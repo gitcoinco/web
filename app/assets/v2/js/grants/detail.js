@@ -28,6 +28,30 @@ $(document).ready(function() {
   $('#edit--members').on('click', () => {
     inlineEdit('#grant-members', '#edit--members');
   });
+
+  $('#js-cancel_grant').validate({
+    submitHandler: function(form) {
+      var data = {};
+
+      $.each($(form).serializeArray(), function() {
+        data[this.name] = this.value;
+      });
+
+      let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, data.contract_address);
+
+      web3.eth.getAccounts(function(err, accounts) {
+
+
+        deployedSubscription.methods.endContract().send({from: accounts[0], gasPrice: 4000000000})
+        .on('confirmation', function(confirmationNumber, receipt) {
+          console.log('receipt', receipt);
+
+          form.submit();
+        });
+
+      })
+    }
+  });
 });
 
 const inlineEdit = (input, icon) => {

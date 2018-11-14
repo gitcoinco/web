@@ -136,12 +136,23 @@
           </div>
         <div class="col-12 col-md-6 offset-lg-2 col-lg-5">
 
-          {% if subscription %}
+          {% if grant_is_inactive %}
+            <h4>{% trans "This grant has ended. You can find all active grants" %}
+              <a href="{% url 'grants:grants' %}">
+                {% trans "here." %}
+              </a>
+            </h4>
+          {% elif is_admin %}
+          <form method="POST" id="js-cancel_grant">
+            {% csrf_token %}
+            <button class="button button--primary button--full" id="cancel_grant" type="submit">{% trans "Cancel this Grant" %}
+            </button>
+            <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
+          </form>
+          {% elif subscription %}
               <a href="{% url 'grants:subscription_cancel' grant.id subscription.id %}">
                 <button class="button button--primary button--full">{% trans "Cancel Your Funding" %}</button>
-          {% elif is_admin %}
-                <button class="button button--primary button--full">{% trans "Cancel this Grant" %}
-                </button>
+              </a>
           {% else %}
             <a href="{% url 'grants:fund' grant.id %}">
               <button class="button button--primary button--full">{% trans "Fund this Grant" %}</button>
@@ -279,6 +290,7 @@
     </div>
 
 
+
     {% include 'shared/current_profile.html' %}
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
@@ -286,6 +298,7 @@
     {% include 'shared/footer.html' %}
   </body>
 
+  <script src="{% static "v2/js/grants/compiledSubscriptionContract.js" %}"></script>
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="{% static "v2/js/shared.js" %}"></script>
   <script src="{% static "v2/js/ipfs-api.js" %}"></script>

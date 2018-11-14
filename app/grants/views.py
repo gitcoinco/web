@@ -80,6 +80,10 @@ def grant_details(request, grant_id):
     except Grant.DoesNotExist:
         raise Http404
 
+    if request.method == 'POST':
+        grant.active = False
+        grant.save()
+
     # TODO: Determine how we want to chunk out articles and where we want to store this data.
     activity_data = [
         {
@@ -146,6 +150,7 @@ def grant_details(request, grant_id):
         'grant': grant,
         'subscription': active_subscription,
         'is_admin': (grant.admin_profile.id == profile.id) if profile and grant.admin_profile else False,
+        'grant_is_inactive': True if grant.active == False else False,
         'activity': activity_data,
         'gh_activity': gh_data,
         'milestones': milestones,
