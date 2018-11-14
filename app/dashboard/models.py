@@ -2636,11 +2636,15 @@ class TokenApproval(SuperModel):
         coinbase_short = f"{self.coinbase[0:5]}...{self.coinbase[-4:]}"
         return coinbase_short
 
-class SearchHistory(SuperModel):
-    """Define the structure of a Search History object
 
-    """
+class SearchHistory(SuperModel):
+    """Define the structure of a Search History object."""
+
+    class Meta:
+        """Define metadata associated with SearchHistory."""
+
+        verbose_name_plural = 'Search History'
 
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
-    data = JSONField()
-    ip_address = models.GenericIPAddressField(null=True)
+    data = JSONField(default=dict)
+    ip_address = models.GenericIPAddressField(blank=True, null=True)
