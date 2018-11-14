@@ -24,7 +24,6 @@ import re
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.postgres.search import SearchVector
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.db.models import Q
 from django.http import Http404, HttpResponse, JsonResponse
@@ -39,7 +38,6 @@ from dashboard.models import Activity, Profile
 from dashboard.notifications import maybe_market_kudos_to_email
 from dashboard.utils import get_web3
 from dashboard.views import record_user_action
-from eth_utils import is_address, to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_master, get_github_primary_email
 from ratelimit.decorators import ratelimit
@@ -98,28 +96,22 @@ def marketplace(request):
     """Render the Kudos 'marketplace' page."""
     q = request.GET.get('q')
     order_by = request.GET.get('order_by', '-created_on')
-    logger.info(order_by)
-    logger.info(q)
-    title = q.title() + str(_(" Kudos ")) if q else str(_('Kudos Marketplace'))
+    title = str(_('Kudos Marketplace'))
+    network = request.GET.get('network', settings.KUDOS_NETWORK)
+
+    # Only show the latest contract Kudos for the current network.
+    query_kwargs = {
+        'num_clones_allowed__gt': 0,
+        'contract__is_latest': True,
+        'contract__network': network,
+    }
+    token_list = Token.objects.select_related('contract').visible().filter(**query_kwargs)
 
     if q:
-        listings = Token.objects.annotate(
-            search=SearchVector('name', 'description', 'tags')
-        ).select_related('contract').filter(
-            # Only show the latest contract Kudos for the current network
-            num_clones_allowed__gt=0,
-            contract__is_latest=True,
-            contract__network=settings.KUDOS_NETWORK,
-            hidden=False,
-            search=q
-        ).order_by(order_by).cache()
-    else:
-        listings = Token.objects.select_related('contract').filter(
-            num_clones_allowed__gt=0,
-            contract__is_latest=True,
-            contract__network=settings.KUDOS_NETWORK,
-            hidden=False,
-        ).order_by(order_by).cache()
+        title = f'{q.title()} Kudos'
+        token_list = token_list.keyword(q)
+
+    listings = token_list.order_by(order_by).cache()
     context = {
         'is_outside': True,
         'active': 'marketplace',
@@ -128,9 +120,8 @@ def marketplace(request):
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
         'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
         'listings': listings,
-        'network': settings.KUDOS_NETWORK
+        'network': network
     }
-
     return TemplateResponse(request, 'kudos_marketplace.html', context)
 
 
