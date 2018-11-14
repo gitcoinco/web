@@ -54,7 +54,8 @@
   <body class="interior {{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
-      {% include 'shared/nav.html' %}
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'grants/nav.html' %}
       {% include 'shared/minihero.html' with h1='Getting Started with Grants' suppress_logo=1 position_h1_below_logo=True hide_rain=True %}
     </div>
 
@@ -103,8 +104,8 @@
                   <img src="{% static "v2/images/grants/quickstart/fund.svg" %}">
                 </div>
                 <div class="col-12 text-center font-subheader">
-                  <h3 class="font-subheader mb-2">{%trans "Ready to fund a grant?" %}</h3>
-                  <a class="btn btn-gc-blue" href="/">{%trans "Fund a Grant" %}</a>
+                  <h3 class="font-subheader my-3">{%trans "Ready to fund a grant?" %}</h3>
+                  <a class="btn btn-gc-blue" href="{% url 'grants:grants' %}">{%trans "Fund a Grant" %}</a>
                   <p class="font-body mt-3">
                     {%trans "Have any questions?" %} <br>
                     {%trans "Reach out to a Gitcoin Core Team member on" %}
@@ -157,8 +158,8 @@
                   <img src="{% static "v2/images/grants/quickstart/start.svg" %}">
                 </div>
                 <div class="col-12 text-center font-subheader">
-                  <h3 class="font-subheader mb-2">{%trans "Ready to start a grant?" %}</h3>
-                  <a class="btn btn-gc-blue" href="/grants/new">{%trans "Start a Grant" %}</a>
+                  <h3 class="font-subheader my-3">{%trans "Ready to start a grant?" %}</h3>
+                  <a class="btn btn-gc-blue" href="{% url 'grants:new' %}">{%trans "Start a Grant" %}</a>
                   <p class="font-body mt-3">
                     {%trans "Have any questions?" %} <br>
                     {%trans "Reach out to a Gitcoin Core Team member on" %}

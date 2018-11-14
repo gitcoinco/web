@@ -56,15 +56,13 @@ def grants(request):
     if request.method == 'POST':
         keyword = request.POST.get('search_grants', '')
         _grants = Grant.objects.filter(
-            Q(description__icontains=keyword) |
-            Q(title__icontains=keyword) |
-            Q(reference_url__icontains=keyword)
+            Q(description__icontains=keyword) | Q(title__icontains=keyword) | Q(reference_url__icontains=keyword)
         ).order_by(sort)
 
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
 
-    params = {'active': 'dashboard', 'title': _('Grants Explorer'), 'grants': grants, 'keywords': get_keywords(), }
+    params = {'active': 'grants_landing', 'title': _('Grants Explorer'), 'grants': grants, 'keywords': get_keywords(), }
     return TemplateResponse(request, 'grants/index.html', params)
 
 
@@ -129,18 +127,20 @@ def grant_details(request, grant_id):
         'title': 'Initial commit by flapjacks',
         'date': '08.02.2018',
         'description': 'Initial commit with some blah blah blah...',
-    }, {
-        'title': 'Fix the build by derp-nation',
-        'date': '08.02.2018',
-        'description': 'Initial commit with some blah blah blah...',
-    }, {
-        'title': 'A subpar commit by derp-diggity',
-        'date': '08.02.2018',
-        'description': 'Initial commit with some blah blah blah...',
-    }]
+    },
+               {
+                   'title': 'Fix the build by derp-nation',
+                   'date': '08.02.2018',
+                   'description': 'Initial commit with some blah blah blah...',
+               },
+               {
+                   'title': 'A subpar commit by derp-diggity',
+                   'date': '08.02.2018',
+                   'description': 'Initial commit with some blah blah blah...',
+               }]
 
     params = {
-        'active': 'dashboard',
+        'active': 'grant_details',
         'title': _('Grant Details'),
         'grant': grant,
         'subscription': subscription,
@@ -185,7 +185,7 @@ def grant_new(request):
 
         return redirect(reverse('grants:details', args=(grant.pk, )))
 
-    params = {'active': 'grants', 'title': _('New Grant'), 'grant': {}, 'keywords': get_keywords(), }
+    params = {'active': 'new_grant', 'title': _('New Grant'), 'grant': {}, 'keywords': get_keywords(), }
 
     return TemplateResponse(request, 'grants/new.html', params)
 
@@ -224,7 +224,7 @@ def milestones(request, grant_id):
     milestones = Milestone.objects.filter(grant_id=grant_id).order_by('due_date')
 
     params = {
-        'active': 'grants',
+        'active': 'grant_milestones',
         'title': _('Grant Milestones'),
         'grant': grant,
         'milestones': milestones,
@@ -261,7 +261,7 @@ def grant_fund(request, grant_id):
         return redirect(reverse('grants:details', args=(grant.pk, )))
 
     params = {
-        'active': 'dashboard',
+        'active': 'fund_grant',
         'title': _('Fund Grant'),
         'subscription': {},
         'grant': grant,
@@ -283,6 +283,7 @@ def subscription_cancel(request, grant_id, subscription_id):
         return redirect(reverse('grants:details', args=(grant.pk, )))
 
     params = {
+        'active': 'cancel_grant',
         'title': _('Cancel Grant Subscription'),
         'subscription': subscription,
         'grant': grant,
@@ -342,4 +343,6 @@ def profile(request):
 
 def quickstart(request):
     """Display quickstart guide."""
-    return TemplateResponse(request, 'grants/quickstart.html', {})
+
+    params = {'active': 'grants_quickstart', 'title': _('Quickstart')}
+    return TemplateResponse(request, 'grants/quickstart.html', params)

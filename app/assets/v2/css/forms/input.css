@@ -7,6 +7,10 @@
   width: 100%;
 }
 
+.form__input-lg {
+  font-size: 1rem;
+}
+
 .form__input_lg {
   padding: 8px;
 }

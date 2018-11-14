@@ -28,15 +28,15 @@
   <body class="interior {{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
-      {% include 'shared/nav.html' %}
-      {% include 'shared/minihero.html' with h1='My Grants' suppress_logo=1 position_h1_below_logo=True hide_rain=True %}
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'grants/nav.html' %}
     </div>
 
     {% if grants|length != 0 and sub_grants|length != 0 %}
       <div class="container pt-5">
         <div id="grant-profile-tabs" class="tab-container font-body mb-3">
-          <button type="button" id="supported" class="section-tab">{% trans "Supported by Me" %} ({{ sub_grants|length }})</button>
-          <button type="button" id="created" class="section-tab">{% trans "Created by Me" %} ({{ grants|length }})</button>
+          <button type="button" id="supported" class="section-tab">{% trans "Supported" %} ({{ sub_grants|length }})</button>
+          <button type="button" id="created" class="section-tab">{% trans "Created" %} ({{ grants|length }})</button>
         </div>
 
         <div id="grant-profile-tabs-sections" class="tab-sections section">
