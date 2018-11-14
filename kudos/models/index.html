@@ -2054,6 +2054,26 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU Affero General Public License for more details.</p>
 <p>You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.</p>
+<h2 id="kudos.models.TokenQuerySet">TokenQuerySet</h2>
+
+<pre><code class="python">TokenQuerySet(self, model=None, query=None, using=None, hints=None)
+</code></pre>
+
+<p>Handle the manager queryset for Tokens.
+<h3 id="kudos.models.TokenQuerySet.visible">visible</h3></p>
+<pre><code class="python">TokenQuerySet.visible(self)
+</code></pre>
+
+<p>Filter results down to visible tokens only.
+<h3 id="kudos.models.TokenQuerySet.keyword">keyword</h3></p>
+<pre><code class="python">TokenQuerySet.keyword(self, keyword)
+</code></pre>
+
+<p>Filter results to all Token objects containing the keywords.</p>
+<p>Args:
+    keyword (str): The keyword to search title, issue description, and issue keywords by.</p>
+<p>Returns:
+    kudos.models.TokenQuerySet: The QuerySet of tokens filtered by keyword.</p>
 <h2 id="kudos.models.Token">Token</h2>
 
 <pre><code class="python">Token(self, *args, **kwargs)
