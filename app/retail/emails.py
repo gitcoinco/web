@@ -67,6 +67,7 @@ def premailer_transform(html):
     p = premailer.Premailer(html, base_url=settings.BASE_URL)
     return p.transform()
 
+
 def render_new_grant_email(grant):
     params = {
         'grant': grant
@@ -76,6 +77,7 @@ def render_new_grant_email(grant):
     subject = "Your Gitcoin Grant"
 
     return response_html, response_txt, subject
+
 
 def render_new_supporter_email(grant, subscription):
     params = {
