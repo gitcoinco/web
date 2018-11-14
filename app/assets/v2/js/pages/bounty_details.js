@@ -786,7 +786,7 @@ var build_detail_page = function(result) {
 };
 
 const is_current_user_interested = function(result) {
-  return !!(result.interested.toLowerCase() || []).find(interest => interest.profile.handle.toLowerCase() == document.contxt.github_handle.toLowerCase());
+  return !!(result.interested || []).find(interest => interest.profile.handle.toLowerCase() == document.contxt.github_handle.toLowerCase());
 };
 
 const is_current_user_approved = function(result) {
