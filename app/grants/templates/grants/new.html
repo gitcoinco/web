@@ -71,7 +71,11 @@
         <div class="col-sm-12 col-md-10 col-lg-7" id="grants_form">
           <div class="form__intro text-center">
             <h1>{% trans "Create a Grant" %}</h1>
-            <p>{% trans "We're excited to learn about your project.<br>Complete the form below to get funding for your project." %}</p>
+            <p>
+              {% trans "We're excited to learn about your project." %}
+              <br>
+              {% trans "Complete the form below to get funding for your project." %}
+            </p>
           </div>
           <form method="POST" id="create-grant" enctype="multipart/form-data">
             {% csrf_token %}

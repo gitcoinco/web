@@ -309,26 +309,28 @@ def profile(request):
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
 
-    history = [{
-        'date': '16 Mar',
-        'value_true': 1.0,
-        'token_name': 'ETH',
-        'frequency': 'days',
-        'value_in_usdt_now': 80,
-        'title': 'Lorem ipsum dolor sit amet',
-        'link': 'https://etherscan.io/txs?a=0xcf267ea3f1ebae3c29fea0a3253f94f3122c2199&f=3',
-        'avatar_url': 'https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg'
-    },
-               {
-                   'date': '24 April',
-                   'value_true': 90,
-                   'token_name': 'DAI',
-                   'frequency': 'months',
-                   'value_in_usdt_now': 90,
-                   'title': 'Lorem ipsum dolor sit amet',
-                   'link': 'https://etherscan.io/txs?a=0xcf267ea3f1ebae3c29fea0a3253f94f3122c2199&f=3',
-                   'avatar_url': 'https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg'
-               }]
+    history = [
+        {
+            'date': '16 Mar',
+            'value_true': 1.0,
+            'token_name': 'ETH',
+            'frequency': 'days',
+            'value_in_usdt_now': 80,
+            'title': 'Lorem ipsum dolor sit amet',
+            'link': 'https://etherscan.io/txs?a=0xcf267ea3f1ebae3c29fea0a3253f94f3122c2199&f=3',
+            'avatar_url': 'https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg'
+        },
+        {
+            'date': '24 April',
+            'value_true': 90,
+            'token_name': 'DAI',
+            'frequency': 'months',
+            'value_in_usdt_now': 90,
+            'title': 'Lorem ipsum dolor sit amet',
+            'link': 'https://etherscan.io/txs?a=0xcf267ea3f1ebae3c29fea0a3253f94f3122c2199&f=3',
+            'avatar_url': 'https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg'
+        }
+    ]
 
     params = {
         'active': 'profile',
