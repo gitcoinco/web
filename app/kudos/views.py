@@ -510,7 +510,7 @@ def receive(request, key, txid, network):
         messages.error(
             request, f'This kudos is for {kudos_transfer.username} but you are logged in as {request.user.username}.  Please logout and log back in as {kudos_transfer.username}.')
     elif did_fail:
-        messages.info(request, f'This tx {tip.txid}, failed.  Please contact the sender and ask them to send the tx again.')
+        messages.info(request, f'This tx {kudos_transfer.txid}, failed.  Please contact the sender and ask them to send the tx again.')
     elif not_mined_yet and not request.GET.get('receive_txid'):
         message = mark_safe(
             f'The <a href="https://etherscan.io/tx/{txid}">transaction</a> is still mining.  '
