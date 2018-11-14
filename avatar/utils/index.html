@@ -1490,10 +1490,130 @@
       <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2-14" type="checkbox" id="nav-2-14">
     
     <label class="md-nav__link" for="nav-2-14">
-      Link Shortener
+      Kudos
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
       <label class="md-nav__title" for="nav-2-14">
+        Kudos
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../kudos_deploy >> docs/KUDOS.md" title="Local Deployment" class="md-nav__link">
+      Local Deployment
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../kudos/admin/" title="Admin" class="md-nav__link">
+      Admin
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../kudos/forms/" title="Forms" class="md-nav__link">
+      Forms
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../kudos/helpers/" title="Helpers" class="md-nav__link">
+      Helpers
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../kudos/models/" title="Models" class="md-nav__link">
+      Models
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../kudos/router/" title="Routers" class="md-nav__link">
+      Routers
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../kudos/utils/" title="Utilities" class="md-nav__link">
+      Utilities
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../kudos/views/" title="Views" class="md-nav__link">
+      Views
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2-15" type="checkbox" id="nav-2-15">
+    
+    <label class="md-nav__link" for="nav-2-15">
+      Link Shortener
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-2-15">
         Link Shortener
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -1559,13 +1679,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2-15" type="checkbox" id="nav-2-15">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2-16" type="checkbox" id="nav-2-16">
     
-    <label class="md-nav__link" for="nav-2-15">
+    <label class="md-nav__link" for="nav-2-16">
       Marketing
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-2-15">
+      <label class="md-nav__title" for="nav-2-16">
         Marketing
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -1691,13 +1811,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2-16" type="checkbox" id="nav-2-16">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2-17" type="checkbox" id="nav-2-17">
     
-    <label class="md-nav__link" for="nav-2-16">
+    <label class="md-nav__link" for="nav-2-17">
       Retail
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-2-16">
+      <label class="md-nav__title" for="nav-2-17">
         Retail
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -1787,13 +1907,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2-17" type="checkbox" id="nav-2-17">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2-18" type="checkbox" id="nav-2-18">
     
-    <label class="md-nav__link" for="nav-2-17">
+    <label class="md-nav__link" for="nav-2-18">
       TDI
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-2-17">
+      <label class="md-nav__title" for="nav-2-18">
         TDI
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -1974,6 +2094,19 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
     output_fmt (str): The output format. Defaults to: png.</p>
 <p>Exceptions:
     Exception: Cowardly catch blanket exceptions here, log it, and return None.</p>
+<p>Returns:
+    BytesIO: The BytesIO stream containing the converted File data.
+    None: If there is an exception, the method returns None.</p>
+<h2 id="avatar.utils.convert_wand">convert_wand</h2>
+
+<pre><code class="python">convert_wand(img_obj, input_fmt='png', output_fmt='svg')
+</code></pre>
+
+<p>Convert an SVG to another format.</p>
+<p>Args:
+    img_obj (File): The PNG or other image File/ContentFile.
+    input_fmt (str): The input format. Defaults to: png.
+    output_fmt (str): The output format. Defaults to: svg.</p>
 <p>Returns:
     BytesIO: The BytesIO stream containing the converted File data.
     None: If there is an exception, the method returns None.</p>
