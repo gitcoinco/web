@@ -35,7 +35,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
 from dashboard.models import Activity, Profile
-from dashboard.notifications import maybe_market_kudos_to_email
+from dashboard.notifications import maybe_market_kudos_to_email, maybe_market_kudos_to_github
 from dashboard.utils import get_web3
 from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
@@ -389,7 +389,7 @@ def send_4(request):
 
     # notifications
     maybe_market_kudos_to_email(kudos_transfer)
-    # record_user_action(kudos_transfer.from_username, 'send_kudos', kudos_transfer)
+    maybe_market_kudos_to_github(kudos_transfer)
     record_kudos_activity(
         kudos_transfer,
         kudos_transfer.from_username,

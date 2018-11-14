@@ -282,7 +282,7 @@ class Token(SuperModel):
 
     @property
     def url(self):
-        return f'/kudos/{self.pk}/{slugify(self.name)}'
+        return f'{settings.BASE_URL}kudos/{self.pk}/{slugify(self.name)}'
 
 
 class KudosTransfer(SendCryptoAsset):
