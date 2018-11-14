@@ -1,0 +1,54 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+<div class="tooltip-info">
+  <div class="">
+    <span class="status-[[:status]]">
+      <i class="fas fa-dot-circle"></i>
+      [[if status === "open"]]
+      Ready to work
+      [[else status === "started"]]
+      Work Started
+      [[else status === "submitted"]]
+      Work Submitted
+      [[else status === "done"]]
+      Work Done
+      [[else status === "cancelled"]]
+      Cancelled
+      [[else status === "expired"]]
+      Expired
+      [[/if]]
+    </span>
+    <img src="[[:avatar_url]]" alt="" class="avatar" height="14">
+  </div>
+  [[:title]]
+
+  <div class="">
+    [[for keywords.split(',') sort=""  ]]
+      <span class="tag token">[[:]]</span>
+    [[/for]]
+  </div>
+  <div>
+    [[if activities.length]]
+      Latest Activity
+      [[for activities sort=""  ]]
+        <div><span class="">[[:activity_type]]</span>
+        <span class="">[[timedifference:created]]</span></div>
+      [[/for]]
+    [[/if]]
+  </div>
+</div>

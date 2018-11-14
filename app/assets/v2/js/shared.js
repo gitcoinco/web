@@ -440,6 +440,10 @@ function getParam(parameterName) {
   return result;
 }
 
+$.views.converters("timedifference", function(date) {
+  return timeDifference(new Date(), new Date(date), false, 60 * 60);
+});
+
 function timeDifference(current, previous, remaining, now_threshold_seconds) {
 
   var elapsed = current - previous;
@@ -1080,7 +1084,7 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
     const isExpired = dateExpires < dateNow && !result['is_open'];
     const isInfinite = dateExpires - new Date().setFullYear(new Date().getFullYear() + 1) > 1;
     const projectType = ucwords(result['project_type']) + ' <span class="separator-bull"></span> ';
-    result['isFoo'] = {isFoo: false};
+
     result['action'] = result['url'];
     result['title'] = result['title'] ? result['title'] : result['github_url'];
     result['p'] = projectType + (result['experience_level'] ? (result['experience_level'] + ' <span class="separator-bull"></span> ') : '');
