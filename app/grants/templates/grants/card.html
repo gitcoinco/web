@@ -15,7 +15,6 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static humanize i18n %}
-<link rel="stylesheet" href="{% static "v2/css/grants/card.css" %}">
 <div class="grant-item">
   <div class="grant-item__content py-4 px-3">
     <h2 class="grant-item__title font-subheader"><a href="{% url 'grants:details' grant.id %}">{{ grant.title|truncatechars:60 }}</a></h2>
