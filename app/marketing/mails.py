@@ -30,7 +30,7 @@ from python_http_client.exceptions import HTTPError, UnauthorizedError
 from retail.emails import (
     render_admin_contact_funder, render_bounty_changed, render_bounty_expire_warning, render_bounty_feedback,
     render_bounty_startwork_expire_warning, render_bounty_unintersted, render_faucet_rejected, render_faucet_request,
-    render_funder_stale, render_gdpr_reconsent, render_gdpr_update, render_kudos_email, render_match_email,
+    render_funder_stale, render_gdpr_reconsent, render_gdpr_update, render_grant_cancellation_email, render_kudos_email, render_match_email,
     render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup,
     render_new_grant_email, render_new_supporter_email, render_new_work_submission, render_quarterly_stats,
     render_start_work_applicant_about_to_expire, render_start_work_applicant_expired, render_start_work_approved,
@@ -160,6 +160,21 @@ def support_cancellation(grant, subscription, profile):
     try:
         setup_lang(to_email)
         html, text, subject = render_support_cancellation_email(grant, subscription)
+
+        if not should_suppress_notification_email(to_email, 'support_cancellation'):
+            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+    finally:
+        translation.activate(cur_language)
+
+
+def grant_cancellation(grant, subscription, profile):
+    from_email = settings.CONTACT_EMAIL
+    to_email = profile.email
+    cur_language = translation.get_language()
+
+    try:
+        setup_lang(to_email)
+        html, text, subject = render_grant_cancellation_email(grant, subscription)
 
         if not should_suppress_notification_email(to_email, 'support_cancellation'):
             send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])

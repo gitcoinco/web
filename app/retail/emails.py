@@ -115,6 +115,28 @@ def render_support_cancellation_email(grant, subscription):
     return response_html, response_txt, subject
 
 
+def render_grant_cancellation_email(grant, subscription):
+    params = {
+        'grant': grant,
+        'subscription': subscription
+    }
+    response_html = premailer_transform(render_to_string("emails/grants/grant_cancellation.html", params))
+    response_txt = render_to_string("emails/grants/grant_cancellation.txt", params)
+    subject = "Your Grant on Gitcoin Grants has been cancelled"
+
+    return response_html, response_txt, subject
+
+
+@staff_member_required
+def grant_cancellation(request):
+    # giving specific pk because I am sure this grant has at least one subscription
+    grant = Grant.objects.get(pk=14)
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+
+    response_html, response_txt, _ = render_grant_cancellation_email(grant, subscription)
+    return HttpResponse(response_html)
+
+
 @staff_member_required
 def support_cancellation(request):
     # giving specific pk because I am sure this grant has at least one subscription

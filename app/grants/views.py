@@ -33,7 +33,7 @@ from django.utils.translation import gettext_lazy as _
 
 from grants.forms import MilestoneForm
 from grants.models import Grant, Milestone, Subscription
-from marketing.mails import new_grant, new_supporter, support_cancellation, thank_you_for_supporting
+from marketing.mails import grant_cancellation, new_grant, new_supporter, support_cancellation, thank_you_for_supporting
 from marketing.models import Keyword
 from web3 import HTTPProvider, Web3
 
@@ -86,6 +86,7 @@ def grant_details(request, grant_id):
     if request.method == 'POST':
         grant.active = False
         grant.save()
+        grant_cancellation(grant, active_subscription, profile)
 
     # TODO: Determine how we want to chunk out articles and where we want to store this data.
     activity_data = [
