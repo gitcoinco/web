@@ -33,6 +33,21 @@ Please checkout [the github repo for Kudos](https://github.com/gitcoinco/Kudos72
 
 Kudos Direct Send (KDS) is a direct send of a Kudos ERC 721 NFT from one Ethereum address to another.
 
+## Are Kudos unique?
+
+Kudos are semi-fungible tokens.   Each kudos has a limited production run which is designated in the [smart contract](https://github.com/gitcoinco/Kudos721Contract/blob/19b783e50825bfc258179454990a517e84343153/contracts/Kudos.sol#L15) in the `numClonesAllowed` variable..
+
+For example, [this kudos](https://gitcoin.co/kudos/430/resilience) has a total of 200 that will ever be in existence.  
+
+When a new kudos is [minted](https://github.com/gitcoinco/Kudos721Contract/blob/19b783e50825bfc258179454990a517e84343153/contracts/Kudos.sol#L48) we create a new *Gen 0 Kudos*.
+
+That *Gen 0 Kudos* can then be [cloned](https://github.com/gitcoinco/Kudos721Contract/blob/19b783e50825bfc258179454990a517e84343153/contracts/Kudos.sol#L68) up to `numClonesAllowed` times.
+
+Creating limited production runs of Kudos allows us to manage the unit economics of Kudos.  For example, it costs us $20 to pay our illustrator to create a new piece of artwork.  Nobody is going to pay $20 for a Kudos NFT, so we instead offer a limited production run of 200 Kudos which are priced at $0.40c each.  When that production run sells out, the artist has made gross $40 in revenue, which nets out to $20 in profit
+
+Every time a
+
+
 ## What is Kudos Indirect Send?
 
 Kudos Indirect Send (KIS) enables Gitcoin users to send a Kudos to *any github/gitcoin username*.  KIS is effectively a proxy account that can hold a Kudos 721 NFT until a recipient (who is authorized by a github username) claims it.  
