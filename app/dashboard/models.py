@@ -558,7 +558,7 @@ class Bounty(SuperModel):
                     return 'done'
                 elif self.past_hard_expiration_date:
                     return 'expired'
-                has_tips = self.tips.filter(is_for_bounty_fulfiller=False).exclude(txid='').exists()
+                has_tips = self.tips.filter(is_for_bounty_fulfiller=False).send_success().exists()
                 if has_tips:
                     return 'done'
                 # If its not expired or done, and no tips, it must be cancelled.
@@ -917,7 +917,7 @@ class Bounty(SuperModel):
         for fulfillment in self.fulfillments.filter(accepted=True):
             if fulfillment.fulfiller_github_username:
                 return_list.append(fulfillment.fulfiller_github_username)
-        for tip in self.tips.exclude(txid=''):
+        for tip in self.tips.send_success():
             if tip.username:
                 return_list.append(tip.username)
         return list(set(return_list))
@@ -926,7 +926,7 @@ class Bounty(SuperModel):
     def additional_funding_summary(self):
         """Return a dict describing the additional funding from crowdfunding that this object has"""
         ret = {}
-        for tip in self.tips.filter(is_for_bounty_fulfiller=True).exclude(txid=''):
+        for tip in self.tips.filter(is_for_bounty_fulfiller=True).send_success():
             token = tip.tokenName
             obj = ret.get(token, {})
 
@@ -1054,6 +1054,42 @@ class Subscription(SuperModel):
         return f"{self.email} {self.created_on}"
 
 
+class SendCryptoAssetQuerySet(models.QuerySet):
+    """Handle the manager queryset for SendCryptoAsset."""
+
+    def send_success(self):
+        """Filter results down to successful sends only."""
+        return self.exclude(txid='').filter(tx_status='success')
+
+    def send_pending(self):
+        """Filter results down to pending sends only."""
+        return self.exclude(txid='').filter(tx_status__in=['pending'])
+
+    def send_happy_path(self):
+        """Filter results down to pending/success sends only."""
+        return self.exclude(txid='').filter(tx_status__in=['pending', 'success'])
+
+    def send_fail(self):
+        """Filter results down to failed sends only."""
+        return self.filter(Q(txid='') | Q(tx_status__in=['dropped', 'unknown', 'na', 'error']))
+
+    def receive_success(self):
+        """Filter results down to successful receives only."""
+        return self.exclude(receive_txid='').filter(receive_tx_status='success')
+
+    def receive_pending(self):
+        """Filter results down to pending receives only."""
+        return self.exclude(receive_txid='').filter(receive_tx_status__in=['pending'])
+
+    def receive_happy_path(self):
+        """Filter results down to pending receives only."""
+        return self.exclude(receive_txid='').filter(receive_tx_status__in=['pending', 'success'])
+
+    def receive_fail(self):
+        """Filter results down to failed receives only."""
+        return self.filter(Q(receive_txid='') | Q(receive_tx_status__in=['dropped', 'unknown', 'na', 'error']))
+
+
 class SendCryptoAsset(SuperModel):
     """Abstract Base Class to handle the model for both Tips and Kudos."""
 
@@ -1094,6 +1130,9 @@ class SendCryptoAsset(SuperModel):
 
     tx_status = models.CharField(max_length=9, choices=TX_STATUS_CHOICES, default='na', db_index=True)
     receive_tx_status = models.CharField(max_length=9, choices=TX_STATUS_CHOICES, default='na', db_index=True)
+
+    # QuerySet Manager
+    objects = SendCryptoAssetQuerySet.as_manager()
 
     class Meta:
         abstract = True
@@ -1585,7 +1624,7 @@ class Profile(SuperModel):
 
         kudos_transfers = kt_profile | kt_owner_address
         kudos_transfers = kudos_transfers.filter(kudos_token_cloned_from__contract__network=settings.KUDOS_NETWORK)
-        kudos_transfers = kudos_transfers.exclude(txid='')
+        kudos_transfers = kudos_transfers.send_success() | kudos_transfers.send_pending()
         kudos_transfers = kudos_transfers.distinct('id') # remove this line IFF we ever move to showing multiple kudos transfers on a profile
 
         return kudos_transfers
@@ -1598,7 +1637,7 @@ class Profile(SuperModel):
         kt_sender_profile = KudosTransfer.objects.filter(sender_profile=self)
 
         kudos_transfers = kt_address | kt_sender_profile
-        kudos_transfers = kudos_transfers.exclude(txid='')
+        kudos_transfers = kudos_transfers.send_success() | kudos_transfers.send_pending()
         kudos_transfers = kudos_transfers.filter(kudos_token_cloned_from__contract__network=settings.KUDOS_NETWORK)
         kudos_transfers = kudos_transfers.distinct('id') # remove this line IFF we ever move to showing multiple kudos transfers on a profile
 
@@ -2310,7 +2349,7 @@ class Profile(SuperModel):
                 }]
 
         if tips:
-            params['tips'] = self.tips.filter(**query_kwargs).exclude(txid='')
+            params['tips'] = self.tips.filter(**query_kwargs).send_success()
 
         if leaderboards:
             params['scoreboard_position_contributor'] = self.get_contributor_leaderboard_index()

@@ -56,10 +56,10 @@ class Command(BaseCommand):
     help = 'gets the tx status of all SendCryptoAssets'
 
     def handle(self, *args, **options):
-        non_terminal_states = ['pending', 'na']
+        non_terminal_states = ['pending', 'na', 'unknown']
         for obj_type in [Tip, KudosTransfer]:
-            sent_txs = obj_type.objects.filter(tx_status__in=non_terminal_states).exclude(txid='')
-            receive_txs = obj_type.objects.filter(receive_tx_status__in=non_terminal_states).exclude(txid='').exclude(receive_txid='')
+            sent_txs = obj_type.objects.filter(tx_status__in=non_terminal_states).send_success()
+            receive_txs = obj_type.objects.filter(receive_tx_status__in=non_terminal_states).send_success().exclude(receive_txid='')
             objects = (sent_txs | receive_txs).distinct('id')
             for obj in objects:
                 print(f"syncing {obj_type} / {obj.pk} / {obj.network}")

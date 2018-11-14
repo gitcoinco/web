@@ -328,7 +328,7 @@ def send_tip_3(request):
         is_over_tip_tx_limit = tip.value_in_usdt_now > max_per_tip
         if request.user.is_authenticated and request.user.profile:
             tips_last_week_value = tip.value_in_usdt_now
-            tips_last_week = Tip.objects.exclude(txid='').filter(sender_profile=get_profile(from_username), created_on__gt=timezone.now() - timezone.timedelta(days=7))
+            tips_last_week = Tip.objects.send_happy_path().filter(sender_profile=get_profile(from_username), created_on__gt=timezone.now() - timezone.timedelta(days=7))
             for this_tip in tips_last_week:
                 if this_tip.value_in_usdt_now:
                     tips_last_week_value += this_tip.value_in_usdt_now
