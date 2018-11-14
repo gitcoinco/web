@@ -63,17 +63,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             </div>
             <div class="col-2 col-lg-1 px-0">
               <button class="button button--primary">
-                <span class="d-none d-sm-inline">{% trans 'Search' %}</span>
+                <span class="d-sm-inline">{% trans 'Search' %}</span>
                 <i class="d-sm-none fas fa-search"></i>
               </button>
             </div>
-            <div class="col-12 col-md-4 col-lg-3 pt-1 font-caption order_by d-none d-md-inline">
+            <div class="col-12 col-md-4 col-lg-3 pt-1 font-caption order_by d-md-inline">
               <div class="heading">{% trans "SORT" %}</div>
               <select name="sort_option" id="sort_option">
-                <option value="-web3_created">{% trans "Created: Recent" %}</option>
-                <option value="web3_created">{% trans "Created: Oldest" %}</option>
-                <option value="-_val_usd_db">{% trans "Value: Highest" %}</option>
-                <option value="_val_usd_db">{% trans "Value: Lowest" %}</option>
+                <option value="-created_on">{% trans "Created: Recent" %}</option>
+                <option value="created_on">{% trans "Created: Oldest" %}</option>
+                <option value="-amount_goal">{% trans "Value: Highest" %}</option>
+                <option value="amount_goal">{% trans "Value: Lowest" %}</option>
               </select>
             </div>
           </div>

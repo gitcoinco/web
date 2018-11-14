@@ -50,17 +50,20 @@ def grants(request):
     """Handle grants explorer."""
     limit = request.GET.get('limit', 25)
     page = request.GET.get('page', 1)
-    sort = request.GET.get('sort', '-created_on')
+    sort = request.GET.get('sort_option', '-created_on')
 
-    _grants = Grant.objects.all().order_by(sort)
+    _grants = Grant.objects.filter(active=True).order_by(sort)
 
     if request.method == 'POST':
+        sort = request.POST.get('sort_option', '-created_on')
         keyword = request.POST.get('search_grants', '')
         _grants = Grant.objects.filter(
             Q(description__icontains=keyword) |
             Q(title__icontains=keyword) |
-            Q(reference_url__icontains=keyword)
+            Q(reference_url__icontains=keyword),
+            active=True
         ).order_by(sort)
+
 
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
