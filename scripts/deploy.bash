@@ -78,8 +78,10 @@ if [ "$CREATE_CACHE_TABLE" ] && [ "$JOBS_NODE" ]; then
 fi
 
 # let gunicorn know its ok to restart
-echo "- gunicorn"
-sudo systemctl restart gunicorn
+if ! [ "$JOBS_NODE" ]; then
+    echo "- gunicorn"
+    sudo systemctl restart gunicorn
+fi
 
 # invalidate cloudfront
 if [ "$ISFRONTENDPUSH" ] && [ "$JOBS_NODE" ]; then

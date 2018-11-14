@@ -31,10 +31,11 @@ class GeneralAdmin(admin.ModelAdmin):
 class TokenAdmin(admin.ModelAdmin):
     ordering = ['-id']
     search_fields = ['name', 'description']
+    raw_id_fields = ['contract']
 
 
 class TransferAdmin(admin.ModelAdmin):
-    raw_id_fields = ['recipient_profile', 'sender_profile', 'kudos_token']
+    raw_id_fields = ['recipient_profile', 'sender_profile', 'kudos_token', 'kudos_token_cloned_from']
     ordering = ['-id']
     readonly_fields = ['claim']
     search_fields = ['tokenName', 'comments_public', 'from_name', 'username', 'network', 'github_url', 'url', 'emails', 'from_address', 'receive_address']

@@ -49,6 +49,7 @@ class AvatarAdmin(GeneralAdmin):
     ]
     readonly_fields = ['svg_asset', 'custom_png_asset', 'github_svg_asset', 'png_asset', 'created_on', 'modified_on']
     inlines = [ProfileInline, ]
+    search_fields = ['profile__handle']
 
     # Custom Avatars
     def svg_asset(self, instance):

@@ -32,22 +32,23 @@ from dashboard.models import Bounty, Profile, Tip
 from economy.utils import convert_amount
 from enssubdomain.models import ENSSubdomainRegistration
 from faucet.models import FaucetRequest
+from kudos.models import KudosTransfer
 from marketing.mails import send_mail
 
 DATE_FORMAT = '%Y/%m/%d'
 DATE_FORMAT_HYPHENATED = '%Y-%m-%d'
 REPORT_URL_EXPIRATION_TIME = 60 * 60 * 24 * 30  # seconds
 
-GITHUB_REPO_PATTERN = re.compile('github.com/[\w-]+/([\w-]+)')
+GITHUB_REPO_PATTERN = re.compile(r'github.com/[\w-]+/([\w-]+)')
 
 imap = map
 
 
 def get_bio(handle):
     try:
-        profile = Profile.objects.filter(handle=handle.replace('@','')).first()
+        profile = Profile.objects.filter(handle=handle.replace('@', '')).first()
         return profile.data.get('location', 'unknown'), profile.data.get('bio', 'unknown')
-    except Exception as e:
+    except Exception:
         return 'unknown', 'unknown'
 
 
@@ -106,30 +107,34 @@ class Command(BaseCommand):
         }
 
     def format_tip(self, tip):
-
+        return self.format_cryptoasset(tip, 'tip')
+        
+    def format_kudos(self, kudos):
+        return self.format_cryptoasset(kudos, 'kudos')
+        
+    def format_cryptoasset(self, ca, _type='tip'):
         location, bio = get_bio(tip.username)
 
         return {
-            'type': 'tip',
-            'created_on': tip.created_on,
-            'last_activity': tip.modified_on,
-            'amount': tip.amount_in_whole_units,
-            'denomination': tip.tokenName,
-            'amount_eth': tip.value_in_eth,
-            'amount_usdt': tip.value_in_usdt,
-            'from_address': tip.from_address,
-            'claimee_address': tip.receive_address,
-            'repo': self.extract_github_repo(tip.github_url) if tip.github_url else '',
-            'from_username': tip.from_name,
-            'fulfiller_github_username': tip.username,
-            'status': tip.status,
-            'comments': tip.github_url,
+            'type': _type,
+            'created_on': ca.created_on,
+            'last_activity': ca.modified_on,
+            'amount': ca.amount_in_whole_units,
+            'denomination': ca.tokenName,
+            'amount_eth': ca.value_in_eth,
+            'amount_usdt': ca.value_in_usdt,
+            'from_address': ca.from_address,
+            'claimee_address': ca.receive_address,
+            'repo': self.extract_github_repo(ca.github_url) if ca.github_url else '',
+            'from_username': ca.from_name,
+            'fulfiller_github_username': ca.username,
+            'status': ca.status,
+            'comments': ca.github_url,
             'payee_bio': bio,
             'payee_location': location,
         }
 
     def format_faucet_distribution(self, fr):
-
         location, bio = get_bio(fr.github_username)
 
         return {
@@ -152,7 +157,6 @@ class Command(BaseCommand):
         }
 
     def format_ens_reg(self, ensreg):
-
         location, bio = get_bio(ensreg.profile.handle) if ensreg.profile else "", ""
         amount = ensreg.gas_cost_eth
         return {
@@ -169,7 +173,7 @@ class Command(BaseCommand):
             'from_username': 'admin',
             'fulfiller_github_username': ensreg.profile.handle if ensreg.profile else "",
             'status': 'sent',
-            'comments': f"ENS Subdomain Registraiton {ensreg.pk}",
+            'comments': f"ENS Subdomain Registration {ensreg.pk}",
             'payee_bio': bio,
             'payee_location': location,
         }
@@ -177,11 +181,9 @@ class Command(BaseCommand):
     def upload_to_s3(self, filename, contents):
         s3 = boto.connect_s3(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
         bucket = s3.get_bucket(settings.S3_REPORT_BUCKET)
-
         key = Key(bucket)
         key.key = os.path.join(settings.S3_REPORT_PREFIX, filename)
         key.set_contents_from_string(contents)
-
         return key.generate_url(expires_in=REPORT_URL_EXPIRATION_TIME)
 
     def handle(self, *args, **options):
@@ -205,6 +207,15 @@ class Command(BaseCommand):
             created_on__lte=options['end_date']
         ).send_success().order_by('created_on', 'id')
         formatted_tips = imap(self.format_tip, tips)
+
+        tips = KudosTransfer.objects.filter(
+            network='mainnet',
+            created_on__gte=options['start_date'],
+            created_on__lte=options['end_date']
+        ).exclude(
+            txid='',
+        ).order_by('created_on', 'id')
+        formatted_tips = imap(self.format_kudos, tips)
 
         enssubregistrations = ENSSubdomainRegistration.objects.filter(
             created_on__gte=options['start_date'],
@@ -236,10 +247,10 @@ class Command(BaseCommand):
         end = options['end_date'].strftime(DATE_FORMAT_HYPHENATED)
         now = str(datetime.datetime.now())
         if has_rows:
-            subject = 'Gitcoin Activity report from %s to %s' % (start, end)
+            subject = f'Gitcoin Activity report from {start} to {end}'
 
-            url = self.upload_to_s3('activity_report_%s_%s_generated_on_%s.csv' % (start, end, now), csvfile.getvalue())
-            body = '<a href="%s">%s</a>' % (url, url)
+            url = self.upload_to_s3(f'activity_report_{start}_{end}_generated_on_{now}.csv', csvfile.getvalue())
+            body = f'<a href="{url}">{url}</a>'
             print(url)
 
             send_mail(

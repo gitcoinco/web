@@ -1,21 +1,22 @@
 # -*- coding: utf-8 -*-
-'''
-    Copyright (C) 2017 Gitcoin Core
+"""Define the tip related views.
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+Copyright (C) 2018 Gitcoin Core
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-'''
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+"""
 from __future__ import print_function, unicode_literals
 
 import json
@@ -30,28 +31,16 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
-from dashboard.utils import generate_pub_priv_keypair, get_web3
+from dashboard.utils import get_web3
 from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_master, get_github_primary_email
-from marketing.mails import (
-    admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,
-)
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import Web3
 
-from .models import (
-    Activity, Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip,
-    Tool, ToolVote, UserAction,
-)
-from .notifications import (
-    maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_github,
-    maybe_market_to_slack, maybe_market_to_twitter, maybe_market_to_user_discord, maybe_market_to_user_slack,
-)
-from .utils import (
-    get_bounty, get_bounty_id, get_context, has_tx_mined, record_user_action_on_interest, web3_process_bounty,
-)
+from .models import Activity, Profile, Tip
+from .notifications import maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -68,7 +57,6 @@ def send_tip(request):
         'card_desc': _('Send a tip to any github user at the click of a button.'),
         'class': 'send',
     }
-
     return TemplateResponse(request, 'onepager/send1.html', params)
 
 
@@ -87,34 +75,31 @@ def record_tip_activity(tip, github_handle, event_name):
             'received_on': str(tip.received_on) if tip.received_on else None
         }
     }
-    try:
-        kwargs['profile'] = Profile.objects.get(handle=github_handle)
-    except Profile.MultipleObjectsReturned:
-        kwargs['profile'] = Profile.objects.filter(handle__iexact=github_handle).first()
-    except Profile.DoesNotExist:
-        logging.error(f"error in record_tip_activity: profile with github name {github_handle} not found")
-        return
+
+    associated_profile = get_profile(github_handle)
+    if associated_profile:
+        kwargs['profile'] = associated_profile
+
     try:
         kwargs['bounty'] = tip.bounty
-    except:
+    except Exception:
         pass
 
     try:
         Activity.objects.create(**kwargs)
     except Exception as e:
-        logging.error(f"error in record_tip_activity: {e} - {event_name} - {tip} - {github_handle}")
+        logger.error('error in record_tip_activity: %s - %s - %s - %s', e, event_name, tip, github_handle)
 
 
 @csrf_exempt
 @ratelimit(key='ip', rate='2/m', method=ratelimit.UNSAFE, block=True)
 def receive_tip_v3(request, key, txid, network):
-    """Handle the receiving of a tip (the POST)
+    """Handle the receiving of a tip (the POST).
 
     Returns:
-        TemplateResponse: the UI with the tip confirmed
+        TemplateResponse: the UI with the tip confirmed.
 
     """
-
     these_tips = Tip.objects.filter(web3_type='v3', txid=txid, network=network)
     tips = these_tips.filter(metadata__reference_hash_for_receipient=key) | these_tips.filter(metadata__reference_hash_for_funder=key)
     tip = tips.first()
@@ -130,7 +115,7 @@ def receive_tip_v3(request, key, txid, network):
     ):
         login_redirect = redirect('/login/github?next=' + request.get_full_path())
         return login_redirect
-    elif tip.receive_txid:
+    if tip.receive_txid:
         messages.info(request, 'This tip has been received')
     elif not is_authed:
         messages.error(request, f'This tip is for @{tip.username} but you are logged in as @{request.user.username}.  Please logout and log back in as {tip.username}.')
@@ -177,7 +162,7 @@ def receive_tip_v3(request, key, txid, network):
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def send_tip_4(request):
-    """Handle the fourth stage of sending a tip (the POST)
+    """Handle the fourth stage of sending a tip (the POST).
 
     Returns:
         JsonResponse: response with success state.
@@ -247,10 +232,10 @@ def get_profile(handle):
 
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def tipee_address(request, handle):
-    """returns the address, if any, that someone would like to be tipped directly at
+    """Return the address, if any, that someone would like to be tipped directly at.
 
     Returns:
-        list of addresse
+        list: The list of tipee address strings.
 
     """
     response = {
@@ -265,7 +250,7 @@ def tipee_address(request, handle):
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def send_tip_3(request):
-    """Handle the third stage of sending a tip (the POST)
+    """Handle the third stage of sending a tip (the POST).
 
     Returns:
         JsonResponse: response with success state.
@@ -326,7 +311,6 @@ def send_tip_3(request):
         sender_profile=get_profile(from_username),
     )
 
-
     is_over_tip_tx_limit = False
     is_over_tip_weekly_limit = False
     max_per_tip = request.user.profile.max_tip_amount_usdt_per_tx if request.user.is_authenticated and request.user.profile else 500
@@ -369,7 +353,6 @@ def send_tip_2(request):
         TemplateResponse: Render the submission form.
 
     """
-
     is_user_authenticated = request.user.is_authenticated
     from_username = request.user.username if is_user_authenticated else ''
     primary_from_email = request.user.email if is_user_authenticated else ''
@@ -383,5 +366,4 @@ def send_tip_2(request):
         'title': 'Send Tip | Gitcoin',
         'card_desc': 'Send a tip to any github user at the click of a button.',
     }
-
     return TemplateResponse(request, 'onepager/send2.html', params)

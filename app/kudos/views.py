@@ -24,8 +24,8 @@ import re
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.postgres.search import SearchVector
 from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.db.models import Q
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -34,12 +34,10 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
-from cacheops import cached_view_as
 from dashboard.models import Activity, Profile
-from dashboard.notifications import maybe_market_kudos_to_email
+from dashboard.notifications import maybe_market_kudos_to_email, maybe_market_kudos_to_github
 from dashboard.utils import get_web3
 from dashboard.views import record_user_action
-from eth_utils import is_address, to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_master, get_github_primary_email
 from ratelimit.decorators import ratelimit
@@ -74,11 +72,6 @@ def get_profile(handle):
     return to_profile
 
 
-@cached_view_as(
-    Token.objects.select_related('contract').filter(
-        num_clones_allowed__gt=0, contract__is_latest=True, contract__network=settings.KUDOS_NETWORK, hidden=False,
-    )
-)
 def about(request):
     """Render the Kudos 'about' page."""
     listings = Token.objects.select_related('contract').filter(
@@ -86,7 +79,7 @@ def about(request):
         contract__is_latest=True,
         contract__network=settings.KUDOS_NETWORK,
         hidden=False,
-    ).order_by('-popularity_week')
+    ).order_by('-popularity_week').cache()
     context = {
         'is_outside': True,
         'active': 'about',
@@ -103,28 +96,22 @@ def marketplace(request):
     """Render the Kudos 'marketplace' page."""
     q = request.GET.get('q')
     order_by = request.GET.get('order_by', '-created_on')
-    logger.info(order_by)
-    logger.info(q)
-    title = q.title() + str(_(" Kudos ")) if q else str(_('Kudos Marketplace'))
+    title = str(_('Kudos Marketplace'))
+    network = request.GET.get('network', settings.KUDOS_NETWORK)
+
+    # Only show the latest contract Kudos for the current network.
+    query_kwargs = {
+        'num_clones_allowed__gt': 0,
+        'contract__is_latest': True,
+        'contract__network': network,
+    }
+    token_list = Token.objects.select_related('contract').visible().filter(**query_kwargs)
 
     if q:
-        listings = Token.objects.annotate(
-            search=SearchVector('name', 'description', 'tags')
-        ).select_related('contract').filter(
-            # Only show the latest contract Kudos for the current network
-            num_clones_allowed__gt=0,
-            contract__is_latest=True,
-            contract__network=settings.KUDOS_NETWORK,
-            hidden=False,
-            search=q
-        ).order_by(order_by)
-    else:
-        listings = Token.objects.select_related('contract').filter(
-            num_clones_allowed__gt=0,
-            contract__is_latest=True,
-            contract__network=settings.KUDOS_NETWORK,
-            hidden=False,
-        ).order_by(order_by)
+        title = f'{q.title()} Kudos'
+        token_list = token_list.keyword(q)
+
+    listings = token_list.order_by(order_by).cache()
     context = {
         'is_outside': True,
         'active': 'marketplace',
@@ -133,9 +120,8 @@ def marketplace(request):
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
         'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
         'listings': listings,
-        'network': settings.KUDOS_NETWORK
+        'network': network
     }
-
     return TemplateResponse(request, 'kudos_marketplace.html', context)
 
 
@@ -185,7 +171,7 @@ def details(request, kudos_id, name):
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
         'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
         'kudos': kudos,
-        'related_profiles': kudos.owners[:20],
+        'related_handles': kudos.owners_handles[:20],
     }
     if kudos:
         token = Token.objects.select_related('contract').get(
@@ -405,8 +391,12 @@ def send_4(request):
 
     # notifications
     maybe_market_kudos_to_email(kudos_transfer)
-    # record_user_action(kudos_transfer.from_username, 'send_kudos', kudos_transfer)
-    # record_kudos_activity(kudos_transfer, kudos_transfer.from_username, 'new_kudos' if kudos_transfer.username else 'new_crowdfund')
+    maybe_market_kudos_to_github(kudos_transfer)
+    record_kudos_activity(
+        kudos_transfer,
+        kudos_transfer.from_username,
+        'new_kudos' if kudos_transfer.username else 'new_crowdfund'
+    )
     return JsonResponse(response)
 
 
@@ -444,6 +434,42 @@ def record_kudos_email_activity(kudos_transfer, github_handle, event_name):
         logger.error(f"error in record_kudos_email_activity: {e} - {event_name} - {kudos_transfer} - {github_handle}")
 
 
+def record_kudos_activity(kudos_transfer, github_handle, event_name):
+    logger.debug(kudos_transfer)
+    kwargs = {
+        'activity_type': event_name,
+        'kudos': kudos_transfer,
+        'metadata': {
+            'amount': str(kudos_transfer.amount),
+            'token_name': kudos_transfer.tokenName,
+            'value_in_eth': str(kudos_transfer.value_in_eth),
+            'value_in_usdt_now': str(kudos_transfer.value_in_usdt_now),
+            'github_url': kudos_transfer.github_url,
+            'to_username': kudos_transfer.username,
+            'from_name': kudos_transfer.from_name,
+            'received_on': str(kudos_transfer.received_on) if kudos_transfer.received_on else None
+        }
+    }
+
+    try:
+        kwargs['profile'] = Profile.objects.get(handle__iexact=github_handle)
+    except Profile.MultipleObjectsReturned:
+        kwargs['profile'] = Profile.objects.filter(handle__iexact=github_handle).first()
+    except Profile.DoesNotExist:
+        logging.error(f"error in record_kudos_activity: profile with github name {github_handle} not found")
+        return
+
+    try:
+        kwargs['bounty'] = kudos_transfer.bounty
+    except Exception:
+        pass
+
+    try:
+        Activity.objects.create(**kwargs)
+    except Exception as e:
+        logging.error(f"error in record_kudos_activity: {e} - {event_name} - {kudos_transfer} - {github_handle}")
+
+
 def receive(request, key, txid, network):
     """Handle the receiving of a kudos (the POST).
 
@@ -452,8 +478,10 @@ def receive(request, key, txid, network):
 
     """
     these_kudos_transfers = KudosTransfer.objects.filter(web3_type='v3', txid=txid, network=network)
-    kudos_transfers = these_kudos_transfers.filter(metadata__reference_hash_for_receipient=key) | these_kudos_transfers.filter(
-        metadata__reference_hash_for_funder=key)
+    kudos_transfers = these_kudos_transfers.filter(
+        Q(metadata__reference_hash_for_receipient=key) |
+        Q(metadata__reference_hash_for_funder=key)
+    )
     kudos_transfer = kudos_transfers.first()
     if not kudos_transfer:
         raise Http404
@@ -495,7 +523,7 @@ def receive(request, key, txid, network):
         # db mutations
         try:
             if params['save_addr']:
-                profile = get_profile(kudos_transfer.username)
+                profile = get_profile(kudos_transfer.username.replace('@', ''))
                 if profile:
                     # TODO: Does this mean that the address the user enters in the receive form
                     # Will overwrite an already existing preferred_payout_address?  Should we
@@ -510,6 +538,11 @@ def receive(request, key, txid, network):
             kudos_transfer.save()
             record_user_action(kudos_transfer.from_username, 'receive_kudos', kudos_transfer)
             record_kudos_email_activity(kudos_transfer, kudos_transfer.username, 'receive_kudos')
+            record_kudos_activity(
+                kudos_transfer,
+                kudos_transfer.from_username,
+                'new_kudos' if kudos_transfer.username else 'new_crowdfund'
+            )
             messages.success(request, _('This kudos has been received'))
         except Exception as e:
             messages.error(request, str(e))

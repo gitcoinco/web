@@ -572,53 +572,62 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Introducing Kudos at Devcon IV"
-
+    subject = "Nominate your Favorite OSS Dev | Kudos Trophies!"
+    new_kudos_pks = [429, 430]
+    new_kudos_size_px = 150
     intro = '''
 
 <p>
-Hi there from Devcon IV in Prague,
+Hi there,
 </p>
+<h3>Kudos Trophies</h3>
 <p>
-BIG NEWS TODAY - We are excited to <a href="https://medium.com/gitcoin/introducing-kudos-10077a4f2def">introduce Kudos</a>!
-Kudos are a <a href="https://en.wikipedia.org/wiki/Non-fungible_token">non-fungible token</a> that can be sent to another gitcoin user to show appreciation or build a relationship. We're launching with <a href="https://gitcoin.co/kudos/marketplace/">over 100 Kudos today</a>, and hope to have more over time.
-</p>
-<p>
-Our relationships with our co-workers are one of the most important outcomes of our work. We are proud to introduce a feature
-which allows us to celebrate those relationships..  What better way to celebrate the launch of kudos, than to give Kudos to the launch team!
+I'm excited to show off a new product: limited edition, Kudos Trophies. Kudos trophies are physical trophies with Kudos on them.  We launched them as the Status Cryptolife Hackathon in Prague.  Here's what they look like:
+<BR>
+<BR>
+<img style='max-width: 300px;' src='https://cdn-images-1.medium.com/max/640/1*8CIBNn9yXZY5bj34ZInkPA.jpeg'>
+<BR>
+<BR>
+Each Kudos Trophy is a physical trophy, which has a QR code on the bottom of it that allows it to be redeemed on Gitcoin’s website.
+<BR>
+<BR>
+<img style='max-width: 300px;' src='https://cdn-images-1.medium.com/max/1280/1*zeXLPyw4qkP4fifHkZAgFA.jpeg'>
+<BR>
+<BR>
+It's quite possible that you'll see them again at EthDenver this year :)
+<BR>
+<BR>
+ <a href="https://medium.com/gitcoin/introducing-kudos-trophies-4e98c54e521">Learn more about Kudos Trophies here</a>.
+
 </p>
 
-<ul>
-<li>
-    Kudos to <strong>Jasan Haas</strong> for <strong>being a great rubber ducky</strong>!
-    <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/145/rubber_ducky'>
-</li>
-<li>
-    Kudos to <strong>Octavio Amuchástegui</strong> for <strong>his eye for detail</strong>!
-    <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/102/eye_for_detail'>
-</li>
-<li>
-    Kudos to <strong>Mark Beacom</strong> for <strong>being a firefighter</strong>!
-    <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/135/firefighter'>
-</li>
-<li>
-    Kudos to <strong>Alisa March</strong> for <strong>being a product wizard</strong>!
-    <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/109/product_wizard'>
-</li>
-<li>
-    Kudos to <strong>Alexandru Solomon</strong> for <strong>his artwork</strong>!
-    <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/99/arts_and_farts'>
-</li>
-</ul>
+<h3>Gitcoin Nominations are now Live</h3>
+<p>
+Who’s making the most impact on your OSS or Web3 project? Do you know someone that solved a problem in a creative way, built something interesting, or truly deserves a thanks? <a href='https://github.com/gitcoinco/web/issues/2816'>Nominate open source contributors to receive a limited edition and unique Kudos!</a>
+</p>
+
+<h3>New Kudos This Week</h3>
+<p>
+Check out a few of the new kudos launched this week:
+</p>
+
+<p>
+
+''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
+
+
+</p>
 
 <h3>What else is new?</h3>
     <ul>
         <li>
-        We're at Devcon IV this week introducing Kudos, shilling EIP-1337 (Subscriptions), and talking bounties.
-        Give us a shout if you're here!
+            Gitcoin now supports EIP--1102 (Metamask Privacy Mode).  To use Gitcoin in privacy mode, <a href="https://medium.com/metamask/introducing-privacy-mode-42549d4870fa">checkout this post</a>.
         </li>
         <li>
-        The Gitcoin Livestream will be on as regularly scheduled this Friday. <a href="https://gitcoin.co/livestream">Join us Friday at 5PM ET</a>!
+            We're announcing the launch of Gitcoin Labs next week.  <a href="https://medium.com/gitcoin/announcing-gitcoin-labs-ba400522d697">Here's a sneak peak</a>.
+        </li>
+        <li>
+            The Gitcoin Livestream will be on as regularly scheduled in two days. Aidan from Chainsafe will be there. They'll be talking about their ETH2.0 implementation and Gorli Testnet. We'll also have Ele from OSCoin presenting Radicle. <a href="https://gitcoin.co/livestream">Join us Friday at 5PM ET</a>!
         </li>
     </ul>
 </p>
@@ -627,39 +636,38 @@ Back to BUIDLing,
 </p>
 '''
     highlights = [{
-        'who': 'cryptomental',
+        'who': 'cleanunicorn',
         'who_link': True,
-        'what': 'Working on Slither with Trail of Bits!',
-        'link': 'https://gitcoin.co/issue/trailofbits/slither/30/1596',
+        'what': 'Has been helping us with some security bounties',
+    }, {
+        'who': 'zachzundel',
+        'who_link': True,
+        'what': 'Worked with mbeacom on our testing suite!',
+        'link': 'https://github.com/gitcoinco/web/pull/2822',
         'link_copy': 'View more',
     }, {
-        'who': 'markx3',
+        'who': 'iamonuwa',
         'who_link': True,
-        'what': 'Doing work on #DeFi with Decentralized Derivatives!',
-        'link': 'https://gitcoin.co/issue/DecentralizedDerivatives/DRCT_standard_DApp/219/1554',
-        'link_copy': 'View more',
-    }, {
-        'who': 'svenski123',
-        'who_link': True,
-        'what': 'Working with POA Network to solve a Linux bug.',
-        'link': 'https://gitcoin.co/issue/poanetwork/blockscout/942/1542',
+        'what': 'Worked with electricfeelco on some hello-metamask component refactoring.',
+        'link': 'https://gitcoin.co/issue/electricfeelco/travay/23/1355',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/blockchain-etl/ethereum-kubernetes/issues/1',
-        'primer': 'Have Kubernetes experience? Put it to use with on ethereum-kubernetes.',
+        'url': 'https://github.com/f-o-a-m/chanterelle/issues/46',
+        'primer': 'Help foam improve their CI',
     }, {
-        'url': 'https://github.com/trailofbits/manticore/issues/1204',
-        'primer': 'Work with Trail of Bits on Manticore.',
+        'url': 'https://github.com/novnc/noVNC/issues/944',
+        'primer': 'Help novnc add multi touch support.',
     }, {
-        'url': 'https://github.com/mikeymicrophone/commissulator/issues/6',
-        'primer': 'Work on a project with Mikey Microphone, a Gitcoin OG.'
+        'url': 'https://github.com/gitcoinco/web/issues/2684',
+        'primer': 'Add new assets to Gitcoin Avatars Builder - Holiday Avatars encouraged! 🎅',
     }, ]
 
-    highlight_kudos_ids = []  # Represent IDs/PKs of KudosTransfers; Optional.  We will pull the latest ones if not.
-
     num_leadboard_items = 5
+    highlight_kudos_ids = []
+    num_kudos_to_show = 10
+
     #### don't need to edit anything below this line
     leaderboard = {
         'quarterly_payers': {
@@ -675,6 +683,13 @@ Back to BUIDLing,
             'items': [],
         },
     }
+
+    from kudos.models import KudosTransfer
+    if highlight_kudos_ids:
+        kudos_highlights = KudosTransfer.objects.filter(id__in=highlight_kudos_ids)
+    else:
+        kudos_highlights = KudosTransfer.objects.exclude(txid='').order_by('-created_on')[:num_kudos_to_show]
+
     for key, __ in leaderboard.items():
         leaderboard[key]['items'] = LeaderboardRank.objects.active() \
             .filter(leaderboard=key).order_by('rank')[0:num_leadboard_items]
@@ -694,12 +709,6 @@ Back to BUIDLing,
             print(e)
 
     ecosystem_bounties = ExternalBounty.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(weeks=1)).order_by('?')[0:5]
-
-    from kudos.models import KudosTransfer
-    if highlight_kudos_ids:
-        kudos_highlights = KudosTransfer.objects.filter(id__in=highlight_kudos_ids)
-    else:
-        kudos_highlights = KudosTransfer.objects.all().order_by('created_on')[:4]
 
     params = {
         'intro': intro,

@@ -82,7 +82,9 @@ def get_avatar_context():
                          'title': 'Pick a hairstyle',
                          'options': (['None', '0'], ['None', '1'], ['None', '2'], ['None', '3'], ['None', '4'],
                                      ['5', 'None'], ['6-back', '6-front'], ['7-back', '7-front'], ['8-back', '8-front'],
-                                     ['9-back', '9-front'], ['None', '10'])
+                                     ['9-back', '9-front'], ['None', '10'], ['damos_hair-back', 'damos_hair-front'], [
+                                         'long_swoosh-back', 'long_swoosh-front'
+                                     ], ['None', 'mohawk'], ['None', 'mohawk_inverted'], ['None', 'spikey'])
                      },
                      {
                          'name': 'Facial Hair',
@@ -100,9 +102,11 @@ def get_avatar_context():
                          ], ['HatShort-redbow'], ['HatShort-yellowbow'], ['HatShort-ballcap'], ['HatShort-cowboy'],
                                      ['HatShort-headphones'], ['HatShort-shortbeanie'], ['HatShort-tallbeanie'], [
                                          'HatShort-bunnyears'
-                                     ], ['Earring-0'], ['Earring-1'], ['EarringBack-2', 'Earring-2'], ['Earring-3'],
-                                     ['Earring-4'], ['Masks-jack-o-lantern'], ['Masks-guy-fawkes'],
-                                     ['Masks-jack-o-lantern-lighted'], ['Extras-Parrot'], ['Masks-gitcoinbot'])
+                                     ], ['HatShort-menorah'], ['HatShort-pilgrim'], ['HatShort-santahat'], [
+                                         'Earring-0'
+                                     ], ['Earring-1'], ['EarringBack-2', 'Earring-2'], ['Earring-3'], ['Earring-4'],
+                                     ['Masks-jack-o-lantern'], ['Masks-guy-fawkes'], ['Masks-jack-o-lantern-lighted'],
+                                     ['Extras-Parrot'], ['Masks-gitcoinbot'])
                      },
                      {
                          'name': 'Background',
@@ -110,6 +114,14 @@ def get_avatar_context():
                          'options': (
                              '25E899', '9AB730', '00A55E', '3FCDFF', '3E00FF', '8E2ABE', 'D0021B', 'F9006C', 'FFCE08',
                              'F8E71C', '15003E', 'FFFFFF'
+                         )
+                     },
+                     {
+                         'name': 'Wallpaper',
+                         'title': 'Pick some swag for your back',
+                         'options': (
+                             'anchors', 'circuit', 'jigsaw', 'lines', 'gears', 'clouds', 'signal', 'polka_dots',
+                             'polka_dots_black', 'squares', 'shapes', 'sunburst', 'sunburst_pastel', 'rainbow'
                          )
                      }],
     }
@@ -142,6 +154,7 @@ def get_svg_templates():
         'head': [],
         'mouth': [],
         'nose': [],
+        'wallpaper': []
     }
 
     for category in template_data:
@@ -231,6 +244,7 @@ def build_avatar_svg(svg_path='avatar.svg', line_color='#781623', icon_size=None
             'mouth': '0',
             'nose': '0',
             'eyes': '0',
+            'wallpaper': None
         }
 
     # Build the list of avatar components
@@ -242,7 +256,7 @@ def build_avatar_svg(svg_path='avatar.svg', line_color='#781623', icon_size=None
     ]
 
     customizable_components = ['clothing', 'ears', 'head', 'hair']
-    flat_components = ['eyes', 'mouth', 'nose']
+    flat_components = ['eyes', 'mouth', 'nose', 'wallpaper']
     multi_components = ['accessories']
 
     for component in customizable_components:
@@ -280,7 +294,7 @@ def handle_avatar_payload(request):
     avatar_dict = {}
     valid_component_keys = [
         'Beard', 'Clothing', 'Earring', 'EarringBack', 'Ears', 'Eyes', 'Glasses', 'Masks', 'HairLong', 'HairShort',
-        'HatLong', 'HatShort', 'Head', 'Mouth', 'Mustache', 'Nose', 'Extras'
+        'HatLong', 'HatShort', 'Head', 'Mouth', 'Mustache', 'Nose', 'Extras', 'Wallpaper'
     ]
     valid_color_keys = ['Background', 'ClothingColor', 'HairColor', 'SkinTone']
     body = json.loads(request.body)
@@ -426,5 +440,37 @@ def convert_img(obj, input_fmt='svg', output_fmt='png'):
     except VipsError:
         pass
     except Exception as e:
-        logger.error(e)
+        logger.error(
+            'Exception encountered in convert_img - Error: (%s) - input: (%s) - output: (%s)', str(e), input_fmt,
+            output_fmt
+        )
+    return None
+
+
+def convert_wand(img_obj, input_fmt='png', output_fmt='svg'):
+    """Convert an SVG to another format.
+
+    Args:
+        img_obj (File): The PNG or other image File/ContentFile.
+        input_fmt (str): The input format. Defaults to: png.
+        output_fmt (str): The output format. Defaults to: svg.
+
+    Returns:
+        BytesIO: The BytesIO stream containing the converted File data.
+        None: If there is an exception, the method returns None.
+
+    """
+    from wand.image import Image as WandImage
+    try:
+        img_data = img_obj.read()
+        with WandImage(blob=img_data, format=input_fmt) as _img:
+            _img.format = output_fmt
+            tmpfile_io = BytesIO()
+            _img.save(file=tmpfile_io)
+            return tmpfile_io
+    except Exception as e:
+        logger.error(
+            'Exception encountered in convert_wand - Error: (%s) - input: (%s) - output: (%s)', str(e), input_fmt,
+            output_fmt
+        )
     return None

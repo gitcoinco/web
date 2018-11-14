@@ -162,6 +162,14 @@ var renderWallets = function(profileId) {
 // Step 0
 // DOM is ready
 $(document).ready(function() {
+
+  // upon keypress for the select2, gotta make sure it opens
+  setTimeout(function() {
+    $('.select2').keypress(function() {
+      $(this).siblings('select').select2('open');
+    });
+  }, 100);
+
   set_metadata();
   // jquery bindings
   $('#advanced_toggle').click(function(e) {
@@ -184,6 +192,12 @@ $(document).ready(function() {
     }
     if (!web3.eth.coinbase) {
       _alert({ message: gettext('Please unlock metamask.') }, 'warning');
+      return;
+    }
+    var kudos_network = $('#kudosNetwork').val();
+
+    if (document.web3network != kudos_network) {
+      _alert({ message: gettext('You are not on the right web3 network.  Please switch to ' + kudos_network) }, 'warning');
       return;
     }
 
