@@ -786,10 +786,16 @@ var build_detail_page = function(result) {
 };
 
 const is_current_user_interested = function(result) {
+  if(!document.contxt.github_handle){
+    return false
+  }
   return !!(result.interested || []).find(interest => interest.profile.handle.toLowerCase() == document.contxt.github_handle.toLowerCase());
 };
 
 const is_current_user_approved = function(result) {
+  if(!document.contxt.github_handle){
+    return false
+  }
   const needs_approval = result['permission_type'] === 'approval';
   const interested = result.interested || [];
   let len = interested.length;
@@ -798,7 +804,7 @@ const is_current_user_approved = function(result) {
     const interest = interested[len];
     const handle = interest.profile ? interest.profile.handle : '';
 
-    if (handle && handle === document.contxt.github_handle) {
+    if (handle && handle.toLowerCase() === document.contxt.github_handle.toLowerCase()) {
       return needs_approval ? interest.pending === false : true;
     }
   }
