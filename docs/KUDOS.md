@@ -29,4 +29,21 @@ Please checkout [the github repo for Kudos](https://github.com/gitcoinco/Kudos72
 
 Please checkout [the github repo for Kudos](https://github.com/gitcoinco/Kudos721Contract) to see this information.
 
+## What is Kudos Direct Send
+
+Kudos Direct Send (KDS) is a direct send of a Kudos ERC 721 NFT from one Ethereum address to another.
+
+## What is Kudos Indirect Send
+
+Kudos Indirect Send (KIS) enables Gitcoin users to send a Kudos to *any github/gitcoin username*.  KIS is effectively a proxy account that can hold a Kudos 721 NFT until a recipient (who was denoated by a github username) claims it.  
+
+The Kudos Indirect send architecture diagram is available [here](https://github.com/gitcoinco/web#of-a-tip)
+
+## When is Kudos Indirect Send used and when is Kudos Direct Send Used?
+
+If a user has set a preferred Ethereum address in their profile, KDS will be used.  
+
+If not, KIS will be used.
+
+
 
