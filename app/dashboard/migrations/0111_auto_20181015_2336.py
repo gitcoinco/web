@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='tip',
             name='tokenAddress',
-            field=models.CharField(max_length=255, null=True),
+            field=models.CharField(max_length=255, blank=True),
         ),
     ]
