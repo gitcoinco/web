@@ -490,7 +490,7 @@ class Bounty(SuperModel):
             bool: Whether or not the user has started work.
 
         """
-        return self.interested.filter(pending=pending, profile__handle=handle).exists()
+        return self.interested.filter(pending=pending, profile__handle__iexact=handle).exists()
 
     @property
     def absolute_url(self):
