@@ -112,14 +112,14 @@ def marketplace(request):
             contract__network=settings.KUDOS_NETWORK,
             hidden=False,
             search=q
-        ).order_by(order_by)
+        ).order_by(order_by).cache()
     else:
         listings = Token.objects.select_related('contract').filter(
             num_clones_allowed__gt=0,
             contract__is_latest=True,
             contract__network=settings.KUDOS_NETWORK,
             hidden=False,
-        ).order_by(order_by)
+        ).order_by(order_by).cache()
     context = {
         'is_outside': True,
         'active': 'marketplace',
