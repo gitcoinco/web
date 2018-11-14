@@ -41,12 +41,9 @@ For example, [this kudos](https://gitcoin.co/kudos/430/resilience) has a total o
 
 When a new kudos is [minted](https://github.com/gitcoinco/Kudos721Contract/blob/19b783e50825bfc258179454990a517e84343153/contracts/Kudos.sol#L48) we create a new *Gen 0 Kudos*.
 
-That *Gen 0 Kudos* can then be [cloned](https://github.com/gitcoinco/Kudos721Contract/blob/19b783e50825bfc258179454990a517e84343153/contracts/Kudos.sol#L68) up to `numClonesAllowed` times.
+That *Gen 0 Kudos* can then be [cloned](https://github.com/gitcoinco/Kudos721Contract/blob/19b783e50825bfc258179454990a517e84343153/contracts/Kudos.sol#L68) up to `numClonesAllowed` times, which will create `numClonesAllowed` *Gen 1 Kudos*.
 
-Creating limited production runs of Kudos allows us to manage the unit economics of Kudos.  For example, it costs us $20 to pay our illustrator to create a new piece of artwork.  Nobody is going to pay $20 for a Kudos NFT, so we instead offer a limited production run of 200 Kudos which are priced at $0.40c each.  When that production run sells out, the artist has made gross $40 in revenue, which nets out to $20 in profit
-
-Every time a
-
+Creating limited production runs of Kudos allows us to manage the unit economics of Kudos.  For example, it costs us $20 to pay our illustrator to create a new piece of artwork.  Nobody is going to pay $20 for a Kudos NFT, so we instead offer a limited production run of 200 Kudos which are priced at $0.40 each.  When that production run sells out, the artist has made gross $40 in revenue, which nets out to $20 in profit.
 
 ## What is Kudos Indirect Send?
 
@@ -60,5 +57,8 @@ If a user has set a preferred Ethereum address in their [account](https://gitcoi
 
 If not, KIS will be used.
 
+## I have a question thats not listed here.
+
+Checkout the Kudos FAQ [here](https://gitcoin.co/kudos/#faq)
 
 
