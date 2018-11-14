@@ -67,7 +67,7 @@ window.onload = function() {
           
           if (initialized == true && open == false && bountyAmount != 0) {
             errormsg =
-                gettext('This bounty is already started (or in work), canceling this issue is not possible anymore.');
+                gettext('This bounty is already in progress, canceling the issue is no longer possible.');
           }
            
           if (bountyAmount == 0 || open == false || initialized == false) {
