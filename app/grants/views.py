@@ -33,6 +33,7 @@ from django.utils.translation import gettext_lazy as _
 
 from grants.forms import MilestoneForm
 from grants.models import Grant, Milestone, Subscription
+from marketing.mails import new_grant, new_supporter, support_cancellation, thank_you_for_supporting
 from marketing.models import Keyword
 from web3 import HTTPProvider, Web3
 
@@ -179,6 +180,7 @@ def grant_new(request):
             'logo': logo,
         }
         grant = Grant.objects.create(**grant_kwargs)
+        new_grant(grant, profile)
 
         if team_members:
             grant.team_members.add(*list(map(int, team_members)))
@@ -258,6 +260,8 @@ def grant_fund(request, grant_id):
         subscription.contributor_profile = profile
         subscription.grant = grant
         subscription.save()
+        new_supporter(grant, subscription)
+        thank_you_for_supporting(grant, subscription, profile)
         return redirect(reverse('grants:details', args=(grant.pk, )))
 
     params = {
@@ -276,10 +280,12 @@ def subscription_cancel(request, grant_id, subscription_id):
     subscription = Subscription.objects.select_related('grant').get(pk=subscription_id)
     grant = getattr(subscription, 'grant', None)
     now = datetime.datetime.now()
+    profile = request.user.profile if request.user.is_authenticated else None
 
     if request.method == 'POST':
         subscription.active = False
         subscription.save()
+        support_cancellation(grant, subscription, profile)
         return redirect(reverse('grants:details', args=(grant.pk, )))
 
     params = {

@@ -32,9 +32,10 @@ from retail.emails import (
     render_bounty_startwork_expire_warning, render_bounty_unintersted, render_faucet_rejected, render_faucet_request,
     render_funder_stale, render_gdpr_reconsent, render_gdpr_update, render_kudos_email, render_match_email,
     render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup,
-    render_new_work_submission, render_quarterly_stats, render_start_work_applicant_about_to_expire,
-    render_start_work_applicant_expired, render_start_work_approved, render_start_work_new_applicant,
-    render_start_work_rejected, render_tip_email,
+    render_new_grant_email, render_new_supporter_email, render_new_work_submission, render_quarterly_stats,
+    render_start_work_applicant_about_to_expire, render_start_work_applicant_expired, render_start_work_approved,
+    render_start_work_new_applicant, render_start_work_rejected, render_support_cancellation_email,
+    render_thank_you_for_supporting_email, render_tip_email,
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
@@ -68,7 +69,7 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     content = Content(contenttype, html) if html else Content(contenttype, body)
 
     # TODO:  A bit of a hidden state change here.  Really confusing when doing development.
-    #        Maybe this should be a variable passed into the function the value is set upstream? 
+    #        Maybe this should be a variable passed into the function the value is set upstream?
     if settings.IS_DEBUG_ENV or debug_mode:
         to_email = Email(settings.CONTACT_EMAIL)  # just to be double secret sure of what were doing in dev
         subject = _("[DEBUG] ") + subject
@@ -92,6 +93,7 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     for category in categories:
         mail.add_category(Category(category))
 
+
     # debug logs
     logger.info(f"-- Sending Mail '{subject}' to {to_email}")
     try:
@@ -103,6 +105,66 @@ def send_mail(from_email, _to_email, subject, body, html=False,
         logger.error(f'-- Sendgrid Mail failure - {e}')
 
     return response
+
+
+def new_grant(grant, profile):
+    from_email = settings.CONTACT_EMAIL
+    to_email = profile.email
+    cur_language = translation.get_language()
+
+    try:
+        setup_lang(to_email)
+        html, text, subject = render_new_grant_email(grant)
+
+        if not should_suppress_notification_email(to_email, 'new_grant'):
+            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+    finally:
+        translation.activate(cur_language)
+
+
+def new_supporter(grant, subscription):
+    from_email = settings.CONTACT_EMAIL
+    to_email = subscription.contributor_profile.email
+    cur_language = translation.get_language()
+
+    try:
+        setup_lang(to_email)
+        html, text, subject = render_new_supporter_email(grant, subscription)
+
+        if not should_suppress_notification_email(to_email, 'new_supporter'):
+            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+    finally:
+        translation.activate(cur_language)
+
+
+def thank_you_for_supporting(grant, subscription, profile):
+    from_email = settings.CONTACT_EMAIL
+    to_email = profile.email
+    cur_language = translation.get_language()
+
+    try:
+        setup_lang(to_email)
+        html, text, subject = render_thank_you_for_supporting_email(grant, subscription)
+
+        if not should_suppress_notification_email(to_email, 'thank_you_for_supporting'):
+            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+    finally:
+        translation.activate(cur_language)
+
+
+def support_cancellation(grant, subscription, profile):
+    from_email = settings.CONTACT_EMAIL
+    to_email = profile.email
+    cur_language = translation.get_language()
+
+    try:
+        setup_lang(to_email)
+        html, text, subject = render_support_cancellation_email(grant, subscription)
+
+        if not should_suppress_notification_email(to_email, 'support_cancellation'):
+            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+    finally:
+        translation.activate(cur_language)
 
 
 def admin_contact_funder(bounty, text, from_user):

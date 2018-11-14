@@ -31,6 +31,7 @@ from django.utils.translation import gettext as _
 
 import cssutils
 import premailer
+from grants.models import Grant, Subscription
 from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
 from retail.utils import strip_double_chars, strip_html
@@ -65,6 +66,91 @@ def premailer_transform(html):
     cssutils.log.setLevel(logging.CRITICAL)
     p = premailer.Premailer(html, base_url=settings.BASE_URL)
     return p.transform()
+
+
+def render_new_grant_email(grant):
+    params = {
+        'grant': grant
+    }
+    response_html = premailer_transform(render_to_string("emails/grants/new_grant.html", params))
+    response_txt = render_to_string("emails/grants/new_grant.txt", params)
+    subject = "Your Gitcoin Grant"
+
+    return response_html, response_txt, subject
+
+
+def render_new_supporter_email(grant, subscription):
+    params = {
+        'grant': grant,
+        'subscription': subscription
+    }
+    response_html = premailer_transform(render_to_string("emails/grants/new_supporter.html", params))
+    response_txt = render_to_string("emails/grants/new_supporter.txt", params)
+    subject = "You have a new Grant supporter!"
+
+    return response_html, response_txt, subject
+
+
+def render_thank_you_for_supporting_email(grant, subscription):
+    params = {
+        'grant': grant,
+        'subscription': subscription
+    }
+    response_html = premailer_transform(render_to_string("emails/grants/thank_you_for_supporting.html", params))
+    response_txt = render_to_string("emails/grants/thank_you_for_supporting.txt", params)
+    subject = "Thank you for supporting Grants on Gitcoin!"
+
+    return response_html, response_txt, subject
+
+
+def render_support_cancellation_email(grant, subscription):
+    params = {
+        'grant': grant,
+        'subscription': subscription
+    }
+    response_html = premailer_transform(render_to_string("emails/grants/support_cancellation.html", params))
+    response_txt = render_to_string("emails/grants/support_cancellation.txt", params)
+    subject = "Your subscription on Gitcoin Grants has been cancelled"
+
+    return response_html, response_txt, subject
+
+
+@staff_member_required
+def support_cancellation(request):
+    # giving specific pk because I am sure this grant has at least one subscription
+    grant = Grant.objects.get(pk=14)
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+
+    response_html, response_txt, _ = render_support_cancellation_email(grant, subscription)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def thank_you_for_supporting(request):
+    # giving specific pk because I am sure this grant has at least one subscription
+    grant = Grant.objects.get(pk=8)
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+
+    response_html, response_txt, _ = render_thank_you_for_supporting_email(grant, subscription)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def new_supporter(request):
+    # giving specific pk because I am sure this grant has at least one subscription
+    grant = Grant.objects.get(pk=8)
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+
+    response_html, response_txt, _ = render_new_supporter_email(grant, subscription)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def new_grant(request):
+    grant = Grant.objects.all().order_by('-created_on')[0]
+
+    response_html, response_txt, _ = render_new_grant_email(grant)
+    return HttpResponse(response_html)
 
 
 def render_tip_email(to_email, tip, is_new):

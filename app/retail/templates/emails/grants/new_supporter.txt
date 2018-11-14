@@ -8,9 +8,12 @@
 
 {{ subscriber.contributor_profile }}
 
-{% trans "User' has begun contributing" %}
+{{ subscription.subscription_hash }}
+
+{{ subscription.amount_per_period }}
+
+{% trans " has begun contributing" %}
 
 {{ transaction.value_true }} {{ transaction.token_name }} {% trans "per" %} {{ transaction.frequency }}
 
 {% trans "You can see the transaction" %} {{ transaction.link }} {% trans "here." %}
-

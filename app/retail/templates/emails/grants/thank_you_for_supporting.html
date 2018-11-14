@@ -1,4 +1,4 @@
-{% extends '../emails/template.html' %}
+{% extends 'emails/template.html' %}
 {% comment %}
   Copyright (C) 2018 Gitcoin Core
 
@@ -31,7 +31,7 @@
     width: 100%;
     text-align: center;
   }
-  
+
   .leftGrantHeader {
     display: inline-block;
   }
@@ -44,7 +44,7 @@
     font-size: 20px;
     line-height: 1.5em;
   }
-  
+
   .grantInfo {
     padding-top: 30px;
     padding-bottom: 1%;
@@ -65,7 +65,7 @@
     margin-top: 15px;
     margin-top: 30px;
   }
-  
+
   .grantInfo h3 {
     margin-top: -20px;
   }
@@ -104,37 +104,44 @@
     <img src="{% static "v2/images/heart-robot.png" %}" alt="{% trans "Gitcoin Heart Robot" %}" title="{% trans "Gitcoin Heart Robot" %}">
   </div>
   <div class="rightGrantHeader">
-    <h1 style="text-transform: none;">{% trans "Thank you for supporting" %}
-      <br>'{{ grant.title }}'!</h1>
-    <h2 style="text-transform: none;">{% trans "The world of open source is a better place because of you." %}</h2>
+    <h1 style="text-transform: none;">{% trans "Thank you for supporting" %} {{ grant.title }}!
+    </h1>
+    <h2 style="text-transform: none;">{% trans "The world of open source is a better place because of you." %}
+    </h2>
   </div>
 </div>
 
 <hr>
 <div class="grantInfo">
-  <a href="{% url 'grant:details' grant.id %}">
+  <a href="{% url 'grants:details' grant.id %}">
     <img src="{{ grant.logo.url }}" width="50" height="50" />
   </a>
   <br>
-  <a class="grantInfoName" href="{% url 'grant:details' grant.id %}">{{ grant.title }}</a>
-  <p>{{ grant.description }}</p>
-  <h5 style="text-transform: none;">{% trans "You have agreed to give" %}</h5>
-  <!-- #TODO - Transaction objects have been used. Replace with appropriate objects. - 1/2 -->
-  <h3 style="text-transform: none;">{{ transaction.value_true }} {{ transaction.token_name }} {% trans "per" %} {{ transaction.frequency }}</h3>
-  <p>{% trans "You can see the transaction on etherscan" %}
-    <!-- #TODO - Transaction object has been used. Replaced with appropriate object. - 2/2 -->
-    <a href="{{ transaction.link }}">{% trans "here." %}</a>
+  <a class="grantInfoName" href="{% url 'grants:details' grant.id %}">
+    {{ grant.title }}
+  </a>
+  <p>
+    {{ grant.description }}
+  </p>
+  <h5 style="text-transform: none;">
+    {% trans "You have agreed to give" %}
+  </h5>
+  <h3 style="text-transform: none;">
+    {{ subscription.amount_per_period }} {{ subscription.token_name }} {% trans "'token name' per" %} {{ subscription.period_seconds }} {% trans "seconds" %}
+  </h3>
+  <p>{% trans "You can see your transactions" %}
+    <a href="{% url 'grants:profile' %}">{% trans "here." %}</a>
   </p>
 </div>
 <hr>
 
 <br>
 <br>
-<a class="updatesButton" href="{% url 'grant:details' grant.id %}">{% trans "View Updates" %}</a>
+<a class="updatesButton" href="{% url 'grants:details' grant.id %}">{% trans "View Updates" %}</a>
 <br>
 <br>
-<p>{% trans "If you ever need to you can cancel your support" %}
-  <a href="{% url 'grant:subscription_cancel' subscription.id %}">{% trans "here." %}</a>
+<p>{% trans "If you ever need to, you can cancel your support" %}
+  <a href="{% url 'grants:subscription_cancel' grant.id subscription.id %}">{% trans "here." %}</a>
 </p>
 
 {% endblock %}
