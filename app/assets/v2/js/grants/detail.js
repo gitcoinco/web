@@ -43,13 +43,13 @@ $(document).ready(function() {
 
 
         deployedSubscription.methods.endContract().send({from: accounts[0], gasPrice: 4000000000})
-        .on('confirmation', function(confirmationNumber, receipt) {
-          console.log('receipt', receipt);
+          .on('confirmation', function(confirmationNumber, receipt) {
+            console.log('receipt', receipt);
 
-          form.submit();
-        });
+            form.submit();
+          });
 
-      })
+      });
     }
   });
 });
