@@ -26,6 +26,7 @@ from .models import Contract, KudosTransfer, Token, Wallet
 
 class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
+    list_display = ['created_on', '__str__']
 
 
 class TokenAdmin(admin.ModelAdmin):
@@ -39,6 +40,7 @@ class TransferAdmin(admin.ModelAdmin):
     ordering = ['-id']
     readonly_fields = ['claim']
     search_fields = ['tokenName', 'comments_public', 'from_name', 'username', 'network', 'github_url', 'url', 'emails', 'from_address', 'receive_address']
+    list_display = ['created_on', '__str__']
 
     def claim(self, instance):
         if instance.web3_type == 'yge':
