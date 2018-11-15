@@ -69,18 +69,21 @@
   border: none;
 }
 
-input.editable:focus,
-textarea.editable:focus {
-  outline: none;
+.button__small {
+  font-weight: 500;
 }
 
 input.editable,
 textarea.editable {
   margin-top: 6px;
-  border-top: none;
-  border-left: none;
-  border-right: none;
-  border-bottom: 1px solid #CECECE;
+  border: 1px solid #CACACA;
+  background: white;
+  padding: 7px 14px !important;
+  border-radius: 3px;
+}
+
+.form__select2 .select2-container--default .select2-selection--single {
+  border: 1px solid #CACACA;
 }
 
 #form--input__description,
@@ -90,6 +93,7 @@ textarea.editable {
 
 #form--input__description {
   text-align: justify;
+  resize: none;
 }
 
 .article-title,
