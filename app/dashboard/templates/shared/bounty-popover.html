@@ -15,40 +15,45 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n %}
-<div class="tooltip-info">
-  <div class="">
-    <span class="status-[[:status]]">
-      <i class="fas fa-dot-circle"></i>
-      [[if status === "open"]]
-      Ready to work
-      [[else status === "started"]]
-      Work Started
-      [[else status === "submitted"]]
-      Work Submitted
-      [[else status === "done"]]
-      Work Done
-      [[else status === "cancelled"]]
-      Cancelled
-      [[else status === "expired"]]
-      Expired
-      [[/if]]
-    </span>
-    <img src="[[:avatar_url]]" alt="" class="avatar" height="14">
-  </div>
-  [[:title]]
+<div class="">
+  <div class="tooltip-bubble__content">
+    <div class="">
+      <span class="status-[[:status]]">
+        <i class="fas fa-dot-circle"></i>
+        [[if status === "open"]]
+        Ready to work
+        [[else status === "started"]]
+        Work Started
+        [[else status === "submitted"]]
+        Work Submitted
+        [[else status === "done"]]
+        Work Done
+        [[else status === "cancelled"]]
+        Cancelled
+        [[else status === "expired"]]
+        Expired
+        [[/if]]
+      </span>
+      <img src="[[:avatar_url]]" alt="" class="avatar" height="14"> [[:github_org_name]]
+    </div>
+    [[:title]]
 
-  <div class="">
-    [[for keywords.split(',') sort=""  ]]
-      <span class="tag token">[[:]]</span>
-    [[/for]]
+    <div class="">
+      [[if keywords]]
+        [[for keywords.split(',') sort=""  ]]
+          <span class="tag token">[[:]]</span>
+        [[/for]]
+      [[/if]]
+    </div>
   </div>
-  <div>
-    [[if activities.length]]
+  [[if activities.length]]
+    <div class="tooltip-bubble__footer">
       Latest Activity
-      [[for activities sort=""  ]]
-        <div><span class="">[[:activity_type]]</span>
+      [[for activities.slice(-1)  ]]
+        <div><span class="">[[activitytext:activity_type]] by [[:profile.handle]]</span>
+
         <span class="">[[timedifference:created]]</span></div>
       [[/for]]
-    [[/if]]
-  </div>
+    </div>
+  [[/if]]
 </div>

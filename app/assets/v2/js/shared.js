@@ -440,9 +440,56 @@ function getParam(parameterName) {
   return result;
 }
 
-$.views.converters("timedifference", function(date) {
-  return timeDifference(new Date(), new Date(date), false, 60 * 60);
+$( '#bounties' ).tooltip({
+  items: ".result",
+  classes: {
+    "ui-tooltip": "tooltip-bubble"
+  },
+  position: {
+    my: "top",
+    at: "center bottom",
+    collision: "flip",
+    using: function(position, feedback ) {
+      $(this).addClass(feedback.vertical).css( position );
+    }
+  }
 });
+
+
+$.views.converters({
+  timedifference: timedifferenceCvrt,
+  activitytext: activitytextCvrt
+});
+
+function timedifferenceCvrt(date) {
+  return timeDifference(new Date(), new Date(date), false, 60 * 60);
+};
+
+function activitytextCvrt(activity_type) {
+  return activity_names[activity_type];
+};
+
+const activity_names = {
+  new_bounty: gettext('New bounty'),
+  start_work: gettext('Work started'),
+  stop_work: gettext('Work stopped'),
+  work_submitted: gettext('Work submitted'),
+  work_done: gettext('Work done'),
+  worker_approved: gettext('Worker approved'),
+  worker_rejected: gettext('Worker rejected'),
+  worker_applied: gettext('Worker applied'),
+  increased_bounty: gettext('Increased funding'),
+  killed_bounty: gettext('Canceled bounty'),
+  new_crowdfund: gettext('New crowdfund contribution'),
+  new_tip: gettext('New tip'),
+  receive_tip: gettext('Tip received'),
+  bounty_abandonment_escalation_to_mods: gettext('Escalated for abandonment of bounty'),
+  bounty_abandonment_warning: gettext('Warned for abandonment of bounty'),
+  bounty_removed_slashed_by_staff: gettext('Dinged and removed from bounty by staff'),
+  bounty_removed_by_staff: gettext('Removed from bounty by staff'),
+  bounty_removed_by_funder: gettext('Removed from bounty by funder'),
+  bounty_changed: gettext('Bounty details changed')
+};
 
 function timeDifference(current, previous, remaining, now_threshold_seconds) {
 
