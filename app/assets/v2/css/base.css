@@ -1679,7 +1679,8 @@ div.busyOverlay {
   background-color: #FFF;
   padding: 0;
   width: 100%;
-  max-width: 25em;
+  max-width: 35em;
+  font-size: 12px;
 }
 
 .tooltip-bubble:after,

@@ -17,28 +17,27 @@
 {% load i18n %}
 <div class="">
   <div class="tooltip-bubble__content">
-    <div class="">
+    <div class="d-flex justify-content-between mb-2">
       <span class="status-[[:status]]">
         <i class="fas fa-dot-circle"></i>
         [[if status === "open"]]
-        Ready to work
+          {% trans "Ready to work" %}
         [[else status === "started"]]
-        Work Started
+          {% trans "Work Started" %}
         [[else status === "submitted"]]
-        Work Submitted
+          {% trans "Work Submitted" %}
         [[else status === "done"]]
-        Work Done
+          {% trans "Work Done" %}
         [[else status === "cancelled"]]
-        Cancelled
+          {% trans "Cancelled" %}
         [[else status === "expired"]]
-        Expired
+          {% trans "Expired" %}
         [[/if]]
       </span>
-      <img src="[[:avatar_url]]" alt="" class="avatar" height="14"> [[:github_org_name]]
+      <span><img src="[[:avatar_url]]" alt="[[:github_org_name]]" class="avatar" height="14"> [[:github_org_name]]</span>
     </div>
-    [[:title]]
-
-    <div class="">
+    <div class="font-subheader">[[:title]]</div>
+    <div class="mt-2">
       [[if keywords]]
         [[for keywords.split(',') sort=""  ]]
           <span class="tag token">[[:]]</span>
@@ -48,9 +47,9 @@
   </div>
   [[if activities.length]]
     <div class="tooltip-bubble__footer">
-      Latest Activity
+      {% trans "Latest Activity" %}
       [[for activities.slice(-1)  ]]
-        <div><span class="">[[activitytext:activity_type]] by [[:profile.handle]]</span>
+        <div><span class="">[[activitytext:activity_type]] {% trans "by" %} [[:profile.handle]]</span>
 
         <span class="">[[timedifference:created]]</span></div>
       [[/for]]
