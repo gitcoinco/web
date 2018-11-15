@@ -220,13 +220,6 @@ body {
   }
 }
 
-@media (min-width: 768px) {
-
-  .bounty-detail {
-    /* margin-right: 4rem; */
-  }
-}
-
 .hiring {
   content: url('/static/v2/images/hiring.svg');
 }

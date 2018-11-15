@@ -20,12 +20,6 @@
         [[:title]]
       </div>
       <div class="bounty-summary col-12">
-        [[if github_comments]]
-          <!-- <div class="col-xs-1"> -->
-            <!-- <img src={% static 'v2/images/comment.svg' %}> -->
-            <!-- <span class="github-comment font-caption">[[:github_comments]]</span> -->
-          <!-- </div> -->
-        [[/if]]
         <div class="info font-caption">
           <span class="status-[[:status]]">
             <i class="fas fa-dot-circle"></i>
@@ -46,12 +40,12 @@
           <span class="separator-bull"></span>
           [[:p]]
           [[if github_comments]]
-            <span class="separator-bull"></span> <i class="fas fa-comment-alt"></i> [[:github_comments]] Comments
+            <span class="separator-bull"></span> <i class="fas fa-comment-alt"></i> [[:github_comments]] {% trans 'Comments' %}
           [[/if]]
           [[if interested.lenght]]
-            <span class="separator-bull"></span> <i class="fas fa-user"></i> [[:interested.lenght]] Applicants
+            <span class="separator-bull"></span> <i class="fas fa-user"></i> [[:interested.lenght]] {% trans 'Applicants' %}
           [[else]]
-            <span class="separator-bull"></span> <i class="fas fa-user"></i> 0 Applicants
+            <span class="separator-bull"></span> <i class="fas fa-user"></i> 0 {% trans 'Applicants' %}
           [[/if]]
         </div>
       </div>

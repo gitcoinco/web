@@ -455,7 +455,6 @@ $('#bounties').tooltip({
   }
 });
 
-
 $.views.converters({
   timedifference: timedifferenceCvrt,
   activitytext: activitytextCvrt
