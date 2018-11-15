@@ -220,6 +220,7 @@ def gas_guzzler_view(request):
     return TemplateResponse(request, 'gas_guzzler.html', context)
 
 
+@cached_view(timeout=60*16)
 def gas_history_view(request):
     breakdown = request.GET.get('breakdown', 'hourly')
     granularity_options = ['hourly', 'daily', 'weekly']
