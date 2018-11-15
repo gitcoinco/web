@@ -44,6 +44,7 @@ class Command(BaseCommand):
                 breakdowns.append('weekly')
 
         with transaction.atomic():
+            items = []
             for breakdown in breakdowns:
                 GasHistory.objects.filter(key__startswith=breakdown).all().delete()
                 for i, __ in lines.items():
@@ -51,9 +52,10 @@ class Command(BaseCommand):
                     key = f"{breakdown}:{i}"
                     print(f"- executing {breakdown} {key}")
                     data = gas_history(breakdown, i)
-                    print("- saving")
-                    GasHistory.objects.create(
+                    print("- creating")
+                    items.append(GasHistory(
                         view=view,
                         key=key,
                         data=data,
-                        )
+                        ))
+            GasHistory.objects.bulk_create(items)
