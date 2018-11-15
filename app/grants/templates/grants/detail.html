@@ -39,7 +39,16 @@
         <div class="row">
           <div class="col-12 col-md-6 col-lg-5">
             <div class="grant__specs">
-              <h1 class="grant__title font-title-xl mb-4">
+              <h1 class="grant__title font-title-lg">
+                {% if is_admin %}
+                  <div class="font-caption mt-4">
+                    <span class="font-weight-bold">Edit Title</span>
+                    <i id="edit--title" class="far fa-edit ml-2"></i>
+                  </div>
+                {% endif %}
+                <input type="text" id="form--input__title" class="p-0 inline-edit" value="{{ grant.title }}" readonly>
+              </h1>
+              <p class="grant__url font-subheader mb-4">
                 {% if is_admin %}
                   <div>
                     <div class="font-caption">
@@ -50,19 +59,11 @@
                   </div>
                 {% else %}
                   <a href="{{ grant.reference_url }}" target="_blank">
-                    <i class="fab fa-github font-title"></i>
+                    <i class="fas fa-link mr-1"></i>
+                    {{ grant.reference_url }}
                   </a>
                 {% endif %}
-                <span>
-                  {% if is_admin %}
-                    <div class="font-caption mt-4">
-                      <span class="font-weight-bold">Edit Title</span>
-                      <i id="edit--title" class="far fa-edit ml-2"></i>
-                    </div>
-                  {% endif %}
-                  <input type="text" id="form--input__title" class="p-0 inline-edit" value="{{ grant.title }}" readonly>
-                </span>
-              </h1>
+              </p>
               <div class="grant-item__owner mb-4">
                 {% if is_admin %}
                   <div class="font-caption">
@@ -87,7 +88,7 @@
                   </div>
                 {% endif %}
               </div>
-              <p class="grant__description font-body">
+              <p class="grant__description font-subheader">
                 {% if is_admin %}
                   <div class="font-caption">
                     <span class="font-weight-bold">
@@ -115,7 +116,7 @@
                   </div>
                 {% else %}
                   {% if grant.team_members %}
-                    <p class="font-caption font-weight-bold">Team Members</p>
+                    <p class="font-body font-weight-bold">Team Members</p>
                     <div class="grant-item__members">
                       {% for team_member in grant.team_members.all %}
                         <div class="font-caption grant-item__member mr-4">
