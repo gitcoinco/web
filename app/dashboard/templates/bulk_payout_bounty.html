@@ -75,12 +75,24 @@
                   <input type="hidden" id="original_amount" value="{{ bounty.value_true }}">
                   <span id="token_name">{{ bounty.token_name }}</span>
                 </div>
-                <div class="w-100 overageAlert">
+                <div class="w-100 mt-2 terms_container">
+                  <input name="pay_with_bounty" id="pay_with_bounty" type="checkbox" value=1 checked="checked" />
+                  <label for=pay_with_bounty>{% trans "Pay using bounty funds." %}</label>
+                </div>
+                <div class="w-100 paymentAlert overageAlert">
                   <div>
                     <img src="{% static "v2/images/warning.svg" %}">
                   </div>
                   <div>
                     <p>{% trans "You have exceeded the bounty's funded amount. The difference of " %}<span id="total_overage"></span> {% trans "will be paid from your metamask wallet ending in ..." %}<span id="address_ending"></span></p>
+                  </div>
+                </div>
+                <div class="w-100 paymentAlert tipAlert">
+                  <div>
+                    <img src="{% static "v2/images/warning.svg" %}">
+                  </div>
+                  <div>
+                    <p>{% trans "You are not paying using bounty funds. The amount of " %}<span id="total_tip_overage"></span> {% trans "will be paid from your metamask wallet ending in ..." %}<span id="address_tip_ending"></span></p>
                   </div>
                 </div>
                 <div class="w-100 my-3">
@@ -93,6 +105,7 @@
                     <div class="mt-2" id="trans_preview">
                       <h5>{% trans 'Payout Preview' %}</h5>
                       <p class="mb-0 overagePreview"><strong><span id="preview_overage"></span>{% trans ' to be paid from wallet ending in ...' %}<span id="preview_ending"></span></strong></p>
+                      <p class="mb-0 tipPreview"><strong><span id="preview_tip_overage"></span>{% trans ' to be paid as tip(s) from wallet ending in ...' %}<span id="preview_tip_ending"></span></strong></p>
                       <p class="mb-0">{% trans 'Paid' %}: -<span id="total_cost"></span></p>
                       <p class="mb-0">{% trans 'Net' %}: <span id="total_net"></span></p>
                       <p class="mt-1 mb-0">{% trans 'Transactions:' %}</p>

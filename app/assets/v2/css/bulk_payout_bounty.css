@@ -86,7 +86,7 @@ tr div {
   background-color: #bbb;
 }
 
-.overageAlert {
+.paymentAlert {
   background-color: #E66700;
   color: #FFF;
   border-radius: 5px;
@@ -96,13 +96,13 @@ tr div {
   padding-left: 15px;
 }
 
-.overageAlert > div:first-child {
+.paymentAlert > div:first-child {
   width: 25px;
   float: left;
   padding-right: 10px;
 }
 
-.overageAlert > div:last-child {
+.paymentAlert > div:last-child {
   width: calc(100% - 40px);
   float: left;
   margin-left: 15px;
@@ -110,12 +110,12 @@ tr div {
   padding-top: 6.5px;
 }
 
-.overageAlert > div:first-child > img {
+.paymentAlert > div:first-child > img {
   width: 17px;
   margin-top: 10px;
 }
 
-.overagePreview {
+.overagePreview , .tipPreview {
   color: #E66700;
   padding-bottom: 5px;
   display: none;

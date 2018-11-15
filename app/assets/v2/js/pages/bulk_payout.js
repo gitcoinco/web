@@ -89,6 +89,10 @@ $(document).ready(function($) {
         callback
       );
 
+    } else if ($('#pay_with_bounty').is(':checked')) {
+
+      // Add secondary payment method that deducts from bounty amount using StandardBounties. 
+      console.log('the second payment method would go here.');
     } else {
       // get form data
       var email = '';
@@ -210,28 +214,36 @@ var update_registry = function() {
   var net = round(original_amount - tc, 2);
   var over = round((original_amount - get_total_cost()) * -1, 4);
   var addr = web3.eth.coinbase.substring(38);
-
+  var pay_with_bounty = $('#pay_with_bounty').is(':checked');
+  
   $('#total_cost').html(tc + ' ' + denomination);
-  $('#total_net').html(net + ' ' + denomination);
 
   let transactions = [];
 
-  first_transaction = {
-    'id': 0,
-    'type': 'cancel',
-    'reason': 'Refund escrow and close bounty.',
-    'amount': '+' + original_amount + ' ' + denomination
-  };
-
-  if (over > 0) {
+  if (over > 0 && pay_with_bounty) {
+    $('#total_net').html(net + ' ' + denomination);
     $('.overageAlert').css('display', 'inline-block');
     $('.overagePreview').css('display', 'inline-block');
     $('#total_overage').html(over + ' ' + denomination);
     $('#address_ending').html(addr + ' ');
     $('#preview_ending').html(addr + ' ');
     $('#preview_overage').html(over + ' ' + denomination);
-    transactions.push(first_transaction);
+    $('.tipAlert').css('display', 'none');
+    $('.tipPreview').css('display', 'none');
+  } else if (pay_with_bounty) {
+    $('#total_net').html(net + ' ' + denomination);
+    $('.overageAlert').css('display', 'none');
+    $('.overagePreview').css('display', 'none');
+    $('.tipAlert').css('display', 'none');
+    $('.tipPreview').css('display', 'none');
   } else {
+    $('#total_net').html(tc + ' ' + denomination);
+    $('.tipAlert').css('display', 'inline-block');
+    $('.tipPreview').css('display', 'inline-block');
+    $('#total_tip_overage').html(tc + ' ' + denomination);
+    $('#address_tip_ending').html(addr + ' ');
+    $('#preview_tip_ending').html(addr + ' ');
+    $('#preview_tip_overage').html(tc + ' ' + denomination);
     $('.overageAlert').css('display', 'none');
     $('.overagePreview').css('display', 'none');
   }
