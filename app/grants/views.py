@@ -33,7 +33,10 @@ from django.utils.translation import gettext_lazy as _
 
 from grants.forms import MilestoneForm
 from grants.models import Grant, Milestone, Subscription
-from marketing.mails import grant_cancellation, new_grant, new_supporter, subscription_terminated, support_cancellation, thank_you_for_supporting
+from marketing.mails import (
+    grant_cancellation, new_grant, new_supporter, subscription_terminated, support_cancellation,
+    thank_you_for_supporting,
+)
 from marketing.models import Keyword
 from web3 import HTTPProvider, Web3
 
