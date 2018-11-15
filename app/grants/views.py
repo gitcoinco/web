@@ -50,15 +50,20 @@ def grants(request):
     """Handle grants explorer."""
     limit = request.GET.get('limit', 25)
     page = request.GET.get('page', 1)
-    sort = request.GET.get('sort', '-created_on')
+    sort = request.GET.get('sort_option', '-created_on')
 
-    _grants = Grant.objects.all().order_by(sort)
+    _grants = Grant.objects.filter(active=True).order_by(sort)
 
     if request.method == 'POST':
+        sort = request.POST.get('sort_option', '-created_on')
         keyword = request.POST.get('search_grants', '')
         _grants = Grant.objects.filter(
-            Q(description__icontains=keyword) | Q(title__icontains=keyword) | Q(reference_url__icontains=keyword)
+            Q(description__icontains=keyword) |
+            Q(title__icontains=keyword) |
+            Q(reference_url__icontains=keyword),
+            active=True
         ).order_by(sort)
+
 
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
@@ -77,6 +82,10 @@ def grant_details(request, grant_id):
         active_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
     except Grant.DoesNotExist:
         raise Http404
+
+    if request.method == 'POST':
+        grant.active = False
+        grant.save()
 
     # TODO: Determine how we want to chunk out articles and where we want to store this data.
     activity_data = [
@@ -146,6 +155,7 @@ def grant_details(request, grant_id):
         'grant': grant,
         'subscription': active_subscription,
         'is_admin': (grant.admin_profile.id == profile.id) if profile and grant.admin_profile else False,
+        'grant_is_inactive': not grant.active,
         'activity': activity_data,
         'gh_activity': gh_data,
         'milestones': milestones,
