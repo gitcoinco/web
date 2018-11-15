@@ -440,17 +440,17 @@ function getParam(parameterName) {
   return result;
 }
 
-$( '#bounties' ).tooltip({
-  items: ".result",
+$('#bounties').tooltip({
+  items: '.result',
   classes: {
-    "ui-tooltip": "tooltip-bubble"
+    'ui-tooltip': 'tooltip-bubble'
   },
   position: {
-    my: "top",
-    at: "center bottom",
-    collision: "flip",
-    using: function(position, feedback ) {
-      $(this).addClass(feedback.vertical).css( position );
+    my: 'top',
+    at: 'center bottom',
+    collision: 'flip',
+    using: function(position, feedback) {
+      $(this).addClass(feedback.vertical).css(position);
     }
   }
 });
@@ -462,11 +462,11 @@ $.views.converters({
 });
 
 function timedifferenceCvrt(date) {
-  return timeDifference(new Date(), new Date(date), false, 60 * 60);
+  return timeDifference(new Date(), new Date(date), false, 60 * 60)
 };
 
 function activitytextCvrt(activity_type) {
-  return activity_names[activity_type];
+  return activity_names[activity_type]
 };
 
 const activity_names = {
