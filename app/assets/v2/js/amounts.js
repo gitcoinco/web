@@ -117,7 +117,6 @@ var getAmountEstimate = function(usd_amount, denomination, callback) {
   }
   if (document.conversion_rates && document.conversion_rates[denomination]) {
     conv_rate = document.conversion_rates[denomination];
-    var _amount = Math.round(usd_amount / conv_rate, 3);
     var amount_estimate = usdToAmountEstimate(usd_amount, conv_rate);
 
     rate_estimate = get_rates_estimate(amount_estimate * conv_rate);
