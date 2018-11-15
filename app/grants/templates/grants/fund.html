@@ -112,22 +112,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   </div>
                 </div>
               </div>
-              <div class="form__group-horizontal">
-                <label class="form__label">{% trans "Token Approval Limit" %}</label>
-                <div class="row">
-                  <div class="col-12">
-                    <input type="number" name="approve" class="form__input" required />
-                  </div>
-                </div>
-              </div>
-              <div class="form__group-horizontal">
-                <label class="form__label">{% trans "Contribution Per Payment Period" %}</label>
-                <div class="row">
-                  <div class="col-12">
-                    <input type="number" name="amount_per_period" class="form__input" required />
-                  </div>
-                </div>
-              </div>
 
               <div class="form__group-horizontal frequency">
                 <label class="form__label">{% trans "Payment Period" %}</label>
@@ -143,6 +127,28 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   </div>
                 </div>
               </div>
+
+              <div class="form__group-horizontal">
+                <label class="form__label">{% trans "Value Of Payment Per Period" %}</label>
+                <div class="row">
+                  <div class="col-12">
+                    <input type="number" name="amount_per_period" class="form__input" required />
+                  </div>
+                </div>
+              </div>
+
+              <div class="form__group-horizontal">
+                <div title="Token Approval Limit - The maximum number of tokens a user approves another party to transfer on their behalf. Since Gitcoin Grants uses subscriptions, a small transaction is performed each time period, and with each transaction the approval limit is lowered by that amount. This way, you know your subscription won't run on forever. Unless you want it to 🙂">
+                  <label class="form__label">{% trans "Token Approval Limit" %}
+                  </label>
+                  <div class="row">
+                    <div class="col-12">
+                      <input type="number" name="approve" class="form__input" required />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
 
               <div class="form__group-horizontal">
                 <div class="row">
