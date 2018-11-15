@@ -48,7 +48,7 @@
                 </button>
                 <button id="cancel-details" class="button button--primary button--warning button__small hidden">
                   <i class="fas fa-times mr-2"></i> Cancel
-                </button>    
+                </button>
               </div>
             {% endif %}
             <div class="grant__specs">
@@ -75,15 +75,6 @@
                         <option selected="selected">{{ grant.admin_profile.handle|default:'anonymous' }}</option>
                       </select>
                     </div>
-                  </div>
-                {% else %}
-                  <div class="grant-item__owner-image mr-2">
-                    <img src="{{ grant.admin_profile.avatar_url }}">
-                  </div>
-                  <div class="grant-item__owner-handle font-body">{% trans 'by' %}
-                    <a class="grant-item__owner-handle" href="{% url 'profile' grant.admin_profile.handle %}">
-                      <span id="grant-profile">{{ grant.admin_profile.handle|default:'anonymous' }}</span>
-                    </a>
                   </div>
                 {% endif %}
               </div>

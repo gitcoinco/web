@@ -116,15 +116,6 @@
             </div>
 
             <div class="form__group-horizontal">
-              <div class="row">
-                <div class="col-12">
-                  <label class="form__label form__label-lg">{% trans "Required subscription amount in ETH" %}</label>
-                  <input type="number" name="required_amount" class="form__input form__input-lg " value="0" required />
-                </div>
-              </div>
-            </div>
-
-            <div class="form__group-horizontal">
               <label class="form__label form__label-lg">{% trans "Required Token For Subscription" %}</label>
               <div class="row">
                 <div class="col-12">
@@ -148,8 +139,9 @@
                 </div>
                 <div class="col-4 font-body">
                   <select name="frequency_unit" id="frequency_unit" style="width: 100%">
+                    <option value="" selected="selected">{% trans "any" %}</option>
                     <option value="days">{% trans "days" %}</option>
-                    <option value="months" selected="selected">{% trans "months" %}</option>
+                    <option value="months">{% trans "months" %}</option>
                   </select>
                 </div>
               </div>
