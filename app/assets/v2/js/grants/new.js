@@ -1,10 +1,5 @@
 /* eslint-disable no-console */
 
-const validate = () => {
-  if ($('#frequency_unit').select2('data')[0].text === 'any')
-    $('#frequency_count').val('0');
-};
-
 $(document).ready(function() {
 
   if (localStorage['grants_quickstart_disable'] !== 'true') {
