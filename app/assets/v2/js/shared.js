@@ -462,12 +462,12 @@ $.views.converters({
 });
 
 function timedifferenceCvrt(date) {
-  return timeDifference(new Date(), new Date(date), false, 60 * 60)
-};
+  return timeDifference(new Date(), new Date(date), false, 60 * 60);
+}
 
 function activitytextCvrt(activity_type) {
-  return activity_names[activity_type]
-};
+  return activity_names[activity_type];
+}
 
 const activity_names = {
   new_bounty: gettext('New bounty'),
