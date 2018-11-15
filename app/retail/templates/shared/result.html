@@ -24,17 +24,17 @@
           <span class="status-[[:status]]">
             <i class="fas fa-dot-circle"></i>
             [[if status === "open"]]
-              Ready to work
+              {% trans "Ready to work" %}
             [[else status === "started"]]
-              Work Started
+              {% trans "Work Started" %}
             [[else status === "submitted"]]
-              Work Submitted
+              {% trans "Work Submitted" %}
             [[else status === "done"]]
-              Work Done
+              {% trans "Work Done" %}
             [[else status === "cancelled"]]
-              Cancelled
+              {% trans "Cancelled" %}
             [[else status === "expired"]]
-              Expired
+              {% trans "Expired" %}
             [[/if]]
           </span>
           <span class="separator-bull"></span>
