@@ -414,6 +414,11 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
     metadata['creation_time'] = creation_time;
     metadata['salt'] = salt;
     metadata['source_url'] = document.location.href;
+    metadata['direct_eth_send'] = false;
+    if(to_eth_address){
+      metadata['address'] = to_eth_address;
+      metadata['direct_eth_send'] = true;
+    }
 
     fetch(url, {
       method: 'POST',
@@ -450,8 +455,8 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
       } else {
         // Step 8
         // A json object with SUCCESS is received from the back-end
-        var is_direct_to_recipient = metadata['is_direct'];
-        var destinationAccount = metadata['address'];
+        var is_direct_to_recipient = metadata['is_direct'] || to_eth_address;
+        var destinationAccount = to_eth_address ? to_eth_address :metadata['address'];
 
         var post_send_callback = function(errors, txid, kudos_id) {
           if (errors) {
