@@ -48,12 +48,17 @@
           [[if github_comments]]
             <span class="separator-bull"></span> <i class="fas fa-comment-alt"></i> [[:github_comments]] Comments
           [[/if]]
+          [[if interested.lenght]]
+            <span class="separator-bull"></span> <i class="fas fa-user"></i> [[:interested.lenght]] Applicants
+          [[else]]
+            <span class="separator-bull"></span> <i class="fas fa-user"></i> 0 Applicants
+          [[/if]]
         </div>
       </div>
     </div>
   </div>
-  <div class="col-12 col-md-3 font-caption">
-    <div class="tags fixed">
+  <div class="col-12 col-md-4 col-lg-3 font-caption">
+    <div class="tags fixed justify-content-sm-start justify-content-md-end">
       [[if network != 'mainnet']]
         <div class="tag network_warning">
           <p>

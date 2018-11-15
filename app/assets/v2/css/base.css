@@ -1675,6 +1675,8 @@ div.busyOverlay {
   text-align: left;
 }
 
+/* Bubble */
+
 .ui-widget.ui-widget-content.tooltip-bubble {
   background-color: #FFF;
   padding: 0;
@@ -1726,3 +1728,16 @@ div.busyOverlay {
 .tooltip-bubble__content {
   padding: 1.4em 1.3em 1.3em;
 }
+
+.keyword-group {
+  display: flex;
+  flex-wrap: wrap;
+}
+.tag.keyword {
+  display: inline-block;
+  min-width: 0;
+  font-size: 11px;
+  background-color: #E7F0FA;
+  color: #6587AE;
+}
+

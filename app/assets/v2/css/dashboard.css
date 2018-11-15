@@ -168,7 +168,6 @@ body {
 }
 
 .tags.fixed {
-  float: right;
   padding-bottom: 1rem;
 }
 
@@ -201,10 +200,6 @@ body {
   .bounty_row .avatar-container {
     display: none !important;
   }
-
-  .tags.fixed {
-    float: left;
-  }
 }
 
 @media (max-width: 768px) {
@@ -228,7 +223,7 @@ body {
 @media (min-width: 768px) {
 
   .bounty-detail {
-    margin-right: 4rem;
+    /* margin-right: 4rem; */
   }
 }
 
