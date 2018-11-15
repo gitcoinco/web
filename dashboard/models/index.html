@@ -1505,8 +1505,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../kudos_deploy" title="Local Deployment" class="md-nav__link">
-      Local Deployment
+    <a href="../../kudos_faq/" title="Local Setup FAQ" class="md-nav__link">
+      Local Setup FAQ
     </a>
   </li>
 
@@ -4515,6 +4515,55 @@ object the first time, the query is executed.</p>
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
 <h3 id="dashboard.models.TokenApproval.tx">tx</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h2 id="dashboard.models.SearchHistory">SearchHistory</h2>
+
+<pre><code class="python">SearchHistory(self, *args, **kwargs)
+</code></pre>
+
+<p>Define the structure of a Search History object.
+<h3 id="dashboard.models.SearchHistory.data">data</h3></p>
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.SearchHistory.get_next_by_created_on">_method</h3>
+
+<pre><code class="python">SearchHistory._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.SearchHistory.get_next_by_modified_on">_method</h3>
+
+<pre><code class="python">SearchHistory._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.SearchHistory.get_previous_by_created_on">_method</h3>
+
+<pre><code class="python">SearchHistory._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.SearchHistory.get_previous_by_modified_on">_method</h3>
+
+<pre><code class="python">SearchHistory._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.SearchHistory.id">id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.SearchHistory.ip_address">ip_address</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.SearchHistory.user">user</h3>
+
+<p>Accessor to the related object on the forward side of a one-to-one relation.</p>
+<p>In the example::</p>
+<pre><code>class Restaurant(Model):
+    place = OneToOneField(Place, related_name='restaurant')
+</code></pre>
+<p><code>Restaurant.place</code> is a <code>ForwardOneToOneDescriptor</code> instance.</p>
+<h3 id="dashboard.models.SearchHistory.user_id">user_id</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
