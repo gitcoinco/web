@@ -76,6 +76,8 @@ def grant_details(request, grant_id):
     """Display the Grant details page."""
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
 
+    print(request.method)
+
     try:
         grant = Grant.objects.prefetch_related('subscriptions', 'milestones').get(pk=grant_id)
         milestones = grant.milestones.order_by('due_date')
@@ -84,8 +86,14 @@ def grant_details(request, grant_id):
         raise Http404
 
     if request.method == 'POST':
-        grant.active = False
-        grant.save()
+        print(request.POST)
+        if 'contract_address' in request.POST:
+            grant.active = False
+            grant.save()
+        elif 'input-title' in request.POST:
+            pass
+        elif 'edit-title' in request.POST:
+            pass
 
     # TODO: Determine how we want to chunk out articles and where we want to store this data.
     activity_data = [

@@ -48,12 +48,12 @@
                 </button>
                 <button id="cancel-details" class="button button--primary button--warning button__small hidden">
                   <i class="fas fa-times mr-2"></i> Cancel
-                </button>    
+                </button>
               </div>
             {% endif %}
             <div class="grant__specs">
               <h1 class="grant__title font-title-lg">
-                <input type="text" id="form--input__title" class="p-0 inline-edit" value="{{ grant.title }}" readonly>
+                <input type="text" id="form--input__title" class="p-0 inline-edit" value="{{ grant.title }}" name="edit-title" readonly>
               </h1>
               <p class="grant__url font-subheader mb-4">
                 {% if is_admin %}

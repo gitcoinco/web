@@ -90,7 +90,7 @@ $(document).ready(function() {
           })
             .send({
               from: accounts[0],
-              gas: 2500000,
+              gas: 3000000,
               gasPrice: 4000000000
             })
             .on('error', function(error) {
