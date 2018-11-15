@@ -145,7 +145,7 @@
           {% elif is_admin %}
           <form method="POST" id="js-cancel_grant">
             {% csrf_token %}
-            <button class="button button--primary button--full" id="cancel_grant" type="submit">{% trans "Cancel this Grant" %}
+            <button class="button button--primary button--full" id="cancel_grant">{% trans "Cancel this Grant" %}
             </button>
             <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
           </form>

@@ -34,7 +34,7 @@ from retail.emails import (
     render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup,
     render_new_grant_email, render_new_supporter_email, render_new_work_submission, render_quarterly_stats,
     render_start_work_applicant_about_to_expire, render_start_work_applicant_expired, render_start_work_approved,
-    render_start_work_new_applicant, render_start_work_rejected, render_support_cancellation_email,
+    render_start_work_new_applicant, render_start_work_rejected, render_subscription_terminated_email, render_support_cancellation_email,
     render_thank_you_for_supporting_email, render_tip_email,
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
@@ -124,7 +124,7 @@ def new_grant(grant, profile):
 
 def new_supporter(grant, subscription):
     from_email = settings.CONTACT_EMAIL
-    to_email = subscription.contributor_profile.email
+    to_email = grant.admin_profile.email
     cur_language = translation.get_language()
 
     try:
@@ -137,9 +137,9 @@ def new_supporter(grant, subscription):
         translation.activate(cur_language)
 
 
-def thank_you_for_supporting(grant, subscription, profile):
+def thank_you_for_supporting(grant, subscription):
     from_email = settings.CONTACT_EMAIL
-    to_email = profile.email
+    to_email = subscription.contributor_profile.email
     cur_language = translation.get_language()
 
     try:
@@ -152,9 +152,9 @@ def thank_you_for_supporting(grant, subscription, profile):
         translation.activate(cur_language)
 
 
-def support_cancellation(grant, subscription, profile):
+def support_cancellation(grant, subscription):
     from_email = settings.CONTACT_EMAIL
-    to_email = profile.email
+    to_email = subscription.contributor_profile.email
     cur_language = translation.get_language()
 
     try:
@@ -167,16 +167,31 @@ def support_cancellation(grant, subscription, profile):
         translation.activate(cur_language)
 
 
-def grant_cancellation(grant, subscription, profile):
+def grant_cancellation(grant, subscription):
     from_email = settings.CONTACT_EMAIL
-    to_email = profile.email
+    to_email = grant.admin_profile.email
     cur_language = translation.get_language()
 
     try:
         setup_lang(to_email)
         html, text, subject = render_grant_cancellation_email(grant, subscription)
 
-        if not should_suppress_notification_email(to_email, 'support_cancellation'):
+        if not should_suppress_notification_email(to_email, 'grant_cancellation'):
+            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+    finally:
+        translation.activate(cur_language)
+
+
+def subscription_terminated(grant, subscription):
+    from_email = settings.CONTACT_EMAIL
+    to_email = subscription.contributor_profile.email
+    cur_language = translation.get_language()
+
+    try:
+        setup_lang(to_email)
+        html, text, subject = render_subscription_terminated_email(grant, subscription)
+
+        if not should_suppress_notification_email(to_email, 'subscription_terminated'):
             send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
     finally:
         translation.activate(cur_language)
