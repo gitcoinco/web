@@ -1073,7 +1073,7 @@ class SendCryptoAsset(SuperModel):
     emails = JSONField(blank=True)
     url = models.CharField(max_length=255, default='', blank=True)
     tokenName = models.CharField(max_length=255, default='ETH')
-    tokenAddress = models.CharField(max_length=255)
+    tokenAddress = models.CharField(max_length=255, blank=True)
     amount = models.DecimalField(default=1, decimal_places=4, max_digits=50)
     comments_public = models.TextField(default='', blank=True)
     ip = models.CharField(max_length=50)
