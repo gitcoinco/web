@@ -25,9 +25,9 @@ from django.conf import settings
 
 import ipfsapi
 import requests
-from app.utils import get_semaphorrollbar, sync_profile
+from app.utils import sync_profile
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
-from dashboard.models import Activity, Bounty, UserAction
+from dashboard.models import Activity, Bounty, UserAction, Profile
 from eth_utils import to_checksum_address
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from hexbytes import HexBytes

@@ -24,7 +24,6 @@ from django.utils import timezone
 from cacheops import CacheMiss, cache
 from dashboard.models import Bounty, Profile, Tip
 from kudos.models import KudosTransfer
-from dashboard.views import profile_keywords_helper
 from marketing.models import LeaderboardRank
 
 # Constants
@@ -334,7 +333,7 @@ class Command(BaseCommand):
             rank = 1
             for index_term, amount in sorted(rankings.items(), key=lambda x: x[1], reverse=True):
                 count = counts[key][index_term]
-                tech_keywords = Profile.objects.get(handle__iexact=username).keywords
+                tech_keywords = Profile.objects.get(handle__iexact=index_term).keywords
                 lbr_kwargs = {
                     'count': count,
                     'active': True,
