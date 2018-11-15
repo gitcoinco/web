@@ -10,18 +10,40 @@
   <body class="interior {{ active }} grant">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
-      {% include 'shared/nav.html' %}
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'grants/nav.html' %}
     </div>
 
     <div class="container">
       <div class="row justify-content-md-center">
         <div class="col-sm-12 col-md-12 col-lg-8">
-          <div class="form__intro">
-            <h1>{% trans "Create Milestones for " %}{{ grant.title }}</h1>
-            <p>{{ grant.description }}</p>
+          <div class="pt-5 my-4 text-center">
+            <h1 class="font-title-xl">{% trans "Create Milestones for " %}{{ grant.title }}</h1>
           </div>
-          <div class="milestones-container">
-              {% if milestones %}
+          <div class="milestones-input">
+            <form action="{% url 'grants:milestones' grant.id %}" method="POST">
+              {% csrf_token %}
+              <input type="hidden" name="method" value="POST">
+              <div class="form__group-horizontal">
+                <div class="row">
+                  <div class="col-12">
+                    {{ form.title }}
+                    {{ form.title.errors }}
+                    {{ form.description }}
+                    {{ form.description.errors }}
+                    {{ form.due_date }}
+                    {{ form.due_date.errors }}
+                  </div>
+                </div>
+              </div>
+              <div class="form__footer">
+                <a class="mt-2" href="{% url 'grants:details' grant.id %}">{% trans "Back to Grant" %}</a>
+                <button class="btn btn-gc-blue">{% trans "Create Milestone" %}</button>
+              </div>
+            </form>
+          </div>
+          <div class="milestones-container mb-4">
+            {% if milestones %}
               <ul class="milestones-list">
                 {% for milestone in milestones %}
                   <li>
@@ -36,8 +58,8 @@
                           <input type="hidden" name="method" value="">
                           <input type="hidden" name="milestone_id" value="{{milestone.id}}">
                           <input type="date" placeholder="Date" name="completion_date" required />
-                          <a data-form-method="DELETE" class="button button__small">{% trans "Delete" %}</a>
-                          <a data-form-method="PUT" class="button button__small">{% trans "Complete" %}</a>
+                          <a data-form-method="DELETE" class="button button--warning">{% trans "Delete" %}</a>
+                          <a data-form-method="PUT" class="button button--primary">{% trans "Complete" %}</a>
                         </form>
                       {% endif %}
                     </div>
@@ -46,29 +68,11 @@
                 {% endfor %}
               </ul>
             {% else %}
-              <p>{% trans "No milestones currently set for this grant." %}</p>
+              <p class="font-title text-center">
+                <i class="fas fa-hiking"></i>
+                {% trans "No milestones currently set for this grant." %}
+              </p>
             {% endif %}
-          </div>
-          <div class="milestones-input">
-            <form action="{% url 'grants:milestones' grant.id %}" method="POST">
-              {% csrf_token %}
-              <input type="hidden" name="method" value="POST">
-              <div class="form__group-horizontal">
-                <div class="row">
-                  <div class="col-12">
-                    {{ form.title }}
-                    {{ form.title.errors }}
-                    {{ form.due_date }}
-                    {{ form.due_date.errors }}
-                    {{ form.description }}
-                    {{ form.description.errors }}
-                  </div>
-                </div>
-              </div>
-              <div class="form__footer">
-                <button class="button button--primary">{% trans "Create Milestone" %}</button>
-              </div>
-            </form>
           </div>
         </div>
       </div>

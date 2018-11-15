@@ -1,6 +1,6 @@
 .milestones-edit {
   float: right;
-  font-size: 0.75rem;
+  font-weight: 600;
 }
 
 .milestones-container {
@@ -58,7 +58,7 @@ ul.milestones-list .milestone-title {
 ul.milestones-list .milestone-date {
   margin-bottom: 0.3rem;
   font-size: 14px;
-  color: #CCCCCC;
+  color: #000;
 }
 
 ul.milestones-list .milestone-date form {
@@ -68,23 +68,35 @@ ul.milestones-list .milestone-date form {
 ul.milestones-list .milestone-date input {
   border: 0;
   font-size: 14px;
-  color: #CCCCCC;
+  color: #999;
 }
+
 ul.milestones-list .milestone-date .error {
   color: #D50000;
   font-size: 0.75rem;
 }
+
 ul.milestones-list .milestone-date a {
   float: right;
   margin-right: 0.3rem;
 }
 
 ul.milestones-list .milestone-description {
-  font-size: 14px;
+  font-size: .85rem;
   color: #43484D;
 }
 
 .milestones-input input,
 .milestones-input textarea {
   margin-top: 20px;
+}
+
+ul.milestones-list .button {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+ul.milestones-list .button:hover {
+  color: #fff;
 }

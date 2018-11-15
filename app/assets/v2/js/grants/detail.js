@@ -1,3 +1,11 @@
+const editableFields = [
+  '#form--input__title',
+  '#form--input__reference-url',
+  '#grant-admin',
+  '#form--input__description',
+  '#grant-members'
+];
+
 $(document).ready(function() {
   $('#tabs').tabs();
 
@@ -7,26 +15,38 @@ $(document).ready(function() {
   userSearch('#grant-members');
 
   $('.select2-selection__rendered').removeAttr('title');
+  $('#form--input__description').height($('#form--input__description').prop('scrollHeight'));
 
-  $('#edit--title').on('click', () => {
-    inlineEdit('#form--input__title', '#edit--title');
+  $('#edit-details').on('click', (event) => {
+    event.preventDefault();
+
+    $('#edit-details').addClass('hidden');
+    $('#save-details').removeClass('hidden');
+    $('#cancel-details').removeClass('hidden');
+
+    editableFields.forEach(field => {
+      makeEditable(field);
+    });
+
   });
 
-  $('#edit--owner').on('click', () => {
-    inlineEdit('#grant-admin', '#edit--owner');
+  $('#save-details').on('click', (event) => {
+    $('#edit-details').removeClass('hidden');
+    $('#save-details').addClass('hidden');
+    $('#cancel-details').addClass('hidden');
+
+    // TODO : Loop through editableFields -> form object with value -> fire save API
+
+    editableFields.forEach(field => disableEdit(field));
   });
 
-  $('#edit--description').on('click', () => {
-    inlineEdit('#form--input__description', '#edit--description');
-    $('#form--input__description').height($('#form--input__description').prop('scrollHeight'));
-  });
+  $('#cancel-details').on('click', (event) => {
+    $('#edit-details').removeClass('hidden');
+    $('#save-details').addClass('hidden');
+    $('#cancel-details').addClass('hidden');
 
-  $('#edit--reference-url').on('click', () => {
-    inlineEdit('#form--input__reference-url', '#edit--reference-url');
-  });
-
-  $('#edit--members').on('click', () => {
-    inlineEdit('#grant-members', '#edit--members');
+    // TODO: Reset value
+    editableFields.forEach(field => disableEdit(field));
   });
 
   $('#js-cancel_grant').validate({
@@ -54,38 +74,14 @@ $(document).ready(function() {
   });
 });
 
-const inlineEdit = (input, icon) => {
-  if ($(icon).hasClass('fa-edit'))
-    makeEditable(input, icon);
-  else
-    inlineSave(input, icon);
-};
-
 const makeEditable = (input, icon) => {
   $(input).addClass('editable');
   $(input).prop('readonly', false);
   $(input).prop('disabled', false);
-  $(icon).toggleClass('fa-edit').toggleClass('fa-save');
-
-  if ($(icon + '-cancel').length == 0) {
-    const cancelIcon = '<i id="' + icon.slice(1, icon.length) + '-cancel" class="ml-2 fa fa-times" onclick=\'inlineSave("' + input + '", "' + icon + '", true)\'></i>';
-
-    $(icon).parent().append(cancelIcon);
-  }
-
-  $(icon + '-cancel').show();
 };
 
-const inlineSave = (input, icon, cancel) => {
-
+const disableEdit = (input) => {
   $(input).removeClass('editable');
   $(input).prop('readonly', true);
   $(input).prop('disabled', true);
-  $(icon).toggleClass('fa-edit').toggleClass('fa-save');
-  $(icon + '-cancel').hide();
-
-  if (cancel)
-    return;
-
-  // TODO : fire API
 };
