@@ -24,39 +24,48 @@
     <link rel="stylesheet" href={% static "v2/css/tabs.css" %}>
     <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
     <link rel="stylesheet" href="{% static "v2/css/grants/profile.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/grants/card.css" %}">
   </head>
   <body class="interior {{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
-      {% include 'shared/nav.html' %}
-      {% include 'shared/minihero.html' with h1='My Grants' suppress_logo=1 position_h1_below_logo=True hide_rain=True %}
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'grants/nav.html' %}
     </div>
 
-    {% if grants|length != 0 and sub_grants|length != 0 %}
+    {% if grants|length != 0 or sub_grants|length != 0 %}
       <div class="container pt-5">
         <div id="grant-profile-tabs" class="tab-container font-body mb-3">
-          <button type="button" id="supported" class="section-tab">{% trans "Supported by Me" %} ({{ sub_grants|length }})</button>
-          <button type="button" id="created" class="section-tab">{% trans "Created by Me" %} ({{ grants|length }})</button>
+          <button type="button" id="supported" class="section-tab">{% trans "Supported" %} ({{ sub_grants|length }})</button>
+          <button type="button" id="created" class="section-tab">{% trans "Created" %} ({{ grants|length }})</button>
         </div>
 
         <div id="grant-profile-tabs-sections" class="tab-sections section">
           <div id="section-supported" class="tab-section active">
-            <div class="container px-0">
-              <div class="row mb-3 py-2 px-0 mx-sm-0">
-                <div class="col-12 px-0">
-                  {% include 'grants/profile/body.html' with grants=sub_grants history=history %}
+            {% if sub_grants|length != 0 %}
+              <div class="container px-0">
+                <div class="row mb-3 py-2 px-0 mx-sm-0">
+                  <div class="col-12 px-0">
+                    {% include 'grants/profile/body.html' with grants=sub_grants history=history %}
+                  </div>
                 </div>
               </div>
-            </div>
+            {% else %}
+              {% include 'grants/profile/none.html' %}
+            {% endif %}
           </div>
           <div id="section-created" class="tab-section">
-            <div class="container px-0">
-              <div class="row mb-3 py-2 px-0 mx-sm-0">
-                <div class="col-12 px-0">
-                  {% include 'grants/profile/body.html' with grants=grants history=history %}
+            {% if grants|length != 0 %}
+              <div class="container px-0">
+                <div class="row mb-3 py-2 px-0 mx-sm-0">
+                  <div class="col-12 px-0">
+                    {% include 'grants/profile/body.html' with grants=grants history=history %}
+                  </div>
                 </div>
               </div>
-            </div>
+            {% else %}
+              {% include 'grants/profile/none.html' %}
+            {% endif %}
           </div>
         </div>
       </div>

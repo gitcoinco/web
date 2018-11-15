@@ -26,7 +26,8 @@
   <body class="interior {{ active }} grant grant-detail g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
-      {% include 'shared/nav.html' %}
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'grants/nav.html' %}
     </div>
 
     <div class="grant-banner">
@@ -37,38 +38,38 @@
       <div class="container">
         <div class="row">
           <div class="col-12 col-md-6 col-lg-5">
+            {% if is_admin %}
+              <div class="mb-4">
+                <button id="edit-details" class="button btn-gc-blue button__small">
+                  <i class="fas fa-edit mr-2"></i> Edit Info
+                </button>
+                <button id="save-details" class="button button--primary button__small hidden">
+                  <i class="fas fa-save mr-2"></i> Save Info
+                </button>
+                <button id="cancel-details" class="button button--primary button--warning button__small hidden">
+                  <i class="fas fa-times mr-2"></i> Cancel
+                </button>    
+              </div>
+            {% endif %}
             <div class="grant__specs">
-              <h1 class="grant__title font-title-xl mb-4">
+              <h1 class="grant__title font-title-lg">
+                <input type="text" id="form--input__title" class="p-0 inline-edit" value="{{ grant.title }}" readonly>
+              </h1>
+              <p class="grant__url font-subheader mb-4">
                 {% if is_admin %}
                   <div>
-                    <div class="font-caption">
-                      <span class="font-weight-bold">Edit URL</span>
-                      <i id="edit--reference-url" class="ml-2 far fa-edit"></i>
-                    </div>
-                    <input type="text" id="form--input__reference-url" class="p-0 mt-2 inline-edit font-body" value="{{ grant.reference_url }}" readonly>
+                    <input type="text" id="form--input__reference-url" class="p-0 mt-2 inline-edit" value="{{ grant.reference_url }}" readonly>
                   </div>
                 {% else %}
                   <a href="{{ grant.reference_url }}" target="_blank">
-                    <i class="fab fa-github font-title"></i>
+                    <i class="fas fa-link mr-1"></i>
+                    {{ grant.reference_url }}
                   </a>
                 {% endif %}
-                <span>
-                  {% if is_admin %}
-                    <div class="font-caption mt-4">
-                      <span class="font-weight-bold">Edit Title</span>
-                      <i id="edit--title" class="far fa-edit ml-2"></i>
-                    </div>
-                  {% endif %}
-                  <input type="text" id="form--input__title" class="p-0 inline-edit" value="{{ grant.title }}" readonly>
-                </span>
-              </h1>
+              </p>
               <div class="grant-item__owner mb-4">
                 {% if is_admin %}
-                  <div class="font-caption">
-                    <div>
-                      <span class="font-weight-bold">Edit Owner</span>
-                      <i id="edit--owner" class="far fa-edit ml-2"></i>
-                    </div>
+                  <div class="font-body">
                     <div class="form__select2">
                       <select id="grant-admin" class="form__input" name="grant-admin" disabled>
                         <option selected="selected">{{ grant.admin_profile.handle|default:'anonymous' }}</option>
@@ -86,24 +87,12 @@
                   </div>
                 {% endif %}
               </div>
-              <p class="grant__description font-body">
-                {% if is_admin %}
-                  <div class="font-caption">
-                    <span class="font-weight-bold">
-                      Edit description
-                    </span>
-                    <i id="edit--description" class="ml-2 far fa-edit"></i>
-                  </div>
-                {% endif %}
+              <p class="grant__description font-subheader">
                 <textarea id="form--input__description" class="p-0 mt-2 inline-edit" disabled>{{ grant.description }}</textarea>
               </p>
               <div class="grant-item__member">
                 {% if is_admin %}
-                  <div class="font-caption">
-                    <div class="mb-2">
-                      <span class="font-weight-bold">Edit Members</span>
-                      <i id="edit--members" class="far fa-edit ml-2"></i>
-                    </div>
+                  <div class="font-body">
                     <div class="form__select2">
                       <select id="grant-members" class="form__input" name="grant-members" name="members" multiple="multiple" disabled>
                         {% for team_member in grant.team_members.all %}
@@ -114,7 +103,7 @@
                   </div>
                 {% else %}
                   {% if grant.team_members %}
-                    <p class="font-caption font-weight-bold">Team Members</p>
+                    <p class="font-body font-weight-bold">Team Members</p>
                     <div class="grant-item__members">
                       {% for team_member in grant.team_members.all %}
                         <div class="font-caption grant-item__member mr-4">
@@ -187,9 +176,6 @@
               {% empty %}
                 <div class="no-subscriptions">
                   <p class="mb-1">{% trans "No active subscriptions." %}</p>
-                  <p class="mt-0">
-                    <a href="{% url 'grants:fund' grant.id %}"> {% trans "Subscribe now!" %}</a>
-                  </p>
                 </div>
               {% endfor %}
             </div>
@@ -237,33 +223,33 @@
                 <li><a href="#all-updates">{% trans "Updates" %}</a></li>
                 <li><a href="#github">{% trans "GitHub" %}</a></li>
               </ul>
-              {% if is_admin %}
-              <div class="mt-4 py-2 px-3 px-md-5">
-                <form method="POST" id="js-postUpdate">
-                  {% csrf_token %}
-                  <div class="form__group-horizontal">
-                    <input class="form__input" type="text" id="input-title" name="input-title" placeholder="{% trans 'Title' %}" required />
-                  </div>
-
-                  <div class="form__group-horizontal">
-                    <textarea class="form__input" type="text" id="input-description" name="description" placeholder="{% trans 'Describe the update' %}" required></textarea>
-                  </div>
-
-                  <div class="text-right">
-                    <button class="button button--primary button__small">
-                      <span class="font-body">{% trans "Post Update" %}</span>
-                    </button>
-                  </div>
-                </form>
-              </div>
-              {% endif %}
               <div id="all-updates">
+                {% if is_admin %}
+                  <div class="my-4 py-2 px-3">
+                    <form method="POST" id="js-postUpdate">
+                      {% csrf_token %}
+                      <div class="form__group-horizontal mb-4">
+                        <input class="form__input" type="text" id="input-title" name="input-title" placeholder="{% trans 'Title' %}" required />
+                      </div>
+
+                      <div class="form__group-horizontal">
+                        <textarea rows=8 class="form__input" type="text" id="input-description" name="description" placeholder="{% trans 'Describe the update' %}" required></textarea>
+                      </div>
+
+                      <div class="text-left">
+                        <button class="btn btn-gc-blue">
+                          <span class="font-body">{% trans "Post Update" %}</span>
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                {% endif %}
                 <ul>
                   {% for item in activity %}
                     <li>
                       <div class="article-title font-title">{{ item.title }}</div>
                       <div class="article-date font-body mb-2">{{ item.date }}</div>
-                      <p class="article-description font-body">{{ item.description }}</p>
+                      <p class="article-description font-subheader">{{ item.description }}</p>
                     </li>
                   {% empty %}
                     {% trans "No updates yet!" %}
@@ -276,7 +262,7 @@
                     <li>
                       <div class="article-title font-title">{{ item.title }}</div>
                       <div class="article-date font-body mb-2">{{ item.date }}</div>
-                      <p class="article-description font-body">{{ item.description }}</p>
+                      <p class="article-description font-subheader">{{ item.description }}</p>
                     </li>
                   {% empty %}
                     {% trans "No Github activity yet!" %}

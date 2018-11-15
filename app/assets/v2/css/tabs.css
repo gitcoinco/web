@@ -23,6 +23,7 @@
   cursor: pointer;
   color: var(--gc-purple);
   padding: 0;
+  padding-bottom: 8px;
 }
 
 .section-tab:hover,

@@ -31,9 +31,9 @@ class GrantForm(forms.ModelForm):
 
         model = Grant
         fields = (
-            'title', 'description', 'reference_url', 'logo', 'logo_svg', 'admin_address', 'frequency',
-            'amount_goal', 'amount_received', 'token_address', 'contract_address', 'transaction_hash', 'metadata',
-            'network', 'required_gas_price', 'admin_profile', 'team_members'
+            'title', 'description', 'reference_url', 'logo', 'logo_svg', 'admin_address', 'frequency', 'amount_goal',
+            'amount_received', 'token_address', 'contract_address', 'transaction_hash', 'metadata', 'network',
+            'required_gas_price', 'admin_profile', 'team_members'
         )
 
 
@@ -44,11 +44,23 @@ class MilestoneForm(forms.ModelForm):
         """Define the metadata for the Milestone model form."""
 
         model = Milestone
-        fields = (
-            'title', 'description', 'due_date',
-        )
+        fields = ('title', 'description', 'due_date', )
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'form__input', 'placeholder': _('Title')}),
-            'description': forms.Textarea(attrs={'class': 'form__input', 'placeholder': _('Description')}),
-            'due_date': forms.DateInput(attrs={'type': 'date', 'class': 'form__input', 'placeholder': _('Date')})
+            'title': forms.TextInput(attrs={
+                'class': 'form__input form__input-lg',
+                'placeholder': _('Title')
+            }),
+            'description':
+                forms.Textarea(attrs={
+                    'class': 'form__input form__input-lg',
+                    'placeholder': _('Description')
+                }),
+            'due_date':
+                forms.DateInput(
+                    attrs={
+                        'type': 'date',
+                        'class': 'form__input form__input-lg',
+                        'placeholder': _('Date')
+                    }
+                )
         }

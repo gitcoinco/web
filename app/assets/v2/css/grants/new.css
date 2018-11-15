@@ -20,6 +20,7 @@
 
 .frequency .select2-container--default .select2-selection--single .select2-selection__rendered {
   position: relative;
+  font-size: 1rem;
 }
 
 .frequency .select2-container--default .select2-selection--single .select2-selection__rendered,
@@ -29,7 +30,11 @@
 
 .select2-container--default .select2-selection--multiple {
   border-color: #000;
-  font-size: 0.8rem;
+  font-size: 1rem;
+}
+
+.select2-results__option, .select2-search--dropdown .select2-search__field {
+  font-size: 1rem;
 }
 
 .select2-container--default .select2-selection--multiple .select2-selection__choice {

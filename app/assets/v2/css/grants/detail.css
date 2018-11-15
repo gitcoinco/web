@@ -56,32 +56,44 @@
   position: relative;
 }
 
-.grant__title,
-.grant__title a {
+.grant__title {
   color: #43484D;
+}
+
+.grant__url a {
+  text-decoration: none;
+  color: #0D0764;
 }
 
 .inline-edit {
   border: none;
 }
 
-input.editable:focus,
-textarea.editable:focus {
-  outline: none;
+.button__small {
+  font-weight: 500;
 }
 
 input.editable,
 textarea.editable {
   margin-top: 6px;
-  border-top: none;
-  border-left: none;
-  border-right: none;
-  border-bottom: 1px solid #CECECE;
+  border: 1px solid #CACACA;
+  background: white;
+  padding: 7px 14px !important;
+  border-radius: 3px;
+}
+
+.form__select2 .select2-container--default .select2-selection--single {
+  border: 1px solid #CACACA;
 }
 
 #form--input__description,
 #form--input__reference-url {
   width: 100%;
+}
+
+#form--input__description {
+  text-align: justify;
+  resize: none;
 }
 
 .article-title,
@@ -90,13 +102,17 @@ textarea.editable {
   color: #43484D;
 }
 
+.article-description {
+  text-align:justify;
+}
+
 .no-subscriptions a {
   text-decoration: none;
   color: #007bff;
 }
 
 .article-date {
-  color: #BBBDBF;
+  color: #999;
 }
 
 .form__input {
@@ -130,6 +146,10 @@ textarea.editable {
 
 .update-milestone {
   background-color: white;
+}
+
+#js-postUpdate {
+  max-width: 40rem;
 }
 
 @keyframes rotation {

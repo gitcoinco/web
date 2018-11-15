@@ -51,6 +51,10 @@
   margin-bottom: 3rem;
 }
 
+.form__footer a {
+  font-weight: 500;
+}
+
 .form__footer button {
   margin-bottom: .5rem;
 }
@@ -63,9 +67,20 @@
   .form__group {
     flex-direction: column;
   }
-  
+
   .form__group-item {
     margin-bottom: 1em;
     width: 100%;
+  }
+}
+
+@media (min-width: 992px) {
+  .form__footer a {
+    position: relative;
+    top: 10px;
+  }
+
+  .form__footer button {
+    float: right
   }
 }
