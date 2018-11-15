@@ -34,9 +34,6 @@ $(document).ready(function() {
         }
       }
 
-      if (!data.gas_price)
-        data.gas_price = 0;
-
       let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, data.contract_address);
 
       let deployedToken = new web3.eth.Contract(compiledToken.abi, data.denomination);
@@ -47,7 +44,7 @@ $(document).ready(function() {
 
         let realTokenAmount = Number(data.amount_per_period * 10 ** decimals);
 
-        let realGasPrice = Number(data.gas_price * 10 ** decimals);
+        let realGasPrice = Number(4 * 10 ** decimals);
 
         web3.eth.getAccounts(function(err, accounts) {
 

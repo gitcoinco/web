@@ -197,7 +197,7 @@ def grant_new(request):
 
         return redirect(reverse('grants:details', args=(grant.pk, )))
 
-    params = {'active': 'new_grant', 'title': _('New Grant'), 'grant': {}, 'keywords': get_keywords(), }
+    params = {'active': 'new_grant', 'title': _('New Grant'), 'profile': profile, 'grant': {}, 'keywords': get_keywords(), }
 
     return TemplateResponse(request, 'grants/new.html', params)
 
