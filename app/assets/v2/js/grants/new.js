@@ -7,8 +7,8 @@ $(document).ready(function() {
   }
 
   web3.eth.getAccounts(function(err, accounts) {
-    $('#input-admin_address').val(accounts[0])
-  })
+    $('#input-admin_address').val(accounts[0]);
+  });
 
   userSearch('.team_members');
 
