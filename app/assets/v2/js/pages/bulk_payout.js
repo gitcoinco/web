@@ -215,6 +215,7 @@ var update_registry = function() {
   $('#total_cost').html(tc + ' ' + denomination);
 
   let transactions = [];
+  
   first_transaction = {
     'id': 0,
     'type': 'cancel',
