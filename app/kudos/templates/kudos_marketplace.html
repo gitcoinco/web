@@ -25,7 +25,8 @@
           <select name="" id="sort_order">
             <option value="-created_on">{% trans 'Newest' %}</option>
             <option value="created_on">{% trans 'Oldest' %}</option>
-            <option value="num_clones_in_wild">{% trans 'Popularity' %}</option>
+            <option value="-popularity">{% trans 'All Time Popularity' %}</option>
+            <option value="-popularity_week">{% trans 'Trending' %}</option>
             <option value="price_finney">{% trans 'Low price' %}</option>
             <option value="-price_finney">{% trans 'High price' %}</option>
             <option value="name">{% trans 'Name' %}</option>

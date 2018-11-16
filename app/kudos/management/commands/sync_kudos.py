@@ -73,16 +73,18 @@ class Command(BaseCommand):
 
         # Event API
         for token_id in token_ids:
-            payload = dict(
-                asset_contract_address=kudos_contract.address,
-                token_id=token_id,
-            )
+            payload = {'asset_contract_address': kudos_contract.address, 'token_id': token_id}
             r = requests.get(url, params=payload, headers=headers)
             r.raise_for_status()
-            asset_token_id = r.json()['asset_events'][0]['asset']['token_id']
-            transaction_hash = r.json()['asset_events'][0]['transaction']['transaction_hash']
-            logger.info(f'token_id: {asset_token_id}, txid: {transaction_hash}')
-            kudos_contract.sync_db(kudos_id=int(asset_token_id), txid=transaction_hash)
+            try:
+                asset_token_id = r.json()['asset_events'][0]['asset']['token_id']
+                transaction_hash = r.json()['asset_events'][0]['transaction']['transaction_hash']
+                logger.info(f'token_id: {asset_token_id}, txid: {transaction_hash}')
+                kudos_contract.sync_db(kudos_id=int(asset_token_id), txid=transaction_hash)
+            except IndexError:
+                continue
+            except Exception as e:
+                logger.error(e)
 
     def filter_sync(self, kudos_contract, fromBlock):
         event_filter = kudos_contract._contract.events.Transfer.createFilter(fromBlock=fromBlock)

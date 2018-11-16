@@ -255,6 +255,7 @@ window.onload = function() {
 
         // send both tip and payout
         var send_tip_and_payout_callback = function() {
+          _alert({ message: gettext('You will now be asked to confirm another transaction (please check metamask, sometimes the second popup doesnt come up).') }, 'info');
           if ($('#tipPercent').val() > 0) {
             attach_and_send_tip(send_payout);
           } else {
@@ -262,19 +263,11 @@ window.onload = function() {
           }
         };
 
-        // KO 2018/10/28
-        // hack to workaround error with kudos inline send
-        // revert this when kudos live 4 realz
-        send_tip_and_payout_callback();
-
-        /* 
-        if ($('.kudos-search').select2('data')[0]) {
+        if ($('.kudos-search').select2('data')[0].id) {
           attach_and_send_kudos($('.kudos-search').select2('data')[0], send_tip_and_payout_callback);
         } else {
           send_tip_and_payout_callback();
         }
-        */
-
 
       };
       // Get bountyId from the database

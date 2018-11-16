@@ -572,29 +572,62 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Gitcoin on Epicenter | Marketing Your Bounties"
-
+    subject = "Nominate your Favorite OSS Dev | Kudos Trophies!"
+    new_kudos_pks = [429, 430]
+    new_kudos_size_px = 150
     intro = '''
 
 <p>
 Hi there,
 </p>
+<h3>Kudos Trophies</h3>
 <p>
-This week, we were on <a href="https://epicenter.tv/episode/257/">Epicenter</a>, a leading blockchain podcast. I talked about Gitcoin's platform and progress, our interest in
-growing open source, and the future of Gitcoin. There are a few sneak peeks in there for those interested in our Q4 plans :)
+I'm excited to show off a new product: limited edition, Kudos Trophies. Kudos trophies are physical trophies with Kudos on them.  We launched them as the Status Cryptolife Hackathon in Prague.  Here's what they look like:
+<BR>
+<BR>
+<img style='max-width: 300px;' src='https://cdn-images-1.medium.com/max/640/1*8CIBNn9yXZY5bj34ZInkPA.jpeg'>
+<BR>
+<BR>
+Each Kudos Trophy is a physical trophy, which has a QR code on the bottom of it that allows it to be redeemed on Gitcoin’s website.
+<BR>
+<BR>
+<img style='max-width: 300px;' src='https://cdn-images-1.medium.com/max/1280/1*zeXLPyw4qkP4fifHkZAgFA.jpeg'>
+<BR>
+<BR>
+It's quite possible that you'll see them again at EthDenver this year :)
+<BR>
+<BR>
+ <a href="https://medium.com/gitcoin/introducing-kudos-trophies-4e98c54e521">Learn more about Kudos Trophies here</a>.
+
 </p>
+
+<h3>Gitcoin Nominations are now Live</h3>
 <p>
-We also released a post about <a href="https://medium.com/gitcoin/increasing-action-on-your-gitcoin-bounty-61bb278f6f54">increasing action on Gitcoin bounties</a>. This is an important post for funders looking to grow their
-open source project with top notch Gitcoiners. Give it a look and let us know if you have any feedback!
+Who’s making the most impact on your OSS or Web3 project? Do you know someone that solved a problem in a creative way, built something interesting, or truly deserves a thanks? <a href='https://github.com/gitcoinco/web/issues/2816'>Nominate open source contributors to receive a limited edition and unique Kudos!</a>
 </p>
+
+<h3>New Kudos This Week</h3>
 <p>
-We had a great time at Github Universe (Oct 16-17) this past week representing Gitcoin and CodeFund.
-If you'll be at Web 3 Summit (Oct 22 - 24), Sustain OSS (Oct 25) or Devcon 4, give us a shout!
+Check out a few of the new kudos launched this week:
 </p>
+
+<p>
+
+''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
+
+
+</p>
+
 <h3>What else is new?</h3>
     <ul>
         <li>
-        The Gitcoin Livestream is back as regularly scheduled this week. <a href="https://gitcoin.co/livestream">Join us at 5PM ET</a>!
+            Gitcoin now supports EIP--1102 (Metamask Privacy Mode).  To use Gitcoin in privacy mode, <a href="https://medium.com/metamask/introducing-privacy-mode-42549d4870fa">checkout this post</a>.
+        </li>
+        <li>
+            We're announcing the launch of Gitcoin Labs next week.  <a href="https://medium.com/gitcoin/announcing-gitcoin-labs-ba400522d697">Here's a sneak peak</a>.
+        </li>
+        <li>
+            The Gitcoin Livestream will be on as regularly scheduled in two days. Aidan from Chainsafe will be there. They'll be talking about their ETH2.0 implementation and Gorli Testnet. We'll also have Ele from OSCoin presenting Radicle. <a href="https://gitcoin.co/livestream">Join us Friday at 5PM ET</a>!
         </li>
     </ul>
 </p>
@@ -603,37 +636,38 @@ Back to BUIDLing,
 </p>
 '''
     highlights = [{
-        'who': 'g-r-a-n-t',
+        'who': 'cleanunicorn',
         'who_link': True,
-        'what': 'Congrats to g-r-a-n-t on his first bounty!',
-        'link': 'https://gitcoin.co/issue/ethereum/eth-bloom/22/1534',
+        'what': 'Has been helping us with some security bounties',
+    }, {
+        'who': 'zachzundel',
+        'who_link': True,
+        'what': 'Worked with mbeacom on our testing suite!',
+        'link': 'https://github.com/gitcoinco/web/pull/2822',
         'link_copy': 'View more',
     }, {
-        'who': 'svenski123',
+        'who': 'iamonuwa',
         'who_link': True,
-        'what': 'A new Gitcoiner contributing to a new Gitcoin Project, Node Stratum!',
-        'link': 'https://gitcoin.co/issue/foxer666/node-stratum-pool/32/1493',
-        'link_copy': 'View more',
-    }, {
-        'who': 'satyamakgec',
-        'who_link': True,
-        'what': 'Helped build a sample app for Pulse Blockchain!',
-        'link': 'https://gitcoin.co/issue/PulseBlockchain/oz-sample-app/10/1479',
+        'what': 'Worked with electricfeelco on some hello-metamask component refactoring.',
+        'link': 'https://gitcoin.co/issue/electricfeelco/travay/23/1355',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/karalabe/hive/issues/133',
-        'primer': 'Help move forward Ethereum testing.',
+        'url': 'https://github.com/f-o-a-m/chanterelle/issues/46',
+        'primer': 'Help foam improve their CI',
     }, {
-        'url': 'https://github.com/dckc/RSign/issues/1',
-        'primer': 'Get paid in RHOC for helping with FireFox support.',
+        'url': 'https://github.com/novnc/noVNC/issues/944',
+        'primer': 'Help novnc add multi touch support.',
     }, {
-        'url': 'https://github.com/poanetwork/blockscout/issues/942',
-        'primer': 'Work on POA Network, a leading blockchain project.'
+        'url': 'https://github.com/gitcoinco/web/issues/2684',
+        'primer': 'Add new assets to Gitcoin Avatars Builder - Holiday Avatars encouraged! 🎅',
     }, ]
 
     num_leadboard_items = 5
+    highlight_kudos_ids = []
+    num_kudos_to_show = 10
+
     #### don't need to edit anything below this line
     leaderboard = {
         'quarterly_payers': {
@@ -649,6 +683,13 @@ Back to BUIDLing,
             'items': [],
         },
     }
+
+    from kudos.models import KudosTransfer
+    if highlight_kudos_ids:
+        kudos_highlights = KudosTransfer.objects.filter(id__in=highlight_kudos_ids)
+    else:
+        kudos_highlights = KudosTransfer.objects.exclude(txid='').order_by('-created_on')[:num_kudos_to_show]
+
     for key, __ in leaderboard.items():
         leaderboard[key]['items'] = LeaderboardRank.objects.active() \
             .filter(leaderboard=key).order_by('rank')[0:num_leadboard_items]
@@ -679,6 +720,7 @@ Back to BUIDLing,
         'hide_header': False,
         'highlights': highlights,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'kudos_highlights': kudos_highlights,
     }
 
     response_html = premailer_transform(render_to_string("emails/bounty_roundup.html", params))

@@ -27,6 +27,7 @@ from .models import AccessCodes, WhitepaperAccess, WhitepaperAccessRequest
 class GeneralAdmin(admin.ModelAdmin):
 
     ordering = ['-id']
+    list_display = ['created_on', '__str__']
 
 
 class WhitepaperAccessRequestAdmin(admin.ModelAdmin):

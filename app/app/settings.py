@@ -25,6 +25,7 @@ from django.utils.translation import gettext_noop
 
 import environ
 import raven
+from boto3.session import Session
 from easy_thumbnails.conf import Settings as easy_thumbnails_defaults
 
 import warnings
@@ -175,7 +176,9 @@ REST_FRAMEWORK = {
         'anon': '1000/day',
     },
     'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'],
-    'DEFAULT_AUTHENTICATION_CLASSES': []
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
 }
 
 AUTH_USER_MODEL = 'auth.User'
@@ -218,18 +221,41 @@ if ENABLE_APM:
     if DEBUG and ENV == 'stage':
         ELASTIC_APM['DEBUG'] = True
 
+AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
+AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', default='')
+AWS_DEFAULT_REGION = env('AWS_DEFAULT_REGION', default='us-west-2')
+AWS_LOG_GROUP = env('AWS_LOG_GROUP', default='Gitcoin')
+AWS_LOG_LEVEL = env('AWS_LOG_LEVEL', default='DEBUG')
+AWS_LOG_STREAM = env('AWS_LOG_STREAM', default=f'{ENV}-web')
+
 if ENV not in ['local', 'test', 'staging', 'preview']:
+    boto3_session = Session(
+        aws_access_key_id=AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+        region_name=AWS_DEFAULT_REGION
+    )
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': True,
+        'filters': {
+            'host_filter': {
+                '()': 'app.log_filters.HostFilter',
+            }
+        },
         'root': {
             'level': 'WARNING',
-            'handlers': ['sentry'],
+            'handlers': ['sentry', 'console', 'watchtower'],
         },
         'formatters': {
+            'simple': {
+                'format': '%(asctime)s %(name)-12s [%(levelname)-8s] %(message)s',
+                'datefmt': '%Y-%m-%d %H:%M:%S'
+            },
+            'cloudwatch': {
+                'format': '%(hostname)s %(name)-12s [%(levelname)-8s] %(message)s',
+            },
             'verbose': {
-                'format': '%(levelname)s %(asctime)s %(module)s '
-                          '%(process)d %(thread)d %(message)s'
+                'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
             },
         },
         'handlers': {
@@ -240,23 +266,32 @@ if ENV not in ['local', 'test', 'staging', 'preview']:
             'console': {
                 'level': 'DEBUG',
                 'class': 'logging.StreamHandler',
-                'formatter': 'verbose'
-            }
+                'formatter': 'verbose',
+            },
+            'watchtower': {
+                'level': AWS_LOG_LEVEL,
+                'class': 'watchtower.django.DjangoCloudWatchLogHandler',
+                'boto3_session': boto3_session,
+                'log_group': AWS_LOG_GROUP,
+                'stream_name': AWS_LOG_STREAM,
+                'filters': ['host_filter'],
+                'formatter': 'cloudwatch',
+            },
         },
         'loggers': {
             'django.db.backends': {
-                'level': 'WARN',
-                'handlers': ['console'],
+                'level': 'WARNING',
+                'handlers': ['console', 'watchtower'],
                 'propagate': False,
             },
             'raven': {
                 'level': 'DEBUG',
-                'handlers': ['console'],
+                'handlers': ['console', 'watchtower'],
                 'propagate': False,
             },
             'sentry.errors': {
                 'level': 'DEBUG',
-                'handlers': ['console'],
+                'handlers': ['console', 'watchtower'],
                 'propagate': False,
             },
         },
@@ -275,6 +310,7 @@ if ENV not in ['local', 'test', 'staging', 'preview']:
         LOGGING['root']['handlers'] = ['sentry', 'elasticapm']
 
     LOGGING['loggers']['django.request'] = LOGGING['loggers']['django.db.backends']
+    LOGGING['loggers']['django.security.*'] = LOGGING['loggers']['django.db.backends']
     for ia in INSTALLED_APPS:
         LOGGING['loggers'][ia] = LOGGING['loggers']['django.db.backends']
 else:
@@ -379,13 +415,23 @@ CACHEOPS = {
     'gas.*': {
         'ops': 'all',
         'timeout': 60 * 10,
-    }
+    },
+    'kudos.token': {
+        'ops': ('get', 'fetch', 'aggregate'),
+        'timeout': 60 * 5,
+    },
+    'kudos.kudostransfer': {
+        'ops': ('get', 'fetch', 'aggregate'),
+        'timeout': 60 * 5,
+    },
 }
 
 DJANGO_REDIS_IGNORE_EXCEPTIONS = env.bool('REDIS_IGNORE_EXCEPTIONS', default=True)
 DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = env.bool('REDIS_LOG_IGNORED_EXCEPTIONS', default=True)
 COLLECTFAST_CACHE = env('COLLECTFAST_CACHE', default='collectfast')
 COLLECTFAST_DEBUG = env.bool('COLLECTFAST_DEBUG', default=False)
+REDIS_URL = env('REDIS_URL', default='rediscache://redis:6379/0?client_class=django_redis.client.DefaultClient')
+SEMAPHORE_REDIS_URL = env('SEMAPHORE_REDIS_URL', default=REDIS_URL)
 
 CACHES = {
     'default': env.cache(
@@ -503,8 +549,8 @@ KUDOS_PRIVATE_KEY = env('KUDOS_PRIVATE_KEY', default='')
 KUDOS_CONTRACT_MAINNET = env('KUDOS_CONTRACT_MAINNET', default='0x2aea4add166ebf38b63d09a75de1a7b94aa24163')
 KUDOS_CONTRACT_RINKEBY = env('KUDOS_CONTRACT_RINKEBY', default='0x4077ae95eec529d924571d00e81ecde104601ae8')
 KUDOS_CONTRACT_ROPSTEN = env('KUDOS_CONTRACT_ROPSTEN', default='0xcd520707fc68d153283d518b29ada466f9091ea8')
-KUDOS_CONTRACT_TESTRPC = env('KUDOS_CONTRACT_TESTRPC', default='0xe7bed272ee374e8116049d0a49737bdda86325b6')
-KUDOS_NETWORK = env('KUDOS_NETWORK', default='localhost')
+KUDOS_CONTRACT_TESTRPC = env('KUDOS_CONTRACT_TESTRPC', default='0x38c48d14a5bbc38c17ced9cd5f0695894336f426')
+KUDOS_NETWORK = env('KUDOS_NETWORK', default='mainnet')
 
 # Reporting Integrations
 MIXPANEL_TOKEN = env('MIXPANEL_TOKEN', default='')
@@ -549,9 +595,6 @@ if SENTRY_ADDRESS and SENTRY_PROJECT:
 IGNORE_COMMENTS_FROM = ['gitcoinbot', ]
 
 # optional: only needed if you run the activity-report management command
-AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
-AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', default='')
-
 AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME', default='')
 AWS_S3_CACHE_MAX_AGE = env.str('AWS_S3_CACHE_MAX_AGE', default='15552000')
 AWS_QUERYSTRING_EXPIRE = env.int('AWS_QUERYSTRING_EXPIRE', default=3600)

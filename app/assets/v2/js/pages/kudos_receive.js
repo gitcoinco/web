@@ -43,8 +43,13 @@ window.onload = function() {
   });
   waitforWeb3(function() {
     if (document.web3network != document.network) {
-      _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
-    } else {
+      if (document.web3network == 'locked') {
+        _alert({ message: gettext('Please authorize Metamask in order to continue.')}, 'info');
+        approve_metamask();
+      } else {
+        _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
+      }
+    } else if (!$('#forwarding_address').val()) {
       $('#forwarding_address').val(web3.eth.coinbase);
     }
     $('#network').val(document.web3network);
@@ -79,6 +84,10 @@ $(document).ready(function() {
 
     if (document.web3network != document.network) {
       _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
+      unloading_button($(this));
+      return;
+    }
+    if (!confirm(gettext('Please confirm that ' + forwarding_address + ' is the address for which you wish to redeem this tip.'))) {
       unloading_button($(this));
       return;
     }
@@ -148,21 +157,27 @@ $(document).ready(function() {
           numClones: numClones,
           holding_address: holding_address,
           kudosPriceInWei: kudosPriceInWei.toString(10)
-        }
+        };
+
         console.log('params for kudos clone:');
         console.log(params);
  
         kudos_contract.clone.estimateGas(forwarding_address, tokenId, numClones, {from: holding_address, value: kudosPriceInWei}, function(error, gasLimit) {
           console.log(gasLimit);
-          var buffer = new web3.BigNumber(0);
+
+          var buffer = new web3.BigNumber(10);
+
+          var observedKudosGasLimit = 505552;
+
+          if (gasLimit < observedKudosGasLimit) {
+            gasLimit = observedKudosGasLimit;
+          }
 
           gasLimit = new web3.BigNumber(gasLimit);
           var send_amount = balance.minus(gasLimit.times(gas_price_wei)).minus(buffer);
-          // rawTx['value'] = web3.toHex(send_amount.toString()); // deduct gas costs from amount to send
 
           rawTx['value'] = send_amount.toNumber();
           rawTx['gasPrice'] = web3.toHex(gas_price_wei.toString());
-          // rawTx['gas'] = web3.toHex(gasLimit.toString());
           rawTx['gasLimit'] = web3.toHex(gasLimit.toString());
           show_console = true;
           if (show_console) {
