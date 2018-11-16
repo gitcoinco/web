@@ -30,144 +30,162 @@
       {% include 'grants/nav.html' %}
     </div>
 
-    <div class="grant-banner">
-      <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% static 'v2/images/bitmap.png' %}{% endif %}" width="100%" />
-    </div>
-
     <div class="grant__header py-5">
       <div class="container">
         <div class="row">
-          <div class="col-12 col-md-6 col-lg-5">
-            {% if is_admin %}
-              <div class="mb-4">
-                <button id="edit-details" class="button btn-gc-blue button__small">
-                  <i class="fas fa-edit mr-2"></i> Edit Info
-                </button>
-                <button id="save-details" class="button button--primary button__small hidden">
-                  <i class="fas fa-save mr-2"></i> Save Info
-                </button>
-                <button id="cancel-details" class="button button--primary button--warning button__small hidden">
-                  <i class="fas fa-times mr-2"></i> Cancel
-                </button>    
-              </div>
-            {% endif %}
-            <div class="grant__specs">
-              <h1 class="grant__title font-title-lg">
-                <input type="text" id="form--input__title" class="p-0 inline-edit" value="{{ grant.title }}" readonly>
-              </h1>
-              <p class="grant__url font-subheader mb-4">
-                {% if is_admin %}
-                  <div>
-                    <input type="text" id="form--input__reference-url" class="p-0 mt-2 inline-edit" value="{{ grant.reference_url }}" readonly>
+          <div class="grant-banner col-12 col-lg-6 col-xl-5 p-0 mb-5 mb-md-0">
+            <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% static 'v2/images/bitmap.png' %}{% endif %}" width="100%" />
+          </div>
+          <div class="col-12 col-lg-6 offset-xl-1 col-xl-5">
+            <div class="row">
+              <div class="col-12">
+                <div class="grant__specs">
+                  <h1 class="grant__title font-title-lg">
+                    <input type="text" id="form--input__title" class="p-0 inline-edit" value="{{ grant.title }}" readonly>
+                  </h1>
+                  <p class="grant__url font-subheader my-4">
+                    {% if is_admin %}
+                      <div>
+                        <input type="text" id="form--input__reference-url" class="p-0 mt-2 inline-edit" value="{{ grant.reference_url }}" readonly>
+                      </div>
+                    {% else %}
+                      <a href="{{ grant.reference_url }}" target="_blank">
+                        <i class="fas fa-link mr-2"></i>
+                        {{ grant.reference_url }}
+                      </a>
+                    {% endif %}
+                  </p>
+                  <div class="grant-item__owner my-2">
+                    {% if is_admin %}
+                      <div class="font-body">
+                        <div class="form__select2">
+                          <select id="grant-admin" class="form__input" name="grant-admin" disabled>
+                            <option selected="selected">{{ grant.admin_profile.handle|default:'anonymous' }}</option>
+                          </select>
+                        </div>
+                      </div>
+                    {% else %}
+                      <div class="grant-item__owner-image mr-2">
+                        <img src="{{ grant.admin_profile.avatar_url }}">
+                      </div>
+                      <div class="grant-item__owner-handle font-body">{% trans 'by' %}
+                        <a class="grant-item__owner-handle" href="{% url 'profile' grant.admin_profile.handle %}">
+                          <span id="grant-profile">{{ grant.admin_profile.handle|default:'anonymous' }}</span>
+                        </a>
+                      </div>
+                    {% endif %}
                   </div>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="grant__progress my-4">
+                  <div class="progress">
+                    <div class="progress-bar" style="width:{{ grant.percent_completed }}%"></div>
+                  </div>
+                  <div class="progress-text mt-2">
+                    <div class="row">
+                      <div class="col-6">
+                        <span>{{ grant.amount_received }} ETH</span>
+                        <p>Current</p>
+                      </div>
+                      <div class="col-6 text-right">
+                        <span>{{ grant.amount_goal }} ETH</span>
+                        <p>Goal</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% if grant_is_inactive %}
+                  <h4>{% trans "This grant has ended. You can find all active grants" %}
+                    <a href="{% url 'grants:grants' %}">
+                      {% trans "here." %}
+                    </a>
+                  </h4>
+                {% elif is_admin %}
+                <form method="POST" id="js-cancel_grant" class="d-inline">
+                  {% csrf_token %}
+                  <button class="button button--primary button--warning" id="cancel_grant">{% trans "Cancel this Grant" %}
+                  </button>
+                  <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
+                </form>
+                {% elif subscription %}
+                    <a href="{% url 'grants:subscription_cancel' grant.id subscription.id %}">
+                      <button class="button button--primary button--full">{% trans "Cancel Your Funding" %}</button>
+                    </a>
                 {% else %}
-                  <a href="{{ grant.reference_url }}" target="_blank">
-                    <i class="fas fa-link mr-1"></i>
-                    {{ grant.reference_url }}
+                  <a href="{% url 'grants:fund' grant.id %}">
+                    <button class="button button--primary button--full">{% trans "Fund this Grant" %}</button>
                   </a>
                 {% endif %}
-              </p>
-              <div class="grant-item__owner mb-4">
                 {% if is_admin %}
-                  <div class="font-body">
-                    <div class="form__select2">
-                      <select id="grant-admin" class="form__input" name="grant-admin" disabled>
-                        <option selected="selected">{{ grant.admin_profile.handle|default:'anonymous' }}</option>
-                      </select>
-                    </div>
+                  <div class="mb-4 d-inline-block">
+                    <button id="edit-details" class="button btn-gc-blue">
+                      <i class="fas fa-edit mr-2"></i> Edit Info
+                    </button>
+                    <button id="save-details" class="button btn-gc-blue hidden">
+                      <i class="fas fa-save mr-2"></i> Save Info
+                    </button>
+                    <button id="cancel-details" class="button button--primary hidden">
+                      <i class="fas fa-times mr-2"></i> Cancel Edit
+                    </button>    
                   </div>
-                {% else %}
-                  <div class="grant-item__owner-image mr-2">
-                    <img src="{{ grant.admin_profile.avatar_url }}">
-                  </div>
-                  <div class="grant-item__owner-handle font-body">{% trans 'by' %}
-                    <a class="grant-item__owner-handle" href="{% url 'profile' grant.admin_profile.handle %}">
-                      <span id="grant-profile">{{ grant.admin_profile.handle|default:'anonymous' }}</span>
-                    </a>
-                  </div>
-                {% endif %}
-              </div>
-              <p class="grant__description font-subheader">
-                <textarea id="form--input__description" class="p-0 mt-2 inline-edit" disabled>{{ grant.description }}</textarea>
-              </p>
-              <div class="grant-item__member">
-                {% if is_admin %}
-                  <div class="font-body">
-                    <div class="form__select2">
-                      <select id="grant-members" class="form__input" name="grant-members" name="members" multiple="multiple" disabled>
-                        {% for team_member in grant.team_members.all %}
-                          <option selected="selected">{{ team_member }}</option>
-                        {% endfor %}
-                      </select>
-                    </div>
-                  </div>
-                {% else %}
-                  {% if grant.team_members %}
-                    <p class="font-body font-weight-bold">Team Members</p>
-                    <div class="grant-item__members">
-                      {% for team_member in grant.team_members.all %}
-                        <div class="font-caption grant-item__member mr-4">
-                          <div class="grant-item__member-image mr-2">
-                            <img src="{{ team_member.avatar_url }}">
-                          </div>
-                          <div class="grant-item__member-handle mt-1">
-                            <a class="grant-item__member-handle" href="{% url 'profile' team_member %}">
-                              <span id="grant-profile">{{ team_member }}</span>
-                            </a>
-                          </div>
-                        </div>
-                      {% endfor %}
-                    </div>
-                  {% endif %}
                 {% endif %}
               </div>
             </div>
           </div>
-        <div class="col-12 col-md-6 offset-lg-2 col-lg-5">
+        </div>
+      </div>
+    </div>
 
-          {% if grant_is_inactive %}
-            <h4>{% trans "This grant has ended. You can find all active grants" %}
-              <a href="{% url 'grants:grants' %}">
-                {% trans "here." %}
-              </a>
-            </h4>
-          {% elif is_admin %}
-          <form method="POST" id="js-cancel_grant">
-            {% csrf_token %}
-            <button class="button button--primary button--full" id="cancel_grant">{% trans "Cancel this Grant" %}
-            </button>
-            <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
-          </form>
-          {% elif subscription %}
-              <a href="{% url 'grants:subscription_cancel' grant.id subscription.id %}">
-                <button class="button button--primary button--full">{% trans "Cancel Your Funding" %}</button>
-              </a>
-          {% else %}
-            <a href="{% url 'grants:fund' grant.id %}">
-              <button class="button button--primary button--full">{% trans "Fund this Grant" %}</button>
-            </a>
-          {% endif %}
-          <div class="grant__progress mt-4">
-            <div class="progress">
-              <div class="progress-bar" style="width:{{ grant.percent_completed }}%"></div>
-            </div>
-
-            <div class="progress-text mt-2">
-              <div class="row">
-                <div class="col-6">
-                  <span>{{ grant.amount_received }} ETH</span>
-                  <p>Current</p>
-                </div>
-                <div class="col-6 text-right">
-                  <span>{{ grant.amount_goal }} ETH</span>
-                  <p>Goal</p>
+    <div class="container py-5">
+      <div class="row">
+        <div class="col-12 col-md-6 pl-lg-0">
+          <p class="grant__description font-subheader pr-lg-4 mb-5">
+            {% if is_admin %}
+              <textarea id="form--input__description" class="p-0 mt-2 inline-edit" disabled>
+                {{ grant.description }}
+              </textarea>
+            {% else %} 
+              <span>
+                {{ grant.description }}
+              </span>
+            {% endif %}
+          </p>
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="grant-item__member mb-4">
+            {% if is_admin %}
+              <div class="font-body">
+                <div class="form__select2">
+                  <select id="grant-members" class="form__input" name="grant-members" name="members" multiple="multiple" disabled>
+                    {% for team_member in grant.team_members.all %}
+                      <option selected="selected">{{ team_member }}</option>
+                    {% endfor %}
+                  </select>
                 </div>
               </div>
-            </div>
+            {% else %}
+              {% if grant.team_members %}
+                <p class="font-body sub-title">Team Members ({{ grant.team_members.all|length }})</p>
+                <div class="grant-item__members font-body">
+                  {% for team_member in grant.team_members.all %}
+                    <div class="grant-item__member mr-4">
+                      <div class="grant-item__member-image mr-2">
+                        <img src="{{ team_member.avatar_url }}">
+                      </div>
+                      <div class="grant-item__member-handle mt-1">
+                        <a class="grant-item__member-handle" href="{% url 'profile' team_member %}">
+                          <span id="grant-profile">{{ team_member }}</span>
+                        </a>
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            {% endif %}
           </div>
-
           <div class="font-body">
-            <p class="font-weight-bold">{% trans "Supported by" %}</p>
+            <p class="sub-title">{% trans "Supported By" %} ({{ grant.subscriptions.all|length }})</p>
             <div class="grant__stakeholders-list">
               {% for subscriber in grant.subscriptions.all %}
                 <a class="grant__stakeholders-item mr-2" href="{% url 'profile' subscriber.contributor_profile.handle %}">
@@ -181,11 +199,10 @@
             </div>
           </div>
         </div>
-        </div>
       </div>
     </div>
 
-    <div class="update-milestone">
+    <div class="update-milestone pt-4">
       <div class="container mt-4">
         <div class="row">
           <div class="col-12 order-md-2 col-md-4">
