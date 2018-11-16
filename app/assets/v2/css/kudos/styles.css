@@ -668,4 +668,19 @@ a.cellarius-partner:before {
     top: -0.5em;
     left: 1em; }
 
+.faqItem {
+  background-color: #ffffff;
+  padding: 15px;
+  padding-bottom: 10px;
+  padding-top: 15px;
+  border-radius: 5px;
+}
+
+.faqItem > h5 {
+  font-weight: 600;
+}
+
+.faqItem > h5:after {
+  color: #0cc67f;
+}
 /*# sourceMappingURL=styles.css.map */
