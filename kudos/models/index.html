@@ -2270,6 +2270,10 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="kudos.models.Token.send_enabled_for_non_gitcoin_admins">send_enabled_for_non_gitcoin_admins</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="kudos.models.Token.shortened_address">shortened_address</h3>
 
 <p>Shorten ethereum address to only the first and last 4 digits.</p>
@@ -2287,6 +2291,15 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="kudos.models.Token.send_enabled_for">send_enabled_for</h3>
+
+<pre><code class="python">Token.send_enabled_for(self, user)
+</code></pre>
+
+<p>Arguments:
+- user: a django user object</p>
+<p>Returns:
+    bool: Wehther a send should be enabled for this user</p>
 <h2 id="kudos.models.KudosTransfer">KudosTransfer</h2>
 
 <pre><code class="python">KudosTransfer(self, *args, **kwargs)
