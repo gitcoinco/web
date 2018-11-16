@@ -15,8 +15,8 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-{% endcomment %} 
-{% load i18n static %} 
+{% endcomment %}
+{% load i18n static %}
 
 {% block content %}
 
@@ -37,8 +37,11 @@
 <img src="{% static "v2/images/grant-ended.png" %}" alt="{% trans "Grant Ended" %}" title="{% trans "Grant Ended" %}">
 <h1 style="text-transform: none;">{% trans "Grant" %} '{{ grant.title }}' {% trans "has been cancelled" %}.</h1>
 <p>{% trans "Thank you for using Gitcoin, we hope you'll come back to build more open source software!" %}</p>
+<p>{% trans "You can see your cancellation transaction on etherscan" %}
+  <a href="{{ transaction.link }}">{% trans "here." %}</a>
+</p>
 <br>
 
-<hr> 
+<hr>
 
 {% endblock %}

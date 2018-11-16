@@ -33,7 +33,10 @@ from django.utils.translation import gettext_lazy as _
 
 from grants.forms import MilestoneForm
 from grants.models import Grant, Milestone, Subscription
-from marketing.mails import new_grant, new_supporter, support_cancellation, thank_you_for_supporting
+from marketing.mails import (
+    grant_cancellation, new_grant, new_supporter, subscription_terminated, support_cancellation,
+    thank_you_for_supporting,
+)
 from marketing.models import Keyword
 from web3 import HTTPProvider, Web3
 
@@ -53,6 +56,7 @@ def grants(request):
     sort = request.GET.get('sort_option', '-created_on')
 
     _grants = Grant.objects.filter(active=True).order_by(sort)
+
 
     if request.method == 'POST':
         sort = request.POST.get('sort_option', '-created_on')
@@ -79,13 +83,19 @@ def grant_details(request, grant_id):
     try:
         grant = Grant.objects.prefetch_related('subscriptions', 'milestones').get(pk=grant_id)
         milestones = grant.milestones.order_by('due_date')
+        subscriptions = grant.subscriptions.all()
         active_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
     except Grant.DoesNotExist:
         raise Http404
 
+
     if request.method == 'POST':
         grant.active = False
         grant.save()
+        grant_cancellation(grant, active_subscription)
+        for sub in subscriptions:
+            subscription_terminated(grant, sub)
+
 
     # TODO: Determine how we want to chunk out articles and where we want to store this data.
     activity_data = [
@@ -271,7 +281,7 @@ def grant_fund(request, grant_id):
         subscription.grant = grant
         subscription.save()
         new_supporter(grant, subscription)
-        thank_you_for_supporting(grant, subscription, profile)
+        thank_you_for_supporting(grant, subscription)
         return redirect(reverse('grants:details', args=(grant.pk, )))
 
     params = {
@@ -295,7 +305,7 @@ def subscription_cancel(request, grant_id, subscription_id):
     if request.method == 'POST':
         subscription.active = False
         subscription.save()
-        support_cancellation(grant, subscription, profile)
+        support_cancellation(grant, subscription)
         return redirect(reverse('grants:details', args=(grant.pk, )))
 
     params = {
