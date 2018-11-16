@@ -70,9 +70,9 @@
           [[/if]]
         </p>
         [[if tokens ]]
-          <a href="" onclick="toggleExpandableBounty(event, '.[[:network]].i[[:standard_bounties_id]]')">
+          <button class="btn-expand-token" onclick="toggleExpandableBounty(event, '.[[:network]].i[[:standard_bounties_id]]')">
             {% trans 'See All' %}   <i class="fa fa-angle-down arrow"></i>
-          </a>
+          </button>
         [[/if]]
       </div>
       [[if value_in_usdt]]
@@ -83,8 +83,8 @@
           </p>
         </div>
       [[/if]]
-      </div>
     </div>
+  </div>
     [[if tokens ]]
       <div class="col-md-12 expandable">
         <div class="d-flex flex-wrap">
@@ -107,6 +107,6 @@
         </div>
       </div>
     [[/if]]
-  </div>
+
 </a>
 </script>

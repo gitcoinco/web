@@ -256,3 +256,16 @@ body {
 .separator-bull:after {
   content: '\2022'
 }
+
+.btn-expand-token {
+  position: absolute;
+  line-height: 1.5rem;
+  border: 0;
+  background-color: transparent;
+  font-weight: 400;
+  color: #007bff;
+}
+
+.btn-expand-token:focus {
+  color: #007bff;
+}
