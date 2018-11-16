@@ -43,7 +43,7 @@
                   <h1 class="grant__title font-title-lg">
                     <input type="text" id="form--input__title" class="p-0 inline-edit" value="{{ grant.title }}" readonly>
                   </h1>
-                  <p class="grant__url font-subheader my-4">
+                  <span class="grant__url font-subheader my-4">
                     {% if is_admin %}
                       <div>
                         <input type="text" id="form--input__reference-url" class="p-0 mt-2 inline-edit" value="{{ grant.reference_url }}" readonly>
@@ -54,7 +54,7 @@
                         {{ grant.reference_url }}
                       </a>
                     {% endif %}
-                  </p>
+                  </span>
                   <div class="grant-item__owner my-2">
                     {% if is_admin %}
                       <div class="font-body">
