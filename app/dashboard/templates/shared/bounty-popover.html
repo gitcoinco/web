@@ -19,7 +19,7 @@
   <div class="tooltip-bubble__content">
     <div class="d-flex justify-content-between mb-2">
       <span class="status-[[:status]]">
-        <i class="fas fa-dot-circle"></i>
+        <i class="g-icon g-icon__dot-circle"></i>
         [[if status === "open"]]
           {% trans "Ready to work" %}
         [[else status === "started"]]
@@ -36,7 +36,7 @@
       </span>
       <span><img src="[[:avatar_url]]" alt="[[:github_org_name]]" class="rounded-circle" height="14"> [[:github_org_name]]</span>
     </div>
-    <div class="font-subheader text-truncate">[[>title]]</div>
+    <div class="font-subheader title text-truncate">[[>title]]</div>
     <div class="mt-2 keyword-group">
       [[if keywords]]
         [[for keywords.split(',')]]
@@ -47,11 +47,12 @@
   </div>
   [[if activities.length]]
     <div class="tooltip-bubble__footer">
-      {% trans "Latest Activity" %}
+      <span class="title">{% trans "Latest Activity" %}</span>
       [[for activities.slice(-1)  ]]
-        <div><span class="">[[activitytext:activity_type]] {% trans "by" %} [[:profile.handle]]</span>
-
-        <span class="">[[timedifference:created]]</span></div>
+        <div class="d-flex justify-content-between">
+          <span>[[activitytext:activity_type]] {% trans "by" %} <b>[[:profile.handle]]</b></span>
+          <span>[[timedifference:created]]</span>
+        </div>
       [[/for]]
     </div>
   [[/if]]

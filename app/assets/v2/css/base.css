@@ -1729,15 +1729,23 @@ div.busyOverlay {
   padding: 1.4em 1.3em 1.3em;
 }
 
-.keyword-group {
-  display: flex;
-  flex-wrap: wrap;
-}
-.tag.keyword {
-  display: inline-block;
-  min-width: 0;
-  font-size: 11px;
-  background-color: #E7F0FA;
-  color: #6587AE;
+/* Custom icons */
+
+.g-icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: middle;
+  line-height: 1;
 }
 
+.g-icon:before {
+  content: '';
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+}
+
+.g-icon__dot-circle:before {
+  border: 0.25em solid currentColor;
+  border-radius: 100px;
+}

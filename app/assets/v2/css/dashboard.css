@@ -90,6 +90,7 @@ body {
 
 .title {
   text-transform: capitalize;
+  font-weight: 600;
 }
 
 .bounty_row {
@@ -220,10 +221,6 @@ body {
   }
 }
 
-.hiring {
-  content: url('/static/v2/images/hiring.svg');
-}
-
 .hiring-alt {
   font-size: 11px;
   color: #4A90E2;
@@ -255,6 +252,7 @@ body {
 .separator-bull {
   margin: 0 0.6em;
 }
+
 .separator-bull:after {
   content: '\2022'
 }
