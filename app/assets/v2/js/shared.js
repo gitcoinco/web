@@ -440,20 +440,22 @@ function getParam(parameterName) {
   return result;
 }
 
-$('#bounties').tooltip({
-  items: '.result',
-  classes: {
-    'ui-tooltip': 'tooltip-bubble'
-  },
-  position: {
-    my: 'top',
-    at: 'center bottom',
-    collision: 'flip',
-    using: function(position, feedback) {
-      $(this).addClass(feedback.vertical).css(position);
+if ($('#bounties').length) {
+  $('#bounties').tooltip({
+    items: '.result',
+    classes: {
+      'ui-tooltip': 'tooltip-bubble'
+    },
+    position: {
+      my: 'top',
+      at: 'center bottom',
+      collision: 'flip',
+      using: function(position, feedback) {
+        $(this).addClass(feedback.vertical).css(position);
+      }
     }
-  }
-});
+  });
+}
 
 $.views.converters({
   timedifference: timedifferenceCvrt,
