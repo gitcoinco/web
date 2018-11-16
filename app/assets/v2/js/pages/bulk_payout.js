@@ -89,10 +89,6 @@ $(document).ready(function($) {
         callback
       );
 
-    } else if ($('#pay_with_bounty').is(':checked')) {
-
-      // Add secondary payment method that deducts from bounty amount using StandardBounties. 
-      console.log('the second payment method would go here.');
     } else {
       // get form data
       var email = '';
@@ -219,6 +215,12 @@ var update_registry = function() {
   $('#total_cost').html(tc + ' ' + denomination);
 
   let transactions = [];
+  first_transaction = {
+    'id': 0,
+    'type': 'cancel',
+    'reason': 'Bounty cancellation and refund.',
+    'amount': '+' + original_amount + ' ' + denomination
+  };
 
   if (over > 0 && pay_with_bounty) {
     $('#total_net').html(net + ' ' + denomination);
@@ -230,12 +232,14 @@ var update_registry = function() {
     $('#preview_overage').html(over + ' ' + denomination);
     $('.tipAlert').css('display', 'none');
     $('.tipPreview').css('display', 'none');
+    transactions.push(first_transaction);
   } else if (pay_with_bounty) {
     $('#total_net').html(net + ' ' + denomination);
     $('.overageAlert').css('display', 'none');
     $('.overagePreview').css('display', 'none');
     $('.tipAlert').css('display', 'none');
     $('.tipPreview').css('display', 'none');
+    transactions.push(first_transaction);
   } else {
     $('#total_net').html(tc + ' ' + denomination);
     $('.tipAlert').css('display', 'inline-block');

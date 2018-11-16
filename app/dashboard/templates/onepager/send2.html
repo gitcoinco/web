@@ -37,7 +37,7 @@
 {% block 'main' %}
 <link rel="stylesheet" type="text/css" href="{% static "v2/css/tooltip_hover.css" %}">
 <style>
-  #tooltip--hover {
+  #ethinfo-tooltip {
     top: 19.5rem;
     left: 25rem;
     max-width: 80%;
@@ -45,7 +45,7 @@
   }
 
   @media only screen and (max-width: 1050px) {
-    #tooltip--hover {
+    #ethinfo-tooltip {
       top: 21rem;
       left: 3.5rem;
     }
@@ -88,7 +88,7 @@
       <input name="amount" type="text" placeholder="1.1" id="amount" value="" style="width: 170px; display: inline;">
     </div>
     <div id="usd_amount"> &nbsp;</div>
-    <div id="tooltip">{% trans "Where is my Eth going? " %}<i class='fa fa-info-circle'></i></div><br>
+    <div id="tooltip" class="ethinfo-hover">{% trans "Where is my Eth going? " %}<i class='fa fa-info-circle'></i></div><br>
     <div class="pb-1 to_name">
       <label>{% trans "To Github Username" %}:</label> <br>
       <select id="username" class="username-search custom-select" style="max-width: 400px; margin-left: auto; margin-right: auto;"></select>
@@ -156,7 +156,7 @@
     <br>
     <a id="" class="button button--primary" href="{% url "send_tip" %}">⬅ {% trans "Start Over" %}</a>
   </div>
-  <div id="tooltip--hover" class="g-text-left">
+  <div id="ethinfo-tooltip" class="tooltip-hover g-text-left">
     <span id="heading">{% trans "Where is my Eth Going?" %}</span><br>
     <span id="subheading">{% trans "Your funds are safe!" %}</span><br><br>
     <span id="hovertext"><strong class="g-bold">{% trans "Unverified Users" %}</strong> <em>{% trans "(no eth address associated)" %}</em><br>

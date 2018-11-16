@@ -1,26 +1,43 @@
-#tooltip--hover {
+#ethinfo-tooltip {
   min-height: 37%;
   top: 17rem;
 }
 
 @media only screen and (max-width: 1400px) {
-  #tooltip--hover {
+  #ethinfo-tooltip {
     top: 18.5rem;
   }
 }
 
 @media only screen and (max-width: 750px) {
-  #tooltip--hover {
+  #ethinfo-tooltip {
     min-height: 30%;
   }
 }
 
 @media only screen and (max-width: 400px) {
-  #tooltip--hover {
+  #ethinfo-tooltip {
     min-height: 33%;
     left: 70px;
     top: 20.5rem;
   }
+}
+
+#pay_with_bounty-tooltip {
+  min-height: 37%;
+  top: 15rem;
+  left: 220px;
+}
+
+@media only screen and (max-width: 730px) {
+  #pay_with_bounty-tooltip {
+    top: 16rem;
+    left: 30px;
+  }
+}
+
+.pay_with_bounty-hover {
+  margin-left: 5px;
 }
 
 #transaction_registry {
