@@ -6,8 +6,6 @@
 
 {% trans "The world of open source is a better place because of you." %}
 
-{{ grant.logo.url }}
-
 {{ grant.description }}
 
 {% trans "You have agreed to give" %}

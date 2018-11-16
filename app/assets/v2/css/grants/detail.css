@@ -73,6 +73,10 @@
   font-weight: 500;
 }
 
+.grant__description textarea {
+  background: white;
+}
+
 input.editable,
 textarea.editable {
   margin-top: 6px;
@@ -100,6 +104,10 @@ textarea.editable {
 .grant__description,
 .article-description {
   color: #43484D;
+}
+
+.grant__description span {
+  text-align: justify;
 }
 
 .article-description {
@@ -130,7 +138,26 @@ textarea.editable {
   flex-wrap: wrap;
 }
 
-.grant__stakeholders-list img {
+.grant__header button {
+  font-weight: 500;
+}
+
+.sub-title {
+  font-weight: 600;
+}
+
+.grant-banner img {
+  height: auto;
+  width: 100%;
+}
+
+.grant-banner {
+  overflow-x : hidden;
+}
+
+.grant__stakeholders-list img,
+.grant-item__members img,
+.grant-item__owner-image img {
   border-radius: 50%;
   width: 50px;
   height: 50px;
@@ -146,6 +173,7 @@ textarea.editable {
 
 .update-milestone {
   background-color: white;
+  border-top: 1px solid #D8D8D8;
 }
 
 #js-postUpdate {
