@@ -125,6 +125,7 @@ class Token(SuperModel):
         'kudos.Contract', related_name='kudos_contract', on_delete=models.SET_NULL, null=True
     )
     hidden = models.BooleanField(default=False)
+    send_enabled_for_non_gitcoin_admins = models.BooleanField(default=True)
 
     # Token QuerySet Manager
     objects = TokenQuerySet.as_manager()
@@ -220,7 +221,7 @@ class Token(SuperModel):
 
     @property
     def num_clones_available_counting_indirect_send(self):
-        return self.num_gen0_clones_allowed - self.num_clones_in_wild_counting_indirect_send
+        return self.num_clones_allowed - self.num_clones_in_wild_counting_indirect_send
 
     @property
     def num_clones_in_wild_counting_indirect_send(self):
@@ -283,6 +284,22 @@ class Token(SuperModel):
     @property
     def url(self):
         return f'{settings.BASE_URL}kudos/{self.pk}/{slugify(self.name)}'
+
+    def send_enabled_for(self, user):
+        """
+
+        Arguments:
+        - user: a django user object
+
+        Returns:
+            bool: Wehther a send should be enabled for this user
+        """
+        are_kudos_available = self.num_clones_allowed != 0 and self.num_clones_available_counting_indirect_send != 0
+        is_enabled_for_user_in_general = self.send_enabled_for_non_gitcoin_admins
+        is_enabled_for_this_user = is_enabled_for_user_in_general
+        if user.is_authenticated and user.is_staff:
+            is_enabled_for_this_user = True
+        return are_kudos_available and is_enabled_for_this_user
 
 
 class KudosTransfer(SendCryptoAsset):

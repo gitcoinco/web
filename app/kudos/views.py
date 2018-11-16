@@ -164,6 +164,7 @@ def details(request, kudos_id, name):
     kudos = get_object_or_404(Token, pk=kudos_id)
 
     context = {
+        'send_enabled': kudos.send_enabled_for(request.user),
         'is_outside': True,
         'active': 'details',
         'title': 'Details',
@@ -256,6 +257,10 @@ def send_2(request):
         raise Http404
 
     kudos = Token.objects.filter(pk=_id).first()
+    if not kudos.send_enabled_for(request.user):
+        messages.error(request, f'This kudos is not available to be sent.')
+        return redirect(kudos.url)
+
     params = {
         'active': 'send',
         'issueURL': request.GET.get('source'),
