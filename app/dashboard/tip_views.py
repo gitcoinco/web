@@ -34,7 +34,7 @@ from django.views.decorators.csrf import csrf_exempt
 from dashboard.utils import get_web3
 from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from git.utils import get_emails_master, get_github_primary_email
+from git.utils import get_emails_master, get_github_primary_email, get_emails_by_category
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import Web3
@@ -256,15 +256,25 @@ def send_tip_3(request):
     from_username = request.user.username if is_user_authenticated else ''
     primary_from_email = request.user.email if is_user_authenticated else ''
     access_token = request.user.profile.get_access_token() if is_user_authenticated and request.user.profile else ''
-    to_emails = []
 
     params = json.loads(request.body)
 
     to_username = params['username'].lstrip('@')
-    to_emails = get_emails_master(to_username)
+    to_emails = get_emails_by_category(to_username)
+    primary_email = ''
 
     if params.get('email'):
-        to_emails.append(params['email'])
+        primary_email = params['email']
+    else if to_emails['primary']:
+        primary_email = to_emails['primary']
+    else if to_emails['github_profile']:
+        primary_email = to_emails['github_profile']
+    else:
+        if len(to_emails['events']):
+            primary_email = to_emails['events'][0]
+        else:
+            print("TODO: no email found.  in the future, we should handle this case better because it's GOING to end up as a support request")
+
 
     # If no primary email in session, try the POST data. If none, fetch from GH.
     if params.get('fromEmail'):
@@ -272,7 +282,6 @@ def send_tip_3(request):
     elif access_token and not primary_from_email:
         primary_from_email = get_github_primary_email(access_token)
 
-    to_emails = list(set(to_emails))
     expires_date = timezone.now() + timezone.timedelta(seconds=params['expires_date'])
 
     # metadata
@@ -281,6 +290,7 @@ def send_tip_3(request):
 
     # db mutations
     tip = Tip.objects.create(
+        primary_email=primary_email,
         emails=to_emails,
         tokenName=params['tokenName'],
         amount=params['amount'],

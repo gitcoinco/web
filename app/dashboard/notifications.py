@@ -401,7 +401,8 @@ def maybe_market_kudos_to_email(kudos_transfer):
 
     logger.info(f'Emails to send to: {kudos_transfer.emails}')
 
-    for to_email in kudos_transfer.emails:
+    to_email = kudos_transfer.primary_email
+    if to_email:
         cur_language = translation.get_language()
         try:
             setup_lang(to_email)
