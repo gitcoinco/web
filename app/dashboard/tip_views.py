@@ -265,9 +265,9 @@ def send_tip_3(request):
 
     if params.get('email'):
         primary_email = params['email']
-    else if to_emails['primary']:
+    elif to_emails['primary']:
         primary_email = to_emails['primary']
-    else if to_emails['github_profile']:
+    elif to_emails['github_profile']:
         primary_email = to_emails['github_profile']
     else:
         if len(to_emails['events']):
