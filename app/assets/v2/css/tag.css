@@ -73,3 +73,16 @@
   line-height: 1.5rem;
   float: right;
 }
+
+.keyword-group {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tag.keyword {
+  display: inline-block;
+  min-width: 0;
+  font-size: 11px;
+  background-color: #E7F0FA;
+  color: #6587AE;
+}
