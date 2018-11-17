@@ -81,17 +81,3 @@ class GasAdvisory(SuperModel):
         if not self:
             return 'none'
         return f"Gas Advisory - {'Active until ' if self.active else 'Inactive'}{self.active_until if self.active else ''}"
-
-
-class GasHistory(SuperModel):
-    """Define the Gas History data model."""
-
-    view = models.CharField(max_length=50, default='', blank=True)
-    key = models.CharField(max_length=50, default='', blank=True)
-    data = JSONField(blank=True, default={})
-
-    def __str__(self):
-        """Define the string representation of GasProfile."""
-        if not self:
-            return "none"
-        return f" {self.view} / {self.key} "

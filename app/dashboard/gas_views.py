@@ -26,7 +26,8 @@ from django.utils.translation import gettext_lazy as _
 
 from cacheops import CacheMiss, cache, cached_view, cached_view_as
 from economy.utils import convert_amount
-from gas.models import GasGuzzler, GasHistory
+from gas.models import GasGuzzler
+from perftools.models import JSONStore
 from gas.utils import conf_time_spread, gas_advisories, gas_history, recommend_min_gas_price_to_confirm_in_time
 
 from .helpers import handle_bounty_views
@@ -86,7 +87,7 @@ def gas_heatmap(request):
         mins = min_options[0]
     breakdown = 'hourly'
     key = f"{breakdown}:{mins}"
-    gas_histories[mins] = GasHistory.objects.filter(view='gas_history', key=key).order_by('-created_on').first().data
+    gas_histories[mins] = JSONStore.objects.filter(view='gas_history', key=key).order_by('-created_on').first().data
     context = {
         'title': _('Live Ethereum (ETH) Gas Heatmap'),
         'card_desc': _(''),
@@ -230,7 +231,7 @@ def gas_history_view(request):
     max_y = 0
     for i, __ in lines.items():
         key = f"{breakdown}:{i}"
-        gas_histories[i] = GasHistory.objects.filter(view='gas_history', key=key).order_by('-created_on').first().data
+        gas_histories[i] = JSONStore.objects.filter(view='gas_history', key=key).order_by('-created_on').first().data
         for gh in gas_histories[i]:
             max_y = max(gh[0], max_y)
     breakdown_ui = breakdown.replace('ly', '') if breakdown != 'daily' else 'day'

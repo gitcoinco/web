@@ -21,7 +21,7 @@ from django.db import transaction
 from django.utils import timezone
 
 from dashboard.gas_views import lines
-from gas.models import GasHistory
+from perftools.models import JSONStore
 from gas.utils import gas_history
 
 
@@ -46,16 +46,16 @@ class Command(BaseCommand):
         with transaction.atomic():
             items = []
             for breakdown in breakdowns:
-                GasHistory.objects.filter(key__startswith=breakdown).all().delete()
+                JSONStore.objects.filter(key__startswith=breakdown).all().delete()
                 for i, __ in lines.items():
                     view = 'gas_history'
                     key = f"{breakdown}:{i}"
                     print(f"- executing {breakdown} {key}")
                     data = gas_history(breakdown, i)
                     print("- creating")
-                    items.append(GasHistory(
+                    items.append(JSONStore(
                         view=view,
                         key=key,
                         data=data,
                         ))
-            GasHistory.objects.bulk_create(items)
+            JSONStore.objects.bulk_create(items)
