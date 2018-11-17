@@ -27,8 +27,8 @@ from django.utils.translation import gettext_lazy as _
 from cacheops import CacheMiss, cache, cached_view, cached_view_as
 from economy.utils import convert_amount
 from gas.models import GasGuzzler
-from perftools.models import JSONStore
 from gas.utils import conf_time_spread, gas_advisories, gas_history, recommend_min_gas_price_to_confirm_in_time
+from perftools.models import JSONStore
 
 from .helpers import handle_bounty_views
 

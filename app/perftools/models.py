@@ -1,6 +1,7 @@
-from django.db import models
-from economy.models import SuperModel
 from django.contrib.postgres.fields import JSONField
+from django.db import models
+
+from economy.models import SuperModel
 
 # Create your models here.
 

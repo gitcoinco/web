@@ -21,8 +21,8 @@ from django.db import transaction
 from django.utils import timezone
 
 from dashboard.gas_views import lines
-from perftools.models import JSONStore
 from gas.utils import gas_history
+from perftools.models import JSONStore
 
 
 class Command(BaseCommand):

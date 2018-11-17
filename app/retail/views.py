@@ -40,12 +40,12 @@ from economy.models import Token
 from marketing.mails import new_funding_limit_increase_request, new_token_request
 from marketing.models import Alumni, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
+from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 
 from .forms import FundingLimitIncreaseRequestForm
 from .utils import programming_languages
-from perftools.models import JSONStore
 
 
 @cached_as(

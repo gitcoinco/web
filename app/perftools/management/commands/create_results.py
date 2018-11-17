@@ -16,20 +16,19 @@
 
 '''
 
-from django.utils.functional import Promise
-from django.utils.encoding import force_text
-from django.core.serializers.json import DjangoJSONEncoder
-from django.db.models.query import QuerySet
-from django.forms.models import model_to_dict
 import json
 
 from django.core.management.base import BaseCommand
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db import transaction
+from django.db.models.query import QuerySet
+from django.forms.models import model_to_dict
 from django.utils import timezone
+from django.utils.encoding import force_text
+from django.utils.functional import Promise
 
 from perftools.models import JSONStore
 from retail.utils import build_stat_results, programming_languages
-
 
 
 class LazyEncoder(DjangoJSONEncoder):
