@@ -42,8 +42,8 @@
           [[if github_comments]]
             <span class="separator-bull"></span> <i class="fas fa-comment-alt"></i> [[:github_comments]] {% trans 'Comments' %}
           [[/if]]
-          [[if interested.lenght]]
-            <span class="separator-bull"></span> <i class="fas fa-user"></i> [[:interested.lenght]] {% trans 'Applicants' %}
+          [[if interested.length]]
+            <span class="separator-bull"></span> <i class="fas fa-user"></i> [[:interested.length]] {% trans 'Applicants' %}
           [[else]]
             <span class="separator-bull"></span> <i class="fas fa-user"></i> 0 {% trans 'Applicants' %}
           [[/if]]
@@ -70,9 +70,9 @@
           [[/if]]
         </p>
         [[if tokens ]]
-          <a href="" onclick="toggleExpandableBounty(event, '.[[:network]].i[[:standard_bounties_id]]')">
+          <button class="btn-expand-token" onclick="toggleExpandableBounty(event, '.[[:network]].i[[:standard_bounties_id]]')">
             {% trans 'See All' %}   <i class="fa fa-angle-down arrow"></i>
-          </a>
+          </button>
         [[/if]]
       </div>
       [[if value_in_usdt]]
@@ -83,8 +83,8 @@
           </p>
         </div>
       [[/if]]
-      </div>
     </div>
+  </div>
     [[if tokens ]]
       <div class="col-md-12 expandable">
         <div class="d-flex flex-wrap">
@@ -107,6 +107,6 @@
         </div>
       </div>
     [[/if]]
-  </div>
+
 </a>
 </script>
