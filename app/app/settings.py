@@ -107,7 +107,8 @@ INSTALLED_APPS = [
     'impersonate',
     'kudos',
     'django.contrib.postgres',
-    'bounty_requests'
+    'bounty_requests',
+    'perftools'
 ]
 
 MIDDLEWARE = [
