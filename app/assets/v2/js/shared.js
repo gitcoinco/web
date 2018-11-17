@@ -457,7 +457,7 @@ if ($('#bounties').length) {
   });
 }
 
-if($.views){
+if ($.views) {
   $.views.converters({
     timedifference: timedifferenceCvrt,
     activitytext: activitytextCvrt
