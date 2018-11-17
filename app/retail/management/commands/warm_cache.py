@@ -47,6 +47,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         # build path list
+        paths = []
         paths.append(reverse('activity'))
         paths.append(reverse('gas'))
         paths.append(reverse('gas_heatmap'))
