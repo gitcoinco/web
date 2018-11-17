@@ -31,7 +31,7 @@ from dashboard.models import Bounty, BountyFulfillment, Profile, Tip
 from marketing.models import Stat
 
 from .models import DataPayload
-
+from perftools.models import JSONStore
 
 @staff_member_required
 def data_viz_helper_get_data_responses(request, visual_type):
@@ -678,6 +678,33 @@ def viz_scatterplot(request, key='hourly_rate', template='dataviz/scatterplot.ht
     return viz_scatterplot_helper(request, key, template, hide_usernames)
 
 
+def viz_scatterplot_data_helper(keyword, hide_usernames=False):
+    rows = [['hourlyRate', 'daysBack', 'username', 'weight']]
+    fulfillments = BountyFulfillment.objects.filter(accepted=True).exclude(fulfiller_hours_worked=None)
+    if keyword:
+        filter_bounties = Bounty.objects.filter(raw_data__icontains=keyword)
+        fulfillments = fulfillments.filter(bounty__in=filter_bounties)
+    for bf in fulfillments:
+        #print(bf.pk, bf.created_on)
+        try:
+            weight = math.log(bf.bounty.value_in_usdt, 10) / 4
+            username = bf.bounty.org_name
+            if hide_usernames:
+                username = "repo: " + helper_hide_pii(username.lower(), 1)
+            row = [str(bf.bounty.hourly_rate), str((timezone.now() - bf.accepted_on).days), username, str(weight), ]
+            if bf.bounty.hourly_rate:
+                rows.append(row)
+        except Exception:
+            pass
+
+    output_rows = []
+    for row in rows:
+        output_rows.append(",".join(row))
+
+    output = "\n".join(output_rows)
+    return output
+
+
 def viz_scatterplot_helper(request, key='hourly_rate', template='dataviz/scatterplot.html', hide_usernames=False):
     """Render a scatterplot visualization.
 
@@ -692,29 +719,7 @@ def viz_scatterplot_helper(request, key='hourly_rate', template='dataviz/scatter
     keyword = request.GET.get('keyword', None)
     type_options = ['hourly_rate']
     if request.GET.get('data'):
-        rows = [['hourlyRate', 'daysBack', 'username', 'weight']]
-        fulfillments = BountyFulfillment.objects.filter(accepted=True).exclude(fulfiller_hours_worked=None)
-        if keyword:
-            filter_bounties = Bounty.objects.filter(raw_data__icontains=keyword)
-            fulfillments = fulfillments.filter(bounty__in=filter_bounties)
-        for bf in fulfillments:
-            #print(bf.pk, bf.created_on)
-            try:
-                weight = math.log(bf.bounty.value_in_usdt, 10) / 4
-                username = bf.bounty.org_name
-                if hide_usernames:
-                    username = "repo: " + helper_hide_pii(username.lower(), 1)
-                row = [str(bf.bounty.hourly_rate), str((timezone.now() - bf.accepted_on).days), username, str(weight), ]
-                if bf.bounty.hourly_rate:
-                    rows.append(row)
-            except Exception:
-                pass
-
-        output_rows = []
-        for row in rows:
-            output_rows.append(",".join(row))
-
-        output = "\n".join(output_rows)
+        output = JSONStore.objects.get(view='d3', key=f"{keyword}_{hide_usernames}").data
         return HttpResponse(output)
 
     params = {
