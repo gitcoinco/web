@@ -29,9 +29,10 @@ from django.utils import timezone
 
 from dashboard.models import Bounty, BountyFulfillment, Profile, Tip
 from marketing.models import Stat
+from perftools.models import JSONStore
 
 from .models import DataPayload
-from perftools.models import JSONStore
+
 
 @staff_member_required
 def data_viz_helper_get_data_responses(request, visual_type):
@@ -555,8 +556,10 @@ def viz_graph_data_helper(_type, keyword, hide_pii):
             })
     return output
 
+
 def get_all_type_options():
     return ['fulfillments_accepted_only', 'all', 'fulfillments', 'what_future_could_look_like']
+
 
 # PUBLIC VIEW!
 def viz_graph(request, _type, template='graph'):

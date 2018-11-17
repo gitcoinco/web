@@ -19,7 +19,8 @@
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils import timezone
-from dataviz.d3_views import viz_scatterplot_data_helper, get_all_type_options, viz_graph_data_helper
+
+from dataviz.d3_views import get_all_type_options, viz_graph_data_helper, viz_scatterplot_data_helper
 from perftools.models import JSONStore
 from retail.utils import programming_languages
 
@@ -32,8 +33,8 @@ class Command(BaseCommand):
         keywords = [''] + programming_languages
         type_options = get_all_type_options()
         # DEBUG OPTIONS
-        keywords = [''] 
-        type_options = ['all']
+        # keywords = [''] 
+        # type_options = ['all']
         with transaction.atomic():
             items = []
             JSONStore.objects.filter(view__startswith='d3').all().delete()
