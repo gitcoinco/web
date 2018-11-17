@@ -201,15 +201,24 @@ var get_total_cost = function() {
   return total;
 };
 
-var update_registry = function() {
+var update_registry = function(coinbase) {
 
+  if (!coinbase) {
+    web3.eth.getCoinbase(
+        function(err, result) {
+          update_registry(result);
+        }
+      );
+    return;
+  }
+  
   var num_rows = $('#payout_table tbody').find('tr').length;
   var tc = round(get_total_cost(), 2);
   var denomination = $('#token_name').text();
   var original_amount = $('#original_amount').val();
   var net = round(original_amount - tc, 2);
   var over = round((original_amount - get_total_cost()) * -1, 4);
-  var addr = web3.eth.coinbase.substring(38);
+  var addr = coinbase.substring(38);
   var pay_with_bounty = $('#pay_with_bounty').is(':checked');
   
   $('#total_cost').html(tc + ' ' + denomination);
