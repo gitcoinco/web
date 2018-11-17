@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 ('modified_on', models.DateTimeField(default=economy.models.get_time)),
                 ('view', models.CharField(blank=True, db_index=True, default='', max_length=50)),
                 ('key', models.CharField(blank=True, db_index=True, default='', max_length=50)),
-                ('data', django.contrib.postgres.fields.jsonb.JSONField(blank=True, default={})),
+                ('data', django.contrib.postgres.fields.jsonb.JSONField(blank=True, default=dict)),
             ],
             options={
                 'abstract': False,
