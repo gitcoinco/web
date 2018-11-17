@@ -43,7 +43,7 @@
                   <h1 class="grant__title font-title-lg">
                     <input type="text" id="form--input__title" class="p-0 inline-edit" value="{{ grant.title }}" readonly>
                   </h1>
-                  <p class="grant__url font-subheader my-4">
+                  <span class="grant__url font-subheader my-4">
                     {% if is_admin %}
                       <div>
                         <input type="text" id="form--input__reference-url" class="p-0 mt-2 inline-edit" value="{{ grant.reference_url }}" readonly>
@@ -54,7 +54,7 @@
                         {{ grant.reference_url }}
                       </a>
                     {% endif %}
-                  </p>
+                  </span>
                   <div class="grant-item__owner my-2">
                     {% if is_admin %}
                       <div class="font-body">
@@ -85,11 +85,11 @@
                   <div class="progress-text mt-2">
                     <div class="row">
                       <div class="col-6">
-                        <span>{{ grant.amount_received }} ETH</span>
+                        <span>{{ grant.amount_received }} DAI</span>
                         <p>Current</p>
                       </div>
                       <div class="col-6 text-right">
-                        <span>{{ grant.amount_goal }} ETH</span>
+                        <span>{{ grant.amount_goal }} DAI</span>
                         <p>Goal</p>
                       </div>
                     </div>
@@ -127,7 +127,7 @@
                     </button>
                     <button id="cancel-details" class="button button--primary hidden">
                       <i class="fas fa-times mr-2"></i> Cancel Edit
-                    </button>    
+                    </button>
                   </div>
                 {% endif %}
               </div>
@@ -145,7 +145,7 @@
               <textarea id="form--input__description" class="p-0 mt-2 inline-edit" disabled>
                 {{ grant.description }}
               </textarea>
-            {% else %} 
+            {% else %}
               <span>
                 {{ grant.description }}
               </span>

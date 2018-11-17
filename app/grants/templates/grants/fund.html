@@ -86,11 +86,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 <div class="progress-text mt-2">
                   <div class="row">
                     <div class="col-6">
-                      <span>{{ grant.amount_received }} ETH</span>
+                      <span>{{ grant.amount_received }} DAI</span>
                       <p>Current</p>
                     </div>
                     <div class="col-6 text-right">
-                      <span>{{ grant.amount_goal }} ETH</span>
+                      <span>{{ grant.amount_goal }} DAI</span>
                       <p>Goal</p>
                     </div>
                   </div>
@@ -112,22 +112,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   </div>
                 </div>
               </div>
-              <div class="form__group-horizontal">
-                <label class="form__label">{% trans "Token Approval Limit" %}</label>
-                <div class="row">
-                  <div class="col-12">
-                    <input type="number" name="approve" class="form__input" required />
-                  </div>
-                </div>
-              </div>
-              <div class="form__group-horizontal">
-                <label class="form__label">{% trans "Contribution Per Payment Period" %}</label>
-                <div class="row">
-                  <div class="col-12">
-                    <input type="number" name="amount_per_period" class="form__input" required />
-                  </div>
-                </div>
-              </div>
 
               <div class="form__group-horizontal frequency">
                 <label class="form__label">{% trans "Payment Period" %}</label>
@@ -137,24 +121,34 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   </div>
                   <div class="col-6 font-body">
                     <select name="frequency_unit" id="frequency_unit" class="js-select2" style="width: 100%">
-                      <option value="minutes">{% trans "minutes" %}</option>
-                      <option value="hours">{% trans "hours" %}</option>
                       <option value="days" selected="selected">{% trans "days" %}</option>
                       <option value="months">{% trans "months" %}</option>
-                      <option value="any">{% trans "any" %}</option>
                     </select>
                   </div>
                 </div>
               </div>
 
               <div class="form__group-horizontal">
-                <label class="form__label">{% trans "MetaTx Gas Price in Payment Token" %}</label>
+                <label class="form__label">{% trans "Value Of Payment Per Period" %}</label>
                 <div class="row">
                   <div class="col-12">
-                    <input type="number" name="gas_price" class="form__input" required />
+                    <input type="number" name="amount_per_period" class="form__input" required />
                   </div>
                 </div>
               </div>
+
+              <div class="form__group-horizontal">
+                <div title="Token Approval Limit - The maximum number of tokens a user approves another party to transfer on their behalf. Since Gitcoin Grants uses subscriptions, a small transaction is performed each time period, and with each transaction the approval limit is lowered by that amount. This way, you know your subscription won't run on forever. Unless you want it to 🙂">
+                  <label class="form__label">{% trans "Token Approval Limit" %}
+                  </label>
+                  <div class="row">
+                    <div class="col-12">
+                      <input type="number" name="approve" class="form__input" required />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
 
               <div class="form__group-horizontal">
                 <div class="row">

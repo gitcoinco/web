@@ -24,11 +24,7 @@ $(document).ready(function() {
         // translate timeAmount&timeType to requiredPeriodSeconds
         let periodSeconds = data.frequency;
 
-        if (data.frequency_unit == 'minutes') {
-          periodSeconds *= 60;
-        } else if (data.frequency_unit == 'hours') {
-          periodSeconds *= 3600;
-        } else if (data.frequency_unit == 'days') {
+        if (data.frequency_unit == 'days') {
           periodSeconds *= 86400;
         } else if (data.frequency_unit == 'months') {
           periodSeconds *= 2592000;
@@ -37,9 +33,6 @@ $(document).ready(function() {
           realPeriodSeconds = periodSeconds;
         }
       }
-
-      if (!data.gas_price)
-        data.gas_price = 0;
 
       let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, data.contract_address);
 
@@ -51,7 +44,7 @@ $(document).ready(function() {
 
         let realTokenAmount = Number(data.amount_per_period * 10 ** decimals);
 
-        let realGasPrice = Number(data.gas_price * 10 ** decimals);
+        let realGasPrice = Number(4 * 10 ** decimals);
 
         web3.eth.getAccounts(function(err, accounts) {
 

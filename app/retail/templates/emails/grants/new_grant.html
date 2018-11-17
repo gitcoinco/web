@@ -73,8 +73,7 @@
 <p class="grant-email-subtitle">{{ grant.description }}</p>
 
 <div>
-  <p class="grant-email-subtitle">{% trans "You are seeking " %}{{ grant.amount_goal }} {% trans "ETH total" %}</p>
-  <p class="grant-email-subtitle">{% trans "and " %}{{ grant.monthly_goal }} {% trans "ETH monthly" %}</p>
+  <p class="grant-email-subtitle">{% trans "You are seeking " %}{{ grant.amount_goal }} {% trans "DAI monthly" %}</p>
 </div>
 
 <p class="grant-email-subtitle">{% trans "The details of your grant can be seen" %} <a href="{% url 'grants:details' grant.pk %}">{% trans "here." %}</a></p>
