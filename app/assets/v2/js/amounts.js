@@ -32,22 +32,22 @@ var get_rates_estimate = function(usd_amount) {
   if (!usd_amount) {
     return '';
   }
+  var hours = $('#hours').val();
+  console.log(hours);
   var rates_addon = [];
-  var rates = [ 40, 80, 120 ];
-
-  for (var i = 0; i < rates.length; i++) {
-    var rate = rates[i];
-    var hours = usd_amount / rate;
-    var round_decimals = hours < 1 ? 2 : 1;
-
-    hours = Math.round(hours, round_decimals);
-    rates_addon.push('' + hours + ' hrs at $' + rate + '/hr');
+  var rate = usd_amount / hours;
+  var round_rate = rate.toFixed(0);
+  var round_decimals = hours < 1 ? 2 : 1;
+  hours = Math.round(hours, round_decimals);
+  success_prob = 100*((0.002 * rate) + 0.65);
+  if (success_prob >=100){
+    success_prob = 99;
   }
+  rates_addon.push('' + hours + ' hrs at $' + round_rate + '/hr <i class="fa fa-arrow-right"></i> ' + success_prob.toFixed(0) + '% success rate<br>');
   rates_addon = rates_addon.join(', ');
 
   var help_addon = ' <a href="https://medium.com/gitcoin/tutorial-how-to-price-work-on-gitcoin-49bafcdd201e" target="_blank" rel="noopener noreferrer">[Read our pricing guide]</a>';
   var final_text = rates_addon + help_addon;
-
   return final_text;
 };
 
