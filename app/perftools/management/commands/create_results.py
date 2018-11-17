@@ -48,6 +48,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         keywords = [''] + programming_languages
+        # DEBUG OPTIONS
+        # keywords = [''] 
         view = 'results'
         with transaction.atomic():
             items = []
