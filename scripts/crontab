@@ -58,9 +58,9 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 ## PERFTOOLS
 
 
-00 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash create_gas_history  >> /var/log/gitcoin/create_gas_history.log  2>&1
-05 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash create_results  >> /var/log/gitcoin/create_results.log  2>&1
-010 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash craete_d3_views  >> /var/log/gitcoin/craete_d3_views.log  2>&1
+0 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash create_gas_history  >> /var/log/gitcoin/create_gas_history.log  2>&1
+5 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash create_results  >> /var/log/gitcoin/create_results.log  2>&1
+10 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash craete_d3_views  >> /var/log/gitcoin/craete_d3_views.log  2>&1
 
 
 ## INFRASTRUCTURE

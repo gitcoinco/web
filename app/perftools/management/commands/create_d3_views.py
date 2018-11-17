@@ -19,23 +19,29 @@
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils import timezone
-from dataviz.d3_views import viz_scatterplot_data_helper
+from dataviz.d3_views import viz_scatterplot_data_helper, get_all_type_options, viz_graph_data_helper
 from perftools.models import JSONStore
 from retail.utils import programming_languages
 
 
 class Command(BaseCommand):
 
-    help = 'generates d3 dataviz vies'
+    help = 'generates d3 dataviz jsonstores'
 
     def handle(self, *args, **options):
         keywords = [''] + programming_languages
+        type_options = get_all_type_options()
+        # DEBUG OPTIONS
+        keywords = [''] 
+        type_options = ['all']
         with transaction.atomic():
             items = []
-            JSONStore.objects.filter(view='d3').all().delete()
+            JSONStore.objects.filter(view__startswith='d3').all().delete()
+
+            ## Scatterplot
             for keyword in keywords:
                 for hide_username in [True, False]:
-                    view = 'd3'
+                    view = 'd3_scatterplot'
                     key = f"{keyword}_{hide_username}"
                     print(f"- executing {view} {key}")
                     data = viz_scatterplot_data_helper(keyword, hide_username)
@@ -45,4 +51,20 @@ class Command(BaseCommand):
                         key=key,
                         data=data,
                         ))
+
+            ## Graph
+            for keyword in keywords:
+                for _type in type_options:
+                    for hide_pii in [True, False]:
+                        view = 'd3_graph'
+                        key = f"{_type}_{keyword}_{hide_pii}"
+                        print(f"- executing {view} {key}")
+                        data = viz_graph_data_helper(_type, keyword, hide_pii)
+                        print("- creating")
+                        items.append(JSONStore(
+                            view=view,
+                            key=key,
+                            data=data,
+                            ))
+
             JSONStore.objects.bulk_create(items)
