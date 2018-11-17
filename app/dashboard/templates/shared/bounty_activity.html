@@ -1,0 +1,194 @@
+{% load i18n %}
+{% if not activities %}
+  <div class="row box activity">
+    <div class="col-12 empty">
+      <p>{% trans "There's no activity yet!" %}</p>
+    </div>
+  </div>
+{% endif %}
+{% for activity in activities %}
+  <div class="row box activity">
+    <div class="col-12 col-md-1">
+      <div class="activity-avatar">
+        <img class="avatar" src="{{ activity.profile.avatar_url }}"/>
+      </div>
+    </div>
+    <div class="col-12 col-md-2">
+      <div class="activity-name">
+        <a href="/profile/{{ activity.profile.handle }}" target="_blank">
+          {{ activity.profile.handle }}
+        </a>
+      </div>
+    </div>
+    <div class="col-12 col-md-7 started-status-column">
+      {% if is_staff or is_funder and bounty_is_open %}
+        {% if activity.profile.handle in pending_handles %}
+          <div class="stop-work">
+            <span title="<div class='tooltip-info tooltip-sm'>{% trans 'Reject worker' %}</div>">
+              <a class="button button--primary"
+                 href="{{ bounty.get_relative_url }}?mutate_worker_action=reject&worker={{ activity.profile.handle }}">
+                <span class="font-smaller-4">{% trans 'Reject worker' %}</span>
+              </a>
+            </span>
+          </div>
+          <div class="stop-work">
+            <span title="<div class='tooltip-info tooltip-sm'>{% trans 'Approve worker' %}</div>">
+              <a class="button button--primary"
+                 href="{{ bounty.get_relative_url }}?mutate_worker_action=approve&worker={{ activity.profile.handle }}">
+                <span class="font-smaller-4">{% trans 'Approve worker' %}</span>
+              </a>
+            </span>
+          </div>
+        {% elif activity.profile.handle in not_pending_handles %}
+          <div class="stop-work">
+            <span title="<div class='tooltip-info tooltip-sm'>{% trans "Remove this user's started work on the bounty" %}</div>">
+              <a onclick="uninterested({{ bounty.pk }}, {{ activity.profile.id }})"
+                 class="button button--primary" role="button" href="#">
+                <span class="font-smaller-4">{% trans 'Stop work' %}</span>
+              </a>
+            </span>
+          </div>
+          {% if is_staff %}
+            <div class="stop-work">
+              <span title="<div class='tooltip-info tooltip-sm'>{% trans "Remove this user's started work on the bounty and ding rep" %}</div>">
+                <a onclick="uninterested({{ bounty.pk }}, {{ activity.profile.id }}, true)"
+                   class="button button--primary admin-only" role="button" href="#">
+                  <span class="font-smaller-4">{% trans 'Stop work + Ding Rep' %}</span>
+                </a>
+              </span>
+            </div>
+          {% endif %}
+        {% endif %}
+      {% endif %}
+      <div class="activity-status d-block">
+        {{ activity.i18n_name }}
+        {% if activity.activity_type == 'work_done' %}
+          <i class="far fa-check-circle"></i>
+        {% endif %}
+        {% if activity.activity_type == 'worker_approved' or activity.activity_type == 'worker_rejected' %}
+          :
+          <a href="/profile/{{ activity.metadata.worker_handle }}" target="_blank">
+            {{ activity.metadata.worker_handle }}
+          </a>
+        {% endif %}
+      </div>
+      <div class="d-flex">
+        <div class="m-0 mr-1">
+          {% if activity.metadata.to_username  == activity.profile.handle %}
+            <div class="d-block">
+              <span class="bounty-subheading">{% trans 'From' %} :</span>
+            </div>
+          {% elif activity.metadata.to_username %}
+            <div class="d-block">
+              <span class="bounty-subheading">{% trans 'For' %} :</span>
+            </div>
+          {% endif %}
+          {% if activity.metadata.amount %}
+            <div class="d-block">
+              <span class="bounty-subheading">{% trans 'Amount' %} :</span>
+            </div>
+          {% endif %}
+          {% if activity.activity_type == 'increased_bounty' %}
+            <div class="d-block my-1">
+              <span class="bounty-subheading">{% trans 'Old Amount' %} :</span>
+            </div>
+            <div class="d-block my-1">
+              <span class="bounty-subheading">{% trans 'New Amount' %} :</span>
+            </div>
+          {% endif %}
+          {% if activity.metadata.fulfillment.fulfiller_github_url %}
+            <div class="d-block">
+              <span class="bounty-subheading">{% trans 'View Work' %} :</span>
+            </div>
+          {% endif %}
+          {% if activity.metadata.fulfillment.fulfiller_address %}
+            <div class="d-block">
+              <span class="bounty-subheading">{% trans 'ETH Address' %} :</span>
+            </div>
+          {% endif %}
+          {% if activity.metadata.fulfillment.fulfiller_email %}
+            <div class="d-block">
+              <span class="bounty-subheading">{% trans 'Email' %} :</span>
+            </div>
+          {% endif %}
+          {% if activity.metadata.fulfillment.fulfillment_id >= 0 %}
+            <div class="d-block">
+              <span class="bounty-subheading">{% trans 'Submission Id' %} :</span>
+            </div>
+          {% endif %}
+        </div>
+        <div class="m-0">
+          {% if activity.metadata.to_username  == activity.profile.handle %}
+            <div class="d-block">
+              <span class="bounty-text">
+                <a href="/profile/{{ activity.metadata.from_name }}" target="_blank">
+                  {{ activity.metadata.from_name }}
+                </a>
+              </span>
+            </div>
+          {% elif activity.metadata.to_username %}
+            <div class="d-block">
+              <span class="bounty-text">
+                <a href="/profile/{{ activity.metadata.to_username }}" target="_blank">
+                  {{ activity.metadata.to_username }}
+                </a>
+              </span>
+            </div>
+          {% endif %}
+          {% if activity.metadata.amount %}
+            <div class="d-block">
+              <div class="tag token">
+                <p><span>{{ activity.metadata.amount|floatformat:3 }} {{ activity.metadata.token_name }}</span></p>
+              </div>
+            </div>
+          {% endif %}
+          {% if activity.activity_type == 'increased_bounty' %}
+            <div class="d-block my-1">
+              <div class="tag usd">
+                <p><span>{{ activity.metadata.old_bounty.token_value_in_usdt|floatformat:2 }} USD</span></p>
+              </div>
+            </div>
+            <div class="d-block my-1">
+              <div class="tag usd">
+                <p><span>{{ activity.metadata.new_bounty.token_value_in_usdt|floatformat:2 }} USD</span></p>
+              </div>
+            </div>
+          {% endif %}
+          {% if activity.metadata.fulfillment.fulfiller_github_url %}
+            <div class="d-block">
+              <span class="bounty-text">
+                <a target="_blank" rel="noopener noreferrer" href="{{ activity.metadata.fulfillment.fulfiller_github_url }}">
+                  {{ activity.metadata.fulfillment.fulfiller_github_url }}
+                </a>
+              </span>
+            </div>
+          {% endif %}
+          {% if activity.metadata.fulfillment.fulfiller_address %}
+            <div class="d-block">
+              <span class="bounty-text">
+                <a href="https://etherscan.io/address/{{ activity.metadata.fulfillment.fulfiller_address }}" target="_blank" rel="noopener noreferrer">
+                  {{ activity.metadata.fulfillment.fulfiller_address }}
+                </a>
+              </span>
+            </div>
+          {% endif %}
+          {% if activity.metadata.fulfillment.fulfiller_email %}
+            <div class="d-block">
+              <span class="bounty-text">
+                <a href="mailto:{{ activity.metadata.fulfillment.fulfiller_email }}">{{ activity.metadata.fulfillment.fulfiller_email }}</a>
+              </span>
+            </div>
+          {% endif %}
+          {% if activity.metadata.fulfillment.fulfillment_id >= 0 %}
+            <div class="d-block">
+              <span class="bounty-text">{{ activity.metadata.fulfillment.fulfillment_id }}</span>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-2">
+      <div class="activity-time">{{ activity.created|timesince }} {% trans 'ago' %}</div>
+    </div>
+  </div>
+{% endfor %}

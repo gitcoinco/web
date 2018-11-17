@@ -952,6 +952,40 @@ def helper_handle_approvals(request, bounty):
             messages.warning(request, _('Only the funder of this bounty may perform this action.'))
 
 
+def bounty_activity(request, network, stdbounties_id):
+    """The bounty activity (sub)-view.
+
+    Args:
+        network (str): The bounty network.
+        stdbounties_id (int): The standard bounties id.
+
+    Returns:
+        django.template.response.TemplateResponse: The Bounty activity template response.
+
+    """
+    is_user_authenticated = request.user.is_authenticated
+    profile = None
+    if is_user_authenticated and hasattr(request.user, 'profile'):
+        profile = request.user.profile
+
+    params = {
+        'is_staff': request.user.is_staff,
+        'is_moderator': profile.is_moderator,
+    }
+    bounty = Bounty.objects.current().filter(standard_bounties_id=stdbounties_id).order_by('-pk').first()
+
+    if bounty:
+        interests = bounty.interested.select_related('profile').all()
+        params['bounty'] = bounty
+        params['activities'] = bounty.activities.all().order_by('-created')
+        params['bounty_is_open'] = bounty.idx_status in bounty.OPEN_STATUSES
+        params['pending_handles'] = interests.filter(pending=True).values_list('profile__handle', flat=True)
+        params['not_pending_handles'] = interests.filter(pending=False).values_list('profile__handle', flat=True)
+        params['is_funder'] = bounty.is_funder(profile.handle) if profile else False
+
+    return TemplateResponse(request, 'shared/bounty_activity.html', params)
+
+
 def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None):
     """Display the bounty details.
 

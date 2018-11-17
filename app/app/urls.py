@@ -157,6 +157,11 @@ urlpatterns = [
         name='issue_details_new2'
     ),
     re_path(r'^funding/details/?', dashboard.views.bounty_details, name='funding_details'),
+    path(
+         'bounty/<str:network>/<int:stdbounties_id>/activity/',
+         dashboard.views.bounty_activity,
+         name='bounty_activity',
+    ),
 
     # Tips
     url(

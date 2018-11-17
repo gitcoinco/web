@@ -1201,138 +1201,22 @@ var pull_bounty_from_api = function() {
   });
 };
 
-
-const process_activities = function(result, bounty_activities) {
-  const activity_names = {
-    new_bounty: gettext('New Bounty'),
-    start_work: gettext('Work Started'),
-    stop_work: gettext('Work Stopped'),
-    work_submitted: gettext('Work Submitted'),
-    work_done: gettext('Work Done'),
-    worker_approved: gettext('Worker Approved'),
-    worker_rejected: gettext('Worker Rejected'),
-    worker_applied: gettext('Worker Applied'),
-    increased_bounty: gettext('Increased Funding'),
-    killed_bounty: gettext('Canceled Bounty'),
-    new_crowdfund: gettext('New Crowdfund Contribution'),
-    new_tip: gettext('New Tip'),
-    receive_tip: gettext('Tip Received'),
-    bounty_abandonment_escalation_to_mods: gettext('Escalated for Abandonment of Bounty'),
-    bounty_abandonment_warning: gettext('Warned for Abandonment of Bounty'),
-    bounty_removed_slashed_by_staff: gettext('Dinged and Removed from Bounty by Staff'),
-    bounty_removed_by_staff: gettext('Removed from Bounty by Staff'),
-    bounty_removed_by_funder: gettext('Removed from Bounty by Funder'),
-    bounty_changed: gettext('Bounty Details Changed')
-  };
-
-  const now = new Date(result['now']);
-  const is_open = result['is_open'];
-
-  return (bounty_activities || []).map(function(_activity) {
-    const meta = _activity.metadata || {};
-    const fulfillment = meta.fulfillment || {};
-    const new_bounty = meta.new_bounty || {};
-    const old_bounty = meta.old_bounty || {};
-    const has_pending_interest = !!result.interested.find(interest =>
-      interest.profile.handle === _activity.profile.handle && interest.pending);
-    const has_interest = !!result.interested.find(interest =>
-      interest.profile.handle === _activity.profile.handle);
-    const slash_possible = currentProfile.isStaff;
-    const is_logged_in = currentProfile.username;
-    const uninterest_possible = is_logged_in && ((isBountyOwnerPerLogin(result) || currentProfile.isStaff) && is_open && has_interest);
-
-    return {
-      profileId: _activity.profile.id,
-      name: _activity.profile.handle,
-      text: activity_names[_activity.activity_type],
-      created_on: _activity.created,
-      age: timeDifference(now, new Date(_activity.created)),
-      activity_type: _activity.activity_type,
-      status: _activity.activity_type === 'work_started' ? 'started' : 'stopped',
-      uninterest_possible: uninterest_possible,
-      slash_possible: slash_possible,
-      approve_worker_url: meta.approve_worker_url,
-      reject_worker_url: meta.reject_worker_url,
-      worker_handle: meta.worker_handle,
-      can_approve_worker: uninterest_possible && has_pending_interest,
-      fulfiller_github_url: fulfillment.fulfiller_github_url,
-      fulfillment_id: fulfillment.fulfillment_id,
-      fulfiller_github_username: fulfillment.fulfiller_github_username,
-      fulfiller_email: fulfillment.fulfiller_email,
-      fulfiller_address: fulfillment.fulfiller_address,
-      fulfillment_accepted: fulfillment.accepted,
-      fulfillment_accepted_on: fulfillment.accepted_on,
-      value_in_token_new: token_value_to_display(new_bounty.value_in_token),
-      value_in_token_old: token_value_to_display(old_bounty.value_in_token),
-      value_in_usdt_new: new_bounty.value_in_usdt_now,
-      value_in_usdt_old: old_bounty.value_in_usdt_now,
-      token_value_in_usdt_new: new_bounty.token_value_in_usdt,
-      token_value_in_usdt_old: old_bounty.token_value_in_usdt,
-      token_value_time_peg_new: new_bounty.token_value_time_peg,
-      token_name: result['token_name']
-    };
-  });
-};
-
-const only_one_approve = function(activities) {
-  const seen = {};
-  const iseen = {};
-
-  for (let activity of activities) {
-    if (activity.can_approve_worker) {
-      if (!seen[activity.name]) {
-        seen[activity.name] = true;
-      } else {
-        activity.can_approve_worker = false;
-      }
-    }
-    if (activity.uninterest_possible) {
-      if (!iseen[activity.name]) {
-        iseen[activity.name] = true;
-      } else if (activity.activity_type != 'start_work') {
-        activity.uninterest_possible = false;
-        activity.slash_possible = false;
-      }
-    }
-  }
-};
-
 const render_activity = function(result, all_results) {
-  let all_activities = [];
-
-  (all_results || []).forEach(result => {
-    all_activities = all_activities.concat(result.activities);
-  });
-
-  let activities = process_activities(result, all_activities);
-
-  activities = activities.slice().sort(function(a, b) {
-    return a['created_on'] < b['created_on'] ? -1 : 1;
-  }).reverse();
-  only_one_approve(activities);
-
-  var html = '<div class="row box activity"><div class="col-12 empty"><p>' + gettext('There\'s no activity yet!') + '</p></div></div>';
-
-  if (activities.length > 0) {
-    var template = $.templates('#activity_template');
-
-    html = template.render(activities);
-  }
-  $('#activities').html(html);
-
-  activities.filter(function(activity) {
-    return activity.uninterest_possible;
-  }).forEach(function(activity) {
-    $('#remove-' + activity.name).click(() => {
-      uninterested(result.pk, activity.profileId);
-      return false;
-    });
-    $('#remove-slash-' + activity.name).click(() => {
-      uninterested(result.pk, activity.profileId, true);
-      return false;
-    });
-  });
-
+  fetch(
+    '/bounty/' +
+    (document.issueNetwork || 'mainnet') +
+    '/' +
+    (document.issue_stdbounties_id || '0') +
+    '/activity/'
+  ).then(
+    function(res) {
+      res.text().then(
+        function(str) {
+          $('#activities').html(str);
+        }
+      );
+    }
+  );
 };
 
 const is_bounty_expired = function(bounty) {
