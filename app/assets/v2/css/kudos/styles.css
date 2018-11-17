@@ -668,19 +668,28 @@ a.cellarius-partner:before {
     top: -0.5em;
     left: 1em; }
 
-.faqItem {
-  background-color: #ffffff;
+.faq-item {
+  background-color: #F2F6F9;
   padding: 15px;
   padding-bottom: 10px;
   padding-top: 15px;
   border-radius: 5px;
+  transition: 0.1s ease-in-out;
 }
 
-.faqItem > h5 {
+.faq-item:hover {
+  background-color: #fefefe;
+}
+
+.faq-item:focus {
+  background-color: #fefefe;
+}
+
+.faq-item > h5 {
   font-weight: 600;
 }
 
-.faqItem > h5:after {
-  color: #0cc67f;
+.faq-item > h5:after {
+  color: #0D0764;
 }
 /*# sourceMappingURL=styles.css.map */
