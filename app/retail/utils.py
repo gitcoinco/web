@@ -218,7 +218,7 @@ def get_hourly_rate_distribution(keyword, bounty_value_range=None, methodology=N
     if bounty_value_range:
         base_bounties = base_bounties.filter(_val_usd_db__lt=bounty_value_range[1], _val_usd_db__gt=bounty_value_range[0])
         hourly_rates = [ele.hourly_rate for ele in base_bounties if ele.hourly_rate is not None]
-        #print(bounty_value_range, len(hourly_rates))
+        # print(bounty_value_range, len(hourly_rates))
     else:
         hourly_rates = [ele.hourly_rate for ele in base_bounties if is_valid_bounty_for_headline_hourly_rate(ele)]
     if len(hourly_rates) == 1:

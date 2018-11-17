@@ -18,7 +18,6 @@
 
 from django.core.management.base import BaseCommand
 from django.db import transaction
-from django.utils import timezone
 
 from dataviz.d3_views import get_all_type_options, viz_graph_data_helper, viz_scatterplot_data_helper
 from perftools.models import JSONStore
