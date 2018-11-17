@@ -204,11 +204,9 @@ var get_total_cost = function() {
 var update_registry = function(coinbase) {
 
   if (!coinbase) {
-    web3.eth.getCoinbase(
-        function(err, result) {
-          update_registry(result);
-        }
-      );
+    web3.eth.getCoinbase(function(err, result) {
+      update_registry(result);
+    });
     return;
   }
   
