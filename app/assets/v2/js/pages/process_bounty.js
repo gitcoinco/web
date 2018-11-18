@@ -263,7 +263,7 @@ window.onload = function() {
           }
         };
 
-        if ($('.kudos-search').select2('data')[0]) {
+        if ($('.kudos-search').select2('data')[0].id) {
           attach_and_send_kudos($('.kudos-search').select2('data')[0], send_tip_and_payout_callback);
         } else {
           send_tip_and_payout_callback();

@@ -227,7 +227,7 @@ body {
   color: white;
 }
 
-.red_warning, 
+.red_warning,
 #network {
   background-color: #fbe0d6;
   color: #fb9470;
@@ -256,11 +256,7 @@ body {
 }
 
 .tag.keyword {
-  min-width: 0;
-  font-size: 11px;
   padding: 5px 10px;
-  background-color: #F2F6F9;
-  color: #6184AC;
 }
 
 .contributor-box {
@@ -296,10 +292,9 @@ body {
   margin-left: 0;
 }
 
-#bounty_owner_name {
+#bounty_owner_github_username a {
   color: #0D0764;
   margin-bottom: 5px;
-  text-transform: capitalize;
   font-weight: 600;
 }
 

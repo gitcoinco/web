@@ -236,6 +236,7 @@ var redirectURL = function() {
     var level = $('#experienceLevel').find(':selected').val();
 
     localStorage['experience_level'] = level;
+    localStorage['referrer'] = 'onboard';
     url = '/explorer?q=' + words.join(',');
   } else if (flow === 'funder') {
     url = '/funding/new';
@@ -243,6 +244,5 @@ var redirectURL = function() {
     url = '/profile';
   }
 
-  localStorage['referrer'] = 'onboard';
   document.location.href = url;
 };

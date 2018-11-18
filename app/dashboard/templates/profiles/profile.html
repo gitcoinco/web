@@ -2,13 +2,16 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    {% if hidden %}
+      <meta name="robots" content="noindex">
+    {% endif %}
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
-    <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
-    <link rel="stylesheet" href={% static "v2/css/profile.css" %}>
-    <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/dashboard.css" %} />
+    <link rel="stylesheet" href={% static "v2/css/profile.css" %} />
+    <link rel="stylesheet" href={% static "v2/css/tag.css" %} />
     <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
-    <link rel="stylesheet" href={% static "v2/css/tabs.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/tabs.css" %} />
   </head>
   <body class="interior {{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
@@ -19,7 +22,7 @@
         <div class="row">
           <div class="col-12 col-lg-4 profile-header__main-infos">
             <div class="clearfix">
-              <img class="profile-header__avatar mb-1 mr-4" src="{% if profile.avatar and profile.avatar.avatar_url %}{{ profile.avatar.avatar_url }}{% else %}{{ profile.avatar_url }}{% endif %}">
+              <img class="profile-header__avatar mb-1 mr-4" src="{% if profile.avatar and profile.avatar.avatar_url %}{{ profile.avatar.avatar_url }}{% else %}{{ profile.avatar_url }}{% endif %}" />
               <p class="profile-header__handle font-title">
                 {% if profile.data.name %}
                   {{ profile.data.name }}
@@ -80,7 +83,7 @@
                             {% endif %}
                             {% for profile, num_times in works_with_collected.items %}
                                 <a href="{% url 'profile' profile %} ">
-                                  <img src='{% avatar_url profile %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
+                                  <img src='{% avatar_url profile %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>" />
                                 </a>
                             {% endfor %}
                         {% endif %}
@@ -109,7 +112,7 @@
                             {% endif %}
                             {% for profile, num_times in works_with_funded.items %}
                               <a href="{% url 'profile' profile %} ">
-                                <img src='{% avatar_url profile %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
+                                <img src='{% avatar_url profile %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>" />
                               </a>
                             {% endfor %}
                         {% endif %}
@@ -123,7 +126,7 @@
         </div>
       </div>
     </div>
-    {% if not hidden %}
+    {% if not hidden and not profile.is_org %}
     <div class="container-fluid bg-light py-5">
       <div class="container" >
         {% if user.is_authenticated and request.path == '/profile/' %}
@@ -167,6 +170,8 @@
       </div>
     </div>
     {% endif %}
+
+
     <div class="container">
     {% if hidden %}
       {% include 'profiles/hidden.html' %}
@@ -183,6 +188,7 @@
                 {% if group.activity_bounties %}
                 <div id="activity-tabs" class="tab-container mt-4 font-body">
                   <button type="button" id="all" class="section-tab">{% trans "All Activity" %} ({{ group.activity_bounties|length }})</button>
+                  <button type="button" id="progress" class="section-tab">{% trans "Bounties In Progress" %} ({{ group.started_bounties_count }})</button>
                   <button type="button" id="funded" class="section-tab">{% trans "Bounties Funded" %} ({{ funded_bounties_count }})</button>
                   <button type="button" id="completed" class="section-tab">{% trans "Bounties Completed" %}</button>
                   <button type="button" id="tips" class="section-tab">{% trans "Tips Received" %}</button>
@@ -194,6 +200,19 @@
                         <div class="col-12">
                           {% for activity in group.activity_bounties %}
                             {% include "shared/profile_activities_bounty.html" %}
+                          {% endfor %}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div id="section-progress" class="tab-section">
+                    <div class="container">
+                      <div class="row mb-3 p-2">
+                        <div class="col-12">
+                          {% for activity in group.activity_bounties %}
+                            {% if activity.activity_type == 'start_work' %}
+                              {% include "shared/profile_activities_bounty.html" %}
+                            {% endif %}
                           {% endfor %}
                         </div>
                       </div>
@@ -231,8 +250,8 @@
                         <div class="col-12">
                             {% for tip in tips %}
                             <div class="row result bounty_row {% if forloop.counter > 5 %}bounty_row--hidden{% endif %} {{ tip.network }}" {% if tip.github_url %}href="{{ tip.github_url }}"{% endif %}>
-                              <div class="avatar-container col-1 justify-content-center special_tag hide_min_viewport">
-                                <img src="{% url "avatar" %}?repo=https://github.com/{% if tip.from_username %}{{ tip.from_username }}{% else %}Self{%endif%}" class="avatar">
+                              <div class="avatar-container col-1 justify-content-center special_tag">
+                                <img src="{% url "avatar" %}?repo=https://github.com/{% if tip.from_username %}{{ tip.from_username }}{% else %}Self{%endif%}" class="avatar" />
                               </div>
                               <div class="col-12 col-md-8 d-flex flex-column">
                                 <div class="bounty-detail">
@@ -291,6 +310,8 @@
             {% endfor %}
           </div>
         </div>
+	  {% else %}
+     	{% include 'profiles/none.html' %}
       {% endif %}
     {% endif %}
     </div>
@@ -372,12 +393,13 @@
       (function($) {
         $(document).on('click','.load-more' ,function() {
           var address =  $('#preferred-address').prop('title')
-          if (!address) {
-            return
-          }
           var link = $(this);
           var page = link.data('page');
           var request = link.data('request')
+          var handle = link.data('handle')
+          if (!handle) {
+            return
+          }
           $.ajax({
             type: 'POST',
             url: '/lazy_load_kudos/',
@@ -385,6 +407,7 @@
               'page': page,
               'request': request,
               'address': address,
+              'handle': handle,
               'csrfmiddlewaretoken': '{{csrf_token}}' // from index.html
             },
             success: function(data) {
@@ -406,6 +429,14 @@
           });
         });
       }(jQuery));
+
+      $('#kudos-section').on('click keypress', '.flip-card', e => {
+        if ($(e.target).is('a')) {
+          e.stopPropagation();
+          return
+        }
+        $(e.currentTarget).toggleClass('turn')
+      })
 
     </script>
 

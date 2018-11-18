@@ -24,7 +24,7 @@
     <a class="nav-link nav-line" id="sentkudos-tab" data-toggle="tab" href="#sentkudos" role="tab" aria-controls="sentkudos" aria-selected="false">{% trans "Sent Kudos" %} ({{ sent_kudos|length }})</a>
   </li>
   <li class="align-self-center ml-auto font-smaller-2">
-    Sort By Recent: <a href="?order_by=-modified_on">{% trans "New" %}</a> - <a href="?order_by=modified_on">{% trans "Old" %}</a>
+    &nbsp;
   </li>
 </ul>
 
@@ -36,7 +36,7 @@
     </div>
     <div class="row justify-content-center">
       {% if kudos.count > 8 %}
-      <button id="" data-request="mykudos" data-page="2" class="btn btn-gc-blue mb-5 load-more">See More Kudos</button>
+      <button id="" data-request="mykudos" data-handle="{{profile.handle}}" data-page="2" class="btn btn-gc-blue mb-5 load-more">See More Kudos</button>
       {% endif %}
     </div>
     {% if not kudos %}
@@ -57,7 +57,7 @@
     </div>
     <div class="row justify-content-center">
       {% if sent_kudos.count > 8 %}
-      <button id="" data-request="sentkudos" data-page="2" class="btn btn-gc-blue mb-5 load-more">See More s Kudos</button>
+      <button id="" data-request="sentkudos" data-handle="{{profile.handle}}" data-page="2" class="btn btn-gc-blue mb-5 load-more">See More Kudos</button>
       {% endif %}
     </div>
     {% if not sent_kudos %}

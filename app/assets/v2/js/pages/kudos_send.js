@@ -162,12 +162,40 @@ var renderWallets = function(profileId) {
 // Step 0
 // DOM is ready
 $(document).ready(function() {
+
+  // upon keypress for the select2, gotta make sure it opens
+  setTimeout(function() {
+    $('.select2').keypress(function() {
+      $(this).siblings('select').select2('open');
+    });
+  }, 100);
+
   set_metadata();
   // jquery bindings
   $('#advanced_toggle').click(function(e) {
     e.preventDefault();
     advancedToggle();
   });
+
+
+  $('#send_to_toggle').click(function(e) {
+    e.preventDefault();
+    if ($(this).hasClass('github')) {
+      $(this).text(gettext('Send to ETH Address'));
+      $(this).removeClass('github');
+      $(this).addClass('eth');
+      $('.select2').removeClass('hidden');
+      $('.eth_address').addClass('hidden');
+    } else {
+      $(this).text(gettext('Send to Github User'));
+      $(this).addClass('github');
+      $(this).removeClass('eth');
+      $('.select2').addClass('hidden');
+      $('.eth_address').removeClass('hidden');
+    }
+  });
+
+
   $('#amount').on('keyup blur change', updateEstimate);
   $('#token').on('change', updateEstimate);
   $('#username').select2();
@@ -175,7 +203,24 @@ $(document).ready(function() {
   // Step 1
   // Kudos send button is clicked
   $('#send').click(function(e) {
+
     e.preventDefault();
+
+    if (typeof web3 == 'undefined') {
+      _alert({ message: gettext('You must have a web3 enabled browser to do this.  Please download Metamask.') }, 'warning');
+      return;
+    }
+    if (!web3.eth.coinbase) {
+      _alert({ message: gettext('Please unlock metamask.') }, 'warning');
+      return;
+    }
+    var kudos_network = $('#kudosNetwork').val();
+
+    if (document.web3network != kudos_network) {
+      _alert({ message: gettext('You are not on the right web3 network.  Please switch to ' + kudos_network) }, 'warning');
+      return;
+    }
+
     $('#send_eth')[0].checkValidity();
 
     if (!$('#username')[0].checkValidity()) {
@@ -192,28 +237,24 @@ $(document).ready(function() {
 
     loading_button($(this));
 
-    var username;
-
-    if ($('#username').select2('data')[0] && $('#username').select2('data')[0].text) {
-      username = $('#username').select2('data')[0].text;
-    } else {
-      username = undefined;
-    }
-
     // Step 2
     // get form data
     var email = $('#email').val();
     var github_url = $('#issueURL').val();
     var from_name = $('#fromName').val();
     // should username be to_username for clarity?
-    // var username = $('#username').select2('data')[0].text || $('#username').select2('data')[0];
+    var username = '';
+
+    if ($('#username').select2('data').length) {
+      username = $('#username').select2('data')[0].text || $('#username').select2('data')[0];
+    }
     var receiverAddress = $('#receiverAddress').val();
     var amountInEth = parseFloat($('#amount').val());
     var comments_priv = $('#comments_priv').val();
     var comments_public = $('#comments_public').val();
     var from_email = $('#fromEmail').val();
+    var to_eth_address = $('#to_eth_address').val();
     var accept_tos = $('#tos').is(':checked');
-    var tokenAddress = $('#token').val();
     var expires = parseInt($('#expires').val());
     // kudosId is the kudos database id that is being cloned
     var kudosId = $('#kudosid').data('kudosid');
@@ -236,22 +277,15 @@ $(document).ready(function() {
       comments_public: comments_public,
       from_email: from_email,
       accept_tos: accept_tos,
-      tokenAddress: tokenAddress,
       expires: expires,
       kudosId: kudosId,
-      tokenId: tokenId
+      tokenId: tokenId,
+      to_eth_address: to_eth_address
     };
 
     // derived info
-    // var isSendingETH = (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000');
-    var tokenDetails = tokenAddressToDetails(tokenAddress);
     var tokenName = 'ETH';
-
     var weiConvert = Math.pow(10, 18);
-
-    // if (!isSendingETH) {
-    //   tokenName = tokenDetails.name;
-    // }
 
     // Step 11 (LAST STEP)
     // Show the congragulation screen
@@ -264,8 +298,11 @@ $(document).ready(function() {
       $('#loading_trans').hide();
       $('#send_eth').css('display', 'none');
       $('#send_eth_done').css('display', 'block');
-      $('#tokenName').html(tokenName);
-      $('#new_username').html(username);
+      if (username) {
+        $('#new_username').html(username);
+      } else {
+        $('#new_username').html(to_eth_address);
+      }
       $('#trans_link').attr('href', url);
       $('#trans_link2').attr('href', url);
       unloading_button($(this));
@@ -282,7 +319,7 @@ $(document).ready(function() {
     console.log(formData);
     // Step 3
     // Run sendKudos function
-    return sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, kudosId, tokenId, success_callback, failure_callback, false);
+    return sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, to_eth_address, expires, kudosId, tokenId, success_callback, failure_callback, false);
 
   });
 
@@ -300,7 +337,7 @@ $(document).ready(function() {
 });
 
 // Step 3
-function sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, kudosId, tokenId, success_callback, failure_callback, is_for_bounty_fulfiller) {
+function sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, to_eth_address, expires, kudosId, tokenId, success_callback, failure_callback, is_for_bounty_fulfiller) {
   mixpanel.track('Tip Step 2 Click', {});
   if (typeof web3 == 'undefined') {
     _alert({ message: gettext('You must have a web3 enabled browser to do this.  Please download Metamask.') }, 'warning');
@@ -309,15 +346,15 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
   }
   // setup
 
-  if (username.indexOf('@') == -1) {
+  if (username && username.indexOf('@') == -1) {
     username = '@' + username;
   }
   var _disableDeveloperTip = true;
-  var gas_money = parseInt(Math.pow(10, (9 + 5)) * ((defaultGasPrice * 1.001) / Math.pow(10, 9)));
-  // var isSendingETH = (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000');
-  var tokenDetails = tokenAddressToDetails(tokenAddress);
+  var observedKudosGasLimit = 505552;
+  var buffer_pct = 1.005;
+  var wei_to_gwei = Math.pow(10, 9);
+  var gas_money = parseInt((wei_to_gwei * observedKudosGasLimit) * (buffer_pct * defaultGasPrice / wei_to_gwei));
   var tokenName = 'ETH';
-  // var tokenName = window.location.href.split('\=')[1];
   var weiConvert = Math.pow(10, 18);
   var creation_time = Math.round((new Date()).getTime() / 1000);
   var salt = parseInt((Math.random() * 1000000));
@@ -331,6 +368,11 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
 
   // Step 4
   // validation
+  if (!username && !to_eth_address) {
+    _alert({ message: gettext('You must specify a recipient.') }, 'warning');
+    failure_callback();
+    return;
+  }
   if (hasEmail && !validateEmail(email)) {
     _alert({ message: gettext('To Email is optional, but if you enter an email, you must enter a valid email!') }, 'warning');
     failure_callback();
@@ -346,16 +388,18 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
     failure_callback();
     return;
   }
-  if (username == '' || username === undefined) {
-    _alert({ message: gettext('You must enter a username.') }, 'warning');
-    failure_callback();
-    return;
-  }
   if (!accept_tos) {
     _alert({ message: gettext('You must accept the terms.') }, 'warning');
     failure_callback();
     return;
   }
+
+  // warnings
+  if (username == $('#fromName').val()) {
+    _alert({ message: gettext('Kudos are intended to be compliments. just like you *can* give yourself a compliment or *can* give yourself an award, you are also able to send yourself a Kudos. ') }, 'warning');
+  }
+
+
   // console.log('got to metadata_callback')
 
   // Step 7
@@ -370,6 +414,11 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
     metadata['creation_time'] = creation_time;
     metadata['salt'] = salt;
     metadata['source_url'] = document.location.href;
+    metadata['direct_eth_send'] = false;
+    if (to_eth_address) {
+      metadata['address'] = to_eth_address;
+      metadata['direct_eth_send'] = true;
+    }
 
     fetch(url, {
       method: 'POST',
@@ -385,7 +434,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
         github_url: github_url,
         from_email: from_email,
         from_name: from_name,
-        tokenAddress: tokenAddress,
+        to_eth_address: to_eth_address,
         kudosId: kudosId,
         tokenId: tokenId,
         network: document.web3network,
@@ -406,8 +455,8 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
       } else {
         // Step 8
         // A json object with SUCCESS is received from the back-end
-        var is_direct_to_recipient = metadata['is_direct'];
-        var destinationAccount = metadata['address'];
+        var is_direct_to_recipient = metadata['is_direct'] || to_eth_address;
+        var destinationAccount = to_eth_address ? to_eth_address : metadata['address'];
 
         var post_send_callback = function(errors, txid, kudos_id) {
           if (errors) {
@@ -485,8 +534,12 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
           };
 
           kudos_contract.clone.estimateGas(destinationAccount, tokenId, numClones, {from: account, value: kudosPriceInWei}, function(err, kudosGasEstimate) {
-            if (err)
+            if (err) {
+              unloading_button($('#send'));
+              _alert('Got an error back from RPC node.  Please try again or contact support');
               throw (err);
+            }
+
             console.log('kudosGasEstimate: ' + kudosGasEstimate);
             // Multiply gas * gas_price_gwei to get gas cost in wei.
             kudosGasEstimateInWei = kudosGasEstimate * get_gas_price();

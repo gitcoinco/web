@@ -3,7 +3,7 @@ from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
 
 from dashboard.models import Bounty, Profile
-from external_bounties.models import ExternalBounty
+from kudos.models import Token
 
 
 class StaticViewSitemap(sitemaps.Sitemap):
@@ -14,8 +14,8 @@ class StaticViewSitemap(sitemaps.Sitemap):
     def items(self):
         return [
             'dashboard', 'new_funding', 'tip', 'terms', 'privacy', 'cookie', 'prirp', 'apitos', 'about', 'index',
-            'help', 'whitepaper', 'whitepaper_access', '_leaderboard', 'ios', 'faucet', 'mission', 'slack',
-            'universe_index', 'results', 'activity',
+            'help', 'whitepaper', 'whitepaper_access', '_leaderboard', 'faucet', 'mission', 'slack', 'universe_index',
+            'results', 'activity', 'kudos_main', 'kudos_marketplace'
         ]
 
     def location(self, item):
@@ -34,6 +34,20 @@ class IssueSitemap(Sitemap):
 
     def location(self, item):
         return item.get_relative_url()
+
+
+class KudosSitemap(Sitemap):
+    changefreq = "daily"
+    priority = 0.9
+
+    def items(self):
+        return Token.objects.filter(hidden=False)
+
+    def lastmod(self, obj):
+        return obj.modified_on
+
+    def location(self, item):
+        return item.url
 
 
 class ProfileSitemap(Sitemap):
@@ -66,24 +80,10 @@ class ResultsSitemap(Sitemap):
         return f'/results/{item}'
 
 
-class ExternalBountySitemap(Sitemap):
-    changefreq = "weekly"
-    priority = 0.8
-
-    def items(self):
-        return ExternalBounty.objects.filter(active=True).cache()
-
-    def lastmod(self, obj):
-        return obj.modified_on
-
-    def location(self, item):
-        return item.url
-
-
 sitemaps = {
     'results': ResultsSitemap,
     'static': StaticViewSitemap,
     'issues': IssueSitemap,
-    'universe': ExternalBountySitemap,
     'orgs': ProfileSitemap,
+    'kudos': KudosSitemap,
 }

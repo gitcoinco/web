@@ -191,6 +191,7 @@ urlpatterns = [
     url(r'^gas/calculator/?', dashboard.gas_views.gas_calculator, name='gas_calculator'),
     url(r'^gas/history/?', dashboard.gas_views.gas_history_view, name='gas_history_view'),
     url(r'^gas/guzzlers/?', dashboard.gas_views.gas_guzzler_view, name='gas_guzzler_view'),
+    url(r'^gas/heatmap/?', dashboard.gas_views.gas_heatmap, name='gas_heatmap'),
     url(r'^gas/?', dashboard.gas_views.gas, name='gas'),
 
     # images
@@ -240,8 +241,6 @@ urlpatterns = [
     re_path(r'^community/?', retail.views.community, name='community'),
     re_path(r'^slack/?', retail.views.slack, name='slack'),
     re_path(r'^submittoken/?', retail.views.newtoken, name='newtoken'),
-    re_path(r'^iosfeedback/?', retail.views.iosfeedback, name='iosfeedback'),
-    re_path(r'^ios/?', retail.views.ios, name='ios'),
     re_path(r'^itunes/?', retail.views.itunes, name='itunes'),
     re_path(r'^podcast/?', retail.views.podcast, name='podcast'),
     re_path(r'^casestudy/?', retail.views.casestudy, name='casestudy'),

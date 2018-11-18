@@ -18,8 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/top-nav.css" %}" />
     <style>
-
       .grant-item {
         border: 1px solid #D3D3D3;
         border-radius: 5px;
@@ -120,21 +122,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         background-color: transparent !important;
         color: none !important;
         text-decoration: none !important;
-       }
+      }
 
       img {
         object-fit: cover;
       }
 
     </style>
-    {% include 'shared/head.html' %}
-    {% include 'shared/cards.html' %}
+
   </head>
   <body class="interior grant g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      {% include 'shared/nav.html' %}
+      {% include 'shared/grants_nav.html' %}
     </div>
 
     <div class="container pt-5 index-padding">
@@ -142,16 +143,21 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <div class="row">
           <div class="col-12 col-md-6 order-md-last mb-5 mb-md-0">
             <div class="embed-responsive embed-responsive-16by9">
-              <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/Hx1iJ_K3D8k?rel=0&showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+              <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/eVgEWSPFR2o?rel=0&showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             </div>
           </div>
           <div class="m-auto col-12 col-md-6 offset-lg-1 col-lg-5">
             <h1 class="font-title-xl">{% trans 'Gitcoin Grants' %}</h1>
-            <p class="mt-4 pt-1 mb-5 font-subheader">
+            <p class="mt-4 pt-1 mb-2 font-subheader">
               {% blocktrans %}
               Want to provide sustainable funding for Open Source? Creating a Gitcoin Grant is a great way to do it! Gitcoin Grants, powered by the
-              <a target="_blank" rel="noopener noreferrer" href="http://1337alliance.com/">EIP 1337 standard</a>
+              <a target="_blank" rel="noopener noreferrer" href="https://1337alliance.com/">EIP 1337 standard</a>
               , are a fast, easy, & secure way to provide recurring token contributions to your favorite OSS maintainers. Show your appreciation for maintainers in your dependancy tree with a Gitcoin Grant today.
+              {% endblocktrans %}
+            </p>
+            <p class="mt-4 pt-1 mb-5 font-subheader">
+              {% blocktrans %}
+              Gitcoin Grants are coming in November of 2018.
               {% endblocktrans %}
             </p>
             <a href="https://consensys1mac.typeform.com/to/HFcZKe">
@@ -247,7 +253,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <div class="grant-item">
               <img src="http://bits.owocki.com/42be97a5579a/World-01.jpg" class="grant-item__cover w-100" height="200">
               <div class="grant-item__content py-4 px-3">
-                <h2 class="grant-item__title font-subheader">The community Audit Fund</h2>
+                <h2 class="grant-item__title font-subheader">The Community Audit Fund</h2>
                 <p class="grant-item__pitch font-caption">The community security audit fund offers cost-free audits to projects that are contributing major value to the commons in the Ethereum space.</p>
                 <div class="grant-item__footer">
                   <div class="grant-item__owner mt-3 mb-4">
@@ -283,7 +289,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
       </div>
     </div>
-
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}

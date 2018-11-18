@@ -52,7 +52,7 @@ class Command(BaseCommand):
         group = parser.add_mutually_exclusive_group(required=True)
         group.add_argument('-s', '--start', type=str,
                            help='kudos_id to or kudos block to start syncing at.  Lowest kudos_id is 1.\
-                           Options for block are: block number (int), "earliest", or "latest"'                                                                                              )
+                           Options for block are: block number (int), "earliest", or "latest"')
         group.add_argument('-r', '--rewind', type=int,
                            help='Sync the lastest <rewind> Kudos Ids or block transactions.')
         group.add_argument('--catchup', action='store_true',

@@ -40,11 +40,12 @@ from economy.models import Token
 from marketing.mails import new_funding_limit_increase_request, new_token_request
 from marketing.models import Alumni, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
+from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 
 from .forms import FundingLimitIncreaseRequestForm
-from .utils import build_stat_results, programming_languages
+from .utils import programming_languages
 
 
 @cached_as(
@@ -420,12 +421,11 @@ def not_a_token(request):
     return TemplateResponse(request, 'not_a_token.html', context)
 
 
-@cached_view(timeout=60 * 10)
 def results(request, keyword=None):
     """Render the Results response."""
     if keyword and keyword not in programming_languages:
         raise Http404
-    context = build_stat_results(keyword)
+    context = JSONStore.objects.get(view='results', key=keyword).data
     context['is_outside'] = True
     context['avatar_url'] = static('v2/images/results_preview.gif')
     return TemplateResponse(request, 'results.html', context)
@@ -434,9 +434,9 @@ def results(request, keyword=None):
 @cached_view_as(Activity.objects.all().order_by('-created'))
 def activity(request):
     """Render the Activity response."""
-
+    page_size = 300
     activities = Activity.objects.all().order_by('-created')
-    p = Paginator(activities, 300)
+    p = Paginator(activities, page_size)
     page = request.GET.get('page', 1)
 
     context = {
@@ -913,23 +913,6 @@ def browser_extension_firefox(request):
 
 def itunes(request):
     return redirect('https://itunes.apple.com/us/app/gitcoin/id1319426014')
-
-
-def ios(request):
-
-    context = {
-        'active': 'ios',
-        'title': 'iOS app',
-        'card_title': 'Gitcoin has an iOS app!',
-        'card_desc': 'Gitcoin aims to make it easier to grow open source from anywhere in the world,\
-            anytime.  We’re proud to announce our iOS app, which brings us a step closer to this north star!\
-            Browse open bounties on the go, express interest, and coordinate your work on the move.',
-    }
-    return TemplateResponse(request, 'ios.html', context)
-
-
-def iosfeedback(request):
-    return redirect('https://goo.gl/forms/UqegoAMh7HVibfuF3')
 
 
 def casestudy(request):

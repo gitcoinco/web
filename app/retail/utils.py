@@ -218,7 +218,7 @@ def get_hourly_rate_distribution(keyword, bounty_value_range=None, methodology=N
     if bounty_value_range:
         base_bounties = base_bounties.filter(_val_usd_db__lt=bounty_value_range[1], _val_usd_db__gt=bounty_value_range[0])
         hourly_rates = [ele.hourly_rate for ele in base_bounties if ele.hourly_rate is not None]
-        print(bounty_value_range, len(hourly_rates))
+        # print(bounty_value_range, len(hourly_rates))
     else:
         hourly_rates = [ele.hourly_rate for ele in base_bounties if is_valid_bounty_for_headline_hourly_rate(ele)]
     if len(hourly_rates) == 1:
@@ -262,23 +262,6 @@ def get_bounty_median_turnaround_time(func='turnaround_time_started', keyword=No
         return statistics.median(pickup_time_hours)
     except statistics.StatisticsError:
         return 0
-
-
-def build_stat_results(keyword=None):
-    timeout = 60 * 60 * 24
-    key_salt = '3'
-    key = f'build_stat_results_{keyword}_{key_salt}'
-    try:
-        results = cache.get(key)
-    except CacheMiss:
-        results = None
-    if results and not settings.DEBUG:
-        return results
-
-    results = build_stat_results_helper(keyword)
-    cache.set(key, results, timeout)
-
-    return results
 
 
 def get_bounty_history(keyword=None, cumulative=True):
@@ -328,7 +311,7 @@ def get_bounty_history(keyword=None, cumulative=True):
     return bh
 
 
-def build_stat_results_helper(keyword=None):
+def build_stat_results(keyword=None):
     """Buidl the results page context.
 
     Args:
@@ -373,7 +356,10 @@ def build_stat_results_helper(keyword=None):
     pp.profile_time('count_*')
 
     # Leaderboard
-    num_to_show = 50
+    num_to_show = 30
+    context['top_funders'] = base_leaderboard.filter(active=True, leaderboard='quarterly_payers') \
+        .order_by('rank').values_list('github_username', flat=True)[0:num_to_show]
+    pp.profile_time('funders')
     context['top_orgs'] = base_leaderboard.filter(active=True, leaderboard='quarterly_orgs') \
         .order_by('rank').values_list('github_username', flat=True)[0:num_to_show]
     pp.profile_time('orgs')

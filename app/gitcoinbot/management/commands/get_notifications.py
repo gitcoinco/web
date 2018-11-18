@@ -35,7 +35,7 @@ class Command(BaseCommand):
         notifications = get_gh_notifications()
         print('Notifications Count: ', notifications.totalCount)
         for notification in notifications:
-            if notification.reason == 'mention':
+            if hasattr(notification, '_subject') and notification.reason == 'mention':
                 try:
                     url = notification.subject.url
                     url = url.replace('/repos', '')
