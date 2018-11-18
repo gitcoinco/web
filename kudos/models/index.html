@@ -2118,6 +2118,17 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="kudos.models.Token.bulk_transfers">bulk_transfers</h3>
+
+<p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="kudos.models.Token.capitalized_name">capitalized_name</h3>
 
 <p>Capitalize name</p>
@@ -2326,6 +2337,17 @@ many-to-one relation.</p>
 <p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="kudos.models.KudosTransfer.bulk_transfer_redemptions">bulk_transfer_redemptions</h3>
+
+<p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="kudos.models.KudosTransfer.get_next_by_created_on">_method</h3>
 
 <pre><code class="python">KudosTransfer._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=True, **kwargs)
@@ -2524,6 +2546,166 @@ one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
 </code></pre>
 <p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
 <h3 id="kudos.models.Wallet.profile_id">profile_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h2 id="kudos.models.BulkTransferCoupon">BulkTransferCoupon</h2>
+
+<pre><code class="python">BulkTransferCoupon(self, *args, **kwargs)
+</code></pre>
+
+<p>Model representing a bulk send of Kudos</p>
+<h3 id="kudos.models.BulkTransferCoupon.bulk_transfer_redemptions">bulk_transfer_redemptions</h3>
+
+<p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="kudos.models.BulkTransferCoupon.comments_to_put_in_kudos_transfer">comments_to_put_in_kudos_transfer</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="kudos.models.BulkTransferCoupon.current_uses">current_uses</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="kudos.models.BulkTransferCoupon.get_next_by_created_on">_method</h3>
+
+<pre><code class="python">BulkTransferCoupon._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="kudos.models.BulkTransferCoupon.get_next_by_modified_on">_method</h3>
+
+<pre><code class="python">BulkTransferCoupon._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="kudos.models.BulkTransferCoupon.get_previous_by_created_on">_method</h3>
+
+<pre><code class="python">BulkTransferCoupon._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="kudos.models.BulkTransferCoupon.get_previous_by_modified_on">_method</h3>
+
+<pre><code class="python">BulkTransferCoupon._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="kudos.models.BulkTransferCoupon.id">id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="kudos.models.BulkTransferCoupon.num_uses_remaining">num_uses_remaining</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="kudos.models.BulkTransferCoupon.num_uses_total">num_uses_total</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="kudos.models.BulkTransferCoupon.secret">secret</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="kudos.models.BulkTransferCoupon.sender_profile">sender_profile</h3>
+
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="kudos.models.BulkTransferCoupon.sender_profile_id">sender_profile_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="kudos.models.BulkTransferCoupon.token">token</h3>
+
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="kudos.models.BulkTransferCoupon.token_id">token_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h2 id="kudos.models.BulkTransferRedemption">BulkTransferRedemption</h2>
+
+<pre><code class="python">BulkTransferRedemption(self, *args, **kwargs)
+</code></pre>
+
+<p>Model representing a bulk send of Kudos</p>
+<h3 id="kudos.models.BulkTransferRedemption.coupon">coupon</h3>
+
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="kudos.models.BulkTransferRedemption.coupon_id">coupon_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="kudos.models.BulkTransferRedemption.get_next_by_created_on">_method</h3>
+
+<pre><code class="python">BulkTransferRedemption._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="kudos.models.BulkTransferRedemption.get_next_by_modified_on">_method</h3>
+
+<pre><code class="python">BulkTransferRedemption._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="kudos.models.BulkTransferRedemption.get_previous_by_created_on">_method</h3>
+
+<pre><code class="python">BulkTransferRedemption._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="kudos.models.BulkTransferRedemption.get_previous_by_modified_on">_method</h3>
+
+<pre><code class="python">BulkTransferRedemption._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="kudos.models.BulkTransferRedemption.id">id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="kudos.models.BulkTransferRedemption.ip_address">ip_address</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="kudos.models.BulkTransferRedemption.kudostransfer">kudostransfer</h3>
+
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="kudos.models.BulkTransferRedemption.kudostransfer_id">kudostransfer_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="kudos.models.BulkTransferRedemption.redeemed_by">redeemed_by</h3>
+
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="kudos.models.BulkTransferRedemption.redeemed_by_id">redeemed_by_id</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
