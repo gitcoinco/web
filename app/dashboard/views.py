@@ -972,7 +972,9 @@ def bounty_activity(request, network, stdbounties_id):
         'is_staff': request.user.is_staff,
         'is_moderator': profile.is_moderator,
     }
-    bounty = Bounty.objects.current().filter(standard_bounties_id=stdbounties_id).order_by('-pk').first()
+    bounty = Bounty.objects.current() \
+            .filter(network=network, standard_bounties_id=stdbounties_id) \
+            .order_by('-pk').first()
 
     if bounty:
         interests = bounty.interested.select_related('profile').all()
