@@ -1,4 +1,23 @@
 $(document).ready(function() {
+
+  var moveKudosToAvatar = function(){
+    var target2 = $(".nav_avatar").offset();
+    var target1 = $("#kudosImg").offset();
+
+
+    var cssSelector = anime({
+      targets: '#kudosImg',
+      translateX: target2.left - target1.left,
+      translateY: target2.top - target1.top,
+      height: 10,
+      loop: true,
+      easing: 'easeInOutQuart',
+      rotate: 360 * 2,
+      duration: 3000,
+    });
+  }
+  moveKudosToAvatar();
+
   if (typeof web3 == 'undefined') {
     _alert({ message: gettext('You are not on a web3 browser.  Please switch to a web3 browser.') }, 'error');
     $('#receive').attr('disabled', 'disabled');

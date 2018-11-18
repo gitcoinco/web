@@ -18,6 +18,7 @@
 {% load i18n static %}
 {% load kudos_extras %}
 {% block 'scripts' %}
+<script src="{% static "v2/js/anime.js" %}"></script>
 <script src="{% static "v2/js/pages/kudos_bulk_receive.js" %}"></script>
 <script src="{% static "onepager/js/confetti.js" %}"></script>
 
@@ -34,7 +35,7 @@
     <h1 class="h2 mt-5">{% trans "You've got a" %} <a style='color:black; text-decoration: underline;' href="{% url 'kudos_about' %}">{% trans "Kudos" %}</a></h1>
 
     <div class="my-4">
-      <img src="{% static coupon.token.image %}" width="160" alt="" class="mb-2">
+      <img id="kudosImg" src="{% static coupon.token.image %}" width="160" alt="" class="mb-2">
       <h3 id="kudosName" data-kudosname="{{ coupon.token.name }}" class="d-block">{{ coupon.token.humanized_name }} </h3>
       <br>
       <span id="kudosComment" class="d-block">
