@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import json
 import logging
 import re
+import time
 
 from django.conf import settings
 from django.contrib import messages
@@ -634,8 +635,13 @@ def receive_bulk(request, secret):
             'value': int(coupon.token.price_finney / 1000.0 * 10**18),
         })
 
-        signed = w3.eth.account.signTransaction(tx, settings.KUDOS_PRIVATE_KEY)
-        txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
+        if settings.DEBUG:
+            time.sleep(1)
+            # mock send
+            txid = '0x0'
+        else:
+            signed = w3.eth.account.signTransaction(tx, settings.KUDOS_PRIVATE_KEY)
+            txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
 
         with transaction.atomic():
             kudos_transfer = KudosTransfer.objects.create(

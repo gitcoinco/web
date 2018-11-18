@@ -16,6 +16,8 @@
 {% endcomment %}
 {% load i18n static %}
 <div class="bg-container" style="display:none;">
+  <canvas id="c">
+  </canvas>
   <img src="{% static "v2/images/icons/circle.png" %}" class="circle" id="c1">
   <img src="{% static "v2/images/icons/circle.png" %}" class="circle" id="c2">
   <img src="{% static "v2/images/icons/circle.png" %}" class="circle" id="c3">
@@ -25,7 +27,6 @@
   <img src="{% static "v2/images/icons/cross.png" %}" class="cross" id="cs2">
   <img src="{% static "v2/images/icons/cross.png" %}" class="cross" id="cs3">
   <img src="{% static "v2/images/icons/cross.png" %}" class="cross" id="cs4">
-
   <div class="transaction-header pt-5">
     <h2 class="my-2">Transaction Processing</h2>
   </div>
@@ -40,7 +41,7 @@
     <h3 class="issue-url"></h3>
   </div>
   <div class="rocket">
-    <img src="{% static "v2/images/rocket.svg" %}" class="svg" alt="Gitcoin Rocket">
+    <img src="{% static "v2/images/rocket_transparent.png" %}" class="svg" alt="Gitcoin Rocket">
   </div>
   <img src="{% static "v2/images/icons/clouds.png" %}" id="cloud">
 </div>

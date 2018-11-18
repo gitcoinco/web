@@ -644,10 +644,18 @@ a.btn {
 }
 
 .bg-container {
-  background-color: #3f24f9;
-  padding-left: 10px;
   padding-right: 10px;
   padding-bottom: 10rem;
+  position: relative;
+}
+
+canvas#c {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  cursor: pointer; 
+  position: absolute;
+  max-height: 350px;
 }
 
 .transaction-header {
@@ -701,7 +709,9 @@ a.btn {
   animation: MoveUpDown 3s infinite alternate;
   -webkit-animation: MoveUpDown 3s infinite alternate;
 }
-
+.rocket img {
+  max-width: 60px;
+}
 .circle,
 .cross {
   position: absolute;
@@ -804,7 +814,7 @@ a.btn {
   }
 
   .rocket {
-    right: 11rem;
+    right: 7rem;
   }
 
   #extend_deadline {
