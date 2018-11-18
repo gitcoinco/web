@@ -182,7 +182,22 @@ def build_avatar_component(path, icon_size=None, avatar_size=None):
     avatar_component_size = avatar_size or (899.2, 1415.7)
     scale_factor = icon_size[1] / avatar_component_size[1]
     x_to_center = (icon_size[0] / 2) - ((avatar_component_size[0] * scale_factor) / 2)
-    svg = SVG(f'{COMPONENT_BASE}{path}').scale(scale_factor).move(x_to_center, 0)
+    svg = SVG(f'{COMPONENT_BASE}{path}')
+    if path.startswith('Wallpaper'):
+        src = transform.fromfile(f'{COMPONENT_BASE}{path}')
+        if src.width != None:
+            src_width = float(re.sub('[^0-9]','', src.width))
+        else:
+            src_width = 900
+        if src.height != None:
+            src_height = float(re.sub('[^0-9]','', src.height))
+        else:
+            src_height = 1415
+        scale_factor = icon_size[1] / src_height;
+        svg = svg.scale(scale_factor)
+    if not path.startswith('Wallpaper'):
+        svg = svg.scale(scale_factor)
+        svg = svg.move(x_to_center, 0)
     return svg
 
 
