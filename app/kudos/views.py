@@ -601,7 +601,7 @@ def receive_bulk(request, secret):
         tx = contract.functions.clone(address, coupon.token.token_id, 1).buildTransaction({
             'nonce': w3.eth.getTransactionCount(kudos_owner_address),
             'gas': 500000,
-            'gasPrice': recommend_min_gas_price_to_confirm_in_time(5) * 10**9,
+            'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(5)) * 10**9,
             'value': int(coupon.token.price_finney / 1000.0 * 10**18),
         })
 
