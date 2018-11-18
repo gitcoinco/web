@@ -465,5 +465,3 @@ class BulkTransferRedemption(SuperModel):
     def __str__(self):
         """Return the string representation of a model."""
         return f"coupon: {self.coupon} redeemed_by: {self.redeemed_by}"
-
-

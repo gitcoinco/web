@@ -25,14 +25,13 @@ import re
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.staticfiles.templatetags.staticfiles import static
-from django.db.models import Q
+from django.core.exceptions import PermissionDenied
 from django.db import transaction
-from django.http import Http404, HttpResponse, JsonResponse
+from django.db.models import Q
+from django.http import Http404, HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
-from django.core.exceptions import PermissionDenied
 from django.utils import timezone
-from django.http import HttpResponseForbidden
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
@@ -50,7 +49,7 @@ from web3 import Web3
 
 from .forms import KudosSearchForm
 from .helpers import get_token
-from .models import KudosTransfer, Token, BulkTransferCoupon, BulkTransferRedemption
+from .models import BulkTransferCoupon, BulkTransferRedemption, KudosTransfer, Token
 
 logger = logging.getLogger(__name__)
 
