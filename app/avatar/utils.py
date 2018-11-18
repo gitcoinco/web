@@ -34,6 +34,8 @@ from git.utils import get_user
 from PIL import Image, ImageOps
 from pyvips.error import Error as VipsError
 from svgutils.compose import SVG, Figure, Line
+from svgutils import transform
+import re
 
 AVATAR_BASE = 'assets/other/avatars/'
 COMPONENT_BASE = 'assets/v2/images/avatar/'
