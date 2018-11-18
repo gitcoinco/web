@@ -1,5 +1,13 @@
 $(document).ready(function() {
 
+  var rotateKudos = function(){
+    var cssSelector = anime({
+      targets: '#kudosImg',
+      easing: 'easeInOutQuart',
+      rotate: 360 * 2,
+      duration: 1000,
+    });
+  }
   var moveKudosToAvatar = function(){
     var target2 = $(".nav_avatar").offset();
     var target1 = $("#kudosImg").offset();
@@ -16,7 +24,13 @@ $(document).ready(function() {
       duration: 3000,
     });
   }
-  moveKudosToAvatar();
+  if($("#forwarding_address:visible").length == 0){
+    moveKudosToAvatar();
+  }
+
+  $("#receive").click(function(){
+    rotateKudos();
+  });
 
   if (typeof web3 == 'undefined') {
     _alert({ message: gettext('You are not on a web3 browser.  Please switch to a web3 browser.') }, 'error');
