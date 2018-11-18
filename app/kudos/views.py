@@ -642,8 +642,8 @@ def receive_bulk(request, secret):
             coupon.num_uses_remaining -= 1
             coupon.current_uses += 1
 
-    title = f"Redeem gifted *{coupon.token.humanized_name}* Kudos"
-    desc = f"About this Kudos: {coupon.token.description}"
+    title = f"Redeem AirDropped *{coupon.token.humanized_name}* Kudos"
+    desc = f"This Kudos has been AirDropped to you.  About this Kudos: {coupon.token.description}"
     params = {
         'title': title,
         'card_title': title,
