@@ -29,6 +29,18 @@ class GeneralAdmin(admin.ModelAdmin):
     list_display = ['created_on', '__str__']
 
 
+class BulkTransferCouponAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['created_on', '__str__']
+    raw_id_fields = ['sender_profile', 'token']
+
+
+class BulkTransferRedemptionAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['created_on', '__str__']
+    raw_id_fields = ['coupon', 'redeemed_by', 'kudostransfer']
+
+
 class TokenAdmin(admin.ModelAdmin):
     ordering = ['-id']
     search_fields = ['name', 'description']
@@ -62,6 +74,6 @@ class TransferAdmin(admin.ModelAdmin):
 admin.site.register(Token, TokenAdmin)
 admin.site.register(KudosTransfer, TransferAdmin)
 admin.site.register(Wallet, GeneralAdmin)
-admin.site.register(BulkTransferCoupon, GeneralAdmin)
-admin.site.register(BulkTransferRedemption, GeneralAdmin)
+admin.site.register(BulkTransferCoupon, BulkTransferCouponAdmin)
+admin.site.register(BulkTransferRedemption, BulkTransferRedemptionAdmin)
 admin.site.register(Contract, GeneralAdmin)

@@ -26,9 +26,11 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.db.models import Q
+from django.db import transaction
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
+from django.core.exceptions import PermissionDenied
 from django.utils import timezone
 from django.http import HttpResponseForbidden
 from django.utils.safestring import mark_safe
@@ -41,6 +43,7 @@ from dashboard.utils import get_web3
 from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_master, get_github_primary_email
+from kudos.utils import kudos_abi
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import Web3
@@ -570,11 +573,83 @@ def receive_bulk(request, secret):
         raise Http404
 
     coupon = coupons.first()
-    redemptions = BulkTransferRedemption.objects.filter(redeemed_by=request.user.profile, coupon=coupon)
-    if redemptions.exists():
-        raise HttpResponseForbidden
+
+    if coupon.num_uses_remaining <= 0:
+        raise PermissionDenied
+
+    kudos_transfer = None
+    if request.user.is_authenticated:
+        redemptions = BulkTransferRedemption.objects.filter(redeemed_by=request.user.profile, coupon=coupon)
+        if redemptions.exists():
+            kudos_transfer = redemptions.first().kudostransfer
+
+    if request.POST:
+        address = Web3.toChecksumAddress(request.POST.get('forwarding_address'))
+        user = request.user
+        profile = user.profile
+        save_addr = request.POST.get('save_addr')
+        ip_address = get_ip(request)
+
+        # handle form submission
+        if save_addr:
+            profile.preferred_payout_address = address
+            profile.save()
+
+        kudos_contract_address = Web3.toChecksumAddress(settings.KUDOS_CONTRACT_MAINNET)
+        kudos_owner_address = Web3.toChecksumAddress(settings.KUDOS_OWNER_ACCOUNT)
+        w3 = get_web3(coupon.token.contract.network)
+        contract = w3.eth.contract(Web3.toChecksumAddress(kudos_contract_address), abi=kudos_abi())
+        tx = contract.functions.clone(address, coupon.token.token_id, 1).buildTransaction({
+            'nonce': w3.eth.getTransactionCount(kudos_owner_address),
+            'gas': 500000,
+            'gasPrice': recommend_min_gas_price_to_confirm_in_time(5) * 10**9,
+            'value': int(coupon.token.price_finney / 1000.0 * 10**18),
+        })
+
+        signed = w3.eth.account.signTransaction(tx, settings.KUDOS_PRIVATE_KEY)
+        txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
+
+        with transaction.atomic():
+            kudos_transfer = KudosTransfer.objects.create(
+                emails=[request.user.email],
+                # For kudos, `token` is a kudos.models.Token instance.
+                kudos_token_cloned_from=coupon.token,
+                amount=0,
+                comments_public=coupon.comments_to_put_in_kudos_transfer,
+                ip=ip_address,
+                github_url='',
+                from_name=coupon.sender_profile.handle,
+                from_email='',
+                from_username=coupon.sender_profile.handle,
+                username=profile.handle,
+                network=coupon.token.contract.network,
+                from_address=settings.KUDOS_OWNER_ACCOUNT,
+                is_for_bounty_fulfiller=False,
+                metadata={'coupon_redemption': True},
+                recipient_profile=profile,
+                sender_profile=coupon.sender_profile,
+                txid=txid,
+                receive_txid=txid,
+            )
+
+            # save to DB
+            BulkTransferRedemption.objects.create(
+                coupon=coupon,
+                redeemed_by=profile,
+                ip_address=ip_address,
+                kudostransfer=kudos_transfer,
+                )
+
+            coupon.num_uses_remaining -= 1
+            coupon.current_uses += 1
 
     params = {
+        'card_title': coupon.token.humanized_name,
+        'card_desc': coupon.token.description,
+        'avatar_url': coupon.token.img_url,
         'coupon': coupon,
+        'user': request.user,
+        'is_authed': request.user.is_authenticated,
+        'kudos_transfer': kudos_transfer,
     }
     return TemplateResponse(request, 'transaction/receive_bulk.html', params)

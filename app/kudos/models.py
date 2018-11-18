@@ -437,6 +437,10 @@ class BulkTransferCoupon(SuperModel):
     num_uses_remaining = models.IntegerField()
     current_uses = models.IntegerField(default=0)
     secret = models.CharField(max_length=255, unique=True)
+    comments_to_put_in_kudos_transfer = models.CharField(max_length=255, blank=True)
+    sender_profile = models.ForeignKey(
+        'dashboard.Profile', related_name='bulk_transfers', on_delete=models.CASCADE
+    )
 
     def __str__(self):
         """Return the string representation of a model."""
