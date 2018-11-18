@@ -564,6 +564,35 @@ def receive(request, key, txid, network):
     return TemplateResponse(request, 'transaction/receive.html', params)
 
 
+def get_nonce(network, address):
+    # this function solves the problem of 2 pending tx's writing over each other
+    # by checking both web3 RPC *and* the local DB for the nonce
+    # and then using the higher of the two as the tx nonce
+    from perftools.models import JSONStore
+    w3 = get_web3(network)
+
+    # web3 RPC node: nonce
+    nonce_from_web3 = w3.eth.getTransactionCount(address)
+
+    # db storage
+    key = f"nonce_{network}_{address}"
+    view = 'get_nonce'
+    nonce_from_db = 0
+    try:
+        nonce_from_db = JSONStore.objects.get(key=key, view=view).data[0]
+        nonce_from_db += 1 # increment by 1 bc we need to be 1 higher than last txid
+    except:
+        pass
+
+    new_nonce = max(nonce_from_db, nonce_from_web3)
+
+    # update JSONStore
+    JSONStore.objects.filter(key=key, view=view).all().delete()
+    JSONStore.objects.create(key=key, view=view, data=[new_nonce])
+
+    return new_nonce
+
+
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
 def receive_bulk(request, secret):
 
@@ -599,7 +628,7 @@ def receive_bulk(request, secret):
         w3 = get_web3(coupon.token.contract.network)
         contract = w3.eth.contract(Web3.toChecksumAddress(kudos_contract_address), abi=kudos_abi())
         tx = contract.functions.clone(address, coupon.token.token_id, 1).buildTransaction({
-            'nonce': w3.eth.getTransactionCount(kudos_owner_address),
+            'nonce': get_nonce(coupon.token.contract.network, kudos_owner_address),
             'gas': 500000,
             'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(5) * 10**9),
             'value': int(coupon.token.price_finney / 1000.0 * 10**18),
