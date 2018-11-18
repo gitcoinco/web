@@ -1,6 +1,27 @@
 /* eslint-disable no-div-regex */
 
 $(document).ready(function() {
+
+  $(".kd-card ").hover(function(){
+    var id = $(this).find('img').data('id');
+    var selector = ".kudos-" + id;
+    console.log(selector);
+    var cssSelector = anime({
+      targets: selector,
+      rotate: 5,
+      duration: 100,
+    });
+  }, function(){
+    var id = $(this).find('img').data('id');
+    var selector = ".kudos-" + id;
+    console.log(selector);
+    var cssSelector = anime({
+      targets: selector,
+      rotate: 0,
+      duration: 100,
+    });
+  });
+
   var queryParam = getQueryParams(document.location.search);
   var clearBtn = $('.clear-search');
 
