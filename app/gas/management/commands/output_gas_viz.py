@@ -44,8 +44,8 @@ def upload_to_s3():
     k = Key(bucket)
     k.key = 'gas_price_viz.mp4'
     k.set_contents_from_filename(filepath, cb=percent_cb, num_cb=10)
-    return k.generate_url(expires_in=60 * 60 * 24 * 30 )
-
+    k.set_acl('public-read')
+    return k.generate_url(expires_in=0, query_auth=False)
 
 
 def get_color(j, k, num_items_to_show_at_a_time):
