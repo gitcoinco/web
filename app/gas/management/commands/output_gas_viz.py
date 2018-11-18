@@ -1,14 +1,15 @@
 import datetime
 import os
 
+from django.conf import settings
+from django.core.management.base import BaseCommand
+from django.utils import timezone
+
 import boto
 from boto.s3.key import Key
-from django.core.management.base import BaseCommand
-from django.conf import settings
-from django.utils import timezone
-from perftools.models import JSONStore
 from gas.models import GasProfile
 from numpy import array
+from perftools.models import JSONStore
 
 
 def convert_to_movie():
@@ -146,4 +147,3 @@ class Command(BaseCommand):
         convert_to_movie()
         url = upload_to_s3()
         print(url)
-
