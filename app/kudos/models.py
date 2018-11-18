@@ -284,7 +284,6 @@ class Contract(SuperModel):
         return f"{self.address} / {self.network} / {self.is_latest}"
 
 
-
 class Wallet(SuperModel):
     """DEPRECATED.  Kudos Address where the tokens are stored.
 
@@ -304,3 +303,42 @@ class Wallet(SuperModel):
     def __str__(self):
         """Return the string representation of a model."""
         return f"Wallet: {self.address} Profile: {self.profile}"
+
+
+class BulkTransferCoupon(SuperModel):
+
+    """Model representing a bulk send of Kudos
+    """
+    token = models.ForeignKey(
+        'kudos.Token', related_name='bulk_transfers', on_delete=models.CASCADE
+    )
+    num_uses_total = models.IntegerField()
+    num_uses_remaining = models.IntegerField()
+    current_uses = models.IntegerField(default=0)
+    secret = models.CharField(max_length=255, unique=True)
+
+    def __str__(self):
+        """Return the string representation of a model."""
+        return f"Token: {self.token} num_uses_total: {self.num_uses_total}"
+
+
+class BulkTransferRedemption(SuperModel):
+
+    """Model representing a bulk send of Kudos
+    """
+    coupon = models.ForeignKey(
+        'kudos.BulkTransferCoupon', related_name='bulk_transfer_redemptions', on_delete=models.CASCADE
+    )
+    redeemed_by = models.ForeignKey(
+        'dashboard.Profile', related_name='bulk_transfer_redemptions', on_delete=models.CASCADE
+    )
+    ip_address = models.GenericIPAddressField(default=None, null=True)
+    kudostransfer = models.ForeignKey(
+        'kudos.KudosTransfer', related_name='bulk_transfer_redemptions', on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+        """Return the string representation of a model."""
+        return f"coupon: {self.coupon} redeemed_by: {self.redeemed_by}"
+
+

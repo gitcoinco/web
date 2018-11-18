@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import Contract, KudosTransfer, Token, Wallet
+from .models import Contract, KudosTransfer, Token, Wallet, BulkTransferRedemption, BulkTransferCoupon
 
 
 class GeneralAdmin(admin.ModelAdmin):
@@ -59,4 +59,6 @@ class TransferAdmin(admin.ModelAdmin):
 admin.site.register(Token, TokenAdmin)
 admin.site.register(KudosTransfer, TransferAdmin)
 admin.site.register(Wallet, GeneralAdmin)
+admin.site.register(BulkTransferCoupon, GeneralAdmin)
+admin.site.register(BulkTransferRedemption, GeneralAdmin)
 admin.site.register(Contract, GeneralAdmin)

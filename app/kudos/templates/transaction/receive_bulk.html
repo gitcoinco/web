@@ -18,16 +18,11 @@
 {% load i18n static %}
 {% load kudos_extras %}
 {% block 'scripts' %}
-<script src="{% static "v2/js/abi.js" %}"></script>
-<script src="{% static "v2/js/secrets.min.js" %}"></script>
-<script src="{% static "v2/js/ipfs-api.js" %}"></script>
-<script src="{% static "v2/js/ipfs.js" %}"></script>
-<script src="{% static "v2/js/pages/kudos_receive.js" %}"></script>
+<script src="{% static "v2/js/pages/kudos_bulk_receive.js" %}"></script>
 <script src="{% static "onepager/js/confetti.js" %}"></script>
-<script src="{% static "onepager/js/tx.js" %}"></script>
 
 <script>
-  $('#forwarding_address').val(web3.eth.coinbase)
+  $('#forwarding_address').val(web3.eth.coinbase);
 </script>
 
 {% endblock %}
@@ -48,11 +43,11 @@
     <h1 class="h2 mt-5">{% trans "You've got a Kudos" %}</h1>
 
     <div class="my-4">
-      <img src="{% static kudos_transfer.kudos_token_cloned_from.image %}" width="160" alt="" class="mb-2">
-      <p hidden id="kudosid" data-kudosid="{{ kudos_transfer.kudos_token_cloned_from_id }}">{{ kudos_transfer.kudos_token_cloned_from_id }}</p>
-      <p hidden id="tokenid" data-tokenid="{{ kudos_transfer.kudos_token_cloned_from.token_id }}">{{ kudos_transfer.kudos_token_cloned_from.token_id }}</p>
-      <span id="kudosName" data-kudosname="{{ kudos_transfer.kudos_token_cloned_from.name }}" class="d-block">{{ kudos_transfer.kudos_token_cloned_from.humanized_name }} </span>
-      <span id="kudosPrice" class="d-block" data-ethprice="{{ kudos_transfer.kudos_token_cloned_from.price_in_eth }}">{{ kudos_transfer.kudos_token_cloned_from.price_in_eth }} ETH<small></small></span>
+      <img src="{% static coupon.token.image %}" width="160" alt="" class="mb-2">
+      <p hidden id="kudosid" data-kudosid="{{ coupon.token_id }}">{{ coupon.token_id }}</p>
+      <p hidden id="tokenid" data-tokenid="{{ coupon.token.token_id }}">{{ coupon.token.token_id }}</p>
+      <span id="kudosName" data-kudosname="{{ coupon.token.name }}" class="d-block">{{ coupon.token.humanized_name }} </span>
+      <span id="kudosPrice" class="d-block" data-ethprice="{{ coupon.token.price_in_eth }}">{{ coupon.token.price_in_eth }} ETH<small></small></span>
     </div>
 
   </header>
@@ -82,7 +77,7 @@
   </div>
   <div id="receove_eth_done" class="text-center" {% if not kudos_transfer.receive_txid %} style="display:none;" {%endif%}>
     <h1>{% trans "Congrats!" %}</h1>
-    <p>You've received a "{{ kudos_transfer.kudos_token_cloned_from.humanized_name }}" Kudos via transaction <span id="trans_id">{{kudos_transfer.receive_txid}}</span>.</p>
+    <p>You've received a "{{ coupon.token.humanized_name }}" Kudos via transaction <span id="trans_id">{{kudos_transfer.receive_txid}}</span>.</p>
     <p>{% trans "You can see your kudos in your" %} <a href="{% url 'profile' %}">{% trans "profile" %}</a></p>
   </div>
   {% if not kudos_transfer.receive_txid and is_authed %}

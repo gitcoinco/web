@@ -30,6 +30,7 @@ from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
+from django.http import HttpResponseForbidden
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
@@ -48,7 +49,7 @@ from retail.helpers import get_ip
 
 from .forms import KudosSearchForm
 from .helpers import get_token
-from .models import KudosTransfer, Token
+from .models import KudosTransfer, Token, BulkTransferCoupon, BulkTransferRedemption
 
 logger = logging.getLogger(__name__)
 
@@ -528,6 +529,20 @@ def receive(request, key, txid, network):
 
     return TemplateResponse(request, 'transaction/receive.html', params)
 
-def receive_bulk(request):
-    params = {}
+
+@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
+def receive_bulk(request, secret):
+
+    coupons = BulkTransferCoupon.objects.filter(secret=secret)
+    if not coupons.exists():
+        raise Http404
+
+    coupon = coupons.first()
+    redemptions = BulkTransferRedemption.objects.filter(redeemed_by=request.user.profile, coupon=coupon)
+    if redemptions.exists():
+        raise HttpResponseForbidden
+
+    params = {
+        'coupon': coupon,
+    }
     return TemplateResponse(request, 'transaction/receive_bulk.html', params)
