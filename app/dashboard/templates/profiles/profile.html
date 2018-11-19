@@ -430,7 +430,7 @@
         });
       }(jQuery));
 
-      $('.flip-card').on('click keypress', e => {
+      $('#kudos-section').on('click keypress', '.flip-card', e => {
         if ($(e.target).is('a')) {
           e.stopPropagation();
           return

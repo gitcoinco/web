@@ -107,7 +107,8 @@ INSTALLED_APPS = [
     'impersonate',
     'kudos',
     'django.contrib.postgres',
-    'bounty_requests'
+    'bounty_requests',
+    'perftools'
 ]
 
 MIDDLEWARE = [
@@ -176,7 +177,9 @@ REST_FRAMEWORK = {
         'anon': '1000/day',
     },
     'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'],
-    'DEFAULT_AUTHENTICATION_CLASSES': []
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
 }
 
 AUTH_USER_MODEL = 'auth.User'
@@ -413,7 +416,15 @@ CACHEOPS = {
     'gas.*': {
         'ops': 'all',
         'timeout': 60 * 10,
-    }
+    },
+    'kudos.token': {
+        'ops': ('get', 'fetch', 'aggregate'),
+        'timeout': 60 * 5,
+    },
+    'kudos.kudostransfer': {
+        'ops': ('get', 'fetch', 'aggregate'),
+        'timeout': 60 * 5,
+    },
 }
 
 DJANGO_REDIS_IGNORE_EXCEPTIONS = env.bool('REDIS_IGNORE_EXCEPTIONS', default=True)

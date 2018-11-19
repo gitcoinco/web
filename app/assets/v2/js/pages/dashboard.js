@@ -334,7 +334,7 @@ var refreshBounties = function(event, offset, append, do_save_search) {
   // Allow search for freeform text
   var searchInput = $('#keywords')[0];
 
-  $('#results-count').html('<i class="fas fa-spinner fa-spin"></i> bounties');
+  $('#results-count span.num').html('<i class="fas fa-spinner fa-spin"></i>');
   if (searchInput.value.length > 0) {
     addTechStackKeywordFilters(searchInput.value.trim());
     searchInput.value = '';
@@ -409,7 +409,12 @@ var refreshBounties = function(event, offset, append, do_save_search) {
       });
     }
 
-    $('#results-count').html(results.length + ' bounties');
+    $('#results-count span.num').html(offset + results.length);
+    if (results.length == results_limit) {
+      $('#results-count span.plus').html('+');
+    } else {
+      $('#results-count span.plus').html('');
+    }
   }).fail(function() {
     if (explorer.bounties_request.readyState !== 0)
       _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
