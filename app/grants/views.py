@@ -184,7 +184,7 @@ def grant_new(request):
             'admin_address': request.POST.get('admin_address', ''),
             'frequency': request.POST.get('frequency', 0),
             'token_address': request.POST.get('denomination', ''),
-            'amount_goal': request.POST.get('amount_goal', 0),
+            'amount_goal': request.POST.get('amount_goal', 1),
             'transaction_hash': request.POST.get('transaction_hash', ''),
             'contract_address': request.POST.get('contract_address', ''),
             'network': request.POST.get('network', 'mainnet'),
