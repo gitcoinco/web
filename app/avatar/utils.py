@@ -55,6 +55,10 @@ def get_avatar_context():
             'title': 'Pick head shape',
             'options': ('0', '1', '2', '3', '4')
         }, {
+            'name': 'Makeup',
+            'title': 'Pick a makeup style',
+            'options': ('ziggy-stardust',)
+        }, {
             'name': 'Eyes',
             'title': 'Pick eyes shape',
             'options': ('0', '1', '2', '3', '4', '5', '6')
@@ -154,6 +158,7 @@ def get_svg_templates():
         },
         'hair': [],
         'head': [],
+        'makeup': [],
         'mouth': [],
         'nose': [],
         'wallpaper': []
@@ -314,7 +319,7 @@ def handle_avatar_payload(request):
     avatar_dict = {}
     valid_component_keys = [
         'Beard', 'Clothing', 'Earring', 'EarringBack', 'Ears', 'Eyes', 'Glasses', 'Masks', 'HairLong', 'HairShort',
-        'HatLong', 'HatShort', 'Head', 'Mouth', 'Mustache', 'Nose', 'Extras', 'Wallpaper'
+        'HatLong', 'HatShort', 'Head', 'Mouth', 'Mustache', 'Nose', 'Extras', 'Wallpaper', 'Makeup'
     ]
     valid_color_keys = ['Background', 'ClothingColor', 'HairColor', 'SkinTone']
     body = json.loads(request.body)
