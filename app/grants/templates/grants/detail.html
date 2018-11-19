@@ -219,11 +219,9 @@
                     <li>
                       <div class="milestone-title">{{ milestone.title }}</div>
                       <div class="milestone-date">
-                        {{ milestone.due_date }} -
+                        <p>{% trans 'Due Date - ' %}{{ milestone.due_date }}</p>
                         {% if milestone.completion_date %}
-                          {{ milestone.completion_date }}
-                        {% else %}
-                          {% trans "Present" %}
+                          <p>{% trans 'Date Completed - ' %}{{ milestone.completion_date }}</p>
                         {% endif %}
                       </div>
                       <p class="milestone-description">{{ milestone.description }}</p>

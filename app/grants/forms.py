@@ -60,7 +60,7 @@ class MilestoneForm(forms.ModelForm):
                     attrs={
                         'type': 'date',
                         'class': 'form__input form__input-lg',
-                        'placeholder': _('Date')
+                        'placeholder': _('Due Date')
                     }
                 )
         }
