@@ -389,9 +389,29 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#startup-server" title="Startup server" class="md-nav__link">
-    Startup server
+  <a href="#setup-dependencies-and-startup-server" title="Setup Dependencies and Startup Server" class="md-nav__link">
+    Setup Dependencies and Startup Server
   </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setup-virtual-environment-with-necessary-dependencies" title="Setup Virtual Environment with Necessary Dependencies" class="md-nav__link">
+    Setup Virtual Environment with Necessary Dependencies
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#startup-server" title="Startup Server" class="md-nav__link">
+    Startup Server
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2135,9 +2155,29 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#startup-server" title="Startup server" class="md-nav__link">
-    Startup server
+  <a href="#setup-dependencies-and-startup-server" title="Setup Dependencies and Startup Server" class="md-nav__link">
+    Setup Dependencies and Startup Server
   </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setup-virtual-environment-with-necessary-dependencies" title="Setup Virtual Environment with Necessary Dependencies" class="md-nav__link">
+    Setup Virtual Environment with Necessary Dependencies
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#startup-server" title="Startup Server" class="md-nav__link">
+    Startup Server
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2176,10 +2216,12 @@
                 
                 <h1 id="running-locally-without-docker">Running Locally without Docker</h1>
 <p>*Note: This setup method is not recommended. To ensure a consistent environment, please check out the <a href="https://docs.gitcoin.co/mk_setup/">Docker Setup Guide</a>.</p>
-<pre><code class="shell">brew install libmaxminddb automake pkg-config libtool libffi gmp python openssl
-git clone https://github.com/gitcoinco/web.git
-cd web/app
-cp app/local.env app/.env
+<pre><code class="shell">
+~/$ brew install libmaxminddb automake pkg-config libtool libffi gmp python3 openssl libvips libvips-dev libvips-tools
+~/$ git clone https://github.com/gitcoinco/web.git
+~/$ cd web/app
+~/web/app$ cp app/local.env app/.env
+
 </code></pre>
 
 <p>You will need to edit the <code>app/.env</code> file with your local environment variables. Look for config items that are marked <code># required</code>.</p>
@@ -2195,45 +2237,74 @@ cp app/local.env app/.env
 <p><a href="http://www.postgresqltutorial.com/install-postgresql/">Windows</a></p>
 <p><a href="https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-16-04">Ubuntu</a></p>
 <p>Once you have Postgres installed and running on your system, enter into a Postgres session.</p>
-<pre><code class="shell">psql
+<pre><code class="shell">
+~/$ psql
+
 </code></pre>
 
 <p>Create the database and a new privileged user.</p>
-<pre><code class="sql">CREATE DATABASE gitcoin;
+<pre><code class="sql">
+CREATE DATABASE gitcoin;
 CREATE USER gitcoin_user WITH PASSWORD 'password';
 GRANT ALL PRIVILEGES ON DATABASE gitcoin TO gitcoin_user;
+
 </code></pre>
 
 <p>Exit Postgres session</p>
-<pre><code class="shell">\q
+<pre><code class="shell">
+\q
+
 </code></pre>
 
-<p>Update .env with the connection details.</p>
-<pre><code class="shell">DATABASE_URL=psql://gitcoin_user:password@localhost:5432/postgres
+<p>Update <code>~/web/app/app/.env</code> with the connection details.</p>
+<pre><code class="shell">
+DATABASE_URL=psql://gitcoin_user:password@localhost:5432/postgres
+
 </code></pre>
 
-<h2 id="startup-server">Startup server</h2>
-<pre><code class="shell">virtualenv gcoin
-source gcoin/bin/activate
-pip install -r requirements/test.txt
-./manage.py migrate
-./manage.py createcachetable
-./manage.py get_prices
-./manage.py runserver 0.0.0.0:8000
+<h2 id="setup-dependencies-and-startup-server">Setup Dependencies and Startup Server</h2>
+<h3 id="setup-virtual-environment-with-necessary-dependencies">Setup Virtual Environment with Necessary Dependencies</h3>
+<pre><code class="shell">
+~/web$ python3 -m virtualenv gcoin
+~/web$ source gcoin/bin/activate
+~/web$ pip3 install -r requirements/test.txt
+
+</code></pre>
+
+<p>Alternatively, if any installation errors occur:</p>
+<p>*Note: A single error will stop the entire installation process when installing from a requirements file, this will install each module one at a time keeping installation failures isolated</p>
+<pre><code class="shell">
+~/web$ awk '!/^(-r)/' requirements/base.txt requirements/test.txt | xargs -n 1 pip3 install
+
+</code></pre>
+
+<h3 id="startup-server">Startup Server</h3>
+<pre><code class="shell">
+~/web/app$ ./manage.py migrate
+~/web/app$ ./manage.py createcachetable
+~/web/app$ ./manage.py get_prices
+~/web/app$ ./manage.py runserver 0.0.0.0:8000
+
 </code></pre>
 
 <p>Navigate to <code>http://localhost:8000/</code>.</p>
 <h2 id="create-django-admin">Create Django Admin</h2>
-<pre><code class="shell">./manage.py createsuperuser
+<pre><code class="shell">
+~/web/app$ ./manage.py createsuperuser
+
 </code></pre>
 
 <h2 id="optional-import-bounty-data-from-web3-to-your-database">Optional: Import bounty data from web3 to your database</h2>
 <p>This can be useful if you'd like data to test with:</p>
-<pre><code class="shell">./manage.py sync_geth
+<pre><code class="shell">
+~/web/app$ ./manage.py sync_geth
+
 </code></pre>
 
 <p>or equivalently:</p>
-<pre><code class="shell">./manage.py sync_geth rinkeby 402 99999999999
+<pre><code class="shell">
+~/web/app$ ./manage.py sync_geth rinkeby 402 99999999999
+
 </code></pre>
                 
                   
