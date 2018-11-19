@@ -94,9 +94,6 @@ textarea.editable {
 #form--input__reference-url,
 #form--input__title {
   width: 100%;
-}
-
-#form--input__description {
   text-align: justify;
   resize: none;
 }

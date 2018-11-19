@@ -34,11 +34,7 @@ from django.utils.translation import gettext_lazy as _
 from grants.forms import MilestoneForm
 from grants.models import Grant, Milestone, Subscription
 from marketing.mails import (
-    grant_cancellation,
-    new_grant,
-    new_supporter,
-    subscription_terminated,
-    support_cancellation,
+    grant_cancellation, new_grant, new_supporter, subscription_terminated, support_cancellation,
     thank_you_for_supporting,
 )
 from marketing.models import Keyword
@@ -182,13 +178,13 @@ def grant_new(request):
         team_members = request.POST.getlist('team_members[]')
 
         grant_kwargs = {
-            'title': request.POST.get('input_name', ''),
+            'title': request.POST.get('input_title', ''),
             'description': request.POST.get('description', ''),
             'reference_url': request.POST.get('reference_url', ''),
             'admin_address': request.POST.get('admin_address', ''),
-            'frequency': request.POST.get('frequency', 2592000),
+            'frequency': request.POST.get('frequency', 0),
             'token_address': request.POST.get('denomination', ''),
-            'amount_goal': request.POST.get('amount_goal', 0),
+            'amount_goal': request.POST.get('amount_goal', 1),
             'transaction_hash': request.POST.get('transaction_hash', ''),
             'contract_address': request.POST.get('contract_address', ''),
             'network': request.POST.get('network', 'mainnet'),

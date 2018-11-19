@@ -41,12 +41,16 @@
               <div class="col-12">
                 <div class="grant__specs">
                   <h1 class="grant__title font-title-lg">
-                    <input type="text" id="form--input__title" class="p-0 inline-edit" value="{{ grant.title }}" readonly>
-                  </h1>
+                  {% if is_admin %}
+                    <textarea id="form--input__title" class="p-0 mt-2 inline-edit" disabled>{{ grant.title }}</textarea>
+                  {% else %}
+                  <span>{{ grant.title }}</span>
+                  {% endif %}
+                </h1>
                   <span class="grant__url font-subheader my-4">
                     {% if is_admin %}
                       <div>
-                        <input type="text" id="form--input__reference-url" class="p-0 mt-2 inline-edit" value="{{ grant.reference_url }}" readonly>
+                        <textarea id="form--input__reference-url" class="p-0 mt-2 inline-edit" disabled>{{ grant.reference_url }}</textarea>
                       </div>
                     {% else %}
                       <a href="{{ grant.reference_url }}" target="_blank">
@@ -85,12 +89,12 @@
                   <div class="progress-text mt-2">
                     <div class="row">
                       <div class="col-6">
-                        <span>{{ grant.amount_received }} DAI</span>
+                        <span>{{ grant.amount_received|floatformat:2|intcomma }} DAI</span>
                         <p>Current</p>
                       </div>
                       <div class="col-6 text-right">
-                        <span>{{ grant.amount_goal }} DAI</span>
-                        <p>Goal</p>
+                        <span>{{ grant.amount_goal|floatformat:2|intcomma }} DAI</span>
+                        <p>Monthly Goal</p>
                       </div>
                     </div>
                   </div>
@@ -142,9 +146,7 @@
         <div class="col-12 col-md-6 pl-lg-0">
           <p class="grant__description font-subheader pr-lg-4 mb-5">
             {% if is_admin %}
-              <textarea id="form--input__description" class="p-0 mt-2 inline-edit" disabled>
-                {{ grant.description }}
-              </textarea>
+              <textarea id="form--input__description" class="p-0 mt-2 inline-edit" disabled>{{ grant.description }}</textarea>
             {% else %}
               <span>
                 {{ grant.description }}

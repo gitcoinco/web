@@ -26,7 +26,8 @@ window.onload = function() {
 
         console.log('realTokenAmount', realTokenAmount);
 
-        let realGasPrice = Number(data.gas_price * 10 ** decimals);
+        // gas price in gwei
+        let realGasPrice = Number(data.gas_price * 10 ** 9);
 
         console.log('realGasPrice', realGasPrice);
 
