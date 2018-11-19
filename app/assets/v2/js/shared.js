@@ -668,9 +668,6 @@ var mixpanel_track_once = function(event, params) {
   }
 };
 
-var is_metamask_approved = is_metamask_approved;
-var is_metamask_unlocked = is_metamask_unlocked;
-
 /* eslint-disable no-lonely-if */
 var currentNetwork = function(network) {
 
