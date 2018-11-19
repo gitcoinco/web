@@ -44,7 +44,11 @@ $(document).ready(function() {
 
         let realTokenAmount = Number(data.amount_per_period * 10 ** decimals);
 
-        let realGasPrice = Number(4 * 10 ** decimals);
+        // gas price in gwei
+        let realGasPrice = Number(4 * 10 ** 9);
+
+        $('#gas_price').val(4);
+
 
         web3.eth.getAccounts(function(err, accounts) {
 
@@ -75,6 +79,11 @@ $(document).ready(function() {
                 web3.utils.toTwosComplement(nonce)
               ];
 
+              console.log('realTokenAmount', realTokenAmount);
+              console.log('realPeriodSeconds', realPeriodSeconds);
+              console.log('realGasPrice', realGasPrice);
+              console.log('parts', parts);
+
               deployedSubscription.methods.getSubscriptionHash(...parts).call(function(err, subscriptionHash) {
 
                 $('#subscription_hash').val(subscriptionHash);
@@ -93,11 +102,11 @@ $(document).ready(function() {
 
                   console.log('postData', postData);
 
+                  $('#frequency_count').val(realPeriodSeconds);
+
                   $.each($(form).serializeArray(), function() {
                     data[this.name] = this.value;
                   });
-
-                  data.frequency = realPeriodSeconds;
 
                   console.log('data', data);
 
