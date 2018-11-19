@@ -234,15 +234,15 @@
             </div>
           </div>
 
-          <div class="col-12 order-md-1 col-md-8">
+          <div class="col-12 order-md-1 col-md-8 p-md-0">
             <div id="tabs">
               <ul>
                 <li><a href="#all-updates">{% trans "Updates" %}</a></li>
                 <li><a href="#github">{% trans "GitHub" %}</a></li>
               </ul>
-              <div id="all-updates">
+              <div id="all-updates" class="p-0">
                 {% if is_admin %}
-                  <div class="my-4 py-2 px-3">
+                  <div class="my-4 py-2 pr-3">
                     <form method="POST" id="js-postUpdate">
                       {% csrf_token %}
                       <div class="form__group-horizontal mb-4">
@@ -261,7 +261,7 @@
                     </form>
                   </div>
                 {% endif %}
-                <ul>
+                <ul class="pl-0">
                   {% for item in activity %}
                     <li>
                       <div class="article-title font-title">{{ item.title }}</div>
@@ -273,8 +273,8 @@
                   {% endfor %}
                 </ul>
               </div>
-              <div id="github">
-                <ul>
+              <div id="github" class="p-0 mt-4">
+                <ul class="pl-0">
                   {% for item in gh_activity %}
                     <li>
                       <div class="article-title font-title">{{ item.title }}</div>
