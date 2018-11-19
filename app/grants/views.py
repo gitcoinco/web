@@ -84,8 +84,8 @@ def grant_details(request, grant_id):
     try:
         grant = Grant.objects.prefetch_related('subscriptions', 'milestones').get(pk=grant_id)
         milestones = grant.milestones.order_by('due_date')
-        subscriptions = grant.subscriptions.all()
-        active_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
+        subscriptions = grant.subscriptions.filter(active=True)
+        user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
     except Grant.DoesNotExist:
         raise Http404
 
@@ -156,7 +156,8 @@ def grant_details(request, grant_id):
         'active': 'grant_details',
         'title': _('Grant Details'),
         'grant': grant,
-        'subscription': active_subscription,
+        'subscriptions': subscriptions,
+        'user_subscription': user_subscription,
         'is_admin': (grant.admin_profile.id == profile.id) if profile and grant.admin_profile else False,
         'grant_is_inactive': not grant.active,
         'activity': activity_data,

@@ -112,8 +112,8 @@
                   </button>
                   <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
                 </form>
-                {% elif subscription %}
-                    <a href="{% url 'grants:subscription_cancel' grant.id subscription.id %}">
+                {% elif active_subscription %}
+                    <a href="{% url 'grants:subscription_cancel' grant.id active_subscription.id %}">
                       <button class="button button--primary button--warning button--full">{% trans "Cancel Your Funding" %}</button>
                     </a>
                 {% else %}
@@ -187,9 +187,9 @@
             {% endif %}
           </div>
           <div class="font-body">
-            <p class="sub-title">{% trans "Supported By" %} ({{ grant.subscriptions.all|length }})</p>
+            <p class="sub-title">{% trans "Supported By" %} ({{ subscriptions|length }})</p>
             <div class="grant__stakeholders-list">
-              {% for subscriber in grant.subscriptions.all %}
+              {% for subscriber in subscriptions %}
                 <a class="grant__stakeholders-item mr-2" href="{% url 'profile' subscriber.contributor_profile.handle %}">
                   <img src="{{ subscriber.contributor_profile.avatar_url }}" />
                 </a>
