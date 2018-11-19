@@ -292,7 +292,7 @@
                           {{ active_bounties_count }}
                         </span>
                         <span class="text-fd-blue--dark text-uppercase">
-                          {% trans "active bountie" %}{{ active_bounties_count|pluralize }}
+                          {% trans "active bount" %}{{ active_bounties_count|pluralize:"y,ies" }}
                         </span>
                       </div>
                       <div class="w-100 text-right">
@@ -310,8 +310,8 @@
                         <span class="funder-dashboard__latest-on-bounties__completed__count font-weight-bold">
                           {{ completed_bounties_count }}
                         </span>
-                        <span class="text-fd-green text-uppercase"> 
-                          {% trans "completed bountie" %}{{ completed_bounties_count|pluralize }}
+                        <span class="text-fd-green text-uppercase">
+                          {% trans "completed bount" %}{{ completed_bounties_count|pluralize:"y,ies" }}
                         </span>
                       </div>
                       <div class="w-100 text-right">
@@ -330,7 +330,7 @@
                           {{ expired_bounties_count }}
                         </span>
                         <span class="text-fd-red text-uppercase">
-                          {% trans "expired bountie" %}{{ expired_bounties_count|pluralize }}
+                          {% trans "expired bount" %}{{ expired_bounties_count|pluralize:"y,ies" }}
                       </span>
                       </div>
                       <div class="w-100 text-right">
