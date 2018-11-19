@@ -69,7 +69,6 @@ def get_avatar_context():
             'title': 'Pick ears shape',
             'options': ('0', '1', '2', '3', 'Spock')
         },
-
                      {
                          'name': 'Clothing',
                          'title': 'Pick your clothing',
@@ -101,12 +100,13 @@ def get_avatar_context():
                          'options': (['Glasses-0'], ['Glasses-1'], ['Glasses-2'], ['Glasses-3'], ['Glasses-4'], [
                              'HatShort-backwardscap'
                          ], ['HatShort-redbow'], ['HatShort-yellowbow'], ['HatShort-ballcap'], ['HatShort-cowboy'],
-                                     ['HatShort-headphones'], ['HatShort-shortbeanie'], ['HatShort-tallbeanie'], [
-                                         'HatShort-bunnyears'
-                                     ], ['HatShort-menorah'], ['HatShort-santahat'],
-                                     ['Earring-0'], ['Earring-1'], ['EarringBack-2', 'Earring-2'], ['Earring-3'],
-                                     ['Earring-4'], ['Masks-jack-o-lantern'], ['Masks-guy-fawkes'],
-                                     ['Masks-jack-o-lantern-lighted'], ['Extras-Parrot'], ['Masks-gitcoinbot'])
+                                     ['HatShort-headdress'], ['HatShort-headphones'], ['HatShort-shortbeanie'],
+                                     ['HatShort-tallbeanie'], ['HatShort-bunnyears'], ['HatShort-menorah'],
+                                     ['HatShort-pilgrim'], ['HatShort-santahat'], ['Earring-0'], ['Earring-1'], [
+                                         'EarringBack-2', 'Earring-2'
+                                     ], ['Earring-3'], ['Earring-4'], ['Masks-jack-o-lantern'], ['Masks-guy-fawkes'], [
+                                         'Masks-jack-o-lantern-lighted'
+                                     ], ['Extras-Parrot'], ['Masks-gitcoinbot'])
                      },
                      {
                          'name': 'Background',
@@ -115,12 +115,15 @@ def get_avatar_context():
                              '25E899', '9AB730', '00A55E', '3FCDFF', '3E00FF', '8E2ABE', 'D0021B', 'F9006C', 'FFCE08',
                              'F8E71C', '15003E', 'FFFFFF'
                          )
-                     }, {
-             'name': 'Wallpaper',
-             'title': 'Pick some swag for your back',
-             'options': ('anchors','jigsaw')
-         }],
-
+                     },
+                     {
+                         'name': 'Wallpaper',
+                         'title': 'Pick some swag for your back',
+                         'options': (
+                             'anchors', 'circuit', 'jigsaw', 'lines', 'gears', 'clouds', 'signal', 'polka_dots',
+                             'polka_dots_black', 'squares', 'shapes', 'sunburst', 'sunburst_pastel', 'rainbow'
+                         )
+                     }],
     }
 
 
@@ -437,5 +440,37 @@ def convert_img(obj, input_fmt='svg', output_fmt='png'):
     except VipsError:
         pass
     except Exception as e:
-        logger.error(e)
+        logger.error(
+            'Exception encountered in convert_img - Error: (%s) - input: (%s) - output: (%s)', str(e), input_fmt,
+            output_fmt
+        )
+    return None
+
+
+def convert_wand(img_obj, input_fmt='png', output_fmt='svg'):
+    """Convert an SVG to another format.
+
+    Args:
+        img_obj (File): The PNG or other image File/ContentFile.
+        input_fmt (str): The input format. Defaults to: png.
+        output_fmt (str): The output format. Defaults to: svg.
+
+    Returns:
+        BytesIO: The BytesIO stream containing the converted File data.
+        None: If there is an exception, the method returns None.
+
+    """
+    from wand.image import Image as WandImage
+    try:
+        img_data = img_obj.read()
+        with WandImage(blob=img_data, format=input_fmt) as _img:
+            _img.format = output_fmt
+            tmpfile_io = BytesIO()
+            _img.save(file=tmpfile_io)
+            return tmpfile_io
+    except Exception as e:
+        logger.error(
+            'Exception encountered in convert_wand - Error: (%s) - input: (%s) - output: (%s)', str(e), input_fmt,
+            output_fmt
+        )
     return None

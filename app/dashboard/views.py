@@ -25,6 +25,7 @@ import time
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.core.exceptions import PermissionDenied
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
 from django.http import Http404, HttpResponse, JsonResponse
@@ -743,6 +744,8 @@ def fulfill_bounty(request):
 
     """
     bounty = handle_bounty_views(request)
+    if not bounty.has_started_work(request.user.username):
+        raise PermissionDenied
     params = get_context(
         ref_object=bounty,
         github_username=request.GET.get('githubUsername'),
@@ -1142,6 +1145,10 @@ def profile(request, handle):
             profile = profile_helper(handle, current_user=request.user)
 
         context = profile.to_dict()
+        for activity in context['activities']:
+            activity['started_bounties_count'] = activity['activity_bounties'].filter(
+                activity_type='start_work'
+            ).count()
     except (Http404, ProfileHiddenException):
         status = 404
         context = {
@@ -1667,7 +1674,7 @@ def get_users(request):
             profile_json['preferred_payout_address'] = user.preferred_payout_address
             results.append(profile_json)
         # try github
-        if not profiles:
+        if not len(results):
             search_results = search_users(q, token=token)
             for result in search_results:
                 profile_json = {}
@@ -1681,7 +1688,7 @@ def get_users(request):
                 if profile_json['text'].lower() not in [p['text'].lower() for p in profiles]:
                     results.append(profile_json)
         # just take users word for it
-        if not profiles:
+        if not len(results):
             profile_json = {}
             profile_json['id'] = -1
             profile_json['text'] = q
@@ -1703,12 +1710,15 @@ def get_kudos(request):
     }
     if request.is_ajax():
         q = request.GET.get('term')
+        network = request.GET.get('network', None)
         eth_to_usd = convert_token_to_usdt('ETH')
         kudos_by_name = Token.objects.filter(name__icontains=q)
         kudos_by_desc = Token.objects.filter(description__icontains=q)
         kudos_by_tags = Token.objects.filter(tags__icontains=q)
         kudos_pks = (kudos_by_desc | kudos_by_name | kudos_by_tags).values_list('pk', flat=True)
         kudos = Token.objects.filter(pk__in=kudos_pks, hidden=False, num_clones_allowed__gt=0).order_by('name')
+        if network:
+            kudos = kudos.filter(contract__network=network)
         results = []
         for token in kudos:
             kudos_json = {}

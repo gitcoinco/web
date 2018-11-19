@@ -1985,4 +1985,51 @@
   tags: 
     - memes
   image: your_bounty_is_bad_and_you_should_fill_bad.svg
+- name: mad_scientist
+  description: The mad scientist transforms the core primitives of logic, math, and physics into something greater (and madder) than the sum of it's parts. muhahahhaah!
+  priceFinney: 3
+  numClonesAllowed: 300
+  tags: 
+    - science
+    - mad scientist
+    - fun
+  image: mad_scientist.svg
+- name: resilience
+  description: Neither fire, nor ice, nor any weapon of war, nor any of the elements of the earth can get through to the resilient.  Kudos to you and your resilience through adversity of any kind.
+  priceFinney: 4
+  numClonesAllowed: 200
+  tags: 
+    - resilience
+    - soft skills
+    - shield
+    - fun
+  image: resilient.svg
+
+- name: Augment
+  description: Choose your tools wisely young hero; for they will be important problem solvers for you during your web3 journey.
+  priceFinney: 3
+  numClonesAllowed: 250
+  tags: 
+    - cyberphunk
+    - augment
+    - tools
+  image: cyberpunk_augment.svg
+- name: cypherpunk_mind
+  description: This Kudos is for those who have a cyberphunk mind.  Know someone who is the brains of the operation?  Send them this Kudos.
+  priceFinney: 5
+  numClonesAllowed: 150
+  tags: 
+    - cyberphunk
+    - brain
+    - mind
+  image: cyberpunk_helm.svg
+- name: gitcoin_ambassador
+  description: This Kudos can be awarded only by Gitcoin team, and signifies that one was a Gitcoin ambassador during Fall 2018 and beyond.
+  priceFinney: 100
+  numClonesAllowed: 250
+  tags: 
+    - gitcoin core
+    - gitcoin ambassador
+  image: gitcoin_ambassador.svg
+
 

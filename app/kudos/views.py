@@ -24,8 +24,9 @@ import re
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.postgres.search import SearchVector
 from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.core.exceptions import PermissionDenied
+from django.db import transaction
 from django.db.models import Q
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
@@ -35,21 +36,20 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
-from cacheops import cached_view_as
 from dashboard.models import Activity, Profile
-from dashboard.notifications import maybe_market_kudos_to_email
+from dashboard.notifications import maybe_market_kudos_to_email, maybe_market_kudos_to_github
 from dashboard.utils import get_web3
 from dashboard.views import record_user_action
-from eth_utils import is_address, to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_master, get_github_primary_email
+from kudos.utils import kudos_abi
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import Web3
 
 from .forms import KudosSearchForm
 from .helpers import get_token
-from .models import KudosTransfer, Token
+from .models import BulkTransferCoupon, BulkTransferRedemption, KudosTransfer, Token
 
 logger = logging.getLogger(__name__)
 
@@ -75,11 +75,6 @@ def get_profile(handle):
     return to_profile
 
 
-@cached_view_as(
-    Token.objects.select_related('contract').filter(
-        num_clones_allowed__gt=0, contract__is_latest=True, contract__network=settings.KUDOS_NETWORK, hidden=False,
-    )
-)
 def about(request):
     """Render the Kudos 'about' page."""
     listings = Token.objects.select_related('contract').filter(
@@ -87,7 +82,7 @@ def about(request):
         contract__is_latest=True,
         contract__network=settings.KUDOS_NETWORK,
         hidden=False,
-    ).order_by('-popularity_week')
+    ).order_by('-popularity_week').cache()
     context = {
         'is_outside': True,
         'active': 'about',
@@ -104,28 +99,22 @@ def marketplace(request):
     """Render the Kudos 'marketplace' page."""
     q = request.GET.get('q')
     order_by = request.GET.get('order_by', '-created_on')
-    logger.info(order_by)
-    logger.info(q)
-    title = q.title() + str(_(" Kudos ")) if q else str(_('Kudos Marketplace'))
+    title = str(_('Kudos Marketplace'))
+    network = request.GET.get('network', settings.KUDOS_NETWORK)
+
+    # Only show the latest contract Kudos for the current network.
+    query_kwargs = {
+        'num_clones_allowed__gt': 0,
+        'contract__is_latest': True,
+        'contract__network': network,
+    }
+    token_list = Token.objects.select_related('contract').visible().filter(**query_kwargs)
 
     if q:
-        listings = Token.objects.annotate(
-            search=SearchVector('name', 'description', 'tags')
-        ).select_related('contract').filter(
-            # Only show the latest contract Kudos for the current network
-            num_clones_allowed__gt=0,
-            contract__is_latest=True,
-            contract__network=settings.KUDOS_NETWORK,
-            hidden=False,
-            search=q
-        ).order_by(order_by)
-    else:
-        listings = Token.objects.select_related('contract').filter(
-            num_clones_allowed__gt=0,
-            contract__is_latest=True,
-            contract__network=settings.KUDOS_NETWORK,
-            hidden=False,
-        ).order_by(order_by)
+        title = f'{q.title()} Kudos'
+        token_list = token_list.keyword(q)
+
+    listings = token_list.order_by(order_by).cache()
     context = {
         'is_outside': True,
         'active': 'marketplace',
@@ -134,9 +123,8 @@ def marketplace(request):
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
         'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
         'listings': listings,
-        'network': settings.KUDOS_NETWORK
+        'network': network
     }
-
     return TemplateResponse(request, 'kudos_marketplace.html', context)
 
 
@@ -179,6 +167,7 @@ def details(request, kudos_id, name):
     kudos = get_object_or_404(Token, pk=kudos_id)
 
     context = {
+        'send_enabled': kudos.send_enabled_for(request.user),
         'is_outside': True,
         'active': 'details',
         'title': 'Details',
@@ -186,7 +175,7 @@ def details(request, kudos_id, name):
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
         'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
         'kudos': kudos,
-        'related_profiles': kudos.owners[:20],
+        'related_handles': kudos.owners_handles[:20],
     }
     if kudos:
         token = Token.objects.select_related('contract').get(
@@ -271,6 +260,10 @@ def send_2(request):
         raise Http404
 
     kudos = Token.objects.filter(pk=_id).first()
+    if not kudos.send_enabled_for(request.user):
+        messages.error(request, f'This kudos is not available to be sent.')
+        return redirect(kudos.url)
+
     params = {
         'active': 'send',
         'issueURL': request.GET.get('source'),
@@ -350,7 +343,7 @@ def send_3(request):
         from_username=from_username,
         username=params['username'],
         network=params['network'],
-        tokenAddress=params['tokenAddress'],
+        tokenAddress=params.get('tokenAddress', ''),
         from_address=params['from_address'],
         is_for_bounty_fulfiller=params['is_for_bounty_fulfiller'],
         metadata=params['metadata'],
@@ -404,7 +397,7 @@ def send_4(request):
 
     # notifications
     maybe_market_kudos_to_email(kudos_transfer)
-    # record_user_action(kudos_transfer.from_username, 'send_kudos', kudos_transfer)
+    maybe_market_kudos_to_github(kudos_transfer)
     record_kudos_activity(
         kudos_transfer,
         kudos_transfer.from_username,
@@ -463,17 +456,20 @@ def record_kudos_activity(kudos_transfer, github_handle, event_name):
             'received_on': str(kudos_transfer.received_on) if kudos_transfer.received_on else None
         }
     }
+
     try:
-        kwargs['profile'] = Profile.objects.get(handle=github_handle)
+        kwargs['profile'] = Profile.objects.get(handle__iexact=github_handle)
     except Profile.MultipleObjectsReturned:
         kwargs['profile'] = Profile.objects.filter(handle__iexact=github_handle).first()
     except Profile.DoesNotExist:
         logging.error(f"error in record_kudos_activity: profile with github name {github_handle} not found")
         return
+
     try:
         kwargs['bounty'] = kudos_transfer.bounty
-    except:
+    except Exception:
         pass
+
     try:
         Activity.objects.create(**kwargs)
     except Exception as e:
@@ -566,3 +562,125 @@ def receive(request, key, txid, network):
     }
 
     return TemplateResponse(request, 'transaction/receive.html', params)
+
+
+def get_nonce(network, address):
+    # this function solves the problem of 2 pending tx's writing over each other
+    # by checking both web3 RPC *and* the local DB for the nonce
+    # and then using the higher of the two as the tx nonce
+    from perftools.models import JSONStore
+    w3 = get_web3(network)
+
+    # web3 RPC node: nonce
+    nonce_from_web3 = w3.eth.getTransactionCount(address)
+
+    # db storage
+    key = f"nonce_{network}_{address}"
+    view = 'get_nonce'
+    nonce_from_db = 0
+    try:
+        nonce_from_db = JSONStore.objects.get(key=key, view=view).data[0]
+        nonce_from_db += 1 # increment by 1 bc we need to be 1 higher than last txid
+    except:
+        pass
+
+    new_nonce = max(nonce_from_db, nonce_from_web3)
+
+    # update JSONStore
+    JSONStore.objects.filter(key=key, view=view).all().delete()
+    JSONStore.objects.create(key=key, view=view, data=[new_nonce])
+
+    return new_nonce
+
+
+@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
+def receive_bulk(request, secret):
+
+    coupons = BulkTransferCoupon.objects.filter(secret=secret)
+    if not coupons.exists():
+        raise Http404
+
+    coupon = coupons.first()
+
+    if coupon.num_uses_remaining <= 0:
+        raise PermissionDenied
+
+    kudos_transfer = None
+    if request.user.is_authenticated:
+        redemptions = BulkTransferRedemption.objects.filter(redeemed_by=request.user.profile, coupon=coupon)
+        if redemptions.exists():
+            kudos_transfer = redemptions.first().kudostransfer
+
+    if request.POST:
+        address = Web3.toChecksumAddress(request.POST.get('forwarding_address'))
+        user = request.user
+        profile = user.profile
+        save_addr = request.POST.get('save_addr')
+        ip_address = get_ip(request)
+
+        # handle form submission
+        if save_addr:
+            profile.preferred_payout_address = address
+            profile.save()
+
+        kudos_contract_address = Web3.toChecksumAddress(settings.KUDOS_CONTRACT_MAINNET)
+        kudos_owner_address = Web3.toChecksumAddress(settings.KUDOS_OWNER_ACCOUNT)
+        w3 = get_web3(coupon.token.contract.network)
+        contract = w3.eth.contract(Web3.toChecksumAddress(kudos_contract_address), abi=kudos_abi())
+        tx = contract.functions.clone(address, coupon.token.token_id, 1).buildTransaction({
+            'nonce': get_nonce(coupon.token.contract.network, kudos_owner_address),
+            'gas': 500000,
+            'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(5) * 10**9),
+            'value': int(coupon.token.price_finney / 1000.0 * 10**18),
+        })
+
+        signed = w3.eth.account.signTransaction(tx, settings.KUDOS_PRIVATE_KEY)
+        txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
+
+        with transaction.atomic():
+            kudos_transfer = KudosTransfer.objects.create(
+                emails=[request.user.email],
+                # For kudos, `token` is a kudos.models.Token instance.
+                kudos_token_cloned_from=coupon.token,
+                amount=0,
+                comments_public=coupon.comments_to_put_in_kudos_transfer,
+                ip=ip_address,
+                github_url='',
+                from_name=coupon.sender_profile.handle,
+                from_email='',
+                from_username=coupon.sender_profile.handle,
+                username=profile.handle,
+                network=coupon.token.contract.network,
+                from_address=settings.KUDOS_OWNER_ACCOUNT,
+                is_for_bounty_fulfiller=False,
+                metadata={'coupon_redemption': True},
+                recipient_profile=profile,
+                sender_profile=coupon.sender_profile,
+                txid=txid,
+                receive_txid=txid,
+            )
+
+            # save to DB
+            BulkTransferRedemption.objects.create(
+                coupon=coupon,
+                redeemed_by=profile,
+                ip_address=ip_address,
+                kudostransfer=kudos_transfer,
+                )
+
+            coupon.num_uses_remaining -= 1
+            coupon.current_uses += 1
+
+    title = f"Redeem AirDropped *{coupon.token.humanized_name}* Kudos"
+    desc = f"This Kudos has been AirDropped to you.  About this Kudos: {coupon.token.description}"
+    params = {
+        'title': title,
+        'card_title': title,
+        'card_desc': desc,
+        'avatar_url': coupon.token.img_url,
+        'coupon': coupon,
+        'user': request.user,
+        'is_authed': request.user.is_authenticated,
+        'kudos_transfer': kudos_transfer,
+    }
+    return TemplateResponse(request, 'transaction/receive_bulk.html', params)

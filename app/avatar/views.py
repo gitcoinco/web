@@ -108,12 +108,12 @@ def save_avatar(request):
             profile.avatar.use_github_avatar = False
             profile.avatar.save()
         response['message'] = 'Avatar updated'
-        profile.avatar.create_from_config(svg_name=profile.handle)
+        profile.avatar.create_from_config()
         create_user_action(profile.user, 'updated_avatar', request)
     except Exception as e:
         response['status'] = 400
         response['message'] = 'Bad Request'
-        logger.error(e)
+        logger.error('Save Avatar - Error: (%s) - Handle: (%s)', e, profile.handle if profile else '')
     return JsonResponse(response, status=response['status'])
 
 
@@ -121,18 +121,21 @@ def handle_avatar(request, _org_name='', add_gitcoincologo=False):
     from dashboard.models import Profile
     icon_size = (215, 215)
 
+    if _org_name:
+        _org_name = _org_name.replace('@', '')
+
     if _org_name in settings.BLOCKED_USERS or is_deleted_account(_org_name):
         return get_err_response(request, blank_img=(_org_name == 'Self'))
 
     if _org_name:
         try:
-            profile = Profile.objects.select_related('avatar').get(handle__iexact=_org_name)
-            if profile.avatar:
+            profile = Profile.objects.select_related('avatar').filter(handle__iexact=_org_name).first()
+            if profile and profile.avatar:
                 avatar_file, content_type = profile.avatar.determine_response(request.GET.get('email', False))
                 if avatar_file:
                     return HttpResponse(avatar_file, content_type=content_type)
         except Exception as e:
-            logger.error(e)
+            logger.error('Handle Avatar - Exception: (%s) - Handle: (%s)', str(e), _org_name)
 
     # default response
     # params
@@ -164,5 +167,5 @@ def handle_avatar(request, _org_name='', add_gitcoincologo=False):
         img.save(response, 'PNG')
         return response
     except (AttributeError, IOError, SyntaxError) as e:
-        logger.error(e)
+        logger.error('Handle Avatar - Response error: (%s) - Handle: (%s)', str(e), _org_name)
         return get_err_response(request, blank_img=(_org_name == 'Self'))

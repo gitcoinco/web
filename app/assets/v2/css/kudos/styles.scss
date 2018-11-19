@@ -79,14 +79,28 @@ $bg-cellarius: #4D5858;
   background: #fff;
   border-radius: .25rem;
   height: 100%;
-  overflow: hidden;
+  transition: all 0.5s ease-in-out;
 
-  &:hover,
-  &:active,
-  &:focus,
-  &:focus-within {
-    .content-hover {
-      display: flex;
+  &:hover {
+    z-index: 2;
+  }
+
+  > a {
+    position: relative;
+    display: block;
+  }
+
+  .sender-avatar {
+    position: absolute;
+    width: 50px;
+    border-radius: 50%;
+    bottom: 1em;
+    left: 7%;
+    width: 18%;
+
+    &.right {
+      left: auto;
+      right: 5%;
     }
   }
 
@@ -102,9 +116,10 @@ $bg-cellarius: #4D5858;
 
 .kd-content {
   font-size: 0.9rem;
-  padding: 1.3rem 2rem;
+  padding: 1.3rem 1.3rem 0.7rem;
 
-  a {
+  a,
+  b {
     color: #3e00ff;
   }
 }
@@ -118,14 +133,17 @@ $bg-cellarius: #4D5858;
   background: rgba($gc-blue,.8);
   color: white;
   padding: 1rem;
-  display: none;
   overflow-y:auto;
   flex-direction: column;
-  // justify-content: space-between;
 
   a {
     color: white;
     font-weight: 700;
+    font-size: 0.9rem;
+  }
+
+  time {
+    font-size: 0.75rem;
   }
 }
 
@@ -257,17 +275,12 @@ $bg-cellarius: #4D5858;
   );
 }
 
-
-#shape-hexagon {
-  // transition: all linear 1s;
-}
 a:hover {
   #shape-hexagon {
     animation-play-state: paused;
   }
 }
   #shape-hexagon {
-    // stroke:red;
     animation: rotation 5s linear infinite;
     animation-fill-mode: none;
     animation-direction: alternate;
@@ -308,15 +321,6 @@ a:hover {
     stroke:#0044e0;
     fill:rgba(#0044e0,0.6);
   }
-  // stroke:#1e6ee2;
-  //   stroke:#662d91;
-  //   stroke:#018cb2;
-  //   stroke:#e57418;
-  //   stroke:#4d4d4d;
-  //   stroke:#0044e0;
-  // stroke-dasharray: 30
-  // -webkit-transform: rotate(360deg);
-          // transform: rotate(360deg);
 }
 
 
@@ -349,7 +353,6 @@ a:hover {
     font-size: 14px;
     margin: 0.8em;
     margin-bottom: -3em;
-    // width: 22%;
     perspective: 1000px;
     position: relative;
     height: 208px;
@@ -459,7 +462,6 @@ a:hover {
   @media(min-width: 800px) {
     grid-template-columns: repeat(8, 1fr);
     .paging-animation {
-      // font-size: 16px;
       &:nth-child(1) {
         grid-column: 1/3;
       }
@@ -577,6 +579,11 @@ a.cellarius-partner:before {
   border-bottom: 1px solid #C8C8C8;
   padding-bottom: 0.8rem;
   margin-bottom: 1rem;
+
+  img {
+    position: relative;
+    top: -2px;
+  }
 }
 
 .kudos-details__price {
@@ -686,4 +693,103 @@ clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
   border-left: 0;
   margin-left: -10px;
   margin-bottom: -20px;
+}
+
+.flip-card {
+  -webkit-perspective: 1000;
+  -moz-perspective: 1000;
+  -o-perspective: 1000;
+  perspective: 1000px;
+  position: relative;
+  outline: none;
+  background-color: transparent;
+  display: flex;
+
+  &:focus .flip-card__flipper {
+    transform: rotateY(-10deg);
+    box-shadow: 2px 0px 7px 1px hsla(0, 0%, 0%, 0.1);
+  }
+
+  &__hold {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  &__flipper {
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    transition: 0.6s;
+    position: relative;
+    display: flex;
+    cursor: pointer;
+    border-radius: 3px;
+  }
+  &__front {
+    position: relative;
+    background: white;
+    border-radius: .25rem;
+    z-index: 2;
+  	transform: rotateY(0);
+  }
+
+
+  &__flipper:hover {
+    transform: rotateY(-10deg);
+    box-shadow: 2px 0px 7px 1px hsla(0, 0%, 0%, 0.1);
+  }
+  &.turn .flip-card__flipper {
+    transform: rotateY(-0.5turn);
+  }
+
+  &__back {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: rotateY(-0.5turn);
+    border-radius: .25rem;
+  }
+
+  &__extra-data {
+    display: flex;
+    justify-content: space-between;
+    margin: .5rem 0 1.5rem;
+
+    a {
+      font-size: 0.75rem;
+    }
+  }
+
+  &__stack-img {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: flex-end;
+
+    img {
+      border: 1px solid #fff;
+      height: 30px;
+      margin-left: -18px;
+    }
+  }
+
+}
+
+.bubble {
+  background: rgba(0,0,0,0.4);
+  padding: 0.7em;
+  position: relative;
+  border-radius: 3px;
+  margin-top: 1.3em;
+  line-height: 1.3em;
+
+  p {
+    margin-bottom: 0;
+  }
+
+  &:after {
+    content: '';
+    border: 11px solid;
+    position: absolute;
+    border-color: transparent transparent rgba(0, 0, 0, 0.4) transparent;
+    border-width: 0px 0.5em 0.5em 0.5em;
+    top: -0.5em;
+    left: 1em;
+  }
 }

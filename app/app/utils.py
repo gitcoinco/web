@@ -173,6 +173,7 @@ def setup_lang(request, user):
 
 
 def sync_profile(handle, user=None, hide_profile=True):
+    handle = handle.strip().replace('@', '')
     data = get_user(handle)
     email = ''
     is_error = 'name' not in data.keys()

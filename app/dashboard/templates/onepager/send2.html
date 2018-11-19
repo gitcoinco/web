@@ -88,7 +88,7 @@
       <input name="amount" type="text" placeholder="1.1" id="amount" value="" style="width: 170px; display: inline;">
     </div>
     <div id="usd_amount"> &nbsp;</div>
-    <div id="tooltip">{% trans "Where is my Eth going? " %}<i class='fa fa-info-circle'></i></div><br>
+    <br>
     <div class="pb-1 to_name">
       <label>{% trans "To Github Username" %}:</label> <br>
       <select id="username" class="username-search custom-select" style="max-width: 400px; margin-left: auto; margin-right: auto;"></select>
@@ -141,6 +141,10 @@
       <label for="tos">{% blocktrans %}I understand &amp; agree to the <a href="https://gitcoin.co/terms">terms of service</a>.{% endblocktrans %}</label>
     </div>
     <a href="#" id="send" class="button button--primary">{% trans "Send" %} <span class="emoji">⚡️</span></a>
+      <br>
+      <br>
+      <br>
+      <div id="tooltip" style="color:#fc7596;">{% trans "Where are my tokens going? " %}<i class='fa fa-info-circle'></i></div><br>
   </div>
   <div id="send_eth_done" style="display:none;">
     <h1>{% trans "Woo hoo!" %}</h1>
