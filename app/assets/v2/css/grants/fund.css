@@ -5,3 +5,8 @@
 #frequency_count {
   height: 40px !important;
 }
+
+.grant-banner-img {
+  max-height: 20rem;
+  overflow-y: hidden;
+}

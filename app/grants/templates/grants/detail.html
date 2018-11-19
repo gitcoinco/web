@@ -33,7 +33,7 @@
     <div class="grant__header py-5">
       <div class="container">
         <div class="row">
-          <div class="grant-banner col-12 col-lg-6 col-xl-5 p-0 mb-5 mb-md-0">
+          <div class="grant-banner col-12 col-lg-6 col-xl-5 p-0 mb-5 my-md-auto">
             <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% static 'v2/images/bitmap.png' %}{% endif %}" width="100%" />
           </div>
           <div class="col-12 col-lg-6 offset-xl-1 col-xl-5">
@@ -110,7 +110,7 @@
                 </form>
                 {% elif subscription %}
                     <a href="{% url 'grants:subscription_cancel' grant.id subscription.id %}">
-                      <button class="button button--primary button--full">{% trans "Cancel Your Funding" %}</button>
+                      <button class="button button--primary button--warning button--full">{% trans "Cancel Your Funding" %}</button>
                     </a>
                 {% else %}
                   <a href="{% url 'grants:fund' grant.id %}">
