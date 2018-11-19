@@ -81,6 +81,11 @@
                   <label for=tipPercent>{% trans "(Optional) Add a tip of:" %}</label>
                   <input name='tipPercent' id="tipPercent" class="gc-round-text-input gc-border-blue" style="width: 50px;" type="number" placeholder="" value="0" min="0" /> % worth <span id="tipEstimate">0</span> {{bounty.token_name}}
                 </div>
+                <div>
+                  Suggested Kudos
+                  <div id="kudos-holder"></div>
+
+                </div>
                 {% include 'shared/add_kudos.html' %}
                 <div id="gas-section">
                   {% include 'shared/bounty_actions_hidden_vars.html' %}
@@ -140,4 +145,6 @@
   <script src="{% static "v2/js/kudos-search.js" %}"></script>
   <script src="{% static "v2/js/pages/kudos_send.js" %}"></script>
   <script src="{% static "v2/js/tooltip_hover.js" %}"></script>
+  <script src="{% static "v2/js/ajax-helper.js" %}"></script>
+  <script src="{% static "v2/js/kudos_suggestions.js" %}"></script>
 </html>
