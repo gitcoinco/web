@@ -178,7 +178,7 @@ def grant_new(request):
         team_members = request.POST.getlist('team_members[]')
 
         grant_kwargs = {
-            'title': request.POST.get('input_name', ''),
+            'title': request.POST.get('input_title', ''),
             'description': request.POST.get('description', ''),
             'reference_url': request.POST.get('reference_url', ''),
             'admin_address': request.POST.get('admin_address', ''),
