@@ -47,7 +47,11 @@ var get_rates_estimate = function(usd_amount) {
   if (success_prob >= 100) {
     success_prob = 99;
   }
-  rates_addon.push('' + hours + ' hrs at $' + round_rate + '/hr <i class="fa fa-arrow-right"></i> ' + success_prob.toFixed(0) + '% success rate<br>');
+  if (hours) {
+    rates_addon.push('' + hours + ' hrs at $' + round_rate + '/hr <i class="fa fa-arrow-right"></i> ' + success_prob.toFixed(0) + '% success rate<br>');
+  } else {
+    rates_addon.push('' + hours + ' hrs at $&infin;/hr <i class="fa fa-arrow-right"></i> ' + success_prob.toFixed(0) + '% success rate<br>');
+  }
   rates_addon = rates_addon.join(', ');
 
   var help_addon = ' <a href="https://medium.com/gitcoin/tutorial-how-to-price-work-on-gitcoin-49bafcdd201e" target="_blank" rel="noopener noreferrer">[Read our pricing guide]</a>';
