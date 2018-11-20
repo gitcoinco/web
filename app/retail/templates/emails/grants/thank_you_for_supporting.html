@@ -113,11 +113,11 @@
 
 <hr>
 <div class="grantInfo">
-  <a href="{% url 'grants:details' grant.id %}">
+  <a href="{% url 'grants:details' grant.id grant.slug %}">
     <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% static 'v2/images/bitmap.png' %}{% endif %}" width="50" height="50" />
   </a>
   <br>
-  <a class="grantInfoName" href="{% url 'grants:details' grant.id %}">
+  <a class="grantInfoName" href="{% url 'grants:details' grant.id grant.slug %}">
     {{ grant.title }}
   </a>
   <p>
@@ -137,11 +137,11 @@
 
 <br>
 <br>
-<a class="updatesButton" href="{% url 'grants:details' grant.id %}">{% trans "View Updates" %}</a>
+<a class="updatesButton" href="{% url 'grants:details' grant.id grant.slug %}">{% trans "View Updates" %}</a>
 <br>
 <br>
 <p>{% trans "If you ever need to, you can cancel your support" %}
-  <a href="{% url 'grants:subscription_cancel' grant.id subscription.id %}">{% trans "here." %}</a>
+  <a href="{% url 'grants:subscription_cancel' grant.id grant.slug subscription.id %}">{% trans "here." %}</a>
 </p>
 
 {% endblock %}

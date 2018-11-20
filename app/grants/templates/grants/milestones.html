@@ -21,7 +21,7 @@
             <h1 class="font-title-xl">{% trans "Create Milestones for " %}{{ grant.title }}</h1>
           </div>
           <div class="milestones-input">
-            <form action="{% url 'grants:milestones' grant.id %}" method="POST">
+            <form action="{% url 'grants:milestones' grant.id grant.slug %}" method="POST">
               {% csrf_token %}
               <input type="hidden" name="method" value="POST">
               <div class="form__group-horizontal">
@@ -37,7 +37,7 @@
                 </div>
               </div>
               <div class="form__footer">
-                <a class="mt-2" href="{% url 'grants:details' grant.id %}">{% trans "Back to Grant" %}</a>
+                <a class="mt-2" href="{% url 'grants:details' grant.id grant.slug %}">{% trans "Back to Grant" %}</a>
                 <button class="btn btn-gc-blue">{% trans "Create Milestone" %}</button>
               </div>
             </form>
@@ -53,7 +53,7 @@
                       {% if milestone.completion_date %}
                         {% trans 'Date Completed - ' %}{{ milestone.completion_date }}
                       {% else %}
-                        <form method="POST" action="{% url 'grants:milestones' grant.id %}">
+                        <form method="POST" action="{% url 'grants:milestones' grant.id grant.slug %}">
                           {% csrf_token %}
                           <input type="hidden" name="method" value="">
                           <input type="hidden" name="milestone_id" value="{{milestone.id}}">

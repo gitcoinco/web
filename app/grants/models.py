@@ -19,8 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from django.contrib.postgres.fields import JSONField
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
+from django_extensions.db.fields import AutoSlugField
 from economy.models import SuperModel
 from grants.utils import get_upload_filename
 
@@ -28,7 +30,29 @@ from grants.utils import get_upload_filename
 class GrantQuerySet(models.QuerySet):
     """Define the Grant default queryset and manager."""
 
-    pass
+    def active(self):
+        """Filter results down to active grants only."""
+        return self.filter(active=True)
+
+    def inactive(self):
+        """Filter results down to inactive grants only."""
+        return self.filter(active=False)
+
+    def keyword(self, keyword):
+        """Filter results to all Grant objects containing the keywords.
+
+        Args:
+            keyword (str): The keyword to search title, description, and reference URL by.
+
+        Returns:
+            dashboard.models.GrantQuerySet: The QuerySet of grants filtered by keyword.
+
+        """
+        return self.filter(
+            Q(description__icontains=keyword) |
+            Q(title__icontains=keyword) |
+            Q(reference_url__icontains=keyword)
+        )
 
 
 class Grant(SuperModel):
@@ -36,6 +60,7 @@ class Grant(SuperModel):
 
     active = models.BooleanField(default=True, help_text=_('Whether or not the Grant is active.'))
     title = models.CharField(default='', max_length=255, help_text=_('The title of the Grant.'))
+    slug = AutoSlugField(populate_from='title')
     description = models.TextField(default='', blank=True, help_text=_('The description of the Grant.'))
     reference_url = models.URLField(blank=True, help_text=_('The associated reference URL of the Grant.'))
     logo = models.ImageField(
@@ -115,6 +140,9 @@ class Grant(SuperModel):
         related_name='grant_teams',
         help_text=_('The team members contributing to this Grant.'),
     )
+
+    # Grant Query Set used as manager.
+    objects = GrantQuerySet.as_manager()
 
     def __str__(self):
         """Return the string representation of a Grant."""

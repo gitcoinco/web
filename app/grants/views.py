@@ -60,10 +60,7 @@ def grants(request):
     if request.method == 'POST':
         sort = request.POST.get('sort_option', '-created_on')
         keyword = request.POST.get('search_grants', '')
-        _grants = Grant.objects.filter(
-            Q(description__icontains=keyword) | Q(title__icontains=keyword) | Q(reference_url__icontains=keyword),
-            active=True
-        ).order_by(sort)
+        _grants = Grant.objects.active().keyword(keyword).order_by(sort)
 
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
@@ -77,12 +74,12 @@ def grants(request):
     return TemplateResponse(request, 'grants/index.html', params)
 
 
-def grant_details(request, grant_id):
+def grant_details(request, grant_id, grant_slug):
     """Display the Grant details page."""
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
 
     try:
-        grant = Grant.objects.prefetch_related('subscriptions', 'milestones').get(pk=grant_id)
+        grant = Grant.objects.prefetch_related('subscriptions', 'milestones').get(pk=grant_id, slug=grant_slug)
         milestones = grant.milestones.order_by('due_date')
         subscriptions = grant.subscriptions.filter(active=True)
         user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
@@ -138,20 +135,6 @@ def grant_details(request, grant_id):
         'description': 'Another stellar update about this project.',
     }]
 
-    gh_data = [{
-        'title': 'Initial commit by flapjacks',
-        'date': '08.02.2018',
-        'description': 'Initial commit with some blah blah blah...',
-    }, {
-        'title': 'Fix the build by derp-nation',
-        'date': '08.02.2018',
-        'description': 'Initial commit with some blah blah blah...',
-    }, {
-        'title': 'A subpar commit by derp-diggity',
-        'date': '08.02.2018',
-        'description': 'Initial commit with some blah blah blah...',
-    }]
-
     params = {
         'active': 'grant_details',
         'title': _('Grant Details'),
@@ -161,7 +144,6 @@ def grant_details(request, grant_id):
         'is_admin': (grant.admin_profile.id == profile.id) if profile and grant.admin_profile else False,
         'grant_is_inactive': not grant.active,
         'activity': activity_data,
-        'gh_activity': gh_data,
         'milestones': milestones,
         'keywords': get_keywords(),
     }
@@ -177,6 +159,7 @@ def grant_new(request):
         logo = request.FILES.get('input_image', None)
         receipt = json.loads(request.POST.get('receipt', '{}'))
         team_members = request.POST.getlist('team_members[]')
+        print('team_members: ', team_members, dir(team_members))
 
         grant_kwargs = {
             'title': request.POST.get('input_title', ''),
@@ -196,10 +179,11 @@ def grant_new(request):
         grant = Grant.objects.create(**grant_kwargs)
         new_grant(grant, profile)
 
-        if team_members:
-            grant.team_members.add(*list(map(int, team_members)))
+        team_members.append(profile.id)
+        grant.team_members.add(*list(filter(lambda member_id: member_id > 0, map(int, team_members))))
 
-        return redirect(reverse('grants:details', args=(grant.pk, )))
+
+        return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
     params = {
         'active': 'new_grant',
@@ -213,12 +197,12 @@ def grant_new(request):
 
 
 @login_required
-def milestones(request, grant_id):
+def milestones(request, grant_id, grant_slug):
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
-    grant = Grant.objects.get(pk=grant_id)
+    grant = Grant.objects.prefetch_related('milestones').get(pk=grant_id, slug=grant_slug)
 
     if profile != grant.admin_profile:
-        return redirect(reverse('grants:details', args=(grant.pk, )))
+        return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
     if request.method == "POST":
         method = request.POST.get('method')
@@ -237,13 +221,13 @@ def milestones(request, grant_id):
 
         if method == "DELETE":
             milestone_id = request.POST.get('milestone_id')
-            milestone = Milestone.objects.get(pk=milestone_id)
+            milestone = grant.milestones.get(pk=milestone_id)
             milestone.delete()
 
-        return redirect(reverse('grants:milestones', args=(grant.pk, )))
+        return redirect(reverse('grants:milestones', args=(grant.pk, grant.slug)))
 
     form = MilestoneForm()
-    milestones = Milestone.objects.filter(grant_id=grant_id).order_by('due_date')
+    milestones = grant.milestones.order_by('due_date')
 
     params = {
         'active': 'grant_milestones',
@@ -257,10 +241,10 @@ def milestones(request, grant_id):
 
 
 @login_required
-def grant_fund(request, grant_id):
+def grant_fund(request, grant_id,  grant_slug):
     """Handle grant funding."""
     try:
-        grant = Grant.objects.get(pk=grant_id)
+        grant = Grant.objects.get(pk=grant_id, slug=grant_slug)
     except Grant.DoesNotExist:
         raise Http404
 
@@ -285,7 +269,7 @@ def grant_fund(request, grant_id):
         subscription.save()
         new_supporter(grant, subscription)
         thank_you_for_supporting(grant, subscription)
-        return redirect(reverse('grants:details', args=(grant.pk, )))
+        return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
     params = {
         'active': 'fund_grant',
@@ -298,18 +282,18 @@ def grant_fund(request, grant_id):
 
 
 @login_required
-def subscription_cancel(request, grant_id, subscription_id):
+def subscription_cancel(request, grant_id, grant_slug, subscription_id):
     """Handle the cancellation of a grant subscription."""
     subscription = Subscription.objects.select_related('grant').get(pk=subscription_id)
     grant = getattr(subscription, 'grant', None)
     now = datetime.datetime.now()
     profile = request.user.profile if request.user.is_authenticated else None
 
-    if request.method == 'POST':
+    if request.method == 'POST' and profile == subscription.contributor_profile:
         subscription.active = False
         subscription.save()
         support_cancellation(grant, subscription)
-        return redirect(reverse('grants:details', args=(grant.pk, )))
+        return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
     params = {
         'active': 'cancel_grant',

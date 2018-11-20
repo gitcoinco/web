@@ -118,11 +118,11 @@
                   <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
                 </form>
                 {% elif user_subscription %}
-                    <a href="{% url 'grants:subscription_cancel' grant.id user_subscription.id %}">
+                    <a href="{% url 'grants:subscription_cancel' grant.id grant.slug user_subscription.id %}">
                       <button class="button button--primary button--warning button--full">{% trans "Cancel Your Funding" %}</button>
                     </a>
                 {% else %}
-                  <a href="{% url 'grants:fund' grant.id %}">
+                  <a href="{% url 'grants:fund' grant.id grant.slug %}">
                     <button class="button button--primary button--full">{% trans "Fund this Grant" %}</button>
                   </a>
                 {% endif %}
@@ -215,7 +215,7 @@
           <div class="col-12 order-md-2 col-md-4">
             <p>
               {% trans "Milestones" %}
-              {% if is_admin %}<a href="{% url 'grants:milestones' grant.id %}" class="milestones-edit">{% trans "Edit Milestones" %}</a>{% endif %}
+              {% if is_admin %}<a href="{% url 'grants:milestones' grant.id grant.slug %}" class="milestones-edit">{% trans "Edit Milestones" %}</a>{% endif %}
             </p>
             <div class="milestones-container">
                 {% if milestones %}
@@ -243,7 +243,6 @@
             <div id="tabs">
               <ul>
                 <li><a href="#all-updates">{% trans "Updates" %}</a></li>
-                <li><a href="#github">{% trans "GitHub" %}</a></li>
               </ul>
               <div id="all-updates" class="p-0">
                 {% if is_admin %}
@@ -275,19 +274,6 @@
                     </li>
                   {% empty %}
                     {% trans "No updates yet!" %}
-                  {% endfor %}
-                </ul>
-              </div>
-              <div id="github" class="p-0 mt-4">
-                <ul class="pl-0">
-                  {% for item in gh_activity %}
-                    <li>
-                      <div class="article-title font-title">{{ item.title }}</div>
-                      <div class="article-date font-body mb-2">{{ item.date }}</div>
-                      <p class="article-description font-subheader">{{ item.description }}</p>
-                    </li>
-                  {% empty %}
-                    {% trans "No Github activity yet!" %}
                   {% endfor %}
                 </ul>
               </div>

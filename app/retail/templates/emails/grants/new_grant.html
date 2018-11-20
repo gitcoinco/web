@@ -76,12 +76,12 @@
   <p class="grant-email-subtitle">{% trans "You are seeking " %}{{ grant.amount_goal }} {% trans "DAI monthly" %}</p>
 </div>
 
-<p class="grant-email-subtitle">{% trans "The details of your grant can be seen" %} <a href="{% url 'grants:details' grant.pk %}">{% trans "here." %}</a></p>
+<p class="grant-email-subtitle">{% trans "The details of your grant can be seen" %} <a href="{% url 'grants:details' grant.pk grant.slug %}">{% trans "here." %}</a></p>
 
 <hr>
 
 <div>
-  <a class="button grant-email-button" href="{% url 'grants:details' grant.pk %}">{% trans "View Grant" %}</a>
+  <a class="button grant-email-button" href="{% url 'grants:details' grant.pk grant.slug %}">{% trans "View Grant" %}</a>
 </div>
 
 {% endblock %}
