@@ -63,18 +63,14 @@ function kudosSearch(elem) {
       var markup;
 
       if (kudos.copy) {
-        var autocomplete_html = '<ul id=kudos_autocomplete>';
-
-        for (var i = 0; i < kudos.autocomplete.length; i++) {
-          autocomplete_html += "<li><a href='#'>" + kudos.autocomplete[i] + '</a></li>';
-        }
-        autocomplete_html += '</ul>';
-
         markup = `<div class="d-flex m-2 align-items-center">
-                        <div style="min-width: 0;width: 100%;">
-                        ${kudos.copy} ${autocomplete_html}
-                        <div>
-                      </div>`;
+                    <div style="min-width: 0;width: 100%;">
+                      ${kudos.copy}
+                      <ul>
+                        ${kudos.autocomplete.map((kudos) => `<li><a href="#" class="kudos_autocomplete">${kudos}</a></li>`).join(" ")}
+                      </ul>
+                    <div>
+                  </div>`;
       } else {
         markup = `<div class="d-flex m-2 align-items-center kudos-search-result">
                         <div class="mr-2">
@@ -153,13 +149,13 @@ function kudosSearch(elem) {
 $('document').ready(function() {
   kudosSearch();
 
-  $('body').on('click', '#kudos_autocomplete li, .kudos_autocomplete', function(e) {
+  $('body').on('click', '.kudos_autocomplete', function(e) {
     var search_term = $(this).text();
 
-    $('.select2-search__field').val(search_term);
-    $('.select2-search__field').trigger('keyup');
+    select2Search($('.kudos-search'), search_term)
     e.preventDefault();
   });
+
   var expandFunc = function(e) {
     $(this).parents('.kudos-search-result').addClass('kudos-search-result-large');
     $(this).parents('.kudos-search-result').find('.text-truncate').removeClass('text-truncate');
@@ -178,3 +174,14 @@ $('document').ready(function() {
   });
 
 });
+
+function select2Search(elem, term, select) {
+  elem.select2('open');
+  var $search = elem.data('select2').dropdown.$search || elem.data('select2').selection.$search;
+
+  $search.val(term);
+  $search.trigger('input');
+  if (select) {
+    setTimeout(function() { $('.select2-results__option').trigger("mouseup"); }, 500);
+  }
+}

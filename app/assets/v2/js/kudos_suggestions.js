@@ -1,9 +1,10 @@
- function suggestKudos(tags){
+function suggestKudos(tags){
   const url = '/api/v0.1/kudos_search/';
   let query = {
     term: tags,
     network: document.web3network
   };
+
   return new Promise(resolve => {
     const kudos = fetchData(url, 'GET', query)
 
@@ -15,14 +16,15 @@
 // get tags
 // request for each tag until quantify
 // return array with kudos data
+var resultData;
 
 async  function getSuggestions(tags){
   const kudosHolder = $('#kudos-holder');
-  try {
-    const resultData = await suggestKudos(tags);
-    console.log(resultData)
 
-    const resu = await fillTmp(resultData)
+  try {
+    resultData = await suggestKudos(tags);
+    const resu = await fillTmp(resultData);
+
     function fillTmp(results){
       let template = `<div>
         ${templateSuggestions(results)}
@@ -37,32 +39,51 @@ async  function getSuggestions(tags){
 
 
 function templateSuggestions(kudosGroup) {
+
   return `
-    ${kudosGroup.map(kudos => `
+    ${kudosGroup.map((kudos, index) => `
       <div>
       <img src="${static_url + kudos.image}" />
         ${kudos.name_human}
         ${kudos.price_finney} ETH
-        <button onclick="fillKudos('${kudos.name_human}', '${kudos.id}', ${kudos})">Add</button>
+        <button onclick="fillKudos(${index} )">Add</button>
       </div>
     `).join(" ")}
   `;
 }
 
+function createButton() {
+  var btnAdd = document.createElement("button");
+  btnAdd.innerHTML = "link";
+  btnAdd.onclick = function () {
+    that.fillKudos(index);
+  };
+}
+
 $(document).ready(function() {
-  getSuggestions('front')
+
 
 })
 
-function fillKudos (name, id,kudos) {
-  console.log(name, id)
-  var newOption = new Option(name, id, false, true);
+function fillKudos (index) {
+  const data = resultData[index]
+  console.log(data)
 
-  $('.kudos-search').append(newOption).trigger('change');
-  $('.kudos-search').trigger({
-    type: 'select2:select',
-    params: {
-        data: kudos
-    }
-  });
+  $('.kudos-search').data('select2')
+  .dataAdapter.select(data);
 }
+
+var refreshIntervalId = null;
+refreshIntervalId = setInterval(checkVariable, 1000);
+
+  function checkVariable() {
+    console.log('test')
+
+    if (typeof result !== "undefined") {
+      clearInterval(refreshIntervalId);
+      bountyKeywords = result.keywords.split(',')
+
+      getSuggestions(bountyKeywords[0])
+    }
+  }
+
