@@ -79,7 +79,7 @@
           {% url 'kudos_marketplace' as marketplace_url %}
           {% blocktrans %}
             <p class="mt-5">Kudos is a way of <span class="text-highlight-green">showing your appreciation</span> for another Gitcoin member.
-            <br>It's also a way to <span class="text-highlight-green">showcase special skills</span> that a member might have, such as Pythonista, or Design Star. Kudos tokens can also be <span class="text-highlight-green">bought</span> and <span class="text-highlight-green">sold</span> on the <a class="text-highlight-gc-blue" href="{{ marketplace_url }}">Kudos Marketplace</a>.</p>
+            <br>It's also a way to <span class="text-highlight-green">showcase special skills</span> that a member might have, such as Pythonista, or Design Star. Kudos tokens can be <span class="text-highlight-green">bought</span> and <span class="text-highlight-green">sold</span> on the <a class="text-highlight-gc-blue" href="{{ marketplace_url }}">Kudos Marketplace</a>.</p>
           {% endblocktrans %}
         </div>
       </div>
@@ -282,7 +282,7 @@
           </div>
           <div class="col-12 col-md-6 d-flex flex-column justify-content-center">
             <h3 class="h1 mb-3">{% trans "ERC-721" %}</h3>
-            <p class="font-bigger-1 lh-3">{% trans "ERC-721 is a standard developed by the Ethereum Foundation that can be used to create Non-Fungible Tokens (NFT's). The most well known example of this is Cryptokitties, but there are many other examples. Here at Gitcoin we believe in the potential of NFT's, so we created our own - Kudos. Want to integrate this ERC 721 into your Dapp?" %} <a href="https://github.com/OpenKudos/OpenKudos/issues/1" target="_blank">{% trans "click here" %}</a></p>
+            <p class="font-bigger-1 lh-3">{% trans "ERC-721 is a standard developed by the Ethereum Foundation that can be used to create Non-Fungible Tokens (NFT's). The most well known example of this is Cryptokitties, but there are many other examples. This project is Gitcoin's foray into the world of NFT's, and we named it after something that's our favorite part of working together - Kudos. Want to integrate this ERC 721 into your Dapp?" %} <a href="https://github.com/OpenKudos/OpenKudos/issues/1" target="_blank">{% trans "Click Here" %}</a></p>
           </div>
         </div>
         <div class="row justify-content-center pt-4">
@@ -292,54 +292,162 @@
 
     </section>
 
-    <section class="container-fluid my-5 pb-5">
+    <section class="container-fluid mt-5 pt-5 pb-5" style="background-color: #eeeeee;">
       <div class="container">
-          <h3 class="text-center my-5">FAQ</h3>
+          <h3 id='faq' class="text-center my-5">FAQ</h3>
 
         <div>
-          <div class="mb-3">
+          <div class="mb-3" style="border-bottom: 1px solid black;">
             <h5 class="accordion">Kudos is a new usage of Non-Fungible tokens... Why did you make it?</h5>
             <div class="panel">
               <p>It's a common practice for on-site teams to be able to celebrate the work they've done together after shipping. We wanted to create a similar experience for distributed, open-source, teams to celebrate their wins and to celebrate each other.</p>
-              <p>Kudos is a way to celebrate the relationships that have been built. Kudos is meant to bootstrap reputation in web3.</p>
+              <p>Kudos is a way to celebrate the relationships that have been built. Kudos is meant to bootstrap reputation on Gitcoin.</p>
             </div>
           </div>
 
-          <div class="mb-3">
+        <div>
+          <div class="mb-3" style="border-bottom: 1px solid black;">
+            <h5 class="accordion">This seems like a good compliment for the extrinsic motivation provided by Gitcoin bounties.</h5>
+            <div class="panel">
+              <p>How very astute of you to notice that.</p>
+            </div>
+          </div>
+
+          <div class="mb-3" style="border-bottom: 1px solid black;">
             <h5 class="accordion">How are Kudos minted?</h5>
             <div class="panel">
-              <p>We currently take these steps but hope to explore uploaded svgs for minting in the future.</p>
+              <p>To mint a new kudos, follow these steps.</p>
               <ol>
                 <li>Post an idea to <a target="_blank" href="https://github.com/gitcoinco/kudosbadges/issues/new">https://github.com/gitcoinco/kudosbadges/issues/new</a></li>
                 <li>Get it prioritized with Mladen, our designer</li>
-                <li>Run it through a management command on the gitcoin site.. which will create the ERC721</li>
+                <li>We run a script which will create the ERC721</li>
+              </ol>
+              <p>If & once the demand for kudos increases, we would like to create a decentralized marketplace where Artists can make a living by creating new Kudos art.</p>
+            </div>
+          </div>
+
+        <div>
+          <div class="mb-3" style="border-bottom: 1px solid black;">
+            <h5 class="accordion">Why would I want to send a compliment to a coworker?</h5>
+            <div class="panel">
+              <p>Great question. Because </p>
+              <ol>
+                <li>they're a <a href="https://gitcoin.co/kudos/109/product_wizard">product wizard</a></li>
+                <li>they're a <a href="https://gitcoin.co/kudos/132/heros_honour">hero</a></li>
+                <li>they've got <a href="https://gitcoin.co/kudos/175/heart">heart</a></li>
+                <li>they're a <a href="https://gitcoin.co/kudos/90/builder_of_a_better_world">builder of a better world</a></li>
+              </ol>
+              <p>and they need to know it. </p>
+
+            </div>
+          </div>
+
+
+          <div class="mb-3" style="border-bottom: 1px solid black;">
+            <h5 class="accordion">Who earns money when a new Kudos is created?</h5>
+            <div class="panel">
+              <p>When a new Kudos is created, the ETH sent during that minting process is directly sent to the illustrator who created the Kudos artwork. In some cases, Gitcoin may also take a 10% fee to help keep the lights on.</p>
+            </div>
+          </div>
+
+          <div class="mb-3" style="border-bottom: 1px solid black;">
+            <h5 class="accordion">How is Kudos' privacy managed?</h5>
+            <div class="panel">
+              <p>When you send a kudos, you making an attestion about an attribute of the person who controls a web3 address.</p>
+              <p>Technically speaking, the attestation is an Ethereum transaction of a <strong>non-fungible token (NFT)</strong> being sent from a <strong>sender</strong> to a <strong>receiver</strong></p>
+              <p>When you send a kudos through the Gitcoin UI, you are sending the NFT to a secure proxy web3 address.</p>
+              <p>The recipient can decide to accept it or reject it.</p>
+              <p>For convenience, the recipient may elect to automatically accept Kudos in the future to forego the acceptance process.</p>
+            </div>
+          </div>
+
+          <div class="mb-3" style="border-bottom: 1px solid black;">
+            <h5 class="accordion">When moon?</h5>
+            <div class="panel">
+              <p>We made <a href="https://gitcoin.co/kudos/331/i_was_told_there_would_be_lambos">this kudos</a> just for you!</p>
+            </div>
+          </div>
+
+          <div class="mb-3" style="border-bottom: 1px solid black;">
+            <h5 class="accordion">Can I send a kudos to myself?</h5>
+            <div class="panel">
+              <p>Kudos is governed by two things:</p>
+              <p>1. The state & functionality of the smart contract.</p>
+              <p>2. Social norms.</p>
+              <p>By virtue of the state & functionality of the smart contract (1), you can absolutely send a Kudos to yourself.  Just like you can stand in front of a group of people and publicly compliment yourself. </p>
+              <p>By virtue of social norms (2), you might think twice.</p>
+            </div>
+          </div>
+
+
+          <div class="mb-3" style="border-bottom: 1px solid black;">
+            <h5 class="accordion">I want to add Kudos to my site. How can I do that?</h5>
+            <div class="panel">
+              <p>Kudos is a decentralized smart contract that any dapp can leverage on the same terms as Gitcoin Core. For more information, checkout get in touch over at <a target="_blank" href="https://github.com/OpenKudos/">https://github.com/OpenKudos/</a> or email <a href="mailto:founders@gitcoin.co">founders@gitcoin.co</a></p>
+            </div>
+          </div>
+
+        <div>
+          <div class="mb-3" style="border-bottom: 1px solid black;">
+            <h5 class="accordion">Whats your favorite kudos on the site rn?</h5>
+            <div class="panel">
+              <p>We are partial to:</p>
+              <ol>
+                <li><a href="https://gitcoin.co/kudos/429/mad_scientist">mad scientist</a></li>
+                <li><a href="https://gitcoin.co/kudos/186/red_stapler">red stapler</a></li>
+                <li><a href="https://gitcoin.co/kudos/430/resilience">resilience</a></li>
+                <li><a href="https://gitcoin.co/kudos/385/creative_cat">creative cat</a></li>
               </ol>
             </div>
           </div>
 
-          <div class="mb-3">
-            <h5 class="accordion">Who earns money when a new Kudos is created?</h5>
+
+        <div>
+          <div class="mb-3" style="border-bottom: 1px solid black;">
+            <h5 class="accordion">Whose beautiful voice is that on the <a href="https://www.youtube.com/watch?v=EOlMTOzmKKk" target="_blank">Kudos Marketing Video</a>?</h5>
             <div class="panel">
-              <p>When a new Kudos is created, the ETH sent during that minting process is sent to the illustrator who created the artwork for the Kudos. In some cases, Gitcoin may also take a 10% percentage of the minting.</p>
+              <p>The voice on the <a href="https://www.youtube.com/watch?v=EOlMTOzmKKk" target="_blank">Kudos Marketing Video</a> is <a href="https://twitter.com/coderberry">@coderberry</a> AKA "emceee booming barotone".  He loves it if you <a href="https://twitter.com/coderberry">tweet at him</a> and say hi!</p>
             </div>
           </div>
 
-          <div class="mb-3">
-            <h5 class="accordion">How is Kudos' privacy managed?</h5>
+        <div>
+          <div class="mb-3" style="border-bottom: 1px solid black;">
+            <h5 class="accordion">I have a technical question about Kudos.</h5>
             <div class="panel">
-              <p>When you send a kudos, you are sending the non-fungible token (NFT) to a proxy address. The recipient can decide to accept it or reject it.</p>
-              <p>A recipient may elect to automatically accept Kudos in the future if they wish to forego the acceptance process.</p>
+              <p>Checkout this <a href="https://github.com/gitcoinco/web/blob/master/docs/KUDOS.md">Technical FAQ</a, and also checkout <a href="https://github.com/gitcoinco/Kudos721Contract/blob/19b783e50825bfc258179454990a517e84343153/contracts/Kudos.sol">the smart contract</a>.</p>
             </div>
           </div>
 
-          <div class="mb-3">
-            <h5 class="accordion">I want to add Kudos to my site. How can I do that?</h5>
+        <div>
+          <div class="mb-3" style="border-bottom: 1px solid black;">
+            <h5 class="accordion">I am an artist and I want to create a kudos, can I?</h5>
             <div class="panel">
-              <p>We plan to make Kudos into an open network that any dapp can leverage. For more information, checkout get in touch over at <a target="_blank" href="https://github.com/OpenKudos/">https://github.com/OpenKudos/</a></p>
+              <p>
+
+                Kudos are a recurring revenue stream for artists.  Anyone can create a kudos!
+
+                
+                [To create a new kudos, click here and follow the instructions.](https://github.com/gitcoinco/kudosbadges/blob/master/README.md#to-create-a-new-kudos)
+
+              </p>
             </div>
           </div>
         </div>
+
+        <div>
+          <div class="mb-3" style="border-bottom: 1px solid black;">
+            <h5 class="accordion">I have another question and it's not listed here.</h5>
+            <div class="panel">
+              <p><a href="https://twitter.com/getgitcoin">Tweet us</a> or <a href="mailto:founders@gitcoin.co">Email Us</a></p>
+            </div>
+          </div>
+        </div>
+
+
       </div>
+
+
+
 
     </section>
     {% include 'shared/footer.html' %}
