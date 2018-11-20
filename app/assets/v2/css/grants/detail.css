@@ -150,7 +150,8 @@ textarea.editable {
 }
 
 .grant-banner {
-  overflow-x : hidden;
+  overflow : hidden;
+  max-height: 22rem;
 }
 
 .grant__stakeholders-list img,
