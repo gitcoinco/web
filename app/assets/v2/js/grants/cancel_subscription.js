@@ -51,7 +51,7 @@ window.onload = function() {
                   // data.amount_per_period
                   web3.utils.toTwosComplement(realTokenAmount),
                   // data.period_seconds
-                  web3.utils.toTwosComplement(data.period_seconds),
+                  web3.utils.toTwosComplement(data.real_period_seconds),
                   // data.gas_price
                   web3.utils.toTwosComplement(realGasPrice),
                   // nonce

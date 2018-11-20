@@ -17,6 +17,8 @@ $(document).ready(function() {
         data[this.name] = this.value;
       });
 
+      $('#token_symbol').val($('#js-token option:selected').text());
+
       let realPeriodSeconds = 0;
 
       if (data.frequency) {
@@ -102,7 +104,7 @@ $(document).ready(function() {
 
                   console.log('postData', postData);
 
-                  $('#frequency_count').val(realPeriodSeconds);
+                  $('#real_period_seconds').val(realPeriodSeconds);
 
                   $.each($(form).serializeArray(), function() {
                     data[this.name] = this.value;

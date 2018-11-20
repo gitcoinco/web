@@ -86,11 +86,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 <div class="progress-text mt-2">
                   <div class="row">
                     <div class="col-6">
-                      <span>{{ grant.amount_received }} DAI</span>
+                      <span>{{ grant.amount_received|floatformat:2|intcomma }} DAI</span>
                       <p>Current</p>
                     </div>
                     <div class="col-6 text-right">
-                      <span>{{ grant.amount_goal }} DAI</span>
+                      <span>{{ grant.amount_goal|floatformat:2|intcomma }} DAI</span>
                       <p>Goal</p>
                     </div>
                   </div>
@@ -175,6 +175,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <input type="hidden" id="signature" name="signature" value="">
             <input type="hidden" id="contributor_address" name="contributor_address" value="">
             <input type="hidden" id="gas_price" name="gas_price" value="">
+            <input type="hidden" id="token_symbol" name="token_symbol" value="">
+            <input type="hidden" id="real_period_seconds" name="real_period_seconds" value="">
           </div>
         </form>
       </div>

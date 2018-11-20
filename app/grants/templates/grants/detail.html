@@ -98,9 +98,14 @@
                       </div>
                     </div>
                   </div>
+                  {% if user_subscription %}
+                  <h5>
+                    {% trans 'You have agreed to contribute' %} {{ user_subscription.amount_per_period|floatformat:2|intcomma }} {{ user_subscription.token_symbol }} every {{ user_subscription.frequency }} {{ user_subscription.frequency_unit }}
+                  </h5>
+                  {% endif %}
                 </div>
                 {% if grant_is_inactive %}
-                  <h4>{% trans "This grant has ended. You can find all active grants" %}
+                  <h4 class="my-4" >{% trans "This grant has ended. You can find all active grants" %}
                     <a href="{% url 'grants:grants' %}">
                       {% trans "here." %}
                     </a>
@@ -112,8 +117,8 @@
                   </button>
                   <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
                 </form>
-                {% elif subscription %}
-                    <a href="{% url 'grants:subscription_cancel' grant.id subscription.id %}">
+                {% elif user_subscription %}
+                    <a href="{% url 'grants:subscription_cancel' grant.id user_subscription.id %}">
                       <button class="button button--primary button--warning button--full">{% trans "Cancel Your Funding" %}</button>
                     </a>
                 {% else %}
@@ -187,9 +192,9 @@
             {% endif %}
           </div>
           <div class="font-body">
-            <p class="sub-title">{% trans "Supported By" %} ({{ grant.subscriptions.all|length }})</p>
+            <p class="sub-title">{% trans "Supported By" %} ({{ subscriptions|length }})</p>
             <div class="grant__stakeholders-list">
-              {% for subscriber in grant.subscriptions.all %}
+              {% for subscriber in subscriptions %}
                 <a class="grant__stakeholders-item mr-2" href="{% url 'profile' subscriber.contributor_profile.handle %}">
                   <img src="{{ subscriber.contributor_profile.avatar_url }}" />
                 </a>
@@ -219,11 +224,9 @@
                     <li>
                       <div class="milestone-title">{{ milestone.title }}</div>
                       <div class="milestone-date">
-                        {{ milestone.due_date }} -
+                        <p>{% trans 'Due Date - ' %}{{ milestone.due_date }}</p>
                         {% if milestone.completion_date %}
-                          {{ milestone.completion_date }}
-                        {% else %}
-                          {% trans "Present" %}
+                          <p>{% trans 'Date Completed - ' %}{{ milestone.completion_date }}</p>
                         {% endif %}
                       </div>
                       <p class="milestone-description">{{ milestone.description }}</p>

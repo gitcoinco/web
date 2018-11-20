@@ -84,15 +84,15 @@ def grant_details(request, grant_id):
     try:
         grant = Grant.objects.prefetch_related('subscriptions', 'milestones').get(pk=grant_id)
         milestones = grant.milestones.order_by('due_date')
-        subscriptions = grant.subscriptions.all()
-        active_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
+        subscriptions = grant.subscriptions.filter(active=True)
+        user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
     except Grant.DoesNotExist:
         raise Http404
 
     if request.method == 'POST':
         grant.active = False
         grant.save()
-        grant_cancellation(grant, active_subscription)
+        grant_cancellation(grant, user_subscription)
         for sub in subscriptions:
             subscription_terminated(grant, sub)
 
@@ -156,7 +156,8 @@ def grant_details(request, grant_id):
         'active': 'grant_details',
         'title': _('Grant Details'),
         'grant': grant,
-        'subscription': active_subscription,
+        'subscriptions': subscriptions,
+        'user_subscription': user_subscription,
         'is_admin': (grant.admin_profile.id == profile.id) if profile and grant.admin_profile else False,
         'grant_is_inactive': not grant.active,
         'activity': activity_data,
@@ -182,8 +183,8 @@ def grant_new(request):
             'description': request.POST.get('description', ''),
             'reference_url': request.POST.get('reference_url', ''),
             'admin_address': request.POST.get('admin_address', ''),
-            'frequency': request.POST.get('frequency', 0),
             'token_address': request.POST.get('denomination', ''),
+            'token_symbol': request.POST.get('token_symbol', ''),
             'amount_goal': request.POST.get('amount_goal', 1),
             'transaction_hash': request.POST.get('transaction_hash', ''),
             'contract_address': request.POST.get('contract_address', ''),
@@ -272,8 +273,11 @@ def grant_fund(request, grant_id):
         subscription.contributor_signature = request.POST.get('signature', '')
         subscription.contributor_address = request.POST.get('contributor_address', '')
         subscription.amount_per_period = request.POST.get('amount_per_period', 0)
-        subscription.period_seconds = request.POST.get('frequency', 2592000)
+        subscription.real_period_seconds = request.POST.get('real_period_seconds', 2592000)
+        subscription.frequency = request.POST.get('frequency', 30)
+        subscription.frequency_unit = request.POST.get('frequency_unit', 'days')
         subscription.token_address = request.POST.get('denomination', '')
+        subscription.token_symbol = request.POST.get('token_symbol', '')
         subscription.gas_price = request.POST.get('gas_price', 0)
         subscription.network = request.POST.get('network', '')
         subscription.contributor_profile = profile
