@@ -101,8 +101,7 @@ window.onload = function() {
 
       };
       var failure_callback = function() {
-        // do nothing
-        $.noop();
+        unloading_button($('.submitBounty'));
       };
 
       return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, false);
@@ -135,8 +134,7 @@ window.onload = function() {
 
       };
       var failure_callback = function() {
-        // do nothing
-        $.noop();
+        unloading_button($('.submitBounty'));
       };
 
       return sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, kudosId, tokenId, success_callback, failure_callback, true);
