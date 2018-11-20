@@ -2,12 +2,12 @@
   Thank you for your pull request. Please provide a description above and review
   the requirements below.
 
-  Contributors guide: https://github.com/gitcoinco/web/blob/contributing/CONTRIBUTING.md
+  Contributors guide: https://docs.gitcoin.co/mk_contributors/
 -->
 
 ##### Description
 
-<!-- A description on what this PR aims to solve -->
+<!-- A description of what this PR aims to solve -->
 
 ##### Checklist
 
@@ -15,7 +15,7 @@
 
 - [ ] linter status: 100% pass
 - [ ] changes don't break existing behavior
-- [ ] commit message follows [commit guidelines](https://github.com/gitcoinco/web/blob/master/docs/CONTRIBUTING.md#step-4-commit)
+- [ ] commit message follows [commit guidelines](https://docs.gitcoin.co/mk_contributors/#step-4-commit)
 
 ##### Affected core subsystem(s)
 

@@ -16,6 +16,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+from json import loads as json_parse
 from os import walk as walkdir
 
 from django.conf import settings
@@ -31,17 +32,25 @@ from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
-from dashboard.models import Activity
+from app.utils import get_default_network
+from cacheops import cached_as, cached_view, cached_view_as
+from dashboard.models import Activity, Profile
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from economy.models import Token
-from marketing.mails import new_token_request
+from marketing.mails import new_funding_limit_increase_request, new_token_request
 from marketing.models import Alumni, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
+from perftools.models import JSONStore
+from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 
-from .utils import build_stat_results, programming_languages
+from .forms import FundingLimitIncreaseRequestForm
+from .utils import programming_languages
 
 
+@cached_as(
+    Activity.objects.select_related('bounty').filter(bounty__network='mainnet').order_by('-created'),
+    timeout=120)
 def get_activities(tech_stack=None, num_activities=15):
     # get activity feed
 
@@ -102,6 +111,7 @@ def index(request):
     return TemplateResponse(request, 'landing/funder.html', context)
 
 
+@cached_view(timeout=60 * 10)
 def contributor_landing(request, tech_stack):
 
     slides = [
@@ -239,20 +249,31 @@ def how_it_works(request, work_type):
     """Show How it Works / Funder page."""
     if work_type not in ['funder', 'contributor']:
         raise Http404
-
+    if work_type == 'contributor':
+        title = _('How to Find & Complete Open Bounties | Gitcoin')
+        desc = _('Learn how to get paid for open bug bounties and get paid in crypto (ETH or any ERC-20 token)')
+    elif work_type == 'funder':
+        title = _('How to Create & Fund Issues/Bounties | Gitcoin')
+        desc = _('Learn how to create open bug bounties and get freelance developers to complete your job/task.')
     context = {
         'active': f'how_it_works_{work_type}',
+        'title': title,
+        'desc': desc
     }
-    return TemplateResponse(request, 'how_it_works.html', context)
+    return TemplateResponse(request, 'how_it_works/index.html', context)
 
 
+@cached_view_as(Profile.objects.hidden())
 def robotstxt(request):
+    hidden_profiles = Profile.objects.hidden()
     context = {
         'settings': settings,
+        'hidden_profiles': hidden_profiles,
     }
     return TemplateResponse(request, 'robots.txt', context, content_type='text')
 
 
+@cached_view(timeout=60 * 10)
 def about(request):
     core_team = [
         (
@@ -338,14 +359,14 @@ def about(request):
     exclude_community = ['kziemiane', 'owocki', 'mbeacom']
     community_members = [
     ]
-    leadeboardranks = LeaderboardRank.objects.filter(active=True, leaderboard='quarterly_earners').exclude(github_username__in=exclude_community).order_by('-amount')[0: 15]
+    leadeboardranks = LeaderboardRank.objects.filter(active=True, leaderboard='quarterly_earners').exclude(github_username__in=exclude_community).order_by('-amount').cache()[0: 15]
     for lr in leadeboardranks:
         package = (lr.avatar_url, lr.github_username, lr.github_username, '')
         community_members.append(package)
 
     alumnis = [
     ]
-    for alumni in Alumni.objects.select_related('profile').filter(public=True).exclude(organization='gitcoinco'):
+    for alumni in Alumni.objects.select_related('profile').filter(public=True).exclude(organization='gitcoinco').cache():
         package = (alumni.profile.avatar_url, alumni.profile.username, alumni.profile.username, alumni.organization)
         alumnis.append(package)
 
@@ -404,16 +425,18 @@ def results(request, keyword=None):
     """Render the Results response."""
     if keyword and keyword not in programming_languages:
         raise Http404
-    context = build_stat_results(keyword)
+    context = JSONStore.objects.get(view='results', key=keyword).data
     context['is_outside'] = True
+    context['avatar_url'] = static('v2/images/results_preview.gif')
     return TemplateResponse(request, 'results.html', context)
 
 
+@cached_view_as(Activity.objects.all().order_by('-created'))
 def activity(request):
     """Render the Activity response."""
-
+    page_size = 300
     activities = Activity.objects.all().order_by('-created')
-    p = Paginator(activities, 300)
+    p = Paginator(activities, page_size)
     page = request.GET.get('page', 1)
 
     context = {
@@ -720,6 +743,10 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
         'url': 'https://medium.com/gitcoin/tutorial-how-to-price-work-on-gitcoin-49bafcdd201e',
         'title': _('How to Price Work on Gitcoin'),
     }, {
+        'img': 'https://raw.github.com/gitcoinco/Gitcoin-Exemplars/master/helpImage.png',
+        'url': 'https://github.com/gitcoinco/Gitcoin-Exemplars',
+        'title': _('Exemplars for Writing A Good Bounty Description'),
+    }, {
         'img': static('v2/images/help/tools.png'),
         'url': 'https://medium.com/gitcoin/tutorial-post-a-bounty-in-90-seconds-a7d1a8353f75',
         'title': _('Post a Bounty in 90 Seconds'),
@@ -793,7 +820,7 @@ def presskit(request):
             "#FFFFFF",
             "23, 244, 238"
         ),
-        ]
+    ]
 
     context = {
         'brand_colors': brand_colors,
@@ -888,23 +915,6 @@ def itunes(request):
     return redirect('https://itunes.apple.com/us/app/gitcoin/id1319426014')
 
 
-def ios(request):
-
-    context = {
-        'active': 'ios',
-        'title': 'iOS app',
-        'card_title': 'Gitcoin has an iOS app!',
-        'card_desc': 'Gitcoin aims to make it easier to grow open source from anywhere in the world,\
-            anytime.  We’re proud to announce our iOS app, which brings us a step closer to this north star!\
-            Browse open bounties on the go, express interest, and coordinate your work on the move.',
-    }
-    return TemplateResponse(request, 'ios.html', context)
-
-
-def iosfeedback(request):
-    return redirect('https://goo.gl/forms/UqegoAMh7HVibfuF3')
-
-
 def casestudy(request):
     return redirect('https://docs.google.com/document/d/1M8-5xCGoJ8u-k0C0ncx_dr9LtHwZ32Ccn3KMFtEnsBA/edit')
 
@@ -953,7 +963,6 @@ def newtoken(request):
                 context['msg'] = str(_('You must provide the following fields: ')) + key
                 validtion_passed = False
         if validtion_passed:
-            ip = get_ip(request)
             obj = Token.objects.create(
                 address=request.POST['address'],
                 symbol=request.POST['symbol'],
@@ -1012,6 +1021,7 @@ def web3(request):
     return redirect('https://www.youtube.com/watch?v=cZZMDOrIo2k')
 
 
+@cached_view_as(Token.objects.filter(network=get_default_network, approved=True))
 def tokens(request):
     context = {}
     networks = ['mainnet', 'ropsten', 'rinkeby', 'unknown', 'custom']
@@ -1050,5 +1060,50 @@ def ui(request):
     return TemplateResponse(request, 'ui_inventory.html', context)
 
 
-def lbcheck(request):
-    return HttpResponse(status=200)
+@csrf_exempt
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def increase_funding_limit_request(request):
+    user = request.user if request.user.is_authenticated else None
+    profile = request.user.profile if user and hasattr(request.user, 'profile') else None
+    usdt_per_tx = request.GET.get('usdt_per_tx', None)
+    usdt_per_week = request.GET.get('usdt_per_week', None)
+    is_staff = user.is_staff if user else False
+
+    if is_staff and usdt_per_tx and usdt_per_week:
+        try:
+            profile_pk = request.GET.get('profile_pk', None)
+            target_profile = Profile.objects.get(pk=profile_pk)
+            target_profile.max_tip_amount_usdt_per_tx = usdt_per_tx
+            target_profile.max_tip_amount_usdt_per_week = usdt_per_week
+            target_profile.save()
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+
+        return JsonResponse({'msg': _('Success')}, status=200)
+
+    if request.body:
+        if not user or not profile or not profile.handle:
+            return JsonResponse(
+                {'error': _('You must be Authenticated via Github to use this feature!')},
+                status=401)
+
+        try:
+            result = FundingLimitIncreaseRequestForm(json_parse(request.body))
+            if not result.is_valid():
+                raise
+        except Exception as e:
+            return JsonResponse({'error': _('Invalid JSON.')}, status=400)
+
+        new_funding_limit_increase_request(profile, result.cleaned_data)
+
+        return JsonResponse({'msg': _('Request received.')}, status=200)
+
+    form = FundingLimitIncreaseRequestForm()
+    params = {
+        'form': form,
+        'title': _('Request a Funding Limit Increase'),
+        'card_title': _('Gitcoin - Request a Funding Limit Increase'),
+        'card_desc': _('Do you hit the Funding Limit? Request a increasement!')
+    }
+
+    return TemplateResponse(request, 'increase_funding_limit_request_form.html', params)

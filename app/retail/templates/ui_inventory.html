@@ -24,7 +24,7 @@ along with this program. If not,see
   <link rel="stylesheet" href="{% static "v2/css/card.css" %}">
   <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
   <link rel="stylesheet" href="{% static "v2/css/tabs.css" %}">
-  <body class="{{ active }}">
+  <body class="{{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header">
       {% include 'shared/minihero.html' with h1='UI Inventory' position_h1_below_logo=1 %}
@@ -221,25 +221,24 @@ along with this program. If not,see
           <button type="button" id="three" class="section-tab">
             my-tab three
           </button>
-          <div id="my-tabs" class="tab-indicator"></div>
         </div>
 
-        <div id="my-tabs" class="tab-sections section d-flex">
-          <div id="one" class="tab-section">
+        <div id="my-tabs-sections" class="tab-sections section">
+          <div id="section-one" class="tab-section active">
             <div class="row mt-5 mb-5">
               <div class="col text-center">
                 <h1>One</h1>
               </div>
             </div>
           </div>
-          <div id="two" class="tab-section">
+          <div id="section-two" class="tab-section">
             <div class="row mt-5 mb-5">
               <div class="col text-center">
                 <h1>Two</h1>
               </div>
             </div>
           </div>
-          <div id="three" class="tab-section">
+          <div id="section-three" class="tab-section">
             <div class="row mt-5 mb-5">
               <div class="col text-center">
                 <h1>Three</h1>
@@ -359,9 +358,9 @@ along with this program. If not,see
         <div class="container-fluid header">
           {% include 'shared/minihero.html' with h1='shared/minihero.html' %}
         </div>
-        <p class="m-3">include 'shared/hero.html'</p>
+        <p class="m-3">include 'landing/funder/hero.html'</p>
         <div class="container-fluid header">
-          {% include 'shared/hero.html' %}
+          {% include 'landing/funder/hero.html' %}
         </div>
       </div>
 

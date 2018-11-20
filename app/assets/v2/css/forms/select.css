@@ -6,7 +6,6 @@
 
 .form__select2 {
   display: flex;
-  font-family: 'Muli', sans-serif;
   height: 100%;
 }
 
@@ -32,7 +31,6 @@
   border-radius: 3px;
   display: inline-block;
   font-size: 14px;
-  font-family: 'Muli', sans-serif;
   height: 37px;
   outline: none;
   width: 100%;

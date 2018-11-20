@@ -47,7 +47,7 @@ def pull_to_db():
     for i in range(0, 90000):
         members = client.lists.members.all(settings.MAILCHIMP_LIST_ID, count=get_size, offset=(i*get_size), fields="members.email_address")
         members = members['members']
-        if not len(members):
+        if not members:
             break
         print(i)
         for member in members:
@@ -65,7 +65,7 @@ def pull_to_db():
     print("- tip")
     from dashboard.models import Tip
     for tip in Tip.objects.all():
-        # do not add receive tip emails to the mailing list, 
+        # do not add receive tip emails to the mailing list,
         # don't want to spam people at 4 diff email addresses
         # for email in tip.emails:
         #    process_email(email, 'tip_usage')

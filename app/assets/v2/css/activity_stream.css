@@ -8,10 +8,8 @@
 }
 
 .box {
-  padding: 14px;
-  border: 1px solid #DBDBDB;
-  border-radius: 3px;
-  margin: 0;
+  padding: 1.2rem;
+  border-bottom: 1px solid #DBDBDB;
 }
 
 #avatar_url .avatar {
@@ -36,4 +34,8 @@
 
 #activity_stream .tag {
   display: inline-block;
+}
+#activity_stream .activity.new_kudos .token,
+#activity_stream .activity.new_kudos .usd{
+  display: none;
 }

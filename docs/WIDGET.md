@@ -12,8 +12,8 @@ We support both *image* widgets (see below) and dynamically resizing *javascript
 
 The JS image is responsive.  Here are some screenshots of it:
 
-<img src='imgs/example.png' width="300">
-<img src='imgs/example2.png' width="300">
+<img src='https://github.com/gitcoinco/web/raw/master/docs/imgs/example.png' width="300">
+<img src='https://github.com/gitcoinco/web/raw/master/docs/imgs/example2.png' width="300">
 <img src='https://gitcoin.co/funding/embed/?repo=https://github.com/gitcoinco/web&badge=1' width="300">
 
 ### Example
@@ -128,23 +128,23 @@ you will see a badge version of this widget.
 #### Badge
 
 <a href="https://gitcoin.co/explorer?q=metamask">
-    <img src="https://gitcoin.co/funding/embed?repo=https://github.com/MetaMask/metamask-extension/issues/2350&badge=1">
+    <img src="https://gitcoin.co/funding/embed?repo=https://github.com/MetaMask/metamask-extension/issues/2350&max_age=60&badge=1">
 </a>
 
 #### Metamask Widget
 
 <a href="https://gitcoin.co/explorer?q=metamask">
-    <img src="https://gitcoin.co/funding/embed?repo=https://github.com/MetaMask/metamask-extension/issues/2350">
+    <img src="https://gitcoin.co/funding/embed?repo=https://github.com/MetaMask/metamask-extension/&max_age=60">
 </a>
 
 #### Ethereum web3py Widget
 
 <a href="https://gitcoin.co/explorer?q=web3">
-    <img src="https://gitcoin.co/funding/embed?repo=https://github.com/ethereum/web3.py">
+    <img src="https://gitcoin.co/funding/embed?repo=https://github.com/ethereum/web3.py/&max_age=60">
 </a>
 
 #### Market Protocol Widget
 
 <a href="https://gitcoin.co/explorer?q=MARKETProtocol">
-    <img src="https://gitcoin.co/funding/embed?repo=https://github.com/MARKETProtocol/MARKETProtocol">
+    <img src="https://gitcoin.co/funding/embed?repo=https://github.com/MARKETProtocol/MARKETProtocol/&max_age=60">
 </a>

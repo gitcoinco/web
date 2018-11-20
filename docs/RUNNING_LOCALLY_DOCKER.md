@@ -43,7 +43,7 @@ You will need to edit the `app/.env` file with your local environment variables.
 
 ## Integration Setup (recommended)
 
-If you plan on using the Github integration, please read the [third party integration guide](THIRD_PARTY_SETUP.md).
+If you plan on using the Github integration, please read the [third party integration guide](https://docs.gitcoin.co/mk_third_party_integrations/).
 
 ## Static Asset Handling (optional)
 
@@ -58,6 +58,18 @@ For example:
 ```shell
 docker-compose exec web python3 app/manage.py createsuperuser
 ```
+
+## Add a Custom ERC20 Token To your Local Gitcoin
+
+1. [Create a django admin](https://github.com/gitcoinco/web/blob/master/docs/RUNNING_LOCALLY_DOCKER.md#create-django-admin)
+2. Go to [http://localhost:8000/_administrationeconomy/token/](http://localhost:8000/_administrationeconomy/token/) and click `Add New Token`.
+3. Open another tab and go to [http://tokenfactory.surge.sh](http://tokenfactory.surge.sh)
+4. Mint a new token on the network of ur choice.
+5. Go back to your Gitcoin local tab, and enter the token.
+6. Click Save
+7. Congratulations, your local environment now supports your custom token!
+8. You may continue administering your token over at [http://tokenfactory.surge.sh](http://tokenfactory.surge.sh).  Hint:  Maybe you should mint some? 🤔
+
 
 ## Optional: Import bounty data from web3 to your database
 
@@ -137,7 +149,7 @@ This error can occur when you are already running a local instance of PostgreSQL
 
 `Q: How can I enable the Github Login functionality on my local docker instance?`
 
-If you plan on using the Github integration, please read the [third party integration guide](THIRD_PARTY_SETUP.md).
+If you plan on using the Github integration, please read the [third party integration guide](https://docs.gitcoin.co/mk_third_party_integrations/).
 
 #### ipdb
 
@@ -156,3 +168,12 @@ Simply run: `make get_django_shell` or `docker-compose exec web python app/manag
 `Q: I want to inspect or manipulate the container via bash.  How can I access the root shell of the container?`
 
 Run: `docker-compose exec web bash`
+
+
+
+
+#### I have a question about Kudos.  Is there a FAQ for that product?
+
+Yes [click here](https://github.com/gitcoinco/web/blob/master/docs/KUDOS.md).
+
+

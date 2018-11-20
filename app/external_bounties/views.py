@@ -163,8 +163,6 @@ def external_bounties_show(request, issuenum, slug):
         django.TemplateResponse: The external bounty details view.
 
     """
-    print('************')
-    print(issuenum)
     if issuenum == '':
         return external_bounties_index(request)
 

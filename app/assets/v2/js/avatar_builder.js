@@ -1,8 +1,9 @@
 let openSection;
 const layers = [
+  'Wallpaper',
   'HatLong', 'HairLong', 'EarringBack', 'Clothing',
-  'Ears', 'Head', 'HairShort', 'Earring', 'Beard', 'HatShort',
-  'Mustache', 'Mouth', 'Nose', 'Eyes', 'Glasses'
+  'Ears', 'Head', 'Makeup', 'HairShort', 'Earring', 'Beard', 'HatShort',
+  'Mustache', 'Mouth', 'Nose', 'Eyes', 'Glasses', 'Masks', 'Extras'
 ];
 const requiredLayers = [ 'Clothing', 'Ears', 'Head', 'Mouth', 'Nose', 'Eyes', 'Background' ];
 const colorOptions = {
@@ -29,7 +30,7 @@ const sectionPalettes = {
 const parentLayers = {
   HairShort: 'HairStyle', HairLong: 'HairStyle', Beard: 'FacialHair', Mustache: 'FacialHair',
   EarringBack: 'Accessories', Earring: 'Accessories', HatLong: 'Accessories', HatShort: 'Accessories',
-  Glasses: 'Accessories'
+  Glasses: 'Accessories', Masks: 'Accessories', Extras: 'Accessories'
 };
 
 var localStorage;
@@ -82,10 +83,13 @@ function getIdFromPath(path, option) {
 function getColorFromPath(path, option) {
   let color = '';
 
+  // filename without path and extension
+  const basename = path.split('.').slice(-2)[0].split('/').slice(-1)[0];
+
   if (option === 'FacialHair' || option === 'Accessories') {
-    color = path.split('.')[0].split('/').slice(-1)[0].split('-')[2];
+    color = basename.split('-')[2];
   } else {
-    color = path.split('.')[0].split('/').slice(-1)[0].split('-')[1];
+    color = basename.split('-')[1];
   }
 
   return color;
@@ -197,10 +201,12 @@ function setOption(option, value, target) {
 
   switch (option) {
     case 'Head':
+    case 'Makeup':
     case 'Eyes':
     case 'Nose':
     case 'Ears':
     case 'Mouth':
+    case 'Wallpaper':
     case 'Clothing':
       localStorage[option + 'Id'] = $(target).attr('id');
       changeImage(option, deselectingFlag && $(target).children().data('path'));

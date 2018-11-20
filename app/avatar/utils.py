@@ -20,16 +20,21 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import json
 import logging
 import os
+import re
 from io import BytesIO
+from secrets import token_hex
 from tempfile import NamedTemporaryFile
 
 from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
 
+import pyvips
 import requests
 from git.utils import get_user
 from PIL import Image, ImageOps
+from pyvips.error import Error as VipsError
+from svgutils import transform
 from svgutils.compose import SVG, Figure, Line
 
 AVATAR_BASE = 'assets/other/avatars/'
@@ -50,9 +55,13 @@ def get_avatar_context():
             'title': 'Pick head shape',
             'options': ('0', '1', '2', '3', '4')
         }, {
+            'name': 'Makeup',
+            'title': 'Pick a makeup style',
+            'options': ('ziggy-stardust',)
+        }, {
             'name': 'Eyes',
             'title': 'Pick eyes shape',
-            'options': ('0', '1', '2', '3', '4')
+            'options': ('0', '1', '2', '3', '4', '5', '6')
         }, {
             'name': 'Nose',
             'title': 'Pick nose shape',
@@ -64,45 +73,69 @@ def get_avatar_context():
         }, {
             'name': 'Ears',
             'title': 'Pick ears shape',
-            'options': ('0', '1', '2', '3')
-        }, {
-            'name': 'Clothing',
-            'title': 'Pick your clothing',
-            'options': ('cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt')
-        }, {
-            'name': 'Hair Style',
-            'title': 'Pick a hairstyle',
-            'options': (['None', '0'], ['None', '1'], ['None', '2'], ['None', '3'], ['None', '4'], ['5', 'None'],
-                        ['6-back', '6-front'], ['7-back', '7-front'], ['8-back', '8-front'])
-        }, {
-            'name': 'Facial Hair',
-            'title': 'Pick a facial hair style',
-            'options': (
-                'Mustache-0', 'Mustache-1', 'Mustache-2', 'Mustache-3', 'Beard-0', 'Beard-1', 'Beard-2', 'Beard-3'
-            )
-        }, {
-            'name': 'Accessories',
-            'title': 'Pick your accessories',
-            'options': (['Glasses-0'], ['Glasses-1'], ['Glasses-2'], ['Glasses-3'], ['Glasses-4'], [
-                'HatShort-backwardscap'
-            ], ['HatShort-ballcap'], ['HatShort-headphones'], ['HatShort-shortbeanie'], ['HatShort-tallbeanie'],
-                        ['Earring-0'], ['Earring-1'], ['EarringBack-2', 'Earring-2'], ['Earring-3'], ['Earring-4'])
-        }, {
-            'name': 'Background',
-            'title': 'Pick a background color',
-            'options': (
-                '25E899', '9AB730', '00A55E', '3FCDFF', '3E00FF', '8E2ABE', 'D0021B', 'F9006C', 'FFCE08', 'F8E71C',
-                '15003E', 'FFFFFF'
-            )
-        }],
+            'options': ('0', '1', '2', '3', 'Spock')
+        },
+                     {
+                         'name': 'Clothing',
+                         'title': 'Pick your clothing',
+                         'options': (
+                             'cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater', 'spacecadet',
+                             'suit', 'ethlogo', 'cloak', 'robe'
+                         )
+                     },
+                     {
+                         'name': 'Hair Style',
+                         'title': 'Pick a hairstyle',
+                         'options': (['None', '0'], ['None', '1'], ['None', '2'], ['None', '3'], ['None', '4'],
+                                     ['5', 'None'], ['6-back', '6-front'], ['7-back', '7-front'], ['8-back', '8-front'],
+                                     ['9-back', '9-front'], ['None', '10'], ['damos_hair-back', 'damos_hair-front'], [
+                                         'long_swoosh-back', 'long_swoosh-front'
+                                     ], ['None', 'mohawk'], ['None', 'mohawk_inverted'], ['None', 'spikey'])
+                     },
+                     {
+                         'name': 'Facial Hair',
+                         'title': 'Pick a facial hair style',
+                         'options': (
+                             'Mustache-0', 'Mustache-1', 'Mustache-2', 'Mustache-3', 'Beard-0', 'Beard-1', 'Beard-2',
+                             'Beard-3'
+                         )
+                     },
+                     {
+                         'name': 'Accessories',
+                         'title': 'Pick your accessories',
+                         'options': (['Glasses-0'], ['Glasses-1'], ['Glasses-2'], ['Glasses-3'], ['Glasses-4'], [
+                             'HatShort-backwardscap'
+                         ], ['HatShort-redbow'], ['HatShort-yellowbow'], ['HatShort-ballcap'], ['HatShort-cowboy'],
+                                     ['HatShort-headdress'], ['HatShort-headphones'], ['HatShort-shortbeanie'],
+                                     ['HatShort-tallbeanie'], ['HatShort-bunnyears'], ['HatShort-menorah'],
+                                     ['HatShort-pilgrim'], ['HatShort-santahat'], ['Earring-0'], ['Earring-1'], [
+                                         'EarringBack-2', 'Earring-2'
+                                     ], ['Earring-3'], ['Earring-4'], ['Masks-jack-o-lantern'], ['Masks-guy-fawkes'], [
+                                         'Masks-jack-o-lantern-lighted'
+                                     ], ['Extras-Parrot'], ['Masks-gitcoinbot'])
+                     },
+                     {
+                         'name': 'Background',
+                         'title': 'Pick a background color',
+                         'options': (
+                             '25E899', '9AB730', '00A55E', '3FCDFF', '3E00FF', '8E2ABE', 'D0021B', 'F9006C', 'FFCE08',
+                             'F8E71C', '15003E', 'FFFFFF'
+                         )
+                     },
+                     {
+                         'name': 'Wallpaper',
+                         'title': 'Pick some swag for your back',
+                         'options': (
+                             'anchors', 'circuit', 'jigsaw', 'lines', 'gears', 'clouds', 'signal', 'polka_dots',
+                             'polka_dots_black', 'squares', 'shapes', 'sunburst', 'sunburst_pastel', 'rainbow'
+                         )
+                     }],
     }
 
 
 def get_upload_filename(instance, filename):
-    from secrets import token_hex
-    from os.path import basename
     salt = token_hex(16)
-    file_path = basename(filename)
+    file_path = os.path.basename(filename)
     return f"avatars/{getattr(instance, '_path', '')}/{salt}/{file_path}"
 
 
@@ -112,7 +145,9 @@ def get_svg_templates():
         'accessories': {
             'earring': [],
             'glasses': [],
-            'hat': []
+            'hat': [],
+            'masks': [],
+            'extras': [],
         },
         'clothing': [],
         'ears': [],
@@ -123,8 +158,10 @@ def get_svg_templates():
         },
         'hair': [],
         'head': [],
+        'makeup': [],
         'mouth': [],
         'nose': [],
+        'wallpaper': []
     }
 
     for category in template_data:
@@ -155,7 +192,25 @@ def build_avatar_component(path, icon_size=None, avatar_size=None):
     avatar_component_size = avatar_size or (899.2, 1415.7)
     scale_factor = icon_size[1] / avatar_component_size[1]
     x_to_center = (icon_size[0] / 2) - ((avatar_component_size[0] * scale_factor) / 2)
-    svg = SVG(f'{COMPONENT_BASE}{path}').scale(scale_factor).move(x_to_center, 0)
+    svg = SVG(f'{COMPONENT_BASE}{path}')
+    if path.startswith('Wallpaper'):
+        src = transform.fromfile(f'{COMPONENT_BASE}{path}')
+
+#       TODO: Consider width aswell...
+#        if src.width != None:
+#            src_width = float(re.sub('[^0-9]','', src.width))
+#        else:
+#            src_width = 900
+
+        if src.height is not None:
+            src_height = float(re.sub('[^0-9]', '', src.height))
+        else:
+            src_height = 1415
+        scale_factor = icon_size[1] / src_height
+        svg = svg.scale(scale_factor)
+    if not path.startswith('Wallpaper'):
+        svg = svg.scale(scale_factor)
+        svg = svg.move(x_to_center, 0)
     return svg
 
 
@@ -214,6 +269,7 @@ def build_avatar_svg(svg_path='avatar.svg', line_color='#781623', icon_size=None
             'mouth': '0',
             'nose': '0',
             'eyes': '0',
+            'wallpaper': None
         }
 
     # Build the list of avatar components
@@ -225,7 +281,7 @@ def build_avatar_svg(svg_path='avatar.svg', line_color='#781623', icon_size=None
     ]
 
     customizable_components = ['clothing', 'ears', 'head', 'hair']
-    flat_components = ['eyes', 'mouth', 'nose']
+    flat_components = ['eyes', 'mouth', 'nose', 'wallpaper']
     multi_components = ['accessories']
 
     for component in customizable_components:
@@ -262,14 +318,14 @@ def handle_avatar_payload(request):
     """Handle the Avatar payload."""
     avatar_dict = {}
     valid_component_keys = [
-        'Beard', 'Clothing', 'Earring', 'EarringBack', 'Ears', 'Eyes', 'Glasses', 'HairLong', 'HairShort', 'HatLong',
-        'HatShort', 'Head', 'Mouth', 'Mustache', 'Nose'
+        'Beard', 'Clothing', 'Earring', 'EarringBack', 'Ears', 'Eyes', 'Glasses', 'Masks', 'HairLong', 'HairShort',
+        'HatLong', 'HatShort', 'Head', 'Mouth', 'Mustache', 'Nose', 'Extras', 'Wallpaper', 'Makeup'
     ]
     valid_color_keys = ['Background', 'ClothingColor', 'HairColor', 'SkinTone']
     body = json.loads(request.body)
     for k, v in body.items():
         if v and k in valid_component_keys:
-            component_type, svg_asset = v.lstrip('{settings.STATIC_URL}v2/images/avatar/').split('/')
+            component_type, svg_asset = v.lstrip(f'{settings.STATIC_URL}v2/images/avatar/').split('/')
             avatar_dict[k] = {'component_type': component_type, 'svg_asset': svg_asset, }
         elif v and k in valid_color_keys:
             avatar_dict[k] = v
@@ -383,3 +439,63 @@ def get_github_avatar(handle):
         return False
 
     return temp_avatar
+
+
+def convert_img(obj, input_fmt='svg', output_fmt='png'):
+    """Convert the provided buffer to another format.
+
+    Args:
+        obj (File): The File/ContentFile object.
+        input_fmt (str): The input format. Defaults to: svg.
+        output_fmt (str): The output format. Defaults to: png.
+
+    Exceptions:
+        Exception: Cowardly catch blanket exceptions here, log it, and return None.
+
+    Returns:
+        BytesIO: The BytesIO stream containing the converted File data.
+        None: If there is an exception, the method returns None.
+
+    """
+    try:
+        obj_data = obj.read()
+        if obj_data:
+            image = pyvips.Image.new_from_buffer(obj_data, f'.{input_fmt}')
+            return BytesIO(image.write_to_buffer(f'.{output_fmt}'))
+    except VipsError:
+        pass
+    except Exception as e:
+        logger.error(
+            'Exception encountered in convert_img - Error: (%s) - input: (%s) - output: (%s)', str(e), input_fmt,
+            output_fmt
+        )
+    return None
+
+
+def convert_wand(img_obj, input_fmt='png', output_fmt='svg'):
+    """Convert an SVG to another format.
+
+    Args:
+        img_obj (File): The PNG or other image File/ContentFile.
+        input_fmt (str): The input format. Defaults to: png.
+        output_fmt (str): The output format. Defaults to: svg.
+
+    Returns:
+        BytesIO: The BytesIO stream containing the converted File data.
+        None: If there is an exception, the method returns None.
+
+    """
+    from wand.image import Image as WandImage
+    try:
+        img_data = img_obj.read()
+        with WandImage(blob=img_data, format=input_fmt) as _img:
+            _img.format = output_fmt
+            tmpfile_io = BytesIO()
+            _img.save(file=tmpfile_io)
+            return tmpfile_io
+    except Exception as e:
+        logger.error(
+            'Exception encountered in convert_wand - Error: (%s) - input: (%s) - output: (%s)', str(e), input_fmt,
+            output_fmt
+        )
+    return None

@@ -25,14 +25,16 @@ from django.conf import settings
 
 import ipfsapi
 import requests
+from app.utils import get_semaphor
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
 from dashboard.models import Activity, Bounty, UserAction
 from eth_utils import to_checksum_address
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from hexbytes import HexBytes
 from ipfsapi.exceptions import CommunicationError
-from web3 import HTTPProvider, Web3
+from web3 import HTTPProvider, Web3, WebsocketProvider
 from web3.exceptions import BadFunctionCallOutput
+from web3.middleware import geth_poa_middleware
 
 logger = logging.getLogger(__name__)
 
@@ -114,6 +116,11 @@ def create_user_action(user, action_type, request=None, metadata=None):
         if ip_address:
             kwargs['ip_address'] = ip_address
 
+        utmJson = _get_utm_from_cookie(request)
+
+        if utmJson:
+            kwargs['utm'] = utmJson
+
     if user and hasattr(user, 'profile'):
         kwargs['profile'] = user.profile if user and user.profile else None
 
@@ -123,6 +130,36 @@ def create_user_action(user, action_type, request=None, metadata=None):
     except Exception as e:
         logger.error(f'Failure in UserAction.create_action - ({e})')
         return False
+
+
+def _get_utm_from_cookie(request):
+    """Extract utm* params from Cookie.
+
+    Args:
+        request (Request): The request object.
+
+    Returns:
+        utm_source: if it's not in cookie should be None.
+        utm_medium: if it's not in cookie should be None.
+        utm_campaign: if it's not in cookie should be None.
+
+    """
+    utmDict = {}
+    utm_source = request.COOKIES.get('utm_source')
+    utm_medium = request.COOKIES.get('utm_medium')
+    utm_campaign = request.COOKIES.get('utm_campaign')
+
+    if utm_source:
+        utmDict['utm_source'] = utm_source
+    if utm_medium:
+        utmDict['utm_medium'] = utm_medium
+    if utm_campaign:
+        utmDict['utm_campaign'] = utm_campaign
+
+    if bool(utmDict):
+        return utmDict
+    else:
+        return None
 
 
 def get_ipfs(host=None, port=settings.IPFS_API_PORT):
@@ -188,7 +225,7 @@ def ipfs_cat_requests(key):
         return None, 500
 
 
-def get_web3(network):
+def get_web3(network, sockets=False):
     """Get a Web3 session for the provided network.
 
     Attributes:
@@ -203,7 +240,17 @@ def get_web3(network):
 
     """
     if network in ['mainnet', 'rinkeby', 'ropsten']:
-        return Web3(HTTPProvider(f'https://{network}.infura.io'))
+        if sockets:
+            provider = WebsocketProvider(f'wss://{network}.infura.io/ws')
+        else:
+            provider = HTTPProvider(f'https://{network}.infura.io')
+        w3 = Web3(provider)
+        if network == 'rinkeby':
+            w3.middleware_stack.inject(geth_poa_middleware, layer=0)
+        return w3
+    elif network == 'localhost' or 'custom network':
+        return Web3(Web3.HTTPProvider("http://testrpc:8545", request_kwargs={'timeout': 60}))
+
     raise UnsupportedNetworkException(network)
 
 
@@ -308,14 +355,18 @@ def web3_process_bounty(bounty_data):
         print(f"--*--")
         return None
 
-    did_change, old_bounty, new_bounty = process_bounty_details(bounty_data)
+    #semaphor_key = f"bounty_processor_{bounty_data['id']}_1"
+    #semaphor = get_semaphor(semaphor_key)
+    #with semaphor:
+    if True: # KO 20181107 -- removing semaphor processing code for time being, due to downtime last night
+        did_change, old_bounty, new_bounty = process_bounty_details(bounty_data)
 
-    if did_change and new_bounty:
-        _from = old_bounty.pk if old_bounty else None
-        print(f"- processing changes, {_from} => {new_bounty.pk}")
-        process_bounty_changes(old_bounty, new_bounty)
+        if did_change and new_bounty:
+            _from = old_bounty.pk if old_bounty else None
+            print(f"- processing changes, {_from} => {new_bounty.pk}")
+            process_bounty_changes(old_bounty, new_bounty)
 
-    return did_change, old_bounty, new_bounty
+        return did_change, old_bounty, new_bounty
 
 
 def has_tx_mined(txid, network):
@@ -333,7 +384,10 @@ def get_bounty_id(issue_url, network):
     if bounty_id:
         return bounty_id
 
-    all_known_stdbounties = Bounty.objects.filter(web3_type='bounties_network', network=network).order_by('-standard_bounties_id')
+    all_known_stdbounties = Bounty.objects.filter(
+        web3_type='bounties_network',
+        network=network,
+    ).nocache().order_by('-standard_bounties_id')
 
     try:
         highest_known_bounty_id = get_highest_known_bounty_id(network)
@@ -349,7 +403,11 @@ def get_bounty_id(issue_url, network):
 
 def get_bounty_id_from_db(issue_url, network):
     issue_url = normalize_url(issue_url)
-    bounties = Bounty.objects.filter(github_url=issue_url, network=network, web3_type='bounties_network').order_by('-standard_bounties_id')
+    bounties = Bounty.objects.filter(
+        github_url=issue_url,
+        network=network,
+        web3_type='bounties_network',
+    ).nocache().order_by('-standard_bounties_id')
     if not bounties.exists():
         return None
     return bounties.first().standard_bounties_id
@@ -429,7 +487,6 @@ def get_ordinal_repr(num):
     else:
         suffix = ordinal_suffixes.get(num % 10, 'th')
     return f'{num}{suffix}'
-
 
 
 def record_user_action_on_interest(interest, event_name, last_heard_from_user_days):

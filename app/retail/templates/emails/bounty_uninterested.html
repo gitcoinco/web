@@ -1,20 +1,19 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+  Copyright (C) 2018 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
-
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load humanize %}
 
@@ -24,15 +23,15 @@
 
 
 <p>
-    Hey there,
+  Hey there,
 
-    <br>
-    <br>
+  <br>
+  <br>
 
-     We are sorry, but the funder has <strong>removed</strong> You from the issue.
+    We are sorry, but the funder has <strong>removed</strong> You from the issue.
 
-    <br>
-    <h5>Funded Issue Details</h5>
+  <br>
+  <h5>Funded Issue Details</h5>
 </p>
 
 <br>
@@ -40,13 +39,13 @@
 {% include 'emails/bounty.html' with bounty=bounty %}
 
 <p>
-You are receiving this email because your email address is on the notification list for this funded issue. <a href="https://gitcoin.co/settings/email/{{subscriber.priv}}">Manage Email Settings</a>.
+  You are receiving this email because your email address is on the notification list for this funded issue. <a href="{% url 'email_settings' subscriber.priv %}">Manage Email Settings</a>.
 </p>
 
 <p>
-    Keep Pushing Open Source Forward,
-    <br>
-    -- Gitcoin Core
+  Keep Pushing Open Source Forward,
+  <br>
+  -- Gitcoin Core
 </p>
 
 

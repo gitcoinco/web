@@ -22,13 +22,14 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 
 from .models import (
-    Alumni, EmailEvent, EmailSubscriber, EmailSupressionList, GithubEvent, GithubOrgToTwitterHandleMapping,
-    LeaderboardRank, Match, SlackPresence, SlackUser, Stat,
+    AccountDeletionRequest, Alumni, EmailEvent, EmailSubscriber, EmailSupressionList, GithubEvent,
+    GithubOrgToTwitterHandleMapping, LeaderboardRank, Match, SlackPresence, SlackUser, Stat,
 )
 
 
 class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
+    list_display = ['created_on', '__str__']
 
 
 class EmailEventAdmin(admin.ModelAdmin):
@@ -106,6 +107,8 @@ class SlackUserAdmin(admin.ModelAdmin):
             return 'Unknown'
 
 
+
+admin.site.register(AccountDeletionRequest, GeneralAdmin)
 admin.site.register(EmailSupressionList, GeneralAdmin)
 admin.site.register(Alumni, AlumniAdmin)
 admin.site.register(GithubEvent, GithubEventAdmin)

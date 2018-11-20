@@ -18,7 +18,6 @@
 
 import datetime
 import logging
-import sys
 import warnings
 
 from django.conf import settings

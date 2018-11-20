@@ -1,26 +1,9 @@
+/* One-Pager CSS */
 @charset "UTF-8";
 /* stylelint-disable no-descending-specificity */
 
-/* ...because sometimes descending-specificity is a PIA to clean up */
-
-/* Futura */
-
-@font-face {
-  font-family: 'futura-pt';
-  src: url('/static/v2/fonts/futura/font4.ttf')/* TTF file for CSS3 browsers */
-}
-
-/* Muli Regular */
-
-@font-face {
-  font-family: 'Muli';
-  src: url('/static/v2/fonts/Muli/Regular.ttf');
-  font-weight: 400;
-}
-
 body {
   line-height: 1;
-  font-family: 'Muli', sans-serif !important;
   -webkit-text-size-adjust: none;
   overflow: hidden;
   width: 100%;
@@ -37,30 +20,6 @@ body {
   background-attachment: fixed;
 }
 
-body::after {
-  content: '';
-  display: block;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: inherit;
-  opacity: 0;
-  z-index: 1;
-  background-color: #ffffff;
-  background-image: url('/static/onepager/images/overlay.png'), -moz-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35));
-  background-image: url('/static/onepager/images/overlay.png'), -webkit-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35));
-  background-image: url('/static/onepager/images/overlay.png'), -ms-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35));
-  background-image: url('/static/onepager/images/overlay.png'), linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35));
-  background-repeat: repeat, no-repeat;
-  background-size: 100px 100px, cover;
-  background-position: top left, center center;
-  -moz-transition: opacity 1.75s ease-out;
-  -webkit-transition: opacity 1.75s ease-out;
-  -ms-transition: opacity 1.75s ease-out;
-  transition: opacity 1.75s ease-out;
-}
-
 body.is-loading:after {
   opacity: 1;
 }
@@ -72,7 +31,6 @@ body.is-loading:after {
   text-transform: uppercase;
   font-size: 14px;
   padding: 4px 7px;
-  font-family: 'Muli', sans-serif;
   font-weight: 100;
   letter-spacing: 0.15em;
   margin: 5px;
@@ -715,8 +673,6 @@ dl dd {
   z-index: 1;
   position: absolute;
 }
-
-/* Footer */
 
 #footer {
   -moz-align-self: -moz-flex-end;

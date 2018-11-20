@@ -55,12 +55,15 @@
 #leaderboard .winner {
   position: relative;
   padding: 0px;
+  min-height: 23em;
+  text-align: center;
 }
 
 #leaderboard .winner-content {
   top: 40%;
-  left: 0;
+  left: 30%;
   position: absolute;
+  max-width: 45%;
 }
 
 #leaderboard .winner-content .winner-position {
@@ -107,6 +110,11 @@
 }
 
 @media (max-width: 1025px) {
+  #leaderboard .winner-content {
+    left: 10%;
+    max-width: 70%;
+  }
+
   #leaderboard .leaderboard_entry div {
     width: 30%;
   }
@@ -125,6 +133,7 @@
 }
 
 @media (max-width: 700px) {
+
   .item-count-bounties {
     display: none !important;
   }

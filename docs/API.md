@@ -46,6 +46,7 @@ The bounties endpoint provides a listing of bounties and their current status. T
 | `value_in_usdt_now`| `float`            | Approximation of current value in USD                             |
 | `now`              | `date_time`        | Current date_time on the server                                   |
 | `action_urls`              | `dict`        | a list of urls where user can take action against the bounty                                   |
+| `paid`              | `array`        | List of users who have been paid from the bounty                             |
 
 **Current Status**
 

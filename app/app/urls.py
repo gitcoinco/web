@@ -25,6 +25,7 @@ from django.urls import path, re_path
 from django.views.i18n import JavaScriptCatalog
 
 import avatar.views
+import bounty_requests.views
 import credits.views
 import dashboard.embed
 import dashboard.gas_views
@@ -38,6 +39,8 @@ import enssubdomain.views
 import external_bounties.views
 import faucet.views
 import gitcoinbot.views
+import healthcheck.views
+import kudos.views
 import linkshortener.views
 import marketing.views
 import marketing.webhookviews
@@ -46,11 +49,36 @@ import retail.views
 import tdi.views
 from dashboard.router import router as dbrouter
 from external_bounties.router import router as ebrouter
+from kudos.router import router as kdrouter
 
 from .sitemaps import sitemaps
 
 urlpatterns = [
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
+
+    # kudos
+    path('kudos/', kudos.views.about, name='kudos_main'),
+    path('kudos/about/', kudos.views.about, name='kudos_about'),
+    path('kudos/marketplace/', kudos.views.marketplace, name='kudos_marketplace'),
+    path('kudos/mint/', kudos.views.mint, name='kudos_mint'),
+    path('kudos/send/', kudos.views.send_2, name='kudos_send'),
+    path('kudos/send/3/', kudos.views.send_3, name='kudos_send_3'),
+    path('kudos/send/4/', kudos.views.send_4, name='kudos_send_4'),
+    re_path(r'^lazy_load_kudos/$', dashboard.views.lazy_load_kudos, name='lazy_load_kudos'),
+    re_path(r'^kudos/receive/v3/(?P<key>.*)/(?P<txid>.*)/(?P<network>.*)?', kudos.views.receive, name='kudos_receive'),
+    re_path(r'^kudos/redeem/(?P<secret>.*)/?$', kudos.views.receive_bulk, name='kudos_receive_bulk'),
+    re_path(r'^kudos/search/$', kudos.views.search, name='kudos_search'),
+    re_path(
+        r'^kudos/(?P<address>\w*)/(?P<token_id>\d+)/(?P<name>\w*)',
+        kudos.views.details_by_address_and_token_id,
+        name='kudos_details_by_address_and_token_id'
+    ),
+    re_path(r'^kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.details, name='kudos_details'),
+    re_path(r'^kudos/address/(?P<handle>.*)', kudos.views.kudos_preferred_wallet, name='kudos_preferred_wallet'),
+    re_path(r'^dynamic/kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.image, name='kudos_dynamic_img'),
+
+    # grant views
+    path('grants/', dashboard.views.grants, name='grants'),
 
     # api views
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
@@ -58,11 +86,13 @@ urlpatterns = [
     url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
     url(r'^api/v0.1/', include(dbrouter.urls)),
     url(r'^api/v0.1/', include(ebrouter.urls)),
-    url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active, but not cached in cloudfront
-
+    url(r'^api/v0.1/', include(kdrouter.urls)),
+    url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active, but not cached in cluodfront
+    url(r'^api/v0.1/users_search/', dashboard.views.get_users, name='users_search'),
+    url(r'^api/v0.1/kudos_search/', dashboard.views.get_kudos, name='kudos_search'),
     # Health check endpoint
     re_path(r'^health/', include('health_check.urls')),
-    re_path(r'^lbcheck/?', retail.views.lbcheck, name='lbcheck'),
+    re_path(r'^lbcheck/?', healthcheck.views.lbcheck, name='lbcheck'),
 
     # dashboard views
 
@@ -81,11 +111,13 @@ urlpatterns = [
     # action URLs
     re_path(r'^bounty/quickstart/?', dashboard.views.quickstart, name='quickstart'),
     url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
+    re_path(r'^bounty/change/(?P<bounty_id>.*)?', dashboard.views.change_bounty, name='change_bounty'),
     url(r'^funding/new/?', dashboard.views.new_bounty, name='new_funding'),
     url(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),
     path('issue/fulfill', dashboard.views.fulfill_bounty, name='fulfill_bounty'),
     path('issue/accept', dashboard.views.accept_bounty, name='process_funding'),
     path('issue/advanced_payout', dashboard.views.bulk_payout_bounty, name='bulk_payout_bounty'),
+    path('issue/invoice', dashboard.views.invoice, name='invoice'),
     path('issue/payout', dashboard.views.payout_bounty, name='payout_bounty'),
     path('issue/increase', dashboard.views.increase_bounty, name='increase_bounty'),
     path('issue/cancel', dashboard.views.cancel_bounty, name='kill_bounty'),
@@ -155,6 +187,7 @@ urlpatterns = [
     url(r'^gas/calculator/?', dashboard.gas_views.gas_calculator, name='gas_calculator'),
     url(r'^gas/history/?', dashboard.gas_views.gas_history_view, name='gas_history_view'),
     url(r'^gas/guzzlers/?', dashboard.gas_views.gas_guzzler_view, name='gas_guzzler_view'),
+    url(r'^gas/heatmap/?', dashboard.gas_views.gas_heatmap, name='gas_heatmap'),
     url(r'^gas/?', dashboard.gas_views.gas, name='gas'),
 
     # images
@@ -168,7 +201,7 @@ urlpatterns = [
     # sync methods
     url(r'^sync/web3/?', dashboard.views.sync_web3, name='sync_web3'),
     url(r'^sync/get_amount/?', dashboard.helpers.amount, name='helpers_amount'),
-    url(r'^sync/get_issue_details/?', dashboard.helpers.issue_details, name='helpers_issue_details'),
+    re_path(r'^sync/get_issue_details/?', dashboard.helpers.issue_details, name='helpers_issue_details'),
 
     # modals
     re_path(r'^modal/get_quickstart_video/?', dashboard.views.get_quickstart_video, name='get_quickstart_video'),
@@ -203,8 +236,6 @@ urlpatterns = [
     re_path(r'community/?$', retail.views.community, name='community'),
     re_path(r'slack/?$', retail.views.slack, name='slack'),
     re_path(r'submittoken/?$', retail.views.newtoken, name='newtoken'),
-    re_path(r'iosfeedback/?$', retail.views.iosfeedback, name='iosfeedback'),
-    re_path(r'ios/?$', retail.views.ios, name='ios'),
     re_path(r'itunes/?$', retail.views.itunes, name='itunes'),
     re_path(r'podcast/?$', retail.views.podcast, name='podcast'),
     re_path(r'casestudies/?$', retail.views.casestudy, name='casestudies'),
@@ -215,11 +246,15 @@ urlpatterns = [
     re_path(r'feedback/?$', retail.views.feedback, name='feedback'),
     re_path(r'twitter/?$', retail.views.twitter, name='twitter'),
     re_path(r'gitter/?$', retail.views.gitter, name='gitter'),
+    re_path(r'^refer/?', retail.views.refer, name='refer'),
     re_path(r'fb/?$', retail.views.fb, name='fb'),
     re_path(r'medium/?$', retail.views.medium, name='medium'),
     re_path(r'github/?$', retail.views.github, name='github'),
     re_path(r'youtube/?$', retail.views.youtube, name='youtube'),
     re_path(r'web3/?$', retail.views.web3, name='web3'),
+
+    # increase funding limit
+    re_path(r'^requestincrease/?', retail.views.increase_funding_limit_request, name='increase_funding_limit_request'),
 
     # link shortener
     url(r'^l/(.*)$/?', linkshortener.views.linkredirect, name='redirect'),
@@ -232,8 +267,14 @@ urlpatterns = [
     # faucet views
     re_path(r'^faucet/?', faucet.views.faucet, name='faucet'),
 
+    # bounty requests
+    re_path(r'^requests/?', bounty_requests.views.bounty_request, name='bounty_requests'),
+
     # admin views
     re_path(r'^_administration/?', admin.site.urls, name='admin'),
+    path('_administration/email/new_kudos', retail.emails.new_kudos, name='new_kudos'),
+    path('_administration/email/kudos_mint', retail.emails.kudos_mint, name='kudos_mint'),
+    path('_administration/email/kudos_mkt', retail.emails.kudos_mkt, name='kudos_mkt'),
     path('_administration/email/new_bounty', retail.emails.new_bounty, name='admin_new_bounty'),
     path('_administration/email/roundup', retail.emails.roundup, name='roundup'),
     path('_administration/email/faucet_rejected', retail.emails.faucet_rejected, name='email_faucet_rejected'),
@@ -361,7 +402,6 @@ if settings.ENABLE_SILK:
     urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]
 
 if settings.ENV == 'local' and not settings.AWS_STORAGE_BUCKET_NAME:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # If running in DEBUG, expose the error handling pages.

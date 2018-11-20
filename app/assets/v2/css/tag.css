@@ -1,17 +1,16 @@
 .tag {
   text-align: center;
-  min-width: 90px;
   border-radius: 2px;
   margin: 4px;
-}
-
-.tag span {
-  margin-left: 2px;
+  padding: 3px 6px;
+  font-size: 11px;
+  font-weight: 400;
+  white-space: nowrap;
+  cursor: pointer;
 }
 
 .tag p {
-  padding: 5px 2px;
-  margin-bottom: 0;
+  margin-bottom: 1px;
 }
 
 .tag.usd {
@@ -19,17 +18,71 @@
   color: #00A55E;
 }
 
+.tag.usd:hover {
+  background-color: #c6ebdb;
+}
+
 .tag.network_warning {
   background-color: #fbaf95;
   color: #fff;
 }
 
+.tag.warning {
+  background-color: #7E1518;
+  color: #fff;
+}
+
+.tag.warning:hover {
+  background-color: #D3696C;
+}
+
+.tag.success {
+  background-color: #216A12;
+  color: #fff;
+}
+
+.tag.success:hover {
+  background-color: #68B159;
+}
+
+.tag.in-progress {
+  background-color: #162955;
+  color: #fff;
+}
+
+.tag.in-progress:hover {
+  background-color: #4F628E;
+}
+
 .tag.token {
   background-color: #e7f0fa;
-  color: #775EC7;
+  color: var(--gc-blue);
+}
+
+.tag.token:hover {
+  background-color: #d7e0ea;
 }
 
 .tag.hiring {
   background-color: #3a9ced;
   color: #fff;
+}
+
+.tag.token > a {
+  height: 0;
+  line-height: 1.5rem;
+  float: right;
+}
+
+.keyword-group {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tag.keyword {
+  display: inline-block;
+  min-width: 0;
+  font-size: 11px;
+  background-color: #E7F0FA;
+  color: #6587AE;
 }

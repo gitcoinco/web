@@ -7,9 +7,10 @@
     {% include 'shared/cards.html' %}
   </head>
 
-  <body class="interior {{active}} offchain_new with-grey-background">
+  <body class="interior {{active}} offchain_new with-grey-background g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav.html' %}
     </div>
     {% if msg %}
@@ -56,6 +57,5 @@
     </script>
     <script src="/dynamic/js/tokens_dynamic.js"></script>
     <script src="{% static "v2/js/tokens.js" %}"></script>
-    <script src="{% static "v2/js/shared.js" %}"></script>
   </body>
 </html>

@@ -164,21 +164,21 @@ class Widget {
     right.appendChild(bar);
     const slider = document.createElement('div');
 
+    function groupBounties(arr, n, fn) {
+      for (var i = 0; i < arr.length; i += n) {
+        fn(arr.slice(i, i + n));
+      }
+    }
+    
     slider.className = 'siema';
-    for (let i = 0; i < this.data.length; i += 4) {
+
+    groupBounties(this.data, 4, function(group) {
       const slide = document.createElement('div');
 
-      for (let j = 0; j < 2; j++) {
-        if (!this.data[i + j]) {
-          break;
-        } else if (this.data[i + j + 1]) {
-          slide.appendChild(Widget.bountyRow([ this.data[i + j], this.data[i + j + 1] ]));
-        } else {
-          slide.appendChild(Widget.bountyRow([this.data[i + j]]));
-        }
-      }
+      slide.appendChild(Widget.bountyRow(group));
       slider.appendChild(slide);
-    }
+    });
+
     right.appendChild(slider);
     return right;
   }

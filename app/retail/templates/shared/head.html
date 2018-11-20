@@ -20,7 +20,9 @@
 <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
 <link rel="stylesheet" href="{% static "v2/css/fontawesome-all.min.css" %}">
 <link rel="stylesheet" href="{% static "v2/css/bootstrap.min.css" %}" crossorigin="anonymous">
+<link rel="stylesheet" href="{% static "v2/css/lib/typography.css" %}">
 <link rel="stylesheet" href="{% static "v2/css/gitcoin.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/top-nav.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/base.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/jquery.modal.min.css" %}" />
@@ -32,7 +34,6 @@
 <link rel="stylesheet" href="{% static "v2/css/carousel.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/faucet.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/colors.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/typography.css" %}" />
 
 <!-- Forms -->
 <link rel="stylesheet" href="{% static "v2/css/forms/button.css" %}">
@@ -63,6 +64,9 @@
 <title>{% if title %}{{title}}{% else %}{% trans "Grow Open Source" %}{% endif %} | Gitcoin</title>
 {% include 'shared/favicon.html' %}
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+<script src="{% static "v2/js/metamask-approval.js" %}"></script>
+
 {% if env == 'prod' %}
 <!-- Hotjar Tracking Code for gitcoin.co -->
 <script>

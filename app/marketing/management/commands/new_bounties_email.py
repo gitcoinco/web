@@ -43,9 +43,8 @@ def get_bounties_for_keywords(keywords, hours_back):
     new_bounties_pks = []
     all_bounties_pks = []
     for keyword in keywords:
-        relevant_bounties = Bounty.objects.filter(
+        relevant_bounties = Bounty.objects.current().filter(
             network='mainnet',
-            current_bounty=True,
             metadata__icontains=keyword,
             idx_status__in=['open'],
             )

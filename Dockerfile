@@ -2,7 +2,7 @@ FROM python:3.7-slim-stretch
 ENV PYTHONUNBUFFERED 1
 
 RUN mkdir /code && \
-    apt-get update && \
+    apt-get update -y && \
     apt-get install build-essential -y && \
     apt-get install -y --no-install-recommends apt-utils && \
     apt-get install -y --no-install-recommends tk-dev python3-tk pgtop libsecp256k1-dev libsecp256k1-0 gettext graphviz libgraphviz-dev wget git dos2unix gcc libc6-dev libc-dev libssl-dev make automake libtool autoconf pkg-config libffi-dev libgdal-dev gdal-bin libgdal20 python3-gdal ffmpeg libav-tools x264 x265 && \
@@ -30,11 +30,15 @@ RUN mkdir -p /usr/share/GeoIP/ && \
 
 WORKDIR /code
 COPY requirements/ /code/
+COPY app/ /code/app/
 
 RUN pip install -r test.txt
 COPY bin/docker-command.bash /bin/docker-command.bash
 RUN dos2unix /bin/docker-command.bash && \
     apt-get purge -y --auto-remove dos2unix wget gcc libc6-dev libc-dev libssl-dev make automake libtool autoconf pkg-config libffi-dev apt-utils
+
+RUN apt-get update && apt-get install -y libvips libvips-dev libmagickwand-dev
+
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
 CMD ["bash", "/bin/docker-command.bash"]
 

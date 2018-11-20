@@ -15,11 +15,15 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
+{% load kudos_extras %}
 <input id="is-authenticated" type="hidden" value={{ user.is_authenticated }}>
 {% if user.is_authenticated %}
   <div class="nav-item dropdown interior">
     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      {% if unclaimed_tips or unclaimed_kudos  %}
+        <span class="notification-dot"></span>
+      {% endif %}
       {{ user }}
     </a>
     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -27,6 +31,10 @@
         <a class="dropdown-item" href="{% url "tip" %}">
           <i class="far fa-paper-plane"></i>
           {% trans "Send Tip" %}
+        </a>
+        <a class="dropdown-item" href="{% url "kudos_marketplace" %}">
+          <i class="fas fa-magic"></i>
+          {% trans "Send Kudos" %}
         </a>
         <a class="dropdown-item" href="{% url "new_funding" %}">
           <i class="fab fa-ethereum"></i>
@@ -60,6 +68,15 @@
           </a>
         {% endfor %}
       {% endif %}
+      {% if unclaimed_kudos %}
+        <div class="dropdown-divider"></div>
+        {% for kudos in unclaimed_kudos %}
+          <a class="dropdown-item" href="{{ kudos.receive_url }}">
+            <i class="fas fa-gift"></i>
+            {% trans "Claim Kudos" %}
+          </a>
+        {% endfor %}
+      {% endif %}
       {% if user.is_staff %}
       <div class="dropdown-divider"></div>
       <a class="dropdown-item" href="{% url "admin:index" %}">
@@ -74,7 +91,7 @@
       </a>
     </div>
   </div>
-  <a href="/profile/" class="nav_avatar"
+  <a href="/profile/" class="nav_avatar d-none d-md-block"
     style="background-image:url({% if user.profile.avatar %}{{ user.profile.avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %})"></a>
 {% else %}
   <a class="nav-link login interior" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"

@@ -1,0 +1,32 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+<h5 class="font-subheader">{% trans "Deadline" %}</h5>
+<label class="form__label" for="expirationTimeDelta">{% trans "Expires in" %}</label>
+<div class="form__select2">
+  <select class="js-select2" name="expirationTimeDelta">
+    <option value="86400">{% trans "1 day" %}</option>
+    <option value="259200">{% trans "3 days" %}</option>
+    <option value="604800">{% trans "1 week" %}</option>
+    <option value="1209600">{% trans "2 weeks" %}</option>
+    <option value="2592000">{% trans "1 month" %}</option>
+    <option value="7776000">{% trans "3 months" %}</option>
+    <option value="15552000">{% trans "6 months" %}</option>
+    <option value="31536000" selected="">{% trans "1 year" %}</option>
+    <option value="9999999999">{% trans "Never" %}</option>
+  </select>
+</div>

@@ -54,6 +54,17 @@ var wait_for_metadata = function(callback) {
 };
 
 $(document).ready(function() {
+
+  // upon keypress for the select2, gotta make sure it opens
+  setTimeout(function() {
+    $('.select2').keypress(function() {
+      $(this).siblings('select').select2('open');
+    });
+  }, 100);
+
+  if (typeof userSearch != 'undefined') {
+    userSearch('.username-search', true);
+  }
   set_metadata();
   // jquery bindings
   $('#advanced_toggle').click(function() {
@@ -66,12 +77,11 @@ $(document).ready(function() {
     if ($(this).hasClass('disabled'))
       return;
     loading_button($(this));
-
     // get form data
     var email = $('#email').val();
     var github_url = $('#issueURL').val();
     var from_name = $('#fromName').val();
-    var username = $('#username').val();
+    var username = $('.username-search').select2('data')[0].text;
     var amountInEth = parseFloat($('#amount').val());
     var comments_priv = $('#comments_priv').val();
     var comments_public = $('#comments_public').val();
@@ -84,7 +94,6 @@ $(document).ready(function() {
     var isSendingETH = (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000');
     var tokenDetails = tokenAddressToDetails(tokenAddress);
     var tokenName = 'ETH';
-    var weiConvert = Math.pow(10, 18);
 
     if (!isSendingETH) {
       tokenName = tokenDetails.name;
@@ -155,7 +164,7 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
   if (username.indexOf('@') == -1) {
     username = '@' + username;
   }
-  var _disableDeveloperTip = true;
+
   var gas_money = parseInt(Math.pow(10, (9 + 5)) * ((defaultGasPrice * 1.001) / Math.pow(10, 9)));
   var isSendingETH = (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000');
   var tokenDetails = tokenAddressToDetails(tokenAddress);
@@ -171,7 +180,6 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
   var amountInWei = amountInEth * 1.0 * weiConvert;
   // validation
   var hasEmail = email != '';
-  var hasUsername = username != '';
 
   // validation
   if (hasEmail && !validateEmail(email)) {
@@ -286,7 +294,7 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
             token_contract.transfer(destinationAccount, amountInWei, {gasPrice: web3.toHex(get_gas_price())}, post_send_callback);
           };
           var send_gas_money_and_erc20 = function() {
-            _alert({ message: gettext('You will now be asked to confirm two transactions.  The first is gas money, so your receipient doesnt have to pay it.  The second is the actual token transfer.') }, 'info');
+            _alert({ message: gettext('You will now be asked to confirm two transactions.  The first is gas money, so your receipient doesnt have to pay it.  The second is the actual token transfer. (note: check Metamask extension, sometimes the 2nd confirmation window doesnt popup)') }, 'info');
             web3.eth.sendTransaction({
               to: destinationAccount,
               value: gas_money,

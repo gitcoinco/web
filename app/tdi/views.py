@@ -78,7 +78,13 @@ IP: {}\n
 https://gitcoin.co/_administration/tdi/whitepaperaccessrequest/
 
     """).format(context['email'], context['role'], context['comments'], ip)
-    send_mail(settings.CONTACT_EMAIL, settings.CONTACT_EMAIL, _("New Whitepaper Request"), str(body))
+    send_mail(
+        settings.CONTACT_EMAIL,
+        settings.CONTACT_EMAIL,
+        _("New Whitepaper Request"),
+        str(body),
+        categories=['admin', 'whitepaper_request'],
+    )
 
     WhitepaperAccessRequest.objects.create(
         email=context['email'],
@@ -154,7 +160,13 @@ def whitepaper_access(request, ratelimited=False):
         ip=ip,
     )
 
-    send_mail(settings.CONTACT_EMAIL, settings.CONTACT_EMAIL, _("New Whitepaper Generated"), str(wa))
+    send_mail(
+        settings.CONTACT_EMAIL,
+        settings.CONTACT_EMAIL,
+        _("New Whitepaper Generated"),
+        str(wa),
+        categories=['admin', 'whitepaper_gen'],
+    )
 
     # bottom watermark
     packet1 = BytesIO()
@@ -247,7 +259,14 @@ def process_accesscode_request(request, pk):
             setup_lang(to_email)
             subject = request.POST.get('subject')
             body = request.POST.get('body').replace('[code]', invitecode)
-            send_mail(from_email, to_email, subject, body, from_name=_("Kevin from Gitcoin.co"))
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                body,
+                from_name=_("Kevin from Gitcoin.co"),
+                categories=['admin', 'access_code_request'],
+            )
             messages.success(request, _('Invite sent'))
         finally:
             translation.activate(cur_language)

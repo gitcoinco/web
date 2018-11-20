@@ -56,6 +56,7 @@ def process(request):
             email_event = EmailEvent(
                 email=event['email'],
                 event=event['event'],
+                category=event.get('category', ''),
                 created_on=created_on,
                 ip_address=event.get('ip'),
                 )

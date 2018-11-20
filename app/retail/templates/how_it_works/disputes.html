@@ -1,0 +1,36 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<div id="disputes" class="row my-5">
+  <div class="col-12 text-center my-5">
+    <h1 class="font-title-xl mb-4">{% trans "Disputes" %}</h1>
+    <p class="font-body how-it-works__text-grey">{% trans "Sometimes disagreements occur, here are a some tips on how to handle them." %}</p>
+  </div>
+  <div class="col-12 col-md-7">
+    <h2 class="font-subheader mb-4">{% trans "What to Know" %}</h2>
+    <div class="font-body how-it-works__text-grey">
+      <p>{% trans "Disputes very rarely occur given that we are mission driven in open source." %}</p>
+      <p>{% trans "It’s natural for some scope to be misunderstood or not fully laid out -- so we shouldn't feel bad about that. software development is naturally iterative." %}</p>
+      <p>{% trans "Plan for a extra tipping budget for after the fact, if there is extra scope." %}</p>
+      <p>{% trans "Sometimes it just doesnt work out and we need to go our seperate ways. Leave a tip for the bounty hunter for any value that was provided towards the end scope and re-bounty the task." %}</p>
+      <p>{% trans "As always feel free to contact the Gitcoin core team on slack with any questions." %}</p>    
+    </div>
+  </div>
+  <div class="col-12 offset-md-1 col-md-4 d-none d-md-block">
+    <img src="{% static "v2/images/how-it-works/funder/disputes.svg" %}" alt="disputes" />
+  </div>
+</div>
