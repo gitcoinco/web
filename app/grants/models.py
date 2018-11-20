@@ -186,7 +186,7 @@ class Subscription(SuperModel):
         max_digits=50,
         help_text=_('The real payout frequency of the Subscription in seconds.'),
     )
-    frequency_uint = models.CharField(
+    frequency_unit = models.CharField(
         max_length=255,
         default='',
         help_text=_('The text version of frequency units e.g. days, months'),
