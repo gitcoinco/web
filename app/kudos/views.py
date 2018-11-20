@@ -266,7 +266,7 @@ def send_2(request):
         raise Http404
 
     kudos = Token.objects.filter(pk=_id).first()
-    if not kudos.send_enabled_for(request.user):
+    if kudos and not kudos.send_enabled_for(request.user):
         messages.error(request, f'This kudos is not available to be sent.')
         return redirect(kudos.url)
 
