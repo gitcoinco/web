@@ -55,12 +55,6 @@ class Grant(SuperModel):
         default='0x0',
         help_text=_('The wallet address for the administrator of this Grant.'),
     )
-    frequency = models.DecimalField(
-        default=0,
-        decimal_places=0,
-        max_digits=50,
-        help_text=_('The payout frequency of the Grant.'),
-    )
     amount_goal = models.DecimalField(
         default=1,
         decimal_places=4,
@@ -77,6 +71,11 @@ class Grant(SuperModel):
         max_length=255,
         default='0x0',
         help_text=_('The token address to be used with the Grant.'),
+    )
+    token_symbol = models.CharField(
+        max_length=255,
+        default='0x0',
+        help_text=_('The token symbol to be used with the Grant.'),
     )
     contract_address = models.CharField(
         max_length=255,
@@ -181,16 +180,32 @@ class Subscription(SuperModel):
         max_digits=50,
         help_text=_('The promised contribution amount per period.'),
     )
-    period_seconds = models.DecimalField(
+    real_period_seconds = models.DecimalField(
         default=2592000,
         decimal_places=0,
         max_digits=50,
-        help_text=_('The subscription period length.'),
+        help_text=_('The real payout frequency of the Subscription in seconds.'),
+    )
+    frequency_uint = models.CharField(
+        max_length=255,
+        default='',
+        help_text=_('The text version of frequency units e.g. days, months'),
+    )
+    frequency = models.DecimalField(
+        default=0,
+        decimal_places=0,
+        max_digits=50,
+        help_text=_('The real payout frequency of the Subscription in seconds.'),
     )
     token_address = models.CharField(
         max_length=255,
         default='0x0',
         help_text=_('The token address to be used with the Subscription.'),
+    )
+    token_symbol = models.CharField(
+        max_length=255,
+        default='0x0',
+        help_text=_('The token symbol to be used with the Subscription.'),
     )
     gas_price = models.DecimalField(
         default=1,

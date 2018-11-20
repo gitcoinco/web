@@ -98,9 +98,14 @@
                       </div>
                     </div>
                   </div>
+                  {% if user_subscription %}
+                  <h5>
+                    {% trans 'You have agreed to give' %} {{ user_subscription.amount_per_period|floatformat:2|intcomma }} DAI {{ user_subscription.token_name }} every {{ user_subscription.period_second }} 30 days {{ frequency_unit }}
+                  </h5>
+                  {% endif %}
                 </div>
                 {% if grant_is_inactive %}
-                  <h4>{% trans "This grant has ended. You can find all active grants" %}
+                  <h4 class="my-4" >{% trans "This grant has ended. You can find all active grants" %}
                     <a href="{% url 'grants:grants' %}">
                       {% trans "here." %}
                     </a>
@@ -112,8 +117,8 @@
                   </button>
                   <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
                 </form>
-                {% elif active_subscription %}
-                    <a href="{% url 'grants:subscription_cancel' grant.id active_subscription.id %}">
+                {% elif user_subscription %}
+                    <a href="{% url 'grants:subscription_cancel' grant.id user_subscription.id %}">
                       <button class="button button--primary button--warning button--full">{% trans "Cancel Your Funding" %}</button>
                     </a>
                 {% else %}

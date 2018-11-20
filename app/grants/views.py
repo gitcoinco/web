@@ -92,7 +92,7 @@ def grant_details(request, grant_id):
     if request.method == 'POST':
         grant.active = False
         grant.save()
-        grant_cancellation(grant, active_subscription)
+        grant_cancellation(grant, user_subscription)
         for sub in subscriptions:
             subscription_terminated(grant, sub)
 
@@ -183,8 +183,8 @@ def grant_new(request):
             'description': request.POST.get('description', ''),
             'reference_url': request.POST.get('reference_url', ''),
             'admin_address': request.POST.get('admin_address', ''),
-            'frequency': request.POST.get('frequency', 0),
             'token_address': request.POST.get('denomination', ''),
+            'token_symbol': request.POST.get('token_symbol', ''),
             'amount_goal': request.POST.get('amount_goal', 1),
             'transaction_hash': request.POST.get('transaction_hash', ''),
             'contract_address': request.POST.get('contract_address', ''),
@@ -273,8 +273,11 @@ def grant_fund(request, grant_id):
         subscription.contributor_signature = request.POST.get('signature', '')
         subscription.contributor_address = request.POST.get('contributor_address', '')
         subscription.amount_per_period = request.POST.get('amount_per_period', 0)
-        subscription.period_seconds = request.POST.get('frequency', 2592000)
+        subscription.real_period_seconds = request.POST.get('real_period_seconds', 2592000)
+        subscription.frequency = request.POST.get('frequency', 30)
+        subscription.frequency_unit = request.POST.get('frequency_unit', 'days')
         subscription.token_address = request.POST.get('denomination', '')
+        subscription.token_symbol = request.POST.get('token_symbol', '')
         subscription.gas_price = request.POST.get('gas_price', 0)
         subscription.network = request.POST.get('network', '')
         subscription.contributor_profile = profile
