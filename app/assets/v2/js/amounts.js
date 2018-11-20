@@ -32,14 +32,11 @@ var get_rates_estimate = function(usd_amount) {
   if (!usd_amount) {
     return '';
   }
+
   var hours = $('#hours').val();
-
   var rates_addon = [];
-  
   var rate = usd_amount / hours;
-
   var round_rate = rate.toFixed(0);
-  
   var round_decimals = hours < 1 ? 2 : 1;
   
   hours = Math.round(hours, round_decimals);
