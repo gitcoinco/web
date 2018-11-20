@@ -138,8 +138,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               </div>
 
               <div class="form__group-horizontal">
-                <div title="Token Approval Limit - The maximum number of tokens a user approves another party to transfer on their behalf. Since Gitcoin Grants uses subscriptions, a small transaction is performed each time period, and with each transaction the approval limit is lowered by that amount. This way, you know your subscription won't run on forever. Unless you want it to 🙂">
-                  <label class="form__label">{% trans "Token Approval Limit" %}
+                <div>
+                  <label class="form__label">
+                    {% trans "Token Approval Limit" %}
+                    <i class="fas fa-question-circle ml-2" data-toggle="tooltip" data-placement="right"
+                      title="<div class='grant-tooltip'><div class='tooltip-inner'>Token Approval Limit - The maximum number of tokens a user approves another party to transfer on their behalf. Since Gitcoin Grants uses subscriptions, a small transaction is performed each time period, and with each transaction the approval limit is lowered by that amount. This way, you know your subscription won't run on forever. Unless you want it to 🙂</div></div>">
+                    </i>
                   </label>
                   <div class="row">
                     <div class="col-12">
