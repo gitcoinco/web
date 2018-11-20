@@ -60,71 +60,127 @@
       flex-direction: column;
     }
   }
+  
+  .kudos-fancy-bg {
+        background-color: #3E00FF;
+        background-image: url("{% static 'v2/images/kudos-bg.png' %}");
+        background-position: center;
+        /* Center the image */
+        background-size: cover;
+        /* Resize the background image to cover the entire container */
+        padding: .5em;
+      }
+
+      .kudos-fancy-bg h1 {
+        color: #FFFFFF;
+        letter-spacing: 0;
+        text-align: center;
+        line-height: 59px;
+
+      }
+
+      .kudos-fancy-bg h3 {
+        color: #FFFFFF;
+        letter-spacing: 0;
+        text-align: center;
+        line-height: 50px;
+      }
+
+      .kudos-fancy-bg p {
+        color: #FFFFFF;
+      }
+
+      .kudos-fancy-bg .kudos-sparkle {
+        position: absolute;
+        background-image: url('data:image/svg+xml;utf8,<svg width="185px" height="178px" viewBox="0 0 185 178" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">        <g id="Received-Kudos" transform="translate(-692.000000, -1019.000000)" fill="#FFFFFF">            <g id="sparkle1" transform="translate(692.000000, 1019.000000)">                <path d="M42.2738534, 101.302405 C42.2738534, 101.302405 52.8812744, 46.6219931 62.4279533, 101.302405 C62.4279533, 101.302405 115.465058, 110.766323 62.4279533, 120.230241 C62.4279533, 120.230241 52.8812744, 175.962199 42.2738534, 120.230241 C10.4515903, 114.446735 12.0427035, 108.137457 42.2738534, 101.302405 Z" id="Path"></path>                <path d="M14.5670485, 14.9749304 C14.5670485, 14.9749304 20.9523044, -18.718663 27.3375604, 14.9749304 C27.3375604, 14.9749304 60.3280495, 20.7660167 27.3375604, 26.5571031 C27.3375604, 26.5571031 21.4844091, 61.3036212 14.5670485, 26.5571031 C-5.1208241, 22.8718663 -4.58871943, 18.6601671 14.5670485, 14.9749304 Z" id="Path"></path>                <path d="M157.567048, 150.97493 C157.567048, 150.97493 163.952304, 117.281337 170.33756, 150.97493 C170.33756, 150.97493 203.32805, 156.766017 170.33756, 162.557103 C170.33756, 162.557103 164.484409, 197.303621 157.567048, 162.557103 C137.879176, 158.871866 138.411281, 154.660167 157.567048, 150.97493 Z" id="Path"></path>            </g>        </g>    </g></svg>');
+  width: 185px;
+        height: 178px;
+        top: 45%;
+        left: 25%;
+        background-position: center;
+        /* Center the image */
+        background-repeat: no-repeat;
+        background-size: 70px;
+
+      }
+
+      .kudos-fancy-bg .kudos-sparkle-reverse {
+        transform: scaleX(-1) scaleY(-1);
+        left: 50%;
+        top: -20%;
+      }
+
+      .kudos-fancy-bg .kudos-hex-container {
+        position: relative;
+        background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 329 382" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">        <g id="Received-Kudos" transform="translate(-875.000000, -799.000000)" stroke="#FFFFFF" stroke-width="20">            <g id="Group-5-Copy-7" transform="translate(1039.124954, 989.889382) rotate(-330.000000) translate(-1039.124954, -989.889382) translate(862.124954, 833.389382)">                <polygon id="Stroke-2" points="265.627611 0.408274735 89.1276108 0.408274735 0.880108514 156.410824 89.1276108 312.408275 265.627611 312.408275 353.880109 156.410824"></polygon>            </g>        </g>    </g></svg>');
+  background-position: center;
+        /* Center the image */
+        background-repeat: no-repeat;
+        background-size: 150px;
+        height: 235px;
+
+      }
+      .kudos-fancy-bg .kudos-hex-content {
+        position: relative;
+        top: 19%;
+      }
+      .kudos-fancy-bg .kudos-hex-content img {
+        width: 130px;
+      }
+  
 </style>
 
 <div>
-  {% if is_new %}
-  <h1>{% trans "You've Received a Kudos" %}</h1>
-  {% else %}
-  <h1>🕑 {% trans "Reminder: Kudos Expires Soon" %} 🕝</h1>
-  {% endif %}
-  <h3>
-    {% if kudos_transfer.from_name %}
-      {{ kudos_transfer.from_name }} {% blocktrans %} sent you a {% endblocktrans %}<b>{{ token_elem.name|humanize_name }}</b> kudos!
-    {% else %}
-      {% trans "Someone sent you a" %} <b>{{ token_elem.name|humanize_name }}</b> kudos.
-    {% endif %}{% if not is_new %} {{ kudos_transfer.created_on|naturaltime }}{% endif %}
-  </h3>
-  <div>
-    <img src="{{ token_elem.img_url }}" alt="{{ token_elem.name|humanize_name }}" width="200" style="margin:auto;">
-  </div>
-</div>
-
-<div class="centered-contents kudos-box">
-  <div class="kudos">
-    <div class="kudos-contents">
-      {% if kudos_transfer.github_url %}
-        <p>
-        {% if kudos_transfer.from_name %}{{ kudos_transfer.from_name }}{% else %}The sender{% endif %} said it was for your work on <a href="{{ kudos_transfer.github_url }}">{{ kudos_transfer.github_url }}</a>.
-        {% if comments %}
-          {% trans "They had the following comments:" %}
-          <pre>{{ comments }}</pre>
-        {% endif %}
-        </p>
-      {% endif %}
-
-      {% if comments_priv %}
-        <p>
-          {% trans "They had the following private comments:" %}
-          <pre>{{ comments_priv }}</pre>
-        </p>
-      {% endif %}
-
-      {% if comments_public %}
-        <p>
-          {% trans "Comment:" %}
-          <pre>{{ comments_public }}</pre>
-        </p>
-      {% endif %}
-      {% if already_redeemed %}
-        <p>
-          {% trans "This kudos has been remitted automatically to the Ethereum address on file for your account via txid " %}{{kudos_transfer.txid}}
-        </p>
-      {% elif show_expires %}
-        <p>
-          {% trans "The kudos expires on" %} <strong>{{ kudos_transfer.expires_date }}, {% trans "in just" %} {{ kudos_transfer.expires_date|naturaltime }}</strong>. {% trans "No pressure, but if you wanted to redeem your kudos sooner rather than later that'd be 👌:" %}
-        </p>
-      {% endif %}
-    </div>
-  </div>
-  {% if not already_redeemed %}
+  <div class="kudos-fancy-bg">
+	<h1>{% if is_new %}
+			{% trans "Awesome!" %}
+		{% else %}
+  	  	 🕑 {% trans "Reminder: Kudos Expires Soon" %} 🕝
+		{% endif %}
+	</h1>
+	<h3>You received a <b>{{ token_elem.name|humanize_name }}</b> kudos
+		{% if kudos_transfer.from_name %}
+			from <b>{{ kudos_transfer.from_name }}</b>
+		{% endif %}
+		!
+	</h3>
+	{% if not is_new %} {{ kudos_transfer.created_on|naturaltime }}{% endif %}
+  
+    <div class="kudos-hex-container">
+      <div class="kudos-sparkle">&nbsp;</div>
+      <div class="kudos-sparkle kudos-sparkle-reverse">&nbsp;</div>
+      <div class="kudos-hex-content">
+        <img src="{{ token_elem.img_url }}" alt="{{ token_elem.name|humanize_name }}">
+	  </div>
+ 	</div>
+    <BR>
+	<p>{% if comments_priv %}{{ comments_priv }}<BR>{% endif %}
+	   {% if comments_public %}{{ comments }}<BR>{% endif %}
+	   {% if kudos_transfer.github_url %}
+	   	 {% if kudos_transfer.from_name %}
+		   {{ kudos_transfer.from_name }}
+		 {% else %}
+		   The sender
+		 {% endif %} said it was for your work on <a href="{{ kudos_transfer.github_url }}">{{ kudos_transfer.github_url }}</a>.
+	   {% endif %} 
+	 </p>
+	   
     <div style="margin: 3em;">
-      <a class="button" href="{{ link }}">{% trans "Accept Kudos" %}</a>
+	  {% if not already_redeemed %}
+      <a style="color:#fff; text-decoration:none; font-size:14px; background-color:#15003e; border-radius:5px; line-height:1.5; padding:15px 20px; text-align:center" bgcolor="#15003e" href="{{ link }}">Accept Kudos</a>
+	  {% endif %} 
+      {% if already_redeemed %}
+  	   <p>
+           {% trans "This kudos has been remitted automatically to the Ethereum address on file for your account via txid " %}{{kudos_transfer.txid}}
+       </p>
+         {% elif show_expires %}
+  	   <p>
+           {% trans "The kudos expires on" %} <strong>{{ kudos_transfer.expires_date }}, {% trans "in just" %} {{ kudos_transfer.expires_date|naturaltime }}</strong>. {% trans "No pressure, but if you wanted to redeem your kudos sooner rather than later that'd be 👌:" %}
+       </p>
+	  {% endif %} 
     </div>
-  {% endif %}
+  </div>
 </div>
-
-<hr>
 
 <div class="cols">
   <div class="col">
