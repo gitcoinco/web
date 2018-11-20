@@ -137,3 +137,7 @@ tr div {
   padding-bottom: 5px;
   display: none;
 }
+
+.select2{
+  width: 100% !important;
+}

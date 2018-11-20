@@ -129,7 +129,7 @@ $(document).ready(function($) {
       _alert('Please accept the TOS.', 'error');
       return;
     }
-    if (!document.transactions.length) {
+    if (typeof document.transactions == 'undefined' || !document.transactions.length) {
       _alert('You do not have any transactions to payout.  Please add payees to the form.', 'error');
       return;
     }
