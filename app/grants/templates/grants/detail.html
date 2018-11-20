@@ -100,7 +100,7 @@
                   </div>
                   {% if user_subscription %}
                   <h5>
-                    {% trans 'You have agreed to give' %} {{ user_subscription.amount_per_period|floatformat:2|intcomma }} {{ user_subscription.token_symbol }} every {{ user_subscription.frequency }} {{ user_subscription.frequency_unit }}
+                    {% trans 'You have agreed to contribute' %} {{ user_subscription.amount_per_period|floatformat:2|intcomma }} {{ user_subscription.token_symbol }} every {{ user_subscription.frequency }} {{ user_subscription.frequency_unit }}
                   </h5>
                   {% endif %}
                 </div>
