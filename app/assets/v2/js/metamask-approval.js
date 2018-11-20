@@ -1,6 +1,6 @@
 
-var is_metamask_approved = is_metamask_approved;
-var is_metamask_unlocked = is_metamask_unlocked;
+var is_metamask_approved = is_metamask_approved || false;
+var is_metamask_unlocked = is_metamask_unlocked || false;
 
 async function metamaskApproval() {
   if (window.ethereum) {
