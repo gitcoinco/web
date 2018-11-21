@@ -38,11 +38,15 @@ $(document).ready(function() {
 
       let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, data.contract_address);
 
-      let deployedToken = new web3.eth.Contract(compiledToken.abi, data.denomination);
+      if (data.token_address != '0x0000000000000000000000000000000000000000') {
+        let deployedToken = new web3.eth.Contract(compiledToken.abi, data.token_address);
+      } else {
+        let deployedToken = new web3.eth.Contract(compiledToken.abi, data.denomination);
+      }
 
       deployedToken.methods.decimals().call(function(err, decimals) {
 
-        let realApproval = Number(data.approve * 10 ** decimals);
+        let realApproval = Number((data.approve * 10 ** decimals) * data.amount_per_period);
 
         let realTokenAmount = Number(data.amount_per_period * 10 ** decimals);
 
@@ -159,6 +163,8 @@ $(document).ready(function() {
         value: ele.addr,
         text: ele.name
       }));
+
+      $("#js-token option[value='0x0000000000000000000000000000000000000000']").remove();
     });
     $('#js-token').select2();
   });

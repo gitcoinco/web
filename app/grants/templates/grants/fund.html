@@ -102,6 +102,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             </div>
 
             <div class="col-12 col-md-10 offset-lg-1 col-lg-6">
+            {% if grant_has_no_token %}
               <div class="form__group-horizontal">
                 <label class="form__label">{% trans "Payment Token" %}</label>
                 <div class="row">
@@ -112,6 +113,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   </div>
                 </div>
               </div>
+              {% else %}
+              <h5>
+                {{ grant.admin_profile.handle }} {% trans 'is accepting contributions in '%}{{ grant.token_symbol }}
+              </h5>
+              {% endif %}
 
               <div class="form__group-horizontal frequency">
                 <label class="form__label">{% trans "Payment Period" %}</label>
@@ -129,7 +135,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               </div>
 
               <div class="form__group-horizontal">
-                <label class="form__label">{% trans "Value Of Payment Per Period" %}</label>
+                <label class="form__label">{% trans "Tokens Per Period" %}</label>
                 <div class="row">
                   <div class="col-12">
                     <input type="number" name="amount_per_period" class="form__input" required />
@@ -140,10 +146,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               <div class="form__group-horizontal">
                 <div>
                   <label class="form__label">
-                    {% trans "Token Approval Limit" %}
-                    <i class="fas fa-question-circle ml-2" data-toggle="tooltip" data-placement="right"
+                    {% trans "Number Of Periods" %}
+                    <!-- <i class="fas fa-question-circle ml-2" data-toggle="tooltip" data-placement="right"
                       title="<div class='grant-tooltip'><div class='tooltip-inner'>Token Approval Limit - The maximum number of tokens a user approves another party to transfer on their behalf. Since Gitcoin Grants uses subscriptions, a small transaction is performed each time period, and with each transaction the approval limit is lowered by that amount. This way, you know your subscription won't run on forever. Unless you want it to 🙂</div></div>">
-                    </i>
+                    </i> -->
                   </label>
                   <div class="row">
                     <div class="col-12">
@@ -169,12 +175,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <input type="hidden" id="admin_address" name="admin_address" value="{{ grant.admin_address }}">
             <input type="hidden" id="token_address" name="token_address" value="{{ grant.token_address }}">
             <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
-            <input type="hidden" id="network" name="network" value="{{grant.network}}">
+            <input type="hidden" id="network" name="network" value="{{ grant.network }}">
             <input type="hidden" id="subscription_hash" name="subscription_hash" value="">
             <input type="hidden" id="signature" name="signature" value="">
             <input type="hidden" id="contributor_address" name="contributor_address" value="">
             <input type="hidden" id="gas_price" name="gas_price" value="">
-            <input type="hidden" id="token_symbol" name="token_symbol" value="">
+            <input type="hidden" id="token_symbol" name="token_symbol" value="{{ grant.token_symbol }}">
             <input type="hidden" id="real_period_seconds" name="real_period_seconds" value="">
           </div>
         </form>

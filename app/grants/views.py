@@ -275,6 +275,7 @@ def grant_fund(request, grant_id,  grant_slug):
         'active': 'fund_grant',
         'title': _('Fund Grant'),
         'subscription': {},
+        'grant_has_no_token': True if grant.token_address == '0x0000000000000000000000000000000000000000' else False,
         'grant': grant,
         'keywords': get_keywords(),
     }
