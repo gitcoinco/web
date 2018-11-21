@@ -28,6 +28,12 @@
   font-size: 11px;
 }
 
+.scroll-carousel__item:hover,
+.scroll-carousel__item.selected {
+  border-color: #3e00ff;
+  box-shadow: inset 0 0 0px 2px #3e00ff;
+}
+
 .scroll-carousel__btn {
   position: absolute;
   bottom: 0;

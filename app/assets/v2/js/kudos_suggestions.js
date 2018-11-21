@@ -61,23 +61,31 @@ function templateSuggestions(kudosGroup) {
 
   return `
     ${kudosGroup.map((kudos, index) => `
-      <div class="scroll-carousel__item">
-      <img class="scroll-carousel__img" src="${static_url + kudos.image}" />
+      <a class="scroll-carousel__item" id="kudos-${kudos.id}" onclick="fillKudos(${index}, this )">
+        <img class="scroll-carousel__img" src="${static_url + kudos.image}" />
         <div class="scroll-carousel__text">
           ${kudos.name_human}
           ${kudos.price_finney} ETH
         </div>
-        <button class="scroll-carousel__btn" onclick="fillKudos(${index} )">Add</button>
-      </div>
+      </a>
     `).join(' ')}
   `;
 }
 
-function fillKudos(index) {
+function fillKudos(index, e) {
   const data = resultData[index];
 
+  $('.scroll-carousel__item').not(e).removeClass('selected');
+  $(e).toggleClass('selected');
   $('.kudos-search').data('select2').dataAdapter.select(data);
 }
+
+$('.kudos-search').on('select2:select', function(e) {
+  const kudoId = e.params.data.id;
+
+  $('.scroll-carousel__item').removeClass('selected');
+  $('#kudos-' + kudoId).toggleClass('selected');
+});
 
 var refreshIntervalId = setInterval(checkVariable, 1000);
 
