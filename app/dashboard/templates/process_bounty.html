@@ -88,7 +88,9 @@
                     <a href="{% url 'kudos_about' %}" target="_blank">What is kudos?</a>
                   </div>
 
-                  <div id="kudos-holder"></div>
+                  <div id="kudos-holder">
+                    <img src="{% static '/v2/images/loading_v2.gif' %}" class="d-block m-auto" style="max-width: 122px;max-height: 122px;">
+                  </div>
                 </div>
                 {% include 'shared/add_kudos.html' %}
                 <div id="gas-section">
