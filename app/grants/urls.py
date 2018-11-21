@@ -19,7 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from django.conf import settings
 from django.urls import path, re_path
-from django.conf.urls.static import static
 
 from grants.views import (
     grant_details, grant_fund, grant_new, grants, milestones, profile, quickstart, subscription_cancel,
@@ -36,6 +35,3 @@ urlpatterns = [
     re_path(r'^profile', profile, name='profile'),
     re_path(r'^quickstart', quickstart, name='quickstart')
 ]
-
-if settings.ENV == 'local' and not settings.AWS_STORAGE_BUCKET_NAME:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -27,7 +27,6 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import redirect
-from django.templatetags.static import static
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -40,7 +39,6 @@ from marketing.mails import (
 )
 from marketing.models import Keyword
 from web3 import HTTPProvider, Web3
-from random import randint
 
 logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
@@ -159,8 +157,6 @@ def grant_new(request):
 
     if request.method == 'POST':
         logo = request.FILES.get('input_image', None)
-        if logo ==  None:
-            logo = static("v2/images/grants/logos/" + str(randint(1, 4)) + '.png')
         receipt = json.loads(request.POST.get('receipt', '{}'))
         team_members = request.POST.getlist('team_members[]')
         print('team_members: ', team_members, dir(team_members))
