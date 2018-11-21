@@ -58,6 +58,11 @@ class GrantQuerySet(models.QuerySet):
 class Grant(SuperModel):
     """Define the structure of a Grant."""
 
+    class Meta:
+        """Define the metadata for Grant."""
+
+        ordering = ['-created_on']
+
     active = models.BooleanField(default=True, help_text=_('Whether or not the Grant is active.'))
     title = models.CharField(default='', max_length=255, help_text=_('The title of the Grant.'))
     slug = AutoSlugField(populate_from='title')

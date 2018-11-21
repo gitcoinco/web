@@ -1693,7 +1693,7 @@ def get_users(request):
 def get_kudos(request):
     autocomplete_kudos = {
         'copy': "No results found.  Try these categories: ",
-        'autocomplete': ['rare','common','ninja','soft skills','programming']
+        'autocomplete': ['rare', 'common', 'ninja', 'soft skills', 'programming']
     }
     if request.is_ajax():
         q = request.GET.get('term')
