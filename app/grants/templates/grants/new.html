@@ -104,17 +104,12 @@
 
             <div class="form__group-horizontal">
               <div class="row">
-                <div class="col-12">
+                <div class="col-12 col-md-6">
                   <label class="form__label form__label-lg">{% trans "Monthly amount sought in DAI" %}</label>
                   <input type="number" name="amount_goal" class="form__input form__input-lg" min="1" required />
                 </div>
-              </div>
-            </div>
-
-            <div class="form__group-horizontal">
-              <label class="form__label form__label-lg">{% trans "Required Token For Subscription" %}</label>
-              <div class="row">
-                <div class="col-12">
+                <div class="col-12 col-md-6">
+                  <label class="form__label form__label-lg">{% trans "Required Token For Subscription" %}</label>
                   <div class="form__select2">
                     <select class='js-select2' name='denomination' id='js-token'></select>
                   </div>
@@ -137,7 +132,7 @@
             </div>
 
             <div class="form__footer text-center">
-              <button class="btn btn-gc-blue" id="new_button">{% trans "Create Grant" %}</button>
+              <button class="button button--primary button--full" id="new_button">{% trans "Create Grant" %}</button>
             </div>
 
             <div>

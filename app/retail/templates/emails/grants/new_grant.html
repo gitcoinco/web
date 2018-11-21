@@ -16,8 +16,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n %}
-{% load static %}
+{% load i18n static grants_extra %}
 
 {% block content %}
 <style>
@@ -67,7 +66,7 @@
 
 <hr>
 
-<img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% static 'v2/images/bitmap.png' %}{% endif %}" alt="grant logo" width="25%" >
+<img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3|add:1 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}" alt="grant logo" width="25%" >
 
 <p class="grant-email-name">{{ grant.title }}</p>
 <p class="grant-email-subtitle">{{ grant.description }}</p>

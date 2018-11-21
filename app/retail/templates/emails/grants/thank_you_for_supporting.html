@@ -15,7 +15,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static grants_extra %}
 
 {% block content %}
 
@@ -114,7 +114,7 @@
 <hr>
 <div class="grantInfo">
   <a href="{% url 'grants:details' grant.id grant.slug %}">
-    <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% static 'v2/images/bitmap.png' %}{% endif %}" width="50" height="50" />
+    <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3|add:1 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}" width="50" height="50" />
   </a>
   <br>
   <a class="grantInfoName" href="{% url 'grants:details' grant.id grant.slug %}">

@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load static humanize i18n %}
+{% load static humanize i18n grants_extra %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -34,23 +34,23 @@
       <div class="container">
         <div class="row">
           <div class="grant-banner col-12 col-lg-6 col-xl-5 p-0 mb-5 my-md-auto">
-            <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% static 'v2/images/bitmap.png' %}{% endif %}" width="100%" />
+            <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3|add:1 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
           </div>
           <div class="col-12 col-lg-6 offset-xl-1 col-xl-5">
             <div class="row">
               <div class="col-12">
                 <div class="grant__specs">
-                  <h1 class="grant__title font-title-lg">
-                  {% if is_admin %}
-                    <textarea id="form--input__title" class="p-0 mt-2 inline-edit" disabled>{{ grant.title }}</textarea>
-                  {% else %}
-                  <span>{{ grant.title }}</span>
-                  {% endif %}
-                </h1>
-                  <span class="grant__url font-subheader my-4">
+                  <h1 class="grant__title font-title-lg {% if is_admin %} mt-4 {% endif %}">
+                    {% if is_admin %}
+                      <textarea id="form--input__title" class="p-0 m-0 inline-edit" disabled>{{ grant.title }}</textarea>
+                    {% else %}
+                      <span>{{ grant.title }}</span>
+                    {% endif %}
+                  </h1>
+                  <span class="grant__url font-subheader {% if not is_admin %}my-4{% endif %}">
                     {% if is_admin %}
                       <div>
-                        <textarea id="form--input__reference-url" class="p-0 mt-2 inline-edit" disabled>{{ grant.reference_url }}</textarea>
+                        <textarea id="form--input__reference-url" class="p-0 m-0 inline-edit" disabled>{{ grant.reference_url }}</textarea>
                       </div>
                     {% else %}
                       <a href="{{ grant.reference_url }}" target="_blank">
@@ -82,7 +82,7 @@
                 </div>
               </div>
               <div class="col-12">
-                <div class="grant__progress my-4">
+                <div class="grant__progress mt-4">
                   <div class="progress">
                     <div class="progress-bar" style="width:{{ grant.percent_completed }}%"></div>
                   </div>
