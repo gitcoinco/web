@@ -62,6 +62,7 @@
                   <div class="grant-item__owner my-2">
                     {% if is_admin %}
                       <div class="font-body">
+                        <p class="font-caption sub-title mb-0">Grant Owner</p>
                         <div class="form__select2">
                           <select id="grant-admin" class="form__input" name="grant-admin" disabled>
                             <option selected="selected">{{ grant.admin_profile.handle|default:'anonymous' }}</option>
@@ -166,6 +167,7 @@
           <div class="grant-item__member mb-4">
             {% if is_admin %}
               <div class="font-body">
+                <p class="font-body sub-title">Team Members</p>
                 <div class="form__select2">
                   <select id="grant-members" class="form__input" name="grant-members" name="members" multiple="multiple" disabled>
                     {% for team_member in grant.team_members.all %}
