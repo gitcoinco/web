@@ -122,6 +122,9 @@
                       <button class="button button--primary button--warning button--full">{% trans "Cancel Your Funding" %}</button>
                     </a>
                 {% else %}
+                  <h5>
+                    {{ grant.admin_profile.handle }} {% trans 'is accepting contributions in '%}{{ grant.token_symbol }}
+                  </h5>
                   <a href="{% url 'grants:fund' grant.id %}">
                     <button class="button button--primary button--full">{% trans "Fund this Grant" %}</button>
                   </a>

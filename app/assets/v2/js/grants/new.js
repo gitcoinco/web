@@ -10,6 +10,9 @@ $(document).ready(function() {
     $('#input-admin_address').val(accounts[0]);
   });
 
+
+  $('#js-token').append("<option value='0x0000000000000000000000000000000000000000'>Any Token");
+
   userSearch('.team_members');
 
   $('#img-project').on('change', function() {
@@ -41,6 +44,8 @@ $(document).ready(function() {
       $.each($(form).serializeArray(), function() {
         data[this.name] = this.value;
       });
+
+      $('#token_symbol').val($('#js-token option:selected').text());
 
       // Begin New Deploy Subscription Contract
       let SubscriptionContract = new web3.eth.Contract(compiledSubscription.abi);
@@ -123,6 +128,7 @@ $(document).ready(function() {
     );
   });
 
+
   waitforWeb3(function() {
     tokens(document.web3network).forEach(function(ele) {
       let option = document.createElement('option');
@@ -136,6 +142,11 @@ $(document).ready(function() {
       }));
     });
     $('#js-token').select2();
+
+    $("#js-token option[value='0x0000000000000000000000000000000000000000']").remove();
+
+    $('#js-token').append("<option value='0x0000000000000000000000000000000000000000' selected='selected'>Any Token");
+
   });
 
   $('.select2-selection__rendered').removeAttr('title');

@@ -74,7 +74,7 @@ class Grant(SuperModel):
     )
     token_symbol = models.CharField(
         max_length=255,
-        default='0x0',
+        default='',
         help_text=_('The token symbol to be used with the Grant.'),
     )
     contract_address = models.CharField(
