@@ -7,8 +7,8 @@
     <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
     <script src="{% static 'v2/js/tweenlite.js' %}"></script>
     <link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
-    <meta property="twitter:image" content="{% static kudos.image %}" />
-    <meta property="og:image" content="{% static kudos.image %}" />
+    <meta property="twitter:image" content="{{ kudos.img_url }}" />
+    <meta property="og:image" content="{{ kudos.img_url }}" />
     <meta property="og:description" content="{{ kudos.name|humanize_name }} Kudos" />
 
   </head>
