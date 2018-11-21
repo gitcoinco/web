@@ -20,4 +20,14 @@ END
 apt-get update
 apt-get install postgresql-client -y
 
-psql postgres -p 5432 -h db -U postgres
+export $(grep -v '^#' app/app/.env | xargs)
+
+
+# Settings
+PGUSER=$(echo $DATABASE_URL | awk -F '://' '{print $2}'  | awk -F ':' '{print $1}')
+PGHOST=$(echo $DATABASE_URL | awk -F '://' '{print $2}'  | awk -F ':' '{print $2}'  | awk -F '@' '{print $2}')
+PGPORT=$(echo $DATABASE_URL | awk -F '://' '{print $2}'  | awk -F ':' '{print $3}'  | awk -F ':' '{print $1}' | awk -F '/' '{print $1}')
+PGPASS=$(echo $DATABASE_URL | awk -F '://' '{print $2}'  | awk -F ':' '{print $2}' | awk -F '@' '{print $1}')
+
+
+psql gitcoin -p $PGPORT -h $PGHOST -U $PGUSER

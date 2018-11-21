@@ -29,6 +29,7 @@
 <body class="interior {{active}} g-font-muli" style="background-color: #FFFFFF;">
   {% include 'shared/tag_manager_2.html' %}
   <div class="container-fluid header dash">
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
     {% include 'shared/nav.html' %}
   </div>
   <div class="container-fluid submit_bounty_content">
@@ -38,6 +39,7 @@
         {% include 'shared/no_metamask_error.html' %}
         {% include 'shared/zero_balance_error.html' %}
         {% include 'shared/unlock_metamask.html' %}
+        {% include 'shared/connect_metamask.html' %}
       </div>
     </div>
     <div class="row">
@@ -102,7 +104,6 @@
                   <h5 class="font-subheader">{% trans "Contact" %}</h5>
                   {% include 'shared/github_username.html' %}
                   {% include 'shared/notification_email.html' with show_information_publicly_checkbox=1 %}
-                  {% include 'shared/name.html' %}
                   <div id="advanced_container"></div>
                   <hr class="mt-4">
                 </div>

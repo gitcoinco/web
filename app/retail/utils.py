@@ -373,7 +373,10 @@ def build_stat_results_helper(keyword=None):
     pp.profile_time('count_*')
 
     # Leaderboard
-    num_to_show = 50
+    num_to_show = 30
+    context['top_funders'] = base_leaderboard.filter(active=True, leaderboard='quarterly_payers') \
+        .order_by('rank').values_list('github_username', flat=True)[0:num_to_show]
+    pp.profile_time('funders')
     context['top_orgs'] = base_leaderboard.filter(active=True, leaderboard='quarterly_orgs') \
         .order_by('rank').values_list('github_username', flat=True)[0:num_to_show]
     pp.profile_time('orgs')
@@ -440,6 +443,10 @@ def build_stat_results_helper(keyword=None):
     context['bounty_median_pickup_time'] = round(
         get_bounty_median_turnaround_time('turnaround_time_started', keyword), 1)
     pp.profile_time('bounty_median_pickup_time')
+    from kudos.models import Token as KudosToken
+
+    context['kudos_tokens'] = KudosToken.objects.filter(num_clones_in_wild__gt=0).order_by('-num_clones_in_wild')[0:25]
+    pp.profile_time('kudos_tokens')
     pp.profile_time('final')
     context['keyword'] = keyword
     context['title'] = f"{keyword.capitalize() if keyword else ''} Results"

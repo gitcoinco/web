@@ -453,10 +453,6 @@ p a {
   color: #25e899;
 }
 
-.btn:focus {
-  box-shadow: none;
-}
-
 .cta-green {
   background-color: var(--gc-green);
   text-align: center;
@@ -693,6 +689,7 @@ input[type=text].loading {
 
 .alert .message .content{
   display: inline;
+  word-break: break-all;
 }
 
 .alert .message::before {
@@ -1643,11 +1640,13 @@ div.busyOverlay {
 .expandable {
   overflow: hidden;
   max-height: 0;
+  opacity: 0.0;
   transition: 0.3s ease-in-out;
 }
 
 .expandable#expanded {
-  max-height: 10rem;
+  max-height: 100rem;
+  opacity: 1.0;
 }
 
 .arrow {
@@ -1668,20 +1667,6 @@ div.busyOverlay {
 
 .middle {
   vertical-align: middle;
-}
-
-.funding {
-  background-color: #f9f9f9;
-}
-
-.funding > div.placeholder {
-  margin-left: 8.3%;
-}
-
-@media (max-width: 768px) {
-  .funding > div.placeholder {
-    margin-left: 3px;
-  }
 }
 
 .g-bold {

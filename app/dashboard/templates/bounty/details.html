@@ -14,6 +14,7 @@
   <body class="interior {{active}} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav.html' %}
     </div>
     <div class="row no-gutter">
@@ -116,8 +117,13 @@
 
                 <div>
                   <span class="bounty-info-heading" title='{% include "shared/permissions_type_tooltip.html" %}'>{% trans "Permissions" %}</span>
-                  <span class="bounty-info-text" id="permission_type" title='{% include "shared/permissions_type_tooltip.html" %}'>></span>
+                  <span class="bounty-info-text" id="permission_type" title='{% include "shared/permissions_type_tooltip.html" %}'></span>
                   <i class="fas fa-info-circle" title='{% include "shared/permissions_type_tooltip.html" %}'></i>
+                </div>
+
+                <div id="auto_approve_workers_wrapper">
+                  <span class="bounty-info-heading">{% trans "Workers Auto Approve" %} </span>
+                  <span class="bounty-info-text" id="admin_override_suspend_auto_approval"></span>
                 </div>
               </div>
             </div>
@@ -166,7 +172,7 @@
                   <div id="issuer_avatar_url"></div>
                 </div>
                 <div class="col-12 col-md-11">
-                  <div id="bounty_owner_name" class="font-subheader"></div>
+                  <div id="bounty_owner_github_username" class="font-subheader"></div>
                   <div>
                     <span class="bounty-subheading">{% trans "Funder" %} :</span>
                     <span class="bounty-text" id="bounty_owner_address"></span>
@@ -174,10 +180,6 @@
                   <div>
                     <span class="bounty-subheading" id="bounty_owner_email_label">{% trans "Email" %} :</span>
                     <span class="bounty-text" id="bounty_owner_email"></span>
-                  </div>
-                  <div>
-                    <span class="bounty-subheading" id="bounty_owner_github_username_label">{% trans "Gitcoin Profile" %} :</span>
-                    <span class="bounty-text" id="bounty_owner_github_username"></span>
                   </div>
                 </div>
               </div>

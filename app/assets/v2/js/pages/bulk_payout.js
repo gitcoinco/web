@@ -162,7 +162,7 @@ $(document).ready(function($) {
       <tr>
         <td class="pl-0 pb-0">
           <div class="pl-0">
-            <select id="username" onchange="update_registry()" class="username-search custom-select" style="width: 100%; margin-left: auto; margin-right: auto;"></select>
+            <select onchange="update_registry()" class="username-search custom-select w-100 ml-auto mr-auto"></select>
           </div>
         </td>
         <td class="pb-0"><div class="percent" contenteditable="true">` + percent + `</div></td>
@@ -185,14 +185,13 @@ $(document).ready(function($) {
 });
 
 var get_total_cost = function() {
-  var num_rows = $('#payout_table tbody').find('tr').length;
+  var rows = $('#payout_table tbody tr');
   var total = 0;
-  var i = 1;
 
-  for (i = 1; i < num_rows; i += 1) {
-    var $row = $('#payout_table tobdy').find('tr:nth-child(' + i + ')');
-    var amount = parseFloat($row.find('.amount').text());
-    var username = $row.find('.username-search').text();
+  for (i = 0; i < rows.length; i += 1) {
+    var $rows = $(rows[i]);
+    var amount = parseFloat($rows.find('.amount').text());
+    var username = $rows.find('.username-search').text();
     var is_error = !$.isNumeric(amount) || amount <= 0 || username == '' || username == '@';
 
     if (!is_error) {
@@ -209,9 +208,23 @@ var update_registry = function() {
   var denomination = $('#token_name').text();
   var original_amount = $('#original_amount').val();
   var net = round(original_amount - tc, 2);
+  var over = round((original_amount - get_total_cost()) * -1, 4);
+  var addr = web3.eth.coinbase.substring(38);
 
   $('#total_cost').html(tc + ' ' + denomination);
   $('#total_net').html(net + ' ' + denomination);
+
+  if (over > 0) {
+    $('.overageAlert').css('display', 'inline-block');
+    $('.overagePreview').css('display', 'inline-block');
+    $('#total_overage').html(over + ' ' + denomination);
+    $('#address_ending').html(addr + ' ');
+    $('#preview_ending').html(addr + ' ');
+    $('#preview_overage').html(over + ' ' + denomination);
+  } else {
+    $('.overageAlert').css('display', 'none');
+    $('.overagePreview').css('display', 'none');
+  }
 
   let transactions = [];
 

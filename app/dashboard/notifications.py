@@ -25,14 +25,18 @@ from urllib.parse import urlparse as parse
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.templatetags.static import static
+from django.utils import timezone, translation
+from django.utils.translation import gettext
 
 import requests
 import twitter
 from economy.utils import convert_token_to_usdt
 from git.utils import delete_issue_comment, org_name, patch_issue_comment, post_issue_comment, repo_name
-from marketing.mails import tip_email
+from marketing.mails import send_mail, setup_lang, tip_email
 from marketing.models import GithubOrgToTwitterHandleMapping
+from marketing.utils import should_suppress_notification_email
 from pyshorteners import Shortener
+from retail.emails import render_new_kudos_email
 from slackclient import SlackClient
 
 logger = logging.getLogger(__name__)
@@ -359,6 +363,62 @@ def maybe_market_tip_to_slack(tip, event_name):
     except Exception as e:
         print(e)
         return False
+    return True
+
+
+def maybe_market_kudos_to_email(kudos_transfer):
+    """Send an email for the specified Kudos.  The general flow of this function:
+
+        - 1. Decide if we are sending it
+        - 2. Generate subject
+        - 3. Render email
+        - 4. Send email
+        - 5. Do translation
+
+    Args:
+        kudos_transfer (kudos.models.KudosTransfer): The Kudos Email object to be marketed.
+
+    Returns:
+        bool: Whether or not the email notification was sent successfully.
+
+    """
+
+    # 1. Decide if we are sending it
+    if kudos_transfer.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
+        logger.warning('Notifications are disabled.  Skipping email.')
+        logger.debug(kudos_transfer.network)
+        logger.debug(settings.ENABLE_NOTIFICATIONS_ON_NETWORK)
+        return False
+
+    if not kudos_transfer or not kudos_transfer.txid or not kudos_transfer.amount or not kudos_transfer.kudos_token_cloned_from:
+        logger.warning('Some kudos information not found.  Skipping email.')
+        return False
+
+    # 2. Generate subject
+    from_name = 'Someone' if not kudos_transfer.from_username else f'{kudos_transfer.from_username}'
+    on_network = '' if kudos_transfer.network == 'mainnet' else f'({kudos_transfer.network})'
+    subject = gettext(f"⚡️ {from_name} Sent You a {kudos_transfer.kudos_token_cloned_from.humanized_name} Kudos {on_network}")
+
+    logger.info(f'Emails to send to: {kudos_transfer.emails}')
+
+    for to_email in kudos_transfer.emails:
+        cur_language = translation.get_language()
+        try:
+            setup_lang(to_email)
+            # TODO:  Does the from_email field in the database mean nothing?  We just override it here.
+            from_email = settings.CONTACT_EMAIL
+            # 3. Render email
+            html, text = render_new_kudos_email(to_email, kudos_transfer, True)
+
+            # 4. Send email unless the email address has notifications disabled
+            if not should_suppress_notification_email(to_email, 'kudos'):
+                # TODO:  Should we be doing something with the response from SendGrid?
+                #        Maybe we should store it somewhere.
+                send_mail(from_email, to_email, subject, text, html)
+        finally:
+            # 5.  Do translation
+            translation.activate(cur_language)
+
     return True
 
 
@@ -883,7 +943,7 @@ def maybe_notify_user_escalated_github(bounty, username, last_heard_from_user_da
 
     msg = f"""{status_header}@{username} due to inactivity, we have escalated [this issue]({bounty.url}) to Gitcoin's moderation team. Let us know if you believe this has been done in error!
 
-* [x] warning ({num_days_back_to_warn} days)
+* [x] reminder ({num_days_back_to_warn} days)
 * [x] escalation to mods ({num_days_back_to_delete_interest} days)
 {append_snooze_copy(bounty)}"""
 
@@ -895,7 +955,7 @@ def maybe_warn_user_removed_github(bounty, username, last_heard_from_user_days):
         return False
 
     msg = f"""@{username} Hello from Gitcoin Core - are you still working on this issue? Please submit a WIP PR or comment back within the next 3 days or you will be removed from this ticket and it will be returned to an ‘Open’ status. Please let us know if you have questions!
-* [x] warning ({num_days_back_to_warn} days)
+* [x] reminder ({num_days_back_to_warn} days)
 * [ ] escalation to mods ({num_days_back_to_delete_interest} days)
 {append_snooze_copy(bounty)}"""
 

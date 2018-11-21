@@ -26,6 +26,7 @@
   <body class="index d-flex flex-column g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
     {% cookielaw_banner %}
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
     {% include 'shared/nav.html' %}
     <div id="landing_page_wrapper">
       <div class="container-fluid header">
@@ -166,7 +167,6 @@
       </div>
 
       {% include 'landing/funder/press.html' %}
-      {% include 'landing/ios_banner.html' %}
       {% include 'shared/footer.html' %}
     </div>
     {% include 'shared/footer_scripts.html' with slim=1 %}

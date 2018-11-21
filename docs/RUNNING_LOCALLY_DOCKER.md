@@ -168,3 +168,12 @@ Simply run: `make get_django_shell` or `docker-compose exec web python app/manag
 `Q: I want to inspect or manipulate the container via bash.  How can I access the root shell of the container?`
 
 Run: `docker-compose exec web bash`
+
+
+
+
+#### I have a question about Kudos.  Is there a FAQ for that product?
+
+Yes [click here](https://github.com/gitcoinco/web/blob/master/docs/KUDOS.md).
+
+
