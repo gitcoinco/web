@@ -1,89 +1,93 @@
-function suggestKudos(tags){
-  const url = '/api/v0.1/kudos_search/';
-  let query = {
-    term: tags,
-    network: document.web3network
-  };
+function suggestKudos(tags, kudosQt) {
+
+  var kudosArray = kudosArray || [];
+  var processCounter = 0;
 
   return new Promise(resolve => {
-    const kudos = fetchData(url, 'GET', query)
+    tags.forEach(tag => {
 
-    $.when(kudos).then(response => {
-      resolve(response)
-    })
+      const url = '/api/v0.1/kudos_search/';
+
+      let query = {
+        term: tag,
+        network: document.web3network
+      };
+
+      const kudos = fetchData(url, 'GET', query);
+
+      $.when(kudos).then(response => {
+        processCounter++;
+
+        if (response.length === 1 && response[0].copy) {
+          console.log('error', response);
+        } else {
+          kudosArray = kudosArray.concat(response);
+        }
+
+        if (processCounter === tags.length || kudosArray.length >= kudosQt) {
+          resolve(kudosArray);
+        }
+      });
+    });
   });
 }
-// get tags
-// request for each tag until quantify
-// return array with kudos data
+
 var resultData;
+var auto_terms = ['soft skills'];
 
-async  function getSuggestions(tags){
-  const kudosHolder = $('#kudos-holder');
-
+async function getSuggestions(tags) {
   try {
     resultData = await suggestKudos(tags);
-    const resu = await fillTmp(resultData);
 
-    function fillTmp(results){
-      let template = `<div>
-        ${templateSuggestions(results)}
-      </div>`;
-      kudosHolder.html(template);
-
+    if (!resultData.length) {
+      resultData = await suggestKudos(auto_terms, 4);
     }
-  } catch(error) {
+    fillTmp(resultData);
+
+  } catch (error) {
     console.log(error);
   }
 }
 
+function fillTmp(results) {
+  const kudosHolder = $('#kudos-holder');
+
+  let template = `<div class="scroll-carousel">
+    ${templateSuggestions(results)}
+  </div>`;
+
+  kudosHolder.html(template);
+}
 
 function templateSuggestions(kudosGroup) {
 
   return `
     ${kudosGroup.map((kudos, index) => `
-      <div>
-      <img src="${static_url + kudos.image}" />
-        ${kudos.name_human}
-        ${kudos.price_finney} ETH
-        <button onclick="fillKudos(${index} )">Add</button>
+      <div class="scroll-carousel__item">
+      <img class="scroll-carousel__img" src="${static_url + kudos.image}" />
+        <div class="scroll-carousel__text">
+          ${kudos.name_human}
+          ${kudos.price_finney} ETH
+        </div>
+        <button class="scroll-carousel__btn" onclick="fillKudos(${index} )">Add</button>
       </div>
-    `).join(" ")}
+    `).join(' ')}
   `;
 }
 
-function createButton() {
-  var btnAdd = document.createElement("button");
-  btnAdd.innerHTML = "link";
-  btnAdd.onclick = function () {
-    that.fillKudos(index);
-  };
+function fillKudos(index) {
+  const data = resultData[index];
+
+  $('.kudos-search').data('select2').dataAdapter.select(data);
 }
 
-$(document).ready(function() {
+var refreshIntervalId = setInterval(checkVariable, 1000);
 
-
-})
-
-function fillKudos (index) {
-  const data = resultData[index]
-  console.log(data)
-
-  $('.kudos-search').data('select2')
-  .dataAdapter.select(data);
-}
-
-var refreshIntervalId = null;
-refreshIntervalId = setInterval(checkVariable, 1000);
-
-  function checkVariable() {
-    console.log('test')
-
-    if (typeof result !== "undefined") {
-      clearInterval(refreshIntervalId);
-      bountyKeywords = result.keywords.split(',')
-
-      getSuggestions(bountyKeywords[0])
-    }
+function checkVariable() {
+  if (typeof result !== 'undefined') {
+    clearInterval(refreshIntervalId);
+    bountyKeywords = result.keywords.split(',');
+    getSuggestions(bountyKeywords);
   }
+}
 
