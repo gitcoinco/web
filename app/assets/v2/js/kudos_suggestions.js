@@ -18,9 +18,7 @@ function suggestKudos(tags, kudosQt) {
       $.when(kudos).then(response => {
         processCounter++;
 
-        if (response.length === 1 && response[0].copy) {
-          console.log('error', response);
-        } else {
+        if (response.length !== 1 && !response[0].copy) {
           kudosArray = kudosArray.concat(response);
         }
 
@@ -45,7 +43,7 @@ async function getSuggestions(tags) {
     fillTmp(resultData);
 
   } catch (error) {
-    console.log(error);
+    // return error;
   }
 }
 

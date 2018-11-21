@@ -82,11 +82,13 @@
                   <label for=tipPercent>{% trans "(Optional) Add a tip of:" %}</label>
                   <input name='tipPercent' id="tipPercent" class="gc-round-text-input gc-border-blue" style="width: 50px;" type="number" placeholder="" value="0" min="0" /> % worth <span id="tipEstimate">0</span> {{bounty.token_name}}
                 </div>
-                <div>
-                  Suggested Kudos
-                  <a href="{% url 'kudos_about' %}" target="_blank" style="float:right">What is kudos?</a>
-                  <div id="kudos-holder"></div>
+                <div class="my-4">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="font-bigger-1 mb-0">Suggested Kudos</h3>
+                    <a href="{% url 'kudos_about' %}" target="_blank">What is kudos?</a>
+                  </div>
 
+                  <div id="kudos-holder"></div>
                 </div>
                 {% include 'shared/add_kudos.html' %}
                 <div id="gas-section">
