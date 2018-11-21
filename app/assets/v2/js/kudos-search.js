@@ -67,7 +67,7 @@ function kudosSearch(elem) {
                     <div style="min-width: 0;width: 100%;">
                       ${kudos.copy}
                       <ul>
-                        ${kudos.autocomplete.map((kudos) => `<li><a href="#" class="kudos_autocomplete">${kudos}</a></li>`).join(" ")}
+                        ${kudos.autocomplete.map((kudos) => `<li><a href="#" class="kudos_autocomplete">${kudos}</a></li>`).join(' ')}
                       </ul>
                     <div>
                   </div>`;
@@ -152,7 +152,7 @@ $('document').ready(function() {
   $('body').on('click', '.kudos_autocomplete', function(e) {
     var search_term = $(this).text();
 
-    select2Search($('.kudos-search'), search_term)
+    select2Search($('.kudos-search'), search_term);
     e.preventDefault();
   });
 
@@ -181,7 +181,10 @@ function select2Search(elem, term, select) {
 
   $search.val(term);
   $search.trigger('input');
+
   if (select) {
-    setTimeout(function() { $('.select2-results__option').trigger("mouseup"); }, 500);
+    setTimeout(function() {
+      $('.select2-results__option').trigger('mouseup');
+    }, 500);
   }
 }
