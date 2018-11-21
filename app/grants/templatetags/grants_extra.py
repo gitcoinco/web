@@ -42,17 +42,17 @@ def addstr(value, arg):
 
 @register.filter
 def modulo(num, val):
-    """Modulo of number
+    """Get the modulo of the provided number and value.
 
         Args:
-            num : Number
-            val : modulo
+            num (int): Something describing the number.
+            val (int): Something describing the value.
 
         Usage:
             {{ num|modulo(val) }}
 
         Returns:
-            number: modulo
+            int: The modulo of number and value.
 
     """
     return num % val
