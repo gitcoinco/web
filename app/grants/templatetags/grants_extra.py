@@ -17,29 +17,42 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-import re
-
 from django import template
 
 register = template.Library()
+
 
 @register.filter
 def addstr(value, arg):
     """Concats argument to string
 
-    Args:
-        value : Original string
-        arg : String to be concated
+        Args:
+            value : Original string
+            arg : String to be concated
 
-    Usage:
-        {{ value|addstr(arg) }}
+        Usage:
+            {{ value|addstr(arg) }}
 
-    Returns:
-        str: Concatenated string
+        Returns:
+            str: Concatenated string
 
     """
     return str(value) + str(arg)
 
+
 @register.filter
 def modulo(num, val):
+    """Modulo of number
+
+        Args:
+            num : Number
+            val : modulo
+
+        Usage:
+            {{ num|modulo(val) }}
+
+        Returns:
+            number: modulo
+
+    """
     return num % val

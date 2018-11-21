@@ -40,6 +40,10 @@
           <i class="fab fa-ethereum"></i>
           {% trans "Fund Issue" %}
         </a>
+        <a class="dropdown-item" href="{% url "grants:profile" %}">
+          <i class="fas fa-money-check"></i>
+          {% trans "My Grants" %}
+        </a>
       {% else %}
         <a class="dropdown-item" href="{% url "get_gitcoin" %}">
           <i class="fas fa-bolt"></i>

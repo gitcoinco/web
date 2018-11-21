@@ -1,3 +1,7 @@
+.button {
+  font-weight: 500;
+}
+
 .progress {
   background-color: #D8D8D8;
   border-radius: 2px;

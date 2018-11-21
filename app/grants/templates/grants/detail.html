@@ -40,17 +40,17 @@
             <div class="row">
               <div class="col-12">
                 <div class="grant__specs">
-                  <h1 class="grant__title font-title-lg">
-                  {% if is_admin %}
-                    <textarea id="form--input__title" class="p-0 mt-2 inline-edit" disabled>{{ grant.title }}</textarea>
-                  {% else %}
-                  <span>{{ grant.title }}</span>
-                  {% endif %}
-                </h1>
-                  <span class="grant__url font-subheader my-4">
+                  <h1 class="grant__title font-title-lg {% if is_admin %} mt-4 {% endif %}">
+                    {% if is_admin %}
+                      <textarea id="form--input__title" class="p-0 m-0 inline-edit" disabled>{{ grant.title }}</textarea>
+                    {% else %}
+                      <span>{{ grant.title }}</span>
+                    {% endif %}
+                  </h1>
+                  <span class="grant__url font-subheader {% if not is_admin %}my-4{% endif %}">
                     {% if is_admin %}
                       <div>
-                        <textarea id="form--input__reference-url" class="p-0 mt-2 inline-edit" disabled>{{ grant.reference_url }}</textarea>
+                        <textarea id="form--input__reference-url" class="p-0 m-0 inline-edit" disabled>{{ grant.reference_url }}</textarea>
                       </div>
                     {% else %}
                       <a href="{{ grant.reference_url }}" target="_blank">
@@ -82,7 +82,7 @@
                 </div>
               </div>
               <div class="col-12">
-                <div class="grant__progress my-4">
+                <div class="grant__progress mt-4">
                   <div class="progress">
                     <div class="progress-bar" style="width:{{ grant.percent_completed }}%"></div>
                   </div>

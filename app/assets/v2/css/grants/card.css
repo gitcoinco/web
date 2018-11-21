@@ -24,6 +24,7 @@
   color: #9B9B9B;
   line-height: 18px;
   height: 3.3rem;
+  overflow-y: hidden;
 }
 
 .grant-item__owner {
