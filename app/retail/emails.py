@@ -572,96 +572,84 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Nominate your Favorite OSS Dev | Kudos Trophies!"
-    new_kudos_pks = [429, 430]
+    subject = "Introducing Gitcoin Labs | Join The Gitcoin Discourse"
+    new_kudos_pks = [486, 485, 484]
     new_kudos_size_px = 150
     intro = '''
-
 <p>
 Hi there,
 </p>
-<h3>Kudos Trophies</h3>
 <p>
-I'm excited to show off a new product: limited edition, Kudos Trophies. Kudos trophies are physical trophies with Kudos on them.  We launched them as the Status Cryptolife Hackathon in Prague.  Here's what they look like:
+We're excited to introduce <a href="https://medium.com/gitcoin/announcing-gitcoin-labs-ba400522d697">Gitcoin Labs</a>, our new R&D arm focused on blockchain UX, open source sustainability,
+and a variety of open research topics in Web 3. Gitcoin Labs is led by <a href="https://twitter.com/austingriffith">Austin Griffith</a>, who is best known in the Web 3 ecosystem for his
+work on meta transactions, burner wallets, and universal logins alongside Alex Van De Sande. Have interesting research problems? Let us know!
 <BR>
 <BR>
-<img style='max-width: 300px;' src='https://cdn-images-1.medium.com/max/640/1*8CIBNn9yXZY5bj34ZInkPA.jpeg'>
+<a href='https://medium.com/gitcoin/announcing-gitcoin-labs-ba400522d697'>
+<img style='max-width: 300px;' src="https://cdn-images-1.medium.com/max/800/1*dZRwgrgBIV9Dd4gsjYbssQ.png"'>
+</a>
 <BR>
 <BR>
-Each Kudos Trophy is a physical trophy, which has a QR code on the bottom of it that allows it to be redeemed on Gitcoin’s website.
-<BR>
-<BR>
-<img style='max-width: 300px;' src='https://cdn-images-1.medium.com/max/1280/1*zeXLPyw4qkP4fifHkZAgFA.jpeg'>
-<BR>
-<BR>
-It's quite possible that you'll see them again at EthDenver this year :)
-<BR>
-<BR>
- <a href="https://medium.com/gitcoin/introducing-kudos-trophies-4e98c54e521">Learn more about Kudos Trophies here</a>.
-
 </p>
-
-<h3>Gitcoin Nominations are now Live</h3>
 <p>
-Who’s making the most impact on your OSS or Web3 project? Do you know someone that solved a problem in a creative way, built something interesting, or truly deserves a thanks? <a href='https://github.com/gitcoinco/web/issues/2816'>Nominate open source contributors to receive a limited edition and unique Kudos!</a>
+In order to foster longer form conversation around meta transactions, UX, we've launched a <a href="https://discourse.gitcoin.co/">Gitcoin Discourse</a>. Come join us for initial conversations around
+<a href="https://discourse.gitcoin.co/t/open-source-sustainability-via-liberal-radicalism/22/3">Liberal Radicalism by Vitalik Buterin & Glen Weyl</a> and start your own conversations for topics of interest
+for Web 3 UX research or open source sustainability. We're excited to see you there!
 </p>
-
+<p>
+Who’s making the most impact on your OSS or Web3 project? Do you know someone that solved a problem in a creative way,
+built something interesting, or truly deserves a thanks? <a href='https://github.com/gitcoinco/web/issues/2816'>Nominate open source contributors to receive a limited edition and unique Kudos!</a>
+</p>
 <h3>New Kudos This Week</h3>
 <p>
 Check out a few of the new kudos launched this week:
 </p>
-
 <p>
-
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
-
-
 </p>
-
 <h3>What else is new?</h3>
     <ul>
         <li>
             Gitcoin now supports EIP--1102 (Metamask Privacy Mode).  To use Gitcoin in privacy mode, <a href="https://medium.com/metamask/introducing-privacy-mode-42549d4870fa">checkout this post</a>.
         </li>
         <li>
-            We're announcing the launch of Gitcoin Labs next week.  <a href="https://medium.com/gitcoin/announcing-gitcoin-labs-ba400522d697">Here's a sneak peak</a>.
-        </li>
-        <li>
-            The Gitcoin Livestream will be on as regularly scheduled in two days. Aidan from Chainsafe will be there. They'll be talking about their ETH2.0 implementation and Gorli Testnet. We'll also have Ele from OSCoin presenting Radicle. <a href="https://gitcoin.co/livestream">Join us Friday at 5PM ET</a>!
+            No Gitcoin Livestream this week due to Thanksgiving in the USA. We'll be back <a href="https://gitcoin.co/livestream">next Friday at 5PM ET</a>!
         </li>
     </ul>
 </p>
 <p>
-Back to BUIDLing,
+Thanks for reading! Back to BUIDLing,
 </p>
 '''
     highlights = [{
-        'who': 'cleanunicorn',
+        'who': 'evgeniuz',
         'who_link': True,
-        'what': 'Has been helping us with some security bounties',
-    }, {
-        'who': 'zachzundel',
-        'who_link': True,
-        'what': 'Worked with mbeacom on our testing suite!',
-        'link': 'https://github.com/gitcoinco/web/pull/2822',
+        'what': 'Added Python Support to blockchain-etl',
+        'link': 'https://gitcoin.co/issue/blockchain-etl/ethereum-etl/123/1723',
         'link_copy': 'View more',
     }, {
-        'who': 'iamonuwa',
+        'who': 'dryajov',
         'who_link': True,
-        'what': 'Worked with electricfeelco on some hello-metamask component refactoring.',
-        'link': 'https://gitcoin.co/issue/electricfeelco/travay/23/1355',
+        'what': 'Implemented Kitsunet PoC for MetaMask!',
+        'link': 'https://gitcoin.co/issue/MetaMask/kitsunet-js/11/1775',
+        'link_copy': 'View more',
+    }, {
+        'who': 'frederikbolding',
+        'who_link': True,
+        'what': 'Worked on Status-React',
+        'link': 'https://gitcoin.co/issue/status-im/status-react/6353/1742',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/f-o-a-m/chanterelle/issues/46',
-        'primer': 'Help foam improve their CI',
+        'url': 'https://github.com/status-im/status-react/issues/6789',
+        'primer': 'Allow ENS names to be used for Ethereum events',
     }, {
-        'url': 'https://github.com/novnc/noVNC/issues/944',
-        'primer': 'Help novnc add multi touch support.',
+        'url': 'https://github.com/web3j/web3j/issues/769',
+        'primer': 'Prepare Web3j for an Android release.',
     }, {
-        'url': 'https://github.com/gitcoinco/web/issues/2684',
-        'primer': 'Add new assets to Gitcoin Avatars Builder - Holiday Avatars encouraged! 🎅',
+        'url': 'https://github.com/ethereum/py-evm/issues/1472',
+        'primer': 'Add integration tests to py-evm',
     }, ]
 
     num_leadboard_items = 5
@@ -727,6 +715,7 @@ Back to BUIDLing,
     response_txt = render_to_string("emails/bounty_roundup.txt", params)
 
     return response_html, response_txt, subject
+
 
 
 
@@ -969,3 +958,5 @@ def start_work_applicant_expired(request):
     bounty = Bounty.objects.last()
     response_html, _, _ = render_start_work_applicant_expired(interest, bounty)
     return HttpResponse(response_html)
+
+
