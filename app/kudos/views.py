@@ -182,6 +182,7 @@ def details(request, kudos_id, name):
         'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
         'kudos': kudos,
         'related_handles': kudos.owners_handles[:20],
+        'related_handles_unique': kudos.owners_handles_unique
     }
     if kudos:
         token = Token.objects.select_related('contract').get(

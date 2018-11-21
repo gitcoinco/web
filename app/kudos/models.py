@@ -220,6 +220,18 @@ class Token(SuperModel):
         return related_kudos_transfers.values_list('username', flat=True)
 
     @property
+    def owners_handles_unique(self):
+        """.
+            differs from `owner_handles` in that they are unique
+        Returns:
+            array: array of handles
+
+        """
+        from dashboard.models import Profile
+        related_kudos_transfers = KudosTransfer.objects.filter(kudos_token_cloned_from=self.pk).exclude(txid='')
+        return related_kudos_transfers.distinct().values_list('username', flat=True)
+
+    @property
     def num_clones_available_counting_indirect_send(self):
         return self.num_clones_allowed - self.num_clones_in_wild_counting_indirect_send
 

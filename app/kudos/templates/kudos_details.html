@@ -7,8 +7,8 @@
     <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
     <script src="{% static 'v2/js/tweenlite.js' %}"></script>
     <link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
-    <meta property="twitter:image" content="{% static kudos.image %}" />
-    <meta property="og:image" content="{% static kudos.image %}" />
+    <meta property="twitter:image" content="{{ kudos.img_url }}" />
+    <meta property="og:image" content="{{ kudos.img_url }}" />
     <meta property="og:description" content="{{ kudos.name|humanize_name }} Kudos" />
 
   </head>
@@ -99,7 +99,7 @@
           </div>
           <div class="row">
             <div class="col-12">
-            {% for handle in related_handles %}
+            {% for handle in related_handles_unique %}
               <a href="{% url 'profile' handle %}" title="{{handle}}">
               <img src="{% avatar_url handle  %}" alts="{{handle}}" width="70" class="rounded-circle border m-1">
               </a>
