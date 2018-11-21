@@ -100,11 +100,6 @@
               <a href="{% url 'profile' handle %}" title="{{handle}}">
               <img src="{% avatar_url handle  %}" alts="{{handle}}" width="70" class="rounded-circle border m-1">
               </a>
-              {% if forloop.counter|divisibleby:5 %}
-            </div>
-          </div>
-          <div class="row">
-            {% endif %}
             {% endfor %}
           </div>
           {% endif %}
