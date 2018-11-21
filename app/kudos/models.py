@@ -268,7 +268,7 @@ class Token(SuperModel):
             try:
                 obj_data = obj.read()
                 if obj_data:
-                    image = pyvips.Image.new_from_file(obj.name)
+                    image = pyvips.Image.new_from_file(obj.name, scale=3)
                     return BytesIO(image.write_to_buffer(f'.png'))
             except VipsError as e:
                 logger.error(e)
