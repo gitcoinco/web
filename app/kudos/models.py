@@ -216,7 +216,7 @@ class Token(SuperModel):
 
         """
         from dashboard.models import Profile
-        related_kudos_transfers = KudosTransfer.objects.filter(kudos_token_cloned_from=self.pk).exclude(txid='')
+        related_kudos_transfers = KudosTransfer.objects.filter(kudos_token_cloned_from=self.pk).exclude(txid='').exclude(username='')
         return related_kudos_transfers.values_list('username', flat=True)
 
     @property

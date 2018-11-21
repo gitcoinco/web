@@ -181,7 +181,7 @@ def details(request, kudos_id, name):
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
         'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
         'kudos': kudos,
-        'related_handles': kudos.owners_handles[:20],
+        'related_handles': list(set(kudos.owners_handles))[:20],
     }
     if kudos:
         token = Token.objects.select_related('contract').get(
