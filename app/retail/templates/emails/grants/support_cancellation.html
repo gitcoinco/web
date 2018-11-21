@@ -163,11 +163,11 @@
 
 <hr>
 <div class="grantInfo">
-  <a href="{% url 'grants:details' grant.id %}">
+  <a href="{% url 'grants:details' grant.id grant.slug %}">
     <img src="{{ grant.logo.url }}" width="50" height="50" />
   </a>
   <br>
-  <a class="grantInfoName" href="{% url 'grants:details' grant.id %}">{{ grant.title }}</a>
+  <a class="grantInfoName" href="{% url 'grants:details' grant.id grant.slug %}">{{ grant.title }}</a>
   <p>{{ grant.description }}</p>
   <div class="progressBarPositionMargin">
     <div class="progressBarPosition" style="margin-left: {{ grant.percentage_done|floatformat:0 }}%;">

@@ -86,7 +86,7 @@
 
             <div class="row mt-4">
               <div class="col-6">
-                <a href="{% url 'grants:details' grant.id %}">
+                <a href="{% url 'grants:details' grant.id grant.slug %}">
                   <button class="button button--cancel button--full">{% trans "Cancel" %}
                   </button>
                 </a>
