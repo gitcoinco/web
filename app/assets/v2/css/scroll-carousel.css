@@ -10,7 +10,6 @@
   scroll-snap-type: x mandatory;
   flex: 1 1 50%;
   flex-direction: row;
-
 }
 
 .scroll-carousel__item {
@@ -48,6 +47,7 @@
 .scroll-carousel__img {
   width: 60px;
 }
+
 .scroll-carousel__text {
   padding: 0.6em;
   word-break: break-word;
