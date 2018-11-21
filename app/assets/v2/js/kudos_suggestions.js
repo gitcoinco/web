@@ -80,11 +80,14 @@ function fillKudos(index, e) {
   $('.kudos-search').data('select2').dataAdapter.select(data);
 }
 
-$('.kudos-search').on('select2:select', function(e) {
-  const kudoId = e.params.data.id;
-
+$('.kudos-search').on('select2:select select2:unselecting', function(e) {
   $('.scroll-carousel__item').removeClass('selected');
-  $('#kudos-' + kudoId).toggleClass('selected');
+
+  if (e.params._type === 'select') {
+    const kudoId = e.params.data.id;
+
+    $('#kudos-' + kudoId).toggleClass('selected');
+  }
 });
 
 var refreshIntervalId = setInterval(checkVariable, 1000);
