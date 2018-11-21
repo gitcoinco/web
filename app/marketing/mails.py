@@ -94,7 +94,6 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     for category in categories:
         mail.add_category(Category(category))
 
-
     # debug logs
     logger.info(f"-- Sending Mail '{subject}' to {to_email}")
     try:

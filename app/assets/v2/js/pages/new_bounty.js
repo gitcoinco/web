@@ -98,12 +98,23 @@ $(document).ready(function() {
   $('input[name=amount]').blur(setUsdAmount);
   $('input[name=usd_amount]').keyup(usdToAmount);
   $('input[name=usd_amount]').blur(usdToAmount);
+  $('input[name=hours]').keyup(setUsdAmount);
+  $('input[name=hours]').blur(setUsdAmount);
   $('select[name=denomination]').change(setUsdAmount);
   $('select[name=denomination]').change(promptForAuth);
   $('input[name=issueURL]').blur(retrieveIssueDetails);
   setTimeout(setUsdAmount, 1000);
   waitforWeb3(function() {
     promptForAuth();
+  });
+  $('select[name=permission_type]').on('change', function() {
+    var val = $('select[name=permission_type] option:selected').val();
+
+    if (val === 'approval') {
+      $('#auto_approve_workers_container').show();
+    } else {
+      $('#auto_approve_workers_container').hide();
+    }
   });
 
   // revision action buttons
@@ -251,7 +262,8 @@ $(document).ready(function() {
           },
           schemes: {
             project_type: data.project_type,
-            permission_type: data.permission_type
+            permission_type: data.permission_type,
+            auto_approve_workers: !!data.auto_approve_workers
           },
           hiring: {
             hiringRightNow: data.hiringRightNow,

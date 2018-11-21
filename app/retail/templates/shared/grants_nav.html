@@ -18,8 +18,9 @@
 {% load i18n static matches %}
 <nav class="navbar navbar-expand-md navbar-dark">
   <div id="gitcoin-background"></div>
-  <a class="navbar-brand pt-0 pb-0" href="{% url 'kudos_main' %}">
-    <img class="mw-100" src="{% static "v2/images/kudos/logo.svg" %}" alt="kudos" height="50">
+  <a class="navbar-brand pt-0 pb-0 brand-hover" href="{% url 'grants' %}">
+    <img class="mw-100 logo-static" src="{% static "v2/images/grants/grants-logo.svg" %}" alt="Grants" height="50">
+    <img class="mw-100 logo-animated" src="{% static "v2/images/grants/grants-white.gif" %}" alt="Grants" height="50">
   </a>
   {% if request.path|matches:"^\/((explorer)|(issue.*)|(.*new.*))$" %}
     <div class="navbar-network ml-5 py-1 px-2 hidden">

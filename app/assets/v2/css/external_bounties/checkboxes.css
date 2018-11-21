@@ -40,8 +40,8 @@
   top: 3px;
   height: 15px;
   width: 15px;
-  background-color: #F2F6F9;
-  border: 1px solid black;
+  background-color: #FFF;
+  border: 1px solid #D3D3D3;
   border-radius: 2px;
 }
 
@@ -52,7 +52,8 @@
 }
 
 .checkbox_container input:checked ~ .checkbox {
-  background-color: black;
+  background-color:#3E00FF;
+  border: 1px solid #3E00FF;
 }
 
 .checkbox_container input:checked ~ .checkbox:after {

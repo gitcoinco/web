@@ -565,15 +565,27 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
               f"{profiles}{sub_msg}\n<hr>\n\n" \
               f"{learn_more_msg}\n{crowdfund_msg}\n{help_msg}\n{openwork_msg}"
     elif event_name == 'work_done':
+        msg_body = ''
+        msg_tips = ''
+
+        # no crowdfund tips
+        for tip in bounty.tips.filter(is_for_bounty_fulfiller=False).exclude(txid=''):
+            msg_tips += f'* {tip.from_username} tipped {tip.amount} {tip.tokenName} ' \
+                        f'worth {tip.value_in_usdt_now} USD to {tip.username}.\n'
+
         try:
             accepted_fulfillment = bounty.fulfillments.filter(accepted=True).latest('fulfillment_id')
             accepted_fulfiller = f' to @{accepted_fulfillment.fulfiller_github_username}'
+            msg_body = f'__The funding of {natural_value} {bounty.token_name} {usdt_value} ' \
+                       f'{crowdfund_amount} attached to this ' \
+                       f'issue has been approved & issued{accepted_fulfiller}.__  \n\n{crowdfund_thx} '
         except BountyFulfillment.DoesNotExist:
-            accepted_fulfiller = ''
+            msg_body = f'__This Bounty has been completed.__'
 
-        msg = f"{status_header}__The funding of {natural_value} {bounty.token_name} {usdt_value} {crowdfund_amount} attached to this " \
-              f"issue has been approved & issued{accepted_fulfiller}.__  \n\n{crowdfund_thx} " \
-              f"{learn_more_msg}\n{help_msg}\n{openwork_msg}\n"
+        if msg_tips:
+            msg_body += f'\n\nAdditional Tips for this Bounty:\n{msg_tips}\n<hr>\n'
+
+        msg = f'{status_header}{msg_body}\n{learn_more_msg}\n{help_msg}\n{openwork_msg}\n'
     return msg
 
 
@@ -725,6 +737,67 @@ def maybe_market_tip_to_github(tip):
         print(e)
         return False
     return True
+
+
+def maybe_market_kudos_to_github(kt):
+    """Post a Github comment for the specified Kudos.
+
+    Args:
+        kt (kudos.models.KudosTransfer): The KudosTransfer to be marketed.
+
+    Returns:
+        bool: Whether or not the Github comment was posted successfully.
+
+    """
+    if not kt.is_notification_eligible(var_to_check=settings.GITHUB_CLIENT_ID) or not kt.github_url:
+        return False
+
+    # prepare message
+    username = kt.username if '@' in kt.username else f'@{kt.username}'
+    _from = f" from @{kt.from_username}" if kt.from_name else ""
+    warning = kt.network if kt.network != 'mainnet' else ""
+    _comments = "\n\nThe sender had the following public comments: \n> " \
+                f"{kt.comments_public}" if kt.comments_public else ""
+    if kt.username:
+        msg = f"⚡️ A *{kt.kudos_token_cloned_from.humanized_name}* Kudos has been " \
+              f"sent to {username} for this issue{_from}. ⚡️ {_comments}\n\nNice work {username}! "
+        redeem_instructions = "\nTo redeem your Kudos, login to Gitcoin at https://gitcoin.co/explorer and select " \
+                              "'Claim Kudos' from dropdown menu in the top right, or check your email for a " \
+                              "link to the Kudos redemption page. "
+        if kt.receive_txid:
+            redeem_instructions = "\nYour Kudos has automatically been sent in the ETH address we have on file."
+        msg += redeem_instructions
+    else:
+        # TODO: support this once ETH-only sends are done
+        return False
+
+    image = f"<a href='{kt.kudos_token_cloned_from.url}'><img src='{kt.kudos_token_cloned_from.img_url}'></a>"
+    msg = f"""
+<table>
+<tr>
+<td>
+{image}
+</td>
+<td>
+{msg}
+</td>
+</tr>
+</table>"""
+    # actually post
+    url = kt.github_url
+    uri = parse(url).path
+    uri_array = uri.split('/')
+    try:
+        username = uri_array[1]
+        repo = uri_array[2]
+        issue_num = uri_array[4]
+        post_issue_comment(username, repo, issue_num, msg)
+    except Exception as e:
+        print(e)
+        return False
+    return True
+
+
 
 
 def maybe_market_to_email(b, event_name):
@@ -943,7 +1016,7 @@ def maybe_notify_user_escalated_github(bounty, username, last_heard_from_user_da
 
     msg = f"""{status_header}@{username} due to inactivity, we have escalated [this issue]({bounty.url}) to Gitcoin's moderation team. Let us know if you believe this has been done in error!
 
-* [x] warning ({num_days_back_to_warn} days)
+* [x] reminder ({num_days_back_to_warn} days)
 * [x] escalation to mods ({num_days_back_to_delete_interest} days)
 {append_snooze_copy(bounty)}"""
 
@@ -955,7 +1028,7 @@ def maybe_warn_user_removed_github(bounty, username, last_heard_from_user_days):
         return False
 
     msg = f"""@{username} Hello from Gitcoin Core - are you still working on this issue? Please submit a WIP PR or comment back within the next 3 days or you will be removed from this ticket and it will be returned to an ‘Open’ status. Please let us know if you have questions!
-* [x] warning ({num_days_back_to_warn} days)
+* [x] reminder ({num_days_back_to_warn} days)
 * [ ] escalation to mods ({num_days_back_to_delete_interest} days)
 {append_snooze_copy(bounty)}"""
 

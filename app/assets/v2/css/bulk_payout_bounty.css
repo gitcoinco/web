@@ -1,26 +1,43 @@
-#tooltip--hover {
+#ethinfo-tooltip {
   min-height: 37%;
   top: 17rem;
 }
 
 @media only screen and (max-width: 1400px) {
-  #tooltip--hover {
+  #ethinfo-tooltip {
     top: 18.5rem;
   }
 }
 
 @media only screen and (max-width: 750px) {
-  #tooltip--hover {
+  #ethinfo-tooltip {
     min-height: 30%;
   }
 }
 
 @media only screen and (max-width: 400px) {
-  #tooltip--hover {
+  #ethinfo-tooltip {
     min-height: 33%;
     left: 70px;
     top: 20.5rem;
   }
+}
+
+#pay_with_bounty-tooltip {
+  min-height: 37%;
+  top: 15rem;
+  left: 220px;
+}
+
+@media only screen and (max-width: 730px) {
+  #pay_with_bounty-tooltip {
+    top: 16rem;
+    left: 30px;
+  }
+}
+
+.pay_with_bounty-hover {
+  margin-left: 5px;
 }
 
 #transaction_registry {
@@ -86,7 +103,7 @@ tr div {
   background-color: #bbb;
 }
 
-.overageAlert {
+.paymentAlert {
   background-color: #E66700;
   color: #FFF;
   border-radius: 5px;
@@ -96,13 +113,13 @@ tr div {
   padding-left: 15px;
 }
 
-.overageAlert > div:first-child {
+.paymentAlert > div:first-child {
   width: 25px;
   float: left;
   padding-right: 10px;
 }
 
-.overageAlert > div:last-child {
+.paymentAlert > div:last-child {
   width: calc(100% - 40px);
   float: left;
   margin-left: 15px;
@@ -110,13 +127,17 @@ tr div {
   padding-top: 6.5px;
 }
 
-.overageAlert > div:first-child > img {
+.paymentAlert > div:first-child > img {
   width: 17px;
   margin-top: 10px;
 }
 
-.overagePreview {
+.overagePreview , .tipPreview {
   color: #E66700;
   padding-bottom: 5px;
   display: none;
+}
+
+.select2{
+  width: 100% !important;
 }
