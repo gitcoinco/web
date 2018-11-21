@@ -39,6 +39,7 @@ class TestAssembleLeaderboards(TestCase):
         self.bounty_value = 3
         self.bounty_payer_handle = 'flintstone'
         self.bounty_earner_handle = 'freddy'
+        self.fulfiller_handle = 'bambam'
 
         self.bounty_payer_profile = Profile.objects.create(
             data={},
@@ -90,7 +91,7 @@ class TestAssembleLeaderboards(TestCase):
         )
         self.fulfiller_profile = Profile.objects.create(
             data={},
-            handle=self.bounty_earner_handle,
+            handle=self.fulfiller_handle,
             hide_profile=False,
         )
         BountyFulfillment.objects.create(
@@ -138,6 +139,13 @@ class TestAssembleLeaderboards(TestCase):
             txid='123',
         )
 
+    def tearDown(self):
+        self.bounty_payer_profile.delete()
+        self.bounty_earner_profile.delete()
+        self.fulfiller_profile.delete()
+        self.tip_username_profile.delete()
+        self.tip_from_username_profile.delete()
+
     def test_default_ranks(self):
         """Test default ranks dictionary."""
         ranks = default_ranks()
@@ -147,7 +155,6 @@ class TestAssembleLeaderboards(TestCase):
     def test_bounty_index_terms(self):
         """Test bounty index terms list."""
         index_terms = bounty_index_terms(self.bounty)
-
         assert len(index_terms) == 15
         assert 'USDT' in index_terms
         assert set([self.bounty_payer_handle, self.bounty_earner_handle, 'gitcoinco']).issubset(set(index_terms))

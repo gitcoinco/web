@@ -107,7 +107,8 @@ INSTALLED_APPS = [
     'impersonate',
     'kudos',
     'django.contrib.postgres',
-    'bounty_requests'
+    'bounty_requests',
+    'perftools'
 ]
 
 MIDDLEWARE = [
@@ -176,7 +177,9 @@ REST_FRAMEWORK = {
         'anon': '1000/day',
     },
     'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'],
-    'DEFAULT_AUTHENTICATION_CLASSES': []
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
 }
 
 AUTH_USER_MODEL = 'auth.User'
@@ -235,6 +238,11 @@ if ENV not in ['local', 'test', 'staging', 'preview']:
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': True,
+        'filters': {
+            'host_filter': {
+                '()': 'app.log_filters.HostFilter',
+            }
+        },
         'root': {
             'level': 'WARNING',
             'handlers': ['sentry', 'console', 'watchtower'],
@@ -245,7 +253,7 @@ if ENV not in ['local', 'test', 'staging', 'preview']:
                 'datefmt': '%Y-%m-%d %H:%M:%S'
             },
             'cloudwatch': {
-                'format': '%(name)-12s [%(levelname)-8s] %(message)s',
+                'format': '%(hostname)s %(name)-12s [%(levelname)-8s] %(message)s',
             },
             'verbose': {
                 'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
@@ -259,7 +267,7 @@ if ENV not in ['local', 'test', 'staging', 'preview']:
             'console': {
                 'level': 'DEBUG',
                 'class': 'logging.StreamHandler',
-                'formatter': 'verbose'
+                'formatter': 'verbose',
             },
             'watchtower': {
                 'level': AWS_LOG_LEVEL,
@@ -267,6 +275,7 @@ if ENV not in ['local', 'test', 'staging', 'preview']:
                 'boto3_session': boto3_session,
                 'log_group': AWS_LOG_GROUP,
                 'stream_name': AWS_LOG_STREAM,
+                'filters': ['host_filter'],
                 'formatter': 'cloudwatch',
             },
         },
@@ -407,7 +416,15 @@ CACHEOPS = {
     'gas.*': {
         'ops': 'all',
         'timeout': 60 * 10,
-    }
+    },
+    'kudos.token': {
+        'ops': ('get', 'fetch', 'aggregate'),
+        'timeout': 60 * 5,
+    },
+    'kudos.kudostransfer': {
+        'ops': ('get', 'fetch', 'aggregate'),
+        'timeout': 60 * 5,
+    },
 }
 
 DJANGO_REDIS_IGNORE_EXCEPTIONS = env.bool('REDIS_IGNORE_EXCEPTIONS', default=True)
@@ -621,6 +638,7 @@ COLO_ACCOUNT_ADDRESS = env('COLO_ACCOUNT_ADDRESS', default='')  # TODO
 COLO_ACCOUNT_PRIVATE_KEY = env('COLO_ACCOUNT_PRIVATE_KEY', default='')  # TODO
 
 IPFS_HOST = env('IPFS_HOST', default='ipfs.infura.io')
+JS_IPFS_HOST = IPFS_HOST if IPFS_HOST != 'ipfs' else 'localhost'
 IPFS_SWARM_PORT = env.int('IPFS_SWARM_PORT', default=4001)
 IPFS_UTP_PORT = env.int('IPFS_UTP_PORT', default=4002)
 IPFS_API_PORT = env.int('IPFS_API_PORT', default=5001)

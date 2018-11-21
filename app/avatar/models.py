@@ -32,7 +32,7 @@ from economy.models import SuperModel
 from svgutils.compose import Figure, Line
 
 from .exceptions import AvatarConversionError
-from .utils import build_avatar_component, convert_img, get_upload_filename
+from .utils import build_avatar_component, convert_img, convert_wand, get_upload_filename
 
 logger = logging.getLogger(__name__)
 
@@ -80,15 +80,10 @@ class Avatar(SuperModel):
 
     def save(self, *args, force_insert=False, force_update=False, **kwargs):
         """Override the save to perform change comparison against PNG and SVG fields."""
-        if (self.svg != self.__previous_svg) or (self.svg and not self.custom_avatar_png):
-            # If the SVG has changed, perform PNG conversion.
-            self.__previous_svg = self.svg
+        if self.svg and not self.custom_avatar_png:
             self.convert_custom_svg()
-        if (self.png != self.__previous_png) or (self.png and not self.github_svg):
-            # If the PNG has changed, perform SVG conversion.
-            self.__previous_png = self.png
+        if self.png and not self.github_svg:
             self.convert_github_png()
-
         super(Avatar, self).save(force_insert, force_update, *args, **kwargs)
 
     def get_color(self, key='Background', with_hashbang=False):
@@ -132,7 +127,7 @@ class Avatar(SuperModel):
             self.png.save(f'{handle}.png', ContentFile(temp_avatar.getvalue()), save=True)
             return self.png.url
         except Exception as e:
-            logger.error(e)
+            logger.error('Error: (%s) - Avatar PK: (%s)', str(e), self.id)
         return ''
 
     @property
@@ -214,7 +209,7 @@ class Avatar(SuperModel):
 
         return f'{settings.BASE_URL}dynamic/avatar/{handle}'
 
-    def create_from_config(self, svg_name='avatar'):
+    def create_from_config(self):
         """Create an avatar SVG from the configuration.
 
         TODO:
@@ -239,18 +234,24 @@ class Avatar(SuperModel):
                 )
 
         with NamedTemporaryFile(mode='w+', suffix='.svg') as tmp:
+            profile = None
             avatar = Figure(*components)
             avatar.save(tmp.name)
             with open(tmp.name) as file:
                 if self.profile_set.exists():
-                    svg_name = self.profile_set.last().handle
+                    profile = self.profile_set.last()
+
+                svg_name = profile.handle if profile and profile.handle else token_hex(8)
                 self.svg.save(f"{svg_name}.svg", File(file), save=True)
 
     def convert_field(self, source, target='custom_avatar_png', input_fmt='svg', output_fmt='png', force_save=False):
         """Handle converting from the source field to the target based on format."""
         try:
             # Convert the provided source to the specified output and store in BytesIO.
-            tmpfile_io = convert_img(source, input_fmt=input_fmt, output_fmt=output_fmt)
+            if output_fmt == 'svg':
+                tmpfile_io = convert_wand(source, input_fmt=input_fmt, output_fmt=output_fmt)
+            else:
+                tmpfile_io = convert_img(source, input_fmt=input_fmt, output_fmt=output_fmt)
             if self.profile_set.exists():
                 png_name = self.profile_set.last().handle
             else:
@@ -264,7 +265,7 @@ class Avatar(SuperModel):
                     self.save()
                 return True
         except Exception as e:
-            logger.error(e)
+            logger.error('Error: (%s) - Avatar PK: (%s)', str(e), self.id)
         return False
 
     def convert_custom_svg(self, force_save=False):
@@ -279,7 +280,7 @@ class Avatar(SuperModel):
             if not converted:
                 raise AvatarConversionError('Avatar conversion error while converting SVG!')
         except AvatarConversionError as e:
-            logger.error(e)
+            logger.error('Error: (%s) - Avatar PK: (%s)', str(e), self.id)
 
     def convert_github_png(self, force_save=False):
         """Handle converting the Github Avatar PNG to SVG."""
@@ -293,4 +294,4 @@ class Avatar(SuperModel):
             if not converted:
                 raise AvatarConversionError('Avatar conversion error while converting SVG!')
         except AvatarConversionError as e:
-            logger.error(e)
+            logger.error('Error: (%s) - Avatar PK: (%s)', str(e), self.id)

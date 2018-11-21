@@ -2005,4 +2005,31 @@
     - fun
   image: resilient.svg
 
+- name: Augment
+  description: Choose your tools wisely young hero; for they will be important problem solvers for you during your web3 journey.
+  priceFinney: 3
+  numClonesAllowed: 250
+  tags: 
+    - cyberphunk
+    - augment
+    - tools
+  image: cyberpunk_augment.svg
+- name: cypherpunk_mind
+  description: This Kudos is for those who have a cyberphunk mind.  Know someone who is the brains of the operation?  Send them this Kudos.
+  priceFinney: 5
+  numClonesAllowed: 150
+  tags: 
+    - cyberphunk
+    - brain
+    - mind
+  image: cyberpunk_helm.svg
+- name: gitcoin_ambassador
+  description: This Kudos can be awarded only by Gitcoin team, and signifies that one was a Gitcoin ambassador during Fall 2018 and beyond.
+  priceFinney: 100
+  numClonesAllowed: 250
+  tags: 
+    - gitcoin core
+    - gitcoin ambassador
+  image: gitcoin_ambassador.svg
+
 

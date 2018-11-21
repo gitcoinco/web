@@ -25,8 +25,8 @@ import time
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import User
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.db.models import Q
+from django.core.exceptions import PermissionDenied
+from django.core.paginator import Paginator
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template import loader
@@ -719,7 +719,7 @@ def bulk_payout_bounty(request):
         user=request.user if request.user.is_authenticated else None,
         confirm_time_minutes_target=confirm_time_minutes_target,
         active='payout_bounty',
-        title=_('Multi-Party Payout'),
+        title=_('Advanced Payout'),
     )
 
     return TemplateResponse(request, 'bulk_payout_bounty.html', params)
@@ -743,6 +743,8 @@ def fulfill_bounty(request):
 
     """
     bounty = handle_bounty_views(request)
+    if not bounty.has_started_work(request.user.username):
+        raise PermissionDenied
     params = get_context(
         ref_object=bounty,
         github_username=request.GET.get('githubUsername'),
@@ -1142,6 +1144,10 @@ def profile(request, handle):
             profile = profile_helper(handle, current_user=request.user)
 
         context = profile.to_dict()
+        for activity in context['activities']:
+            activity['started_bounties_count'] = activity['activity_bounties'].filter(
+                activity_type='start_work'
+            ).count()
     except (Http404, ProfileHiddenException):
         status = 404
         context = {
@@ -1710,6 +1716,9 @@ def get_kudos(request):
         kudos_by_tags = Token.objects.filter(tags__icontains=q)
         kudos_pks = (kudos_by_desc | kudos_by_name | kudos_by_tags).values_list('pk', flat=True)
         kudos = Token.objects.filter(pk__in=kudos_pks, hidden=False, num_clones_allowed__gt=0).order_by('name')
+        is_staff = request.user.is_staff if request.user.is_authenticated else False
+        if not is_staff:
+            kudos = kudos.filter(send_enabled_for_non_gitcoin_admins=True)
         if network:
             kudos = kudos.filter(contract__network=network)
         results = []

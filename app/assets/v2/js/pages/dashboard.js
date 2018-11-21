@@ -140,13 +140,6 @@ var set_sidebar_defaults = function() {
   });
 };
 
-var set_filter_header = function() {
-  var idxStatusEl = $('input[name=idx_status]:checked');
-  var filter_status = idxStatusEl.attr('val-ui') ? idxStatusEl.attr('val-ui') : 'All';
-
-  $('#filter').html(filter_status);
-};
-
 var toggleAny = function(event) {
   if (!event)
     return;
@@ -301,66 +294,6 @@ var get_search_URI = function(offset) {
   return uri;
 };
 
-var process_stats = function(results) {
-  var num = results.length;
-  var worth_usdt = 0;
-  var worth_eth = 0;
-  var currencies_to_value = {};
-
-  for (var i = 0; i < results.length; i++) {
-    var result = results[i];
-
-    var this_worth_usdt = Number.parseFloat(result['value_in_usdt']);
-    var this_worth_eth = Number.parseFloat(result['value_in_eth']);
-
-    if (this_worth_usdt) {
-      worth_usdt += this_worth_usdt;
-    }
-    if (this_worth_eth) {
-      worth_eth += this_worth_eth;
-    }
-    var token = result['token_name'];
-
-    if (token !== 'ETH') {
-      if (!currencies_to_value[token]) {
-        currencies_to_value[token] = 0;
-      }
-      currencies_to_value[token] += Number.parseFloat(result['value_true']);
-    }
-  }
-
-  show_stats = false; // TODO: xfr over to new stats API call
-  if (show_stats) {
-    worth_usdt = worth_usdt.toFixed(2);
-    worth_eth = (worth_eth / Math.pow(10, 18)).toFixed(2);
-
-    var stats = worth_usdt + ' USD, ' + worth_eth + ' ETH';
-
-    for (var t in currencies_to_value) {
-      if (Object.prototype.hasOwnProperty.call(currencies_to_value, t)) {
-        stats += ', ' + currencies_to_value[t].toFixed(2) + ' ' + t;
-      }
-    }
-
-    var matchesEl = $('#matches');
-    var fundingInfoEl = $('#funding-info');
-
-    switch (num) {
-      case 0:
-        matchesEl.html(gettext('No Results'));
-        fundingInfoEl.html('');
-        break;
-      case 1:
-        matchesEl.html(num + gettext(' Matching Result'));
-        fundingInfoEl.html('<span id="modifiers">Funded Issue</span><span id="stats" class="font-caption">(' + stats + ')</span>');
-        break;
-      default:
-        matchesEl.html(num + gettext(' Matching Results'));
-        fundingInfoEl.html('<span id="modifiers">Funded Issues</span><span id="stats" class="font-caption">(' + stats + ')</span>');
-    }
-  }
-};
-
 var trigger_scroll = debounce(function() {
   var scrollPos = $(document).scrollTop();
   var last_active_bounty = $('.bounty_row.result:last-child');
@@ -401,6 +334,7 @@ var refreshBounties = function(event, offset, append, do_save_search) {
   // Allow search for freeform text
   var searchInput = $('#keywords')[0];
 
+  $('#results-count span.num').html('<i class="fas fa-spinner fa-spin"></i>');
   if (searchInput.value.length > 0) {
     addTechStackKeywordFilters(searchInput.value.trim());
     searchInput.value = '';
@@ -409,7 +343,6 @@ var refreshBounties = function(event, offset, append, do_save_search) {
   }
 
   save_sidebar_latest();
-  set_filter_header();
   toggleAny(event);
   getFilters();
   if (do_save_search) {
@@ -476,7 +409,12 @@ var refreshBounties = function(event, offset, append, do_save_search) {
       });
     }
 
-    process_stats(results);
+    $('#results-count span.num').html(offset + results.length);
+    if (results.length == results_limit) {
+      $('#results-count span.plus').html('+');
+    } else {
+      $('#results-count span.plus').html('');
+    }
   }).fail(function() {
     if (explorer.bounties_request.readyState !== 0)
       _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
@@ -514,6 +452,9 @@ var resetFilters = function(resetKeyword) {
       else
         $('input[name="' + filter + '"][value="' + tag[j].value + '"]').prop('checked', false);
     }
+
+    // Defaults to mainnet on clear filters to make it less confusing
+    $('input[name="network"][value="mainnet"]').prop('checked', true);
   });
 
   if (resetKeyword && localStorage['keywords']) {
@@ -643,7 +584,7 @@ $(document).ready(function() {
   });
 
   // search bar
-  $('#bounties').delegate('#new_search', 'click', function(e) {
+  $('#sidebar_container').delegate('#new_search', 'click', function(e) {
     reset_offset();
     refreshBounties(null, 0, false, true);
     e.preventDefault();
@@ -765,7 +706,7 @@ var paint_search_tabs = function() {
   if (searches.length <= 1)
     return target.html('');
 
-  var html = "<ul class='nav'><i class='fas fa-history'></i>";
+  var html = "<ul class='nav'>";
 
   for (var i = 0; i < searches.length; i++) {
     var search_no = searches[i];

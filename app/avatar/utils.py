@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import json
 import logging
 import os
+import re
 from io import BytesIO
 from secrets import token_hex
 from tempfile import NamedTemporaryFile
@@ -33,6 +34,7 @@ import requests
 from git.utils import get_user
 from PIL import Image, ImageOps
 from pyvips.error import Error as VipsError
+from svgutils import transform
 from svgutils.compose import SVG, Figure, Line
 
 AVATAR_BASE = 'assets/other/avatars/'
@@ -52,6 +54,10 @@ def get_avatar_context():
             'name': 'Head',
             'title': 'Pick head shape',
             'options': ('0', '1', '2', '3', '4')
+        }, {
+            'name': 'Makeup',
+            'title': 'Pick a makeup style',
+            'options': ('ziggy-stardust',)
         }, {
             'name': 'Eyes',
             'title': 'Pick eyes shape',
@@ -100,13 +106,13 @@ def get_avatar_context():
                          'options': (['Glasses-0'], ['Glasses-1'], ['Glasses-2'], ['Glasses-3'], ['Glasses-4'], [
                              'HatShort-backwardscap'
                          ], ['HatShort-redbow'], ['HatShort-yellowbow'], ['HatShort-ballcap'], ['HatShort-cowboy'],
-                                     ['HatShort-headphones'], ['HatShort-shortbeanie'], ['HatShort-tallbeanie'], [
-                                         'HatShort-bunnyears'
-                                     ], ['HatShort-menorah'], ['HatShort-pilgrim'], ['HatShort-santahat'], [
-                                         'Earring-0'
-                                     ], ['Earring-1'], ['EarringBack-2', 'Earring-2'], ['Earring-3'], ['Earring-4'],
-                                     ['Masks-jack-o-lantern'], ['Masks-guy-fawkes'], ['Masks-jack-o-lantern-lighted'],
-                                     ['Extras-Parrot'], ['Masks-gitcoinbot'])
+                                     ['HatShort-headdress'], ['HatShort-headphones'], ['HatShort-shortbeanie'],
+                                     ['HatShort-tallbeanie'], ['HatShort-bunnyears'], ['HatShort-menorah'],
+                                     ['HatShort-pilgrim'], ['HatShort-santahat'], ['Earring-0'], ['Earring-1'], [
+                                         'EarringBack-2', 'Earring-2'
+                                     ], ['Earring-3'], ['Earring-4'], ['Masks-jack-o-lantern'], ['Masks-guy-fawkes'], [
+                                         'Masks-jack-o-lantern-lighted'
+                                     ], ['Extras-Parrot'], ['Masks-gitcoinbot'])
                      },
                      {
                          'name': 'Background',
@@ -152,6 +158,7 @@ def get_svg_templates():
         },
         'hair': [],
         'head': [],
+        'makeup': [],
         'mouth': [],
         'nose': [],
         'wallpaper': []
@@ -185,7 +192,25 @@ def build_avatar_component(path, icon_size=None, avatar_size=None):
     avatar_component_size = avatar_size or (899.2, 1415.7)
     scale_factor = icon_size[1] / avatar_component_size[1]
     x_to_center = (icon_size[0] / 2) - ((avatar_component_size[0] * scale_factor) / 2)
-    svg = SVG(f'{COMPONENT_BASE}{path}').scale(scale_factor).move(x_to_center, 0)
+    svg = SVG(f'{COMPONENT_BASE}{path}')
+    if path.startswith('Wallpaper'):
+        src = transform.fromfile(f'{COMPONENT_BASE}{path}')
+
+#       TODO: Consider width aswell...
+#        if src.width != None:
+#            src_width = float(re.sub('[^0-9]','', src.width))
+#        else:
+#            src_width = 900
+
+        if src.height is not None:
+            src_height = float(re.sub('[^0-9]', '', src.height))
+        else:
+            src_height = 1415
+        scale_factor = icon_size[1] / src_height
+        svg = svg.scale(scale_factor)
+    if not path.startswith('Wallpaper'):
+        svg = svg.scale(scale_factor)
+        svg = svg.move(x_to_center, 0)
     return svg
 
 
@@ -294,7 +319,7 @@ def handle_avatar_payload(request):
     avatar_dict = {}
     valid_component_keys = [
         'Beard', 'Clothing', 'Earring', 'EarringBack', 'Ears', 'Eyes', 'Glasses', 'Masks', 'HairLong', 'HairShort',
-        'HatLong', 'HatShort', 'Head', 'Mouth', 'Mustache', 'Nose', 'Extras', 'Wallpaper'
+        'HatLong', 'HatShort', 'Head', 'Mouth', 'Mustache', 'Nose', 'Extras', 'Wallpaper', 'Makeup'
     ]
     valid_color_keys = ['Background', 'ClothingColor', 'HairColor', 'SkinTone']
     body = json.loads(request.body)
@@ -440,5 +465,37 @@ def convert_img(obj, input_fmt='svg', output_fmt='png'):
     except VipsError:
         pass
     except Exception as e:
-        logger.error(e)
+        logger.error(
+            'Exception encountered in convert_img - Error: (%s) - input: (%s) - output: (%s)', str(e), input_fmt,
+            output_fmt
+        )
+    return None
+
+
+def convert_wand(img_obj, input_fmt='png', output_fmt='svg'):
+    """Convert an SVG to another format.
+
+    Args:
+        img_obj (File): The PNG or other image File/ContentFile.
+        input_fmt (str): The input format. Defaults to: png.
+        output_fmt (str): The output format. Defaults to: svg.
+
+    Returns:
+        BytesIO: The BytesIO stream containing the converted File data.
+        None: If there is an exception, the method returns None.
+
+    """
+    from wand.image import Image as WandImage
+    try:
+        img_data = img_obj.read()
+        with WandImage(blob=img_data, format=input_fmt) as _img:
+            _img.format = output_fmt
+            tmpfile_io = BytesIO()
+            _img.save(file=tmpfile_io)
+            return tmpfile_io
+    except Exception as e:
+        logger.error(
+            'Exception encountered in convert_wand - Error: (%s) - input: (%s) - output: (%s)', str(e), input_fmt,
+            output_fmt
+        )
     return None
