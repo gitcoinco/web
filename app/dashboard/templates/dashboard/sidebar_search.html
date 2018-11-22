@@ -30,7 +30,20 @@
     </div>
   </div>
   <form>
+
     <div class="col my-1">
+      <div class="col-12 subheading">
+        {% trans "Organization name" %}
+        <i class="fas fa-question-circle ml-2" title='{% include "shared/project_type_tooltip.html" %}'></i>
+      </div>
+      <div class="col-12">
+        <div class="mb-2">
+          <input class="form__input form__input_lg" name="org" id="org" type="text" />
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
       <div class="col-12 subheading">{% trans "Experience Level" %}</div>
       <div class="col-12 options">
         <div class="checkbox_container">
@@ -56,7 +69,7 @@
         </div>
       </div>
     </div>
-    
+
     <div class="col">
       <div class="col-12 subheading">
         {% trans "Project Type" %}
@@ -86,7 +99,7 @@
         </div>
       </div>
     </div>
-  
+
     <div class="col">
       <div class="col-12 subheading">
         {% trans "Status" %}
