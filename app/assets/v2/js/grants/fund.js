@@ -5,10 +5,11 @@ $(document).ready(function() {
     $(this).select2();
   });
 
-  $('.select2-selection__rendered').hover(function () {
+  $('.select2-selection__rendered').hover(function() {
     $(this).removeAttr('title');
   });
 
+  updateSummary();
 
   // alert("Just so you know, you will perform two actions in MetaMask on this page!")
 
@@ -172,3 +173,31 @@ $(document).ready(function() {
     $('#js-token').select2();
   });
 });
+
+const updateSummary = (element) => {
+
+  $('#summary-period').html($('input#frequency_count').val());
+  $('#summary-amount').html($('input#amount').val() ? $('input#amount').val() : 0);
+  $('#summary-frequency').html($('input#period').val() ? $('input#period').val() : 0);
+  $('#summary-frequency-unit').html($('#frequency_unit').val());
+
+  $('#js-token').on('select2:select', event => {
+    $('#summary-token').html(event.params.data.text);
+  });
+
+  $('#frequency_unit').on('select2:select', event => {
+    $('#summary-frequency-unit').html(event.params.data.text);
+  });
+
+  $('input#frequency_count').on('input', () => {
+    $('#summary-period').html($('input#frequency_count').val());
+  });
+
+  $('input#amount').on('input', () => {
+    $('#summary-amount').html($('input#amount').val());
+  });
+
+  $('input#period').on('input', () => {
+    $('#summary-frequency').html($('input#period').val());
+  });
+};

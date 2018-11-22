@@ -127,7 +127,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   <label class="form__label">{% trans "Amount Per Period" %}</label>
                   <div class="row">
                     <div class="col-8">
-                      <input type="number" name="amount_per_period" class="form__input" required />
+                      <input type="number" id="amount" name="amount_per_period" class="form__input" required />
                     </div>
                     <div class="col-4">
                       {% if grant_has_no_token %}
@@ -147,7 +147,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                       <label class="form__label">
                         {% trans "Number Of Periods" %}
                       </label>
-                      <input type="number" name="approve" class="form__input" required />
+                      <input id="period" type="number" name="approve" class="form__input" required />
                     </div>
                   </div>
                 </div>
@@ -157,16 +157,22 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   <p>
                     <i class="fas fa-circle mr-2"></i>
                     {% trans "Your contribution will stop once this payment has happened" %}
-                    <span id="summary-frequency" class="font-weight-semibold">-</span> times.
+                    <span id="summary-frequency" class="font-weight-bold">-</span> times.
                   </p>
                   <p>
                     <i class="fas fa-circle mr-2"></i>
                     {% trans "You are contributing" %}
-                    <span id="summary-amount" class="font-weight-semibold">-</span>
-                    <span id="summary-token" class="font-weight-semibold">-</span>
+                    <span id="summary-amount" class="font-weight-bold">-</span>
+                    <span id="summary-token" class="font-weight-bold">
+                      {% if not grant_has_no_token %}
+                        {{ token_symbol }}
+                      {% else %}
+                        -
+                      {% endif %}
+                    </span>
                     {% trans "to this grant every" %}
-                    <span id="summary-period" class="font-weight-semibold">-</span>
-                    <span id="summary-frequency-unit" class="font-weight-semibold">-</span>.
+                    <span id="summary-period" class="font-weight-bold">-</span>
+                    <span id="summary-frequency-unit" class="font-weight-bold">-</span>.
                   </p>
                   <p>
                     <i class="fas fa-circle mr-2"></i>
