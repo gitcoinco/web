@@ -2031,5 +2031,13 @@
     - gitcoin core
     - gitcoin ambassador
   image: gitcoin_ambassador.svg
+- name: twitter_follower__thanksgiving_turkey_2018
+  description: This Kudos is a thank you to Gitcoin's twitter followers at https://twitter.com/getgitcoin.
+  priceFinney: 10
+  numClonesAllowed: 250
+  tags: 
+    - gitcoin 
+    - thanksgiving
+  image: turkey.svg
 
 
