@@ -112,20 +112,22 @@
                     </a>
                   </h4>
                 {% elif is_admin %}
-                <form method="POST" id="js-cancel_grant" class="d-inline">
-                  {% csrf_token %}
-                  <button class="button button--primary button--warning" id="cancel_grant">{% trans "Cancel this Grant" %}
-                  </button>
-                  <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
-                </form>
+                  <form method="POST" id="js-cancel_grant" class="d-inline">
+                    {% csrf_token %}
+                    <button class="button button--primary button--warning" id="cancel_grant">{% trans "Cancel this Grant" %}
+                    </button>
+                    <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
+                  </form>
                 {% elif user_subscription %}
-                    <a href="{% url 'grants:subscription_cancel' grant.id grant.slug user_subscription.id %}">
-                      <button class="button button--primary button--warning button--full">{% trans "Cancel Your Funding" %}</button>
-                    </a>
+                  <a href="{% url 'grants:subscription_cancel' grant.id grant.slug user_subscription.id %}">
+                    <button class="button button--primary button--warning button--full">{% trans "Cancel Your Funding" %}</button>
+                  </a>
                 {% else %}
-                  <h5>
-                    {{ grant.admin_profile.handle }} {% trans 'is accepting contributions in '%}{{ grant.token_symbol }}
-                  </h5>
+                  {% if grant.token_symbol %}
+                    <h5 class="font-body token_symbol">
+                      {{ grant.admin_profile.handle }} {% trans 'is accepting contributions in '%}{{ grant.token_symbol }}
+                    </h5>
+                  {% endif %}
                   <a href="{% url 'grants:fund' grant.id grant.slug %}">
                     <button class="button button--primary button--full">{% trans "Fund this Grant" %}</button>
                   </a>

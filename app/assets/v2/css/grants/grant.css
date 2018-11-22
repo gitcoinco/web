@@ -2,6 +2,10 @@
   font-weight: 500;
 }
 
+.token_symbol {
+  font-weight: 600;
+}
+
 .progress {
   background-color: #D8D8D8;
   border-radius: 2px;

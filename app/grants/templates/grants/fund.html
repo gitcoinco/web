@@ -96,27 +96,28 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   </div>
                 </div>
               </div>
-              <p class="font-body">
+              {% if not grant_has_no_token %}
+                <h5 class="font-subheader token_symbol">
+                  {{ grant.admin_profile.handle }} {% trans 'is accepting contributions in '%}{{ grant.token_symbol }}
+                </h5>
+              {% endif %}
+              <p class="font-body text-justify">
                 {{ grant.description }}
               </p>
             </div>
 
             <div class="col-12 col-md-10 offset-lg-1 col-lg-6">
-            {% if grant_has_no_token %}
-              <div class="form__group-horizontal">
-                <label class="form__label">{% trans "Payment Token" %}</label>
-                <div class="row">
-                  <div class="col-12">
-                    <div class="form__select2">
-                      <select class='js-select2' name='denomination' id='js-token'> </select>
+              {% if grant_has_no_token %}
+                <div class="form__group-horizontal">
+                  <label class="form__label">{% trans "Payment Token" %}</label>
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="form__select2">
+                        <select class='js-select2' name='denomination' id='js-token'> </select>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              {% else %}
-              <h5>
-                {{ grant.admin_profile.handle }} {% trans 'is accepting contributions in '%}{{ grant.token_symbol }}
-              </h5>
               {% endif %}
 
               <div class="form__group-horizontal frequency">
