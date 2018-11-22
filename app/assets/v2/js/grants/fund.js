@@ -1,11 +1,14 @@
 /* eslint-disable no-console */
 $(document).ready(function() {
 
-  $('#period').select2();
-
   $('.js-select2').each(function() {
     $(this).select2();
   });
+
+  $('.select2-selection__rendered').hover(function () {
+    $(this).removeAttr('title');
+  });
+
 
   // alert("Just so you know, you will perform two actions in MetaMask on this page!")
 

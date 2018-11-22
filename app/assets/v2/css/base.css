@@ -124,6 +124,10 @@ span {
   border-radius: 4px !important;
 }
 
+.font-weight-semibold {
+  font-weight: 600;
+}
+
 #tutorials li{
   list-style: none;
 }
