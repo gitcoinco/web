@@ -51,7 +51,7 @@ def get_keywords():
 
 def grants(request):
     """Handle grants explorer."""
-    limit = request.GET.get('limit', 25)
+    limit = request.GET.get('limit', 24)
     page = request.GET.get('page', 1)
     sort = request.GET.get('sort_option', '-created_on')
 
