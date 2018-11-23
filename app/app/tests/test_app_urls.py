@@ -58,7 +58,7 @@ class AppUrlsTestCase(TestCase):
 
     def test_leaderboard_reverse(self):
         """Test the leaderboard url and check the reverse."""
-        self.assertEqual(reverse('leaderboard', args=('quarterly_earners', )), '/leaderboard/quarterly_earners')
+        self.assertEqual(reverse('leaderboard', args=('quarterly_earners', '')), '/leaderboard/quarterly_earners')
 
     def test_leaderboard_resolve(self):
         """Test the leaderboard url and check the resolution."""
