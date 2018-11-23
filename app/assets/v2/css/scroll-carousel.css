@@ -4,8 +4,6 @@
 
 .scroll-carousel {
   display: flex;
-  /* padding: 3rem 0rem; */
-  /* height: 150px; */
   overflow-x: scroll;
   scroll-snap-type: x mandatory;
   flex: 1 1 50%;
