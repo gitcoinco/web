@@ -79,6 +79,17 @@
                   </select>
                 </div>
               </div>
+              <div class="col-2 select">
+                <div class="form-group">
+                  <select id="orderBy" class="form-control key">
+                    {% for this_title in order_by_labels.items %}
+                      <option value="{{this_title.0}}"
+                        {% if selected_order == this_title.0 %}selected=selected{% endif %} >{{this_title.1}}
+                      </option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
             </div>
 
             {% if items|length == 0 %}

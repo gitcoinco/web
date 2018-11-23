@@ -34,8 +34,16 @@ $(document).ready(function() {
 
   $('#key').change(function() {
     const val = $(this).val();
+    const orderBy = $('#orderBy').val();
 
-    document.location.href = `/leaderboard/${val}`;
+    document.location.href = `/leaderboard/${val}/${orderBy}`;
+  });
+
+  $('#orderBy').change(function() {
+    const val = $('#key').val();
+    const orderBy = $(this).val();
+
+    document.location.href = `/leaderboard/${val}/${orderBy}`;
   });
 
   $('#tech-keyword').change(function() {

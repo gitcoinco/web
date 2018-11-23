@@ -578,7 +578,7 @@ def _leaderboard(request):
     return leaderboard(request, '')
 
 
-def leaderboard(request, key=''):
+def leaderboard(request, key='', order_by=''):
     """Display the leaderboard for top earning or paying profiles.
 
     Args:
@@ -592,6 +592,8 @@ def leaderboard(request, key=''):
         key = 'quarterly_earners'
 
     keyword_search = request.GET.get('keyword')
+
+    order_by = 'amount' if not order_by else order_by
 
     titles = {
         'quarterly_payers': _('Top Payers'),
@@ -620,6 +622,12 @@ def leaderboard(request, key=''):
         titles['quarterly_countries'] = _('Top Countries')
         titles['quarterly_continents'] = _('Top Continents')
 
+    order_by_labels = {
+        'amount': _('By Amount'),
+        'count': _('By No of Bounties')
+    }
+
+
     if key not in titles.keys():
         raise Http404
 
@@ -630,7 +638,7 @@ def leaderboard(request, key=''):
         ranks = LeaderboardRank.objects.filter(active=True, leaderboard=key)
 
     amount = ranks.values_list('amount').annotate(Max('amount')).order_by('-amount')
-    items = ranks.order_by('-amount')
+    items = ranks.order_by(f'-{order_by}')
     top_earners = ''
     technologies = set()
     for profile_keywords in ranks.values_list('tech_keywords'):
@@ -651,7 +659,9 @@ def leaderboard(request, key=''):
     context = {
         'items': items,
         'titles': titles,
+        'order_by_labels': order_by_labels,
         'selected': title,
+        'selected_order': order_by,
         'is_linked_to_profile': is_linked_to_profile,
         'title': f'Leaderboard: {title}',
         'card_title': f'Leaderboard: {title}',
