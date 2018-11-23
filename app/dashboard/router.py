@@ -196,19 +196,15 @@ class BountyViewSet(viewsets.ModelViewSet):
 
         # filter by orgs
         if 'org' in param_keys:
-            for orgs in param_keys:
-                val = self.request.query_params.get('org', '')
-                values = val.strip().split(',')
-                values = [value for value in values if value and val.strip()]
-                if values:
-                    _queryset = queryset.none()
-                    for value in values:
-                        args = {}
-                        org = value.strip()
-                        url = f"https://github.com/{org}"
-                        args[f'github_url__icontains'] = url
-                        _queryset = _queryset | queryset.filter(**args)
-                    queryset = _queryset
+            val = self.request.query_params.get('org', '')
+            values = val.strip().split(',')
+            values = [value for value in values if value and val.strip()]
+            if values:
+                _queryset = queryset.none()
+                for value in values:
+                    org = value.strip()
+                    _queryset = _queryset | queryset.filter(github_url__icontains=f'https://github.com/{org}')
+                queryset = _queryset
 
         # Retrieve all fullfilled bounties by fulfiller_username
         if 'fulfiller_github_username' in param_keys:
