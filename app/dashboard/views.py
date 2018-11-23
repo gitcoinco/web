@@ -901,21 +901,27 @@ def helper_handle_approvals(request, bounty):
     mutate_worker_action = request.GET.get('mutate_worker_action', None)
     mutate_worker_action_past_tense = 'approved' if mutate_worker_action == 'approve' else 'rejected'
     worker = request.GET.get('worker', None)
+
     if mutate_worker_action:
         if not request.user.is_authenticated:
             messages.warning(request, _('You must be logged in to approve or reject worker submissions. Please login and try again.'))
             return
+
+        if not worker:
+            messages.warning(request, _('You must provide the worker\'s username in order to approve or reject them.'))
+            return
+
         is_funder = bounty.is_funder(request.user.username.lower())
         is_staff = request.user.is_staff
         if is_funder or is_staff:
-            interests = bounty.interested.filter(profile__handle=worker)
-            is_interest_invalid = (not interests.filter(pending=True).exists() and mutate_worker_action == 'rejected') or (not interests.exists())
-            if is_interest_invalid:
+            pending_interests = bounty.interested.select_related('profile').filter(profile__handle=worker, pending=True)
+            # Check whether or not there are pending interests.
+            if not pending_interests.exists():
                 messages.warning(
                     request,
                     _('This worker does not exist or is not in a pending state. Perhaps they were already approved or rejected? Please check your link and try again.'))
                 return
-            interest = interests.first()
+            interest = pending_interests.first()
 
             if mutate_worker_action == 'approve':
                 interest.pending = False
@@ -929,7 +935,6 @@ def helper_handle_approvals(request, bounty):
                 maybe_market_to_user_slack(bounty, 'worker_approved')
                 maybe_market_to_twitter(bounty, 'worker_approved')
                 record_bounty_activity(bounty, request.user, 'worker_approved', interest)
-
             else:
                 start_work_rejected(interest, bounty)
 
