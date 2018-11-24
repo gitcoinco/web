@@ -26,8 +26,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.db.models import Q
+from django.core.paginator import Paginator
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template import loader
@@ -720,7 +719,7 @@ def bulk_payout_bounty(request):
         user=request.user if request.user.is_authenticated else None,
         confirm_time_minutes_target=confirm_time_minutes_target,
         active='payout_bounty',
-        title=_('Multi-Party Payout'),
+        title=_('Advanced Payout'),
     )
 
     return TemplateResponse(request, 'bulk_payout_bounty.html', params)
@@ -902,21 +901,27 @@ def helper_handle_approvals(request, bounty):
     mutate_worker_action = request.GET.get('mutate_worker_action', None)
     mutate_worker_action_past_tense = 'approved' if mutate_worker_action == 'approve' else 'rejected'
     worker = request.GET.get('worker', None)
+
     if mutate_worker_action:
         if not request.user.is_authenticated:
             messages.warning(request, _('You must be logged in to approve or reject worker submissions. Please login and try again.'))
             return
+
+        if not worker:
+            messages.warning(request, _('You must provide the worker\'s username in order to approve or reject them.'))
+            return
+
         is_funder = bounty.is_funder(request.user.username.lower())
         is_staff = request.user.is_staff
         if is_funder or is_staff:
-            interests = bounty.interested.filter(profile__handle=worker)
-            is_interest_invalid = (not interests.filter(pending=True).exists() and mutate_worker_action == 'rejected') or (not interests.exists())
-            if is_interest_invalid:
+            pending_interests = bounty.interested.select_related('profile').filter(profile__handle=worker, pending=True)
+            # Check whether or not there are pending interests.
+            if not pending_interests.exists():
                 messages.warning(
                     request,
                     _('This worker does not exist or is not in a pending state. Perhaps they were already approved or rejected? Please check your link and try again.'))
                 return
-            interest = interests.first()
+            interest = pending_interests.first()
 
             if mutate_worker_action == 'approve':
                 interest.pending = False
@@ -930,7 +935,6 @@ def helper_handle_approvals(request, bounty):
                 maybe_market_to_user_slack(bounty, 'worker_approved')
                 maybe_market_to_twitter(bounty, 'worker_approved')
                 record_bounty_activity(bounty, request.user, 'worker_approved', interest)
-
             else:
                 start_work_rejected(interest, bounty)
 
@@ -1717,6 +1721,9 @@ def get_kudos(request):
         kudos_by_tags = Token.objects.filter(tags__icontains=q)
         kudos_pks = (kudos_by_desc | kudos_by_name | kudos_by_tags).values_list('pk', flat=True)
         kudos = Token.objects.filter(pk__in=kudos_pks, hidden=False, num_clones_allowed__gt=0).order_by('name')
+        is_staff = request.user.is_staff if request.user.is_authenticated else False
+        if not is_staff:
+            kudos = kudos.filter(send_enabled_for_non_gitcoin_admins=True)
         if network:
             kudos = kudos.filter(contract__network=network)
         results = []

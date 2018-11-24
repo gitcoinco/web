@@ -1118,7 +1118,7 @@ class SendCryptoAsset(SuperModel):
     emails = JSONField(blank=True)
     url = models.CharField(max_length=255, default='', blank=True)
     tokenName = models.CharField(max_length=255, default='ETH')
-    tokenAddress = models.CharField(max_length=255)
+    tokenAddress = models.CharField(max_length=255, blank=True)
     amount = models.DecimalField(default=1, decimal_places=4, max_digits=50)
     comments_public = models.TextField(default='', blank=True)
     ip = models.CharField(max_length=50)
@@ -2704,3 +2704,16 @@ class TokenApproval(SuperModel):
     def coinbase_short(self):
         coinbase_short = f"{self.coinbase[0:5]}...{self.coinbase[-4:]}"
         return coinbase_short
+
+
+class SearchHistory(SuperModel):
+    """Define the structure of a Search History object."""
+
+    class Meta:
+        """Define metadata associated with SearchHistory."""
+
+        verbose_name_plural = 'Search History'
+
+    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
+    data = JSONField(default=dict)
+    ip_address = models.GenericIPAddressField(blank=True, null=True)

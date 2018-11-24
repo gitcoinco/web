@@ -40,11 +40,12 @@ from economy.models import Token
 from marketing.mails import new_funding_limit_increase_request, new_token_request
 from marketing.models import Alumni, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
+from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 
 from .forms import FundingLimitIncreaseRequestForm
-from .utils import build_stat_results, programming_languages
+from .utils import programming_languages
 
 
 @cached_as(
@@ -424,7 +425,7 @@ def results(request, keyword=None):
     """Render the Results response."""
     if keyword and keyword not in programming_languages:
         raise Http404
-    context = build_stat_results(keyword)
+    context = JSONStore.objects.get(view='results', key=keyword).data
     context['is_outside'] = True
     context['avatar_url'] = static('v2/images/results_preview.gif')
     return TemplateResponse(request, 'results.html', context)
