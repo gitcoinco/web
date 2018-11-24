@@ -570,7 +570,7 @@ class Bounty(SuperModel):
                     return 'done'
                 elif self.past_hard_expiration_date:
                     return 'expired'
-                has_tips = self.tips.filter(is_for_bounty_fulfiller=False).exclude(txid='').exists()
+                has_tips = self.tips.filter(is_for_bounty_fulfiller=False).send_happy_path().exists()
                 if has_tips:
                     return 'done'
                 # If its not expired or done, and no tips, it must be cancelled.
@@ -929,7 +929,7 @@ class Bounty(SuperModel):
         for fulfillment in self.fulfillments.filter(accepted=True):
             if fulfillment.fulfiller_github_username:
                 return_list.append(fulfillment.fulfiller_github_username)
-        for tip in self.tips.exclude(txid=''):
+        for tip in self.tips.send_happy_path():
             if tip.username:
                 return_list.append(tip.username)
         return list(set(return_list))
@@ -938,7 +938,7 @@ class Bounty(SuperModel):
     def additional_funding_summary(self):
         """Return a dict describing the additional funding from crowdfunding that this object has"""
         ret = {}
-        for tip in self.tips.filter(is_for_bounty_fulfiller=True).exclude(txid=''):
+        for tip in self.tips.filter(is_for_bounty_fulfiller=True).send_happy_path():
             token = tip.tokenName
             obj = ret.get(token, {})
 
@@ -1066,8 +1066,53 @@ class Subscription(SuperModel):
         return f"{self.email} {self.created_on}"
 
 
+class SendCryptoAssetQuerySet(models.QuerySet):
+    """Handle the manager queryset for SendCryptoAsset."""
+
+    def send_success(self):
+        """Filter results down to successful sends only."""
+        return self.exclude(txid='').filter(tx_status='success')
+
+    def send_pending(self):
+        """Filter results down to pending sends only."""
+        return self.exclude(txid='').filter(tx_status__in=['pending'])
+
+    def send_happy_path(self):
+        """Filter results down to pending/success sends only."""
+        return self.exclude(txid='').filter(tx_status__in=['pending', 'success'])
+
+    def send_fail(self):
+        """Filter results down to failed sends only."""
+        return self.filter(Q(txid='') | Q(tx_status__in=['dropped', 'unknown', 'na', 'error']))
+
+    def receive_success(self):
+        """Filter results down to successful receives only."""
+        return self.exclude(receive_txid='').filter(receive_tx_status='success')
+
+    def receive_pending(self):
+        """Filter results down to pending receives only."""
+        return self.exclude(receive_txid='').filter(receive_tx_status__in=['pending'])
+
+    def receive_happy_path(self):
+        """Filter results down to pending receives only."""
+        return self.exclude(receive_txid='').filter(receive_tx_status__in=['pending', 'success'])
+
+    def receive_fail(self):
+        """Filter results down to failed receives only."""
+        return self.filter(Q(receive_txid='') | Q(receive_tx_status__in=['dropped', 'unknown', 'na', 'error']))
+
+
 class SendCryptoAsset(SuperModel):
     """Abstract Base Class to handle the model for both Tips and Kudos."""
+
+    TX_STATUS_CHOICES = (
+        ('na', 'na'), # not applicable
+        ('pending', 'pending'),
+        ('success', 'success'),
+        ('error', 'error'),
+        ('unknown', 'unknown'),
+        ('dropped', 'dropped'),
+        )
 
     web3_type = models.CharField(max_length=50, default='v3')
     emails = JSONField(blank=True)
@@ -1094,6 +1139,14 @@ class SendCryptoAsset(SuperModel):
         help_text='If this option is chosen, this tip will be automatically paid to the bounty'
                   ' fulfiller, not self.usernameusername.',
     )
+
+    tx_status = models.CharField(max_length=9, choices=TX_STATUS_CHOICES, default='na', db_index=True)
+    receive_tx_status = models.CharField(max_length=9, choices=TX_STATUS_CHOICES, default='na', db_index=True)
+    tx_time = models.DateTimeField(null=True, blank=True)
+    receive_tx_time = models.DateTimeField(null=True, blank=True)
+
+    # QuerySet Manager
+    objects = SendCryptoAssetQuerySet.as_manager()
 
     class Meta:
         abstract = True
@@ -1211,6 +1264,22 @@ class SendCryptoAsset(SuperModel):
         if (settings.DEBUG or settings.ENV != 'prod') and settings.GITHUB_API_USER != self.github_org_name:
             return False
         return True
+
+    def update_tx_status(self):
+        """ Updates the tx status according to what infura says about the tx
+
+        """
+        from dashboard.utils import get_tx_status
+        self.tx_status, self.tx_time = get_tx_status(self.txid, self.network, self.created_on)
+        return bool(self.tx_status)
+
+    def update_receive_tx_status(self):
+        """ Updates the receive tx status according to what infura says about the receive tx
+
+        """
+        from dashboard.utils import get_tx_status
+        self.receive_tx_status, self.receive_tx_time = get_tx_status(self.receive_txid, self.network, self.created_on)
+        return bool(self.receive_tx_status)
 
     @property
     def bounty(self):
@@ -1616,7 +1685,7 @@ class Profile(SuperModel):
         kudos_transfers = kudos_transfers.filter(
             kudos_token_cloned_from__contract__network=settings.KUDOS_NETWORK
         )
-        kudos_transfers = kudos_transfers.exclude(txid='')
+        kudos_transfers = kudos_transfers.send_success() | kudos_transfers.send_pending()
 
         # remove this line IFF we ever move to showing multiple kudos transfers on a profile
         kudos_transfers = kudos_transfers.distinct('id')
@@ -1632,7 +1701,7 @@ class Profile(SuperModel):
         kt_sender_profile = KudosTransfer.objects.filter(sender_profile=self)
 
         kudos_transfers = kt_address | kt_sender_profile
-        kudos_transfers = kudos_transfers.exclude(txid='')
+        kudos_transfers = kudos_transfers.send_success() | kudos_transfers.send_pending()
         kudos_transfers = kudos_transfers.filter(
             kudos_token_cloned_from__contract__network=settings.KUDOS_NETWORK
         )
@@ -2348,7 +2417,7 @@ class Profile(SuperModel):
                 }]
 
         if tips:
-            params['tips'] = self.tips.filter(**query_kwargs).exclude(txid='')
+            params['tips'] = self.tips.filter(**query_kwargs).send_happy_path()
 
         if leaderboards:
             params['scoreboard_position_contributor'] = self.get_contributor_leaderboard_index()
