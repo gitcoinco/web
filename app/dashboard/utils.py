@@ -625,8 +625,8 @@ def get_tx_status(txid, network, created_on):
             block = web3.eth.getBlock(tx['blockNumber'])
             timestamp = block.timestamp
             timestamp = timezone.datetime.fromtimestamp(timestamp).replace(tzinfo=pytz.UTC)
-        except:
-            pass
+    except:
+        pass
     return status, timestamp
 
 
