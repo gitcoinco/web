@@ -42,9 +42,9 @@ class Command(BaseCommand):
             for obj in objects:
                 print(f"syncing {obj_type} / {obj.pk} / {obj.network}")
                 if obj.tx_status in non_terminal_states:
-                    obj.tx_status, obj.tx_time = obj.update_tx_status()
+                    obj.update_tx_status()
                     print(f" - updated {obj.txid} to {obj.tx_status}")
                 if obj.receive_tx_status in non_terminal_states:
-                    obj.receive_tx_status, obj.receive_tx_time = obj.update_receive_tx_status()
+                    obj.update_receive_tx_status()
                     print(f" - updated {obj.receive_txid} to {obj.receive_tx_status}")
                 obj.save()
