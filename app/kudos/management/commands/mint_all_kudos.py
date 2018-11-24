@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 formatter = '%(levelname)s:%(name)s.%(funcName)s:%(message)s'
 
 
-def mint_kudos(kudos_contract, kudos, account, mint_to=None, live=False):
+def mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint_to=None, live=False):
 
     image_name = urllib.parse.quote(kudos.get('image'))
     if image_name:
@@ -176,4 +176,4 @@ class Command(BaseCommand):
         for __, kudos in enumerate(all_kudos):
             if kudos_filter not in kudos['name']:
                 continue
-            mint_kudos(kudos_contract, kudos, account, options['mint_to'], options['live'])
+            mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, options['mint_to'], options['live'])
