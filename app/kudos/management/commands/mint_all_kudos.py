@@ -35,6 +35,101 @@ logger = logging.getLogger(__name__)
 formatter = '%(levelname)s:%(name)s.%(funcName)s:%(message)s'
 
 
+def mint_kudos(kudos_contract, kudos, account, mint_to=None, live=False):
+
+    image_name = urllib.parse.quote(kudos.get('image'))
+    if image_name:
+        # Support Open Sea
+        if kudos_contract.network == 'rinkeby':
+            image_path = f'https://ss.gitcoin.co/static/v2/images/kudos/{image_name}'
+            external_url = f'https://stage.gitcoin.co/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
+        elif kudos_contract.network == 'mainnet':
+            image_path = f'https://s.gitcoin.co/static/v2/images/kudos/{image_name}'
+            external_url = f'https://gitcoin.co/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
+        elif kudos_contract.network == 'localhost':
+            image_path = f'v2/images/kudos/{image_name}'
+            external_url = f'http://localhost:8000/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
+        else:
+            raise RuntimeError('Need to set the image path for that network')
+    else:
+        image_path = ''
+
+    attributes = []
+    # "trait_type": "investor_experience",
+    # "value": 20,
+    # "display_type": "boost_number",
+    # "max_value": 100
+    rarity = {
+        "trait_type": "rarity",
+        "value": get_rarity_score(kudos['numClonesAllowed']),
+    }
+    attributes.append(rarity)
+
+    artist = {
+        "trait_type": "artist",
+        "value": kudos.get('artist')
+    }
+    attributes.append(artist)
+
+    platform = {
+        "trait_type": "platform",
+        "value": kudos.get('platform')
+    }
+    attributes.append(platform)
+
+    tags = kudos['tags']
+    price_finney = kudos['priceFinney']
+
+    # append tags
+    if price_finney < 2:
+        tags.append('budget')
+    if price_finney < 5:
+        tags.append('affordable')
+    if price_finney > 20:
+        tags.append('premium')
+    if price_finney > 200:
+        tags.append('expensive')
+
+    for tag in tags:
+        attributes.append({"trait_type": "tag", "value": tag})
+
+    readable_name = humanize_name(kudos['name'])
+    metadata = {
+        'name': readable_name,
+        'image': image_path,
+        'description': kudos['description'],
+        'external_url': external_url,
+        'background_color': 'fbfbfb',
+        'attributes': attributes
+    }
+
+    if not kudos.get('to_address', None):
+        mint_to = kudos_contract._w3.toChecksumAddress(kudos.get('to_address'))
+    if not mint_to:
+        mint_to = kudos_contract._w3.toChecksumAddress(settings.KUDOS_OWNER_ACCOUNT)
+    else:
+        mint_to = kudos_contract._w3.toChecksumAddress(mint_to)
+
+    is_live = live
+    if is_live:
+        try:
+            token_uri_url = kudos_contract.create_token_uri_url(**metadata)
+            args = (mint_to, kudos['priceFinney'], kudos['numClonesAllowed'], token_uri_url)
+            kudos_contract.mint(
+                *args,
+                account=account,
+                private_key=private_key,
+                skip_sync=skip_sync,
+                gas_price_gwei=gas_price_gwei,
+            )
+            print('Live run - Name: ', readable_name, ' - Account: ', account, 'Minted!')
+        except Exception as e:
+            print(f'Error minting: {readable_name} - {e}')
+    else:
+        print('Dry run - Name: ', readable_name, ' - Account: ', account, 'Skipping!')
+
+
+
 class Command(BaseCommand):
 
     help = 'mints the initial kudos gen0 set'
@@ -81,91 +176,4 @@ class Command(BaseCommand):
         for __, kudos in enumerate(all_kudos):
             if kudos_filter not in kudos['name']:
                 continue
-            image_name = urllib.parse.quote(kudos.get('image'))
-            if image_name:
-                # Support Open Sea
-                if kudos_contract.network == 'rinkeby':
-                    image_path = f'https://ss.gitcoin.co/static/v2/images/kudos/{image_name}'
-                    external_url = f'https://stage.gitcoin.co/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
-                elif kudos_contract.network == 'mainnet':
-                    image_path = f'https://s.gitcoin.co/static/v2/images/kudos/{image_name}'
-                    external_url = f'https://gitcoin.co/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
-                elif kudos_contract.network == 'localhost':
-                    image_path = f'v2/images/kudos/{image_name}'
-                    external_url = f'http://localhost:8000/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
-                else:
-                    raise RuntimeError('Need to set the image path for that network')
-            else:
-                image_path = ''
-
-            attributes = []
-            # "trait_type": "investor_experience",
-            # "value": 20,
-            # "display_type": "boost_number",
-            # "max_value": 100
-            rarity = {
-                "trait_type": "rarity",
-                "value": get_rarity_score(kudos['numClonesAllowed']),
-            }
-            attributes.append(rarity)
-
-            artist = {
-                "trait_type": "artist",
-                "value": kudos.get('artist')
-            }
-            attributes.append(artist)
-
-            platform = {
-                "trait_type": "platform",
-                "value": kudos.get('platform')
-            }
-            attributes.append(platform)
-
-            tags = kudos['tags']
-            price_finney = kudos['priceFinney']
-
-            # append tags
-            if price_finney < 2:
-                tags.append('budget')
-            if price_finney < 5:
-                tags.append('affordable')
-            if price_finney > 20:
-                tags.append('premium')
-            if price_finney > 200:
-                tags.append('expensive')
-
-            for tag in tags:
-                attributes.append({"trait_type": "tag", "value": tag})
-
-            readable_name = humanize_name(kudos['name'])
-            metadata = {
-                'name': readable_name,
-                'image': image_path,
-                'description': kudos['description'],
-                'external_url': external_url,
-                'background_color': 'fbfbfb',
-                'attributes': attributes
-            }
-
-            if not options['mint_to']:
-                mint_to = kudos_contract._w3.toChecksumAddress(settings.KUDOS_OWNER_ACCOUNT)
-            else:
-                mint_to = kudos_contract._w3.toChecksumAddress(options['mint_to'])
-
-            is_live = options['live']
-            if is_live:
-                try:
-                    token_uri_url = kudos_contract.create_token_uri_url(**metadata)
-                    args = (mint_to, kudos['priceFinney'], kudos['numClonesAllowed'], token_uri_url)
-                    kudos_contract.mint(
-                        *args,
-                        account=account,
-                        private_key=private_key,
-                        skip_sync=skip_sync,
-                        gas_price_gwei=gas_price_gwei,
-                    )
-                    print('Live run - Name: ', readable_name, ' - Account: ', account, 'Minted!')
-                except Exception as e:
-                    print(f'Error minting: {readable_name} - {e}')
-            else:
-                print('Dry run - Name: ', readable_name, ' - Account: ', account, 'Skipping!')
+            mint_kudos(kudos_contract, kudos, account, options['mint_to'], options['live'])
