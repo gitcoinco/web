@@ -616,7 +616,7 @@ def get_tx_status(txid, network, created_on):
                 status = 'dropped'
             else:
                 status = 'pending'
-        elif tx and not 'status' in tx.keys():
+        elif tx and 'status' not in tx.keys():
             if bool(tx['blockNumber']) and bool(tx['blockHash']):
                 status = 'success'
             else:
@@ -641,5 +641,3 @@ def get_tx_status(txid, network, created_on):
     except:
         pass
     return status, timestamp
-
-

@@ -570,7 +570,7 @@ class Bounty(SuperModel):
                     return 'done'
                 elif self.past_hard_expiration_date:
                     return 'expired'
-                has_tips = self.tips.filter(is_for_bounty_fulfiller=False).send_success().exists()
+                has_tips = self.tips.filter(is_for_bounty_fulfiller=False).send_happy_path().exists()
                 if has_tips:
                     return 'done'
                 # If its not expired or done, and no tips, it must be cancelled.
@@ -929,7 +929,7 @@ class Bounty(SuperModel):
         for fulfillment in self.fulfillments.filter(accepted=True):
             if fulfillment.fulfiller_github_username:
                 return_list.append(fulfillment.fulfiller_github_username)
-        for tip in self.tips.send_success():
+        for tip in self.tips.send_happy_path():
             if tip.username:
                 return_list.append(tip.username)
         return list(set(return_list))
@@ -938,7 +938,7 @@ class Bounty(SuperModel):
     def additional_funding_summary(self):
         """Return a dict describing the additional funding from crowdfunding that this object has"""
         ret = {}
-        for tip in self.tips.filter(is_for_bounty_fulfiller=True).send_success():
+        for tip in self.tips.filter(is_for_bounty_fulfiller=True).send_happy_path():
             token = tip.tokenName
             obj = ret.get(token, {})
 
@@ -2417,7 +2417,7 @@ class Profile(SuperModel):
                 }]
 
         if tips:
-            params['tips'] = self.tips.filter(**query_kwargs).send_success()
+            params['tips'] = self.tips.filter(**query_kwargs).send_happy_path()
 
         if leaderboards:
             params['scoreboard_position_contributor'] = self.get_contributor_leaderboard_index()
