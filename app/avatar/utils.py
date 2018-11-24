@@ -57,7 +57,7 @@ def get_avatar_context():
         }, {
             'name': 'Makeup',
             'title': 'Pick a makeup style',
-            'options': ('ziggy-stardust', 'kiss', 'blush', 'eyeliner-green', 'eyeliner-teal', 'eyeliner-pink', 'eyeliner-red', 'eyeliner-blue', 'star' )
+            'options': ('ziggy-stardust', 'bolt', 'kiss', 'blush', 'eyeliner-green', 'eyeliner-teal', 'eyeliner-pink', 'eyeliner-red', 'eyeliner-blue', 'star' )
         }, {
             'name': 'Eyes',
             'title': 'Pick eyes shape',
