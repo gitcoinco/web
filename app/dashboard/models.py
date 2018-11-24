@@ -1274,7 +1274,7 @@ class SendCryptoAsset(SuperModel):
         return bool(self.tx_status)
 
     def update_receive_tx_status(self):
-        """ Updates the tx status according to what infura says about the tx
+        """ Updates the receive tx status according to what infura says about the receive tx
 
         """
         from dashboard.utils import get_tx_status
