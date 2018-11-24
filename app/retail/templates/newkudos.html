@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+{% block body %}
+<link rel="stylesheet" href="{% static "v2/css/onepagesubmit.css" %}">
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12 col-md-5 pb-4">
+      <div class="align-items-right justify-content-right">
+        <img class="slack--brand-tree" src="{% static "v2/images/tree/dark.png" %}">
+      </div>
+    </div>
+    <div class="col-12 col-md-6 pr-2 pl-2 pb-4 form_container">
+      <div style="max-width: 500px; margin: 0px auto;">
+        <h4>
+          {% trans "New Kudos Submission Form" %}
+        </h4>
+        {% if msg %}
+          <p>
+            {{ msg | safe }}
+          </p>
+        {% endif %}
+        {% if success %}
+          <div style="text-align: center; margin-bottom: 10px">
+            <img src="{% static "v2/images/tree/party_robot.jpg" %}">
+          </div>
+        {% endif %}
+        <form class="mt-5" id="newkudos" method="POST">
+          <div class="form-group">
+            <label class="form__label" for="email">{% trans "Contact email address" %}</label>
+            <input type="email" name="email" class="form__input" placeholder='you@somewhere' value="{% if email %}{{ email }}{% endif %}" required>
+          </div>
+          <div class="form-group">
+            <label class="form__label" for="name">{% trans "Artwork" %}</label>
+            <input type="hidden" id="artwork_url" name="artwork_url" value="" required>
+            <input type="file" name="photo" id="photo" class="form__input">
+            <button type="button" id="upload" class='button button--primary mt-2'>Upload</button>
+          </div>
+          <div class="form-group">
+            <label class="form__label" for="name">{% trans "Name" %}</label>
+            <input type="text" name="name" class="form__input" placeholder='foo_bar' value="" required>
+          </div>
+          <div class="form-group">
+            <label class="form__label" for="description">{% trans "Description" %}</label>
+            <input type="text" name="description" class="form__input" placeholder='This kudos is for those who foo the bar!' value="" required>
+          </div>
+          <div class="form-group">
+            <label class="form__label" for="priceFinney">{% trans "Price in Finney (1/1000 ETH)" %}</label>
+            <input type="number" name="priceFinney" class="form__input" placeholder='5' value="" required>
+          </div>
+          <div class="form-group">
+            <label class="form__label" for="numClonesAllowed">{% trans "Number of Clones Allowed" %}</label>
+            <input type="number" name="numClonesAllowed" class="form__input" placeholder='150' value="" required>
+          </div>
+          <div class="form-group">
+            <label class="form__label" for="platform">{% trans "Platform" %}</label>
+            <input type="text" name="platform" class="form__input" placeholder='gitcoin' value="" required>
+          </div>
+          <div class="form-group">
+            <label class="form__label" for="tags">{% trans "Tags" %}</label>
+            <input type="text" name="tags" class="form__input" placeholder='tags, comma, dilimeted' value="" required>
+          </div>
+          <div class="form-group">
+            <label class="form__label" for="artist">{% trans "Artist Name" %}</label>
+            <input type="text" name="artist" class="form__input" placeholder='' value="" required>
+          </div>
+          <div class="form-group">
+            <label class="form__label" for="to_address">{% trans "Artist Address" %}</label>
+            <input type="text" name="to_address" class="form__input" placeholder='0x0...abc109' value="" required>
+          </div>
+          <div class="terms_container pt-4">
+            <div class="form__checkbox">
+              <input name='terms' id='terms' type="checkbox" value=1 required />
+                <label class="form__label" for=terms>{% trans "I have read, understand, and agree to, the" %}
+                  <a href="{% url "terms" %}" target="_blank" rel="noopener noreferrer">{% trans "Terms of Service" %}</a>.
+              </label>
+            </div>
+          </div>
+
+          <div class="w-100 mt-2 terms_container">
+            <div class="form__checkbox">
+              <input name='own_ip' id='own_ip' type="checkbox" value=1 required />
+              <label class="form__label" for=own_ip style="display: flex;">{% blocktrans %}I certify that I own the IP for this Kudos, and that I liscense it to users of the mainnet Kudos web3 smart contract..{% endblocktrans %}</label>
+            </div>
+          </div>
+
+          {% csrf_token %}
+          <input class='button button--primary joinslack mt-2' type='submit' name='submit' value="Submit Token">
+        </form>
+        {% endblock %}
+      </div>
+    </div>
+  </div>
+</div>
+{% block scripts %}
+<!-- jQuery -->
+<script src="{% static "v2/js/buffer.js" %}"></script>
+<script src="{% static "v2/js/ipfs-api.js" %}"></script>
+<script src="{% static "v2/js/ipfs.js" %}"></script>
+<script src="{% static "v2/js/pages/newkudos.js" %}"></script>
+
+{% endblock %}

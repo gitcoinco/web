@@ -28,6 +28,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.text import slugify
+from django.contrib.postgres.fields import ArrayField
 
 import environ
 import pyvips
@@ -465,3 +466,51 @@ class BulkTransferRedemption(SuperModel):
     def __str__(self):
         """Return the string representation of a model."""
         return f"coupon: {self.coupon} redeemed_by: {self.redeemed_by}"
+
+
+
+class TokenRequest(SuperModel):
+    """Define the Token model."""
+
+    name = models.CharField(max_length=255, db_index=True)
+    description = models.TextField(max_length=500, default='')
+    priceFinney = models.IntegerField(default=18)
+    network = models.CharField(max_length=25, db_index=True)
+    artist = models.CharField(max_length=255)
+    platform = models.CharField(max_length=255)
+    to_address = models.CharField(max_length=255)
+    artwork_url = models.CharField(max_length=255)
+    numClonesAllowed = models.IntegerField(default=18)
+    metadata = JSONField(null=True, default=dict, blank=True)
+    tags = ArrayField(models.CharField(max_length=200), blank=True, default=list)
+    approved = models.BooleanField(default=True)
+
+    def __str__(self):
+        """Define the string representation of a conversion rate."""
+        return f"{self.name} on {self.network}"
+
+
+    def approve(self):
+        """Approve / mint this token."""
+        # TODO - make this available via web interface
+        from kudos.management.commands import mint_all_kudos
+        from kudos.utils import KudosContract
+        account = settings.KUDOS_OWNER_ACCOUNT
+        private_key = settings.KUDOS_PRIVATE_KEY
+        kudos = {
+            'name': self.name,
+            'description': self.description,
+            'priceFinney': self.priceFinney,
+            'artist': self.artist,
+            'platform': self.name,
+            'platform': self.platform,
+            'numClonesAllowed': self.numClonesAllowed,
+            'tags': self.tags,
+            'artwork_url': self.artwork_url,
+        }
+        kudos_contract = KudosContract(network=self.network)
+        mint_kudos(kudos_contract, kudos, account, private_key, mint_to=None, live=True)
+        self.approved = True
+        self.save()
+        
+

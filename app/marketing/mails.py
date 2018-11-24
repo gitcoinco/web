@@ -251,6 +251,28 @@ def new_token_request(obj):
         translation.activate(cur_language)
 
 
+def new_kudos_request(obj):
+    to_email = 'founders@gitcoin.co'
+    from_email = obj.email
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        subject = _("New Kudos Request")
+        body_str = _("A new kudos request was completed. You may approve the kudos request here")
+        body = f"{body_str}: https://gitcoin.co/{obj.admin_url} \n\n {obj.email}"
+        if not should_suppress_notification_email(to_email, 'faucet'):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                body,
+                from_name=_("No Reply from Gitcoin.co"),
+                categories=['admin', func_name()],
+            )
+    finally:
+        translation.activate(cur_language)
+
+
 def warn_account_out_of_eth(account, balance, denomination):
     to_email = settings.PERSONAL_CONTACT_EMAIL
     from_email = settings.SERVER_EMAIL

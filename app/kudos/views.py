@@ -42,6 +42,7 @@ from dashboard.utils import get_web3
 from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_master, get_github_primary_email
+from marketing.mails import new_kudos_request
 from kudos.utils import kudos_abi
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
@@ -49,7 +50,7 @@ from web3 import Web3
 
 from .forms import KudosSearchForm
 from .helpers import get_token
-from .models import BulkTransferCoupon, BulkTransferRedemption, KudosTransfer, Token
+from .models import BulkTransferCoupon, BulkTransferRedemption, KudosTransfer, Token, TokenRequest
 
 logger = logging.getLogger(__name__)
 
@@ -690,3 +691,45 @@ def receive_bulk(request, secret):
         'kudos_transfer': kudos_transfer,
     }
     return TemplateResponse(request, 'transaction/receive_bulk.html', params)
+
+
+@csrf_exempt
+def newkudos(request):
+    context = {
+        'active': 'newkudos',
+        'msg': None,
+    }
+
+    if request.POST:
+        required_fields = ['name', 'description', 'priceFinney', 'artist', 'platform', 'numClonesAllowed', 'tags', 'to_address', 'artwork_url']
+        validtion_passed = True
+        for key in required_fields:
+            if not request.POST.get(key):
+                context['msg'] = str(_('You must provide the following fields: ')) + key
+                validtion_passed = False
+        if validtion_passed:
+            # save / send email
+            obj = TokenRequest.objects.create(
+                name=request.POST['name'],
+                description=request.POST['description'],
+                priceFinney=request.POST['priceFinney'],
+                artist=request.POST['artist'],
+                platform=request.POST['platform'],
+                numClonesAllowed=request.POST['numClonesAllowed'],
+                tags=",".split(request.POST['tags']),
+                to_address=request.POST['to_address'],
+                artwork_url=request.POST['artwork_url'],
+                network='mainnet',
+                approved=False,
+                metadata={
+                    'ip': get_ip(request),
+                    'email': request.POST['email'],
+                    }
+                )
+            new_kudos_request(obj) 
+
+
+            context['msg'] = str(_('Your Kudos has been submitted and will be listed within 2 business days if it is accepted.'))
+
+    return TemplateResponse(request, 'newkudos.html', context)
+

@@ -35,24 +35,31 @@ logger = logging.getLogger(__name__)
 formatter = '%(levelname)s:%(name)s.%(funcName)s:%(message)s'
 
 
-def mint_kudos(kudos_contract, kudos, account, mint_to=None, live=False):
+def mint_kudos(kudos_contract, kudos, account, private_key, mint_to=None, live=False):
 
-    image_name = urllib.parse.quote(kudos.get('image'))
-    if image_name:
-        # Support Open Sea
-        if kudos_contract.network == 'rinkeby':
-            image_path = f'https://ss.gitcoin.co/static/v2/images/kudos/{image_name}'
-            external_url = f'https://stage.gitcoin.co/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
-        elif kudos_contract.network == 'mainnet':
-            image_path = f'https://s.gitcoin.co/static/v2/images/kudos/{image_name}'
-            external_url = f'https://gitcoin.co/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
-        elif kudos_contract.network == 'localhost':
-            image_path = f'v2/images/kudos/{image_name}'
-            external_url = f'http://localhost:8000/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
+    image_path = kudos.get('artwork_url')
+    if not image_path:
+        image_name = urllib.parse.quote(kudos.get('image'))
+        if image_name:
+            # Support Open Sea
+            if kudos_contract.network == 'rinkeby':
+                image_path = f'https://ss.gitcoin.co/static/v2/images/kudos/{image_name}'
+            elif kudos_contract.network == 'mainnet':
+                image_path = f'https://s.gitcoin.co/static/v2/images/kudos/{image_name}'
+            elif kudos_contract.network == 'localhost':
+                image_path = f'v2/images/kudos/{image_name}'
+            else:
+                raise RuntimeError('Need to set the image path for that network')
         else:
-            raise RuntimeError('Need to set the image path for that network')
-    else:
-        image_path = ''
+            image_path = ''
+
+    if kudos_contract.network == 'rinkeby':
+        external_url = f'https://stage.gitcoin.co/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
+    elif kudos_contract.network == 'mainnet':
+        external_url = f'https://gitcoin.co/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
+    elif kudos_contract.network == 'localhost':
+        external_url = f'http://localhost:8000/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
+
 
     attributes = []
     # "trait_type": "investor_experience",
@@ -103,10 +110,10 @@ def mint_kudos(kudos_contract, kudos, account, mint_to=None, live=False):
         'attributes': attributes
     }
 
-    if not kudos.get('to_address', None):
-        mint_to = kudos_contract._w3.toChecksumAddress(kudos.get('to_address'))
     if not mint_to:
         mint_to = kudos_contract._w3.toChecksumAddress(settings.KUDOS_OWNER_ACCOUNT)
+    elif not kudos.get('to_address', None):
+        mint_to = kudos_contract._w3.toChecksumAddress(kudos.get('to_address'))
     else:
         mint_to = kudos_contract._w3.toChecksumAddress(mint_to)
 
@@ -176,4 +183,4 @@ class Command(BaseCommand):
         for __, kudos in enumerate(all_kudos):
             if kudos_filter not in kudos['name']:
                 continue
-            mint_kudos(kudos_contract, kudos, account, options['mint_to'], options['live'])
+            mint_kudos(kudos_contract, kudos, account, private_key, options['mint_to'], options['live'])
