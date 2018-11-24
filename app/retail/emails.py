@@ -958,5 +958,3 @@ def start_work_applicant_expired(request):
     bounty = Bounty.objects.last()
     response_html, _, _ = render_start_work_applicant_expired(interest, bounty)
     return HttpResponse(response_html)
-
-
