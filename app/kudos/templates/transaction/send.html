@@ -92,6 +92,10 @@
       <input type="text" placeholder="@username" id="fromName" value="{% if user.is_authenticated  %}{{ user }}{% endif %}" class="form-control" disabled="disabled">
     </div>
     <div class="form-group">
+      <label for="">{% trans "Related Github Issue URL" %} ({% trans "optional" %}):</label>
+      <input type="text" placeholder="https://github.com/user/repo/pull|issues/n" id="issueURL" class="form-control">
+    </div>
+    <div class="form-group">
       <label for="">{% trans "Public Comments" %} ({% trans "optional" %}):</label>
       <textarea id="comments_public" class="form-control"></textarea>
     </div>
@@ -99,10 +103,6 @@
       <a href="#">{% trans "Advanced" %} >></a>
     </div>
     <div id='advanced' style="display:none;">
-      <div class="form-group">
-        <label for="">{% trans "Related Github Issue URL" %} ({% trans "optional" %}):</label>
-        <input type="text" placeholder="https://github.com/user/repo/pull|issues/n" id="issueURL" class="form-control">
-      </div>
       <div class="form-group">
         <label for="">{% trans "To Email address" %} ({% trans "optional" %}):</label>
         <input type="email" placeholder="foo@bar.it" id="email" class="form-control">
