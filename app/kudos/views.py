@@ -672,6 +672,8 @@ def receive_bulk(request, secret):
                 sender_profile=coupon.sender_profile,
                 txid=txid,
                 receive_txid=txid,
+                tx_status='pending',
+                receive_tx_status='pending',
             )
 
             # save to DB
