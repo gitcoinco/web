@@ -57,7 +57,7 @@ def get_avatar_context():
         }, {
             'name': 'Makeup',
             'title': 'Pick a makeup style',
-            'options': ('ziggy-stardust',)
+            'options': ('ziggy-stardust', 'blush', )
         }, {
             'name': 'Eyes',
             'title': 'Pick eyes shape',
