@@ -32,6 +32,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           {% include 'shared/no_metamask_error.html' %}
           {% include 'shared/zero_balance_error.html' %}
           {% include 'shared/unlock_metamask.html' %}
+          {% include 'shared/connect_metamask.html' %}
         </div>
       </div>
     </div>
@@ -48,12 +49,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     </div>
 
     <div class="row">
-      <div id="robot_error" class="hidden">
+      <div id="robot_error" class="hidden my-5">
         <img src="{% static "v2/images/prime.png" %}">
       </div>
     </div>
 
-    <div class="row">
+    <div class="row" id="grants_form">
       <div class="col-12 text-center mt-md-3">
         <h2 class="font-title-lg my-5">{% trans "Fund Grant" %}</h2>
       </div>
