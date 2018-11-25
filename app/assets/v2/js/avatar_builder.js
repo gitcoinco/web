@@ -185,25 +185,26 @@ function changeImage(option, path) {
 }
 
 function purchaseOption(option, value, target) {
-  if(document.web3network == 'mainnet' || document.web3network == 'rinkeby'){
-    _alert("You will now be prompted via Metamask to purchase this avatar item.", 'info');
-    var ele = $("#"+target.id.replace("'","").replace("'",""));
-    var cost = ele.find("div").data('cost');
+  if (document.web3network == 'mainnet') {
+    _alert('You will now be prompted via Metamask to purchase this avatar item.', 'info');
+    var ele = $('#' + target.id.replace("'", '').replace("'", ''));
+    var cost = ele.find('div').data('cost');
     var cost_eth = parseFloat(cost.replace('ETH', ''));
     var cost_wei = web3.toWei(cost_eth);
+
     to_address = '0x00De4B13153673BCAE2616b67bf822500d325Fc3'; // TODO: make dynamic
     web3.eth.sendTransaction({
       'from': web3.eth.coinbase,
-      'to': to_address, 
-      'value': cost_wei,
-    },function(error,result){
-      if(error){
-        _alert("There was an error.", 'error');
+      'to': to_address,
+      'value': cost_wei
+    }, function(error, result) {
+      if (error) {
+        _alert('There was an error.', 'error');
         return;
       }
       showBusyOverlay();
-      _alert("Waiting for tx to mine...", 'info');
-      callFunctionWhenTransactionMined(result, function(){
+      _alert('Waiting for tx to mine...', 'info');
+      callFunctionWhenTransactionMined(result, function() {
         var request_url = '/revenue/attestations/new';
         var txid = result;
         var data = {
@@ -214,28 +215,29 @@ function purchaseOption(option, value, target) {
           'to_address': to_address,
           'type': 'avatar',
           'option': option,
-          'value': value,
-        }
+          'value': value
+        };
+
         $.post(request_url, data).then(function(result) {
           hideBusyOverlay();
-          _alert("Success ✅ Loading your purchase now.", 'success');
-          setTimeout(function(){
+          _alert('Success ✅ Loading your purchase now.', 'success');
+          setTimeout(function() {
             location.reload();
           });
         });
       });
     });
-  } else if(document.web3network == 'locked'){
-    _alert("This is a premium avatar item.  In order to purchase it, please unlock your web3 wallet.", 'info');
+  } else if (document.web3network == 'locked') {
+    _alert('This is a premium avatar item.  In order to purchase it, please unlock your web3 wallet.', 'info');
   } else {
-    _alert("This is a premium avatar item.  In order to purchase it, please switch to the mainnet.", 'info');
+    _alert('This is a premium avatar item.  In order to purchase it, please switch to the mainnet.', 'info');
   }
   return;
 }
 
 
 function setOption(option, value, target) {
-  if(target.classList.contains('not_paid')){
+  if (target.classList.contains('not_paid')) {
     return purchaseOption(option, value, target);
   }
 
