@@ -21,9 +21,7 @@ import logging
 import warnings
 
 from django.core.management.base import BaseCommand
-
-from dashboard.models import Tip
-from kudos.models import KudosTransfer
+from dashboard.utils import all_sendcryptoasset_models
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("web3").setLevel(logging.WARNING)
@@ -36,7 +34,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         non_terminal_states = ['pending', 'na', 'unknown']
-        for obj_type in [Tip, KudosTransfer]:
+        for obj_type in all_sendcryptoasset_models():
             sent_txs = obj_type.objects.filter(tx_status__in=non_terminal_states).exclude(txid='')
             receive_txs = obj_type.objects.filter(receive_tx_status__in=non_terminal_states).exclude(txid='').exclude(receive_txid='')
             objects = (sent_txs | receive_txs).distinct('id')

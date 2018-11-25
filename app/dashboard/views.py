@@ -40,7 +40,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
 from app.utils import clean_str, ellipses, sync_profile
-from avatar.utils import get_avatar_context
+from avatar.utils import get_avatar_context_for_user
 from economy.utils import convert_token_to_usdt
 from eth_utils import to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
@@ -532,7 +532,7 @@ def onboard(request, flow):
         'steps': steps or onboard_steps,
         'flow': flow,
     }
-    params.update(get_avatar_context())
+    params.update(get_avatar_context_for_user(request.user))
     return TemplateResponse(request, 'ftux/onboard.html', params)
 
 
