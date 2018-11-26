@@ -2,6 +2,16 @@
   font-weight: 500;
 }
 
+#search_form button {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+#search_grants {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
 .token_symbol {
   font-weight: 600;
 }
@@ -100,6 +110,10 @@
   background-color: #F2F6F9;
 }
 
+.grant-item {
+  background-color: #fff;
+}
+
 .grants-hero.white a {
   color: white;
 }
@@ -162,13 +176,19 @@
 }
 
 @media (max-width: 767.98px) {
-
   .search {
-    margin-left: 1rem;
+    margin-left: 0rem;
+    margin-right: 0rem;
   }
 
   .order_by {
     margin-top: 1rem;
     padding: 0;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .search {
+    margin-left: 1rem;
   }
 }

@@ -60,22 +60,21 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <form method="POST" id="search_form">
           {% csrf_token %}
           <div class="row">
-            <div class="search col-9 col-md-5 offset-md-3 col-lg-6 form__flex-group">
+            <div class="search px-0 col-7 col-sm-9 col-md-5 offset-md-2 col-lg-6 form__flex-group">
               <input type="search" class="form__input" id="search_grants" name="search_grants" placeholder="Search Grants">
             </div>
-            <div class="col-2 col-lg-1 px-0">
+            <div class="col-3 col-lg-1 px-0">
               <button class="btn btn-gc-blue">
-                <span class="d-sm-inline">{% trans 'Search' %}</span>
-                <i class="d-sm-none fas fa-search"></i>
+                <span class="d-sm-inline">{% trans "Search" %}</span>
+                <i class="ml-2 fas fa-search"></i>
               </button>
             </div>
           </div>
           <div class="row mt-5">
-            <div class="col-12 col-md-4 col-lg-3 pt-1">
-              {{ grants_count }} Grants available on <b>mainnet</b>.
+            <div class="col-12 col-md-6 pt-1 text-center text-sm-left pl-sm-0">
+              {{ grants_count }} {% trans "Grants available on" %} <b>mainnet</b>.
             </div>
-            <div class="col-md-4 col-lg-6"></div>
-            <div class="col-12 col-md-4 col-lg-3 pt-1 font-caption order_by d-md-inline">
+            <div class="col-12 col-md-6 pt-1 font-caption order_by d-md-inline text-center text-sm-right">
               <div class="heading">{% trans "SORT" %}</div>
               <select name="sort_option" id="sort_option">
                 <option value="-created_on">{% trans "Created: Recent" %}</option>
