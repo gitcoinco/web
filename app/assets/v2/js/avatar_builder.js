@@ -234,13 +234,11 @@ function purchaseOption(option, value, target) {
       });
     });
   } else if (document.web3network == 'locked') {
-    if(document.ready){
+    if (document.ready) {
       _alert('This is a premium avatar item.  In order to purchase it, please unlock your web3 wallet.', 'info');
     }
-  } else {
-    if(document.ready){
-      _alert('This is a premium avatar item.  In order to purchase it, please switch to the mainnet.', 'info');
-    }
+  } else if (document.ready) {
+    _alert('This is a premium avatar item.  In order to purchase it, please switch to the mainnet.', 'info');
   }
   return;
 }
@@ -372,6 +370,6 @@ function saveAvatar() {
 
 changeSection('Head');
 
-$(document).ready(function(){
+$(document).ready(function() {
   document.ready = true;
-})
+});
