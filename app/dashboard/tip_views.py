@@ -274,12 +274,12 @@ def send_tip_3(request):
 
     if params.get('email'):
         primary_email = params['email']
-    elif to_emails['primary']:
+    elif to_emails.get('primary', None):
         primary_email = to_emails['primary']
-    elif to_emails['github_profile']:
+    elif to_emails.get('github_profile', None):
         primary_email = to_emails['github_profile']
     else:
-        if len(to_emails['events']):
+        if len(to_emails.get('events', None)):
             primary_email = to_emails['events'][0]
         else:
             print("TODO: no email found.  in the future, we should handle this case better because it's GOING to end up as a support request")
