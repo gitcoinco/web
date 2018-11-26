@@ -32,12 +32,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           {% include 'shared/no_metamask_error.html' %}
           {% include 'shared/zero_balance_error.html' %}
           {% include 'shared/unlock_metamask.html' %}
+          {% include 'shared/connect_metamask.html' %}
         </div>
       </div>
-    </div>
-
-    <div class="grant-banner-img">
-      <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3|add:1 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
     </div>
 
     <div class="alpha-warning font-caption">
@@ -52,139 +49,168 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     </div>
 
     <div class="row">
-      <div id="robot_error" class="hidden">
+      <div id="robot_error" class="hidden my-5">
         <img src="{% static "v2/images/prime.png" %}">
       </div>
     </div>
 
-    <div id="grants_form">
-      <h2 class="my-5 text-center">
-        <div class="mb-2 font-title-lg">{% trans "Fund" %}
-          <a href="{{ grant.reference_url }}" target="_blank">
-            {{ grant.title }}
-          </a>
-          {% trans "Grant" %}
+    <div class="row" id="grants_form">
+      <div class="col-12 text-center mt-md-3">
+        <h2 class="font-title-lg my-5">{% trans "Fund Grant" %}</h2>
+      </div>
+      <div class="col-12 grant-banner py-5 row mx-0">
+        <div class="col-12 offset-md-2 col-md-3 py-4 banner-img">
+          <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3|add:1 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
         </div>
-        <div class="font-subheader admin_profile">
-          {% trans "by" %}
-          <a href="{% url 'profile' grant.admin_profile.handle %}">
-            {{ grant.admin_profile }}
-          </a>
-        </div>
-      </h2>
+        <div class="col-12 col-md-4 offset-md-1 ml-md-5 py-4 my-auto">
+          <h1 class="font-title-xl grant-title mb-3">
+            <a href="{{ grant.reference_url }}" target="_blank">{{ grant.title }}</a>
+          </h1>
 
-      <div class="container">
-        <form method="POST" id="js-fundGrant">
-          {% csrf_token %}
-          <div class="row">
-            <div class="col-12 col-md-10 col-lg-5 order-md-last">
-              <div class="grant__progress mt-4">
-                <div class="progress">
-                  <div class="progress-bar" style="width:{{ grant.percent_completed }}%"></div>
+          <div class="admin_profile">
+            {% trans "by" %}
+            <a href="{% url 'profile' grant.admin_profile.handle %}">
+              {{ grant.admin_profile }}
+            </a>
+          </div>
+
+          <div class="grant__progress mt-4">
+            <div class="progress">
+              <div class="progress-bar" style="width:{{ grant.percent_completed }}%"></div>
+            </div>
+            <div class="progress-text mt-2">
+              <div class="row">
+                <div class="col-6">
+                  <span>{{ grant.amount_received|floatformat:2|intcomma }} DAI</span>
+                  <p>Current</p>
                 </div>
+                <div class="col-6 text-right">
+                  <span>{{ grant.amount_goal|floatformat:2|intcomma }} DAI</span>
+                  <p>Goal</p>
+                </div>
+              </div>
+            </div>
+          </div>
 
-                <div class="progress-text mt-2">
+        </div>
+      </div>
+      <div class="col-12 offset-md-2 col-md-10 offset-lg-3 col-lg-6 mt-5 font-subheader mx-0 mx-md-auto row">
+        <p class="col-12 font-weight-semibold my-4">
+          {{ grant.admin_profile }} {% trans "is accepting contributions in "%}
+          {% if grant_has_no_token %}
+            {% trans "any token." %}
+          {% else %}
+            {{ token_symbol }}
+          {% endif %}
+        </p>
+
+        <div id="grants_form" class="col-12">
+          <form method="POST" id="js-fundGrant">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-12">
+                <div class="form__group-horizontal frequency">
+                  <label class="form__label">{% trans "Payment Period" %}</label>
                   <div class="row">
-                    <div class="col-6">
-                      <span>{{ grant.amount_received|floatformat:2|intcomma }} DAI</span>
-                      <p>Current</p>
+                    <div class="col-8">
+                      <input type="number" id="frequency_count" name="frequency" class="form__input" value='30' required />
                     </div>
-                    <div class="col-6 text-right">
-                      <span>{{ grant.amount_goal|floatformat:2|intcomma }} DAI</span>
-                      <p>Goal</p>
+                    <div class="col-4 font-body">
+                      <select name="frequency_unit" id="frequency_unit" class="js-select2" style="width: 100%">
+                        <option value="days" selected="selected">{% trans "days" %}</option>
+                        <option value="months">{% trans "months" %}</option>
+                      </select>
                     </div>
                   </div>
                 </div>
-              </div>
-              {% if not grant_has_no_token %}
-                <h5 class="font-subheader token_symbol">
-                  {{ grant.admin_profile.handle }} {% trans 'is accepting contributions in '%}{{ grant.token_symbol }}
-                </h5>
-              {% endif %}
-              <p class="font-body text-justify">
-                {{ grant.description }}
-              </p>
-            </div>
 
-            <div class="col-12 col-md-10 offset-lg-1 col-lg-6">
-              {% if grant_has_no_token %}
                 <div class="form__group-horizontal">
-                  <label class="form__label">{% trans "Payment Token" %}</label>
+                  <label class="form__label">{% trans "Amount Per Period" %}</label>
                   <div class="row">
-                    <div class="col-12">
-                      <div class="form__select2">
-                        <select class='js-select2' name='denomination' id='js-token'> </select>
-                      </div>
+                    <div class="col-8">
+                      <input type="number" id="amount" name="amount_per_period" class="form__input" required />
+                    </div>
+                    <div class="col-4">
+                      {% if grant_has_no_token %}
+                        <div class="form__select2">
+                          <select class='js-select2' name='denomination' id='js-token'> </select>
+                        </div>
+                      {% else %}
+                        {{ token_symbol }}
+                      {% endif %}
                     </div>
                   </div>
                 </div>
-              {% endif %}
 
-              <div class="form__group-horizontal frequency">
-                <label class="form__label">{% trans "Payment Period" %}</label>
-                <div class="row">
-                  <div class="col-6">
-                    <input type="number" id="frequency_count" name="frequency" class="form__input" value='30' required />
-                  </div>
-                  <div class="col-6 font-body">
-                    <select name="frequency_unit" id="frequency_unit" class="js-select2" style="width: 100%">
-                      <option value="days" selected="selected">{% trans "days" %}</option>
-                      <option value="months">{% trans "months" %}</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="form__group-horizontal">
-                <label class="form__label">{% trans "Tokens Per Period" %}</label>
-                <div class="row">
-                  <div class="col-12">
-                    <input type="number" name="amount_per_period" class="form__input" required />
-                  </div>
-                </div>
-              </div>
-
-              <div class="form__group-horizontal">
-                <div>
-                  <label class="form__label">
-                    {% trans "Number Of Periods" %}
-                    <!-- <i class="fas fa-question-circle ml-2" data-toggle="tooltip" data-placement="right"
-                      title="<div class='grant-tooltip'><div class='tooltip-inner'>Token Approval Limit - The maximum number of tokens a user approves another party to transfer on their behalf. Since Gitcoin Grants uses subscriptions, a small transaction is performed each time period, and with each transaction the approval limit is lowered by that amount. This way, you know your subscription won't run on forever. Unless you want it to 🙂</div></div>">
-                    </i> -->
-                  </label>
+                <div class="form__group-horizontal">
                   <div class="row">
                     <div class="col-12">
-                      <input type="number" name="approve" class="form__input" required />
+                      <label class="form__label">
+                        {% trans "Number Of Periods" %}
+                      </label>
+                      <input id="period" type="number" name="approve" class="form__input" required />
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div class="form__group-horizontal">
-                <div class="row">
-                  <div class="col-12 form__footer text-center">
-                    <button class="button button--primary button--full" id='js-fundGrant'>{% trans "Contribute to Grant" %}</button>
+                <div class="summary font-body mt-4">
+                  <p class="mb-2 font-weight-semibold">Summary</p>
+                  <p>
+                    <i class="fas fa-circle mr-2"></i>
+                    {% trans "Your contribution will stop once this payment has happened" %}
+                    <span id="summary-frequency" class="font-weight-bold">-</span> times.
+                  </p>
+                  <p>
+                    <i class="fas fa-circle mr-2"></i>
+                    {% trans "You are contributing" %}
+                    <span id="summary-amount" class="font-weight-bold">-</span>
+                    <span id="summary-token" class="font-weight-bold">
+                      {% if not grant_has_no_token %}
+                        {{ token_symbol }}
+                      {% else %}
+                        -
+                      {% endif %}
+                    </span>
+                    {% trans "to this grant every" %}
+                    <span id="summary-period" class="font-weight-bold">-</span>
+                    <span id="summary-frequency-unit" class="font-weight-bold">-</span>.
+                  </p>
+                  <p>
+                    <i class="fas fa-circle mr-2"></i>
+                    {% trans "The first payment will happen immediately after you click Contribute to Grant." %}
+                  </p>
+                  <p>
+                    <i class="fas fa-circle mr-2"></i>
+                    {% trans "Note: You will have to approve 2 transactions via MetaMask on submit." %}
+                  </p>
+                </div>
+
+                <div class="form__group-horizontal">
+                  <div class="row">
+                    <div class="col-12 form__footer text-center">
+                      <button class="button button--primary button--full" id='js-fundGrant'>{% trans "Contribute to Grant" %}</button>
+                    </div>
                   </div>
                 </div>
 
               </div>
             </div>
-          </div>
 
-          <div>
-            <input type="hidden" id="grant_id" name="grant_id" value="{{ grant.id }}">
-            <input type="hidden" id="admin_address" name="admin_address" value="{{ grant.admin_address }}">
-            <input type="hidden" id="token_address" name="token_address" value="{{ grant.token_address }}">
-            <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
-            <input type="hidden" id="network" name="network" value="{{ grant.network }}">
-            <input type="hidden" id="subscription_hash" name="subscription_hash" value="">
-            <input type="hidden" id="signature" name="signature" value="">
-            <input type="hidden" id="contributor_address" name="contributor_address" value="">
-            <input type="hidden" id="gas_price" name="gas_price" value="">
-            <input type="hidden" id="token_symbol" name="token_symbol" value="{{ grant.token_symbol }}">
-            <input type="hidden" id="real_period_seconds" name="real_period_seconds" value="">
-          </div>
-        </form>
+            <div>
+              <input type="hidden" id="grant_id" name="grant_id" value="{{ grant.id }}">
+              <input type="hidden" id="admin_address" name="admin_address" value="{{ grant.admin_address }}">
+              <input type="hidden" id="token_address" name="token_address" value="{{ grant.token_address }}">
+              <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
+              <input type="hidden" id="network" name="network" value="{{ grant.network }}">
+              <input type="hidden" id="subscription_hash" name="subscription_hash" value="">
+              <input type="hidden" id="signature" name="signature" value="">
+              <input type="hidden" id="contributor_address" name="contributor_address" value="">
+              <input type="hidden" id="gas_price" name="gas_price" value="">
+              <input type="hidden" id="token_symbol" name="token_symbol" value="{{ grant.token_symbol }}">
+              <input type="hidden" id="real_period_seconds" name="real_period_seconds" value="">
+            </div>
+          </form>
+        </div>
       </div>
     </div>
 
