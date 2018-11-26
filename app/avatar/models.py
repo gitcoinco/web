@@ -81,9 +81,9 @@ class Avatar(SuperModel):
     def save(self, *args, force_insert=False, force_update=False, **kwargs):
         """Override the save to perform change comparison against PNG and SVG fields."""
         if self.svg and not self.custom_avatar_png:
-            self.convert_custom_svg()
+            self.convert_custom_svg(True)
         if self.png and not self.github_svg:
-            self.convert_github_png()
+            self.convert_github_png(True)
         super(Avatar, self).save(force_insert, force_update, *args, **kwargs)
 
     def get_color(self, key='Background', with_hashbang=False):
