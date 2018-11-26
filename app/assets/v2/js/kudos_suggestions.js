@@ -18,7 +18,7 @@ function suggestKudos(tags, kudosQt) {
       $.when(kudos).then(response => {
         processCounter++;
 
-        if (response.length !== 1 && !response[0].copy) {
+        if (!response[0].copy) {
           kudosArray = kudosArray.concat(response);
         }
 
@@ -35,12 +35,14 @@ var auto_terms = ['soft skills'];
 
 async function getSuggestions(tags) {
   try {
-    resultData = await suggestKudos(tags);
+    resultData = await suggestKudos(tags, 15);
 
     if (!resultData.length) {
       resultData = await suggestKudos(auto_terms, 4);
     }
-    fillTmp(resultData);
+    const shuffledData = shuffleArray(resultData);
+
+    fillTmp(shuffledData);
 
   } catch (error) {
     // return error;
@@ -99,4 +101,3 @@ function checkVariable() {
     getSuggestions(bountyKeywords);
   }
 }
-
