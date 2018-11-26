@@ -810,7 +810,7 @@ def bounty_request_feedback(profile):
                'How\'d it go? Any feedback for us?\n\n'\
                'Let us know if you have any bounties in your near future '\
                '-- we\'ll pay attention to '\
-               '[Gitcoin Requests](https://gitcoin.co/requests/) '\
+               'Gitcoin Requests (https://gitcoin.co/requests/) '\
                'from you as we know you\'ve suggested good things '\
                'in the past 🙂\n\n'\
                'Best,\nV'
