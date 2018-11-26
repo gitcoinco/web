@@ -802,7 +802,7 @@ def bounty_request_feedback(profile):
 
     try:
         setup_lang(to_email)
-        subject = _('Bounty Request Feedback')
+        subject = _(f'Bounty Request Feedback, @{profile.username} <> Gitcoin')
         body = f'Howdy @{profile.username},\n\n'\
                'This is Vivek from Gitcoin. '\
                'I noticed you made a funded Gitcoin Requests '\
