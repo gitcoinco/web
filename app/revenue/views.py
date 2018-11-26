@@ -1,11 +1,13 @@
+from django.http import JsonResponse
 from django.shortcuts import render
+from django.utils import timezone
+from django.views.decorators.csrf import csrf_exempt
+
 from ratelimit.decorators import ratelimit
+from retail.helpers import get_ip
 from revenue.models import DigitalGoodPurchase
 from web3 import Web3
-from retail.helpers import get_ip
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.utils import timezone
+
 # Create your views here.
 
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)

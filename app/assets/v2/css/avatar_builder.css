@@ -101,6 +101,12 @@ button.avatar-option {
   background-repeat: no-repeat;
 }
 
+.paid div {
+  background-color: #C8D7EF;
+}
+.not_paid div {
+  background-color: #D4EFC8;
+}
 .avatar-option div, #avatar-preview div {
   width: 100%;
   height: 100%;
@@ -112,12 +118,6 @@ button.avatar-option {
   background-repeat: no-repeat;
 }
 
-.avatar-option.payment_required.paid div {
-  background-color: #C8D7EF;
-}
-.avatar-option.payment_required.not_paid div {
-  background-color: #D4EFC8;
-}
 .avatar-option::after {
   position: absolute;
   bottom: -8px;

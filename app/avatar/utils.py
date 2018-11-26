@@ -45,10 +45,7 @@ logger = logging.getLogger(__name__)
 
 def get_avatar_context_for_user(user):
     from revenue.models import DigitalGoodPurchase
-    purchases = DigitalGoodPurchase.objects.filter(
-        from_name=user.username,
-        purchase__type='avatar',
-        ).send_success()
+    purchases = DigitalGoodPurchase.objects.filter(from_name=user.username, purchase__type='avatar', ).send_success()
 
     context = get_avatar_context()
     context['has_purchased_everything_package'] = purchases.filter(purchase__option='all').exists()
@@ -73,39 +70,48 @@ def get_avatar_context():
             'name': 'Head',
             'title': 'Pick head shape',
             'options': ('0', '1', '2', '3', '4'),
-            'paid_options': {  }
-        }, {
-            'name': 'Makeup',
-            'title': 'Pick a makeup style',
-            'options': ('ziggy-stardust', 'bolt', 'star2', 'kiss', 'blush', 
-                'eyeliner-green', 'eyeliner-teal', 'eyeliner-pink', 'eyeliner-red', 'eyeliner-blue', 'star' ),
-            'paid_options': { 
-                'ziggy-stardust': 0.02, 
-                'bolt': 0.01,
-                'star': 0.01,
-                'kiss': 0.02,
-            },
-        }, {
-            'name': 'Eyes',
-            'title': 'Pick eyes shape',
-            'options': ('0', '1', '2', '3', '4', '5', '6'),
-            'paid_options': {},
-        }, {
-            'name': 'Nose',
-            'title': 'Pick nose shape',
-            'options': ('0', '1', '2', '3', '4'),
-            'paid_options': {},
-        }, {
-            'name': 'Mouth',
-            'title': 'Pick mouth shape',
-            'options': ('0', '1', '2', '3', '4'),
-            'paid_options': {},
-        }, {
-            'name': 'Ears',
-            'title': 'Pick ears shape',
-            'options': ('0', '1', '2', '3', 'Spock'),
-            'paid_options': { 'Spock': 0.01 },
+            'paid_options': {}
         },
+                     {
+                         'name': 'Makeup',
+                         'title': 'Pick a makeup style',
+                         'options': (
+                             'ziggy-stardust', 'bolt', 'star2', 'kiss', 'blush', 'eyeliner-green', 'eyeliner-teal',
+                             'eyeliner-pink', 'eyeliner-red', 'eyeliner-blue', 'star'
+                         ),
+                         'paid_options': {
+                             'ziggy-stardust': 0.02,
+                             'bolt': 0.01,
+                             'star': 0.01,
+                             'kiss': 0.02,
+                         },
+                     },
+                     {
+                         'name': 'Eyes',
+                         'title': 'Pick eyes shape',
+                         'options': ('0', '1', '2', '3', '4', '5', '6'),
+                         'paid_options': {},
+                     },
+                     {
+                         'name': 'Nose',
+                         'title': 'Pick nose shape',
+                         'options': ('0', '1', '2', '3', '4'),
+                         'paid_options': {},
+                     },
+                     {
+                         'name': 'Mouth',
+                         'title': 'Pick mouth shape',
+                         'options': ('0', '1', '2', '3', '4'),
+                         'paid_options': {},
+                     },
+                     {
+                         'name': 'Ears',
+                         'title': 'Pick ears shape',
+                         'options': ('0', '1', '2', '3', 'Spock'),
+                         'paid_options': {
+                             'Spock': 0.01
+                         },
+                     },
                      {
                          'name': 'Clothing',
                          'title': 'Pick your clothing',
@@ -113,12 +119,11 @@ def get_avatar_context():
                              'cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater', 'spacecadet',
                              'suit', 'ethlogo', 'cloak', 'robe', 'pjs'
                          ),
-                        'paid_options': {
-                            'robe': 0.01,
-                            'cloak': 0.01,
-                            'spacecadet': 0.01,
-
-                        },
+                         'paid_options': {
+                             'robe': 0.01,
+                             'cloak': 0.01,
+                             'spacecadet': 0.01,
+                         },
                      },
                      {
                          'name': 'Hair Style',
@@ -128,7 +133,7 @@ def get_avatar_context():
                                      ['9-back', '9-front'], ['None', '10'], ['damos_hair-back', 'damos_hair-front'], [
                                          'long_swoosh-back', 'long_swoosh-front'
                                      ], ['None', 'mohawk'], ['None', 'mohawk_inverted'], ['None', 'spikey']),
-                        'paid_options': {},
+                         'paid_options': {},
                      },
                      {
                          'name': 'Facial Hair',
@@ -137,7 +142,7 @@ def get_avatar_context():
                              'Mustache-0', 'Mustache-1', 'Mustache-2', 'Mustache-3', 'Beard-0', 'Beard-1', 'Beard-2',
                              'Beard-3'
                          ),
-                        'paid_options': {},
+                         'paid_options': {},
                      },
                      {
                          'name': 'Accessories',
@@ -152,10 +157,10 @@ def get_avatar_context():
                                      ], ['Earring-3'], ['Earring-4'], ['Masks-jack-o-lantern'], ['Masks-guy-fawkes'], [
                                          'Masks-jack-o-lantern-lighted'
                                      ], ['Extras-Parrot'], ['Masks-gitcoinbot'], ['Masks-batman']),
-                        'paid_options': { 
-                            'Extras-Parrot': 0.01, 
-                            'Masks-batman': 0.02 
-                        },
+                         'paid_options': {
+                             'Extras-Parrot': 0.01,
+                             'Masks-batman': 0.02
+                         },
                      },
                      {
                          'name': 'Background',
@@ -164,7 +169,7 @@ def get_avatar_context():
                              '25E899', '9AB730', '00A55E', '3FCDFF', '3E00FF', '8E2ABE', 'D0021B', 'F9006C', 'FFCE08',
                              'F8E71C', '15003E', 'FFFFFF'
                          ),
-                        'paid_options': {},
+                         'paid_options': {},
                      },
                      {
                          'name': 'Wallpaper',
@@ -173,11 +178,10 @@ def get_avatar_context():
                              'anchors', 'circuit', 'jigsaw', 'lines', 'gears', 'clouds', 'signal', 'polka_dots',
                              'polka_dots_black', 'squares', 'shapes', 'sunburst', 'sunburst_pastel', 'rainbow'
                          ),
-                        'paid_options': {
-                            'sunburst_pastel': 0.01,
-                            'rainbow': 0.01,
-                        
-                        },
+                         'paid_options': {
+                             'sunburst_pastel': 0.01,
+                             'rainbow': 0.01,
+                         },
                      }],
     }
 

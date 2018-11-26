@@ -17,9 +17,10 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from dashboard.models import SendCryptoAsset
-from django.db import models
 from django.contrib.postgres.fields import JSONField
+from django.db import models
+
+from dashboard.models import SendCryptoAsset
 
 
 class DigitalGoodPurchase(SendCryptoAsset):

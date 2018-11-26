@@ -109,9 +109,8 @@ urlpatterns = [
     url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
 
-    # 
+    #
     path('revenue/attestations/new', revenue.views.new_attestation, name='revenue_new_attestation'),
-
 
     # action URLs
     re_path(r'^bounty/quickstart/?', dashboard.views.quickstart, name='quickstart'),
