@@ -1032,6 +1032,11 @@ class BountyFulfillment(SuperModel):
             self.fulfiller_github_username = self.fulfiller_github_username.lstrip('@')
         super().save(*args, **kwargs)
 
+
+    @property
+    def should_hide(self):
+        return self.fulfiller_github_username in settings.BLOCKED_USERS
+
     @property
     def to_json(self):
         """Define the JSON representation of BountyFulfillment.
