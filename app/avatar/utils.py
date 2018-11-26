@@ -112,7 +112,7 @@ def get_avatar_context():
                                          'EarringBack-2', 'Earring-2'
                                      ], ['Earring-3'], ['Earring-4'], ['Masks-jack-o-lantern'], ['Masks-guy-fawkes'], [
                                          'Masks-jack-o-lantern-lighted'
-                                     ], ['Extras-Parrot'], ['Masks-gitcoinbot'])
+                                     ], ['Extras-Parrot'], ['Masks-gitcoinbot'], ['Masks-batman'])
                      },
                      {
                          'name': 'Background',
