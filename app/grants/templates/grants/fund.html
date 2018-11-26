@@ -56,13 +56,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <div class="row" id="grants_form">
       <div class="col-12 text-center mt-md-3">
-        <h2 class="font-title-lg my-5">{% trans "Fund Grant" %}</h2>
+        <h2 class="font-title-lg my-4">{% trans "Fund Grant" %}</h2>
       </div>
       <div class="col-12 grant-banner py-5 row mx-0">
         <div class="col-12 offset-md-2 col-md-3 py-4 banner-img">
           <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3|add:1 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
         </div>
-        <div class="col-12 col-md-4 offset-md-1 ml-md-5 py-4 my-auto">
+        <div class="col-12 offset-sm-1 col-sm-10 col-md-4 ml-md-5 py-4 my-auto">
           <h1 class="font-title-xl grant-title mb-3">
             <a href="{{ grant.reference_url }}" target="_blank">{{ grant.title }}</a>
           </h1>

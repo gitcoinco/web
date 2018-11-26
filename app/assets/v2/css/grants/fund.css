@@ -1,5 +1,6 @@
-.admin_profile a {
-  color: #43484D;
+.admin_profile a,
+.grant-link a {
+  color: #0D0764;
 }
 
 #grants_form input {
