@@ -69,6 +69,7 @@ def grants(request):
         'active': 'grants_landing',
         'title': _('Grants Explorer'),
         'grants': grants,
+        'grants_count': _grants.count(),
         'keywords': get_keywords(),
     }
     return TemplateResponse(request, 'grants/index.html', params)

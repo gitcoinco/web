@@ -95,8 +95,13 @@
   color: #BBBDBF;
 }
 
-.grants-search {
+.grants-search,
+.grants-container {
   background-color: #F2F6F9;
+}
+
+.grants-hero.white a {
+  color: white;
 }
 
 /* Tabs */
