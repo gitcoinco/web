@@ -56,7 +56,11 @@
     <meta property=og:title content="Gitcoin: Grow Open Source.">
     <meta property=og:site_name content="Gitcoin: Grow Open Source.">
 {% endif %}
-<meta property=og:url content="https://gitcoin.co/" >
+{% if request.build_absolute_uri %}
+  <meta property=og:url content="{{request.build_absolute_uri}}" >
+{% else %}
+  <meta property=og:url content="https://gitcoin.co/" >
+{% endif %}
 {% if card_desc %}
     <meta property=og:description content="Gitcoin is the easiest way to monetize or incentivize work in Open Source Software.">
 {% else %}
