@@ -33,10 +33,10 @@
     <div class="grant__header py-5">
       <div class="container">
         <div class="row">
-          <div class="grant-banner col-12 col-lg-6 col-xl-5 p-0 mb-5 my-md-auto">
-            <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3|add:1 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
+          <div class="grant-banner col-12 col-lg-6 pr-lg-5 p-0 mb-5 my-md-auto">
+            <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
           </div>
-          <div class="col-12 col-lg-6 offset-xl-1 col-xl-5">
+          <div class="col-12 col-lg-6">
             <div class="row">
               <div class="col-12">
                 <div class="grant__specs">
@@ -156,6 +156,7 @@
     <div class="container py-5">
       <div class="row">
         <div class="col-12 col-md-6 pl-lg-0">
+          <p class="font-body sub-title">{% trans "Description" %}</p>
           <p class="grant__description font-subheader pr-lg-4 mb-5">
             {% if is_admin %}
               <textarea id="form--input__description" class="p-0 mt-2 inline-edit" disabled>{{ grant.description }}</textarea>
@@ -170,7 +171,7 @@
           <div class="grant-item__member mb-4">
             {% if is_admin %}
               <div class="font-body">
-                <p class="font-body sub-title">Team Members</p>
+                <p class="font-body sub-title">{% trans "Team Members" %}</p>
                 <div class="form__select2">
                   <select id="grant-members" class="form__input" name="grant-members" name="members" multiple="multiple" disabled>
                     {% for team_member in grant.team_members.all %}
@@ -181,7 +182,7 @@
               </div>
             {% else %}
               {% if grant.team_members %}
-                <p class="font-body sub-title">Team Members ({{ grant.team_members.all|length }})</p>
+                <p class="font-body sub-title">{% trans "Team Members" %} ({{ grant.team_members.all|length }})</p>
                 <div class="grant-item__members font-body">
                   {% for team_member in grant.team_members.all %}
                     <div class="grant-item__member mr-4">
@@ -220,7 +221,7 @@
     <div class="update-milestone pt-4">
       <div class="container mt-4">
         <div class="row">
-          <div class="col-12 order-md-2 col-md-4">
+          <div class="col-12 order-md-2 col-md-6">
             <p>
               {% trans "Milestones" %}
               {% if is_admin %}<a href="{% url 'grants:milestones' grant.id grant.slug %}" class="milestones-edit">{% trans "Edit Milestones" %}</a>{% endif %}
@@ -247,10 +248,10 @@
             </div>
           </div>
 
-          <div class="col-12 order-md-1 col-md-8 p-md-0">
+          <div class="col-12 order-md-1 col-md-6 p-md-0">
             <div id="tabs">
               <ul>
-                <li><a href="#all-updates">{% trans "Updates" %}</a></li>
+                <li><a href="#all-updates" class="pt-md-0">{% trans "Updates" %}</a></li>
               </ul>
               <div id="all-updates" class="p-0">
                 {% if is_admin %}
