@@ -99,11 +99,6 @@
                       </div>
                     </div>
                   </div>
-                  {% if user_subscription %}
-                  <h5>
-                    {% trans 'You have agreed to contribute' %} {{ user_subscription.amount_per_period|floatformat:2|intcomma }} {{ user_subscription.token_symbol }} every {{ user_subscription.frequency }} {{ user_subscription.frequency_unit }}
-                  </h5>
-                  {% endif %}
                 </div>
                 {% if grant_is_inactive %}
                   <h4 class="my-4" >{% trans "This grant has ended. You can find all active grants" %}
@@ -144,6 +139,11 @@
                       <i class="fas fa-times mr-2"></i> Cancel Edit
                     </button>
                   </div>
+                {% endif %}
+                {% if user_subscription %}
+                  <h5 class="font-body mt-2 font-weight-semibold">
+                    {% trans 'You have agreed to contribute' %} {{ user_subscription.amount_per_period|floatformat:2|intcomma }} {{ user_subscription.token_symbol }} every {{ user_subscription.frequency }} {{ user_subscription.frequency_unit }}
+                  </h5>
                 {% endif %}
               </div>
             </div>

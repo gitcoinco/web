@@ -41,11 +41,12 @@ $(document).ready(function() {
       }
 
       let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, data.contract_address);
+      let deployedToken;
 
       if (data.token_address != '0x0000000000000000000000000000000000000000') {
-        let deployedToken = new web3.eth.Contract(compiledToken.abi, data.token_address);
+        deployedToken = new web3.eth.Contract(compiledToken.abi, data.token_address);
       } else {
-        let deployedToken = new web3.eth.Contract(compiledToken.abi, data.denomination);
+        deployedToken = new web3.eth.Contract(compiledToken.abi, data.denomination);
       }
 
       deployedToken.methods.decimals().call(function(err, decimals) {
