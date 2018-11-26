@@ -34,7 +34,7 @@ from django.views.decorators.csrf import csrf_exempt
 from dashboard.utils import get_web3
 from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from git.utils import get_emails_master, get_github_primary_email, get_emails_by_category
+from git.utils import get_github_primary_email, get_emails_by_category
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import Web3
