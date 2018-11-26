@@ -12,6 +12,14 @@ iframe {
   padding: 0 !important;
 }
 
+.richtext-image.left {
+  float: left;
+}
+
+.richtext-image.right {
+  float: right;
+}
+
 .body {
   margin: 0;
 }
@@ -21,15 +29,14 @@ iframe {
 }
 
 .intro {
-  margin: 0;
+  margin: 0 auto;
   padding: 3rem;
 }
 
 .intro img {
-  position: absolute;
+  margin: 1rem;
   max-height: 18rem;
   width: auto;
-  right: -28rem;
   vertical-align: top;
   bottom: 0;
 }
