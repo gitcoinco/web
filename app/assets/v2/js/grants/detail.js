@@ -57,8 +57,10 @@ $(document).ready(function() {
         data[this.name] = this.value;
       });
 
+      let compiledSubscription;
+
       if (data.contract_version == 0) {
-        let compiledSubscription = compiledSubscription0;
+        compiledSubscription = compiledSubscription0;
       }
 
       let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, data.contract_address);
