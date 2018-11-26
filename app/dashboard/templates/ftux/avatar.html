@@ -23,6 +23,16 @@
       </button>
     </h2>
   </div>
+  {% if not has_purchased_everything_package %}
+    <div class="col-12">
+      <p style="background-color: #CAF4E3; padding: 3px 5px; font-size: 12px;">
+        {% trans "NEW!  Purchase ALL Current & Future Premium Avatar Items for only 0.1 ETH" %}
+        <a href="#" id="purchase_all" data-cost="0.1ETH" style="font-weight: bold; font-size: 12px;" onclick="purchaseOption('all','all',this)">
+        {% trans "Click Here!" %}
+        </a>
+      </p>
+    </div>
+  {%endif %}
   <div id="avatar-builder">
     <!-- Navigation Links -->
     <ul id="avatar-builder__sections">

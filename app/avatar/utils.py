@@ -49,10 +49,16 @@ def get_avatar_context_for_user(user):
         from_name=user.username,
         purchase__type='avatar',
         ).send_success()
+
     context = get_avatar_context()
+    context['has_purchased_everything_package'] = purchases.filter(purchase__option='all').exists()
     for i in range(0, len(context['sections'])):
         purchase_objs = purchases.filter(purchase__option=context['sections'][i]['name'])
-        context['sections'][i]['purchases'] = [obj.purchase['value'] for obj in purchase_objs]
+        if context['has_purchased_everything_package']:
+            context['sections'][i]['purchases'] = [obj for obj in context['sections'][i]['options']]
+        else:
+            context['sections'][i]['purchases'] = [obj.purchase['value'] for obj in purchase_objs]
+
     return context
 
 

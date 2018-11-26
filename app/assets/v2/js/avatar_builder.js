@@ -185,10 +185,14 @@ function changeImage(option, path) {
 }
 
 function purchaseOption(option, value, target) {
-  if (document.web3network == 'mainnet') {
+  if (document.web3network == 'mainnet' | document.web3network == 'rinkeby') {
     _alert('You will now be prompted via Metamask to purchase this avatar item.', 'info');
     var ele = $('#' + target.id.replace("'", '').replace("'", ''));
-    var cost = ele.find('div').data('cost');
+    if(ele.data('cost')){
+      var cost = ele.data('cost');
+    } else {
+      var cost = ele.find('div').data('cost');
+    }
     var cost_eth = parseFloat(cost.replace('ETH', ''));
     var cost_wei = web3.toWei(cost_eth);
 
