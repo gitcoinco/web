@@ -938,22 +938,22 @@ var listen_for_web3_changes = async function() {
       document.listen_for_web3_iterations += 1;
     }
 
-  if (typeof web3 == 'undefined') {
-    currentNetwork();
-    trigger_form_hooks();
-  } else if (typeof web3 == 'undefined' || typeof web3.eth == 'undefined' || typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
-    currentNetwork('locked');
-    trigger_form_hooks();
-  } else {
-    is_metamask_unlocked = true;
-    web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
-      if (errors) {
-        return;
-      }
-      if (typeof result != 'undefined') {
-        document.balance = result.toNumber();
-      }
-    });
+    if (typeof web3 == 'undefined') {
+      currentNetwork();
+      trigger_form_hooks();
+    } else if (typeof web3 == 'undefined' || typeof web3.eth == 'undefined' || typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
+      currentNetwork('locked');
+      trigger_form_hooks();
+    } else {
+      is_metamask_unlocked = true;
+      web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
+        if (errors) {
+          return;
+        }
+        if (typeof result != 'undefined') {
+          document.balance = result.toNumber();
+        }
+      });
 
       web3.version.getNetwork(function(error, netId) {
         if (error) {
