@@ -40,12 +40,6 @@ $(document).ready(function() {
         }
       }
 
-      let compiledSubscription;
-
-      if (data.contract_version == 0) {
-        compiledSubscription = compiledSubscription0;
-      }
-
       let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, data.contract_address);
       let deployedToken;
 

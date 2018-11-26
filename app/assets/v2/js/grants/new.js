@@ -47,6 +47,8 @@ $(document).ready(function() {
 
       $('#token_symbol').val($('#js-token option:selected').text());
 
+      console.log('compiledSubscription', compiledSubscription);
+
       // Begin New Deploy Subscription Contract
       let SubscriptionContract = new web3.eth.Contract(compiledSubscription.abi);
 
