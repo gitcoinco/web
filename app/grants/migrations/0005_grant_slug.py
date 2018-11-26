@@ -24,7 +24,6 @@ class Migration(migrations.Migration):
             model_name='grant',
             name='slug',
             field=django_extensions.db.fields.AutoSlugField(blank=True, editable=False, populate_from='title'),
-        )
-        # ,
-        # migrations.RunPython(update_grants),
+        ),
+        migrations.RunPython(update_grants),
     ]
