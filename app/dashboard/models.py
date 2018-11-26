@@ -1122,6 +1122,7 @@ class SendCryptoAsset(SuperModel):
     web3_type = models.CharField(max_length=50, default='v3')
     emails = JSONField(blank=True)
     url = models.CharField(max_length=255, default='', blank=True)
+    primary_email = models.CharField(max_length=255, default='', blank=True)
     tokenName = models.CharField(max_length=255, default='ETH')
     tokenAddress = models.CharField(max_length=255, blank=True)
     amount = models.DecimalField(default=1, decimal_places=4, max_digits=50)
