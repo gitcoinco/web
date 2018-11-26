@@ -38,6 +38,13 @@ from web3.middleware import geth_poa_middleware
 
 logger = logging.getLogger(__name__)
 
+def all_sendcryptoasset_models():
+    from revenue.models import DigitalGoodPurchase
+    from dashboard.models import Tip
+    from kudos.models import KudosTransfer
+
+    return [DigitalGoodPurchase, Tip, KudosTransfer]
+
 
 class BountyNotFoundException(Exception):
     pass
@@ -596,3 +603,48 @@ def generate_pub_priv_keypair():
     # return priv key, pub key, address
 
     return priv.to_string().hex(), pub.hex(), checksum_encode(address)
+
+
+def get_tx_status(txid, network, created_on):
+    from django.utils import timezone
+    from dashboard.utils import get_web3
+    import pytz
+
+    # get status
+    status = None
+    if txid == 'override':
+        return 'success', None #overridden by admin
+    try:
+        web3 = get_web3(network)
+        tx = web3.eth.getTransactionReceipt(txid)
+        if not tx:
+            drop_dead_date = created_on + timezone.timedelta(days=3)
+            if timezone.now() > drop_dead_date:
+                status = 'dropped'
+            else:
+                status = 'pending'
+        elif tx and 'status' not in tx.keys():
+            if bool(tx['blockNumber']) and bool(tx['blockHash']):
+                status = 'success'
+            else:
+                raise Exception("got a tx but no blockNumber or blockHash")
+        elif tx.status == 1:
+            status = 'success'
+        elif tx.status == 0:
+            status = 'error'
+        else:
+            status = 'unknown'
+    except Exception as e:
+        logger.error(f'Failure in get_tx_status for {txid} - ({e})')
+        status = 'unknown'
+    
+    # get timestamp
+    timestamp = None
+    try:
+        if tx:
+            block = web3.eth.getBlock(tx['blockNumber'])
+            timestamp = block.timestamp
+            timestamp = timezone.datetime.fromtimestamp(timestamp).replace(tzinfo=pytz.UTC)
+    except:
+        pass
+    return status, timestamp

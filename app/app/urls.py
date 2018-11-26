@@ -46,6 +46,7 @@ import marketing.views
 import marketing.webhookviews
 import retail.emails
 import retail.views
+import revenue.views
 import tdi.views
 from dashboard.router import router as dbrouter
 from external_bounties.router import router as ebrouter
@@ -66,6 +67,7 @@ urlpatterns = [
     path('kudos/send/4/', kudos.views.send_4, name='kudos_send_4'),
     re_path(r'^lazy_load_kudos/$', dashboard.views.lazy_load_kudos, name='lazy_load_kudos'),
     re_path(r'^kudos/receive/v3/(?P<key>.*)/(?P<txid>.*)/(?P<network>.*)?', kudos.views.receive, name='kudos_receive'),
+    re_path(r'^kudos/redeem/(?P<secret>.*)/?$', kudos.views.receive_bulk, name='kudos_receive_bulk'),
     re_path(r'^kudos/search/$', kudos.views.search, name='kudos_search'),
     re_path(
         r'^kudos/(?P<address>\w*)/(?P<token_id>\d+)/(?P<name>\w*)',
@@ -106,6 +108,10 @@ urlpatterns = [
     re_path(r'^onboard/contributor/avatar/?$', dashboard.views.onboard_avatar, name='onboard_avatar'),
     url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
+
+    # 
+    path('revenue/attestations/new', revenue.views.new_attestation, name='revenue_new_attestation'),
+
 
     # action URLs
     re_path(r'^bounty/quickstart/?', dashboard.views.quickstart, name='quickstart'),

@@ -457,10 +457,13 @@ if ($('#bounties').length) {
   });
 }
 
-$.views.converters({
-  timedifference: timedifferenceCvrt,
-  activitytext: activitytextCvrt
-});
+if ($.views) {
+  $.views.converters({
+    timedifference: timedifferenceCvrt,
+    activitytext: activitytextCvrt
+  });
+  
+}
 
 function timedifferenceCvrt(date) {
   return timeDifference(new Date(), new Date(date), false, 60 * 60);

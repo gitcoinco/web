@@ -58,7 +58,7 @@ def insert_settings(request):
         'profile_id': profile.id if profile else '',
         'hotjar': settings.HOTJAR_CONFIG,
         'ipfs_config': {
-            'host': settings.IPFS_HOST,
+            'host': settings.JS_IPFS_HOST,
             'port': settings.IPFS_API_PORT,
             'protocol': settings.IPFS_API_SCHEME,
             'root': settings.IPFS_API_ROOT,
@@ -75,10 +75,10 @@ def insert_settings(request):
             receive_txid='',
             username__iexact=context['github_handle'],
             web3_type='v3',
-        ).exclude(txid='')
+        ).send_happy_path()
         context['unclaimed_kudos'] = KudosTransfer.objects.filter(
             receive_txid='', username__iexact="@" + context['github_handle'], web3_type='v3',
-        ).exclude(txid='')
+        ).send_happy_path()
 
         if not settings.DEBUG:
             context['unclaimed_tips'] = context['unclaimed_tips'].filter(network='mainnet')
