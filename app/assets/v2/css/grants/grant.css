@@ -105,8 +105,8 @@
   color: #BBBDBF;
 }
 
-.grants-search,
-.grants-container {
+.grants_landing .grants-search,
+.grants_landing .grants-container {
   background-color: #F2F6F9;
 }
 
