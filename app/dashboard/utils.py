@@ -38,6 +38,13 @@ from web3.middleware import geth_poa_middleware
 
 logger = logging.getLogger(__name__)
 
+def all_sendcryptoasset_models():
+    from revenue.models import DigitalGoodPurchase
+    from dashboard.models import Tip
+    from kudos.models import KudosTransfer
+
+    return [DigitalGoodPurchase, Tip, KudosTransfer]
+
 
 class BountyNotFoundException(Exception):
     pass

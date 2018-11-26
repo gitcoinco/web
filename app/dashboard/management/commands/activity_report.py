@@ -28,11 +28,11 @@ from django.core.management.base import BaseCommand
 
 import boto
 from boto.s3.key import Key
-from dashboard.models import Bounty, Profile, Tip
+from dashboard.models import Bounty, Profile
+from dashboard.utils import all_sendcryptoasset_models
 from economy.utils import convert_amount
 from enssubdomain.models import ENSSubdomainRegistration
 from faucet.models import FaucetRequest
-from kudos.models import KudosTransfer
 from marketing.mails import send_mail
 
 DATE_FORMAT = '%Y/%m/%d'
@@ -105,15 +105,10 @@ class Command(BaseCommand):
             'payee_bio': bio,
             'payee_location': location,
         }
-
-    def format_tip(self, tip):
-        return self.format_cryptoasset(tip, 'tip')
         
-    def format_kudos(self, kudos):
-        return self.format_cryptoasset(kudos, 'kudos')
-        
-    def format_cryptoasset(self, ca, _type='tip'):
-        location, bio = get_bio(tip.username)
+    def format_cryptoasset(self, ca):
+        _type = type(ca)
+        location, bio = get_bio(ca.username)
 
         return {
             'type': _type,
@@ -201,21 +196,16 @@ class Command(BaseCommand):
         ).order_by('created_on', 'id')
         formatted_frs = imap(self.format_faucet_distribution, frs)
 
-        tips = Tip.objects.filter(
-            network='mainnet',
-            created_on__gte=options['start_date'],
-            created_on__lte=options['end_date']
-        ).send_success().order_by('created_on', 'id')
-        formatted_tips = imap(self.format_tip, tips)
-
-        tips = KudosTransfer.objects.filter(
-            network='mainnet',
-            created_on__gte=options['start_date'],
-            created_on__lte=options['end_date']
-        ).exclude(
-            txid='',
-        ).order_by('created_on', 'id')
-        formatted_tips = imap(self.format_kudos, tips)
+        all_scram = []
+        for _class in all_sendcryptoasset_models():
+            objs = _class.objects.filter(
+                network='mainnet',
+                created_on__gte=options['start_date'],
+                created_on__lte=options['end_date']
+            ).send_success().order_by('created_on', 'id')
+            objs = imap(self.format_cryptoasset, objs)
+            objs = [x for x in objs]
+            all_scram += objs
 
         enssubregistrations = ENSSubdomainRegistration.objects.filter(
             created_on__gte=options['start_date'],
@@ -226,9 +216,8 @@ class Command(BaseCommand):
         # python3 list hack
         formatted_frs = [x for x in formatted_frs]
         formatted_bounties = [x for x in formatted_bounties]
-        formatted_tips = [x for x in formatted_tips]
         formateted_enssubregistrations = [x for x in formted_enssubreg]
-        all_items = formatted_bounties + formatted_tips + formatted_frs + formateted_enssubregistrations
+        all_items = formatted_bounties + all_scram + formatted_frs + formateted_enssubregistrations
 
         csvfile = StringIO()
         csvwriter = csv.DictWriter(csvfile, fieldnames=[

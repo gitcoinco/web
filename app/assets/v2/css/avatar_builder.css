@@ -123,6 +123,28 @@ button.avatar-option {
   line-height: 1.2rem;
 }
 
+
+.avatar-option.payment_required.not_paid div {
+  background-color: #D4EFC8;
+}
+.avatar-option.payment_required.not_paid div::before {
+  content: attr(data-cost);
+  font-size: 10px;
+  float: right;
+}
+.avatar-option.payment_required.not_paid:hover div::before {
+  color: black !important;
+  font-weight: bold;
+}
+.avatar-option.payment_required.paid div {
+  background-color: #C8D7EF;
+}
+.avatar-option.payment_required.paid div::before {
+  content: "✅";
+  font-size: 10px;
+  float: right;
+}
+
 .avatar-option:hover {
   border: 2px solid #00BB61;
 }

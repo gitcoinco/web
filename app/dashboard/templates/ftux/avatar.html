@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static hash strip_char is_in_list_type_iexact %}
 <div class="row">
   <div class="col-12">
     <h2>{% trans "Build Your Gitcoin Avatar" %}
@@ -50,38 +50,47 @@
         {% with "v2/images/avatar/"|add:id|add:"/" as basePath %}
         <div id="options-{{ id }}" class="options-section d-flex flex-wrap {% if id in optionalSections %}optional{% endif %}">
           {% for o in s.options %}
-          <button type="button" class="avatar-option" id="avatar-option-{{ id }}-{{ o }}" onclick="setOption('{{ id }}', '{{ o|addslashes }}', this)">
+          <button type="button" class="avatar-option 
+          {% if s.paid_options|hash:o %} 
+            payment_required {{o}} {{s.purchases}}
+            {% if o|is_in_list_type_iexact:s.purchases %} 
+              paid
+            {% else %}
+              not_paid
+            {% endif %}
+          {% endif %}
+           {{ id }}-{{ o }} " id="avatar-option-{{ id | strip_char:"'" }}-{{ o | strip_char:"'" }}" onclick="setOption('{{ id }}', '{{ o|addslashes }}', this)">
             {% if id == "Head" or id == "Ears" %}
             {% with STATIC_URL|add:basePath|add:o|add:"-"|add:defaultSkinTone|add:".svg" as path %}
-            <div class="SkinTone-dependent" style="background-image: url({{ path }});" data-path="{{ path }}"></div>
+            <div data-cost="{{s.paid_options|hash:o}}ETH" class="SkinTone-dependent" style="background-image: url({{ path }});" data-path="{{ path }}"></div>
             {% endwith %}
             {% elif id == "Clothing" %}
               {% with STATIC_URL|add:basePath|add:o|add:"-"|add:defaultClothingColor|add:".svg" as path %}
-              <div class="ClothingColor-dependent" style="background-image: url({{ path }});" data-path="{{ path }}"></div>
+              <div data-cost="{{s.paid_options|hash:o}}ETH" class="ClothingColor-dependent" style="background-image: url({{ path }});" data-path="{{ path }}"></div>
               {% endwith %}
             {% elif id == "HairStyle" %}
               {% for part in o %}
               {% with STATIC_URL|add:basePath|add:part|add:"-"|add:defaultHairColor|add:".svg" as path %}
                 {% if part != 'None' %}
-                <div class="{{ forloop.counter0 }} HairColor-dependent" style="background-image: url({{ path }});" data-path="{{ path }}"></div>
+                <div data-cost="{{s.paid_options|hash:o}}ETH" class="{{ forloop.counter0 }} HairColor-dependent" style="background-image: url({{ path }});" data-path="{{ path }}"></div>
                 {% endif %}
               {% endwith %}
               {% endfor %}
             {% elif id == "FacialHair" %}
               {% with STATIC_URL|add:basePath|add:o|add:"-"|add:defaultHairColor|add:".svg" as path %}
-              <div class="HairColor-dependent" style="background-image: url({{ path }});" data-path="{{ path }}"></div>
+              <div data-cost="{{s.paid_options|hash:o}}ETH" class="HairColor-dependent" style="background-image: url({{ path }});" data-path="{{ path }}"></div>
               {% endwith %}
             {% elif id == "Accessories" %}
               {% for part in o %}
               {% with STATIC_URL|add:basePath|add:part|add:".svg" as path %}
-              <div style="background-image: url({{ path }});" data-path="{{ path }}"></div>
+              <div data-cost="{{s.paid_options|hash:o}}ETH" style="background-image: url({{ path }});" data-path="{{ path }}"></div>
               {% endwith %}
               {% endfor %}
             {% elif id == 'Background' or id == 'SkinTone' or id == 'HairColor' %}
-            <div class="color-option" style="background-color: #{{ o }}" data-path="{{ path }}"></div>
+            <div data-cost="{{s.paid_options|hash:o}}ETH" class="color-option" style="background-color: #{{ o }}" data-path="{{ path }}"></div>
             {% else %}
               {% with STATIC_URL|add:basePath|add:o|add:".svg" as path %}
-              <div style="background-image: url({{ path }});" data-path="{{ path }}"></div>
+              <div data-cost="{{s.paid_options|hash:o}}ETH" style="background-image: url({{ path }});" data-path="{{ path }}"></div>
               {% endwith %}
             {% endif %}
           </button>
