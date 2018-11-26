@@ -105,6 +105,10 @@ def receive_tip_v3(request, key, txid, network):
     tip = tips.first()
     is_authed = request.user.username.lower() == tip.username.lower() or request.user.username.lower() == tip.from_username.lower()
     not_mined_yet = get_web3(tip.network).eth.getBalance(Web3.toChecksumAddress(tip.metadata['address'])) == 0
+    did_fail = False
+    if not_mined_yet:
+        tip.update_tx_status()
+        did_fail = tip.tx_status in ['dropped', 'unknown', 'na', 'error']
 
     if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
         request.user, 'profile', None
@@ -115,6 +119,8 @@ def receive_tip_v3(request, key, txid, network):
         messages.info(request, 'This tip has been received')
     elif not is_authed:
         messages.error(request, f'This tip is for @{tip.username} but you are logged in as @{request.user.username}.  Please logout and log back in as {tip.username}.')
+    elif did_fail:
+        messages.info(request, f'This tx {tip.txid}, failed.  Please contact the sender and ask them to send the tx again.')
     elif not_mined_yet:
         messages.info(request, f'This tx {tip.txid}, is still mining.  Please wait a moment before submitting the receive form.')
     elif request.GET.get('receive_txid') and not tip.receive_txid:
@@ -128,6 +134,7 @@ def receive_tip_v3(request, key, txid, network):
                     profile.preferred_payout_address = params['forwarding_address']
                     profile.save()
             tip.receive_txid = params['receive_txid']
+            tip.receive_tx_status = 'pending'
             tip.receive_address = params['forwarding_address']
             tip.received_on = timezone.now()
             tip.save()
@@ -196,8 +203,10 @@ def send_tip_4(request):
 
     # db mutations
     tip.txid = txid
+    tip.tx_status = 'pending'
     if is_direct_to_recipient:
         tip.receive_txid = txid
+        tip.receive_tx_status = 'pending'
         tip.receive_address = destinationAccount
     tip.save()
 
@@ -309,7 +318,7 @@ def send_tip_3(request):
         is_over_tip_tx_limit = tip.value_in_usdt_now > max_per_tip
         if request.user.is_authenticated and request.user.profile:
             tips_last_week_value = tip.value_in_usdt_now
-            tips_last_week = Tip.objects.exclude(txid='').filter(sender_profile=get_profile(from_username), created_on__gt=timezone.now() - timezone.timedelta(days=7))
+            tips_last_week = Tip.objects.send_happy_path().filter(sender_profile=get_profile(from_username), created_on__gt=timezone.now() - timezone.timedelta(days=7))
             for this_tip in tips_last_week:
                 if this_tip.value_in_usdt_now:
                     tips_last_week_value += this_tip.value_in_usdt_now

@@ -283,6 +283,8 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
             'payload', {}).get('fulfiller', {}).get(
                 'githubUsername', '')
         if github_username:
+            if github_username in settings.BLOCKED_USERS:
+                continue
             try:
                 kwargs['profile_id'] = Profile.objects.get(handle__iexact=github_username).pk
             except Profile.MultipleObjectsReturned:

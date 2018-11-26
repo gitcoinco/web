@@ -113,7 +113,7 @@ def get_avatar_context():
                                          'EarringBack-2', 'Earring-2'
                                      ], ['Earring-3'], ['Earring-4'], ['Masks-jack-o-lantern'], ['Masks-guy-fawkes'], [
                                          'Masks-jack-o-lantern-lighted'
-                                     ], ['Extras-Parrot'], ['Masks-gitcoinbot'])
+                                     ], ['Extras-Parrot'], ['Masks-gitcoinbot'], ['Masks-batman'])
                      },
                      {
                          'name': 'Background',
@@ -197,11 +197,11 @@ def build_avatar_component(path, icon_size=None, avatar_size=None):
     if path.startswith('Wallpaper'):
         src = transform.fromfile(f'{COMPONENT_BASE}{path}')
 
-#       TODO: Consider width aswell...
-#        if src.width != None:
-#            src_width = float(re.sub('[^0-9]','', src.width))
-#        else:
-#            src_width = 900
+        #       TODO: Consider width aswell...
+        #        if src.width != None:
+        #            src_width = float(re.sub('[^0-9]','', src.width))
+        #        else:
+        #            src_width = 900
 
         if src.height is not None:
             src_height = float(re.sub('[^0-9]', '', src.height))
