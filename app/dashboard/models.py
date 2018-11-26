@@ -1539,7 +1539,7 @@ class Activity(models.Model):
         blank=True, null=True
     )
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True, db_index=True)
-    activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES, blank=True)
+    activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES, blank=True, db_index=True)
     metadata = JSONField(default=dict)
     needs_review = models.BooleanField(default=False)
 
@@ -1757,14 +1757,25 @@ class Profile(SuperModel):
             )
         return user_actions.count()
 
-    @property
-    def desc(self):
-        stats = self.stats
-        role = stats[0][0]
-        total_funded_participated = stats[1][0]
+    def get_desc(self, funded_bounties, fulfilled_bounties):
+        total_funded = funded_bounties.aggregate(Sum('value_in_usdt'))['value_in_usdt__sum'] or 0
+        total_fulfilled = fulfilled_bounties.aggregate(Sum('value_in_usdt'))['value_in_usdt__sum'] or 0
+
+        role = 'newbie'
+        if total_funded > total_fulfilled:
+            role = 'funder'
+        elif total_funded < total_fulfilled:
+            role = 'coder'
+
+        total_funded_participated = funded_bounties.count() + fulfilled_bounties.count()
         plural = 's' if total_funded_participated != 1 else ''
+
         return f"@{self.handle} is a {role} who has participated in {total_funded_participated} " \
                f"funded issue{plural} on Gitcoin"
+
+    @property
+    def desc(self):
+        return self.get_desc(self.get_funded_bounties(), self.get_fulfilled_bounties())
 
     @property
     def github_created_on(self):
@@ -1806,62 +1817,6 @@ class Profile(SuperModel):
 
         """
         return self.user.is_staff if self.user else False
-
-    @property
-    def stats(self):
-        bounties = self.bounties.stats_eligible()
-        loyalty_rate = 0
-        total_funded = sum([
-            bounty.value_in_usdt if bounty.value_in_usdt else 0
-            for bounty in bounties if bounty.is_funder(self.handle)
-        ])
-        total_fulfilled = sum([
-            bounty.value_in_usdt if bounty.value_in_usdt else 0
-            for bounty in bounties if bounty.is_hunter(self.handle)
-        ])
-        print(total_funded, total_fulfilled)
-        role = 'newbie'
-        if total_funded > total_fulfilled:
-            role = 'funder'
-        elif total_funded < total_fulfilled:
-            role = 'coder'
-
-        loyalty_rate = self.fulfilled.filter(accepted=True).count()
-        success_rate = 0
-        if bounties.exists():
-            numer = bounties.filter(idx_status__in=['submitted', 'started', 'done']).count()
-            denom = bounties.exclude(idx_status__in=['open']).count()
-            success_rate = int(round(numer * 1.0 / denom, 2) * 100) if denom != 0 else 'N/A'
-        if success_rate == 0:
-            success_rate = 'N/A'
-            loyalty_rate = 'N/A'
-        else:
-            success_rate = f"{success_rate}%"
-            loyalty_rate = f"{loyalty_rate}x"
-        if role == 'newbie':
-            return [
-                (role, 'Status'),
-                (bounties.count(), 'Total Funded Issues'),
-                (bounties.filter(idx_status='open').count(), 'Open Funded Issues'),
-                (loyalty_rate, 'Loyalty Rate'),
-                (total_fulfilled, 'Bounties completed'),
-            ]
-        elif role == 'coder':
-            return [
-                (role, 'Primary Role'),
-                (bounties.count(), 'Total Funded Issues'),
-                (success_rate, 'Success Rate'),
-                (loyalty_rate, 'Loyalty Rate'),
-                (total_fulfilled, 'Bounties completed'),
-            ]
-        # funder
-        return [
-            (role, 'Primary Role'),
-            (bounties.count(), 'Total Funded Issues'),
-            (bounties.filter(idx_status='open').count(), 'Open Funded Issues'),
-            (success_rate, 'Success Rate'),
-            (total_fulfilled, 'Bounties completed'),
-        ]
 
     @property
     def get_quarterly_stats(self):
@@ -2244,13 +2199,15 @@ class Profile(SuperModel):
     def get_org_leaderboard_index(self):
         return self.get_leaderboard_index('quarterly_orgs')
 
-    def get_eth_sum(self, sum_type='collected', network='mainnet'):
+    def get_eth_sum(self, sum_type='collected', network='mainnet', bounties=None):
         """Get the sum of collected or funded ETH based on the provided type.
 
         Args:
             sum_type (str): The sum to lookup.  Defaults to: collected.
             network (str): The network to query results for.
                 Defaults to: mainnet.
+            bounties (dashboard.models.BountyQuerySet): Override the BountyQuerySet this function processes.
+                Defaults to: None.
 
         Returns:
             float: The total sum of all ETH of the provided type.
@@ -2258,16 +2215,20 @@ class Profile(SuperModel):
         """
         eth_sum = 0
 
+        if not bounties:
+            if sum_type == 'funded':
+                bounties = self.get_funded_bounties(network=network)
+            elif sum_type == 'collected':
+                bounties = self.get_fulfilled_bounties(network=network)
+            elif sum_type == 'org':
+                bounties = self.get_orgs_bounties(network=network)
+
         if sum_type == 'funded':
-            obj = self.get_funded_bounties(network=network).has_funds()
-        elif sum_type == 'collected':
-            obj = self.get_fulfilled_bounties(network=network)
-        elif sum_type == 'org':
-            obj = self.get_orgs_bounties(network=network)
+            bounties = bounties.has_funds()
 
         try:
-            if obj.exists():
-                eth_sum = obj.aggregate(
+            if bounties.exists():
+                eth_sum = bounties.aggregate(
                     Sum('value_in_eth')
                 )['value_in_eth__sum'] / 10**18
         except Exception:
@@ -2275,30 +2236,33 @@ class Profile(SuperModel):
 
         return eth_sum
 
-    def get_who_works_with(self, work_type='collected', network='mainnet'):
+    def get_who_works_with(self, work_type='collected', network='mainnet', bounties=None):
         """Get an array of profiles that this user works with.
 
         Args:
             work_type (str): The work type to lookup.  Defaults to: collected.
             network (str): The network to query results for.
                 Defaults to: mainnet.
+            bounties (dashboard.models.BountyQuerySet): Override the BountyQuerySet this function processes.
+                Defaults to: None.
 
         Returns:
             dict: list of the profiles that were worked with (key) and the number of times they occured
 
         """
-        if work_type == 'funded':
-            obj = self.bounties_funded.filter(network=network)
-        elif work_type == 'collected':
-            obj = self.get_fulfilled_bounties(network=network)
-        elif work_type == 'org':
-            obj = self.get_orgs_bounties(network=network)
+        if not bounties:
+            if work_type == 'funded':
+                bounties = self.bounties_funded.filter(network=network)
+            elif work_type == 'collected':
+                bounties = self.get_fulfilled_bounties(network=network)
+            elif work_type == 'org':
+                bounties = self.get_orgs_bounties(network=network)
 
         if work_type != 'org':
-            profiles = [bounty.org_name for bounty in obj if bounty.org_name]
+            profiles = [bounty.org_name for bounty in bounties if bounty.org_name]
         else:
             profiles = []
-            for bounty in obj:
+            for bounty in bounties:
                 for bf in bounty.fulfillments.filter(accepted=True):
                     if bf.fulfiller_github_username:
                         profiles.append(bf.fulfiller_github_username)
@@ -2311,7 +2275,6 @@ class Profile(SuperModel):
         for ele in sorted(profiles_dict.items(), key=lambda x: x[1], reverse=True):
             ordered_profiles_dict[ele[0]] = ele[1]
         return ordered_profiles_dict
-
 
     def get_funded_bounties(self, network='mainnet'):
         """Get the bounties that this user has funded
@@ -2328,11 +2291,37 @@ class Profile(SuperModel):
 
         funded_bounties = Bounty.objects.current().filter(
             Q(bounty_owner_github_username__iexact=self.handle) |
-            Q(bounty_owner_github_username__iexact=f'@{self.handle}')
+            Q(bounty_owner_github_username__iexact=f'@{self.handle}'),
+            network=network,
         )
-        funded_bounties = funded_bounties.filter(network=network)
         return funded_bounties
 
+    def get_bounty_and_tip_activities(self, network='mainnet'):
+        """Get bounty and tip related activities for this profile.
+
+        Args:
+            network (str): The network to query results for.
+                Defaults to: mainnet.
+
+        Returns:
+            (dashboard.models.ActivityQuerySet): The query results.
+
+        """
+        if not self.is_org:
+            all_activities = self.activities
+        else:
+            url = self.github_url
+            all_activities = Activity.objects.filter(
+                Q(bounty__github_url__startswith=url) |
+                Q(tip__github_url__startswith=url),
+            )
+
+        all_activities = all_activities.filter(
+            Q(bounty__network=network) |
+            Q(tip__network=network),
+        ).select_related('bounty', 'tip').all().order_by('-created')
+
+        return all_activities
 
     def to_dict(self, activities=True, leaderboards=True, network=None, tips=True):
         """Get the dictionary representation with additional data.
@@ -2349,8 +2338,14 @@ class Profile(SuperModel):
 
         Attributes:
             params (dict): The context dictionary to be returned.
+            network (str): The bounty network to operate on.
             query_kwargs (dict): The kwargs to be passed to all queries
                 throughout the method.
+            bounties (dashboard.models.BountyQuerySet): All bounties referencing this profile.
+            fulfilled_bounties (dashboard.models.BountyQuerySet): All fulfilled bounties for this profile.
+            funded_bounties (dashboard.models.BountyQuerySet): All funded bounties for this profile.
+            orgs_bounties (dashboard.models.BountyQuerySet or None):
+                All bounties belonging to this organization, if applicable.
             sum_eth_funded (float): The total amount of ETH funded.
             sum_eth_collected (float): The total amount of ETH collected.
 
@@ -2360,41 +2355,48 @@ class Profile(SuperModel):
         """
         params = {}
         network = network or self.get_network()
-
         query_kwargs = {'network': network}
-
-        sum_eth_funded = self.get_eth_sum(sum_type='funded', **query_kwargs)
-        sum_eth_collected = self.get_eth_sum(**query_kwargs)
-        works_with_funded = self.get_who_works_with(work_type='funded', **query_kwargs)
-        works_with_collected = self.get_who_works_with(work_type='collected', **query_kwargs)
+        bounties = self.bounties
+        fulfilled_bounties = self.get_fulfilled_bounties(network=network)
         funded_bounties = self.get_funded_bounties(network=network)
+        orgs_bounties = None
+
+        if self.is_org:
+            orgs_bounties = self.get_orgs_bounties(network=network)
+
+        sum_eth_funded = self.get_eth_sum(sum_type='funded', bounties=funded_bounties)
+        sum_eth_collected = self.get_eth_sum(bounties=fulfilled_bounties)
+        works_with_funded = self.get_who_works_with(work_type='funded', bounties=funded_bounties)
+        works_with_collected = self.get_who_works_with(work_type='collected', bounties=fulfilled_bounties)
 
         # org only
-        works_with_org = []
         count_bounties_on_repo = 0
         sum_eth_on_repos = 0
-        if self.is_org:
-            works_with_org = self.get_who_works_with(work_type='org', **query_kwargs)
-            count_bounties_on_repo = self.get_orgs_bounties(network=network).count()
-            sum_eth_on_repos = self.get_eth_sum(sum_type='org', **query_kwargs)
+        works_with_org = []
+        if orgs_bounties:
+            count_bounties_on_repo = orgs_bounties.count()
+            sum_eth_on_repos = self.get_eth_sum(bounties=orgs_bounties)
+            works_with_org = self.get_who_works_with(work_type='org', bounties=orgs_bounties)
 
+        total_funded = funded_bounties.count()
+        total_fulfilled = fulfilled_bounties.count()
+        desc = self.get_desc(funded_bounties, fulfilled_bounties)
         no_times_been_removed = self.no_times_been_removed_by_funder() + self.no_times_been_removed_by_staff() + self.no_times_slashed_by_staff()
         params = {
             'title': f"@{self.handle}",
             'active': 'profile_details',
             'newsletter_headline': _('Be the first to know about new funded issues.'),
             'card_title': f'@{self.handle} | Gitcoin',
-            'card_desc': self.desc,
+            'card_desc': desc,
             'avatar_url': self.avatar_url_with_gitcoin_logo,
             'profile': self,
-            'bounties': self.bounties,
-            'count_bounties_completed': self.fulfilled.filter(accepted=True, bounty__current_bounty=True, bounty__network=network).distinct('bounty__pk').count(),
+            'bounties': bounties,
+            'count_bounties_completed': total_fulfilled,
             'sum_eth_collected': sum_eth_collected,
             'sum_eth_funded': sum_eth_funded,
             'works_with_collected': works_with_collected,
             'works_with_funded': works_with_funded,
-            'funded_bounties_count': funded_bounties.count(),
-            'activities': [],
+            'funded_bounties_count': total_funded,
             'no_times_been_removed': no_times_been_removed,
             'sum_eth_on_repos': sum_eth_on_repos,
             'works_with_org': works_with_org,
@@ -2402,19 +2404,7 @@ class Profile(SuperModel):
         }
 
         if activities:
-            if not self.is_org:
-                all_activities = self.activities
-            else:
-                url = self.github_url
-                all_activities = Activity.objects.filter(bounty__github_url__startswith=url)
-            all_activities = all_activities.filter(
-                bounty__network=network
-            ).select_related('bounty', 'tip').all().order_by('-created')
-            if all_activities:
-                params['activities'] = [{
-                    'title': _('By Created Date'),
-                    'activity_bounties': all_activities,
-                }]
+            params['activities'] = self.get_bounty_and_tip_activities(network=network)
 
         if tips:
             params['tips'] = self.tips.filter(**query_kwargs).send_happy_path()

@@ -1113,6 +1113,24 @@ def profile_keywords(request, handle):
     return JsonResponse(response)
 
 
+def profile_filter_activities(activities, activity_name):
+    """A helper function to filter a ActivityQuerySet.
+
+    Args:
+        activities (ActivityQuerySet): The ActivityQuerySet.
+        activity_name (str): The activity_type to filter.
+
+    Returns:
+        ActivityQuerySet: The filtered results.
+
+    """
+    if not activity_name or activity_name == 'all':
+        return activities
+    if activity_name == 'start_work':
+        return activities.filter(activity_type__in=['start_work', 'worker_approved'])
+    return activities.filter(activity_type=activity_name)
+
+
 def profile(request, handle):
     """Display profile details.
 
@@ -1148,11 +1166,54 @@ def profile(request, handle):
                 handle = handle[:-1]
             profile = profile_helper(handle, current_user=request.user)
 
-        context = profile.to_dict()
-        for activity in context['activities']:
-            activity['started_bounties_count'] = activity['activity_bounties'].filter(
-                activity_type='start_work'
-            ).count()
+        tabs = [
+            ('all', _('All Activity')),
+            ('new_bounty', _('Bounties Funded')),
+            ('start_work', _('Work Started')),
+            ('work_submitted', _('Work Submitted')),
+            ('work_done', _('Bounties Completed')),
+            ('new_tip', _('Tips Sent')),
+            ('receive_tip', _('Tips Received')),
+        ]
+        page = request.GET.get('p', None)
+
+        if page:
+            page = int(page)
+            activity_type = request.GET.get('a', '')
+            all_activities = profile.get_bounty_and_tip_activities()
+            paginator = Paginator(profile_filter_activities(all_activities, activity_type), 10)
+
+            if page > paginator.num_pages:
+                return HttpResponse(status=204)
+
+            context = {}
+            context['activities'] = paginator.get_page(page)
+
+            return TemplateResponse(request, 'profiles/profile_activities.html', context, status=status)
+        else:
+            context = profile.to_dict(tips=False)
+            all_activities = context.get('activities')
+            activity_tabs = []
+
+            for tab, name in tabs:
+                activities = profile_filter_activities(all_activities, tab)
+                activities_count = activities.count()
+
+                if activities_count == 0:
+                    continue
+
+                paginator = Paginator(activities, 10)
+
+                obj = {}
+                obj['id'] = tab
+                obj['name'] = name
+                obj['activities'] = paginator.get_page(1)
+                obj['count'] = activities_count
+
+                activity_tabs.append(obj)
+
+            context['activity_tabs'] = activity_tabs
+
     except (Http404, ProfileHiddenException):
         status = 404
         context = {
