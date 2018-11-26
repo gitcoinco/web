@@ -56,6 +56,7 @@
   display: unset;
 }
 
+
 #avatar-preview {
   width: 250px;
   height: 256px;
@@ -111,6 +112,12 @@ button.avatar-option {
   background-repeat: no-repeat;
 }
 
+.avatar-option.payment_required.paid div {
+  background-color: #C8D7EF;
+}
+.avatar-option.payment_required.not_paid div {
+  background-color: #D4EFC8;
+}
 .avatar-option::after {
   position: absolute;
   bottom: -8px;
@@ -123,27 +130,6 @@ button.avatar-option {
   line-height: 1.2rem;
 }
 
-
-.avatar-option.payment_required.not_paid div {
-  background-color: #D4EFC8;
-}
-.avatar-option.payment_required.not_paid div::before {
-  content: attr(data-cost);
-  font-size: 10px;
-  float: right;
-}
-.avatar-option.payment_required.not_paid:hover div::before {
-  color: black !important;
-  font-weight: bold;
-}
-.avatar-option.payment_required.paid div {
-  background-color: #C8D7EF;
-}
-.avatar-option.payment_required.paid div::before {
-  content: "✅";
-  font-size: 10px;
-  float: right;
-}
 
 .avatar-option:hover {
   border: 2px solid #00BB61;
@@ -218,6 +204,23 @@ button.avatar-option {
   border: 2px solid #150069 !important;
 }
 
+
+.avatar-option.payment_required.not_paid div::before {
+  content: attr(data-cost);
+  font-size: 10px;
+  float: right;
+}
+.avatar-option.payment_required.paid div::before {
+  content: "✅";
+  font-size: 10px;
+  float: right;
+}
+.avatar-option.payment_required.not_paid:hover div::before {
+  color: black !important;
+  font-weight: bold;
+}
+
+
 @media (min-width: 500px) {
 
   #avatar-builder {
@@ -252,3 +255,5 @@ button.avatar-option {
     text-align: left;
   }
 }
+
+
