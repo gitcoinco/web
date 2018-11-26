@@ -20,6 +20,7 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/grants/fund.css" %}">
   </head>
   <body class="interior {{ active }} grant">
     {% include 'shared/tag_manager_2.html' %}
@@ -35,7 +36,17 @@
         </div>
       </div>
     </div>
-    <img src="{% static "v2/images/bitmap.png" %}" width="100%" />
+
+    <div class="alpha-warning font-caption">
+      <div>
+        {% trans "WARNING: Gitcoin Grants is in" %}
+        <span class="font-weight-bold">ALPHA</span>
+        {% trans "release." %}
+      </div>
+      <div>
+        {% trans "It has had inital audits done on it's smart contract and we are in the process of testing it holistically. Please, use caution and do not send high amounts of value." %}
+      </div>
+    </div>
 
     <div class="row">
       <div id="robot_error" class="hidden my-5">
@@ -43,78 +54,46 @@
       </div>
     </div>
 
-    <div id="grants_form">
-      <h2 class="my-5 text-center">
-        <div class="mb-2 font-title-lg">
-          {% trans "Cancel contribution for" %}
-          <a href="{{ grant.reference_url }}" target="_blank">
-            {{ grant.title }}
+    <div class="row" id="grants_form">
+
+      <div class="col-12 text-center mt-md-3">
+        <h2 class="font-title-lg my-4">{% trans "Cancel Contribution" %}</h2>
+      </div>
+
+      {% include 'grants/banner.html' %}
+
+      <div class="col-12 offset-md-2 col-md-10 offset-lg-3 col-lg-5 mt-5 font-subheader mx-0 mx-md-auto row">
+
+        <div class="col-12 summary font-body my-4">
+          <p class="mb-2 font-weight-semibold">Summary</p>
+          <p>
+            <i class="fas fa-circle mr-2"></i>
+            {% trans "Your contribution will be cancelled from" %}
+            <span class="font-weight-semibold">{{ now|date:"M d, Y" }}</span>
+          </p>
+        </div>
+
+        <div class="col-12 my-4">
+          <form method="POST" id="js-cancelSubscription">
+            {% csrf_token %}
+            <button class="button button--primary button--warning button--full">{% trans "Cancel Contribution" %}
+            </button>
+            <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
+            <input type="hidden" id="admin_address" name="admin_address" value="{{ grant.admin_address }}">
+            <input type="hidden" id="token_address" name="token_address" value="{{ subscription.token_address }}">
+            <input type="hidden" id="amount_per_period" name="amount_per_period" value="{{ subscription.amount_per_period }}">
+            <input type="hidden" id="real_period_seconds" name="real_period_seconds" value="{{ subscription.real_period_seconds }}">
+            <input type="hidden" id="signature" name="signature" value="{{ subscription.contributor_signature }}">
+            <input type="hidden" id="gas_price" name="gas_price" value="{{ subscription.gas_price }}">
+          </form>
+        </div>
+
+        <div class="col-12 mt-3 mb-5 text-center grant-link font-body">
+          <a href="{% url 'grants:details' grant.id grant.slug %}">
+            {% trans "No I do not want to cancel my contribution" %}
           </a>
-          {% trans "Grant" %}
         </div>
-      </h2>
 
-      <div class="container">
-        <div class="row mb-4">
-          <div class="col-6">
-            <div class="grant__progress mt-4 cancel">
-              <div class="progress">
-                <div class="progress-bar" style="width:{{ grant.percent_completed }}%"></div>
-              </div>
-
-              <div class="progress-text mt-2">
-                <div class="row">
-                  <div class="col-6">
-                    <span>{{ grant.amount_received }} ETH</span>
-                    <p>Current</p>
-                  </div>
-                  <div class="col-6 text-right">
-                    <span>{{ grant.amount_goal }} ETH</span>
-                    <p>Goal</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="row dates">
-              <div class="col-6">
-                {% trans "Start date:" %} {{ subscription.created_on|date:"M d, Y" }}
-              </div>
-              <div class="col-6 text-right">
-                {% trans "Effective date of cancel:" %} {{ now|date:"M d, Y" }}
-              </div>
-            </div>
-
-            <div class="row mt-4">
-              <div class="col-6">
-                <a href="{% url 'grants:details' grant.id grant.slug %}">
-                  <button class="button button--cancel button--full">{% trans "Cancel" %}
-                  </button>
-                </a>
-              </div>
-              <div class="col-6">
-                <form method="POST" id="js-cancelSubscription">
-                  {% csrf_token %}
-                  <button class="button button--primary button--full">{% trans "Cancel Contribution" %}
-                  </button>
-                  <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
-                  <input type="hidden" id="admin_address" name="admin_address" value="{{ grant.admin_address }}">
-                  <input type="hidden" id="token_address" name="token_address" value="{{ subscription.token_address }}">
-                  <input type="hidden" id="amount_per_period" name="amount_per_period" value="{{ subscription.amount_per_period }}">
-                  <input type="hidden" id="real_period_seconds" name="real_period_seconds" value="{{ subscription.real_period_seconds }}">
-                  <input type="hidden" id="signature" name="signature" value="{{ subscription.contributor_signature }}">
-                  <input type="hidden" id="gas_price" name="gas_price" value="{{ subscription.gas_price }}">
-                </form>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-6">
-            <p>
-            {{ grant.description }}
-            </p>
-          </div>
-        </div>
       </div>
     </div>
 
