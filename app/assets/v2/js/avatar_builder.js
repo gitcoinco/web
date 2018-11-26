@@ -189,6 +189,7 @@ function purchaseOption(option, value, target) {
     _alert('You will now be prompted via Metamask to purchase this avatar item.', 'info');
     var ele = $('#' + target.id.replace("'", '').replace("'", ''));
     var cost = null;
+
     if (ele.data('cost')) {
       cost = ele.data('cost');
     } else {
