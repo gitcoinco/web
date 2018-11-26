@@ -1,7 +1,8 @@
 let openSection;
 const layers = [
+  'Wallpaper',
   'HatLong', 'HairLong', 'EarringBack', 'Clothing',
-  'Ears', 'Head', 'HairShort', 'Earring', 'Beard', 'HatShort',
+  'Ears', 'Head', 'Makeup', 'HairShort', 'Earring', 'Beard', 'HatShort',
   'Mustache', 'Mouth', 'Nose', 'Eyes', 'Glasses', 'Masks', 'Extras'
 ];
 const requiredLayers = [ 'Clothing', 'Ears', 'Head', 'Mouth', 'Nose', 'Eyes', 'Background' ];
@@ -200,10 +201,12 @@ function setOption(option, value, target) {
 
   switch (option) {
     case 'Head':
+    case 'Makeup':
     case 'Eyes':
     case 'Nose':
     case 'Ears':
     case 'Mouth':
+    case 'Wallpaper':
     case 'Clothing':
       localStorage[option + 'Id'] = $(target).attr('id');
       changeImage(option, deselectingFlag && $(target).children().data('path'));

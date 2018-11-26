@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load static humanize i18n %}
+{% load static humanize i18n grants_extra %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -30,146 +30,179 @@
       {% include 'grants/nav.html' %}
     </div>
 
-    <div class="grant-banner">
-      <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% static 'v2/images/bitmap.png' %}{% endif %}" width="100%" />
-    </div>
-
     <div class="grant__header py-5">
       <div class="container">
         <div class="row">
-          <div class="col-12 col-md-6 col-lg-5">
-            {% if is_admin %}
-              <div class="mb-4">
-                <button id="edit-details" class="button btn-gc-blue button__small">
-                  <i class="fas fa-edit mr-2"></i> Edit Info
-                </button>
-                <button id="save-details" class="button button--primary button__small hidden">
-                  <i class="fas fa-save mr-2"></i> Save Info
-                </button>
-                <button id="cancel-details" class="button button--primary button--warning button__small hidden">
-                  <i class="fas fa-times mr-2"></i> Cancel
-                </button>
-              </div>
-            {% endif %}
-            <div class="grant__specs">
-              <h1 class="grant__title font-title-lg">
-                <input type="text" id="form--input__title" class="p-0 inline-edit" value="{{ grant.title }}" name="edit-title" readonly>
-              </h1>
-              <p class="grant__url font-subheader mb-4">
-                {% if is_admin %}
-                  <div>
-                    <input type="text" id="form--input__reference-url" class="p-0 mt-2 inline-edit" value="{{ grant.reference_url }}" readonly>
+          <div class="grant-banner col-12 col-lg-6 pr-lg-5 p-0 mb-5 my-md-auto">
+            <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
+          </div>
+          <div class="col-12 col-lg-6">
+            <div class="row">
+              <div class="col-12">
+                <div class="grant__specs">
+                  <h1 class="grant__title font-title-lg {% if is_admin %} mt-4 {% endif %}">
+                    {% if is_admin %}
+                      <textarea id="form--input__title" class="p-0 m-0 inline-edit" disabled>{{ grant.title }}</textarea>
+                    {% else %}
+                      <span>{{ grant.title }}</span>
+                    {% endif %}
+                  </h1>
+                  <span class="grant__url font-subheader {% if not is_admin %}my-4{% endif %}">
+                    {% if is_admin %}
+                      <div>
+                        <textarea id="form--input__reference-url" class="p-0 m-0 inline-edit" disabled>{{ grant.reference_url }}</textarea>
+                      </div>
+                    {% else %}
+                      <a href="{{ grant.reference_url }}" target="_blank">
+                        <i class="fas fa-link mr-2"></i>
+                        {{ grant.reference_url }}
+                      </a>
+                    {% endif %}
+                  </span>
+                  <div class="grant-item__owner my-2">
+                    {% if is_admin %}
+                      <div class="font-body">
+                        <p class="font-caption sub-title mb-0">Grant Owner</p>
+                        <div class="form__select2">
+                          <select id="grant-admin" class="form__input" name="grant-admin" disabled>
+                            <option selected="selected">{{ grant.admin_profile.handle|default:'anonymous' }}</option>
+                          </select>
+                        </div>
+                      </div>
+                    {% else %}
+                      <div class="grant-item__owner-image mr-2">
+                        <img src="{{ grant.admin_profile.avatar_url }}">
+                      </div>
+                      <div class="grant-item__owner-handle font-body">{% trans 'by' %}
+                        <a class="grant-item__owner-handle" href="{% url 'profile' grant.admin_profile.handle %}">
+                          <span id="grant-profile">{{ grant.admin_profile.handle|default:'anonymous' }}</span>
+                        </a>
+                      </div>
+                    {% endif %}
                   </div>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="grant__progress mt-4">
+                  <div class="progress">
+                    <div class="progress-bar" style="width:{{ grant.percent_completed }}%"></div>
+                  </div>
+                  <div class="progress-text mt-2">
+                    <div class="row">
+                      <div class="col-6">
+                        <span>{{ grant.amount_received|floatformat:2|intcomma }} DAI</span>
+                        <p>Current</p>
+                      </div>
+                      <div class="col-6 text-right">
+                        <span>{{ grant.amount_goal|floatformat:2|intcomma }} DAI</span>
+                        <p>Monthly Goal</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% if grant_is_inactive %}
+                  <h4 class="my-4" >{% trans "This grant has ended. You can find all active grants" %}
+                    <a href="{% url 'grants:grants' %}">
+                      {% trans "here." %}
+                    </a>
+                  </h4>
+                {% elif is_admin %}
+                  <form method="POST" id="js-cancel_grant" class="d-inline">
+                    {% csrf_token %}
+                    <button class="button button--primary button--warning" id="cancel_grant">{% trans "Cancel this Grant" %}
+                    </button>
+                    <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
+                  </form>
+                {% elif user_subscription %}
+                  <a href="{% url 'grants:subscription_cancel' grant.id grant.slug user_subscription.id %}">
+                    <button class="button button--primary button--warning button--full">{% trans "Cancel Your Funding" %}</button>
+                  </a>
                 {% else %}
-                  <a href="{{ grant.reference_url }}" target="_blank">
-                    <i class="fas fa-link mr-1"></i>
-                    {{ grant.reference_url }}
+                  {% if grant.token_symbol %}
+                    <h5 class="font-body token_symbol">
+                      {{ grant.admin_profile.handle }} {% trans 'is accepting contributions in '%}{{ grant.token_symbol }}
+                    </h5>
+                  {% endif %}
+                  <a href="{% url 'grants:fund' grant.id grant.slug %}">
+                    <button class="button button--primary button--full">{% trans "Fund this Grant" %}</button>
                   </a>
                 {% endif %}
-              </p>
-              <div class="grant-item__owner mb-4">
                 {% if is_admin %}
-                  <div class="font-body">
-                    <div class="form__select2">
-                      <select id="grant-admin" class="form__input" name="grant-admin" disabled>
-                        <option selected="selected">{{ grant.admin_profile.handle|default:'anonymous' }}</option>
-                      </select>
-                    </div>
-                  </div>
-                {% else %}
-                  <div class="grant-item__owner-image mr-2">
-                    <img src="{{ grant.admin_profile.avatar_url }}">
-                  </div>
-                  <div class="grant-item__owner-handle font-body">{% trans 'by' %}
-                    <a class="grant-item__owner-handle" href="{% url 'profile' grant.admin_profile.handle %}">
-                      <span id="grant-profile">{{ grant.admin_profile.handle|default:'anonymous' }}</span>
-                    </a>
+                  <div class="mb-4 d-inline-block">
+                    <button id="edit-details" class="button btn-gc-blue">
+                      <i class="fas fa-edit mr-2"></i> Edit Info
+                    </button>
+                    <button id="save-details" class="button btn-gc-blue hidden">
+                      <i class="fas fa-save mr-2"></i> Save Info
+                    </button>
+                    <button id="cancel-details" class="button button--primary hidden">
+                      <i class="fas fa-times mr-2"></i> Cancel Edit
+                    </button>
                   </div>
                 {% endif %}
-              </div>
-              <p class="grant__description font-subheader">
-                <textarea id="form--input__description" class="p-0 mt-2 inline-edit" disabled>{{ grant.description }}</textarea>
-              </p>
-              <div class="grant-item__member">
-                {% if is_admin %}
-                  <div class="font-body">
-                    <div class="form__select2">
-                      <select id="grant-members" class="form__input" name="grant-members" name="members" multiple="multiple" disabled>
-                        {% for team_member in grant.team_members.all %}
-                          <option selected="selected">{{ team_member }}</option>
-                        {% endfor %}
-                      </select>
-                    </div>
-                  </div>
-                {% else %}
-                  {% if grant.team_members %}
-                    <p class="font-body font-weight-bold">Team Members</p>
-                    <div class="grant-item__members">
-                      {% for team_member in grant.team_members.all %}
-                        <div class="font-caption grant-item__member mr-4">
-                          <div class="grant-item__member-image mr-2">
-                            <img src="{{ team_member.avatar_url }}">
-                          </div>
-                          <div class="grant-item__member-handle mt-1">
-                            <a class="grant-item__member-handle" href="{% url 'profile' team_member %}">
-                              <span id="grant-profile">{{ team_member }}</span>
-                            </a>
-                          </div>
-                        </div>
-                      {% endfor %}
-                    </div>
-                  {% endif %}
+                {% if user_subscription %}
+                  <h5 class="font-body mt-2 font-weight-semibold">
+                    {% trans 'You have agreed to contribute' %} {{ user_subscription.amount_per_period|floatformat:2|intcomma }} {{ user_subscription.token_symbol }} every {{ user_subscription.frequency }} {{ user_subscription.frequency_unit }}
+                  </h5>
                 {% endif %}
               </div>
             </div>
           </div>
-        <div class="col-12 col-md-6 offset-lg-2 col-lg-5">
+        </div>
+      </div>
+    </div>
 
-          {% if grant_is_inactive %}
-            <h4>{% trans "This grant has ended. You can find all active grants" %}
-              <a href="{% url 'grants:grants' %}">
-                {% trans "here." %}
-              </a>
-            </h4>
-          {% elif is_admin %}
-          <form method="POST" id="js-cancel_grant">
-            {% csrf_token %}
-            <button class="button button--primary button--full" id="cancel_grant" type="submit">{% trans "Cancel this Grant" %}
-            </button>
-            <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
-          </form>
-          {% elif subscription %}
-              <a href="{% url 'grants:subscription_cancel' grant.id subscription.id %}">
-                <button class="button button--primary button--full">{% trans "Cancel Your Funding" %}</button>
-              </a>
-          {% else %}
-            <a href="{% url 'grants:fund' grant.id %}">
-              <button class="button button--primary button--full">{% trans "Fund this Grant" %}</button>
-            </a>
-          {% endif %}
-          <div class="grant__progress mt-4">
-            <div class="progress">
-              <div class="progress-bar" style="width:{{ grant.percent_completed }}%"></div>
-            </div>
-
-            <div class="progress-text mt-2">
-              <div class="row">
-                <div class="col-6">
-                  <span>{{ grant.amount_received }} ETH</span>
-                  <p>Current</p>
-                </div>
-                <div class="col-6 text-right">
-                  <span>{{ grant.amount_goal }} ETH</span>
-                  <p>Goal</p>
+    <div class="container py-5">
+      <div class="row">
+        <div class="col-12 col-md-6 pl-lg-0">
+          <p class="font-body sub-title">{% trans "Description" %}</p>
+          <p class="grant__description font-subheader pr-lg-4 mb-5">
+            {% if is_admin %}
+              <textarea id="form--input__description" class="p-0 mt-2 inline-edit" disabled>{{ grant.description }}</textarea>
+            {% else %}
+              <span>
+                {{ grant.description }}
+              </span>
+            {% endif %}
+          </p>
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="grant-item__member mb-4">
+            {% if is_admin %}
+              <div class="font-body">
+                <p class="font-body sub-title">{% trans "Team Members" %}</p>
+                <div class="form__select2">
+                  <select id="grant-members" class="form__input" name="grant-members" name="members" multiple="multiple" disabled>
+                    {% for team_member in grant.team_members.all %}
+                      <option selected="selected">{{ team_member }}</option>
+                    {% endfor %}
+                  </select>
                 </div>
               </div>
-            </div>
+            {% else %}
+              {% if grant.team_members %}
+                <p class="font-body sub-title">{% trans "Team Members" %} ({{ grant.team_members.all|length }})</p>
+                <div class="grant-item__members font-body">
+                  {% for team_member in grant.team_members.all %}
+                    <div class="grant-item__member mr-4">
+                      <div class="grant-item__member-image mr-2">
+                        <img src="{{ team_member.avatar_url }}">
+                      </div>
+                      <div class="grant-item__member-handle mt-1">
+                        <a class="grant-item__member-handle" href="{% url 'profile' team_member %}">
+                          <span id="grant-profile">{{ team_member }}</span>
+                        </a>
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            {% endif %}
           </div>
-
           <div class="font-body">
-            <p class="font-weight-bold">{% trans "Supported by" %}</p>
+            <p class="sub-title">{% trans "Supported By" %} ({{ subscriptions|length }})</p>
             <div class="grant__stakeholders-list">
-              {% for subscriber in grant.subscriptions.all %}
+              {% for subscriber in subscriptions %}
                 <a class="grant__stakeholders-item mr-2" href="{% url 'profile' subscriber.contributor_profile.handle %}">
                   <img src="{{ subscriber.contributor_profile.avatar_url }}" />
                 </a>
@@ -181,17 +214,16 @@
             </div>
           </div>
         </div>
-        </div>
       </div>
     </div>
 
-    <div class="update-milestone">
+    <div class="update-milestone pt-4">
       <div class="container mt-4">
         <div class="row">
-          <div class="col-12 order-md-2 col-md-4">
+          <div class="col-12 order-md-2 col-md-6">
             <p>
               {% trans "Milestones" %}
-              {% if is_admin %}<a href="{% url 'grants:milestones' grant.id %}" class="milestones-edit">{% trans "Edit Milestones" %}</a>{% endif %}
+              {% if is_admin %}<a href="{% url 'grants:milestones' grant.id grant.slug %}" class="milestones-edit">{% trans "Edit Milestones" %}</a>{% endif %}
             </p>
             <div class="milestones-container">
                 {% if milestones %}
@@ -200,11 +232,9 @@
                     <li>
                       <div class="milestone-title">{{ milestone.title }}</div>
                       <div class="milestone-date">
-                        {{ milestone.due_date }} -
+                        <p>{% trans 'Due Date - ' %}{{ milestone.due_date }}</p>
                         {% if milestone.completion_date %}
-                          {{ milestone.completion_date }}
-                        {% else %}
-                          {% trans "Present" %}
+                          <p>{% trans 'Date Completed - ' %}{{ milestone.completion_date }}</p>
                         {% endif %}
                       </div>
                       <p class="milestone-description">{{ milestone.description }}</p>
@@ -217,15 +247,14 @@
             </div>
           </div>
 
-          <div class="col-12 order-md-1 col-md-8">
+          <div class="col-12 order-md-1 col-md-6 p-md-0">
             <div id="tabs">
               <ul>
-                <li><a href="#all-updates">{% trans "Updates" %}</a></li>
-                <li><a href="#github">{% trans "GitHub" %}</a></li>
+                <li><a href="#all-updates" class="pt-md-0">{% trans "Updates" %}</a></li>
               </ul>
-              <div id="all-updates">
+              <div id="all-updates" class="p-0">
                 {% if is_admin %}
-                  <div class="my-4 py-2 px-3">
+                  <div class="my-4 py-2 pr-3">
                     <form method="POST" id="js-postUpdate">
                       {% csrf_token %}
                       <div class="form__group-horizontal mb-4">
@@ -244,7 +273,7 @@
                     </form>
                   </div>
                 {% endif %}
-                <ul>
+                <ul class="pl-0">
                   {% for item in activity %}
                     <li>
                       <div class="article-title font-title">{{ item.title }}</div>
@@ -253,19 +282,6 @@
                     </li>
                   {% empty %}
                     {% trans "No updates yet!" %}
-                  {% endfor %}
-                </ul>
-              </div>
-              <div id="github">
-                <ul>
-                  {% for item in gh_activity %}
-                    <li>
-                      <div class="article-title font-title">{{ item.title }}</div>
-                      <div class="article-date font-body mb-2">{{ item.date }}</div>
-                      <p class="article-description font-subheader">{{ item.description }}</p>
-                    </li>
-                  {% empty %}
-                    {% trans "No Github activity yet!" %}
                   {% endfor %}
                 </ul>
               </div>

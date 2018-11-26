@@ -33,7 +33,10 @@ from django.utils.translation import gettext_lazy as _
 
 from grants.forms import MilestoneForm
 from grants.models import Grant, Milestone, Subscription
-from marketing.mails import new_grant, new_supporter, support_cancellation, thank_you_for_supporting
+from marketing.mails import (
+    grant_cancellation, new_grant, new_supporter, subscription_terminated, support_cancellation,
+    thank_you_for_supporting,
+)
 from marketing.models import Keyword
 from web3 import HTTPProvider, Web3
 
@@ -57,31 +60,32 @@ def grants(request):
     if request.method == 'POST':
         sort = request.POST.get('sort_option', '-created_on')
         keyword = request.POST.get('search_grants', '')
-        _grants = Grant.objects.filter(
-            Q(description__icontains=keyword) |
-            Q(title__icontains=keyword) |
-            Q(reference_url__icontains=keyword),
-            active=True
-        ).order_by(sort)
-
+        _grants = Grant.objects.active().keyword(keyword).order_by(sort)
 
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
 
-    params = {'active': 'grants_landing', 'title': _('Grants Explorer'), 'grants': grants, 'keywords': get_keywords(), }
+    params = {
+        'active': 'grants_landing',
+        'title': _('Grants Explorer'),
+        'grants': grants,
+        'grants_count': _grants.count(),
+        'keywords': get_keywords(),
+    }
     return TemplateResponse(request, 'grants/index.html', params)
 
 
-def grant_details(request, grant_id):
+def grant_details(request, grant_id, grant_slug):
     """Display the Grant details page."""
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
 
     print(request.method)
 
     try:
-        grant = Grant.objects.prefetch_related('subscriptions', 'milestones').get(pk=grant_id)
+        grant = Grant.objects.prefetch_related('subscriptions', 'milestones').get(pk=grant_id, slug=grant_slug)
         milestones = grant.milestones.order_by('due_date')
-        active_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
+        subscriptions = grant.subscriptions.filter(active=True)
+        user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
     except Grant.DoesNotExist:
         raise Http404
 
@@ -90,82 +94,65 @@ def grant_details(request, grant_id):
         if 'contract_address' in request.POST:
             grant.active = False
             grant.save()
+            grant_cancellation(grant, user_subscription)
+            for sub in subscriptions:
+                subscription_terminated(grant, sub)
         elif 'input-title' in request.POST:
             pass
         elif 'edit-title' in request.POST:
             pass
 
     # TODO: Determine how we want to chunk out articles and where we want to store this data.
-    activity_data = [
-        {
-            'title': 'allow funder to turn off auto approvals during bounty creation',
-            'date': '08.02.2018',
-            'description':
-                'Vestibulum ante ipsum primis in faucibus orci luctus ultrices '
-                'posuere cubilia Curae; Proin vel ante.',
-        },
-        {
-            'title': 'Beyond The Naked Eye',
-            'date': '2012 - Present',
-            'description':
-                'What is the loop of Creation? How is there something from nothing? '
-                'In spite of the fact that it is impossible to prove that anything exists beyond '
-                'one’s perception since any such proof would involve one’s perception (I observed it, '
-                'I heard it, I thought about it, I calculated it, and etc.), science deals with a '
-                'so-called objective reality “out there,” beyond one’s perception professing to '
-                'describe Nature objectively (as if there was a Nature or reality external '
-                'to one’s perception). The shocking impact of Matrix was precisely the valid '
-                'possibility that what we believed to be reality was but our perception; however, '
-                'this was presented through showing a real reality wherein the perceived reality was a '
-                'computer simulation. Many who toy with the idea that perhaps, indeed, we are computer '
-                'simulations, deviate towards questions, such as, who could create such software and what '
-                'kind of hardware would be needed for such a feat. Although such questions assume that reality '
-                'is our perception, they also axiomatically presuppose the existence of an objective '
-                'deterministic world “out there” that nevertheless must be responsible for how we perceive '
-                'our reality. This is a major mistake emphasizing technology and algorithms instead of trying '
-                'to discover the nature of reality and the structure of creation. As will be shown in the following, '
-                'the required paradigm shift from “perception is our reality fixed within an objective world,” '
-                'to “perception is reality without the need of an objective world ‘out there,” '
-                'is provided by a dynamic logical structure. The Holophanic loop logic is responsible '
-                'for a consistent and complete worldview that not only describes, but also creates whatever '
-                'can be perceived or experienced.'
-        }, {
-            'title': 'Awesome Update',
-            'date': '08.02.2018',
-            'description': 'Some awesome update about this project.',
-        },
-        {
-            'title': 'Stellar Update',
-            'date': '08.02.2018',
-            'description': 'Another stellar update about this project.',
-        }
-    ]
-
-    gh_data = [{
-        'title': 'Initial commit by flapjacks',
+    activity_data = [{
+        'title': 'allow funder to turn off auto approvals during bounty creation',
         'date': '08.02.2018',
-        'description': 'Initial commit with some blah blah blah...',
-    },
-               {
-                   'title': 'Fix the build by derp-nation',
-                   'date': '08.02.2018',
-                   'description': 'Initial commit with some blah blah blah...',
-               },
-               {
-                   'title': 'A subpar commit by derp-diggity',
-                   'date': '08.02.2018',
-                   'description': 'Initial commit with some blah blah blah...',
-               }]
+        'description':
+            'Vestibulum ante ipsum primis in faucibus orci luctus ultrices '
+            'posuere cubilia Curae; Proin vel ante.',
+    }, {
+        'title': 'Beyond The Naked Eye',
+        'date': '2012 - Present',
+        'description':
+            'What is the loop of Creation? How is there something from nothing? '
+            'In spite of the fact that it is impossible to prove that anything exists beyond '
+            'one’s perception since any such proof would involve one’s perception (I observed it, '
+            'I heard it, I thought about it, I calculated it, and etc.), science deals with a '
+            'so-called objective reality “out there,” beyond one’s perception professing to '
+            'describe Nature objectively (as if there was a Nature or reality external '
+            'to one’s perception). The shocking impact of Matrix was precisely the valid '
+            'possibility that what we believed to be reality was but our perception; however, '
+            'this was presented through showing a real reality wherein the perceived reality was a '
+            'computer simulation. Many who toy with the idea that perhaps, indeed, we are computer '
+            'simulations, deviate towards questions, such as, who could create such software and what '
+            'kind of hardware would be needed for such a feat. Although such questions assume that reality '
+            'is our perception, they also axiomatically presuppose the existence of an objective '
+            'deterministic world “out there” that nevertheless must be responsible for how we perceive '
+            'our reality. This is a major mistake emphasizing technology and algorithms instead of trying '
+            'to discover the nature of reality and the structure of creation. As will be shown in the following, '
+            'the required paradigm shift from “perception is our reality fixed within an objective world,” '
+            'to “perception is reality without the need of an objective world ‘out there,” '
+            'is provided by a dynamic logical structure. The Holophanic loop logic is responsible '
+            'for a consistent and complete worldview that not only describes, but also creates whatever '
+            'can be perceived or experienced.'
+    }, {
+        'title': 'Awesome Update',
+        'date': '08.02.2018',
+        'description': 'Some awesome update about this project.',
+    }, {
+        'title': 'Stellar Update',
+        'date': '08.02.2018',
+        'description': 'Another stellar update about this project.',
+    }]
 
     params = {
         'active': 'grant_details',
         'title': _('Grant Details'),
         'grant': grant,
-        'subscription': active_subscription,
+        'subscriptions': subscriptions,
+        'user_subscription': user_subscription,
         'is_admin': (grant.admin_profile.id == profile.id) if profile and grant.admin_profile else False,
         'grant_is_inactive': not grant.active,
         'activity': activity_data,
-        'gh_activity': gh_data,
         'milestones': milestones,
         'keywords': get_keywords(),
     }
@@ -181,15 +168,16 @@ def grant_new(request):
         logo = request.FILES.get('input_image', None)
         receipt = json.loads(request.POST.get('receipt', '{}'))
         team_members = request.POST.getlist('team_members[]')
+        print('team_members: ', team_members, dir(team_members))
 
         grant_kwargs = {
-            'title': request.POST.get('input_name', ''),
+            'title': request.POST.get('input_title', ''),
             'description': request.POST.get('description', ''),
             'reference_url': request.POST.get('reference_url', ''),
             'admin_address': request.POST.get('admin_address', ''),
-            'frequency': request.POST.get('frequency', 2592000),
             'token_address': request.POST.get('denomination', ''),
-            'amount_goal': request.POST.get('amount_goal', 0),
+            'token_symbol': request.POST.get('token_symbol', ''),
+            'amount_goal': request.POST.get('amount_goal', 1),
             'transaction_hash': request.POST.get('transaction_hash', ''),
             'contract_address': request.POST.get('contract_address', ''),
             'network': request.POST.get('network', 'mainnet'),
@@ -200,23 +188,30 @@ def grant_new(request):
         grant = Grant.objects.create(**grant_kwargs)
         new_grant(grant, profile)
 
-        if team_members:
-            grant.team_members.add(*list(map(int, team_members)))
+        team_members.append(profile.id)
+        grant.team_members.add(*list(filter(lambda member_id: member_id > 0, map(int, team_members))))
 
-        return redirect(reverse('grants:details', args=(grant.pk, )))
 
-    params = {'active': 'new_grant', 'title': _('New Grant'), 'grant': {}, 'keywords': get_keywords(), }
+        return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
+
+    params = {
+        'active': 'new_grant',
+        'title': _('New Grant'),
+        'profile': profile,
+        'grant': {},
+        'keywords': get_keywords()
+    }
 
     return TemplateResponse(request, 'grants/new.html', params)
 
 
 @login_required
-def milestones(request, grant_id):
+def milestones(request, grant_id, grant_slug):
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
-    grant = Grant.objects.get(pk=grant_id)
+    grant = Grant.objects.prefetch_related('milestones').get(pk=grant_id, slug=grant_slug)
 
     if profile != grant.admin_profile:
-        return redirect(reverse('grants:details', args=(grant.pk, )))
+        return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
     if request.method == "POST":
         method = request.POST.get('method')
@@ -235,13 +230,13 @@ def milestones(request, grant_id):
 
         if method == "DELETE":
             milestone_id = request.POST.get('milestone_id')
-            milestone = Milestone.objects.get(pk=milestone_id)
+            milestone = grant.milestones.get(pk=milestone_id)
             milestone.delete()
 
-        return redirect(reverse('grants:milestones', args=(grant.pk, )))
+        return redirect(reverse('grants:milestones', args=(grant.pk, grant.slug)))
 
     form = MilestoneForm()
-    milestones = Milestone.objects.filter(grant_id=grant_id).order_by('due_date')
+    milestones = grant.milestones.order_by('due_date')
 
     params = {
         'active': 'grant_milestones',
@@ -255,10 +250,10 @@ def milestones(request, grant_id):
 
 
 @login_required
-def grant_fund(request, grant_id):
+def grant_fund(request, grant_id,  grant_slug):
     """Handle grant funding."""
     try:
-        grant = Grant.objects.get(pk=grant_id)
+        grant = Grant.objects.get(pk=grant_id, slug=grant_slug)
     except Grant.DoesNotExist:
         raise Http404
 
@@ -271,21 +266,25 @@ def grant_fund(request, grant_id):
         subscription.contributor_signature = request.POST.get('signature', '')
         subscription.contributor_address = request.POST.get('contributor_address', '')
         subscription.amount_per_period = request.POST.get('amount_per_period', 0)
-        subscription.period_seconds = request.POST.get('frequency', 2592000)
+        subscription.real_period_seconds = request.POST.get('real_period_seconds', 2592000)
+        subscription.frequency = request.POST.get('frequency', 30)
+        subscription.frequency_unit = request.POST.get('frequency_unit', 'days')
         subscription.token_address = request.POST.get('denomination', '')
+        subscription.token_symbol = request.POST.get('token_symbol', '')
         subscription.gas_price = request.POST.get('gas_price', 0)
         subscription.network = request.POST.get('network', '')
         subscription.contributor_profile = profile
         subscription.grant = grant
         subscription.save()
         new_supporter(grant, subscription)
-        thank_you_for_supporting(grant, subscription, profile)
-        return redirect(reverse('grants:details', args=(grant.pk, )))
+        thank_you_for_supporting(grant, subscription)
+        return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
     params = {
         'active': 'fund_grant',
         'title': _('Fund Grant'),
         'subscription': {},
+        'grant_has_no_token': True if grant.token_address == '0x0000000000000000000000000000000000000000' else False,
         'grant': grant,
         'keywords': get_keywords(),
     }
@@ -293,18 +292,18 @@ def grant_fund(request, grant_id):
 
 
 @login_required
-def subscription_cancel(request, grant_id, subscription_id):
+def subscription_cancel(request, grant_id, grant_slug, subscription_id):
     """Handle the cancellation of a grant subscription."""
     subscription = Subscription.objects.select_related('grant').get(pk=subscription_id)
     grant = getattr(subscription, 'grant', None)
     now = datetime.datetime.now()
     profile = request.user.profile if request.user.is_authenticated else None
 
-    if request.method == 'POST':
+    if request.method == 'POST' and profile == subscription.contributor_profile:
         subscription.active = False
         subscription.save()
-        support_cancellation(grant, subscription, profile)
-        return redirect(reverse('grants:details', args=(grant.pk, )))
+        support_cancellation(grant, subscription)
+        return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
     params = {
         'active': 'cancel_grant',
@@ -333,28 +332,25 @@ def profile(request):
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
 
-    history = [
-        {
-            'date': '16 Mar',
-            'value_true': 1.0,
-            'token_name': 'ETH',
-            'frequency': 'days',
-            'value_in_usdt_now': 80,
-            'title': 'Lorem ipsum dolor sit amet',
-            'link': 'https://etherscan.io/txs?a=0xcf267ea3f1ebae3c29fea0a3253f94f3122c2199&f=3',
-            'avatar_url': 'https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg'
-        },
-        {
-            'date': '24 April',
-            'value_true': 90,
-            'token_name': 'DAI',
-            'frequency': 'months',
-            'value_in_usdt_now': 90,
-            'title': 'Lorem ipsum dolor sit amet',
-            'link': 'https://etherscan.io/txs?a=0xcf267ea3f1ebae3c29fea0a3253f94f3122c2199&f=3',
-            'avatar_url': 'https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg'
-        }
-    ]
+    history = [{
+        'date': '16 Mar',
+        'value_true': 1.0,
+        'token_name': 'ETH',
+        'frequency': 'days',
+        'value_in_usdt_now': 80,
+        'title': 'Lorem ipsum dolor sit amet',
+        'link': 'https://etherscan.io/txs?a=0xcf267ea3f1ebae3c29fea0a3253f94f3122c2199&f=3',
+        'avatar_url': 'https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg'
+    }, {
+        'date': '24 April',
+        'value_true': 90,
+        'token_name': 'DAI',
+        'frequency': 'months',
+        'value_in_usdt_now': 90,
+        'title': 'Lorem ipsum dolor sit amet',
+        'link': 'https://etherscan.io/txs?a=0xcf267ea3f1ebae3c29fea0a3253f94f3122c2199&f=3',
+        'avatar_url': 'https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg'
+    }]
 
     params = {
         'active': 'profile',

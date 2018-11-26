@@ -31,6 +31,33 @@
   color: #fff;
 }
 
+.tag.warning {
+  background-color: #7E1518;
+  color: #fff;
+}
+
+.tag.warning:hover {
+  background-color: #D3696C;
+}
+
+.tag.success {
+  background-color: #216A12;
+  color: #fff;
+}
+
+.tag.success:hover {
+  background-color: #68B159;
+}
+
+.tag.in-progress {
+  background-color: #162955;
+  color: #fff;
+}
+
+.tag.in-progress:hover {
+  background-color: #4F628E;
+}
+
 .tag.token {
   background-color: #e7f0fa;
   color: var(--gc-blue);
@@ -49,4 +76,17 @@
   height: 0;
   line-height: 1.5rem;
   float: right;
+}
+
+.keyword-group {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tag.keyword {
+  display: inline-block;
+  min-width: 0;
+  font-size: 11px;
+  background-color: #E7F0FA;
+  color: #6587AE;
 }

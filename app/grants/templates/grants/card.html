@@ -14,15 +14,15 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static humanize i18n %}
+{% load i18n static humanize grants_extra %}
 <div class="grant-item">
-  <a href="{% url 'grants:details' grant.id %}">
+  <a href="{% url 'grants:details' grant.id grant.slug %}">
     <div class="grant-item__img">
-      <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% static 'v2/images/bitmap.png' %}{% endif %}">
+      <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
     </div>
     <div class="grant-item__content py-4 px-3">
-      <h2 class="grant-item__title font-subheader"><a href="{% url 'grants:details' grant.id %}">{{ grant.title|truncatechars:60 }}</a></h2>
-      <p class="grant-item__pitch font-caption">{{ grant.description|truncatechars:190 }}</p>
+      <h2 class="grant-item__title font-subheader"><a href="{% url 'grants:details' grant.id grant.slug %}">{{ grant.title|truncatechars:60 }}</a></h2>
+      <p class="grant-item__pitch font-caption">{{ grant.description|truncatechars:145 }}</p>
       <div class="grant-item__footer">
         <div class="grant-item__owner mt-3 mb-4">
           <div class="grant-item__owner-image mr-2">
@@ -42,11 +42,11 @@
         </div>
         <div class="grant-item__funding mt-2">
           <div class="grant-item__funding-item">
-            <div class="grant-item__funding-number font-body">{{ grant.amount_received|floatformat:2|intcomma }} ETH</div>
+            <div class="grant-item__funding-number font-body">{{ grant.amount_received|floatformat:2|intcomma }} DAI</div>
             <div class="grant-item__funding-label font-caption">{% trans 'Current' %}</div>
           </div>
           <div class="grant-item__funding-item">
-            <div class="grant-item__funding-number font-body">{{ grant.amount_goal|floatformat:2|intcomma }} ETH</div>
+            <div class="grant-item__funding-number font-body">{{ grant.amount_goal|floatformat:2|intcomma }} DAI</div>
             <div class="grant-item__funding-label font-caption">{% trans 'Goal' %}</div>
           </div>
         </div>

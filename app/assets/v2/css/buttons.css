@@ -187,3 +187,10 @@ button:focus {
 .btn > svg:first-child {
   margin-right: .5rem;
 }
+
+#metamask_connect {
+  background: none;
+  color: white;
+  border: 2px solid white;
+  border-radius: 4px;
+}

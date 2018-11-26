@@ -6,6 +6,13 @@ $(document).ready(function() {
     window.location = document.location.origin + '/grants/quickstart';
   }
 
+  web3.eth.getAccounts(function(err, accounts) {
+    $('#input-admin_address').val(accounts[0]);
+  });
+
+
+  $('#js-token').append("<option value='0x0000000000000000000000000000000000000000'>Any Token");
+
   userSearch('.team_members');
 
   $('#img-project').on('change', function() {
@@ -38,33 +45,10 @@ $(document).ready(function() {
         data[this.name] = this.value;
       });
 
-      let requiredPeriodSeconds = 0;
-
-      if (data.frequency) {
-        // translate timeAmount&timeType to requiredPeriodSeconds
-        let periodSeconds = data.frequency;
-
-        if (data.frequency_unit == 'minutes') {
-          periodSeconds *= 60;
-        } else if (data.frequency_unit == 'hours') {
-          periodSeconds *= 3600;
-        } else if (data.frequency_unit == 'days') {
-          periodSeconds *= 86400;
-        } else if (data.frequency_unit == 'months') {
-          periodSeconds *= 2592000;
-        }
-        if (periodSeconds) {
-          requiredPeriodSeconds = periodSeconds;
-          data.frequency = requiredPeriodSeconds;
-        }
-      }
+      $('#token_symbol').val($('#js-token option:selected').text());
 
       // Begin New Deploy Subscription Contract
       let SubscriptionContract = new web3.eth.Contract(compiledSubscription.abi);
-
-      console.log('SubscriptionContract', SubscriptionContract);
-
-      let realTokenAmount = Number(data.required_amount * 10 ** 18);
 
       // These args are baseline requirements for the contract set by the sender. Will set most to zero to abstract complexity from user.
       let args = [
@@ -73,9 +57,9 @@ $(document).ready(function() {
         // required token
         data.denomination,
         // required tokenAmount
-        web3.utils.toTwosComplement(realTokenAmount),
+        web3.utils.toTwosComplement(0),
         // data.frequency
-        web3.utils.toTwosComplement(requiredPeriodSeconds),
+        web3.utils.toTwosComplement(0),
         // data.gas_price
         web3.utils.toTwosComplement(0)
       ];
@@ -144,6 +128,7 @@ $(document).ready(function() {
     );
   });
 
+
   waitforWeb3(function() {
     tokens(document.web3network).forEach(function(ele) {
       let option = document.createElement('option');
@@ -157,6 +142,11 @@ $(document).ready(function() {
       }));
     });
     $('#js-token').select2();
+
+    $("#js-token option[value='0x0000000000000000000000000000000000000000']").remove();
+
+    $('#js-token').append("<option value='0x0000000000000000000000000000000000000000' selected='selected'>Any Token");
+
   });
 
   $('.select2-selection__rendered').removeAttr('title');

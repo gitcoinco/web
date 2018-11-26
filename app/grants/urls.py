@@ -26,11 +26,11 @@ from grants.views import (
 app_name = 'grants'
 urlpatterns = [
     path('', grants, name='grants'),
-    path('<int:grant_id>', grant_details, name='details'),
+    path('<int:grant_id>/<slug:grant_slug>', grant_details, name='details'),
     re_path(r'^new', grant_new, name='new'),
-    path('<int:grant_id>/milestones', milestones, name='milestones'),
-    path('<int:grant_id>/fund', grant_fund, name='fund'),
-    path('<int:grant_id>/subscription/<int:subscription_id>/cancel', subscription_cancel, name='subscription_cancel'),
+    path('<int:grant_id>/<slug:grant_slug>/milestones', milestones, name='milestones'),
+    path('<int:grant_id>/<slug:grant_slug>/fund', grant_fund, name='fund'),
+    path('<int:grant_id>/<slug:grant_slug>/subscription/<int:subscription_id>/cancel', subscription_cancel, name='subscription_cancel'),
     re_path(r'^profile', profile, name='profile'),
     re_path(r'^quickstart', quickstart, name='quickstart')
 ]

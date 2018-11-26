@@ -115,6 +115,50 @@ def render_support_cancellation_email(grant, subscription):
     return response_html, response_txt, subject
 
 
+def render_grant_cancellation_email(grant, subscription):
+    params = {
+        'grant': grant,
+        'subscription': subscription
+    }
+    response_html = premailer_transform(render_to_string("emails/grants/grant_cancellation.html", params))
+    response_txt = render_to_string("emails/grants/grant_cancellation.txt", params)
+    subject = "Your Grant on Gitcoin Grants has been cancelled"
+
+    return response_html, response_txt, subject
+
+
+def render_subscription_terminated_email(grant, subscription):
+    params = {
+        'grant': grant,
+        'subscription': subscription
+    }
+    response_html = premailer_transform(render_to_string("emails/grants/subscription_terminated.html", params))
+    response_txt = render_to_string("emails/grants/subscription_terminated.txt", params)
+    subject = "Your subscription on Gitcoin Grants has been cancelled by the Grant Creator"
+
+    return response_html, response_txt, subject
+
+
+@staff_member_required
+def subscription_terminated(request):
+    # giving specific pk because I am sure this grant has at least one subscription
+    grant = Grant.objects.get(pk=14)
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+
+    response_html, response_txt, _ = render_subscription_terminated_email(grant, subscription)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def grant_cancellation(request):
+    # giving specific pk because I am sure this grant has at least one subscription
+    grant = Grant.objects.get(pk=14)
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+
+    response_html, response_txt, _ = render_grant_cancellation_email(grant, subscription)
+    return HttpResponse(response_html)
+
+
 @staff_member_required
 def support_cancellation(request):
     # giving specific pk because I am sure this grant has at least one subscription
@@ -658,20 +702,40 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Introducing Kudos at Devcon IV"
-
+    subject = "Introducing Gitcoin Labs | Join The Gitcoin Discourse"
+    new_kudos_pks = [486, 485, 484]
+    new_kudos_size_px = 150
     intro = '''
-
 <p>
 Hi there from Devcon IV in Prague,
 </p>
 <p>
-BIG NEWS TODAY - We are excited to <a href="https://medium.com/gitcoin/introducing-kudos-10077a4f2def">introduce Kudos</a>!
-Kudos are a <a href="https://en.wikipedia.org/wiki/Non-fungible_token">non-fungible token</a> that can be sent to another gitcoin user to show appreciation or build a relationship. We're launching with <a href="https://gitcoin.co/kudos/marketplace/">over 100 Kudos today</a>, and hope to have more over time.
+We're excited to introduce <a href="https://medium.com/gitcoin/announcing-gitcoin-labs-ba400522d697">Gitcoin Labs</a>, our new R&D arm focused on blockchain UX, open source sustainability,
+and a variety of open research topics in Web 3. Gitcoin Labs is led by <a href="https://twitter.com/austingriffith">Austin Griffith</a>, who is best known in the Web 3 ecosystem for his
+work on meta transactions, burner wallets, and universal logins alongside Alex Van De Sande. Have interesting research problems? Let us know!
+<BR>
+<BR>
+<a href='https://medium.com/gitcoin/announcing-gitcoin-labs-ba400522d697'>
+<img style='max-width: 300px;' src="https://cdn-images-1.medium.com/max/800/1*dZRwgrgBIV9Dd4gsjYbssQ.png"'>
+</a>
+<BR>
+<BR>
 </p>
 <p>
-Our relationships with our co-workers are one of the most important outcomes of our work. We are proud to introduce a feature
-which allows us to celebrate those relationships..  What better way to celebrate the launch of kudos, than to give Kudos to the launch team!
+In order to foster longer form conversation around meta transactions, UX, we've launched a <a href="https://discourse.gitcoin.co/">Gitcoin Discourse</a>. Come join us for initial conversations around
+<a href="https://discourse.gitcoin.co/t/open-source-sustainability-via-liberal-radicalism/22/3">Liberal Radicalism by Vitalik Buterin & Glen Weyl</a> and start your own conversations for topics of interest
+for Web 3 UX research or open source sustainability. We're excited to see you there!
+</p>
+<p>
+Who’s making the most impact on your OSS or Web3 project? Do you know someone that solved a problem in a creative way,
+built something interesting, or truly deserves a thanks? <a href='https://github.com/gitcoinco/web/issues/2816'>Nominate open source contributors to receive a limited edition and unique Kudos!</a>
+</p>
+<h3>New Kudos This Week</h3>
+<p>
+Check out a few of the new kudos launched this week:
+</p>
+<p>
+''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
 </p>
 
 <ul>
@@ -700,52 +764,54 @@ which allows us to celebrate those relationships..  What better way to celebrate
 <h3>What else is new?</h3>
     <ul>
         <li>
-        We're at Devcon IV this week introducing Kudos, shilling EIP-1337 (Subscriptions), and talking bounties.
-        Give us a shout if you're here!
+            Gitcoin now supports EIP--1102 (Metamask Privacy Mode).  To use Gitcoin in privacy mode, <a href="https://medium.com/metamask/introducing-privacy-mode-42549d4870fa">checkout this post</a>.
         </li>
         <li>
-        The Gitcoin Livestream will be on as regularly scheduled this Friday. <a href="https://gitcoin.co/livestream">Join us Friday at 5PM ET</a>!
+            No Gitcoin Livestream this week due to Thanksgiving in the USA. We'll be back <a href="https://gitcoin.co/livestream">next Friday at 5PM ET</a>!
         </li>
     </ul>
 </p>
 <p>
-Back to BUIDLing,
+Thanks for reading! Back to BUIDLing,
 </p>
 '''
     highlights = [{
-        'who': 'cryptomental',
+        'who': 'evgeniuz',
         'who_link': True,
-        'what': 'Working on Slither with Trail of Bits!',
-        'link': 'https://gitcoin.co/issue/trailofbits/slither/30/1596',
+        'what': 'Added Python Support to blockchain-etl',
+        'link': 'https://gitcoin.co/issue/blockchain-etl/ethereum-etl/123/1723',
         'link_copy': 'View more',
     }, {
-        'who': 'markx3',
+        'who': 'dryajov',
         'who_link': True,
-        'what': 'Doing work on #DeFi with Decentralized Derivatives!',
-        'link': 'https://gitcoin.co/issue/DecentralizedDerivatives/DRCT_standard_DApp/219/1554',
+        'what': 'Implemented Kitsunet PoC for MetaMask!',
+        'link': 'https://gitcoin.co/issue/MetaMask/kitsunet-js/11/1775',
         'link_copy': 'View more',
     }, {
-        'who': 'svenski123',
+        'who': 'frederikbolding',
         'who_link': True,
-        'what': 'Working with POA Network to solve a Linux bug.',
-        'link': 'https://gitcoin.co/issue/poanetwork/blockscout/942/1542',
+        'what': 'Worked on Status-React',
+        'link': 'https://gitcoin.co/issue/status-im/status-react/6353/1742',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/blockchain-etl/ethereum-kubernetes/issues/1',
-        'primer': 'Have Kubernetes experience? Put it to use with on ethereum-kubernetes.',
+        'url': 'https://github.com/status-im/status-react/issues/6789',
+        'primer': 'Allow ENS names to be used for Ethereum events',
     }, {
-        'url': 'https://github.com/trailofbits/manticore/issues/1204',
-        'primer': 'Work with Trail of Bits on Manticore.',
+        'url': 'https://github.com/web3j/web3j/issues/769',
+        'primer': 'Prepare Web3j for an Android release.',
     }, {
-        'url': 'https://github.com/mikeymicrophone/commissulator/issues/6',
-        'primer': 'Work on a project with Mikey Microphone, a Gitcoin OG.'
+        'url': 'https://github.com/ethereum/py-evm/issues/1472',
+        'primer': 'Add integration tests to py-evm',
     }, ]
 
     highlight_kudos_ids = []  # Represent IDs/PKs of KudosTransfers; Optional.  We will pull the latest ones if not.
 
     num_leadboard_items = 5
+    highlight_kudos_ids = []
+    num_kudos_to_show = 10
+
     #### don't need to edit anything below this line
     leaderboard = {
         'quarterly_payers': {
@@ -761,6 +827,13 @@ Back to BUIDLing,
             'items': [],
         },
     }
+
+    from kudos.models import KudosTransfer
+    if highlight_kudos_ids:
+        kudos_highlights = KudosTransfer.objects.filter(id__in=highlight_kudos_ids)
+    else:
+        kudos_highlights = KudosTransfer.objects.exclude(txid='').order_by('-created_on')[:num_kudos_to_show]
+
     for key, __ in leaderboard.items():
         leaderboard[key]['items'] = LeaderboardRank.objects.active() \
             .filter(leaderboard=key).order_by('rank')[0:num_leadboard_items]

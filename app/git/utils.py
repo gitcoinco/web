@@ -29,7 +29,7 @@ from django.utils import timezone
 import dateutil.parser
 import requests
 from github import Github
-from github.GithubException import BadCredentialsException, UnknownObjectException
+from github.GithubException import BadCredentialsException, GithubException, UnknownObjectException
 from requests.exceptions import ConnectionError
 from rest_framework.reverse import reverse
 
@@ -759,4 +759,7 @@ def issue_number(issue_url):
 def get_current_ratelimit(token=None):
     """Get the current Github API ratelimit for the provided token."""
     gh_client = github_connect(token)
-    return gh_client.get_rate_limit()
+    try:
+        return gh_client.get_rate_limit()
+    except GithubException:
+        return {}

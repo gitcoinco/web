@@ -100,3 +100,22 @@ ul.milestones-list .button {
 ul.milestones-list .button:hover {
   color: #fff;
 }
+
+input[type="date"]:before {
+  content: attr(placeholder) !important;
+  color: #aaa;
+  margin-right: 0.5em;
+}
+
+input[type="date"]:focus:before,
+input[type="date"]:valid:before {
+  content: "";
+}
+
+#completed_label {
+  display: flex;
+}
+
+#due_label {
+  margin: 0px;
+}

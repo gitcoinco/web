@@ -47,7 +47,7 @@
                             {{podium_item.at_ify_username}}
                           {% endif %}
                         </h5>
-                        <h2 style="color:#86eec4" > ${{podium_item.amount|floatformat:2}} </h2>
+                        <h2 style="color:#86eec4" > ${{podium_item.amount|floatformat:0}} </h2>
                       </div>
                     </div>
                   </div>
@@ -134,7 +134,6 @@
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
-  <script src="{% static "v2/js/shared.js" %}"></script>
   <script src="{% static "v2/js/pages/leaderboard.js" %}"></script>
 
 </html>

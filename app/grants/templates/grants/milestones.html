@@ -21,7 +21,7 @@
             <h1 class="font-title-xl">{% trans "Create Milestones for " %}{{ grant.title }}</h1>
           </div>
           <div class="milestones-input">
-            <form action="{% url 'grants:milestones' grant.id %}" method="POST">
+            <form action="{% url 'grants:milestones' grant.id grant.slug %}" method="POST">
               {% csrf_token %}
               <input type="hidden" name="method" value="POST">
               <div class="form__group-horizontal">
@@ -37,7 +37,7 @@
                 </div>
               </div>
               <div class="form__footer">
-                <a class="mt-2" href="{% url 'grants:details' grant.id %}">{% trans "Back to Grant" %}</a>
+                <a class="mt-2" href="{% url 'grants:details' grant.id grant.slug %}">{% trans "Back to Grant" %}</a>
                 <button class="btn btn-gc-blue">{% trans "Create Milestone" %}</button>
               </div>
             </form>
@@ -49,15 +49,15 @@
                   <li>
                     <div class="milestone-title">{{ milestone.title }}</div>
                     <div class="milestone-date">
-                      {{ milestone.due_date }} - 
+                      <p id="due_label">{% trans 'Due Date - ' %}{{ milestone.due_date }}</p>
                       {% if milestone.completion_date %}
-                        {{ milestone.completion_date }}
+                        {% trans 'Date Completed - ' %}{{ milestone.completion_date }}
                       {% else %}
-                        <form method="POST" action="{% url 'grants:milestones' grant.id %}">
+                        <form method="POST" action="{% url 'grants:milestones' grant.id grant.slug %}">
                           {% csrf_token %}
                           <input type="hidden" name="method" value="">
                           <input type="hidden" name="milestone_id" value="{{milestone.id}}">
-                          <input type="date" placeholder="Date" name="completion_date" required />
+                          <p id="completed_label">{% trans 'Date Completed - ' %}<input type="date" name="completion_date" id="completion_date" required/></p>
                           <a data-form-method="DELETE" class="button button--warning">{% trans "Delete" %}</a>
                           <a data-form-method="PUT" class="button button--primary">{% trans "Complete" %}</a>
                         </form>

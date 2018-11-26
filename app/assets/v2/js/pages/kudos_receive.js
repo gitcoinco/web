@@ -13,7 +13,7 @@ var sign_and_send = function(rawTx, success_callback, private_key) {
 
   var private_key_buffer = new EthJS.Buffer.Buffer.from(private_key, 'hex');
   // console.log(private_key_buffer)
-  
+
   tx.sign(private_key_buffer);
   var serializedTx = tx.serialize();
 
@@ -43,8 +43,13 @@ window.onload = function() {
   });
   waitforWeb3(function() {
     if (document.web3network != document.network) {
-      _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
-    } else {
+      if (document.web3network == 'locked') {
+        _alert({ message: gettext('Please authorize Metamask in order to continue.')}, 'info');
+        approve_metamask();
+      } else {
+        _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
+      }
+    } else if (!$('#forwarding_address').val()) {
       $('#forwarding_address').val(web3.eth.coinbase);
     }
     $('#network').val(document.web3network);
@@ -82,6 +87,10 @@ $(document).ready(function() {
       unloading_button($(this));
       return;
     }
+    if (!confirm(gettext('Please confirm that ' + forwarding_address + ' is the address for which you wish to redeem this tip.'))) {
+      unloading_button($(this));
+      return;
+    }
 
     loading_button($(this));
 
@@ -104,7 +113,7 @@ $(document).ready(function() {
     var token_address = document.kudos_transfer['token_address'];
     var kudos_contract = web3.eth.contract(kudos_abi).at(kudos_address());
     var holding_address = document.kudos_transfer['holding_address'];
-    
+
 
     web3.eth.getTransactionCount(holding_address, function(error, result) {
       var nonce = result;
@@ -152,7 +161,7 @@ $(document).ready(function() {
 
         console.log('params for kudos clone:');
         console.log(params);
- 
+
         kudos_contract.clone.estimateGas(forwarding_address, tokenId, numClones, {from: holding_address, value: kudosPriceInWei}, function(error, gasLimit) {
           console.log(gasLimit);
 

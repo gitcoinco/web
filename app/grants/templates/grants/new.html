@@ -33,7 +33,19 @@
           {% include 'shared/no_metamask_error.html' %}
           {% include 'shared/zero_balance_error.html' %}
           {% include 'shared/unlock_metamask.html' %}
+          {% include 'shared/connect_metamask.html' %}
         </div>
+      </div>
+    </div>
+
+    <div class="alpha-warning font-caption mb-0">
+      <div>
+        {% trans "WARNING: Gitcoin Grants is in" %}
+        <span class="font-weight-bold">ALPHA</span>
+        {% trans "release." %}
+      </div>
+      <div>
+          {% trans "It has had inital audits done on it's smart contract and we are in the process of testing it holistically. Please, use caution and do not send high amounts of value." %}
       </div>
     </div>
 
@@ -49,17 +61,6 @@
             <input id="quoteRefresh" class="button button--primary" name="refresh" type='submit' onclick='javascript:waitingRoomEntertainment()' value="Refresh Quote" >
           </div>
         </div>
-      </div>
-    </div>
-
-    <div class="alpha-warning font-caption">
-      <div>
-        {% trans "WARNING: Gitcoin Grants is in" %}
-        <span class="font-weight-bold">ALPHA</span>
-        {% trans "release." %}
-      </div>
-      <div>
-          {% trans "It has had inital audits done on it's smart contract and we are in the process of testing it holistically. Please, use caution and do not send high amounts of value." %}
       </div>
     </div>
 
@@ -80,8 +81,8 @@
           <form method="POST" id="create-grant" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form__group-horizontal">
-              <label class="form__label form__label-lg" for="input_name">{% trans "Name of Project" %}</label>
-              <input class="form__input form__input-lg " type="text" id="input_name" name="input_name" required />
+              <label class="form__label form__label-lg" for="input_title">{% trans "Title of Project" %}</label>
+              <input class="form__input form__input-lg " type="text" id="input_title" name="input_title" required />
             </div>
 
             <div class="form__group-horizontal">
@@ -105,29 +106,11 @@
             <div class="form__group-horizontal">
               <div class="row">
                 <div class="col-12 col-md-6">
-                  <label class="form__label form__label-lg">{% trans "Total amount sought for grant in ETH" %}</label>
-                  <input type="number" name="amount_goal" class="form__input form__input-lg " required />
+                  <label class="form__label form__label-lg">{% trans "Monthly amount sought in DAI" %}</label>
+                  <input type="number" name="amount_goal" class="form__input form__input-lg" min="1" required />
                 </div>
                 <div class="col-12 col-md-6">
-                  <label class="form__label form__label-lg">{% trans "Monthly amount sought in ETH" %}</label>
-                  <input type="number" name="monthly_goal" class="form__input form__input-lg " required />
-                </div>
-              </div>
-            </div>
-
-            <div class="form__group-horizontal">
-              <div class="row">
-                <div class="col-12">
-                  <label class="form__label form__label-lg">{% trans "Required subscription amount in ETH" %}</label>
-                  <input type="number" name="required_amount" class="form__input form__input-lg " value="0" required />
-                </div>
-              </div>
-            </div>
-
-            <div class="form__group-horizontal">
-              <label class="form__label form__label-lg">{% trans "Required Token For Subscription" %}</label>
-              <div class="row">
-                <div class="col-12">
+                  <label class="form__label form__label-lg">{% trans "Required Token For Subscription" %}</label>
                   <div class="form__select2">
                     <select class='js-select2' name='denomination' id='js-token'></select>
                   </div>
@@ -136,23 +119,8 @@
             </div>
 
             <div class="form__group-horizontal">
-              <label class="form__label form__label-lg" for="input-admin_address">{% trans "Admin Wallet Address" %}</label>
-              <input type="text" class="form__input form__input-lg " id="input-adminAddress" placeholder="{% trans 'Enter the address you would live funds sent to' %}" name="admin_address" required/>
-            </div>
-
-            <div class="form__group-horizontal frequency">
-              <label class="form__label form__label-lg">{% trans "Frequency of payments" %}</label>
-              <div class="row">
-                <div class="col-8">
-                  <input type="number" id="frequency_count" name="frequency" class="form__input form__input-lg " placeholder="{% trans 'Your required frequency - 0 for any' %}" required />
-                </div>
-                <div class="col-4 font-body">
-                  <select name="frequency_unit" id="frequency_unit" style="width: 100%">
-                    <option value="days">{% trans "days" %}</option>
-                    <option value="months" selected="selected">{% trans "months" %}</option>
-                  </select>
-                </div>
-              </div>
+              <label class="form__label form__label-lg" for="input-admin_address">{% trans "Recipient Wallet Address" %}</label>
+              <input type="text" class="form__input form__input-lg " id="input-admin_address" value="" name="admin_address" required/>
             </div>
 
             <div class="form__group-horizontal">
@@ -165,7 +133,7 @@
             </div>
 
             <div class="form__footer text-center">
-              <button class="btn btn-gc-blue">{% trans "Create Grant" %}</button>
+              <button class="button button--primary button--full" id="new_button">{% trans "Create Grant" %}</button>
             </div>
 
             <div>
@@ -173,6 +141,7 @@
               <input type="hidden" class="form__input form__input-lg " id="contract_address" name="contract_address" />
               <input type="hidden" class="form__input form__input-lg " id="network" name="network" />
               <input type="hidden" id="receipt" name="receipt" value="{}">
+              <input type="hidden" id="token_symbol" name="token_symbol" value="">
             </div>
           </form>
         </div>

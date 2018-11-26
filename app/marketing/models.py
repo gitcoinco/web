@@ -51,15 +51,15 @@ class EmailSubscriber(SuperModel):
     active = models.BooleanField(default=True)
     newsletter = models.BooleanField(default=True)
     preferences = JSONField(default=dict)
-    metadata = JSONField(default=dict)
+    metadata = JSONField(default=dict, blank=True)
     priv = models.CharField(max_length=30, default='')
-    github = models.CharField(max_length=255, default='')
+    github = models.CharField(max_length=255, default='', blank=True)
     keywords = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     profile = models.ForeignKey(
         'dashboard.Profile',
         on_delete=models.CASCADE,
         related_name='email_subscriptions',
-        null=True)
+        null=True, blank=True)
     form_submission_records = JSONField(default=list, blank=True)
 
     def __str__(self):
@@ -213,7 +213,7 @@ class LeaderboardRank(SuperModel):
         if not self.is_user_based:
             return f"@{self.github_username}"
         if 'kudos/' in self.github_username:
-            pk = self.github_username.split('/')[2]
+            pk = self.github_username.split('/')[4]
             from kudos.models import Token
             return Token.objects.get(pk=pk).humanized_name
         return self.github_username
@@ -221,7 +221,7 @@ class LeaderboardRank(SuperModel):
     @property
     def avatar_url(self):
         if 'kudos/' in self.github_username:
-            pk = self.github_username.split('/')[2]
+            pk = self.github_username.split('/')[4]
             from kudos.models import Token
             return Token.objects.get(pk=pk).img_url
         if self.profile and self.profile.avatar:
@@ -238,7 +238,7 @@ class LeaderboardRank(SuperModel):
     def url(self):
         from django.urls import reverse
         if 'kudos/' in self.github_username:
-            pk = self.github_username.split('/')[2]
+            pk = self.github_username.split('/')[4]
             from kudos.models import Token
             return Token.objects.get(pk=pk).url
         return reverse('profile', args=[self.github_username])

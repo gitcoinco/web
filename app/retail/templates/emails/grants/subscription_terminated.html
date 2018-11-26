@@ -132,17 +132,17 @@
 
 </style>
 <img id="newSupporter" src="{% static "v2/images/subscription-terminated.png" %}" alt="{% trans "Subscription Terminated." %}" title="{% trans "Subscription Terminated." %}">
-<h1 style="text-transform: none;">{% trans "Grant" %} '{{ grant.title }}' {% trans "has been cancelled." %}.</h1>
+<h1 style="text-transform: none;">{% trans "Grant" %} '{{ grant.title }}' {% trans "has been cancelled by its creator." %}</h1>
 <p>{% trans "Your subscription for the project has been cancelled and you will no longer be charged." %}</p>
 <br>
 
 <hr>
 <div class="grantInfo">
-  <a href="{% url 'grants:details' grant.id %}">
+  <a href="{% url 'grants:details' grant.id grant.slug %}">
     <img src="{{ grant.logo.url }}" style="width:50px; height: 50px;"/>
   </a>
   <br>
-  <a class="grantInfoName" href="{% url 'grants:details' grant.id %}">{{ grant.title }}</a>
+  <a class="grantInfoName" href="{% url 'grants:details' grant.id grant.slug %}">{{ grant.title }}</a>
   <p>{{ grant.description }}</p>
   <div class="progress">
     <!-- #TODO - Revisit which object to use to pull grant status. -->

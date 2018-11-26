@@ -73,6 +73,10 @@
   font-weight: 500;
 }
 
+.grant__description textarea {
+  background: white;
+}
+
 input.editable,
 textarea.editable {
   margin-top: 6px;
@@ -87,11 +91,9 @@ textarea.editable {
 }
 
 #form--input__description,
-#form--input__reference-url {
+#form--input__reference-url,
+#form--input__title {
   width: 100%;
-}
-
-#form--input__description {
   text-align: justify;
   resize: none;
 }
@@ -100,6 +102,10 @@ textarea.editable {
 .grant__description,
 .article-description {
   color: #43484D;
+}
+
+.grant__description span {
+  text-align: justify;
 }
 
 .article-description {
@@ -130,7 +136,27 @@ textarea.editable {
   flex-wrap: wrap;
 }
 
-.grant__stakeholders-list img {
+.grant__header button {
+  font-weight: 500;
+}
+
+.sub-title {
+  font-weight: 600;
+}
+
+.grant-banner img {
+  height: auto;
+  width: 100%;
+}
+
+.grant-banner {
+  overflow : hidden;
+  max-height: 22rem;
+}
+
+.grant__stakeholders-list img,
+.grant-item__members img,
+.grant-item__owner-image img {
   border-radius: 50%;
   width: 50px;
   height: 50px;
@@ -146,10 +172,33 @@ textarea.editable {
 
 .update-milestone {
   background-color: white;
+  border-top: 1px solid #D8D8D8;
 }
 
-#js-postUpdate {
-  max-width: 40rem;
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+    visibility: visible;
 }
 
 @keyframes rotation {

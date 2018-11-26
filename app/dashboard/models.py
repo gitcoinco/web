@@ -480,6 +480,18 @@ class Bounty(SuperModel):
         """
         return handle.lower().lstrip('@') == self.bounty_owner_github_username.lower().lstrip('@')
 
+    def has_started_work(self, handle, pending=False):
+        """Determine whether or not the profile has started work
+
+        Args:
+            handle (str): The profile handle to be compared.
+
+        Returns:
+            bool: Whether or not the user has started work.
+
+        """
+        return self.interested.filter(pending=pending, profile__handle__iexact=handle).exists()
+
     @property
     def absolute_url(self):
         return self.get_absolute_url()
@@ -1061,7 +1073,7 @@ class SendCryptoAsset(SuperModel):
     emails = JSONField(blank=True)
     url = models.CharField(max_length=255, default='', blank=True)
     tokenName = models.CharField(max_length=255, default='ETH')
-    tokenAddress = models.CharField(max_length=255)
+    tokenAddress = models.CharField(max_length=255, blank=True)
     amount = models.DecimalField(default=1, decimal_places=4, max_digits=50)
     comments_public = models.TextField(default='', blank=True)
     ip = models.CharField(max_length=50)
@@ -1465,7 +1477,7 @@ class Activity(models.Model):
         on_delete=models.CASCADE,
         blank=True, null=True
     )
-    created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True, blank=True, null=True, db_index=True)
     activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES, blank=True)
     metadata = JSONField(default=dict)
     needs_review = models.BooleanField(default=False)
@@ -1568,7 +1580,7 @@ class Profile(SuperModel):
 
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
     data = JSONField()
-    handle = models.CharField(max_length=255, db_index=True)
+    handle = models.CharField(max_length=255, db_index=True, unique=True)
     avatar = models.ForeignKey('avatar.Avatar', on_delete=models.SET_NULL, null=True, blank=True)
     last_sync_date = models.DateTimeField(null=True)
     email = models.CharField(max_length=255, blank=True, db_index=True)
@@ -2382,6 +2394,14 @@ class Profile(SuperModel):
         return False
 
 
+# enforce casing / formatting rules for profiles
+@receiver(pre_save, sender=Profile, dispatch_uid="psave_profile")
+def psave_profile(sender, instance, **kwargs):
+    instance.handle = instance.handle.replace(' ', '')
+    instance.handle = instance.handle.replace('@', '')
+    instance.handle = instance.handle.lower()
+
+
 @receiver(user_logged_in)
 def post_login(sender, request, user, **kwargs):
     """Handle actions to take on user login."""
@@ -2456,6 +2476,7 @@ class UserAction(SuperModel):
     ip_address = models.GenericIPAddressField(null=True)
     location_data = JSONField(default=dict)
     metadata = JSONField(default=dict)
+    utm = JSONField(default=dict, null=True)
 
     def __str__(self):
         return f"{self.action} by {self.profile} at {self.created_on}"
@@ -2622,3 +2643,16 @@ class TokenApproval(SuperModel):
     def coinbase_short(self):
         coinbase_short = f"{self.coinbase[0:5]}...{self.coinbase[-4:]}"
         return coinbase_short
+
+
+class SearchHistory(SuperModel):
+    """Define the structure of a Search History object."""
+
+    class Meta:
+        """Define metadata associated with SearchHistory."""
+
+        verbose_name_plural = 'Search History'
+
+    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
+    data = JSONField(default=dict)
+    ip_address = models.GenericIPAddressField(blank=True, null=True)

@@ -49,6 +49,7 @@ import retail.views
 import tdi.views
 from dashboard.router import router as dbrouter
 from external_bounties.router import router as ebrouter
+from grants.router import router as grant_router
 from kudos.router import router as kdrouter
 
 from .sitemaps import sitemaps
@@ -66,6 +67,7 @@ urlpatterns = [
     path('kudos/send/4/', kudos.views.send_4, name='kudos_send_4'),
     re_path(r'^lazy_load_kudos/$', dashboard.views.lazy_load_kudos, name='lazy_load_kudos'),
     re_path(r'^kudos/receive/v3/(?P<key>.*)/(?P<txid>.*)/(?P<network>.*)?', kudos.views.receive, name='kudos_receive'),
+    re_path(r'^kudos/redeem/(?P<secret>.*)/?$', kudos.views.receive_bulk, name='kudos_receive_bulk'),
     re_path(r'^kudos/search/$', kudos.views.search, name='kudos_search'),
     re_path(
         r'^kudos/(?P<address>\w*)/(?P<token_id>\d+)/(?P<name>\w*)',
@@ -83,7 +85,8 @@ urlpatterns = [
     url(r'^api/v0.1/', include(dbrouter.urls)),
     url(r'^api/v0.1/', include(ebrouter.urls)),
     url(r'^api/v0.1/', include(kdrouter.urls)),
-    url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active, but not cached in cluodfront
+    url(r'^api/v0.1/', include(grant_router.urls)),
+    url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active
     url(r'^api/v0.1/users_search/', dashboard.views.get_users, name='users_search'),
     url(r'^api/v0.1/kudos_search/', dashboard.views.get_kudos, name='kudos_search'),
     # Health check endpoint
@@ -190,6 +193,7 @@ urlpatterns = [
     url(r'^gas/calculator/?', dashboard.gas_views.gas_calculator, name='gas_calculator'),
     url(r'^gas/history/?', dashboard.gas_views.gas_history_view, name='gas_history_view'),
     url(r'^gas/guzzlers/?', dashboard.gas_views.gas_guzzler_view, name='gas_guzzler_view'),
+    url(r'^gas/heatmap/?', dashboard.gas_views.gas_heatmap, name='gas_heatmap'),
     url(r'^gas/?', dashboard.gas_views.gas, name='gas'),
 
     # images
@@ -239,8 +243,6 @@ urlpatterns = [
     re_path(r'^community/?', retail.views.community, name='community'),
     re_path(r'^slack/?', retail.views.slack, name='slack'),
     re_path(r'^submittoken/?', retail.views.newtoken, name='newtoken'),
-    re_path(r'^iosfeedback/?', retail.views.iosfeedback, name='iosfeedback'),
-    re_path(r'^ios/?', retail.views.ios, name='ios'),
     re_path(r'^itunes/?', retail.views.itunes, name='itunes'),
     re_path(r'^podcast/?', retail.views.podcast, name='podcast'),
     re_path(r'^casestudy/?', retail.views.casestudy, name='casestudy'),
@@ -278,6 +280,12 @@ urlpatterns = [
 
     # admin views
     re_path(r'^_administration/?', admin.site.urls, name='admin'),
+    path('_administration/email/grant_cancellation', retail.emails.grant_cancellation, name='admin_grant_cancellation'),
+    path(
+        '_administration/email/subscription_terminated',
+        retail.emails.subscription_terminated,
+        name='admin_subscription_terminated'
+    ),
     path('_administration/email/new_grant', retail.emails.new_grant, name='admin_new_grant'),
     path('_administration/email/new_supporter', retail.emails.new_supporter, name='admin_new_supporter'),
     path(

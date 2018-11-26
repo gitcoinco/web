@@ -23,12 +23,18 @@
 .grant-item__pitch {
   color: #9B9B9B;
   line-height: 18px;
-  height: 6rem;
+  height: 3.3rem;
+  overflow-y: hidden;
 }
 
 .grant-item__owner {
   align-items: center;
   display: flex;
+}
+
+.grant-item__img {
+  height: 11rem;
+  overflow: hidden;
 }
 
 .grant-item__img img {

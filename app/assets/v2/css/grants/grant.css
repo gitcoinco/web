@@ -1,6 +1,45 @@
+.button {
+  font-weight: 500;
+}
+
+#search_form button {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+#search_grants {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.token_symbol {
+  font-weight: 600;
+}
+
 .progress {
   background-color: #D8D8D8;
   border-radius: 2px;
+}
+
+.grant-tooltip {
+  text-align: left;
+  display: block;
+  font-size: 14px;
+  color: #0ECF7C;
+  font-weight: 600;
+  line-height: 1.5;
+  width: 300px;
+}
+
+.ui-tooltip {
+  padding: 0 !important;
+  border-radius: 0.25rem !important;
+}
+
+.grant-tooltip .tooltip-inner {
+  font-size: 12px;
+  padding: 1rem;
+  max-width: 100%;
 }
 
 .progress-bar {
@@ -21,11 +60,6 @@
   height: 7px;
 }
 
-.grant-banner {
-  max-height: 20rem;
-  overflow: hidden;
-}
-
 .grant-item__owner-handle {
   color: #9B9B9B;
   line-height: 18px;
@@ -40,7 +74,6 @@
 
 .progress-text p {
   font-size: 14px;
-  color: #BBBDBF;
 }
 
 /* Grants Contribution */
@@ -72,8 +105,17 @@
   color: #BBBDBF;
 }
 
-.grants-search {
+.grants_landing .grants-search,
+.grants_landing .grants-container {
   background-color: #F2F6F9;
+}
+
+.grant-item {
+  background-color: #fff;
+}
+
+.grants-hero.white a {
+  color: white;
 }
 
 /* Tabs */
@@ -134,13 +176,19 @@
 }
 
 @media (max-width: 767.98px) {
-
   .search {
-    margin-left: 1rem;
+    margin-left: 0rem;
+    margin-right: 0rem;
   }
 
   .order_by {
     margin-top: 1rem;
     padding: 0;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .search {
+    margin-left: 1rem;
   }
 }
