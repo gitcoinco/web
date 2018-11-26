@@ -28,48 +28,53 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <div class="container-fluid header dash">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'grants/nav.html' %}
-    </div>
 
-    <div class="container pt-5">
-      <div class="grants-hero">
-        <div class="row">
-          <div class="col-12 col-md-6 order-md-last mb-5 mb-md-0">
-            <div class="embed-responsive embed-responsive-16by9">
-              <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/Hx1iJ_K3D8k?rel=0&showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      <div class="container py-5">
+        <div class="grants-hero white">
+          <div class="row">
+            <div class="col-12 col-md-6 order-md-last mb-5 mb-md-0">
+              <div class="embed-responsive embed-responsive-16by9">
+                <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/Hx1iJ_K3D8k?rel=0&showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+              </div>
             </div>
-          </div>
-          <div class="m-auto col-12 col-md-6 offset-lg-1 col-lg-5">
-            <h1 class="font-title-xl">{% trans 'Gitcoin Grants' %}</h1>
-            <p class="mt-4 pt-1 mb-5 font-subheader">
-              {% blocktrans %}
-              Want to provide sustainable funding for Open Source? Creating a Gitcoin Grant is a great way to do it! Gitcoin Grants, powered by the
-              <a target="_blank" rel="noopener noreferrer" href="http://1337alliance.com/">EIP 1337 standard</a>
-              , are a fast, easy, & secure way to provide recurring token contributions to your favorite OSS maintainers. Show your appreciation for maintainers in your dependancy tree with a Gitcoin Grant today.
-              {% endblocktrans %}
-            </p>
-            <a class="button button--primary" href="{% url 'grants:new' %}">
-              {% trans 'Create a Grant' %}
-            </a>
+            <div class="m-auto col-12 col-md-6 offset-lg-1 col-lg-5">
+              <h1 class="font-title-xl">{% trans 'Provide sustainable funding for Open Source with Gitcoin Grants' %}</h1>
+              <p class="mt-4 pt-1 mb-5 font-subheader">
+                {% blocktrans %}
+                Gitcoin Grants, powered by the <a target="_blank" rel="noopener noreferrer" href="http://1337alliance.com/">EIP 1337 standard</a>
+                , are a fast, easy, & secure way to provide recurring token contributions to your favorite OSS maintainers. <br/><br/>
+                Show your appreciation for maintainers in your dependancy tree with a Gitcoin Grant today.
+                {% endblocktrans %}
+              </p>
+              <a class="btn btn-gc-blue" href="{% url 'grants:new' %}">
+                {% trans 'Create a Grant' %}
+              </a>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="container-fluid py-5 my-5 grants-search">
+    <div class="container-fluid py-5 grants-search">
       <div class="container">
         <form method="POST" id="search_form">
           {% csrf_token %}
           <div class="row">
-            <div class="search col-9 col-md-5 offset-md-1 col-lg-6 form__flex-group">
+            <div class="search px-0 col-7 col-sm-9 col-md-5 offset-md-2 col-lg-6 form__flex-group">
               <input type="search" class="form__input" id="search_grants" name="search_grants" placeholder="Search Grants">
             </div>
-            <div class="col-2 col-lg-1 px-0">
-              <button class="button button--primary">
-                <span class="d-sm-inline">{% trans 'Search' %}</span>
-                <i class="d-sm-none fas fa-search"></i>
+            <div class="col-3 col-lg-1 px-0">
+              <button class="btn btn-gc-blue">
+                <span class="d-sm-inline">{% trans "Search" %}</span>
+                <i class="ml-2 fas fa-search"></i>
               </button>
             </div>
-            <div class="col-12 col-md-4 col-lg-3 pt-1 font-caption order_by d-md-inline">
+          </div>
+          <div class="row mt-5">
+            <div class="col-12 col-md-6 pt-1 text-center text-sm-left pl-sm-0">
+              {{ grants_count }} {% trans "Grants available on" %} <b>mainnet</b>.
+            </div>
+            <div class="col-12 col-md-6 pt-1 font-caption order_by d-md-inline text-center text-sm-right">
               <div class="heading">{% trans "SORT" %}</div>
               <select name="sort_option" id="sort_option">
                 <option value="-created_on">{% trans "Created: Recent" %}</option>
@@ -84,14 +89,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     </div>
 
     {% if grants %}
-    <div class="container grants-container">
+    <div class="container-fluid grants-container">
+      <div class="container">
       {% for grant in grants %}
       {% if forloop.counter0|divisibleby:3 %} <div class="row"> {% endif %}
-      <div class="col-12 col-md-6 col-lg-4 mb-4">
-        {% include 'grants/card.html' %}
-      </div>
+        <div class="col-12 col-md-6 col-lg-4 mb-4">
+          {% include 'grants/card.html' %}
+        </div>
       {%  if forloop.counter|divisibleby:3 or forloop.last %} </div> {% endif %}
       {% endfor %}
+      </div>
     </div>
     {% endif %}
 
