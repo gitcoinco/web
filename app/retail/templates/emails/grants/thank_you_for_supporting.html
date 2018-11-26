@@ -114,7 +114,7 @@
 <hr>
 <div class="grantInfo">
   <a href="{% url 'grants:details' grant.id grant.slug %}">
-    <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3|add:1 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}" width="50" height="50" />
+    <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}" width="50" height="50" />
   </a>
   <br>
   <a class="grantInfoName" href="{% url 'grants:details' grant.id grant.slug %}">

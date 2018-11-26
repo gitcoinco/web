@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load static humanize i18n grants_extra %}
+{% load static humanize i18n %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -60,42 +60,7 @@
         <h2 class="font-title-lg my-4">{% trans "Cancel Contribution" %}</h2>
       </div>
 
-      <div class="col-12 grant-banner py-5 row mx-0">
-        <div class="col-12 offset-md-2 col-md-3 py-4 banner-img">
-          <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3|add:1 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
-        </div>
-        <div class="col-12 offset-sm-1 col-sm-10 col-md-4 ml-md-5 py-4 my-auto">
-          <h1 class="font-title-xl grant-title mb-3">
-            <a href="{{ grant.reference_url }}" target="_blank">{{ grant.title }}</a>
-          </h1>
-
-          <div class="admin_profile">
-            {% trans "by" %}
-            <a href="{% url 'profile' grant.admin_profile.handle %}">
-              {{ grant.admin_profile }}
-            </a>
-          </div>
-
-          <div class="grant__progress mt-4">
-            <div class="progress">
-              <div class="progress-bar" style="width:{{ grant.percent_completed }}%"></div>
-            </div>
-            <div class="progress-text mt-2">
-              <div class="row">
-                <div class="col-6">
-                  <span>{{ grant.amount_received|floatformat:2|intcomma }} DAI</span>
-                  <p>Current</p>
-                </div>
-                <div class="col-6 text-right">
-                  <span>{{ grant.amount_goal|floatformat:2|intcomma }} DAI</span>
-                  <p>Goal</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
+      {% include 'grants/banner.html' %}
 
       <div class="col-12 offset-md-2 col-md-10 offset-lg-3 col-lg-5 mt-5 font-subheader mx-0 mx-md-auto row">
 
