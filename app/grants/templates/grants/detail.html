@@ -112,6 +112,7 @@
                     <button class="button button--primary button--warning" id="cancel_grant">{% trans "Cancel this Grant" %}
                     </button>
                     <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
+                    <input type="hidden" id="contract_version" name="contract_version" value="{{ grant.contract_version }}">
                   </form>
                 {% elif user_subscription %}
                   <a href="{% url 'grants:subscription_cancel' grant.id grant.slug user_subscription.id %}">

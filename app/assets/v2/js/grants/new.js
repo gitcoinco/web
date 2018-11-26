@@ -61,6 +61,8 @@ $(document).ready(function() {
         // data.frequency
         web3.utils.toTwosComplement(0),
         // data.gas_price
+        web3.utils.toTwosComplement(0),
+        // contract version
         web3.utils.toTwosComplement(0)
       ];
 
