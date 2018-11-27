@@ -38,16 +38,7 @@
       </div>
     </div>
 
-    <div class="alpha-warning font-caption mb-0">
-      <div>
-        {% trans "WARNING: Gitcoin Grants is in" %}
-        <span class="font-weight-bold">ALPHA</span>
-        {% trans "release." %}
-      </div>
-      <div>
-          {% trans "It has had inital audits done on it's smart contract and we are in the process of testing it holistically. Please, use caution and do not send high amounts of value." %}
-      </div>
-    </div>
+    {% include 'grants/shared/alpha.html' %}
 
     <div class="row no-gutter grant_waiting" style="display: none;">
       <div class="col-12 offset-md-1 col-md-10 offset-lg-1 col-lg-8 body ">
