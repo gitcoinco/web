@@ -311,7 +311,7 @@ class Command(BaseCommand):
             sum_bounties(b, index_terms)
 
         # get tips
-        tips = Tip.objects.exclude(txid='').filter(network='mainnet')
+        tips = Tip.objects.send_success().filter(network='mainnet')
 
         # iterate
         for t in tips:
@@ -321,7 +321,7 @@ class Command(BaseCommand):
             sum_tips(t, index_terms)
 
         # kudos'
-        for kt in KudosTransfer.objects.exclude(txid='').filter(network='mainnet'):
+        for kt in KudosTransfer.objects.send_success().filter(network='mainnet'):
             sum_kudos(kt)
 
         # set old LR as inactive

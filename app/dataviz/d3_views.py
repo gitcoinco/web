@@ -29,6 +29,7 @@ from django.utils import timezone
 
 from dashboard.models import Bounty, BountyFulfillment, Profile, Tip
 from marketing.models import Stat
+from perftools.models import JSONStore
 
 from .models import DataPayload
 
@@ -452,6 +453,114 @@ def helper_hide_pii(username, num_chars=3):
     return new_username
 
 
+def viz_graph_data_helper(_type, keyword, hide_pii):
+    # setup response
+    output = {"nodes": [], "links": []}
+
+    # gather info
+    types = {}
+    names = {}
+    values = {}
+    avatars = {}
+    edges = []
+    bounties = Bounty.objects.current().filter(network='mainnet')
+    if keyword:
+        bounties = bounties.filter(raw_data__icontains=keyword)
+
+    for bounty in bounties:
+        if bounty.value_in_usdt_then:
+            weight = bounty.value_in_usdt_then
+            source = bounty.org_name
+            if source:
+                for fulfillment in bounty.fulfillments.all():
+                    created = fulfillment.created_on.strftime("%s")
+                    if _type != 'fulfillments_accepted_only' or fulfillment.accepted:
+                        target = fulfillment.fulfiller_github_username.lower()
+                        if hide_pii:
+                            target = helper_hide_pii(target)
+                        types[source] = 'source'
+                        types[target] = 'target_accepted' if fulfillment.accepted else 'target'
+                        names[source] = None
+                        names[target] = None
+                        edges.append((source, target, weight, created))
+
+                        value = values.get(source, 0)
+                        value += weight
+                        values[source] = value
+                        value = values.get(target, 0)
+                        value += weight
+                        values[target] = value
+
+    for tip in Tip.objects.filter(network='mainnet'):
+        weight = tip.value_in_usdt
+        created = tip.created_on.strftime("%s")
+        if weight:
+            source = tip.username.lower()
+            if hide_pii:
+                source = helper_hide_pii(source)
+            target = tip.from_username.lower()
+            if hide_pii:
+                target = helper_hide_pii(target)
+            if source and target:
+                if source not in names.keys():
+                    types[source] = 'source'
+                    names[source] = None
+                if source not in types.keys():
+                    types[target] = 'target'
+                    names[target] = None
+                edges.append((source, target, weight, created))
+
+    if _type in ['what_future_could_look_like', 'all']:
+        last_node = None
+        created = 1525147679
+        nodes = Profile.objects.exclude(github_access_token='').all()
+        for profile in nodes:
+            node = profile.handle.lower()
+            if hide_pii:
+                node = helper_hide_pii(node)
+            if node not in names.keys():
+                names[node] = None
+                types[node] = 'independent'
+            if last_node and _type == 'what_future_could_look_like':  # and random.randint(0, 2) == 0:
+                weight = random.randint(1, 10)
+                # edges.append((node, last_node, weight))
+                # edges.append((nodes.order_by('?').first().handle.lower(), node, weight))
+                target = nodes.order_by('?').first().handle.lower()
+                if hide_pii:
+                    target = helper_hide_pii(target)
+                edges.append((target, node, weight, created))
+            last_node = node
+
+    for key, val in values.items():
+        if val > 40:
+            avatar_key = key if key and "*" not in key else "None"
+            avatars[key] = f'https://gitcoin.co/dynamic/avatar/{avatar_key}'
+
+    # build output
+    for name in set(names.keys()):
+        names[name] = len(output['nodes'])
+        value = int(math.sqrt(math.sqrt(values.get(name, 1))))
+        output['nodes'].append({"name": name, 'value': value, 'type': types.get(name), 'avatar': avatars.get(name)})
+    for edge in edges:
+        source, target, weight, created = edge
+        weight = math.sqrt(weight)
+        if names.get(source) and names.get(target):
+            source = names[source]
+            target = names[target]
+            output['links'].append({
+                'source': source,
+                'target': target,
+                'value': value,
+                'weight': weight,
+                'created': created,
+            })
+    return output
+
+
+def get_all_type_options():
+    return ['fulfillments_accepted_only', 'all', 'fulfillments', 'what_future_could_look_like']
+
+
 # PUBLIC VIEW!
 def viz_graph(request, _type, template='graph'):
     """Render a graph visualization of the Gitcoin Network.
@@ -473,7 +582,7 @@ def viz_graph(request, _type, template='graph'):
             'fulfillments_accepted_only'
         ]  # for performance reasons, since this graph can't handle too many nodes
     else:
-        _type_options = ['fulfillments_accepted_only', 'all', 'fulfillments', 'what_future_could_look_like']
+        _type_options = get_all_type_options()
         _type_options = _type_options + list(
             DataPayload.objects.filter(key=page_route).values_list('report', flat=True)
         )
@@ -490,107 +599,7 @@ def viz_graph(request, _type, template='graph'):
             output = datapayloads.first().get_payload_with_mutations()
             return JsonResponse(output)
 
-        # setup response
-        output = {"nodes": [], "links": []}
-
-        # gather info
-        types = {}
-        names = {}
-        values = {}
-        avatars = {}
-        edges = []
-        bounties = Bounty.objects.current().filter(network='mainnet')
-        if keyword:
-            bounties = bounties.filter(raw_data__icontains=keyword)
-
-        for bounty in bounties:
-            if bounty.value_in_usdt_then:
-                weight = bounty.value_in_usdt_then
-                source = bounty.org_name
-                if source:
-                    for fulfillment in bounty.fulfillments.all():
-                        created = fulfillment.created_on.strftime("%s")
-                        if _type != 'fulfillments_accepted_only' or fulfillment.accepted:
-                            target = fulfillment.fulfiller_github_username.lower()
-                            if hide_pii:
-                                target = helper_hide_pii(target)
-                            types[source] = 'source'
-                            types[target] = 'target_accepted' if fulfillment.accepted else 'target'
-                            names[source] = None
-                            names[target] = None
-                            edges.append((source, target, weight, created))
-
-                            value = values.get(source, 0)
-                            value += weight
-                            values[source] = value
-                            value = values.get(target, 0)
-                            value += weight
-                            values[target] = value
-
-        for tip in Tip.objects.filter(network='mainnet'):
-            weight = tip.value_in_usdt
-            created = tip.created_on.strftime("%s")
-            if weight:
-                source = tip.username.lower()
-                if hide_pii:
-                    source = helper_hide_pii(source)
-                target = tip.from_username.lower()
-                if hide_pii:
-                    target = helper_hide_pii(target)
-                if source and target:
-                    if source not in names.keys():
-                        types[source] = 'source'
-                        names[source] = None
-                    if source not in types.keys():
-                        types[target] = 'target'
-                        names[target] = None
-                    edges.append((source, target, weight, created))
-
-        if _type in ['what_future_could_look_like', 'all']:
-            last_node = None
-            created = 1525147679
-            nodes = Profile.objects.exclude(github_access_token='').all()
-            for profile in nodes:
-                node = profile.handle.lower()
-                if hide_pii:
-                    node = helper_hide_pii(node)
-                if node not in names.keys():
-                    names[node] = None
-                    types[node] = 'independent'
-                if last_node and _type == 'what_future_could_look_like':  # and random.randint(0, 2) == 0:
-                    weight = random.randint(1, 10)
-                    # edges.append((node, last_node, weight))
-                    # edges.append((nodes.order_by('?').first().handle.lower(), node, weight))
-                    target = nodes.order_by('?').first().handle.lower()
-                    if hide_pii:
-                        target = helper_hide_pii(target)
-                    edges.append((target, node, weight, created))
-                last_node = node
-
-        for key, val in values.items():
-            if val > 40:
-                avatar_key = key if key and "*" not in key else "None"
-                avatars[key] = f'https://gitcoin.co/dynamic/avatar/{avatar_key}'
-
-        # build output
-        for name in set(names.keys()):
-            names[name] = len(output['nodes'])
-            value = int(math.sqrt(math.sqrt(values.get(name, 1))))
-            output['nodes'].append({"name": name, 'value': value, 'type': types.get(name), 'avatar': avatars.get(name)})
-        for edge in edges:
-            source, target, weight, created = edge
-            weight = math.sqrt(weight)
-            if names.get(source) and names.get(target):
-                source = names[source]
-                target = names[target]
-                output['links'].append({
-                    'source': source,
-                    'target': target,
-                    'value': value,
-                    'weight': weight,
-                    'created': created,
-                })
-
+        output = JSONStore.objects.get(view='d3_graph', key=f"{_type}_{keyword}_{hide_pii}").data
         return JsonResponse(output)
 
     params = {
@@ -678,6 +687,33 @@ def viz_scatterplot(request, key='hourly_rate', template='dataviz/scatterplot.ht
     return viz_scatterplot_helper(request, key, template, hide_usernames)
 
 
+def viz_scatterplot_data_helper(keyword, hide_usernames=False):
+    rows = [['hourlyRate', 'daysBack', 'username', 'weight']]
+    fulfillments = BountyFulfillment.objects.filter(accepted=True).exclude(fulfiller_hours_worked=None)
+    if keyword:
+        filter_bounties = Bounty.objects.filter(raw_data__icontains=keyword)
+        fulfillments = fulfillments.filter(bounty__in=filter_bounties)
+    for bf in fulfillments:
+        #print(bf.pk, bf.created_on)
+        try:
+            weight = math.log(bf.bounty.value_in_usdt, 10) / 4
+            username = bf.bounty.org_name
+            if hide_usernames:
+                username = "repo: " + helper_hide_pii(username.lower(), 1)
+            row = [str(bf.bounty.hourly_rate), str((timezone.now() - bf.accepted_on).days), username, str(weight), ]
+            if bf.bounty.hourly_rate:
+                rows.append(row)
+        except Exception:
+            pass
+
+    output_rows = []
+    for row in rows:
+        output_rows.append(",".join(row))
+
+    output = "\n".join(output_rows)
+    return output
+
+
 def viz_scatterplot_helper(request, key='hourly_rate', template='dataviz/scatterplot.html', hide_usernames=False):
     """Render a scatterplot visualization.
 
@@ -692,29 +728,7 @@ def viz_scatterplot_helper(request, key='hourly_rate', template='dataviz/scatter
     keyword = request.GET.get('keyword', None)
     type_options = ['hourly_rate']
     if request.GET.get('data'):
-        rows = [['hourlyRate', 'daysBack', 'username', 'weight']]
-        fulfillments = BountyFulfillment.objects.filter(accepted=True).exclude(fulfiller_hours_worked=None)
-        if keyword:
-            filter_bounties = Bounty.objects.filter(raw_data__icontains=keyword)
-            fulfillments = fulfillments.filter(bounty__in=filter_bounties)
-        for bf in fulfillments:
-            #print(bf.pk, bf.created_on)
-            try:
-                weight = math.log(bf.bounty.value_in_usdt, 10) / 4
-                username = bf.bounty.org_name
-                if hide_usernames:
-                    username = "repo: " + helper_hide_pii(username.lower(), 1)
-                row = [str(bf.bounty.hourly_rate), str((timezone.now() - bf.accepted_on).days), username, str(weight), ]
-                if bf.bounty.hourly_rate:
-                    rows.append(row)
-            except Exception:
-                pass
-
-        output_rows = []
-        for row in rows:
-            output_rows.append(",".join(row))
-
-        output = "\n".join(output_rows)
+        output = JSONStore.objects.get(view='d3_scatterplot', key=f"{keyword}_{hide_usernames}").data
         return HttpResponse(output)
 
     params = {

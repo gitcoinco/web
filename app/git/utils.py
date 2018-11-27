@@ -357,19 +357,25 @@ def get_github_emails(oauth_token):
     return emails
 
 
-def get_emails_master(username):
+def get_emails_by_category(username):
     from dashboard.models import Profile
-    to_emails = []
+    to_emails = {}
     to_profiles = Profile.objects.filter(handle__iexact=username)
     if to_profiles.exists():
         to_profile = to_profiles.first()
         if to_profile.github_access_token:
-            to_emails = get_github_emails(to_profile.github_access_token)
+            to_emails['primary'] = get_github_emails(to_profile.github_access_token)
         if to_profile.email:
-            to_emails.append(to_profile.email)
+            to_emails['github_profile'] = to_profile.email
+    to_emails['events'] = []
     for email in get_github_event_emails(None, username):
-        to_emails.append(email)
-    return list(set(to_emails))
+        to_emails['events'].append(email)
+    return to_emails
+
+
+def get_emails_master(username):
+    emails_by_category = get_emails_by_category(username)
+    return list(set([to_email for category, to_email in emails_by_category.items()]))
 
 
 def search(query):

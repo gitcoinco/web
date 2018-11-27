@@ -36,6 +36,7 @@ class BountyFulfillmentAdmin(admin.ModelAdmin):
 
 class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
+    list_display = ['created_on', '__str__']
 
 
 class ActivityAdmin(admin.ModelAdmin):
