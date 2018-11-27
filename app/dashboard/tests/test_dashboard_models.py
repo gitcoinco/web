@@ -67,6 +67,7 @@ class DashboardModelsTest(TestCase):
             bounty_type='Feature',
             experience_level='Intermediate',
             raw_data={},
+            estimated_hours=7,
         )
         bounty_fulfillment = BountyFulfillment.objects.create(
             fulfiller_address='0x0000000000000000000000000000000000000000',
@@ -76,7 +77,7 @@ class DashboardModelsTest(TestCase):
             bounty=bounty,
             profile=fulfiller_profile,
         )
-        assert str(bounty) == f'5: foo, 0 ETH @ {naturaltime(bounty.web3_created)}'
+        assert str(bounty) == f'{bounty.pk}: foo, 0 ETH @ {naturaltime(bounty.web3_created)}'
         assert bounty.url == f'{settings.BASE_URL}issue/gitcoinco/web/11/{bounty.standard_bounties_id}'
         assert bounty.title_or_desc == 'foo'
         assert bounty.issue_description_text == 'hello world'
@@ -92,6 +93,7 @@ class DashboardModelsTest(TestCase):
         assert 'ago 5 Feature Intermediate' in bounty.desc
         assert bounty.is_legacy is False
         assert bounty.get_github_api_url() == 'https://api.github.com/repos/gitcoinco/web/issues/11'
+        assert bounty.estimated_hours == 7
         assert bounty_fulfillment.profile.handle == 'fred'
         assert bounty_fulfillment.bounty.title == 'foo'
 
