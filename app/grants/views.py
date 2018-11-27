@@ -93,7 +93,6 @@ def grant_details(request, grant_id, grant_slug):
         raise Http404
 
     if request.method == 'POST':
-        print(request.POST)
         if 'contract_address' in request.POST:
             grant.active = False
             grant.save()

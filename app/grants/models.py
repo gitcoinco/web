@@ -165,7 +165,7 @@ class Grant(SuperModel):
 
 
 class Update(SuperModel):
-    """Define the structure of a Grant."""
+    """Define the structure of a Grant Update."""
 
     title = models.CharField(
         default='',

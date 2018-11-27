@@ -278,7 +278,7 @@
                   {% for item in updates %}
                     <li>
                       <div class="article-title font-title">{{ item.title }}</div>
-                      <div class="article-date font-body mb-2">{{ item.created_on }}</div>
+                      <div class="article-date font-body mb-2">{{ item.created_on|date:"M d, Y" }}</div>
                       <p class="article-description font-subheader">{{ item.description }}</p>
                     </li>
                   {% empty %}
