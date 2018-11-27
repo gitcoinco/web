@@ -357,7 +357,7 @@ def get_default_network():
     return 'mainnet'
 
 
-def get_semaphore(namespace, count=1, db=None, blocking=False):
+def get_semaphore(namespace, count=1, db=None, blocking=False, stale_client_timeout=60):
     from redis import Redis
     from redis_semaphore import Semaphore
     from urllib.parse import urlparse
@@ -371,6 +371,7 @@ def get_semaphore(namespace, count=1, db=None, blocking=False):
         count=count,
         namespace=namespace,
         blocking=blocking,
+        stale_client_timeout=stale_client_timeout,
     )
     return semaphore
 
