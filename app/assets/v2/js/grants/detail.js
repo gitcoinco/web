@@ -62,10 +62,10 @@ $(document).ready(function() {
       web3.eth.getAccounts(function(err, accounts) {
         deployedSubscription.methods.endContract()
           .send({from: accounts[0], gasPrice: 4000000000})
-          // .on('transactionHash', function() {
-          //   document.issueURL = document.getElementById('grant-link').href;
-          //   enableWaitState('#grants-details');
-          // })
+          .on('transactionHash', function() {
+            document.issueURL = document.getElementById('grant-link').href;
+            enableWaitState('#grants-details');
+          })
           .on('confirmation', function(confirmationNumber, receipt) {
             console.log('receipt', receipt);
             form.submit();
