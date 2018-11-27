@@ -112,6 +112,12 @@ class Grant(SuperModel):
         default='0x0',
         help_text=_('The contract address of the Grant.'),
     )
+    contract_version = models.DecimalField(
+        default=0,
+        decimal_places=0,
+        max_digits=3,
+        help_text=_('The contract version the Grant.'),
+    )
     transaction_hash = models.CharField(
         max_length=255,
         default='0x0',

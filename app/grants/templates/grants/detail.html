@@ -112,6 +112,7 @@
                     <button class="button button--primary button--warning" id="cancel_grant">{% trans "Cancel this Grant" %}
                     </button>
                     <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
+                    <input type="hidden" id="contract_version" name="contract_version" value="{{ grant.contract_version }}">
                   </form>
                 {% elif user_subscription %}
                   <a href="{% url 'grants:subscription_cancel' grant.id grant.slug user_subscription.id %}">
@@ -302,9 +303,10 @@
 
   <script src="{% static "v2/js/grants/compiledSubscriptionContract.js" %}"></script>
   <script src="{% static "v2/js/abi.js" %}"></script>
-  <script src="{% static "v2/js/shared.js" %}"></script>
   <script src="{% static "v2/js/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
   <script src="{% static "v2/js/user-search.js" %}"></script>
+  <script src="{% static "v2/js/grants/shared.js" %}"></script>
   <script src="{% static "v2/js/grants/detail.js" %}"></script>
+
 </html>

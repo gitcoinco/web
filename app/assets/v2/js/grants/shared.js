@@ -1,4 +1,16 @@
+// outside of document.ready to be in global scope
+var compiledSubscription;
+
 $(document).ready(function() {
+
+  let contractVersion = $('#contract_version').val();
+
+  if (contractVersion) {
+    if (contractVersion == 0) {
+      compiledSubscription = compiledSubscription0;
+    }
+  }
+
   var params = {
     page: document.location.pathname
   };
