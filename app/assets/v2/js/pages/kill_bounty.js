@@ -93,7 +93,8 @@ window.onload = function() {
               _alert({ message: gettext('Cancel bounty submitted to web3.') }, 'info');
               setTimeout(function() {
                 mixpanel.track('Kill Bounty Success', {});
-                document.location.href = '/funding/details?url=' + issueURL;
+                // document.location.href = '/funding/details?url=' + issueURL;
+                show_cancel_bounty_reason_modal()
               }, 1000);
             };
 
@@ -124,4 +125,56 @@ window.onload = function() {
       }
     });
   }, 100);
+
+  var show_cancel_bounty_reason_modal = function() {
+    var self = this;
+
+    setTimeout(function() {
+      var url = '/modal/cancel_bounty_modal?pk=' + document.bountyPk;
+
+      $.get(url, function(newHTML) {
+        var modal = $(newHTML).appendTo('body').modal({
+          modalClass: 'modal'
+        });
+
+        $('.btn-cancel').on('click', function() {
+          $.modal.close();
+          return;
+        });
+
+        $('.modal input:visible:first').focus();
+
+        modal.on('submit', function(e) {
+          console.log(e)
+          e.preventDefault();
+
+          // var extended_time = $('input[name=updatedExpires]').val();
+
+          var payload = {
+            pk: document.bountyPk,
+            canceled_bounty_reason: "agora vai"
+          }
+
+
+
+          var sendForm = fetchData (  'cancel_reason',
+                          'POST',
+                          payload)
+          $.when( sendForm ).then( function(payback) {
+            console.log(payback)
+            return payback
+          })
+          // extend_expiration(document.bountyPk, {
+            // cancelled_bounty_reason: extended_time
+          // });
+          $.modal.close();
+          setTimeout(function() {
+            // document.location.href = '/funding/details?url=' + issueURL;
+            // window.location.reload();
+          }, 2000);
+        });
+      });
+    });
+  };
+  show_cancel_bounty_reason_modal()
 };

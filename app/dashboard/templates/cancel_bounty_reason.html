@@ -1,0 +1,111 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+
+
+<div id="extend_deadline" class="white-light-bg">
+<style>
+input[type=radio]:checked ~ label ~ textarea {
+    display: block;
+}
+textarea {
+    display: none;
+}
+</style>
+  <div class="row">
+    <div class="col-12 closebtn">
+      <a rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">
+        <span aria-hidden="true">&times;</span>
+      </a>
+    </div>
+    <div class="col-12">
+      <h5 class="text-center font-title mb-3">{% trans "You have successfully Cancelled this Bounty" %}</h5>
+    </div>
+    {% if user_logged_in %}
+      <div class="col-12 offset-md-1 col-md-10">
+        <p class="font-body mb-0">{% trans "You have successfully cancelled this bounty" %}</p>
+        <p>{% trans "If you have a moment, please let us know why you cancelled" %}</p>
+        <form id="cancelBounty" method="POST" action="issue/cancel_reason/" class="font-body">
+          <div class="options">
+            <div class="form__radio option">
+              <input name="reason_cancel" id="reason_1" type="radio" value="1- I paid out the developer" />
+              <label class="filter-label" for=reason_1>{% trans "I paid out the developer for his/her work and want to close the issue on Gitcoin." %}</label>
+            </div>
+
+            <div class="form__radio option">
+              <input name="reason_cancel" id="reason_2" type="radio" value="2- Scope changed" />
+              <label class="filter-label" for=reason_2>{% trans "The scope of work changed." %}</label>
+            </div>
+
+            <div class="form__radio option">
+              <input name="reason_cancel" id="reason_3" type="radio" value="3- Solved issue" />
+              <label class="filter-label" for=reason_3>{% trans "An alternative solution (merged commit/patch) solved the issue." %}</label>
+            </div>
+
+            <div class="form__radio option">
+              <input name="reason_cancel" id="reason_4" type="radio" value="4- Internal solution" />
+              <label class="filter-label" for=reason_4>{% trans "I decided to bring the issue to our internal team." %}</label>
+            </div>
+
+            <div class="form__radio option">
+              <input name="reason_cancel" id="reason_5" type="radio" value="5- Edit bounty details" />
+              <label class="filter-label" for=reason_5>{% trans "I am unable to change certain details on the bounty I want changed." %}</label>
+            </div>
+
+            <div class="form__radio option">
+              <input name="reason_cancel" id="reason_6" type="radio" value="6- Abandoned bounty" />
+              <label class="filter-label" for=reason_6>{% trans "The bounty had no workers / was consistently abandoned." %}</label>
+            </div>
+
+            <div class="form__radio option">
+              <input name="reason_cancel" id="reason_7" type="radio" value="7- Special bounty with time out" />
+              <label class="filter-label" for=reason_7>{% trans "The bounty was available only under special circumstances (e.g hackathon)." %}</label>
+            </div>
+
+            <div class="form__radio option">
+              <input name="reason_cancel" id="reason_8" type="radio" value="8- Bad work submitted" />
+              <label class="filter-label" for=reason_8>{% trans "The quality of the submitted work was not up to par." %}</label>
+            </div>
+
+            <div class="form__radio option">
+              <input name="reason_cancel" id="reason_other" type="radio" value="other" />
+              <label class="filter-label" for=reason_other>{% trans "Others (Please tell us more)" %}</label>
+              <textarea class="form__input" name="reason_cancel" id="reason_text" cols="10" rows="4" placeholder="What made you cancel this bounty?"></textarea>
+            </div>
+
+            <div class="">
+
+            </div>
+          </div>
+
+          <button class="row button button--primary btn-extend" type="submit">{% trans "Submit" %}</button>
+        </form>
+      </div>
+    {% else %}
+      <div class="col-12 text-center">
+        <div class="login">
+          <div class="login__text">
+            {% trans "Please login with Github to get started." %}
+          </div>
+          <a class="button button--primary login__button" href={{login_link}} onclick="dataLayer.push({'event': 'login'});">
+            <i class="fab fa-github"></i> <span>{% trans "Login With Github" %}</span>
+          </a>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>

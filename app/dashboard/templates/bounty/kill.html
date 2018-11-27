@@ -87,6 +87,9 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
   </body>
+  <script>
+    document.bountyPk = '{{ bounty.pk }}';
+  </script>
 
   <!-- jQuery -->
   <script src="{% static "v2/js/abi.js" %}"></script>

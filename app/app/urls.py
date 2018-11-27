@@ -121,6 +121,7 @@ urlpatterns = [
     path('issue/payout', dashboard.views.payout_bounty, name='payout_bounty'),
     path('issue/increase', dashboard.views.increase_bounty, name='increase_bounty'),
     path('issue/cancel', dashboard.views.cancel_bounty, name='kill_bounty'),
+    path('issue/cancel_reason', dashboard.views.cancel_reason, name='cancel_reason'),
     path('issue/contribute', dashboard.views.contribute, name='contribute'),
     path('issue/social_contribution', dashboard.views.social_contribution, name='social_contribution'),
     path(
@@ -210,6 +211,7 @@ urlpatterns = [
     # modals
     re_path(r'^modal/get_quickstart_video/?', dashboard.views.get_quickstart_video, name='get_quickstart_video'),
     re_path(r'^modal/extend_issue_deadline/?', dashboard.views.extend_issue_deadline, name='extend_issue_deadline'),
+    re_path(r'^modal/cancel_bounty_modal/?', dashboard.views.cancel_bounty_modal, name='cancel_bounty_modal'),
 
     # brochureware views
     re_path(r'^about/?', retail.views.about, name='about'),

@@ -41,3 +41,7 @@
   border: 2px solid #fff;
   transform: scale(0.7);
 }
+
+input[type=radio]:focus + label {
+  outline: rgba(77, 97, 171, 0.5) auto 3px;
+}
