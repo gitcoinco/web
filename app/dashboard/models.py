@@ -1402,7 +1402,7 @@ class ActivityQuerySet(models.QuerySet):
         )
 
     def warned(self):
-            """Filter results to       objects to be reviewed by moderators."""
+        """Filter results to Activity objects to be reviewed by moderators."""
         return self.select_related('bounty', 'profile').filter(
             activity_type='bounty_abandonment_warning',
         )
