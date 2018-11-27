@@ -20,6 +20,7 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/grants/detail.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/grants/milestones.css" %}">
   </head>
@@ -30,6 +31,9 @@
       {% include 'grants/nav.html' %}
     </div>
 
+    {% include 'grants/shared/waiting_state.html' %}
+
+    <div id="grants-details">
     <div class="grant__header py-5">
       <div class="container">
         <div class="row">
@@ -291,7 +295,7 @@
         </div>
       </div>
     </div>
-
+    </div>
 
 
     {% include 'shared/current_profile.html' %}
@@ -308,5 +312,5 @@
   <script src="{% static "v2/js/user-search.js" %}"></script>
   <script src="{% static "v2/js/grants/shared.js" %}"></script>
   <script src="{% static "v2/js/grants/detail.js" %}"></script>
-
+  <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
 </html>
