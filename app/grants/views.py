@@ -183,6 +183,7 @@ def grant_new(request):
             'token_address': request.POST.get('denomination', ''),
             'token_symbol': request.POST.get('token_symbol', ''),
             'amount_goal': request.POST.get('amount_goal', 1),
+            'contract_version': request.POST.get('contract_version', ''),
             'transaction_hash': request.POST.get('transaction_hash', ''),
             'contract_address': request.POST.get('contract_address', ''),
             'network': request.POST.get('network', 'mainnet'),

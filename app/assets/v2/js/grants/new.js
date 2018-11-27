@@ -47,6 +47,8 @@ $(document).ready(function() {
 
       $('#token_symbol').val($('#js-token option:selected').text());
 
+      console.log('compiledSubscription', compiledSubscription);
+
       // Begin New Deploy Subscription Contract
       let SubscriptionContract = new web3.eth.Contract(compiledSubscription.abi);
 
@@ -61,6 +63,8 @@ $(document).ready(function() {
         // data.frequency
         web3.utils.toTwosComplement(0),
         // data.gas_price
+        web3.utils.toTwosComplement(0),
+        // contract version
         web3.utils.toTwosComplement(0)
       ];
 
