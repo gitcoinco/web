@@ -81,12 +81,13 @@ function showDivs(n) {
   var i;
 
   var x = document.getElementsByClassName('split-cta');
+
   if (n > x.length) {
-    slideIndex = 1
+    slideIndex = 1;
   }
   if (n < 1) {
-    slideIndex = x.length
-  };
+    slideIndex = x.length;
+  }
   for (i = 0; i < x.length; i++) {
     x[i].style.display = 'none';
   }
@@ -94,10 +95,10 @@ function showDivs(n) {
 }  
 
 function screenClass() {
-  if ($(window).innerWidth() < 1160) {
+  if ( $(window).innerWidth() < 1160) {
     showDivs(slideIndex);
   } else {
-    $('.live-refresh-banner').load(location.href+" .live-refresh-banner>*", "");
+    $('.live-refresh-banner').load(location.href+' .live-refresh-banner>*', '');
   }
 }
 
