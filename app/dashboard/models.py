@@ -1670,6 +1670,8 @@ class Profile(SuperModel):
         default=False,
         help_text='If this option is chosen, the user is able to submit a faucet/ens domain registration even if they are new to github',
     )
+    keywords = ArrayField(models.CharField(max_length=200), blank=True, default=[])
+    organizations = ArrayField(models.CharField(max_length=200), blank=True, default=[])
     form_submission_records = JSONField(default=list, blank=True)
     max_num_issues_start_work = models.IntegerField(default=3)
     preferred_payout_address = models.CharField(max_length=255, default='', blank=True)
@@ -1794,12 +1796,16 @@ class Profile(SuperModel):
         return created_on.replace(tzinfo=pytz.UTC)
 
     @property
-    def repos_data(self):
+    def repos_data_lite(self):
         from git.utils import get_user
-        from app.utils import add_contributors
         # TODO: maybe rewrite this so it doesnt have to go to the internet to get the info
         # but in a way that is respectful of db size too
-        repos_data = get_user(self.handle, '/repos')
+        return get_user(self.handle, '/repos')
+
+    @property
+    def repos_data(self):
+        from app.utils import add_contributors
+        repos_data = self.repos_data_lite
         repos_data = sorted(repos_data, key=lambda repo: repo['stargazers_count'], reverse=True)
         repos_data = [add_contributors(repo_data) for repo_data in repos_data]
         return repos_data

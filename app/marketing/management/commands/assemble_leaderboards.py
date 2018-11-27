@@ -339,13 +339,17 @@ class Command(BaseCommand):
                     'amount': amount,
                     'rank': rank,
                     'leaderboard': key,
-                    'github_username': index_term,
+                    'github_username': index_term
                 }
 
                 try:
-                    lbr_kwargs['profile'] = Profile.objects.get(handle__iexact=index_term)
+                    profile = Profile.objects.get(handle__iexact=index_term)
+                    lbr_kwargs['profile'] = profile
+                    lbr_kwargs['tech_keywords'] = profile.keywords
                 except Profile.MultipleObjectsReturned:
-                    lbr_kwargs['profile'] = Profile.objects.filter(handle__iexact=index_term).latest('id')
+                    profile = Profile.objects.filter(handle__iexact=index_term).latest('id')
+                    lbr_kwargs['profile'] = profile
+                    lbr_kwargs['tech_keywords'] = profile.keywords
                     print(f'Multiple profiles found for username: {index_term}')
                 except Profile.DoesNotExist:
                     print(f'No profiles found for username: {index_term}')
