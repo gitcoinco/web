@@ -71,63 +71,38 @@ $(document).ready(function() {
           SubscriptionContract.deploy({
             data: compiledSubscription.bytecode,
             arguments: args
-          })
-            .send({
-              from: accounts[0],
-              gas: 2500000,
-              gasPrice: 4000000000
-            })
-            .on('error', function(error) {
-              console.log('1', error);
-            })
-            .on('transactionHash', function(transactionHash) {
-              console.log('2', transactionHash);
-              $('#transaction_hash').val(transactionHash);
+          }).send({
+            from: accounts[0],
+            gas: 2500000,
+            gasPrice: 4000000000
+          }).on('error', function(error) {
+            console.log('1', error);
+          }).on('transactionHash', function(transactionHash) {
+            console.log('2', transactionHash);
+            $('#transaction_hash').val(transactionHash);
 
-              // Waiting State screen
-              $('#new-grant').hide();
-              $('.interior .body').addClass('open');
-              $('.interior .body').addClass('loading');
-              $('.grant_waiting').show();
-              document.issueURL = $('#input-url').val();
-              waitingStateActive();
-
-            })
-            .on('receipt', function(receipt) {
-              $('#receipt').val(JSON.stringify(receipt));
-              $('#contract_address').val(receipt.contractAddress);
-            })
-            .then(function(contractInstance) {
-
-              console.log(contractInstance);
-
-              $.each($(form).serializeArray(), function() {
-                data[this.name] = this.value;
-              });
-              console.log(data);
-              form.submit();
+            // Waiting State screen
+            $('#new-grant').hide();
+            $('.interior .body').addClass('open');
+            $('.interior .body').addClass('loading');
+            $('.grant_waiting').show();
+            document.issueURL = $('#input-url').val();
+            waitingStateActive();
+          }).on('receipt', function(receipt) {
+            $('#receipt').val(JSON.stringify(receipt));
+            $('#contract_address').val(receipt.contractAddress);
+          }).then(function(contractInstance) {
+            console.log(contractInstance);
+            $.each($(form).serializeArray(), function() {
+              data[this.name] = this.value;
             });
+            console.log(data);
+            form.submit();
+          });
         });
       });
     }
   });
-
-  $('#new-milestone').on('click', function(event) {
-    event.preventDefault();
-    var milestones = $('.milestone-form .row');
-    var milestoneId = milestones.length || 1;
-
-    $('.milestone-form').append(
-      '<div class="row" id="milestone' + milestoneId + '">' +
-        '<div class="col-12">\n' +
-          '<input type="text" class="form__input" placeholder="Title" name="milestone-title[' + milestoneId + ']" required/>' +
-          '<input type="date" class="form__input" placeholder="Date" name="milestone-date[' + milestoneId + ']" required/>' +
-          '<textarea class="form__input" type="text" placeholder="Description" name="milestone-description[' + milestoneId + ']" required></textarea>' +
-        '</div>' +
-      '</div>'
-    );
-  });
-
 
   waitforWeb3(function() {
     tokens(document.web3network).forEach(function(ele) {
@@ -141,12 +116,10 @@ $(document).ready(function() {
         text: ele.name
       }));
     });
+
     $('#js-token').select2();
-
     $("#js-token option[value='0x0000000000000000000000000000000000000000']").remove();
-
     $('#js-token').append("<option value='0x0000000000000000000000000000000000000000' selected='selected'>Any Token");
-
   });
 
   $('.select2-selection__rendered').removeAttr('title');
