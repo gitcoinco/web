@@ -163,6 +163,7 @@ class Grant(SuperModel):
         """Return the percentage of token received based on the token goal."""
         return ((self.amount_received / self.amount_goal) * 100)
 
+
 class Update(SuperModel):
     """Define the structure of a Grant."""
 

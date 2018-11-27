@@ -80,7 +80,8 @@ def grant_details(request, grant_id, grant_slug):
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
 
     try:
-        grant = Grant.objects.prefetch_related('subscriptions', 'milestones', 'updates').get(pk=grant_id, slug=grant_slug)
+        grant = Grant.objects.prefetch_related('subscriptions',
+        'milestones', 'updates').get(pk=grant_id, slug=grant_slug)
         milestones = grant.milestones.order_by('due_date')
         updates = grant.updates.order_by('-created_on')
         subscriptions = grant.subscriptions.filter(active=True)
@@ -102,7 +103,7 @@ def grant_details(request, grant_id, grant_slug):
                 'description': request.POST.get('description', ''),
                 'grant': grant
             }
-            update = Update.objects.create(**update_kwargs)
+            Update.objects.create(**update_kwargs)
         elif 'edit-title' in request.POST:
             pass
 
