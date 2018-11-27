@@ -23,6 +23,7 @@ import logging
 
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -52,6 +53,15 @@ def get_keywords():
 
 def grants(request):
     """Handle grants explorer."""
+
+    # TODO: Remove after hard launch
+    if not request.user.is_staff or not request.user.is_authenticated:
+        params = {
+            'active': 'dashboard',
+            'title': _('Grants Explorer')
+        }
+        return TemplateResponse(request, 'grants/stub/index.html', params)
+
     limit = request.GET.get('limit', 25)
     page = request.GET.get('page', 1)
     sort = request.GET.get('sort_option', '-created_on')
@@ -76,6 +86,7 @@ def grants(request):
     return TemplateResponse(request, 'grants/index.html', params)
 
 
+@staff_member_required
 def grant_details(request, grant_id, grant_slug):
     """Display the Grant details page."""
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
@@ -153,6 +164,7 @@ def grant_details(request, grant_id, grant_slug):
 
 
 @login_required
+@staff_member_required
 def grant_new(request):
     """Handle new grant."""
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
@@ -199,6 +211,7 @@ def grant_new(request):
 
 
 @login_required
+@staff_member_required
 def milestones(request, grant_id, grant_slug):
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
     grant = Grant.objects.prefetch_related('milestones').get(pk=grant_id, slug=grant_slug)
@@ -243,6 +256,7 @@ def milestones(request, grant_id, grant_slug):
 
 
 @login_required
+@staff_member_required
 def grant_fund(request, grant_id,  grant_slug):
     """Handle grant funding."""
     try:
@@ -285,6 +299,7 @@ def grant_fund(request, grant_id,  grant_slug):
 
 
 @login_required
+@staff_member_required
 def subscription_cancel(request, grant_id, grant_slug, subscription_id):
     """Handle the cancellation of a grant subscription."""
     subscription = Subscription.objects.select_related('grant').get(pk=subscription_id)
@@ -312,6 +327,7 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
 
 
 @login_required
+@staff_member_required
 def profile(request):
     """Show grants profile of logged in user."""
     limit = request.GET.get('limit', 25)
@@ -357,6 +373,7 @@ def profile(request):
     return TemplateResponse(request, 'grants/profile/index.html', params)
 
 
+@staff_member_required
 def quickstart(request):
     """Display quickstart guide."""
 
