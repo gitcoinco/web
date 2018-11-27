@@ -157,6 +157,26 @@ class Grant(SuperModel):
         """Return the percentage of token received based on the token goal."""
         return ((self.amount_received / self.amount_goal) * 100)
 
+class Update(SuperModel):
+    """Define the structure of a Grant."""
+
+    title = models.CharField(
+        default='',
+        max_length=255,
+        help_text=_('The title of the Grant.')
+    )
+    description = models.TextField(
+        default='',
+        blank=True,
+        help_text=_('The description of the Grant.')
+    )
+    grant = models.ForeignKey(
+        'grants.Grant',
+        related_name='updates',
+        on_delete=models.CASCADE,
+        null=True,
+        help_text=_('The associated Grant.'),
+    )
 
 class SubscriptionQuerySet(models.QuerySet):
     """Define the Subscription default queryset and manager."""

@@ -274,10 +274,10 @@
                   </div>
                 {% endif %}
                 <ul class="pl-0">
-                  {% for item in activity %}
+                  {% for item in updates %}
                     <li>
                       <div class="article-title font-title">{{ item.title }}</div>
-                      <div class="article-date font-body mb-2">{{ item.date }}</div>
+                      <div class="article-date font-body mb-2">{{ item.created_on }}</div>
                       <p class="article-description font-subheader">{{ item.description }}</p>
                     </li>
                   {% empty %}
