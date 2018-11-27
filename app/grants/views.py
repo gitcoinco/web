@@ -32,7 +32,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from grants.forms import MilestoneForm
-from grants.models import Grant, Milestone, Subscription
+from grants.models import Grant, Milestone, Subscription, Update
 from marketing.mails import (
     grant_cancellation, new_grant, new_supporter, subscription_terminated, support_cancellation,
     thank_you_for_supporting,
@@ -98,8 +98,9 @@ def grant_details(request, grant_id, grant_slug):
                 subscription_terminated(grant, sub)
         elif 'input-title' in request.POST:
             update_kwargs = {
-                'title': request.POST.get('input_title', ''),
-                'description': request.POST.get('description', '')
+                'title': request.POST.get('input-title', ''),
+                'description': request.POST.get('description', ''),
+                'grant': grant
             }
             update = Update.objects.create(**update_kwargs)
         elif 'edit-title' in request.POST:
