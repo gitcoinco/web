@@ -432,6 +432,104 @@ body {
   min-height: 1000vh;
 }
 
+.split-cta {
+  max-width: 600px;
+  height: 125px;
+  display: inline-block;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.split-cta > div:first-child {
+  width: 135px;
+  height: 100%;
+  float: left;
+  text-align: center;
+}
+
+.split-cta > div:first-child > img {
+  height: 125px;
+}
+
+.split-cta:first-child > div:first-child > img {
+  height: 115px;
+  margin-top: 7.5px;
+}
+
+.split-cta > div:last-child {
+  max-width: 465px;
+  width: auto;
+  height: 100%;
+  text-align: left;
+  float: left;
+}
+
+.split-cta > div:last-child > h4 {
+  text-align: left;
+  padding-top: 5px;
+}
+
+.split-cta > div:last-child > a {
+  padding-top: 5px;
+  padding-bottom: 8px;
+}
+
+.cta-button {
+  border: none; 
+  background-color: transparent;
+  display: none;
+}
+
+.cta-button:hover {
+  color: var(--color);
+}
+
+.cta-button:focus {
+  color: var(--color);
+}
+
+.cta-button:last-child {
+  margin-left: 10px;
+}
+
+@media only screen and (max-width: 1180px) {
+
+  .cta-button {
+    display: inline;
+  }
+
+}
+
+@media screen and (max-width: 680px) {
+
+  .split-cta {
+    height: auto !important;
+    width: calc(100% - 100px) !important;
+  }
+
+  .split-cta > div:first-child {
+    width: 100% !important;
+    height: 100px !important;
+  }
+
+  .split-cta > div:first-child > img {
+    height: 100px !important;
+  }
+
+  .split-cta > div:last-child {
+    width: 100% !important;
+    text-align: center !important;
+  }
+
+  .split-cta > div:last-child > h4 {
+    text-align: center !important;
+  }
+
+  .split-cta > div:last-child > a {
+    margin-top: 5px;
+  }
+  
+}
 /* Landing Page Animations */
 #WindmillBlades {
   animation: rotate-blades 8s linear infinite;

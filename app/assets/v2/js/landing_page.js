@@ -69,3 +69,34 @@ $(document).ready(function() {
     localStorage.setItem('lastAccessed', new Date().getTime());
   });
 });
+
+var slideIndex = 1;
+
+function plusDivs(n) {
+  showDivs(slideIndex += n);
+}
+
+function showDivs(n) {
+  var i;
+  var x = document.getElementsByClassName("split-cta");
+  if (n > x.length) {slideIndex = 1} 
+  if (n < 1) {slideIndex = x.length} ;
+  for (i = 0; i < x.length; i++) {
+      x[i].style.display = "none"; 
+  }
+  x[slideIndex-1].style.display = "block"; 
+}  
+
+function screenClass() {
+  if($(window).innerWidth() < 1160) {
+    showDivs(slideIndex);
+  } else {
+    $(".live-refresh-banner").load(location.href+" .live-refresh-banner>*","");
+  }
+}
+
+screenClass();
+
+$(window).bind('resize',function(){
+    screenClass();
+});

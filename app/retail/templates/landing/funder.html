@@ -31,15 +31,31 @@
     <div id="landing_page_wrapper">
       <div class="container-fluid header">
         {% include 'landing/funder/hero.html' %}
-        <div class="row banner--green px-3 py-4 justify-content-center font-subheader">
-          <p class="col-12 mb-2 white text-center">{% trans "DEVELOPERS! Looking for work on OSS Projects?" %}</p>
-          <div class="col-12 text-highlight-gc-purple text-center">
-            <a class="text-highlight-gc-purple" href="{% url "explorer" %}">{% trans "View Available Bounties" %}</a>
-            |
-            <a class="text-highlight-gc-purple" href="{% url "onboard" "contributor" %}">{% trans "Get Started with Gitcoin" %}</a>
-            |
-            <a class="text-highlight-gc-purple" href="/contributor">{% trans "Learn More" %}</a>
+        <div class="row banner--green px-3 py-4 justify-content-center font-subheader live-refresh-banner">
+          <button class="cta-button" onclick="plusDivs(-1)">&#10094;</button>
+          <div class="split-cta">
+            <div>
+              <img src="{% static "v2/images/prime.png" %}" id="cta-prime"/>
+            </div>
+            <div>
+              <h4 class="text-highlight-gc-purple">Are you a funder or project organizer?</h4>  
+              <p class="text-highlight-gc-purple">Fund your OSS bounties and get work done!</p>
+              <a class="btn btn-gc-purple" href="{% url "onboard" "funder" %}">Get Started</a>
+              <a class="btn btn-outline-gc-purple" href="{% url "how_it_works" "funder" %}">Learn More</a>
+            </div>
           </div>
+          <div class="split-cta">
+            <div>
+              <img src="{% static "v2/images/regulus.png" %}" id="cta-regulus"/>
+            </div>
+            <div>
+              <h4 class="text-highlight-gc-purple">Are you a developer or a designer?</h4>
+              <p class="text-highlight-gc-purple">Contribute to existing OSS projects and get paid!</p>
+              <a class="btn btn-gc-purple" href="{% url "onboard" "contributor" %}">Get Started</a>
+              <a class="btn btn-outline-gc-purple" href="{% url "how_it_works" "contributor" %}">Learn More</a>
+            </div>
+          </div>
+          <button class="cta-button" onclick="plusDivs(1)">&#10095;</button>
         </div>
       </div>
 
