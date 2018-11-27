@@ -813,7 +813,7 @@ def bounty_request_feedback(profile):
                'Gitcoin Requests (https://gitcoin.co/requests/) '\
                'from you as we know you\'ve suggested good things '\
                'in the past 🙂\n\n'\
-               'Best,\nV'
+               'Best,\n\nV'
 
         send_mail(
             from_email,
