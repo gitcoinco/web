@@ -60,15 +60,21 @@ $(document).ready(function() {
       let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, data.contract_address);
 
       web3.eth.getAccounts(function(err, accounts) {
-
-
-        deployedSubscription.methods.endContract().send({from: accounts[0], gasPrice: 4000000000})
+        deployedSubscription.methods.endContract()
+          .send({from: accounts[0], gasPrice: 4000000000})
+          // .on('transactionHash', function() {
+          //   // Waiting State screen
+          //   $('#grants-details').hide();
+          //   $('.interior .body').addClass('open');
+          //   $('.interior .body').addClass('loading');
+          //   $('.grant_waiting').show();
+          //   document.issueURL = document.getElementById('grant-link').href;
+          //   waitingStateActive();
+          // })
           .on('confirmation', function(confirmationNumber, receipt) {
             console.log('receipt', receipt);
-
             form.submit();
           });
-
       });
     }
   });
