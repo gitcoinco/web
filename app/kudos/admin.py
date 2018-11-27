@@ -21,12 +21,24 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import Contract, KudosTransfer, Token, Wallet
+from .models import BulkTransferCoupon, BulkTransferRedemption, Contract, KudosTransfer, Token, Wallet
 
 
 class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
     list_display = ['created_on', '__str__']
+
+
+class BulkTransferCouponAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['created_on', '__str__']
+    raw_id_fields = ['sender_profile', 'token']
+
+
+class BulkTransferRedemptionAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['created_on', '__str__']
+    raw_id_fields = ['coupon', 'redeemed_by', 'kudostransfer']
 
 
 class TokenAdmin(admin.ModelAdmin):
@@ -62,4 +74,6 @@ class TransferAdmin(admin.ModelAdmin):
 admin.site.register(Token, TokenAdmin)
 admin.site.register(KudosTransfer, TransferAdmin)
 admin.site.register(Wallet, GeneralAdmin)
+admin.site.register(BulkTransferCoupon, BulkTransferCouponAdmin)
+admin.site.register(BulkTransferRedemption, BulkTransferRedemptionAdmin)
 admin.site.register(Contract, GeneralAdmin)

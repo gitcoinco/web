@@ -46,6 +46,7 @@ window.onload = function() {
 
         option.attr('value', value.fulfillment_id);
         option.attr('data-username', value.fulfiller_github_username);
+        option.attr('data-address', value.fulfiller_address);
         var short_addr = value.fulfiller_address.slice(0, 7).concat('...');
 
         option.text('Id: ' + value.fulfillment_id + ',  Username: ' + value.fulfiller_github_username + ',  Address: ' + short_addr);
@@ -101,8 +102,7 @@ window.onload = function() {
 
       };
       var failure_callback = function() {
-        // do nothing
-        $.noop();
+        unloading_button($('.submitBounty'));
       };
 
       return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, false);
@@ -121,7 +121,7 @@ window.onload = function() {
       var comments_priv = '';
       var from_email = '';
       var accept_tos = true;
-      var tokenAddress = document.token_address;
+      var to_eth_address = $('#bountyFulfillment option:selected').data('address');
       var expires = 9999999999;
       var kudosId = selected_kudos.id;
       var tokenId = selected_kudos.token_id;
@@ -135,11 +135,10 @@ window.onload = function() {
 
       };
       var failure_callback = function() {
-        // do nothing
-        $.noop();
+        unloading_button($('.submitBounty'));
       };
 
-      return sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, kudosId, tokenId, success_callback, failure_callback, true);
+      return sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, to_eth_address, expires, kudosId, tokenId, success_callback, failure_callback, true);
 
     };
 
