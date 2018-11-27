@@ -21,7 +21,7 @@
   <a class="navbar-brand pt-0 pb-0 brand-hover" href="{% url 'grants:grants' %}">
     <img class="mw-100" src="{% static "v2/images/top-bar/grants-logo.svg" %}" alt="grants" height="35">
   </a>
-  {% if request.path|matches:"^\/((new)|(fund.*)|(.*cancel.*))$" %}
+  {% if request.path|matches:"^\/((.*new)|(.*cancel)|(.*fund))$" %}
     <div class="navbar-network ml-5 py-1 px-2 hidden">
       <i class="fas fa-circle pr-1"></i>
       <span id="current-network"></span>
@@ -49,6 +49,6 @@
     </nav>
   </div>
 </nav>
-{% if request.path|matches:"^\/((new)|(fund.*)|(.*cancel.*))$" %}
+{% if request.path|matches:"^\/((.*new)|(.*cancel)|(.*fund))$" %}
   <p id="navbar-network-banner" class="px-0 py-1 m-0 font-caption hidden"></p>
 {% endif %}
