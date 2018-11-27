@@ -20,6 +20,7 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/grants/fund.css" %}">
   </head>
   <body class="interior {{ active }} grant">
@@ -37,7 +38,7 @@
       </div>
     </div>
 
-    <div class="alpha-warning font-caption">
+    <div class="alpha-warning font-caption mb-0">
       <div>
         {% trans "WARNING: Gitcoin Grants is in" %}
         <span class="font-weight-bold">ALPHA</span>
@@ -45,6 +46,21 @@
       </div>
       <div>
         {% trans "It has had inital audits done on it's smart contract and we are in the process of testing it holistically. Please, use caution and do not send high amounts of value." %}
+      </div>
+    </div>
+
+    <div class="row no-gutter grant_waiting" style="display: none;">
+      <div class="col-12 offset-md-1 col-md-10 offset-lg-1 col-lg-8 body ">
+        {% include 'shared/bounty_waiting_state.html' %}
+        <div class="row ml-2 mr-2 pl-4 pr-4 waiting_room_entertainment" style="display: none; text-align: center">
+          {% include 'shared/rain.html' with class="color" %}
+          <div class="quote-container">
+            <img src="{% static "v2/images/quotes.png" %}" style="float: left; max-width: 22px;" />
+            <div class="quote_text"></div>body
+            <div class="quote_author"></div>
+            <input id="quoteRefresh" class="button button--primary" name="refresh" type='submit' onclick='javascript:waitingRoomEntertainment()' value="Refresh Quote" >
+          </div>
+        </div>
       </div>
     </div>
 
@@ -57,7 +73,7 @@
     <div class="row" id="grants_form">
 
       <div class="col-12 text-center mt-md-3">
-        <h2 class="font-title-lg my-4">{% trans "Cancel Contribution" %}</h2>
+        <h2 class="font-title-lg my-5">{% trans "Cancel Contribution" %}</h2>
       </div>
 
       {% include 'grants/banner.html' %}
@@ -88,8 +104,8 @@
           </form>
         </div>
 
-        <div class="col-12 mt-3 mb-5 text-center grant-link font-body">
-          <a href="{% url 'grants:details' grant.id grant.slug %}">
+        <div class="col-12 mt-3 mb-5 text-center font-body">
+          <a id="grant-link" href="{% url 'grants:details' grant.id grant.slug %}">
             {% trans "No I do not want to cancel my contribution" %}
           </a>
         </div>
@@ -112,4 +128,5 @@
   <script src="{% static "v2/js/shared.js" %}"></script>
   <script src="{% static "v2/js/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
+  <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
 </html>

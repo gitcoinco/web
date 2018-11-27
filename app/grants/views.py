@@ -22,6 +22,7 @@ import json
 import logging
 
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -295,6 +296,7 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
         subscription.active = False
         subscription.save()
         support_cancellation(grant, subscription)
+        messages.info(request, 'Thank you for your contribution')
         return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
     params = {
