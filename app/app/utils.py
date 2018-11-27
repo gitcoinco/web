@@ -200,7 +200,7 @@ def sync_profile(handle, user=None, hide_profile=True):
         orgs = get_user(handle, '/orgs')
         profile.organizations = [ele['login'] for ele in orgs]
         keywords = []
-        for repo in profile.repos_data:
+        for repo in profile.repos_data_lite:
             language = repo.get('language') if repo.get('language') else ''
             _keywords = language.split(',')
             for key in _keywords:
