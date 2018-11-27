@@ -63,6 +63,10 @@
   max-width: 100px;
   max-height: 100px;
 }
+.profile-organizations .organization img{
+  max-width: 100px;
+  max-height: 100px;
+}
 
 .profile-bounties--activities{
   min-height: 200px;
