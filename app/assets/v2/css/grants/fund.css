@@ -1,0 +1,54 @@
+.admin_profile a,
+.grant-link a {
+  color: #0D0764;
+}
+
+#grants_form input {
+  height: 2.5rem !important;
+}
+
+.select2-container--default .select2-selection--single,
+#grants_form input {
+  border-color: #0D0764 !important;
+}
+
+.grant-banner img {
+  max-height: 20rem;
+  width: 100%;
+  overflow-y: hidden;
+}
+
+.grant-banner {
+  background-color: #F2F6F9;
+  width: 100%;
+}
+
+.grant-banner .grant-title {
+  font-weight: 600;
+}
+
+.grant-banner .grant-title a {
+  color: #000;
+}
+
+.summary p {
+  margin: 0 0 4px;
+}
+
+.summary i {
+  font-size: 6px;
+  position: relative;
+  bottom: 2px;
+}
+
+@media (max-width: 767.98px) {
+
+  .banner-img {
+    text-align: center;
+  }
+
+  .banner-img img {
+    width: auto;
+    max-width: 100%;
+  }
+}

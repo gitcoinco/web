@@ -105,6 +105,7 @@ INSTALLED_APPS = [
     'external_bounties',
     'dataviz',
     'impersonate',
+    'grants',
     'kudos',
     'django.contrib.postgres',
     'bounty_requests',

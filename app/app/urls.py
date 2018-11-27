@@ -46,10 +46,10 @@ import marketing.views
 import marketing.webhookviews
 import retail.emails
 import retail.views
-import revenue.views
 import tdi.views
 from dashboard.router import router as dbrouter
 from external_bounties.router import router as ebrouter
+from grants.router import router as grant_router
 from kudos.router import router as kdrouter
 
 from .sitemaps import sitemaps
@@ -78,9 +78,6 @@ urlpatterns = [
     re_path(r'^kudos/address/(?P<handle>.*)', kudos.views.kudos_preferred_wallet, name='kudos_preferred_wallet'),
     re_path(r'^dynamic/kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.image, name='kudos_dynamic_img'),
 
-    # grant views
-    path('grants/', dashboard.views.grants, name='grants'),
-
     # api views
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
     url(r'^api/v0.1/funding/save/?', dashboard.ios.save, name='save'),
@@ -88,12 +85,16 @@ urlpatterns = [
     url(r'^api/v0.1/', include(dbrouter.urls)),
     url(r'^api/v0.1/', include(ebrouter.urls)),
     url(r'^api/v0.1/', include(kdrouter.urls)),
-    url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active, but not cached in cluodfront
+    url(r'^api/v0.1/', include(grant_router.urls)),
+    url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active
     url(r'^api/v0.1/users_search/', dashboard.views.get_users, name='users_search'),
     url(r'^api/v0.1/kudos_search/', dashboard.views.get_kudos, name='kudos_search'),
     # Health check endpoint
     re_path(r'^health/', include('health_check.urls')),
     re_path(r'^lbcheck/?', healthcheck.views.lbcheck, name='lbcheck'),
+
+    # grant views
+    path('grants/', include('grants.urls', namespace='grants')),
 
     # dashboard views
 
@@ -109,7 +110,6 @@ urlpatterns = [
     url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
 
-    #
     path('revenue/attestations/new', revenue.views.new_attestation, name='revenue_new_attestation'),
 
     # action URLs
@@ -282,6 +282,24 @@ urlpatterns = [
 
     # admin views
     re_path(r'^_administration/?', admin.site.urls, name='admin'),
+    path('_administration/email/grant_cancellation', retail.emails.grant_cancellation, name='admin_grant_cancellation'),
+    path(
+        '_administration/email/subscription_terminated',
+        retail.emails.subscription_terminated,
+        name='admin_subscription_terminated'
+    ),
+    path('_administration/email/new_grant', retail.emails.new_grant, name='admin_new_grant'),
+    path('_administration/email/new_supporter', retail.emails.new_supporter, name='admin_new_supporter'),
+    path(
+        '_administration/email/thank_you_for_supporting',
+        retail.emails.thank_you_for_supporting,
+        name='admin_thank_you_for_supporting'
+    ),
+    path(
+        '_administration/email/support_cancellation',
+        retail.emails.support_cancellation,
+        name='admin_support_cancellation'
+    ),
     path('_administration/email/new_kudos', retail.emails.new_kudos, name='new_kudos'),
     path('_administration/email/kudos_mint', retail.emails.kudos_mint, name='kudos_mint'),
     path('_administration/email/kudos_mkt', retail.emails.kudos_mkt, name='kudos_mkt'),

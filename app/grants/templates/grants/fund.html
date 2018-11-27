@@ -1,0 +1,201 @@
+{% comment %}
+Copyright (C) 2018 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load static humanize i18n %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/grants/fund.css" %}">
+  </head>
+  <body class="interior {{ active }} grant g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'grants/nav.html' %}
+      <div class="row no-gutters metamask-banner">
+        <div class="col-12">
+          {% include 'shared/no_metamask_error.html' %}
+          {% include 'shared/zero_balance_error.html' %}
+          {% include 'shared/unlock_metamask.html' %}
+          {% include 'shared/connect_metamask.html' %}
+        </div>
+      </div>
+    </div>
+
+    <div class="alpha-warning font-caption">
+      <div>
+        {% trans "WARNING: Gitcoin Grants is in" %}
+        <span class="font-weight-bold">ALPHA</span>
+        {% trans "release." %}
+      </div>
+      <div>
+        {% trans "It has had inital audits done on it's smart contract and we are in the process of testing it holistically. Please, use caution and do not send high amounts of value." %}
+      </div>
+    </div>
+
+    <div class="row">
+      <div id="robot_error" class="hidden my-5">
+        <img src="{% static "v2/images/prime.png" %}">
+      </div>
+    </div>
+
+    <div class="row" id="grants_form">
+      <div class="col-12 text-center mt-md-3">
+        <h2 class="font-title-lg my-4">{% trans "Fund Grant" %}</h2>
+      </div>
+
+      {% include 'grants/banner.html' %}
+
+      <div class="col-12 offset-md-2 col-md-10 offset-lg-3 col-lg-6 mt-5 font-subheader mx-0 mx-md-auto row">
+        <p class="col-12 font-weight-semibold my-4">
+          {{ grant.admin_profile }} {% trans "is accepting contributions in "%}
+          {% if grant_has_no_token %}
+            {% trans "any token." %}
+          {% else %}
+            {{ token_symbol }}
+          {% endif %}
+        </p>
+
+        <div id="grants_form" class="col-12">
+          <form method="POST" id="js-fundGrant">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-12">
+                <div class="form__group-horizontal frequency">
+                  <label class="form__label">{% trans "Payment Period" %}</label>
+                  <div class="row">
+                    <div class="col-8">
+                      <input type="number" id="frequency_count" name="frequency" class="form__input" value='30' required />
+                    </div>
+                    <div class="col-4 font-body">
+                      <select name="frequency_unit" id="frequency_unit" class="js-select2" style="width: 100%">
+                        <option value="days" selected="selected">{% trans "days" %}</option>
+                        <option value="months">{% trans "months" %}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form__group-horizontal">
+                  <label class="form__label">{% trans "Amount Per Period" %}</label>
+                  <div class="row">
+                    <div class="col-8">
+                      <input type="number" id="amount" name="amount_per_period" class="form__input" required />
+                    </div>
+                    <div class="col-4">
+                      {% if grant_has_no_token %}
+                        <div class="form__select2">
+                          <select class='js-select2' name='denomination' id='js-token'> </select>
+                        </div>
+                      {% else %}
+                        {{ token_symbol }}
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form__group-horizontal">
+                  <div class="row">
+                    <div class="col-12">
+                      <label class="form__label">
+                        {% trans "Number Of Periods" %}
+                      </label>
+                      <input id="period" type="number" name="approve" class="form__input" required />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="summary font-body mt-4">
+                  <p class="mb-2 font-weight-semibold">Summary</p>
+                  <p>
+                    <i class="fas fa-circle mr-2"></i>
+                    {% trans "Your contribution will stop once this payment has happened" %}
+                    <span id="summary-frequency" class="font-weight-bold">-</span> times.
+                  </p>
+                  <p>
+                    <i class="fas fa-circle mr-2"></i>
+                    {% trans "You are contributing" %}
+                    <span id="summary-amount" class="font-weight-bold">-</span>
+                    <span id="summary-token" class="font-weight-bold">
+                      {% if not grant_has_no_token %}
+                        {{ token_symbol }}
+                      {% else %}
+                        -
+                      {% endif %}
+                    </span>
+                    {% trans "to this grant every" %}
+                    <span id="summary-period" class="font-weight-bold">-</span>
+                    <span id="summary-frequency-unit" class="font-weight-bold">-</span>.
+                  </p>
+                  <p>
+                    <i class="fas fa-circle mr-2"></i>
+                    {% trans "The first payment will happen immediately after you click Contribute to Grant." %}
+                  </p>
+                  <p>
+                    <i class="fas fa-circle mr-2"></i>
+                    {% trans "Note: You will have to approve 2 transactions via MetaMask on submit." %}
+                  </p>
+                </div>
+
+                <div class="form__group-horizontal">
+                  <div class="row">
+                    <div class="col-12 form__footer text-center">
+                      <button class="button button--primary button--full" id='js-fundGrant'>{% trans "Contribute to Grant" %}</button>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div>
+              <input type="hidden" id="grant_id" name="grant_id" value="{{ grant.id }}">
+              <input type="hidden" id="admin_address" name="admin_address" value="{{ grant.admin_address }}">
+              <input type="hidden" id="token_address" name="token_address" value="{{ grant.token_address }}">
+              <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
+              <input type="hidden" id="contract_version" name="contract_version" value="{{ grant.contract_version }}">
+              <input type="hidden" id="network" name="network" value="{{ grant.network }}">
+              <input type="hidden" id="subscription_hash" name="subscription_hash" value="">
+              <input type="hidden" id="signature" name="signature" value="">
+              <input type="hidden" id="contributor_address" name="contributor_address" value="">
+              <input type="hidden" id="gas_price" name="gas_price" value="">
+              <input type="hidden" id="token_symbol" name="token_symbol" value="{{ grant.token_symbol }}">
+              <input type="hidden" id="real_period_seconds" name="real_period_seconds" value="">
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+  </body>
+
+  <script src="{% static "v2/js/grants/compiledSubscriptionContract.js" %}"></script>
+  <script src="{% static "v2/js/grants/compiledTokenContract.js" %}"></script>
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
+  <script src="{% static "v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
+  <script src="{% static "v2/js/grants/shared.js" %}"></script>
+  <script src="{% static "v2/js/grants/fund.js" %}"></script>
+  <script src="{% static "v2/js/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/ipfs.js" %}"></script>
+</html>

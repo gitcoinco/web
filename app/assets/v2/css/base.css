@@ -124,6 +124,10 @@ span {
   border-radius: 4px !important;
 }
 
+.font-weight-semibold {
+  font-weight: 600;
+}
+
 #tutorials li{
   list-style: none;
 }
@@ -528,6 +532,14 @@ p a {
 
 .loading_img img {
   max-width: 100px;
+}
+
+.grant .loading_img {
+  display: none;
+}
+
+.grant .loading_img.waiting-state {
+  display: flex;
 }
 
 .dashboard .body .experienence.unknown {
