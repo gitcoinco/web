@@ -74,8 +74,8 @@ class Command(BaseCommand):
                     es.keywords = profile_keywords_helper(es.github)
                     if es.keywords:
                         print(f"got keywords: {es.keywords}")
-                    profile = profile_helper(es.github, True)
-                    es.keywords = profile.keywords
+                    es.profile = profile_helper(es.github, True)
+                    es.keywords = es.profile.keywords
                 es.save()
                 # print(es.email, es.github, es.keywords)
                 success += 1

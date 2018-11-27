@@ -56,14 +56,16 @@
               {% endfor %}
             </div>
             <div class="row mt-0 ml-1 pt-1 pl-1" style="height: 4em; padding: 0.5em;">
-              <div class="col-6" style="padding-top: 0.5em;">
+              <div class="col-7" style="padding-top: 0.5em;">
                 <h3>{{title}} <span id="alpha">Alpha</span></h3>
               </div>
               <div class="col-2 filter">
                 <div class="form-group">
-                  <select id="tech-keyword" class="form-control tech-options key">
-                    <option value="all">All</option>
-                  </select>
+                  {% if technologies|length  > 0%}
+                    <select id="tech-keyword" class="form-control tech-options key">
+                      <option value="all">All</option>
+                    </select>
+                  {%endif%}
                 </div>
               </div>
               <div class="col-2 select" style="margin-left: 1.5em;">

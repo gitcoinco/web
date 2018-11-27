@@ -39,7 +39,7 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
-from app.utils import clean_str, ellipses, sync_profile
+from app.utils import clean_str, ellipses
 from avatar.utils import get_avatar_context_for_user
 from economy.utils import convert_token_to_usdt
 from eth_utils import to_checksum_address, to_normalized_address
@@ -47,7 +47,7 @@ from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_auth_url, get_github_user_data, is_github_token_valid, search_users
 from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
-from dashboard.utils import ProfileNotFoundException
+from dashboard.utils import ProfileNotFoundException, profile_helper
 from marketing.mails import (
     admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,
 )
@@ -1038,64 +1038,6 @@ def quickstart(request):
 
 class ProfileHiddenException(Exception):
     pass
-
-
-def profile_helper(handle, suppress_profile_hidden_exception=False, current_user=None):
-    """Define the profile helper.
-
-    Args:
-        handle (str): The profile handle.
-
-    Raises:
-        DoesNotExist: The exception is raised if a Profile isn't found matching the handle.
-            Remediation is attempted by syncing the profile data.
-        MultipleObjectsReturned: The exception is raised if multiple Profiles are found.
-            The latest Profile will be returned.
-
-    Returns:
-        dashboard.models.Profile: The Profile associated with the provided handle.
-
-    """
-    current_profile = getattr(current_user, 'profile', None)
-    if current_profile and current_profile.handle == handle:
-        return current_profile
-
-    try:
-        profile = Profile.objects.get(handle__iexact=handle)
-    except Profile.DoesNotExist:
-        profile = sync_profile(handle)
-        if not profile:
-            raise Http404
-    except Profile.MultipleObjectsReturned as e:
-        # Handle edge case where multiple Profile objects exist for the same handle.
-        # We should consider setting Profile.handle to unique.
-        # TODO: Should we handle merging or removing duplicate profiles?
-        profile = Profile.objects.filter(handle__iexact=handle).latest('id')
-        logger.error(e)
-
-    if profile.hide_profile and not profile.is_org and not suppress_profile_hidden_exception:
-        raise ProfileHiddenException
-
-    return profile
-
-
-def profile_keywords_helper(handle):
-    """Define the profile keywords helper.
-
-    Args:
-        handle (str): The profile handle.
-
-    """
-    profile = profile_helper(handle, True)
-
-    keywords = []
-    for repo in profile.repos_data:
-        language = repo.get('language') if repo.get('language') else ''
-        _keywords = language.split(',')
-        for key in _keywords:
-            if key != '' and key not in keywords:
-                keywords.append(key)
-    return keywords
 
 
 def profile_keywords(request, handle):
