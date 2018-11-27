@@ -65,7 +65,8 @@ $(document).ready(function() {
 
           deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(realApproval)).send({from: accounts[0], gasPrice: 4000000000}, function(err, result) {
 
-            enableWaitState();
+            document.issueURL = window.location.origin + $('#grant-link').val();
+            enableWaitState('#grants_form');
             // Should add approval transactions to transaction history
             deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
 
@@ -186,13 +187,4 @@ const updateSummary = (element) => {
   $('input#period').on('input', () => {
     $('#summary-frequency').html($('input#period').val());
   });
-};
-
-const enableWaitState = () => {
-  $('#grants_form').hide();
-  $('.interior .body').addClass('open');
-  $('.interior .body').addClass('loading');
-  $('.grant_waiting').show();
-  document.issueURL = window.location.origin + $('#grant-link').val();
-  waitingStateActive();
 };

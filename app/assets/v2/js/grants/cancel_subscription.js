@@ -37,13 +37,8 @@ window.onload = function() {
             .on('transactionHash', function(hash) {
               console.log('hash', hash);
 
-              // Waiting State screen
-              $('#grants_form').hide();
-              $('.interior .body').addClass('open');
-              $('.interior .body').addClass('loading');
-              $('.grant_waiting').show();
               document.issueURL = document.getElementById('grant-link').href;
-              waitingStateActive();
+              enableWaitState('#grants_form');
 
               deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
 

@@ -63,13 +63,8 @@ $(document).ready(function() {
         deployedSubscription.methods.endContract()
           .send({from: accounts[0], gasPrice: 4000000000})
           // .on('transactionHash', function() {
-          //   // Waiting State screen
-          //   $('#grants-details').hide();
-          //   $('.interior .body').addClass('open');
-          //   $('.interior .body').addClass('loading');
-          //   $('.grant_waiting').show();
           //   document.issueURL = document.getElementById('grant-link').href;
-          //   waitingStateActive();
+          //   enableWaitState('#grants-details');
           // })
           .on('confirmation', function(confirmationNumber, receipt) {
             console.log('receipt', receipt);

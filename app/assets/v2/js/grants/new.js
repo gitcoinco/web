@@ -80,14 +80,8 @@ $(document).ready(function() {
           }).on('transactionHash', function(transactionHash) {
             console.log('2', transactionHash);
             $('#transaction_hash').val(transactionHash);
-
-            // Waiting State screen
-            $('#new-grant').hide();
-            $('.interior .body').addClass('open');
-            $('.interior .body').addClass('loading');
-            $('.grant_waiting').show();
             document.issueURL = $('#input-url').val();
-            waitingStateActive();
+            enableWaitState('#new-grant');
           }).on('receipt', function(receipt) {
             $('#receipt').val(JSON.stringify(receipt));
             $('#contract_address').val(receipt.contractAddress);
