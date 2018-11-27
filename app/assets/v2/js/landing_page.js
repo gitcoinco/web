@@ -95,10 +95,10 @@ function showDivs(n) {
 }  
 
 function screenClass() {
-  if ( $(window).innerWidth() < 1160) {
+  if ($(window).innerWidth() < 1160) {
     showDivs(slideIndex);
   } else {
-    $('.live-refresh-banner').load(location.href+' .live-refresh-banner>*', '');
+    $('.live-refresh-banner').load(location.href + ' .live-refresh-banner>*', '');
   }
 }
 
