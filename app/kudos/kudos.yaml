@@ -2039,5 +2039,26 @@
     - gitcoin 
     - thanksgiving
   image: turkey.svg
+- name: ether_gun
+  description: Know someone who produces and distributes value at a rapid clip?  Send them the Ether Gun Kudos!
+  priceFinney: 4
+  numClonesAllowed: 251
+  tags: 
+    - gitcoin 
+    - value
+    - fun
+    - ether
+  image: ethergun.svg
+- name: helpotron
+  description: The helpotron is your handy, helpful, robot friend.  This kudos is for any collaborator that you find really "helpful"!
+  priceFinney: 3
+  numClonesAllowed: 255
+  tags: 
+    - gitcoin 
+    - helpful
+    - sot skills
+    - fun
+    - robot
+  image: helpotron.svg
 
 
