@@ -113,6 +113,7 @@
       {% endif %}
     </nav>
   </div>
+  {% include 'shared/notifications.html' %}
 </nav>
 {% if request.path|matches:"^\/((explorer)|(issue.*)|(.*new.*))$" %}
   <p id="navbar-network-banner" class="px-0 py-1 m-0 font-caption hidden"></p>

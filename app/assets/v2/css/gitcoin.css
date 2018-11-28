@@ -343,7 +343,7 @@ div.button-pink {
   text-decoration: none;
   padding-right: 1rem;
   padding-left: 1rem;
-  font-size: 0.9rem !important;
+  font-size: 0.9rem;
 }
 
 .footer .nav-link:hover {
@@ -620,12 +620,3 @@ div.button-pink {
   }
 }
 
-.notification-dot {
-  background-color: #ef3427;
-  width: 0.5rem;
-  height: 0.5rem;
-  position: absolute;
-  top: 6px;
-  border-radius: 30px;
-  left: 6px;
-}

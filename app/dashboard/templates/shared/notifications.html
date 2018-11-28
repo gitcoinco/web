@@ -1,0 +1,36 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+
+<div class="nav-item dropdown">
+    <a href="" class="notifications nav-link dropdown-toggle" id="notificationsDropdown" role="button"
+    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <i class="fas fa-bell fa-fw"></i>
+      <span class="notification-dot"></span>
+    </a>
+    <div class="dropdown-menu" aria-labelledby="notificationsDropdown">
+      {% trans 'Notifications' %} {% trans 'Mark All as Read' %}
+      <ul>
+        <li>
+          <span class="notifications__read-state"></span>
+          You haven’t responded to #2186: [Design] Show Remarketed Issues… in 3 days. Please submit a WIP…
+          time
+        </li>
+      </ul>
+      <a href="">{% trans 'See all' %}</a>
+    </div>
+  </div>

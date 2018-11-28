@@ -1,0 +1,45 @@
+:root {
+  --color-notification: 37, 232, 153;
+
+}
+
+
+.navbar-nav .nav-link.notifications {
+  position: relative;
+  font-size: 18px;
+  color: white;
+}
+
+.dropdown-toggle::after {
+  content: none;
+}
+
+.notification-dot {
+  background: rgba(var(--color-notification), 1);
+  display: block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 rgba(var(--color-notification), .4);
+  animation: BadgePulse 1.8s infinite;
+  position: absolute;
+  top: 0.5em;
+  right: 0.9em;
+}
+
+@keyframes BadgePulse{
+  0%{
+    -moz-box-shadow:0 0 0 0 rgba(var(--color-notification), .4);
+    box-shadow:0 0 0 0 rgba(var(--color-notification), .4)
+  }
+
+  70%{
+    -moz-box-shadow:0 0 0 10px rgba(var(--color-notification), 0);
+    box-shadow:0 0 0 10px rgba(var(--color-notification), 0)
+  }
+
+  100%{
+    -moz-box-shadow:0 0 0 20px rgba(var(--color-notification), 0);
+    box-shadow:0 0 0 20px rgba(var(--color-notification), 0)
+  }
+}
