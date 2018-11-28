@@ -1,11 +1,15 @@
 import datetime
 import os
 
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
+import boto
+from boto.s3.key import Key
 from gas.models import GasProfile
 from numpy import array
+from perftools.models import JSONStore
 
 
 def convert_to_movie():
@@ -28,14 +32,20 @@ def clear_cache():
     command = "rm cache/*.mp4"
     os.system(command)
 
+def upload_to_s3():
+    def percent_cb(complete, total):
+        import sys
+        sys.stdout.write('.')
+        sys.stdout.flush()
 
-def move_to_static():
-    # TODO: This whole method and utilization needs modified to use S3 storage... not local.
-    # We can't be using local storage moving forward.
-    command = "rm static/tmp/gas_price_viz.mp4 -f"
-    os.system(command)
-    command = "mv cache/out.mp4 static/tmp/gas_price_viz.mp4"
-    os.system(command)
+    filepath = 'cache/out.mp4'
+    s3 = boto.connect_s3(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
+    bucket = s3.get_bucket(settings.AWS_STORAGE_BUCKET_NAME)
+    k = Key(bucket)
+    k.key = 'gas_price_viz.mp4'
+    k.set_contents_from_filename(filepath, cb=percent_cb, num_cb=10)
+    k.set_acl('public-read')
+    return k.generate_url(expires_in=0, query_auth=False)
 
 
 def get_color(j, k, num_items_to_show_at_a_time):
@@ -135,4 +145,5 @@ class Command(BaseCommand):
             plt.savefig(png_file)
             plt.close()
         convert_to_movie()
-        move_to_static()
+        url = upload_to_s3()
+        print(url)

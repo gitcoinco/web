@@ -14,9 +14,17 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
-<div class="w-100 mt-2" style="text-align: center;">
-  <a href="https://codefund.io?utm_medium=website&utm_source=gitcoin" target="_blank">
-    <img src="{% static "v2/images/codefund_banner.png" %}" style="max-width: 90%">
-  </a>
+{% load i18n %}
+<div class="tooltip-info">
+  <p class="font-subheader">{% trans "Organization Name" %}</p>
+  <div class="font-body">
+    <div class="row">
+      <div class="col-12">
+        <strong>{% trans "Search by organization name" %}:</strong>
+
+          {% trans "ex. gitcoinco, ethereum" %}
+
+      </div>
+    </div>
+  </div>
 </div>

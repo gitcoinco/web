@@ -37,26 +37,14 @@
     {% include 'dashboard/ftux.html' %}
     <div id="dashboard-content" class="row no-gutter">
       <div class="col-12 col-lg-3 col-xl-2 invisible" id="sidebar_container" style="background: #F2F6F9;">
-        {% include 'shared/sidebar_search.html' %}
-        {% include 'shared/codefund_banner.html' %}
+        {% include 'dashboard/sidebar_search.html' %}
       </div>
 
       <div class="col-12 col-lg-9 col-xl-10 body">
         <div class="container-fluid p-2" id="bounties">
           <div id="dashboard-title" class="hidden">
             {% include 'shared/search_bar.html' %}
-            <div class="row mt-2 mb-2">
-            </div>
           </div>
-          <div class="col-12 col-lg-11 pl-2 mr-2 pb-1 title-row">
-            <div class="col-12 col-md-4">
-              <span id="filter" class="font-title"></span>
-              <span id="matches" class="font-body"></span>
-            </div>
-            <div class="col-12 col-md-8 bounty-info" id="funding-info">
-            </div>
-          </div>
-          <div style="clear: right;"></div>
           <div class="row loading justify-content-center align-items-center loading_img">
             <img src="{% static "v2/images/loading_v2.gif" %}">
           </div>

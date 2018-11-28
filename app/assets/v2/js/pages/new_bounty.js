@@ -98,6 +98,8 @@ $(document).ready(function() {
   $('input[name=amount]').blur(setUsdAmount);
   $('input[name=usd_amount]').keyup(usdToAmount);
   $('input[name=usd_amount]').blur(usdToAmount);
+  $('input[name=hours]').keyup(setUsdAmount);
+  $('input[name=hours]').blur(setUsdAmount);
   $('select[name=denomination]').change(setUsdAmount);
   $('select[name=denomination]').change(promptForAuth);
   $('input[name=issueURL]').blur(retrieveIssueDetails);

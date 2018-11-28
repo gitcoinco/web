@@ -379,6 +379,7 @@ class DashboardModelsTest(TestCase):
             raw_data={},
             current_bounty=True,
             bounty_owner_github_username='gitcoinco',
+            network='mainnet',
         )
         tip = Tip.objects.create(
             emails=['foo@bar.com'],
@@ -394,13 +395,6 @@ class DashboardModelsTest(TestCase):
         assert profile.bounties.first() == bounty
         assert profile.tips.first() == tip
         assert profile.desc == '@gitcoinco is a newbie who has participated in 1 funded issue on Gitcoin'
-        assert profile.stats == [
-            ('newbie', 'Status'),
-            (1, 'Total Funded Issues'),
-            (1, 'Open Funded Issues'),
-            ('0x', 'Loyalty Rate'),
-            (0, 'Bounties completed'),
-        ]
         assert profile.github_url == 'https://github.com/gitcoinco'
         assert profile.get_relative_url() == '/profile/gitcoinco'
 

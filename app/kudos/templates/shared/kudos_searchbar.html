@@ -15,18 +15,13 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n kudos_extras %}
-<form action="{% url "kudos_marketplace" %}" method="get">
+<form action="{% url 'kudos_marketplace' %}" method="get">
   <div class="form-row align-items-center justify-content-center">
     <div class="col-12 col-sm-6 my-4 ">
       <div class="input-group">
 
         <input type="text" list="kudos-suggestions"  class="form-control form-control-lg" name="q" id="kudos-search" placeholder="{% trans "Search for Kudos" %}">
         <datalist id="kudos-suggestions">
-          <!-- {% for listing in listings %}
-            {% for tag in listing.tags.split %}
-              <option>{{tag }}</option>
-            {% endfor %}
-          {% endfor %} -->
           <option>rare</option>
           <option>common</option>
           <option>ninja</option>
@@ -39,20 +34,20 @@
           <option>graphs</option>
           <option>ideas</option>
           <option>clean code</option>
+          <option>cellarius</option>
         </datalist>
         <div class="input-group-append">
-
-          <a href="/kudos/marketplace" class="btn btn-dark btn-lg clear-search hidden"><i class="fas fa-times"></i></a>
+          <a href="{% url 'kudos_marketplace' %}" class="btn btn-dark btn-lg clear-search hidden"><i class="fas fa-times"></i></a>
           <button type="submit" class="btn btn-gc-blue">{% trans "Search" %}</button>
         </div>
       </div>
       <div class="mt-3 white">
         <span class="white">Search suggestions:</span>
-        <a href="{% url "kudos_marketplace" %}?q=rare">rare</a> -
-        <a href="{% url "kudos_marketplace" %}?q=common">common</a> -
-        <a href="{% url "kudos_marketplace" %}?q=ninja">ninja</a> -
-        <a href="{% url "kudos_marketplace" %}?q=soft skills">soft skills</a> -
-        <a href="{% url "kudos_marketplace" %}?q=programming">programming</a>
+        <a href="{% url 'kudos_marketplace' %}?q=rare">rare</a> -
+        <a href="{% url 'kudos_marketplace' %}?q=common">common</a> -
+        <a href="{% url 'kudos_marketplace' %}?q=ninja">ninja</a> -
+        <a href="{% url 'kudos_marketplace' %}?q=soft skills">soft skills</a> -
+        <a href="{% url 'kudos_marketplace' %}?q=programming">programming</a>
       </div>
     </div>
   </div>

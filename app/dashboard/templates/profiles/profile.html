@@ -176,134 +176,75 @@
     {% if hidden %}
       {% include 'profiles/hidden.html' %}
     {% else %}
-      {% if activities %}
+
+      {% if not profile.is_org and profile.organizations|length %}
+        <div class="container">
+          <div class="row">
+          <div class="col py-4">
+            <div class="pb-2 profile-section-title">
+              {% trans "Organizations" %}
+            </div>
+          </div>
+          </div>
+          <div class="row">
+            <div class="container profile-organizations">
+              <div class="col-12 text-left">
+                {% for org in profile.organizations %}
+                  <div class="organization">
+                    <a href="{% url 'profile' %}{{org}}" title="{{ org }}">
+                      <img src="/dynamic/avatar/{{ org }}" title="{{ org }}">
+                    </a>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+
+      {% if activity_tabs %}
         <div class="row pt-4 py-2">
           <div class="container profile-bounties profile-bounties--activities">
-            {% for group in activities %}
-              <div class="row">
-                <div class="col-12 px-4 px-lg-0">
-                  <span class="font-caption profile-bounties__sort_label">{{ group.title }}</span>
-                </div>
-
-                {% if group.activity_bounties %}
-                <div id="activity-tabs" class="tab-container mt-4 font-body">
-                  <button type="button" id="all" class="section-tab">{% trans "All Activity" %} ({{ group.activity_bounties|length }})</button>
-                  <button type="button" id="funded" class="section-tab">{% trans "Bounties Funded" %} ({{ funded_bounties_count }})</button>
-                  <button type="button" id="completed" class="section-tab">{% trans "Bounties Completed" %}</button>
-                  <button type="button" id="tips" class="section-tab">{% trans "Tips Received" %}</button>
-                </div>
-                <div id="activity-tabs-sections" class="tab-sections section">
-                  <div id="section-all" class="tab-section active">
-                    <div class="container">
-                      <div class="row mb-3 p-2">
-                        <div class="col-12">
-                          {% for activity in group.activity_bounties %}
-                            {% include "shared/profile_activities_bounty.html" %}
-                          {% endfor %}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div id="section-funded" class="tab-section">
-                    <div class="container">
-                      <div class="row mb-3 p-2">
-                        <div class="col-12">
-                          {% for activity in group.activity_bounties %}
-                            {% if activity.activity_type == 'new_bounty' %}
-                              {% include "shared/profile_activities_bounty.html" %}
-                            {% endif %}
-                          {% endfor %}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div id="section-completed" class="tab-section">
-                    <div class="container">
-                      <div class="row mb-3 p-2">
-                        <div class="col-12">
-                          {% for activity in group.activity_bounties %}
-                            {% if activity.activity_type == 'work_done' %}
-                              {% include "shared/profile_activities_bounty.html" %}
-                            {% endif %}
-                          {% endfor %}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div id="section-tips" class="tab-section">
-                    <div class="container">
-                      <div class="row mb-3 p-2">
-                        <div class="col-12">
-                            {% for tip in tips %}
-                            <div class="row result bounty_row {% if forloop.counter > 5 %}bounty_row--hidden{% endif %} {{ tip.network }}" {% if tip.github_url %}href="{{ tip.github_url }}"{% endif %}>
-                              <div class="avatar-container col-1 justify-content-center special_tag hide_min_viewport">
-                                <img src="{% url "avatar" %}?repo=https://github.com/{% if tip.from_username %}{{ tip.from_username }}{% else %}Self{%endif%}" class="avatar" />
-                              </div>
-                              <div class="col-12 col-md-8 d-flex flex-column">
-                                <div class="bounty-detail">
-                                  {% if tip.comments_public %}
-                                    <div class="title font-subheader">
-                                      {% trans "Comments" %}: {{ tip.comments_public }}
-                                    </div>
-                                  {% endif %}
-                                  <div class="bounty-summary col-12">
-                                    <div class="info font-caption">
-                                      from
-                                      {% if tip.from_username %}
-                                        {{ tip.from_username }}
-                                      {% else %}
-                                        {% trans "an anonymous user" %}
-                                      {% endif %}
-                                      {% if tip.received_on %}
-                                        &bull; {{ tip.received_on | naturaltime }}
-                                      {% endif %}
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="col-12 col-md-3 tags font-caption align-items-center">
-                                {% if tip.network != 'mainnet' %}
-                                <div class="tag network_warning">
-                                  <p>
-                                    <span>{{ tip.network }}</span>
-                                  </p>
-                                </div>
-                                {% endif %}
-                                <div class="tag token">
-                                  <p>
-                                    {{ tip.amount }}
-                                    <span>{{ tip.tokenName }}</span>
-                                  </p>
-                                </div>
-                                {% if tip.value_in_usdt_now %}
-                                  <div class="tag usd">
-                                    <p>
-                                      {{ tip.value_in_usdt_now }}
-                                      <span>USD</span>
-                                    </p>
-                                  </div>
-                                {% endif %}
-                              </div>
-                            </div>
-                          {% endfor %}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {% endif %}
+            <div class="row">
+              <div class="col-12 px-4 px-lg-0">
+                <span class="font-caption profile-bounties__sort_label">{% trans 'By Created Date' %}</span>
               </div>
-            {% endfor %}
+              <div id="activity-tabs" class="tab-container mt-4 font-body">
+                {% for tab in activity_tabs %}
+                  <button type="button" id="{{ tab.id }}" class="section-tab">{{ tab.name }} ({{ tab.count }})</button>
+                {% endfor %}
+              </div>
+              <div id="activity-tabs-sections" class="tab-sections section">
+                {% for tab in activity_tabs %}
+                  <div id="section-{{ tab.id }}" class="tab-section">
+                    <div class="container">
+                      <div class="row mb-3 p-2">
+                        <div id="{{ tab.id }}" class="col-12 activities" count="{{ tab.count }}">
+                          {% include 'profiles/profile_activities.html' with activities=tab.activities %}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+              <div class="col text-center">
+                <div class="row loading justify-content-center align-items-center loading_img hidden">
+                  <img src="{% static 'v2/images/loading_v2.gif' %}">
+                </div>
+                <span id="update-view-btn" class="btn btn-outline-gc-purple font-caption m-1 p-1" style="visibility: hidden;">
+                  {% trans 'Show Me More' %}
+                </span>
+              </div>
+            </div>
           </div>
-        </div>		
-	  {% else %}
-     	{% include 'profiles/none.html' %}
+        </div>
+      {% else %}
+        {% include 'profiles/none.html' %}
       {% endif %}
     {% endif %}
     </div>
 
     {% include 'shared/result.html' %}
-
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html'%}
@@ -319,104 +260,12 @@
     <script>
       var bootstrapTooltip = $.fn.tooltip.noConflict()
     </script>
-    <script src="{% static "v2/js/shared.js" %}"></script>
     <script src="{% static "v2/js/pages/tabs.js" %}"></script>
-
+    <script src="{% static "v2/js/pages/profile.js" %}"></script>
     <script type="text/javascript">
-      $(document).ready(function() {
-        if ($('.profile-bounties--tips .bounty_row--hidden').length > 0) {
-          var $button = $('.profile-bounties--tips .profile-bounties__btn-show-all');
-          $button.removeClass('hidden');
-          $button.on('click', function(event) {
-            $(this).remove();
-            $('.profile-bounties--tips .bounty_row').removeClass('bounty_row--hidden');
-          });
-        }
-        setupTabs('#activity-tabs');
-
-
-
-        $("[data-toggle=popover]").popover({
-          html : true,
-          trigger: 'focus',
-          template: '<div class="popover wallet-popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>',
-          content: function() {
-              var content = $(this).attr("data-popover-content");
-              return $(content).children(".popover-body").html();
-          },
-          title: function() {
-              var title = $(this).attr("data-popover-content");
-              return $(title).children(".popover-heading").html();
-          }
-        });
-
-        {% if not preferred_payout_address%}
-          $("[data-toggle=popover]").popover('show')
-        {% endif %}
-
-        $("body").on('submit', '#form-wallets', function(e) {
-          e.preventDefault()
-          var data = $("#form-wallets").serializeArray();
-          data.push({'page': 2});
-          var postWallets = fetchData ( e.currentTarget.action,
-                                        e.currentTarget.method,
-                                        data
-                                      )
-
-          $.when( postWallets ).then( function ( response ){
-            var walletAddress = response.wallets[0]
-            var newAddress = new truncate(walletAddress)
-            $('#preferred-address').text(newAddress.elem);
-            $('#preferred-address').prop('title', walletAddress)
-            $('#kudos-section').html(response.kudos_html)
-
-            })
-        });
-
-      });
-
-
-      (function($) {
-        $(document).on('click','.load-more' ,function() {
-          var address =  $('#preferred-address').prop('title')
-          var link = $(this);
-          var page = link.data('page');
-          var request = link.data('request')
-          var handle = link.data('handle')
-          if (!handle) {
-            return
-          }
-          $.ajax({
-            type: 'POST',
-            url: '/lazy_load_kudos/',
-            data: {
-              'page': page,
-              'request': request,
-              'address': address,
-              'handle': handle,
-              'csrfmiddlewaretoken': '{{csrf_token}}' // from index.html
-            },
-            success: function(data) {
-              // if there are still more pages to load,
-              // add 1 to the "Load More Posts" link's page data attribute
-              // else hide the link
-              if (data.has_next) {
-                  link.data('page', page+1);
-              } else {
-                link.hide();
-              }
-              // append html to the posts div
-              var elem = '#' + request
-              $(elem + ' div').first().append(data.kudos_html);
-            },
-            error: function(xhr, status, error) {
-              // shit happens friends!
-            }
-          });
-        });
-      }(jQuery));
-
+      {% if preferred_payout_address %}
+        document.hasPreferredPayoutAddress = true;
+      {% endif %}
     </script>
-
   </body>
 </html>

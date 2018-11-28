@@ -28,6 +28,7 @@ class GeneralAdmin(admin.ModelAdmin):
     """Define the GeneralAdmin administration layout."""
 
     ordering = ['-id']
+    list_display = ['created_on', '__str__']
 
 
 class ProfileInline(admin.TabularInline):
