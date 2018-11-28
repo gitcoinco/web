@@ -90,6 +90,7 @@ body {
 
 .title {
   text-transform: capitalize;
+  font-weight: 600;
 }
 
 .bounty_row {
@@ -151,7 +152,6 @@ body {
 }
 
 .bounty-detail .info {
-  font-weight: 300;
   color: #666666;
 }
 
@@ -169,7 +169,6 @@ body {
 }
 
 .tags.fixed {
-  float: right;
   padding-bottom: 1rem;
 }
 
@@ -202,10 +201,6 @@ body {
   .bounty_row .avatar-container {
     display: none !important;
   }
-
-  .tags.fixed {
-    float: left;
-  }
 }
 
 @media (max-width: 768px) {
@@ -226,13 +221,51 @@ body {
   }
 }
 
-@media (min-width: 768px) {
-
-  .bounty-detail {
-    margin-right: 4rem;
-  }
+.hiring-alt {
+  font-size: 11px;
+  color: #4A90E2;
+  font-weight: 700;
+  letter-spacing: 1.7px;
 }
 
-.hiring {
-  content: url('/static/v2/images/hiring.svg');
+.status-open {
+  color: #00A652;
+}
+
+.status-started {
+  color: #0D0764;
+}
+
+.status-submitted {
+  color: #008EFF;
+}
+
+.status-done {
+  color: #666666;
+}
+
+.status-cancelled,
+.status-expired {
+  color: #C70018;
+}
+
+.separator-bull {
+  margin: 0 0.6em;
+}
+
+.separator-bull:after {
+  content: '\2022'
+}
+
+.btn-expand-token {
+  position: absolute;
+  line-height: 1.5rem;
+  border: 0;
+  background-color: transparent;
+  font-weight: 400;
+  color: #007bff;
+}
+
+.btn-expand-token:focus {
+  color: #007bff;
 }

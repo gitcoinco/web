@@ -490,7 +490,7 @@ class Bounty(SuperModel):
             bool: Whether or not the user has started work.
 
         """
-        return self.interested.filter(pending=pending, profile__handle=handle).exists()
+        return self.interested.filter(pending=pending, profile__handle__iexact=handle).exists()
 
     @property
     def absolute_url(self):
@@ -570,7 +570,7 @@ class Bounty(SuperModel):
                     return 'done'
                 elif self.past_hard_expiration_date:
                     return 'expired'
-                has_tips = self.tips.filter(is_for_bounty_fulfiller=False).exclude(txid='').exists()
+                has_tips = self.tips.filter(is_for_bounty_fulfiller=False).send_happy_path().exists()
                 if has_tips:
                     return 'done'
                 # If its not expired or done, and no tips, it must be cancelled.
@@ -929,7 +929,7 @@ class Bounty(SuperModel):
         for fulfillment in self.fulfillments.filter(accepted=True):
             if fulfillment.fulfiller_github_username:
                 return_list.append(fulfillment.fulfiller_github_username)
-        for tip in self.tips.exclude(txid=''):
+        for tip in self.tips.send_happy_path():
             if tip.username:
                 return_list.append(tip.username)
         return list(set(return_list))
@@ -938,7 +938,7 @@ class Bounty(SuperModel):
     def additional_funding_summary(self):
         """Return a dict describing the additional funding from crowdfunding that this object has"""
         ret = {}
-        for tip in self.tips.filter(is_for_bounty_fulfiller=True).exclude(txid=''):
+        for tip in self.tips.filter(is_for_bounty_fulfiller=True).send_happy_path():
             token = tip.tokenName
             obj = ret.get(token, {})
 
@@ -1032,6 +1032,11 @@ class BountyFulfillment(SuperModel):
             self.fulfiller_github_username = self.fulfiller_github_username.lstrip('@')
         super().save(*args, **kwargs)
 
+
+    @property
+    def should_hide(self):
+        return self.fulfiller_github_username in settings.BLOCKED_USERS
+
     @property
     def to_json(self):
         """Define the JSON representation of BountyFulfillment.
@@ -1066,14 +1071,60 @@ class Subscription(SuperModel):
         return f"{self.email} {self.created_on}"
 
 
+class SendCryptoAssetQuerySet(models.QuerySet):
+    """Handle the manager queryset for SendCryptoAsset."""
+
+    def send_success(self):
+        """Filter results down to successful sends only."""
+        return self.filter(tx_status='success').exclude(txid='')
+
+    def send_pending(self):
+        """Filter results down to pending sends only."""
+        return self.filter(tx_status='pending').exclude(txid='')
+
+    def send_happy_path(self):
+        """Filter results down to pending/success sends only."""
+        return self.filter(tx_status__in=['pending', 'success']).exclude(txid='')
+
+    def send_fail(self):
+        """Filter results down to failed sends only."""
+        return self.filter(Q(txid='') | Q(tx_status__in=['dropped', 'unknown', 'na', 'error']))
+
+    def receive_success(self):
+        """Filter results down to successful receives only."""
+        return self.filter(receive_tx_status='success').exclude(receive_txid='')
+
+    def receive_pending(self):
+        """Filter results down to pending receives only."""
+        return self.filter(receive_tx_status='pending').exclude(receive_txid='')
+
+    def receive_happy_path(self):
+        """Filter results down to pending receives only."""
+        return self.filter(receive_tx_status__in=['pending', 'success']).exclude(receive_txid='')
+
+    def receive_fail(self):
+        """Filter results down to failed receives only."""
+        return self.filter(Q(receive_txid='') | Q(receive_tx_status__in=['dropped', 'unknown', 'na', 'error']))
+
+
 class SendCryptoAsset(SuperModel):
     """Abstract Base Class to handle the model for both Tips and Kudos."""
+
+    TX_STATUS_CHOICES = (
+        ('na', 'na'),  # not applicable
+        ('pending', 'pending'),
+        ('success', 'success'),
+        ('error', 'error'),
+        ('unknown', 'unknown'),
+        ('dropped', 'dropped'),
+    )
 
     web3_type = models.CharField(max_length=50, default='v3')
     emails = JSONField(blank=True)
     url = models.CharField(max_length=255, default='', blank=True)
+    primary_email = models.CharField(max_length=255, default='', blank=True)
     tokenName = models.CharField(max_length=255, default='ETH')
-    tokenAddress = models.CharField(max_length=255)
+    tokenAddress = models.CharField(max_length=255, blank=True)
     amount = models.DecimalField(default=1, decimal_places=4, max_digits=50)
     comments_public = models.TextField(default='', blank=True)
     ip = models.CharField(max_length=50)
@@ -1094,6 +1145,14 @@ class SendCryptoAsset(SuperModel):
         help_text='If this option is chosen, this tip will be automatically paid to the bounty'
                   ' fulfiller, not self.usernameusername.',
     )
+
+    tx_status = models.CharField(max_length=9, choices=TX_STATUS_CHOICES, default='na', db_index=True)
+    receive_tx_status = models.CharField(max_length=9, choices=TX_STATUS_CHOICES, default='na', db_index=True)
+    tx_time = models.DateTimeField(null=True, blank=True)
+    receive_tx_time = models.DateTimeField(null=True, blank=True)
+
+    # QuerySet Manager
+    objects = SendCryptoAssetQuerySet.as_manager()
 
     class Meta:
         abstract = True
@@ -1211,6 +1270,22 @@ class SendCryptoAsset(SuperModel):
         if (settings.DEBUG or settings.ENV != 'prod') and settings.GITHUB_API_USER != self.github_org_name:
             return False
         return True
+
+    def update_tx_status(self):
+        """ Updates the tx status according to what infura says about the tx
+
+        """
+        from dashboard.utils import get_tx_status
+        self.tx_status, self.tx_time = get_tx_status(self.txid, self.network, self.created_on)
+        return bool(self.tx_status)
+
+    def update_receive_tx_status(self):
+        """ Updates the receive tx status according to what infura says about the receive tx
+
+        """
+        from dashboard.utils import get_tx_status
+        self.receive_tx_status, self.receive_tx_time = get_tx_status(self.receive_txid, self.network, self.created_on)
+        return bool(self.receive_tx_status)
 
     @property
     def bounty(self):
@@ -1470,7 +1545,7 @@ class Activity(models.Model):
         blank=True, null=True
     )
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True, db_index=True)
-    activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES, blank=True)
+    activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES, blank=True, db_index=True)
     metadata = JSONField(default=dict)
     needs_review = models.BooleanField(default=False)
 
@@ -1595,6 +1670,8 @@ class Profile(SuperModel):
         default=False,
         help_text='If this option is chosen, the user is able to submit a faucet/ens domain registration even if they are new to github',
     )
+    keywords = ArrayField(models.CharField(max_length=200), blank=True, default=list)
+    organizations = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     form_submission_records = JSONField(default=list, blank=True)
     max_num_issues_start_work = models.IntegerField(default=3)
     preferred_payout_address = models.CharField(max_length=255, default='', blank=True)
@@ -1616,7 +1693,7 @@ class Profile(SuperModel):
         kudos_transfers = kudos_transfers.filter(
             kudos_token_cloned_from__contract__network=settings.KUDOS_NETWORK
         )
-        kudos_transfers = kudos_transfers.exclude(txid='')
+        kudos_transfers = kudos_transfers.send_success() | kudos_transfers.send_pending()
 
         # remove this line IFF we ever move to showing multiple kudos transfers on a profile
         kudos_transfers = kudos_transfers.distinct('id')
@@ -1632,7 +1709,7 @@ class Profile(SuperModel):
         kt_sender_profile = KudosTransfer.objects.filter(sender_profile=self)
 
         kudos_transfers = kt_address | kt_sender_profile
-        kudos_transfers = kudos_transfers.exclude(txid='')
+        kudos_transfers = kudos_transfers.send_success() | kudos_transfers.send_pending()
         kudos_transfers = kudos_transfers.filter(
             kudos_token_cloned_from__contract__network=settings.KUDOS_NETWORK
         )
@@ -1688,14 +1765,25 @@ class Profile(SuperModel):
             )
         return user_actions.count()
 
-    @property
-    def desc(self):
-        stats = self.stats
-        role = stats[0][0]
-        total_funded_participated = stats[1][0]
+    def get_desc(self, funded_bounties, fulfilled_bounties):
+        total_funded = funded_bounties.aggregate(Sum('value_in_usdt'))['value_in_usdt__sum'] or 0
+        total_fulfilled = fulfilled_bounties.aggregate(Sum('value_in_usdt'))['value_in_usdt__sum'] or 0
+
+        role = 'newbie'
+        if total_funded > total_fulfilled:
+            role = 'funder'
+        elif total_funded < total_fulfilled:
+            role = 'coder'
+
+        total_funded_participated = funded_bounties.count() + fulfilled_bounties.count()
         plural = 's' if total_funded_participated != 1 else ''
+
         return f"@{self.handle} is a {role} who has participated in {total_funded_participated} " \
                f"funded issue{plural} on Gitcoin"
+
+    @property
+    def desc(self):
+        return self.get_desc(self.get_funded_bounties(), self.get_fulfilled_bounties())
 
     @property
     def github_created_on(self):
@@ -1708,12 +1796,16 @@ class Profile(SuperModel):
         return created_on.replace(tzinfo=pytz.UTC)
 
     @property
-    def repos_data(self):
+    def repos_data_lite(self):
         from git.utils import get_user
-        from app.utils import add_contributors
         # TODO: maybe rewrite this so it doesnt have to go to the internet to get the info
         # but in a way that is respectful of db size too
-        repos_data = get_user(self.handle, '/repos')
+        return get_user(self.handle, '/repos')
+
+    @property
+    def repos_data(self):
+        from app.utils import add_contributors
+        repos_data = self.repos_data_lite
         repos_data = sorted(repos_data, key=lambda repo: repo['stargazers_count'], reverse=True)
         repos_data = [add_contributors(repo_data) for repo_data in repos_data]
         return repos_data
@@ -1737,62 +1829,6 @@ class Profile(SuperModel):
 
         """
         return self.user.is_staff if self.user else False
-
-    @property
-    def stats(self):
-        bounties = self.bounties.stats_eligible()
-        loyalty_rate = 0
-        total_funded = sum([
-            bounty.value_in_usdt if bounty.value_in_usdt else 0
-            for bounty in bounties if bounty.is_funder(self.handle)
-        ])
-        total_fulfilled = sum([
-            bounty.value_in_usdt if bounty.value_in_usdt else 0
-            for bounty in bounties if bounty.is_hunter(self.handle)
-        ])
-        print(total_funded, total_fulfilled)
-        role = 'newbie'
-        if total_funded > total_fulfilled:
-            role = 'funder'
-        elif total_funded < total_fulfilled:
-            role = 'coder'
-
-        loyalty_rate = self.fulfilled.filter(accepted=True).count()
-        success_rate = 0
-        if bounties.exists():
-            numer = bounties.filter(idx_status__in=['submitted', 'started', 'done']).count()
-            denom = bounties.exclude(idx_status__in=['open']).count()
-            success_rate = int(round(numer * 1.0 / denom, 2) * 100) if denom != 0 else 'N/A'
-        if success_rate == 0:
-            success_rate = 'N/A'
-            loyalty_rate = 'N/A'
-        else:
-            success_rate = f"{success_rate}%"
-            loyalty_rate = f"{loyalty_rate}x"
-        if role == 'newbie':
-            return [
-                (role, 'Status'),
-                (bounties.count(), 'Total Funded Issues'),
-                (bounties.filter(idx_status='open').count(), 'Open Funded Issues'),
-                (loyalty_rate, 'Loyalty Rate'),
-                (total_fulfilled, 'Bounties completed'),
-            ]
-        elif role == 'coder':
-            return [
-                (role, 'Primary Role'),
-                (bounties.count(), 'Total Funded Issues'),
-                (success_rate, 'Success Rate'),
-                (loyalty_rate, 'Loyalty Rate'),
-                (total_fulfilled, 'Bounties completed'),
-            ]
-        # funder
-        return [
-            (role, 'Primary Role'),
-            (bounties.count(), 'Total Funded Issues'),
-            (bounties.filter(idx_status='open').count(), 'Open Funded Issues'),
-            (success_rate, 'Success Rate'),
-            (total_fulfilled, 'Bounties completed'),
-        ]
 
     @property
     def get_quarterly_stats(self):
@@ -2175,13 +2211,15 @@ class Profile(SuperModel):
     def get_org_leaderboard_index(self):
         return self.get_leaderboard_index('quarterly_orgs')
 
-    def get_eth_sum(self, sum_type='collected', network='mainnet'):
+    def get_eth_sum(self, sum_type='collected', network='mainnet', bounties=None):
         """Get the sum of collected or funded ETH based on the provided type.
 
         Args:
             sum_type (str): The sum to lookup.  Defaults to: collected.
             network (str): The network to query results for.
                 Defaults to: mainnet.
+            bounties (dashboard.models.BountyQuerySet): Override the BountyQuerySet this function processes.
+                Defaults to: None.
 
         Returns:
             float: The total sum of all ETH of the provided type.
@@ -2189,16 +2227,20 @@ class Profile(SuperModel):
         """
         eth_sum = 0
 
+        if not bounties:
+            if sum_type == 'funded':
+                bounties = self.get_funded_bounties(network=network)
+            elif sum_type == 'collected':
+                bounties = self.get_fulfilled_bounties(network=network)
+            elif sum_type == 'org':
+                bounties = self.get_orgs_bounties(network=network)
+
         if sum_type == 'funded':
-            obj = self.get_funded_bounties(network=network).has_funds()
-        elif sum_type == 'collected':
-            obj = self.get_fulfilled_bounties(network=network)
-        elif sum_type == 'org':
-            obj = self.get_orgs_bounties(network=network)
+            bounties = bounties.has_funds()
 
         try:
-            if obj.exists():
-                eth_sum = obj.aggregate(
+            if bounties.exists():
+                eth_sum = bounties.aggregate(
                     Sum('value_in_eth')
                 )['value_in_eth__sum'] / 10**18
         except Exception:
@@ -2206,30 +2248,33 @@ class Profile(SuperModel):
 
         return eth_sum
 
-    def get_who_works_with(self, work_type='collected', network='mainnet'):
+    def get_who_works_with(self, work_type='collected', network='mainnet', bounties=None):
         """Get an array of profiles that this user works with.
 
         Args:
             work_type (str): The work type to lookup.  Defaults to: collected.
             network (str): The network to query results for.
                 Defaults to: mainnet.
+            bounties (dashboard.models.BountyQuerySet): Override the BountyQuerySet this function processes.
+                Defaults to: None.
 
         Returns:
             dict: list of the profiles that were worked with (key) and the number of times they occured
 
         """
-        if work_type == 'funded':
-            obj = self.bounties_funded.filter(network=network)
-        elif work_type == 'collected':
-            obj = self.get_fulfilled_bounties(network=network)
-        elif work_type == 'org':
-            obj = self.get_orgs_bounties(network=network)
+        if not bounties:
+            if work_type == 'funded':
+                bounties = self.bounties_funded.filter(network=network)
+            elif work_type == 'collected':
+                bounties = self.get_fulfilled_bounties(network=network)
+            elif work_type == 'org':
+                bounties = self.get_orgs_bounties(network=network)
 
         if work_type != 'org':
-            profiles = [bounty.org_name for bounty in obj if bounty.org_name]
+            profiles = [bounty.org_name for bounty in bounties if bounty.org_name]
         else:
             profiles = []
-            for bounty in obj:
+            for bounty in bounties:
                 for bf in bounty.fulfillments.filter(accepted=True):
                     if bf.fulfiller_github_username:
                         profiles.append(bf.fulfiller_github_username)
@@ -2242,7 +2287,6 @@ class Profile(SuperModel):
         for ele in sorted(profiles_dict.items(), key=lambda x: x[1], reverse=True):
             ordered_profiles_dict[ele[0]] = ele[1]
         return ordered_profiles_dict
-
 
     def get_funded_bounties(self, network='mainnet'):
         """Get the bounties that this user has funded
@@ -2259,11 +2303,37 @@ class Profile(SuperModel):
 
         funded_bounties = Bounty.objects.current().filter(
             Q(bounty_owner_github_username__iexact=self.handle) |
-            Q(bounty_owner_github_username__iexact=f'@{self.handle}')
+            Q(bounty_owner_github_username__iexact=f'@{self.handle}'),
+            network=network,
         )
-        funded_bounties = funded_bounties.filter(network=network)
         return funded_bounties
 
+    def get_bounty_and_tip_activities(self, network='mainnet'):
+        """Get bounty and tip related activities for this profile.
+
+        Args:
+            network (str): The network to query results for.
+                Defaults to: mainnet.
+
+        Returns:
+            (dashboard.models.ActivityQuerySet): The query results.
+
+        """
+        if not self.is_org:
+            all_activities = self.activities
+        else:
+            url = self.github_url
+            all_activities = Activity.objects.filter(
+                Q(bounty__github_url__startswith=url) |
+                Q(tip__github_url__startswith=url),
+            )
+
+        all_activities = all_activities.filter(
+            Q(bounty__network=network) |
+            Q(tip__network=network),
+        ).select_related('bounty', 'tip').all().order_by('-created')
+
+        return all_activities
 
     def to_dict(self, activities=True, leaderboards=True, network=None, tips=True):
         """Get the dictionary representation with additional data.
@@ -2280,8 +2350,14 @@ class Profile(SuperModel):
 
         Attributes:
             params (dict): The context dictionary to be returned.
+            network (str): The bounty network to operate on.
             query_kwargs (dict): The kwargs to be passed to all queries
                 throughout the method.
+            bounties (dashboard.models.BountyQuerySet): All bounties referencing this profile.
+            fulfilled_bounties (dashboard.models.BountyQuerySet): All fulfilled bounties for this profile.
+            funded_bounties (dashboard.models.BountyQuerySet): All funded bounties for this profile.
+            orgs_bounties (dashboard.models.BountyQuerySet or None):
+                All bounties belonging to this organization, if applicable.
             sum_eth_funded (float): The total amount of ETH funded.
             sum_eth_collected (float): The total amount of ETH collected.
 
@@ -2291,41 +2367,48 @@ class Profile(SuperModel):
         """
         params = {}
         network = network or self.get_network()
-
         query_kwargs = {'network': network}
-
-        sum_eth_funded = self.get_eth_sum(sum_type='funded', **query_kwargs)
-        sum_eth_collected = self.get_eth_sum(**query_kwargs)
-        works_with_funded = self.get_who_works_with(work_type='funded', **query_kwargs)
-        works_with_collected = self.get_who_works_with(work_type='collected', **query_kwargs)
+        bounties = self.bounties
+        fulfilled_bounties = self.get_fulfilled_bounties(network=network)
         funded_bounties = self.get_funded_bounties(network=network)
+        orgs_bounties = None
+
+        if self.is_org:
+            orgs_bounties = self.get_orgs_bounties(network=network)
+
+        sum_eth_funded = self.get_eth_sum(sum_type='funded', bounties=funded_bounties)
+        sum_eth_collected = self.get_eth_sum(bounties=fulfilled_bounties)
+        works_with_funded = self.get_who_works_with(work_type='funded', bounties=funded_bounties)
+        works_with_collected = self.get_who_works_with(work_type='collected', bounties=fulfilled_bounties)
 
         # org only
-        works_with_org = []
         count_bounties_on_repo = 0
         sum_eth_on_repos = 0
-        if self.is_org:
-            works_with_org = self.get_who_works_with(work_type='org', **query_kwargs)
-            count_bounties_on_repo = self.get_orgs_bounties(network=network).count()
-            sum_eth_on_repos = self.get_eth_sum(sum_type='org', **query_kwargs)
+        works_with_org = []
+        if orgs_bounties:
+            count_bounties_on_repo = orgs_bounties.count()
+            sum_eth_on_repos = self.get_eth_sum(bounties=orgs_bounties)
+            works_with_org = self.get_who_works_with(work_type='org', bounties=orgs_bounties)
 
+        total_funded = funded_bounties.count()
+        total_fulfilled = fulfilled_bounties.count()
+        desc = self.get_desc(funded_bounties, fulfilled_bounties)
         no_times_been_removed = self.no_times_been_removed_by_funder() + self.no_times_been_removed_by_staff() + self.no_times_slashed_by_staff()
         params = {
             'title': f"@{self.handle}",
             'active': 'profile_details',
             'newsletter_headline': _('Be the first to know about new funded issues.'),
             'card_title': f'@{self.handle} | Gitcoin',
-            'card_desc': self.desc,
+            'card_desc': desc,
             'avatar_url': self.avatar_url_with_gitcoin_logo,
             'profile': self,
-            'bounties': self.bounties,
-            'count_bounties_completed': self.fulfilled.filter(accepted=True, bounty__current_bounty=True, bounty__network=network).distinct('bounty__pk').count(),
+            'bounties': bounties,
+            'count_bounties_completed': total_fulfilled,
             'sum_eth_collected': sum_eth_collected,
             'sum_eth_funded': sum_eth_funded,
             'works_with_collected': works_with_collected,
             'works_with_funded': works_with_funded,
-            'funded_bounties_count': funded_bounties.count(),
-            'activities': [],
+            'funded_bounties_count': total_funded,
             'no_times_been_removed': no_times_been_removed,
             'sum_eth_on_repos': sum_eth_on_repos,
             'works_with_org': works_with_org,
@@ -2333,22 +2416,10 @@ class Profile(SuperModel):
         }
 
         if activities:
-            if not self.is_org:
-                all_activities = self.activities
-            else:
-                url = self.github_url
-                all_activities = Activity.objects.filter(bounty__github_url__startswith=url)
-            all_activities = all_activities.filter(
-                bounty__network=network
-            ).select_related('bounty', 'tip').all().order_by('-created')
-            if all_activities:
-                params['activities'] = [{
-                    'title': _('By Created Date'),
-                    'activity_bounties': all_activities,
-                }]
+            params['activities'] = self.get_bounty_and_tip_activities(network=network)
 
         if tips:
-            params['tips'] = self.tips.filter(**query_kwargs).exclude(txid='')
+            params['tips'] = self.tips.filter(**query_kwargs).send_happy_path()
 
         if leaderboards:
             params['scoreboard_position_contributor'] = self.get_contributor_leaderboard_index()
@@ -2635,3 +2706,16 @@ class TokenApproval(SuperModel):
     def coinbase_short(self):
         coinbase_short = f"{self.coinbase[0:5]}...{self.coinbase[-4:]}"
         return coinbase_short
+
+
+class SearchHistory(SuperModel):
+    """Define the structure of a Search History object."""
+
+    class Meta:
+        """Define metadata associated with SearchHistory."""
+
+        verbose_name_plural = 'Search History'
+
+    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
+    data = JSONField(default=dict)
+    ip_address = models.GenericIPAddressField(blank=True, null=True)
