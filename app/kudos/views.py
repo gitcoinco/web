@@ -324,7 +324,7 @@ def send_3(request):
             primary_email = to_emails['events'][0]
         else:
             print("TODO: no email found.  in the future, we should handle this case better because it's GOING to end up as a support request")
-    if type(primary_email) is list and len(primary_email):
+    if primary_email and isinstance(primary_email, list):
         primary_email = primary_email[0]
 
     # If no primary email in session, try the POST data. If none, fetch from GH.
