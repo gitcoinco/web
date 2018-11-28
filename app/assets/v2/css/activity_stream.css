@@ -32,6 +32,14 @@
   color: #0D0764;
 }
 
-#activity_stream .tag {
+.tag {
   display: inline-block;
+}
+
+.bounty_removed_by_funder .activity-tags .tag,
+.bounty_removed_by_staff .activity-tags .tag,
+.bounty_abandonment_escalation_to_mods .activity-tags .tag,
+.bounty_abandonment_warning .activity-tags .tag,
+.activity.new_kudos .activity-tags .tag {
+  display: none;
 }

@@ -17,7 +17,13 @@
 {% load i18n static  %}
 <link rel="stylesheet" href={% static "v2/css/activity_stream.css" %}>
 <div class="col text-center mb-2">
-  <h2 class="mb-4">{% trans "Recent" %} {{ tech_stack|capfirst }} {% trans "Activity on Gitcoin" %}</h2>
+  <h2 class="mb-4">
+  {% if title %}
+    {{ title }}
+  {% else %}
+    {% trans "Recent" %} {{ tech_stack|capfirst }} {% trans "Activity on Gitcoin" %}
+  {% endif %}
+  </h2>
 </div>
 <div id=activity_stream style="max-height: 400px; overflow-y: scroll;">
   <div class="mb-4 col offset-lg-1 col-lg-10">
@@ -26,6 +32,8 @@
     {% endfor %}
   </div>
 </div>
+
+{% if not suppress_cta %}
 <div class="col text-center mt-5">
   <a href="/explorer?q={{ tech_stack }}" class="button button--primary" target="_blank" rel="noopener noreferrer">
     {% if tech_stack %}
@@ -35,3 +43,4 @@
     {% endif %}
   </a>
 </div>
+{% endif %}

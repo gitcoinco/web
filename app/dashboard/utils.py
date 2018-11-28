@@ -25,8 +25,9 @@ from django.conf import settings
 
 import ipfsapi
 import requests
+from app.utils import sync_profile
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
-from dashboard.models import Activity, Bounty, UserAction
+from dashboard.models import Activity, Bounty, Profile, UserAction
 from eth_utils import to_checksum_address
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from hexbytes import HexBytes
@@ -39,6 +40,22 @@ logger = logging.getLogger(__name__)
 
 SEMAPHORE_BOUNTY_SALT = '1'
 SEMAPHORE_BOUNTY_NS = 'bounty_processor'
+
+
+def all_sendcryptoasset_models():
+    from revenue.models import DigitalGoodPurchase
+    from dashboard.models import Tip
+    from kudos.models import KudosTransfer
+
+    return [DigitalGoodPurchase, Tip, KudosTransfer]
+
+
+class ProfileNotFoundException(Exception):
+    pass
+
+
+class ProfileHiddenException(Exception):
+    pass
 
 
 class BountyNotFoundException(Exception):
@@ -604,3 +621,88 @@ def release_bounty_lock(standard_bounty_id):
     from app.utils import release_semaphore
     ns = get_bounty_semaphore_ns(standard_bounty_id)
     release_semaphore(ns)
+
+
+def profile_helper(handle, suppress_profile_hidden_exception=False, current_user=None):
+    """Define the profile helper.
+
+    Args:
+        handle (str): The profile handle.
+
+    Raises:
+        DoesNotExist: The exception is raised if a Profile isn't found matching the handle.
+            Remediation is attempted by syncing the profile data.
+        MultipleObjectsReturned: The exception is raised if multiple Profiles are found.
+            The latest Profile will be returned.
+
+    Returns:
+        dashboard.models.Profile: The Profile associated with the provided handle.
+
+    """
+
+    current_profile = getattr(current_user, 'profile', None)
+    if current_profile and current_profile.handle == handle:
+        return current_profile
+
+    try:
+        profile = Profile.objects.get(handle__iexact=handle)
+    except Profile.DoesNotExist:
+        profile = sync_profile(handle)
+        if not profile:
+            raise ProfileNotFoundException
+    except Profile.MultipleObjectsReturned as e:
+        # Handle edge case where multiple Profile objects exist for the same handle.
+        # We should consider setting Profile.handle to unique.
+        # TODO: Should we handle merging or removing duplicate profiles?
+        profile = Profile.objects.filter(handle__iexact=handle).latest('id')
+        logging.error(e)
+
+    if profile.hide_profile and not profile.is_org and not suppress_profile_hidden_exception:
+        raise ProfileHiddenException
+
+    return profile
+
+
+def get_tx_status(txid, network, created_on):
+    from django.utils import timezone
+    from dashboard.utils import get_web3
+    import pytz
+
+    # get status
+    status = None
+    if txid == 'override':
+        return 'success', None #overridden by admin
+    try:
+        web3 = get_web3(network)
+        tx = web3.eth.getTransactionReceipt(txid)
+        if not tx:
+            drop_dead_date = created_on + timezone.timedelta(days=3)
+            if timezone.now() > drop_dead_date:
+                status = 'dropped'
+            else:
+                status = 'pending'
+        elif tx and 'status' not in tx.keys():
+            if bool(tx['blockNumber']) and bool(tx['blockHash']):
+                status = 'success'
+            else:
+                raise Exception("got a tx but no blockNumber or blockHash")
+        elif tx.status == 1:
+            status = 'success'
+        elif tx.status == 0:
+            status = 'error'
+        else:
+            status = 'unknown'
+    except Exception as e:
+        logger.error(f'Failure in get_tx_status for {txid} - ({e})')
+        status = 'unknown'
+
+    # get timestamp
+    timestamp = None
+    try:
+        if tx:
+            block = web3.eth.getBlock(tx['blockNumber'])
+            timestamp = block.timestamp
+            timestamp = timezone.datetime.fromtimestamp(timestamp).replace(tzinfo=pytz.UTC)
+    except:
+        pass
+    return status, timestamp
