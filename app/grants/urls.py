@@ -30,7 +30,11 @@ urlpatterns = [
     re_path(r'^new', grant_new, name='new'),
     path('<int:grant_id>/<slug:grant_slug>/milestones', milestones, name='milestones'),
     path('<int:grant_id>/<slug:grant_slug>/fund', grant_fund, name='fund'),
-    path('<int:grant_id>/<slug:grant_slug>/subscription/<int:subscription_id>/cancel', subscription_cancel, name='subscription_cancel'),
+    path(
+        '<int:grant_id>/<slug:grant_slug>/subscription/<int:subscription_id>/cancel',
+        subscription_cancel,
+        name='subscription_cancel'
+    ),
     re_path(r'^profile', profile, name='profile'),
     re_path(r'^quickstart', quickstart, name='quickstart')
 ]
