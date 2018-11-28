@@ -46,6 +46,7 @@ import marketing.views
 import marketing.webhookviews
 import retail.emails
 import retail.views
+import revenue.views
 import tdi.views
 from dashboard.router import router as dbrouter
 from external_bounties.router import router as ebrouter
