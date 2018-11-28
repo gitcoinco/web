@@ -36,7 +36,6 @@ formatter = '%(levelname)s:%(name)s.%(funcName)s:%(message)s'
 
 
 def mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint_to=None, live=False, skip_sync=True):
-
     image_name = urllib.parse.quote(kudos.get('image'))
     if image_name:
         # Support Open Sea
@@ -176,4 +175,7 @@ class Command(BaseCommand):
         for __, kudos in enumerate(all_kudos):
             if kudos_filter not in kudos['name']:
                 continue
-            mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, options['mint_to'], options['live'], skip_sync)
+            mint_kudos(
+                kudos_contract, kudos, account, private_key, gas_price_gwei, options['mint_to'], options['live'],
+                skip_sync
+            )
