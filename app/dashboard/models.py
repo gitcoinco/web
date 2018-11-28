@@ -1678,8 +1678,8 @@ class Profile(SuperModel):
         default=False,
         help_text='If this option is chosen, the user is able to submit a faucet/ens domain registration even if they are new to github',
     )
-    keywords = ArrayField(models.CharField(max_length=200), blank=True, default=[])
-    organizations = ArrayField(models.CharField(max_length=200), blank=True, default=[])
+    keywords = ArrayField(models.CharField(max_length=200), blank=True, default=list)
+    organizations = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     form_submission_records = JSONField(default=list, blank=True)
     max_num_issues_start_work = models.IntegerField(default=3)
     preferred_payout_address = models.CharField(max_length=255, default='', blank=True)
