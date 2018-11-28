@@ -20,7 +20,7 @@ from django.core.management.base import BaseCommand
 
 from dashboard.helpers import record_bounty_activity
 from dashboard.models import Activity, Bounty, Interest
-from dashboard.views import record_bounty_activity
+from dashboard.views import record_bounty_activity as record_bounty_activity_interest
 
 
 def set_created(activity, date):
@@ -35,10 +35,10 @@ def create_activities(bounty):
     approval_required = bounty.permission_type == 'approval'
     for interest in bounty.interested.all():
         event_name = 'start_work' if not approval_required else 'worker_applied'
-        act = record_bounty_activity(bounty, interest.profile.user, event_name, interest)
+        act = record_bounty_activity_interest(bounty, interest.profile.user, event_name, interest)
         set_created(act, interest.created)
         if approval_required and interest.status != Interest.STATUS_REVIEW:
-            act = record_bounty_activity(bounty, interest.profile.user, 'worker_approved', interest)
+            act = record_bounty_activity_interest(bounty, interest.profile.user, 'worker_approved', interest)
             set_created(act, interest.acceptance_date)
     done_recorded = False
     for fulfillment in bounty.fulfillments.all():
