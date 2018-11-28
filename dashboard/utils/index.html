@@ -2156,6 +2156,21 @@ Github issue URLs copy/pasted via comments.</p>
     * Deprecate this in favor of Django forms.</p>
 <p>Returns:
     str: The cleaned Bounty URL.</p>
+<h2 id="dashboard.utils.profile_helper">profile_helper</h2>
+
+<pre><code class="python">profile_helper(handle, suppress_profile_hidden_exception=False, current_user=None)
+</code></pre>
+
+<p>Define the profile helper.</p>
+<p>Args:
+    handle (str): The profile handle.</p>
+<p>Raises:
+    DoesNotExist: The exception is raised if a Profile isn't found matching the handle.
+        Remediation is attempted by syncing the profile data.
+    MultipleObjectsReturned: The exception is raised if multiple Profiles are found.
+        The latest Profile will be returned.</p>
+<p>Returns:
+    dashboard.models.Profile: The Profile associated with the provided handle.</p>
                 
                   
                 

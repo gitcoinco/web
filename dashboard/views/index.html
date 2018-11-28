@@ -2382,36 +2382,24 @@ The class bool is a subclass of the class int, and cannot be subclassed.
 </code></pre>
 
 <p>Display quickstart guide.
-<h2 id="dashboard.views.profile_helper">profile_helper</h2></p>
-<pre><code class="python">profile_helper(handle, suppress_profile_hidden_exception=False, current_user=None)
-</code></pre>
-
-<p>Define the profile helper.</p>
-<p>Args:
-    handle (str): The profile handle.</p>
-<p>Raises:
-    DoesNotExist: The exception is raised if a Profile isn't found matching the handle.
-        Remediation is attempted by syncing the profile data.
-    MultipleObjectsReturned: The exception is raised if multiple Profiles are found.
-        The latest Profile will be returned.</p>
-<p>Returns:
-    dashboard.models.Profile: The Profile associated with the provided handle.</p>
-<h2 id="dashboard.views.profile_keywords_helper">profile_keywords_helper</h2>
-
-<pre><code class="python">profile_keywords_helper(handle)
-</code></pre>
-
-<p>Define the profile keywords helper.</p>
-<p>Args:
-    handle (str): The profile handle.</p>
-<h2 id="dashboard.views.profile_keywords">profile_keywords</h2>
-
+<h2 id="dashboard.views.profile_keywords">profile_keywords</h2></p>
 <pre><code class="python">profile_keywords(request, handle)
 </code></pre>
 
 <p>Display profile keywords.</p>
 <p>Args:
     handle (str): The profile handle.</p>
+<h2 id="dashboard.views.profile_filter_activities">profile_filter_activities</h2>
+
+<pre><code class="python">profile_filter_activities(activities, activity_name)
+</code></pre>
+
+<p>A helper function to filter a ActivityQuerySet.</p>
+<p>Args:
+    activities (ActivityQuerySet): The ActivityQuerySet.
+    activity_name (str): The activity_type to filter.</p>
+<p>Returns:
+    ActivityQuerySet: The filtered results.</p>
 <h2 id="dashboard.views.profile">profile</h2>
 
 <pre><code class="python">profile(request, handle)

@@ -2601,38 +2601,41 @@ These should also be created directly off of the <code>master</code> branch.</p>
 <li>1 tab = 2 spaces for <code>.html</code> and <code>.js</code> files</li>
 <li>1 tab = 4 spaces for everything else</li>
 <li>Use <code>rem</code> for CSS when applicable</li>
-<li>Add relevant unit tests for all new Python logic and update existing tests to accommodate new logic.</li>
+<li>Add relevant unit tests for all new Python logic and update existing tests to accommodate new logic.  You can run tests via: <code>make pytest</code></li>
+<li>If you introduce new backend methods or classes, you must include docstrings that conform to PEP-257 and follow the existing patterns throughout the codebase.  See <code>app/avatar/(models|views|utils).py</code>  - If you introduce a new django module, like: <code>avatar</code> or <code>marketing</code>, you must update <code>pydocmd.yaml</code> to include relevant python modules from the newly introduced app.</li>
 </ul>
 <h3 id="step-4-commit">Step 4: Commit</h3>
 <ol>
 <li>Ensure your code changes adhere to our styling and linting standards: <code>npm run eslint:fix; npm run stylelint:fix; isort -rc --atomic .</code></li>
-<li>List all your changes as a list if needed else simply give a brief
-  description on what the changes are.</li>
+<li>List all your changes as a list if needed else simply give a brief description on what the changes are.</li>
 <li>All lines at 100 columns.</li>
 <li>
-<p>If your PR fixed an issue, Use the <code>Fixes:</code> prefix and the full issue URL.
-  For other references use <code>Refs:</code>.</p>
-<p><em>Examples:</em>
-<em> <code>Fixes: https://github.com/gitcoinco/web/issues/87</code>
-</em> <code>Refs: https://github.com/gitcoinco/web/issues/91</code></p>
+<p>If your PR fixed an issue, Use the <code>Fixes:</code> prefix and the full issue URL. For other references use <code>Refs:</code>.</p>
+<p><em>Examples:</em></p>
+<ul>
+<li><code>Fixes: https://github.com/gitcoinco/web/issues/87</code></li>
+<li><code>Refs: https://github.com/gitcoinco/web/issues/91</code></li>
+</ul>
 </li>
 <li>
-<p><em>Sample commit A</em>
-    ```txt
-    if you can write down the changes explaining it in a paragraph which each
-    line wrapped within 100 lines.</p>
+<p><em>Sample commit A</em></p>
+<p>```txt
+if you can write down the changes explaining it in a paragraph which each
+line wrapped within 100 lines.</p>
 <p>Fixes: https://github.com/gitcoinco/web/issues/87
 Refs: https://github.com/gitcoinco/web/issues/91
 ```</p>
-<p><em>Sample commit B</em>
-```txt
+<p><em>Sample commit B</em></p>
+<p>```txt
 - list out your changes as points if there are many changes
 - if needed you can also send it across as
 - all wrapped within 100 lines</p>
 <p>Fixes: https://github.com/gitcoinco/web/issues/87
 Refs: https://github.com/gitcoinco/web/issues/91
-```
-6. <a href="https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History">Squashing</a> and <a href="https://git-scm.com/docs/git-merge">Merging</a> your commits to make our history neater is always welcomed, but squashing can be handled during the merge process.</p>
+```</p>
+</li>
+<li>
+<p><a href="https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History">Squashing</a> and <a href="https://git-scm.com/docs/git-merge">Merging</a> your commits to make our history neater is always welcomed, but squashing can be handled during the merge process.</p>
 </li>
 </ol>
 <h3 id="step-5-rebase">Step 5: Rebase</h3>
@@ -2652,7 +2655,8 @@ git rebase upstream/master
 <li>Title is descriptive and generally focused on what the PR addresses (If your PR is a work in progress, include <code>WIP</code> in the title. Once the PR is ready for review, please remove <code>WIP</code>)</li>
 <li>Description explains what the PR achieves or addresses</li>
 <li>If the PR modifies the frontend in any way, please attach screenshots and/or GIFs of all purposeful changes (before and after screens are recommended)</li>
-<li>The PR passes all CI checks, to include Stickler, codecov, and Travis.</li>
+<li>The PR passes all CI checks, to include: Stickler, Codecov, and CI.</li>
+<li>If tests are failing or coverage is decreased while adding logic to any backend code, you will be asked to include relevant tests and your PR will not be merged until all checks pass.</li>
 </ul>
 <h2 id="python">Python</h2>
 <h3 id="docstrings">Docstrings</h3>

@@ -2165,7 +2165,62 @@ that will be decoded using the given encoding and error handler.
 Otherwise, returns the result of object.<strong>str</strong>() (if defined)
 or repr(object).
 encoding defaults to sys.getdefaultencoding().
-errors defaults to 'strict'.</p>
+errors defaults to 'strict'.
+<h2 id="bounty_requests.models.BountyRequestMeta">BountyRequestMeta</h2></p>
+<pre><code class="python">BountyRequestMeta(self, *args, **kwargs)
+</code></pre>
+
+<p>A helper storage class for BountyRequest to keep track of dispatched emails.
+<h3 id="bounty_requests.models.BountyRequestMeta.get_next_by_created_on">_method</h3></p>
+<pre><code class="python">BountyRequestMeta._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="bounty_requests.models.BountyRequestMeta.get_next_by_last_feedback_sent">_method</h3>
+
+<pre><code class="python">BountyRequestMeta._method(self, *, field=&lt;django.db.models.fields.DateTimeField: last_feedback_sent&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="bounty_requests.models.BountyRequestMeta.get_next_by_modified_on">_method</h3>
+
+<pre><code class="python">BountyRequestMeta._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="bounty_requests.models.BountyRequestMeta.get_previous_by_created_on">_method</h3>
+
+<pre><code class="python">BountyRequestMeta._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="bounty_requests.models.BountyRequestMeta.get_previous_by_last_feedback_sent">_method</h3>
+
+<pre><code class="python">BountyRequestMeta._method(self, *, field=&lt;django.db.models.fields.DateTimeField: last_feedback_sent&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="bounty_requests.models.BountyRequestMeta.get_previous_by_modified_on">_method</h3>
+
+<pre><code class="python">BountyRequestMeta._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="bounty_requests.models.BountyRequestMeta.id">id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="bounty_requests.models.BountyRequestMeta.last_feedback_sent">last_feedback_sent</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="bounty_requests.models.BountyRequestMeta.profile">profile</h3>
+
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="bounty_requests.models.BountyRequestMeta.profile_id">profile_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
                 
                   
                 

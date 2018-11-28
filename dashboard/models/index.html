@@ -2986,8 +2986,53 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
-<h2 id="dashboard.models.SendCryptoAsset">SendCryptoAsset</h2>
+<h2 id="dashboard.models.SendCryptoAssetQuerySet">SendCryptoAssetQuerySet</h2>
 
+<pre><code class="python">SendCryptoAssetQuerySet(self, model=None, query=None, using=None, hints=None)
+</code></pre>
+
+<p>Handle the manager queryset for SendCryptoAsset.
+<h3 id="dashboard.models.SendCryptoAssetQuerySet.send_success">send_success</h3></p>
+<pre><code class="python">SendCryptoAssetQuerySet.send_success(self)
+</code></pre>
+
+<p>Filter results down to successful sends only.
+<h3 id="dashboard.models.SendCryptoAssetQuerySet.send_pending">send_pending</h3></p>
+<pre><code class="python">SendCryptoAssetQuerySet.send_pending(self)
+</code></pre>
+
+<p>Filter results down to pending sends only.
+<h3 id="dashboard.models.SendCryptoAssetQuerySet.send_happy_path">send_happy_path</h3></p>
+<pre><code class="python">SendCryptoAssetQuerySet.send_happy_path(self)
+</code></pre>
+
+<p>Filter results down to pending/success sends only.
+<h3 id="dashboard.models.SendCryptoAssetQuerySet.send_fail">send_fail</h3></p>
+<pre><code class="python">SendCryptoAssetQuerySet.send_fail(self)
+</code></pre>
+
+<p>Filter results down to failed sends only.
+<h3 id="dashboard.models.SendCryptoAssetQuerySet.receive_success">receive_success</h3></p>
+<pre><code class="python">SendCryptoAssetQuerySet.receive_success(self)
+</code></pre>
+
+<p>Filter results down to successful receives only.
+<h3 id="dashboard.models.SendCryptoAssetQuerySet.receive_pending">receive_pending</h3></p>
+<pre><code class="python">SendCryptoAssetQuerySet.receive_pending(self)
+</code></pre>
+
+<p>Filter results down to pending receives only.
+<h3 id="dashboard.models.SendCryptoAssetQuerySet.receive_happy_path">receive_happy_path</h3></p>
+<pre><code class="python">SendCryptoAssetQuerySet.receive_happy_path(self)
+</code></pre>
+
+<p>Filter results down to pending receives only.
+<h3 id="dashboard.models.SendCryptoAssetQuerySet.receive_fail">receive_fail</h3></p>
+<pre><code class="python">SendCryptoAssetQuerySet.receive_fail(self)
+</code></pre>
+
+<p>Filter results down to failed receives only.
+<h2 id="dashboard.models.SendCryptoAsset">SendCryptoAsset</h2></p>
 <pre><code class="python">SendCryptoAsset(self, *args, **kwargs)
 </code></pre>
 
@@ -3039,6 +3084,16 @@ object the first time, the query is executed.</p>
 <pre><code class="python">SendCryptoAsset._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=False, **kwargs)
 </code></pre>
 
+<h3 id="dashboard.models.SendCryptoAsset.get_receive_tx_status_display">_method</h3>
+
+<pre><code class="python">SendCryptoAsset._method(self, *, field=&lt;django.db.models.fields.CharField: receive_tx_status&gt;)
+</code></pre>
+
+<h3 id="dashboard.models.SendCryptoAsset.get_tx_status_display">_method</h3>
+
+<pre><code class="python">SendCryptoAsset._method(self, *, field=&lt;django.db.models.fields.CharField: tx_status&gt;)
+</code></pre>
+
 <h3 id="dashboard.models.SendCryptoAsset.github_url">github_url</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -3059,7 +3114,19 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="dashboard.models.SendCryptoAsset.primary_email">primary_email</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.SendCryptoAsset.receive_address">receive_address</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.SendCryptoAsset.receive_tx_status">receive_tx_status</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.SendCryptoAsset.receive_tx_time">receive_tx_time</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
@@ -3077,6 +3144,19 @@ object the first time, the query is executed.</p>
 object the first time, the query is executed.</p>
 <h3 id="dashboard.models.SendCryptoAsset.tokenName">tokenName</h3>
 
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.SendCryptoAsset.tx_status">tx_status</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.SendCryptoAsset.TX_STATUS_CHOICES">TX_STATUS_CHOICES</h3>
+
+<p>Built-in immutable sequence.</p>
+<p>If no argument is given, the constructor returns an empty tuple.
+If iterable is specified the tuple is initialized from iterable's items.</p>
+<p>If the argument is a tuple, the return value is the same object.
+<h3 id="dashboard.models.SendCryptoAsset.tx_time">tx_time</h3></p>
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
 <h3 id="dashboard.models.SendCryptoAsset.txid">txid</h3>
@@ -3108,6 +3188,18 @@ object the first time, the query is executed.</p>
 <p>Determine whether or not a notification is eligible for transmission outside of production.</p>
 <p>Returns:
     bool: Whether or not the Tip is eligible for outbound notifications.</p>
+<h3 id="dashboard.models.SendCryptoAsset.update_tx_status">update_tx_status</h3>
+
+<pre><code class="python">SendCryptoAsset.update_tx_status(self)
+</code></pre>
+
+<p>Updates the tx status according to what infura says about the tx</p>
+<h3 id="dashboard.models.SendCryptoAsset.update_receive_tx_status">update_receive_tx_status</h3>
+
+<pre><code class="python">SendCryptoAsset.update_receive_tx_status(self)
+</code></pre>
+
+<p>Updates the receive tx status according to what infura says about the receive tx</p>
 <h2 id="dashboard.models.Tip">Tip</h2>
 
 <pre><code class="python">Tip(self, *args, **kwargs)
@@ -3150,6 +3242,16 @@ object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Tip.get_previous_by_modified_on">_method</h3>
 
 <pre><code class="python">Tip._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.Tip.get_receive_tx_status_display">_method</h3>
+
+<pre><code class="python">Tip._method(self, *, field=&lt;django.db.models.fields.CharField: receive_tx_status&gt;)
+</code></pre>
+
+<h3 id="dashboard.models.Tip.get_tx_status_display">_method</h3>
+
+<pre><code class="python">Tip._method(self, *, field=&lt;django.db.models.fields.CharField: tx_status&gt;)
 </code></pre>
 
 <h3 id="dashboard.models.Tip.id">id</h3>
@@ -3540,6 +3642,17 @@ many-to-one relation.</p>
 <p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="dashboard.models.Profile.bountyrequestmeta_set">bountyrequestmeta_set</h3>
+
+<p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="dashboard.models.Profile.bulk_transfer_redemptions">bulk_transfer_redemptions</h3>
 
 <p>Accessor to the related objects manager on the reverse side of a
@@ -3725,6 +3838,10 @@ class built by <code>create_forward_many_to_many_manager()</code> defined below.
 <p>Determine whether or not the user is a staff member.</p>
 <p>Returns:
     bool: Whether or not the user is a member of the staff.</p>
+<h3 id="dashboard.models.Profile.keywords">keywords</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Profile.kudos_wallets">kudos_wallets</h3>
 
 <p>Accessor to the related objects manager on the reverse side of a
@@ -3760,6 +3877,10 @@ object the first time, the query is executed.</p>
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Profile.max_tip_amount_usdt_per_week">max_tip_amount_usdt_per_week</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Profile.organizations">organizations</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
@@ -3948,26 +4069,30 @@ class built by <code>create_forward_many_to_many_manager()</code> defined below.
     repos (list of str): The profile's github repositories to track.</p>
 <h3 id="dashboard.models.Profile.get_eth_sum">get_eth_sum</h3>
 
-<pre><code class="python">Profile.get_eth_sum(self, sum_type='collected', network='mainnet')
+<pre><code class="python">Profile.get_eth_sum(self, sum_type='collected', network='mainnet', bounties=None)
 </code></pre>
 
 <p>Get the sum of collected or funded ETH based on the provided type.</p>
 <p>Args:
     sum_type (str): The sum to lookup.  Defaults to: collected.
     network (str): The network to query results for.
-        Defaults to: mainnet.</p>
+        Defaults to: mainnet.
+    bounties (dashboard.models.BountyQuerySet): Override the BountyQuerySet this function processes.
+        Defaults to: None.</p>
 <p>Returns:
     float: The total sum of all ETH of the provided type.</p>
 <h3 id="dashboard.models.Profile.get_who_works_with">get_who_works_with</h3>
 
-<pre><code class="python">Profile.get_who_works_with(self, work_type='collected', network='mainnet')
+<pre><code class="python">Profile.get_who_works_with(self, work_type='collected', network='mainnet', bounties=None)
 </code></pre>
 
 <p>Get an array of profiles that this user works with.</p>
 <p>Args:
     work_type (str): The work type to lookup.  Defaults to: collected.
     network (str): The network to query results for.
-        Defaults to: mainnet.</p>
+        Defaults to: mainnet.
+    bounties (dashboard.models.BountyQuerySet): Override the BountyQuerySet this function processes.
+        Defaults to: None.</p>
 <p>Returns:
     dict: list of the profiles that were worked with (key) and the number of times they occured</p>
 <h3 id="dashboard.models.Profile.get_funded_bounties">get_funded_bounties</h3>
@@ -3981,6 +4106,17 @@ class built by <code>create_forward_many_to_many_manager()</code> defined below.
         Defaults to: mainnet.</p>
 <p>Returns:
     queryset: list of bounties</p>
+<h3 id="dashboard.models.Profile.get_bounty_and_tip_activities">get_bounty_and_tip_activities</h3>
+
+<pre><code class="python">Profile.get_bounty_and_tip_activities(self, network='mainnet')
+</code></pre>
+
+<p>Get bounty and tip related activities for this profile.</p>
+<p>Args:
+    network (str): The network to query results for.
+        Defaults to: mainnet.</p>
+<p>Returns:
+    (dashboard.models.ActivityQuerySet): The query results.</p>
 <h3 id="dashboard.models.Profile.to_dict">to_dict</h3>
 
 <pre><code class="python">Profile.to_dict(self, activities=True, leaderboards=True, network=None, tips=True)
@@ -3998,8 +4134,14 @@ class built by <code>create_forward_many_to_many_manager()</code> defined below.
         Defaults to: True.</p>
 <p>Attributes:
     params (dict): The context dictionary to be returned.
+    network (str): The bounty network to operate on.
     query_kwargs (dict): The kwargs to be passed to all queries
         throughout the method.
+    bounties (dashboard.models.BountyQuerySet): All bounties referencing this profile.
+    fulfilled_bounties (dashboard.models.BountyQuerySet): All fulfilled bounties for this profile.
+    funded_bounties (dashboard.models.BountyQuerySet): All funded bounties for this profile.
+    orgs_bounties (dashboard.models.BountyQuerySet or None):
+        All bounties belonging to this organization, if applicable.
     sum_eth_funded (float): The total amount of ETH funded.
     sum_eth_collected (float): The total amount of ETH collected.</p>
 <p>Returns:
