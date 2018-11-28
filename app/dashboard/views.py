@@ -963,14 +963,11 @@ def bounty_activity(request, network, stdbounties_id):
         django.template.response.TemplateResponse: The Bounty activity template response.
 
     """
-    is_user_authenticated = request.user.is_authenticated
-    profile = None
-    if is_user_authenticated and hasattr(request.user, 'profile'):
-        profile = request.user.profile
+    profile = getattr(request.user, 'profile', None)
 
     params = {
         'is_staff': request.user.is_staff,
-        'is_moderator': profile.is_moderator,
+        'is_moderator': profile.is_moderator if profile is not None else False,
     }
     bounty = Bounty.objects.current() \
         .filter(network=network, standard_bounties_id=stdbounties_id) \
@@ -983,7 +980,7 @@ def bounty_activity(request, network, stdbounties_id):
         params['bounty_is_open'] = bounty.idx_status in bounty.OPEN_STATUSES
         params['pending_handles'] = interests.filter(pending=True).values_list('profile__handle', flat=True)
         params['not_pending_handles'] = interests.filter(pending=False).values_list('profile__handle', flat=True)
-        params['is_funder'] = bounty.is_funder(profile.handle) if profile else False
+        params['is_funder'] = bounty.is_funder(profile.handle) if profile is not None else False
 
     return TemplateResponse(request, 'shared/bounty_activity.html', params)
 
