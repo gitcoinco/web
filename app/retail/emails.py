@@ -573,7 +573,7 @@ def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
     subject = "In Pursuit Of Open Source Financial Freemdom"
-    new_kudos_pks = [486, 485, 484]
+    new_kudos_pks = [528, 588, 589]
     new_kudos_size_px = 150
     intro = '''
 <p>
@@ -611,7 +611,10 @@ Check out a few of the new kudos launched this week:
     </ul>
 </p>
 <p>
-Thanks for reading! Back to BUIDLing,
+Thanks for reading to the end!  <a href="https://gitcoin.co/kudos/redeem/red_staplers_for_all">Here's a kudos just for you :)</a>. 
+<BR>
+<BR>
+OK, Back to BUIDLing,
 </p>
 '''
     highlights = [{
