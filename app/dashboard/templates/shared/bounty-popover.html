@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n %}
+{% load i18n static %}
 <div class="">
   <div class="tooltip-bubble__content">
     <div class="d-flex justify-content-between mb-2">
@@ -43,6 +43,9 @@
           <span class="tag keyword">[[>]]</span>
         [[/for]]
       [[/if]]
+    </div>
+    <div class="mt-2">
+      [[if expiredIcon === "true"]]<img src="{% static "v2/images/time-expired.svg" %}" class="expired-icon" />[[/if]][[:expired]]
     </div>
   </div>
   [[if activities.length]]

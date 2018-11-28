@@ -1749,3 +1749,9 @@ div.busyOverlay {
   border: 0.25em solid currentColor;
   border-radius: 100px;
 }
+
+.expired-icon {
+  width: 1.2em;
+  margin-right: 0.5em;
+  margin-top: -0.25em;
+}

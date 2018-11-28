@@ -1139,6 +1139,8 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
     result['action'] = result['url'];
     result['title'] = result['title'] ? result['title'] : result['github_url'];
     result['p'] = projectType + (result['experience_level'] ? (result['experience_level'] + ' <span class="separator-bull"></span> ') : '');
+    result['expired'] = '';
+    result['expiredIcon'] = '';
 
     if (result['status'] === 'done') {
       result['p'] += 'Done';
@@ -1163,19 +1165,24 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
     } else if (isExpired) {
       const timeAgo = timeDifference(dateNow, dateExpires, true);
 
-      result['p'] += ('Expired ' + timeAgo + ' ago');
+      result['expired'] += ('Expired ' + timeAgo + ' ago');
+      result['expiredIcon'] += ('true');
     } else {
       const openedWhen = timeDifference(dateNow, new Date(result['web3_created']), true);
 
       if (isInfinite) {
         const expiredExpires = '<b>Never expires</b>';
 
-        result['p'] += ('Opened ' + openedWhen + ' ago, ' + expiredExpires);
+        result['p'] += ('Opened ' + openedWhen + ' ago');
+        result['expired'] += (expiredExpires);
+        result['expiredIcon'] += ('true');
       } else {
         const timeLeft = timeDifference(dateNow, dateExpires);
         const expiredExpires = dateNow < dateExpires ? 'Expires' : 'Expired';
 
-        result['p'] += ('Opened ' + openedWhen + ' ago, ' + expiredExpires + ' <b>' + timeLeft + '</b>');
+        result['p'] += ('Opened ' + openedWhen + ' ago'); 
+        result['expired'] += (expiredExpires + ' ' + timeLeft);
+        result['expiredIcon'] += ('true');
       }
     }
 
