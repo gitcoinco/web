@@ -448,7 +448,7 @@ def ens():
 
 def tips():
     from dashboard.models import Tip
-    tips = Tip.objects.filter(network='mainnet').exclude(txid='')
+    tips = Tip.objects.filter(network='mainnet').send_success()
     val = sum(tip.value_in_usdt for tip in tips if tip.value_in_usdt)
 
     stats_to_create = [
@@ -469,7 +469,7 @@ def tips_received():
 
     Stat.objects.create(
         key='tips_received',
-        val=(Tip.objects.filter(network='mainnet').exclude(txid='').exclude(receive_txid='').count()),
+        val=(Tip.objects.filter(network='mainnet').send_success().receive_success().count()),
         )
 
 

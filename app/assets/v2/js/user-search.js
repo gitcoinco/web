@@ -28,10 +28,9 @@ function userSearch(elem, showAddress, theme) {
         cache: true
       },
       theme: themeChoice,
-      placeholder: 'Search by username',
+      placeholder: 'Search by Github/Gitcoin username',
       minimumInputLength: 3,
       escapeMarkup: function(markup) {
-
         return markup;
       },
       templateResult: formatUser,

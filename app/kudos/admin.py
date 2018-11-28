@@ -21,23 +21,38 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import Contract, KudosTransfer, Token, Wallet
+from .models import BulkTransferCoupon, BulkTransferRedemption, Contract, KudosTransfer, Token, Wallet
 
 
 class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
+    list_display = ['created_on', '__str__']
+
+
+class BulkTransferCouponAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['created_on', '__str__']
+    raw_id_fields = ['sender_profile', 'token']
+
+
+class BulkTransferRedemptionAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['created_on', '__str__']
+    raw_id_fields = ['coupon', 'redeemed_by', 'kudostransfer']
 
 
 class TokenAdmin(admin.ModelAdmin):
     ordering = ['-id']
     search_fields = ['name', 'description']
+    raw_id_fields = ['contract']
 
 
 class TransferAdmin(admin.ModelAdmin):
-    raw_id_fields = ['recipient_profile', 'sender_profile', 'kudos_token']
+    raw_id_fields = ['recipient_profile', 'sender_profile', 'kudos_token', 'kudos_token_cloned_from']
     ordering = ['-id']
     readonly_fields = ['claim']
     search_fields = ['tokenName', 'comments_public', 'from_name', 'username', 'network', 'github_url', 'url', 'emails', 'from_address', 'receive_address']
+    list_display = ['created_on', '__str__']
 
     def claim(self, instance):
         if instance.web3_type == 'yge':
@@ -59,4 +74,6 @@ class TransferAdmin(admin.ModelAdmin):
 admin.site.register(Token, TokenAdmin)
 admin.site.register(KudosTransfer, TransferAdmin)
 admin.site.register(Wallet, GeneralAdmin)
+admin.site.register(BulkTransferCoupon, BulkTransferCouponAdmin)
+admin.site.register(BulkTransferRedemption, BulkTransferRedemptionAdmin)
 admin.site.register(Contract, GeneralAdmin)

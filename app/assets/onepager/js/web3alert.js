@@ -29,6 +29,8 @@ var metaMaskWarning = function() {
       _alert({ message: gettext('You must install <a href=https://metamask.io/>Metamask</a> to use this tool.') }, 'info');
     }
     return true;
+  } else if (is_metamask_unlocked && !is_metamask_approved) {
+    _alert({ message: gettext('Please connect to Metamask.') }, 'info');
   } else if (web3.eth.accounts.length == 0) {
     _alert({ message: gettext('Please unlock Metamask.') }, 'info');
     return true;

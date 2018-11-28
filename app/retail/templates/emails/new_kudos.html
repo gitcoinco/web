@@ -41,6 +41,9 @@
     margin: 3em auto;
     /* flex-direction: column; */
   }
+  .col {
+    width: 100%;
+  }
   .col-img {
     margin: 0 2em;
   }
@@ -124,8 +127,12 @@
 <hr>
 
 <div class="cols">
-  <img src="{% static 'v2/images/emails/email-kudos.png' %}" alt="{{ token_elem.name|humanize_name }}" width="134" class="col-img">
-  <p class="col-txt">Kudos is a way of showing your appreciation for another Gitcoin member. It's also a way to showcase special skills that a member might have, such as Pythonista, or Design Star. Kudos are non-fungible tokens that can also be bought and sold on the <b>Kudos Marketplace</b>.</p>
+  <div class="col">
+    <img src="{% static 'v2/images/emails/email-kudos.png' %}" alt="{{ token_elem.name|humanize_name }}" width="134" height="155" class="col-img">
+  </div>
+  <div class="col">
+    <p class="col-txt">Kudos is a way of showing your appreciation for another Gitcoin member. It's also a way to showcase special skills that a member might have, such as Pythonista, or Design Star. Kudos are non-fungible tokens that can also be bought and sold on the <b>Kudos Marketplace</b>.</p>
+  </div>
 </div>
 <div style="margin: 3em 0 5em;">
   <a class="button" href="{% url 'kudos_about' %}">{% trans "Learn More" %}</a>
