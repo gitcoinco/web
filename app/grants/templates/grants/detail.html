@@ -172,7 +172,7 @@
                 <div class="form__select2">
                   <select id="grant-members" class="form__input" multiple="multiple" disabled>
                     {% for team_member in grant.team_members.all %}
-                      <option selected="selected">{{ team_member }}</option>
+                      <option selected="selected" value="{{ team_member.id }}">{{ team_member }}</option>
                     {% endfor %}
                   </select>
                 </div>
