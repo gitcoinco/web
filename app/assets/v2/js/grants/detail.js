@@ -80,23 +80,27 @@ $(document).ready(function() {
 
 
     let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, contract_address);
+    function cancelGrant() {
+      let contract_address = $('#contract_address').val();
 
+      $.ajax({
+        type: 'post',
+        url: '',
+        data: { 'contract_address': contract_address},
+        success: function(json) {
+          console.log('cancel grant POST successful');
+        },
+        error: function() {
+          console.log('failure');
+        }
+      });
+    }
     web3.eth.getAccounts(function(err, accounts) {
 
       deployedSubscription.methods.endContract().send({from: accounts[0], gasPrice: 4000000000})
-      .on('confirmation', function(confirmationNumber, receipt) {
+      .on('confirmation', function(confirmationNumber, receipt, contract_address) {
         console.log('receipt', receipt);
-        $.ajax({
-          type: 'post',
-          url: '',
-          data: { 'contract_address': contract_address},
-          success: function(json) {
-            console.log('cancel grant POST successful');
-          },
-          error: function() {
-            console.log('failure');
-          }
-        });
+        cancelGrant()
 
       });
     });
