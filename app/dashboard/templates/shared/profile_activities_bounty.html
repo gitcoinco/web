@@ -4,13 +4,18 @@
  {% elif activity.bounty.github_url %} href="{{ activity.bounty.github_url }}"
  {% endif %}>
   <div class="avatar-container col-1 justify-content-center special_tag hide_min_viewport">
-    <img class="avatar" src="{% url 'org_avatar' activity.bounty.bounty_owner_github_username %}?repo=https://github.com/{{ activity.bounty.bounty_owner_github_username }}">
+    {% if activity.bounty.funding_organisation %}
+      <img class="avatar" src="{% url 'org_avatar' activity.bounty.funding_organisation %}">
+    {% else %}
+      <img class="avatar" src="{% url 'org_avatar' activity.bounty.bounty_owner_github_username %}">
+    {% endif %}
   </div>
-  <div class="col-12 col-md-8 d-flex flex-column">
+  <div class="col-12 col-md-7 d-flex flex-column">
     <div class="bounty-detail">
       <div class="title font-subheader">
         {{ activity.bounty.title }}
       </div>
+
       <div class="bounty-summary col-12">
         <div class="info font-caption">
           {% if activity.bounty.experience_level %}
@@ -19,29 +24,67 @@
           {% if activity.bounty.status %}
             {{ activity.bounty.status|title }}
           {% endif %}
-          {% if activity.activity_type == 'new_bounty' %}
-            <span>&bull; {% trans "Funded a new issue " %}</span>
-          {% elif activity.activity_type == 'start_work' %}
-            <span>&bull; {% trans "Started work " %}</span>
-          {% elif activity.activity_type == 'stop_work' %}
-            <span>&bull; {% trans "Stopped work " %}</span>
-          {% elif activity.activity_type == 'work_submitted' %}
-            <span>&bull; {% trans "Submitted work " %}</span>
-          {% elif activity.activity_type == 'work_done' %}
-            <span>&bull; {% trans "Work done " %}</span>
-          {% elif activity.activity_type == 'killed_bounty' %}
-            <span>&bull; {% trans "Canceled bounty " %}</span>
-          {% elif activity.activity_type == 'increased_bounty' %}
-            <span>&bull; {% trans "Increased funding " %}</span>
-          {% elif activity.activity_type == 'worker_applied' %}
-            <span>&bull; {% trans "Applied for work " %}</span>
-          {% endif %}
           &bull; {{ activity.created | naturaltime }}
         </div>
       </div>
     </div>
   </div>
-  <div class="col-12 col-md-3 tags font-caption align-items-center">
+  <div class="col-12 col-md-4 tags fixed font-caption align-items-center">
+    {% if activity.activity_type == 'new_bounty' %}
+      <div class="tag in-progress">
+        <p>
+          <span>{% trans "Funded a new issue " %}</span>
+        </p>
+      </div>
+    {% elif activity.activity_type == 'start_work' %}
+      <div class="tag in-progress">
+        <p>
+          <span>{% trans "Started work " %}</span>
+        </p>
+      </div>
+    {% elif activity.activity_type == 'stop_work' %}
+      <div class="tag warning">
+        <p>
+          <span>{% trans "Stopped work " %}</span>
+        </p>
+      </div>
+    {% elif activity.activity_type == 'work_submitted' %}
+      <div class="tag in-progress">
+        <p>
+          <span>{% trans "Submitted work " %}</span>
+        </p>
+      </div>
+    {% elif activity.activity_type == 'work_done' %}
+      <div class="tag success">
+        <p>
+          <span>{% trans "Work done " %}</span>
+        </p>
+      </div>
+    {% elif activity.activity_type == 'killed_bounty' %}
+      <div class="tag warning">
+        <p>
+          <span>{% trans "Canceled bounty " %}</span>
+        </p>
+      </div>
+    {% elif activity.activity_type == 'increased_bounty' %}
+      <div class="tag in-progress">
+        <p>
+          <span>{% trans "Increased funding " %}</span>
+        </p>
+      </div>
+    {% elif activity.activity_type == 'worker_applied' %}
+      <div class="tag in-progress">
+        <p>
+          <span>{% trans "Applied for work " %}</span>
+        </p>
+      </div>
+    {% else %}
+      <div class="tag in-progress">
+        <p>
+          <span>{{ activity.i18n_name }}</span>
+        </p>
+      </div>
+    {% endif %}
     {% if activity.bounty.network != 'mainnet' %}
     <div class="tag network_warning">
       <p>

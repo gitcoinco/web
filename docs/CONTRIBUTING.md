@@ -137,22 +137,23 @@ To keep the style of the Javascript code consistent we have a basic linting conf
   * 1 tab = 2 spaces for `.html` and `.js` files
   * 1 tab = 4 spaces for everything else
 * Use `rem` for CSS when applicable
-* Add relevant unit tests for all new Python logic and update existing tests to accommodate new logic.
+* Add relevant unit tests for all new Python logic and update existing tests to accommodate new logic.  You can run tests via: `make pytest`
+* If you introduce new backend methods or classes, you must include docstrings that conform to PEP-257 and follow the existing patterns throughout the codebase.  See `app/avatar/(models|views|utils).py`  - If you introduce a new django module, like: `avatar` or `marketing`, you must update `pydocmd.yaml` to include relevant python modules from the newly introduced app.
 
 ### Step 4: Commit
 
 1. Ensure your code changes adhere to our styling and linting standards: `npm run eslint:fix; npm run stylelint:fix; isort -rc --atomic .`
-2. List all your changes as a list if needed else simply give a brief
-  description on what the changes are.
+2. List all your changes as a list if needed else simply give a brief description on what the changes are.
 3. All lines at 100 columns.
-4. If your PR fixed an issue, Use the `Fixes:` prefix and the full issue URL.
-  For other references use `Refs:`.
+4. If your PR fixed an issue, Use the `Fixes:` prefix and the full issue URL. For other references use `Refs:`.
 
     _Examples:_
+
     * `Fixes: https://github.com/gitcoinco/web/issues/87`
     * `Refs: https://github.com/gitcoinco/web/issues/91`
 
 5. _Sample commit A_
+
     ```txt
     if you can write down the changes explaining it in a paragraph which each
     line wrapped within 100 lines.
@@ -162,6 +163,7 @@ To keep the style of the Javascript code consistent we have a basic linting conf
     ```
 
     _Sample commit B_
+
     ```txt
     - list out your changes as points if there are many changes
     - if needed you can also send it across as
@@ -170,6 +172,7 @@ To keep the style of the Javascript code consistent we have a basic linting conf
     Fixes: https://github.com/gitcoinco/web/issues/87
     Refs: https://github.com/gitcoinco/web/issues/91
     ```
+
 6. [Squashing](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History) and [Merging](https://git-scm.com/docs/git-merge) your commits to make our history neater is always welcomed, but squashing can be handled during the merge process.
 
 ### Step 5: Rebase
@@ -194,7 +197,8 @@ Please ensure that your pull request follows all of the community guidelines to 
 * Title is descriptive and generally focused on what the PR addresses (If your PR is a work in progress, include `WIP` in the title. Once the PR is ready for review, please remove `WIP`)
 * Description explains what the PR achieves or addresses
 * If the PR modifies the frontend in any way, please attach screenshots and/or GIFs of all purposeful changes (before and after screens are recommended)
-* The PR passes all CI checks, to include Stickler, codecov, and Travis.
+* The PR passes all CI checks, to include: Stickler, Codecov, and CI.
+* If tests are failing or coverage is decreased while adding logic to any backend code, you will be asked to include relevant tests and your PR will not be merged until all checks pass.
 
 ## Python
 

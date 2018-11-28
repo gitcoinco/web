@@ -64,3 +64,10 @@ class BountyRequest(SuperModel):
     def __str__(self):
         """Return the string representation of BountyRequest."""
         return f"{self.requested_by.username if self.requested_by else 'anonymous'} / {self.created_on}"
+
+
+class BountyRequestMeta(SuperModel):
+    """A helper storage class for BountyRequest to keep track of dispatched emails."""
+
+    profile = models.ForeignKey('dashboard.Profile', on_delete=models.CASCADE)
+    last_feedback_sent = models.DateTimeField()

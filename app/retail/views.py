@@ -40,11 +40,12 @@ from economy.models import Token
 from marketing.mails import new_funding_limit_increase_request, new_token_request
 from marketing.models import Alumni, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
+from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 
 from .forms import FundingLimitIncreaseRequestForm
-from .utils import build_stat_results, programming_languages
+from .utils import programming_languages
 
 
 @cached_as(
@@ -286,19 +287,12 @@ def about(request):
         ),
         (
             static("v2/images/team/alisa-march.jpg"),
-            "Alisa March", "User Experience Design",
+            "Alisa March",
+            "User Experience Design",
             "PixelantDesign",
             "pixelant",
             "Tips",
             "Apple Cider Doughnuts"
-        ),
-        (
-            static("v2/images/team/justin-bean.jpg"),
-            "Justin Bean", "Engineering",
-            "StareIntoTheBeard",
-            "justinbean",
-            "Issue Explorer",
-            "Sushi"
         ),
         (
             static("v2/images/team/mark-beacom.jpg"),
@@ -353,6 +347,42 @@ def about(request):
             "scott-moore-a2970075",
             "Issue Explorer",
             "Teriyaki Chicken"
+        ),
+        (
+            static("v2/images/team/octavio-amu.png"),
+            "Octavio Amuchástegui",
+            "Front End Dev",
+            "octavioamu",
+            "octavioamu",
+            "The Community",
+            "Homemade italian pasta"
+        ),
+        (
+            static("v2/images/team/frank-chen.png"),
+            "Frank Chen",
+            "Data & Product",
+            "frankchen07",
+            "frankchen07",
+            "Kudos!",
+            "Crispy pork belly"
+        ),
+        (
+            static("v2/images/team/austin-griffith.jpg"),
+            "Austin Griffith",
+            "Research",
+            "austintgriffith",
+            None,
+            "The #BUIDL",
+            "Drunken Noodles"
+        ),
+        (
+            static("v2/images/team/nate-hopkins.png"),
+            "Nate Hopkins",
+            "Engineering",
+            "hopsoft",
+            None,
+            "Bounties",
+            "Chicken tikka masala"
         ),
     ]
     exclude_community = ['kziemiane', 'owocki', 'mbeacom']
@@ -424,7 +454,7 @@ def results(request, keyword=None):
     """Render the Results response."""
     if keyword and keyword not in programming_languages:
         raise Http404
-    context = build_stat_results(keyword)
+    context = JSONStore.objects.get(view='results', key=keyword).data
     context['is_outside'] = True
     context['avatar_url'] = static('v2/images/results_preview.gif')
     return TemplateResponse(request, 'results.html', context)
@@ -433,9 +463,9 @@ def results(request, keyword=None):
 @cached_view_as(Activity.objects.all().order_by('-created'))
 def activity(request):
     """Render the Activity response."""
-
+    page_size = 300
     activities = Activity.objects.all().order_by('-created')
-    p = Paginator(activities, 300)
+    p = Paginator(activities, page_size)
     page = request.GET.get('page', 1)
 
     context = {

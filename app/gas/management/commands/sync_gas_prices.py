@@ -62,4 +62,3 @@ class Command(BaseCommand):
                     )
                 except KeyError:
                     logger.warning('In: sync_gas_prices - Malformed response - Code: %s', response.status_code)
-

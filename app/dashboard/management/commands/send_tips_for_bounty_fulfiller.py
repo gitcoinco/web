@@ -50,7 +50,7 @@ class Command(BaseCommand):
             is_for_bounty_fulfiller=True,
             receive_txid='',
             metadata__is_for_bounty_fulfiller_handled__isnull=True
-            ).exclude(txid='')
+            ).send_success()
         for tip in tips:
             try:
                 bounty = tip.bounty

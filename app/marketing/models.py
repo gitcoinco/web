@@ -193,6 +193,7 @@ class LeaderboardRank(SuperModel):
     active = models.BooleanField()
     count = models.IntegerField(default=0)
     rank = models.IntegerField(default=0)
+    tech_keywords = ArrayField(models.CharField(max_length=50), blank=True, default=list)
 
     objects = LeaderboardRankQuerySet.as_manager()
 
@@ -213,7 +214,7 @@ class LeaderboardRank(SuperModel):
         if not self.is_user_based:
             return f"@{self.github_username}"
         if 'kudos/' in self.github_username:
-            pk = self.github_username.split('/')[2]
+            pk = self.github_username.split('/')[4]
             from kudos.models import Token
             return Token.objects.get(pk=pk).humanized_name
         return self.github_username
@@ -221,7 +222,7 @@ class LeaderboardRank(SuperModel):
     @property
     def avatar_url(self):
         if 'kudos/' in self.github_username:
-            pk = self.github_username.split('/')[2]
+            pk = self.github_username.split('/')[4]
             from kudos.models import Token
             return Token.objects.get(pk=pk).img_url
         if self.profile and self.profile.avatar:
@@ -238,7 +239,7 @@ class LeaderboardRank(SuperModel):
     def url(self):
         from django.urls import reverse
         if 'kudos/' in self.github_username:
-            pk = self.github_username.split('/')[2]
+            pk = self.github_username.split('/')[4]
             from kudos.models import Token
             return Token.objects.get(pk=pk).url
         return reverse('profile', args=[self.github_username])

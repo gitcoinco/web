@@ -15,7 +15,7 @@ var filters = [
 var local_storage_keys = JSON.parse(JSON.stringify(filters));
 
 local_storage_keys.push('keywords');
-
+local_storage_keys.push('org');
 results_limit = 25;
 
 var localStorage;
@@ -58,7 +58,7 @@ var getActiveFilters = function() {
   }
   let _filters = filters.slice();
 
-  _filters.push('keywords', 'order_by');
+  _filters.push('keywords', 'order_by', 'org');
   _filters.forEach(filter => {
     if (getParam(filter)) {
       localStorage[filter] = getParam(filter).replace(/^,|,\s*$/g, '');
@@ -73,7 +73,7 @@ var buildURI = function() {
   let uri = '';
   let _filters = filters.slice();
 
-  _filters.push('keywords', 'order_by');
+  _filters.push('keywords', 'order_by', 'org');
   _filters.forEach((filter) => {
     if (localStorage[filter] &&
       localStorage[filter] != 'any') {
@@ -106,6 +106,7 @@ var set_sidebar_defaults = function() {
   // Special handling to support adding keywords from url query param
   var q = getParam('q');
   var keywords;
+  var org;
 
   if (q) {
     keywords = decodeURIComponent(q).replace(/^,|\s|,\s*$/g, '');
@@ -118,6 +119,16 @@ var set_sidebar_defaults = function() {
       });
     } else {
       localStorage['keywords'] = keywords;
+    }
+
+    if (localStorage['org']) {
+      org.split(',').forEach(function(v, k) {
+        if (localStorage['org'].indexOf(v) === -1) {
+          localStorage['org'] += ',' + v;
+        }
+      });
+    } else {
+      localStorage['org'] = org;
     }
   }
 
@@ -138,13 +149,6 @@ var set_sidebar_defaults = function() {
         $('input[name="' + filter + '"][value=any]').prop('checked', false);
     }
   });
-};
-
-var set_filter_header = function() {
-  var idxStatusEl = $('input[name=idx_status]:checked');
-  var filter_status = idxStatusEl.attr('val-ui') ? idxStatusEl.attr('val-ui') : 'All';
-
-  $('#filter').html(filter_status);
 };
 
 var toggleAny = function(event) {
@@ -187,6 +191,26 @@ var addTechStackKeywordFilters = function(value) {
     '<i class="fas fa-times" onclick="removeFilter(\'keywords\', \'' + value + '\')"></i></a>');
 };
 
+var addTechStackOrgFilters = function(value) {
+  if (localStorage['org']) {
+    const org = localStorage['org'];
+    const new_value = ',' + value;
+
+    if (org === value ||
+        org.indexOf(new_value) !== -1 ||
+        org.indexOf(value + ',') !== -1) {
+
+      return;
+    }
+    localStorage['org'] = org + new_value;
+  } else {
+    localStorage['org'] = value;
+  }
+
+  $('.filter-tags').append('<a class="filter-tag keywords"><span>' + value + '</span>' +
+    '<i class="fas fa-times" onclick="removeFilter(\'org\', \'' + value + '\')"></i></a>');
+};
+
 var getFilters = function() {
   var _filters = [];
 
@@ -206,17 +230,24 @@ var getFilters = function() {
     });
   }
 
+  if (localStorage['org']) {
+    localStorage['org'].split(',').forEach(function(v, k) {
+      _filters.push('<a class="filter-tag keywords"><span>' + v + '</span>' +
+        '<i class="fas fa-times" onclick="removeFilter(\'org\', \'' + v + '\')"></i></a>');
+    });
+  }
+
   $('.filter-tags').html(_filters);
 };
 
 var removeFilter = function(key, value) {
-  if (key !== 'keywords') {
+  if (key !== 'keywords' && key !== 'org') {
     $('input[name="' + key + '"][value="' + value + '"]').prop('checked', false);
   } else {
-    localStorage['keywords'] = localStorage['keywords'].replace(value, '').replace(',,', ',');
+    localStorage[key] = localStorage[key].replace(value, '').replace(',,', ',');
 
     // Removing the start and last comma to avoid empty element when splitting with comma
-    localStorage['keywords'] = localStorage['keywords'].replace(/^,|,\s*$/g, '');
+    localStorage[key] = localStorage[key].replace(/^,|,\s*$/g, '');
   }
 
   reset_offset();
@@ -226,6 +257,8 @@ var removeFilter = function(key, value) {
 var get_search_URI = function(offset) {
   var uri = '/api/v0.1/bounties/?';
   var keywords = '';
+  var org = '';
+
 
   filters.forEach((filter) => {
     var active_filters = [];
@@ -291,6 +324,19 @@ var get_search_URI = function(offset) {
     uri += '&raw_data=' + keywords;
   }
 
+  if (localStorage['org']) {
+    localStorage['org'].split(',').forEach(function(v, pos, arr) {
+      org += v;
+      if (arr.length > pos + 1) {
+        org += ',';
+      }
+    });
+  }
+
+  if (org) {
+    uri += '&org=' + org;
+  }
+
   var order_by = localStorage['order_by'];
 
   if (order_by) {
@@ -299,66 +345,6 @@ var get_search_URI = function(offset) {
   uri += '&offset=' + offset;
   uri += '&limit=' + results_limit;
   return uri;
-};
-
-var process_stats = function(results) {
-  var num = results.length;
-  var worth_usdt = 0;
-  var worth_eth = 0;
-  var currencies_to_value = {};
-
-  for (var i = 0; i < results.length; i++) {
-    var result = results[i];
-
-    var this_worth_usdt = Number.parseFloat(result['value_in_usdt']);
-    var this_worth_eth = Number.parseFloat(result['value_in_eth']);
-
-    if (this_worth_usdt) {
-      worth_usdt += this_worth_usdt;
-    }
-    if (this_worth_eth) {
-      worth_eth += this_worth_eth;
-    }
-    var token = result['token_name'];
-
-    if (token !== 'ETH') {
-      if (!currencies_to_value[token]) {
-        currencies_to_value[token] = 0;
-      }
-      currencies_to_value[token] += Number.parseFloat(result['value_true']);
-    }
-  }
-
-  show_stats = false; // TODO: xfr over to new stats API call
-  if (show_stats) {
-    worth_usdt = worth_usdt.toFixed(2);
-    worth_eth = (worth_eth / Math.pow(10, 18)).toFixed(2);
-
-    var stats = worth_usdt + ' USD, ' + worth_eth + ' ETH';
-
-    for (var t in currencies_to_value) {
-      if (Object.prototype.hasOwnProperty.call(currencies_to_value, t)) {
-        stats += ', ' + currencies_to_value[t].toFixed(2) + ' ' + t;
-      }
-    }
-
-    var matchesEl = $('#matches');
-    var fundingInfoEl = $('#funding-info');
-
-    switch (num) {
-      case 0:
-        matchesEl.html(gettext('No Results'));
-        fundingInfoEl.html('');
-        break;
-      case 1:
-        matchesEl.html(num + gettext(' Matching Result'));
-        fundingInfoEl.html('<span id="modifiers">Funded Issue</span><span id="stats" class="font-caption">(' + stats + ')</span>');
-        break;
-      default:
-        matchesEl.html(num + gettext(' Matching Results'));
-        fundingInfoEl.html('<span id="modifiers">Funded Issues</span><span id="stats" class="font-caption">(' + stats + ')</span>');
-    }
-  }
 };
 
 var trigger_scroll = debounce(function() {
@@ -400,7 +386,9 @@ var refreshBounties = function(event, offset, append, do_save_search) {
 
   // Allow search for freeform text
   var searchInput = $('#keywords')[0];
+  var orgInput = $('#org')[0];
 
+  $('#results-count span.num').html('<i class="fas fa-spinner fa-spin"></i>');
   if (searchInput.value.length > 0) {
     addTechStackKeywordFilters(searchInput.value.trim());
     searchInput.value = '';
@@ -408,8 +396,14 @@ var refreshBounties = function(event, offset, append, do_save_search) {
     $('.close-icon').hide();
   }
 
+  if (orgInput.value.length > 0) {
+    addTechStackOrgFilters(orgInput.value.trim());
+    orgInput.value = '';
+    orgInput.blur();
+    $('.close-icon').hide();
+  }
+
   save_sidebar_latest();
-  set_filter_header();
   toggleAny(event);
   getFilters();
   if (do_save_search) {
@@ -476,7 +470,12 @@ var refreshBounties = function(event, offset, append, do_save_search) {
       });
     }
 
-    process_stats(results);
+    $('#results-count span.num').html(offset + results.length);
+    if (results.length == results_limit) {
+      $('#results-count span.plus').html('+');
+    } else {
+      $('#results-count span.plus').html('');
+    }
   }).fail(function() {
     if (explorer.bounties_request.readyState !== 0)
       _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
@@ -514,11 +513,20 @@ var resetFilters = function(resetKeyword) {
       else
         $('input[name="' + filter + '"][value="' + tag[j].value + '"]').prop('checked', false);
     }
+
+    // Defaults to mainnet on clear filters to make it less confusing
+    $('input[name="network"][value="mainnet"]').prop('checked', true);
   });
 
   if (resetKeyword && localStorage['keywords']) {
     localStorage['keywords'].split(',').forEach(function(v, k) {
       removeFilter('keywords', v);
+    });
+  }
+
+  if (resetKeyword && localStorage['org']) {
+    localStorage['org'].split(',').forEach(function(v, k) {
+      removeFilter('org', v);
     });
   }
 };
@@ -643,7 +651,7 @@ $(document).ready(function() {
   });
 
   // search bar
-  $('#bounties').delegate('#new_search', 'click', function(e) {
+  $('#sidebar_container').delegate('#new_search', 'click', function(e) {
     reset_offset();
     refreshBounties(null, 0, false, true);
     e.preventDefault();
@@ -683,6 +691,12 @@ $(document).ready(function() {
 
   // sidebar filters
   $('.sidebar_search input[type=checkbox], .sidebar_search label').change(function(e) {
+    reset_offset();
+    refreshBounties(null, 0, false, true);
+    e.preventDefault();
+  });
+
+  $('#org').change(function(e) {
     reset_offset();
     refreshBounties(null, 0, false, true);
     e.preventDefault();
@@ -765,7 +779,7 @@ var paint_search_tabs = function() {
   if (searches.length <= 1)
     return target.html('');
 
-  var html = "<ul class='nav'><i class='fas fa-history'></i>";
+  var html = "<ul class='nav'>";
 
   for (var i = 0; i < searches.length; i++) {
     var search_no = searches[i];
