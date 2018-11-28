@@ -62,15 +62,20 @@ def pull_to_db():
         email = sub.email
         process_email(email, 'dashboard_subscription')
 
-    print("- tip")
+    print("- tip, Kudos")
     from dashboard.models import Tip
-    for tip in Tip.objects.all():
-        # do not add receive tip emails to the mailing list,
-        # don't want to spam people at 4 diff email addresses
-        # for email in tip.emails:
-        #    process_email(email, 'tip_usage')
-        if tip.from_email:
-            process_email(tip.from_email, 'tip_usage')
+    from kudos.models import KudosTransfer
+    objects = [Tip, KudosTransfer]
+    for obj in objects:
+        for _this in obj.objects.all():
+            # do not add receive tip emails to the mailing list,
+            # don't want to spam people at 4 diff email addresses
+            # for email in tip.emails:
+            #    process_email(email, 'tip_usage')
+            if _this.from_email:
+                process_email(_this.from_email, 'kudos_tip_usage')
+            if _this.primary_email:
+                process_email(_this.primary_email, 'kudos_tip_receive')
 
     print("- bounty")
     from dashboard.models import Bounty

@@ -18,6 +18,7 @@
 
 from django.core.management.base import BaseCommand
 from django.db.models import Count
+from django.db.models.functions import Lower
 
 from dashboard.models import Profile
 
@@ -32,6 +33,7 @@ def combine_profiles(p1, p2):
 
     p1.github_access_token = p2.github_access_token if p2.github_access_token else p1.github_access_token
     p1.slack_token = p2.slack_token if p2.slack_token else p1.slack_token
+    p1.avatar = p2.avatar if p2.avatar else p1.avatar
     p1.slack_repos = p2.slack_repos if p2.slack_repos else p1.slack_repos
     p1.slack_channel = p2.slack_channel if p2.slack_channel else p1.slack_channel
     p1.email = p2.email if p2.email else p1.email
@@ -40,7 +42,7 @@ def combine_profiles(p1, p2):
     p1.max_tip_amount_usdt_per_week = max(p1.max_tip_amount_usdt_per_week, p2.max_tip_amount_usdt_per_week)
     p1.max_num_issues_start_work = max(p1.max_num_issues_start_work, p2.max_num_issues_start_work)
     p1.trust_profile = any([p1.trust_profile, p2.trust_profile])
-    p1.hide_profile = any([p1.hide_profile, p2.hide_profile])
+    p1.hide_profile = False
     p1.suppress_leaderboard = any([p1.suppress_leaderboard, p2.suppress_leaderboard])
     p1.user = p2.user if p2.user else p1.user
     # tips, bounties, fulfillments, and interests , activities, actions
@@ -71,6 +73,15 @@ def combine_profiles(p1, p2):
     for obj in p2.votes.all():
         obj.profile = p1
         obj.save()
+    for obj in p2.received_kudos.all():
+        obj.recipient_profile = p1
+        obj.save()
+    for obj in p2.sent_kudos.all():
+        obj.sender_profile = p1
+        obj.save()
+    for obj in p2.kudos_wallets.all():
+        obj.profile = p1
+        obj.save()
     p2.delete()
     p1.save()
 
@@ -80,11 +91,23 @@ class Command(BaseCommand):
     help = 'cleans up users who have duplicate profiles'
 
     def handle(self, *args, **options):
+        whitespace_profiles = Profile.objects.filter(handle__endswith=' ')
+        print(f" - {whitespace_profiles.count()} whitespace profiles")
+        for profile in whitespace_profiles:
+            profile.handle = profile.handle.strip()
+            profile.save()
 
-        dupes = Profile.objects.values('handle').annotate(Count('handle')).filter(handle__count__gt=1)
+        at_profiles = Profile.objects.filter(handle__startswith='@')
+        print(f" - {at_profiles.count()} at_profiles")
+        for profile in at_profiles:
+            profile.handle = profile.handle.replace('@', '')
+            profile.save()
+
+        dupes = Profile.objects.exclude(handle=None).annotate(handle_lower=Lower("handle")).values('handle_lower').annotate(handle_lower_count=Count('handle_lower')).filter(handle_lower_count__gt=1)
+        print(f" - {dupes.count()} dupes")
 
         for dupe in dupes:
-            handle = dupe['handle']
-            profiles = Profile.objects.filter(handle=handle).distinct("pk")
+            handle = dupe['handle_lower']
+            profiles = Profile.objects.filter(handle__iexact=handle).distinct("pk")
             print(f"combining {handle}: {profiles[0].pk} and {profiles[1].pk}")
             combine_profiles(profiles[0], profiles[1])

@@ -17,11 +17,11 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from cacheops import CacheMiss, cache
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
+from cacheops import CacheMiss, cache
 from dashboard.models import Bounty, Profile, Tip
 from kudos.models import KudosTransfer
 from marketing.models import LeaderboardRank
@@ -311,7 +311,7 @@ class Command(BaseCommand):
             sum_bounties(b, index_terms)
 
         # get tips
-        tips = Tip.objects.exclude(txid='').filter(network='mainnet')
+        tips = Tip.objects.send_success().filter(network='mainnet')
 
         # iterate
         for t in tips:
@@ -319,9 +319,9 @@ class Command(BaseCommand):
                 continue
             index_terms = tip_index_terms(t)
             sum_tips(t, index_terms)
-        
+
         # kudos'
-        for kt in KudosTransfer.objects.exclude(txid='').filter(network='mainnet'):
+        for kt in KudosTransfer.objects.send_success().filter(network='mainnet'):
             sum_kudos(kt)
 
         # set old LR as inactive
@@ -339,13 +339,17 @@ class Command(BaseCommand):
                     'amount': amount,
                     'rank': rank,
                     'leaderboard': key,
-                    'github_username': index_term,
+                    'github_username': index_term
                 }
 
                 try:
-                    lbr_kwargs['profile'] = Profile.objects.get(handle__iexact=index_term)
+                    profile = Profile.objects.get(handle__iexact=index_term)
+                    lbr_kwargs['profile'] = profile
+                    lbr_kwargs['tech_keywords'] = profile.keywords
                 except Profile.MultipleObjectsReturned:
-                    lbr_kwargs['profile'] = Profile.objects.filter(handle__iexact=index_term).latest('id')
+                    profile = Profile.objects.filter(handle__iexact=index_term).latest('id')
+                    lbr_kwargs['profile'] = profile
+                    lbr_kwargs['tech_keywords'] = profile.keywords
                     print(f'Multiple profiles found for username: {index_term}')
                 except Profile.DoesNotExist:
                     print(f'No profiles found for username: {index_term}')

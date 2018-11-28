@@ -16,10 +16,14 @@
 
 {% endcomment %}
 {% load humanize i18n static %}
-<div class="row box activity">
+<div class="row box activity {{ row.activity_type }}">
   <div class="col-12 col-md-1">
     <div class="activity-avatar">
       <img class="avatar" src="/dynamic/avatar/{{ row.profile.handle }}"/>
+      {% if row.metadata.to_username %}
+        <img class="avatar" src="/dynamic/avatar/{{ row.metadata.to_username|cut:'@' }}" style="
+      width: 30px; height: 30px; bottom: 0; right: 0; position: absolute;"/>
+      {% endif %}
     </div>
   </div>
   <div class="col-12 col-md-10 activity-info">
@@ -31,6 +35,13 @@
         {% trans "tipped" %}
         <a href="https://gitcoin.co/profile/{{ row.metadata.to_username }}" target="_blank">
           @{{ row.metadata.to_username }}
+        </a>
+      {% elif row.activity_type == 'new_kudos' %}
+        {% trans "send a" %}
+        {{ row.i18n_name|lower }}
+        {% trans "to" %}
+        <a href="/profile/{{ row.metadata.to_username|cut:'@' }}">
+          {{ row.metadata.to_username }}
         </a>
       {% elif row.activity_type == 'new_bounty' %}
         <span>{% trans "funded a new issue: " %}</span>{{ row.urled_title | safe }}
@@ -73,7 +84,13 @@
       </div>
     </div>
   </div>
-  <div class="col-12 col-md-1">
-    <i class="far {{ row.icon }} last-icon"></i>
+  <div class="col-12 col-md-1 text-center">
+    {% if row.kudos %}
+      <a href="/kudos/{{row.kudos.kudos_token_cloned_from_id}}/{{row.kudos.kudos_token_cloned_from.name}}">
+        <img src="{% static row.kudos_data.image %}" alt="" class="w-100">
+      </a>
+    {% else %}
+      <i class="far {{ row.icon }} last-icon"></i>
+    {% endif %}
   </div>
 </div>

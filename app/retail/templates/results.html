@@ -178,7 +178,7 @@
             <div id="repo_repos">
                 {% for org in top_orgs %}
                     <a href="/profile/{{org}}" title="{{org}}">
-                        <img src="/dynamic/avatar/{{org}}" alts="{{org}}" style="max-width: 100px; max-height: 100px; margin 5px; border-radius: 50px;">
+                        <img data-src="/dynamic/avatar/{{org}}" alts="{{org}}" style="max-width: 100px; max-height: 100px; margin 5px; border-radius: 50px;">
                     </a>
                 {% endfor %}
             </div>
@@ -199,7 +199,7 @@
             <div id="repo_repos">
                 {% for org in top_funders %}
                     <a href="/profile/{{org}}" title="{{org}}">
-                        <img src="/dynamic/avatar/{{org}}" alts="{{org}}" style="max-width: 100px; max-height: 100px; margin 5px; border-radius: 50px;">
+                        <img data-src="/dynamic/avatar/{{org}}" alts="{{org}}" style="max-width: 100px; max-height: 100px; margin 5px; border-radius: 50px;">
                     </a>
                 {% endfor %}
             </div>
@@ -245,7 +245,7 @@
             <div id="repo_repos">
                 {% for org in top_coders %}
                     <a href="/profile/{{org}}" title="{{org}}">
-                        <img src="/dynamic/avatar/{{org}}" alts="{{org}}" style="max-width: 100px; max-height: 100px; margin 5px; border-radius: 50px;">
+                        <img data-src="/dynamic/avatar/{{org}}" alts="{{org}}" style="max-width: 100px; max-height: 100px; margin 5px; border-radius: 50px;">
                     </a>
                 {% endfor %}
             </div>
@@ -343,7 +343,7 @@
             <div id="repo_repos">
                 {% for kudos in kudos_tokens %}
                     <a href="/kudos/{{ kudos.id }}/{{ kudos.name }}"" title="{{kudos.name|humanize_name}}">
-                        <img src="{% static kudos.image %}" alts="{{kudos.name|humanize_name}}" style="max-width: 100px; max-height: 100px; margin 5px; border-radius: 50px;">
+                        <img data-src="{% static kudos.image %}" alts="{{kudos.name|humanize_name}}" style="max-width: 100px; max-height: 100px; margin 5px; border-radius: 50px;">
                     </a>
                 {% endfor %}
             </div>
@@ -478,6 +478,9 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/messages.html' %}
+
+    <script src="{% static "v2/js/jquery-unveil.js" %}"></script>
+
   </body>
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script src="{% static "v2/js/pages/results.js" %}"></script>
@@ -486,6 +489,9 @@
       $("#mesh_network_jobs_holder").html('<iframe src="{% url 'viz_graph' %}?keyword={{keyword}}" style="width: 100%; height: 600px; border-left: 1px #dddddd solid; border-bottom: 1px #dddddd solid;  " frameBorder="0">');
       e.preventDefault();
     });
+  $(document).ready(function() {
+    $("img").unveil(200);
+  });
   </script>
 </html>
 
