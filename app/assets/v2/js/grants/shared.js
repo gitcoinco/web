@@ -90,3 +90,12 @@ $(document).ready(function() {
     }
   };
 });
+
+// Waiting State screen
+const enableWaitState = container => {
+  $(container).hide();
+  $('.interior .body').addClass('open');
+  $('.interior .body').addClass('loading');
+  $('.grant_waiting').show();
+  waitingStateActive();
+};

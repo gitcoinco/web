@@ -11,8 +11,6 @@ $(document).ready(function() {
 
   updateSummary();
 
-  // alert("Just so you know, you will perform two actions in MetaMask on this page!")
-
   $('#js-fundGrant').validate({
     submitHandler: function(form) {
       var data = {};
@@ -67,27 +65,21 @@ $(document).ready(function() {
 
           deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(realApproval)).send({from: accounts[0], gasPrice: 4000000000}, function(err, result) {
 
+            document.issueURL = window.location.origin + $('#grant-link').val();
+            enableWaitState('#grants_form');
             // Should add approval transactions to transaction history
-
             deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
 
               nonce = parseInt(nonce) + 1;
 
               const parts = [
-                // subscriber address
-                accounts[0],
-                // admin_address
-                data.admin_address,
-                // token denomination / address
-                data.denomination,
-                // data.amount_per_period
-                web3.utils.toTwosComplement(realTokenAmount),
-                // data.period_seconds
-                web3.utils.toTwosComplement(realPeriodSeconds),
-                // data.gas_price
-                web3.utils.toTwosComplement(realGasPrice),
-                // nonce
-                web3.utils.toTwosComplement(nonce)
+                accounts[0], // subscriber address
+                data.admin_address, // admin_address
+                data.denomination, // token denomination / address
+                web3.utils.toTwosComplement(realTokenAmount), // data.amount_per_period
+                web3.utils.toTwosComplement(realPeriodSeconds), // data.period_seconds
+                web3.utils.toTwosComplement(realGasPrice), // data.gas_price
+                web3.utils.toTwosComplement(nonce) // nonce
               ];
 
               console.log('realTokenAmount', realTokenAmount);
@@ -98,7 +90,6 @@ $(document).ready(function() {
               deployedSubscription.methods.getSubscriptionHash(...parts).call(function(err, subscriptionHash) {
 
                 $('#subscription_hash').val(subscriptionHash);
-
 
                 web3.eth.personal.sign('' + subscriptionHash, accounts[0], function(err, signature) {
 
@@ -120,7 +111,6 @@ $(document).ready(function() {
                   });
 
                   console.log('data', data);
-
                   form.submit();
 
                   fetch('http://localhost:10003/saveSubscription', {
@@ -139,15 +129,11 @@ $(document).ready(function() {
                     });
 
                     data.frequency = realPeriodSeconds;
-
                     console.log('data', data);
-
                     form.submit();
-
-                  })
-                    .catch((error)=>{
-                      console.log(error);
-                    });
+                  }).catch((error)=>{
+                    console.log(error);
+                  });
                 });
               });
             });

@@ -43,27 +43,22 @@ window.onload = function() {
             .on('transactionHash', function(hash) {
               console.log('hash', hash);
 
+              document.issueURL = document.getElementById('grant-link').href;
+              enableWaitState('#grants_form');
+
               deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
 
                 nonce = parseInt(nonce) + 1;
 
                 const parts = [
-                // subscriber address
-                  accounts[0],
-                  // admin_address
-                  data.admin_address,
-                  // testing token
-                  data.token_address,
-                  // data.amount_per_period
-                  web3.utils.toTwosComplement(realTokenAmount),
-                  // data.period_seconds
-                  web3.utils.toTwosComplement(data.real_period_seconds),
-                  // data.gas_price
-                  web3.utils.toTwosComplement(realGasPrice),
-                  // nonce
-                  web3.utils.toTwosComplement(nonce),
-                  // contributor_signature
-                  data.signature
+                  accounts[0], // subscriber address
+                  data.admin_address, // admin_address
+                  data.token_address, // testing token
+                  web3.utils.toTwosComplement(realTokenAmount), // data.amount_per_period
+                  web3.utils.toTwosComplement(data.real_period_seconds), // data.period_seconds
+                  web3.utils.toTwosComplement(realGasPrice), // data.gas_price
+                  web3.utils.toTwosComplement(nonce), // nonce
+                  data.signature // contributor_signature
                 ];
 
                 console.log('parts', parts);
@@ -73,16 +68,17 @@ window.onload = function() {
                 ).send({from: accounts[0], gasPrice: 4000000000})
                   .on('confirmation', function(confirmationNumber, receipt) {
                     console.log('receipt', receipt);
-
                     form.submit();
                   });
               });
             })
             .on('confirmation', function(confirmationNumber, receipt) {
               console.log('receipt', receipt);
+              window.location = $('#grant-link').val();
             })
             .on('error', function(err) {
               console.log('err', err);
+              // TODO: Redirect to same page and throw error ?
             });
         });
       });
