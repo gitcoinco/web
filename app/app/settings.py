@@ -108,7 +108,8 @@ INSTALLED_APPS = [
     'kudos',
     'django.contrib.postgres',
     'bounty_requests',
-    'perftools'
+    'perftools',
+    'revenue',
 ]
 
 MIDDLEWARE = [

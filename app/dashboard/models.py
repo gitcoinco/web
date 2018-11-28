@@ -1033,6 +1033,11 @@ class BountyFulfillment(SuperModel):
             self.fulfiller_github_username = self.fulfiller_github_username.lstrip('@')
         super().save(*args, **kwargs)
 
+
+    @property
+    def should_hide(self):
+        return self.fulfiller_github_username in settings.BLOCKED_USERS
+
     @property
     def to_json(self):
         """Define the JSON representation of BountyFulfillment.
@@ -1072,15 +1077,15 @@ class SendCryptoAssetQuerySet(models.QuerySet):
 
     def send_success(self):
         """Filter results down to successful sends only."""
-        return self.exclude(txid='').filter(tx_status='success')
+        return self.filter(tx_status='success').exclude(txid='')
 
     def send_pending(self):
         """Filter results down to pending sends only."""
-        return self.exclude(txid='').filter(tx_status__in=['pending'])
+        return self.filter(tx_status='pending').exclude(txid='')
 
     def send_happy_path(self):
         """Filter results down to pending/success sends only."""
-        return self.exclude(txid='').filter(tx_status__in=['pending', 'success'])
+        return self.filter(tx_status__in=['pending', 'success']).exclude(txid='')
 
     def send_fail(self):
         """Filter results down to failed sends only."""
@@ -1088,15 +1093,15 @@ class SendCryptoAssetQuerySet(models.QuerySet):
 
     def receive_success(self):
         """Filter results down to successful receives only."""
-        return self.exclude(receive_txid='').filter(receive_tx_status='success')
+        return self.filter(receive_tx_status='success').exclude(receive_txid='')
 
     def receive_pending(self):
         """Filter results down to pending receives only."""
-        return self.exclude(receive_txid='').filter(receive_tx_status__in=['pending'])
+        return self.filter(receive_tx_status='pending').exclude(receive_txid='')
 
     def receive_happy_path(self):
         """Filter results down to pending receives only."""
-        return self.exclude(receive_txid='').filter(receive_tx_status__in=['pending', 'success'])
+        return self.filter(receive_tx_status__in=['pending', 'success']).exclude(receive_txid='')
 
     def receive_fail(self):
         """Filter results down to failed receives only."""
@@ -1107,17 +1112,18 @@ class SendCryptoAsset(SuperModel):
     """Abstract Base Class to handle the model for both Tips and Kudos."""
 
     TX_STATUS_CHOICES = (
-        ('na', 'na'), # not applicable
+        ('na', 'na'),  # not applicable
         ('pending', 'pending'),
         ('success', 'success'),
         ('error', 'error'),
         ('unknown', 'unknown'),
         ('dropped', 'dropped'),
-        )
+    )
 
     web3_type = models.CharField(max_length=50, default='v3')
     emails = JSONField(blank=True)
     url = models.CharField(max_length=255, default='', blank=True)
+    primary_email = models.CharField(max_length=255, default='', blank=True)
     tokenName = models.CharField(max_length=255, default='ETH')
     tokenAddress = models.CharField(max_length=255, blank=True)
     amount = models.DecimalField(default=1, decimal_places=4, max_digits=50)
@@ -1665,6 +1671,8 @@ class Profile(SuperModel):
         default=False,
         help_text='If this option is chosen, the user is able to submit a faucet/ens domain registration even if they are new to github',
     )
+    keywords = ArrayField(models.CharField(max_length=200), blank=True, default=list)
+    organizations = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     form_submission_records = JSONField(default=list, blank=True)
     max_num_issues_start_work = models.IntegerField(default=3)
     preferred_payout_address = models.CharField(max_length=255, default='', blank=True)
@@ -1789,12 +1797,16 @@ class Profile(SuperModel):
         return created_on.replace(tzinfo=pytz.UTC)
 
     @property
-    def repos_data(self):
+    def repos_data_lite(self):
         from git.utils import get_user
-        from app.utils import add_contributors
         # TODO: maybe rewrite this so it doesnt have to go to the internet to get the info
         # but in a way that is respectful of db size too
-        repos_data = get_user(self.handle, '/repos')
+        return get_user(self.handle, '/repos')
+
+    @property
+    def repos_data(self):
+        from app.utils import add_contributors
+        repos_data = self.repos_data_lite
         repos_data = sorted(repos_data, key=lambda repo: repo['stargazers_count'], reverse=True)
         repos_data = [add_contributors(repo_data) for repo_data in repos_data]
         return repos_data

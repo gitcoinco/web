@@ -109,6 +109,7 @@ def save_avatar(request):
             profile.avatar.save()
         response['message'] = 'Avatar updated'
         profile.avatar.create_from_config()
+        profile.avatar.save()
         create_user_action(profile.user, 'updated_avatar', request)
     except Exception as e:
         response['status'] = 400

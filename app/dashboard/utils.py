@@ -25,9 +25,9 @@ from django.conf import settings
 
 import ipfsapi
 import requests
-from app.utils import get_semaphor
+from app.utils import sync_profile
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
-from dashboard.models import Activity, Bounty, UserAction
+from dashboard.models import Activity, Bounty, Profile, UserAction
 from eth_utils import to_checksum_address
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from hexbytes import HexBytes
@@ -37,6 +37,21 @@ from web3.exceptions import BadFunctionCallOutput
 from web3.middleware import geth_poa_middleware
 
 logger = logging.getLogger(__name__)
+
+def all_sendcryptoasset_models():
+    from revenue.models import DigitalGoodPurchase
+    from dashboard.models import Tip
+    from kudos.models import KudosTransfer
+
+    return [DigitalGoodPurchase, Tip, KudosTransfer]
+
+
+class ProfileNotFoundException(Exception):
+    pass
+
+
+class ProfileHiddenException(Exception):
+    pass
 
 
 class BountyNotFoundException(Exception):
@@ -596,6 +611,46 @@ def generate_pub_priv_keypair():
     # return priv key, pub key, address
 
     return priv.to_string().hex(), pub.hex(), checksum_encode(address)
+
+
+def profile_helper(handle, suppress_profile_hidden_exception=False, current_user=None):
+    """Define the profile helper.
+
+    Args:
+        handle (str): The profile handle.
+
+    Raises:
+        DoesNotExist: The exception is raised if a Profile isn't found matching the handle.
+            Remediation is attempted by syncing the profile data.
+        MultipleObjectsReturned: The exception is raised if multiple Profiles are found.
+            The latest Profile will be returned.
+
+    Returns:
+        dashboard.models.Profile: The Profile associated with the provided handle.
+
+    """
+
+    current_profile = getattr(current_user, 'profile', None)
+    if current_profile and current_profile.handle == handle:
+        return current_profile
+
+    try:
+        profile = Profile.objects.get(handle__iexact=handle)
+    except Profile.DoesNotExist:
+        profile = sync_profile(handle)
+        if not profile:
+            raise ProfileNotFoundException
+    except Profile.MultipleObjectsReturned as e:
+        # Handle edge case where multiple Profile objects exist for the same handle.
+        # We should consider setting Profile.handle to unique.
+        # TODO: Should we handle merging or removing duplicate profiles?
+        profile = Profile.objects.filter(handle__iexact=handle).latest('id')
+        logging.error(e)
+
+    if profile.hide_profile and not profile.is_org and not suppress_profile_hidden_exception:
+        raise ProfileHiddenException
+
+    return profile
 
 
 def get_tx_status(txid, network, created_on):

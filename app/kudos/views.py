@@ -41,7 +41,7 @@ from dashboard.notifications import maybe_market_kudos_to_email, maybe_market_ku
 from dashboard.utils import get_web3
 from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from git.utils import get_emails_master, get_github_primary_email
+from git.utils import get_emails_by_category, get_emails_master, get_github_primary_email
 from kudos.utils import kudos_abi
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
@@ -306,24 +306,30 @@ def send_3(request):
     from_username = request.user.username if is_user_authenticated else ''
     primary_from_email = request.user.email if is_user_authenticated else ''
     access_token = request.user.profile.get_access_token() if is_user_authenticated and request.user.profile else ''
-    to_emails = []
 
     params = json.loads(request.body)
 
     to_username = params.get('username', '').lstrip('@')
-    to_emails = get_emails_master(to_username)
+    to_emails = get_emails_by_category(to_username)
+    primary_email = ''
 
-    email = params.get('email')
-    if email:
-        to_emails.append(email)
+    if params.get('email'):
+        primary_email = params['email']
+    elif to_emails.get('primary', None):
+        primary_email = to_emails['primary']
+    elif to_emails.get('github_profile', None):
+        primary_email = to_emails['github_profile']
+    else:
+        if len(to_emails.get('events', None)):
+            primary_email = to_emails['events'][0]
+        else:
+            print("TODO: no email found.  in the future, we should handle this case better because it's GOING to end up as a support request")
 
     # If no primary email in session, try the POST data. If none, fetch from GH.
     primary_from_email = params.get('fromEmail')
 
     if access_token and not primary_from_email:
         primary_from_email = get_github_primary_email(access_token)
-
-    to_emails = list(set(to_emails))
 
     # Validate that the token exists on the back-end
     kudos_id = params.get('kudosId')
@@ -337,6 +343,7 @@ def send_3(request):
 
     # db mutations
     KudosTransfer.objects.create(
+        primary_email=primary_email,
         emails=to_emails,
         # For kudos, `token` is a kudos.models.Token instance.
         kudos_token_cloned_from=kudos_token_cloned_from,
@@ -648,44 +655,49 @@ def receive_bulk(request, secret):
             'value': int(coupon.token.price_finney / 1000.0 * 10**18),
         })
 
-        signed = w3.eth.account.signTransaction(tx, settings.KUDOS_PRIVATE_KEY)
-        txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
+        if not profile.trust_profile and profile.github_created_on > (timezone.now() - timezone.timedelta(days=7)):
+            messages.error(request, f'Your github profile is too new.  Cannot receive kudos.')
+        else:
 
-        with transaction.atomic():
-            kudos_transfer = KudosTransfer.objects.create(
-                emails=[request.user.email],
-                # For kudos, `token` is a kudos.models.Token instance.
-                kudos_token_cloned_from=coupon.token,
-                amount=0,
-                comments_public=coupon.comments_to_put_in_kudos_transfer,
-                ip=ip_address,
-                github_url='',
-                from_name=coupon.sender_profile.handle,
-                from_email='',
-                from_username=coupon.sender_profile.handle,
-                username=profile.handle,
-                network=coupon.token.contract.network,
-                from_address=settings.KUDOS_OWNER_ACCOUNT,
-                is_for_bounty_fulfiller=False,
-                metadata={'coupon_redemption': True},
-                recipient_profile=profile,
-                sender_profile=coupon.sender_profile,
-                txid=txid,
-                receive_txid=txid,
-                tx_status='pending',
-                receive_tx_status='pending',
-            )
+            signed = w3.eth.account.signTransaction(tx, settings.KUDOS_PRIVATE_KEY)
+            txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
 
-            # save to DB
-            BulkTransferRedemption.objects.create(
-                coupon=coupon,
-                redeemed_by=profile,
-                ip_address=ip_address,
-                kudostransfer=kudos_transfer,
+            with transaction.atomic():
+                kudos_transfer = KudosTransfer.objects.create(
+                    emails=[request.user.email],
+                    # For kudos, `token` is a kudos.models.Token instance.
+                    kudos_token_cloned_from=coupon.token,
+                    amount=0,
+                    comments_public=coupon.comments_to_put_in_kudos_transfer,
+                    ip=ip_address,
+                    github_url='',
+                    from_name=coupon.sender_profile.handle,
+                    from_email='',
+                    from_username=coupon.sender_profile.handle,
+                    username=profile.handle,
+                    network=coupon.token.contract.network,
+                    from_address=settings.KUDOS_OWNER_ACCOUNT,
+                    is_for_bounty_fulfiller=False,
+                    metadata={'coupon_redemption': True},
+                    recipient_profile=profile,
+                    sender_profile=coupon.sender_profile,
+                    txid=txid,
+                    receive_txid=txid,
+                    tx_status='pending',
+                    receive_tx_status='pending',
                 )
 
-            coupon.num_uses_remaining -= 1
-            coupon.current_uses += 1
+                # save to DB
+                BulkTransferRedemption.objects.create(
+                    coupon=coupon,
+                    redeemed_by=profile,
+                    ip_address=ip_address,
+                    kudostransfer=kudos_transfer,
+                    )
+
+                coupon.num_uses_remaining -= 1
+                coupon.current_uses += 1
+                coupon.save()
 
     title = f"Redeem AirDropped *{coupon.token.humanized_name}* Kudos"
     desc = f"This Kudos has been AirDropped to you.  About this Kudos: {coupon.token.description}"

@@ -42,7 +42,7 @@ def combine_profiles(p1, p2):
     p1.max_tip_amount_usdt_per_week = max(p1.max_tip_amount_usdt_per_week, p2.max_tip_amount_usdt_per_week)
     p1.max_num_issues_start_work = max(p1.max_num_issues_start_work, p2.max_num_issues_start_work)
     p1.trust_profile = any([p1.trust_profile, p2.trust_profile])
-    # p1.hide_profile = any([p1.hide_profile, p2.hide_profile]) not valid, all p2s have hide profile because its default
+    p1.hide_profile = False
     p1.suppress_leaderboard = any([p1.suppress_leaderboard, p2.suppress_leaderboard])
     p1.user = p2.user if p2.user else p1.user
     # tips, bounties, fulfillments, and interests , activities, actions
