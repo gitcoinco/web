@@ -580,7 +580,7 @@ def render_new_bounty_roundup(to_email):
 Hi there,
 </p>
 <p>
-We wrote a post this week on the pursuit of <a href="https://medium.com/gitcoin/open-source-financial-freedom-a-community-roadmap-29df883e759e">Open Source Financial Freedom</a>.
+We wrote a post this week on the pursuit of <a href="https://medium.com/gitcoin/open-source-financial-freedom-8d852cbb6247">Open Source Financial Freedom</a>.
 It explains a bit more about how we think about open source sustainability, paths towards financial freedom, and why blockchain is important in the journey.
 Please do give it a read and let us know what you think.
 </p>
