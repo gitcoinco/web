@@ -118,9 +118,9 @@ def grant_details(request, grant_id, grant_slug):
             admin_profile = Profile.objects.get(handle=form_profile)
             grant.admin_profile = admin_profile
             grant.description = request.POST.get('edit-description')
-            team_members = request.POST.get('edit-grant_members[]')
+            team_members = request.POST.getlist('edit-grant_members[]')
             print('1', team_members)
-            grant.team_members.add(*list(filter(lambda member_id: member_id > 0, map(int, team_members))))
+            grant.team_members.set(team_members)
             print('2', grant.team_members)
             grant.save()
 
