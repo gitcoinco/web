@@ -440,6 +440,61 @@ function getParam(parameterName) {
   return result;
 }
 
+if ($('#bounties').length) {
+  $('#bounties').tooltip({
+    items: '.result',
+    classes: {
+      'ui-tooltip': 'tooltip-bubble'
+    },
+    position: {
+      my: 'top',
+      at: 'center bottom',
+      collision: 'flip',
+      using: function(position, feedback) {
+        $(this).addClass(feedback.vertical).css(position);
+      }
+    }
+  });
+}
+
+if ($.views) {
+  $.views.converters({
+    timedifference: timedifferenceCvrt,
+    activitytext: activitytextCvrt
+  });
+
+}
+
+function timedifferenceCvrt(date) {
+  return timeDifference(new Date(), new Date(date), false, 60 * 60);
+}
+
+function activitytextCvrt(activity_type) {
+  return activity_names[activity_type];
+}
+
+const activity_names = {
+  new_bounty: gettext('New bounty'),
+  start_work: gettext('Work started'),
+  stop_work: gettext('Work stopped'),
+  work_submitted: gettext('Work submitted'),
+  work_done: gettext('Work done'),
+  worker_approved: gettext('Worker approved'),
+  worker_rejected: gettext('Worker rejected'),
+  worker_applied: gettext('Worker applied'),
+  increased_bounty: gettext('Increased funding'),
+  killed_bounty: gettext('Canceled bounty'),
+  new_crowdfund: gettext('New crowdfund contribution'),
+  new_tip: gettext('New tip'),
+  receive_tip: gettext('Tip received'),
+  bounty_abandonment_escalation_to_mods: gettext('Escalated for abandonment of bounty'),
+  bounty_abandonment_warning: gettext('Warned for abandonment of bounty'),
+  bounty_removed_slashed_by_staff: gettext('Dinged and removed from bounty by staff'),
+  bounty_removed_by_staff: gettext('Removed from bounty by staff'),
+  bounty_removed_by_funder: gettext('Removed from bounty by funder'),
+  bounty_changed: gettext('Bounty details changed')
+};
+
 function timeDifference(current, previous, remaining, now_threshold_seconds) {
 
   var elapsed = current - previous;
@@ -830,6 +885,9 @@ var trigger_faucet_form_web3_hooks = function() {
       return;
     }
     web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
+      if (errors) {
+        return;
+      }
       var balance = result.toNumber();
 
       if (balance == 0) {
@@ -876,6 +934,9 @@ var listen_for_web3_changes = async function() {
   } else {
     is_metamask_unlocked = true;
     web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
+      if (errors) {
+        return;
+      }
       if (typeof result != 'undefined') {
         document.balance = result.toNumber();
       }
@@ -939,7 +1000,7 @@ var actions_page_warn_if_not_on_same_network = function() {
 attach_change_element_type();
 
 window.addEventListener('load', function() {
-  setInterval(listen_for_web3_changes, 300);
+  setInterval(listen_for_web3_changes, 1000);
   attach_close_button();
 });
 
@@ -1073,11 +1134,11 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
     const dateExpires = new Date(result['expires_date']);
     const isExpired = dateExpires < dateNow && !result['is_open'];
     const isInfinite = dateExpires - new Date().setFullYear(new Date().getFullYear() + 1) > 1;
-    const projectType = ucwords(result['project_type']) + ' &bull; ';
+    const projectType = ucwords(result['project_type']) + ' <span class="separator-bull"></span> ';
 
     result['action'] = result['url'];
     result['title'] = result['title'] ? result['title'] : result['github_url'];
-    result['p'] = projectType + (result['experience_level'] ? (result['experience_level'] + ' &bull; ') : '');
+    result['p'] = projectType + (result['experience_level'] ? (result['experience_level'] + ' <span class="separator-bull"></span> ') : '');
 
     if (result['status'] === 'done') {
       result['p'] += 'Done';
@@ -1107,14 +1168,14 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
       const openedWhen = timeDifference(dateNow, new Date(result['web3_created']), true);
 
       if (isInfinite) {
-        const expiredExpires = 'Never expires';
+        const expiredExpires = '<b>Never expires</b>';
 
         result['p'] += ('Opened ' + openedWhen + ' ago, ' + expiredExpires);
       } else {
         const timeLeft = timeDifference(dateNow, dateExpires);
         const expiredExpires = dateNow < dateExpires ? 'Expires' : 'Expired';
 
-        result['p'] += ('Opened ' + openedWhen + ' ago, ' + expiredExpires + ' ' + timeLeft);
+        result['p'] += ('Opened ' + openedWhen + ' ago, ' + expiredExpires + ' <b>' + timeLeft + '</b>');
       }
     }
 
@@ -1262,4 +1323,13 @@ function newTokenTag(amount, tokenName, tooltipInfo, isCrowdfunded) {
   }
 
   return ele;
+}
+
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+
+    [ array[i], array[j] ] = [ array[j], array[i] ];
+  }
+  return array;
 }

@@ -39,6 +39,7 @@ class TestAssembleLeaderboards(TestCase):
         self.bounty_value = 3
         self.bounty_payer_handle = 'flintstone'
         self.bounty_earner_handle = 'freddy'
+        self.fulfiller_handle = 'bambam'
 
         self.bounty_payer_profile = Profile.objects.create(
             data={},
@@ -90,7 +91,7 @@ class TestAssembleLeaderboards(TestCase):
         )
         self.fulfiller_profile = Profile.objects.create(
             data={},
-            handle=self.bounty_earner_handle,
+            handle=self.fulfiller_handle,
             hide_profile=False,
         )
         BountyFulfillment.objects.create(
@@ -137,6 +138,13 @@ class TestAssembleLeaderboards(TestCase):
             tokenAddress='0x0000000000000000000000000000000000000000',
             txid='123',
         )
+
+    def tearDown(self):
+        self.bounty_payer_profile.delete()
+        self.bounty_earner_profile.delete()
+        self.fulfiller_profile.delete()
+        self.tip_username_profile.delete()
+        self.tip_from_username_profile.delete()
 
     def test_default_ranks(self):
         """Test default ranks dictionary."""
@@ -273,11 +281,11 @@ class TestAssembleLeaderboards(TestCase):
         """Test command assemble leaderboards."""
         Command().handle()
 
-        assert LeaderboardRank.objects.all().count() == 255
-        assert LeaderboardRank.objects.filter(leaderboard="all_all").count() == 17
-        assert LeaderboardRank.objects.filter(leaderboard="all_fulfilled").count() == 17
-        assert LeaderboardRank.objects.filter(leaderboard="all_earners").count() == 2
-        assert LeaderboardRank.objects.filter(leaderboard="all_payers").count() == 2
+        assert LeaderboardRank.objects.all().count() == 225
+        assert LeaderboardRank.objects.filter(leaderboard="all_all").count() == 15
+        assert LeaderboardRank.objects.filter(leaderboard="all_fulfilled").count() == 15
+        assert LeaderboardRank.objects.filter(leaderboard="all_earners").count() == 1
+        assert LeaderboardRank.objects.filter(leaderboard="all_payers").count() == 1
         assert LeaderboardRank.objects.filter(leaderboard="all_tokens").count() == 1
         assert LeaderboardRank.objects.filter(leaderboard="all_countries").count() == 3
         assert LeaderboardRank.objects.filter(leaderboard="all_keywords").count() == 2
