@@ -1180,7 +1180,7 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
         const timeLeft = timeDifference(dateNow, dateExpires);
         const expiredExpires = dateNow < dateExpires ? 'Expires' : 'Expired';
 
-        result['p'] += ('Opened ' + openedWhen + ' ago'); 
+        result['p'] += ('Opened ' + openedWhen + ' ago');
         result['expired'] += (expiredExpires + ' ' + timeLeft);
         result['expiredIcon'] += ('true');
       }
