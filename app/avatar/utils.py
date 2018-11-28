@@ -156,7 +156,8 @@ def get_avatar_context():
                                          'EarringBack-2', 'Earring-2'
                                      ], ['Earring-3'], ['Earring-4'], ['Masks-jack-o-lantern'], ['Masks-guy-fawkes'], [
                                          'Masks-jack-o-lantern-lighted'
-                                     ], ['Extras-Parrot'], ['Masks-gitcoinbot'], ['Masks-batman']),
+                                     ], ['Extras-Parrot'], ['Masks-gitcoinbot'], ['Masks-batman'],
+                                     ['Masks-eye-patch'], ['Masks-flash']),
                          'paid_options': {
                              'Extras-Parrot': 0.01,
                              'Masks-batman': 0.02
