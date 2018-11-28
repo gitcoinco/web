@@ -287,19 +287,12 @@ def about(request):
         ),
         (
             static("v2/images/team/alisa-march.jpg"),
-            "Alisa March", "User Experience Design",
+            "Alisa March",
+            "User Experience Design",
             "PixelantDesign",
             "pixelant",
             "Tips",
             "Apple Cider Doughnuts"
-        ),
-        (
-            static("v2/images/team/justin-bean.jpg"),
-            "Justin Bean", "Engineering",
-            "StareIntoTheBeard",
-            "justinbean",
-            "Issue Explorer",
-            "Sushi"
         ),
         (
             static("v2/images/team/mark-beacom.jpg"),
@@ -354,6 +347,42 @@ def about(request):
             "scott-moore-a2970075",
             "Issue Explorer",
             "Teriyaki Chicken"
+        ),
+        (
+            static("v2/images/team/octavio-amu.png"),
+            "Octavio Amuchástegui",
+            "Front End Dev",
+            "octavioamu",
+            "octavioamu",
+            "The Community",
+            "Homemade italian pasta"
+        ),
+        (
+            static("v2/images/team/frank-chen.png"),
+            "Frank Chen",
+            "Data & Product",
+            "frankchen07",
+            "frankchen07",
+            "Kudos!",
+            "Crispy pork belly"
+        ),
+        (
+            static("v2/images/team/austin-griffith.jpg"),
+            "Austin Griffith",
+            "Research",
+            "austintgriffith",
+            None,
+            "The #BUIDL",
+            "Drunken Noodles"
+        ),
+        (
+            static("v2/images/team/nate-hopkins.png"),
+            "Nate Hopkins",
+            "Engineering",
+            "hopsoft",
+            None,
+            "Bounties",
+            "Chicken tikka masala"
         ),
     ]
     exclude_community = ['kziemiane', 'owocki', 'mbeacom']
