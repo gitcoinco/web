@@ -6,38 +6,6 @@ const editableFields = [
   '#grant-members'
 ];
 
-function getCookie(name) {
-  var cookieValue = null;
-
-  if (document.cookie && document.cookie !== '') {
-    var cookies = document.cookie.split(';');
-
-    for (var i = 0; i < cookies.length; i++) {
-      var cookie = jQuery.trim(cookies[i]);
-      // Does this cookie string begin with the name we want?
-
-      if (cookie.substring(0, name.length + 1) === (name + '=')) {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        break;
-      }
-    }
-  }
-  return cookieValue;
-}
-var csrftoken = getCookie('csrftoken');
-
-function csrfSafeMethod(method) {
-  // these HTTP methods do not require CSRF protection
-  return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-}
-$.ajaxSetup({
-  beforeSend: function(xhr, settings) {
-    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-      xhr.setRequestHeader('X-CSRFToken', csrftoken);
-    }
-  }
-});
-
 $(document).ready(function() {
   $('#tabs').tabs();
 
@@ -67,7 +35,32 @@ $(document).ready(function() {
     $('#save-details').addClass('hidden');
     $('#cancel-details').addClass('hidden');
 
-    // TODO : Loop through editableFields -> form object with value -> fire save API
+    let edit_title = $('#form--input__title').val();
+    let edit_reference_url = $('#form--input__reference-url').val();
+    let edit_admin_profile = $('#grant-admin option').last().text();
+    let edit_description = $('#form--input__description').val();
+    let edit_grant_members = $('#grant-members').val();
+
+
+    console.log(edit_title, edit_reference_url, edit_admin_profile, edit_description, edit_grant_members);
+
+    $.ajax({
+      type: 'post',
+      url: '',
+      data: {
+        'edit-title': edit_title,
+        'edit-reference_url': edit_reference_url,
+        'edit-admin_profile': edit_admin_profile,
+        'edit-description': edit_description,
+        'edit-grant_members[]': edit_grant_members
+      },
+      success: function(json) {
+        console.log('save details POST successful');
+      },
+      error: function() {
+        console.log('save details POST failure');
+      }
+    });
 
     editableFields.forEach(field => disableEdit(field));
   });
@@ -90,63 +83,23 @@ $(document).ready(function() {
       url: '',
       data: { 'contract_address': contract_address},
       success: function(json) {
-        console.log('requested access complete');
+        console.log('cancel grant POST successful');
       },
       error: function() {
         console.log('failure');
       }
     });
 
-    // let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, contract_address);
-    //
-    //    web3.eth.getAccounts(function(err, accounts) {
-    //
-    //      deployedSubscription.methods.endContract().send({from: accounts[0], gasPrice: 4000000000})
-    //        .on('confirmation', function(confirmationNumber, receipt) {
-    //          console.log('receipt', receipt);
-    //
-    //
-    //
-    //        });
-    //
-    //    });
-  });
+    let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, contract_address);
 
-  // $('#js-cancel_grant').validate({
-  //   submitHandler: function(form) {
-  //     var data = {};
-  //
-  //     $.each($(form).serializeArray(), function() {
-  //       data[this.name] = this.value;
-  //     });
-  //
-  //     let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, data.contract_address);
-  //
-  //     web3.eth.getAccounts(function(err, accounts) {
-  //
-  //       deployedSubscription.methods.endContract().send({from: accounts[0], gasPrice: 4000000000})
-  //         .on('confirmation', function(confirmationNumber, receipt) {
-  //           console.log('receipt', receipt);
-  //
-  //           form.submit();
-  //         });
-  //
-  //     });
-  //   }
-  // });
+    web3.eth.getAccounts(function(err, accounts) {
 
-  $('#js-edit_grant').validate({
-    submitHandler: function(form) {
-      var data = {};
+      deployedSubscription.methods.endContract().send({from: accounts[0], gasPrice: 4000000000})
+        .on('confirmation', function(confirmationNumber, receipt) {
+          console.log('receipt', receipt);
 
-      $.each($(form).serializeArray(), function() {
-        data[this.name] = this.value;
-      });
-
-      console.log('data', data);
-
-      form.submit();
-    }
+        });
+    });
   });
 
 });

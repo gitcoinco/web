@@ -30,7 +30,9 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.csrf import csrf_exempt
 
+from dashboard.models import Profile
 from grants.forms import MilestoneForm
 from grants.models import Grant, Milestone, Subscription, Update
 from marketing.mails import (
@@ -93,10 +95,7 @@ def grant_details(request, grant_id, grant_slug):
         raise Http404
 
 
-    if profile != grant.admin_profile:
-        return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
-
-    if request.method == 'POST':
+    if request.method == 'POST' and (profile == grant.admin_profile or request.user.is_staff):
         print(request.POST)
         if 'contract_address' in request.POST:
             grant.active = False
@@ -115,10 +114,16 @@ def grant_details(request, grant_id, grant_slug):
             print('winner winner chcken dinner')
             grant.title = request.POST.get('edit-title')
             grant.reference_url = request.POST.get('edit-reference_url')
-            grant.admin_profile = request.POST.get('edit-admin_profile')
+            form_profile = request.POST.get('edit-admin_profile')
+            admin_profile = Profile.objects.get(handle=form_profile)
+            grant.admin_profile = admin_profile
             grant.description = request.POST.get('edit-description')
-            grant.team_members = request.POST.get('edit-grant_members')
+            team_members = request.POST.get('edit-grant_members[]')
+            print('1', team_members)
+            grant.team_members.add(*list(filter(lambda member_id: member_id > 0, map(int, team_members))))
+            print('2', grant.team_members)
             grant.save()
+
 
 
     params = {

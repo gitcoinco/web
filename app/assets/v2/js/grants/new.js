@@ -45,6 +45,8 @@ $(document).ready(function() {
         data[this.name] = this.value;
       });
 
+      console.log('data', data);
+
       $('#token_symbol').val($('#js-token option:selected').text());
 
       console.log('compiledSubscription', compiledSubscription);

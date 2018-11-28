@@ -29,7 +29,6 @@
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'grants/nav.html' %}
     </div>
-
     <div class="grant__header py-5">
       <div class="container">
         <div class="row">
@@ -50,7 +49,8 @@
                   <span class="grant__url font-subheader {% if not is_admin %}my-4{% endif %}">
                     {% if is_admin %}
                       <div>
-                        <textarea id="form--input__reference-url" class="p-0 m-0 inline-edit" disabled>{{ grant.reference_url }}</textarea>
+                        <textarea id="form--input__reference-url" class="p-0 m-0 inline-edit" form="js-edit_grant" name="form--input__reference-url" disabled>{{ grant.reference_url }}</textarea>
+                        <input type="hidden" id="test" name="test">
                       </div>
                     {% else %}
                       <a href="{{ grant.reference_url }}" target="_blank">
@@ -64,7 +64,7 @@
                       <div class="font-body">
                         <p class="font-caption sub-title mb-0">Grant Owner</p>
                         <div class="form__select2">
-                          <select id="grant-admin" class="form__input" name="grant-admin" disabled>
+                          <select id="grant-admin" class="form__input" name="edit-admin_profile" form="js-edit_grant" disabled>
                             <option selected="selected">{{ grant.admin_profile.handle|default:'anonymous' }}</option>
                           </select>
                         </div>
@@ -107,13 +107,10 @@
                     </a>
                   </h4>
                 {% elif is_admin %}
-                  <!-- <form method="POST" id="js-cancel_grant" class="d-inline">
-                    {% csrf_token %} -->
                     <button class="button button--primary button--warning" id="cancel_grant">{% trans "Cancel this Grant" %}
                     </button>
                     <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
                     <input type="hidden" id="contract_version" name="contract_version" value="{{ grant.contract_version }}">
-                  <!-- </form> -->
                 {% elif user_subscription %}
                   <a href="{% url 'grants:subscription_cancel' grant.id grant.slug user_subscription.id %}">
                     <button class="button button--primary button--warning button--full">{% trans "Cancel Your Funding" %}</button>
@@ -133,7 +130,7 @@
                     <button id="edit-details" class="button btn-gc-blue">
                       <i class="fas fa-edit mr-2"></i> Edit Info
                     </button>
-                    <button id="save-details" class="button btn-gc-blue hidden">
+                    <button id="save-details" class="button btn-gc-blue hidden" form="js-edit_grant">
                       <i class="fas fa-save mr-2"></i> Save Info
                     </button>
                     <button id="cancel-details" class="button button--primary hidden">
@@ -159,7 +156,7 @@
           <p class="font-body sub-title">{% trans "Description" %}</p>
           <p class="grant__description font-subheader pr-lg-4 mb-5">
             {% if is_admin %}
-              <textarea id="form--input__description" class="p-0 mt-2 inline-edit" disabled>{{ grant.description }}</textarea>
+              <textarea id="form--input__description" class="p-0 mt-2 inline-edit" form="js-edit_grant" name="edit-description" disabled>{{ grant.description }}</textarea>
             {% else %}
               <span>
                 {{ grant.description }}
@@ -173,7 +170,7 @@
               <div class="font-body">
                 <p class="font-body sub-title">{% trans "Team Members" %}</p>
                 <div class="form__select2">
-                  <select id="grant-members" class="form__input" name="grant-members" name="members" multiple="multiple" disabled>
+                  <select id="grant-members" class="form__input" multiple="multiple" disabled>
                     {% for team_member in grant.team_members.all %}
                       <option selected="selected">{{ team_member }}</option>
                     {% endfor %}
