@@ -48,7 +48,7 @@
 
 {% block 'main' %}
 <div>
-  <canvas id="world" style="position:absolute; top:0px; left: 0px;"></canvas>
+  <canvas id="world" style="position:fixed; top:0px; left: 0px;"></canvas>
 </div>
 <section id="main" class="box-transaction">
   <header class="text-center">
@@ -76,15 +76,24 @@
   </header>
   <form id="send_eth">
     <!-- token and amount are not used for kudos -->
-    <input type="hidden" id="token" value="0x408c49a91e46311ddc35737f8c1aaea6191f36e0">
-    <input type="hidden" id="amount" value="0.0011">
-    <label for="">{% trans "To Github Username" %}</label>
+    <input type="hidden" id="token" value="0x0000000000000000000000000000000000000000">
+    <input type="hidden" id="kudosNetwork" value="{{ kudos.contract.network }}">
+    <input type="hidden" id="amount" value="{{ kudos.price_in_eth }}">
+    <label for="">{% trans "To:" %} 
+      (<a href="#" id="send_to_toggle" class='eth'>{% trans "Send to ETH Address" %}</a>)
+    </label>
     <div class="form-group">
-      <select id="username" class="username-search custom-select" required {% if not kudos.name  %}disabled{% endif %}></select>
+      <select id="username" class="username-search custom-select" {% if not kudos.name  %}disabled{% endif %}></select>
+      <input type="text" placeholder="0x408c49a91e46311ddc35737f8c1aaea6191f36e0" id="to_eth_address" value="" class="form-control eth_address hidden" >
+
     </div>
     <div class="form-group">
-      <label for="">{% trans "From Github Username" %} {% if not request.user.is_authenticated %}(<a href="{% url 'social:begin' 'github' %}?next=/kudos/send">{% trans "Login" %}</a>) {%endif%}</label>
+      <label for="">{% trans "From Github Username:" %} {% if not request.user.is_authenticated %}(<a href="{% url 'social:begin' 'github' %}?next=/kudos/send">{% trans "Login" %}</a>) {%endif%}</label>
       <input type="text" placeholder="@username" id="fromName" value="{% if user.is_authenticated  %}{{ user }}{% endif %}" class="form-control" disabled="disabled">
+    </div>
+    <div class="form-group">
+      <label for="">{% trans "Related Github Issue URL" %} ({% trans "optional" %}):</label>
+      <input type="text" placeholder="https://github.com/user/repo/pull|issues/n" id="issueURL" class="form-control">
     </div>
     <div class="form-group">
       <label for="">{% trans "Public Comments" %} ({% trans "optional" %}):</label>
@@ -94,10 +103,6 @@
       <a href="#">{% trans "Advanced" %} >></a>
     </div>
     <div id='advanced' style="display:none;">
-      <div class="form-group">
-        <label for="">{% trans "Related Github Issue URL" %} ({% trans "optional" %}):</label>
-        <input type="text" placeholder="https://github.com/user/repo/pull|issues/n" id="issueURL" class="form-control">
-      </div>
       <div class="form-group">
         <label for="">{% trans "To Email address" %} ({% trans "optional" %}):</label>
         <input type="email" placeholder="foo@bar.it" id="email" class="form-control">
@@ -120,7 +125,7 @@
 
   <div id="send_eth_done" style="display:none;" class="text-center">
     <h3>{% trans "Woo hoo!" %}</h3>
-    <p>{% blocktrans %}Your <span id="tokenName">Kudos</span> has been sent <a href="" target="_blank" rel="noopener noreferrer" id="trans_link">to the blockchain</a>.{% endblocktrans %}</p>
+    <p>{% blocktrans %}Your <span id="tokenName">Kudos</span> has been sent <a href="" target="_blank" rel="noopener noreferrer" id="trans_link">via the blockchain</a>.{% endblocktrans %}</p>
     <div id="loading_trans">
       <p class="font-smaller-1">
         <a href="" target="_blank" rel="noopener noreferrer" id="trans_link2" >{% trans "The transaction is still pending." %}</a><br>{% trans "This page will auto-update when the transaction is confirmed" %} <br>({% trans "but you can close the browser window if you want" %}).

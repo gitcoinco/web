@@ -22,6 +22,7 @@
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
     <link rel="stylesheet" href="{% static "v2/css/select2-kudos.css" %}" />
+    <link rel="stylesheet" href="{% static "v2/css/scroll-carousel.css" %}" />
 
     <style>
       /* TODO: remove duplication of alert with same styles in bounties merge */
@@ -49,6 +50,7 @@
           {% include 'shared/no_metamask_error.html' %}
           {% include 'shared/zero_balance_error.html' %}
           {% include 'shared/unlock_metamask.html' %}
+          {% include 'shared/connect_metamask.html' %}
         </div>
       </div>
       <div class="row">
@@ -71,7 +73,7 @@
                 </div>
                 <div class="w-100 my-2">
                   <label for=bountyFulfillment>{% trans "Bounty Submission:" %}</label>
-                  <label id="tooltip">{% trans "Where is my Eth going? " %}<i class='fa fa-info-circle'></i></label>
+                  <label id="tooltip" class="ethinfo-hover">{% trans "Where is my Eth going? " %}<i class='fa fa-info-circle'></i></label>
                   <select class="w-100 btn btn-sm" name=bountyFulfillment id=bountyFulfillment>
                     <option value="">-- {% trans "Submission" %} -- </option>
                   </select>
@@ -79,6 +81,16 @@
                 <div class="w-100 my-2">
                   <label for=tipPercent>{% trans "(Optional) Add a tip of:" %}</label>
                   <input name='tipPercent' id="tipPercent" class="gc-round-text-input gc-border-blue" style="width: 50px;" type="number" placeholder="" value="0" min="0" /> % worth <span id="tipEstimate">0</span> {{bounty.token_name}}
+                </div>
+                <div class="my-4">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="font-bigger-1 mb-0">Suggested Kudos</h3>
+                    <a href="{% url 'kudos_about' %}" target="_blank">What is kudos?</a>
+                  </div>
+
+                  <div id="kudos-holder">
+                    <img src="{% static '/v2/images/loading_v2.gif' %}" class="d-block m-auto" style="max-width: 122px;max-height: 122px;">
+                  </div>
                 </div>
                 {% include 'shared/add_kudos.html' %}
                 <div id="gas-section">
@@ -101,7 +113,7 @@
                   </a>
                 </div>
               </div>
-              <div id="tooltip--hover">
+              <div id="ethinfo-tooltip" class="tooltip-hover">
                 <span id="heading">{% trans "Where is my Eth Going?" %}</span><br>
                 <span id="subheading">{% trans "Your funds are safe!" %}</span><br><br>
                 <span id="hovertext"><br><strong>{% trans "Standard Bounties" %}</strong><br>{% trans "When you pay via Standard Bounties, your tokens will be securely taken from the escrow StandardBounties.sol contract on the Ethereum mainnet, and transferred to the payee's wallet" %}</span>
@@ -139,4 +151,6 @@
   <script src="{% static "v2/js/kudos-search.js" %}"></script>
   <script src="{% static "v2/js/pages/kudos_send.js" %}"></script>
   <script src="{% static "v2/js/tooltip_hover.js" %}"></script>
+  <script src="{% static "v2/js/ajax-helper.js" %}"></script>
+  <script src="{% static "v2/js/kudos_suggestions.js" %}"></script>
 </html>

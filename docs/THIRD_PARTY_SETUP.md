@@ -47,6 +47,7 @@ Update the `web/app/app/.env` file to include the values provided by Github:
 
 ```shell
 SENDGRID_API_KEY=xxx
+CONTACT_EMAIL=xxx
 ```
 
 ```

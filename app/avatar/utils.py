@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import json
 import logging
 import os
+import re
 from io import BytesIO
 from secrets import token_hex
 from tempfile import NamedTemporaryFile
@@ -33,12 +34,29 @@ import requests
 from git.utils import get_user
 from PIL import Image, ImageOps
 from pyvips.error import Error as VipsError
+from svgutils import transform
 from svgutils.compose import SVG, Figure, Line
 
 AVATAR_BASE = 'assets/other/avatars/'
 COMPONENT_BASE = 'assets/v2/images/avatar/'
 
 logger = logging.getLogger(__name__)
+
+
+def get_avatar_context_for_user(user):
+    from revenue.models import DigitalGoodPurchase
+    purchases = DigitalGoodPurchase.objects.filter(from_name=user.username, purchase__type='avatar', ).send_success()
+
+    context = get_avatar_context()
+    context['has_purchased_everything_package'] = purchases.filter(purchase__option='all').exists()
+    for i in range(0, len(context['sections'])):
+        purchase_objs = purchases.filter(purchase__option=context['sections'][i]['name'])
+        if context['has_purchased_everything_package']:
+            context['sections'][i]['purchases'] = [obj for obj in context['sections'][i]['options']]
+        else:
+            context['sections'][i]['purchases'] = [obj.purchase['value'] for obj in purchase_objs]
+
+    return context
 
 
 def get_avatar_context():
@@ -51,38 +69,71 @@ def get_avatar_context():
         'sections': [{
             'name': 'Head',
             'title': 'Pick head shape',
-            'options': ('0', '1', '2', '3', '4')
-        }, {
-            'name': 'Eyes',
-            'title': 'Pick eyes shape',
-            'options': ('0', '1', '2', '3', '4', '5', '6')
-        }, {
-            'name': 'Nose',
-            'title': 'Pick nose shape',
-            'options': ('0', '1', '2', '3', '4')
-        }, {
-            'name': 'Mouth',
-            'title': 'Pick mouth shape',
-            'options': ('0', '1', '2', '3', '4')
-        }, {
-            'name': 'Ears',
-            'title': 'Pick ears shape',
-            'options': ('0', '1', '2', '3', 'Spock')
+            'options': ('0', '1', '2', '3', '4'),
+            'paid_options': {}
         },
+                     {
+                         'name': 'Makeup',
+                         'title': 'Pick a makeup style',
+                         'options': (
+                             'ziggy-stardust', 'bolt', 'star2', 'kiss', 'blush', 'eyeliner-green', 'eyeliner-teal',
+                             'eyeliner-pink', 'eyeliner-red', 'eyeliner-blue', 'star'
+                         ),
+                         'paid_options': {
+                             'ziggy-stardust': 0.02,
+                             'bolt': 0.01,
+                             'star': 0.01,
+                             'kiss': 0.02,
+                         },
+                     },
+                     {
+                         'name': 'Eyes',
+                         'title': 'Pick eyes shape',
+                         'options': ('0', '1', '2', '3', '4', '5', '6'),
+                         'paid_options': {},
+                     },
+                     {
+                         'name': 'Nose',
+                         'title': 'Pick nose shape',
+                         'options': ('0', '1', '2', '3', '4'),
+                         'paid_options': {},
+                     },
+                     {
+                         'name': 'Mouth',
+                         'title': 'Pick mouth shape',
+                         'options': ('0', '1', '2', '3', '4'),
+                         'paid_options': {},
+                     },
+                     {
+                         'name': 'Ears',
+                         'title': 'Pick ears shape',
+                         'options': ('0', '1', '2', '3', 'Spock'),
+                         'paid_options': {
+                             'Spock': 0.01
+                         },
+                     },
                      {
                          'name': 'Clothing',
                          'title': 'Pick your clothing',
                          'options': (
                              'cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater', 'spacecadet',
-                             'suit', 'ethlogo', 'cloak', 'robe'
-                         )
+                             'suit', 'ethlogo', 'cloak', 'robe', 'pjs'
+                         ),
+                         'paid_options': {
+                             'robe': 0.01,
+                             'cloak': 0.01,
+                             'spacecadet': 0.01,
+                         },
                      },
                      {
                          'name': 'Hair Style',
                          'title': 'Pick a hairstyle',
                          'options': (['None', '0'], ['None', '1'], ['None', '2'], ['None', '3'], ['None', '4'],
                                      ['5', 'None'], ['6-back', '6-front'], ['7-back', '7-front'], ['8-back', '8-front'],
-                                     ['9-back', '9-front'], ['None', '10'])
+                                     ['9-back', '9-front'], ['None', '10'], ['damos_hair-back', 'damos_hair-front'], [
+                                         'long_swoosh-back', 'long_swoosh-front'
+                                     ], ['None', 'mohawk'], ['None', 'mohawk_inverted'], ['None', 'spikey']),
+                         'paid_options': {},
                      },
                      {
                          'name': 'Facial Hair',
@@ -90,7 +141,8 @@ def get_avatar_context():
                          'options': (
                              'Mustache-0', 'Mustache-1', 'Mustache-2', 'Mustache-3', 'Beard-0', 'Beard-1', 'Beard-2',
                              'Beard-3'
-                         )
+                         ),
+                         'paid_options': {},
                      },
                      {
                          'name': 'Accessories',
@@ -98,11 +150,17 @@ def get_avatar_context():
                          'options': (['Glasses-0'], ['Glasses-1'], ['Glasses-2'], ['Glasses-3'], ['Glasses-4'], [
                              'HatShort-backwardscap'
                          ], ['HatShort-redbow'], ['HatShort-yellowbow'], ['HatShort-ballcap'], ['HatShort-cowboy'],
-                                     ['HatShort-headphones'], ['HatShort-shortbeanie'], ['HatShort-tallbeanie'], [
-                                         'HatShort-bunnyears'
-                                     ], ['Earring-0'], ['Earring-1'], ['EarringBack-2', 'Earring-2'], ['Earring-3'],
-                                     ['Earring-4'], ['Masks-jack-o-lantern'], ['Masks-guy-fawkes'],
-                                     ['Masks-jack-o-lantern-lighted'], ['Extras-Parrot'], ['Masks-gitcoinbot'])
+                                     ['HatShort-headdress'], ['HatShort-headphones'], ['HatShort-shortbeanie'],
+                                     ['HatShort-tallbeanie'], ['HatShort-bunnyears'], ['HatShort-menorah'],
+                                     ['HatShort-pilgrim'], ['HatShort-santahat'], ['Earring-0'], ['Earring-1'], [
+                                         'EarringBack-2', 'Earring-2'
+                                     ], ['Earring-3'], ['Earring-4'], ['Masks-jack-o-lantern'], ['Masks-guy-fawkes'], [
+                                         'Masks-jack-o-lantern-lighted'
+                                     ], ['Extras-Parrot'], ['Masks-gitcoinbot'], ['Masks-batman']),
+                         'paid_options': {
+                             'Extras-Parrot': 0.01,
+                             'Masks-batman': 0.02
+                         },
                      },
                      {
                          'name': 'Background',
@@ -110,7 +168,20 @@ def get_avatar_context():
                          'options': (
                              '25E899', '9AB730', '00A55E', '3FCDFF', '3E00FF', '8E2ABE', 'D0021B', 'F9006C', 'FFCE08',
                              'F8E71C', '15003E', 'FFFFFF'
-                         )
+                         ),
+                         'paid_options': {},
+                     },
+                     {
+                         'name': 'Wallpaper',
+                         'title': 'Pick some swag for your back',
+                         'options': (
+                             'anchors', 'circuit', 'jigsaw', 'lines', 'gears', 'clouds', 'signal', 'polka_dots',
+                             'polka_dots_black', 'squares', 'shapes', 'sunburst', 'sunburst_pastel', 'rainbow'
+                         ),
+                         'paid_options': {
+                             'sunburst_pastel': 0.01,
+                             'rainbow': 0.01,
+                         },
                      }],
     }
 
@@ -140,8 +211,10 @@ def get_svg_templates():
         },
         'hair': [],
         'head': [],
+        'makeup': [],
         'mouth': [],
         'nose': [],
+        'wallpaper': []
     }
 
     for category in template_data:
@@ -172,7 +245,25 @@ def build_avatar_component(path, icon_size=None, avatar_size=None):
     avatar_component_size = avatar_size or (899.2, 1415.7)
     scale_factor = icon_size[1] / avatar_component_size[1]
     x_to_center = (icon_size[0] / 2) - ((avatar_component_size[0] * scale_factor) / 2)
-    svg = SVG(f'{COMPONENT_BASE}{path}').scale(scale_factor).move(x_to_center, 0)
+    svg = SVG(f'{COMPONENT_BASE}{path}')
+    if path.startswith('Wallpaper'):
+        src = transform.fromfile(f'{COMPONENT_BASE}{path}')
+
+        #       TODO: Consider width aswell...
+        #        if src.width != None:
+        #            src_width = float(re.sub('[^0-9]','', src.width))
+        #        else:
+        #            src_width = 900
+
+        if src.height is not None:
+            src_height = float(re.sub('[^0-9]', '', src.height))
+        else:
+            src_height = 1415
+        scale_factor = icon_size[1] / src_height
+        svg = svg.scale(scale_factor)
+    if not path.startswith('Wallpaper'):
+        svg = svg.scale(scale_factor)
+        svg = svg.move(x_to_center, 0)
     return svg
 
 
@@ -231,6 +322,7 @@ def build_avatar_svg(svg_path='avatar.svg', line_color='#781623', icon_size=None
             'mouth': '0',
             'nose': '0',
             'eyes': '0',
+            'wallpaper': None
         }
 
     # Build the list of avatar components
@@ -242,7 +334,7 @@ def build_avatar_svg(svg_path='avatar.svg', line_color='#781623', icon_size=None
     ]
 
     customizable_components = ['clothing', 'ears', 'head', 'hair']
-    flat_components = ['eyes', 'mouth', 'nose']
+    flat_components = ['eyes', 'mouth', 'nose', 'wallpaper']
     multi_components = ['accessories']
 
     for component in customizable_components:
@@ -280,7 +372,7 @@ def handle_avatar_payload(request):
     avatar_dict = {}
     valid_component_keys = [
         'Beard', 'Clothing', 'Earring', 'EarringBack', 'Ears', 'Eyes', 'Glasses', 'Masks', 'HairLong', 'HairShort',
-        'HatLong', 'HatShort', 'Head', 'Mouth', 'Mustache', 'Nose', 'Extras'
+        'HatLong', 'HatShort', 'Head', 'Mouth', 'Mustache', 'Nose', 'Extras', 'Wallpaper', 'Makeup'
     ]
     valid_color_keys = ['Background', 'ClothingColor', 'HairColor', 'SkinTone']
     body = json.loads(request.body)
@@ -426,5 +518,37 @@ def convert_img(obj, input_fmt='svg', output_fmt='png'):
     except VipsError:
         pass
     except Exception as e:
-        logger.error(e)
+        logger.error(
+            'Exception encountered in convert_img - Error: (%s) - input: (%s) - output: (%s)', str(e), input_fmt,
+            output_fmt
+        )
+    return None
+
+
+def convert_wand(img_obj, input_fmt='png', output_fmt='svg'):
+    """Convert an SVG to another format.
+
+    Args:
+        img_obj (File): The PNG or other image File/ContentFile.
+        input_fmt (str): The input format. Defaults to: png.
+        output_fmt (str): The output format. Defaults to: svg.
+
+    Returns:
+        BytesIO: The BytesIO stream containing the converted File data.
+        None: If there is an exception, the method returns None.
+
+    """
+    from wand.image import Image as WandImage
+    try:
+        img_data = img_obj.read()
+        with WandImage(blob=img_data, format=input_fmt) as _img:
+            _img.format = output_fmt
+            tmpfile_io = BytesIO()
+            _img.save(file=tmpfile_io)
+            return tmpfile_io
+    except Exception as e:
+        logger.error(
+            'Exception encountered in convert_wand - Error: (%s) - input: (%s) - output: (%s)', str(e), input_fmt,
+            output_fmt
+        )
     return None

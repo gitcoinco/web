@@ -440,6 +440,61 @@ function getParam(parameterName) {
   return result;
 }
 
+if ($('#bounties').length) {
+  $('#bounties').tooltip({
+    items: '.result',
+    classes: {
+      'ui-tooltip': 'tooltip-bubble'
+    },
+    position: {
+      my: 'top',
+      at: 'center bottom',
+      collision: 'flip',
+      using: function(position, feedback) {
+        $(this).addClass(feedback.vertical).css(position);
+      }
+    }
+  });
+}
+
+if ($.views) {
+  $.views.converters({
+    timedifference: timedifferenceCvrt,
+    activitytext: activitytextCvrt
+  });
+
+}
+
+function timedifferenceCvrt(date) {
+  return timeDifference(new Date(), new Date(date), false, 60 * 60);
+}
+
+function activitytextCvrt(activity_type) {
+  return activity_names[activity_type];
+}
+
+const activity_names = {
+  new_bounty: gettext('New bounty'),
+  start_work: gettext('Work started'),
+  stop_work: gettext('Work stopped'),
+  work_submitted: gettext('Work submitted'),
+  work_done: gettext('Work done'),
+  worker_approved: gettext('Worker approved'),
+  worker_rejected: gettext('Worker rejected'),
+  worker_applied: gettext('Worker applied'),
+  increased_bounty: gettext('Increased funding'),
+  killed_bounty: gettext('Canceled bounty'),
+  new_crowdfund: gettext('New crowdfund contribution'),
+  new_tip: gettext('New tip'),
+  receive_tip: gettext('Tip received'),
+  bounty_abandonment_escalation_to_mods: gettext('Escalated for abandonment of bounty'),
+  bounty_abandonment_warning: gettext('Warned for abandonment of bounty'),
+  bounty_removed_slashed_by_staff: gettext('Dinged and removed from bounty by staff'),
+  bounty_removed_by_staff: gettext('Removed from bounty by staff'),
+  bounty_removed_by_funder: gettext('Removed from bounty by funder'),
+  bounty_changed: gettext('Bounty details changed')
+};
+
 function timeDifference(current, previous, remaining, now_threshold_seconds) {
 
   var elapsed = current - previous;
@@ -635,10 +690,17 @@ var currentNetwork = function(network) {
         $('#current-network').text(gettext('Metamask Not Enabled'));
         $('#navbar-network-banner').html(info);
       } else if (network == 'locked') {
-        info = gettext('Web3 locked. Please unlock ') +
-          '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
-        $('#current-network').text(gettext('Metamask Locked'));
-        $('#navbar-network-banner').html(info);
+        if (is_metamask_approved || !is_metamask_unlocked) {
+          info = gettext('Web3 locked. Please unlock ') +
+            '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
+          $('#current-network').text(gettext('Metamask Locked'));
+          $('#navbar-network-banner').html(info);
+        } else {
+          info = gettext('Metamask not connected. ') +
+            '<button id="metamask_connect" onclick="approve_metamask()">Click here to connect to metamask</button>';
+          $('#current-network').text(gettext('Metamask Not Connected'));
+          $('#navbar-network-banner').html(info);
+        }
       } else {
         info = gettext('Connect to Mainnet via Metamask');
         $('#current-network').text(gettext('Unsupported Network'));
@@ -669,10 +731,17 @@ var currentNetwork = function(network) {
         $('#current-network').text(gettext('Metamask Not Enabled'));
         $('#navbar-network-banner').html(info);
       } else if (network == 'locked') {
-        info = gettext('Web3 locked. Please unlock ') +
-          '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
-        $('#current-network').text(gettext('Metamask Locked'));
-        $('#navbar-network-banner').html(info);
+        if (is_metamask_approved || !is_metamask_unlocked) {
+          info = gettext('Web3 locked. Please unlock ') +
+            '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
+          $('#current-network').text(gettext('Metamask Locked'));
+          $('#navbar-network-banner').html(info);
+        } else {
+          info = gettext('Metamask not connected. ') +
+            '<button id="metamask_connect" onclick="approve_metamask()">Click here to connect to metamask</button>';
+          $('#current-network').text(gettext('Metamask Not Connected'));
+          $('#navbar-network-banner').html(info);
+        }
       } else {
         info = gettext('Connect to Rinkeby / Custom RPC via Metamask');
         $('#current-network').text(gettext('Unsupported Network'));
@@ -708,14 +777,26 @@ var trigger_primary_form_web3_hooks = function() {
       $('#primary_form').addClass('hidden');
       $('.submit_bounty .newsletter').addClass('hidden');
       $('#unlock_metamask_error').css('display', 'none');
+      $('#connect_metamask_error').css('display', 'none');
       $('#no_issue_error').css('display', 'none');
       mixpanel_track_once('No Metamask Error', params);
+    } else if (is_metamask_unlocked && !is_metamask_approved) {
+      $('#connect_metamask_error').css('display', 'block');
+      $('#unlock_metamask_error').css('display', 'none');
+      $('#zero_balance_error').css('display', 'none');
+      $('#no_metamask_error').css('display', 'none');
+      $('#robot_error').removeClass('hidden');
+      $('#primary_form').addClass('hidden');
+      $('.submit_bounty .newsletter').addClass('hidden');
+      $('#no_issue_error').css('display', 'none');
+      mixpanel_track_once('Unlock Metamask Error', params);
     } else if (!web3.eth.coinbase) {
       $('#unlock_metamask_error').css('display', 'block');
       $('#zero_balance_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
       $('#robot_error').removeClass('hidden');
       $('#primary_form').addClass('hidden');
+      $('#connect_metamask_error').css('display', 'none');
       $('.submit_bounty .newsletter').addClass('hidden');
       $('#no_issue_error').css('display', 'none');
       mixpanel_track_once('Unlock Metamask Error', params);
@@ -725,6 +806,7 @@ var trigger_primary_form_web3_hooks = function() {
       $('#primary_form').addClass('hidden');
       $('.submit_bounty .newsletter').addClass('hidden');
       $('#unlock_metamask_error').css('display', 'none');
+      $('#connect_metamask_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
       $('#no_issue_error').css('display', 'none');
       mixpanel_track_once('Zero Balance Metamask Error', params);
@@ -732,6 +814,7 @@ var trigger_primary_form_web3_hooks = function() {
       $('#zero_balance_error').css('display', 'none');
       $('#unlock_metamask_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
+      $('#connect_metamask_error').css('display', 'none');
       $('#no_issue_error').css('display', 'block');
       $('#robot_error').addClass('hidden');
       $('#primary_form').removeClass('hidden');
@@ -755,14 +838,23 @@ var trigger_faucet_form_web3_hooks = function() {
       $('#faucet_form').addClass('hidden');
       mixpanel_track_once('No Metamask Error', params);
       return;
+    } else if (is_metamask_unlocked && !is_metamask_approved) {
+      $('#no_metamask_error').css('display', 'none');
+      $('#unlock_metamask_error').css('display', 'none');
+      $('#connect_metamask_error').css('display', 'block');
+      $('#over_balance_error').css('display', 'none');
+      $('#faucet_form').addClass('hidden');
     } else if (!web3.eth.coinbase) {
       $('#no_metamask_error').css('display', 'none');
       $('#unlock_metamask_error').css('display', 'block');
+      $('#connect_metamask_error').css('display', 'none');
+      $('#over_balance_error').css('display', 'none');
       $('#faucet_form').addClass('hidden');
       return;
     } else if (balance >= faucet_amount) {
       $('#no_metamask_error').css('display', 'none');
       $('#unlock_metamask_error').css('display', 'none');
+      $('#connect_metamask_error').css('display', 'none');
       $('#over_balance_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
       mixpanel_track_once('Faucet Available Funds Metamask Error', params);
@@ -770,6 +862,7 @@ var trigger_faucet_form_web3_hooks = function() {
       $('#over_balance_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
       $('#unlock_metamask_error').css('display', 'none');
+      $('#connect_metamask_error').css('display', 'none');
       $('#faucet_form').removeClass('hidden');
     }
   }
@@ -780,6 +873,11 @@ var trigger_faucet_form_web3_hooks = function() {
       mixpanel_track_once('No Metamask Error', params);
       return;
     }
+    if (is_metamask_unlocked && !is_metamask_approved) {
+      $('#unlock_metamask_error').css('display', 'none');
+      $('#connect_metamask_error').css('display', 'block');
+      $('#faucet_form').addClass('hidden');
+    }
     if (!web3.eth.coinbase) {
       $('#unlock_metamask_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
@@ -787,6 +885,9 @@ var trigger_faucet_form_web3_hooks = function() {
       return;
     }
     web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
+      if (errors) {
+        return;
+      }
       var balance = result.toNumber();
 
       if (balance == 0) {
@@ -816,7 +917,7 @@ function getNetwork(id) {
 }
 
 // figure out what version of web3 this is, whether we're logged in, etc..
-var listen_for_web3_changes = function() {
+var listen_for_web3_changes = async function() {
 
   if (!document.listen_for_web3_iterations) {
     document.listen_for_web3_iterations = 1;
@@ -831,7 +932,11 @@ var listen_for_web3_changes = function() {
     currentNetwork('locked');
     trigger_form_hooks();
   } else {
+    is_metamask_unlocked = true;
     web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
+      if (errors) {
+        return;
+      }
       if (typeof result != 'undefined') {
         document.balance = result.toNumber();
       }
@@ -847,6 +952,22 @@ var listen_for_web3_changes = function() {
         trigger_form_hooks();
       }
     });
+  }
+  if (window.ethereum && !document.has_checked_for_ethereum_enable) {
+    document.has_checked_for_ethereum_enable = true;
+    is_metamask_approved = await window.ethereum._metamask.isApproved();
+    is_metamask_unlocked = await window.ethereum._metamask.isUnlocked();
+    if (is_metamask_approved && is_metamask_unlocked) {
+      var start_time = ((new Date()).getTime() / 1000);
+
+      await ethereum.enable();
+      var now_time = ((new Date()).getTime() / 1000);
+      var did_request_and_user_respond = (now_time - start_time) > 1.0;
+
+      if (did_request_and_user_respond) {
+        document.location.href = document.location.href;
+      }
+    }
   }
 };
 
@@ -879,7 +1000,7 @@ var actions_page_warn_if_not_on_same_network = function() {
 attach_change_element_type();
 
 window.addEventListener('load', function() {
-  setInterval(listen_for_web3_changes, 300);
+  setInterval(listen_for_web3_changes, 1000);
   attach_close_button();
 });
 
@@ -1012,11 +1133,12 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
     const dateNow = new Date();
     const dateExpires = new Date(result['expires_date']);
     const isExpired = dateExpires < dateNow && !result['is_open'];
-    const projectType = ucwords(result['project_type']) + ' &bull; ';
+    const isInfinite = dateExpires - new Date().setFullYear(new Date().getFullYear() + 1) > 1;
+    const projectType = ucwords(result['project_type']) + ' <span class="separator-bull"></span> ';
 
     result['action'] = result['url'];
     result['title'] = result['title'] ? result['title'] : result['github_url'];
-    result['p'] = projectType + (result['experience_level'] ? (result['experience_level'] + ' &bull; ') : '');
+    result['p'] = projectType + (result['experience_level'] ? (result['experience_level'] + ' <span class="separator-bull"></span> ') : '');
 
     if (result['status'] === 'done') {
       result['p'] += 'Done';
@@ -1044,10 +1166,17 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
       result['p'] += ('Expired ' + timeAgo + ' ago');
     } else {
       const openedWhen = timeDifference(dateNow, new Date(result['web3_created']), true);
-      const timeLeft = timeDifference(dateNow, dateExpires);
-      const expiredExpires = dateNow < dateExpires ? 'Expires' : 'Expired';
 
-      result['p'] += ('Opened ' + openedWhen + ' ago, ' + expiredExpires + ' ' + timeLeft);
+      if (isInfinite) {
+        const expiredExpires = '<b>Never expires</b>';
+
+        result['p'] += ('Opened ' + openedWhen + ' ago, ' + expiredExpires);
+      } else {
+        const timeLeft = timeDifference(dateNow, dateExpires);
+        const expiredExpires = dateNow < dateExpires ? 'Expires' : 'Expired';
+
+        result['p'] += ('Opened ' + openedWhen + ' ago, ' + expiredExpires + ' <b>' + timeLeft + '</b>');
+      }
     }
 
     if (renderForExplorer) {
@@ -1194,4 +1323,13 @@ function newTokenTag(amount, tokenName, tooltipInfo, isCrowdfunded) {
   }
 
   return ele;
+}
+
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+
+    [ array[i], array[j] ] = [ array[j], array[i] ];
+  }
+  return array;
 }

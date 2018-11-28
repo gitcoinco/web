@@ -175,7 +175,11 @@ We may introduce Arbitration [via Delphi](http://delphi.network/) at some point 
 
 ### of a Tip
 
-Note: Crowdfunded bounties + bulk payouts are secured by Tips (at least until Standard Bounties 2.0 is released).
+### or of a Kudos
+
+Note: 
+- Crowdfunded bounties + bulk payouts are secured by Tips (at least until Standard Bounties 2.0 is released).
+- Kudos are also secured by Tips
 
 This is the high level flow of a bounty on Gitcoin:
 

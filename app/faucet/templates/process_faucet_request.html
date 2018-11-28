@@ -78,8 +78,10 @@
 {% block extrahead %}{{ block.super }}
   <script>
     document.gas_price = {{recommend_gas_price}};
+    function gettext(str){return str};
   </script>
-  <script src="{% static "v2/js/jquery.js" %}"></script>
-  <script src="{% static "v2/js/shared.js" %}"></script>
+  {% include 'shared/footer_scripts.html' %}
+
+  <script src="{% static "v2/js/metamask-approval.js" %}"></script>
   <script src="{% static "v2/js/pages/process_faucet.js" %}"></script>
 {% endblock %}
