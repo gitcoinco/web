@@ -607,7 +607,7 @@ Check out a few of the new kudos launched this week:
     </ul>
 </p>
 <p>
-Thanks for reading! Back to BUI DLing,
+Thanks for reading! Back to BUIDLing,
 </p>
 '''
     highlights = [{
