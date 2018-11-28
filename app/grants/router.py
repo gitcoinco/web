@@ -1,5 +1,5 @@
 import django_filters.rest_framework
-from rest_framework import routers, serializers, viewsets
+from rest_framework import routers, viewsets
 
 from .models import Grant, Subscription
 from .serializers import GrantSerializer, SubscriptionSerializer
@@ -59,6 +59,7 @@ class GrantViewSet(viewsets.ModelViewSet):
             queryset = queryset.keyword(self.request.query_params.get('keyword'))
 
         return queryset
+
 
 router = routers.DefaultRouter()
 router.register(r'grants', GrantViewSet)

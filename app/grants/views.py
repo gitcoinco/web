@@ -196,8 +196,6 @@ def grant_new(request):
 
         team_members.append(profile.id)
         grant.team_members.add(*list(filter(lambda member_id: member_id > 0, map(int, team_members))))
-
-
         return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
     params = {
