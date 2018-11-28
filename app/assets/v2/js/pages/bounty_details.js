@@ -462,15 +462,7 @@ var showWarningMessage = function(txid) {
   $('#bounty_details').hide();
   $('#bounty_detail').hide();
 
-  $('.bg-container').show();
-  $('.loading_img').addClass('waiting-state ');
-  $('.waiting_room_entertainment').show();
-  $('.issue-url').html('<a href="' + document.issueURL + '">' + document.issueURL + '</a>');
-
-  var secondsBetweenQuoteChanges = 30;
-
-  waitingRoomEntertainment();
-  var interval = setInterval(waitingRoomEntertainment, secondsBetweenQuoteChanges * 1000);
+  waitingStateActive();
 };
 
 // refresh page if metamask changes
