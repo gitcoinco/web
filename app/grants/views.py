@@ -74,7 +74,7 @@ def grants(request):
     }
     return TemplateResponse(request, 'grants/index.html', params)
 
-
+@csrf_exempt
 def grant_details(request, grant_id, grant_slug):
     """Display the Grant details page."""
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
@@ -92,7 +92,12 @@ def grant_details(request, grant_id, grant_slug):
     except Grant.DoesNotExist:
         raise Http404
 
+
+    if profile != grant.admin_profile:
+        return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
+
     if request.method == 'POST':
+        print(request.POST)
         if 'contract_address' in request.POST:
             grant.active = False
             grant.save()
@@ -107,7 +112,13 @@ def grant_details(request, grant_id, grant_slug):
             }
             Update.objects.create(**update_kwargs)
         elif 'edit-title' in request.POST:
-            pass
+            print('winner winner chcken dinner')
+            grant.title = request.POST.get('edit-title')
+            grant.reference_url = request.POST.get('edit-reference_url')
+            grant.admin_profile = request.POST.get('edit-admin_profile')
+            grant.description = request.POST.get('edit-description')
+            grant.team_members = request.POST.get('edit-grant_members')
+            grant.save()
 
 
     params = {

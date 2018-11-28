@@ -6,6 +6,38 @@ const editableFields = [
   '#grant-members'
 ];
 
+function getCookie(name) {
+  var cookieValue = null;
+
+  if (document.cookie && document.cookie !== '') {
+    var cookies = document.cookie.split(';');
+
+    for (var i = 0; i < cookies.length; i++) {
+      var cookie = jQuery.trim(cookies[i]);
+      // Does this cookie string begin with the name we want?
+
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+var csrftoken = getCookie('csrftoken');
+
+function csrfSafeMethod(method) {
+  // these HTTP methods do not require CSRF protection
+  return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+$.ajaxSetup({
+  beforeSend: function(xhr, settings) {
+    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+      xhr.setRequestHeader('X-CSRFToken', csrftoken);
+    }
+  }
+});
+
 $(document).ready(function() {
   $('#tabs').tabs();
 
@@ -49,7 +81,61 @@ $(document).ready(function() {
     editableFields.forEach(field => disableEdit(field));
   });
 
-  $('#js-cancel_grant').validate({
+  $('#cancel_grant').click(function() {
+
+    let contract_address = $('#contract_address').val();
+
+    $.ajax({
+      type: 'post',
+      url: '',
+      data: { 'contract_address': contract_address},
+      success: function(json) {
+        console.log('requested access complete');
+      },
+      error: function() {
+        console.log('failure');
+      }
+    });
+
+    // let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, contract_address);
+    //
+    //    web3.eth.getAccounts(function(err, accounts) {
+    //
+    //      deployedSubscription.methods.endContract().send({from: accounts[0], gasPrice: 4000000000})
+    //        .on('confirmation', function(confirmationNumber, receipt) {
+    //          console.log('receipt', receipt);
+    //
+    //
+    //
+    //        });
+    //
+    //    });
+  });
+
+  // $('#js-cancel_grant').validate({
+  //   submitHandler: function(form) {
+  //     var data = {};
+  //
+  //     $.each($(form).serializeArray(), function() {
+  //       data[this.name] = this.value;
+  //     });
+  //
+  //     let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, data.contract_address);
+  //
+  //     web3.eth.getAccounts(function(err, accounts) {
+  //
+  //       deployedSubscription.methods.endContract().send({from: accounts[0], gasPrice: 4000000000})
+  //         .on('confirmation', function(confirmationNumber, receipt) {
+  //           console.log('receipt', receipt);
+  //
+  //           form.submit();
+  //         });
+  //
+  //     });
+  //   }
+  // });
+
+  $('#js-edit_grant').validate({
     submitHandler: function(form) {
       var data = {};
 
@@ -57,27 +143,12 @@ $(document).ready(function() {
         data[this.name] = this.value;
       });
 
-      // let compiledSubscription;
-      //
-      // if (data.contract_version == 0) {
-      //   compiledSubscription = compiledSubscription0;
-      // }
+      console.log('data', data);
 
-      let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, data.contract_address);
-
-      web3.eth.getAccounts(function(err, accounts) {
-
-
-        deployedSubscription.methods.endContract().send({from: accounts[0], gasPrice: 4000000000})
-          .on('confirmation', function(confirmationNumber, receipt) {
-            console.log('receipt', receipt);
-
-            form.submit();
-          });
-
-      });
+      form.submit();
     }
   });
+
 });
 
 const makeEditable = (input, icon) => {

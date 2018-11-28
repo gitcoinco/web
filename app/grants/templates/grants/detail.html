@@ -107,13 +107,13 @@
                     </a>
                   </h4>
                 {% elif is_admin %}
-                  <form method="POST" id="js-cancel_grant" class="d-inline">
-                    {% csrf_token %}
+                  <!-- <form method="POST" id="js-cancel_grant" class="d-inline">
+                    {% csrf_token %} -->
                     <button class="button button--primary button--warning" id="cancel_grant">{% trans "Cancel this Grant" %}
                     </button>
                     <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
                     <input type="hidden" id="contract_version" name="contract_version" value="{{ grant.contract_version }}">
-                  </form>
+                  <!-- </form> -->
                 {% elif user_subscription %}
                   <a href="{% url 'grants:subscription_cancel' grant.id grant.slug user_subscription.id %}">
                     <button class="button button--primary button--warning button--full">{% trans "Cancel Your Funding" %}</button>
