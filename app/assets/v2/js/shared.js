@@ -1171,7 +1171,7 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
       const openedWhen = timeDifference(dateNow, new Date(result['web3_created']), true);
 
       if (isInfinite) {
-        const expiredExpires = '<b>Never expires</b>';
+        const expiredExpires = 'Never expires';
 
         result['p'] += ('Opened ' + openedWhen + ' ago');
         result['expired'] += (expiredExpires);
