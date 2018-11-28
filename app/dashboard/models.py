@@ -1076,15 +1076,15 @@ class SendCryptoAssetQuerySet(models.QuerySet):
 
     def send_success(self):
         """Filter results down to successful sends only."""
-        return self.exclude(txid='').filter(tx_status='success')
+        return self.filter(tx_status='success').exclude(txid='')
 
     def send_pending(self):
         """Filter results down to pending sends only."""
-        return self.exclude(txid='').filter(tx_status__in=['pending'])
+        return self.filter(tx_status='pending').exclude(txid='')
 
     def send_happy_path(self):
         """Filter results down to pending/success sends only."""
-        return self.exclude(txid='').filter(tx_status__in=['pending', 'success'])
+        return self.filter(tx_status__in=['pending', 'success']).exclude(txid='')
 
     def send_fail(self):
         """Filter results down to failed sends only."""
@@ -1092,15 +1092,15 @@ class SendCryptoAssetQuerySet(models.QuerySet):
 
     def receive_success(self):
         """Filter results down to successful receives only."""
-        return self.exclude(receive_txid='').filter(receive_tx_status='success')
+        return self.filter(receive_tx_status='success').exclude(receive_txid='')
 
     def receive_pending(self):
         """Filter results down to pending receives only."""
-        return self.exclude(receive_txid='').filter(receive_tx_status__in=['pending'])
+        return self.filter(receive_tx_status='pending').exclude(receive_txid='')
 
     def receive_happy_path(self):
         """Filter results down to pending receives only."""
-        return self.exclude(receive_txid='').filter(receive_tx_status__in=['pending', 'success'])
+        return self.filter(receive_tx_status__in=['pending', 'success']).exclude(receive_txid='')
 
     def receive_fail(self):
         """Filter results down to failed receives only."""
@@ -1111,13 +1111,13 @@ class SendCryptoAsset(SuperModel):
     """Abstract Base Class to handle the model for both Tips and Kudos."""
 
     TX_STATUS_CHOICES = (
-        ('na', 'na'), # not applicable
+        ('na', 'na'),  # not applicable
         ('pending', 'pending'),
         ('success', 'success'),
         ('error', 'error'),
         ('unknown', 'unknown'),
         ('dropped', 'dropped'),
-        )
+    )
 
     web3_type = models.CharField(max_length=50, default='v3')
     emails = JSONField(blank=True)
@@ -1670,8 +1670,8 @@ class Profile(SuperModel):
         default=False,
         help_text='If this option is chosen, the user is able to submit a faucet/ens domain registration even if they are new to github',
     )
-    keywords = ArrayField(models.CharField(max_length=200), blank=True, default=[])
-    organizations = ArrayField(models.CharField(max_length=200), blank=True, default=[])
+    keywords = ArrayField(models.CharField(max_length=200), blank=True, default=list)
+    organizations = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     form_submission_records = JSONField(default=list, blank=True)
     max_num_issues_start_work = models.IntegerField(default=3)
     preferred_payout_address = models.CharField(max_length=255, default='', blank=True)
