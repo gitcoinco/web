@@ -28,7 +28,6 @@ try {
   localStorage = {};
 }
 
-
 var paint_search_tabs = function() {
   if (!localStorage['searches'])
     return;
@@ -54,8 +53,6 @@ var paint_search_tabs = function() {
   html += '</ul>';
   target.html(html);
 };
-
-
 
 function debounce(func, wait, immediate) {
   var timeout;
