@@ -8,108 +8,80 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-12 12:10+0530\n"
+"POT-Creation-Date: 2018-09-18 00:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Aashutosh Rathi <aashutoshrathi@gmail.com>\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
-#: assets/onepager/js/quarantine/receive_legacy.js:100
-#, fuzzy
-#| msgid "Not a valid forwarding address"
-msgid "Not a valid forwarding address."
-msgstr "有効な転送先アドレスではありません。"
+#: assets/onepager/js/receive.js:36 assets/onepager/js/receive.js:71
+msgid "You are not on the right web3 network.  Please switch to "
+msgstr "あなたは正しいweb3ネットワークにいません。に切り替えてください"
 
-#: assets/onepager/js/quarantine/receive_legacy.js:105
-#: assets/onepager/js/quarantine/receive_legacy.js:109
-msgid "Invalid Link.  Please check your link and try again"
-msgstr "無効なリンク。あなたのリンクを確認して、もう一度お試しください"
+#: assets/onepager/js/receive.js:61
+msgid "You are not on a web3 browser.  Please switch to a web3 browser."
+msgstr "あなたはweb3のブラウザではありません。 web3ブラウザに切り替えてください。"
 
-#: assets/onepager/js/quarantine/receive_legacy.js:118
-msgid "got an error :("
-msgstr "エラーが発生しました:("
+#: assets/onepager/js/receive.js:66
+msgid "You do not have permission to do that."
+msgstr "あなたはそれを行う許可を持っていません。"
 
-#: assets/onepager/js/quarantine/receive_legacy.js:153
-msgid "You must wait until the senders transaction confirms."
-msgstr "送信者の取引が確認されるまで待つ必要があります。"
+#: assets/onepager/js/send.js:146
+msgid ""
+"You must have a web3 enabled browser to do this.  Please download Metamask."
+msgstr "これを行うには、web3対応のブラウザが必要です。 Metamaskをダウンロードしてください。"
 
+#: assets/onepager/js/send.js:175
+msgid ""
+"To Email is optional, but if you enter an email, you must enter a valid "
+"email!"
+msgstr "電子メールへの送信はオプションですが、電子メールを入力する場合は有効な電子メールを入力する必要があります。"
 
-#: assets/onepager/js/quarantine/web3alert.js:29
+#: assets/onepager/js/send.js:180
+msgid ""
+"From Email is optional, but if you enter an email, you must enter a valid "
+"email!"
+msgstr "[電子メールから]はオプションですが、電子メールを入力する場合は、有効な電子メールを入力する必要があります。"
+
+#: assets/onepager/js/send.js:185
+msgid "You must enter an number for the amount!"
+msgstr "金額の番号を入力する必要があります！"
+
+#: assets/onepager/js/send.js:190
+msgid "You must enter a username."
+msgstr "ユーザー名を入力する必要があります。"
+
+#: assets/onepager/js/send.js:195
+msgid "You must accept the terms."
+msgstr "あなたは条件に同意する必要があります。"
+
+#: assets/onepager/js/send.js:242
+msgid "There was an error."
+msgstr "エラーが発生しました。"
+
+#: assets/onepager/js/send.js:286
+msgid ""
+"You will now be asked to confirm two transactions.  The first is gas money, "
+"so your receipient doesnt have to pay it.  The second is the actual token "
+"transfer. (note: check Metamask extension, sometimes the 2nd confirmation "
+"window doesnt popup)"
+msgstr ""
+"2つの取引を確認するように求められます。最初のものはガスマネーなので、受領者はそれを支払わなければなりません。 2番目は実際のトークン転送です。 "
+"（注：Metamaskの拡張機能をチェックしてください。時には2番目の確認ウィンドウがポップアップしません）"
+
 #: assets/onepager/js/web3alert.js:29
 msgid ""
 "You must install <a href=https://metamask.io/>Metamask</a> to use this tool."
 msgstr ""
-""You must install <a href=https://metamask.io/>Metamask</a> to use this tool."
-"
+"このツールを使用するには、<a href=https://metamask.io/> Metamask </a>をインストールする必要があります。"
 
-
-#: assets/onepager/js/quarantine/web3alert.js:33
 #: assets/onepager/js/web3alert.js:33
-#, fuzzy
-#| msgid "Unlock Metamask"
 msgid "Please unlock Metamask."
 msgstr "Metamaskを解除してください。"
-
-#: assets/onepager/js/receive.js:5
-msgid "You are not on the right web3 network.  Please switch to "
-msgstr "あなたは正しいweb3ネットワークにいません。に切り替えてください"
-
-#: assets/onepager/js/send.js:88
-msgid ""
-"You must have a web3 enabled browser to do this.  Please download Metamask."
-msgstr ""
-"これを行うには、web3対応のブラウザが必要です。 Metamaskをダウンロードしてください。"
-
-
-#: assets/onepager/js/send.js:115
-msgid ""
-"To Email is optional, but if you enter an email, you must enter a valid "
-"email!"
-msgstr ""
-"電子メールへの送信はオプションですが、電子メールを入力する場合は、有効な"
-"Eメール！"
-
-#: assets/onepager/js/send.js:119
-msgid ""
-"From Email is optional, but if you enter an email, you must enter a valid "
-"email!"
-msgstr ""
-"[電子メールから]はオプションですが、電子メールを入力する場合は、有効な"
-"Eメール！"
-
-#: assets/onepager/js/send.js:123
-msgid "You must enter an number for the amount!"
-msgstr "金額の番号を入力する必要があります！"
-
-#: assets/onepager/js/send.js:127
-msgid "You must enter a username."
-msgstr "ユーザー名を入力する必要があります。"
-
-#: assets/onepager/js/send.js:131
-#, fuzzy
-#| msgid "You must agree to the precedence clause."
-msgid "You must accept the terms."
-msgstr "あなたは条件に同意する必要があります。"
-
-#: assets/onepager/js/send.js:166
-#, fuzzy
-#| msgid "There was an error"
-msgid "There was an error."
-msgstr "エラーが発生しました。"
-
-#: assets/onepager/js/send.js:196
-msgid ""
-"You will now be asked to confirm two transactions.  The first is gas money, "
-"so your receipient doesnt have to pay it.  The second is the actual token "
-"transfer."
-msgstr ""
-"2つの取引を確認するように求められます。最初はガス貨で、"
-"あなたの受取人はそれを支払う必要はありません。 2番目は実際のトークンです"
-"転送。"
 
 #: assets/v2/js/amounts.js:11
 msgid "Approx: "
@@ -132,23 +104,21 @@ msgstr "あなたのアバターはあなたのGitcoinプロフィールに保�
 msgid "Error occurred while saving. Please try again."
 msgstr "保存中にエラーが発生しました。もう一度お試しください。"
 
-#: assets/v2/js/base.js:191
+#: assets/v2/js/base.js:194
 msgid "We Care About Your Privacy"
 msgstr "プライバシーについて"
 
-#: assets/v2/js/base.js:194
+#: assets/v2/js/base.js:197
 msgid ""
 "As a Web 3.0 company, we think carefully about user data and privacy and how"
 " the internet is evolving. We hope Web 3.0 will bring more control of data "
 "to users. With this ethos in mind, we are always careful about how we use "
 "your information."
 msgstr ""
-"Web 3.0企業として、私たちはユーザーデータとプライバシー、および"
-"インターネットは進化しています。 Web 3.0がより多くのデータを管理することを願っています"
-"ユーザーに。この精神を念頭に置いて、私たちは常に私たちが"
-"あなたの情報。"
+"Web 3.0企業として、私たちはユーザーデータとプライバシーとインターネットがどのように進化しているかを慎重に考えます。 Web "
+"3.0がより多くのデータをユーザーに制御してくれることを願っています。このような心を念頭に置いて、私たちはあなたの情報の使い方を常に慎重に考えています。"
 
-#: assets/v2/js/base.js:198
+#: assets/v2/js/base.js:201
 msgid ""
 "We recently reviewed our Privacy Policy to comply with requirements of "
 "General Data Protection Regulation (GDPR), improving our Terms of Use, "
@@ -156,313 +126,351 @@ msgid ""
 "25, 2018, and your continued use of the Gitcoin after May 25, 2018 will be "
 "subject to our updated Terms of Use and Privacy Policy."
 msgstr ""
-"最近、私たちはプライバシーポリシーを見直し、"
-"一般データ保護規制（GDPR）、利用規約の改善、"
-"プライバシーポリシーとクッキーポリシー。これらの変更は5月に施行されます"
-"25、2018、2018年5月25日以降のGitcoinの継続使用は"
-"更新された利用規約とプライバシーポリシーに従ってください。"
+"私たちは最近、一般データ保護規制（GDPR）の要件を遵守し、当社の利用規約、プライバシーポリシー、およびCookieポリシーを改善するためにプライバシーポリシーを見直しました。これらの変更は2018年5月25日に施行され、2018年5月25日以降のGitcoinの継続使用は、更新された利用規約およびプライバシーポリシーの対象となります。"
 
-
-
-#: assets/v2/js/base.js:206
+#: assets/v2/js/base.js:209
 msgid "Read Our Updated Terms"
 msgstr "更新された利用規約を読む"
 
-#: assets/v2/js/pages/bounty_details.js:95
+#: assets/v2/js/pages/bounty_details.js:101
 msgid "Issue"
 msgstr "問題"
 
-#: assets/v2/js/pages/bounty_details.js:96
+#: assets/v2/js/pages/bounty_details.js:102
 msgid "Issue Funding Info"
 msgstr "問題資金情報"
 
-#: assets/v2/js/pages/bounty_details.js:97
+#: assets/v2/js/pages/bounty_details.js:103
 msgid "Funder"
 msgstr "ファインダー"
 
-#: assets/v2/js/pages/bounty_details.js:98
+#: assets/v2/js/pages/bounty_details.js:104
 msgid "Submitter"
 msgstr "提出者"
 
-#: assets/v2/js/pages/bounty_details.js:99
+#: assets/v2/js/pages/bounty_details.js:105
 msgid "Meta"
 msgstr "メタ"
 
-#: assets/v2/js/pages/bounty_details.js:120
+#: assets/v2/js/pages/bounty_details.js:126
 msgid "OPEN ISSUE"
 msgstr "開かれた問題"
 
-#: assets/v2/js/pages/bounty_details.js:123
+#: assets/v2/js/pages/bounty_details.js:132
+msgid "This issue is past its expiration date, but it is still active."
+msgstr "この問題は有効期限を過ぎていますが、まだ有効です。"
+
+#: assets/v2/js/pages/bounty_details.js:134
+msgid ""
+"Check with the submitter to see if they still want to see it fulfilled."
+msgstr "提出者に依頼して、それがまだ達成されているかどうかを確認してください。"
+
+#: assets/v2/js/pages/bounty_details.js:139
 msgid "work started"
 msgstr "仕事が始まった"
 
-#: assets/v2/js/pages/bounty_details.js:126
+#: assets/v2/js/pages/bounty_details.js:142
 msgid "work submitted"
 msgstr "提出された作品"
 
-#: assets/v2/js/pages/bounty_details.js:129
+#: assets/v2/js/pages/bounty_details.js:145
 msgid "done"
 msgstr "完了"
 
-#: assets/v2/js/pages/bounty_details.js:132
+#: assets/v2/js/pages/bounty_details.js:148
 msgid "cancelled"
 msgstr "キャンセル"
 
-#: assets/v2/js/pages/bounty_details.js:437
-#, fuzzy
-#| msgid "Are you sure you want to remove your interest?"
+#: assets/v2/js/pages/bounty_details.js:470
+msgid "Detected a web3 change.  Refreshing the page. "
+msgstr "Web3の変更を検出しました。ページを更新しています。"
+
+#: assets/v2/js/pages/bounty_details.js:537
 msgid "Are you sure you want to stop work?"
 msgstr "仕事をやめてもよろしいですか？"
 
-#: assets/v2/js/pages/bounty_details.js:439
-#: assets/v2/js/pages/bounty_details.js:650
+#: assets/v2/js/pages/bounty_details.js:539
+#: assets/v2/js/pages/bounty_details.js:850
 msgid "Start Work"
 msgstr "仕事を始める"
 
-#: assets/v2/js/pages/bounty_details.js:499
-msgid "Please provide an action plan for this ticket."
-msgstr "このチケットの行動計画を提示してください。"
+#: assets/v2/js/pages/bounty_details.js:594
+msgid "What steps will you take to complete this task? (min 30 chars)"
+msgstr "あなたはこの作業を完了するためにどのような措置を取るでしょうか？ （30文字以上）"
 
-#: assets/v2/js/pages/bounty_details.js:504
-msgid "You must agree to the precedence clause."
-msgstr "優先権の条項に同意する必要があります。"
+#: assets/v2/js/pages/bounty_details.js:602
+msgid "Please provide an action plan for this ticket. (min 30 chars)"
+msgstr "このチケットの行動計画を提示してください。 （30文字以上）"
 
-#: assets/v2/js/pages/bounty_details.js:508
-msgid "You must agree to keep the funder updated on your progress."
-msgstr "あなたは、あなたの進歩に合わせて資金提供者を更新することに同意しなければなりません。"
-
-
-#: assets/v2/js/pages/bounty_details.js:513
-#: assets/v2/js/pages/bounty_details.js:650
+#: assets/v2/js/pages/bounty_details.js:607
+#: assets/v2/js/pages/bounty_details.js:850
 msgid "Stop Work"
 msgstr "仕事を止める"
 
-#: assets/v2/js/pages/bounty_details.js:537
+#: assets/v2/js/pages/bounty_details.js:701
 msgid "Funded Issue Details: "
-msgstr "資金援助された問題の詳細："
+msgstr "資金提供された問題の詳細："
 
-#: assets/v2/js/pages/bounty_details.js:635
+#: assets/v2/js/pages/bounty_details.js:705
+msgid "Funder Address: "
+msgstr "ファンダー住所："
+
+#: assets/v2/js/pages/bounty_details.js:835
 msgid "Submit Work"
 msgstr "仕事を提出する"
 
-#: assets/v2/js/pages/bounty_details.js:637
+#: assets/v2/js/pages/bounty_details.js:837
 msgid "Submit work for the funder to review"
 msgstr "資金提供者がレビューするための作業を送信する"
 
-#: assets/v2/js/pages/bounty_details.js:652
+#: assets/v2/js/pages/bounty_details.js:852
 msgid "Notify the funder that you will not be working on this project"
 msgstr "あなたがこのプロジェクトに取り組んでいないことを資金提供者に知らせる"
 
-#: assets/v2/js/pages/bounty_details.js:652
+#: assets/v2/js/pages/bounty_details.js:852
 msgid "Notify the funder that you would like to take on this project"
-msgstr "あなたがこのプロジェクトを受けたいということを資金提供者に通知する"
+msgstr "あなたがこのプロジェクトを受けたいと思っていることを資金提供者に知らせる"
 
-#: assets/v2/js/pages/bounty_details.js:665
+#: assets/v2/js/pages/bounty_details.js:865
 msgid "Cancel Bounty"
 msgstr "バウンティをキャンセルする"
 
-#: assets/v2/js/pages/bounty_details.js:667
+#: assets/v2/js/pages/bounty_details.js:867
 msgid "Cancel bounty and reclaim funds for this issue"
 msgstr "奨励金を取り消し、この問題の資金を回収する"
 
-#: assets/v2/js/pages/bounty_details.js:679
-msgid "View Attached Job Description"
-msgstr "添付されたジョブの説明を見る"
-
-#: assets/v2/js/pages/bounty_details.js:681
-msgid ""
-"This bounty hunter is hiring for a full time, part time, or contract role "
-"and has attached that to this bounty."
-msgstr ""
-"この賞金ハンターは、フルタイム、パートタイム、または契約の役割を雇っています"
-"この恩恵にそれを付けました。"
-
-#: assets/v2/js/pages/bounty_details.js:694
-#, fuzzy
-#| msgid "Cancel Bounty"
+#: assets/v2/js/pages/bounty_details.js:879
 msgid "Payout Bounty"
 msgstr "ペイアウトバウンティ"
 
-#: assets/v2/js/pages/bounty_details.js:695
-#, fuzzy
-#| msgid "This will payout the bounty to the submitter."
+#: assets/v2/js/pages/bounty_details.js:880
 msgid "Payout the bounty to one or more submitters."
 msgstr "1つ以上の提出者に賞金を支払う。"
 
-#: assets/v2/js/pages/bounty_details.js:707
-msgid "Add Contribution"
-msgstr "投稿を追加する"
+#: assets/v2/js/pages/bounty_details.js:893
+msgid "Contribute"
+msgstr "寄稿"
 
-#: assets/v2/js/pages/bounty_details.js:709
-msgid "Increase the funding for this issue"
-msgstr "この問題の資金を増やす"
+#: assets/v2/js/pages/bounty_details.js:895
+msgid "Help by funding or promoting this issue"
+msgstr "この問題への資金提供またはプロモーションによるヘルプ"
 
-#: assets/v2/js/pages/bounty_details.js:725
+#: assets/v2/js/pages/bounty_details.js:906
+msgid "Extend Expiration"
+msgstr "有効期限を延長する"
+
+#: assets/v2/js/pages/bounty_details.js:908
+msgid "Extend deadline of an issue"
+msgstr "問題の期限を延長する"
+
+#: assets/v2/js/pages/bounty_details.js:918
+msgid "Show Invoice"
+msgstr "請求書を表示する"
+
+#: assets/v2/js/pages/bounty_details.js:920
+msgid "View an Invoice for this Issue"
+msgstr "この問題の請求書を見る"
+
+#: assets/v2/js/pages/bounty_details.js:930
+msgid "Edit Issue Details"
+msgstr "問題の詳細を編集"
+
+#: assets/v2/js/pages/bounty_details.js:932
+msgid "Update your Bounty Settings to get the right Crowd"
+msgstr "バウンティの設定を更新して、適切なクラウドを取得してください"
+
+#: assets/v2/js/pages/bounty_details.js:948
 msgid "View On Github"
 msgstr "Githubで見る"
 
-#: assets/v2/js/pages/bounty_details.js:727
+#: assets/v2/js/pages/bounty_details.js:949
+msgid " (Issue is closed)"
+msgstr "（問題は閉鎖されています）"
+
+#: assets/v2/js/pages/bounty_details.js:951
 msgid "View issue details and comments on Github"
 msgstr "Githubに関する問題の詳細とコメントを表示する"
 
-#: assets/v2/js/pages/bounty_details.js:742
+#: assets/v2/js/pages/bounty_details.js:966
+msgid "View Attached Job Description"
+msgstr "添付されたジョブの説明を見る"
+
+#: assets/v2/js/pages/bounty_details.js:968
+msgid ""
+"This bounty funder is hiring for a full time, part time, or contract role "
+"and has attached that to this bounty."
+msgstr "このバウンティファンドは、フルタイム、パートタイム、または契約の役割を果たすために雇用しており、これをこの奨励金に添付しています。"
+
+#: assets/v2/js/pages/bounty_details.js:983
 msgid "Suspend Auto Approval"
 msgstr "自動承認を一時停止する"
 
-#: assets/v2/js/pages/bounty_details.js:744
+#: assets/v2/js/pages/bounty_details.js:985
 msgid ""
 "Suspend *Auto Approval* of Bounty Hunters Who Have Applied for This Bounty"
-msgstr ""
-"この賞金に適用されたバウンティハンターのサスペンド*自動承認*"
+msgstr "この賞金に適用されたバウンティハンターのサスペンド*自動承認*"
 
-
-#: assets/v2/js/pages/bounty_details.js:759
-#, fuzzy
-#| msgid "Cancel Bounty"
+#: assets/v2/js/pages/bounty_details.js:1000
 msgid "Hide Bounty"
 msgstr "バウンティを隠す"
 
-#: assets/v2/js/pages/bounty_details.js:761
+#: assets/v2/js/pages/bounty_details.js:1002
 msgid "Hides Bounty from Active Bounties"
 msgstr "アクティブな賞金からバウンティを隠す"
 
-#: assets/v2/js/pages/bounty_details.js:776
+#: assets/v2/js/pages/bounty_details.js:1017
 msgid "Toggle Remarket Ready"
 msgstr "リマーケティング準備をトグル"
 
-#: assets/v2/js/pages/bounty_details.js:778
+#: assets/v2/js/pages/bounty_details.js:1019
 msgid ""
 "Sets Remarket Ready if not already remarket ready.  Unsets it if already "
 "remarket ready."
-msgstr ""
-"まだリマーケティング準備ができていない場合は、Remarket Readyを設定します。既に設定している場合は設定を解除します"
-"リマーケティング準備完了。"
+msgstr "まだリマーケティング準備ができていない場合は、Remarket Readyを設定します。すでにリマーケティングが可能な場合は解除します。"
 
-#: assets/v2/js/pages/bounty_details.js:792
-#, fuzzy
-#| msgid "Funder"
+#: assets/v2/js/pages/bounty_details.js:1034
+msgid "Mark as Reviewed"
+msgstr "レビュー済みとしてマークする"
+
+#: assets/v2/js/pages/bounty_details.js:1036
+msgid "Marks the bounty activity as reviewed."
+msgstr "賞品アクティビティをレビュー済みとしてマークします。"
+
+#: assets/v2/js/pages/bounty_details.js:1050
 msgid "Contact Funder"
 msgstr "お問い合わせFunder"
 
-#: assets/v2/js/pages/bounty_details.js:794
+#: assets/v2/js/pages/bounty_details.js:1052
 msgid "Contact Funder via Email"
 msgstr "電子メールでFunderに連絡する"
 
-#: assets/v2/js/pages/bounty_details.js:808
+#: assets/v2/js/pages/bounty_details.js:1066
 msgid "Snooze Gitcoinbot"
 msgstr "スヌーズGitcoinbot"
 
-#: assets/v2/js/pages/bounty_details.js:810
+#: assets/v2/js/pages/bounty_details.js:1068
 msgid "Snooze Gitcoinbot reminders"
 msgstr "Gitcoinbotリマインダをスヌーズする"
 
-#: assets/v2/js/pages/bounty_details.js:824
+#: assets/v2/js/pages/bounty_details.js:1082
 msgid "Override Status"
 msgstr "上書きステータス"
 
-#: assets/v2/js/pages/bounty_details.js:826
+#: assets/v2/js/pages/bounty_details.js:1084
 msgid "Override Status with a status of your choosing"
 msgstr "選択したステータスでステータスを上書きする"
 
-#: assets/v2/js/pages/bounty_details.js:892
-#: assets/v2/js/pages/dashboard.js:510 assets/v2/js/shared.js:296
+#: assets/v2/js/pages/bounty_details.js:1098
+#: assets/v2/js/pages/bounty_details.js:1100
+msgid "View in Admin"
+msgstr "管理者で表示"
+
+#: assets/v2/js/pages/bounty_details.js:1166
+#: assets/v2/js/pages/dashboard.js:536 assets/v2/js/shared.js:336
+#: assets/v2/js/shared.js:356
 msgid "got an error. please try again, or contact support@gitcoin.co"
 msgstr "エラーが発生しました。もう一度お試しいただくか、support@gitcoin.coまでご連絡ください。"
 
-#: assets/v2/js/pages/bounty_details.js:902
-#, fuzzy
-#| msgid "Cancel Bounty"
+#: assets/v2/js/pages/bounty_details.js:1176
 msgid "New Bounty"
 msgstr "ニューバウンティ"
 
-#: assets/v2/js/pages/bounty_details.js:903
+#: assets/v2/js/pages/bounty_details.js:1177
 msgid "Work Started"
 msgstr "作業開始"
 
-#: assets/v2/js/pages/bounty_details.js:904
-#, fuzzy
-#| msgid "Work Started"
+#: assets/v2/js/pages/bounty_details.js:1178
 msgid "Work Stopped"
 msgstr "仕事が止まった"
 
-#: assets/v2/js/pages/bounty_details.js:905
+#: assets/v2/js/pages/bounty_details.js:1179
 msgid "Work Submitted"
 msgstr "提出された作業"
 
-#: assets/v2/js/pages/bounty_details.js:906
-#, fuzzy
-#| msgid "Done"
+#: assets/v2/js/pages/bounty_details.js:1180
 msgid "Work Done"
 msgstr "作業完了"
 
-#: assets/v2/js/pages/bounty_details.js:907
-#, fuzzy
-#| msgid "Work Accepted"
+#: assets/v2/js/pages/bounty_details.js:1181
 msgid "Worker Approved"
 msgstr "労働者が承認した"
 
-#: assets/v2/js/pages/bounty_details.js:908
-#, fuzzy
-#| msgid "Work Accepted"
+#: assets/v2/js/pages/bounty_details.js:1182
 msgid "Worker Rejected"
 msgstr "労働者が拒否された"
 
-#: assets/v2/js/pages/bounty_details.js:909
-#, fuzzy
-#| msgid "Work Accepted"
+#: assets/v2/js/pages/bounty_details.js:1183
 msgid "Worker Applied"
 msgstr "労働者が適用された"
 
-#: assets/v2/js/pages/bounty_details.js:910
-#, fuzzy
-#| msgid "Issue Funding Info"
+#: assets/v2/js/pages/bounty_details.js:1184
 msgid "Increased Funding"
 msgstr "資金調達の増加"
 
-#: assets/v2/js/pages/bounty_details.js:911
-#, fuzzy
-#| msgid "Cancel Bounty"
+#: assets/v2/js/pages/bounty_details.js:1185
 msgid "Canceled Bounty"
 msgstr "キャンセルされた賞金"
 
-#: assets/v2/js/pages/bounty_details.js:912
+#: assets/v2/js/pages/bounty_details.js:1186
+msgid "New Crowdfund Contribution"
+msgstr "新しいCrowdfundの貢献"
+
+#: assets/v2/js/pages/bounty_details.js:1187
 msgid "New Tip"
 msgstr "新しいヒント"
 
-#: assets/v2/js/pages/bounty_details.js:913
+#: assets/v2/js/pages/bounty_details.js:1188
 msgid "Tip Received"
 msgstr "ヒントを受け取った"
 
-#: assets/v2/js/pages/bounty_details.js:1000
+#: assets/v2/js/pages/bounty_details.js:1189
+msgid "Escalated for Abandonment of Bounty"
+msgstr "バウンティの放棄のためにエスカレートされた"
+
+#: assets/v2/js/pages/bounty_details.js:1190
+msgid "Warned for Abandonment of Bounty"
+msgstr "バウンティの放棄を警告"
+
+#: assets/v2/js/pages/bounty_details.js:1191
+msgid "Dinged and Removed from Bounty by Staff"
+msgstr "職員の恩恵から敬服され、取り除かれた"
+
+#: assets/v2/js/pages/bounty_details.js:1192
+msgid "Removed from Bounty by Staff"
+msgstr "スタッフによる賞金から取り除かれた"
+
+#: assets/v2/js/pages/bounty_details.js:1193
+msgid "Removed from Bounty by Funder"
+msgstr "FunderによってBountyから削除されました"
+
+#: assets/v2/js/pages/bounty_details.js:1194
+msgid "Bounty Details Changed"
+msgstr "バウンティの詳細が変更されました"
+
+#: assets/v2/js/pages/bounty_details.js:1283
 msgid "There's no activity yet!"
 msgstr "まだ活動はありません！"
 
-#: assets/v2/js/pages/dashboard.js:324
+#: assets/v2/js/pages/bounty_request_form.js:62
+#: assets/v2/js/pages/change_bounty.js:67 assets/v2/js/shared.js:303
+msgid "Network error. Please reload the page and try again."
+msgstr "ネットワークエラー。ページをリロードしてもう一度お試しください。"
+
+#: assets/v2/js/pages/dashboard.js:347
 msgid "No Results"
 msgstr "結果がありません"
 
-#: assets/v2/js/pages/dashboard.js:328
+#: assets/v2/js/pages/dashboard.js:351
 msgid " Matching Result"
 msgstr "マッチング結果"
 
-#: assets/v2/js/pages/dashboard.js:332
+#: assets/v2/js/pages/dashboard.js:355
 msgid " Matching Results"
 msgstr "マッチング結果"
-
-#: assets/v2/js/pages/dashboard.js:732
-msgid "Please enter a valid email address."
-msgstr "有効なメールアドレスを入力してください。"
-
-#: assets/v2/js/pages/dashboard.js:743
-msgid "You're in! Keep an eye on your inbox for the next funding listing."
-msgstr "君も仲間だ！次の資金調達リストのために受信トレイに注目してください。"
-
-
 
 #: assets/v2/js/pages/faucet_form.js:31
 msgid "We could not validate that input as an email address"
 msgstr "入力を電子メールアドレスとして検証できませんでした"
-
 
 #: assets/v2/js/pages/faucet_form.js:59
 msgid "Please make sure to fill out all fields."
@@ -473,74 +481,66 @@ msgid "Got an unexpected error"
 msgstr "予期しないエラーが発生しました"
 
 #: assets/v2/js/pages/fulfill_bounty.js:25
-#: assets/v2/js/pages/increase_bounty.js:29
-#: assets/v2/js/pages/kill_bounty.js:17 assets/v2/js/pages/new_bounty.js:189
-#: assets/v2/js/pages/process_bounty.js:68
+#: assets/v2/js/pages/increase_bounty.js:38
+#: assets/v2/js/pages/kill_bounty.js:17 assets/v2/js/pages/new_bounty.js:186
+#: assets/v2/js/pages/process_bounty.js:117
 msgid ""
 "You are on an unsupported network.  Please change your network to a "
 "supported network."
-msgstr ""
-"あなたはサポートされていないネットワークにいます。ネットワークを変更してください"
-"サポートされているネットワーク。"
+msgstr "あなたはサポートされていないネットワークにいます。ネットワークをサポートされているネットワークに変更してください。"
 
-#: assets/v2/js/pages/fulfill_bounty.js:105
+#: assets/v2/js/pages/fulfill_bounty.js:95
 msgid "Could not get bounty details."
 msgstr "奨励金の詳細を得ることができませんでした。"
 
-#: assets/v2/js/pages/fulfill_bounty.js:121
+#: assets/v2/js/pages/fulfill_bounty.js:111
 msgid "Fulfillment submitted to web3."
 msgstr "Web3にフルフィルメントを提出しました。"
 
-#: assets/v2/js/pages/fulfill_bounty.js:134
+#: assets/v2/js/pages/fulfill_bounty.js:124
 #: assets/v2/js/pages/kill_bounty.js:106
-#: assets/v2/js/pages/process_bounty.js:163
+#: assets/v2/js/pages/process_bounty.js:210
 msgid "There was an error"
 msgstr "エラーが発生しました"
 
-#: assets/v2/js/pages/increase_bounty.js:51
-#: assets/v2/js/pages/process_bounty.js:83
+#: assets/v2/js/pages/increase_bounty.js:56
+#: assets/v2/js/pages/process_bounty.js:130
 msgid "Please accept the terms of service."
 msgstr "利用規約に同意してください。"
 
-#: assets/v2/js/pages/increase_bounty.js:61
+#: assets/v2/js/pages/increase_bounty.js:60
+msgid "Invalid Amount."
+msgstr "無効な金額。"
+
+#: assets/v2/js/pages/increase_bounty.js:70
 msgid "Please enter a valid github issue URL."
 msgstr "有効なgithubの問題のURLを入力してください。"
 
-#: assets/v2/js/pages/increase_bounty.js:65
-#, fuzzy
-#| msgid "Please enter a fulfillment Id."
+#: assets/v2/js/pages/increase_bounty.js:74
 msgid "Please enter an amount."
 msgstr "金額を入力してください。"
 
-#: assets/v2/js/pages/increase_bounty.js:97
-#: assets/v2/js/pages/new_bounty.js:371 assets/v2/js/pages/new_bounty.js:397
+#: assets/v2/js/pages/increase_bounty.js:110
+#: assets/v2/js/pages/new_bounty.js:352 assets/v2/js/pages/new_bounty.js:378
 msgid "There was an error.  Please try again or contact support."
 msgstr "エラーが発生しました。再試行するかサポートにお問い合わせください。"
 
-
-#: assets/v2/js/pages/increase_bounty.js:109
-#: assets/v2/js/pages/new_bounty.js:352
+#: assets/v2/js/pages/increase_bounty.js:122
+#: assets/v2/js/pages/new_bounty.js:333
 msgid "Submission sent to web3."
 msgstr "Web3に送信が送信されました。"
 
-#: assets/v2/js/pages/increase_bounty.js:124
+#: assets/v2/js/pages/increase_bounty.js:137
 msgid "No active funded issue found at this address on "
 msgstr "この住所に積立金の問題は見つかりませんでした"
 
-#: assets/v2/js/pages/increase_bounty.js:127
-msgid ""
-"Only the address that submitted this funded issue may increase the payout."
-msgstr ""
-"この資金提供された問題を提出した住所だけが支払いを増やす可能性があります。"
-
-
 #: assets/v2/js/pages/kill_bounty.js:44
-#: assets/v2/js/pages/process_bounty.js:107
+#: assets/v2/js/pages/process_bounty.js:154
 msgid "Could not get bounty details"
 msgstr "奨励金の詳細を取得できませんでした"
 
 #: assets/v2/js/pages/kill_bounty.js:53
-#: assets/v2/js/pages/process_bounty.js:115
+#: assets/v2/js/pages/process_bounty.js:162
 msgid "No active bounty found for this Github URL on "
 msgstr "にこのGithub URLのアクティブな賞金が見つかりません"
 
@@ -548,115 +548,123 @@ msgstr "にこのGithub URLのアクティブな賞金が見つかりません"
 msgid ""
 "No active funded issue found at this address.  Are you sure this is an "
 "active funded issue?"
-msgstr ""
-"この住所に積立金の問題は見つかりませんでした。これは確かですか？"
-"積立資金の問題？"
+msgstr "この住所に積立金の問題は見つかりませんでした。これが積立資金の問題であると確信していますか？"
 
 #: assets/v2/js/pages/kill_bounty.js:74
 msgid "Only the address that submitted this funded issue may kill the bounty."
 msgstr "この資金提供された問題を提出した住所だけが賞金を殺す可能性があります。"
 
-
-
 #: assets/v2/js/pages/kill_bounty.js:93
-msgid "Kill bounty submitted to web3."
-msgstr "Web3に提出された賞金を殺す。"
+msgid "Cancel bounty submitted to web3."
+msgstr "Web3に提出された賞品をキャンセルします。"
 
-#: assets/v2/js/pages/onboard.js:40
+#: assets/v2/js/pages/new_bounty.js:442
+msgid "You do not have enough tokens to fund this bounty. You have "
+msgstr "あなたはこの恩恵のために十分なトークンを持っていません。あなたが持っている"
+
+#: assets/v2/js/pages/new_bounty.js:442
+msgid " but you need "
+msgstr "しかし、あなたが必要です"
+
+#: assets/v2/js/pages/onboard.js:32
 msgid "Done"
 msgstr "完了"
 
-#: assets/v2/js/pages/onboard.js:47
+#: assets/v2/js/pages/onboard.js:39
 msgid "Next"
 msgstr "次"
 
-#: assets/v2/js/pages/onboard.js:69
+#: assets/v2/js/pages/onboard.js:64
 msgid "Install Metamask"
 msgstr "Metamaskをインストールする"
 
-#: assets/v2/js/pages/onboard.js:81
+#: assets/v2/js/pages/onboard.js:76
 msgid "Unlock Metamask"
 msgstr "Metamaskのロック解除"
 
-#: assets/v2/js/pages/process_bounty.js:17
+#: assets/v2/js/pages/onboard.js:87
+msgid "Unlocked"
+msgstr "ロック解除された"
+
+#: assets/v2/js/pages/onboard.js:88 assets/v2/js/pages/onboard.js:89
+msgid "Ethereum Payout Address"
+msgstr "エチリアムペイアウト住所"
+
+#: assets/v2/js/pages/process_bounty.js:29
 msgid "Could not get fulfillment details"
 msgstr "フルフィルメントの詳細を取得できませんでした"
 
-#: assets/v2/js/pages/process_bounty.js:25
-#, fuzzy
-#| msgid "No bounty fulfillments found for this Github URL."
+#: assets/v2/js/pages/process_bounty.js:37
 msgid ""
-"No bounty fulfillments found for this Github URL.  Please use the multi-"
-"party payout tool instead."
-msgstr ""
-"このGithubのURLには、賞金の支払いはありません。多分、"
-"代わりにパーティーペイアウトツールを使用してください。"
+"No bounty fulfillments found for this Github URL.  Please use the advanced "
+"payout tool instead."
+msgstr "このGithubのURLには、賞金の支払いはありません。代わりに高度な支払いツールを使用してください。"
 
-#: assets/v2/js/pages/process_bounty.js:89
+#: assets/v2/js/pages/process_bounty.js:136
 msgid "Please enter a issue URL."
 msgstr "問題のURLを入力してください。"
 
-#: assets/v2/js/pages/process_bounty.js:93
+#: assets/v2/js/pages/process_bounty.js:140
 msgid "Please enter a fulfillment Id."
 msgstr "達成IDを入力してください。"
 
-#: assets/v2/js/pages/process_bounty.js:130
+#: assets/v2/js/pages/process_bounty.js:177
 msgid ""
 "No active funding found at this address.  Are you sure this is an active "
 "funded issue?"
-msgstr ""
-"この住所に積立金が見つかりませんでした。これがアクティブであると確信していますか？"
-"資金援助の問題？"
+msgstr "この住所に積立金が見つかりませんでした。これが積立資金の問題であると確信していますか？"
 
-#: assets/v2/js/pages/process_bounty.js:132
+#: assets/v2/js/pages/process_bounty.js:179
 msgid "No claimee found for this bounty."
 msgstr "この賞金のためにclaimeeは見つかりませんでした。"
 
-#: assets/v2/js/pages/process_bounty.js:134
+#: assets/v2/js/pages/process_bounty.js:181
 msgid "You can only process a funded issue if you submitted it initially."
 msgstr "資金提供済みの問題は、最初に提出した場合にのみ処理することができます。"
 
-
-#: assets/v2/js/pages/process_bounty.js:153
+#: assets/v2/js/pages/process_bounty.js:200
 msgid "Submitted transaction to web3."
 msgstr "web3に提出されたトランザクション。"
 
-#: assets/v2/js/shared.js:247
-msgid "Thanks for letting us know that you're ready to start work."
-msgstr "作業を開始する準備ができていることをお知らせいただきありがとうございます。"
-
-
-#: assets/v2/js/shared.js:250
-msgid "You've stopped working on this, thanks for letting us know."
-msgstr "あなたは私たちに知らせてくれてありがとう。"
-
-#: assets/v2/js/shared.js:575 assets/v2/js/shared.js:609
+#: assets/v2/js/shared.js:633 assets/v2/js/shared.js:667
 msgid "Web3 disabled. Please install "
 msgstr "Web3が無効になりました。インストールしてください"
 
-#: assets/v2/js/shared.js:577 assets/v2/js/shared.js:611
+#: assets/v2/js/shared.js:635 assets/v2/js/shared.js:669
 msgid "Metamask Not Enabled"
 msgstr "メタマスクが有効になっていない"
 
-#: assets/v2/js/shared.js:580 assets/v2/js/shared.js:614
+#: assets/v2/js/shared.js:638 assets/v2/js/shared.js:672
 msgid "Web3 locked. Please unlock "
 msgstr "Web3がロックされています。ロックを解除してください"
 
-#: assets/v2/js/shared.js:582 assets/v2/js/shared.js:616
+#: assets/v2/js/shared.js:640 assets/v2/js/shared.js:674
 msgid "Metamask Locked"
 msgstr "Metamask Locked"
 
-#: assets/v2/js/shared.js:585
+#: assets/v2/js/shared.js:643
 msgid "Connect to Mainnet via Metamask"
 msgstr "Metamask経由でMainnetに接続する"
 
-#: assets/v2/js/shared.js:586 assets/v2/js/shared.js:620
+#: assets/v2/js/shared.js:644 assets/v2/js/shared.js:678
 msgid "Unsupported Network"
 msgstr "サポートされていないネットワーク"
 
-#: assets/v2/js/shared.js:619
+#: assets/v2/js/shared.js:677
 msgid "Connect to Rinkeby / Custom RPC via Metamask"
 msgstr "Metamask経由でRinkeby / Custom RPCに接続する"
+
+#: assets/v2/js/shared.js:905
+msgid "To enable this token, go to the "
+msgstr "このトークンを有効にするには、"
+
+#: assets/v2/js/shared.js:907
+msgid "Token Settings page and enable it."
+msgstr "[トークンの設定]ページを開き、有効にします。"
+
+#: assets/v2/js/shared.js:909
+msgid "This is only needed once per token."
+msgstr "これはトークンごとに1回だけ必要です。"
 
 #: assets/v2/js/waiting_room_entertainment.js:4
 msgid ""
@@ -665,10 +673,7 @@ msgid ""
 " software in various areas and is already included in many commercial "
 "software products."
 msgstr ""
-"オープンソースソフトウェアは、ソフトウェア産業の関連部分となっており、"
-"多くのソフトウェアエコシステムそれは商業の代わりになっている"
-"さまざまな分野のソフトウェアであり、すでに多くの商用ソフトウェアに含まれています"
-"ソフトウェア製品。"
+"オープンソースソフトウェアは、ソフトウェア産業と多くのソフトウェアエコシステムの関連部分となっています。さまざまな分野で商用ソフトウェアの代替品となり、既に多くの商用ソフトウェア製品に組み込まれています。"
 
 #: assets/v2/js/waiting_room_entertainment.js:5
 msgid ""
@@ -677,10 +682,7 @@ msgid ""
 "catalyst for new software developments and the creation of new software "
 "companies."
 msgstr ""
-"OSSは、新しいソフトウェアの開発を支援することができます。"
-"既存のソフトウェアを使用してソフトウェア製品を作成します。したがって、"
-"新しいソフトウェア開発のための触媒と新しいソフトウェアの創造"
-"企業。"
+"OSSは、企業が既存のソフトウェアを使用してソフトウェア製品を作成できるため、新しいソフトウェアの開発をサポートすることができます。したがって、それは新しいソフトウェア開発のための触媒であり、新しいソフトウェア会社の創造である可能性があります。"
 
 #: assets/v2/js/waiting_room_entertainment.js:6
 msgid ""
@@ -689,11 +691,7 @@ msgid ""
 "replaces the standard middleware platform provided by a third party. It "
 "limits costs and, more importantly, dependency to some extent."
 msgstr ""
-"OSSは、価値創造の重要な要素と考えられます。"
-"他のソフトウェアであっても、定量化することは困難です。今日、OSSはしばしば"
-"サードパーティが提供する標準のミドルウェアプラットフォームを置き換えます。それ"
-"コストを制限し、さらに重要なことにはある程度依存します。"
-
+"OSSは、たとえ定量化が困難であっても、他のソフトウェアの価値創造において重要な要素とみなすことができます。現在、OSSは、第三者が提供する標準のミドルウェアプラットフォームを置き換えることがあります。それはコストと、より重要なことに、ある程度の依存関係を制限します。"
 
 #: assets/v2/js/waiting_room_entertainment.js:7
 msgid ""
@@ -703,11 +701,7 @@ msgid ""
 "can foster the development of new software products as well as the creation "
 "of new software vendors."
 msgstr ""
-"新製品を構築するソフトウェアベンダーは、再利用するとコストを削減できます"
-"ソフトウェアを開発する代わりに既存のオープンソースソフトウェアコンポーネント"
-"自分自身または購入ソフトウェアコンポーネント。その結果、オープンソースソフトウェア"
-"新しいソフトウェア製品の開発と創造を促進することができます"
-"新しいソフトウェアベンダーの"
+"新製品を構築するソフトウェアベンダーは、ソフトウェアを独自に開発するか、ソフトウェアコンポーネントを購入する代わりに、既存のオープンソースソフトウェアコンポーネントを再利用すれば、コストを削減できます。その結果、オープンソースソフトウェアは、新しいソフトウェア製品の開発と新しいソフトウェアベンダーの創造を促進することができます。"
 
 #: assets/v2/js/waiting_room_entertainment.js:8
 msgid ""
@@ -715,10 +709,7 @@ msgid ""
 "Instead of buying commercial software that may involve the risk of a vendor "
 "lock-in, they just have to share value with the OSS community."
 msgstr ""
-"OSSにより、企業はITをバリューチェーンに簡単に組み込むことができます。"
-"ベンダーのリスクを伴う商用ソフトウェアを購入する代わりに"
-"ロックインするには、OSSコミュニティと価値を共有するだけです。"
-
+"OSSにより、企業はITをバリューチェーンに簡単に組み込むことができます。ベンダーに依存するリスクを伴う商用ソフトウェアを購入する代わりに、OSSコミュニティと価値を共有するだけで済みます。"
 
 #: assets/v2/js/waiting_room_entertainment.js:9
 msgid ""
@@ -726,10 +717,7 @@ msgid ""
 "of software experts contributes time and effort for coding, reviewing and "
 "testing to publicly available source code."
 msgstr ""
-"オープンソースソフトウェア開発の基本原則は、コミュニティ"
-"のソフトウェア専門家が、コーディング、レビュー、および"
-"公開されているソースコードをテストします。"
-
+"オープンソースソフトウェア開発の基本原則は、ソフトウェア専門家のコミュニティが、公開されているソースコードのコーディング、レビュー、テストに時間と労力を費やすことです。"
 
 #: assets/v2/js/waiting_room_entertainment.js:10
 msgid ""
@@ -738,10 +726,8 @@ msgid ""
 "very important for the development of emerging technologies and that help "
 "lower the total cost of ownership."
 msgstr ""
-"オープンソースは、共同イノベーションにとって重要な成功要因となりうる"
-"参加者は優位に立つでしょう。 OSSは、"
-"新興技術の開発にとって非常に重要であり、それは"
-"所有権の総コストを削減します。"
+"オープンソースは、参加者の誰もが優位に立つことはないので、共同革新の成功の鍵となることができます。 "
+"OSSは、新興テクノロジーの開発にとって非常に重要であり、総所有コストを削減するのに役立つ標準を作成することができます。"
 
 #: assets/v2/js/waiting_room_entertainment.js:11
 msgid ""
@@ -751,12 +737,7 @@ msgid ""
 "modules: rather than developing from scratch, existing software must become "
 "more easily retrievable, interoperable and usable."
 msgstr ""
-"将来のソフトウェアは、コンポーネントから自由に開発することができなければなりません"
-"利用可能なソフトウェアとそのメンテナンスはワイド"
-"コミュニティ。これには、既存のソフトウェアの再利用と進化が含まれます。"
-"モジュール：最初から開発するのではなく、既存のソフトウェアが"
-"より容易に検索可能で、相互運用可能で、使用可能である。"
-
+"将来のソフトウェアは、コンポーネントと自由に利用可能なソフトウェアから容易に開発されなければならず、そのメンテナンスは幅広いコミュニティによってサポートされなければならない。これには、既存のソフトウェアとモジュールの再利用と進化が含まれます。既存のソフトウェアを最初から開発するのではなく、より簡単に検索、相互運用、使用可能にする必要があります。"
 
 #: assets/v2/js/waiting_room_entertainment.js:12
 msgid ""
@@ -765,10 +746,8 @@ msgid ""
 "develop software in a collaborative way. Many enabling technologies for SMAC"
 " have strong OSS roots."
 msgstr ""
-"OSSは、標準と相互運用性の堅固な推進者でもあります。この開放性"
-"ベンダーがロックインするリスクを低減します。 OSSは、"
-"共同でソフトウェアを開発するSMACの多くの有効化技術"
-"強いOSSのルーツを持つ"
+"OSSは、標準と相互運用性の堅固な推進者でもあります。この開放性は、ベンダーのロックインのリスクを低下させます。 "
+"OSSは、協調的な方法でソフトウェアを開発するコミュニティに基づいています。 SMACの多くの実現可能な技術は、強力なOSSのルーツを持っています。"
 
 #: assets/v2/js/waiting_room_entertainment.js:13
 msgid ""
@@ -778,11 +757,7 @@ msgid ""
 "or professional editions that are based on the open source software. "
 "Examples are the providers of the Linux distributions RedHat and Suse."
 msgstr ""
-"いくつかの商用ベンダーは、オープンソースソフトウェアを提供して、"
-"大規模なユーザーコミュニティ。彼らは、サポートへの購読から収入を得る"
-"および更新および/またはプロフェッショナルサービスの提供、および拡張機能の販売"
-"またはオープンソースソフトウェアに基づいたプロフェッショナルエディションです。"
-"例として、LinuxディストリビューションRedHatとSuseのプロバイダがあります。"
+"いくつかの商用ベンダーは、大規模なユーザーコミュニティを作成するためにオープンソースソフトウェアを提供しています。サポート、アップデート、プロフェッショナルサービス、オープンソースソフトウェアに基づいた拡張機能やプロフェッショナル版の販売から収入を得ています。例として、LinuxディストリビューションRedHatとSuseのプロバイダがあります。"
 
 #: assets/v2/js/waiting_room_entertainment.js:14
 msgid ""
@@ -790,9 +765,7 @@ msgid ""
 "technology a part of their business by integrating it into their own "
 "products and by providing professional services for open source software."
 msgstr ""
-"IBMやHPなどの主要な商用ソフトウェアベンダーがオープンソースを作った"
-"技術を自社のビジネスに統合することでビジネスの一部"
-"オープンソースソフトウェアに専門的なサービスを提供することによって、"
+"IBMやHPなどの主要な商用ソフトウェアベンダーは、自社製品に統合し、オープンソースソフトウェアの専門サービスを提供することで、オープンソース技術をビジネスの一部にしています。"
 
 #: assets/v2/js/waiting_room_entertainment.js:15
 msgid ""
@@ -803,12 +776,7 @@ msgid ""
 "hand, open source software that is free of charge can be an alternative to "
 "commercial application software."
 msgstr ""
-"多くのビジネスアプリケーションにはすでにオープンソースソフトウェアが含まれており、これは"
-"増加するだろう。一部のベンダーは自社製品の一部をオープンに寄付することがあります"
-"より大きなユーザーコミュニティを作り出す"
-"商用アドオンやサービスのバイヤーになる可能性があります。もう一方の"
-"無料のオープンソースのオープンソースソフトウェアは、"
-"商用アプリケーションソフトウェア。"
+"多くのビジネスアプリケーションにはすでにオープンソースソフトウェアが含まれており、これは増加するでしょう。一部のベンダーは、商用のアドオンやサービスのバイヤーになる可能性のあるより大きなユーザーコミュニティを作成するために、自社製品の一部をオープンソース基盤に寄付することがあります。一方、無償のオープンソースソフトウェアは、商用アプリケーションソフトウェアの代替品になる可能性があります。"
 
 #: assets/v2/js/waiting_room_entertainment.js:16
 msgid ""
@@ -819,13 +787,8 @@ msgid ""
 "benefits of open source are reduced project failure and lower cost of code "
 "maintenance."
 msgstr ""
-"Carlo Daffaraによると、IT経済学の分野の研究者"
-"オープンに関わるいくつかの欧州委員会の研究プロジェクトに貢献した"
-"ヨーロッパ経済は、年間約1140億ユーロを節約する"
-"オープンソースのソフトウェアソリューションです。直接経費削減以外に、"
-"オープンソースの利点は、プロジェクトの失敗を減らし、コードのコストを削減することです"
-"メンテナンス。"
-
+"オープンソースを含むいくつかの欧州委員会の調査プロジェクトに貢献したIT経済学者のCarlo "
+"Daffara氏によると、欧州経済はオープンソースのソフトウェアソリューションを利用することで、年間約1140億ユーロの節約となる。直接的なコスト節約は別として、オープンソースのその他の利点は、プロジェクトの失敗を減らし、コード保守コストを削減することです。"
 
 #: assets/v2/js/waiting_room_entertainment.js:17
 msgid ""
@@ -833,9 +796,8 @@ msgid ""
 "estimates that about 35 per cent of the software  used in the past five "
 "years was directly or indirectly derived from open source."
 msgstr ""
-"いくつかの情報源を引用すると、[Carlo Daffara、IT経済学研究者]"
-"過去5年間に使用されたソフトウェアの約35％"
-"オープンソースから直接的または間接的に派生したものです。"
+"いくつかの情報源を引用すると、[Carlo Daffara、IT "
+"Economicsの研究者]は、過去5年間に使用されたソフトウェアの約35％が直接的または間接的にオープンソースから得られたと推定しています。"
 
 #: assets/v2/js/waiting_room_entertainment.js:18
 msgid ""
@@ -844,10 +806,7 @@ msgid ""
 " autonomous driving technology, as this is highly confidential and highly "
 "relevant for its competitiveness."
 msgstr ""
-"企業はあまり重要ではない活動をアウトソーシングします。例えば、自動車"
-"製造業者は自社のソフトウェア開発を外注することはほとんどありません"
-"これは機密性が高く高度に自律的な運転技術です"
-"その競争力に関連しています。"
+"企業はあまり重要ではない活動をアウトソーシングします。例えば、自動車メーカーは自社の技術を自社のソフトウェア開発に委託することはほとんどありません。これは機密性が高く、競争力の高い関連性があるからです。"
 
 #: assets/v2/js/waiting_room_entertainment.js:19
 msgid ""
@@ -856,20 +815,15 @@ msgid ""
 "outsourcing in the area of in-house software development are testing and "
 "maintenance."
 msgstr ""
-"アウトソーシングは社内ソフトウェア開発の代替品となる可能性があります"
-"より多くの企業がこれを利用しています。 ...潜在的な2つの領域"
-"社内ソフトウェア開発の分野におけるアウトソーシングは、"
-"メンテナンス。"
+"アウトソーシングは、社内ソフトウェア開発の代替品となり、ますます多くの企業がこれを活用しています。 "
+"...社内ソフトウェア開発の分野で潜在的なアウトソーシングの2つの領域は、テストとメンテナンスです。"
 
 #: assets/v2/js/waiting_room_entertainment.js:20
 msgid ""
 "As demand for individual software development increases, companies evaluate "
 "ways to outsource such activities due to internal skill shortages and cost "
 "considerations."
-msgstr ""
-"個々のソフトウェア開発の需要が増加するにつれて、企業は"
-"社内のスキル不足やコストのためにそのような活動を外部委託する方法"
-"考察。"
+msgstr "個々のソフトウェア開発の需要が高まるにつれて、企業は社内のスキル不足やコストの問題から、こうした活動を外部委託する方法を評価しています。"
 
 #: assets/v2/js/waiting_room_entertainment.js:22
 msgid ""
@@ -878,10 +832,8 @@ msgid ""
 " and deliver elements of response as to whether the time for a new "
 "entrepreneurial age has come."
 msgstr ""
-"Victor Hugoはかつて言った：「あなたは侵略軍に抵抗することができます。それはいけません"
-"時が来たアイデアに抵抗する。ドラッカーフォーラムは質問をします"
-"応答の要素を提供して、新しい"
-"起業家の時代が来た。"
+"Victor "
+"Hugoはかつて言った：「あなたは侵略軍に抵抗することができます。あなたは時間が来たアイデアに抵抗することはできません。ドラッカーフォーラムは質問をし、新しい起業家時代の時が来たかどうかについての回答要素を提供します。"
 
 #: assets/v2/js/waiting_room_entertainment.js:23
 msgid ""
@@ -891,11 +843,7 @@ msgid ""
 "creation and sharing and by enabling new forms of continuous learning, all "
 "on a global canvas."
 msgstr ""
-"デジタル技術はこの変革において加速している"
-"エントリへの障壁を劇的に下げることによって[起業家社会へ]"
-"知識を管理するための新しいツールを提供することによって"
-"創造と共有、そして新しい形の継続学習を可能にすることによって、すべて"
-"グローバルキャンバスに"
+"デジタル技術は、多くの業界の参入障壁を劇的に下げ、知識創造と共有を管理するための新しいツールを提供し、グローバルなキャンバス上で新しい形の連続学習を可能にすることで、この起業家社会への変革に加速しています。"
 
 #: assets/v2/js/waiting_room_entertainment.js:24
 msgid ""
@@ -905,12 +853,7 @@ msgid ""
 "that was once regarded as peripheral, perhaps even a bit suspect, has become"
 " cool, celebrated by politicians and embraced by the new generations."
 msgstr ""
-"起業家社会への旅は決して"
-"明確な目的地への直線的な進路、幅広い文化的な文化"
-"変化が起業家精神を主流にもたらしました。アクティビティ"
-"以前は周辺機器と見なされていたかもしれません。"
-"涼しく、政治家によって祝われ、新しい世代に受け入れられます。"
-
+"起業家社会への旅は決して明確な目的地への直線的進歩ではありませんが、幅広い文化の変化が起業家精神を主流にもたらしました。以前は周りの人と見なされていたアクティビティは、おそらく少し疑わしいものでもあり、涼しくなり、政治家によって祝われ、新しい世代に受け入れられました。"
 
 #: assets/v2/js/waiting_room_entertainment.js:25
 msgid ""
@@ -919,20 +862,13 @@ msgid ""
 " proliferation of free agents in the form of contractors, freelancers and "
 "self-employed workers on on-demand platforms, for example."
 msgstr ""
-"彼は起業家文化の出現はより幅広い"
-"私たちの社会の経済的構造の変容"
-"契約者、フリーランサーおよび"
-"たとえば、オンデマンドプラットフォームの自営業者。"
-
+"起業家文化の出現は、フリー・エージェントの急速な普及を契機として、オンデマンド・プラットフォームで請負業者、フリーランスマン、自営業者の形で急速に拡大していく中で、例。"
 
 #: assets/v2/js/waiting_room_entertainment.js:26
 msgid ""
 "[I]n a world of rapid change frequent job and career moves, switches between"
 " employed and independent roles become the rule rather than the exception."
-msgstr ""
-"[私は]急速な変化の世界、頻繁な仕事とキャリアの動き、"
-"雇用され、独立した役割が例外ではなくルールになる。"
-
+msgstr "急速に変化する仕事やキャリアの動きの世界では、雇用と独立の役割の切り替えが例外ではなくルールになります。"
 
 #: assets/v2/js/waiting_room_entertainment.js:27
 msgid ""
@@ -941,33 +877,4 @@ msgid ""
 " entrepreneurial society] i.e. a new mindset of ownership, responsibility "
 "and autonomy."
 msgstr ""
-"大規模な組織内では、クリエイティブを解放し、"
-"労働者の革新的な可能性は、["
-"起業家社会]、すなわちオーナーシップと責任という新しい考え方"
-"自律性。"
-
-#~ msgid "Accept Submission"
-#~ msgstr "提出を承諾する"
-
-#, fuzzy
-#~ msgid "Please enter a valid checksum address."
-#~ msgstr "有効なチェックサムアドレスを入力してください。"
-
-#~ msgid "Not a valid forwarding address"
-#~ msgstr "有効な転送先アドレスではありません"
-
-#~ msgid "Please enter your Twitter username"
-#~ msgstr "あなたのTwitterユーザー名を入力してください"
-
-#~ msgid "batch mode enabled"
-#~ msgstr "バッチモードが有効"
-
-#~ msgid "Invalid addresses generated. Please try again from the first page."
-#~ msgstr "無効なアドレスが生成されました。最初のページからもう一度お試しください。"
-
-
-#~ msgid "You can only send a maximum of "
-#~ msgstr "あなたは最大の"
-
-#~ msgid "You can only send a minimum of "
-#~ msgstr "あなたは最低でも"
+"大企業では、起業家社会の創造的で革新的な可能性を、起業家社会と同じ方向、つまりオーナーシップ、責任、自立という新しい考え方で解放することに新たな焦点を当てています。"

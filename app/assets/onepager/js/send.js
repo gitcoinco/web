@@ -54,6 +54,17 @@ var wait_for_metadata = function(callback) {
 };
 
 $(document).ready(function() {
+
+  // upon keypress for the select2, gotta make sure it opens
+  setTimeout(function() {
+    $('.select2').keypress(function() {
+      $(this).siblings('select').select2('open');
+    });
+  }, 100);
+
+  if (typeof userSearch != 'undefined') {
+    userSearch('.username-search', true);
+  }
   set_metadata();
   // jquery bindings
   $('#advanced_toggle').click(function() {

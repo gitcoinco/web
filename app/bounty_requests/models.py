@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from __future__ import unicode_literals
 
+from django.core.validators import MinValueValidator
 from django.db import models
 
 from economy.models import SuperModel
@@ -56,10 +57,17 @@ class BountyRequest(SuperModel):
     eth_address = models.CharField(max_length=50, blank=True)
     comment = models.TextField(max_length=500, default='')
     comment_admin = models.TextField(max_length=500, blank=True)
-    amount = models.FloatField(default=0.0)
+    amount = models.FloatField(blank=False, validators=[MinValueValidator(1.0)])
 
     objects = BountyQuerySet.as_manager()
 
     def __str__(self):
         """Return the string representation of BountyRequest."""
-        return f"{self.requested_by.username} / {self.created_on}"
+        return f"{self.requested_by.username if self.requested_by else 'anonymous'} / {self.created_on}"
+
+
+class BountyRequestMeta(SuperModel):
+    """A helper storage class for BountyRequest to keep track of dispatched emails."""
+
+    profile = models.ForeignKey('dashboard.Profile', on_delete=models.CASCADE)
+    last_feedback_sent = models.DateTimeField()

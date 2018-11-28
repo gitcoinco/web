@@ -21,12 +21,15 @@
 <head>
   {% include 'shared/head.html' %}
   {% include 'shared/cards.html' %}
+  <meta name="title" content="Create Funded Issue / Bounty | Gitcoin">
+  <meta name="description" content="Instructions for creating an issue and posting a bounty to Gitcoin so developers across the world can discover your bounty and start working on your issue.">
   <link rel="stylesheet" href={% static "v2/css/submit_bounty.css" %}>
 </head>
 
-<body class="interior {{active}}" style="background-color: #FFFFFF;">
+<body class="interior {{active}} g-font-muli" style="background-color: #FFFFFF;">
   {% include 'shared/tag_manager_2.html' %}
   <div class="container-fluid header dash">
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
     {% include 'shared/nav.html' %}
   </div>
   <div class="container-fluid submit_bounty_content">
@@ -36,6 +39,7 @@
         {% include 'shared/no_metamask_error.html' %}
         {% include 'shared/zero_balance_error.html' %}
         {% include 'shared/unlock_metamask.html' %}
+        {% include 'shared/connect_metamask.html' %}
       </div>
     </div>
     <div class="row">
@@ -63,7 +67,7 @@
                   </div>
                   <div id="issue-details" class="mt-4">
                     <label class="form__label mb-0 mt-3" for="title">{% trans "Issue Title" %}</label>
-                    <input name='title' id="title"  class="form__input pb-3 pt-0 hidden" type="text" value="{{ issue_title }}" readonly/>
+                    <input name='title' id="title"  class="form__input pb-3 pt-0 hidden" type="text" value="{{ issue_title }}" readonly required/>
                     <p id="title--text"></p>
                     <label class="form__label" for="description">{% trans "Description" %}</label>
                     <textarea name="description" class="form__input" id="description" readonly></textarea>
@@ -100,12 +104,15 @@
                   <h5 class="font-subheader">{% trans "Contact" %}</h5>
                   {% include 'shared/github_username.html' %}
                   {% include 'shared/notification_email.html' with show_information_publicly_checkbox=1 %}
-                  {% include 'shared/name.html' %}
                   <div id="advanced_container"></div>
                   <hr class="mt-4">
                 </div>
                 {% include 'shared/pricing.html' %}
                 <div class="w-100 mt-2">
+                  <label class="form__label" for="fundingOrganisation">{% trans "Funding organisation" %}</label>
+                  <input name='fundingOrganisation' id="fundingOrganisation" class="form__input" type="text" placeholder="Ethereum Community Foundation"/>
+                  <hr class="mt-4">
+
                   <label class="form__label" for="hiringRightNow">{% trans "Hiring right now?" %}</label>
                   <div class="hiring_container">
                     <div class="form__checkbox">
@@ -160,6 +167,8 @@
   {% include 'shared/messages.html' %}
 </body>
 
+{% include 'shared/current_profile.html' %}
+
 <!-- jQuery -->
 <script src="{% static "v2/js/ipfs-api.js" %}"></script>
 <script src="{% static "v2/js/ipfs.js" %}"></script>
@@ -167,7 +176,6 @@
 <script src="{% static "v2/js/abi.js" %}"></script>
 <script src="/dynamic/js/tokens_dynamic.js"></script>
 <script src="{% static "v2/js/tokens.js" %}"></script>
-<script src="{% static "v2/js/shared.js" %}"></script>
 <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
 <script src="{% static "v2/js/pages/new_bounty.js" %}"></script>
 

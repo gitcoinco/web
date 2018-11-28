@@ -29,6 +29,7 @@
   }
 
   h4 {
+    padding-top: 10px;
     color: #9B9B9B;
   }
 
@@ -42,7 +43,8 @@
   }
 
   .total-transaction {
-    background-color: #D6FBEB;
+    border-right: 5px solid #D6FBEB;
+    padding-right: 5px;
     color: #00A55E;
     display: flex;
     justify-content: center;
@@ -61,8 +63,8 @@
   .stat-img {
     text-align: center;
     border-width: 1px;
-    border-radius: 50%;
     width: 7em;
+    vertical-align: middle;
   }
 
   .stat-img > .content {
@@ -76,7 +78,6 @@
     text-align: left;
     align-items: center;
     display: flex;
-    justify-content: left;
   }
 
   .stat-contents > p {
@@ -138,10 +139,10 @@
   }
 
   .full-bordered-circle {
-    border-radius: 100%;
-    border-style: solid;
-    border-width: 5px;
-    border-color: #3E00FF;
+    border-bottom: 5px solid #3E00FF;
+  }
+  .full-bordered-circle .content {
+    margin: 0px auto;
   }
 
   .user-skill-1, .user-skill-5, .user-skill-9 {
@@ -171,9 +172,7 @@
   }
 
   #stat-container {
-    margin-left: 20%;
-    margin-right: 20%;
-    padding: 5em;
+    padding: 1em 5em;
   }
 
   .bounty-completion-circle {
@@ -196,12 +195,13 @@
   }
 </style>
 <div id="stat-container">
-    <h1>{% trans "GITCOIN QUARTERLY" %}</h1>
+    <h1>{% trans "Gitcoin Quarterly Stats for" %} @{{profile.handle}}</h1>
 
     {% if user_active_in_last_quarter %}
+    
     	{% if user_fulfilled_bounties %}
 	<h2>{% trans "You've Been BUIDLing" %}</h2>
-	<h4>{% trans "An overview of your stats from the last 3 months." %}</h4>
+	<h4>{% trans "An overview of your BUIDL-stats from the last 3 months." %}</h4>
         <div class="centered-contents stat-box row">
             <div class="stat-img total-transaction col-sm-12">
 		    <p class="content">
@@ -210,11 +210,9 @@
             </div>
             <div class="stat-contents col-sm-12">
 		    <p>
-		    {% blocktrans with total_earned_eth=user_total_earned_eth|intcomma total_earned_usd=user_total_earned_usd|intcomma avg_eth_earned_per_bounty=user_avg_eth_earned_per_bounty|intcomma avg_usd_earned_per_bounty=user_avg_usd_earned_per_bounty|intcomma count fulfilled_bounties_count=user_fulfilled_bounties_count %}
-		    You earned {{ total_earned_eth }} ETH ({{ total_earned_usd }} USD) from {{ fulfilled_bounties_count|intcomma }} completed bounty, for an average of {{ avg_eth_earned_per_bounty }} ETH ({{ avg_usd_earned_per_bounty }} USD) per bounty!
-		    {% plural %}
-		    You earned {{ total_earned_eth }} ETH ({{ total_earned_usd }} USD) from {{ fulfilled_bounties_count|intcomma }} completed bounties, for an average of {{ avg_eth_earned_per_bounty }} ETH ({{ avg_usd_earned_per_bounty }} USD) per bounty!
-		    {% endblocktrans %}
+
+        You earned {{ user_total_earned_eth|intcomma }} ETH ({{ user_total_earned_usd|intcomma  }} USD) from {{ user_fulfilled_bounties_count|intcomma }} completed bounties, for an average of {{ user_avg_eth_earned_per_bounty|intcomma }} ETH ({{ user_avg_usd_earned_per_bounty|intcomma }} USD) per bounty!
+
 		    </p>
             </div>
         </div>
@@ -230,7 +228,7 @@
 		    <p>{% blocktrans with bounty_completion_percentage=user_bounty_completion_percentage count num_completed_bounties=user_num_completed_bounties %}
 			You completed {{ bounty_completion_percentage }}% of the {{ num_completed_bounties|intcomma }} bounties that you started - thanks for showing such diligence.
 			{% plural %}
-			You completed {{ bounty_completion_percentage }}% of the {{ num_completed_bounties|intcomma }} bounty that you started - thanks for showing such diligence.
+			You completed {{ bounty_completion_percentage }}% of the {{ num_completed_bounties|intcomma }} bounties that you started - thanks for showing such diligence.
 			{% endblocktrans %}
 		    </p>
             </div>
@@ -249,7 +247,7 @@
 		    <p>{% blocktrans count no_of_languages=user_no_of_languages %}
 		          You've boosted your skills in {{ no_of_languages }} different areas:
 			  {% plural %}
-			  You've boosted your skills in {{ no_of_languages }} different area:
+			  You've boosted your skills on bounties tagged with {{ no_of_languages }} different tags:
 		       {% endblocktrans %}
                     {% for language in user_languages %}
 		        {% if not forloop.first %}{% trans ", " %}{% endif %}
@@ -261,27 +259,26 @@
         </div>
 
         <div class="button-action">
-            <a class="button" href="{% url 'dashboard' %}">{% trans "Share my stats" %}</a>
+            <a class="button" href="{{profile.url}}">{% trans "View Your Profile" %}</a>
         </div>
         {% endif %}
 
     	{% if user_funded_bounties_count %}
-	<h2>{% trans "You've Been Making Money Moves" %}</h2>
+	<h2>{% trans "You've Been Funding Open Source" %}</h2>
 	<h4>{% trans "An overview of your OSS project's stats from the last 3 months." %}</h4>
+
+        {% if user_funded_fulfilled_percentage > 60 %}
         <div class="centered-contents stat-box row">
             <div class="stat-img full-bordered-circle percent-content col-sm-12">
 		    <p class="content">{{ user_funded_fulfilled_percentage }} {% trans "%" %}</p>
             </div>
             <div class="stat-contents col-sm-12">
-		    <p>
-		        {% blocktrans with num_funded_fulfilled_bounties=user_num_funded_fulfilled_bounties|intcomma funded_fulfilled_percentage=user_funded_fulfilled_percentage count funded_bounties_count=user_funded_bounties_count %}
-			Of the {{ funded_bounties_count }} issue that you funded a bounty for, {{ num_funded_fulfilled_bounties|intcomma }} were fulfilled -- that's a {{ funded_fulfilled_percentage }}% success rate!
-			{% plural %}
-			Of the {{ funded_bounties_count }} issues that you funded a bounty for, {{ num_funded_fulfilled_bounties|intcomma }} were fulfilled -- that's a {{ funded_fulfilled_percentage }}% success rate!
-			{% endblocktrans %}
+		    <p> 
+			Of the {{ user_funded_bounties_count }} issues that you funded a bounty for, {{ user_num_funded_fulfilled_bounties|intcomma }} were fulfilled -- that's a {{ user_funded_fulfilled_percentage }}% success rate!
 		    </p>
             </div>
         </div>
+        {% endif %}
         <div class="centered-contents stat-box row">
 	   <div class="stat-img total-transaction">
 		   <p class="content">
@@ -299,10 +296,12 @@
 			     {% plural %}
 			     The following {{ funded_bounty_developers }} developers have made contributions to your OSS projects this quarter:
 			 {% endblocktrans %}
-               {% for developer in user_funded_bounty_developers %}
-	           {% if not forloop.first %}{% trans "," %} {% endif %}
-	           {% if forloop.counter == user_num_funded_bounty_developers %} &amp; {% endif %}
-		   <a href="https://github.com/{{ developer }}">@{{ developer }}</a>
+         {% for developer in user_funded_bounty_developers %}
+         {% if developer %}
+           {% if not forloop.first %}{% trans "," %} {% endif %}
+           {% if forloop.counter == user_num_funded_bounty_developers %} &amp; {% endif %}
+    		   <a href="https://gitcoin.co/profile/{{ developer }}">@{{ developer }}</a>
+       {% endif %}
 	       {% endfor %}</p>
 	    </div>
         </div>
@@ -324,7 +323,7 @@
             </div>
             <div class="stat-contents">
 		    <p>
-		    {% blocktrans with avg_hours_per_funded_bounty=usr_avg_hours_per_funded_bounty total_funded_usd=user_total_funded_usd|intcomma avg_hourly_rate_per_funded_bounty=user_avg_hourly_rate_per_funded_bounty %}
+		    {% blocktrans with avg_hours_per_funded_bounty=user_avg_hours_per_funded_bounty total_funded_usd=user_total_funded_usd|intcomma avg_hourly_rate_per_funded_bounty=user_avg_hourly_rate_per_funded_bounty %}
 		    Developers worked an average of {{ avg_hours_per_funded_bounty }} hours per issue on your projects (only applies to bounties where users entered their hours). You funded a total of ${{ total_funded_usd }} USD of work at an average rate of ${{ avg_hourly_rate_per_funded_bounty }} USD / hour.
 		    {% endblocktrans %}
 		    </p>
@@ -333,7 +332,7 @@
         {% endif %}
 
         <div class="button-action">
-            <a class="button" href="{% url 'dashboard' %}">{% trans "Share my stats" %}</a>
+            <a class="button" href="{{profile.url}}">{% trans "View Your Profile" %}</a>
         </div>
     {% endif %}
 {% endif %}
@@ -359,7 +358,7 @@
             <p class="content">{{ bounties_completion_percent }} %</p>
         </div>
         <div class="stat-contents">
-            <p>Over the past 3 months, {{ bounties_completion_percent }}% of the {{ total_funded_bounties }} funded bounties on the Gitcoin network were completed.</p>
+            <p>Over the past 3 months, {{ bounties_completion_percent }}% of the {{ total_funded_bounties }} started bounties on the Gitcoin network were completed.</p>
         </div>
     </div>
     <div class="centered-contents stat-box">
@@ -368,7 +367,7 @@
             <p class="content bounty-fund-img">{{ completed_bounties_fund | intcomma }} USD</p>
         </div>
         <div class="stat-contents">
-            <p>A total of {{ num_completed_bounties | intcomma }} bounties were funded an average of ${{ avg_fund_per_bounty }} per bounty, for a total of ${{ completed_bounties_fund | intcomma }} USD.</p>
+            <p>A total of {{ num_completed_bounties | intcomma }} bounties were funded for an average of ${{ avg_fund_per_bounty }} per bounty, for a total of ${{ completed_bounties_fund | intcomma }} USD.</p>
         </div>
     </div>
     <div class="centered-contents stat-box">
@@ -379,15 +378,15 @@
         </div>
         <div class="stat-contents">
             <p>The top {{ hunters | length }} hunters in this quarter were
-            {% for hunter in hunters %}{% if forloop.counter == no_of_hunters %} &amp; {% elif forloop.first %}{% else %}, {% endif %}<a href="https://github.com/{{ hunter }}">@{{ hunter }}</a>{% endfor %}</p>
+            {% for hunter in hunters %}{% if forloop.counter == no_of_hunters %} &amp; {% elif forloop.first %}{% else %}, {% endif %}<a href="https://gitcoin.co/profile/{{ hunter }}">@{{ hunter }}</a>{% endfor %}</p>
         </div>
     </div>
     <div class="centered-contents stat-box">
         <div class="stat-img total-transaction">
-            <p class="content">{{ total_transaction_in_usd }} USD</p>
+            <p class="content">{{ total_transaction_in_usd |intcomma }} USD</p>
         </div>
         <div class="stat-contents">
-            <p>A total value of ${{ total_transaction_in_usd | intcomma }} USD was transacted on the Gitcoin network &amp; {{total_transaction_in_eth|intcomma}} ETH.</p>
+            <p>A total value of ${{ total_transaction_in_usd | intcomma }} USD was transacted on the Gitcoin network; about {{total_transaction_in_eth|intcomma}} ETH.</p>
         </div>
     </div>
     {% if largest_bounty_value %}
@@ -406,7 +405,7 @@
         </div>
     {% endif %}
     <div class="button-action">
-        <a class="button" href="{% url 'dashboard' %}">{% trans "Explore New Bounties" %}</a>
+        <a class="button" href="{% url 'results' %}">{% trans "View Gitcoin's Results" %}</a>
     </div>
     <hr>
 </div>

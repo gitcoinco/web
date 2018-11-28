@@ -17,13 +17,13 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-
 from datetime import datetime
 
 import django_filters.rest_framework
 from rest_framework import routers, serializers, viewsets
+from retail.helpers import get_ip
 
-from .models import Activity, Bounty, BountyFulfillment, Interest, ProfileSerializer
+from .models import Activity, Bounty, BountyFulfillment, Interest, ProfileSerializer, SearchHistory
 
 
 class BountyFulfillmentSerializer(serializers.ModelSerializer):
@@ -97,7 +97,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
             'github_org_name', 'github_repo_name', 'idx_status', 'token_value_time_peg', 'fulfillment_accepted_on',
             'fulfillment_submitted_on', 'fulfillment_started_on', 'canceled_on', 'action_urls', 'project_type',
             'permission_type', 'attached_job_description', 'needs_review', 'github_issue_state', 'is_issue_closed',
-            'additional_funding_summary', 'paid',
+            'additional_funding_summary', 'funding_organisation', 'paid', 'admin_override_suspend_auto_approval',
         )
 
     def create(self, validated_data):
@@ -119,9 +119,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
 
 class BountyViewSet(viewsets.ModelViewSet):
     """Handle the Bounty view behavior."""
-
-    queryset = Bounty.objects.prefetch_related(
-        'fulfillments', 'interested', 'interested__profile', 'activities') \
+    queryset = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile', 'activities') \
         .all().order_by('-web3_created')
     serializer_class = BountySerializer
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
@@ -150,13 +148,13 @@ class BountyViewSet(viewsets.ModelViewSet):
                 request_key = key if key != 'bounty_owner_address' else 'coinbase'
                 val = self.request.query_params.get(request_key, '')
 
-                vals = val.strip().split(',')
-                vals = [val for val in vals if val and val.strip()]
-                if len(vals):
+                values = val.strip().split(',')
+                values = [value for value in values if value and val.strip()]
+                if values:
                     _queryset = queryset.none()
-                    for val in vals:
+                    for value in values:
                         args = {}
-                        args['{}__icontains'.format(key)] = val.strip()
+                        args[f'{key}__icontains'] = value.strip()
                         _queryset = _queryset | queryset.filter(**args)
                     queryset = _queryset
 
@@ -188,7 +186,7 @@ class BountyViewSet(viewsets.ModelViewSet):
 
         # filter by is open or not
         if 'is_open' in param_keys:
-            queryset = queryset.filter(is_open=self.request.query_params.get('is_open') == 'True')
+            queryset = queryset.filter(is_open=self.request.query_params.get('is_open').lower() == 'true')
             queryset = queryset.filter(expires_date__gt=datetime.now())
 
         # filter by urls
@@ -196,11 +194,17 @@ class BountyViewSet(viewsets.ModelViewSet):
             urls = self.request.query_params.get('github_url').split(',')
             queryset = queryset.filter(github_url__in=urls)
 
-        # filter by urls
+        # filter by orgs
         if 'org' in param_keys:
-            org = self.request.query_params.get('org')
-            url = f"https://github.com/{org}"
-            queryset = queryset.filter(github_url__contains=url)
+            val = self.request.query_params.get('org', '')
+            values = val.strip().split(',')
+            values = [value for value in values if value and val.strip()]
+            if values:
+                _queryset = queryset.none()
+                for value in values:
+                    org = value.strip()
+                    _queryset = _queryset | queryset.filter(github_url__icontains=f'https://github.com/{org}')
+                queryset = _queryset
 
         # Retrieve all fullfilled bounties by fulfiller_username
         if 'fulfiller_github_username' in param_keys:
@@ -263,6 +267,16 @@ class BountyViewSet(viewsets.ModelViewSet):
             start = int(offset)
             end = start + int(limit)
             queryset = queryset[start:end]
+
+        # save search history
+        if self.request.user and self.request.user.is_authenticated:
+            SearchHistory.objects.update_or_create(
+                user=self.request.user,
+                defaults={
+                    'data': dict(self.request.query_params),
+                    'ip_address': get_ip(self.request)
+                }
+            )
 
         return queryset
 

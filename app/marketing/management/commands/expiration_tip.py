@@ -29,7 +29,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         days = [1, 2]
         for day in days:
-            tips = Tip.objects.filter(
+            tips = Tip.objects.send_success().filter(
                 expires_date__lt=(timezone.now() + timezone.timedelta(days=(day+1))),
                 expires_date__gte=(timezone.now() + timezone.timedelta(days=day)),
                 receive_txid='',

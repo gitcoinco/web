@@ -38,7 +38,7 @@ push: ## Push the Docker image to the Docker Hub repository.
 	@docker push "${REPO_NAME}"
 
 collect-static: ## Collect newly added static resources from the assets directory.
-	@docker-compose exec -i web bash -c "cd /code/app && python3 manage.py collectstatic -i other"
+	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web bash -c "cd /code/app && python3 manage.py collectstatic -i other --no-input"
 
 compress-images: ## Compress and optimize images throughout the repository. Requires optipng, svgo, and jpeg-recompress.
 	@./scripts/compress_images.bash

@@ -1,0 +1,137 @@
+{% load kudos_extras %}
+{% load i18n static %}
+<style>
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1025;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+    max-width: 100%;
+    overflow-y: auto;
+  }
+
+  .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: none;
+    border-radius: 0;
+    width: 60%;
+  }
+
+  .fa-times:hover,
+  .fa-times:focus {
+    cursor: pointer;
+  }
+
+  .modal #kudos-image {
+    max-width: 12rem;
+  }
+
+  .tooltip-share {
+    z-index: 1036;
+  }
+
+  #share-modal button i {
+    font-style: normal;
+    color: #fff;
+  }
+
+  #shareLink {
+    background-color: #fff;
+    border: 1px solid #979797;
+    min-width: 18rem;
+    width: auto;
+  }
+
+  .tooltip-share .tooltip-inner {
+    padding: 5px;
+    width: 150px;
+  }
+
+  .tooltip-inner .title-tooltip {
+    font-size: 0.65rem;
+  }
+
+  @media (max-width: 991.98px) {
+
+    .modal-content {
+      width: 80%;
+    }
+
+    #share-modal p {
+      text-align: center;
+    }
+
+    #share-modal #kudos-image {
+      margin: auto;
+    }
+  }
+
+  @media (max-width: 767.98px) {
+
+    .modal-content {
+      width: 100%;
+    }
+
+    .share-button {
+      margin-bottom: 1rem;
+    }
+  }
+
+  @media (max-width: 575.98px) {
+    #shareLink {
+      min-width: auto;
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+  }
+</style>
+
+<div id="share-modal" class="modal">
+  <div class="modal-content row">
+    <div class="col-12 text-right font-title">
+      <i class="fas fa-times"></i>
+    </div>
+    <div class="col-12 row">
+      <div class="col-12 text-center">
+        <h1 class="font-title-lg mb-4">{% trans "Share" %} Kudos!</h1>
+      </div>
+      <div id="kudos-image" class="col-12 offset-lg-4 col-lg-4">
+        <img src="{% static kudos.image %}" alt="{{ kudos.name }}" class="w-100">
+      </div>
+      <div class="col-12 col-lg-4 my-auto">
+        <p>
+          <span class="text-color_blue text-weight_semibold">{{ kudos.name|humanize_name }}</span> <br>
+          <span class="text-color_blue text-weight_semibold">{{ kudos.rarity }}</span>
+          ({{ kudos.num_clones_in_wild_counting_indirect_send }} {% trans "out of" %} {{ kudos.num_gen0_clones_allowed }}) <br>
+          <span id='kudosNumClonesAvailable' class="text-color_blue text-weight_semibold">{{ kudos.num_clones_available_counting_indirect_send }}</span> {% trans "Total Available" %} <br>
+          <span id='kudosNumClonesAllowed' class="text-color_blue text-weight_semibold">{{ kudos.num_clones_in_wild_counting_indirect_send }}</span> {% trans "Total minted" %}
+        </p>
+      </div>
+    </div>
+    <div class="col-12 my-4 text-center">
+      <input class="form__input"type="text" value="{{ request.META.HTTP_HOST }}{% url 'kudos_details' kudos.id kudos.name %}" id="shareLink" readonly>
+      <button class="btn btn-gc-blue button__small font-body" id="copyLink">
+        <i data-toggle="tooltip" title="" data-html="true" 
+          data-original-title="<span class='title-tooltip text-center'>{% trans 'Click To Copy' %}</span>"
+          data-template='<div class="tooltip-kudos tooltip-share" role="tooltip"><div class="tooltip-inner"></div></div>' class="text-color_blue">
+          {% trans "Copy Link" %}
+        </i>
+      </button>
+    </div>
+    <div class="col-12 text-center">
+      <a class="btn btn-gc-blue share-button font-body" target="_blank" rel="noopener noreferrer"
+        href="https://twitter.com/intent/tweet?text=Check%20out%20the%20{{kudos.name|humanize_name}}%20kudos%21%20{{ request.META.HTTP_HOST }}{% url 'kudos_details' kudos.id kudos.name %}"
+        data-size="large"><i class="fab fa-twitter mr-2"></i>{% trans "Share on" %} Twitter</a>
+      <a class="btn btn-gc-blue share-button font-body" target="_blank" rel="noopener noreferrer"
+        href="https://www.facebook.com/sharer/sharer.php?u={{ request.META.HTTP_HOST }}{% url 'kudos_details' kudos.id kudos.name %}"
+        data-size="large"><i class="fab fa-facebook mr-2"></i>{% trans "Share on" %} Facebook</a>
+    </div>
+  </div>
+</div>

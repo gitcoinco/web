@@ -591,12 +591,18 @@ def leaderboard(request, key=''):
     if not key:
         key = 'quarterly_earners'
 
+    keyword_search = request.GET.get('keyword')
+
     titles = {
         'quarterly_payers': _('Top Payers'),
         'quarterly_earners': _('Top Earners'),
         'quarterly_orgs': _('Top Orgs'),
         'quarterly_tokens': _('Top Tokens'),
         'quarterly_keywords': _('Top Keywords'),
+        'quarterly_kudos': _('Top Kudos'),
+        'quarterly_cities': _('Top Cities'),
+        'quarterly_countries': _('Top Countries'),
+        'quarterly_continents': _('Top Continents'),
         #        'weekly_fulfilled': 'Weekly Leaderboard: Fulfilled Funded Issues',
         #        'weekly_all': 'Weekly Leaderboard: All Funded Issues',
         #        'monthly_fulfilled': 'Monthly Leaderboard',
@@ -607,24 +613,41 @@ def leaderboard(request, key=''):
         #        'all_all': 'All-Time Leaderboard: All Funded Issues',
         # TODO - also include options for weekly, yearly, and all cadences of earning
     }
+
+    if settings.ENV != 'prod':
+        # TODO (mbeacom): Re-enable this on live following a fix for leaderboards by location.
+        titles['quarterly_cities'] = _('Top Cities')
+        titles['quarterly_countries'] = _('Top Countries')
+        titles['quarterly_continents'] = _('Top Continents')
+
     if key not in titles.keys():
         raise Http404
 
     title = titles[key]
-    leadeboardranks = LeaderboardRank.objects.active().filter(leaderboard=key)
-    amount = leadeboardranks.values_list('amount').annotate(Max('amount')).order_by('-amount')
-    items = leadeboardranks.order_by('-amount')
+    if keyword_search:
+        ranks = LeaderboardRank.objects.filter(active=True, leaderboard=key, tech_keywords__icontains=keyword_search)
+    else:
+        ranks = LeaderboardRank.objects.filter(active=True, leaderboard=key)
+
+    amount = ranks.values_list('amount').annotate(Max('amount')).order_by('-amount')
+    items = ranks.order_by('-amount')
     top_earners = ''
+    technologies = set()
+    for profile_keywords in ranks.values_list('tech_keywords'):
+        for techs in profile_keywords:
+            for tech in techs:
+                technologies.add(tech)
 
     if amount:
         amount_max = amount[0][0]
-        top_earners = leadeboardranks.order_by('-amount')[0:3].values_list('github_username', flat=True)
+        top_earners = ranks.order_by('-amount')[0:3].values_list('github_username', flat=True)
         top_earners = ['@' + username for username in top_earners]
         top_earners = f'The top earners of this period are {", ".join(top_earners)}'
     else:
         amount_max = 0
 
-    is_linked_to_profile = '_tokens' in key or '_keywords' in key
+    profile_keys = ['_tokens', '_keywords', '_cities', '_countries', '_continents']
+    is_linked_to_profile = any(sub in key for sub in profile_keys)
     context = {
         'items': items,
         'titles': titles,
@@ -635,6 +658,7 @@ def leaderboard(request, key=''):
         'card_desc': f'See the most valued members in the Gitcoin community recently . {top_earners}',
         'action_past_tense': 'Transacted' if 'submitted' in key else 'bountied',
         'amount_max': amount_max,
-        'podium_items': items[:3] if items else []
+        'podium_items': items[:3] if items else [],
+        'technologies': technologies
     }
     return TemplateResponse(request, 'leaderboard.html', context)

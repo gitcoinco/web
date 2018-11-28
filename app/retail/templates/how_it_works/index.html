@@ -21,12 +21,15 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
+    <meta name="title" content="{{ title }}">
+    <meta name="description" content="{{ desc }}">
     <link rel="stylesheet" href="{% static "v2/css/landing_page.css" %}" />
     <link rel="stylesheet" href="{% static "v2/css/howitworks.css" %}" />
   </head>
-  <body class="index d-flex flex-column">
+  <body class="index d-flex flex-column g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
     {% cookielaw_banner %}
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
     {% include 'shared/nav.html' %}
     <div>
       <div class="container-fluid p-5 howworks-container howworks-container-contributors">
@@ -76,7 +79,7 @@
               <div class="text-center mt-3">
                 <h5 class="">{% trans "Iteration is Key" %}</h5>
                 {% blocktrans %}
-                  Expect a few rounds of revisions to complete the project. 
+                  Expect a few rounds of revisions to complete the project.
                 {% endblocktrans %}
               </div>
             </div>
@@ -112,7 +115,7 @@
 
           {% if active == 'how_it_works_funder' %}
             {% include "how_it_works/payment.html" %}
-            {% include "how_it_works/disputes.html" %} 
+            {% include "how_it_works/disputes.html" %}
           {% endif %}
         </div>
       </div>

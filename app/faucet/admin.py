@@ -29,6 +29,7 @@ class GeneralAdmin(admin.ModelAdmin):
     """Define the Faucet specific admin handling."""
 
     ordering = ['-id']
+    list_display = ['created_on', '__str__']
 
 
 class FaucetRequestAdmin(admin.ModelAdmin):

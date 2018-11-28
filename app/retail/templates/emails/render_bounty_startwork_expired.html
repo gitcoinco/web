@@ -29,7 +29,7 @@
   <br>
   <br>
 
-   You <strong>started work upon</strong> a funded issue {{interest.created | naturaltime}}.  But we haven't heard from you on the github thread{% if time_delta_days %} in {{time_delta_days}} days{%endif%}.
+   You <strong>started work upon</strong> a funded issue {{ interest.created|naturaltime }}.  But we haven't heard from you on the github thread{% if time_delta_days %} in {{ time_delta_days }} days{% endif %}.
 
   <br>
   <br>
@@ -46,11 +46,11 @@
   <br>
   -{% trans "AND" %}-
   <br>
-  {% blocktrans %}Click 'Start Work' on the <a href="{{bounty.absolute_url}}">issue detail page</a>.{% endblocktrans %}
+  {% blocktrans %}Click 'Start Work' on the <a href="{{ bounty.absolute_url }}">issue detail page</a>.{% endblocktrans %}
 
   <br>
   <br>
-  {% blocktrans %}If you have any questions, feel free to reach out <a href="https://gitcoin.co/slack">on slack</a>.{% endblocktrans %}
+  {% blocktrans %}If you have any questions, feel free to reach out <a href="{% url 'slack' %}">on slack</a>.{% endblocktrans %}
 
   <br>
   <h5>{% trans "Funded Issue Details" %}</h5>

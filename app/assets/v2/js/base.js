@@ -16,6 +16,23 @@ $(document).ready(function() {
 
   force_no_www();
 
+  var record_campaign_to_cookie = function() {
+    var paramsStr = decodeURIComponent(window.location.search.substring(1));
+
+    paramsStr.split('&')
+      .map((paramStr) => {
+        var [ key, value ] = paramStr.split('=');
+
+        return {key, value};
+      })
+      .filter((param) => [ 'utm_medium', 'utm_source', 'utm_campaign' ].indexOf(param.key) !== -1)
+      .forEach((campaign) => {
+        Cookies.set(campaign.key, campaign.value);
+      });
+  };
+
+  record_campaign_to_cookie();
+
   if (!$('.header > .minihero').length && $('.header > .navbar').length) {
     $('.header').css('overflow', 'visible');
   }
@@ -68,10 +85,20 @@ $(document).ready(function() {
   $('#logo').mouseleave(function(e) {
     $(this).attr('src', $(this).attr('old-src'));
   });
+  if (!$.fn.collapse) {
+    $('.navbar-toggler').click(function() {
+      var toggle = $(this).attr('aria-expanded');
 
-  $('.navbar-toggler').click(function() {
-    $('.navbar-collapse').toggleClass('show');
-  });
+      console.log(toggle);
+      $('.navbar-collapse').toggleClass('show');
+      if (toggle === 'false') {
+        $(this).attr('aria-expanded', 'true');
+      } else {
+        $(this).attr('aria-expanded', 'false');
+      }
+
+    });
+  }
 
   // get started modal
   $('body').delegate('.iama', 'click', function() {
@@ -173,10 +200,6 @@ $(document).ready(function() {
       panel.style.marginBottom = 10 + 'px';
     }
   });
-});
-
-$(window).scroll(function() {
-  var scrollPos = jQuery(document).scrollTop();
 });
 
 /* TODO : Remove after GDPR */

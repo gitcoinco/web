@@ -160,6 +160,32 @@ def get_completion_rate(keyword):
         return 0
 
 
+def get_funder_receiver_stats(keyword):
+    from dashboard.models import Bounty, BountyFulfillment, Tip
+    base_bounties = Bounty.objects.current().filter(network='mainnet')
+    if keyword:
+        base_bounties = base_bounties.filter(raw_data__icontains=keyword)
+
+    eligible_bounties = base_bounties
+    eligible_bounty_fulfillments = BountyFulfillment.objects.filter(bounty__in=base_bounties)
+    eligible_tips = Tip.objects.filter(network='mainnet')
+
+    bounty_funders = list(eligible_bounties.values_list('bounty_owner_address', flat=True))
+    tip_funders = list(eligible_tips.values_list('from_address', flat=True))
+    tip_recipients = list(eligible_tips.values_list('receive_address', flat=True))
+    bounty_recipients = list(eligible_bounty_fulfillments.values_list('fulfiller_address', flat=True))
+
+    num_funders = len(set(bounty_funders + tip_funders))
+    num_recipients = len(set(bounty_recipients + tip_recipients))
+    num_transactions = eligible_tips.count() + eligible_bounties.count()
+
+    return {
+        'funders': num_funders,
+        'recipients': num_recipients,
+        'transactions': num_transactions,
+    }
+
+
 def get_base_done_bounties(keyword):
     from dashboard.models import Bounty
     base_bounties = Bounty.objects.current().filter(network='mainnet', idx_status__in=['done', 'expired', 'cancelled'])
@@ -192,7 +218,7 @@ def get_hourly_rate_distribution(keyword, bounty_value_range=None, methodology=N
     if bounty_value_range:
         base_bounties = base_bounties.filter(_val_usd_db__lt=bounty_value_range[1], _val_usd_db__gt=bounty_value_range[0])
         hourly_rates = [ele.hourly_rate for ele in base_bounties if ele.hourly_rate is not None]
-        print(bounty_value_range, len(hourly_rates))
+        # print(bounty_value_range, len(hourly_rates))
     else:
         hourly_rates = [ele.hourly_rate for ele in base_bounties if is_valid_bounty_for_headline_hourly_rate(ele)]
     if len(hourly_rates) == 1:
@@ -236,23 +262,6 @@ def get_bounty_median_turnaround_time(func='turnaround_time_started', keyword=No
         return statistics.median(pickup_time_hours)
     except statistics.StatisticsError:
         return 0
-
-
-def build_stat_results(keyword=None):
-    timeout = 60 * 60 * 24
-    key_salt = '3'
-    key = f'build_stat_results_{keyword}_{key_salt}'
-    try:
-        results = cache.get(key)
-    except CacheMiss:
-        results = None
-    if results and not settings.DEBUG:
-        return results
-
-    results = build_stat_results_helper(keyword)
-    cache.set(key, results, timeout)
-
-    return results
 
 
 def get_bounty_history(keyword=None, cumulative=True):
@@ -302,7 +311,7 @@ def get_bounty_history(keyword=None, cumulative=True):
     return bh
 
 
-def build_stat_results_helper(keyword=None):
+def build_stat_results(keyword=None):
     """Buidl the results page context.
 
     Args:
@@ -338,11 +347,24 @@ def build_stat_results_helper(keyword=None):
         network='mainnet', idx_status__in=['started', 'submitted']
     ).count()
     context['count_done'] = base_bounties.filter(network='mainnet', idx_status__in=['done']).count()
+
+    total_count = context['count_started'] + context['count_open'] + context['count_done']
+    context['pct_done'] = round(100 * context['count_done'] / total_count)
+    context['pct_started'] = round(100 * context['count_started'] / total_count)
+    context['pct_open'] = round(100 * context['count_open'] / total_count)
+
     pp.profile_time('count_*')
 
     # Leaderboard
+    num_to_show = 30
+    context['top_funders'] = base_leaderboard.filter(active=True, leaderboard='quarterly_payers') \
+        .order_by('rank').values_list('github_username', flat=True)[0:num_to_show]
+    pp.profile_time('funders')
     context['top_orgs'] = base_leaderboard.filter(active=True, leaderboard='quarterly_orgs') \
-        .order_by('rank').values_list('github_username', flat=True)
+        .order_by('rank').values_list('github_username', flat=True)[0:num_to_show]
+    pp.profile_time('orgs')
+    context['top_coders'] = base_leaderboard.filter(active=True, leaderboard='quarterly_earners') \
+        .order_by('rank').values_list('github_username', flat=True)[0:num_to_show]
     pp.profile_time('orgs')
 
     # community size
@@ -363,18 +385,23 @@ def build_stat_results_helper(keyword=None):
     pp.profile_time('Stats2')
 
     # bounties history
-    get_bounty_history(keyword)
-    context['bounty_history'] = json.dumps(get_bounty_history(keyword))
+    cumulative = False
+    context['bounty_history'] = json.dumps(get_bounty_history(keyword, cumulative))
     pp.profile_time('bounty_history')
 
     # Bounties
     completion_rate = get_completion_rate(keyword)
+    funder_receiver_stats = get_funder_receiver_stats(keyword)
+    context['funders'] = funder_receiver_stats['funders']
+    context['transactions'] = funder_receiver_stats['transactions']
+    context['recipients'] = funder_receiver_stats['recipients']
+    context['audience'] = json.loads(context['members_history'])[-1][1]
     pp.profile_time('completion_rate')
     bounty_abandonment_rate = round(100 - completion_rate, 1)
     total_bounties_usd = sum(base_bounties.exclude(idx_status__in=['expired', 'cancelled', 'canceled', 'unknown']).values_list('_val_usd_db', flat=True))
     total_tips_usd = sum([
         tip.value_in_usdt
-        for tip in Tip.objects.filter(network='mainnet').exclude(txid='').cache() if tip.value_in_usdt
+        for tip in Tip.objects.filter(network='mainnet').send_happy_path().cache() if tip.value_in_usdt
     ])
     context['universe_total_usd'] = float(total_bounties_usd) + float(total_tips_usd)
     pp.profile_time('universe_total_usd')
@@ -399,6 +426,10 @@ def build_stat_results_helper(keyword=None):
     context['bounty_median_pickup_time'] = round(
         get_bounty_median_turnaround_time('turnaround_time_started', keyword), 1)
     pp.profile_time('bounty_median_pickup_time')
+    from kudos.models import Token as KudosToken
+
+    context['kudos_tokens'] = KudosToken.objects.filter(num_clones_in_wild__gt=0).order_by('-num_clones_in_wild')[0:25]
+    pp.profile_time('kudos_tokens')
     pp.profile_time('final')
     context['keyword'] = keyword
     context['title'] = f"{keyword.capitalize() if keyword else ''} Results"

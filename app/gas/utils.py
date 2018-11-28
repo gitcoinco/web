@@ -38,9 +38,9 @@ def conf_time_spread(max_gas_price=9999):
     try:
         for minutes in [1, 11, 21, 31]:
             gp = GasProfile.objects.filter(
-                created_on__gt=(timezone.now()-timezone.timedelta(minutes=minutes)),
+                created_on__gt=(timezone.now() - timezone.timedelta(minutes=minutes)),
                 gas_price__lte=max_gas_price,
-                ).distinct('gas_price').order_by('gas_price').values_list('gas_price', 'mean_time_to_confirm_minutes')
+            ).distinct('gas_price').order_by('gas_price').values_list('gas_price', 'mean_time_to_confirm_minutes')
             if gp:
                 return json.dumps(list(gp), cls=DjangoJSONEncoder)
     except Exception:
@@ -49,8 +49,7 @@ def conf_time_spread(max_gas_price=9999):
 
 
 def gas_history(breakdown, mean_time_to_confirm_minutes):
-
-    days = 30 * 8 # 8 months
+    days = 30 * 8  # 8 months
     if breakdown == 'hourly':
         days = 10
     if breakdown == 'daily':
@@ -61,7 +60,7 @@ def gas_history(breakdown, mean_time_to_confirm_minutes):
     gas_profiles = GasProfile.objects.filter(
         created_on__gt=start_date,
         mean_time_to_confirm_minutes__lte=mean_time_to_confirm_minutes,
-        ).order_by('-created_on').cache()
+    ).order_by('-created_on')
 
     # collapse into best gas price per time period
     results = {}
@@ -73,7 +72,11 @@ def gas_history(breakdown, mean_time_to_confirm_minutes):
         if not gp.created_on.weekday() < 1 and breakdown in ['weekly']:
             continue
         key = gp.created_on.strftime("%Y-%m-%dT%H:00:00")
-        package = {'created_on': key, 'gas_price': float(gp.gas_price), 'mean_time_to_confirm_minutes': float(gp.mean_time_to_confirm_minutes)}
+        package = {
+            'created_on': key,
+            'gas_price': float(gp.gas_price),
+            'mean_time_to_confirm_minutes': float(gp.mean_time_to_confirm_minutes)
+        }
         if key not in results.keys():
             results[key] = package
         else:
@@ -91,7 +94,7 @@ def gas_history(breakdown, mean_time_to_confirm_minutes):
     results_array = []
     i = 0
     for key, val in results.items():
-        results_array.append([val['gas_price'], i])
+        results_array.append([val['gas_price'], i, val["created_on"]])
         i += 1
     return results_array
 

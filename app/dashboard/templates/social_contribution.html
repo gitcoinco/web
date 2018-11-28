@@ -23,9 +23,10 @@
     {% include 'shared/cards.html' %}
   </head>
 
-  <body class="interior {{active}}">
+  <body class="interior {{active}} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav.html' %}
     </div>
     <div class="container-fluid">
@@ -35,6 +36,7 @@
           {% include 'shared/no_metamask_error.html' %}
           {% include 'shared/zero_balance_error.html' %}
           {% include 'shared/unlock_metamask.html' %}
+          {% include 'shared/connect_metamask.html' %}
         </div>
       </div>
       <div class="row">

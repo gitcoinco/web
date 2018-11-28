@@ -23,15 +23,17 @@
   </div>
   <div class="col-12 col-lg-6">
     <div class="col header-line header-line-contributors mt-5">
-      {% trans "Join the Gitcoin" %}
+      {% trans "Get Paid for Solving" %}
       <br>
-      {{tech_stack|title}}
-      {% trans "Developer Community" %}
+      {% if tech_stack %}
+        {{tech_stack|title}}
+      {% else %}
+        {% trans "Open Source" %}
+      {% endif %}
+      {% trans "Issues" %}
     </div>
     <div class="col subheader-line subheader-line-contributors mb-4">
-      <span>{% trans "Gitcoin is the easiest way to monetize work" %}
-      <br>
-      <span>{% trans "in Open Source Software." %}</span>
+      <span>{% trans "Gitcoin bounties pay when you submit a pull request." %}
     </div>
     <div class="col d-flex mt-2 mb-5 mr-5">
       <div class="text-center">

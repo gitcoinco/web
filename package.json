@@ -4,8 +4,8 @@
   "description": "Gitcoin is the easiest way to monetize or incentivize work in Open Source Software",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "eslint": "./node_modules/eslint/bin/eslint.js --quiet --config .eslintrc ./app/assets/v2/js/*.js ./app/assets/v2/js/**/*.js ./app/assets/legacy/v2/js/*.js ./app/assets/legacy/v2/js/**/*.js ./app/assets/onepager/*.js ./app/assets/onepager/js/*.js",
-    "eslint:fix": "./node_modules/eslint/bin/eslint.js --quiet --fix --config .eslintrc ./app/assets/v2/js/*.js ./app/assets/v2/js/**/*.js ./app/assets/legacy/v2/js/*.js ./app/assets/legacy/v2/js/**/*.js ./app/assets/onepager/*.js ./app/assets/onepager/js/*.js",
+    "eslint": "./node_modules/eslint/bin/eslint.js --quiet --config .eslintrc ./app/assets/v2/js/*.js ./app/assets/v2/js/**/*.js ./app/assets/legacy/v2/js/*.js ./app/assets/legacy/v2/js/**/*.js ./app/assets/onepager/*.js ./app/assets/onepager/js/*.js ./app/assets/ens/*.js",
+    "eslint:fix": "./node_modules/eslint/bin/eslint.js --quiet --fix --config .eslintrc ./app/assets/v2/js/*.js ./app/assets/v2/js/**/*.js ./app/assets/legacy/v2/js/*.js ./app/assets/legacy/v2/js/**/*.js ./app/assets/onepager/*.js ./app/assets/onepager/js/*.js ./app/assets/ens/*.js",
     "stylelint": "stylelint ./app/assets/**/**/*.css",
     "stylelint:fix": "stylelint --fix ./app/assets/**/**/*.css",
     "build": "webpack --config webpack.config.js --progress --colors"
@@ -31,7 +31,7 @@
     "eslint-friendly-formatter": "^3.0.0",
     "eslint-loader": "^1.9.0",
     "eslint-plugin-babel": "^4.1.2",
-    "eslint-plugin-html": "^4.0.5",
+    "eslint-plugin-html": "^4.0.6",
     "eslint-plugin-node": "^6.0.1",
     "eslint-plugin-promise": "^3.8.0",
     "eslint-plugin-standard": "^3.1.0",
@@ -39,7 +39,7 @@
     "stylelint-config-recommended": "^2.1.0",
     "stylelint-webpack-plugin": "^0.9.0",
     "webpack": "^3.12.0",
-    "webpack-bundle-tracker": "^0.2.1",
-    "webpack-dev-server": "^2.11.2"
+    "webpack-bundle-tracker": "^0.3.0",
+    "webpack-dev-server": "^2.11.3"
   }
 }

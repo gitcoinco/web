@@ -17,24 +17,43 @@
 {% endcomment %}
 {% load i18n %}
 
-<div class="">
-    <div class="">
-        <div class="tbl_user_data">
-          <table class="table table-hover" id ="payout_table">
-            <thead>
-              <tr>
-                <th>{% trans 'Github Username'%}</th>
-                <th>{% trans 'Percent'%}(%)</th>
-                <th>{% trans 'Amount'%}</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-            </tbody>
-          </table>
-        </div>
-        <input type="submit" class="button button--primary add_another" value="Add (+)" />
+<style>
+  #payout_table tr td {
+    border-top: none;
+  }
+
+  #payout_table tr td .percent {
+    border-radius: 2px;
+    border: 1px solid;
+
+  }
+
+  #payout_table tr td .percent,
+  #payout_table tr td .amount {
+    padding-top: 9px;
+    padding-bottom: 9px;
+    top: 5px;
+  }
+</style>
+
+<div>
+  <div>
+    <div class="tbl_user_data">
+      <table class="table table-hover" id ="payout_table">
+        <thead>
+          <tr>
+            <th>{% trans 'Github Username'%}</th>
+            <th>{% trans 'Percent'%}(%)</th>
+            <th>{% trans 'Amount'%}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
     </div>
+    <input type="submit" class="button button--primary button__small add_another" value="Add (+)" />
+  </div>
 </div>
 
 

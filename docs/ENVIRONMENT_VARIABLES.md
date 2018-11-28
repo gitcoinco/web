@@ -19,6 +19,10 @@ All of the environment variables used by this application conform to the [`djang
 | --- | --- | --- | --- |
 | FORCE_PROVISION | Whether or not to force provisioning even if the container has been previously provisioned | `bool` | False |
 | FORCE_GET_PRICES | Whether or not to force pulling fresh conversion rate data from etherdelta and poloniex | `bool` | False |
+| DISABLE_INITIAL_CACHETABLE | Whether or not to disable the initial createcachetable | `bool` | False |
+| DISABLE_INITIAL_COLLECTSTATIC | Whether or not to disable the initial collectstatic | `bool` | False |
+| DISABLE_INITIAL_MIGRATE | Whether or not to disable the initial data migration | `bool` | False |
+| DISABLE_INITIAL_LOADDATA | Whether or not to disable the initial loaddata fixture import | `bool` | False |
 
 ## Amazon Web Services
 
@@ -36,17 +40,7 @@ All of the environment variables used by this application conform to the [`djang
 | COLO_ACCOUNT_ADDRESS | The coin distribution address. | `str` | '' |
 | COLO_ACCOUNT_PRIVATE_KEY | The coin distribution private key. | `str` | '' |
 
-## EthOS
 
-| Variable | Description | Type | Default |
-| --- | --- | --- | --- |
-| ETHOS_CONTRACT_ADDRESS | The coin contract address. | `str` | '' |
-| ETHOS_ACCOUNT_ADDRESS | The coin distribution address. | `str` | '' |
-| ETHOS_ACCOUNT_PRIVATE_KEY | The coin distribution private key. | `str` | '' |
-| ETHOS_TWITTER_CONSUMER_KEY | EthOSEthereal Twitter account consumer key. | `str` | '' |
-| ETHOS_TWITTER_CONSUMER_SECRET | EthOSEthereal Twitter account consumer secret. | `str` | '' |
-| ETHOS_TWITTER_ACCESS_TOKEN | EthOSEthereal Twitter account access token. | `str` | '' |
-| ETHOS_TWITTER_ACCESS_SECRET | TEthOSEthereal Twitter account access secret. | `str` | '' |
 
 ## Django
 
@@ -94,6 +88,9 @@ For further information, please check out the [Gitcoin Bot Documentation](https:
 | Variable | Description | Type | Default |
 | --- | --- | --- | --- |
 | SENDGRID_EVENT_HOOK_URL | The SendGrid event hook URL. | `str` | sg_event_process |
+| SENDGRID_API_KEY | The SendGrid API Key, required for sending emails. | `str` | None |
+
+
 
 ## Slack
 
@@ -123,6 +120,16 @@ The below environment variables are useful for overwriting [Django Silk](https:/
 | Variable | Description | Type | Default |
 | --- | --- | --- | --- |
 | WEB3_HTTP_PROVIDER | The Web3 HTTP provider URI to be used. | `str` | https://rinkeby.infura.io |
+
+## VSCode Remote Debugging
+
+If you opt to modify the port or listener interface, you must update your `launch.json` configuration accordingly.
+
+| Variable | Description | Type | Default |
+| --- | --- | --- | --- |
+| VSCODE_DEBUGGER_ENABLED | Whether or not to enable the `ptvsd` remote debugging service. | `bool` | False |
+| VSCODE_DEBUGGER_PORT | The `ptvsd` port to be used for debugging. | `str` | 3030 |
+| VSCODE_DEBUGGER_INTERFACE | The `ptvsd` network interface to be used for debugging. | `str` | 0.0.0.0 |
 
 
 ## Miscellaneous

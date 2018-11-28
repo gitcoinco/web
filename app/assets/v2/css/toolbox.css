@@ -1,7 +1,6 @@
 .body {
   padding: 60px 100px !important;
   background-color: #fefefe !important;
-  font-family: 'Muli', sans-serif;
 }
 
 .description {
@@ -11,7 +10,6 @@
 
 .title,
 .sub-title {
-  font-family: 'Muli', sans-serif;
   font-weight: 600;
   text-transform: none;
   letter-spacing: 0;
