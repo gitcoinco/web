@@ -2100,5 +2100,105 @@
     - gitcoin 
     - leaderboard
   image: trophy_5.svg
+- name: eth_singapore_winner_1
+  description: For one of the winners of the ETHSingapore hackathon 2018
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 2
+  tags:
+  - ethsingapore
+  - special event
+  image: trophy_computer_kudos.svg
+- name: eth_singapore_winner_2
+  description: For one of the winners of the ETHSingapore hackathon 2018
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 2
+  tags:
+  - ethsingapore
+  - special event
+  image: trophy_crown_kudos.svg
+- name: eth_singapore_winner_3
+  description: For one of the winners of the ETHSingapore hackathon 2018
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 2
+  tags:
+  - ethsingapore
+  - special event
+  image: trophy_diamondl_kudos.svg
+- name: eth_singapore_winner_4
+  description: For one of the winners of the ETHSingapore hackathon 2018
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 2
+  tags:
+  - ethsingapore
+  - special event
+  image: trophy_trophy_kudos.svg
+- name: eth_singapore_winner_5
+  description: For one of the winners of the ETHSingapore hackathon 2018
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 2
+  tags:
+  - ethsingapore
+  - special event
+  image: trophy_ethsingapore_kudos.svg
+- name: eth_singapore_winner_6
+  description: For one of the winners of the ETHSingapore hackathon 2018
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 2
+  tags:
+  - ethsingapore
+  - special event
+  image: trophy_genie_kudos.svg
+- name: eth_singapore_winner_7
+  description: For one of the winners of the ETHSingapore hackathon 2018
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 2
+  tags:
+  - ethsingapore
+  - special event
+  image: trophy_medal_kudos.svg
+- name: eth_singapore_winner_8
+  description: For one of the winners of the ETHSingapore hackathon 2018
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 2
+  tags:
+  - ethsingapore
+  - special event
+  image: trophy_rocket_kudos.svg
+- name: eth_singapore_winner_9
+  description: For one of the winners of the ETHSingapore hackathon 2018
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 2
+  tags:
+  - ethsingapore
+  - special event
+  image: trophy_skyline_kudos.svg
+- name: eth_singapore_winner_10
+  description: For one of the winners of the ETHSingapore hackathon 2018
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 2
+  tags:
+  - ethsingapore
+  - special event
+  image: trophy_superhero_kudos.svg
 
 
