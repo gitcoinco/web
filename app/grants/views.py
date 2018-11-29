@@ -276,6 +276,19 @@ def grant_fund(request, grant_id,  grant_slug):
         }
         return TemplateResponse(request, 'grants/shared/error.html', params)
 
+    active_subscription = Subscription.objects.select_related('grant').filter(
+        grant=grant_id, active=True, contributor_profile=request.user.profile
+    )
+
+    if active_subscription:
+        params = {
+            'active': 'grant_error',
+            'title': _('Subscription Exists'),
+            'grant': grant,
+            'text': _('You already have an active subscription for this grant.')
+        }
+        return TemplateResponse(request, 'grants/shared/error.html', params)
+
     # make sure a user can only create one subscription per grant
     if request.method == 'POST':
         subscription = Subscription()
