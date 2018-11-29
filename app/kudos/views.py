@@ -747,7 +747,7 @@ def newkudos(request):
                 approved=False,
                 metadata={
                     'ip': get_ip(request),
-                    'email': request.POST['email'],
+                    'email': request.POST.get('email'),
                     }
                 )
             new_kudos_request(obj) 
