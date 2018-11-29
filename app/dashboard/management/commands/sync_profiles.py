@@ -20,6 +20,7 @@ import time
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
+from dashboard.utils import is_blocked
 
 from app.utils import sync_profile
 from dashboard.models import Bounty, Profile
@@ -56,7 +57,7 @@ class Command(BaseCommand):
         handles = set([b.org_name for b in Bounty.objects.current()])
         for handle in handles:
             print(handle)
-            if handle in settings.BLOCKED_USERS or is_deleted_account(handle):
+            if is_blocked(handle)or is_deleted_account(handle):
                 print('not syncing, handle is blocked')
                 continue
 

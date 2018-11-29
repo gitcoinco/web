@@ -35,6 +35,7 @@ from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
     maybe_market_to_user_discord, maybe_market_to_user_slack,
 )
+from dashboard.utils import is_blocked
 from dashboard.tokens import addr_to_token
 from economy.utils import convert_amount
 from git.utils import get_gh_issue_details, get_url_dict
@@ -283,7 +284,7 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
             'payload', {}).get('fulfiller', {}).get(
                 'githubUsername', '')
         if github_username:
-            if github_username in settings.BLOCKED_USERS:
+            if is_blocked(github_username):
                 continue
             try:
                 kwargs['profile_id'] = Profile.objects.get(handle__iexact=github_username).pk

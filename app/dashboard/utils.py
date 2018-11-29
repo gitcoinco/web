@@ -27,7 +27,7 @@ import ipfsapi
 import requests
 from app.utils import sync_profile
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
-from dashboard.models import Activity, Bounty, Profile, UserAction
+from dashboard.models import Activity, Bounty, Profile, UserAction, BlockedUser
 from eth_utils import to_checksum_address
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from hexbytes import HexBytes
@@ -696,3 +696,6 @@ def get_tx_status(txid, network, created_on):
     except:
         pass
     return status, timestamp
+
+def is_blocked(handle):
+    return BlockedUser.objects.filter(handle__iexact=handle, active=True).exists()
