@@ -23,7 +23,6 @@ import logging
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -53,9 +52,7 @@ def get_keywords():
 
 def grants(request):
     """Handle grants explorer."""
-
-    # TODO: Remove after hard launch
-    if not request.user.is_staff or not request.user.is_authenticated:
+    if not request.user.has_perm('grants.view_grant'):
         params = {
             'active': 'dashboard',
             'title': _('Grants Explorer')
@@ -66,13 +63,14 @@ def grants(request):
     page = request.GET.get('page', 1)
     sort = request.GET.get('sort_option', '-created_on')
 
-    _grants = Grant.objects.filter(active=True).order_by(sort)
+    _grants = Grant.objects.active()
 
     if request.method == 'POST':
         sort = request.POST.get('sort_option', '-created_on')
         keyword = request.POST.get('search_grants', '')
-        _grants = Grant.objects.active().keyword(keyword).order_by(sort)
+        _grants = _grants.keyword(keyword)
 
+    _grants = _grants.order_by(sort)
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
 
@@ -86,9 +84,12 @@ def grants(request):
     return TemplateResponse(request, 'grants/index.html', params)
 
 
-@staff_member_required
 def grant_details(request, grant_id, grant_slug):
     """Display the Grant details page."""
+    if not request.user.has_perm('grants.view_grant'):
+        messages.info(request, _('You do not have permission to view grant details.'))
+        return redirect(reverse('grants:grants'))
+
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
 
     try:
@@ -164,9 +165,12 @@ def grant_details(request, grant_id, grant_slug):
 
 
 @login_required
-@staff_member_required
 def grant_new(request):
     """Handle new grant."""
+    if not request.user.has_perm('grants.add_grant'):
+        messages.info(request, _('You do not have permission to add a grant.'))
+        return redirect(reverse('grants:grants'))
+
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
 
     if request.method == 'POST':
@@ -210,7 +214,6 @@ def grant_new(request):
 
 
 @login_required
-@staff_member_required
 def milestones(request, grant_id, grant_slug):
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
     grant = Grant.objects.prefetch_related('milestones').get(pk=grant_id, slug=grant_slug)
@@ -255,7 +258,6 @@ def milestones(request, grant_id, grant_slug):
 
 
 @login_required
-@staff_member_required
 def grant_fund(request, grant_id,  grant_slug):
     """Handle grant funding."""
     try:
@@ -298,7 +300,6 @@ def grant_fund(request, grant_id,  grant_slug):
 
 
 @login_required
-@staff_member_required
 def subscription_cancel(request, grant_id, grant_slug, subscription_id):
     """Handle the cancellation of a grant subscription."""
     subscription = Subscription.objects.select_related('grant').get(pk=subscription_id)
@@ -306,11 +307,13 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
     now = datetime.datetime.now()
     profile = request.user.profile if request.user.is_authenticated else None
 
-    if request.method == 'POST' and profile == subscription.contributor_profile:
+    if request.method == 'POST' and (
+        profile == subscription.contributor_profile or request.user.has_perm('grants.change_subscription')
+    ):
         subscription.active = False
         subscription.save()
         support_cancellation(grant, subscription)
-        messages.info(request, 'Thank you for your contribution')
+        messages.info(request, _('Thank you for your contribution'))
         return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
     params = {
@@ -326,9 +329,12 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
 
 
 @login_required
-@staff_member_required
 def profile(request):
     """Show grants profile of logged in user."""
+    if not request.user.has_perm('grants.view_grant'):
+        messages.info(request, _('You do not have permission to view grants.'))
+        return redirect(reverse('grants:grants'))
+
     limit = request.GET.get('limit', 25)
     page = request.GET.get('page', 1)
     sort = request.GET.get('sort', '-created_on')
@@ -372,9 +378,11 @@ def profile(request):
     return TemplateResponse(request, 'grants/profile/index.html', params)
 
 
-@staff_member_required
 def quickstart(request):
     """Display quickstart guide."""
+    if not request.user.has_perm('grants.view_grant'):
+        messages.info(request, _('You do not have permission to view grants.'))
+        return redirect(reverse('grants:grants'))
 
     params = {'active': 'grants_quickstart', 'title': _('Quickstart')}
     return TemplateResponse(request, 'grants/quickstart.html', params)
