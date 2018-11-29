@@ -267,7 +267,7 @@ def grant_fund(request, grant_id,  grant_slug):
 
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
 
-    if grant.active == False:
+    if not grant.active:
         params = {
             'active': 'grant_error',
             'title': _('Grant Ended'),
@@ -317,7 +317,7 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
     now = datetime.datetime.now()
     profile = request.user.profile if request.user.is_authenticated else None
 
-    if subscription.active == False:
+    if not subscription.active:
         params = {
             'active': 'grant_error',
             'title': _('Grant Subscription Cancelled'),
@@ -325,9 +325,9 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
         }
 
         if grant.active:
-             params['text'] = _('This Grant subscription has already been cancelled.')
+            params['text'] = _('This Grant subscription has already been cancelled.')
         else:
-             params['text'] = _('This Subscription is already cancelled as the grant is not longer active.')
+            params['text'] = _('This Subscription is already cancelled as the grant is not longer active.')
 
         return TemplateResponse(request, 'grants/shared/error.html', params)
 
