@@ -111,13 +111,11 @@
                     </a>
                   </h4>
                 {% elif is_admin %}
-                  <form method="POST" id="js-cancel_grant" class="d-inline">
                     {% csrf_token %}
                     <button class="button button--primary button--warning" id="cancel_grant">{% trans "Cancel this Grant" %}
                     </button>
                     <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
                     <input type="hidden" id="contract_version" name="contract_version" value="{{ grant.contract_version }}">
-                  </form>
                 {% elif user_subscription %}
                   <a href="{% url 'grants:subscription_cancel' grant.id grant.slug user_subscription.id %}">
                     <button class="button button--primary button--warning button--full">{% trans "Cancel Your Funding" %}</button>
@@ -279,10 +277,10 @@
                   </div>
                 {% endif %}
                 <ul class="pl-0">
-                  {% for item in activity %}
+                  {% for item in updates %}
                     <li>
                       <div class="article-title font-title">{{ item.title }}</div>
-                      <div class="article-date font-body mb-2">{{ item.date }}</div>
+                      <div class="article-date font-body mb-2">{{ item.created_on|date:"M d, Y" }}</div>
                       <p class="article-description font-subheader">{{ item.description }}</p>
                     </li>
                   {% empty %}
