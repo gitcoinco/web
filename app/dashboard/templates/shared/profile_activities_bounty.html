@@ -78,6 +78,12 @@
           <span>{% trans "Applied for work " %}</span>
         </p>
       </div>
+    {% else %}
+      <div class="tag in-progress">
+        <p>
+          <span>{{ activity.i18n_name }}</span>
+        </p>
+      </div>
     {% endif %}
     {% if activity.bounty.network != 'mainnet' %}
     <div class="tag network_warning">
