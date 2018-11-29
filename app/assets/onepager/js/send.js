@@ -121,7 +121,7 @@ $(document).ready(function() {
 
   });
 
-  waitforWeb3(function() {
+  waitForWeb3(function() {
     tokens(document.web3network).forEach(function(ele) {
       if (ele && ele.addr) {
         var html = '<option value=' + ele.addr + '>' + ele.name + '</option>';
@@ -158,7 +158,7 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
     return;
   }
   // setup
-  var fromAccount = web3.eth.accounts[0];
+  var fromAccount = document.coinbase;
 
   if (username.indexOf('@') == -1) {
     username = '@' + username;
@@ -176,7 +176,7 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
     tokenName = tokenDetails.name;
     weiConvert = Math.pow(10, tokenDetails.decimals);
   }
-  var amountInWei = amountInEth * 1.0 * weiConvert;
+  var amountInWei = Math.round(amountInEth * weiConvert);
   // validation
   var hasEmail = email != '';
 
@@ -281,24 +281,41 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
         };
 
         if (isSendingETH) {
-          web3.eth.sendTransaction({
-            to: destinationAccount,
-            value: amountInWei,
-            gasPrice: web3.toHex(get_gas_price())
-          }, post_send_callback);
+          window.web3.eth.sendTransaction(
+            {
+              from: document.coinbase,
+              to: destinationAccount,
+              value: window.web3.utils.toHex(amountInWei),
+              gasPrice: window.web3.utils.toHex(get_gas_price())
+            },
+            post_send_callback
+          );
         } else {
           var send_erc20 = function() {
-            var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+            const token_contract = new window.web3.eth.Contract(token_abi, tokenAddress);
 
-            token_contract.transfer(destinationAccount, amountInWei, {gasPrice: web3.toHex(get_gas_price())}, post_send_callback);
+            token_contract.methods.transfer(
+              destinationAccount,
+              window.web3.utils.toHex(amountInWei)
+            ).send(
+              {
+                from: document.coinbase,
+                gasPrice: window.web3.utils.toHex(get_gas_price())
+              },
+              post_send_callback
+            );
           };
           var send_gas_money_and_erc20 = function() {
             _alert({ message: gettext('You will now be asked to confirm two transactions.  The first is gas money, so your receipient doesnt have to pay it.  The second is the actual token transfer. (note: check Metamask extension, sometimes the 2nd confirmation window doesnt popup)') }, 'info');
-            web3.eth.sendTransaction({
-              to: destinationAccount,
-              value: gas_money,
-              gasPrice: web3.toHex(get_gas_price())
-            }, send_erc20);
+            window.web3.eth.sendTransaction(
+              {
+                from: document.coinbase,
+                to: destinationAccount,
+                value: window.web3.utils.toHex(gas_money),
+                gasPrice: window.web3.utils.toHex(get_gas_price())
+              },
+              send_erc20
+            );
           };
 
           if (is_direct_to_recipient) {

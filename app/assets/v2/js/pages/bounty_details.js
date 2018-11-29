@@ -448,16 +448,13 @@ const isAvailableIfReserved = function(bounty) {
 };
 
 var isBountyOwner = function(result) {
-  var bountyAddress = result['bounty_owner_address'];
+  const bountyAddress = result['bounty_owner_address'];
 
-  if (typeof web3 == 'undefined') {
-    return false;
-  }
-  if (typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
+  if (!document.coinbase || !bountyAddress) {
     return false;
   }
 
-  return (web3.eth.coinbase.toLowerCase() == bountyAddress.toLowerCase());
+  return (document.coinbase.toLowerCase() === bountyAddress.toLowerCase());
 };
 
 var isBountyOwnerPerLogin = function(result) {
@@ -491,7 +488,7 @@ var showWarningMessage = function(txid) {
   $('.interior .body').addClass('loading');
 
   if (typeof txid != 'undefined' && txid.indexOf('0x') != -1) {
-    waitforWeb3(function() {
+    waitForWeb3(function() {
       clearInterval(interval);
       var link_url = etherscan_tx_url(txid);
 
@@ -507,7 +504,7 @@ var showWarningMessage = function(txid) {
 };
 
 // refresh page if metamask changes
-waitforWeb3(function() {
+waitForWeb3(function() {
   setInterval(function() {
     if (document.web3Changed) {
       return;
@@ -517,10 +514,10 @@ waitforWeb3(function() {
       return;
     }
     if (typeof document.lastCoinbase == 'undefined') {
-      document.lastCoinbase = web3.eth.coinbase;
+      document.lastCoinbase = document.coinbase;
       return;
     }
-    var hasChanged = (document.lastCoinbase != web3.eth.coinbase) || (document.lastWeb3Network != document.web3network);
+    var hasChanged = (document.lastCoinbase != document.coinbase) || (document.lastWeb3Network != document.web3network);
 
     if (hasChanged) {
       _alert(gettext('Detected a web3 change.  Refreshing the page. '), 'info');
@@ -537,7 +534,7 @@ var wait_for_tx_to_mine_and_then_ping_server = function() {
     var txid = document.pendingIssueMetadata['txid'];
 
     console.log('waiting for web3 to be available');
-    callFunctionWhenweb3Available(function() {
+    waitForWeb3(function() {
       console.log('waiting for tx to be mined');
       callFunctionWhenTransactionMined(txid, function() {
         console.log('tx mined');
@@ -1452,5 +1449,5 @@ var main = function() {
 };
 
 window.addEventListener('load', function() {
-  main();
+  waitForWeb3(main);
 });

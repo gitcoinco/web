@@ -104,7 +104,7 @@ $(document).ready(function() {
   $('select[name=denomination]').change(promptForAuth);
   $('input[name=issueURL]').blur(retrieveIssueDetails);
   setTimeout(setUsdAmount, 1000);
-  waitforWeb3(function() {
+  waitForWeb3(function() {
     promptForAuth();
   });
   $('select[name=permission_type]').on('change', function() {
@@ -319,8 +319,7 @@ $(document).ready(function() {
       // TODO: web3 is using the web3.js file.  In the future we will move
       // to the node.js package.  github.com/ethereum/web3.js
       var isETH = tokenAddress == '0x0000000000000000000000000000000000000000';
-      var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
-      var account = web3.eth.coinbase;
+      const account = document.coinbase;
 
       if (!isETH) {
         check_balance_and_alert_user_if_not_enough(tokenAddress, amount);
@@ -331,7 +330,7 @@ $(document).ready(function() {
       // This function instantiates a contract from the existing deployed Standard Bounties Contract.
       // bounty_abi is a giant object containing the different network options
       // bounty_address() is a function that looks up the name of the network and returns the hash code
-      var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+      const bounty = new window.web3.eth.Contract(bounty_abi, bounty_address());
       // StandardBounties integration begins here
       // Set up Interplanetary file storage
       // IpfsApi is defined in the ipfs-api.js.
@@ -414,22 +413,23 @@ $(document).ready(function() {
 
         var eth_amount = isETH ? amount : 0;
         var _paysTokens = !isETH;
-        var bountyIndex = bounty.issueAndActivateBounty(
+        const bountyIndex = bounty.methods.issueAndActivateBounty(
           account, // _issuer
           mock_expire_date, // _deadline
           result, // _data (ipfs hash)
-          amount, // _fulfillmentAmount
-          0x0, // _arbiter
+          window.web3.utils.toHex(amount), // _fulfillmentAmount
+          '0x0000000000000000000000000000000000000000', // _arbiter
           _paysTokens, // _paysTokens
           tokenAddress, // _tokenContract
-          amount, // _value
+          window.web3.utils.toHex(amount), // _value
+        ).send(
           {
           // {from: x, to: y}
             from: account,
-            value: eth_amount,
-            gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)),
-            gas: web3.toHex(318730),
-            gasLimit: web3.toHex(318730)
+            value: window.web3.utils.toHex(eth_amount),
+            gasPrice: window.web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9)),
+            gas: window.web3.utils.toHex(318730),
+            gasLimit: window.web3.utils.toHex(318730)
           },
           web3Callback // callback for web3
         );
@@ -447,23 +447,28 @@ $(document).ready(function() {
 });
 
 var check_balance_and_alert_user_if_not_enough = function(tokenAddress, amount) {
-  var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
-  var from = web3.eth.coinbase;
+  const token_contract = new window.web3.eth.Contract(token_abi, tokenAddress);
+  const from = document.coinbase;
   var token_details = tokenAddressToDetails(tokenAddress);
   var token_decimals = token_details['decimals'];
   var token_name = token_details['name'];
 
-  token_contract.balanceOf.call(from, function(error, result) {
-    if (error) return;
-    var balance = result.toNumber() / Math.pow(10, token_decimals);
-    var balance_rounded = Math.round(balance * 10) / 10;
+  token_contract.methods.balanceOf(from).call().then(
+    function(result) {
+      var balance = window.web3.utils.toBN(result).div(
+        window.web3.utils.toBN(10).pow(window.web3.utils.toBN(token_decimals))
+      );
+      var balance_rounded = Math.round(balance * 10) / 10;
 
-    if (parseFloat(amount) > balance) {
-      var msg = gettext('You do not have enough tokens to fund this bounty. You have ') + balance_rounded + ' ' + token_name + ' ' + gettext(' but you need ') + amount + ' ' + token_name;
+      if (parseFloat(amount) > balance) {
+        var msg = gettext('You do not have enough tokens to fund this bounty. You have ') + balance_rounded + ' ' + token_name + ' ' + gettext(' but you need ') + amount + ' ' + token_name;
 
-      _alert(msg, 'warning');
+        _alert(msg, 'warning');
+      }
     }
-  });
-
-
+  ).catch(
+    function(error) {
+      _alert(error.toString(), 'error');
+    }
+  );
 };

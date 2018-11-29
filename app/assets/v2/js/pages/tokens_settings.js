@@ -4,7 +4,7 @@ load_tokens();
 
 $(document).ready(function() {
 
-  waitforWeb3(function() {
+  waitForWeb3(function() {
     $('#contract_address').val(bounty_address());
   });
 
@@ -37,21 +37,20 @@ $(document).ready(function() {
 
     e.preventDefault();
     // actual approval
-    var token_contract = web3.eth.contract(token_abi).at(token_address);
-    var from = web3.eth.coinbase;
-    var to = contract_address;
+    const token_contract = new window.web3.eth.Contract(token_abi, token_address);
+    const from = document.coinbase;
+    const to = contract_address;
 
-    token_contract.allowance.call(from, to, function(error, result) {
-      if (error || result.toNumber() == 0) {
-        var amount = 10 * 18 * 9999999999999999999999999999999999999999999999999999; // uint256
+    token_contract.methods.allowance(from, to).call({ from: from }, function(error, result) {
+      if (error || window.web3.utils.toBN(result).toString() === '0') {
+        // 10 * 18 * 9999999999999999999999999999999999999999999999999999; uint256
+        const amount = '0x12caf9fa791c0600000000000000000000000000000000';
 
-        token_contract.approve(
-          to,
-          amount,
+        token_contract.methods.approve(to, amount).send(
           {
             from: from,
-            value: 0,
-            gasPrice: web3.toHex(document.gas_price * Math.pow(10, 9))
+            value: '0x00',
+            gasPrice: window.web3.utils.toHex(document.gas_price * Math.pow(10, 9))
           }, function(error, result) {
             if (error) {
               _alert('Token request denied - no permission for this token');
@@ -59,7 +58,7 @@ $(document).ready(function() {
             }
             var tx = result;
 
-            $('#coinbase').val(web3.eth.coinbase);
+            $('#coinbase').val(document.coinbase);
             $('#token_name').val(token_name);
             $('#token_address').val(token_address);
             $('#contract_address').val(contract_address);

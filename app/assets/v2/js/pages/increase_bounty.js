@@ -2,13 +2,13 @@ load_tokens();
 
 // Wait until page is loaded, then run the function
 $(document).ready(function() {
-  waitforWeb3(actions_page_warn_if_not_on_same_network);
+  waitForWeb3(actions_page_warn_if_not_on_same_network);
   
   var is_funder = function() {
-    return document.is_funder_github_user_same && $('input[name=bountyOwnerAddress]').val() == web3.eth.coinbase;
+    return document.is_funder_github_user_same && $('input[name=bountyOwnerAddress]').val() == document.coinbase;
   };
 
-  waitforWeb3(function() {
+  waitForWeb3(function() {
     if (!is_funder()) {
       $('input, select').removeAttr('disabled');
     }
@@ -85,16 +85,14 @@ $(document).ready(function() {
     var token = tokenAddressToDetails(tokenAddress);
     var decimals = token['decimals'];
     var decimalDivisor = Math.pow(10, decimals);
-    var tokenName = token['name'];
-    var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
-    var account = web3.eth.coinbase;
+    const account = document.coinbase;
 
     amount = amount * decimalDivisor;
     // Create the bounty object.
     // This function instantiates a contract from the existing deployed Standard Bounties Contract.
     // bounty_abi is a giant object containing the different network options
     // bounty_address() is a function that looks up the name of the network and returns the hash code
-    var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+    const bounty = new window.web3.eth.Contract(bounty_abi, bounty_address());
 
     // setup inter page state
     localStorage[issueURL] = JSON.stringify({
@@ -176,15 +174,16 @@ $(document).ready(function() {
     }
 
     function do_as_funder() {
-      bounty.increasePayout(
+      bounty.methods.increasePayout(
         bountyId,
-        bountyAmount + amount,
-        amount,
+        window.web3.utils.toHex(bountyAmount + amount),
+        window.web3.utils.toHex(amount)
+      ).send(
         {
           from: account,
-          value: ethAmount,
-          gas: web3.toHex(65269),
-          gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
+          value: window.web3.utils.toHex(ethAmount),
+          gas: window.web3.utils.toHex(65269),
+          gasPrice: window.web3.utils.toHex(($('#gasPrice').val() * Math.pow(10, 9)))
         },
         web3Callback
       );

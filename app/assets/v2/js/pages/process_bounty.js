@@ -2,8 +2,7 @@
 window.onload = function() {
   // a little time for web3 injection
   setTimeout(function() {
-    waitforWeb3(actions_page_warn_if_not_on_same_network);
-    var account = web3.eth.accounts[0];
+    waitForWeb3(actions_page_warn_if_not_on_same_network);
 
     if (getParam('source')) {
       $('input[name=issueURL]').val(getParam('source'));
@@ -153,7 +152,7 @@ window.onload = function() {
         return;
       }
 
-      var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+      const bounty = new window.web3.eth.Contract(bounty_abi, bounty_address());
 
       loading_button($(this));
 
@@ -185,7 +184,7 @@ window.onload = function() {
           errormsg = gettext('No active funding found at this address.  Are you sure this is an active funded issue?');
         } else if (claimeeAddress == '0x0000000000000000000000000000000000000000') {
           errormsg = gettext('No claimee found for this bounty.');
-        } else if (fromAddress != web3.eth.coinbase) {
+        } else if (fromAddress !== document.coinbase) {
           errormsg = gettext('You can only process a funded issue if you submitted it initially.');
         }
 
@@ -201,7 +200,7 @@ window.onload = function() {
             localStorage[issueURL] = JSON.stringify({
               'timestamp': timestamp(),
               'dataHash': null,
-              'issuer': account,
+              'issuer': document.coinbase,
               'txid': result
             });
 
@@ -222,7 +221,13 @@ window.onload = function() {
         };
         // just sent payout
         var send_payout = function() {
-          bounty.acceptFulfillment(bountyId, fulfillmentId, {gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))}, final_callback);
+          bounty.methods.acceptFulfillment(bountyId, fulfillmentId).send(
+            {
+              from: document.coinbase,
+              gasPrice: window.web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9))
+            },
+            final_callback
+          );
         };
 
         // send both tip and payout
@@ -244,7 +249,7 @@ window.onload = function() {
       };
       // Get bountyId from the database
 
-      waitforWeb3(function() {
+      waitForWeb3(function() {
         var uri = '/api/v0.1/bounties/?github_url=' + issueURL + '&network=' + $('input[name=network]').val() + '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
 
         $.get(uri, apiCallback);

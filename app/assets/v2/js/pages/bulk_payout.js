@@ -75,16 +75,18 @@ $(document).ready(function($) {
           localStorage[$('#issueURL').val()] = JSON.stringify({
             timestamp: timestamp(),
             dataHash: null,
-            issuer: web3.eth.coinbase,
+            issuer: document.coinbase,
             txid: txid
           });
         }
       };
-      var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
-      var gas_dict = { gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)) };
+      const bounty = new window.web3.eth.Contract(bounty_abi, bounty_address());
+      const gas_dict = {
+        from: document.coinbase,
+        gasPrice: window.web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9))
+      };
 
-      bounty.killBounty(
-        $('#standard_bounties_id').val(),
+      bounty.methods.killBounty($('#standard_bounties_id').val()).send(
         gas_dict,
         callback
       );
@@ -203,12 +205,11 @@ var get_total_cost = function() {
   return total;
 };
 
-var update_registry = function(coinbase) {
+var update_registry = function() {
+  const coinbase = document.coinbase;
 
   if (!coinbase) {
-    web3.eth.getCoinbase(function(err, result) {
-      update_registry(result);
-    });
+    window.setTimeout(update_registry, 300);
     return;
   }
   

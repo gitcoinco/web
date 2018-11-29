@@ -35,9 +35,6 @@
   };
 }());
 
-new truncateHash();
-
-
 /**
  * Get address form metamask
  *
@@ -46,7 +43,7 @@ new truncateHash();
 */
 (function() {
   this.getaddress = function(elem, _address) {
-    const address = !_address ? _address = web3.eth.coinbase : _address;
+    const address = !_address ? _address = document.coinbase : _address;
 
     if (elem.nodeName == 'INPUT') {
       elem.value = address;
@@ -58,25 +55,30 @@ new truncateHash();
   };
 
   this.metamaskAddress = function() {
-    try {
-      const currentWallet = web3.eth.coinbase;
-      const elem = document.querySelectorAll('[data-metamask-address]');
-  
-      for (let i = 0; i < elem.length; ++i) {
-        new getaddress(elem[i], currentWallet);
-      }
-    } catch (ignore) {
-      console.log('%c error: web3 not defined', 'color: red');
+    const currentWallet = document.coinbase || '';
+    const elem = document.querySelectorAll('[data-metamask-address]');
+
+    for (let i = 0; i < elem.length; ++i) {
+      new getaddress(elem[i], currentWallet);
     }
   };
 }());
 
-new metamaskAddress();
+window.addEventListener('load',
+  function() {
+    new truncateHash();
 
-try {
-  web3.currentProvider.publicConfigStore.on('update', function(e) {
-    new metamaskAddress();
-  });
-} catch (ignore) {
-  console.log('%c error: web3 not defined', 'color: red');
-}
+    waitForWeb3(function() {
+      new metamaskAddress();
+    });
+
+    if (window.web3 && window.web3.currentProvider) {
+      window.web3.currentProvider.publicConfigStore.on('update',
+        function() {
+          new metamaskAddress();
+        }
+      );
+    }
+  },
+  false
+);

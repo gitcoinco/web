@@ -195,12 +195,12 @@ function purchaseOption(option, value, target) {
     } else {
       cost = ele.find('div').data('cost');
     }
-    var cost_eth = parseFloat(cost.replace('ETH', ''));
-    var cost_wei = web3.toWei(cost_eth);
+    var cost_eth = cost.replace('ETH', '');
+    var cost_wei = window.web3.utils.toWei(cost_eth);
 
     to_address = '0x00De4B13153673BCAE2616b67bf822500d325Fc3'; // TODO: make dynamic
-    web3.eth.sendTransaction({
-      'from': web3.eth.coinbase,
+    window.web3.eth.sendTransaction({
+      'from': document.coinbase,
       'to': to_address,
       'value': cost_wei
     }, function(error, result) {
@@ -217,7 +217,7 @@ function purchaseOption(option, value, target) {
           'txid': txid,
           'amount': cost_eth,
           'network': document.web3network,
-          'from_address': web3.eth.coinbase,
+          'from_address': document.coinbase,
           'to_address': to_address,
           'type': 'avatar',
           'option': option,

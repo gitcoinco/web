@@ -206,11 +206,11 @@ $(document).ready(function() {
 
     e.preventDefault();
 
-    if (typeof web3 == 'undefined') {
+    if (!window.web3.currentProvider) {
       _alert({ message: gettext('You must have a web3 enabled browser to do this.  Please download Metamask.') }, 'warning');
       return;
     }
-    if (!web3.eth.coinbase) {
+    if (!document.coinbase) {
       _alert({ message: gettext('Please unlock metamask.') }, 'warning');
       return;
     }
@@ -263,7 +263,7 @@ $(document).ready(function() {
 
     // get kudosPrice from the HTML
     kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice'));
-    kudosPriceInWei = new web3.BigNumber((kudosPriceInEth * 1.0 * Math.pow(10, 18)).toString());
+    kudosPriceInWei = window.web3.utils.toBN(Math.round(kudosPriceInEth * Math.pow(10, 18)).toString());
 
     var formData = {
       email: email,
@@ -323,7 +323,7 @@ $(document).ready(function() {
 
   });
 
-  waitforWeb3(function() {
+  waitForWeb3(function() {
     tokens(document.web3network).forEach(function(ele) {
       if (ele && ele.addr) {
         var html = '<option value=' + ele.addr + '>' + ele.name + '</option>';
@@ -339,7 +339,7 @@ $(document).ready(function() {
 // Step 3
 function sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, to_eth_address, expires, kudosId, tokenId, success_callback, failure_callback, is_for_bounty_fulfiller) {
 
-  if (typeof web3 == 'undefined') {
+  if (!window.web3.currentProvider) {
     _alert({ message: gettext('You must have a web3 enabled browser to do this.  Please download Metamask.') }, 'warning');
     failure_callback();
     return;
@@ -359,7 +359,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
   var creation_time = Math.round((new Date()).getTime() / 1000);
   var salt = parseInt((Math.random() * 1000000));
 
-  var amountInWei = amountInEth * 1.0 * weiConvert;
+  var amountInWei = Math.round(amountInEth * weiConvert);
   // validation
   // console.log(amountInEth)
   // console.log(amountInWei)
@@ -438,7 +438,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
         kudosId: kudosId,
         tokenId: tokenId,
         network: document.web3network,
-        from_address: web3.eth.coinbase,
+        from_address: document.coinbase,
         is_for_bounty_fulfiller: is_for_bounty_fulfiller,
         metadata: metadata
       })
@@ -496,15 +496,15 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
         // end post_send_callback
 
         // Pull up Kudos contract instance
-        var kudos_contract = web3.eth.contract(kudos_abi).at(kudos_address());
+        var kudos_contract = new window.web3.eth.Contract(kudos_abi, kudos_address());
 
         var numClones = 1;
-        var account = web3.eth.coinbase;
+        var account = document.coinbase;
 
         console.log('destinationAccount:' + destinationAccount);
 
         var kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice')) || $('.kudos-search').select2('data')[0].price_finney;
-        var kudosPriceInWei = new web3.BigNumber((kudosPriceInEth * 1.0 * Math.pow(10, 18)).toString());
+        var kudosPriceInWei = window.web3.utils.toBN(Math.round(kudosPriceInEth * Math.pow(10, 18)).toString());
 
         if (is_direct_to_recipient) {
           // Step 9
@@ -512,13 +512,21 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
           console.log('Using Kudos Direct Send (KDS)');
 
 
-          kudos_contract.clone(destinationAccount, tokenId, numClones, {from: account, value: kudosPriceInWei, gasPrice: web3.toHex(get_gas_price())
-          }, function(cloneError, cloneTxid) {
-            // getLatestId yields the last kudos_id
-            kudos_contract.getLatestId(function(error, kudos_id) {
-              post_send_callback(cloneError, cloneTxid, kudos_id);
-            });
-          });
+          kudos_contract.methods.clone(destinationAccount, tokenId, numClones).send(
+            {
+              from: account,
+              value: kudosPriceInWei,
+              gasPrice: window.web3.utils.toHex(get_gas_price())
+            },
+            function(cloneError, cloneTxid) {
+              // getLatestId yields the last kudos_id
+              kudos_contract.methods.getLatestId().call().then(
+                function(kudos_id) {
+                  post_send_callback(cloneError, cloneTxid, kudos_id);
+                }
+              );
+            }
+          );
 
           // Send Indirectly
         } else {
@@ -527,38 +535,38 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
           // estimate gas for cloning the kudos
           console.log('Using Kudos Indirect Send (KIS)');
 
-          params = {
-            tokenId: tokenId,
-            numClones: numClones,
-            from: account,
-            value: kudosPriceInWei.toString()
-          };
+          kudos_contract.methods.clone(destinationAccount, tokenId, numClones).estimateGas(
+            {
+              from: account,
+              value: kudosPriceInWei,
+              gasPrice: window.web3.utils.toHex(get_gas_price())
+            },
+            function(err, kudosGasEstimate) {
+              if (err) {
+                unloading_button($('#send'));
+                _alert('Got an error back from RPC node.  Please try again or contact support');
+                throw (err);
+              }
 
-          kudos_contract.clone.estimateGas(destinationAccount, tokenId, numClones, {from: account, value: kudosPriceInWei, gasPrice: web3.toHex(get_gas_price())
-          }, function(err, kudosGasEstimate) {
-            if (err) {
-              unloading_button($('#send'));
-              _alert('Got an error back from RPC node.  Please try again or contact support');
-              throw (err);
+              console.log('kudosGasEstimate: ' + kudosGasEstimate);
+              // Multiply gas * gas_price_gwei to get gas cost in wei.
+              kudosGasEstimateInWei = kudosGasEstimate * get_gas_price();
+              _alert({ message: gettext('You will now be asked to confirm a transaction to cover the cost of the Kudos and the gas money.') }, 'info');
+              console.log({ gas_money, kudosGasEstimateInWei, kudosPriceInWei: kudosPriceInWei.toString() });
+              window.web3.eth.sendTransaction(
+                {
+                  from: document.coinbase,
+                  to: destinationAccount,
+                  // Add gas_money + gas cost for kudos contract transaction + cost of kudos token (Gitcoin keeps this amount?)
+                  value: window.web3.utils.toHex(
+                    Math.round(gas_money + kudosGasEstimateInWei + parseInt(kudosPriceInWei.toString()))
+                  ),
+                  gasPrice: window.web3.utils.toHex(get_gas_price())
+                },
+                post_send_callback
+              );
             }
-
-            console.log('kudosGasEstimate: ' + kudosGasEstimate);
-            // Multiply gas * gas_price_gwei to get gas cost in wei.
-            kudosGasEstimateInWei = kudosGasEstimate * get_gas_price();
-            _alert({ message: gettext('You will now be asked to confirm a transaction to cover the cost of the Kudos and the gas money.') }, 'info');
-            money = {
-              gas_money: gas_money,
-              kudosGasEstimateInWei: kudosGasEstimateInWei,
-              kudosPriceInWei: kudosPriceInWei.toNumber()
-            };
-            console.log(money);
-            web3.eth.sendTransaction({
-              to: destinationAccount,
-              // Add gas_money + gas cost for kudos contract transaction + cost of kudos token (Gitcoin keeps this amount?)
-              value: gas_money + kudosGasEstimateInWei + kudosPriceInWei.toNumber(),
-              gasPrice: web3.toHex(get_gas_price())
-            }, post_send_callback);
-          });
+          );
         }
       }
     });
@@ -599,14 +607,15 @@ function checkNetwork(e) {
     return;
   }
 
-  var network = e ? e.networkVersion : web3.version.network;
+  var network = e ? getNetwork(e.networkVersion) : document.web3network;
 
   console.log(web3.currentProvider);
-  if (network === '4' || network === '1') {
+  if (network === 'rinkeby' || network === 'mainnet' || network === 'locked') {
     console.log(network);
   } else {
     error = true;
     _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
   }
 }
-checkNetwork();
+
+waitForWeb3(checkNetwork);

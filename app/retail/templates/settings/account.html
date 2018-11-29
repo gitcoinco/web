@@ -115,12 +115,12 @@
 {% block scripts %}
 <script>
   $(document).ready(function() {
-    $("#pull_from_metamask").on('click', function(e){
-      if(web3 && typeof web3.eth.coinbase != 'undefined'){
-        $("input[name=preferred_payout_address]").val(web3.eth.coinbase);
+    $("#pull_from_metamask").on('click', function(e) {
+      if (document.coinbase) {
+        $("input[name=preferred_payout_address]").val(document.coinbase);
       } else {
         e.preventDefault();
-        _alert("You must have Metamask installed to perform this action.");
+        _alert("You must have Metamask installed and unlocked to perform this action.");
       }
     });
     $("#delete_account").on('click', function(e) {

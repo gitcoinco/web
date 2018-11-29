@@ -1,9 +1,9 @@
 function signMsgAndCreateSubdomain(message, from) {
-  var msg = web3.toHex(message);
+  var msg = window.web3.utils.toHex(message);
   var params = [ msg, from ];
   var method = 'personal_sign';
 
-  web3.currentProvider.sendAsync({
+  window.web3.currentProvider.sendAsync({
     method,
     params,
     from

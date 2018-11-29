@@ -2,8 +2,7 @@
 window.onload = function() {
   // a little time for web3 injection
   setTimeout(function() {
-    waitforWeb3(actions_page_warn_if_not_on_same_network);
-    var account = web3.eth.accounts[0];
+    waitForWeb3(actions_page_warn_if_not_on_same_network);
 
     if (typeof localStorage['githubUsername'] != 'undefined') {
       if (!$('input[name=githubUsername]').val()) {
@@ -47,8 +46,8 @@ window.onload = function() {
 
         localStorage['githubUsername'] = githubUsername;
 
-        var account = web3.eth.coinbase;
-        var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+        const account = document.coinbase;
+        const bounty = new web3.eth.Contract(bounty_abi, bounty_address());
 
         ipfs.ipfsApi = IpfsApi(ipfsConfig);
         ipfs.setProvider(ipfsConfig);
@@ -134,11 +133,10 @@ window.onload = function() {
 
                 var bountyId = result['standard_bounties_id'];
 
-                bounty.fulfillBounty(
-                  bountyId,
-                  document.ipfsDataHash,
+                bounty.methods.fulfillBounty(bountyId, document.ipfsDataHash).send(
                   {
-                    gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
+                    from: document.coinbase,
+                    gasPrice: window.web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9))
                   },
                   web3Callback
                 );

@@ -18,7 +18,7 @@ var tokenAddressToDetailsByNetwork = function(addr, network) {
 
 var load_tokens = function() {
   window.addEventListener('load', function() {
-    waitforWeb3(function() {
+    waitForWeb3(function() {
       // add tokens to the submission form
       var tokenAddress = localStorage['tokenAddress'];
 

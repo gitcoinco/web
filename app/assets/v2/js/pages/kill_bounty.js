@@ -2,8 +2,7 @@
 window.onload = function() {
   // a little time for web3 injection
   setTimeout(function() {
-    waitforWeb3(actions_page_warn_if_not_on_same_network);
-    var account = web3.eth.accounts[0];
+    waitForWeb3(actions_page_warn_if_not_on_same_network);
 
     if (getParam('source')) {
       $('input[name=issueURL]').val(getParam('source'));
@@ -54,7 +53,7 @@ window.onload = function() {
         loading_button($('.js-submit'));
         const issueURL = data.issueURL;
 
-        var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+        const bounty = new window.web3.eth.Contract(bounty_abi, bounty_address());
 
         var apiCallback = function(results, status) {
           if (status != 'success') {
@@ -84,7 +83,7 @@ window.onload = function() {
             errormsg =
                 gettext('No active funded issue found at this address.  Are you sure this is an active funded issue?');
           }
-          if (fromAddress != web3.eth.coinbase) {
+          if (fromAddress !== document.coinbase) {
             errormsg =
                 gettext('Only the address that submitted this funded issue may kill the bounty.');
           }
@@ -101,7 +100,7 @@ window.onload = function() {
               localStorage[issueURL] = JSON.stringify({
                 timestamp: timestamp(),
                 dataHash: null,
-                issuer: account,
+                issuer: document.coinbase,
                 txid: result
               });
 
@@ -120,12 +119,13 @@ window.onload = function() {
             }
           };
 
-          bounty.killBounty(
-            bountyId,
-            { gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)) },
+          bounty.methods.killBounty(bountyId).send(
+            {
+              from: document.coinbase,
+              gasPrice: window.web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9))
+            },
             final_callback
           );
-
         };
         // Get bountyId from the database
         var uri = '/api/v0.1/bounties/?github_url=' + issueURL + '&network=' + $('input[name=network]').val() + '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();

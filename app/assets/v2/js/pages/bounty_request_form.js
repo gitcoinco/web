@@ -1,9 +1,9 @@
 
 // Overwrite from shared.js
 var trigger_form_hooks = function() {
-  callFunctionWhenweb3Available(
+  waitForWeb3(
     function() {
-      const addr = web3.eth.coinbase;
+      const addr = document.coinbase;
       const input = $('[name=eth_address]');
 
       if (addr && !input.val()) {

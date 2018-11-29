@@ -1,6 +1,6 @@
 window.addEventListener('load', function() {
   try {
-    if (web3.currentProvider.isTrust) {
+    if (window.web3.currentProvider && window.web3.currentProvider.isTrust) {
       $('#trust_label').show();
     } else {
       $('#metamask_label').show();
