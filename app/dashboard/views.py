@@ -1160,7 +1160,7 @@ def profile(request, handle):
 
             context['activity_tabs'] = activity_tabs
 
-    except (Http404, ProfileHiddenException):
+    except (Http404, ProfileHiddenException, ProfileNotFoundException):
         status = 404
         context = {
             'hidden': True,
