@@ -59,7 +59,7 @@ def grants(request):
         }
         return TemplateResponse(request, 'grants/stub/index.html', params)
 
-    limit = request.GET.get('limit', 25)
+    limit = request.GET.get('limit', 24)
     page = request.GET.get('page', 1)
     sort = request.GET.get('sort_option', '-created_on')
 
