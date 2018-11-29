@@ -22,14 +22,30 @@
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
     <style>
+      h1 {
+        color: #666666;
+      }
+
+      .text {
+        color: #9B9B9B;
+      }
+
       .grant-title {
+        background-color: #F2F6F9;
+      }
+
+      .grant-title a {
           text-decoration: none;
           color: #0D0764;
       }
 
-      .shrug_bot {
+      .obiwan {
         animation : wiggle 500ms ease-in-out;
         animation-iteration-count: 1;
+      }
+
+      .btn-gc {
+        border-radius: 3px;
       }
 
       @keyframes wiggle {
@@ -48,22 +64,21 @@
       {% include 'grants/nav.html' %}
     </div>
 
-    <div class="container my-2 my-md-5">
+    <div class="container my-5">
       <div class="row">
-        <div class="col-12 my-md-5">
-          <h1 class="font-title-xl mb-3">{% trans "Are you at the right place?" %}</h1>
-          <p class="font-title mb-0 font-weight-semibold">
-            <a class="grant-title" href="{% url 'grants:details' grant.id grant.slug %}">
+        <div class="col-12 my-5 mx-auto col-md-6">
+          <img class="obiwan my-4" src="{% static "v2/images/obiwan-bot.svg" %}">
+          <h1 class="font-title-xl mt-4 mb-2">{% trans "This isn’t the page you’re looking for." %}</h1>
+          <p class="font-title text">Oops! {{ text }}</p>
+          <p class="font-subheader mt-4 mb-0 font-weight-semibold grant-title py-3">
+            <a href="{% url 'grants:details' grant.id grant.slug %}">
               {{grant.title}}
             </a>
           </p>
-          <p class="font-title">{{ text }}</p>
-          <img class="shrug_bot my-5" style="max-width: 25rem;" src="{% static "v2/images/shrug_bot.png" %}">
         </div>
-        <div class="col-12">
-          <a class="btn-gc btn-gc-blue" href="{% url 'grants:details' grant.id grant.slug %}">
-            <img class="mr-1 white-icon" src="{% static "v2/images/grants/icons/white.svg" %}">
-            {% trans "Back to grant." %}
+        <div class="col-12 mt-3">
+          <a class="button-lg btn-gc btn-gc-blue py-3 px-5" href="{% url 'grants:details' grant.id grant.slug %}">
+            {% trans "Back to Grant" %}
           </a>
         </div>
       </div>

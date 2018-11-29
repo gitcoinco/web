@@ -14,13 +14,19 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}			
+{% load i18n static %}
 <div class="row text-center my-4">
-  <div class="col-12">
+  <div class="col-12 mt-4">
     <img width="240px" height="225px" src="{% static "v2/images/tree.png" %}"/>
   </div>
   <div class="col-12 no-profile-textcolor">
-    <p class="mb-0">{% trans 'Oops! Looks like you aren\'t supporting any grants yet.' %}</p>
+    <p class="mt-2 mb-0">
+      {% if tab == 'create' %}
+        {% trans "Oops! Looks like you haven't created any grants yet." %}
+      {% else %}
+        {% trans "Oops! Looks like you aren\'t supporting any grants yet." %}
+      {% endif %}
+    </p>
     <p>{% trans 'In the meantime, here are some things you can do:' %}</p>
   </div>
 </div>

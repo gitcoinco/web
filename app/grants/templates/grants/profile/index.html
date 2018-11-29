@@ -51,7 +51,7 @@
                 </div>
               </div>
             {% else %}
-              {% include 'grants/profile/none.html' %}
+              {% include 'grants/profile/none.html' with tab='support' %}
             {% endif %}
           </div>
           <div id="section-created" class="tab-section">
@@ -64,7 +64,7 @@
                 </div>
               </div>
             {% else %}
-              {% include 'grants/profile/none.html' %}
+              {% include 'grants/profile/none.html' with tab='create' %}
             {% endif %}
           </div>
         </div>
