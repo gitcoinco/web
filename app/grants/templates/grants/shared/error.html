@@ -1,0 +1,72 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load static humanize i18n %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+    <style>
+      .grant-title {
+          text-decoration: none;
+          color: #0D0764;
+      }
+
+      .shrug_bot {
+        animation : wiggle 500ms ease-in-out;
+        animation-iteration-count: 1;
+      }
+
+      @keyframes wiggle {
+        0% { transform: rotate(6deg); }
+        25% { transform: rotate(-6deg); }
+        50% { transform: rotate(9deg); }
+        75% { transform: rotate(-3deg); }
+        100% { transform: rotate(0deg); }
+      }
+    </style>
+  </head>
+  <body class="interior {{ active }} grant text-center">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'grants/nav.html' %}
+    </div>
+
+    <div class="container my-2 my-md-5">
+      <div class="row">
+        <div class="col-12 my-md-5">
+          <h1 class="font-title-xl mb-3">{% trans "Are you at the right place?" %}</h1>
+          <p class="font-title mb-0 font-weight-semibold">
+            <a class="grant-title" href="{% url 'grants:details' grant.id grant.slug %}">
+              {{grant.title}}
+            </a>
+          </p>
+          <p class="font-title">{{ text }}</p>
+          <img class="shrug_bot my-5" style="max-width: 25rem;" src="{% static "v2/images/shrug_bot.png" %}">
+        </div>
+        <div class="col-12">
+          <a class="btn-gc btn-gc-blue" href="{% url 'grants:details' grant.id grant.slug %}">
+            <img class="mr-1 white-icon" src="{% static "v2/images/grants/icons/white.svg" %}">
+            {% trans "Back to grant." %}
+          </a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

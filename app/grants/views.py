@@ -266,6 +266,16 @@ def grant_fund(request, grant_id,  grant_slug):
         raise Http404
 
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
+
+    if grant.active == False:
+        params = {
+            'active': 'grant_error',
+            'title': _('Grant Ended'),
+            'grant': grant,
+            'text': _('This Grant is not longer active.')
+        }
+        return TemplateResponse(request, 'grants/shared/error.html', params)
+
     # make sure a user can only create one subscription per grant
     if request.method == 'POST':
         subscription = Subscription()
@@ -306,6 +316,20 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
     grant = getattr(subscription, 'grant', None)
     now = datetime.datetime.now()
     profile = request.user.profile if request.user.is_authenticated else None
+
+    if subscription.active == False:
+        params = {
+            'active': 'grant_error',
+            'title': _('Grant Subscription Cancelled'),
+            'grant': grant
+        }
+
+        if grant.active:
+             params['text'] = _('This Grant subscription has already been cancelled.')
+        else:
+             params['text'] = _('This Subscription is already cancelled as the grant is not longer active.')
+
+        return TemplateResponse(request, 'grants/shared/error.html', params)
 
     if request.method == 'POST' and (
         profile == subscription.contributor_profile or request.user.has_perm('grants.change_subscription')
