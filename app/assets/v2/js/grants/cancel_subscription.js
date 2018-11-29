@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-window.onload = function() {
+$(document).ready(() => {
   $('#period').select2();
 
 
@@ -13,11 +13,6 @@ window.onload = function() {
 
       // need to delete subscription from miner so it isn't checked every 15 seconds.
       //
-      // let compiledSubscription;
-      //
-      // if (data.contract_version == 0) {
-      //   compiledSubscription = compiledSubscription0;
-      // }
 
       let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, data.contract_address);
 
@@ -43,7 +38,6 @@ window.onload = function() {
             .on('transactionHash', function(hash) {
               console.log('hash', hash);
 
-              document.issueURL = document.getElementById('grant-link').href;
               enableWaitState('#grants_form');
 
               deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
@@ -74,7 +68,6 @@ window.onload = function() {
             })
             .on('confirmation', function(confirmationNumber, receipt) {
               console.log('receipt', receipt);
-              window.location = $('#grant-link').val();
             })
             .on('error', function(err) {
               console.log('err', err);
@@ -85,4 +78,4 @@ window.onload = function() {
     }
   });
 
-};
+});
