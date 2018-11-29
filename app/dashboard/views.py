@@ -1351,6 +1351,10 @@ def apitos(request):
     return TemplateResponse(request, 'legal/privacy.html', {})
 
 
+def labs(request):
+    return TemplateResponse(request, 'legal/privacy.html', {})
+
+
 def toolbox(request):
     access_token = request.GET.get('token')
     if access_token and is_github_token_valid(access_token):

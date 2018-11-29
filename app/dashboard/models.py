@@ -1562,6 +1562,17 @@ class ProfileQuerySet(models.QuerySet):
         return self.filter(hide_profile=True)
 
 
+class LabsResearch(models.Model):
+    """Define the structure of Labs Research object."""
+
+    title = models.CharField(max_length=255)
+    description = models.CharField(max_length=1000)
+    link = models.URLField(null=True)
+    image = models.FileField()
+
+    def __str__(self):
+        return self.title
+
 class Profile(SuperModel):
     """Define the structure of the user profile.
 
