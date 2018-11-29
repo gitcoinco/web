@@ -45,7 +45,7 @@
       [[/if]]
     </div>
     <div class="mt-2">
-      [[if expiredIcon === "true"]]<img src="{% static "v2/images/time-expired.svg" %}" class="expired-icon" />[[/if]][[:expired]]
+      [[if expired !== ""]]<i class="far fa-clock expired-icon"></i>[[/if]][[:expired]]
     </div>
   </div>
   [[if activities.length]]
