@@ -419,6 +419,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 'bounty_type': metadata.get('bountyType', ''),
                 'funding_organisation': metadata.get('fundingOrganisation', ''),
                 'project_length': metadata.get('projectLength', ''),
+                'estimated_hours': metadata.get('estimatedHours'),
                 'experience_level': metadata.get('experienceLevel', ''),
                 'project_type': schemes.get('project_type', 'traditional'),
                 'permission_type': schemes.get('permission_type', 'permissionless'),
