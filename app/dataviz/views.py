@@ -271,7 +271,7 @@ def funnel(request):
         'keys': ['sessions', 'bounties_alltime', 'bounties_fulfilled', ],
         'data': []
     },
-                {
+               {
                    'title': 'web => bounties_posted => bounties_fulfilled (detail)',
                    'keys': [
                        'sessions', 'bounties_alltime', 'bounties_started_total', 'bounties_submitted_total',

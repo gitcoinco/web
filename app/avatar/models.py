@@ -47,7 +47,7 @@ class Avatar(SuperModel):
 
     ICON_SIZE = (215, 215)
 
-    config = JSONField( default=dict, help_text=_('The JSON configuration of the custom avatar.'), )
+    config = JSONField(default=dict, help_text=_('The JSON configuration of the custom avatar.'), )
     # Github Avatar
     github_svg = models.FileField(
         upload_to=get_upload_filename, null=True, blank=True, help_text=_('The Github avatar SVG.')

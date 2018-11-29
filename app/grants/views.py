@@ -130,8 +130,10 @@ def grant_details(request, grant_id, grant_slug):
             grant.admin_profile = admin_profile
             grant.description = request.POST.get('edit-description')
             team_members = request.POST.getlist('edit-grant_members[]')
+            team_members.append(str(admin_profile.id))
             grant.team_members.set(team_members)
             grant.save()
+            return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
 
     params = {

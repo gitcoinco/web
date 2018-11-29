@@ -72,7 +72,7 @@ def get_avatar_context():
             'options': ('0', '1', '2', '3', '4'),
             'paid_options': {}
         },
-                    {
+                     {
                          'name': 'Makeup',
                          'title': 'Pick a makeup style',
                          'options': (
