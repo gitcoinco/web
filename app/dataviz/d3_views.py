@@ -162,7 +162,7 @@ def viz_chord(request, key='bounties_paid'):
         output = "\n".join(output_rows)
         return HttpResponse(output)
 
-    params = {'key': key, 'page_route': 'spiral', 'viz_type': key, }
+    params = {'key': key, 'page_route': 'spiral', 'type_options': type_options, 'viz_type': key, }
     return TemplateResponse(request, 'dataviz/chord.html', params)
 
 

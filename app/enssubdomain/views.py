@@ -146,7 +146,7 @@ def set_owner(signer, github_handle, nonce, gas_multiplier=1.101):
     ens_contract = w3.eth.contract(address=ENS_MAINNET_ADDR, abi=ens_abi, )
 
     txn = ens_contract.functions.setSubnodeOwner(
-    dot_eth_namehash(owned), label_to_hash(label), Web3.toChecksumAddress(settings.ENS_OWNER_ACCOUNT),
+        dot_eth_namehash(owned), label_to_hash(label), Web3.toChecksumAddress(settings.ENS_OWNER_ACCOUNT),
     ).buildTransaction(transaction)
     signed_txn = w3.eth.account.signTransaction(txn, private_key=settings.ENS_PRIVATE_KEY)
     try:
