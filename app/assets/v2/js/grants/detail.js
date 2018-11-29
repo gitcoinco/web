@@ -71,32 +71,65 @@ $(document).ready(function() {
     editableFields.forEach(field => disableEdit(field));
   });
 
-  $('#cancel_grant').click(function() {
+  $('#cancel_grant').on('click', function(e) {
+    var img_src = static_url + 'v2/images/grants/cancel-grants-icon.png';
+    var content = $.parseHTML(
+      '<div>' +
+        '<div class="row">' +
+          '<div class="col-12 closebtn">' +
+            '<a rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">' +
+              '<span aria-hidden="true">&times;</span>' +
+            '</a>' +
+          '</div>' +
+          '<div class="col-12 pt-2 pb-2 text-center">' +
+            '<h2 class="font-title">' + gettext('Are you sure you want to cancel this grant?') + '</h2>' +
+          '</div>' +
+          '<div class="col-12 text-center">' +
+            '<img src="' + img_src + '" />' +
+          '</div>' +
+          '<div class="col-12 pt-2 pb-2 font-body">' +
+            '<p>' + gettext('By clicking Cancel, you will be cancelling this grant from Gitcoin.') + '</p>' +
+            '<ul><li>' + gettext('Your grant will stay in Gitcoin, but ') + '<b>' + gettext('marked as inactive.') + '</b></li>' +
+            '<li>' + gettext('Funds received till now ') + '<b>' + gettext('will not be refunded ') + '</b>' + gettext('to the contributors.') + '</li>' +
+            '<li>' + gettext('Once cancelled, it is ') + '<b>' + gettext('not possible to restart the grant, ') + '</b>' + gettext('as the smart contract will be destroyed.') + '</li></ul>' +
+            '<p>' + gettext('To relaunch the grant, you need to create a new grant.') + '</p>' +
+          '</div>' +
+          '<div class="col-12 mt-4 mb-2 text-right font-caption">' +
+            '<a rel="modal:close" href="javascript:void" aria-label="Close dialog" class="button button--primary-o mr-3">' + gettext('No, I don\'t want to cancel') + '</a>' +
+            '<button class="modal-cancel button button--warning">' + gettext('Cancel this Grant') + '</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    );
+    var modal = $(content).appendTo('#js-cancel_grant').modal({
+      modalClass: 'modal delete_account'
+    });
 
-    let contract_address = $('#contract_address').val();
+    $('.modal-cancel').on('click', function(e) {
+      let contract_address = $('#contract_address').val();
+      let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, contract_address);
 
-    let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, contract_address);
-
-    web3.eth.getAccounts(function(err, accounts) {
-      deployedSubscription.methods.endContract()
-        .send({from: accounts[0], gasPrice: 4000000000})
-        .on('transactionHash', function() {
-          document.issueURL = document.getElementById('form--input__reference-url').value;
-          enableWaitState('#grants-details');
-        })
-        .on('confirmation', function(confirmationNumber, receipt) {
-          $.ajax({
-            type: 'post',
-            url: '',
-            data: { 'contract_address': contract_address},
-            success: function(json) {
-              window.location.reload(false);
-            },
-            error: function() {
-              alert('Canceling you grant failed to save. Please try again.');
-            }
+      web3.eth.getAccounts(function(err, accounts) {
+        deployedSubscription.methods.endContract()
+          .send({from: accounts[0], gasPrice: 4000000000})
+          .on('transactionHash', function() {
+            document.issueURL = document.getElementById('form--input__reference-url').value;
+            enableWaitState('#grants-details');
+          })
+          .on('confirmation', function(confirmationNumber, receipt) {
+            $.ajax({
+              type: 'post',
+              url: '',
+              data: { 'contract_address': contract_address},
+              success: function(json) {
+                window.location.reload(false);
+              },
+              error: function() {
+                alert('Canceling you grant failed to save. Please try again.');
+              }
+            });
           });
-        });
+      });
     });
   });
 
