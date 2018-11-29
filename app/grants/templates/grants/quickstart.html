@@ -89,7 +89,7 @@
                     <h2 class="font-title">{%trans "Contribute with any ERC-20 token" %}</h2>
                     <p>
                       {%trans "If the grant owner does not specify a required token, you can contribute with any token!" %}<br>
-                      {%trans "ETH, DAI, it’s up to you." %}
+                      {%trans "WETH, DAI. It’s up to you." %}
                     </p>
                   </div>
                   <div class="mb-3 pb-1">
@@ -109,7 +109,7 @@
                   <p class="font-body mt-3">
                     {%trans "Have any questions?" %} <br>
                     {%trans "Reach out to a Gitcoin Core Team member on" %}
-                    <a href="https://gitcoincommunity.slack.com/" target="_blank" rel="noopener noreferrer">
+                    <a href="{% url 'slack' %}" target="_blank" rel="noopener noreferrer">
                       Slack
                     </a>
                   </p>
@@ -135,10 +135,9 @@
                     </p>
                   </div>
                   <div class="mb-3 pb-1">
-                    <h2 class="font-title">{%trans "Contribute with any ERC-20 token" %}</h2>
+                    <h2 class="font-title">{%trans "Supports any ERC-20 token" %}</h2>
                     <p>
-                      {%trans "If the grant owner does not specify a required token, you can contribute with any token!" %}<br>
-                      {%trans ", it’s up to you." %}
+                      {%trans "You can request for a grant with a specific ERC-20 token or leave the choice to your grant supporters!" %}
                     </p>
                   </div>
                   <div class="mb-3 pb-1">
@@ -157,7 +156,7 @@
                   <p class="font-body mt-3">
                     {%trans "Have any questions?" %} <br>
                     {%trans "Reach out to a Gitcoin Core Team member on" %}
-                    <a href="https://gitcoincommunity.slack.com/" target="_blank" rel="noopener noreferrer">
+                    <a href="{% url 'slack' %}" target="_blank" rel="noopener noreferrer">
                       Slack
                     </a>
                   </p>
