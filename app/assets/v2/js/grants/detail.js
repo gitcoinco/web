@@ -52,10 +52,10 @@ $(document).ready(function() {
         'edit-grant_members[]': edit_grant_members
       },
       success: function(json) {
-        console.log('save details POST successful');
+        window.location.reload(false);
       },
       error: function() {
-        console.log('save details POST failure');
+        alert("Your edits failed to save. Please try again.")
       }
     });
 
@@ -81,6 +81,7 @@ $(document).ready(function() {
       deployedSubscription.methods.endContract()
         .send({from: accounts[0], gasPrice: 4000000000})
         .on('transactionHash', function() {
+          document.issueURL = document.getElementById('form--input__reference-url').value;
           enableWaitState('#grants-details');
         })
         .on('confirmation', function(confirmationNumber, receipt) {
@@ -89,10 +90,10 @@ $(document).ready(function() {
             url: '',
             data: { 'contract_address': contract_address},
             success: function(json) {
-              console.log('cancel grant POST successful');
+              window.location.reload(false);
             },
             error: function() {
-              console.log('failure');
+              alert("Canceling you grant failed to save. Please try again.")
             }
           });
         });
