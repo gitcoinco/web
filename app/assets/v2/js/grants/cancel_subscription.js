@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-window.onload = function() {
+$(document).ready(() => {
   $('#period').select2();
 
 
@@ -13,11 +13,6 @@ window.onload = function() {
 
       // need to delete subscription from miner so it isn't checked every 15 seconds.
       //
-      // let compiledSubscription;
-      //
-      // if (data.contract_version == 0) {
-      //   compiledSubscription = compiledSubscription0;
-      // }
 
       let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, data.contract_address);
 
@@ -85,4 +80,4 @@ window.onload = function() {
     }
   });
 
-};
+});

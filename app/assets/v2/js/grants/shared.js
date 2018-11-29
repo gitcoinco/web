@@ -1,6 +1,26 @@
 // outside of document.ready to be in global scope
 var compiledSubscription;
 
+// Waiting State screen
+var enableWaitState = container => {
+  $(container).hide();
+  $('.interior .body').addClass('open');
+  $('.interior .body').addClass('loading');
+  $('.grant_waiting').show();
+  waitingStateActive();
+};
+
+var waitingStateActive = function() {
+  $('.bg-container').show();
+  $('.loading_img').addClass('waiting-state ');
+  $('.waiting_room_entertainment').show();
+  $('.issue-url').html('<a href="' + document.issueURL + '">' + document.issueURL + '</a>');
+  var secondsBetweenQuoteChanges = 30;
+
+  waitingRoomEntertainment();
+  var interval = setInterval(waitingRoomEntertainment, secondsBetweenQuoteChanges * 1000);
+};
+
 $(document).ready(function() {
 
   let contractVersion = $('#contract_version').val();
@@ -90,12 +110,3 @@ $(document).ready(function() {
     }
   };
 });
-
-// Waiting State screen
-const enableWaitState = container => {
-  $(container).hide();
-  $('.interior .body').addClass('open');
-  $('.interior .body').addClass('loading');
-  $('.grant_waiting').show();
-  waitingStateActive();
-};
