@@ -75,7 +75,7 @@ $(document).ready(function() {
     var img_src = static_url + 'v2/images/grants/cancel-grants-icon.png';
     var content = $.parseHTML(
       '<div>' +
-        '<div class="row">' +
+        '<div class="row px-5">' +
           '<div class="col-12 closebtn">' +
             '<a rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">' +
               '<span aria-hidden="true">&times;</span>' +
@@ -96,13 +96,13 @@ $(document).ready(function() {
           '</div>' +
           '<div class="col-12 mt-4 mb-2 text-right font-caption">' +
             '<a rel="modal:close" href="javascript:void" aria-label="Close dialog" class="button button--primary-o mr-3">' + gettext('No, I don\'t want to cancel') + '</a>' +
-            '<button class="modal-cancel button button--warning">' + gettext('Cancel this Grant') + '</button>' +
+            '<button class="modal-cancel-grants button button--warning">' + gettext('Cancel this Grant') + '</button>' +
           '</div>' +
         '</div>' +
       '</div>'
     );
     var modal = $(content).appendTo('#js-cancel_grant').modal({
-      modalClass: 'modal delete_account'
+      modalClass: 'modal cancel_grants'
     });
 
     $('.modal-cancel').on('click', function(e) {
@@ -114,6 +114,7 @@ $(document).ready(function() {
           .send({from: accounts[0], gasPrice: 4000000000})
           .on('transactionHash', function() {
             document.issueURL = document.getElementById('form--input__reference-url').value;
+            $('.modal .close').trigger('click');
             enableWaitState('#grants-details');
           })
           .on('confirmation', function(confirmationNumber, receipt) {
