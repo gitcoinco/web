@@ -2039,5 +2039,66 @@
     - gitcoin 
     - thanksgiving
   image: turkey.svg
+- name: ether_gun
+  description: Know someone who produces and distributes value at a rapid clip?  Send them the Ether Gun Kudos!
+  priceFinney: 4
+  numClonesAllowed: 251
+  tags: 
+    - gitcoin 
+    - value
+    - fun
+    - ether
+  image: ethergun.svg
+- name: helpotron
+  description: The helpotron is your handy, helpful, robot friend.  This kudos is for any collaborator that you find really "helpful"!
+  priceFinney: 3
+  numClonesAllowed: 255
+  tags: 
+    - gitcoin 
+    - helpful
+    - sot skills
+    - fun
+    - robot
+  image: helpotron.svg
+- name: top_leaderboard
+  description: This kudos is for those who have been at the top of the Gitcoin Leaderboard at gitcoin.co/leaderboard
+  priceFinney: 15
+  numClonesAllowed: 300
+  tags: 
+    - gitcoin 
+    - leaderboard
+  image: trophy_1.svg
+- name: top_two_leaderboard
+  description: This kudos is for those who have been in the top 2 of the Gitcoin Leaderboard at gitcoin.co/leaderboard
+  priceFinney: 10
+  numClonesAllowed: 350
+  tags: 
+    - gitcoin 
+    - leaderboard
+  image: trophy_2.svg
+- name: top_three_leaderboard
+  description: This kudos is for those who have been in the top 3 of the Gitcoin Leaderboard at gitcoin.co/leaderboard
+  priceFinney: 9
+  numClonesAllowed: 400
+  tags: 
+    - gitcoin 
+    - leaderboard
+  image: trophy_3.svg
+- name: top_four_leaderboard
+  description: This kudos is for those who have been in the top 4 of the Gitcoin Leaderboard at gitcoin.co/leaderboard
+  priceFinney: 8
+  numClonesAllowed: 500
+  tags: 
+    - gitcoin 
+    - leaderboard
+  image: trophy_4.svg
+- name: top_five_leaderboard
+  description: This kudos is for those who have been in the top 5 of the Gitcoin Leaderboard at gitcoin.co/leaderboard
+  priceFinney: 7
+  numClonesAllowed: 500
+  tags: 
+    - gitcoin 
+    - leaderboard
+  image: trophy_5.svg
 
 
