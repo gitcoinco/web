@@ -22,6 +22,7 @@ from django.core.exceptions import SuspiciousOperation
 from app.utils import setup_lang, sync_profile
 from dashboard.utils import is_blocked
 
+
 def save_profile(backend, user, response, request, *args, **kwargs):
     """Associate a Profile with a User."""
     if backend.name == 'github':

@@ -20,10 +20,10 @@ import time
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-from dashboard.utils import is_blocked
 
 from app.utils import sync_profile
 from dashboard.models import Bounty, Profile
+from dashboard.utils import is_blocked
 from marketing.utils import is_deleted_account
 
 

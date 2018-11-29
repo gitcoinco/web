@@ -2735,4 +2735,3 @@ class BlockedUser(SuperModel):
     def __str__(self):
         """Return the string representation of a Bounty."""
         return f"{self.handle}"
-

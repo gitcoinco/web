@@ -35,7 +35,6 @@ from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
     maybe_market_to_user_discord, maybe_market_to_user_slack,
 )
-from dashboard.utils import is_blocked
 from dashboard.tokens import addr_to_token
 from economy.utils import convert_amount
 from git.utils import get_gh_issue_details, get_url_dict
@@ -277,6 +276,7 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
         QuerySet: The BountyFulfillments queryset.
 
     """
+    from dashboard.utils import is_blocked
     for fulfillment in fulfillments:
         kwargs = {}
         accepted_on = None
