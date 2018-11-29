@@ -49,7 +49,9 @@ class GrantQuerySet(models.QuerySet):
 
         """
         return self.filter(
-            Q(description__icontains=keyword) | Q(title__icontains=keyword) | Q(reference_url__icontains=keyword)
+            Q(description__icontains=keyword) |
+            Q(title__icontains=keyword) |
+            Q(reference_url__icontains=keyword)
         )
 
 
@@ -162,6 +164,7 @@ class Grant(SuperModel):
         return ((self.amount_received / self.amount_goal) * 100)
 
 
+
 class Milestone(SuperModel):
     """Define the structure of a Grant Milestone"""
 
@@ -198,9 +201,16 @@ class UpdateQuerySet(models.QuerySet):
 
 class Update(SuperModel):
     """Define the structure of a Grant Update."""
-
-    title = models.CharField(default='', max_length=255, help_text=_('The title of the Grant.'))
-    description = models.TextField(default='', blank=True, help_text=_('The description of the Grant.'))
+    title = models.CharField(
+        default='',
+        max_length=255,
+        help_text=_('The title of the Grant.')
+    )
+    description = models.TextField(
+        default='',
+        blank=True,
+        help_text=_('The description of the Grant.')
+    )
     grant = models.ForeignKey(
         'grants.Grant',
         related_name='updates',

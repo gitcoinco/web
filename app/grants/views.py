@@ -37,11 +37,7 @@ from dashboard.models import Profile
 from grants.forms import MilestoneForm
 from grants.models import Grant, Milestone, Subscription, Update
 from marketing.mails import (
-    grant_cancellation,
-    new_grant,
-    new_supporter,
-    subscription_terminated,
-    support_cancellation,
+    grant_cancellation, new_grant, new_supporter, subscription_terminated, support_cancellation,
     thank_you_for_supporting,
 )
 from marketing.models import Keyword
@@ -59,7 +55,10 @@ def get_keywords():
 def grants(request):
     """Handle grants explorer."""
     if not request.user.has_perm('grants.view_grant'):
-        params = {'active': 'dashboard', 'title': _('Grants Explorer')}
+        params = {
+            'active': 'dashboard',
+            'title': _('Grants Explorer')
+        }
         return TemplateResponse(request, 'grants/stub/index.html', params)
 
     limit = request.GET.get('limit', 25)
@@ -97,9 +96,11 @@ def grant_details(request, grant_id, grant_slug):
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
 
     try:
-        grant = Grant.objects.prefetch_related('subscriptions', 'milestones', 'updates').get(
-            pk=grant_id, slug=grant_slug
-        )
+        grant = Grant.objects.prefetch_related(
+            'subscriptions',
+            'milestones',
+            'updates'
+        ).get(pk=grant_id, slug=grant_slug)
         milestones = grant.milestones.order_by('due_date')
         updates = grant.updates.order_by('-created_on')
         subscriptions = grant.subscriptions.filter(active=True)
@@ -132,6 +133,7 @@ def grant_details(request, grant_id, grant_slug):
             team_members = request.POST.getlist('edit-grant_members[]')
             grant.team_members.set(team_members)
             grant.save()
+
 
     params = {
         'active': 'grant_details',
@@ -242,7 +244,7 @@ def milestones(request, grant_id, grant_slug):
 
 
 @login_required
-def grant_fund(request, grant_id, grant_slug):
+def grant_fund(request, grant_id,  grant_slug):
     """Handle grant funding."""
     try:
         grant = Grant.objects.get(pk=grant_id, slug=grant_slug)
@@ -315,7 +317,11 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
     profile = request.user.profile if request.user.is_authenticated else None
 
     if not subscription.active:
-        params = {'active': 'grant_error', 'title': _('Grant Subscription Cancelled'), 'grant': grant}
+        params = {
+            'active': 'grant_error',
+            'title': _('Grant Subscription Cancelled'),
+            'grant': grant
+        }
 
         if grant.active:
             params['text'] = _('This Grant subscription has already been cancelled.')
