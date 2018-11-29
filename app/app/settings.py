@@ -109,7 +109,6 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'bounty_requests',
     'perftools',
-
     # wagtail
     'taggit',
     'modelcluster',
@@ -125,6 +124,7 @@ INSTALLED_APPS = [
     'wagtail.admin',
     'wagtail.core',
     'cms',
+    'revenue',
 ]
 
 MIDDLEWARE = [
