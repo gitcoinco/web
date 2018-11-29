@@ -35,8 +35,7 @@ logger = logging.getLogger(__name__)
 formatter = '%(levelname)s:%(name)s.%(funcName)s:%(message)s'
 
 
-def mint_kudos(kudos_contract, kudos, account, private_key, mint_to=None, live=False):
-
+def mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint_to=None, live=False, skip_sync=True):
     image_path = kudos.get('artwork_url')
     if not image_path:
         image_name = urllib.parse.quote(kudos.get('image'))
@@ -50,8 +49,6 @@ def mint_kudos(kudos_contract, kudos, account, private_key, mint_to=None, live=F
                 image_path = f'v2/images/kudos/{image_name}'
             else:
                 raise RuntimeError('Need to set the image path for that network')
-        else:
-            image_path = ''
 
     if kudos_contract.network == 'rinkeby':
         external_url = f'https://stage.gitcoin.co/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
@@ -59,7 +56,8 @@ def mint_kudos(kudos_contract, kudos, account, private_key, mint_to=None, live=F
         external_url = f'https://gitcoin.co/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
     elif kudos_contract.network == 'localhost':
         external_url = f'http://localhost:8000/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
-
+    else:
+        raise RuntimeError('Need to set the external url for that network')
 
     attributes = []
     # "trait_type": "investor_experience",
@@ -110,12 +108,12 @@ def mint_kudos(kudos_contract, kudos, account, private_key, mint_to=None, live=F
         'attributes': attributes
     }
 
-    if not mint_to:
-        mint_to = kudos_contract._w3.toChecksumAddress(settings.KUDOS_OWNER_ACCOUNT)
-    elif not kudos.get('to_address', None):
+    if kudos.get('to_address', None):
         mint_to = kudos_contract._w3.toChecksumAddress(kudos.get('to_address'))
-    else:
+    elif mint_to:
         mint_to = kudos_contract._w3.toChecksumAddress(mint_to)
+    else:
+        mint_to = kudos_contract._w3.toChecksumAddress(settings.KUDOS_OWNER_ACCOUNT)
 
     is_live = live
     if is_live:
@@ -183,4 +181,7 @@ class Command(BaseCommand):
         for __, kudos in enumerate(all_kudos):
             if kudos_filter not in kudos['name']:
                 continue
-            mint_kudos(kudos_contract, kudos, account, private_key, options['mint_to'], options['live'])
+            mint_kudos(
+                kudos_contract, kudos, account, private_key, gas_price_gwei, options['mint_to'], options['live'],
+                skip_sync
+            )

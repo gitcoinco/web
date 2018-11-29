@@ -46,6 +46,7 @@ import marketing.views
 import marketing.webhookviews
 import retail.emails
 import retail.views
+import revenue.views
 import tdi.views
 from dashboard.router import router as dbrouter
 from external_bounties.router import router as ebrouter
@@ -108,6 +109,9 @@ urlpatterns = [
     re_path(r'^onboard/contributor/avatar/?$', dashboard.views.onboard_avatar, name='onboard_avatar'),
     url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
+
+    #
+    path('revenue/attestations/new', revenue.views.new_attestation, name='revenue_new_attestation'),
 
     # action URLs
     re_path(r'^bounty/quickstart/?', dashboard.views.quickstart, name='quickstart'),

@@ -401,7 +401,7 @@ def build_stat_results(keyword=None):
     total_bounties_usd = sum(base_bounties.exclude(idx_status__in=['expired', 'cancelled', 'canceled', 'unknown']).values_list('_val_usd_db', flat=True))
     total_tips_usd = sum([
         tip.value_in_usdt
-        for tip in Tip.objects.filter(network='mainnet').exclude(txid='').cache() if tip.value_in_usdt
+        for tip in Tip.objects.filter(network='mainnet').send_happy_path().cache() if tip.value_in_usdt
     ])
     context['universe_total_usd'] = float(total_bounties_usd) + float(total_tips_usd)
     pp.profile_time('universe_total_usd')

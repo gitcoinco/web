@@ -203,7 +203,7 @@ class Token(SuperModel):
 
         """
         from dashboard.models import Profile
-        related_kudos_transfers = KudosTransfer.objects.filter(kudos_token_cloned_from=self.pk).exclude(txid='')
+        related_kudos_transfers = KudosTransfer.objects.filter(kudos_token_cloned_from=self.pk).send_happy_path()
         related_profiles_pks = related_kudos_transfers.values_list('recipient_profile_id', flat=True)
         related_profiles = Profile.objects.filter(pk__in=related_profiles_pks).distinct()
         return related_profiles
@@ -382,7 +382,7 @@ class KudosTransfer(SendCryptoAsset):
 def psave_kt(sender, instance, **kwargs):
     token = instance.kudos_token_cloned_from
     if token:
-        all_transfers = KudosTransfer.objects.filter(kudos_token_cloned_from=token).exclude(txid='')
+        all_transfers = KudosTransfer.objects.filter(kudos_token_cloned_from=token).send_happy_path()
         token.popularity = all_transfers.count()
         token.popularity_week = all_transfers.filter(created_on__gt=(timezone.now() - timezone.timedelta(days=7))).count()
         token.popularity_month = all_transfers.filter(created_on__gt=(timezone.now() - timezone.timedelta(days=30))).count()
@@ -493,6 +493,7 @@ class TokenRequest(SuperModel):
     def approve(self):
         """Approve / mint this token."""
         # TODO - make this available via web interface
+        from gas.utils import recommend_min_gas_price_to_confirm_in_time
         from kudos.management.commands import mint_all_kudos
         from kudos.utils import KudosContract
         account = settings.KUDOS_OWNER_ACCOUNT
@@ -509,7 +510,8 @@ class TokenRequest(SuperModel):
             'artwork_url': self.artwork_url,
         }
         kudos_contract = KudosContract(network=self.network)
-        mint_kudos(kudos_contract, kudos, account, private_key, mint_to=None, live=True)
+        gas_price_gwei = recommend_min_gas_price_to_confirm_in_time(5)
+        mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint_to=None, live=True)
         self.approved = True
         self.save()
         
