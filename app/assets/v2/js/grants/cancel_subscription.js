@@ -38,7 +38,6 @@ $(document).ready(() => {
             .on('transactionHash', function(hash) {
               console.log('hash', hash);
 
-              document.issueURL = document.getElementById('grant-link').href;
               enableWaitState('#grants_form');
 
               deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
@@ -69,7 +68,6 @@ $(document).ready(() => {
             })
             .on('confirmation', function(confirmationNumber, receipt) {
               console.log('receipt', receipt);
-              window.location = $('#grant-link').val();
             })
             .on('error', function(err) {
               console.log('err', err);
