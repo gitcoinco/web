@@ -278,9 +278,9 @@ def grant_fund(request, grant_id,  grant_slug):
 
     active_subscription = Subscription.objects.select_related('grant').filter(
         grant=grant_id, active=True, contributor_profile=request.user.profile
-    ).count()
+    )
 
-    if active_subscription > 0:
+    if active_subscription:
         params = {
             'active': 'grant_error',
             'title': _('Subscription Exists'),
