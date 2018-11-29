@@ -57,19 +57,12 @@ $(document).ready(function() {
         data[this.name] = this.value;
       });
 
-      // let compiledSubscription;
-      //
-      // if (data.contract_version == 0) {
-      //   compiledSubscription = compiledSubscription0;
-      // }
-
       let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, data.contract_address);
 
       web3.eth.getAccounts(function(err, accounts) {
         deployedSubscription.methods.endContract()
           .send({from: accounts[0], gasPrice: 4000000000})
           .on('transactionHash', function() {
-            document.issueURL = document.getElementById('form--input__reference-url').value;
             enableWaitState('#grants-details');
           })
           .on('confirmation', function(confirmationNumber, receipt) {
