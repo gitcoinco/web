@@ -470,7 +470,7 @@ class BulkTransferRedemption(SuperModel):
 
 
 class TokenRequest(SuperModel):
-    """Define the Token model."""
+    """Define the TokenRequest model."""
 
     name = models.CharField(max_length=255, db_index=True)
     description = models.TextField(max_length=500, default='')
