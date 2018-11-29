@@ -60,7 +60,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           {% if grant_has_no_token %}
             {% trans "any token." %}
           {% else %}
-            {{ token_symbol }}
+            {{ grant.token_symbol }}
           {% endif %}
         </p>
 
@@ -96,7 +96,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                           <select class='js-select2' name='denomination' id='js-token'> </select>
                         </div>
                       {% else %}
-                        {{ token_symbol }}
+                        {{ grant.token_symbol }}
                       {% endif %}
                     </div>
                   </div>
@@ -180,6 +180,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
+    {% include 'grants/shared/shared_scripts.html' %}
   </body>
 
   <script src="{% static "v2/js/grants/compiledSubscriptionContract.js" %}"></script>
