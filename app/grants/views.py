@@ -123,7 +123,6 @@ def grant_details(request, grant_id, grant_slug):
             }
             Update.objects.create(**update_kwargs)
         elif 'edit-title' in request.POST:
-            print('winner winner chcken dinner')
             grant.title = request.POST.get('edit-title')
             grant.reference_url = request.POST.get('edit-reference_url')
             form_profile = request.POST.get('edit-admin_profile')
