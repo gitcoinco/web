@@ -167,7 +167,9 @@
                   <span class="desc">{{food}}</span>
                 </p>
                 <div class="social-links">
-                  <a href="https://www.linkedin.com/in/{{linkedin}}" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i></a>
+                  {%  if linkedin %}
+                    <a href="https://www.linkedin.com/in/{{linkedin}}" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i></a>
+                  {% endif %}
                   <a href="https://gitcoin.co/profile/{{handle}}"><div class="gitcoin-svg"></div></a>
                   <a href="https://github.com/{{handle}}" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
                 </div>

@@ -3,7 +3,7 @@
   float: right;
 }
 
-#tooltip--hover {
+.tooltip-hover {
   border: 1px solid #dbdbdb;
   background-color: #f8f8f8;
   width: 75%;
@@ -18,14 +18,14 @@
 }
 
 @media only screen and (max-width: 1400px) {
-  #tooltip--hover {
+  .tooltip-hover {
     top: 24.5rem;
     left: 110px;
   }
 }
 
 @media only screen and (max-width: 500px) {
-  #tooltip--hover {
+  .tooltip-hover {
     left: 70px;
   }
 }

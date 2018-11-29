@@ -41,7 +41,7 @@ from dashboard.notifications import maybe_market_kudos_to_email, maybe_market_ku
 from dashboard.utils import get_web3
 from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from git.utils import get_emails_master, get_github_primary_email
+from git.utils import get_emails_by_category, get_emails_master, get_github_primary_email
 from kudos.utils import kudos_abi
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
@@ -181,7 +181,7 @@ def details(request, kudos_id, name):
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
         'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
         'kudos': kudos,
-        'related_handles': kudos.owners_handles[:20],
+        'related_handles': list(set(kudos.owners_handles))[:20],
     }
     if kudos:
         token = Token.objects.select_related('contract').get(
@@ -266,7 +266,7 @@ def send_2(request):
         raise Http404
 
     kudos = Token.objects.filter(pk=_id).first()
-    if not kudos.send_enabled_for(request.user):
+    if kudos and not kudos.send_enabled_for(request.user):
         messages.error(request, f'This kudos is not available to be sent.')
         return redirect(kudos.url)
 
@@ -306,24 +306,32 @@ def send_3(request):
     from_username = request.user.username if is_user_authenticated else ''
     primary_from_email = request.user.email if is_user_authenticated else ''
     access_token = request.user.profile.get_access_token() if is_user_authenticated and request.user.profile else ''
-    to_emails = []
 
     params = json.loads(request.body)
 
     to_username = params.get('username', '').lstrip('@')
-    to_emails = get_emails_master(to_username)
+    to_emails = get_emails_by_category(to_username)
+    primary_email = ''
 
-    email = params.get('email')
-    if email:
-        to_emails.append(email)
+    if params.get('email'):
+        primary_email = params['email']
+    elif to_emails.get('primary', None):
+        primary_email = to_emails['primary']
+    elif to_emails.get('github_profile', None):
+        primary_email = to_emails['github_profile']
+    else:
+        if len(to_emails.get('events', None)):
+            primary_email = to_emails['events'][0]
+        else:
+            print("TODO: no email found.  in the future, we should handle this case better because it's GOING to end up as a support request")
+    if primary_email and isinstance(primary_email, list):
+        primary_email = primary_email[0]
 
     # If no primary email in session, try the POST data. If none, fetch from GH.
     primary_from_email = params.get('fromEmail')
 
     if access_token and not primary_from_email:
         primary_from_email = get_github_primary_email(access_token)
-
-    to_emails = list(set(to_emails))
 
     # Validate that the token exists on the back-end
     kudos_id = params.get('kudosId')
@@ -337,6 +345,7 @@ def send_3(request):
 
     # db mutations
     KudosTransfer.objects.create(
+        primary_email=primary_email,
         emails=to_emails,
         # For kudos, `token` is a kudos.models.Token instance.
         kudos_token_cloned_from=kudos_token_cloned_from,
@@ -397,8 +406,10 @@ def send_4(request):
     # Save the txid to the database once it has been confirmed in MetaMask.  If there is no txid,
     # it means that the user never went through with the transaction.
     kudos_transfer.txid = txid
+    kudos_transfer.tx_status = 'pending'
     if is_direct_to_recipient:
         kudos_transfer.receive_txid = txid
+        kudos_transfer.receive_tx_status = 'pending'
     kudos_transfer.save()
 
     # notifications
@@ -504,6 +515,10 @@ def receive(request, key, txid, network):
     ]
     not_mined_yet = get_web3(kudos_transfer.network).eth.getBalance(
         Web3.toChecksumAddress(kudos_transfer.metadata['address'])) == 0
+    did_fail = False
+    if not_mined_yet:
+        kudos_transfer.update_tx_status()
+        did_fail = kudos_transfer.tx_status in ['dropped', 'unknown', 'na', 'error']
 
     if not kudos_transfer.trust_url:
         if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
@@ -517,6 +532,8 @@ def receive(request, key, txid, network):
     elif not is_authed:
         messages.error(
             request, f'This kudos is for {kudos_transfer.username} but you are logged in as {request.user.username}.  Please logout and log back in as {kudos_transfer.username}.')
+    elif did_fail:
+        messages.info(request, f'This tx {kudos_transfer.txid}, failed.  Please contact the sender and ask them to send the tx again.')
     elif not_mined_yet and not request.GET.get('receive_txid'):
         message = mark_safe(
             f'The <a href="https://etherscan.io/tx/{txid}">transaction</a> is still mining.  '
@@ -640,42 +657,49 @@ def receive_bulk(request, secret):
             'value': int(coupon.token.price_finney / 1000.0 * 10**18),
         })
 
-        signed = w3.eth.account.signTransaction(tx, settings.KUDOS_PRIVATE_KEY)
-        txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
+        if not profile.trust_profile and profile.github_created_on > (timezone.now() - timezone.timedelta(days=7)):
+            messages.error(request, f'Your github profile is too new.  Cannot receive kudos.')
+        else:
 
-        with transaction.atomic():
-            kudos_transfer = KudosTransfer.objects.create(
-                emails=[request.user.email],
-                # For kudos, `token` is a kudos.models.Token instance.
-                kudos_token_cloned_from=coupon.token,
-                amount=0,
-                comments_public=coupon.comments_to_put_in_kudos_transfer,
-                ip=ip_address,
-                github_url='',
-                from_name=coupon.sender_profile.handle,
-                from_email='',
-                from_username=coupon.sender_profile.handle,
-                username=profile.handle,
-                network=coupon.token.contract.network,
-                from_address=settings.KUDOS_OWNER_ACCOUNT,
-                is_for_bounty_fulfiller=False,
-                metadata={'coupon_redemption': True},
-                recipient_profile=profile,
-                sender_profile=coupon.sender_profile,
-                txid=txid,
-                receive_txid=txid,
-            )
+            signed = w3.eth.account.signTransaction(tx, settings.KUDOS_PRIVATE_KEY)
+            txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
 
-            # save to DB
-            BulkTransferRedemption.objects.create(
-                coupon=coupon,
-                redeemed_by=profile,
-                ip_address=ip_address,
-                kudostransfer=kudos_transfer,
+            with transaction.atomic():
+                kudos_transfer = KudosTransfer.objects.create(
+                    emails=[request.user.email],
+                    # For kudos, `token` is a kudos.models.Token instance.
+                    kudos_token_cloned_from=coupon.token,
+                    amount=0,
+                    comments_public=coupon.comments_to_put_in_kudos_transfer,
+                    ip=ip_address,
+                    github_url='',
+                    from_name=coupon.sender_profile.handle,
+                    from_email='',
+                    from_username=coupon.sender_profile.handle,
+                    username=profile.handle,
+                    network=coupon.token.contract.network,
+                    from_address=settings.KUDOS_OWNER_ACCOUNT,
+                    is_for_bounty_fulfiller=False,
+                    metadata={'coupon_redemption': True},
+                    recipient_profile=profile,
+                    sender_profile=coupon.sender_profile,
+                    txid=txid,
+                    receive_txid=txid,
+                    tx_status='pending',
+                    receive_tx_status='pending',
                 )
 
-            coupon.num_uses_remaining -= 1
-            coupon.current_uses += 1
+                # save to DB
+                BulkTransferRedemption.objects.create(
+                    coupon=coupon,
+                    redeemed_by=profile,
+                    ip_address=ip_address,
+                    kudostransfer=kudos_transfer,
+                    )
+
+                coupon.num_uses_remaining -= 1
+                coupon.current_uses += 1
+                coupon.save()
 
     title = f"Redeem AirDropped *{coupon.token.humanized_name}* Kudos"
     desc = f"This Kudos has been AirDropped to you.  About this Kudos: {coupon.token.description}"

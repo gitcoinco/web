@@ -1,3 +1,7 @@
+
+var is_metamask_approved = is_metamask_approved || false;
+var is_metamask_unlocked = is_metamask_unlocked || false;
+
 async function metamaskApproval() {
   if (window.ethereum) {
     window.web3 = new Web3(ethereum);

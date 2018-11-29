@@ -129,7 +129,7 @@ $(document).ready(function($) {
       _alert('Please accept the TOS.', 'error');
       return;
     }
-    if (!document.transactions.length) {
+    if (typeof document.transactions == 'undefined' || !document.transactions.length) {
       _alert('You do not have any transactions to payout.  Please add payees to the form.', 'error');
       return;
     }
@@ -201,32 +201,64 @@ var get_total_cost = function() {
   return total;
 };
 
-var update_registry = function() {
+var update_registry = function(coinbase) {
 
+  if (!coinbase) {
+    web3.eth.getCoinbase(function(err, result) {
+      update_registry(result);
+    });
+    return;
+  }
+  
   var num_rows = $('#payout_table tbody').find('tr').length;
   var tc = round(get_total_cost(), 2);
   var denomination = $('#token_name').text();
   var original_amount = $('#original_amount').val();
   var net = round(original_amount - tc, 2);
   var over = round((original_amount - get_total_cost()) * -1, 4);
-  var addr = web3.eth.coinbase.substring(38);
-
+  var addr = coinbase.substring(38);
+  var pay_with_bounty = $('#pay_with_bounty').is(':checked');
+  
   $('#total_cost').html(tc + ' ' + denomination);
-  $('#total_net').html(net + ' ' + denomination);
 
-  if (over > 0) {
+  let transactions = [];
+  
+  first_transaction = {
+    'id': 0,
+    'type': 'cancel',
+    'reason': 'Bounty cancellation and refund.',
+    'amount': '+' + original_amount + ' ' + denomination
+  };
+
+  if (over > 0 && pay_with_bounty) {
+    $('#total_net').html(net + ' ' + denomination);
     $('.overageAlert').css('display', 'inline-block');
     $('.overagePreview').css('display', 'inline-block');
     $('#total_overage').html(over + ' ' + denomination);
     $('#address_ending').html(addr + ' ');
     $('#preview_ending').html(addr + ' ');
     $('#preview_overage').html(over + ' ' + denomination);
+    $('.tipAlert').css('display', 'none');
+    $('.tipPreview').css('display', 'none');
+    transactions.push(first_transaction);
+  } else if (pay_with_bounty) {
+    $('#total_net').html(net + ' ' + denomination);
+    $('.overageAlert').css('display', 'none');
+    $('.overagePreview').css('display', 'none');
+    $('.tipAlert').css('display', 'none');
+    $('.tipPreview').css('display', 'none');
+    transactions.push(first_transaction);
   } else {
+    $('#total_net').html(tc + ' ' + denomination);
+    $('.tipAlert').css('display', 'inline-block');
+    $('.tipPreview').css('display', 'inline-block');
+    $('#total_tip_overage').html(tc + ' ' + denomination);
+    $('#address_tip_ending').html(addr + ' ');
+    $('#preview_tip_ending').html(addr + ' ');
+    $('#preview_tip_overage').html(tc + ' ' + denomination);
     $('.overageAlert').css('display', 'none');
     $('.overagePreview').css('display', 'none');
   }
-
-  let transactions = [];
 
   for (let j = 1; j <= num_rows; j++) {
 
