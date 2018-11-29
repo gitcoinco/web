@@ -69,7 +69,7 @@ $(document).ready(function() {
         deployedSubscription.methods.endContract()
           .send({from: accounts[0], gasPrice: 4000000000})
           .on('transactionHash', function() {
-            document.issueURL = document.getElementById('grant-link').href;
+            document.issueURL = document.getElementById('form--input__reference-url').value;
             enableWaitState('#grants-details');
           })
           .on('confirmation', function(confirmationNumber, receipt) {
