@@ -55,7 +55,7 @@ $(document).ready(function() {
         window.location.reload(false);
       },
       error: function() {
-        alert("Your edits failed to save. Please try again.")
+        alert('Your edits failed to save. Please try again.');
       }
     });
 
@@ -93,7 +93,7 @@ $(document).ready(function() {
               window.location.reload(false);
             },
             error: function() {
-              alert("Canceling you grant failed to save. Please try again.")
+              alert('Canceling you grant failed to save. Please try again.');
             }
           });
         });
