@@ -1,20 +1,22 @@
 :root {
   --color-notification: 37, 232, 153;
+  --badge-bg: #D6FBEB;
+  --badge-text: #00A55E;
 
 }
 
 
-.navbar-nav .nav-link.notifications {
+.navbar-nav .nav-link.notification__icon {
   position: relative;
   font-size: 18px;
   color: white;
 }
 
-.dropdown-toggle::after {
+.notification__icon.dropdown-toggle::after {
   content: none;
 }
 
-.notification-dot {
+.notification__dot {
   background: rgba(var(--color-notification), 1);
   display: block;
   width: 9px;
@@ -25,6 +27,45 @@
   position: absolute;
   top: 0.5em;
   right: 0.9em;
+}
+
+.badge--greenlight {
+  background-color: var(--badge-bg);
+  color: var(--badge-text);
+}
+
+.notifications__box {
+  width: 430px;
+  border-radius: 3px;
+  padding: 1em;
+  max-width: calc(100vw - 2em);
+  will-change: transform;
+}
+
+.notifications__header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.notifications__list {
+  max-height: 328px;
+  overflow-y: auto;
+  padding: 0;
+}
+
+.notifications__item {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #D8D8D8;
+}
+
+.notifications__item-readed {
+  background: rgba(var(--color-notification), 1);
+  display: block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  padding: 0.3em;
 }
 
 @keyframes BadgePulse{
@@ -43,3 +84,4 @@
     box-shadow:0 0 0 20px rgba(var(--color-notification), 0)
   }
 }
+

@@ -486,8 +486,6 @@ div.button-pink {
   background-color: #FAFAFA;
   border-radius: 0px;
   padding: 0;
-  right: 0;
-  left: auto;
 }
 
 .dropdown-menu .dropdown-divider {
@@ -620,3 +618,24 @@ div.button-pink {
   }
 }
 
+/* dropdown animation */
+.animation {
+  -webkit-animation-duration: 80ms;
+  animation-duration: 80ms;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+}
+.slideDownIn {
+  -webkit-animation-name: slideDownIn;
+  animation-name: slideDownIn;
+}
+
+@keyframes slideDownIn {
+  0% {
+    -webkit-transform: translateY(-20px) scale(0.9, 0.7);
+  }
+  50% {
+    -webkit-transform: translateY(0) scale(1, 1);
+  }
+
+}

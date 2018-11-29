@@ -14,23 +14,29 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static humanize %}
 
-<div class="nav-item dropdown">
-    <a href="" class="notifications nav-link dropdown-toggle" id="notificationsDropdown" role="button"
-    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      <i class="fas fa-bell fa-fw"></i>
-      <span class="notification-dot"></span>
-    </a>
-    <div class="dropdown-menu" aria-labelledby="notificationsDropdown">
-      {% trans 'Notifications' %} {% trans 'Mark All as Read' %}
-      <ul>
-        <li>
-          <span class="notifications__read-state"></span>
-          You haven’t responded to #2186: [Design] Show Remarketed Issues… in 3 days. Please submit a WIP…
-          time
-        </li>
-      </ul>
-      <a href="">{% trans 'See all' %}</a>
+<div class="nav-item dropdown notifications">
+  <a href="" class="notification__icon nav-link dropdown-toggle" id="notificationsDropdown" role="button"
+  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <i class="fas fa-bell fa-fw"></i>
+    <span class="notification__dot"></span>
+  </a>
+  <div class="dropdown-menu dropdown-menu-right animation slideDownIn notifications__box " aria-labelledby="notificationsDropdown">
+    <div class="notifications__header">
+      <div>
+        {% trans 'Notifications' %} <span class="badge badge--greenlight">8</span>
+      </div> <a href="">{% trans 'Mark All as Read' %}</a>
     </div>
+    <ul class="notifications__list">
+      <li class="notifications__item">
+        <span class="notifications__item-readed"></span>
+        You haven’t responded to #2186: [Design] Show Remarketed Issues… in 3 days. Please submit a WIP…
+        <time datetime="{{'7:30 PM'|date:'c'}}" title="{{'7:30 PM'}}">
+          {{'7:30 PM'|naturaltime}}
+        </time>
+      </li>
+    </ul>
+    <a href="">{% trans 'See all' %}</a>
   </div>
+</div>
