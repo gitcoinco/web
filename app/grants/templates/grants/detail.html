@@ -163,7 +163,7 @@
           <p class="font-body sub-title">{% trans "Description" %}</p>
           <p class="grant__description font-subheader pr-lg-4 mb-5">
             {% if is_admin %}
-              <textarea id="form--input__description" class="p-0 mt-2 inline-edit" disabled>{{ grant.description }}</textarea>
+              <textarea id="form--input__description" maxlength=5000 class="p-0 mt-2 inline-edit" disabled>{{ grant.description }}</textarea>
             {% else %}
               <span>
                 {{ grant.description }}
