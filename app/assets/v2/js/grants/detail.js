@@ -24,6 +24,8 @@ $(document).ready(function() {
     $('#save-details').removeClass('hidden');
     $('#cancel-details').removeClass('hidden');
 
+    copyDuplicateDetails();
+
     editableFields.forEach(field => {
       makeEditable(field);
     });
@@ -60,6 +62,7 @@ $(document).ready(function() {
     });
 
     editableFields.forEach(field => disableEdit(field));
+    copyDuplicateDetails();
   });
 
   $('#cancel-details').on('click', (event) => {
@@ -146,4 +149,25 @@ const disableEdit = (input) => {
   $(input).removeClass('editable');
   $(input).prop('readonly', true);
   $(input).prop('disabled', true);
+
+  $('.grant__specs textarea').css('background-color', '#F2F6F9');
+};
+
+const copyDuplicateDetails = () => {
+  let obj = {};
+
+  editableFields.forEach(field => {
+    obj[field] = $(field).val() ? $(field).val() : $(field).last().text();
+  });
+
+  $('#cancel-details').on('click', (event) => {
+    editableFields.forEach(field => {
+      if (field == '#grant-admin')
+        $(field).val([obj[field]]).trigger('change');
+      else if (field == '#grant-members')
+        $(field).val(obj[field]).trigger('change');
+      else
+        $(field).val(obj[field]);
+    });
+  });
 };
