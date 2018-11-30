@@ -164,11 +164,6 @@ class Grant(SuperModel):
         return ((self.amount_received / self.amount_goal) * 100)
 
 
-class SubscriptionQuerySet(models.QuerySet):
-    """Define the Subscription default queryset and manager."""
-
-    pass
-
 
 class Milestone(SuperModel):
     """Define the structure of a Grant Milestone"""
@@ -196,6 +191,39 @@ class Milestone(SuperModel):
             f" id: {self.pk}, title: {self.title}, description: {self.description}, "
             f"due_date: {self.due_date}, completion_date: {self.completion_date}, grant: {self.grant_id}"
         )
+
+
+class UpdateQuerySet(models.QuerySet):
+    """Define the Update default queryset and manager."""
+
+    pass
+
+
+class Update(SuperModel):
+    """Define the structure of a Grant Update."""
+    title = models.CharField(
+        default='',
+        max_length=255,
+        help_text=_('The title of the Grant.')
+    )
+    description = models.TextField(
+        default='',
+        blank=True,
+        help_text=_('The description of the Grant.')
+    )
+    grant = models.ForeignKey(
+        'grants.Grant',
+        related_name='updates',
+        on_delete=models.CASCADE,
+        null=True,
+        help_text=_('The associated Grant.'),
+    )
+
+
+class SubscriptionQuerySet(models.QuerySet):
+    """Define the Subscription default queryset and manager."""
+
+    pass
 
 
 class Subscription(SuperModel):

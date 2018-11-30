@@ -35,7 +35,29 @@ $(document).ready(function() {
     $('#save-details').addClass('hidden');
     $('#cancel-details').addClass('hidden');
 
-    // TODO : Loop through editableFields -> form object with value -> fire save API
+    let edit_title = $('#form--input__title').val();
+    let edit_reference_url = $('#form--input__reference-url').val();
+    let edit_admin_profile = $('#grant-admin option').last().text();
+    let edit_description = $('#form--input__description').val();
+    let edit_grant_members = $('#grant-members').val();
+
+    $.ajax({
+      type: 'post',
+      url: '',
+      data: {
+        'edit-title': edit_title,
+        'edit-reference_url': edit_reference_url,
+        'edit-admin_profile': edit_admin_profile,
+        'edit-description': edit_description,
+        'edit-grant_members[]': edit_grant_members
+      },
+      success: function(json) {
+        window.location.reload(false);
+      },
+      error: function() {
+        alert('Your edits failed to save. Please try again.');
+      }
+    });
 
     editableFields.forEach(field => disableEdit(field));
   });
@@ -49,30 +71,35 @@ $(document).ready(function() {
     editableFields.forEach(field => disableEdit(field));
   });
 
-  $('#js-cancel_grant').validate({
-    submitHandler: function(form) {
-      var data = {};
+  $('#cancel_grant').click(function() {
 
-      $.each($(form).serializeArray(), function() {
-        data[this.name] = this.value;
-      });
+    let contract_address = $('#contract_address').val();
 
-      let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, data.contract_address);
+    let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, contract_address);
 
-      web3.eth.getAccounts(function(err, accounts) {
-        deployedSubscription.methods.endContract()
-          .send({from: accounts[0], gasPrice: 4000000000})
-          .on('transactionHash', function() {
-            document.issueURL = document.getElementById('form--input__reference-url').value;
-            enableWaitState('#grants-details');
-          })
-          .on('confirmation', function(confirmationNumber, receipt) {
-            console.log('receipt', receipt);
-            form.submit();
+    web3.eth.getAccounts(function(err, accounts) {
+      deployedSubscription.methods.endContract()
+        .send({from: accounts[0], gasPrice: 4000000000})
+        .on('transactionHash', function() {
+          document.issueURL = document.getElementById('form--input__reference-url').value;
+          enableWaitState('#grants-details');
+        })
+        .on('confirmation', function(confirmationNumber, receipt) {
+          $.ajax({
+            type: 'post',
+            url: '',
+            data: { 'contract_address': contract_address},
+            success: function(json) {
+              window.location.reload(false);
+            },
+            error: function() {
+              alert('Canceling you grant failed to save. Please try again.');
+            }
           });
-      });
-    }
+        });
+    });
   });
+
 });
 
 const makeEditable = (input, icon) => {

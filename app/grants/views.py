@@ -31,9 +31,11 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.csrf import csrf_exempt
 
+from dashboard.models import Profile
 from grants.forms import MilestoneForm
-from grants.models import Grant, Milestone, Subscription
+from grants.models import Grant, Milestone, Subscription, Update
 from marketing.mails import (
     grant_cancellation, new_grant, new_supporter, subscription_terminated, support_cancellation,
     thank_you_for_supporting,
@@ -84,6 +86,7 @@ def grants(request):
     return TemplateResponse(request, 'grants/index.html', params)
 
 
+@csrf_exempt
 def grant_details(request, grant_id, grant_slug):
     """Display the Grant details page."""
     if not request.user.has_perm('grants.view_grant'):
@@ -93,61 +96,45 @@ def grant_details(request, grant_id, grant_slug):
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
 
     try:
-        grant = Grant.objects.prefetch_related('subscriptions', 'milestones').get(pk=grant_id, slug=grant_slug)
+        grant = Grant.objects.prefetch_related(
+            'subscriptions',
+            'milestones',
+            'updates'
+        ).get(pk=grant_id, slug=grant_slug)
         milestones = grant.milestones.order_by('due_date')
+        updates = grant.updates.order_by('-created_on')
         subscriptions = grant.subscriptions.filter(active=True)
         user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
     except Grant.DoesNotExist:
         raise Http404
 
-    if request.method == 'POST':
-        grant.active = False
-        grant.save()
-        grant_cancellation(grant, user_subscription)
-        for sub in subscriptions:
-            subscription_terminated(grant, sub)
+    if request.method == 'POST' and (profile == grant.admin_profile or request.user.is_staff):
+        if 'contract_address' in request.POST:
+            grant.active = False
+            grant.save()
+            grant_cancellation(grant, user_subscription)
+            for sub in subscriptions:
+                subscription_terminated(grant, sub)
+        elif 'input-title' in request.POST:
+            update_kwargs = {
+                'title': request.POST.get('input-title', ''),
+                'description': request.POST.get('description', ''),
+                'grant': grant
+            }
+            Update.objects.create(**update_kwargs)
+        elif 'edit-title' in request.POST:
+            grant.title = request.POST.get('edit-title')
+            grant.reference_url = request.POST.get('edit-reference_url')
+            form_profile = request.POST.get('edit-admin_profile')
+            admin_profile = Profile.objects.get(handle=form_profile)
+            grant.admin_profile = admin_profile
+            grant.description = request.POST.get('edit-description')
+            team_members = request.POST.getlist('edit-grant_members[]')
+            team_members.append(str(admin_profile.id))
+            grant.team_members.set(team_members)
+            grant.save()
+            return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
-    # TODO: Determine how we want to chunk out articles and where we want to store this data.
-    activity_data = [{
-        'title': 'allow funder to turn off auto approvals during bounty creation',
-        'date': '08.02.2018',
-        'description':
-            'Vestibulum ante ipsum primis in faucibus orci luctus ultrices '
-            'posuere cubilia Curae; Proin vel ante.',
-    }, {
-        'title': 'Beyond The Naked Eye',
-        'date': '2012 - Present',
-        'description':
-            'What is the loop of Creation? How is there something from nothing? '
-            'In spite of the fact that it is impossible to prove that anything exists beyond '
-            'one’s perception since any such proof would involve one’s perception (I observed it, '
-            'I heard it, I thought about it, I calculated it, and etc.), science deals with a '
-            'so-called objective reality “out there,” beyond one’s perception professing to '
-            'describe Nature objectively (as if there was a Nature or reality external '
-            'to one’s perception). The shocking impact of Matrix was precisely the valid '
-            'possibility that what we believed to be reality was but our perception; however, '
-            'this was presented through showing a real reality wherein the perceived reality was a '
-            'computer simulation. Many who toy with the idea that perhaps, indeed, we are computer '
-            'simulations, deviate towards questions, such as, who could create such software and what '
-            'kind of hardware would be needed for such a feat. Although such questions assume that reality '
-            'is our perception, they also axiomatically presuppose the existence of an objective '
-            'deterministic world “out there” that nevertheless must be responsible for how we perceive '
-            'our reality. This is a major mistake emphasizing technology and algorithms instead of trying '
-            'to discover the nature of reality and the structure of creation. As will be shown in the following, '
-            'the required paradigm shift from “perception is our reality fixed within an objective world,” '
-            'to “perception is reality without the need of an objective world ‘out there,” '
-            'is provided by a dynamic logical structure. The Holophanic loop logic is responsible '
-            'for a consistent and complete worldview that not only describes, but also creates whatever '
-            'can be perceived or experienced.'
-    }, {
-        'title': 'Awesome Update',
-        'date': '08.02.2018',
-        'description': 'Some awesome update about this project.',
-    }, {
-        'title': 'Stellar Update',
-        'date': '08.02.2018',
-        'description': 'Another stellar update about this project.',
-    }]
 
     params = {
         'active': 'grant_details',
@@ -157,7 +144,7 @@ def grant_details(request, grant_id, grant_slug):
         'user_subscription': user_subscription,
         'is_admin': (grant.admin_profile.id == profile.id) if profile and grant.admin_profile else False,
         'grant_is_inactive': not grant.active,
-        'activity': activity_data,
+        'updates': updates,
         'milestones': milestones,
         'keywords': get_keywords(),
     }
