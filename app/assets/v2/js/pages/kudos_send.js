@@ -504,7 +504,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
         console.log('destinationAccount:' + destinationAccount);
 
         var kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice')) || $('.kudos-search').select2('data')[0].price_finney;
-        var kudosPriceInWei = new web3.BigNumber(kudosPriceInEth * 1.0 * Math.pow(10, 18));
+        var kudosPriceInWei = new web3.BigNumber((kudosPriceInEth * 1.0 * Math.pow(10, 18)).toString());
 
         if (is_direct_to_recipient) {
           // Step 9
