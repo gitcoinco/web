@@ -42,9 +42,11 @@ $(document).ready(function() {
         web3.eth.getBalance(result, function(err, balance) {
           document.balance = balance;
         });
-        web3.eth.net.getNetworkType(function(err, network) {
-          currentNetwork(network);
+
+        web3.eth.net.getId((err, network) => {
+          currentNetwork(getNetwork(network));
         });
+
       } else {
         currentNetwork('locked');
       }

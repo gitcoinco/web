@@ -40,10 +40,13 @@ $(document).ready(function() {
 
       let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, data.contract_address);
       let deployedToken;
+      let selected_token;
 
       if (data.token_address != '0x0000000000000000000000000000000000000000') {
+        selected_token = data.token_address;
         deployedToken = new web3.eth.Contract(compiledToken.abi, data.token_address);
       } else {
+        selected_token = data.denomination;
         deployedToken = new web3.eth.Contract(compiledToken.abi, data.denomination);
       }
 
@@ -75,7 +78,7 @@ $(document).ready(function() {
               const parts = [
                 accounts[0], // subscriber address
                 data.admin_address, // admin_address
-                data.denomination, // token denomination / address
+                selected_token, // token denomination / address
                 web3.utils.toTwosComplement(realTokenAmount), // data.amount_per_period
                 web3.utils.toTwosComplement(realPeriodSeconds), // data.period_seconds
                 web3.utils.toTwosComplement(realGasPrice), // data.gas_price

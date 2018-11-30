@@ -61,7 +61,7 @@ def grants(request):
         }
         return TemplateResponse(request, 'grants/stub/index.html', params)
 
-    limit = request.GET.get('limit', 25)
+    limit = request.GET.get('limit', 24)
     page = request.GET.get('page', 1)
     sort = request.GET.get('sort_option', '-created_on')
 
@@ -260,6 +260,15 @@ def grant_fund(request, grant_id,  grant_slug):
             'title': _('Grant Ended'),
             'grant': grant,
             'text': _('This Grant is not longer active.')
+        }
+        return TemplateResponse(request, 'grants/shared/error.html', params)
+
+    if grant.admin_profile == profile:
+        params = {
+            'active': 'grant_error',
+            'title': _('Invalid Grant Subscription'),
+            'grant': grant,
+            'text': _('You cannot fund your own Grant.')
         }
         return TemplateResponse(request, 'grants/shared/error.html', params)
 
