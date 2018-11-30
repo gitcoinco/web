@@ -29,6 +29,14 @@
   right: 0.9em;
 }
 
+.notification__dot-small {
+  background: rgba(var(--color-notification), 1);
+  display: block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
 .badge--greenlight {
   background-color: var(--badge-bg);
   color: var(--badge-text);
@@ -56,7 +64,7 @@
 
   position: relative;
   z-index: 1;
-  background: white no-repeat;
+  background: #fafafa no-repeat;
   background-image: -webkit-radial-gradient(50% 0, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)), -webkit-radial-gradient(50% 100%, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
   background-image: -moz-radial-gradient(50% 0, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)), -moz-radial-gradient(50% 100%, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
   background-image: radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)), radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
@@ -72,16 +80,16 @@
   display: block;
   height: 30px;
   margin: 0 0 -30px;
-  background: -webkit-linear-gradient(top, #FFF, #FFF 30%, rgba(255, 255, 255, 0));
-  background: -moz-linear-gradient(top, #FFF, #FFF 30%, rgba(255, 255, 255, 0));
-  background: linear-gradient(to bottom, #FFF, #FFF 30%, rgba(255, 255, 255, 0));
+  background: -webkit-linear-gradient(top, #fafafa, #fafafa 30%, rgba(255, 255, 255, 0));
+  background: -moz-linear-gradient(top, #fafafa, #fafafa 30%, rgba(255, 255, 255, 0));
+  background: linear-gradient(to bottom, #fafafa, #fafafa 30%, rgba(255, 255, 255, 0));
 }
 
 .notifications__list:after {
   margin: -30px 0 0;
-  background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0), #FFF 70%, #FFF);
-  background: -moz-linear-gradient(top, rgba(255, 255, 255, 0), #FFF 70%, #FFF);
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #FFF 70%, #FFF);
+  background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0), #fafafa 70%, #fafafa);
+  background: -moz-linear-gradient(top, rgba(255, 255, 255, 0), #fafafa 70%, #fafafa);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #fafafa 70%, #fafafa);
 }
 
 .notifications__item {
@@ -92,12 +100,12 @@
 }
 
 .notifications__item-readed {
-  background: rgba(var(--color-notification), 1);
-  display: block;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  padding: 0.3em;
+  padding: 0.6em 0.8em 0.6em 0;
+}
+
+.notifications__time {
+  flex: 1 0 68px;
+  text-align: right;
 }
 
 .notifications__button-all {
