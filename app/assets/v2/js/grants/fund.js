@@ -75,7 +75,7 @@ $(document).ready(function() {
           }).on('error', function(error) {
             console.log('1', error);
             alert('Your approval transaction failed. Please try again.');
-          }).on('transactionHash', function(transactionHash){
+          }).on('transactionHash', function(transactionHash) {
 
             document.issueURL = window.location.origin + $('#grant-link').val();
             enableWaitState('#grants_form');
