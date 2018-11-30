@@ -626,7 +626,8 @@ def receive_bulk(request, secret):
     coupon = coupons.first()
 
     if coupon.num_uses_remaining <= 0:
-        raise PermissionDenied
+        messages.info(request, f'Sorry but the coupon for a free kudos has has expired.  Contact the person who sent you the coupon link, or you can still purchase one on this page.')
+        return redirect(coupon.token.url)
 
     kudos_transfer = None
     if request.user.is_authenticated:
