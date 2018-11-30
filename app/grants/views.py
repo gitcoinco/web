@@ -79,6 +79,7 @@ def grants(request):
     params = {
         'active': 'grants_landing',
         'title': _('Grants Explorer'),
+        'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
         'grants': grants,
         'grants_count': _grants.count(),
         'keywords': get_keywords(),
@@ -140,6 +141,9 @@ def grant_details(request, grant_id, grant_slug):
         'active': 'grant_details',
         'title': _('Grant Details'),
         'grant': grant,
+        'title': grant.title,
+        'card_desc': grant.description,
+        'avatar_url': grant.logo.url if grant.logo else None,
         'subscriptions': subscriptions,
         'user_subscription': user_subscription,
         'is_admin': (grant.admin_profile.id == profile.id) if profile and grant.admin_profile else False,
@@ -192,6 +196,7 @@ def grant_new(request):
     params = {
         'active': 'new_grant',
         'title': _('New Grant'),
+        'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
         'profile': profile,
         'grant': {},
         'keywords': get_keywords()
@@ -236,6 +241,7 @@ def milestones(request, grant_id, grant_slug):
     params = {
         'active': 'grant_milestones',
         'title': _('Grant Milestones'),
+        'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
         'grant': grant,
         'milestones': milestones,
         'form': form,
@@ -310,6 +316,7 @@ def grant_fund(request, grant_id,  grant_slug):
     params = {
         'active': 'fund_grant',
         'title': _('Fund Grant'),
+        'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
         'subscription': {},
         'grant_has_no_token': True if grant.token_address == '0x0000000000000000000000000000000000000000' else False,
         'grant': grant,
@@ -352,6 +359,7 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
     params = {
         'active': 'cancel_grant',
         'title': _('Cancel Grant Subscription'),
+        'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
         'subscription': subscription,
         'grant': grant,
         'now': now,
@@ -403,6 +411,7 @@ def profile(request):
     params = {
         'active': 'profile',
         'title': _('My Grants'),
+        'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
         'grants': grants,
         'sub_grants': sub_grants,
         'history': history
