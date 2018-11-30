@@ -39,24 +39,56 @@
   border-radius: 3px;
   padding: 1em;
   max-width: calc(100vw - 2em);
-  will-change: transform;
 }
 
 .notifications__header {
   display: flex;
   justify-content: space-between;
+  border-bottom: 1px solid #D8D8D8;
+  padding-bottom: 0.8em;
 }
 
 .notifications__list {
+  font-size: 12px;
   max-height: 328px;
   overflow-y: auto;
   padding: 0;
+
+  position: relative;
+  z-index: 1;
+  background: white no-repeat;
+  background-image: -webkit-radial-gradient(50% 0, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)), -webkit-radial-gradient(50% 100%, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
+  background-image: -moz-radial-gradient(50% 0, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)), -moz-radial-gradient(50% 100%, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
+  background-image: radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)), radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
+  background-position: 0 0, 0 100%;
+  background-size: 100% 14px;
+}
+
+.notifications__list:before,
+.notifications__list:after {
+  content: "";
+  position: relative;
+  z-index: -1;
+  display: block;
+  height: 30px;
+  margin: 0 0 -30px;
+  background: -webkit-linear-gradient(top, #FFF, #FFF 30%, rgba(255, 255, 255, 0));
+  background: -moz-linear-gradient(top, #FFF, #FFF 30%, rgba(255, 255, 255, 0));
+  background: linear-gradient(to bottom, #FFF, #FFF 30%, rgba(255, 255, 255, 0));
+}
+
+.notifications__list:after {
+  margin: -30px 0 0;
+  background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0), #FFF 70%, #FFF);
+  background: -moz-linear-gradient(top, rgba(255, 255, 255, 0), #FFF 70%, #FFF);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #FFF 70%, #FFF);
 }
 
 .notifications__item {
   display: flex;
   align-items: center;
   border-bottom: 1px solid #D8D8D8;
+  padding: 1em 0;
 }
 
 .notifications__item-readed {
@@ -66,6 +98,11 @@
   height: 9px;
   border-radius: 50%;
   padding: 0.3em;
+}
+
+.notifications__button-all {
+  display: block;
+  text-align: center;
 }
 
 @keyframes BadgePulse{
@@ -84,4 +121,5 @@
     box-shadow:0 0 0 20px rgba(var(--color-notification), 0)
   }
 }
+
 
