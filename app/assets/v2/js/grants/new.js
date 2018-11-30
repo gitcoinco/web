@@ -87,17 +87,35 @@ $(document).ready(function() {
             $('#transaction_hash').val(transactionHash);
             document.issueURL = $('#input-url').val();
             enableWaitState('#new-grant');
-          }).on('receipt', function(receipt) {
-            $('#receipt').val(JSON.stringify(receipt));
-            $('#contract_address').val(receipt.contractAddress);
-          }).then(function(contractInstance) {
-            console.log(contractInstance);
-            $.each($(form).serializeArray(), function() {
-              data[this.name] = this.value;
-            });
-            console.log(data);
-            form.submit();
+
+            var callFunctionWhenTransactionMined = function(transactionHash) {
+              var transactionReceipt = web3.eth.getTransactionReceipt(transactionHash, function(error, result) {
+                if (result) {
+                  $('#contract_address').val(result.contractAddress);
+                  $.each($(form).serializeArray(), function() {
+                    data[this.name] = this.value;
+                  });
+                  form.submit();
+                } else {
+                  setTimeout(function() {
+                    callFunctionWhenTransactionMined(transactionHash);
+                  }, 1000);
+                }
+              });
+            };
+
+            callFunctionWhenTransactionMined(transactionHash);
           });
+          // .on('receipt', function(receipt) {
+          //   $('#contract_address').val(receipt.contractAddress);
+          // }).then(function(contractInstance) {
+          //   console.log(contractInstance);
+          //   $.each($(form).serializeArray(), function() {
+          //     data[this.name] = this.value;
+          //   });
+          //   console.log(data);
+          //   // form.submit();
+          // });
         });
       });
     }
