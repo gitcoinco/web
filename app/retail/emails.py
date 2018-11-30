@@ -119,8 +119,7 @@ def render_subscription_terminated_email(grant, subscription):
 
 @staff_member_required
 def subscription_terminated(request):
-    # giving specific pk because I am sure this grant has at least one subscription
-    grant = Grant.objects.get(pk=14)
+    grant = Grant.objects.all().first()
     subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
     response_html, __, __ = render_subscription_terminated_email(grant, subscription)
     return HttpResponse(response_html)
@@ -128,8 +127,7 @@ def subscription_terminated(request):
 
 @staff_member_required
 def grant_cancellation(request):
-    # giving specific pk because I am sure this grant has at least one subscription
-    grant = Grant.objects.get(pk=14)
+    grant = Grant.objects.all().first()
     subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
     response_html, __, __ = render_grant_cancellation_email(grant, subscription)
     return HttpResponse(response_html)
@@ -137,8 +135,7 @@ def grant_cancellation(request):
 
 @staff_member_required
 def support_cancellation(request):
-    # giving specific pk because I am sure this grant has at least one subscription
-    grant = Grant.objects.get(pk=14)
+    grant = Grant.objects.all().first()
     subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
     response_html, __, __ = render_support_cancellation_email(grant, subscription)
     return HttpResponse(response_html)
@@ -146,8 +143,7 @@ def support_cancellation(request):
 
 @staff_member_required
 def thank_you_for_supporting(request):
-    # giving specific pk because I am sure this grant has at least one subscription
-    grant = Grant.objects.get(pk=8)
+    grant = Grant.objects.all().first()
     subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
     response_html, __, __ = render_thank_you_for_supporting_email(grant, subscription)
     return HttpResponse(response_html)
@@ -155,8 +151,7 @@ def thank_you_for_supporting(request):
 
 @staff_member_required
 def new_supporter(request):
-    # giving specific pk because I am sure this grant has at least one subscription
-    grant = Grant.objects.get(pk=8)
+    grant = Grant.objects.all().first()
     subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
     response_html, __, __ = render_new_supporter_email(grant, subscription)
     return HttpResponse(response_html)
@@ -164,7 +159,7 @@ def new_supporter(request):
 
 @staff_member_required
 def new_grant(request):
-    grant = Grant.objects.all().order_by('-created_on')[0]
+    grant = Grant.objects.all().first()
     response_html, __, __ = render_new_grant_email(grant)
     return HttpResponse(response_html)
 
@@ -704,7 +699,7 @@ Check out a few of the new kudos launched this week:
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Colony is running an on-going bug bounty program using Gitcoin for the <a href="https://github.com/JoinColony/colonyNetwork">colonyNetwork repository</a>. 
+            Colony is running an on-going bug bounty program using Gitcoin for the <a href="https://github.com/JoinColony/colonyNetwork">colonyNetwork repository</a>.
             Awards go up to $20,000 DAI for critical bugs. <a href="https://docs.colony.io/colonynetwork/bug-bounty-program-overview/">See the Rules page for more.</a>
         </li>
         <li>
@@ -713,7 +708,7 @@ Check out a few of the new kudos launched this week:
     </ul>
 </p>
 <p>
-Thanks for reading to the end!  <a href="https://gitcoin.co/kudos/redeem/red_staplers_for_all">Here's a kudos just for you :)</a>. 
+Thanks for reading to the end!  <a href="https://gitcoin.co/kudos/redeem/red_staplers_for_all">Here's a kudos just for you :)</a>.
 <BR>
 <BR>
 OK, Back to BUIDLing,

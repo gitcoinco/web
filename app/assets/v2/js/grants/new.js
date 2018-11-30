@@ -89,7 +89,7 @@ $(document).ready(function() {
             enableWaitState('#new-grant');
 
             var callFunctionWhenTransactionMined = function(transactionHash) {
-              var transactionReceipt = web3.eth.getTransactionReceipt(transactionHash, function(error, result) {
+              web3.eth.getTransactionReceipt(transactionHash, function(error, result) {
                 if (result) {
                   $('#contract_address').val(result.contractAddress);
                   $.each($(form).serializeArray(), function() {
