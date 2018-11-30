@@ -73,7 +73,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   <label class="form__label">{% trans "Payment Period" %}</label>
                   <div class="row">
                     <div class="col-8">
-                      <input type="number" id="frequency_count" name="frequency" class="form__input" value='30' required />
+                      <input type="number" min=0 step="1" id="frequency_count" name="frequency" class="form__input" value='30' required />
                     </div>
                     <div class="col-4 font-body">
                       <select name="frequency_unit" id="frequency_unit" class="js-select2" style="width: 100%">
@@ -88,7 +88,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   <label class="form__label">{% trans "Amount Per Period" %}</label>
                   <div class="row">
                     <div class="col-8">
-                      <input type="number" id="amount" name="amount_per_period" class="form__input" required />
+                      <input type="number" min=1 id="amount" name="amount_per_period" class="form__input" required />
                     </div>
                     <div class="col-4">
                       {% if grant_has_no_token %}
@@ -106,9 +106,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   <div class="row">
                     <div class="col-12">
                       <label class="form__label">
-                        {% trans "Number Of Periods" %}
+                        {% trans "Number Of Recurring Payments" %}
                       </label>
-                      <input id="period" type="number" name="approve" class="form__input" required />
+                      <input id="period" type="number" min=0 step="1" name="approve" class="form__input" required />
                     </div>
                   </div>
                 </div>
