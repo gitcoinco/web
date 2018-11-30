@@ -1359,7 +1359,7 @@ def apitos(request):
 
 
 def labs(request):
-    return TemplateResponse(request, 'legal/privacy.html', {})
+    return TemplateResponse(request, 'shared/labs.html', {})
 
 
 def toolbox(request):
