@@ -93,6 +93,7 @@ urlpatterns = [
     # Health check endpoint
     re_path(r'^health/', include('health_check.urls')),
     re_path(r'^lbcheck/?', healthcheck.views.lbcheck, name='lbcheck'),
+    re_path(r'^spec/?', healthcheck.views.spec, name='spec'),
 
     # grant views
     path('grants/', include('grants.urls', namespace='grants')),
