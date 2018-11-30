@@ -102,8 +102,9 @@ $(document).ready(function() {
                 }
               });
             };
+
             callFunctionWhenTransactionMined(transactionHash);
-          })
+          });
           // .on('receipt', function(receipt) {
           //   $('#contract_address').val(receipt.contractAddress);
           // }).then(function(contractInstance) {
