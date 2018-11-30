@@ -9,6 +9,10 @@
   display: inline;
 }
 
+.cancel_grants.modal {
+  max-width: 45rem;
+}
+
 .grant__header .grant-item__owner-image img {
   width: 50px;
   height: 50px;
