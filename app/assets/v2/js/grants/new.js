@@ -81,6 +81,7 @@ $(document).ready(function() {
             gasPrice: 4000000000
           }).on('error', function(error) {
             console.log('1', error);
+            alert('Your contract failed to deploy. Please try again.');
           }).on('transactionHash', function(transactionHash) {
             console.log('2', transactionHash);
             $('#transaction_hash').val(transactionHash);

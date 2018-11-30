@@ -66,7 +66,16 @@ $(document).ready(function() {
 
           $('#contributor_address').val(accounts[0]);
 
-          deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(realApproval)).send({from: accounts[0], gasPrice: 4000000000}, function(err, result) {
+          deployedToken.methods.approve(
+            data.contract_address,
+            web3.utils.toTwosComplement(realApproval)
+          ).send({
+            from: accounts[0],
+            gasPrice: 4000000000
+          }).on('error', function(error) {
+            console.log('1', error);
+            alert('Your approval transaction failed. Please try again.');
+          }).on('transactionHash', function(transactionHash){
 
             document.issueURL = window.location.origin + $('#grant-link').val();
             enableWaitState('#grants_form');
@@ -84,11 +93,6 @@ $(document).ready(function() {
                 web3.utils.toTwosComplement(realGasPrice), // data.gas_price
                 web3.utils.toTwosComplement(nonce) // nonce
               ];
-
-              console.log('realTokenAmount', realTokenAmount);
-              console.log('realPeriodSeconds', realPeriodSeconds);
-              console.log('realGasPrice', realGasPrice);
-              console.log('parts', parts);
 
               deployedSubscription.methods.getSubscriptionHash(...parts).call(function(err, subscriptionHash) {
 
@@ -127,20 +131,26 @@ $(document).ready(function() {
                   }).then((response)=>{
                     console.log('TX RESULT', response);
 
-                    $.each($(form).serializeArray(), function() {
-                      data[this.name] = this.value;
-                    });
-
-                    data.frequency = realPeriodSeconds;
-                    console.log('data', data);
-                    form.submit();
                   }).catch((error)=>{
                     console.log(error);
+                    alert('Your subscription data failed to save. Please try again.');
+
                   });
                 });
               });
             });
+          }).on('confirmation', function(confirmationNumber, receipt) {
+            console.log('receipt', receipt);
+            //
+            // $.each($(form).serializeArray(), function() {
+            //   data[this.name] = this.value;
+            // });
+            //
+            // data.frequency = realPeriodSeconds;
+            // console.log('data', data);
+            // form.submit();
           });
+
         });
       });
     }
