@@ -1,24 +1,19 @@
-FROM python:3.7-slim-stretch
+FROM python:3.7-alpine3.8 as base
+FROM base as builder
+
 ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONVERBOSE 1
+ARG PACKAGES="postgresql-libs libxml2 libxslt freetype libffi jpeg libmaxminddb"
+ARG BUILD_DEPS="gcc g++ postgresql-dev libxml2-dev libxslt-dev freetype-dev libffi-dev jpeg-dev linux-headers autoconf automake libtool make dos2unix"
 
-RUN mkdir /code && \
-    apt-get update -y && \
-    apt-get install build-essential -y && \
-    apt-get install -y --no-install-recommends apt-utils && \
-    apt-get install -y --no-install-recommends tk-dev python3-tk pgtop libsecp256k1-dev libsecp256k1-0 gettext graphviz libgraphviz-dev wget git dos2unix gcc libc6-dev libc-dev libssl-dev make automake libtool autoconf pkg-config libffi-dev libgdal-dev gdal-bin libgdal20 python3-gdal ffmpeg libav-tools x264 x265 && \
-    pip install --upgrade pip wheel setuptools && \
-    pip3 install dumb-init psutil && \
-    rm -rf /var/lib/apt/lists/*
+RUN mkdir /install
+WORKDIR /install
 
-RUN git clone --recursive https://github.com/maxmind/libmaxminddb.git && \
-    cd libmaxminddb && \
-    ./bootstrap && \
-    ./configure && \
-    make && \
-    make check && \
-    make install && \
-    echo /usr/local/lib  >> /etc/ld.so.conf.d/local.conf && \
-    ldconfig
+# Install general dependencies.
+RUN apk add --no-cache --update $PACKAGES && \
+    apk add --no-cache --update --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/ vips && \
+    apk add --no-cache --update --virtual .builder $BUILD_DEPS
 
 # GeoIP2 Data Files
 RUN mkdir -p /usr/share/GeoIP/ && \
@@ -28,16 +23,28 @@ RUN mkdir -p /usr/share/GeoIP/ && \
     gunzip GeoLite2-Country.mmdb.gz && \
     mv *.mmdb /usr/share/GeoIP/
 
-WORKDIR /code
+# Upgrade package essentials.
+RUN pip3 install --upgrade --install-option="--prefix=/install" pip setuptools wheel dumb-init pipenv
+
+
 COPY requirements/ /code/
-COPY app/ /code/app/
+RUN pip3 install --upgrade --install-option="--prefix=/install" -r test.txt
 
-RUN pip install -r test.txt
 COPY bin/docker-command.bash /bin/docker-command.bash
-RUN dos2unix /bin/docker-command.bash && \
-    apt-get purge -y --auto-remove dos2unix wget gcc libc6-dev libc-dev libssl-dev make automake libtool autoconf pkg-config libffi-dev apt-utils
+RUN dos2unix /bin/docker-command.bash
 
-RUN apt-get update && apt-get install -y libvips libvips-dev libmagickwand-dev
+# Switch to the base image.
+FROM base
+WORKDIR /code
+
+RUN apk add --no-cache --update $PACKAGES bash git && \
+    apk add --no-cache --update --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/ vips
+
+RUN mkdir -p /usr/share/GeoIP/
+COPY --from=builder /install /usr/local
+COPY --from=builder /usr/share/GeoIP /usr/share/GeoIP
+COPY --from=builder /bin/docker-command.bash /bin/docker-command.bash
+COPY app/ /code/app/
 
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
 CMD ["bash", "/bin/docker-command.bash"]
