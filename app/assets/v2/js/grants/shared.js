@@ -68,6 +68,7 @@ $(document).ready(function() {
         $('#unlock_metamask_error').css('display', 'none');
         $('#connect_metamask_error').css('display', 'none');
         $('#no_issue_error').css('display', 'none');
+        $('.alpha-warning').addClass('hidden');
         mixpanel_track_once('No Metamask Error', params);
       } else if (is_metamask_unlocked && !is_metamask_approved) {
         $('#connect_metamask_error').css('display', 'block');
@@ -78,6 +79,7 @@ $(document).ready(function() {
         $('#grants_form').addClass('hidden');
         $('.submit_bounty .newsletter').addClass('hidden');
         $('#no_issue_error').css('display', 'none');
+        $('.alpha-warning').addClass('hidden');
         mixpanel_track_once('Unlock Metamask Error', params);
       } else if (!result) {
         $('#unlock_metamask_error').css('display', 'block');
@@ -88,6 +90,7 @@ $(document).ready(function() {
         $('#grants_form').addClass('hidden');
         $('.submit_bounty .newsletter').addClass('hidden');
         $('#no_issue_error').css('display', 'none');
+        $('.alpha-warning').addClass('hidden');
         mixpanel_track_once('Unlock Metamask Error', params);
       } else if (is_zero_balance_not_okay && document.balance == 0) {
         $('#zero_balance_error').css('display', 'block');
@@ -98,6 +101,7 @@ $(document).ready(function() {
         $('#connect_metamask_error').css('display', 'none');
         $('#no_metamask_error').css('display', 'none');
         $('#no_issue_error').css('display', 'none');
+        $('.alpha-warning').addClass('hidden');
         mixpanel_track_once('Zero Balance Metamask Error', params);
       } else {
         $('#zero_balance_error').css('display', 'none');
@@ -108,6 +112,7 @@ $(document).ready(function() {
         $('#robot_error').addClass('hidden');
         $('#grants_form').removeClass('hidden');
         $('.submit_bounty .newsletter').removeClass('hidden');
+        $('.alpha-warning').removeClass('hidden');
       }
     }
   };
