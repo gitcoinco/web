@@ -148,7 +148,7 @@ def get_avatar_context():
                 ['HatShort-pilgrim'], ['HatShort-santahat'], ['Earring-0'], ['Earring-1'],
                 ['EarringBack-2', 'Earring-2'], ['Earring-3'], ['Earring-4'], ['Masks-jack-o-lantern'],
                 ['Masks-guy-fawkes'], ['Masks-jack-o-lantern-lighted'], ['Masks-wolverine'],
-                ['Extras-Parrot'], ['Extras-wonderwoman'], ['Extras-santa'],
+                ['Extras-Parrot'], ['Extras-wonderwoman'], ['Extras-santa'], ['Extras-reindeer'],
                 ['Masks-gitcoinbot'], ['Masks-batman'], ['Masks-eye-patch'], ['Masks-flash'],
             ),
             'paid_options': {
