@@ -112,7 +112,7 @@
                   </h4>
                 {% elif is_admin %}
                   {% csrf_token %}
-                  <div id="js-cancel_grant">
+                  <div id="js-cancel_grant" class="d-inline-block">
                     <button class="button button--primary button--warning" id="cancel_grant">{% trans "Cancel this Grant" %}
                     </button>
                     <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">

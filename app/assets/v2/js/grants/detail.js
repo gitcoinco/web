@@ -105,7 +105,7 @@ $(document).ready(function() {
       modalClass: 'modal cancel_grants'
     });
 
-    $('.modal-cancel').on('click', function(e) {
+    $('.modal-cancel-grants').on('click', function(e) {
       let contract_address = $('#contract_address').val();
       let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, contract_address);
 
