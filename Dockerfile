@@ -1,14 +1,10 @@
-FROM python:3.7-alpine3.8 as base
-FROM base as builder
+FROM python:3.7-alpine3.8
 
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONVERBOSE 1
-ARG PACKAGES="postgresql-libs libxml2 libxslt freetype libffi jpeg libmaxminddb"
+ARG PACKAGES="postgresql-libs libxml2 libxslt freetype libffi jpeg libmaxminddb bash git"
 ARG BUILD_DEPS="gcc g++ postgresql-dev libxml2-dev libxslt-dev freetype-dev libffi-dev jpeg-dev linux-headers autoconf automake libtool make dos2unix"
-
-RUN mkdir /install
-WORKDIR /install
+WORKDIR /code
 
 # Install general dependencies.
 RUN apk add --no-cache --update $PACKAGES && \
@@ -24,26 +20,15 @@ RUN mkdir -p /usr/share/GeoIP/ && \
     mv *.mmdb /usr/share/GeoIP/
 
 # Upgrade package essentials.
-RUN pip3 install --upgrade --install-option="--prefix=/install" pip setuptools wheel dumb-init pipenv
-
+RUN pip3 install --upgrade pip setuptools wheel dumb-init pipenv
 
 COPY requirements/ /code/
-RUN pip3 install --upgrade --install-option="--prefix=/install" -r test.txt
+RUN pip3 install --upgrade -r test.txt
 
 COPY bin/docker-command.bash /bin/docker-command.bash
-RUN dos2unix /bin/docker-command.bash
+RUN dos2unix /bin/docker-command.bash && \
+    apk del .builder
 
-# Switch to the base image.
-FROM base
-WORKDIR /code
-
-RUN apk add --no-cache --update $PACKAGES bash git && \
-    apk add --no-cache --update --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/ vips
-
-RUN mkdir -p /usr/share/GeoIP/
-COPY --from=builder /install /usr/local
-COPY --from=builder /usr/share/GeoIP /usr/share/GeoIP
-COPY --from=builder /bin/docker-command.bash /bin/docker-command.bash
 COPY app/ /code/app/
 
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
