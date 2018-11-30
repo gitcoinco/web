@@ -353,7 +353,7 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
         subscription.active = False
         subscription.save()
         support_cancellation(grant, subscription)
-        messages.info(request, _('Thank you for your contribution'))
+        messages.info(request, _('Your subscription has been canceled. We hope you continue to support other open source projects!'))
         return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
     params = {
