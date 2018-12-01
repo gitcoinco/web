@@ -1633,6 +1633,18 @@ class Activity(models.Model):
         return model_to_dict(self, **kwargs)
 
 
+class LabsResearch(models.Model):
+    """Define the structure of Labs Research object."""
+
+    title = models.CharField(max_length=255)
+    description = models.CharField(max_length=1000)
+    link = models.URLField(null=True)
+    image = models.ImageField(upload_to='labs')
+
+    def __str__(self):
+        return self.title
+
+
 class ProfileQuerySet(models.QuerySet):
     """Define the Profile QuerySet to be used as the objects manager."""
 
