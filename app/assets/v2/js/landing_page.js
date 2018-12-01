@@ -71,6 +71,7 @@ $(document).ready(function() {
 });
 
 var slideIndex = 1;
+var autoRefresh;
 
 function plusDivs(n) {
   showDivs(slideIndex += n);
@@ -97,8 +98,12 @@ function showDivs(n) {
 function screenClass() {
   if ($(window).innerWidth() < 1160) {
     showDivs(slideIndex);
+    autoRefresh = setInterval(function() {
+      plusDivs(1);
+    }, 8000 );
   } else {
     $('.live-refresh-banner').load(location.href + ' .live-refresh-banner>*', '');
+    clearInterval(autoRefresh);
   }
 }
 
