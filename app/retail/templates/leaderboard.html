@@ -56,21 +56,21 @@
               {% endfor %}
             </div>
             <div class="row mt-0 ml-1 pt-1 pl-1" style="height: 4em; padding: 0.5em;">
-              <div class="col-7" style="padding-top: 0.5em;">
+              <div class="col-5" style="padding-top: 0.5em">
                 <h3>{{title}} <span id="alpha">Alpha</span></h3>
               </div>
-              <div class="col-2 filter">
+              <div class="col-2 offset-1 filter">
                 <div class="form-group">
                   {% if technologies|length  > 0%}
-                    <select id="tech-keyword" class="form-control tech-options key">
+                    <select id="tech-keyword" class="form-control tech-options key mr-3">
                       <option value="all">All</option>
                     </select>
                   {%endif%}
                 </div>
               </div>
-              <div class="col-2 select" style="margin-left: 1.5em;">
+              <div class="col-2 select">
                 <div class="form-group">
-                  <select id="key" class="form-control key">
+                  <select id="key" class="form-control key mr-2">
                     {% for this_title in titles.items %}
                       <option value="{{this_title.0}}"
                         {% if selected == this_title.1 %}selected=selected{% endif %} >{{this_title.1}}
@@ -83,7 +83,7 @@
                 <div class="form-group">
                   <select id="orderBy" class="form-control key">
                     {% for this_title in order_by_labels.items %}
-                      <option value="{{this_title.0}}"
+                      <option value="{{ this_title.0 }}"
                         {% if selected_order == this_title.0 %}selected=selected{% endif %} >{{this_title.1}}
                       </option>
                     {% endfor %}
