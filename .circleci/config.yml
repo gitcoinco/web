@@ -42,7 +42,9 @@ jobs:
       - run:
           name: install dependencies
           command: |
-            python3 -m venv venv
+            which python
+            echo "$PWD"
+            python -m venv venv
             . venv/bin/activate
             pip install -r requirements/test.txt
 
