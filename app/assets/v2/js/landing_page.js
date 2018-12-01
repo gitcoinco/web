@@ -100,7 +100,7 @@ function screenClass() {
     showDivs(slideIndex);
     autoRefresh = setInterval(function() {
       plusDivs(1);
-    }, 8000 );
+    },8000);
   } else {
     $('.live-refresh-banner').load(location.href + ' .live-refresh-banner>*', '');
     clearInterval(autoRefresh);
