@@ -70,7 +70,7 @@
               </div>
               <div class="col-2 select">
                 <div class="form-group">
-                  <select id="key" class="form-control key mr-2">
+                  <select id="key" class="form-control key mr-2" style="right: 5px">
                     {% for this_title in titles.items %}
                       <option value="{{this_title.0}}"
                         {% if selected == this_title.1 %}selected=selected{% endif %} >{{this_title.1}}
