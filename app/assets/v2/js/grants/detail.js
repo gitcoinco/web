@@ -62,7 +62,6 @@ $(document).ready(function() {
     });
 
     editableFields.forEach(field => disableEdit(field));
-    copyDuplicateDetails();
   });
 
   $('#cancel-details').on('click', (event) => {

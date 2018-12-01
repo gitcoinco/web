@@ -90,20 +90,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     </div>
 
     {% if grants %}
-    <div class="container-fluid grants-container">
-      <div class="container">
-        <div class="infinite-container row">
-          {% for grant in grants %}
-            <div class="col-12 col-md-6 col-lg-4 mb-4 infinite-item">
-              {% include 'grants/card.html' %}
-            </div>
-          {% endfor %} 
+      <div class="container-fluid grants-container">
+        <div class="container">
+          <div class="infinite-container row">
+            {% for grant in grants %}
+              <div class="col-12 col-md-6 col-lg-4 mb-4 infinite-item">
+                {% include 'grants/card.html' %}
+              </div>
+            {% endfor %}
+          </div>
+          {% if grants.has_next %}
+            <a class="infinite-more-link" href="?page={{ grants.next_page_number }}">More</a>
+          {% endif %}
         </div>
-        {% if grants.has_next %}
-          <a class="infinite-more-link" href="?page={{ grants.next_page_number }}">More</a>
-        {% endif %}
       </div>
-    </div>
     {% endif %}
 
     {% include 'shared/bottom_notification.html' %}

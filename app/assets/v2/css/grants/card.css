@@ -50,6 +50,7 @@
 
 .grant-item__owner-image img {
   width: 100%;
+  border-radius: 50%;
 }
 
 .grant-item__footer {
