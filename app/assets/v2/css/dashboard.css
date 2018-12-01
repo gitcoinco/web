@@ -271,8 +271,7 @@ body {
 }
 
 .expired-icon {
-  font-size: 1.3em;
+  font-size: 15px;
   padding-right: 0.5em;
-  color: #656565;
   transform: translateY(5%);
 }
