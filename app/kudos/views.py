@@ -324,6 +324,8 @@ def send_3(request):
             primary_email = to_emails['events'][0]
         else:
             print("TODO: no email found.  in the future, we should handle this case better because it's GOING to end up as a support request")
+    if primary_email and isinstance(primary_email, list):
+        primary_email = primary_email[0]
 
     # If no primary email in session, try the POST data. If none, fetch from GH.
     primary_from_email = params.get('fromEmail')
@@ -624,7 +626,8 @@ def receive_bulk(request, secret):
     coupon = coupons.first()
 
     if coupon.num_uses_remaining <= 0:
-        raise PermissionDenied
+        messages.info(request, f'Sorry but the coupon for a free kudos has has expired.  Contact the person who sent you the coupon link, or you can still purchase one on this page.')
+        return redirect(coupon.token.url)
 
     kudos_transfer = None
     if request.user.is_authenticated:
