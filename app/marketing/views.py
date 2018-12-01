@@ -623,7 +623,7 @@ def leaderboard(request, key=''):
         titles['quarterly_continents'] = _('Top Continents')
 
     order_by_labels = {
-        'amount': _('By Amount'), 
+        'amount': _('By Amount'),
         'count': _('By No of Bounties'),
     }
 
