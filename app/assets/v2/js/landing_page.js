@@ -92,15 +92,15 @@ function showDivs(n) {
   for (i = 0; i < x.length; i++) {
     x[i].style.display = 'none';
   }
-  x[slideIndex-1].style.display = 'block';
-}  
+  x[slideIndex - 1].style.display = 'block';
+}
 
 function screenClass() {
   if ($(window).innerWidth() < 1160) {
     showDivs(slideIndex);
-    autoRefresh = setInterval(function() { 
-      plusDivs(1); 
-    }, 8000 );
+    autoRefresh = setInterval(function() {
+      plusDivs(1);
+    }, 8000);
   } else {
     $('.live-refresh-banner').load(location.href + ' .live-refresh-banner>*', '');
     clearInterval(autoRefresh);
