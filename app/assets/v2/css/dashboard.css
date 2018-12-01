@@ -273,5 +273,5 @@ body {
 .expired-icon {
   font-size: 15px;
   padding-right: 0.5em;
-  transform: translateY(5%);
+  vertical-align: text-bottom;
 }
