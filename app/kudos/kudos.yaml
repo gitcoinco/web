@@ -2005,4 +2005,100 @@
     - fun
   image: resilient.svg
 
+- name: Augment
+  description: Choose your tools wisely young hero; for they will be important problem solvers for you during your web3 journey.
+  priceFinney: 3
+  numClonesAllowed: 250
+  tags: 
+    - cyberphunk
+    - augment
+    - tools
+  image: cyberpunk_augment.svg
+- name: cypherpunk_mind
+  description: This Kudos is for those who have a cyberphunk mind.  Know someone who is the brains of the operation?  Send them this Kudos.
+  priceFinney: 5
+  numClonesAllowed: 150
+  tags: 
+    - cyberphunk
+    - brain
+    - mind
+  image: cyberpunk_helm.svg
+- name: gitcoin_ambassador
+  description: This Kudos can be awarded only by Gitcoin team, and signifies that one was a Gitcoin ambassador during Fall 2018 and beyond.
+  priceFinney: 100
+  numClonesAllowed: 250
+  tags: 
+    - gitcoin core
+    - gitcoin ambassador
+  image: gitcoin_ambassador.svg
+- name: twitter_follower__thanksgiving_turkey_2018
+  description: This Kudos is a thank you to Gitcoin's twitter followers at https://twitter.com/getgitcoin.
+  priceFinney: 10
+  numClonesAllowed: 250
+  tags: 
+    - gitcoin 
+    - thanksgiving
+  image: turkey.svg
+- name: ether_gun
+  description: Know someone who produces and distributes value at a rapid clip?  Send them the Ether Gun Kudos!
+  priceFinney: 4
+  numClonesAllowed: 251
+  tags: 
+    - gitcoin 
+    - value
+    - fun
+    - ether
+  image: ethergun.svg
+- name: helpotron
+  description: The helpotron is your handy, helpful, robot friend.  This kudos is for any collaborator that you find really "helpful"!
+  priceFinney: 3
+  numClonesAllowed: 255
+  tags: 
+    - gitcoin 
+    - helpful
+    - sot skills
+    - fun
+    - robot
+  image: helpotron.svg
+- name: top_leaderboard
+  description: This kudos is for those who have been at the top of the Gitcoin Leaderboard at gitcoin.co/leaderboard
+  priceFinney: 15
+  numClonesAllowed: 300
+  tags: 
+    - gitcoin 
+    - leaderboard
+  image: trophy_1.svg
+- name: top_two_leaderboard
+  description: This kudos is for those who have been in the top 2 of the Gitcoin Leaderboard at gitcoin.co/leaderboard
+  priceFinney: 10
+  numClonesAllowed: 350
+  tags: 
+    - gitcoin 
+    - leaderboard
+  image: trophy_2.svg
+- name: top_three_leaderboard
+  description: This kudos is for those who have been in the top 3 of the Gitcoin Leaderboard at gitcoin.co/leaderboard
+  priceFinney: 9
+  numClonesAllowed: 400
+  tags: 
+    - gitcoin 
+    - leaderboard
+  image: trophy_3.svg
+- name: top_four_leaderboard
+  description: This kudos is for those who have been in the top 4 of the Gitcoin Leaderboard at gitcoin.co/leaderboard
+  priceFinney: 8
+  numClonesAllowed: 500
+  tags: 
+    - gitcoin 
+    - leaderboard
+  image: trophy_4.svg
+- name: top_five_leaderboard
+  description: This kudos is for those who have been in the top 5 of the Gitcoin Leaderboard at gitcoin.co/leaderboard
+  priceFinney: 7
+  numClonesAllowed: 500
+  tags: 
+    - gitcoin 
+    - leaderboard
+  image: trophy_5.svg
+
 

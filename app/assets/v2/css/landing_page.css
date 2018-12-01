@@ -16,7 +16,20 @@ body {
 }
 
 .banner--green {
-  background-color:#0ECF7C;
+  background-color:#25E899;
+  color: #000000;
+}
+
+.banner--green .btn-green {
+  background: transparent;
+  box-shadow: none;
+  color: #0D0764;
+  border: 1px solid #0D0764;
+}
+
+.banner--green p,
+.banner--green a {
+  font-weight: 600;
 }
 
 .youtube iframe {
@@ -781,6 +794,17 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .banner--green a {
+    display: inherit;
+  }
+
+  .banner--green a:first-child {
+    margin-bottom: 0.5rem;
+  }
+}
+
 
 @media (max-width: 768px) {
 

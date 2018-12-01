@@ -281,11 +281,11 @@ class TestAssembleLeaderboards(TestCase):
         """Test command assemble leaderboards."""
         Command().handle()
 
-        assert LeaderboardRank.objects.all().count() == 255
-        assert LeaderboardRank.objects.filter(leaderboard="all_all").count() == 17
-        assert LeaderboardRank.objects.filter(leaderboard="all_fulfilled").count() == 17
-        assert LeaderboardRank.objects.filter(leaderboard="all_earners").count() == 2
-        assert LeaderboardRank.objects.filter(leaderboard="all_payers").count() == 2
+        assert LeaderboardRank.objects.all().count() == 225
+        assert LeaderboardRank.objects.filter(leaderboard="all_all").count() == 15
+        assert LeaderboardRank.objects.filter(leaderboard="all_fulfilled").count() == 15
+        assert LeaderboardRank.objects.filter(leaderboard="all_earners").count() == 1
+        assert LeaderboardRank.objects.filter(leaderboard="all_payers").count() == 1
         assert LeaderboardRank.objects.filter(leaderboard="all_tokens").count() == 1
         assert LeaderboardRank.objects.filter(leaderboard="all_countries").count() == 3
         assert LeaderboardRank.objects.filter(leaderboard="all_keywords").count() == 2

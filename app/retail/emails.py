@@ -572,96 +572,80 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Nominate your Favorite OSS Dev | Kudos Trophies!"
-    new_kudos_pks = [429, 430]
+    subject = "In Pursuit Of Open Source Financial Freemdom"
+    new_kudos_pks = [528, 588, 589]
     new_kudos_size_px = 150
     intro = '''
-
 <p>
 Hi there,
 </p>
-<h3>Kudos Trophies</h3>
 <p>
-I'm excited to show off a new product: limited edition, Kudos Trophies. Kudos trophies are physical trophies with Kudos on them.  We launched them as the Status Cryptolife Hackathon in Prague.  Here's what they look like:
-<BR>
-<BR>
-<img style='max-width: 300px;' src='https://cdn-images-1.medium.com/max/640/1*8CIBNn9yXZY5bj34ZInkPA.jpeg'>
-<BR>
-<BR>
-Each Kudos Trophy is a physical trophy, which has a QR code on the bottom of it that allows it to be redeemed on Gitcoin’s website.
-<BR>
-<BR>
-<img style='max-width: 300px;' src='https://cdn-images-1.medium.com/max/1280/1*zeXLPyw4qkP4fifHkZAgFA.jpeg'>
-<BR>
-<BR>
-It's quite possible that you'll see them again at EthDenver this year :)
-<BR>
-<BR>
- <a href="https://medium.com/gitcoin/introducing-kudos-trophies-4e98c54e521">Learn more about Kudos Trophies here</a>.
-
+We wrote a post this week on the pursuit of <a href="https://medium.com/gitcoin/open-source-financial-freedom-8d852cbb6247">Open Source Financial Freedom</a>.
+It explains a bit more about how we think about open source sustainability, paths towards financial freedom, and why blockchain is important in the journey.
+Please do give it a read and let us know what you think.
 </p>
-
-<h3>Gitcoin Nominations are now Live</h3>
 <p>
-Who’s making the most impact on your OSS or Web3 project? Do you know someone that solved a problem in a creative way, built something interesting, or truly deserves a thanks? <a href='https://github.com/gitcoinco/web/issues/2816'>Nominate open source contributors to receive a limited edition and unique Kudos!</a>
+Austin Griffith with Gitcoin Labs continues to churn out great developer guides. Check out his latest work <a href="https://medium.com/gitcoin/moloch-rises-b292b64565f2">on the Moloch DAO</a>
+and see how easy it is to spin up a minimum viable decentralized organization, today.
 </p>
-
+<p>
+Last chance! Who is making the most impact on your OSS or Web3 project? Do you know someone that solved a problem in a creative way,
+built something interesting, or truly deserves a thanks? <a href='https://github.com/gitcoinco/web/issues/2816'>Nominate open source contributors to receive a limited edition and unique Kudos!</a>
+</p>
 <h3>New Kudos This Week</h3>
 <p>
 Check out a few of the new kudos launched this week:
 </p>
-
 <p>
-
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
-
-
 </p>
-
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Gitcoin now supports EIP--1102 (Metamask Privacy Mode).  To use Gitcoin in privacy mode, <a href="https://medium.com/metamask/introducing-privacy-mode-42549d4870fa">checkout this post</a>.
+            Colony is running an on-going bug bounty program using Gitcoin for the <a href="https://github.com/JoinColony/colonyNetwork">colonyNetwork repository</a>. 
+            Awards go up to $20,000 DAI for critical bugs. <a href="https://docs.colony.io/colonynetwork/bug-bounty-program-overview/">See the Rules page for more.</a>
         </li>
         <li>
-            We're announcing the launch of Gitcoin Labs next week.  <a href="https://medium.com/gitcoin/announcing-gitcoin-labs-ba400522d697">Here's a sneak peak</a>.
-        </li>
-        <li>
-            The Gitcoin Livestream will be on as regularly scheduled in two days. Aidan from Chainsafe will be there. They'll be talking about their ETH2.0 implementation and Gorli Testnet. We'll also have Ele from OSCoin presenting Radicle. <a href="https://gitcoin.co/livestream">Join us Friday at 5PM ET</a>!
+            Gitcoin Livestream is back this week! Polkadot will be on, alongside a guest to be named. Join us <a href="https://gitcoin.co/livestream">Friday at 5PM ET</a>!
         </li>
     </ul>
 </p>
 <p>
-Back to BUIDLing,
+Thanks for reading to the end!  <a href="https://gitcoin.co/kudos/redeem/red_staplers_for_all">Here's a kudos just for you :)</a>. 
+<BR>
+<BR>
+OK, Back to BUIDLing,
 </p>
 '''
     highlights = [{
-        'who': 'cleanunicorn',
+        'who': 'pvienhage',
         'who_link': True,
-        'what': 'Has been helping us with some security bounties',
-    }, {
-        'who': 'zachzundel',
-        'who_link': True,
-        'what': 'Worked with mbeacom on our testing suite!',
-        'link': 'https://github.com/gitcoinco/web/pull/2822',
+        'what': 'Reviewed Bloom smart contract for bugs!',
+        'link': 'https://gitcoin.co/issue/hellobloom/core/35/1854',
         'link_copy': 'View more',
     }, {
-        'who': 'iamonuwa',
+        'who': 'frederikbolding',
         'who_link': True,
-        'what': 'Worked with electricfeelco on some hello-metamask component refactoring.',
-        'link': 'https://gitcoin.co/issue/electricfeelco/travay/23/1355',
+        'what': 'Great work on Embark things!',
+        'link': 'https://gitcoin.co/issue/status-im/status-react/6780/1806',
+        'link_copy': 'View more',
+    }, {
+        'who': 'chriscates',
+        'who_link': True,
+        'what': 'Helped build a Hamburger menu on mobile for Unlock Protocol',
+        'link': 'https://gitcoin.co/issue/unlock-protocol/unlock/431/1820',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/f-o-a-m/chanterelle/issues/46',
-        'primer': 'Help foam improve their CI',
+        'url': 'https://github.com/centrifuge/precise-proofs/issues/29',
+        'primer': 'Work with centrifuge on Precise Proofs.',
     }, {
-        'url': 'https://github.com/novnc/noVNC/issues/944',
-        'primer': 'Help novnc add multi touch support.',
+        'url': 'https://github.com/status-im/status-react/issues/6199',
+        'primer': 'Add support for Universal Links on Status React.',
     }, {
-        'url': 'https://github.com/gitcoinco/web/issues/2684',
-        'primer': 'Add new assets to Gitcoin Avatars Builder - Holiday Avatars encouraged! 🎅',
+        'url': 'https://github.com/hellobloom/share-kit/issues/28',
+        'primer': 'Complete Bloom sign-in kit example!',
     }, ]
 
     num_leadboard_items = 5
@@ -727,6 +711,7 @@ Back to BUIDLing,
     response_txt = render_to_string("emails/bounty_roundup.txt", params)
 
     return response_html, response_txt, subject
+
 
 
 

@@ -26,8 +26,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.db.models import Q
+from django.core.paginator import Paginator
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template import loader
@@ -40,8 +39,9 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
-from app.utils import clean_str, ellipses, sync_profile
-from avatar.utils import get_avatar_context
+from app.utils import clean_str, ellipses
+from avatar.utils import get_avatar_context_for_user
+from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, profile_helper
 from economy.utils import convert_token_to_usdt
 from eth_utils import to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
@@ -533,7 +533,7 @@ def onboard(request, flow):
         'steps': steps or onboard_steps,
         'flow': flow,
     }
-    params.update(get_avatar_context())
+    params.update(get_avatar_context_for_user(request.user))
     return TemplateResponse(request, 'ftux/onboard.html', params)
 
 
@@ -636,7 +636,7 @@ def invoice(request):
     )
     params['accepted_fulfillments'] = bounty.fulfillments.filter(accepted=True)
     params['tips'] = [
-        tip for tip in bounty.tips.exclude(txid='') if tip.username == request.user.username and tip.username
+        tip for tip in bounty.tips.send_happy_path() if tip.username == request.user.username and tip.username
     ]
     params['total'] = bounty._val_usd_db if params['accepted_fulfillments'] else 0
     for tip in params['tips']:
@@ -720,7 +720,7 @@ def bulk_payout_bounty(request):
         user=request.user if request.user.is_authenticated else None,
         confirm_time_minutes_target=confirm_time_minutes_target,
         active='payout_bounty',
-        title=_('Multi-Party Payout'),
+        title=_('Advanced Payout'),
     )
 
     return TemplateResponse(request, 'bulk_payout_bounty.html', params)
@@ -902,21 +902,27 @@ def helper_handle_approvals(request, bounty):
     mutate_worker_action = request.GET.get('mutate_worker_action', None)
     mutate_worker_action_past_tense = 'approved' if mutate_worker_action == 'approve' else 'rejected'
     worker = request.GET.get('worker', None)
+
     if mutate_worker_action:
         if not request.user.is_authenticated:
             messages.warning(request, _('You must be logged in to approve or reject worker submissions. Please login and try again.'))
             return
+
+        if not worker:
+            messages.warning(request, _('You must provide the worker\'s username in order to approve or reject them.'))
+            return
+
         is_funder = bounty.is_funder(request.user.username.lower())
         is_staff = request.user.is_staff
         if is_funder or is_staff:
-            interests = bounty.interested.filter(profile__handle=worker)
-            is_interest_invalid = (not interests.filter(pending=True).exists() and mutate_worker_action == 'rejected') or (not interests.exists())
-            if is_interest_invalid:
+            pending_interests = bounty.interested.select_related('profile').filter(profile__handle=worker, pending=True)
+            # Check whether or not there are pending interests.
+            if not pending_interests.exists():
                 messages.warning(
                     request,
                     _('This worker does not exist or is not in a pending state. Perhaps they were already approved or rejected? Please check your link and try again.'))
                 return
-            interest = interests.first()
+            interest = pending_interests.first()
 
             if mutate_worker_action == 'approve':
                 interest.pending = False
@@ -930,7 +936,6 @@ def helper_handle_approvals(request, bounty):
                 maybe_market_to_user_slack(bounty, 'worker_approved')
                 maybe_market_to_twitter(bounty, 'worker_approved')
                 record_bounty_activity(bounty, request.user, 'worker_approved', interest)
-
             else:
                 start_work_rejected(interest, bounty)
 
@@ -1031,68 +1036,6 @@ def quickstart(request):
     return TemplateResponse(request, 'quickstart.html', {})
 
 
-class ProfileHiddenException(Exception):
-    pass
-
-
-def profile_helper(handle, suppress_profile_hidden_exception=False, current_user=None):
-    """Define the profile helper.
-
-    Args:
-        handle (str): The profile handle.
-
-    Raises:
-        DoesNotExist: The exception is raised if a Profile isn't found matching the handle.
-            Remediation is attempted by syncing the profile data.
-        MultipleObjectsReturned: The exception is raised if multiple Profiles are found.
-            The latest Profile will be returned.
-
-    Returns:
-        dashboard.models.Profile: The Profile associated with the provided handle.
-
-    """
-    current_profile = getattr(current_user, 'profile', None)
-    if current_profile and current_profile.handle == handle:
-        return current_profile
-
-    try:
-        profile = Profile.objects.get(handle__iexact=handle)
-    except Profile.DoesNotExist:
-        profile = sync_profile(handle)
-        if not profile:
-            raise Http404
-    except Profile.MultipleObjectsReturned as e:
-        # Handle edge case where multiple Profile objects exist for the same handle.
-        # We should consider setting Profile.handle to unique.
-        # TODO: Should we handle merging or removing duplicate profiles?
-        profile = Profile.objects.filter(handle__iexact=handle).latest('id')
-        logger.error(e)
-
-    if profile.hide_profile and not profile.is_org and not suppress_profile_hidden_exception:
-        raise ProfileHiddenException
-
-    return profile
-
-
-def profile_keywords_helper(handle):
-    """Define the profile keywords helper.
-
-    Args:
-        handle (str): The profile handle.
-
-    """
-    profile = profile_helper(handle, True)
-
-    keywords = []
-    for repo in profile.repos_data:
-        language = repo.get('language') if repo.get('language') else ''
-        _keywords = language.split(',')
-        for key in _keywords:
-            if key != '' and key not in keywords:
-                keywords.append(key)
-    return keywords
-
-
 def profile_keywords(request, handle):
     """Display profile keywords.
 
@@ -1100,13 +1043,34 @@ def profile_keywords(request, handle):
         handle (str): The profile handle.
 
     """
-    keywords = profile_keywords_helper(handle)
+    try:
+        profile = profile_helper(handle, True)
+    except (ProfileNotFoundException, ProfileHiddenException):
+        raise Http404
 
     response = {
         'status': 200,
-        'keywords': keywords,
+        'keywords': profile.keywords,
     }
     return JsonResponse(response)
+
+
+def profile_filter_activities(activities, activity_name):
+    """A helper function to filter a ActivityQuerySet.
+
+    Args:
+        activities (ActivityQuerySet): The ActivityQuerySet.
+        activity_name (str): The activity_type to filter.
+
+    Returns:
+        ActivityQuerySet: The filtered results.
+
+    """
+    if not activity_name or activity_name == 'all':
+        return activities
+    if activity_name == 'start_work':
+        return activities.filter(activity_type__in=['start_work', 'worker_approved'])
+    return activities.filter(activity_type=activity_name)
 
 
 def profile(request, handle):
@@ -1144,12 +1108,55 @@ def profile(request, handle):
                 handle = handle[:-1]
             profile = profile_helper(handle, current_user=request.user)
 
-        context = profile.to_dict()
-        for activity in context['activities']:
-            activity['started_bounties_count'] = activity['activity_bounties'].filter(
-                activity_type='start_work'
-            ).count()
-    except (Http404, ProfileHiddenException):
+        tabs = [
+            ('all', _('All Activity')),
+            ('new_bounty', _('Bounties Funded')),
+            ('start_work', _('Work Started')),
+            ('work_submitted', _('Work Submitted')),
+            ('work_done', _('Bounties Completed')),
+            ('new_tip', _('Tips Sent')),
+            ('receive_tip', _('Tips Received')),
+        ]
+        page = request.GET.get('p', None)
+
+        if page:
+            page = int(page)
+            activity_type = request.GET.get('a', '')
+            all_activities = profile.get_bounty_and_tip_activities()
+            paginator = Paginator(profile_filter_activities(all_activities, activity_type), 10)
+
+            if page > paginator.num_pages:
+                return HttpResponse(status=204)
+
+            context = {}
+            context['activities'] = paginator.get_page(page)
+
+            return TemplateResponse(request, 'profiles/profile_activities.html', context, status=status)
+
+        context = profile.to_dict(tips=False)
+        all_activities = context.get('activities')
+        activity_tabs = []
+
+        for tab, name in tabs:
+            activities = profile_filter_activities(all_activities, tab)
+            activities_count = activities.count()
+
+            if activities_count == 0:
+                continue
+
+            paginator = Paginator(activities, 10)
+
+            obj = {}
+            obj['id'] = tab
+            obj['name'] = name
+            obj['activities'] = paginator.get_page(1)
+            obj['count'] = activities_count
+
+            activity_tabs.append(obj)
+
+            context['activity_tabs'] = activity_tabs
+
+    except (Http404, ProfileHiddenException, ProfileNotFoundException):
         status = 404
         context = {
             'hidden': True,
@@ -1717,6 +1724,9 @@ def get_kudos(request):
         kudos_by_tags = Token.objects.filter(tags__icontains=q)
         kudos_pks = (kudos_by_desc | kudos_by_name | kudos_by_tags).values_list('pk', flat=True)
         kudos = Token.objects.filter(pk__in=kudos_pks, hidden=False, num_clones_allowed__gt=0).order_by('name')
+        is_staff = request.user.is_staff if request.user.is_authenticated else False
+        if not is_staff:
+            kudos = kudos.filter(send_enabled_for_non_gitcoin_admins=True)
         if network:
             kudos = kudos.filter(contract__network=network)
         results = []
