@@ -150,6 +150,7 @@ def get_avatar_context():
                 ['Masks-guy-fawkes'], ['Masks-jack-o-lantern-lighted'], ['Masks-wolverine'], ['Masks-captain'],
                 ['Extras-Parrot'], ['Extras-wonderwoman'], ['Extras-santa'], ['Extras-reindeer'],
                 ['Masks-gitcoinbot'], ['Masks-batman'], ['Masks-eye-patch'], ['Masks-flash'],
+                ['Masks-deadpool'],
             ),
             'paid_options': {
                 'Extras-Parrot': 0.01,
