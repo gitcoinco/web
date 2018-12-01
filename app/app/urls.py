@@ -386,7 +386,7 @@ urlpatterns = [
     re_path(r'^settings/(.*)?', marketing.views.email_settings, name='settings'),
 
     # marketing views
-    url(r'^leaderboard/(\w*)\/?(\w*)', marketing.views.leaderboard, name='leaderboard'),
+    url(r'^leaderboard/(.*)', marketing.views.leaderboard, name='leaderboard'),
     path('leaderboard', marketing.views._leaderboard, name='_leaderboard'),
 
     # dataviz views

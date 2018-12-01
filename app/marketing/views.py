@@ -578,7 +578,7 @@ def _leaderboard(request):
     return leaderboard(request, '')
 
 
-def leaderboard(request, key='', order_by=''):
+def leaderboard(request, key=''):
     """Display the leaderboard for top earning or paying profiles.
 
     Args:
@@ -593,7 +593,7 @@ def leaderboard(request, key='', order_by=''):
 
     keyword_search = request.GET.get('keyword')
 
-    order_by = 'amount' if not order_by else order_by
+    order_by = 'amount' if not request.GET.get('orderby') else request.GET.get('orderby')
 
     titles = {
         'quarterly_payers': _('Top Payers'),
@@ -623,10 +623,11 @@ def leaderboard(request, key='', order_by=''):
         titles['quarterly_continents'] = _('Top Continents')
 
     order_by_labels = {
-        'amount': _('By Amount'),
-        'count': _('By No of Bounties')
+        'amount': _('By Amount'), 
+        'count': _('By No of Bounties'),
     }
 
+    order_by = 'amount' if order_by not in order_by_labels.keys() else order_by
 
     if key not in titles.keys():
         raise Http404
