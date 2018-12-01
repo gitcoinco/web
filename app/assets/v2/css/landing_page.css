@@ -438,6 +438,12 @@ body {
   display: inline-block;
   margin-left: 10px;
   margin-right: 10px;
+  animation: fadein 2s;
+}
+
+@keyframes fadein {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 .split-cta > div:first-child {
@@ -517,7 +523,8 @@ body {
   }
 
   .split-cta > div:last-child {
-    width: 100% !important;
+    max-width: 100% !important;
+    float: none;
     text-align: center !important;
   }
 
