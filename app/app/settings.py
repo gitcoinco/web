@@ -110,6 +110,7 @@ INSTALLED_APPS = [
     'bounty_requests',
     'perftools',
     'revenue',
+    'inbox',
 ]
 
 MIDDLEWARE = [

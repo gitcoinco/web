@@ -48,6 +48,7 @@ import retail.emails
 import retail.views
 import revenue.views
 import tdi.views
+import inbox.views
 from dashboard.router import router as dbrouter
 from external_bounties.router import router as ebrouter
 from kudos.router import router as kdrouter
@@ -57,6 +58,7 @@ from .sitemaps import sitemaps
 urlpatterns = [
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
 
+    path('notification/', inbox.views.inbox, name='inbox'),
     # kudos
     path('kudos/', kudos.views.about, name='kudos_main'),
     path('kudos/about/', kudos.views.about, name='kudos_about'),
