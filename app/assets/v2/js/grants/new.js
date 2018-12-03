@@ -47,7 +47,9 @@ $(document).ready(function() {
 
       $('#token_symbol').val($('#js-token option:selected').text());
 
-      console.log('compiledSubscription', compiledSubscription);
+      web3.eth.net.getNetworkType(function(err, network){
+        $('#network').val(network);
+      })
 
       // Begin New Deploy Subscription Contract
       let SubscriptionContract = new web3.eth.Contract(compiledSubscription.abi);
