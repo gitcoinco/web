@@ -1,0 +1,147 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static grants_extra %}
+
+{% block content %}
+
+<style>
+  hr {
+    width: 80%;
+    height: 2px;
+    border-radius: 25px;
+    border: none;
+    background-color: #D2D2D2;
+  }
+  .grantHeader {
+    width: 100%;
+    text-align: center;
+  }
+
+  .leftGrantHeader {
+    display: inline-block;
+  }
+
+  .rightGrantHeader {
+    display: inline-block;
+  }
+
+  .rightGrantHeader > h2 {
+    font-size: 20px;
+    line-height: 1.5em;
+  }
+
+  .grantInfo {
+    padding-top: 30px;
+    padding-bottom: 1%;
+  }
+
+  .grantInfo a img {
+    border-radius: 25px;
+    margin-bottom: 10px;
+  }
+
+  .grantInfoName {
+    font-size: 20px;
+    color: #0D0764;
+  }
+
+  .grantInfo h5 {
+    font-size: 14px;
+    margin-top: 15px;
+    margin-top: 30px;
+  }
+
+  .grantInfo h3 {
+    margin-top: -20px;
+  }
+
+  .updatesButton {
+    padding-left: 30px;
+    padding-right: 30px;
+    text-decoration: none;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    background-color: #0D0764;
+    color: white;
+    border-radius: 2.7px;
+    font-size: 17px;
+  }
+
+  #grow-oss {
+    margin-top: 50px;
+    margin-bottom: 50px;
+  }
+
+  @media screen and (min-width: 598px) {
+    .rightGrantHeader {
+      padding-left: 40px;
+      transform: translateY(-12.5%);
+      text-align: left;
+    }
+    .leftGrantHeader > img {
+      transform: translateY(13.5%);
+    }
+  }
+
+</style>
+<div class="grantHeader">
+  <div class="leftGrantHeader">
+    <img src="{% static "v2/images/heart-robot.png" %}" alt="{% trans "Gitcoin Heart Robot" %}" title="{% trans "Gitcoin Heart Robot" %}">
+  </div>
+  <div class="rightGrantHeader">
+    <h1 style="text-transform: none;">{% trans "Your contribution of" %} {{ subscription.amount_per_period }} {{ subscription.token_symbol }} {% trans "to " %} {{ grant.title }} {% trans " was successful" %}!
+    </h1>
+    <h2 style="text-transform: none;">{% trans "The world of open source is a better place because of you." %}
+    </h2>
+  </div>
+</div>
+
+<hr>
+<div class="grantInfo">
+  <a href="{% url 'grants:details' grant.id grant.slug %}">
+    <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}" width="50" height="50" />
+  </a>
+  <br>
+  <a class="grantInfoName" href="{% url 'grants:details' grant.id grant.slug %}">
+    {{ grant.title }}
+  </a>
+  <p>
+    {{ grant.description }}
+  </p>
+  <h5 style="text-transform: none;">
+    {% trans "You have agreed to give" %}
+  </h5>
+  <h3 style="text-transform: none;">
+    {{ subscription.amount_per_period }} {{ subscription.token_symbol }} {% trans " every" %} {{ subscription.frequency }} {{ subscription.frequency_unit }}
+  </h3>
+  <p>{% trans "You can see all your transactions" %}
+    <a href="{% url 'grants:profile' %}">{% trans "here." %}</a>
+  </p>
+</div>
+<hr>
+
+<br>
+<br>
+<a class="updatesButton" href="{% url 'grants:details' grant.id grant.slug %}">{% trans "View Updates" %}</a>
+<br>
+<br>
+<p>{% trans "If you ever need to, you can cancel your support" %}
+  <a href="{% url 'grants:subscription_cancel' grant.id grant.slug subscription.id %}">{% trans "here." %}</a>
+</p>
+
+{% endblock %}

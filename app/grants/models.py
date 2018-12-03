@@ -306,6 +306,7 @@ class Subscription(SuperModel):
 
     def successful_contribution(self, kwargs):
         """Create a contribution object."""
+        from marketing.mails import successful_contribution
         contribution_kwargs = {
             'tx_id': kwargs.tx_id,
             'gas_price': kwargs.gas_price,
@@ -313,7 +314,7 @@ class Subscription(SuperModel):
             'subscription': self
         }
         contribution = Contribution.objects.create(**contribution_kwargs)
-        # TODO: Email user that there payment has gone through
+        successful_contribution(self.grant, self)
         return contribution
 
 class ContributionQuerySet(models.QuerySet):
