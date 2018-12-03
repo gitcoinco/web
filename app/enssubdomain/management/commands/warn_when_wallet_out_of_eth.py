@@ -28,11 +28,7 @@ class Command(BaseCommand):
     help = 'warns the admins when any of the monitored_accounts is out of gas'
 
     def handle(self, *args, **options):
-        monitored_accounts = [
-            settings.ENS_OWNER_ACCOUNT,
-            settings.KUDOS_OWNER_ACCOUNT,
-            settings.GRANTS_OWNER_ACCOUNT
-        ]
+        monitored_accounts = [settings.ENS_OWNER_ACCOUNT, settings.KUDOS_OWNER_ACCOUNT, settings.GRANTS_OWNER_ACCOUNT]
         for account in monitored_accounts:
             balance_eth_threshold = 0.07
 

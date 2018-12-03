@@ -17,12 +17,15 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from django.core.management.base import BaseCommand
-from grants.models import Grant, Milestone, Update, Subscription, Contribution
-from django.conf import settings
-from django.utils import timezone
-from marketing.mails import warn_subscription_failed
 import logging
+
+from django.conf import settings
+from django.core.management.base import BaseCommand
+from django.utils import timezone
+
+from grants.models import Contribution, Grant, Milestone, Subscription, Update
+from marketing.mails import warn_subscription_failed
+
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 logging.getLogger("web3").setLevel(logging.WARNING)
 
@@ -80,4 +83,3 @@ class Command(BaseCommand):
                             warn_subscription_failed(subscription, txid, status)
                         else:
                             print("TODO: upon success, any DB mutations, send emails, handle failure")
-                    

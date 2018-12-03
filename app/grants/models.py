@@ -20,14 +20,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.db.models import Q
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from django_extensions.db.fields import AutoSlugField
 from economy.models import SuperModel
-from grants.utils import get_upload_filename
-from django.utils import timezone
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
+from grants.utils import get_upload_filename
 from web3 import Web3
+
 
 class GrantQuerySet(models.QuerySet):
     """Define the Grant default queryset and manager."""
@@ -512,4 +513,3 @@ class Contribution(SuperModel):
         null=True,
         help_text=_('The associated Subscription.'),
     )
-
