@@ -2,6 +2,7 @@
   --color-notification: 37, 232, 153;
   --badge-bg: #D6FBEB;
   --badge-text: #00A55E;
+  --link-color: #3E00FF;
 
 }
 
@@ -49,6 +50,11 @@
   max-width: calc(100vw - 2em);
 }
 
+.notifications__box a {
+  color: var(--link-color);
+  font-size: 0.75rem;
+}
+
 .notifications__header {
   display: flex;
   justify-content: space-between;
@@ -56,12 +62,16 @@
   padding-bottom: 0.8em;
 }
 
+.notifications__title {
+  font-size: 0.87rem;
+  font-weight: 600;
+}
+
 .notifications__list {
   font-size: 12px;
   max-height: 328px;
   overflow-y: auto;
   padding: 0;
-
   position: relative;
   z-index: 1;
   background: #fafafa no-repeat;
@@ -111,6 +121,7 @@
 .notifications__button-all {
   display: block;
   text-align: center;
+  font-weight: 700;
 }
 
 @keyframes BadgePulse{
