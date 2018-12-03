@@ -101,54 +101,17 @@ $(document).ready(function() {
                 web3.eth.personal.sign('' + subscriptionHash, accounts[0], function(err, signature) {
 
                   $('#signature').val(signature);
-
-                  let postData = {
-                    subscriptionContract: data.contract_address,
-                    parts: parts,
-                    subscriptionHash: subscriptionHash,
-                    signature: signature
-                  };
-
-                  console.log('postData', postData);
-
-                  $('#real_period_seconds').val(realPeriodSeconds);
-
-                  $.each($(form).serializeArray(), function() {
-                    data[this.name] = this.value;
-                  });
-
-                  console.log('data', data);
-                  form.submit();
-
-                  fetch('http://localhost:10003/saveSubscription', {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                      postData
-                    })
-                  }).then((response)=>{
-                    console.log('TX RESULT', response);
-
-                  }).catch((error)=>{
-                    console.log(error);
-                    alert('Your subscription data failed to save. Please try again.');
-
-                  });
                 });
               });
             });
           }).on('confirmation', function(confirmationNumber, receipt) {
-            console.log('receipt', receipt);
-            //
-            // $.each($(form).serializeArray(), function() {
-            //   data[this.name] = this.value;
-            // });
-            //
-            // data.frequency = realPeriodSeconds;
-            // console.log('data', data);
-            // form.submit();
+            $('#real_period_seconds').val(realPeriodSeconds);
+
+            $.each($(form).serializeArray(), function() {
+              data[this.name] = this.value;
+            });
+
+            form.submit();
           });
 
         });
