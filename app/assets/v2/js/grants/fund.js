@@ -85,9 +85,9 @@ $(document).ready(function() {
               nonce = parseInt(nonce) + 1;
 
               const parts = [
-                accounts[0], // subscriber address
-                data.admin_address, // admin_address
-                selected_token, // token denomination / address
+                web3.utils.toChecksumAddress(accounts[0]), // subscriber address
+                web3.utils.toChecksumAddress(data.admin_address), // admin_address
+                web3.utils.toChecksumAddress(selected_token), // token denomination / address
                 web3.utils.toTwosComplement(realTokenAmount), // data.amount_per_period
                 web3.utils.toTwosComplement(realPeriodSeconds), // data.period_seconds
                 web3.utils.toTwosComplement(realGasPrice), // data.gas_price

@@ -55,9 +55,9 @@ $(document).ready(function() {
       // These args are baseline requirements for the contract set by the sender. Will set most to zero to abstract complexity from user.
       let args = [
         // admin_address
-        data.admin_address,
+        web3.utils.toChecksumAddress(data.admin_address),
         // required token
-        data.denomination,
+        web3.utils.toChecksumAddress(data.denomination),
         // required tokenAmount
         web3.utils.toTwosComplement(0),
         // data.frequency
