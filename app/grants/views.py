@@ -139,10 +139,8 @@ def grant_details(request, grant_id, grant_slug):
             grant.save()
             return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
-
     params = {
         'active': 'grant_details',
-        'title': _('Grant Details'),
         'grant': grant,
         'title': grant.title,
         'card_desc': grant.description,

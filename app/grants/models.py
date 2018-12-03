@@ -164,7 +164,6 @@ class Grant(SuperModel):
         return ((self.amount_received / self.amount_goal) * 100)
 
 
-
 class Milestone(SuperModel):
     """Define the structure of a Grant Milestone"""
 

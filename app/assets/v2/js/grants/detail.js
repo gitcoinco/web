@@ -69,7 +69,6 @@ $(document).ready(function() {
     $('#save-details').addClass('hidden');
     $('#cancel-details').addClass('hidden');
 
-    // TODO: Reset value
     editableFields.forEach(field => disableEdit(field));
   });
 
