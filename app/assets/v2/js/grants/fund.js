@@ -139,7 +139,6 @@ $(document).ready(function() {
               data[this.name] = this.value;
             });
 
-            data.frequency = realPeriodSeconds;
             console.log('data', data);
             form.submit();
           });
