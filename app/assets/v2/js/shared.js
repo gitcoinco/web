@@ -262,8 +262,8 @@ var waitingStateActive = function() {
   waitingRoomEntertainment();
 };
 
-var notify_funder = function(bounty_pk, data) {
-  var request_url = '/actions/bounty/' + bounty_pk + '/notify_funder/';
+var notify_funder = function(network, std_bounties_id, data) {
+  var request_url = '/actions/bounty/'  + network + '/' + std_bounties_id + '/notify/funder/';
 
   showBusyOverlay();
   $.post(request_url, data).then(function(result) {

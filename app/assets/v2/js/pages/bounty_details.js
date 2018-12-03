@@ -587,7 +587,8 @@ var show_notify_funder_modal = function() {
   var self = this;
 
   setTimeout(function() {
-    var url = '/' + document.result['standard_bounties_id'] + '/modal/notify-funder';
+    var bounty_path = document_result['network'] + '/' + document_result['standard_bounties_id'];
+    var url = '/' + bounty_path + '/modal/notify-funder';
 
     $.get(url, function(newHTML) {
       var modal = $(newHTML).appendTo('body').modal({
@@ -597,9 +598,7 @@ var show_notify_funder_modal = function() {
       modal.on('submit', function(event) {
         event.preventDefault();
 
-        notify_funder(document.result['pk'], {
-          url: window.location.pathname + '&pk=' + document.result['pk']
-        });
+        notify_funder(document.result['network'], document.result['standard_bounties_id'], {});
         $('#notifyFunder .button').addClass('disabled');
         $.modal.close();
       });

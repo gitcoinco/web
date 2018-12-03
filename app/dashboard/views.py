@@ -1018,9 +1018,9 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
     return TemplateResponse(request, 'bounty/details.html', params)
 
 
-def get_notify_funder_modal(request, stdbounties_id):
+def get_notify_funder_modal(request, network, stdbounties_id):
     stdbounties_id = clean_str(stdbounties_id)
-    bounty = Bounty.objects.filter(standard_bounties_id=stdbounties_id).first()
+    bounty = Bounty.objects.current().filter(network=network, standard_bounties_id=stdbounties_id).first()
 
     context = {
         'bounty': bounty,
@@ -1031,13 +1031,25 @@ def get_notify_funder_modal(request, stdbounties_id):
 
 
 @csrf_exempt
-def funder_payout_reminder(request, bounty_id):
+def funder_payout_reminder(request, network, stdbounties_id):
+    if request.user.is_authenticated:
+        return JsonResponse({
+            'success': False,
+            status=403
+        })
+
     try:
-        bounty = Bounty.objects.get(pk=bounty_id)
+        bounty = Bounty.objects.current().filter(network=network, standard_bounties_id=stdbounties_id)
     except Bounty.DoesNotExist:
         raise Http404
 
-    user = request.user if request.user.is_authenticated else None
+    if (bounty.funder_last_messaged_on) {
+        return JsonResponse({
+            'success': False,
+            status=410 # 410 Gone Indicates that the resource requested is no longer available and will not be available again. 
+        })
+    }
+    user = request.user
     funder_payout_reminder_mail(to_email=bounty.bounty_owner_email, bounty=bounty, github_username=user, live=True)
     bounty.funder_last_messaged_on = timezone.now()
     bounty.save()

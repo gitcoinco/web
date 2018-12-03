@@ -438,9 +438,8 @@ def funder_payout_reminder(to_email, bounty, github_username, live):
     from_email = settings.PERSONAL_CONTACT_EMAIL
     subject = "Payout reminder"
     html, text = render_funder_payout_reminder(to_email=to_email, bounty=bounty, github_username=github_username)
-    print("-----" * 100)
     print(html)
-    print("-----" * 100)
+    print("\n")
     if (live):
         try:
             send_mail(
