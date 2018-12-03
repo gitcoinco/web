@@ -304,7 +304,6 @@ class Subscription(SuperModel):
         """Return the string representation of a Subscription."""
         return f"id: {self.pk}, active: {self.active}, subscription_hash: {self.subscription_hash}"
 
-
     def successful_contribution(self, kwargs):
         """Create a contribution object."""
         contribution_kwargs = {
