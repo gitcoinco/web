@@ -314,6 +314,9 @@ class Subscription(SuperModel):
             'subscription': self
         }
         contribution = Contribution.objects.create(**contribution_kwargs)
+        grant = self.grant
+        grant.amount_received = (grant.amount_received + self.amount_per_period)
+        grant.save()
         successful_contribution(self.grant, self)
         return contribution
 
