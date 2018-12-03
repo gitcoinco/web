@@ -25,7 +25,9 @@ from django.utils.translation import gettext_lazy as _
 from django_extensions.db.fields import AutoSlugField
 from economy.models import SuperModel
 from grants.utils import get_upload_filename
-
+from django.utils import timezone
+from gas.utils import recommend_min_gas_price_to_confirm_in_time
+from web3 import Web3
 
 class GrantQuerySet(models.QuerySet):
     """Define the Grant default queryset and manager."""
@@ -163,6 +165,21 @@ class Grant(SuperModel):
         """Return the percentage of token received based on the token goal."""
         return ((self.amount_received / self.amount_goal) * 100)
 
+
+    @property
+    def abi(self):
+        """Return grants abi."""
+        abi = [    {      "constant": True,      "inputs": [],      "name": "requiredGasPrice",      "outputs": [        {          "name": "",          "type": "uint256"        }      ],      "payable": False,      "stateMutability": "view",      "type": "function"    },    {      "constant": True,      "inputs": [],      "name": "requiredTokenAmount",      "outputs": [        {          "name": "",          "type": "uint256"        }      ],      "payable": False,      "stateMutability": "view",      "type": "function"    },    {      "constant": True,      "inputs": [],      "name": "requiredToAddress",      "outputs": [        {          "name": "",          "type": "address"        }      ],      "payable": False,      "stateMutability": "view",      "type": "function"    },    {      "constant": True,      "inputs": [],      "name": "requiredPeriodSeconds",      "outputs": [        {          "name": "",          "type": "uint256"        }      ],      "payable": False,      "stateMutability": "view",      "type": "function"    },    {      "constant": True,      "inputs": [],      "name": "requiredTokenAddress",      "outputs": [        {          "name": "",          "type": "address"        }      ],      "payable": False,      "stateMutability": "view",      "type": "function"    },    {      "constant": True,      "inputs": [],      "name": "contractVersion",      "outputs": [        {          "name": "",          "type": "uint8"        }      ],      "payable": False,      "stateMutability": "view",      "type": "function"    },    {      "constant": True,      "inputs": [        {          "name": "",          "type": "address"        }      ],      "name": "extraNonce",      "outputs": [        {          "name": "",          "type": "uint256"        }      ],      "payable": False,      "stateMutability": "view",      "type": "function"    },    {      "constant": True,      "inputs": [],      "name": "author",      "outputs": [        {          "name": "",          "type": "address"        }      ],      "payable": False,      "stateMutability": "view",      "type": "function"    },    {      "constant": True,      "inputs": [        {          "name": "",          "type": "bytes32"        }      ],      "name": "nextValidTimestamp",      "outputs": [        {          "name": "",          "type": "uint256"        }      ],      "payable": False,      "stateMutability": "view",      "type": "function"    },    {      "inputs": [        {          "name": "_toAddress",          "type": "address"        },        {          "name": "_tokenAddress",          "type": "address"        },        {          "name": "_tokenAmount",          "type": "uint256"        },        {          "name": "_periodSeconds",          "type": "uint256"        },        {          "name": "_gasPrice",          "type": "uint256"        },        {          "name": "_version",          "type": "uint8"        }      ],      "payable": False,      "stateMutability": "nonpayable",      "type": "constructor"    },    {      "payable": True,      "stateMutability": "payable",      "type": "fallback"    },    {      "anonymous": False,      "inputs": [        {          "indexed": True,          "name": "from",          "type": "address"        },        {          "indexed": True,          "name": "to",          "type": "address"        },        {          "indexed": False,          "name": "tokenAddress",          "type": "address"        },        {          "indexed": False,          "name": "tokenAmount",          "type": "uint256"        },        {          "indexed": False,          "name": "periodSeconds",          "type": "uint256"        },        {          "indexed": False,          "name": "gasPrice",          "type": "uint256"        },        {          "indexed": False,          "name": "nonce",          "type": "uint256"        }      ],      "name": "ExecuteSubscription",      "type": "event"    },    {      "anonymous": False,      "inputs": [        {          "indexed": True,          "name": "from",          "type": "address"        },        {          "indexed": True,          "name": "to",          "type": "address"        },        {          "indexed": False,          "name": "tokenAddress",          "type": "address"        },        {          "indexed": False,          "name": "tokenAmount",          "type": "uint256"        },        {          "indexed": False,          "name": "periodSeconds",          "type": "uint256"        },        {          "indexed": False,          "name": "gasPrice",          "type": "uint256"        },        {          "indexed": False,          "name": "nonce",          "type": "uint256"        }      ],      "name": "CancelSubscription",      "type": "event"    },    {      "constant": True,      "inputs": [        {          "name": "subscriptionHash",          "type": "bytes32"        },        {          "name": "gracePeriodSeconds",          "type": "uint256"        }      ],      "name": "isSubscriptionActive",      "outputs": [        {          "name": "",          "type": "bool"        }      ],      "payable": False,      "stateMutability": "view",      "type": "function"    },    {      "constant": True,      "inputs": [        {          "name": "from",          "type": "address"        },        {          "name": "to",          "type": "address"        },        {          "name": "tokenAddress",          "type": "address"        },        {          "name": "tokenAmount",          "type": "uint256"        },        {          "name": "periodSeconds",          "type": "uint256"        },        {          "name": "gasPrice",          "type": "uint256"        },        {          "name": "nonce",          "type": "uint256"        }      ],      "name": "getSubscriptionHash",      "outputs": [        {          "name": "",          "type": "bytes32"        }      ],      "payable": False,      "stateMutability": "view",      "type": "function"    },    {      "constant": True,      "inputs": [        {          "name": "subscriptionHash",          "type": "bytes32"        },        {          "name": "signature",          "type": "bytes"        }      ],      "name": "getSubscriptionSigner",      "outputs": [        {          "name": "",          "type": "address"        }      ],      "payable": False,      "stateMutability": "pure",      "type": "function"    },    {      "constant": True,      "inputs": [        {          "name": "from",          "type": "address"        },        {          "name": "to",          "type": "address"        },        {          "name": "tokenAddress",          "type": "address"        },        {          "name": "tokenAmount",          "type": "uint256"        },        {          "name": "periodSeconds",          "type": "uint256"        },        {          "name": "gasPrice",          "type": "uint256"        },        {          "name": "nonce",          "type": "uint256"        },        {          "name": "signature",          "type": "bytes"        }      ],      "name": "isSubscriptionReady",      "outputs": [        {          "name": "",          "type": "bool"        }      ],      "payable": False,      "stateMutability": "view",      "type": "function"    },    {      "constant": False,      "inputs": [        {          "name": "from",          "type": "address"        },        {          "name": "to",          "type": "address"        },        {          "name": "tokenAddress",          "type": "address"        },        {          "name": "tokenAmount",          "type": "uint256"        },        {          "name": "periodSeconds",          "type": "uint256"        },        {          "name": "gasPrice",          "type": "uint256"        },        {          "name": "nonce",          "type": "uint256"        },        {          "name": "signature",          "type": "bytes"        }      ],      "name": "cancelSubscription",      "outputs": [        {          "name": "success",          "type": "bool"        }      ],      "payable": False,      "stateMutability": "nonpayable",      "type": "function"    },    {      "constant": False,      "inputs": [        {          "name": "from",          "type": "address"        },        {          "name": "to",          "type": "address"        },        {          "name": "tokenAddress",          "type": "address"        },        {          "name": "tokenAmount",          "type": "uint256"        },        {          "name": "periodSeconds",          "type": "uint256"        },        {          "name": "gasPrice",          "type": "uint256"        },        {          "name": "nonce",          "type": "uint256"        },        {          "name": "signature",          "type": "bytes"        }      ],      "name": "executeSubscription",      "outputs": [        {          "name": "success",          "type": "bool"        }      ],      "payable": False,      "stateMutability": "nonpayable",      "type": "function"    },    {      "constant": False,      "inputs": [],      "name": "endContract",      "outputs": [],      "payable": False,      "stateMutability": "nonpayable",      "type": "function"    }  ]
+        return abi
+
+
+    @property
+    def contract(self):
+        """Return grants contract."""
+        from dashboard.utils import get_web3
+        web3 = get_web3(self.network)
+        grant_contract = web3.eth.contract(self.contract_address, abi=self.abi)
+        return grant_contract
 
 
 class Milestone(SuperModel):
@@ -304,6 +321,140 @@ class Subscription(SuperModel):
         """Return the string representation of a Subscription."""
         return f"id: {self.pk}, active: {self.active}, subscription_hash: {self.subscription_hash}"
 
+    def get_nonce(self, address):
+        return self.grant.contract.functions.extraNonce(address).call()
+
+
+    def get_is_ready_to_be_processed_from_db(self):
+        """Return true if subscription is ready to be processed according to the DB."""
+        if not self.subscription_contribution.exists():
+            return True
+        last_contribution = self.subscription_contribution.order_by('created_on').last()
+        period = self.real_period_seconds
+        return (last_contribution.created_on.timestamp() + period > (timezone.now()))
+
+
+    def get_is_ready_to_be_processed_from_web3(self):
+        """Return true if subscription is ready to be processed according to web3."""
+        the_args = args = self.get_subscription_hash_arguments()
+        print(the_args)
+        return self.grant.contract.functions.isSubscriptionReady(
+            args['from'],
+            args['to'],
+            args['tokenAddress'],
+            args['tokenAmount'],
+            args['periodSeconds'],
+            args['gasPrice'],
+            args['nonce'],
+            args['signature'],
+            ).call()
+
+    def get_check_success_web3(self):
+        """Checks the return value of the previous function. Returns true if the previous function."""
+        return self.grant.contract.functions.checkSuccess().call()
+
+    def do_cancel_subscription_via_web3(self, minutes_to_confirm_within = 5):
+        """.Cancels the subscripion on the blockchain"""
+        args = self.get_subscription_hash_arguments()
+        return self.grant.contract.functions.cancelSubscription(
+                args['from'],
+                args['to'],
+                args['tokenAddress'],
+                args['tokenAmount'],
+                args['periodSeconds'],
+                args['gasPrice'],
+                args['nonce'],
+                args['signature'],
+            ).transact(
+                self.helper_tx_dict(minutes_to_confirm_within)
+            )
+
+    def do_execute_subscription_via_web3(self, minutes_to_confirm_within = 5):
+        """.Executes the subscription on the blockchain"""
+        args = self.get_subscription_hash_arguments()
+        return self.grant.contract.functions.executeSubscription(
+                args['from'],
+                args['to'],
+                args['tokenAddress'],
+                args['tokenAmount'],
+                args['periodSeconds'],
+                args['gasPrice'],
+                args['nonce'],
+                args['signature'],
+            ).transact(
+                self.helper_tx_dict(minutes_to_confirm_within)
+            )
+
+    def helper_tx_dict(self, minutes_to_confirm_within = 5):
+        """returns a dict like this: {'to': '0xd3cda913deb6f67967b99d67acdfa1712c293601', 'from': web3.eth.coinbase, 'value': 12345}"""
+        return {
+            'to': self.grant.contract_address,
+            'from': settings.GRANTS_OWNER_ACCOUNT,
+            'value': 0,
+            'gasPrice': recommend_min_gas_price_to_confirm_in_time(minutes_to_confirm_within),
+        }
+
+
+    def get_is_active_from_web3(self):
+        """Return true if subscription is active according to web3."""
+        _hash = self.get_hash_from_web3()
+        return self.grant.contract.functions.isSubscriptionActive(_hash, 10).call()
+
+    def get_subscription_signer_from_web3(self):
+        """Return subscription signer."""
+        _hash = self.get_hash_from_web3()
+        return self.grant.contract.functions.getSubscriptionSigner(_hash, self.contributor_signature).call()
+
+
+    def get_subscription_hash_arguments(self):
+        """Returns the grants subscription hash (has to get it from web3)."""
+        """
+            from = Subscription.contributor_address,
+            to = Grant.admin_address,
+            tokenAddress = Subscription.token_address,
+            tokenAmount = Subscription.amount_per_period,
+            periodSeconds = real_period_seconds in the Subscription model
+            gasPrice = Subscription.gas_price,
+            nonce = The nonce is stored in the Contribution model. its created / managed by sync_geth
+            signature = Subscription.contributor_signature
+        """
+        subs = self
+        grant = subs.grant
+
+        _from = subs.contributor_address
+        to = grant.admin_address
+        tokenAddress = subs.token_address
+        tokenAmount = subs.amount_per_period
+        periodSeconds = subs.real_period_seconds
+        gasPrice = subs.gas_price
+        nonce = subs.get_nonce(_from)
+        signature = subs.contributor_signature
+
+        return {
+            'from':Web3.toChecksumAddress(_from),
+            'to':Web3.toChecksumAddress(to),
+            'tokenAddress':Web3.toChecksumAddress(tokenAddress),
+            'tokenAmount':int(tokenAmount),
+            'periodSeconds':int(periodSeconds),
+            'gasPrice':int(gasPrice),
+            'nonce':int(nonce),
+            'signature':signature,
+        }
+
+    def get_hash_from_web3(self):
+        """Returns the grants subscription hash (has to get it from web3)."""
+        args = self.get_subscription_hash_arguments()
+        return self.grant.contract.functions.getSubscriptionHash(
+            args['from'],
+            args['to'],
+            args['tokenAddress'],
+            args['tokenAmount'],
+            args['periodSeconds'],
+            args['gasPrice'],
+            args['nonce'],
+            ).call()
+
+
 
 class ContributionQuerySet(models.QuerySet):
     """Define the Contribution default queryset and manager."""
@@ -361,3 +512,4 @@ class Contribution(SuperModel):
         null=True,
         help_text=_('The associated Subscription.'),
     )
+

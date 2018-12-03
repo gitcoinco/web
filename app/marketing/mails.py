@@ -364,6 +364,28 @@ def warn_account_out_of_eth(account, balance, denomination):
     finally:
         translation.activate(cur_language)
 
+def warn_subscription_failed(subscription, txid, status):
+    to_email = settings.SERVER_EMAIL
+    from_email = settings.SERVER_EMAIL
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        subject = subscription.pk + str(_(" subscription failed"))
+        body_str = _("is down to ")
+        body = f"{subscription.pk } {txid} {status}"
+        if not should_suppress_notification_email(to_email, 'admin'):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                body,
+                from_name=_("No Reply from Gitcoin.co"),
+                categories=['admin', func_name()],
+            )
+    finally:
+        translation.activate(cur_language)
+
+
 
 def new_feedback(email, feedback):
     to_email = settings.PERSONAL_CONTACT_EMAIL
