@@ -50,17 +50,25 @@
             <div class="grant-item__funding-label font-caption">{% trans 'Goal' %}</div>
           </div>
         </div>
-        <div class="grant-item__state mt-3">
-          {% if grant.active %}
-            <div class="grant-item__state-active">
-              <div class="inner"></div>
+        <div class="grant-item__state mt-3 row">
+          <div class="col-6">
+            {% if grant.active %}
+              <div class="grant-item__state-active">
+                <div class="inner"></div>
+              </div>
+              <span class="grant-item__state-label font-caption">Active</span>
+            {% else %}
+              <div class="grant-item__state-completed">
+                <div class="inner"></div>
+              </div>
+              <span class="grant-item__state-label font-caption">Completed</span>
+            {% endif %}
+          </div>
+          {% if grant.active and grant.activeSubscriptions %}
+            <div class="col-6 text-right my-auto font-caption font-weight-semibold">
+              {{ grant.activeSubscriptions.count}}
+              subscription{% if grant.activeSubscriptions.count > 1 %}s{% endif %}
             </div>
-            <span class="grant-item__state-label font-caption">Active</span>
-          {% else %}
-            <div class="grant-item__state-completed">
-              <div class="inner"></div>
-            </div>
-            <span class="grant-item__state-label font-caption">Completed</span>
           {% endif %}
         </div>
       </div>
