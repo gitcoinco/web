@@ -19,8 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from datetime import datetime
 
-from django.utils import timezone
-
 import django_filters.rest_framework
 from rest_framework import routers, serializers, viewsets
 from retail.helpers import get_ip
@@ -77,7 +75,8 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
 
     # check for extended issues and resurface them
     def set_resurfaced_issue(self, issue):
-        return issue.idx_status == 'open' and not issue.past_expiration_date and issue.activities.all().filter(activity_type='extend_expiration').exists()
+        return issue.idx_status == 'open' and not issue.past_expiration_date \
+            and issue.activities.all().filter(activity_type='extend_expiration').exists()
 
     def override_bounty_owner_email(self, obj):
         can_make_visible_via_api = bool(int(obj.privacy_preferences.get('show_email_publicly', 0)))
