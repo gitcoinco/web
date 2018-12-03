@@ -24,7 +24,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from dashboard.utils import has_tx_mined
-from grants.models import Contribution, Grant, Milestone, Subscription, Update
+from grants.models import Grant
 from marketing.mails import warn_subscription_failed
 
 logging.getLogger("urllib3").setLevel(logging.WARNING)
