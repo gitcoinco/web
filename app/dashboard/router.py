@@ -77,15 +77,9 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
 
     # check for extended issues and resurface them
     def set_resurfaced_issue(self, issue):
-        issue_activities = issue.activities.all()
-        issue_extended = False
-
-        for activity in issue_activities:
-            if (activity.activity_type == 'extend_expiration'
-                and issue.idx_status == 'open'
-                    and issue.expires_date > timezone.now()):
-
-                issue_extended = True
+        issue_extended = issue.idx_status == 'open'
+                            and not issue.past_expiration_date
+                                and issue.activities.all().filter(activity_type='extend_expiration').exists()
 
         return issue_extended
 
