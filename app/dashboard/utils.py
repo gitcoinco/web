@@ -725,4 +725,3 @@ def get_nonce(network, address):
     JSONStore.objects.create(key=key, view=view, data=[new_nonce])
 
     return new_nonce
-

@@ -17,12 +17,13 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from django.contrib.postgres.fields import JSONField
 from django.conf import settings
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+
 from django_extensions.db.fields import AutoSlugField
 from economy.models import SuperModel
 from gas.utils import recommend_min_gas_price_to_confirm_in_time

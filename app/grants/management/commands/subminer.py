@@ -22,8 +22,8 @@ import logging
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-from dashboard.utils import has_tx_mined
 
+from dashboard.utils import has_tx_mined
 from grants.models import Contribution, Grant, Milestone, Subscription, Update
 from marketing.mails import warn_subscription_failed
 

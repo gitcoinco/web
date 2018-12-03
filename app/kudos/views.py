@@ -38,7 +38,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from dashboard.models import Activity, Profile
 from dashboard.notifications import maybe_market_kudos_to_email, maybe_market_kudos_to_github
-from dashboard.utils import get_web3, get_nonce
+from dashboard.utils import get_nonce, get_web3
 from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_by_category, get_emails_master, get_github_primary_email
