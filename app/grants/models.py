@@ -23,7 +23,6 @@ from django.db import models
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-
 from django_extensions.db.fields import AutoSlugField
 from economy.models import SuperModel
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
@@ -323,7 +322,7 @@ class Subscription(SuperModel):
         return f"id: {self.pk}, active: {self.active}, subscription_hash: {self.subscription_hash}"
 
     def get_nonce(self, address):
-        return self.grant.contract.functions.extraNonce(address).call()
+        return self.grant.contract.functions.extraNonce(address).call() + 1
 
     def get_next_valid_timestamp(self, address):
         return self.grant.contract.functions.nextValidTimestamp(address).call()
@@ -361,8 +360,9 @@ class Subscription(SuperModel):
 
     def do_cancel_subscription_via_web3(self, minutes_to_confirm_within = 5):
         """.Cancels the subscripion on the blockchain"""
+        from dashboard.utils import get_web3
         args = self.get_subscription_hash_arguments()
-        return self.grant.contract.functions.cancelSubscription(
+        tx = self.grant.contract.functions.cancelSubscription(
                 args['from'],
                 args['to'],
                 args['tokenAddress'],
@@ -371,33 +371,43 @@ class Subscription(SuperModel):
                 args['gasPrice'],
                 args['nonce'],
                 args['signature'],
-            ).transact(
+            ).buildTransaction(
                 self.helper_tx_dict(minutes_to_confirm_within)
             )
+        web3 = get_web3(self.grant.network)
+        signed_txn = web3.eth.account.signTransaction(tx, private_key=settings.GRANTS_PRIVATE_KEY)
+        return web3.eth.sendRawTransaction(signed_txn.rawTransaction)  
 
     def do_execute_subscription_via_web3(self, minutes_to_confirm_within = 5):
         """.Executes the subscription on the blockchain"""
+        from dashboard.utils import get_web3
         args = self.get_subscription_hash_arguments()
-        return self.grant.contract.functions.executeSubscription(
-                args['from'],
-                args['to'],
-                args['tokenAddress'],
-                args['tokenAmount'],
-                args['periodSeconds'],
-                args['gasPrice'],
-                args['nonce'],
-                args['signature'],
-            ).transact(
-                self.helper_tx_dict(minutes_to_confirm_within)
-            )
+        tx = self.grant.contract.functions.executeSubscription(
+            args['from'],
+            args['to'],
+            args['tokenAddress'],
+            args['tokenAmount'],
+            args['periodSeconds'],
+            args['gasPrice'],
+            args['nonce'],
+            args['signature'],
+        ).buildTransaction(
+            self.helper_tx_dict(minutes_to_confirm_within)
+        )
+        web3 = get_web3(self.grant.network)
+        signed_txn = web3.eth.account.signTransaction(tx, private_key=settings.GRANTS_PRIVATE_KEY)
+        return web3.eth.sendRawTransaction(signed_txn.rawTransaction)  
+
+
 
     def helper_tx_dict(self, minutes_to_confirm_within=5):
         """returns a dict like this: {'to': '0xd3cda913deb6f67967b99d67acdfa1712c293601', 'from': web3.eth.coinbase, 'value': 12345}"""
+        from dashboard.utils import get_nonce
         return {
-            'to': self.grant.contract_address,
             'from': settings.GRANTS_OWNER_ACCOUNT,
+            'nonce': get_nonce(self.grant.network, settings.GRANTS_OWNER_ACCOUNT),
             'value': 0,
-            'gasPrice': recommend_min_gas_price_to_confirm_in_time(minutes_to_confirm_within),
+            'gasPrice': recommend_min_gas_price_to_confirm_in_time(minutes_to_confirm_within) * 10**9,
         }
 
     def get_is_active_from_web3(self):
@@ -422,6 +432,8 @@ class Subscription(SuperModel):
             nonce = The nonce is stored in the Contribution model. its created / managed by sync_geth
             signature = Subscription.contributor_signature
         """
+        from dashboard.tokens import addr_to_token
+
         subs = self
         grant = subs.grant
 
@@ -434,13 +446,17 @@ class Subscription(SuperModel):
         nonce = subs.get_nonce(_from)
         signature = subs.contributor_signature
 
+        #TODO - figure out the number of decimals
+        token = addr_to_token(subs.token_address, subs.grant.network)
+        decimals = token.get('decimals', 0)
+
         return {
             'from': Web3.toChecksumAddress(_from),
             'to': Web3.toChecksumAddress(to),
             'tokenAddress': Web3.toChecksumAddress(tokenAddress),
-            'tokenAmount': int(tokenAmount),
+            'tokenAmount': int(tokenAmount  * 10**decimals),
             'periodSeconds': int(periodSeconds),
-            'gasPrice': int(gasPrice),
+            'gasPrice': int(gasPrice * 10**9),
             'nonce': int(nonce),
             'signature': signature,
         }
@@ -449,9 +465,9 @@ class Subscription(SuperModel):
         """Returns the grants subscription hash (has to get it from web3)."""
         args = self.get_subscription_hash_arguments()
         return self.grant.contract.functions.getSubscriptionHash(
-            args['from'],
-            args['to'],
-            args['tokenAddress'],
+            Web3.toChecksumAddress(args['from']),
+            Web3.toChecksumAddress(args['to']),
+            Web3.toChecksumAddress(args['tokenAddress']),
             args['tokenAmount'],
             args['periodSeconds'],
             args['gasPrice'],

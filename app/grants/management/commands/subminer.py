@@ -22,13 +22,18 @@ import logging
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
+from dashboard.utils import has_tx_mined
 
 from grants.models import Contribution, Grant, Milestone, Subscription, Update
 from marketing.mails import warn_subscription_failed
 
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 logging.getLogger("web3").setLevel(logging.WARNING)
+logging.getLogger("marketing.mails").setLevel(logging.WARNING)
 
+def has_mined(txid, subscription):
+    mined, when = has_tx_mined(txid, subscription.grant.network)
+    return mined
 
 class Command(BaseCommand):
 
@@ -69,15 +74,14 @@ class Command(BaseCommand):
                     #is_active_web3 = subscription.get_is_active_from_web3()
                     #signer = subscription.get_subscription_signer_from_web3()
                     #print(are_we_past_next_valid_timestamp, is_ready_to_be_processed_web3, is_active_web3, signer)
-
+                    #print(signer)
                     if are_we_past_next_valid_timestamp:
                         print("   -- (ready via web3) ")
                         print("   -- *executing* ")
                         try:
                             txid = subscription.do_execute_subscription_via_web3()
-                            
                             print(f"   -- *waiting for mine* (txid {txid}) ")
-                            while not has_tx_mined(txid, subscription.grant.network):
+                            while not has_mined(txid, subscription):
                                 time.sleep(10)
                             status, timestamp = get_tx_status(txid, subscription.grant.network, timezone.now())
                             error = None
