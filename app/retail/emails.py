@@ -117,6 +117,22 @@ def render_subscription_terminated_email(grant, subscription):
     return response_html, response_txt, subject
 
 
+def render_successful_contribution_email(grant, subscription):
+    params = {'grant': grant, 'subscription': subscription}
+    response_html = premailer_transform(render_to_string("emails/grants/successful_contribution.html", params))
+    response_txt = render_to_string("emails/grants/successful_contribution.txt", params)
+    subject = "Your subscription on Gitcoin Grants has been cancelled by the Grant Creator"
+    return response_html, response_txt, subject
+
+
+@staff_member_required
+def successful_contribution(request):
+    grant = Grant.objects.all().first()
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+    response_html, __, __ = render_successful_contribution_email(grant, subscription)
+    return HttpResponse(response_html)
+
+
 @staff_member_required
 def subscription_terminated(request):
     grant = Grant.objects.all().first()
