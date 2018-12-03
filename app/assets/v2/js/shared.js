@@ -930,7 +930,7 @@ function getNetwork(id) {
 // figure out what version of web3 this is, whether we're logged in, etc..
 var listen_for_web3_changes = async function() {
 
-  if (document.location.href.indexOf('grants') === -1) {
+  if (document.location.pathname.indexOf('grants') === -1) {
     if (!document.listen_for_web3_iterations) {
       document.listen_for_web3_iterations = 1;
     } else {
