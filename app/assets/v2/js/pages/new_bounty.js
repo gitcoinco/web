@@ -374,7 +374,10 @@ $(document).ready(function() {
       var account = web3.eth.coinbase;
 
       if (!isETH) {
-        check_balance_and_alert_user_if_not_enough(tokenAddress, amount);
+        check_balance_and_alert_user_if_not_enough(
+          tokenAddress,
+          amount,
+          'You do not have enough tokens to fund this bounty.');
       }
 
       amount = amount * decimalDivisor;
@@ -620,27 +623,6 @@ $(window).on('load', function() {
     toggleCtaPlan($(this).val());
   });
 });
-
-var check_balance_and_alert_user_if_not_enough = function(tokenAddress, amount) {
-  var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
-  var from = web3.eth.coinbase;
-  var token_details = tokenAddressToDetails(tokenAddress);
-  var token_decimals = token_details['decimals'];
-  var token_name = token_details['name'];
-
-  token_contract.balanceOf.call(from, function(error, result) {
-    if (error) return;
-    var balance = result.toNumber() / Math.pow(10, token_decimals);
-    var balance_rounded = Math.round(balance * 10) / 10;
-    const total = parseFloat(amount) + parseFloat((parseFloat(amount) / FEE_PERCENTAGE).toFixed(4));
-
-    if (parseFloat(total) > balance) {
-      var msg = gettext('You do not have enough tokens to fund this bounty. You have ') + balance_rounded + ' ' + token_name + ' ' + gettext(' but you need ') + amount + ' ' + token_name;
-
-      _alert(msg, 'warning');
-    }
-  });
-};
 
 let usdFeaturedPrice = $('.featured-price-usd').text();
 let ethFeaturedPrice;
