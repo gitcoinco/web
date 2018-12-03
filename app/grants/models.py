@@ -305,43 +305,33 @@ class Subscription(SuperModel):
         return f"id: {self.pk}, active: {self.active}, subscription_hash: {self.subscription_hash}"
 
 
+    def successful_contribution(self, kwargs):
+        """Create a contribution object."""
+        contribution_kwargs = {
+            'tx_id': kwargs.tx_id,
+            'gas_price': kwargs.gas_price,
+            'nonce': kwargs.nonce,
+            'subscription': self
+        }
+        contribution = Contribution.objects.create(**contribution_kwargs)
+        # TODO: Email user that there payment has gone through
+        return contribution
+
 class ContributionQuerySet(models.QuerySet):
-    """Define the Contribution default queryset and manager."""
+"""Define the Contribution default queryset and manager."""
 
     pass
 
 
 class Contribution(SuperModel):
-    """Define the structure of a subscription agreement."""
+"""Define the structure of a subscription agreement."""
 
-    tx_id = models.CharField(max_length=255, default='0x0', help_text=_('The transaction ID of the Contribution.'))
-    from_address = models.CharField(
+    tx_id = models.CharField(
         max_length=255,
         default='0x0',
-        help_text=_('The wallet address tokens are sent from.'),
+        help_text=_('The transaction ID of the Contribution.'),
     )
-    to_address = models.CharField(
-        max_length=255,
-        default='0x0',
-        help_text=_('The wallet address tokens are sent to.'),
-    )
-    token_address = models.CharField(
-        max_length=255,
-        default='0x0',
-        help_text=_('The token address to be used with the Subscription.'),
-    )
-    token_amount = models.DecimalField(
-        default=1,
-        decimal_places=4,
-        max_digits=50,
-        help_text=_('The promised contribution amount per period.'),
-    )
-    period_seconds = models.DecimalField(
-        default=0,
-        decimal_places=0,
-        max_digits=50,
-        help_text=_('The number of seconds thats constitues a period.'),
-    )
+
     gas_price = models.DecimalField(
         default=0,
         decimal_places=4,
