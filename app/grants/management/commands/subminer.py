@@ -43,9 +43,12 @@ class Command(BaseCommand):
 
         #TODO - when https://gitcoincore.slack.com/archives/CBDTKB59A/p1543864404079500
         # is fixed, then remove these lines
-        for grant in Grant.objects.all():
-            grant.network = 'rinkeby'
-            grant.save()
+        for obj in Grant.objects.all():
+            obj.network = 'rinkeby'
+            obj.save()
+        for obj in Subscription.objects.all():
+            obj.network = 'rinkeby'
+            obj.save()
 
         # iter through Grants
         grants = Grant.objects.filter(network=network)
@@ -70,16 +73,23 @@ class Command(BaseCommand):
                     if are_we_past_next_valid_timestamp:
                         print("   -- (ready via web3) ")
                         print("   -- *executing* ")
-                        txid = subscription.do_execute_subscription_via_web3()
-                        
-                        print(f"   -- *waiting for mine* (txid {txid}) ")
-                        while not has_tx_mined(txid, subscription.grant.network):
-                            time.sleep(10)
-                        status, timestamp = get_tx_status(txid, subscription.grant.network, timezone.now())
-                        
-                        print(f"   -- *mined* (status: {status}) ")
+                        try:
+                            txid = subscription.do_execute_subscription_via_web3()
+                            
+                            print(f"   -- *waiting for mine* (txid {txid}) ")
+                            while not has_tx_mined(txid, subscription.grant.network):
+                                time.sleep(10)
+                            status, timestamp = get_tx_status(txid, subscription.grant.network, timezone.now())
+                            error = None
+
+                        except Exception as e:
+                            error = str(e)
+                            status = 'failure'
+                            txid = None
+
+                        print(f"   -- *mined* (status: {status} / {error}) ")
                         was_success = status == 'success'
                         if not was_success:
-                            warn_subscription_failed(subscription, txid, status)
+                            warn_subscription_failed(subscription, txid, status, error)
                         else:
                             print("TODO: upon success, any DB mutations, send emails, handle failure")
