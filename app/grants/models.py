@@ -318,13 +318,13 @@ class Subscription(SuperModel):
         return contribution
 
 class ContributionQuerySet(models.QuerySet):
-"""Define the Contribution default queryset and manager."""
+    """Define the Contribution default queryset and manager."""
 
     pass
 
 
 class Contribution(SuperModel):
-"""Define the structure of a subscription agreement."""
+    """Define the structure of a subscription agreement."""
 
     tx_id = models.CharField(
         max_length=255,
