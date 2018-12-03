@@ -325,6 +325,9 @@ class Subscription(SuperModel):
     def get_nonce(self, address):
         return self.grant.contract.functions.extraNonce(address).call()
 
+    def get_next_valid_timestamp(self, address):
+        return self.grant.contract.functions.nextValidTimestamp(address).call()
+
     def get_is_ready_to_be_processed_from_db(self):
         """Return true if subscription is ready to be processed according to the DB."""
         if not self.subscription_contribution.exists():
@@ -333,7 +336,12 @@ class Subscription(SuperModel):
         period = self.real_period_seconds
         return (last_contribution.created_on.timestamp() + period > (timezone.now()))
 
-    def get_is_ready_to_be_processed_from_web3(self):
+    def get_are_we_past_next_valid_timestamp(self):
+        address = self.contributor_address
+        return timezone.now().timestamp() > self.get_next_valid_timestamp(address)
+
+
+    def get_is_subscription_ready_from_web3(self):
         """Return true if subscription is ready to be processed according to web3."""
         the_args = args = self.get_subscription_hash_arguments()
         return self.grant.contract.functions.isSubscriptionReady(

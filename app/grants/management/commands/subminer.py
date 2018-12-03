@@ -61,13 +61,13 @@ class Command(BaseCommand):
                 print(f"  - subscription {subscription.pk}")
                 if is_ready_to_be_processed_db:
                     print("   -- (ready via db) ")
-                    is_ready_to_be_processed_web3 = subscription.get_is_ready_to_be_processed_from_web3()
-                    is_active_web3 = subscription.get_is_active_from_web3()
-                    signer = subscription.get_subscription_signer_from_web3()
+                    are_we_past_next_valid_timestamp = subscription.get_are_we_past_next_valid_timestamp()
+                    #is_ready_to_be_processed_web3 = subscription.get_is_subscription_ready_from_web3()
+                    #is_active_web3 = subscription.get_is_active_from_web3()
+                    #signer = subscription.get_subscription_signer_from_web3()
+                    #print(are_we_past_next_valid_timestamp, is_ready_to_be_processed_web3, is_active_web3, signer)
 
-                    print(is_ready_to_be_processed_web3, is_active_web3, signer)
-
-                    if is_ready_to_be_processed_web3:
+                    if are_we_past_next_valid_timestamp:
                         print("   -- (ready via web3) ")
                         print("   -- *executing* ")
                         txid = subscription.do_execute_subscription_via_web3()
