@@ -317,12 +317,13 @@ class Subscription(SuperModel):
         null=True,
         help_text=_('The Subscription contributor\'s Profile.'),
     )
+    last_contribution_date = models.DateField(help_text=_('The last contribution date'), default=timezone.datetime(1990, 1, 1))
+    next_contribution_date = models.DateField(help_text=_('The next contribution date'), default=timezone.datetime(1990, 1, 1))
 
     def __str__(self):
         """Return the string representation of a Subscription."""
         return f"id: {self.pk}, active: {self.active}, subscription_hash: {self.subscription_hash}"
 
-<<<<<<< HEAD
     def get_nonce(self, address):
         return self.grant.contract.functions.extraNonce(address).call() + 1
 
@@ -477,10 +478,12 @@ class Subscription(SuperModel):
             ).call()
 
 
-=======
     def successful_contribution(self, kwargs):
         """Create a contribution object."""
         from marketing.mails import successful_contribution
+        self.last_contribution_date = timezone.now()
+        self.next_contribution_date = timezone.now() + timezone.timedelta(seconds=self.real_period_seconds)
+        self.save()
         contribution_kwargs = {
             'tx_id': kwargs.tx_id,
             'gas_price': kwargs.gas_price,
@@ -490,7 +493,6 @@ class Subscription(SuperModel):
         contribution = Contribution.objects.create(**contribution_kwargs)
         successful_contribution(self.grant, self)
         return contribution
->>>>>>> grantz
 
 class ContributionQuerySet(models.QuerySet):
     """Define the Contribution default queryset and manager."""

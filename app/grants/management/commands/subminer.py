@@ -46,21 +46,12 @@ class Command(BaseCommand):
         # setup
         network = options['network']
 
-        #TODO - when https://gitcoincore.slack.com/archives/CBDTKB59A/p1543864404079500
-        # is fixed, then remove these lines
-        for obj in Grant.objects.all():
-            obj.network = 'rinkeby'
-            obj.save()
-        for obj in Subscription.objects.all():
-            obj.network = 'rinkeby'
-            obj.save()
-
         # iter through Grants
         grants = Grant.objects.filter(network=network)
         print(f"got {grants.count()} grants")
 
         for grant in grants:
-            subs = grant.subscriptions.filter(active=True)
+            subs = grant.subscriptions.filter(active=True, next_contribution_date__lt=timezone.now())
             print(f" - {grant.pk} has {subs.count()} subs")
 
             for subscription in subs:
@@ -70,11 +61,14 @@ class Command(BaseCommand):
                 if is_ready_to_be_processed_db:
                     print("   -- (ready via db) ")
                     are_we_past_next_valid_timestamp = subscription.get_are_we_past_next_valid_timestamp()
-                    #is_ready_to_be_processed_web3 = subscription.get_is_subscription_ready_from_web3()
-                    #is_active_web3 = subscription.get_is_active_from_web3()
-                    #signer = subscription.get_subscription_signer_from_web3()
-                    #print(are_we_past_next_valid_timestamp, is_ready_to_be_processed_web3, is_active_web3, signer)
-                    #print(signer)
+
+                    # FOR DEBUGGING
+                    # is_ready_to_be_processed_web3 = subscription.get_is_subscription_ready_from_web3()
+                    # is_active_web3 = subscription.get_is_active_from_web3()
+                    # signer = subscription.get_subscription_signer_from_web3()
+                    # print(are_we_past_next_valid_timestamp, is_ready_to_be_processed_web3, is_active_web3, signer)
+                    # print(signer)
+
                     if are_we_past_next_valid_timestamp:
                         print("   -- (ready via web3) ")
                         print("   -- *executing* ")
@@ -96,4 +90,5 @@ class Command(BaseCommand):
                         if not was_success:
                             warn_subscription_failed(subscription, txid, status, error)
                         else:
-                            print("TODO: upon success, any DB mutations, send emails, handle failure")
+                            subscription.successful_contribution()
+                            subscription.save()
