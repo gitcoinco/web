@@ -301,6 +301,11 @@ urlpatterns = [
         retail.emails.support_cancellation,
         name='admin_support_cancellation'
     ),
+    path(
+        '_administration/email/successful_contribution',
+        retail.emails.successful_contribution,
+        name='admin_successful_contribution'
+    ),
     path('_administration/email/new_kudos', retail.emails.new_kudos, name='new_kudos'),
     path('_administration/email/kudos_mint', retail.emails.kudos_mint, name='kudos_mint'),
     path('_administration/email/kudos_mkt', retail.emails.kudos_mkt, name='kudos_mkt'),
