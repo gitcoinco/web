@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <link rel="stylesheet" href="{% static "v2/css/search_bar.css" %}">
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
     <link rel="stylesheet" href="{% static "v2/css/grants/card.css" %}">
   </head>
   <body class="interior {{ active }} grant g-font-muli">
@@ -95,7 +96,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           <div class="infinite-container row">
             {% for grant in grants %}
               <div class="col-12 col-md-6 col-lg-4 mb-4 infinite-item">
-                {% include 'grants/card.html' %}
+                {% include 'grants/card/index.html' %}
               </div>
             {% endfor %}
           </div>

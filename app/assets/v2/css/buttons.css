@@ -130,6 +130,7 @@ button:focus {
 .btn-outline-white {
   border-color: #ffffff;
   color: #ffffff;
+  text-decoration: none;
 }
 
 .btn-outline-white:hover {

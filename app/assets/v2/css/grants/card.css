@@ -1,15 +1,12 @@
 
 .grant-item {
-  border: 1px solid #D3D3D3;
   border-radius: 5px;
   display: flex;
-  margin: 1rem;
-  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
   flex-direction: column;
 }
 
-.grant-item:hover {
-  box-shadow: 0 1px 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+.flip-card__flipper {
+  border: 1px solid #D3D3D3;
 }
 
 .grant-item__title {
@@ -43,13 +40,19 @@
   width: 100%;
 }
 
-.grant-item__owner-image {
+.grant-item__owner-image,
+.flip-card__flipper .grant__stakeholders-item,
+.flip-card__flipper .grant__stakeholders-item img  {
   height: 35px;
   width: 35px;
 }
 
 .grant-item__owner-image img {
   width: 100%;
+  border-radius: 50%;
+}
+
+.flip-card__flipper .grant__stakeholders-item img {
   border-radius: 50%;
 }
 
