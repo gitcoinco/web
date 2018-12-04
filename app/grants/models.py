@@ -26,11 +26,10 @@ from django.utils.translation import gettext_lazy as _
 
 from django_extensions.db.fields import AutoSlugField
 from economy.models import SuperModel
+from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from grants.utils import get_upload_filename
 from web3 import Web3
-from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
-from django.utils import timezone
 
 
 class GrantQuerySet(models.QuerySet):
@@ -380,7 +379,7 @@ class Subscription(SuperModel):
             )
         web3 = get_web3(self.grant.network)
         signed_txn = web3.eth.account.signTransaction(tx, private_key=settings.GRANTS_PRIVATE_KEY)
-        return web3.eth.sendRawTransaction(signed_txn.rawTransaction)  
+        return web3.eth.sendRawTransaction(signed_txn.rawTransaction)
 
     def do_execute_subscription_via_web3(self, minutes_to_confirm_within = 5):
         """.Executes the subscription on the blockchain"""
@@ -400,7 +399,7 @@ class Subscription(SuperModel):
         )
         web3 = get_web3(self.grant.network)
         signed_txn = web3.eth.account.signTransaction(tx, private_key=settings.GRANTS_PRIVATE_KEY)
-        return web3.eth.sendRawTransaction(signed_txn.rawTransaction)  
+        return web3.eth.sendRawTransaction(signed_txn.rawTransaction)
 
 
 
