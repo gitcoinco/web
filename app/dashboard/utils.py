@@ -388,6 +388,8 @@ def has_tx_mined(txid, network):
     web3 = get_web3(network)
     try:
         transaction = web3.eth.getTransaction(txid)
+        if not transaction:
+            return False
         return transaction.blockHash != HexBytes('0x0000000000000000000000000000000000000000000000000000000000000000')
     except Exception:
         return False
