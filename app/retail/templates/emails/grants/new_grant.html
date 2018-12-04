@@ -59,6 +59,11 @@
     background-color: #0D0764;
     color: white;
   }
+
+  #grant-logo {
+    max-width: 25rem;
+    width: 100%;
+  }
 </style>
 
 <img src="{% static 'v2/images/new_grant.png' %}" alt="success icon" width="100px" height="100px" >
@@ -69,20 +74,15 @@
 <p>{% trans "Get ready to buidl and push forward open source!" %}</p>
 
 <hr>
-
-<img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}" alt="grant logo" width="25%" >
-
+<br>
+<img id="grant-logo" src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}" alt="grant logo" >
 <p class="grant-email-name">{{ grant.title }}</p>
 <p class="grant-email-subtitle">{{ grant.description }}</p>
-
 <div>
   <p class="grant-email-subtitle">{% trans "You are seeking " %}{{ grant.amount_goal }} {% trans "DAI monthly" %}</p>
 </div>
-
 <p class="grant-email-subtitle">{% trans "The details of your grant can be seen" %} <a href="{% url 'grants:details' grant.pk grant.slug %}">{% trans "here." %}</a></p>
-
 <hr>
-
 <div>
   <a class="updatesButton" href="{% url 'grants:details' grant.pk grant.slug %}">{% trans "View Grant" %}</a>
 </div>
