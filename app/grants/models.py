@@ -410,7 +410,7 @@ class Subscription(SuperModel):
             'from': settings.GRANTS_OWNER_ACCOUNT,
             'nonce': get_nonce(self.grant.network, settings.GRANTS_OWNER_ACCOUNT),
             'value': 0,
-            'gasPrice': recommend_min_gas_price_to_confirm_in_time(minutes_to_confirm_within) * 10**9,
+            'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(minutes_to_confirm_within) * 10**9),
         }
 
     def get_is_active_from_web3(self):
