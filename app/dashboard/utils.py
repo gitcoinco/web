@@ -666,7 +666,7 @@ def get_tx_status(txid, network, created_on):
         web3 = get_web3(network)
         tx = web3.eth.getTransactionReceipt(txid)
         if not tx:
-            drop_dead_date = created_on + timezone.timedelta(days=3)
+            drop_dead_date = created_on + timezone.timedelta(days=1)
             if timezone.now() > drop_dead_date:
                 status = 'dropped'
             else:

@@ -41,7 +41,7 @@ class GeneralAdmin(admin.ModelAdmin):
 
 class ActivityAdmin(admin.ModelAdmin):
     ordering = ['-id']
-    raw_id_fields = ['bounty', 'profile', 'tip']
+    raw_id_fields = ['bounty', 'profile', 'tip', 'kudos']
     search_fields = ['metadata', 'activity_type', 'profile__handle']
 
 
@@ -88,7 +88,7 @@ class TipAdmin(admin.ModelAdmin):
     readonly_fields = ['resend', 'claim']
     search_fields = [
         'tokenName', 'comments_public', 'comments_priv', 'from_name', 'username', 'network', 'github_url', 'url',
-        'emails', 'from_address', 'receive_address', 'ip', 'metadata'
+        'emails', 'from_address', 'receive_address', 'ip', 'metadata', 'txid', 'receive_txid'
     ]
 
     def resend(self, instance):
