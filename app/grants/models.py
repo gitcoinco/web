@@ -379,7 +379,7 @@ class Subscription(SuperModel):
             )
         web3 = get_web3(self.grant.network)
         signed_txn = web3.eth.account.signTransaction(tx, private_key=settings.GRANTS_PRIVATE_KEY)
-        return web3.eth.sendRawTransaction(signed_txn.rawTransaction)
+        return web3.eth.sendRawTransaction(signed_txn.rawTransaction).hex()
 
     def do_execute_subscription_via_web3(self, minutes_to_confirm_within = 5):
         """.Executes the subscription on the blockchain"""
@@ -399,9 +399,7 @@ class Subscription(SuperModel):
         )
         web3 = get_web3(self.grant.network)
         signed_txn = web3.eth.account.signTransaction(tx, private_key=settings.GRANTS_PRIVATE_KEY)
-        return web3.eth.sendRawTransaction(signed_txn.rawTransaction)
-
-
+        return web3.eth.sendRawTransaction(signed_txn.rawTransaction).hex()
 
     def helper_tx_dict(self, minutes_to_confirm_within=5):
         """returns a dict like this: {'to': '0xd3cda913deb6f67967b99d67acdfa1712c293601', 'from': web3.eth.coinbase, 'value': 12345}"""
@@ -410,7 +408,8 @@ class Subscription(SuperModel):
             'from': settings.GRANTS_OWNER_ACCOUNT,
             'nonce': get_nonce(self.grant.network, settings.GRANTS_OWNER_ACCOUNT),
             'value': 0,
-            'gasPrice': recommend_min_gas_price_to_confirm_in_time(minutes_to_confirm_within) * 10**9,
+            'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(minutes_to_confirm_within) * 10**9),
+            'gas': 204066,
         }
 
     def get_is_active_from_web3(self):

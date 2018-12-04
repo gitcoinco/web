@@ -18,11 +18,12 @@
 
 '''
 import logging
+import time
 
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from dashboard.utils import has_tx_mined
+from dashboard.utils import get_tx_status, has_tx_mined
 from grants.models import Grant
 from marketing.mails import warn_subscription_failed
 
@@ -32,8 +33,7 @@ logging.getLogger("marketing.mails").setLevel(logging.WARNING)
 
 
 def has_mined(txid, subscription):
-    mined, when = has_tx_mined(txid, subscription.grant.network)
-    return mined
+    return has_tx_mined(txid, subscription.grant.network)
 
 
 def process_subscription(subscription, live):
