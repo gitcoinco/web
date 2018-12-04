@@ -101,7 +101,7 @@ class Command(BaseCommand):
         live = options['live']
 
         # iter through Grants
-        grants = Grant.objects.filter(network=network)
+        grants = Grant.objects.filter(network=network).active()
         print(f"got {grants.count()} grants")
 
         for grant in grants:
