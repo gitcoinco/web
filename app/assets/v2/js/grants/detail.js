@@ -62,7 +62,6 @@ $(document).ready(function() {
     });
 
     editableFields.forEach(field => disableEdit(field));
-    copyDuplicateDetails();
   });
 
   $('#cancel-details').on('click', (event) => {
@@ -70,7 +69,6 @@ $(document).ready(function() {
     $('#save-details').addClass('hidden');
     $('#cancel-details').addClass('hidden');
 
-    // TODO: Reset value
     editableFields.forEach(field => disableEdit(field));
   });
 
