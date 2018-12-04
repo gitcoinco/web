@@ -1,9 +1,10 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from economy.models import SuperModel
 
 # Create your models here.
 
-class Notification(models.Model):
+class Notification(SuperModel):
     created_on = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     to_user_id = models.IntegerField()
     from_user_id = models.IntegerField()
