@@ -51,9 +51,13 @@
     margin: 0;
   }
 
-  a.grant-email-button {
-    background: #0D0764;
-    padding: .5em 3em;
+  .updatesButton {
+    padding: 12px 36px;
+    font-size: 12px;
+    border-radius: 3px;
+    text-decoration: none;
+    background-color: #0D0764;
+    color: white;
   }
 </style>
 
@@ -80,7 +84,7 @@
 <hr>
 
 <div>
-  <a class="button grant-email-button" href="{% url 'grants:details' grant.pk grant.slug %}">{% trans "View Grant" %}</a>
+  <a class="updatesButton" href="{% url 'grants:details' grant.pk grant.slug %}">{% trans "View Grant" %}</a>
 </div>
 
 {% endblock %}

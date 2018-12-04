@@ -71,15 +71,12 @@
   }
 
   .updatesButton {
-    padding-left: 30px;
-    padding-right: 30px;
+    padding: 12px 36px;
+    border-radius: 3px;
+    font-size: 14px;
     text-decoration: none;
-    padding-top: 8px;
-    padding-bottom: 8px;
     background-color: #0D0764;
     color: white;
-    border-radius: 2.7px;
-    font-size: 17px;
   }
 
   #grow-oss {
@@ -87,14 +84,17 @@
     margin-bottom: 50px;
   }
 
+  @media (min-width : 1386px) {
+    .leftGrantHeader > img {
+      transform: translateY(13.5%);
+    }
+  }
+
   @media screen and (min-width: 598px) {
     .rightGrantHeader {
       padding-left: 40px;
       transform: translateY(-12.5%);
       text-align: left;
-    }
-    .leftGrantHeader > img {
-      transform: translateY(13.5%);
     }
   }
 

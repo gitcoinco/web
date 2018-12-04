@@ -88,6 +88,9 @@ $(document).ready(function() {
             console.log('2', transactionHash);
             $('#transaction_hash').val(transactionHash);
             document.issueURL = $('#input-url').val();
+            const linkURL = etherscan_tx_url(transactionHash);
+
+            $('#transaction_url').attr('href', linkURL);
             enableWaitState('#new-grant');
 
             var callFunctionWhenTransactionMined = function(transactionHash) {

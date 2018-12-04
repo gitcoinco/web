@@ -76,6 +76,9 @@ def grants(request):
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
 
+    for _grant in grants:
+        _grant.activeSubscriptions = Subscription.objects.filter(grant=_grant, active=True)
+
     params = {
         'active': 'grants_landing',
         'title': _('Grants Explorer'),
@@ -136,10 +139,8 @@ def grant_details(request, grant_id, grant_slug):
             grant.save()
             return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
-
     params = {
         'active': 'grant_details',
-        'title': _('Grant Details'),
         'grant': grant,
         'title': grant.title,
         'card_desc': grant.description,
@@ -387,6 +388,9 @@ def profile(request):
 
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
+
+    for _grant in grants:
+        _grant.activeSubscriptions = Subscription.objects.filter(grant=_grant, active=True)
 
     history = [{
         'date': '16 Mar',

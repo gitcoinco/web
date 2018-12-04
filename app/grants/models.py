@@ -29,6 +29,8 @@ from economy.models import SuperModel
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from grants.utils import get_upload_filename
 from web3 import Web3
+from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
+from django.utils import timezone
 
 
 class GrantQuerySet(models.QuerySet):
@@ -93,13 +95,13 @@ class Grant(SuperModel):
         default=1,
         decimal_places=4,
         max_digits=50,
-        help_text=_('The contribution goal amount for the Grant.'),
+        help_text=_('The contribution goal amount for the Grant in DAI.'),
     )
     amount_received = models.DecimalField(
         default=0,
         decimal_places=4,
         max_digits=50,
-        help_text=_('The total amount received for the Grant.'),
+        help_text=_('The total amount received for the Grant in USDT/DAI.'),
     )
     token_address = models.CharField(
         max_length=255,
@@ -166,7 +168,6 @@ class Grant(SuperModel):
     def percentage_done(self):
         """Return the percentage of token received based on the token goal."""
         return ((self.amount_received / self.amount_goal) * 100)
-
 
     @property
     def abi(self):
@@ -491,8 +492,12 @@ class Subscription(SuperModel):
             'subscription': self
         }
         contribution = Contribution.objects.create(**contribution_kwargs)
+        grant = self.grant
+        grant.amount_received = (grant.amount_received + convert_amount(self.amount_per_period, self.token_symbol, "USDT", timezone.now()))
+        grant.save()
         successful_contribution(self.grant, self)
         return contribution
+
 
 class ContributionQuerySet(models.QuerySet):
     """Define the Contribution default queryset and manager."""

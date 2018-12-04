@@ -28,9 +28,27 @@
     border: none;
     background-color: #D2D2D2;
   }
+
   #grow-oss {
     margin-top: 50px;
     margin-bottom: 40px;
+  }
+
+  img {
+    max-width: 4rem;
+  }
+
+  .updatesButton {
+    padding: 12px 36px;
+    font-size: 12px;
+    border-radius: 3px;
+    text-decoration: none;
+    background-color: #0D0764;
+    color: white;
+  }
+
+  .grant-link {
+    margin-top: 3rem;
   }
 
 </style>
@@ -39,6 +57,9 @@
 <p>{% trans "Thank you for using Gitcoin, we hope you'll come back to build more open source software!" %}</p>
 <p>{% trans "You can see your cancellation transaction on etherscan" %}
   <a href="{{ transaction.link }}">{% trans "here." %}</a>
+</p>
+<p class="grant-link">
+  <a class="updatesButton" href="{% url 'grants:details' grant.pk grant.slug %}">{% trans "View Inactive Grant" %}</a>
 </p>
 <br>
 

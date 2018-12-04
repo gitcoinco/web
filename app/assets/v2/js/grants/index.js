@@ -15,4 +15,12 @@ $(document).ready(() => {
       form.submit();
     }
   });
+
+  $('.flip-card').on('click keypress', e => {
+    if ($(e.target).is('a') || $(e.target).is('img')) {
+      e.stopPropagation();
+      return;
+    }
+    $(e.currentTarget).toggleClass('turn');
+  });
 });
