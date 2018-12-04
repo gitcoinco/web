@@ -79,16 +79,6 @@ confirm_time_minutes_target = 4
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 
-# def grants(request):
-#     """Handle grants explorer."""
-#
-#     params = {
-#         'active': 'dashboard',
-#         'title': _('Grants Explorer')
-#         }
-#     return TemplateResponse(request, 'grants_index.html', params)
-
-
 def record_user_action(user, event_name, instance):
     instance_class = instance.__class__.__name__.lower()
     kwargs = {
