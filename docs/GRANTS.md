@@ -44,3 +44,15 @@ When you run this code, it looks through all of the active grants on your local 
 
 Heres an example successful tx created by the subminer: https://rinkeby.etherscan.io/tx/0x274c159a6d89513c3f0b533a5329bef4ce02b3ffc770bece9a8ce5d269319f72
 
+
+# More information
+
+For more information on the subminer for grants, checkout 
+* https://github.com/gitcoinco/web/issues/2424
+* https://github.com/gitcoinco/web/pull/3055
+* https://gitcoin.co/slack
+* http://1337alliance.com
+
+
+
+

@@ -537,4 +537,3 @@ class Contribution(SuperModel):
     def __str__(self):
         """Return the string representation of this object."""
         return f" {self.tx_id} => {self.subscription}"
-
