@@ -401,8 +401,6 @@ class Subscription(SuperModel):
         signed_txn = web3.eth.account.signTransaction(tx, private_key=settings.GRANTS_PRIVATE_KEY)
         return web3.eth.sendRawTransaction(signed_txn.rawTransaction)
 
-
-
     def helper_tx_dict(self, minutes_to_confirm_within=5):
         """returns a dict like this: {'to': '0xd3cda913deb6f67967b99d67acdfa1712c293601', 'from': web3.eth.coinbase, 'value': 12345}"""
         from dashboard.utils import get_nonce
@@ -411,6 +409,7 @@ class Subscription(SuperModel):
             'nonce': get_nonce(self.grant.network, settings.GRANTS_OWNER_ACCOUNT),
             'value': 0,
             'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(minutes_to_confirm_within) * 10**9),
+            'gas': 204066,
         }
 
     def get_is_active_from_web3(self):
