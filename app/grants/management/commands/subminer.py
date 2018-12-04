@@ -32,8 +32,7 @@ logging.getLogger("marketing.mails").setLevel(logging.WARNING)
 
 
 def has_mined(txid, subscription):
-    mined, when = has_tx_mined(txid, subscription.grant.network)
-    return mined
+    return has_tx_mined(txid, subscription.grant.network)
 
 
 def process_subscription(subscription, live):
