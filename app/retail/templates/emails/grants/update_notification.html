@@ -1,0 +1,140 @@
+{% extends '../emails/template.html' %}
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static %}
+
+{% block content %}
+
+<style>
+  hr {
+    width: 80%;
+    height: 2px;
+    border-radius: 25px;
+    border: none;
+    background-color: #D2D2D2;
+  }
+
+  .grantInfo {
+    padding-bottom: 1%;
+  }
+
+  .grantInfo a img {
+    border-radius: 25px;
+    margin-bottom: 10px;
+  }
+
+  .grantInfoName {
+    font-size: 20px;
+    color: #0D0764;
+  }
+
+  .grantInfo h5 {
+    font-size: 14px;
+    margin-top: 15px;
+    margin-top: 30px;
+  }
+
+  .grantInfo h3 {
+    margin-top: -20px;
+  }
+
+  .updatesButton {
+    padding: 12px 36px;
+    font-size: 12px;
+    border-radius: 3px;
+    text-decoration: none;
+    background-color: #0D0764;
+    color: white;
+  }
+
+  #grow-oss {
+    margin-top: 70px;
+    margin-bottom: 40px;
+  }
+
+  .grantUpdate {
+    width: 100%;
+    margin-top: 30px;
+    padding-bottom: 10px;
+  }
+
+  .upDate {
+    color: #BBBDBF;
+    transform: translateY(-100%);
+  }
+
+  @media screen and (min-width: 900px) {
+    .grantUpdateIcon {
+      width: 5%;
+      float: left;
+      margin-top: 20px;
+    }
+    .grantUpdate {
+      width: 100%;
+      padding-left: 10%;
+      padding-bottom: 200px;
+      transform: translateY(-150%);
+    }
+    .grantUpdateContent {
+      width: 93%;
+      float: left;
+      text-align: left;
+      margin-left: 2%;
+    }
+    .grantUpdateContent > p:last-child {
+      padding-right: 25%;
+      color: #43484D;
+    }
+    .grantUpdateContent > h3 {
+      color: #43484D;
+    }
+  }
+
+</style>
+<img id="newSupporter" src="{% static "v2/images/update-notification.png" %}" alt="{% trans "Update!" %}" title="{% trans "Update!" %}">
+<h1 style="text-transform: none;">{% trans "An update has been posted for:" %}</h1>
+<div class="grantInfo">
+  <a href="{% url 'grant:details' grant.id %}">
+    <img src="{{ grant.logo.url }}" style="width: 50px; height: 50px;"/>
+  </a>
+  <br>
+  <a class="grantInfoName" href="{% url 'grant:details' grant.id %}">{{ grant.title }}</a>
+  <p>{{ grant.description }}</p>
+</div>
+
+<br>
+
+<hr>
+<div class="grantUpdate">
+  <div class="grantUpdateIcon">
+    <img src="{% static "v2/images/file-text.png" %}" alt="{% trans "New Grant Update." %}" title="{% trans "New Grant Update" %}">
+  </div>
+  <div class="grantUpdateContent">
+    <h3>{{ activity.title }}</h3>
+    <p class="upDate">{{ activity.date }}</p>
+    <p>{{ activity.description }}</p>
+  </div>
+</div>
+<hr>
+
+<br>
+<br>
+<a class="updatesButton" href="{% url 'grant:details' grant.id %}">{% trans "View Grant" %}</a>
+<br>
+
+{% endblock %}

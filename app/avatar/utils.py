@@ -147,9 +147,9 @@ def get_avatar_context():
                 ['HatShort-tallbeanie'], ['HatShort-bunnyears'], ['HatShort-menorah'],
                 ['HatShort-pilgrim'], ['HatShort-santahat'], ['Earring-0'], ['Earring-1'],
                 ['EarringBack-2', 'Earring-2'], ['Earring-3'], ['Earring-4'], ['Masks-jack-o-lantern'],
-                ['Masks-guy-fawkes'], ['Masks-jack-o-lantern-lighted'], ['Masks-wolverine'],
-                ['Extras-Parrot'], ['Masks-gitcoinbot'], ['Masks-batman'], ['Masks-eye-patch'],
-                ['Masks-flash'],
+                ['Masks-guy-fawkes'], ['Masks-jack-o-lantern-lighted'], ['Masks-wolverine'], ['Masks-captain'],
+                ['Extras-Parrot'], ['Extras-wonderwoman'], ['Extras-santa'], ['Extras-reindeer'],
+                ['Masks-gitcoinbot'], ['Masks-batman'], ['Masks-eye-patch'], ['Masks-flash'],
             ),
             'paid_options': {
                 'Extras-Parrot': 0.01,
@@ -238,22 +238,28 @@ def build_avatar_component(path, icon_size=None, avatar_size=None):
     scale_factor = icon_size[1] / avatar_component_size[1]
     x_to_center = (icon_size[0] / 2) - ((avatar_component_size[0] * scale_factor) / 2)
     svg = SVG(f'{COMPONENT_BASE}{path}')
-    if path.startswith('Wallpaper'):
+    if path.startswith('Wallpaper') or path.startswith('Makeup'):
         src = transform.fromfile(f'{COMPONENT_BASE}{path}')
 
-        #       TODO: Consider width aswell...
-        #        if src.width != None:
-        #            src_width = float(re.sub('[^0-9]','', src.width))
-        #        else:
-        #            src_width = 900
+        if src.width is not None:
+            src_width = float(re.sub('[^0-9]', '', src.width))
+        else:
+            src_width = 900
 
         if src.height is not None:
             src_height = float(re.sub('[^0-9]', '', src.height))
         else:
             src_height = 1415
         scale_factor = icon_size[1] / src_height
+        if path.startswith('Makeup'):
+            scale_factor = scale_factor / 2
+
         svg = svg.scale(scale_factor)
-    if not path.startswith('Wallpaper'):
+        if path.startswith('Makeup'):
+            x_to_center = (icon_size[0] / 2) - ((src_width * scale_factor) / 2)
+            svg = svg.move(x_to_center, src_height * scale_factor / 2)
+
+    if not path.startswith('Wallpaper') and not path.startswith('Makeup'):
         svg = svg.scale(scale_factor)
         svg = svg.move(x_to_center, 0)
     return svg

@@ -14,6 +14,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 #*/3 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_geth mainnet -10 0  >> /var/log/gitcoin/sync_geth_latest.log  2>&1
 * * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_listener mainnet  >> /var/log/gitcoin/sync_listener.log  2>&1
 12 */2 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_geth rinkeby -200 0  >> /var/log/gitcoin/sync_geth_rinkeby.log  2>&1
+* * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash subminer mainnet --live  >> /var/log/gitcoin/subminer_mainnet.log  2>&1
 
 ## KUDOS
 */15 3,10,17 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_kudos mainnet opensea --catchup >> /var/log/gitcoin/sync_kudos_catchup.log 2>&1
