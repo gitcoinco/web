@@ -30,9 +30,56 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 logging.getLogger("web3").setLevel(logging.WARNING)
 logging.getLogger("marketing.mails").setLevel(logging.WARNING)
 
+
 def has_mined(txid, subscription):
     mined, when = has_tx_mined(txid, subscription.grant.network)
     return mined
+
+
+def process_subscription(subscription, live):
+    is_ready_to_be_processed_db = subscription.get_is_ready_to_be_processed_from_db()
+
+    print(f"  - subscription {subscription.pk}")
+    if is_ready_to_be_processed_db:
+        print("   -- (ready via db) ")
+        are_we_past_next_valid_timestamp = subscription.get_are_we_past_next_valid_timestamp()
+
+        # FOR DEBUGGING
+        if not live:
+            is_ready_to_be_processed_web3 = subscription.get_is_subscription_ready_from_web3()
+            is_active_web3 = subscription.get_is_active_from_web3()
+            signer = subscription.get_subscription_signer_from_web3()
+            print("    ---  DEBUG INFO")
+            print("    --- ", are_we_past_next_valid_timestamp, is_ready_to_be_processed_web3, is_active_web3, signer)
+
+        if are_we_past_next_valid_timestamp:
+            print("   -- (ready via web3) ")
+            if not live:
+                print("   -- *not live, not executing* ")
+            else:
+                print("   -- *executing* ")
+            status = 'failure'
+            txid = None
+            error = None
+            try:
+                if live:
+                    txid = subscription.do_execute_subscription_via_web3()
+                    print(f"   -- *waiting for mine* (txid {txid}) ")
+                    while not has_mined(txid, subscription):
+                        time.sleep(10)
+                    status, timestamp = get_tx_status(txid, subscription.grant.network, timezone.now())
+            except Exception as e:
+                error = str(e)
+
+            print(f"   -- *mined* (status: {status} / {error}) ")
+            was_success = status == 'success'
+            if live:
+                if not was_success:
+                    warn_subscription_failed(subscription, txid, status, error)
+                else:
+                    subscription.successful_contribution()
+                    subscription.save()
+
 
 class Command(BaseCommand):
 
@@ -40,10 +87,18 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('network', default='rinkeby', type=str)
+        parser.add_argument(
+            '-live', '--live',
+            action='store_true',
+            dest='live',
+            default=False,
+            help='Actually do the sync'
+        )
 
     def handle(self, *args, **options):
         # setup
         network = options['network']
+        live = options['live']
 
         # iter through Grants
         grants = Grant.objects.filter(network=network)
@@ -54,40 +109,4 @@ class Command(BaseCommand):
             print(f" - {grant.pk} has {subs.count()} subs")
 
             for subscription in subs:
-                is_ready_to_be_processed_db = subscription.get_is_ready_to_be_processed_from_db()
-                
-                print(f"  - subscription {subscription.pk}")
-                if is_ready_to_be_processed_db:
-                    print("   -- (ready via db) ")
-                    are_we_past_next_valid_timestamp = subscription.get_are_we_past_next_valid_timestamp()
-
-                    # FOR DEBUGGING
-                    # is_ready_to_be_processed_web3 = subscription.get_is_subscription_ready_from_web3()
-                    # is_active_web3 = subscription.get_is_active_from_web3()
-                    # signer = subscription.get_subscription_signer_from_web3()
-                    # print(are_we_past_next_valid_timestamp, is_ready_to_be_processed_web3, is_active_web3, signer)
-                    # print(signer)
-
-                    if are_we_past_next_valid_timestamp:
-                        print("   -- (ready via web3) ")
-                        print("   -- *executing* ")
-                        try:
-                            txid = subscription.do_execute_subscription_via_web3()
-                            print(f"   -- *waiting for mine* (txid {txid}) ")
-                            while not has_mined(txid, subscription):
-                                time.sleep(10)
-                            status, timestamp = get_tx_status(txid, subscription.grant.network, timezone.now())
-                            error = None
-
-                        except Exception as e:
-                            error = str(e)
-                            status = 'failure'
-                            txid = None
-
-                        print(f"   -- *mined* (status: {status} / {error}) ")
-                        was_success = status == 'success'
-                        if not was_success:
-                            warn_subscription_failed(subscription, txid, status, error)
-                        else:
-                            subscription.successful_contribution()
-                            subscription.save()
+                process_subscription(subscription, live)
