@@ -1,0 +1,23 @@
+{
+    "website": "https://groo.io",
+    "published_on": "2018-09-09",
+    "links": {
+        "github": "https://github.com/groocoindev",
+        "telegram": "https://t.me/groocoin_official_en",
+        "twitter": "https://twitter.com/groocoinio",
+        "blog": "https://medium.com/@groocoinio"
+    },
+    "overview": {
+        "en": "The project Groocoin is a cryptocurrency based a beauty content advertisement media platform (“Groo DApp” platform) accumulating quality corporate, social media, and blog contents through partnerships with creators, as well as a blockchain network used in that platform.",
+        "zh": ""
+    },
+    "state": "NORMAL",
+    "symbol": "GROO",
+    "initial_price": {
+        "ETH": "0.005 ETH",
+        "USD": "0.1 USD"
+    },
+    "address": "0xc17195bde49d70cefcf8a9f2ee1759ffc27bf0b1",
+    "whitepaper": "https://groo.io/assets/whitepaper/Groocoin_Whitepaper_v1.0_EN.pdf",
+    "email": "support@groo.io"
+}

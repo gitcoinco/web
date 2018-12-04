@@ -1,0 +1,17 @@
+{
+  "symbol": "BTCL",
+  "address": "0x5acd19b9c91e596b1f062f18e3d02da7ed8d1e50",
+  "overview":{
+        "en": "BTClite promises to bring advantages of Bitcoin on the ethereum blockchain."
+  },
+  "email": "btclitetoken@gmail.com",
+  "website": "http://btclite.org/",
+  "whitepaper": "http://btclite.org/whitepaper/",
+  "published_on": "2017-11-20",
+  "links": {
+    "blog": "http://btclite.org/blog/",
+    "twitter": "https://twitter.com/BTCliteofficial",
+    "telegram": "http://t.me/BTCLITE",
+    "github": "https://github.com/BTC-lite"
+  }
+}
