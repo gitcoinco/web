@@ -254,6 +254,17 @@ var showLoading = function() {
   setTimeout(showLoading, 10);
 };
 
+var waitingStateActive = function() {
+  $('.bg-container').show();
+  $('.loading_img').addClass('waiting-state ');
+  $('.waiting_room_entertainment').show();
+  $('.issue-url').html('<a href="' + document.issueURL + '">' + document.issueURL + '</a>');
+  var secondsBetweenQuoteChanges = 30;
+
+  waitingRoomEntertainment();
+  var interval = setInterval(waitingRoomEntertainment, secondsBetweenQuoteChanges * 1000);
+};
+
 /** Add the current profile to the interested profiles list. */
 var add_interest = function(bounty_pk, data) {
   if (document.interested) {
@@ -919,40 +930,43 @@ function getNetwork(id) {
 // figure out what version of web3 this is, whether we're logged in, etc..
 var listen_for_web3_changes = async function() {
 
-  if (!document.listen_for_web3_iterations) {
-    document.listen_for_web3_iterations = 1;
-  } else {
-    document.listen_for_web3_iterations += 1;
+  if (document.location.pathname.indexOf('grants') === -1) {
+    if (!document.listen_for_web3_iterations) {
+      document.listen_for_web3_iterations = 1;
+    } else {
+      document.listen_for_web3_iterations += 1;
+    }
+
+    if (typeof web3 == 'undefined') {
+      currentNetwork();
+      trigger_form_hooks();
+    } else if (typeof web3 == 'undefined' || typeof web3.eth == 'undefined' || typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
+      currentNetwork('locked');
+      trigger_form_hooks();
+    } else {
+      is_metamask_unlocked = true;
+      web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
+        if (errors) {
+          return;
+        }
+        if (typeof result != 'undefined') {
+          document.balance = result.toNumber();
+        }
+      });
+
+      web3.version.getNetwork(function(error, netId) {
+        if (error) {
+          currentNetwork();
+        } else {
+          var network = getNetwork(netId);
+
+          currentNetwork(network);
+          trigger_form_hooks();
+        }
+      });
+    }
   }
 
-  if (typeof web3 == 'undefined') {
-    currentNetwork();
-    trigger_form_hooks();
-  } else if (typeof web3 == 'undefined' || typeof web3.eth == 'undefined' || typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
-    currentNetwork('locked');
-    trigger_form_hooks();
-  } else {
-    is_metamask_unlocked = true;
-    web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
-      if (errors) {
-        return;
-      }
-      if (typeof result != 'undefined') {
-        document.balance = result.toNumber();
-      }
-    });
-
-    web3.version.getNetwork(function(error, netId) {
-      if (error) {
-        currentNetwork();
-      } else {
-        var network = getNetwork(netId);
-
-        currentNetwork(network);
-        trigger_form_hooks();
-      }
-    });
-  }
   if (window.ethereum && !document.has_checked_for_ethereum_enable) {
     document.has_checked_for_ethereum_enable = true;
     is_metamask_approved = await window.ethereum._metamask.isApproved();
@@ -1139,6 +1153,7 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
     result['action'] = result['url'];
     result['title'] = result['title'] ? result['title'] : result['github_url'];
     result['p'] = projectType + (result['experience_level'] ? (result['experience_level'] + ' <span class="separator-bull"></span> ') : '');
+    result['expired'] = '';
 
     if (result['status'] === 'done') {
       result['p'] += 'Done';
@@ -1163,19 +1178,21 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
     } else if (isExpired) {
       const timeAgo = timeDifference(dateNow, dateExpires, true);
 
-      result['p'] += ('Expired ' + timeAgo + ' ago');
+      result['expired'] += ('Expired ' + timeAgo + ' ago');
     } else {
       const openedWhen = timeDifference(dateNow, new Date(result['web3_created']), true);
 
       if (isInfinite) {
-        const expiredExpires = '<b>Never expires</b>';
+        const expiredExpires = 'Never expires';
 
-        result['p'] += ('Opened ' + openedWhen + ' ago, ' + expiredExpires);
+        result['p'] += ('Opened ' + openedWhen + ' ago');
+        result['expired'] += (expiredExpires);
       } else {
         const timeLeft = timeDifference(dateNow, dateExpires);
         const expiredExpires = dateNow < dateExpires ? 'Expires' : 'Expired';
 
-        result['p'] += ('Opened ' + openedWhen + ' ago, ' + expiredExpires + ' <b>' + timeLeft + '</b>');
+        result['p'] += ('Opened ' + openedWhen + ' ago');
+        result['expired'] += (expiredExpires + ' ' + timeLeft);
       }
     }
 

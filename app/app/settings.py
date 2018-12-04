@@ -105,6 +105,7 @@ INSTALLED_APPS = [
     'external_bounties',
     'dataviz',
     'impersonate',
+    'grants',
     'kudos',
     'django.contrib.postgres',
     'bounty_requests',
@@ -553,6 +554,11 @@ KUDOS_CONTRACT_RINKEBY = env('KUDOS_CONTRACT_RINKEBY', default='0x4077ae95eec529
 KUDOS_CONTRACT_ROPSTEN = env('KUDOS_CONTRACT_ROPSTEN', default='0xcd520707fc68d153283d518b29ada466f9091ea8')
 KUDOS_CONTRACT_TESTRPC = env('KUDOS_CONTRACT_TESTRPC', default='0x38c48d14a5bbc38c17ced9cd5f0695894336f426')
 KUDOS_NETWORK = env('KUDOS_NETWORK', default='mainnet')
+
+# Grants
+GRANTS_OWNER_ACCOUNT = env('GRANTS_OWNER_ACCOUNT', default='0xD386793F1DB5F21609571C0164841E5eA2D33aD8')
+GRANTS_PRIVATE_KEY = env('GRANTS_PRIVATE_KEY', default='')
+
 
 # Reporting Integrations
 MIXPANEL_TOKEN = env('MIXPANEL_TOKEN', default='')

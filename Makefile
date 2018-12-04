@@ -25,6 +25,8 @@ autotranslate: ## Automatically translate all untranslated entries for all LOCAL
 
 build: ## Build the Gitcoin Web image.
 	@docker build \
+		--stream \
+		--pull \
 		--build-arg BUILD_DATETIME=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
 		--build-arg "SHA1=${SHA1}" \
 		${VERSION:+--build-arg "VERSION=$VERSION"} \
