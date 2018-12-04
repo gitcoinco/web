@@ -13,13 +13,21 @@ const jsonExp = /\.json$/
 
 const imgExp = /\.png$/
 
-const addressExp = /^(0x)?[0-9a-f]{40}$/i
+const ethAddressExp = /^(0x)?[0-9a-f]{40}$/i
 
-const isAddress = address => addressExp.test(address)
+const eosTokenExp = /@/
 
-const isAddressJson = (filename) => jsonExp.test(filename) && isAddress(filename.replace(jsonExp, ''))
+const isEthAddress = address => ethAddressExp.test(address)
 
-const isAddressPng = (filename) => imgExp.test(filename) && isAddress(filename.replace(imgExp, ''))
+const isEosToken = address => eosTokenExp.test(address)
+
+const isEthAddressJson = (filename) => jsonExp.test(filename) && isEthAddress(filename.replace(jsonExp, ''))
+
+const isEosTokenJson = (filename) => jsonExp.test(filename) && isEosToken(filename.replace(jsonExp, ''))
+
+const isEthAddressPng = (filename) => imgExp.test(filename) && isEthAddress(filename.replace(imgExp, ''))
+
+const isEosTokenPng = (filename) => imgExp.test(filename) && isEosToken(filename.replace(jsonExp, ''))
 
 const isStringWithCharacter = (str) => {
   return str && typeof str === 'string' && str.trim()
@@ -37,116 +45,141 @@ const notice = (msg) => {
 }
 
 const jsonFileNames = fs.readdirSync('./erc20')
+const eosJsonFileNames = fs.readdirSync('./eos-token')
 const imageFileNames = fs.readdirSync('./images')
 const imageAddrs = imageFileNames.map(n => n.slice(0, 42)).filter(n => n.startsWith('0x'))
 const lowerCaseImageAddrs =imageAddrs.map(x => x.toLowerCase())
+const jsonFileCheck = (jsonFileName, type) => {
+  const addr = jsonFileName.replace(jsonExp, '')
+  let prepath = ''
 
-jsonFileNames
-  .filter(jsonFileName => {
-    return jsonFileName !== '$template.json' && jsonFileName.endsWith('.json')
-  })
-  .forEach(jsonFileName => {
-    const addr = jsonFileName.replace(jsonExp, '')
-    if (!isAddress(addr)) {
-      exitWithMsg(`ERROR! json file name ${jsonFileName} is not like a address.json`)
+  if (
+    (type === 'ETHEREUM' && !isEthAddress(addr)) ||
+    (type === 'EOS' && !isEosToken(addr))
+  ) {
+    exitWithMsg(`ERROR! json file name ${jsonFileName} is not like a ${type} address.json`)
+  }
+
+  if (type === 'ETHEREUM') {
+    prepath = './erc20/'
+  } else if (type === 'EOS') {
+    prepath = './eos-token/'
+  }
+
+  const content = fs.readFileSync(`${prepath}${addr}.json`).toString()
+  let obj = null
+  let parseErr = null
+
+  if (content.indexOf('�') !== -1) {
+    exitWithMsg(`ERROR! json file name ${jsonFileName} must be utf-8 encoding`)
+  }
+
+  try {
+    obj = JSON.parse(content)
+  } catch (e) {
+    parseErr = e
+  }
+
+  if (parseErr) {
+    exitWithMsg(`ERROR! json file name ${jsonFileName} parse error, please check first (maybe has some unnecessary space or comma symbol like ",")`)
+  }
+
+  if (!lowerCaseImageAddrs.includes(addr.toLowerCase())) {
+    notice(`Warning! dose not have ${addr + '.png'} in images dir, please check first`)
+  } else if (!imageAddrs.includes(obj.address)) {
+    const imgAddr = imageAddrs.find(imgad => {
+      return imgad.toLowerCase() === addr.toLowerCase()
+    })
+    exitWithMsg(`Warning! ${imgAddr + '.png'} in images dir, that capital and small letter isn't quite the same with ${addr}`)
+  }
+
+  if (!obj.symbol) {
+    exitWithMsg(`ERROR! json file ${jsonFileName} content must have symbol field`)
+  }
+
+  if (!obj.address) {
+    exitWithMsg(`ERROR! json file ${jsonFileName} content must have address field`)
+  }
+
+  if (!isEthAddress(obj.address)) {
+    exitWithMsg(`ERROR! json file ${jsonFileName} address field must be an ethereum address`)
+  }
+
+  if (obj.address.toLowerCase() !== addr.toLowerCase()) {
+    exitWithMsg(`ERROR! json file ${jsonFileName} should be the same with address field ${obj.address}`)
+  } else if (obj.address !== addr) {
+    // exitWithMsg(`Warning! json file ${jsonFileName}, that capital and small letter isn't quite the same with object.address ${obj.address}`)
+  }
+
+  if (obj.published_on !== undefined) {
+    if (obj.published_on.search(dateExp) === -1) {
+      exitWithMsg(`ERROR! json file ${jsonFileName}'s published_on field ${obj.published_on} must be format of YYYY-MM-DD or YYYY-MM-DD`)
+    }
+  }
+
+  if (obj.email !== undefined) {
+    if (obj.email.search(emailExp) === -1) {
+      exitWithMsg(`ERROR! json file ${jsonFileName}'s email field ${obj.email} must be an email`)
+    }
+  }
+
+  if (obj.overview !== undefined) {
+    if (!['zh', 'en'].some(k => isStringWithCharacter(obj.overview[k]))) {
+      exitWithMsg(`ERROR! json file ${jsonFileName}'s overview field must have zh and en field, and must be a string (not empty)`)
+    }
+  }
+
+  if (obj.links !== undefined) {
+    if (!Object.keys(obj.links).every(k => isUrl(obj.links[k]))) {
+      exitWithMsg(`ERROR! json file ${jsonFileName}'s links every field must be an url`)
+    }
+  }
+
+  if (obj.state !== undefined) {
+    if (!['LOCKED', 'NORMAL'].includes(obj.state)) {
+      exitWithMsg(`ERROR! json file ${jsonFileName}'s state field ${obj.state} must be 'LOCKED' or 'NORMAL'`)
+    }
+  }
+
+  if (obj.initial_price !== undefined) {
+    const keys = Object.keys(obj.initial_price)
+    if (keys.some(k => !['BTC', 'ETH', 'USD'].includes(k))) {
+      exitWithMsg(`ERROR! json file ${jsonFileName}'s initial_price field ${JSON.stringify(obj.initial_price)} only support BTC ETH USD`)
     }
 
-    const content = fs.readFileSync(`./erc20/${addr}.json`).toString()
-    let obj = null
-    let parseErr = null
-
-    if (content.indexOf('�') !== -1) {
-      exitWithMsg(`ERROR! json file name ${jsonFileName} must be utf-8 encoding`)
-    }
-
-    try {
-      obj = JSON.parse(content)
-    } catch (e) {
-      parseErr = e
-    }
-
-    if (parseErr) {
-      exitWithMsg(`ERROR! json file name ${jsonFileName} parse error, please check first (maybe has some unnecessary space or comma symbol like ",")`)
-    }
-
-    if (!lowerCaseImageAddrs.includes(addr.toLowerCase())) {
-      notice(`Warning! dose not have ${addr + '.png'} in images dir, please check first`)
-    } else if (!imageAddrs.includes(obj.address)) {
-      const imgAddr = imageAddrs.find(imgad => {
-        return imgad.toLowerCase() === addr.toLowerCase()
-      })
-      exitWithMsg(`Warning! ${imgAddr + '.png'} in images dir, that capital and small letter isn't quite the same with ${addr}`)
-    }
-
-    if (!obj.symbol) {
-      exitWithMsg(`ERROR! json file ${jsonFileName} content must have symbol field`)
-    }
-
-    if (!obj.address) {
-      exitWithMsg(`ERROR! json file ${jsonFileName} content must have address field`)
-    }
-
-    if (!isAddress(obj.address)) {
-      exitWithMsg(`ERROR! json file ${jsonFileName} address field must be an ethereum address`)
-    }
-
-    if (obj.address.toLowerCase() !== addr.toLowerCase()) {
-      exitWithMsg(`ERROR! json file ${jsonFileName} should be the same with address field ${obj.address}`)
-    } else if (obj.address !== addr) {
-      // exitWithMsg(`Warning! json file ${jsonFileName}, that capital and small letter isn't quite the same with object.address ${obj.address}`)
-    }
-
-    if (obj.published_on !== undefined) {
-      if (obj.published_on.search(dateExp) === -1) {
-        exitWithMsg(`ERROR! json file ${jsonFileName}'s published_on field ${obj.published_on} must be format of YYYY-MM-DD or YYYY-MM-DD`)
-      }
-    }
-
-    if (obj.email !== undefined) {
-      if (obj.email.search(emailExp) === -1) {
-        exitWithMsg(`ERROR! json file ${jsonFileName}'s email field ${obj.email} must be an email`)
-      }
-    }
-
-    if (obj.overview !== undefined) {
-      if (!['zh', 'en'].some(k => isStringWithCharacter(obj.overview[k]))) {
-        exitWithMsg(`ERROR! json file ${jsonFileName}'s overview field must have zh and en field, and must be a string (not empty)`)
-      }
-    }
-  
-    if (obj.links !== undefined) {
-      if (!Object.keys(obj.links).every(k => isUrl(obj.links[k]))) {
-        exitWithMsg(`ERROR! json file ${jsonFileName}'s links every field must be an url`)
-      }
-    }
-
-    if (obj.state !== undefined) {
-      if (!['LOCKED', 'NORMAL'].includes(obj.state)) {
-        exitWithMsg(`ERROR! json file ${jsonFileName}'s state field ${obj.state} must be 'LOCKED' or 'NORMAL'`)
-      }
-    }
-
-    if (obj.initial_price !== undefined) {
-      const keys = Object.keys(obj.initial_price)
-      if (keys.some(k => !['BTC', 'ETH', 'USD'].includes(k))) {
-        exitWithMsg(`ERROR! json file ${jsonFileName}'s initial_price field ${JSON.stringify(obj.initial_price)} only support BTC ETH USD`)
-      }
-
-      keys.forEach(k => {
-        if (!obj.initial_price[k].endsWith(` ${k}`)) {
-          exitWithMsg(`ERROR! json file ${jsonFileName}'s initial_price field ${obj.initial_price[k]} must end with ${'space+' + k}, just see example`)
-        }
-      })
-    }
-
-    ['website', 'whitepaper'].forEach(k => {
-      if (obj[k] !== undefined) {
-        if (!isUrl(obj[k])) {
-          exitWithMsg(`ERROR! json file ${jsonFileName}'s ${k} field ${obj[k]} must an url`)
-        }
+    keys.forEach(k => {
+      if (!obj.initial_price[k].endsWith(` ${k}`)) {
+        exitWithMsg(`ERROR! json file ${jsonFileName}'s initial_price field ${obj.initial_price[k]} must end with ${'space+' + k}, just see example`)
       }
     })
+  }
+
+  ['website', 'whitepaper'].forEach(k => {
+    if (obj[k] !== undefined) {
+      if (!isUrl(obj[k])) {
+        exitWithMsg(`ERROR! json file ${jsonFileName}'s ${k} field ${obj[k]} must an url`)
+      }
+    }
   })
+}
+
+const jsonFileNameFilter = jsonFileName => {
+  return jsonFileName !== '$template.json' && jsonFileName.endsWith('.json')
+}
+
+jsonFileNames
+  .filter(jsonFileNameFilter)
+  .forEach(jsonFileName => {
+    jsonFileCheck(jsonFileName, 'ETHEREUM')
+  })
+
+eosJsonFileNames
+  .filter(jsonFileNameFilter)
+  .forEach(jsonFileName => {
+    jsonFileCheck(jsonFileName, 'EOS')
+  })
+
+  
 
 imageFileNames.forEach(n => {
   const path = `./images/${n}`
@@ -174,12 +207,19 @@ imageFileNames.forEach(n => {
 const checkWrongDirectoryItem = (directory, filename) => {
   const errorMsg = `${filename} in the wrong directory ${directory}/`
   if (directory === './erc20') {
-    if (['$template.json', 'README.md'].indexOf(filename) === -1 && !isAddressJson(filename)) {
+    if (['$template.json', 'README.md'].indexOf(filename) === -1 && !isEthAddressJson(filename)) {
+      exitWithMsg(errorMsg)
+    }
+
+  } else if (directory === './eos-token') {
+    if (['$template.json', 'README.md'].indexOf(filename) === -1 && !isEosTokenJson(filename)) {
       exitWithMsg(errorMsg)
     }
 
   } else if (directory === './images') {
-    if (['bitcoin.png', 'eos.png', 'ethereum.png'].indexOf(filename) === -1 && !isAddressPng(filename)) {
+    if (['bitcoin.png', 'eos.png', 'ethereum.png'].indexOf(filename) === -1 &&
+      !isEthAddressPng(filename) &&
+      !isEosTokenPng(filename)) {
       // temporality not throw
       if (filename === '0x4488ed050cd13ccfe0b0fcf3d168216830142775.jpg') {
         notice(errorMsg)
@@ -188,7 +228,11 @@ const checkWrongDirectoryItem = (directory, filename) => {
       }
     }
 
-  } else if (isAddressJson(filename) || isAddressPng(filename)) {
+  } else if (isEthAddressJson(filename) ||
+      isEthAddressPng(filename) ||
+      isEosTokenJson(filename) ||
+      isEosTokenPng(filename)
+    ) {
     exitWithMsg(errorMsg)
   }
 }
