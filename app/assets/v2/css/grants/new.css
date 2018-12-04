@@ -28,8 +28,10 @@
   top: -3px;
 }
 
-.select2-container--default .select2-selection--multiple {
-  border-color: #000;
+.select2-container--default .select2-selection--multiple,
+.new-grant .form__select2 .select2-container--default .select2-selection--single {
+  border-color: #D3D3D3 !important;
+  border-radius: 2px !important;
   font-size: 1rem;
 }
 
