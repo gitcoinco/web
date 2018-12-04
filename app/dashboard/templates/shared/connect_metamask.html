@@ -24,7 +24,7 @@
       </p>
       <p>
         {% trans "Please connect to Metamask and refresh the page." %}
-        <button id="metamask_connect" onclick="approve_metamask()">{% trans "Click here to connect to metamask" %}</button>
+        <button id="metamask_connect" class="font-caption mx-1" onclick="approve_metamask()">{% trans "Click here to connect to metamask" %}</button>
       </p>
     </div>
     <div class="col-lg-2 col-sm-12">
@@ -32,3 +32,10 @@
     </div>
   </div>
 </div>
+
+<style>
+  #connect_metamask_error #metamask_connect {
+    position: relative;
+    bottom: 2px;
+  }
+</style>

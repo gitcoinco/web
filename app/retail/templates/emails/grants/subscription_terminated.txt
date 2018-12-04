@@ -1,0 +1,27 @@
+{% load i18n %}
+
+{% trans "Subscription Terminated." %}
+
+{% trans "Grant" %} {{ grant.title }} {% trans "has been cancelled." %}
+
+{% trans "Your subscription for the project has been cancelled and you will no longer be charged." %}
+
+{{ grant.logo.url }}
+
+{{ grant.description }}
+
+{{ grant.status }}
+
+{{ grant.percentage_done }}
+
+{{ grant.amount_goal }} {% trans "ETH" %}
+
+{% trans "Goal" %}
+
+{% trans "You can see the subscription cancelation transaction" %} 
+
+{{ transaction.link }} 
+
+{% trans "here." %}
+
+{% trans "View Transaction" %}

@@ -31,6 +31,7 @@ from django.utils.translation import gettext as _
 
 import cssutils
 import premailer
+from grants.models import Grant, Subscription
 from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
 from retail.utils import strip_double_chars, strip_html
@@ -65,6 +66,118 @@ def premailer_transform(html):
     cssutils.log.setLevel(logging.CRITICAL)
     p = premailer.Premailer(html, base_url=settings.BASE_URL)
     return p.transform()
+
+
+def render_new_grant_email(grant):
+    params = {'grant': grant}
+    response_html = premailer_transform(render_to_string("emails/grants/new_grant.html", params))
+    response_txt = render_to_string("emails/grants/new_grant.txt", params)
+    subject = "Your Gitcoin Grant"
+    return response_html, response_txt, subject
+
+
+def render_new_supporter_email(grant, subscription):
+    params = {'grant': grant, 'subscription': subscription}
+    response_html = premailer_transform(render_to_string("emails/grants/new_supporter.html", params))
+    response_txt = render_to_string("emails/grants/new_supporter.txt", params)
+    subject = "You have a new Grant supporter!"
+    return response_html, response_txt, subject
+
+
+def render_thank_you_for_supporting_email(grant, subscription):
+    params = {'grant': grant, 'subscription': subscription}
+    response_html = premailer_transform(render_to_string("emails/grants/thank_you_for_supporting.html", params))
+    response_txt = render_to_string("emails/grants/thank_you_for_supporting.txt", params)
+    subject = "Thank you for supporting Grants on Gitcoin!"
+    return response_html, response_txt, subject
+
+
+def render_support_cancellation_email(grant, subscription):
+    params = {'grant': grant, 'subscription': subscription}
+    response_html = premailer_transform(render_to_string("emails/grants/support_cancellation.html", params))
+    response_txt = render_to_string("emails/grants/support_cancellation.txt", params)
+    subject = "Your subscription on Gitcoin Grants has been cancelled"
+
+    return response_html, response_txt, subject
+
+
+def render_grant_cancellation_email(grant, subscription):
+    params = {'grant': grant, 'subscription': subscription}
+    response_html = premailer_transform(render_to_string("emails/grants/grant_cancellation.html", params))
+    response_txt = render_to_string("emails/grants/grant_cancellation.txt", params)
+    subject = "Your Grant on Gitcoin Grants has been cancelled"
+    return response_html, response_txt, subject
+
+
+def render_subscription_terminated_email(grant, subscription):
+    params = {'grant': grant, 'subscription': subscription}
+    response_html = premailer_transform(render_to_string("emails/grants/subscription_terminated.html", params))
+    response_txt = render_to_string("emails/grants/subscription_terminated.txt", params)
+    subject = "Your subscription on Gitcoin Grants has been cancelled by the Grant Creator"
+    return response_html, response_txt, subject
+
+
+def render_successful_contribution_email(grant, subscription):
+    params = {'grant': grant, 'subscription': subscription}
+    response_html = premailer_transform(render_to_string("emails/grants/successful_contribution.html", params))
+    response_txt = render_to_string("emails/grants/successful_contribution.txt", params)
+    subject = "Your subscription on Gitcoin Grants has been cancelled by the Grant Creator"
+    return response_html, response_txt, subject
+
+
+@staff_member_required
+def successful_contribution(request):
+    grant = Grant.objects.all().first()
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+    response_html, __, __ = render_successful_contribution_email(grant, subscription)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def subscription_terminated(request):
+    grant = Grant.objects.all().first()
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+    response_html, __, __ = render_subscription_terminated_email(grant, subscription)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def grant_cancellation(request):
+    grant = Grant.objects.all().first()
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+    response_html, __, __ = render_grant_cancellation_email(grant, subscription)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def support_cancellation(request):
+    grant = Grant.objects.all().first()
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+    response_html, __, __ = render_support_cancellation_email(grant, subscription)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def thank_you_for_supporting(request):
+    grant = Grant.objects.all().first()
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+    response_html, __, __ = render_thank_you_for_supporting_email(grant, subscription)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def new_supporter(request):
+    grant = Grant.objects.all().first()
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+    response_html, __, __ = render_new_supporter_email(grant, subscription)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def new_grant(request):
+    grant = Grant.objects.all().first()
+    response_html, __, __ = render_new_grant_email(grant)
+    return HttpResponse(response_html)
 
 
 def render_tip_email(to_email, tip, is_new):
@@ -602,7 +715,7 @@ Check out a few of the new kudos launched this week:
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Colony is running an on-going bug bounty program using Gitcoin for the <a href="https://github.com/JoinColony/colonyNetwork">colonyNetwork repository</a>. 
+            Colony is running an on-going bug bounty program using Gitcoin for the <a href="https://github.com/JoinColony/colonyNetwork">colonyNetwork repository</a>.
             Awards go up to $20,000 DAI for critical bugs. <a href="https://docs.colony.io/colonynetwork/bug-bounty-program-overview/">See the Rules page for more.</a>
         </li>
         <li>
@@ -611,7 +724,7 @@ Check out a few of the new kudos launched this week:
     </ul>
 </p>
 <p>
-Thanks for reading to the end!  <a href="https://gitcoin.co/kudos/redeem/red_staplers_for_all">Here's a kudos just for you :)</a>. 
+Thanks for reading to the end!  <a href="https://gitcoin.co/kudos/redeem/red_staplers_for_all">Here's a kudos just for you :)</a>.
 <BR>
 <BR>
 OK, Back to BUIDLing,
