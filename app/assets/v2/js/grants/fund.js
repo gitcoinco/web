@@ -30,6 +30,10 @@ $(document).ready(function() {
 
         if (data.frequency_unit == 'days') {
           periodSeconds *= 86400;
+        } else if (data.frequency_unit == 'hours') {
+          periodSeconds *= 3600;
+        } else if (data.frequency_unit == 'minutes') {
+          periodSeconds *= 60;
         } else if (data.frequency_unit == 'months') {
           periodSeconds *= 2592000;
         }
