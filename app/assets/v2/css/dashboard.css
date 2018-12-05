@@ -269,3 +269,9 @@ body {
 .btn-expand-token:focus {
   color: #007bff;
 }
+
+.expired-icon {
+  font-size: 15px;
+  padding-right: 0.5em;
+  vertical-align: text-bottom;
+}
