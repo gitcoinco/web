@@ -23,7 +23,7 @@ import time
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from dashboard.utils import has_tx_mined, get_tx_status
+from dashboard.utils import get_tx_status, has_tx_mined
 from grants.models import Grant
 from marketing.mails import warn_subscription_failed
 
@@ -98,7 +98,7 @@ class Command(BaseCommand):
         live = options['live']
 
         # iter through Grants
-        grants = Grant.objects.filter(network=network)
+        grants = Grant.objects.filter(network=network).active()
         print(f"got {grants.count()} grants")
 
         for grant in grants:

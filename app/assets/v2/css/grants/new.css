@@ -1,3 +1,16 @@
+.grant-container {
+  background-color: #f2f6f9;
+}
+
+.primary-form {
+  background-color: #FFFFFF;
+}
+
+#create-grant label {
+  color: #666;
+  font-weight: 600;
+}
+
 .new-grant .form__drop {
   margin-top: 15px;
 }

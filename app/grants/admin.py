@@ -62,14 +62,12 @@ class GrantAdmin(GeneralAdmin):
 
 class SubscriptionAdmin(GeneralAdmin):
     """Define the Subscription administration layout."""
-
-    pass
+    raw_id_fields = ['grant', 'contributor_profile']
 
 
 class ContributionAdmin(GeneralAdmin):
     """Define the Contribution administration layout."""
-
-    pass
+    raw_id_fields = ['subscription']
 
 
 admin.site.register(Grant, GrantAdmin)

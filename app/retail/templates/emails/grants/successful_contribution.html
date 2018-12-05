@@ -84,6 +84,11 @@
     margin-bottom: 50px;
   }
 
+  #grant-logo {
+    max-width: 25rem;
+    width: 100%;
+  }
+
   @media screen and (min-width: 598px) {
     .rightGrantHeader {
       padding-left: 40px;
@@ -109,9 +114,10 @@
 </div>
 
 <hr>
+<br>
 <div class="grantInfo">
   <a href="{% url 'grants:details' grant.id grant.slug %}">
-    <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}" width="50" height="50" />
+    <img id="grant-logo" src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}" />
   </a>
   <br>
   <a class="grantInfoName" href="{% url 'grants:details' grant.id grant.slug %}">

@@ -75,8 +75,8 @@ def get_avatar_context():
             'name': 'Makeup',
             'title': 'Pick a makeup style',
             'options': (
-                'ziggy-stardust', 'bolt', 'star2', 'kiss', 'blush', 'eyeliner-green', 'eyeliner-teal',
-                'eyeliner-pink', 'eyeliner-red', 'eyeliner-blue', 'star',
+                'ziggy-stardust', 'bolt', 'star2', 'kiss', 'blush', 'eyeliner-green', 'eyeliner-teal', 'eyeliner-pink',
+                'eyeliner-red', 'eyeliner-blue', 'star',
             ),
             'paid_options': {
                 'ziggy-stardust': 0.02,
@@ -110,8 +110,8 @@ def get_avatar_context():
             'name': 'Clothing',
             'title': 'Pick your clothing',
             'options': (
-                'cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater', 'spacecadet',
-                'suit', 'ethlogo', 'cloak', 'robe', 'pjs',
+                'cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater', 'spacecadet', 'suit', 'ethlogo',
+                'cloak', 'robe', 'pjs',
             ),
             'paid_options': {
                 'robe': 0.01,
@@ -121,20 +121,18 @@ def get_avatar_context():
         }, {
             'name': 'Hair Style',
             'title': 'Pick a hairstyle',
-            'options': (
-                ['None', '0'], ['None', '1'], ['None', '2'], ['None', '3'], ['None', '4'],
-                ['5', 'None'], ['6-back', '6-front'], ['7-back', '7-front'], ['8-back', '8-front'],
-                ['9-back', '9-front'], ['None', '10'], ['damos_hair-back', 'damos_hair-front'],
-                ['long_swoosh-back', 'long_swoosh-front'], ['None', 'mohawk'], ['None', 'mohawk_inverted'],
-                ['None', 'spikey'],
-            ),
+            'options': (['None', '0'], ['None', '1'], ['None', '2'], ['None', '3'], ['None', '4'], ['5', 'None'], [
+                '6-back', '6-front'
+            ], ['7-back', '7-front'], ['8-back', '8-front'], ['9-back', '9-front'], ['None', '10'],
+                        ['damos_hair-back', 'damos_hair-front'], ['long_swoosh-back', 'long_swoosh-front'],
+                        ['None', 'mohawk'], ['None', 'mohawk_inverted'], ['None', 'spikey'],
+                        ),
             'paid_options': {},
         }, {
             'name': 'Facial Hair',
             'title': 'Pick a facial hair style',
             'options': (
-                'Mustache-0', 'Mustache-1', 'Mustache-2', 'Mustache-3', 'Beard-0', 'Beard-1', 'Beard-2',
-                'Beard-3',
+                'Mustache-0', 'Mustache-1', 'Mustache-2', 'Mustache-3', 'Beard-0', 'Beard-1', 'Beard-2', 'Beard-3',
             ),
             'paid_options': {},
         }, {
@@ -150,6 +148,7 @@ def get_avatar_context():
                 ['Masks-guy-fawkes'], ['Masks-jack-o-lantern-lighted'], ['Masks-wolverine'], ['Masks-captain'],
                 ['Extras-Parrot'], ['Extras-wonderwoman'], ['Extras-santa'], ['Extras-reindeer'],
                 ['Masks-gitcoinbot'], ['Masks-batman'], ['Masks-eye-patch'], ['Masks-flash'],
+                ['Masks-deadpool'],
             ),
             'paid_options': {
                 'Extras-Parrot': 0.01,
@@ -159,16 +158,16 @@ def get_avatar_context():
             'name': 'Background',
             'title': 'Pick a background color',
             'options': (
-                '25E899', '9AB730', '00A55E', '3FCDFF', '3E00FF', '8E2ABE', 'D0021B', 'F9006C', 'FFCE08',
-                'F8E71C', '15003E', 'FFFFFF',
+                '25E899', '9AB730', '00A55E', '3FCDFF', '3E00FF', '8E2ABE', 'D0021B', 'F9006C', 'FFCE08', 'F8E71C',
+                '15003E', 'FFFFFF',
             ),
             'paid_options': {},
         }, {
             'name': 'Wallpaper',
             'title': 'Pick some swag for your back',
             'options': (
-                'anchors', 'circuit', 'jigsaw', 'lines', 'gears', 'clouds', 'signal', 'polka_dots',
-                'polka_dots_black', 'squares', 'shapes', 'sunburst', 'sunburst_pastel', 'rainbow',
+                'anchors', 'circuit', 'jigsaw', 'lines', 'gears', 'clouds', 'signal', 'polka_dots', 'polka_dots_black',
+                'squares', 'shapes', 'sunburst', 'sunburst_pastel', 'rainbow',
             ),
             'paid_options': {
                 'sunburst_pastel': 0.01,
