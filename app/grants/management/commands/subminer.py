@@ -103,7 +103,7 @@ class Command(BaseCommand):
 
         for grant in grants:
             subs = grant.subscriptions.filter(active=True, next_contribution_date__lt=timezone.now())
-            print(f" - {grant.pk} has {subs.count()} subs")
+            print(f" - {grant.pk} has {subs.count()} subs ready for execution")
 
             for subscription in subs:
                 process_subscription(subscription, live)

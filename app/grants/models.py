@@ -469,7 +469,7 @@ class Subscription(SuperModel):
         """Create a contribution object."""
         from marketing.mails import successful_contribution
         self.last_contribution_date = timezone.now()
-        self.next_contribution_date = timezone.now() + timezone.timedelta(seconds=self.real_period_seconds)
+        self.next_contribution_date = timezone.now() + timezone.timedelta(seconds=int(self.real_period_seconds))
         self.save()
         # TODO: add gasPrice and nonce
         contribution_kwargs = {
@@ -478,7 +478,7 @@ class Subscription(SuperModel):
         }
         contribution = Contribution.objects.create(**contribution_kwargs)
         grant = self.grant
-        grant.amount_received = (grant.amount_received + convert_amount(self.amount_per_period, self.token_symbol, "USDT", timezone.now()))
+        grant.amount_received = (int(grant.amount_received) + int(convert_amount(self.amount_per_period, self.token_symbol, "USDT")))
         grant.save()
         successful_contribution(self.grant, self)
         return contribution
