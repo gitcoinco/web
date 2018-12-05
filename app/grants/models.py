@@ -399,7 +399,7 @@ class Subscription(SuperModel):
         web3 = get_web3(self.grant.network)
         return {
             'from': settings.GRANTS_OWNER_ACCOUNT,
-            'nonce': web3.eth.getTransactionCount( settings.GRANTS_OWNER_ACCOUNT),
+            'nonce': web3.eth.getTransactionCount(settings.GRANTS_OWNER_ACCOUNT),
             'value': 0,
             'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(minutes_to_confirm_within) * 10**9),
             'gas': 204066,
@@ -469,7 +469,6 @@ class Subscription(SuperModel):
             args['nonce'],
             ).call()
 
-
     def successful_contribution(self, tx_id):
         """Create a contribution object."""
         from marketing.mails import successful_contribution
@@ -483,7 +482,11 @@ class Subscription(SuperModel):
         }
         contribution = Contribution.objects.create(**contribution_kwargs)
         grant = self.grant
-        grant.amount_received = (int(grant.amount_received) + int(convert_amount(self.amount_per_period, self.token_symbol, "USDT")))
+        grant.amount_received = (
+            int(grant.amount_received) + int(convert_amount(self.amount_per_period,
+            self.token_symbol,
+            "USDT"))
+        )
         grant.save()
         successful_contribution(self.grant, self)
         return contribution
