@@ -326,7 +326,7 @@ class Subscription(SuperModel):
 
     def __str__(self):
         """Return the string representation of a Subscription."""
-        return f"id: {self.pk}, active: {self.active}, subscription_hash: {self.subscription_hash}"
+        return f"id: {self.pk} / {self.grant.title} => {self.amount_goal} {self.token_symbol} / active: {self.active}"
 
     def get_nonce(self, address):
         return self.grant.contract.functions.extraNonce(address).call() + 1
@@ -493,10 +493,6 @@ class Subscription(SuperModel):
         grant.save()
         successful_contribution(self.grant, self)
         return contribution
-
-    def __str__(self):
-        """Return the string representation of this object."""
-        return f" {self.pk} / {self.grant.title} => {self.amount_goal} {self.token_symbol}"
 
 
 class ContributionQuerySet(models.QuerySet):
