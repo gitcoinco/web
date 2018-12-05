@@ -599,7 +599,7 @@ Check out a few of the new kudos launched this week:
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Gitcoin is hiring for a Principal Engineer. Know a superstar Python/Django engineer? <a href="https://consensys.net/open-roles/1333457/">Send him or her our way!</a> 
+            Gitcoin is hiring for a Principal Engineer. Know a superstar Python/Django engineer? <a href="https://consensys.net/open-roles/1333457/">Send him or her our way!</a>
         </li>
         <li>
             Gitcoin Livestream is back this week! Hear more about Gnosis Safe + another project to be named. Join us <a href="https://gitcoin.co/livestream">Friday at 5PM ET</a>!
@@ -609,6 +609,7 @@ Check out a few of the new kudos launched this week:
 <p>
 Thanks for reading! Back to BUIDLing,
 </p>
+
 '''
     highlights = [{
         'who': 'bhargavasomu',
