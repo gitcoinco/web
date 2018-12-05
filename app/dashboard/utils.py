@@ -388,6 +388,8 @@ def has_tx_mined(txid, network):
     web3 = get_web3(network)
     try:
         transaction = web3.eth.getTransaction(txid)
+        if not transaction:
+            return False
         return transaction.blockHash != HexBytes('0x0000000000000000000000000000000000000000000000000000000000000000')
     except Exception:
         return False
@@ -696,3 +698,32 @@ def get_tx_status(txid, network, created_on):
     except:
         pass
     return status, timestamp
+
+def get_nonce(network, address):
+    # this function solves the problem of 2 pending tx's writing over each other
+    # by checking both web3 RPC *and* the local DB for the nonce
+    # and then using the higher of the two as the tx nonce
+    from perftools.models import JSONStore
+    from dashboard.utils import get_web3
+    w3 = get_web3(network)
+
+    # web3 RPC node: nonce
+    nonce_from_web3 = w3.eth.getTransactionCount(address)
+
+    # db storage
+    key = f"nonce_{network}_{address}"
+    view = 'get_nonce'
+    nonce_from_db = 0
+    try:
+        nonce_from_db = JSONStore.objects.get(key=key, view=view).data[0]
+        nonce_from_db += 1 # increment by 1 bc we need to be 1 higher than last txid
+    except:
+        pass
+
+    new_nonce = max(nonce_from_db, nonce_from_web3)
+
+    # update JSONStore
+    JSONStore.objects.filter(key=key, view=view).all().delete()
+    JSONStore.objects.create(key=key, view=view, data=[new_nonce])
+
+    return new_nonce
