@@ -497,6 +497,7 @@ body {
   border: none; 
   background-color: transparent;
   display: none;
+  font-size: 1.7em;
 }
 
 .cta-button:hover {
@@ -536,7 +537,7 @@ body {
   }
 
   .split-cta > div:last-child {
-    max-width: 100% !important;
+    max-width: 465px !important;
     float: none;
     text-align: center !important;
   }
@@ -796,9 +797,6 @@ body {
 }
 
 @media (min-width: 768px) and (max-width: 991.98px) {
-  .banner--green a {
-    display: inherit;
-  }
 
   .banner--green a:first-child {
     margin-bottom: 0.5rem;
