@@ -24,7 +24,7 @@ def forwards_func(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0124_blockeduser'),
+        ('dashboard', '0125_blockeduser'),
     ]
 
     operations = [migrations.RunPython(forwards_func, ), ]
