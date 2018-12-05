@@ -94,6 +94,8 @@ $(document).ready(function() {
                 web3.utils.toTwosComplement(nonce) // nonce
               ];
 
+              console.log('parts', parts);
+
               deployedSubscription.methods.getSubscriptionHash(...parts).call(function(err, subscriptionHash) {
 
                 $('#subscription_hash').val(subscriptionHash);

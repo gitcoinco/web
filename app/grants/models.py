@@ -361,30 +361,12 @@ class Subscription(SuperModel):
         """Checks the return value of the previous function. Returns true if the previous function."""
         return self.grant.contract.functions.checkSuccess().call()
 
-    def do_cancel_subscription_via_web3(self, minutes_to_confirm_within = 5):
-        """.Cancels the subscripion on the blockchain"""
-        from dashboard.utils import get_web3
-        args = self.get_subscription_hash_arguments()
-        tx = self.grant.contract.functions.cancelSubscription(
-                args['from'],
-                args['to'],
-                args['tokenAddress'],
-                args['tokenAmount'],
-                args['periodSeconds'],
-                args['gasPrice'],
-                args['nonce'],
-                args['signature'],
-            ).buildTransaction(
-                self.helper_tx_dict(minutes_to_confirm_within)
-            )
-        web3 = get_web3(self.grant.network)
-        signed_txn = web3.eth.account.signTransaction(tx, private_key=settings.GRANTS_PRIVATE_KEY)
-        return web3.eth.sendRawTransaction(signed_txn.rawTransaction)
-
     def do_execute_subscription_via_web3(self, minutes_to_confirm_within = 5):
         """.Executes the subscription on the blockchain"""
         from dashboard.utils import get_web3
         args = self.get_subscription_hash_arguments()
+        print('args', args)
+        print('params', self.helper_tx_dict(minutes_to_confirm_within))
         tx = self.grant.contract.functions.executeSubscription(
             args['from'],
             args['to'],
@@ -397,19 +379,24 @@ class Subscription(SuperModel):
         ).buildTransaction(
             self.helper_tx_dict(minutes_to_confirm_within)
         )
+        print('self.grant.network', self.grant.network)
         web3 = get_web3(self.grant.network)
+        print('tx', tx)
         signed_txn = web3.eth.account.signTransaction(tx, private_key=settings.GRANTS_PRIVATE_KEY)
-        return web3.eth.sendRawTransaction(signed_txn.rawTransaction)
+        return web3.toHex(web3.eth.sendRawTransaction(signed_txn.rawTransaction))
 
 
 
     def helper_tx_dict(self, minutes_to_confirm_within=5):
         """returns a dict like this: {'to': '0xd3cda913deb6f67967b99d67acdfa1712c293601', 'from': web3.eth.coinbase, 'value': 12345}"""
         from dashboard.utils import get_nonce
+        from dashboard.utils import get_web3
+        web3 = get_web3(self.grant.network)
         return {
             'from': settings.GRANTS_OWNER_ACCOUNT,
-            'nonce': get_nonce(self.grant.network, settings.GRANTS_OWNER_ACCOUNT),
+            'nonce': web3.eth.getTransactionCount( settings.GRANTS_OWNER_ACCOUNT),
             'value': 0,
+            'gas': 300000,
             'gasPrice': recommend_min_gas_price_to_confirm_in_time(minutes_to_confirm_within) * 10**9,
         }
 
@@ -478,16 +465,15 @@ class Subscription(SuperModel):
             ).call()
 
 
-    def successful_contribution(self, kwargs):
+    def successful_contribution(self, tx_id):
         """Create a contribution object."""
         from marketing.mails import successful_contribution
         self.last_contribution_date = timezone.now()
         self.next_contribution_date = timezone.now() + timezone.timedelta(seconds=self.real_period_seconds)
         self.save()
+        # TODO: add gasPrice and nonce
         contribution_kwargs = {
-            'tx_id': kwargs.tx_id,
-            'gas_price': kwargs.gas_price,
-            'nonce': kwargs.nonce,
+            'tx_id': tx_id,
             'subscription': self
         }
         contribution = Contribution.objects.create(**contribution_kwargs)

@@ -18,22 +18,18 @@
 
 '''
 import logging
+import time
 
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from dashboard.utils import has_tx_mined
+from dashboard.utils import has_tx_mined, get_tx_status
 from grants.models import Grant
 from marketing.mails import warn_subscription_failed
 
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 logging.getLogger("web3").setLevel(logging.WARNING)
 logging.getLogger("marketing.mails").setLevel(logging.WARNING)
-
-
-def has_mined(txid, subscription):
-    mined, when = has_tx_mined(txid, subscription.grant.network)
-    return mined
 
 
 def process_subscription(subscription, live):
@@ -65,19 +61,20 @@ def process_subscription(subscription, live):
                 if live:
                     txid = subscription.do_execute_subscription_via_web3()
                     print(f"   -- *waiting for mine* (txid {txid}) ")
-                    while not has_mined(txid, subscription):
+                    while not has_tx_mined(txid, subscription.grant.network):
                         time.sleep(10)
+                        print("   -- *waiting 10 seconds*")
                     status, timestamp = get_tx_status(txid, subscription.grant.network, timezone.now())
             except Exception as e:
                 error = str(e)
 
-            print(f"   -- *mined* (status: {status} / {error}) ")
+            print(f"   -- *mined* (status: {status} / error: {error}) ")
             was_success = status == 'success'
             if live:
                 if not was_success:
                     warn_subscription_failed(subscription, txid, status, error)
                 else:
-                    subscription.successful_contribution()
+                    subscription.successful_contribution(txid)
                     subscription.save()
 
 
