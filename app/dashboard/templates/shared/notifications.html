@@ -20,12 +20,12 @@
   <a href="" class="notification__icon nav-link dropdown-toggle" id="notificationsDropdown" role="button"
   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     <i class="fas fa-bell fa-fw"></i>
-    <span class="notification__dot"></span>
+    <span id="notification-dot" class="notification__dot"></span>
   </a>
   <div class="dropdown-menu dropdown-menu-right animation slideDownIn notifications__box " aria-labelledby="notificationsDropdown">
     <div class="notifications__header">
       <div class="notifications__title">
-        {% trans 'Notifications' %} <span class="badge badge--greenlight">8</span>
+        {% trans 'Notifications' %} <span id="total-notifications" class="badge badge--greenlight">8</span>
       </div> <a href="">{% trans 'Mark All as Read' %}</a>
     </div>
     <ul class="notifications__list">

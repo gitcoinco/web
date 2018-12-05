@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator
 from inbox.models import Notification
+from django.utils import timezone
 
 from django.http import Http404, JsonResponse
 
@@ -36,24 +37,39 @@ def inbox(request):
     paginator = Paginator(_notifications, limit)
     notifications = paginator.get_page(page)
 
-    params = [{
-        'is_read': 'false',
-        'created_on': '2018-11-15T19:59:08.081864Z',
-        'to_user_id': '7',
-        'from_user_id': '1',
-        'CTA_URL': 'http://localhost:8000/issue/owocki/pytrader/142/1555',
-        'CTA_Text': 'You haven’t responded to #2186: [Design] Show Remarketed Issues… in 3 days. Please submit a WIP…',
-        'message_html': 'You haven’t responded to <b>#2186: [Design] Show Remarketed Issues… in 3 days. Please submit a WIP…</b>',
-    },
-    {
-        'is_read': 'false',
-        'created_on': '2018-11-15T19:59:08.081864Z',
-        'to_user_id': '7',
-        'from_user_id': '1',
-        'CTA_URL': 'http://localhost:8000/issue/owocki/pytrader/142/1555',
-        'CTA_Text': 'You haven’t responded to #2186: [Design] Show Remarketed Issues… in 3 days. Please submit a WIP…',
-        'message_html': 'You haven’t responded to <b>#2186: [Design] Show Remarketed Issues… in 3 days. Please submit a WIP…</b>',
-    },
+    params = [{'id': 1,
+                'modified_on': '2018-12-04T20:32:48.524Z',
+                'created_on': '2018-12-04T20:32:48.524Z',
+                'to_user_id': 1,
+                'from_user_id': 3,
+                'username': 'octavioamu',
+                'CTA_URL': 'http://localhost:8000',
+                'CTA_Text': 'You haven’t responded to #2186: [Design] Show Remarketed Issues… in 3 days. Please submit a WIP…',
+                'message_html': 'You haven’t responded to <b>#2186: [Design] Show Remarketed Issues… in 3 days. Please submit a WIP…</b>',
+                'is_read': False
+            },
+            {'id': 2,
+                'modified_on':'2018-12-04T04:39:36.662Z',
+                'created_on': '2018-12-04T04:39:36.662Z',
+                'to_user_id': 1,
+                'from_user_id': 3,
+                'username': 'owocki',
+                'CTA_URL': 'http://localhost:8000',
+                'CTA_Text': 'You haven’t responded to #2186: [Design] Show Remarketed Issues… in 3 days. Please submit a WIP…',
+                'message_html': 'You haven’t responded to <b>#2186: [Design] Show Remarketed Issues… in 3 days. Please submit a WIP…</b>',
+                'is_read': False
+            },
+            {'id': 3,
+                'modified_on': '2018-12-04T11:39:36.662Z',
+                'created_on': '2018-12-04T11:39:36.662Z',
+                'to_user_id': 1,
+                'from_user_id': 3,
+                'username': 'octavioamu',
+                'CTA_URL': 'http://localhost:8000',
+                'CTA_Text': 'You haven’t responded to #2186: [Design] Show Remarketed Issues… in 3 days. Please submit a WIP…',
+                'message_html': 'You haven’t responded to <b>#2186: [Design] Show Remarketed Issues… in 3 days. Please submit a WIP…</b>',
+                'is_read': False
+            },
 
     ]
     return JsonResponse(params, status=200, safe=False)

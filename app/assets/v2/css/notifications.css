@@ -19,15 +19,19 @@
 
 .notification__dot {
   background: rgba(var(--color-notification), 1);
-  display: block;
+  display: none;
   width: 9px;
   height: 9px;
   border-radius: 50%;
   box-shadow: 0 0 0 rgba(var(--color-notification), .4);
-  animation: BadgePulse 1.8s infinite;
   position: absolute;
   top: 0.5em;
   right: 0.9em;
+}
+
+.notification__dot-active {
+  display: block;
+  animation: BadgePulse 1.8s infinite;
 }
 
 .notification__dot-small {
@@ -116,6 +120,22 @@
 .notifications__time {
   flex: 1 0 68px;
   text-align: right;
+}
+
+.notifications_content {
+  display: flex;
+  align-items: center;
+}
+
+.notifications_content p {
+  margin-bottom: 0;
+}
+
+.notifications__avatar {
+  border-radius:50px;
+  width: 28px;
+  height: 28px;
+  margin-right: 1em;
 }
 
 .notifications__button-all {
