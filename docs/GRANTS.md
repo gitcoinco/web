@@ -2,7 +2,7 @@
 
 grants is built upon [EIP 1337](https://1337alliance.org).
 
-specifically, it is built upon [this smart contract](https://github.com/gitcoinco/grants1337/blob/master/Subscription/Subscription.sol).
+specifically, it is built upon [this smart contract](https://github.com/gitcoinco/grants1337/blob/master/contracts/Subscription.sol).
 
 ## How Grants works
 
