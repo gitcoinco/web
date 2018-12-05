@@ -270,7 +270,7 @@ var callbacks = {
       const tokenValue = normalizeAmount(1.0 * ratio, dollarDecimals);
       const timestamp = new Date(obj['timestamp']);
       const timePeg = timeDifference(dateNow, timestamp > dateNow ? dateNow : timestamp, false, 60 * 60);
-      const tooltip = '$' + normalizeAmount(usd, dollarDecimals) + ' ' + tokenName + ' in crowdfunding';
+      const tooltip = `$ ${normalizeAmount(usd, dollarDecimals)} USD in crowdfunding`;
 
       leftHtml += '<p class="m-0">+ ' + funding + ' ' + tokenName + '</p>';
       rightHtml += '<p class="m-0">@ $' + tokenValue + ' ' + tokenName + ' as of ' + timePeg + '</p>';
