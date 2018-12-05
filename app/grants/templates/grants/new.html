@@ -41,86 +41,90 @@
     {% include 'grants/shared/alpha.html' %}
     {% include 'grants/shared/waiting_state.html' %}
 
-    <div class="container new-grant" id="new-grant">
-      <div class="row justify-content-md-center my-5">
-        <div id="robot_error" class="hidden">
-          <img src="{% static "v2/images/prime.png" %}">
-        </div>
-        <div class="col-sm-12 col-md-10 col-lg-7" id="grants_form">
-          <div class="form__intro text-center">
-            <h1>{% trans "Create a Grant" %}</h1>
-            <p>
-              {% trans "We're excited to learn about your project." %}
-              <br>
-              {% trans "Complete the form below to get funding for your project." %}
-            </p>
+    <div class="grant-container">
+      <div class="container new-grant" id="new-grant">
+        <div class="row justify-content-md-center pb-5">
+          <div id="robot_error" class="hidden mt-5">
+            <img src="{% static "v2/images/prime.png" %}">
           </div>
-          <form method="POST" id="create-grant" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="form__group-horizontal">
-              <label class="form__label form__label-lg" for="input_title">{% trans "Title of Project" %}</label>
-              <input class="form__input form__input-lg " type="text" id="input_title" name="input_title" required />
+          <div class="col-sm-12 col-md-10 col-lg-8 mt-5" id="grants_form">
+            <div class="form__intro my-4 text-center">
+              <h1 class="text-center font-title-xl">{% trans "Create a Grant" %}</h1>
+              <p class="mb-1">
+                {% trans "We're excited to learn about your project." %}
+                <br>
+                {% trans "Complete the form below to get funding for your project." %}
+              </p>
             </div>
-
-            <div class="form__group-horizontal">
-              <label class="form__label form__label-lg" for="input-description">{% trans "Description of Project" %}</label>
-              <textarea rows=8 class="form__input form__input-lg " maxlength=5000 type="text" id="input-description" name="description" required></textarea>
-            </div>
-
-            <div class="form__group-horizontal">
-              <label class="form__label form__label-lg" for="input-url">{% trans "Project URL" %}</label>
-              <input type="url" class="form__input form__input-lg " id="input-url" name="reference_url" required/>
-            </div>
-
-            <div class="form__group-horizontal">
-              <label class="form__label form__label-lg" for="input-team_members">{% trans "Team members" %}</label>
-              <div class="form__select2">
-                <select id="input-team_members" class="form__input form__input-lg  team_members" name="team_members[]" multiple="multiple">
-                </select>
-              </div>
-            </div>
-
-            <div class="form__group-horizontal">
-              <div class="row">
-                <div class="col-12 col-md-6">
-                  <label class="form__label form__label-lg">{% trans "Monthly amount sought in DAI" %}</label>
-                  <input type="number" name="amount_goal" class="form__input form__input-lg" min="1" required />
+            <div class="primary-form py-5">
+              <form method="POST" id="create-grant" enctype="multipart/form-data" class="px-5">
+                {% csrf_token %}
+                <div class="form__group-horizontal pb-3">
+                  <label class="font-body" for="input_title">{% trans "Title of Project" %}</label>
+                  <input class="form__input form__input-lg " type="text" id="input_title" name="input_title" required />
                 </div>
-                <div class="col-12 col-md-6">
-                  <label class="form__label form__label-lg">{% trans "Required Token For Subscription" %}</label>
+
+                <div class="form__group-horizontal pb-3">
+                  <label class="font-body" for="input-description">{% trans "Description of Project" %}</label>
+                  <textarea rows=8 class="form__input form__input-lg " maxlength=5000 type="text" id="input-description" name="description" required></textarea>
+                </div>
+
+                <div class="form__group-horizontal pb-3">
+                  <label class="font-body" for="input-url">{% trans "Project URL" %}</label>
+                  <input type="url" class="form__input form__input-lg " id="input-url" name="reference_url" required/>
+                </div>
+
+                <div class="form__group-horizontal pb-3">
+                  <label class="font-body" for="input-team_members">{% trans "Team members" %}</label>
                   <div class="form__select2">
-                    <select class='js-select2' name='denomination' id='js-token'></select>
+                    <select id="input-team_members" class="form__input form__input-lg  team_members" name="team_members[]" multiple="multiple">
+                    </select>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            <div class="form__group-horizontal">
-              <label class="form__label form__label-lg" for="input-admin_address">{% trans "Recipient Wallet Address" %}</label>
-              <input type="text" class="form__input form__input-lg " id="input-admin_address" value="" name="admin_address" required/>
-            </div>
+                <div class="form__group-horizontal pb-3">
+                  <div class="row">
+                    <div class="col-12 col-md-6">
+                      <label class="font-body">{% trans "Monthly amount sought in DAI" %}</label>
+                      <input type="number" name="amount_goal" class="form__input form__input-lg" min="1" required />
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label class="font-body">{% trans "Required Token For Subscription" %}</label>
+                      <div class="form__select2">
+                        <select class='js-select2' name='denomination' id='js-token'></select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-            <div class="form__group-horizontal">
-              <label class="form__label form__label-lg">{% trans "Project Logo" %}</label>
-              <div class="form__drop" id="js-drop">
-                <input id="img-project" type="file" name="input_image" accept="image/*">
-                <span>{% trans "Drag & Drop or Browse" %}</span>
-                <img id="preview"/>
-              </div>
-            </div>
+                <div class="form__group-horizontal pb-3">
+                  <label class="font-body" for="input-admin_address">{% trans "Recipient Wallet Address" %}</label>
+                  <input type="text" class="form__input form__input-lg " id="input-admin_address" value="" name="admin_address" required/>
+                </div>
 
-            <div class="form__footer text-center">
-              <button class="button button--primary button--full" id="new_button">{% trans "Create Grant" %}</button>
-            </div>
+                <div class="form__group-horizontal pb-3">
+                  <label class="font-body">{% trans "Project Logo" %}</label>
+                  <div class="form__drop" id="js-drop">
+                    <input id="img-project" type="file" name="input_image" accept="image/*">
+                    <span>{% trans "Drag & Drop or Browse" %}</span>
+                    <img id="preview"/>
+                  </div>
+                </div>
 
-            <div>
-              <input type="hidden" id="transaction_hash" name="transaction_hash" />
-              <input type="hidden" id="contract_address" name="contract_address" />
-              <input type="hidden" id="contract_version" name="contract_version" value="0">
-              <input type="hidden" id="token_symbol" name="token_symbol" value="">
-              <input type="hidden" id="network" name="network">
+                <div class="form__footer text-center">
+                  <button class="button button--primary button--full" id="new_button">{% trans "Create Grant" %}</button>
+                </div>
+
+                <div>
+                  <input type="hidden" id="transaction_hash" name="transaction_hash" />
+                  <input type="hidden" id="contract_address" name="contract_address" />
+                  <input type="hidden" id="contract_version" name="contract_version" value="0">
+                  <input type="hidden" id="token_symbol" name="token_symbol" value="">
+                  <input type="hidden" id="network" name="network">
+                </div>
+              </form>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>
