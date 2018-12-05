@@ -3,23 +3,7 @@ from django.core.paginator import Paginator
 from inbox.models import Notification
 from django.utils import timezone
 
-from django.http import Http404, JsonResponse
-
-# Create your views here.
-
-# def inbox(request):
-#     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
-
-#     try:
-#         grant = Notification.objects.prefetch_related('subscriptions', 'milestones').get(pk=grant_id, slug=grant_slug)
-#         notification = Notification.get(notification=notification)
-#         return notification
-#     except Exception as e:
-#         print(e)
-#         raise Http404
-#     return JsonResponse("Hello, world. You're at the polls index.")
-
-
+from django.http import Http404, JsonResponse, HttpResponseForbidden
 
 def inbox(request):
     """Handle grants explorer."""
@@ -27,6 +11,9 @@ def inbox(request):
     limit = request.GET.get('limit', 25)
     page = request.GET.get('page', 1)
     sort = request.GET.get('sort_option', '-created_on')
+
+    if profile == None:
+        return HttpResponseForbidden('Not Allowed')
 
     _notifications = Notification.objects.filter(to_user_id=profile.id).order_by(sort)
 
