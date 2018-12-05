@@ -64,7 +64,7 @@ def process_subscription(subscription, live):
                     while not has_tx_mined(txid, subscription.grant.network):
                         time.sleep(10)
                         print("   -- *waiting 10 seconds*")
-                    status, timestamp = get_tx_status(txid, subscription.grant.network, timezone.now())
+                    status, __ = get_tx_status(txid, subscription.grant.network, timezone.now())
             except Exception as e:
                 error = str(e)
 

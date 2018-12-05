@@ -399,7 +399,7 @@ class Subscription(SuperModel):
         web3 = get_web3(self.grant.network)
         return {
             'from': settings.GRANTS_OWNER_ACCOUNT,
-            'nonce': web3.eth.getTransactionCount(settings.GRANTS_OWNER_ACCOUNT),
+            'nonce': get_nonce(self.grant.network, settings.GRANTS_OWNER_ACCOUNT),
             'value': 0,
             'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(minutes_to_confirm_within) * 10**9),
             'gas': 204066,
@@ -475,7 +475,6 @@ class Subscription(SuperModel):
         self.last_contribution_date = timezone.now()
         self.next_contribution_date = timezone.now() + timezone.timedelta(seconds=int(self.real_period_seconds))
         self.save()
-        # TODO: add gasPrice and nonce
         contribution_kwargs = {
             'tx_id': tx_id,
             'subscription': self
@@ -505,19 +504,6 @@ class Contribution(SuperModel):
         max_length=255,
         default='0x0',
         help_text=_('The transaction ID of the Contribution.'),
-    )
-
-    gas_price = models.DecimalField(
-        default=0,
-        decimal_places=4,
-        max_digits=50,
-        help_text=_('The amount of token used to incentivize subminers.'),
-    )
-    nonce = models.DecimalField(
-        default=0,
-        decimal_places=0,
-        max_digits=50,
-        help_text=_('The of the subscription metaTx.'),
     )
     subscription = models.ForeignKey(
         'grants.Subscription',

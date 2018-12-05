@@ -709,7 +709,6 @@ def get_nonce(network, address):
 
     # web3 RPC node: nonce
     nonce_from_web3 = w3.eth.getTransactionCount(address)
-    print('nonce_from_web3', nonce_from_web3)
 
     # db storage
     key = f"nonce_{network}_{address}"
@@ -718,7 +717,6 @@ def get_nonce(network, address):
     try:
         nonce_from_db = JSONStore.objects.get(key=key, view=view).data[0]
         nonce_from_db += 1 # increment by 1 bc we need to be 1 higher than last txid
-        print('nonce_from_db', nonce_from_db)
     except:
         pass
 
