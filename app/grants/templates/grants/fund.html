@@ -77,6 +77,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     </div>
                     <div class="col-4 font-body">
                       <select name="frequency_unit" id="frequency_unit" class="js-select2" style="width: 100%">
+                        {% if user.is_staff %}
+                          <option value="minutes" selected="selected">{% trans "minutes" %}</option>
+                          <option value="hours" selected="selected">{% trans "hours" %}</option>
+                        {% endif %}
                         <option value="days" selected="selected">{% trans "days" %}</option>
                         <option value="months">{% trans "months" %}</option>
                       </select>
