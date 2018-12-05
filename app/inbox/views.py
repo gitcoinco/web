@@ -70,6 +70,18 @@ def inbox(request):
                 'message_html': 'You haven’t responded to <b>#2186: [Design] Show Remarketed Issues… in 3 days. Please submit a WIP…</b>',
                 'is_read': False
             },
+            {'id': 4,
+                'modified_on': '2018-12-04T11:39:36.662Z',
+                'created_on': '2018-12-04T11:39:36.662Z',
+                'to_user_id': 1,
+                'from_user_id': 3,
+                'username': 'octavioamu',
+                'CTA_URL': 'http://localhost:8000',
+                'CTA_Text': 'You haven’t responded to #2186: [Design] Show Remarketed Issues… in 3 days. Please submit a WIP…',
+                'message_html': 'You haven’t responded to <b>#2186: [Design] Show Remarketed Issues… in 3 days. Please submit a WIP…</b>',
+                'is_read': False
+            },
+
 
     ]
     return JsonResponse(params, status=200, safe=False)

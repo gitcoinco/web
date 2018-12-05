@@ -111,6 +111,8 @@
   align-items: center;
   border-bottom: 1px solid #D8D8D8;
   padding: 1em 0;
+  animation: animateElement linear .3s;
+  animation-iteration-count: 1;
 }
 
 .notifications__item-readed {
@@ -161,4 +163,14 @@
   }
 }
 
+@keyframes animateElement{
+  0% {
+    opacity: 0;
+    transform: translate(0px,-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0px,0px);
+  }
+}
 

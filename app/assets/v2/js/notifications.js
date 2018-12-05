@@ -1,4 +1,5 @@
 var notifications = []
+var newNotifications = []
 const isHidden = false
 const container = $('.notifications__list')
 
@@ -8,39 +9,36 @@ function requestNotifications() {
   $.when( getNotifications ).then(function(response) {
 
     // if (notifications.length) {
-    //   newNotifications = filterNewData(response);
+      // newNotifications = filterNewData(notifications);
+      // console.log(newNotifications)
     // } else {
       // }
     // newNotifications = response;
-    // console.log(newNotifications)
-    // var flag = compareJson(response, notifications)
-    // if (flag === false) {
 
 
 
       console.log('updating')
+      var loadTmp = true
+      console.log(response, notifications)
+      if (response.length !== notifications.length){
+        newNotifications = newData(response, notifications)
 
-      response.forEach(element => {
-        notifications.push(element)
-      });
-      // notifications.push(response);
-      // notifications = notifications.filter( function( elem, i, array ) {
-      //   console.log( elem, i, array )
-      //         return array.indexOf( elem ) === i;
-      //       } );
+        newNotifications.forEach(element => {
+          notifications.push(element)
+        });
 
-      // notifications = getDistinctArray(notifications)
+        console.log(newNotifications)
+        setDot(true, notifications)
+        templateSuggestions(newNotifications)
+      }
 
-      notifications = notifications.filter((notification, index, self) =>
-        index === self.findIndex((t) => (
-          t.id === notification.id
-        ))
-      )
-      console.log(notifications)
-      setDot(true, notifications)
-      templateSuggestions(notifications)
-    // }
-    // return response
+
+      // notifications = notifications.filter((notification, index, self) =>
+      //   index === self.findIndex((t) => (
+      //     t.id === notification.id
+      //   ))
+      // )
+
   })
 }
 
@@ -64,7 +62,8 @@ function templateSuggestions(notifications) {
     ).join(' ')}
   `;
 
-  container.prepend(tmp);
+  container.prepend(tmp)
+  $('.notifications__item');
 }
 
 function checkHidden() {
@@ -73,6 +72,15 @@ function checkHidden() {
   } else {
     return isHidden = false
   }
+}
+
+function newData(newObj, oldObj) {
+
+  return newObj.filter(function(obj) {
+    return !oldObj.some(function(obj2) {
+        return obj.id == obj2.id;
+    });
+  });
 }
 
 function filterNewData(data) {
@@ -137,9 +145,9 @@ moment.updateLocale('en', {
   }
 });
 
-function setDot(newData, notifications) {
-  $('#total-notifications').text(notifications.length)
-  if (newData) {
+function setDot(hasNewData, newNotifications) {
+  $('#total-notifications').text(newNotifications.length)
+  if (hasNewData) {
     $('#notification-dot').addClass('notification__dot-active')
   } else {
     $('#notification-dot').removeClass('notification__dot-active')
