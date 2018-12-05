@@ -14,12 +14,9 @@
 
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
-
 {% endcomment %}
 {% load i18n static %}
-
 {% block content %}
-
 <style>
   hr {
     width: 80%;
@@ -64,9 +61,7 @@
 </style>
 <img id="newSupporter" src="{% static "v2/images/new-supporter.png" %}" alt="{% trans "New Supporter" %}" title="{% trans "New Supporter." %}">
 <h1 style="text-transform: none;">{{ grant.title }}{% trans " has a new supporter!" %}</h1>
-
 <hr>
-
 <div class="supporter">
   <a href="{% url 'profile' subscription.contributor_profile.handle %}">
     <img src="{{ subscription.contributor_profile.avatar_url }}" width="50" height="50" />
@@ -76,17 +71,14 @@
     {{ subscription.contributor_profile.handle }}
   </a>
   <h5 style="text-transform: none;">
-     {% trans "has begun contributing" %}
+    {% trans "has begun contributing" %}
   </h5>
   <!-- #TODO - Revisit transaction retrieving objects. -->
   <h3 style="text-transform: none;">{{ subscription.amount_per_period }} {% trans "'token name' every" %} {{ subscription.period_seconds }} {% trans "seconds" %}</h3>
 </div>
-
 <hr>
-
 <br>
 <p>{% trans "You can see recent transactions" %}
   <a href="{% url 'grants:profile' %}">{% trans "here." %}</a>
 </p>
-
 {% endblock %}
