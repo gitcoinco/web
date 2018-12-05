@@ -5,6 +5,7 @@ This repository (repo) creates the Token Profile, which provides an avenue for u
 
 
 How to access the Token Profile in imToken 2.0?
+
 **Wallet(tab)** -> **Token(for example, ETH)** -> **Token Profile Button(right-top corner)**.
 
 ![Wallet Tab](tutorial/sample.png)
