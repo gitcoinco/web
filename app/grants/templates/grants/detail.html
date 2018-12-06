@@ -117,6 +117,7 @@
                     </button>
                     <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
                     <input type="hidden" id="contract_version" name="contract_version" value="{{ grant.contract_version }}">
+                    <input type="hidden" id="grant_cancel_tx_id" name="grant_cancel_tx_id">
                   </div>
                 {% elif user_subscription %}
                   <a href="{% url 'grants:subscription_cancel' grant.id grant.slug user_subscription.id %}">
