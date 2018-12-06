@@ -321,12 +321,18 @@ class Subscription(SuperModel):
         null=True,
         help_text=_('The Subscription contributor\'s Profile.'),
     )
-    last_contribution_date = models.DateField(help_text=_('The last contribution date'), default=timezone.datetime(1990, 1, 1))
-    next_contribution_date = models.DateField(help_text=_('The next contribution date'), default=timezone.datetime(1990, 1, 1))
+    last_contribution_date = models.DateField(
+        help_text=_('The last contribution date'),
+        default=timezone.datetime(1990, 1, 1),
+    )
+    next_contribution_date = models.DateField(
+        help_text=_('The next contribution date'),
+        default=timezone.datetime(1990, 1, 1),
+    )
 
     def __str__(self):
         """Return the string representation of a Subscription."""
-        return f"id: {self.pk} / {self.grant.title} => {self.amount_goal} {self.token_symbol} / active: {self.active}"
+        return f"id: {self.pk} / {self.grant.title} {self.token_symbol} / active: {self.active}"
 
     def get_nonce(self, address):
         return self.grant.contract.functions.extraNonce(address).call() + 1
@@ -346,10 +352,9 @@ class Subscription(SuperModel):
         address = self.contributor_address
         return timezone.now().timestamp() > self.get_next_valid_timestamp(address)
 
-
     def get_is_subscription_ready_from_web3(self):
         """Return true if subscription is ready to be processed according to web3."""
-        the_args = args = self.get_subscription_hash_arguments()
+        args = self.get_subscription_hash_arguments()
         return self.grant.contract.functions.isSubscriptionReady(
             args['from'],
             args['to'],
@@ -359,28 +364,28 @@ class Subscription(SuperModel):
             args['gasPrice'],
             args['nonce'],
             args['signature'],
-            ).call()
+        ).call()
 
     def get_check_success_web3(self):
-        """Checks the return value of the previous function. Returns true if the previous function."""
+        """Check the return value of the previous function. Returns true if the previous function."""
         return self.grant.contract.functions.checkSuccess().call()
 
     def _do_helper_via_web3(self, fn, minutes_to_confirm_within=5):
-        """Calls the specified function fn"""
+        """Call the specified function fn"""
         from dashboard.utils import get_web3
         args = self.get_subscription_hash_arguments()
         tx = fn(
-                args['from'],
-                args['to'],
-                args['tokenAddress'],
-                args['tokenAmount'],
-                args['periodSeconds'],
-                args['gasPrice'],
-                args['nonce'],
-                args['signature'],
-            ).buildTransaction(
-                self.helper_tx_dict(minutes_to_confirm_within)
-            )
+            args['from'],
+            args['to'],
+            args['tokenAddress'],
+            args['tokenAmount'],
+            args['periodSeconds'],
+            args['gasPrice'],
+            args['nonce'],
+            args['signature'],
+        ).buildTransaction(
+            self.helper_tx_dict(minutes_to_confirm_within)
+        )
         web3 = get_web3(self.grant.network)
         signed_txn = web3.eth.account.signTransaction(tx, private_key=settings.GRANTS_PRIVATE_KEY)
         return web3.eth.sendRawTransaction(signed_txn.rawTransaction).hex()
@@ -390,14 +395,14 @@ class Subscription(SuperModel):
         return self._do_helper_via_web3(
             self.grant.contract.functions.cancelSubscription,
             minutes_to_confirm_within=minutes_to_confirm_within
-            )
+        )
 
     def do_execute_subscription_via_web3(self, minutes_to_confirm_within=5):
         """.Executes the subscription on the blockchain"""
         return self._do_helper_via_web3(
             self.grant.contract.functions.executeSubscription,
             minutes_to_confirm_within=minutes_to_confirm_within
-            )
+        )
 
     def helper_tx_dict(self, minutes_to_confirm_within=5):
         """returns a dict like this: {'to': '0xd3cda913deb6f67967b99d67acdfa1712c293601', 'from': web3.eth.coinbase, 'value': 12345}"""
@@ -421,16 +426,21 @@ class Subscription(SuperModel):
         return self.grant.contract.functions.getSubscriptionSigner(_hash, self.contributor_signature).call()
 
     def get_subscription_hash_arguments(self):
-        """Returns the grants subscription hash (has to get it from web3)."""
-        """
-            from = Subscription.contributor_address,
-            to = Grant.admin_address,
-            tokenAddress = Subscription.token_address,
-            tokenAmount = Subscription.amount_per_period,
-            periodSeconds = real_period_seconds in the Subscription model
-            gasPrice = Subscription.gas_price,
-            nonce = The nonce is stored in the Contribution model. its created / managed by sync_geth
-            signature = Subscription.contributor_signature
+        """Get the grant subscription hash from web3.
+
+        Attributes:
+            from (str): Subscription.contributor_address
+            to (str): Grant.admin_address
+            tokenAddress (str): Subscription.token_address
+            tokenAmount (float): Subscription.amount_per_period
+            periodSeconds (int): real_period_seconds in the Subscription model
+            gasPrice (float): Subscription.gas_price
+            nonce (int): The nonce is stored in the Contribution model. its created / managed by sync_geth
+            signature (str): Subscription.contributor_signature
+
+        Returns:
+            str: The Subscription hash.
+
         """
         from dashboard.tokens import addr_to_token
 
@@ -446,7 +456,7 @@ class Subscription(SuperModel):
         nonce = subs.get_nonce(_from)
         signature = subs.contributor_signature
 
-        #TODO - figure out the number of decimals
+        # TODO - figure out the number of decimals
         token = addr_to_token(subs.token_address, subs.grant.network)
         decimals = token.get('decimals', 0)
 
@@ -454,7 +464,7 @@ class Subscription(SuperModel):
             'from': Web3.toChecksumAddress(_from),
             'to': Web3.toChecksumAddress(to),
             'tokenAddress': Web3.toChecksumAddress(tokenAddress),
-            'tokenAmount': int(tokenAmount  * 10**decimals),
+            'tokenAmount': int(tokenAmount * 10**decimals),
             'periodSeconds': int(periodSeconds),
             'gasPrice': int(gasPrice * 10**9),
             'nonce': int(nonce),
