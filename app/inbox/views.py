@@ -38,7 +38,9 @@ def inbox(request):
         a.save()
     params = []
     for i in all_notifs:
-        params.append(i.to_standard_dict())
+        new_notif = i.to_standard_dict()
+        new_notif['created_on'] = i.created_on
+        params.append(new_notif)
 
 
     '''params = [{'id': 1,
