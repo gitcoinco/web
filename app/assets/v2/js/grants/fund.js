@@ -63,8 +63,6 @@ $(document).ready(function() {
 
         let realApproval = Number(((data.approve * 10 ** decimals) + realGasPrice) * data.amount_per_period);
 
-        console.log('realApproval', realApproval);
-
         let realTokenAmount = Number(data.amount_per_period * 10 ** decimals);
 
         web3.eth.getAccounts(function(err, accounts) {
