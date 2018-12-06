@@ -402,7 +402,6 @@ class Subscription(SuperModel):
     def helper_tx_dict(self, minutes_to_confirm_within=5):
         """returns a dict like this: {'to': '0xd3cda913deb6f67967b99d67acdfa1712c293601', 'from': web3.eth.coinbase, 'value': 12345}"""
         from dashboard.utils import get_nonce
-        web3 = get_web3(self.grant.network)
         return {
             'from': settings.GRANTS_OWNER_ACCOUNT,
             'nonce': get_nonce(self.grant.network, settings.GRANTS_OWNER_ACCOUNT),
