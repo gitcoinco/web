@@ -92,7 +92,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   <label class="form__label">{% trans "Amount Per Period" %}</label>
                   <div class="row">
                     <div class="col-8">
-                      <input type="number" min=1 id="amount" name="amount_per_period" class="form__input" required />
+                      <input type="number" min="0.001" id="amount" name="amount_per_period" class="form__input" required />
                     </div>
                     <div class="col-4">
                       {% if grant_has_no_token %}
