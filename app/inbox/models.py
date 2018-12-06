@@ -13,7 +13,6 @@ class Notification(SuperModel):
     CTA_Text = models.CharField(max_length=255)
     message_html = models.CharField(max_length=255, null=True, help_text=_("Html message"))
     is_read = models.BooleanField(default=False)
-    notification_type = models.CharField(max_length=255)
 
     def __str__(self):
-        return self.notification_type
+        return str(self.id)

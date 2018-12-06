@@ -15,7 +15,7 @@ def inbox(request):
     if profile == None:
         return HttpResponseForbidden('Not Allowed')
 
-    _notifications = Notification.objects.filter(to_user_id=profile.id).order_by(sort)
+    '''_notifications = Notification.objects.filter(to_user_id=profile.id).order_by(sort)
 
     if request.method == 'POST':
         sort = request.POST.get('sort_option', '-created_on')
@@ -23,8 +23,25 @@ def inbox(request):
 
     paginator = Paginator(_notifications, limit)
     notifications = paginator.get_page(page)
+    '''
+    all_notifs = Notification.objects.all()
+    if len(all_notifs) == 0:
+        a = Notification(created_on=timezone.now(), to_user_id=1, from_user_id=3, username="owocki",
+            CTA_URL="http://localhost:8000",
+            CTA_Text="You haven’t responded to #2186: [Design] Show Remarketed Issues… in 3 days. Please submit a WIP…",
+            message_html="You haven’t responded to <b>#2186: [Design] Show Remarketed Issues… in 3 days. Please submit a WIP…</b>" )
+        a.save()
+        a = Notification(created_on=timezone.now(), to_user_id=1, from_user_id=3, username="octavioamu",
+            CTA_URL="http://localhost:8000",
+            CTA_Text="You haven’t responded to #2186: [Design] Show Remarketed Issues… in 3 days. Please submit a WIP…",
+            message_html="You haven’t responded to <b>#2186: [Design] Show Remarketed Issues… in 3 days. Please submit a WIP…</b>" )
+        a.save()
+    params = []
+    for i in all_notifs:
+        params.append(i.to_standard_dict())
 
-    params = [{'id': 1,
+
+    '''params = [{'id': 1,
                 'modified_on': '2018-12-04T20:32:48.524Z',
                 'created_on': '2018-12-04T20:32:48.524Z',
                 'to_user_id': 1,
@@ -70,5 +87,5 @@ def inbox(request):
             },
 
 
-    ]
+    ]'''
     return JsonResponse(params, status=200, safe=False)
