@@ -94,7 +94,7 @@ class Grant(SuperModel):
         default=1,
         decimal_places=4,
         max_digits=50,
-        help_text=_('The contribution goal amount for the Grant in DAI.'),
+        help_text=_('The monthly contribution goal amount for the Grant in DAI.'),
     )
     amount_received = models.DecimalField(
         default=0,
