@@ -108,7 +108,7 @@ $(document).ready(function() {
 
     // redeem kudos
 
-    var gas_price_wei = new web3.BigNumber(document.gas_price * 10 ** 9);
+    var gas_price_wei = new web3.BigNumber(parseInt(document.gas_price * 10 ** 9));
     // Not used
     var token_address = document.kudos_transfer['token_address'];
     var kudos_contract = web3.eth.contract(kudos_abi).at(kudos_address());
