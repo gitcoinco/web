@@ -35,8 +35,8 @@ $(document).ready(() => {
         web3.eth.getAccounts(function(err, accounts) {
 
           deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(0)).send({from: accounts[0], gasPrice: 4000000000})
-            .on('transactionHash', function(hash) {
-              console.log('hash', hash);
+            .on('transactionHash', function(transactionHash) {
+              $('#sub_end_approve_tx_id').val(transactionHash);
 
               enableWaitState('#grants_form');
 
@@ -60,7 +60,9 @@ $(document).ready(() => {
                 deployedSubscription.methods.cancelSubscription(
                   ...parts
                 ).send({from: accounts[0], gasPrice: 4000000000})
-                  .on('confirmation', function(confirmationNumber, receipt) {
+                  .on('transactionHash', function(transactionHash) {
+                    $('#sub_cancel_tx_id').val(transactionHash);
+                  }).on('confirmation', function(confirmationNumber, receipt) {
                     console.log('receipt', receipt);
                     form.submit();
                   });

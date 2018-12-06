@@ -94,7 +94,7 @@ class Grant(SuperModel):
         default=1,
         decimal_places=4,
         max_digits=50,
-        help_text=_('The contribution goal amount for the Grant in DAI.'),
+        help_text=_('The monthly contribution goal amount for the Grant in DAI.'),
     )
     amount_received = models.DecimalField(
         default=0,
@@ -117,16 +117,21 @@ class Grant(SuperModel):
         default='0x0',
         help_text=_('The contract address of the Grant.'),
     )
+    deploy_tx_id = models.CharField(
+        max_length=255,
+        default='0x0',
+        help_text=_('The transaction id for contract deployment.'),
+    )
+    grant_cancel_tx_id = models.CharField(
+        max_length=255,
+        default='0x0',
+        help_text=_('The transaction id for endContract.'),
+    )
     contract_version = models.DecimalField(
         default=0,
         decimal_places=0,
         max_digits=3,
         help_text=_('The contract version the Grant.'),
-    )
-    transaction_hash = models.CharField(
-        max_length=255,
-        default='0x0',
-        help_text=_('The transaction hash of the Grant.'),
     )
     metadata = JSONField(
         default=dict,
@@ -301,6 +306,21 @@ class Subscription(SuperModel):
         decimal_places=4,
         max_digits=50,
         help_text=_('The required gas price for the Subscription.'),
+    )
+    sub_new_approve_tx_id = models.CharField(
+        max_length=255,
+        default='0x0',
+        help_text=_('The transaction id for subscription approve().'),
+    )
+    sub_end_approve_tx_id = models.CharField(
+        max_length=255,
+        default='0x0',
+        help_text=_('The transaction id for subscription approve().'),
+    )
+    sub_cancel_tx_id = models.CharField(
+        max_length=255,
+        default='0x0',
+        help_text=_('The transaction id for cancelSubscription.'),
     )
     network = models.CharField(
         max_length=8,
@@ -491,7 +511,7 @@ class Subscription(SuperModel):
         self.next_contribution_date = timezone.now() + timezone.timedelta(seconds=self.real_period_seconds)
         self.save()
         contribution_kwargs = {
-            'tx_id': kwargs.tx_id,
+            'contribution_tx_id': kwargs.tx_id,
             'gas_price': kwargs.gas_price,
             'nonce': kwargs.nonce,
             'subscription': self
@@ -515,10 +535,10 @@ class ContributionQuerySet(models.QuerySet):
 class Contribution(SuperModel):
     """Define the structure of a subscription agreement."""
 
-    tx_id = models.CharField(
+    contribution_tx_id = models.CharField(
         max_length=255,
         default='0x0',
-        help_text=_('The transaction ID of the Contribution.'),
+        help_text=_('The transaction id for the contribution.'),
     )
 
     gas_price = models.DecimalField(

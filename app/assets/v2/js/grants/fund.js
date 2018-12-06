@@ -81,7 +81,7 @@ $(document).ready(function() {
             console.log('1', error);
             alert('Your approval transaction failed. Please try again.');
           }).on('transactionHash', function(transactionHash) {
-
+            $('#sub_new_approve_tx_id').val(transactionHash);
             document.issueURL = window.location.origin + $('#grant-link').val();
             enableWaitState('#grants_form');
             // Should add approval transactions to transaction history
@@ -100,11 +100,8 @@ $(document).ready(function() {
               ];
 
               deployedSubscription.methods.getSubscriptionHash(...parts).call(function(err, subscriptionHash) {
-
                 $('#subscription_hash').val(subscriptionHash);
-
                 web3.eth.personal.sign('' + subscriptionHash, accounts[0], function(err, signature) {
-
                   $('#signature').val(signature);
                 });
               });
