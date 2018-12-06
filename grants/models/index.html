@@ -2731,7 +2731,7 @@ object the first time, the query is executed.</p>
 <pre><code class="python">Subscription.get_check_success_web3(self)
 </code></pre>
 
-<p>Checks the return value of the previous function. Returns true if the previous function.
+<p>Check the return value of the previous function. Returns true if the previous function.
 <h3 id="grants.models.Subscription.do_cancel_subscription_via_web3">do_cancel_subscription_via_web3</h3></p>
 <pre><code class="python">Subscription.do_cancel_subscription_via_web3(self, minutes_to_confirm_within=5)
 </code></pre>
@@ -2761,8 +2761,20 @@ object the first time, the query is executed.</p>
 <pre><code class="python">Subscription.get_subscription_hash_arguments(self)
 </code></pre>
 
-<p>Returns the grants subscription hash (has to get it from web3).
-<h3 id="grants.models.Subscription.get_hash_from_web3">get_hash_from_web3</h3></p>
+<p>Get the grant subscription hash from web3.</p>
+<p>Attributes:
+    from (str): Subscription.contributor_address
+    to (str): Grant.admin_address
+    tokenAddress (str): Subscription.token_address
+    tokenAmount (float): Subscription.amount_per_period
+    periodSeconds (int): real_period_seconds in the Subscription model
+    gasPrice (float): Subscription.gas_price
+    nonce (int): The nonce is stored in the Contribution model. its created / managed by sync_geth
+    signature (str): Subscription.contributor_signature</p>
+<p>Returns:
+    str: The Subscription hash.</p>
+<h3 id="grants.models.Subscription.get_hash_from_web3">get_hash_from_web3</h3>
+
 <pre><code class="python">Subscription.get_hash_from_web3(self)
 </code></pre>
 
