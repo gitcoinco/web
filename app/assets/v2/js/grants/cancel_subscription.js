@@ -60,9 +60,9 @@ $(document).ready(() => {
                 deployedSubscription.methods.cancelSubscription(
                   ...parts
                 ).send({from: accounts[0], gasPrice: 4000000000})
-                .on('transactionHash', function(transactionHash) {
-                  $('#sub_cancel_tx_id').val(transactionHash);
-                }).on('confirmation', function(confirmationNumber, receipt) {
+                  .on('transactionHash', function(transactionHash) {
+                    $('#sub_cancel_tx_id').val(transactionHash);
+                  }).on('confirmation', function(confirmationNumber, receipt) {
                     console.log('receipt', receipt);
                     form.submit();
                   });
