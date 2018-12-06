@@ -29,7 +29,7 @@
   right: 0.9em;
 }
 
-.notification__dot-active {
+.notification__dot_active {
   display: block;
   animation: BadgePulse 1.8s infinite;
 }
@@ -40,6 +40,11 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
+  opacity: 0;
+}
+
+.notification__dot-small_active {
+  opacity: 1;
 }
 
 .badge--greenlight {
@@ -174,3 +179,11 @@
   }
 }
 
+
+.line-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}

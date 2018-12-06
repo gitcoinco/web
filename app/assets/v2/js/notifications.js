@@ -8,36 +8,17 @@ function requestNotifications() {
 
   $.when( getNotifications ).then(function(response) {
 
-    // if (notifications.length) {
-      // newNotifications = filterNewData(notifications);
-      // console.log(newNotifications)
-    // } else {
-      // }
-    // newNotifications = response;
+    var loadTmp = true
+    console.log(response, notifications)
+    if (response.length !== notifications.length) {
+      newNotifications = newData(response, notifications)
 
-
-
-      console.log('updating')
-      var loadTmp = true
-      console.log(response, notifications)
-      if (response.length !== notifications.length){
-        newNotifications = newData(response, notifications)
-
-        newNotifications.forEach(element => {
-          notifications.push(element)
-        });
-
-        console.log(newNotifications)
-        setDot(true, notifications)
-        templateSuggestions(newNotifications)
-      }
-
-
-      // notifications = notifications.filter((notification, index, self) =>
-      //   index === self.findIndex((t) => (
-      //     t.id === notification.id
-      //   ))
-      // )
+      newNotifications.forEach(element => {
+        notifications.push(element)
+      });
+      setDot(true, notifications)
+      templateSuggestions(newNotifications)
+    }
 
   })
 }
@@ -47,11 +28,11 @@ function templateSuggestions(notifications) {
     ${notifications.map((notify, index) => `
       <li class="notifications__item">
         <span class="notifications__item-readed">
-          <b class="notification__dot-small"></b>
+          <b class="notification__dot-small ${notify.is_read ? `` : `notification__dot-small_active` }"></b>
         </span>
         <a href="${notify.CTA_URL}" class="notifications_content">
           <img class="notifications__avatar" src="/dynamic/avatar/${notify.username}" width="24">
-          <p>
+          <p class="line-clamp">
           	${notify.message_html}
           </p>
         </a>
@@ -83,49 +64,6 @@ function newData(newObj, oldObj) {
   });
 }
 
-function filterNewData(data) {
-
-  return notifications.filter(
-    function(item) {
-
-      return data.indexOf(item) < 0;
-    }
-  );
-}
-
-
-
-function getDistinctArray(arr) {
-  var dups = {};
-  return arr.filter(function(el) {
-      var hash = el.valueOf();
-      var isDup = dups[hash];
-      dups[hash] = true;
-      return !isDup;
-  });
-}
-
-function compareJson(obj1, obj2) {
-  var flag = true
-  if (Object.keys(obj1).length==Object.keys(obj2).length){
-      for(key in obj1) {
-          if(obj1[key] == obj2[key]) {
-              continue;
-          }
-          else {
-              return flag=false;
-              break;
-          }
-      }
-  }
-  else {
-    return flag=false;
-  }
-}
-
-
-
-
 moment.updateLocale('en', {
   relativeTime : {
       future: "in %s",
@@ -148,9 +86,18 @@ moment.updateLocale('en', {
 function setDot(hasNewData, newNotifications) {
   $('#total-notifications').text(newNotifications.length)
   if (hasNewData) {
-    $('#notification-dot').addClass('notification__dot-active')
+    $('#notification-dot').addClass('notification__dot_active')
   } else {
-    $('#notification-dot').removeClass('notification__dot-active')
+    $('#notification-dot').removeClass('notification__dot_active')
+  }
+}
+
+function truncateString(str, num) {
+
+  if (str.length > num) {
+    return str.slice(0, num) + "...";}
+  else {
+    return str;
   }
 }
 
