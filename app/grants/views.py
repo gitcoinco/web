@@ -114,7 +114,7 @@ def grant_details(request, grant_id, grant_slug):
 
     if request.method == 'POST' and (profile == grant.admin_profile or request.user.is_staff):
         if 'contract_address' in request.POST:
-            grant.grant_cancel_tx_id = request.POST.get('grant_cancel_tx_id')
+            grant.grant_cancel_tx_id = request.POST.get('grant_cancel_tx_id', '')
             grant.active = False
             grant.save()
             grant_cancellation(grant, user_subscription)
