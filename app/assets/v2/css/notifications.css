@@ -152,19 +152,22 @@
 }
 
 @keyframes BadgePulse{
-  0%{
-    -moz-box-shadow:0 0 0 0 rgba(var(--color-notification), .4);
-    box-shadow:0 0 0 0 rgba(var(--color-notification), .4)
+  0% {
+    -moz-box-shadow:0 0 0 0 rgba(37, 232, 153, .4);
+    -webkit-box-shadow:0 0 0 0 rgba(37, 232, 153, .4);
+    box-shadow: 0 0 0 0 rgba(37, 232, 153, .4);
   }
 
-  70%{
-    -moz-box-shadow:0 0 0 10px rgba(var(--color-notification), 0);
-    box-shadow:0 0 0 10px rgba(var(--color-notification), 0)
+  70% {
+    -moz-box-shadow: 0 0 0 10px rgba(37, 232, 153, 0);
+    -webkit-box-shadow: 0 0 0 10px rgba(37, 232, 153, 0);
+    box-shadow: 0 0 0 10px rgba(37, 232, 153, 0);
   }
 
-  100%{
-    -moz-box-shadow:0 0 0 20px rgba(var(--color-notification), 0);
-    box-shadow:0 0 0 20px rgba(var(--color-notification), 0)
+  100% {
+    -moz-box-shadow: 0 0 0 20px rgba(37, 232, 153, 0);
+    -webkit-box-shadow: 0 0 0 20px rgba(37, 232, 153, 0);
+    box-shadow: 0 0 0 20px rgba(37, 232, 153, 0);
   }
 }
 
