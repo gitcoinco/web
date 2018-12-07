@@ -1,19 +1,15 @@
-from django.shortcuts import render
-from django.core.paginator import Paginator
 from inbox.models import Notification
-from django.utils import timezone
 from django.contrib.auth import get_user_model
 
 from django.http import JsonResponse, HttpResponseForbidden
 
 def inbox(request):
-    """Handle grants explorer."""
+    """Handle all notifications."""
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
     if profile is None:
         return HttpResponseForbidden('Not Allowed')
 
-    all_notifs = Notification.objects.filter(to_user_id=get_user_model().objects.get(username=profile).id).\
-        order_by('id')[::-1]
+    all_notifs = Notification.objects.filter(to_user_id=request.user.id).order_by('id')[::-1]
     params = []
     for i in all_notifs:
         new_notif = i.to_standard_dict()
@@ -22,4 +18,4 @@ def inbox(request):
 
         params.append(new_notif)
 
-    return JsonResponse(params, status=200, safe=False)
+    return JsonResponse(params, status=200)
