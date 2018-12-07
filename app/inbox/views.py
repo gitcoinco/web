@@ -12,7 +12,8 @@ def inbox(request):
     if profile is None:
         return HttpResponseForbidden('Not Allowed')
 
-    all_notifs = Notification.objects.filter(to_user_id=get_user_model().objects.get(username=profile).id).order_by('id')[::-1]
+    all_notifs = Notification.objects.filter(to_user_id=get_user_model().objects.get(username=profile).id).\
+        order_by('id')[::-1]
     params = []
     for i in all_notifs:
         new_notif = i.to_standard_dict()
