@@ -31,8 +31,9 @@ class GrantForm(forms.ModelForm):
 
         model = Grant
         fields = (
-            'title', 'description', 'reference_url', 'logo', 'logo_svg', 'admin_address', 'amount_goal',
-            'amount_received', 'token_address', 'contract_address', 'transaction_hash', 'metadata', 'network',
+            'title', 'description', 'reference_url', 'logo', 'logo_svg', 'amount_goal', 'admin_address',
+            'deploy_tx_id', 'cancel_tx_id',
+            'amount_received', 'token_address', 'contract_address', 'metadata', 'network',
             'required_gas_price', 'admin_profile', 'team_members'
         )
 

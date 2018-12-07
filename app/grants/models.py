@@ -94,7 +94,7 @@ class Grant(SuperModel):
         default=1,
         decimal_places=4,
         max_digits=50,
-        help_text=_('The contribution goal amount for the Grant in DAI.'),
+        help_text=_('The monthly contribution goal amount for the Grant in DAI.'),
     )
     amount_received = models.DecimalField(
         default=0,
@@ -117,16 +117,21 @@ class Grant(SuperModel):
         default='0x0',
         help_text=_('The contract address of the Grant.'),
     )
+    deploy_tx_id = models.CharField(
+        max_length=255,
+        default='0x0',
+        help_text=_('The transaction id for contract deployment.'),
+    )
+    cancel_tx_id = models.CharField(
+        max_length=255,
+        default='0x0',
+        help_text=_('The transaction id for endContract.'),
+    )
     contract_version = models.DecimalField(
         default=0,
         decimal_places=0,
         max_digits=3,
         help_text=_('The contract version the Grant.'),
-    )
-    transaction_hash = models.CharField(
-        max_length=255,
-        default='0x0',
-        help_text=_('The transaction hash of the Grant.'),
     )
     metadata = JSONField(
         default=dict,
@@ -301,6 +306,21 @@ class Subscription(SuperModel):
         decimal_places=4,
         max_digits=50,
         help_text=_('The required gas price for the Subscription.'),
+    )
+    new_approve_tx_id = models.CharField(
+        max_length=255,
+        default='0x0',
+        help_text=_('The transaction id for subscription approve().'),
+    )
+    end_approve_tx_id = models.CharField(
+        max_length=255,
+        default='0x0',
+        help_text=_('The transaction id for subscription approve().'),
+    )
+    cancel_tx_id = models.CharField(
+        max_length=255,
+        default='0x0',
+        help_text=_('The transaction id for cancelSubscription.'),
     )
     network = models.CharField(
         max_length=8,

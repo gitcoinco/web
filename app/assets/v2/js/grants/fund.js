@@ -56,15 +56,14 @@ $(document).ready(function() {
 
       deployedToken.methods.decimals().call(function(err, decimals) {
 
-        let realApproval = Number((data.approve * 10 ** decimals) * data.amount_per_period);
-
-        let realTokenAmount = Number(data.amount_per_period * 10 ** decimals);
-
         // gas price in gwei
         let realGasPrice = Number(4 * 10 ** 9);
 
         $('#gas_price').val(4);
 
+        let realApproval = Number(((data.approve * 10 ** decimals) + realGasPrice) * data.amount_per_period);
+
+        let realTokenAmount = Number(data.amount_per_period * 10 ** decimals);
 
         web3.eth.getAccounts(function(err, accounts) {
 
@@ -80,7 +79,7 @@ $(document).ready(function() {
             console.log('1', error);
             alert('Your approval transaction failed. Please try again.');
           }).on('transactionHash', function(transactionHash) {
-
+            $('#sub_new_approve_tx_id').val(transactionHash);
             document.issueURL = window.location.origin + $('#grant-link').val();
             enableWaitState('#grants_form');
             // Should add approval transactions to transaction history
@@ -99,11 +98,8 @@ $(document).ready(function() {
               ];
 
               deployedSubscription.methods.getSubscriptionHash(...parts).call(function(err, subscriptionHash) {
-
                 $('#subscription_hash').val(subscriptionHash);
-
                 web3.eth.personal.sign('' + subscriptionHash, accounts[0], function(err, signature) {
-
                   $('#signature').val(signature);
                 });
               });

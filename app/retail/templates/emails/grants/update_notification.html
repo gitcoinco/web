@@ -29,31 +29,31 @@
     background-color: #D2D2D2;
   }
 
-  .grantInfo {
+  .grant-info {
     padding-bottom: 1%;
   }
 
-  .grantInfo a img {
+  .grant-info a img {
     border-radius: 25px;
     margin-bottom: 10px;
   }
 
-  .grantInfoName {
+  .grant-info-name {
     font-size: 20px;
     color: #0D0764;
   }
 
-  .grantInfo h5 {
+  .grant-info h5 {
     font-size: 14px;
     margin-top: 15px;
     margin-top: 30px;
   }
 
-  .grantInfo h3 {
+  .grant-info h3 {
     margin-top: -20px;
   }
 
-  .updatesButton {
+  .grant-button {
     padding: 12px 36px;
     font-size: 12px;
     border-radius: 3px;
@@ -67,7 +67,7 @@
     margin-bottom: 40px;
   }
 
-  .grantUpdate {
+  .grant-update {
     width: 100%;
     margin-top: 30px;
     padding-bottom: 10px;
@@ -79,28 +79,32 @@
   }
 
   @media screen and (min-width: 900px) {
-    .grantUpdateIcon {
+    .grant-update-icon {
       width: 5%;
       float: left;
       margin-top: 20px;
     }
-    .grantUpdate {
+
+    .grant-update {
       width: 100%;
       padding-left: 10%;
       padding-bottom: 200px;
       transform: translateY(-150%);
     }
-    .grantUpdateContent {
+
+    .grant-update-content {
       width: 93%;
       float: left;
       text-align: left;
       margin-left: 2%;
     }
-    .grantUpdateContent > p:last-child {
+
+    .grant-update-content > p:last-child {
       padding-right: 25%;
       color: #43484D;
     }
-    .grantUpdateContent > h3 {
+
+    .grant-update-content > h3 {
       color: #43484D;
     }
   }
@@ -108,23 +112,23 @@
 </style>
 <img id="newSupporter" src="{% static "v2/images/update-notification.png" %}" alt="{% trans "Update!" %}" title="{% trans "Update!" %}">
 <h1 style="text-transform: none;">{% trans "An update has been posted for:" %}</h1>
-<div class="grantInfo">
+<div class="grant-info">
   <a href="{% url 'grant:details' grant.id %}">
     <img src="{{ grant.logo.url }}" style="width: 50px; height: 50px;"/>
   </a>
   <br>
-  <a class="grantInfoName" href="{% url 'grant:details' grant.id %}">{{ grant.title }}</a>
+  <a class="grant-info-name" href="{% url 'grant:details' grant.id %}">{{ grant.title }}</a>
   <p>{{ grant.description }}</p>
 </div>
 
 <br>
 
 <hr>
-<div class="grantUpdate">
-  <div class="grantUpdateIcon">
+<div class="grant-update">
+  <div class="grant-update-icon">
     <img src="{% static "v2/images/file-text.png" %}" alt="{% trans "New Grant Update." %}" title="{% trans "New Grant Update" %}">
   </div>
-  <div class="grantUpdateContent">
+  <div class="grant-update-content">
     <h3>{{ activity.title }}</h3>
     <p class="upDate">{{ activity.date }}</p>
     <p>{{ activity.description }}</p>
@@ -134,7 +138,7 @@
 
 <br>
 <br>
-<a class="updatesButton" href="{% url 'grant:details' grant.id %}">{% trans "View Grant" %}</a>
+<a class="grant-button" href="{% url 'grant:details' grant.id %}">{% trans "View Grant" %}</a>
 <br>
 
 {% endblock %}

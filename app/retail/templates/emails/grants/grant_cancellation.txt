@@ -4,4 +4,6 @@
 
 {% trans "Grant" %} {{ grant.title }} {% trans "has been cancelled" %}
 
+{% trans "You can see your transaction on etherscan at" %} {{ grant.grant_cancel_tx_id }}
+
 {% trans "Thank you for using Gitcoin, we hope you'll come back to build more open source software!" %}

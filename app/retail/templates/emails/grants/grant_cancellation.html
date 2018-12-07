@@ -38,13 +38,14 @@
     max-width: 4rem;
   }
 
-  .updatesButton {
+  .grant-button {
     padding: 12px 36px;
     font-size: 12px;
     border-radius: 3px;
     text-decoration: none;
     background-color: #0D0764;
     color: white;
+    font-weight: 600;
   }
 
   .grant-link {
@@ -56,10 +57,10 @@
 <h1 style="text-transform: none;">{% trans "Grant" %} '{{ grant.title }}' {% trans "has been cancelled" %}.</h1>
 <p>{% trans "Thank you for using Gitcoin, we hope you'll come back to build more open source software!" %}</p>
 <p>{% trans "You can see your cancellation transaction on etherscan" %}
-  <a href="{{ transaction.link }}">{% trans "here." %}</a>
+  <a href="{{ grant.grant_cancel_tx_id }}">{% trans "here." %}</a>
 </p>
 <p class="grant-link">
-  <a class="updatesButton" href="{% url 'grants:details' grant.pk grant.slug %}">{% trans "View Inactive Grant" %}</a>
+  <a class="grant-button" href="{% url 'grants:details' grant.pk grant.slug %}">{% trans "View Inactive Grant" %}</a>
 </p>
 <br>
 
