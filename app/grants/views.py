@@ -114,6 +114,7 @@ def grant_details(request, grant_id, grant_slug):
 
     if request.method == 'POST' and (profile == grant.admin_profile or request.user.is_staff):
         if 'contract_address' in request.POST:
+            grant.cancel_tx_id = request.POST.get('grant_cancel_tx_id', '')
             grant.active = False
             grant.save()
             grant_cancellation(grant, user_subscription)
@@ -180,7 +181,7 @@ def grant_new(request):
             'token_symbol': request.POST.get('token_symbol', ''),
             'amount_goal': request.POST.get('amount_goal', 1),
             'contract_version': request.POST.get('contract_version', ''),
-            'transaction_hash': request.POST.get('transaction_hash', ''),
+            'deploy_tx_id': request.POST.get('transaction_hash', ''),
             'contract_address': request.POST.get('contract_address', ''),
             'network': request.POST.get('network', 'mainnet'),
             'metadata': receipt,
@@ -306,6 +307,7 @@ def grant_fund(request, grant_id,  grant_slug):
         subscription.token_address = request.POST.get('denomination', '')
         subscription.token_symbol = request.POST.get('token_symbol', '')
         subscription.gas_price = request.POST.get('gas_price', 0)
+        subscription.new_approve_tx_id = request.POST.get('sub_new_approve_tx_id', '')
         subscription.network = request.POST.get('network', '')
         subscription.contributor_profile = profile
         subscription.grant = grant
@@ -351,6 +353,8 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
     if request.method == 'POST' and (
         profile == subscription.contributor_profile or request.user.has_perm('grants.change_subscription')
     ):
+        subscription.end_approve_tx_id = request.POST.get('sub_end_approve_tx_id', '')
+        subscription.cancel_tx_id = request.POST.get('sub_cancel_tx_id', '')
         subscription.active = False
         subscription.save()
         support_cancellation(grant, subscription)

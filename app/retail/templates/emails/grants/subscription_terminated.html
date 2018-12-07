@@ -16,7 +16,7 @@
  along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static grants_extra %}
 
 {% block content %}
 
@@ -127,6 +127,11 @@
     color: #BBBDBF;
   }
 
+  #grant-logo {
+    max-width: 25rem;
+    width: 100%;
+    margin-top: 2rem;
+  }
 </style>
 <img id="newSupporter" src="{% static "v2/images/subscription-terminated.png" %}" alt="{% trans "Subscription Terminated." %}" title="{% trans "Subscription Terminated." %}">
 <h1 style="text-transform: none;">{% trans "Grant" %} '{{ grant.title }}' {% trans "has been cancelled by its creator." %}</h1>
@@ -136,7 +141,7 @@
 <hr>
 <div class="grantInfo">
   <a href="{% url 'grants:details' grant.id grant.slug %}">
-    <img src="{{ grant.logo.url }}" style="width:50px; height: 50px;"/>
+    <img id="grant-logo" src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}" alt="grant logo" >
   </a>
   <br>
   <a class="grantInfoName" href="{% url 'grants:details' grant.id grant.slug %}">{{ grant.title }}</a>

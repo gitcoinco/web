@@ -108,12 +108,14 @@ $(document).ready(function() {
 
     $('.modal-cancel-grants').on('click', function(e) {
       let contract_address = $('#contract_address').val();
+      let grant_cancel_tx_id;
       let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, contract_address);
 
       web3.eth.getAccounts(function(err, accounts) {
         deployedSubscription.methods.endContract()
           .send({from: accounts[0], gasPrice: 4000000000})
           .on('transactionHash', function() {
+            grant_cancel_tx_id = $('#grant_cancel_tx_id').val();
             document.issueURL = document.getElementById('form--input__reference-url').value;
             $('.modal .close').trigger('click');
             enableWaitState('#grants-details');
@@ -122,7 +124,10 @@ $(document).ready(function() {
             $.ajax({
               type: 'post',
               url: '',
-              data: { 'contract_address': contract_address},
+              data: {
+                'contract_address': contract_address,
+                'grant_cancel_tx_id': grant_cancel_tx_id
+              },
               success: function(json) {
                 window.location.reload(false);
               },
