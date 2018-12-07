@@ -126,7 +126,7 @@
                 {% else %}
                   {% if grant.token_symbol %}
                     <h5 class="font-body token_symbol">
-                      {{ grant.admin_profile.handle }} {% trans 'is accepting contributions in '%}{{ grant.token_symbol }}
+                      {{ grant.admin_profile.handle }} {% trans 'is accepting contributions in '%}{{ grant.token_symbol }}{% trans ' on '%} {{ grant.network }}
                     </h5>
                   {% endif %}
                   <a href="{% url 'grants:fund' grant.id grant.slug %}">
