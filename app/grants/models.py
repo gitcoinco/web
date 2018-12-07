@@ -28,10 +28,9 @@ from django.utils.translation import gettext_lazy as _
 
 from django_extensions.db.fields import AutoSlugField
 from economy.models import SuperModel
-from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
+from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from grants.utils import get_upload_filename
-from retail.utils import ConversionRateNotFoundError
 from web3 import Web3
 
 logger = logging.getLogger(__name__)
