@@ -29,38 +29,39 @@
     background-color: #D2D2D2;
   }
 
-  .grantInfo {
+  .grant-info {
     padding-top: 30px;
     padding-bottom: 1%;
   }
 
-  .grantInfo a img {
+  .grant-info a img {
     border-radius: 25px;
     margin-bottom: 10px;
   }
 
-  .grantInfoName {
+  .grant-info-name {
     font-size: 20px;
     color: #0D0764;
   }
 
-  .grantInfo h5 {
+  .grant-info h5 {
     font-size: 14px;
     margin-top: 15px;
     margin-top: 30px;
   }
 
-  .grantInfo h3 {
+  .grant-info h3 {
     margin-top: -20px;
   }
 
-  .updatesButton {
+  .grant-button {
     padding: 12px 36px;
     font-size: 12px;
     border-radius: 3px;
     text-decoration: none;
     background-color: #0D0764;
     color: white;
+    font-weight: 600;
   }
 
   #grow-oss {
@@ -152,19 +153,24 @@
     width: 42.5%;
   }
 
+  #grant-logo {
+    max-width: 25rem;
+    width: 100%;
+    margin-top: 2rem;
+  }
 </style>
-<img id="newSupporter" src="{% static "v2/images/subscription-terminated.png" %}" alt="{% trans "We are sad to see you go." %}" title="{% trans "We are sad to see you go." %}">
+<img src="{% static "v2/images/subscription-terminated.png" %}" alt="{% trans "We are sad to see you go." %}" title="{% trans "We are sad to see you go." %}">
 <h1 style="text-transform: none;">{% trans "Your support for" %} {{ grant.title }} {% trans "has been cancelled" %}.</h1>
 <p>{% trans "Thank you for everything you have contributed!" %}</p>
 <br>
 
 <hr>
-<div class="grantInfo">
+<div class="grant-info">
   <a href="{% url 'grants:details' grant.id grant.slug %}">
-    <img src="{{ grant.logo.url }}" width="50" height="50" />
+    <img id="grant-logo" src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}" alt="grant logo" >
   </a>
   <br>
-  <a class="grantInfoName" href="{% url 'grants:details' grant.id grant.slug %}">{{ grant.title }}</a>
+  <a class="grant-info-name" href="{% url 'grants:details' grant.id grant.slug %}">{{ grant.title }}</a>
   <p>{{ grant.description }}</p>
   <div class="progressBarPositionMargin">
     <div class="progressBarPosition" style="margin-left: {{ grant.percentage_done|floatformat:0 }}%;">
@@ -205,7 +211,7 @@
   <a href="{{ transaction.link }}">{% trans "here." %}</a>
 </p>
 <br>
-<a class="updatesButton" href="{{ transaction.link }}">{% trans "View Transaction" %}</a>
+<a class="grant-button" href="{{ transaction.link }}">{% trans "View Transaction" %}</a>
 <br>
 
 {% endblock %}
