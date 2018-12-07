@@ -276,6 +276,7 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
         QuerySet: The BountyFulfillments queryset.
 
     """
+    from dashboard.utils import is_blocked
     for fulfillment in fulfillments:
         kwargs = {}
         accepted_on = None
@@ -283,7 +284,7 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
             'payload', {}).get('fulfiller', {}).get(
                 'githubUsername', '')
         if github_username:
-            if github_username in settings.BLOCKED_USERS:
+            if is_blocked(github_username):
                 continue
             try:
                 kwargs['profile_id'] = Profile.objects.get(handle__iexact=github_username).pk

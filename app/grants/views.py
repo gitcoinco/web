@@ -382,8 +382,9 @@ def profile(request):
     sort = request.GET.get('sort', '-created_on')
 
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
+    _grants_pks = Grant.objects.filter(Q(admin_profile=profile) | Q(team_members__in=[profile])).values_list('pk', flat=True)
     _grants = Grant.objects.prefetch_related('team_members') \
-        .filter(Q(admin_profile=profile) | Q(team_members__in=[profile])).order_by(sort)
+        .filter(pk__in=_grants_pks).order_by(sort)
     sub_grants = Grant.objects.filter(subscriptions__contributor_profile=profile).order_by(sort)
 
     paginator = Paginator(_grants, limit)
