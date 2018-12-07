@@ -17,6 +17,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import logging
+
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
 from django.db import models
@@ -29,7 +31,10 @@ from economy.models import SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from grants.utils import get_upload_filename
+from retail.utils import ConversionRateNotFoundError
 from web3 import Web3
+
+logger = logging.getLogger(__name__)
 
 
 class GrantQuerySet(models.QuerySet):
@@ -518,9 +523,13 @@ class Subscription(SuperModel):
         }
         contribution = Contribution.objects.create(**contribution_kwargs)
         grant = self.grant
-        grant.amount_received = (
-            grant.amount_received + convert_amount(self.amount_per_period, self.token_symbol, "USDT", timezone.now())
-        )
+        try:
+            grant.amount_received = (
+                grant.amount_received + convert_amount(self.amount_per_period, self.token_symbol, "USDT", timezone.now())
+            )
+        except ConversionRateNotFoundError as e:
+            logger.info(e)
+
         grant.save()
         successful_contribution(self.grant, self)
         return contribution
