@@ -64,8 +64,8 @@ class FaucetRequestAdmin(admin.ModelAdmin):
             return mark_safe(
                 f'<a href=/_administration/dashboard/profile/{obj.profile.pk}/change/>{obj.profile.handle}</a>'
             )
-        if obj.github_handle:
-            return obj.github_handle
+        if obj.github_username:
+            return obj.github_username
         return 'N/A'
 
     get_profile_handle.admin_order_field = 'handle'
