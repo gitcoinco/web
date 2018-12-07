@@ -35,13 +35,13 @@ class GrantAdmin(GeneralAdmin):
     ordering = ['-id']
     fields = [
         'title', 'description', 'reference_url', 'admin_address', 'active', 'amount_goal', 'amount_received',
-        'deploy_tx_id', 'grant_cancel_tx_id',
+        'deploy_tx_id', 'cancel_tx_id',
         'token_address', 'contract_address', 'network', 'required_gas_price', 'logo_svg_asset',
         'logo_asset', 'created_on', 'modified_on',
     ]
     readonly_fields = [
         'logo_svg_asset', 'logo_asset', 'created_on', 'modified_on', 'token_address', 'contract_address',
-        'deploy_tx_id', 'grant_cancel_tx_id',
+        'deploy_tx_id', 'cancel_tx_id',
         'network', 'amount_goal', 'amount_received',
     ]
 

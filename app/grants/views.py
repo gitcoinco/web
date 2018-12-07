@@ -114,7 +114,7 @@ def grant_details(request, grant_id, grant_slug):
 
     if request.method == 'POST' and (profile == grant.admin_profile or request.user.is_staff):
         if 'contract_address' in request.POST:
-            grant.grant_cancel_tx_id = request.POST.get('grant_cancel_tx_id', '')
+            grant.cancel_tx_id = request.POST.get('grant_cancel_tx_id', '')
             grant.active = False
             grant.save()
             grant_cancellation(grant, user_subscription)
@@ -307,7 +307,7 @@ def grant_fund(request, grant_id,  grant_slug):
         subscription.token_address = request.POST.get('denomination', '')
         subscription.token_symbol = request.POST.get('token_symbol', '')
         subscription.gas_price = request.POST.get('gas_price', 0)
-        subscription.sub_new_approve_tx_id = request.POST.get('sub_new_approve_tx_id', '')
+        subscription.new_approve_tx_id = request.POST.get('sub_new_approve_tx_id', '')
         subscription.network = request.POST.get('network', '')
         subscription.contributor_profile = profile
         subscription.grant = grant
@@ -353,8 +353,8 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
     if request.method == 'POST' and (
         profile == subscription.contributor_profile or request.user.has_perm('grants.change_subscription')
     ):
-        subscription.sub_end_approve_tx_id = request.POST.get('sub_end_approve_tx_id', '')
-        subscription.sub_cancel_tx_id = request.POST.get('sub_cancel_tx_id', '')
+        subscription.end_approve_tx_id = request.POST.get('sub_end_approve_tx_id', '')
+        subscription.cancel_tx_id = request.POST.get('sub_cancel_tx_id', '')
         subscription.active = False
         subscription.save()
         support_cancellation(grant, subscription)
@@ -386,8 +386,9 @@ def profile(request):
     sort = request.GET.get('sort', '-created_on')
 
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
+    _grants_pks = Grant.objects.filter(Q(admin_profile=profile) | Q(team_members__in=[profile])).values_list('pk', flat=True)
     _grants = Grant.objects.prefetch_related('team_members') \
-        .filter(Q(admin_profile=profile) | Q(team_members__in=[profile])).order_by(sort)
+        .filter(pk__in=_grants_pks).order_by(sort)
     sub_grants = Grant.objects.filter(subscriptions__contributor_profile=profile).order_by(sort)
 
     paginator = Paginator(_grants, limit)

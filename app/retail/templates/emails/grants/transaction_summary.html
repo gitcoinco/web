@@ -28,32 +28,32 @@
     background-color: #D2D2D2;
   }
 
-  .grantInfo {
+  .grant-info {
     padding-top: 30px;
     padding-bottom: 1%;
   }
 
-  .grantInfo a img {
+  .grant-info a img {
     border-radius: 25px;
     margin-bottom: 10px;
   }
 
-  .grantInfoName {
+  .grant-info-name {
     font-size: 20px;
     color: #0D0764;
   }
 
-  .grantInfo h5 {
+  .grant-info h5 {
     font-size: 14px;
     margin-top: 15px;
     margin-top: 30px;
   }
 
-  .grantInfo h3 {
+  .grant-info h3 {
     margin-top: -20px;
   }
 
-  .updatesButton {
+  .grant-button {
     padding: 12px 36px;
     font-size: 12px;
     border-radius: 3px;
@@ -78,20 +78,20 @@
     padding-bottom: 25px;
   }
 
-  .progressBar {
+  .progressbar {
     height: 15px;
     background-color: #D8D8D8;
     border-radius: 2.7px;
   }
 
-  .progressCompleted {
+  .progress-completed {
     height: 100%;
     background-color: #0FCE7C;
     border-radius: 2.7px;
     float: left;
   }
 
-  .progressRemoved {
+  .progress-removed {
     height: 100%;
     background-color: #CF0E0E;
     border-top-right-radius: 2.7px;
@@ -103,13 +103,13 @@
     width: 100%;
   }
 
-  .leftFunding {
+  .left-funding {
     width: 50%;
     float: left;
     text-align: left;
   }
 
-  .rightFunding {
+  .right-funding {
     width: 50%;
     float: left;
     text-align: right;
@@ -121,15 +121,15 @@
     padding-top: -50px;
   }
 
-  .leftFunding > h4 {
+  .left-funding > h4 {
     text-align: left;
   }
 
-  .rightFunding > h4 {
+  .right-funding > h4 {
     text-align: right;
   }
 
-  .progressBarLine {
+  .progressbar-line {
     width: 1px;
     height: 45px;
     background-color: #979797;
@@ -153,18 +153,18 @@
   }
 
 </style>
-<img id="newSupporter" src="{% static "v2/images/transaction-summary.png" %}" alt="{% trans "Transaction Summary" %}"
+<img src="{% static "v2/images/transaction-summary.png" %}" alt="{% trans "Transaction Summary" %}"
   title="{% trans "Transaction Summary" %}">
 <h1 style="text-transform: none;">{% trans "Grant" %} '{{ grant.title }}' {% trans "has received more funding" %}!</h1>
 <br>
 
 <hr>
-<div class="grantInfo">
+<div class="grant-info">
   <a href="{% url 'grant:details' grant.id %}">
     <img src="{{ grant.logo.url }}" style="width: 50px; height: 50px;"/>
   </a>
   <br>
-  <a class="grantInfoName" href="{% url 'grant:details' grant.id %}">{{ grant.title }}</a>
+  <a class="grant-info-name" href="{% url 'grant:details' grant.id %}">{{ grant.title }}</a>
   <p>{{ grant.description }}</p>
 </div>
 <hr>
@@ -204,18 +204,18 @@
   <h3>
     <strong>{% trans "Total Funds" %}</strong>
   </h3>
-  <div class="progressBar">
-    <div class="progressCompleted" style="width: {{ grant.percentage_done|floatformat:0 }}%;">
+  <div class="progressbar">
+    <div class="progress-completed" style="width: {{ grant.percentage_done|floatformat:0 }}%;">
     </div>
   </div>
   <div class="funding">
-    <div class="leftFunding">
+    <div class="left-funding">
       <h4>
         <strong>{{ grant.amount_received }} {% trans "ETH" %}</strong>
       </h4>
       <p>{% trans "Current" %}</p>
     </div>
-    <div class="rightFunding">
+    <div class="right-funding">
       <h4>
         <strong>{{ grant.amount_goal }} {% trans "ETH" %}</strong>
       </h4>
@@ -226,6 +226,6 @@
 <hr>
 <br>
 <br>
-<a class="updatesButton" href="{% url 'grant:details' grant.id %}">{% trans "View Grant" %}</a>
+<a class="grant-button" href="{% url 'grant:details' grant.id %}">{% trans "View Grant" %}</a>
 <br>
 {% endblock %}
