@@ -128,6 +128,24 @@ var etherscanDomain = function() {
   return etherscanDomain;
 };
 
+var blockscoutDomain = function() {
+  var blockscoutDomain = 'blockscout.com/eth/mainnet/';
+
+  if (document.web3network == 'custom network') {
+    // testrpc
+    blockscoutDomain = 'localhost';
+  } else if (document.web3network == 'rinkeby') {
+    // rinkeby
+    blockscoutDomain = 'blockscout.com/eth/rinkeby/';
+  } else if (document.web3network == 'ropsten') {
+    // ropsten
+    blockscoutDomain = 'blockscout.com/eth/ropsten/';
+  } else {
+    // mainnet
+  }
+  return blockscoutDomain;
+};
+
 var renderWallets = function(profileId) {
   // $('.form-check').remove()
   console.log('profileId: ' + profileId);
@@ -292,6 +310,7 @@ $(document).ready(function() {
     var success_callback = function(txid) {
 
       startConfetti();
+      // TODO!!!
       var url = 'https://' + etherscanDomain() + '/tx/' + txid;
 
       $('#loading_trans').html('This transaction has been sent 👌');

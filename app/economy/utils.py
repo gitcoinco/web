@@ -93,3 +93,16 @@ def etherscan_link(txid):
 
     """
     return f'https://etherscan.io/tx/{txid}'
+
+
+def blockscout_link(txid):
+    """Build the Blockscout URL.
+
+    Args:
+        txid (str): The transaction ID.
+
+    Returns:
+        str: The Blockscout TX URL.
+
+    """
+    return f'https://blockscout.com/eth/mainnet/tx/{txid}'

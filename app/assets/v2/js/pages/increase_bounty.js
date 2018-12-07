@@ -157,8 +157,9 @@ $(document).ready(function() {
       var expires = 9999999999;
 
       var success_callback = function(txid) {
-        var url = 'https://' + etherscanDomain() + '/tx/' + txid;
-        var msg = 'This funding increase has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
+        var etherscan_url = 'https://' + etherscanDomain() + '/tx/' + txid;
+        var blockscout_url = 'https://' + blockscoutDomain() + '/tx/' + txid;
+        var msg = 'This funding increase has been sent 👌 <a target=_blank href="' + etherscan_url + '">[Etherscan Link]</a> <a target=_blank href="' + blockscout_url + '">[Blockscout Link]</a>';
 
         // send msg to frontend
         _alert(msg, 'info');
