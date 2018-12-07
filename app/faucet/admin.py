@@ -65,7 +65,7 @@ class FaucetRequestAdmin(admin.ModelAdmin):
         profile = getattr(obj, 'profile', None)
         if profile and profile.handle:
             return mark_safe(
-                f'<a href=/_administration/dashboard/profile/{obj.profile.pk}/change/>{obj.profile.handle}</a>'
+                f'<a href=/_administration/dashboard/profile/{profile.pk}/change/>{profile.handle}</a>'
             )
         if obj.github_username:
             return obj.github_username
