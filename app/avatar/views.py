@@ -24,7 +24,7 @@ from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from dashboard.utils import create_user_action
+from dashboard.utils import create_user_action, is_blocked
 from git.utils import org_name
 from marketing.utils import is_deleted_account
 from PIL import Image, ImageOps
@@ -125,7 +125,7 @@ def handle_avatar(request, _org_name='', add_gitcoincologo=False):
     if _org_name:
         _org_name = _org_name.replace('@', '')
 
-    if _org_name in settings.BLOCKED_USERS or is_deleted_account(_org_name):
+    if is_blocked(_org_name) or is_deleted_account(_org_name):
         return get_err_response(request, blank_img=(_org_name == 'Self'))
 
     if _org_name:

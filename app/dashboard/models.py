@@ -2727,3 +2727,16 @@ class SearchHistory(SuperModel):
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
     data = JSONField(default=dict)
     ip_address = models.GenericIPAddressField(blank=True, null=True)
+
+
+class BlockedUser(SuperModel):
+    """Define the structure of the BlockedUser."""
+
+    handle = models.CharField(max_length=255, db_index=True, unique=True)
+    comments = models.TextField(default='', blank=True)
+    active = models.BooleanField(help_text=_('Is the block active?'))
+    user = models.OneToOneField(User, related_name='blocked', on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        """Return the string representation of a Bounty."""
+        return f'<BlockedUser: {self.handle}>'
