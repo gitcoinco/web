@@ -171,7 +171,8 @@ def details(request, kudos_id, name):
 
     # Find other profiles that have the same kudos name
     kudos = get_object_or_404(Token, pk=kudos_id)
-
+    num_kudos_limit = 100
+    
     context = {
         'send_enabled': kudos.send_enabled_for(request.user),
         'is_outside': True,
@@ -181,7 +182,7 @@ def details(request, kudos_id, name):
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
         'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
         'kudos': kudos,
-        'related_handles': list(set(kudos.owners_handles))[:20],
+        'related_handles': list(set(kudos.owners_handles))[:num_kudos_limit],
     }
     if kudos:
         token = Token.objects.select_related('contract').get(
