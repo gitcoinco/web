@@ -14,7 +14,8 @@ def forwards_func(apps, schema_editor):
     for handle in handles:
         try:
             profile = Profile.objects.select_related('user').filter(handle__iexact=handle, user__isnull=False).last()
-            kwargs['user'] = profile.user
+            if profile:
+                kwargs['user'] = profile.user
         except Profile.DoesNotExist:
             pass
 
