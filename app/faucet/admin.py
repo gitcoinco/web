@@ -52,7 +52,10 @@ class FaucetRequestAdmin(admin.ModelAdmin):
 
     def get_profile_email(self, obj):
         """Get the profile email address."""
-        return obj.profile.email
+        profile = getattr(obj, 'profile', None)
+        if profile:
+            return profile.email
+        return 'N/A'
 
     get_profile_email.admin_order_field = 'email'
     get_profile_email.short_description = 'Profile Email'
