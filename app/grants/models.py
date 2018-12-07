@@ -524,7 +524,12 @@ class Subscription(SuperModel):
         grant = self.grant
         try:
             grant.amount_received = (
-                grant.amount_received + convert_amount(self.amount_per_period, self.token_symbol, "USDT", timezone.now())
+                grant.amount_received + convert_amount(
+                    self.amount_per_period,
+                    self.token_symbol,
+                    "USDT",
+                    timezone.now()
+                )
             )
         except ConversionRateNotFoundError as e:
             logger.info(e)
