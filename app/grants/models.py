@@ -517,9 +517,11 @@ class Subscription(SuperModel):
         contribution = Contribution.objects.create(**contribution_kwargs)
         grant = self.grant
         grant.amount_received = (
-            int(grant.amount_received) + int(convert_amount(self.amount_per_period,
-            self.token_symbol,
-            "USDT"))
+            int(grant.amount_received) + int(convert_amount(
+                self.amount_per_period,
+                self.token_symbol,
+                "USDT")
+            )
         )
         grant.save()
         successful_contribution(self.grant, self)
