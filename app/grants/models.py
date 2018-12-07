@@ -122,7 +122,7 @@ class Grant(SuperModel):
         default='0x0',
         help_text=_('The transaction id for contract deployment.'),
     )
-    grant_cancel_tx_id = models.CharField(
+    cancel_tx_id = models.CharField(
         max_length=255,
         default='0x0',
         help_text=_('The transaction id for endContract.'),
@@ -307,17 +307,17 @@ class Subscription(SuperModel):
         max_digits=50,
         help_text=_('The required gas price for the Subscription.'),
     )
-    sub_new_approve_tx_id = models.CharField(
+    new_approve_tx_id = models.CharField(
         max_length=255,
         default='0x0',
         help_text=_('The transaction id for subscription approve().'),
     )
-    sub_end_approve_tx_id = models.CharField(
+    end_approve_tx_id = models.CharField(
         max_length=255,
         default='0x0',
         help_text=_('The transaction id for subscription approve().'),
     )
-    sub_cancel_tx_id = models.CharField(
+    cancel_tx_id = models.CharField(
         max_length=255,
         default='0x0',
         help_text=_('The transaction id for cancelSubscription.'),
@@ -511,7 +511,7 @@ class Subscription(SuperModel):
         self.next_contribution_date = timezone.now() + timezone.timedelta(seconds=self.real_period_seconds)
         self.save()
         contribution_kwargs = {
-            'contribution_tx_id': kwargs.tx_id,
+            'tx_id': kwargs.tx_id,
             'gas_price': kwargs.gas_price,
             'nonce': kwargs.nonce,
             'subscription': self
@@ -535,10 +535,10 @@ class ContributionQuerySet(models.QuerySet):
 class Contribution(SuperModel):
     """Define the structure of a subscription agreement."""
 
-    contribution_tx_id = models.CharField(
+    tx_id = models.CharField(
         max_length=255,
         default='0x0',
-        help_text=_('The transaction id for the contribution.'),
+        help_text=_('The transaction ID of the Contribution.'),
     )
 
     gas_price = models.DecimalField(
