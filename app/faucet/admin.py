@@ -38,7 +38,7 @@ class FaucetRequestAdmin(admin.ModelAdmin):
     raw_id_fields = ['profile']
     ordering = ['-created_on']
     list_display = [
-        'created_on', 'fulfilled', 'rejected', 'link', 'get_profile_username',
+        'created_on', 'fulfilled', 'rejected', 'link', 'get_profile_handle',
         'get_profile_email', 'email', 'address', 'comment',
     ]
     search_fields = [
@@ -57,16 +57,19 @@ class FaucetRequestAdmin(admin.ModelAdmin):
     get_profile_email.admin_order_field = 'email'
     get_profile_email.short_description = 'Profile Email'
 
-    def get_profile_username(self, obj):
-        """Get the profile username."""
-        if hasattr(obj, 'profile') and obj.profile.username:
-            return mark_safe(f'<a href=/_administration/dashboard/profile/{obj.profile.pk}/change/>{obj.profile.username}</a>')
-        elif obj.github_username:
-            return obj.github_username
+    def get_profile_handle(self, obj):
+        """Get the profile handle."""
+        profile = getattr(obj, 'profile', None)
+        if profile and profile.handle:
+            return mark_safe(
+                f'<a href=/_administration/dashboard/profile/{obj.profile.pk}/change/>{obj.profile.handle}</a>'
+            )
+        if obj.github_handle:
+            return obj.github_handle
         return 'N/A'
 
-    get_profile_username.admin_order_field = 'username'
-    get_profile_username.short_description = 'Profile Username'
+    get_profile_handle.admin_order_field = 'handle'
+    get_profile_handle.short_description = 'Profile Handle'
 
     def link(self, instance):
         """Handle faucet request specific links.
@@ -80,8 +83,7 @@ class FaucetRequestAdmin(admin.ModelAdmin):
         """
         if instance.fulfilled or instance.rejected:
             return 'n/a'
-        link = mark_safe(f"<a href=/_administration/process_faucet_request/{instance.pk}>process me</a>")
-        return link
+        return mark_safe(f"<a href=/_administration/process_faucet_request/{instance.pk}>process me</a>")
     link.allow_tags = True
 
 
