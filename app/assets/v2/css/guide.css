@@ -42,7 +42,7 @@ iframe {
 }
 
 #toc {
-  position: sticky;
+  position: -webkit-sticky; position: sticky;
   top: 1em;
   float: right;
 }
