@@ -1,9 +1,11 @@
 from django.contrib import sitemaps
 from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
+from django.utils.text import slugify
 
 from dashboard.models import Bounty, Profile
 from kudos.models import Token
+from grants.models import Grant
 
 
 class StaticViewSitemap(sitemaps.Sitemap):
