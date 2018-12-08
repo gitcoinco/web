@@ -60,7 +60,9 @@ urlpatterns = [
 
     # inbox
     path('notification/', inbox.views.inbox, name='inbox'),
-    path('notification/delete/', inbox.views.delete_notification, name='inbox'),
+    path('notification/delete/', inbox.views.delete_notification, name='delete_notif'),
+    path('notification/unread/', inbox.views.unread_notification, name='unread_notif'),
+    path('notification/read/', inbox.views.read_notification, name='read_notif'),
 
     # kudos
     path('kudos/', kudos.views.about, name='kudos_main'),
