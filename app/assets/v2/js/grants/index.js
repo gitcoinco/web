@@ -2,13 +2,27 @@ $(document).ready(() => {
   $('#sort_option').select2({
     minimumResultsForSearch: Infinity
   });
+
+  $('#network').select2({
+    minimumResultsForSearch: Infinity
+  });
+
+
+  $('#sort_option').on("change", function (e) {
+    // Should this fire POST / Update URL + fire ajax ?
+  });
+
+  $('#network').on("change", function (e) {
+    // Should this fire POST / Update URL + fire ajax ?
+  });
+
   $('.select2-selection__rendered').removeAttr('title');
 
-  $('#search_from').validate({
-    submitHandler: function(form) {
-      var data = {};
+  $('#search_form').validate({
+    submitHandler: (form) => {
+      let data = {};
 
-      $.each($(form).serializeArray(), function() {
+      $.each($(form).serializeArray(), () => {
         data[this.name] = this.value;
       });
 

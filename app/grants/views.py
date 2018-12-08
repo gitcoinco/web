@@ -64,11 +64,11 @@ def grants(request):
     limit = request.GET.get('limit', 24)
     page = request.GET.get('page', 1)
     sort = request.GET.get('sort_option', '-created_on')
+    network = request.GET.get('network', 'mainnet')
 
-    _grants = Grant.objects.active()
+    _grants = Grant.objects.filter(network=network).active()
 
-    if request.method == 'POST':
-        sort = request.POST.get('sort_option', '-created_on')
+    if request.method == 'POST': # shouldn't this be a GET call ?
         keyword = request.POST.get('search_grants', '')
         _grants = _grants.keyword(keyword)
 

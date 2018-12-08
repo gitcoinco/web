@@ -74,7 +74,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           </div>
           <div class="row mt-5">
             <div class="col-12 col-md-6 pt-1 text-center text-sm-left pl-sm-0">
-              {{ grants_count }} {% trans "Grants available on" %} <b>mainnet</b>.
+              {{ grants_count }} {% trans "Grants available on" %}
+              <span class="ml-2">
+                <select name="network" id="network">
+                  <option value="mainnet">mainnet</option>
+                  <option value="rinkeby">rinkeby</option>
+                </select>
+              </span>
             </div>
             <div class="col-12 col-md-6 pt-1 font-caption order_by d-md-inline text-center text-sm-right">
               <div class="heading">{% trans "SORT" %}</div>
