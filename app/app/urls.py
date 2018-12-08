@@ -58,7 +58,10 @@ from .sitemaps import sitemaps
 urlpatterns = [
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
 
+    # inbox
     path('notification/', inbox.views.inbox, name='inbox'),
+    path('notification/delete/', inbox.views.delete_notification, name='inbox'),
+
     # kudos
     path('kudos/', kudos.views.about, name='kudos_main'),
     path('kudos/about/', kudos.views.about, name='kudos_about'),
