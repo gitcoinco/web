@@ -59,10 +59,10 @@ urlpatterns = [
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
 
     # inbox
-    path('api/v1.0/notifications/', inbox.views.notifications, name='notifications'),
-    path('api/v1.0/notifications/delete/', inbox.views.delete_notifications, name='delete_notif'),
-    path('api/v1.0/notifications/unread/', inbox.views.unread_notifications, name='unread_notif'),
-    path('api/v1.0/notifications/read/', inbox.views.read_notifications, name='read_notif'),
+    path('api/v0.1/notifications/', inbox.views.notifications, name='notifications'),
+    path('api/v0.1/notifications/delete/', inbox.views.delete_notifications, name='delete_notif'),
+    path('api/v0.1/notifications/unread/', inbox.views.unread_notifications, name='unread_notif'),
+    path('api/v0.1/notifications/read/', inbox.views.read_notifications, name='read_notif'),
     path('inbox/', inbox.views.inbox, name='inbox'),
 
     # kudos
