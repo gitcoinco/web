@@ -1,6 +1,5 @@
 from inbox.models import Notification
 from django.contrib.auth import get_user_model
-from django.views.decorators.csrf import csrf_exempt
 import json
 from django.http import JsonResponse, HttpResponseForbidden
 
@@ -24,6 +23,7 @@ def inbox(request):
 
     else:
         return HttpResponseForbidden('Not Allowed')
+
 
 def delete_notification(request):
     """For deleting a notification"""
