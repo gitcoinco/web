@@ -946,7 +946,7 @@ var listen_for_web3_changes = async function() {
         if (errors) {
           return;
         }
-        if (typeof result != 'undefined') {
+        if (typeof result != 'undefined' && result !== null) {
           document.balance = result.toNumber();
         }
       });
