@@ -20,7 +20,19 @@ class StaticViewSitemap(sitemaps.Sitemap):
 
     def location(self, item):
         return reverse(item)
-
+    
+class GrantSitemap(Sitemap):
+    changefreq = "daily"
+    priority = 0.9
+    
+    def items(self):
+        return Grant.objects.all()
+        
+    def lastmod(self, obj):
+        return obj.modified_on
+    
+    def location(self, item):
+        return "/grants/"+str(item.id)+"/"+item.slug
 
 class IssueSitemap(Sitemap):
     changefreq = "daily"
@@ -47,7 +59,7 @@ class KudosSitemap(Sitemap):
         return obj.modified_on
 
     def location(self, item):
-        return item.url
+        return f"/kudos/{item.pk}/{slugify(item.name)}"
 
 
 class ProfileSitemap(Sitemap):
@@ -86,4 +98,5 @@ sitemaps = {
     'issues': IssueSitemap,
     'orgs': ProfileSitemap,
     'kudos': KudosSitemap,
+    'grant': GrantSitemap,
 }
