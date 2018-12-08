@@ -22,19 +22,21 @@ class StaticViewSitemap(sitemaps.Sitemap):
 
     def location(self, item):
         return reverse(item)
-    
+
+
 class GrantSitemap(Sitemap):
     changefreq = "daily"
     priority = 0.9
-    
+
     def items(self):
         return Grant.objects.all()
-        
+
     def lastmod(self, obj):
         return obj.modified_on
-    
+
     def location(self, item):
         return "/grants/"+str(item.id)+"/"+item.slug
+
 
 class IssueSitemap(Sitemap):
     changefreq = "daily"
