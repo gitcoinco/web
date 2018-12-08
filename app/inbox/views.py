@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 import json
 from django.http import JsonResponse, HttpResponseForbidden
 
+
 def notifications(request):
     """Handle all notifications."""
     if request.method == 'GET':
