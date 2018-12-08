@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 import json
 from django.http import JsonResponse, HttpResponseForbidden
 
-def inbox(request):
+def notifications(request):
     """Handle all notifications."""
     if request.method == 'GET':
         profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
@@ -26,7 +26,7 @@ def inbox(request):
         return HttpResponseForbidden('Not Allowed')
 
 
-def delete_notification(request):
+def delete_notifications(request):
     """For deleting a notification"""
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
     if request.method == 'DELETE' and profile is not None:
@@ -47,7 +47,7 @@ def delete_notification(request):
         return HttpResponseForbidden('Not Allowed')
 
 
-def unread_notification(request):
+def unread_notifications(request):
     """Mark a notification as unread"""
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
     if request.method == 'PUT' and profile is not None:
@@ -70,7 +70,7 @@ def unread_notification(request):
         return HttpResponseForbidden('Not Allowed')
 
 
-def read_notification(request):
+def read_notifications(request):
     """Mark a notification as read"""
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
     if request.method == 'PUT' and profile is not None:
