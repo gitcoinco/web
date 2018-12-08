@@ -71,7 +71,7 @@ def unread_notification(request):
 
 
 def read_notification(request):
-    """Mark a notification as unread"""
+    """Mark a notification as read"""
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
     if request.method == 'PUT' and profile is not None:
         params = dict()
