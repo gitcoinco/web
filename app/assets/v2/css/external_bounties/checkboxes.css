@@ -91,3 +91,76 @@
   background-color: #26cd7f;
   border: 3px solid #36E69B;
 }
+
+/* border checkbox  */
+
+.gc-checkbox input[type="checkbox"] {
+  -moz-appearance: none;
+	-webkit-appearance: none;
+	appearance: none;
+	margin-top: .75em;
+	opacity: .00001;
+	position: relative;
+	vertical-align: top;
+	z-index: 2;
+}
+
+.gc-checkbox label {
+  position: relative;
+  display: inline-block;
+
+  /*16px width of fake checkbox + 6px distance between fake checkbox and text*/
+  padding-left: 22px;
+  min-height: 16px;
+  vertical-align: middle;
+}
+
+.gc-checkbox label::before,
+.gc-checkbox label::after {
+  position: absolute;
+  content: "";
+
+  /*Needed for the line-height to take effect*/
+  display: inline-block;
+}
+
+/*Outer box of the fake checkbox*/
+.gc-checkbox label::before{
+  height: 18px;
+  width: 18px;
+  border: 2px solid #9F9F9F;
+  border-radius: 3px;
+  left: 0px;
+
+  /*(24px line-height - 16px height of fake checkbox) / 2 - 1px for the border
+   *to vertically center it.
+   */
+  top: 3px;
+}
+
+/*Checkmark of the fake checkbox*/
+.gc-checkbox label::after {
+  height: 6px;
+  width: 10px;
+  border-left: 2px solid;
+  border-bottom: 2px solid;
+  transform: rotate(-45deg);
+  left: 4px;
+  top: 8px;
+}
+
+/*Hide the checkmark by default*/
+.gc-checkbox input[type="checkbox"] + label::after {
+  content: none;
+}
+
+/*Unhide on the checked state*/
+.gc-checkbox input[type="checkbox"]:checked + label::after {
+  content: "";
+}
+
+/*Adding focus styles on the outer-box of the fake checkbox*/
+.gc-checkbox input[type="checkbox"]:focus + label::before {
+  outline: rgb(59, 153, 252) auto 5px;
+}
+

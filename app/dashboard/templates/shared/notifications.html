@@ -26,7 +26,7 @@
     <div class="notifications__header">
       <div class="notifications__title">
         {% trans 'Notifications' %} <span id="total-notifications" class="badge badge--greenlight">0</span>
-      </div> <a href="">{% trans 'Mark All as Read' %}</a>
+      </div> <a href="" class="notifications__link">{% trans 'Mark All as Read' %}</a>
     </div>
     <ul class="notifications__list">
       <!-- <li class="notifications__item">
@@ -99,6 +99,6 @@
         </time>
       </li> -->
     </ul>
-    <a href="" class="notifications__button-all">{% trans 'See all' %}</a>
+    <a href="" class="notifications__button-all notifications__link">{% trans 'See all' %}</a>
   </div>
 </div>

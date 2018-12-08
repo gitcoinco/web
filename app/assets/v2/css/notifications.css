@@ -59,7 +59,7 @@
   max-width: calc(100vw - 2em);
 }
 
-.notifications__box a {
+.notifications__link {
   color: var(--link-color);
   font-size: 0.75rem;
 }
@@ -130,8 +130,14 @@
 }
 
 .notifications_content {
+  color: #212529;
   display: flex;
   align-items: center;
+}
+
+.notifications_content:hover {
+  color: #5d666f;
+  text-decoration: none;
 }
 
 .notifications_content p {
@@ -189,4 +195,13 @@
   -webkit-box-orient: vertical;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+
+.inbox-list {
+  background: white;
+  padding: 6em;
+  margin-top: -3em;
+  z-index: 0;
+  position: relative;
+  border-radius: 4px;
 }

@@ -1,11 +1,14 @@
-from django.shortcuts import render
+from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.paginator import Paginator
-from inbox.models import Notification
+from django.shortcuts import render
+from django.template.response import TemplateResponse
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
+from inbox.models import Notification
 
 from django.http import JsonResponse, HttpResponseForbidden
 
-def inbox(request):
+def notifications(request):
     """Handle grants explorer."""
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
     limit = request.GET.get('limit', 25)
@@ -32,3 +35,15 @@ def inbox(request):
         params.append(new_notif)
 
     return JsonResponse(params, status=200, safe=False)
+
+def inbox(request):
+
+    context = {
+        'is_outside': True,
+        'active': 'inbox',
+        'title': 'inbox',
+        'card_title': _('Each Kudos is a unique work of art.'),
+        'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
+        'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
+    }
+    return TemplateResponse(request, 'inbox.html', context)
