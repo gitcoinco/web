@@ -78,7 +78,7 @@ def read_notification(request):
         params['success'] = []
         req_body = json.loads(request.body.decode('utf-8'))
         if 'read' in req_body:
-            for i in req_body['unread']:
+            for i in req_body['read']:
                 entry = Notification.objects.filter(id=i)
                 if entry.to_user_id == request.user.id and len(entry) != 0:
                     obj = entry[0]
