@@ -59,7 +59,7 @@
   max-width: calc(100vw - 2em);
 }
 
-.notifications__box a {
+.notifications__link {
   color: var(--link-color);
   font-size: 0.75rem;
 }
@@ -130,8 +130,14 @@
 }
 
 .notifications_content {
+  color: #212529;
   display: flex;
   align-items: center;
+}
+
+.notifications_content:hover {
+  color: #5d666f;
+  text-decoration: none;
 }
 
 .notifications_content p {
@@ -152,19 +158,22 @@
 }
 
 @keyframes BadgePulse{
-  0%{
-    -moz-box-shadow:0 0 0 0 rgba(var(--color-notification), .4);
-    box-shadow:0 0 0 0 rgba(var(--color-notification), .4)
+  0% {
+    -moz-box-shadow:0 0 0 0 rgba(37, 232, 153, .4);
+    -webkit-box-shadow:0 0 0 0 rgba(37, 232, 153, .4);
+    box-shadow: 0 0 0 0 rgba(37, 232, 153, .4);
   }
 
-  70%{
-    -moz-box-shadow:0 0 0 10px rgba(var(--color-notification), 0);
-    box-shadow:0 0 0 10px rgba(var(--color-notification), 0)
+  70% {
+    -moz-box-shadow: 0 0 0 10px rgba(37, 232, 153, 0);
+    -webkit-box-shadow: 0 0 0 10px rgba(37, 232, 153, 0);
+    box-shadow: 0 0 0 10px rgba(37, 232, 153, 0);
   }
 
-  100%{
-    -moz-box-shadow:0 0 0 20px rgba(var(--color-notification), 0);
-    box-shadow:0 0 0 20px rgba(var(--color-notification), 0)
+  100% {
+    -moz-box-shadow: 0 0 0 20px rgba(37, 232, 153, 0);
+    -webkit-box-shadow: 0 0 0 20px rgba(37, 232, 153, 0);
+    box-shadow: 0 0 0 20px rgba(37, 232, 153, 0);
   }
 }
 
@@ -186,4 +195,13 @@
   -webkit-box-orient: vertical;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+
+.inbox-list {
+  background: white;
+  padding: 6em;
+  margin-top: -3em;
+  z-index: 0;
+  position: relative;
+  border-radius: 4px;
 }

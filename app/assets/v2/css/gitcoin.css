@@ -69,10 +69,12 @@ h4,
   position: fixed;
   top: 0;
   left: 0;
+  right: 0;
   z-index: -1;
   will-change: transform;
   overflow-y: hidden;
   overflow-x: hidden;
+  min-height: 112px;
 }
 
 .text-white {
@@ -199,6 +201,10 @@ div.button-pink {
   background-size: contain;
   background-position: bottom;
   background-repeat: no-repeat;
+}
+
+.bg-lightblue {
+  background-color: #EFF3F6;
 }
 
 .white-light-bg {

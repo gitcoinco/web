@@ -1,0 +1,109 @@
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not,see
+    <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+
+
+  </head>
+  <body class="{{ active }} bg-lightblue g-font-muli">
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    {% include 'shared/nav.html' %}
+    <header class="container-fluid header">
+      {% include 'shared/minihero.html' with h1='Notifications' suppress_logo=1 %}
+    </header>
+    <section class="container inbox-list">
+
+    <div class="">
+      <div class="btn-group">
+          <div class="gc-checkbox">
+              <input type="checkbox" id="checkbox_1">
+              <label for="checkbox_1"></label>
+          </div>
+          <button type="button" class="btn btn-sm dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="sr-only">Toggle Dropdown</span>
+          </button>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="#">All</a>
+            <a class="dropdown-item" href="#">None</a>
+            <a class="dropdown-item" href="#">Read</a>
+            <a class="dropdown-item" href="#">Unread</a>
+          </div>
+        </div>
+
+
+        <button><i class="fas fa-envelope-open"></i> Mark as Read</button>
+        <button><i class="fas fa-envelope"></i> Mark as Unead</button>
+        <button><i class="fas fa-trash-alt"></i> Delete</button>
+    </div>
+    Today
+    <ul class="list-unstyled">
+      <li class="notifications__item">
+        <div class="gc-checkbox">
+            <input type="checkbox" id="checkbox_not">
+            <label for="checkbox_not"></label>
+        </div>
+        <span class="notifications__item-readed">
+          <b class="notification__dot-small notification__dot-small_active"></b>
+        </span>
+        <a href="http://localhost:8000" class="notifications_content" data-notification="1">
+          <img class="notifications__avatar" src="/dynamic/avatar/owocki" width="28" height="28">
+          <p class="line-clamp">
+            You haven’t responded to <b>#2186: [Design] Show Remarketed Issues… in 3 days. Please submit a WIP…</b>
+          </p>
+        </a>
+        <time class="notifications__time" datetime="2018-12-06T16:02:23.979Z" title="2018-12-06T16:02:23.979Z">
+          1 day
+        </time>
+      </li>
+
+      <li class="notifications__item">
+          <div class="gc-checkbox">
+              <input type="checkbox" id="checkbox_not">
+              <label for="checkbox_not"></label>
+          </div>
+          <span class="notifications__item-readed">
+            <b class="notification__dot-small notification__dot-small_active"></b>
+          </span>
+          <a href="http://localhost:8000" class="notifications_content" data-notification="1">
+            <img class="notifications__avatar" src="/dynamic/avatar/owocki" width="28" height="28">
+            <p class="line-clamp">
+              You haven’t responded to <b>#2186: [Design] Show Remarketed Issues… in 3 days. Please submit a WIP…</b>
+            </p>
+          </a>
+          <time class="notifications__time" datetime="2018-12-06T16:02:23.979Z" title="2018-12-06T16:02:23.979Z">
+            1 day
+          </time>
+        </li>
+    </ul>
+
+    </section>
+    {% include 'shared/footer.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' with slim=1 %}
+    <script src="{% static "v2/js/popper.min.js" %}"></script>
+    <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
+    <script>
+      var bootstrapTooltip = $.fn.tooltip.noConflict()
+    </script>
+  </body>
+</html>
