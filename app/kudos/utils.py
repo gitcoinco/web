@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import json
 import logging
+import os
 import re
 import time
 from functools import wraps
@@ -361,7 +362,7 @@ class KudosContract:
             obj: Web3py contract object.
 
         """
-        with open('kudos/Kudos.json') as f:
+        with open(os.path.dirname(os.path.realpath(__file__)) + os.sep + 'Kudos.json') as f:
             abi = json.load(f)
         address = self._get_contract_address()
         return self._w3.eth.contract(address=address, abi=abi)
