@@ -587,7 +587,7 @@ var show_notify_funder_modal = function() {
   var self = this;
 
   setTimeout(function() {
-    var bounty_path = document_result['network'] + '/' + document_result['standard_bounties_id'];
+    var bounty_path = document.result['network'] + '/' + document.result['standard_bounties_id'];
     var url = '/' + bounty_path + '/modal/notify-funder';
 
     $.get(url, function(newHTML) {
@@ -849,6 +849,10 @@ var do_actions = function(result) {
   // Find interest information
   const is_interested = is_current_user_interested(result);
 
+  let console = eruda.get('console');
+  console.log(result['fulfillments']);
+  console.log(result['fulfillments'][0].fulfiller_github_username);
+  console.log(document.contxt['github_handle']);
   const has_fulfilled = result['fulfillments'].filter(fulfiller => fulfiller.fulfiller_github_username === document.contxt['github_handle']).length > 0;
 
   document.interested = is_interested;

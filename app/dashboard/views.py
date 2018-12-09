@@ -1018,9 +1018,8 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
     return TemplateResponse(request, 'bounty/details.html', params)
 
 
-def get_notify_funder_modal(request, network, stdbounties_id):
-    stdbounties_id = clean_str(stdbounties_id)
-    bounty = Bounty.objects.current().filter(network=network, standard_bounties_id=stdbounties_id).first()
+def get_notify_funder_modal(request, bounty_network, stdbounties_id):
+    bounty = Bounty.objects.current().filter(network=bounty_network, standard_bounties_id=stdbounties_id).first()
 
     context = {
         'bounty': bounty,
@@ -1031,17 +1030,31 @@ def get_notify_funder_modal(request, network, stdbounties_id):
 
 
 @csrf_exempt
-def funder_payout_reminder(request, network, stdbounties_id):
-    if request.user.is_authenticated:
+def funder_payout_reminder(request, bounty_network, stdbounties_id):
+    if not request.user.is_authenticated:
         return JsonResponse({
             'success': False,
         },
         status=403)
 
+    if hasattr(request.user, 'profile'):
+        access_token = request.user.profile.get_access_token()
+    else:
+        access_token = request.session.get('access_token')
+    github_user_data = get_github_user_data(access_token)
+
     try:
-        bounty = Bounty.objects.current().filter(network=network, standard_bounties_id=stdbounties_id)
+        bounty = Bounty.objects.current().filter(network=bounty_network, standard_bounties_id=stdbounties_id).first()
     except Bounty.DoesNotExist:
         raise Http404
+
+    has_fulfilled = bounty.fulfillments.filter(fulfiller_github_username=github_user_data['login']).count()
+    if has_fulfilled == 0:
+        return JsonResponse({
+            'success': False,
+        },
+        status=403)
+
 
     if bounty.funder_last_messaged_on:
         return JsonResponse({
