@@ -53,8 +53,10 @@ class Command(BaseCommand):
         print(hours, start)
 
         #  Sync actions for Git issues that are in bounties that:
-        bounties_fulfilled = BountyFulfillment.objects.filter(accepted=False)                                                                                               bounties_fulfilled_last_time_period = bounties_fulfilled.filter(created_on__gt=start)
-        fulfillments_notified_before_last_time_period = bounties_fulfilled.filter(funder_last_notified_on__lt=start)                                                        bounty_fulfillments = bounties_fulfilled_last_time_period | fulfillments_notified_before_last_time_period
+        bounties_fulfilled = BountyFulfillment.objects.filter(accepted=False)
+        bounties_fulfilled_last_time_period = bounties_fulfilled.filter(created_on__gt=start)
+        fulfillments_notified_before_last_time_period = bounties_fulfilled.filter(funder_last_notified_on__lt=start)
+        bounty_fulfillments = bounties_fulfilled_last_time_period | fulfillments_notified_before_last_time_period
         bounty_fulfillments = bounty_fulfillments.distinct()
         for bounty_fulfillment in bounty_fulfillments:
             # Debug
@@ -62,11 +64,21 @@ class Command(BaseCommand):
             # bounty_gh_details = get_gh_issue_details()
             print(bounty_fulfillment.bounty)
             bounty = bounty_fulfillment.bounty
-            closed_issue = get_gh_issue_state(bounty.github_org_name, bounty.github_repo_name, bounty.github_issue_number)
+            try:
+                closed_issue = get_gh_issue_state(bounty.github_org_name, bounty.github_repo_name, bounty.github_issue_number)
+            except Exception as e:
+                print(e)
+                time.sleep(5)
+                continue
             print(closed_issue)
             if (closed_issue == 'closed'):
                 print(bounty.github_url)
-                actions = get_interested_actions(bounty.github_url, '*')
+                try:
+                    actions = get_interested_actions(bounty.github_url, '*')
+                except Exception as e:
+                    print(e)
+                    time.sleep(5)
+                    continue
                 # -> retreive:
                 # --> The pull request that references the issue that a BountyFulfillment points to
                 pr_ref_commit_url = None
@@ -86,10 +98,10 @@ class Command(BaseCommand):
                             notified = self.notify_funder(bounty.bounty_owner_email, bounty, bounty_fulfillment.fulfiller_github_username, options['live'])
                             if bounty_fulfillment.created_on < deadline:
                                 print('Posting github comment')
-                                post_issue_comment(
-                                    bounty.github_org_name, bounty.gihtub_repo_name, bounty.github_issue_number,
-                                    '@'+bounty.bounty_owner_github_username+', please remember to close out the bounty!'
-                                )
+                                #post_issue_comment(
+                                #    bounty.github_org_name, bounty.gihtub_repo_name, bounty.github_issue_number,
+                                #    '@'+bounty.bounty_owner_github_username+', please remember to close out the bounty!'
+                                #)
                                 if bounty_fulfillment.created_on < escalated_deadline:
                                     record_funder_inaction_on_fulfillment(bounty_fulfillment)
                             print('Sending payment reminder: ')
