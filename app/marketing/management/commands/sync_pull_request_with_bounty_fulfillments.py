@@ -53,11 +53,9 @@ class Command(BaseCommand):
         print(hours, start)
 
         #  Sync actions for Git issues that are in bounties that:
-        bounties_fulfilled_last_time_period = list(BountyFulfillment.objects.filter(accepted=False).filter(created_on__gt=start).values_list('pk', flat=True))
-        fulfillments_notified_before_last_time_period = list(BountyFulfillment.objects.filter(accepted=False).filter(funder_last_notified_on__lt=start).values_list('pk', flat=True))
-        bounty_fulfillments = bounties_fulfilled_last_time_period + fulfillments_notified_before_last_time_period
-
-        bounty_fulfillments = BountyFulfillment.objects.filter(pk__in=bounty_fulfillments)
+        bounties_fulfilled = BountyFulfillment.objects.filter(accepted=False)                                                                                               bounties_fulfilled_last_time_period = bounties_fulfilled.filter(created_on__gt=start)
+                fulfillments_notified_before_last_time_period = bounties_fulfilled.filter(funder_last_notified_on__lt=start)                                                        bounty_fulfillments = bounties_fulfilled_last_time_period | fulfillments_notified_before_last_time_period
+                        bounty_fulfillments = bounty_fulfillments.distinct()
         for bounty_fulfillment in bounty_fulfillments:
             # Debug
             # May not be necessary if these are arleady synced
