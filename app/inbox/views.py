@@ -1,12 +1,13 @@
+import json
+from inbox.models import Notification
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.shortcuts import render
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from inbox.models import Notification
 from django.contrib.auth import get_user_model
-import json
 from django.http import JsonResponse, HttpResponseForbidden
+from django.core.paginator import Paginator
 
 
 def notifications(request):
@@ -15,17 +16,29 @@ def notifications(request):
         profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
         if profile is None:
             return HttpResponseForbidden('Not Allowed')
-
+        limit = 10
+        page = 1
+        if 'limit' in request.GET:
+            limit = int(request.GET['limit'])
+        if 'page' in request.GET:
+            page = int(request.GET['page'])
+        print(limit, page)
         all_notifs = Notification.objects.filter(to_user_id=request.user.id).order_by('id')[::-1]
-        params = []
-        for i in all_notifs:
-            new_notif = i.to_standard_dict()
-            new_notif['created_on'] = i.created_on
-            new_notif['modified_on'] = i.modified_on
-            new_notif['username'] = get_user_model().objects.get(id=new_notif['from_user_id']).username
+        params = dict()
+        all_pages = Paginator(all_notifs, limit)
+        if page > 0 and page <= all_pages.num_pages:
+            all_notifications = []
+            for i in all_pages.page(page):
+                new_notif = i.to_standard_dict()
+                new_notif['created_on'] = i.created_on
+                new_notif['modified_on'] = i.modified_on
+                new_notif['username'] = get_user_model().objects.get(id=new_notif['from_user_id']).username
 
-            params.append(new_notif)
-
+                all_notifications.append(new_notif)
+            params['data'] = all_notifications
+            params['has_next'] = all_pages.page(page).has_next()
+        else:
+            params['total_pages'] = all_pages.num_pages
         return JsonResponse(params, status=200, safe=False)
 
     else:
@@ -38,7 +51,10 @@ def delete_notifications(request):
     if request.method == 'DELETE' and profile is not None:
         params = dict()
         params['success'] = []
-        req_body = json.loads(request.body.decode('utf-8'))
+        try:
+            req_body = json.loads(request.body.decode('utf-8'))
+        except:
+            pass
         if 'delete' in req_body:
             for i in req_body['delete']:
                 entry = Notification.objects.filter(id=i)
@@ -59,7 +75,10 @@ def unread_notifications(request):
     if request.method == 'PUT' and profile is not None:
         params = dict()
         params['success'] = []
-        req_body = json.loads(request.body.decode('utf-8'))
+        try:
+            req_body = json.loads(request.body.decode('utf-8'))
+        except:
+            pass
         if 'unread' in req_body:
             for i in req_body['unread']:
                 entry = Notification.objects.filter(id=i)
@@ -82,7 +101,10 @@ def read_notifications(request):
     if request.method == 'PUT' and profile is not None:
         params = dict()
         params['success'] = []
-        req_body = json.loads(request.body.decode('utf-8'))
+        try:
+            req_body = json.loads(request.body.decode('utf-8'))
+        except:
+            pass
         if 'read' in req_body:
             for i in req_body['read']:
                 entry = Notification.objects.filter(id=i)
