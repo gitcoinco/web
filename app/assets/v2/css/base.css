@@ -60,6 +60,8 @@ span {
 .navbar-nav .btn-gc-blue {
   margin-right: 1rem;
   font-size: 0.9rem;
+  padding-left: 1rem;
+  text-align: left;
 }
 
 .navbar-nav .dropdown-menu {
