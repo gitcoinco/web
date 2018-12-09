@@ -1032,8 +1032,8 @@ def funder_payout_reminder(request, bounty_network, stdbounties_id):
     if not request.user.is_authenticated:
         return JsonResponse({
             'success': False,
-        },
-        status=403)
+          },
+          status=403)
 
     if hasattr(request.user, 'profile'):
         access_token = request.user.profile.get_access_token()
@@ -1050,22 +1050,23 @@ def funder_payout_reminder(request, bounty_network, stdbounties_id):
     if has_fulfilled == 0:
         return JsonResponse({
             'success': False,
-        },
-        status=403)
+          },
+          status=403)
 
-
+    #  410 Gone Indicates that the resource requested is no longer available and will not be available again.
     if bounty.funder_last_messaged_on:
         return JsonResponse({
             'success': False,
-        }, status=410 # 410 Gone Indicates that the resource requested is no longer available and will not be available again. 
-        )
-    
+          },
+          status=410)
+
     user = request.user
     funder_payout_reminder_mail(to_email=bounty.bounty_owner_email, bounty=bounty, github_username=user, live=True)
     bounty.funder_last_messaged_on = timezone.now()
     bounty.save()
     return JsonResponse({
-        'success': True},
+          'success': True
+        },
         status=200)
 
 
