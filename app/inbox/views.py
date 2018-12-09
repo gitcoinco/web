@@ -38,7 +38,10 @@ def delete_notifications(request):
     if request.method == 'DELETE' and profile is not None:
         params = dict()
         params['success'] = []
-        req_body = json.loads(request.body.decode('utf-8'))
+        try:
+            req_body = json.loads(request.body.decode('utf-8'))
+        except:
+            pass
         if 'delete' in req_body:
             for i in req_body['delete']:
                 entry = Notification.objects.filter(id=i)
@@ -59,7 +62,10 @@ def unread_notifications(request):
     if request.method == 'PUT' and profile is not None:
         params = dict()
         params['success'] = []
-        req_body = json.loads(request.body.decode('utf-8'))
+        try:
+            req_body = json.loads(request.body.decode('utf-8'))
+        except:
+            pass
         if 'unread' in req_body:
             for i in req_body['unread']:
                 entry = Notification.objects.filter(id=i)
@@ -82,7 +88,10 @@ def read_notifications(request):
     if request.method == 'PUT' and profile is not None:
         params = dict()
         params['success'] = []
-        req_body = json.loads(request.body.decode('utf-8'))
+        try:
+            req_body = json.loads(request.body.decode('utf-8'))
+        except:
+            pass
         if 'read' in req_body:
             for i in req_body['read']:
                 entry = Notification.objects.filter(id=i)
