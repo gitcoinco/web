@@ -98,10 +98,15 @@ class Command(BaseCommand):
                             notified = self.notify_funder(bounty.bounty_owner_email, bounty, bounty_fulfillment.fulfiller_github_username, options['live'])
                             if bounty_fulfillment.created_on < deadline:
                                 print('Posting github comment')
-                                #post_issue_comment(
-                                #    bounty.github_org_name, bounty.gihtub_repo_name, bounty.github_issue_number,
-                                #    '@'+bounty.bounty_owner_github_username+', please remember to close out the bounty!'
-                                #)
+                                try:
+                                    post_issue_comment(
+                                        bounty.github_org_name, bounty.gihtub_repo_name, bounty.github_issue_number,
+                                        '@'+bounty.bounty_owner_github_username+', please remember to close out the bounty!'
+                                    )
+                                except Exception as e:
+                                    print(e)
+                                    time.sleep(5)
+                                    pass
                                 if bounty_fulfillment.created_on < escalated_deadline:
                                     record_funder_inaction_on_fulfillment(bounty_fulfillment)
                             print('Sending payment reminder: ')
