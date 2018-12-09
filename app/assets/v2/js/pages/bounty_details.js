@@ -850,6 +850,7 @@ var do_actions = function(result) {
   const is_interested = is_current_user_interested(result);
 
   let console = eruda.get('console');
+
   console.log(result['fulfillments']);
   console.log(result['fulfillments'][0].fulfiller_github_username);
   console.log(document.contxt['github_handle']);

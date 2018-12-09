@@ -48,9 +48,7 @@ from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_auth_url, get_github_user_data, is_github_token_valid, search_users
 from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
-from marketing.mails import (
-    admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,
-)
+from marketing.mails import admin_contact_funder, bounty_uninterested
 from marketing.mails import funder_payout_reminder as funder_payout_reminder_mail
 from marketing.mails import start_work_approved, start_work_new_applicant, start_work_rejected
 from marketing.models import Keyword

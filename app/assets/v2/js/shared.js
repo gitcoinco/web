@@ -263,7 +263,7 @@ var waitingStateActive = function() {
 };
 
 var notify_funder = function(network, std_bounties_id, data) {
-  var request_url = '/actions/bounty/'  + network + '/' + std_bounties_id + '/notify/funder/';
+  var request_url = '/actions/bounty/' + network + '/' + std_bounties_id + '/notify/funder/';
 
   showBusyOverlay();
   $.post(request_url, data).then(function(result) {
