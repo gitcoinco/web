@@ -1036,19 +1036,19 @@ def funder_payout_reminder(request, network, stdbounties_id):
         return JsonResponse({
             'success': False,
         },
-        status-403)
+        status=403)
 
     try:
         bounty = Bounty.objects.current().filter(network=network, standard_bounties_id=stdbounties_id)
     except Bounty.DoesNotExist:
         raise Http404
 
-    if (bounty.funder_last_messaged_on) {
+    if bounty.funder_last_messaged_on:
         return JsonResponse({
             'success': False,
         }, status=410 # 410 Gone Indicates that the resource requested is no longer available and will not be available again. 
         )
-    }
+    
     user = request.user
     funder_payout_reminder_mail(to_email=bounty.bounty_owner_email, bounty=bounty, github_username=user, live=True)
     bounty.funder_last_messaged_on = timezone.now()
