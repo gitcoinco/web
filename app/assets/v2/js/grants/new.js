@@ -80,7 +80,7 @@ $(document).ready(function() {
           }).send({
             from: accounts[0],
             gas: 3000000,
-            gasPrice: 4000000000
+            gasPrice: web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9))
           }).on('error', function(error) {
             console.log('1', error);
           }).on('transactionHash', function(transactionHash) {
