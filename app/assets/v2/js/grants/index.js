@@ -7,28 +7,10 @@ $(document).ready(() => {
     minimumResultsForSearch: Infinity
   });
 
-
-  $('#sort_option').on("change", function (e) {
-    // Should this fire POST / Update URL + fire ajax ?
-  });
-
-  $('#network').on("change", function (e) {
-    // Should this fire POST / Update URL + fire ajax ?
-  });
+  searchGrant();
+  populateFilters();
 
   $('.select2-selection__rendered').removeAttr('title');
-
-  $('#search_form').validate({
-    submitHandler: (form) => {
-      let data = {};
-
-      $.each($(form).serializeArray(), () => {
-        data[this.name] = this.value;
-      });
-
-      form.submit();
-    }
-  });
 
   $('.flip-card').on('click keypress', e => {
     if ($(e.target).is('a') || $(e.target).is('img')) {
@@ -38,3 +20,31 @@ $(document).ready(() => {
     $(e.currentTarget).toggleClass('turn');
   });
 });
+
+const searchGrant = () => {
+  $('#sort_option').on('change', function(e) {
+    updateParams('sort_option', $('#sort_option').val());
+  });
+
+  $('#network').on('change', function(e) {
+    updateParams('network', $('#network').val());
+  });
+
+  $('#search_form').on('submit', (e) => {
+    e.preventDefault();
+    updateParams('keyword', $('#keyword').val());
+  });
+};
+
+const populateFilters = () => {
+  const sort = getURLParams('sort_option');
+  const network = getURLParams('network');
+  const keyword = getURLParams('keyword');
+
+  if (sort)
+    $('#sort_option').val(getURLParams('sort_option')).trigger('change');
+  if (network)
+    $('#network').val(getURLParams('network')).trigger('change');
+  if (keyword)
+    $('#keyword').val(keyword);
+};

@@ -1350,3 +1350,19 @@ function shuffleArray(array) {
   }
   return array;
 }
+
+const getURLParams = (k) => {
+  var p = {};
+
+  location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(s, k, v) {
+    p[k] = v;
+  });
+  return k ? p[k] : p;
+};
+
+const updateParams = (key, value) => {
+  params = new URLSearchParams(window.location.search);
+  if (params.get(key) === value) return;
+  params.set(key, value);
+  window.location.search = params.toString();
+};
