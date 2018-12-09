@@ -15,6 +15,9 @@ function requestNotifications() {
       newNotifications.forEach(element => {
         notifications.push(element);
       });
+
+      markAsRead(newNotifications)
+
       setDot(true, notifications);
       templateSuggestions(newNotifications);
     }
@@ -92,6 +95,32 @@ function setDot(hasNewData, newNotifications) {
   }
 }
 
+function markAsRead(notificationsA) {
+  console.log(notificationsA)
+  var notificationRead = parseInt(sessionStorage.getItem('notificationRead'))
+
+  if (notificationRead) {
+    console.log('ping')
+    sessionStorage.removeItem('notificationRead');
+    console.log('api request readed', notificationRead);
+    // notificationRead = parseInt(notificationRead)
+
+    const resulta = notificationsA.findIndex(item => {
+      return item.id === notificationRead
+    })
+    notificationsA[resulta].is_read = true;
+  }
+}
+
 requestNotifications();
 
 var intervalNotifications = window.setInterval(requestNotifications, 5000);
+
+$(document).ready(function() {
+
+  $('.notifications__box').on('click', '[data-notification]', function(e){
+    window.sessionStorage.setItem('notificationRead', e.currentTarget.dataset.notification);
+  })
+
+})
+
