@@ -12,7 +12,7 @@
   border-bottom-left-radius: 0;
 }
 
-#search_grants {
+#keyword {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
 }
@@ -163,11 +163,12 @@
   margin-top: 0;
 }
 
-.order_by .select2-container {
+#search_form .select2-container {
   width: auto !important;
   font-weight: normal;
   text-align: left;
   min-width: 9rem;
+  font-size: 12px;
 }
 
 .alpha-warning {
