@@ -21,52 +21,6 @@ window.onload = function() {
       $('#tipEstimate').text(estimate);
     });
 
-    var bountyDetails = [];
-
-    var fulfillmentCallback = function(results, status) {
-      if (status != 'success') {
-        mixpanel.track('Process Bounty Error', {step: 'fulfillmentCallback', error: error});
-        _alert({ message: gettext('Could not get fulfillment details') }, 'warning');
-        console.error(error);
-        unloading_button($('.submitBounty'));
-        return;
-      }
-      results = sanitizeAPIResults(results);
-      result = results[0];
-      if (result == null) {
-        _alert({ message: gettext('No bounty fulfillments found for this Github URL.  Please use the advanced payout tool instead.') }, 'warning');
-        unloading_button($('.submitBounty'));
-        return;
-      }
-      $('#bountyFulfillment').html('');
-      $('body').append($('<select>').append($('<option>').attr('value', 'bla bla bla')));
-      $.each(result['fulfillments'], function(index, value) {
-        // option to build each selector-option:
-        var option = $('<option>');
-
-        option.attr('value', value.fulfillment_id);
-        option.attr('data-username', value.fulfiller_github_username);
-        var short_addr = value.fulfiller_address.slice(0, 7).concat('...');
-
-        option.text('Id: ' + value.fulfillment_id + ',  Username: ' + value.fulfiller_github_username + ',  Address: ' + short_addr);
-        $('#bountyFulfillment').append(option);
-      });
-
-      if (getParam('id')) {
-        selectedFulfillment = getParam('id');
-        $('#bountyFulfillment').find('option[value=' + selectedFulfillment + ']').attr('selected', '');
-      }
-
-    };
-
-    var issueURL = $('input[name=issueURL]').val();
-
-    waitforWeb3(function() {
-      var uri = '/api/v0.1/bounties/?github_url=' + issueURL + '&network=' + document.web3network;
-
-      $.get(uri, fulfillmentCallback);
-    });
-
     $('#goBack').click(function(e) {
       var url = window.location.href;
       var new_url = url.replace('process?source', 'details?url');
@@ -82,7 +36,7 @@ window.onload = function() {
       var email = '';
       var github_url = $('#issueURL').val();
       var from_name = document.contxt['github_handle'];
-      var username = $('#bountyFulfillment option:selected').data('username');
+      var username = getSelectedFulfillment().getAttribute('username');
       var amountInEth = bounty_amount * pct;
       var comments_priv = '';
       var comments_public = '';
@@ -101,8 +55,7 @@ window.onload = function() {
 
       };
       var failure_callback = function() {
-        // do nothing
-        $.noop();
+        unloading_button($('.submitBounty'));
       };
 
       return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, false);
@@ -115,13 +68,13 @@ window.onload = function() {
       var email = '';
       var github_url = $('#issueURL').val();
       var from_name = document.contxt['github_handle'];
-      var username = $('#bountyFulfillment option:selected').data('username');
+      var username = getSelectedFulfillment().getAttribute('username');
       var amountInEth = selected_kudos.price_finney / 1000.0;
       var comments_public = $('.kudos-comment textarea').val();
       var comments_priv = '';
       var from_email = '';
       var accept_tos = true;
-      var tokenAddress = document.token_address;
+      var to_eth_address = $('#bountyFulfillment option:selected').data('address');
       var expires = 9999999999;
       var kudosId = selected_kudos.id;
       var tokenId = selected_kudos.token_id;
@@ -135,11 +88,10 @@ window.onload = function() {
 
       };
       var failure_callback = function() {
-        // do nothing
-        $.noop();
+        unloading_button($('.submitBounty'));
       };
 
-      return sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, kudosId, tokenId, success_callback, failure_callback, true);
+      return sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, to_eth_address, expires, kudosId, tokenId, success_callback, failure_callback, true);
 
     };
 
@@ -156,7 +108,7 @@ window.onload = function() {
       e.preventDefault();
       var whatAction = $(this).html().trim();
       var issueURL = $('input[name=issueURL]').val();
-      var fulfillmentId = $('select[name=bountyFulfillment]').val();
+      var fulfillmentId = getSelectedFulfillment().getAttribute('value');
 
       var isError = false;
 
@@ -279,6 +231,36 @@ window.onload = function() {
       });
       e.preventDefault();
     });
-  }, 100);
 
+    function getSelectedFulfillment() {
+      return $('#bountyFulfillment').select2('data')[0].element;
+    }
+
+    function renderFulfillment(selected) {
+      if (!selected.element) {
+        return selected.text;
+      }
+
+      let html =
+        '<img class="rounded-circle mr-1" src="' +
+        selected.element.getAttribute('avatar') +
+        '" width="32" height="32">' +
+        selected.element.getAttribute('username') +
+        '<i class="px-1 font-smallest middle fas fa-circle"></i>' +
+        truncate(selected.element.getAttribute('address'), 4);
+
+      return html;
+    }
+
+    $('#bountyFulfillment').select2(
+      {
+        templateSelection: renderFulfillment,
+        templateResult: renderFulfillment,
+        escapeMarkup: function(markup) {
+          return markup;
+        }
+      }
+    );
+
+  }, 100);
 };

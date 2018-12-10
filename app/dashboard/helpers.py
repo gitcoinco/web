@@ -37,7 +37,7 @@ from django.utils import timezone
 from django.utils.html import escape
 from django.utils.translation import gettext_lazy as _
 
-from app.utils import sync_profile
+from app.utils import get_semaphore, sync_profile
 from dashboard.models import Activity, Bounty, BountyFulfillment, BountySyncRequest, UserAction
 from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
@@ -49,6 +49,7 @@ from git.utils import get_gh_issue_details, get_url_dict
 from jsondiff import diff
 from pytz import UTC
 from ratelimit.decorators import ratelimit
+from redis_semaphore import NotAvailable as SemaphoreExists
 
 from .models import Profile
 
@@ -284,6 +285,7 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
         QuerySet: The BountyFulfillments queryset.
 
     """
+    from dashboard.utils import is_blocked
     for fulfillment in fulfillments:
         kwargs = {}
         accepted_on = None
@@ -291,6 +293,8 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
             'payload', {}).get('fulfiller', {}).get(
                 'githubUsername', '')
         if github_username:
+            if is_blocked(github_username):
+                continue
             try:
                 kwargs['profile_id'] = Profile.objects.get(handle__iexact=github_username).pk
             except Profile.MultipleObjectsReturned:
@@ -507,6 +511,7 @@ def process_bounty_details(bounty_details):
         tuple[2] (dashboard.models.Bounty): The new Bounty object.
 
     """
+    from dashboard.utils import get_bounty_semaphore_ns
     # See dashboard/utils.py:get_bounty from details on this data
     bounty_id = bounty_details.get('id', {})
     bounty_data = bounty_details.get('data') or {}
@@ -527,11 +532,18 @@ def process_bounty_details(bounty_details):
     if not did_change:
         return (did_change, latest_old_bounty, latest_old_bounty)
 
-    new_bounty = create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id)
+    semaphore_key = get_bounty_semaphore_ns(bounty_data['id'])
+    semaphore = get_semaphore(semaphore_key)
 
-    if new_bounty:
-        return (did_change, latest_old_bounty, new_bounty)
-    return (did_change, latest_old_bounty, latest_old_bounty)
+    try:
+        with semaphore:
+            new_bounty = create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id)
+
+            if new_bounty:
+                return (did_change, latest_old_bounty, new_bounty)
+            return (did_change, latest_old_bounty, latest_old_bounty)
+    except SemaphoreExists:
+        return (did_change, latest_old_bounty, latest_old_bounty)
 
 
 def get_bounty_data_for_activity(bounty):

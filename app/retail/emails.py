@@ -31,6 +31,7 @@ from django.utils.translation import gettext as _
 
 import cssutils
 import premailer
+from grants.models import Grant, Subscription
 from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
 from retail.utils import strip_double_chars, strip_html
@@ -65,6 +66,118 @@ def premailer_transform(html):
     cssutils.log.setLevel(logging.CRITICAL)
     p = premailer.Premailer(html, base_url=settings.BASE_URL)
     return p.transform()
+
+
+def render_new_grant_email(grant):
+    params = {'grant': grant}
+    response_html = premailer_transform(render_to_string("emails/grants/new_grant.html", params))
+    response_txt = render_to_string("emails/grants/new_grant.txt", params)
+    subject = "Your Gitcoin Grant"
+    return response_html, response_txt, subject
+
+
+def render_new_supporter_email(grant, subscription):
+    params = {'grant': grant, 'subscription': subscription}
+    response_html = premailer_transform(render_to_string("emails/grants/new_supporter.html", params))
+    response_txt = render_to_string("emails/grants/new_supporter.txt", params)
+    subject = "You have a new Grant supporter!"
+    return response_html, response_txt, subject
+
+
+def render_thank_you_for_supporting_email(grant, subscription):
+    params = {'grant': grant, 'subscription': subscription}
+    response_html = premailer_transform(render_to_string("emails/grants/thank_you_for_supporting.html", params))
+    response_txt = render_to_string("emails/grants/thank_you_for_supporting.txt", params)
+    subject = "Thank you for supporting Grants on Gitcoin!"
+    return response_html, response_txt, subject
+
+
+def render_support_cancellation_email(grant, subscription):
+    params = {'grant': grant, 'subscription': subscription}
+    response_html = premailer_transform(render_to_string("emails/grants/support_cancellation.html", params))
+    response_txt = render_to_string("emails/grants/support_cancellation.txt", params)
+    subject = "Your subscription on Gitcoin Grants has been cancelled"
+
+    return response_html, response_txt, subject
+
+
+def render_grant_cancellation_email(grant, subscription):
+    params = {'grant': grant, 'subscription': subscription}
+    response_html = premailer_transform(render_to_string("emails/grants/grant_cancellation.html", params))
+    response_txt = render_to_string("emails/grants/grant_cancellation.txt", params)
+    subject = "Your Grant on Gitcoin Grants has been cancelled"
+    return response_html, response_txt, subject
+
+
+def render_subscription_terminated_email(grant, subscription):
+    params = {'grant': grant, 'subscription': subscription}
+    response_html = premailer_transform(render_to_string("emails/grants/subscription_terminated.html", params))
+    response_txt = render_to_string("emails/grants/subscription_terminated.txt", params)
+    subject = "Your subscription on Gitcoin Grants has been cancelled by the Grant Creator"
+    return response_html, response_txt, subject
+
+
+def render_successful_contribution_email(grant, subscription):
+    params = {'grant': grant, 'subscription': subscription}
+    response_html = premailer_transform(render_to_string("emails/grants/successful_contribution.html", params))
+    response_txt = render_to_string("emails/grants/successful_contribution.txt", params)
+    subject = "Your subscription on Gitcoin Grants has been cancelled by the Grant Creator"
+    return response_html, response_txt, subject
+
+
+@staff_member_required
+def successful_contribution(request):
+    grant = Grant.objects.all().first()
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+    response_html, __, __ = render_successful_contribution_email(grant, subscription)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def subscription_terminated(request):
+    grant = Grant.objects.all().first()
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+    response_html, __, __ = render_subscription_terminated_email(grant, subscription)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def grant_cancellation(request):
+    grant = Grant.objects.all().first()
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+    response_html, __, __ = render_grant_cancellation_email(grant, subscription)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def support_cancellation(request):
+    grant = Grant.objects.all().first()
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+    response_html, __, __ = render_support_cancellation_email(grant, subscription)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def thank_you_for_supporting(request):
+    grant = Grant.objects.all().first()
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+    response_html, __, __ = render_thank_you_for_supporting_email(grant, subscription)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def new_supporter(request):
+    grant = Grant.objects.all().first()
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+    response_html, __, __ = render_new_supporter_email(grant, subscription)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def new_grant(request):
+    grant = Grant.objects.all().first()
+    response_html, __, __ = render_new_grant_email(grant)
+    return HttpResponse(response_html)
 
 
 def render_tip_email(to_email, tip, is_new):
@@ -572,96 +685,74 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Nominate your Favorite OSS Dev | Kudos Trophies!"
-    new_kudos_pks = [429, 430]
+    subject = "Introducing Gitcoin Ambassadors | MetaTX Grows"
+    new_kudos_pks = [486, 485, 484]
     new_kudos_size_px = 150
     intro = '''
-
 <p>
 Hi there,
 </p>
-<h3>Kudos Trophies</h3>
 <p>
-I'm excited to show off a new product: limited edition, Kudos Trophies. Kudos trophies are physical trophies with Kudos on them.  We launched them as the Status Cryptolife Hackathon in Prague.  Here's what they look like:
-<BR>
-<BR>
-<img style='max-width: 300px;' src='https://cdn-images-1.medium.com/max/640/1*8CIBNn9yXZY5bj34ZInkPA.jpeg'>
-<BR>
-<BR>
-Each Kudos Trophy is a physical trophy, which has a QR code on the bottom of it that allows it to be redeemed on Gitcoin’s website.
-<BR>
-<BR>
-<img style='max-width: 300px;' src='https://cdn-images-1.medium.com/max/1280/1*zeXLPyw4qkP4fifHkZAgFA.jpeg'>
-<BR>
-<BR>
-It's quite possible that you'll see them again at EthDenver this year :)
-<BR>
-<BR>
- <a href="https://medium.com/gitcoin/introducing-kudos-trophies-4e98c54e521">Learn more about Kudos Trophies here</a>.
-
+This week, we welcomed <a href="https://medium.com/gitcoin/introducing-the-gitcoin-ambassadors-7eddb5f4d507">eight fantastic Gitcoin ambassadors to the Gitcoin community.</a>
+Each of these people has organically proved themselves to be a valuable part of the Gitcoin community,
+all behind the mission to grow and sustain open source. We're grateful for the opportunity to provide a platform
+from where they can contribute their vision to our shared, open, future. Say hello to them on Gitcoin Slack.
 </p>
-
-<h3>Gitcoin Nominations are now Live</h3>
 <p>
-Who’s making the most impact on your OSS or Web3 project? Do you know someone that solved a problem in a creative way, built something interesting, or truly deserves a thanks? <a href='https://github.com/gitcoinco/web/issues/2816'>Nominate open source contributors to receive a limited edition and unique Kudos!</a>
+In blockchain UX world, Gitcoin Labs is continuing it's industry leading work. Austin Griffith's post on native MetaTX's within smart contracts is a must read
+for anyone interested in 'gas-less' dApps. <a href="https://medium.com/gitcoin/native-meta-transactions-e509d91a8482">Check it out!</a>
 </p>
-
 <h3>New Kudos This Week</h3>
 <p>
 Check out a few of the new kudos launched this week:
 </p>
-
 <p>
-
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
-
-
 </p>
-
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Gitcoin now supports EIP--1102 (Metamask Privacy Mode).  To use Gitcoin in privacy mode, <a href="https://medium.com/metamask/introducing-privacy-mode-42549d4870fa">checkout this post</a>.
+            Gitcoin is hiring for a Principal Engineer. Know a superstar Python/Django engineer? <a href="https://consensys.net/open-roles/1333457/">Send him or her our way!</a>
         </li>
         <li>
-            We're announcing the launch of Gitcoin Labs next week.  <a href="https://medium.com/gitcoin/announcing-gitcoin-labs-ba400522d697">Here's a sneak peak</a>.
-        </li>
-        <li>
-            The Gitcoin Livestream will be on as regularly scheduled in two days. Aidan from Chainsafe will be there. They'll be talking about their ETH2.0 implementation and Gorli Testnet. We'll also have Ele from OSCoin presenting Radicle. <a href="https://gitcoin.co/livestream">Join us Friday at 5PM ET</a>!
+            Gitcoin Livestream is back this week! Hear more about Gnosis Safe + another project to be named. Join us <a href="https://gitcoin.co/livestream">Friday at 5PM ET</a>!
         </li>
     </ul>
 </p>
 <p>
-Back to BUIDLing,
+Thanks for reading! Back to BUIDLing,
 </p>
+
 '''
     highlights = [{
-        'who': 'cleanunicorn',
+        'who': 'bhargavasomu',
         'who_link': True,
-        'what': 'Has been helping us with some security bounties',
-    }, {
-        'who': 'zachzundel',
-        'who_link': True,
-        'what': 'Worked with mbeacom on our testing suite!',
-        'link': 'https://github.com/gitcoinco/web/pull/2822',
+        'what': 'Worked on py-szz with the Ethereum Foundation',
+        'link': 'https://gitcoin.co/issue/ethereum/py-ssz/1/1878',
         'link_copy': 'View more',
     }, {
-        'who': 'iamonuwa',
+        'who': 'dylanjw',
         'who_link': True,
-        'what': 'Worked with electricfeelco on some hello-metamask component refactoring.',
-        'link': 'https://gitcoin.co/issue/electricfeelco/travay/23/1355',
+        'what': 'Great work on Status React!',
+        'link': 'https://gitcoin.co/issue/status-im/status-react/6199/1865',
+        'link_copy': 'View more',
+    }, {
+        'who': 'cryptomental',
+        'who_link': True,
+        'what': 'Completed work on Py-EVM with their core team!',
+        'link': 'https://gitcoin.co/issue/ethereum/py-evm/1472/1769',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/f-o-a-m/chanterelle/issues/46',
-        'primer': 'Help foam improve their CI',
+        'url': 'https://github.com/ethereum/py-ssz/issues/4',
+        'primer': 'Serialization and Deserialization of Remaining Base Types.',
     }, {
-        'url': 'https://github.com/novnc/noVNC/issues/944',
-        'primer': 'Help novnc add multi touch support.',
+        'url': 'https://github.com/trailofbits/slither/issues/85',
+        'primer': 'Improve Remix plugin on Trail Of Bits!',
     }, {
-        'url': 'https://github.com/gitcoinco/web/issues/2684',
-        'primer': 'Add new assets to Gitcoin Avatars Builder - Holiday Avatars encouraged! 🎅',
+        'url': 'https://github.com/spacemeshos/POET/issues/20',
+        'primer': 'Add interoperability tests on Spash Mesh OS!',
     }, ]
 
     num_leadboard_items = 5
@@ -727,6 +818,7 @@ Back to BUIDLing,
     response_txt = render_to_string("emails/bounty_roundup.txt", params)
 
     return response_html, response_txt, subject
+
 
 
 

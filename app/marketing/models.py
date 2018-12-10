@@ -193,6 +193,7 @@ class LeaderboardRank(SuperModel):
     active = models.BooleanField()
     count = models.IntegerField(default=0)
     rank = models.IntegerField(default=0)
+    tech_keywords = ArrayField(models.CharField(max_length=50), blank=True, default=list)
 
     objects = LeaderboardRankQuerySet.as_manager()
 

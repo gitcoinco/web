@@ -202,7 +202,7 @@ class Token(SuperModel):
 
         """
         from dashboard.models import Profile
-        related_kudos_transfers = KudosTransfer.objects.filter(kudos_token_cloned_from=self.pk).exclude(txid='')
+        related_kudos_transfers = KudosTransfer.objects.filter(kudos_token_cloned_from=self.pk).send_happy_path()
         related_profiles_pks = related_kudos_transfers.values_list('recipient_profile_id', flat=True)
         related_profiles = Profile.objects.filter(pk__in=related_profiles_pks).distinct()
         return related_profiles
@@ -216,7 +216,7 @@ class Token(SuperModel):
 
         """
         from dashboard.models import Profile
-        related_kudos_transfers = KudosTransfer.objects.filter(kudos_token_cloned_from=self.pk).exclude(txid='')
+        related_kudos_transfers = KudosTransfer.objects.filter(kudos_token_cloned_from=self.pk).exclude(txid='').exclude(username='')
         return related_kudos_transfers.values_list('username', flat=True)
 
     @property
@@ -268,7 +268,7 @@ class Token(SuperModel):
             try:
                 obj_data = obj.read()
                 if obj_data:
-                    image = pyvips.Image.new_from_file(obj.name)
+                    image = pyvips.Image.new_from_file(obj.name, scale=3)
                     return BytesIO(image.write_to_buffer(f'.png'))
             except VipsError as e:
                 logger.error(e)
@@ -381,7 +381,7 @@ class KudosTransfer(SendCryptoAsset):
 def psave_kt(sender, instance, **kwargs):
     token = instance.kudos_token_cloned_from
     if token:
-        all_transfers = KudosTransfer.objects.filter(kudos_token_cloned_from=token).exclude(txid='')
+        all_transfers = KudosTransfer.objects.filter(kudos_token_cloned_from=token).send_happy_path()
         token.popularity = all_transfers.count()
         token.popularity_week = all_transfers.filter(created_on__gt=(timezone.now() - timezone.timedelta(days=7))).count()
         token.popularity_month = all_transfers.filter(created_on__gt=(timezone.now() - timezone.timedelta(days=30))).count()

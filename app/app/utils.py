@@ -197,6 +197,19 @@ def sync_profile(handle, user=None, hide_profile=True):
     try:
         profile, created = Profile.objects.update_or_create(handle=handle, defaults=defaults)
         print("Profile:", profile, "- created" if created else "- updated")
+        orgs = get_user(handle, '/orgs')
+        profile.organizations = [ele['login'] for ele in orgs]
+        keywords = []
+        for repo in profile.repos_data_lite:
+            language = repo.get('language') if repo.get('language') else ''
+            _keywords = language.split(',')
+            for key in _keywords:
+                if key != '' and key not in keywords:
+                    keywords.append(key)
+
+        profile.keywords = keywords
+        profile.save()
+
     except Exception as e:
         logger.error(e)
         return None
@@ -357,11 +370,28 @@ def get_default_network():
     return 'mainnet'
 
 
-def get_semaphor(namespace, count=1):
+def get_semaphore(namespace, count=1, db=None, blocking=False, stale_client_timeout=60):
     from redis import Redis
     from redis_semaphore import Semaphore
     from urllib.parse import urlparse
     redis = urlparse(settings.SEMAPHORE_REDIS_URL)
 
-    semaphore = Semaphore(Redis(host=redis.hostname, port=redis.port), count=count, namespace=namespace)
+    if db is None:
+        db = int(redis.path.lstrip('/'))
+
+    semaphore = Semaphore(
+        Redis(host=redis.hostname, port=redis.port, db=db),
+        count=count,
+        namespace=namespace,
+        blocking=blocking,
+        stale_client_timeout=stale_client_timeout,
+    )
     return semaphore
+
+
+def release_semaphore(namespace, semaphore=None):
+    if not semaphore:
+        semaphore = get_semaphore(namespace)
+
+    token = semaphore.get_namespaced_key(namespace)
+    semaphore.signal(token)
