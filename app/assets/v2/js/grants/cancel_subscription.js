@@ -27,10 +27,7 @@ $(document).ready(() => {
 
         console.log('realTokenAmount', realTokenAmount);
 
-        // gas price in gwei
-        let realGasPrice = Number(data.gas_price * 10 ** 9);
-
-        console.log('realGasPrice', realGasPrice);
+        let realGasPrice = $('#gasPrice').val() * Math.pow(10, 9);
 
         web3.eth.getAccounts(function(err, accounts) {
 
@@ -59,7 +56,7 @@ $(document).ready(() => {
 
                 deployedSubscription.methods.cancelSubscription(
                   ...parts
-                ).send({from: accounts[0], gasPrice: 4000000000})
+                ).send({from: accounts[0], gasPrice: realGasPrice})
                   .on('transactionHash', function(transactionHash) {
                     $('#sub_cancel_tx_id').val(transactionHash);
                   }).on('confirmation', function(confirmationNumber, receipt) {

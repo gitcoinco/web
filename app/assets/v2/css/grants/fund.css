@@ -45,6 +45,10 @@
   bottom: 2px;
 }
 
+#accordion-set-own-limit {
+  font-size: 12px;
+}
+
 @media (max-width: 767.98px) {
 
   .banner-img {

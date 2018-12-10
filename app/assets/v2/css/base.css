@@ -798,6 +798,11 @@ input[type=text].loading {
   display: inline-block;
 }
 
+#metamask_label img {
+  position: relative;
+  top: -2px;
+}
+
 #metamask_context .red_warning {
   background-color: #fbe0d6;
   color: #fb9470;
@@ -813,9 +818,14 @@ input[type=text].loading {
   text-decoration: underline;
 }
 
-#metamask_context {
-  background-color: #fafafa;
-  border-radius: 5px;
+#metamask_context ul {
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  padding-left: 1rem;
+}
+
+#metamask_context li a {
+  color: #0D0764;
 }
 
 #metamask_context .warning {
