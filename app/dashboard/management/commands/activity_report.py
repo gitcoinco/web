@@ -33,6 +33,7 @@ from dashboard.utils import all_sendcryptoasset_models
 from economy.utils import convert_amount
 from enssubdomain.models import ENSSubdomainRegistration
 from faucet.models import FaucetRequest
+from grants.models import Contribution
 from marketing.mails import send_mail
 
 DATE_FORMAT = '%Y/%m/%d'
@@ -172,6 +173,32 @@ class Command(BaseCommand):
             'payee_bio': bio,
             'payee_location': location,
         }
+    def format_grantcontrib(self, contrib):
+        location, bio = get_bio(contrib.subscription.contributor_profile.handle) if contrib.subscription.contributor_profile else "", ""
+        return {
+            'type': 'grant_contribution',
+            'created_on': contrib.created_on,
+            'last_activity': contrib.modified_on,
+            'amount': contrib.subscription.amount_per_period,
+            'denomination': contrib.subscription.token_symbol,
+            'amount_eth': convert_amount(contrib.subscription.amount_per_period,contrib.subscription.token_symbol, 'ETH'),
+            'amount_usdt': convert_amount(contrib.subscription.amount_per_period,contrib.subscription.token_symbol, 'USD'),
+            'from_address': contrib.subscription.contributor_address,
+            'claimee_address': contrib.subscription.grant.contract_address,
+            'repo': 'n/a',
+            'from_username': contrib.subscription.contributor_profile.handle,
+            'fulfiller_github_username': contrib.subscription.contributor_profile.handle if contrib.subscription.contributor_profile else "",
+            'status': 'sent',
+            'comments': f"Gas: {contrib.gas_price}, Nonce: {contrib.nonce}, Grant: {contrib.subscription.grant.id}, Subscription: {contrib.subscription.id}, TX: {contrib.tx_id}",
+            'payee_bio': bio,
+            'payee_location': location,
+            
+            #'gas_price': contrib.gas_price,
+            #'nonce': contrib.nonce,
+            #'tx_id': contrib.tx_id,
+            #'subscription': contrib.subscription.id,
+            #'grant': contrib.subscription.grant.id
+        }
 
     def upload_to_s3(self, filename, contents):
         s3 = boto.connect_s3(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
@@ -212,13 +239,25 @@ class Command(BaseCommand):
             created_on__lte=options['end_date']
         ).order_by('created_on', 'id')
         formted_enssubreg = imap(self.format_ens_reg, enssubregistrations)
-
+        
+        #grants contribution objcets
+        grantcontobjs = Contribution.objects.filter(
+            created_on__gte=options['start_date'],
+            created_on__lte=options['end_date']
+        ).order_by('created_on', 'id')
+        formatted_grantcontrib = imap(self.format_grantcontrib, grantcontobjs)
+        
         # python3 list hack
         formatted_frs = [x for x in formatted_frs]
         formatted_bounties = [x for x in formatted_bounties]
         formateted_enssubregistrations = [x for x in formted_enssubreg]
-        all_items = formatted_bounties + all_scram + formatted_frs + formateted_enssubregistrations
-
+        formatted_grantcontrib = [x for x in formatted_grantcontrib]
+        all_items = formatted_bounties + all_scram + formatted_frs + formateted_enssubregistrations + formatted_grantcontrib
+        
+        # debug output
+        # for x in all_items:
+        #   print(x)
+        
         csvfile = StringIO()
         csvwriter = csv.DictWriter(csvfile, fieldnames=[
             'type', 'created_on', 'last_activity', 'amount', 'denomination', 'amount_eth',
