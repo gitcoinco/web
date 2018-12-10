@@ -278,9 +278,9 @@ def get_bounty_history(keyword=None, cumulative=True):
     if not keyword:
         bh = bh + initial_stats
     for year in range(2018, 2025):
-        months = range(1, 12)
+        months = range(1, 13)
         if year == 2018:
-            months = range(6, 12)
+            months = range(6, 13)
         for month in months:
             day_of_month = 3 if year == 2018 and month < 7 else 1
             then = timezone.datetime(year, month, day_of_month).replace(tzinfo=pytz.UTC)
