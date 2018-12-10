@@ -23,8 +23,8 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 from .models import (
-    Activity, Bounty, BountyFulfillment, BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Interest, Profile,
-    SearchHistory, Subscription, Tip, TokenApproval, Tool, ToolVote, UserAction,
+    Activity, BlockedUser, Bounty, BountyFulfillment, BountySyncRequest, CoinRedemption, CoinRedemptionRequest,
+    Interest, Profile, SearchHistory, Subscription, Tip, TokenApproval, Tool, ToolVote, UserAction,
 )
 
 
@@ -154,6 +154,7 @@ class BountyAdmin(admin.ModelAdmin):
 admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
 admin.site.register(Subscription, GeneralAdmin)
+admin.site.register(BlockedUser, GeneralAdmin)
 admin.site.register(UserAction, UserActionAdmin)
 admin.site.register(Interest, InterestAdmin)
 admin.site.register(Profile, ProfileAdmin)
