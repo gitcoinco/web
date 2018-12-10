@@ -96,9 +96,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       </div>
     </div>
 
-    {% if grants %}
-      <div class="container-fluid grants-container">
-        <div class="container">
+    <div class="container-fluid grants-container">
+      <div class="container">
+        {% if grants %}
           <div class="infinite-container row">
             {% for grant in grants %}
               <div class="col-12 col-md-6 col-lg-4 mb-4 infinite-item">
@@ -109,9 +109,23 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           {% if grants.has_next %}
             <a class="infinite-more-link" href="?page={{ grants.next_page_number }}">More</a>
           {% endif %}
-        </div>
+        {% else %}
+          <div class="col-12 mb-3 mx-auto col-md-6 text-center">
+            <img class="obiwan my-4" src="{% static "v2/images/obiwan-bot.svg" %}">
+            <h1 class="font-title-lg font-weight-semibold mt-4 mb-2">{% trans "This is not the grant you’re looking for." %}</h1>
+            <p class="font-subheader text">
+              {% trans "We couldn't match with any grants on Gitcoin." %}</br>
+              {% trans "Please try another search term or browse for a grant." %}
+            </p>
+          </div>
+          <div class="col-12 pt-4 pb-5 mx-auto text-center">
+            <a class="button-lg btn-gc btn-gc-blue py-3 px-5 font-weight-semibold" href="{% url 'grants:grants' %}">
+              {% trans "Browse Grants" %}
+            </a>
+          </div>
+        {% endif %}
       </div>
-    {% endif %}
+    </div>
 
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
