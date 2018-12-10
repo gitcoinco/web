@@ -490,7 +490,7 @@ class Subscription(SuperModel):
             'tokenAddress': Web3.toChecksumAddress(tokenAddress),
             'tokenAmount': int(tokenAmount * 10**decimals),
             'periodSeconds': int(periodSeconds),
-            'gasPrice': int(gasPrice * 10**9),
+            'gasPrice': int(gasPrice),
             'nonce': int(nonce),
             'signature': signature,
         }
