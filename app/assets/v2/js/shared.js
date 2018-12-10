@@ -259,10 +259,7 @@ var waitingStateActive = function() {
   $('.loading_img').addClass('waiting-state ');
   $('.waiting_room_entertainment').show();
   $('.issue-url').html('<a href="' + document.issueURL + '">' + document.issueURL + '</a>');
-  var secondsBetweenQuoteChanges = 30;
-
   waitingRoomEntertainment();
-  var interval = setInterval(waitingRoomEntertainment, secondsBetweenQuoteChanges * 1000);
 };
 
 /** Add the current profile to the interested profiles list. */
@@ -949,7 +946,7 @@ var listen_for_web3_changes = async function() {
         if (errors) {
           return;
         }
-        if (typeof result != 'undefined') {
+        if (typeof result != 'undefined' && result !== null) {
           document.balance = result.toNumber();
         }
       });
@@ -1350,3 +1347,19 @@ function shuffleArray(array) {
   }
   return array;
 }
+
+const getURLParams = (k) => {
+  var p = {};
+
+  location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(s, k, v) {
+    p[k] = v;
+  });
+  return k ? p[k] : p;
+};
+
+const updateParams = (key, value) => {
+  params = new URLSearchParams(window.location.search);
+  if (params.get(key) === value) return;
+  params.set(key, value);
+  window.location.search = params.toString();
+};

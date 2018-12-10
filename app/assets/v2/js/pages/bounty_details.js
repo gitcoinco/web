@@ -444,6 +444,8 @@ var update_title = function() {
 };
 
 var showWarningMessage = function(txid) {
+  const secondsBetweenQuoteChanges = 30;
+  let interval = setInterval(waitingRoomEntertainment, secondsBetweenQuoteChanges * 1000);
 
   update_title();
   $('.interior .body').addClass('open');

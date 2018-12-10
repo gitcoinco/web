@@ -64,15 +64,16 @@ def grants(request):
     limit = request.GET.get('limit', 24)
     page = request.GET.get('page', 1)
     sort = request.GET.get('sort_option', '-created_on')
+    network = request.GET.get('network', 'mainnet')
+    keyword = request.GET.get('keyword', '')
+    state = request.GET.get('state', 'active')
+    _grants = None
 
-    _grants = Grant.objects.active()
+    if state == 'active':
+        _grants = Grant.objects.filter(network=network).active().keyword(keyword).order_by(sort)
+    else:
+        _grants = Grant.objects.filter(network=network).keyword(keyword).order_by(sort)
 
-    if request.method == 'POST':
-        sort = request.POST.get('sort_option', '-created_on')
-        keyword = request.POST.get('search_grants', '')
-        _grants = _grants.keyword(keyword)
-
-    _grants = _grants.order_by(sort)
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
 
@@ -100,11 +101,9 @@ def grant_details(request, grant_id, grant_slug):
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
 
     try:
-        grant = Grant.objects.prefetch_related(
-            'subscriptions',
-            'milestones',
-            'updates'
-        ).get(pk=grant_id, slug=grant_slug)
+        grant = Grant.objects.prefetch_related('subscriptions', 'milestones', 'updates').get(
+            pk=grant_id, slug=grant_slug
+        )
         milestones = grant.milestones.order_by('due_date')
         updates = grant.updates.order_by('-created_on')
         subscriptions = grant.subscriptions.filter(active=True)
@@ -253,7 +252,7 @@ def milestones(request, grant_id, grant_slug):
 
 
 @login_required
-def grant_fund(request, grant_id,  grant_slug):
+def grant_fund(request, grant_id, grant_slug):
     """Handle grant funding."""
     try:
         grant = Grant.objects.get(pk=grant_id, slug=grant_slug)
@@ -358,7 +357,10 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
         subscription.active = False
         subscription.save()
         support_cancellation(grant, subscription)
-        messages.info(request, _('Your subscription has been canceled. We hope you continue to support other open source projects!'))
+        messages.info(
+            request,
+            _('Your subscription has been canceled. We hope you continue to support other open source projects!')
+        )
         return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
     params = {
@@ -386,7 +388,9 @@ def profile(request):
     sort = request.GET.get('sort', '-created_on')
 
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
-    _grants_pks = Grant.objects.filter(Q(admin_profile=profile) | Q(team_members__in=[profile])).values_list('pk', flat=True)
+    _grants_pks = Grant.objects.filter(Q(admin_profile=profile) | Q(team_members__in=[profile])).values_list(
+        'pk', flat=True
+    )
     _grants = Grant.objects.prefetch_related('team_members') \
         .filter(pk__in=_grants_pks).order_by(sort)
     sub_grants = Grant.objects.filter(subscriptions__contributor_profile=profile).order_by(sort)
