@@ -15,10 +15,10 @@ var waitingStateActive = function() {
   $('.loading_img').addClass('waiting-state ');
   $('.waiting_room_entertainment').show();
   $('.issue-url').html('<a href="' + document.issueURL + '">' + document.issueURL + '</a>');
-  var secondsBetweenQuoteChanges = 30;
+  const secondsBetweenQuoteChanges = 30;
 
   waitingRoomEntertainment();
-  var interval = setInterval(waitingRoomEntertainment, secondsBetweenQuoteChanges * 1000);
+  setInterval(waitingRoomEntertainment, secondsBetweenQuoteChanges * 1000);
 };
 
 $(document).ready(function() {

@@ -43,6 +43,7 @@ iframe {
 
 #toc {
   position: sticky;
+  position: -webkit-sticky;
   top: 1em;
   float: right;
 }
