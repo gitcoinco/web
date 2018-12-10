@@ -17,6 +17,25 @@ $(document).ready(function() {
     }
 
     form.submit();
+    if ($('#completion_date').val() == '') {
+      console.log();
+    }
+  });
+
+
+  $('input[name="due_date"]').daterangepicker({
+    singleDatePicker: true,
+    autoUpdateInput: false
+  }, function(chosen_date) {
+    $('input[name="due_date"]').val(chosen_date.format('YYYY-MM-DD'));
+  });
+
+
+  $('input[name="completion_date"]').daterangepicker({
+    singleDatePicker: true,
+    autoUpdateInput: false
+  }, function(chosen_date) {
+    $('input[name="completion_date"]').val(chosen_date.format('YYYY-MM-DD'));
   });
 
 });
