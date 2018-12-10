@@ -122,8 +122,9 @@ $(document).ready(function() {
   waitforWeb3(function() {
     if (document.web3network != $('#network').val()) {
       $('#js-fundGrant-button').prop('disabled', true);
-      let network = $('#network').val()
-      alert("This Grant is on the " + network + " network. Please, switch to " + network + " to contribute to this grant.")
+      let network = $('#network').val();
+
+      _alert({ message: gettext('This Grant is on the ' + network + ' network. Please, switch to ' + network + ' to contribute to this grant.') }, 'error');
     }
 
     tokens(document.web3network).forEach(function(ele) {
