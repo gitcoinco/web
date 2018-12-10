@@ -93,8 +93,14 @@ onboard.watchMetamask = function() {
       $('#metamask-video').hide();
       $('#next-btn').click(function(e) {
         var eth_address = $('#eth_address').val();
-
-        $.get('/onboard/contributor/', {eth_address: eth_address});
+		
+		if ($('#lfw')[0]){
+			var lfw = $('#lfw')[0].checked;
+			var lfw_public = $('#lfw_public')[0].checked;
+			$.get('/onboard/contributor/', {eth_address: eth_address, lfw: lfw, lfw_public: lfw_public});
+		} else {
+	        $.get('/onboard/contributor/', {eth_address: eth_address});
+		}
       });
     }
   }

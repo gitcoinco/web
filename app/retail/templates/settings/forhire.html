@@ -1,0 +1,21 @@
+{% extends 'settings/settings.html' %}
+{% load i18n static %}
+{% block settings_content %}
+<form id="whitepaper" method="POST">
+  <h5>{% trans "For hire - Preferences" %}</h5>
+  <div><input type='checkbox' name='lfw' 
+  {% if profile.looking_for_work %}
+  checked
+  {% endif %}	
+  > Looking for work</div>
+  <div class="mb-2"><input type='checkbox' name='lfw_public' 
+  {% if profile.looking_for_work_public %}
+  checked
+  {% endif %}	
+  > Show "Looking for work" status in public</div>
+  {% csrf_token %}
+  <input class='button button--primary' type='submit' name='submit' value="Save">
+  <input type="hidden" value="lfw: {{profile.looking_for_work}} / lfw_p: {{profile.looking_for_work_public}}"
+	  
+</form>
+{% endblock %}

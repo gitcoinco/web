@@ -77,6 +77,9 @@ def get_settings_navs(request):
     }, {
         'body': _('Token'),
         'href': reverse('token_settings'),
+    }, {
+        'body': _('For Hire'),
+        'href': reverse('forhire_settings'),
     }]
 
 
@@ -566,6 +569,53 @@ def account_settings(request):
         'msg': msg,
     }
     return TemplateResponse(request, 'settings/account.html', context)
+
+
+def forhire_settings(request):
+    """Display and save user's For-Hire settings.
+
+    Returns:
+        TemplateResponse: The user's For Hire settings template response.
+
+    """
+    msg = ''
+    profile, es, user, is_logged_in = settings_helper_get_auth(request)
+
+    if not user or not profile or not is_logged_in:
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
+
+    if request.POST and request.POST.get('submit'):
+        lfw = request.POST.get('lfw',False)
+        lfw_public = request.POST.get('lfw_public',False)
+        if lfw == "on":
+            lfw = True
+        else:
+            lfw = False
+        if lfw_public == "on":
+            lfw_public = True
+        else:
+            lfw_public = False        
+        
+        if profile:
+            profile.looking_for_work = lfw
+            profile.looking_for_work_public = lfw_public
+            profile.save()
+            msg = _('Updated your preferences.')
+        else:
+            msg = _('Error: did not understand your request')
+
+    context = {
+        'is_logged_in': is_logged_in,
+        'nav': 'internal',
+        'active': '/settings/forhire',
+        'title': _('Looking for work - Settings'),
+        'navs': get_settings_navs(request),
+        'es': es,
+        'profile': profile,
+        'msg': msg,
+    }
+    return TemplateResponse(request, 'settings/forhire.html', context)
 
 
 def _leaderboard(request):

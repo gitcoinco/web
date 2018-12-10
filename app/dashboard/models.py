@@ -1686,6 +1686,8 @@ class Profile(SuperModel):
     preferred_kudos_wallet = models.OneToOneField('kudos.Wallet', related_name='preferred_kudos_wallet', on_delete=models.SET_NULL, null=True, blank=True)
     max_tip_amount_usdt_per_tx = models.DecimalField(default=500, decimal_places=2, max_digits=50)
     max_tip_amount_usdt_per_week = models.DecimalField(default=1500, decimal_places=2, max_digits=50)
+    looking_for_work = models.BooleanField(null=True, default=False)
+    looking_for_work_public = models.BooleanField(null=True, default=False)
 
     objects = ProfileQuerySet.as_manager()
 

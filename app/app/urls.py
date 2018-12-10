@@ -383,6 +383,7 @@ urlpatterns = [
     re_path(r'^settings/ens/?', marketing.views.ens_settings, name='ens_settings'),
     re_path(r'^settings/account/?', marketing.views.account_settings, name='account_settings'),
     re_path(r'^settings/tokens/?', marketing.views.token_settings, name='token_settings'),
+    re_path(r'^settings/forhire/?', marketing.views.forhire_settings, name='forhire_settings'),
     re_path(r'^settings/(.*)?', marketing.views.email_settings, name='settings'),
 
     # marketing views

@@ -492,12 +492,12 @@ def onboard(request, flow):
     if flow not in ['funder', 'contributor', 'profile']:
         raise Http404
     elif flow == 'funder':
-        onboard_steps = ['github', 'metamask', 'avatar']
+        onboard_steps = ['github', 'metamask', 'avatar', 'lfw']
     elif flow == 'contributor':
-        onboard_steps = ['github', 'metamask', 'avatar', 'skills']
+        onboard_steps = ['github', 'metamask', 'avatar', 'skills', 'lfw']
     elif flow == 'profile':
         onboard_steps = ['avatar']
-
+        
     steps = []
     if request.GET:
         steps = request.GET.get('steps', [])
@@ -514,7 +514,21 @@ def onboard(request, flow):
     if request.GET.get('eth_address') and request.user.is_authenticated and getattr(request.user, 'profile', None):
         profile = request.user.profile
         eth_address = request.GET.get('eth_address')
+        lfw = request.GET.get('lfw',False)
+        lfw_pub = request.GET.get('lfw_public',False)
+        if lfw == "on":
+            lfw = True
+        else:
+            lfw = False
+    
+        if lfw_pub == "on":
+            lfw_pub = True
+        else:
+            lfw_pub = False
+        
         profile.preferred_payout_address = eth_address
+        profile.looking_for_work = lfw
+        profile.looking_for_work_public = lfw_pub
         profile.save()
         return JsonResponse({'OK': True})
 

@@ -182,6 +182,18 @@
         <img id="grow-oss" width="259" src="{% static "v2/images/grow_open_source_new.png" %}" alt="Gitcoin Open Source" title="Grow Open Source Image">
     </div>
 
+  {% if profile %}
+  	{% if profile.looking_for_work %}
+	  <div class="lfw mt-2 mb-2">
+		  You stated that you are looking for work 
+		  {% if profile.looking_for_work_public %}
+		    publically
+		  {% endif %}
+		  . If this is not the case anymore, please update your settings.
+	  </div>
+    {% endif %}
+  {% endif %}
+
   <div id="footer" class="centered-contents">
     <div>
       <a href="https://www.twitter.com/GetGitcoin"><img class="social-img" src="{% static "v2/images/social/twitter_new.png" %}"></a>
