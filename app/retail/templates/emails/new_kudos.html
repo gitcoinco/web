@@ -141,13 +141,13 @@
       {% endif %}
     </h1>
     <h3>
-      You received a <b>{{ token_elem.name|humanize_name }}</b> kudos
+      {% trans "You received a" %} <b>{{ token_elem.name|humanize_name }}</b> {% trans "kudos" %}
       {% if kudos_transfer.from_name %}
-        from <b>{{ kudos_transfer.from_name }}</b>
+        {% trans "from" %} <b>{{ kudos_transfer.from_name }}</b>
       {% endif %}
       !
     </h3>
-    {% if not is_new %} 
+    {% if not is_new %}
       {{ kudos_transfer.created_on|naturaltime }}
     {% endif %}
     <div class="kudos-hex-container">
@@ -161,27 +161,27 @@
         <img src="{{ token_elem.img_url }}" alt="{{ token_elem.name|humanize_name }}">
       </div>
     </div>
-    <BR>
+    <br>
     <p>
       {% if comments_priv %}
-        {{ comments_priv }}<BR>
+        {{ comments_priv }}<br>
       {% endif %}
       {% if comments_public %}
-        {{ comments }}<BR>
+        {{ comments }}<br>
       {% endif %}
       {% if kudos_transfer.github_url %}
         {% if kudos_transfer.from_name %}
           {{ kudos_transfer.from_name }}
         {% else %}
-          The sender
+          {% trans "The sender" %}
         {% endif %}
-         said it was for your work on <a href="{{ kudos_transfer.github_url }}">{{ kudos_transfer.github_url }}</a>.
-      {% endif %} 
+         {% trans " said it was for your work on" %} <a href="{{ kudos_transfer.github_url }}">{{ kudos_transfer.github_url }}</a>.
+      {% endif %}
     </p>
     <div style="margin: 3em;">
       {% if not already_redeemed %}
-        <a style="color:#fff; text-decoration:none; font-size:14px; background-color:#15003e; border-radius:5px; line-height:1.5; padding:15px 20px; text-align:center" bgcolor="#15003e" href="{{ link }}">Accept Kudos</a>
-      {% endif %} 
+        <a style="color:#fff; text-decoration:none; font-size:14px; background-color:#15003e; border-radius:5px; line-height:1.5; padding:15px 20px; text-align:center" bgcolor="#15003e" href="{{ link }}">{% trans "Accept Kudos" %}</a>
+      {% endif %}
       {% if already_redeemed %}
         <p>
           {% trans "This kudos has been remitted automatically to the Ethereum address on file for your account via txid " %}{{kudos_transfer.txid}}
@@ -190,7 +190,7 @@
         <p>
           {% trans "The kudos expires on" %} <strong>{{ kudos_transfer.expires_date }}, {% trans "in just" %} {{ kudos_transfer.expires_date|naturaltime }}</strong>. {% trans "No pressure, but if you wanted to redeem your kudos sooner rather than later that'd be 👌:" %}
         </p>
-      {% endif %} 
+      {% endif %}
     </div>
   </div>
   <div class="cols">
@@ -198,7 +198,7 @@
       <img src="{% static 'v2/images/emails/email-kudos.png' %}" alt="{{ token_elem.name|humanize_name }}" width="134" height="155" class="col-img">
     </div>
     <div class="col">
-      <p class="col-txt">Kudos is a way of showing your appreciation for another Gitcoin member. It's also a way to showcase special skills that a member might have, such as Pythonista, or Design Star. Kudos are non-fungible tokens that can also be bought and sold on the <b>Kudos Marketplace</b>.</p>
+      <p class="col-txt">{% trans "Kudos is a way of showing your appreciation for another Gitcoin member. It's also a way to showcase special skills that a member might have, such as Pythonista, or Design Star." %} {% trans "Kudos are non-fungible tokens that can also be bought and sold on the" %} <b>{% trans "Kudos Marketplace" %}</b>{% trans "." %}</p>
     </div>
   </div>
   <div style="margin: 3em 0 5em;">
