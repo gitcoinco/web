@@ -16,33 +16,12 @@
 
     <div class="container">
       <div class="row justify-content-md-center">
-        <div class="col-sm-12 col-md-12 col-lg-8">
-          <div class="pt-5 my-4 text-center">
-            <h1 class="font-title-xl">{% trans "Create Milestones for " %}{{ grant.title }}</h1>
+        <div class="col-sm-12 col-md-12 col-lg-8 my-lg-5">
+          <div class="mt-5">
+            <p class="font-title-xl text-center">{% trans "Current Milestones" %}</p>
+            <a href="{% url 'grants:details' grant.id grant.slug %}">{% trans "Back to" %} {{ grant.title }}</a>
           </div>
-          <div class="milestones-input">
-            <form action="{% url 'grants:milestones' grant.id grant.slug %}" method="POST">
-              {% csrf_token %}
-              <input type="hidden" name="method" value="POST">
-              <div class="form__group-horizontal">
-                <div class="row">
-                  <div class="col-12">
-                    {{ form.title }}
-                    {{ form.title.errors }}
-                    {{ form.description }}
-                    {{ form.description.errors }}
-                    {{ form.due_date }}
-                    {{ form.due_date.errors }}
-                  </div>
-                </div>
-              </div>
-              <div class="form__footer">
-                <a class="mt-2" href="{% url 'grants:details' grant.id grant.slug %}">{% trans "Back to Grant" %}</a>
-                <button class="btn btn-gc-blue">{% trans "Create Milestone" %}</button>
-              </div>
-            </form>
-          </div>
-          <div class="milestones-container mb-4">
+          <div class="milestones-container mt-2 mb-4">
             {% if milestones %}
               <ul class="milestones-list">
                 {% for milestone in milestones %}
@@ -73,6 +52,30 @@
                 {% trans "No milestones currently set for this grant." %}
               </p>
             {% endif %}
+          </div>
+          <div class="pt-5 my-4 text-center">
+            <h1 class="font-title-xl">{% trans "Create Milestones for " %}{{ grant.title }}</h1>
+          </div>
+          <div class="milestones-input">
+            <form action="{% url 'grants:milestones' grant.id grant.slug %}" method="POST">
+              {% csrf_token %}
+              <input type="hidden" name="method" value="POST">
+              <div class="form__group-horizontal mb-5">
+                <div class="row">
+                  <div class="col-12">
+                    {{ form.title }}
+                    {{ form.title.errors }}
+                    {{ form.description }}
+                    {{ form.description.errors }}
+                    {{ form.due_date }}
+                    {{ form.due_date.errors }}
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 mt-4 text-center">
+                <button class="btn btn-gc-blue">{% trans "Create Milestone" %}</button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
