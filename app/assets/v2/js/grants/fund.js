@@ -56,10 +56,9 @@ $(document).ready(function() {
 
       deployedToken.methods.decimals().call(function(err, decimals) {
 
-        // gas price in gwei
-        let realGasPrice = Number(4 * 10 ** 9);
+        let realGasPrice = $('#gasPrice').val() * Math.pow(10, 9);
 
-        $('#gas_price').val(4);
+        $('#gas_price').val(realGasPrice);
 
         let realApproval = Number(((data.approve * 10 ** decimals) + realGasPrice) * data.amount_per_period);
 
@@ -74,7 +73,7 @@ $(document).ready(function() {
             web3.utils.toTwosComplement(realApproval)
           ).send({
             from: accounts[0],
-            gasPrice: 4000000000
+            gasPrice: realGasPrice
           }).on('error', function(error) {
             console.log('1', error);
             alert('Your approval transaction failed. Please try again.');

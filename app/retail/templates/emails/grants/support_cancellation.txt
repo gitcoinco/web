@@ -6,8 +6,6 @@
 
 {% trans "Thank you for everything you have contributed!" %}
 
-{{ grant.logo.url }}
-
 {{ grant.description }}
 
 {{ grant.percentage_done }}
