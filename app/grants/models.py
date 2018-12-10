@@ -506,29 +506,26 @@ class Subscription(SuperModel):
             args['periodSeconds'],
             args['gasPrice'],
             args['nonce'],
-        ).call()
+            ).call()
 
-    def successful_contribution(self, kwargs):
+    def successful_contribution(self, tx_id):
         """Create a contribution object."""
         from marketing.mails import successful_contribution
         self.last_contribution_date = timezone.now()
-        self.next_contribution_date = timezone.now() + timezone.timedelta(seconds=self.real_period_seconds)
+        self.next_contribution_date = timezone.now() + timezone.timedelta(seconds=int(self.real_period_seconds))
         self.save()
         contribution_kwargs = {
-            'tx_id': kwargs.tx_id,
-            'gas_price': kwargs.gas_price,
-            'nonce': kwargs.nonce,
+            'tx_id': tx_id,
             'subscription': self
         }
         contribution = Contribution.objects.create(**contribution_kwargs)
         grant = self.grant
         try:
             grant.amount_received = (
-                grant.amount_received + convert_amount(
+                int(grant.amount_received) + int(convert_amount(
                     self.amount_per_period,
                     self.token_symbol,
-                    "USDT",
-                    timezone.now()
+                    "USDT")
                 )
             )
         except ConversionRateNotFoundError as e:
@@ -552,19 +549,6 @@ class Contribution(SuperModel):
         max_length=255,
         default='0x0',
         help_text=_('The transaction ID of the Contribution.'),
-    )
-
-    gas_price = models.DecimalField(
-        default=0,
-        decimal_places=4,
-        max_digits=50,
-        help_text=_('The amount of token used to incentivize subminers.'),
-    )
-    nonce = models.DecimalField(
-        default=0,
-        decimal_places=0,
-        max_digits=50,
-        help_text=_('The of the subscription metaTx.'),
     )
     subscription = models.ForeignKey(
         'grants.Subscription',

@@ -32,10 +32,6 @@ logging.getLogger("web3").setLevel(logging.WARNING)
 logging.getLogger("marketing.mails").setLevel(logging.WARNING)
 
 
-def has_mined(txid, subscription):
-    return has_tx_mined(txid, subscription.grant.network)
-
-
 def process_subscription(subscription, live):
     is_ready_to_be_processed_db = subscription.get_is_ready_to_be_processed_from_db()
 
@@ -65,19 +61,20 @@ def process_subscription(subscription, live):
                 if live:
                     txid = subscription.do_execute_subscription_via_web3()
                     print(f"   -- *waiting for mine* (txid {txid}) ")
-                    while not has_mined(txid, subscription):
+                    while not has_tx_mined(txid, subscription.grant.network):
                         time.sleep(10)
+                        print("   -- *waiting 10 seconds*")
                     status, __ = get_tx_status(txid, subscription.grant.network, timezone.now())
             except Exception as e:
                 error = str(e)
 
-            print(f"   -- *mined* (status: {status} / {error}) ")
+            print(f"   -- *mined* (status: {status} / error: {error}) ")
             was_success = status == 'success'
             if live:
                 if not was_success:
                     warn_subscription_failed(subscription, txid, status, error)
                 else:
-                    subscription.successful_contribution()
+                    subscription.successful_contribution(txid)
                     subscription.save()
 
 
@@ -106,7 +103,7 @@ class Command(BaseCommand):
 
         for grant in grants:
             subs = grant.subscriptions.filter(active=True, next_contribution_date__lt=timezone.now())
-            print(f" - {grant.pk} has {subs.count()} subs")
+            print(f" - {grant.pk} has {subs.count()} subs ready for execution")
 
             for subscription in subs:
                 process_subscription(subscription, live)

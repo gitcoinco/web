@@ -121,7 +121,7 @@ def render_successful_contribution_email(grant, subscription):
     params = {'grant': grant, 'subscription': subscription}
     response_html = premailer_transform(render_to_string("emails/grants/successful_contribution.html", params))
     response_txt = render_to_string("emails/grants/successful_contribution.txt", params)
-    subject = "Your subscription on Gitcoin Grants has been cancelled by the Grant Creator"
+    subject = f"Your contribution of {{ subscription.amount_per_period }} {{ subscription.token_symbol }} to {{ grant.title }} was successful!"
     return response_html, response_txt, subject
 
 
