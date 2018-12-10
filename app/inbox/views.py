@@ -8,6 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse, HttpResponseForbidden
 from django.core.paginator import Paginator
+from django.views.decorators.csrf import csrf_exempt
 
 
 def notifications(request):
@@ -45,6 +46,7 @@ def notifications(request):
         return HttpResponseForbidden('Not Allowed')
 
 
+@csrf_exempt
 def delete_notifications(request):
     """For deleting a notification"""
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
@@ -69,6 +71,7 @@ def delete_notifications(request):
         return HttpResponseForbidden('Not Allowed')
 
 
+@csrf_exempt
 def unread_notifications(request):
     """Mark a notification as unread"""
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
@@ -95,6 +98,7 @@ def unread_notifications(request):
         return HttpResponseForbidden('Not Allowed')
 
 
+@csrf_exempt
 def read_notifications(request):
     """Mark a notification as read"""
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None

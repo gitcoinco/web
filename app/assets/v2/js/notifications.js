@@ -1,16 +1,23 @@
 var notifications = [];
 var newNotifications = [];
 var isHidden = false;
+var page = 1;
 const container = $('.notifications__list');
 
 function requestNotifications() {
-  var getNotifications = fetchData ('/api/v0.1/notifications/', 'GET');
+  console.log(page)
+  var getNotifications = fetchData (`/api/v0.1/notifications/?page=${page}`, 'GET');
 
   $.when(getNotifications).then(function(response) {
-    var loadTmp = true;
+    // var loadTmp = response.data.length && response.data[0].id !== notifications[0].id;
+    var loadTmp = response.data.length !== notifications.length
+    // console.log(response.data[0].id)
+    // if (response.data.length !== notifications.length) {
+    if (loadTmp) {
+      newNotifications = newData(response.data, notifications);
 
-    if (response.length !== notifications.length) {
-      newNotifications = newData(response, notifications);
+      page = response.has_next ? page+1 : page = 1
+      console.log(page)
 
       newNotifications.forEach(element => {
         notifications.push(element);
@@ -43,7 +50,11 @@ function templateSuggestions(notifications) {
         </time>
       </li>`).join(' ')}`;
 
-  container.prepend(tmp);
+  // if (newItems) {
+    container.prepend(tmp);
+  // } else {
+    // container.append(tmp);
+  // }
   $('.notifications__item');
 }
 
@@ -95,26 +106,32 @@ function setDot(hasNewData, newNotifications) {
   }
 }
 
-function markAsRead(notificationsA) {
-  console.log(notificationsA)
+function markAsRead(notificationToRead) {
+  console.log(notificationToRead)
   var notificationRead = parseInt(sessionStorage.getItem('notificationRead'))
 
   if (notificationRead) {
     console.log('ping')
     sessionStorage.removeItem('notificationRead');
     console.log('api request readed', notificationRead);
+    let data = JSON.stringify({'read':[notificationRead]});
+    var putRead = fetchData (`api/v0.1/notifications/read/`, 'PUT', data);
+    $.when(putRead).then(function(response) {
+      console.log(response)
+    })
+
     // notificationRead = parseInt(notificationRead)
 
-    const resulta = notificationsA.findIndex(item => {
+    const index = notificationToRead.findIndex(item => {
       return item.id === notificationRead
     })
-    notificationsA[resulta].is_read = true;
+    notificationToRead[index].is_read = true;
   }
 }
 
 requestNotifications();
 
-var intervalNotifications = window.setInterval(requestNotifications, 5000);
+var intervalNotifications = window.setInterval(requestNotifications, 10000);
 
 $(document).ready(function() {
 
@@ -123,4 +140,24 @@ $(document).ready(function() {
   })
 
 })
+
+$('.notifications__list').scroll( function() {
+  console.log($(this)[0])
+  const scrollContainer = $(this)[0]
+  if (scrollContainer.scrollTop + scrollContainer.clientHeight >= scrollContainer.scrollHeight) {
+    requestNotifications(page);
+  }
+});
+
+
+
+var array = [];
+var observedArray = new Proxy(notifications, {
+    set: function (target, propertyKey, value, receiver) {
+        console.log(propertyKey+'='+value);
+        console.log(target,propertyKey, value )
+        target[propertyKey] = value;
+        return true
+    }
+});
 
