@@ -17,9 +17,6 @@ $(document).ready(function() {
     }
 
     form.submit();
-    if ($('#completion_date').val() == '') {
-      console.log();
-    }
   });
 
 
