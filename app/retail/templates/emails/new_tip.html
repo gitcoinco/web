@@ -89,7 +89,7 @@
           {% endif %}
           {% if already_redeemed %}
             <p>
-               {% trans "This tip has been remitted automatically to the Ethereum address on file for your account (" %}<a href='https://etherscan.io/address/{{tip.receive_address}}'>{{tip.receive_address}}</a>{% trans ") via txid " %}<a href='https://etherscan.io/tx/{{tip.txid}}'>{{tip.txid}}</a>.
+               {% trans "This tip has been remitted automatically to the Ethereum address on file for your account (" %}{{tip.receive_address}} <a href='https://etherscan.io/address/{{tip.receive_address}}'>[View on Etherscan]</a> <a href='https://blockscout.com/eth/mainnet/address/{{tip.receive_address}}'>[View on Blockscout]</a>{% trans ") via txid " %}{{tip.txid}} <a href='https://etherscan.io/tx/{{tip.txid}}'>[View on Etherscan]</a> <a href='https://blockscout.com/eth/mainnet/tx/{{tip.txid}}'>[View on Etherscan]</a>.
             </p>
           {% elif show_expires %}
             <p>
