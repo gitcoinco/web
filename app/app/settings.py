@@ -105,10 +105,26 @@ INSTALLED_APPS = [
     'external_bounties',
     'dataviz',
     'impersonate',
+    'grants',
     'kudos',
     'django.contrib.postgres',
     'bounty_requests',
     'perftools',
+    # wagtail
+    'taggit',
+    'modelcluster',
+    'wagtail.contrib.forms',
+    'wagtail.contrib.redirects',
+    'wagtail.embeds',
+    'wagtail.sites',
+    'wagtail.users',
+    'wagtail.snippets',
+    'wagtail.documents',
+    'wagtail.images',
+    'wagtail.search',
+    'wagtail.admin',
+    'wagtail.core',
+    'cms',
     'revenue',
 ]
 
@@ -127,6 +143,8 @@ MIDDLEWARE = [
     'ratelimit.middleware.RatelimitMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',
     'impersonate.middleware.ImpersonateMiddleware',
+    'wagtail.core.middleware.SiteMiddleware',
+    'wagtail.contrib.redirects.middleware.RedirectMiddleware'
 ]
 
 ROOT_URLCONF = env('ROOT_URLCONF', default='app.urls')
@@ -554,6 +572,11 @@ KUDOS_CONTRACT_ROPSTEN = env('KUDOS_CONTRACT_ROPSTEN', default='0xcd520707fc68d1
 KUDOS_CONTRACT_TESTRPC = env('KUDOS_CONTRACT_TESTRPC', default='0x38c48d14a5bbc38c17ced9cd5f0695894336f426')
 KUDOS_NETWORK = env('KUDOS_NETWORK', default='mainnet')
 
+# Grants
+GRANTS_OWNER_ACCOUNT = env('GRANTS_OWNER_ACCOUNT', default='0xD386793F1DB5F21609571C0164841E5eA2D33aD8')
+GRANTS_PRIVATE_KEY = env('GRANTS_PRIVATE_KEY', default='')
+
+
 # Reporting Integrations
 MIXPANEL_TOKEN = env('MIXPANEL_TOKEN', default='')
 
@@ -650,9 +673,6 @@ IPFS_API_SCHEME = env('IPFS_API_SCHEME', default='https')
 
 STABLE_COINS = ['DAI', 'USDT', 'TUSD']
 
-BLOCKED_USERS = env('BLOCKED_USERS', default=[])
-
-
 # Silk Profiling and Performance Monitoring
 ENABLE_SILK = env.bool('ENABLE_SILK', default=False)
 if ENABLE_SILK:
@@ -677,3 +697,6 @@ if ENABLE_SILK:
             'name': 'Index View',
         }]
     SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT = env.int('SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT', default=10)
+
+TAGGIT_CASE_INSENSITIVE = env.bool('TAGGIT_CASE_INSENSITIVE', default=True)
+WAGTAIL_SITE_NAME = 'Gitcoin'
