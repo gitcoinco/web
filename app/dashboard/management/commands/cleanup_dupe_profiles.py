@@ -122,6 +122,3 @@ class Command(BaseCommand):
             profile.hide_profile=False
             profile.save()
             print(profile.handle)
-            
-
-
