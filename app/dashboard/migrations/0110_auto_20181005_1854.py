@@ -12,7 +12,12 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name='bountyfulfillment',
-            name='fulfiller_last_notified_on',
+            name='funder_last_notified_on',
+            field=models.DateTimeField(blank=True, null=True),
+        ),
+        migrations.AddField(
+            model_name='bounty',
+            name='funder_last_messaged_on',
             field=models.DateTimeField(blank=True, null=True),
         ),
     ]

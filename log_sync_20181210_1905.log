@@ -1,0 +1,941 @@
+{'url': 'https://api.github.com/repos/owocki/pytrader/issues/comments/234190830', 'html_url': 'https://github.com/owocki/pytrader/pull/75#issuecomment-234190830', 'issue_url': 'https://api.github.com/repos/owocki/pytrader/issues/75', 'id': 234190830, 'node_id': 'MDEyOklzc3VlQ29tbWVudDIzNDE5MDgzMA==', 'user': {'login': 'jeff-hykin', 'id': 17692058, 'node_id': 'MDQ6VXNlcjE3NjkyMDU4', 'avatar_url': 'https://avatars3.githubusercontent.com/u/17692058?v=4', 'gravatar_id': '', 'url': 'https://api.github.com/users/jeff-hykin', 'html_url': 'https://github.com/jeff-hykin', 'followers_url': 'https://api.github.com/users/jeff-hykin/followers', 'following_url': 'https://api.github.com/users/jeff-hykin/following{/other_user}', 'gists_url': 'https://api.github.com/users/jeff-hykin/gists{/gist_id}', 'starred_url': 'https://api.github.com/users/jeff-hykin/starred{/owner}{/repo}', 'subscriptions_url': 'https://api.github.com/users/jeff-hykin/subscriptions', 'organizations_url': 'https://api.github.com/users/jeff-hykin/orgs', 'repos_url': 'https://api.github.com/users/jeff-hykin/repos', 'events_url': 'https://api.github.com/users/jeff-hykin/events{/privacy}', 'received_events_url': 'https://api.github.com/users/jeff-hykin/received_events', 'type': 'User', 'site_admin': False}, 'created_at': '2016-07-21T08:33:58Z', 'updated_at': '2016-07-21T08:33:58Z', 'author_association': 'NONE', 'body': 'Check this out [www.hedgechatter.com](url) They’re basically doing/have done what this issue is trying to accomplish \n\nSadly I’ve had little free time due to work. I still haven’t even run a single line of code on my Ras-pi. The good news is I’ve been learning Python at work that should help the implementation of this project. \n', 'event': 'commented', 'actor': {'login': 'jeff-hykin', 'id': 17692058, 'node_id': 'MDQ6VXNlcjE3NjkyMDU4', 'avatar_url': 'https://avatars3.githubusercontent.com/u/17692058?v=4', 'gravatar_id': '', 'url': 'https://api.github.com/users/jeff-hykin', 'html_url': 'https://github.com/jeff-hykin', 'followers_url': 'https://api.github.com/users/jeff-hykin/followers', 'following_url': 'https://api.github.com/users/jeff-hykin/following{/other_user}', 'gists_url': 'https://api.github.com/users/jeff-hykin/gists{/gist_id}', 'starred_url': 'https://api.github.com/users/jeff-hykin/starred{/owner}{/repo}', 'subscriptions_url': 'https://api.github.com/users/jeff-hykin/subscriptions', 'organizations_url': 'https://api.github.com/users/jeff-hykin/orgs', 'repos_url': 'https://api.github.com/users/jeff-hykin/repos', 'events_url': 'https://api.github.com/users/jeff-hykin/events{/privacy}', 'received_events_url': 'https://api.github.com/users/jeff-hykin/received_events', 'type': 'User', 'site_admin': False}}
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
+
+  <style>@media screen and (min-width: 35.5em) {
+    .social-img {
+        max-height: 50px;
+        max-width: 50px
+        }
+    .primary-content {
+        margin-left: 20%;
+        margin-right: 20%
+        }
+    }
+@media screen and (max-width: 35.5em) {
+    .social-img {
+        max-height: 45px;
+        max-width: 45px
+        }
+    }
+@media screen and (min-width: 48em) {
+    .primary-content {
+        margin-left: 10%;
+        margin-right: 10%
+        }
+    }
+@media screen and (max-width: 48em) {
+    .primary-content {
+        margin-left: 0;
+        margin-right: 0
+        }
+    }</style>
+
+</head>
+<body class="g-font-muli" style='margin:0; padding:0; background-color:#f2f6f9; font-family:"Muli", sans-serif' bgcolor="#f2f6f9">
+  
+  <div id="header" style="height:200px; align-content:center; background-color:#15003e; color:white; padding:2em; text-align:center" height="200" bgcolor="#15003e" align="center">
+    <a href="http://127.0.0.1:8000/" style="color:#70b2ff; text-decoration:none; font-size:15px">
+      <span style="display: inline-block;height: 100%;vertical-align: middle;"></span><img id="logo" src="http://127.0.0.1:8000/static/v2/images/logo_large.png" alt="Gitcoin" title="Gitcoin Logo" style="display:inline-block; max-height:120px; max-width:100%; vertical-align:middle" valign="middle">
+    </a>
+  </div>
+  
+
+    <div class="primary-content centered-contents" style="text-align:center; background-color:white; padding:2em" align="center" bgcolor="white">
+        
+
+<h1 style="font-weight:lighter; text-transform:capitalize; font-size:1.8rem">Your funded bounty is fulfilled</h1>
+
+
+<p style="font-size:15px; color:#4A4A4A">
+    
+        <br>
+        <br>
+        There is a currently pending claim against this funded issue. Please make sure you process them!
+    
+
+    <br>
+    <br>
+    <br>
+    If you have any questions, feel free to reach out <a href="https://gitcoin.co/slack" style="color:#70b2ff; text-decoration:none; font-size:15px">on slack</a>.
+
+    <br>
+    </p>
+<h5 style="font-weight:lighter; text-transform:capitalize">Funded Issue Details</h5>
+
+
+<br>
+
+
+
+
+<div class="centered-contents bounty-box" style="text-align:center; border:1px solid #e0e0e0; margin-bottom:1em; padding-bottom:1em; padding-top:1.5em" align="center">
+  
+  <div class="bounty" style="display:flex; padding:0.5em">
+    <div class="bounty-avatar" style="margin:1em; text-align:right" align="right">
+      <img style="max-height:50px; max-width:100%; border:2px solid #1AB56D; border-radius:100%" src="http://127.0.0.1:8000/dynamic/avatar/owocki">
+    </div>
+    <div class="bounty-contents" style="text-align:left" align="left">
+      
+        <p class="bounty_title" style="font-size:15px">
+          <b>owocki</b>: Documentation on howto trade
+        </p>
+      
+
+      
+        
+          <p style="font-size:15px">
+            <b>Keywords:</b> Python, HTML, Shell
+          </p>
+        
+
+        <p style="font-size:15px">
+          <b>Github:</b> <a href="https://github.com/owocki/pytrader/issues/40" style="color:#70b2ff; text-decoration:none; font-size:15px">https://github.com/owocki/pytrader/issues/40</a>
+        </p>
+      
+
+      <p style="font-size:15px">
+        <b>Amount:</b> 0.10 ETH
+        
+      </p>
+
+      
+        <p style="font-size:15px">
+          <b>Status:</b> submitted
+          
+            (submitted by
+            
+              
+                <a href="http://127.0.0.1:8000/profile/gitcoinbot" style="color:#70b2ff; text-decoration:none; font-size:15px">gitcoinbot</a>
+              
+              
+            
+            )
+          
+        </p>
+        <p style="font-size:15px">
+          <b>Expires:</b> 7 months, 2 weeks from now
+        </p>
+        <p style="font-size:15px">
+          <b>Specs:</b><br>
+          Time Commitment: Days
+          <br>
+          Type: Feature
+          <br>
+          Experience Level: Beginner
+        </p>
+      
+    </div>
+  </div>
+    <hr>
+    
+
+  <div style="margin-bottom: 2em; margin-top: 2em;">
+    <a class="button" href="http://127.0.0.1:8000/issue/owocki/pytrader/40/939" style="color:#fff; text-decoration:none; font-size:14px; background-color:#15003e; border-radius:5px; line-height:1.5; padding:15px 20px; text-align:center" bgcolor="#15003e" align="center">View on Gitcoin.co</a>
+  </div>
+
+
+
+</div>
+
+
+<p style="font-size:15px">
+You are receiving this email because your email address is listed as the reviewing funder for this issue. <a href="http://127.0.0.1:8000/issue/owocki/pytrader/40/939" style="color:#70b2ff; text-decoration:none; font-size:15px">View Bounty</a>.
+</p>
+
+
+        <img id="grow-oss" width="259" src="http://127.0.0.1:8000/static/v2/images/grow_open_source_new.png" alt="Gitcoin Open Source" title="Grow Open Source Image" style="display:inline-block; max-width:100%">
+    </div>
+
+  <div id="footer" class="centered-contents" style="text-align:center; align-content:center; background-color:#15003e; color:white; padding:2em" align="center" bgcolor="#15003e">
+    <div>
+      <a href="https://www.twitter.com/GetGitcoin" style="color:#ccc; text-decoration:none; font-size:15px"><img class="social-img" src="http://127.0.0.1:8000/static/v2/images/social/twitter_new.png"></a>
+
+      <a href="https://www.medium.com/gitcoin" style="color:#ccc; text-decoration:none; font-size:15px"><img class="social-img" src="http://127.0.0.1:8000/static/v2/images/social/medium_new.png"></a>
+
+      <a href="https://www.facebook.com/GetGitcoin" style="color:#ccc; text-decoration:none; font-size:15px"><img class="social-img" src="http://127.0.0.1:8000/static/v2/images/social/facebook_new.png"></a>
+
+      <a href="https://reddit.com/r/gitcoincommunity" style="color:#ccc; text-decoration:none; font-size:15px"><img class="social-img" src="http://127.0.0.1:8000/static/v2/images/social/reddit_new.png"></a>
+
+      <a href="http://127.0.0.1:8000/slack" style="color:#ccc; text-decoration:none; font-size:15px"><img class="social-img" src="http://127.0.0.1:8000/static/v2/images/social/slack_new.png"></a>
+    </div>
+    <div>
+      <div id="copyright" style="padding-top:0.5em">
+        <p style="font-size:15px; color:#ccc">
+          <span>© 2018 Gitcoin Core, Inc. All rights reserved.</span>
+        </p>
+      </div>
+      <div id="legal-contact" style="padding-top:0.5em">
+        <p style="font-size:15px; color:#ccc">
+          Want to change how you receive these emails?
+          <br>
+          You can update your <a href="http://127.0.0.1:8000/settings/email/" style="color:#ccc; text-decoration:none; font-size:15px">preferences</a> or <a href="http://127.0.0.1:8000/settings/email/" style="color:#ccc; text-decoration:none; font-size:15px">unsubscribe</a> from this list.
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+
+
+
+Sending payment reminder: 
+owocki/pytrader 40
+.
+ Email failed.
+
+{'id': 1647944710, 'node_id': 'MDE5OkNvbW1lbnREZWxldGVkRXZlbnQxNjQ3OTQ0NzEw', 'url': 'https://api.github.com/repos/gitcoinco/web/issues/events/1647944710', 'actor': {'login': 'gitcoinco', 'id': 30044474, 'node_id': 'MDEyOk9yZ2FuaXphdGlvbjMwMDQ0NDc0', 'avatar_url': 'https://avatars1.githubusercontent.com/u/30044474?v=4', 'gravatar_id': '', 'url': 'https://api.github.com/users/gitcoinco', 'html_url': 'https://github.com/gitcoinco', 'followers_url': 'https://api.github.com/users/gitcoinco/followers', 'following_url': 'https://api.github.com/users/gitcoinco/following{/other_user}', 'gists_url': 'https://api.github.com/users/gitcoinco/gists{/gist_id}', 'starred_url': 'https://api.github.com/users/gitcoinco/starred{/owner}{/repo}', 'subscriptions_url': 'https://api.github.com/users/gitcoinco/subscriptions', 'organizations_url': 'https://api.github.com/users/gitcoinco/orgs', 'repos_url': 'https://api.github.com/users/gitcoinco/repos', 'events_url': 'https://api.github.com/users/gitcoinco/events{/privacy}', 'received_events_url': 'https://api.github.com/users/gitcoinco/received_events', 'type': 'Organization', 'site_admin': False}, 'event': 'comment_deleted', 'commit_id': None, 'commit_url': None, 'created_at': '2018-05-26T17:02:28Z'}
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
+
+  <style>@media screen and (min-width: 35.5em) {
+    .social-img {
+        max-height: 50px;
+        max-width: 50px
+        }
+    .primary-content {
+        margin-left: 20%;
+        margin-right: 20%
+        }
+    }
+@media screen and (max-width: 35.5em) {
+    .social-img {
+        max-height: 45px;
+        max-width: 45px
+        }
+    }
+@media screen and (min-width: 48em) {
+    .primary-content {
+        margin-left: 10%;
+        margin-right: 10%
+        }
+    }
+@media screen and (max-width: 48em) {
+    .primary-content {
+        margin-left: 0;
+        margin-right: 0
+        }
+    }</style>
+
+</head>
+<body class="g-font-muli" style='margin:0; padding:0; background-color:#f2f6f9; font-family:"Muli", sans-serif' bgcolor="#f2f6f9">
+  
+  <div id="header" style="height:200px; align-content:center; background-color:#15003e; color:white; padding:2em; text-align:center" height="200" bgcolor="#15003e" align="center">
+    <a href="http://127.0.0.1:8000/" style="color:#70b2ff; text-decoration:none; font-size:15px">
+      <span style="display: inline-block;height: 100%;vertical-align: middle;"></span><img id="logo" src="http://127.0.0.1:8000/static/v2/images/logo_large.png" alt="Gitcoin" title="Gitcoin Logo" style="display:inline-block; max-height:120px; max-width:100%; vertical-align:middle" valign="middle">
+    </a>
+  </div>
+  
+
+    <div class="primary-content centered-contents" style="text-align:center; background-color:white; padding:2em" align="center" bgcolor="white">
+        
+
+<h1 style="font-weight:lighter; text-transform:capitalize; font-size:1.8rem">Your funded bounty is fulfilled</h1>
+
+
+<p style="font-size:15px; color:#4A4A4A">
+    
+    Heads up! The funded issue that you posted (below) has work submitted by <a href="https://github.com/iamonuwa" style="color:#70b2ff; text-decoration:none; font-size:15px">@iamonuwa.</a>
+    <br>
+    <br>
+    <img src="http://127.0.0.1:8000/static/v2/images/update-notification.png" style="padding: 20px 0;">
+    <br>
+    <br>
+    <a class="button button--primary" href="http://127.0.0.1:8000/" style="color:#fff; text-decoration:none; font-size:14px; background-color:#15003e; border-radius:5px; line-height:1.5; padding:15px 20px; text-align:center" bgcolor="#15003e" align="center">View work</a>
+    
+
+    <br>
+    <br>
+    <br>
+    If you have any questions, feel free to reach out <a href="https://gitcoin.co/slack" style="color:#70b2ff; text-decoration:none; font-size:15px">on slack</a>.
+
+    <br>
+    </p>
+<h5 style="font-weight:lighter; text-transform:capitalize">Funded Issue Details</h5>
+
+
+<br>
+
+
+
+
+<div class="centered-contents bounty-box" style="text-align:center; border:1px solid #e0e0e0; margin-bottom:1em; padding-bottom:1em; padding-top:1.5em" align="center">
+  
+  <div class="bounty" style="display:flex; padding:0.5em">
+    <div class="bounty-avatar" style="margin:1em; text-align:right" align="right">
+      <img style="max-height:50px; max-width:100%; border:2px solid #1AB56D; border-radius:100%" src="http://127.0.0.1:8000/dynamic/avatar/gitcoinco">
+    </div>
+    <div class="bounty-contents" style="text-align:left" align="left">
+      
+        <p class="bounty_title" style="font-size:15px">
+          <b>gitcoinco</b>: Consistent Form Styles Across the Gitcoin
+        </p>
+      
+
+      
+        
+          <p style="font-size:15px">
+            <b>Keywords:</b> web, gitcoinco, JavaScript, Python, HTML, CSS
+          </p>
+        
+
+        <p style="font-size:15px">
+          <b>Github:</b> <a href="https://github.com/gitcoinco/web/issues/498" style="color:#70b2ff; text-decoration:none; font-size:15px">https://github.com/gitcoinco/web/issues/498</a>
+        </p>
+      
+
+      <p style="font-size:15px">
+        <b>Amount:</b> 2.00 ETH
+        
+          (about 1384.21 USD @ $692.1/ETH)
+        
+      </p>
+
+      
+        <p style="font-size:15px">
+          <b>Status:</b> submitted
+          
+            (submitted by
+            
+              
+                <a href="http://127.0.0.1:8000/profile/iamonuwa" style="color:#70b2ff; text-decoration:none; font-size:15px">iamonuwa</a>
+              
+              
+                <a href="https://github.com/livepeer/livepeerjs/pull/138" style="color:#70b2ff; text-decoration:none; font-size:15px">(View Submission)</a>
+              
+            
+            )
+          
+        </p>
+        <p style="font-size:15px">
+          <b>Expires:</b> 2 months, 3 weeks from now
+        </p>
+        <p style="font-size:15px">
+          <b>Specs:</b><br>
+          Time Commitment: Unknown
+          <br>
+          Type: Not specified
+          <br>
+          Experience Level: Not specified
+        </p>
+      
+    </div>
+  </div>
+    <hr>
+    
+
+  <div style="margin-bottom: 2em; margin-top: 2em;">
+    <a class="button" href="http://127.0.0.1:8000/issue/gitcoinco/web/498/453" style="color:#fff; text-decoration:none; font-size:14px; background-color:#15003e; border-radius:5px; line-height:1.5; padding:15px 20px; text-align:center" bgcolor="#15003e" align="center">View on Gitcoin.co</a>
+  </div>
+
+
+
+</div>
+
+
+<p style="font-size:15px">
+You are receiving this email because your email address is listed as the reviewing funder for this issue. <a href="http://127.0.0.1:8000/issue/gitcoinco/web/498/453" style="color:#70b2ff; text-decoration:none; font-size:15px">View Bounty</a>.
+</p>
+
+
+        <img id="grow-oss" width="259" src="http://127.0.0.1:8000/static/v2/images/grow_open_source_new.png" alt="Gitcoin Open Source" title="Grow Open Source Image" style="display:inline-block; max-width:100%">
+    </div>
+
+  <div id="footer" class="centered-contents" style="text-align:center; align-content:center; background-color:#15003e; color:white; padding:2em" align="center" bgcolor="#15003e">
+    <div>
+      <a href="https://www.twitter.com/GetGitcoin" style="color:#ccc; text-decoration:none; font-size:15px"><img class="social-img" src="http://127.0.0.1:8000/static/v2/images/social/twitter_new.png"></a>
+
+      <a href="https://www.medium.com/gitcoin" style="color:#ccc; text-decoration:none; font-size:15px"><img class="social-img" src="http://127.0.0.1:8000/static/v2/images/social/medium_new.png"></a>
+
+      <a href="https://www.facebook.com/GetGitcoin" style="color:#ccc; text-decoration:none; font-size:15px"><img class="social-img" src="http://127.0.0.1:8000/static/v2/images/social/facebook_new.png"></a>
+
+      <a href="https://reddit.com/r/gitcoincommunity" style="color:#ccc; text-decoration:none; font-size:15px"><img class="social-img" src="http://127.0.0.1:8000/static/v2/images/social/reddit_new.png"></a>
+
+      <a href="http://127.0.0.1:8000/slack" style="color:#ccc; text-decoration:none; font-size:15px"><img class="social-img" src="http://127.0.0.1:8000/static/v2/images/social/slack_new.png"></a>
+    </div>
+    <div>
+      <div id="copyright" style="padding-top:0.5em">
+        <p style="font-size:15px; color:#ccc">
+          <span>© 2018 Gitcoin Core, Inc. All rights reserved.</span>
+        </p>
+      </div>
+      <div id="legal-contact" style="padding-top:0.5em">
+        <p style="font-size:15px; color:#ccc">
+          Want to change how you receive these emails?
+          <br>
+          You can update your <a href="http://127.0.0.1:8000/settings/email/" style="color:#ccc; text-decoration:none; font-size:15px">preferences</a> or <a href="http://127.0.0.1:8000/settings/email/" style="color:#ccc; text-decoration:none; font-size:15px">unsubscribe</a> from this list.
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+
+
+
+Sending payment reminder: 
+gitcoinco/web 498
+.
+ Email failed.
+{'url': 'https://api.github.com/repos/oogetyboogety/gitcointestproject/issues/comments/425697984', 'html_url': 'https://github.com/oogetyboogety/gitcointestproject/pull/29#issuecomment-425697984', 'issue_url': 'https://api.github.com/repos/oogetyboogety/gitcointestproject/issues/29', 'id': 425697984, 'node_id': 'MDEyOklzc3VlQ29tbWVudDQyNTY5Nzk4NA==', 'user': {'login': 'samplegitcoindeveloper1', 'id': 39746647, 'node_id': 'MDQ6VXNlcjM5NzQ2NjQ3', 'avatar_url': 'https://avatars3.githubusercontent.com/u/39746647?v=4', 'gravatar_id': '', 'url': 'https://api.github.com/users/samplegitcoindeveloper1', 'html_url': 'https://github.com/samplegitcoindeveloper1', 'followers_url': 'https://api.github.com/users/samplegitcoindeveloper1/followers', 'following_url': 'https://api.github.com/users/samplegitcoindeveloper1/following{/other_user}', 'gists_url': 'https://api.github.com/users/samplegitcoindeveloper1/gists{/gist_id}', 'starred_url': 'https://api.github.com/users/samplegitcoindeveloper1/starred{/owner}{/repo}', 'subscriptions_url': 'https://api.github.com/users/samplegitcoindeveloper1/subscriptions', 'organizations_url': 'https://api.github.com/users/samplegitcoindeveloper1/orgs', 'repos_url': 'https://api.github.com/users/samplegitcoindeveloper1/repos', 'events_url': 'https://api.github.com/users/samplegitcoindeveloper1/events{/privacy}', 'received_events_url': 'https://api.github.com/users/samplegitcoindeveloper1/received_events', 'type': 'User', 'site_admin': False}, 'created_at': '2018-09-30T06:23:12Z', 'updated_at': '2018-09-30T06:23:12Z', 'author_association': 'CONTRIBUTOR', 'body': 'https://github.com/oogetyboogety/gitcointestproject/issues/28', 'event': 'commented', 'actor': {'login': 'samplegitcoindeveloper1', 'id': 39746647, 'node_id': 'MDQ6VXNlcjM5NzQ2NjQ3', 'avatar_url': 'https://avatars3.githubusercontent.com/u/39746647?v=4', 'gravatar_id': '', 'url': 'https://api.github.com/users/samplegitcoindeveloper1', 'html_url': 'https://github.com/samplegitcoindeveloper1', 'followers_url': 'https://api.github.com/users/samplegitcoindeveloper1/followers', 'following_url': 'https://api.github.com/users/samplegitcoindeveloper1/following{/other_user}', 'gists_url': 'https://api.github.com/users/samplegitcoindeveloper1/gists{/gist_id}', 'starred_url': 'https://api.github.com/users/samplegitcoindeveloper1/starred{/owner}{/repo}', 'subscriptions_url': 'https://api.github.com/users/samplegitcoindeveloper1/subscriptions', 'organizations_url': 'https://api.github.com/users/samplegitcoindeveloper1/orgs', 'repos_url': 'https://api.github.com/users/samplegitcoindeveloper1/repos', 'events_url': 'https://api.github.com/users/samplegitcoindeveloper1/events{/privacy}', 'received_events_url': 'https://api.github.com/users/samplegitcoindeveloper1/received_events', 'type': 'User', 'site_admin': False}}
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
+
+  <style>@media screen and (min-width: 35.5em) {
+    .social-img {
+        max-height: 50px;
+        max-width: 50px
+        }
+    .primary-content {
+        margin-left: 20%;
+        margin-right: 20%
+        }
+    }
+@media screen and (max-width: 35.5em) {
+    .social-img {
+        max-height: 45px;
+        max-width: 45px
+        }
+    }
+@media screen and (min-width: 48em) {
+    .primary-content {
+        margin-left: 10%;
+        margin-right: 10%
+        }
+    }
+@media screen and (max-width: 48em) {
+    .primary-content {
+        margin-left: 0;
+        margin-right: 0
+        }
+    }</style>
+
+</head>
+<body class="g-font-muli" style='margin:0; padding:0; background-color:#f2f6f9; font-family:"Muli", sans-serif' bgcolor="#f2f6f9">
+  
+  <div id="header" style="height:200px; align-content:center; background-color:#15003e; color:white; padding:2em; text-align:center" height="200" bgcolor="#15003e" align="center">
+    <a href="http://127.0.0.1:8000/" style="color:#70b2ff; text-decoration:none; font-size:15px">
+      <span style="display: inline-block;height: 100%;vertical-align: middle;"></span><img id="logo" src="http://127.0.0.1:8000/static/v2/images/logo_large.png" alt="Gitcoin" title="Gitcoin Logo" style="display:inline-block; max-height:120px; max-width:100%; vertical-align:middle" valign="middle">
+    </a>
+  </div>
+  
+
+    <div class="primary-content centered-contents" style="text-align:center; background-color:white; padding:2em" align="center" bgcolor="white">
+        
+
+<h1 style="font-weight:lighter; text-transform:capitalize; font-size:1.8rem">Your funded bounty is fulfilled</h1>
+
+
+<p style="font-size:15px; color:#4A4A4A">
+    
+    Heads up! The funded issue that you posted (below) has work submitted by <a href="https://github.com/samplegitcoindeveloper1" style="color:#70b2ff; text-decoration:none; font-size:15px">@samplegitcoindeveloper1.</a>
+    <br>
+    <br>
+    <img src="http://127.0.0.1:8000/static/v2/images/update-notification.png" style="padding: 20px 0;">
+    <br>
+    <br>
+    <a class="button button--primary" href="http://127.0.0.1:8000/" style="color:#fff; text-decoration:none; font-size:14px; background-color:#15003e; border-radius:5px; line-height:1.5; padding:15px 20px; text-align:center" bgcolor="#15003e" align="center">View work</a>
+    
+
+    <br>
+    <br>
+    <br>
+    If you have any questions, feel free to reach out <a href="https://gitcoin.co/slack" style="color:#70b2ff; text-decoration:none; font-size:15px">on slack</a>.
+
+    <br>
+    </p>
+<h5 style="font-weight:lighter; text-transform:capitalize">Funded Issue Details</h5>
+
+
+<br>
+
+
+
+
+<div class="centered-contents bounty-box" style="text-align:center; border:1px solid #e0e0e0; margin-bottom:1em; padding-bottom:1em; padding-top:1.5em" align="center">
+  
+  <div class="bounty" style="display:flex; padding:0.5em">
+    <div class="bounty-avatar" style="margin:1em; text-align:right" align="right">
+      <img style="max-height:50px; max-width:100%; border:2px solid #1AB56D; border-radius:100%" src="http://127.0.0.1:8000/dynamic/avatar/oogetyboogety">
+    </div>
+    <div class="bounty-contents" style="text-align:left" align="left">
+      
+        <p class="bounty_title" style="font-size:15px">
+          <b>oogetyboogety</b>: Issue9000
+        </p>
+      
+
+      
+        
+          <p style="font-size:15px">
+            <b>Keywords:</b> JavaScript, CSS, HTML
+          </p>
+        
+
+        <p style="font-size:15px">
+          <b>Github:</b> <a href="https://github.com/oogetyboogety/gitcointestproject/issues/28" style="color:#70b2ff; text-decoration:none; font-size:15px">https://github.com/oogetyboogety/gitcointestproject/issues/28</a>
+        </p>
+      
+
+      <p style="font-size:15px">
+        <b>Amount:</b> 0.03 ETH
+        
+          (about 20.76 USD @ $692.1/ETH)
+        
+      </p>
+
+      
+        <p style="font-size:15px">
+          <b>Status:</b> submitted
+          
+            (submitted by
+            
+              
+                <a href="http://127.0.0.1:8000/profile/samplegitcoindeveloper1" style="color:#70b2ff; text-decoration:none; font-size:15px">samplegitcoindeveloper1</a>
+              
+              
+                <a href="https://github.com/oogetyboogety/gitcointestproject/pull/29" style="color:#70b2ff; text-decoration:none; font-size:15px">(View Submission)</a>
+              
+            
+            )
+          
+        </p>
+        <p style="font-size:15px">
+          <b>Expires:</b> 9 months, 3 weeks from now
+        </p>
+        <p style="font-size:15px">
+          <b>Specs:</b><br>
+          Time Commitment: Hours
+          <br>
+          Type: Bug
+          <br>
+          Experience Level: Beginner
+        </p>
+      
+    </div>
+  </div>
+    <hr>
+    
+
+  <div style="margin-bottom: 2em; margin-top: 2em;">
+    <a class="button" href="http://127.0.0.1:8000/issue/oogetyboogety/gitcointestproject/28/1425" style="color:#fff; text-decoration:none; font-size:14px; background-color:#15003e; border-radius:5px; line-height:1.5; padding:15px 20px; text-align:center" bgcolor="#15003e" align="center">View on Gitcoin.co</a>
+  </div>
+
+
+
+</div>
+
+
+<p style="font-size:15px">
+You are receiving this email because your email address is listed as the reviewing funder for this issue. <a href="http://127.0.0.1:8000/issue/oogetyboogety/gitcointestproject/28/1425" style="color:#70b2ff; text-decoration:none; font-size:15px">View Bounty</a>.
+</p>
+
+
+        <img id="grow-oss" width="259" src="http://127.0.0.1:8000/static/v2/images/grow_open_source_new.png" alt="Gitcoin Open Source" title="Grow Open Source Image" style="display:inline-block; max-width:100%">
+    </div>
+
+  <div id="footer" class="centered-contents" style="text-align:center; align-content:center; background-color:#15003e; color:white; padding:2em" align="center" bgcolor="#15003e">
+    <div>
+      <a href="https://www.twitter.com/GetGitcoin" style="color:#ccc; text-decoration:none; font-size:15px"><img class="social-img" src="http://127.0.0.1:8000/static/v2/images/social/twitter_new.png"></a>
+
+      <a href="https://www.medium.com/gitcoin" style="color:#ccc; text-decoration:none; font-size:15px"><img class="social-img" src="http://127.0.0.1:8000/static/v2/images/social/medium_new.png"></a>
+
+      <a href="https://www.facebook.com/GetGitcoin" style="color:#ccc; text-decoration:none; font-size:15px"><img class="social-img" src="http://127.0.0.1:8000/static/v2/images/social/facebook_new.png"></a>
+
+      <a href="https://reddit.com/r/gitcoincommunity" style="color:#ccc; text-decoration:none; font-size:15px"><img class="social-img" src="http://127.0.0.1:8000/static/v2/images/social/reddit_new.png"></a>
+
+      <a href="http://127.0.0.1:8000/slack" style="color:#ccc; text-decoration:none; font-size:15px"><img class="social-img" src="http://127.0.0.1:8000/static/v2/images/social/slack_new.png"></a>
+    </div>
+    <div>
+      <div id="copyright" style="padding-top:0.5em">
+        <p style="font-size:15px; color:#ccc">
+          <span>© 2018 Gitcoin Core, Inc. All rights reserved.</span>
+        </p>
+      </div>
+      <div id="legal-contact" style="padding-top:0.5em">
+        <p style="font-size:15px; color:#ccc">
+          Want to change how you receive these emails?
+          <br>
+          You can update your <a href="http://127.0.0.1:8000/settings/email/" style="color:#ccc; text-decoration:none; font-size:15px">preferences</a> or <a href="http://127.0.0.1:8000/settings/email/" style="color:#ccc; text-decoration:none; font-size:15px">unsubscribe</a> from this list.
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+
+
+
+Sending payment reminder: 
+oogetyboogety/gitcointestproject 28
+.
+ Email failed.
+{'id': 1987605329, 'node_id': 'MDE1OlN1YnNjcmliZWRFdmVudDE5ODc2MDUzMjk=', 'url': 'https://api.github.com/repos/gitcoinco/web/issues/events/1987605329', 'actor': {'login': 'Anish-Agnihotri', 'id': 4398624, 'node_id': 'MDQ6VXNlcjQzOTg2MjQ=', 'avatar_url': 'https://avatars1.githubusercontent.com/u/4398624?v=4', 'gravatar_id': '', 'url': 'https://api.github.com/users/Anish-Agnihotri', 'html_url': 'https://github.com/Anish-Agnihotri', 'followers_url': 'https://api.github.com/users/Anish-Agnihotri/followers', 'following_url': 'https://api.github.com/users/Anish-Agnihotri/following{/other_user}', 'gists_url': 'https://api.github.com/users/Anish-Agnihotri/gists{/gist_id}', 'starred_url': 'https://api.github.com/users/Anish-Agnihotri/starred{/owner}{/repo}', 'subscriptions_url': 'https://api.github.com/users/Anish-Agnihotri/subscriptions', 'organizations_url': 'https://api.github.com/users/Anish-Agnihotri/orgs', 'repos_url': 'https://api.github.com/users/Anish-Agnihotri/repos', 'events_url': 'https://api.github.com/users/Anish-Agnihotri/events{/privacy}', 'received_events_url': 'https://api.github.com/users/Anish-Agnihotri/received_events', 'type': 'User', 'site_admin': False}, 'event': 'subscribed', 'commit_id': None, 'commit_url': None, 'created_at': '2018-11-26T18:48:56Z'}
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
+
+  <style>@media screen and (min-width: 35.5em) {
+    .social-img {
+        max-height: 50px;
+        max-width: 50px
+        }
+    .primary-content {
+        margin-left: 20%;
+        margin-right: 20%
+        }
+    }
+@media screen and (max-width: 35.5em) {
+    .social-img {
+        max-height: 45px;
+        max-width: 45px
+        }
+    }
+@media screen and (min-width: 48em) {
+    .primary-content {
+        margin-left: 10%;
+        margin-right: 10%
+        }
+    }
+@media screen and (max-width: 48em) {
+    .primary-content {
+        margin-left: 0;
+        margin-right: 0
+        }
+    }</style>
+
+</head>
+<body class="g-font-muli" style='margin:0; padding:0; background-color:#f2f6f9; font-family:"Muli", sans-serif' bgcolor="#f2f6f9">
+  
+  <div id="header" style="height:200px; align-content:center; background-color:#15003e; color:white; padding:2em; text-align:center" height="200" bgcolor="#15003e" align="center">
+    <a href="http://127.0.0.1:8000/" style="color:#70b2ff; text-decoration:none; font-size:15px">
+      <span style="display: inline-block;height: 100%;vertical-align: middle;"></span><img id="logo" src="http://127.0.0.1:8000/static/v2/images/logo_large.png" alt="Gitcoin" title="Gitcoin Logo" style="display:inline-block; max-height:120px; max-width:100%; vertical-align:middle" valign="middle">
+    </a>
+  </div>
+  
+
+    <div class="primary-content centered-contents" style="text-align:center; background-color:white; padding:2em" align="center" bgcolor="white">
+        
+
+<h1 style="font-weight:lighter; text-transform:capitalize; font-size:1.8rem">Your funded bounty is fulfilled</h1>
+
+
+<p style="font-size:15px; color:#4A4A4A">
+    
+        <br>
+        <br>
+        There is a currently pending claim against this funded issue. Please make sure you process them!
+    
+
+    <br>
+    <br>
+    <br>
+    If you have any questions, feel free to reach out <a href="https://gitcoin.co/slack" style="color:#70b2ff; text-decoration:none; font-size:15px">on slack</a>.
+
+    <br>
+    </p>
+<h5 style="font-weight:lighter; text-transform:capitalize">Funded Issue Details</h5>
+
+
+<br>
+
+
+
+
+<div class="centered-contents bounty-box" style="text-align:center; border:1px solid #e0e0e0; margin-bottom:1em; padding-bottom:1em; padding-top:1.5em" align="center">
+  
+  <div class="bounty" style="display:flex; padding:0.5em">
+    <div class="bounty-avatar" style="margin:1em; text-align:right" align="right">
+      <img style="max-height:50px; max-width:100%; border:2px solid #1AB56D; border-radius:100%" src="http://127.0.0.1:8000/dynamic/avatar/gitcoinco">
+    </div>
+    <div class="bounty-contents" style="text-align:left" align="left">
+      
+        <p class="bounty_title" style="font-size:15px">
+          <b>gitcoinco</b>: Advanced Pay Fix - Default to Bountied Amount for Payment, Add Guidance on Overage
+        </p>
+      
+
+      
+        
+          <p style="font-size:15px">
+            <b>Keywords:</b> JavaScript, Python, HTML, CSS, Shell, Makefile, Dockerfile
+          </p>
+        
+
+        <p style="font-size:15px">
+          <b>Github:</b> <a href="https://github.com/gitcoinco/web/issues/2294" style="color:#70b2ff; text-decoration:none; font-size:15px">https://github.com/gitcoinco/web/issues/2294</a>
+        </p>
+      
+
+      <p style="font-size:15px">
+        <b>Amount:</b> 0.20 ETH
+        
+          (about 138.42 USD @ $692.1/ETH)
+        
+      </p>
+
+      
+        <p style="font-size:15px">
+          <b>Status:</b> cancelled
+          
+        </p>
+        <p style="font-size:15px">
+          <b>Expires:</b> 9 months, 3 weeks from now
+        </p>
+        <p style="font-size:15px">
+          <b>Specs:</b><br>
+          Time Commitment: Hours
+          <br>
+          Type: Bug
+          <br>
+          Experience Level: Beginner
+        </p>
+      
+    </div>
+  </div>
+    <hr>
+    
+
+  <div style="margin-bottom: 2em; margin-top: 2em;">
+    <a class="button" href="http://127.0.0.1:8000/issue/gitcoinco/web/2294/1436" style="color:#fff; text-decoration:none; font-size:14px; background-color:#15003e; border-radius:5px; line-height:1.5; padding:15px 20px; text-align:center" bgcolor="#15003e" align="center">View on Gitcoin.co</a>
+  </div>
+
+
+
+</div>
+
+
+<p style="font-size:15px">
+You are receiving this email because your email address is listed as the reviewing funder for this issue. <a href="http://127.0.0.1:8000/issue/gitcoinco/web/2294/1436" style="color:#70b2ff; text-decoration:none; font-size:15px">View Bounty</a>.
+</p>
+
+
+        <img id="grow-oss" width="259" src="http://127.0.0.1:8000/static/v2/images/grow_open_source_new.png" alt="Gitcoin Open Source" title="Grow Open Source Image" style="display:inline-block; max-width:100%">
+    </div>
+
+  <div id="footer" class="centered-contents" style="text-align:center; align-content:center; background-color:#15003e; color:white; padding:2em" align="center" bgcolor="#15003e">
+    <div>
+      <a href="https://www.twitter.com/GetGitcoin" style="color:#ccc; text-decoration:none; font-size:15px"><img class="social-img" src="http://127.0.0.1:8000/static/v2/images/social/twitter_new.png"></a>
+
+      <a href="https://www.medium.com/gitcoin" style="color:#ccc; text-decoration:none; font-size:15px"><img class="social-img" src="http://127.0.0.1:8000/static/v2/images/social/medium_new.png"></a>
+
+      <a href="https://www.facebook.com/GetGitcoin" style="color:#ccc; text-decoration:none; font-size:15px"><img class="social-img" src="http://127.0.0.1:8000/static/v2/images/social/facebook_new.png"></a>
+
+      <a href="https://reddit.com/r/gitcoincommunity" style="color:#ccc; text-decoration:none; font-size:15px"><img class="social-img" src="http://127.0.0.1:8000/static/v2/images/social/reddit_new.png"></a>
+
+      <a href="http://127.0.0.1:8000/slack" style="color:#ccc; text-decoration:none; font-size:15px"><img class="social-img" src="http://127.0.0.1:8000/static/v2/images/social/slack_new.png"></a>
+    </div>
+    <div>
+      <div id="copyright" style="padding-top:0.5em">
+        <p style="font-size:15px; color:#ccc">
+          <span>© 2018 Gitcoin Core, Inc. All rights reserved.</span>
+        </p>
+      </div>
+      <div id="legal-contact" style="padding-top:0.5em">
+        <p style="font-size:15px; color:#ccc">
+          Want to change how you receive these emails?
+          <br>
+          You can update your <a href="http://127.0.0.1:8000/settings/email/" style="color:#ccc; text-decoration:none; font-size:15px">preferences</a> or <a href="http://127.0.0.1:8000/settings/email/" style="color:#ccc; text-decoration:none; font-size:15px">unsubscribe</a> from this list.
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+
+
+
+Sending payment reminder: 
+gitcoinco/web 2294
+.
+ Email failed.
+{'id': 2007528285, 'node_id': 'MDE0OlVubGFiZWxlZEV2ZW50MjAwNzUyODI4NQ==', 'url': 'https://api.github.com/repos/gitcoinco/web/issues/events/2007528285', 'actor': {'login': 'mbeacom', 'id': 7315957, 'node_id': 'MDQ6VXNlcjczMTU5NTc=', 'avatar_url': 'https://avatars0.githubusercontent.com/u/7315957?v=4', 'gravatar_id': '', 'url': 'https://api.github.com/users/mbeacom', 'html_url': 'https://github.com/mbeacom', 'followers_url': 'https://api.github.com/users/mbeacom/followers', 'following_url': 'https://api.github.com/users/mbeacom/following{/other_user}', 'gists_url': 'https://api.github.com/users/mbeacom/gists{/gist_id}', 'starred_url': 'https://api.github.com/users/mbeacom/starred{/owner}{/repo}', 'subscriptions_url': 'https://api.github.com/users/mbeacom/subscriptions', 'organizations_url': 'https://api.github.com/users/mbeacom/orgs', 'repos_url': 'https://api.github.com/users/mbeacom/repos', 'events_url': 'https://api.github.com/users/mbeacom/events{/privacy}', 'received_events_url': 'https://api.github.com/users/mbeacom/received_events', 'type': 'User', 'site_admin': False}, 'event': 'unlabeled', 'commit_id': None, 'commit_url': None, 'created_at': '2018-12-05T16:01:42Z', 'label': {'name': 'needs review', 'color': 'ffd073'}}
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
+
+  <style>@media screen and (min-width: 35.5em) {
+    .social-img {
+        max-height: 50px;
+        max-width: 50px
+        }
+    .primary-content {
+        margin-left: 20%;
+        margin-right: 20%
+        }
+    }
+@media screen and (max-width: 35.5em) {
+    .social-img {
+        max-height: 45px;
+        max-width: 45px
+        }
+    }
+@media screen and (min-width: 48em) {
+    .primary-content {
+        margin-left: 10%;
+        margin-right: 10%
+        }
+    }
+@media screen and (max-width: 48em) {
+    .primary-content {
+        margin-left: 0;
+        margin-right: 0
+        }
+    }</style>
+
+</head>
+<body class="g-font-muli" style='margin:0; padding:0; background-color:#f2f6f9; font-family:"Muli", sans-serif' bgcolor="#f2f6f9">
+  
+  <div id="header" style="height:200px; align-content:center; background-color:#15003e; color:white; padding:2em; text-align:center" height="200" bgcolor="#15003e" align="center">
+    <a href="http://127.0.0.1:8000/" style="color:#70b2ff; text-decoration:none; font-size:15px">
+      <span style="display: inline-block;height: 100%;vertical-align: middle;"></span><img id="logo" src="http://127.0.0.1:8000/static/v2/images/logo_large.png" alt="Gitcoin" title="Gitcoin Logo" style="display:inline-block; max-height:120px; max-width:100%; vertical-align:middle" valign="middle">
+    </a>
+  </div>
+  
+
+    <div class="primary-content centered-contents" style="text-align:center; background-color:white; padding:2em" align="center" bgcolor="white">
+        
+
+<h1 style="font-weight:lighter; text-transform:capitalize; font-size:1.8rem">Your funded bounty is fulfilled</h1>
+
+
+<p style="font-size:15px; color:#4A4A4A">
+    
+        <br>
+        <br>
+        There is a currently pending claim against this funded issue. Please make sure you process them!
+    
+
+    <br>
+    <br>
+    <br>
+    If you have any questions, feel free to reach out <a href="https://gitcoin.co/slack" style="color:#70b2ff; text-decoration:none; font-size:15px">on slack</a>.
+
+    <br>
+    </p>
+<h5 style="font-weight:lighter; text-transform:capitalize">Funded Issue Details</h5>
+
+
+<br>
+
+
+
+
+<div class="centered-contents bounty-box" style="text-align:center; border:1px solid #e0e0e0; margin-bottom:1em; padding-bottom:1em; padding-top:1.5em" align="center">
+  
+  <div class="bounty" style="display:flex; padding:0.5em">
+    <div class="bounty-avatar" style="margin:1em; text-align:right" align="right">
+      <img style="max-height:50px; max-width:100%; border:2px solid #1AB56D; border-radius:100%" src="http://127.0.0.1:8000/dynamic/avatar/gitcoinco">
+    </div>
+    <div class="bounty-contents" style="text-align:left" align="left">
+      
+        <p class="bounty_title" style="font-size:15px">
+          <b>gitcoinco</b>: Basic Payout - Implement Display of User Icon and Address
+        </p>
+      
+
+      
+        
+          <p style="font-size:15px">
+            <b>Keywords:</b> JavaScript, Python, HTML, CSS, Shell, Makefile, Dockerfile, Smarty
+          </p>
+        
+
+        <p style="font-size:15px">
+          <b>Github:</b> <a href="https://github.com/gitcoinco/web/issues/2354" style="color:#70b2ff; text-decoration:none; font-size:15px">https://github.com/gitcoinco/web/issues/2354</a>
+        </p>
+      
+
+      <p style="font-size:15px">
+        <b>Amount:</b> 0.05 ETH
+        
+      </p>
+
+      
+        <p style="font-size:15px">
+          <b>Status:</b> done
+          
+        </p>
+        <p style="font-size:15px">
+          <b>Expires:</b> 10 months, 3 weeks from now
+        </p>
+        <p style="font-size:15px">
+          <b>Specs:</b><br>
+          Time Commitment: Unknown
+          <br>
+          Type: Not specified
+          <br>
+          Experience Level: Not specified
+        </p>
+      
+    </div>
+  </div>
+    <hr>
+    
+
+  <div style="margin-bottom: 2em; margin-top: 2em;">
+    <a class="button" href="http://127.0.0.1:8000/issue/gitcoinco/web/2354/1516" style="color:#fff; text-decoration:none; font-size:14px; background-color:#15003e; border-radius:5px; line-height:1.5; padding:15px 20px; text-align:center" bgcolor="#15003e" align="center">View on Gitcoin.co</a>
+  </div>
+
+
+
+</div>
+
+
+<p style="font-size:15px">
+You are receiving this email because your email address is listed as the reviewing funder for this issue. <a href="http://127.0.0.1:8000/issue/gitcoinco/web/2354/1516" style="color:#70b2ff; text-decoration:none; font-size:15px">View Bounty</a>.
+</p>
+
+
+        <img id="grow-oss" width="259" src="http://127.0.0.1:8000/static/v2/images/grow_open_source_new.png" alt="Gitcoin Open Source" title="Grow Open Source Image" style="display:inline-block; max-width:100%">
+    </div>
+
+  <div id="footer" class="centered-contents" style="text-align:center; align-content:center; background-color:#15003e; color:white; padding:2em" align="center" bgcolor="#15003e">
+    <div>
+      <a href="https://www.twitter.com/GetGitcoin" style="color:#ccc; text-decoration:none; font-size:15px"><img class="social-img" src="http://127.0.0.1:8000/static/v2/images/social/twitter_new.png"></a>
+
+      <a href="https://www.medium.com/gitcoin" style="color:#ccc; text-decoration:none; font-size:15px"><img class="social-img" src="http://127.0.0.1:8000/static/v2/images/social/medium_new.png"></a>
+
+      <a href="https://www.facebook.com/GetGitcoin" style="color:#ccc; text-decoration:none; font-size:15px"><img class="social-img" src="http://127.0.0.1:8000/static/v2/images/social/facebook_new.png"></a>
+
+      <a href="https://reddit.com/r/gitcoincommunity" style="color:#ccc; text-decoration:none; font-size:15px"><img class="social-img" src="http://127.0.0.1:8000/static/v2/images/social/reddit_new.png"></a>
+
+      <a href="http://127.0.0.1:8000/slack" style="color:#ccc; text-decoration:none; font-size:15px"><img class="social-img" src="http://127.0.0.1:8000/static/v2/images/social/slack_new.png"></a>
+    </div>
+    <div>
+      <div id="copyright" style="padding-top:0.5em">
+        <p style="font-size:15px; color:#ccc">
+          <span>© 2018 Gitcoin Core, Inc. All rights reserved.</span>
+        </p>
+      </div>
+      <div id="legal-contact" style="padding-top:0.5em">
+        <p style="font-size:15px; color:#ccc">
+          Want to change how you receive these emails?
+          <br>
+          You can update your <a href="http://127.0.0.1:8000/settings/email/" style="color:#ccc; text-decoration:none; font-size:15px">preferences</a> or <a href="http://127.0.0.1:8000/settings/email/" style="color:#ccc; text-decoration:none; font-size:15px">unsubscribe</a> from this list.
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+
+
+
+Sending payment reminder: 
+gitcoinco/web 2354
+.
+ Email failed.
