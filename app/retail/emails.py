@@ -429,6 +429,31 @@ def render_new_bounty(to_email, bounties, old_bounties):
 
     return response_html, response_txt
 
+def render_weekly_recap(to_email):
+    sub = get_or_save_email_subscriber(to_email, 'internal')
+    from dashboard.models import Profile
+    prof = Profile.objects.filter(email__iexact=to_email).last()
+    item = { 'bounty_image_url': 'v2/images/aaaa.png',
+              'bounty_name': 'Aaaa',
+              'bounty_link': '123'
+            }
+    _items = [ item ]    
+    section = { 'items': _items,
+                'header_name': 'New applicants',
+                'header_icon': 'v2/images/circle.png' }
+    # Work started, Submissions available, Work Done, Work Stopped
+    _sections = [ section ]
+    
+    params = {
+        'subscriber': sub,
+        'sections': _sections,
+        'profile': prof
+    }
+
+    response_html = premailer_transform(render_to_string("emails/recap/weekly_founder_recap.html", params))
+    response_txt = render_to_string("emails/recap/weekly_founder_recap.txt", params)
+
+    return response_html, response_txt
 
 def render_gdpr_reconsent(to_email):
     sub = get_or_save_email_subscriber(to_email, 'internal')
@@ -824,7 +849,11 @@ Thanks for reading! Back to BUIDLing,
 
 # DJANGO REQUESTS
 
-
+@staff_member_required
+def weekly_recap(request):
+    response_html, _ = render_weekly_recap("kuhnchris@kuhnchris.eu")
+    return HttpResponse(response_html)
+    
 @staff_member_required
 def new_tip(request):
     from dashboard.models import Tip

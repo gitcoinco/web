@@ -1,0 +1,41 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n humanize static kudos_extras %}
+{% block content %}
+  <h1>{% trans "Your weekly bounties recap" %}</h1>
+  <h2>{% trans "Hi" %} {{profile.handle}},
+    {% trans "here are the latest activities on your bounties: " %}</h2>
+    
+  {% for section in sections %}
+    <h3><img src={% static section.header_icon %} alt="{{section.header_name}}"> {{section.header_name}}</h3>
+    <br />
+    {% for itm in section.items %}
+    <div class="section_row_entry">
+      <div class="section_row_bounty_logo">
+        <img src={{itm.bounty_image_url}} alt={{itm.bounty_name}}>
+      </div>
+      <div class="section_row_bounty_name">
+        {{ itm.bounty_name }}
+      </div>
+      <div class="section_row_bounty_link">
+        <a href={{item.bounty_link}}>{% trans "View bounty" %}</a>
+      </div>
+    </div>
+    {% endfor %}
+  {% endfor %}
+{% endblock %}
