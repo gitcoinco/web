@@ -453,7 +453,7 @@ var showWarningMessage = function(txid) {
     waitforWeb3(function() {
       clearInterval(interval);
       var etherscan_url = etherscan_tx_url(txid);
-      var blockscout_url = "https://blockscout.com/eth/mainnet/tx/" + txid;
+      var blockscout_url = 'https://blockscout.com/eth/mainnet/tx/' + txid;
 
       $('#transaction_url_etherscan').attr('href', etherscan_url);
       $('#transaction_url_blockscout').attr('href', blockscout_url);

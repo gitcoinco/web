@@ -367,7 +367,8 @@ var etherscanDomain = function() {
 
 var blockscoutDomain = function() {
   var blockscoutDomain = 'blockscout.com/eth/mainnet/';
-   if (document.web3network == 'custom network') {
+  
+  if (document.web3network == 'custom network') {
     // testrpc
     blockscoutDomain = 'localhost';
   } else if (document.web3network == 'rinkeby') {
