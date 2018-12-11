@@ -102,15 +102,18 @@ $(document).ready(function() {
     var success_callback = function(txid) {
 
       startConfetti();
-      var url = 'https://' + etherscanDomain() + '/tx/' + txid;
+      var etherscan_url = 'https://' + etherscanDomain() + '/tx/' + txid;
+      var blockscout_url = 'https://' + blockscoutDomain() + '/tx/' + txid;
 
       $('#loading_trans').html('This transaction has been sent 👌');
       $('#send_eth').css('display', 'none');
       $('#send_eth_done').css('display', 'block');
       $('#tokenName').html(tokenName);
       $('#new_username').html(username);
-      $('#trans_link').attr('href', url);
-      $('#trans_link2').attr('href', url);
+      $('#trans_link_etherscan').attr('href', etherscan_url);
+      $('#trans_link_blockscout').attr('href', blockscout_url);
+      $('#trans_link2_etherscan').attr('href', etherscan_url);
+      $('#trans_link2_blockscout').attr('href', blockscout_url);
       unloading_button($(this));
     };
     var failure_callback = function() {
@@ -360,4 +363,21 @@ var etherscanDomain = function() {
     // mainnet
   }
   return etherscanDomain;
+};
+
+var blockscoutDomain = function() {
+  var blockscoutDomain = 'blockscout.com/eth/mainnet/';
+   if (document.web3network == 'custom network') {
+    // testrpc
+    blockscoutDomain = 'localhost';
+  } else if (document.web3network == 'rinkeby') {
+    // rinkeby
+    blockscoutDomain = 'blockscout.com/eth/rinkeby/';
+  } else if (document.web3network == 'ropsten') {
+    // ropsten
+    blockscoutDomain = 'blockscout.com/eth/ropsten/';
+  } else {
+    // mainnet
+  }
+  return blockscoutDomain;
 };

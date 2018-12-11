@@ -310,8 +310,8 @@ $(document).ready(function() {
     var success_callback = function(txid) {
 
       startConfetti();
-      // TODO!!!
-      var url = 'https://' + etherscanDomain() + '/tx/' + txid;
+      var etherscanUrl = 'https://' + etherscanDomain() + '/tx/' + txid;
+      var blockscoutUrl = 'https://' + blockscoutDomain() + '/tx/' + txid;
 
       $('#loading_trans').html('This transaction has been sent 👌');
       $('#loading_trans').hide();
@@ -322,8 +322,10 @@ $(document).ready(function() {
       } else {
         $('#new_username').html(to_eth_address);
       }
-      $('#trans_link').attr('href', url);
-      $('#trans_link2').attr('href', url);
+      $('#trans_link_etherscan').attr('href', etherscanUrl);
+      $('#trans_link_blockscout').attr('href', blockscoutUrl);
+      $('#trans_link2_etherscan').attr('href', etherscanUrl);
+      $('#trans_link2_blockscout').attr('href', blockscoutUrl);
       unloading_button($(this));
     };
     var failure_callback = function() {

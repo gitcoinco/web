@@ -145,9 +145,9 @@
   </div>
   <div id="send_eth_done" style="display:none;">
     <h1>{% trans "Woo hoo!" %}</h1>
-    <h2>{% blocktrans %}Your <span id="tokenName">ETH</span> has been sent <a href="" target="_blank" rel="noopener noreferrer" id="trans_link">to the blockchain</a>.{% endblocktrans %}</h2>
+    <h2>{% blocktrans %}Your <span id="tokenName">ETH</span> has been sent to the blockchain <a href="" target="_blank" rel="noopener noreferrer" id="trans_link_etherscan">[View on Etherscan]</a> <a href="" target="_blank" rel="noopener noreferrer" id="trans_link_blockscout">[View on Blockscout]</a>.{% endblocktrans %}</h2>
     <p id="loading_trans">
-      <a href="" target="_blank" rel="noopener noreferrer" id="trans_link2" >{% trans "The transaction is still pending." %}</a><br>{% trans "This page will auto-update when the transaction is confirmed" %} <br>({% trans "but you can close the browser window if you want" %}).
+      {% trans "The transaction is still pending." %} <a href="" target="_blank" rel="noopener noreferrer" id="trans_link2_etherscan" >[View on Etherscan]</a> <a href="" target="_blank" rel="noopener noreferrer" id="trans_link2_blockscout" >[View on Blockscout]</a><br>{% trans "This page will auto-update when the transaction is confirmed" %} <br>({% trans "but you can close the browser window if you want" %}).
       <br>
       <img src="{% static "onepager/images/loading_v2.gif" %}" style="max-width: 70px; max-height: 70px;">
     </p>
