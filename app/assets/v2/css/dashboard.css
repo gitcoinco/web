@@ -166,6 +166,7 @@ body {
 
 .tags {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .tags.fixed {
