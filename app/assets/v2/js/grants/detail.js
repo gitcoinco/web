@@ -7,7 +7,6 @@ const editableFields = [
 ];
 
 $(document).ready(function() {
-  $('#tabs').tabs();
 
   userSearch('#grant-admin');
   userSearch('#grant-members');

@@ -185,6 +185,10 @@ textarea.editable {
   border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
 }
 
+.milestones-list li:last-child {
+  padding-bottom: 0 !important;
+}
+
 /* Tooltip text */
 .tooltip .tooltiptext {
   visibility: hidden;
