@@ -35,7 +35,7 @@ class GrantSitemap(Sitemap):
         return obj.modified_on
 
     def location(self, item):
-        return "/grants/"+str(item.id)+"/"+item.slug
+        return f"/grants/{str(item.id)}/{item.slug}"
 
 
 class IssueSitemap(Sitemap):
