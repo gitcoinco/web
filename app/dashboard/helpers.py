@@ -510,12 +510,12 @@ def process_bounty_details(bounty_details):
     bounty_payload = bounty_data.get('payload', {})
     meta = bounty_data.get('meta', {})
 
-    # what schema are we workign with?
+    # what schema are we working with?
     schema_name = meta.get('schemaName')
     schema_version = meta.get('schemaVersion', 'Unknown')
     if not schema_name or schema_name != 'gitcoinBounty':
-        raise UnsupportedSchemaException(
-            f'Unknown Schema: Unknown - Version: {schema_version}')
+        logger.info('Unknown Schema: Unknown - Version: %s', schema_version)
+        return (False, None, None)
 
     # Create new bounty (but only if things have changed)
     did_change, old_bounties = bounty_did_change(bounty_id, bounty_details)
