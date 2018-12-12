@@ -103,12 +103,6 @@
                   <input type="text" class="form__input form__input-lg " id="input-admin_address" value="" name="admin_address" required/>
                 </div>
 
-                <div id="gas-section" class="pb-2">
-                  <h5 class="font-subheader pb-2">{% trans "Gas Settings" %}</h5>
-                  <div>
-                    {% include 'shared/wallet_estimate.html' %}
-                  </div>
-                </div>
 
                 <div class="form__group-horizontal pb-3">
                   <label class="font-body">{% trans "Project Logo" %}</label>
@@ -116,6 +110,13 @@
                     <input id="img-project" type="file" name="input_image" accept="image/*">
                     <span>{% trans "Drag & Drop or Browse" %}</span>
                     <img id="preview"/>
+                  </div>
+                </div>
+
+                <div id="gas-section" class="pb-2">
+                  <h5 class="font-subheader pb-2">{% trans "Gas Settings" %}</h5>
+                  <div>
+                    {% include 'shared/wallet_estimate.html' %}
                   </div>
                 </div>
 
