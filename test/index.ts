@@ -1,6 +1,6 @@
-const fs = require('fs')
-const PNG = require('pngjs').PNG
-const chalk = require('chalk')
+import * as fs from 'fs'
+import * as pngjs from 'pngjs'
+import chalk from 'chalk'
 
 
 const dateExp = /^\d{4}-\d{2}(-\d{2})?$/
@@ -44,71 +44,9 @@ const notice = (msg) => {
   console.log(chalk.yellow(msg))
 }
 
-const jsonFileNames = fs.readdirSync('./erc20')
-const eosJsonFileNames = fs.readdirSync('./eos-token')
-const imageFileNames = fs.readdirSync('./images')
-const imageAddrs = imageFileNames.map(n => n.slice(0, 42)).filter(n => n.startsWith('0x'))
-const lowerCaseImageAddrs =imageAddrs.map(x => x.toLowerCase())
-const jsonFileCheck = (jsonFileName, type) => {
-  const addr = jsonFileName.replace(jsonExp, '')
-  let prepath = ''
-
-  if (
-    (type === 'ETHEREUM' && !isEthAddress(addr)) ||
-    (type === 'EOS' && !isEosToken(addr))
-  ) {
-    exitWithMsg(`ERROR! json file name ${jsonFileName} is not like a ${type} address.json`)
-  }
-
-  if (type === 'ETHEREUM') {
-    prepath = './erc20/'
-  } else if (type === 'EOS') {
-    prepath = './eos-token/'
-  }
-
-  const content = fs.readFileSync(`${prepath}${addr}.json`).toString()
-  let obj = null
-  let parseErr = null
-
-  if (content.indexOf('�') !== -1) {
-    exitWithMsg(`ERROR! json file name ${jsonFileName} must be utf-8 encoding`)
-  }
-
-  try {
-    obj = JSON.parse(content)
-  } catch (e) {
-    parseErr = e
-  }
-
-  if (parseErr) {
-    exitWithMsg(`ERROR! json file name ${jsonFileName} parse error, please check first (maybe has some unnecessary space or comma symbol like ",")`)
-  }
-
-  if (!lowerCaseImageAddrs.includes(addr.toLowerCase())) {
-    notice(`Warning! dose not have ${addr + '.png'} in images dir, please check first`)
-  } else if (!imageAddrs.includes(obj.address)) {
-    const imgAddr = imageAddrs.find(imgad => {
-      return imgad.toLowerCase() === addr.toLowerCase()
-    })
-    exitWithMsg(`Warning! ${imgAddr + '.png'} in images dir, that capital and small letter isn't quite the same with ${addr}`)
-  }
-
+const commonFieldCheck = (jsonFileName, obj) => {
   if (!obj.symbol) {
     exitWithMsg(`ERROR! json file ${jsonFileName} content must have symbol field`)
-  }
-
-  if (!obj.address) {
-    exitWithMsg(`ERROR! json file ${jsonFileName} content must have address field`)
-  }
-
-  if (!isEthAddress(obj.address)) {
-    exitWithMsg(`ERROR! json file ${jsonFileName} address field must be an ethereum address`)
-  }
-
-  if (obj.address.toLowerCase() !== addr.toLowerCase()) {
-    exitWithMsg(`ERROR! json file ${jsonFileName} should be the same with address field ${obj.address}`)
-  } else if (obj.address !== addr) {
-    // exitWithMsg(`Warning! json file ${jsonFileName}, that capital and small letter isn't quite the same with object.address ${obj.address}`)
   }
 
   if (obj.published_on !== undefined) {
@@ -124,7 +62,7 @@ const jsonFileCheck = (jsonFileName, type) => {
   }
 
   if (obj.overview !== undefined) {
-    if (!['zh', 'en'].some(k => isStringWithCharacter(obj.overview[k]))) {
+    if (!['zh', 'en'].some(k => !!isStringWithCharacter(obj.overview[k]))) {
       exitWithMsg(`ERROR! json file ${jsonFileName}'s overview field must have zh and en field, and must be a string (not empty)`)
     }
   }
@@ -143,8 +81,8 @@ const jsonFileCheck = (jsonFileName, type) => {
 
   if (obj.initial_price !== undefined) {
     const keys = Object.keys(obj.initial_price)
-    if (keys.some(k => !['BTC', 'ETH', 'USD'].includes(k))) {
-      exitWithMsg(`ERROR! json file ${jsonFileName}'s initial_price field ${JSON.stringify(obj.initial_price)} only support BTC ETH USD`)
+    if (keys.some(k => !['BTC', 'ETH', 'USD', 'EOS'].includes(k))) {
+      exitWithMsg(`ERROR! json file ${jsonFileName}'s initial_price field ${JSON.stringify(obj.initial_price)} only support BTC ETH USD EOS`)
     }
 
     keys.forEach(k => {
@@ -161,6 +99,101 @@ const jsonFileCheck = (jsonFileName, type) => {
       }
     }
   })
+}
+
+const getObjIfNoError = (jsonFileName, type) => {
+  const addr = jsonFileName.replace(jsonExp, '')
+  let prepath = ''
+  let parseErr = null
+
+  if (type === 'ETHEREUM') {
+    prepath = './erc20/'
+
+    if (!isEthAddress(addr)) {
+      exitWithMsg(`ERROR! json file name ${jsonFileName} is not like a ${type} address.json`)
+    }
+  } else if (type === 'EOS') {
+    prepath = './eos-token/'
+
+    if (!isEosToken(addr)) {
+      exitWithMsg(`ERROR! json file name ${jsonFileName} is not like a ${type} account_name.json`)
+    }
+  }
+
+  const content = fs.readFileSync(`${prepath}${addr}.json`).toString()
+
+  if (content.indexOf('�') !== -1) {
+    exitWithMsg(`ERROR! json file name ${jsonFileName} must be utf-8 encoding`)
+  }
+
+  try {
+    return JSON.parse(content)
+  } catch (e) {
+    parseErr = e
+  }
+
+  if (parseErr) {
+    exitWithMsg(`ERROR! json file name ${jsonFileName} parse error, please check first (maybe has some unnecessary space or comma symbol like ",")`)
+  }
+}
+
+const jsonFileNames = fs.readdirSync('./erc20')
+const eosJsonFileNames = fs.readdirSync('./eos-token')
+const imageFileNames = fs.readdirSync('./images')
+
+const jsonFileCheck = (jsonFileName, type) => {
+  const addr = jsonFileName.replace(jsonExp, '')
+  const imageAddrs = imageFileNames.map(n => n.slice(0, 42)).filter(n => {
+    return type === 'ETHEREUM' ? n.startsWith('0x') : (n.indexOf('@') !== -1)
+  })
+  const lowerCaseImageAddrs =imageAddrs.map(x => x.toLowerCase())
+  
+  let addressOrAccountname = ''
+  let obj = getObjIfNoError(jsonFileName, type)
+  
+
+  if (type === 'ETHEREUM') {
+    addressOrAccountname = obj.address
+  } else if (type === 'EOS') {
+    addressOrAccountname = obj.account_name
+  }
+
+  if (!lowerCaseImageAddrs.includes(addr.toLowerCase())) {
+    notice(`Warning! dose not have ${addr + '.png'} in images dir, please check first`)
+  } else if (!imageAddrs.includes(addressOrAccountname)) {
+    const imgAddr = imageAddrs.find(imgad => {
+      return imgad.toLowerCase() === addr.toLowerCase()
+    })
+    exitWithMsg(`Warning! ${imgAddr + '.png'} in images dir, that capital and small letter isn't quite the same with ${addr}`)
+  }
+
+  if (type === 'ETHEREUM') {
+    if (!addressOrAccountname) {
+      exitWithMsg(`ERROR! json file ${jsonFileName} content must have address field`)
+    }
+    if (!isEthAddress(addressOrAccountname)) {
+      exitWithMsg(`ERROR! json file ${jsonFileName} address field must be an ethereum address`)
+    }
+    if (addressOrAccountname.toLowerCase() !== addr.toLowerCase()) {
+      exitWithMsg(`ERROR! json file ${jsonFileName} should be the same with address field ${addressOrAccountname}`)
+    } else if (addressOrAccountname !== addr) {
+      // exitWithMsg(`Warning! json file ${jsonFileName}, that capital and small letter isn't quite the same with object.address ${obj.address}`)
+    }
+  } else if (type === 'EOS') {
+    if (!addressOrAccountname) {
+      exitWithMsg(`ERROR! json file ${jsonFileName} content must have acount_name field`)
+    }
+    if (!isEosToken(addressOrAccountname)) {
+      exitWithMsg(`ERROR! json file ${jsonFileName} account_name field must be an eos account name`)
+    }
+    if (addressOrAccountname.toLowerCase() !== addr.toLowerCase()) {
+      exitWithMsg(`ERROR! json file ${jsonFileName} should be the same with account_name field ${addressOrAccountname}`)
+    } else if (addressOrAccountname !== addr) {
+      // exitWithMsg(`Warning! json file ${jsonFileName}, that capital and small letter isn't quite the same with object.account_name ${obj.address}`)
+    }
+  }
+
+  commonFieldCheck(jsonFileName, obj)
 }
 
 const jsonFileNameFilter = jsonFileName => {
@@ -186,7 +219,7 @@ imageFileNames.forEach(n => {
   
   if (imgExp.test(n)) {
     fs.createReadStream(path)
-      .pipe(new PNG()).on('metadata', (metadata) => {
+      .pipe(new pngjs.PNG()).on('metadata', (metadata) => {
         if (metadata.width !== metadata.height) {
           notice(`${n} image width ${metadata.width} !== height ${metadata.height}`)
         }
