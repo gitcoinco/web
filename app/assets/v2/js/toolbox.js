@@ -11,6 +11,16 @@ $(document).ready(function() {
     return elementBottom > viewportTop && elementTop < viewportBottom;
   };
 
+  $(window).on('hashchange', function(evt) {
+    $('#toc a').each(function() {
+      $(this).removeClass('active');
+
+      if ($(this).attr('href') === window.location.hash) {
+        $(this).addClass('active');
+      }
+    });
+  });
+
   $(window).scroll(function() {
     var scrollPos = $(document).scrollTop();
 
