@@ -31,13 +31,15 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 logging.getLogger("web3").setLevel(logging.WARNING)
 logging.getLogger("marketing.mails").setLevel(logging.WARNING)
 
+logger = logging.getLogger(__name__)
+
 
 def process_subscription(subscription, live):
     is_ready_to_be_processed_db = subscription.get_is_ready_to_be_processed_from_db()
 
-    print(f"  - subscription {subscription.pk}")
+    logger.info("  - subscription %d", subscription.pk)
     if is_ready_to_be_processed_db:
-        print("   -- (ready via db) ")
+        logger.info("   -- (ready via db) ")
         are_we_past_next_valid_timestamp = subscription.get_are_we_past_next_valid_timestamp()
 
         # FOR DEBUGGING
@@ -45,35 +47,39 @@ def process_subscription(subscription, live):
             is_ready_to_be_processed_web3 = subscription.get_is_subscription_ready_from_web3()
             is_active_web3 = subscription.get_is_active_from_web3()
             signer = subscription.get_subscription_signer_from_web3()
-            print("    ---  DEBUG INFO")
-            print("    --- ", are_we_past_next_valid_timestamp, is_ready_to_be_processed_web3, is_active_web3, signer)
+            logger.info("    ---  DEBUG INFO")
+            logger.info(
+                "    --- %s, %s, %s, %s", are_we_past_next_valid_timestamp, is_ready_to_be_processed_web3,
+                is_active_web3, signer,
+            )
 
         if are_we_past_next_valid_timestamp:
-            print("   -- (ready via web3) ")
-            if not live:
-                print("   -- *not live, not executing* ")
-            else:
-                print("   -- *executing* ")
+            logger.info("   -- (ready via web3) ")
             status = 'failure'
             txid = None
             error = None
             try:
                 if live:
+                    logger.info("   -- *executing* ")
                     txid = subscription.do_execute_subscription_via_web3()
-                    print(f"   -- *waiting for mine* (txid {txid}) ")
+                    logger.info("   -- *waiting for mine* (txid %s) ", txid)
                     while not has_tx_mined(txid, subscription.grant.network):
                         time.sleep(10)
-                        print("   -- *waiting 10 seconds*")
+                        logger.info("   -- *waiting 10 seconds*")
                     status, __ = get_tx_status(txid, subscription.grant.network, timezone.now())
+                else:
+                    logger.info("   -- *not live, not executing* ")
             except Exception as e:
                 error = str(e)
 
-            print(f"   -- *mined* (status: {status} / error: {error}) ")
+            logger.info("   -- *mined* (status: %s / error: %s) ", status, error)
             was_success = status == 'success'
             if live:
                 if not was_success:
+                    logger.warning('subscription processing failed')
                     warn_subscription_failed(subscription, txid, status, error)
                 else:
+                    logger.info('subscription processing successful')
                     subscription.successful_contribution(txid)
                     subscription.save()
 
@@ -85,11 +91,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('network', default='rinkeby', type=str)
         parser.add_argument(
-            '-live', '--live',
-            action='store_true',
-            dest='live',
-            default=False,
-            help='Actually do the sync'
+            '-live', '--live', action='store_true', dest='live', default=False, help='Actually do the sync'
         )
 
     def handle(self, *args, **options):
@@ -97,13 +99,14 @@ class Command(BaseCommand):
         network = options['network']
         live = options['live']
 
+        logger.info('Subminer - Network: (%s) Live: (%s)', network, live)
         # iter through Grants
         grants = Grant.objects.filter(network=network).active()
-        print(f"got {grants.count()} grants")
+        logger.info("got %d grants", grants.count())
 
         for grant in grants:
             subs = grant.subscriptions.filter(active=True, next_contribution_date__lt=timezone.now())
-            print(f" - {grant.pk} has {subs.count()} subs ready for execution")
+            logger.info(" - %d has %d subs ready for execution", grant.pk, subs.count())
 
             for subscription in subs:
                 process_subscription(subscription, live)
