@@ -361,7 +361,7 @@ class Subscription(SuperModel):
     def percentage_removed(self):
         """Return the percentage of token removed on subscription cancel."""
         grant = self.grant
-        
+
         return ((self.amount_received / self.amount_goal) * 100)
 
 
@@ -539,7 +539,7 @@ class Subscription(SuperModel):
             logger.info(e)
 
         grant.save()
-        successful_contribution(self.grant, self)
+        successful_contribution(self.grant, self, contribution)
         return contribution
 
 
