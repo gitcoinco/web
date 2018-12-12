@@ -97,6 +97,7 @@ $(document).ready(function() {
               ];
 
               deployedSubscription.methods.getSubscriptionHash(...parts).call(function(err, subscriptionHash) {
+                console.log('sub hash', $('#signature').val());
                 $('#subscription_hash').val(subscriptionHash);
                 web3.eth.personal.sign('' + subscriptionHash, accounts[0], function(err, signature) {
                   $('#signature').val(signature);
@@ -106,11 +107,13 @@ $(document).ready(function() {
           }).on('confirmation', function(confirmationNumber, receipt) {
             $('#real_period_seconds').val(realPeriodSeconds);
 
-            $.each($(form).serializeArray(), function() {
-              data[this.name] = this.value;
-            });
-
-            form.submit();
+            waitforData(function(){
+              console.log('sub hash 2', $('#signature').val());
+              $.each($(form).serializeArray(), function() {
+                data[this.name] = this.value;
+              });
+              form.submit();
+            })
           });
 
         });
@@ -142,6 +145,19 @@ $(document).ready(function() {
     $('#js-token').select2();
   });
 });
+
+var waitforData = function(callback) {
+  console.log('sub hash 3', $('#signature').val());
+  if ($('#signature').val() != '') {
+    callback();
+  } else {
+    var wait_callback = function() {
+      waitforData(callback);
+    };
+
+    setTimeout(wait_callback, 3000);
+  }
+};
 
 const updateSummary = (element) => {
 
