@@ -7,10 +7,10 @@ const editableFields = [
 ];
 
 $(document).ready(function() {
+  showMore();
 
   userSearch('#grant-admin');
   userSearch('#grant-members');
-
   $('.select2-selection__rendered').removeAttr('title');
   $('#form--input__description').height($('#form--input__description').prop('scrollHeight'));
   $('#form--input__title').height($('#form--input__title').prop('scrollHeight'));
