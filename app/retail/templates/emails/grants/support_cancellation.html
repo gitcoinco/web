@@ -59,16 +59,6 @@
     text-align: justify;
   }
 
-  .grant-button {
-    padding: 12px 36px;
-    font-size: 12px;
-    border-radius: 3px;
-    text-decoration: none;
-    background-color: #0D0764;
-    color: white;
-    font-weight: 600;
-  }
-
   #grow-oss {
     margin-top: 2rem;
     margin-bottom: 2rem;
@@ -81,20 +71,20 @@
     padding-bottom: 75px;
   }
 
-  .progressBar {
+  .progressbar {
     height: 15px;
     background-color: #D8D8D8;
     border-radius: 2.7px;
   }
 
-  .progressCompleted {
+  .progress-completed {
     height: 100%;
     background-color: #0FCE7C;
     border-radius: 2.7px;
     float: left;
   }
 
-  .progressRemoved {
+  .progress-removed {
     height: 100%;
     background-color: #CF0E0E;
     border-top-right-radius: 2.7px;
@@ -114,7 +104,7 @@
     padding-top: -20px;
   }
 
-  .progressBarLine {
+  .progressbar-line {
     width: 1px;
     height: 45px;
     background-color: #979797;
@@ -123,23 +113,23 @@
     margin-right: 20px;
   }
 
-  .progressBarPositionMargin {
+  .progressbar-position-margin {
     padding-left: 20%;
     padding-right: 20%;
     margin-top: 4rem;
   }
 
-  .progressBarPosition {
+  .progressbar-position {
     transform: translateY(160%);
   }
 
-  .progressBarPosition > p {
+  .progressbar-position > p {
     line-height: 0px;
     color: #BBBDBF;
     text-align: left;
   }
 
-  .progressBarPosition > h4 {
+  .progressbar-position > h4 {
     line-height: 0px;
     color: #0D0764;
     padding-top: -20px;
@@ -185,9 +175,9 @@
   <p class="grant-description">
     {{ grant.description }}
   </p>
-  <div class="progressBarPositionMargin">
-    <div class="progressBarPosition" style="margin-left: {{ grant.percentage_done|floatformat:0 }}%;">
-      <div class="progressBarLine"></div>
+  <div class="progressbar-position-margin">
+    <div class="progressbar-position" style="margin-left: {{ grant.percentage_done|floatformat:0 }}%;">
+      <div class="progressbar-line"></div>
       <p>{% trans "Your Contribution" %}</p>
       <h4>
         <strong>{{ subscription.amount_per_period }} {{ subscription.token_symbol }}</strong>
@@ -195,11 +185,11 @@
     </div>
   </div>
   <div class="progress">
-    <div class="progressBar">
-      <div class="progressCompleted" style="width: {{ grant.percentage_done|floatformat:0 }}%;">
+    <div class="progressbar">
+      <div class="progress-completed" style="width: {{ grant.percentage_done|floatformat:0 }}%;">
       </div>
       <!-- #TODO - Change object that takes the percentage value of removed contribution. -->
-      <div class="progressRemoved" style="width: {{ grant.percentage_removed|floatformat:0 }}%;">
+      <div class="progress-removed" style="width: {{ grant.percentage_removed|floatformat:0 }}%;">
       </div>
     </div>
     <div class="funding" id="currentFunding">

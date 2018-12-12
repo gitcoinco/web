@@ -20,6 +20,15 @@
 {% block content %}
 
 <style>
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+
   hr {
     width: 80%;
     height: 2px;
@@ -34,23 +43,19 @@
   }
 
   .grant-info a img {
-    border-radius: 25px;
     margin-bottom: 10px;
   }
 
   .grant-info-name {
-    font-size: 20px;
+    font-size: 1.5rem;
+    font-weight: 600;
     color: #0D0764;
   }
 
-  .grant-info h5 {
-    font-size: 14px;
-    margin-top: 15px;
-    margin-top: 30px;
-  }
-
-  .grant-info h3 {
-    margin-top: -20px;
+  .grant-description {
+    max-width: 50rem;
+    margin: 1.5rem auto;
+    text-align: justify;
   }
 
   .grant-button {
@@ -63,8 +68,8 @@
   }
 
   #grow-oss {
-    margin-top: 70px;
-    margin-bottom: 40px;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
   }
 
   .progress {
@@ -148,24 +153,26 @@
   }
 
   td:nth-child(1) > img {
-    border-radius: 50%;
     height: 40px;
   }
 
 </style>
 <img src="{% static "v2/images/transaction-summary.png" %}" alt="{% trans "Transaction Summary" %}"
   title="{% trans "Transaction Summary" %}">
-<h1 style="text-transform: none;">{% trans "Grant" %} '{{ grant.title }}' {% trans "has received more funding" %}!</h1>
-<br>
-
+<h1 style="margin-bottom:1.25rem">{% trans "Grant" %} '{{ grant.title }}' {% trans "has received more funding" %}!</h1>
 <hr>
+
 <div class="grant-info">
-  <a href="{% url 'grant:details' grant.id %}">
-    <img src="{{ grant.logo.url }}" style="width: 50px; height: 50px;"/>
+  <a href="{% url 'grants:details' grant.id grant.slug %}">
+    <img id="grant-logo" src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}" alt="grant logo" >
   </a>
   <br>
-  <a class="grant-info-name" href="{% url 'grant:details' grant.id %}">{{ grant.title }}</a>
-  <p>{{ grant.description }}</p>
+  <a class="grant-info-name" href="{% url 'grants:details' grant.id grant.slug %}">
+    {{ grant.title }}
+  </a>
+  <p class="grant-description">
+    {{ grant.description }}
+  </p>
 </div>
 <hr>
 <div class="progress" id="tablePadding">
@@ -211,13 +218,13 @@
   <div class="funding">
     <div class="left-funding">
       <h4>
-        <strong>{{ grant.amount_received }} {% trans "ETH" %}</strong>
+        <strong>{{ grant.amount_received }} {% trans "DAI" %}</strong>
       </h4>
       <p>{% trans "Current" %}</p>
     </div>
     <div class="right-funding">
       <h4>
-        <strong>{{ grant.amount_goal }} {% trans "ETH" %}</strong>
+        <strong>{{ grant.amount_goal }} {% trans "DAI" %}</strong>
       </h4>
       <p>{% trans "Goal" %}</p>
     </div>
