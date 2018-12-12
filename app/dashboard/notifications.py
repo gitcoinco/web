@@ -772,7 +772,9 @@ def maybe_market_kudos_to_github(kt):
         # TODO: support this once ETH-only sends are done
         return False
 
-    image = f"<a title='{kt.kudos_token_cloned_from.humanized_name}' href='{kt.kudos_token_cloned_from.url}'><img width='250' src='{kt.kudos_token_cloned_from.img_url}' alt='{kt.kudos_token_cloned_from.humanized_name}'></a>"
+    image = f"<a title='{kt.kudos_token_cloned_from.humanized_name}' href='{kt.kudos_token_cloned_from.url}'> " \
+            f"<img width='250' src='{kt.kudos_token_cloned_from.img_url}' alt='{kt.kudos_token_cloned_from.humanized_name}'> " \
+            f"</a> "
     msg = f"""
 <table>
 <tr>
