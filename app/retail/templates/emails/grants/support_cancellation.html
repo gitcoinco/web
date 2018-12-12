@@ -21,6 +21,15 @@
 {% block content %}
 
 <style>
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+
   hr {
     width: 80%;
     height: 2px;
@@ -35,23 +44,19 @@
   }
 
   .grant-info a img {
-    border-radius: 25px;
     margin-bottom: 10px;
   }
 
   .grant-info-name {
-    font-size: 20px;
+    font-size: 1.5rem;
+    font-weight: 600;
     color: #0D0764;
   }
 
-  .grant-info h5 {
-    font-size: 14px;
-    margin-top: 15px;
-    margin-top: 30px;
-  }
-
-  .grant-info h3 {
-    margin-top: -20px;
+  .grant-description {
+    max-width: 50rem;
+    margin: 1.5rem auto;
+    text-align: justify;
   }
 
   .grant-button {
@@ -65,8 +70,8 @@
   }
 
   #grow-oss {
-    margin-top: 70px;
-    margin-bottom: 40px;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
   }
 
   .progress {
@@ -121,6 +126,7 @@
   .progressBarPositionMargin {
     padding-left: 20%;
     padding-right: 20%;
+    margin-top: 4rem;
   }
 
   .progressBarPosition {
@@ -135,7 +141,6 @@
 
   .progressBarPosition > h4 {
     line-height: 0px;
-    text-align: left;
     color: #0D0764;
     padding-top: -20px;
   }
@@ -151,6 +156,11 @@
 
   #goalFunding {
     width: 42.5%;
+    text-align: right;
+  }
+
+  #goalFunding h4 {
+    text-align: right;
   }
 
   #grant-logo {
@@ -160,25 +170,28 @@
   }
 </style>
 <img src="{% static "v2/images/subscription-terminated.png" %}" alt="{% trans "We are sad to see you go." %}" title="{% trans "We are sad to see you go." %}">
-<h1 style="text-transform: none;">{% trans "Your support for" %} {{ grant.title }} {% trans "has been cancelled" %}.</h1>
-<p>{% trans "Thank you for everything you have contributed!" %}</p>
-<br>
-
+<h1>{% trans "Your Subscription for" %} {{ grant.title }} {% trans "has been cancelled" %}.</h1>
+<p style="margin-bottom:1.25rem;">{% trans "Thank you for everything you have contributed!" %}</p>
 <hr>
+
 <div class="grant-info">
   <a href="{% url 'grants:details' grant.id grant.slug %}">
     <img id="grant-logo" src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}" alt="grant logo" >
   </a>
   <br>
-  <a class="grant-info-name" href="{% url 'grants:details' grant.id grant.slug %}">{{ grant.title }}</a>
-  <p>{{ grant.description }}</p>
+  <a class="grant-info-name" href="{% url 'grants:details' grant.id grant.slug %}">
+    {{ grant.title }}
+  </a>
+  <p class="grant-description">
+    {{ grant.description }}
+  </p>
   <div class="progressBarPositionMargin">
     <div class="progressBarPosition" style="margin-left: {{ grant.percentage_done|floatformat:0 }}%;">
       <div class="progressBarLine"></div>
-      <h4>
-        <strong>{{ subscription.amount_per_period }} {{ subscription.token_name }}</strong>
-      </h4>
       <p>{% trans "Your Contribution" %}</p>
+      <h4>
+        <strong>{{ subscription.amount_per_period }} {{ subscription.token_symbol }}</strong>
+      </h4>
     </div>
   </div>
   <div class="progress">
@@ -191,27 +204,27 @@
     </div>
     <div class="funding" id="currentFunding">
       <h4>
-        <strong>{{ grant.amount_received }} {% trans "ETH" %}</strong>
+        <strong>{{ grant.amount_received }} {% trans "DAI" %}</strong>
       </h4>
       <p>{% trans "Current" %}</p>
     </div>
     <div class="funding" id="goalFunding">
       <h4>
-        <strong>{{ grant.amount_goal }} {% trans "ETH" %}</strong>
+        <strong>{{ grant.amount_goal }} {% trans "DAI" %}</strong>
       </h4>
       <p>{% trans "Goal" %}</p>
     </div>
   </div>
 </div>
-<hr>
 
 <br>
-<!-- #TODO - Use correct object for transaction link. - 2/2 -->
 <p>{% trans "You can see your cancellation transaction on etherscan" %}
-  <a href="{{ transaction.link }}">{% trans "here." %}</a>
+  {% if subscription.network == 'mainnet' %}
+    <a href="http://etherscan.io/tx/{{ subscription.cancel_tx_id }}">{% trans "here." %}</a>
+  {% else %}
+    <a href="http://{{ grant.network }}.etherscan.io/tx/{{ subscription.cancel_tx_id }}">{% trans "here." %}</a>
+  {% endif %}
 </p>
-<br>
-<a class="grant-button" href="{{ transaction.link }}">{% trans "View Transaction" %}</a>
-<br>
+<hr>
 
 {% endblock %}
