@@ -524,7 +524,7 @@ def process_bounty_details(bounty_details):
     if not did_change:
         return (did_change, latest_old_bounty, latest_old_bounty)
 
-    semaphore_key = get_bounty_semaphore_ns(bounty_data['id'])
+    semaphore_key = get_bounty_semaphore_ns(bounty_id)
     semaphore = get_semaphore(semaphore_key)
 
     try:

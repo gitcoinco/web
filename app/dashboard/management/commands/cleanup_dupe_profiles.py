@@ -111,3 +111,14 @@ class Command(BaseCommand):
             profiles = Profile.objects.filter(handle__iexact=handle).distinct("pk")
             print(f"combining {handle}: {profiles[0].pk} and {profiles[1].pk}")
             combine_profiles(profiles[0], profiles[1])
+
+        # KO Hack 2018/12/10
+        # For some reason, profiles keep getting set to hide_profile=True, even
+        # when there's no form submissions on record for them.
+        # this is a stopgap until we can figure out the root cause
+        from dashboard.models import Profile
+        profiles = Profile.objects.filter(hide_profile=True, form_submission_records=[])
+        for profile in profiles:
+            profile.hide_profile=False
+            profile.save()
+            print(profile.handle)
