@@ -773,7 +773,8 @@ def maybe_market_kudos_to_github(kt):
         return False
 
     image = f"<a title='{kt.kudos_token_cloned_from.humanized_name}' href='{kt.kudos_token_cloned_from.url}'> " \
-            f"<img width='250' src='{kt.kudos_token_cloned_from.img_url}' alt='{kt.kudos_token_cloned_from.humanized_name}'> " \
+            f"<img width='250' src='{kt.kudos_token_cloned_from.img_url}' " \
+            f"alt='{kt.kudos_token_cloned_from.humanized_name}'> " \
             f"</a> "
     msg = f"""
 <table>
