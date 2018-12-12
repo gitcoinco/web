@@ -56,7 +56,7 @@
   .grant-description {
     max-width: 50rem;
     margin: 1.5rem auto;
-    text-align: justify;
+    text-align: center;
   }
 
   #grow-oss {
@@ -183,21 +183,12 @@
 </div>
 
 <br>
-<p class="grant-link">
-  <a class="grant-button" href="{% url 'grants:details' grant.pk grant.slug %}">{% trans "View Inactive Grant" %}</a>
-</p>
+
 <p>{% trans "You can see the grant cancellation transaction on etherscan" %}
   {% if subscription.network == 'mainnet' %}
     <a href="http://etherscan.io/tx/{{ grant.cancel_tx_id }}">{% trans "here." %}</a>
   {% else %}
     <a href="http://{{ grant.network }}.etherscan.io/tx/{{ grant.cancel_tx_id }}">{% trans "here." %}</a>
-  {% endif %}
-</p>
-<p>{% trans "You can see your cancellation transaction on etherscan" %}
-  {% if subscription.network == 'mainnet' %}
-    <a href="http://etherscan.io/tx/{{ subscription.cancel_tx_id }}">{% trans "here." %}</a>
-  {% else %}
-    <a href="http://{{ grant.network }}.etherscan.io/tx/{{ subscription.cancel_tx_id }}">{% trans "here." %}</a>
   {% endif %}
 </p>
 <p class="grant-link">
