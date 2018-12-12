@@ -1135,20 +1135,28 @@ input.is-invalid {
   color: white;
   text-decoration: none;
 }
+
 .bounty_box.disabled, .bounty_box.disabled:hover {
   cursor: not-allowed;
   background-color: #5f445b;
   text-decoration: none;
 }
+
 .bounty_box:hover {
   background-color: #35305e;
   text-decoration: none;
 }
-.bounty_box h5{
+
+.bounty_box h5 {
   color: white;
 }
-.bounty_box span{
+
+.bounty_box span {
   color: white;
+}
+
+.morecontent span {
+  display: none;
 }
 
 @media (max-width: 1350px) {

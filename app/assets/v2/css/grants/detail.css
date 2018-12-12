@@ -185,6 +185,14 @@ textarea.editable {
   border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
 }
 
+.update {
+  border-bottom: 1px solid #D8D8D8;
+}
+
+.update:first-child {
+  padding-top: 0 !important;
+}
+
 .milestones-list li:last-child {
   padding-bottom: 0 !important;
 }

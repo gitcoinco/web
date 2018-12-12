@@ -1363,3 +1363,44 @@ const updateParams = (key, value) => {
   params.set(key, value);
   window.location.search = params.toString();
 };
+
+/**
+ * shrinks text if it exceeds a given length which introduces a button
+ * which can expand / shrink the text.
+ * useage: <div class="more">...</div>
+ *
+ * @param {number} length - text length to be wrapped.
+ */
+const showMore = (length = 400) => {
+  const placeholder = '...';
+  const expand = 'More';
+  const shrink = 'Less';
+
+  $('.wrap-text').each(function() {
+    const content = $(this).html();
+
+    if (content.length > length) {
+      const shortText = content.substr(0, length);
+      const remainingText = content.substr(length, content.length - length + 1);
+      const html = shortText + '<span class="moreellipses">' + placeholder +
+      '&nbsp;</span><span class="morecontent"><span>' + remainingText +
+      '</span>&nbsp;&nbsp;<a href="#" class="morelink">' + expand +
+      '</a></span>';
+
+      $(this).html(html);
+    }
+  });
+
+  $('.morelink').click((event) => {
+    if ($(event.currentTarget).hasClass('less')) {
+      $(event.currentTarget).removeClass('less');
+      $(event.currentTarget).html(expand);
+    } else {
+      $(event.currentTarget).addClass('less');
+      $(event.currentTarget).html(shrink);
+    }
+    $(event.currentTarget).parent().prev().toggle();
+    $(event.currentTarget).prev().toggle();
+    return false;
+  });
+};
