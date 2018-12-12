@@ -874,6 +874,29 @@ def setup_lang(to_email):
         translation.activate(preferred_language)
 
 
+def low_bounty_alert(bounty):
+    to_email = 'founders@gitcoin.co'
+    from_email = bounty.bounty_owner_email or settings.SERVER_EMAIL
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        subject = _("Low Bounty Alert")
+        body_str = _("A low bounty was set from")
+        body = f"{body_str} {bounty.bounty_owner_name} ({bounty.bounty_owner_email}):"\
+            f"{settings.BASE_URL}_administrationdashboard/bounty/{bounty.pk}/change\n\n"\
+            f"Github: {bounty.github_url}\n"
+        send_mail(
+            from_email,
+            to_email,
+            subject,
+            body,
+            from_name=_("No Reply from Gitcoin.co"),
+            categories=['admin'],
+        )
+    finally:
+        translation.activate(cur_language)
+
+
 def new_bounty_request(model):
     to_email = 'vivek.singh@consensys.net'
     from_email = model.requested_by.email or settings.SERVER_EMAIL

@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 from datetime import date, datetime, timedelta
+from unittest.mock import patch
 
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
@@ -464,3 +465,49 @@ class DashboardModelsTest(TestCase):
         )
         assert bounty.github_url == 'https://github.com/gitcoinco/web/issues/305'
         bounty.delete()
+
+    @patch('marketing.mails.send_mail')
+    def test_low_bounty_alert(self, mock_send_mail):
+        """Test that an alert email is sent when a bounty with a low value is created"""
+        Bounty.objects.create(
+            title='Low Value Bounty',
+            value_in_token=1 * 1e18,
+            token_name='ETH',
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            github_url='https://github.com/gitcoinco/web/issues/305#issuecomment-999999999',
+            token_address='0x0000000000000000000000000000000000000000',
+            issue_description='hello world',
+            bounty_owner_github_username='flintstone',
+            is_open=False,
+            accepted=False,
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            idx_project_length=5,
+            project_length='Months',
+            bounty_type='Feature',
+            experience_level='Intermediate',
+            raw_data={},
+        )
+        assert mock_send_mail.call_count == 1
+
+    @patch('marketing.mails.send_mail')
+    def test_no_bounty_alert_for_reasonable_bounties(self, mock_send_mail):
+        """Test that no alert email is sent when a bounty with a reasonable price is created."""
+        Bounty.objects.create(
+            title='Reasonable Value Bounty',
+            value_in_token=3 * 1e18,
+            token_name='ETH',
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            github_url='https://github.com/gitcoinco/web/issues/305#issuecomment-999999999',
+            token_address='0x0000000000000000000000000000000000000000',
+            issue_description='hello world',
+            bounty_owner_github_username='flintstone',
+            is_open=False,
+            accepted=False,
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            idx_project_length=5,
+            project_length='Months',
+            bounty_type='Feature',
+            experience_level='Intermediate',
+            raw_data={},
+        )
+        assert mock_send_mail.call_count == 0

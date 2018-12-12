@@ -49,6 +49,7 @@ from git.utils import (
     _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_gh_issue_details, get_issue_comments, issue_number, org_name,
     repo_name,
 )
+from marketing.mails import low_bounty_alert
 from marketing.models import LeaderboardRank
 from rest_framework import serializers
 from web3 import Web3
@@ -986,6 +987,18 @@ class Bounty(SuperModel):
             sentence += f" worth {usd_value} USD"
 
         return sentence
+
+
+LOW_BOUNTY_THRESHOLD = 5.0
+
+
+@receiver(post_save, sender=Bounty)
+def alert_low_bounty(sender, **kwargs):
+    """Alert when a bounty with a low price is created."""
+    bounty = kwargs.get('instance')
+    usdt_value = bounty.get_value_in_usdt_now
+    if(kwargs.get('created') is True and usdt_value and usdt_value < LOW_BOUNTY_THRESHOLD):
+        low_bounty_alert(bounty)
 
 
 class BountyFulfillmentQuerySet(models.QuerySet):
