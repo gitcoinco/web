@@ -106,12 +106,12 @@ $(document).ready(function() {
           }).on('confirmation', function(confirmationNumber, receipt) {
             $('#real_period_seconds').val(realPeriodSeconds);
 
-            waitforData(function(){
+            waitforData(function() {
               $.each($(form).serializeArray(), function() {
                 data[this.name] = this.value;
               });
               form.submit();
-            })
+            });
           });
         });
       });
