@@ -2200,5 +2200,89 @@
   - ethsingapore
   - special event
   image: trophy_superhero_kudos.svg
+- name: carlos_matos
+  description: hey hey hey... HEY HEY HEY!  wassa wassa wassa gitconnnecctttt!
+  priceFinney: 3
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - carlos matos
+  - just for fun
+  - meme
+  image: carlos_matos.svg
+- name: christmas_creator
+  description: Got a creator who did something great for you around Xmas?  Send them this Kudos.
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - holiday
+  - creators
+  - buidl
+  image: christmas_creator.svg
+- name: happy_holidays
+  description: hohoho! happy holidays!
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - holiday
+  - just for fun
+  image: holiday_theme.svg
+- name: make_big_bucks
+  description: When an unknown journalist finds your personal contact info, calls you up and then publishes a low-quality article taking your comments out of context, you, my friend, qualify for the Make Big Bucks Kudo
+  priceFinney: 1
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 100
+  tags:
+  - moon
+  - lambo
+  - carl
+  - journalism
+  image: making_big_bucks.svg
+- name: open_sea_salty_dog
+  description: An OpenSea Salty Dog navigates the churning waters of the NFT market, creates liquidity, and helps keep the operation shipshape.
+  priceFinney: 50
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 250
+  to_address: 0x530cF036Ed4Fa58f7301a9C788C9806624ceFD19
+  tags:
+  - Collaboration
+  - Affordable
+  - NFT Navigator
+  image: open_sea_salty_dog.svg
+- name: santas_elf
+  description: this elf is here to wish you happy holidays!
+  priceFinney: 5
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - holidays
+  - just for fun
+  image: santas_elf.svg
+- name: polyglot_programmer
+  description: For those who love languages, programming or otherwise!
+  priceFinney: 4
+  artist: jake_rockland
+  platform: gitcoin
+  numClonesAllowed: 200
+  to_address: 0xF5D4020dCA6a62bB1efFcC9212AAF3c9819E30D7
+  tags:
+  - programming
+  - languages
+  - c++
+  - javascript
+  - python
+  - java
+  - php
+  - go
+  - ruby
+  image: polyglot_programmer.svg
 
 
