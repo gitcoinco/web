@@ -36,7 +36,7 @@ from django.views.decorators.csrf import csrf_exempt
 from dashboard.models import Profile
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.forms import MilestoneForm
-from grants.models import Grant, Milestone, Subscription, Update
+from grants.models import Grant, Milestone, Subscription, Update, Contribution
 from marketing.mails import (
     grant_cancellation, new_grant, new_supporter, subscription_terminated, support_cancellation,
     thank_you_for_supporting,
@@ -416,39 +416,42 @@ def profile(request):
         .filter(pk__in=_grants_pks).order_by(sort)
     sub_grants = Grant.objects.filter(subscriptions__contributor_profile=profile).order_by(sort)
 
+    sub_contributions = []
+    contributions = []
+
+    for contribution in Contribution.objects.filter(subscription__contributor_profile=profile):
+        instance = {
+            "cont": contribution,
+            "sub": contribution.subscription,
+            "grant":  contribution.subscription.grant,
+            "profile": contribution.subscription.contributor_profile
+        }
+        sub_contributions.append(instance)
+
+    for _grant in _grants:
+        subs = Subscription.objects.filter(grant=_grant)
+        for _sub in subs:
+            conts = Contribution.objects.filter(subscription=_sub)
+            for _cont in conts:
+                instance = {
+                    "cont": _cont,
+                    "sub": _sub,
+                    "grant":  _grant,
+                    "profile": _sub.contributor_profile
+                }
+                contributions.append(instance)
+
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
-
-    for _grant in grants:
-        _grant.activeSubscriptions = Subscription.objects.filter(grant=_grant, active=True)
-
-    history = [{
-        'date': '16 Mar',
-        'value_true': 1.0,
-        'token_name': 'ETH',
-        'frequency': 'days',
-        'value_in_usdt_now': 80,
-        'title': 'Lorem ipsum dolor sit amet',
-        'link': 'https://etherscan.io/txs?a=0xcf267ea3f1ebae3c29fea0a3253f94f3122c2199&f=3',
-        'avatar_url': 'https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg'
-    }, {
-        'date': '24 April',
-        'value_true': 90,
-        'token_name': 'DAI',
-        'frequency': 'months',
-        'value_in_usdt_now': 90,
-        'title': 'Lorem ipsum dolor sit amet',
-        'link': 'https://etherscan.io/txs?a=0xcf267ea3f1ebae3c29fea0a3253f94f3122c2199&f=3',
-        'avatar_url': 'https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg'
-    }]
 
     params = {
         'active': 'profile',
         'title': _('My Grants'),
         'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
         'grants': grants,
+        'history': contributions,
         'sub_grants': sub_grants,
-        'history': history
+        'sub_history': sub_contributions
     }
 
     return TemplateResponse(request, 'grants/profile/index.html', params)
