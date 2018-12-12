@@ -256,7 +256,7 @@
             </div>
           </div>
 
-          <div class="col-12 order-md-1 col-md-6 p-md-0">
+          <div class="col-12 order-md-1 col-md-6 p-md-0 pr-lg-5">
             <p class="font-body">{% trans "Updates" %}</p>
             <div class="p-0">
               {% if is_admin %}
@@ -281,13 +281,15 @@
               {% endif %}
               <div class="pl-0">
                 {% for item in updates %}
-                  <div class="mb-2">
-                    <div class="article-title font-title">{{ item.title }}</div>
-                    <div class="article-date font-body mb-2">{{ item.created_on|date:"M d, Y" }}</div>
-                    <p class="article-description font-subheader">{{ item.description }}</p>
+                  <div class="py-4 update">
+                    <div class="article-date font-caption mb-2">{{ item.created_on|date:"M d, Y" }}</div>
+                    <div class="article-title font-subheader font-weight-semibold mb-2">{{ item.title }}</div>
+                    <div class="article-description font-body mb-2 wrap-text">{{ item.description }}</div>
                   </div>
                 {% empty %}
-                  {% trans "No updates yet!" %}
+                  <p class="py-4 font-weight-semibold">
+                    {% trans "No updates added" %}
+                  </p>
                 {% endfor %}
               </div>
             </div>
