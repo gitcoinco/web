@@ -64,7 +64,7 @@
                     {% endif %}
                   </span>
                   <div class="grant-item__owner my-2">
-                    {% if is_admin %}
+                    {% if is_admin and not grant_is_inactive %}
                       <div class="font-body">
                         <p class="font-caption sub-title mb-0">Grant Owner</p>
                         <div class="form__select2">
@@ -105,11 +105,11 @@
                   </div>
                 </div>
                 {% if grant_is_inactive %}
-                  <h4 class="my-4" >{% trans "This grant has ended. You can find all active grants" %}
+                  <p class="font-weight-semibold my-2">{% trans "This grant has ended. You can find all active grants" %}
                     <a href="{% url 'grants:grants' %}">
                       {% trans "here." %}
                     </a>
-                  </h4>
+                  </p>
                 {% elif is_admin %}
                   {% csrf_token %}
                   <div id="js-cancel_grant" class="d-inline-block">
@@ -133,7 +133,7 @@
                     <button class="button button--primary button--full">{% trans "Fund this Grant" %}</button>
                   </a>
                 {% endif %}
-                {% if is_admin %}
+                {% if is_admin and not grant_is_inactive %}
                   <div class="mb-4 d-inline-block">
                     <button id="edit-details" class="button btn-gc-blue">
                       <i class="fas fa-edit mr-2"></i> Edit Info
@@ -163,7 +163,7 @@
         <div class="col-12 col-md-6 pl-lg-0">
           <p class="font-body sub-title">{% trans "Description" %}</p>
           <p class="grant__description font-subheader pr-lg-4 mb-5">
-            {% if is_admin %}
+            {% if is_admin and not grant_is_inactive %}
               <textarea id="form--input__description" maxlength=5000 class="p-0 mt-2 inline-edit" disabled>{{ grant.description }}</textarea>
             {% else %}
               <span>
@@ -174,7 +174,7 @@
         </div>
         <div class="col-12 col-md-6">
           <div class="grant-item__member mb-4">
-            {% if is_admin %}
+            {% if is_admin and not grant_is_inactive %}
               <div class="font-body">
                 <p class="font-body sub-title">{% trans "Team Members" %}</p>
                 <div class="form__select2">
@@ -229,7 +229,7 @@
           <div class="col-12 order-md-2 col-md-6">
             <p class="font-body sub-title">
               {% trans "Milestones" %}
-              {% if is_admin %}<a href="{% url 'grants:milestones' grant.id grant.slug %}" class="milestones-edit">{% trans "Edit Milestones" %}</a>{% endif %}
+              {% if is_admin and not grant_is_inactive %}<a href="{% url 'grants:milestones' grant.id grant.slug %}" class="milestones-edit">{% trans "Edit Milestones" %}</a>{% endif %}
             </p>
             <div class="milestones-container px-5 mb-4">
                 {% if milestones %}
@@ -257,9 +257,9 @@
           </div>
 
           <div class="col-12 order-md-1 col-md-6 p-md-0 pr-lg-5">
-            <p class="font-body">{% trans "Updates" %}</p>
+            <p class="font-body sub-title">{% trans "Updates" %}</p>
             <div class="p-0">
-              {% if is_admin %}
+              {% if is_admin and not grant_is_inactive %}
                 <div class="my-4 py-2 pr-3">
                   <form method="POST" id="js-postUpdate">
                     {% csrf_token %}
