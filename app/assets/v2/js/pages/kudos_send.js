@@ -513,7 +513,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
 
 
           kudos_contract.clone(destinationAccount, tokenId, numClones, {from: account, value: kudosPriceInWei, gasPrice: web3.toHex(get_gas_price())
-}, function(cloneError, cloneTxid) {
+          }, function(cloneError, cloneTxid) {
             // getLatestId yields the last kudos_id
             kudos_contract.getLatestId(function(error, kudos_id) {
               post_send_callback(cloneError, cloneTxid, kudos_id);
@@ -535,7 +535,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
           };
 
           kudos_contract.clone.estimateGas(destinationAccount, tokenId, numClones, {from: account, value: kudosPriceInWei, gasPrice: web3.toHex(get_gas_price())
-}, function(err, kudosGasEstimate) {
+          }, function(err, kudosGasEstimate) {
             if (err) {
               unloading_button($('#send'));
               _alert('Got an error back from RPC node.  Please try again or contact support');
