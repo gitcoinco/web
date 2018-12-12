@@ -358,13 +358,6 @@ class Subscription(SuperModel):
         """Return the string representation of a Subscription."""
         return f"id: {self.pk} / {self.grant.title} {self.token_symbol} / active: {self.active}"
 
-    def percentage_removed(self):
-        """Return the percentage of token removed on subscription cancel."""
-        grant = self.grant
-
-        return ((self.amount_received / self.amount_goal) * 100)
-
-
     def get_nonce(self, address):
         return self.grant.contract.functions.extraNonce(address).call() + 1
 
