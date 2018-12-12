@@ -45,8 +45,17 @@ from sendgrid.helpers.stats import Category
 logger = logging.getLogger(__name__)
 
 
-def send_mail(from_email, _to_email, subject, body, html=False,
-              from_name="Gitcoin.co", cc_emails=None, categories=None, debug_mode=False):
+def send_mail(
+    from_email,
+    _to_email,
+    subject,
+    body,
+    html=False,
+    from_name="Gitcoin.co",
+    cc_emails=None,
+    categories=None,
+    debug_mode=False
+):
     """Send email via SendGrid."""
     # make sure this subscriber is saved
     if not settings.SENDGRID_API_KEY:
@@ -300,7 +309,9 @@ def tip_email(tip, to_emails, is_new):
     warning = '' if tip.network == 'mainnet' else "({})".format(tip.network)
     subject = gettext("⚡️ New Tip Worth {} {} {}").format(round(tip.amount, round_decimals), warning, tip.tokenName)
     if not is_new:
-        subject = gettext("🕐 Tip Worth {} {} {} Expiring Soon").format(round(tip.amount, round_decimals), warning, tip.tokenName)
+        subject = gettext("🕐 Tip Worth {} {} {} Expiring Soon").format(
+            round(tip.amount, round_decimals), warning, tip.tokenName
+        )
 
     for to_email in to_emails:
         cur_language = translation.get_language()
@@ -380,6 +391,7 @@ def warn_account_out_of_eth(account, balance, denomination):
     finally:
         translation.activate(cur_language)
 
+
 def warn_subscription_failed(subscription, txid, status, error):
     to_email = settings.SERVER_EMAIL
     from_email = settings.SERVER_EMAIL
@@ -400,7 +412,6 @@ def warn_subscription_failed(subscription, txid, status, error):
             )
     finally:
         translation.activate(cur_language)
-
 
 
 def new_feedback(email, feedback):
@@ -444,13 +455,13 @@ def funder_payout_reminder(to_email, bounty, github_username, live):
     if (live):
         try:
             send_mail(
-                    from_email,
-                    to_email,
-                    subject,
-                    text,
-                    html,
-                    from_name="Kevin Owocki (Gitcoin.co)",
-                    categories=['marketing', func_name()],
+                from_email,
+                to_email,
+                subject,
+                text,
+                html,
+                from_name="Kevin Owocki (Gitcoin.co)",
+                categories=['marketing', func_name()],
             )
         except Exception as e:
             print(e)
@@ -968,12 +979,6 @@ def bounty_request_feedback(profile):
                'in the past 🙂\n\n'\
                'Best,\n\nV'
 
-        send_mail(
-            from_email,
-            to_email,
-            subject,
-            body,
-            from_name=_('Vivek Singh (Gitcoin.co)'),
-        )
+        send_mail(from_email, to_email, subject, body, from_name=_('Vivek Singh (Gitcoin.co)'), )
     finally:
         translation.activate(cur_language)

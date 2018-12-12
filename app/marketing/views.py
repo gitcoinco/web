@@ -95,8 +95,7 @@ def settings_helper_get_auth(request, key=None):
             if request.user.profile.email_subscriptions.exists():
                 es = request.user.profile.email_subscriptions.first()
             if not es or es and not es.priv:
-                es = get_or_save_email_subscriber(
-                    request.user.email, 'settings', profile=request.user.profile)
+                es = get_or_save_email_subscriber(request.user.email, 'settings', profile=request.user.profile)
     else:
         try:
             es = EmailSubscriber.objects.get(priv=key)
@@ -115,10 +114,7 @@ def settings_helper_get_auth(request, key=None):
     # lazily create email settings if needed
     if not es:
         if request.user.is_authenticated and request.user.email:
-            es = EmailSubscriber.objects.create(
-                email=request.user.email,
-                source='settings_page',
-            )
+            es = EmailSubscriber.objects.create(email=request.user.email, source='settings_page', )
             es.set_priv()
             es.save()
 
@@ -162,7 +158,7 @@ def record_form_submission(request, obj, submission_type):
         'ip': get_ip(request),
         'timestamp': int(timezone.now().timestamp()),
         'type': submission_type,
-        })
+    })
     return obj
 
 
@@ -200,8 +196,8 @@ def matching_settings(request):
     context = {
         'keywords': ",".join(es.keywords),
         'is_logged_in': is_logged_in,
-        'autocomplete_keywords': json.dumps(
-            [str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
+        'autocomplete_keywords':
+            json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
         'nav': 'internal',
         'active': '/settings/matching',
         'title': _('Matching Settings'),
@@ -443,7 +439,7 @@ def token_settings(request):
             approved_name=approved_name,
             tx=txid,
             network=network,
-            )
+        )
         msg = "Token approval completed"
 
     context = {
@@ -533,21 +529,13 @@ def account_settings(request):
                 client = MailChimp(mc_user=settings.MAILCHIMP_USER, mc_api=settings.MAILCHIMP_API_KEY)
                 result = client.search_members.get(query=es.email)
                 subscriber_hash = result['exact_matches']['members'][0]['id']
-                client.lists.members.delete(
-                    list_id=settings.MAILCHIMP_LIST_ID,
-                    subscriber_hash=subscriber_hash,
-                )
+                client.lists.members.delete(list_id=settings.MAILCHIMP_LIST_ID, subscriber_hash=subscriber_hash, )
             except Exception as e:
                 logger.exception(e)
             if es:
                 es.delete()
             request.user.delete()
-            AccountDeletionRequest.objects.create(
-                handle=profile.handle,
-                profile={
-                        'ip': get_ip(request),
-                    }
-                )
+            AccountDeletionRequest.objects.create(handle=profile.handle, profile={'ip': get_ip(request), })
             profile.delete()
             messages.success(request, _('Your account has been deleted.'))
             logout_redirect = redirect(reverse('logout') + '?next=/')

@@ -31,11 +31,7 @@ from economy.models import SuperModel
 
 class Alumni(SuperModel):
 
-    profile = models.ForeignKey(
-        'dashboard.Profile',
-        on_delete=models.CASCADE,
-        related_name='alumni',
-        null=True)
+    profile = models.ForeignKey('dashboard.Profile', on_delete=models.CASCADE, related_name='alumni', null=True)
     organization = models.CharField(max_length=255, db_index=True, blank=True)
     comments = models.TextField(max_length=5000, blank=True)
     public = models.BooleanField(default=True)
@@ -56,10 +52,8 @@ class EmailSubscriber(SuperModel):
     github = models.CharField(max_length=255, default='', blank=True)
     keywords = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     profile = models.ForeignKey(
-        'dashboard.Profile',
-        on_delete=models.CASCADE,
-        related_name='email_subscriptions',
-        null=True, blank=True)
+        'dashboard.Profile', on_delete=models.CASCADE, related_name='email_subscriptions', null=True, blank=True
+    )
     form_submission_records = JSONField(default=list, blank=True)
 
     def __str__(self):
@@ -144,9 +138,7 @@ class Stat(SuperModel):
 
     class Meta:
 
-        index_together = [
-            ["created_on", "key"],
-        ]
+        index_together = [["created_on", "key"], ]
 
     def __str__(self):
         return f"{self.key}: {self.val}"
@@ -182,10 +174,7 @@ class LeaderboardRank(SuperModel):
     """Define the Leaderboard Rank model."""
 
     profile = models.ForeignKey(
-        'dashboard.Profile',
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name='leaderboard_ranks',
+        'dashboard.Profile', on_delete=models.SET_NULL, null=True, related_name='leaderboard_ranks',
     )
     github_username = models.CharField(max_length=255)
     leaderboard = models.CharField(max_length=255)

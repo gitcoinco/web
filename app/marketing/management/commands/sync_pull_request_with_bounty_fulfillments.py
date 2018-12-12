@@ -33,11 +33,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '-live', '--live',
-            action='store_true',
-            dest='live',
-            default=False,
-            help='Actually Send the emails'
+            '-live', '--live', action='store_true', dest='live', default=False, help='Actually Send the emails'
         )
 
     # ->-> Check if the referenced pull request:
@@ -48,8 +44,8 @@ class Command(BaseCommand):
         # This is the subset of profile IDs to be saved for PullRequest Eents in the GitHub Events API
         hours = 500 if settings.DEBUG else 24
         start = timezone.now() - timezone.timedelta(hours=hours)
-        deadline = timezone.now() - timezone.timedelta(hours=hours*3)
-        escalated_deadline = deadline - timezone.timedelta(hours=hours*3)
+        deadline = timezone.now() - timezone.timedelta(hours=hours * 3)
+        escalated_deadline = deadline - timezone.timedelta(hours=hours * 3)
         print(hours, start)
 
         #  Sync actions for Git issues that are in bounties that:
@@ -65,7 +61,9 @@ class Command(BaseCommand):
             print(bounty_fulfillment.bounty)
             bounty = bounty_fulfillment.bounty
             try:
-                closed_issue = get_gh_issue_state(bounty.github_org_name, bounty.github_repo_name, bounty.github_issue_number)
+                closed_issue = get_gh_issue_state(
+                    bounty.github_org_name, bounty.github_repo_name, bounty.github_issue_number
+                )
             except Exception as e:
                 print(e)
                 time.sleep(5)
@@ -95,13 +93,17 @@ class Command(BaseCommand):
                 if pr_ref_commit_url and pr_merged_commit_url:
                     if pr_ref_commit_url == pr_merged_commit_url:
                         try:
-                            notified = self.notify_funder(bounty.bounty_owner_email, bounty, bounty_fulfillment.fulfiller_github_username, options['live'])
+                            notified = self.notify_funder(
+                                bounty.bounty_owner_email, bounty, bounty_fulfillment.fulfiller_github_username,
+                                options['live']
+                            )
                             if bounty_fulfillment.created_on < deadline:
                                 print('Posting github comment')
                                 try:
                                     post_issue_comment(
                                         bounty.github_org_name, bounty.gihtub_repo_name, bounty.github_issue_number,
-                                        '@'+bounty.bounty_owner_github_username+', please remember to close out the bounty!'
+                                        '@' + bounty.bounty_owner_github_username +
+                                        ', please remember to close out the bounty!'
                                     )
                                 except Exception as e:
                                     print(e)
@@ -110,8 +112,11 @@ class Command(BaseCommand):
                                 if bounty_fulfillment.created_on < escalated_deadline:
                                     record_funder_inaction_on_fulfillment(bounty_fulfillment)
                             print('Sending payment reminder: ')
-                            print(bounty.github_org_name + '/' + bounty.github_repo_name + ' ' + str(bounty.github_issue_number))
-                            if(notified):
+                            print(
+                                bounty.github_org_name + '/' + bounty.github_repo_name + ' ' +
+                                str(bounty.github_issue_number)
+                            )
+                            if (notified):
                                 print('.\n Emailed.')
                             else:
                                 print('.\n Email failed.')
