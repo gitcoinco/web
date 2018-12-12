@@ -227,69 +227,68 @@
       <div class="container mt-4">
         <div class="row">
           <div class="col-12 order-md-2 col-md-6">
-            <p>
+            <p class="font-body sub-title">
               {% trans "Milestones" %}
               {% if is_admin %}<a href="{% url 'grants:milestones' grant.id grant.slug %}" class="milestones-edit">{% trans "Edit Milestones" %}</a>{% endif %}
             </p>
-            <div class="milestones-container">
+            <div class="milestones-container px-5 mb-4">
                 {% if milestones %}
-                <ul class="milestones-list">
+                <ul class="milestones-list mb-0">
                   {% for milestone in milestones %}
-                    <li>
-                      <div class="milestone-title">{{ milestone.title }}</div>
+                    <li class="pb-3 pl-2">
                       <div class="milestone-date">
-                        <p>{% trans 'Due Date - ' %}{{ milestone.due_date }}</p>
-                        {% if milestone.completion_date %}
-                          <p>{% trans 'Date Completed - ' %}{{ milestone.completion_date }}</p>
-                        {% endif %}
+                        <p class="mb-0 pt-2 font-caption">
+                          <span class="font-weight-semibold">{% trans 'Due: ' %}</span>{{ milestone.due_date }}
+                          {% if milestone.completion_date %}
+                           <span class="mx-1">/</span>
+                           <span class="font-weight-semibold">{% trans 'Completed: ' %}</span> {{ milestone.completion_date }}
+                          {% endif %}
+                        </p>
                       </div>
-                      <p class="milestone-description">{{ milestone.description }}</p>
+                      <div class="font-subheader font-weight-semibold mb-2">{{ milestone.title }}</div>
+                      <p class="milestone-description font-body">{{ milestone.description }}</p>
                     </li>
                   {% endfor %}
                 </ul>
               {% else %}
-                <p>{% trans "No milestones currently set for this grant." %}</p>
+                <p class="m-auto text-center font-weight-semibold">{% trans "No milestones added" %}</p>
               {% endif %}
             </div>
           </div>
 
           <div class="col-12 order-md-1 col-md-6 p-md-0">
-            <div id="tabs">
-              <ul>
-                <li><a href="#all-updates" class="pt-md-0">{% trans "Updates" %}</a></li>
-              </ul>
-              <div id="all-updates" class="p-0">
-                {% if is_admin %}
-                  <div class="my-4 py-2 pr-3">
-                    <form method="POST" id="js-postUpdate">
-                      {% csrf_token %}
-                      <div class="form__group-horizontal mb-4">
-                        <input class="form__input" type="text" id="input-title" name="input-title" placeholder="{% trans 'Title' %}" required />
-                      </div>
+            <p class="font-body">{% trans "Updates" %}</p>
+            <div class="p-0">
+              {% if is_admin %}
+                <div class="my-4 py-2 pr-3">
+                  <form method="POST" id="js-postUpdate">
+                    {% csrf_token %}
+                    <div class="form__group-horizontal mb-4">
+                      <input class="form__input" type="text" id="input-title" name="input-title" placeholder="{% trans 'Title' %}" required />
+                    </div>
 
-                      <div class="form__group-horizontal">
-                        <textarea rows=8 class="form__input" type="text" id="input-description" name="description" placeholder="{% trans 'Describe the update' %}" required></textarea>
-                      </div>
+                    <div class="form__group-horizontal">
+                      <textarea rows=8 class="form__input" type="text" id="input-description" name="description" placeholder="{% trans 'Describe the update' %}" required></textarea>
+                    </div>
 
-                      <div class="text-left">
-                        <button class="btn btn-gc-blue">
-                          <span class="font-body">{% trans "Post Update" %}</span>
-                        </button>
-                      </div>
-                    </form>
+                    <div class="text-left">
+                      <button class="btn btn-gc-blue">
+                        <span class="font-body">{% trans "Post Update" %}</span>
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              {% endif %}
+              <div class="pl-0">
+                {% for item in updates %}
+                  <div class="mb-2">
+                    <div class="article-title font-title">{{ item.title }}</div>
+                    <div class="article-date font-body mb-2">{{ item.created_on|date:"M d, Y" }}</div>
+                    <p class="article-description font-subheader">{{ item.description }}</p>
                   </div>
-                {% endif %}
-                <ul class="pl-0">
-                  {% for item in updates %}
-                    <li>
-                      <div class="article-title font-title">{{ item.title }}</div>
-                      <div class="article-date font-body mb-2">{{ item.created_on|date:"M d, Y" }}</div>
-                      <p class="article-description font-subheader">{{ item.description }}</p>
-                    </li>
-                  {% empty %}
-                    {% trans "No updates yet!" %}
-                  {% endfor %}
-                </ul>
+                {% empty %}
+                  {% trans "No updates yet!" %}
+                {% endfor %}
               </div>
             </div>
           </div>
