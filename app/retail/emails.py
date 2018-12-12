@@ -297,9 +297,9 @@ in that spirit,  i have a few questions for you.
 
 thanks again for being a member of the community.
 
-kevin
+alisa / frank (gitcoin product team)
 
-PS - i've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+PS - we've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
 
 """
     elif persona == 'funder':
@@ -323,9 +323,9 @@ in that spirit,  i have a few questions for you:
 
 thanks for being a member of the community.
 
-kevin
+alisa / frank (gitcoin product team)
 
-PS - i've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+PS - we've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
 
 """
         elif bounty.status == 'cancelled':
@@ -344,9 +344,9 @@ i have a few questions for you.
 
 thanks again for being a member of the community.
 
-kevin
+alisa / frank (gitcoin product team)
 
-PS - i've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+PS - we've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
 
 """
         else:
@@ -397,7 +397,7 @@ def render_funder_stale(github_username, days=30, time_as_str='about a month'):
     response_txt = f"""
 hi {github_username},
 
-kevin from Gitcoin here (CC scott and vivek too) — i see you haven't funded an issue in {time_as_str}. in the spirit of making Gitcoin better + checking in:
+alisa and frank from Gitcoin here (CC scott and vivek too) — i see you haven't funded an issue in {time_as_str}. in the spirit of making Gitcoin better + checking in:
 
 - has anything been slipping on your issue board which might be bounty worthy?
 - do you have any feedback for Gitcoin Core on how we might improve the product to fit your needs?
@@ -406,7 +406,8 @@ our idea is that gitcoin should be a place you come when priorities stretch long
 
 appreciate you being a part of the community and let me know if you'd like some Gitcoin schwag — just send over a mailing address and a t-shirt size and it'll come your way.
 
-~ kevin
+~ alisa / frank (gitcoin product team)
+
 
 """
 
