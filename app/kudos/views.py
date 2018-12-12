@@ -25,11 +25,12 @@ import re
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.staticfiles.templatetags.staticfiles import static
-from django.core.exceptions import PermissionDenied
+from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Q
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
+from django.template import loader
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.safestring import mark_safe
@@ -40,8 +41,9 @@ from dashboard.models import Activity, Profile
 from dashboard.notifications import maybe_market_kudos_to_email, maybe_market_kudos_to_github
 from dashboard.utils import get_nonce, get_web3
 from dashboard.views import record_user_action
+from economy.utils import convert_token_to_usdt
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from git.utils import get_emails_by_category, get_emails_master, get_github_primary_email
+from git.utils import get_emails_by_category, get_github_primary_email
 from kudos.utils import kudos_abi
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
@@ -49,7 +51,8 @@ from web3 import Web3
 
 from .forms import KudosSearchForm
 from .helpers import get_token
-from .models import BulkTransferCoupon, BulkTransferRedemption, KudosTransfer, Token
+from .models import BulkTransferCoupon, BulkTransferRedemption, KudosTransfer, Token, Wallet
+from .utils import humanize_name
 
 logger = logging.getLogger(__name__)
 
@@ -58,13 +61,16 @@ confirm_time_minutes_target = 4
 
 def get_profile(handle):
     """Get the gitcoin profile.
-    TODO:  This might be depreacted in favor of the sync_profile function in the future.
+
+    TODO:
+        * This might be deprecated in favor of the sync_profile function in the future.
 
     Args:
         handle (str): The github handle.
 
     Returns:
         obj: The profile model object.
+
     """
     try:
         to_profile = Profile.objects.get(handle__iexact=handle)
@@ -687,3 +693,31 @@ def receive_bulk(request, secret):
         'kudos_transfer': kudos_transfer,
     }
     return TemplateResponse(request, 'transaction/receive_bulk.html', params)
+
+
+@csrf_exempt
+def lazy_load(request):
+    page = request.POST.get('page', 1)
+    datarequest = request.POST.get('request', '').lower()
+    order_by = request.GET.get('order_by', '-modified_on')
+    limit = int(request.GET.get('limit', 8))
+    handle = request.POST.get('handle', '')
+    key = 'sent_kudos'
+    page_data = []
+
+    if handle:
+        try:
+            profile = Profile.objects.get(handle__iexact=handle)
+            if datarequest == 'mykudos':
+                key = 'kudos'
+                page_data = profile.get_my_kudos
+            else:
+                page_data = profile.get_sent_kudos
+            page_data = page_data.order_by('id', order_by)
+        except Profile.DoesNotExist:
+            raise Http404
+
+    paginator = Paginator(page_data, limit)
+    kudos = paginator.get_page(page)
+    kudos_html = loader.render_to_string('shared/kudos_card_profile.html', {'kudos_data': key, key: kudos})
+    return JsonResponse({'kudos_html': kudos_html, 'has_next': kudos.has_next()})

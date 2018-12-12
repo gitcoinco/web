@@ -62,3 +62,8 @@ def humanize_address(address):
 @register.filter
 def replace_commas(string):
     return ' '.join([x.capitalize() for x in string.split(',')])
+
+
+@register.filter
+def split_list(value):
+    return value.replace('_', ' ').split(',')

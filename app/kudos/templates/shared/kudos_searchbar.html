@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2017 Gitcoin Core
+  Copyright (C) 2018 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -15,40 +15,31 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n kudos_extras %}
-<form action="{% url 'kudos_marketplace' %}" method="get">
-  <div class="form-row align-items-center justify-content-center">
-    <div class="col-12 col-sm-6 my-4 ">
-      <div class="input-group">
-
-        <input type="text" list="kudos-suggestions"  class="form-control form-control-lg" name="q" id="kudos-search" placeholder="{% trans "Search for Kudos" %}">
-        <datalist id="kudos-suggestions">
-          <option>rare</option>
-          <option>common</option>
-          <option>ninja</option>
-          <option>soft skills</option>
-          <option>programming</option>
-          <option>open source</option>
-          <option>project management</option>
-          <option>design</option>
-          <option>technical</option>
-          <option>graphs</option>
-          <option>ideas</option>
-          <option>clean code</option>
-          <option>cellarius</option>
-        </datalist>
-        <div class="input-group-append">
-          <a href="{% url 'kudos_marketplace' %}" class="btn btn-dark btn-lg clear-search hidden"><i class="fas fa-times"></i></a>
-          <button type="submit" class="btn btn-gc-blue">{% trans "Search" %}</button>
+{% with 'rare,common,ninja,soft_skills,programming,open_source,project_management,design,technical,graphs,ideas,clean_code,cellarius' as suggestion_list %}
+  {% with suggestion_list|split_list as clean_suggestion_list %}
+  <form action="{% url 'kudos:marketplace' %}" method="get">
+    <div class="form-row align-items-center justify-content-center">
+      <div class="col-12 col-sm-6 my-4 ">
+        <div class="input-group">
+          <input type="text" list="kudos-suggestions"  class="form-control form-control-lg" name="q" id="kudos-search" placeholder="{% trans "Search for Kudos" %}">
+          <datalist id="kudos-suggestions">
+            {% for suggestion in clean_suggestion_list %}
+            <option>{{ suggestion }}</option>
+            {% endfor %}
+          </datalist>
+          <div class="input-group-append">
+            <a href="{% url 'kudos:marketplace' %}" class="btn btn-dark btn-lg clear-search hidden"><i class="fas fa-times"></i></a>
+            <button type="submit" class="btn btn-gc-blue">{% trans "Search" %}</button>
+          </div>
+        </div>
+        <div class="mt-3 white">
+          <span class="white">{% trans "Search suggestions:" %}</span>
+          {% for suggestion in clean_suggestion_list %}
+          <a href="{% url 'kudos:marketplace' %}?q={{ suggestion }}">{{ suggestion }}</a>{% if not forloop.last %} -{% endif %}
+          {% endfor %}
         </div>
       </div>
-      <div class="mt-3 white">
-        <span class="white">Search suggestions:</span>
-        <a href="{% url 'kudos_marketplace' %}?q=rare">rare</a> -
-        <a href="{% url 'kudos_marketplace' %}?q=common">common</a> -
-        <a href="{% url 'kudos_marketplace' %}?q=ninja">ninja</a> -
-        <a href="{% url 'kudos_marketplace' %}?q=soft skills">soft skills</a> -
-        <a href="{% url 'kudos_marketplace' %}?q=programming">programming</a>
-      </div>
     </div>
-  </div>
-</form>
+  </form>
+  {% endwith %}
+{% endwith %}

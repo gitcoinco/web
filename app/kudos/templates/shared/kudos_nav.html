@@ -18,7 +18,7 @@
 {% load i18n static matches %}
 <nav class="navbar navbar-expand-md navbar-dark">
   <div id="gitcoin-background"></div>
-  <a class="navbar-brand pt-0 pb-0 brand-hover" href="{% url 'kudos_main' %}">
+  <a class="navbar-brand pt-0 pb-0 brand-hover" href="{% url 'kudos:main' %}">
     {% if request.path == '/ios' %}
     <!-- <img id="logo" src="{% static "v2/images/ios/gitcoin.svg" %}" data-hover="{% static "v2/images/ios/gitcoin_hover.gif" %}" height="50" /> -->
     {% else %}
@@ -40,9 +40,9 @@
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <nav class="navbar-nav ml-auto mr-3">
-      <a class="nav-link{% if active == 'about' %} selected{% endif %} interior" href="{% url 'kudos_main' %}">{% trans "What is Kudos?" %}</a>
-      <a class="nav-link{% if active == 'marketplace' %} selected{% endif %} interior" href="{% url 'kudos_marketplace' %}">{% trans "Marketplace" %}</a>
-      <a class="nav-link{% if active == 'send' %} selected{% endif %} interior" href="{% url 'kudos_send' %}">{% trans "Send kudos" %}</a>
+      <a class="nav-link{% if active == 'about' %} selected{% endif %} interior" href="{% url 'kudos:main' %}">{% trans "What is Kudos?" %}</a>
+      <a class="nav-link{% if active == 'marketplace' %} selected{% endif %} interior" href="{% url 'kudos:marketplace' %}">{% trans "Marketplace" %}</a>
+      <a class="nav-link{% if active == 'send' %} selected{% endif %} interior" href="{% url 'kudos:send' %}">{% trans "Send kudos" %}</a>
 
 
       {% if not user.is_authenticated %}

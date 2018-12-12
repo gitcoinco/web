@@ -42,7 +42,7 @@
       <footer id="footer" class="copyright d-flex font-smaller-1 justify-content-center mt-5 p-4">
           <a href="{% url 'index' %}" class="mr-4">&copy; Gitcoin.co</a>
         {% if not hide_send_tip %}
-          <a href="{% url 'kudos_marketplace' %}">{% trans "Kudos Marketplace" %}</a>
+          <a href="{% url 'kudos:marketplace' %}">{% trans "Kudos Marketplace" %}</a>
         {% endif %}
       </footer>
     </main>

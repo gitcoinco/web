@@ -1,21 +1,22 @@
 # -*- coding: utf-8 -*-
-'''
-    Copyright (C) 2017 Gitcoin Core
+"""Define Gas related views.
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+Copyright (C) 2018 Gitcoin Core
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-'''
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+"""
 from __future__ import print_function, unicode_literals
 
 import logging
@@ -25,29 +26,22 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from cacheops import CacheMiss, cache, cached_view, cached_view_as
+from dashboard.helpers import handle_bounty_views
 from economy.utils import convert_amount
-from gas.models import GasGuzzler
-from gas.utils import conf_time_spread, gas_advisories, gas_history, recommend_min_gas_price_to_confirm_in_time
 from perftools.models import JSONStore
 
-from .helpers import handle_bounty_views
+from .models import GasGuzzler
+from .utils import (conf_time_spread, gas_advisories, gas_history,
+                    recommend_min_gas_price_to_confirm_in_time)
 
 logging.basicConfig(level=logging.DEBUG)
 
 confirm_time_minutes_target = 4
 
-lines = {
-    1: 'red',
-    5: 'orange',
-    60: 'green',
-    90: 'steelblue',
-    105: 'purple',
-    120: '#dddddd',
-    180: 'black',
-}
+lines = {1: 'red', 5: 'orange', 60: 'green', 90: 'steelblue', 105: 'purple', 120: '#dddddd', 180: 'black', }
 
 
-@cached_view(timeout=60*16)
+@cached_view(timeout=60 * 16)
 def gas(request):
     _cts = conf_time_spread()
     recommended_gas_price = recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target)
@@ -70,15 +64,18 @@ def gas(request):
 def gas_intro(request):
     context = {
         'title': _('What is Ethereum (ETH) Gas & Web3'),
-        'card_desc': _('About Ethereum (ETH) Gas and how it works. '
-                       'Gas is the payment that is sent to the ethereum node operators (also called miners), '
-                       'in exchange for execution of a smart contract.'),
+        'card_desc':
+            _(
+                'About Ethereum (ETH) Gas and how it works. '
+                'Gas is the payment that is sent to the ethereum node operators (also called miners), '
+                'in exchange for execution of a smart contract.'
+            ),
         'hide_send_tip': True,
     }
     return TemplateResponse(request, 'gas_intro.html', context)
 
 
-@cached_view(timeout=60*16)
+@cached_view(timeout=60 * 16)
 def gas_heatmap(request):
     gas_histories = {}
     mins = request.GET.get('mins', 60)
@@ -118,7 +115,7 @@ def gas_faucet_list(request):
     return TemplateResponse(request, 'gas_faucet_list.html', context)
 
 
-@cached_view(timeout=60*16)
+@cached_view(timeout=60 * 16)
 def gas_calculator(request):
     recommended_gas_price = recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target)
     _cts = conf_time_spread()
@@ -171,16 +168,15 @@ def gas_calculator(request):
     return TemplateResponse(request, 'gas_calculator.html', context)
 
 
-@cached_view_as(GasGuzzler, timeout=60*3)
+@cached_view_as(GasGuzzler, timeout=60 * 3)
 def gas_guzzler_view(request):
     breakdown = request.GET.get('breakdown', 'hourly')
     breakdown_ui = breakdown.replace('ly', '') if breakdown != 'daily' else 'day'
     num_guzzlers = 7
     gas_histories = {}
     _lines = {}
-    top_guzzlers = GasGuzzler.objects.filter(
-        created_on__gt=timezone.now() - timezone.timedelta(minutes=60)
-    ).order_by('-pct_total')[0:num_guzzlers]
+    top_guzzlers = GasGuzzler.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(minutes=60)
+                                             ).order_by('-pct_total')[0:num_guzzlers]
     counter = 0
     colors = [val for key, val in lines.items()]
     max_y = 0
@@ -221,7 +217,7 @@ def gas_guzzler_view(request):
     return TemplateResponse(request, 'gas_guzzler.html', context)
 
 
-@cached_view(timeout=60*16)
+@cached_view(timeout=60 * 16)
 def gas_history_view(request):
     breakdown = request.GET.get('breakdown', 'hourly')
     granularity_options = ['hourly', 'daily', 'weekly']

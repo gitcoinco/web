@@ -15,36 +15,34 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static kudos_extras humanize avatar_tags %}
-
 {% for kt in kudos_group.list %}
   <div class="d-flex flex-row">
-
     {% if relation == 'to' %}
       <img src="{% avatar_url kt.username  %}" alt="{{ kt.username }}" class="rounded-circle mr-3" width="45" height="45">
       <div class="d-flex flex-column">
         <a href="{% url 'profile' kt.username %}" >{{kt.username}}</a>
-        <time datetime="{{kt.created_on|date:'c'}}" title="{{kt.created_on}}">
-          {{kt.created_on|naturaltime}}
+        <time datetime="{{ kt.created_on|date:'c' }}" title="{{ kt.created_on }}">
+          {{ kt.created_on|naturaltime }}
         </time>
       </div>
     {% else %}
       <img src="{% avatar_url kt.from_username  %}" alt="{{ kt.from_username }}" class="rounded-circle mr-3" width="45" height="45">
       <div class="d-flex flex-column">
-        <a href="{% url 'profile' kt.from_username %}" title="{% trans 'go to profile' %}">{{kt.from_username}}</a>
-        <time datetime="{{kt.created_on|date:'c'}}" title="{{kt.created_on}}">
-          {{kt.created_on|naturaltime}}
+        <a href="{% url 'profile' kt.from_username %}" title="{% trans 'go to profile' %}">{{ kt.from_username }}</a>
+        <time datetime="{{ kt.created_on|date:'c' }}" title="{{ kt.created_on }}">
+          {{ kt.created_on|naturaltime }}
         </time>
       </div>
     {% endif %}
   </div>
   {% if kt.comments_public %}
     <div class="bubble">
-      <p>{{kt.comments_public}}</p>
+      <p>{{ kt.comments_public }}</p>
     </div>
   {% endif %}
   <div class="flip-card__extra-data">
     {% if tk.github_url %}
-      <a href="{{tk.github_url}}" target="_blank">{% trans 'Issue url' %}</a>
+      <a href="{{ tk.github_url }}" target="_blank">{% trans 'Issue url' %}</a>
     {% endif %}
     <a title="{% trans 'tx in etherscan' %}" href="{% if not kt.network == 'mainnet' %}https://{{ kt.network }}.etherscan.io/tx/{{ kt.txid }}{% else %}https://etherscan.io/tx/{{ kt.txid }}{% endif %}" target="_blank" class="mb-1">{{ kt.txid|humanize_address }}</a>
   </div>

@@ -19,17 +19,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import logging
 import unittest
 
-from django.test import Client, TestCase
+from django.test import Client
+
+from test_plus.test import TestCase
 
 from .utils import KudosContract
 
-logging.getLogger("requests").setLevel(logging.WARNING)
-logging.getLogger("urllib3").setLevel(logging.WARNING)
-logging.getLogger("web3").setLevel(logging.WARNING)
+logging.getLogger('requests').setLevel(logging.WARNING)
+logging.getLogger('urllib3').setLevel(logging.WARNING)
+logging.getLogger('web3').setLevel(logging.WARNING)
 
 
 @unittest.skip(reason='Not creating fresh database and blockchain instances')
 class KudosContractTestCase(TestCase):
+
     def setUp(self):
         self.contract = KudosContract(network='localhost')
         self.metadata = {

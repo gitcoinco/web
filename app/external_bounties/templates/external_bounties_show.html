@@ -5,7 +5,7 @@
 
   <head>
     <meta name="title" content="Bounty Universe Explorer | Gitcoin">
-    <link rel="canonical" href="{% url 'offchain_index' %}" />
+    <link rel="canonical" href="{% url 'external_bounties:index' %}" />
     <link rel="stylesheet" href="{% static "v2/css/external_bounties/bounty.css" %}">
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
@@ -28,7 +28,7 @@
           <header class="bounties-header">
             <div class="bounties-header__title bounties-header__title--active">
               <h2 class="title">
-                <a href="{% url "universe_index" %}">{% trans "Bounties Universe" %}<span id="alpha">{% trans "Alpha" %}</span></a>
+                <a href="{% url "external_bounties:index" %}">{% trans "Bounties Universe" %}<span id="alpha">{% trans "Alpha" %}</span></a>
               </h2>
             </div>
           </header>
@@ -78,7 +78,7 @@
                     <pre>{{ bounty.content }}</pre>
                     </div>
                     <div class="bounty__footer">
-                      <a class="link-red" href="{% url "offchain_index" %}">{% trans "Go Back" %}</a>
+                      <a class="link-red" href="{% url "external_bounties:index" %}">{% trans "Go Back" %}</a>
                     </div>
                   {% endif %}
                 </div>

@@ -16,8 +16,8 @@
     <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
-
 <!DOCTYPE html>
+{% url 'kudos:marketplace' as marketplace_url %}
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
@@ -28,7 +28,6 @@
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
     <header class="container-fluid header">
       {% include 'shared/kudos_nav.html' %}
-      <!-- {% include 'shared/kudos_banner.html' %} -->
       <div class="container text-center mt-5">
         <h1 class="white h2">
           Kudos is a new way to show <br>appreciation and build relationships.
@@ -56,17 +55,17 @@
           <div class="carousel-control-kudos">
             <a class="carousel-control-prev" href="#carouselkudos" role="button" data-slide="prev">
               <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-              <span class="sr-only">Previous</span>
+              <span class="sr-only">{% trans "Previous" %}</span>
             </a>
             <a class="carousel-control-next" href="#carouselkudos" role="button" data-slide="next">
               <span class="carousel-control-next-icon" aria-hidden="true"></span>
-              <span class="sr-only">Next</span>
+              <span class="sr-only">{% trans "Next" %}</span>
             </a>
           </div>
         </div> <!-- /carousel -->
 
         <div class="row justify-content-center pb-5">
-          <a class="btn btn-gc-blue m-5" href="{% url 'kudos_marketplace' %}">{% trans "See More Kudos" %}</a>
+          <a class="btn btn-gc-blue m-5" href="{{ marketplace_url }}">{% trans "See More Kudos" %}</a>
         </div>
       </div>
     </header>
@@ -76,7 +75,6 @@
         <div class="col my-5 text-featured">
           <img class="img-fluid" src="{% static "v2/images/kudos/assets/send-kudos.png" %}" alt="kudos" width="548" height="271">
           <img class="mw-100 position-absolute star-pulse" src="{% static "v2/images/kudos/assets/star.png" %}" alt="kudos" width="">
-          {% url 'kudos_marketplace' as marketplace_url %}
           {% blocktrans %}
             <p class="mt-5">Kudos is a way of <span class="text-highlight-green">showing your appreciation</span> for another Gitcoin member.
             <br>It's also a way to <span class="text-highlight-green">showcase special skills</span> that a member might have, such as Pythonista, or Design Star. Kudos tokens can be <span class="text-highlight-green">bought</span> and <span class="text-highlight-green">sold</span> on the <a class="text-highlight-gc-blue" href="{{ marketplace_url }}">Kudos Marketplace</a>.</p>
@@ -84,12 +82,11 @@
         </div>
       </div>
       <div class="row justify-content-center">
-          <a class="btn btn-gc-blue mb-5" href="{% url 'kudos_marketplace' %}">{% trans "Send Kudos" %}</a>
+        <a class="btn btn-gc-blue mb-5" href="{{ marketplace_url }}">{% trans "Send Kudos" %}</a>
       </div>
     </section>
     <section class="container-fluid mt-5 py-5 bg-dark-blue white">
       <div class="container">
-
         <div class="row">
           <div class="col">
             <h3 class="my-5 text-center h1">{% trans "What is Kudos?" %}</h3>
@@ -103,7 +100,6 @@
           </div>
         </div>
       </div>
-
     </section>
 
     {% if activities|length %}
@@ -147,27 +143,13 @@
           </div>
         </div>
         <div class="row justify-content-center">
-            <a class="btn btn-orange m-4" href="{% url 'kudos_marketplace' %}?q=cellarius">{% trans "See Cellarius Kudos" %}</a>
-            <a class="btn m-4" target="_blank" style="color: #cd7e66; border: 1px solid #cd7e66; padding: 0.8rem;" href="https://cellarius.network">{% trans "Visit the Cellarius Network" %}</a>
+          <a class="btn btn-orange m-4" href="{{ marketplace_url }}?q=cellarius">{% trans "See Cellarius Kudos" %}</a>
+          <a class="btn m-4" target="_blank" style="color: #cd7e66; border: 1px solid #cd7e66; padding: 0.8rem;" href="https://cellarius.network">{% trans "Visit the Cellarius Network" %}</a>
         </div>
       </div>
     </section>
     <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
       <desc>kudos hexagon</desc>
-
-
-
-
-  <!-- <symbol id="hexagon" viewBox="0 0 108 124">
-
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-      <g id="Artboard" stroke="#9B9B9B" stroke-width="8">
-        <polygon id="Stroke-2" points="104 90.7704754 53.999183 119.695059 4 90.7704754 4 32.9229461 53.999183 4 104 32.9229461"></polygon>
-      </g>
-    </g>
-  </symbol> -->
-
-
       <symbol id="hexagon" viewBox="0 0 237 273">
         <g transform="translate(-46.000000, -3742.000000)" fill="currentColor">
           <g transform="translate(250.327895, 3805.378820) rotate(-330.000000) translate(-250.327895, -3805.378820) translate(76.327895, 3581.378820)">
@@ -177,7 +159,7 @@
       </symbol>
     </svg>
     <section class="container py-5">
-      <h1 class="text-center my-5">Why Use Kudos?</h1>
+      <h1 class="text-center my-5">{% trans "Why Use Kudos?" %}</h1>
       <div class="hexagon-group">
         <div class="paging-animation">
           <div class="faces">
@@ -257,28 +239,23 @@
         </div>
       </div>
       <div class="row justify-content-center pt-5">
-          <a class="btn btn-gc-blue m-5" href="{% url 'kudos_marketplace' %}">{% trans "Send Kudos Now" %}</a>
+        <a class="btn btn-gc-blue m-5" href="{{ marketplace_url }}">{% trans "Send Kudos Now" %}</a>
       </div>
     </section>
     <section class="container-fluid my-5 py-5">
       <div class="container">
-
         <div class="row pb-5">
           <div class="col-12 col-md-6 d-flex flex-column justify-content-center">
             <h3 class="h1 mb-3">{% trans "How Do I Get One?" %}</h3>
             <p class="font-bigger-1 lh-3">{% trans "Kudos can be gifted to you by any other Gitcoin member. You can also purchase Kudos through the marketplace and send it to any other Gitcoin user. When you send a Kudos, they receive an email notication. After they accept the Kudos, it will be minted on the blockchain and delivered to its recipient." %}</p>
           </div>
           <div class="col-12 col-md-6 d-flex justify-content-center">
-
-              <img src="{% static "v2/images/kudos/assets/how-get.svg" %}" alt="{% trans "how to get Kudos" %}" width="277" height="369">
-
+            <img src="{% static "v2/images/kudos/assets/how-get.svg" %}" alt="{% trans "how to get Kudos" %}" width="277" height="369">
           </div>
         </div>
         <div class="row pt-5">
           <div class="col-12 col-md-6">
-
-              <img src="{% static "v2/images/kudos/assets/erc-721.svg" %}" alt="{% trans "ERC 721" %}" width="277" height="369">
-
+            <img src="{% static "v2/images/kudos/assets/erc-721.svg" %}" alt="{% trans "ERC 721" %}" width="277" height="369">
           </div>
           <div class="col-12 col-md-6 d-flex flex-column justify-content-center">
             <h3 class="h1 mb-3">{% trans "ERC-721" %}</h3>
@@ -286,16 +263,13 @@
           </div>
         </div>
         <div class="row justify-content-center pt-4">
-            <a class="btn btn-gc-blue m-5" href="{% url 'kudos_marketplace' %}">{% trans "Send Kudos Now" %}</a>
+          <a class="btn btn-gc-blue m-5" href="{{ marketplace_url }}">{% trans "Send Kudos Now" %}</a>
         </div>
       </div>
-
     </section>
-
     <section class="container-fluid mt-5 pt-5 pb-5" style="background-color: #eeeeee;">
       <div class="container">
-          <h3 id='faq' class="text-center my-5">FAQ</h3>
-
+        <h3 id='faq' class="text-center my-5">FAQ</h3>
         <div>
           <div class="mb-3 faq-item">
             <h5 class="accordion">Kudos is a new usage of Non-Fungible tokens... Why did you make it?</h5>
@@ -304,15 +278,12 @@
               <p>Kudos is a way to celebrate the relationships that have been built. Kudos is meant to bootstrap reputation on Gitcoin.</p>
             </div>
           </div>
-
-        <div>
           <div class="mb-3 faq-item">
             <h5 class="accordion">This seems like a good compliment for the extrinsic motivation provided by Gitcoin bounties.</h5>
             <div class="panel">
               <p>How very astute of you to notice that.</p>
             </div>
           </div>
-
           <div class="mb-3 faq-item">
             <h5 class="accordion">How are Kudos minted?</h5>
             <div class="panel">
@@ -325,8 +296,6 @@
               <p>If & once the demand for kudos increases, we would like to create a decentralized marketplace where Artists can make a living by creating new Kudos art.  The above minting process is a stopgap.</p>
             </div>
           </div>
-
-        <div>
           <div class="mb-3 faq-item">
             <h5 class="accordion">Why would I want to send a compliment to a coworker?</h5>
             <div class="panel">
@@ -338,18 +307,14 @@
                 <li>they're a <a href="https://gitcoin.co/kudos/90/builder_of_a_better_world">builder of a better world</a></li>
               </ol>
               <p>and they need to know it. </p>
-
             </div>
           </div>
-
-
           <div class="mb-3 faq-item">
             <h5 class="accordion">Who earns money when a new Kudos is created?</h5>
             <div class="panel">
               <p>When a new Kudos is created, the ETH sent during that minting process is directly sent to the illustrator who created the Kudos artwork. In some cases, Gitcoin may also take a 10% fee to help keep the lights on.</p>
             </div>
           </div>
-
           <div class="mb-3 faq-item">
             <h5 class="accordion">How is Kudos' privacy managed?</h5>
             <div class="panel">
@@ -360,14 +325,12 @@
               <p>For convenience, the recipient may elect to automatically accept Kudos in the future to forego the acceptance process.</p>
             </div>
           </div>
-
           <div class="mb-3 faq-item">
             <h5 class="accordion">When moon?</h5>
             <div class="panel">
               <p>We made <a href="https://gitcoin.co/kudos/331/i_was_told_there_would_be_lambos">this kudos</a> just for you!</p>
             </div>
           </div>
-
           <div class="mb-3 faq-item">
             <h5 class="accordion">Can I send a kudos to myself?</h5>
             <div class="panel">
@@ -378,16 +341,12 @@
               <p>By virtue of social norms (2), you might think twice.</p>
             </div>
           </div>
-
-
           <div class="mb-3 faq-item">
             <h5 class="accordion">I want to add Kudos to my site. How can I do that?</h5>
             <div class="panel">
               <p>Kudos is a decentralized smart contract that any dapp can leverage on the same terms as Gitcoin Core. For more information, checkout get in touch over at <a target="_blank" href="https://github.com/OpenKudos/">https://github.com/OpenKudos/</a> or email <a href="mailto:founders@gitcoin.co">founders@gitcoin.co</a></p>
             </div>
           </div>
-
-        <div>
           <div class="mb-3 faq-item">
             <h5 class="accordion">Whats your favorite kudos on the site rn?</h5>
             <div class="panel">
@@ -400,55 +359,35 @@
               </ol>
             </div>
           </div>
-
-
-        <div>
           <div class="mb-3 faq-item">
             <h5 class="accordion">Whose beautiful voice is that on the <a href="https://www.youtube.com/watch?v=EOlMTOzmKKk" target="_blank">Kudos Marketing Video</a>?</h5>
             <div class="panel">
               <p>The voice on the <a href="https://www.youtube.com/watch?v=EOlMTOzmKKk" target="_blank">Kudos Marketing Video</a> is <a href="https://twitter.com/coderberry">@coderberry</a> AKA "emceee booming barotone".  He loves it if you <a href="https://twitter.com/coderberry">tweet at him</a> and say hi!</p>
             </div>
           </div>
-
-        <div>
           <div class="mb-3 faq-item">
-            <h5 class="accordion">I have a technical question about Kudos.</h5>
+            <h5 class="accordion">{% trans "I have a technical question about Kudos." %}</h5>
             <div class="panel">
               <p>Checkout this <a href="https://github.com/gitcoinco/web/blob/master/docs/KUDOS.md">Technical FAQ</a>, and also checkout <a href="https://github.com/gitcoinco/Kudos721Contract/blob/19b783e50825bfc258179454990a517e84343153/contracts/Kudos.sol">the smart contract</a>.</p>
             </div>
           </div>
-
-        <div>
           <div class="mb-3 faq-item">
-            <h5 class="accordion">I am an artist and I want to create a kudos, can I?</h5>
+            <h5 class="accordion">{% trans "I am an artist and I want to create a kudos, can I?" %}</h5>
             <div class="panel">
               <p>
-
-                Kudos are a recurring revenue stream for artists.  Anyone can create a kudos!
-
-                
-                <a href="https://github.com/gitcoinco/kudosbadges/blob/master/README.md#to-create-a-new-kudos">To create a new kudos, click here and follow the instructions.</a>
-
+                {% trans "Kudos are a recurring revenue stream for artists.  Anyone can create a kudos!" %}
+                <a href="https://github.com/gitcoinco/kudosbadges/blob/master/README.md#to-create-a-new-kudos">{% trans "To create a new kudos, click here and follow the instructions." %}</a>
               </p>
             </div>
           </div>
-        </div>
-
-        <div>
           <div class="mb-3 faq-item">
-            <h5 class="accordion">I have another question and it's not listed here.</h5>
+            <h5 class="accordion">{% trans "I have another question and it's not listed here." %}</h5>
             <div class="panel">
-              <p><a href="https://twitter.com/getgitcoin">Tweet us</a> or <a href="mailto:founders@gitcoin.co">Email Us</a></p>
+              <p><a href="https://twitter.com/getgitcoin">Tweet us</a> or <a href="mailto:founders@gitcoin.co">{% trans "Email Us" %}</a></p>
             </div>
           </div>
         </div>
-
-
       </div>
-
-
-
-
     </section>
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
@@ -457,18 +396,15 @@
     <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
     <script>
       $(document).ready(function() {
-
-
         var load_kudos_card_images = function(){
           for(var i = 0; i < $(".kd-card:visible img").length; i++){
             // dont load all at once
-              var ele = $(".kd-card:visible img")[i];
-              var url = $(ele).data('src');
-              $(ele).attr('src', url);
+            var ele = $(".kd-card:visible img")[i];
+            var url = $(ele).data('src');
+            $(ele).attr('src', url);
           };
         };
         load_kudos_card_images();
-
         $(".carousel-control-next-icon, .carousel-control-prev-icon").click(function(){
           setTimeout(load_kudos_card_images, 50);
         });

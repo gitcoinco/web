@@ -1192,36 +1192,6 @@ def profile(request, handle):
 
 
 @csrf_exempt
-def lazy_load_kudos(request):
-    page = request.POST.get('page', 1)
-    context = {}
-    datarequest = request.POST.get('request')
-    order_by = request.GET.get('order_by', '-modified_on')
-    limit = int(request.GET.get('limit', 8))
-    handle = request.POST.get('handle')
-
-    if handle:
-        try:
-            profile = Profile.objects.get(handle=handle)
-            if datarequest == 'mykudos':
-                key = 'kudos'
-                context[key] = profile.get_my_kudos.order_by('id', order_by)
-            else:
-                key = 'sent_kudos'
-                context[key] = profile.get_sent_kudos.order_by('id', order_by)
-        except Profile.DoesNotExist:
-            pass
-
-    paginator = Paginator(context[key], limit)
-    kudos = paginator.get_page(page)
-    html_context = {}
-    html_context[key] = kudos
-    html_context['kudos_data'] = key
-    kudos_html = loader.render_to_string('shared/kudos_card_profile.html', html_context)
-    return JsonResponse({'kudos_html': kudos_html, 'has_next': kudos.has_next()})
-
-
-@csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def get_quickstart_video(request):
     """Show quickstart video."""
@@ -1321,10 +1291,7 @@ def sync_web3(request):
 # LEGAL
 @xframe_options_exempt
 def terms(request):
-    context = {
-        'title': _('Terms of Use'),
-    }
-    return TemplateResponse(request, 'legal/terms.html', context)
+    return TemplateResponse(request, 'legal/terms.html', {'title': _('Terms of Use')})
 
 
 def privacy(request):
@@ -1570,24 +1537,23 @@ def change_bounty(request, bounty_id):
         if request.body:
             return JsonResponse(
                 {'error': _('You must be authenticated via github to use this feature!')},
-                status=401)
-        else:
-            return redirect('/login/github?next=' + request.get_full_path())
+                status=401,
+            )
+        return redirect('/login/github?next=' + request.get_full_path())
 
     try:
         bounty_id = int(bounty_id)
         bounty = Bounty.objects.get(pk=bounty_id)
-    except:
+    except Exception:
         if request.body:
             return JsonResponse({'error': _('Bounty doesn\'t exist!')}, status=404)
-        else:
-            raise Http404
+        raise Http404
 
     keys = ['experience_level', 'project_length', 'bounty_type', 'permission_type', 'project_type']
 
     if request.body:
         can_change = (bounty.status in Bounty.OPEN_STATUSES) or \
-                (bounty.can_submit_after_expiration_date and bounty.status is 'expired')
+                (bounty.can_submit_after_expiration_date and bounty.status == 'expired')
         if not can_change:
             return JsonResponse({
                 'error': _('The bounty can not be changed anymore.')
@@ -1648,91 +1614,99 @@ def change_bounty(request, bounty_id):
 
 
 def get_users(request):
-    token = request.GET.get('token', None)
-
-    if request.is_ajax():
-        q = request.GET.get('term')
-        profiles = Profile.objects.filter(handle__icontains=q)
-        results = []
-        # try gitcoin
-        for user in profiles:
-            profile_json = {}
-            profile_json['id'] = user.id
-            profile_json['text'] = user.handle
-            profile_json['email'] = user.email
-            profile_json['avatar_id'] = user.avatar_id
-            if user.avatar_id:
-                profile_json['avatar_url'] = user.avatar_url
-            profile_json['preferred_payout_address'] = user.preferred_payout_address
-            results.append(profile_json)
-        # try github
-        if not len(results):
-            search_results = search_users(q, token=token)
-            for result in search_results:
-                profile_json = {}
-                profile_json['id'] = -1
-                profile_json['text'] = result.login
-                profile_json['email'] = None
-                profile_json['avatar_id'] = None
-                profile_json['avatar_url'] = result.avatar_url
-                profile_json['preferred_payout_address'] = None
-                # dont dupe github profiles and gitcoin profiles in user search
-                if profile_json['text'].lower() not in [p['text'].lower() for p in profiles]:
-                    results.append(profile_json)
-        # just take users word for it
-        if not len(results):
-            profile_json = {}
-            profile_json['id'] = -1
-            profile_json['text'] = q
-            profile_json['email'] = None
-            profile_json['avatar_id'] = None
-            profile_json['preferred_payout_address'] = None
-            results.append(profile_json)
-        data = json.dumps(results)
-    else:
+    if not request.is_ajax():
         raise Http404
-    mimetype = 'application/json'
-    return HttpResponse(data, mimetype)
+
+    token = request.GET.get('token', None)
+    q = request.GET.get('term', '')
+    profiles = Profile.objects.filter(handle__icontains=q)
+    results = []
+
+    # try gitcoin
+    for user in profiles:
+        profile_json = {
+            'id': user.id,
+            'text': user.handle,
+            'email': user.email,
+            'avatar_id': user.avatar_id,
+            'preferred_payout_address': user.preferred_payout_address,
+        }
+
+        if user.avatar_id:
+            profile_json['avatar_url'] = user.avatar_url
+
+        results.append(profile_json)
+
+    # try github
+    if not results:
+        search_results = search_users(q, token=token)
+        for result in search_results:
+            profile_json = {
+                'id': -1,
+                'text': result.login,
+                'email': None,
+                'avatar_id': None,
+                'avatar_url': result.avatar_url,
+                'preferred_payout_address': None,
+            }
+            # dont dupe github profiles and gitcoin profiles in user search
+            if profile_json['text'].lower() not in [profile['text'].lower() for profile in profiles]:
+                results.append(profile_json)
+
+    # just take users word for it
+    if not results:
+        profile_json = {
+            'id': -1,
+            'text': q,
+            'email': None,
+            'avatar_id': None,
+            'preferred_payout_address': None,
+        }
+        results.append(profile_json)
+
+    return HttpResponse(json.dumps(results), 'application/json')
 
 
 def get_kudos(request):
+    if not request.is_ajax():
+        raise Http404
+
     autocomplete_kudos = {
         'copy': "No results found.  Try these categories: ",
-        'autocomplete': ['rare','common','ninja','soft skills','programming']
+        'autocomplete': [
+            'rare', 'common', 'ninja', 'soft skills', 'programming', 'open source', 'project management', 'design',
+            'technical', 'graphs', 'ideas', 'clean code', 'cellarius',
+        ]
     }
-    if request.is_ajax():
-        q = request.GET.get('term')
-        network = request.GET.get('network', None)
-        eth_to_usd = convert_token_to_usdt('ETH')
-        kudos_by_name = Token.objects.filter(name__icontains=q)
-        kudos_by_desc = Token.objects.filter(description__icontains=q)
-        kudos_by_tags = Token.objects.filter(tags__icontains=q)
-        kudos_pks = (kudos_by_desc | kudos_by_name | kudos_by_tags).values_list('pk', flat=True)
-        kudos = Token.objects.filter(pk__in=kudos_pks, hidden=False, num_clones_allowed__gt=0).order_by('name')
-        is_staff = request.user.is_staff if request.user.is_authenticated else False
-        if not is_staff:
-            kudos = kudos.filter(send_enabled_for_non_gitcoin_admins=True)
-        if network:
-            kudos = kudos.filter(contract__network=network)
-        results = []
-        for token in kudos:
-            kudos_json = {}
-            kudos_json['id'] = token.id
-            kudos_json['token_id'] = token.token_id
-            kudos_json['name'] = token.name
-            kudos_json['name_human'] = humanize_name(token.name)
-            kudos_json['description'] = token.description
-            kudos_json['image'] = token.image
 
-            kudos_json['price_finney'] = token.price_finney / 1000
-            kudos_json['price_usd'] = eth_to_usd * kudos_json['price_finney']
-            kudos_json['price_usd_humanized'] = f"${round(kudos_json['price_usd'], 2)}"
+    q = request.GET.get('term', '')
+    network = request.GET.get('network', None)
+    eth_to_usd = convert_token_to_usdt('ETH')
+    kudos = Token.objects.keyword(q).visible().clones_allowed().distinct('name').order_by('name')
 
-            results.append(kudos_json)
-        if not results:
-            results = [autocomplete_kudos]
-        data = json.dumps(results)
-    else:
-        raise Http404
-    mimetype = 'application/json'
-    return HttpResponse(data, mimetype)
+    if not request.user.is_staff:
+        kudos = kudos.filter(send_enabled_for_non_gitcoin_admins=True)
+
+    if network:
+        kudos = kudos.select_related('contract').filter(contract__network=network)
+
+    results = []
+    for token in kudos:
+        price_finney = token.price_finney / 1000
+        price_usd = eth_to_usd * price_finney
+        kudos_json = {
+            'id': token.id,
+            'token_id': token.token_id,
+            'name': token.name,
+            'name_human': humanize_name(token.name),
+            'description': token.description,
+            'image': token.image,
+            'price_finney': price_finney,
+            'price_usd': price_usd,
+            'price_usd_humanized': f'{round(price_usd, 2)}'
+        }
+        results.append(kudos_json)
+
+    if not results:
+        results = [autocomplete_kudos]
+    return HttpResponse(json.dumps(results), 'application/json')

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Handle legacy URLs.
+"""Test the Kudos models.
 
 Copyright (C) 2018 Gitcoin Core
 
@@ -15,14 +15,10 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
-
 """
+import logging
+import unittest
 
-from django.urls import re_path
+from django.test import Client
 
-from dashboard.views import bounty_details
-
-app_name = 'legacy'
-urlpatterns = [
-    re_path(r'^issue/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)', bounty_details, name='legacy_issue_details_new2'),
-]
+from test_plus.test import TestCase

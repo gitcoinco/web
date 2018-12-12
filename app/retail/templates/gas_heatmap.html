@@ -1,9 +1,8 @@
 {% extends 'onepager/base.html' %}
 {% load i18n static %}
 {% block 'scripts' %}
-<script src="{% static "v2/js/jquery.js"%}"> </script> 
-<script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js"  %}">
-</script>
+<script src="{% static "v2/js/jquery.js" %}"></script>
+<script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
 <script src="{% static "v2/js/pages/gas.js" %}"></script>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="{% static "v2/js/tooltip.js" %}"></script>
@@ -25,8 +24,6 @@
 
   {% endfor %}
 
-
-
   //UI configuration
   var itemSize = 70,
     cellSize = itemSize - 1,
@@ -46,23 +43,22 @@
     itemSize = 50;
     height = 1400;
   }
-  //formats
+
+  // formats
   var hourFormat = d3.timeFormat('%H'),
     dayFormat = d3.timeFormat('%j'),
     timeFormat = d3.timeFormat('%Y-%m-%dT%X'),
     monthDayFormat = d3.timeFormat('%m.%d');
 
-  //timeFormatParse = d3.timeParse('%Y-%m-%dT%X');
-
   timeFormatParse = d3.timeParse("%Y-%m-%dT%H:%M:%S");
 
-  //data vars for rendering
+  // data vars for rendering
   var dateExtent = null,
     dayOffset = 0,
     colorCalibration = ['#f6faaa', '#FEE08B', '#FDAE61', '#F46D43', '#D53E4F', '#9E0142'],
     dailyValueExtent = {};
 
-  //axises and scales
+  // axises and scales
   var axisWidth = 0,
     axisHeight = itemSize * 24,
     xAxisScale = d3.scaleTime(),
@@ -105,7 +101,7 @@
 
   axisWidth = itemSize * (dayFormat(dateExtent[1]) - dayFormat(dateExtent[0]) + 1);
 
-  //render axises
+  // render axises
   xAxis.scale(xAxisScale.range([0, axisWidth]).domain([dateExtent[0], dateExtent[1]]));
   svg.append('g')
     .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
@@ -123,7 +119,7 @@
     .text('time')
     .attr('transform', 'translate(-10,' + axisHeight + ') rotate(-90)');
 
-  //render heatmap rects
+  // render heatmap rects
   dayOffset = dayFormat(dateExtent[0]);
   rect = heatmap.selectAll('rect')
     .data(data)
@@ -159,15 +155,13 @@
         return d;
       });
 
-    //bind click event
+    // bind click event
     d3.selectAll('[role="calibration"] [name="displayType"]').on('click', function () {
       renderColor();
     });
   }
 
   function renderColor() {
-    //var renderByCount = document.getElementsByName('displayType')[0].checked;
-
     rect
       .filter(function (d) {
         return (d["gas_price"] >= 0);
@@ -178,7 +172,7 @@
       })
       .duration(500)
       .attrTween('fill', function (d, i, a) {
-        //choose color dynamicly      
+        // choose color dynamicly
         var colorIndex = d3.scaleQuantize()
           .range([0, 1, 2, 3, 4, 5])
           .domain((dailyValueExtent[d.day]));
@@ -187,12 +181,11 @@
       });
   }
 
-  //extend frame height in `http://bl.ocks.org/`
+  // extend frame height in `http://bl.ocks.org/`
   d3.select(self.frameElement).style("height", "600px");
   }) ();
 </script>
-
-{%endif%}
+{% endif %}
 
 <style>
   .axis {
@@ -225,24 +218,22 @@
   }
 </style>
 {% endblock %}
-<!-- Main -->
 
+<!-- Main -->
 {% block 'world' %}
 <canvas id="world" style="position:absolute; top:0px; left: 0px;">
 </canvas>
 {% endblock %}
 
 {% block 'main' %}
-
 <section id=main>
   {% include 'shared/gas_nav.html' %}
-
   {% include 'shared/gas_advisories.html' %}
 
-  <h1> {% trans "Gas Heatmap to confirm within" %} {{mins}} {% trans "minutes" %} <span id="alpha">{% trans "Alpha" %}</span> </h1>
+  <h1> {% trans "Gas Heatmap to confirm within" %} {{ mins }} {% trans "minutes" %} <span id="alpha">{% trans "Alpha" %}</span> </h1>
   <div>
     {% for min in min_options %}
-    <a href="{% url 'gas_heatmap' %}?mins={{min}}">({{min}} mins)</a>
+    <a href="{% url 'gas:heatmap' %}?mins={{ min }}">({{ min }} mins)</a>
     {% endfor %}
     <br>
     <br>
@@ -255,7 +246,7 @@
   </p>
   {% else %}
   <div style="position: absolute; left: 30px; top: 500px; transform: rotate(-90deg);">
-    Hour of Day (UTC)
+    {% trans "Hour of Day (UTC)" %}
   </div>
   <div class="days-hours-heatmap">
     <!-- calibration and render type controller -->
@@ -264,15 +255,15 @@
         <svg width="120" height="17">
         </svg>
         <div role="description" class="description">
-          <label>Less Gas</label> <==>
-          <label>More Gas</label>
+          <label>{% trans "Less Gas" %}</label> <==>
+          <label>{% trans "More Gas" %}</label>
         </div>
       </div>
     </div>
     <div>
       <br>
       <br>
-      Date
+      {% trans "Date" %}
     </div>
     <!-- heatmap -->
     <svg role="heatmap" class="heatmap"></svg>

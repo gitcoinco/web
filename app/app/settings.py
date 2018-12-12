@@ -96,7 +96,6 @@ INSTALLED_APPS = [
     'gas',
     'git',
     'healthcheck.apps.HealthcheckConfig',
-    'legacy',
     'chartit',
     'email_obfuscator',
     'linkshortener',
@@ -459,7 +458,6 @@ CACHES = {
         default='rediscache://redis:6379/0?client_class=django_redis.client.DefaultClient'
     ),
     COLLECTFAST_CACHE: env.cache('COLLECTFAST_CACHE_URL', default='dbcache://collectfast'),
-    'legacy': env.cache('CACHE_URL', default='dbcache://my_cache_table'),
 }
 CACHES[COLLECTFAST_CACHE]['OPTIONS'] = {'MAX_ENTRIES': 1000}
 

@@ -21,6 +21,8 @@ from unittest import skip
 
 from django.test import Client, TestCase
 
+from dajngo.urls import reverse
+
 # from .utils import KudosContract
 
 logging.getLogger("requests").setLevel(logging.WARNING)
@@ -32,18 +34,21 @@ class KudosViewsTestCase(TestCase):
     def setUp(self):
         self.client = Client()
 
+    def test_main(self):
+        response = self.client.get(reverse('kudos:main'))
+        self.assertEqual(response.status_code, 200)
+
     def test_about(self):
-        r = self.client.get('/kudos/')
-        self.assertEqual(r.status_code, 200)
-        r = self.client.get('/kudos/about/')
-        self.assertEqual(r.status_code, 200)
+        response = self.client.get(reverse('kudos:about'))
+        self.assertEqual(response.status_code, 200)
 
     def test_marketplace(self):
-        r = self.client.get('/kudos/marketplace/')
-        self.assertEqual(r.status_code, 200)
+        response = self.client.get(reverse('kudos:marketplace'))
+        self.assertEqual(response.status_code, 200)
 
-        r = self.client.get('/kudos/marketplace/?q=python')
-        self.assertEqual(r.status_code, 200)
+    def test_marketplace_search(self):
+        response = self.client.get(f"{reverse('kudos:marketplace')}/?q=python")
+        self.assertEqual(response.status_code, 200)
 
     # @skip(reason='stub for future testing')
     # def test_image(self):
@@ -59,8 +64,8 @@ class KudosViewsTestCase(TestCase):
     #     self.client.get('/kudos/1')
 
     def test_mint(self):
-        r = self.client.get('/kudos/mint/')
-        self.assertEqual(r.status_code, 200)
+        response = self.client.get(reverse('kudos:mint'))
+        self.assertEqual(response.status_code, 200)
 
     # @skip(reason='stub for future testing')
     # def test_get_to_emails(self):
@@ -75,10 +80,10 @@ class KudosViewsTestCase(TestCase):
     #     self.client.get('/kudos/1')
 
     def test_send_2(self):
-        r = self.client.get('/kudos/send/')
-        self.assertEqual(r.status_code, 302)
-        # r = self.client.get('/kudos/send/?id=1')
-        # self.assertEqual(r.status_code, 200)
+        response = self.client.get(reverse('kudos:send'))
+        self.assertEqual(response.status_code, 302)
+        # response = self.client.get('/kudos/send/?id=1')
+        # self.assertEqual(response.status_code, 200)
 
     # @skip(reason='stub for future testing')
     # def test_send_3(self):

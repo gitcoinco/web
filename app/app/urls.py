@@ -28,19 +28,16 @@ import avatar.views
 import bounty_requests.views
 import credits.views
 import dashboard.embed
-import dashboard.gas_views
 import dashboard.helpers
 import dashboard.ios
 import dashboard.tip_views
 import dashboard.views
 import dataviz.d3_views
-import dataviz.views
 import enssubdomain.views
 import external_bounties.views
 import faucet.views
 import gitcoinbot.views
 import healthcheck.views
-import kudos.views
 import linkshortener.views
 import marketing.views
 import marketing.webhookviews
@@ -49,9 +46,11 @@ import retail.views
 import revenue.views
 import tdi.views
 from dashboard.router import router as dbrouter
+from dataviz.d3_views import viz_graph, viz_scatterplot_stripped
 from external_bounties.router import router as ebrouter
 from grants.router import router as grant_router
 from kudos.router import router as kdrouter
+from kudos.views import image as kudos_image
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.core import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
@@ -59,30 +58,10 @@ from wagtail.documents import urls as wagtaildocs_urls
 from .sitemaps import sitemaps
 
 urlpatterns = [
+    # JS Internationalization
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
 
-    # kudos
-    path('kudos/', kudos.views.about, name='kudos_main'),
-    path('kudos/about/', kudos.views.about, name='kudos_about'),
-    path('kudos/marketplace/', kudos.views.marketplace, name='kudos_marketplace'),
-    path('kudos/mint/', kudos.views.mint, name='kudos_mint'),
-    path('kudos/send/', kudos.views.send_2, name='kudos_send'),
-    path('kudos/send/3/', kudos.views.send_3, name='kudos_send_3'),
-    path('kudos/send/4/', kudos.views.send_4, name='kudos_send_4'),
-    re_path(r'^lazy_load_kudos/$', dashboard.views.lazy_load_kudos, name='lazy_load_kudos'),
-    re_path(r'^kudos/receive/v3/(?P<key>.*)/(?P<txid>.*)/(?P<network>.*)?', kudos.views.receive, name='kudos_receive'),
-    re_path(r'^kudos/redeem/(?P<secret>.*)/?$', kudos.views.receive_bulk, name='kudos_receive_bulk'),
-    re_path(r'^kudos/search/$', kudos.views.search, name='kudos_search'),
-    re_path(
-        r'^kudos/(?P<address>\w*)/(?P<token_id>\d+)/(?P<name>\w*)',
-        kudos.views.details_by_address_and_token_id,
-        name='kudos_details_by_address_and_token_id'
-    ),
-    re_path(r'^kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.details, name='kudos_details'),
-    re_path(r'^kudos/address/(?P<handle>.*)', kudos.views.kudos_preferred_wallet, name='kudos_preferred_wallet'),
-    re_path(r'^dynamic/kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.image, name='kudos_dynamic_img'),
-
-    # api views
+    # API Views
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
     url(r'^api/v0.1/funding/save/?', dashboard.ios.save, name='save'),
     url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
@@ -93,23 +72,29 @@ urlpatterns = [
     url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active
     url(r'^api/v0.1/users_search/', dashboard.views.get_users, name='users_search'),
     url(r'^api/v0.1/kudos_search/', dashboard.views.get_kudos, name='kudos_search'),
-    # Health check endpoint
+
+    # Health check endpoints
     re_path(r'^health/', include('health_check.urls')),
     re_path(r'^lbcheck/?', healthcheck.views.lbcheck, name='lbcheck'),
     re_path(r'^spec/?', healthcheck.views.spec, name='spec'),
 
-    # grant views
+    # Avatar Views
+    path('avatar/', include('avatar.urls', namespace='avatar')),
+
+    # Gas Views
+    path('gas/', include('gas.urls', namespace='gas')),
+
+    # Grant Views
     path('grants/', include('grants.urls', namespace='grants')),
 
-    # dashboard views
+    # Kudos Views
+    path('kudos/', include('kudos.urls', namespace='kudos')),
 
-    # Dummy offchain index
-    url(r'^offchain/new/?', external_bounties.views.external_bounties_new, name="offchain_new"),
-    url(r'^offchain/(?P<issuenum>.*)/(?P<slug>.*)/?', external_bounties.views.external_bounties_show, name='offchain'),
-    url(r'^offchain/?', external_bounties.views.external_bounties_index, name="offchain_index"),
-    url(r'^universe/new/?', external_bounties.views.external_bounties_new, name="universe_new"),
-    url(r'^universe/(?P<issuenum>.*)/(?P<slug>.*)/?', external_bounties.views.external_bounties_show, name='universe'),
-    url(r'^universe/?', external_bounties.views.external_bounties_index, name="universe_index"),
+    # Universe Views
+    path('universe/', include('external_bounties.urls', namespace='external_bounties')),
+
+    # Dashboard Views
+    # Onboarding Views
     re_path(r'^onboard/(?P<flow>\w+)/$', dashboard.views.onboard, name='onboard'),
     re_path(r'^onboard/contributor/avatar/?$', dashboard.views.onboard_avatar, name='onboard_avatar'),
     url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
@@ -136,9 +121,6 @@ urlpatterns = [
         dashboard.views.extend_expiration,
         name='extend_expiration'
     ),
-
-    # Avatars
-    path('avatar/', include('avatar.urls', namespace='avatar')),
 
     # Interests
     path('actions/bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
@@ -192,22 +174,15 @@ urlpatterns = [
     path('actions/tool/<int:tool_id>/voteDown', dashboard.views.vote_tool_down, name='vote_tool_down'),
     re_path(r'^tools/?', dashboard.views.toolbox, name='tools'),
 
-    # gas views
-    url(r'^gas/faucets/?', dashboard.gas_views.gas_faucet_list, name='gas_faucet_list'),
-    url(r'^gas/faq/?', dashboard.gas_views.gas_faq, name='gas_faq'),
-    url(r'^gas/intro/?', dashboard.gas_views.gas_intro, name='gas_intro'),
-    url(r'^gas/calculator/?', dashboard.gas_views.gas_calculator, name='gas_calculator'),
-    url(r'^gas/history/?', dashboard.gas_views.gas_history_view, name='gas_history_view'),
-    url(r'^gas/guzzlers/?', dashboard.gas_views.gas_guzzler_view, name='gas_guzzler_view'),
-    url(r'^gas/heatmap/?', dashboard.gas_views.gas_heatmap, name='gas_heatmap'),
-    url(r'^gas/?', dashboard.gas_views.gas, name='gas'),
-
     # images
     re_path(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
     re_path(r'^funding/avatar/?', avatar.views.handle_avatar, name='avatar'),
+
+    # Dynamic
     re_path(r'^dynamic/avatar/(.*)/(.*)?', avatar.views.handle_avatar, name='org_avatar'),
-    re_path(r'^dynamic/viz/graph/(.*)?$', dataviz.d3_views.viz_graph, name='viz_graph'),
-    re_path(r'^dynamic/viz/sscatterplot/(.*)?$', dataviz.d3_views.viz_scatterplot_stripped, name='viz_sscatterplot'),
+    re_path(r'^dynamic/kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos_image, name='kudos_dynamic_img'),
+    re_path(r'^dynamic/viz/graph/(.*)?$', viz_graph, name='viz_graph'),
+    re_path(r'^dynamic/viz/sscatterplot/(.*)?$', viz_scatterplot_stripped, name='viz_sscatterplot'),
     path('dynamic/js/tokens_dynamic.js', retail.views.tokens, name='tokens'),
 
     # sync methods
@@ -284,95 +259,6 @@ urlpatterns = [
     # bounty requests
     re_path(r'^requests/?', bounty_requests.views.bounty_request, name='bounty_requests'),
 
-    # admin views
-    re_path(r'^_administration/?', admin.site.urls, name='admin'),
-    path('_administration/email/grant_cancellation', retail.emails.grant_cancellation, name='admin_grant_cancellation'),
-    path(
-        '_administration/email/subscription_terminated',
-        retail.emails.subscription_terminated,
-        name='admin_subscription_terminated'
-    ),
-    path('_administration/email/new_grant', retail.emails.new_grant, name='admin_new_grant'),
-    path('_administration/email/new_supporter', retail.emails.new_supporter, name='admin_new_supporter'),
-    path(
-        '_administration/email/thank_you_for_supporting',
-        retail.emails.thank_you_for_supporting,
-        name='admin_thank_you_for_supporting'
-    ),
-    path(
-        '_administration/email/support_cancellation',
-        retail.emails.support_cancellation,
-        name='admin_support_cancellation'
-    ),
-    path(
-        '_administration/email/successful_contribution',
-        retail.emails.successful_contribution,
-        name='admin_successful_contribution'
-    ),
-    path('_administration/email/new_kudos', retail.emails.new_kudos, name='new_kudos'),
-    path('_administration/email/kudos_mint', retail.emails.kudos_mint, name='kudos_mint'),
-    path('_administration/email/kudos_mkt', retail.emails.kudos_mkt, name='kudos_mkt'),
-    path('_administration/email/new_bounty', retail.emails.new_bounty, name='admin_new_bounty'),
-    path('_administration/email/roundup', retail.emails.roundup, name='roundup'),
-    path('_administration/email/faucet_rejected', retail.emails.faucet_rejected, name='email_faucet_rejected'),
-    path('_administration/email/faucet', retail.emails.faucet, name='email_faucet'),
-    path('_administration/email/new_tip', retail.emails.new_tip, name='new_tip'),
-    path('_administration/email/new_match', retail.emails.new_match, name='new_match'),
-    path('_administration/email/quarterly_roundup', retail.emails.quarterly_roundup, name='quarterly_roundup'),
-    path('_administration/email/new_work_submission', retail.emails.new_work_submission, name='new_work_submission'),
-    path('_administration/email/new_bounty_rejection', retail.emails.new_bounty_rejection, name='new_bounty_rejection'),
-    path(
-        '_administration/email/new_bounty_acceptance',
-        retail.emails.new_bounty_acceptance,
-        name='new_bounty_acceptance'
-    ),
-    path(
-        '_administration/email/bounty_expire_warning',
-        retail.emails.bounty_expire_warning,
-        name='bounty_expire_warning'
-    ),
-    path('_administration/email/bounty_feedback', retail.emails.bounty_feedback, name='bounty_feedback'),
-    path('_administration/email/funder_stale', retail.emails.funder_stale, name='funder_stale'),
-    path(
-        '_administration/email/start_work_expire_warning',
-        retail.emails.start_work_expire_warning,
-        name='start_work_expire_warning'
-    ),
-    path('_administration/email/start_work_expired', retail.emails.start_work_expired, name='start_work_expired'),
-    path('_administration/email/gdpr_reconsent', retail.emails.gdpr_reconsent, name='gdpr_reconsent'),
-    path('_administration/email/new_tip/resend', retail.emails.resend_new_tip, name='resend_new_tip'),
-    re_path(
-        r'^_administration/process_accesscode_request/(.*)$',
-        tdi.views.process_accesscode_request,
-        name='process_accesscode_request'
-    ),
-    re_path(
-        r'^_administration/process_faucet_request/(.*)$',
-        faucet.views.process_faucet_request,
-        name='process_faucet_request'
-    ),
-    re_path(
-        r'^_administration/email/start_work_approved$', retail.emails.start_work_approved, name='start_work_approved'
-    ),
-    re_path(
-        r'^_administration/email/start_work_rejected$', retail.emails.start_work_rejected, name='start_work_rejected'
-    ),
-    re_path(
-        r'^_administration/email/start_work_new_applicant$',
-        retail.emails.start_work_new_applicant,
-        name='start_work_new_applicant'
-    ),
-    re_path(
-        r'^_administration/email/start_work_applicant_about_to_expire$',
-        retail.emails.start_work_applicant_about_to_expire,
-        name='start_work_applicant_about_to_expire'
-    ),
-    re_path(
-        r'^_administration/email/start_work_applicant_expired$',
-        retail.emails.start_work_applicant_expired,
-        name='start_work_applicant_expired'
-    ),
-
     # settings
     re_path(r'^settings/email/(.*)', marketing.views.email_settings, name='email_settings'),
     re_path(r'^settings/privacy/?', marketing.views.privacy_settings, name='privacy_settings'),
@@ -389,22 +275,6 @@ urlpatterns = [
     url(r'^leaderboard/(.*)', marketing.views.leaderboard, name='leaderboard'),
     path('leaderboard', marketing.views._leaderboard, name='_leaderboard'),
 
-    # dataviz views
-    re_path(r'^_administration/stats/$', dataviz.views.stats, name='stats'),
-    re_path(r'^_administration/cohort/$', dataviz.views.cohort, name='cohort'),
-    re_path(r'^_administration/funnel/$', dataviz.views.funnel, name='funnel'),
-    re_path(r'^_administration/viz/?$', dataviz.d3_views.viz_index, name='viz_index'),
-    re_path(r'^_administration/viz/sunburst/(.*)?$', dataviz.d3_views.viz_sunburst, name='viz_sunburst'),
-    re_path(r'^_administration/viz/chord/(.*)?$', dataviz.d3_views.viz_chord, name='viz_chord'),
-    re_path(r'^_administration/viz/steamgraph/(.*)?$', dataviz.d3_views.viz_steamgraph, name='viz_steamgraph'),
-    re_path(r'^_administration/viz/circles/(.*)?$', dataviz.d3_views.viz_circles, name='viz_circles'),
-    re_path(r'^_administration/viz/sankey/(.*)?$', dataviz.d3_views.viz_sankey, name='viz_sankey'),
-    re_path(r'^_administration/viz/spiral/(.*)?$', dataviz.d3_views.viz_spiral, name='viz_spiral'),
-    re_path(r'^_administration/viz/heatmap/(.*)?$', dataviz.d3_views.viz_heatmap, name='viz_heatmap'),
-    re_path(r'^_administration/viz/calendar/(.*)?$', dataviz.d3_views.viz_calendar, name='viz_calendar'),
-    re_path(r'^_administration/viz/draggable/(.*)?$', dataviz.d3_views.viz_draggable, name='viz_draggable'),
-    re_path(r'^_administration/viz/scatterplot/(.*)?$', dataviz.d3_views.viz_scatterplot, name='viz_scatterplot'),
-
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
@@ -419,7 +289,12 @@ urlpatterns = [
     ),
 
     # Legacy Support
-    path('legacy/', include('legacy.urls', namespace='legacy')),
+    re_path(
+        r'^legacy/issue/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)',
+        dashboard.views.bounty_details,
+        name='legacy_issue_details_new2'
+    ),
+
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     re_path(r'^gh-login/$', dashboard.views.gh_login, name='gh_login'),
     path('', include('social_django.urls', namespace='social')),

@@ -14,8 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static kudos_extras avatar_tags  %}
-{% load humanize %}
+{% load i18n static kudos_extras avatar_tags humanize %}
 {% if kudos_data == 'sent_kudos' %}
   {% regroup sent_kudos|dictsort:"kudos_token_cloned_from.name" by kudos_token_cloned_from.name as kudos_dupe %}
   {% for kudos_group in kudos_dupe|slice:":8" %}
@@ -41,7 +40,6 @@
             </div>
           </div>
         </div>
-
         <div class="content-hover flip-card__hold flip-card__back">
           {% include 'shared/kudos_card_hover_content.html' with relation='to' %}
         </div>
@@ -74,7 +72,6 @@
             </div>
           </div>
         </div>
-
         <div class="content-hover flip-card__hold flip-card__back">
           {% include 'shared/kudos_card_hover_content.html' with relation='from' %}
         </div>

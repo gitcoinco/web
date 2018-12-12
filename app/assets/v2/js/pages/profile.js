@@ -142,7 +142,7 @@ $(document).ready(function() {
 
     $.ajax({
       type: 'POST',
-      url: '/lazy_load_kudos/',
+      url: '/kudos/lazy_load/',
       data: {
         'page': page,
         'request': request,

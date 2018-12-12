@@ -26,7 +26,7 @@
     <img src="{% static "v2/images/top-bar/codefund-logo.svg" %}" height="20" alt="" class="d-md-block d-none">
     <img src="{% static "v2/images/top-bar/codefund-symbol.svg" %}" height="20" alt="" class="d-md-none">
   </a>
-  <a class="{% if request.path|matches:'^\/((kudos.*))$' %}selected{% endif %}" href="{% url 'kudos_main' %}">
+  <a class="{% if request.path|matches:'^\/((kudos.*))$' %}selected{% endif %}" href="{% url 'kudos:main' %}">
     <img src="{% static "v2/images/top-bar/kudos-logo.svg" %}" height="22" alt="" class="d-md-block d-none">
     <img src="{% static "v2/images/top-bar/kudos-symbol.svg" %}" height="22" alt="" class="d-md-none">
   </a>

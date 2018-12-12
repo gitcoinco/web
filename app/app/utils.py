@@ -176,8 +176,7 @@ def sync_profile(handle, user=None, hide_profile=True):
     handle = handle.strip().replace('@', '')
     data = get_user(handle)
     email = ''
-    is_error = 'name' not in data.keys()
-    if is_error:
+    if 'name' not in data.keys():
         print("- error main")
         logger.warning('Failed to fetch github username', exc_info=True, extra={'handle': handle})
         return None
@@ -197,8 +196,8 @@ def sync_profile(handle, user=None, hide_profile=True):
     try:
         profile, created = Profile.objects.update_or_create(handle=handle, defaults=defaults)
         print("Profile:", profile, "- created" if created else "- updated")
-        orgs = get_user(handle, '/orgs')
-        profile.organizations = [ele['login'] for ele in orgs]
+        organizations = get_user(handle, '/orgs')
+        profile.organizations = [organization['login'] for organization in organizations]
         keywords = []
         for repo in profile.repos_data_lite:
             language = repo.get('language') if repo.get('language') else ''
@@ -209,7 +208,6 @@ def sync_profile(handle, user=None, hide_profile=True):
 
         profile.keywords = keywords
         profile.save()
-
     except Exception as e:
         logger.error(e)
         return None

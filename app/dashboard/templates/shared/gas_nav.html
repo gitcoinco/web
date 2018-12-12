@@ -60,27 +60,27 @@
 </style>
 <ul class="gas_nav">
   <li>
-    <a href="{% url 'gas_intro' %}">Intro</a>
+    <a href="{% url 'gas:intro' %}">{% trans "Intro" %}</a>
   </li>
   <li>
-    <a href="{% url 'gas' %}">Price Tradeoff Tool</a>
+    <a href="{% url 'gas:index' %}">{% trans "Price Tradeoff Tool" %}</a>
   </li>
   <li>
-    <a href="{% url 'gas_heatmap' %}">Heatmap</a>
+    <a href="{% url 'gas:heatmap' %}">{% trans "Heatmap" %}</a>
   </li>
   <li>
-    <a href="{% url 'gas_history_view' %}">Price History</a>
+    <a href="{% url 'gas:history_view' %}">{% trans "Price History" %}</a>
   </li>
   <li>
-    <a href="{% url 'gas_guzzler_view' %}">Gas Guzzlers</a>
+    <a href="{% url 'gas:guzzler_view' %}"> {% trans "Gas Guzzlers" %}</a>
   </li>
   <li>
-    <a href="{% url 'gas_calculator' %}"> Gitcoin Contract Gas Cost Calculator</a>
+    <a href="{% url 'gas:calculator' %}"> {% trans "Gitcoin Contract Gas Cost Calculator" %}</a>
   </li>
   <li>
-    <a href="{% url 'gas_faq' %}"> FAQ</a>
+    <a href="{% url 'gas:faq' %}"> {% trans "FAQ" %}</a>
   </li>
   <li>
-    <a href="{% url 'gas_faucet_list' %}"> Get Gas</a>
+    <a href="{% url 'gas:faucet_list' %}"> {% trans "Get Gas" %}</a>
   </li>
 </ul>

@@ -31,7 +31,7 @@
 {% block 'main' %}
 <section id="main" class="box-transaction">
   <header class="text-center">
-    <h1 class="h2 mt-5">{% trans "You've got a" %} <a style='color:black; text-decoration: underline;' href="{% url 'kudos_about' %}">{% trans "Kudos" %}</a></h1>
+    <h1 class="h2 mt-5">{% trans "You've got a" %} <a style='color:black; text-decoration: underline;' href="{% url 'kudos:about' %}">{% trans "Kudos" %}</a></h1>
 
     <div class="my-4">
       <img src="{% static coupon.token.image %}" width="160" alt="" class="mb-2">

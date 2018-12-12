@@ -62,6 +62,9 @@ class TokenQuerySet(models.QuerySet):
             Q(tags__icontains=keyword)
         )
 
+    def clones_allowed(self):
+        return self.filter(num_clones_allowed__gt=0)
+
 
 class Token(SuperModel):
     """Model representing a Kudos ERC721 token on the blockchain.

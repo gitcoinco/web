@@ -9,7 +9,7 @@
   </head>
 
   <body class="interior {{active}} with-grey-background g-font-muli">
-    <link rel="canonical" href="{% url 'offchain_index' %}">
+    <link rel="canonical" href="{% url 'external_bounties:index' %}">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
@@ -42,10 +42,10 @@
                 <span class="icon">{% include 'svgs/search.svg' %}</span>
                 <div id="sort_options">
                   {% trans "Sort by" %}
-                  <a class="{% if sorted_by == 'Oldest' and sort_direction == 'asc' %}active{%endif%}" href="/universe?sort=Created&direction=asc">{% trans "Oldest" %}</a> |
-                  <a class="{% if sorted_by == 'Oldest' and sort_direction == 'asc' %}active{%endif%}" href="/universe?sort=Created&direction=desc">{% trans "Newest" %}</a> |
-                  <a class="{% if sorted_by == 'Value' %}active{%endif%}" href="/universe?sort=Value&direction=desc">{% trans "Highest Value" %}</a> |
-                  <a class="{% if sorted_by == 'Value' %}active{%endif%}" href="/universe?sort=Value&direction=asc">{% trans "Lowest Value" %}</a>
+                  <a class="{% if sorted_by == 'Oldest' and sort_direction == 'asc' %}active{%endif%}" href="{% url 'external_bounties:index' %}?sort=Created&direction=asc">{% trans "Oldest" %}</a> |
+                  <a class="{% if sorted_by == 'Oldest' and sort_direction == 'asc' %}active{%endif%}" href="{% url 'external_bounties:index' %}?sort=Created&direction=desc">{% trans "Newest" %}</a> |
+                  <a class="{% if sorted_by == 'Value' %}active{%endif%}" href="{% url 'external_bounties:index' %}?sort=Value&direction=desc">{% trans "Highest Value" %}</a> |
+                  <a class="{% if sorted_by == 'Value' %}active{%endif%}" href="{% url 'external_bounties:index' %}?sort=Value&direction=asc">{% trans "Lowest Value" %}</a>
                 </div>
               </div>
             </div>
@@ -64,7 +64,7 @@
             </aside>
             <main class="bounties-container">
                 <div style="float: right; padding-right: 10px; padding-top: 20px; margin-bottom: 20px;">
-                  <a class="button right btn-info" href="{% url "universe_new" %}">{% trans "Post New" %} >> </a>
+                  <a class="button right btn-info" href="{% url "external_bounties:new" %}">{% trans "Post New" %} >> </a>
                 </div>
                 <br style="clear:both;">
               {% for bounty in bounties %}

@@ -54,10 +54,10 @@ div.tooltip {
 
 <ul class="gas_nav small">
   <li>
-    <a href="{% url 'gas' %}?is_3d=0">{% trans "View Live Data in 2d" %}</a>
+    <a href="{% url 'gas:index' %}?is_3d=0">{% trans "View Live Data in 2d" %}</a>
   </li>
   <li>
-    <a href="{% url 'gas' %}?is_3d=1">{% trans "View Historical in 3d" %}</a>
+    <a href="{% url 'gas:index' %}?is_3d=1">{% trans "View Historical in 3d" %}</a>
   </li>
 </ul>
 {% if is_3d == "1" %}
