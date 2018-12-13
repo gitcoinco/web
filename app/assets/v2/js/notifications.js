@@ -18,13 +18,13 @@ const onChange = (objToWatch, onChangeFunction) => {
 return new Proxy(objToWatch, handler);
 };
 
-const logger = (value) => console.log('changed', value);
+const logger = (value) => console.log();
 
 const notifications = onChange(newNotifications, logger)
 
 
 function requestNotifications() {
-  console.log(page)
+  console.log('REQUEST', page)
   var getNotifications = fetchData (`/api/v0.1/notifications/?page=${page}`, 'GET');
 
   $.when(getNotifications).then(function(response) {
@@ -33,11 +33,17 @@ function requestNotifications() {
     // console.log(response.data[0].id)
     // if (response.data.length !== notifications.length) {
     // if (loadTmp) {
-      newNotifications = newData(response.data, notifications);
 
-      page = response.has_next ? page+1 : page = 1
+      // page = response.has_next ? page+1 : page = 1
+      if (response.has_next) {
+        page = ++page
+        console.log('PAGE', page)
+      } else {
+        page = 1
+      }
       console.log(page)
 
+      newNotifications = newData(response.data, notifications);
       newNotifications.forEach(element => {
         notifications.push(element);
       });
@@ -45,13 +51,13 @@ function requestNotifications() {
       toggleRead(newNotifications)
 
       setDot(true, notifications);
-      templateSuggestions(newNotifications);
+      templateSuggestions(newNotifications, page);
     // }
 
   });
 }
 
-function templateSuggestions(notifications) {
+function templateSuggestions(notifications, page) {
   var tmp = `
     ${notifications.map((notify, index) => `
       <li class="notifications__item">
@@ -69,15 +75,16 @@ function templateSuggestions(notifications) {
         </time>
       </li>`
     ).join(' ')}`;
-      if (page === 1) {
-        container.append(tmp);
-      } else {
-        container.prepend(tmp);
-      }
-  $('.notifications__item');
+
+    console.log('template' , page)
+  if (page === 1) {
+    container.append(tmp);
+  } else {
+    container.prepend(tmp);
+  }
 }
 
-function checkHidden() {
+function checkTabHidden() {
   if (typeof document.hidden !== 'undefined') {
     isHidden = document.hidden;
 
@@ -115,10 +122,18 @@ moment.updateLocale('en', {
   }
 });
 
-function setDot(hasNewData, newNotifications) {
-  $('#total-notifications').text(newNotifications.length);
+function setDot(hasNewData, dataNotify) {
+  let dataNotifyCount = dataNotify.length
+  $('#total-notifications').text(dataNotifyCount);
+  if (dataNotifyCount == 0) {
+    $('notifications__no-results').removeClass('d-none');
+  } else {
+    $('notifications__no-results').addClass('d-none');
+  }
 
-  if (hasNewData) {
+  let hasUnread = dataNotify.find(o => o.is_read === false);
+
+  if (hasUnread != undefined ) {
     $('#notification-dot').addClass('notification__dot_active');
   } else {
     $('#notification-dot').removeClass('notification__dot_active');
@@ -126,15 +141,15 @@ function setDot(hasNewData, newNotifications) {
 }
 
 function toggleRead(notificationToRead, unread) {
-  console.log(notificationToRead)
+  // console.log(notificationToRead)
   let notificationRead = sessionStorage.getItem('notificationRead')
   notificationRead && notificationRead.length ? notificationRead = notificationRead.split(',').map(String) : notificationRead;
-  console.log(notificationRead)
+  // console.log(notificationRead)
 
   if (notificationRead) {
-    console.log('ping')
+    // console.log('ping')
     sessionStorage.removeItem('notificationRead');
-    console.log('api request readed', notificationRead);
+    // console.log('api request readed', notificationRead);
     if (unread) {
       const unread = Object()
       unread["unread"] = notificationRead
@@ -165,14 +180,17 @@ function toggleRead(notificationToRead, unread) {
       const index = notificationToRead.findIndex(function(item, index) {
           return item.id == notify
       });
-      console.log(notificationToRead)
+      console.log(index)
       if (unread) {
         // notificationToRead[index].is_read = false;
 
 
       } else {
-        console.log('index',index)
-        notificationToRead[index].is_read = true;
+        // console.log('index',index)
+        if (notificationToRead.length) {
+          console.log(notificationToRead)
+          notificationToRead[index].is_read = true;
+        }
       }
 
     })
@@ -229,48 +247,25 @@ $(document).ready(function() {
 
     // })
 
-    console.log(toRead)
+    // console.log(toRead)
     window.sessionStorage.setItem('notificationRead', toRead);
+    requestNotifications();
   })
 
-
-  // target element that we will observe
-const target = $('.notifications__box')[0]
-
-// config object
-const config = {
-  attributes: true,
-};
-
-// subscriber function
-function subscriber(mutations) {
-  mutations.forEach((mutation) => {
-    console.log(mutation)
-    console.log($(mutation.target).hasClass('show'))
-    if ($(mutation.target).hasClass('show')) {
-      // page = 1
+  $('.notification__icon').on('click', function(e){
+    if($('.notifications__box').hasClass('show')){
+      page = 1
       requestNotifications();
     }
-    // if (mutation.addedNodes.length && mutation.addedNodes[0].length > 5) {
-    //   mutation.target.innerText = 'too long';
-    // }
-  });
-}
-
-// instantiating observer
-const observer = new MutationObserver(subscriber);
-
-// observing target
-observer.observe(target, config);
-
+  })
 
 })
 
 $('.notifications__list').scroll( function() {
-  console.log($(this)[0])
+  console.log(page)
   const scrollContainer = $(this)[0]
   if (scrollContainer.scrollTop + scrollContainer.clientHeight >= scrollContainer.scrollHeight) {
-    requestNotifications(page);
+    requestNotifications();
   }
 });
 

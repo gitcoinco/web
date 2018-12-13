@@ -29,76 +29,14 @@
       </div> <a id="read-all" href="" class="notifications__link">{% trans 'Mark All as Read' %}</a>
     </div>
     <ul class="notifications__list">
-      <!-- <li class="notifications__item">
-        <span class="notifications__item-readed">
-          <b class="notification__dot-small"></b>
-        </span>
-        You haven’t responded to #2186: [Design] Show Remarketed Issues… in 3 days. Please submit a WIP…
-        <time class="notifications__time" datetime="{{'7:30 PM'|date:'c'}}" title="{{'7:30 PM'}}">
-          {{'7:30 PM'|naturaltime}}
-        </time>
-      </li> -->
 
-      <!-- <li class="notifications__item">
-        <span class="notifications__item-readed">
-          <b class="notification__dot-small"></b>
-        </span>
-        You haven’t responded to #2186: [Design] Show Remarketed Issues… in 3 days. Please submit a WIP…
-        <time class="notifications__time" datetime="{{'7:30 PM'|date:'c'}}" title="{{'7:30 PM'}}">
-          {{'7:30 PM'|naturaltime}}
-        </time>
-      </li> -->
-
-      <!-- <li class="notifications__item">
-        <span class="notifications__item-readed">
-          <b class="notification__dot-small"></b>
-        </span>
-        You haven’t responded to #2186: [Design] Show Remarketed Issues… in 3 days. Please submit a WIP…
-        <time class="notifications__time" datetime="{{'7:30 PM'|date:'c'}}" title="{{'7:30 PM'}}">
-          {{'7:30 PM'|naturaltime}}
-        </time>
-      </li> -->
-
-      <!-- <li class="notifications__item">
-        <span class="notifications__item-readed">
-          <b class="notification__dot-small"></b>
-        </span>
-        You haven’t responded to #2186: [Design] Show Remarketed Issues… in 3 days. Please submit a WIP…
-        <time class="notifications__time" datetime="{{'7:30 PM'|date:'c'}}" title="{{'7:30 PM'}}">
-          {{'7:30 PM'|naturaltime}}
-        </time>
-      </li> -->
-
-      <!-- <li class="notifications__item">
-        <span class="notifications__item-readed">
-          <b class="notification__dot-small"></b>
-        </span>
-        You haven’t responded to #2186: [Design] Show Remarketed Issues… in 3 days. Please submit a WIP…
-        <time class="notifications__time" datetime="{{'7:30 PM'|date:'c'}}" title="{{'7:30 PM'}}">
-          {{'7:30 PM'|naturaltime}}
-        </time>
-      </li> -->
-
-      <!-- <li class="notifications__item">
-        <span class="notifications__item-readed">
-          <b class="notification__dot-small"></b>
-        </span>
-        You haven’t responded to #2186: [Design] Show Remarketed Issues… in 3 days. Please submit a WIP…
-        <time class="notifications__time" datetime="{{'7:30 PM'|date:'c'}}" title="{{'7:30 PM'}}">
-          {{'7:30 PM'|naturaltime}}
-        </time>
-      </li> -->
-
-      <!-- <li class="notifications__item">
-        <span class="notifications__item-readed">
-          <b class="notification__dot-small"></b>
-        </span>
-        You haven’t responded to #2186: [Design] Show Remarketed Issues… in 3 days. Please submit a WIP…
-        <time class="notifications__time" datetime="{{'7:30 PM'|date:'c'}}" title="{{'7:30 PM'}}">
-          {{'7:30 PM'|naturaltime}}
-        </time>
-      </li> -->
     </ul>
+    <div class="notifications__no-results d-none">
+      <img src="{% static 'v2/images/shrug_bot.png' %}" alt="" width="316" height="221">
+      <p>
+        Nothing yet!
+      </p>
+    </div>
     <a href="{% url 'inbox' %}" class="notifications__button-all notifications__link">{% trans 'See all' %}</a>
   </div>
 </div>

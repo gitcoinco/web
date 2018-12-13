@@ -205,3 +205,13 @@
   position: relative;
   border-radius: 4px;
 }
+
+.notifications__no-results {
+  text-align: center;
+  margin: 3em 0;
+}
+.notifications__no-results img {
+  width: 80%;
+  margin: auto;
+  display: block;
+}
