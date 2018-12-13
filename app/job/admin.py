@@ -21,8 +21,9 @@ from __future__ import unicode_literals
 
 from django.contrib import admin, messages
 
-from .models import Job
 from marketing.mails import new_job_approved
+
+from .models import Job
 
 
 class JobAdmin(admin.ModelAdmin):

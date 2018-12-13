@@ -1,9 +1,9 @@
 /* eslint-disable no-loop-func */
 
-var filters = ["title", "job_type", "skills", "company"];
+var filters = [ 'title', 'job_type', 'skills', 'company' ];
 var local_storage_keys = JSON.parse(JSON.stringify(filters));
 
-local_storage_keys.push("keywords");
+local_storage_keys.push('keywords');
 results_limit = 25;
 
 var localStorage;
@@ -17,8 +17,8 @@ try {
 }
 
 function renderJobRowsFromResults(results, renderForExplorer) {
-  let html = "";
-  const tmpl = $.templates("#result");
+  let html = '';
+  const tmpl = $.templates('#result');
 
   if (results.length === 0) {
     return html;
@@ -38,13 +38,15 @@ function debounce(func, wait, immediate) {
     var args = arguments;
     var later = function() {
       timeout = null;
-      if (!immediate) func.apply(context, args);
+      if (!immediate)
+        func.apply(context, args);
     };
     var callNow = immediate && !timeout;
 
     clearTimeout(timeout);
     timeout = setTimeout(later, wait);
-    if (callNow) func.apply(context, args);
+    if (callNow)
+      func.apply(context, args);
   };
 }
 
@@ -57,10 +59,10 @@ var getActiveFilters = function() {
   }
   let _filters = filters.slice();
 
-  _filters.push("keywords", "order_by");
+  _filters.push('keywords', 'order_by');
   _filters.forEach(filter => {
     if (getParam(filter)) {
-      localStorage[filter] = getParam(filter).replace(/^,|,\s*$/g, "");
+      localStorage[filter] = getParam(filter).replace(/^,|,\s*$/g, '');
     }
   });
 };
@@ -69,13 +71,13 @@ var getActiveFilters = function() {
  * Build URI based on selected filter
  */
 var buildURI = function() {
-  let uri = "";
+  let uri = '';
   let _filters = filters.slice();
 
-  _filters.push("keywords", "order_by");
+  _filters.push('keywords', 'order_by');
   _filters.forEach(filter => {
-    if (localStorage[filter] && localStorage[filter] != "any") {
-      uri += filter + "=" + localStorage[filter] + "&";
+    if (localStorage[filter] && localStorage[filter] != 'any') {
+      uri += filter + '=' + localStorage[filter] + '&';
     }
   });
 
@@ -86,133 +88,134 @@ var buildURI = function() {
  * Updates localStorage with selected filters
  */
 var save_sidebar_latest = function() {
-  localStorage["order_by"] = $("#sort_option").val();
+  localStorage['order_by'] = $('#sort_option').val();
 
   filters.forEach(filter => {
-    localStorage[filter] = "";
+    localStorage[filter] = '';
 
     $('input[name="' + filter + '"]:checked').each(function() {
-      localStorage[filter] += $(this).val() + ",";
+      localStorage[filter] += $(this).val() + ',';
     });
 
-    localStorage[filter] = localStorage[filter].replace(/^,|,\s*$/g, "");
+    localStorage[filter] = localStorage[filter].replace(/^,|,\s*$/g, '');
   });
 };
 
 // saves search information default
 var set_sidebar_defaults = function() {
   // Special handling to support adding keywords from url query param
-  var q = getParam("q");
+  var q = getParam('q');
   var keywords;
 
   if (q) {
-    keywords = decodeURIComponent(q).replace(/^,|\s|,\s*$/g, "");
+    keywords = decodeURIComponent(q).replace(/^,|\s|,\s*$/g, '');
 
-    if (localStorage["keywords"]) {
-      keywords.split(",").forEach(function(v, k) {
-        if (localStorage["keywords"].indexOf(v) === -1) {
-          localStorage["keywords"] += "," + v;
+    if (localStorage['keywords']) {
+      keywords.split(',').forEach(function(v, k) {
+        if (localStorage['keywords'].indexOf(v) === -1) {
+          localStorage['keywords'] += ',' + v;
         }
       });
     } else {
-      localStorage["keywords"] = keywords;
+      localStorage['keywords'] = keywords;
     }
   }
 
   getActiveFilters();
 
-  if (localStorage["order_by"]) {
-    $("#sort_option").val(localStorage["order_by"]);
-    $("#sort_option")
+  if (localStorage['order_by']) {
+    $('#sort_option').val(localStorage['order_by']);
+    $('#sort_option')
       .selectmenu()
-      .selectmenu("refresh");
+      .selectmenu('refresh');
   }
 
   filters.forEach(filter => {
     if (localStorage[filter]) {
-      localStorage[filter].split(",").forEach(function(val) {
+      localStorage[filter].split(',').forEach(function(val) {
         $('input[name="' + filter + '"][value="' + val + '"]').prop(
-          "checked",
+          'checked',
           true
         );
       });
 
       if ($('input[name="' + filter + '"][value!=any]:checked').length > 0)
-        $('input[name="' + filter + '"][value=any]').prop("checked", false);
+        $('input[name="' + filter + '"][value=any]').prop('checked', false);
     }
   });
 };
 
 var toggleAny = function(event) {
-  if (!event) return;
+  if (!event)
+    return;
   var key = event.target.name;
   var anyOption = $('input[name="' + key + '"][value=any]');
 
   // Selects option 'any' when no filter is applied
   if ($('input[name="' + key + '"]:checked').length === 0) {
-    anyOption.prop("checked", true);
+    anyOption.prop('checked', true);
     return;
   }
-  if (event.target.value === "any") {
+  if (event.target.value === 'any') {
     // Deselect other filters when 'any' is selected
-    $('input[name="' + key + '"][value!=any]').prop("checked", false);
+    $('input[name="' + key + '"][value!=any]').prop('checked', false);
   } else {
     // Deselect option 'any' when another filter is selected
-    anyOption.prop("checked", false);
+    anyOption.prop('checked', false);
   }
 };
 
 var addTechStackKeywordFilters = function(value) {
-  if (localStorage["keywords"]) {
-    const keywords = localStorage["keywords"];
-    const new_value = "," + value;
+  if (localStorage['keywords']) {
+    const keywords = localStorage['keywords'];
+    const new_value = ',' + value;
 
     if (
       keywords === value ||
       keywords.indexOf(new_value) !== -1 ||
-      keywords.indexOf(value + ",") !== -1
+      keywords.indexOf(value + ',') !== -1
     ) {
       return;
     }
-    localStorage["keywords"] = keywords + new_value;
+    localStorage['keywords'] = keywords + new_value;
   } else {
-    localStorage["keywords"] = value;
+    localStorage['keywords'] = value;
   }
 
-  $(".filter-tags").append(
+  $('.filter-tags').append(
     '<a class="filter-tag keywords"><span>' +
-      value +
-      "</span>" +
-      "<i class=\"fas fa-times\" onclick=\"removeFilter('keywords', '" +
-      value +
-      "')\"></i></a>"
+    value +
+    '</span>' +
+    "<i class=\"fas fa-times\" onclick=\"removeFilter('keywords', '" +
+    value +
+    "')\"></i></a>"
   );
 };
 
 var addTechStackOrgFilters = function(value) {
-  if (localStorage["org"]) {
-    const org = localStorage["org"];
-    const new_value = "," + value;
+  if (localStorage['org']) {
+    const org = localStorage['org'];
+    const new_value = ',' + value;
 
     if (
       org === value ||
       org.indexOf(new_value) !== -1 ||
-      org.indexOf(value + ",") !== -1
+      org.indexOf(value + ',') !== -1
     ) {
       return;
     }
-    localStorage["org"] = org + new_value;
+    localStorage['org'] = org + new_value;
   } else {
-    localStorage["org"] = value;
+    localStorage['org'] = value;
   }
 
-  $(".filter-tags").append(
+  $('.filter-tags').append(
     '<a class="filter-tag keywords"><span>' +
-      value +
-      "</span>" +
-      "<i class=\"fas fa-times\" onclick=\"removeFilter('org', '" +
-      value +
-      "')\"></i></a>"
+    value +
+    '</span>' +
+    "<i class=\"fas fa-times\" onclick=\"removeFilter('org', '" +
+    value +
+    "')\"></i></a>"
   );
 };
 
@@ -221,50 +224,50 @@ var getFilters = function() {
 
   filters.forEach(filter => {
     $.each($('input[name="' + filter + '"]:checked'), function() {
-      if ($(this).attr("val-ui")) {
+      if ($(this).attr('val-ui')) {
         _filters.push(
           '<a class="filter-tag ' +
-            filter +
-            '"><span>' +
-            $(this).attr("val-ui") +
-            "</span>" +
-            '<i class="fas fa-times" onclick="removeFilter(\'' +
-            filter +
-            "', '" +
-            $(this).attr("value") +
-            "')\"></i></a>"
+          filter +
+          '"><span>' +
+          $(this).attr('val-ui') +
+          '</span>' +
+          '<i class="fas fa-times" onclick="removeFilter(\'' +
+          filter +
+          "', '" +
+          $(this).attr('value') +
+          "')\"></i></a>"
         );
       }
     });
   });
 
-  if (localStorage["keywords"]) {
-    localStorage["keywords"].split(",").forEach(function(v, k) {
+  if (localStorage['keywords']) {
+    localStorage['keywords'].split(',').forEach(function(v, k) {
       _filters.push(
         '<a class="filter-tag keywords"><span>' +
-          v +
-          "</span>" +
-          "<i class=\"fas fa-times\" onclick=\"removeFilter('keywords', '" +
-          v +
-          "')\"></i></a>"
+        v +
+        '</span>' +
+        "<i class=\"fas fa-times\" onclick=\"removeFilter('keywords', '" +
+        v +
+        "')\"></i></a>"
       );
     });
   }
 
-  $(".filter-tags").html(_filters);
+  $('.filter-tags').html(_filters);
 };
 
 var removeFilter = function(key, value) {
-  if (key !== "keywords" && key !== "org") {
+  if (key !== 'keywords' && key !== 'org') {
     $('input[name="' + key + '"][value="' + value + '"]').prop(
-      "checked",
+      'checked',
       false
     );
   } else {
-    localStorage[key] = localStorage[key].replace(value, "").replace(",,", ",");
+    localStorage[key] = localStorage[key].replace(value, '').replace(',,', ',');
 
     // Removing the start and last comma to avoid empty element when splitting with comma
-    localStorage[key] = localStorage[key].replace(/^,|,\s*$/g, "");
+    localStorage[key] = localStorage[key].replace(/^,|,\s*$/g, '');
   }
 
   reset_offset();
@@ -272,8 +275,8 @@ var removeFilter = function(key, value) {
 };
 
 var get_search_URI = function(offset) {
-  var uri = "/api/v0.1/jobs/?";
-  var keywords = "";
+  var uri = '/api/v0.1/jobs/?';
+  var keywords = '';
 
   filters.forEach(filter => {
     var active_filters = [];
@@ -286,56 +289,55 @@ var get_search_URI = function(offset) {
 
     var val = active_filters.toString();
 
-    if (filter === "job_type" && val) {
-      uri += "job_type=" + val;
+    if (filter === 'job_type' && val) {
+      uri += 'job_type=' + val;
     }
   });
 
-  if (localStorage["keywords"]) {
-    localStorage["keywords"].split(",").forEach(function(v, pos, arr) {
+  if (localStorage['keywords']) {
+    localStorage['keywords'].split(',').forEach(function(v, pos, arr) {
       keywords += v;
       if (arr.length > pos + 1) {
-        keywords += ",";
+        keywords += ',';
       }
     });
   }
 
   if (keywords) {
-    uri += "&raw_data=" + keywords;
+    uri += '&raw_data=' + keywords;
   }
 
-  var order_by = localStorage["order_by"];
+  var order_by = localStorage['order_by'];
 
   if (order_by) {
-    uri += "&order_by=" + order_by;
+    uri += '&order_by=' + order_by;
   }
-  uri += "&offset=" + offset;
-  uri += "&limit=" + results_limit;
+  uri += '&offset=' + offset;
+  uri += '&limit=' + results_limit;
   return uri;
 };
 
 var trigger_scroll = debounce(function() {
   var scrollPos = $(document).scrollTop();
-  var last_active_bounty = $(".bounty_row.result:last-child");
+  var last_active_bounty = $('.bounty_row.result:last-child');
 
   var window_height = $(window).height();
   var have_painted_all_bounties = false; // TODO
   var buffer = 500;
-  var get_more =
-    !have_painted_all_bounties &&
+  var get_more = !have_painted_all_bounties &&
     last_active_bounty.offset().top < scrollPos + buffer + window_height;
 
   if (get_more && !document.done_loading_results) {
     // move loading indicator
-    var loading_html = $(".loading_img")
+    var loading_html = $('.loading_img')
       .clone()
-      .wrap("<p>")
+      .wrap('<p>')
       .parent()
       .html();
 
-    $(".loading_img").remove();
-    $("#jobs").append(loading_html);
-    $(".loading_img").css("display", "block");
+    $('.loading_img').remove();
+    $('#jobs').append(loading_html);
+    $('.loading_img').css('display', 'block');
 
     document.offset = parseInt(document.offset) + parseInt(results_limit);
     refreshBounties(null, document.offset, true, false);
@@ -343,7 +345,7 @@ var trigger_scroll = debounce(function() {
 }, 200);
 
 $(window).scroll(trigger_scroll);
-$("body").bind("touchmove", trigger_scroll);
+$('body').bind('touchmove', trigger_scroll);
 
 var reset_offset = function() {
   document.done_loading_results = false;
@@ -352,14 +354,14 @@ var reset_offset = function() {
 
 var refreshBounties = function(event, offset, append, do_save_search) {
   // Allow search for freeform text
-  var searchInput = $("#keywords")[0];
+  var searchInput = $('#keywords')[0];
 
-  $("#results-count span.num").html('<i class="fas fa-spinner fa-spin"></i>');
+  $('#results-count span.num').html('<i class="fas fa-spinner fa-spin"></i>');
   if (searchInput.value.length > 0) {
     addTechStackKeywordFilters(searchInput.value.trim());
-    searchInput.value = "";
+    searchInput.value = '';
     searchInput.blur();
-    $(".close-icon").hide();
+    $('.close-icon').hide();
   }
 
   save_sidebar_latest();
@@ -372,18 +374,20 @@ var refreshBounties = function(event, offset, append, do_save_search) {
   }
   paint_search_tabs();
 
-  window.history.pushState("", "", "/jobs?" + buildURI());
+  window.history.pushState('', '', '/jobs?' + buildURI());
 
   if (!append) {
-    $(".nonefound").css("display", "none");
-    $(".loading").css("display", "block");
-    $(".job_row").remove();
+    $('.nonefound').css('display', 'none');
+    $('.loading').css('display', 'block');
+    $('.job_row').remove();
   }
   // filter
   var uri = get_search_URI(offset);
 
   // analytics
-  mixpanel.track("Refresh Jobs", { uri: uri });
+  mixpanel.track('Refresh Jobs', {
+    uri: uri
+  });
 
   // Abort pending request if any subsequent request
   if (explorer.jobs_request && explorer.jobs_request.readyState !== 4) {
@@ -394,11 +398,11 @@ var refreshBounties = function(event, offset, append, do_save_search) {
     results = sanitizeAPIResults(results);
 
     if (results.length === 0 && !append) {
-      if (localStorage["referrer"] === "onboard") {
-        $(".no-results").removeClass("hidden");
-        $("#dashboard-content").addClass("hidden");
+      if (localStorage['referrer'] === 'onboard') {
+        $('.no-results').removeClass('hidden');
+        $('#dashboard-content').addClass('hidden');
       } else {
-        $(".nonefound").css("display", "block");
+        $('.nonefound').css('display', 'block');
       }
     }
 
@@ -407,51 +411,51 @@ var refreshBounties = function(event, offset, append, do_save_search) {
     var html = renderJobRowsFromResults(results, true);
 
     if (html) {
-      $("#jobs").append(html);
+      $('#jobs').append(html);
     }
 
     document.done_loading_results = results.length < results_limit;
 
-    $("div.bounty_row.result").each(function() {
-      var href = $(this).attr("href");
+    $('div.bounty_row.result').each(function() {
+      var href = $(this).attr('href');
 
-      if (typeof $(this).changeElementType !== "undefined") {
-        $(this).changeElementType("a"); // hack so that users can right click on the element
+      if (typeof $(this).changeElementType !== 'undefined') {
+        $(this).changeElementType('a'); // hack so that users can right click on the element
       }
 
-      $(this).attr("href", href);
+      $(this).attr('href', href);
     });
 
-    if (localStorage["referrer"] === "onboard") {
-      $(".bounty_row").each(function(index) {
-        if (index > 2) $(this).addClass("hidden");
+    if (localStorage['referrer'] === 'onboard') {
+      $('.bounty_row').each(function(index) {
+        if (index > 2)
+          $(this).addClass('hidden');
       });
     }
 
-    $("#results-count span.num").html(offset + results.length);
+    $('#results-count span.num').html(offset + results.length);
     if (results.length == results_limit) {
-      $("#results-count span.plus").html("+");
+      $('#results-count span.plus').html('+');
     } else {
-      $("#results-count span.plus").html("");
+      $('#results-count span.plus').html('');
     }
   })
     .fail(function() {
       if (explorer.jobs_request.readyState !== 0)
-        _alert(
-          {
-            message: gettext(
-              "got an error. please try again, or contact support@gitcoin.co"
-            )
-          },
-          "error"
+        _alert({
+          message: gettext(
+            'got an error. please try again, or contact support@gitcoin.co'
+          )
+        },
+        'error'
         );
     })
     .always(function() {
-      $(".loading").css("display", "none");
+      $('.loading').css('display', 'none');
     });
 };
 
-window.addEventListener("load", function() {
+window.addEventListener('load', function() {
   set_sidebar_defaults();
   reset_offset();
   refreshBounties(null, 0, false, false);
@@ -475,62 +479,62 @@ var resetFilters = function(resetKeyword) {
     var tag = $('input[name="' + filter + '"][value]');
 
     for (var j = 0; j < tag.length; j++) {
-      if (tag[j].value == "any")
-        $('input[name="' + filter + '"][value="any"]').prop("checked", true);
+      if (tag[j].value == 'any')
+        $('input[name="' + filter + '"][value="any"]').prop('checked', true);
       else
         $('input[name="' + filter + '"][value="' + tag[j].value + '"]').prop(
-          "checked",
+          'checked',
           false
         );
     }
   });
 
-  if (resetKeyword && localStorage["keywords"]) {
-    localStorage["keywords"].split(",").forEach(function(v, k) {
-      removeFilter("keywords", v);
+  if (resetKeyword && localStorage['keywords']) {
+    localStorage['keywords'].split(',').forEach(function(v, k) {
+      removeFilter('keywords', v);
     });
   }
 };
 
 (function() {
-  if (localStorage["referrer"] === "onboard") {
-    $("#sidebar_container").addClass("invisible");
-    $("#dashboard-title").addClass("hidden");
-    $("#onboard-dashboard").removeClass("hidden");
-    $("#onboard-footer").removeClass("hidden");
+  if (localStorage['referrer'] === 'onboard') {
+    $('#sidebar_container').addClass('invisible');
+    $('#dashboard-title').addClass('hidden');
+    $('#onboard-dashboard').removeClass('hidden');
+    $('#onboard-footer').removeClass('hidden');
     resetFilters(true);
-    $("input[name=idx_status][value=open]").prop("checked", true);
-    $(".search-area input[type=text]").text(getURLParams("q"));
+    $('input[name=idx_status][value=open]').prop('checked', true);
+    $('.search-area input[type=text]').text(getURLParams('q'));
 
-    $("#onboard-alert").click(function(e) {
-      if (!$(".no-results").hasClass("hidden"))
-        $(".nonefound").css("display", "block");
+    $('#onboard-alert').click(function(e) {
+      if (!$('.no-results').hasClass('hidden'))
+        $('.nonefound').css('display', 'block');
 
-      $(".bounty_row").each(function(index) {
-        $(this).removeClass("hidden");
+      $('.bounty_row').each(function(index) {
+        $(this).removeClass('hidden');
       });
 
-      $("#onboard-dashboard").addClass("hidden");
-      $("#onboard-footer").addClass("hidden");
-      $("#sidebar_container").removeClass("invisible");
-      $("#dashboard-title").removeClass("hidden");
-      $("#dashboard-content").removeClass("hidden");
+      $('#onboard-dashboard').addClass('hidden');
+      $('#onboard-footer').addClass('hidden');
+      $('#sidebar_container').removeClass('invisible');
+      $('#dashboard-title').removeClass('hidden');
+      $('#dashboard-content').removeClass('hidden');
 
-      localStorage["referrer"] = "";
+      localStorage['referrer'] = '';
       e.preventDefault();
     });
   } else {
-    $("#dashboard-content").removeClass("hidden");
-    $("#onboard-dashboard").addClass("hidden");
-    $("#onboard-footer").addClass("hidden");
-    $("#sidebar_container").removeClass("invisible");
-    $("#dashboard-title").removeClass("hidden");
+    $('#dashboard-content').removeClass('hidden');
+    $('#onboard-dashboard').addClass('hidden');
+    $('#onboard-footer').addClass('hidden');
+    $('#sidebar_container').removeClass('invisible');
+    $('#dashboard-title').removeClass('hidden');
   }
 })();
 
 $(document).ready(function() {
   // Sort select menu
-  $("#sort_option").selectmenu({
+  $('#sort_option').selectmenu({
     select: function(event, ui) {
       reset_offset();
       refreshBounties(null, 0, false, true);
@@ -548,25 +552,25 @@ $(document).ready(function() {
   }
 
   // Handle search input clear
-  $(".close-icon").on("click", function(e) {
+  $('.close-icon').on('click', function(e) {
     e.preventDefault();
-    $("#keywords").val("");
+    $('#keywords').val('');
     $(this).hide();
   });
 
-  $("#keywords")
-    .on("input", function() {
+  $('#keywords')
+    .on('input', function() {
       if ($(this).val()) {
-        $(".close-icon").show();
+        $('.close-icon').show();
       } else {
-        $(".close-icon").hide();
+        $('.close-icon').hide();
       }
     })
     // don't navigate away from the field on tab when selecting an item
-    .on("keydown", function(event) {
+    .on('keydown', function(event) {
       if (
         event.keyCode === $.ui.keyCode.TAB &&
-        $(this).autocomplete("instance").menu.active
+        $(this).autocomplete('instance').menu.active
       ) {
         event.preventDefault();
       }
@@ -586,7 +590,7 @@ $(document).ready(function() {
       select: function(event, ui) {
         var terms = split(this.value);
 
-        $(".close-icon").hide();
+        $('.close-icon').hide();
 
         // remove the current input
         terms.pop();
@@ -595,9 +599,9 @@ $(document).ready(function() {
         terms.push(ui.item.value);
 
         // add placeholder to get the comma-and-space at the end
-        terms.push("");
+        terms.push('');
 
-        this.value = "";
+        this.value = '';
 
         addTechStackKeywordFilters(ui.item.value);
 
@@ -606,7 +610,7 @@ $(document).ready(function() {
     });
 
   // sidebar clear
-  $(".dashboard #clear").click(function(e) {
+  $('.dashboard #clear').click(function(e) {
     e.preventDefault();
     resetFilters(true);
     reset_offset();
@@ -614,33 +618,33 @@ $(document).ready(function() {
   });
 
   // search bar
-  $("#sidebar_container").delegate("#new_search", "click", function(e) {
+  $('#sidebar_container').delegate('#new_search', 'click', function(e) {
     reset_offset();
     refreshBounties(null, 0, false, true);
     e.preventDefault();
   });
 
   // search bar -- remove bounty
-  $("#jobs").delegate("#search_nav li a", "click", function(e) {
+  $('#jobs').delegate('#search_nav li a', 'click', function(e) {
     var n = $(this)
-      .parents("li")
-      .data("num");
+      .parents('li')
+      .data('num');
 
     remove_search(n);
     paint_search_tabs();
   });
 
   // search bar
-  $("#jobs").delegate("#search_nav li span", "click", function(e) {
+  $('#jobs').delegate('#search_nav li span', 'click', function(e) {
     var n = $(this)
-      .parents("li")
-      .data("num");
+      .parents('li')
+      .data('num');
 
     load_search(n);
     refreshBounties(null, 0, false, false);
   });
 
-  $(".search-area input[type=text]").keypress(function(e) {
+  $('.search-area input[type=text]').keypress(function(e) {
     if (e.which == 13) {
       reset_offset();
       refreshBounties(null, 0, false, true);
@@ -649,7 +653,7 @@ $(document).ready(function() {
   });
 
   // sidebar filters
-  $(".sidebar_search input[type=radio], .sidebar_search label").change(function(
+  $('.sidebar_search input[type=radio], .sidebar_search label').change(function(
     e
   ) {
     reset_offset();
@@ -658,7 +662,7 @@ $(document).ready(function() {
   });
 
   // sidebar filters
-  $(".sidebar_search input[type=checkbox], .sidebar_search label").change(
+  $('.sidebar_search input[type=checkbox], .sidebar_search label').change(
     function(e) {
       reset_offset();
       refreshBounties(null, 0, false, true);
@@ -669,14 +673,14 @@ $(document).ready(function() {
 
 var get_this_search_name = function() {
   var names = [];
-  var eles = $(".filter-tag");
+  var eles = $('.filter-tag');
 
   for (let i = 0; i < eles.length; i++) {
     var ele = eles[i];
 
     names.push(ele.text.toLowerCase());
   }
-  names = names.join(",");
+  names = names.join(',');
   return names;
 };
 
@@ -684,10 +688,10 @@ var is_search_already_saved = function() {
   var this_search = get_this_search_name();
 
   for (let i = 0; i < 100; i++) {
-    var new_key = "_name_" + i;
+    var new_key = '_name_' + i;
     var result = localStorage[new_key];
 
-    if (typeof result != "undefined") {
+    if (typeof result != 'undefined') {
       if (this_search == result) {
         return true;
       }
@@ -700,43 +704,45 @@ var is_search_already_saved = function() {
 
 // saves search info in local storage
 var save_search = function() {
-  if (typeof localStorage["searches"] == "undefined") {
-    localStorage["searches"] = "0";
+  if (typeof localStorage['searches'] == 'undefined') {
+    localStorage['searches'] = '0';
   }
-  searches = localStorage["searches"].split(",");
+  searches = localStorage['searches'].split(',');
   max = parseInt(Math.max.apply(Math, searches));
   next = max + 1;
-  searches = searches + "," + next;
-  localStorage["searches"] = searches;
+  searches = searches + ',' + next;
+  localStorage['searches'] = searches;
   // save each key
   for (let i = 0; i < local_storage_keys.length; i++) {
     var key = local_storage_keys[i];
-    let new_key = "_" + key + "_" + next;
+    let new_key = '_' + key + '_' + next;
 
     localStorage[new_key] = localStorage[key];
   }
 
   // save the name
-  let new_key = "_name_" + next;
+  let new_key = '_name_' + next;
 
   localStorage[new_key] = get_this_search_name();
 };
 
 var get_search_tab_name = function(n) {
-  var new_key = "_name_" + n;
+  var new_key = '_name_' + n;
 
   return localStorage[new_key];
 };
 
 var paint_search_tabs = function() {
-  if (!localStorage["searches"]) return;
+  if (!localStorage['searches'])
+    return;
 
-  var container = $("#dashboard-title");
-  var target = $("#search_nav");
+  var container = $('#dashboard-title');
+  var target = $('#search_nav');
 
-  searches = localStorage["searches"].split(",");
+  searches = localStorage['searches'].split(',');
 
-  if (searches.length <= 1) return target.html("");
+  if (searches.length <= 1)
+    return target.html('');
 
   var html = "<ul class='nav'>";
 
@@ -745,31 +751,31 @@ var paint_search_tabs = function() {
     var title = get_search_tab_name(search_no);
 
     if (title) {
-      html +=
-        "<li class='nav-item' data-num='" +
+      html
+        += "<li class='nav-item' data-num='" +
         search_no +
         "'><span>" +
         title +
         '</span><a><i class="fas fa-times"></i></a></li>';
     }
   }
-  html += "</ul>";
+  html += '</ul>';
   target.html(html);
 };
 
 // gets available searches
 var get_available_searches = function() {
-  if (typeof localStorage["searches"] == "undefined") {
-    localStorage["searches"] = "";
+  if (typeof localStorage['searches'] == 'undefined') {
+    localStorage['searches'] = '';
   }
-  return localStorage["searches"].split(",");
+  return localStorage['searches'].split(',');
 };
 
 // loads search info from local storage
 var load_search = function(n) {
   for (var i = 0; i < local_storage_keys.length; i++) {
     var key = local_storage_keys[i];
-    var new_key = "_" + key + "_" + n;
+    var new_key = '_' + key + '_' + n;
 
     localStorage[key] = localStorage[new_key];
   }
@@ -777,19 +783,19 @@ var load_search = function(n) {
 
 // removes this search
 var remove_search = function(n) {
-  var is_last_element = "0," + n == localStorage["searches"];
+  var is_last_element = '0,' + n == localStorage['searches'];
 
   if (is_last_element) {
-    localStorage["searches"] = "0";
+    localStorage['searches'] = '0';
     return;
   }
-  search_str = "," + n + ",";
-  replace_str = ",";
-  localStorage["searches"] = localStorage["searches"].replace(
+  search_str = ',' + n + ',';
+  replace_str = ',';
+  localStorage['searches'] = localStorage['searches'].replace(
     search_str,
     replace_str
   );
-  var key = "_name_" + n;
+  var key = '_name_' + n;
 
   localStorage.removeItem(key);
 };
