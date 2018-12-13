@@ -30,7 +30,7 @@ class JobForm(ModelForm):
 
         model = Job
         fields = ['title', 'description', 'amount', 'txid', 'job_type', 'job_location', 'skills',
-            'company', 'github_profile', 'apply_location', 'token_symbol', 'token_address']
+                  'company', 'github_profile', 'apply_location', 'token_symbol', 'token_address']
 
         widgets = {
             'txid': HiddenInput(),
