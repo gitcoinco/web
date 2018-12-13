@@ -98,13 +98,43 @@
   }
 
   .funding {
-    float: right;
-    text-align: right;
+    float: left;
+    text-align: left;
   }
 
   .funding > h4 {
     line-height: 0px;
-    text-align: right;
+    text-align: left;
+    color: #0D0764;
+    padding-top: -20px;
+  }
+
+  .progressbar-line {
+    width: 1px;
+    height: 50px;
+    background-color: #979797;
+    float: left;
+    margin-right: 20px;
+  }
+
+  .progressbar-position-margin {
+    padding-left: 20%;
+    padding-right: 20%;
+    margin-top: 4rem;
+  }
+
+  .progressbar-position {
+    transform: translateY(160%);
+  }
+
+  .progressbar-position > p {
+    line-height: 0px;
+    color: #BBBDBF;
+    text-align: left;
+  }
+
+  .progressbar-position > h4 {
+    line-height: 0px;
     color: #0D0764;
     padding-top: -20px;
   }
@@ -112,6 +142,19 @@
   .funding > p {
     line-height: 0px;
     color: #BBBDBF;
+  }
+
+  #currentFunding {
+    width: 57.5%;
+  }
+
+  #goalFunding {
+    width: 42.5%;
+    text-align: right;
+  }
+
+  #goalFunding h4 {
+    text-align: right;
   }
 
   #grant-logo {
