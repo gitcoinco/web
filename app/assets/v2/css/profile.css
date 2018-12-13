@@ -69,6 +69,7 @@
 
 .profile-organizations .organization img{
   max-height: 4rem;
+  max-width: 4rem;
   margin-right: 0.5rem;
   margin-bottom: 0.5rem;
   border-radius: 50%;

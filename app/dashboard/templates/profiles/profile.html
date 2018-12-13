@@ -192,7 +192,7 @@
                 {% for org in profile.organizations %}
                   <div class="organization">
                     <a href="{% url 'profile' %}{{org}}" title="{{ org }}">
-                      <img src="/dynamic/avatar/{{ org }}" title="{{ org }}">
+                      <img src="/dynamic/avatar/{{ org }}" title="{{ org }}" height="100px" width="100px">
                     </a>
                   </div>
                 {% endfor %}
