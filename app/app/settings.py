@@ -245,7 +245,7 @@ AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
 AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', default='')
 AWS_DEFAULT_REGION = env('AWS_DEFAULT_REGION', default='us-west-2')
 AWS_LOG_GROUP = env('AWS_LOG_GROUP', default='Gitcoin')
-AWS_LOG_LEVEL = env('AWS_LOG_LEVEL', default='DEBUG')
+AWS_LOG_LEVEL = env('AWS_LOG_LEVEL', default='INFO')
 AWS_LOG_STREAM = env('AWS_LOG_STREAM', default=f'{ENV}-web')
 
 # Sentry
@@ -277,7 +277,7 @@ if ENV not in ['local', 'test', 'staging', 'preview']:
             }
         },
         'root': {
-            'level': 'WARNING',
+            'level': 'INFO',
             'handlers': ['console', 'watchtower', ],
         },
         'formatters': {
