@@ -15,11 +15,14 @@ const imgExp = /\.png$/
 
 const ethAddressExp = /^(0x)?[0-9a-f]{40}$/i
 
-const eosTokenExp = /@/
-
 const isEthAddress = address => ethAddressExp.test(address)
 
-const isEosToken = address => eosTokenExp.test(address)
+const isEosToken = (account: string) => {
+  return !!account && (
+    account.search(/^[1-5a-z]{12}$/) === 0 ||
+    account.search(/^[1-5a-z]+\.[1-5a-z]{1,11}$/) === 0
+  )
+}
 
 const isEthAddressJson = (filename) => jsonExp.test(filename) && isEthAddress(filename.replace(jsonExp, ''))
 
@@ -143,9 +146,10 @@ const imageFileNames = fs.readdirSync('./images')
 
 const jsonFileCheck = (jsonFileName, type) => {
   const addr = jsonFileName.replace(jsonExp, '')
-  const imageAddrs = imageFileNames.map(n => n.slice(0, 42)).filter(n => {
-    return type === 'ETHEREUM' ? n.startsWith('0x') : (n.indexOf('@') !== -1)
-  })
+  const imageAddrs = type === 'ETHEREUM' ? imageFileNames.map(n => n.slice(0, 42)).filter(n => {
+    return n.startsWith('0x')
+  }) : imageFileNames.filter(n => !n.startsWith('0x'))
+
   const lowerCaseImageAddrs =imageAddrs.map(x => x.toLowerCase())
   
   let addressOrAccountname = ''
@@ -261,6 +265,8 @@ const checkWrongDirectoryItem = (directory, filename) => {
       }
     }
 
+  } else if (directory === './tutorial') {
+    // do nothing
   } else if (isEthAddressJson(filename) ||
       isEthAddressPng(filename) ||
       isEosTokenJson(filename) ||
