@@ -532,7 +532,7 @@ class Subscription(SuperModel):
             logger.info(e)
 
         grant.save()
-        successful_contribution(self.grant, self)
+        successful_contribution(self.grant, self, contribution)
         return contribution
 
 

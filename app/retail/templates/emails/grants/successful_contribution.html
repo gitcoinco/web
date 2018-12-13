@@ -64,7 +64,7 @@
   .grant-description {
     max-width: 50rem;
     margin: 1.5rem auto;
-    text-align: justify;
+    text-align: center;
   }
 
   .grant-contribution {
@@ -132,18 +132,24 @@
     {{ grant.description }}
   </p>
   <p class="grant-contribution">
-    {% trans "You have agreed to give" %}
+    {% trans "Your contribution of" %}
   </p>
   <p class="grant-contribution">
-    <strong>{{ subscription.amount_per_period }} {{ subscription.token_symbol }} </strong>{% trans "per" %} <strong>{{ subscription.frequency }} {{ subscription.frequency_unit }}</strong>
+    <strong>{{ subscription.amount_per_period }} {{ subscription.token_symbol }} </strong>
   </p>
-  <p>{% trans "You can see all your transactions" %}
-    <a href="{% url 'grants:profile' %}">{% trans "here." %}</a>
+  <p>{% trans "occured at" %} </p>
+  <p>{{ contribution.created_on|date:"fa F j, Y" }}</p>
+  <p>{% trans "You can see the transaction on Etherscan " %}
+    {% if subscription.network == 'mainnet' %}
+      <a href="http://etherscan.io/tx/{{ contribution.tx_id }}">{% trans "here." %}</a>
+    {% else %}
+      <a href="http://{{ grant.network }}.etherscan.io/tx/{{ contribution.tx_id }}">{% trans "here." %}</a>
+    {% endif %}
   </p>
 </div>
 
 <br>
-<a class="grant-button" href="{% url 'grants:details' grant.id grant.slug %}">{% trans "View Updates" %}</a>
+<a class="grant-button" href="{% url 'grants:details' grant.id grant.slug %}">{% trans "View Grant" %}</a>
 <br>
 <br>
 <p>{% trans "If you ever need to, you can cancel your support" %}

@@ -64,7 +64,7 @@
   .grant-description {
     max-width: 50rem;
     margin: 1.5rem auto;
-    text-align: justify;
+    text-align: center;
   }
 
   .grant-button {
@@ -130,14 +130,10 @@
     {% trans "You have agreed to give" %}
   </p>
   <p>
-    <strong>{{ subscription.amount_per_period }} {{ subscription.token_symbol }}</strong> {% trans "per" %} <strong>{{ subscription.frequency }} {{ subscription.frequency_unit }}</strong>
+    <strong>{{ subscription.amount_per_period }} {{ subscription.token_symbol }}</strong> {% trans "every" %} <strong>{{ subscription.frequency }} {{ subscription.frequency_unit }}</strong>
   </p>
-  <p>{% trans "You can see your transactions" %}
-    {% if subscription.network == 'mainnet' %}
-      <a href="http://etherscan.io/tx/{{ subscription.sub_new_approve_tx_id }}">{% trans "here." %}</a>
-    {% else %}
-      <a href="http://{{ grant.network }}.etherscan.io/tx/{{ subscription.sub_new_approve_tx_id }}">{% trans "here." %}</a>
-    {% endif %}
+  <p>{% trans "You can see all the grants you support and your transaction history " %}
+      <a href="{% url 'grants:profile' %}">{% trans "here." %}</a>
   </p>
 </div>
 
