@@ -16,27 +16,33 @@
 {% endcomment %}
 {% load i18n static humanize %}
 
-<div class="nav-item dropdown notifications">
-  <a href="" class="notification__icon nav-link dropdown-toggle" id="notificationsDropdown" role="button"
-  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <i class="fas fa-bell fa-fw"></i>
-    <span id="notification-dot" class="notification__dot"></span>
-  </a>
-  <div class="dropdown-menu dropdown-menu-right animation slideDownIn notifications__box " aria-labelledby="notificationsDropdown">
-    <div class="notifications__header">
-      <div class="notifications__title">
-        {% trans 'Notifications' %} <span id="total-notifications" class="badge badge--greenlight">0</span>
-      </div> <a id="read-all" href="" class="notifications__link">{% trans 'Mark All as Read' %}</a>
-    </div>
-    <ul class="notifications__list">
+  <div id="gc-notifications" class="nav-item dropdown notifications">
+    [[ message ]]
 
-    </ul>
-    <div class="notifications__no-results d-none">
-      <img src="{% static 'v2/images/shrug_bot.png' %}" alt="" width="316" height="221">
-      <p>
-        Nothing yet!
-      </p>
+    <a href="" class="notification__icon nav-link dropdown-toggle" id="notificationsDropdown" role="button"
+    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <i class="fas fa-bell fa-fw"></i>
+      <span id="notification-dot" class="notification__dot" v-bind:class="{'notification__dot_active': notifications.lenght > 0}"></span>
+    </a>
+    <div class="dropdown-menu dropdown-menu-right animation slideDownIn notifications__box " aria-labelledby="notificationsDropdown">
+      <div class="notifications__header">
+        <div class="notifications__title">
+          {% trans 'Notifications' %} <span id="total-notifications" class="badge badge--greenlight">0</span>
+        </div> <a id="read-all" href="" class="notifications__link">{% trans 'Mark All as Read' %}</a>
+      </div>
+      <ul class="notifications__list">
+        <li v-for="notification in notifications">
+          [[ notification ]]
+        </li>
+
+      </ul>
+      <div class="notifications__no-results d-none">
+        <img src="{% static 'v2/images/shrug_bot.png' %}" alt="" width="316" height="221">
+        <p>
+          Nothing yet!
+        </p>
+      </div>
+      <a href="{% url 'inbox' %}" class="notifications__button-all notifications__link">{% trans 'See all' %}</a>
     </div>
-    <a href="{% url 'inbox' %}" class="notifications__button-all notifications__link">{% trans 'See all' %}</a>
   </div>
-</div>
+
