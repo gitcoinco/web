@@ -211,6 +211,9 @@
               {% for subscriber in subscriptions %}
                 <a class="grant__stakeholders-item mr-2" href="{% url 'profile' subscriber.contributor_profile.handle %}">
                   <img src="{{ subscriber.contributor_profile.avatar_url }}" />
+                  <div>
+                    <span id="grant-profile">{{ subscriber.contributor_profile.handle }}</span>
+                  </div>
                 </a>
               {% empty %}
                 <div class="no-subscriptions">
