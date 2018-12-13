@@ -17,13 +17,13 @@
 '''
 
 
-def get_tokens():
+def get_tokens(network='mainnet'):
     from economy.models import Token
-    return [token.to_dict for token in Token.objects.filter(network='mainnet', approved=True).all()]
+    return [token.to_dict for token in Token.objects.filter(network=network, approved=True).all()]
 
 
-def addr_to_token(addr):
-    for token in get_tokens():
+def addr_to_token(addr, network='mainnet'):
+    for token in get_tokens(network=network):
         if(token['addr'].lower() == addr.lower()):
             return token
     return False

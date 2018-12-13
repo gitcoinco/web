@@ -170,7 +170,6 @@ div.button-pink {
   font-size: 2em;
   font-weight: 500;
   font-style: italic;
-  letter-spacing: 0.1em;
 }
 
 .header-line-contributors {
@@ -258,6 +257,10 @@ div.button-pink {
 
 .font-smaller-7 {
   font-size: 0.55rem;
+}
+
+.font-smallest {
+  font-size: 0.1rem;
 }
 
 .center-block {

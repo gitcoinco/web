@@ -1,9 +1,28 @@
+.form__intro {
+  margin: 40px 0;
+}
+
+.form__intro h1 {
+  font-size: 24px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
 .form__group {
   display: flex;
 }
 
 .form__group-item {
   height: 37px;
+}
+
+.form__img {
+  margin-top: 70px;
+}
+
+.form__group-horizontal {
+  width: 100%;
+  margin-bottom: 12px;
 }
 
 .form__amount-wrapper {
@@ -32,6 +51,10 @@
   margin-bottom: 3rem;
 }
 
+.form__footer a {
+  font-weight: 500;
+}
+
 .form__footer button {
   margin-bottom: .5rem;
 }
@@ -44,9 +67,20 @@
   .form__group {
     flex-direction: column;
   }
-  
+
   .form__group-item {
     margin-bottom: 1em;
     width: 100%;
+  }
+}
+
+@media (min-width: 992px) {
+  .form__footer a {
+    position: relative;
+    top: 10px;
+  }
+
+  .form__footer button {
+    float: right
   }
 }

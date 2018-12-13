@@ -128,6 +128,26 @@ generate:
     - gitcoinbot.models++
   - gitcoinbot/views.md:
     - gitcoinbot.views++
+  - grants/abi.md:
+    - grants.abi++
+  - grants/admin.md:
+    - grants.admin++
+  - grants/commands.md:
+    - grants.management.commands.subminer++
+  - grants/forms.md:
+    - grants.forms++
+  - grants/models.md:
+    - grants.models++
+  - grants/router.md:
+    - grants.router++
+  - grants/serializers.md:
+    - grants.serializers++
+  - grants/templatetags.md:
+    - grants.templatetags.grants_extra++
+  - grants/utils.md:
+    - grants.utils++
+  - grants/views.md:
+    - grants.views++
   - healthcheck/healthchecks.md:
     - healthcheck.healthchecks++
   - kudos/admin.md:
@@ -300,6 +320,18 @@ pages:
       - Admin: gitcoinbot/admin.md
       - Models: gitcoinbot/models.md
       - Views: gitcoinbot/views.md
+    - Grants:
+      - Local Setup: grants_faq.md << docs/GRANTS.md
+      - ABI: grants/abi.md
+      - Admin: grants/admin.md
+      - Commands: grants/commands.md
+      - Forms: grants/forms.md
+      - Models: grants/models.md
+      - Router: grants/router.md
+      - Serializers: grants/serializers.md
+      - Template Tags: grants/templatetags.md
+      - Utilities: grants/utils.md
+      - Views: grants/views.md
     - Kudos:
       - Local Setup FAQ: kudos_faq.md << docs/KUDOS.md
       - Admin: kudos/admin.md

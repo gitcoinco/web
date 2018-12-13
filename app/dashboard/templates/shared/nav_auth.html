@@ -37,6 +37,12 @@
           <i class="fab fa-ethereum"></i>
           {% trans "Fund Issue" %}
         </a>
+        {% if perms.grants.view_grant %}
+        <a class="dropdown-item" href="{% url "grants:profile" %}">
+          <i class="fas"><img src="{% static "v2/images/grants/icons/black.svg" %}"></i>
+          {% trans "My Grants" %}
+        </a>
+        {% endif %}
       {% else %}
         <a class="dropdown-item" href="{% url "get_gitcoin" %}">
           <i class="fas fa-bolt"></i>
