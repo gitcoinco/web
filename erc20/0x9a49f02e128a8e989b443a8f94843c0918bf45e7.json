@@ -1,0 +1,23 @@
+{
+  "symbol": "TOK(TOKOK)",
+  "address": "0x9a49f02e128a8e989b443a8f94843c0918bf45e7",
+  "overview":{
+        "en": "We are a group that attached to blockchain, deeply participating in the development of blockchain and with common values. We are determined to create a tech-professional,security-guaranteed Crypto Assets Exchange Platform that hold consensus community as our own responsibility for a blockchain , enhance user service experience and spread the value of blockchain.",
+        "zh": "我们是由一群热爱区块链、深入参与区块链发展历程、并有共同价值理念的人员组成的团队。我们立志于打造一个技术专业、安全保障，以打造区块链共识社区为己任，提升用户服务体验，传播区块链价值的加密资产交易平台。让世界各地人们都能够公平地参与加密资产投资，让加密资产成为一种新的资产配置，同时促进优质区块链项目的应用落地，为区块链行业发展作出社会贡献。"
+  },
+  "email": "service@tokok.com",
+  "website": "https://www.tokok.com/",
+  "whitepaper": "https://www.tokok.com/static/file/TOKOKWhitePaperEn.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-04-02",
+  "initial_price":{
+  },
+  "links": {
+    "twitter": "http://twitter.com/TOKOKcom",
+    "telegram": "https://t.me/TOKOKcom",
+    "facebook": "https://www.facebook.com/tokok.exchange/",
+    "reddit": "https://www.reddit.com/r/tokok/",
+    "medium": "https://medium.com/@tokok"
+  }
+}
+
