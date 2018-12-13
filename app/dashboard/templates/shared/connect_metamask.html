@@ -24,8 +24,6 @@
       </p>
       <p>
         {% trans "Please connect and authorize MetaMask to be used with GitCoin." %}
-      </p>
-      <p>
         <button id="metamask_connect" onclick="approve_metamask()">{% trans "Click here to authorize" %}</button>
       </p>
     </div>
@@ -34,3 +32,10 @@
     </div>
   </div>
 </div>
+
+<style>
+  #connect_metamask_error #metamask_connect {
+    position: relative;
+    bottom: 2px;
+  }
+</style>

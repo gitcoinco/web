@@ -270,7 +270,7 @@ var callbacks = {
       const tokenValue = normalizeAmount(1.0 * ratio, dollarDecimals);
       const timestamp = new Date(obj['timestamp']);
       const timePeg = timeDifference(dateNow, timestamp > dateNow ? dateNow : timestamp, false, 60 * 60);
-      const tooltip = '$' + normalizeAmount(usd, dollarDecimals) + ' ' + tokenName + ' in crowdfunding';
+      const tooltip = `$ ${normalizeAmount(usd, dollarDecimals)} USD in crowdfunding`;
 
       leftHtml += '<p class="m-0">+ ' + funding + ' ' + tokenName + '</p>';
       rightHtml += '<p class="m-0">@ $' + tokenValue + ' ' + tokenName + ' as of ' + timePeg + '</p>';
@@ -444,6 +444,8 @@ var update_title = function() {
 };
 
 var showWarningMessage = function(txid) {
+  const secondsBetweenQuoteChanges = 30;
+  let interval = setInterval(waitingRoomEntertainment, secondsBetweenQuoteChanges * 1000);
 
   update_title();
   $('.interior .body').addClass('open');
@@ -462,15 +464,7 @@ var showWarningMessage = function(txid) {
   $('#bounty_details').hide();
   $('#bounty_detail').hide();
 
-  $('.bg-container').show();
-  $('.loading_img').addClass('waiting-state ');
-  $('.waiting_room_entertainment').show();
-  $('.issue-url').html('<a href="' + document.issueURL + '">' + document.issueURL + '</a>');
-
-  var secondsBetweenQuoteChanges = 30;
-
-  waitingRoomEntertainment();
-  var interval = setInterval(waitingRoomEntertainment, secondsBetweenQuoteChanges * 1000);
+  waitingStateActive();
 };
 
 // refresh page if metamask changes
