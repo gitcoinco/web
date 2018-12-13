@@ -31,6 +31,7 @@ from django.utils.translation import gettext as _
 
 import cssutils
 import premailer
+from grants.models import Grant, Subscription
 from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
 from retail.utils import strip_double_chars, strip_html
@@ -65,6 +66,118 @@ def premailer_transform(html):
     cssutils.log.setLevel(logging.CRITICAL)
     p = premailer.Premailer(html, base_url=settings.BASE_URL)
     return p.transform()
+
+
+def render_new_grant_email(grant):
+    params = {'grant': grant}
+    response_html = premailer_transform(render_to_string("emails/grants/new_grant.html", params))
+    response_txt = render_to_string("emails/grants/new_grant.txt", params)
+    subject = "Your Gitcoin Grant"
+    return response_html, response_txt, subject
+
+
+def render_new_supporter_email(grant, subscription):
+    params = {'grant': grant, 'subscription': subscription}
+    response_html = premailer_transform(render_to_string("emails/grants/new_supporter.html", params))
+    response_txt = render_to_string("emails/grants/new_supporter.txt", params)
+    subject = "You have a new Grant supporter!"
+    return response_html, response_txt, subject
+
+
+def render_thank_you_for_supporting_email(grant, subscription):
+    params = {'grant': grant, 'subscription': subscription}
+    response_html = premailer_transform(render_to_string("emails/grants/thank_you_for_supporting.html", params))
+    response_txt = render_to_string("emails/grants/thank_you_for_supporting.txt", params)
+    subject = "Thank you for supporting Grants on Gitcoin!"
+    return response_html, response_txt, subject
+
+
+def render_support_cancellation_email(grant, subscription):
+    params = {'grant': grant, 'subscription': subscription}
+    response_html = premailer_transform(render_to_string("emails/grants/support_cancellation.html", params))
+    response_txt = render_to_string("emails/grants/support_cancellation.txt", params)
+    subject = "Your subscription on Gitcoin Grants has been cancelled"
+
+    return response_html, response_txt, subject
+
+
+def render_grant_cancellation_email(grant, subscription):
+    params = {'grant': grant, 'subscription': subscription}
+    response_html = premailer_transform(render_to_string("emails/grants/grant_cancellation.html", params))
+    response_txt = render_to_string("emails/grants/grant_cancellation.txt", params)
+    subject = "Your Grant on Gitcoin Grants has been cancelled"
+    return response_html, response_txt, subject
+
+
+def render_subscription_terminated_email(grant, subscription):
+    params = {'grant': grant, 'subscription': subscription}
+    response_html = premailer_transform(render_to_string("emails/grants/subscription_terminated.html", params))
+    response_txt = render_to_string("emails/grants/subscription_terminated.txt", params)
+    subject = "Your subscription on Gitcoin Grants has been cancelled by the Grant Creator"
+    return response_html, response_txt, subject
+
+
+def render_successful_contribution_email(grant, subscription):
+    params = {'grant': grant, 'subscription': subscription}
+    response_html = premailer_transform(render_to_string("emails/grants/successful_contribution.html", params))
+    response_txt = render_to_string("emails/grants/successful_contribution.txt", params)
+    subject = "Your subscription on Gitcoin Grants has been cancelled by the Grant Creator"
+    return response_html, response_txt, subject
+
+
+@staff_member_required
+def successful_contribution(request):
+    grant = Grant.objects.all().first()
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+    response_html, __, __ = render_successful_contribution_email(grant, subscription)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def subscription_terminated(request):
+    grant = Grant.objects.all().first()
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+    response_html, __, __ = render_subscription_terminated_email(grant, subscription)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def grant_cancellation(request):
+    grant = Grant.objects.all().first()
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+    response_html, __, __ = render_grant_cancellation_email(grant, subscription)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def support_cancellation(request):
+    grant = Grant.objects.all().first()
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+    response_html, __, __ = render_support_cancellation_email(grant, subscription)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def thank_you_for_supporting(request):
+    grant = Grant.objects.all().first()
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+    response_html, __, __ = render_thank_you_for_supporting_email(grant, subscription)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def new_supporter(request):
+    grant = Grant.objects.all().first()
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+    response_html, __, __ = render_new_supporter_email(grant, subscription)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def new_grant(request):
+    grant = Grant.objects.all().first()
+    response_html, __, __ = render_new_grant_email(grant)
+    return HttpResponse(response_html)
 
 
 def render_tip_email(to_email, tip, is_new):
@@ -184,9 +297,9 @@ in that spirit,  i have a few questions for you.
 
 thanks again for being a member of the community.
 
-kevin
+alisa / frank (gitcoin product team)
 
-PS - i've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+PS - we've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
 
 """
     elif persona == 'funder':
@@ -210,9 +323,9 @@ in that spirit,  i have a few questions for you:
 
 thanks for being a member of the community.
 
-kevin
+alisa / frank (gitcoin product team)
 
-PS - i've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+PS - we've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
 
 """
         elif bounty.status == 'cancelled':
@@ -231,9 +344,9 @@ i have a few questions for you.
 
 thanks again for being a member of the community.
 
-kevin
+alisa / frank (gitcoin product team)
 
-PS - i've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+PS - we've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
 
 """
         else:
@@ -284,7 +397,7 @@ def render_funder_stale(github_username, days=30, time_as_str='about a month'):
     response_txt = f"""
 hi {github_username},
 
-kevin from Gitcoin here (CC scott and vivek too) — i see you haven't funded an issue in {time_as_str}. in the spirit of making Gitcoin better + checking in:
+alisa and frank from Gitcoin here (CC scott and vivek too) — i see you haven't funded an issue in {time_as_str}. in the spirit of making Gitcoin better + checking in:
 
 - has anything been slipping on your issue board which might be bounty worthy?
 - do you have any feedback for Gitcoin Core on how we might improve the product to fit your needs?
@@ -293,7 +406,8 @@ our idea is that gitcoin should be a place you come when priorities stretch long
 
 appreciate you being a part of the community and let me know if you'd like some Gitcoin schwag — just send over a mailing address and a t-shirt size and it'll come your way.
 
-~ kevin
+~ alisa / frank (gitcoin product team)
+
 
 """
 
@@ -572,37 +686,25 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Introducing Gitcoin Labs | Join The Gitcoin Discourse"
-    new_kudos_pks = [486, 485, 484]
+    subject = "Announcing Open Kudos | MVPayment Channels"
+    new_kudos_pks = [813, 811, 810]
     new_kudos_size_px = 150
     intro = '''
 <p>
 Hi there,
 </p>
 <p>
-We're excited to introduce <a href="https://medium.com/gitcoin/announcing-gitcoin-labs-ba400522d697">Gitcoin Labs</a>, our new R&D arm focused on blockchain UX, open source sustainability,
-and a variety of open research topics in Web 3. Gitcoin Labs is led by <a href="https://twitter.com/austingriffith">Austin Griffith</a>, who is best known in the Web 3 ecosystem for his
-work on meta transactions, burner wallets, and universal logins alongside Alex Van De Sande. Have interesting research problems? Let us know!
-<BR>
-<BR>
-<a href='https://medium.com/gitcoin/announcing-gitcoin-labs-ba400522d697'>
-<img style='max-width: 300px;' src="https://cdn-images-1.medium.com/max/800/1*dZRwgrgBIV9Dd4gsjYbssQ.png"'>
-</a>
-<BR>
-<BR>
+We're excited to announce <a href="https://medium.com/gitcoin/announcing-open-kudos-e437450f7802">Open Kudos</a>, an easy way
+for any dApp to integrate Kudos, the NFT marketplace for compliments, into your project. We think it's a unique way to spread culture,
+joy, and community with the people who have moved your project forward. Please reach out if you're interested in integration!
 </p>
 <p>
-In order to foster longer form conversation around meta transactions, UX, we've launched a <a href="https://discourse.gitcoin.co/">Gitcoin Discourse</a>. Come join us for initial conversations around
-<a href="https://discourse.gitcoin.co/t/open-source-sustainability-via-liberal-radicalism/22/3">Liberal Radicalism by Vitalik Buterin & Glen Weyl</a> and start your own conversations for topics of interest
-for Web 3 UX research or open source sustainability. We're excited to see you there!
-</p>
-<p>
-Who’s making the most impact on your OSS or Web3 project? Do you know someone that solved a problem in a creative way,
-built something interesting, or truly deserves a thanks? <a href='https://github.com/gitcoinco/web/issues/2816'>Nominate open source contributors to receive a limited edition and unique Kudos!</a>
+Gitcoin Labs director Austin Griffith put out another tutorial last week on Minimum Viable Payment Channels. <a href="https://twitter.com/austingriffith/status/1071075739473108992">Check it out</a> and
+give him a follow if you'd like to see more!
 </p>
 <h3>New Kudos This Week</h3>
 <p>
-Check out a few of the new kudos launched this week:
+Happy Holidays from all of us at Gitcoin!
 </p>
 <p>
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
@@ -610,46 +712,47 @@ Check out a few of the new kudos launched this week:
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Gitcoin now supports EIP--1102 (Metamask Privacy Mode).  To use Gitcoin in privacy mode, <a href="https://medium.com/metamask/introducing-privacy-mode-42549d4870fa">checkout this post</a>.
+            _Whose Future Is It? Cellarius Stories, Volume I_ launched yesterday. It's free with a MetaMask login and is a worthwhile look into a cypherpunk future. <a href="https://cellarius.network/whose-future-is-it/">Read it here.</a>
         </li>
         <li>
-            No Gitcoin Livestream this week due to Thanksgiving in the USA. We'll be back <a href="https://gitcoin.co/livestream">next Friday at 5PM ET</a>!
+            Gitcoin Livestream is on as usual this week! Join us <a href="https://gitcoin.co/livestream">Friday at 5PM ET</a>!
         </li>
     </ul>
 </p>
 <p>
 Thanks for reading! Back to BUIDLing,
 </p>
+
 '''
     highlights = [{
-        'who': 'evgeniuz',
+        'who': 'tbenr',
         'who_link': True,
-        'what': 'Added Python Support to blockchain-etl',
-        'link': 'https://gitcoin.co/issue/blockchain-etl/ethereum-etl/123/1723',
+        'what': 'Worked on Status React.',
+        'link': 'https://gitcoin.co/issue/status-im/status-react/6866/1876',
         'link_copy': 'View more',
     }, {
-        'who': 'dryajov',
+        'who': 'gusilverflame',
         'who_link': True,
-        'what': 'Implemented Kitsunet PoC for MetaMask!',
-        'link': 'https://gitcoin.co/issue/MetaMask/kitsunet-js/11/1775',
+        'what': 'Worked with POA Network on Blockscout!',
+        'link': 'https://gitcoin.co/issue/poanetwork/blockscout/1106/1877',
         'link_copy': 'View more',
     }, {
-        'who': 'frederikbolding',
+        'who': 'zyfrank',
         'who_link': True,
-        'what': 'Worked on Status-React',
-        'link': 'https://gitcoin.co/issue/status-im/status-react/6353/1742',
+        'what': 'Good work with Centrifuge on Precise Proofs.',
+        'link': 'https://gitcoin.co/issue/centrifuge/precise-proofs/33/1907',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/status-im/status-react/issues/6789',
-        'primer': 'Allow ENS names to be used for Ethereum events',
+        'url': 'https://github.com/ethereum-ts/TypeChain/issues/109',
+        'primer': 'Work on TypeChain with Scott and team.',
     }, {
-        'url': 'https://github.com/web3j/web3j/issues/769',
-        'primer': 'Prepare Web3j for an Android release.',
+        'url': 'https://github.com/VolcaTech/cryptoxmas.xyz/issues/77',
+        'primer': 'A smart contract bug bounty for Crypto X-Mas!',
     }, {
-        'url': 'https://github.com/ethereum/py-evm/issues/1472',
-        'primer': 'Add integration tests to py-evm',
+        'url': 'https://github.com/cybercongress/cyb/issues/86',
+        'primer': 'Integrate EOS into Cyber Congress!',
     }, ]
 
     num_leadboard_items = 5

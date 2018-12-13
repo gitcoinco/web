@@ -36,7 +36,7 @@ if [ "$VSCODE_DEBUGGER_ENABLED" = "on" ]; then
 fi
 
 if [ "$GC_WEB_WORKER" = "runserver_plus" ]; then
-    GC_WEB_OPTS="${GC_WEB_OPTS} --extra-file /code/app/app/.env --nopin"
+    GC_WEB_OPTS="${GC_WEB_OPTS} --extra-file /code/app/app/.env --nopin --verbosity 0"
 fi
 
 # Provision the Django test environment.

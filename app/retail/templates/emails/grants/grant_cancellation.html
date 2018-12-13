@@ -1,0 +1,68 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static %}
+
+{% block content %}
+
+<style>
+  hr {
+    width: 80%;
+    height: 2px;
+    border-radius: 25px;
+    border: none;
+    background-color: #D2D2D2;
+  }
+
+  #grow-oss {
+    margin-top: 50px;
+    margin-bottom: 40px;
+  }
+
+  img {
+    max-width: 4rem;
+  }
+
+  .updatesButton {
+    padding: 12px 36px;
+    font-size: 12px;
+    border-radius: 3px;
+    text-decoration: none;
+    background-color: #0D0764;
+    color: white;
+  }
+
+  .grant-link {
+    margin-top: 3rem;
+  }
+
+</style>
+<img src="{% static "v2/images/grant-ended.png" %}" alt="{% trans "Grant Ended" %}" title="{% trans "Grant Ended" %}">
+<h1 style="text-transform: none;">{% trans "Grant" %} '{{ grant.title }}' {% trans "has been cancelled" %}.</h1>
+<p>{% trans "Thank you for using Gitcoin, we hope you'll come back to build more open source software!" %}</p>
+<p>{% trans "You can see your cancellation transaction on etherscan" %}
+  <a href="{{ transaction.link }}">{% trans "here." %}</a>
+</p>
+<p class="grant-link">
+  <a class="updatesButton" href="{% url 'grants:details' grant.pk grant.slug %}">{% trans "View Inactive Grant" %}</a>
+</p>
+<br>
+
+<hr>
+
+{% endblock %}

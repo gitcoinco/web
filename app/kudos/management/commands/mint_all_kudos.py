@@ -35,8 +35,7 @@ logger = logging.getLogger(__name__)
 formatter = '%(levelname)s:%(name)s.%(funcName)s:%(message)s'
 
 
-def mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint_to=None, live=False):
-
+def mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint_to=None, live=False, skip_sync=True):
     image_name = urllib.parse.quote(kudos.get('image'))
     if image_name:
         # Support Open Sea
@@ -103,12 +102,12 @@ def mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint
         'attributes': attributes
     }
 
-    if not kudos.get('to_address', None):
+    if kudos.get('to_address', None):
         mint_to = kudos_contract._w3.toChecksumAddress(kudos.get('to_address'))
-    if not mint_to:
-        mint_to = kudos_contract._w3.toChecksumAddress(settings.KUDOS_OWNER_ACCOUNT)
-    else:
+    elif mint_to:
         mint_to = kudos_contract._w3.toChecksumAddress(mint_to)
+    else:
+        mint_to = kudos_contract._w3.toChecksumAddress(settings.KUDOS_OWNER_ACCOUNT)
 
     is_live = live
     if is_live:
@@ -176,4 +175,7 @@ class Command(BaseCommand):
         for __, kudos in enumerate(all_kudos):
             if kudos_filter not in kudos['name']:
                 continue
-            mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, options['mint_to'], options['live'])
+            mint_kudos(
+                kudos_contract, kudos, account, private_key, gas_price_gwei, options['mint_to'], options['live'],
+                skip_sync
+            )
