@@ -32,7 +32,7 @@
   .grant-description {
     max-width: 50rem;
     margin: auto;
-    text-align: justify;
+    text-align: center;
   }
 
   div {
@@ -88,7 +88,7 @@
 <div>
   <p>{% trans "You are seeking " %}<strong>{{ grant.amount_goal }}</strong> {% trans "DAI monthly" %}</p>
 </div>
-<p>{% trans "The details of your grant can be seen" %} <a href="{% url 'grants:details' grant.pk grant.slug %}">{% trans "here." %}</a></p>
+<p>{% trans "To view or edit your grant click the button below." %}</p>
 <p style="margin: 2rem;">
   <a class="grant-button" href="{% url 'grants:details' grant.pk grant.slug %}">{% trans "View Grant" %}</a>
 </p>

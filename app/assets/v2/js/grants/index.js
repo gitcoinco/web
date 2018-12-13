@@ -19,6 +19,13 @@ $(document).ready(() => {
     }
     $(e.currentTarget).toggleClass('turn');
   });
+
+  waitforWeb3(function() {
+    const linkURL = etherscan_tx_url($('#tx_id').val());
+    
+    $('#tx_link').attr('href', linkURL);
+  });
+
 });
 
 const searchGrant = () => {

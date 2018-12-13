@@ -56,7 +56,7 @@
   .grant-description {
     max-width: 50rem;
     margin: 1.5rem auto;
-    text-align: justify;
+    text-align: center;
   }
 
   #grow-oss {
@@ -98,13 +98,43 @@
   }
 
   .funding {
-    float: right;
-    text-align: right;
+    float: left;
+    text-align: left;
   }
 
   .funding > h4 {
     line-height: 0px;
-    text-align: right;
+    text-align: left;
+    color: #0D0764;
+    padding-top: -20px;
+  }
+
+  .progressbar-line {
+    width: 1px;
+    height: 50px;
+    background-color: #979797;
+    float: left;
+    margin-right: 20px;
+  }
+
+  .progressbar-position-margin {
+    padding-left: 20%;
+    padding-right: 20%;
+    margin-top: 4rem;
+  }
+
+  .progressbar-position {
+    transform: translateY(160%);
+  }
+
+  .progressbar-position > p {
+    line-height: 0px;
+    color: #BBBDBF;
+    text-align: left;
+  }
+
+  .progressbar-position > h4 {
+    line-height: 0px;
     color: #0D0764;
     padding-top: -20px;
   }
@@ -112,6 +142,19 @@
   .funding > p {
     line-height: 0px;
     color: #BBBDBF;
+  }
+
+  #currentFunding {
+    width: 57.5%;
+  }
+
+  #goalFunding {
+    width: 42.5%;
+    text-align: right;
+  }
+
+  #goalFunding h4 {
+    text-align: right;
   }
 
   #grant-logo {
@@ -183,9 +226,7 @@
 </div>
 
 <br>
-<p class="grant-link">
-  <a class="grant-button" href="{% url 'grants:details' grant.pk grant.slug %}">{% trans "View Inactive Grant" %}</a>
-</p>
+
 <p>{% trans "You can see the grant cancellation transaction on etherscan" %}
   {% if subscription.network == 'mainnet' %}
     <a href="http://etherscan.io/tx/{{ grant.cancel_tx_id }}">{% trans "here." %}</a>
@@ -193,15 +234,9 @@
     <a href="http://{{ grant.network }}.etherscan.io/tx/{{ grant.cancel_tx_id }}">{% trans "here." %}</a>
   {% endif %}
 </p>
-<p>{% trans "You can see your cancellation transaction on etherscan" %}
-  {% if subscription.network == 'mainnet' %}
-    <a href="http://etherscan.io/tx/{{ subscription.cancel_tx_id }}">{% trans "here." %}</a>
-  {% else %}
-    <a href="http://{{ grant.network }}.etherscan.io/tx/{{ subscription.cancel_tx_id }}">{% trans "here." %}</a>
-  {% endif %}
-</p>
 <p class="grant-link">
   <a class="grant-button" href="{% url 'grants:details' grant.pk grant.slug %}">{% trans "View Inactive Grant" %}</a>
 </p>
+<br>
 <hr>
 {% endblock %}

@@ -16,7 +16,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static grants_extra %}
 
 {% block content %}
 
@@ -38,6 +38,12 @@
     max-width: 4rem;
   }
 
+  #grant-logo {
+    max-width: 25rem;
+    width: 100%;
+    margin-top: 2rem;
+  }
+
   .grant-button {
     padding: 12px 36px;
     font-size: 12px;
@@ -55,6 +61,9 @@
 </style>
 <img src="{% static "v2/images/grant-ended.png" %}" alt="{% trans "Grant Ended" %}" title="{% trans "Grant Ended" %}">
 <h1 style="text-transform: none;">{% trans "Grant" %} '{{ grant.title }}' {% trans "has been cancelled" %}.</h1>
+<a href="{% url 'grants:details' grant.id grant.slug %}">
+  <img id="grant-logo" src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}" alt="grant logo" >
+</a>
 <p>{% trans "Thank you for using Gitcoin, we hope you'll come back to build more open source software!" %}</p>
 <p>{% trans "You can see the grant cancellation transaction on etherscan" %}
   {% if grant.network == 'mainnet' %}

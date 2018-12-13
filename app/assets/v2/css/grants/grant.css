@@ -47,8 +47,9 @@
   max-width: 100%;
 }
 
-.progress-bar {
+.progress .progress-bar {
   background-color: #0FCE7C;
+  height: auto;
 }
 
 .progress-bar.progress-bar--cancel {

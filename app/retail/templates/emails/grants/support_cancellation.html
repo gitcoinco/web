@@ -56,7 +56,7 @@
   .grant-description {
     max-width: 50rem;
     margin: 1.5rem auto;
-    text-align: justify;
+    text-align: center;
   }
 
   #grow-oss {
@@ -158,6 +158,20 @@
     width: 100%;
     margin-top: 2rem;
   }
+
+  .grant-button {
+    padding: 12px 36px;
+    font-size: 12px;
+    border-radius: 3px;
+    text-decoration: none;
+    background-color: #0D0764;
+    color: white;
+    font-weight: 600;
+  }
+
+  .grant-link {
+    margin-top: 3rem;
+  }
 </style>
 <img src="{% static "v2/images/subscription-terminated.png" %}" alt="{% trans "We are sad to see you go." %}" title="{% trans "We are sad to see you go." %}">
 <h1>{% trans "Your Subscription for" %} {{ grant.title }} {% trans "has been cancelled" %}.</h1>
@@ -215,6 +229,10 @@
     <a href="http://{{ grant.network }}.etherscan.io/tx/{{ subscription.cancel_tx_id }}">{% trans "here." %}</a>
   {% endif %}
 </p>
+<p class="grant-link">
+  <a class="grant-button" href="{% url 'grants:details' grant.pk grant.slug %}">{% trans "View Inactive Grant" %}</a>
+</p>
+<br>
 <hr>
 
 {% endblock %}
