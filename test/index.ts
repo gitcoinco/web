@@ -26,11 +26,33 @@ const isEosToken = (account: string) => {
 
 const isEthAddressJson = (filename) => jsonExp.test(filename) && isEthAddress(filename.replace(jsonExp, ''))
 
-const isEosTokenJson = (filename) => jsonExp.test(filename) && isEosToken(filename.replace(jsonExp, ''))
+const isEosSymbolAndAccountName = (filenameWithoutExt) => {
+  if (filenameWithoutExt.indexOf('@') === -1) {
+    return false
+  }
+  const arr = filenameWithoutExt.split('@')
+  const accountName = arr[1]
+
+  return isEosToken(accountName)
+}
+
+const isEosTokenJson = (filename) => {
+  if (!jsonExp.test(filename)) {
+    return false
+  }
+  const filenameWithoutExt = filename.replace(jsonExp, '')
+  return isEosSymbolAndAccountName(filenameWithoutExt)
+}
 
 const isEthAddressPng = (filename) => imgExp.test(filename) && isEthAddress(filename.replace(imgExp, ''))
 
-const isEosTokenPng = (filename) => imgExp.test(filename) && isEosToken(filename.replace(jsonExp, ''))
+const isEosTokenPng = (filename) => {
+  if (!imgExp.test(filename)) {
+    return false
+  }
+  const filenameWithoutExt = filename.replace(imgExp, '')
+  return isEosSymbolAndAccountName(filenameWithoutExt)
+}
 
 const isStringWithCharacter = (str) => {
   return str && typeof str === 'string' && str.trim()
@@ -118,8 +140,8 @@ const getObjIfNoError = (jsonFileName, type) => {
   } else if (type === 'EOS') {
     prepath = './eos-token/'
 
-    if (!isEosToken(addr)) {
-      exitWithMsg(`ERROR! json file name ${jsonFileName} is not like a ${type} account_name.json`)
+    if (!isEosSymbolAndAccountName(addr)) {
+      exitWithMsg(`ERROR! json file name ${jsonFileName} is not like a ${type} symbol@account_name.json`)
     }
   }
 
@@ -145,54 +167,64 @@ const eosJsonFileNames = fs.readdirSync('./eos-token')
 const imageFileNames = fs.readdirSync('./images')
 
 const jsonFileCheck = (jsonFileName, type) => {
-  const addr = jsonFileName.replace(jsonExp, '')
+  const filenameWithoutExt = jsonFileName.replace(jsonExp, '')
   const imageAddrs = type === 'ETHEREUM' ? imageFileNames.map(n => n.slice(0, 42)).filter(n => {
     return n.startsWith('0x')
   }) : imageFileNames.filter(n => !n.startsWith('0x'))
 
   const lowerCaseImageAddrs =imageAddrs.map(x => x.toLowerCase())
-  
-  let addressOrAccountname = ''
-  let obj = getObjIfNoError(jsonFileName, type)
-  
+  const obj = getObjIfNoError(jsonFileName, type)
 
   if (type === 'ETHEREUM') {
-    addressOrAccountname = obj.address
-  } else if (type === 'EOS') {
-    addressOrAccountname = obj.account_name
-  }
+    const address = obj.address
 
-  if (!lowerCaseImageAddrs.includes(addr.toLowerCase())) {
-    notice(`Warning! dose not have ${addr + '.png'} in images dir, please check first`)
-  } else if (!imageAddrs.includes(addressOrAccountname)) {
-    const imgAddr = imageAddrs.find(imgad => {
-      return imgad.toLowerCase() === addr.toLowerCase()
-    })
-    exitWithMsg(`Warning! ${imgAddr + '.png'} in images dir, that capital and small letter isn't quite the same with ${addr}`)
-  }
+    if (!lowerCaseImageAddrs.includes(filenameWithoutExt.toLowerCase())) {
+      notice(`Warning! dose not have ${filenameWithoutExt + '.png'} in images dir, please check first`)
+    } else if (!imageAddrs.includes(address)) {
+      const imgAddr = imageAddrs.find(imgad => {
+        return imgad.toLowerCase() === filenameWithoutExt.toLowerCase()
+      })
+      exitWithMsg(`Warning! ${imgAddr + '.png'} in images dir, that capital and small letter isn't quite the same with ${address}`)
+    }
 
-  if (type === 'ETHEREUM') {
-    if (!addressOrAccountname) {
+    if (!address) {
       exitWithMsg(`ERROR! json file ${jsonFileName} content must have address field`)
     }
-    if (!isEthAddress(addressOrAccountname)) {
+    if (!isEthAddress(address)) {
       exitWithMsg(`ERROR! json file ${jsonFileName} address field must be an ethereum address`)
     }
-    if (addressOrAccountname.toLowerCase() !== addr.toLowerCase()) {
-      exitWithMsg(`ERROR! json file ${jsonFileName} should be the same with address field ${addressOrAccountname}`)
-    } else if (addressOrAccountname !== addr) {
+    if (address.toLowerCase() !== filenameWithoutExt.toLowerCase()) {
+      exitWithMsg(`ERROR! json file ${jsonFileName} should be the same with address field ${address}`)
+    } else if (address !== filenameWithoutExt) {
       // exitWithMsg(`Warning! json file ${jsonFileName}, that capital and small letter isn't quite the same with object.address ${obj.address}`)
     }
   } else if (type === 'EOS') {
-    if (!addressOrAccountname) {
+    const account_name = obj.account_name
+    const symbol = obj.symbol
+    const symbolFromFilename = filenameWithoutExt.split('@')[0]
+    const accountNameFromFilename = filenameWithoutExt.split('@')[1]
+
+    if (!lowerCaseImageAddrs.includes(filenameWithoutExt.toLowerCase())) {
+      notice(`Warning! dose not have ${filenameWithoutExt + '.png'} in images dir, please check first`)
+    } else if (!imageAddrs.includes(filenameWithoutExt)) {
+      const imgAddr = imageAddrs.find(imgad => {
+        return imgad.toLowerCase() === filenameWithoutExt.toLowerCase()
+      })
+      exitWithMsg(`Warning! ${imgAddr + '.png'} in images dir, that capital and small letter isn't quite the same with ${filenameWithoutExt}`)
+    }
+
+    if (!account_name) {
       exitWithMsg(`ERROR! json file ${jsonFileName} content must have acount_name field`)
     }
-    if (!isEosToken(addressOrAccountname)) {
+    if (!isEosToken(account_name)) {
       exitWithMsg(`ERROR! json file ${jsonFileName} account_name field must be an eos account name`)
     }
-    if (addressOrAccountname.toLowerCase() !== addr.toLowerCase()) {
-      exitWithMsg(`ERROR! json file ${jsonFileName} should be the same with account_name field ${addressOrAccountname}`)
-    } else if (addressOrAccountname !== addr) {
+    if (symbol.toLowerCase() !== symbolFromFilename.toLowerCase()) {
+      exitWithMsg(`ERROR! json file ${jsonFileName} should have same symbol with symbol field ${symbol}`)
+    }
+    if (account_name.toLowerCase() !== accountNameFromFilename.toLowerCase()) {
+      exitWithMsg(`ERROR! json file ${jsonFileName} should have same account_name with account_name field ${account_name}`)
+    } else if (account_name !== accountNameFromFilename) {
       // exitWithMsg(`Warning! json file ${jsonFileName}, that capital and small letter isn't quite the same with object.account_name ${obj.address}`)
     }
   }
