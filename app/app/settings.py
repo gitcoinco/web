@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import os
 import socket
 
-from django.http import Http404
 from django.utils.translation import gettext_noop
 
 import environ
@@ -259,8 +258,9 @@ RAVEN_JS_VERSION = env.str('RAVEN_JS_VERSION', default='3.26.4')
 if SENTRY_ADDRESS and SENTRY_PROJECT:
     RAVEN_CONFIG = {
         'dsn': f'https://{SENTRY_USER}:{SENTRY_PASSWORD}@{SENTRY_ADDRESS}/{SENTRY_PROJECT}',
-        'release': RELEASE,
     }
+    if RELEASE:
+        RAVEN_CONFIG['release'] = RELEASE
 
 if ENV not in ['local', 'test', 'staging', 'preview']:
     boto3_session = Session(
@@ -310,7 +310,7 @@ if ENV not in ['local', 'test', 'staging', 'preview']:
         },
         'loggers': {
             'django.db.backends': {
-                'level': 'WARNING',
+                'level': AWS_LOG_LEVEL,
                 'handlers': ['console', 'watchtower'],
                 'propagate': False,
             },
