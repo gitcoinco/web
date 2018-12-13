@@ -190,16 +190,16 @@
                 <p class="font-body sub-title">{% trans "Team Members" %} ({{ grant.team_members.all|length }})</p>
                 <div class="grant-item__members font-body">
                   {% for team_member in grant.team_members.all %}
+                  <a class="grant-item__member-handle" href="{% url 'profile' team_member %}">
                     <div class="grant-item__member mr-4">
                       <div class="grant-item__member-image mr-2">
                         <img src="{{ team_member.avatar_url }}">
                       </div>
                       <div class="grant-item__member-handle mt-1">
-                        <a class="grant-item__member-handle" href="{% url 'profile' team_member %}">
-                          <span id="grant-profile">{{ team_member }}</span>
-                        </a>
+                        <span id="grant-profile">{{ team_member }}</span>
                       </div>
                     </div>
+                  </a>
                   {% endfor %}
                 </div>
               {% endif %}
