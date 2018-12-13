@@ -74,14 +74,16 @@
                         </div>
                       </div>
                     {% else %}
-                      <div class="grant-item__owner-image mr-2">
-                        <img src="{{ grant.admin_profile.avatar_url }}">
-                      </div>
-                      <div class="grant-item__owner-handle font-body">{% trans 'by' %}
-                        <a class="grant-item__owner-handle" href="{% url 'profile' grant.admin_profile.handle %}">
+                    <div class="grant-item__owner-handle font-body">{% trans 'by' %}
+                      <a class="grant-item__owner-handle" href="{% url 'profile' grant.admin_profile.handle %}">
+                        <div class="grant-item__owner-image ml-2">
+                          <img src="{{ grant.admin_profile.avatar_url }}">
+                        </div>
+                        <div class="grant-item__owner-handle font-body">
                           <span id="grant-profile">{{ grant.admin_profile.handle|default:'anonymous' }}</span>
-                        </a>
-                      </div>
+                        </div>
+                      </a>
+                    </div>
                     {% endif %}
                   </div>
                 </div>
