@@ -983,7 +983,7 @@ def new_job_approved(job):
     to_email = job.posted_by.email
     cur_language = translation.get_language()
     subject = _("GitCoin Job Posting Approved!")
-    body = f'Howdy @{profile.username},\n\n'\
+    body = f'Howdy,\n\n'\
         'Your job posting has been activated on GitCoin '\
         'Thank you for your support. '\
         'Best,\n\nV'

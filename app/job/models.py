@@ -17,7 +17,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-import logging
 from datetime import datetime, timedelta
 
 from django.contrib.postgres.fields import JSONField
@@ -59,7 +58,12 @@ class Job(SuperModel):
     )
 
     title = models.CharField(default='', max_length=255, help_text=_('The Job title'))
-    job_type = models.CharField(default='full-time', choices=JOB_TYPE_CHOICES, max_length=255, help_text=_('The Job type'))
+    job_type = models.CharField(
+        default='full-time',
+        choices=JOB_TYPE_CHOICES,
+        max_length=255,
+        help_text=_('The Job type')
+    )
     job_location = models.CharField(default='', max_length=255, help_text=_('city where the job is or remote'))
     description = models.TextField(default='', blank=True, help_text=_('The description of the Job'))
     posted_by = models.ForeignKey('dashboard.Profile', null=True, on_delete=models.SET_NULL)
@@ -69,7 +73,6 @@ class Job(SuperModel):
     github_profile = models.CharField(default='', max_length=255, help_text=_('user or company profile on github'))
     expiry_date = models.DateField(default=default_job_expiry)
     apply_location = models.CharField(max_length=255, help_text=_('link to apply to, url or mailto:'))
-
 
     txid = models.CharField(max_length=255)
     token_address = models.CharField(

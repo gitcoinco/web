@@ -40,5 +40,4 @@ class JobAdmin(admin.ModelAdmin):
         super(JobAdmin, self).save_model(request, obj, form, change)
 
 
-
 admin.site.register(Job, JobAdmin)
