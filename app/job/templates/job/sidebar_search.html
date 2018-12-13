@@ -1,0 +1,73 @@
+{% comment %}
+    Copyright (C) 2018 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<link rel="stylesheet" href={% static "v2/css/sidebar_search.css" %}>
+<div class="sidebar_search font-body">
+  <div class="search font-caption mb-4">
+    <div class="search-area col-12">
+      <input class="form__input form__input_lg" id="keywords" type="text" />
+      <img class="close-icon" src="{% static "v2/images/close-grey.png" %}" alt="X" />
+      <a id="new_search" href="#">
+        <i class="fas fa-search"></i>
+      </a>
+    </div>
+    <div class="col-12">
+      <div class="filter-tags"></div> <!-- Populate the filters -->
+    </div>
+  </div>
+  <form>
+
+    <div class="col">
+      <div class="col-12 subheading">{% trans "Employment Type" %}</div>
+      <div class="col-12 options">
+        <div class="checkbox_container">
+          <input name="job_type" id="full-time" type="checkbox" value="full-time" val-ui='Full-Time' />
+          <span class="checkbox"></span>
+          <div class="filter-label">
+            <label for=full-time>{% trans "Full-Time" %}</label>
+          </div>
+        </div>
+        <div class="checkbox_container">
+          <input name="job_type" id="part-time" type="checkbox" value="part-time" val-ui='Part-Time' />
+          <span class="checkbox"></span>
+          <div class="filter-label">
+            <label for="part-time">{% trans "Part-Time" %}</label>
+          </div>
+        </div>
+        <div class="checkbox_container">
+          <input name="job_type" id="intern" type="checkbox" value="intern" val-ui='Intern' />
+          <span class="checkbox"></span>
+          <div class="filter-label">
+            <label for=intern>{% trans "Intern" %}</label>
+          </div>
+        </div>
+        <div class="checkbox_container mb-2">
+          <input name="job_type" id="contractor" type="checkbox" value="contractor" val-ui='Contractor' />
+          <span class="checkbox"></span>
+          <div class="filter-label">
+            <label for=contractor>{% trans "Contractor" %}</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </form>
+  <div>
+    <p id="clear">{% trans "Reset Filters" %}</p>
+    <p id="clear"><a class="btn btn-sml" href="{% url "job_new" %}">{% trans "Post new Job" %}</a></p>
+  </div>
+</div>

@@ -109,6 +109,7 @@ INSTALLED_APPS = [
     'kudos',
     'django.contrib.postgres',
     'bounty_requests',
+    'job',
     'perftools',
     # wagtail
     'taggit',

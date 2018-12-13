@@ -40,6 +40,7 @@ import external_bounties.views
 import faucet.views
 import gitcoinbot.views
 import healthcheck.views
+import job.views
 import kudos.views
 import linkshortener.views
 import marketing.views
@@ -52,6 +53,7 @@ from dashboard.router import router as dbrouter
 from external_bounties.router import router as ebrouter
 from grants.router import router as grant_router
 from kudos.router import router as kdrouter
+from job.router import router as jobrouter
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.core import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
@@ -90,6 +92,7 @@ urlpatterns = [
     url(r'^api/v0.1/', include(ebrouter.urls)),
     url(r'^api/v0.1/', include(kdrouter.urls)),
     url(r'^api/v0.1/', include(grant_router.urls)),
+    url(r'^api/v0.1/', include(jobrouter.urls)),
     url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active
     url(r'^api/v0.1/users_search/', dashboard.views.get_users, name='users_search'),
     url(r'^api/v0.1/kudos_search/', dashboard.views.get_kudos, name='kudos_search'),
@@ -283,6 +286,11 @@ urlpatterns = [
 
     # bounty requests
     re_path(r'^requests/?', bounty_requests.views.bounty_request, name='bounty_requests'),
+
+    # Job board
+    path('jobs/new/', job.views.job_new, name='job_new'),
+    path('jobs/', job.views.job_index, name='job_index'),
+    path('jobs/<pk>/', job.views.job_show, name='job_show'),
 
     # admin views
     re_path(r'^_administration/?', admin.site.urls, name='admin'),

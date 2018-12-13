@@ -1,0 +1,91 @@
+{% load i18n humanize markdown_extras %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta name="title" content="Job Universe Explorer | Gitcoin">
+    <link rel="canonical" href="{% url 'offchain_index' %}" />
+    <link rel="stylesheet" href="{% static "v2/css/external_jobs/job.css" %}">
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+    {% if no_index %}
+      <meta name="robots" content="noindex">
+    {% endif %}
+  </head>
+
+  <body class="interior {{active}} offchain_show g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'shared/nav.html' %}
+    </div>
+
+    <div class="row no-gutter">
+
+      <div class="col body">
+        <div class="container" id="jobs">
+          <header class="jobs-header">
+            <div class="jobs-header__title jobs-header__title--active">
+              <h2 class="title">
+                <a href="{% url "job_index" %}">{% trans "Job Board" %}</a>
+              </h2>
+            </div>
+          </header>
+          <div class="main-content">
+            <main class="jobs-container">
+              <div class="job-container">
+                <div class="job__image">
+                  <img src="{{job.avatar}}"/>
+                </div>
+                <div class="job__info">
+                  <div class="job__header-wrapper">
+                    <div class="job__header">
+                      <h3 class="job__title">{{ job.title }}</h3>
+                      <div class="job__source">{% trans "created" %}: {{ job.created_on | naturaltime}}</div>
+                      {% if job.company %}
+                        <div class="job__source">{% trans "company" %}: {{ job.company }}</div>
+                      {% endif %}
+                    </div>
+                    <div class="job__action">
+                      <a href="{{job.apply_location}}" class="btn btn-success">{% trans "Apply to Job" %}</a>
+                    </div>
+                  </div>
+                  <hr>
+                  {% if job.description %}
+                    <div class="job__content">
+                    {{job.description | markdown | safe}}
+                    </div>
+
+                    {% if job.company %}
+                      <div class="job__source">{{ job.company }}</div>
+                    {% endif %}
+                    {% if job.github_profile %}
+                    <div>
+                    <a href="https://github.com/{{job.github_profile}}" target="_blank"><i class="fab fa-github"></i>{{job.github_profile}}</a>
+                    </div>
+                    {% endif %}
+
+                    <div class="job__footer">
+                      <a class="link-red" href="{% url "job_index" %}">{% trans "Go Back" %}</a>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            </main>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+    {% include 'shared/messages.html' %}
+
+    <script src="/dynamic/js/tokens_dynamic.js"></script>
+    <script src="{% static "v2/js/tokens.js" %}"></script>
+
+  </body>
+</html>

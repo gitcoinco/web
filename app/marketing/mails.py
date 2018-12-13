@@ -953,3 +953,45 @@ def bounty_request_feedback(profile):
         )
     finally:
         translation.activate(cur_language)
+
+
+def new_job_notification():
+    """Send a new job board posting email notification."""
+    to_email = settings.PERSONAL_CONTACT_EMAIL
+    from_email = settings.SERVER_EMAIL
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        subject = _("New job board posting")
+        body = f"https://gitcoin.co/_administrationjob/job/"
+        if not should_suppress_notification_email(to_email, 'admin'):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                body,
+                from_name=_("No Reply from Gitcoin.co"),
+                categories=['admin', func_name()],
+            )
+    finally:
+        translation.activate(cur_language)
+
+
+def new_job_approved(job):
+    """Email to customer that bought job posting after it gets activated"""
+    from_email = settings.CONTACT_EMAIL
+    to_email = job.posted_by.email
+    cur_language = translation.get_language()
+    subject = _("GitCoin Job Posting Approved!")
+    body = f'Howdy @{profile.username},\n\n'\
+        'Your job posting has been activated on GitCoin '\
+        'Thank you for your support. '\
+        'Best,\n\nV'
+
+    try:
+        setup_lang(to_email)
+
+        if not should_suppress_notification_email(to_email, 'job'):
+            send_mail(from_email, to_email, subject, body, categories=['transactional', func_name()])
+    finally:
+        translation.activate(cur_language)

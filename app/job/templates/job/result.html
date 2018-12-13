@@ -1,0 +1,23 @@
+{% load static i18n %}
+<!-- JSRender stuff -->
+<script id="result" type="text/x-jsrender">
+<a class="row result job_row [[if hidden]]hidden[[/if]]" href="[[:url]]" title=''>
+  <div class="col-9 col-md-8 d-flex flex-column">
+    <div class="job-detail">
+      <div class="title font-subheader">
+        [[:title]]
+      </div>
+      <div>
+        <span class="company">[[:company]]<span> <span class="skills">[[:skills]]</span>
+      </div>
+      [[if github_profile]]<div><a href="https://github.com/[[:github_profile]]" target="_blank"><i class="fab fa-github"></i>[[:github_profile]]</a></div>[[/if]]
+    </div>
+  </div>
+  <div class="col d-flex flex-column">
+    <div class="tags fixed justify-content-sm-start justify-content-md-end">
+      <span class="job-type">[[:job_type]]</span> <br>
+      <span class="job-location">[[:job_location]]</span>
+    </div>
+  </div>
+</a>
+</script>

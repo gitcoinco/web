@@ -1,0 +1,81 @@
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static humanize %}
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+    <meta name="description" content="The Gitcoin platform connects freelance developers with open bug bounties or online jobs, paid in crypto (ETH).
+    Leverage a global workforce to quickly complete software development and coding jobs.">
+    <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
+  </head>
+
+  <body class="interior {{active}} g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'shared/nav.html' %}
+    </div>
+
+    <div id="dashboard-content" class="row no-gutter">
+      <div class="col-12 col-lg-3 col-xl-2 invisible" id="sidebar_container" style="background: #F2F6F9;">
+        {% include 'job/sidebar_search.html' %}
+      </div>
+
+      <div class="col-12 col-lg-9 col-xl-10 body">
+        <div class="container-fluid p-2" id="jobs">
+          <div id="dashboard-title" class="hidden">
+            {% include 'job/search_bar.html' %}
+          </div>
+          <div class="row loading justify-content-center align-items-center loading_img">
+            <img src="{% static "v2/images/loading_v2.gif" %}">
+          </div>
+          <div class="row nonefound" style="display:none;">
+              <img src="{% static "v2/images/shrug_bot.png" %}">
+              <h3>{% trans "No results found." %}</h3>
+              <p>{% trans "Please try another query" %}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="onboard-footer" class="row hidden font-body">
+      <div class="col-12">
+        <p>{% trans "Want to post a job ? " %}
+          <a target="_blank" rel="noopener noreferrer" href="{% url "job_new" %}">{% trans "Get Started!" %}</a>
+        </p>
+      </div>
+    </div>
+    {% include 'job/result.html' %}
+
+
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+    {% include 'shared/messages.html' %}
+
+    <script src="/dynamic/js/tokens_dynamic.js"></script>
+    <script src="{% static "v2/js/tokens.js" %}"></script>
+    <script src="{% static "v2/js/pages/jobs.js" %}"></script>
+
+  </body>
+</html>
