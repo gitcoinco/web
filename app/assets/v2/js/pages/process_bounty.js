@@ -37,13 +37,14 @@ window.onload = function() {
         return;
       }
 
-     };
+    };
 
-     var issueURL = $('input[name=issueURL]').val();
+    var issueURL = $('input[name=issueURL]').val();
 
-     waitforWeb3(function() {
+    waitforWeb3(function() {
       var uri = '/api/v0.1/bounties/?github_url=' + issueURL + '&network=' + document.web3network;
-       $.get(uri, fulfillmentCallback);
+
+      $.get(uri, fulfillmentCallback);
     });
 
     $('#goBack').click(function(e) {
