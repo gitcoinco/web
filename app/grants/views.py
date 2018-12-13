@@ -36,7 +36,7 @@ from django.views.decorators.csrf import csrf_exempt
 from dashboard.models import Profile
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.forms import MilestoneForm
-from grants.models import Grant, Milestone, Subscription, Update, Contribution
+from grants.models import Contribution, Grant, Milestone, Subscription, Update
 from marketing.mails import (
     grant_cancellation, new_grant, new_supporter, subscription_terminated, support_cancellation,
     thank_you_for_supporting,
