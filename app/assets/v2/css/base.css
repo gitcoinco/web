@@ -60,6 +60,8 @@ span {
 .navbar-nav .btn-gc-blue {
   margin-right: 1rem;
   font-size: 0.9rem;
+  padding-left: 1rem;
+  text-align: left;
 }
 
 .navbar-nav .dropdown-menu {
@@ -122,6 +124,10 @@ span {
 .modal {
   z-index: 9;
   border-radius: 4px !important;
+}
+
+.font-weight-semibold {
+  font-weight: 600;
 }
 
 #tutorials li{
@@ -528,6 +534,14 @@ p a {
 
 .loading_img img {
   max-width: 100px;
+}
+
+.grant .loading_img {
+  display: none;
+}
+
+.grant .loading_img.waiting-state {
+  display: flex;
 }
 
 .dashboard .body .experienence.unknown {

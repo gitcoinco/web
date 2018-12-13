@@ -263,7 +263,7 @@ $(document).ready(function() {
 
     // get kudosPrice from the HTML
     kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice'));
-    kudosPriceInWei = new web3.BigNumber(kudosPriceInEth * 1.0 * Math.pow(10, 18));
+    kudosPriceInWei = new web3.BigNumber((kudosPriceInEth * 1.0 * Math.pow(10, 18)).toString());
 
     var formData = {
       email: email,
@@ -504,7 +504,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
         console.log('destinationAccount:' + destinationAccount);
 
         var kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice')) || $('.kudos-search').select2('data')[0].price_finney;
-        var kudosPriceInWei = new web3.BigNumber(kudosPriceInEth * 1.0 * Math.pow(10, 18));
+        var kudosPriceInWei = new web3.BigNumber((kudosPriceInEth * 1.0 * Math.pow(10, 18)).toString());
 
         if (is_direct_to_recipient) {
           // Step 9
@@ -512,7 +512,8 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
           console.log('Using Kudos Direct Send (KDS)');
 
 
-          kudos_contract.clone(destinationAccount, tokenId, numClones, {from: account, value: kudosPriceInWei}, function(cloneError, cloneTxid) {
+          kudos_contract.clone(destinationAccount, tokenId, numClones, {from: account, value: kudosPriceInWei, gasPrice: web3.toHex(get_gas_price())
+          }, function(cloneError, cloneTxid) {
             // getLatestId yields the last kudos_id
             kudos_contract.getLatestId(function(error, kudos_id) {
               post_send_callback(cloneError, cloneTxid, kudos_id);
@@ -533,7 +534,8 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
             value: kudosPriceInWei.toString()
           };
 
-          kudos_contract.clone.estimateGas(destinationAccount, tokenId, numClones, {from: account, value: kudosPriceInWei}, function(err, kudosGasEstimate) {
+          kudos_contract.clone.estimateGas(destinationAccount, tokenId, numClones, {from: account, value: kudosPriceInWei, gasPrice: web3.toHex(get_gas_price())
+          }, function(err, kudosGasEstimate) {
             if (err) {
               unloading_button($('#send'));
               _alert('Got an error back from RPC node.  Please try again or contact support');

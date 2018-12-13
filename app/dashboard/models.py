@@ -1516,6 +1516,14 @@ class Activity(models.Model):
         ('bounty_removed_by_staff', 'Removed from Bounty by Staff'),
         ('bounty_removed_by_funder', 'Removed from Bounty by Funder'),
         ('new_crowdfund', 'New Crowdfund Contribution'),
+        # Grants
+        ('new_grant', 'New Grant'),
+        ('update_grant', 'Updated Grant'),
+        ('killed_grant', 'Cancelled Grant'),
+        ('new_grant_contribution', 'Contributed to Grant'),
+        ('killed_grant_contribution', 'Cancelled Grant Contribution'),
+        ('new_milestone', 'New Milestone'),
+        ('update_milestone', 'Updated Milestone'),
         ('new_kudos', 'New Kudos'),
     ]
 
@@ -2719,3 +2727,16 @@ class SearchHistory(SuperModel):
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
     data = JSONField(default=dict)
     ip_address = models.GenericIPAddressField(blank=True, null=True)
+
+
+class BlockedUser(SuperModel):
+    """Define the structure of the BlockedUser."""
+
+    handle = models.CharField(max_length=255, db_index=True, unique=True)
+    comments = models.TextField(default='', blank=True)
+    active = models.BooleanField(help_text=_('Is the block active?'))
+    user = models.OneToOneField(User, related_name='blocked', on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        """Return the string representation of a Bounty."""
+        return f'<BlockedUser: {self.handle}>'

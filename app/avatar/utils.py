@@ -75,8 +75,8 @@ def get_avatar_context():
             'name': 'Makeup',
             'title': 'Pick a makeup style',
             'options': (
-                'ziggy-stardust', 'bolt', 'star2', 'kiss', 'blush', 'eyeliner-green', 'eyeliner-teal',
-                'eyeliner-pink', 'eyeliner-red', 'eyeliner-blue', 'star',
+                'ziggy-stardust', 'bolt', 'star2', 'kiss', 'blush', 'eyeliner-green', 'eyeliner-teal', 'eyeliner-pink',
+                'eyeliner-red', 'eyeliner-blue', 'star',
             ),
             'paid_options': {
                 'ziggy-stardust': 0.02,
@@ -110,8 +110,8 @@ def get_avatar_context():
             'name': 'Clothing',
             'title': 'Pick your clothing',
             'options': (
-                'cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater', 'spacecadet',
-                'suit', 'ethlogo', 'cloak', 'robe', 'pjs',
+                'cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater', 'spacecadet', 'suit', 'ethlogo',
+                'cloak', 'robe', 'pjs',
             ),
             'paid_options': {
                 'robe': 0.01,
@@ -121,20 +121,18 @@ def get_avatar_context():
         }, {
             'name': 'Hair Style',
             'title': 'Pick a hairstyle',
-            'options': (
-                ['None', '0'], ['None', '1'], ['None', '2'], ['None', '3'], ['None', '4'],
-                ['5', 'None'], ['6-back', '6-front'], ['7-back', '7-front'], ['8-back', '8-front'],
-                ['9-back', '9-front'], ['None', '10'], ['damos_hair-back', 'damos_hair-front'],
-                ['long_swoosh-back', 'long_swoosh-front'], ['None', 'mohawk'], ['None', 'mohawk_inverted'],
-                ['None', 'spikey'],
-            ),
+            'options': (['None', '0'], ['None', '1'], ['None', '2'], ['None', '3'], ['None', '4'], ['5', 'None'], [
+                '6-back', '6-front'
+            ], ['7-back', '7-front'], ['8-back', '8-front'], ['9-back', '9-front'], ['None', '10'],
+                        ['damos_hair-back', 'damos_hair-front'], ['long_swoosh-back', 'long_swoosh-front'],
+                        ['None', 'mohawk'], ['None', 'mohawk_inverted'], ['None', 'spikey'],
+                        ),
             'paid_options': {},
         }, {
             'name': 'Facial Hair',
             'title': 'Pick a facial hair style',
             'options': (
-                'Mustache-0', 'Mustache-1', 'Mustache-2', 'Mustache-3', 'Beard-0', 'Beard-1', 'Beard-2',
-                'Beard-3',
+                'Mustache-0', 'Mustache-1', 'Mustache-2', 'Mustache-3', 'Beard-0', 'Beard-1', 'Beard-2', 'Beard-3',
             ),
             'paid_options': {},
         }, {
@@ -147,9 +145,11 @@ def get_avatar_context():
                 ['HatShort-tallbeanie'], ['HatShort-bunnyears'], ['HatShort-menorah'],
                 ['HatShort-pilgrim'], ['HatShort-santahat'], ['Earring-0'], ['Earring-1'],
                 ['EarringBack-2', 'Earring-2'], ['Earring-3'], ['Earring-4'], ['Masks-jack-o-lantern'],
-                ['Masks-guy-fawkes'], ['Masks-jack-o-lantern-lighted'], ['Masks-wolverine'],
-                ['Extras-Parrot'], ['Extras-wonderwoman'], ['Masks-gitcoinbot'],
-                ['Masks-batman'], ['Masks-eye-patch'], ['Masks-flash'],
+                ['Masks-guy-fawkes'], ['Masks-jack-o-lantern-lighted'], ['Masks-wolverine_inspired'],
+                ['Masks-captain_inspired'], ['Extras-Parrot'], ['Extras-wonderwoman_inspired'],
+                ['Extras-santa_inspired'], ['Extras-reindeer'], ['Masks-gitcoinbot'],
+                ['Masks-batman_inspired'], ['Masks-eye-patch'],
+                ['Masks-flash_inspired'], ['Masks-deadpool_inspired'],
             ),
             'paid_options': {
                 'Extras-Parrot': 0.01,
@@ -159,16 +159,16 @@ def get_avatar_context():
             'name': 'Background',
             'title': 'Pick a background color',
             'options': (
-                '25E899', '9AB730', '00A55E', '3FCDFF', '3E00FF', '8E2ABE', 'D0021B', 'F9006C', 'FFCE08',
-                'F8E71C', '15003E', 'FFFFFF',
+                '25E899', '9AB730', '00A55E', '3FCDFF', '3E00FF', '8E2ABE', 'D0021B', 'F9006C', 'FFCE08', 'F8E71C',
+                '15003E', 'FFFFFF',
             ),
             'paid_options': {},
         }, {
             'name': 'Wallpaper',
             'title': 'Pick some swag for your back',
             'options': (
-                'anchors', 'circuit', 'jigsaw', 'lines', 'gears', 'clouds', 'signal', 'polka_dots',
-                'polka_dots_black', 'squares', 'shapes', 'sunburst', 'sunburst_pastel', 'rainbow',
+                'anchors', 'circuit', 'jigsaw', 'lines', 'gears', 'clouds', 'signal', 'polka_dots', 'polka_dots_black',
+                'squares', 'shapes', 'sunburst', 'sunburst_pastel', 'rainbow',
             ),
             'paid_options': {
                 'sunburst_pastel': 0.01,
@@ -238,22 +238,28 @@ def build_avatar_component(path, icon_size=None, avatar_size=None):
     scale_factor = icon_size[1] / avatar_component_size[1]
     x_to_center = (icon_size[0] / 2) - ((avatar_component_size[0] * scale_factor) / 2)
     svg = SVG(f'{COMPONENT_BASE}{path}')
-    if path.startswith('Wallpaper'):
+    if path.startswith('Wallpaper') or path.startswith('Makeup'):
         src = transform.fromfile(f'{COMPONENT_BASE}{path}')
 
-        #       TODO: Consider width aswell...
-        #        if src.width != None:
-        #            src_width = float(re.sub('[^0-9]','', src.width))
-        #        else:
-        #            src_width = 900
+        if src.width is not None:
+            src_width = float(re.sub('[^0-9]', '', src.width))
+        else:
+            src_width = 900
 
         if src.height is not None:
             src_height = float(re.sub('[^0-9]', '', src.height))
         else:
             src_height = 1415
         scale_factor = icon_size[1] / src_height
+        if path.startswith('Makeup'):
+            scale_factor = scale_factor / 2
+
         svg = svg.scale(scale_factor)
-    if not path.startswith('Wallpaper'):
+        if path.startswith('Makeup'):
+            x_to_center = (icon_size[0] / 2) - ((src_width * scale_factor) / 2)
+            svg = svg.move(x_to_center, src_height * scale_factor / 2)
+
+    if not path.startswith('Wallpaper') and not path.startswith('Makeup'):
         svg = svg.scale(scale_factor)
         svg = svg.move(x_to_center, 0)
     return svg
