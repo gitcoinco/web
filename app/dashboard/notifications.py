@@ -211,7 +211,7 @@ def build_message_for_integration(bounty, event_name):
     from dashboard.utils import humanize_event_name
     event_name_in_msg = humanize_event_name(event_name)
     if event_name_in_msg == 'killed_bounty':
-        if (bounty.bulk_payout_tips.count()): 
+        if (bounty.bulk_payout_tips.count()):
             return False
     conv_details = ""
     usdt_details = ""
