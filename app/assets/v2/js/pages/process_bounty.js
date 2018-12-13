@@ -31,7 +31,7 @@ window.onload = function() {
       }
       results = sanitizeAPIResults(results);
       result = results[0];
-      if (result == null) {
+      if (result === null) {
         _alert({ message: gettext('No bounty fulfillments found for this Github URL.  Please use the advanced payout tool instead.') }, 'warning');
         unloading_button($('.submitBounty'));
         return;
