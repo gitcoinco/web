@@ -593,7 +593,7 @@ def leaderboard(request, key=''):
 
     keyword_search = request.GET.get('keyword')
 
-    order_by = 'amount' if not request.GET.get('orderby') else request.GET.get('orderby')
+    order_by = request.GET.get('orderby', '-amount')
 
     titles = {
         'quarterly_payers': _('Top Payers'),
@@ -623,8 +623,8 @@ def leaderboard(request, key=''):
         titles['quarterly_continents'] = _('Top Continents')
 
     order_by_labels = {
-        'amount': _('By Amount'),
-        'count': _('By No of Bounties'),
+        '-amount': _('By Amount'),
+        '-count': _('By No of Bounties'),
     }
 
     order_by = 'amount' if order_by not in order_by_labels.keys() else order_by
@@ -639,7 +639,7 @@ def leaderboard(request, key=''):
         ranks = LeaderboardRank.objects.filter(active=True, leaderboard=key)
 
     amount = ranks.values_list('amount').annotate(Max('amount')).order_by('-amount')
-    items = ranks.order_by(f'-{order_by}')
+    items = ranks.order_by(order_by)
     top_earners = ''
     technologies = set()
     for profile_keywords in ranks.values_list('tech_keywords'):
