@@ -15,27 +15,143 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n humanize static kudos_extras %}
+{% load i18n humanize %}
 {% block content %}
-  <h1>{% trans "Your weekly bounties recap" %}</h1>
-  <h2>{% trans "Hi" %} {{profile.handle}},
-    {% trans "here are the latest activities on your bounties: " %}</h2>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <style type="text/css">
+    .g-icon {
+      width: 1em;
+      height: 1em;
+      vertical-align: middle;
+      line-height: 1;
+    }
+
+    .g-icon:before {
+      content: '';
+      width: 1em;
+      height: 1em;
+      display: inline-block;
+    }
+
+    .g-icon__dot-circle:before {
+      border: 0.25em solid currentColor;
+      border-radius: 100px;
+    }
+    .status-open {
+      color: #00A652;
+      border-color: #D2D2D2;
+    }
+
+    .status-started {
+      color: #0D0764;
+      border-color: #D2D2D2;
+    }
+
+    .status-submitted {
+      color: #008EFF;
+      border-color: #D2D2D2;
+    }
+
+    .status-done {
+      color: #666666;
+      border-color: #D2D2D2;
+    }
+
+    .status-cancelled,
+    .status-expired {
+      color: #C70018;
+      border-color: #D2D2D2;
+    }
     
-  {% for section in sections %}
-    <h3><img src={% static section.header_icon %} alt="{{section.header_name}}"> {{section.header_name}}</h3>
-    <br />
-    {% for itm in section.items %}
-    <div class="section_row_entry">
-      <div class="section_row_bounty_logo">
-        <img src={{itm.bounty_image_url}} alt={{itm.bounty_name}}>
-      </div>
-      <div class="section_row_bounty_name">
-        {{ itm.bounty_name }}
-      </div>
-      <div class="section_row_bounty_link">
-        <a href={{item.bounty_link}}>{% trans "View bounty" %}</a>
-      </div>
-    </div>
-    {% endfor %}
-  {% endfor %}
+    .bold {
+      font-weight: bold;
+    }
+    .header {
+       /*width: 100%;*/
+       border-bottom: 1px solid; 
+       margin-top: 3em;
+    }
+    .leftAlign {
+      text-align: left;
+    }
+
+    .rightAlign {
+      text-align: right;
+    }
+    .imgGitcoinStyle {
+      max-height:50px; max-width:100%; border:2px solid #1AB56D; border-radius:100%;
+    }
+    .contentOverall { 
+      padding-bottom: 3em;
+      padding-top: 2em;
+    }
+    h1 {
+      padding-bottom: 1em;
+    }
+    .section_row_entry {
+      padding-bottom: 1.5em;
+      
+    }
+    body {
+      background-color: #f2f6f9;
+    }
+    .middlecenter {
+      display: flex;
+      justify-content: center; /* align horizontal */
+      align-items: center; /* align vertical */
+    }
+    
+    @media (max-width: 576px) {
+      .middlecenter-2 {
+        display: flex;
+        justify-content: center; /* align horizontal */
+        align-items: center; /* align vertical */
+      }
+    }
+    @media (min-width: 576px) {
+      
+      .middlecenter-2 {
+        text-align: left;
+        align-items: left;
+        justify-content: left;
+      }
+    }
+    .timeCol {
+      color: rgba(0,0,0,0.3);
+      font-size: smaller;
+    }
+  </style>
+  <div class="contentOverall">
+      <h1>{% trans "Your weekly bounties recap" %}</h1>
+      <div class="bold">{% trans "Hi" %} {{profile.handle}},</div>
+      <div>{% trans "here are the latest activities on your bounties: " %}({{ select_params.to }} - {{ select_params.from }})</div>
+    
+      {% for section in sections %}
+        <div class="{{section.header_css}} header leftAlign">
+          <i class="g-icon g-icon__dot-circle"></i>&nbsp;{{section.header_name}}
+        </div>
+        <br />
+        <div class="container">
+          {% for itm in section.items %}
+            <div class="section_row_entry row justify-content-md-center">
+              <div class="col-sm-2 middlecenter-2">
+                  <img src={{itm.bounty_image_url}} alt={{itm.bounty_name}} class="imgGitcoinStyle"> {{ itm.bounty_action_user }}
+              </div>
+              <div class="col-sm-4 middlecenter">
+                <span>
+                  {{ itm.bounty_name }}
+                </span>
+              </div>
+              <div class="col-sm-2 middlecenter timeCol">
+                {{ itm.bounty_action_date }}
+              </div>
+              <div class="col-sm-2 middlecenter">
+                <a href={{itm.bounty_link}}>{% trans "View bounty" %}</a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endfor %}
+  </div>
 {% endblock %}
+
