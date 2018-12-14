@@ -1292,7 +1292,7 @@
   - star
   - backend
   image: backend_star.svg
-- name: squahser_of_bugs
+- name: squasher_of_bugs
   description: A bug squasher makes bugs dissapear like magic.
   priceFinney: 4
   artist: mladen
