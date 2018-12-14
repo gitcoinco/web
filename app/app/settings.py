@@ -694,3 +694,6 @@ if ENABLE_SILK:
             'name': 'Index View',
         }]
     SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT = env.int('SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT', default=10)
+
+# Sending an email when a bounty is funded below a threshold
+LOWBALL_BOUNTY_THRESHOLD = env.float('LOWBALL_BOUNTY_THRESHOLD', default=10.00)
