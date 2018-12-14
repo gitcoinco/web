@@ -7,6 +7,6 @@ pytest-sugar==0.9.2
 coverage==4.5.2
 isort==4.3.4
 responses==0.10.4
-requests_mock==1.5.2
+requests_mock==1.5.3
 django-test-plus==1.1.1
 git+https://github.com/google/yapf.git#egg=yapf
