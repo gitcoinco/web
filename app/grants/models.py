@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 import logging
+from datetime import timedelta
 
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
@@ -369,8 +370,8 @@ class Subscription(SuperModel):
         if not self.subscription_contribution.exists():
             return True
         last_contribution = self.subscription_contribution.order_by('created_on').last()
-        period = self.real_period_seconds
-        return (last_contribution.created_on.timestamp() + period > (timezone.now()))
+        period = last_contribution.created_on + timedelta(0, round(self.real_period_seconds))
+        return period > timezone.now()
 
     def get_are_we_past_next_valid_timestamp(self):
         address = self.contributor_address
