@@ -38,6 +38,8 @@ def notifications(request):
                 all_notifications.append(new_notif)
             params['data'] = all_notifications
             params['has_next'] = all_pages.page(page).has_next()
+            params['num_notifications'] = all_pages.count
+            params['num_pages'] = all_pages.num_pages
         else:
             params['total_pages'] = all_pages.num_pages
         return JsonResponse(params, status=200, safe=False)
