@@ -34,7 +34,10 @@ $(document).ready(() => {
           deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(0)).send({from: accounts[0], gasPrice: 4000000000})
             .on('transactionHash', function(transactionHash) {
               $('#sub_end_approve_tx_id').val(transactionHash);
-
+              document.issueURL = document.querySelector('.grant-title a').href;
+              const linkURL = etherscan_tx_url(transactionHash);
+  
+              $('#transaction_url').attr('href', linkURL);
               enableWaitState('#grants_form');
 
               deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
