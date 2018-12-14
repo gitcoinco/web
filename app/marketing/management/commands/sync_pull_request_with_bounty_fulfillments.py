@@ -74,10 +74,13 @@ class Command(BaseCommand):
 
         return pr_ref_commit_url, pr_merged_commit_url
 
-    def _notify_funder(self, bounty, bounty_fulfillment):
+    def _notify_funder(self, bounty, bounty_fulfillment, live, deadline, escalated_deadline):
         try:
-            notified = self.notify_funder(
-                bounty.bounty_owner_email, bounty, bounty_fulfillment.fulfiller_github_username, options['live']
+            notified = funder_payout_reminder(
+                to_email=bounty.bounty_owner_email,
+                bounty=bounty,
+                github_username=bounty_fulfillment.fulfiller_github_username,
+                live=live
             )
             if bounty_fulfillment.created_on < deadline:
                 print('Posting github comment')
@@ -126,18 +129,16 @@ class Command(BaseCommand):
                 # --> The pull request that references the issue that a BountyFulfillment points to
 
                 pr_ref_commit_url, pr_merged_commit_url = self._get_pr_urls(actions)
-                notified = None
                 if pr_ref_commit_url and pr_merged_commit_url:
                     if pr_ref_commit_url == pr_merged_commit_url:
-                        if self._notify_funder(bounty, bounty_fulfillment):
+                        if self._notify_funder(
+                            bounty, bounty_fulfillment, options['live'], deadline, escalated_deadline
+                        ):
                             print('.\n Emailed.')
                             bounty_fulfillment.funder_last_notified_on = timezone.now()
                             bounty_fulfillment.save()
                         else:
                             print('Email failed')
-
-    def notify_funder(self, to_email, bounty, github_username, live):
-        return funder_payout_reminder(to_email=to_email, bounty=bounty, github_username=github_username, live=live)
 
     def handle(self, *args, **options):
         self.sync_pull_requests_with_bounty_fulfillments(options)
