@@ -345,18 +345,18 @@ class Subscription(SuperModel):
         null=True,
         help_text=_('The Subscription contributor\'s Profile.'),
     )
-    last_contribution_date = models.DateField(
+    last_contribution_date = models.DateTimeField(
         help_text=_('The last contribution date'),
         default=timezone.datetime(1990, 1, 1),
     )
-    next_contribution_date = models.DateField(
+    next_contribution_date = models.DateTimeField(
         help_text=_('The next contribution date'),
         default=timezone.datetime(1990, 1, 1),
     )
 
     def __str__(self):
         """Return the string representation of a Subscription."""
-        return f"id: {self.pk} / {self.grant.title} {self.token_symbol} / active: {self.active}"
+        return f"id: {self.pk} / {self.grant.title} {self.token_symbol} / active: {self.active} / next_contribution_date: {self.next_contribution_date}"
 
     def get_nonce(self, address):
         return self.grant.contract.functions.extraNonce(address).call() + 1
@@ -370,7 +370,7 @@ class Subscription(SuperModel):
             return True
         last_contribution = self.subscription_contribution.order_by('created_on').last()
         period = self.real_period_seconds
-        return (last_contribution.created_on.timestamp() + period > (timezone.now()))
+        return ((last_contribution.created_on.timestamp() + float(period)) < timezone.now().timestamp())
 
     def get_are_we_past_next_valid_timestamp(self):
         address = self.contributor_address
@@ -398,6 +398,7 @@ class Subscription(SuperModel):
         """Call the specified function fn"""
         from dashboard.utils import get_web3
         args = self.get_subscription_hash_arguments()
+        logger.info('args', args)
         tx = fn(
             args['from'],
             args['to'],
@@ -512,7 +513,7 @@ class Subscription(SuperModel):
         """Create a contribution object."""
         from marketing.mails import successful_contribution
         self.last_contribution_date = timezone.now()
-        self.next_contribution_date = timezone.now() + timezone.timedelta(seconds=int(self.real_period_seconds))
+        self.next_contribution_date = timezone.now() + timezone.timedelta(seconds=float(self.real_period_seconds))
         self.save()
         contribution_kwargs = {
             'tx_id': tx_id,
@@ -521,13 +522,13 @@ class Subscription(SuperModel):
         contribution = Contribution.objects.create(**contribution_kwargs)
         grant = self.grant
         try:
-            grant.amount_received = (
-                int(grant.amount_received) + int(convert_amount(
-                    self.amount_per_period,
-                    self.token_symbol,
-                    "USDT")
-                )
-            )
+            stuff = float(grant.amount_received) + float(convert_amount(
+                        self.amount_per_period,
+                        self.token_symbol,
+                        "USDT")
+                    )
+            print("stuff", stuff)
+            grant.amount_received = stuff
         except ConversionRateNotFoundError as e:
             logger.info(e)
 

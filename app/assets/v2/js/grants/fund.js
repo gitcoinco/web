@@ -60,9 +60,13 @@ $(document).ready(function() {
 
         $('#gas_price').val(realGasPrice);
 
-        let realApproval = Number(((data.approve * 10 ** decimals) + realGasPrice) * data.amount_per_period);
-
         let realTokenAmount = Number(data.amount_per_period * 10 ** decimals);
+
+        console.log('realTokenAmount', realTokenAmount);
+
+        let realApproval = Number((realTokenAmount + realGasPrice) * data.approve);
+
+        console.log('realApproval', realApproval);
 
         web3.eth.getAccounts(function(err, accounts) {
 
@@ -95,6 +99,8 @@ $(document).ready(function() {
                 web3.utils.toTwosComplement(realGasPrice), // data.gas_price
                 web3.utils.toTwosComplement(nonce) // nonce
               ];
+
+              console.log('parts', parts);
 
               deployedSubscription.methods.getSubscriptionHash(...parts).call(function(err, subscriptionHash) {
                 $('#subscription_hash').val(subscriptionHash);
