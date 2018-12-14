@@ -1,9 +1,7 @@
 import json
 from inbox.models import Notification
 from django.contrib.staticfiles.templatetags.staticfiles import static
-from django.shortcuts import render
 from django.template.response import TemplateResponse
-from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse, HttpResponseForbidden
@@ -121,7 +119,6 @@ def read_notifications(request):
         if 'read' in req_body:
             for i in req_body['read']:
                 entry = Notification.objects.filter(id=i)
-                #if entry.to_user_id.id == request.user.id and len(entry) != 0:
                 if len(entry) != 0:
                     obj = entry[0]
                     if obj.to_user_id.id == request.user.id:
