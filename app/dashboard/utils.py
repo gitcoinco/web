@@ -737,7 +737,6 @@ def get_nonce(network, address):
 
     new_nonce = max(nonce_from_db, nonce_from_web3)
 
-
     # update JSONStore
     JSONStore.objects.filter(key=key, view=view).all().delete()
     JSONStore.objects.create(key=key, view=view, data=[new_nonce])

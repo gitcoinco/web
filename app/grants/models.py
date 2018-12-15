@@ -522,11 +522,13 @@ class Subscription(SuperModel):
         contribution = Contribution.objects.create(**contribution_kwargs)
         grant = self.grant
         try:
-            grant.amount_received = float(grant.amount_received) + float(convert_amount(
-                        self.amount_per_period,
-                        self.token_symbol,
-                        "USDT")
-                    )
+            grant.amount_received = (
+                float(grant.amount_received) + float(convert_amount(
+                    self.amount_per_period,
+                    self.token_symbol,
+                    "USDT")
+                )
+            )
         except ConversionRateNotFoundError as e:
             logger.info(e)
 
