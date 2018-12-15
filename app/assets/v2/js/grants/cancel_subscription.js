@@ -37,6 +37,10 @@ $(document).ready(() => {
 
               enableWaitState('#grants_form');
 
+              deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
+
+                nonce = parseInt(nonce) + 1;
+
                 const parts = [
                   accounts[0], // subscriber address
                   data.admin_address, // admin_address
@@ -44,6 +48,7 @@ $(document).ready(() => {
                   web3.utils.toTwosComplement(realTokenAmount), // data.amount_per_period
                   web3.utils.toTwosComplement(data.real_period_seconds), // data.period_seconds
                   web3.utils.toTwosComplement(realGasPrice), // data.gas_price
+                  web3.utils.toTwosComplement(nonce), // nonce
                   data.signature // contributor_signature
                 ];
 
@@ -58,6 +63,7 @@ $(document).ready(() => {
                     console.log('receipt', receipt);
                     form.submit();
                   });
+              });
             })
             .on('confirmation', function(confirmationNumber, receipt) {
               console.log('receipt', receipt);

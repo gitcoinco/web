@@ -58,7 +58,6 @@ def convert_amount(from_amount, from_currency, to_currency, timestamp=None):
             from_currency=from_currency,
             to_currency=to_currency,
         ).order_by('-timestamp').first()
-        print('tell me', conversion_rate)
 
     if not conversion_rate:
         raise ConversionRateNotFoundError(f"ConversionRate {from_currency}/{to_currency} @ {timestamp} not found")

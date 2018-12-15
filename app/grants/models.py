@@ -358,6 +358,9 @@ class Subscription(SuperModel):
         """Return the string representation of a Subscription."""
         return f"id: {self.pk} / {self.grant.title} {self.token_symbol} / active: {self.active} / next_contribution_date: {self.next_contribution_date}"
 
+    def get_nonce(self, address):
+        return self.grant.contract.functions.extraNonce(address).call() + 1
+
     def get_next_valid_timestamp(self, address):
         return self.grant.contract.functions.nextValidTimestamp(address).call()
 
@@ -383,6 +386,7 @@ class Subscription(SuperModel):
             args['tokenAmount'],
             args['periodSeconds'],
             args['gasPrice'],
+            args['nonce'],
             args['signature'],
         ).call()
 
@@ -402,6 +406,7 @@ class Subscription(SuperModel):
             args['tokenAmount'],
             args['periodSeconds'],
             args['gasPrice'],
+            args['nonce'],
             args['signature'],
         ).buildTransaction(
             self.helper_tx_dict(minutes_to_confirm_within)
@@ -427,6 +432,10 @@ class Subscription(SuperModel):
     def helper_tx_dict(self, minutes_to_confirm_within=5):
         """returns a dict like this: {'to': '0xd3cda913deb6f67967b99d67acdfa1712c293601', 'from': web3.eth.coinbase, 'value': 12345}"""
         from dashboard.utils import get_nonce
+        from dashboard.utils import get_web3
+        web3 = get_web3(self.grant.network)
+        print("web3_contributor +1", self.grant.contract.functions.extraNonce('0x43c7F23008563B02C206eCebdD4147fFF9748346').call() + 1)
+        print('web3_miner + 1', self.grant.contract.functions.extraNonce(settings.GRANTS_OWNER_ACCOUNT).call())
         print('tx_nonce', get_nonce(self.grant.network, settings.GRANTS_OWNER_ACCOUNT))
         return {
             'from': settings.GRANTS_OWNER_ACCOUNT,
@@ -456,6 +465,7 @@ class Subscription(SuperModel):
             tokenAmount (float): Subscription.amount_per_period
             periodSeconds (int): real_period_seconds in the Subscription model
             gasPrice (float): Subscription.gas_price
+            nonce (int): The nonce is stored in the Contribution model. its created / managed by sync_geth
             signature (str): Subscription.contributor_signature
 
         Returns:
@@ -473,8 +483,11 @@ class Subscription(SuperModel):
         tokenAmount = subs.amount_per_period
         periodSeconds = subs.real_period_seconds
         gasPrice = subs.gas_price
+        nonce = subs.get_nonce(_from)
         signature = subs.contributor_signature
 
+        print('nonce_from', subs.get_nonce(_from))
+        # TODO - figure out the number of decimals
         token = addr_to_token(subs.token_address, subs.grant.network)
         decimals = token.get('decimals', 0)
 
@@ -485,6 +498,7 @@ class Subscription(SuperModel):
             'tokenAmount': int(tokenAmount * 10**decimals),
             'periodSeconds': int(periodSeconds),
             'gasPrice': int(gasPrice),
+            'nonce': int(nonce),
             'signature': signature,
         }
 
@@ -497,7 +511,8 @@ class Subscription(SuperModel):
             Web3.toChecksumAddress(args['tokenAddress']),
             args['tokenAmount'],
             args['periodSeconds'],
-            args['gasPrice']
+            args['gasPrice'],
+            args['nonce'],
             ).call()
 
     def successful_contribution(self, tx_id):
