@@ -17,7 +17,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-import json
 import logging
 import os
 import re
@@ -240,7 +239,8 @@ def get_svg_template(category, item, primary_color, secondary_color=''):
 
 
 def build_avatar_component(path, icon_size=None, avatar_size=None):
-    icon_size = icon_size or (215, 215)
+    from .models import BaseAvatar
+    icon_size = icon_size or BaseAvatar.ICON_SIZE
     avatar_component_size = avatar_size or (899.2, 1415.7)
     scale_factor = icon_size[1] / avatar_component_size[1]
     x_to_center = (icon_size[0] / 2) - ((avatar_component_size[0] * scale_factor) / 2)
@@ -280,7 +280,8 @@ def build_temporary_avatar_component(
     component_type='cardigan',
     component_category='clothing'
 ):
-    icon_size = icon_size or (215, 215)
+    from .models import BaseAvatar
+    icon_size = icon_size or BaseAvatar.ICON_SIZE
     avatar_component_size = avatar_size or (899.2, 1415.7)
     scale_factor = icon_size[1] / avatar_component_size[1]
     x_to_center = (icon_size[0] / 2) - ((avatar_component_size[0] * scale_factor) / 2)
@@ -299,7 +300,8 @@ def build_temporary_avatar_component(
 
 
 def build_avatar_svg(svg_path='avatar.svg', line_color='#781623', icon_size=None, payload=None, temp=False):
-    icon_size = icon_size or (215, 215)
+    from .models import BaseAvatar
+    icon_size = icon_size or BaseAvatar.ICON_SIZE
     icon_width = icon_size[0]
     icon_height = icon_size[1]
 
@@ -307,7 +309,7 @@ def build_avatar_svg(svg_path='avatar.svg', line_color='#781623', icon_size=None
         # Sample payload
         payload = {
             'background_color': line_color,
-            'icon_size': (215, 215),
+            'icon_size': BaseAvatar.ICON_SIZE,
             'avatar_size': None,
             'skin_tone': '#3F2918',
             'ears': {
@@ -372,7 +374,7 @@ def build_avatar_svg(svg_path='avatar.svg', line_color='#781623', icon_size=None
     return result_path
 
 
-def handle_avatar_payload(request):
+def handle_avatar_payload(body):
     """Handle the Avatar payload."""
     avatar_dict = {}
     valid_component_keys = [
@@ -380,7 +382,6 @@ def handle_avatar_payload(request):
         'HatLong', 'HatShort', 'Head', 'Mouth', 'Mustache', 'Nose', 'Extras', 'Wallpaper', 'Makeup'
     ]
     valid_color_keys = ['Background', 'ClothingColor', 'HairColor', 'SkinTone']
-    body = json.loads(request.body)
     for k, v in body.items():
         if v and k in valid_component_keys:
             component_type, svg_asset = v.lstrip(f'{settings.STATIC_URL}v2/images/avatar/').split('/')
@@ -459,7 +460,25 @@ def get_err_response(request, blank_img=False):
     return err_response
 
 
-def get_temp_image_file(url):
+def get_user_github_avatar_image(handle):
+    remote_user = get_user(handle)
+    avatar_url = remote_user.get('avatar_url')
+    if not avatar_url:
+        return None
+    from .models import BaseAvatar
+    temp_avatar = get_github_avatar_image(avatar_url, BaseAvatar.ICON_SIZE)
+    if not temp_avatar:
+        return None
+    return temp_avatar
+
+
+def get_github_avatar_image(url, icon_size):
+    response = requests.get(url)
+    img = Image.open(BytesIO(response.content)).convert('RGBA')
+    return ImageOps.fit(img, icon_size, Image.ANTIALIAS)
+
+
+def get_temp_image_file(image):
     """Fetch an image from a remote URL and hold in temporary IO.
 
     Args:
@@ -471,32 +490,11 @@ def get_temp_image_file(url):
     """
     temp_io = None
     try:
-        response = requests.get(url)
-        img = Image.open(BytesIO(response.content)).convert('RGBA')
         temp_io = BytesIO()
-        img.save(temp_io, format='PNG')
+        image.save(temp_io, format='PNG')
     except Exception as e:
         logger.error(e)
     return temp_io
-
-
-def get_github_avatar(handle):
-    """Pull the latest avatar from Github and store in Avatar.png.
-
-    Returns:
-        bool: Whether or not the Github avatar was updated.
-
-    """
-    remote_user = get_user(handle)
-    avatar_url = remote_user.get('avatar_url')
-    if not avatar_url:
-        return False
-
-    temp_avatar = get_temp_image_file(avatar_url)
-    if not temp_avatar:
-        return False
-
-    return temp_avatar
 
 
 def convert_img(obj, input_fmt='svg', output_fmt='png'):
@@ -557,3 +555,29 @@ def convert_wand(img_obj, input_fmt='png', output_fmt='svg'):
             output_fmt
         )
     return None
+
+
+def dhash(image, hash_size=8):
+    # https://blog.iconfinder.com/detecting-duplicate-images-using-python-cb240b05a3b6
+    # Grayscale and shrink the image in one step.
+    image = image.convert('L').resize(
+        (hash_size + 1, hash_size),
+        Image.ANTIALIAS,
+    )
+    # Compare adjacent pixels.
+    difference = []
+    for row in range(hash_size):
+        for col in range(hash_size):
+            pixel_left = image.getpixel((col, row))
+            pixel_right = image.getpixel((col + 1, row))
+            difference.append(pixel_left > pixel_right)
+    # Convert the binary array to a hexadecimal string.
+    decimal_value = 0
+    hex_string = []
+    for index, value in enumerate(difference):
+        if value:
+            decimal_value += 2 ** (index % 8)
+        if (index % 8) == 7:
+            hex_string.append(hex(decimal_value)[2:].rjust(2, '0'))
+            decimal_value = 0
+    return ''.join(hex_string)

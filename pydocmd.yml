@@ -21,8 +21,6 @@ generate:
     - app.utils++
   - avatar/admin.md:
     - avatar.admin++
-  - avatar/exceptions.md:
-    - avatar.exceptions++
   - avatar/models.md:
     - avatar.models++
   - avatar/utils.md:
