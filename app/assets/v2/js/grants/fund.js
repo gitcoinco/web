@@ -86,9 +86,6 @@ $(document).ready(function() {
             document.issueURL = window.location.origin + $('#grant-link').val();
             enableWaitState('#grants_form');
             // Should add approval transactions to transaction history
-            deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
-
-              nonce = parseInt(nonce) + 1;
 
               const parts = [
                 web3.utils.toChecksumAddress(accounts[0]), // subscriber address
@@ -96,19 +93,18 @@ $(document).ready(function() {
                 web3.utils.toChecksumAddress(selected_token), // token denomination / address
                 web3.utils.toTwosComplement(realTokenAmount), // data.amount_per_period
                 web3.utils.toTwosComplement(realPeriodSeconds), // data.period_seconds
-                web3.utils.toTwosComplement(realGasPrice), // data.gas_price
-                web3.utils.toTwosComplement(nonce) // nonce
+                web3.utils.toTwosComplement(realGasPrice) // data.gas_price
               ];
 
               console.log('parts', parts);
 
               deployedSubscription.methods.getSubscriptionHash(...parts).call(function(err, subscriptionHash) {
+                console.log('err', err);
                 $('#subscription_hash').val(subscriptionHash);
                 web3.eth.personal.sign('' + subscriptionHash, accounts[0], function(err, signature) {
                   $('#signature').val(signature);
                 });
               });
-            });
           }).on('confirmation', function(confirmationNumber, receipt) {
             $('#real_period_seconds').val(realPeriodSeconds);
 
