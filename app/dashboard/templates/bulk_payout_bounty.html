@@ -96,6 +96,14 @@
                     <p>{% trans "You are not paying using bounty funds. The amount of " %}<span id="total_tip_overage"></span> {% trans "will be paid from your metamask wallet ending in ..." %}<span id="address_tip_ending"></span></p>
                   </div>
                 </div>
+                <div class="w-100 paymentAlert asyncAlert">
+                  <div>
+                    <img src="{% static "v2/images/warning.svg" %}">
+                  </div>
+                  <div>
+                    <p>{% trans "Note: The refund and payout from bounty funds will be processed as asynchronous transactions, which means the payout will not happen until the refund transaction is confirmed. If you would like the payout to occur immediately, you must have the payout amount available in your wallet." %}</p>
+                  </div>
+                </div>
                 <div class="w-100 my-3">
                   <label for=bountyFulfillment>{% trans "Payout" %}</label>
                   <label id="tooltip" class="ethinfo-hover">{% trans "Where is my Eth going? " %}<i class='fa fa-info-circle'></i></label>
