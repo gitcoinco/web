@@ -735,10 +735,7 @@ def get_nonce(network, address):
     except:
         pass
 
-    print('db_nonce miner', nonce_from_db)
-    print('web3_nonce miner', nonce_from_web3)
-    # new_nonce = max(nonce_from_db, nonce_from_web3)
-    new_nonce = nonce_from_web3
+    new_nonce = max(nonce_from_db, nonce_from_web3)
 
 
     # update JSONStore

@@ -356,7 +356,7 @@ class Subscription(SuperModel):
 
     def __str__(self):
         """Return the string representation of a Subscription."""
-        return f"id: {self.pk} / {self.grant.title} {self.token_symbol} / active: {self.active} / next_contribution_date: {self.next_contribution_date}"
+        return f"id: {self.pk} / {self.grant.title} {self.token_symbol} / active: {self.active}"
 
     def get_nonce(self, address):
         return self.grant.contract.functions.extraNonce(address).call() + 1
@@ -398,7 +398,6 @@ class Subscription(SuperModel):
         """Call the specified function fn"""
         from dashboard.utils import get_web3
         args = self.get_subscription_hash_arguments()
-        print('args', args)
         tx = fn(
             args['from'],
             args['to'],
@@ -432,11 +431,6 @@ class Subscription(SuperModel):
     def helper_tx_dict(self, minutes_to_confirm_within=5):
         """returns a dict like this: {'to': '0xd3cda913deb6f67967b99d67acdfa1712c293601', 'from': web3.eth.coinbase, 'value': 12345}"""
         from dashboard.utils import get_nonce
-        from dashboard.utils import get_web3
-        web3 = get_web3(self.grant.network)
-        print("web3_contributor +1", self.grant.contract.functions.extraNonce('0x43c7F23008563B02C206eCebdD4147fFF9748346').call() + 1)
-        print('web3_miner + 1', self.grant.contract.functions.extraNonce(settings.GRANTS_OWNER_ACCOUNT).call())
-        print('tx_nonce', get_nonce(self.grant.network, settings.GRANTS_OWNER_ACCOUNT))
         return {
             'from': settings.GRANTS_OWNER_ACCOUNT,
             'nonce': get_nonce(self.grant.network, settings.GRANTS_OWNER_ACCOUNT),
@@ -486,7 +480,6 @@ class Subscription(SuperModel):
         nonce = subs.get_nonce(_from)
         signature = subs.contributor_signature
 
-        print('nonce_from', subs.get_nonce(_from))
         # TODO - figure out the number of decimals
         token = addr_to_token(subs.token_address, subs.grant.network)
         decimals = token.get('decimals', 0)
@@ -528,13 +521,11 @@ class Subscription(SuperModel):
         contribution = Contribution.objects.create(**contribution_kwargs)
         grant = self.grant
         try:
-            stuff = float(grant.amount_received) + float(convert_amount(
+            grant.amount_received = float(grant.amount_received) + float(convert_amount(
                         self.amount_per_period,
                         self.token_symbol,
                         "USDT")
                     )
-            print("stuff", stuff)
-            grant.amount_received = stuff
         except ConversionRateNotFoundError as e:
             logger.info(e)
 

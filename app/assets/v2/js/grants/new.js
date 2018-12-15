@@ -70,8 +70,6 @@ $(document).ready(function() {
         web3.utils.toTwosComplement(0)
       ];
 
-      console.log('args', args);
-
       web3.eth.getAccounts(function(err, accounts) {
         web3.eth.net.getId(function(err, network) {
           SubscriptionContract.deploy({
