@@ -81,11 +81,6 @@
   flex-wrap: wrap;
 }
 
-.lab-cards {
-  display: flex;
-  flex-wrap: wrap;
-}
-
 .card {
   background: #fff;
   border-radius: 6px;
