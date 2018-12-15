@@ -175,7 +175,7 @@ class LeaderboardRankQuerySet(models.QuerySet):
 
     def active(self):
         """Filter results to only active LeaderboardRank objects."""
-        return self.select_related('profile', 'profile__avatar').filter(active=True)
+        return self.select_related('profile').filter(active=True)
 
 
 class LeaderboardRank(SuperModel):
@@ -225,8 +225,8 @@ class LeaderboardRank(SuperModel):
             pk = self.github_username.split('/')[4]
             from kudos.models import Token
             return Token.objects.get(pk=pk).img_url
-        if self.profile and self.profile.avatar:
-            return self.profile.avatar.get_avatar_url()
+        if self.profile and self.profile.active_avatar:
+            return self.profile.active_avatar.get_avatar_url()
         key = self.github_username
 
         # these two types won't have images

@@ -352,7 +352,7 @@ function saveAvatar() {
   $('#later-button').hide();
 
   var request = $.ajax({
-    url: '/avatar/save',
+    url: '/avatar/custom/save',
     type: 'POST',
     data: JSON.stringify(options),
     dataType: 'json',
@@ -361,9 +361,14 @@ function saveAvatar() {
       _alert({ message: gettext('Your Avatar Has Been Saved To your Gitcoin Profile!')}, 'success');
       changeStep(1);
     },
-    error: function() {
+    error: function(response) {
+      let text = gettext('Error occurred while saving. Please try again.');
+
+      if (response.responseJSON && response.responseJSON.message) {
+        text = response.responseJSON.message;
+      }
       $('#later-button').show();
-      _alert({ message: gettext('Error occurred while saving. Please try again.')}, 'error');
+      _alert({ message: text}, 'error');
     }
   });
 }
