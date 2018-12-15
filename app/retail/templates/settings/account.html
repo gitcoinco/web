@@ -51,6 +51,30 @@
     border: 0.2rem solid #1AB56D;
   }
 </style>
+<script src="https://unpkg.com/3box/dist/3box.js"></script>
+<script>
+  function load3BoxAccount(){
+    var ethVal = $("input.form__input").val();
+    Box.getProfile(ethVal).then(profile => {
+      console.log(profile)
+    }).catch(err => { console.log("no account");})
+  }
+  var boxObj;
+  function saveAvatarTo3BoxAccount(){
+    var ethVal = $("input.form__input").val();
+    Box.openBox(ethVal, web3.currentProvider).then(saveStep2);
+  }
+  function saveStep2(box){
+    boxObj = box;
+    box.onSyncDone(saveStep3);
+  }
+  function saveStep3(){
+    boxObj.public.set('gitcoin.avatar', '/ipfs/QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ/cat.jpg').then(success =>{ 
+      console.log("Did writing this succeed? "+success);
+      boxObj.close();
+    });
+  }
+</script>
 <form id="settings" method="POST">
   <div class="form-group">
     <h5>{% trans "ETH Account Preferences" %}</h5>
@@ -75,7 +99,17 @@
           <i class="mr-2 fab fa-github"></i>{% trans "Use Github Avatar" %}
         </button>
       </div>
-      <div class="col-12">
+      <!--<div class="col-12 mt-2 mb-2">
+        <button id="load_3box" type="button" class="button button--primary-o" onclick="load3BoxAccount()">
+          <i class="mr-2 fab fa-github"></i>{% trans "Use 3Box Avatar" %}
+        </button>
+      </div>-->
+      <div class="col-12 mt-2 mb-2">
+        <button id="save_3box" type="button" class="button button--primary-o" onclick="saveAvatarTo3BoxAccount()">
+          <i class="mr-2 fab fa-github"></i>{% trans "Upload avatar to 3Box" %}
+        </button>
+      </div>
+      <div class="col-12 mt-2">
         <form id="build_avatar" method="GET" action="/onboard/contributor">
           {% csrf_token %}
           <input type="hidden" name="steps" value="avatar" />
