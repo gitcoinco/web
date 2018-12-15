@@ -87,6 +87,11 @@ body {
   height: 115px;
 }
 
+.lab-cards {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .lab-card {
   background: #fff;
   border-radius: 6px;

@@ -44,7 +44,7 @@
             <h3 class="sub-title mb-4 dark-text">{% trans "Latest Research" %}</h3>
             <div class="cards">
               {% for lab in labs %}
-                <div class="lab-card col-10 col-sm-8 col-md-5 mx-auto col-xl-4" id="{{ lab.title }}">
+                <div class="lab-card col-10 col-sm-6 col-md-5 col-xl-3" id="{{ lab.title }}">
                   <div class="img">
                     {% if lab.image.url %}
                       <img src="{{ lab.image.url }}"/>
