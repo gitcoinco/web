@@ -35,21 +35,24 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - deps37-{{ .Branch }}-{{ checksum "requirements/base.txt" }}
+          - deps37-{{ .Branch }}-{{ checksum "requirements/base.txt" }}-alpine
           # fallback to using the latest cache if no exact match is found
-          - deps37-{{ .Branch }}-
+          - deps37-{{ .Branch }}-alpine
 
       - run:
           name: install dependencies
           command: |
-            which python
-            echo "$PWD"
+            echo "Using Python: $(which python)"
+            echo "Working Directory: $PWD"
             python -m venv venv
+            echo "Activating virtualenv..."
             . venv/bin/activate
+            echo "Installing requirements..."
             pip install -r requirements/test.txt
+            echo "Requirements installed!"
 
       - save_cache:
-          key: deps37-{{ .Branch }}-{{ checksum "requirements/base.txt" }}
+          key: deps37-{{ .Branch }}-{{ checksum "requirements/base.txt" }}-alpine
           paths:
             - ./venv
             - "/usr/local/bin"
@@ -63,8 +66,10 @@ jobs:
       - run:
           name: run tests
           command: |
+            echo "Activating environment for tests..."
             . venv/bin/activate
             cd ~/web/app
+            echo "Running pytest..."
             pytest -p no:ethereum
       - store_test_results:
           path: test-results

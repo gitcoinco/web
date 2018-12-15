@@ -113,9 +113,12 @@ $(document).ready(function() {
       web3.eth.getAccounts(function(err, accounts) {
         deployedSubscription.methods.endContract()
           .send({from: accounts[0], gasPrice: 4000000000})
-          .on('transactionHash', function() {
+          .on('transactionHash', function(transactionHash) {
             grant_cancel_tx_id = $('#grant_cancel_tx_id').val();
             document.issueURL = document.getElementById('form--input__reference-url').value;
+            const linkURL = etherscan_tx_url(transactionHash);
+
+            $('#transaction_url').attr('href', linkURL);
             $('.modal .close').trigger('click');
             enableWaitState('#grants-details');
           })

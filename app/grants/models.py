@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 import logging
+from datetime import timedelta
 
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
