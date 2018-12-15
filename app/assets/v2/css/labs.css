@@ -1,5 +1,5 @@
 body {
-  color: var(--text-dark);  
+  color: var(--text-dark);
 }
 
 .navbar {
@@ -8,7 +8,7 @@ body {
 
 .navbar-nav > .img__spaceship {
   display: none !important;
-}  
+}
 
 .lab-hero-bg {
   position: relative;
@@ -22,9 +22,9 @@ body {
   height: 500px;
   width: 500px;
 }
-  
+
 .lab-hero-container {
-  position: relative; 
+  position: relative;
   overflow-y: hidden;
 }
 
@@ -71,7 +71,48 @@ body {
 }
 
 .card {
-  height: 270px;
+  height: 19rem;
+}
+
+.card .content {
+  min-height: 5rem;
+}
+
+.card .content .title {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.card img {
+  height: 115px;
+}
+
+.lab-card {
+  background: #fff;
+  border-radius: 6px;
+  display: inline-block;
+  margin: 1em 2em 1em 0;
+  position: relative;
+  border: 1px solid #D3D3D3;
+}
+
+.lab-card .content {
+  margin: 15px 20px;
+  min-height: 170px;
+  position: relative;
+}
+
+.lab-card .content .title {
+  color: rgb(7, 7, 7);
+}
+
+.lab-card .img {
+  overflow-y: hidden;
+  text-align: center;
+}
+
+.lab-card img {
+  width: 100%;
 }
 
 .magenta-link {
@@ -121,11 +162,15 @@ body {
     text-align: center;
   }
 
-  .space {
-    display: none;
-  }
-
   .social {
     margin-top: 0.2rem;
+  }
+
+  .lab-cards {
+    justify-content: center;
+  }
+
+  .lab-card {
+    margin: 1em;
   }
 }

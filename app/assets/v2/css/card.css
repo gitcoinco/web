@@ -94,24 +94,7 @@
   margin: 1em 2em 1em 0;
   position: relative;
   width: 240px;
-  box-shadow: 0 0px 2px rgba(0, 0, 0, 0.12), 0 1px 1px rgba(0, 0, 0, 0.24);
-  transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
-}
-
-.lab-card {
-  background: #fff;
-  border-radius: 6px;
-  display: inline-block;
-  height: 420px;
-  margin: 1em 2em 1em 0;
-  position: relative;
-  width: 360px;
-  box-shadow: 0 0px 2px rgba(0, 0, 0, 0.12), 0 1px 1px rgba(0, 0, 0, 0.24);
-  transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
-}
-
-.card:hover .lab-card:hover {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25), 0 1px 1px rgba(0, 0, 0, 0.22);
+  border: 1px solid #D3D3D3;
 }
 
 .card .img {
@@ -131,18 +114,6 @@
   margin: 15px 20px;
   min-height: 160px;
   position: relative;
-}
-
-.lab-card .content {
-  margin: 15px 20px;
-  min-height: 170px;
-  position: relative;
-}
-
-.lab-card .content .title {
-  margin-bottom: 10px;
-  color: rgb(7, 7, 7);
-  font-size: 1.43rem;
 }
 
 .card .content .title {
@@ -172,13 +143,4 @@
   .card {
     margin: 1em;
   }
-
-  .lab-cards {
-    justify-content: center;
-  }
-
-  .lab-card {
-    margin: 1em;
-  }
-  
 }
