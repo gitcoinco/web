@@ -685,26 +685,25 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Introducing Gitcoin Ambassadors | MetaTX Grows"
-    new_kudos_pks = [486, 485, 484]
+    subject = "Announcing Open Kudos | MVPayment Channels"
+    new_kudos_pks = [813, 811, 810]
     new_kudos_size_px = 150
     intro = '''
 <p>
 Hi there,
 </p>
 <p>
-This week, we welcomed <a href="https://medium.com/gitcoin/introducing-the-gitcoin-ambassadors-7eddb5f4d507">eight fantastic Gitcoin ambassadors to the Gitcoin community.</a>
-Each of these people has organically proved themselves to be a valuable part of the Gitcoin community,
-all behind the mission to grow and sustain open source. We're grateful for the opportunity to provide a platform
-from where they can contribute their vision to our shared, open, future. Say hello to them on Gitcoin Slack.
+We're excited to announce <a href="https://medium.com/gitcoin/announcing-open-kudos-e437450f7802">Open Kudos</a>, an easy way
+for any dApp to integrate Kudos, the NFT marketplace for compliments, into your project. We think it's a unique way to spread culture,
+joy, and community with the people who have moved your project forward. Please reach out if you're interested in integration!
 </p>
 <p>
-In blockchain UX world, Gitcoin Labs is continuing it's industry leading work. Austin Griffith's post on native MetaTX's within smart contracts is a must read
-for anyone interested in 'gas-less' dApps. <a href="https://medium.com/gitcoin/native-meta-transactions-e509d91a8482">Check it out!</a>
+Gitcoin Labs director Austin Griffith put out another tutorial last week on Minimum Viable Payment Channels. <a href="https://twitter.com/austingriffith/status/1071075739473108992">Check it out</a> and
+give him a follow if you'd like to see more!
 </p>
 <h3>New Kudos This Week</h3>
 <p>
-Check out a few of the new kudos launched this week:
+Happy Holidays from all of us at Gitcoin!
 </p>
 <p>
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
@@ -712,10 +711,10 @@ Check out a few of the new kudos launched this week:
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Gitcoin is hiring for a Principal Engineer. Know a superstar Python/Django engineer? <a href="https://consensys.net/open-roles/1333457/">Send him or her our way!</a>
+            _Whose Future Is It? Cellarius Stories, Volume I_ launched yesterday. It's free with a MetaMask login and is a worthwhile look into a cypherpunk future. <a href="https://cellarius.network/whose-future-is-it/">Read it here.</a>
         </li>
         <li>
-            Gitcoin Livestream is back this week! Hear more about Gnosis Safe + another project to be named. Join us <a href="https://gitcoin.co/livestream">Friday at 5PM ET</a>!
+            Gitcoin Livestream is on as usual this week! Join us <a href="https://gitcoin.co/livestream">Friday at 5PM ET</a>!
         </li>
     </ul>
 </p>
@@ -725,34 +724,34 @@ Thanks for reading! Back to BUIDLing,
 
 '''
     highlights = [{
-        'who': 'bhargavasomu',
+        'who': 'tbenr',
         'who_link': True,
-        'what': 'Worked on py-szz with the Ethereum Foundation',
-        'link': 'https://gitcoin.co/issue/ethereum/py-ssz/1/1878',
+        'what': 'Worked on Status React.',
+        'link': 'https://gitcoin.co/issue/status-im/status-react/6866/1876',
         'link_copy': 'View more',
     }, {
-        'who': 'dylanjw',
+        'who': 'gusilverflame',
         'who_link': True,
-        'what': 'Great work on Status React!',
-        'link': 'https://gitcoin.co/issue/status-im/status-react/6199/1865',
+        'what': 'Worked with POA Network on Blockscout!',
+        'link': 'https://gitcoin.co/issue/poanetwork/blockscout/1106/1877',
         'link_copy': 'View more',
     }, {
-        'who': 'cryptomental',
+        'who': 'zyfrank',
         'who_link': True,
-        'what': 'Completed work on Py-EVM with their core team!',
-        'link': 'https://gitcoin.co/issue/ethereum/py-evm/1472/1769',
+        'what': 'Good work with Centrifuge on Precise Proofs.',
+        'link': 'https://gitcoin.co/issue/centrifuge/precise-proofs/33/1907',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/ethereum/py-ssz/issues/4',
-        'primer': 'Serialization and Deserialization of Remaining Base Types.',
+        'url': 'https://github.com/ethereum-ts/TypeChain/issues/109',
+        'primer': 'Work on TypeChain with Scott and team.',
     }, {
-        'url': 'https://github.com/trailofbits/slither/issues/85',
-        'primer': 'Improve Remix plugin on Trail Of Bits!',
+        'url': 'https://github.com/VolcaTech/cryptoxmas.xyz/issues/77',
+        'primer': 'A smart contract bug bounty for Crypto X-Mas!',
     }, {
-        'url': 'https://github.com/spacemeshos/POET/issues/20',
-        'primer': 'Add interoperability tests on Spash Mesh OS!',
+        'url': 'https://github.com/cybercongress/cyb/issues/86',
+        'primer': 'Integrate EOS into Cyber Congress!',
     }, ]
 
     num_leadboard_items = 5
