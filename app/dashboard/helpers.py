@@ -29,7 +29,7 @@ from django.db import transaction
 from django.http import Http404, JsonResponse
 from django.utils import timezone
 
-from app.utils import sync_profile
+from app.utils import get_semaphore, sync_profile
 from dashboard.models import Activity, Bounty, BountyFulfillment, BountySyncRequest, UserAction
 from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
@@ -41,6 +41,7 @@ from git.utils import get_gh_issue_details, get_url_dict
 from jsondiff import diff
 from pytz import UTC
 from ratelimit.decorators import ratelimit
+from redis_semaphore import NotAvailable as SemaphoreExists
 
 from .models import Profile
 
@@ -502,18 +503,19 @@ def process_bounty_details(bounty_details):
         tuple[2] (dashboard.models.Bounty): The new Bounty object.
 
     """
+    from dashboard.utils import get_bounty_semaphore_ns
     # See dashboard/utils.py:get_bounty from details on this data
     bounty_id = bounty_details.get('id', {})
     bounty_data = bounty_details.get('data') or {}
     bounty_payload = bounty_data.get('payload', {})
     meta = bounty_data.get('meta', {})
 
-    # what schema are we workign with?
+    # what schema are we working with?
     schema_name = meta.get('schemaName')
     schema_version = meta.get('schemaVersion', 'Unknown')
     if not schema_name or schema_name != 'gitcoinBounty':
-        raise UnsupportedSchemaException(
-            f'Unknown Schema: Unknown - Version: {schema_version}')
+        logger.info('Unknown Schema: Unknown - Version: %s', schema_version)
+        return (False, None, None)
 
     # Create new bounty (but only if things have changed)
     did_change, old_bounties = bounty_did_change(bounty_id, bounty_details)
@@ -522,11 +524,18 @@ def process_bounty_details(bounty_details):
     if not did_change:
         return (did_change, latest_old_bounty, latest_old_bounty)
 
-    new_bounty = create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id)
+    semaphore_key = get_bounty_semaphore_ns(bounty_id)
+    semaphore = get_semaphore(semaphore_key)
 
-    if new_bounty:
-        return (did_change, latest_old_bounty, new_bounty)
-    return (did_change, latest_old_bounty, latest_old_bounty)
+    try:
+        with semaphore:
+            new_bounty = create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id)
+
+            if new_bounty:
+                return (did_change, latest_old_bounty, new_bounty)
+            return (did_change, latest_old_bounty, latest_old_bounty)
+    except SemaphoreExists:
+        return (did_change, latest_old_bounty, latest_old_bounty)
 
 
 def get_bounty_data_for_activity(bounty):
