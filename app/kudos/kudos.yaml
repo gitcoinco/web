@@ -2284,5 +2284,16 @@
   - go
   - ruby
   image: polyglot_programmer.svg
+- name: bufficorn_christmas
+  description: Are you a Bufficorn?  Do you celebrate Christmas?  Then this kudos is for you! Have a happy holiday, and see you at ETHDenver 2019. Applications now open at http://ethdenver.com/
+  priceFinney: 10
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 750
+  tags:
+  - holidays
+  - just for fun
+  - ethdenver
+  image: bufficorn_christmas.svg
 
 
