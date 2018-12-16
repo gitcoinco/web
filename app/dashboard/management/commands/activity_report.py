@@ -173,7 +173,7 @@ class Command(BaseCommand):
             'payee_bio': bio,
             'payee_location': location,
         }
-    
+
     def format_grantcontrib(self, contrib):
         contr_prof = contrib.subscription.contributor_profile
         contr_sub = contrib.subscription
@@ -250,8 +250,8 @@ class Command(BaseCommand):
         formateted_enssubregistrations = [x for x in formted_enssubreg]
         formatted_grantcontrib = [x for x in formatted_grantcontrib]
         all_items = formatted_bounties
-        all_items = all_items + all_scram 
-        all_items = all_items + formatted_frs 
+        all_items = all_items + all_scram
+        all_items = all_items + formatted_frs
         all_items = all_items + formateted_enssubregistrations
         all_items = all_items + formatted_grantcontrib
 
