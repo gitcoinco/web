@@ -1433,6 +1433,8 @@ def labs(request):
     context = {
         'active': "labs",
         'title': _("Labs"),
+        'card_desc': _("Gitcoin Labs provides advanced tools for busy developers")
+        'avatar_url': 'https://c.gitcoin.co/labs/Articles-Announcing_Gitcoin_Labs.png',
         'tools': tools,
         'labs': labs,
         'socials': socials
