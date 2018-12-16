@@ -1414,7 +1414,7 @@ def toolbox(request):
 
 def labs(request):
     labs = LabsResearch.objects.all()
-    tools = Tool.objects.prefetch_related('votes').filter(category=Tool.CAT_BASIC)
+    tools = Tool.objects.prefetch_related('votes').filter(category=Tool.CAT_ALPHA)
 
     socials = [{
         "name": _("GitHub Repo"),
