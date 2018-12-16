@@ -278,9 +278,9 @@ def get_bounty_history(keyword=None, cumulative=True):
     if not keyword:
         bh = bh + initial_stats
     for year in range(2018, 2025):
-        months = range(1, 12)
+        months = range(1, 13)
         if year == 2018:
-            months = range(6, 12)
+            months = range(6, 13)
         for month in months:
             day_of_month = 3 if year == 2018 and month < 7 else 1
             then = timezone.datetime(year, month, day_of_month).replace(tzinfo=pytz.UTC)
@@ -289,7 +289,7 @@ def get_bounty_history(keyword=None, cumulative=True):
                 row = get_bounty_history_row(label, then, keyword)
                 bh.append(row)
 
-    if timezone.now().day > 10:
+    if timezone.now().day > 9:
         # get current month date to month
         label = timezone.now().strftime("%B %Y") + " (MTD)"
         row = get_bounty_history_row(label, timezone.now(), keyword)
@@ -401,7 +401,7 @@ def build_stat_results(keyword=None):
     total_bounties_usd = sum(base_bounties.exclude(idx_status__in=['expired', 'cancelled', 'canceled', 'unknown']).values_list('_val_usd_db', flat=True))
     total_tips_usd = sum([
         tip.value_in_usdt
-        for tip in Tip.objects.filter(network='mainnet').send_happy_path().cache() if tip.value_in_usdt
+        for tip in Tip.objects.filter(network='mainnet').send_happy_path() if tip.value_in_usdt
     ])
     context['universe_total_usd'] = float(total_bounties_usd) + float(total_tips_usd)
     pp.profile_time('universe_total_usd')
