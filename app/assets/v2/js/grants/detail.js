@@ -136,7 +136,7 @@ $(document).ready(function() {
                 window.location.reload(false);
               },
               error: function() {
-                alert('Canceling you grant failed to save. Please try again.');
+                alert('Canceling your grant failed to save. Please try again.');
               }
             });
           });
@@ -149,37 +149,35 @@ $(document).ready(function() {
     let contract_address = $('#contract_address').val();
     let grant_cancel_tx_id;
     let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, contract_address);
-    console.log(contract_owner_address);
-    console.log(typeof contract_owner_address);
+
     web3.eth.getAccounts(function(err, accounts) {
       deployedSubscription.methods.changeOwnership(
         contract_owner_address
       ).send({
-          from: accounts[0],
-          gasPrice: 8000000000
-        }).on('transactionHash', function(transactionHash) {
-          document.issueURL = document.getElementById('form--input__reference-url').value;
-          const linkURL = etherscan_tx_url(transactionHash);
+        from: accounts[0],
+        gasPrice: 8000000000
+      }).on('transactionHash', function(transactionHash) {
+        document.issueURL = document.getElementById('form--input__reference-url').value;
+        const linkURL = etherscan_tx_url(transactionHash);
 
-          $('#transaction_url').attr('href', linkURL);
-          $('.modal .close').trigger('click');
-          enableWaitState('#grants-details');
-        })
-        .on('confirmation', function(confirmationNumber, receipt) {
-          $.ajax({
-            type: 'post',
-            url: '',
-            data: {
-              'contract_owner_address': contract_owner_address
-            },
-            success: function(json) {
-              window.location.reload(false);
-            },
-            error: function() {
-              alert('Canceling you grant failed to save. Please try again.');
-            }
-          });
+        $('#transaction_url').attr('href', linkURL);
+        $('.modal .close').trigger('click');
+        enableWaitState('#grants-details');
+      }).on('confirmation', function(confirmationNumber, receipt) {
+        $.ajax({
+          type: 'post',
+          url: '',
+          data: {
+            'contract_owner_address': contract_owner_address
+          },
+          success: function(json) {
+            window.location.reload(false);
+          },
+          error: function() {
+            alert('Changing the contract owner address failed to save. Please try again.');
+          }
         });
+      });
     });
   });
 
@@ -195,7 +193,7 @@ const disableEdit = (input) => {
   $(input).removeClass('editable');
   $(input).prop('readonly', true);
   $(input).prop('disabled', true);
-  
+
   $('#contract_owner_button').addClass('hidden');
   $('.grant__specs textarea').css('background-color', '#F2F6F9');
 };
