@@ -24,13 +24,14 @@ from django.utils.safestring import mark_safe
 
 from .models import (
     Activity, BlockedUser, Bounty, BountyFulfillment, BountySyncRequest, CoinRedemption, CoinRedemptionRequest,
-    Interest, Profile, SearchHistory, Subscription, Tip, TokenApproval, Tool, ToolVote, UserAction,
+    Interest, LabsResearch, Profile, SearchHistory, Subscription, Tip, TokenApproval, Tool, ToolVote, UserAction,
 )
 
 
 class BountyFulfillmentAdmin(admin.ModelAdmin):
     raw_id_fields = ['bounty', 'profile']
-    search_fields = ['fulfiller_address', 'fulfiller_email', 'fulfiller_github_username', 'fulfiller_name', 'fulfiller_metadata', 'fulfiller_github_url']
+    search_fields = ['fulfiller_address', 'fulfiller_email', 'fulfiller_github_username',
+                     'fulfiller_name', 'fulfiller_metadata', 'fulfiller_github_url']
     ordering = ['-id']
 
 
@@ -167,3 +168,4 @@ admin.site.register(CoinRedemption, GeneralAdmin)
 admin.site.register(CoinRedemptionRequest, GeneralAdmin)
 admin.site.register(Tool, GeneralAdmin)
 admin.site.register(ToolVote, ToolVoteAdmin)
+admin.site.register(LabsResearch)
