@@ -215,3 +215,7 @@
   margin: auto;
   display: block;
 }
+
+[v-cloak] {
+  display: none;
+}

@@ -1,20 +1,15 @@
-var app = new Vue({
-  delimiters: [ '[[', ']]' ],
-  el: '#gc-notifications',
-  data() {
-    return {
-      page: 1,
-      notifications: [],
-      unreadNotifications: [],
-      hasNext: false,
-      numPages: '',
-      numNotifications: ''
-    };
-  },
+let notifications = []
+let page = 1;
+let unreadNotifications = [];
+let hasNext = false;
+let numPages = '';
+let numNotifications = '';
+
+Vue.mixin({
   methods: {
     fetchNotifications: function(newPage) {
       var vm = this;
-
+      console.log(vm.page)
       if (newPage) {
         vm.page = newPage;
       }
@@ -34,6 +29,7 @@ var app = new Vue({
         vm.checkUnread();
         if (vm.hasNext) {
           vm.page = ++vm.page;
+          console.log(vm.page)
 
         } else {
           vm.page = 1;
@@ -54,8 +50,6 @@ var app = new Vue({
     markRead: function(item) {
       vm = this;
       window.sessionStorage.setItem('notificationRead', item);
-
-
     },
     checkUnread: function() {
       vm = this;
@@ -103,43 +97,120 @@ var app = new Vue({
     },
     onScroll: function() {
       vm = this;
-      const scrollContainer = event.target;
+      let scrollContainer = event.target;
+      // console.log(scrollContainer,scrollContainer.scrollTop + scrollContainer.clientHeight >= scrollContainer.scrollHeight, vm.page , vm.numPages)
 
       if (scrollContainer.scrollTop + scrollContainer.clientHeight >= scrollContainer.scrollHeight) {
-        if (vm.page < vm.numPages) {
+        if (vm.page <= vm.numPages) {
           this.fetchNotifications();
         }
       }
     }
-  },
-  filters: {
-    moment: function(date) {
-      moment.updateLocale('en', {
-        relativeTime: {
-          future: 'in %s',
-          past: '%s ',
-          s: 'now',
-          ss: '%ds',
-          m: '1m',
-          mm: '%d m',
-          h: '1h',
-          hh: '%dh',
-          d: '1 day',
-          dd: '%d days',
-          M: '1 month',
-          MM: '%d months',
-          y: '1 year',
-          yy: '%d years'
-        }
-      });
-      return moment.utc(date).fromNow();
-    }
+  }
+
+})
+
+var app = new Vue({
+  delimiters: [ '[[', ']]' ],
+  el: '#gc-notifications',
+  data: {
+    // return {
+      page,
+      notifications,
+      unreadNotifications,
+      hasNext,
+      numPages,
+      numNotifications
+    // };
   },
   mounted() {
-    this.sendState();
     this.fetchNotifications();
+  },
+  created(){
+    this.sendState();
   }
 });
+
+if (document.getElementById("gc-inbox")) {
+  var appInbox = new Vue({
+    delimiters: [ '[[', ']]' ],
+    el:'#gc-inbox',
+    data() {
+      return {
+        page,
+        notifications,
+        unreadNotifications,
+        hasNext,
+        numPages,
+        numNotifications,
+        selectedNotifications:[]
+      };
+    },
+    computed: {
+      selectAll: {
+        get: function () {
+          return this.notifications ? this.selectedNotifications.length == this.notifications.length : false;
+        },
+        set: function (value) {
+          console.log(value)
+          var selectedNotifications = [];
+
+          if (value) {
+            this.notifications.forEach(function (notification) {
+              selectedNotifications.push(notification.id);
+            });
+          }
+
+          this.selectedNotifications = selectedNotifications;
+        }
+      }
+    },
+    methods: {
+      toggleRead(){
+        vm = this;
+
+        // for (notification in notifications ) {
+        //   notification.id ===
+        // }
+
+        vm.notifications.map((notify, index) => {
+          if (vm.selectedNotifications.includes(notify.id))
+            notify.is_read = !notify.is_read;
+        });
+        window.sessionStorage.setItem('notificationRead', vm.selectedNotifications);
+        vm.sendState()
+      },
+      selectUnread(){
+        vm = this;
+        vm.selectedNotifications = [];
+        vm.notifications.forEach(function (notification){
+
+          if (notification.is_read === false) {
+            vm.selectedNotifications.push(notification.id);
+          }
+        })
+      },
+      selectRead(){
+        vm = this;
+        vm.selectedNotifications = [];
+        vm.notifications.forEach(function (notification){
+
+          if (notification.is_read === true) {
+            vm.selectedNotifications.push(notification.id);
+
+          }
+        })
+
+      }
+    },
+    mounted() {
+      this.fetchNotifications();
+    },
+    created(){
+      this.sendState();
+    }
+  })
+};
 
 
 // function checkTabHidden() {
@@ -160,3 +231,30 @@ function newData(newObj, oldObj) {
     });
   });
 }
+
+
+
+
+Vue.filter('moment', function (date) {
+  moment.updateLocale('en', {
+    relativeTime: {
+      future: 'in %s',
+      past: '%s ',
+      s: 'now',
+      ss: '%ds',
+      m: '1m',
+      mm: '%d m',
+      h: '1h',
+      hh: '%dh',
+      d: '1 day',
+      dd: '%d days',
+      M: '1 month',
+      MM: '%d months',
+      y: '1 year',
+      yy: '%d years'
+    }
+  });
+  return moment.utc(date).fromNow();
+})
+
+
