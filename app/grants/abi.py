@@ -21,12 +21,10 @@ abi_v0 = [{
     "constant": True,
     "inputs": [],
     "name": "requiredGasPrice",
-    "outputs": [
-        {
+    "outputs": [{
         "name": "",
         "type": "uint256"
-        }
-    ],
+        }],
     "payable": False,
     "stateMutability": "view",
     "type": "function"
@@ -287,9 +285,9 @@ abi_v0 = [{
         "name": "",
         "type": "bytes32"
     }],
-      "payable": False,
-      "stateMutability": "view",
-      "type": "function"
+    "payable": False,
+    "stateMutability": "view",
+    "type": "function"
 },    {
     "constant": True,
     "inputs": [{
