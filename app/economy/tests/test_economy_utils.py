@@ -22,7 +22,7 @@ from datetime import datetime
 from django.test.client import RequestFactory
 
 from economy.models import ConversionRate
-from economy.utils import convert_amount, etherscan_link, blockscout_link
+from economy.utils import blockscout_link, convert_amount, etherscan_link
 from test_plus.test import TestCase
 
 
