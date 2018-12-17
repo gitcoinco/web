@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 abi_v0 = [{
-  "constant": true,
+  "constant": True,
   "inputs": [],
   "name": "requiredGasPrice",
   "outputs": [
@@ -27,12 +27,12 @@ abi_v0 = [{
       "type": "uint256"
     }
   ],
-  "payable": false,
+  "payable": False,
   "stateMutability": "view",
   "type": "function"
 },
 {
-  "constant": true,
+  "constant": True,
   "inputs": [],
   "name": "requiredTokenAmount",
   "outputs": [
@@ -41,12 +41,12 @@ abi_v0 = [{
       "type": "uint256"
     }
   ],
-  "payable": false,
+  "payable": False,
   "stateMutability": "view",
   "type": "function"
 },
 {
-  "constant": true,
+  "constant": True,
   "inputs": [],
   "name": "requiredToAddress",
   "outputs": [
@@ -55,12 +55,12 @@ abi_v0 = [{
       "type": "address"
     }
   ],
-  "payable": false,
+  "payable": False,
   "stateMutability": "view",
   "type": "function"
 },
 {
-  "constant": true,
+  "constant": True,
   "inputs": [],
   "name": "requiredPeriodSeconds",
   "outputs": [
@@ -69,12 +69,12 @@ abi_v0 = [{
       "type": "uint256"
     }
   ],
-  "payable": false,
+  "payable": False,
   "stateMutability": "view",
   "type": "function"
 },
 {
-  "constant": true,
+  "constant": True,
   "inputs": [],
   "name": "requiredTokenAddress",
   "outputs": [
@@ -83,12 +83,12 @@ abi_v0 = [{
       "type": "address"
     }
   ],
-  "payable": false,
+  "payable": False,
   "stateMutability": "view",
   "type": "function"
 },
 {
-  "constant": true,
+  "constant": True,
   "inputs": [],
   "name": "owner",
   "outputs": [
@@ -97,12 +97,12 @@ abi_v0 = [{
       "type": "address"
     }
   ],
-  "payable": false,
+  "payable": False,
   "stateMutability": "view",
   "type": "function"
 },
 {
-  "constant": true,
+  "constant": True,
   "inputs": [],
   "name": "contractVersion",
   "outputs": [
@@ -111,12 +111,12 @@ abi_v0 = [{
       "type": "uint8"
     }
   ],
-  "payable": false,
+  "payable": False,
   "stateMutability": "view",
   "type": "function"
 },
 {
-  "constant": true,
+  "constant": True,
   "inputs": [
     {
       "name": "",
@@ -130,12 +130,12 @@ abi_v0 = [{
       "type": "uint256"
     }
   ],
-  "payable": false,
+  "payable": False,
   "stateMutability": "view",
   "type": "function"
 },
 {
-  "constant": true,
+  "constant": True,
   "inputs": [
     {
       "name": "",
@@ -149,7 +149,7 @@ abi_v0 = [{
       "type": "uint256"
     }
   ],
-  "payable": false,
+  "payable": False,
   "stateMutability": "view",
   "type": "function"
 },
@@ -180,50 +180,50 @@ abi_v0 = [{
       "type": "uint8"
     }
   ],
-  "payable": false,
+  "payable": False,
   "stateMutability": "nonpayable",
   "type": "constructor"
 },
 {
-  "payable": true,
+  "payable": True,
   "stateMutability": "payable",
   "type": "fallback"
 },
 {
-  "anonymous": false,
+  "anonymous": False,
   "inputs": [
     {
-      "indexed": true,
+      "indexed": True,
       "name": "from",
       "type": "address"
     },
     {
-      "indexed": true,
+      "indexed": True,
       "name": "to",
       "type": "address"
     },
     {
-      "indexed": false,
+      "indexed": False,
       "name": "tokenAddress",
       "type": "address"
     },
     {
-      "indexed": false,
+      "indexed": False,
       "name": "tokenAmount",
       "type": "uint256"
     },
     {
-      "indexed": false,
+      "indexed": False,
       "name": "periodSeconds",
       "type": "uint256"
     },
     {
-      "indexed": false,
+      "indexed": False,
       "name": "gasPrice",
       "type": "uint256"
     },
     {
-      "indexed": false,
+      "indexed": False,
       "name": "nonce",
       "type": "uint256"
     }
@@ -232,40 +232,40 @@ abi_v0 = [{
   "type": "event"
 },
 {
-  "anonymous": false,
+  "anonymous": False,
   "inputs": [
     {
-      "indexed": true,
+      "indexed": True,
       "name": "from",
       "type": "address"
     },
     {
-      "indexed": true,
+      "indexed": True,
       "name": "to",
       "type": "address"
     },
     {
-      "indexed": false,
+      "indexed": False,
       "name": "tokenAddress",
       "type": "address"
     },
     {
-      "indexed": false,
+      "indexed": False,
       "name": "tokenAmount",
       "type": "uint256"
     },
     {
-      "indexed": false,
+      "indexed": False,
       "name": "periodSeconds",
       "type": "uint256"
     },
     {
-      "indexed": false,
+      "indexed": False,
       "name": "gasPrice",
       "type": "uint256"
     },
     {
-      "indexed": false,
+      "indexed": False,
       "name": "nonce",
       "type": "uint256"
     }
@@ -274,15 +274,15 @@ abi_v0 = [{
   "type": "event"
 },
 {
-  "anonymous": false,
+  "anonymous": False,
   "inputs": [
     {
-      "indexed": false,
+      "indexed": False,
       "name": "oldOwner",
       "type": "address"
     },
     {
-      "indexed": false,
+      "indexed": False,
       "name": "newOwner",
       "type": "address"
     }
@@ -291,7 +291,7 @@ abi_v0 = [{
   "type": "event"
 },
 {
-  "constant": false,
+  "constant": False,
   "inputs": [
     {
       "name": "_newOwner",
@@ -300,12 +300,12 @@ abi_v0 = [{
   ],
   "name": "changeOwnership",
   "outputs": [],
-  "payable": false,
+  "payable": False,
   "stateMutability": "nonpayable",
   "type": "function"
 },
 {
-  "constant": true,
+  "constant": True,
   "inputs": [
     {
       "name": "subscriptionHash",
@@ -323,12 +323,12 @@ abi_v0 = [{
       "type": "bool"
     }
   ],
-  "payable": false,
+  "payable": False,
   "stateMutability": "view",
   "type": "function"
 },
 {
-  "constant": true,
+  "constant": True,
   "inputs": [
     {
       "name": "from",
@@ -366,12 +366,12 @@ abi_v0 = [{
       "type": "bytes32"
     }
   ],
-  "payable": false,
+  "payable": False,
   "stateMutability": "view",
   "type": "function"
 },
 {
-  "constant": true,
+  "constant": True,
   "inputs": [
     {
       "name": "subscriptionHash",
@@ -389,12 +389,12 @@ abi_v0 = [{
       "type": "address"
     }
   ],
-  "payable": false,
+  "payable": False,
   "stateMutability": "pure",
   "type": "function"
 },
 {
-  "constant": true,
+  "constant": True,
   "inputs": [
     {
       "name": "from",
@@ -436,12 +436,12 @@ abi_v0 = [{
       "type": "bool"
     }
   ],
-  "payable": false,
+  "payable": False,
   "stateMutability": "view",
   "type": "function"
 },
 {
-  "constant": false,
+  "constant": False,
   "inputs": [
     {
       "name": "from",
@@ -483,12 +483,12 @@ abi_v0 = [{
       "type": "bool"
     }
   ],
-  "payable": false,
+  "payable": False,
   "stateMutability": "nonpayable",
   "type": "function"
 },
 {
-  "constant": false,
+  "constant": False,
   "inputs": [
     {
       "name": "from",
@@ -530,16 +530,16 @@ abi_v0 = [{
       "type": "bool"
     }
   ],
-  "payable": false,
+  "payable": False,
   "stateMutability": "nonpayable",
   "type": "function"
 },
 {
-  "constant": false,
+  "constant": False,
   "inputs": [],
   "name": "endContract",
   "outputs": [],
-  "payable": false,
+  "payable": False,
   "stateMutability": "nonpayable",
   "type": "function"
 }]
