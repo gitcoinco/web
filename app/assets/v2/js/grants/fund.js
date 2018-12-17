@@ -62,7 +62,7 @@ $(document).ready(function() {
 
         let realTokenAmount = Number(data.amount_per_period * 10 ** decimals);
 
-        let realApproval = Number((realTokenAmount + realGasPrice) * data.approve);
+        let realApproval = Number((realTokenAmount + realGasPrice) * data.num_periods);
 
         web3.eth.getAccounts(function(err, accounts) {
 

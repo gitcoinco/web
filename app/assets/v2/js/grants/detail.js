@@ -25,7 +25,6 @@ $(document).ready(function() {
     $('#cancel-details').removeClass('hidden');
     $('#contract_owner_button').removeClass('hidden');
 
-
     copyDuplicateDetails();
 
     editableFields.forEach(field => {
@@ -196,9 +195,8 @@ const disableEdit = (input) => {
   $(input).removeClass('editable');
   $(input).prop('readonly', true);
   $(input).prop('disabled', true);
+  
   $('#contract_owner_button').addClass('hidden');
-
-
   $('.grant__specs textarea').css('background-color', '#F2F6F9');
 };
 

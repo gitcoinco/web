@@ -375,8 +375,7 @@ class Subscription(SuperModel):
         if not self.subscription_contribution.exists():
             return True
         last_contribution = self.subscription_contribution.order_by('created_on').last()
-        period = self.real_period_seconds
-        return ((last_contribution.created_on.timestamp() + float(period)) < timezone.now().timestamp())
+        return self.next_contribution_date < timezone.now()
 
     def get_are_we_past_next_valid_timestamp(self):
         address = self.contributor_address
@@ -518,7 +517,7 @@ class Subscription(SuperModel):
         """Create a contribution object."""
         from marketing.mails import successful_contribution
         self.last_contribution_date = timezone.now()
-        self.next_contribution_date = timezone.now() + timezone.timedelta(seconds=float(self.real_period_seconds))
+        self.next_contribution_date = timezone.now() + timedelta(0, round(self.real_period_seconds))
         self.save()
         contribution_kwargs = {
             'tx_id': tx_id,
