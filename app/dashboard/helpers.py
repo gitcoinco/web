@@ -816,10 +816,9 @@ def get_payout_history(done_bounties):
         csv_row = []
         fd_bounty = to_funder_dashboard_bounty(bounty)
 
-        csv_row.append(fd_bounty['id'])
         csv_row.append(fd_bounty['title'])
         csv_row.append(fd_bounty['type'])
-        csv_row.append(fd_bounty['githubLink'])
+        csv_row.append(fd_bounty['url'])
         csv_row.append(fd_bounty['worthDollars'])
         csv_row.append(fd_bounty['worthEth'])
 
@@ -1041,7 +1040,7 @@ def get_funder_outgoing_funds(done_bounties, funder_tips):
         Each dictionary object in the list is of the form: {
             id,
             createdOn (timestamp),
-            etherscanLink,
+            url,
             title,
             type ("Tip" / "Payment"),
             status ("Pending" / "Claimed"),
@@ -1054,7 +1053,7 @@ def get_funder_outgoing_funds(done_bounties, funder_tips):
         return {
             'id': id,
             'createdOn': time.mktime(created_on.timetuple()),
-            'etherscanLink': link_to_etherscan,
+            'url': link_to_etherscan,
             'title': escape(title),
             'type': type,
             'status': status,
@@ -1187,9 +1186,8 @@ def to_funder_dashboard_bounty(bounty):
     Returns:
         dict: The mapped bounty, to be JSON stringified for use in the front-end of the funder dashboard.
               The mapped bounty is of the form: {
-                  id,
                   createdOn (timestamp),
-                  githubLink,
+                  url,
                   title,
                   type,
                   status ("active", "done", "expired" etc. - uses bounty.status),
@@ -1201,9 +1199,8 @@ def to_funder_dashboard_bounty(bounty):
     """
     bounty_dict = bounty.to_standard_dict(fields=['title', 'bounty_type'])
     bounty_dict.update({
-        'id': bounty.github_issue_number,
         'createdOn': time.mktime(bounty.created_on.timetuple()),
-        'githubLink': bounty.url,
+        'url': bounty.url,
         'title': escape(bounty_dict['title']),
         'type': bounty_dict.pop('bounty_type'),
         'status': bounty.status,

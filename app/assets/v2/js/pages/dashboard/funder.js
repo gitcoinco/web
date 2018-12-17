@@ -237,6 +237,14 @@ $(function() {
             }
           ]
         },
+        tooltips: {
+          enabled: true,
+          callbacks: {
+            label: function(tooltipItems) {
+              return '$' + tooltipItems.yLabel;
+            }
+          }
+        },
         legend: {
           display: false
         },
@@ -413,14 +421,13 @@ $(function() {
 
         var $clone = $fundTemplate.clone();
 
-        utils.updateBemElementInParent($clone, fundBaseSel, 'id', fund.id);
         utils.updateBemElementInParent($clone, fundBaseSel, 'title', fund.title);
         utils.updateBemElementInParent($clone, fundBaseSel, 'type', fund.type);
         utils.updateBemElementInParent($clone, fundBaseSel, 'status', fund.status);
         var $etherscanLink = $clone.find(classSel(fundBaseSel) + '__view-etherscan');
 
         if (fund.etherscanLink) {
-          $etherscanLink.attr('href', fund.etherscanLink);
+          $etherscanLink.attr('href', fund.url);
         } else {
           $clone.find(classSel(fundBaseSel) + '__etherscan-link-placeholder').removeClass('d-none');
           $etherscanLink.addClass('d-none');
@@ -555,11 +562,10 @@ $(function() {
         var $clone = $bountyTemplate.clone();
         var bounty = bounties[i];
 
-        utils.updateBemElementInParent($clone, bountyBaseSel, 'id', bounty.id);
         utils.updateBemElementInParent($clone, bountyBaseSel, 'title', bounty.title);
         utils.updateBemElementInParent($clone, bountyBaseSel, 'type', bounty.type);
         utils.updateBemElementInParent($clone, bountyBaseSel, 'status', bounty.status);
-        $clone.find(classSel(bountyBaseSel) + '__view-github').attr('href', bounty.githubLink);
+        $clone.find(classSel(bountyBaseSel) + '__view-github').attr('href', bounty.url);
         utils.updateBemElementInParent($clone, bountyBaseSel, 'worth__dollars', bounty.worthDollars);
         utils.updateBemElementInParent($clone, bountyBaseSel, 'worth__eth', bounty.worthEth);
 
