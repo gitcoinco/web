@@ -96,7 +96,8 @@ textarea.editable {
 
 #form--input__description,
 #form--input__reference-url,
-#form--input__title {
+#form--input__title,
+#contract_owner_address {
   width: 100%;
   text-align: justify;
   resize: none;

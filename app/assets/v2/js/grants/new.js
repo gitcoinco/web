@@ -8,6 +8,7 @@ $(document).ready(function() {
 
   web3.eth.getAccounts(function(err, accounts) {
     $('#input-admin_address').val(accounts[0]);
+    $('#contract_owner_address').val(accounts[0]);
   });
 
 

@@ -86,6 +86,17 @@
                     </div>
                     {% endif %}
                   </div>
+                  <div class="grant-item__owner my-2">
+                    {% if is_admin and not grant_is_inactive %}
+                      <div class="font-body">
+                        <p class="font-caption sub-title mb-0">Contract Owner Address</p>
+                        <textarea id="contract_owner_address" class="p-0 m-0 inline-edit" name="contract_owner_address" disabled>{{ grant.contract_owner_address }}</textarea>
+                        <button id="contract_owner_button" class="button button--primary hidden">
+                        {% trans 'Change Contract Owner' %}
+                        </button>
+                      </div>
+                    {% endif %}
+                  </div>
                 </div>
               </div>
               <div class="col-12">

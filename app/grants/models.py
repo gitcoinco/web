@@ -93,7 +93,12 @@ class Grant(SuperModel):
     admin_address = models.CharField(
         max_length=255,
         default='0x0',
-        help_text=_('The wallet address for the administrator of this Grant.'),
+        help_text=_('The wallet address where subscription funds will be sent.'),
+    )
+    contract_owner_address = models.CharField(
+        max_length=255,
+        default='0x0',
+        help_text=_('The wallet address that owns the subscription contract and is able to call endContract()'),
     )
     amount_goal = models.DecimalField(
         default=1,
