@@ -71,8 +71,8 @@ from .helpers import (
     usd_format,
 )
 from .models import (
-    Activity, Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip,
-    Tool, ToolVote, UserAction,
+    Activity, Bounty, CoinRedemption, CoinRedemptionRequest, Interest, LabsResearch, Profile, ProfileSerializer,
+    Subscription, Tool, ToolVote, UserAction,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -1607,6 +1607,36 @@ def toolbox(request):
         'profile_down_votes_tool_ids': profile_down_votes_tool_ids
     }
     return TemplateResponse(request, 'toolbox.html', context)
+
+
+def labs(request):
+    labs = LabsResearch.objects.all()
+    tools = Tool.objects.prefetch_related('votes').filter(category=Tool.CAT_ALPHA)
+
+    socials = [{
+        "name": _("GitHub Repo"),
+        "link": "https://github.com/gitcoinco/labs/",
+        "class": "fab fa-github fa-2x"
+    }, {
+        "name": _("Slack"),
+        "link": "https://gitcoin.co/slack",
+        "class": "fab fa-slack fa-2x"
+    }, {
+        "name": _("Contact the Team"),
+        "link": "mailto:founders@gitcoin.co",
+        "class": "fa fa-envelope fa-2x"
+    }]
+
+    context = {
+        'active': "labs",
+        'title': _("Labs"),
+        'card_desc': _("Gitcoin Labs provides advanced tools for busy developers"),
+        'avatar_url': 'https://c.gitcoin.co/labs/Articles-Announcing_Gitcoin_Labs.png',
+        'tools': tools,
+        'labs': labs,
+        'socials': socials
+    }
+    return TemplateResponse(request, 'labs.html', context)
 
 
 @csrf_exempt
