@@ -193,17 +193,13 @@ if (document.getElementById('gc-inbox')) {
         $.when(deleteNotify).then(function(response) {
 
           if (response.success) {
-            for (n in vm.selectedNotifications) {
-              vm.notifications.map((notify, index) => {
-                if (vm.selectedNotifications.includes(notify.id))
-                  vm.notifications.splice(notify[index], 1);
-              });
-            }
+            vm.notifications.map((notify, index) => {
+              if (vm.selectedNotifications.includes(notify.id))
+                vm.notifications.splice(notify[index], 1);
+            });
             vm.selectedNotifications = [];
           }
-
         });
-
       },
       selectUnread() {
         vm = this;
