@@ -27,7 +27,7 @@ import ipfsapi
 import requests
 from app.utils import sync_profile
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
-from dashboard.models import Activity, Bounty, Profile, UserAction
+from dashboard.models import Activity, BlockedUser, Bounty, Profile, UserAction
 from eth_utils import to_checksum_address
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from hexbytes import HexBytes
@@ -37,6 +37,10 @@ from web3.exceptions import BadFunctionCallOutput
 from web3.middleware import geth_poa_middleware
 
 logger = logging.getLogger(__name__)
+
+SEMAPHORE_BOUNTY_SALT = '1'
+SEMAPHORE_BOUNTY_NS = 'bounty_processor'
+
 
 def all_sendcryptoasset_models():
     from revenue.models import DigitalGoodPurchase
@@ -370,24 +374,22 @@ def web3_process_bounty(bounty_data):
         print(f"--*--")
         return None
 
-    #semaphor_key = f"bounty_processor_{bounty_data['id']}_1"
-    #semaphor = get_semaphor(semaphor_key)
-    #with semaphor:
-    if True: # KO 20181107 -- removing semaphor processing code for time being, due to downtime last night
-        did_change, old_bounty, new_bounty = process_bounty_details(bounty_data)
+    did_change, old_bounty, new_bounty = process_bounty_details(bounty_data)
 
-        if did_change and new_bounty:
-            _from = old_bounty.pk if old_bounty else None
-            print(f"- processing changes, {_from} => {new_bounty.pk}")
-            process_bounty_changes(old_bounty, new_bounty)
+    if did_change and new_bounty:
+        _from = old_bounty.pk if old_bounty else None
+        print(f"- processing changes, {_from} => {new_bounty.pk}")
+        process_bounty_changes(old_bounty, new_bounty)
 
-        return did_change, old_bounty, new_bounty
+    return did_change, old_bounty, new_bounty
 
 
 def has_tx_mined(txid, network):
     web3 = get_web3(network)
     try:
         transaction = web3.eth.getTransaction(txid)
+        if not transaction:
+            return False
         return transaction.blockHash != HexBytes('0x0000000000000000000000000000000000000000000000000000000000000000')
     except Exception:
         return False
@@ -613,6 +615,16 @@ def generate_pub_priv_keypair():
     return priv.to_string().hex(), pub.hex(), checksum_encode(address)
 
 
+def get_bounty_semaphore_ns(standard_bounty_id):
+    return f'{SEMAPHORE_BOUNTY_NS}_{standard_bounty_id}_{SEMAPHORE_BOUNTY_SALT}'
+
+
+def release_bounty_lock(standard_bounty_id):
+    from app.utils import release_semaphore
+    ns = get_bounty_semaphore_ns(standard_bounty_id)
+    release_semaphore(ns)
+
+
 def profile_helper(handle, suppress_profile_hidden_exception=False, current_user=None):
     """Define the profile helper.
 
@@ -666,7 +678,7 @@ def get_tx_status(txid, network, created_on):
         web3 = get_web3(network)
         tx = web3.eth.getTransactionReceipt(txid)
         if not tx:
-            drop_dead_date = created_on + timezone.timedelta(days=3)
+            drop_dead_date = created_on + timezone.timedelta(days=1)
             if timezone.now() > drop_dead_date:
                 status = 'dropped'
             else:
@@ -685,7 +697,7 @@ def get_tx_status(txid, network, created_on):
     except Exception as e:
         logger.error(f'Failure in get_tx_status for {txid} - ({e})')
         status = 'unknown'
-    
+
     # get timestamp
     timestamp = None
     try:
@@ -696,3 +708,37 @@ def get_tx_status(txid, network, created_on):
     except:
         pass
     return status, timestamp
+
+
+def is_blocked(handle):
+    return BlockedUser.objects.filter(handle__iexact=handle, active=True).exists()
+
+
+def get_nonce(network, address):
+    # this function solves the problem of 2 pending tx's writing over each other
+    # by checking both web3 RPC *and* the local DB for the nonce
+    # and then using the higher of the two as the tx nonce
+    from perftools.models import JSONStore
+    from dashboard.utils import get_web3
+    w3 = get_web3(network)
+
+    # web3 RPC node: nonce
+    nonce_from_web3 = w3.eth.getTransactionCount(address)
+
+    # db storage
+    key = f"nonce_{network}_{address}"
+    view = 'get_nonce'
+    nonce_from_db = 0
+    try:
+        nonce_from_db = JSONStore.objects.get(key=key, view=view).data[0]
+        nonce_from_db += 1 # increment by 1 bc we need to be 1 higher than last txid
+    except:
+        pass
+
+    new_nonce = max(nonce_from_db, nonce_from_web3)
+
+    # update JSONStore
+    JSONStore.objects.filter(key=key, view=view).all().delete()
+    JSONStore.objects.create(key=key, view=view, data=[new_nonce])
+
+    return new_nonce

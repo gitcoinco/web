@@ -41,7 +41,7 @@ from django.views.decorators.http import require_GET, require_POST
 
 from app.utils import clean_str, ellipses
 from avatar.utils import get_avatar_context_for_user
-from dashboard.utils import ProfileNotFoundException, profile_helper
+from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, profile_helper
 from economy.utils import convert_token_to_usdt
 from eth_utils import to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
@@ -59,8 +59,8 @@ from web3 import HTTPProvider, Web3
 
 from .helpers import get_bounty_data_for_activity, handle_bounty_views
 from .models import (
-    Activity, Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tool,
-    ToolVote, UserAction,
+    Activity, Bounty, CoinRedemption, CoinRedemptionRequest, Interest, LabsResearch, Profile, ProfileSerializer,
+    Subscription, Tool, ToolVote, UserAction,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -77,16 +77,6 @@ confirm_time_minutes_target = 4
 
 # web3.py instance
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
-
-
-def grants(request):
-    """Handle grants explorer."""
-
-    params = {
-        'active': 'dashboard',
-        'title': _('Grants Explorer')
-        }
-    return TemplateResponse(request, 'grants_index.html', params)
 
 
 def record_user_action(user, event_name, instance):
@@ -611,19 +601,14 @@ def accept_bounty(request):
 
     """
     bounty = handle_bounty_views(request)
-    bounty_params = {
-        'fulfillment_id': request.GET.get('id'),
-        'fulfiller_address': request.GET.get('address'),
-    }
-
     params = get_context(
         ref_object=bounty,
         user=request.user if request.user.is_authenticated else None,
         confirm_time_minutes_target=confirm_time_minutes_target,
         active='accept_bounty',
         title=_('Process Issue'),
-        update=bounty_params,
     )
+    params['open_fulfillments'] = bounty.fulfillments.filter(accepted=False)
     return TemplateResponse(request, 'process_bounty.html', params)
 
 
@@ -1083,10 +1068,6 @@ def quickstart(request):
     return TemplateResponse(request, 'quickstart.html', {})
 
 
-class ProfileHiddenException(Exception):
-    pass
-
-
 def profile_keywords(request, handle):
     """Display profile keywords.
 
@@ -1096,7 +1077,7 @@ def profile_keywords(request, handle):
     """
     try:
         profile = profile_helper(handle, True)
-    except ProfileNotFoundException:
+    except (ProfileNotFoundException, ProfileHiddenException):
         raise Http404
 
     response = {
@@ -1183,31 +1164,31 @@ def profile(request, handle):
             context['activities'] = paginator.get_page(page)
 
             return TemplateResponse(request, 'profiles/profile_activities.html', context, status=status)
-        else:
-            context = profile.to_dict(tips=False)
-            all_activities = context.get('activities')
-            activity_tabs = []
 
-            for tab, name in tabs:
-                activities = profile_filter_activities(all_activities, tab)
-                activities_count = activities.count()
+        context = profile.to_dict(tips=False)
+        all_activities = context.get('activities')
+        activity_tabs = []
 
-                if activities_count == 0:
-                    continue
+        for tab, name in tabs:
+            activities = profile_filter_activities(all_activities, tab)
+            activities_count = activities.count()
 
-                paginator = Paginator(activities, 10)
+            if activities_count == 0:
+                continue
 
-                obj = {}
-                obj['id'] = tab
-                obj['name'] = name
-                obj['activities'] = paginator.get_page(1)
-                obj['count'] = activities_count
+            paginator = Paginator(activities, 10)
 
-                activity_tabs.append(obj)
+            obj = {}
+            obj['id'] = tab
+            obj['name'] = name
+            obj['activities'] = paginator.get_page(1)
+            obj['count'] = activities_count
+
+            activity_tabs.append(obj)
 
             context['activity_tabs'] = activity_tabs
 
-    except (Http404, ProfileHiddenException):
+    except (Http404, ProfileHiddenException, ProfileNotFoundException):
         status = 404
         context = {
             'hidden': True,
@@ -1492,6 +1473,36 @@ def toolbox(request):
         'profile_down_votes_tool_ids': profile_down_votes_tool_ids
     }
     return TemplateResponse(request, 'toolbox.html', context)
+
+
+def labs(request):
+    labs = LabsResearch.objects.all()
+    tools = Tool.objects.prefetch_related('votes').filter(category=Tool.CAT_ALPHA)
+
+    socials = [{
+        "name": _("GitHub Repo"),
+        "link": "https://github.com/gitcoinco/labs/",
+        "class": "fab fa-github fa-2x"
+    }, {
+        "name": _("Slack"),
+        "link": "https://gitcoin.co/slack",
+        "class": "fab fa-slack fa-2x"
+    }, {
+        "name": _("Contact the Team"),
+        "link": "mailto:founders@gitcoin.co",
+        "class": "fa fa-envelope fa-2x"
+    }]
+
+    context = {
+        'active': "labs",
+        'title': _("Labs"),
+        'card_desc': _("Gitcoin Labs provides advanced tools for busy developers"),
+        'avatar_url': 'https://c.gitcoin.co/labs/Articles-Announcing_Gitcoin_Labs.png',
+        'tools': tools,
+        'labs': labs,
+        'socials': socials
+    }
+    return TemplateResponse(request, 'labs.html', context)
 
 
 @csrf_exempt

@@ -1,4 +1,4 @@
-FROM python:3.7-alpine
+FROM python:3.7-alpine3.8
 # Specify label-schema specific arguments and labels.
 ARG BUILD_DATE
 ARG VCS_REF

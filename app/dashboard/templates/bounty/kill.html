@@ -67,8 +67,9 @@
                       <label required class="form__label" for="terms">{% url "terms" as termsurl %}{% blocktrans %}I have read, understand, and agree to, the <a href="{{ termsurl }}" target="_blank" rel="noopener noreferrer">Terms of Service</a>.{% endblocktrans %}</label>
                     </div>
                   </div>
-                  <div class="form__footer text-center">
-                      <button class="button button--primary button--warning js-submit">{% trans "Cancel Bounty" %}</button>
+                  <div class="text-center">
+                      <button class="button button--primary button--warning js-submit" style="width: 100%;">{% trans "Cancel Bounty" %}</button>
+                      <BR>
                       <a class="font-caption" style="display: block;" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">
                         Your transaction is secured by the audited StandardBounties contract on the Ethereum blockchain.</br>
                         Learn more here.
