@@ -801,7 +801,7 @@ def get_payout_history(done_bounties):
     csv_all_time_paid_bounties = io.StringIO()
     wr = csv.writer(csv_all_time_paid_bounties, quoting=csv.QUOTE_ALL)
     wr.writerow([
-        'Issue ID', 'Title', 'Bounty Type', 'Github Link', 'Value in USD', 'Value in ETH'
+        'Issue ID', 'Title', 'Bounty Type', 'Details Link', 'Value in USD', 'Value in ETH', 'Created On (Timestamp)'
     ])
 
     for bounty in done_bounties:
@@ -821,6 +821,7 @@ def get_payout_history(done_bounties):
         csv_row.append(fd_bounty['url'])
         csv_row.append(fd_bounty['worthDollars'])
         csv_row.append(fd_bounty['worthEth'])
+        csv_row.append(fd_bounty['createdOn'])
 
         wr.writerow(csv_row)
 
@@ -1049,9 +1050,8 @@ def get_funder_outgoing_funds(done_bounties, funder_tips):
         }
 
     """
-    def to_outgoing_fund(id, created_on, title, type, status, link_to_etherscan, worth_eth, worth_dollars):
+    def to_outgoing_fund(created_on, title, type, status, link_to_etherscan, worth_eth, worth_dollars):
         return {
-            'id': id,
             'createdOn': time.mktime(created_on.timetuple()),
             'url': link_to_etherscan,
             'title': escape(title),
@@ -1069,10 +1069,9 @@ def get_funder_outgoing_funds(done_bounties, funder_tips):
         if bounty.fulfillments.filter(accepted=True).exists():
             fund_status = 'Claimed'
         else:
-            fund_status = 'Pending'
+            fund_status = 'Submitted'
 
-        outgoing_funds.append(to_outgoing_fund(bounty.github_issue_number,
-                                               bounty.created_on,
+        outgoing_funds.append(to_outgoing_fund(bounty.created_on,
                                                bounty.title,
                                                'Payment',
                                                fund_status,
@@ -1081,15 +1080,14 @@ def get_funder_outgoing_funds(done_bounties, funder_tips):
                                                bounty.get_value_in_usdt))
 
     for tip in funder_tips:
-        if tip.status == "RECEIVED":
-            tip_status = "Claimed"
+        if tip.status == 'RECEIVED':
+            tip_status = 'Claimed'
         else:
-            tip_status = "Pending"
+            tip_status = 'Submitted'
 
         if tip.bounty:
             outgoing_funds.append(
-                to_outgoing_fund(tip.bounty.github_issue_number,
-                                 tip.bounty.created_on,
+                to_outgoing_fund(tip.bounty.created_on,
                                  tip.bounty.title,
                                  'Tip',
                                  tip_status,
@@ -1120,7 +1118,7 @@ def get_outgoing_funds_filters():
         outgoing_funds_filter('All', _('All'), True, False, False),
         outgoing_funds_filter('Tip', _('Tip'), False, True, False),
         outgoing_funds_filter('Payment', _('Payment'), False, True, False),
-        outgoing_funds_filter('Pending', _('Pending'), False, False, True),
+        outgoing_funds_filter('Submitted', _('Submitted'), False, False, True),
         outgoing_funds_filter('Claimed', _('Claimed'), False, False, True),
     ]
 

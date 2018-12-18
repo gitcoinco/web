@@ -426,7 +426,7 @@ $(function() {
         utils.updateBemElementInParent($clone, fundBaseSel, 'status', fund.status);
         var $etherscanLink = $clone.find(classSel(fundBaseSel) + '__view-etherscan');
 
-        if (fund.etherscanLink) {
+        if (fund.url) {
           $etherscanLink.attr('href', fund.url);
         } else {
           $clone.find(classSel(fundBaseSel) + '__etherscan-link-placeholder').removeClass('d-none');
@@ -435,8 +435,8 @@ $(function() {
         utils.updateBemElementInParent($clone, fundBaseSel, 'worth__dollars', fund.worthDollars);
         utils.updateBemElementInParent($clone, fundBaseSel, 'worth__eth', fund.worthEth);
 
-        if (fund.status === 'Pending') {
-          $clone.addClass(fundBaseSel + '--pending');
+        if (fund.status === 'Submitted') {
+          $clone.addClass(fundBaseSel + '--submitted');
         }
 
         $clone.removeClass(fundBaseSel + '--template');

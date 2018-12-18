@@ -267,20 +267,23 @@
                         {% trans "Reclaim Your Funds" %}
                       </div>
                       <div>
-                        {% url "explorer" as explorer_url %}
-                        {% blocktrans with explorer_url=explorer_url%}
-                        You have
+                        {% trans "You have" %}
                         <span class="funder-dashboard__latest-on-bounties__reclaim-funds__funds-count
                                              text-danger">{{ expired_issues_count }}</span>
-                        <span class="text-danger">Expired Issue{{ expired_issues_count|pluralize }},</span>
-                        funds worth <span class="funder-dashboard__latest-on-bounties__reclaim-funds__worth
-                                                         font-weight-bold">${{ expired_issues_worth_dollars }}</span>
-                        <a href="{{ explorer_url }}"
+                        <span class="text-danger">
+                          {% blocktrans count count=expired_issues_count %}
+                            Expired Issue
+                          {% plural %}
+                            Expired Issues
+                          {% endblocktrans %}
+                        </span>
+                        {% trans "funds worth" %}<span class="funder-dashboard__latest-on-bounties__reclaim-funds__worth
+                                                         font-weight-bold"> ${{ expired_issues_worth_dollars }}</span>
+                        <a href="{% url "explorer" %}"
                            class="funder-dashboard__latest-on-bounties__reclaim-funds__reclaim
                                   issue-explorer-link issue-explorer-link--bounties--expired text-fd-blue--light ml-1">
-                          Reclaim Now
+                          {% trans "Reclaim Now" %}
                         </a>
-                        {% endblocktrans %}
                       </div>
                     </div>
                   </div>
@@ -292,7 +295,11 @@
                           {{ active_bounties_count }}
                         </span>
                         <span class="text-fd-blue--dark text-uppercase">
-                          {% trans "active bount" %}{{ active_bounties_count|pluralize:"y,ies" }}
+                          {% blocktrans count count=active_bounties_count %}
+                            active bounty
+                          {% plural %}
+                            active bounties
+                          {% endblocktrans %}
                         </span>
                       </div>
                       <div class="w-100 text-right">
@@ -311,7 +318,11 @@
                           {{ completed_bounties_count }}
                         </span>
                         <span class="text-fd-green text-uppercase">
-                          {% trans "completed bount" %}{{ completed_bounties_count|pluralize:"y,ies" }}
+                          {% blocktrans count count=completed_bounties_count %}
+                            completed bounty
+                          {% plural %}
+                            completed bounties
+                          {% endblocktrans %}
                         </span>
                       </div>
                       <div class="w-100 text-right">
@@ -330,7 +341,11 @@
                           {{ expired_bounties_count }}
                         </span>
                         <span class="text-fd-red text-uppercase">
-                          {% trans "expired bount" %}{{ expired_bounties_count|pluralize:"y,ies" }}
+                          {% blocktrans count count=expired_bounties_count %}
+                            expired bounty
+                          {% plural %}
+                            expired bounties
+                          {% endblocktrans %}
                       </span>
                       </div>
                       <div class="w-100 text-right">
@@ -426,13 +441,6 @@
                     <tbody class="funder-dashboard__outgoing-funds__funds">
                     <tr class="funder-dashboard__outgoing-funds__funds__fund
                                funder-dashboard__outgoing-funds__funds__fund--template">
-                      <td class="">
-                        <span class="table-header--inline">
-                            {% trans "Issue:" %}
-                        </span>
-                        <span class="funder-dashboard__outgoing-funds__funds__fund__id">
-                        </span>
-                      </td>
                       <td>
                         <span class="table-header--inline">
                             {% trans "Title:" %}
@@ -461,7 +469,7 @@
                         <a href="#" target="_blank"
                            class="funder-dashboard__outgoing-funds__funds__fund__view-etherscan text-secondary">
                           <i class="fas mr-1 fa-eye"></i>
-                          {% trans "View Bounty" %}
+                          {% trans "View Details" %}
                         </a>
                         <span class="d-none text-secondary
                           funder-dashboard__outgoing-funds__funds__fund__etherscan-link-placeholder">
@@ -575,13 +583,6 @@
                              funder-dashboard__all-bounties__bounties__bounty--template">
                     <td>
                       <span class="table-header--inline">
-                          {% trans "Issue:" %}
-                      </span>
-                      <span class="funder-dashboard__all-bounties__bounties__bounty__id">
-                      </span>
-                    </td>
-                    <td>
-                      <span class="table-header--inline">
                           {% trans "Title:" %}
                       </span>
                       <span class="funder-dashboard__all-bounties__bounties__bounty__title">
@@ -609,7 +610,7 @@
                       <a href="#" target="_blank"
                          class="funder-dashboard__all-bounties__bounties__bounty__view-github text-secondary">
                         <i class="fas mr-1 fa-eye"></i>
-                        {% trans "View Github" %}
+                        {% trans "View Details" %}
                       </a>
                     </td>
                     <td class="funder-dashboard__all-bounties__bounties__bounty__worth">
