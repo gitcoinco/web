@@ -19,8 +19,6 @@ $(document).ready(function() {
         data[this.name] = this.value;
       });
 
-      $('#token_symbol').val($('#js-token option:selected').text());
-
       let realPeriodSeconds = 0;
 
       if (data.frequency) {
@@ -52,6 +50,7 @@ $(document).ready(function() {
       } else {
         selected_token = data.denomination;
         deployedToken = new web3.eth.Contract(compiledToken.abi, data.denomination);
+        $('#token_symbol').val($('#js-token option:selected').text());
       }
 
       deployedToken.methods.decimals().call(function(err, decimals) {

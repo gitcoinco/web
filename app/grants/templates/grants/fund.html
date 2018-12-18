@@ -141,9 +141,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     <span id="summary-amount" class="font-weight-bold">-</span>
                     <span id="summary-token" class="font-weight-bold">
                       {% if not grant_has_no_token %}
-                        {{ token_symbol }}
+                        {{ grant.token_symbol }}
                       {% else %}
-                        -
+                      {{ token_symbol }}
                       {% endif %}
                     </span>
                     {% trans "to this grant every" %}
