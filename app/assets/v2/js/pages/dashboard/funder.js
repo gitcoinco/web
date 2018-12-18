@@ -642,7 +642,7 @@ $(function() {
         urlExplorer = addQueryString('idx_status', 'open', urlExplorer);
       } else if ($this.hasClass(baseClassName + '--payments--all')) {
         urlExplorer = createdByMe(urlExplorer);
-        urlExplorer = addQueryString('idx_status', 'any', urlExplorer);
+        urlExplorer = addQueryString('idx_status', 'done', urlExplorer);
       } else if ($this.hasClass(baseClassName + '--bounties--all')) {
         urlExplorer = createdByMe(urlExplorer);
         urlExplorer = addQueryString('idx_status', 'any', urlExplorer);
