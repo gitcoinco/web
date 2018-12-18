@@ -478,7 +478,11 @@ class Subscription(SuperModel):
 
         _from = subs.contributor_address
         to = grant.admin_address
-        tokenAddress = subs.token_address
+        if grant.token_address != '0x0000000000000000000000000000000000000000':
+            tokenAddress = grant.token_address
+        else:
+            tokenAddress = subs.token_address
+
         tokenAmount = subs.amount_per_period
         periodSeconds = subs.real_period_seconds
         gasPrice = subs.gas_price
@@ -486,7 +490,7 @@ class Subscription(SuperModel):
         signature = subs.contributor_signature
 
         # TODO - figure out the number of decimals
-        token = addr_to_token(subs.token_address, subs.grant.network)
+        token = addr_to_token(tokenAddress, subs.grant.network)
         decimals = token.get('decimals', 0)
 
         return {

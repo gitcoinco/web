@@ -31,12 +31,12 @@ $(document).ready(() => {
 
         web3.eth.getAccounts(function(err, accounts) {
 
-          deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(0)).send({from: accounts[0], gasPrice: 4000000000})
+          deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(0)).send({from: accounts[0], gasPrice: realGasPrice})
             .on('transactionHash', function(transactionHash) {
               $('#sub_end_approve_tx_id').val(transactionHash);
-              document.issueURL = document.querySelector('.grant-title a').href;
               const linkURL = etherscan_tx_url(transactionHash);
-  
+
+              document.issueURL = linkURL;
               $('#transaction_url').attr('href', linkURL);
               enableWaitState('#grants_form');
 

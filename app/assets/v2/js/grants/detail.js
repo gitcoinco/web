@@ -117,9 +117,9 @@ $(document).ready(function() {
           .send({from: accounts[0], gasPrice: 4000000000})
           .on('transactionHash', function(transactionHash) {
             grant_cancel_tx_id = $('#grant_cancel_tx_id').val();
-            document.issueURL = document.getElementById('form--input__reference-url').value;
             const linkURL = etherscan_tx_url(transactionHash);
 
+            document.issueURL = linkURL;
             $('#transaction_url').attr('href', linkURL);
             $('.modal .close').trigger('click');
             enableWaitState('#grants-details');
@@ -157,9 +157,9 @@ $(document).ready(function() {
         from: accounts[0],
         gasPrice: 8000000000
       }).on('transactionHash', function(transactionHash) {
-        document.issueURL = document.getElementById('form--input__reference-url').value;
         const linkURL = etherscan_tx_url(transactionHash);
 
+        document.issueURL = linkURL;
         $('#transaction_url').attr('href', linkURL);
         $('.modal .close').trigger('click');
         enableWaitState('#grants-details');

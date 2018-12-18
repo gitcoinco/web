@@ -90,9 +90,9 @@ $(document).ready(function() {
           }).on('transactionHash', function(transactionHash) {
             console.log('2', transactionHash);
             $('#transaction_hash').val(transactionHash);
-            document.issueURL = $('#input-url').val();
             const linkURL = etherscan_tx_url(transactionHash);
 
+            document.issueURL = linkURL;
             $('#transaction_url').attr('href', linkURL);
             enableWaitState('#new-grant');
 

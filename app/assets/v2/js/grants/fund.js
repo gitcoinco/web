@@ -79,9 +79,9 @@ $(document).ready(function() {
             alert('Your approval transaction failed. Please try again.');
           }).on('transactionHash', function(transactionHash) {
             $('#sub_new_approve_tx_id').val(transactionHash);
-            document.issueURL = window.location.origin + $('#grant-link').val();
             const linkURL = etherscan_tx_url(transactionHash);
 
+            document.issueURL = linkURL;
             $('#transaction_url').attr('href', linkURL);
             enableWaitState('#grants_form');
             // Should add approval transactions to transaction history
