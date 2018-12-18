@@ -148,7 +148,7 @@ def get_avatar_context():
                 ['Masks-guy-fawkes'], ['Masks-jack-o-lantern-lighted'], ['Masks-wolverine_inspired'],
                 ['Masks-captain_inspired'], ['Extras-Parrot'], ['Extras-wonderwoman_inspired'],
                 ['Extras-santa_inspired'], ['Extras-reindeer'], ['Masks-gitcoinbot'],
-                ['Masks-batman_inspired'], ['Masks-eye-patch'],
+                ['Masks-batman_inspired'], ['Masks-eye-patch'], ['Masks-darth_inspired'],
                 ['Masks-flash_inspired'], ['Masks-deadpool_inspired'],
             ),
             'paid_options': {
