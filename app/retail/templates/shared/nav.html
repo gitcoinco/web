@@ -85,7 +85,6 @@
         <i class="fab fa-slack-hash" aria-hidden="true"></i><span class="nav-link__text">Slack</span>({{num_slack}})
       </a>
       {% else %}
-      <a class="nav-link{% if active == 'tools' %} selected{% endif %} interior" href="{% url "tools" %}">{% trans "Tools" %}</a>
       {% endif %}
       <a href="{% url "new_funding" %}" class={% if request.path != '/' %}"nav-link interior button--fund"{% else %}"btn btn-gc-blue interior button--fund"{% endif %}>
         <i class="fab fa-ethereum mr-1" role="aria-hidden"></i>

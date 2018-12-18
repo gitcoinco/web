@@ -199,6 +199,7 @@ urlpatterns = [
     path('actions/tool/<int:tool_id>/voteUp', dashboard.views.vote_tool_up, name='vote_tool_up'),
     path('actions/tool/<int:tool_id>/voteDown', dashboard.views.vote_tool_down, name='vote_tool_down'),
     re_path(r'^tools/?', dashboard.views.toolbox, name='tools'),
+    re_path(r'^labs/?', dashboard.views.labs, name='labs'),
 
     # gas views
     url(r'^gas/faucets/?', dashboard.gas_views.gas_faucet_list, name='gas_faucet_list'),
