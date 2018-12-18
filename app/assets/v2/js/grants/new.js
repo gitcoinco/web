@@ -19,7 +19,7 @@ $(document).ready(function() {
   $('#img-project').on('change', function() {
     if (this.files && this.files[0]) {
       if (exceedFileSize(this.files[0])) {
-        _alert({ message: 'Grant Image should not exceed 250KB' }, 'error');
+        _alert({ message: 'Grant Image should not exceed 950KB' }, 'error');
         return;
       }
 
@@ -150,7 +150,7 @@ $(document).ready(function() {
   $('.select2-selection__rendered').removeAttr('title');
 });
 
-const exceedFileSize = (file, size = 250000) => {
+const exceedFileSize = (file, size = 950000) => {
   if (file.size > size)
     return true;
   return false;
