@@ -1,4 +1,4 @@
-let notifications = []
+let notifications = [];
 let page = 1;
 let unreadNotifications = [];
 let hasNext = false;
@@ -9,7 +9,7 @@ Vue.mixin({
   methods: {
     fetchNotifications: function(newPage) {
       var vm = this;
-      console.log(vm.page)
+
       if (newPage) {
         vm.page = newPage;
       }
@@ -29,7 +29,6 @@ Vue.mixin({
         vm.checkUnread();
         if (vm.hasNext) {
           vm.page = ++vm.page;
-          console.log(vm.page)
 
         } else {
           vm.page = 1;
@@ -58,33 +57,36 @@ Vue.mixin({
           return elem.id;
       });
     },
-    sendState: function(unread) {
+    sendState: function(toUnread) {
       vm = this;
       var putRead;
+      // let toUnread;
+
       let notificationRead = sessionStorage.getItem('notificationRead');
 
       notificationRead && notificationRead.length ? notificationRead = notificationRead.split(',').map(String) : notificationRead;
       if (notificationRead) {
 
-        if (unread) {
+        if (toUnread) {
           const unread = Object();
 
           unread['unread'] = notificationRead;
           let data = JSON.stringify(unread);
 
-          putRead = fetchData ('api/v0.1/notifications/unread/', 'PUT', data);
-
+          putRead = fetchData ('/api/v0.1/notifications/unread/', 'PUT', data);
         } else {
           const read = Object();
 
           read['read'] = notificationRead;
           let data = JSON.stringify(read);
 
-          putRead = fetchData ('api/v0.1/notifications/read/', 'PUT', data);
+          putRead = fetchData ('/api/v0.1/notifications/read/', 'PUT', data);
         }
 
+
         vm.notifications.map((notify, index) => {
-          notify.is_read = true;
+          if (notificationRead.includes(notify.id))
+            notify.is_read = !toUnread;
         });
 
         $.when(putRead).then(function(response) {
@@ -98,7 +100,6 @@ Vue.mixin({
     onScroll: function() {
       vm = this;
       let scrollContainer = event.target;
-      // console.log(scrollContainer,scrollContainer.scrollTop + scrollContainer.clientHeight >= scrollContainer.scrollHeight, vm.page , vm.numPages)
 
       if (scrollContainer.scrollTop + scrollContainer.clientHeight >= scrollContainer.scrollHeight) {
         if (vm.page <= vm.numPages) {
@@ -108,33 +109,31 @@ Vue.mixin({
     }
   }
 
-})
+});
 
 var app = new Vue({
   delimiters: [ '[[', ']]' ],
   el: '#gc-notifications',
   data: {
-    // return {
-      page,
-      notifications,
-      unreadNotifications,
-      hasNext,
-      numPages,
-      numNotifications
-    // };
+    page,
+    notifications,
+    unreadNotifications,
+    hasNext,
+    numPages,
+    numNotifications
   },
   mounted() {
     this.fetchNotifications();
   },
-  created(){
+  created() {
     this.sendState();
   }
 });
 
-if (document.getElementById("gc-inbox")) {
+if (document.getElementById('gc-inbox')) {
   var appInbox = new Vue({
     delimiters: [ '[[', ']]' ],
-    el:'#gc-inbox',
+    el: '#gc-inbox',
     data() {
       return {
         page,
@@ -143,20 +142,19 @@ if (document.getElementById("gc-inbox")) {
         hasNext,
         numPages,
         numNotifications,
-        selectedNotifications:[]
+        selectedNotifications: []
       };
     },
     computed: {
       selectAll: {
-        get: function () {
+        get: function() {
           return this.notifications ? this.selectedNotifications.length == this.notifications.length : false;
         },
-        set: function (value) {
-          console.log(value)
+        set: function(value) {
           var selectedNotifications = [];
 
           if (value) {
-            this.notifications.forEach(function (notification) {
+            this.notifications.forEach(function(notification) {
               selectedNotifications.push(notification.id);
             });
           }
@@ -166,62 +164,76 @@ if (document.getElementById("gc-inbox")) {
       }
     },
     methods: {
-      toggleRead(){
+      toggleRead(unread) {
         vm = this;
-
-        // for (notification in notifications ) {
-        //   notification.id ===
-        // }
 
         vm.notifications.map((notify, index) => {
           if (vm.selectedNotifications.includes(notify.id))
-            notify.is_read = !notify.is_read;
+            if (unread) {
+              notify.is_read = false;
+            } else {
+              notify.is_read = true;
+            }
         });
         window.sessionStorage.setItem('notificationRead', vm.selectedNotifications);
-        vm.sendState()
+        if (unread) {
+          vm.sendState(true);
+        } else {
+          vm.sendState();
+        }
       },
-      selectUnread(){
+      deleteNotification() {
+        vm = this;
+        const deleteObj = Object();
+
+        deleteObj['delete'] = vm.selectedNotifications;
+        let data = JSON.stringify(deleteObj);
+        let deleteNotify = fetchData ('/api/v0.1/notifications/delete/', 'DELETE', data);
+
+        $.when(deleteNotify).then(function(response) {
+
+          if (response.success) {
+            for (n in vm.selectedNotifications) {
+              vm.notifications.map((notify, index) => {
+                if (vm.selectedNotifications.includes(notify.id))
+                  vm.notifications.splice(notify[index], 1);
+              });
+            }
+            vm.selectedNotifications = [];
+          }
+
+        });
+
+      },
+      selectUnread() {
         vm = this;
         vm.selectedNotifications = [];
-        vm.notifications.forEach(function (notification){
+        vm.notifications.forEach(function(notification) {
 
           if (notification.is_read === false) {
             vm.selectedNotifications.push(notification.id);
           }
-        })
+        });
       },
-      selectRead(){
+      selectRead() {
         vm = this;
         vm.selectedNotifications = [];
-        vm.notifications.forEach(function (notification){
+        vm.notifications.forEach(function(notification) {
 
           if (notification.is_read === true) {
             vm.selectedNotifications.push(notification.id);
-
           }
-        })
-
+        });
       }
     },
     mounted() {
       this.fetchNotifications();
     },
-    created(){
+    created() {
       this.sendState();
     }
-  })
-};
-
-
-// function checkTabHidden() {
-//   if (typeof document.hidden !== 'undefined') {
-//     isHidden = document.hidden;
-
-//   } else {
-//     isHidden = false;
-//   }
-//   return isHidden;
-// }
+  });
+}
 
 function newData(newObj, oldObj) {
 
@@ -232,11 +244,9 @@ function newData(newObj, oldObj) {
   });
 }
 
-
-
-
-Vue.filter('moment', function (date) {
-  moment.updateLocale('en', {
+Vue.filter('moment-fromnow', function(date) {
+  moment.defineLocale('en-custom', {parentLocale: 'en'});
+  moment.updateLocale('en-custom', {
     relativeTime: {
       future: 'in %s',
       past: '%s ',
@@ -255,6 +265,9 @@ Vue.filter('moment', function (date) {
     }
   });
   return moment.utc(date).fromNow();
-})
+});
 
-
+Vue.filter('moment', function(date) {
+  moment.locale('en');
+  return moment.utc(date).fromNow();
+});

@@ -77,7 +77,6 @@
 }
 
 .notifications__list {
-  font-size: 12px;
   max-height: 328px;
   overflow-y: auto;
   padding: 0;
@@ -112,6 +111,7 @@
 }
 
 .notifications__item {
+  font-size: 12px;
   display: flex;
   align-items: center;
   border-bottom: 1px solid #D8D8D8;
@@ -145,6 +145,7 @@
 }
 
 .notifications__avatar {
+  flex-shrink: 0;
   border-radius:50px;
   width: 28px;
   height: 28px;
@@ -197,25 +198,73 @@
   overflow: hidden;
 }
 
-.inbox-list {
+.inbox__notifications {
   background: white;
-  padding: 6em;
+  padding-bottom: 1rem;
+  margin-bottom: 3rem;
   margin-top: -3em;
   z-index: 0;
   position: relative;
   border-radius: 4px;
 }
 
+.inbox__list {
+  padding: 1em 3em;
+  overflow-y: scroll;
+  max-height: 100vh;
+}
+
 .notifications__no-results {
   text-align: center;
   margin: 3em 0;
 }
+
 .notifications__no-results img {
-  width: 80%;
+  max-width: 80%;
   margin: auto;
   display: block;
+  height: auto;
 }
 
 [v-cloak] {
   display: none;
+}
+
+.notifications_button-group {
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+  padding: 1.4rem 3rem;
+  border-bottom: 1px solid #E6EAEE;
+  user-select: none;
+}
+
+.inbox__item {
+  padding: 1rem 3rem;
+}
+
+.btn-clean {
+  color: #666666;
+  border: none;
+  background-color: transparent;
+  user-select: none;
+}
+
+.btn-clean:hover {
+  color: #000;
+}
+
+.btn-clean:focus {
+  outline: rgb(59, 153, 252) auto 5px;
+}
+.btn-clean + .btn-clean {
+  margin-left: 1em;
+}
+
+.btn-clean > i {
+  margin-right: 0.4em;
+}
+
+.btn-clean--danger {
+  color: #F9006C;
 }

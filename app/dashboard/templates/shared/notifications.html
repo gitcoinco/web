@@ -40,13 +40,13 @@
             <p class="line-clamp" v-html="notification.message_html"></p>
           </a>
           <time class="notifications__time" :datetime="[[ notification.created_on ]]" :title="[[ notification.created_on ]]">
-            [[ notification.created_on | moment ]]
+            [[ notification.created_on | moment-fromnow ]]
           </time>
         </li>
 
       </ul>
       <div class="notifications__no-results" :class="{'d-none': notifications.length > 0}">
-        <img src="{% static 'v2/images/shrug_bot.png' %}" alt="" width="316" height="221">
+        <img src="{% static 'v2/images/shrug_bot.png' %}" alt="nothing found" width="316" height="221">
         <p>
           Nothing yet!
         </p>
