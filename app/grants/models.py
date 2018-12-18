@@ -93,7 +93,12 @@ class Grant(SuperModel):
     admin_address = models.CharField(
         max_length=255,
         default='0x0',
-        help_text=_('The wallet address for the administrator of this Grant.'),
+        help_text=_('The wallet address where subscription funds will be sent.'),
+    )
+    contract_owner_address = models.CharField(
+        max_length=255,
+        default='0x0',
+        help_text=_('The wallet address that owns the subscription contract and is able to call endContract()'),
     )
     amount_goal = models.DecimalField(
         default=1,
@@ -346,11 +351,11 @@ class Subscription(SuperModel):
         null=True,
         help_text=_('The Subscription contributor\'s Profile.'),
     )
-    last_contribution_date = models.DateField(
+    last_contribution_date = models.DateTimeField(
         help_text=_('The last contribution date'),
         default=timezone.datetime(1990, 1, 1),
     )
-    next_contribution_date = models.DateField(
+    next_contribution_date = models.DateTimeField(
         help_text=_('The next contribution date'),
         default=timezone.datetime(1990, 1, 1),
     )
@@ -370,8 +375,7 @@ class Subscription(SuperModel):
         if not self.subscription_contribution.exists():
             return True
         last_contribution = self.subscription_contribution.order_by('created_on').last()
-        period = last_contribution.created_on + timedelta(0, round(self.real_period_seconds))
-        return period > timezone.now()
+        return self.next_contribution_date < timezone.now()
 
     def get_are_we_past_next_valid_timestamp(self):
         address = self.contributor_address
@@ -513,7 +517,7 @@ class Subscription(SuperModel):
         """Create a contribution object."""
         from marketing.mails import successful_contribution
         self.last_contribution_date = timezone.now()
-        self.next_contribution_date = timezone.now() + timezone.timedelta(seconds=int(self.real_period_seconds))
+        self.next_contribution_date = timezone.now() + timedelta(0, round(self.real_period_seconds))
         self.save()
         contribution_kwargs = {
             'tx_id': tx_id,
@@ -523,7 +527,7 @@ class Subscription(SuperModel):
         grant = self.grant
         try:
             grant.amount_received = (
-                int(grant.amount_received) + int(convert_amount(
+                float(grant.amount_received) + float(convert_amount(
                     self.amount_per_period,
                     self.token_symbol,
                     "USDT")

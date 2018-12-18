@@ -127,6 +127,10 @@ def grant_details(request, grant_id, grant_slug):
                 'grant': grant
             }
             Update.objects.create(**update_kwargs)
+        elif 'contract_owner_address' in request.POST:
+            grant.contract_owner_address = request.POST.get('contract_owner_address')
+            grant.save()
+            return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
         elif 'edit-title' in request.POST:
             grant.title = request.POST.get('edit-title')
             grant.reference_url = request.POST.get('edit-reference_url')
@@ -170,13 +174,13 @@ def grant_new(request):
         logo = request.FILES.get('input_image', None)
         receipt = json.loads(request.POST.get('receipt', '{}'))
         team_members = request.POST.getlist('team_members[]')
-        print('team_members: ', team_members, dir(team_members))
 
         grant_kwargs = {
             'title': request.POST.get('input_title', ''),
             'description': request.POST.get('description', ''),
             'reference_url': request.POST.get('reference_url', ''),
             'admin_address': request.POST.get('admin_address', ''),
+            'contract_owner_address': request.POST.get('contract_owner_address', ''),
             'token_address': request.POST.get('denomination', ''),
             'token_symbol': request.POST.get('token_symbol', ''),
             'amount_goal': request.POST.get('amount_goal', 1),

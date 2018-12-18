@@ -8,6 +8,7 @@ $(document).ready(function() {
 
   web3.eth.getAccounts(function(err, accounts) {
     $('#input-admin_address').val(accounts[0]);
+    $('#contract_owner_address').val(accounts[0]);
   });
 
 
@@ -74,8 +75,6 @@ $(document).ready(function() {
         // contract version
         web3.utils.toTwosComplement(0)
       ];
-
-      console.log('args', args);
 
       web3.eth.getAccounts(function(err, accounts) {
         web3.eth.net.getId(function(err, network) {

@@ -55,8 +55,6 @@ $(document).ready(() => {
                   data.signature // contributor_signature
                 ];
 
-                console.log('parts', parts);
-
                 deployedSubscription.methods.cancelSubscription(
                   ...parts
                 ).send({from: accounts[0], gasPrice: realGasPrice})
