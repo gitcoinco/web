@@ -49,6 +49,14 @@ h4,
   background-size: cover;
   background-position: 0px 0px;
   background-repeat: no-repeat;
+  position: relative;
+}
+
+.index .header {
+  overflow: hidden;
+}
+
+.minihero {
   overflow: hidden;
   position: relative;
 }
@@ -69,12 +77,18 @@ h4,
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
+  /* right: 0; */
   z-index: -1;
   will-change: transform;
   overflow-y: hidden;
   overflow-x: hidden;
-  min-height: 112px;
+}
+
+.gitcoin-background {
+  background: url("/static/v2/images/header-bg.png") #0d023b;
+  background-attachment: fixed;
+  background-position: center 0;
+  background-size: 2000px;
 }
 
 .text-white {
