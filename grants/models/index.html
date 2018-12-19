@@ -2306,13 +2306,25 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="grants.models.Grant.cancel_tx_id">cancel_tx_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="grants.models.Grant.contract">contract</h3>
 
 <p>Return grants contract.
 <h3 id="grants.models.Grant.contract_address">contract_address</h3></p>
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="grants.models.Grant.contract_owner_address">contract_owner_address</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="grants.models.Grant.contract_version">contract_version</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.Grant.deploy_tx_id">deploy_tx_id</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
@@ -2423,10 +2435,6 @@ object the first time, the query is executed.</p>
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
 <h3 id="grants.models.Grant.token_symbol">token_symbol</h3>
-
-<p>A wrapper for a deferred-loading field. When the value is read from this
-object the first time, the query is executed.</p>
-<h3 id="grants.models.Grant.transaction_hash">transaction_hash</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
@@ -2587,6 +2595,10 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="grants.models.Subscription.cancel_tx_id">cancel_tx_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="grants.models.Subscription.contributor_address">contributor_address</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -2605,6 +2617,10 @@ one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
 <h3 id="grants.models.Subscription.contributor_signature">contributor_signature</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.Subscription.end_approve_tx_id">end_approve_tx_id</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
@@ -2627,7 +2643,7 @@ object the first time, the query is executed.</p>
 
 <h3 id="grants.models.Subscription.get_next_by_last_contribution_date">_method</h3>
 
-<pre><code class="python">Subscription._method(self, *, field=&lt;django.db.models.fields.DateField: last_contribution_date&gt;, is_next=True, **kwargs)
+<pre><code class="python">Subscription._method(self, *, field=&lt;django.db.models.fields.DateTimeField: last_contribution_date&gt;, is_next=True, **kwargs)
 </code></pre>
 
 <h3 id="grants.models.Subscription.get_next_by_modified_on">_method</h3>
@@ -2637,7 +2653,7 @@ object the first time, the query is executed.</p>
 
 <h3 id="grants.models.Subscription.get_next_by_next_contribution_date">_method</h3>
 
-<pre><code class="python">Subscription._method(self, *, field=&lt;django.db.models.fields.DateField: next_contribution_date&gt;, is_next=True, **kwargs)
+<pre><code class="python">Subscription._method(self, *, field=&lt;django.db.models.fields.DateTimeField: next_contribution_date&gt;, is_next=True, **kwargs)
 </code></pre>
 
 <h3 id="grants.models.Subscription.get_previous_by_created_on">_method</h3>
@@ -2647,7 +2663,7 @@ object the first time, the query is executed.</p>
 
 <h3 id="grants.models.Subscription.get_previous_by_last_contribution_date">_method</h3>
 
-<pre><code class="python">Subscription._method(self, *, field=&lt;django.db.models.fields.DateField: last_contribution_date&gt;, is_next=False, **kwargs)
+<pre><code class="python">Subscription._method(self, *, field=&lt;django.db.models.fields.DateTimeField: last_contribution_date&gt;, is_next=False, **kwargs)
 </code></pre>
 
 <h3 id="grants.models.Subscription.get_previous_by_modified_on">_method</h3>
@@ -2657,7 +2673,7 @@ object the first time, the query is executed.</p>
 
 <h3 id="grants.models.Subscription.get_previous_by_next_contribution_date">_method</h3>
 
-<pre><code class="python">Subscription._method(self, *, field=&lt;django.db.models.fields.DateField: next_contribution_date&gt;, is_next=False, **kwargs)
+<pre><code class="python">Subscription._method(self, *, field=&lt;django.db.models.fields.DateTimeField: next_contribution_date&gt;, is_next=False, **kwargs)
 </code></pre>
 
 <h3 id="grants.models.Subscription.grant">grant</h3>
@@ -2682,6 +2698,10 @@ object the first time, the query is executed.</p>
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
 <h3 id="grants.models.Subscription.network">network</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.Subscription.new_approve_tx_id">new_approve_tx_id</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
@@ -2780,7 +2800,7 @@ object the first time, the query is executed.</p>
 
 <p>Returns the grants subscription hash (has to get it from web3).
 <h3 id="grants.models.Subscription.successful_contribution">successful_contribution</h3></p>
-<pre><code class="python">Subscription.successful_contribution(self, kwargs)
+<pre><code class="python">Subscription.successful_contribution(self, tx_id)
 </code></pre>
 
 <p>Create a contribution object.
@@ -2794,11 +2814,7 @@ object the first time, the query is executed.</p>
 </code></pre>
 
 <p>Define the structure of a subscription agreement.
-<h3 id="grants.models.Contribution.gas_price">gas_price</h3></p>
-<p>A wrapper for a deferred-loading field. When the value is read from this
-object the first time, the query is executed.</p>
-<h3 id="grants.models.Contribution.get_next_by_created_on">_method</h3>
-
+<h3 id="grants.models.Contribution.get_next_by_created_on">_method</h3></p>
 <pre><code class="python">Contribution._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=True, **kwargs)
 </code></pre>
 
@@ -2818,10 +2834,6 @@ object the first time, the query is executed.</p>
 </code></pre>
 
 <h3 id="grants.models.Contribution.id">id</h3>
-
-<p>A wrapper for a deferred-loading field. When the value is read from this
-object the first time, the query is executed.</p>
-<h3 id="grants.models.Contribution.nonce">nonce</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
