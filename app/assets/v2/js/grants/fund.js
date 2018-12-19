@@ -59,9 +59,11 @@ $(document).ready(function() {
 
         $('#gas_price').val(realGasPrice);
 
-        let realTokenAmount = Number(data.amount_per_period * 10 ** decimals);
+        let realTokenAmount = Number(data.amount_per_period * Math.pow(10, decimals));
+        let amountSTR = realTokenAmount.toLocaleString('fullwide', { useGrouping: false });
 
         let realApproval = Number((realTokenAmount + realGasPrice) * data.num_periods);
+        let approvalSTR = realApproval.toLocaleString('fullwide', { useGrouping: false });
 
         web3.eth.getAccounts(function(err, accounts) {
 
@@ -69,7 +71,7 @@ $(document).ready(function() {
 
           deployedToken.methods.approve(
             data.contract_address,
-            web3.utils.toTwosComplement(realApproval)
+            web3.utils.toTwosComplement(approvalSTR)
           ).send({
             from: accounts[0],
             gasPrice: realGasPrice
@@ -92,7 +94,7 @@ $(document).ready(function() {
                 web3.utils.toChecksumAddress(accounts[0]), // subscriber address
                 web3.utils.toChecksumAddress(data.admin_address), // admin_address
                 web3.utils.toChecksumAddress(selected_token), // token denomination / address
-                web3.utils.toTwosComplement(realTokenAmount), // data.amount_per_period
+                web3.utils.toTwosComplement(amountSTR), // data.amount_per_period
                 web3.utils.toTwosComplement(realPeriodSeconds), // data.period_seconds
                 web3.utils.toTwosComplement(realGasPrice), // data.gas_price
                 web3.utils.toTwosComplement(nonce) // nonce

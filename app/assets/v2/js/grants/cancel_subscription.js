@@ -24,8 +24,7 @@ $(document).ready(() => {
       deployedToken.methods.decimals().call(function(err, decimals) {
 
         let realTokenAmount = Number(data.amount_per_period * 10 ** decimals);
-
-        console.log('realTokenAmount', realTokenAmount);
+        let amountSTR = realTokenAmount.toLocaleString('fullwide', { useGrouping: false });
 
         let realGasPrice = $('#gasPrice').val() * Math.pow(10, 9);
 
@@ -48,7 +47,7 @@ $(document).ready(() => {
                   accounts[0], // subscriber address
                   data.admin_address, // admin_address
                   data.token_address, // testing token
-                  web3.utils.toTwosComplement(realTokenAmount), // data.amount_per_period
+                  web3.utils.toTwosComplement(amountSTR), // data.amount_per_period
                   web3.utils.toTwosComplement(data.real_period_seconds), // data.period_seconds
                   web3.utils.toTwosComplement(realGasPrice), // data.gas_price
                   web3.utils.toTwosComplement(nonce), // nonce
