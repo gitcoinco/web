@@ -34,8 +34,9 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
 from dashboard.models import Profile
+from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.forms import MilestoneForm
-from grants.models import Grant, Milestone, Subscription, Update
+from grants.models import Contribution, Grant, Milestone, Subscription, Update
 from marketing.mails import (
     grant_cancellation, new_grant, new_supporter, subscription_terminated, support_cancellation,
     thank_you_for_supporting,
@@ -64,15 +65,16 @@ def grants(request):
     limit = request.GET.get('limit', 24)
     page = request.GET.get('page', 1)
     sort = request.GET.get('sort_option', '-created_on')
+    network = request.GET.get('network', 'mainnet')
+    keyword = request.GET.get('keyword', '')
+    state = request.GET.get('state', 'active')
+    _grants = None
 
-    _grants = Grant.objects.active()
+    if state == 'active':
+        _grants = Grant.objects.filter(network=network).active().keyword(keyword).order_by(sort)
+    else:
+        _grants = Grant.objects.filter(network=network).keyword(keyword).order_by(sort)
 
-    if request.method == 'POST':
-        sort = request.POST.get('sort_option', '-created_on')
-        keyword = request.POST.get('search_grants', '')
-        _grants = _grants.keyword(keyword)
-
-    _grants = _grants.order_by(sort)
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
 
@@ -100,11 +102,9 @@ def grant_details(request, grant_id, grant_slug):
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
 
     try:
-        grant = Grant.objects.prefetch_related(
-            'subscriptions',
-            'milestones',
-            'updates'
-        ).get(pk=grant_id, slug=grant_slug)
+        grant = Grant.objects.prefetch_related('subscriptions', 'milestones', 'updates').get(
+            pk=grant_id, slug=grant_slug
+        )
         milestones = grant.milestones.order_by('due_date')
         updates = grant.updates.order_by('-created_on')
         subscriptions = grant.subscriptions.filter(active=True)
@@ -114,6 +114,7 @@ def grant_details(request, grant_id, grant_slug):
 
     if request.method == 'POST' and (profile == grant.admin_profile or request.user.is_staff):
         if 'contract_address' in request.POST:
+            grant.cancel_tx_id = request.POST.get('grant_cancel_tx_id', '')
             grant.active = False
             grant.save()
             grant_cancellation(grant, user_subscription)
@@ -126,6 +127,10 @@ def grant_details(request, grant_id, grant_slug):
                 'grant': grant
             }
             Update.objects.create(**update_kwargs)
+        elif 'contract_owner_address' in request.POST:
+            grant.contract_owner_address = request.POST.get('contract_owner_address')
+            grant.save()
+            return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
         elif 'edit-title' in request.POST:
             grant.title = request.POST.get('edit-title')
             grant.reference_url = request.POST.get('edit-reference_url')
@@ -152,6 +157,13 @@ def grant_details(request, grant_id, grant_slug):
         'updates': updates,
         'milestones': milestones,
         'keywords': get_keywords(),
+        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
+        'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(120),
+        'recommend_gas_price_avg': recommend_min_gas_price_to_confirm_in_time(15),
+        'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(1),
+        'eth_usd_conv_rate': eth_usd_conv_rate(),
+        'conf_time_spread': conf_time_spread(),
+        'gas_advisories': gas_advisories(),
     }
     return TemplateResponse(request, 'grants/detail.html', params)
 
@@ -169,18 +181,18 @@ def grant_new(request):
         logo = request.FILES.get('input_image', None)
         receipt = json.loads(request.POST.get('receipt', '{}'))
         team_members = request.POST.getlist('team_members[]')
-        print('team_members: ', team_members, dir(team_members))
 
         grant_kwargs = {
             'title': request.POST.get('input_title', ''),
             'description': request.POST.get('description', ''),
             'reference_url': request.POST.get('reference_url', ''),
             'admin_address': request.POST.get('admin_address', ''),
+            'contract_owner_address': request.POST.get('contract_owner_address', ''),
             'token_address': request.POST.get('denomination', ''),
             'token_symbol': request.POST.get('token_symbol', ''),
             'amount_goal': request.POST.get('amount_goal', 1),
             'contract_version': request.POST.get('contract_version', ''),
-            'transaction_hash': request.POST.get('transaction_hash', ''),
+            'deploy_tx_id': request.POST.get('transaction_hash', ''),
             'contract_address': request.POST.get('contract_address', ''),
             'network': request.POST.get('network', 'mainnet'),
             'metadata': receipt,
@@ -200,7 +212,14 @@ def grant_new(request):
         'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
         'profile': profile,
         'grant': {},
-        'keywords': get_keywords()
+        'keywords': get_keywords(),
+        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
+        'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(120),
+        'recommend_gas_price_avg': recommend_min_gas_price_to_confirm_in_time(15),
+        'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(1),
+        'eth_usd_conv_rate': eth_usd_conv_rate(),
+        'conf_time_spread': conf_time_spread(),
+        'gas_advisories': gas_advisories(),
     }
 
     return TemplateResponse(request, 'grants/new.html', params)
@@ -252,7 +271,7 @@ def milestones(request, grant_id, grant_slug):
 
 
 @login_required
-def grant_fund(request, grant_id,  grant_slug):
+def grant_fund(request, grant_id, grant_slug):
     """Handle grant funding."""
     try:
         grant = Grant.objects.get(pk=grant_id, slug=grant_slug)
@@ -292,7 +311,6 @@ def grant_fund(request, grant_id,  grant_slug):
         }
         return TemplateResponse(request, 'grants/shared/error.html', params)
 
-    # make sure a user can only create one subscription per grant
     if request.method == 'POST':
         subscription = Subscription()
 
@@ -306,6 +324,7 @@ def grant_fund(request, grant_id,  grant_slug):
         subscription.token_address = request.POST.get('denomination', '')
         subscription.token_symbol = request.POST.get('token_symbol', '')
         subscription.gas_price = request.POST.get('gas_price', 0)
+        subscription.new_approve_tx_id = request.POST.get('sub_new_approve_tx_id', '')
         subscription.network = request.POST.get('network', '')
         subscription.contributor_profile = profile
         subscription.grant = grant
@@ -322,6 +341,13 @@ def grant_fund(request, grant_id,  grant_slug):
         'grant_has_no_token': True if grant.token_address == '0x0000000000000000000000000000000000000000' else False,
         'grant': grant,
         'keywords': get_keywords(),
+        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
+        'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(120),
+        'recommend_gas_price_avg': recommend_min_gas_price_to_confirm_in_time(15),
+        'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(1),
+        'eth_usd_conv_rate': eth_usd_conv_rate(),
+        'conf_time_spread': conf_time_spread(),
+        'gas_advisories': gas_advisories(),
     }
     return TemplateResponse(request, 'grants/fund.html', params)
 
@@ -351,10 +377,15 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
     if request.method == 'POST' and (
         profile == subscription.contributor_profile or request.user.has_perm('grants.change_subscription')
     ):
+        subscription.end_approve_tx_id = request.POST.get('sub_end_approve_tx_id', '')
+        subscription.cancel_tx_id = request.POST.get('sub_cancel_tx_id', '')
         subscription.active = False
         subscription.save()
         support_cancellation(grant, subscription)
-        messages.info(request, _('Your subscription has been canceled. We hope you continue to support other open source projects!'))
+        messages.info(
+            request,
+            _('Your subscription has been canceled. We hope you continue to support other open source projects!')
+        )
         return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
     params = {
@@ -365,6 +396,13 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
         'grant': grant,
         'now': now,
         'keywords': get_keywords(),
+        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
+        'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(120),
+        'recommend_gas_price_avg': recommend_min_gas_price_to_confirm_in_time(15),
+        'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(1),
+        'eth_usd_conv_rate': eth_usd_conv_rate(),
+        'conf_time_spread': conf_time_spread(),
+        'gas_advisories': gas_advisories(),
     }
 
     return TemplateResponse(request, 'grants/cancel.html', params)
@@ -382,44 +420,49 @@ def profile(request):
     sort = request.GET.get('sort', '-created_on')
 
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
-    _grants_pks = Grant.objects.filter(Q(admin_profile=profile) | Q(team_members__in=[profile])).values_list('pk', flat=True)
+    _grants_pks = Grant.objects.filter(Q(admin_profile=profile) | Q(team_members__in=[profile])).values_list(
+        'pk', flat=True
+    )
     _grants = Grant.objects.prefetch_related('team_members') \
         .filter(pk__in=_grants_pks).order_by(sort)
     sub_grants = Grant.objects.filter(subscriptions__contributor_profile=profile).order_by(sort)
 
+    sub_contributions = []
+    contributions = []
+
+    for contribution in Contribution.objects.filter(subscription__contributor_profile=profile):
+        instance = {
+            "cont": contribution,
+            "sub": contribution.subscription,
+            "grant":  contribution.subscription.grant,
+            "profile": contribution.subscription.contributor_profile
+        }
+        sub_contributions.append(instance)
+
+    for _grant in _grants:
+        subs = Subscription.objects.filter(grant=_grant)
+        for _sub in subs:
+            conts = Contribution.objects.filter(subscription=_sub)
+            for _cont in conts:
+                instance = {
+                    "cont": _cont,
+                    "sub": _sub,
+                    "grant":  _grant,
+                    "profile": _sub.contributor_profile
+                }
+                contributions.append(instance)
+
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
-
-    for _grant in grants:
-        _grant.activeSubscriptions = Subscription.objects.filter(grant=_grant, active=True)
-
-    history = [{
-        'date': '16 Mar',
-        'value_true': 1.0,
-        'token_name': 'ETH',
-        'frequency': 'days',
-        'value_in_usdt_now': 80,
-        'title': 'Lorem ipsum dolor sit amet',
-        'link': 'https://etherscan.io/txs?a=0xcf267ea3f1ebae3c29fea0a3253f94f3122c2199&f=3',
-        'avatar_url': 'https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg'
-    }, {
-        'date': '24 April',
-        'value_true': 90,
-        'token_name': 'DAI',
-        'frequency': 'months',
-        'value_in_usdt_now': 90,
-        'title': 'Lorem ipsum dolor sit amet',
-        'link': 'https://etherscan.io/txs?a=0xcf267ea3f1ebae3c29fea0a3253f94f3122c2199&f=3',
-        'avatar_url': 'https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg'
-    }]
 
     params = {
         'active': 'profile',
         'title': _('My Grants'),
         'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
         'grants': grants,
+        'history': contributions,
         'sub_grants': sub_grants,
-        'history': history
+        'sub_history': sub_contributions
     }
 
     return TemplateResponse(request, 'grants/profile/index.html', params)

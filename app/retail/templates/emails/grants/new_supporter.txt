@@ -14,6 +14,11 @@
 
 {% trans " has begun contributing" %}
 
-{{ transaction.value_true }} {{ transaction.token_name }} {% trans "per" %} {{ transaction.frequency }}
+{{ subscription.amount_per_period }} {{ subscription.token_symbol }} {% trans "per" %} {{ subscription.frequency }} {{ subscription.frequency_unit }}
 
-{% trans "You can see the transaction" %} {{ transaction.link }} {% trans "here." %}
+{% trans "You can see the transaction on etherscan" %} at
+{% if subscription.network == 'mainnet' %}
+  http://etherscan.io/tx/{{ subscription.sub_new_approve_tx_id }}
+{% else %}
+  http://{{ grant.network }}.etherscan.io/tx/{{ subscription.sub_new_approve_tx_id }}
+{% endif %}

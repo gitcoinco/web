@@ -17,6 +17,9 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import logging
+from datetime import timedelta
+
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
 from django.db import models
@@ -26,10 +29,12 @@ from django.utils.translation import gettext_lazy as _
 
 from django_extensions.db.fields import AutoSlugField
 from economy.models import SuperModel
-from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
+from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from grants.utils import get_upload_filename
 from web3 import Web3
+
+logger = logging.getLogger(__name__)
 
 
 class GrantQuerySet(models.QuerySet):
@@ -88,13 +93,18 @@ class Grant(SuperModel):
     admin_address = models.CharField(
         max_length=255,
         default='0x0',
-        help_text=_('The wallet address for the administrator of this Grant.'),
+        help_text=_('The wallet address where subscription funds will be sent.'),
+    )
+    contract_owner_address = models.CharField(
+        max_length=255,
+        default='0x0',
+        help_text=_('The wallet address that owns the subscription contract and is able to call endContract()'),
     )
     amount_goal = models.DecimalField(
         default=1,
         decimal_places=4,
         max_digits=50,
-        help_text=_('The contribution goal amount for the Grant in DAI.'),
+        help_text=_('The monthly contribution goal amount for the Grant in DAI.'),
     )
     amount_received = models.DecimalField(
         default=0,
@@ -117,16 +127,21 @@ class Grant(SuperModel):
         default='0x0',
         help_text=_('The contract address of the Grant.'),
     )
+    deploy_tx_id = models.CharField(
+        max_length=255,
+        default='0x0',
+        help_text=_('The transaction id for contract deployment.'),
+    )
+    cancel_tx_id = models.CharField(
+        max_length=255,
+        default='0x0',
+        help_text=_('The transaction id for endContract.'),
+    )
     contract_version = models.DecimalField(
         default=0,
         decimal_places=0,
         max_digits=3,
         help_text=_('The contract version the Grant.'),
-    )
-    transaction_hash = models.CharField(
-        max_length=255,
-        default='0x0',
-        help_text=_('The transaction hash of the Grant.'),
     )
     metadata = JSONField(
         default=dict,
@@ -302,6 +317,21 @@ class Subscription(SuperModel):
         max_digits=50,
         help_text=_('The required gas price for the Subscription.'),
     )
+    new_approve_tx_id = models.CharField(
+        max_length=255,
+        default='0x0',
+        help_text=_('The transaction id for subscription approve().'),
+    )
+    end_approve_tx_id = models.CharField(
+        max_length=255,
+        default='0x0',
+        help_text=_('The transaction id for subscription approve().'),
+    )
+    cancel_tx_id = models.CharField(
+        max_length=255,
+        default='0x0',
+        help_text=_('The transaction id for cancelSubscription.'),
+    )
     network = models.CharField(
         max_length=8,
         default='mainnet',
@@ -321,11 +351,11 @@ class Subscription(SuperModel):
         null=True,
         help_text=_('The Subscription contributor\'s Profile.'),
     )
-    last_contribution_date = models.DateField(
+    last_contribution_date = models.DateTimeField(
         help_text=_('The last contribution date'),
         default=timezone.datetime(1990, 1, 1),
     )
-    next_contribution_date = models.DateField(
+    next_contribution_date = models.DateTimeField(
         help_text=_('The next contribution date'),
         default=timezone.datetime(1990, 1, 1),
     )
@@ -345,8 +375,7 @@ class Subscription(SuperModel):
         if not self.subscription_contribution.exists():
             return True
         last_contribution = self.subscription_contribution.order_by('created_on').last()
-        period = self.real_period_seconds
-        return (last_contribution.created_on.timestamp() + period > (timezone.now()))
+        return self.next_contribution_date < timezone.now()
 
     def get_are_we_past_next_valid_timestamp(self):
         address = self.contributor_address
@@ -449,7 +478,11 @@ class Subscription(SuperModel):
 
         _from = subs.contributor_address
         to = grant.admin_address
-        tokenAddress = subs.token_address
+        if grant.token_address != '0x0000000000000000000000000000000000000000':
+            tokenAddress = grant.token_address
+        else:
+            tokenAddress = subs.token_address
+
         tokenAmount = subs.amount_per_period
         periodSeconds = subs.real_period_seconds
         gasPrice = subs.gas_price
@@ -457,7 +490,7 @@ class Subscription(SuperModel):
         signature = subs.contributor_signature
 
         # TODO - figure out the number of decimals
-        token = addr_to_token(subs.token_address, subs.grant.network)
+        token = addr_to_token(tokenAddress, subs.grant.network)
         decimals = token.get('decimals', 0)
 
         return {
@@ -466,7 +499,7 @@ class Subscription(SuperModel):
             'tokenAddress': Web3.toChecksumAddress(tokenAddress),
             'tokenAmount': int(tokenAmount * 10**decimals),
             'periodSeconds': int(periodSeconds),
-            'gasPrice': int(gasPrice * 10**9),
+            'gasPrice': int(gasPrice),
             'nonce': int(nonce),
             'signature': signature,
         }
@@ -482,27 +515,33 @@ class Subscription(SuperModel):
             args['periodSeconds'],
             args['gasPrice'],
             args['nonce'],
-        ).call()
+            ).call()
 
-    def successful_contribution(self, kwargs):
+    def successful_contribution(self, tx_id):
         """Create a contribution object."""
         from marketing.mails import successful_contribution
         self.last_contribution_date = timezone.now()
-        self.next_contribution_date = timezone.now() + timezone.timedelta(seconds=self.real_period_seconds)
+        self.next_contribution_date = timezone.now() + timedelta(0, round(self.real_period_seconds))
         self.save()
         contribution_kwargs = {
-            'tx_id': kwargs.tx_id,
-            'gas_price': kwargs.gas_price,
-            'nonce': kwargs.nonce,
+            'tx_id': tx_id,
             'subscription': self
         }
         contribution = Contribution.objects.create(**contribution_kwargs)
         grant = self.grant
-        grant.amount_received = (
-            grant.amount_received + convert_amount(self.amount_per_period, self.token_symbol, "USDT", timezone.now())
-        )
+        try:
+            grant.amount_received = (
+                float(grant.amount_received) + float(convert_amount(
+                    self.amount_per_period,
+                    self.token_symbol,
+                    "USDT")
+                )
+            )
+        except ConversionRateNotFoundError as e:
+            logger.info(e)
+
         grant.save()
-        successful_contribution(self.grant, self)
+        successful_contribution(self.grant, self, contribution)
         return contribution
 
 
@@ -519,19 +558,6 @@ class Contribution(SuperModel):
         max_length=255,
         default='0x0',
         help_text=_('The transaction ID of the Contribution.'),
-    )
-
-    gas_price = models.DecimalField(
-        default=0,
-        decimal_places=4,
-        max_digits=50,
-        help_text=_('The amount of token used to incentivize subminers.'),
-    )
-    nonce = models.DecimalField(
-        default=0,
-        decimal_places=0,
-        max_digits=50,
-        help_text=_('The of the subscription metaTx.'),
     )
     subscription = models.ForeignKey(
         'grants.Subscription',
