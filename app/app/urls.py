@@ -287,14 +287,41 @@ urlpatterns = [
 
     # admin views
     re_path(r'^_administration/?', admin.site.urls, name='admin'),
-    path('_administration/email/grant_cancellation', retail.emails.grant_cancellation, name='admin_grant_cancellation'),
+    path(
+        '_administration/email/grant_cancellation',
+        retail.emails.grant_cancellation,
+        name='admin_grant_cancellation'
+    ),
     path(
         '_administration/email/subscription_terminated',
         retail.emails.subscription_terminated,
         name='admin_subscription_terminated'
     ),
-    path('_administration/email/new_grant', retail.emails.new_grant, name='admin_new_grant'),
-    path('_administration/email/new_supporter', retail.emails.new_supporter, name='admin_new_supporter'),
+    path(
+        '_administration/email/new_grant',
+        retail.emails.new_grant,
+        name='admin_new_grant'
+    ),
+    path(
+        '_administration/email/change_grant_owner',
+        retail.emails.change_grant_owner,
+        name='admin_change_grant_owner'
+    ),
+    path(
+        '_administration/email/change_grant_owner_accept',
+        retail.emails.change_grant_owner_accept,
+        name='admin_change_grant_owner_accept'
+    ),
+    path(
+        '_administration/email/change_grant_owner_reject',
+        retail.emails.change_grant_owner_reject,
+        name='admin_change_grant_owner_reject'
+    ),
+    path(
+        '_administration/email/new_supporter',
+        retail.emails.new_supporter,
+        name='admin_new_supporter'
+    ),
     path(
         '_administration/email/thank_you_for_supporting',
         retail.emails.thank_you_for_supporting,
@@ -321,7 +348,11 @@ urlpatterns = [
     path('_administration/email/new_match', retail.emails.new_match, name='new_match'),
     path('_administration/email/quarterly_roundup', retail.emails.quarterly_roundup, name='quarterly_roundup'),
     path('_administration/email/new_work_submission', retail.emails.new_work_submission, name='new_work_submission'),
-    path('_administration/email/new_bounty_rejection', retail.emails.new_bounty_rejection, name='new_bounty_rejection'),
+    path(
+        '_administration/email/new_bounty_rejection',
+        retail.emails.new_bounty_rejection,
+        name='new_bounty_rejection'
+    ),
     path(
         '_administration/email/new_bounty_acceptance',
         retail.emails.new_bounty_acceptance,

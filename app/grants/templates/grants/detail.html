@@ -365,4 +365,13 @@
   <script src="{% static "v2/js/grants/shared.js" %}"></script>
   <script src="{% static "v2/js/grants/detail.js" %}"></script>
   <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
+  <script>
+    {% if change_ownership == 'Y' %}
+      _alert({ message: gettext('You are now the owner of this grant.') }, 'success');
+    {% elif change_ownership == 'N' %}
+      _alert({ message: gettext('Ownership Request has been rejected.') }, 'error');
+    {% elif change_ownership == 'R' %}
+      _alert({ message: gettext('Ownership Transfer will happen upon confirmation from the requested user.') }, 'success');
+    {% endif %}
+  </script>
 </html>

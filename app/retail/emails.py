@@ -76,6 +76,30 @@ def render_new_grant_email(grant):
     return response_html, response_txt, subject
 
 
+def render_change_grant_owner(grant):
+    params = {'grant': grant}
+    response_html = premailer_transform(render_to_string("emails/grants/change_owner.html", params))
+    response_txt = render_to_string("emails/grants/change_owner.txt", params)
+    subject = "You've been chosen to be the owner for a Gitcoin Grant"
+    return response_html, response_txt, subject
+
+
+def render_change_grant_owner_accept(grant):
+    params = {'grant': grant}
+    response_html = premailer_transform(render_to_string("emails/grants/change_owner_accept.html", params))
+    response_txt = render_to_string("emails/grants/change_owner_accept.txt", params)
+    subject = "Grant Owner has changed"
+    return response_html, response_txt, subject
+
+
+def render_change_grant_owner_reject(grant):
+    params = {'grant': grant}
+    response_html = premailer_transform(render_to_string("emails/grants/change_owner_reject.html", params))
+    response_txt = render_to_string("emails/grants/change_owner_reject.txt", params)
+    subject = "Grant has no change in ownership"
+    return response_html, response_txt, subject
+
+
 def render_new_supporter_email(grant, subscription):
     params = {'grant': grant, 'subscription': subscription}
     response_html = premailer_transform(render_to_string("emails/grants/new_supporter.html", params))
@@ -127,7 +151,7 @@ def render_successful_contribution_email(grant, subscription, contribution):
 
 @staff_member_required
 def successful_contribution(request):
-    grant = Grant.objects.all().first()
+    grant = Grant.objects.first()
     subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
     contribution = Contribution.objects.filter(subscription__pk=subscription.pk).first()
     response_html, __, __ = render_successful_contribution_email(grant, subscription, contribution)
@@ -136,7 +160,7 @@ def successful_contribution(request):
 
 @staff_member_required
 def subscription_terminated(request):
-    grant = Grant.objects.all().first()
+    grant = Grant.objects.first()
     subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
     response_html, __, __ = render_subscription_terminated_email(grant, subscription)
     return HttpResponse(response_html)
@@ -144,7 +168,7 @@ def subscription_terminated(request):
 
 @staff_member_required
 def grant_cancellation(request):
-    grant = Grant.objects.all().first()
+    grant = Grant.objects.first()
     subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
     response_html, __, __ = render_grant_cancellation_email(grant, subscription)
     return HttpResponse(response_html)
@@ -152,7 +176,7 @@ def grant_cancellation(request):
 
 @staff_member_required
 def support_cancellation(request):
-    grant = Grant.objects.all().first()
+    grant = Grant.objects.first()
     subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
     response_html, __, __ = render_support_cancellation_email(grant, subscription)
     return HttpResponse(response_html)
@@ -160,7 +184,7 @@ def support_cancellation(request):
 
 @staff_member_required
 def thank_you_for_supporting(request):
-    grant = Grant.objects.all().first()
+    grant = Grant.objects.first()
     subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
     response_html, __, __ = render_thank_you_for_supporting_email(grant, subscription)
     return HttpResponse(response_html)
@@ -168,7 +192,7 @@ def thank_you_for_supporting(request):
 
 @staff_member_required
 def new_supporter(request):
-    grant = Grant.objects.all().first()
+    grant = Grant.objects.first()
     subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
     response_html, __, __ = render_new_supporter_email(grant, subscription)
     return HttpResponse(response_html)
@@ -176,8 +200,29 @@ def new_supporter(request):
 
 @staff_member_required
 def new_grant(request):
-    grant = Grant.objects.all().first()
+    grant = Grant.objects.first()
     response_html, __, __ = render_new_grant_email(grant)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def change_grant_owner(request):
+    grant = Grant.objects.first()
+    response_html, __, __ = render_change_grant_owner(grant)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def change_grant_owner_accept(request):
+    grant = Grant.objects.first()
+    response_html, __, __ = render_change_grant_owner_accept(grant)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def change_grant_owner_reject(request):
+    grant = Grant.objects.first()
+    response_html, __, __ = render_change_grant_owner_reject(grant)
     return HttpResponse(response_html)
 
 
