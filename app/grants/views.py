@@ -163,7 +163,7 @@ def grant_details(request, grant_id, grant_slug):
 def grant_new(request):
     """Handle new grant."""
     if not request.user.has_perm('grants.add_grant'):
-        messages.info(request, _('You do not have permission to add a grant.'))
+        messages.info(request, _('You do not have permission to add a grant.  We plan to open up grant creation to all users in Q1 2019.'))
         return redirect(reverse('grants:grants'))
 
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
