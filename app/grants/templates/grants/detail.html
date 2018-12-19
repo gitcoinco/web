@@ -131,6 +131,38 @@
                     <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
                     <input type="hidden" id="contract_version" name="contract_version" value="{{ grant.contract_version }}">
                     <input type="hidden" id="grant_cancel_tx_id" name="grant_cancel_tx_id" value="">
+                    <div id="cancelModal" style="display: none;">
+                      <div class="row px-5">
+                        <div class="col-12 closebtn">
+                          <a rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">
+                            <span aria-hidden="true">&times;</span>
+                          </a>
+                        </div>
+                        <div class="col-12 pt-2 pb-2 text-center">
+                          <h2 class="font-title">{% trans "Are you sure you want to cancel this grant?" %}</h2>
+                        </div>
+                        <div class="col-12 text-center">
+                          <img src="{% static "v2/images/grants/cancel-grants-icon.png" %}" />
+                        </div>
+                        <div class="col-12 pt-2 pb-2 font-body">
+                          <p>{% trans "By clicking Cancel, you will be cancelling this grant from Gitcoin." %}</p>
+                          <ul><li>{% trans "Your grant will stay in Gitcoin, but " %}<b>{% trans "marked as inactive." %}</b></li>
+                          <li>{% trans "Funds received till now " %}<b>{% trans "will not be refunded " %}</b>{% trans "to the contributors." %}</li>
+                          <li>{% trans "Once cancelled, it is " %}<b>{% trans "not possible to restart the grant, " %}</b>{% trans "as the smart contract will be destroyed." %}</li></ul>
+                          <p>{% trans "To relaunch the grant, you need to create a new grant." %}</p>
+                        </div>
+                        <div id="gas-section" class="form__group-horizontal">
+                          <h5 class="font-subheader pb-2">{% trans "Gas Settings" %}</h5>
+                          <div>
+                            {% include 'shared/wallet_estimate.html' %}
+                          </div>
+                        </div>
+                        <div class="col-12 mt-4 mb-2 text-right font-caption">
+                          <a rel="modal:close" href="javascript:void" aria-label="Close dialog" class="button button--primary-o mr-3">{% trans "No, I don\'t want to cancel" %}</a>
+                          <button class="modal-cancel-grants button button--warning">{% trans "Cancel this Grant" %}</button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 {% elif user_subscription %}
                   <a href="{% url 'grants:subscription_cancel' grant.id grant.slug user_subscription.id %}">
@@ -326,6 +358,7 @@
 
   <script src="{% static "v2/js/grants/compiledSubscriptionContract.js" %}"></script>
   <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
   <script src="{% static "v2/js/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
   <script src="{% static "v2/js/user-search.js" %}"></script>
