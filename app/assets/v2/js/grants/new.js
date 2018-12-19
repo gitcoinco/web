@@ -151,7 +151,6 @@ $(document).ready(function() {
 });
 
 const exceedFileSize = (file, size = 4000000) => {
-  console.log('size', file.size);
   if (file.size > size)
     return true;
   return false;
