@@ -60,10 +60,10 @@ $(document).ready(function() {
         $('#gas_price').val(realGasPrice);
 
         let realTokenAmount = Number(data.amount_per_period * Math.pow(10, decimals));
-        let amountSTR = realTokenAmount.toLocaleString('fullwide', { useGrouping: false })
+        let amountSTR = realTokenAmount.toLocaleString('fullwide', { useGrouping: false });
 
         let realApproval = Number((realTokenAmount + realGasPrice) * data.num_periods);
-        let approvalSTR = realApproval.toLocaleString('fullwide', { useGrouping: false })
+        let approvalSTR = realApproval.toLocaleString('fullwide', { useGrouping: false });
 
         web3.eth.getAccounts(function(err, accounts) {
 
