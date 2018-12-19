@@ -55,12 +55,6 @@ def get_keywords():
 
 def grants(request):
     """Handle grants explorer."""
-    if not request.user.has_perm('grants.view_grant'):
-        params = {
-            'active': 'dashboard',
-            'title': _('Grants Explorer')
-        }
-        return TemplateResponse(request, 'grants/stub/index.html', params)
 
     limit = request.GET.get('limit', 24)
     page = request.GET.get('page', 1)
@@ -95,9 +89,6 @@ def grants(request):
 @csrf_exempt
 def grant_details(request, grant_id, grant_slug):
     """Display the Grant details page."""
-    if not request.user.has_perm('grants.view_grant'):
-        messages.info(request, _('You do not have permission to view grant details.'))
-        return redirect(reverse('grants:grants'))
 
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
 
@@ -375,7 +366,7 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
         return TemplateResponse(request, 'grants/shared/error.html', params)
 
     if request.method == 'POST' and (
-        profile == subscription.contributor_profile or request.user.has_perm('grants.change_subscription')
+        profile == subscription.contributor_profile
     ):
         subscription.end_approve_tx_id = request.POST.get('sub_end_approve_tx_id', '')
         subscription.cancel_tx_id = request.POST.get('sub_cancel_tx_id', '')
@@ -411,9 +402,6 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
 @login_required
 def profile(request):
     """Show grants profile of logged in user."""
-    if not request.user.has_perm('grants.view_grant'):
-        messages.info(request, _('You do not have permission to view grants.'))
-        return redirect(reverse('grants:grants'))
 
     limit = request.GET.get('limit', 25)
     page = request.GET.get('page', 1)
@@ -470,9 +458,6 @@ def profile(request):
 
 def quickstart(request):
     """Display quickstart guide."""
-    if not request.user.has_perm('grants.view_grant'):
-        messages.info(request, _('You do not have permission to view grants.'))
-        return redirect(reverse('grants:grants'))
 
     params = {'active': 'grants_quickstart', 'title': _('Quickstart')}
     return TemplateResponse(request, 'grants/quickstart.html', params)
