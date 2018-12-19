@@ -58,10 +58,9 @@
   margin-right: 0.5em;
   filter: invert(100%);
 }
-.profile-organizations .organization{
+
+.profile-organizations .organization {
   display: inline-block;
-  max-width: 100px;
-  max-height: 100px;
 }
 
 .profile-bounties--activities{
@@ -69,8 +68,11 @@
 }
 
 .profile-organizations .organization img{
-  max-width: 100px;
-  max-height: 100px;
+  max-height: 4rem;
+  max-width: 4rem;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-radius: 50%;
 }
 
 @media (max-width: 767.98px) {
@@ -247,8 +249,8 @@
 }
 
 .no-profile-button {
-  background-color: #3E00FF; 
-  color: #FFFFFF; 
+  background-color: #3E00FF;
+  color: #FFFFFF;
   font-size: 0.875rem;
 }
 

@@ -31,7 +31,7 @@ from django.utils.translation import gettext as _
 
 import cssutils
 import premailer
-from grants.models import Grant, Subscription
+from grants.models import Contribution, Grant, Subscription
 from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
 from retail.utils import strip_double_chars, strip_html
@@ -117,11 +117,11 @@ def render_subscription_terminated_email(grant, subscription):
     return response_html, response_txt, subject
 
 
-def render_successful_contribution_email(grant, subscription):
-    params = {'grant': grant, 'subscription': subscription}
+def render_successful_contribution_email(grant, subscription, contribution):
+    params = {'grant': grant, 'subscription': subscription, "contribution": contribution}
     response_html = premailer_transform(render_to_string("emails/grants/successful_contribution.html", params))
     response_txt = render_to_string("emails/grants/successful_contribution.txt", params)
-    subject = "Your subscription on Gitcoin Grants has been cancelled by the Grant Creator"
+    subject = 'Your Gitcoin Grants contribution was successful!'
     return response_html, response_txt, subject
 
 
@@ -129,7 +129,8 @@ def render_successful_contribution_email(grant, subscription):
 def successful_contribution(request):
     grant = Grant.objects.all().first()
     subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
-    response_html, __, __ = render_successful_contribution_email(grant, subscription)
+    contribution = Contribution.objects.filter(subscription__pk=subscription.pk).first()
+    response_html, __, __ = render_successful_contribution_email(grant, subscription, contribution)
     return HttpResponse(response_html)
 
 
@@ -297,9 +298,9 @@ in that spirit,  i have a few questions for you.
 
 thanks again for being a member of the community.
 
-kevin
+alisa / frank (gitcoin product team)
 
-PS - i've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+PS - we've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
 
 """
     elif persona == 'funder':
@@ -323,9 +324,9 @@ in that spirit,  i have a few questions for you:
 
 thanks for being a member of the community.
 
-kevin
+alisa / frank (gitcoin product team)
 
-PS - i've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+PS - we've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
 
 """
         elif bounty.status == 'cancelled':
@@ -344,9 +345,9 @@ i have a few questions for you.
 
 thanks again for being a member of the community.
 
-kevin
+alisa / frank (gitcoin product team)
 
-PS - i've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+PS - we've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
 
 """
         else:
@@ -397,7 +398,7 @@ def render_funder_stale(github_username, days=30, time_as_str='about a month'):
     response_txt = f"""
 hi {github_username},
 
-kevin from Gitcoin here (CC scott and vivek too) — i see you haven't funded an issue in {time_as_str}. in the spirit of making Gitcoin better + checking in:
+alisa and frank from Gitcoin here (CC scott and vivek too) — i see you haven't funded an issue in {time_as_str}. in the spirit of making Gitcoin better + checking in:
 
 - has anything been slipping on your issue board which might be bounty worthy?
 - do you have any feedback for Gitcoin Core on how we might improve the product to fit your needs?
@@ -406,7 +407,8 @@ our idea is that gitcoin should be a place you come when priorities stretch long
 
 appreciate you being a part of the community and let me know if you'd like some Gitcoin schwag — just send over a mailing address and a t-shirt size and it'll come your way.
 
-~ kevin
+~ alisa / frank (gitcoin product team)
+
 
 """
 
