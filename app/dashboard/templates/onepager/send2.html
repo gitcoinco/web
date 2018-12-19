@@ -50,7 +50,7 @@
       left: 3.5rem;
     }
   }
-  
+
   .send2 .navbar-network {
     padding: 3px;
   }
@@ -115,7 +115,7 @@
       </div>
       <div>
         {% trans "Expires" %}:
-        <select id="expires" style="width:400px; margin: 0px auto;" >
+        <select id="expires">
           <option value="86400">1 {% trans "day" %}</option>
           <option value="259200">3 {% trans "days" %}</option>
           <option value="604800" selected="selected">1 {% trans "week" %}</option>
@@ -129,11 +129,11 @@
       </div>
       <div>
         {% trans "Private Comments" %} ({% trans "optional" %}):
-        <textarea id="comments_priv" style="width:400px; margin: 0px auto;" ></textarea>
+        <textarea id="comments_priv"></textarea>
       </div>
       <div>
         {% trans "Public Comments" %} ({% trans "optional" %}):
-        <textarea id="comments_public" style="width:400px; margin: 0px auto;" ></textarea>
+        <textarea id="comments_public"></textarea>
       </div>
     </div>
     <div class="terms pb-1">
