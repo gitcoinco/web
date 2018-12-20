@@ -158,9 +158,3 @@ _bountydetails function returns the following fields:
 | `created_on`     | `datetime`            | Creation timestamp                                                |
 | `source_project`         | `string`           | Source Project the bounty came from           |
 | `tags`         | `strings`           | tags to classify the bounthy           |
-
-# Bounties Universe API
-
-Access it at `https://gitcoin.co/api/v0.1/universe`
-
-The bounties universe API lists all bounties (offchain) that have not yet been put into the blockchain or (onchain) that aren't in standard bounties :)

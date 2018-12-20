@@ -434,28 +434,6 @@ def gdpr_reconsent(email):
     )
 
 
-def new_external_bounty():
-    """Send a new external bounty email notification."""
-    to_email = settings.PERSONAL_CONTACT_EMAIL
-    from_email = settings.SERVER_EMAIL
-    cur_language = translation.get_language()
-    try:
-        setup_lang(to_email)
-        subject = _("New External Bounty")
-        body = f"https://gitcoin.co/_administrationexternal_bounties/externalbounty"
-        if not should_suppress_notification_email(to_email, 'admin'):
-            send_mail(
-                from_email,
-                to_email,
-                subject,
-                body,
-                from_name=_("No Reply from Gitcoin.co"),
-                categories=['admin', func_name()],
-            )
-    finally:
-        translation.activate(cur_language)
-
-
 def processed_faucet_request(fr):
     from_email = settings.SERVER_EMAIL
     subject = _("Faucet Request Processed")
