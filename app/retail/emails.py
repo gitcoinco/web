@@ -687,7 +687,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Announcing Open Kudos | MVPayment Channels"
+    subject = "A Few Holiday Gifts"
     new_kudos_pks = [813, 811, 810]
     new_kudos_size_px = 150
     intro = '''
