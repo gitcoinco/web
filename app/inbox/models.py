@@ -10,15 +10,15 @@ class Notification(SuperModel):
     cta_text = models.CharField(max_length=255)
     message_html = models.CharField(max_length=255, blank=True, help_text=_("Html message"))
     is_read = models.BooleanField(default=False)
-    to_user_id = models.ForeignKey(
+    to_user = models.ForeignKey(
             get_user_model(),
             on_delete=models.CASCADE,
-            related_name='received_notification'
+            related_name='received_notifications'
         )
     from_user = models.ForeignKey(
             get_user_model(),
             on_delete=models.CASCADE,
-            related_name='sent_notification'
+            related_name='sent_notifications'
         )
 
     def __str__(self):
