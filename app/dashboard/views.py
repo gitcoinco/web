@@ -417,7 +417,9 @@ def cancel_reason(request):
 
     :request method: POST
 
-    post_id (int): ID of the Bounty.
+    Params:
+        pk (int): ID of the Bounty.
+        canceled_bounty_reason (string): STRING with cancel  reason
 
     Returns:
         dict: The success key with a boolean value and accompanying error.
@@ -442,16 +444,14 @@ def cancel_reason(request):
         canceled_bounty_reason = request.POST.get('canceled_bounty_reason')
         bounty.canceled_bounty_reason = canceled_bounty_reason
         bounty.save()
-        # record_user_action(request.user, 'cancel_reason', bounty)
-        # record_bounty_activity(bounty, request.user, 'cancel_reason')
 
         return JsonResponse({
             'success': True,
-            'msg': _("You've extended expiration of this issue."),
+            'msg': _("Cancel reason added."),
         })
 
     return JsonResponse({
-        'error': _("You must be funder to extend expiration"),
+        'error': _("You must be funder to add a reason"),
     }, status=200)
 
 
@@ -1293,23 +1293,6 @@ def extend_issue_deadline(request):
         'login_link': '/login/github?next=' + request.GET.get('redirect', '/')
     }
     return TemplateResponse(request, 'extend_issue_deadline.html', context)
-
-
-@csrf_exempt
-@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
-def cancel_bounty_modal(request):
-    """Show cancel reason modal."""
-    bounty = Bounty.objects.get(pk=request.GET.get("pk"))
-    print(bounty)
-    context = {
-        'active': 'cancel_bounty_modal',
-        'title': _('Cancel Bounty'),
-        'bounty': bounty,
-        'user_logged_in': request.user.is_authenticated,
-        'login_link': '/login/github?next=' + request.GET.get('redirect', '/')
-    }
-    return TemplateResponse(request, 'cancel_bounty_reason.html', context)
-
 
 @require_POST
 @csrf_exempt

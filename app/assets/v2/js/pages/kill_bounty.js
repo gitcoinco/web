@@ -24,8 +24,30 @@ window.onload = function() {
           .removeAttr('disabled');
 
         $.each($(form).serializeArray(), function() {
-          data[this.name] = this.value;
+          if (this.value) {
+            data[this.name] = this.value;
+          }
         });
+
+        const selectedRadio = $('input[name=canceled_bounty_reason]:checked').val();
+        let reasonCancel;
+
+        if (selectedRadio == 'other') {
+          reasonCancel = $('#reason_text').val();
+        } else {
+          reasonCancel = selectedRadio;
+        }
+        var payload = {
+          pk: $('input[name=pk]').val(),
+          canceled_bounty_reason: reasonCancel
+        };
+
+        var sendForm = fetchData('cancel_reason', 'POST', payload);
+
+        $.when(sendForm).then(function(payback) {
+          return payback;
+        });
+
 
         disabled.attr('disabled', 'disabled');
         mixpanel.track('Kill Bounty Clicked', {});
@@ -94,7 +116,7 @@ window.onload = function() {
               setTimeout(function() {
                 mixpanel.track('Kill Bounty Success', {});
                 // document.location.href = '/funding/details?url=' + issueURL;
-                show_cancel_bounty_reason_modal()
+                // show_cancel_bounty_reason_modal()
               }, 1000);
             };
 
@@ -125,56 +147,4 @@ window.onload = function() {
       }
     });
   }, 100);
-
-  var show_cancel_bounty_reason_modal = function() {
-    var self = this;
-
-    setTimeout(function() {
-      var url = '/modal/cancel_bounty_modal?pk=' + document.bountyPk;
-
-      $.get(url, function(newHTML) {
-        var modal = $(newHTML).appendTo('body').modal({
-          modalClass: 'modal'
-        });
-
-        $('.btn-cancel').on('click', function() {
-          $.modal.close();
-          return;
-        });
-
-        $('.modal input:visible:first').focus();
-
-        modal.on('submit', function(e) {
-          console.log(e)
-          e.preventDefault();
-
-          // var extended_time = $('input[name=updatedExpires]').val();
-
-          var payload = {
-            pk: document.bountyPk,
-            canceled_bounty_reason: "agora vai"
-          }
-
-
-
-          var sendForm = fetchData (  'cancel_reason',
-                          'POST',
-                          payload)
-          $.when( sendForm ).then( function(payback) {
-            console.log(payback)
-            return payback
-          })
-          // extend_expiration(document.bountyPk, {
-            // cancelled_bounty_reason: extended_time
-          // });
-          $.modal.close();
-          setTimeout(function() {
-            // document.location.href = '/funding/details?url=' + issueURL;
-            // window.location.reload();
-          }, 2000);
-        });
-      });
-    });
-  };
-  show_cancel_bounty_reason_modal()
 };
