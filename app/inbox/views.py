@@ -48,11 +48,10 @@ def notifications(request):
 
 @csrf_exempt
 def delete_notifications(request):
-    """For deleting a notification"""
+    """For deleting a notification."""
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
     if request.method == 'DELETE' and profile is not None:
-        params = dict()
-        params['success'] = []
+        params = {'success': []}
         try:
             req_body = json.loads(request.body.decode('utf-8'))
         except:
@@ -77,7 +76,7 @@ def delete_notifications(request):
 
 @csrf_exempt
 def unread_notifications(request):
-    """Mark a notification as unread"""
+    """Mark a notification as unread."""
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
     if request.method == 'PUT' and profile is not None:
         params = dict()
@@ -107,7 +106,7 @@ def unread_notifications(request):
 
 @csrf_exempt
 def read_notifications(request):
-    """Mark a notification as read"""
+    """Mark a notification as read."""
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
     if request.method == 'PUT' and profile is not None:
         params = dict()
@@ -136,7 +135,7 @@ def read_notifications(request):
 
 
 def inbox(request):
-
+    """Handles the inbox view."""
     context = {
         'is_outside': True,
         'active': 'inbox',
