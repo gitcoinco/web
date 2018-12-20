@@ -149,7 +149,7 @@ def get_avatar_context():
                 ['Masks-captain_inspired'], ['Extras-Parrot'], ['Extras-wonderwoman_inspired'],
                 ['Extras-santa_inspired'], ['Extras-reindeer'], ['Masks-gitcoinbot'],
                 ['Extras-tattoo'], ['Masks-batman_inspired'], ['Masks-eye-patch'],
-                ['Masks-flash_inspired'], ['Masks-deadpool_inspired'],
+                ['Masks-flash_inspired'], ['Masks-deadpool_inspired'], ['Masks-darth_inspired'],
             ),
             'paid_options': {
                 'Extras-Parrot': 0.01,
