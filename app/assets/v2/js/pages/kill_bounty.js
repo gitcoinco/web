@@ -115,8 +115,6 @@ window.onload = function() {
               _alert({ message: gettext('Cancel bounty submitted to web3.') }, 'info');
               setTimeout(function() {
                 mixpanel.track('Kill Bounty Success', {});
-                // document.location.href = '/funding/details?url=' + issueURL;
-                // show_cancel_bounty_reason_modal()
               }, 1000);
             };
 
