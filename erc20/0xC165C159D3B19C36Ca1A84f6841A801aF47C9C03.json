@@ -8,13 +8,14 @@
   "email": "info@e-bank.io",
   "website": "https://e-bank.io/",
   "whitepaper": "https://e-bank.io/ebank_whitepaper.pdf",
-  "state": "LOCKED",
+  "state": "NORMAL",
   "published_on": "2018-12-15",
   "initial_price":{
-        "USD":"0.1 USD"
+        "USD":"0.08 USD"
   },
   "links": {
     "blog": "https://weibo.com/ebankCN",
+    "twitter": "https://twitter.com/EbankEcoSystem",
     "telegram": "https://t.me/EBankEcosystem",
     "github": "https://github.com/EbankEcoSystem/ebank",
     "facebook": "https://www.facebook.com/EbankEcoSystem"
