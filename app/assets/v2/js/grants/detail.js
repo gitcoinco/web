@@ -2,16 +2,16 @@ const editableFields = [
   '#form--input__title',
   '#form--input__reference-url',
   '#grant-admin',
+  '#contract_owner_address',
   '#form--input__description',
   '#grant-members'
 ];
 
 $(document).ready(function() {
-  $('#tabs').tabs();
+  showMore();
 
   userSearch('#grant-admin');
   userSearch('#grant-members');
-
   $('.select2-selection__rendered').removeAttr('title');
   $('#form--input__description').height($('#form--input__description').prop('scrollHeight'));
   $('#form--input__title').height($('#form--input__title').prop('scrollHeight'));
@@ -23,6 +23,7 @@ $(document).ready(function() {
     $('#edit-details').addClass('hidden');
     $('#save-details').removeClass('hidden');
     $('#cancel-details').removeClass('hidden');
+    $('#contract_owner_button').removeClass('hidden');
 
     copyDuplicateDetails();
 
@@ -73,48 +74,27 @@ $(document).ready(function() {
   });
 
   $('#cancel_grant').on('click', function(e) {
-    var img_src = static_url + 'v2/images/grants/cancel-grants-icon.png';
-    var content = $.parseHTML(
-      '<div>' +
-        '<div class="row px-5">' +
-          '<div class="col-12 closebtn">' +
-            '<a rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">' +
-              '<span aria-hidden="true">&times;</span>' +
-            '</a>' +
-          '</div>' +
-          '<div class="col-12 pt-2 pb-2 text-center">' +
-            '<h2 class="font-title">' + gettext('Are you sure you want to cancel this grant?') + '</h2>' +
-          '</div>' +
-          '<div class="col-12 text-center">' +
-            '<img src="' + img_src + '" />' +
-          '</div>' +
-          '<div class="col-12 pt-2 pb-2 font-body">' +
-            '<p>' + gettext('By clicking Cancel, you will be cancelling this grant from Gitcoin.') + '</p>' +
-            '<ul><li>' + gettext('Your grant will stay in Gitcoin, but ') + '<b>' + gettext('marked as inactive.') + '</b></li>' +
-            '<li>' + gettext('Funds received till now ') + '<b>' + gettext('will not be refunded ') + '</b>' + gettext('to the contributors.') + '</li>' +
-            '<li>' + gettext('Once cancelled, it is ') + '<b>' + gettext('not possible to restart the grant, ') + '</b>' + gettext('as the smart contract will be destroyed.') + '</li></ul>' +
-            '<p>' + gettext('To relaunch the grant, you need to create a new grant.') + '</p>' +
-          '</div>' +
-          '<div class="col-12 mt-4 mb-2 text-right font-caption">' +
-            '<a rel="modal:close" href="javascript:void" aria-label="Close dialog" class="button button--primary-o mr-3">' + gettext('No, I don\'t want to cancel') + '</a>' +
-            '<button class="modal-cancel-grants button button--warning">' + gettext('Cancel this Grant') + '</button>' +
-          '</div>' +
-        '</div>' +
-      '</div>'
-    );
-    var modal = $(content).appendTo('#js-cancel_grant').modal({
+    $('#cancelModal').modal({
       modalClass: 'modal cancel_grants'
     });
 
     $('.modal-cancel-grants').on('click', function(e) {
       let contract_address = $('#contract_address').val();
+      let grant_cancel_tx_id;
       let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, contract_address);
 
       web3.eth.getAccounts(function(err, accounts) {
         deployedSubscription.methods.endContract()
-          .send({from: accounts[0], gasPrice: 4000000000})
-          .on('transactionHash', function() {
-            document.issueURL = document.getElementById('form--input__reference-url').value;
+          .send({
+            from: accounts[0],
+            gas: 3000000,
+            gasPrice: web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9))
+          }).on('transactionHash', function(transactionHash) {
+            grant_cancel_tx_id = $('#grant_cancel_tx_id').val();
+            const linkURL = etherscan_tx_url(transactionHash);
+
+            document.issueURL = linkURL;
+            $('#transaction_url').attr('href', linkURL);
             $('.modal .close').trigger('click');
             enableWaitState('#grants-details');
           })
@@ -122,15 +102,55 @@ $(document).ready(function() {
             $.ajax({
               type: 'post',
               url: '',
-              data: { 'contract_address': contract_address},
+              data: {
+                'contract_address': contract_address,
+                'grant_cancel_tx_id': grant_cancel_tx_id
+              },
               success: function(json) {
                 window.location.reload(false);
               },
               error: function() {
-                alert('Canceling you grant failed to save. Please try again.');
+                alert('Canceling your grant failed to save. Please try again.');
               }
             });
           });
+      });
+    });
+  });
+
+  $('#contract_owner_button').on('click', function(e) {
+    let contract_owner_address = $('#contract_owner_address').val();
+    let contract_address = $('#contract_address').val();
+    let grant_cancel_tx_id;
+    let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, contract_address);
+
+    web3.eth.getAccounts(function(err, accounts) {
+      deployedSubscription.methods.changeOwnership(
+        contract_owner_address
+      ).send({
+        from: accounts[0],
+        gasPrice: 8000000000
+      }).on('transactionHash', function(transactionHash) {
+        const linkURL = etherscan_tx_url(transactionHash);
+
+        document.issueURL = linkURL;
+        $('#transaction_url').attr('href', linkURL);
+        $('.modal .close').trigger('click');
+        enableWaitState('#grants-details');
+      }).on('confirmation', function(confirmationNumber, receipt) {
+        $.ajax({
+          type: 'post',
+          url: '',
+          data: {
+            'contract_owner_address': contract_owner_address
+          },
+          success: function(json) {
+            window.location.reload(false);
+          },
+          error: function() {
+            alert('Changing the contract owner address failed to save. Please try again.');
+          }
+        });
       });
     });
   });
@@ -148,6 +168,7 @@ const disableEdit = (input) => {
   $(input).prop('readonly', true);
   $(input).prop('disabled', true);
 
+  $('#contract_owner_button').addClass('hidden');
   $('.grant__specs textarea').css('background-color', '#F2F6F9');
 };
 
