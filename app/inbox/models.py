@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 
 
 class Notification(SuperModel):
-
+    """Model for each notification."""
     cta_url = models.URLField(max_length=255, blank=True)
     cta_text = models.CharField(max_length=255)
     message_html = models.CharField(max_length=255, blank=True, help_text=_("Html message"))
