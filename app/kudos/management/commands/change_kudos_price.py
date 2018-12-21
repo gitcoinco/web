@@ -19,13 +19,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import logging
 import warnings
 
+from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from kudos.models import Token
-from kudos.utils import KudosContract
 from dashboard.utils import get_nonce, get_web3
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from django.conf import settings
+from kudos.models import Token
+from kudos.utils import KudosContract
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)
@@ -75,7 +75,3 @@ class Command(BaseCommand):
                 signed = w3.eth.account.signTransaction(tx, settings.KUDOS_PRIVATE_KEY)
                 txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
                 print(txid)
-
-
-
-
