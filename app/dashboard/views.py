@@ -184,8 +184,14 @@ def gh_login(request):
 
 
 def get_interest_modal(request):
+    bounty_id = request.GET.get('pk')
+    if not bounty_id:
+        raise Http404
 
-    bounty = Bounty.objects.get(pk=request.GET.get("pk"))
+    try:
+        bounty = Bounty.objects.get(pk=bounty_id)
+    except Bounty.DoesNotExist:
+        raise Http404
 
     context = {
         'bounty': bounty,
