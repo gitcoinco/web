@@ -78,16 +78,14 @@ window.onload = function() {
             return;
           }
 
-          var bountyAmount = parseInt(result['value_in_token'], 10);
-          var fromAddress = result['bounty_owner_address'];
-          var claimeeAddress = result['fulfiller_address'];
-          var open = result['is_open'];
-          var initialized = true;
-          var bountyId = result['standard_bounties_id'];
+          const bountyAmount = parseInt(result['value_in_token'], 10);
+          const fromAddress = result['bounty_owner_address'];
+          const is_open = result['is_open'];
+          const bountyId = result['standard_bounties_id'];
 
-          var errormsg = undefined;
+          let errormsg = undefined;
 
-          if (bountyAmount == 0 || open == false || initialized == false) {
+          if (bountyAmount == 0 || is_open == false) {
             errormsg =
                 gettext('No active funded issue found at this address.  Are you sure this is an active funded issue?');
           }
@@ -115,6 +113,7 @@ window.onload = function() {
               _alert({ message: gettext('Cancel bounty submitted to web3.') }, 'info');
               setTimeout(function() {
                 mixpanel.track('Kill Bounty Success', {});
+                document.location.href = '/funding/details/?url=' + issueURL;
               }, 1000);
             };
 

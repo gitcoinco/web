@@ -1294,6 +1294,7 @@ def extend_issue_deadline(request):
     }
     return TemplateResponse(request, 'extend_issue_deadline.html', context)
 
+
 @require_POST
 @csrf_exempt
 @ratelimit(key='ip', rate='5/s', method=ratelimit.UNSAFE, block=True)

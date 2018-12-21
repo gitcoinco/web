@@ -25,8 +25,14 @@
       input[type=radio]:checked ~ label ~ textarea {
         display: block;
       }
+
       textarea {
         display: none;
+      }
+
+      .link {
+        text-decoration: none;
+        color: #0D0764;
       }
     </style>
   </head>
@@ -65,6 +71,9 @@
               <p class="mt-2">{% trans "Once you cancel, you will receive the funds & you can reuse it for your next bounty." %}</p>
               <form id="submitBounty" class="font-smaller-2">
                 <div class="w-100">
+                  <p class="font-body font-weight-semibold">
+                    <a class="link" href="{{ bounty.github_url }}">{% trans "Back to Bounty" %}</a>
+                  </p>
                   <label class="form__label" for="issueURL">{% trans "Issue URL" %}</label>
                   <input name='issueURL' id="issueURL" class="form__input" type="url" required placeholder="https://github.com/user/repo/issues/n" value="{% if bounty %}{{bounty.github_url}}{%endif%}" />
                 </div>
@@ -125,10 +134,9 @@
                 </div>
                 <div class="text-center">
                     <button class="button button--primary button--warning js-submit" style="width: 100%;">{% trans "Cancel Bounty" %}</button>
-                    <BR>
-                    <a class="font-caption" style="display: block;" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">
-                      Your transaction is secured by the audited StandardBounties contract on the Ethereum blockchain.</br>
-                      Learn more here.
+                    <br>
+                    <a class="font-caption mt-3" style="display: block;" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">
+                      {% trans "Your transaction is secured by the audited StandardBounties contract on the Ethereum blockchain. Learn more here." %}
                     </a>
                 </div>
               </form>
@@ -144,7 +152,6 @@
     {% include 'shared/messages.html' %}
   </body>
 
-  <!-- jQuery -->
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
