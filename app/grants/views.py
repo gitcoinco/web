@@ -55,13 +55,6 @@ def get_keywords():
 
 def grants(request):
     """Handle grants explorer."""
-    if not request.user.has_perm('grants.view_grant'):
-        params = {
-            'active': 'dashboard',
-            'title': _('Grants Explorer')
-        }
-        return TemplateResponse(request, 'grants/stub/index.html', params)
-
     limit = request.GET.get('limit', 24)
     page = request.GET.get('page', 1)
     sort = request.GET.get('sort_option', '-created_on')
@@ -95,10 +88,6 @@ def grants(request):
 @csrf_exempt
 def grant_details(request, grant_id, grant_slug):
     """Display the Grant details page."""
-    if not request.user.has_perm('grants.view_grant'):
-        messages.info(request, _('You do not have permission to view grant details.'))
-        return redirect(reverse('grants:grants'))
-
     profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
 
     try:
@@ -411,10 +400,6 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
 @login_required
 def profile(request):
     """Show grants profile of logged in user."""
-    if not request.user.has_perm('grants.view_grant'):
-        messages.info(request, _('You do not have permission to view grants.'))
-        return redirect(reverse('grants:grants'))
-
     limit = request.GET.get('limit', 25)
     page = request.GET.get('page', 1)
     sort = request.GET.get('sort', '-created_on')
@@ -470,9 +455,5 @@ def profile(request):
 
 def quickstart(request):
     """Display quickstart guide."""
-    if not request.user.has_perm('grants.view_grant'):
-        messages.info(request, _('You do not have permission to view grants.'))
-        return redirect(reverse('grants:grants'))
-
     params = {'active': 'grants_quickstart', 'title': _('Quickstart')}
     return TemplateResponse(request, 'grants/quickstart.html', params)

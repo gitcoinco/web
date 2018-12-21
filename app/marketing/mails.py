@@ -284,7 +284,7 @@ def bounty_feedback(bounty, persona='fulfiller', previous_bounties=None):
                 subject,
                 text,
                 cc_emails=cc_emails,
-                from_name="Kevin Owocki (Gitcoin.co)",
+                from_name="Alisa March (Gitcoin.co)",
                 categories=['transactional', func_name()],
             )
     finally:
