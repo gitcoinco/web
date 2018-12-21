@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from django.http import JsonResponse, HttpResponseForbidden
 from django.core.paginator import Paginator
 from django.views.decorators.csrf import csrf_exempt
-from django.views.ddecorators.http import require_GET, require_http_methods
+from django.views.decorators.http import require_GET, require_http_methods
 from django.contrib.auth.decorators import login_required
 
 
