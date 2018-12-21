@@ -490,15 +490,6 @@ window.addEventListener('load', function() {
   refreshBounties(null, 0, false, false);
 });
 
-function getURLParams(k) {
-  var p = {};
-
-  location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(s, k, v) {
-    p[k] = v;
-  });
-  return k ? p[k] : p;
-}
-
 /**
  * removed all filters from the sidebar search
  * resetKeyword : boolean
@@ -828,4 +819,3 @@ var remove_search = function(n) {
 
   localStorage.removeItem(key);
 };
-

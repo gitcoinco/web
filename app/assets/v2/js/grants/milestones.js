@@ -19,4 +19,20 @@ $(document).ready(function() {
     form.submit();
   });
 
+
+  $('input[name="due_date"]').daterangepicker({
+    singleDatePicker: true,
+    autoUpdateInput: false
+  }, function(chosen_date) {
+    $('input[name="due_date"]').val(chosen_date.format('YYYY-MM-DD'));
+  });
+
+
+  $('input[name="completion_date"]').daterangepicker({
+    singleDatePicker: true,
+    autoUpdateInput: false
+  }, function(chosen_date) {
+    $('input[name="completion_date"]').val(chosen_date.format('YYYY-MM-DD'));
+  });
+
 });

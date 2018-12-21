@@ -191,6 +191,7 @@ urlpatterns = [
     path('actions/tool/<int:tool_id>/voteUp', dashboard.views.vote_tool_up, name='vote_tool_up'),
     path('actions/tool/<int:tool_id>/voteDown', dashboard.views.vote_tool_down, name='vote_tool_down'),
     re_path(r'^tools/?', dashboard.views.toolbox, name='tools'),
+    re_path(r'^labs/?', dashboard.views.labs, name='labs'),
 
     # gas views
     url(r'^gas/faucets/?', dashboard.gas_views.gas_faucet_list, name='gas_faucet_list'),
@@ -443,7 +444,7 @@ urlpatterns = [
 if settings.ENABLE_SILK:
     urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]
 
-if settings.ENV == 'local' and not settings.AWS_STORAGE_BUCKET_NAME:
+if not settings.AWS_STORAGE_BUCKET_NAME:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # If running in DEBUG, expose the error handling pages.

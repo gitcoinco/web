@@ -197,14 +197,14 @@ def subscription_terminated(grant, subscription):
         translation.activate(cur_language)
 
 
-def successful_contribution(grant, subscription):
+def successful_contribution(grant, subscription, contribution):
     from_email = settings.CONTACT_EMAIL
     to_email = subscription.contributor_profile.email
     cur_language = translation.get_language()
 
     try:
         setup_lang(to_email)
-        html, text, subject = render_successful_contribution_email(grant, subscription)
+        html, text, subject = render_successful_contribution_email(grant, subscription, contribution)
 
         if not should_suppress_notification_email(to_email, 'successful_contribution'):
             send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
@@ -284,7 +284,7 @@ def bounty_feedback(bounty, persona='fulfiller', previous_bounties=None):
                 subject,
                 text,
                 cc_emails=cc_emails,
-                from_name="Kevin Owocki (Gitcoin.co)",
+                from_name="Alisa March (Gitcoin.co)",
                 categories=['transactional', func_name()],
             )
     finally:

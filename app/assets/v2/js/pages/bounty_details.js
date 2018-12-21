@@ -1216,7 +1216,8 @@ const process_activities = function(result, bounty_activities) {
     bounty_removed_slashed_by_staff: gettext('Dinged and Removed from Bounty by Staff'),
     bounty_removed_by_staff: gettext('Removed from Bounty by Staff'),
     bounty_removed_by_funder: gettext('Removed from Bounty by Funder'),
-    bounty_changed: gettext('Bounty Details Changed')
+    bounty_changed: gettext('Bounty Details Changed'),
+    extend_expiration: gettext('Extended Bounty Expiration')
   };
 
   const now = new Date(result['now']);
