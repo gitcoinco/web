@@ -49,7 +49,7 @@ def delete_notifications(request):
             entry = Notification.objects.filter(id=i)
             if entry:
                 obj = entry[0]
-                if obj.to_user_id.id == request.user.id:
+                if obj.to_user.id == request.user.id:
                     obj.delete()
                     params['success'].append(True)
                 else:
@@ -74,7 +74,7 @@ def unread_notifications(request):
             entry = Notification.objects.filter(id=i)
             if entry:
                 obj = entry[0]
-                if obj.to_user_id.id == request.user.id:
+                if obj.to_user.id == request.user.id:
                     obj.is_read = False
                     obj.save()
                     params['success'].append(True)
@@ -100,7 +100,7 @@ def read_notifications(request):
             entry = Notification.objects.filter(id=i)
             if entry:
                 obj = entry[0]
-                if obj.to_user_id.id == request.user.id:
+                if obj.to_user.id == request.user.id:
                     obj.is_read = True
                     obj.save()
                     params['success'].append(True)
