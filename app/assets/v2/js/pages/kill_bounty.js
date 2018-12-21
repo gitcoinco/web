@@ -37,12 +37,12 @@ window.onload = function() {
         } else {
           reasonCancel = selectedRadio;
         }
-        var payload = {
+        const payload = {
           pk: $('input[name=pk]').val(),
           canceled_bounty_reason: reasonCancel
         };
 
-        var sendForm = fetchData('cancel_reason', 'POST', payload);
+        const sendForm = fetchData('cancel_reason', 'POST', payload);
 
         $.when(sendForm).then(function(payback) {
           return payback;
@@ -53,7 +53,7 @@ window.onload = function() {
         mixpanel.track('Kill Bounty Clicked', {});
 
         loading_button($('.js-submit'));
-        var issueURL = data.issueURL;
+        const issueURL = data.issueURL;
 
         var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
 
