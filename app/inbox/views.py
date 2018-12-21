@@ -14,7 +14,6 @@ from django.contrib.auth.decorators import login_required
 @require_GET
 def notifications(request):
     """Handle all notifications."""
-    profile = request.user.profile
     limit = int(request.GET.get('limit', 10))
     page = int(request.GET.get('page', 1))
     all_notifs = Notification.objects.filter(to_user_id=request.user.id).order_by('-id')
@@ -40,7 +39,6 @@ def notifications(request):
 @csrf_exempt
 def delete_notifications(request):
     """For deleting a notification."""
-    profile = request.user.profile
     params = {'success': []}
     try:
         req_body = json.loads(request.body.decode('utf-8'))
@@ -66,7 +64,6 @@ def delete_notifications(request):
 @csrf_exempt
 def unread_notifications(request):
     """Mark a notification as unread."""
-    profile = request.user.profile
     params = {'success': []}
     try:
         req_body = json.loads(request.body.decode('utf-8'))
@@ -93,7 +90,6 @@ def unread_notifications(request):
 @csrf_exempt
 def read_notifications(request):
     """Mark a notification as read."""
-    profile = request.user.profile
     params = {'success': []}
     try:
         req_body = json.loads(request.body.decode('utf-8'))
