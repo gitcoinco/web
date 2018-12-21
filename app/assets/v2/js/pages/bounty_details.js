@@ -551,7 +551,8 @@ var attach_work_actions = function() {
       show_interest_modal.call(this);
     } else if ($(this).attr('href') === '/extend-deadlines') {
       show_extend_deadline_modal.call(this);
-    } else if (confirm(gettext('Are you sure you want to stop work?'))) {
+    } else if (confirm('sure?')) {
+    // } else if (show_stop_work_modal()) {
       $(this).attr('href', '/interested');
       $(this).find('span').text(gettext('Start Work'));
       $(this).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you would like to take on this project') + '</div>');
@@ -628,6 +629,57 @@ var show_interest_modal = function() {
           issue_message: msg
         });
         $.modal.close();
+      });
+    });
+  });
+};
+
+var show_stop_work_modal = function() {
+  var self = this;
+
+  setTimeout(function() {
+    var url = '/modal/stop_work_modal?pk=' + document.result['pk'];
+
+    $.get(url, function(newHTML) {
+      var modal = $(newHTML).appendTo('body').modal({
+        modalClass: 'modal'
+      });
+
+      $('.btn-cancel').on('click', function() {
+        $.modal.close();
+        return;
+      });
+
+      $('.modal input:visible:first').focus();
+
+      modal.on('submit', function(e) {
+        console.log(e)
+        e.preventDefault();
+
+        // var extended_time = $('input[name=updatedExpires]').val();
+
+        var payload = {
+          pk: document.bountyPk,
+          canceled_bounty_reason: "agora vai"
+        }
+
+
+
+        var sendForm = fetchData (  'cancel_reason',
+                        'POST',
+                        payload)
+        $.when( sendForm ).then( function(payback) {
+          console.log(payback)
+          return payback
+        })
+        // extend_expiration(document.bountyPk, {
+          // cancelled_bounty_reason: extended_time
+        // });
+        $.modal.close();
+        setTimeout(function() {
+          // document.location.href = '/funding/details?url=' + issueURL;
+          // window.location.reload();
+        }, 2000);
       });
     });
   });

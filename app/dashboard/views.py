@@ -1297,18 +1297,18 @@ def extend_issue_deadline(request):
 
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
-def cancel_bounty_modal(request):
+def stop_work_modal(request):
     """Show cancel reason modal."""
     bounty = Bounty.objects.get(pk=request.GET.get("pk"))
     print(bounty)
     context = {
-        'active': 'cancel_bounty_modal',
+        'active': 'stop_work_modal',
         'title': _('Cancel Bounty'),
         'bounty': bounty,
         'user_logged_in': request.user.is_authenticated,
         'login_link': '/login/github?next=' + request.GET.get('redirect', '/')
     }
-    return TemplateResponse(request, 'cancel_bounty_reason.html', context)
+    return TemplateResponse(request, 'stop_work_modal.html', context)
 
 
 @require_POST
