@@ -33,6 +33,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
+from app.utils import get_profile
 from dashboard.models import Profile
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.forms import MilestoneForm
@@ -88,7 +89,7 @@ def grants(request):
 @csrf_exempt
 def grant_details(request, grant_id, grant_slug):
     """Display the Grant details page."""
-    profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
+    profile = get_profile(request)
 
     try:
         grant = Grant.objects.prefetch_related('subscriptions', 'milestones', 'updates').get(
@@ -164,7 +165,7 @@ def grant_new(request):
         messages.info(request, _('You do not have permission to add a grant.'))
         return redirect(reverse('grants:grants'))
 
-    profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
+    profile = get_profile(request)
 
     if request.method == 'POST':
         logo = request.FILES.get('input_image', None)
@@ -216,7 +217,7 @@ def grant_new(request):
 
 @login_required
 def milestones(request, grant_id, grant_slug):
-    profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
+    profile = get_profile(request)
     grant = Grant.objects.prefetch_related('milestones').get(pk=grant_id, slug=grant_slug)
 
     if profile != grant.admin_profile:
@@ -267,7 +268,7 @@ def grant_fund(request, grant_id, grant_slug):
     except Grant.DoesNotExist:
         raise Http404
 
-    profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
+    profile = get_profile(request)
 
     if not grant.active:
         params = {
@@ -347,7 +348,7 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
     subscription = Subscription.objects.select_related('grant').get(pk=subscription_id)
     grant = getattr(subscription, 'grant', None)
     now = datetime.datetime.now()
-    profile = request.user.profile if request.user.is_authenticated else None
+    profile = get_profile(request)
 
     if not subscription.active:
         params = {
@@ -404,7 +405,7 @@ def profile(request):
     page = request.GET.get('page', 1)
     sort = request.GET.get('sort', '-created_on')
 
-    profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
+    profile = get_profile(request)
     _grants_pks = Grant.objects.filter(Q(admin_profile=profile) | Q(team_members__in=[profile])).values_list(
         'pk', flat=True
     )
