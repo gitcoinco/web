@@ -53,10 +53,10 @@ class Command(BaseCommand):
         live = options['live']
         multiplier = options['multiplier']
 
-        tokens = Token.objects.filter(owner_address=settings.KUDOS_OWNER_ACCOUNT, network=network)
+        tokens = Token.objects.filter(owner_address=settings.KUDOS_OWNER_ACCOUNT, contract__network=network)
         if _filter:
             tokens = tokens.filter(name__contains=_filter)
-        kudos_contract = KudosContract(contract__network=network)._get_contract()
+        kudos_contract = KudosContract(network=network)._get_contract()
         w3 = get_web3(network)
 
         for token in tokens:
