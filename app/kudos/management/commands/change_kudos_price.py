@@ -1,4 +1,4 @@
-"""Define the mint all kudos management command.
+"""Define the change kudos price management command.
 
 Copyright (C) 2018 Gitcoin Core
 
@@ -67,8 +67,8 @@ class Command(BaseCommand):
                 _tokenId = token.token_id
                 _newPriceFinney = token.price_finney * multiplier
                 tx = kudos_contract.functions.setPrice(_tokenId, _newPriceFinney).buildTransaction({
-                    'nonce': get_nonce(network, kudos_contract.address),
-                    'gas': 50000, #TODO
+                    'nonce': get_nonce(network, settings.KUDOS_OWNER_ACCOUNT),
+                    'gas': 47000,
                     'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(5) * 10**9),
                     'value': 0,
                 })
