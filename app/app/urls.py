@@ -48,7 +48,6 @@ import retail.emails
 import retail.views
 import revenue.views
 import tdi.views
-import inbox.views
 from dashboard.router import router as dbrouter
 from external_bounties.router import router as ebrouter
 from grants.router import router as grant_router
@@ -63,7 +62,7 @@ urlpatterns = [
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
 
     # inbox
-    path('inbox/', inbox.views.inbox, name='inbox'),
+    path('inbox/', include('inbox.urls', namespace='inbox')),
 
     # kudos
     path('kudos/', kudos.views.about, name='kudos_main'),
@@ -87,10 +86,6 @@ urlpatterns = [
     re_path(r'^dynamic/kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.image, name='kudos_dynamic_img'),
 
     # api views
-    path('api/v0.1/notifications/', inbox.views.notifications, name='notifications'),
-    path('api/v0.1/notifications/delete/', inbox.views.delete_notifications, name='delete_notifications'),
-    path('api/v0.1/notifications/unread/', inbox.views.unread_notifications, name='unread_notifications'),
-    path('api/v0.1/notifications/read/', inbox.views.read_notifications, name='read_notifications'),
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
     url(r'^api/v0.1/funding/save/?', dashboard.ios.save, name='save'),
     url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
