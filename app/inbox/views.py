@@ -46,15 +46,14 @@ def delete_notifications(request):
         pass
     if 'delete' in req_body:
         for i in req_body['delete']:
-            entry = Notification.objects.filter(id=i)
-            if entry:
-                obj = entry[0]
+            try:
+                obj = Notification.objects.get(id=i)
                 if obj.to_user.id == request.user.id:
                     obj.delete()
                     params['success'].append(True)
                 else:
                     params['success'].append(False)
-            else:
+            except Notification.DoesNotExist:
                 params['success'].append(False)
     return JsonResponse(params, status=200)
 
@@ -71,16 +70,15 @@ def unread_notifications(request):
         pass
     if 'unread' in req_body:
         for i in req_body['unread']:
-            entry = Notification.objects.filter(id=i)
-            if entry:
-                obj = entry[0]
+            try:
+                obj = Notification.objects.get(id=i)
                 if obj.to_user.id == request.user.id:
                     obj.is_read = False
                     obj.save()
                     params['success'].append(True)
                 else:
                     params['success'].append(False)
-            else:
+            except Notification.DoesNotExist:
                 params['success'].append(False)
     return JsonResponse(params, status=200)
 
@@ -97,16 +95,15 @@ def read_notifications(request):
         pass
     if 'read' in req_body:
         for i in req_body['read']:
-            entry = Notification.objects.filter(id=i)
-            if entry:
-                obj = entry[0]
+            try:
+                obj = Notification.objects.get(id=i)
                 if obj.to_user.id == request.user.id:
                     obj.is_read = True
                     obj.save()
                     params['success'].append(True)
                 else:
                     params['success'].append(False)
-            else:
+            except Notification.DoesNotExist:
                 params['success'].append(False)
     return JsonResponse(params, status=200)
 
