@@ -14,7 +14,7 @@ Vue.mixin({
         vm.page = newPage;
       }
 
-      var getNotifications = fetchData (`/api/v0.1/notifications/?page=${vm.page}`, 'GET');
+      var getNotifications = fetchData (`/inbox/notifications/?page=${vm.page}`, 'GET');
 
       $.when(getNotifications).then(function(response) {
         newNotifications = newData(response.data, vm.notifications);
@@ -73,14 +73,14 @@ Vue.mixin({
           unread['unread'] = notificationRead;
           let data = JSON.stringify(unread);
 
-          putRead = fetchData ('/api/v0.1/notifications/unread/', 'PUT', data);
+          putRead = fetchData ('/inbox/notifications/unread/', 'PUT', data);
         } else {
           const read = Object();
 
           read['read'] = notificationRead;
           let data = JSON.stringify(read);
 
-          putRead = fetchData ('/api/v0.1/notifications/read/', 'PUT', data);
+          putRead = fetchData ('/inbox/notifications/read/', 'PUT', data);
         }
 
 
@@ -188,7 +188,7 @@ if (document.getElementById('gc-inbox')) {
 
         deleteObj['delete'] = vm.selectedNotifications;
         let data = JSON.stringify(deleteObj);
-        let deleteNotify = fetchData ('/api/v0.1/notifications/delete/', 'DELETE', data);
+        let deleteNotify = fetchData ('/inbox/notifications/delete/', 'DELETE', data);
 
         $.when(deleteNotify).then(function(response) {
 
