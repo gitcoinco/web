@@ -126,7 +126,8 @@ def get_avatar_context():
             ], ['7-back', '7-front'], ['8-back', '8-front'], ['9-back', '9-front'], ['None', '10'],
                         ['damos_hair-back', 'damos_hair-front'], ['long_swoosh-back', 'long_swoosh-front'],
                         ['None', 'mohawk'], ['None', 'mohawk_inverted'], ['None', 'spikey'], ['None', 'mickey_hair'],
-                        ['None', 'modernhair_1']
+                        ['None', 'modernhair_1'], ['None', 'modernhair_2']
+
                         ),
             'paid_options': {},
         }, {
