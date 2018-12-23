@@ -375,6 +375,26 @@ class Subscription(SuperModel):
     def get_nonce(self, address):
         return self.grant.contract.functions.extraNonce(address).call() + 1
 
+    def get_debug_info(self):
+        """Return grants contract."""
+        from dashboard.utils import get_web3
+        from dashboard.abi import erc20_abi
+        try:
+            web3 = get_web3(self.network)
+            if not self.token_address:
+                return "This subscription has no token_address"
+            token_contract = web3.eth.contract(Web3.toChecksumAddress(self.token_address), abi=erc20_abi)
+            balance = token_contract.functions.balanceOf(Web3.toChecksumAddress(self.contributor_address)).call()
+            allowance = token_contract.functions.allowance(Web3.toChecksumAddress(self.contributor_address), Web3.toChecksumAddress(self.grant.contract_address)).call()
+            debug_info = f"""
+balance: {balance}
+allowance: {allowance}
+amount_per_period: {self.amount_per_period}
+"""
+        except Exception as e:
+            return str(e)
+        return debug_info
+
     def get_next_valid_timestamp(self, address):
         return self.grant.contract.functions.nextValidTimestamp(address).call()
 

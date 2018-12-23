@@ -73,7 +73,7 @@ class GrantAdmin(GeneralAdmin):
         """Define the logo image tag to be displayed in the admin."""
         eles = []
 
-        for ele in instance.subscriptions.all():
+        for ele in instance.subscriptions.all().order_by('pk'):
             html = f"<a href='{ele.admin_url}'>{ele}</a>"
             eles.append(html)
 
@@ -83,9 +83,11 @@ class GrantAdmin(GeneralAdmin):
         """Define the logo image tag to be displayed in the admin."""
         eles = []
 
-        for ele in instance.subscriptions.all():
-            for sub_ele in ele.subscription_contribution.all():
-                html = f"<a href='{sub_ele.admin_url}'>{sub_ele}</a>"
+        for ele in instance.subscriptions.all().order_by('pk'):
+            html = f"<a href='{ele.admin_url}'>{ele}</a>"
+            eles.append(html)
+            for sub_ele in ele.subscription_contribution.all().order_by('pk'):
+                html = f" - <a href='{sub_ele.admin_url}'>{sub_ele}</a>"
                 eles.append(html)
 
         return mark_safe("<BR>".join(eles))
