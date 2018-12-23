@@ -273,6 +273,7 @@ body {
 
 .join-gitcoin-heading {
   font-size: 2.5rem;
+  color: var(--text-light)
 }
 
 .contributors-cta-text {
@@ -425,6 +426,10 @@ body {
 
 .whatisit {
   height: min-content;
+}
+
+.whatisit-title {
+  color: var(--text-light);
 }
 
 .whatisit .youtube {
