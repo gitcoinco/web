@@ -82,7 +82,7 @@ def process_subscription(subscription, live):
                     logger.warning('subscription processing failed')
                     warn_subscription_failed(subscription, txid, status, error)
                     subscription.error = True
-                    error_comments = f"{error}, debug info: {subscription.get_debug_info()}"
+                    error_comments = f"{error}\n\ndebug info: {subscription.get_debug_info()}"
                     subscription.subminer_comments = error_comments
                     subscription.save()
                 else:

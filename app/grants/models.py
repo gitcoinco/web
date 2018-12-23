@@ -363,6 +363,14 @@ class Subscription(SuperModel):
         default=timezone.datetime(1990, 1, 1),
     )
 
+    @property
+    def status(self):
+        """Return grants status, current or past due."""
+        if self.next_contribution_date < timezone.now():
+            return "PAST DUE"
+        return "CURRENT"
+
+
     def __str__(self):
         """Return the string representation of a Subscription."""
         from django.contrib.humanize.templatetags.humanize import naturaltime
@@ -370,7 +378,7 @@ class Subscription(SuperModel):
         if self.last_contribution_date < timezone.now() - timezone.timedelta(days=10*365):
             active_details = "(NEVER BILLED)"
 
-        return f"id: {self.pk}; {self.amount_per_period} {self.token_symbol} / {self.frequency} {self.frequency_unit} for grant {self.grant.pk} created {naturaltime(self.created_on)} by {self.contributor_profile.handle} {active_details}"
+        return f"id: {self.pk}; {self.status}, {self.amount_per_period} {self.token_symbol} / {self.frequency} {self.frequency_unit} for grant {self.grant.pk} created {naturaltime(self.created_on)} by {self.contributor_profile.handle} {active_details}"
 
     def get_nonce(self, address):
         return self.grant.contract.functions.extraNonce(address).call() + 1
@@ -379,6 +387,7 @@ class Subscription(SuperModel):
         """Return grants contract."""
         from dashboard.utils import get_web3
         from dashboard.abi import erc20_abi
+        from dashboard.tokens import addr_to_token
         try:
             web3 = get_web3(self.network)
             if not self.token_address:
@@ -386,7 +395,20 @@ class Subscription(SuperModel):
             token_contract = web3.eth.contract(Web3.toChecksumAddress(self.token_address), abi=erc20_abi)
             balance = token_contract.functions.balanceOf(Web3.toChecksumAddress(self.contributor_address)).call()
             allowance = token_contract.functions.allowance(Web3.toChecksumAddress(self.contributor_address), Web3.toChecksumAddress(self.grant.contract_address)).call()
+            token = addr_to_token(self.token_address, self.network)
+            decimals = token.get('decimals', 0)
+            balance = balance / 10 ** decimals
+            allowance = allowance / 10 ** decimals
+            error_reason = "unknown"
+            if balance < self.amount_per_period:
+                error_reason = "insufficient_balance"
+            if allowance < self.amount_per_period:
+                error_reason = "insufficient_allowance"
+
             debug_info = f"""
+error_reason: {error_reason}
+==============================
+decimals: {decimals}
 balance: {balance}
 allowance: {allowance}
 amount_per_period: {self.amount_per_period}
