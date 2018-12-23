@@ -267,6 +267,9 @@ class Subscription(SuperModel):
     """Define the structure of a subscription agreement."""
 
     active = models.BooleanField(default=True, help_text=_('Whether or not the Subscription is active.'))
+    error = models.BooleanField(default=False, help_text=_('Whether or not the Subscription is erroring out.'))
+    subminer_comments = models.TextField(default='', blank=True, help_text=_('Comments left by the subminer.'))
+
     subscription_hash = models.CharField(
         default='',
         max_length=255,

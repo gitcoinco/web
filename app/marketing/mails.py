@@ -379,8 +379,9 @@ def warn_account_out_of_eth(account, balance, denomination):
     finally:
         translation.activate(cur_language)
 
+
 def warn_subscription_failed(subscription, txid, status, error):
-    to_email = settings.SERVER_EMAIL
+    to_email = settings.PERSONAL_CONTACT_EMAIL
     from_email = settings.SERVER_EMAIL
     cur_language = translation.get_language()
     try:

@@ -57,7 +57,7 @@ def process_subscription(subscription, live):
             logger.info("   -- (ready via web3) ")
             status = 'failure'
             txid = None
-            error = None
+            error = ""
             try:
                 if live:
                     logger.info("   -- *executing* ")
@@ -67,10 +67,13 @@ def process_subscription(subscription, live):
                         time.sleep(10)
                         logger.info("   -- *waiting 10 seconds*")
                     status, __ = get_tx_status(txid, subscription.grant.network, timezone.now())
+                    if status != 'success':
+                        error = f"tx status from RPC is {status} not success, txid: {txid}"
                 else:
                     logger.info("   -- *not live, not executing* ")
             except Exception as e:
                 error = str(e)
+                logger.info("   -- *not live, not executing* ")
 
             logger.info("   -- *mined* (status: %s / error: %s) ", status, error)
             was_success = status == 'success'
@@ -78,6 +81,9 @@ def process_subscription(subscription, live):
                 if not was_success:
                     logger.warning('subscription processing failed')
                     warn_subscription_failed(subscription, txid, status, error)
+                    subscription.error = True
+                    subscription.subminer_comments = error
+                    subscription.save()
                 else:
                     logger.info('subscription processing successful')
                     subscription.successful_contribution(txid)
@@ -105,7 +111,7 @@ class Command(BaseCommand):
         logger.info("got %d grants", grants.count())
 
         for grant in grants:
-            subs = grant.subscriptions.filter(active=True, next_contribution_date__lt=timezone.now())
+            subs = grant.subscriptions.filter(active=True, error=False, next_contribution_date__lt=timezone.now())
             logger.info(" - %d has %d subs ready for execution", grant.pk, subs.count())
 
             for subscription in subs:
