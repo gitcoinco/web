@@ -80,11 +80,11 @@ def process_subscription(subscription, live):
             if live:
                 if not was_success:
                     logger.warning('subscription processing failed')
-                    warn_subscription_failed(subscription, txid, status, error)
                     subscription.error = True
                     error_comments = f"{error}\n\ndebug info: {subscription.get_debug_info()}"
                     subscription.subminer_comments = error_comments
                     subscription.save()
+                    warn_subscription_failed(subscription)
                 else:
                     logger.info('subscription processing successful')
                     subscription.successful_contribution(txid)
