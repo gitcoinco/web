@@ -112,6 +112,7 @@ def get_avatar_context():
             'options': (
                 'cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater', 'spacecadet', 'suit', 'ethlogo',
                 'cloak', 'robe', 'pjs',
+                'cloak', 'robe', 'pjs', 'elf_inspired'
             ),
             'paid_options': {
                 'robe': 0.01,
