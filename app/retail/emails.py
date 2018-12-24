@@ -687,73 +687,71 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Announcing Open Kudos | MVPayment Channels"
-    new_kudos_pks = [813, 811, 810]
+    subject = "The Season Of Giving"
+    new_kudos_pks = [866, 811, 810]
     new_kudos_size_px = 150
     intro = '''
 <p>
-Hi there,
-</p>
-<p>
-We're excited to announce <a href="https://medium.com/gitcoin/announcing-open-kudos-e437450f7802">Open Kudos</a>, an easy way
-for any dApp to integrate Kudos, the NFT marketplace for compliments, into your project. We think it's a unique way to spread culture,
-joy, and community with the people who have moved your project forward. Please reach out if you're interested in integration!
-</p>
-<p>
-Gitcoin Labs director Austin Griffith put out another tutorial last week on Minimum Viable Payment Channels. <a href="https://twitter.com/austingriffith/status/1071075739473108992">Check it out</a> and
-give him a follow if you'd like to see more!
-</p>
-<h3>New Kudos This Week</h3>
-<p>
-Happy Holidays from all of us at Gitcoin!
+<h3>Happy Holidays From Gitcoin!</h3>
 </p>
 <p>
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
 </p>
+<p>
+We hope you all have a joyous holiday season. Send the Kudos above to your friends, your family,
+or anyone in crypto who could use some of holiday cheer! We're already excited for the next few weeks
+where we'll have a few presents for you all, as well.
+</p>
+<p>
+Since you're here... we'll start now! We've been hard at work on <a href="https://gitcoin.co/grants/">Gitcoin Grants</a>, a new tool hyperfocused on
+recurring funding for open source developers. We're looking to provide an initial list of OSS projects some funding to carry their projects into 2019.
+<a href="https://gitcoin.co/grants/">Give it a look</a> and let us know if you have any feedback.
+</p>
 <h3>What else is new?</h3>
     <ul>
         <li>
-            _Whose Future Is It? Cellarius Stories, Volume I_ launched yesterday. It's free with a MetaMask login and is a worthwhile look into a cypherpunk future. <a href="https://cellarius.network/whose-future-is-it/">Read it here.</a>
+            I wrote up a post on <a href="https://medium.com/gitcoin/progressive-elaboration-of-scope-on-gitcoin-3167742312b0">progressive elaboration of scope</a>
+            for Gitcoin funders!
         </li>
         <li>
-            Gitcoin Livestream is on as usual this week! Join us <a href="https://gitcoin.co/livestream">Friday at 5PM ET</a>!
+            Gitcoin Livestream is on as usual this week! Lighthouse + Cryptoeconomics.study will be on this week. Join us <a href="https://gitcoin.co/livestream">Friday at 5PM ET</a>!
         </li>
     </ul>
 </p>
 <p>
-Thanks for reading! Back to BUIDLing,
+Happy holidays,
 </p>
 
 '''
     highlights = [{
-        'who': 'tbenr',
+        'who': 'iamonuwa',
         'who_link': True,
-        'what': 'Worked on Status React.',
-        'link': 'https://gitcoin.co/issue/status-im/status-react/6866/1876',
+        'what': 'Worked on Fraktal with Julien',
+        'link': 'https://gitcoin.co/issue/julienbrg/fraktal/1/2007',
         'link_copy': 'View more',
     }, {
-        'who': 'gusilverflame',
+        'who': 'brascoder',
         'who_link': True,
-        'what': 'Worked with POA Network on Blockscout!',
-        'link': 'https://gitcoin.co/issue/poanetwork/blockscout/1106/1877',
+        'what': 'Worked on CodeFund with us!',
+        'link': 'https://gitcoin.co/issue/gitcoinco/code_fund_ads/85/1931',
         'link_copy': 'View more',
     }, {
-        'who': 'zyfrank',
+        'who': 'elemino',
         'who_link': True,
-        'what': 'Good work with Centrifuge on Precise Proofs.',
-        'link': 'https://gitcoin.co/issue/centrifuge/precise-proofs/33/1907',
+        'what': 'Worked on Javascript Practice, a cool bounty.',
+        'link': 'https://gitcoin.co/issue/lastmjs/javascript-practice/179/1917',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/ethereum-ts/TypeChain/issues/109',
-        'primer': 'Work on TypeChain with Scott and team.',
+        'url': 'https://github.com/Giveth/giveth-bot/issues/39',
+        'primer': 'Work on Giveth with Griff and team.',
     }, {
-        'url': 'https://github.com/VolcaTech/cryptoxmas.xyz/issues/77',
-        'primer': 'A smart contract bug bounty for Crypto X-Mas!',
+        'url': 'https://github.com/unlock-protocol/unlock/issues/334',
+        'primer': 'Bounty from Unlock Protocol',
     }, {
-        'url': 'https://github.com/cybercongress/cyb/issues/86',
-        'primer': 'Integrate EOS into Cyber Congress!',
+        'url': 'https://github.com/status-im/status-react/issues/7076',
+        'primer': 'Work on Status-React on Whisper!',
     }, ]
 
     num_leadboard_items = 5

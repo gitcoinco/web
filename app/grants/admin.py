@@ -37,12 +37,12 @@ class GrantAdmin(GeneralAdmin):
         'title', 'description', 'reference_url', 'admin_address', 'active', 'amount_goal', 'amount_received',
         'deploy_tx_id', 'cancel_tx_id',
         'token_address', 'contract_address', 'network', 'required_gas_price', 'logo_svg_asset',
-        'logo_asset', 'created_on', 'modified_on',
+        'logo_asset', 'created_on', 'modified_on', 'team_member_list'
     ]
     readonly_fields = [
         'logo_svg_asset', 'logo_asset', 'created_on', 'modified_on', 'token_address', 'contract_address',
         'deploy_tx_id', 'cancel_tx_id',
-        'network', 'amount_goal', 'amount_received',
+        'network', 'amount_goal', 'amount_received', 'team_member_list'
     ]
 
     # Custom Avatars
@@ -51,6 +51,15 @@ class GrantAdmin(GeneralAdmin):
         if instance.logo_svg and instance.logo_svg.url:
             return mark_safe(f'<img src="{instance.svg.url}" width="300" height="300" />')
         return mark_safe('N/A')
+
+    def team_member_list(self, instance):
+        items = []
+        for team_member in instance.team_members.all():
+            html = f"<a href={team_member.url}>{team_member.handle}</a>"
+            items.append(html)
+
+        return mark_safe(" , ".join(items))
+
 
     def logo_asset(self, instance):
         """Define the logo image tag to be displayed in the admin."""
