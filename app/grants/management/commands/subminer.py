@@ -106,7 +106,11 @@ class Command(BaseCommand):
         logger.info("got %d grants", grants.count())
 
         for grant in grants:
-            subs = grant.subscriptions.filter(active=True, next_contribution_date__lt=timezone.now(), num_tx_processed__lt=F('num_tx_approved'))
+            subs = grant.subscriptions.filter(
+                active=True,
+                next_contribution_date__lt=timezone.now(),
+                num_tx_processed__lt=F('num_tx_approved')
+            )
             logger.info(" - %d has %d subs ready for execution", grant.pk, subs.count())
 
             for subscription in subs:
