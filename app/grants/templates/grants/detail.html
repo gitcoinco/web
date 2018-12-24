@@ -33,6 +33,12 @@
 
     {% include 'grants/shared/waiting_state.html' %}
 
+    {% if is_staff %}
+    <div class="alpha-warning font-caption mb-0">
+      <span class="font-weight-bold">Staff only</span>
+      <a style="color:white;" href="{{grant.admin_url}}">{% trans "View Admin" %}</a>
+    </div>
+    {% endif %}
     <div id="grants-details">
     <div class="grant__header py-5">
       <div class="container">
