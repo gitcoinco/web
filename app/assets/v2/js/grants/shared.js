@@ -14,7 +14,7 @@ var waitingStateActive = function() {
   $('.bg-container').show();
   $('.loading_img').addClass('waiting-state ');
   $('.waiting_room_entertainment').show();
-  $('.issue-url').html('<a href="' + document.issueURL + '">' + document.issueURL + '</a>');
+  $('.issue-url').html('<a href="' + document.issueURL + '" target="_blank" rel="noopener noreferrer">' + document.issueURL + '</a>');
   const secondsBetweenQuoteChanges = 30;
 
   waitingRoomEntertainment();
