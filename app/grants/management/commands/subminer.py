@@ -58,7 +58,7 @@ def process_subscription(subscription, live):
             logger.info("   -- (ready via web3) ")
             status = 'failure'
             txid = None
-            error = None
+            error = ""
             try:
                 if live:
                     logger.info("   -- *executing* ")
@@ -68,17 +68,24 @@ def process_subscription(subscription, live):
                         time.sleep(10)
                         logger.info("   -- *waiting 10 seconds*")
                     status, __ = get_tx_status(txid, subscription.grant.network, timezone.now())
+                    if status != 'success':
+                        error = f"tx status from RPC is {status} not success, txid: {txid}"
                 else:
                     logger.info("   -- *not live, not executing* ")
             except Exception as e:
                 error = str(e)
+                logger.info("   -- *not live, not executing* ")
 
             logger.info("   -- *mined* (status: %s / error: %s) ", status, error)
             was_success = status == 'success'
             if live:
                 if not was_success:
                     logger.warning('subscription processing failed')
-                    warn_subscription_failed(subscription, txid, status, error)
+                    subscription.error = True
+                    error_comments = f"{error}\n\ndebug info: {subscription.get_debug_info()}"
+                    subscription.subminer_comments = error_comments
+                    subscription.save()
+                    warn_subscription_failed(subscription)
                 else:
                     logger.info('subscription processing successful')
                     subscription.successful_contribution(txid)
@@ -108,6 +115,7 @@ class Command(BaseCommand):
         for grant in grants:
             subs = grant.subscriptions.filter(
                 active=True,
+                error=False,
                 next_contribution_date__lt=timezone.now(),
                 num_tx_processed__lt=F('num_tx_approved')
             )
