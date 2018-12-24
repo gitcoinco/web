@@ -70,8 +70,16 @@
   }
   function saveStep3(){
     boxObj.public.set('gitcoin.avatar', '/ipfs/QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ/cat.jpg').then(success =>{ 
+      const imgObj = [{
+        "@type": "ImageObject",
+        contentUrl: {
+          "/": "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ/cat.jpg"
+        }
+      }]
+      boxObj.public.set('image', imgObj).then(success2 => {
       console.log("Did writing this succeed? "+success);
       boxObj.close();
+      });
     });
   }
 </script>
