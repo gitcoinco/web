@@ -339,7 +339,7 @@ class Subscription(SuperModel):
         help_text=_('The number of transactions approved for the Subscription.'),
     )
     num_tx_processed = models.DecimalField(
-        default=1,
+        default=0,
         decimal_places=4,
         max_digits=50,
         help_text=_('The number of transactoins processed by the subminer for the Subscription.'),
@@ -533,6 +533,7 @@ class Subscription(SuperModel):
         from marketing.mails import successful_contribution
         self.last_contribution_date = timezone.now()
         self.next_contribution_date = timezone.now() + timedelta(0, round(self.real_period_seconds))
+        self.num_tx_processed = self.num_tx_processed + 1
         self.save()
         contribution_kwargs = {
             'tx_id': tx_id,
