@@ -111,8 +111,7 @@ def get_avatar_context():
             'title': 'Pick your clothing',
             'options': (
                 'cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater', 'spacecadet', 'suit', 'ethlogo',
-                'cloak', 'robe', 'pjs',
-                'cloak', 'robe', 'pjs', 'elf_inspired'
+                'cloak', 'robe', 'pjs', 'elf_inspired', 'suspender',
             ),
             'paid_options': {
                 'robe': 0.01,
