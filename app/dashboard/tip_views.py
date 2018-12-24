@@ -30,6 +30,7 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import get_user_model
 
 from dashboard.utils import get_web3
 from dashboard.views import record_user_action
@@ -41,6 +42,7 @@ from web3 import Web3
 
 from .models import Activity, Profile, Tip
 from .notifications import maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack
+from inbox.utils import send_notification_to_user
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -211,6 +213,14 @@ def send_tip_4(request):
     tip.save()
 
     # notifications
+    if tip.username:
+        send_notification_to_user(
+                request.user,
+                get_user_model().objects.get(username=tip.username),
+                tip.receive_url,
+                'new_tip',
+                f'<b>New Tip</b> worth {tip.value_in_usdt_now} USD recieved from {request.user.username}'
+            )
     maybe_market_tip_to_github(tip)
     maybe_market_tip_to_slack(tip, 'New tip')
     maybe_market_tip_to_email(tip, tip.emails)
