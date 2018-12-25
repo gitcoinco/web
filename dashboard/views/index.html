@@ -2373,6 +2373,24 @@ The class bool is a subclass of the class int, and cannot be subclassed.
 <p>Returns True when the argument x is true, False otherwise.
 The builtins True and False are the only two instances of the class bool.
 The class bool is a subclass of the class int, and cannot be subclassed.
+<h2 id="dashboard.views.cancel_reason">cancel_reason</h2></p>
+<pre><code class="python">cancel_reason(request)
+</code></pre>
+
+<p>Extend expiration of the Bounty.</p>
+<p>Can only be called by funder or staff of the bounty.</p>
+<p>:request method: POST</p>
+<p>Params:
+    pk (int): ID of the Bounty.
+    canceled_bounty_reason (string): STRING with cancel  reason</p>
+<p>Returns:
+    dict: The success key with a boolean value and accompanying error.</p>
+<h3 id="dashboard.views.cancel_reason.csrf_exempt">csrf_exempt</h3>
+
+<p>bool(x) -&gt; bool</p>
+<p>Returns True when the argument x is true, False otherwise.
+The builtins True and False are the only two instances of the class bool.
+The class bool is a subclass of the class int, and cannot be subclassed.
 <h2 id="dashboard.views.uninterested">uninterested</h2></p>
 <pre><code class="python">uninterested(request, bounty_id, profile_id)
 </code></pre>
