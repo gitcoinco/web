@@ -87,6 +87,7 @@ def get_bounty_history_row(label, date, keyword):
         get_bounty_history_at_date(['started', 'submitted'], date, keyword),
         get_bounty_history_at_date(['done'], date, keyword),
         get_bounty_history_at_date(['cancelled'], date, keyword),
+        get_grants_history_at_date(date, keyword),
     ]
 
 
@@ -96,6 +97,18 @@ def get_bounty_history_at_date(statuses, date, keyword):
         keys = [f'bounties_{status}{keyword_with_prefix}_value' for status in statuses]
         base_stats = Stat.objects.filter(
             key__in=keys,
+            ).order_by('-pk')
+        return base_stats.filter(created_on__lte=date).first().val
+    except Exception as e:
+        print(e)
+        return 0
+
+
+def get_grants_history_at_date(date, keyword):
+    try:
+        # TODO: keyword support for grants
+        base_stats = Stat.objects.filter(
+            key='grants',
             ).order_by('-pk')
         return base_stats.filter(created_on__lte=date).first().val
     except Exception as e:
@@ -266,14 +279,14 @@ def get_bounty_median_turnaround_time(func='turnaround_time_started', keyword=No
 
 def get_bounty_history(keyword=None, cumulative=True):
     bh = [
-        ['', 'Tips',  'Open / Available',  'Started / In Progress',  'Completed', 'Cancelled'],
+        ['', 'Tips',  'Open / Available',  'Started / In Progress',  'Completed', 'Cancelled', 'Grants'],
     ]
     initial_stats = [
-        ["December 2017", 2011, 903, 2329, 5534, 1203],
-        ["January 2018", 5093, 1290, 1830, 15930, 1803],
-        ["February 2018", 7391, 6903, 4302, 16302, 2390],
-        ["March 2018", 8302, 5349, 5203, 26390, 3153],
-        ["April 2018", 10109, 6702, 4290, 37342, 4281],
+        ["December 2017", 2011, 903, 2329, 5534, 1203, 0],
+        ["January 2018", 5093, 1290, 1830, 15930, 1803, 0],
+        ["February 2018", 7391, 6903, 4302, 16302, 2390, 0],
+        ["March 2018", 8302, 5349, 5203, 26390, 3153, 0],
+        ["April 2018", 10109, 6702, 4290, 37342, 4281, 0],
     ]
     if not keyword:
         bh = bh + initial_stats
@@ -297,7 +310,8 @@ def get_bounty_history(keyword=None, cumulative=True):
 
     # adjust monthly totals
     if not cumulative:
-        new_bh = bh.copy()
+        import copy
+        new_bh = copy.deepcopy(bh)
         for i in range(1, len(bh)):
             for k in range(1, len(bh[i])):
                 try:
@@ -403,9 +417,10 @@ def build_stat_results(keyword=None):
         tip.value_in_usdt
         for tip in Tip.objects.filter(network='mainnet').send_happy_path() if tip.value_in_usdt
     ])
-    context['universe_total_usd'] = float(total_bounties_usd) + float(total_tips_usd)
+    total_grants_usd = get_grants_history_at_date(timezone.now(), [])
+    context['universe_total_usd'] = float(total_bounties_usd) + float(total_tips_usd) + float(total_grants_usd)
     pp.profile_time('universe_total_usd')
-    context['max_bounty_history'] = float(context['universe_total_usd']) * .7
+    context['max_bounty_history'] = float(context['universe_total_usd']) * .25
     context['bounty_abandonment_rate'] = bounty_abandonment_rate
     bounty_average_turnaround = round(get_bounty_median_turnaround_time('turnaround_time_submitted', keyword) / 24, 1)
     context['bounty_average_turnaround'] = f'{bounty_average_turnaround} days'

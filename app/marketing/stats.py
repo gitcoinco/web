@@ -274,6 +274,19 @@ def bounties():
         val=(Bounty.objects.current().filter(network='mainnet').count()),
         )
 
+def grants():
+    from grants.models import Contribution
+    val = 0
+    for contrib in Contribution.objects.filter(subscription__grant__network='mainnet'):
+        value_in_usdt = contrib.subscription.value_usdt
+        if value_in_usdt:
+            val += value_in_usdt
+
+    Stat.objects.create(
+        key='grants',
+        val=val,
+        )
+
 
 def bounties_hourly_rate():
     from dashboard.models import Bounty

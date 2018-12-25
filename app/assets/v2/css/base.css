@@ -1590,7 +1590,7 @@ input.is-invalid {
   width: 100%;
 }
 
-.results .bounty_status .yellow_box, .green_box, .blue_box, .pink_box, .lblue_box {
+.results .bounty_status .yellow_box, .green_box, .blue_box, .pink_box, .lblue_box, .grey_box {
   float: left;
   width: 1rem;
   height: 1rem;
@@ -1637,6 +1637,11 @@ input.is-invalid {
 .pink_box {
   color: #F9006C;
   border: 10px solid #F9006C;
+}
+
+.grey_box {
+  color: #dddddd;
+  border: 10px solid #aaaaaa;
 }
 
 .results .icon {

@@ -48,6 +48,7 @@ class Command(BaseCommand):
             stats.slack_users_active,
             stats.twitter_followers,
             stats.bounties,
+            stats.grants,
             stats.tips,
             stats.subs,
             stats.whitepaper_access,

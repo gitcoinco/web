@@ -567,6 +567,18 @@ amount_per_period: {self.amount_per_period}
             args['nonce'],
             ).call()
 
+    @property
+    def value_usdt(self):
+        try:
+            return float(convert_amount(
+                    self.amount_per_period,
+                    self.token_symbol,
+                    "USDT")
+                )
+        except ConversionRateNotFoundError as e:
+            logger.info(e)
+        return None
+
     def successful_contribution(self, tx_id):
         """Create a contribution object."""
         from marketing.mails import successful_contribution
@@ -579,16 +591,9 @@ amount_per_period: {self.amount_per_period}
         }
         contribution = Contribution.objects.create(**contribution_kwargs)
         grant = self.grant
-        try:
-            grant.amount_received = (
-                float(grant.amount_received) + float(convert_amount(
-                    self.amount_per_period,
-                    self.token_symbol,
-                    "USDT")
-                )
-            )
-        except ConversionRateNotFoundError as e:
-            logger.info(e)
+        value_usdt = self.value_usdt
+        if value_usdt:
+            grant.amount_received += value_usdt
 
         grant.save()
         successful_contribution(self.grant, self, contribution)
