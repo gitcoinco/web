@@ -1159,6 +1159,16 @@ input.is-invalid {
   display: none;
 }
 
+.alpha-warning {
+  background-color: #fb9470;
+  color: #fbe0d6;
+  padding: 5px 10px;
+  border-radius: 2px;
+  margin-bottom: 15px;
+  display: block;
+  text-align: center;
+}
+
 @media (max-width: 1350px) {
   .profile_details .tips li div.details {
     width: 300px;

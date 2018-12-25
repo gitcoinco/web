@@ -172,16 +172,6 @@
   font-size: 12px;
 }
 
-.alpha-warning {
-  background-color: #fb9470;
-  color: #fbe0d6;
-  padding: 5px 10px;
-  border-radius: 2px;
-  margin-bottom: 15px;
-  display: block;
-  text-align: center;
-}
-
 @media (max-width: 767.98px) {
   .search {
     margin-left: 0rem;
