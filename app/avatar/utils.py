@@ -112,6 +112,7 @@ def get_avatar_context():
             'options': (
                 'cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater', 'spacecadet', 'suit', 'ethlogo',
                 'cloak', 'robe', 'pjs',
+                'cloak', 'robe', 'pjs', 'elf_inspired'
             ),
             'paid_options': {
                 'robe': 0.01,
@@ -144,11 +145,13 @@ def get_avatar_context():
                 ['HatShort-redbow'], ['HatShort-yellowbow'], ['HatShort-ballcap'], ['HatShort-cowboy'],
                 ['HatShort-headdress'], ['HatShort-headphones'], ['HatShort-shortbeanie'],
                 ['HatShort-tallbeanie'], ['HatShort-bunnyears'], ['HatShort-menorah'],
-                ['HatShort-pilgrim'], ['HatShort-santahat'], ['Earring-0'], ['Earring-1'],
-                ['EarringBack-2', 'Earring-2'], ['Earring-3'], ['Earring-4'], ['Masks-jack-o-lantern'],
-                ['Masks-guy-fawkes'], ['Masks-jack-o-lantern-lighted'], ['Masks-wolverine_inspired'],
-                ['Masks-captain_inspired'], ['Extras-Parrot'], ['Extras-wonderwoman_inspired'],
-                ['Extras-santa_inspired'], ['Extras-reindeer'], ['Masks-gitcoinbot'],
+                ['HatShort-pilgrim'], ['HatShort-santahat'], ['HatShort-elfhat'],
+                ['Earring-0'], ['Earring-1'], ['EarringBack-2', 'Earring-2'],
+                ['Earring-3'], ['Earring-4'], ['Masks-jack-o-lantern'],
+                ['Masks-guy-fawkes'], ['Masks-jack-o-lantern-lighted'],
+                ['Masks-wolverine_inspired'], ['Masks-captain_inspired'], ['Extras-Parrot'],
+                ['Extras-wonderwoman_inspired'], ['Extras-santa_inspired'],
+                ['Extras-reindeer'], ['Masks-gitcoinbot'],
                 ['Extras-tattoo'], ['Masks-batman_inspired'], ['Masks-eye-patch'],
                 ['Masks-flash_inspired'], ['Masks-deadpool_inspired'], ['Masks-darth_inspired'],
             ),
