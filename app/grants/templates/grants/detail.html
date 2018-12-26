@@ -19,7 +19,7 @@
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
-    {% include 'shared/cards.html' %}
+    {% include 'shared/cards_pic.html' %}
     <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/grants/detail.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/grants/milestones.css" %}">
@@ -113,8 +113,8 @@
                   <div class="progress-text mt-2">
                     <div class="row">
                       <div class="col-6">
-                        <span>{{ grant.amount_received|floatformat:2|intcomma }} DAI</span>
-                        <p>Current</p>
+                        <span>{{ grant.monthly_amount_subscribed|floatformat:2|intcomma }} DAI</span>
+                        <p>Monthly Funded</p>
                       </div>
                       <div class="col-6 text-right">
                         <span>{{ grant.amount_goal|floatformat:2|intcomma }} DAI</span>
