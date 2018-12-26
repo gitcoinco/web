@@ -118,5 +118,14 @@ update_fork: ## Update the current fork master branch with upstream master.
 	@git push origin master
 	@echo "Updated!"
 
+update_stable: ## Update the stable branch with master.
+	@echo "This will alter the live state of Gitcoin."
+	@echo "Have you verified your changes and wish to continue? [y/N] " && read response && [ $${response:-N} == y ]
+	@git checkout master; git pull --rebase; git checkout stable; git reset --hard master;
+	@echo "The stable branch has been reset. You might be prompted to enter your password."
+	@echo "Force push changes to Github? [y/N] " && read response && [ $${response:-N} == y ]
+	@git push origin stable --force
+
+
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
