@@ -341,6 +341,18 @@ class Subscription(SuperModel):
         default='0x0',
         help_text=_('The transaction id for cancelSubscription.'),
     )
+    num_tx_approved = models.DecimalField(
+        default=1,
+        decimal_places=4,
+        max_digits=50,
+        help_text=_('The number of transactions approved for the Subscription.'),
+    )
+    num_tx_processed = models.DecimalField(
+        default=0,
+        decimal_places=4,
+        max_digits=50,
+        help_text=_('The number of transactoins processed by the subminer for the Subscription.'),
+    )
     network = models.CharField(
         max_length=8,
         default='mainnet',
@@ -430,8 +442,7 @@ class Subscription(SuperModel):
         """Return true if subscription is ready to be processed according to the DB."""
         if not self.subscription_contribution.exists():
             return True
-        last_contribution = self.subscription_contribution.order_by('created_on').last()
-        return self.next_contribution_date < timezone.now()
+        return self.next_contribution_date < timezone.now() and self.num_tx_processed < self.num_tx_approved
 
     def get_are_we_past_next_valid_timestamp(self):
         address = self.contributor_address
@@ -578,6 +589,7 @@ class Subscription(SuperModel):
         from marketing.mails import successful_contribution
         self.last_contribution_date = timezone.now()
         self.next_contribution_date = timezone.now() + timedelta(0, round(self.real_period_seconds))
+        self.num_tx_processed = self.num_tx_processed + 1
         self.save()
         contribution_kwargs = {
             'tx_id': tx_id,
