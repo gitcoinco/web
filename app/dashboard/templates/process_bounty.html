@@ -1,19 +1,18 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+  Copyright (C) 2018 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
-
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
 <!DOCTYPE html>
@@ -23,7 +22,6 @@
     {% include 'shared/cards.html' %}
     <link rel="stylesheet" href="{% static "v2/css/select2-kudos.css" %}" />
     <link rel="stylesheet" href="{% static "v2/css/scroll-carousel.css" %}" />
-
     <style>
       /* TODO: remove duplication of alert with same styles in bounties merge */
       .msg-alert {
@@ -63,13 +61,13 @@
               <div class="d-flex justify-content-center flex-column mt-5" id="primary_subform">
                 <div class="w-100" style="text-align: center;">
                   <h3>{% trans "Basic Payout" %}</h3>
-                  <p><a href="{{action_urls.advanced_payout}}">Switch to Advanced Payout</a></p>
+                  <p><a href="{{ action_urls.advanced_payout }}">{% trans "Switch to Advanced Payout" %}</a></p>
                   <img src="{% static "v2/images/prime.png" %}">
                 </div>
                 {% include 'shared/network_status.html' %}
                 <div class="w-100 mb-2">
                   <label for=issueURL>{% trans "Issue URL:" %}</label>
-                  <input name='issueURL' id="issueURL" class="w-100 gc-round-text-input gc-border-blue" type="text" placeholder="https://github.com/user/repo/issues/n" value="{% if bounty %}{{bounty.github_url}}{%endif%}" />
+                  <input name='issueURL' id="issueURL" class="w-100 gc-round-text-input gc-border-blue" type="text" placeholder="https://github.com/user/repo/issues/n" value="{% if bounty %}{{ bounty.github_url }}{% endif %}" />
                 </div>
                 <div class="w-100 my-2">
                   <label for='bountyFulfillment'>{% trans "Bounty Submission:" %}</label>
@@ -87,12 +85,12 @@
                 </div>
                 <div class="w-100 my-2">
                   <label for=tipPercent>{% trans "(Optional) Add a tip of:" %}</label>
-                  <input name='tipPercent' id="tipPercent" class="gc-round-text-input gc-border-blue" style="width: 50px;" type="number" placeholder="" value="0" min="0" /> % worth <span id="tipEstimate">0</span> {{bounty.token_name}}
+                  <input name='tipPercent' id="tipPercent" class="gc-round-text-input gc-border-blue" style="width: 50px;" type="number" placeholder="" value="0" min="0" /> % worth <span id="tipEstimate">0</span> {{ bounty.token_name }}
                 </div>
                 <div class="my-4">
                   <div class="d-flex justify-content-between align-items-center">
-                    <h3 class="font-bigger-1 mb-0">Suggested Kudos</h3>
-                    <a href="{% url 'kudos:about' %}" target="_blank">What is kudos?</a>
+                    <h3 class="font-bigger-1 mb-0">{% trans "Suggested Kudos" %}</h3>
+                    <a href="{% url 'kudos:about' %}" target="_blank">{% trans "What is kudos?" %}</a>
                   </div>
 
                   <div id="kudos-holder">
@@ -115,8 +113,8 @@
                 </div>
                 <div class="mt-1 text-center">
                   <a class="font-caption" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">
-                    Your transaction is secured by the audited StandardBounties contract on the Ethereum blockchain.</br>
-                    Learn more here.
+                    {% trans "Your transaction is secured by the audited StandardBounties contract on the Ethereum blockchain." %}</br>
+                    {% trans "Learn more here." %}
                   </a>
                 </div>
               </div>
@@ -138,18 +136,15 @@
   </body>
 
   <script>
-    document.bounty_amount_whole = {{bounty.get_value_true}};
-    document.bounty_amount_wei = {{bounty.value_in_token}};
-    document.token_address = '{{bounty.token_address}}';
+    document.bounty_amount_whole = {{ bounty.get_value_true }};
+    document.bounty_amount_wei = {{ bounty.value_in_token }};
+    document.token_address = '{{ bounty.token_address }}';
   </script>
-
-  <!-- jQuery -->
   <script src="{% static "v2/js/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
   <script src="{% static "v2/js/secrets.min.js" %}"></script>
   <script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
   <script src="{% static "onepager/js/send.js" %}"></script>
-
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
