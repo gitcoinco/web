@@ -128,7 +128,7 @@ def get_avatar_context():
                         ['damos_hair-back', 'damos_hair-front'], ['long_swoosh-back', 'long_swoosh-front'],
                         ['None', 'mohawk'], ['None', 'mohawk_inverted'], ['None', 'spikey'], ['None', 'mickey_hair'],
                         ['None', 'modernhair_1'], ['None', 'modernhair_2'], ['modernhair_3-back', 'modernhair_3-front'],
-                        ['None', 'womenhair']
+                        ['None', 'womenhair'], ['None', 'womanhair1']
                         ),
             'paid_options': {},
         }, {
