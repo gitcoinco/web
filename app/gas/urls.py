@@ -17,7 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from django.urls import path, re_path
+from django.urls import re_path
 
 from .views import (
     gas, gas_calculator, gas_faq, gas_faucet_list, gas_guzzler_view, gas_heatmap, gas_history_view, gas_intro,

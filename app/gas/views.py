@@ -31,20 +31,26 @@ from economy.utils import convert_amount
 from perftools.models import JSONStore
 
 from .models import GasGuzzler
-from .utils import (conf_time_spread, gas_advisories, gas_history,
-                    recommend_min_gas_price_to_confirm_in_time)
+from .utils import conf_time_spread, gas_advisories, gas_history, recommend_min_gas_price_to_confirm_in_time
 
-logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
-confirm_time_minutes_target = 4
-
-lines = {1: 'red', 5: 'orange', 60: 'green', 90: 'steelblue', 105: 'purple', 120: '#dddddd', 180: 'black', }
+GAS_LINES = {
+    1: 'red',
+    5: 'orange',
+    60: 'green',
+    90: 'steelblue',
+    105: 'purple',
+    120: '#dddddd',
+    180: 'black',
+}
+TARGET_CONFIRMATION_MINUTES = 4
 
 
 @cached_view(timeout=60 * 16)
 def gas(request):
     _cts = conf_time_spread()
-    recommended_gas_price = recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target)
+    recommended_gas_price = recommend_min_gas_price_to_confirm_in_time(TARGET_CONFIRMATION_MINUTES)
     if recommended_gas_price < 2:
         _cts = conf_time_spread(recommended_gas_price)
 
@@ -79,7 +85,7 @@ def gas_intro(request):
 def gas_heatmap(request):
     gas_histories = {}
     mins = request.GET.get('mins', 60)
-    min_options = [key for key, val in lines.items()]
+    min_options = [key for key, val in GAS_LINES.items()]
     if mins not in min_options:
         mins = min_options[0]
     breakdown = 'hourly'
@@ -117,7 +123,7 @@ def gas_faucet_list(request):
 
 @cached_view(timeout=60 * 16)
 def gas_calculator(request):
-    recommended_gas_price = recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target)
+    recommended_gas_price = recommend_min_gas_price_to_confirm_in_time(TARGET_CONFIRMATION_MINUTES)
     _cts = conf_time_spread()
 
     actions = [{
@@ -178,7 +184,7 @@ def gas_guzzler_view(request):
     top_guzzlers = GasGuzzler.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(minutes=60)
                                              ).order_by('-pct_total')[0:num_guzzlers]
     counter = 0
-    colors = [val for key, val in lines.items()]
+    colors = [val for key, val in GAS_LINES.items()]
     max_y = 0
     for guzzler in top_guzzlers:
         address = guzzler.address
@@ -225,7 +231,7 @@ def gas_history_view(request):
         breakdown = 'hourly'
     gas_histories = {}
     max_y = 0
-    for i, __ in lines.items():
+    for i, __ in GAS_LINES.items():
         key = f"{breakdown}:{i}"
         gas_histories[i] = JSONStore.objects.filter(view='gas_history', key=key).order_by('-created_on').first().data
         for gh in gas_histories[i]:
@@ -235,7 +241,7 @@ def gas_history_view(request):
         'title': _('Live Ethereum (ETH) Gas History'),
         'card_desc': _('See and comment on the Ethereum (ETH) Gas - Hourly History Graph'),
         'max': max_y,
-        'lines': lines,
+        'lines': GAS_LINES,
         'gas_histories': gas_histories,
         'breakdown': breakdown,
         'breakdown_ui': breakdown_ui,

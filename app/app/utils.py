@@ -176,7 +176,8 @@ def sync_profile(handle, user=None, hide_profile=True):
     handle = handle.strip().replace('@', '')
     data = get_user(handle)
     email = ''
-    if 'name' not in data.keys():
+    is_error = 'name' not in data.keys()
+    if is_error:
         print("- error main")
         logger.warning('Failed to fetch github username', exc_info=True, extra={'handle': handle})
         return None

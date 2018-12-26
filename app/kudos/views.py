@@ -41,7 +41,6 @@ from dashboard.models import Activity, Profile
 from dashboard.notifications import maybe_market_kudos_to_email, maybe_market_kudos_to_github
 from dashboard.utils import get_nonce, get_web3
 from dashboard.views import record_user_action
-from economy.utils import convert_token_to_usdt
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_by_category, get_github_primary_email
 from kudos.utils import kudos_abi
@@ -51,8 +50,7 @@ from web3 import Web3
 
 from .forms import KudosSearchForm
 from .helpers import get_token
-from .models import BulkTransferCoupon, BulkTransferRedemption, KudosTransfer, Token, Wallet
-from .utils import humanize_name
+from .models import BulkTransferCoupon, BulkTransferRedemption, KudosTransfer, Token
 
 logger = logging.getLogger(__name__)
 

@@ -28,6 +28,7 @@ class KudosUrlsTestCase(TestCase):
     """Define tests for kudos urls."""
 
     def setUp(self):
+        """Setup the Kudos URL testcase."""
         self.key = token_hex(16)[:29]
         self.tx = 0x0123456789
         self.network = 'rinkeby'
@@ -120,7 +121,10 @@ class KudosUrlsTestCase(TestCase):
 
     def test_kudos_details_by_address_token_id_reverse(self):
         """Test the kudos details by address and token id url and check the reverse."""
-        self.assertEqual(reverse('kudos:details_by_address_and_token_id', args=(self.tx, 1, 'test')), f'/kudos/redeem/{self.tx}/1/test')
+        self.assertEqual(
+            reverse('kudos:details_by_address_and_token_id', args=(self.tx, 1, 'test')),
+            f'/kudos/redeem/{self.tx}/1/test'
+        )
 
     def test_kudos_details_by_address_token_id_resolve(self):
         """Test the kudos details by address and token id url and check the resolution."""
