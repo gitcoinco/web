@@ -1,0 +1,140 @@
+
+.intro {
+  background-color: #0c023c;
+  color: #ffffff;
+}
+
+.bounties {
+  background-color: #29086a;
+  color: #ffffff;
+}
+
+.kudos{
+  background-color: #3e00ff;
+  color: #ffffff;
+  overflow-x:hidden;
+}
+
+.grants{
+  background-color: #00a55e;
+  color: #ffffff;
+}
+
+.codefund{
+  background-color: #4c008f;
+  color: #ffffff;
+}
+
+.labs{
+  background-color: #bf2781;
+  color: #ffffff;
+
+}
+
+@media(min-width: 1200px) {
+  .intro-header{
+    font-size:76px;
+    font-weight:700;
+  }
+  .intro-sub-header{
+    font-size:24px;
+  }
+  .product-name{
+    font-size:20px;
+    font-weight:500;
+  }
+  .product-heading{
+    font-size: 32px;
+    font-weight: 700;
+  }
+  .product-desc{
+    font-size:20px;
+  }
+}
+  
+@media(min-width: 768px) and (max-width:1199px) {
+  .intro-header{
+    font-size:52px;
+    font-weight:700;
+  }
+  .intro-sub-header{
+    font-size:18px;
+  }
+  .product-name{
+    font-size:16px;
+    font-weight:500;
+  }
+  .product-heading{
+    font-size: 22px;
+    font-weight: 700;
+  }
+  .product-desc{
+    font-size:16px;
+  } 
+}
+
+@media (min-width: 0px) and (max-width:767px) {
+  .intro-header{
+    font-size:40px;
+    font-weight:700;
+  }
+  .intro-sub-header{
+    font-size:14px;
+  }
+  .product-name{
+    font-size:16px;
+    font-weight:500;
+  }
+  .product-heading{
+    font-size: 22px;
+    font-weight: 700;
+  }
+  .product-desc{
+    font-size:16px;
+  } 
+}
+
+.product-left{
+  padding: 0 10vw;
+}
+
+.button {
+  border: none;
+  border-radius: 2px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  font-weight: 500;
+  padding: 10px 20px;
+  height:45px;
+  width:180px;
+}
+
+.button-codefund{
+  background-color: #8e2abe;
+  color: #fff;
+}
+
+.button-kudos{
+  background-color: #ffffff;
+  color: #000000;
+}
+.button-bounties{
+  background-color: #3e00ff;
+  color: #fff;
+}
+
+.button-grants{
+  background-color: #25e899;
+  color: #000;
+}
+
+.button-labs{
+  background-color: #782456;
+  color: #fff;
+}
+
+.button:hover  {
+  opacity:0.8;
+  color:#808080;
+}
+
