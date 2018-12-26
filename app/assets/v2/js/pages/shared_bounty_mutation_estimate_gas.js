@@ -22,6 +22,12 @@ var gas_amount = function(page_url) {
     gasLimitEstimate = 21000;
   } else if (page_url.indexOf('tip/receive') != -1) { // tip
     gasLimitEstimate = 21000;
+  } else if (page_url.indexOf('/fund') != -1) { // grant contribution
+    gasLimitEstimate = 318730;
+  } else if (page_url.indexOf('/subscription') != -1) { // canacel grant contribution
+    gasLimitEstimate = 318730;
+  } else if (page_url.indexOf('/grants/') != -1) { // canacel grant contribution
+    gasLimitEstimate = 318730;
   }
   return gasLimitEstimate;
 };

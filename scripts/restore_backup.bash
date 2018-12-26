@@ -17,8 +17,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 END
 
-apt-get update
-apt-get install postgresql-client -y
+apk --update add postgresql-client
+
 
 BFILE=$1
 echo "DROP SCHEMA public CASCADE;

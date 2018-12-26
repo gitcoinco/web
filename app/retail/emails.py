@@ -31,7 +31,7 @@ from django.utils.translation import gettext as _
 
 import cssutils
 import premailer
-from grants.models import Grant, Subscription
+from grants.models import Contribution, Grant, Subscription
 from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
 from retail.utils import strip_double_chars, strip_html
@@ -117,11 +117,11 @@ def render_subscription_terminated_email(grant, subscription):
     return response_html, response_txt, subject
 
 
-def render_successful_contribution_email(grant, subscription):
-    params = {'grant': grant, 'subscription': subscription}
+def render_successful_contribution_email(grant, subscription, contribution):
+    params = {'grant': grant, 'subscription': subscription, "contribution": contribution}
     response_html = premailer_transform(render_to_string("emails/grants/successful_contribution.html", params))
     response_txt = render_to_string("emails/grants/successful_contribution.txt", params)
-    subject = "Your subscription on Gitcoin Grants has been cancelled by the Grant Creator"
+    subject = 'Your Gitcoin Grants contribution was successful!'
     return response_html, response_txt, subject
 
 
@@ -129,7 +129,8 @@ def render_successful_contribution_email(grant, subscription):
 def successful_contribution(request):
     grant = Grant.objects.all().first()
     subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
-    response_html, __, __ = render_successful_contribution_email(grant, subscription)
+    contribution = Contribution.objects.filter(subscription__pk=subscription.pk).first()
+    response_html, __, __ = render_successful_contribution_email(grant, subscription, contribution)
     return HttpResponse(response_html)
 
 
@@ -304,9 +305,9 @@ in that spirit,  i have a few questions for you.
 
 thanks again for being a member of the community.
 
-kevin
+alisa / frank (gitcoin product team)
 
-PS - i've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+PS - we've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
 
 """
     elif persona == 'funder':
@@ -330,9 +331,9 @@ in that spirit,  i have a few questions for you:
 
 thanks for being a member of the community.
 
-kevin
+alisa / frank (gitcoin product team)
 
-PS - i've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+PS - we've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
 
 """
         elif bounty.status == 'cancelled':
@@ -351,9 +352,9 @@ i have a few questions for you.
 
 thanks again for being a member of the community.
 
-kevin
+alisa / frank (gitcoin product team)
 
-PS - i've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+PS - we've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
 
 """
         else:
@@ -404,7 +405,7 @@ def render_funder_stale(github_username, days=30, time_as_str='about a month'):
     response_txt = f"""
 hi {github_username},
 
-kevin from Gitcoin here (CC scott and vivek too) — i see you haven't funded an issue in {time_as_str}. in the spirit of making Gitcoin better + checking in:
+alisa and frank from Gitcoin here (CC scott and vivek too) — i see you haven't funded an issue in {time_as_str}. in the spirit of making Gitcoin better + checking in:
 
 - has anything been slipping on your issue board which might be bounty worthy?
 - do you have any feedback for Gitcoin Core on how we might improve the product to fit your needs?
@@ -413,7 +414,8 @@ our idea is that gitcoin should be a place you come when priorities stretch long
 
 appreciate you being a part of the community and let me know if you'd like some Gitcoin schwag — just send over a mailing address and a t-shirt size and it'll come your way.
 
-~ kevin
+~ alisa / frank (gitcoin product team)
+
 
 """
 
@@ -692,74 +694,71 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Introducing Gitcoin Ambassadors | MetaTX Grows"
-    new_kudos_pks = [486, 485, 484]
+    subject = "The Season Of Giving"
+    new_kudos_pks = [866, 811, 810]
     new_kudos_size_px = 150
     intro = '''
 <p>
-Hi there,
-</p>
-<p>
-This week, we welcomed <a href="https://medium.com/gitcoin/introducing-the-gitcoin-ambassadors-7eddb5f4d507">eight fantastic Gitcoin ambassadors to the Gitcoin community.</a>
-Each of these people has organically proved themselves to be a valuable part of the Gitcoin community,
-all behind the mission to grow and sustain open source. We're grateful for the opportunity to provide a platform
-from where they can contribute their vision to our shared, open, future. Say hello to them on Gitcoin Slack.
-</p>
-<p>
-In blockchain UX world, Gitcoin Labs is continuing it's industry leading work. Austin Griffith's post on native MetaTX's within smart contracts is a must read
-for anyone interested in 'gas-less' dApps. <a href="https://medium.com/gitcoin/native-meta-transactions-e509d91a8482">Check it out!</a>
-</p>
-<h3>New Kudos This Week</h3>
-<p>
-Check out a few of the new kudos launched this week:
+<h3>Happy Holidays From Gitcoin!</h3>
 </p>
 <p>
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
 </p>
+<p>
+We hope you all have a joyous holiday season. Send the Kudos above to your friends, your family,
+or anyone in crypto who could use some of holiday cheer! We're already excited for the next few weeks
+where we'll have a few presents for you all, as well.
+</p>
+<p>
+Since you're here... we'll start now! We've been hard at work on <a href="https://gitcoin.co/grants/">Gitcoin Grants</a>, a new tool hyperfocused on
+recurring funding for open source developers. We're looking to provide an initial list of OSS projects some funding to carry their projects into 2019.
+<a href="https://gitcoin.co/grants/">Give it a look</a> and let us know if you have any feedback.
+</p>
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Gitcoin is hiring for a Principal Engineer. Know a superstar Python/Django engineer? <a href="https://consensys.net/open-roles/1333457/">Send him or her our way!</a>
+            I wrote up a post on <a href="https://medium.com/gitcoin/progressive-elaboration-of-scope-on-gitcoin-3167742312b0">progressive elaboration of scope</a>
+            for Gitcoin funders!
         </li>
         <li>
-            Gitcoin Livestream is back this week! Hear more about Gnosis Safe + another project to be named. Join us <a href="https://gitcoin.co/livestream">Friday at 5PM ET</a>!
+            Gitcoin Livestream is on as usual this week! Lighthouse + Cryptoeconomics.study will be on this week. Join us <a href="https://gitcoin.co/livestream">Friday at 5PM ET</a>!
         </li>
     </ul>
 </p>
 <p>
-Thanks for reading! Back to BUIDLing,
+Happy holidays,
 </p>
 
 '''
     highlights = [{
-        'who': 'bhargavasomu',
+        'who': 'iamonuwa',
         'who_link': True,
-        'what': 'Worked on py-szz with the Ethereum Foundation',
-        'link': 'https://gitcoin.co/issue/ethereum/py-ssz/1/1878',
+        'what': 'Worked on Fraktal with Julien',
+        'link': 'https://gitcoin.co/issue/julienbrg/fraktal/1/2007',
         'link_copy': 'View more',
     }, {
-        'who': 'dylanjw',
+        'who': 'brascoder',
         'who_link': True,
-        'what': 'Great work on Status React!',
-        'link': 'https://gitcoin.co/issue/status-im/status-react/6199/1865',
+        'what': 'Worked on CodeFund with us!',
+        'link': 'https://gitcoin.co/issue/gitcoinco/code_fund_ads/85/1931',
         'link_copy': 'View more',
     }, {
-        'who': 'cryptomental',
+        'who': 'elemino',
         'who_link': True,
-        'what': 'Completed work on Py-EVM with their core team!',
-        'link': 'https://gitcoin.co/issue/ethereum/py-evm/1472/1769',
+        'what': 'Worked on Javascript Practice, a cool bounty.',
+        'link': 'https://gitcoin.co/issue/lastmjs/javascript-practice/179/1917',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/ethereum/py-ssz/issues/4',
-        'primer': 'Serialization and Deserialization of Remaining Base Types.',
+        'url': 'https://github.com/Giveth/giveth-bot/issues/39',
+        'primer': 'Work on Giveth with Griff and team.',
     }, {
-        'url': 'https://github.com/trailofbits/slither/issues/85',
-        'primer': 'Improve Remix plugin on Trail Of Bits!',
+        'url': 'https://github.com/unlock-protocol/unlock/issues/334',
+        'primer': 'Bounty from Unlock Protocol',
     }, {
-        'url': 'https://github.com/spacemeshos/POET/issues/20',
-        'primer': 'Add interoperability tests on Spash Mesh OS!',
+        'url': 'https://github.com/status-im/status-react/issues/7076',
+        'primer': 'Work on Status-React on Whisper!',
     }, ]
 
     num_leadboard_items = 5

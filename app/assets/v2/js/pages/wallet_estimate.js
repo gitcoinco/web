@@ -127,4 +127,3 @@ function prefill_recommended_prices() {
   $('#fast-recommended-gas').html('Fast $' + parseFloat(fast_data['usd']).toFixed(2) + ' ~' + fast_data['time'] + ' minutes');
   $('#fast-recommended-gas').data('amount-usd', parseFloat(fast_data['usd']).toFixed(2));
 }
-

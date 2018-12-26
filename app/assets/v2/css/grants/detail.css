@@ -96,7 +96,8 @@ textarea.editable {
 
 #form--input__description,
 #form--input__reference-url,
-#form--input__title {
+#form--input__title,
+#contract_owner_address {
   width: 100%;
   text-align: justify;
   resize: none;
@@ -183,6 +184,18 @@ textarea.editable {
   position: relative;
   display: inline-block;
   border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+}
+
+.update {
+  border-bottom: 1px solid #D8D8D8;
+}
+
+.update:first-child {
+  padding-top: 0 !important;
+}
+
+.milestones-list li:last-child {
+  padding-bottom: 0 !important;
 }
 
 /* Tooltip text */

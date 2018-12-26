@@ -92,7 +92,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   <label class="form__label">{% trans "Amount Per Period" %}</label>
                   <div class="row">
                     <div class="col-8">
-                      <input type="number" min=1 id="amount" name="amount_per_period" class="form__input" required />
+                      <input type="number" min="0.001" id="amount" name="amount_per_period" class="form__input" required />
                     </div>
                     <div class="col-4">
                       {% if grant_has_no_token %}
@@ -112,7 +112,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                       <label class="form__label">
                         {% trans "Number Of Recurring Payments" %}
                       </label>
-                      <input id="period" type="number" min=0 step="1" name="approve" class="form__input" required />
+                      <input id="period" type="number" min=0 step="1" name="num_periods" class="form__input" required />
+                    </div>
+                  </div>
+                </div>
+
+                <div id="gas-section" class="form__group-horizontal">
+                  <div class="row">
+                    <div class="col-12">
+                      <h5 class="form__label">{% trans "Gas Settings" %}</h5>
+                      <div>
+                        {% include 'shared/wallet_estimate.html' %}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -130,9 +141,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     <span id="summary-amount" class="font-weight-bold">-</span>
                     <span id="summary-token" class="font-weight-bold">
                       {% if not grant_has_no_token %}
-                        {{ token_symbol }}
+                        {{ grant.token_symbol }}
                       {% else %}
-                        -
+                        {{ token_symbol }}
                       {% endif %}
                     </span>
                     {% trans "to this grant every" %}
@@ -152,7 +163,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 <div class="form__group-horizontal">
                   <div class="row">
                     <div class="col-12 form__footer text-center">
-                      <button class="button button--primary button--full" id='js-fundGrant'>{% trans "Contribute to Grant" %}</button>
+                      <button class="button button--primary button--full" id='js-fundGrant-button'>{% trans "Contribute to Grant" %}</button>
                     </div>
                   </div>
                 </div>
@@ -164,13 +175,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               <input type="hidden" id="grant_id" name="grant_id" value="{{ grant.id }}">
               <input type="hidden" id="admin_address" name="admin_address" value="{{ grant.admin_address }}">
               <input type="hidden" id="token_address" name="token_address" value="{{ grant.token_address }}">
+              <input type="hidden" id="gas_price" name="gas_price" value="">
               <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
               <input type="hidden" id="contract_version" name="contract_version" value="{{ grant.contract_version }}">
               <input type="hidden" id="network" name="network" value="{{ grant.network }}">
               <input type="hidden" id="subscription_hash" name="subscription_hash" value="">
               <input type="hidden" id="signature" name="signature" value="">
               <input type="hidden" id="contributor_address" name="contributor_address" value="">
-              <input type="hidden" id="gas_price" name="gas_price" value="">
+              <input type="hidden" id="sub_new_approve_tx_id" name="sub_new_approve_tx_id" value="">
               <input type="hidden" id="token_symbol" name="token_symbol" value="{{ grant.token_symbol }}">
               <input type="hidden" id="real_period_seconds" name="real_period_seconds" value="">
               <input type="hidden" id="grant-link" value="{% url 'grants:details' grant.id grant.slug %}">
