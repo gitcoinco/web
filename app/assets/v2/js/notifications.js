@@ -24,7 +24,7 @@ Vue.mixin({
 
         vm.numPages = response.num_pages;
         vm.hasNext = response.has_next;
-        vm.numNotifications = response.num_notifications;
+        vm.numNotifications = response.count;
 
         vm.checkUnread();
         if (vm.hasNext) {

@@ -35,7 +35,7 @@
           <span class="notifications__item-readed">
             <b class="notification__dot-small" v-bind:class="{'notification__dot-small_active': !notification.is_read}"></b>
           </span>
-          <a :href="[[ notification.CTA_URL ]]" class="notifications_content" @click="e => !notification.is_read && markRead(notification.id)">
+          <a :href="[[ notification.cta_url ]]" class="notifications_content" @click="e => !notification.is_read && markRead(notification.id)">
             <img class="notifications__avatar" :src="'/dynamic/avatar/' + [[ notification.username ]]" width="28" height="28">
             <p class="line-clamp" v-html="notification.message_html"></p>
           </a>
@@ -61,7 +61,7 @@
           <span class="notifications__item-readed">
             <b class="notification__dot-small" v-bind:class="{'notification__dot-small_active': !notification.is_read}"></b>
           </span>
-          <a :href="[[ notification.CTA_URL ]]" class="notifications_content" @click="e => !notification.is_read && markRead(notification.id)">
+          <a :href="[[ notification.cta_url ]]" class="notifications_content" @click="e => !notification.is_read && markRead(notification.id)">
             <img class="notifications__avatar" :src="'/dynamic/avatar/' + [[ notification.username ]]" width="28" height="28">
             <p class="line-clamp" v-html="notification.message_html"></p>
           </a>
