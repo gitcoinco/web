@@ -21,7 +21,7 @@
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
-    {% include 'shared/cards_pic.html' %}
+    {% include 'shared/cards.html' %}
     <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
   </head>
   <body class="{{ active }} g-font-muli">
@@ -396,18 +396,8 @@
     <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
     <script>
       $(document).ready(function() {
-        var load_kudos_card_images = function(){
-          for(var i = 0; i < $(".kd-card:visible img").length; i++){
-            // dont load all at once
-            var ele = $(".kd-card:visible img")[i];
-            var url = $(ele).data('src');
-            $(ele).attr('src', url);
-          };
-        };
-        load_kudos_card_images();
-        $(".carousel-control-next-icon, .carousel-control-prev-icon").click(function(){
-          setTimeout(load_kudos_card_images, 50);
-        });
+
+        setInterval(load_kudos_card_images, 300);
       });
       var bootstrapTooltip = $.fn.tooltip.noConflict()
     </script>

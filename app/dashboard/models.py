@@ -259,6 +259,7 @@ class Bounty(SuperModel):
     fulfillment_submitted_on = models.DateTimeField(null=True, blank=True)
     fulfillment_started_on = models.DateTimeField(null=True, blank=True)
     canceled_on = models.DateTimeField(null=True, blank=True)
+    canceled_bounty_reason = models.TextField(default='', blank=True, verbose_name=_('Cancelation reason'))
     project_type = models.CharField(max_length=50, choices=PROJECT_TYPES, default='traditional')
     permission_type = models.CharField(max_length=50, choices=PERMISSION_TYPES, default='permissionless')
     snooze_warnings_for_days = models.IntegerField(default=0)
@@ -1631,6 +1632,18 @@ class Activity(models.Model):
         if exclude:
             kwargs['exclude'] = exclude
         return model_to_dict(self, **kwargs)
+
+
+class LabsResearch(models.Model):
+    """Define the structure of Labs Research object."""
+
+    title = models.CharField(max_length=255)
+    description = models.CharField(max_length=1000)
+    link = models.URLField(null=True)
+    image = models.ImageField(upload_to='labs', blank=True, null=True)
+
+    def __str__(self):
+        return self.title
 
 
 class ProfileQuerySet(models.QuerySet):

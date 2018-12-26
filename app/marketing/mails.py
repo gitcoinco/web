@@ -197,14 +197,14 @@ def subscription_terminated(grant, subscription):
         translation.activate(cur_language)
 
 
-def successful_contribution(grant, subscription):
+def successful_contribution(grant, subscription, contribution):
     from_email = settings.CONTACT_EMAIL
     to_email = subscription.contributor_profile.email
     cur_language = translation.get_language()
 
     try:
         setup_lang(to_email)
-        html, text, subject = render_successful_contribution_email(grant, subscription)
+        html, text, subject = render_successful_contribution_email(grant, subscription, contribution)
 
         if not should_suppress_notification_email(to_email, 'successful_contribution'):
             send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
@@ -237,14 +237,14 @@ def admin_contact_funder(bounty, text, from_user):
 
 
 def funder_stale(to_email, github_username, days=30, time_as_str='about a month'):
-    from_email = settings.PERSONAL_CONTACT_EMAIL
+    from_email = 'product@gitcoin.co'
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
 
         subject = "hey from gitcoin.co" if not github_username else f"hey @{github_username}"
         __, text = render_funder_stale(github_username, days, time_as_str)
-        cc_emails = [from_email, 'vivek.singh@consensys.net', 'scott.moore@consensys.net', 'alisa.march@consensys.net']
+        cc_emails = [from_email, 'vivek.singh@consensys.net', 'scott.moore@consensys.net']
         if not should_suppress_notification_email(to_email, 'admin_contact_funder'):
             send_mail(
                 from_email,
@@ -260,7 +260,7 @@ def funder_stale(to_email, github_username, days=30, time_as_str='about a month'
 
 
 def bounty_feedback(bounty, persona='fulfiller', previous_bounties=None):
-    from_email = settings.PERSONAL_CONTACT_EMAIL
+    from_email = 'product@gitcoin.co'
     to_email = None
     cur_language = translation.get_language()
     if previous_bounties is None:
@@ -284,7 +284,7 @@ def bounty_feedback(bounty, persona='fulfiller', previous_bounties=None):
                 subject,
                 text,
                 cc_emails=cc_emails,
-                from_name="Kevin Owocki (Gitcoin.co)",
+                from_name="Alisa March (Gitcoin.co)",
                 categories=['transactional', func_name()],
             )
     finally:
@@ -379,15 +379,15 @@ def warn_account_out_of_eth(account, balance, denomination):
     finally:
         translation.activate(cur_language)
 
-def warn_subscription_failed(subscription, txid, status, error):
-    to_email = settings.SERVER_EMAIL
+
+def warn_subscription_failed(subscription):
+    to_email = settings.PERSONAL_CONTACT_EMAIL
     from_email = settings.SERVER_EMAIL
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
         subject = str(subscription.pk) + str(_(" subscription failed"))
-        body_str = _("is down to ")
-        body = f"{subscription.pk } {txid} {status} {error}"
+        body = f"{subscription.admin_url }\n{subscription.contributor_profile.email}, {subscription.contributor_profile.user.email}\n\n{subscription.subminer_comments}"
         if not should_suppress_notification_email(to_email, 'admin'):
             send_mail(
                 from_email,
@@ -403,7 +403,7 @@ def warn_subscription_failed(subscription, txid, status, error):
 
 
 def new_feedback(email, feedback):
-    to_email = settings.PERSONAL_CONTACT_EMAIL
+    to_email = 'product@gitcoin.co'
     from_email = settings.SERVER_EMAIL
     subject = "New Feedback"
     body = f"New feedback from {email}: {feedback}"
