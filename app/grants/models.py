@@ -596,7 +596,29 @@ class Subscription(SuperModel):
         except ConversionRateNotFoundError as e:
             logger.info(e)
 
-        if self.num_tx_approved
+        if self.num_tx_processed == self.num_tx_approved:
+            converted_amount =
+                float(convert_amount(
+                    subscription.amount_per_period,
+                    subscription.token_symbol,
+                    "USDT")
+                )
+
+            if subscription.frequency_unit == 'days':
+                period_seconds == 86400 * subscription.frequency
+            elif subscription.frequency_unit == 'hours':
+                period_seconds == 3600 * subscription.frequency
+            elif subscription.frequency_unit == 'minutes':
+                period_seconds == 60 * subscription.frequency
+            elif subscription.frequency_unit == 'months':
+                period_seconds == 2592000 * subscription.frequency
+
+            grant.monthly_amount_subscribed =
+                grant.monthly_amount_subscribed -
+                (converted_amount * (2592000 / period_seconds))
+
+        except ConversionRateNotFoundError as e:
+            logger.info(e)
 
         grant.save()
         successful_contribution(self.grant, self, contribution)

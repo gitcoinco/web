@@ -415,14 +415,13 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
                 period_seconds == 2592000 * subscription.frequency
 
             grant.monthly_amount_subscribed =
-                grant.monthly_amount_subscribed - 
+                grant.monthly_amount_subscribed -
                 (converted_amount * (2592000 / period_seconds))
 
         except ConversionRateNotFoundError as e:
             logger.info(e)
 
         grant.save()
-        grant.monthly_amount_subscribed = grant.monthly_amount_subscribed - subscription.amount_per_period
         support_cancellation(grant, subscription)
         messages.info(
             request,
