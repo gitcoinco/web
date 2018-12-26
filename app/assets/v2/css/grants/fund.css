@@ -3,6 +3,10 @@
   color: #0D0764;
 }
 
+#grants_form .form__input.error {
+  background-position: top 0.55rem right 0.5rem;
+}
+
 #grants_form input {
   height: 2.5rem !important;
 }
@@ -39,6 +43,10 @@
   font-size: 6px;
   position: relative;
   bottom: 2px;
+}
+
+#accordion-set-own-limit {
+  font-size: 12px;
 }
 
 @media (max-width: 767.98px) {

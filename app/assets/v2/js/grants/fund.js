@@ -19,8 +19,6 @@ $(document).ready(function() {
         data[this.name] = this.value;
       });
 
-      $('#token_symbol').val($('#js-token option:selected').text());
-
       let realPeriodSeconds = 0;
 
       if (data.frequency) {
@@ -52,19 +50,20 @@ $(document).ready(function() {
       } else {
         selected_token = data.denomination;
         deployedToken = new web3.eth.Contract(compiledToken.abi, data.denomination);
+        $('#token_symbol').val($('#js-token option:selected').text());
       }
 
       deployedToken.methods.decimals().call(function(err, decimals) {
 
-        let realApproval = Number((data.approve * 10 ** decimals) * data.amount_per_period);
+        let realGasPrice = $('#gasPrice').val() * Math.pow(10, 9);
 
-        let realTokenAmount = Number(data.amount_per_period * 10 ** decimals);
+        $('#gas_price').val(realGasPrice);
 
-        // gas price in gwei
-        let realGasPrice = Number(4 * 10 ** 9);
+        let realTokenAmount = Number(data.amount_per_period * Math.pow(10, decimals));
+        let amountSTR = realTokenAmount.toLocaleString('fullwide', { useGrouping: false });
 
-        $('#gas_price').val(4);
-
+        let realApproval = Number((realTokenAmount + realGasPrice) * data.num_periods);
+        let approvalSTR = realApproval.toLocaleString('fullwide', { useGrouping: false });
 
         web3.eth.getAccounts(function(err, accounts) {
 
@@ -72,16 +71,19 @@ $(document).ready(function() {
 
           deployedToken.methods.approve(
             data.contract_address,
-            web3.utils.toTwosComplement(realApproval)
+            web3.utils.toTwosComplement(approvalSTR)
           ).send({
             from: accounts[0],
-            gasPrice: 4000000000
+            gasPrice: realGasPrice
           }).on('error', function(error) {
             console.log('1', error);
             alert('Your approval transaction failed. Please try again.');
           }).on('transactionHash', function(transactionHash) {
+            $('#sub_new_approve_tx_id').val(transactionHash);
+            const linkURL = etherscan_tx_url(transactionHash);
 
-            document.issueURL = window.location.origin + $('#grant-link').val();
+            document.issueURL = linkURL;
+            $('#transaction_url').attr('href', linkURL);
             enableWaitState('#grants_form');
             // Should add approval transactions to transaction history
             deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
@@ -92,18 +94,15 @@ $(document).ready(function() {
                 web3.utils.toChecksumAddress(accounts[0]), // subscriber address
                 web3.utils.toChecksumAddress(data.admin_address), // admin_address
                 web3.utils.toChecksumAddress(selected_token), // token denomination / address
-                web3.utils.toTwosComplement(realTokenAmount), // data.amount_per_period
+                web3.utils.toTwosComplement(amountSTR), // data.amount_per_period
                 web3.utils.toTwosComplement(realPeriodSeconds), // data.period_seconds
                 web3.utils.toTwosComplement(realGasPrice), // data.gas_price
                 web3.utils.toTwosComplement(nonce) // nonce
               ];
 
               deployedSubscription.methods.getSubscriptionHash(...parts).call(function(err, subscriptionHash) {
-
                 $('#subscription_hash').val(subscriptionHash);
-
                 web3.eth.personal.sign('' + subscriptionHash, accounts[0], function(err, signature) {
-
                   $('#signature').val(signature);
                 });
               });
@@ -111,19 +110,26 @@ $(document).ready(function() {
           }).on('confirmation', function(confirmationNumber, receipt) {
             $('#real_period_seconds').val(realPeriodSeconds);
 
-            $.each($(form).serializeArray(), function() {
-              data[this.name] = this.value;
+            waitforData(function() {
+              $.each($(form).serializeArray(), function() {
+                data[this.name] = this.value;
+              });
+              form.submit();
             });
-
-            form.submit();
           });
-
         });
       });
     }
   });
 
   waitforWeb3(function() {
+    if (document.web3network != $('#network').val()) {
+      $('#js-fundGrant-button').prop('disabled', true);
+      let network = $('#network').val();
+
+      _alert({ message: gettext('This Grant is on the ' + network + ' network. Please, switch to ' + network + ' to contribute to this grant.') }, 'error');
+    }
+
     tokens(document.web3network).forEach(function(ele) {
       let option = document.createElement('option');
 
@@ -140,6 +146,18 @@ $(document).ready(function() {
     $('#js-token').select2();
   });
 });
+
+var waitforData = function(callback) {
+  if ($('#signature').val() != '') {
+    callback();
+  } else {
+    var wait_callback = function() {
+      waitforData(callback);
+    };
+
+    setTimeout(wait_callback, 3000);
+  }
+};
 
 const updateSummary = (element) => {
 
