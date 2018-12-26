@@ -17,7 +17,7 @@
 {% endcomment %}
 {% load i18n static matches %}
 <div class="top-nav g-font-muli {{class}}">
-  <a class="link d-md-block d-none" href="{% url 'mission' %}">Grow Open Source</a>
+  <a class="link d-md-block d-none" href="{% url 'products' %}">Grow Open Source</a>
   <a class="{% if request.path == '/' %}selected{% endif %}" href="/">
     <img src="{% static "v2/images/top-bar/gitcoin-logo.svg" %}" height="22" alt="" class="d-md-block d-none" style="margin-bottom: 5px;">
     <img src="{% static "v2/images/top-bar/gitcoin-symbol.svg" %}" height="22" alt="" class="d-md-none">
