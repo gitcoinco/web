@@ -129,6 +129,7 @@ urlpatterns = [
     path('issue/payout', dashboard.views.payout_bounty, name='payout_bounty'),
     path('issue/increase', dashboard.views.increase_bounty, name='increase_bounty'),
     path('issue/cancel', dashboard.views.cancel_bounty, name='kill_bounty'),
+    path('issue/cancel_reason', dashboard.views.cancel_reason, name='cancel_reason'),
     path('issue/contribute', dashboard.views.contribute, name='contribute'),
     path('issue/social_contribution', dashboard.views.social_contribution, name='social_contribution'),
     path(
@@ -224,6 +225,7 @@ urlpatterns = [
     re_path(r'^about/?', retail.views.about, name='about'),
     re_path(r'^mission/?', retail.views.mission, name='mission'),
     re_path(r'^vision/?', retail.views.vision, name='vision'),
+    re_path(r'^products/?', retail.views.products, name='products'),
     path('not_a_token', retail.views.not_a_token, name='not_a_token'),
     re_path(r'^styleguide-alpha/?', retail.views.ui, name='ui'),
     re_path(r'^results/?(?P<keyword>.*)/?', retail.views.results, name='results_by_keyword'),
@@ -445,7 +447,7 @@ urlpatterns = [
 if settings.ENABLE_SILK:
     urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]
 
-if settings.ENV == 'local' and not settings.AWS_STORAGE_BUCKET_NAME:
+if not settings.AWS_STORAGE_BUCKET_NAME:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # If running in DEBUG, expose the error handling pages.

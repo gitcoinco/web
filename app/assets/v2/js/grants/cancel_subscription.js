@@ -24,20 +24,19 @@ $(document).ready(() => {
       deployedToken.methods.decimals().call(function(err, decimals) {
 
         let realTokenAmount = Number(data.amount_per_period * 10 ** decimals);
+        let amountSTR = realTokenAmount.toLocaleString('fullwide', { useGrouping: false });
 
-        console.log('realTokenAmount', realTokenAmount);
-
-        // gas price in gwei
-        let realGasPrice = Number(data.gas_price * 10 ** 9);
-
-        console.log('realGasPrice', realGasPrice);
+        let realGasPrice = $('#gasPrice').val() * Math.pow(10, 9);
 
         web3.eth.getAccounts(function(err, accounts) {
 
-          deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(0)).send({from: accounts[0], gasPrice: 4000000000})
-            .on('transactionHash', function(hash) {
-              console.log('hash', hash);
+          deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(0)).send({from: accounts[0], gasPrice: realGasPrice})
+            .on('transactionHash', function(transactionHash) {
+              $('#sub_end_approve_tx_id').val(transactionHash);
+              const linkURL = etherscan_tx_url(transactionHash);
 
+              document.issueURL = linkURL;
+              $('#transaction_url').attr('href', linkURL);
               enableWaitState('#grants_form');
 
               deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
@@ -48,19 +47,19 @@ $(document).ready(() => {
                   accounts[0], // subscriber address
                   data.admin_address, // admin_address
                   data.token_address, // testing token
-                  web3.utils.toTwosComplement(realTokenAmount), // data.amount_per_period
+                  web3.utils.toTwosComplement(amountSTR), // data.amount_per_period
                   web3.utils.toTwosComplement(data.real_period_seconds), // data.period_seconds
                   web3.utils.toTwosComplement(realGasPrice), // data.gas_price
                   web3.utils.toTwosComplement(nonce), // nonce
                   data.signature // contributor_signature
                 ];
 
-                console.log('parts', parts);
-
                 deployedSubscription.methods.cancelSubscription(
                   ...parts
-                ).send({from: accounts[0], gasPrice: 4000000000})
-                  .on('confirmation', function(confirmationNumber, receipt) {
+                ).send({from: accounts[0], gasPrice: realGasPrice})
+                  .on('transactionHash', function(transactionHash) {
+                    $('#sub_cancel_tx_id').val(transactionHash);
+                  }).on('confirmation', function(confirmationNumber, receipt) {
                     console.log('receipt', receipt);
                     form.submit();
                   });

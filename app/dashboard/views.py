@@ -184,8 +184,14 @@ def gh_login(request):
 
 
 def get_interest_modal(request):
+    bounty_id = request.GET.get('pk')
+    if not bounty_id:
+        raise Http404
 
-    bounty = Bounty.objects.get(pk=request.GET.get("pk"))
+    try:
+        bounty = Bounty.objects.get(pk=bounty_id)
+    except Bounty.DoesNotExist:
+        raise Http404
 
     context = {
         'bounty': bounty,
@@ -405,6 +411,53 @@ def extend_expiration(request, bounty_id):
 
     return JsonResponse({
         'error': _("You must be funder to extend expiration"),
+    }, status=200)
+
+
+@csrf_exempt
+@require_POST
+def cancel_reason(request):
+    """Extend expiration of the Bounty.
+
+    Can only be called by funder or staff of the bounty.
+
+    :request method: POST
+
+    Params:
+        pk (int): ID of the Bounty.
+        canceled_bounty_reason (string): STRING with cancel  reason
+
+    Returns:
+        dict: The success key with a boolean value and accompanying error.
+
+    """
+    print(request.POST.get('canceled_bounty_reason'))
+    user = request.user if request.user.is_authenticated else None
+
+    if not user:
+        return JsonResponse(
+            {'error': _('You must be authenticated via github to use this feature!')},
+            status=401)
+
+    try:
+        bounty = Bounty.objects.get(pk=request.POST.get('pk'))
+    except Bounty.DoesNotExist:
+        return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
+                            status=401)
+
+    is_funder = bounty.is_funder(user.username.lower()) if user else False
+    if is_funder:
+        canceled_bounty_reason = request.POST.get('canceled_bounty_reason')
+        bounty.canceled_bounty_reason = canceled_bounty_reason
+        bounty.save()
+
+        return JsonResponse({
+            'success': True,
+            'msg': _("Cancel reason added."),
+        })
+
+    return JsonResponse({
+        'error': _("You must be funder to add a reason"),
     }, status=200)
 
 
@@ -1414,7 +1467,7 @@ def toolbox(request):
 
 def labs(request):
     labs = LabsResearch.objects.all()
-    tools = Tool.objects.prefetch_related('votes').filter(category=Tool.CAT_BASIC)
+    tools = Tool.objects.prefetch_related('votes').filter(category=Tool.CAT_ALPHA)
 
     socials = [{
         "name": _("GitHub Repo"),
@@ -1433,6 +1486,8 @@ def labs(request):
     context = {
         'active': "labs",
         'title': _("Labs"),
+        'card_desc': _("Gitcoin Labs provides advanced tools for busy developers"),
+        'avatar_url': 'https://c.gitcoin.co/labs/Articles-Announcing_Gitcoin_Labs.png',
         'tools': tools,
         'labs': labs,
         'socials': socials

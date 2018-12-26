@@ -44,7 +44,7 @@
             <h3 class="sub-title mb-4 dark-text">{% trans "Latest Research" %}</h3>
             <div class="cards">
               {% for lab in labs %}
-                <div class="lab-card col-10 col-sm-6 col-md-5 col-xl-3" id="{{ lab.title }}">
+                <div class="lab-card col-10 col-sm-6 col-md-5 col-xl-3 mx-md-4" id="{{ lab.title }}">
                   <div class="img">
                     {% if lab.image.url %}
                       <img src="{{ lab.image.url }}"/>
@@ -79,7 +79,7 @@
           <a href="{% url 'tools' %}" class="description">{% trans "See All" %}</a>
           <div class="cards text-center mt-2">
             {% for tool in tools %}
-              <div class="card col-md-4 col-lg-3 mx-md-2 {{ tool.class }}" id="{{ tool.i18n_name }}">
+              <div class="card col-md-4 col-lg-3 mx-md-5 mx-lg-4 {{ tool.class }}" id="{{ tool.i18n_name }}">
                 <div class="img">
                   <img src="{{ tool.img_url }}" {% if tool.stat_graph %} {% endif %} />
                 </div>
@@ -128,7 +128,7 @@
               </p>
               <p class="pt-2">
                 {% trans "We welcome contributions and contributors of all kinds - research suggestions, useful tools, or simply sharing your ideas. To get started, check out our" %}
-                <a href="{% url 'labs' %}" class="font-weight-bold magenta-link">GitHub Repo</a>
+                <a href="https://github.com/gitcoinco/labs/" class="font-weight-bold magenta-link">GitHub Repo</a>
                 <span>{% trans "and join our" %}</span>
                 <a href="{% url 'slack' %}" class="font-weight-bold magenta-link">Slack Channel!</a>
               </p>
