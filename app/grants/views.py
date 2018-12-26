@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import datetime
 import json
 import logging
+from decimal import *
 
 from django.conf import settings
 from django.contrib import messages
@@ -326,32 +327,38 @@ def grant_fund(request, grant_id, grant_slug):
         subscription.grant = grant
         subscription.save()
         try:
+            print("amount", subscription.amount_per_period)
+            print("symbol", subscription.token_symbol)
             converted_amount = (
-                int(convert_amount(
-                    request.POST.get('amount_per_period', 0),
-                    request.POST.get('token_symbol', ''),
+                float(convert_amount(
+                    subscription.amount_per_period,
+                    subscription.token_symbol,
                     "USDT")
                 )
             )
 
-            if request.POST.get('frequency_unit', 'days') == 'days':
-                period_seconds = 86400 * request.POST.get('frequency', 30)
-                print('1', period_seconds)
-            elif request.POST.get('frequency_unit', 'days') == 'hours':
-                period_seconds = 3600 * request.POST.get('frequency', 30)
-                print('2', period_seconds)
+            print('converted', converted_amount)
 
-            elif request.POST.get('frequency_unit', 'days') == 'minutes':
-                period_seconds = 60 * request.POST.get('frequency', 30)
+            if subscription.frequency_unit == 'days':
+                period_seconds = 86400 * subscription.num_tx_approved
+                print('1', period_seconds)
+            elif subscription.frequency_unit == 'hours':
+                period_seconds = 3600 * subscription.num_tx_approved
+                print('2', period_seconds)
+            elif subscription.frequency_unit == 'minutes':
+                print('freq', subscription.num_tx_approved)
+                period_seconds = 60 * int(subscription.num_tx_approved)
                 print('3', period_seconds)
-            elif request.POST.get('frequency_unit', 'days') == 'months':
-                period_seconds = 2592000 * request.POST.get('frequency', 30)
+            elif subscription.frequency_unit == 'months':
+                period_seconds = 2592000 * subscription.num_tx_approved
                 print('4', period_seconds)
 
             grant.monthly_amount_subscribed = (
                 grant.monthly_amount_subscribed +
-                int(converted_amount * (int(2592000) / int(period_seconds)))
+                Decimal(converted_amount * (2592000 / period_seconds))
             )
+
+            print('here', grant.monthly_amount_subscribed)
 
         except ConversionRateNotFoundError as e:
             logger.info(e)
