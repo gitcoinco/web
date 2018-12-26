@@ -30,13 +30,14 @@ from python_http_client.exceptions import HTTPError, UnauthorizedError
 from retail.emails import (
     render_admin_contact_funder, render_bounty_changed, render_bounty_expire_warning, render_bounty_feedback,
     render_bounty_startwork_expire_warning, render_bounty_unintersted, render_faucet_rejected, render_faucet_request,
-    render_funder_stale, render_gdpr_reconsent, render_gdpr_update, render_grant_cancellation_email, render_kudos_email,
-    render_match_email, render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection,
-    render_new_bounty_roundup, render_new_grant_email, render_new_supporter_email, render_new_work_submission,
-    render_quarterly_stats, render_start_work_applicant_about_to_expire, render_start_work_applicant_expired,
-    render_start_work_approved, render_start_work_new_applicant, render_start_work_rejected,
-    render_subscription_terminated_email, render_successful_contribution_email, render_support_cancellation_email,
-    render_thank_you_for_supporting_email, render_tip_email,
+    render_funder_payout_reminder, render_funder_stale, render_gdpr_reconsent, render_gdpr_update,
+    render_grant_cancellation_email, render_kudos_email, render_match_email, render_new_bounty,
+    render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup, render_new_grant_email,
+    render_new_supporter_email, render_new_work_submission, render_quarterly_stats,
+    render_start_work_applicant_about_to_expire, render_start_work_applicant_expired, render_start_work_approved,
+    render_start_work_new_applicant, render_start_work_rejected, render_subscription_terminated_email,
+    render_successful_contribution_email, render_support_cancellation_email, render_thank_you_for_supporting_email,
+    render_tip_email,
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
@@ -44,8 +45,17 @@ from sendgrid.helpers.stats import Category
 logger = logging.getLogger(__name__)
 
 
-def send_mail(from_email, _to_email, subject, body, html=False,
-              from_name="Gitcoin.co", cc_emails=None, categories=None, debug_mode=False):
+def send_mail(
+    from_email,
+    _to_email,
+    subject,
+    body,
+    html=False,
+    from_name="Gitcoin.co",
+    cc_emails=None,
+    categories=None,
+    debug_mode=False
+):
     """Send email via SendGrid."""
     # make sure this subscriber is saved
     if not settings.SENDGRID_API_KEY:
@@ -299,7 +309,9 @@ def tip_email(tip, to_emails, is_new):
     warning = '' if tip.network == 'mainnet' else "({})".format(tip.network)
     subject = gettext("⚡️ New Tip Worth {} {} {}").format(round(tip.amount, round_decimals), warning, tip.tokenName)
     if not is_new:
-        subject = gettext("🕐 Tip Worth {} {} {} Expiring Soon").format(round(tip.amount, round_decimals), warning, tip.tokenName)
+        subject = gettext("🕐 Tip Worth {} {} {} Expiring Soon").format(
+            round(tip.amount, round_decimals), warning, tip.tokenName
+        )
 
     for to_email in to_emails:
         cur_language = translation.get_language()
@@ -401,7 +413,6 @@ def warn_subscription_failed(subscription):
         translation.activate(cur_language)
 
 
-
 def new_feedback(email, feedback):
     to_email = 'product@gitcoin.co'
     from_email = settings.SERVER_EMAIL
@@ -432,6 +443,29 @@ def gdpr_reconsent(email):
         from_name="Kevin Owocki (Gitcoin.co)",
         categories=['marketing', func_name()],
     )
+
+
+def funder_payout_reminder(to_email, bounty, github_username, live):
+    from_email = settings.PERSONAL_CONTACT_EMAIL
+    subject = "Payout reminder"
+    html, text = render_funder_payout_reminder(to_email=to_email, bounty=bounty, github_username=github_username)
+    print(html)
+    print("\n")
+    if (live):
+        try:
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                text,
+                html,
+                from_name="Kevin Owocki (Gitcoin.co)",
+                categories=['marketing', func_name()],
+            )
+        except Exception as e:
+            print(e)
+            return False
+        return True
 
 
 def new_external_bounty():
@@ -944,12 +978,6 @@ def bounty_request_feedback(profile):
                'in the past 🙂\n\n'\
                'Best,\n\nV'
 
-        send_mail(
-            from_email,
-            to_email,
-            subject,
-            body,
-            from_name=_('Vivek Singh (Gitcoin.co)'),
-        )
+        send_mail(from_email, to_email, subject, body, from_name=_('Vivek Singh (Gitcoin.co)'), )
     finally:
         translation.activate(cur_language)

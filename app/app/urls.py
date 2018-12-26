@@ -220,7 +220,11 @@ urlpatterns = [
     # modals
     re_path(r'^modal/get_quickstart_video/?', dashboard.views.get_quickstart_video, name='get_quickstart_video'),
     re_path(r'^modal/extend_issue_deadline/?', dashboard.views.extend_issue_deadline, name='extend_issue_deadline'),
-
+    path(
+        '<str:bounty_network>/<int:stdbounties_id>/modal/notify-funder/',
+        dashboard.views.get_notify_funder_modal,
+        name='get_notify_funder_modal'
+    ),
     # brochureware views
     re_path(r'^about/?', retail.views.about, name='about'),
     re_path(r'^mission/?', retail.views.mission, name='mission'),
@@ -407,6 +411,13 @@ urlpatterns = [
     re_path(r'^_administration/viz/calendar/(.*)?$', dataviz.d3_views.viz_calendar, name='viz_calendar'),
     re_path(r'^_administration/viz/draggable/(.*)?$', dataviz.d3_views.viz_draggable, name='viz_draggable'),
     re_path(r'^_administration/viz/scatterplot/(.*)?$', dataviz.d3_views.viz_scatterplot, name='viz_scatterplot'),
+
+    # Notify Funder Modal
+    path(
+        'actions/bounty/<str:bounty_network>/<int:stdbounties_id>/notify/funder/',
+        dashboard.views.funder_payout_reminder,
+        name='notify-funder'
+    ),
 
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
