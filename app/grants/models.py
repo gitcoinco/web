@@ -106,6 +106,12 @@ class Grant(SuperModel):
         max_digits=50,
         help_text=_('The monthly contribution goal amount for the Grant in DAI.'),
     )
+    monthly_amount_subscribed = models.DecimalField(
+        default=0,
+        decimal_places=4,
+        max_digits=50,
+        help_text=_('The monthly subscribed to by contributors USDT/DAI.'),
+    )
     amount_received = models.DecimalField(
         default=0,
         decimal_places=4,
@@ -406,13 +412,13 @@ class Subscription(SuperModel):
                 error_reason = "insufficient_allowance"
 
             debug_info = f"""
-error_reason: {error_reason}
-==============================
-decimals: {decimals}
-balance: {balance}
-allowance: {allowance}
-amount_per_period: {self.amount_per_period}
-"""
+                error_reason: {error_reason}
+                ==============================
+                decimals: {decimals}
+                balance: {balance}
+                allowance: {allowance}
+                amount_per_period: {self.amount_per_period}
+                """
         except Exception as e:
             return str(e)
         return debug_info
@@ -589,6 +595,8 @@ amount_per_period: {self.amount_per_period}
             )
         except ConversionRateNotFoundError as e:
             logger.info(e)
+
+        if self.num_tx_approved
 
         grant.save()
         successful_contribution(self.grant, self, contribution)

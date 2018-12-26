@@ -33,6 +33,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
+from economy.utils import ConversionRateNotFoundError, convert_amount
 from app.utils import get_profile
 from dashboard.models import Profile
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
@@ -319,6 +320,31 @@ def grant_fund(request, grant_id, grant_slug):
         subscription.contributor_profile = profile
         subscription.grant = grant
         subscription.save()
+        try:
+            converted_amount =
+                float(convert_amount(
+                    request.POST.get('amount_per_period', 0),
+                    request.POST.get('token_symbol', ''),
+                    "USDT")
+                )
+
+            if request.POST.get('frequency_unit', 'days') == 'days':
+                period_seconds == 86400 * request.POST.get('frequency', 30)
+            elif request.POST.get('frequency_unit', 'days') == 'hours':
+                period_seconds == 3600 * request.POST.get('frequency', 30)
+            elif request.POST.get('frequency_unit', 'days') == 'minutes':
+                period_seconds == 60 * request.POST.get('frequency', 30)
+            elif request.POST.get('frequency_unit', 'days') == 'months':
+                period_seconds == 2592000 * request.POST.get('frequency', 30)
+
+            grant.monthly_amount_subscribed =
+                grant.monthly_amount_subscribed +
+                (converted_amount * (2592000 / period_seconds))
+
+        except ConversionRateNotFoundError as e:
+            logger.info(e)
+
+        grant.save()
         new_supporter(grant, subscription)
         thank_you_for_supporting(grant, subscription)
         return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
@@ -371,6 +397,32 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
         subscription.cancel_tx_id = request.POST.get('sub_cancel_tx_id', '')
         subscription.active = False
         subscription.save()
+        try:
+            converted_amount =
+                float(convert_amount(
+                    subscription.amount_per_period,
+                    subscription.token_symbol,
+                    "USDT")
+                )
+
+            if subscription.frequency_unit == 'days':
+                period_seconds == 86400 * subscription.frequency
+            elif subscription.frequency_unit == 'hours':
+                period_seconds == 3600 * subscription.frequency
+            elif subscription.frequency_unit == 'minutes':
+                period_seconds == 60 * subscription.frequency
+            elif subscription.frequency_unit == 'months':
+                period_seconds == 2592000 * subscription.frequency
+
+            grant.monthly_amount_subscribed =
+                grant.monthly_amount_subscribed - 
+                (converted_amount * (2592000 / period_seconds))
+
+        except ConversionRateNotFoundError as e:
+            logger.info(e)
+
+        grant.save()
+        grant.monthly_amount_subscribed = grant.monthly_amount_subscribed - subscription.amount_per_period
         support_cancellation(grant, subscription)
         messages.info(
             request,
