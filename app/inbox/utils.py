@@ -1,5 +1,4 @@
 from inbox.models import Notification
-from django.contrib.auth import get_user_model
 
 
 def send_notification_to_user(from_user, to_user, cta_url, cta_text, msg_html):
