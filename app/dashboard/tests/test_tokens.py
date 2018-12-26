@@ -25,6 +25,8 @@ from dashboard.tokens import addr_to_token, get_tokens
 class DashboardTokensTest(TestCase):
     """Define tests for Dashboard tokens module."""
 
+    fixtures = ['tokens.json']
+
     def test_tokens(self):
         tokens = get_tokens()
         """Test the dashboard tokens variable to ensure it can be read properly."""
