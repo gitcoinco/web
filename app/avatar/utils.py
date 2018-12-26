@@ -127,7 +127,8 @@ def get_avatar_context():
             ], ['7-back', '7-front'], ['8-back', '8-front'], ['9-back', '9-front'], ['None', '10'],
                         ['damos_hair-back', 'damos_hair-front'], ['long_swoosh-back', 'long_swoosh-front'],
                         ['None', 'mohawk'], ['None', 'mohawk_inverted'], ['None', 'spikey'], ['None', 'mickey_hair'],
-                        ['None', 'modernhair_1']
+                        ['None', 'modernhair_1'], ['None', 'modernhair_2'], ['modernhair_3-back', 'modernhair_3-front'],
+                        ['None', 'womenhair']
                         ),
             'paid_options': {},
         }, {
@@ -154,6 +155,7 @@ def get_avatar_context():
                 ['Extras-reindeer'], ['Masks-gitcoinbot'],
                 ['Extras-tattoo'], ['Masks-batman_inspired'], ['Masks-eye-patch'],
                 ['Masks-flash_inspired'], ['Masks-deadpool_inspired'], ['Masks-darth_inspired'],
+                ['Masks-spiderman_inspired'],
             ),
             'paid_options': {
                 'Extras-Parrot': 0.01,
