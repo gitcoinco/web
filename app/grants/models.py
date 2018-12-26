@@ -609,28 +609,31 @@ class Subscription(SuperModel):
             logger.info(e)
 
         if self.num_tx_processed == self.num_tx_approved:
-            converted_amount =
-                float(convert_amount(
-                    subscription.amount_per_period,
-                    subscription.token_symbol,
-                    "USDT")
+            try:
+                converted_amount = (
+                    float(convert_amount(
+                        self.amount_per_period,
+                        self.token_symbol,
+                        "USDT")
+                    )
                 )
 
-            if subscription.frequency_unit == 'days':
-                period_seconds == 86400 * subscription.frequency
-            elif subscription.frequency_unit == 'hours':
-                period_seconds == 3600 * subscription.frequency
-            elif subscription.frequency_unit == 'minutes':
-                period_seconds == 60 * subscription.frequency
-            elif subscription.frequency_unit == 'months':
-                period_seconds == 2592000 * subscription.frequency
+                if self.frequency_unit == 'days':
+                    period_seconds == 86400 * self.frequency
+                elif self.frequency_unit == 'hours':
+                    period_seconds == 3600 * self.frequency
+                elif self.frequency_unit == 'minutes':
+                    period_seconds == 60 * self.frequency
+                elif self.frequency_unit == 'months':
+                    period_seconds == 2592000 * self.frequency
 
-            grant.monthly_amount_subscribed =
-                grant.monthly_amount_subscribed -
-                (converted_amount * (2592000 / period_seconds))
+                grant.monthly_amount_subscribed = (
+                    grant.monthly_amount_subscribed -
+                    (converted_amount * (2592000 / period_seconds))
+                )
 
-        except ConversionRateNotFoundError as e:
-            logger.info(e)
+            except ConversionRateNotFoundError as e:
+                logger.info(e)
 
         grant.save()
         successful_contribution(self.grant, self, contribution)
