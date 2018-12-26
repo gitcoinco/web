@@ -124,7 +124,8 @@
   <div class="contentOverall">
       <h1>{% trans "Your weekly bounties recap" %}</h1>
       <div class="bold">{% trans "Hi" %} {{profile.handle}},</div>
-      <div>{% trans "here are the latest activities on your bounties: " %}({{ select_params.to }} - {{ select_params.from }})</div>
+      <div>{% trans "here are the latest activities on your bounties: " %}</div>
+      <div>({{ select_params.to }} - {{ select_params.from }})</div>
     
       {% for section in sections %}
         <div class="{{section.header_css}} header leftAlign">
@@ -137,16 +138,16 @@
               <div class="col-sm-2 middlecenter-2">
                   <img src={{itm.bounty_image_url}} alt={{itm.bounty_name}} class="imgGitcoinStyle"> {{ itm.bounty_action_user }}
               </div>
-              <div class="col-sm-4 middlecenter">
-                <span>
-                  {{ itm.bounty_name }}
-                </span>
-              </div>
-              <div class="col-sm-2 middlecenter timeCol">
-                {{ itm.bounty_action_date }}
+              <div class="col-sm-6">
+                <div class="row leftAlign">
+                  <div class="col-12">
+                    {{ itm.bounty_name }}
+                  </div>
+                  <div class="timeCol col-12">{{ itm.bounty_action_date }}</div>
+                </div>
               </div>
               <div class="col-sm-2 middlecenter">
-                <a href={{itm.bounty_link}}>{% trans "View bounty" %}</a>
+                <a href={{itm.bounty_link}}>{% if section.header_name != "Worker applied" and section.header_name != "Work got submitted" %}{% trans "View bounty" %}{% else %}{% trans "Review" %}{% endif %}</a>
               </div>
             </div>
           {% endfor %}

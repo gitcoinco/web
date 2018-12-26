@@ -438,6 +438,7 @@ def render_weekly_recap(to_email, from_date = date.today(), days_back=7):
     from dashboard.models import Bounty
     prof = Profile.objects.filter(email__iexact=to_email).last()
     bounties = prof.bounties.all()
+    from_date = from_date + timedelta(days=1)
     to_date = from_date - timedelta(days=days_back)
     
     activity_types = {}
@@ -450,7 +451,24 @@ def render_weekly_recap(to_email, from_date = date.today(), days_back=7):
       "stop_work": {
         "css-class": "status-cancelled",
         "text": "Work stopped"
-      }
+      },
+      "worker_approved": {
+        "css-class": "status-open",
+        "text": "Worker got approved"
+      },
+      "worker_applied": {
+        "css-class": "status-submitted",
+        "text": "Worker applied"
+      },
+      "new_bounty": {
+        "css-class": "status-open",
+        "text": "New created bounties"
+      },
+      "work_submitted": {
+        "css-class": "status-submitted",
+        "text": "Work got submitted"
+      },
+      
     }
     
     
@@ -496,9 +514,9 @@ def render_weekly_recap(to_email, from_date = date.today(), days_back=7):
           'from': from_date,
           'to': to_date
           
-        }
+        },
+        'debug': activity_types
     }
-
     response_html = premailer_transform(render_to_string("emails/recap/weekly_founder_recap.html", params))
     response_txt = render_to_string("emails/recap/weekly_founder_recap.txt", params)
 
