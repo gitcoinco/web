@@ -611,7 +611,7 @@ class Subscription(SuperModel):
         if self.num_tx_processed == self.num_tx_approved:
             try:
                 converted_amount = (
-                    float(convert_amount(
+                    int(convert_amount(
                         self.amount_per_period,
                         self.token_symbol,
                         "USDT")
@@ -629,7 +629,7 @@ class Subscription(SuperModel):
 
                 grant.monthly_amount_subscribed = (
                     grant.monthly_amount_subscribed -
-                    (converted_amount * (2592000 / period_seconds))
+                    int((converted_amount) * (int(2592000) / int(period_seconds)))
                 )
 
             except ConversionRateNotFoundError as e:

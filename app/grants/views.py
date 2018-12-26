@@ -327,7 +327,7 @@ def grant_fund(request, grant_id, grant_slug):
         subscription.save()
         try:
             converted_amount = (
-                float(convert_amount(
+                int(convert_amount(
                     request.POST.get('amount_per_period', 0),
                     request.POST.get('token_symbol', ''),
                     "USDT")
@@ -336,16 +336,21 @@ def grant_fund(request, grant_id, grant_slug):
 
             if request.POST.get('frequency_unit', 'days') == 'days':
                 period_seconds = 86400 * request.POST.get('frequency', 30)
+                print('1', period_seconds)
             elif request.POST.get('frequency_unit', 'days') == 'hours':
                 period_seconds = 3600 * request.POST.get('frequency', 30)
+                print('2', period_seconds)
+
             elif request.POST.get('frequency_unit', 'days') == 'minutes':
                 period_seconds = 60 * request.POST.get('frequency', 30)
+                print('3', period_seconds)
             elif request.POST.get('frequency_unit', 'days') == 'months':
                 period_seconds = 2592000 * request.POST.get('frequency', 30)
+                print('4', period_seconds)
 
             grant.monthly_amount_subscribed = (
                 grant.monthly_amount_subscribed +
-                (converted_amount * (2592000 / period_seconds))
+                int(converted_amount * (int(2592000) / int(period_seconds)))
             )
 
         except ConversionRateNotFoundError as e:
@@ -406,7 +411,7 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
         subscription.save()
         try:
             converted_amount = (
-                float(convert_amount(
+                int(convert_amount(
                     subscription.amount_per_period,
                     subscription.token_symbol,
                     "USDT")
@@ -424,7 +429,7 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
 
             grant.monthly_amount_subscribed = (
                 grant.monthly_amount_subscribed -
-                (converted_amount * (2592000 / period_seconds))
+                int(converted_amount * (int(2592000) / int(period_seconds)))
             )
 
         except ConversionRateNotFoundError as e:
