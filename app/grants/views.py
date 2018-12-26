@@ -335,13 +335,13 @@ def grant_fund(request, grant_id, grant_slug):
             )
 
             if request.POST.get('frequency_unit', 'days') == 'days':
-                period_seconds == 86400 * request.POST.get('frequency', 30)
+                period_seconds = 86400 * request.POST.get('frequency', 30)
             elif request.POST.get('frequency_unit', 'days') == 'hours':
-                period_seconds == 3600 * request.POST.get('frequency', 30)
+                period_seconds = 3600 * request.POST.get('frequency', 30)
             elif request.POST.get('frequency_unit', 'days') == 'minutes':
-                period_seconds == 60 * request.POST.get('frequency', 30)
+                period_seconds = 60 * request.POST.get('frequency', 30)
             elif request.POST.get('frequency_unit', 'days') == 'months':
-                period_seconds == 2592000 * request.POST.get('frequency', 30)
+                period_seconds = 2592000 * request.POST.get('frequency', 30)
 
             grant.monthly_amount_subscribed = (
                 grant.monthly_amount_subscribed +
@@ -414,13 +414,13 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
             )
 
             if subscription.frequency_unit == 'days':
-                period_seconds == 86400 * subscription.frequency
+                period_seconds = 86400 * subscription.frequency
             elif subscription.frequency_unit == 'hours':
-                period_seconds == 3600 * subscription.frequency
+                period_seconds = 3600 * subscription.frequency
             elif subscription.frequency_unit == 'minutes':
-                period_seconds == 60 * subscription.frequency
+                period_seconds = 60 * subscription.frequency
             elif subscription.frequency_unit == 'months':
-                period_seconds == 2592000 * subscription.frequency
+                period_seconds = 2592000 * subscription.frequency
 
             grant.monthly_amount_subscribed = (
                 grant.monthly_amount_subscribed -

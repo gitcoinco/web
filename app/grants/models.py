@@ -619,13 +619,13 @@ class Subscription(SuperModel):
                 )
 
                 if self.frequency_unit == 'days':
-                    period_seconds == 86400 * self.frequency
+                    period_seconds = 86400 * self.frequency
                 elif self.frequency_unit == 'hours':
-                    period_seconds == 3600 * self.frequency
+                    period_seconds = 3600 * self.frequency
                 elif self.frequency_unit == 'minutes':
-                    period_seconds == 60 * self.frequency
+                    period_seconds = 60 * self.frequency
                 elif self.frequency_unit == 'months':
-                    period_seconds == 2592000 * self.frequency
+                    period_seconds = 2592000 * self.frequency
 
                 grant.monthly_amount_subscribed = (
                     grant.monthly_amount_subscribed -
