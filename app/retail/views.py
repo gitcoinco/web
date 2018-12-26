@@ -437,20 +437,6 @@ def vision(request):
     return TemplateResponse(request, 'vision.html', context)
 
 
-def products(request):
-    """Render the Products response."""
-    context = {
-        'is_outside': True,
-        'active': 'products',
-        'title': 'Products',
-        'card_title': _("Gitcoin's Products."),
-        'card_desc': _('At Gitcoin, we build products that allow for better incentivized collaboration \
-                        in the realm of open source software'),
-        'avatar_url': static('v2/images/grow_open_source.png'),
-    }
-    return TemplateResponse(request, 'products.html', context)
-
-
 def not_a_token(request):
     """Render the not_a_token response."""
     context = {

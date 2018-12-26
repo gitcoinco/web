@@ -414,53 +414,6 @@ def extend_expiration(request, bounty_id):
     }, status=200)
 
 
-@csrf_exempt
-@require_POST
-def cancel_reason(request):
-    """Extend expiration of the Bounty.
-
-    Can only be called by funder or staff of the bounty.
-
-    :request method: POST
-
-    Params:
-        pk (int): ID of the Bounty.
-        canceled_bounty_reason (string): STRING with cancel  reason
-
-    Returns:
-        dict: The success key with a boolean value and accompanying error.
-
-    """
-    print(request.POST.get('canceled_bounty_reason'))
-    user = request.user if request.user.is_authenticated else None
-
-    if not user:
-        return JsonResponse(
-            {'error': _('You must be authenticated via github to use this feature!')},
-            status=401)
-
-    try:
-        bounty = Bounty.objects.get(pk=request.POST.get('pk'))
-    except Bounty.DoesNotExist:
-        return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
-                            status=401)
-
-    is_funder = bounty.is_funder(user.username.lower()) if user else False
-    if is_funder:
-        canceled_bounty_reason = request.POST.get('canceled_bounty_reason')
-        bounty.canceled_bounty_reason = canceled_bounty_reason
-        bounty.save()
-
-        return JsonResponse({
-            'success': True,
-            'msg': _("Cancel reason added."),
-        })
-
-    return JsonResponse({
-        'error': _("You must be funder to add a reason"),
-    }, status=200)
-
-
 @require_POST
 @csrf_exempt
 def uninterested(request, bounty_id, profile_id):
