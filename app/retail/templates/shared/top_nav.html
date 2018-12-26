@@ -17,12 +17,12 @@
 {% endcomment %}
 {% load i18n static matches %}
 <div class="top-nav g-font-muli {{class}}">
-  <a class="link d-md-block d-none" href="{% url 'mission' %}">Grow Open Source</a>
+  <a class="link d-md-block d-none" href="{% url 'products' %}">Grow Open Source</a>
   <a class="{% if request.path == '/' %}selected{% endif %}" href="/">
     <img src="{% static "v2/images/top-bar/gitcoin-logo.svg" %}" height="22" alt="" class="d-md-block d-none" style="margin-bottom: 5px;">
     <img src="{% static "v2/images/top-bar/gitcoin-symbol.svg" %}" height="22" alt="" class="d-md-none">
   </a>
-  <a class="{% if request.path|matches:'^\/((codefund.*))$' %}selected{% endif %}" href="https://codefund.io/">
+  <a class="{% if request.path|matches:'^\/((codefund.*))$' %}selected{% endif %}" href="https://codefund.app/">
     <img src="{% static "v2/images/top-bar/codefund-logo.svg" %}" height="20" alt="" class="d-md-block d-none">
     <img src="{% static "v2/images/top-bar/codefund-symbol.svg" %}" height="20" alt="" class="d-md-none">
   </a>
