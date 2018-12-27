@@ -23,7 +23,7 @@ import json
 from django.contrib.auth.decorators import login_required
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.paginator import Paginator
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
@@ -61,7 +61,6 @@ def notifications(request):
 @csrf_exempt
 def delete_notifications(request):
     """For deleting a notification."""
-    params = {'success': []}
     try:
         req_body = json.loads(request.body.decode('utf-8'))
     except:
@@ -72,12 +71,9 @@ def delete_notifications(request):
                 obj = Notification.objects.get(id=i)
                 if obj.to_user.id == request.user.id:
                     obj.delete()
-                    params['success'].append(True)
-                else:
-                    params['success'].append(False)
             except Notification.DoesNotExist:
-                params['success'].append(False)
-    return JsonResponse(params, status=200)
+                pass
+    return HttpResponse(status=204)
 
 
 @login_required
@@ -85,7 +81,6 @@ def delete_notifications(request):
 @csrf_exempt
 def unread_notifications(request):
     """Mark a notification as unread."""
-    params = {'success': []}
     try:
         req_body = json.loads(request.body.decode('utf-8'))
     except:
@@ -97,12 +92,9 @@ def unread_notifications(request):
                 if obj.to_user.id == request.user.id:
                     obj.is_read = False
                     obj.save()
-                    params['success'].append(True)
-                else:
-                    params['success'].append(False)
             except Notification.DoesNotExist:
-                params['success'].append(False)
-    return JsonResponse(params, status=200)
+                pass
+    return HttpResponse(status=204)
 
 
 @login_required
@@ -110,7 +102,6 @@ def unread_notifications(request):
 @csrf_exempt
 def read_notifications(request):
     """Mark a notification as read."""
-    params = {'success': []}
     try:
         req_body = json.loads(request.body.decode('utf-8'))
     except:
@@ -122,12 +113,9 @@ def read_notifications(request):
                 if obj.to_user.id == request.user.id:
                     obj.is_read = True
                     obj.save()
-                    params['success'].append(True)
-                else:
-                    params['success'].append(False)
             except Notification.DoesNotExist:
-                params['success'].append(False)
-    return JsonResponse(params, status=200)
+                pass
+    return HttpResponse(status=204)
 
 
 def inbox(request):
