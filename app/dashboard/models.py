@@ -1395,6 +1395,12 @@ class InterestQuerySet(models.QuerySet):
         """Filter results to Interest objects that are currently in warning."""
         return self.filter(status=Interest.STATUS_WARNED)
 
+    def active(self):
+        return self.exclude(status__in=Interest.INACTIVE_STATUSES)
+
+    def inactive(self):
+        return self.filter(status__in=Interest.INACTIVE_STATUSES)
+
 
 class Interest(models.Model):
     """Define relationship for profiles expressing interest on a bounty."""
@@ -1404,6 +1410,11 @@ class Interest(models.Model):
     STATUS_OKAY = 'okay'
     STATUS_SNOOZED = 'snoozed'
     STATUS_PENDING = 'pending'
+    STATUS_BOUNTY_CANCELED = 'BC'
+    STATUS_STOPPED_BY_USER = 'SBU'
+    STATUS_STOPPED_BY_FUNDER = 'SBF'
+    STATUS_STOPPED_BY_STAFF = 'SBS'
+    STATUS_APPROVAL_REJECTED = 'AR'
 
     WORK_STATUSES = (
         (STATUS_REVIEW, 'Needs Review'),
@@ -1411,11 +1422,22 @@ class Interest(models.Model):
         (STATUS_OKAY, 'Okay'),
         (STATUS_SNOOZED, 'Snoozed'),
         (STATUS_PENDING, 'Pending'),
+        (STATUS_STOPPED_BY_USER, 'Stopped By User'),
+        (STATUS_STOPPED_BY_FUNDER, 'Stopped By Funder'),
+        (STATUS_STOPPED_BY_STAFF, 'Stopped By Staff'),
+        (STATUS_BOUNTY_CANCELED, 'Bounty Canceled'),
+        (STATUS_APPROVAL_REJECTED, 'Approval Rejected'),
     )
+
+    INACTIVE_STATUSES = [
+        STATUS_BOUNTY_CANCELED, STATUS_STOPPED_BY_USER, STATUS_STOPPED_BY_FUNDER, STATUS_STOPPED_BY_STAFF,
+        STATUS_APPROVAL_REJECTED,
+    ]
 
     profile = models.ForeignKey('dashboard.Profile', related_name='interested', on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True, verbose_name=_('Date Created'))
     issue_message = models.TextField(default='', blank=True, verbose_name=_('Issue Comment'))
+    completion_message = models.TextField(default='', blank=True, verbose_name=_('Worker Completion Message'))
     pending = models.BooleanField(
         default=False,
         help_text=_('If this option is chosen, this interest is pending and not yet active'),
@@ -1426,8 +1448,8 @@ class Interest(models.Model):
         choices=WORK_STATUSES,
         default=STATUS_OKAY,
         max_length=7,
-        help_text=_('Whether or not the interest requires review'),
-        verbose_name=_('Needs Review'))
+        help_text=_('The current status of the interest'),
+        verbose_name=_('Status'))
 
     # Interest QuerySet Manager
     objects = InterestQuerySet.as_manager()

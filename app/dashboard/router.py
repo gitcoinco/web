@@ -47,7 +47,9 @@ class InterestSerializer(serializers.ModelSerializer):
         """Define the Interest serializer metadata."""
 
         model = Interest
-        fields = ('profile', 'created', 'pending')
+        fields = (
+            'profile', 'created', 'pending', 'status', 'issue_message', 'completion_message', 'acceptance_date',
+        )
 
 
 class ActivitySerializer(serializers.ModelSerializer):

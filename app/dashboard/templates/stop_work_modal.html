@@ -19,12 +19,12 @@
 
 <div id="extend_deadline" class="white-light-bg">
 <style>
-input[type=radio]:checked ~ label ~ textarea {
+  input[type=radio]:checked ~ label ~ textarea {
     display: block;
-}
-textarea {
+  }
+  textarea {
     display: none;
-}
+  }
 </style>
   <div class="row">
     <div class="col-12 closebtn">
@@ -40,6 +40,7 @@ textarea {
         <p class="font-body mb-0">{% trans "You are going to stop working on this bounty." %}</p>
         <p>{% trans "If you have a moment, please let us know why you stopped work." %}</p>
         <form id="cancelBounty" method="POST" action="issue/cancel_reason/" class="font-body">
+          {% csrf_token %}
           <div class="options mb-3">
             <div class="form__radio option">
               <input name="reason_cancel" id="reason_1" type="radio" value="1- No response from funder" />
@@ -79,7 +80,7 @@ textarea {
             <div class="form__radio option">
               <input name="reason_cancel" id="reason_other" type="radio" value="other" />
               <label class="filter-label" for=reason_other>{% trans "Others (Please tell us more)" %}</label>
-              <textarea class="form__input" name="reason_cancel" id="reason_text" cols="10" rows="4" placeholder="What made you stop work?"></textarea>
+              <textarea class="form__input" name="reason_cancel" id="reason_text" cols="10" rows="4" placeholder="{% trans 'What made you stop work?' %}"></textarea>
             </div>
           </div>
 
@@ -94,7 +95,7 @@ textarea {
           <div class="login__text">
             {% trans "Please login with Github to get started." %}
           </div>
-          <a class="button button--primary login__button" href={{login_link}} onclick="dataLayer.push({'event': 'login'});">
+          <a class="button button--primary login__button" href="{{ login_link }}" onclick="dataLayer.push({'event': 'login'});">
             <i class="fab fa-github"></i> <span>{% trans "Login With Github" %}</span>
           </a>
         </div>

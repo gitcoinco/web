@@ -302,7 +302,7 @@ def new_interest(request, bounty_id):
 @csrf_exempt
 @require_POST
 def remove_interest(request, bounty_id):
-    """Unclaim work from the Bounty.
+    """Stop work on the Bounty.
 
     Can only be called by someone who has started work
 
@@ -316,6 +316,7 @@ def remove_interest(request, bounty_id):
     """
     profile_id = request.user.profile.pk if request.user.is_authenticated and getattr(request.user, 'profile', None) else None
 
+    completion_message = request.GET.get('message', '')
     access_token = request.GET.get('token')
     if access_token:
         helper_handle_access_token(request, access_token)
@@ -335,11 +336,12 @@ def remove_interest(request, bounty_id):
                             status=401)
 
     try:
-        interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
+        interest = Interest.objects.active().get(profile_id=profile_id, bounty=bounty)
         record_user_action(request.user, 'stop_work', interest)
         record_bounty_activity(bounty, request.user, 'stop_work')
-        bounty.interested.remove(interest)
-        interest.delete()
+        interest.status = Interest.STATUS_STOPPED_BY_USER
+        interest.completion_message = completion_message
+        interest.save()
         maybe_market_to_slack(bounty, 'stop_work')
         maybe_market_to_user_slack(bounty, 'stop_work')
         maybe_market_to_user_discord(bounty, 'stop_work')
@@ -353,12 +355,16 @@ def remove_interest(request, bounty_id):
         interest_ids = bounty.interested \
             .filter(
                 profile_id=profile_id,
-                bounty=bounty
-            ).values_list('id', flat=True) \
+                bounty=bounty,
+            ).exclude(status__in=Interest.INACTIVE_STATUSES) \
+            .values_list('id', flat=True) \
             .order_by('-created')
 
-        bounty.interested.remove(*interest_ids)
-        Interest.objects.filter(pk__in=list(interest_ids)).delete()
+        Interest.objects.filter(pk__in=list(interest_ids)) \
+            .update(
+                status=Interest.STATUS_STOPPED_BY_USER,
+                completion_message=completion_message,
+            )
 
     return JsonResponse({
         'success': True,
@@ -414,10 +420,10 @@ def extend_expiration(request, bounty_id):
     }, status=200)
 
 
-@csrf_exempt
+# @csrf_exempt
 @require_POST
 def cancel_reason(request):
-    """Extend expiration of the Bounty.
+    """Cancel a Bounty.
 
     Can only be called by funder or staff of the bounty.
 
@@ -425,14 +431,15 @@ def cancel_reason(request):
 
     Params:
         pk (int): ID of the Bounty.
-        canceled_bounty_reason (string): STRING with cancel  reason
+        canceled_bounty_reason (string): The reason for the cancellation.
 
     Returns:
         dict: The success key with a boolean value and accompanying error.
 
     """
-    print(request.POST.get('canceled_bounty_reason'))
     user = request.user if request.user.is_authenticated else None
+    reason = request.POST.get('canceled_bounty_reason', '')
+    print(request.POST.get('canceled_bounty_reason'))
 
     if not user:
         return JsonResponse(
@@ -442,13 +449,18 @@ def cancel_reason(request):
     try:
         bounty = Bounty.objects.get(pk=request.POST.get('pk'))
     except Bounty.DoesNotExist:
-        return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
-                            status=401)
+        return JsonResponse({'errors': ['Bounty doesn\'t exist!']}, status=401)
 
-    is_funder = bounty.is_funder(user.username.lower()) if user else False
+    is_funder = bounty.is_funder(user.username.lower())
     if is_funder:
-        canceled_bounty_reason = request.POST.get('canceled_bounty_reason')
+        canceled_bounty_reason = reason
         bounty.canceled_bounty_reason = canceled_bounty_reason
+        bounty.interested.exclude(
+            status__in=Interest.INACTIVE_STATUSES
+        ).update(
+            status=Interest.STATUS_BOUNTY_CANCELED,
+            completion_message=canceled_bounty_reason,
+        )
         bounty.save()
 
         return JsonResponse({
@@ -464,7 +476,7 @@ def cancel_reason(request):
 @require_POST
 @csrf_exempt
 def uninterested(request, bounty_id, profile_id):
-    """Remove party from given bounty
+    """Remove party from given bounty.
 
     Can only be called by the bounty funder
 
@@ -479,6 +491,7 @@ def uninterested(request, bounty_id, profile_id):
 
     Returns:
         dict: The success key with a boolean value and accompanying error.
+
     """
     try:
         bounty = Bounty.objects.get(pk=bounty_id)
@@ -496,18 +509,21 @@ def uninterested(request, bounty_id, profile_id):
 
     slashed = request.POST.get('slashed')
     try:
-        interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
-        bounty.interested.remove(interest)
+        interest = Interest.objects.active().get(profile_id=profile_id, bounty=bounty)
         maybe_market_to_slack(bounty, 'stop_work')
         maybe_market_to_user_slack(bounty, 'stop_work')
         maybe_market_to_user_discord(bounty, 'stop_work')
         if is_staff or is_moderator:
             event_name = "bounty_removed_slashed_by_staff" if slashed else "bounty_removed_by_staff"
+            status = Interest.STATUS_STOPPED_BY_STAFF
         else:
             event_name = "bounty_removed_by_funder"
+            status = Interest.STATUS_STOPPED_BY_FUNDER
+
+        interest.status = status
+        interest.save()
         record_user_action_on_interest(interest, event_name, None)
         record_bounty_activity(bounty, interest.profile.user, 'stop_work')
-        interest.delete()
     except Interest.DoesNotExist:
         return JsonResponse({
             'errors': ['Party haven\'t expressed interest on this bounty.'],
@@ -517,12 +533,12 @@ def uninterested(request, bounty_id, profile_id):
         interest_ids = bounty.interested \
             .filter(
                 profile_id=profile_id,
-                bounty=bounty
-            ).values_list('id', flat=True) \
+                bounty=bounty,
+            ) \
+            .exclude(status__in=Interest.INACTIVE_STATUSES) \
+            .values_list('id', flat=True) \
             .order_by('-created')
-
-        bounty.interested.remove(*interest_ids)
-        Interest.objects.filter(pk__in=list(interest_ids)).delete()
+        Interest.objects.filter(pk__in=list(interest_ids)).update(status=status)
 
     profile = Profile.objects.get(id=profile_id)
     if profile.user and profile.user.email and interest:
@@ -953,7 +969,10 @@ def helper_handle_approvals(request, bounty):
         is_funder = bounty.is_funder(request.user.username.lower())
         is_staff = request.user.is_staff
         if is_funder or is_staff:
-            pending_interests = bounty.interested.select_related('profile').filter(profile__handle=worker, pending=True)
+            pending_interests = bounty.interested.select_related('profile').filter(
+                profile__handle=worker,
+                pending=True
+            ).exclude(status__in=Interest.INACTIVE_STATUSES)
             # Check whether or not there are pending interests.
             if not pending_interests.exists():
                 messages.warning(
@@ -978,8 +997,8 @@ def helper_handle_approvals(request, bounty):
                 start_work_rejected(interest, bounty)
 
                 record_bounty_activity(bounty, request.user, 'worker_rejected', interest)
-                bounty.interested.remove(interest)
-                interest.delete()
+                interest.status = Interest.STATUS_APPROVAL_REJECTED
+                interest.save()
 
                 maybe_market_to_slack(bounty, 'worker_rejected')
                 maybe_market_to_user_slack(bounty, 'worker_rejected')
@@ -990,6 +1009,7 @@ def helper_handle_approvals(request, bounty):
             messages.warning(request, _('Only the funder of this bounty may perform this action.'))
 
 
+@csrf_exempt
 def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None):
     """Display the bounty details.
 
@@ -1051,7 +1071,9 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 params['bounty_pk'] = bounty.pk
                 params['network'] = bounty.network
                 params['stdbounties_id'] = bounty.standard_bounties_id if not stdbounties_id else stdbounties_id
-                params['interested_profiles'] = bounty.interested.select_related('profile').all()
+                params['interested_profiles'] = bounty.interested.select_related('profile').exclude(
+                    status__in=Interest.INACTIVE_STATUSES,
+                )
                 params['avatar_url'] = bounty.get_avatar_url(True)
 
                 helper_handle_snooze(request, bounty)
@@ -1302,11 +1324,19 @@ def extend_issue_deadline(request):
 
 
 @csrf_exempt
+@require_GET
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def stop_work_modal(request):
     """Show cancel reason modal."""
-    bounty = Bounty.objects.get(pk=request.GET.get("pk"))
-    print(bounty)
+    bounty_id = request.GET.get('pk', '')
+    if not bounty_id or (bounty_id and not bounty_id.isdigit()):
+        raise Http404
+
+    try:
+        bounty = Bounty.objects.get(pk=bounty_id)
+    except Bounty.DoesNotExist:
+        raise Http404
+
     context = {
         'active': 'stop_work_modal',
         'title': _('Cancel Bounty'),
