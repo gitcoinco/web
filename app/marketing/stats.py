@@ -276,6 +276,7 @@ def bounties():
 
 
 def grants():
+    """Creates a stats entry for 'grants', which stores the total value of all grant contributions in the system to date"""
     from grants.models import Contribution
     val = 0
     for contrib in Contribution.objects.filter(subscription__grant__network='mainnet'):
