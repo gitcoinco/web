@@ -274,6 +274,7 @@ def bounties():
         val=(Bounty.objects.current().filter(network='mainnet').count()),
         )
 
+
 def grants():
     from grants.models import Contribution
     val = 0
