@@ -247,7 +247,7 @@
                         <img src="{{ team_member.avatar_url }}">
                       </div>
                       <div class="grant-item__member-handle mt-1">
-                        <span id="grant-profile">{{ team_member }}</span>
+                        <span class="grant-profile">{{ team_member }}</span>
                       </div>
                     </div>
                   </a>
@@ -263,7 +263,7 @@
                 <a class="grant__stakeholders-item mr-2" href="{% url 'profile' subscriber.contributor_profile.handle %}">
                   <img src="{{ subscriber.contributor_profile.avatar_url }}" />
                   <div>
-                    <span id="grant-profile">{{ subscriber.contributor_profile.handle }}</span>
+                    <span class="grant-profile">{{ subscriber.contributor_profile.handle }}</span>
                   </div>
                 </a>
               {% empty %}
