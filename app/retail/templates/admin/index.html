@@ -1,22 +1,20 @@
 {% extends "admin/base_site.html" %}
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+  Copyright (C) 2018 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
-
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-
 {% load i18n static %}
 
 {% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
@@ -29,7 +27,6 @@
 
 {% block content %}
 <div id="content-main">
-
 {% if app_list %}
     {% for app in app_list %}
         <div class="app-{{ app.app_label }} module">
@@ -68,21 +65,20 @@
 {% endblock %}
 
 {% block sidebar %}
-
 <div id="content-related">
     <div class="module" id="-some-custom-links">
         <h2>{% trans 'Analytics' %}</h2>
         <ul>
-            <a href="{% url 'stats' %}">KPI Dashboard</a>
+            <a href="{% url 'admin_urls:stats' %}">{% trans "KPI Dashboard" %}</a>
         </ul>
         <ul>
-            <a href="{% url 'cohort' %}">Cohort Analysis</a>
+            <a href="{% url 'admin_urls:cohort' %}">{% trans "Cohort Analysis" %}</a>
         </ul>
         <ul>
-            <a href="{% url 'funnel' %}">Funnel Analysis</a>
+            <a href="{% url 'admin_urls:funnel' %}">{% trans "Funnel Analysis" %}</a>
         </ul>
         <ul>
-            <a href="{% url 'viz_index' %}">Analytics Playground</a>
+            <a href="{% url 'admin_urls:viz_index' %}">{% trans "Analytics Playground" %}</a>
         </ul>
         <h2>{% trans 'Debugging Tasks' %}</h2>
 
@@ -93,20 +89,18 @@
         <h2>{% trans 'Administrative Tasks' %}</h2>
 
         <ul>
-            <a href="/_administrationfaucet/faucetrequest/">Process Faucet Requests</a>
+            <a href="/_administration/faucet/faucetrequest/">{% trans "Process Faucet Requests" %}</a>
         </ul>
         <ul>
-            <a href="/_administrationexternal_bounties/externalbounty/">Process Universal Bounties</a>
+            <a href="/_administration/external_bounties/externalbounty/">{% trans "Process Universal Bounties" %}</a>
         </ul>
         <ul>
-            <a href="/_administrationtdi/whitepaperaccessrequest/">Process Whitepaper Requests</a>
+            <a href="/_administration/tdi/whitepaperaccessrequest/">{% trans "Process Whitepaper Requests" %}</a>
         </ul>
         <ul>
-            <a href="/_administrationeconomy/token/">Process Token Requests</a>
+            <a href="/_administration/economy/token/">{% trans "Process Token Requests" %}</a>
         </ul>
-
     </div>
-
 
     <div class="module" id="recent-actions-module">
         <h2>{% trans 'Recent Actions' %}</h2>

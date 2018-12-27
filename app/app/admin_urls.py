@@ -17,6 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+from django.conf.urls import include
 from django.contrib import admin
 from django.urls import path, re_path
 
@@ -28,9 +29,6 @@ from tdi.views import process_accesscode_request
 
 app_name = '_administration'
 urlpatterns = [
-    # Standard Views
-    path('', admin.site.urls, name='admin'),
-
     # Email Previews
     path('email/grant_cancellation', retail_emails.grant_cancellation, name='admin_grant_cancellation'),
     path('email/subscription_terminated', retail_emails.subscription_terminated, name='admin_subscription_terminated'),

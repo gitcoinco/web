@@ -1,22 +1,24 @@
-'''
-    Copyright (C) 2018 Gitcoin Core
+# -*- coding: utf-8 -*-
+"""Define the general app endpoints.
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+Copyright (C) 2018 Gitcoin Core
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-'''
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+"""
 from django.conf import settings
-from django.conf.urls import include, url
+from django.conf.urls import include
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
@@ -62,16 +64,20 @@ urlpatterns = [
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
 
     # API Views
-    url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
-    url(r'^api/v0.1/funding/save/?', dashboard.ios.save, name='save'),
-    url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
-    url(r'^api/v0.1/', include(dbrouter.urls)),
-    url(r'^api/v0.1/', include(ebrouter.urls)),
-    url(r'^api/v0.1/', include(kdrouter.urls)),
-    url(r'^api/v0.1/', include(grant_router.urls)),
-    url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active
-    url(r'^api/v0.1/users_search/', dashboard.views.get_users, name='users_search'),
-    url(r'^api/v0.1/kudos_search/', dashboard.views.get_kudos, name='kudos_search'),
+    re_path(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
+    re_path(r'^api/v0.1/funding/save/?', dashboard.ios.save, name='save'),
+    re_path(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
+    re_path(r'^api/v0.1/', include(dbrouter.urls)),
+    re_path(r'^api/v0.1/', include(ebrouter.urls)),
+    re_path(r'^api/v0.1/', include(kdrouter.urls)),
+    re_path(r'^api/v0.1/', include(grant_router.urls)),
+    re_path(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active
+    re_path(r'^api/v0.1/users_search/', dashboard.views.get_users, name='users_search'),
+    re_path(r'^api/v0.1/kudos_search/', dashboard.views.get_kudos, name='kudos_search'),
+
+    # Admin
+    path('_administration/', admin.site.urls, name='admin'),
+    path('_administration/', include('app.admin_urls', namespace='admin_urls')),
 
     # Health check endpoints
     re_path(r'^health/', include('health_check.urls')),
@@ -97,16 +103,16 @@ urlpatterns = [
     # Onboarding Views
     re_path(r'^onboard/(?P<flow>\w+)/$', dashboard.views.onboard, name='onboard'),
     re_path(r'^onboard/contributor/avatar/?$', dashboard.views.onboard_avatar, name='onboard_avatar'),
-    url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
-    url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
+    re_path(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
+    re_path(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
     path('revenue/attestations/new', revenue.views.new_attestation, name='revenue_new_attestation'),
 
     # action URLs
     re_path(r'^bounty/quickstart/?', dashboard.views.quickstart, name='quickstart'),
-    url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
+    re_path(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
     re_path(r'^bounty/change/(?P<bounty_id>.*)?', dashboard.views.change_bounty, name='change_bounty'),
-    url(r'^funding/new/?', dashboard.views.new_bounty, name='new_funding'),
-    url(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),
+    re_path(r'^funding/new/?', dashboard.views.new_bounty, name='new_funding'),
+    re_path(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),
     path('issue/fulfill', dashboard.views.fulfill_bounty, name='fulfill_bounty'),
     path('issue/accept', dashboard.views.accept_bounty, name='process_funding'),
     path('issue/advanced_payout', dashboard.views.bulk_payout_bounty, name='bulk_payout_bounty'),
@@ -133,12 +139,12 @@ urlpatterns = [
     ),
 
     # View Bounty
-    url(
+    re_path(
         r'^issue/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)/(?P<stdbounties_id>.*)',
         dashboard.views.bounty_details,
         name='issue_details_new3'
     ),
-    url(
+    re_path(
         r'^issue/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)',
         dashboard.views.bounty_details,
         name='issue_details_new2'
@@ -146,18 +152,18 @@ urlpatterns = [
     re_path(r'^funding/details/?', dashboard.views.bounty_details, name='funding_details'),
 
     # Tips
-    url(
+    re_path(
         r'^tip/receive/v3/(?P<key>.*)/(?P<txid>.*)/(?P<network>.*)?',
         dashboard.tip_views.receive_tip_v3,
         name='receive_tip'
     ),
-    url(r'^tip/address/(?P<handle>.*)', dashboard.tip_views.tipee_address, name='tipee_address'),
-    url(r'^tip/send/4/?', dashboard.tip_views.send_tip_4, name='send_tip_4'),
-    url(r'^tip/send/3/?', dashboard.tip_views.send_tip_3, name='send_tip_3'),
-    url(r'^tip/send/2/?', dashboard.tip_views.send_tip_2, name='send_tip_2'),
-    url(r'^tip/send/?', dashboard.tip_views.send_tip, name='send_tip'),
-    url(r'^send/?', dashboard.tip_views.send_tip, name='tip'),
-    url(r'^tip/?', dashboard.tip_views.send_tip, name='tip'),
+    re_path(r'^tip/address/(?P<handle>.*)', dashboard.tip_views.tipee_address, name='tipee_address'),
+    re_path(r'^tip/send/4/?', dashboard.tip_views.send_tip_4, name='send_tip_4'),
+    re_path(r'^tip/send/3/?', dashboard.tip_views.send_tip_3, name='send_tip_3'),
+    re_path(r'^tip/send/2/?', dashboard.tip_views.send_tip_2, name='send_tip_2'),
+    re_path(r'^tip/send/?', dashboard.tip_views.send_tip, name='send_tip'),
+    re_path(r'^send/?', dashboard.tip_views.send_tip, name='tip'),
+    re_path(r'^tip/?', dashboard.tip_views.send_tip, name='tip'),
 
     # Legal
     re_path(r'^terms/?', dashboard.views.terms, name='_terms'),
@@ -188,8 +194,8 @@ urlpatterns = [
     path('dynamic/js/tokens_dynamic.js', retail.views.tokens, name='tokens'),
 
     # sync methods
-    url(r'^sync/web3/?', dashboard.views.sync_web3, name='sync_web3'),
-    url(r'^sync/get_amount/?', dashboard.helpers.amount, name='helpers_amount'),
+    re_path(r'^sync/web3/?', dashboard.views.sync_web3, name='sync_web3'),
+    re_path(r'^sync/get_amount/?', dashboard.helpers.amount, name='helpers_amount'),
     re_path(r'^sync/get_issue_details/?', dashboard.helpers.issue_details, name='helpers_issue_details'),
 
     # modals
@@ -207,18 +213,18 @@ urlpatterns = [
     re_path(r'^results/?', retail.views.results, name='results'),
     re_path(r'^activity/?', retail.views.activity, name='activity'),
     re_path(r'^get/?', retail.views.get_gitcoin, name='get_gitcoin'),
-    url(r'^$', retail.views.index, name='index'),
+    re_path(r'^', retail.views.index, name='index'),
     re_path(r'^contributor/?(?P<tech_stack>.*)/?', retail.views.contributor_landing, name='contributor_landing'),
-    url(r'^help/dev/?', retail.views.help_dev, name='help_dev'),
-    url(r'^help/repo/?', retail.views.help_repo, name='help_repo'),
-    url(r'^help/faq/?', retail.views.help_faq, name='help_faq'),
-    url(r'^help/portal/?', retail.views.portal, name='portal'),
-    url(r'^help/pilot/?', retail.views.help_pilot, name='help_pilot'),
-    url(r'^help/?', retail.views.help, name='help'),
-    url(r'^docs/onboard/?', retail.views.onboard, name='onboard_doc'),
-    url(r'^extension/chrome/?', retail.views.browser_extension_chrome, name='browser_extension_chrome'),
-    url(r'^extension/firefox/?', retail.views.browser_extension_firefox, name='browser_extension_firefox'),
-    url(r'^extension/?', retail.views.browser_extension_chrome, name='browser_extension'),
+    re_path(r'^help/dev/?', retail.views.help_dev, name='help_dev'),
+    re_path(r'^help/repo/?', retail.views.help_repo, name='help_repo'),
+    re_path(r'^help/faq/?', retail.views.help_faq, name='help_faq'),
+    re_path(r'^help/portal/?', retail.views.portal, name='portal'),
+    re_path(r'^help/pilot/?', retail.views.help_pilot, name='help_pilot'),
+    re_path(r'^help/?', retail.views.help, name='help'),
+    re_path(r'^docs/onboard/?', retail.views.onboard, name='onboard_doc'),
+    re_path(r'^extension/chrome/?', retail.views.browser_extension_chrome, name='browser_extension_chrome'),
+    re_path(r'^extension/firefox/?', retail.views.browser_extension_firefox, name='browser_extension_firefox'),
+    re_path(r'^extension/?', retail.views.browser_extension_chrome, name='browser_extension'),
     path('how/<str:work_type>', retail.views.how_it_works, name='how_it_works'),
 
     # basic redirect retail views
@@ -249,8 +255,8 @@ urlpatterns = [
     re_path(r'^requestincrease/?', retail.views.increase_funding_limit_request, name='increase_funding_limit_request'),
 
     # link shortener
-    url(r'^l/(.*)$/?', linkshortener.views.linkredirect, name='redirect'),
-    url(r'^credit/(.*)$/?', credits.views.credits, name='credit'),
+    re_path(r'^l/(.*)$/?', linkshortener.views.linkredirect, name='redirect'),
+    re_path(r'^credit/(.*)$/?', credits.views.credits, name='credit'),
 
     # token distribution event
     re_path(r'^whitepaper/accesscode/?', tdi.views.whitepaper_access, name='whitepaper_access'),
@@ -275,12 +281,12 @@ urlpatterns = [
     re_path(r'^settings/(.*)?', marketing.views.email_settings, name='settings'),
 
     # marketing views
-    url(r'^leaderboard/(.*)', marketing.views.leaderboard, name='leaderboard'),
+    re_path(r'^leaderboard/(.*)', marketing.views.leaderboard, name='leaderboard'),
     path('leaderboard', marketing.views._leaderboard, name='_leaderboard'),
 
     # for robots
-    url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
-    url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+    re_path(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
+    re_path(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     # Interests
     path('interest/modal', dashboard.views.get_interest_modal, name='get_interest_modal'),
     path('actions/bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
@@ -309,8 +315,8 @@ urlpatterns = [
     re_path(r'^ens/', enssubdomain.views.ens_subdomain, name='ens'),
 
     # gitcoinbot
-    url(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),
-    url(r'^impersonate/', include('impersonate.urls')),
+    path(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),
+    re_path(r'^impersonate/', include('impersonate.urls')),
 
     # wagtail
     re_path(r'^cms/', include(wagtailadmin_urls)),
@@ -319,7 +325,7 @@ urlpatterns = [
 ]
 
 if settings.ENABLE_SILK:
-    urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]
+    urlpatterns += [re_path(r'^silk/', include('silk.urls', namespace='silk'))]
 
 if not settings.AWS_STORAGE_BUCKET_NAME:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
