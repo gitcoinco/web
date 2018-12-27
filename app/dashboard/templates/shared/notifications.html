@@ -28,8 +28,6 @@
           {% trans 'Notifications' %} <span id="total-notifications" class="badge badge--greenlight">[[ numNotifications ]]</span>
         </div> <a id="read-all" href="" class="notifications__link" @click.prevent="markAll">{% trans 'Mark All as Read' %}</a>
       </div>
-      <!-- <notification-list :notifications="notifications"></notification-list> -->
-
       <ul class="notifications__list" @scroll.passive="onScroll($event)">
         <li v-for="notification in notifications" class="notifications__item" :key="notification.id">
           <span class="notifications__item-readed">
@@ -43,7 +41,6 @@
             [[ notification.created_on | moment-fromnow ]]
           </time>
         </li>
-
       </ul>
       <div class="notifications__no-results" :class="{'d-none': notifications.length > 0}">
         <img src="{% static 'v2/images/shrug_bot.png' %}" alt="nothing found" width="316" height="221">
@@ -54,21 +51,3 @@
       <a href="{% url 'inbox:inbox_view' %}" class="notifications__button-all notifications__link">{% trans 'See all' %}</a>
     </div>
   </div>
-
-  <script type="text/x-template" id="notification-list">
-    <ul class="notifications__list" @scroll.passive="onScroll($event)">
-        <li v-for="notification in notifications" class="notifications__item" :key="notification.id">
-          <span class="notifications__item-readed">
-            <b class="notification__dot-small" v-bind:class="{'notification__dot-small_active': !notification.is_read}"></b>
-          </span>
-          <a :href="[[ notification.cta_url ]]" class="notifications_content" @click="e => !notification.is_read && markRead(notification.id)">
-            <img class="notifications__avatar" :src="'/dynamic/avatar/' + [[ notification.username ]]" width="28" height="28">
-            <p class="line-clamp" v-html="notification.message_html"></p>
-          </a>
-          <time class="notifications__time" :datetime="[[ notification.created_on ]]" :title="[[ notification.created_on ]]">
-            [[ notification.created_on | moment ]]
-          </time>
-        </li>
-
-      </ul>
-  </script>

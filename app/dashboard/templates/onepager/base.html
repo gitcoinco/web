@@ -61,10 +61,6 @@
       var static_url = "{{ STATIC_URL }}";
       var media_url = "{{ MEDIA_URL }}";
     </script>
-    <!-- <script src="{% static "v2/js/jquery.js" %}"></script> -->
-    <!-- <script src="{% static "v2/js/work_with_gitcoin.js" %}"></script> -->
-    <!--[if lte IE 9]><link rel="stylesheet" href="{% static "onepager/css/ie9.css" %}"><![endif]-->
-    <!--[if lte IE 8]><link rel="stylesheet" href="{% static "onepager/css/ie8.css" %}"><![endif]-->
     <noscript>
       <link rel="stylesheet" href="{% static "onepager/css/noscript.css" %}">
     </noscript>
@@ -94,10 +90,7 @@
     {% include 'shared/footer_scripts.html' with slim=1 %}
 
     {% block 'scripts' %}{% endblock %}
-    <!-- {% include 'shared/sentry.html' %} -->
-    <!-- <script src="{% static "v2/js/jquery.select2.min.js" %}"></script> -->
-    <!-- <script src="{% static "cookielaw/js/cl.js" %}"></script> -->
-    <!--[if lte IE 8]><script src="{% static "onepager/js/respond.min.js" %}"></script><![endif]-->
+
     <script>
       if ('addEventListener' in window) {
         window.addEventListener('load', function () {
@@ -106,14 +99,6 @@
         document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
       }
     </script>
-    <!-- {% if recommend_gas_price %}
-    <script type="text/javascript">
-      setInterval(function () {
-        defaultGasPrice = parseInt(10 ** 9 * {{ recommend_gas_price }});
-      }, 1000);
-    </script>
-    {% endif %} -->
-    <!-- {% include 'shared/messages.html' %} -->
 
     <script>
       var host = ("{{ ipfs_config.host }}" == "ipfs" ? "localhost" : "{{ ipfs_config.host }}");
