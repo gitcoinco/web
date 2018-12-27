@@ -184,8 +184,14 @@ def gh_login(request):
 
 
 def get_interest_modal(request):
+    bounty_id = request.GET.get('pk')
+    if not bounty_id:
+        raise Http404
 
-    bounty = Bounty.objects.get(pk=request.GET.get("pk"))
+    try:
+        bounty = Bounty.objects.get(pk=bounty_id)
+    except Bounty.DoesNotExist:
+        raise Http404
 
     context = {
         'bounty': bounty,
@@ -417,7 +423,9 @@ def cancel_reason(request):
 
     :request method: POST
 
-    post_id (int): ID of the Bounty.
+    Params:
+        pk (int): ID of the Bounty.
+        canceled_bounty_reason (string): STRING with cancel  reason
 
     Returns:
         dict: The success key with a boolean value and accompanying error.
@@ -442,16 +450,14 @@ def cancel_reason(request):
         canceled_bounty_reason = request.POST.get('canceled_bounty_reason')
         bounty.canceled_bounty_reason = canceled_bounty_reason
         bounty.save()
-        # record_user_action(request.user, 'cancel_reason', bounty)
-        # record_bounty_activity(bounty, request.user, 'cancel_reason')
 
         return JsonResponse({
             'success': True,
-            'msg': _("You've extended expiration of this issue."),
+            'msg': _("Cancel reason added."),
         })
 
     return JsonResponse({
-        'error': _("You must be funder to extend expiration"),
+        'error': _("You must be funder to add a reason"),
     }, status=200)
 
 

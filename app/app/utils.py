@@ -395,3 +395,19 @@ def release_semaphore(namespace, semaphore=None):
 
     token = semaphore.get_namespaced_key(namespace)
     semaphore.signal(token)
+
+
+def get_profile(request):
+    """Get the current profile from the provided request.
+
+    Returns:
+        dashboard.models.Profile: The current user's Profile.
+
+    """
+    is_authed = request.user.is_authenticated
+    profile = getattr(request.user, 'profile', None) if is_authed else None
+
+    if is_authed and not profile:
+        profile = sync_profile(request.user.username, request.user, hide_profile=False)
+
+    return profile

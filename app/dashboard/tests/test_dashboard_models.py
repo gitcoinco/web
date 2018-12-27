@@ -31,6 +31,8 @@ from test_plus.test import TestCase
 class DashboardModelsTest(TestCase):
     """Define tests for dashboard models."""
 
+    fixtures = ['tokens.json']
+
     def setUp(self):
         """Perform setup for the testcase."""
         Token.objects.create(priority=999, symbol='ETH', address='0x0000000000000000000000000000000000000000')
