@@ -55,8 +55,13 @@
 <img src="{% static "v2/images/grant-ended.png" %}" alt="{% trans "Grant Ended" %}" title="{% trans "Grant Ended" %}">
 <h1 style="text-transform: none;">{% trans "Grant" %} '{{ grant.title }}' {% trans "has been cancelled" %}.</h1>
 <p>{% trans "Thank you for using Gitcoin, we hope you'll come back to build more open source software!" %}</p>
-<p>{% trans "You can see your cancellation transaction on etherscan" %}
-  <a href="{{ transaction.link }}">{% trans "here." %}</a>
+<p>{% trans "You can see the grant cancellation transaction on etherscan or blockscout" %}
+  {% if grant.network == 'mainnet' %}
+    <a href="http://etherscan.io/tx/{{ grant.cancel_tx_id }}">{% trans "[View on Etherscan]" %}</a>
+  {% else %}
+    <a href="http://{{ grant.network }}.etherscan.io/tx/{{ grant.cancel_tx_id }}">{% trans "[View on Etherscan]" %}</a>
+  {% endif %}
+  <a href="https://blockscout.com/eth/{{ grant.network }}/tx/{{ grant.cancel_tx_id }}">{% trans "[View on Blockscout]" %}</a>
 </p>
 <p class="grant-link">
   <a class="updatesButton" href="{% url 'grants:details' grant.pk grant.slug %}">{% trans "View Inactive Grant" %}</a>

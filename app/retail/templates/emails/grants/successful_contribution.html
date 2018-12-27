@@ -135,6 +135,19 @@
   <p>{% trans "You can see all your transactions" %}
     <a href="{% url 'grants:profile' %}">{% trans "here." %}</a>
   </p>
+  <p class="grant-contribution">
+    <strong>{{ subscription.amount_per_period }} {{ subscription.token_symbol }} </strong>
+  </p>
+  <p>{% trans "occured at" %} </p>
+  <p>{{ contribution.created_on|date:"fa F j, Y" }}</p>
+  <p>{% trans "You can see the transaction on Etherscan or blockscout " %}
+    {% if subscription.network == 'mainnet' %}
+    <a href="http://etherscan.io/tx/{{ contribution.tx_id }}">{% trans "[View on Etherscan]" %}</a>
+  {% else %}
+    <a href="http://{{ grant.network }}.etherscan.io/tx/{{ contribution.tx_id }}">{% trans "[View on Etherscan]" %}</a>
+  {% endif %}
+  <a href="https://blockscout.com/eth/{{ grant.network }}/tx/{{ contribution.tx_id }}">{% trans "[View on Blockscout]" %}</a>
+  </p>
 </div>
 <hr>
 

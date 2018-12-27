@@ -200,9 +200,13 @@
 <hr>
 
 <br>
-<!-- #TODO - Use correct object for transaction link. - 2/2 -->
-<p>{% trans "You can see your cancellation transaction on etherscan" %}
-  <a href="{{ transaction.link }}">{% trans "here." %}</a>
+<p>{% trans "You can see your cancellation transaction on etherscan or blockscout" %}
+  {% if subscription.network == 'mainnet' %}
+  <a href="http://etherscan.io/tx/{{ subscription.cancel_tx_id }}">{% trans "[View on Etherscan]" %}</a>
+{% else %}
+  <a href="http://{{ grant.network }}.etherscan.io/tx/{{ subscription.cancel_tx_id }}">{% trans "[View on Etherscan]" %}</a>
+{% endif %}
+<a href="https://blockscout.com/eth/{{ grant.network }}/tx/{{ subscription.cancel_tx_id }}">{% trans "[View on Blockscout]" %}</a>
 </p>
 <br>
 <a class="updatesButton" href="{{ transaction.link }}">{% trans "View Transaction" %}</a>

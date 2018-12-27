@@ -12,9 +12,13 @@
 
 {{ transaction.value_true }} {{ transaction.token_name }} {% trans "per" %} {{ transaction.frequency }}
 
-{{ variable_amount_contribution }}
-
-{% trans "You can see the transaction on etherscan" %} {{ transaction.link }} {% trans "here." %}
+{% trans "You can see the transaction on etherscan or blockscout" %} at
+{% if grant.network == 'mainnet' %}
+  http://etherscan.io/tx/{{ contribution.tx_id }}
+{% else %}
+  http://{{ grant.network }}.etherscan.io/tx/{{ contribution.tx_id }}
+{% endif %}
+or https://blockscout.com/eth/{{ grant.network }}/tx/{{ contribution.tx_id }}
 
 {% trans "View Updates" %}
 

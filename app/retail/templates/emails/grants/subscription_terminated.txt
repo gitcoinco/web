@@ -14,9 +14,21 @@
 
 {{ grant.percentage_done }}
 
-{{ grant.amount_goal }} {% trans "ETH" %}
+{% trans "You can see the  cancelled subscription on etherscan or blockscout" %} at
+{% if subscription.network == 'mainnet' %}
+  http://etherscan.io/tx/{{ subscription.cancel_tx_id }}
+{% else %}
+  http://{{ grant.network }}.etherscan.io/tx/{{ subscription.cancel_tx_id }}
+{% endif %}
+or https://blockscout.com/eth/{{ grant.network }}/tx/{{ subscription.cancel_tx_id }}
 
-{% trans "Goal" %}
+{% trans "You can see the  cancelled grant on etherscan or blockscout" %} at
+{% if grant.network == 'mainnet' %}
+  http://etherscan.io/tx/{{ grant.cancel_tx_id }}
+{% else %}
+  http://{{ grant.network }}.etherscan.io/tx/{{ grant.cancel_tx_id }}
+{% endif %}
+or https://blockscout.com/eth/{{ grant.network }}/tx/{{ grant.cancel_tx_id }}
 
 {% trans "You can see the subscription cancelation transaction" %} 
 

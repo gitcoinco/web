@@ -26,7 +26,13 @@
 
 {% trans "Goal" %}
 
-{% trans "You can see your cancellation transaction on etherscan" %}
+{% trans "You can see the transaction on etherscan or blockscout" %} at
+{% if subscription.network == 'mainnet' %}
+  http://etherscan.io/tx/{{ subscription.cancel_tx_id }}
+{% else %}
+  http://{{ grant.network }}.etherscan.io/tx/{{ subscription.cancel_tx_id }}
+{% endif %}
+or https://blockscout.com/eth/{{ grant.network }}/tx/{{ subscription.cancel_tx_id }}
 
 {{ transaction.link }}
 
