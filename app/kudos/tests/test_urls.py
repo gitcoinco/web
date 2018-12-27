@@ -35,59 +35,59 @@ class KudosUrlsTestCase(TestCase):
 
     def test_kudos_main_reverse(self):
         """Test the kudos main url and check the reverse."""
-        self.assertEqual(reverse('kudos:main'), '/kudos')
+        self.assertEqual(reverse('kudos:main'), '/kudos/')
 
     def test_kudos_main_resolve(self):
         """Test the kudos main url and check the resolution."""
-        self.assertEqual(resolve('/kudos').view_name, 'kudos:main')
+        self.assertEqual(resolve('/kudos/').view_name, 'kudos:main')
 
     def test_kudos_about_reverse(self):
         """Test the kudos about url and check the reverse."""
-        self.assertEqual(reverse('kudos:about'), '/kudos/about')
+        self.assertEqual(reverse('kudos:about'), '/kudos/about/')
 
     def test_kudos_about_resolve(self):
         """Test the kudos about url and check the resolution."""
-        self.assertEqual(resolve('/kudos/about').view_name, 'kudos:about')
+        self.assertEqual(resolve('/kudos/about/').view_name, 'kudos:about')
 
     def test_kudos_marketplace_reverse(self):
         """Test the kudos marketplace url and check the reverse."""
-        self.assertEqual(reverse('kudos:marketplace'), '/kudos/marketplace')
+        self.assertEqual(reverse('kudos:marketplace'), '/kudos/marketplace/')
 
     def test_kudos_marketplace_resolve(self):
         """Test the kudos marketplace url and check the resolution."""
-        self.assertEqual(resolve('/kudos/marketplace').view_name, 'kudos:marketplace')
+        self.assertEqual(resolve('/kudos/marketplace/').view_name, 'kudos:marketplace')
 
     def test_kudos_mint_reverse(self):
         """Test the kudos mint url and check the reverse."""
-        self.assertEqual(reverse('kudos:mint'), '/kudos/mint')
+        self.assertEqual(reverse('kudos:mint'), '/kudos/mint/')
 
     def test_kudos_mint_resolve(self):
         """Test the kudos mint url and check the resolution."""
-        self.assertEqual(resolve('/kudos/mint').view_name, 'kudos:mint')
+        self.assertEqual(resolve('/kudos/mint/').view_name, 'kudos:mint')
 
     def test_kudos_send_reverse(self):
         """Test the kudos send url and check the reverse."""
-        self.assertEqual(reverse('kudos:send'), '/kudos/send')
+        self.assertEqual(reverse('kudos:send'), '/kudos/send/')
 
     def test_kudos_send_resolve(self):
         """Test the kudos send url and check the resolution."""
-        self.assertEqual(resolve('/kudos/send').view_name, 'kudos:send')
+        self.assertEqual(resolve('/kudos/send/').view_name, 'kudos:send')
 
     def test_kudos_send_3_reverse(self):
         """Test the kudos send_3 url and check the reverse."""
-        self.assertEqual(reverse('kudos:send_3'), '/kudos/send/3')
+        self.assertEqual(reverse('kudos:send_3'), '/kudos/send/3/')
 
     def test_kudos_send_3_resolve(self):
         """Test the kudos send_3 url and check the resolution."""
-        self.assertEqual(resolve('/kudos/send/3').view_name, 'kudos:send_3')
+        self.assertEqual(resolve('/kudos/send/3/').view_name, 'kudos:send_3')
 
     def test_kudos_send_4_reverse(self):
         """Test the kudos send_4 url and check the reverse."""
-        self.assertEqual(reverse('kudos:send_4'), '/kudos/send/4')
+        self.assertEqual(reverse('kudos:send_4'), '/kudos/send/4/')
 
     def test_kudos_send_4_resolve(self):
         """Test the kudos send_4 url and check the resolution."""
-        self.assertEqual(resolve('/kudos/send/4').view_name, 'kudos:send_4')
+        self.assertEqual(resolve('/kudos/send/4/').view_name, 'kudos:send_4')
 
     def test_kudos_receive_reverse(self):
         """Test the kudos receive url and check the reverse."""
@@ -123,12 +123,12 @@ class KudosUrlsTestCase(TestCase):
         """Test the kudos details by address and token id url and check the reverse."""
         self.assertEqual(
             reverse('kudos:details_by_address_and_token_id', args=(self.tx, 1, 'test')),
-            f'/kudos/redeem/{self.tx}/1/test'
+            f'/kudos/{self.tx}/1/test'
         )
 
     def test_kudos_details_by_address_token_id_resolve(self):
         """Test the kudos details by address and token id url and check the resolution."""
-        self.assertEqual(resolve('/kudos/redeem/{self.tx}/1/test').view_name, 'kudos:details_by_address_and_token_id')
+        self.assertEqual(resolve('/kudos/{self.tx}/1/test').view_name, 'kudos:details_by_address_and_token_id')
 
     def test_kudos_details_reverse(self):
         """Test the kudos details url and check the reverse."""
