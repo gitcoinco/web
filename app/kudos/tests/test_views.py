@@ -21,7 +21,7 @@ from unittest import skip
 
 from django.test import Client, TestCase
 
-from dajngo.urls import reverse
+from django.urls import reverse
 
 # from .utils import KudosContract
 

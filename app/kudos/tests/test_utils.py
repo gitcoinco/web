@@ -23,7 +23,7 @@ from django.test import Client
 
 from test_plus.test import TestCase
 
-from .utils import KudosContract
+from kudos.utils import KudosContract
 
 logging.getLogger('requests').setLevel(logging.WARNING)
 logging.getLogger('urllib3').setLevel(logging.WARNING)
