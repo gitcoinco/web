@@ -1,0 +1,20 @@
+{
+  "symbol": "UTD",
+  "address": "0xc2be193f581f129ace32d2fe949d100dc09c2a05",
+  "overview":{
+        "en":"UTDEX(United Exchange) is the first digital asset conversion platform in the world. Focusing on the digitization of global physical assets, UTDEX aims at improving the circulation efficiency of physical assets, digesting excess capacity and improving the utilization rate of resources to achieve the efficient co-creation of physical assets through block chain and enabling the real economy.",
+        "zh":"UTDEX(United Exchange)是全球首家数字资产转换平台,聚焦全球实体资产数字化旨在提高实体资产流通效率、消化过剩产能、提高资源利用率实现实体资产通过区块链高效共创，为实体经济赋能"
+  },
+  "email": "utdex.net@gmail.com",
+  "website": "http://www.utdex.net/",
+  "whitepaper": "http://www.utdex.net/UTDEX_WhitePaper.pdf",
+  "published_on": "2018-11-10",
+  "initial_price":{
+        "ETH":"0.0000375 ETH",
+        "BTC":"0.000000856 BTC"
+  },
+  "links": {
+    "telegram": "https://0.plus/#/joinchat/Kz-ZyhKmHdxQ8wfIwWj5Kw",
+    "facebook": "http://www.utdex.net/"
+  }
+}
