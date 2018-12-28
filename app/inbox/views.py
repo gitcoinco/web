@@ -1,13 +1,35 @@
+# -*- coding: utf-8 -*-
+"""Define view for the inbox app.
+
+Copyright (C) 2018 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+"""
+
 import json
-from inbox.models import Notification
+
+from django.contrib.auth.decorators import login_required
 from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.core.paginator import Paginator
+from django.http import HttpResponse, JsonResponse
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
-from django.http import JsonResponse
-from django.core.paginator import Paginator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_http_methods
-from django.contrib.auth.decorators import login_required
+
+from inbox.models import Notification
 
 
 @login_required
@@ -19,18 +41,17 @@ def notifications(request):
     all_notifs = Notification.objects.filter(to_user_id=request.user.id).order_by('-id')
     params = dict()
     all_pages = Paginator(all_notifs, limit)
-    if page > 0 and page <= all_pages.num_pages:
-        all_notifications = []
-        for i in all_pages.page(page):
-            new_notif = i.to_standard_dict()
-            new_notif['username'] = i.from_user.username
-            all_notifications.append(new_notif)
-        params['data'] = all_notifications
-        params['has_next'] = all_pages.page(page).has_next()
-        params['count'] = all_pages.count
-        params['num_pages'] = all_pages.num_pages
-    else:
-        params['num_pages'] = all_pages.num_pages
+    if page <= 0 or page > all_pages.num_pages:
+        page = 1
+    all_notifications = []
+    for i in all_pages.page(page):
+        new_notif = i.to_standard_dict()
+        new_notif['username'] = i.from_user.username
+        all_notifications.append(new_notif)
+    params['data'] = all_notifications
+    params['has_next'] = all_pages.page(page).has_next()
+    params['count'] = all_pages.count
+    params['num_pages'] = all_pages.num_pages
     return JsonResponse(params, status=200, safe=False)
 
 
@@ -39,23 +60,16 @@ def notifications(request):
 @csrf_exempt
 def delete_notifications(request):
     """For deleting a notification."""
-    params = {'success': []}
     try:
         req_body = json.loads(request.body.decode('utf-8'))
     except:
         pass
     if 'delete' in req_body:
-        for i in req_body['delete']:
-            try:
-                obj = Notification.objects.get(id=i)
-                if obj.to_user.id == request.user.id:
-                    obj.delete()
-                    params['success'].append(True)
-                else:
-                    params['success'].append(False)
-            except Notification.DoesNotExist:
-                params['success'].append(False)
-    return JsonResponse(params, status=200)
+        Notification.objects.filter(
+            id__in=req_body['delete'],
+            to_user=request.user
+        ).delete()
+    return HttpResponse(status=204)
 
 
 @login_required
@@ -63,7 +77,6 @@ def delete_notifications(request):
 @csrf_exempt
 def unread_notifications(request):
     """Mark a notification as unread."""
-    params = {'success': []}
     try:
         req_body = json.loads(request.body.decode('utf-8'))
     except:
@@ -75,12 +88,9 @@ def unread_notifications(request):
                 if obj.to_user.id == request.user.id:
                     obj.is_read = False
                     obj.save()
-                    params['success'].append(True)
-                else:
-                    params['success'].append(False)
             except Notification.DoesNotExist:
-                params['success'].append(False)
-    return JsonResponse(params, status=200)
+                pass
+    return HttpResponse(status=204)
 
 
 @login_required
@@ -88,7 +98,6 @@ def unread_notifications(request):
 @csrf_exempt
 def read_notifications(request):
     """Mark a notification as read."""
-    params = {'success': []}
     try:
         req_body = json.loads(request.body.decode('utf-8'))
     except:
@@ -100,16 +109,13 @@ def read_notifications(request):
                 if obj.to_user.id == request.user.id:
                     obj.is_read = True
                     obj.save()
-                    params['success'].append(True)
-                else:
-                    params['success'].append(False)
             except Notification.DoesNotExist:
-                params['success'].append(False)
-    return JsonResponse(params, status=200)
+                pass
+    return HttpResponse(status=204)
 
 
 def inbox(request):
-    """Handles the inbox view."""
+    """Handle the inbox view."""
     context = {
         'is_outside': True,
         'active': 'inbox',
