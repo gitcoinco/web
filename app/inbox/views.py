@@ -65,13 +65,10 @@ def delete_notifications(request):
     except:
         pass
     if 'delete' in req_body:
-        for i in req_body['delete']:
-            try:
-                obj = Notification.objects.get(id=i)
-                if obj.to_user.id == request.user.id:
-                    obj.delete()
-            except Notification.DoesNotExist:
-                pass
+        Notification.objects.filter(
+            id__in=req_body['delete'],
+            to_user=request.user
+        ).delete()
     return HttpResponse(status=204)
 
 
