@@ -2,11 +2,18 @@
 $(document).ready(() => {
   $('#period').select2();
 
-  setInterval (notifyOwnerAddressMismatch, 1000);
+  setInterval (() => {
+    notifyOwnerAddressMismatch(
+      $('#subscriber-handle').val(),
+      $('#subscriber-address').val(),
+      '#cancel-subscription',
+      'Looks like you\'ve funded this grant with ' + $('#subscriber-address').val() + '. Switch to that to take action on your subscription.'
+    );
+  }, 1000);
 
   $('#js-cancelSubscription').validate({
     submitHandler: function(form) {
-      var data = {};
+      let data = {};
 
       $.each($(form).serializeArray(), function() {
         data[this.name] = this.value;
@@ -70,30 +77,9 @@ $(document).ready(() => {
             })
             .on('error', function(err) {
               console.log('err', err);
-              // TODO: Redirect to same page and throw error ?
             });
         });
       });
     }
   });
-
 });
-
-const notifyOwnerAddressMismatch = () => {
-  if (!web3 || !web3.eth)
-    return;
-  web3.eth.getAccounts((error, accounts) => {
-    if (document.contxt.github_handle == $('#subscriber-handle').val() &&
-        accounts[0] != $('#subscriber-address').val()) {
-      if ($('#cancel-subscription').attr('disabled') != 'disabled') {
-        $('#cancel-subscription').attr('disabled', 'disabled');
-        _alert({
-          message: 'Looks like you\'ve funded this grant with ' + $('#token_address').val() + '. Switch to that to take action on your subscription.'
-        }, 'error');
-      }
-    } else {
-      $('#cancel-subscription').removeAttr('disabled');
-      $('.alert.error').remove();
-    }
-  });
-};

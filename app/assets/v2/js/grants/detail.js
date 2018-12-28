@@ -9,7 +9,15 @@ const editableFields = [
 
 $(document).ready(function() {
   showMore();
-  setInterval (notifyOwnerAddressMismatch, 1000);
+
+  setInterval (() => {
+    notifyOwnerAddressMismatch(
+      $('#grant-admin').val(),
+      $('#contract_owner_address').val(),
+      '#cancel_grant',
+      'Looks like your grant has been created with ' + $('#contract_owner_address').val() + '. Switch to take action on your grant.'
+    );
+  }, 1000);
 
   userSearch('#grant-admin');
   userSearch('#grant-members');
@@ -188,24 +196,5 @@ const copyDuplicateDetails = () => {
       else
         $(field).val(obj[field]);
     });
-  });
-};
-
-const notifyOwnerAddressMismatch = () => {
-  if (!web3 || !web3.eth)
-    return;
-  web3.eth.getAccounts((error, accounts) => {
-    if (document.contxt.github_handle == $('#grant-admin').val() &&
-        accounts[0] != $('#contract_owner_address').val()) {
-      if ($('#cancel_grant').attr('disabled') != 'disabled') {
-        $('#cancel_grant').attr('disabled', 'disabled');
-        _alert({
-          message: 'Looks like your grant has been created with ' + $('#contract_owner_address').val() + '. Switch to take action on your grant.'
-        }, 'error');
-      }
-    } else {
-      $('#cancel_grant').removeAttr('disabled');
-      $('.alert.error').remove();
-    }
   });
 };
