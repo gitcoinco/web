@@ -1,6 +1,6 @@
 # ERC20 Token Profile 提交教程
 
-*查看 [Token Profile 指南](README.md)*
+*查看 [Token Profile 指南](README.zh-CN.md)*
 
 ## 要求
 ### 资料准备
@@ -61,7 +61,7 @@ git push -f origin xxx-token
 
 8. 在你的仓库页面下点击 `New pull request` 按钮 ，并附上项目资料以及相关区块链媒体报道，包括但不限于以下：（团队背景；项目基本情况；媒体报道；收录的交易所；代币转账调用智能合约需要的 Gas limit）
 
-PR 示例：https://github.com/consenlabs/token-profile/pull/1636 
+   PR 示例：https://github.com/consenlabs/token-profile/pull/1636 
 
 9. 我们会尽快核实你的 PR，如果 PR 没问题我们会合并到主分支下，至此你的代币资料将会出现在 imToken App 内
 

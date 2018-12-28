@@ -1,7 +1,7 @@
 # EOS Token Profile 提交教程
 
 
-*查看 [Token Profile 指南](README.md)*
+*查看 [Token Profile 指南](README.zh-CN.md)*
 
 ## 要求
 ### 资料准备
