@@ -55,7 +55,9 @@ def process_subscription(subscription, live):
                 is_active_web3, signer,
             )
 
-        if are_we_past_next_valid_timestamp:
+        if not are_we_past_next_valid_timestamp:
+            logger.info("   -- ( NOT ready via web3) ")
+        else:
             logger.info("   -- (ready via web3) ")
             status = 'failure'
             txid = None
