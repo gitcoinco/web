@@ -41,18 +41,17 @@ def notifications(request):
     all_notifs = Notification.objects.filter(to_user_id=request.user.id).order_by('-id')
     params = dict()
     all_pages = Paginator(all_notifs, limit)
-    if page > 0 and page <= all_pages.num_pages:
-        all_notifications = []
-        for i in all_pages.page(page):
-            new_notif = i.to_standard_dict()
-            new_notif['username'] = i.from_user.username
-            all_notifications.append(new_notif)
-        params['data'] = all_notifications
-        params['has_next'] = all_pages.page(page).has_next()
-        params['count'] = all_pages.count
-        params['num_pages'] = all_pages.num_pages
-    else:
-        params['num_pages'] = all_pages.num_pages
+    if page <= 0 or page > all_pages.num_pages:
+        page = 1
+    all_notifications = []
+    for i in all_pages.page(page):
+        new_notif = i.to_standard_dict()
+        new_notif['username'] = i.from_user.username
+        all_notifications.append(new_notif)
+    params['data'] = all_notifications
+    params['has_next'] = all_pages.page(page).has_next()
+    params['count'] = all_pages.count
+    params['num_pages'] = all_pages.num_pages
     return JsonResponse(params, status=200, safe=False)
 
 
