@@ -123,6 +123,7 @@
   </style>
   <div class="contentOverall">
       <h1>{% trans "Your weekly bounties recap" %}</h1>
+      <div class="mt-2 mb-2"><img src={% static 'v2/images/emails/robot-weekly-bounties.png' %} ></div>
       <div class="bold">{% trans "Hi" %} {{profile.handle}},</div>
       <div>{% trans "here are the latest activities on your bounties: " %}</div>
       <div>({{ select_params.to }} - {{ select_params.from }})</div>
