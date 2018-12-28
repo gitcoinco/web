@@ -166,7 +166,7 @@ def grant_details(request, grant_id, grant_slug):
 def grant_new(request):
     """Handle new grant."""
     if not request.user.has_perm('grants.add_grant'):
-        messages.info(request, _('You do not have permission to add a grant.'))
+        messages.info(request, _('Grants is still in beta. To create a Grant ping us at team@gitcoin.co'))
         return redirect(reverse('grants:grants'))
 
     profile = get_profile(request)
