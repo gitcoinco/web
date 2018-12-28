@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import datetime
 import json
 import logging
-from decimal import *
 
 from django.conf import settings
 from django.contrib import messages
@@ -327,35 +326,8 @@ def grant_fund(request, grant_id, grant_slug):
         subscription.grant = grant
         subscription.save()
         try:
-            print("amount", subscription.amount_per_period)
-            print("symbol", subscription.token_symbol)
-            converted_amount = (
-                float(convert_amount(
-                    subscription.amount_per_period,
-                    subscription.token_symbol,
-                    "USDT")
-                )
-            )
-
-            print('converted', converted_amount)
-
-            if subscription.frequency_unit == 'days':
-                period_seconds = 86400 * subscription.num_tx_approved
-                print('1', period_seconds)
-            elif subscription.frequency_unit == 'hours':
-                period_seconds = 3600 * subscription.num_tx_approved
-                print('2', period_seconds)
-            elif subscription.frequency_unit == 'minutes':
-                print('freq', subscription.num_tx_approved)
-                period_seconds = 60 * int(subscription.num_tx_approved)
-                print('3', period_seconds)
-            elif subscription.frequency_unit == 'months':
-                period_seconds = 2592000 * subscription.num_tx_approved
-                print('4', period_seconds)
-
             grant.monthly_amount_subscribed = (
-                grant.monthly_amount_subscribed +
-                Decimal(converted_amount * (2592000 / period_seconds))
+                grant.monthly_amount_subscribed + subscription.get_converted_monthly_amount()
             )
 
             print('here', grant.monthly_amount_subscribed)
@@ -417,26 +389,8 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
         subscription.active = False
         subscription.save()
         try:
-            converted_amount = (
-                int(convert_amount(
-                    subscription.amount_per_period,
-                    subscription.token_symbol,
-                    "USDT")
-                )
-            )
-
-            if subscription.frequency_unit == 'days':
-                period_seconds = 86400 * subscription.frequency
-            elif subscription.frequency_unit == 'hours':
-                period_seconds = 3600 * subscription.frequency
-            elif subscription.frequency_unit == 'minutes':
-                period_seconds = 60 * subscription.frequency
-            elif subscription.frequency_unit == 'months':
-                period_seconds = 2592000 * subscription.frequency
-
             grant.monthly_amount_subscribed = (
-                grant.monthly_amount_subscribed -
-                int(converted_amount * (int(2592000) / int(period_seconds)))
+                grant.monthly_amount_subscribed - subscription.get_converted_monthly_amount()
             )
 
         except ConversionRateNotFoundError as e:

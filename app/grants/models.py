@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import logging
 from datetime import timedelta
+from decimal import *
 
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
@@ -584,6 +585,32 @@ class Subscription(SuperModel):
             args['nonce'],
             ).call()
 
+    def get_converted_amount(self, amount_per_period, token_symbol):
+        return (
+            Decimal(convert_amount(
+                amount_per_period,
+                token_symbol,
+                "USDT"))
+            )
+
+    def get_converted_monthly_amount(self):
+        converted_amount = self.get_converted_amount(self.amount_per_period, self.token_symbol)
+
+        print('converted_amount', converted_amount)
+
+        total_sub_seconds = Decimal(self.real_period_seconds) * Decimal(self.num_tx_approved)
+
+        print('total_sub_seconds', total_sub_seconds)
+
+        if total_sub_seconds < 2592000:
+            result = Decimal(converted_amount * Decimal(self.num_tx_approved))
+            print('result 1', result)
+        elif total_sub_seconds >= 2592000:
+            result = Decimal(converted_amount * (Decimal(2592000) / Decimal(self.real_period_seconds)))
+            print('result 2', result)
+
+        return result
+
     def successful_contribution(self, tx_id):
         """Create a contribution object."""
         from marketing.mails import successful_contribution
@@ -599,37 +626,15 @@ class Subscription(SuperModel):
         grant = self.grant
         try:
             grant.amount_received = (
-                float(grant.amount_received) + float(convert_amount(
-                    self.amount_per_period,
-                    self.token_symbol,
-                    "USDT")
-                )
+                float(grant.amount_received) + get_converted_amount(self.amount_per_period, self.token_symbol)
             )
         except ConversionRateNotFoundError as e:
             logger.info(e)
 
         if self.num_tx_processed == self.num_tx_approved:
             try:
-                converted_amount = (
-                    int(convert_amount(
-                        self.amount_per_period,
-                        self.token_symbol,
-                        "USDT")
-                    )
-                )
-
-                if self.frequency_unit == 'days':
-                    period_seconds = 86400 * self.frequency
-                elif self.frequency_unit == 'hours':
-                    period_seconds = 3600 * self.frequency
-                elif self.frequency_unit == 'minutes':
-                    period_seconds = 60 * self.frequency
-                elif self.frequency_unit == 'months':
-                    period_seconds = 2592000 * self.frequency
-
                 grant.monthly_amount_subscribed = (
-                    grant.monthly_amount_subscribed -
-                    int((converted_amount) * (int(2592000) / int(period_seconds)))
+                    grant.monthly_amount_subscribed + self.get_converted_monthly_amount()
                 )
 
             except ConversionRateNotFoundError as e:
