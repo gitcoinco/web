@@ -461,22 +461,32 @@ def ens():
         )
 
 
-def tips():
+def sendcryptoassets():
+    from revenue.models import DigitalGoodPurchase
     from dashboard.models import Tip
-    tips = Tip.objects.filter(network='mainnet').send_success()
-    val = sum(tip.value_in_usdt for tip in tips if tip.value_in_usdt)
+    from kudos.models import KudosTransfer
 
-    stats_to_create = [
-        ('tips', tips.count()),
-        ('tips_value', val),
-        ]
+    iterate_me = {
+        'tip': Tip,
+        'kudos': KudosTransfer,
+        'dgp': DigitalGoodPurchase,
+    }
 
-    for stat in stats_to_create:
-        #print(stat)
-        Stat.objects.create(
-            key=stat[0],
-            val=stat[1],
-            )
+    for key, SendCryptoAsset in iterate_me.items():
+        objs = SendCryptoAsset.objects.filter(network='mainnet').send_success()
+        val = sum(obj.value_in_usdt for obj in objs if obj.value_in_usdt)
+
+        stats_to_create = [
+            (key, objs.count()),
+            (f'{key}_value', val),
+            ]
+
+        for stat in stats_to_create:
+            print(stat)
+            Stat.objects.create(
+                key=stat[0],
+                val=stat[1],
+                )
 
 
 def tips_received():
