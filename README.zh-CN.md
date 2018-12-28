@@ -18,8 +18,8 @@ Token Profile 即项目方所发行代币的详细信息。imToken 2.0 对 Token
 
 imToken 支持 ERC20 和 EOS 代币 Token Profile 的提交，选择对应教程了解具体操作：
 
-- [ERC20 Token Profile 提交教程](erc20-tutorial.zh-CN.md) 
-- [EOS Token Profile 提交教程](eos-tutorial.zh-CN.md) 
+- [ERC20 Token Profile 提交教程](tutorial/erc20-tutorial.zh-CN.md) 
+- [EOS Token Profile 提交教程](tutorial/eos-tutorial.zh-CN.md) 
 
 ## 建议
 由于 Token Profile 的提交涉及诸多方面：GitHub 使用，Logo 设计，项目资料介绍等。我们建议 **Token Profile 提交由你们的市场运营人员、技术人员、设计师协作完成。**

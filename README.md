@@ -2,7 +2,7 @@
 
 *Read this in other languages: [English](README.md), [简体中文](README.zh-CN.md).*
 
-This repository (repo) provides the details about self-submitting **Token** information to imToken via Github.
+This repository (repo) provides the details about self-submitting **Token** information to imToken via GitHub.
 
 ## What is Token Profile?
 
@@ -12,15 +12,16 @@ The page is located at:
 
 
 
-The page is displayed as follows
+The page is displayed as follows:
+
 ![Wallet Tab](tutorial/sample.png)
 
 
 ##  Overview
 
 imToken supports the submission of ERC20 and EOS Token Profile, please select the corresponding tutorial to understand the specific procedures:
-- [ERC20 Token Profile Guideline](erc20-tutorial.en.md)
-- [EOS Token Profile Guideline](eos-tutorial.en.md)
+- [ERC20 Token Profile Guideline](tutorial/erc20-tutorial.en.md)
+- [EOS Token Profile Guideline](tutorial/eos-tutorial.en.md)
 
 
 ## Suggestions
