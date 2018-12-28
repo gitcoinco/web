@@ -699,7 +699,7 @@ def render_new_bounty_roundup(to_email):
 </p>
 <p>
 The Gitcoin team has been taking a collective breath at the end of our year and have gotten a chance to look back on
-late 2017 and 2018, while looking ahead to ourfuture. <a href="https://twitter.com/GetGitcoin/status/1078686012514226177">The Gitcoin EOY Letter</a>
+late 2017 and 2018, while looking ahead to our future. <a href="https://twitter.com/GetGitcoin/status/1078686012514226177">The Gitcoin EOY Letter</a>
 shows our continued excitement towards the mission of growing a more open (source) internet, together. We're thankful to you for taking part
 in our journey and hope to reward each of you for your support with a great 2019.
 </p>
@@ -715,7 +715,7 @@ recurring funding for open source developers. We're looking to provide an initia
             for Gitcoin funders!
         </li>
         <li>
-            No Gitcoin Livestream this week, but we'll be back on 1/5. Join us <a href="https://gitcoin.co/livestream">Friday's at 5PM ET</a>!
+            No Gitcoin Livestream this week, but we'll be back on 1/5. In the future, join us <a href="https://gitcoin.co/livestream">Friday's at 5PM ET</a>!
         </li>
     </ul>
 </p>
