@@ -53,7 +53,7 @@ git checkout xxx-token
 ```
 git add -A
 git commit -m “Add xxx token”
-git push -f origin xxx-token
+git push origin xxx-token
 ```
 
 8. 在你的仓库页面下点击 `New pull request` 按钮 ，并附上项目资料以及相关区块链媒体报道，包括但不限于以下：（团队背景；项目基本情况；媒体报道；收录的交易所）

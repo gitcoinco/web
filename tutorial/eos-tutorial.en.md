@@ -65,7 +65,7 @@ git checkout xxx-token
 ```
 git add -A
 git commit -m “Add xxx token”
-git push -f origin xxx-token
+git push origin xxx-token
 ```
 
 
