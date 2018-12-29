@@ -433,79 +433,75 @@ def render_new_bounty(to_email, bounties, old_bounties):
     return response_html, response_txt
 
 
-def render_weekly_recap(to_email, from_date = date.today(), days_back=7):
+def render_weekly_recap(to_email, from_date=date.today(), days_back=7):
     sub = get_or_save_email_subscriber(to_email, 'internal')
     from dashboard.models import Profile
-    from dashboard.models import Bounty
     prof = Profile.objects.filter(email__iexact=to_email).last()
     bounties = prof.bounties.all()
     from_date = from_date + timedelta(days=1)
     to_date = from_date - timedelta(days=days_back)
-    
+
     activity_types = {}
-    _sections = [ ]
+    _sections = []
     activity_types_def = {
-      "start_work": {
-        "css-class": "status-open",
-        "text": "Started work"
-      },
-      "stop_work": {
-        "css-class": "status-cancelled",
-        "text": "Work stopped"
-      },
-      "worker_approved": {
-        "css-class": "status-open",
-        "text": "Worker got approved"
-      },
-      "worker_applied": {
-        "css-class": "status-submitted",
-        "text": "Worker applied"
-      },
-      "new_bounty": {
-        "css-class": "status-open",
-        "text": "New created bounties"
-      },
-      "work_submitted": {
-        "css-class": "status-submitted",
-        "text": "Work got submitted"
-      },
-      
+        "start_work": {
+          "css-class": "status-open",
+          "text": "Started work"
+        },
+        "stop_work": {
+          "css-class": "status-cancelled",
+          "text": "Work stopped"
+        },
+        "worker_approved": {
+          "css-class": "status-open",
+          "text": "Worker got approved"
+        },
+        "worker_applied": {
+          "css-class": "status-submitted",
+          "text": "Worker applied"
+        },
+        "new_bounty": {
+          "css-class": "status-open",
+          "text": "New created bounties"
+        },
+        "work_submitted": {
+          "css-class": "status-submitted",
+          "text": "Work got submitted"
+        },
     }
-    
-    
+
     for bounty in bounties:
-      for activity in bounty.activities.filter(created__range=[to_date,from_date]):
-        if activity_types.get(activity.activity_type) == None:
-          activity_types[activity.activity_type] = []
-        
-        avatar_url = "about:blank"
-        if activity.profile:
-          #avatar_url = activity.profile.avatar.get_avatar_url()
-          avatar_url = activity.profile.avatar_url
-          
-        item = {
-          'bounty_image_url': avatar_url,
-          'bounty_action_user': activity.profile.handle,
-          'bounty_action_date': activity.created,
-          'bounty_action': activity.activity_type,
-          'bounty_name': f'{bounty.title}',
-          'bounty_link': bounty.get_absolute_url()
-        }
-        activity_types[activity.activity_type].append(item)
-        #_items.append(item)
-      #Activities
-      #Fulfillment
-      #Interest
-    
+        for activity in bounty.activities.filter(created__range=[to_date, from_date]):
+            if activity_types.get(activity.activity_type) is None:
+                activity_types[activity.activity_type] = []
+
+            avatar_url = "about:blank"
+            if activity.profile:
+                avatar_url = activity.profile.avatar_url
+
+            item = {
+                'bounty_image_url': avatar_url,
+                'bounty_action_user': activity.profile.handle,
+                'bounty_action_date': activity.created,
+                'bounty_action': activity.activity_type,
+                'bounty_name': f'{bounty.title}',
+                'bounty_link': bounty.get_absolute_url()
+            }
+            activity_types[activity.activity_type].append(item)
+
+          # TODO: Activities
+          # TODO: Fulfillment
+          # TODO: Interest
+
     for act_type in activity_types:
-      if activity_types_def.get(act_type):
-        section = { 'items': activity_types[act_type],
-                  'header_name': activity_types_def[act_type]["text"],
-                  'header_css': activity_types_def[act_type]["css-class"],
-                }
-        _sections.append(section)
+        if activity_types_def.get(act_type):
+            section = {'items': activity_types[act_type],
+                       'header_name': activity_types_def[act_type]["text"],
+                       'header_css': activity_types_def[act_type]["css-class"],
+                      }
+            _sections.append(section)
     # Work started, Submissions available, Work Done, Work Stopped
-    
+
     params = {
         'subscriber': sub,
         'sections': _sections,
@@ -518,10 +514,12 @@ def render_weekly_recap(to_email, from_date = date.today(), days_back=7):
         },
         'debug': activity_types
     }
+
     response_html = premailer_transform(render_to_string("emails/recap/weekly_founder_recap.html", params))
     response_txt = render_to_string("emails/recap/weekly_founder_recap.txt", params)
 
     return response_html, response_txt
+
 
 def render_gdpr_reconsent(to_email):
     sub = get_or_save_email_subscriber(to_email, 'internal')
@@ -910,15 +908,14 @@ Happy holidays,
     return response_html, response_txt, subject
 
 
-
-
 # DJANGO REQUESTS
 
 @staff_member_required
 def weekly_recap(request):
-    response_html, _ = render_weekly_recap("mark.beacom@consensys.net")#("kuhnchris@kuhnchris.eu")
+    response_html, _ = render_weekly_recap("mark.beacom@consensys.net")
     return HttpResponse(response_html)
-    
+
+
 @staff_member_required
 def new_tip(request):
     from dashboard.models import Tip

@@ -537,6 +537,7 @@ def weekly_roundup(to_emails=None):
         finally:
             translation.activate(cur_language)
 
+
 def weekly_recap(to_emails=None):
     if to_emails is None:
         to_emails = []
