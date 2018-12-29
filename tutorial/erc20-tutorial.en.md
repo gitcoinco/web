@@ -1,4 +1,4 @@
-# ERC20 Token Profile Submission Guildeline
+# ERC20 Token Profile Submission Guideline
 
 *Check [Token Profile Guideline](../README.md)*
 

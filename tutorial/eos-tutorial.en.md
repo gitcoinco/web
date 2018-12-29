@@ -1,4 +1,4 @@
-# EOS Token Profile Submission Guildeline
+# EOS Token Profile Submission Guideline
 
 *Check [Token Profile Guideline](../README.md)*
 
