@@ -13,7 +13,7 @@
 
 
 #### Token Profile Submission:
-Sample Pull Request (PR): https://github.com/consenlabs/token-profile/pull/1636/files
+Sample Pull Request (PR): https://github.com/consenlabs/token-profile/pull/3475/files
 
 ### Requirements to the information
 #### Completeness and Accuracy of the information
@@ -70,6 +70,8 @@ git push -f origin xxx-token
 
 
 8. Under your repo page, click the “New pull request” button. Then, attach the detailed  project information and related blockchain media reports. This includes but not limited to the following: (Project team background; Project basic information; Media publications; Supported Exchanges).
+
+   Sample PR: https://github.com/consenlabs/token-profile/pull/3475
 
 
 9. We will review your PR as soon as possible. If there is no problem with your PR, we will merge it into our master branch. And then your token profile will display in the current imToken App
