@@ -17,6 +17,7 @@
 
 '''
 import logging
+from datetime import date, timedelta
 from functools import partial
 
 from django.conf import settings
@@ -431,7 +432,6 @@ def render_new_bounty(to_email, bounties, old_bounties):
 
     return response_html, response_txt
 
-from datetime import date, timedelta
 
 def render_weekly_recap(to_email, from_date = date.today(), days_back=7):
     sub = get_or_save_email_subscriber(to_email, 'internal')

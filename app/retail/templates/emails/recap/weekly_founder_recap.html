@@ -16,6 +16,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n humanize %}
+{% load static %}
 {% block content %}
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
   <style type="text/css">
@@ -83,10 +84,10 @@
     }
     .contentOverall { 
       padding-bottom: 3em;
-      padding-top: 2em;
+      padding-top: 1em;
     }
     h1 {
-      padding-bottom: 1em;
+      padding-bottom: .5em;
     }
     .section_row_entry {
       padding-bottom: 1.5em;
@@ -121,12 +122,11 @@
       font-size: smaller;
     }
   </style>
+  <div class=""><img src={% static 'v2/images/emails/robot-weekly-bounties.png' %} ></div>
   <div class="contentOverall">
-      <h1>{% trans "Your weekly bounties recap" %}</h1>
-      <div class="mt-2 mb-2"><img src={% static 'v2/images/emails/robot-weekly-bounties.png' %} ></div>
-      <div class="bold">{% trans "Hi" %} {{profile.handle}},</div>
-      <div>{% trans "here are the latest activities on your bounties: " %}</div>
-      <div>({{ select_params.to }} - {{ select_params.from }})</div>
+      <h2>{% trans "Your weekly bounties recap" %}</h2>
+      <div>{{ select_params.to }} - {{ select_params.from }}</div>
+      <div class="bold">{{profile.handle}}</div>
     
       {% for section in sections %}
         <div class="{{section.header_css}} header leftAlign">
