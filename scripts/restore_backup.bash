@@ -19,10 +19,13 @@ END
 
 apk --update add postgresql-client
 
+if [ "$2" == "1" ]; then
+    echo "DROP SCHEMA public CASCADE;
+    CREATE SCHEMA public;
+    " | psql postgres -p 5432 -h db -U postgres
+
+fi
 
 BFILE=$1
-echo "DROP SCHEMA public CASCADE;
-CREATE SCHEMA public;
-" | psql postgres -p 5432 -h db -U postgres
 cat "$BFILE" | psql postgres -p 5432 -h db -U postgres
 
