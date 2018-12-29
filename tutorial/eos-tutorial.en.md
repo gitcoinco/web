@@ -1,6 +1,6 @@
 # EOS Token Profile Submission Guildeline
 
-*Check [Token Profile Guideline](README.md)*
+*Check [Token Profile Guideline](../README.md)*
 
 ## Requirements
 ### Information Preparation
@@ -25,7 +25,7 @@ You are responsible for the information you submitted. Please ensure that the to
 - Transparent background PNG format
 - Brand logo horizontally and vertically centered, as shown below.
 
-![example](tutorial/logo.png)
+![example](./logo.png)
 
 
 ## How it works
@@ -54,7 +54,7 @@ git checkout xxx-token
   *PUB@publytoken11.json*
 
 
-5. Please ensure to use UTF-8 encoding in the json file to avoid Travis-CI build error. Please check the template file to fill in the complete token information: [$template.json](./erc20/$template.json)
+5. Please ensure to use UTF-8 encoding in the json file to avoid Travis-CI build error. Please check the template file to fill in the complete token information: [$template.json](../erc20/$template.json)
 
 
 6. Add the token logo to images directory, name it by **symbol@accountname** as well.

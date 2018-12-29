@@ -1,6 +1,6 @@
 # ERC20 Token Profile 提交教程
 
-*查看 [Token Profile 指南](README.zh-CN.md)*
+*查看 [Token Profile 指南](../README.zh-CN.md)*
 
 ## 要求
 ### 资料准备
@@ -25,7 +25,7 @@
 - 图片为透明背景的 PNG 格式
 - 品牌标识水平竖直居中顶边，见下图
 
-![example](tutorial/logo.png)
+![example](./logo.png)
 
 ## 具体如何操作？
 *建议由技术人员协助完成*
@@ -49,7 +49,7 @@ git checkout xxx-token
   举例：
   *0xf90f1648926005A8bb3ed8ec883164De7F768743.json*
 
-5. json 文件请使用 UTF-8 编码，否则 Travis-CI 会构建失败。请参照模板文件补充完整的代币资料：[$template.json](./erc20/$template.json)
+5. json 文件请使用 UTF-8 编码，否则 Travis-CI 会构建失败。请参照模版文件补充完整的代币资料：[$template.json](../erc20/$template.json)
 6. 代币 Logo 放到 images 目录里，图片名称也是使用 **checksum** 代币合约地址命名
 7. Commit 并且 Push 提交信息到你的仓库
   举例：
@@ -76,7 +76,7 @@ imToken 目前的价格显示对接 block.cc 的 API，如需在 imToken 中显�
 
 其他情况，如需修改合约地址，需要项目方在社区发布修改 Symbol 公告，告知用户需要重新搜索添加。并在 GitHub 提交新的 PR，将旧合约 Symbol 增加 _OLD，如 TFT_OLD，然后提交新的代币合约和 Logo，如下图所示，并把公告链接在 PR 下留言，我们会核实情况修改。
 
-![old](tutorial/old.png)
+![old](./old.png)
 
 ### 无法通过合约搜索
 通过合约地址搜索不出来的情况，请查看是否是并未有成功的转账记录，另外请在 [Etherscan](https://etherscan.io/) verify 你的合约信息，我们可以帮你手动添加。

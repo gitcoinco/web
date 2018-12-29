@@ -1,7 +1,6 @@
 # EOS Token Profile 提交教程
 
-
-*查看 [Token Profile 指南](README.zh-CN.md)*
+*查看 [Token Profile 指南](../README.zh-CN.md)*
 
 ## 要求
 ### 资料准备
@@ -25,7 +24,7 @@
 - 图片为透明背景的 PNG 格式
 - 品牌标识水平竖直居中顶边，见下图
 
-![example](tutorial/logo.png)
+![example](./logo.png)
 
 ## 具体如何操作？
 *建议由技术人员协助完成*
@@ -47,7 +46,7 @@ git checkout xxx-token
 4. 在 eos-token 目录里添加一个新的 json 文件，使用 **symbol@accoutname** 命名这个 json 文件。举例：
   *PUB@publytoken11.json*
 
-5. json 文件请使用 UTF-8 编码，否则 Travis-CI 会构建失败。请参照模板文件补充完整的代币资料：[$template.json](./eos-token/$template.json)
+5. json 文件请使用 UTF-8 编码，否则 Travis-CI 会构建失败。请参照模版文件补充完整的代币资料：[$template.json](../eos-token/$template.json)
 6. 代币 Logo 放到 images 目录里，图片名称也是使用 **symbol@accoutname** 命名
 7. Commit 并且 Push 提交信息到你的仓库
   举例：

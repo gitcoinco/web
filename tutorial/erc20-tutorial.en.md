@@ -1,6 +1,6 @@
 # ERC20 Token Profile Submission Guildeline
 
-*Check [Token Profile Guideline](README.md)*
+*Check [Token Profile Guideline](../README.md)*
 
 ## Requirements
 ### Information Preparation
@@ -26,7 +26,7 @@ You are responsible for the information you submitted. Please ensure that the to
 - Transparent background PNG format
 - Brand logo horizontally and vertically centered, as shown below.
 
-![example](tutorial/logo.png)
+![example](./logo.png)
 
 
 ## How it works
@@ -55,7 +55,7 @@ git checkout xxx-token
   *0xf90f1648926005A8bb3ed8ec883164De7F768743.json*
 
 
-5. Please ensure to use UTF-8 encoding in the json file to avoid Travis-CI build error. Please check the template file to fill in the complete token information: [$template.json](./erc20/$template.json)
+5. Please ensure to use UTF-8 encoding in the json file to avoid Travis-CI build error. Please check the template file to fill in the complete token information: [$template.json](../erc20/$template.json)
 
 
 6. Add the token logo to images directory, name it by the token contract address with **checksum** .
@@ -88,7 +88,7 @@ In imToken 1.0, if duplicated token names are found, imToken team will add a num
 
 If there are update requests due to contract amendment, projects are required to make an official announcement for respective community for the change of Symbol, and inform users about the need to search and add the token again in imToken. Besides, please submit a new PR in GitHub, add on _OLD to the old contract Symbol (e.g. TFT_OLD), and then resubmit new token contract and logo, as shown in the picture below. Please share your announcement link under the comment section in the PR, imToken team will evaluate the situation.
 
-![old](tutorial/old_en.png)
+![old](./old_en.png)
 
 ### Unable to search via contract address
 If you can't search via the contract address, please check if there is no successful transaction records. Besides, please verify your contract information on [Etherscan] (https://etherscan.io/), then we can help you manually add it.
