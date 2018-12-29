@@ -47,7 +47,6 @@ class Notification(SuperModel):
         ('bounty_removed_by_staff', 'Removed from Bounty by Staff'),
         ('bounty_removed_by_funder', 'Removed from Bounty by Funder'),
         ('new_crowdfund', 'New Crowdfund Contribution'),
-        # Grants
         ('new_grant', 'New Grant'),
         ('update_grant', 'Updated Grant'),
         ('killed_grant', 'Cancelled Grant'),
