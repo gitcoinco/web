@@ -4,7 +4,8 @@ const editableFields = [
   '#grant-admin',
   '#contract_owner_address',
   '#form--input__description',
-  '#grant-members'
+  '#grant-members',
+  '#amount_goal'
 ];
 
 $(document).ready(function() {
@@ -24,6 +25,8 @@ $(document).ready(function() {
     $('#save-details').removeClass('hidden');
     $('#cancel-details').removeClass('hidden');
     $('#contract_owner_button').removeClass('hidden');
+    $('#edit-amount_goal').removeClass('hidden');
+    $('.grant__progress').addClass('hidden');
 
     copyDuplicateDetails();
 
@@ -37,11 +40,14 @@ $(document).ready(function() {
     $('#edit-details').removeClass('hidden');
     $('#save-details').addClass('hidden');
     $('#cancel-details').addClass('hidden');
+    $('#edit-amount_goal').addClass('hidden');
+    $('.grant__progress').removeClass('hidden');
 
     let edit_title = $('#form--input__title').val();
     let edit_reference_url = $('#form--input__reference-url').val();
     let edit_admin_profile = $('#grant-admin option').last().text();
     let edit_description = $('#form--input__description').val();
+    let edit_amount_goal = $('#amount_goal').val();
     let edit_grant_members = $('#grant-members').val();
 
     $.ajax({
@@ -52,6 +58,7 @@ $(document).ready(function() {
         'edit-reference_url': edit_reference_url,
         'edit-admin_profile': edit_admin_profile,
         'edit-description': edit_description,
+        'edit-amount_goal': edit_amount_goal,
         'edit-grant_members[]': edit_grant_members
       },
       success: function(json) {
@@ -69,6 +76,7 @@ $(document).ready(function() {
     $('#edit-details').removeClass('hidden');
     $('#save-details').addClass('hidden');
     $('#cancel-details').addClass('hidden');
+    $('.grant__progress').removeClass('hidden');
 
     editableFields.forEach(field => disableEdit(field));
   });
@@ -157,7 +165,7 @@ $(document).ready(function() {
 
 });
 
-const makeEditable = (input, icon) => {
+const makeEditable = (input) => {
   $(input).addClass('editable');
   $(input).prop('readonly', false);
   $(input).prop('disabled', false);
