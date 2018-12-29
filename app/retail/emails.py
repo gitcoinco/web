@@ -489,18 +489,18 @@ def render_weekly_recap(to_email, from_date=date.today(), days_back=7):
             }
             activity_types[activity.activity_type].append(item)
 
-          # TODO: Activities
-          # TODO: Fulfillment
-          # TODO: Interest
+    # TODO: Activities
+    # TODO: Fulfillment
+    # TODO: Interest
 
     for act_type in activity_types:
         if activity_types_def.get(act_type):
-            section = {'items': activity_types[act_type],
-                       'header_name': activity_types_def[act_type]["text"],
-                       'header_css': activity_types_def[act_type]["css-class"],
-                      }
+            section = {
+              'items': activity_types[act_type],
+              'header_name': activity_types_def[act_type]["text"],
+              'header_css': activity_types_def[act_type]["css-class"],
+            }
             _sections.append(section)
-    # Work started, Submissions available, Work Done, Work Stopped
 
     params = {
         'subscriber': sub,
