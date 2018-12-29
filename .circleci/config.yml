@@ -4,9 +4,16 @@
 #
 version: 2.1
 
-executors:
-  gitcoin-latest:
+jobs:
+  test:
+    working_directory: ~/web
     docker:
+      - image: circleci/postgres:10-alpine
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: testdb
+      - image: circleci/redis:4-alpine3.8
       - image: gitcoin/web:latest
         environment:
           CACHE_URL: dbcache://my_cache_table
@@ -15,22 +22,6 @@ executors:
           CACHEOPS_REDIS: redis://localhost:6379/0
           ENV: test
           COLLECTFAST_CACHE_URL: dbcache://collectfast
-    working_directory: ~/web
-
-jobs:
-  test:
-    executor: gitcoin-latest
-    branches:
-      ignore:
-        - gh-pages
-    docker:
-      - image: circleci/postgres:10-alpine
-        environment:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: testdb
-      - image: circleci/redis:4-alpine3.8
-
     steps:
       - checkout
 
@@ -73,3 +64,8 @@ jobs:
       - store_artifacts:
           path: test-results
           destination: test-results
+
+workflows:
+  workflow:
+    jobs:
+      - test
