@@ -908,6 +908,7 @@ Happy holidays,
 
 # DJANGO REQUESTS
 
+
 @staff_member_required
 def weekly_recap(request):
     response_html, _ = render_weekly_recap("mark.beacom@consensys.net")
