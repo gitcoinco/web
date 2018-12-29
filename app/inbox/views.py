@@ -36,6 +36,7 @@ from inbox.models import Notification
 @require_GET
 def notifications(request):
     """Handle all notifications."""
+
     limit = int(request.GET.get('limit', 10))
     page = int(request.GET.get('page', 1))
     all_notifs = Notification.objects.filter(to_user_id=request.user.id).order_by('-id')
@@ -60,6 +61,7 @@ def notifications(request):
 @csrf_exempt
 def delete_notifications(request):
     """For deleting a notification."""
+
     try:
         req_body = json.loads(request.body.decode('utf-8'))
     except:
@@ -77,6 +79,7 @@ def delete_notifications(request):
 @csrf_exempt
 def unread_notifications(request):
     """Mark a notification as unread."""
+
     try:
         req_body = json.loads(request.body.decode('utf-8'))
     except:
@@ -98,6 +101,7 @@ def unread_notifications(request):
 @csrf_exempt
 def read_notifications(request):
     """Mark a notification as read."""
+
     try:
         req_body = json.loads(request.body.decode('utf-8'))
     except:
@@ -116,12 +120,13 @@ def read_notifications(request):
 
 def inbox(request):
     """Handle the inbox view."""
+
     context = {
         'is_outside': True,
         'active': 'inbox',
-        'title': 'inbox',
-        'card_title': _('Each Kudos is a unique work of art.'),
-        'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
-        'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
+        'title': 'Inbox',
+        'card_title': _('Inbox notifications'),
+        'card_desc': _('Manage all your notifications.'),
+        'avatar_url': static('v2/images/helmet.png'),
     }
     return TemplateResponse(request, 'inbox.html', context)

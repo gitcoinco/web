@@ -209,9 +209,8 @@
 }
 
 .inbox__list {
-  padding: 1em 3em;
   overflow-y: scroll;
-  max-height: 100vh;
+  max-height: 600px;
 }
 
 .notifications__no-results {

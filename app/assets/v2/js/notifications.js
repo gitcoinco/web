@@ -190,9 +190,9 @@ if (document.getElementById('gc-inbox')) {
         let data = JSON.stringify(deleteObj);
         let deleteNotify = fetchData ('/inbox/notifications/delete/', 'DELETE', data);
 
-        $.when(deleteNotify).then(function(response) {
+        $.when(deleteNotify).then(function(response, status, statusText) {
 
-          if (response.success) {
+          if (statusText.status === 204) {
             vm.notifications.map((notify, index) => {
               if (vm.selectedNotifications.includes(notify.id))
                 vm.notifications.splice(notify[index], 1);

@@ -61,7 +61,7 @@
           Selected [[ selectedNotifications.length ]] of [[ numNotifications ]]
         </div>
       </div>
-      <ul class="list-unstyled inbox_list" @scroll.passive="onScroll($event)">
+      <ul class="list-unstyled inbox__list" @scroll.passive="onScroll($event)">
         <li v-for="notification in notifications" class="notifications__item inbox__item" :key="notification.id" v-cloak>
           <div class="gc-checkbox mr-3">
             <input type="checkbox" :id="'not-'+ [[notification.id]]" :value="notification.id" v-model="selectedNotifications">
