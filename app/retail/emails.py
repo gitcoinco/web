@@ -510,7 +510,6 @@ def render_weekly_recap(to_email, from_date=date.today(), days_back=7):
         'select_params': {
           'from': from_date,
           'to': to_date
-          
         },
         'debug': activity_types
     }
@@ -906,7 +905,6 @@ Happy holidays,
     response_txt = render_to_string("emails/bounty_roundup.txt", params)
 
     return response_html, response_txt, subject
-
 
 # DJANGO REQUESTS
 
