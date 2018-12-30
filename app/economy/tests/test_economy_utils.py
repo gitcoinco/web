@@ -73,6 +73,6 @@ class EconomyUtilsTest(TestCase):
 
     def test_blockscout_link(self):
         """Test the economy util blockscout_link method."""
+        l = 'https://blockscout.com/eth/mainnet/tx/0xcb39900d98fa00de2936d2770ef3bfef2cc289328b068e580dc68b7ac1e2055b'
         txid = '0xcb39900d98fa00de2936d2770ef3bfef2cc289328b068e580dc68b7ac1e2055b'
-        assert blockscout_link(
-            txid) == 'https://blockscout.com/eth/mainnet/tx/0xcb39900d98fa00de2936d2770ef3bfef2cc289328b068e580dc68b7ac1e2055b'
+        assert blockscout_link(txid) == l
