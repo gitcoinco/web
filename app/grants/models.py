@@ -415,10 +415,13 @@ class Subscription(SuperModel):
             balance = token_contract.functions.balanceOf(Web3.toChecksumAddress(self.contributor_address)).call()
             allowance = token_contract.functions.allowance(Web3.toChecksumAddress(self.contributor_address), Web3.toChecksumAddress(self.grant.contract_address)).call()
             token = addr_to_token(self.token_address, self.network)
+            next_valid_timestamp = self.get_next_valid_timestamp()
             decimals = token.get('decimals', 0)
             balance = balance / 10 ** decimals
             allowance = allowance / 10 ** decimals
             error_reason = "unknown"
+            if timezone.now().timestamp() < next_valid_timestamp:
+                error_reason = 'before_next_valid_timestamp'
             if balance < self.amount_per_period:
                 error_reason = "insufficient_balance"
             if allowance < self.amount_per_period:
@@ -431,13 +434,15 @@ decimals: {decimals}
 balance: {balance}
 allowance: {allowance}
 amount_per_period: {self.amount_per_period}
+next_valid_timestamp: {next_valid_timestamp}
 """
         except Exception as e:
             return str(e)
         return debug_info
 
-    def get_next_valid_timestamp(self, address):
-        return self.grant.contract.functions.nextValidTimestamp(address).call()
+    def get_next_valid_timestamp(self):
+        _hash = self.get_hash_from_web3()
+        return self.grant.contract.functions.nextValidTimestamp(_hash).call()
 
     def get_is_ready_to_be_processed_from_db(self):
         """Return true if subscription is ready to be processed according to the DB."""
@@ -446,8 +451,7 @@ amount_per_period: {self.amount_per_period}
         return self.next_contribution_date < timezone.now() and self.num_tx_processed < self.num_tx_approved
 
     def get_are_we_past_next_valid_timestamp(self):
-        address = self.contributor_address
-        return timezone.now().timestamp() > self.get_next_valid_timestamp(address)
+        return timezone.now().timestamp() > self.get_next_valid_timestamp()
 
     def get_is_subscription_ready_from_web3(self):
         """Return true if subscription is ready to be processed according to web3."""
@@ -585,13 +589,17 @@ amount_per_period: {self.amount_per_period}
             args['nonce'],
             ).call()
 
-    def get_converted_amount(self, amount_per_period, token_symbol):
-        return (
-            Decimal(convert_amount(
-                amount_per_period,
-                token_symbol,
-                "USDT"))
-            )
+    def get_converted_amount(self):
+        try:
+            return Decimal(convert_amount(
+                    self.amount_per_period,
+                    self.token_symbol,
+                    "USDT")
+                )
+        
+         except ConversionRateNotFoundError as e:
+            logger.info(e)
+        return None
 
     def get_converted_monthly_amount(self):
         converted_amount = self.get_converted_amount(self.amount_per_period, self.token_symbol)
@@ -604,6 +612,7 @@ amount_per_period: {self.amount_per_period}
             result = Decimal(converted_amount * (Decimal(2592000) / Decimal(self.real_period_seconds)))
 
         return result
+
 
     def successful_contribution(self, tx_id):
         """Create a contribution object."""
@@ -618,12 +627,10 @@ amount_per_period: {self.amount_per_period}
         }
         contribution = Contribution.objects.create(**contribution_kwargs)
         grant = self.grant
-        try:
-            grant.amount_received = (
-                grant.amount_received + self.get_converted_amount(self.amount_per_period, self.token_symbol)
-            )
-        except ConversionRateNotFoundError as e:
-            logger.info(e)
+
+        value_usdt = self.get_converted_amount
+        if value_usdt:
+            grant.amount_received += value_usdt
 
         if self.num_tx_processed == self.num_tx_approved:
             try:
