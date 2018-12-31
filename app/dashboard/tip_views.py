@@ -110,13 +110,18 @@ def receive_tip_v3(request, key, txid, network):
         tip.update_tx_status()
         did_fail = tip.tx_status in ['dropped', 'unknown', 'na', 'error']
 
+    is_received_done = tip.receive_txid and tip.receive_tx_status in ['success']
+    is_pending_received = tip.receive_txid and tip.receive_tx_status in ['pending', 'unknown', 'na']
+
     if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
         request.user, 'profile', None
     ):
         login_redirect = redirect('/login/github?next=' + request.get_full_path())
         return login_redirect
-    if tip.receive_txid:
+    if is_received_done:
         messages.info(request, 'This tip has been received')
+    elif is_pending_received:
+        messages.info(request, 'This tip is being received.  Please wait for the pending tx to clear.')
     elif not is_authed:
         messages.error(request, f'This tip is for @{tip.username} but you are logged in as @{request.user.username}.  Please logout and log back in as {tip.username}.')
     elif did_fail:
@@ -152,6 +157,9 @@ def receive_tip_v3(request, key, txid, network):
         'gas_price': round(recommend_min_gas_price_to_confirm_in_time(120), 1),
         'tip': tip,
         'key': key,
+        'is_pending_received': is_pending_received,
+        'is_received_done': is_received_done,
+        'is_received': is_received_done or is_pending_received,
         'is_authed': is_authed,
         'disable_inputs': tip.receive_txid or not_mined_yet or not is_authed,
     }
