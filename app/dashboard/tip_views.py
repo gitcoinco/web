@@ -213,14 +213,6 @@ def send_tip_4(request):
     tip.save()
 
     # notifications
-    if tip.username:
-        send_notification_to_user(
-            request.user,
-            get_user_model().objects.get(username=tip.username),
-            tip.receive_url,
-            'new_tip',
-            f'<b>New Tip</b> worth {tip.value_in_usdt_now} USD recieved from {request.user.username}'
-        )
     maybe_market_tip_to_github(tip)
     maybe_market_tip_to_slack(tip, 'New tip')
     maybe_market_tip_to_email(tip, tip.emails)
