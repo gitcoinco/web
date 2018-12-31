@@ -252,6 +252,8 @@ class BountyViewSet(viewsets.ModelViewSet):
             queryset = queryset.keyword(self.request.query_params.get('keyword'))
 
         # order
+        # this is applied twice.. if you change this block, 
+        # also change the block 20 lines down
         order_by = self.request.query_params.get('order_by')
         if order_by and order_by != 'null':
             queryset = queryset.order_by(order_by)
@@ -273,6 +275,8 @@ class BountyViewSet(viewsets.ModelViewSet):
         queryset = Bounty.objects.filter(pk__in=pks)
 
         # order
+        # this is applied twice.. if you change this block, 
+        # also change the block 20 lines up
         order_by = self.request.query_params.get('order_by')
         if order_by and order_by != 'null':
             queryset = queryset.order_by(order_by)
