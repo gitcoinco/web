@@ -34,7 +34,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
-from economy.utils import ConversionRateNotFoundError, convert_amount
+from economy.utils import ConversionRateNotFoundError
 from app.utils import get_profile
 from dashboard.models import Profile
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
@@ -329,7 +329,6 @@ def grant_fund(request, grant_id, grant_slug):
             grant.monthly_amount_subscribed = (
                 grant.monthly_amount_subscribed + subscription.get_converted_monthly_amount()
             )
-
         except ConversionRateNotFoundError as e:
             logger.info(e)
 
