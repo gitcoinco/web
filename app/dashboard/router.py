@@ -257,7 +257,6 @@ class BountyViewSet(viewsets.ModelViewSet):
             queryset = queryset.order_by(order_by)
 
         queryset = queryset.distinct()
-
         # offset / limit
         limit = int(self.request.query_params.get('limit', 100))
         max_bounties = 100
@@ -268,6 +267,16 @@ class BountyViewSet(viewsets.ModelViewSet):
             start = int(offset)
             end = start + int(limit)
             queryset = queryset[start:end]
+
+        # workaround for https://github.com/gitcoinco/web/issues/3348
+        pks = queryset.values_list('pk', flat=True)
+        queryset = Bounty.objects.filter(pk__in=pks)
+
+        # order
+        order_by = self.request.query_params.get('order_by')
+        if order_by and order_by != 'null':
+            queryset = queryset.order_by(order_by)
+
 
         # save search history
         if self.request.user and self.request.user.is_authenticated:
