@@ -22,6 +22,7 @@ from django.db.models.signals import post_save
 from dashboard.models import Tip
 from inbox.utils import send_notification_to_user
 
+
 def create_notification(sender, **kwargs):
     tip = kwargs['instance']
     if tip.txid != '':
@@ -30,8 +31,9 @@ def create_notification(sender, **kwargs):
             get_user_model().objects.get(username=tip.username),
             tip.receive_url,
             'new_tip',
-            f'<b>New Tip</b> worth {tip.value_in_usdt_now} USD '\
+            f'<b>New Tip</b> worth {tip.value_in_usdt_now} USD ' +
             f'recieved from {tip.from_username}'
         )
+
 
 post_save.connect(create_notification, sender=Tip)

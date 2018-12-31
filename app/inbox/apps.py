@@ -25,4 +25,4 @@ class NotificationConfig(AppConfig):
     name = 'inbox'
 
     def ready(self):
-        import inbox.signals
+        import inbox.signals # noqa
