@@ -20,7 +20,7 @@
     <i class="fas fa-exclamation-triangle font-bigger-1 mr-3"></i>
     <div class="pr-5">{% trans "A bounty payment, tip, and Kudos will send as separate transactions. You will need to confirm payment of each item separately after clicking accept." %}</div>
   </div>
-
+  <input type="hidden" name="keywords" value="{{bounty.keywords}}">
   <div class="my-2">
     <select name="kudos-search" class="kudos-search custom-select gc-border-blue" id="kudos-search">
       <option></option>
