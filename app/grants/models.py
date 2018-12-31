@@ -425,13 +425,13 @@ class Subscription(SuperModel):
                 error_reason = "insufficient_allowance"
 
             debug_info = f"""
-                error_reason: {error_reason}
-                ==============================
-                decimals: {decimals}
-                balance: {balance}
-                allowance: {allowance}
-                amount_per_period: {self.amount_per_period}
-                """
+error_reason: {error_reason}
+==============================
+decimals: {decimals}
+balance: {balance}
+allowance: {allowance}
+amount_per_period: {self.amount_per_period}
+"""
         except Exception as e:
             return str(e)
         return debug_info
