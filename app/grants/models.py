@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import logging
 from datetime import timedelta
-from decimal import *
+from decimal import Decimal
 
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
@@ -596,18 +596,12 @@ class Subscription(SuperModel):
     def get_converted_monthly_amount(self):
         converted_amount = self.get_converted_amount(self.amount_per_period, self.token_symbol)
 
-        print('converted_amount', converted_amount)
-
         total_sub_seconds = Decimal(self.real_period_seconds) * Decimal(self.num_tx_approved)
-
-        print('total_sub_seconds', total_sub_seconds)
 
         if total_sub_seconds < 2592000:
             result = Decimal(converted_amount * Decimal(self.num_tx_approved))
-            print('result 1', result)
         elif total_sub_seconds >= 2592000:
             result = Decimal(converted_amount * (Decimal(2592000) / Decimal(self.real_period_seconds)))
-            print('result 2', result)
 
         return result
 

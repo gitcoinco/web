@@ -330,8 +330,6 @@ def grant_fund(request, grant_id, grant_slug):
                 grant.monthly_amount_subscribed + subscription.get_converted_monthly_amount()
             )
 
-            print('here', grant.monthly_amount_subscribed)
-
         except ConversionRateNotFoundError as e:
             logger.info(e)
 
