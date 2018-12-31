@@ -150,7 +150,7 @@ def get_avatar_context():
                 ['Earring-0'], ['Earring-1'], ['EarringBack-2', 'Earring-2'],
                 ['Earring-3'], ['Earring-4'], ['Masks-jack-o-lantern'],
                 ['Masks-guy-fawkes'], ['Masks-jack-o-lantern-lighted'],
-                ['Masks-wolverine_inspired'], ['Masks-captain_inspired'], ['Extras-Parrot'],
+                ['Masks-wolverine_inspired'], ['Masks-captain_inspired'], ['Masks-alien'], ['Extras-Parrot'],
                 ['Extras-wonderwoman_inspired'], ['Extras-santa_inspired'],
                 ['Extras-reindeer'], ['Masks-gitcoinbot'],
                 ['Extras-tattoo'], ['Masks-batman_inspired'], ['Masks-eye-patch'],
