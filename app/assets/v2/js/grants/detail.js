@@ -129,7 +129,7 @@ $(document).ready(function() {
         contract_owner_address
       ).send({
         from: accounts[0],
-        gasPrice: 8000000000
+        gasPrice: web3.utils.toHex($('.gas-section-owner [name=gasPrice]').val() * Math.pow(10, 9))
       }).on('transactionHash', function(transactionHash) {
         const linkURL = etherscan_tx_url(transactionHash);
 

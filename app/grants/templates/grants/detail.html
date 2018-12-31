@@ -97,6 +97,12 @@
                       <div class="font-body">
                         <p class="font-caption sub-title mb-0">Contract Owner Address</p>
                         <textarea id="contract_owner_address" class="p-0 m-0 inline-edit" name="contract_owner_address" disabled>{{ grant.contract_owner_address }}</textarea>
+                        <div id="gas-section" class="form__group-horizontal gas-section-owner">
+                          <h5 class="font-subheader pb-2">{% trans "Gas Settings" %}</h5>
+                          <div>
+                            {% include 'shared/wallet_estimate.html' %}
+                          </div>
+                        </div>
                         <button id="contract_owner_button" class="button button--primary hidden">
                         {% trans 'Change Contract Owner' %}
                         </button>
