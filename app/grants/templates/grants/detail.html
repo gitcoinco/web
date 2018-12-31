@@ -122,6 +122,9 @@
                       </div>
                     </div>
                   </div>
+                  <p>
+                    {% trans 'Total Funding Received: '%} {{ grant.amount_received }}
+                  </p>
                 </div>
                 {% if grant_is_inactive %}
                   <p class="font-weight-semibold my-2">{% trans "This grant has ended. You can find all active grants" %}

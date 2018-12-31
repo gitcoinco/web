@@ -626,7 +626,7 @@ class Subscription(SuperModel):
         grant = self.grant
         try:
             grant.amount_received = (
-                float(grant.amount_received) + get_converted_amount(self.amount_per_period, self.token_symbol)
+                grant.amount_received + self.get_converted_amount(self.amount_per_period, self.token_symbol)
             )
         except ConversionRateNotFoundError as e:
             logger.info(e)
@@ -634,7 +634,7 @@ class Subscription(SuperModel):
         if self.num_tx_processed == self.num_tx_approved:
             try:
                 grant.monthly_amount_subscribed = (
-                    grant.monthly_amount_subscribed + self.get_converted_monthly_amount()
+                    grant.monthly_amount_subscribed - self.get_converted_monthly_amount()
                 )
 
             except ConversionRateNotFoundError as e:
