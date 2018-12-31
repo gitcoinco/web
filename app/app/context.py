@@ -72,10 +72,9 @@ def insert_settings(request):
     if context['github_handle']:
         context['unclaimed_tips'] = Tip.objects.filter(
             expires_date__gte=timezone.now(),
-            receive_txid='',
             username__iexact=context['github_handle'],
             web3_type='v3',
-        ).send_happy_path()
+        ).send_happy_path().receive_fail()
         context['unclaimed_kudos'] = KudosTransfer.objects.filter(
             receive_txid='', username__iexact="@" + context['github_handle'], web3_type='v3',
         ).send_happy_path()
