@@ -21,6 +21,33 @@ var waitingStateActive = function() {
   setInterval(waitingRoomEntertainment, secondsBetweenQuoteChanges * 1000);
 };
 
+/**
+ * Disables button and throws alert with message if logged in user match username
+ * and a different metamask address.
+ * @param {string} username
+ * @param {string} address
+ * @param {string} button
+ * @param {string} message
+ */
+const notifyOwnerAddressMismatch = (username, address, button, message) => {
+  if (!web3 || !web3.eth)
+    return;
+  web3.eth.getAccounts((error, accounts) => {
+    if (document.contxt.github_handle == username &&
+        accounts[0] != address) {
+      if ($(button).attr('disabled') != 'disabled') {
+        $(button).attr('disabled', 'disabled');
+        _alert({
+          message: message
+        }, 'error');
+      }
+    } else {
+      $(button).removeAttr('disabled');
+      $('.alert.error').remove();
+    }
+  });
+};
+
 $(document).ready(function() {
 
   let contractVersion = $('#contract_version').val();
