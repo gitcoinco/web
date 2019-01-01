@@ -687,7 +687,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "The Season Of Giving"
+    subject = "Our EOY Letter | Happy Holidays"
     new_kudos_pks = [866, 811, 810]
     new_kudos_size_px = 150
     intro = '''
@@ -698,9 +698,10 @@ def render_new_bounty_roundup(to_email):
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
 </p>
 <p>
-We hope you all have a joyous holiday season. Send the Kudos above to your friends, your family,
-or anyone in crypto who could use some of holiday cheer! We're already excited for the next few weeks
-where we'll have a few presents for you all, as well.
+The Gitcoin team has been taking a collective breath at the end of our year and have gotten a chance to look back on
+late 2017 and 2018, while looking ahead to our future. <a href="https://twitter.com/GetGitcoin/status/1078686012514226177">The Gitcoin EOY Letter</a>
+shows our continued excitement towards the mission of growing a more open (source) internet, together. We're thankful to you for taking part
+in our journey and hope to reward each of you for your support with a great 2019.
 </p>
 <p>
 Since you're here... we'll start now! We've been hard at work on <a href="https://gitcoin.co/grants/">Gitcoin Grants</a>, a new tool hyperfocused on
@@ -714,7 +715,7 @@ recurring funding for open source developers. We're looking to provide an initia
             for Gitcoin funders!
         </li>
         <li>
-            Gitcoin Livestream is on as usual this week! Lighthouse + Cryptoeconomics.study will be on this week. Join us <a href="https://gitcoin.co/livestream">Friday at 5PM ET</a>!
+            No Gitcoin Livestream this week, but we'll be back on 1/5. In the future, join us <a href="https://gitcoin.co/livestream">Friday's at 5PM ET</a>!
         </li>
     </ul>
 </p>
