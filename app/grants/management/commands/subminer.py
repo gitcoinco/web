@@ -56,7 +56,7 @@ def process_subscription(subscription, live):
             )
 
         if not are_we_past_next_valid_timestamp:
-            logger.info("   -- ( NOT ready via web3) ")
+            logger.info(f"   -- ( NOT ready via web3, will be ready on {subscription.get_next_valid_timestamp()}) ")
         else:
             logger.info("   -- (ready via web3) ")
             status = 'failure'
