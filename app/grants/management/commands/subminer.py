@@ -33,6 +33,8 @@ logging.getLogger("marketing.mails").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 
+SLEEP_TIME = 20
+
 
 def process_subscription(subscription, live):
     is_ready_to_be_processed_db = subscription.get_is_ready_to_be_processed_from_db()
@@ -53,7 +55,9 @@ def process_subscription(subscription, live):
                 is_active_web3, signer,
             )
 
-        if are_we_past_next_valid_timestamp:
+        if not are_we_past_next_valid_timestamp:
+            logger.info(f"   -- ( NOT ready via web3, will be ready on {subscription.get_next_valid_timestamp()}) ")
+        else:
             logger.info("   -- (ready via web3) ")
             status = 'failure'
             txid = None
@@ -61,11 +65,14 @@ def process_subscription(subscription, live):
             try:
                 if live:
                     logger.info("   -- *executing* ")
+                    while not has_tx_mined(subscription.new_approve_tx_id, subscription.grant.network):
+                        time.sleep(SLEEP_TIME)
+                        logger.info(f"   -- *waiting {SLEEP_TIME} seconds*")
                     txid = subscription.do_execute_subscription_via_web3()
                     logger.info("   -- *waiting for mine* (txid %s) ", txid)
                     while not has_tx_mined(txid, subscription.grant.network):
-                        time.sleep(10)
-                        logger.info("   -- *waiting 10 seconds*")
+                        time.sleep(SLEEP_TIME)
+                        logger.info(f"   -- *waiting {SLEEP_TIME} seconds*")
                     status, __ = get_tx_status(txid, subscription.grant.network, timezone.now())
                     if status != 'success':
                         error = f"tx status from RPC is {status} not success, txid: {txid}"

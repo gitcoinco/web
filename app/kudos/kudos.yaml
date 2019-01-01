@@ -2309,5 +2309,17 @@
   - santa
   - elf
   image: 12_days_of_bounties.svg
-
+- name: panvala_holidays
+  to_address: 0xc6b0a4c5BA85d082eCd4Fb05FBF63eb92AC1083a
+  artist: PanvalaMark
+  description: Happy holidays from Panvala! Wishing you a new year full of cooperation!
+  artist: niran
+  platform: panvala
+  priceFinney: 1
+  numClonesAllowed: 50
+  tags:
+    - just for fun
+    - panvala
+    - holidays
+  image: panvala_holidays.svg
 

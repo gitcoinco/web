@@ -29,6 +29,7 @@ from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
@@ -73,12 +74,15 @@ def grants(request):
     grants = paginator.get_page(page)
 
     for _grant in grants:
-        _grant.activeSubscriptions = Subscription.objects.filter(grant=_grant, active=True)
+        _grant.activeSubscriptions = Subscription.objects.filter(grant=_grant, active=True).distinct('contributor_profile')
 
     params = {
         'active': 'grants_landing',
         'title': _('Grants Explorer'),
         'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
+        'card_player_override': 'https://www.youtube.com/embed/eVgEWSPFR2o',
+        'card_player_stream_override': static('v2/card/grants.mp4'),
+        'card_player_thumb_override': static('v2/card/grants.png'),
         'grants': grants,
         'grants_count': _grants.count(),
         'keywords': get_keywords(),
@@ -162,7 +166,7 @@ def grant_details(request, grant_id, grant_slug):
 def grant_new(request):
     """Handle new grant."""
     if not request.user.has_perm('grants.add_grant'):
-        messages.info(request, _('You do not have permission to add a grant.'))
+        messages.info(request, _('Grants is still in beta. To create a Grant ping us at team@gitcoin.co'))
         return redirect(reverse('grants:grants'))
 
     profile = get_profile(request)
