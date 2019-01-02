@@ -596,13 +596,13 @@ next_valid_timestamp: {next_valid_timestamp}
                     self.token_symbol,
                     "USDT")
                 )
-        
-         except ConversionRateNotFoundError as e:
+
+        except ConversionRateNotFoundError as e:
             logger.info(e)
         return None
 
     def get_converted_monthly_amount(self):
-        converted_amount = self.get_converted_amount(self.amount_per_period, self.token_symbol)
+        converted_amount = self.get_converted_amount()
 
         total_sub_seconds = Decimal(self.real_period_seconds) * Decimal(self.num_tx_approved)
 
@@ -632,14 +632,8 @@ next_valid_timestamp: {next_valid_timestamp}
         if value_usdt:
             grant.amount_received += value_usdt
 
-        if self.num_tx_processed == self.num_tx_approved:
-            try:
-                grant.monthly_amount_subscribed = (
-                    grant.monthly_amount_subscribed - self.get_converted_monthly_amount()
-                )
-
-            except ConversionRateNotFoundError as e:
-                logger.info(e)
+        if self.num_tx_processed == self.num_tx_approved and value_usdt:
+            grant.monthly_amount_subscribed -= self.get_converted_monthly_amount()
 
         grant.save()
         successful_contribution(self.grant, self, contribution)

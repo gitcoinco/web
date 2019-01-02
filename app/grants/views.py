@@ -326,12 +326,10 @@ def grant_fund(request, grant_id, grant_slug):
         subscription.contributor_profile = profile
         subscription.grant = grant
         subscription.save()
-        try:
-            grant.monthly_amount_subscribed = (
-                grant.monthly_amount_subscribed + subscription.get_converted_monthly_amount()
-            )
-        except ConversionRateNotFoundError as e:
-            logger.info(e)
+
+        value_usdt = self.get_converted_amount
+        if value_usdt:
+            grant.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
 
         grant.save()
         new_supporter(grant, subscription)
@@ -386,13 +384,10 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
         subscription.cancel_tx_id = request.POST.get('sub_cancel_tx_id', '')
         subscription.active = False
         subscription.save()
-        try:
-            grant.monthly_amount_subscribed = (
-                grant.monthly_amount_subscribed - subscription.get_converted_monthly_amount()
-            )
 
-        except ConversionRateNotFoundError as e:
-            logger.info(e)
+        value_usdt = self.get_converted_amount
+        if value_usdt:
+            grant.monthly_amount_subscribed -= subscription.get_converted_monthly_amount()
 
         grant.save()
         support_cancellation(grant, subscription)
