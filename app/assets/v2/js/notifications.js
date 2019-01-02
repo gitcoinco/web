@@ -238,7 +238,7 @@ const newDate = (newObj, oldObj) => {
       return obj.id == obj2.id;
     });
   });
-}
+};
 
 Vue.filter('moment-fromnow', function(date) {
   moment.defineLocale('en-custom', {parentLocale: 'en'});
