@@ -223,9 +223,9 @@ if ($('#is-authenticated').val() === 'True' && !localStorage['notify_policy_upda
           'we use your information.') + '</p>' +
         '<p>' + gettext('We recently reviewed our Privacy Policy to comply with requirements of ' +
           'General Data Protection Regulation (GDPR), improving our Terms of Use, ' +
-          'Privacy Policy and Cookie Policy. These changes will go into effect on May 25, ' +
-          '2018, and your continued use of the Gitcoin after May 25, 2018 will be ' +
-          'subject to our updated Terms of Use and Privacy Policy.') +
+          'Privacy Policy and Cookie Policy. These changes are in effect ' +
+          'and your continued use of the Gitcoin will be ' +
+          'subjected to our updated Terms of Use and Privacy Policy.') +
         '</p>' +
       '</div>' +
       '<div class="col-12 font-caption"><a href="/legal/policy" target="_blank">' +
