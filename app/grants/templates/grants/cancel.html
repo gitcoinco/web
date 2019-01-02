@@ -79,7 +79,7 @@
                 {% include 'shared/wallet_estimate.html' %}
               </div>
             </div>
-            <button class="button button--primary button--warning button--full">{% trans "Cancel Contribution" %}
+            <button id="cancel-subscription" class="button button--primary button--warning button--full">{% trans "Cancel Contribution" %}
             </button>
             <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
             <input type="hidden" id="contract_version" name="contract_version" value="{{ grant.contract_version }}">
@@ -90,6 +90,8 @@
             <input type="hidden" id="amount_per_period" name="amount_per_period" value="{{ subscription.amount_per_period }}">
             <input type="hidden" id="real_period_seconds" name="real_period_seconds" value="{{ subscription.real_period_seconds }}">
             <input type="hidden" id="signature" name="signature" value="{{ subscription.contributor_signature }}">
+            <input type="hidden" id="subscriber-handle" name="subscriber-handle" value="{{ subscription.contributor_profile }}">
+            <input type="hidden" id="subscriber-address" name="subscriber-address" value="{{ subscription.contributor_address }}">
           </form>
         </div>
 

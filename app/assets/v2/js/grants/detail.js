@@ -4,11 +4,21 @@ const editableFields = [
   '#grant-admin',
   '#contract_owner_address',
   '#form--input__description',
-  '#grant-members'
+  '#grant-members',
+  '#amount_goal'
 ];
 
 $(document).ready(function() {
   showMore();
+
+  setInterval (() => {
+    notifyOwnerAddressMismatch(
+      $('#grant-admin').val(),
+      $('#contract_owner_address').val(),
+      '#cancel_grant',
+      'Looks like your grant has been created with ' + $('#contract_owner_address').val() + '. Switch to take action on your grant.'
+    );
+  }, 1000);
 
   userSearch('#grant-admin');
   userSearch('#grant-members');
@@ -24,6 +34,8 @@ $(document).ready(function() {
     $('#save-details').removeClass('hidden');
     $('#cancel-details').removeClass('hidden');
     $('#contract_owner_button').removeClass('hidden');
+    $('#edit-amount_goal').removeClass('hidden');
+    $('.grant__progress').addClass('hidden');
 
     copyDuplicateDetails();
 
@@ -37,11 +49,14 @@ $(document).ready(function() {
     $('#edit-details').removeClass('hidden');
     $('#save-details').addClass('hidden');
     $('#cancel-details').addClass('hidden');
+    $('#edit-amount_goal').addClass('hidden');
+    $('.grant__progress').removeClass('hidden');
 
     let edit_title = $('#form--input__title').val();
     let edit_reference_url = $('#form--input__reference-url').val();
     let edit_admin_profile = $('#grant-admin option').last().text();
     let edit_description = $('#form--input__description').val();
+    let edit_amount_goal = $('#amount_goal').val();
     let edit_grant_members = $('#grant-members').val();
 
     $.ajax({
@@ -52,13 +67,14 @@ $(document).ready(function() {
         'edit-reference_url': edit_reference_url,
         'edit-admin_profile': edit_admin_profile,
         'edit-description': edit_description,
+        'edit-amount_goal': edit_amount_goal,
         'edit-grant_members[]': edit_grant_members
       },
       success: function(json) {
         window.location.reload(false);
       },
       error: function() {
-        alert('Your edits failed to save. Please try again.');
+        _alert({ message: gettext('Your edits failed to save. Please try again.') }, 'error');
       }
     });
 
@@ -69,6 +85,7 @@ $(document).ready(function() {
     $('#edit-details').removeClass('hidden');
     $('#save-details').addClass('hidden');
     $('#cancel-details').addClass('hidden');
+    $('.grant__progress').removeClass('hidden');
 
     editableFields.forEach(field => disableEdit(field));
   });
@@ -110,7 +127,7 @@ $(document).ready(function() {
                 window.location.reload(false);
               },
               error: function() {
-                alert('Canceling your grant failed to save. Please try again.');
+                _alert({ message: gettext('Canceling your grant failed to save. Please try again.') }, 'error');
               }
             });
           });
@@ -121,7 +138,6 @@ $(document).ready(function() {
   $('#contract_owner_button').on('click', function(e) {
     let contract_owner_address = $('#contract_owner_address').val();
     let contract_address = $('#contract_address').val();
-    let grant_cancel_tx_id;
     let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, contract_address);
 
     web3.eth.getAccounts(function(err, accounts) {
@@ -148,7 +164,7 @@ $(document).ready(function() {
             window.location.reload(false);
           },
           error: function() {
-            alert('Changing the contract owner address failed to save. Please try again.');
+            _alert({ message: gettext('Changing the contract owner address failed to save. Please try again.') }, 'error');
           }
         });
       });
@@ -157,7 +173,7 @@ $(document).ready(function() {
 
 });
 
-const makeEditable = (input, icon) => {
+const makeEditable = (input) => {
   $(input).addClass('editable');
   $(input).prop('readonly', false);
   $(input).prop('disabled', false);
