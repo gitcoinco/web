@@ -193,70 +193,6 @@ span {
   overflow-x: hidden;
 }
 
-.bounty_def {
-  background-color: #eee;
-  height: 140px;
-  padding-top: 10px;
-}
-
-.bounty_def #mce-EMAIL {
-  display: inline;
-  text-transform: uppercase;
-  font-size: 14px;
-}
-
-.bounty_def #mc-embedded-subscribe {
-  display: inline;
-  text-transform: uppercase;
-}
-
-#mce-EMAIL:focus {
-  outline: none;
-}
-
-#mc-embedded-subscribe:hover {
-  cursor: pointer;
-}
-
-#mc-embedded-subscribe:focus {
-  box-shadow: none;
-}
-
-#mc_embed_signup_scroll #mce-EMAIL {
-  font-size: 1rem !important;
-  height: 45px !important;
-  padding: .1em 1em !important;
-  border: none !important;
-  border-radius: 3px 0 0 3px !important;
-}
-
-#mc_embed_signup_scroll #mc-embedded-subscribe {
-  transition: none;
-  font-size: 1.25rem;
-  padding: 0 20px;
-  height: 45px;
-  border-radius: 0 3px 3px 0;
-  margin-left: -3px;
-  border: none;
-}
-
-#mc_embed_signup_scroll #mc-embedded-subscribe:hover {
-  background: #cf005a;
-  color: white;
-}
-
-#mc_embed_signup_scroll #mc-embedded-subscribe i {
-  margin-left: 5px;
-}
-
-.bounty_def h5 {
-  font-size: 1.1rem;
-}
-
-.bounty_def .mt-4 {
-  margin-top: 10px !important;
-}
-
 .interior #logo {
   margin-top: -5px;
 }
@@ -1220,25 +1156,6 @@ input.is-invalid {
     width: 130px;
   }
 
-  .bounty_def .col-7 {
-    width: 80%;
-    flex: 0 0 80%;
-    max-width: 80%;
-    padding-left: 20px !important;
-  }
-
-  .bounty_def .ml-3 {
-    font-size: .9rem;
-  }
-
-  .bounty_def h5 {
-    font-size: 1.3rem;
-  }
-
-  .bounty_def .mt-4 {
-    margin-top: 10px !important;
-  }
-
   #mission_hero .font-bigger-4 {
     font-size: 1.3rem;
   }
@@ -1295,10 +1212,6 @@ input.is-invalid {
     max-width: 100%;
   }
 
-  .bounty_def {
-    height: 160px;
-  }
-
   #team .row,
   #team .row .d-flex {
     display: block;
@@ -1324,10 +1237,6 @@ input.is-invalid {
     padding-right: 1rem !important;
   }
 
-  .bounty_def .mt-4 {
-    margin-top: 0 !important;
-  }
-
   .search_bar .sort_row {
     display: none !important;
   }
@@ -1335,19 +1244,6 @@ input.is-invalid {
   #hero_cta a.btn {
     padding: .5rem .75rem;
     font-size: 1rem;
-  }
-
-  .bounty_def h5 {
-    font-size: 1.2rem;
-  }
-
-  #mc_embed_signup_scroll #mce-EMAIL {
-    border-radius: 3px !important;
-  }
-
-  #mc_embed_signup_scroll #mc-embedded-subscribe {
-    margin-top: 15px;
-    border-radius: 3px;
   }
 
   #mission_hero .font-bigger-4 {
@@ -1513,10 +1409,6 @@ input.is-invalid {
     padding-top: 20px;
   }
 
-  .bounty_def {
-    display: none;
-  }
-
   .interior .body {
     width: 100%;
     flex: 0 0 100%;
@@ -1541,13 +1433,8 @@ input.is-invalid {
   .header .subheader-line {
     font-size: 1em;
   }
-
-  .bounty_def h5 {
-    font-size: .8rem;
-  }
 }
 
-/* TODO : Remove after GDPR */
 .modal h2 {
   letter-spacing: 0;
 }
@@ -1560,7 +1447,6 @@ input.is-invalid {
 .notify_policy_update .button {
   padding: 0.25rem 1.25rem;
 }
-/* End TODO */
 
 /* Results */
 

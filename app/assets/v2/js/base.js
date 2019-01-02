@@ -166,8 +166,8 @@ $(document).ready(function() {
     $('body').delegate("a[href='/" + to + "']", 'click', callback);
   }
 
-  $('body').delegate("a[href^='https://github.com/']", 'click', function(e) {
-    var _params = {
+  $('body').delegate("a[href^='https://github.com/']", 'click', () => {
+    const _params = {
       'to_domain': 'github.com',
       'to': $(this).attr('href')
     };
@@ -175,20 +175,15 @@ $(document).ready(function() {
     mixpanel.track('Outbound', _params);
   });
 
-  // To be deprecrated with #newsletter-subscribe
-  $('#mc-embedded-subscribe').click(function() {
+  $('#newsletter-subscribe').click(() => {
     mixpanel.track('Email Subscribe');
   });
 
-  $('#newsletter-subscribe').click(function() {
-    mixpanel.track('Email Subscribe');
-  });
-
-  $('body.whitepaper .btn-success').click(function() {
+  $('body.whitepaper .btn-success').click(() => {
     mixpanel.track('Whitepaper Request');
   });
 
-  $('.accordion').click(function() {
+  $('.accordion').click(() => {
     this.classList.toggle('active');
     var panel = this.nextElementSibling;
 
@@ -202,11 +197,10 @@ $(document).ready(function() {
   });
 });
 
-/* TODO : Remove after GDPR */
 if ($('#is-authenticated').val() === 'True' && !localStorage['notify_policy_update']) {
   localStorage['notify_policy_update'] = true;
 
-  var content = $.parseHTML(
+  const content = $.parseHTML(
     '<div><div class="row">' +
       '<div class="col-12 closebtn">' +
         '<a rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">' +
@@ -236,7 +230,5 @@ if ($('#is-authenticated').val() === 'True' && !localStorage['notify_policy_upda
       '</div>' +
     '</div></div>');
 
-  var modal = $(content).appendTo('body').modal({
-    modalClass: 'modal notify_policy_update'
-  });
+  $(content).appendTo('body').modal({ modalClass: 'modal notify_policy_update' });
 }
