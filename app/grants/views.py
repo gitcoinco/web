@@ -34,7 +34,6 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
-from economy.utils import ConversionRateNotFoundError
 from app.utils import get_profile
 from dashboard.models import Profile
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
@@ -327,9 +326,9 @@ def grant_fund(request, grant_id, grant_slug):
         subscription.grant = grant
         subscription.save()
 
-        value_usdt = self.get_converted_amount
+        value_usdt = subscription.get_converted_amount
         if value_usdt:
-            grant.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
+            grant.monthly_amount_subscribed += subscription.get_converted_monthly_amount
 
         grant.save()
         new_supporter(grant, subscription)
@@ -385,9 +384,9 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
         subscription.active = False
         subscription.save()
 
-        value_usdt = self.get_converted_amount
+        value_usdt = subscription.get_converted_amount
         if value_usdt:
-            grant.monthly_amount_subscribed -= subscription.get_converted_monthly_amount()
+            grant.monthly_amount_subscribed -= subscription.get_converted_monthly_amount
 
         grant.save()
         support_cancellation(grant, subscription)

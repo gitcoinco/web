@@ -599,7 +599,7 @@ next_valid_timestamp: {next_valid_timestamp}
 
         except ConversionRateNotFoundError as e:
             logger.info(e)
-        return None
+            return None
 
     def get_converted_monthly_amount(self):
         converted_amount = self.get_converted_amount()
