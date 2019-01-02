@@ -231,7 +231,7 @@ if (document.getElementById('gc-inbox')) {
   });
 }
 
-function newData(newObj, oldObj) {
+const newDate = (newObj, oldObj) => {
 
   return newObj.filter(function(obj) {
     return !oldObj.some(function(obj2) {
