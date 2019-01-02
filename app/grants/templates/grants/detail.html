@@ -96,15 +96,15 @@
                     {% if is_admin and not grant_is_inactive %}
                       <div class="font-body">
                         <p class="font-caption sub-title mb-0">Contract Owner Address</p>
-                        <textarea id="contract_owner_address" class="p-0 m-0 inline-edit" name="contract_owner_address" disabled>{{ grant.contract_owner_address }}</textarea>
+                        <input id="contract_owner_address" class="p-0 m-0 inline-edit" name="contract_owner_address" value="{{ grant.contract_owner_address }}" disabled>
                         <div id="gas-section" class="form__group-horizontal gas-section-owner">
                           <h5 class="font-subheader pb-2">{% trans "Gas Settings" %}</h5>
                           <div>
                             {% include 'shared/wallet_estimate.html' %}
                           </div>
                         </div>
-                        <button id="contract_owner_button" class="button button--primary hidden">
-                        {% trans 'Change Contract Owner' %}
+                        <button id="contract_owner_button" class="mt-2 button button--primary button__small hidden">
+                          {% trans "Change Contract Owner" %}
                         </button>
                       </div>
                     {% endif %}
@@ -112,6 +112,12 @@
                 </div>
               </div>
               <div class="col-12">
+                {% if is_admin %}
+                  <div id="edit-amount_goal" class="my-2 hidden">
+                    <p class="font-caption sub-title mb-0">{% trans "Monthly Amount sought in DAI" %}</p>
+                    <input id="amount_goal" class="p-0 m-0 inline-edit" value="{{ grant.amount_goal }}" disabled>
+                  </div>
+                {% endif %}
                 <div class="grant__progress mt-4">
                   <div class="progress">
                     <div class="progress-bar" role="progressbar" style="width: {{ grant.percentage_done }}%" aria-valuenow="{{ grant.percentage_done }}%" aria-valuemin="0" aria-valuemax="100"></div>
@@ -120,11 +126,11 @@
                     <div class="row">
                       <div class="col-6">
                         <span>{{ grant.amount_received|floatformat:2|intcomma }} DAI</span>
-                        <p>Current</p>
+                        <p>{% trans "Current" %}</p>
                       </div>
                       <div class="col-6 text-right">
                         <span>{{ grant.amount_goal|floatformat:2|intcomma }} DAI</span>
-                        <p>Monthly Goal</p>
+                        <p>{% trans "Monthly Goal" %}</p>
                       </div>
                     </div>
                   </div>
@@ -193,13 +199,13 @@
                 {% if is_admin and not grant_is_inactive %}
                   <div class="mb-4 d-inline-block">
                     <button id="edit-details" class="button btn-gc-blue">
-                      <i class="fas fa-edit mr-2"></i> Edit Info
+                      <i class="fas fa-edit mr-2"></i> {% trans "Edit Info" %}
                     </button>
                     <button id="save-details" class="button btn-gc-blue hidden">
-                      <i class="fas fa-save mr-2"></i> Save Info
+                      <i class="fas fa-save mr-2"></i> {% trans "Save Info" %}
                     </button>
                     <button id="cancel-details" class="button button--primary hidden">
-                      <i class="fas fa-times mr-2"></i> Cancel Edit
+                      <i class="fas fa-times mr-2"></i> {% trans "Cancel Edit" %}
                     </button>
                   </div>
                 {% endif %}
@@ -253,7 +259,7 @@
                         <img src="{{ team_member.avatar_url }}">
                       </div>
                       <div class="grant-item__member-handle mt-1">
-                        <span id="grant-profile">{{ team_member }}</span>
+                        <span class="grant-profile">{{ team_member }}</span>
                       </div>
                     </div>
                   </a>
@@ -269,7 +275,7 @@
                 <a class="grant__stakeholders-item mr-2" href="{% url 'profile' subscriber.contributor_profile.handle %}">
                   <img src="{{ subscriber.contributor_profile.avatar_url }}" />
                   <div>
-                    <span id="grant-profile">{{ subscriber.contributor_profile.handle }}</span>
+                    <span class="grant-profile">{{ subscriber.contributor_profile.handle }}</span>
                   </div>
                 </a>
               {% empty %}

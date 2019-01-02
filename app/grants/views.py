@@ -74,7 +74,7 @@ def grants(request):
     grants = paginator.get_page(page)
 
     for _grant in grants:
-        _grant.activeSubscriptions = Subscription.objects.filter(grant=_grant, active=True)
+        _grant.activeSubscriptions = Subscription.objects.filter(grant=_grant, active=True).distinct('contributor_profile')
 
     params = {
         'active': 'grants_landing',
@@ -132,6 +132,7 @@ def grant_details(request, grant_id, grant_slug):
             admin_profile = Profile.objects.get(handle=form_profile)
             grant.admin_profile = admin_profile
             grant.description = request.POST.get('edit-description')
+            grant.amount_goal = request.POST.get('edit-amount_goal')
             team_members = request.POST.getlist('edit-grant_members[]')
             team_members.append(str(admin_profile.id))
             grant.team_members.set(team_members)
