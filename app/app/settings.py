@@ -160,7 +160,7 @@ TEMPLATES = [{
         'context_processors': [
             'django.template.context_processors.debug', 'django.template.context_processors.request',
             'django.contrib.auth.context_processors.auth', 'django.contrib.messages.context_processors.messages',
-            'app.context.insert_settings', 'social_django.context_processors.backends',
+            'app.context.preprocess', 'social_django.context_processors.backends',
             'social_django.context_processors.login_redirect',
         ],
     },

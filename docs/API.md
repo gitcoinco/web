@@ -16,14 +16,14 @@ Beyond simple datatypes like `string` or `integer` the API returns datatypes lik
 
 The bounties endpoint provides a listing of bounties and their current status. There are two endpoints that access bounties:
 
-- `https://gitcoin.co/api/v0.1/bounties` - Returns a list of bounties
-- `https://gitcoin.co/api/v0.1/bounties/<bountyId>` - Returns a single bounty by ID.
+- `https://gitcoin.co/api/v0.1/bounties/` - Returns a list of bounties
+- `https://gitcoin.co/api/v0.1/bounties/<bountyId>/` - Returns a single bounty by ID.
 
 #### Fields
 
 | Field Key          |  Datatype          | Description                                                       |
 |--------------------|--------------------|-------------------------------------------------------------------|
-| `url`              | `string`           | URL for this specific bounty Ex: api/v0.1/bounties/9              |
+| `url`              | `string`           | URL for this specific bounty Ex: api/v0.1/bounties/9/              |
 | `created_on`       | `date_time`        | Creation timestamp                                                |
 | `modified_on`      | `date_time`        | Last modified timestamp                                           |
 | `title`            | `string`           | Title of the bounty                                               |
