@@ -50,8 +50,8 @@
     </div>
 
     {% for product in products %}
-      <div class="{{ product.name }} container-fluid px-0 ">
-        <div class="row py-3 py-md-0 ">
+      <div class="{{ product.name }} container-fluid px-0 py-5">
+        <div class="row py-3 py-md-0">
           {% if forloop.counter|divisibleby:2 %}
             <div class="d-flex flex-column col-md-6 product-left py-md-5 py-2 align-self-center">
               <span class="g-font-futura mb-2 product-name d-flex align-items-center">

@@ -106,26 +106,26 @@ $(document).ready(function() {
   });
 
   // pulse animation on click
-  $('.pulseClick').click(function(e) {
-    var ele = $(this);
+  $('.pulseClick').on('click', (event) => {
+    let element = $(event.target);
 
-    ele.addClass('pulseButton');
-    var callback = function() {
-      ele.removeClass('pulseButton');
+    element.addClass('pulseButton');
+    let callback = () => {
+      element.removeClass('pulseButton');
     };
 
     setTimeout(callback, 300);
   });
 
-  $('.faq_item .question').click(function() {
-    $(this).parents('.faq_parent').find('.answer').toggleClass('hidden');
-    $(this).parents('.faq_parent').find('.answer').toggleClass('show');
+  $('.faq_item .question').on('click', (event) => {
+    $(event.target).parents('.faq_parent').find('.answer').toggleClass('hidden');
+    $(event.target).parents('.faq_parent').find('.answer').toggleClass('show');
   });
 
   // mixpanel integration
-  setTimeout(function() {
-    var web3v = (typeof web3 == 'undefined' || typeof web3.version == 'undefined') ? 'none' : web3.version.api;
-    var params = {
+  setTimeout(() => {
+    let web3v = (typeof web3 == 'undefined' || typeof web3.version == 'undefined') ? 'none' : web3.version.api;
+    const params = {
       page: document.location.pathname,
       web3: web3v
     };
@@ -133,7 +133,7 @@ $(document).ready(function() {
     mixpanel.track('Pageview', params);
   }, 300);
 
-  var tos = [
+  const tos = [
     'slack',
     'btctalk',
     'reddit',
@@ -153,13 +153,13 @@ $(document).ready(function() {
     'help/faq'
   ];
 
-  for (var i = 0; i < tos.length; i++) {
-    var to = tos[i];
-    var callback = function(e) {
-      var _params = {
-        'to': $(this).attr('href')
-      };
+  for (let i = 0; i < tos.length; i++) {
+    const to = tos[i];
+    const _params = {
+      'to': $(this).attr('href')
+    };
 
+    const callback = () => {
       mixpanel.track('Outbound', _params);
     };
 
@@ -175,15 +175,15 @@ $(document).ready(function() {
     mixpanel.track('Outbound', _params);
   });
 
-  $('#newsletter-subscribe').click(() => {
+  $('#newsletter-subscribe').on('click', () => {
     mixpanel.track('Email Subscribe');
   });
 
-  $('body.whitepaper .btn-success').click(() => {
+  $('body.whitepaper .btn-success').on('click', () => {
     mixpanel.track('Whitepaper Request');
   });
 
-  $('.accordion').click(() => {
+  $('.accordion').on('click', () => {
     this.classList.toggle('active');
     var panel = this.nextElementSibling;
 
