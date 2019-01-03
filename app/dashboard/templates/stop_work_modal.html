@@ -43,44 +43,44 @@
           {% csrf_token %}
           <div class="options mb-3">
             <div class="form__radio option">
-              <input name="reason_cancel" id="reason_1" type="radio" value="1- No response from funder" />
+              <input name="stop_working_reason" id="reason_1" type="radio" value="1- No response from funder" />
               <label class="filter-label" for=reason_1>{% trans "There was no response from the funder." %}</label>
             </div>
 
             <div class="form__radio option">
-              <input name="reason_cancel" id="reason_2" type="radio" value="2- Someone else approved" />
+              <input name="stop_working_reason" id="reason_2" type="radio" value="2- Someone else approved" />
               <label class="filter-label" for=reason_2>{% trans "Someone else was approved / reserved for the bounty." %}</label>
             </div>
 
             <div class="form__radio option">
-              <input name="reason_cancel" id="reason_3" type="radio" value="3- Changed scope" />
+              <input name="stop_working_reason" id="reason_3" type="radio" value="3- Changed scope" />
               <label class="filter-label" for=reason_3>{% trans "The scope of work deviated from the initial bounty." %}</label>
             </div>
 
             <div class="form__radio option">
-              <input name="reason_cancel" id="reason_4" type="radio" value="4- Technical blockers" />
+              <input name="stop_working_reason" id="reason_4" type="radio" value="4- Technical blockers" />
               <label class="filter-label" for=reason_4>{% trans "There were technical blockers that prevented the bounty from being completed. (e.g. issues setting up env, incomplete docs, etc.)" %}</label>
             </div>
 
             <div class="form__radio option">
-              <input name="reason_cancel" id="reason_5" type="radio" value="5- Insufficient skillset" />
+              <input name="stop_working_reason" id="reason_5" type="radio" value="5- Insufficient skillset" />
               <label class="filter-label" for=reason_5>{% trans "I was unable to finish the bounty with my current skillset." %}</label>
             </div>
 
             <div class="form__radio option">
-              <input name="reason_cancel" id="reason_6" type="radio" value="6- No time" />
+              <input name="stop_working_reason" id="reason_6" type="radio" value="6- No time" />
               <label class="filter-label" for=reason_6>{% trans "I no longer have time to do the bounty." %}</label>
             </div>
 
             <div class="form__radio option">
-              <input name="reason_cancel" id="reason_7" type="radio" value="7- Max cap reached" />
+              <input name="stop_working_reason" id="reason_7" type="radio" value="7- Max cap reached" />
               <label class="filter-label" for=reason_7>{% trans "I reached the max cap of bounties one could work on simultaneously and wanted to work on another bounty." %}</label>
             </div>
 
             <div class="form__radio option">
-              <input name="reason_cancel" id="reason_other" type="radio" value="other" />
+              <input name="stop_working_reason" id="reason_other" type="radio" value="other" />
               <label class="filter-label" for=reason_other>{% trans "Others (Please tell us more)" %}</label>
-              <textarea class="form__input" name="reason_cancel" id="reason_text" cols="10" rows="4" placeholder="{% trans 'What made you stop work?' %}"></textarea>
+              <textarea class="form__input" name="stop_working_reason" id="reason_text" cols="10" rows="4" placeholder="{% trans 'What made you stop work?' %}"></textarea>
             </div>
           </div>
 

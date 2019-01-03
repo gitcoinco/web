@@ -316,8 +316,9 @@ def remove_interest(request, bounty_id):
     """
     profile_id = request.user.profile.pk if request.user.is_authenticated and getattr(request.user, 'profile', None) else None
 
-    completion_message = request.GET.get('message', '')
-    access_token = request.GET.get('token')
+    completion_message = request.POST.get('message', '')
+    access_token = request.POST.get('token')
+    print(access_token)
     if access_token:
         helper_handle_access_token(request, access_token)
         github_user_data = get_github_user_data(access_token)

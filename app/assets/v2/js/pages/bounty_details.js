@@ -551,12 +551,13 @@ var attach_work_actions = function() {
       show_interest_modal.call(this);
     } else if ($(this).attr('href') === '/extend-deadlines') {
       show_extend_deadline_modal.call(this);
-    } else if (confirm('sure?')) {
-    // } else if (show_stop_work_modal()) {
-      $(this).attr('href', '/interested');
-      $(this).find('span').text(gettext('Start Work'));
-      $(this).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you would like to take on this project') + '</div>');
-      remove_interest(document.result['pk']);
+    // } else if (confirm('sure?')) {
+    } else if ($(this).attr('href') === '/uninterested') {
+      show_stop_work_modal.call(this)
+      // // $(this).attr('href', '/interested');
+      // $(this).find('span').text(gettext('Start Work'));
+      // $(this).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you would like to take on this project') + '</div>');
+      // remove_interest(document.result['pk']);
     }
   });
 };
@@ -656,22 +657,30 @@ var show_stop_work_modal = function() {
         console.log(e)
         e.preventDefault();
 
-        // var extended_time = $('input[name=updatedExpires]').val();
+        const csrftoken = $("[name=csrfmiddlewaretoken]").val();
+        $.ajaxSetup({
+          beforeSend: function(xhr) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+        });
 
-        var payload = {
-          pk: document.bountyPk,
-          canceled_bounty_reason: "agora vai"
+        // var extended_time = $('input[name=updatedExpires]').val();
+        const selectedRadio = $('input[name=stop_working_reason]:checked').val();
+        let reasonCancel;
+
+        if (selectedRadio == 'other') {
+          reasonCancel = $('#reason_text').val();
+        } else {
+          reasonCancel = selectedRadio;
         }
 
+        remove_interest(document.result['pk'], {
+          message: reasonCancel
+        });
+        $(self).attr('href', '/interested');
+        $(self).find('span').text(gettext('Start Work'));
+        $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you would like to take on this project') + '</div>');
 
-
-        var sendForm = fetchData (  'cancel_reason',
-                        'POST',
-                        payload)
-        $.when( sendForm ).then( function(payback) {
-          console.log(payback)
-          return payback
-        })
         // extend_expiration(document.bountyPk, {
           // cancelled_bounty_reason: extended_time
         // });

@@ -271,12 +271,12 @@ var add_interest = function(bounty_pk, data) {
 };
 
 /** Remove the current profile from the interested profiles list. */
-var remove_interest = function(bounty_pk, slash = false) {
+var remove_interest = function(bounty_pk, data) {
   if (!document.interested) {
     return;
   }
 
-  mutate_interest(bounty_pk, 'remove', slash);
+  mutate_interest(bounty_pk, 'remove', data);
 };
 
 /** Helper function -- mutates interests in either direction. */
