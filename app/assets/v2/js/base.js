@@ -221,10 +221,10 @@ if ($('#is-authenticated').val() === 'True' && !localStorage['notify_policy_upda
           'and how the internet is evolving. We hope Web 3.0 will bring more control ' +
           'of data to users. With this ethos in mind, we are always careful about how ' +
           'we use your information.') + '</p>' +
-        '<p>' + gettext('We recently reviewed our Privacy Policy to comply with requirements of ' +
-          'General Data Protection Regulation (GDPR), improving our Terms of Use, ' +
-          'Privacy Policy and Cookie Policy. These changes will go into effect on May 25, ' +
-          '2018, and your continued use of the Gitcoin after May 25, 2018 will be ' +
+        '<p>' + gettext('Our Privacy Policy and Terms of Use are now compliant with requirements of ' +
+          'General Data Protection Regulation (GDPR). ' +
+          'These changes are in effect as of May 25, ' +
+          '2018. So your continued use of the Gitcoin will be ' +
           'subject to our updated Terms of Use and Privacy Policy.') +
         '</p>' +
       '</div>' +
