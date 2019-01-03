@@ -688,7 +688,7 @@ def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
     subject = "Announcing Gitcoin Grants | Happy New Year!"
-    new_kudos_pks = [153, 982, 150]
+    new_kudos_pks = [153, 185, 150]
     new_kudos_size_px = 150
     intro = '''
 <p>
