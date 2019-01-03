@@ -36,7 +36,6 @@ import dashboard.views
 import dataviz.d3_views
 import dataviz.views
 import enssubdomain.views
-import external_bounties.views
 import faucet.views
 import gitcoinbot.views
 import healthcheck.views
@@ -49,7 +48,6 @@ import retail.views
 import revenue.views
 import tdi.views
 from dashboard.router import router as dbrouter
-from external_bounties.router import router as ebrouter
 from grants.router import router as grant_router
 from kudos.router import router as kdrouter
 from wagtail.admin import urls as wagtailadmin_urls
@@ -87,7 +85,6 @@ urlpatterns = [
     url(r'^api/v0.1/funding/save/?', dashboard.ios.save, name='save'),
     url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
     url(r'^api/v0.1/', include(dbrouter.urls)),
-    url(r'^api/v0.1/', include(ebrouter.urls)),
     url(r'^api/v0.1/', include(kdrouter.urls)),
     url(r'^api/v0.1/', include(grant_router.urls)),
     url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active
@@ -102,14 +99,6 @@ urlpatterns = [
     path('grants/', include('grants.urls', namespace='grants')),
 
     # dashboard views
-
-    # Dummy offchain index
-    url(r'^offchain/new/?', external_bounties.views.external_bounties_new, name="offchain_new"),
-    url(r'^offchain/(?P<issuenum>.*)/(?P<slug>.*)/?', external_bounties.views.external_bounties_show, name='offchain'),
-    url(r'^offchain/?', external_bounties.views.external_bounties_index, name="offchain_index"),
-    url(r'^universe/new/?', external_bounties.views.external_bounties_new, name="universe_new"),
-    url(r'^universe/(?P<issuenum>.*)/(?P<slug>.*)/?', external_bounties.views.external_bounties_show, name='universe'),
-    url(r'^universe/?', external_bounties.views.external_bounties_index, name="universe_index"),
     re_path(r'^onboard/(?P<flow>\w+)/$', dashboard.views.onboard, name='onboard'),
     re_path(r'^onboard/contributor/avatar/?$', dashboard.views.onboard_avatar, name='onboard_avatar'),
     url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
@@ -129,6 +118,7 @@ urlpatterns = [
     path('issue/payout', dashboard.views.payout_bounty, name='payout_bounty'),
     path('issue/increase', dashboard.views.increase_bounty, name='increase_bounty'),
     path('issue/cancel', dashboard.views.cancel_bounty, name='kill_bounty'),
+    path('issue/cancel_reason', dashboard.views.cancel_reason, name='cancel_reason'),
     path('issue/contribute', dashboard.views.contribute, name='contribute'),
     path('issue/social_contribution', dashboard.views.social_contribution, name='social_contribution'),
     path(
@@ -224,6 +214,7 @@ urlpatterns = [
     re_path(r'^about/?', retail.views.about, name='about'),
     re_path(r'^mission/?', retail.views.mission, name='mission'),
     re_path(r'^vision/?', retail.views.vision, name='vision'),
+    re_path(r'^products/?', retail.views.products, name='products'),
     path('not_a_token', retail.views.not_a_token, name='not_a_token'),
     re_path(r'^styleguide-alpha/?', retail.views.ui, name='ui'),
     re_path(r'^results/?(?P<keyword>.*)/?', retail.views.results, name='results_by_keyword'),

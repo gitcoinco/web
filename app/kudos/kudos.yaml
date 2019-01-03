@@ -2295,5 +2295,31 @@
   - just for fun
   - ethdenver
   image: bufficorn_christmas.svg
-
+- name: chief_christmas_officer
+  description: By completing all 12 holiday themed bounties in 2018, this user has certified themselves in a class of their own. They should be deferred to from here on out for making any executive holiday related decisions. When encountering this user, be cautious of the unnaturally large size of their heart (reported to be 3x larger than average)
+  priceFinney: 100
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 200
+  to_address: 0xbfdb50dc66c8df9fd9688d8fe5a0c34126427645
+  tags:
+  - holidays
+  - christmas
+  - holidays
+  - santa
+  - elf
+  image: 12_days_of_bounties.svg
+- name: panvala_holidays
+  to_address: 0xc6b0a4c5BA85d082eCd4Fb05FBF63eb92AC1083a
+  artist: PanvalaMark
+  description: Happy holidays from Panvala! Wishing you a new year full of cooperation!
+  artist: niran
+  platform: panvala
+  priceFinney: 1
+  numClonesAllowed: 50
+  tags:
+    - just for fun
+    - panvala
+    - holidays
+  image: panvala_holidays.svg
 
