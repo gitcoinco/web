@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/grants/detail.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/grants/milestones.css" %}">
+    <link rel="stylesheet" href={% static "v2/css/tabs.css" %}>
   </head>
   <body class="interior {{ active }} grant grant-detail g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
@@ -283,75 +284,110 @@
       </div>
     </div>
 
-    <div class="update-milestone pt-4">
+    <div class="update-milestone pt-4 font-body">
       <div class="container mt-4">
-        <div class="row">
-          <div class="col-12 order-md-2 col-md-6">
-            <p class="font-body sub-title">
-              {% trans "Milestones" %}
-              {% if is_admin and not grant_is_inactive %}<a href="{% url 'grants:milestones' grant.id grant.slug %}" class="milestones-edit">{% trans "Edit Milestones" %}</a>{% endif %}
-            </p>
-            <div class="milestones-container px-5 mb-4">
-                {% if milestones %}
-                <ul class="milestones-list mb-0">
-                  {% for milestone in milestones %}
-                    <li class="pb-3 pl-2">
-                      <div class="milestone-date">
-                        <p class="mb-0 pt-2 font-caption">
-                          <span class="font-weight-semibold">{% trans 'Due: ' %}</span>{{ milestone.due_date }}
-                          {% if milestone.completion_date %}
-                           <span class="mx-1">/</span>
-                           <span class="font-weight-semibold">{% trans 'Completed: ' %}</span> {{ milestone.completion_date }}
-                          {% endif %}
-                        </p>
+        <div id="grant-detail-tabs" class="tab-container mb-3">
+          <button type="button" id="updates" class="section-tab">{%trans "Updates" %}</button>
+          <button type="button" id="milestones" class="section-tab">{%trans "Milestones" %}</button>
+          <button type="button" id="contributions" class="section-tab">{%trans "Contributions" %}</button>
+          <button type="button" id="contributors" class="section-tab">{%trans "Contributors" %}</button>
+        </div>
+        <div id="grant-detail-tabs-sections" class="tab-sections section mt-4">
+          <!-- Updates Tab -->
+          <div id="section-updates" class="tab-section">
+            <div class="container px-0">
+              <div class="row">
+                <div class="col-12 order-md-2 col-md-6">
+                  <p class="font-body sub-title">{% trans "Updates" %}</p>
+                  <div class="p-0">
+                    {% if is_admin and not grant_is_inactive %}
+                      <div class="my-4 py-2 pr-3">
+                        <form method="POST" id="js-postUpdate">
+                          {% csrf_token %}
+                          <div class="form__group-horizontal mb-4">
+                            <input class="form__input" type="text" id="input-title" name="input-title" placeholder="{% trans 'Title' %}" required />
+                          </div>
+
+                          <div class="form__group-horizontal">
+                            <textarea rows=8 class="form__input" type="text" id="input-description" name="description" placeholder="{% trans 'Describe the update' %}" required></textarea>
+                          </div>
+
+                          <div class="text-left">
+                            <button class="btn btn-gc-blue">
+                              <span class="font-body">{% trans "Post Update" %}</span>
+                            </button>
+                          </div>
+                        </form>
                       </div>
-                      <div class="font-subheader font-weight-semibold mb-2">{{ milestone.title }}</div>
-                      <p class="milestone-description font-body">{{ milestone.description }}</p>
-                    </li>
-                  {% endfor %}
-                </ul>
-              {% else %}
-                <p class="m-auto text-center font-weight-semibold">{% trans "No milestones added" %}</p>
-              {% endif %}
+                    {% endif %}
+                    <div class="pl-0">
+                      {% for item in updates %}
+                        <div class="py-4 update">
+                          <div class="article-date font-caption mb-2">{{ item.created_on|date:"M d, Y" }}</div>
+                          <div class="article-title font-subheader font-weight-semibold mb-2">{{ item.title }}</div>
+                          <div class="article-description font-body mb-2 wrap-text">{{ item.description }}</div>
+                        </div>
+                      {% empty %}
+                        <p class="py-4 font-weight-semibold">
+                          {% trans "No updates added" %}
+                        </p>
+                      {% endfor %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
 
-          <div class="col-12 order-md-1 col-md-6 p-md-0 pr-lg-5">
-            <p class="font-body sub-title">{% trans "Updates" %}</p>
-            <div class="p-0">
-              {% if is_admin and not grant_is_inactive %}
-                <div class="my-4 py-2 pr-3">
-                  <form method="POST" id="js-postUpdate">
-                    {% csrf_token %}
-                    <div class="form__group-horizontal mb-4">
-                      <input class="form__input" type="text" id="input-title" name="input-title" placeholder="{% trans 'Title' %}" required />
-                    </div>
-
-                    <div class="form__group-horizontal">
-                      <textarea rows=8 class="form__input" type="text" id="input-description" name="description" placeholder="{% trans 'Describe the update' %}" required></textarea>
-                    </div>
-
-                    <div class="text-left">
-                      <button class="btn btn-gc-blue">
-                        <span class="font-body">{% trans "Post Update" %}</span>
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              {% endif %}
-              <div class="pl-0">
-                {% for item in updates %}
-                  <div class="py-4 update">
-                    <div class="article-date font-caption mb-2">{{ item.created_on|date:"M d, Y" }}</div>
-                    <div class="article-title font-subheader font-weight-semibold mb-2">{{ item.title }}</div>
-                    <div class="article-description font-body mb-2 wrap-text">{{ item.description }}</div>
-                  </div>
-                {% empty %}
-                  <p class="py-4 font-weight-semibold">
-                    {% trans "No updates added" %}
+          <!-- Milestones Tab -->
+          <div id="section-milestones" class="tab-section active">
+            <div class="container px-0">
+              <div class="row">
+                <div class="col-12 order-md-2 col-md-6">
+                  <p class="font-body sub-title">
+                    {% trans "Milestones" %}
+                    {% if is_admin and not grant_is_inactive %}<a href="{% url 'grants:milestones' grant.id grant.slug %}" class="milestones-edit">{% trans "Edit Milestones" %}</a>{% endif %}
                   </p>
-                {% endfor %}
+                  <div class="milestones-container px-5 mb-4">
+                      {% if milestones %}
+                      <ul class="milestones-list mb-0">
+                        {% for milestone in milestones %}
+                          <li class="pb-3 pl-2">
+                            <div class="milestone-date">
+                              <p class="mb-0 pt-2 font-caption">
+                                <span class="font-weight-semibold">{% trans 'Due: ' %}</span>{{ milestone.due_date }}
+                                {% if milestone.completion_date %}
+                                 <span class="mx-1">/</span>
+                                 <span class="font-weight-semibold">{% trans 'Completed: ' %}</span> {{ milestone.completion_date }}
+                                {% endif %}
+                              </p>
+                            </div>
+                            <div class="font-subheader font-weight-semibold mb-2">{{ milestone.title }}</div>
+                            <p class="milestone-description font-body">{{ milestone.description }}</p>
+                          </li>
+                        {% endfor %}
+                      </ul>
+                    {% else %}
+                      <p class="m-auto text-center font-weight-semibold">{% trans "No milestones added" %}</p>
+                    {% endif %}
+                  </div>
+                </div>
               </div>
+            </div>
+          </div>
+
+          <!-- Contributions Tab -->
+          <div id="section-contributions" class="tab-section">
+            <div class="container px-0">
+              Contributions Tab
+            </div>
+          </div>
+
+          <!-- Contributors Tab -->
+          <div id="section-contributors" class="tab-section">
+            <div class="container px-0">
+              Contributors Tab
             </div>
           </div>
         </div>
@@ -367,7 +403,6 @@
     {% include 'shared/footer.html' %}
     {% include 'grants/shared/shared_scripts.html' %}
   </body>
-
   <script src="{% static "v2/js/grants/compiledSubscriptionContract.js" %}"></script>
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
@@ -377,4 +412,10 @@
   <script src="{% static "v2/js/grants/shared.js" %}"></script>
   <script src="{% static "v2/js/grants/detail.js" %}"></script>
   <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
+  <script src="{% static "v2/js/pages/tabs.js" %}"></script>
+  <script>
+    $(document).ready(function() {
+      setupTabs('#grant-detail-tabs');
+    });
+  </script>  
 </html>
