@@ -19,21 +19,32 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from django.contrib.auth import get_user_model
 from django.db.models.signals import post_save
-from dashboard.models import Tip
+from dashboard.models import Activity
 from inbox.utils import send_notification_to_user
 
 
 def create_notification(sender, **kwargs):
-    tip = kwargs['instance']
-    if tip.txid != '':
+    activity = kwargs['instance']
+    if activity.activity_type == 'new_tip':
+        tip = activity.tip
         send_notification_to_user(
-            get_user_model().objects.get(username=tip.from_username),
-            get_user_model().objects.get(username=tip.username),
+            activity.profile.user,
+            tip.recipient_profile.user,
             tip.receive_url,
             'new_tip',
             f'<b>New Tip</b> worth {tip.value_in_usdt_now} USD ' +
             f'recieved from {tip.from_username}'
         )
 
+    if activity.activity_type == 'worker_applied':
+        bounty = activity.bounty
+        send_notification_to_user(
+            activity.profile.user,
+            get_user_model().objects.get(username=bounty.bounty_owner_github_username),
+            bounty.url,
+            'worker_applied',
+            f'<b>{activity.profile.user} applied</b> to work on {bounty.title}'
+        )
 
-post_save.connect(create_notification, sender=Tip)
+
+post_save.connect(create_notification, sender=Activity)
