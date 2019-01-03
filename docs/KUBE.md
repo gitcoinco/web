@@ -49,4 +49,13 @@ http://github.com/helm
 ingress docs => https://kubernetes.io/docs/concepts/services-networking/ingress/
 
 
+# questions 
+
+
+how do i spin up grants.gitcoin.co
+TODO: access to https://gam.gitcoin.co/login
+what is ingress?
+
+
+
 
