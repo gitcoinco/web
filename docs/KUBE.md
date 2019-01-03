@@ -25,11 +25,28 @@ awscli us-west-2 kubectl completion bash > $(brew --prefix)/etc/bash_complet
 # using it 
 
 kubectl config get-contexts
+kubectl config use-context
+
 
 ## using the proxy
 kubectl proxy
 
 ## you can now go to 
 http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/#!/login
+
+
+# other tools
+
+https://gam.gitcoin.co/login
+http://grafana.com/dashboards
+prometheus -- out of the box alerts /logs
+did you know that you can run your standard docker commands in kubectl? neato
+    kubectl get pods --namespace=gc-production
+    kubectl get services --namespace=monitoring
+    kbuectl get ingress web --namespace notifications
+http://github.com/helm 
+    predefined deployments you can use.
+ingress docs => https://kubernetes.io/docs/concepts/services-networking/ingress/
+
 
 
