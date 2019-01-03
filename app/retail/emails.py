@@ -687,72 +687,69 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Our EOY Letter | Happy Holidays"
-    new_kudos_pks = [866, 811, 810]
+    subject = "Announcing Gitcoin Grants | Happy New Year!"
+    new_kudos_pks = [153, 982, 150]
     new_kudos_size_px = 150
     intro = '''
 <p>
-<h3>Happy Holidays From Gitcoin!</h3>
+Happy New Year, Gitcoin family!
+<p>
+<p>
+We're ringing in the new yaer the best way we know how - with a new product launch. We're proud to formally announce <a href="https://twitter.com/GetGitcoin/status/1080607835120173056">Gitcoin Grants</a>,
+recurring funding for projects in open source software. We're very excited about the prospect of providing funding to OSS projects at the maintainer level.
+</p>
+<p>
+Want to create a Gitcoin Grant for a project you run? <a href="https://consensys1mac.typeform.com/to/HFcZKe">Let us know</a> and we'll get back to you within 5 days
+to see if there's a good fit on our alpha launch. Want to contribute to a Gitcoin Grant? <a href="https://gitcoin.co/grants/">Take a look at our launch partners</a>, including Prysmatic Labs, Cryptoeconomics Study, and more.
+</p>
+<p>
+<h3>Happy New Year From Gitcoin</h3>
 </p>
 <p>
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
 </p>
-<p>
-The Gitcoin team has been taking a collective breath at the end of our year and have gotten a chance to look back on
-late 2017 and 2018, while looking ahead to our future. <a href="https://twitter.com/GetGitcoin/status/1078686012514226177">The Gitcoin EOY Letter</a>
-shows our continued excitement towards the mission of growing a more open (source) internet, together. We're thankful to you for taking part
-in our journey and hope to reward each of you for your support with a great 2019.
-</p>
-<p>
-Since you're here... we'll start now! We've been hard at work on <a href="https://gitcoin.co/grants/">Gitcoin Grants</a>, a new tool hyperfocused on
-recurring funding for open source developers. We're looking to provide an initial list of OSS projects some funding to carry their projects into 2019.
-<a href="https://gitcoin.co/grants/">Give it a look</a> and let us know if you have any feedback.
-</p>
+
 <h3>What else is new?</h3>
     <ul>
         <li>
-            I wrote up a post on <a href="https://medium.com/gitcoin/progressive-elaboration-of-scope-on-gitcoin-3167742312b0">progressive elaboration of scope</a>
-            for Gitcoin funders!
-        </li>
-        <li>
-            No Gitcoin Livestream this week, but we'll be back on 1/5. In the future, join us <a href="https://gitcoin.co/livestream">Friday's at 5PM ET</a>!
+            Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream">on Friday at 5PM ET</a>!
         </li>
     </ul>
 </p>
 <p>
-Happy holidays,
+Happy new year,
 </p>
 
 '''
     highlights = [{
-        'who': 'iamonuwa',
+        'who': 'pvienhage',
         'who_link': True,
-        'what': 'Worked on Fraktal with Julien',
-        'link': 'https://gitcoin.co/issue/julienbrg/fraktal/1/2007',
+        'what': 'Worked on Smart Contract Security',
+        'link': 'https://gitcoin.co/issue/SmartContractSecurity/SWC-registry/158/2061',
         'link_copy': 'View more',
     }, {
-        'who': 'brascoder',
+        'who': 'robin-thomas',
         'who_link': True,
-        'what': 'Worked on CodeFund with us!',
-        'link': 'https://gitcoin.co/issue/gitcoinco/code_fund_ads/85/1931',
+        'what': 'Worked on Prysmatic Labs on BLS curves',
+        'link': 'https://gitcoin.co/issue/prysmaticlabs/go-bls/9/2047',
         'link_copy': 'View more',
     }, {
-        'who': 'elemino',
+        'who': 'bakaoh',
         'who_link': True,
-        'what': 'Worked on Javascript Practice, a cool bounty.',
-        'link': 'https://gitcoin.co/issue/lastmjs/javascript-practice/179/1917',
+        'what': 'Longtime Gitcoin contributor meets longtime Gitcoin funder!',
+        'link': 'https://gitcoin.co/issue/spacemeshos/go-spacemesh/290/2044',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/Giveth/giveth-bot/issues/39',
-        'primer': 'Work on Giveth with Griff and team.',
+        'url': 'https://github.com/gitcoinco/web/issues/3370',
+        'primer': 'Help Gitcoin migrate to the Infura Dashboard.',
     }, {
-        'url': 'https://github.com/unlock-protocol/unlock/issues/334',
-        'primer': 'Bounty from Unlock Protocol',
+        'url': 'https://github.com/ethereum/pm/issues/69',
+        'primer': 'Take notes for the EF devs call, get $75 USD',
     }, {
-        'url': 'https://github.com/status-im/status-react/issues/7076',
-        'primer': 'Work on Status-React on Whisper!',
+        'url': 'https://github.com/austintgriffith/burner-wallet/issues/51',
+        'primer': 'Work with Austin on the Burner Wallet!',
     }, ]
 
     num_leadboard_items = 5
