@@ -77,8 +77,9 @@
   font-weight: 500;
 }
 
-.grant__description textarea {
-  background: white;
+.grant__description textarea,
+#contract_owner_address.editable {
+  background: white !important;
 }
 
 input.editable,
