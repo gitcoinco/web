@@ -102,7 +102,7 @@ def grant_details(request, grant_id, grant_slug):
         milestones = grant.milestones.order_by('due_date')
         updates = grant.updates.order_by('-created_on')
         subscriptions = grant.subscriptions.filter(active=True, error=False)
-        user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
+        user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True, error=False).first()
     except Grant.DoesNotExist:
         raise Http404
 
@@ -167,8 +167,7 @@ def grant_details(request, grant_id, grant_slug):
 def grant_new(request):
     """Handle new grant."""
     if not request.user.has_perm('grants.add_grant'):
-        messages.info(request, _('Grants is still in beta. To create a Grant ping us at team@gitcoin.co'))
-        return redirect(reverse('grants:grants'))
+        return redirect('https://consensys1mac.typeform.com/to/HFcZKe/')
 
     profile = get_profile(request)
 
