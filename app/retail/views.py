@@ -923,14 +923,6 @@ def presskit(request):
     return TemplateResponse(request, 'presskit.html', context)
 
 
-def get_gitcoin(request):
-    context = {
-        'active': 'get_gitcoin',
-        'title': _('Get Started'),
-    }
-    return TemplateResponse(request, 'getgitcoin.html', context)
-
-
 def handler403(request, exception=None):
     return error(request, 403)
 

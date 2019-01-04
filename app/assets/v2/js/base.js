@@ -100,11 +100,6 @@ $(document).ready(function() {
     });
   }
 
-  // get started modal
-  $('body').delegate('.iama', 'click', function() {
-    document.location.href = $(this).find('a').attr('href');
-  });
-
   // pulse animation on click
   $('.pulseClick').on('click', (event) => {
     let element = $(event.target);

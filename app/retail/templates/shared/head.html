@@ -65,13 +65,6 @@
 <link rel="stylesheet" href="{% static "v2/css/external_bounties/bounties.css" %}">
 {% endif %}
 
-{% if request.path == '/ios' %}
-<!-- iOS -->
-<link rel="stylesheet" href="{% static "v2/css/toolbox.css" %}">
-<link rel="stylesheet" href="{% static "v2/css/card.css" %}">
-<link rel="stylesheet" href="{% static "v2/css/ios.css" %}">
-{% endif %}
-
 <title>{% if title %}{{title}}{% else %}{% trans "Grow Open Source" %}{% endif %} | Gitcoin</title>
 {% include 'shared/favicon.html' %}
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />

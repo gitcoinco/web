@@ -250,65 +250,6 @@ p a {
   float:right;
 }
 
-.iama {
-  background: #0d023b;
-  color: white;
-  cursor: pointer;
-  -moz-transition: background-color 0.2s ease-in-out;
-  -webkit-transition: background-color 0.2s ease-in-out;
-  -ms-transition: background-color 0.2s ease-in-out;
-  transition: background-color 0.2s ease-in-out;
-}
-
-.iama a {
-  color: white;
-  font-weight: lighter;
-}
-
-.iama a.btn {
-  color: #f9006c;
-  border-color: #f9006c;
-}
-
-.iama a.btn:hover {
-  color: white;
-  background-color: #f9006c;
-}
-
-.iama .mt-3 {
-  width: 40px;
-  height: 40px;
-  border-radius: 20px;
-}
-
-.iama:hover,
-.iama.clicked {
-  background: #3e24fb;
-  color: #fff;
-}
-
-.iama:hover .mt-3,
-.iama.clicked .mt-3 {
-  width: 40px;
-  height: 40px;
-  border-radius: 20px;
-}
-
-.iama:first-child {
-  border-right: 1px dotted #29eb98;
-}
-
-.iama:last-child {
-  border-left: 1px dotted #29eb98;
-}
-
-.iama img {
-  width: 30px;
-  height: 30px;
-  filter: invert(100%);
-}
-
-
 #gas-section .gas-image {
   height: 5rem;
 }
@@ -1391,14 +1332,6 @@ input.is-invalid {
     display: block;
     width: 100%;
     text-align: center;
-  }
-
-  #get .row {
-    display: block;
-  }
-
-  #get .row .iama {
-    margin-bottom: 5px;
   }
 
   .advisor {
