@@ -1,0 +1,89 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+    Copyright (C) 2018 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static grants_extra %}
+
+{% block content %}
+<style>
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+
+  .grant-description {
+    max-width: 50rem;
+    margin: auto;
+    text-align: center;
+  }
+
+  div {
+    margin: 2em 0;
+  }
+
+  hr {
+    width: 80%;
+    height: 2px;
+    border-radius: 25px;
+    border: none;
+    background-color: #D2D2D2;
+  }
+
+  .grant-email-name {
+    color: #0D0764;
+  }
+
+  .grant-email-amount {
+    font-size: 1.5em;
+    font-weight: 600;
+    color: #3E00FF;
+    margin: 0;
+  }
+
+  .grant-button {
+    padding: 12px 36px;
+    font-size: 12px;
+    border-radius: 3px;
+    text-decoration: none;
+    background-color: #0D0764;
+    color: white;
+    font-weight: 600;
+  }
+
+  #grant-logo {
+    max-width: 25rem;
+    width: 100%;
+    margin-top: 2rem;
+  }
+</style>
+
+<h1>{% trans "Grant Failed to Bill" %}</h1>
+<p style="margin-top:0.25rem;">{% trans "Just a heads up that your most recent gitcoin grant contribution to " %} <a href="{% url 'grants:details' grant.id grant.slug %}">{% trans "this grant" %}</a> {% trans "failed. The reason is that your token " %}{{ reason }}{% trans " is lower than is needed for your" %} {{ grant.amount_goal }} {{ grant.token_symbol }} {% trans "contribution." %}</p>
+<hr>
+<img id="grant-logo" src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}" alt="grant logo" >
+<h1 class="grant-email-name">{{ grant.title }}</h1>
+<p class="grant-description">{{ grant.description }}</p>
+<div>
+  <p>{{ suggestion }}</p>
+</div>
+<hr>
+
+{% endblock %}

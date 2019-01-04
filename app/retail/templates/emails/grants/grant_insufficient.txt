@@ -1,0 +1,9 @@
+{% load i18n  %}
+
+{% trans "Hey " %}{{ to_email }}
+
+{% trans "Just a heads up that your most recent gitcoin grant contribution to this grant " %}{% url 'grants:details' grant.id grant.slug %}{% trans "failed. The reason is that your token allowance is lower than is needed for your" %} {{ grant.amount_goal }} {{ grant.token_symbol }} {% trans "contribution." %}
+{% trans "let me know if you want to renew your subscription to this grant or not.  if so, the best way to do so is to go to the grant and click 'cancel subscription', and start a new subscription." %}
+
+{% trans "best, " %}
+{% trans "Kevin" %}

@@ -287,6 +287,16 @@ urlpatterns = [
     path('_administration/email/new_grant', retail.emails.new_grant, name='admin_new_grant'),
     path('_administration/email/new_supporter', retail.emails.new_supporter, name='admin_new_supporter'),
     path(
+        '_administration/email/grants_insufficient_balance',
+        retail.emails.grants_insufficient_balance,
+        name='admin_grants_insufficient_balance'
+    ),
+    path(
+        '_administration/email/grants_insufficient_allowance',
+        retail.emails.grants_insufficient_allowance,
+        name='admin_grants_insufficient_allowance'
+    ),
+    path(
         '_administration/email/thank_you_for_supporting',
         retail.emails.thank_you_for_supporting,
         name='admin_thank_you_for_supporting'

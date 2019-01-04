@@ -40,8 +40,8 @@ from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recom
 from grants.forms import MilestoneForm
 from grants.models import Contribution, Grant, Milestone, Subscription, Update
 from marketing.mails import (
-    grant_cancellation, new_grant, new_supporter, subscription_terminated, support_cancellation,
-    thank_you_for_supporting,
+    grant_cancellation, grants_insufficient_balance, grants_insufficient_allowance, new_grant, new_supporter,
+    subscription_terminated, support_cancellation, thank_you_for_supporting,
 )
 from marketing.models import Keyword
 from web3 import HTTPProvider, Web3

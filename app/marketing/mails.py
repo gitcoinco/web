@@ -32,9 +32,9 @@ from retail.emails import (
     render_bounty_startwork_expire_warning, render_bounty_unintersted, render_faucet_rejected, render_faucet_request,
     render_funder_stale, render_gdpr_reconsent, render_gdpr_update, render_grant_cancellation_email, render_kudos_email,
     render_match_email, render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection,
-    render_new_bounty_roundup, render_new_grant_email, render_new_supporter_email, render_new_work_submission,
-    render_quarterly_stats, render_start_work_applicant_about_to_expire, render_start_work_applicant_expired,
-    render_start_work_approved, render_start_work_new_applicant, render_start_work_rejected,
+    render_new_bounty_roundup, render_new_grant_email, render_grant_insufficient_allowance_email, render_grant_insufficient_balance_email,
+    render_new_supporter_email, render_new_work_submission, render_quarterly_stats, render_start_work_applicant_about_to_expire,
+    render_start_work_applicant_expired, render_start_work_approved, render_start_work_new_applicant, render_start_work_rejected,
     render_subscription_terminated_email, render_successful_contribution_email, render_support_cancellation_email,
     render_thank_you_for_supporting_email, render_tip_email,
 )
@@ -117,6 +117,36 @@ def new_grant(grant, profile):
         html, text, subject = render_new_grant_email(grant)
 
         if not should_suppress_notification_email(to_email, 'new_grant'):
+            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+    finally:
+        translation.activate(cur_language)
+
+
+def grants_insufficient_balance(grant, profile):
+    from_email = settings.CONTACT_EMAIL
+    to_email = profile.email
+    cur_language = translation.get_language()
+
+    try:
+        setup_lang(to_email)
+        html, text, subject = render_grant_insufficient_balance_email(grant, to_email)
+
+        if not should_suppress_notification_email(to_email, 'grant_contribution_fail'):
+            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+    finally:
+        translation.activate(cur_language)
+
+
+def grants_insufficient_allowance(grant, profile):
+    from_email = settings.CONTACT_EMAIL
+    to_email = profile.email
+    cur_language = translation.get_language()
+
+    try:
+        setup_lang(to_email)
+        html, text, subject = render_grant_insufficient_allowance_email(grant, to_email)
+
+        if not should_suppress_notification_email(to_email, 'grant_contribution_fail'):
             send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
     finally:
         translation.activate(cur_language)

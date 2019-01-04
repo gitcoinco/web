@@ -76,6 +76,33 @@ def render_new_grant_email(grant):
     return response_html, response_txt, subject
 
 
+def render_grant_insufficient_balance_email(grant, to_email):
+    params = {
+        'grant': grant,
+        'email': to_email,
+        'reason': _('balance'),
+        'suggestion': _('let me know if you want to reload your wallet with some DAI and we can re-bill you.')
+    }
+    response_html = premailer_transform(render_to_string("emails/grants/grant_insufficient.html", params))
+    response_txt = render_to_string("emails/grants/grant_insufficient.txt", params)
+    subject = " (Action Required) Your grant to {grant.admin.username} failed to bill"
+    return response_html, response_txt, subject
+
+
+def render_grant_insufficient_allowance_email(grant, to_email):
+    params = {
+        'grant': grant,
+        'email': to_email,
+        'reason': _('allowance'),
+        'suggestion': _('let me know if you want to renew your subscription to this grant or not.  if so, \
+        the best way to do so is to go to the grant and click \'cancel subscription\', and start a new subscription.')
+    }
+    response_html = premailer_transform(render_to_string("emails/grants/grant_insufficient.html", params))
+    response_txt = render_to_string("emails/grants/grant_insufficient.txt", params)
+    subject = " (Action Required) Your grant to {grant.admin.username} failed to bill"
+    return response_html, response_txt, subject
+
+
 def render_new_supporter_email(grant, subscription):
     params = {'grant': grant, 'subscription': subscription}
     response_html = premailer_transform(render_to_string("emails/grants/new_supporter.html", params))
@@ -171,6 +198,20 @@ def new_supporter(request):
     grant = Grant.objects.all().first()
     subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
     response_html, __, __ = render_new_supporter_email(grant, subscription)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def grants_insufficient_balance(request):
+    grant = Grant.objects.all().first()
+    response_html, __, __ = render_grant_insufficient_balance_email(grant, 'saptak013@gmail.com')
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def grants_insufficient_allowance(request):
+    grant = Grant.objects.all().first()
+    response_html, __, __ = render_grant_insufficient_allowance_email(grant, 'saptak013@gmail.com')
     return HttpResponse(response_html)
 
 
