@@ -3,6 +3,8 @@
   and ensure your pull request has fulfilled all requirements outlined by the Gitcoin Core team.
 
   Contributors guide: https://docs.gitcoin.co/mk_contributors/
+  
+  Please note that deleting or not properly filling those sections below may result in your PR being rejected.
 -->
 
 ##### Description
@@ -39,7 +41,7 @@
 
 <!-- Why should the PR reviewer trust that this change doesn't break anything? How have you tested this change? -->
 
-###### Contributor
+###### Contributor (PR submitter & devs working on this)
 
 - [ ] Read and followed the [Contributor Guidelines](https://docs.gitcoin.co/mk_contributors/)
 - [ ] Tested all changes **locally**
@@ -51,7 +53,7 @@
 - [ ] Affirm contributor guidelines have been followed and requested changes made
 - [ ] CI tests and linting pass
 - [ ] No conflicts (migrations, files, etc)
-- [ ] Regression tested against staging
+- [ ] Regression tested against staging or local deployment
 
 ###### Funder
 
