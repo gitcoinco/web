@@ -326,9 +326,9 @@ def grant_fund(request, grant_id, grant_slug):
         subscription.grant = grant
         subscription.save()
 
-        value_usdt = subscription.get_converted_amount
+        value_usdt = subscription.get_converted_amount()
         if value_usdt:
-            grant.monthly_amount_subscribed += subscription.get_converted_monthly_amount
+            grant.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
 
         grant.save()
         new_supporter(grant, subscription)
@@ -386,7 +386,7 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
 
         value_usdt = subscription.get_converted_amount
         if value_usdt:
-            grant.monthly_amount_subscribed -= subscription.get_converted_monthly_amount
+            grant.monthly_amount_subscribed -= subscription.get_converted_monthly_amount()
 
         grant.save()
         support_cancellation(grant, subscription)

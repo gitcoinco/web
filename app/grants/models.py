@@ -620,7 +620,6 @@ next_valid_timestamp: {next_valid_timestamp}
         self.last_contribution_date = timezone.now()
         self.next_contribution_date = timezone.now() + timedelta(0, round(self.real_period_seconds))
         self.num_tx_processed = self.num_tx_processed + 1
-        self.save()
         contribution_kwargs = {
             'tx_id': tx_id,
             'subscription': self
@@ -628,13 +627,15 @@ next_valid_timestamp: {next_valid_timestamp}
         contribution = Contribution.objects.create(**contribution_kwargs)
         grant = self.grant
 
-        value_usdt = self.get_converted_amount
+        value_usdt = self.get_converted_amount()
         if value_usdt:
             grant.amount_received += value_usdt
 
         if self.num_tx_processed == self.num_tx_approved and value_usdt:
             grant.monthly_amount_subscribed -= self.get_converted_monthly_amount()
+            self.active = False
 
+        self.save()
         grant.save()
         successful_contribution(self.grant, self, contribution)
         return contribution
