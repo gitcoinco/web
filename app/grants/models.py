@@ -619,7 +619,7 @@ next_valid_timestamp: {next_valid_timestamp}
         from marketing.mails import successful_contribution
         self.last_contribution_date = timezone.now()
         self.next_contribution_date = timezone.now() + timedelta(0, round(self.real_period_seconds))
-        self.num_tx_processed = self.num_tx_processed + 1
+        self.num_tx_processed += 1
         contribution_kwargs = {
             'tx_id': tx_id,
             'subscription': self
