@@ -19,11 +19,7 @@
 <div class="container-fluid footer">
   <div class="d-flex flex-wrap align-items-center footer__top justify-content-around pr-5 pl-5 pt-5">
     <a class="navbar-brand text-center pt-0 pb-0 mb-3" href="/">
-      {% if request.path == '/ios' %}
-        <img id="logo" src="{% static "v2/images/ios/gitcoin.svg" %}" data-hover="{% static "v2/images/ios/gitcoin_hover.gif" %}" height="50" />
-      {% else %}
-        <img id="logo" src="{% static "v2/images/logo_large.png" %}" data-hover="{% static "v2/images/logo_med_hover.gif" %}" width="150" height="50" />
-      {% endif %}
+      <img id="logo" src="{% static "v2/images/logo_large.png" %}" data-hover="{% static "v2/images/logo_med_hover.gif" %}" width="150" height="50" />
     </a>
     <div class="nav footer__social justify-content-center">
       <a class="nav-link" href="{% url "medium" %}">
@@ -85,7 +81,7 @@
   </div>
   <div class="row footer__consensys">
     <a href="https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-projects-f5a0955de9d6" style="margin: 10px auto;" target="_blank" rel="noopener noreferrer">
-      <img src="{% static "v2/images/consensys-logo-white-small.png" %}" style="filter:{% if request.path == '/ios' %}invert(100%);{%else%}none;{% endif %} width: 100px; height: 35px;"/>
+      <img src="{% static "v2/images/consensys-logo-white-small.png" %}" style="filter: none; width: 100px; height: 35px;"/>
     </a>
   </div>
 </div>
