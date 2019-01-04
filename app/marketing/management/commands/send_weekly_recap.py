@@ -39,7 +39,6 @@ class Command(BaseCommand):
             help='Actually Send the emails'
         )
 
-
     def handle(self, *args, **options):
         profiles = Profile.objects.active()
         email_list = profiles.values_list('email', flat=True)
