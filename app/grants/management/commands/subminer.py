@@ -21,8 +21,8 @@ import logging
 import time
 
 from django.core.management.base import BaseCommand
-from django.utils import timezone
 from django.db.models import F
+from django.utils import timezone
 
 from dashboard.utils import get_tx_status, has_tx_mined
 from grants.models import Grant
