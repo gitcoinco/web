@@ -5,7 +5,7 @@ from django.db import migrations
 def add_num_tx_processed(apps, schema_editor):
     Subscription = apps.get_model('grants', 'Subscription')
     for subscription in Subscription.objects.all():
-        subscription.num_tx_processed = contribution.count()
+        subscription.num_tx_processed = subscription.subscription_contribution.count()
         subscription.save()
 
 class Migration(migrations.Migration):
