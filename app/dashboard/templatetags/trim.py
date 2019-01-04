@@ -17,10 +17,11 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-# shamelessly stolen from: 
+# shamelessly stolen from:
 # https://stackoverflow.com/questions/10361240/template-filter-to-trim-any-leading-or-trailing-whitespace
 from django import template
 from django.template.defaultfilters import stringfilter
+
 
 register = template.Library()
 
