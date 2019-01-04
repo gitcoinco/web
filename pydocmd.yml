@@ -45,8 +45,6 @@ generate:
     - dashboard.embed++
   - dashboard/helpers.md:
     - dashboard.helpers++
-  - dashboard/ios.md:
-    - dashboard.ios++
   - dashboard/models.md:
     - dashboard.models++
   - dashboard/notifications.md:
@@ -263,7 +261,6 @@ pages:
       - Views: dashboard/views.md
       - Healthchecks: dashboard/healthchecks.md
       - Helpers: dashboard/helpers.md
-      - iOS: dashboard/ios.md
       - Notifications: dashboard/notifications.md
       - API Router: dashboard/router.md
       - Signals: dashboard/signals.md
