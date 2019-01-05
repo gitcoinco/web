@@ -263,7 +263,7 @@ def new_interest(request, bounty_id):
             status=401)
 
     try:
-        Interest.objects.get(profile_id=profile_id, bounty=bounty)
+        Interest.objects.exclude(status__in=Interest.INACTIVE_STATUSES).get(profile_id=profile_id, bounty=bounty)
         return JsonResponse({
             'error': _('You have already started work on this bounty!'),
             'success': False},

@@ -680,6 +680,7 @@ var show_stop_work_modal = function() {
         $(self).attr('href', '/interested');
         $(self).find('span').text(gettext('Start Work'));
         $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you would like to take on this project') + '</div>');
+        $('#submit').hide();
 
         // extend_expiration(document.bountyPk, {
           // cancelled_bounty_reason: extended_time
@@ -844,8 +845,23 @@ const is_current_user_interested = function(result) {
   if (!document.contxt.github_handle) {
     return false;
   }
-  return !!(result.interested || []).find(interest => interest.profile.handle.toLowerCase() == document.contxt.github_handle.toLowerCase());
+  return (result.interested || []).find(interest => interest.profile.handle.toLowerCase() == document.contxt.github_handle.toLowerCase());
 };
+
+const inacativeStatuses = ['BC', 'SBU', 'SBF', 'SBS', 'AR'];
+const is_current_user_permit = function(result) {
+  if (!result) {
+    return false;
+  }
+  console.log(result)
+
+    if (inacativeStatuses.indexOf(result.status) > -1 ) {
+      return false
+    } else {
+      return true
+    }
+
+}
 
 const is_current_user_approved = function(result) {
   if (!document.contxt.github_handle) {
@@ -879,6 +895,9 @@ var do_actions = function(result) {
 
   // Find interest information
   const is_interested = is_current_user_interested(result);
+  const can_start_work = is_current_user_permit(is_interested)
+  console.log(can_start_work)
+  // const inactive_status = ;
 
   const has_fulfilled = result['fulfillments'].filter(fulfiller => fulfiller.fulfiller_github_username === document.contxt['github_handle']).length > 0;
 
@@ -889,7 +908,7 @@ var do_actions = function(result) {
   const should_block_from_starting_work = !is_interested && result['project_type'] == 'traditional' && (result['status'] == 'started' || result['status'] == 'submitted');
   let show_start_stop_work = is_still_on_happy_path && !should_block_from_starting_work && is_open && !isBountyOwner(result);
   let show_github_link = result['github_url'].substring(0, 4) == 'http';
-  let show_submit_work = is_open && !has_fulfilled;
+  let show_submit_work = can_start_work && is_open && !has_fulfilled;
   let show_kill_bounty = !is_status_done && !is_status_expired && !is_status_cancelled && isBountyOwner(result);
   let show_job_description = result['attached_job_description'] && result['attached_job_description'].startsWith('http');
   const show_increase_bounty = !is_status_done && !is_status_expired && !is_status_cancelled;
@@ -922,7 +941,7 @@ var do_actions = function(result) {
       text: gettext('Submit Work'),
       parent: 'right_actions',
       title: gettext('Submit work for the funder to review'),
-      work_started: is_interested,
+      work_started: can_start_work,
       id: 'submit'
     };
 
@@ -933,11 +952,11 @@ var do_actions = function(result) {
     const enabled = true;
     const interest_entry = {
       enabled: enabled,
-      href: is_interested ? '/uninterested' : '/interested',
-      text: is_interested ? gettext('Stop Work') : gettext('Start Work'),
+      href: can_start_work ? '/uninterested' : '/interested',
+      text: can_start_work ? gettext('Stop Work') : gettext('Start Work'),
       parent: 'right_actions',
-      title: is_interested ? gettext('Notify the funder that you will not be working on this project') : gettext('Notify the funder that you would like to take on this project'),
-      color: is_interested ? '' : '',
+      title: can_start_work ? gettext('Notify the funder that you will not be working on this project') : gettext('Notify the funder that you would like to take on this project'),
+      color: can_start_work ? '' : '',
       id: 'interest'
     };
 

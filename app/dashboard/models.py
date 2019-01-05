@@ -872,7 +872,7 @@ class Bounty(SuperModel):
         """
         fulfilled = False
         if self.project_type == 'traditional':
-            fulfilled = self.interested.filter(pending=False).exists()
+            fulfilled = self.interested.filter(pending=False).exclude(status__in=Interest.INACTIVE_STATUSES).exists()
         return fulfilled
 
     @property

@@ -264,9 +264,9 @@ var waitingStateActive = function() {
 
 /** Add the current profile to the interested profiles list. */
 var add_interest = function(bounty_pk, data) {
-  if (document.interested) {
-    return;
-  }
+  // if (document.interested) {
+  //   return;
+  // }
   mutate_interest(bounty_pk, 'new', data);
 };
 
