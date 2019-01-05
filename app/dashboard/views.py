@@ -59,8 +59,8 @@ from web3 import HTTPProvider, Web3
 
 from .helpers import get_bounty_data_for_activity, handle_bounty_views
 from .models import (
-    Activity, Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tool,
-    ToolVote, UserAction,
+    Activity, Bounty, CoinRedemption, CoinRedemptionRequest, Interest, LabsResearch, Profile, ProfileSerializer,
+    Subscription, Tool, ToolVote, UserAction,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -184,8 +184,14 @@ def gh_login(request):
 
 
 def get_interest_modal(request):
+    bounty_id = request.GET.get('pk')
+    if not bounty_id:
+        raise Http404
 
-    bounty = Bounty.objects.get(pk=request.GET.get("pk"))
+    try:
+        bounty = Bounty.objects.get(pk=bounty_id)
+    except Bounty.DoesNotExist:
+        raise Http404
 
     context = {
         'bounty': bounty,
@@ -405,6 +411,53 @@ def extend_expiration(request, bounty_id):
 
     return JsonResponse({
         'error': _("You must be funder to extend expiration"),
+    }, status=200)
+
+
+@csrf_exempt
+@require_POST
+def cancel_reason(request):
+    """Extend expiration of the Bounty.
+
+    Can only be called by funder or staff of the bounty.
+
+    :request method: POST
+
+    Params:
+        pk (int): ID of the Bounty.
+        canceled_bounty_reason (string): STRING with cancel  reason
+
+    Returns:
+        dict: The success key with a boolean value and accompanying error.
+
+    """
+    print(request.POST.get('canceled_bounty_reason'))
+    user = request.user if request.user.is_authenticated else None
+
+    if not user:
+        return JsonResponse(
+            {'error': _('You must be authenticated via github to use this feature!')},
+            status=401)
+
+    try:
+        bounty = Bounty.objects.get(pk=request.POST.get('pk'))
+    except Bounty.DoesNotExist:
+        return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
+                            status=401)
+
+    is_funder = bounty.is_funder(user.username.lower()) if user else False
+    if is_funder:
+        canceled_bounty_reason = request.POST.get('canceled_bounty_reason')
+        bounty.canceled_bounty_reason = canceled_bounty_reason
+        bounty.save()
+
+        return JsonResponse({
+            'success': True,
+            'msg': _("Cancel reason added."),
+        })
+
+    return JsonResponse({
+        'error': _("You must be funder to add a reason"),
     }, status=200)
 
 
@@ -1410,6 +1463,36 @@ def toolbox(request):
         'profile_down_votes_tool_ids': profile_down_votes_tool_ids
     }
     return TemplateResponse(request, 'toolbox.html', context)
+
+
+def labs(request):
+    labs = LabsResearch.objects.all()
+    tools = Tool.objects.prefetch_related('votes').filter(category=Tool.CAT_ALPHA)
+
+    socials = [{
+        "name": _("GitHub Repo"),
+        "link": "https://github.com/gitcoinco/labs/",
+        "class": "fab fa-github fa-2x"
+    }, {
+        "name": _("Slack"),
+        "link": "https://gitcoin.co/slack",
+        "class": "fab fa-slack fa-2x"
+    }, {
+        "name": _("Contact the Team"),
+        "link": "mailto:founders@gitcoin.co",
+        "class": "fa fa-envelope fa-2x"
+    }]
+
+    context = {
+        'active': "labs",
+        'title': _("Labs"),
+        'card_desc': _("Gitcoin Labs provides advanced tools for busy developers"),
+        'avatar_url': 'https://c.gitcoin.co/labs/Articles-Announcing_Gitcoin_Labs.png',
+        'tools': tools,
+        'labs': labs,
+        'socials': socials
+    }
+    return TemplateResponse(request, 'labs.html', context)
 
 
 @csrf_exempt

@@ -437,6 +437,69 @@ def vision(request):
     return TemplateResponse(request, 'vision.html', context)
 
 
+def products(request):
+    """Render the Products response."""
+    products = [
+        {
+            'name': 'bounties',
+            'heading': _("Solve bounties. Get paid. Contribute to open source"),
+            'description': _("Collaborate and monetize your skills while working on Open Source projects \
+                            through bounties."),
+            'link': '/explorer',
+            'img': static('v2/images/products/graphics-Bounties.png'),
+            'logo': static('v2/images/products/gitcoin-logo.svg')
+        },
+        {
+            'name': 'kudos',
+            'heading': _("Show your appreciation with collectible tokens"),
+            'description': _("Kudos is a way of showing your appreciation to another Gitcoin member.\
+                            It's also a way to showcase special skills that a member might have."),
+            'link': '/kudos',
+            'img': static('v2/images/products/graphics-Kudos.png'),
+            'logo': static('v2/images/products/kudos-logo.svg')
+        },
+        {
+            'name': 'grants',
+            'heading': _("Sustainable funding for open source"),
+            'description': _("Gitcoin Grants are a fast, easy & secure way to provide recurring token \
+                            contributions to your favorite OSS maintainers. Powered by EIP1337."),
+            'link': '/grants',
+            'img': static('v2/images/products/graphics-Grants.png'),
+            'logo': static('v2/images/products/grants-logo.svg')
+        },
+        {
+            'name': 'codefund',
+            'heading': _("Ethical advertising for developers"),
+            'description': _("CodeFund is an open source ad platform that funds contributors of the open \
+                            source ecosystem"),
+            'link': 'https://codefund.app/',
+            'img': static('v2/images/products/graphics-Codefund.svg'),
+            'logo': static('v2/images/products/codefund-logo.svg')
+        },
+        {
+            'name': 'labs',
+            'heading': _("Tools for busy developers"),
+            'description': _("Gitcoin Labs provides research reports and toolkits for busy developers, \
+                            making Ethereum dapps fast, usable, and secure."),
+            'link': '/labs',
+            'img': static('v2/images/products/graphics-Labs.png'),
+            'logo': static('v2/images/products/labs-logo.svg')
+        }
+    ]
+
+    context = {
+        'is_outside': True,
+        'active': 'products',
+        'title': 'Products',
+        'card_title': _("Gitcoin's Products."),
+        'card_desc': _('At Gitcoin, we build products that allow for better incentivized collaboration \
+                        in the realm of open source software'),
+        'avatar_url': static('v2/images/grow_open_source.png'),
+        'products': products,
+    }
+    return TemplateResponse(request, 'products.html', context)
+
+
 def not_a_token(request):
     """Render the not_a_token response."""
     context = {
@@ -445,7 +508,8 @@ def not_a_token(request):
         'avatar_url': static('v2/images/no-token/no-token.jpg'),
         'title': 'Gitcoin is not a token',
         'card_title': _("Gitcoin is not a token"),
-        'card_desc': _("We didn't do a token because we felt it wasn't the right way to align incentives with our user base.  Read more about the future of monetization in web3."),
+        'card_desc': _("We didn't do a token because we felt it wasn't the right way to align incentives \
+                        with our user base.  Read more about the future of monetization in web3."),
     }
     return TemplateResponse(request, 'not_a_token.html', context)
 
@@ -857,14 +921,6 @@ def presskit(request):
         'title': _('Presskit'),
     }
     return TemplateResponse(request, 'presskit.html', context)
-
-
-def get_gitcoin(request):
-    context = {
-        'active': 'get_gitcoin',
-        'title': _('Get Started'),
-    }
-    return TemplateResponse(request, 'getgitcoin.html', context)
 
 
 def handler403(request, exception=None):

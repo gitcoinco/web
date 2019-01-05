@@ -621,13 +621,21 @@ var show_interest_modal = function() {
           return false;
         }
 
-        $(self).attr('href', '/uninterested');
-        $(self).find('span').text(gettext('Stop Work'));
-        $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
+
         add_interest(document.result['pk'], {
           issue_message: msg
+        }).then(success => {
+          if (success) {
+            $(self).attr('href', '/uninterested');
+            $(self).find('span').text(gettext('Stop Work'));
+            $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
+            $.modal.close();
+          }
+        }).catch((error) => {
+          if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
+            return;
+          throw error;
         });
-        $.modal.close();
       });
     });
   });
@@ -1216,7 +1224,8 @@ const process_activities = function(result, bounty_activities) {
     bounty_removed_slashed_by_staff: gettext('Dinged and Removed from Bounty by Staff'),
     bounty_removed_by_staff: gettext('Removed from Bounty by Staff'),
     bounty_removed_by_funder: gettext('Removed from Bounty by Funder'),
-    bounty_changed: gettext('Bounty Details Changed')
+    bounty_changed: gettext('Bounty Details Changed'),
+    extend_expiration: gettext('Extended Bounty Expiration')
   };
 
   const now = new Date(result['now']);

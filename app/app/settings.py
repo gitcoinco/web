@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import os
 import socket
 
-from django.http import Http404
 from django.utils.translation import gettext_noop
 
 import environ
@@ -102,7 +101,6 @@ INSTALLED_APPS = [
     'linkshortener',
     'credits',
     'gitcoinbot',
-    'external_bounties',
     'dataviz',
     'impersonate',
     'grants',
@@ -156,13 +154,13 @@ AUTHENTICATION_BACKENDS = (
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': ['retail/templates/', 'external_bounties/templates/', 'dataviz/templates', 'kudos/templates'],
+    'DIRS': ['retail/templates/', 'dataviz/templates', 'kudos/templates'],
     'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': [
             'django.template.context_processors.debug', 'django.template.context_processors.request',
             'django.contrib.auth.context_processors.auth', 'django.contrib.messages.context_processors.messages',
-            'app.context.insert_settings', 'social_django.context_processors.backends',
+            'app.context.preprocess', 'social_django.context_processors.backends',
             'social_django.context_processors.login_redirect',
         ],
     },
@@ -245,8 +243,23 @@ AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
 AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', default='')
 AWS_DEFAULT_REGION = env('AWS_DEFAULT_REGION', default='us-west-2')
 AWS_LOG_GROUP = env('AWS_LOG_GROUP', default='Gitcoin')
-AWS_LOG_LEVEL = env('AWS_LOG_LEVEL', default='DEBUG')
+AWS_LOG_LEVEL = env('AWS_LOG_LEVEL', default='INFO')
 AWS_LOG_STREAM = env('AWS_LOG_STREAM', default=f'{ENV}-web')
+
+# Sentry
+SENTRY_USER = env('SENTRY_USER', default='')
+SENTRY_PASSWORD = env('SENTRY_PASSWORD', default='')
+SENTRY_ADDRESS = env('SENTRY_ADDRESS', default='')
+SENTRY_JS_DSN = env.str('SENTRY_JS_DSN', default='')
+SENTRY_PROJECT = env('SENTRY_PROJECT', default='')
+RELEASE = raven.fetch_git_sha(os.path.abspath(os.pardir)) if ENV == 'prod' else ''
+RAVEN_JS_VERSION = env.str('RAVEN_JS_VERSION', default='3.26.4')
+if SENTRY_ADDRESS and SENTRY_PROJECT:
+    RAVEN_CONFIG = {
+        'dsn': f'https://{SENTRY_USER}:{SENTRY_PASSWORD}@{SENTRY_ADDRESS}/{SENTRY_PROJECT}',
+    }
+    if RELEASE:
+        RAVEN_CONFIG['release'] = RELEASE
 
 if ENV not in ['local', 'test', 'staging', 'preview']:
     boto3_session = Session(
@@ -263,8 +276,8 @@ if ENV not in ['local', 'test', 'staging', 'preview']:
             }
         },
         'root': {
-            'level': 'WARNING',
-            'handlers': ['sentry', 'console', 'watchtower'],
+            'level': 'INFO',
+            'handlers': ['console', 'watchtower', ],
         },
         'formatters': {
             'simple': {
@@ -279,10 +292,6 @@ if ENV not in ['local', 'test', 'staging', 'preview']:
             },
         },
         'handlers': {
-            'sentry': {
-                'level': 'ERROR',  # To capture more than ERROR, change to WARNING, INFO, etc.
-                'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
-            },
             'console': {
                 'level': 'DEBUG',
                 'class': 'logging.StreamHandler',
@@ -300,22 +309,21 @@ if ENV not in ['local', 'test', 'staging', 'preview']:
         },
         'loggers': {
             'django.db.backends': {
-                'level': 'WARNING',
-                'handlers': ['console', 'watchtower'],
-                'propagate': False,
-            },
-            'raven': {
-                'level': 'DEBUG',
-                'handlers': ['console', 'watchtower'],
-                'propagate': False,
-            },
-            'sentry.errors': {
-                'level': 'DEBUG',
+                'level': AWS_LOG_LEVEL,
                 'handlers': ['console', 'watchtower'],
                 'propagate': False,
             },
         },
     }
+
+    if SENTRY_PROJECT:
+        LOGGING['handlers']['sentry'] = {
+            'level': 'ERROR',  # To capture more than ERROR, change to WARNING, INFO, etc.
+            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
+        }
+        for logger in ['sentry.errors', 'raven']:
+            LOGGING['loggers'][logger] = {'level': 'DEBUG', 'handlers': ['console', 'watchtower'], 'propagate': False, }
+        LOGGING['root']['handlers'].append('sentry')
 
     if ENABLE_APM:
         LOGGING['handlers']['elasticapm'] = {
@@ -601,20 +609,6 @@ GOOGLE_ANALYTICS_AUTH_JSON = {
     'client_x509_cert_url': env('GA_CLIENT_X509_CERT_URL', default='')
 }
 HOTJAR_CONFIG = {'hjid': env.int('HOTJAR_ID', default=0), 'hjsv': env.int('HOTJAR_SV', default=0), }
-
-# Sentry
-SENTRY_USER = env('SENTRY_USER', default='')
-SENTRY_PASSWORD = env('SENTRY_PASSWORD', default='')
-SENTRY_ADDRESS = env('SENTRY_ADDRESS', default='')
-SENTRY_JS_DSN = env.str('SENTRY_JS_DSN', default='')
-SENTRY_PROJECT = env('SENTRY_PROJECT', default='')
-RELEASE = raven.fetch_git_sha(os.path.abspath(os.pardir)) if SENTRY_USER else ''
-RAVEN_JS_VERSION = env.str('RAVEN_JS_VERSION', default='3.26.4')
-if SENTRY_ADDRESS and SENTRY_PROJECT:
-    RAVEN_CONFIG = {
-        'dsn': f'https://{SENTRY_USER}:{SENTRY_PASSWORD}@{SENTRY_ADDRESS}/{SENTRY_PROJECT}',
-        'release': RELEASE,
-    }
 
 # List of github usernames to not count as comments on an issue
 IGNORE_COMMENTS_FROM = ['gitcoinbot', ]
