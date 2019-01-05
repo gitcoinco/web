@@ -35,6 +35,11 @@ kubectl proxy
 http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/#!/login
 
 
+# exec into a pod
+
+kubectl exec <pod-name> <command> --namespace=<namespace>
+kubectl exec prometheus-op-kube-state-metrics-85b7ffcb89-s96z7 /bin/bash --namespace=monitoring
+
 # other tools
 
 https://gam.gitcoin.co/login
