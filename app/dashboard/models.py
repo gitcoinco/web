@@ -999,6 +999,21 @@ class BountyFulfillmentQuerySet(models.QuerySet):
         """Exclude results that have not been submitted."""
         return self.exclude(fulfiller_address='0x0000000000000000000000000000000000000000')
 
+class BountyComment(SuperModel):
+    fulfillment = models.ForeignKey(BountyFulfillment, related_name='comments', on_delete=models.CASCADE)
+    comment = models.TextField(blank=True)
+    rating = models.IntegerField(null=True, blank=True)
+    commentsender = models.ForeignKey('dashboard.Profile', related_name='comments_given', on_delete=models.CASCADE)
+    commentreceiver = models.ForeignKey('dashboard.Profile', related_name='comments_received', on_delete=models.CASCADE)
+    
+    def __str__(self):
+        """Define the string representation of BountyComment.
+
+        Returns:
+            str: The string representation of the object.
+
+        """
+        return f'BountyComment ID: ({self.pk}) - BountyFulfillment ID: ({self.fulfillment.pk})'
 
 class BountyFulfillment(SuperModel):
     """The structure of a fulfillment on a Bounty."""

@@ -1118,7 +1118,7 @@ input.is-invalid {
   height:30px;
   text-align:center;
   color:#FFF;
-  font-size:30px;
+  font-size:25px;
   margin-right:2px;
   line-height:30px;
   border-radius:50%;
@@ -1127,11 +1127,22 @@ input.is-invalid {
 .rating span label i {
   color:#ccc;
 }
+
+.rating span:hover ~ span label i,
+.rating span:hover label i {
+	opacity: 0.5;
+}
+.rating span.checked label i,
+.rating span.checked ~ span label i 
+{
+	opacity: 1;
+}
+
 .rating span:hover ~ span label i,
 .rating span:hover label i,
 .rating span.checked label i,
 .rating span.checked ~ span label i {
-  color:#F90;
+  color: rgb(18,199,113);
 }
 
 .bounty_box {

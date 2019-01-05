@@ -602,17 +602,24 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
                           'increased_bounty',
                           'worker_rejected',
                           'bounty_changed']
+        logger.info(f"record_bounty_activity > profile at start: {user_profile}")
         if event_name not in funder_actions:
             if not fulfillment:
+                logger.info(f"record_bounty_activity > not fulfillment, event_name: {event_name}")
                 fulfillment = new_bounty.fulfillments.order_by('-pk').first()
                 if event_name == 'work_done':
                     fulfillment = new_bounty.fulfillments.filter(accepted=True).latest('fulfillment_id')
             if fulfillment:
+                logger.info(f"record_bounty_activity > fulfillment! {fulfillment}")
                 user_profile = Profile.objects.filter(handle__iexact=fulfillment.fulfiller_github_username).first()
                 if not user_profile:
+                    logger.info(f"record_bounty_activity > not user_profile :-(")
                     user_profile = sync_profile(fulfillment.fulfiller_github_username)
+                
     except Exception as e:
         logger.error(f'{e} during record_bounty_activity for {new_bounty}')
+
+    logger.info(f"record_bounty_activity > user_profile: {user_profile}")
 
     if user_profile:
         return Activity.objects.create(
@@ -706,6 +713,8 @@ def process_bounty_changes(old_bounty, new_bounty):
     # record a useraction for this
     record_user_action(event_name, old_bounty, new_bounty)
     record_bounty_activity(event_name, old_bounty, new_bounty)
+    # check for review{} in here, create review object, wheeee.
+
 
     # Build profile pairs list
     if new_bounty.fulfillments.exists():

@@ -59,7 +59,7 @@ window.onload = function() {
         var notificationEmail = data.notificationEmail;
         var githubPRLink = data.githubPRLink;
         var hoursWorked = data.hoursWorked;
-
+		debugger;
         localStorage['githubUsername'] = githubUsername;
 
         var account = web3.eth.coinbase;
@@ -88,7 +88,12 @@ window.onload = function() {
             platform: 'gitcoin',
             schemaVersion: '0.1',
             schemaName: 'gitcoinFulfillment'
-          }
+          },
+		  review: {
+			  rating: data.rating?data.rating:-1,
+			  comment: data.review?data.review:"No comment given.",
+			  reviewType: "worker"
+		  }
         };
 
         var _callback = function(error, result) {
