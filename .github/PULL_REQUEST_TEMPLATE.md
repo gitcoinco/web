@@ -41,7 +41,7 @@
 
 <!-- Why should the PR reviewer trust that this change doesn't break anything? How have you tested this change? -->
 
-###### Contributor (PR submitter & devs working on this)
+###### Contributor
 
 - [ ] Read and followed the [Contributor Guidelines](https://docs.gitcoin.co/mk_contributors/)
 - [ ] Tested all changes **locally**
