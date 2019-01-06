@@ -1,0 +1,182 @@
+{% comment %}
+Copyright (C) 2018 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load static %}
+{% include "ethdenver2019/base.html" %}
+{% block style %}
+<style type="text/css">
+    .ethdenver2019-nli-header {
+      background-image: url("{% static 'v2/images/event_ethdenver2019/background.png' %}");
+      background-size: 100% 100%;
+    }
+    .ethdenver2019-nli-kudos {
+/*      background-image: url("{% static 'v2/images/event_ethdenver2019/collect_kudos.png' %}");
+        background-repeat: no-repeat;
+  background-position: center;*/
+      height: 30em;
+    }
+    .ethdenver2019-texts-headers {
+      font-size: 40px;
+line-height: 36px;
+color: #ffffff;
+font-family: canada-type-gibson, sans-serif;
+font-weight: bold;
+text-align: center;
+    }
+    .ethdenver2019-nli-prizes {
+background-color: #281840;
+    }
+    .container {
+      margin-left: 0.25em;
+      margin-right: 0.25em;
+      width: 100%;
+      max-width: 100%
+    }
+    .ethdenver2019-col-center {
+      color: #ffffff;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+      vertical-align: middle;
+    }
+    .ethdenver2019-col-prize-img {
+      height: 260px;
+      vertical-align: text-bottom;
+      text-align: center;
+    }
+    .ethdenver2019-button-getstarted {
+      width: 200px;
+      height: 63px;
+      border-radius: 5px;
+      background-color: #fc5090;
+      float: none;
+      margin: 0 auto;
+      display: inline-grid;
+    }
+    .ethdenver2019-button-getstarted-text {
+      font-size: 20px;
+      line-height: 36px;
+      color: #ffffff;
+      align-self: center;
+      font-family: canada-type-gibson, sans-serif;
+      text-align: center;
+    }
+    .peekicorn {
+      position: absolute;
+      top: -100px;
+    }
+    .bufficorn {
+      position: absolute;
+      left: 10em;
+      top: -13em;
+    }
+
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="row text-center">
+    <div class="ethdenver2019-nli-header col-12">
+      <div class="container">
+        <div class="row mt-4">
+          <div class="col-12">
+            <img src="{% static 'v2/images/event_ethdenver2019/ethdenver_logo.png' %}" class="rounded mx-auto d-block">
+          </div>
+        </div>
+        <div class="row mt-5 mb-5">
+          <div class="col-12">
+            <div class="ethdenver2019-texts-headers">
+              SET CHALLENGES
+            </div>
+          </div>
+        </div>
+        <div class="row mt-5 mb-5">
+          <div class="col-12">
+            <div class="ethdenver2019-button-getstarted">
+              <div class="ethdenver2019-button-getstarted-text">
+                Get Started
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ethdenver2019-nli-kudos mt-4 mb-4 align-middle text-center">
+    &nbsp;<img src="{% static 'v2/images/event_ethdenver2019/collect_kudos.png' %}">
+  </div>
+  <div class="ethdenver2019-nli-prizes pb-5">
+    <div class="row">
+      <div class="col-12 ethdenver2019-col-center mt-5 mb-5">
+        <div class="ethdenver2019-texts-headers">
+          PRIZES
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-3 ethdenver2019-col-center">
+        <div class="peekicorn">
+          <img src="{% static 'v2/images/event_ethdenver2019/peeking-bufficorn.png' %}" class="rounded mx-auto d-block">
+        </div>
+        <div class="ethdenver2019-col-prize-img">
+          <img src="{% static 'v2/images/event_ethdenver2019/keepkey.png' %}" class="rounded mx-auto d-block">
+        </div>
+        <div class="ethdenver2019-texts-headers-2">
+          KeepKey
+        </div>
+        <div class="ethdenver2019-texts-normal">
+          A hardware wallet that secures bitcoin, ethereum, erc-20 tokens, and many more.
+        </div>
+      </div>
+      <div class="col-3 ethdenver2019-col-center">
+        <div class="ethdenver2019-col-prize-img">
+          <img src="{% static 'v2/images/event_ethdenver2019/price_2.png' %}">
+        </div>
+        <div class="ethdenver2019-texts-headers-2">
+          Limited Edition Kudos
+        </div>
+        <div class="ethdenver2019-texts-normal">
+          A special, limited edition Kudos you won’t be able to find anywhere else!
+        </div>
+      </div>
+      <div class="col-3 ethdenver2019-col-center">
+        <div class="ethdenver2019-col-prize-img">
+          <img src="{% static 'v2/images/event_ethdenver2019/uport.png' %}" class="rounded mx-auto d-block">
+        </div>
+        <div class="bufficorn">
+          <img src="{% static 'v2/images/event_ethdenver2019/bufficorn2.png' %}" class="rounded mx-auto d-block">
+        </div>
+        <div class="ethdenver2019-texts-headers-2">
+          uPort Attestation
+        </div>
+        <div class="ethdenver2019-texts-normal">
+          Proof that you’ve won the ETHDenver prize... on the blockchain.
+        </div>
+      </div>
+    </div>
+    <div class="row text-center mt-5 mb-5">
+      <div class="col-12">
+        <div class="ethdenver2019-button-getstarted">
+          <div class="ethdenver2019-button-getstarted-text">
+            Get Started
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

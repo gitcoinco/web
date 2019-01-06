@@ -124,6 +124,9 @@ INSTALLED_APPS = [
     'wagtail.core',
     'cms',
     'revenue',
+    # event:ethdenver2019
+    'event_ethdenver2019',
+    # /event:ethdenver2019
 ]
 
 MIDDLEWARE = [
