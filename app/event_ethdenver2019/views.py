@@ -2,7 +2,7 @@ from django.template.response import TemplateResponse
 from app.utils import get_profile
 from kudos.models import KudosTransfer
 from .models import Event_ETHDenver2019_Customizing_Kudos
-# from dashboard.models import Profile
+
 
 def ethdenver2019_redeem(request):
     profile = get_profile(request)
@@ -12,8 +12,6 @@ def ethdenver2019_redeem(request):
     kudos_select = KudosTransfer.objects.filter(recipient_profile=profile).all()
 
     all_kudos_collected = True
-    kudos_selection = []
-    kudos_row = []
     kudos_selected = Event_ETHDenver2019_Customizing_Kudos.objects.filter(active=True).all()
 
     for kudos in kudos_selected:
@@ -29,8 +27,8 @@ def ethdenver2019_redeem(request):
     else:
         page_ctx['success'] = False
 
-
     return TemplateResponse(request, 'ethdenver2019/redeem.html', page_ctx)
+
 
 def ethdenver2019(request):
     profile = get_profile(request)
