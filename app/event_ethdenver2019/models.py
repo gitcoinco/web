@@ -1,6 +1,7 @@
 from django.db import models
 from economy.models import SuperModel
 
+
 # Create your models here.
 class Event_ETHDenver2019_Customizing_Kudos(SuperModel):
     # kudos that is required

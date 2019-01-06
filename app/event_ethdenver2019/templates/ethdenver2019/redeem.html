@@ -23,6 +23,10 @@ along with this program. If not, see
   background-image: url("{% static 'v2/images/event_ethdenver2019/background.png' %}");
   background-size: 100% 100%;
 }
+.sadsmiley {
+  font-size: 140px;
+  transform: rotate(90deg);
+}
 </style>
 {% endblock %}
 {% block content %}
@@ -54,26 +58,37 @@ along with this program. If not, see
     </div>
   </div>
   <div class="ethdenver2019-kudos mt-4 mb-4 align-middle text-center">
-    <div class="ethdenver2019-texts-headers ethdenver2019-texts-black">
-      YOUR BUFFICORN KUDOS
-    </div>
-    <div class="ethdenver2019-texts-black mb-5">
-      Click on each Kudos for more details.
-    </div>
-
-    <div class="container mt-5">
-      {% for kudos_rows in kudos_selection %}
-      <div class="row">
-        {% for kudos in kudos_rows %}
-        <div class="col-3 ">
-          <div class="row"><div class="col-12"><img src="{% static kudos.kudos.image %}" width="200px" height="200px" class="mb-2 received-equals-{{ kudos.received }}"></div></div>
-          <div class="row"><div class="col-12">{{ kudos.kudos.humanized_name }}</div></div>
-
-        </div>
-        {% endfor %}
+    {% if success %}
+    <div class="row">
+      <div class="col-12">
+        <img src="{% static 'v2/images/event_ethdenver2019/bufficorn-joy.png' %}">
       </div>
-      {% endfor %}
     </div>
+    <div class="row">
+      <div class="col-12">
+        <div class="ethdenver2019-texts-headers ethdenver2019-texts-black mb-2 mt-2">
+          Horray!
+        </div>
+        <div class="ethdenver2019-texts-black">
+          You completed the ETHDenver2019 challenge!
+        </div>
+        <div>
+          Go to the front desk and show them that you received this kudos:
+        </div>
+      </div>
+    </div>
+    {% else %}
+     <div class="row">
+      <div class="col-12 sadsmiley">
+        :-(
+      </div>
+    </div>
+     <div class="row mt-5">
+      <div class="col-12">
+        You did not collect all challenge kudos yet. Try again later.
+      </div>
+    </div>
+    {% endif %}
   </div>
 </div>
 {% endblock %}
