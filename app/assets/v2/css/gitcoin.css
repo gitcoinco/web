@@ -192,14 +192,6 @@ div.button-pink {
   font-weight: 300;
 }
 
-.light-bg {
-  background-color: rgba(239, 243, 238, 0.7);
-  background-image: url('/static/v2/images/light-bg.png');
-  background-size: contain;
-  background-position: bottom;
-  background-repeat: no-repeat;
-}
-
 .white-light-bg {
   background-color: white;
   background-image: url('/static/v2/images/light-bg.png');
