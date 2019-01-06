@@ -247,6 +247,7 @@ $(document).ready(function() {
         experienceLevel: data.experience_level,
         projectLength: data.project_length,
         bountyType: data.bounty_type,
+        estimatedHours: data.hours,
         fundingOrganisation: data.fundingOrganisation,
         reservedFor: reservedFor ? reservedFor.text : '',
         tokenName
