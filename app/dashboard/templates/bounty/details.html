@@ -25,7 +25,7 @@
       </div>
 
       <div class="col-12 offset-md-1 col-md-10 offset-lg-1 col-lg-8 body">
-        {% include 'shared/bounty_waiting_state.html' %}
+        {% include 'shared/bounty_waiting_state.html' with can_close=True %}
         <div class="row nonefound" style="display:none;">
           <img src="{% static "v2/images/shrug_bot.png" %}">
           <h3>{% trans "No funded issue found." %}</h3>
