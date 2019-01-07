@@ -16,6 +16,7 @@
 
 '''
 
+from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
 from django.db.models import Count
 from django.db.models.functions import Lower
@@ -123,3 +124,14 @@ class Command(BaseCommand):
             profile.hide_profile = False
             profile.save()
             print(profile.handle)
+
+        # KO Hack 2019/01/07
+        # For some reason, these proiles keep getting
+        # removed from their useres.  this mgmt command fixes that
+        for user in User.objects.filter(profile__isnull=True):
+            profiles = Profile.objects.filter(handle__iexact=user.username)
+            if profiles.exists():
+                print(user.username)
+                profile = profiles.first()
+                profile.user = user
+                profile.save()
