@@ -28,8 +28,8 @@ class DashboardTokensTest(TestCase):
     fixtures = ['tokens.json']
 
     def test_tokens(self):
-        tokens = get_tokens()
         """Test the dashboard tokens variable to ensure it can be read properly."""
+        tokens = get_tokens()
         assert isinstance(tokens, list)
         assert isinstance(tokens[0], dict)
         assert len(tokens[0]) == 4
