@@ -283,8 +283,8 @@ class Subscription(SuperModel):
     )
     amount_per_period = models.DecimalField(
         default=1,
-        decimal_places=4,
-        max_digits=50,
+        decimal_places=18,
+        max_digits=64,
         help_text=_('The promised contribution amount per period.'),
     )
     real_period_seconds = models.DecimalField(
