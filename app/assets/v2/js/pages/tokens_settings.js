@@ -53,6 +53,10 @@ $(document).ready(function() {
             value: 0,
             gasPrice: web3.toHex(document.gas_price * Math.pow(10, 9))
           }, function(error, result) {
+            if (error) {
+              _alert('Token request denied - no permission for this token');
+              return;
+            }
             var tx = result;
 
             $('#coinbase').val(web3.eth.coinbase);

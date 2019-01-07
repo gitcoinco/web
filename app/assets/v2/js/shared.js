@@ -254,12 +254,20 @@ var showLoading = function() {
   setTimeout(showLoading, 10);
 };
 
+var waitingStateActive = function() {
+  $('.bg-container').show();
+  $('.loading_img').addClass('waiting-state ');
+  $('.waiting_room_entertainment').show();
+  $('.issue-url').html('<a href="' + document.issueURL + '">' + document.issueURL + '</a>');
+  waitingRoomEntertainment();
+};
+
 /** Add the current profile to the interested profiles list. */
 var add_interest = function(bounty_pk, data) {
   if (document.interested) {
     return;
   }
-  mutate_interest(bounty_pk, 'new', data);
+  return mutate_interest(bounty_pk, 'new', data);
 };
 
 /** Remove the current profile from the interested profiles list. */
@@ -276,7 +284,7 @@ var mutate_interest = function(bounty_pk, direction, data) {
   var request_url = '/actions/bounty/' + bounty_pk + '/interest/' + direction + '/';
 
   showBusyOverlay();
-  $.post(request_url, data).then(function(result) {
+  return $.post(request_url, data).then(function(result) {
     hideBusyOverlay();
 
     result = sanitizeAPIResults(result);
@@ -285,6 +293,7 @@ var mutate_interest = function(bounty_pk, direction, data) {
       if (direction === 'new') {
         _alert({ message: result.msg }, 'success');
         $('#interest a').attr('id', 'btn-white');
+        return true;
       } else if (direction === 'remove') {
         _alert({ message: result.msg }, 'success');
         $('#interest a').attr('id', '');
@@ -304,7 +313,6 @@ var mutate_interest = function(bounty_pk, direction, data) {
     }
 
     _alert({ message: alertMsg }, 'error');
-
   });
 };
 
@@ -919,40 +927,43 @@ function getNetwork(id) {
 // figure out what version of web3 this is, whether we're logged in, etc..
 var listen_for_web3_changes = async function() {
 
-  if (!document.listen_for_web3_iterations) {
-    document.listen_for_web3_iterations = 1;
-  } else {
-    document.listen_for_web3_iterations += 1;
+  if (document.location.pathname.indexOf('grants') === -1) {
+    if (!document.listen_for_web3_iterations) {
+      document.listen_for_web3_iterations = 1;
+    } else {
+      document.listen_for_web3_iterations += 1;
+    }
+
+    if (typeof web3 == 'undefined') {
+      currentNetwork();
+      trigger_form_hooks();
+    } else if (typeof web3 == 'undefined' || typeof web3.eth == 'undefined' || typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
+      currentNetwork('locked');
+      trigger_form_hooks();
+    } else {
+      is_metamask_unlocked = true;
+      web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
+        if (errors) {
+          return;
+        }
+        if (typeof result != 'undefined' && result !== null) {
+          document.balance = result.toNumber();
+        }
+      });
+
+      web3.version.getNetwork(function(error, netId) {
+        if (error) {
+          currentNetwork();
+        } else {
+          var network = getNetwork(netId);
+
+          currentNetwork(network);
+          trigger_form_hooks();
+        }
+      });
+    }
   }
 
-  if (typeof web3 == 'undefined') {
-    currentNetwork();
-    trigger_form_hooks();
-  } else if (typeof web3 == 'undefined' || typeof web3.eth == 'undefined' || typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
-    currentNetwork('locked');
-    trigger_form_hooks();
-  } else {
-    is_metamask_unlocked = true;
-    web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
-      if (errors) {
-        return;
-      }
-      if (typeof result != 'undefined') {
-        document.balance = result.toNumber();
-      }
-    });
-
-    web3.version.getNetwork(function(error, netId) {
-      if (error) {
-        currentNetwork();
-      } else {
-        var network = getNetwork(netId);
-
-        currentNetwork(network);
-        trigger_form_hooks();
-      }
-    });
-  }
   if (window.ethereum && !document.has_checked_for_ethereum_enable) {
     document.has_checked_for_ethereum_enable = true;
     is_metamask_approved = await window.ethereum._metamask.isApproved();
@@ -1139,6 +1150,7 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
     result['action'] = result['url'];
     result['title'] = result['title'] ? result['title'] : result['github_url'];
     result['p'] = projectType + (result['experience_level'] ? (result['experience_level'] + ' <span class="separator-bull"></span> ') : '');
+    result['expired'] = '';
 
     if (result['status'] === 'done') {
       result['p'] += 'Done';
@@ -1163,19 +1175,21 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
     } else if (isExpired) {
       const timeAgo = timeDifference(dateNow, dateExpires, true);
 
-      result['p'] += ('Expired ' + timeAgo + ' ago');
+      result['expired'] += ('Expired ' + timeAgo + ' ago');
     } else {
       const openedWhen = timeDifference(dateNow, new Date(result['web3_created']), true);
 
       if (isInfinite) {
-        const expiredExpires = '<b>Never expires</b>';
+        const expiredExpires = 'Never expires';
 
-        result['p'] += ('Opened ' + openedWhen + ' ago, ' + expiredExpires);
+        result['p'] += ('Opened ' + openedWhen + ' ago');
+        result['expired'] += (expiredExpires);
       } else {
         const timeLeft = timeDifference(dateNow, dateExpires);
         const expiredExpires = dateNow < dateExpires ? 'Expires' : 'Expired';
 
-        result['p'] += ('Opened ' + openedWhen + ' ago, ' + expiredExpires + ' <b>' + timeLeft + '</b>');
+        result['p'] += ('Opened ' + openedWhen + ' ago');
+        result['expired'] += (expiredExpires + ' ' + timeLeft);
       }
     }
 
@@ -1333,3 +1347,60 @@ function shuffleArray(array) {
   }
   return array;
 }
+
+const getURLParams = (k) => {
+  var p = {};
+
+  location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(s, k, v) {
+    p[k] = v;
+  });
+  return k ? p[k] : p;
+};
+
+const updateParams = (key, value) => {
+  params = new URLSearchParams(window.location.search);
+  if (params.get(key) === value) return;
+  params.set(key, value);
+  window.location.search = params.toString();
+};
+
+/**
+ * shrinks text if it exceeds a given length which introduces a button
+ * which can expand / shrink the text.
+ * useage: <div class="more">...</div>
+ *
+ * @param {number} length - text length to be wrapped.
+ */
+const showMore = (length = 400) => {
+  const placeholder = '...';
+  const expand = 'More';
+  const shrink = 'Less';
+
+  $('.wrap-text').each(function() {
+    const content = $(this).html();
+
+    if (content.length > length) {
+      const shortText = content.substr(0, length);
+      const remainingText = content.substr(length, content.length - length + 1);
+      const html = shortText + '<span class="moreellipses">' + placeholder +
+      '&nbsp;</span><span class="morecontent"><span>' + remainingText +
+      '</span>&nbsp;&nbsp;<a href="#" class="morelink">' + expand +
+      '</a></span>';
+
+      $(this).html(html);
+    }
+  });
+
+  $('.morelink').click((event) => {
+    if ($(event.currentTarget).hasClass('less')) {
+      $(event.currentTarget).removeClass('less');
+      $(event.currentTarget).html(expand);
+    } else {
+      $(event.currentTarget).addClass('less');
+      $(event.currentTarget).html(shrink);
+    }
+    $(event.currentTarget).parent().prev().toggle();
+    $(event.currentTarget).prev().toggle();
+    return false;
+  });
+};
