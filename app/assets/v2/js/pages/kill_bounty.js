@@ -24,14 +24,36 @@ window.onload = function() {
           .removeAttr('disabled');
 
         $.each($(form).serializeArray(), function() {
-          data[this.name] = this.value;
+          if (this.value) {
+            data[this.name] = this.value;
+          }
         });
+
+        const selectedRadio = $('input[name=canceled_bounty_reason]:checked').val();
+        let reasonCancel;
+
+        if (selectedRadio == 'other') {
+          reasonCancel = $('#reason_text').val();
+        } else {
+          reasonCancel = selectedRadio;
+        }
+        const payload = {
+          pk: $('input[name=pk]').val(),
+          canceled_bounty_reason: reasonCancel
+        };
+
+        const sendForm = fetchData('cancel_reason', 'POST', payload);
+
+        $.when(sendForm).then(function(payback) {
+          return payback;
+        });
+
 
         disabled.attr('disabled', 'disabled');
         mixpanel.track('Kill Bounty Clicked', {});
 
         loading_button($('.js-submit'));
-        var issueURL = data.issueURL;
+        const issueURL = data.issueURL;
 
         var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
 
@@ -56,16 +78,14 @@ window.onload = function() {
             return;
           }
 
-          var bountyAmount = parseInt(result['value_in_token'], 10);
-          var fromAddress = result['bounty_owner_address'];
-          var claimeeAddress = result['fulfiller_address'];
-          var open = result['is_open'];
-          var initialized = true;
-          var bountyId = result['standard_bounties_id'];
+          const bountyAmount = parseInt(result['value_in_token'], 10);
+          const fromAddress = result['bounty_owner_address'];
+          const is_open = result['is_open'];
+          const bountyId = result['standard_bounties_id'];
 
-          var errormsg = undefined;
+          let errormsg = undefined;
 
-          if (bountyAmount == 0 || open == false || initialized == false) {
+          if (bountyAmount == 0 || is_open == false) {
             errormsg =
                 gettext('No active funded issue found at this address.  Are you sure this is an active funded issue?');
           }
@@ -93,7 +113,7 @@ window.onload = function() {
               _alert({ message: gettext('Cancel bounty submitted to web3.') }, 'info');
               setTimeout(function() {
                 mixpanel.track('Kill Bounty Success', {});
-                document.location.href = '/funding/details?url=' + issueURL;
+                document.location.href = '/funding/details/?url=' + issueURL;
               }, 1000);
             };
 

@@ -267,7 +267,7 @@ var add_interest = function(bounty_pk, data) {
   if (document.interested) {
     return;
   }
-  mutate_interest(bounty_pk, 'new', data);
+  return mutate_interest(bounty_pk, 'new', data);
 };
 
 /** Remove the current profile from the interested profiles list. */
@@ -284,7 +284,7 @@ var mutate_interest = function(bounty_pk, direction, data) {
   var request_url = '/actions/bounty/' + bounty_pk + '/interest/' + direction + '/';
 
   showBusyOverlay();
-  $.post(request_url, data).then(function(result) {
+  return $.post(request_url, data).then(function(result) {
     hideBusyOverlay();
 
     result = sanitizeAPIResults(result);
@@ -293,6 +293,7 @@ var mutate_interest = function(bounty_pk, direction, data) {
       if (direction === 'new') {
         _alert({ message: result.msg }, 'success');
         $('#interest a').attr('id', 'btn-white');
+        return true;
       } else if (direction === 'remove') {
         _alert({ message: result.msg }, 'success');
         $('#interest a').attr('id', '');
@@ -312,7 +313,6 @@ var mutate_interest = function(bounty_pk, direction, data) {
     }
 
     _alert({ message: alertMsg }, 'error');
-
   });
 };
 
@@ -1347,3 +1347,60 @@ function shuffleArray(array) {
   }
   return array;
 }
+
+const getURLParams = (k) => {
+  var p = {};
+
+  location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(s, k, v) {
+    p[k] = v;
+  });
+  return k ? p[k] : p;
+};
+
+const updateParams = (key, value) => {
+  params = new URLSearchParams(window.location.search);
+  if (params.get(key) === value) return;
+  params.set(key, value);
+  window.location.search = params.toString();
+};
+
+/**
+ * shrinks text if it exceeds a given length which introduces a button
+ * which can expand / shrink the text.
+ * useage: <div class="more">...</div>
+ *
+ * @param {number} length - text length to be wrapped.
+ */
+const showMore = (length = 400) => {
+  const placeholder = '...';
+  const expand = 'More';
+  const shrink = 'Less';
+
+  $('.wrap-text').each(function() {
+    const content = $(this).html();
+
+    if (content.length > length) {
+      const shortText = content.substr(0, length);
+      const remainingText = content.substr(length, content.length - length + 1);
+      const html = shortText + '<span class="moreellipses">' + placeholder +
+      '&nbsp;</span><span class="morecontent"><span>' + remainingText +
+      '</span>&nbsp;&nbsp;<a href="#" class="morelink">' + expand +
+      '</a></span>';
+
+      $(this).html(html);
+    }
+  });
+
+  $('.morelink').click((event) => {
+    if ($(event.currentTarget).hasClass('less')) {
+      $(event.currentTarget).removeClass('less');
+      $(event.currentTarget).html(expand);
+    } else {
+      $(event.currentTarget).addClass('less');
+      $(event.currentTarget).html(shrink);
+    }
+    $(event.currentTarget).parent().prev().toggle();
+    $(event.currentTarget).prev().toggle();
+    return false;
+  });
+};

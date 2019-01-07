@@ -100,32 +100,27 @@ $(document).ready(function() {
     });
   }
 
-  // get started modal
-  $('body').delegate('.iama', 'click', function() {
-    document.location.href = $(this).find('a').attr('href');
-  });
-
   // pulse animation on click
-  $('.pulseClick').click(function(e) {
-    var ele = $(this);
+  $('.pulseClick').on('click', (event) => {
+    let element = $(event.target);
 
-    ele.addClass('pulseButton');
-    var callback = function() {
-      ele.removeClass('pulseButton');
+    element.addClass('pulseButton');
+    let callback = () => {
+      element.removeClass('pulseButton');
     };
 
     setTimeout(callback, 300);
   });
 
-  $('.faq_item .question').click(function() {
-    $(this).parents('.faq_parent').find('.answer').toggleClass('hidden');
-    $(this).parents('.faq_parent').find('.answer').toggleClass('show');
+  $('.faq_item .question').on('click', (event) => {
+    $(event.target).parents('.faq_parent').find('.answer').toggleClass('hidden');
+    $(event.target).parents('.faq_parent').find('.answer').toggleClass('show');
   });
 
   // mixpanel integration
-  setTimeout(function() {
-    var web3v = (typeof web3 == 'undefined' || typeof web3.version == 'undefined') ? 'none' : web3.version.api;
-    var params = {
+  setTimeout(() => {
+    let web3v = (typeof web3 == 'undefined' || typeof web3.version == 'undefined') ? 'none' : web3.version.api;
+    const params = {
       page: document.location.pathname,
       web3: web3v
     };
@@ -133,7 +128,7 @@ $(document).ready(function() {
     mixpanel.track('Pageview', params);
   }, 300);
 
-  var tos = [
+  const tos = [
     'slack',
     'btctalk',
     'reddit',
@@ -153,21 +148,21 @@ $(document).ready(function() {
     'help/faq'
   ];
 
-  for (var i = 0; i < tos.length; i++) {
-    var to = tos[i];
-    var callback = function(e) {
-      var _params = {
-        'to': $(this).attr('href')
-      };
+  for (let i = 0; i < tos.length; i++) {
+    const to = tos[i];
+    const _params = {
+      'to': $(this).attr('href')
+    };
 
+    const callback = () => {
       mixpanel.track('Outbound', _params);
     };
 
     $('body').delegate("a[href='/" + to + "']", 'click', callback);
   }
 
-  $('body').delegate("a[href^='https://github.com/']", 'click', function(e) {
-    var _params = {
+  $('body').delegate("a[href^='https://github.com/']", 'click', () => {
+    const _params = {
       'to_domain': 'github.com',
       'to': $(this).attr('href')
     };
@@ -175,20 +170,15 @@ $(document).ready(function() {
     mixpanel.track('Outbound', _params);
   });
 
-  // To be deprecrated with #newsletter-subscribe
-  $('#mc-embedded-subscribe').click(function() {
+  $('#newsletter-subscribe').on('click', () => {
     mixpanel.track('Email Subscribe');
   });
 
-  $('#newsletter-subscribe').click(function() {
-    mixpanel.track('Email Subscribe');
-  });
-
-  $('body.whitepaper .btn-success').click(function() {
+  $('body.whitepaper .btn-success').on('click', () => {
     mixpanel.track('Whitepaper Request');
   });
 
-  $('.accordion').click(function() {
+  $('.accordion').on('click', () => {
     this.classList.toggle('active');
     var panel = this.nextElementSibling;
 
@@ -202,11 +192,10 @@ $(document).ready(function() {
   });
 });
 
-/* TODO : Remove after GDPR */
 if ($('#is-authenticated').val() === 'True' && !localStorage['notify_policy_update']) {
   localStorage['notify_policy_update'] = true;
 
-  var content = $.parseHTML(
+  const content = $.parseHTML(
     '<div><div class="row">' +
       '<div class="col-12 closebtn">' +
         '<a rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">' +
@@ -223,9 +212,9 @@ if ($('#is-authenticated').val() === 'True' && !localStorage['notify_policy_upda
           'we use your information.') + '</p>' +
         '<p>' + gettext('We recently reviewed our Privacy Policy to comply with requirements of ' +
           'General Data Protection Regulation (GDPR), improving our Terms of Use, ' +
-          'Privacy Policy and Cookie Policy. These changes will go into effect on May 25, ' +
-          '2018, and your continued use of the Gitcoin after May 25, 2018 will be ' +
-          'subject to our updated Terms of Use and Privacy Policy.') +
+          'Privacy Policy and Cookie Policy. These changes are in effect ' +
+          'and your continued use of the Gitcoin will be ' +
+          'subjected to our updated Terms of Use and Privacy Policy.') +
         '</p>' +
       '</div>' +
       '<div class="col-12 font-caption"><a href="/legal/policy" target="_blank">' +
@@ -236,7 +225,5 @@ if ($('#is-authenticated').val() === 'True' && !localStorage['notify_policy_upda
       '</div>' +
     '</div></div>');
 
-  var modal = $(content).appendTo('body').modal({
-    modalClass: 'modal notify_policy_update'
-  });
+  $(content).appendTo('body').modal({ modalClass: 'modal notify_policy_update' });
 }
