@@ -114,7 +114,7 @@
 <script>
   $('#newtoken').validate();
   $(document).ready(function() {
-    $('#newtoken input.btn-go').click(function(e){
+    $('#newtoken input.btn-go').on('click', function(e){
       mixpanel.track("New Token Request", {});
       setTimeout(function(){
         $('#newtoken input.btn-go').attr('disabled','disabled');

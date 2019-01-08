@@ -115,7 +115,7 @@
 {% block scripts %}
 <script>
   $(document).ready(function() {
-    $("#pull_from_metamask").click(function(e){
+    $("#pull_from_metamask").on('click', function(e){
       if(web3 && typeof web3.eth.coinbase != 'undefined'){
         $("input[name=preferred_payout_address]").val(web3.eth.coinbase);
       } else {
