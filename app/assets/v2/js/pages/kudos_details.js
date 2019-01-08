@@ -60,7 +60,7 @@ $(document).ready(function() {
 
   $('#getKudos').on('click', function() {
     if (numClones > kudosNumClonesAvailable) {
-      alert('Cannot make ' + numClones + ' clone(s).  ' + kudosNumClonesAvailable + ' clones available!');
+      _alert('Cannot make ' + numClones + ' clone(s).  ' + kudosNumClonesAvailable + ' clones available!');
       return;
     }
 

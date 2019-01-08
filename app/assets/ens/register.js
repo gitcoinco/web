@@ -1,10 +1,10 @@
 window.onload = function() {
   $('#register')[0].onclick = function(e) {
     if ($('#tos')[0].checked === false) {
-      return alert('Please check the TOS checkbox.');
+      return _alert('Please check the TOS checkbox.');
     }
     if (typeof web3 == 'undefined') {
-      return alert('Please install metamask in your browser and try again.');
+      return _alert('Please install metamask in your browser and try again.');
     }
     // Get the github handle
     githubHandle = $('#githubHandle').text();
