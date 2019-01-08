@@ -92,7 +92,7 @@
 <script>
   $('#whitepaper').validate();
   $(document).ready(function() {
-    $('#whitepaper input.btn-go').click(function(e){
+    $('#whitepaper input.btn-go').on('click', function(e){
       mixpanel.track("Whitepaper New Request", {});
       setTimeout(function(){
         $('#whitepaper input.btn-go').attr('disabled','disabled');

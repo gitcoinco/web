@@ -172,13 +172,13 @@ $(document).ready(function() {
 
   set_metadata();
   // jquery bindings
-  $('#advanced_toggle').click(function(e) {
+  $('#advanced_toggle').on('click', function(e) {
     e.preventDefault();
     advancedToggle();
   });
 
 
-  $('#send_to_toggle').click(function(e) {
+  $('#send_to_toggle').on('click', function(e) {
     e.preventDefault();
     if ($(this).hasClass('github')) {
       $(this).text(gettext('Send to ETH Address'));
@@ -202,7 +202,7 @@ $(document).ready(function() {
 
   // Step 1
   // Kudos send button is clicked
-  $('#send').click(function(e) {
+  $('#send').on('click', function(e) {
 
     e.preventDefault();
 
