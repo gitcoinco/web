@@ -52,8 +52,12 @@ $(document).ready(function() {
     $toggleIndicator.css('left', `${$funderToggle.innerWidth() + 20}px`);
     $sections.addClass('contributor-section');
   }
-  $funderToggle.click(switchToFunder);
-  $contributorToggle.click(switchToContributor);
+  $funderToggle.on('click', function(e) {
+    switchToFunder(e);
+  });
+  $contributorToggle.on('click', function(e) {
+    switchToContributor(e);
+  });
   switchToFunder();
 
   const prevScroll = localStorage.getItem('scrollTop');

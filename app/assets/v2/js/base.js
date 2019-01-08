@@ -37,7 +37,7 @@ $(document).ready(function() {
     $('.header').css('overflow', 'visible');
   }
 
-  $('.nav-link.dropdown-toggle').click(function(e) {
+  $('.nav-link.dropdown-toggle').on('click', function(e) {
     e.preventDefault();
     var parent = $(this).parents('.nav-item');
 
@@ -48,7 +48,7 @@ $(document).ready(function() {
   });
 
   // get started modal
-  $("a[href='/get']").click(function(e) {
+  $("a[href='/get']").on('click', function(e) {
     e.preventDefault();
     var url = $(this).attr('href');
 
@@ -60,7 +60,7 @@ $(document).ready(function() {
   });
 
   // bust the cache every time the user interacts with github
-  $("[href^='/_github']").click(function(e) {
+  $("[href^='/_github']").on('click', function(e) {
     var timestamp = Date.now() / 1000 | 0;
 
     Cookies.set('last_github_auth_mutation', timestamp);
@@ -86,7 +86,7 @@ $(document).ready(function() {
     $(this).attr('src', $(this).attr('old-src'));
   });
   if (!$.fn.collapse) {
-    $('.navbar-toggler').click(function() {
+    $('.navbar-toggler').on('click', function() {
       var toggle = $(this).attr('aria-expanded');
 
       console.log(toggle);
