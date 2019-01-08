@@ -77,7 +77,7 @@ $(document).ready(function() {
             gasPrice: realGasPrice
           }).on('error', function(error) {
             console.log('1', error);
-            alert('Your approval transaction failed. Please try again.');
+            _alert({ message: gettext('Your approval transaction failed. Please try again.')}, 'error');
           }).on('transactionHash', function(transactionHash) {
             $('#sub_new_approve_tx_id').val(transactionHash);
             const linkURL = etherscan_tx_url(transactionHash);

@@ -47,7 +47,7 @@ $('document').ready(function() {
   $('#submitFaucet').on('click', function(e) {
     e.preventDefault();
     if (document.web3network != 'mainnet') {
-      alert('you must be on mainnet');
+      _alert({ message: gettext('you must be on mainnet')}, 'error');
       return;
     }
     if ($(this).hasClass('disabled')) {
