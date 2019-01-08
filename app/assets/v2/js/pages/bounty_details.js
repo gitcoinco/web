@@ -551,13 +551,8 @@ var attach_work_actions = function() {
       show_interest_modal.call(this);
     } else if ($(this).attr('href') === '/extend-deadlines') {
       show_extend_deadline_modal.call(this);
-    // } else if (confirm('sure?')) {
     } else if ($(this).attr('href') === '/uninterested') {
-      show_stop_work_modal.call(this)
-      // // $(this).attr('href', '/interested');
-      // $(this).find('span').text(gettext('Start Work'));
-      // $(this).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you would like to take on this project') + '</div>');
-      // remove_interest(document.result['pk']);
+      show_stop_work_modal.call(this);
     }
   });
 };
@@ -654,17 +649,16 @@ var show_stop_work_modal = function() {
       $('.modal input:visible:first').focus();
 
       modal.on('submit', function(e) {
-        console.log(e)
         e.preventDefault();
 
-        const csrftoken = $("[name=csrfmiddlewaretoken]").val();
+        const csrftoken = $('[name=csrfmiddlewaretoken]').val();
+
         $.ajaxSetup({
           beforeSend: function(xhr) {
-            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.setRequestHeader('X-CSRFToken', csrftoken);
           }
         });
 
-        // var extended_time = $('input[name=updatedExpires]').val();
         const selectedRadio = $('input[name=stop_working_reason]:checked').val();
         let reasonCancel;
 
@@ -681,15 +675,7 @@ var show_stop_work_modal = function() {
         $(self).find('span').text(gettext('Start Work'));
         $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you would like to take on this project') + '</div>');
         $('#submit').hide();
-
-        // extend_expiration(document.bountyPk, {
-          // cancelled_bounty_reason: extended_time
-        // });
         $.modal.close();
-        setTimeout(function() {
-          // document.location.href = '/funding/details?url=' + issueURL;
-          // window.location.reload();
-        }, 2000);
       });
     });
   });
@@ -848,20 +834,18 @@ const is_current_user_interested = function(result) {
   return (result.interested || []).find(interest => interest.profile.handle.toLowerCase() == document.contxt.github_handle.toLowerCase());
 };
 
-const inacativeStatuses = ['BC', 'SBU', 'SBF', 'SBS', 'AR'];
+const inacativeStatuses = [ 'BC', 'SBU', 'SBF', 'SBS', 'AR' ];
 const is_current_user_permit = function(result) {
   if (!result) {
     return false;
   }
-  console.log(result)
 
-    if (inacativeStatuses.indexOf(result.status) > -1 ) {
-      return false
-    } else {
-      return true
-    }
+  if (inacativeStatuses.indexOf(result.status) > -1) {
+    return false;
+  }
+  return true;
 
-}
+};
 
 const is_current_user_approved = function(result) {
   if (!document.contxt.github_handle) {
@@ -895,10 +879,7 @@ var do_actions = function(result) {
 
   // Find interest information
   const is_interested = is_current_user_interested(result);
-  const can_start_work = is_current_user_permit(is_interested)
-  console.log(can_start_work)
-  // const inactive_status = ;
-
+  const can_start_work = is_current_user_permit(is_interested);
   const has_fulfilled = result['fulfillments'].filter(fulfiller => fulfiller.fulfiller_github_username === document.contxt['github_handle']).length > 0;
 
   document.interested = is_interested;
