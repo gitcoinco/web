@@ -162,6 +162,8 @@ def cohort_helper_num(inner_start_time, inner_end_time, data_source, users):
             event = 'start_work'
             if data_source == 'profile-login':
                 event = 'Login'
+            if data_source == 'profile-visit':
+                event = 'Visit'
             if data_source == 'profile-new_bounty':
                 event = 'new_bounty'
             num = UserAction.objects.filter(
@@ -195,7 +197,7 @@ def cohort(request):
     cohorts = {}
 
     data_source = request.GET.get('data_source', 'slack-online')
-    num_periods = request.GET.get('num_periods', 10)
+    num_periods = request.GET.get('num_periods', 20)
     period_size = request.GET.get('period_size', 'weeks')
     kwargs = {}
 

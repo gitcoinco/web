@@ -28,6 +28,32 @@ try {
   localStorage = {};
 }
 
+var paint_search_tabs = function() {
+  if (!localStorage['searches'])
+    return;
+
+  var container = $('#dashboard-title');
+  var target = $('#search_nav');
+
+  searches = localStorage['searches'].split(',');
+
+  if (searches.length <= 1)
+    return target.html('');
+
+  var html = "<ul class='nav'><i class='fas fa-history'></i>";
+
+  for (var i = 0; i < searches.length; i++) {
+    var search_no = searches[i];
+    var title = get_search_tab_name(search_no);
+
+    if (title) {
+      html += "<li class='nav-item' data-num='" + search_no + "'><span>" + title + '</span><a><i class="fas fa-times"></i></a></li>';
+    }
+  }
+  html += '</ul>';
+  target.html(html);
+};
+
 function debounce(func, wait, immediate) {
   var timeout;
 
@@ -757,33 +783,6 @@ var get_search_tab_name = function(n) {
   return localStorage[new_key];
 
 };
-
-var paint_search_tabs = function() {
-  if (!localStorage['searches'])
-    return;
-
-  var container = $('#dashboard-title');
-  var target = $('#search_nav');
-
-  searches = localStorage['searches'].split(',');
-
-  if (searches.length <= 1)
-    return target.html('');
-
-  var html = "<ul class='nav'>";
-
-  for (var i = 0; i < searches.length; i++) {
-    var search_no = searches[i];
-    var title = get_search_tab_name(search_no);
-
-    if (title) {
-      html += "<li class='nav-item' data-num='" + search_no + "'><span>" + title + '</span><a><i class="fas fa-times"></i></a></li>';
-    }
-  }
-  html += '</ul>';
-  target.html(html);
-};
-
 
 // gets available searches
 var get_available_searches = function() {

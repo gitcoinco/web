@@ -111,7 +111,7 @@ h4 {
 
 .gitcoin-svg {
   background-size: cover !important;
-  background-image: url("/static/v2/images/ios/gitcoin.svg");
+  background-image: url("/static/v2/images/gitcoin.svg");
   width: 2em;
   height: 2em;
   position: relative;
