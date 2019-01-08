@@ -714,7 +714,7 @@ var show_extend_deadline_modal = function() {
         $('.select2-selection__rendered').removeAttr('title');
       });
       // removes search field in all but the 'denomination' dropdown
-      $('.select2-container').click(function() {
+      $('.select2-container').on('click', function() {
         $('.select2-container .select2-search__field').remove();
       });
 
@@ -1366,11 +1366,11 @@ const render_activity = function(result, all_results) {
   activities.filter(function(activity) {
     return activity.uninterest_possible;
   }).forEach(function(activity) {
-    $('#remove-' + activity.name).click(() => {
+    $('#remove-' + activity.name).on('click', function() {
       uninterested(result.pk, activity.profileId);
       return false;
     });
-    $('#remove-slash-' + activity.name).click(() => {
+    $('#remove-slash-' + activity.name).on('click', function() {
       uninterested(result.pk, activity.profileId, true);
       return false;
     });

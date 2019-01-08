@@ -558,7 +558,7 @@ var resetFilters = function(resetKeyword) {
     $('input[name=idx_status][value=open]').prop('checked', true);
     $('.search-area input[type=text]').text(getURLParams('q'));
 
-    $('#onboard-alert').click(function(e) {
+    $('#onboard-alert').on('click', function(e) {
 
       if (!$('.no-results').hasClass('hidden'))
         $('.nonefound').css('display', 'block');
@@ -660,7 +660,7 @@ $(document).ready(function() {
     });
 
   // sidebar clear
-  $('.dashboard #clear').click(function(e) {
+  $('.dashboard #clear').on('click', function(e) {
     e.preventDefault();
     resetFilters(true);
     reset_offset();

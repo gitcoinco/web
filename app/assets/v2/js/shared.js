@@ -1391,7 +1391,7 @@ const showMore = (length = 400) => {
     }
   });
 
-  $('.morelink').click((event) => {
+  $('.morelink').on('click', function(event) {
     if ($(event.currentTarget).hasClass('less')) {
       $(event.currentTarget).removeClass('less');
       $(event.currentTarget).html(expand);
