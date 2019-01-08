@@ -15,7 +15,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static humanize %}
 {% block content %}
 <style>
   hr {
@@ -63,7 +63,7 @@
   </a>
   <p>{% trans "has begun contributing" %}</p>
   <p style="padding-top:0;margin-top:.5rem">
-    <strong>{{ subscription.amount_per_period }} {{ subscription.token_symbol }}</strong> {% trans "every" %} <strong>{{ subscription.frequency }} {{ subscription.frequency_unit }}</strong>
+    <strong>{{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }}</strong> {% trans "every" %} <strong>{{ subscription.frequency }} {{ subscription.frequency_unit }}</strong>
   </p>
 
   <p>{% trans "You can see the transaction history for " %}{{ grant.title }}

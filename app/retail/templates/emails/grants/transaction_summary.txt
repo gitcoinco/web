@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n humanize %}
 
 {% trans "Transaction Summary" %}
 
@@ -14,7 +14,7 @@
 
 {{ subscription.contributor_profile }}
 
-{{ subscription.amount_per_period }}
+{{ subscription.amount_per_period|floatformat:4|intcomma }}
 
 {{ subscription.contributor_timestamp }}
 

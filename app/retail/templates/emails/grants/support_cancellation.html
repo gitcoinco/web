@@ -16,7 +16,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static grants_extra %}
+{% load i18n static humanize grants_extra %}
 
 {% block content %}
 
@@ -194,7 +194,7 @@
       <div class="progressbar-line"></div>
       <p>{% trans "Your Contribution" %}</p>
       <h4>
-        <strong>{{ subscription.amount_per_period }} {{ subscription.token_symbol }}</strong>
+        <strong>{{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }}</strong>
       </h4>
     </div>
   </div>
