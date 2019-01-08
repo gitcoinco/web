@@ -10,7 +10,7 @@ $(document).ready(function() {
     $('#admin_faucet_form').submit();
   };
 
-  $('#submitFaucet').click(function(e) {
+  $('#submitFaucet').on('click', function(e) {
     e.preventDefault();
     $('.js-submit').attr('disabled', 'disabled');
     $('#loadingImg').show();

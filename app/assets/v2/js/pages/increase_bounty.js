@@ -31,7 +31,7 @@ $(document).ready(function() {
   });
 
   // submit bounty button click
-  $('#increaseFunding').click(function(e) {
+  $('#increaseFunding').on('click', function(e) {
     try {
       bounty_address();
     } catch (exception) {
