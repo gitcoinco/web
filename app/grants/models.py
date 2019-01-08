@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import logging
 from datetime import timedelta
+from decimal import Decimal
 
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
@@ -283,8 +284,8 @@ class Subscription(SuperModel):
     )
     amount_per_period = models.DecimalField(
         default=1,
-        decimal_places=4,
-        max_digits=50,
+        decimal_places=18,
+        max_digits=64,
         help_text=_('The promised contribution amount per period.'),
     )
     real_period_seconds = models.DecimalField(
@@ -395,11 +396,17 @@ class Subscription(SuperModel):
             token_contract = web3.eth.contract(Web3.toChecksumAddress(self.token_address), abi=erc20_abi)
             balance = token_contract.functions.balanceOf(Web3.toChecksumAddress(self.contributor_address)).call()
             allowance = token_contract.functions.allowance(Web3.toChecksumAddress(self.contributor_address), Web3.toChecksumAddress(self.grant.contract_address)).call()
+            is_active = self.get_is_active_from_web3()
             token = addr_to_token(self.token_address, self.network)
+            next_valid_timestamp = self.get_next_valid_timestamp()
             decimals = token.get('decimals', 0)
             balance = balance / 10 ** decimals
             allowance = allowance / 10 ** decimals
             error_reason = "unknown"
+            if not is_active:
+                error_reason = 'not_active'
+            if timezone.now().timestamp() < next_valid_timestamp:
+                error_reason = 'before_next_valid_timestamp'
             if balance < self.amount_per_period:
                 error_reason = "insufficient_balance"
             if allowance < self.amount_per_period:
@@ -408,17 +415,20 @@ class Subscription(SuperModel):
             debug_info = f"""
 error_reason: {error_reason}
 ==============================
+is_active: {is_active}
 decimals: {decimals}
 balance: {balance}
 allowance: {allowance}
 amount_per_period: {self.amount_per_period}
+next_valid_timestamp: {next_valid_timestamp}
 """
         except Exception as e:
             return str(e)
         return debug_info
 
-    def get_next_valid_timestamp(self, address):
-        return self.grant.contract.functions.nextValidTimestamp(address).call()
+    def get_next_valid_timestamp(self):
+        _hash = self.get_hash_from_web3()
+        return self.grant.contract.functions.nextValidTimestamp(_hash).call()
 
     def get_is_ready_to_be_processed_from_db(self):
         """Return true if subscription is ready to be processed according to the DB."""
@@ -428,8 +438,7 @@ amount_per_period: {self.amount_per_period}
         return self.next_contribution_date < timezone.now()
 
     def get_are_we_past_next_valid_timestamp(self):
-        address = self.contributor_address
-        return timezone.now().timestamp() > self.get_next_valid_timestamp(address)
+        return timezone.now().timestamp() > self.get_next_valid_timestamp()
 
     def get_is_subscription_ready_from_web3(self):
         """Return true if subscription is ready to be processed according to web3."""
@@ -567,6 +576,18 @@ amount_per_period: {self.amount_per_period}
             args['nonce'],
             ).call()
 
+    @property
+    def value_usdt(self):
+        try:
+            return float(convert_amount(
+                    self.amount_per_period,
+                    self.token_symbol,
+                    "USDT")
+                )
+        except ConversionRateNotFoundError as e:
+            logger.info(e)
+        return None
+
     def successful_contribution(self, tx_id):
         """Create a contribution object."""
         from marketing.mails import successful_contribution
@@ -579,16 +600,9 @@ amount_per_period: {self.amount_per_period}
         }
         contribution = Contribution.objects.create(**contribution_kwargs)
         grant = self.grant
-        try:
-            grant.amount_received = (
-                float(grant.amount_received) + float(convert_amount(
-                    self.amount_per_period,
-                    self.token_symbol,
-                    "USDT")
-                )
-            )
-        except ConversionRateNotFoundError as e:
-            logger.info(e)
+        value_usdt = self.value_usdt
+        if value_usdt:
+            grant.amount_received += Decimal(value_usdt)
 
         grant.save()
         successful_contribution(self.grant, self, contribution)

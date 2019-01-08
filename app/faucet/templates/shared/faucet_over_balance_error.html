@@ -17,12 +17,10 @@
 {% load i18n static %}
 <div id="over_balance_error" class="submit-notification metamask-error container-fluid" style="display: none;">
   <div class="row align-items-center px-4 py-2 text-center text-lg-left">
-    <div class="col-lg-10 col-sm-12 py-2 px-5">
+    <div class="col-lg-10 col-sm-12 py-2 px-5 font-body">
       <h3>{% trans "You Appear to Have Ether!" %}</h3>
       <p>
-        {% trans "Thank you for your interest in receiving a faucet distribution." %}
-      </p>
-      <p>
+        {% trans "Thank you for your interest in receiving a faucet distribution." %} <br>
         {% trans "You have more ether currently in your wallet than the distribution would provide. Please use that ether to pay the transaction cost." %}
       </p>
       <div class="col-lg-2 col-sm-12">

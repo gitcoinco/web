@@ -17,6 +17,7 @@
 
 '''
 import logging
+from datetime import date, timedelta
 from functools import partial
 
 from django.conf import settings
@@ -432,6 +433,93 @@ def render_new_bounty(to_email, bounties, old_bounties):
     return response_html, response_txt
 
 
+def render_weekly_recap(to_email, from_date=date.today(), days_back=7):
+    sub = get_or_save_email_subscriber(to_email, 'internal')
+    from dashboard.models import Profile
+    prof = Profile.objects.filter(email__iexact=to_email).last()
+    bounties = prof.bounties.all()
+    from_date = from_date + timedelta(days=1)
+    to_date = from_date - timedelta(days=days_back)
+
+    activity_types = {}
+    _sections = []
+    activity_types_def = {
+        "start_work": {
+          "css-class": "status-open",
+          "text": "Started work"
+        },
+        "stop_work": {
+          "css-class": "status-cancelled",
+          "text": "Work stopped"
+        },
+        "worker_approved": {
+          "css-class": "status-open",
+          "text": "Worker got approved"
+        },
+        "worker_applied": {
+          "css-class": "status-submitted",
+          "text": "Worker applied"
+        },
+        "new_bounty": {
+          "css-class": "status-open",
+          "text": "New created bounties"
+        },
+        "work_submitted": {
+          "css-class": "status-submitted",
+          "text": "Work got submitted"
+        },
+    }
+
+    for bounty in bounties:
+        for activity in bounty.activities.filter(created__range=[to_date, from_date]):
+            if activity_types.get(activity.activity_type) is None:
+                activity_types[activity.activity_type] = []
+
+            avatar_url = "about:blank"
+            if activity.profile:
+                avatar_url = activity.profile.avatar_url
+
+            item = {
+                'bounty_image_url': avatar_url,
+                'bounty_action_user': activity.profile.handle,
+                'bounty_action_date': activity.created,
+                'bounty_action': activity.activity_type,
+                'bounty_name': f'{bounty.title}',
+                'bounty_link': bounty.get_absolute_url()
+            }
+            activity_types[activity.activity_type].append(item)
+
+    # TODO: Activities
+    # TODO: Fulfillment
+    # TODO: Interest
+
+    for act_type in activity_types:
+        if activity_types_def.get(act_type):
+            section = {
+              'items': activity_types[act_type],
+              'header_name': activity_types_def[act_type]["text"],
+              'header_css': activity_types_def[act_type]["css-class"],
+            }
+            _sections.append(section)
+
+    params = {
+        'subscriber': sub,
+        'sections': _sections,
+        'profile': prof,
+        'override_back_color': '#f2f6f9',
+        'select_params': {
+          'from': from_date,
+          'to': to_date
+        },
+        'debug': activity_types
+    }
+
+    response_html = premailer_transform(render_to_string("emails/recap/weekly_founder_recap.html", params))
+    response_txt = render_to_string("emails/recap/weekly_founder_recap.txt", params)
+
+    return response_html, response_txt
+
+
 def render_gdpr_reconsent(to_email):
     sub = get_or_save_email_subscriber(to_email, 'internal')
     params = {
@@ -602,6 +690,18 @@ def render_gdpr_update(to_email):
     return response_html, response_txt, subject
 
 
+def render_reserved_issue(to_email, user, bounty):
+    params = {
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'user': user,
+        'bounty': bounty
+    }
+    subject = "Reserved Issue"
+    response_html = premailer_transform(render_to_string("emails/reserved_issue.html", params))
+    response_txt = render_to_string("emails/reserved_issue.txt", params)
+    return response_html, response_txt, subject
+
+
 def render_start_work_approved(interest, bounty):
     to_email = interest.profile.email
     params = {
@@ -687,71 +787,69 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "The Season Of Giving"
-    new_kudos_pks = [866, 811, 810]
+    subject = "Announcing Gitcoin Grants | Happy New Year!"
+    new_kudos_pks = [153, 185, 150]
     new_kudos_size_px = 150
     intro = '''
 <p>
-<h3>Happy Holidays From Gitcoin!</h3>
+Happy New Year, Gitcoin family!
+<p>
+<p>
+We're ringing in the new yaer the best way we know how - with a new product launch. We're proud to formally announce <a href="https://twitter.com/GetGitcoin/status/1080607835120173056">Gitcoin Grants</a>,
+recurring funding for projects in open source software. We're very excited about the prospect of providing funding to OSS projects at the maintainer level.
+</p>
+<p>
+Want to create a Gitcoin Grant for a project you run? <a href="https://consensys1mac.typeform.com/to/HFcZKe">Let us know</a> and we'll get back to you within 5 days
+to see if there's a good fit on our alpha launch. Want to contribute to a Gitcoin Grant? <a href="https://gitcoin.co/grants/">Take a look at our launch partners</a>, including Prysmatic Labs, Cryptoeconomics Study, and more.
+</p>
+<p>
+<h3>Happy New Year From Gitcoin</h3>
 </p>
 <p>
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
 </p>
-<p>
-We hope you all have a joyous holiday season. Send the Kudos above to your friends, your family,
-or anyone in crypto who could use some of holiday cheer! We're already excited for the next few weeks
-where we'll have a few presents for you all, as well.
-</p>
-<p>
-Since you're here... we'll start now! We've been hard at work on <a href="https://gitcoin.co/grants/">Gitcoin Grants</a>, a new tool hyperfocused on
-recurring funding for open source developers. We're looking to provide an initial list of OSS projects some funding to carry their projects into 2019.
-<a href="https://gitcoin.co/grants/">Give it a look</a> and let us know if you have any feedback.
-</p>
+
 <h3>What else is new?</h3>
     <ul>
         <li>
-            I wrote up a post on <a href="https://medium.com/gitcoin/progressive-elaboration-of-scope-on-gitcoin-3167742312b0">progressive elaboration of scope</a>
-            for Gitcoin funders!
-        </li>
-        <li>
-            Gitcoin Livestream is on as usual this week! Lighthouse + Cryptoeconomics.study will be on this week. Join us <a href="https://gitcoin.co/livestream">Friday at 5PM ET</a>!
+            Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream">on Friday at 5PM ET</a>!
         </li>
     </ul>
 </p>
 <p>
-Happy holidays,
+Happy new year,
 </p>
 
 '''
     highlights = [{
-        'who': 'iamonuwa',
+        'who': 'pvienhage',
         'who_link': True,
-        'what': 'Worked on Fraktal with Julien',
-        'link': 'https://gitcoin.co/issue/julienbrg/fraktal/1/2007',
+        'what': 'Worked on Smart Contract Security',
+        'link': 'https://gitcoin.co/issue/SmartContractSecurity/SWC-registry/158/2061',
         'link_copy': 'View more',
     }, {
-        'who': 'brascoder',
+        'who': 'robin-thomas',
         'who_link': True,
-        'what': 'Worked on CodeFund with us!',
-        'link': 'https://gitcoin.co/issue/gitcoinco/code_fund_ads/85/1931',
+        'what': 'Worked on Prysmatic Labs on BLS curves',
+        'link': 'https://gitcoin.co/issue/prysmaticlabs/go-bls/9/2047',
         'link_copy': 'View more',
     }, {
-        'who': 'elemino',
+        'who': 'bakaoh',
         'who_link': True,
-        'what': 'Worked on Javascript Practice, a cool bounty.',
-        'link': 'https://gitcoin.co/issue/lastmjs/javascript-practice/179/1917',
+        'what': 'Longtime Gitcoin contributor meets longtime Gitcoin funder!',
+        'link': 'https://gitcoin.co/issue/spacemeshos/go-spacemesh/290/2044',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/Giveth/giveth-bot/issues/39',
-        'primer': 'Work on Giveth with Griff and team.',
+        'url': 'https://github.com/gitcoinco/web/issues/3370',
+        'primer': 'Help Gitcoin migrate to the Infura Dashboard.',
     }, {
-        'url': 'https://github.com/unlock-protocol/unlock/issues/334',
-        'primer': 'Bounty from Unlock Protocol',
+        'url': 'https://github.com/ethereum/pm/issues/69',
+        'primer': 'Take notes for the EF devs call, get $75 USD',
     }, {
-        'url': 'https://github.com/status-im/status-react/issues/7076',
-        'primer': 'Work on Status-React on Whisper!',
+        'url': 'https://github.com/austintgriffith/burner-wallet/issues/51',
+        'primer': 'Work with Austin on the Burner Wallet!',
     }, ]
 
     num_leadboard_items = 5
@@ -798,14 +896,11 @@ Happy holidays,
         except Exception as e:
             print(e)
 
-    ecosystem_bounties = ExternalBounty.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(weeks=1)).order_by('?')[0:5]
-
     params = {
         'intro': intro,
         'intro_txt': strip_double_chars(strip_double_chars(strip_double_chars(strip_html(intro), ' '), "\n"), "\n "),
         'bounties': bounties,
         'leaderboard': leaderboard,
-        'ecosystem_bounties': ecosystem_bounties,
         'invert_footer': False,
         'hide_header': False,
         'highlights': highlights,
@@ -818,10 +913,13 @@ Happy holidays,
 
     return response_html, response_txt, subject
 
-
-
-
 # DJANGO REQUESTS
+
+
+@staff_member_required
+def weekly_recap(request):
+    response_html, _ = render_weekly_recap("mark.beacom@consensys.net")
+    return HttpResponse(response_html)
 
 
 @staff_member_required

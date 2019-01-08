@@ -100,7 +100,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
             'fulfillment_submitted_on', 'fulfillment_started_on', 'canceled_on', 'canceled_bounty_reason',
             'action_urls', 'project_type', 'permission_type', 'attached_job_description', 'needs_review',
             'github_issue_state', 'is_issue_closed', 'additional_funding_summary', 'funding_organisation', 'paid',
-            'admin_override_suspend_auto_approval',
+            'admin_override_suspend_auto_approval', 'reserved_for_user_handle',
         )
 
     def create(self, validated_data):
