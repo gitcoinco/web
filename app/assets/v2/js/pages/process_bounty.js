@@ -47,7 +47,7 @@ window.onload = function() {
       $.get(uri, fulfillmentCallback);
     });
 
-    $('#goBack').click(function(e) {
+    $('#goBack').on('click', function(e) {
       var url = window.location.href;
       var new_url = url.replace('process?source', 'details?url');
 
@@ -122,7 +122,7 @@ window.onload = function() {
     };
 
 
-    $('#acceptBounty').click(function(e) {
+    $('#acceptBounty').on('click', function(e) {
       try {
         bounty_address();
       } catch (exception) {

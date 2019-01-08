@@ -159,7 +159,7 @@ $(document).ready(function() {
     $('.select2-selection__rendered').removeAttr('title');
   });
   // removes search field in all but the 'denomination' dropdown
-  $('.select2-container').click(function() {
+  $('.select2-container').on('click', function() {
     $('.select2-container .select2-search__field').remove();
   });
   // denomination field
@@ -182,12 +182,12 @@ $(document).ready(function() {
     }, 10);
   };
 
-  $('#hiringRightNow').click(function() {
+  $('#hiringRightNow').on('click', function() {
     open_hiring_panel(true);
   });
 
 
-  $('#advancedLink a').click(function(e) {
+  $('#advancedLink a').on('click', function(e) {
     e.preventDefault();
     var target = $('#advanced_container');
 
