@@ -221,6 +221,7 @@ class Bounty(SuperModel):
     token_address = models.CharField(max_length=50)
     bounty_type = models.CharField(max_length=50, choices=BOUNTY_TYPES, blank=True)
     project_length = models.CharField(max_length=50, choices=PROJECT_LENGTHS, blank=True)
+    estimated_hours = models.PositiveIntegerField(blank=True, null=True)
     experience_level = models.CharField(max_length=50, choices=EXPERIENCE_LEVELS, blank=True)
     github_url = models.URLField(db_index=True)
     github_issue_details = JSONField(default=dict, blank=True, null=True)
@@ -231,6 +232,9 @@ class Bounty(SuperModel):
     bounty_owner_name = models.CharField(max_length=255, blank=True)
     bounty_owner_profile = models.ForeignKey(
         'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='bounties_funded', blank=True
+    )
+    bounty_reserved_for_user = models.ForeignKey(
+        'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='reserved_bounties', blank=True
     )
     is_open = models.BooleanField(help_text=_('Whether the bounty is still open for fulfillments.'))
     expires_date = models.DateTimeField()
@@ -987,6 +991,24 @@ class Bounty(SuperModel):
             sentence += f" worth {usd_value} USD"
 
         return sentence
+
+    @property
+    def reserved_for_user_handle(self):
+        if self.bounty_reserved_for_user:
+            return self.bounty_reserved_for_user.handle
+        return ''
+
+    @reserved_for_user_handle.setter
+    def reserved_for_user_handle(self, handle):
+        profile = None
+
+        if handle:
+            try:
+                profile = Profile.objects.filter(handle__iexact=handle).first()
+            except:
+                logger.warning(f'reserved_for_user_handle: Unknown handle: ${handle}')
+
+        self.bounty_reserved_for_user = profile
 
 
 class BountyFulfillmentQuerySet(models.QuerySet):

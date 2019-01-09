@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import logging
 from datetime import timedelta
+from decimal import Decimal
 
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
@@ -290,8 +291,8 @@ class Subscription(SuperModel):
     )
     amount_per_period = models.DecimalField(
         default=1,
-        decimal_places=4,
-        max_digits=50,
+        decimal_places=18,
+        max_digits=64,
         help_text=_('The promised contribution amount per period.'),
     )
     real_period_seconds = models.DecimalField(
@@ -608,7 +609,7 @@ next_valid_timestamp: {next_valid_timestamp}
         grant = self.grant
         value_usdt = self.value_usdt
         if value_usdt:
-            grant.amount_received += value_usdt
+            grant.amount_received += Decimal(value_usdt)
 
         grant.save()
         successful_contribution(self.grant, self, contribution)

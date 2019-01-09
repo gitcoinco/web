@@ -67,12 +67,12 @@ $(document).ready(function() {
   }
   set_metadata();
   // jquery bindings
-  $('#advanced_toggle').click(function() {
+  $('#advanced_toggle').on('click', function() {
     advancedToggle();
   });
   $('#amount').on('keyup blur change', updateEstimate);
   $('#token').on('change', updateEstimate);
-  $('#send').click(function(e) {
+  $('#send').on('click', function(e) {
     e.preventDefault();
     if ($(this).hasClass('disabled'))
       return;

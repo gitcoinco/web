@@ -102,7 +102,7 @@ def grant_details(request, grant_id, grant_slug):
         milestones = grant.milestones.order_by('due_date')
         updates = grant.updates.order_by('-created_on')
         subscriptions = grant.subscriptions.filter(active=True, error=False)
-        user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
+        user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True, error=False).first()
     except Grant.DoesNotExist:
         raise Http404
 

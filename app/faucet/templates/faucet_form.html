@@ -31,11 +31,11 @@
     <div class="row no-gutter">
       <div class="col body">
         <div class="container-fluid no-gutter">
+          {% include 'shared/no_metamask_error.html' %}
+          {% include 'shared/unlock_metamask.html' %}
+          {% include 'shared/connect_metamask.html' %}
+          {% include 'shared/faucet_over_balance_error.html' %}
           <div class="form-container" id="form_container">
-            {% include 'shared/no_metamask_error.html' %}
-            {% include 'shared/unlock_metamask.html' %}
-            {% include 'shared/connect_metamask.html' %}
-            {% include 'shared/faucet_over_balance_error.html' %}
             <div id="faucet_form">
               <div class="faucet-form" id="primary_form">
                 <h3>{% trans "Faucet Request" %} <span id="alpha">{% trans "Alpha" %}</span></h3>

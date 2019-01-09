@@ -90,7 +90,7 @@ $(document).ready(function() {
   }};
   flash_pull_gh();
   $("input[name=github]").keyup(flash_pull_gh);
-  $('#pull_gh').click(function(e){
+  $('#pull_gh').on('click', function(e){
       e.preventDefault();
       keywordprefill();
   });

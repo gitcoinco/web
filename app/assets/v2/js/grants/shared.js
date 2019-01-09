@@ -8,6 +8,7 @@ var enableWaitState = container => {
   $('.interior .body').addClass('loading');
   $('.grant_waiting').show();
   waitingStateActive();
+
 };
 
 var waitingStateActive = function() {
@@ -19,6 +20,16 @@ var waitingStateActive = function() {
 
   waitingRoomEntertainment();
   setInterval(waitingRoomEntertainment, secondsBetweenQuoteChanges * 1000);
+  window.addEventListener('beforeunload', function(e) {
+    if (!document.suppress_loading_leave_code) {
+      var confirmationMessage = 'This change has NOT been saved. Please do not leave the page until the tx has confirmed!';
+
+      (e || window.event).returnValue = confirmationMessage; // Gecko + IE
+      return confirmationMessage; // Gecko + Webkit, Safari, Chrome etc.
+    }
+  });
+
+
 };
 
 /**
