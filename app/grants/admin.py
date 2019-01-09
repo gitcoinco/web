@@ -43,7 +43,7 @@ class GrantAdmin(GeneralAdmin):
     ]
     readonly_fields = [
         'logo_svg_asset', 'logo_asset', 'created_on', 'modified_on', 'token_address', 'contract_address',
-        'deploy_tx_id', 'cancel_tx_id', 'monthly_amount_subscribed',
+        'deploy_tx_id', 'cancel_tx_id',
         'network', 'amount_goal', 'amount_received', 'team_member_list',
         'subscriptions_links', 'contributions_links',
     ]
