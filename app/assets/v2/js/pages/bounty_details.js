@@ -668,7 +668,7 @@ var show_interest_modal = function() {
             $.modal.close();
           }
         }).catch((error) => {
-          if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
+          if (error.responseJSON.error === gettext('You may only work on max of 3 issues at once.'))
             return;
           throw error;
         });
@@ -717,12 +717,18 @@ var show_stop_work_modal = function() {
 
         remove_interest(document.result['pk'], {
           message: reasonCancel
+        }).then(success => {
+          if (success) {
+            $(self).attr('href', '/interested');
+            $(self).find('span').text(gettext('Start Work'));
+            $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you would like to take on this project') + '</div>');
+            $('#submit').hide();
+            $.modal.close();
+          }
+        }).catch((error) => {
+          throw error;
         });
-        $(self).attr('href', '/interested');
-        $(self).find('span').text(gettext('Start Work'));
-        $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you would like to take on this project') + '</div>');
-        $('#submit').hide();
-        $.modal.close();
+
       });
     });
   });

@@ -264,7 +264,7 @@ var waitingStateActive = function() {
 
 /** Add the current profile to the interested profiles list. */
 var add_interest = function(bounty_pk, data) {
-  mutate_interest(bounty_pk, 'new', data);
+  return mutate_interest(bounty_pk, 'new', data);
 };
 
 /** Remove the current profile from the interested profiles list. */
@@ -273,7 +273,7 @@ var remove_interest = function(bounty_pk, data) {
     return;
   }
 
-  mutate_interest(bounty_pk, 'remove', data);
+  return mutate_interest(bounty_pk, 'remove', data);
 };
 
 /** Helper function -- mutates interests in either direction. */
