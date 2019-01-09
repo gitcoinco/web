@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load static i18n %}
+{% load static i18n humanize %}
 
 {% if grants %}
   <div class="grants-container">
@@ -39,7 +39,7 @@
                 {{ transaction.grant.title }}
               </div>
               <div class="info font-caption">
-                {{ transaction.sub.amount_per_period }} {{ transaction.sub.token_symbol }} / {{ transaction.sub.frequency }} {{ transaction.sub.frequency_unit }}
+                {{ transaction.sub.amount_per_period|floatformat:4|intcomma }} {{ transaction.sub.token_symbol }} / {{ transaction.sub.frequency }} {{ transaction.sub.frequency_unit }}
               </div>
             </div>
             <div class="col-5 col-md-2 font-body my-auto txn-link">
@@ -51,7 +51,7 @@
             <div class="offset-lg-1 col-7 col-md-2 my-auto tags font-caption">
               <div class="tag tag-lg token">
                 <p>
-                  {{ transaction.sub.amount_per_period }}
+                  {{ transaction.sub.amount_per_period|floatformat:4|intcomma }}
                   <span>{{ transaction.sub.token_symbol }}</span>
                 </p>
               </div>
