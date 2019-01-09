@@ -14,7 +14,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 #*/3 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_geth mainnet -10 0  >> /var/log/gitcoin/sync_geth_latest.log  2>&1
 * * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_listener mainnet  >> /var/log/gitcoin/sync_listener.log  2>&1
 12 */2 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_geth rinkeby -200 0  >> /var/log/gitcoin/sync_geth_rinkeby.log  2>&1
-* * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash subminer mainnet --live  >> /var/log/gitcoin/subminer_mainnet.log  2>&1
+*/5 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash subminer mainnet --live  >> /var/log/gitcoin/subminer_mainnet.log  2>&1
 
 ## KUDOS
 */15 3,10,17 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_kudos mainnet opensea --catchup >> /var/log/gitcoin/sync_kudos_catchup.log 2>&1
@@ -30,7 +30,6 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 15 2 * * * cd gitcoin/coin; bash scripts/run_management_command.bash cleanup_dupe_profiles  >> /var/log/gitcoin/cleanup_dupe_profiles.log  2>&1
 15 2 * * * cd gitcoin/coin; bash scripts/run_management_command.bash cleanup_stray_activities  >> /var/log/gitcoin/cleanup_stray_activities.log  2>&1
 15 4 * * * cd gitcoin/coin; bash scripts/run_management_command.bash cleanup_db_space  >> /var/log/gitcoin/cleanup_db_space.log  2>&1
-15 5 * * * cd gitcoin/coin; bash scripts/sync_external_bounties.bash  >> /var/log/gitcoin/sync_external_bounties.log  2>&1
 15 6 * * * cd gitcoin/coin; bash scripts/run_management_command.bash clearsessions  >> /var/log/gitcoin/clearsessions.log  2>&1
 15 7 * * * cd gitcoin/coin; bash scripts/run_management_command.bash warn_when_wallet_out_of_eth  >> /var/log/gitcoin/warn_when_wallet_out_of_eth.log  2>&1
 */8 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash send_tips_for_bounty_fulfiller  >> /var/log/gitcoin/send_tips_for_bounty_fulfiller.log  2>&1

@@ -31,7 +31,7 @@ $(document).ready(function() {
   });
 
   // submit bounty button click
-  $('#increaseFunding').click(function(e) {
+  $('#increaseFunding').on('click', function(e) {
     try {
       bounty_address();
     } catch (exception) {
@@ -187,7 +187,7 @@ $(document).ready(function() {
         {
           from: account,
           value: ethAmount,
-          gas: web3.toHex(56269),
+          gas: web3.toHex(65269),
           gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
         },
         web3Callback

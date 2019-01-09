@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import logging
 from datetime import timedelta
+from decimal import Decimal
 
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
@@ -106,6 +107,12 @@ class Grant(SuperModel):
         max_digits=50,
         help_text=_('The monthly contribution goal amount for the Grant in DAI.'),
     )
+    monthly_amount_subscribed = models.DecimalField(
+        default=0,
+        decimal_places=4,
+        max_digits=50,
+        help_text=_('The monthly subscribed to by contributors USDT/DAI.'),
+    )
     amount_received = models.DecimalField(
         default=0,
         decimal_places=4,
@@ -181,7 +188,7 @@ class Grant(SuperModel):
 
     def percentage_done(self):
         """Return the percentage of token received based on the token goal."""
-        return ((self.amount_received / self.amount_goal) * 100)
+        return ((self.monthly_amount_subscribed / self.amount_goal) * 100)
 
     @property
     def abi(self):
@@ -267,6 +274,9 @@ class Subscription(SuperModel):
     """Define the structure of a subscription agreement."""
 
     active = models.BooleanField(default=True, help_text=_('Whether or not the Subscription is active.'))
+    error = models.BooleanField(default=False, help_text=_('Whether or not the Subscription is erroring out.'))
+    subminer_comments = models.TextField(default='', blank=True, help_text=_('Comments left by the subminer.'))
+
     subscription_hash = models.CharField(
         default='',
         max_length=255,
@@ -280,8 +290,8 @@ class Subscription(SuperModel):
     )
     amount_per_period = models.DecimalField(
         default=1,
-        decimal_places=4,
-        max_digits=50,
+        decimal_places=18,
+        max_digits=64,
         help_text=_('The promised contribution amount per period.'),
     )
     real_period_seconds = models.DecimalField(
@@ -332,6 +342,18 @@ class Subscription(SuperModel):
         default='0x0',
         help_text=_('The transaction id for cancelSubscription.'),
     )
+    num_tx_approved = models.DecimalField(
+        default=1,
+        decimal_places=4,
+        max_digits=50,
+        help_text=_('The number of transactions approved for the Subscription.'),
+    )
+    num_tx_processed = models.DecimalField(
+        default=0,
+        decimal_places=4,
+        max_digits=50,
+        help_text=_('The number of transactoins processed by the subminer for the Subscription.'),
+    )
     network = models.CharField(
         max_length=8,
         default='mainnet',
@@ -360,26 +382,80 @@ class Subscription(SuperModel):
         default=timezone.datetime(1990, 1, 1),
     )
 
+    @property
+    def status(self):
+        """Return grants status, current or past due."""
+        if self.next_contribution_date < timezone.now():
+            return "PAST DUE"
+        return "CURRENT"
+
+
     def __str__(self):
         """Return the string representation of a Subscription."""
-        return f"id: {self.pk} / {self.grant.title} {self.token_symbol} / active: {self.active}"
+        from django.contrib.humanize.templatetags.humanize import naturaltime
+        active_details = f"( active: {self.active}, billed {self.subscription_contribution.count()} times, last contrib: {naturaltime(self.last_contribution_date)},  next contrib: {naturaltime(self.next_contribution_date)} )"
+        if self.last_contribution_date < timezone.now() - timezone.timedelta(days=10*365):
+            active_details = "(NEVER BILLED)"
+
+        return f"id: {self.pk}; {self.status}, {self.amount_per_period} {self.token_symbol} / {self.frequency} {self.frequency_unit} for grant {self.grant.pk} created {naturaltime(self.created_on)} by {self.contributor_profile.handle} {active_details}"
 
     def get_nonce(self, address):
         return self.grant.contract.functions.extraNonce(address).call() + 1
 
-    def get_next_valid_timestamp(self, address):
-        return self.grant.contract.functions.nextValidTimestamp(address).call()
+    def get_debug_info(self):
+        """Return grants contract."""
+        from dashboard.utils import get_web3
+        from dashboard.abi import erc20_abi
+        from dashboard.tokens import addr_to_token
+        try:
+            web3 = get_web3(self.network)
+            if not self.token_address:
+                return "This subscription has no token_address"
+            token_contract = web3.eth.contract(Web3.toChecksumAddress(self.token_address), abi=erc20_abi)
+            balance = token_contract.functions.balanceOf(Web3.toChecksumAddress(self.contributor_address)).call()
+            allowance = token_contract.functions.allowance(Web3.toChecksumAddress(self.contributor_address), Web3.toChecksumAddress(self.grant.contract_address)).call()
+            is_active = self.get_is_active_from_web3()
+            token = addr_to_token(self.token_address, self.network)
+            next_valid_timestamp = self.get_next_valid_timestamp()
+            decimals = token.get('decimals', 0)
+            balance = balance / 10 ** decimals
+            allowance = allowance / 10 ** decimals
+            error_reason = "unknown"
+            if not is_active:
+                error_reason = 'not_active'
+            if timezone.now().timestamp() < next_valid_timestamp:
+                error_reason = 'before_next_valid_timestamp'
+            if balance < self.amount_per_period:
+                error_reason = "insufficient_balance"
+            if allowance < self.amount_per_period:
+                error_reason = "insufficient_allowance"
+
+            debug_info = f"""
+error_reason: {error_reason}
+==============================
+is_active: {is_active}
+decimals: {decimals}
+balance: {balance}
+allowance: {allowance}
+amount_per_period: {self.amount_per_period}
+next_valid_timestamp: {next_valid_timestamp}
+"""
+        except Exception as e:
+            return str(e)
+        return debug_info
+
+    def get_next_valid_timestamp(self):
+        _hash = self.get_hash_from_web3()
+        return self.grant.contract.functions.nextValidTimestamp(_hash).call()
 
     def get_is_ready_to_be_processed_from_db(self):
         """Return true if subscription is ready to be processed according to the DB."""
         if not self.subscription_contribution.exists():
             return True
-        last_contribution = self.subscription_contribution.order_by('created_on').last()
-        return self.next_contribution_date < timezone.now()
+        return self.next_contribution_date < timezone.now() and self.num_tx_processed < self.num_tx_approved
 
     def get_are_we_past_next_valid_timestamp(self):
-        address = self.contributor_address
-        return timezone.now().timestamp() > self.get_next_valid_timestamp(address)
+        return timezone.now().timestamp() > self.get_next_valid_timestamp()
 
     def get_is_subscription_ready_from_web3(self):
         """Return true if subscription is ready to be processed according to web3."""
@@ -517,29 +593,53 @@ class Subscription(SuperModel):
             args['nonce'],
             ).call()
 
+    def get_converted_amount(self):
+        try:
+            return Decimal(convert_amount(
+                    self.amount_per_period,
+                    self.token_symbol,
+                    "USDT")
+                )
+
+        except ConversionRateNotFoundError as e:
+            logger.info(e)
+            return None
+
+    def get_converted_monthly_amount(self):
+        converted_amount = self.get_converted_amount()
+
+        total_sub_seconds = Decimal(self.real_period_seconds) * Decimal(self.num_tx_approved)
+
+        if total_sub_seconds < 2592000:
+            result = Decimal(converted_amount * Decimal(self.num_tx_approved))
+        elif total_sub_seconds >= 2592000:
+            result = Decimal(converted_amount * (Decimal(2592000) / Decimal(self.real_period_seconds)))
+
+        return result
+
+
     def successful_contribution(self, tx_id):
         """Create a contribution object."""
         from marketing.mails import successful_contribution
         self.last_contribution_date = timezone.now()
         self.next_contribution_date = timezone.now() + timedelta(0, round(self.real_period_seconds))
-        self.save()
+        self.num_tx_processed += 1
         contribution_kwargs = {
             'tx_id': tx_id,
             'subscription': self
         }
         contribution = Contribution.objects.create(**contribution_kwargs)
         grant = self.grant
-        try:
-            grant.amount_received = (
-                float(grant.amount_received) + float(convert_amount(
-                    self.amount_per_period,
-                    self.token_symbol,
-                    "USDT")
-                )
-            )
-        except ConversionRateNotFoundError as e:
-            logger.info(e)
 
+        value_usdt = self.get_converted_amount()
+        if value_usdt:
+            grant.amount_received += Decimal(value_usdt)
+
+        if self.num_tx_processed == self.num_tx_approved and value_usdt:
+            grant.monthly_amount_subscribed -= self.get_converted_monthly_amount()
+            self.active = False
+
+        self.save()
         grant.save()
         successful_contribution(self.grant, self, contribution)
         return contribution
@@ -569,4 +669,6 @@ class Contribution(SuperModel):
 
     def __str__(self):
         """Return the string representation of this object."""
-        return f" {self.tx_id} => {self.subscription}"
+        from django.contrib.humanize.templatetags.humanize import naturaltime
+        txid_shortened = self.tx_id[0:10] + "..."
+        return f"id: {self.pk}; {txid_shortened} => subs:{self.subscription}; {naturaltime(self.created_on)}"

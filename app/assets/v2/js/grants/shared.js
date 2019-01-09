@@ -8,17 +8,55 @@ var enableWaitState = container => {
   $('.interior .body').addClass('loading');
   $('.grant_waiting').show();
   waitingStateActive();
+
 };
 
 var waitingStateActive = function() {
   $('.bg-container').show();
   $('.loading_img').addClass('waiting-state ');
   $('.waiting_room_entertainment').show();
-  $('.issue-url').html('<a href="' + document.issueURL + '">' + document.issueURL + '</a>');
+  $('.issue-url').html('<a href="' + document.issueURL + '" target="_blank" rel="noopener noreferrer">' + document.issueURL + '</a>');
   const secondsBetweenQuoteChanges = 30;
 
   waitingRoomEntertainment();
   setInterval(waitingRoomEntertainment, secondsBetweenQuoteChanges * 1000);
+  window.addEventListener('beforeunload', function(e) {
+    if (!document.suppress_loading_leave_code) {
+      var confirmationMessage = 'This change has NOT been saved. Please do not leave the page until the tx has confirmed!';
+
+      (e || window.event).returnValue = confirmationMessage; // Gecko + IE
+      return confirmationMessage; // Gecko + Webkit, Safari, Chrome etc.
+    }
+  });
+
+
+};
+
+/**
+ * Disables button and throws alert with message if logged in user match username
+ * and a different metamask address.
+ * @param {string} username
+ * @param {string} address
+ * @param {string} button
+ * @param {string} message
+ */
+const notifyOwnerAddressMismatch = (username, address, button, message) => {
+  if (!web3 || !web3.eth)
+    return;
+  web3.eth.getAccounts((error, accounts) => {
+    if (document.contxt.github_handle == username &&
+        accounts[0] != address) {
+      if ($(button).attr('disabled') != 'disabled') {
+        $(button).attr('disabled', 'disabled');
+        _alert({
+          message: message
+        }, 'error');
+      }
+    } else {
+      $(button).removeAttr('disabled');
+      $('.alert.error').remove();
+    }
+  });
 };
 
 $(document).ready(function() {

@@ -66,7 +66,7 @@ $(document).ready(function() {
     _alert({ message: response.responseJSON.error }, 'error');
   }
 
-  $('.vote-up').click(function() {
+  $('.vote-up').on('click', function() {
     var el = $(this);
     var toolId = el.data('tool-id');
 
@@ -74,7 +74,7 @@ $(document).ready(function() {
       voteCallback(response, toolId, 1);
     }).fail(failVoteCallback);
   });
-  $('.vote-down').click(function() {
+  $('.vote-down').on('click', function() {
     var el = $(this);
     var toolId = el.data('tool-id');
 

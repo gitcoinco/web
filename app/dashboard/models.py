@@ -221,6 +221,7 @@ class Bounty(SuperModel):
     token_address = models.CharField(max_length=50)
     bounty_type = models.CharField(max_length=50, choices=BOUNTY_TYPES, blank=True)
     project_length = models.CharField(max_length=50, choices=PROJECT_LENGTHS, blank=True)
+    estimated_hours = models.PositiveIntegerField(blank=True, null=True)
     experience_level = models.CharField(max_length=50, choices=EXPERIENCE_LEVELS, blank=True)
     github_url = models.URLField(db_index=True)
     github_issue_details = JSONField(default=dict, blank=True, null=True)
@@ -231,6 +232,9 @@ class Bounty(SuperModel):
     bounty_owner_name = models.CharField(max_length=255, blank=True)
     bounty_owner_profile = models.ForeignKey(
         'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='bounties_funded', blank=True
+    )
+    bounty_reserved_for_user = models.ForeignKey(
+        'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='reserved_bounties', blank=True
     )
     is_open = models.BooleanField(help_text=_('Whether the bounty is still open for fulfillments.'))
     expires_date = models.DateTimeField()
@@ -259,6 +263,7 @@ class Bounty(SuperModel):
     fulfillment_submitted_on = models.DateTimeField(null=True, blank=True)
     fulfillment_started_on = models.DateTimeField(null=True, blank=True)
     canceled_on = models.DateTimeField(null=True, blank=True)
+    canceled_bounty_reason = models.TextField(default='', blank=True, verbose_name=_('Cancelation reason'))
     project_type = models.CharField(max_length=50, choices=PROJECT_TYPES, default='traditional')
     permission_type = models.CharField(max_length=50, choices=PERMISSION_TYPES, default='permissionless')
     snooze_warnings_for_days = models.IntegerField(default=0)
@@ -987,6 +992,24 @@ class Bounty(SuperModel):
 
         return sentence
 
+    @property
+    def reserved_for_user_handle(self):
+        if self.bounty_reserved_for_user:
+            return self.bounty_reserved_for_user.handle
+        return ''
+
+    @reserved_for_user_handle.setter
+    def reserved_for_user_handle(self, handle):
+        profile = None
+
+        if handle:
+            try:
+                profile = Profile.objects.filter(handle__iexact=handle).first()
+            except:
+                logger.warning(f'reserved_for_user_handle: Unknown handle: ${handle}')
+
+        self.bounty_reserved_for_user = profile
+
 
 class BountyFulfillmentQuerySet(models.QuerySet):
     """Handle the manager queryset for BountyFulfillments."""
@@ -1640,6 +1663,7 @@ class LabsResearch(models.Model):
     description = models.CharField(max_length=1000)
     link = models.URLField(null=True)
     image = models.ImageField(upload_to='labs', blank=True, null=True)
+    upcoming = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title
@@ -1698,6 +1722,7 @@ class Profile(SuperModel):
     preferred_kudos_wallet = models.OneToOneField('kudos.Wallet', related_name='preferred_kudos_wallet', on_delete=models.SET_NULL, null=True, blank=True)
     max_tip_amount_usdt_per_tx = models.DecimalField(default=500, decimal_places=2, max_digits=50)
     max_tip_amount_usdt_per_week = models.DecimalField(default=1500, decimal_places=2, max_digits=50)
+    last_visit = models.DateTimeField(null=True)
 
     objects = ProfileQuerySet.as_manager()
 
@@ -2548,6 +2573,7 @@ class UserAction(SuperModel):
     ACTION_TYPES = [
         ('Login', 'Login'),
         ('Logout', 'Logout'),
+        ('Visit', 'Visit'),
         ('added_slack_integration', 'Added Slack Integration'),
         ('removed_slack_integration', 'Removed Slack Integration'),
         ('updated_avatar', 'Updated Avatar'),

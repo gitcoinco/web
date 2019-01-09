@@ -21,6 +21,7 @@ import logging
 import time
 
 from django.core.management.base import BaseCommand
+from django.db.models import F
 from django.utils import timezone
 
 from dashboard.utils import get_tx_status, has_tx_mined
@@ -32,6 +33,8 @@ logging.getLogger("web3").setLevel(logging.WARNING)
 logging.getLogger("marketing.mails").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
+
+SLEEP_TIME = 20
 
 
 def process_subscription(subscription, live):
@@ -53,31 +56,43 @@ def process_subscription(subscription, live):
                 is_active_web3, signer,
             )
 
-        if are_we_past_next_valid_timestamp:
+        if not are_we_past_next_valid_timestamp:
+            logger.info(f"   -- ( NOT ready via web3, will be ready on {subscription.get_next_valid_timestamp()}) ")
+        else:
             logger.info("   -- (ready via web3) ")
             status = 'failure'
             txid = None
-            error = None
+            error = ""
             try:
                 if live:
                     logger.info("   -- *executing* ")
+                    while not has_tx_mined(subscription.new_approve_tx_id, subscription.grant.network):
+                        time.sleep(SLEEP_TIME)
+                        logger.info(f"   -- *waiting {SLEEP_TIME} seconds*")
                     txid = subscription.do_execute_subscription_via_web3()
                     logger.info("   -- *waiting for mine* (txid %s) ", txid)
                     while not has_tx_mined(txid, subscription.grant.network):
-                        time.sleep(10)
-                        logger.info("   -- *waiting 10 seconds*")
+                        time.sleep(SLEEP_TIME)
+                        logger.info(f"   -- *waiting {SLEEP_TIME} seconds*")
                     status, __ = get_tx_status(txid, subscription.grant.network, timezone.now())
+                    if status != 'success':
+                        error = f"tx status from RPC is {status} not success, txid: {txid}"
                 else:
                     logger.info("   -- *not live, not executing* ")
             except Exception as e:
                 error = str(e)
+                logger.info("   -- *not live, not executing* ")
 
             logger.info("   -- *mined* (status: %s / error: %s) ", status, error)
             was_success = status == 'success'
             if live:
                 if not was_success:
                     logger.warning('subscription processing failed')
-                    warn_subscription_failed(subscription, txid, status, error)
+                    subscription.error = True
+                    error_comments = f"{error}\n\ndebug info: {subscription.get_debug_info()}"
+                    subscription.subminer_comments = error_comments
+                    subscription.save()
+                    warn_subscription_failed(subscription)
                 else:
                     logger.info('subscription processing successful')
                     subscription.successful_contribution(txid)
@@ -105,7 +120,12 @@ class Command(BaseCommand):
         logger.info("got %d grants", grants.count())
 
         for grant in grants:
-            subs = grant.subscriptions.filter(active=True, next_contribution_date__lt=timezone.now())
+            subs = grant.subscriptions.filter(
+                active=True,
+                error=False,
+                next_contribution_date__lt=timezone.now(),
+                num_tx_processed__lt=F('num_tx_approved')
+            )
             logger.info(" - %d has %d subs ready for execution", grant.pk, subs.count())
 
             for subscription in subs:

@@ -34,15 +34,18 @@ class GrantAdmin(GeneralAdmin):
 
     ordering = ['-id']
     fields = [
-        'title', 'description', 'reference_url', 'admin_address', 'active', 'amount_goal', 'amount_received',
+        'title', 'description', 'reference_url', 'admin_address', 'active',
+        'amount_goal', 'amount_received', 'monthly_amount_subscribed',
         'deploy_tx_id', 'cancel_tx_id',
         'token_address', 'contract_address', 'network', 'required_gas_price', 'logo_svg_asset',
-        'logo_asset', 'created_on', 'modified_on', 'team_member_list'
+        'logo_asset', 'created_on', 'modified_on', 'team_member_list',
+        'subscriptions_links', 'contributions_links',
     ]
     readonly_fields = [
         'logo_svg_asset', 'logo_asset', 'created_on', 'modified_on', 'token_address', 'contract_address',
         'deploy_tx_id', 'cancel_tx_id',
-        'network', 'amount_goal', 'amount_received', 'team_member_list'
+        'network', 'amount_goal', 'amount_received', 'team_member_list',
+        'subscriptions_links', 'contributions_links',
     ]
 
     # Custom Avatars
@@ -67,6 +70,29 @@ class GrantAdmin(GeneralAdmin):
             return mark_safe(f'<img src="{instance.logo.url}" width="300" height="300" />')
         return mark_safe('N/A')
 
+    def subscriptions_links(self, instance):
+        """Define the logo image tag to be displayed in the admin."""
+        eles = []
+
+        for ele in instance.subscriptions.all().order_by('pk'):
+            html = f"<a href='{ele.admin_url}'>{ele}</a>"
+            eles.append(html)
+
+        return mark_safe("<BR>".join(eles))
+
+    def contributions_links(self, instance):
+        """Define the logo image tag to be displayed in the admin."""
+        eles = []
+
+        for ele in instance.subscriptions.all().order_by('pk'):
+            html = f"<a href='{ele.admin_url}'>{ele}</a>"
+            eles.append(html)
+            for sub_ele in ele.subscription_contribution.all().order_by('pk'):
+                html = f" - <a href='{sub_ele.admin_url}'>{sub_ele}</a>"
+                eles.append(html)
+
+        return mark_safe("<BR>".join(eles))
+
     logo_svg_asset.short_description = 'Logo SVG Asset'
     logo_asset.short_description = 'Logo Image Asset'
 
@@ -74,6 +100,19 @@ class GrantAdmin(GeneralAdmin):
 class SubscriptionAdmin(GeneralAdmin):
     """Define the Subscription administration layout."""
     raw_id_fields = ['grant', 'contributor_profile']
+    readonly_fields = [
+        'contributions_links',
+    ]
+
+    def contributions_links(self, instance):
+        """Define the logo image tag to be displayed in the admin."""
+        eles = []
+
+        for sub_ele in instance.subscription_contribution.all():
+            html = f"<a href='{sub_ele.admin_url}'>{sub_ele}</a>"
+            eles.append(html)
+
+        return mark_safe("<BR>".join(eles))
 
 
 class ContributionAdmin(GeneralAdmin):

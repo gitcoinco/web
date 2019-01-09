@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n humanize %}
 
 {% trans "Gitcoin Heart Robot" %}
 
@@ -10,7 +10,7 @@
 
 {% trans "You have agreed to give" %}
 
-{{ subscription.amount_per_period }} {{ subscription.token_symbol }} {% trans "per" %} {{ subscription.frequency }} {{ subscription.frequency_unit }}
+{{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }} {% trans "per" %} {{ subscription.frequency }} {{ subscription.frequency_unit }}
 
 {% trans "You can see the transaction on etherscan" %} at
 {% if subscription.network == 'mainnet' %}

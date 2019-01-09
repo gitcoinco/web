@@ -103,6 +103,7 @@ $(document).ready(function() {
                   $.each($(form).serializeArray(), function() {
                     data[this.name] = this.value;
                   });
+                  document.suppress_loading_leave_code = true;
                   form.submit();
                 } else {
                   setTimeout(function() {

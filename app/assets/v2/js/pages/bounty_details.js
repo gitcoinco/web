@@ -88,6 +88,7 @@ var rows = [
   'fulfillments',
   'network',
   'experience_level',
+  'reserved_for_user_handle',
   'bounty_type',
   'expires_date',
   'issue_keywords',
@@ -405,7 +406,45 @@ var callbacks = {
       }
     }
     return [ 'fulfilled_owners_username', accepted ];
+  },
+  'reserved_for_user_handle': function(key, val, bounty) {
+    if (val) {
+      const reservedForHoursLeft = 72 - Math.abs(new Date() - new Date(bounty['created_on'])) / 3600000;
+
+      // check if 24 hours have passed before setting the issue as reserved
+      if (Math.round(reservedForHoursLeft) > 0) {
+        const reservedForHtmlLink = '<a href="/profile/' + val + '">' + val + '</a>';
+        const reservedForAvatar = '<img class="rounded-circle" src="/dynamic/avatar/' + val + '" width="25" height="25"/>';
+
+        $('#bounty_reserved_for').html(reservedForHtmlLink + reservedForAvatar);
+        return [ key, val ];
+      }
+    }
+
+    $('#bounty_reserved_for').css('display', 'none');
+    $('#bounty_reserved_for_label').css('display', 'none');
+
+    return [ key, val ];
   }
+};
+
+const isAvailableIfReserved = function(bounty) {
+  const reservedFor = bounty['reserved_for_user_handle'];
+
+  if (reservedFor) {
+    if (reservedFor === document.contxt['github_handle']) {
+      return true;
+    }
+
+    const reservedForHoursLeft = 72 - Math.abs(new Date() - new Date(bounty['created_on'])) / 3600000;
+
+    // check if 24 hours have passed before setting the issue as reserved
+    if (Math.round(reservedForHoursLeft) > 0) {
+      return false;
+    }
+  }
+
+  return true;
 };
 
 var isBountyOwner = function(result) {
@@ -621,13 +660,21 @@ var show_interest_modal = function() {
           return false;
         }
 
-        $(self).attr('href', '/uninterested');
-        $(self).find('span').text(gettext('Stop Work'));
-        $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
+
         add_interest(document.result['pk'], {
           issue_message: msg
+        }).then(success => {
+          if (success) {
+            $(self).attr('href', '/uninterested');
+            $(self).find('span').text(gettext('Stop Work'));
+            $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
+            $.modal.close();
+          }
+        }).catch((error) => {
+          if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
+            return;
+          throw error;
         });
-        $.modal.close();
       });
     });
   });
@@ -667,7 +714,7 @@ var show_extend_deadline_modal = function() {
         $('.select2-selection__rendered').removeAttr('title');
       });
       // removes search field in all but the 'denomination' dropdown
-      $('.select2-container').click(function() {
+      $('.select2-container').on('click', function() {
         $('.select2-container .select2-search__field').remove();
       });
 
@@ -826,7 +873,8 @@ var do_actions = function(result) {
   const current_user_is_approved = is_current_user_approved(result);
   // which actions should we show?
   const should_block_from_starting_work = !is_interested && result['project_type'] == 'traditional' && (result['status'] == 'started' || result['status'] == 'submitted');
-  let show_start_stop_work = is_still_on_happy_path && !should_block_from_starting_work && is_open && !isBountyOwner(result);
+  let show_start_stop_work = is_still_on_happy_path && !should_block_from_starting_work &&
+    is_open && !isBountyOwner(result) && isAvailableIfReserved(result);
   let show_github_link = result['github_url'].substring(0, 4) == 'http';
   let show_submit_work = is_open && !has_fulfilled;
   let show_kill_bounty = !is_status_done && !is_status_expired && !is_status_cancelled && isBountyOwner(result);
@@ -870,10 +918,17 @@ var do_actions = function(result) {
 
   if (show_start_stop_work) {
     const enabled = true;
+    let text;
+
+    if (result['permission_type'] === 'approval')
+      text = is_interested ? gettext('Stop') : gettext('Express Interest');
+    else
+      text = is_interested ? gettext('Stop Work') : gettext('Start Work');
+
     const interest_entry = {
       enabled: enabled,
       href: is_interested ? '/uninterested' : '/interested',
-      text: is_interested ? gettext('Stop Work') : gettext('Start Work'),
+      text: text,
       parent: 'right_actions',
       title: is_interested ? gettext('Notify the funder that you will not be working on this project') : gettext('Notify the funder that you would like to take on this project'),
       color: is_interested ? '' : '',
@@ -1318,11 +1373,11 @@ const render_activity = function(result, all_results) {
   activities.filter(function(activity) {
     return activity.uninterest_possible;
   }).forEach(function(activity) {
-    $('#remove-' + activity.name).click(() => {
+    $('#remove-' + activity.name).on('click', function() {
       uninterested(result.pk, activity.profileId);
       return false;
     });
-    $('#remove-slash-' + activity.name).click(() => {
+    $('#remove-slash-' + activity.name).on('click', function() {
       uninterested(result.pk, activity.profileId, true);
       return false;
     });
