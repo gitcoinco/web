@@ -34,7 +34,8 @@ class GrantAdmin(GeneralAdmin):
 
     ordering = ['-id']
     fields = [
-        'title', 'description', 'reference_url', 'admin_address', 'active', 'amount_goal', 'amount_received',
+        'title', 'description', 'reference_url', 'admin_address', 'active',
+        'amount_goal', 'amount_received', 'monthly_amount_subscribed',
         'deploy_tx_id', 'cancel_tx_id',
         'token_address', 'contract_address', 'network', 'required_gas_price', 'logo_svg_asset',
         'logo_asset', 'created_on', 'modified_on', 'team_member_list',

@@ -178,9 +178,11 @@ $(document).ready(function() {
     mixpanel.track('Whitepaper Request');
   });
 
-  $('.accordion').on('click', () => {
-    this.classList.toggle('active');
-    var panel = this.nextElementSibling;
+  $('.accordion').on('click', (event) => {
+    const element = $(event.target);
+
+    element.classList.toggle('active');
+    let panel = element.nextElementSibling;
 
     if (panel.style.maxHeight) {
       panel.style.maxHeight = null;
