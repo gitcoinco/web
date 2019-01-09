@@ -133,3 +133,4 @@ def create_notification(sender, **kwargs):
     # Funding has increased on a bounty that you’re working on.
 
 post_save.connect(create_notification, sender=Activity)
+
