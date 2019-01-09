@@ -8,8 +8,12 @@ def add_monthly_amount_subscribed(apps, schema_editor):
         subscriptions = grant.subscriptions.all()
         for subscription in subscriptions:
             if subscription.active and subscription.num_tx_approved > 1:
-                grant.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
-                grant.save()
+                try:
+                    grant.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
+                    grant.save()
+
+                except Exception as e:
+                    logger.info(e)
 
 def backwards(apps, schema_editor):
     pass
