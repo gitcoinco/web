@@ -264,7 +264,7 @@ def new_interest(request, bounty_id):
             status=401)
 
     try:
-        Interest.objects.exclude(status__in=Interest.INACTIVE_STATUSES).get(profile_id=profile_id, bounty=bounty)
+        Interest.objects.active().get(profile_id=profile_id, bounty=bounty)
         return JsonResponse({
             'error': _('You have already started work on this bounty!'),
             'success': False},
@@ -422,7 +422,7 @@ def extend_expiration(request, bounty_id):
     }, status=200)
 
 
-# @csrf_exempt
+@csrf_exempt
 @require_POST
 def cancel_reason(request):
     """Cancel a Bounty.
@@ -441,7 +441,6 @@ def cancel_reason(request):
     """
     user = request.user if request.user.is_authenticated else None
     reason = request.POST.get('canceled_bounty_reason', '')
-    print(request.POST.get('canceled_bounty_reason'))
 
     if not user:
         return JsonResponse(
