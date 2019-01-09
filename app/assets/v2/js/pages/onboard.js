@@ -91,7 +91,7 @@ onboard.watchMetamask = function() {
       document.alreadyFoundMetamask = true;
       $('.controls').show();
       $('#metamask-video').hide();
-      $('#next-btn').click(function(e) {
+      $('#next-btn').on('click', function(e) {
         var eth_address = $('#eth_address').val();
 
         $.get('/onboard/contributor/', {eth_address: eth_address});

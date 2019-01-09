@@ -122,7 +122,7 @@ $(document).ready(function($) {
     }
   };
 
-  $('#acceptBounty').click(function(e) {
+  $('#acceptBounty').on('click', function(e) {
     e.preventDefault();
 
     if (!$('#terms').is(':checked')) {
@@ -180,7 +180,9 @@ $(document).ready(function($) {
     add_row();
     update_registry();
 
-    $('.add_another').click(add_row);
+    $('.add_another').on('click', function() {
+      add_row();
+    });
   });
 });
 

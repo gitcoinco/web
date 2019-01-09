@@ -102,7 +102,7 @@ def grant_details(request, grant_id, grant_slug):
         milestones = grant.milestones.order_by('due_date')
         updates = grant.updates.order_by('-created_on')
         subscriptions = grant.subscriptions.filter(active=True, error=False)
-        user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
+        user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True, error=False).first()
     except Grant.DoesNotExist:
         raise Http404
 
@@ -167,8 +167,7 @@ def grant_details(request, grant_id, grant_slug):
 def grant_new(request):
     """Handle new grant."""
     if not request.user.has_perm('grants.add_grant'):
-        messages.info(request, _('Grants is still in beta. To create a Grant ping us at team@gitcoin.co'))
-        return redirect(reverse('grants:grants'))
+        return redirect('https://consensys1mac.typeform.com/to/HFcZKe/')
 
     profile = get_profile(request)
 
@@ -320,10 +319,17 @@ def grant_fund(request, grant_id, grant_slug):
         subscription.token_symbol = request.POST.get('token_symbol', '')
         subscription.gas_price = request.POST.get('gas_price', 0)
         subscription.new_approve_tx_id = request.POST.get('sub_new_approve_tx_id', '')
+        subscription.num_tx_approved = request.POST.get('num_periods', 1)
         subscription.network = request.POST.get('network', '')
         subscription.contributor_profile = profile
         subscription.grant = grant
         subscription.save()
+
+        value_usdt = subscription.get_converted_amount()
+        if value_usdt:
+            grant.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
+
+        grant.save()
         new_supporter(grant, subscription)
         thank_you_for_supporting(grant, subscription)
         return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
@@ -376,6 +382,12 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
         subscription.cancel_tx_id = request.POST.get('sub_cancel_tx_id', '')
         subscription.active = False
         subscription.save()
+
+        value_usdt = subscription.get_converted_amount
+        if value_usdt:
+            grant.monthly_amount_subscribed -= subscription.get_converted_monthly_amount()
+
+        grant.save()
         support_cancellation(grant, subscription)
         messages.info(
             request,

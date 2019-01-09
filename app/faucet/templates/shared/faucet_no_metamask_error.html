@@ -1,39 +1,39 @@
 {% comment %}
-    Copyright (C) 2018 Gitcoin Core
+  Copyright (C) 2018 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
 {% load i18n static %}
-                    <div id="no_metamask_error" class="blocking_error" style="display: none; min-height: 500px;">
-                        <div class="w-100" style="text-align: center;">
-                            <h3>{% trans "Apply for a faucet distribution" %}</h3>
-                        </div>
-                        <img src="{% static "v2/images/prime.png" %}" style="max-height: 100px">
-                        <br>
-                        <h3>{% trans "To continue, enable Web3." %}</h3>
-                        <p>
-                            {% trans "Web3 is the same web you know and love, but with Ethereum-enabled functionality." %}
-                        </p>
-                        <p>
-                            {% blocktrans %}The fastest and easiest way to add Web3 to your browser is to install <a href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en" target="_blank" rel="noopener noreferrer"> Metamask</a>. To continue submitting a bounty, please install Metamask and return to this page.{% endblocktrans %}
-                        </p>
-                        <p class="float-right">
-                            <a class="btn btn-sm btn-info mt-3 pulseClick" role="button" id="submit" href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en">{% trans "Install MetaMask" %}</a>
-                            <br>
-                            - {% trans "or" %} -
-                            <br>
-                            <a href="https://github.com/gitcoinco/gitcoinco/issues/4" target="_blank" rel="noopener noreferrer">{% trans "Can't get web3 to work?  Get help here." %}</a>
-                        </p>
-                    </div>
+<div id="no_metamask_error" class="blocking_error font-body" style="display: none; min-height: 500px;">
+  <div class="w-100 text-center">
+    <h3>{% trans "Apply for a faucet distribution" %}</h3>
+  </div>
+  <img src="{% static "v2/images/prime.png" %}" style="max-height: 100px">
+  <br>
+  <h3>{% trans "To continue, enable Web3." %}</h3>
+  <p>
+    {% trans "Web3 is the same web you know and love, but with Ethereum-enabled functionality." %}
+  </p>
+  <p>
+    {% blocktrans %}The fastest and easiest way to add Web3 to your browser is to install <a href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en" target="_blank" rel="noopener noreferrer"> Metamask</a>. To continue submitting a bounty, please install Metamask and return to this page.{% endblocktrans %}
+  </p>
+  <p class="float-right">
+    <a class="btn btn-sm btn-info mt-3 pulseClick" role="button" id="submit" href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en">{% trans "Install MetaMask" %}</a>
+    <br>
+    - {% trans "or" %} -
+    <br>
+    <a href="https://github.com/gitcoinco/gitcoinco/issues/4" target="_blank" rel="noopener noreferrer">{% trans "Can't get web3 to work?  Get help here." %}</a>
+  </p>
+</div>

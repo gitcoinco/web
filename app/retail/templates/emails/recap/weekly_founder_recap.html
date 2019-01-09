@@ -1,0 +1,159 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n humanize %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <style type="text/css">
+    .g-icon {
+      width: 1em;
+      height: 1em;
+      vertical-align: middle;
+      line-height: 1;
+    }
+
+    .g-icon:before {
+      content: '';
+      width: 1em;
+      height: 1em;
+      display: inline-block;
+    }
+
+    .g-icon__dot-circle:before {
+      border: 0.25em solid currentColor;
+      border-radius: 100px;
+    }
+    .status-open {
+      color: #00A652;
+      border-color: #D2D2D2;
+    }
+
+    .status-started {
+      color: #0D0764;
+      border-color: #D2D2D2;
+    }
+
+    .status-submitted {
+      color: #008EFF;
+      border-color: #D2D2D2;
+    }
+
+    .status-done {
+      color: #666666;
+      border-color: #D2D2D2;
+    }
+
+    .status-cancelled,
+    .status-expired {
+      color: #C70018;
+      border-color: #D2D2D2;
+    }
+    
+    .bold {
+      font-weight: bold;
+    }
+    .header {
+       /*width: 100%;*/
+       border-bottom: 1px solid; 
+       margin-top: 3em;
+    }
+    .leftAlign {
+      text-align: left;
+    }
+
+    .rightAlign {
+      text-align: right;
+    }
+    .imgGitcoinStyle {
+      max-height:50px; max-width:100%; border:2px solid #1AB56D; border-radius:100%;
+    }
+    .contentOverall { 
+      padding-bottom: 3em;
+      padding-top: 1em;
+    }
+    h1 {
+      padding-bottom: .5em;
+    }
+    .section_row_entry {
+      padding-bottom: 1.5em;
+      
+    }
+    body {
+      background-color: #f2f6f9;
+    }
+    .middlecenter {
+      display: flex;
+      justify-content: center; /* align horizontal */
+      align-items: center; /* align vertical */
+    }
+    
+    @media (max-width: 576px) {
+      .middlecenter-2 {
+        display: flex;
+        justify-content: center; /* align horizontal */
+        align-items: center; /* align vertical */
+      }
+    }
+    @media (min-width: 576px) {
+      
+      .middlecenter-2 {
+        text-align: left;
+        align-items: left;
+        justify-content: left;
+      }
+    }
+    .timeCol {
+      color: rgba(0,0,0,0.3);
+      font-size: smaller;
+    }
+  </style>
+  <div class=""><img src={% static 'v2/images/emails/robot-weekly-bounties.png' %} ></div>
+  <div class="contentOverall">
+      <h2>{% trans "Your weekly bounties recap" %}</h2>
+      <div>{{ select_params.to }} - {{ select_params.from }}</div>
+      <div class="bold">{{profile.handle}}</div>
+    
+      {% for section in sections %}
+        <div class="{{section.header_css}} header leftAlign">
+          <i class="g-icon g-icon__dot-circle"></i>&nbsp;{{section.header_name}}
+        </div>
+        <br />
+        <div class="container">
+          {% for itm in section.items %}
+            <div class="section_row_entry row justify-content-md-center">
+              <div class="col-sm-2 middlecenter-2">
+                  <img src={{itm.bounty_image_url}} alt={{itm.bounty_name}} class="imgGitcoinStyle"> {{ itm.bounty_action_user }}
+              </div>
+              <div class="col-sm-6">
+                <div class="row leftAlign">
+                  <div class="col-12">
+                    {{ itm.bounty_name }}
+                  </div>
+                  <div class="timeCol col-12">{{ itm.bounty_action_date }}</div>
+                </div>
+              </div>
+              <div class="col-sm-2 middlecenter">
+                <a href={{itm.bounty_link}}>{% if section.header_name != "Worker applied" and section.header_name != "Work got submitted" %}{% trans "View bounty" %}{% else %}{% trans "Review" %}{% endif %}</a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endfor %}
+  </div>
+{% endblock %}
+
