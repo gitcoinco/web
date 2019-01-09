@@ -92,6 +92,11 @@ $(document).ready(function() {
             $('#transaction_hash').val(transactionHash);
             const linkURL = etherscan_tx_url(transactionHash);
 
+            $.each($(form).serializeArray(), function() {
+              data[this.name] = this.value;
+            });
+            form.submit();
+
             document.issueURL = linkURL;
             $('#transaction_url').attr('href', linkURL);
             enableWaitState('#new-grant');
