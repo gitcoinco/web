@@ -16,11 +16,20 @@
  along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static humanize grants_extra %}
 
 {% block content %}
 
 <style>
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+
   hr {
     width: 80%;
     height: 2px;
@@ -29,43 +38,30 @@
     background-color: #D2D2D2;
   }
 
-  .grantInfo {
+  .grant-info {
     padding-top: 30px;
     padding-bottom: 1%;
   }
 
-  .grantInfo a img {
-    border-radius: 25px;
+  .grant-info a img {
     margin-bottom: 10px;
   }
 
-  .grantInfoName {
-    font-size: 20px;
+  .grant-info-name {
+    font-size: 1.5rem;
+    font-weight: 600;
     color: #0D0764;
   }
 
-  .grantInfo h5 {
-    font-size: 14px;
-    margin-top: 15px;
-    margin-top: 30px;
-  }
-
-  .grantInfo h3 {
-    margin-top: -20px;
-  }
-
-  .updatesButton {
-    padding: 12px 36px;
-    font-size: 12px;
-    border-radius: 3px;
-    text-decoration: none;
-    background-color: #0D0764;
-    color: white;
+  .grant-description {
+    max-width: 50rem;
+    margin: 1.5rem auto;
+    text-align: center;
   }
 
   #grow-oss {
-    margin-top: 70px;
-    margin-bottom: 40px;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
   }
 
   .progress {
@@ -80,20 +76,20 @@
     color: #5B3AF0;
   }
 
-  .progressBar {
+  .progressbar {
     height: 15px;
     background-color: #D8D8D8;
     border-radius: 2.7px;
   }
 
-  .progressCompleted {
+  .progress-completed {
     height: 100%;
     background-color: #0FCE7C;
     border-radius: 2.7px;
     float: left;
   }
 
-  .progressRemoved {
+  .progress-removed {
     height: 100%;
     background-color: #CF0E0E;
     border-top-right-radius: 2.7px;
@@ -102,24 +98,45 @@
   }
 
   .funding {
-    float: right;
-    text-align: right;
+    float: left;
+    text-align: left;
   }
 
   .funding > h4 {
     line-height: 0px;
-    text-align: right;
+    text-align: left;
     color: #0D0764;
     padding-top: -20px;
   }
 
-  .progressBarLine {
+  .progressbar-line {
     width: 1px;
-    height: 45px;
+    height: 50px;
     background-color: #979797;
     float: left;
-    transform: translateY(-20%);
     margin-right: 20px;
+  }
+
+  .progressbar-position-margin {
+    padding-left: 20%;
+    padding-right: 20%;
+    margin-top: 4rem;
+  }
+
+  .progressbar-position {
+    transform: translateY(160%);
+  }
+
+  .progressbar-position > p {
+    line-height: 0px;
+    color: #BBBDBF;
+    text-align: left;
+  }
+
+  .progressbar-position > h4 {
+    line-height: 0px;
+    color: #0D0764;
+    padding-top: -20px;
   }
 
   .funding > p {
@@ -127,43 +144,99 @@
     color: #BBBDBF;
   }
 
-</style>
-<img id="newSupporter" src="{% static "v2/images/subscription-terminated.png" %}" alt="{% trans "Subscription Terminated." %}" title="{% trans "Subscription Terminated." %}">
-<h1 style="text-transform: none;">{% trans "Grant" %} '{{ grant.title }}' {% trans "has been cancelled by its creator." %}</h1>
-<p>{% trans "Your subscription for the project has been cancelled and you will no longer be charged." %}</p>
-<br>
+  #currentFunding {
+    width: 57.5%;
+  }
 
+  #goalFunding {
+    width: 42.5%;
+    text-align: right;
+  }
+
+  #goalFunding h4 {
+    text-align: right;
+  }
+
+  #grant-logo {
+    max-width: 25rem;
+    width: 100%;
+    margin-top: 2rem;
+  }
+
+  .grant-button {
+    padding: 12px 36px;
+    font-size: 12px;
+    border-radius: 3px;
+    text-decoration: none;
+    background-color: #0D0764;
+    color: white;
+    font-weight: 600;
+  }
+
+  .grant-link {
+    margin-top: 3rem;
+  }
+</style>
+<img src="{% static "v2/images/subscription-terminated.png" %}" alt="{% trans "Subscription Terminated." %}" title="{% trans "Subscription Terminated." %}">
+<h1>{% trans "Grant" %} '{{ grant.title }}' {% trans "has been cancelled by its creator." %}</h1>
+<p style="margin-bottom:1.25rem;">{% trans "Your subscription for the project has been cancelled and you will no longer be charged." %}</p>
 <hr>
-<div class="grantInfo">
+
+<div class="grant-info">
   <a href="{% url 'grants:details' grant.id grant.slug %}">
-    <img src="{{ grant.logo.url }}" style="width:50px; height: 50px;"/>
+    <img id="grant-logo" src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}" alt="grant logo" >
   </a>
   <br>
-  <a class="grantInfoName" href="{% url 'grants:details' grant.id grant.slug %}">{{ grant.title }}</a>
-  <p>{{ grant.description }}</p>
+  <a class="grant-info-name" href="{% url 'grants:details' grant.id grant.slug %}">
+    {{ grant.title }}
+  </a>
+  <p class="grant-description">
+    {{ grant.description }}
+  </p>
+  <div class="progressbar-position-margin">
+    <div class="progressbar-position" style="margin-left: {{ grant.percentage_done|floatformat:0 }}%;">
+      <div class="progressbar-line"></div>
+      <p>{% trans "Your Contribution" %}</p>
+      <h4>
+        <strong>{{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }}</strong>
+      </h4>
+    </div>
+  </div>
   <div class="progress">
-    <!-- #TODO - Revisit which object to use to pull grant status. -->
-    <h3 style="text-transform: none;">{{ grant.status }}</h3>
-    <div class="progressBar">
-      <div class="progressCompleted" style="width: {{ grant.percentage_done|floatformat:0 }}%;">
+    <div class="progressbar">
+      <div class="progress-completed" style="width: {{ grant.percentage_done|floatformat:0 }}%;">
+      </div>
+      <!-- #TODO - Change object that takes the percentage value of removed contribution. -->
+      <div class="progress-removed" style="width: {{ grant.percentage_removed|floatformat:0 }}%;">
       </div>
     </div>
-    <div class="funding">
+    <div class="funding" id="currentFunding">
       <h4>
-        <strong>{{ grant.amount_goal }} {% trans "ETH" %}</strong>
+        <strong>{{ grant.amount_received }} {% trans "DAI" %}</strong>
+      </h4>
+      <p>{% trans "Current" %}</p>
+    </div>
+    <div class="funding" id="goalFunding">
+      <h4>
+        <strong>{{ grant.amount_goal }} {% trans "DAI" %}</strong>
       </h4>
       <p>{% trans "Goal" %}</p>
     </div>
   </div>
 </div>
-<hr>
 
 <br>
-<p>{% trans "You can see the subscription cancelation transaction" %}
-  <a href="{{ transaction.link }}">{% trans "here." %}</a>
+
+<p>{% trans "You can see the grant cancellation transaction on etherscan" %}
+  {% if subscription.network == 'mainnet' %}
+    <a href="http://etherscan.io/tx/{{ grant.cancel_tx_id }}">{% trans "here." %}</a>
+  {% else %}
+    <a href="http://{{ grant.network }}.etherscan.io/tx/{{ grant.cancel_tx_id }}">{% trans "here." %}</a>
+  {% endif %}
+</p>
+<p class="grant-link">
+  <a class="grant-button" href="{% url 'grants:details' grant.pk grant.slug %}">{% trans "View Inactive Grant" %}</a>
 </p>
 <br>
-<a class="updatesButton" href="{{ transaction.link }}">{% trans "View Transaction" %}</a>
-<br>
-
+<hr>
 {% endblock %}

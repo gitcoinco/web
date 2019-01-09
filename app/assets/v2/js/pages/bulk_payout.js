@@ -122,7 +122,7 @@ $(document).ready(function($) {
     }
   };
 
-  $('#acceptBounty').click(function(e) {
+  $('#acceptBounty').on('click', function(e) {
     e.preventDefault();
 
     if (!$('#terms').is(':checked')) {
@@ -180,7 +180,9 @@ $(document).ready(function($) {
     add_row();
     update_registry();
 
-    $('.add_another').click(add_row);
+    $('.add_another').on('click', function() {
+      add_row();
+    });
   });
 });
 
@@ -239,6 +241,7 @@ var update_registry = function(coinbase) {
     $('#preview_ending').html(addr + ' ');
     $('#preview_overage').html(over + ' ' + denomination);
     $('.tipAlert').css('display', 'none');
+    $('.asyncAlert').css('display', 'none');
     $('.tipPreview').css('display', 'none');
     transactions.push(first_transaction);
   } else if (pay_with_bounty) {
@@ -246,11 +249,13 @@ var update_registry = function(coinbase) {
     $('.overageAlert').css('display', 'none');
     $('.overagePreview').css('display', 'none');
     $('.tipAlert').css('display', 'none');
+    $('.asyncAlert').css('display', 'none');
     $('.tipPreview').css('display', 'none');
     transactions.push(first_transaction);
   } else {
     $('#total_net').html(tc + ' ' + denomination);
     $('.tipAlert').css('display', 'inline-block');
+    $('.asyncAlert').css('display', 'inline-block');
     $('.tipPreview').css('display', 'inline-block');
     $('#total_tip_overage').html(tc + ' ' + denomination);
     $('#address_tip_ending').html(addr + ' ');

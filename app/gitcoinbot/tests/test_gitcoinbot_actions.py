@@ -31,6 +31,8 @@ from test_plus.test import TestCase
 class GitcoinBotActionsTest(TestCase):
     """Define the Gitcoin Bot actions TestCase."""
 
+    fixtures = ['tokens.json']
+
     def test_help_text(self):
         """Test that help_text function returns the correct text."""
         self.maxDiff = None

@@ -117,6 +117,17 @@ $(document).ready(function() {
     }
   });
 
+  // show/hide the reserved for selector based on the project type
+  $('.js-select2[name=project_type]').change(
+    function(e) {
+      if (String(e.target.value).toLowerCase() === 'traditional') {
+        $('#reservedForDiv').show();
+      } else {
+        $('#reservedForDiv').hide();
+      }
+    }
+  );
+
   // revision action buttons
   $('#subtractAction').on('click', function() {
     var revision = parseInt($('input[name=revisions]').val());
@@ -148,7 +159,7 @@ $(document).ready(function() {
     $('.select2-selection__rendered').removeAttr('title');
   });
   // removes search field in all but the 'denomination' dropdown
-  $('.select2-container').click(function() {
+  $('.select2-container').on('click', function() {
     $('.select2-container .select2-search__field').remove();
   });
   // denomination field
@@ -171,12 +182,12 @@ $(document).ready(function() {
     }, 10);
   };
 
-  $('#hiringRightNow').click(function() {
+  $('#hiringRightNow').on('click', function() {
     open_hiring_panel(true);
   });
 
 
-  $('#advancedLink a').click(function(e) {
+  $('#advancedLink a').on('click', function(e) {
     e.preventDefault();
     var target = $('#advanced_container');
 
@@ -188,6 +199,8 @@ $(document).ready(function() {
       $(this).text('Advanced ⬇ ');
     }
   });
+
+  userSearch('#reservedFor', false);
 
   $('#submitBounty').validate({
     submitHandler: function(form) {
@@ -222,6 +235,7 @@ $(document).ready(function() {
       var tokenName = token['name'];
       var decimalDivisor = Math.pow(10, decimals);
       var expirationTimeDelta = data.expirationTimeDelta;
+      let reservedFor = $('.username-search').select2('data')[0];
 
       var metadata = {
         issueTitle: data.title,
@@ -233,7 +247,9 @@ $(document).ready(function() {
         experienceLevel: data.experience_level,
         projectLength: data.project_length,
         bountyType: data.bounty_type,
+        estimatedHours: data.hours,
         fundingOrganisation: data.fundingOrganisation,
+        reservedFor: reservedFor ? reservedFor.text : '',
         tokenName
       };
 

@@ -28,6 +28,32 @@ try {
   localStorage = {};
 }
 
+var paint_search_tabs = function() {
+  if (!localStorage['searches'])
+    return;
+
+  var container = $('#dashboard-title');
+  var target = $('#search_nav');
+
+  searches = localStorage['searches'].split(',');
+
+  if (searches.length <= 1)
+    return target.html('');
+
+  var html = "<ul class='nav'><i class='fas fa-history'></i>";
+
+  for (var i = 0; i < searches.length; i++) {
+    var search_no = searches[i];
+    var title = get_search_tab_name(search_no);
+
+    if (title) {
+      html += "<li class='nav-item' data-num='" + search_no + "'><span>" + title + '</span><a><i class="fas fa-times"></i></a></li>';
+    }
+  }
+  html += '</ul>';
+  target.html(html);
+};
+
 function debounce(func, wait, immediate) {
   var timeout;
 
@@ -490,15 +516,6 @@ window.addEventListener('load', function() {
   refreshBounties(null, 0, false, false);
 });
 
-function getURLParams(k) {
-  var p = {};
-
-  location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(s, k, v) {
-    p[k] = v;
-  });
-  return k ? p[k] : p;
-}
-
 /**
  * removed all filters from the sidebar search
  * resetKeyword : boolean
@@ -541,7 +558,7 @@ var resetFilters = function(resetKeyword) {
     $('input[name=idx_status][value=open]').prop('checked', true);
     $('.search-area input[type=text]').text(getURLParams('q'));
 
-    $('#onboard-alert').click(function(e) {
+    $('#onboard-alert').on('click', function(e) {
 
       if (!$('.no-results').hasClass('hidden'))
         $('.nonefound').css('display', 'block');
@@ -643,7 +660,7 @@ $(document).ready(function() {
     });
 
   // sidebar clear
-  $('.dashboard #clear').click(function(e) {
+  $('.dashboard #clear').on('click', function(e) {
     e.preventDefault();
     resetFilters(true);
     reset_offset();
@@ -767,33 +784,6 @@ var get_search_tab_name = function(n) {
 
 };
 
-var paint_search_tabs = function() {
-  if (!localStorage['searches'])
-    return;
-
-  var container = $('#dashboard-title');
-  var target = $('#search_nav');
-
-  searches = localStorage['searches'].split(',');
-
-  if (searches.length <= 1)
-    return target.html('');
-
-  var html = "<ul class='nav'>";
-
-  for (var i = 0; i < searches.length; i++) {
-    var search_no = searches[i];
-    var title = get_search_tab_name(search_no);
-
-    if (title) {
-      html += "<li class='nav-item' data-num='" + search_no + "'><span>" + title + '</span><a><i class="fas fa-times"></i></a></li>';
-    }
-  }
-  html += '</ul>';
-  target.html(html);
-};
-
-
 // gets available searches
 var get_available_searches = function() {
   if (typeof localStorage['searches'] == 'undefined') {
@@ -828,4 +818,3 @@ var remove_search = function(n) {
 
   localStorage.removeItem(key);
 };
-

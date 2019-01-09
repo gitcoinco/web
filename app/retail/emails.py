@@ -17,6 +17,7 @@
 
 '''
 import logging
+from datetime import date, timedelta
 from functools import partial
 
 from django.conf import settings
@@ -31,7 +32,7 @@ from django.utils.translation import gettext as _
 
 import cssutils
 import premailer
-from grants.models import Grant, Subscription
+from grants.models import Contribution, Grant, Subscription
 from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
 from retail.utils import strip_double_chars, strip_html
@@ -117,11 +118,11 @@ def render_subscription_terminated_email(grant, subscription):
     return response_html, response_txt, subject
 
 
-def render_successful_contribution_email(grant, subscription):
-    params = {'grant': grant, 'subscription': subscription}
+def render_successful_contribution_email(grant, subscription, contribution):
+    params = {'grant': grant, 'subscription': subscription, "contribution": contribution}
     response_html = premailer_transform(render_to_string("emails/grants/successful_contribution.html", params))
     response_txt = render_to_string("emails/grants/successful_contribution.txt", params)
-    subject = "Your subscription on Gitcoin Grants has been cancelled by the Grant Creator"
+    subject = 'Your Gitcoin Grants contribution was successful!'
     return response_html, response_txt, subject
 
 
@@ -129,7 +130,8 @@ def render_successful_contribution_email(grant, subscription):
 def successful_contribution(request):
     grant = Grant.objects.all().first()
     subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
-    response_html, __, __ = render_successful_contribution_email(grant, subscription)
+    contribution = Contribution.objects.filter(subscription__pk=subscription.pk).first()
+    response_html, __, __ = render_successful_contribution_email(grant, subscription, contribution)
     return HttpResponse(response_html)
 
 
@@ -431,6 +433,93 @@ def render_new_bounty(to_email, bounties, old_bounties):
     return response_html, response_txt
 
 
+def render_weekly_recap(to_email, from_date=date.today(), days_back=7):
+    sub = get_or_save_email_subscriber(to_email, 'internal')
+    from dashboard.models import Profile
+    prof = Profile.objects.filter(email__iexact=to_email).last()
+    bounties = prof.bounties.all()
+    from_date = from_date + timedelta(days=1)
+    to_date = from_date - timedelta(days=days_back)
+
+    activity_types = {}
+    _sections = []
+    activity_types_def = {
+        "start_work": {
+          "css-class": "status-open",
+          "text": "Started work"
+        },
+        "stop_work": {
+          "css-class": "status-cancelled",
+          "text": "Work stopped"
+        },
+        "worker_approved": {
+          "css-class": "status-open",
+          "text": "Worker got approved"
+        },
+        "worker_applied": {
+          "css-class": "status-submitted",
+          "text": "Worker applied"
+        },
+        "new_bounty": {
+          "css-class": "status-open",
+          "text": "New created bounties"
+        },
+        "work_submitted": {
+          "css-class": "status-submitted",
+          "text": "Work got submitted"
+        },
+    }
+
+    for bounty in bounties:
+        for activity in bounty.activities.filter(created__range=[to_date, from_date]):
+            if activity_types.get(activity.activity_type) is None:
+                activity_types[activity.activity_type] = []
+
+            avatar_url = "about:blank"
+            if activity.profile:
+                avatar_url = activity.profile.avatar_url
+
+            item = {
+                'bounty_image_url': avatar_url,
+                'bounty_action_user': activity.profile.handle,
+                'bounty_action_date': activity.created,
+                'bounty_action': activity.activity_type,
+                'bounty_name': f'{bounty.title}',
+                'bounty_link': bounty.get_absolute_url()
+            }
+            activity_types[activity.activity_type].append(item)
+
+    # TODO: Activities
+    # TODO: Fulfillment
+    # TODO: Interest
+
+    for act_type in activity_types:
+        if activity_types_def.get(act_type):
+            section = {
+              'items': activity_types[act_type],
+              'header_name': activity_types_def[act_type]["text"],
+              'header_css': activity_types_def[act_type]["css-class"],
+            }
+            _sections.append(section)
+
+    params = {
+        'subscriber': sub,
+        'sections': _sections,
+        'profile': prof,
+        'override_back_color': '#f2f6f9',
+        'select_params': {
+          'from': from_date,
+          'to': to_date
+        },
+        'debug': activity_types
+    }
+
+    response_html = premailer_transform(render_to_string("emails/recap/weekly_founder_recap.html", params))
+    response_txt = render_to_string("emails/recap/weekly_founder_recap.txt", params)
+
+    return response_html, response_txt
+
+
 def render_gdpr_reconsent(to_email):
     sub = get_or_save_email_subscriber(to_email, 'internal')
     params = {
@@ -601,6 +690,18 @@ def render_gdpr_update(to_email):
     return response_html, response_txt, subject
 
 
+def render_reserved_issue(to_email, user, bounty):
+    params = {
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'user': user,
+        'bounty': bounty
+    }
+    subject = "Reserved Issue"
+    response_html = premailer_transform(render_to_string("emails/reserved_issue.html", params))
+    response_txt = render_to_string("emails/reserved_issue.txt", params)
+    return response_html, response_txt, subject
+
+
 def render_start_work_approved(interest, bounty):
     to_email = interest.profile.email
     params = {
@@ -686,73 +787,69 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Announcing Open Kudos | MVPayment Channels"
-    new_kudos_pks = [813, 811, 810]
+    subject = "Announcing Gitcoin Grants | Happy New Year!"
+    new_kudos_pks = [153, 185, 150]
     new_kudos_size_px = 150
     intro = '''
 <p>
-Hi there,
+Happy New Year, Gitcoin family!
+<p>
+<p>
+We're ringing in the new yaer the best way we know how - with a new product launch. We're proud to formally announce <a href="https://twitter.com/GetGitcoin/status/1080607835120173056">Gitcoin Grants</a>,
+recurring funding for projects in open source software. We're very excited about the prospect of providing funding to OSS projects at the maintainer level.
 </p>
 <p>
-We're excited to announce <a href="https://medium.com/gitcoin/announcing-open-kudos-e437450f7802">Open Kudos</a>, an easy way
-for any dApp to integrate Kudos, the NFT marketplace for compliments, into your project. We think it's a unique way to spread culture,
-joy, and community with the people who have moved your project forward. Please reach out if you're interested in integration!
+Want to create a Gitcoin Grant for a project you run? <a href="https://consensys1mac.typeform.com/to/HFcZKe">Let us know</a> and we'll get back to you within 5 days
+to see if there's a good fit on our alpha launch. Want to contribute to a Gitcoin Grant? <a href="https://gitcoin.co/grants/">Take a look at our launch partners</a>, including Prysmatic Labs, Cryptoeconomics Study, and more.
 </p>
 <p>
-Gitcoin Labs director Austin Griffith put out another tutorial last week on Minimum Viable Payment Channels. <a href="https://twitter.com/austingriffith/status/1071075739473108992">Check it out</a> and
-give him a follow if you'd like to see more!
-</p>
-<h3>New Kudos This Week</h3>
-<p>
-Happy Holidays from all of us at Gitcoin!
+<h3>Happy New Year From Gitcoin</h3>
 </p>
 <p>
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
 </p>
+
 <h3>What else is new?</h3>
     <ul>
         <li>
-            _Whose Future Is It? Cellarius Stories, Volume I_ launched yesterday. It's free with a MetaMask login and is a worthwhile look into a cypherpunk future. <a href="https://cellarius.network/whose-future-is-it/">Read it here.</a>
-        </li>
-        <li>
-            Gitcoin Livestream is on as usual this week! Join us <a href="https://gitcoin.co/livestream">Friday at 5PM ET</a>!
+            Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream">on Friday at 5PM ET</a>!
         </li>
     </ul>
 </p>
 <p>
-Thanks for reading! Back to BUIDLing,
+Happy new year,
 </p>
 
 '''
     highlights = [{
-        'who': 'tbenr',
+        'who': 'pvienhage',
         'who_link': True,
-        'what': 'Worked on Status React.',
-        'link': 'https://gitcoin.co/issue/status-im/status-react/6866/1876',
+        'what': 'Worked on Smart Contract Security',
+        'link': 'https://gitcoin.co/issue/SmartContractSecurity/SWC-registry/158/2061',
         'link_copy': 'View more',
     }, {
-        'who': 'gusilverflame',
+        'who': 'robin-thomas',
         'who_link': True,
-        'what': 'Worked with POA Network on Blockscout!',
-        'link': 'https://gitcoin.co/issue/poanetwork/blockscout/1106/1877',
+        'what': 'Worked on Prysmatic Labs on BLS curves',
+        'link': 'https://gitcoin.co/issue/prysmaticlabs/go-bls/9/2047',
         'link_copy': 'View more',
     }, {
-        'who': 'zyfrank',
+        'who': 'bakaoh',
         'who_link': True,
-        'what': 'Good work with Centrifuge on Precise Proofs.',
-        'link': 'https://gitcoin.co/issue/centrifuge/precise-proofs/33/1907',
+        'what': 'Longtime Gitcoin contributor meets longtime Gitcoin funder!',
+        'link': 'https://gitcoin.co/issue/spacemeshos/go-spacemesh/290/2044',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/ethereum-ts/TypeChain/issues/109',
-        'primer': 'Work on TypeChain with Scott and team.',
+        'url': 'https://github.com/gitcoinco/web/issues/3370',
+        'primer': 'Help Gitcoin migrate to the Infura Dashboard.',
     }, {
-        'url': 'https://github.com/VolcaTech/cryptoxmas.xyz/issues/77',
-        'primer': 'A smart contract bug bounty for Crypto X-Mas!',
+        'url': 'https://github.com/ethereum/pm/issues/69',
+        'primer': 'Take notes for the EF devs call, get $75 USD',
     }, {
-        'url': 'https://github.com/cybercongress/cyb/issues/86',
-        'primer': 'Integrate EOS into Cyber Congress!',
+        'url': 'https://github.com/austintgriffith/burner-wallet/issues/51',
+        'primer': 'Work with Austin on the Burner Wallet!',
     }, ]
 
     num_leadboard_items = 5
@@ -799,14 +896,11 @@ Thanks for reading! Back to BUIDLing,
         except Exception as e:
             print(e)
 
-    ecosystem_bounties = ExternalBounty.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(weeks=1)).order_by('?')[0:5]
-
     params = {
         'intro': intro,
         'intro_txt': strip_double_chars(strip_double_chars(strip_double_chars(strip_html(intro), ' '), "\n"), "\n "),
         'bounties': bounties,
         'leaderboard': leaderboard,
-        'ecosystem_bounties': ecosystem_bounties,
         'invert_footer': False,
         'hide_header': False,
         'highlights': highlights,
@@ -819,10 +913,13 @@ Thanks for reading! Back to BUIDLing,
 
     return response_html, response_txt, subject
 
-
-
-
 # DJANGO REQUESTS
+
+
+@staff_member_required
+def weekly_recap(request):
+    response_html, _ = render_weekly_recap("mark.beacom@consensys.net")
+    return HttpResponse(response_html)
 
 
 @staff_member_required

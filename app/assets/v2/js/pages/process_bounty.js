@@ -21,7 +21,33 @@ window.onload = function() {
       $('#tipEstimate').text(estimate);
     });
 
-    $('#goBack').click(function(e) {
+    var fulfillmentCallback = function(results, status) {
+      if (status != 'success') {
+        mixpanel.track('Process Bounty Error', {step: 'fulfillmentCallback', error: error});
+        _alert({ message: gettext('Could not get fulfillment details') }, 'warning');
+        console.error(error);
+        unloading_button($('.submitBounty'));
+        return;
+      }
+      results = sanitizeAPIResults(results);
+      result = results[0];
+      if (result === null) {
+        _alert({ message: gettext('No bounty fulfillments found for this Github URL.  Please use the advanced payout tool instead.') }, 'warning');
+        unloading_button($('.submitBounty'));
+        return;
+      }
+
+    };
+
+    var issueURL = $('input[name=issueURL]').val();
+
+    waitforWeb3(function() {
+      var uri = '/api/v0.1/bounties/?github_url=' + issueURL + '&network=' + document.web3network;
+
+      $.get(uri, fulfillmentCallback);
+    });
+
+    $('#goBack').on('click', function(e) {
       var url = window.location.href;
       var new_url = url.replace('process?source', 'details?url');
 
@@ -96,7 +122,7 @@ window.onload = function() {
     };
 
 
-    $('#acceptBounty').click(function(e) {
+    $('#acceptBounty').on('click', function(e) {
       try {
         bounty_address();
       } catch (exception) {

@@ -1,0 +1,38 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+    Copyright (C) 2018 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n humanize %}
+{% load static %}
+{% block content %}
+  <h1>{% trans "Reserved Issue" %}</h1>
+  <div style="text-align: left! important">
+    <p>{% trans "Hello" %} @{{ user.handle }},</p>
+    <p>
+      {% trans "Good news! An "%} <a href="{{ bounty.url }}">{% trans "issue" %}</a>.  {% trans " has been reserved for you on gitcoin. "%} 
+      {% trans "Please start working on the issue, in the next 72 hours, before it is opened up for other bounty hunters to try as well." %}
+    </p>
+    <br>
+    {% include 'emails/bounty.html' with bounty=bounty %}
+    <p>{% trans "As always, if you have questions, please reach out to the project owner!" %}</p>
+    <p>
+      {% blocktrans %}
+        - Gitcoin Team
+      {% endblocktrans %}
+    </p>
+  </div>
+{% endblock %}

@@ -8,6 +8,7 @@ $(document).ready(function() {
 
   web3.eth.getAccounts(function(err, accounts) {
     $('#input-admin_address').val(accounts[0]);
+    $('#contract_owner_address').val(accounts[0]);
   });
 
 
@@ -17,6 +18,11 @@ $(document).ready(function() {
 
   $('#img-project').on('change', function() {
     if (this.files && this.files[0]) {
+      if (exceedFileSize(this.files[0])) {
+        _alert({ message: 'Grant Image should not exceed 4MB' }, 'error');
+        return;
+      }
+
       let reader = new FileReader();
 
       reader.onload = function(e) {
@@ -70,8 +76,6 @@ $(document).ready(function() {
         web3.utils.toTwosComplement(0)
       ];
 
-      console.log('args', args);
-
       web3.eth.getAccounts(function(err, accounts) {
         web3.eth.net.getId(function(err, network) {
           SubscriptionContract.deploy({
@@ -80,16 +84,15 @@ $(document).ready(function() {
           }).send({
             from: accounts[0],
             gas: 3000000,
-            gasPrice: 4000000000
+            gasPrice: web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9))
           }).on('error', function(error) {
             console.log('1', error);
-            alert('Your contract failed to deploy. Please try again.');
           }).on('transactionHash', function(transactionHash) {
             console.log('2', transactionHash);
             $('#transaction_hash').val(transactionHash);
-            document.issueURL = $('#input-url').val();
             const linkURL = etherscan_tx_url(transactionHash);
 
+            document.issueURL = linkURL;
             $('#transaction_url').attr('href', linkURL);
             enableWaitState('#new-grant');
 
@@ -100,6 +103,7 @@ $(document).ready(function() {
                   $.each($(form).serializeArray(), function() {
                     data[this.name] = this.value;
                   });
+                  document.suppress_loading_leave_code = true;
                   form.submit();
                 } else {
                   setTimeout(function() {
@@ -146,3 +150,9 @@ $(document).ready(function() {
 
   $('.select2-selection__rendered').removeAttr('title');
 });
+
+const exceedFileSize = (file, size = 4000000) => {
+  if (file.size > size)
+    return true;
+  return false;
+};

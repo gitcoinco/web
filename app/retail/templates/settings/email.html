@@ -57,7 +57,7 @@
 <script>
   $(document).ready(function(){
     // select / deselect all
-    $('#select_all').click(function(e) {
+    $('#select_all').on('click', function(e) {
       e.preventDefault();
       if($(this).data('direction') == '+'){
         $('.priv_checkbox').prop('checked', true);
