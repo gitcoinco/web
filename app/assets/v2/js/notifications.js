@@ -231,7 +231,7 @@ if (document.getElementById('gc-inbox')) {
   });
 }
 
-const newDate = (newObj, oldObj) => {
+const newData = (newObj, oldObj) => {
 
   return newObj.filter(function(obj) {
     return !oldObj.some(function(obj2) {
@@ -241,8 +241,8 @@ const newDate = (newObj, oldObj) => {
 };
 
 Vue.filter('moment-fromnow', function(date) {
-  moment.defineLocale('en-custom', {parentLocale: 'en'});
-  moment.updateLocale('en-custom', {
+  moment.defineLocale('en-custom', {
+    parentLocale: 'en',
     relativeTime: {
       future: 'in %s',
       past: '%s ',
