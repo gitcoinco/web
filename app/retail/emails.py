@@ -705,10 +705,10 @@ if you'd be open to ethical, sustainable, developer centric ads on your site or 
 </p>
 <p>
 We're hard at work making our first round of Gitcoin Grants successful. <a href="https://consensys1mac.typeform.com/to/HFcZKe">Let us know</a> if you'd like to be in a future cohort and we'll
-let you know. Want to contribute to a Gitcoin Grant? <a href="https://gitcoin.co/grants/">Take a look at our launch partners</a>, including Prysmatic Labs, Lighthouse, and more.
+reach out with more details. Want to contribute to a Gitcoin Grant? <a href="https://gitcoin.co/grants/">Take a look at our launch partners</a>, including Prysmatic Labs, Lighthouse, and more.
 </p>
 <p>
-<h3>Kudos Is On Open Sea!</h3>
+<h3>Kudos On Open Sea!</h3>
 </p>
 <p>
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
