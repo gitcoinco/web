@@ -11,10 +11,8 @@ def add_monthly_amount_subscribed(apps, schema_editor):
                 grant.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
                 grant.save()
 
-
 def backwards(apps, schema_editor):
     pass
-
 
 class Migration(migrations.Migration):
 
