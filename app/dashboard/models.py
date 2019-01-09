@@ -51,7 +51,6 @@ from git.utils import (
 )
 from marketing.models import LeaderboardRank
 from rest_framework import serializers
-from web3 import Web3
 
 from .signals import m2m_changed_interested
 
@@ -2611,6 +2610,7 @@ class CoinRedemption(SuperModel):
 @receiver(pre_save, sender=CoinRedemption, dispatch_uid="to_checksum_address")
 def to_checksum_address(sender, instance, **kwargs):
     """Handle pre-save signals from CoinRemptions to normalize the contract address."""
+    from web3 import Web3
     if instance.contract_address:
         instance.contract_address = Web3.toChecksumAddress(instance.contract_address)
         print(instance.contract_address)
