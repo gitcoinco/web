@@ -47,6 +47,7 @@ $(document).ready(function() {
       if (data.token_address != '0x0000000000000000000000000000000000000000') {
         selected_token = data.token_address;
         deployedToken = new web3.eth.Contract(compiledToken.abi, data.token_address);
+        $('#sub_token_address').val(data.token_address);
       } else {
         selected_token = data.denomination;
         deployedToken = new web3.eth.Contract(compiledToken.abi, data.denomination);
