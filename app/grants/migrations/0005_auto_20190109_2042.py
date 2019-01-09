@@ -4,6 +4,8 @@ import logging
 from django.db import migrations
 from grants.models import Grant
 
+logger = logging.getLogger(__name__)
+
 def add_monthly_amount_subscribed(apps, schema_editor):
     for grant in Grant.objects.all():
         subscriptions = grant.subscriptions.all()
