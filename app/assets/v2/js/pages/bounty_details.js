@@ -918,10 +918,17 @@ var do_actions = function(result) {
 
   if (show_start_stop_work) {
     const enabled = true;
+    let text;
+
+    if (result['permission_type'] === 'approval')
+      text = is_interested ? gettext('Stop') : gettext('Express Interest');
+    else
+      text = is_interested ? gettext('Stop Work') : gettext('Start Work');
+
     const interest_entry = {
       enabled: enabled,
       href: is_interested ? '/uninterested' : '/interested',
-      text: is_interested ? gettext('Stop Work') : gettext('Start Work'),
+      text: text,
       parent: 'right_actions',
       title: is_interested ? gettext('Notify the funder that you will not be working on this project') : gettext('Notify the funder that you would like to take on this project'),
       color: is_interested ? '' : '',
