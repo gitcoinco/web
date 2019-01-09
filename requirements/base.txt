@@ -38,7 +38,7 @@ boto==2.49.0
 google-api-python-client
 django-environ==0.4.5
 ipfsapi
-eth-utils==1.0.3
+eth-utils==1.4.1
 jsondiff==1.1.1
 social-auth-app-django==2.1.0
 django-ipware==2.0.2
