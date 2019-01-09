@@ -38,7 +38,6 @@ from ens.main import ENS_MAINNET_ADDR
 from ens.utils import dot_eth_namehash, label_to_hash
 from eth_account.messages import defunct_hash_message
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from web3 import Web3
 
 from .models import ENSSubdomainRegistration
 from .utils import convert_txn
@@ -98,6 +97,7 @@ def handle_subdomain_exists(request, github_handle):
 
 
 def set_resolver(signer, github_handle, nonce, gas_multiplier=1.101):
+    from web3 import Web3
     if mock_request:
         return '0x7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39'
 
@@ -128,6 +128,7 @@ def set_resolver(signer, github_handle, nonce, gas_multiplier=1.101):
 
 
 def set_owner(signer, github_handle, nonce, gas_multiplier=1.101):
+    from web3 import Web3
     if mock_request:
         return '0x7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39'
     owned = settings.ENS_TLD
@@ -157,6 +158,7 @@ def set_owner(signer, github_handle, nonce, gas_multiplier=1.101):
 
 
 def set_address_at_resolver(signer, github_handle, nonce, gas_multiplier=1.101):
+    from web3 import Web3
     if mock_request:
         return '0x7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39'
     ns = ENS.fromWeb3(w3)
