@@ -56,7 +56,7 @@ $(document).ready(function() {
 
       deployedToken.methods.decimals().call(function(err, decimals) {
 
-        let realGasPrice = $('#gasPrice').val() * Math.pow(10, 9);
+        let realGasPrice = Math.ceil($('#gasPrice').val() * Math.pow(10, 9));
 
         $('#gas_price').val(realGasPrice);
 
