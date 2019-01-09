@@ -30,7 +30,6 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import get_user_model
 
 from dashboard.utils import get_web3
 from dashboard.views import record_user_action
@@ -42,7 +41,6 @@ from web3 import Web3
 
 from .models import Activity, Profile, Tip
 from .notifications import maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack
-from inbox.utils import send_notification_to_user
 
 logging.basicConfig(level=logging.DEBUG)
 
