@@ -120,9 +120,6 @@ def create_notification(sender, **kwargs):
             f'A <b>crowdfunding contribution worth {amount} USD</b> has been attached for {bounty.title}'
         )
 
-post_save.connect(create_notification, sender=Activity)
-
-
     # TODO
     # For Funder
     # Your bounty hunters haven't responded on this issue in a few days.
@@ -134,3 +131,6 @@ post_save.connect(create_notification, sender=Activity)
     # You have been removed from a bounty due to no response
     # Your submission has been declined.
     # Funding has increased on a bounty that you’re working on.
+
+
+post_save.connect(create_notification, sender=Activity)
