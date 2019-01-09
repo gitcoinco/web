@@ -985,10 +985,17 @@ var do_actions = function(result) {
 
   if (show_start_stop_work) {
     const enabled = true;
+    let text;
+
+    if (result['permission_type'] === 'approval')
+      text = can_start_work ? gettext('Stop') : gettext('Express Interest');
+    else
+      text = can_start_work ? gettext('Stop Work') : gettext('Start Work');
+
     const interest_entry = {
       enabled: enabled,
       href: can_start_work ? '/uninterested' : '/interested',
-      text: can_start_work ? gettext('Stop Work') : gettext('Start Work'),
+      text: text,
       parent: 'right_actions',
       title: can_start_work ? gettext('Notify the funder that you will not be working on this project') : gettext('Notify the funder that you would like to take on this project'),
       color: can_start_work ? '' : '',
