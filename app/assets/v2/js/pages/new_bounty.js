@@ -221,7 +221,6 @@ $(document).ready(function() {
       });
 
       disabled.attr('disabled', 'disabled');
-      mixpanel.track('Submit New Bounty Clicked', {});
 
       // setup
       loading_button($('.js-submit'));
@@ -361,9 +360,8 @@ $(document).ready(function() {
         localStorage[issueURL] = JSON.stringify(issuePackage);
 
         _alert({ message: gettext('Submission sent to web3.') }, 'info');
-        setTimeout(function() {
+        setTimeout(() => {
           delete localStorage['issueURL'];
-          mixpanel.track('Submit New Bounty Success', {});
           document.location.href = '/funding/details/?url=' + issueURL;
         }, 1000);
       }
@@ -371,10 +369,6 @@ $(document).ready(function() {
       // web3 callback
       function web3Callback(error, result) {
         if (error) {
-          mixpanel.track('New Bounty Error', {
-            step: 'post_bounty',
-            error: error
-          });
           console.error(error);
           _alert(
             {
@@ -399,10 +393,6 @@ $(document).ready(function() {
 
       function newIpfsCallback(error, result) {
         if (error) {
-          mixpanel.track('New Bounty Error', {
-            step: 'post_ipfs',
-            error: error
-          });
           console.error(error);
           _alert({
             message: gettext('There was an error.  Please try again or contact support.')
