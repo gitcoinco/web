@@ -1972,7 +1972,7 @@ class Profile(SuperModel):
         )
         if not self.preferred_payout_address:
             kt_owner_address = KudosTransfer.objects.none()
-            
+
         kt_profile = KudosTransfer.objects.filter(recipient_profile=self)
 
         kudos_transfers = kt_profile | kt_owner_address
@@ -2050,6 +2050,11 @@ class Profile(SuperModel):
     @property
     def job_status_verbose(self):
         return dict(Profile.JOB_SEARCH_STATUS)[self.job_search_status]
+
+    @property
+    def active_bounties(self):
+        active_bounties = Bounty.objects.current().filter(idx_status__in=['open', 'started'])
+        return Interest.objects.filter(profile_id=self.pk, bounty__in=active_bounties)
 
     @property
     def is_org(self):
