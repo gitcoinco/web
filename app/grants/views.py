@@ -163,7 +163,6 @@ def grant_details(request, grant_id, grant_slug):
     }
     return TemplateResponse(request, 'grants/detail.html', params)
 
-
 @login_required
 def grant_new(request):
     """Handle new grant."""
@@ -173,27 +172,22 @@ def grant_new(request):
     profile = get_profile(request)
 
     if request.method == 'POST':
-        if 'transactoin_hash' = '' in request.POST:
-            transaction_hash = request.POST.get('transaction_hash', '')
-            grant = Grant.objects.filter(deploy_tx_hash=transaction_hash)
-            grant.contract_address = request.POST.get('contract_address', '')
-            grant.save()
-            return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
-        else:
+        if 'transaction_hash' in request.POST:
             logo = request.FILES.get('input_image', None)
             receipt = json.loads(request.POST.get('receipt', '{}'))
             team_members = request.POST.getlist('team_members[]')
 
             grant_kwargs = {
-                'title': request.POST.get('input_title', ''),
+                'title': request.POST.get('title', ''),
                 'description': request.POST.get('description', ''),
                 'reference_url': request.POST.get('reference_url', ''),
                 'admin_address': request.POST.get('admin_address', ''),
                 'contract_owner_address': request.POST.get('contract_owner_address', ''),
-                'token_address': request.POST.get('denomination', ''),
+                'token_address': request.POST.get('token_address', ''),
                 'token_symbol': request.POST.get('token_symbol', ''),
                 'amount_goal': request.POST.get('amount_goal', 1),
                 'contract_version': request.POST.get('contract_version', ''),
+                'contract_address': request.POST.get('contract_address', ''),
                 'deploy_tx_id': request.POST.get('transaction_hash', ''),
                 'network': request.POST.get('network', 'mainnet'),
                 'metadata': receipt,

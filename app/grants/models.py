@@ -139,10 +139,18 @@ class Grant(SuperModel):
         default='0x0',
         help_text=_('The transaction id for contract deployment.'),
     )
+    deploy_tx_confirmed = models.BooleanField(
+        default=False,
+        help_text=_('Whether or not the grant deployment transaction has been confirmed on chain.'),
+    )
     cancel_tx_id = models.CharField(
         max_length=255,
         default='0x0',
         help_text=_('The transaction id for endContract.'),
+    )
+    cancel_tx_confirmed = models.BooleanField(
+        default=False,
+        help_text=_('Whether or not the grant cancellation transaction has been confirmed on chain.'),
     )
     contract_version = models.DecimalField(
         default=0,
@@ -332,15 +340,27 @@ class Subscription(SuperModel):
         default='0x0',
         help_text=_('The transaction id for subscription approve().'),
     )
+    new_approved_tx_confirmed = models.BooleanField(
+        default=False,
+        help_text=_('Whether or not the new approve transaction has been confirmed on chain.'),
+    )
     end_approve_tx_id = models.CharField(
         max_length=255,
         default='0x0',
         help_text=_('The transaction id for subscription approve().'),
     )
+    end_approved_tx_confirmed = models.BooleanField(
+        default=False,
+        help_text=_('Whether or not the end approve transaction has been confirmed on chain.'),
+    )
     cancel_tx_id = models.CharField(
         max_length=255,
         default='0x0',
         help_text=_('The transaction id for cancelSubscription.'),
+    )
+    cancel_tx_confirmed = models.BooleanField(
+        default=False,
+        help_text=_('Whether or not the subscription cancellation transaction has been confirmed on chain.'),
     )
     num_tx_approved = models.DecimalField(
         default=1,
