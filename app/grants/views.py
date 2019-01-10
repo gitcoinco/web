@@ -172,6 +172,7 @@ def grant_new(request):
     profile = get_profile(request)
 
     if request.method == 'POST':
+        if 'title' in request.POST
         logo = request.FILES.get('input_image', None)
         receipt = json.loads(request.POST.get('receipt', '{}'))
         team_members = request.POST.getlist('team_members[]')
@@ -187,7 +188,6 @@ def grant_new(request):
             'amount_goal': request.POST.get('amount_goal', 1),
             'contract_version': request.POST.get('contract_version', ''),
             'deploy_tx_id': request.POST.get('transaction_hash', ''),
-            'contract_address': request.POST.get('contract_address', ''),
             'network': request.POST.get('network', 'mainnet'),
             'metadata': receipt,
             'admin_profile': profile,
@@ -198,6 +198,10 @@ def grant_new(request):
 
         team_members.append(profile.id)
         grant.team_members.add(*list(filter(lambda member_id: member_id > 0, map(int, team_members))))
+
+    if 'contract_address' in request.POST:
+        grant.contract_address = request.POST.get('contract_address', '')
+        grant.save()
         return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
     params = {
