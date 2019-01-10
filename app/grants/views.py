@@ -26,7 +26,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.http import Http404
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
@@ -172,37 +172,46 @@ def grant_new(request):
     profile = get_profile(request)
 
     if request.method == 'POST':
-        if 'title' in request.POST
-        logo = request.FILES.get('input_image', None)
-        receipt = json.loads(request.POST.get('receipt', '{}'))
-        team_members = request.POST.getlist('team_members[]')
+        if 'title' in request.POST:
+            logo = request.FILES.get('input_image', None)
+            receipt = json.loads(request.POST.get('receipt', '{}'))
+            team_members = request.POST.getlist('team_members[]')
 
-        grant_kwargs = {
-            'title': request.POST.get('input_title', ''),
-            'description': request.POST.get('description', ''),
-            'reference_url': request.POST.get('reference_url', ''),
-            'admin_address': request.POST.get('admin_address', ''),
-            'contract_owner_address': request.POST.get('contract_owner_address', ''),
-            'token_address': request.POST.get('denomination', ''),
-            'token_symbol': request.POST.get('token_symbol', ''),
-            'amount_goal': request.POST.get('amount_goal', 1),
-            'contract_version': request.POST.get('contract_version', ''),
-            'deploy_tx_id': request.POST.get('transaction_hash', ''),
-            'network': request.POST.get('network', 'mainnet'),
-            'metadata': receipt,
-            'admin_profile': profile,
-            'logo': logo,
-        }
-        grant = Grant.objects.create(**grant_kwargs)
-        new_grant(grant, profile)
+            grant_kwargs = {
+                'title': request.POST.get('title', ''),
+                'description': request.POST.get('description', ''),
+                'reference_url': request.POST.get('reference_url', ''),
+                'admin_address': request.POST.get('admin_address', ''),
+                'contract_owner_address': request.POST.get('contract_owner_address', ''),
+                'token_address': request.POST.get('denomination', ''),
+                'token_symbol': request.POST.get('token_symbol', ''),
+                'amount_goal': request.POST.get('amount_goal', 1),
+                'contract_version': request.POST.get('contract_version', ''),
+                'deploy_tx_id': request.POST.get('transaction_hash', ''),
+                'network': request.POST.get('network', 'mainnet'),
+                'metadata': receipt,
+                'admin_profile': profile,
+                'logo': logo,
+            }
+            grant = Grant.objects.create(**grant_kwargs)
 
-        team_members.append(profile.id)
-        grant.team_members.add(*list(filter(lambda member_id: member_id > 0, map(int, team_members))))
+            team_members.append(profile.id)
+            grant.team_members.add(*list(filter(lambda member_id: member_id > 0, map(int, team_members))))
+            return JsonResponse({
+                'success': True,
+            })
 
-    if 'contract_address' in request.POST:
-        grant.contract_address = request.POST.get('contract_address', '')
-        grant.save()
-        return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
+        if 'contract_address' in request.POST:
+            tx_hash = request.POST.get('transaction_hash', '')
+            grant = Grant.objects.filter(deploy_tx_id=tx_hash).first()
+            grant.contract_address = request.POST.get('contract_address', '')
+            grant.save()
+            new_grant(grant, profile)
+            return JsonResponse({
+                'success': True,
+                'url':reverse('grants:details', args=(grant.pk, grant.slug))
+            })
+
 
     params = {
         'active': 'new_grant',

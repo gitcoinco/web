@@ -108,8 +108,6 @@ $(document).ready(function() {
               'csrfmiddlewaretoken': $("#create-grant input[name='csrfmiddlewaretoken']").val()
             }
 
-            console.log(data);
-
             $.ajax({
               type: 'post',
               url: '',
@@ -130,18 +128,24 @@ $(document).ready(function() {
               web3.eth.getTransactionReceipt(transactionHash, function(error, result) {
                 if (result) {
 
+                  let data = {
+                    'contract_address': result.contractAddress,
+                    'csrfmiddlewaretoken': $("#create-grant input[name='csrfmiddlewaretoken']").val(),
+                    'transaction_hash': $('#transaction_hash').val()
+                  }
+
                   $.ajax({
                     type: 'post',
                     url: '',
-                    data: 'contract_address': result.contractAddress,
+                    data: data,
                     success: function(json) {
-                      console.log('successfully saved grant');
+                      document.suppress_loading_leave_code = true;
+                      window.location = json.url;
                     },
                     error: function() {
                       _alert({ message: gettext('Your grant failed to save. Please try again.') }, 'error');
                     }
                   });
-
 
                 } else {
                   setTimeout(function() {
