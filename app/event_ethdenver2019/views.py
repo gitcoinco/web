@@ -52,6 +52,7 @@ def ethdenver2019(request):
         recv = kudos_select.filter(kudos_token_cloned_from=kudos.kudos_required).last()
         if recv:
             kudos_obj['received'] = True
+            kudos_obj['transfer'] = recv
 
         kudos_row.append(kudos_obj)
         i_kudos_item = i_kudos_item + 1

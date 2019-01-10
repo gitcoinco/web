@@ -17,6 +17,7 @@ along with this program. If not, see
 {% endcomment %}
 {% load static avatar_tags i18n %}
 {% load kudos_extras matches %}
+{% load i18n static kudos_extras humanize avatar_tags trim %}
 {% include "ethdenver2019/base.html" %}
 {% block style %}
 <style type="text/css">
@@ -100,23 +101,12 @@ $(document).ready(function() {
       {% for kudos_rows in kudos_selection %}
       <div class="row">
         {% for kudos in kudos_rows %}
-<!--        <div class="col-3 ">
-          <div class="row"><div class="col-12"><img src="{% static kudos.kudos.image %}" width="200px" height="200px" class="mb-2 received-equals-{{ kudos.received }}"></div></div>
-          <div class="row"><div class="col-12">{{ kudos.kudos.humanized_name }}</div></div>
-
-        </div>--!>
-
 <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
-    <div class="kd-card kd-extended flip-card" aria-haspopup="true" tabindex="0">
+    <div class="kd-card kd-extended {% if kudos.transfer %} flip-card {%endif%}" aria-haspopup="true" tabindex="0">
       <div class="flip-card__flipper">
         <div class="flip-card__hold flip-card__front">
           <div>
           <img src="{% static kudos.kudos.image %}" alt="{{ kudos.kudos.name|humanize_name }}" class="img-thumbnail border-transparent kd-shadow received-equals-{{ kudos.received }}" width="250">
-          {% if kudos.received %}
-          <!--<div class="ethdenver2019-kudos-received-overlay">
-            <i class="fas fa-check-circle"></i>
-          </div>--!>
-          {% endif %}
             </div>
           <div class="kd-content">
             <div>
@@ -130,10 +120,30 @@ $(document).ready(function() {
             </p>
           </div>
         </div>
-
+        {% if kudos.transfer %}
         <div class="content-hover flip-card__hold flip-card__back">
-          *hint hint*
+          <div class="d-flex flex-row">
+            <img src="{% avatar_url kudos.transfer.from_username  %}" alt="{{ kudos.transfer.from_username }}" class="rounded-circle mr-3" width="45" height="45">
+            <div class="d-flex flex-column">
+              <a href="{% filter trim %}{% url 'profile' kudos.transfer.from_username %}{% endfilter %}" title="{% trans 'go to profile' %}">{{kudos.transfer.from_username}}</a>
+              <time datetime="{{kudos.transfer.created_on|date:'c'}}" title="{{kudos.transfer.created_on}}">
+                {{kudos.transfer.created_on|naturaltime}}
+              </time>
+            </div>
+          </div>
+          {% if kudos.transfer.comments_public %}
+          <div class="bubble">
+            <p>{{kudos.transfer.comments_public}}</p>
+          </div>
+          {% endif %}
+          <div class="flip-card__extra-data">
+            {% if kudos.transfer.github_url %}
+              <a href="{{kudos.transfer.github_url}}" target="_blank">{% trans 'Issue url' %}</a>
+            {% endif %}
+            <a title="{% trans 'tx in etherscan' %}" href="{% if not kudos.transfer.network == 'mainnet' %}https://{{ kudos.transfer.network }}.etherscan.io/tx/{{ kudos.transfer.txid }}{% else %}https://etherscan.io/tx/{{ kudos.transfer.txid }}{% endif %}" target="_blank" class="mb-1">{{ kudos.transfer.txid|humanize_address }}</a>
+          </div>
         </div>
+        {% endif %}
       </div>
     </div>
   </div>
