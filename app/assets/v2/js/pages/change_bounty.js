@@ -65,8 +65,6 @@ $(document).ready(function() {
 
       loading_button($('.js-submit'));
 
-      mixpanel.track('Change Bounty Details Clicked', {});
-
       // update bounty reserved for
       const reservedFor = $('.username-search').select2('data')[0];
 
