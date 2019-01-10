@@ -1,14 +1,12 @@
-# Python CircleCI 2.0 configuration file
+# Python CircleCI 2.1 configuration file
 #
 # Check https://circleci.com/docs/2.0/language-python/ for more details
 #
-version: 2
-jobs:
-  build:
-    working_directory: ~/web
+version: 2.1
+
+executors:
+  gitcoin-latest:
     docker:
-      # specify the version you desire here
-      # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
       - image: gitcoin/web:latest
         environment:
           CACHE_URL: dbcache://my_cache_table
@@ -17,17 +15,21 @@ jobs:
           CACHEOPS_REDIS: redis://localhost:6379/0
           ENV: test
           COLLECTFAST_CACHE_URL: dbcache://collectfast
+    working_directory: ~/web
 
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      - image: circleci/postgres:9-alpine
+jobs:
+  test:
+    executor: gitcoin-latest
+    branches:
+      ignore:
+        - gh-pages
+    docker:
+      - image: circleci/postgres:10-alpine
         environment:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: testdb
-
-      - image: redis:4.0-alpine
+      - image: circleci/redis:4-alpine3.8
 
     steps:
       - checkout
@@ -35,37 +37,39 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - deps37-{{ .Branch }}-{{ checksum "requirements/base.txt" }}
+          - deps37-{{ .Branch }}-{{ checksum "requirements/base.txt" }}-alpine
           # fallback to using the latest cache if no exact match is found
-          - deps37-{{ .Branch }}-
+          - deps37-{{ .Branch }}-alpine
 
       - run:
           name: install dependencies
           command: |
-            python3 -m venv venv
+            python -m venv venv
+            echo "Activating virtualenv..."
             . venv/bin/activate
+            echo "Installing requirements..."
             pip install -r requirements/test.txt
+            echo "Requirements installed!"
 
       - save_cache:
-          key: deps37-{{ .Branch }}-{{ checksum "requirements/base.txt" }}
+          key: deps37-{{ .Branch }}-{{ checksum "requirements/base.txt" }}-alpine
           paths:
             - ./venv
             - "/usr/local/bin"
             - "/usr/local/lib/python3.7/site-packages"
 
-      # run tests!
-      # this example uses Django's built-in test-runner
-      # other common Python testing frameworks include pytest and nose
-      # https://pytest.org
-      # https://nose.readthedocs.io
       - run:
           name: run tests
           command: |
+            echo "Activating environment for tests..."
             . venv/bin/activate
             cd ~/web/app
+            echo "Running pytest..."
             pytest -p no:ethereum
+
       - store_test_results:
           path: test-results
+
       - store_artifacts:
           path: test-results
           destination: test-results

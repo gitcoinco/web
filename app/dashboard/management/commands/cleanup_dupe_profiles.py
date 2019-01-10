@@ -15,18 +15,19 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-
+from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
 from django.db.models import Count
 from django.db.models.functions import Lower
 
+from app.utils import sync_profile
 from dashboard.models import Profile
 
 
 def combine_profiles(p1, p2):
     # p2 is the delete profile, p1 is the save profile
     # switch if p2 has the user
-    # TODO: refactor to use https://github.com/mighty-justice/django-super-deduper 
+    # TODO: refactor to use https://github.com/mighty-justice/django-super-deduper
     # instead
     if p2.user:
         p1, p2 = p2, p1
@@ -103,7 +104,9 @@ class Command(BaseCommand):
             profile.handle = profile.handle.replace('@', '')
             profile.save()
 
-        dupes = Profile.objects.exclude(handle=None).annotate(handle_lower=Lower("handle")).values('handle_lower').annotate(handle_lower_count=Count('handle_lower')).filter(handle_lower_count__gt=1)
+        dupes = Profile.objects.exclude(handle=None).annotate(handle_lower=Lower("handle")) \
+            .values('handle_lower').annotate(handle_lower_count=Count('handle_lower')) \
+            .filter(handle_lower_count__gt=1)
         print(f" - {dupes.count()} dupes")
 
         for dupe in dupes:
@@ -111,3 +114,26 @@ class Command(BaseCommand):
             profiles = Profile.objects.filter(handle__iexact=handle).distinct("pk")
             print(f"combining {handle}: {profiles[0].pk} and {profiles[1].pk}")
             combine_profiles(profiles[0], profiles[1])
+
+        # KO Hack 2018/12/10
+        # For some reason, profiles keep getting set to hide_profile=True, even
+        # when there's no form submissions on record for them.
+        # this is a stopgap until we can figure out the root cause
+        profiles = Profile.objects.filter(hide_profile=True, form_submission_records=[])
+        for profile in profiles:
+            profile.hide_profile = False
+            profile.save()
+            print(profile.handle)
+
+        # KO Hack 2019/01/07
+        # For some reason, these proiles keep getting
+        # removed from their useres.  this mgmt command fixes that
+        for user in User.objects.filter(profile__isnull=True):
+            profiles = Profile.objects.filter(handle__iexact=user.username)
+            if profiles.exists():
+                print(user.username)
+                profile = profiles.first()
+                profile.user = user
+                profile.save()
+            else:
+                sync_profile(user.username, user, hide_profile=True)

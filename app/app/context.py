@@ -22,11 +22,16 @@ import json
 from django.conf import settings
 from django.utils import timezone
 
-from dashboard.models import Tip
+from app.utils import get_location_from_ip
+from dashboard.models import Tip, UserAction
+from dashboard.utils import _get_utm_from_cookie
 from kudos.models import KudosTransfer
+from retail.helpers import get_ip
+
+RECORD_VISIT_EVERY_N_SECONDS = 60 * 60
 
 
-def insert_settings(request):
+def preprocess(request):
     """Handle inserting pertinent data into the current context."""
     from marketing.utils import get_stat
     try:
@@ -40,9 +45,23 @@ def insert_settings(request):
     profile = request.user.profile if user_is_authenticated and hasattr(request.user, 'profile') else None
     email_subs = profile.email_subscriptions if profile else None
     email_key = email_subs.first().priv if user_is_authenticated and email_subs and email_subs.exists() else ''
-
+    if user_is_authenticated and profile:
+        record_visit = not profile.last_visit or profile.last_visit < (
+            timezone.now() - timezone.timedelta(seconds=RECORD_VISIT_EVERY_N_SECONDS)
+        )
+        if record_visit:
+            ip_address = get_ip(request)
+            profile.last_visit = timezone.now()
+            profile.save()
+            UserAction.objects.create(
+                user=request.user,
+                profile=profile,
+                action='Visit',
+                location_data=get_location_from_ip(ip_address),
+                ip_address=ip_address,
+                utm=_get_utm_from_cookie(request),
+            )
     context = {
-        'mixpanel_token': settings.MIXPANEL_TOKEN,
         'STATIC_URL': settings.STATIC_URL,
         'MEDIA_URL': settings.MEDIA_URL,
         'num_slack': num_slack,

@@ -19,6 +19,13 @@
       </div>
     </header>
 
+    {% if is_staff %}
+    <div class="alpha-warning font-caption mb-0">
+      <span class="font-weight-bold">Staff only</span>
+      <a style="color:white;" href="{{grant.admin_url}}">{% trans "kudos Admin" %}</a>
+    </div>
+    {% endif %}
+
     <div class="container py-5">
       <a href="{% url 'kudos_marketplace' %}">&lt; {% trans "Kudos Marketplace" %}</a>
     </div>

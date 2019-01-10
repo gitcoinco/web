@@ -44,6 +44,9 @@
         [[/for]]
       [[/if]]
     </div>
+    <div class="mt-2">
+      [[if expired !== ""]]<i class="far fa-clock expired-icon"></i>[[/if]][[:expired]]
+    </div>
   </div>
   [[if activities.length]]
     <div class="tooltip-bubble__footer">

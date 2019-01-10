@@ -50,7 +50,6 @@ window.onload = function() {
         });
 
         disabled.attr('disabled', 'disabled');
-        mixpanel.track('Claim Bounty Clicked', {});
 
         // setup
         loading_button($('.js-submit'));
@@ -101,10 +100,6 @@ window.onload = function() {
 
           if (error) {
             console.error(error);
-            mixpanel.track('Fulfill Bounty Error', {
-              step: '_callback',
-              error: error
-            });
             ignore_error = String(error).indexOf('BigNumber') != -1;
           }
           document.ipfsDataHash = result; // Cache IPFS data hash
@@ -128,17 +123,12 @@ window.onload = function() {
 
                   dataLayer.push({ event: 'claimissue' });
                   _alert({ message: gettext('Fulfillment submitted to web3.') }, 'info');
-                  setTimeout(function() {
-                    mixpanel.track('Fulfill Bounty Success', {});
+                  setTimeout(() => {
                     document.location.href = '/funding/details?url=' + issueURL;
                   }, 1000);
                 };
 
                 if (error) {
-                  mixpanel.track('Fulfill Bounty Error', {
-                    step: 'callback',
-                    error: error
-                  });
                   console.error('err', error);
                   _alert({ message: gettext('There was an error') });
                   unloading_button($('.js-submit'));
