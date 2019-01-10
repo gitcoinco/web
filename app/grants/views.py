@@ -26,7 +26,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.http import Http404, HttpResponse, JsonResponse
+from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
@@ -194,7 +194,6 @@ def grant_new(request):
                 'logo': logo,
             }
             grant = Grant.objects.create(**grant_kwargs)
-
             team_members.append(profile.id)
             grant.team_members.add(*list(filter(lambda member_id: member_id > 0, map(int, team_members))))
             return JsonResponse({
@@ -209,7 +208,7 @@ def grant_new(request):
             new_grant(grant, profile)
             return JsonResponse({
                 'success': True,
-                'url':reverse('grants:details', args=(grant.pk, grant.slug))
+                'url': reverse('grants:details', args=(grant.pk, grant.slug))
             })
 
 

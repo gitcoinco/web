@@ -106,7 +106,7 @@ $(document).ready(function() {
               'network': $('#network').val(),
               'team_members': $('#input-team_members').val(),
               'csrfmiddlewaretoken': $("#create-grant input[name='csrfmiddlewaretoken']").val()
-            }
+            };
 
             $.ajax({
               type: 'post',
@@ -132,7 +132,7 @@ $(document).ready(function() {
                     'contract_address': result.contractAddress,
                     'csrfmiddlewaretoken': $("#create-grant input[name='csrfmiddlewaretoken']").val(),
                     'transaction_hash': $('#transaction_hash').val()
-                  }
+                  };
 
                   $.ajax({
                     type: 'post',
