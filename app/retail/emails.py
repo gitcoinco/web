@@ -786,24 +786,28 @@ def render_start_work_applicant_expired(interest, bounty):
 # ROUNDUP_EMAIL
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
-    from external_bounties.models import ExternalBounty
-    subject = "Announcing Gitcoin Grants | Happy New Year!"
-    new_kudos_pks = [153, 185, 150]
+    subject = "CodeFund 2.0 | Gitcoin Grants Grows"
+    new_kudos_pks = [806, 394, 387]
     new_kudos_size_px = 150
     intro = '''
 <p>
-Happy New Year, Gitcoin family!
+Hi Gitcoiners,
 <p>
 <p>
-We're ringing in the new yaer the best way we know how - with a new product launch. We're proud to formally announce <a href="https://twitter.com/GetGitcoin/status/1080607835120173056">Gitcoin Grants</a>,
-recurring funding for projects in open source software. We're very excited about the prospect of providing funding to OSS projects at the maintainer level.
+Over the past 3 months, Eric Berry and Nate Hopkins been heads-down on rebuilding our ethical ad platform
+ from the ground up.We are excited to announce that our new and improved version of
+ <a href="https://blog.codefund.app/introducing-codefund-2-0/">CodeFund has been released!</a>
+CodeFund provides a simple way for open source projects to generate passive income through ethical advertising.
+We take care of the details and allow contributors to stay focused on the project.
+Running an OSS repo? <a href="https://codefund.app/publishers">Let us know</a>
+if you'd be open to ethical, sustainable, developer centric ads on your site or repo.
 </p>
 <p>
-Want to create a Gitcoin Grant for a project you run? <a href="https://consensys1mac.typeform.com/to/HFcZKe">Let us know</a> and we'll get back to you within 5 days
-to see if there's a good fit on our alpha launch. Want to contribute to a Gitcoin Grant? <a href="https://gitcoin.co/grants/">Take a look at our launch partners</a>, including Prysmatic Labs, Cryptoeconomics Study, and more.
+We're hard at work making our first round of Gitcoin Grants successful. <a href="https://consensys1mac.typeform.com/to/HFcZKe">Let us know</a> if you'd like to be in a future cohort and we'll
+reach out with more details. Want to contribute to a Gitcoin Grant? <a href="https://gitcoin.co/grants/">Take a look at our launch partners</a>, including Prysmatic Labs, Lighthouse, and more.
 </p>
 <p>
-<h3>Happy New Year From Gitcoin</h3>
+<h3>Kudos On Open Sea!</h3>
 </p>
 <p>
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
@@ -812,44 +816,48 @@ to see if there's a good fit on our alpha launch. Want to contribute to a Gitcoi
 <h3>What else is new?</h3>
     <ul>
         <li>
+            Kudos are now live on Open Sea. Want to send a sincere compliment to friends, co-workers, or family? <a href="https://medium.com/opensea/gitcoin-kudos-are-now-tradeable-opensea-ff2e96e74c27">Check
+            out our integration details </a>to find out how you can do so on OpenSea.
+        </li>
+        <li>
             Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream">on Friday at 5PM ET</a>!
         </li>
     </ul>
 </p>
 <p>
-Happy new year,
+Back to shipping,
 </p>
 
 '''
     highlights = [{
-        'who': 'pvienhage',
+        'who': 'joemphilips',
         'who_link': True,
-        'what': 'Worked on Smart Contract Security',
-        'link': 'https://gitcoin.co/issue/SmartContractSecurity/SWC-registry/158/2061',
+        'what': 'Completed bounty with Diginex, cool project!',
+        'link': 'https://gitcoin.co/issue/diginex/geewallet/39/2088',
         'link_copy': 'View more',
     }, {
-        'who': 'robin-thomas',
+        'who': 'annavladi',
         'who_link': True,
-        'what': 'Worked on Prysmatic Labs on BLS curves',
-        'link': 'https://gitcoin.co/issue/prysmaticlabs/go-bls/9/2047',
+        'what': 'Took notes for ETH Core Devs Call last week!',
+        'link': 'https://gitcoin.co/issue/ethereum/pm/69/2062',
         'link_copy': 'View more',
     }, {
-        'who': 'bakaoh',
+        'who': 'mul1sh',
         'who_link': True,
-        'what': 'Longtime Gitcoin contributor meets longtime Gitcoin funder!',
-        'link': 'https://gitcoin.co/issue/spacemeshos/go-spacemesh/290/2044',
+        'what': 'Completed a bounty with HERCone by fixing a bug!',
+        'link': 'https://gitcoin.co/issue/HERCone/herc-igvc-registrar/1/2081',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/gitcoinco/web/issues/3370',
-        'primer': 'Help Gitcoin migrate to the Infura Dashboard.',
+        'url': 'https://github.com/OpenZeppelin/openzeppelin-solidity/issues/1596',
+        'primer': 'Interesting bounty for a new feature on Gitcoin Kudos.',
     }, {
-        'url': 'https://github.com/ethereum/pm/issues/69',
-        'primer': 'Take notes for the EF devs call, get $75 USD',
+        'url': 'https://github.com/ethereumjs/rustbn.js/issues/25',
+        'primer': 'Bounty on ethereumjs for $60!',
     }, {
-        'url': 'https://github.com/austintgriffith/burner-wallet/issues/51',
-        'primer': 'Work with Austin on the Burner Wallet!',
+        'url': 'https://github.com/status-im/status-react/issues/7204',
+        'primer': 'Extension event for transacation data on Status-React!',
     }, ]
 
     num_leadboard_items = 5
