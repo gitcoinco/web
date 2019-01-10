@@ -659,18 +659,12 @@ var retrieveIssueDetails = function() {
 };
 
 
-var randomElement = function(array) {
-  var length = array.length;
-  var randomNumber = Math.random();
-  var randomIndex = Math.floor(randomNumber * length);
+const randomElement = array => {
+  const length = array.length;
+  const randomNumber = Math.random();
+  const randomIndex = Math.floor(randomNumber * length);
 
   return array[randomIndex];
-};
-
-var mixpanel_track_once = function(event, params) {
-  if (document.listen_for_web3_iterations == 1 && mixpanel) {
-    mixpanel.track(event, params);
-  }
 };
 
 /* eslint-disable no-lonely-if */
@@ -784,7 +778,6 @@ var trigger_primary_form_web3_hooks = function() {
       $('#unlock_metamask_error').css('display', 'none');
       $('#connect_metamask_error').css('display', 'none');
       $('#no_issue_error').css('display', 'none');
-      mixpanel_track_once('No Metamask Error', params);
     } else if (is_metamask_unlocked && !is_metamask_approved) {
       $('#connect_metamask_error').css('display', 'block');
       $('#unlock_metamask_error').css('display', 'none');
@@ -794,7 +787,6 @@ var trigger_primary_form_web3_hooks = function() {
       $('#primary_form').addClass('hidden');
       $('.submit_bounty .newsletter').addClass('hidden');
       $('#no_issue_error').css('display', 'none');
-      mixpanel_track_once('Unlock Metamask Error', params);
     } else if (!web3.eth.coinbase) {
       $('#unlock_metamask_error').css('display', 'block');
       $('#zero_balance_error').css('display', 'none');
@@ -804,7 +796,6 @@ var trigger_primary_form_web3_hooks = function() {
       $('#connect_metamask_error').css('display', 'none');
       $('.submit_bounty .newsletter').addClass('hidden');
       $('#no_issue_error').css('display', 'none');
-      mixpanel_track_once('Unlock Metamask Error', params);
     } else if (is_zero_balance_not_okay && document.balance == 0) {
       $('#zero_balance_error').css('display', 'block');
       $('#robot_error').removeClass('hidden');
@@ -814,7 +805,6 @@ var trigger_primary_form_web3_hooks = function() {
       $('#connect_metamask_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
       $('#no_issue_error').css('display', 'none');
-      mixpanel_track_once('Zero Balance Metamask Error', params);
     } else {
       $('#zero_balance_error').css('display', 'none');
       $('#unlock_metamask_error').css('display', 'none');
@@ -841,7 +831,6 @@ var trigger_faucet_form_web3_hooks = function() {
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
-      mixpanel_track_once('No Metamask Error', params);
       return;
     } else if (is_metamask_unlocked && !is_metamask_approved) {
       $('#no_metamask_error').css('display', 'none');
@@ -862,7 +851,6 @@ var trigger_faucet_form_web3_hooks = function() {
       $('#connect_metamask_error').css('display', 'none');
       $('#over_balance_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
-      mixpanel_track_once('Faucet Available Funds Metamask Error', params);
     } else {
       $('#over_balance_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
@@ -875,7 +863,6 @@ var trigger_faucet_form_web3_hooks = function() {
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
-      mixpanel_track_once('No Metamask Error', params);
       return;
     }
     if (is_metamask_unlocked && !is_metamask_approved) {
@@ -886,7 +873,6 @@ var trigger_faucet_form_web3_hooks = function() {
     if (!web3.eth.coinbase) {
       $('#unlock_metamask_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
-      mixpanel_track_once('Unlock Metamask Error', params);
       return;
     }
     web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
@@ -898,7 +884,6 @@ var trigger_faucet_form_web3_hooks = function() {
       if (balance == 0) {
         $('#zero_balance_error').css('display', 'block');
         $('#admin_faucet_form').remove();
-        mixpanel_track_once('Zero Balance Metamask Error', params);
       }
     });
   }

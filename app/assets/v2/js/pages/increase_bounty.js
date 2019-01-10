@@ -39,8 +39,6 @@ $(document).ready(function() {
       return;
     }
 
-    mixpanel.track('Increase Bounty Clicked (funder)', {});
-
     // setup
     e.preventDefault();
     loading_button($(this));
@@ -106,7 +104,6 @@ $(document).ready(function() {
 
     function web3Callback(error, result) {
       if (error) {
-        mixpanel.track('Increase Bounty Error (funder)', {step: 'post_bounty', error: error});
         _alert({ message: gettext('There was an error.  Please try again or contact support.') }, 'error');
         unloading_button($('#increaseFunding'));
         return;
@@ -120,8 +117,7 @@ $(document).ready(function() {
       localStorage[issueURL] = JSON.stringify(issuePackage);
 
       _alert({ message: gettext('Submission sent to web3.') }, 'info');
-      setTimeout(function() {
-        mixpanel.track('Submit New Bounty Success', {});
+      setTimeout(() => {
         document.location.href = '/funding/details/?url=' + issueURL;
       }, 1000);
     }

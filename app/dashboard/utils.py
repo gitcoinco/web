@@ -670,6 +670,8 @@ def get_tx_status(txid, network, created_on):
     from dashboard.utils import get_web3
     import pytz
 
+    DROPPED_DAYS = 4
+
     # get status
     status = None
     if txid == 'override':
@@ -678,7 +680,7 @@ def get_tx_status(txid, network, created_on):
         web3 = get_web3(network)
         tx = web3.eth.getTransactionReceipt(txid)
         if not tx:
-            drop_dead_date = created_on + timezone.timedelta(days=1)
+            drop_dead_date = created_on + timezone.timedelta(days=DROPPED_DAYS)
             if timezone.now() > drop_dead_date:
                 status = 'dropped'
             else:
