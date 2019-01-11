@@ -95,7 +95,7 @@ $(document).ready(function() {
               'token_symbol': $('#token_symbol').val(),
               'gas_price': $('#gas_price').val(),
               'sub_new_approve_tx_id': transactionHash,
-              'num_tx_approved': $('#num_periods').val(),
+              'num_tx_approved': $('#period').val(),
               'network': $('#network').val(),
               'csrfmiddlewaretoken': $("#js-fundGrant input[name='csrfmiddlewaretoken']").val()
             };
@@ -133,29 +133,30 @@ $(document).ready(function() {
               deployedSubscription.methods.getSubscriptionHash(...parts).call(function(err, subscriptionHash) {
                 $('#subscription_hash').val(subscriptionHash);
                 web3.eth.personal.sign('' + subscriptionHash, accounts[0], function(err, signature) {
-                  $('#signature').val(signature);
+                  if (signature) {
+                    $('#signature').val(signature);
 
-                  let data = {
-                    'subscription_hash': subscriptionHash,
-                    'signature': signature,
-                    'csrfmiddlewaretoken': $("#js-fundGrant input[name='csrfmiddlewaretoken']").val(),
-                    'sub_new_approve_tx_id': $('#sub_new_approve_tx_id').val(),
+                    let data = {
+                      'subscription_hash': subscriptionHash,
+                      'signature': signature,
+                      'csrfmiddlewaretoken': $("#js-fundGrant input[name='csrfmiddlewaretoken']").val(),
+                      'sub_new_approve_tx_id': $('#sub_new_approve_tx_id').val(),
+                    };
+
+                    $.ajax({
+                      type: 'post',
+                      url: '',
+                      data: data,
+                      success: function(json) {
+                        console.log('successfully saved subscriptionHash and signature');
+                        url = json.url;
+                        $('#wait').val(false)
+                      },
+                      error: function() {
+                        _alert({ message: gettext('Your subscription failed to save. Please try again.') }, 'error');
+                      }
+                    });
                   };
-
-                  $.ajax({
-                    type: 'post',
-                    url: '',
-                    data: data,
-                    success: function(json) {
-                      console.log('successfully saved subscriptionHash and signature');
-                      console.log(json);
-                      // url = json.url;
-                      // console.log(url);
-                    },
-                    error: function() {
-                      _alert({ message: gettext('Your subscription failed to save. Please try again.') }, 'error');
-                    }
-                  });
                 });
               });
             });
@@ -163,8 +164,7 @@ $(document).ready(function() {
 
             waitforData(function() {
               document.suppress_loading_leave_code = true;
-              console.log(url);
-              // window.location = url;
+              window.location = url;
             });
           });
         });
@@ -198,7 +198,7 @@ $(document).ready(function() {
 });
 
 var waitforData = function(callback) {
-  if ($('#signature').val() != '') {
+  if ($('#wait').val() == false) {
     callback();
   } else {
     var wait_callback = function() {

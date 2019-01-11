@@ -321,6 +321,7 @@ def grant_fund(request, grant_id, grant_slug):
         if 'contributor_address' in request.POST:
             subscription = Subscription()
 
+            subscription.active = False
             subscription.contributor_address = request.POST.get('contributor_address', '')
             subscription.amount_per_period = request.POST.get('amount_per_period', 0)
             subscription.real_period_seconds = request.POST.get('real_period_seconds', 2592000)
@@ -339,9 +340,10 @@ def grant_fund(request, grant_id, grant_slug):
                 'success': True,
             })
 
-        if 'subscription_hash' in request.POST:
+        if 'signature' in request.POST:
             sub_new_approve_tx_id = request.POST.get('sub_new_approve_tx_id', '')
-            subscription = Subscription.objects.filter(sub_new_approve_tx_id=sub_new_approve_tx_id)
+            subscription = Subscription.objects.filter(new_approve_tx_id=sub_new_approve_tx_id).first()
+            subscription.active = True
             subscription.subscription_hash = request.POST.get('subscription_hash', '')
             subscription.contributor_signature = request.POST.get('signature', '')
             subscription.save()
