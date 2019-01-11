@@ -140,7 +140,7 @@ $(document).ready(function() {
                       'subscription_hash': subscriptionHash,
                       'signature': signature,
                       'csrfmiddlewaretoken': $("#js-fundGrant input[name='csrfmiddlewaretoken']").val(),
-                      'sub_new_approve_tx_id': $('#sub_new_approve_tx_id').val(),
+                      'sub_new_approve_tx_id': $('#sub_new_approve_tx_id').val()
                     };
 
                     $.ajax({
@@ -150,13 +150,13 @@ $(document).ready(function() {
                       success: function(json) {
                         console.log('successfully saved subscriptionHash and signature');
                         url = json.url;
-                        $('#wait').val(false)
+                        $('#wait').val(false);
                       },
                       error: function() {
                         _alert({ message: gettext('Your subscription failed to save. Please try again.') }, 'error');
                       }
                     });
-                  };
+                  }
                 });
               });
             });
