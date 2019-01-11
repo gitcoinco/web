@@ -183,7 +183,7 @@ def grant_new(request):
                 'reference_url': request.POST.get('reference_url', ''),
                 'admin_address': request.POST.get('admin_address', ''),
                 'contract_owner_address': request.POST.get('contract_owner_address', ''),
-                'token_address': request.POST.get('denomination', ''),
+                'token_address': request.POST.get('token_address', ''),
                 'token_symbol': request.POST.get('token_symbol', ''),
                 'amount_goal': request.POST.get('amount_goal', 1),
                 'contract_version': request.POST.get('contract_version', ''),
@@ -326,7 +326,7 @@ def grant_fund(request, grant_id, grant_slug):
             subscription.real_period_seconds = request.POST.get('real_period_seconds', 2592000)
             subscription.frequency = request.POST.get('frequency', 30)
             subscription.frequency_unit = request.POST.get('frequency_unit', 'days')
-            subscription.token_address = request.POST.get('denomination', '')
+            subscription.token_address = request.POST.get('token_address', '')
             subscription.token_symbol = request.POST.get('token_symbol', '')
             subscription.gas_price = request.POST.get('gas_price', 0)
             subscription.new_approve_tx_id = request.POST.get('sub_new_approve_tx_id', '')

@@ -51,7 +51,10 @@ $(document).ready(function() {
         data[this.name] = this.value;
       });
 
+
       $('#token_symbol').val($('#js-token option:selected').text());
+      $('#token_address').val($('#js-token option:selected').val());
+      console.log($('#token_address').val());
 
       if (document.web3network) {
         $('#network').val(document.web3network);
@@ -98,7 +101,7 @@ $(document).ready(function() {
               'reference_url': $('#input-url').val(),
               'admin_address': $('#input-admin_address').val(),
               'contract_owner_address': $('#contract_owner_address').val(),
-              'token_address': $('#js-token').val(),
+              'token_address': $('#token_address').val(),
               'token_symbol': $('#token_symbol').val(),
               'amount_goal': $('#amount_goal').val(),
               'contract_version': $('#contract_version').val(),

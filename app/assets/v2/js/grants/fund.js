@@ -122,7 +122,7 @@ $(document).ready(function() {
 
               const parts = [
                 web3.utils.toChecksumAddress(accounts[0]), // subscriber address
-                web3.utils.toChecksumAddress(data.admin_address), // admin_address
+                web3.utils.toChecksumAddress($('#admin_address').val()), // admin_address
                 web3.utils.toChecksumAddress(selected_token), // token denomination / address
                 web3.utils.toTwosComplement(amountSTR), // data.amount_per_period
                 web3.utils.toTwosComplement(realPeriodSeconds), // data.period_seconds
@@ -148,7 +148,9 @@ $(document).ready(function() {
                     data: data,
                     success: function(json) {
                       console.log('successfully saved subscriptionHash and signature');
-                      url = json.url
+                      console.log(json);
+                      // url = json.url;
+                      // console.log(url);
                     },
                     error: function() {
                       _alert({ message: gettext('Your subscription failed to save. Please try again.') }, 'error');
@@ -161,7 +163,8 @@ $(document).ready(function() {
 
             waitforData(function() {
               document.suppress_loading_leave_code = true;
-              window.location = url;
+              console.log(url);
+              // window.location = url;
             });
           });
         });
