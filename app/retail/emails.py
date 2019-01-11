@@ -77,10 +77,10 @@ def render_new_grant_email(grant):
     return response_html, response_txt, subject
 
 
-def render_change_grant_owner(grant):
+def render_change_grant_owner_request(grant):
     params = {'grant': grant}
-    response_html = premailer_transform(render_to_string("emails/grants/change_owner.html", params))
-    response_txt = render_to_string("emails/grants/change_owner.txt", params)
+    response_html = premailer_transform(render_to_string("emails/grants/change_owner_request.html", params))
+    response_txt = render_to_string("emails/grants/change_owner_request.txt", params)
     subject = "You've been chosen to be the owner for a Gitcoin Grant"
     return response_html, response_txt, subject
 
@@ -207,9 +207,9 @@ def new_grant(request):
 
 
 @staff_member_required
-def change_grant_owner(request):
+def change_grant_owner_request(request):
     grant = Grant.objects.first()
-    response_html, __, __ = render_change_grant_owner(grant)
+    response_html, __, __ = render_change_grant_owner_request(grant)
     return HttpResponse(response_html)
 
 

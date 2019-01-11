@@ -40,7 +40,7 @@ from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recom
 from grants.forms import MilestoneForm
 from grants.models import Contribution, Grant, Milestone, Subscription, Update
 from marketing.mails import (
-    change_grant_owner, change_grant_owner_accept, change_grant_owner_reject, grant_cancellation, new_grant,
+    change_grant_owner_accept, change_grant_owner_reject, change_grant_owner_request, grant_cancellation, new_grant,
     new_supporter, subscription_terminated, support_cancellation, thank_you_for_supporting,
 )
 from marketing.models import Keyword
@@ -137,7 +137,7 @@ def grant_details(request, grant_id, grant_slug):
             grant.team_members.set(team_members)
             if grant.admin_profile != admin_profile:
                 grant.request_ownership_change = admin_profile
-                change_grant_owner(grant, grant.request_ownership_change)
+                change_grant_owner_request(grant, grant.request_ownership_change)
                 # TODO : Pass { 'change_ownership' = 'R' } to template
             grant.save()
             return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))

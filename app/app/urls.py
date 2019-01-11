@@ -291,9 +291,9 @@ urlpatterns = [
         name='admin_new_grant'
     ),
     path(
-        '_administration/email/change_grant_owner',
-        retail.emails.change_grant_owner,
-        name='admin_change_grant_owner'
+        '_administration/email/change_grant_owner_request',
+        retail.emails.change_grant_owner_request,
+        name='admin_change_grant_owner_request'
     ),
     path(
         '_administration/email/change_grant_owner_accept',
