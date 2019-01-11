@@ -120,8 +120,8 @@ $(document).ready(function() {
   $('.accordion').on('click', (event) => {
     const element = $(event.target);
 
-    element.classList.toggle('active');
-    let panel = element.nextElementSibling;
+    element.toggleClass('active');
+    let panel = element[0].nextElementSibling;
 
     if (panel.style.maxHeight) {
       panel.style.maxHeight = null;
