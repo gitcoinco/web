@@ -1022,22 +1022,6 @@ class BountyFulfillmentQuerySet(models.QuerySet):
         """Exclude results that have not been submitted."""
         return self.exclude(fulfiller_address='0x0000000000000000000000000000000000000000')
 
-class BountyComment(SuperModel):
-    fulfillment = models.ForeignKey(BountyFulfillment, related_name='comments', on_delete=models.CASCADE)
-    comment = models.TextField(blank=True)
-    rating = models.IntegerField(null=True, blank=True)
-    commentsender = models.ForeignKey('dashboard.Profile', related_name='comments_given', on_delete=models.CASCADE)
-    commentreceiver = models.ForeignKey('dashboard.Profile', related_name='comments_received', on_delete=models.CASCADE)
-    
-    def __str__(self):
-        """Define the string representation of BountyComment.
-
-        Returns:
-            str: The string representation of the object.
-
-        """
-        return f'BountyComment ID: ({self.pk}) - BountyFulfillment ID: ({self.fulfillment.pk})'
-
 class BountyFulfillment(SuperModel):
     """The structure of a fulfillment on a Bounty."""
 
@@ -2793,3 +2777,33 @@ class BlockedUser(SuperModel):
     def __str__(self):
         """Return the string representation of a Bounty."""
         return f'<BlockedUser: {self.handle}>'
+
+class FeedbackEntry(SuperModel):
+    bounty = models.ForeignKey(
+        'dashboard.Bounty',
+        related_name='feedbacks',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True
+    )
+    sender_profile = models.ForeignKey(
+        'dashboard.Profile',
+        related_name='feedbacks_sent',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True
+    )
+    receiver_profile = models.ForeignKey(
+        'dashboard.Profile',
+        related_name='feedbacks_got',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True
+    )
+    rating = models.SmallIntegerField(blank=True, default=0)
+    comment = models.TextField(default='', blank=True)
+    feedbackType = models.TextField(default='', blank=True, max_length=20)
+
+    def __str__(self):
+        """Return the string representation of a Bounty."""
+        return f'<Feedback Bounty #{self.bounty} - from: {self.sender_profile} to: {self.receiver_profile}>'

@@ -44,7 +44,7 @@ from pytz import UTC
 from ratelimit.decorators import ratelimit
 from redis_semaphore import NotAvailable as SemaphoreExists
 
-from .models import Profile
+from .models import Profile, FeedbackEntry
 
 logger = logging.getLogger(__name__)
 
@@ -333,7 +333,9 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
         except Exception as e:
             logger.error(f'{e} during new fulfillment creation for {new_bounty}')
             continue
-    return new_bounty.fulfillments.all()
+
+    if new_bounty:
+        return new_bounty.fulfillments.all()
 
 
 def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
@@ -519,12 +521,13 @@ def process_bounty_details(bounty_details):
     bounty_data = bounty_details.get('data') or {}
     bounty_payload = bounty_data.get('payload', {})
     meta = bounty_data.get('meta', {})
+    bounty_review = bounty_data.get('review', {})
 
     # what schema are we working with?
-    schema_name = meta.get('schemaName')
+    schema_name = meta.get('schemaName', 'Unknown')
     schema_version = meta.get('schemaVersion', 'Unknown')
     if not schema_name or schema_name != 'gitcoinBounty':
-        logger.info('Unknown Schema: Unknown - Version: %s', schema_version)
+        logger.info('Unknown Schema: %s - Version: %s', schema_name, schema_version)
         return (False, None, None)
 
     # Create new bounty (but only if things have changed)
@@ -542,11 +545,33 @@ def process_bounty_details(bounty_details):
             new_bounty = create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id)
 
             if new_bounty:
+                create_new_feedback(new_bounty, bounty_review)
                 return (did_change, latest_old_bounty, new_bounty)
             return (did_change, latest_old_bounty, latest_old_bounty)
     except SemaphoreExists:
         return (did_change, latest_old_bounty, latest_old_bounty)
 
+def create_new_feedback(new_bounty, feedback_dict):
+    feedbackType = feedback_dict.get('feedbackType','???')
+    if feedbackType == 'worker':
+        sender = new_bounty.bounty_owner_profile
+        receiver = new_bounty.activities.last().profile
+    else:
+        receiver = new_bounty.bounty_owner_profile
+        sender = new_bounty.activities.last().profile
+
+    kwargs = {
+        'bounty': new_bounty,
+        'sender_profile': sender,
+        'receiver_profile': receiver,
+        'rating': feedback_dict.get('rating', '-1'),
+        'comment': feedback_dict.get('comment', 'No comment in IPFS entry.'),
+        'feedbackType': feedbackType
+    }
+
+    e = FeedbackEntry.objects.create(**kwargs)
+    e.save()
+    pass
 
 def get_bounty_data_for_activity(bounty):
     """Get data from bounty to be saved in activity records.
