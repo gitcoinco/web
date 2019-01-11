@@ -1,0 +1,20 @@
+{
+    "symbol": "MANGO",
+    "account_name": "mangotokenll",
+    "overview": {
+        "en": "MANGO is committed to becoming a boutique game and benchmark for global blockchain betting games",
+        "zh": "MANGO致力于成为全球区块链博彩游戏的一个精品游戏和一个标杆"
+    },
+    "website": "https://mango.best/",
+    "whitepaper": "https://github.com/for-oneBts/MangoDice/blob/master/whitePaper.pdf",
+    "published_on": "2018-12-24",
+    "initial_price": {
+        "EOS": "0.001 EOS",
+        "USD": "0.00228 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/Mango_ltd",
+        "telegram": "https://t.me/mango_best",
+        "github": "https://github.com/for-oneBts/MangoDice/tree/master"
+    }
+}
