@@ -54,7 +54,6 @@ $(document).ready(function() {
 
       $('#token_symbol').val($('#js-token option:selected').text());
       $('#token_address').val($('#js-token option:selected').val());
-      console.log($('#token_address').val());
 
       if (document.web3network) {
         $('#network').val(document.web3network);
@@ -115,10 +114,10 @@ $(document).ready(function() {
               type: 'post',
               url: '',
               data: data,
-              success: function(json) {
+              success: json => {
                 console.log('successfully saved grant');
               },
-              error: function() {
+              error: () => {
                 _alert({ message: gettext('Your grant failed to save. Please try again.') }, 'error');
               }
             });
@@ -141,17 +140,17 @@ $(document).ready(function() {
                     type: 'post',
                     url: '',
                     data: data,
-                    success: function(json) {
+                    success: json => {
                       document.suppress_loading_leave_code = true;
                       window.location = json.url;
                     },
-                    error: function() {
+                    error: () => {
                       _alert({ message: gettext('Your grant failed to save. Please try again.') }, 'error');
                     }
                   });
 
                 } else {
-                  setTimeout(function() {
+                  setTimeout(() => {
                     callFunctionWhenTransactionMined(transactionHash);
                   }, 1000);
                 }

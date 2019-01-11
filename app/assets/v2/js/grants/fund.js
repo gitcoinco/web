@@ -104,10 +104,10 @@ $(document).ready(function() {
               type: 'post',
               url: '',
               data: data,
-              success: function(json) {
+              success: json => {
                 console.log('successfully saved subscription');
               },
-              error: function() {
+              error: () => {
                 _alert({ message: gettext('Your subscription failed to save. Please try again.') }, 'error');
               }
             });
@@ -147,13 +147,16 @@ $(document).ready(function() {
                       type: 'post',
                       url: '',
                       data: data,
-                      success: function(json) {
+                      success: json => {
+                        console.log(json);
                         console.log('successfully saved subscriptionHash and signature');
                         url = json.url;
-                        $('#wait').val(false);
+                        console.log(url);
+                        $('#wait').val('false');
                       },
-                      error: function() {
+                      error: () => {
                         _alert({ message: gettext('Your subscription failed to save. Please try again.') }, 'error');
+                        url = window.location;
                       }
                     });
                   }
@@ -162,7 +165,7 @@ $(document).ready(function() {
             });
           }).on('confirmation', function(confirmationNumber, receipt) {
 
-            waitforData(function() {
+            waitforData(() => {
               document.suppress_loading_leave_code = true;
               window.location = url;
             });
@@ -197,11 +200,11 @@ $(document).ready(function() {
   });
 });
 
-var waitforData = function(callback) {
-  if ($('#wait').val() == false) {
+var waitforData = (callback) => {
+  if ($('#wait').val() === 'false') {
     callback();
   } else {
-    var wait_callback = function() {
+    var wait_callback = () => {
       waitforData(callback);
     };
 
