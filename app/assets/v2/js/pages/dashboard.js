@@ -446,11 +446,8 @@ var refreshBounties = function(event, offset, append, do_save_search) {
     $('.loading').css('display', 'block');
     $('.bounty_row').remove();
   }
-  // filter
-  var uri = get_search_URI(offset);
 
-  // analytics
-  mixpanel.track('Refresh Bounties', { uri: uri });
+  const uri = get_search_URI(offset);
 
   // Abort pending request if any subsequent request
   if (explorer.bounties_request && explorer.bounties_request.readyState !== 4) {
