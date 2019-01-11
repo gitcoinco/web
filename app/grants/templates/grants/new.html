@@ -89,7 +89,7 @@
                   <div class="row">
                     <div class="col-12 col-md-6">
                       <label class="font-body">{% trans "Monthly amount sought in DAI" %}</label>
-                      <input type="number" name="amount_goal" id="amount_goal" class="form__input form__input-lg" min="0.001" required />
+                      <input type="number" id="amount_goal" name="amount_goal" class="form__input form__input-lg" min="0.001" required />
                     </div>
                     <div class="col-12 col-md-6">
                       <label class="font-body">{% trans "Required Token For Subscription" %}</label>
@@ -131,6 +131,7 @@
                   <input type="hidden" id="contract_address" name="contract_address" />
                   <input type="hidden" id="contract_owner_address" name="contract_owner_address">
                   <input type="hidden" id="contract_version" name="contract_version" value="0">
+                    <input type="hidden" id="token_address" name="token_address" value="">
                   <input type="hidden" id="token_symbol" name="token_symbol" value="">
                   <input type="hidden" id="network" name="network">
                 </div>
