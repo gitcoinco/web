@@ -99,7 +99,7 @@ var buildURI = function() {
   let uri = '';
   let _filters = filters.slice();
 
-  _filters.push('keywords', 'order_by','org', 'order_by_date');
+  _filters.push('keywords', 'order_by', 'org', 'order_by_date');
 
   _filters.forEach((filter) => {
     if (localStorage[filter] &&
