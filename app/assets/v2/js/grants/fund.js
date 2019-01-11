@@ -70,6 +70,8 @@ $(document).ready(function() {
 
           $('#contributor_address').val(accounts[0]);
 
+          let url;
+
           deployedToken.methods.approve(
             data.contract_address,
             web3.utils.toTwosComplement(approvalSTR)
@@ -82,6 +84,33 @@ $(document).ready(function() {
           }).on('transactionHash', function(transactionHash) {
             $('#sub_new_approve_tx_id').val(transactionHash);
             const linkURL = etherscan_tx_url(transactionHash);
+
+            let data = {
+              'contributor_address': $('#contributor_address').val(),
+              'amount_per_period': $('#amount').val(),
+              'real_period_seconds': realPeriodSeconds,
+              'frequency': $('#frequency_count').val(),
+              'frequency_unit': $('#frequency_unit').val(),
+              'token_address': $('#js-token').val(),
+              'token_symbol': $('#token_symbol').val(),
+              'gas_price': $('#gas_price').val(),
+              'sub_new_approve_tx_id': transactionHash,
+              'num_tx_approved': $('#num_periods').val(),
+              'network': $('#network').val(),
+              'csrfmiddlewaretoken': $("#js-fundGrant input[name='csrfmiddlewaretoken']").val()
+            };
+
+            $.ajax({
+              type: 'post',
+              url: '',
+              data: data,
+              success: function(json) {
+                console.log('successfully saved subscription');
+              },
+              error: function() {
+                _alert({ message: gettext('Your subscription failed to save. Please try again.') }, 'error');
+              }
+            });
 
             document.issueURL = linkURL;
             $('#transaction_url').attr('href', linkURL);
@@ -105,18 +134,34 @@ $(document).ready(function() {
                 $('#subscription_hash').val(subscriptionHash);
                 web3.eth.personal.sign('' + subscriptionHash, accounts[0], function(err, signature) {
                   $('#signature').val(signature);
+
+                  let data = {
+                    'subscription_hash': subscriptionHash,
+                    'signature': signature,
+                    'csrfmiddlewaretoken': $("#js-fundGrant input[name='csrfmiddlewaretoken']").val(),
+                    'sub_new_approve_tx_id': $('#sub_new_approve_tx_id').val(),
+                  };
+
+                  $.ajax({
+                    type: 'post',
+                    url: '',
+                    data: data,
+                    success: function(json) {
+                      console.log('successfully saved subscriptionHash and signature');
+                      url = json.url
+                    },
+                    error: function() {
+                      _alert({ message: gettext('Your subscription failed to save. Please try again.') }, 'error');
+                    }
+                  });
                 });
               });
             });
           }).on('confirmation', function(confirmationNumber, receipt) {
-            $('#real_period_seconds').val(realPeriodSeconds);
 
             waitforData(function() {
-              $.each($(form).serializeArray(), function() {
-                data[this.name] = this.value;
-              });
               document.suppress_loading_leave_code = true;
-              form.submit();
+              window.location = url;
             });
           });
         });

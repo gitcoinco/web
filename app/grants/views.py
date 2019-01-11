@@ -318,33 +318,45 @@ def grant_fund(request, grant_id, grant_slug):
         return TemplateResponse(request, 'grants/shared/error.html', params)
 
     if request.method == 'POST':
-        subscription = Subscription()
+        if 'contributor_address' in request.POST:
+            subscription = Subscription()
 
-        subscription.subscription_hash = request.POST.get('subscription_hash', '')
-        subscription.contributor_signature = request.POST.get('signature', '')
-        subscription.contributor_address = request.POST.get('contributor_address', '')
-        subscription.amount_per_period = request.POST.get('amount_per_period', 0)
-        subscription.real_period_seconds = request.POST.get('real_period_seconds', 2592000)
-        subscription.frequency = request.POST.get('frequency', 30)
-        subscription.frequency_unit = request.POST.get('frequency_unit', 'days')
-        subscription.token_address = request.POST.get('denomination', '')
-        subscription.token_symbol = request.POST.get('token_symbol', '')
-        subscription.gas_price = request.POST.get('gas_price', 0)
-        subscription.new_approve_tx_id = request.POST.get('sub_new_approve_tx_id', '')
-        subscription.num_tx_approved = request.POST.get('num_periods', 1)
-        subscription.network = request.POST.get('network', '')
-        subscription.contributor_profile = profile
-        subscription.grant = grant
-        subscription.save()
+            subscription.contributor_address = request.POST.get('contributor_address', '')
+            subscription.amount_per_period = request.POST.get('amount_per_period', 0)
+            subscription.real_period_seconds = request.POST.get('real_period_seconds', 2592000)
+            subscription.frequency = request.POST.get('frequency', 30)
+            subscription.frequency_unit = request.POST.get('frequency_unit', 'days')
+            subscription.token_address = request.POST.get('denomination', '')
+            subscription.token_symbol = request.POST.get('token_symbol', '')
+            subscription.gas_price = request.POST.get('gas_price', 0)
+            subscription.new_approve_tx_id = request.POST.get('sub_new_approve_tx_id', '')
+            subscription.num_tx_approved = request.POST.get('num_periods', 1)
+            subscription.network = request.POST.get('network', '')
+            subscription.contributor_profile = profile
+            subscription.grant = grant
+            subscription.save()
+            return JsonResponse({
+                'success': True,
+            })
 
-        value_usdt = subscription.get_converted_amount()
-        if value_usdt:
-            grant.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
+        if 'subscription_hash' in request.POST:
+            sub_new_approve_tx_id = request.POST.get('sub_new_approve_tx_id', '')
+            subscription = Subscription.objects.filter(sub_new_approve_tx_id=sub_new_approve_tx_id)
+            subscription.subscription_hash = request.POST.get('subscription_hash', '')
+            subscription.contributor_signature = request.POST.get('signature', '')
+            subscription.save()
 
-        grant.save()
-        new_supporter(grant, subscription)
-        thank_you_for_supporting(grant, subscription)
-        return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
+            value_usdt = subscription.get_converted_amount()
+            if value_usdt:
+                grant.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
+
+            grant.save()
+            new_supporter(grant, subscription)
+            thank_you_for_supporting(grant, subscription)
+            return JsonResponse({
+                'success': True,
+                'url': reverse('grants:details', args=(grant.pk, grant.slug))
+            })
 
     params = {
         'active': 'fund_grant',
