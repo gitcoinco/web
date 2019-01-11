@@ -33,6 +33,8 @@ from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
+from decimal import Decimal
+
 
 from app.utils import get_profile
 from dashboard.models import Profile
@@ -131,7 +133,7 @@ def grant_details(request, grant_id, grant_slug):
             form_profile = request.POST.get('edit-admin_profile')
             admin_profile = Profile.objects.get(handle=form_profile)
             grant.description = request.POST.get('edit-description')
-            grant.amount_goal = request.POST.get('edit-amount_goal')
+            grant.amount_goal = Decimal(request.POST.get('edit-amount_goal'))
             team_members = request.POST.getlist('edit-grant_members[]')
             team_members.append(str(admin_profile.id))
             grant.team_members.set(team_members)
@@ -167,11 +169,11 @@ def grant_details(request, grant_id, grant_slug):
     if request.method == 'GET' and grant.request_ownership_change and profile == grant.request_ownership_change:
         # if request.method == 'GET' and grant.request_ownership_change:
         if request.GET.get('ownership') == 'accept':
+            previous_owner = grant.admin_profile
             grant.admin_profile = grant.request_ownership_change
             grant.request_ownership_change = None
             grant.save()
-            # Should mail be sent to the previous owner also ?
-            change_grant_owner_accept(grant, grant.admin_profile)
+            change_grant_owner_accept(grant, grant.admin_profile, previous_owner)
             params['change_ownership'] = 'Y'
         elif request.GET.get('ownership') == 'reject':
             grant.request_ownership_change = None

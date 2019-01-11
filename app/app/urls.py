@@ -301,6 +301,11 @@ urlpatterns = [
         name='admin_change_grant_owner_accept'
     ),
     path(
+        '_administration/email/notify_ownership_change',
+        retail.emails.notify_ownership_change,
+        name='admin_notify_ownership_change'
+    ),
+    path(
         '_administration/email/change_grant_owner_reject',
         retail.emails.change_grant_owner_reject,
         name='admin_change_grant_owner_reject'

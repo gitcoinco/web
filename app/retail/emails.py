@@ -93,6 +93,14 @@ def render_change_grant_owner_accept(grant):
     return response_html, response_txt, subject
 
 
+def render_notify_ownership_change(grant):
+    params = {'grant': grant}
+    response_html = premailer_transform(render_to_string("emails/grants/change_owner_notify.html", params))
+    response_txt = render_to_string("emails/grants/change_owner_notify.txt", params)
+    subject = "Grant ownership has been changed"
+    return response_html, response_txt, subject
+
+
 def render_change_grant_owner_reject(grant):
     params = {'grant': grant}
     response_html = premailer_transform(render_to_string("emails/grants/change_owner_reject.html", params))
@@ -210,6 +218,13 @@ def new_grant(request):
 def change_grant_owner_request(request):
     grant = Grant.objects.first()
     response_html, __, __ = render_change_grant_owner_request(grant)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def notify_ownership_change(request):
+    grant = Grant.objects.first()
+    response_html, __, __ = render_notify_ownership_change(grant)
     return HttpResponse(response_html)
 
 
