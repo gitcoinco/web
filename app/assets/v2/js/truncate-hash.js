@@ -45,7 +45,7 @@ new truncateHash();
 */
 (function() {
   this.getaddress = function(elem, _address) {
-    var address = !_address ? _address = web3.eth.coinbase : _address;
+    const address = !_address ? _address = web3.eth.coinbase : _address;
 
     if (elem.nodeName == 'INPUT') {
       elem.value = address;
@@ -56,13 +56,14 @@ new truncateHash();
     new truncateHash();
   };
 
-  this.metamaskAddress = function() {
-    var currentWallet = web3.eth.coinbase;
+  this.metamaskAddress = () => {
+    if (!web3)
+      return;
 
-    var elem = document.querySelectorAll('[data-metamask-address]');
-    // var elem = $('#wallet-address')
+    const currentWallet = web3.eth.coinbase;
+    const elem = document.querySelectorAll('[data-metamask-address]');
 
-    for (var i = 0; i < elem.length; ++i) {
+    for (let i = 0; i < elem.length; ++i) {
       new getaddress(elem[i], currentWallet);
     }
   };
