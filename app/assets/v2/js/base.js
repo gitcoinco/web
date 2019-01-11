@@ -117,70 +117,11 @@ $(document).ready(function() {
     $(event.target).parents('.faq_parent').find('.answer').toggleClass('show');
   });
 
-  // mixpanel integration
-  setTimeout(() => {
-    let web3v = (typeof web3 == 'undefined' || typeof web3.version == 'undefined') ? 'none' : web3.version.api;
-    const params = {
-      page: document.location.pathname,
-      web3: web3v
-    };
+  $('.accordion').on('click', (event) => {
+    const element = $(event.target);
 
-    mixpanel.track('Pageview', params);
-  }, 300);
-
-  const tos = [
-    'slack',
-    'btctalk',
-    'reddit',
-    'twitter',
-    'fb',
-    'medium',
-    'gitter',
-    'github',
-    'youtube',
-    'extension',
-    'get',
-    'watch',
-    'unwatch',
-    'help/repo',
-    'help/dev',
-    'help/portal',
-    'help/faq'
-  ];
-
-  for (let i = 0; i < tos.length; i++) {
-    const to = tos[i];
-    const _params = {
-      'to': $(this).attr('href')
-    };
-
-    const callback = () => {
-      mixpanel.track('Outbound', _params);
-    };
-
-    $('body').delegate("a[href='/" + to + "']", 'click', callback);
-  }
-
-  $('body').delegate("a[href^='https://github.com/']", 'click', () => {
-    const _params = {
-      'to_domain': 'github.com',
-      'to': $(this).attr('href')
-    };
-
-    mixpanel.track('Outbound', _params);
-  });
-
-  $('#newsletter-subscribe').on('click', () => {
-    mixpanel.track('Email Subscribe');
-  });
-
-  $('body.whitepaper .btn-success').on('click', () => {
-    mixpanel.track('Whitepaper Request');
-  });
-
-  $('.accordion').on('click', () => {
-    this.classList.toggle('active');
-    var panel = this.nextElementSibling;
+    element.toggleClass('active');
+    let panel = element[0].nextElementSibling;
 
     if (panel.style.maxHeight) {
       panel.style.maxHeight = null;

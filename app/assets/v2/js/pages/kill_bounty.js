@@ -50,7 +50,6 @@ window.onload = function() {
 
 
         disabled.attr('disabled', 'disabled');
-        mixpanel.track('Kill Bounty Clicked', {});
 
         loading_button($('.js-submit'));
         const issueURL = data.issueURL;
@@ -59,10 +58,6 @@ window.onload = function() {
 
         var apiCallback = function(results, status) {
           if (status != 'success') {
-            mixpanel.track('Kill Bounty Error', {
-              step: 'apiCallback',
-              error: error
-            });
             _alert({ message: gettext('Could not get bounty details') });
             console.error(error);
             unloading_button($('.submitBounty'));
@@ -111,17 +106,12 @@ window.onload = function() {
               });
 
               _alert({ message: gettext('Cancel bounty submitted to web3.') }, 'info');
-              setTimeout(function() {
-                mixpanel.track('Kill Bounty Success', {});
+              setTimeout(() => {
                 document.location.href = '/funding/details/?url=' + issueURL;
               }, 1000);
             };
 
             if (error) {
-              mixpanel.track('Kill Bounty Error', {
-                step: 'final_callback',
-                error: error
-              });
               console.error('err', error);
               _alert({ message: gettext('There was an error') });
               unloading_button($('.js-submit'));
