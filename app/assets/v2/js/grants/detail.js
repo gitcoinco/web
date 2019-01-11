@@ -206,3 +206,7 @@ const copyDuplicateDetails = () => {
     });
   });
 };
+
+$(document).ready(function() {
+  setupTabs('#grant-profile-tabs');
+});
