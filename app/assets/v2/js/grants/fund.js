@@ -148,10 +148,8 @@ $(document).ready(function() {
                       url: '',
                       data: data,
                       success: json => {
-                        console.log(json);
                         console.log('successfully saved subscriptionHash and signature');
                         url = json.url;
-                        console.log(url);
                         $('#wait').val('false');
                       },
                       error: () => {
@@ -200,7 +198,7 @@ $(document).ready(function() {
   });
 });
 
-var waitforData = (callback) => {
+const waitforData = (callback) => {
   if ($('#wait').val() === 'false') {
     callback();
   } else {
