@@ -385,8 +385,11 @@
       _alert({ message: gettext('You are now the owner of this grant.') }, 'success');
     {% elif change_ownership == 'N' %}
       _alert({ message: gettext('Ownership Request has been rejected.') }, 'error');
-    {% elif change_ownership == 'R' %}
-      _alert({ message: gettext('Ownership Transfer will happen upon confirmation from the requested user.') }, 'success');
     {% endif %}
+
+    if(localStorage['request_change'] == 'R') {
+      _alert({ message: gettext('Ownership Transfer will happen upon confirmation from the requested user.') }, 'success');
+      delete localStorage['request_change'];
+    }
   </script>
 </html>

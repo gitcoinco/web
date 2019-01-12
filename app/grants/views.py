@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import datetime
 import json
 import logging
+from decimal import Decimal
 
 from django.conf import settings
 from django.contrib import messages
@@ -33,8 +34,6 @@ from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
-from decimal import Decimal
-
 
 from app.utils import get_profile
 from dashboard.models import Profile
@@ -140,7 +139,6 @@ def grant_details(request, grant_id, grant_slug):
             if grant.admin_profile != admin_profile:
                 grant.request_ownership_change = admin_profile
                 change_grant_owner_request(grant, grant.request_ownership_change)
-                # TODO : Pass { 'change_ownership' = 'R' } to template
             grant.save()
             return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
