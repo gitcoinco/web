@@ -207,6 +207,6 @@ const copyDuplicateDetails = () => {
   });
 };
 
-$(document).ready(function() {
+$(document).ready(() => {
   setupTabs('#grant-profile-tabs');
 });
