@@ -212,6 +212,10 @@ class Grant(SuperModel):
         grant_contract = web3.eth.contract(self.contract_address, abi=self.abi)
         return grant_contract
 
+    def confirm_grant_deploy(self):
+        self.deploy_tx_confirmed = True
+        self.save()
+
 
 class Milestone(SuperModel):
     """Define the structure of a Grant Milestone"""

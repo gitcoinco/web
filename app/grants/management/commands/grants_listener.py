@@ -22,6 +22,8 @@ import time
 
 from django.core.management.base import BaseCommand
 from django.db.models import F
+from django.shortcuts import redirect
+from django.urls import reverse
 from django.utils import timezone
 
 from dashboard.utils import get_tx_status, has_tx_mined
@@ -37,32 +39,29 @@ logger = logging.getLogger(__name__)
 SLEEP_TIME = 20
 
 
-def listen_deploy_grant_tx(grant, live):
+def listen_deploy_grant_tx(grant):
     logger.info("  - grant %d", grant.pk)
 
-        status = 'failure'
-        txid = None
-        error = ""
-            logger.info("   -- *waiting for confirmation* ")
-            while not has_tx_mined(grant.deploy_tx_id, grant.network):
-                time.sleep(SLEEP_TIME)
-                logger.info(f"   -- *waiting {SLEEP_TIME} seconds*")
-            while not has_tx_mined(grant.deploy_tx_id, grant.network):
-                time.sleep(SLEEP_TIME)
-                logger.info(f"   -- *waiting {SLEEP_TIME} seconds*")
-                status, __ = get_tx_status(grant.deploy_tx_id, grant.network, timezone.now())
-            if status != 'success':
-                    error = f"tx status from RPC is {status} not success, txid: {grant.deploy_tx_id}"
+    status = 'failure'
+    txid = None
+    error = "none"
+    logger.info("   -- *waiting for confirmation* ")
+    while not has_tx_mined(grant.deploy_tx_id, grant.network):
+        time.sleep(SLEEP_TIME)
+        logger.info(f"   -- *waiting {SLEEP_TIME} seconds*")
+    status, __ = get_tx_status(grant.deploy_tx_id, grant.network, timezone.now())
+    if status != 'success':
+        error = f"tx status from RPC is {status} not success, txid: {grant.deploy_tx_id}"
 
-        logger.info("   -- *mined* (status: %s / error: %s) ", status, error)
-        was_success = status == 'success'
-            if not was_success:
-                logger.warning('tx processing failed')
-                # execute alert logic
-            else:
-                logger.info('tx processing successful')
-                subscription.successful_contribution(txid)
-                subscription.save()
+    logger.info("   -- *mined* (status: %s / error: %s) ", status, error)
+    was_success = status == 'success'
+    if not was_success:
+            logger.warning('tx processing failed')
+            # execute alert logic
+    else:
+        logger.info('tx processing successful')
+        grant.confirm_grant_deploy()
+        redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
 
 class Command(BaseCommand):
@@ -71,17 +70,16 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('network', default='rinkeby', type=str)
-    )
+
 
     def handle(self, *args, **options):
         # setup
         network = options['network']
-        live = options['live']
 
-        logger.info('grants_listener - Network: (%s) Live: (%s)', network, live)
+        logger.info('grants_listener - Network: (%s)', network)
 
-        deploy_grant_txs = Grant.objects.filter(deploy_tx_id__innull=False, deploy_tx_confirmed__isnull=True)
-        logger.info("got %d unconfirmed deploy_grant_txs", deploy_grant_txs.count())
+        unconfirmed_grants = Grant.objects.filter(contract_address='0x0', deploy_tx_confirmed=False)
+        logger.info("got %d unconfirmed deploy_grant_txs", unconfirmed_grants.count())
 
-        for tx in deploy_grant_txs:
-            listen_deploy_grant_tx(grant, live)
+        for grant in unconfirmed_grants:
+            listen_deploy_grant_tx(grant)

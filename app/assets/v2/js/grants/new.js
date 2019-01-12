@@ -128,38 +128,38 @@ $(document).ready(function() {
             $('#transaction_url').attr('href', linkURL);
             enableWaitState('#new-grant');
 
-            var callFunctionWhenTransactionMined = function(transactionHash) {
-              web3.eth.getTransactionReceipt(transactionHash, function(error, result) {
-                if (result) {
-
-                  let data = {
-                    'contract_address': result.contractAddress,
-                    'csrfmiddlewaretoken': $("#create-grant input[name='csrfmiddlewaretoken']").val(),
-                    'transaction_hash': $('#transaction_hash').val()
-                  };
-
-                  $.ajax({
-                    type: 'post',
-                    url: '',
-                    data: data,
-                    success: json => {
-                      document.suppress_loading_leave_code = true;
-                      window.location = json.url;
-                    },
-                    error: () => {
-                      _alert({ message: gettext('Your grant failed to save. Please try again.') }, 'error');
-                    }
-                  });
-
-                } else {
-                  setTimeout(() => {
-                    callFunctionWhenTransactionMined(transactionHash);
-                  }, 1000);
-                }
-              });
-            };
-
-            callFunctionWhenTransactionMined(transactionHash);
+            // var callFunctionWhenTransactionMined = function(transactionHash) {
+            //   web3.eth.getTransactionReceipt(transactionHash, function(error, result) {
+            //     if (result) {
+            //
+            //       let data = {
+            //         'contract_address': result.contractAddress,
+            //         'csrfmiddlewaretoken': $("#create-grant input[name='csrfmiddlewaretoken']").val(),
+            //         'transaction_hash': $('#transaction_hash').val()
+            //       };
+            //
+            //       $.ajax({
+            //         type: 'post',
+            //         url: '',
+            //         data: data,
+            //         success: json => {
+            //           document.suppress_loading_leave_code = true;
+            //           // window.location = json.url;
+            //         },
+            //         error: () => {
+            //           _alert({ message: gettext('Your grant failed to save. Please try again.') }, 'error');
+            //         }
+            //       });
+            //
+            //     } else {
+            //       setTimeout(() => {
+            //         callFunctionWhenTransactionMined(transactionHash);
+            //       }, 1000);
+            //     }
+            //   });
+            // };
+            //
+            // callFunctionWhenTransactionMined(transactionHash);
           });
           // .on('receipt', function(receipt) {
           //   $('#contract_address').val(receipt.contractAddress);
