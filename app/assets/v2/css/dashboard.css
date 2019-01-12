@@ -97,6 +97,7 @@ body {
   color: #000000;
   text-decoration: none;
   padding: 10px 3rem 10px 1rem;
+  display: flex;
 }
 
 .bounty_row .avatar-container {

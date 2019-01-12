@@ -1,0 +1,45 @@
+.featured-bounties {
+  color: #fff;
+  background-color: #0d003c;
+  padding: 1.5rem;
+}
+
+.featured-bounties__title {
+  font-size: 1.25em;
+  font-weight: 600;
+  margin-bottom: 1em;
+}
+
+.featured-bounties__title .status-open {
+  color: #00e996;
+  font-size: 0.7em;
+  margin-left: 1.5em;
+}
+
+.bounty-card {
+  display: flex;
+  color: #0d003c;
+  background-color: #fff;
+  border-radius: 4px;
+  padding: 1rem;
+}
+
+.bounty-card__link {
+  color: #5100ff;
+  font-size: 0.9em;
+  font-weight: 600;
+}
+
+
+
+.carousel-control-small .carousel-control-next,
+.carousel-control-small .carousel-control-prev {
+  width: 2.3rem;
+  height: 2.3rem;
+  background: #d3d3d3;
+  top: 0;
+  bottom: 0;
+  margin: auto -0.3em;
+  border-radius: 40px;
+}
+
