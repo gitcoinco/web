@@ -1,4 +1,5 @@
 /* eslint-disable no-new */
+/* eslint-disable no-console */
 
 /**
  * Simple plugin for truncate the hash at the center
@@ -64,7 +65,7 @@ new truncateHash();
       for (let i = 0; i < elem.length; ++i) {
         new getaddress(elem[i], currentWallet);
       }
-    } catch (error) {
+    } catch (ignore) {
       console.log('%c error: web3 not defined', 'color: red');
     }
   };
@@ -76,6 +77,6 @@ try {
   web3.currentProvider.publicConfigStore.on('update', function(e) {
     new metamaskAddress();
   });
-} catch (error) {
+} catch (ignore) {
   console.log('%c error: web3 not defined', 'color: red');
 }

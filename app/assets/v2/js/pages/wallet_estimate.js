@@ -5,7 +5,7 @@ window.addEventListener('load', function() {
     } else {
       $('#metamask_label').show();
     }
-  } catch (error) {
+  } catch (ignore) {
     console.log('%c error: web3 not defined', 'color: red');
   }
   setTimeout(prefill_recommended_prices, 1000);
