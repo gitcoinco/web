@@ -2,6 +2,42 @@ from django.template.response import TemplateResponse
 from app.utils import get_profile
 from kudos.models import KudosTransfer
 from .models import Event_ETHDenver2019_Customizing_Kudos
+from django.http import JsonResponse
+
+def ethdenver2019_web3api_getKudos(request):
+    kudos_select = KudosTransfer.objects.filter(recipient_profile=profile).all()
+
+    i_kudos_item = 0
+    kudos_selection = []
+    kudos_row = []
+    kudos_selected = Event_ETHDenver2019_Customizing_Kudos.objects.filter(active=True).all()
+
+    for kudos in kudos_selected:
+        kudos_obj = {
+            "kudos": kudos.kudos_required,
+            "received": False,
+            "customizing": kudos,
+            # "expanded_kudos": vars(kudos.kudos_required)
+        }
+        recv = kudos_select.filter(kudos_token_cloned_from=kudos.kudos_required).last()
+        if recv:
+            kudos_obj['received'] = True
+            kudos_obj['transfer'] = recv
+
+        kudos_row.append(kudos_obj)
+        i_kudos_item = i_kudos_item + 1
+        if i_kudos_item >= 5:
+            i_kudos_item = 0
+            kudos_selection.append(kudos_row)
+            kudos_row = []
+
+    if i_kudos_item > 0:
+        kudos_selection.append(kudos_row)
+
+    page_ctx = {
+        "kudos_selection": kudos_selection,
+        "profile": profile
+    }
 
 
 def ethdenver2019_redeem(request):
