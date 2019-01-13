@@ -73,7 +73,7 @@ def render_new_grant_email(grant):
     params = {'grant': grant}
     response_html = premailer_transform(render_to_string("emails/grants/new_grant.html", params))
     response_txt = render_to_string("emails/grants/new_grant.txt", params)
-    subject = "Your Gitcoin Grant"
+    subject = _("Your Gitcoin Grant")
     return response_html, response_txt, subject
 
 
@@ -81,7 +81,7 @@ def render_change_grant_owner_request(grant):
     params = {'grant': grant}
     response_html = premailer_transform(render_to_string("emails/grants/change_owner_request.html", params))
     response_txt = render_to_string("emails/grants/change_owner_request.txt", params)
-    subject = "You've been chosen to be the owner for a Gitcoin Grant"
+    subject = _("You've been chosen to be the owner for a Gitcoin Grant")
     return response_html, response_txt, subject
 
 
@@ -89,7 +89,7 @@ def render_change_grant_owner_accept(grant):
     params = {'grant': grant}
     response_html = premailer_transform(render_to_string("emails/grants/change_owner_accept.html", params))
     response_txt = render_to_string("emails/grants/change_owner_accept.txt", params)
-    subject = "Grant Owner has changed"
+    subject = _("Grant Owner has changed")
     return response_html, response_txt, subject
 
 
@@ -97,7 +97,7 @@ def render_notify_ownership_change(grant):
     params = {'grant': grant}
     response_html = premailer_transform(render_to_string("emails/grants/change_owner_notify.html", params))
     response_txt = render_to_string("emails/grants/change_owner_notify.txt", params)
-    subject = "Grant ownership has been changed"
+    subject = _("Grant ownership has been changed")
     return response_html, response_txt, subject
 
 
@@ -105,7 +105,7 @@ def render_change_grant_owner_reject(grant):
     params = {'grant': grant}
     response_html = premailer_transform(render_to_string("emails/grants/change_owner_reject.html", params))
     response_txt = render_to_string("emails/grants/change_owner_reject.txt", params)
-    subject = "Grant has no change in ownership"
+    subject = _("Grant has no change in ownership")
     return response_html, response_txt, subject
 
 
@@ -113,7 +113,7 @@ def render_new_supporter_email(grant, subscription):
     params = {'grant': grant, 'subscription': subscription}
     response_html = premailer_transform(render_to_string("emails/grants/new_supporter.html", params))
     response_txt = render_to_string("emails/grants/new_supporter.txt", params)
-    subject = "You have a new Grant supporter!"
+    subject = _("You have a new Grant supporter!")
     return response_html, response_txt, subject
 
 
@@ -121,7 +121,7 @@ def render_thank_you_for_supporting_email(grant, subscription):
     params = {'grant': grant, 'subscription': subscription}
     response_html = premailer_transform(render_to_string("emails/grants/thank_you_for_supporting.html", params))
     response_txt = render_to_string("emails/grants/thank_you_for_supporting.txt", params)
-    subject = "Thank you for supporting Grants on Gitcoin!"
+    subject = _("Thank you for supporting Grants on Gitcoin!")
     return response_html, response_txt, subject
 
 
@@ -129,7 +129,7 @@ def render_support_cancellation_email(grant, subscription):
     params = {'grant': grant, 'subscription': subscription}
     response_html = premailer_transform(render_to_string("emails/grants/support_cancellation.html", params))
     response_txt = render_to_string("emails/grants/support_cancellation.txt", params)
-    subject = "Your subscription on Gitcoin Grants has been cancelled"
+    subject = _("Your subscription on Gitcoin Grants has been cancelled")
 
     return response_html, response_txt, subject
 
@@ -138,7 +138,7 @@ def render_grant_cancellation_email(grant, subscription):
     params = {'grant': grant, 'subscription': subscription}
     response_html = premailer_transform(render_to_string("emails/grants/grant_cancellation.html", params))
     response_txt = render_to_string("emails/grants/grant_cancellation.txt", params)
-    subject = "Your Grant on Gitcoin Grants has been cancelled"
+    subject = _("Your Grant on Gitcoin Grants has been cancelled")
     return response_html, response_txt, subject
 
 
@@ -146,7 +146,7 @@ def render_subscription_terminated_email(grant, subscription):
     params = {'grant': grant, 'subscription': subscription}
     response_html = premailer_transform(render_to_string("emails/grants/subscription_terminated.html", params))
     response_txt = render_to_string("emails/grants/subscription_terminated.txt", params)
-    subject = "Your subscription on Gitcoin Grants has been cancelled by the Grant Creator"
+    subject = _("Your subscription on Gitcoin Grants has been cancelled by the Grant Creator")
     return response_html, response_txt, subject
 
 
@@ -154,7 +154,7 @@ def render_successful_contribution_email(grant, subscription, contribution):
     params = {'grant': grant, 'subscription': subscription, "contribution": contribution}
     response_html = premailer_transform(render_to_string("emails/grants/successful_contribution.html", params))
     response_txt = render_to_string("emails/grants/successful_contribution.txt", params)
-    subject = 'Your Gitcoin Grants contribution was successful!'
+    subject = _('Your Gitcoin Grants contribution was successful!')
     return response_html, response_txt, subject
 
 

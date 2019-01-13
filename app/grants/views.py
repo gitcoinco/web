@@ -165,15 +165,14 @@ def grant_details(request, grant_id, grant_slug):
     }
 
     if request.method == 'GET' and grant.request_ownership_change and profile == grant.request_ownership_change:
-        # if request.method == 'GET' and grant.request_ownership_change:
-        if request.GET.get('ownership') == 'accept':
+        if request.GET.get('ownership', None) == 'accept':
             previous_owner = grant.admin_profile
             grant.admin_profile = grant.request_ownership_change
             grant.request_ownership_change = None
             grant.save()
             change_grant_owner_accept(grant, grant.admin_profile, previous_owner)
             params['change_ownership'] = 'Y'
-        elif request.GET.get('ownership') == 'reject':
+        elif request.GET.get('ownership', None) == 'reject':
             grant.request_ownership_change = None
             grant.save()
             change_grant_owner_reject(grant, grant.admin_profile)

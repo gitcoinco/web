@@ -387,7 +387,7 @@
       _alert({ message: gettext('Ownership Request has been rejected.') }, 'error');
     {% endif %}
 
-    if(localStorage['request_change'] == 'R') {
+    if(localStorage['request_change'] === 'R') {
       _alert({ message: gettext('Ownership Transfer will happen upon confirmation from the requested user.') }, 'success');
       delete localStorage['request_change'];
     }
