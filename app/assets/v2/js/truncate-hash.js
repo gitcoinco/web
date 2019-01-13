@@ -26,9 +26,9 @@
   };
 
   this.truncateHash = function() {
-    var elem = document.querySelectorAll('[data-truncatehash]');
+    const elem = document.querySelectorAll('[data-truncatehash]');
 
-    for (var i = 0; i < elem.length; ++i) {
+    for (let i = 0; i < elem.length; ++i) {
       new truncate(elem[i], elem[i].dataset.truncatehash);
     }
   };
@@ -56,20 +56,26 @@ new truncateHash();
     new truncateHash();
   };
 
-  this.metamaskAddress = () => {
-    if (!web3)
-      return;
-
-    const currentWallet = web3.eth.coinbase;
-    const elem = document.querySelectorAll('[data-metamask-address]');
-
-    for (let i = 0; i < elem.length; ++i) {
-      new getaddress(elem[i], currentWallet);
+  this.metamaskAddress = function() {
+    try {
+      const currentWallet = web3.eth.coinbase;
+      const elem = document.querySelectorAll('[data-metamask-address]');
+  
+      for (let i = 0; i < elem.length; ++i) {
+        new getaddress(elem[i], currentWallet);
+      }
+    } catch (error) {
+      console.log('%c error: web3 not defined', 'color: red');
     }
   };
 }());
+
 new metamaskAddress();
 
-web3.currentProvider.publicConfigStore.on('update', function(e) {
-  new metamaskAddress();
-});
+try {
+  web3.currentProvider.publicConfigStore.on('update', function(e) {
+    new metamaskAddress();
+  });
+} catch (error) {
+  console.log('%c error: web3 not defined', 'color: red');
+}
