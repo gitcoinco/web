@@ -63,9 +63,14 @@
                         <textarea id="form--input__reference-url" class="p-0 m-0 inline-edit" disabled>{{ grant.reference_url }}</textarea>
                       </div>
                     {% else %}
-                      <a href="{{ grant.reference_url }}" target="_blank">
+                      <a href="{{ grant.reference_url }}" target="_blank" title="Project URL">
                         <i class="fas fa-link mr-2"></i>
                         {{ grant.reference_url }}
+                      </a>
+                      <BR>
+                      <a href="https://etherscan.io/address/{{ grant.admin_address }}" target="_blank"  title="Recipient Funding Address">
+                        <i class="fas fa-lock mr-2"></i>
+                        {{ grant.admin_address }}
                       </a>
                     {% endif %}
                   </span>
