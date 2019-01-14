@@ -144,6 +144,7 @@ MIDDLEWARE = [
     'wagtail.core.middleware.SiteMiddleware',
     'wagtail.contrib.redirects.middleware.RedirectMiddleware'
 ]
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 ROOT_URLCONF = env('ROOT_URLCONF', default='app.urls')
 
@@ -584,9 +585,6 @@ KUDOS_NETWORK = env('KUDOS_NETWORK', default='mainnet')
 GRANTS_OWNER_ACCOUNT = env('GRANTS_OWNER_ACCOUNT', default='0xD386793F1DB5F21609571C0164841E5eA2D33aD8')
 GRANTS_PRIVATE_KEY = env('GRANTS_PRIVATE_KEY', default='')
 
-
-# Reporting Integrations
-MIXPANEL_TOKEN = env('MIXPANEL_TOKEN', default='')
 
 GA_PRIVATE_KEY_PATH = env('GA_PRIVATE_KEY_PATH', default='')
 GA_PRIVATE_KEY = ''

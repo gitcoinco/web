@@ -7,7 +7,7 @@ from grants.models import Grant
 logger = logging.getLogger(__name__)
 
 def add_monthly_amount_subscribed(apps, schema_editor):
-    for grant in Grant.objects.all():
+    for grant in Grant.objects.all().values('subscriptions', 'monthly_amount_subscribed'):
         subscriptions = grant.subscriptions.all()
         for subscription in subscriptions:
             if subscription.active and subscription.num_tx_approved > 1:

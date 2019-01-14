@@ -62,7 +62,6 @@ def preprocess(request):
                 utm=_get_utm_from_cookie(request),
             )
     context = {
-        'mixpanel_token': settings.MIXPANEL_TOKEN,
         'STATIC_URL': settings.STATIC_URL,
         'MEDIA_URL': settings.MEDIA_URL,
         'num_slack': num_slack,

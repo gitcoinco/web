@@ -59,6 +59,9 @@ $(document).ready(function() {
     let edit_amount_goal = $('#amount_goal').val();
     let edit_grant_members = $('#grant-members').val();
 
+    if (editableFields['edit_admin_profile'] != edit_admin_profile)
+      localStorage['request_change'] = 'R';
+
     $.ajax({
       type: 'post',
       url: '',

@@ -36,14 +36,14 @@ class GrantAdmin(GeneralAdmin):
     fields = [
         'title', 'description', 'reference_url', 'admin_address', 'active',
         'amount_goal', 'amount_received', 'monthly_amount_subscribed',
-        'deploy_tx_id', 'cancel_tx_id',
+        'deploy_tx_id', 'cancel_tx_id', 'admin_profile', 'token_symbol',
         'token_address', 'contract_address', 'network', 'required_gas_price', 'logo_svg_asset',
         'logo_asset', 'created_on', 'modified_on', 'team_member_list',
         'subscriptions_links', 'contributions_links',
     ]
     readonly_fields = [
         'logo_svg_asset', 'logo_asset', 'created_on', 'modified_on', 'token_address', 'contract_address',
-        'deploy_tx_id', 'cancel_tx_id',
+        'deploy_tx_id', 'cancel_tx_id', 'token_symbol',
         'network', 'amount_goal', 'amount_received', 'team_member_list',
         'subscriptions_links', 'contributions_links',
     ]
