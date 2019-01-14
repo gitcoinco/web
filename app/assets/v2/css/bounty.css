@@ -136,6 +136,10 @@ body {
   padding: 1em 0;
 }
 
+#bounty-info-row {
+  margin-left: 1px;
+}
+
 .bounty-subheading {
   font-weight: lighter;
   font-size: 14px;
@@ -160,8 +164,24 @@ body {
   color: #0D0764;
 }
 
+.bounty-info-row-div {
+  width: 100%;
+}
+.bounty-info-row-span-left {
+  float: left;
+}
+.bounty-info-row-span-right {
+  float: right;
+}
+
 .bounty-info-text {
   color: #717171;
+}
+
+@media (min-width: 1200px) {
+  .col-xl-4.bounty-info .bounty-info-row-div .bounty-info-text.bounty-info-row-span-right {
+    margin-right: 3.2em;
+  }
 }
 
 .started-status-column div {
@@ -240,6 +260,11 @@ body {
 .red_warning a,
 #network a{
   color: #fb9470;
+  font-weight: bold;
+}
+
+#bounty_reserved_for a {
+  margin-left: 5px;
   font-weight: bold;
 }
 
@@ -370,6 +395,12 @@ a.btn {
 .waiting-state img {
   top: -2rem;
   transform: none;
+}
+
+#bounty_reserved_for img {
+  vertical-align: top;
+  margin-left: 3px;
+  margin-top: -2px;
 }
 
 #btn-white img {
@@ -664,20 +695,23 @@ a.btn {
   text-align: center;
 }
 
-.bounty_details .quote-container {
+.bounty_details .quote-container,
+.grant_waiting .quote-container {
   width: 55%;
   margin: 4rem auto;
   font-weight: 700;
   z-index: 2;
 }
 
-.bounty_details .quote_text {
+.bounty_details .quote_text,
+.grant_waiting .quote_text {
   margin-top: 50px;
   font-size: 1.1rem;
   color: #4A4A4A;
 }
 
-.bounty_details .quote_author {
+.bounty_details .quote_author,
+.grant_waiting .quote_author {
   color: #4A4A4A;
   margin: 1rem auto;
   font-size: 1rem;

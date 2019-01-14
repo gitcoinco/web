@@ -168,7 +168,6 @@ div.button-pink {
   font-size: 2em;
   font-weight: 500;
   font-style: italic;
-  letter-spacing: 0.1em;
 }
 
 .header-line-contributors {
@@ -191,14 +190,6 @@ div.button-pink {
 
 .font-weight-300 {
   font-weight: 300;
-}
-
-.light-bg {
-  background-color: rgba(239, 243, 238, 0.7);
-  background-image: url('/static/v2/images/light-bg.png');
-  background-size: contain;
-  background-position: bottom;
-  background-repeat: no-repeat;
 }
 
 .white-light-bg {
@@ -252,6 +243,10 @@ div.button-pink {
 
 .font-smaller-7 {
   font-size: 0.55rem;
+}
+
+.font-smallest {
+  font-size: 0.1rem;
 }
 
 .center-block {

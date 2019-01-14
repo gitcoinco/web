@@ -38,7 +38,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from dashboard.models import Activity, Profile
 from dashboard.notifications import maybe_market_kudos_to_email, maybe_market_kudos_to_github
-from dashboard.utils import get_web3
+from dashboard.utils import get_nonce, get_web3
 from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_by_category, get_emails_master, get_github_primary_email
@@ -96,6 +96,9 @@ def about(request):
         'card_title': _('Each Kudos is a unique work of art.'),
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
         'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
+        'card_player_override': 'https://www.youtube.com/embed/EOlMTOzmKKk',
+        'card_player_stream_override': static('v2/card/kudos.mp4'),
+        'card_player_thumb_override': static('v2/card/kudos.png'),
         "listings": listings
     }
     return TemplateResponse(request, 'kudos_about.html', context)
@@ -171,6 +174,7 @@ def details(request, kudos_id, name):
 
     # Find other profiles that have the same kudos name
     kudos = get_object_or_404(Token, pk=kudos_id)
+    num_kudos_limit = 100
 
     context = {
         'send_enabled': kudos.send_enabled_for(request.user),
@@ -181,7 +185,7 @@ def details(request, kudos_id, name):
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
         'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
         'kudos': kudos,
-        'related_handles': list(set(kudos.owners_handles))[:20],
+        'related_handles': list(set(kudos.owners_handles))[:num_kudos_limit],
     }
     if kudos:
         token = Token.objects.select_related('contract').get(
@@ -585,35 +589,6 @@ def receive(request, key, txid, network):
     }
 
     return TemplateResponse(request, 'transaction/receive.html', params)
-
-
-def get_nonce(network, address):
-    # this function solves the problem of 2 pending tx's writing over each other
-    # by checking both web3 RPC *and* the local DB for the nonce
-    # and then using the higher of the two as the tx nonce
-    from perftools.models import JSONStore
-    w3 = get_web3(network)
-
-    # web3 RPC node: nonce
-    nonce_from_web3 = w3.eth.getTransactionCount(address)
-
-    # db storage
-    key = f"nonce_{network}_{address}"
-    view = 'get_nonce'
-    nonce_from_db = 0
-    try:
-        nonce_from_db = JSONStore.objects.get(key=key, view=view).data[0]
-        nonce_from_db += 1 # increment by 1 bc we need to be 1 higher than last txid
-    except:
-        pass
-
-    new_nonce = max(nonce_from_db, nonce_from_web3)
-
-    # update JSONStore
-    JSONStore.objects.filter(key=key, view=view).all().delete()
-    JSONStore.objects.create(key=key, view=view, data=[new_nonce])
-
-    return new_nonce
 
 
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)

@@ -254,12 +254,20 @@ var showLoading = function() {
   setTimeout(showLoading, 10);
 };
 
+var waitingStateActive = function() {
+  $('.bg-container').show();
+  $('.loading_img').addClass('waiting-state ');
+  $('.waiting_room_entertainment').show();
+  $('.issue-url').html('<a href="' + document.issueURL + '">' + document.issueURL + '</a>');
+  waitingRoomEntertainment();
+};
+
 /** Add the current profile to the interested profiles list. */
 var add_interest = function(bounty_pk, data) {
   if (document.interested) {
     return;
   }
-  mutate_interest(bounty_pk, 'new', data);
+  return mutate_interest(bounty_pk, 'new', data);
 };
 
 /** Remove the current profile from the interested profiles list. */
@@ -276,7 +284,7 @@ var mutate_interest = function(bounty_pk, direction, data) {
   var request_url = '/actions/bounty/' + bounty_pk + '/interest/' + direction + '/';
 
   showBusyOverlay();
-  $.post(request_url, data).then(function(result) {
+  return $.post(request_url, data).then(function(result) {
     hideBusyOverlay();
 
     result = sanitizeAPIResults(result);
@@ -285,6 +293,7 @@ var mutate_interest = function(bounty_pk, direction, data) {
       if (direction === 'new') {
         _alert({ message: result.msg }, 'success');
         $('#interest a').attr('id', 'btn-white');
+        return true;
       } else if (direction === 'remove') {
         _alert({ message: result.msg }, 'success');
         $('#interest a').attr('id', '');
@@ -304,7 +313,6 @@ var mutate_interest = function(bounty_pk, direction, data) {
     }
 
     _alert({ message: alertMsg }, 'error');
-
   });
 };
 
@@ -654,18 +662,12 @@ var retrieveIssueDetails = function() {
 };
 
 
-var randomElement = function(array) {
-  var length = array.length;
-  var randomNumber = Math.random();
-  var randomIndex = Math.floor(randomNumber * length);
+const randomElement = array => {
+  const length = array.length;
+  const randomNumber = Math.random();
+  const randomIndex = Math.floor(randomNumber * length);
 
   return array[randomIndex];
-};
-
-var mixpanel_track_once = function(event, params) {
-  if (document.listen_for_web3_iterations == 1 && mixpanel) {
-    mixpanel.track(event, params);
-  }
 };
 
 /* eslint-disable no-lonely-if */
@@ -779,7 +781,6 @@ var trigger_primary_form_web3_hooks = function() {
       $('#unlock_metamask_error').css('display', 'none');
       $('#connect_metamask_error').css('display', 'none');
       $('#no_issue_error').css('display', 'none');
-      mixpanel_track_once('No Metamask Error', params);
     } else if (is_metamask_unlocked && !is_metamask_approved) {
       $('#connect_metamask_error').css('display', 'block');
       $('#unlock_metamask_error').css('display', 'none');
@@ -789,7 +790,6 @@ var trigger_primary_form_web3_hooks = function() {
       $('#primary_form').addClass('hidden');
       $('.submit_bounty .newsletter').addClass('hidden');
       $('#no_issue_error').css('display', 'none');
-      mixpanel_track_once('Unlock Metamask Error', params);
     } else if (!web3.eth.coinbase) {
       $('#unlock_metamask_error').css('display', 'block');
       $('#zero_balance_error').css('display', 'none');
@@ -799,7 +799,6 @@ var trigger_primary_form_web3_hooks = function() {
       $('#connect_metamask_error').css('display', 'none');
       $('.submit_bounty .newsletter').addClass('hidden');
       $('#no_issue_error').css('display', 'none');
-      mixpanel_track_once('Unlock Metamask Error', params);
     } else if (is_zero_balance_not_okay && document.balance == 0) {
       $('#zero_balance_error').css('display', 'block');
       $('#robot_error').removeClass('hidden');
@@ -809,7 +808,6 @@ var trigger_primary_form_web3_hooks = function() {
       $('#connect_metamask_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
       $('#no_issue_error').css('display', 'none');
-      mixpanel_track_once('Zero Balance Metamask Error', params);
     } else {
       $('#zero_balance_error').css('display', 'none');
       $('#unlock_metamask_error').css('display', 'none');
@@ -836,7 +834,6 @@ var trigger_faucet_form_web3_hooks = function() {
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
-      mixpanel_track_once('No Metamask Error', params);
       return;
     } else if (is_metamask_unlocked && !is_metamask_approved) {
       $('#no_metamask_error').css('display', 'none');
@@ -857,7 +854,6 @@ var trigger_faucet_form_web3_hooks = function() {
       $('#connect_metamask_error').css('display', 'none');
       $('#over_balance_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
-      mixpanel_track_once('Faucet Available Funds Metamask Error', params);
     } else {
       $('#over_balance_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
@@ -870,7 +866,6 @@ var trigger_faucet_form_web3_hooks = function() {
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
-      mixpanel_track_once('No Metamask Error', params);
       return;
     }
     if (is_metamask_unlocked && !is_metamask_approved) {
@@ -881,7 +876,6 @@ var trigger_faucet_form_web3_hooks = function() {
     if (!web3.eth.coinbase) {
       $('#unlock_metamask_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
-      mixpanel_track_once('Unlock Metamask Error', params);
       return;
     }
     web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
@@ -893,7 +887,6 @@ var trigger_faucet_form_web3_hooks = function() {
       if (balance == 0) {
         $('#zero_balance_error').css('display', 'block');
         $('#admin_faucet_form').remove();
-        mixpanel_track_once('Zero Balance Metamask Error', params);
       }
     });
   }
@@ -919,40 +912,43 @@ function getNetwork(id) {
 // figure out what version of web3 this is, whether we're logged in, etc..
 var listen_for_web3_changes = async function() {
 
-  if (!document.listen_for_web3_iterations) {
-    document.listen_for_web3_iterations = 1;
-  } else {
-    document.listen_for_web3_iterations += 1;
+  if (document.location.pathname.indexOf('grants') === -1) {
+    if (!document.listen_for_web3_iterations) {
+      document.listen_for_web3_iterations = 1;
+    } else {
+      document.listen_for_web3_iterations += 1;
+    }
+
+    if (typeof web3 == 'undefined') {
+      currentNetwork();
+      trigger_form_hooks();
+    } else if (typeof web3 == 'undefined' || typeof web3.eth == 'undefined' || typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
+      currentNetwork('locked');
+      trigger_form_hooks();
+    } else {
+      is_metamask_unlocked = true;
+      web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
+        if (errors) {
+          return;
+        }
+        if (typeof result != 'undefined' && result !== null) {
+          document.balance = result.toNumber();
+        }
+      });
+
+      web3.version.getNetwork(function(error, netId) {
+        if (error) {
+          currentNetwork();
+        } else {
+          var network = getNetwork(netId);
+
+          currentNetwork(network);
+          trigger_form_hooks();
+        }
+      });
+    }
   }
 
-  if (typeof web3 == 'undefined') {
-    currentNetwork();
-    trigger_form_hooks();
-  } else if (typeof web3 == 'undefined' || typeof web3.eth == 'undefined' || typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
-    currentNetwork('locked');
-    trigger_form_hooks();
-  } else {
-    is_metamask_unlocked = true;
-    web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
-      if (errors) {
-        return;
-      }
-      if (typeof result != 'undefined') {
-        document.balance = result.toNumber();
-      }
-    });
-
-    web3.version.getNetwork(function(error, netId) {
-      if (error) {
-        currentNetwork();
-      } else {
-        var network = getNetwork(netId);
-
-        currentNetwork(network);
-        trigger_form_hooks();
-      }
-    });
-  }
   if (window.ethereum && !document.has_checked_for_ethereum_enable) {
     document.has_checked_for_ethereum_enable = true;
     is_metamask_approved = await window.ethereum._metamask.isApproved();
@@ -1336,3 +1332,60 @@ function shuffleArray(array) {
   }
   return array;
 }
+
+const getURLParams = (k) => {
+  var p = {};
+
+  location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(s, k, v) {
+    p[k] = v;
+  });
+  return k ? p[k] : p;
+};
+
+const updateParams = (key, value) => {
+  params = new URLSearchParams(window.location.search);
+  if (params.get(key) === value) return;
+  params.set(key, value);
+  window.location.search = params.toString();
+};
+
+/**
+ * shrinks text if it exceeds a given length which introduces a button
+ * which can expand / shrink the text.
+ * useage: <div class="more">...</div>
+ *
+ * @param {number} length - text length to be wrapped.
+ */
+const showMore = (length = 400) => {
+  const placeholder = '...';
+  const expand = 'More';
+  const shrink = 'Less';
+
+  $('.wrap-text').each(function() {
+    const content = $(this).html();
+
+    if (content.length > length) {
+      const shortText = content.substr(0, length);
+      const remainingText = content.substr(length, content.length - length + 1);
+      const html = shortText + '<span class="moreellipses">' + placeholder +
+      '&nbsp;</span><span class="morecontent"><span>' + remainingText +
+      '</span>&nbsp;&nbsp;<a href="#" class="morelink">' + expand +
+      '</a></span>';
+
+      $(this).html(html);
+    }
+  });
+
+  $('.morelink').on('click', function(event) {
+    if ($(event.currentTarget).hasClass('less')) {
+      $(event.currentTarget).removeClass('less');
+      $(event.currentTarget).html(expand);
+    } else {
+      $(event.currentTarget).addClass('less');
+      $(event.currentTarget).html(shrink);
+    }
+    $(event.currentTarget).parent().prev().toggle();
+    $(event.currentTarget).prev().toggle();
+    return false;
+  });
+};

@@ -1,0 +1,255 @@
+@media (min-width: 1200px) {
+  .grant-detail .container {
+    max-width: 85vw
+  }
+}
+
+.grant-item__owner-image,
+.grant-item__owner-handle {
+  display: inline;
+}
+
+.cancel_grants.modal {
+  max-width: 45rem;
+}
+
+.grant__header .grant-item__owner-image img {
+  width: 50px;
+  height: 50px;
+}
+
+.grant-item__owner .select2-selection
+.grant-item__member .select2-selection,
+.grant__header,
+.inline-edit {
+  background-color: #F2F6F9;
+}
+
+.grant-item__owner .select2-selection,
+.grant-item__member .select2-selection {
+  border-radius: 2px !important;
+  font-size: 0.75rem;
+  margin-top: 0.5rem;
+  outline: none;
+}
+
+.grant-item__member .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+  padding: 2px 5px;
+}
+
+.grant-item__member .select2-container--default .select2-selection--multiple .select2-selection__choice {
+  border-radius: 2px;
+}
+
+.grant-item__members {
+  display: flex;
+  text-align: center;
+}
+
+.grant__header .grant-item__member-image img {
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+  top: 10px;
+}
+
+.grant__header {
+  position: relative;
+}
+
+.grant__title {
+  color: #43484D;
+}
+
+.grant__url a {
+  text-decoration: none;
+  color: #0D0764;
+}
+
+.inline-edit {
+  border: none;
+}
+
+.button__small {
+  font-weight: 500;
+}
+
+.grant__description textarea,
+#contract_owner_address.editable {
+  background: white !important;
+}
+
+input.editable,
+textarea.editable {
+  margin-top: 6px;
+  border: 1px solid #CACACA;
+  background: white;
+  padding: 7px 14px !important;
+  border-radius: 3px;
+}
+
+.form__select2 .select2-container--default .select2-selection--single {
+  border: 1px solid #CACACA;
+}
+
+#form--input__description,
+#form--input__reference-url,
+#form--input__title,
+#contract_owner_address {
+  width: 100%;
+  text-align: justify;
+  resize: none;
+}
+
+.article-title,
+.grant__description,
+.article-description {
+  color: #43484D;
+}
+
+.grant__description span {
+  text-align: justify;
+}
+
+.article-description {
+  text-align:justify;
+}
+
+.no-subscriptions a {
+  text-decoration: none;
+  color: #007bff;
+}
+
+.article-date {
+  color: #999;
+}
+
+.form__input {
+  border-radius: 2px;
+}
+
+.grant__specs {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.grant__stakeholders-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.grant__header button {
+  font-weight: 500;
+}
+
+.sub-title {
+  font-weight: 600;
+}
+
+.grant-banner img {
+  height: auto;
+  width: 100%;
+}
+
+.grant-banner {
+  overflow : hidden;
+  max-height: 22rem;
+}
+
+.grant__stakeholders-list img,
+.grant-item__members img,
+.grant-item__owner-image img {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+}
+
+.grant__header .fa-save {
+  animation: rotation 0.1s linear;
+}
+
+.grant__header .fa-edit {
+  animation: rotation2 0.1s linear;
+}
+
+.update-milestone {
+  background-color: white;
+  border-top: 1px solid #D8D8D8;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+}
+
+.update {
+  border-bottom: 1px solid #D8D8D8;
+}
+
+.update:first-child {
+  padding-top: 0 !important;
+}
+
+.milestones-list li:last-child {
+  padding-bottom: 0 !important;
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+@keyframes rotation2 {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+@media (max-width: 767.98px) {
+
+  #tabs ul {
+    list-style-type: none;
+    padding-left: 0;
+  }
+
+  #tabs ul li {
+    margin-bottom: 2rem;
+  }
+
+  #tabs > .ui-widget-header {
+    display: flex;
+    justify-content: center;
+  }
+}
