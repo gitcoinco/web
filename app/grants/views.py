@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import datetime
 import json
 import logging
+from decimal import Decimal
 
 from django.conf import settings
 from django.contrib import messages
@@ -40,8 +41,8 @@ from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recom
 from grants.forms import MilestoneForm
 from grants.models import Contribution, Grant, Milestone, Subscription, Update
 from marketing.mails import (
-    grant_cancellation, new_grant, new_supporter, subscription_terminated, support_cancellation,
-    thank_you_for_supporting,
+    change_grant_owner_accept, change_grant_owner_reject, change_grant_owner_request, grant_cancellation, new_grant,
+    new_supporter, subscription_terminated, support_cancellation, thank_you_for_supporting,
 )
 from marketing.models import Keyword
 from web3 import HTTPProvider, Web3
@@ -130,12 +131,14 @@ def grant_details(request, grant_id, grant_slug):
             grant.reference_url = request.POST.get('edit-reference_url')
             form_profile = request.POST.get('edit-admin_profile')
             admin_profile = Profile.objects.get(handle=form_profile)
-            grant.admin_profile = admin_profile
             grant.description = request.POST.get('edit-description')
-            grant.amount_goal = request.POST.get('edit-amount_goal')
+            grant.amount_goal = Decimal(request.POST.get('edit-amount_goal'))
             team_members = request.POST.getlist('edit-grant_members[]')
             team_members.append(str(admin_profile.id))
             grant.team_members.set(team_members)
+            if grant.admin_profile != admin_profile:
+                grant.request_ownership_change = admin_profile
+                change_grant_owner_request(grant, grant.request_ownership_change)
             grant.save()
             return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
@@ -160,6 +163,21 @@ def grant_details(request, grant_id, grant_slug):
         'conf_time_spread': conf_time_spread(),
         'gas_advisories': gas_advisories(),
     }
+
+    if request.method == 'GET' and grant.request_ownership_change and profile == grant.request_ownership_change:
+        if request.GET.get('ownership', None) == 'accept':
+            previous_owner = grant.admin_profile
+            grant.admin_profile = grant.request_ownership_change
+            grant.request_ownership_change = None
+            grant.save()
+            change_grant_owner_accept(grant, grant.admin_profile, previous_owner)
+            params['change_ownership'] = 'Y'
+        elif request.GET.get('ownership', None) == 'reject':
+            grant.request_ownership_change = None
+            grant.save()
+            change_grant_owner_reject(grant, grant.admin_profile)
+            params['change_ownership'] = 'N'
+
     return TemplateResponse(request, 'grants/detail.html', params)
 
 
