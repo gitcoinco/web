@@ -273,7 +273,7 @@
             <p class="sub-title">{% trans "Supported By" %} ({{ subscriptions|length }})</p>
             <div class="grant__stakeholders-list">
               {% for subscriber in subscriptions %}
-                <a class="grant__stakeholders-item mr-2" href="{% url 'profile' subscriber.contributor_profile.handle %}">
+                <a class="grant__stakeholders-item mr-2 text-center" href="{% url 'profile' subscriber.contributor_profile.handle %}">
                   <img src="{{ subscriber.contributor_profile.avatar_url }}" />
                   <div>
                     <span class="grant-profile">{{ subscriber.contributor_profile.handle }}</span>
@@ -291,10 +291,15 @@
     </div>
     </div>
     
-    <div class="container pt-5">
-      <div id="grant-profile-tabs" class="tab-container font-body mb-3">
+    <div class="container py-5">
+      <div id="grant-profile-tabs" class="tab-container font-body mb-4">
         <button type="button" id="summary" class="section-tab">{% trans "Activity Summary" %}</button>
-        <button type="button" id="transactions" class="section-tab">{% trans "Transactions" %}</button>
+        <button type="button" id="transactions" class="section-tab">
+          {% trans "Transactions" %}
+          {% if not subscriptions and not cancelled_subscriptions and not contributions %}
+            (0)
+          {% endif %}
+        </button>
       </div>
 
       <div id="grant-profile-tabs-sections" class="tab-sections section">
@@ -302,7 +307,11 @@
           {% include 'grants/detail/summary.html' %}
         </div>
         <div id="section-transactions" class="tab-section">
-          {% include 'grants/activity.html' %}
+          {% if not subscriptions and not cancelled_subscriptions and not contributions %}
+            <h4 class="m-auto text-center font-weight-semibold">{% trans "No Activity for this Grant!" %}</h4>
+          {% else %}
+            {% include 'grants/activity.html' %}
+          {% endif %}
         </div>
       </div>
     </div>
