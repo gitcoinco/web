@@ -21,9 +21,11 @@ $(document).ready(() => {
   });
 
   waitforWeb3(() => {
-    $('#sub_tx_link').attr('href', etherscan_tx_url($('#sub_tx_link').attr('href')));
-    $('#tx_link').attr('href', etherscan_tx_url($('#tx_link').attr('href')));
-    $('#cancel_tx_link').attr('href', etherscan_tx_url($('#cancel_tx_link').attr('href')));
+    let _network = $('#grant-network').html();
+
+    $('#sub_tx_link').attr('href', etherscan_tx_url($('#sub_tx_link').attr('href'), _network));
+    $('#tx_link').attr('href', etherscan_tx_url($('#tx_link').attr('href'), _network));
+    $('#cancel_tx_link').attr('href', etherscan_tx_url($('#cancel_tx_link').attr('href'), _network));
   });
 
 });

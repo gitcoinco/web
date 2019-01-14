@@ -311,6 +311,7 @@
             <h4 class="m-auto text-center font-weight-semibold">{% trans "No Activity for this Grant!" %}</h4>
           {% else %}
             {% include 'grants/activity.html' %}
+            <span id="grant-network" class="hidden">{{ grant.network }}</span>
           {% endif %}
         </div>
       </div>
