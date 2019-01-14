@@ -1,7 +1,15 @@
 /* eslint-disable no-console */
 
 $(document).ready(function() {
+  if (web3 && web3.eth) {
+    web3.eth.net.isListening((error, connectionStatus) => {
+      if (connectionStatus)
+        init();
+    });
+  }
+});
 
+const init = () => {
   if (localStorage['grants_quickstart_disable'] !== 'true') {
     window.location = document.location.origin + '/grants/quickstart';
   }
@@ -193,7 +201,7 @@ $(document).ready(function() {
   });
 
   $('.select2-selection__rendered').removeAttr('title');
-});
+};
 
 const exceedFileSize = (file, size = 4000000) => {
   if (file.size > size)
