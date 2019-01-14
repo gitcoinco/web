@@ -1,0 +1,124 @@
+{% load static humanize i18n grants_extra %}
+<div class="container px-0">
+  <div class="row mb-3 py-2 px-0 mx-sm-0">
+    <div class="col-12 px-0">
+      {% if subscriptions %}
+        <div id="active-subscriptions">
+          <p class="font-body subtitle">
+            {% trans "Active Subscriptions" %}
+          </p>
+          {% for subscription in subscriptions %}
+            <div class="py-3 mx-sm-0 row transaction-history">
+              <div class="col-3 col-md-1 font-subheader text-center my-auto">
+                {{ subscription.created_on|date:"d M" }}
+              </div>
+              <div class="col-2 col-md-1 justify-content-center special_tag">
+                <img class="avatar" src="{{ subscription.contributor_profile.avatar_url }}">
+              </div>
+              <div class="col-7 col-md-5 my-auto">
+                <div class="font-weight-bold font-body">
+                  {{ subscription.contributor_profile }}
+                </div>
+                <div class="info font-caption">
+                  {{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }} / {{
+                  subscription.frequency }} {{ subscription.frequency_unit }}
+                </div>
+              </div>
+              <div class="offset-lg-1 col-7 col-md-2 my-auto tags font-caption">
+                <div class="tag tag-lg token">
+                  <p>
+                    {{ subscription.amount_per_period|floatformat:4|intcomma }}
+                    <span>{{ subscription.token_symbol }}</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+      {% if cancelled_subscriptions %}
+        <div id="cancelled-subscriptions">
+          <p class="font-body subtitle">
+            Cancelled Subscriptions
+          </p>
+          {% for subscription in cancelled_subscriptions %}
+          <div class="py-3 mx-sm-0 row transaction-history">
+            <div class="col-3 col-md-1 font-subheader text-center my-auto">
+              {{ subscription.created_on|date:"d M" }}
+            </div>
+            <div class="col-2 col-md-1 justify-content-center special_tag">
+              <img class="avatar" src="{{ subscription.contributor_profile.avatar_url }}">
+            </div>
+            <div class="col-7 col-md-5 my-auto">
+              <div class="font-weight-bold font-body">
+                {{ subscription.contributor_profile }}
+              </div>
+              <div class="info font-caption">
+                {{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }} / {{ subscription.frequency }} {{ subscription.frequency_unit }}
+              </div>
+            </div>
+            <div class="offset-lg-1 col-7 col-md-2 my-auto tags font-caption">
+              <div class="tag tag-lg token">
+                <p>
+                  {{ subscription.amount_per_period|floatformat:4|intcomma }}
+                  <span>{{ subscription.token_symbol }}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+      {% if contributions %}
+      <div id="contributions">
+        <p class="font-body subtitle">
+          {% trans "Contributions" %}
+        </p>
+        {% for transaction in contributions %}
+          <div class="py-3 mx-sm-0 row transaction-history">
+            <div class="col-3 col-md-1 font-subheader text-center my-auto">
+              {{ transaction.created_on|date:"d M" }}
+            </div>
+            <div class="col-2 col-md-1 justify-content-center special_tag">
+              <img class="avatar" src="{{ transaction.subscription.contributor_profile.avatar_url }}">
+            </div>
+            <div class="col-7 col-md-5 my-auto">
+              <div class="font-weight-bold font-body">
+                {{ transaction.subscription.contributor_profile }}
+              </div>
+              <div class="info font-caption">
+                {{ transaction.subscription.amount_per_period|floatformat:4|intcomma }} {{ transaction.subscription.token_symbol }} / {{ transaction.subscription.frequency }} {{ transaction.subscription.frequency_unit }}
+              </div>
+            </div>
+            <div class="col-5 col-md-2 font-body my-auto txn-link">
+              <a id="tx_link" href="" target="_blank" rel="noopener noreferrer">
+                View Etherscan
+              </a>
+              <input type="hidden" id="tx_id" name="tx_id" value="{{ transaction.tx_id }}" />
+            </div>
+            <div class="offset-lg-1 col-7 col-md-2 my-auto tags font-caption">
+              <div class="tag tag-lg token">
+                <p>
+                  {{ transaction.subscription.amount_per_period|floatformat:4|intcomma }}
+                  <span>{{ transaction.subscription.token_symbol }}</span>
+                </p>
+              </div>
+              {% if transaction.value_in_usdt_now %}
+                <div class="tag tag-lg usd">
+                  <p>
+                    {{ transaction.value_in_usdt_now }}
+                    <span>USD</span>
+                  </p>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% if subscriptions.count == 0 and cancelled_subscriptions.count == 0 and contributions.count == 0 %}
+    {% trans "No Transactions Found" %}
+  {% endif %}
+</div>

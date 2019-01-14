@@ -182,7 +182,7 @@ def grant_details(request, grant_id, grant_slug):
             change_grant_owner_reject(grant, grant.admin_profile)
             params['change_ownership'] = 'N'
 
-    return TemplateResponse(request, 'grants/detail.html', params)
+    return TemplateResponse(request, 'grants/detail/index.html', params)
 
 
 @login_required
