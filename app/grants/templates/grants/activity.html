@@ -1,5 +1,5 @@
 {% load static humanize i18n grants_extra %}
-<div class="container px-0">
+<div class="container px-md-0">
   <div class="row mb-3 py-2 px-0 mx-sm-0">
     <div class="col-12 px-0">
       {% if subscriptions %}
@@ -9,7 +9,7 @@
           </p>
           {% for subscription in subscriptions %}
             <div class="py-3 mx-sm-0 row transaction-history">
-              <div class="col-3 col-md-1 font-subheader text-center my-auto">
+              <div class="col-2 col-xl-1 font-subheader text-center my-auto">
                 {{ subscription.created_on|date:"d M" }}
               </div>
               <div class="col-2 col-md-1 justify-content-center special_tag">
@@ -17,7 +17,7 @@
                   <img class="avatar rounded-circle" src="{{ subscription.contributor_profile.avatar_url }}">
                 </a>
               </div>
-              <div class="col-7 col-md-5 my-auto">
+              <div class="col-4 col-xl-5 my-auto">
                 <div class="font-weight-semibold font-body">
                   <a href="{% url 'profile' subscription.contributor_profile.handle %}">
                     {{ subscription.contributor_profile }}
@@ -28,12 +28,12 @@
                   {{ subscription.frequency }} {{ subscription.frequency_unit }}
                 </div>
               </div>
-              <div class="col-md-2 my-auto font-body">
+              <div class="d-none d-md-block col-4 col-md-2 my-auto font-body">
                 <a id="sub_tx_link" href="{{ subscription.new_approve_tx_id }}" target="_blank" rel="noopener noreferrer">
                   View Etherscan
                 </a>
               </div>
-              <div class="offset-lg-1 col-7 col-md-2 my-auto tags font-caption">
+              <div class="offset-lg-1 col-4 col-md-2 my-auto tags font-caption">
                 <div class="tag tag-lg token">
                   <p>
                     {{ subscription.amount_per_period|floatformat:4|intcomma }}
@@ -53,7 +53,7 @@
           </p>
           {% for transaction in contributions %}
             <div class="py-3 mx-sm-0 row transaction-history">
-              <div class="col-3 col-md-1 font-subheader text-center my-auto">
+              <div class="col-2 col-xl-1 font-subheader text-center my-auto">
                 {{ transaction.created_on|date:"d M" }}
               </div>
               <div class="col-2 col-md-1 justify-content-center special_tag">
@@ -61,7 +61,7 @@
                   <img class="avatar rounded-circle" src="{{ transaction.subscription.contributor_profile.avatar_url }}">
                 </a>
               </div>
-              <div class="col-7 col-md-5 my-auto">
+              <div class="col-4 col-xl-5 my-auto">
                 <div class="font-weight-bold font-body">
                   {{ transaction.subscription.contributor_profile }}
                 </div>
@@ -69,12 +69,12 @@
                   {{ transaction.subscription.amount_per_period|floatformat:4|intcomma }} {{ transaction.subscription.token_symbol }} / {{ transaction.subscription.frequency }} {{ transaction.subscription.frequency_unit }}
                 </div>
               </div>
-              <div class="col-5 col-md-2 font-body my-auto txn-link">
+              <div class="d-none d-md-block col-md-2 font-body my-auto txn-link">
                 <a id="tx_link" href="{{ transaction.tx_id }}" target="_blank" rel="noopener noreferrer">
                   View Etherscan
                 </a>
               </div>
-              <div class="offset-lg-1 col-7 col-md-2 my-auto tags font-caption">
+              <div class="offset-lg-1 col-4 col-md-2 my-auto tags font-caption">
                 <div class="tag tag-lg token">
                   <p>
                     {{ transaction.subscription.amount_per_period|floatformat:4|intcomma }}
@@ -102,7 +102,7 @@
           </p>
           {% for subscription in cancelled_subscriptions %}
           <div class="py-3 mx-sm-0 row transaction-history">
-            <div class="col-3 col-md-1 font-subheader text-center my-auto">
+            <div class="col-2 col-xl-1 font-subheader text-center my-auto">
               {{ subscription.created_on|date:"d M" }}
             </div>
             <div class="col-2 col-md-1 justify-content-center special_tag">
@@ -110,7 +110,7 @@
                 <img class="avatar rounded-circle" src="{{ subscription.contributor_profile.avatar_url }}">
               </a>
             </div>
-            <div class="col-7 col-md-5 my-auto">
+            <div class="col-4 col-xl-5 my-auto">
               <div class="font-weight-semibold font-body">
                 <a href="{% url 'profile' subscription.contributor_profile.handle %}">
                   {{ subscription.contributor_profile }}
@@ -120,12 +120,12 @@
                 {{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }} / {{ subscription.frequency }} {{ subscription.frequency_unit }}
               </div>
             </div>
-            <div class="col-2 my-auto font-body">
+            <div class="d-none d-md-block col-md-2 my-auto font-body">
               <a id="cancel_tx_link" href="{{ subscription.cancel_tx_id }}" target="_blank" rel="noopener noreferrer">
                 View Etherscan
               </a>
             </div>
-            <div class="offset-lg-1 col-7 col-md-2 my-auto tags font-caption">
+            <div class="col-4 col-md-2 offset-lg-1 my-auto tags font-caption">
               <div class="tag tag-lg token">
                 <p>
                   {{ subscription.amount_per_period|floatformat:4|intcomma }}
