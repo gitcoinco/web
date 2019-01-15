@@ -12,6 +12,12 @@ $(document).ready(function() {
   updateSummary();
 
   $('#js-fundGrant').validate({
+    rules: {
+      num_periods: {
+        required: true,
+        min: 1
+      }
+    },
     submitHandler: function(form) {
       var data = {};
 
