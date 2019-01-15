@@ -298,13 +298,13 @@
     
     <div class="container py-5">
       <div id="grant-profile-tabs" class="tab-container font-body mb-4">
-        <button type="button" id="summary" class="section-tab">{% trans "Activity Summary" %}</button>
         <button type="button" id="transactions" class="section-tab">
-          {% trans "Transactions" %}
+          {% trans "All Activity" %}
           {% if not subscriptions and not cancelled_subscriptions and not contributions %}
             (0)
           {% endif %}
         </button>
+        <button type="button" id="summary" class="section-tab">{% trans "Grantee Activity" %}</button>
       </div>
 
       <div id="grant-profile-tabs-sections" class="tab-sections section">
