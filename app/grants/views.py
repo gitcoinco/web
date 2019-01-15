@@ -226,6 +226,7 @@ def grant_new(request):
             tx_hash = request.POST.get('transaction_hash', '')
             grant = Grant.objects.filter(deploy_tx_id=tx_hash).first()
             grant.contract_address = request.POST.get('contract_address', '')
+            grant.deploy_tx_confirmed = True
             grant.save()
             new_grant(grant, profile)
             return JsonResponse({

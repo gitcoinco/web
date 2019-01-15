@@ -74,7 +74,7 @@ def process_subscription(subscription, live):
                     while not has_tx_mined(txid, subscription.grant.network):
                         time.sleep(SLEEP_TIME)
                         logger.info(f"   -- *waiting {SLEEP_TIME} seconds*")
-                    status, __ = get_tx_status(txid, subscription.grant.network, timezone.now())
+                    status, __, __ = get_tx_status(txid, subscription.grant.network, timezone.now())
                     if status != 'success':
                         error = f"tx status from RPC is {status} not success, txid: {txid}"
                 else:

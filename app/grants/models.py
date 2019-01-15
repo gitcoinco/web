@@ -219,7 +219,8 @@ class Grant(SuperModel):
         grant_contract = web3.eth.contract(self.contract_address, abi=self.abi)
         return grant_contract
 
-    def confirm_grant_deploy(self):
+    def confirm_grant_deploy(self, tx_contract_address):
+        self.contract_address = tx_contract_address
         self.deploy_tx_confirmed = True
         self.save()
 

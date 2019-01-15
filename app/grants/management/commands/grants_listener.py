@@ -49,7 +49,7 @@ def listen_deploy_grant_tx(grant):
     while not has_tx_mined(grant.deploy_tx_id, grant.network):
         time.sleep(SLEEP_TIME)
         logger.info(f"   -- *waiting {SLEEP_TIME} seconds*")
-    status, __ = get_tx_status(grant.deploy_tx_id, grant.network, timezone.now())
+    status, __, tx_contract_address = get_tx_status(grant.deploy_tx_id, grant.network, timezone.now())
     if status != 'success':
         error = f"tx status from RPC is {status} not success, txid: {grant.deploy_tx_id}"
 
@@ -60,7 +60,7 @@ def listen_deploy_grant_tx(grant):
             # execute alert logic
     else:
         logger.info('tx processing successful')
-        grant.confirm_grant_deploy()
+        grant.confirm_grant_deploy(tx_contract_address)
         redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
 

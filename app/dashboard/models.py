@@ -1299,7 +1299,7 @@ class SendCryptoAsset(SuperModel):
 
         """
         from dashboard.utils import get_tx_status
-        self.tx_status, self.tx_time = get_tx_status(self.txid, self.network, self.created_on)
+        self.tx_status, self.tx_time, __ = get_tx_status(self.txid, self.network, self.created_on)
         return bool(self.tx_status)
 
     def update_receive_tx_status(self):
@@ -1307,7 +1307,7 @@ class SendCryptoAsset(SuperModel):
 
         """
         from dashboard.utils import get_tx_status
-        self.receive_tx_status, self.receive_tx_time = get_tx_status(self.receive_txid, self.network, self.created_on)
+        self.receive_tx_status, self.receive_tx_time, __ = get_tx_status(self.receive_txid, self.network, self.created_on)
         return bool(self.receive_tx_status)
 
     @property

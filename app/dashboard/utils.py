@@ -709,7 +709,7 @@ def get_tx_status(txid, network, created_on):
             timestamp = timezone.datetime.fromtimestamp(timestamp).replace(tzinfo=pytz.UTC)
     except:
         pass
-    return status, timestamp
+    return status, timestamp, tx.contractAddress
 
 
 def is_blocked(handle):
