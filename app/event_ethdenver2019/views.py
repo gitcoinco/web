@@ -1,11 +1,23 @@
 from django.template.response import TemplateResponse
+from django.db import transaction
+from django.conf import settings
+from django.contrib import messages
+from django.http import Http404
+from django.shortcuts import redirect
 from app.utils import get_profile
-from kudos.models import KudosTransfer
 from .models import Event_ETHDenver2019_Customizing_Kudos
 from django.http import JsonResponse
+from dashboard.utils import get_nonce, get_web3
+from gas.utils import recommend_min_gas_price_to_confirm_in_time
+from kudos.utils import kudos_abi
+from ratelimit.decorators import ratelimit
+from retail.helpers import get_ip
+from web3 import Web3
+from kudos.models import BulkTransferCoupon, BulkTransferRedemption, KudosTransfer, Token
+
 
 def ethdenver2019_web3api_getKudos(request):
-    kudos_select = KudosTransfer.objects.filter(recipient_profile=profile).all()
+    # kudos_select = KudosTransfer.objects.filter(recipient_profile=profile).all()
 
     i_kudos_item = 0
     kudos_selection = []
@@ -36,8 +48,9 @@ def ethdenver2019_web3api_getKudos(request):
 
     page_ctx = {
         "kudos_selection": kudos_selection,
-        "profile": profile
     }
+
+    return JsonResponse(page_ctx)
 
 
 def ethdenver2019_redeem(request):
@@ -106,3 +119,95 @@ def ethdenver2019(request):
         }
 
     return TemplateResponse(request, 'ethdenver2019/kudosprogress.html', page_ctx)
+
+
+@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
+def receive_bulk_ethdenver(request, secret):
+
+    coupons = BulkTransferCoupon.objects.filter(secret=secret)
+    if not coupons.exists():
+        raise Http404
+
+    coupon = coupons.first()
+
+    eventobjs = Event_ETHDenver2019_Customizing_Kudos.objects.filter(active=True).filter(kudos_required=coupon.token)
+    if not eventobjs.exists():
+        raise Http404
+
+    if coupon.num_uses_remaining <= 0:
+        messages.info(request, f'Sorry but this kudos redeem link has expired! Please contact the person who sent you the coupon link, or contact your nearest Gitcoin representative.')
+        return redirect(coupon.token.url)
+
+    kudos_transfer = None
+    if request.user.is_authenticated and request.user and request.user.profile:
+        redemptions = BulkTransferRedemption.objects.filter(redeemed_by=request.user.profile, coupon=coupon)
+        if redemptions.exists():
+            kudos_transfer = redemptions.first().kudostransfer
+
+    if request.POST:
+        address = Web3.toChecksumAddress(request.POST.get('forwarding_address'))
+        ip_address = get_ip(request)
+
+        kudos_contract_address = Web3.toChecksumAddress(settings.KUDOS_CONTRACT_MAINNET)
+        kudos_owner_address = Web3.toChecksumAddress(settings.KUDOS_OWNER_ACCOUNT)
+        w3 = get_web3(coupon.token.contract.network)
+        contract = w3.eth.contract(Web3.toChecksumAddress(kudos_contract_address), abi=kudos_abi())
+        tx = contract.functions.clone(address, coupon.token.token_id, 1).buildTransaction({
+            'nonce': get_nonce(coupon.token.contract.network, kudos_owner_address),
+            'gas': 500000,
+            'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(5) * 10**9),
+            'value': int(coupon.token.price_finney / 1000.0 * 10**18),
+        })
+
+        signed = w3.eth.account.signTransaction(tx, settings.KUDOS_PRIVATE_KEY)
+        txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
+
+        with transaction.atomic():
+            kudos_transfer = KudosTransfer.objects.create(
+                emails=[request.user.email],
+                # For kudos, `token` is a kudos.models.Token instance.
+                kudos_token_cloned_from=coupon.token,
+                amount=0,
+                comments_public=coupon.comments_to_put_in_kudos_transfer,
+                ip=ip_address,
+                github_url='',
+                from_name=coupon.sender_profile.handle,
+                from_email='',
+                from_username=coupon.sender_profile.handle,
+                network=coupon.token.contract.network,
+                from_address=settings.KUDOS_OWNER_ACCOUNT,
+                receive_address=address,
+                is_for_bounty_fulfiller=False,
+                metadata={'coupon_redemption': True},
+                sender_profile=coupon.sender_profile,
+                txid=txid,
+                receive_txid=txid,
+                tx_status='pending',
+                receive_tx_status='pending',
+            )
+            # save to DB
+            if request.user and request.user.profile:
+                BulkTransferRedemption.objects.create(
+                    coupon=coupon,
+                    redeemed_by=request.user.profile,
+                    ip_address=ip_address,
+                    kudostransfer=kudos_transfer,
+                    )
+
+            coupon.num_uses_remaining -= 1
+            coupon.current_uses += 1
+            coupon.save()
+
+    title = f"Redeem ETHDenver event kudos: *{coupon.token.humanized_name}*"
+    desc = f"Thank you for joining the event! About this Kudos: {coupon.token.description}"
+    params = {
+        'title': title,
+        'card_title': title,
+        'card_desc': desc,
+        'avatar_url': coupon.token.img_url,
+        'coupon': coupon,
+        'user': request.user,
+        'is_authed': request.user.is_authenticated,
+        'kudos_transfer': kudos_transfer,
+    }
+    return TemplateResponse(request, 'ethdenver2019/receive_bulk.html', params)

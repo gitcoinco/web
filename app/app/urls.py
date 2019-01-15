@@ -428,6 +428,7 @@ urlpatterns = [
     url(r'^impersonate/', include('impersonate.urls')),
 
     # event:ethdenver2019
+    re_path(r'^ethdenver/redeem/(?P<secret>.*)/?$', event_ethdenver2019.views.receive_bulk_ethdenver, name='kudos_receive_bulk'),
     url(r'^ethdenver/redeem', event_ethdenver2019.views.ethdenver2019_redeem),
     url(r'^ethdenver/', event_ethdenver2019.views.ethdenver2019),
     # /event:ethdenver2019

@@ -664,7 +664,6 @@ def receive_bulk(request, secret):
                     tx_status='pending',
                     receive_tx_status='pending',
                 )
-
                 # save to DB
                 BulkTransferRedemption.objects.create(
                     coupon=coupon,
