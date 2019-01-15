@@ -4,6 +4,7 @@ from django.urls import reverse
 
 from dashboard.models import Bounty, Profile
 from kudos.models import Token
+from grants.models import Grant, Subscription
 
 
 class StaticViewSitemap(sitemaps.Sitemap):
@@ -14,11 +15,14 @@ class StaticViewSitemap(sitemaps.Sitemap):
     def items(self):
         return [
             'dashboard', 'new_funding', 'tip', 'terms', 'privacy', 'cookie', 'prirp', 'apitos', 'about', 'index',
-            'help', 'whitepaper', 'whitepaper_access', '_leaderboard', 'faucet', 'mission', 'slack',
-            'results', 'activity', 'kudos_main', 'kudos_marketplace'
+            'help', 'whitepaper', 'whitepaper_access', '_leaderboard', 'faucet', 'mission', 'slack', 'labs',
+            'results', 'activity', 'kudos_main', 'kudos_marketplace', 'grants'
         ]
 
     def location(self, item):
+        print(item)
+        if item == 'grants':
+            return reverse('grants:grants')
         return reverse(item)
 
 
