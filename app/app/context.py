@@ -45,7 +45,7 @@ def preprocess(request):
     profile = request.user.profile if user_is_authenticated and hasattr(request.user, 'profile') else None
     email_subs = profile.email_subscriptions if profile else None
     email_key = email_subs.first().priv if user_is_authenticated and email_subs and email_subs.exists() else ''
-    if user_is_authenticated:
+    if user_is_authenticated and profile:
         record_visit = not profile.last_visit or profile.last_visit < (
             timezone.now() - timezone.timedelta(seconds=RECORD_VISIT_EVERY_N_SECONDS)
         )
@@ -62,7 +62,6 @@ def preprocess(request):
                 utm=_get_utm_from_cookie(request),
             )
     context = {
-        'mixpanel_token': settings.MIXPANEL_TOKEN,
         'STATIC_URL': settings.STATIC_URL,
         'MEDIA_URL': settings.MEDIA_URL,
         'num_slack': num_slack,

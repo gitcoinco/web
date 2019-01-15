@@ -24,7 +24,7 @@ $(document).ready(function() {
     $(this).css('width', `${width}%`);
   });
 
-  $('.clickable-row').click(function(e) {
+  $('.clickable-row').on('click', function(e) {
     if (typeof $(this).data('href') == 'undefined') {
       return;
     }

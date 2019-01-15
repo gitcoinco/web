@@ -8,6 +8,7 @@ var enableWaitState = container => {
   $('.interior .body').addClass('loading');
   $('.grant_waiting').show();
   waitingStateActive();
+
 };
 
 var waitingStateActive = function() {
@@ -19,6 +20,16 @@ var waitingStateActive = function() {
 
   waitingRoomEntertainment();
   setInterval(waitingRoomEntertainment, secondsBetweenQuoteChanges * 1000);
+  window.addEventListener('beforeunload', function(e) {
+    if (!document.suppress_loading_leave_code) {
+      var confirmationMessage = 'This change has NOT been saved. Please do not leave the page until the tx has confirmed!';
+
+      (e || window.event).returnValue = confirmationMessage; // Gecko + IE
+      return confirmationMessage; // Gecko + Webkit, Safari, Chrome etc.
+    }
+  });
+
+
 };
 
 /**
@@ -58,10 +69,6 @@ $(document).ready(function() {
     }
   }
 
-  var params = {
-    page: document.location.pathname
-  };
-
   const listen_web3_1_changes = () => {
     web3.eth.getCoinbase().then(function(result) {
       show_error_banner(result);
@@ -77,16 +84,18 @@ $(document).ready(function() {
       } else {
         currentNetwork('locked');
       }
+    }).catch(err => {
+      show_error_banner(null, true);
     });
   };
 
   setInterval(listen_web3_1_changes, 1000);
 
-  const show_error_banner = (result) => {
+  const show_error_banner = (result, web3_not_found) => {
     if ($('#grants_form').length) {
       var is_zero_balance_not_okay = document.location.href.indexOf('/faucet') == -1;
 
-      if (typeof web3 == 'undefined') {
+      if (typeof web3 == 'undefined' || web3_not_found) {
         $('#no_metamask_error').css('display', 'block');
         $('#zero_balance_error').css('display', 'none');
         $('#robot_error').removeClass('hidden');
@@ -96,7 +105,6 @@ $(document).ready(function() {
         $('#connect_metamask_error').css('display', 'none');
         $('#no_issue_error').css('display', 'none');
         $('.alpha-warning').addClass('hidden');
-        mixpanel_track_once('No Metamask Error', params);
       } else if (is_metamask_unlocked && !is_metamask_approved) {
         $('#connect_metamask_error').css('display', 'block');
         $('#unlock_metamask_error').css('display', 'none');
@@ -107,7 +115,6 @@ $(document).ready(function() {
         $('.submit_bounty .newsletter').addClass('hidden');
         $('#no_issue_error').css('display', 'none');
         $('.alpha-warning').addClass('hidden');
-        mixpanel_track_once('Unlock Metamask Error', params);
       } else if (!result) {
         $('#unlock_metamask_error').css('display', 'block');
         $('#connect_metamask_error').css('display', 'none');
@@ -118,7 +125,6 @@ $(document).ready(function() {
         $('.submit_bounty .newsletter').addClass('hidden');
         $('#no_issue_error').css('display', 'none');
         $('.alpha-warning').addClass('hidden');
-        mixpanel_track_once('Unlock Metamask Error', params);
       } else if (is_zero_balance_not_okay && document.balance == 0) {
         $('#zero_balance_error').css('display', 'block');
         $('#robot_error').removeClass('hidden');
@@ -129,7 +135,6 @@ $(document).ready(function() {
         $('#no_metamask_error').css('display', 'none');
         $('#no_issue_error').css('display', 'none');
         $('.alpha-warning').addClass('hidden');
-        mixpanel_track_once('Zero Balance Metamask Error', params);
       } else {
         $('#zero_balance_error').css('display', 'none');
         $('#unlock_metamask_error').css('display', 'none');

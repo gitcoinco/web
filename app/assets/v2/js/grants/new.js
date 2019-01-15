@@ -1,7 +1,15 @@
 /* eslint-disable no-console */
 
 $(document).ready(function() {
+  if (web3 && web3.eth) {
+    web3.eth.net.isListening((error, connectionStatus) => {
+      if (connectionStatus)
+        init();
+    });
+  }
+});
 
+const init = () => {
   if (localStorage['grants_quickstart_disable'] !== 'true') {
     window.location = document.location.origin + '/grants/quickstart';
   }
@@ -51,7 +59,9 @@ $(document).ready(function() {
         data[this.name] = this.value;
       });
 
+
       $('#token_symbol').val($('#js-token option:selected').text());
+      $('#token_address').val($('#js-token option:selected').val());
 
       if (document.web3network) {
         $('#network').val(document.web3network);
@@ -92,6 +102,34 @@ $(document).ready(function() {
             $('#transaction_hash').val(transactionHash);
             const linkURL = etherscan_tx_url(transactionHash);
 
+            let data = {
+              'title': $('#input_title').val(),
+              'description': $('#input-description').val(),
+              'reference_url': $('#input-url').val(),
+              'admin_address': $('#input-admin_address').val(),
+              'contract_owner_address': $('#contract_owner_address').val(),
+              'token_address': $('#token_address').val(),
+              'token_symbol': $('#token_symbol').val(),
+              'amount_goal': $('#amount_goal').val(),
+              'contract_version': $('#contract_version').val(),
+              'transaction_hash': $('#transaction_hash').val(),
+              'network': $('#network').val(),
+              'team_members': $('#input-team_members').val(),
+              'csrfmiddlewaretoken': $("#create-grant input[name='csrfmiddlewaretoken']").val()
+            };
+
+            $.ajax({
+              type: 'post',
+              url: '',
+              data: data,
+              success: json => {
+                console.log('successfully saved grant');
+              },
+              error: () => {
+                _alert({ message: gettext('Your grant failed to save. Please try again.') }, 'error');
+              }
+            });
+
             document.issueURL = linkURL;
             $('#transaction_url').attr('href', linkURL);
             enableWaitState('#new-grant');
@@ -99,13 +137,28 @@ $(document).ready(function() {
             var callFunctionWhenTransactionMined = function(transactionHash) {
               web3.eth.getTransactionReceipt(transactionHash, function(error, result) {
                 if (result) {
-                  $('#contract_address').val(result.contractAddress);
-                  $.each($(form).serializeArray(), function() {
-                    data[this.name] = this.value;
+
+                  let data = {
+                    'contract_address': result.contractAddress,
+                    'csrfmiddlewaretoken': $("#create-grant input[name='csrfmiddlewaretoken']").val(),
+                    'transaction_hash': $('#transaction_hash').val()
+                  };
+
+                  $.ajax({
+                    type: 'post',
+                    url: '',
+                    data: data,
+                    success: json => {
+                      document.suppress_loading_leave_code = true;
+                      window.location = json.url;
+                    },
+                    error: () => {
+                      _alert({ message: gettext('Your grant failed to save. Please try again.') }, 'error');
+                    }
                   });
-                  form.submit();
+
                 } else {
-                  setTimeout(function() {
+                  setTimeout(() => {
                     callFunctionWhenTransactionMined(transactionHash);
                   }, 1000);
                 }
@@ -148,7 +201,7 @@ $(document).ready(function() {
   });
 
   $('.select2-selection__rendered').removeAttr('title');
-});
+};
 
 const exceedFileSize = (file, size = 4000000) => {
   if (file.size > size)

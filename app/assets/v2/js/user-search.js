@@ -1,6 +1,19 @@
-function userSearch(elem, showAddress, theme) {
+function userSearch(elem, showAddress, theme, initialData, allowClear) {
   var themeChoice = theme || undefined;
   var selectItem = elem || '.username-search';
+
+  if (initialData) {
+    initialData = initialData.map(
+      function(userHandle) {
+        return {
+          'id': userHandle,
+          'text': userHandle,
+          'avatar_url': '/dynamic/avatar/' + userHandle,
+          'selected': true
+        };
+      }
+    );
+  }
 
   $(selectItem).each(function() {
     if (!$(this).length) {
@@ -27,6 +40,8 @@ function userSearch(elem, showAddress, theme) {
         },
         cache: true
       },
+      data: initialData,
+      allowClear: allowClear,
       theme: themeChoice,
       placeholder: 'Search by Github/Gitcoin username',
       minimumInputLength: 3,

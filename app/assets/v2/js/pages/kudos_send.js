@@ -172,13 +172,13 @@ $(document).ready(function() {
 
   set_metadata();
   // jquery bindings
-  $('#advanced_toggle').click(function(e) {
+  $('#advanced_toggle').on('click', function(e) {
     e.preventDefault();
     advancedToggle();
   });
 
 
-  $('#send_to_toggle').click(function(e) {
+  $('#send_to_toggle').on('click', function(e) {
     e.preventDefault();
     if ($(this).hasClass('github')) {
       $(this).text(gettext('Send to ETH Address'));
@@ -202,7 +202,7 @@ $(document).ready(function() {
 
   // Step 1
   // Kudos send button is clicked
-  $('#send').click(function(e) {
+  $('#send').on('click', function(e) {
 
     e.preventDefault();
 
@@ -338,7 +338,7 @@ $(document).ready(function() {
 
 // Step 3
 function sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, to_eth_address, expires, kudosId, tokenId, success_callback, failure_callback, is_for_bounty_fulfiller) {
-  mixpanel.track('Tip Step 2 Click', {});
+
   if (typeof web3 == 'undefined') {
     _alert({ message: gettext('You must have a web3 enabled browser to do this.  Please download Metamask.') }, 'warning');
     failure_callback();

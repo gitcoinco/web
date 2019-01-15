@@ -15,7 +15,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static grants_extra %}
+{% load i18n static grants_extra humanize %}
 
 {% block content %}
 
@@ -111,7 +111,7 @@
     <img src="{% static "v2/images/heart-robot.png" %}" alt="{% trans "Gitcoin Heart Robot" %}" title="{% trans "Gitcoin Heart Robot" %}">
   </div>
   <div class="right-grant-header">
-    <h1 style="text-transform: none;">{% trans "Your contribution of" %} {{ subscription.amount_per_period }} {{ subscription.token_symbol }} {% trans "to " %} {{ grant.title }} {% trans " was successful" %}!
+    <h1 style="text-transform: none;">{% trans "Your contribution of" %} {{ subscription.amount_per_period|floatformat:2|intcomma }} {{ subscription.token_symbol }} {% trans "to " %} {{ grant.title }} {% trans " was successful" %}!
     </h1>
     <h2 style="text-transform: none;">{% trans "The world of open source is a better place because of you." %}
     </h2>

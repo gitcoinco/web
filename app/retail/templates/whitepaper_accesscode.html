@@ -60,12 +60,11 @@
 {% endblock %}
 {% block scripts %}
 <script>
-  $(document).ready(function() {
-    $('#whitepaper input.btn-go').click(function(e){
-      mixpanel.track("Whitepaper Access Code Request", {});
-      setTimeout(function(){
+  $(document).ready(() => {
+    $('#whitepaper input.btn-go').on('click', () => {
+      setTimeout(() => {
         $('#whitepaper input.btn-go').attr('disabled','disabled');
-      },1);
+      }, 1);
     });
   });
 </script>

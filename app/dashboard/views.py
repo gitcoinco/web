@@ -49,7 +49,8 @@ from git.utils import get_auth_url, get_github_user_data, is_github_token_valid,
 from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
 from marketing.mails import (
-    admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,
+    admin_contact_funder, bounty_uninterested, new_reserved_issue, start_work_approved, start_work_new_applicant,
+    start_work_rejected,
 )
 from marketing.models import Keyword
 from pytz import UTC
@@ -1666,7 +1667,8 @@ def change_bounty(request, bounty_id):
         else:
             raise Http404
 
-    keys = ['experience_level', 'project_length', 'bounty_type', 'permission_type', 'project_type']
+    keys = ['experience_level', 'project_length', 'bounty_type',
+            'permission_type', 'project_type', 'reserved_for_user_handle']
 
     if request.body:
         can_change = (bounty.status in Bounty.OPEN_STATUSES) or \
@@ -1711,6 +1713,10 @@ def change_bounty(request, bounty_id):
         maybe_market_to_slack(bounty, 'bounty_changed')
         maybe_market_to_user_slack(bounty, 'bounty_changed')
         maybe_market_to_user_discord(bounty, 'bounty_changed')
+
+        # notify a user that a bounty has been reserved for them
+        if bounty.bounty_reserved_for_user:
+            new_reserved_issue('founders@gitcoin.co', bounty.bounty_reserved_for_user, bounty)
 
         return JsonResponse({
             'success': True,

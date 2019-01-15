@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import logging
 from datetime import timedelta
+from decimal import Decimal
 
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
@@ -106,6 +107,12 @@ class Grant(SuperModel):
         max_digits=50,
         help_text=_('The monthly contribution goal amount for the Grant in DAI.'),
     )
+    monthly_amount_subscribed = models.DecimalField(
+        default=0,
+        decimal_places=4,
+        max_digits=50,
+        help_text=_('The monthly subscribed to by contributors USDT/DAI.'),
+    )
     amount_received = models.DecimalField(
         default=0,
         decimal_places=4,
@@ -166,6 +173,13 @@ class Grant(SuperModel):
         help_text=_('The Grant administrator\'s profile.'),
         null=True,
     )
+    request_ownership_change = models.ForeignKey(
+        'dashboard.Profile',
+        related_name='request_ownership_change',
+        on_delete=models.CASCADE,
+        help_text=_('The Grant\'s potential new administrator profile.'),
+        null=True,
+    )
     team_members = models.ManyToManyField(
         'dashboard.Profile',
         related_name='grant_teams',
@@ -181,7 +195,7 @@ class Grant(SuperModel):
 
     def percentage_done(self):
         """Return the percentage of token received based on the token goal."""
-        return ((self.amount_received / self.amount_goal) * 100)
+        return ((self.monthly_amount_subscribed / self.amount_goal) * 100)
 
     @property
     def abi(self):
@@ -283,8 +297,8 @@ class Subscription(SuperModel):
     )
     amount_per_period = models.DecimalField(
         default=1,
-        decimal_places=4,
-        max_digits=50,
+        decimal_places=18,
+        max_digits=64,
         help_text=_('The promised contribution amount per period.'),
     )
     real_period_seconds = models.DecimalField(
@@ -334,6 +348,18 @@ class Subscription(SuperModel):
         max_length=255,
         default='0x0',
         help_text=_('The transaction id for cancelSubscription.'),
+    )
+    num_tx_approved = models.DecimalField(
+        default=1,
+        decimal_places=4,
+        max_digits=50,
+        help_text=_('The number of transactions approved for the Subscription.'),
+    )
+    num_tx_processed = models.DecimalField(
+        default=0,
+        decimal_places=4,
+        max_digits=50,
+        help_text=_('The number of transactoins processed by the subminer for the Subscription.'),
     )
     network = models.CharField(
         max_length=8,
@@ -433,8 +459,7 @@ next_valid_timestamp: {next_valid_timestamp}
         """Return true if subscription is ready to be processed according to the DB."""
         if not self.subscription_contribution.exists():
             return True
-        last_contribution = self.subscription_contribution.order_by('created_on').last()
-        return self.next_contribution_date < timezone.now()
+        return self.next_contribution_date < timezone.now() and self.num_tx_processed < self.num_tx_approved
 
     def get_are_we_past_next_valid_timestamp(self):
         return timezone.now().timestamp() > self.get_next_valid_timestamp()
@@ -575,34 +600,53 @@ next_valid_timestamp: {next_valid_timestamp}
             args['nonce'],
             ).call()
 
-    @property
-    def value_usdt(self):
+    def get_converted_amount(self):
         try:
-            return float(convert_amount(
+            return Decimal(convert_amount(
                     self.amount_per_period,
                     self.token_symbol,
                     "USDT")
                 )
+
         except ConversionRateNotFoundError as e:
             logger.info(e)
-        return None
+            return None
+
+    def get_converted_monthly_amount(self):
+        converted_amount = self.get_converted_amount()
+
+        total_sub_seconds = Decimal(self.real_period_seconds) * Decimal(self.num_tx_approved)
+
+        if total_sub_seconds < 2592000:
+            result = Decimal(converted_amount * Decimal(self.num_tx_approved))
+        elif total_sub_seconds >= 2592000:
+            result = Decimal(converted_amount * (Decimal(2592000) / Decimal(self.real_period_seconds)))
+
+        return result
+
 
     def successful_contribution(self, tx_id):
         """Create a contribution object."""
         from marketing.mails import successful_contribution
         self.last_contribution_date = timezone.now()
         self.next_contribution_date = timezone.now() + timedelta(0, round(self.real_period_seconds))
-        self.save()
+        self.num_tx_processed += 1
         contribution_kwargs = {
             'tx_id': tx_id,
             'subscription': self
         }
         contribution = Contribution.objects.create(**contribution_kwargs)
         grant = self.grant
-        value_usdt = self.value_usdt
-        if value_usdt:
-            grant.amount_received += value_usdt
 
+        value_usdt = self.get_converted_amount()
+        if value_usdt:
+            grant.amount_received += Decimal(value_usdt)
+
+        if self.num_tx_processed == self.num_tx_approved and value_usdt:
+            grant.monthly_amount_subscribed -= self.get_converted_monthly_amount()
+            self.active = False
+
+        self.save()
         grant.save()
         successful_contribution(self.grant, self, contribution)
         return contribution

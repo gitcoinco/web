@@ -21,6 +21,7 @@ import logging
 import time
 
 from django.core.management.base import BaseCommand
+from django.db.models import F
 from django.utils import timezone
 
 from dashboard.utils import get_tx_status, has_tx_mined
@@ -119,7 +120,12 @@ class Command(BaseCommand):
         logger.info("got %d grants", grants.count())
 
         for grant in grants:
-            subs = grant.subscriptions.filter(active=True, error=False, next_contribution_date__lt=timezone.now())
+            subs = grant.subscriptions.filter(
+                active=True,
+                error=False,
+                next_contribution_date__lt=timezone.now(),
+                num_tx_processed__lt=F('num_tx_approved')
+            )
             logger.info(" - %d has %d subs ready for execution", grant.pk, subs.count())
 
             for subscription in subs:

@@ -63,9 +63,14 @@
                         <textarea id="form--input__reference-url" class="p-0 m-0 inline-edit" disabled>{{ grant.reference_url }}</textarea>
                       </div>
                     {% else %}
-                      <a href="{{ grant.reference_url }}" target="_blank">
+                      <a href="{{ grant.reference_url }}" target="_blank" title="Project URL">
                         <i class="fas fa-link mr-2"></i>
                         {{ grant.reference_url }}
+                      </a>
+                      <BR>
+                      <a href="https://etherscan.io/address/{{ grant.admin_address }}" target="_blank"  title="Recipient Funding Address">
+                        <i class="fas fa-lock mr-2"></i>
+                        {{ grant.admin_address }}
                       </a>
                     {% endif %}
                   </span>
@@ -125,8 +130,8 @@
                   <div class="progress-text mt-2">
                     <div class="row">
                       <div class="col-6">
-                        <span>{{ grant.amount_received|floatformat:2|intcomma }} DAI</span>
-                        <p>{% trans "Current" %}</p>
+                        <span>{{ grant.monthly_amount_subscribed|floatformat:2|intcomma }} DAI</span>
+                        <p>Monthly Funding</p>
                       </div>
                       <div class="col-6 text-right">
                         <span>{{ grant.amount_goal|floatformat:2|intcomma }} DAI</span>
@@ -134,6 +139,9 @@
                       </div>
                     </div>
                   </div>
+                  <p>
+                    {% trans 'Total Funding Received: '%} {{ grant.amount_received }}
+                  </p>
                 </div>
                 {% if grant_is_inactive %}
                   <p class="font-weight-semibold my-2">{% trans "This grant has ended. You can find all active grants" %}
@@ -383,4 +391,16 @@
   <script src="{% static "v2/js/grants/shared.js" %}"></script>
   <script src="{% static "v2/js/grants/detail.js" %}"></script>
   <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
+  <script>
+    {% if change_ownership == 'Y' %}
+      _alert({ message: gettext('You are now the owner of this grant.') }, 'success');
+    {% elif change_ownership == 'N' %}
+      _alert({ message: gettext('Ownership Request has been rejected.') }, 'error');
+    {% endif %}
+
+    if(localStorage['request_change'] === 'R') {
+      _alert({ message: gettext('Ownership Transfer will happen upon confirmation from the requested user.') }, 'success');
+      delete localStorage['request_change'];
+    }
+  </script>
 </html>
