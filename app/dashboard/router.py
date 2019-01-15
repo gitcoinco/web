@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 from datetime import datetime
+from itertools import chain
 
 import django_filters.rest_framework
 from rest_framework import routers, serializers, viewsets
@@ -250,6 +251,11 @@ class BountyViewSet(viewsets.ModelViewSet):
 
         if 'keyword' in param_keys:
             queryset = queryset.keyword(self.request.query_params.get('keyword'))
+        
+        if 'is_featured' in param_keys:
+            queryset = queryset.filter(
+                is_featured=self.request.query_params.get('is_featured'),
+            )
 
         # order
         order_by = self.request.query_params.get('order_by')
@@ -259,22 +265,25 @@ class BountyViewSet(viewsets.ModelViewSet):
         queryset = queryset.distinct()
 
         # offset / limit
-        limit = int(self.request.query_params.get('limit', 100))
-        max_bounties = 100
-        if limit > max_bounties:
-            limit = max_bounties
-        offset = self.request.query_params.get('offset', 0)
-        if limit:
-            start = int(offset)
-            end = start + int(limit)
-            queryset = queryset[start:end]
+        if 'is_featured' not in param_keys:
+            limit = int(self.request.query_params.get('limit', 100))
+            max_bounties = 100
+            if limit > max_bounties:
+                limit = max_bounties
+            offset = self.request.query_params.get('offset', 0)
+            if limit:
+                start = int(offset)
+                end = start + int(limit)
+                queryset = queryset[start:end]
 
+        data = dict(self.request.query_params)
+        data.pop('is_featured', None)
         # save search history
         if self.request.user and self.request.user.is_authenticated:
             SearchHistory.objects.update_or_create(
                 user=self.request.user,
                 defaults={
-                    'data': dict(self.request.query_params),
+                    'data': data,
                     'ip_address': get_ip(self.request)
                 }
             )

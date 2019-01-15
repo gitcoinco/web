@@ -1,3 +1,4 @@
+{% load static i18n %}
 <div class="featured-bounties my-4">
     <div class="">
       <h3 class="featured-bounties__title">
@@ -12,61 +13,7 @@
     <div id="carouselExampleInterval" class="carousel slide" data-ride="carousel">
       <div class="carousel-inner">
         <div class="carousel-item active" data-interval="10000">
-          <div class="row justify-content-center">
-            <div class="col-xs-12 col-sm-6 col-lg-3">
-              <div class="bounty-card">
-                <img src="http://localhost:8000/dynamic/avatar/mbeacom" alt="" width="60" height="60">
-                <div class="">
-                  featured bounty title
-                  <div class="">
-                    <div class="tag token">0.001 <span>ETH</span></div>
-                    <div class="tag usd">14 <span>USD</span></div>
-                  </div>
-                  <a href="" class="bounty-card__link">View Bounty</a>
-                </div>
-              </div>
-            </div>
-            <div class="col-xs-12 col-sm-6 col-lg-3">
-              <div class="bounty-card">
-                <img src="http://localhost:8000/dynamic/avatar/mbeacom" alt="" width="60" height="60">
-                <div class="">
-                  featured bounty title
-                  <div class="">
-                    <div class="tag token">0.001 <span>ETH</span></div>
-                    <div class="tag usd">14 <span>USD</span></div>
-                  </div>
-                  <a href="" class="bounty-card__link">View Bounty</a>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-xs-12 col-sm-6 col-lg-3">
-                <div class="bounty-card">
-                  <img src="http://localhost:8000/dynamic/avatar/mbeacom" alt="" width="60" height="60">
-                  <div class="">
-                    featured bounty title
-                    <div class="">
-                      <div class="tag token">0.001 <span>ETH</span></div>
-                      <div class="tag usd">14 <span>USD</span></div>
-                    </div>
-                    <a href="" class="bounty-card__link">View Bounty</a>
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-xs-12 col-sm-6 col-lg-3">
-                  <div class="bounty-card">
-                    <img src="http://localhost:8000/dynamic/avatar/mbeacom" alt="" width="60" height="60">
-                    <div class="">
-                      featured bounty title
-                      <div class="">
-                        <div class="tag token">0.001 <span>ETH</span></div>
-                        <div class="tag usd">14 <span>USD</span></div>
-                      </div>
-                      <a href="" class="bounty-card__link">View Bounty</a>
-                    </div>
-                  </div>
-                </div>
+          <div class="row justify-content-center" id="featured-card-container">
           </div>
         </div>
       </div>

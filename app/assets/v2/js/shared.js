@@ -1195,6 +1195,22 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
   return html;
 }
 
+function renderFeaturedBountiesFromResults(results, renderForExplorer) {
+  let html = '';
+  const tmpl = $.templates('#featured-card');
+
+  if (results.length === 0) {
+    return html;
+  }
+
+  for (var i = 0; i < results.length; i++) {
+    const result = results[i];
+
+    html += tmpl.render(result);
+  }
+  return html;
+}
+
 /**
  * Fetches results from the API and paints them onto the target element
  *

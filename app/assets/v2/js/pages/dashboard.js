@@ -448,13 +448,22 @@ var refreshBounties = function(event, offset, append, do_save_search) {
   }
 
   const uri = get_search_URI(offset);
+  let bountiesURI;
+  let featuredBountiesURI;
+
+  if (!uri.endsWith('?')) {
+    bountiesURI = uri + '&';
+    featuredBountiesURI = uri + '&';
+  }
+  bountiesURI += 'is_featured=False';
+  featuredBountiesURI += 'is_featured=True';
 
   // Abort pending request if any subsequent request
   if (explorer.bounties_request && explorer.bounties_request.readyState !== 4) {
     explorer.bounties_request.abort();
   }
 
-  explorer.bounties_request = $.get(uri, function(results, x) {
+  explorer.bounties_request = $.get(bountiesURI, function(results, x) {
     results = sanitizeAPIResults(results);
 
     if (results.length === 0 && !append) {
@@ -498,6 +507,30 @@ var refreshBounties = function(event, offset, append, do_save_search) {
       $('#results-count span.plus').html('+');
     } else {
       $('#results-count span.plus').html('');
+    }
+  }).fail(function() {
+    if (explorer.bounties_request.readyState !== 0)
+      _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
+  }).always(function() {
+    $('.loading').css('display', 'none');
+  });
+
+  explorer.bounties_request = $.get(featuredBountiesURI, function(results, x) {
+    results = sanitizeAPIResults(results);
+
+    if (results.length === 0 && !append) {
+      if (localStorage['referrer'] === 'onboard') {
+        $('.no-results').removeClass('hidden');
+        $('#dashboard-content').addClass('hidden');
+      } else {
+        $('.nonefound').css('display', 'block');
+      }
+    }
+
+    var html = renderFeaturedBountiesFromResults(results, true);
+
+    if (html) {
+      $('#featured-card-container').append(html);
     }
   }).fail(function() {
     if (explorer.bounties_request.readyState !== 0)
