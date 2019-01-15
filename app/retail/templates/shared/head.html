@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static is_in_list %}
+{% load i18n static is_in_list matches %}
 {% include 'shared/tag_manager_1.html' %}
 <meta charset="utf-8">
 <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
@@ -25,7 +25,9 @@
 <link rel="stylesheet" href="{% static "v2/css/top-nav.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/base.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/jquery.modal.min.css" %}" />
+{% if request.path|matches:"^\/((.*grant))$" %}
+  <link rel="stylesheet" href="{% static "v2/css/jquery.modal.min.css" %}" />
+{% endif %}
 <link rel="stylesheet" href="{% static "v2/css/jquery.select2.min.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/animate.min.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/rain.css" %}" />

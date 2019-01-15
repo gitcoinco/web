@@ -121,9 +121,8 @@ span {
   color: #ff3232;
 }
 
-.modal {
-  z-index: 9;
-  border-radius: 4px !important;
+.modal-content {
+  border: none;
 }
 
 .font-weight-semibold {
