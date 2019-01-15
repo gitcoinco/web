@@ -224,6 +224,11 @@ class Grant(SuperModel):
         self.deploy_tx_confirmed = True
         self.save()
 
+    def confirm_grant_cancel(self):
+        self.active = False
+        self.cancel_tx_confirmed = True
+        self.save()
+
 
 class Milestone(SuperModel):
     """Define the structure of a Grant Milestone"""

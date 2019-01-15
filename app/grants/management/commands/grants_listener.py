@@ -39,19 +39,24 @@ logger = logging.getLogger(__name__)
 SLEEP_TIME = 20
 
 
-def listen_deploy_grant_tx(grant):
-    logger.info("  - grant %d", grant.pk)
+def listen_for_tx(grant, subscription, tx, network, tx_type):
+    if grant:
+        logger.info("  - grant %d", grant.pk)
+        model = grant
+    elif subscription:
+        logger.info("  - sub %d", subscription.pk)
+        model = subscription
 
     status = 'failure'
     txid = None
     error = "none"
     logger.info("   -- *waiting for confirmation* ")
-    while not has_tx_mined(grant.deploy_tx_id, grant.network):
+    while not has_tx_mined(tx, network):
         time.sleep(SLEEP_TIME)
         logger.info(f"   -- *waiting {SLEEP_TIME} seconds*")
-    status, __, tx_contract_address = get_tx_status(grant.deploy_tx_id, grant.network, timezone.now())
+    status, __, tx_contract_address = get_tx_status(tx, network, timezone.now())
     if status != 'success':
-        error = f"tx status from RPC is {status} not success, txid: {grant.deploy_tx_id}"
+        error = f"tx status from RPC is {status} not success, txid: {tx}"
 
     logger.info("   -- *mined* (status: %s / error: %s) ", status, error)
     was_success = status == 'success'
@@ -60,7 +65,10 @@ def listen_deploy_grant_tx(grant):
             # execute alert logic
     else:
         logger.info('tx processing successful')
-        grant.confirm_grant_deploy(tx_contract_address)
+        if tx_type == 'grant_deploy':
+            grant.confirm_grant_deploy(tx_contract_address)
+        elif tx_type == 'grant_cancel':
+            grant.confirm_grant_cancel()
         redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
 
@@ -78,8 +86,14 @@ class Command(BaseCommand):
 
         logger.info('grants_listener - Network: (%s)', network)
 
-        unconfirmed_grants = Grant.objects.filter(contract_address='0x0', deploy_tx_confirmed=False)
-        logger.info("got %d unconfirmed deploy_grant_txs", unconfirmed_grants.count())
+        unconfirmed_grant_deploy = Grant.objects.filter(contract_address='0x0', deploy_tx_confirmed=False, network=network)
+        logger.info("got %d unconfirmed deploy_grant_txs", unconfirmed_grant_deploy.count())
 
-        for grant in unconfirmed_grants:
-            listen_deploy_grant_tx(grant)
+        unconfirmed_grant_cancel = Grant.objects.filter( cancel_tx_confirmed=False, network=network).exclude(cancel_tx_id='0x0').exclude(cancel_tx_id='')
+        logger.info("got %d unconfirmed cancel_grant_txs", unconfirmed_grant_cancel.count())
+
+        for grant in unconfirmed_grant_deploy:
+            listen_for_tx(grant, None, grant.deploy_tx_id, grant.network, 'grant_deploy')
+
+        for grant in unconfirmed_grant_cancel:
+            listen_for_tx(grant, None, grant.cancel_tx_id, network, 'grant_cancel')
