@@ -248,6 +248,7 @@ $(document).ready(function() {
         bountyType: data.bounty_type,
         estimatedHours: data.hours,
         fundingOrganisation: data.fundingOrganisation,
+        is_featured: data.featuredBounty,
         reservedFor: reservedFor ? reservedFor.text : '',
         tokenName
       };
@@ -285,6 +286,7 @@ $(document).ready(function() {
             jobDescription: data.jobDescription
           },
           funding_organisation: metadata.fundingOrganisation,
+          is_featured: metadata.featuredBounty,
           privacy_preferences: privacy_preferences,
           funders: [],
           categories: metadata.issueKeywords.split(','),
