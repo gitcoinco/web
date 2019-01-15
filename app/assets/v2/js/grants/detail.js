@@ -209,3 +209,7 @@ const copyDuplicateDetails = () => {
     });
   });
 };
+
+$(document).ready(() => {
+  setupTabs('#grant-profile-tabs');
+});

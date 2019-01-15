@@ -46,8 +46,9 @@ var kudos_address = function() {
   }
 };
 
-var etherscan_tx_url = function(txid) {
-  switch (document.web3network) {
+var etherscan_tx_url = function(txid, network) {
+  let _network = network ? network : document.web3network;
+  switch (_network) {
     case 'mainnet':
       return 'https://etherscan.io/tx/' + txid;
     case 'ropsten':
