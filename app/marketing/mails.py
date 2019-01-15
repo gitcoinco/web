@@ -399,7 +399,7 @@ def warn_subscription_failed(subscription):
     try:
         setup_lang(to_email)
         subject = str(subscription.pk) + str(_(" subscription failed"))
-        body = f"{subscription.admin_url }\n{subscription.contributor_profile.email}, {subscription.contributor_profile.user.email}\n\n{subscription.subminer_comments}"
+        body = f"{settings.BASE_URL}{subscription.admin_url }\n{subscription.contributor_profile.email}, {subscription.contributor_profile.user.email}<pre>\n\n{subscription.subminer_comments}</pre>"
         if not should_suppress_notification_email(to_email, 'admin'):
             send_mail(
                 from_email,
@@ -466,28 +466,6 @@ def funder_payout_reminder(to_email, bounty, github_username, live):
             print(e)
             return False
         return True
-
-
-def new_external_bounty():
-    """Send a new external bounty email notification."""
-    to_email = settings.PERSONAL_CONTACT_EMAIL
-    from_email = settings.SERVER_EMAIL
-    cur_language = translation.get_language()
-    try:
-        setup_lang(to_email)
-        subject = _("New External Bounty")
-        body = f"https://gitcoin.co/_administrationexternal_bounties/externalbounty"
-        if not should_suppress_notification_email(to_email, 'admin'):
-            send_mail(
-                from_email,
-                to_email,
-                subject,
-                body,
-                from_name=_("No Reply from Gitcoin.co"),
-                categories=['admin', func_name()],
-            )
-    finally:
-        translation.activate(cur_language)
 
 
 def processed_faucet_request(fr):

@@ -283,7 +283,7 @@ var add_interest = function(bounty_pk, data) {
   if (document.interested) {
     return;
   }
-  mutate_interest(bounty_pk, 'new', data);
+  return mutate_interest(bounty_pk, 'new', data);
 };
 
 /** Remove the current profile from the interested profiles list. */
@@ -300,7 +300,7 @@ var mutate_interest = function(bounty_pk, direction, data) {
   var request_url = '/actions/bounty/' + bounty_pk + '/interest/' + direction + '/';
 
   showBusyOverlay();
-  $.post(request_url, data).then(function(result) {
+  return $.post(request_url, data).then(function(result) {
     hideBusyOverlay();
 
     result = sanitizeAPIResults(result);
@@ -309,6 +309,7 @@ var mutate_interest = function(bounty_pk, direction, data) {
       if (direction === 'new') {
         _alert({ message: result.msg }, 'success');
         $('#interest a').attr('id', 'btn-white');
+        return true;
       } else if (direction === 'remove') {
         _alert({ message: result.msg }, 'success');
         $('#interest a').attr('id', '');
@@ -328,7 +329,6 @@ var mutate_interest = function(bounty_pk, direction, data) {
     }
 
     _alert({ message: alertMsg }, 'error');
-
   });
 };
 

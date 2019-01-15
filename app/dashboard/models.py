@@ -1643,6 +1643,7 @@ class LabsResearch(models.Model):
     description = models.CharField(max_length=1000)
     link = models.URLField(null=True)
     image = models.ImageField(upload_to='labs', blank=True, null=True)
+    upcoming = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title
@@ -1701,6 +1702,7 @@ class Profile(SuperModel):
     preferred_kudos_wallet = models.OneToOneField('kudos.Wallet', related_name='preferred_kudos_wallet', on_delete=models.SET_NULL, null=True, blank=True)
     max_tip_amount_usdt_per_tx = models.DecimalField(default=500, decimal_places=2, max_digits=50)
     max_tip_amount_usdt_per_week = models.DecimalField(default=1500, decimal_places=2, max_digits=50)
+    last_visit = models.DateTimeField(null=True)
 
     objects = ProfileQuerySet.as_manager()
 
@@ -2551,6 +2553,7 @@ class UserAction(SuperModel):
     ACTION_TYPES = [
         ('Login', 'Login'),
         ('Logout', 'Logout'),
+        ('Visit', 'Visit'),
         ('added_slack_integration', 'Added Slack Integration'),
         ('removed_slack_integration', 'Removed Slack Integration'),
         ('updated_avatar', 'Updated Avatar'),
