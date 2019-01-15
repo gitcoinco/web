@@ -477,10 +477,6 @@ function timedifferenceCvrt(date) {
   return timeDifference(new Date(), new Date(date), false, 60 * 60);
 }
 
-function activitytextCvrt(activity_type) {
-  return activity_names[activity_type];
-}
-
 const activity_names = {
   new_bounty: gettext('New bounty'),
   start_work: gettext('Work started'),
@@ -502,6 +498,10 @@ const activity_names = {
   bounty_removed_by_funder: gettext('Removed from bounty by funder'),
   bounty_changed: gettext('Bounty details changed')
 };
+
+function activitytextCvrt(activity_type) {
+  return activity_names[activity_type];
+}
 
 function timeDifference(current, previous, remaining, now_threshold_seconds) {
 
