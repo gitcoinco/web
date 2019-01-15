@@ -262,7 +262,7 @@ var trigger_primary_form_web3_hooks = function() {
       $('#connect_metamask_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
       $('#no_issue_error').css('display', 'none');
-    } else if (isFaucet && document.balance >= faucet_amount) {
+    } else if (isFaucet && (document.balance * Math.pow(10, 18)) >= faucet_amount) {
       $('#no_metamask_error').css('display', 'none');
       $('#unlock_metamask_error').css('display', 'none');
       $('#connect_metamask_error').css('display', 'none');
