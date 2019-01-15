@@ -27,6 +27,7 @@
     <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
     <script src="{% static "v2/js/jquery.js" %}"></script>
     <script src="{% static "v2/js/work_with_gitcoin.js" %}"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.36/dist/web3.min.js" integrity="sha256-nWBTbvxhJgjslRyuAKJHK+XcZPlCnmIAAMixz6EefVk=" crossorigin="anonymous"></script>
 
     <link rel="stylesheet" href="{% static "v2/css/event_ethdenver2019/style.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/fontawesome-all.min.css" %}">
@@ -62,6 +63,14 @@
           font-size: 200px;
 
       }
+      .ethdenver2019-prog-header {
+        background-image: url("{% static 'v2/images/event_ethdenver2019/background.png' %}");
+        background-size: 100% 100%;
+      }
+      .sadsmiley {
+        font-size: 140px;
+        transform: rotate(90deg);
+      }
     </style>
     <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
     {% include 'shared/favicon.html' %}
@@ -78,8 +87,91 @@
         });
       });
     </script>
+     <style>
+    .loader {
+      border: 16px solid #f3f3f3; /* Light grey */
+      border-top: 16px solid #3498db; /* Blue */
+      border-radius: 50%;
+      width: 120px;
+      height: 120px;
+      animation: spin 2s linear infinite;
+      justify-self: center;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    #web3content {
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      align-content: center;
+      align-self: center;
+      align-items: center;
+      justify-content: center;
+      display: inline-grid;
+
+    }
+    .loadertext{
+            padding-top: 3em;
+justify-self: center;
+    }
+    </style>
+    <script>
+  {% if page1 %}
+  var accountInterval;
+  $( document ).ready(x => {
+    if (typeof web3 !== 'undefined') {
+      web3 = new Web3(web3.currentProvider);
+    } else {
+      // Set the provider you want from Web3.providers
+      console.log("no web3 provider, please unlock metamask!");
+      return;
+    }
+
+    function parseAddr(){
+      var f = web3.eth.getAccounts().then(r => {
+        walletAddr = r[0];
+        if (walletAddr !== undefined) {
+          trimWallet = walletAddr.split("0x",2)[1];
+          window.location.replace(window.location.href+"/?eth_addr="+r[0]);
+        } else {
+          console.log("Invalid address - no address found.");
+        }
+      });
+    }
+
+    var account = "";
+    web3.eth.getAccounts().then(x => {
+      account = x[0];
+    });
+
+    accountInterval = setInterval(function() {
+      web3.eth.getAccounts().then(x => {
+        if (x[0] !== account) {
+          console.log("Account changed!");
+          clearInterval(accountInterval);
+          window.location.replace(window.location.href);
+        }
+      });
+    }, 100);
+
+    parseAddr();
+
+
+  })
+  {% endif %}
+    </script>
   </head>
   <body class="{{ class }} g-font-multi">
+  {% if page1 %}
+  <div id='web3content'>
+    <div class="loadertext">
+      <div class="loadercontent">Please unlock your web3 provider (for example: metamask)...</div>
+    </div>
+  </div>
     <div class="container" id="page1">
       <div class="row text-center">
         <div class="ethdenver2019-nli-header col-12">
@@ -171,8 +263,10 @@
         </div>
       </div>
     </div>
+{% endif %}
+{% if page2 %}
 
-    <div class="container hidden" id="page2">
+    <div class="container" id="page2">
       <div class="row text-center">
         <div class="ethdenver2019-prog-header col-12">
           <div class="container">
@@ -262,5 +356,69 @@
         </div>
       </div>
     </div>
+  {% endif %}
+  {% if page3 %}
+    <div class="container" id="page3">
+      <div class="row text-center">
+        <div class="ethdenver2019-prog-header col-12">
+          <div class="container">
+            <div class="row mt-4">
+              <div class="col-12">
+                <img src="{% static 'v2/images/event_ethdenver2019/ethdenver_logo.png' %}" class="rounded mx-auto d-block">
+              </div>
+            </div>
+            <div class="row mt-5 mb-5">
+              <div class="col-12">
+                <div class="ethdenver2019-texts-headers">
+                  SET CHALLENGES
+                </div>
+              </div>
+            </div>
+            <div class="row mt-5 mb-5">
+              <div class="col-12">
+                <img src="{% avatar_url profile %}" width="100px" height="100px" class="circle-cutter">
+              </div>
+              <div class="col-12 ethdenver2019-texts-white">
+                {{ profile.handle }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ethdenver2019-kudos mt-4 mb-4 align-middle text-center">
+        {% if success %}
+        <div class="row">
+          <div class="col-12">
+            <img src="{% static 'v2/images/event_ethdenver2019/bufficorn-joy.png' %}">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="ethdenver2019-texts-headers ethdenver2019-texts-black mb-2 mt-2">
+              Horray!
+            </div>
+            <div class="ethdenver2019-texts-black">
+              You completed the ETHDenver2019 challenge!
+            </div>
+            <div>
+              Go to the front desk and show them that you received this kudos:
+            </div>
+          </div>
+        </div>
+        {% else %}
+         <div class="row">
+          <div class="col-12 sadsmiley">
+            :-(
+          </div>
+        </div>
+         <div class="row mt-5">
+          <div class="col-12">
+            You did not collect all challenge kudos yet. Try again later.
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
   </body>
 </html>

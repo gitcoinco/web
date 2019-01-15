@@ -15,7 +15,7 @@ from retail.helpers import get_ip
 from web3 import Web3
 from kudos.models import BulkTransferCoupon, BulkTransferRedemption, KudosTransfer, Token
 
-
+'''
 def ethdenver2019_web3api_getKudos(request):
     # kudos_select = KudosTransfer.objects.filter(recipient_profile=profile).all()
 
@@ -51,6 +51,7 @@ def ethdenver2019_web3api_getKudos(request):
     }
 
     return JsonResponse(page_ctx)
+
 
 
 def ethdenver2019_redeem(request):
@@ -119,6 +120,44 @@ def ethdenver2019(request):
         }
 
     return TemplateResponse(request, 'ethdenver2019/kudosprogress.html', page_ctx)
+'''
+
+def ethdenver2019(request):
+    recv_addr = 'invalid'
+    if request.GET:
+        recv_addr = request.GET.get('eth_addr', 'invalid')
+    kudos_select = KudosTransfer.objects.filter(receive_address=recv_addr).all()
+
+    i_kudos_item = 0
+    kudos_selection = []
+    kudos_row = []
+    kudos_selected = Event_ETHDenver2019_Customizing_Kudos.objects.filter(active=True).all()
+
+    for kudos in kudos_selected:
+        kudos_obj = {
+            "kudos": kudos.kudos_required,
+            "received": False,
+            "customizing": kudos,
+            # "expanded_kudos": vars(kudos.kudos_required)
+        }
+        recv = kudos_select.filter(kudos_token_cloned_from=kudos.kudos_required).last()
+        if recv:
+            kudos_obj['received'] = False
+            kudos_obj['transfer'] = recv
+
+        kudos_row.append(kudos_obj)
+        i_kudos_item = i_kudos_item + 1
+
+    if i_kudos_item > 0:
+        kudos_selection.append(kudos_row)
+
+    page_ctx = {
+        "kudos_selection": kudos_selection,
+        "page2": request.GET and recv_addr != 'invalid',
+        "page3": False
+    }
+    page_ctx["page1"] = not page_ctx['page2']
+    return TemplateResponse(request, 'ethdenver2019/onepager.html', page_ctx)
 
 
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
