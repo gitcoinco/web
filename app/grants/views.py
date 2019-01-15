@@ -363,10 +363,16 @@ def grant_fund(request, grant_id, grant_slug):
                 'success': True,
             })
 
-        if 'signature' in request.POST:
+        if 'confirmed' in request.POST:
             sub_new_approve_tx_id = request.POST.get('sub_new_approve_tx_id', '')
             subscription = Subscription.objects.filter(new_approve_tx_id=sub_new_approve_tx_id).first()
             subscription.active = True
+            subscription.new_approved_tx_confirmed = True
+            subscription.save()
+
+        if 'signature' in request.POST:
+            sub_new_approve_tx_id = request.POST.get('sub_new_approve_tx_id', '')
+            subscription = Subscription.objects.filter(new_approve_tx_id=sub_new_approve_tx_id).first()
             subscription.subscription_hash = request.POST.get('subscription_hash', '')
             subscription.contributor_signature = request.POST.get('signature', '')
             subscription.save()

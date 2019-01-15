@@ -357,7 +357,7 @@ class Subscription(SuperModel):
         default='0x0',
         help_text=_('The transaction id for subscription approve().'),
     )
-    new_approved_tx_confirmed = models.BooleanField(
+    new_approve_tx_confirmed = models.BooleanField(
         default=False,
         help_text=_('Whether or not the new approve transaction has been confirmed on chain.'),
     )
@@ -366,7 +366,7 @@ class Subscription(SuperModel):
         default='0x0',
         help_text=_('The transaction id for subscription approve().'),
     )
-    end_approved_tx_confirmed = models.BooleanField(
+    end_approve_tx_confirmed = models.BooleanField(
         default=False,
         help_text=_('Whether or not the end approve transaction has been confirmed on chain.'),
     )
@@ -680,6 +680,19 @@ next_valid_timestamp: {next_valid_timestamp}
         grant.save()
         successful_contribution(self.grant, self, contribution)
         return contribution
+
+    def confirm_new_approve(self):
+        self.new_approve_tx_confirmed = True
+        self.save()
+
+    def confirm_end_approve(self):
+        self.end_approve_tx_confirmed = True
+        self.save()
+
+    def confirm_sub_cancel(self):
+        self.active = False
+        self.cancel_tx_confirmed = True
+        self.save()
 
 
 class ContributionQuerySet(models.QuerySet):

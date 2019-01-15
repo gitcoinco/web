@@ -150,7 +150,6 @@ $(document).ready(function() {
                       success: json => {
                         console.log('successfully saved subscriptionHash and signature');
                         url = json.url;
-                        $('#wait').val('false');
                       },
                       error: () => {
                         _alert({ message: gettext('Your subscription failed to save. Please try again.') }, 'error');
@@ -162,6 +161,25 @@ $(document).ready(function() {
               });
             });
           }).on('confirmation', function(confirmationNumber, receipt) {
+            let data = {
+              'confirmed': true,
+              'csrfmiddlewaretoken': $("#js-fundGrant input[name='csrfmiddlewaretoken']").val(),
+              'sub_new_approve_tx_id': $('#sub_new_approve_tx_id').val()
+            };
+
+            $.ajax({
+              type: 'post',
+              url: '',
+              data: data,
+              success: json => {
+                console.log('approve successfully confirmed on chain');
+                $('#wait').val('false');
+              },
+              error: () => {
+                _alert({ message: gettext('Your approve tranasction failed. Please try again.') }, 'error');
+                url = window.location;
+              }
+            });
 
             waitforData(() => {
               document.suppress_loading_leave_code = true;
