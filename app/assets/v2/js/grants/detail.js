@@ -117,20 +117,37 @@ $(document).ready(function() {
             $('#transaction_url').attr('href', linkURL);
             $('.modal .close').trigger('click');
             enableWaitState('#grants-details');
+
+            $.ajax({
+              type: 'post',
+              url: '',
+              data: {
+                'contract_address': contract_address,
+                'grant_cancel_tx_id': grant_cancel_tx_id,
+                'csrfmiddlewaretoken': $("#grants-details input[name='csrfmiddlewaretoken']").val(),
+              },
+              success: function(json) {
+                  console.log('Your grant_cancel call successfully saved');
+              },
+              error: function() {
+                _alert({ message: gettext('Canceling your grant failed to save. Please try again.') }, 'error');
+              }
+            });
           })
           .on('confirmation', function(confirmationNumber, receipt) {
             $.ajax({
               type: 'post',
               url: '',
               data: {
-                'contract_address': contract_address,
-                'grant_cancel_tx_id': grant_cancel_tx_id
+                'csrfmiddlewaretoken': $("#grants-details input[name='csrfmiddlewaretoken']").val(),
+                'confirmed': true
               },
               success: function(json) {
+                  console.log('Your cancel_grant tx successfully confirmed on chain');
                 window.location.reload(false);
               },
               error: function() {
-                _alert({ message: gettext('Canceling your grant failed to save. Please try again.') }, 'error');
+                _alert({ message: gettext('Your cancel_grant tx failed. Please try again.') }, 'error');
               }
             });
           });

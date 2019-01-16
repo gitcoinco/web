@@ -49,7 +49,7 @@ $(document).ready(() => {
               enableWaitState('#grants_form');
 
               let data = {
-                'csrfmiddlewaretoken': $("#js-fundGrant input[name='csrfmiddlewaretoken']").val(),
+                'csrfmiddlewaretoken': $("#js-cancelSubscription input[name='csrfmiddlewaretoken']").val(),
                 'sub_end_approve_tx_id': $('#sub_end_approve_tx_id').val()
               };
 
@@ -87,7 +87,7 @@ $(document).ready(() => {
                   .on('transactionHash', function(transactionHash) {
                     $('#sub_cancel_tx_id').val(transactionHash);
                     let data = {
-                      'sub_cancel_tx_id': $('#sub_cancel_tx_id').val()                      'csrfmiddlewaretoken': $("#js-fundGrant input[name='csrfmiddlewaretoken']").val()
+                      'sub_cancel_tx_id': $('#sub_cancel_tx_id').val()                      'csrfmiddlewaretoken': $("#js-cancelSubscription input[name='csrfmiddlewaretoken']").val()
                     };
 
                     $.ajax({
@@ -106,7 +106,7 @@ $(document).ready(() => {
 
                     let data = {
                       'sub_cancel_confirmed': true,
-                      'csrfmiddlewaretoken': $("#js-fundGrant input[name='csrfmiddlewaretoken']").val()
+                      'csrfmiddlewaretoken': $("#js-cancelSubscription input[name='csrfmiddlewaretoken']").val()
                     };
 
                     $.ajax({
@@ -131,7 +131,7 @@ $(document).ready(() => {
             .on('confirmation', function(confirmationNumber, receipt) {
               let data = {
                 'end_approve_tx_confirmed': true,
-                'csrfmiddlewaretoken': $("#js-fundGrant input[name='csrfmiddlewaretoken']").val()
+                'csrfmiddlewaretoken': $("#js-cancelSubscription input[name='csrfmiddlewaretoken']").val()
               };
 
               $.ajax({

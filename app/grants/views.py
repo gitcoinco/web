@@ -92,7 +92,6 @@ def grants(request):
     return TemplateResponse(request, 'grants/index.html', params)
 
 
-@csrf_exempt
 def grant_details(request, grant_id, grant_slug):
     """Display the Grant details page."""
     profile = get_profile(request)
