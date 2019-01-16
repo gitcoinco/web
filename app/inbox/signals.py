@@ -120,6 +120,40 @@ def create_notification(sender, **kwargs):
             f'A <b>crowdfunding contribution worth {amount} USD</b> has been attached for {bounty.title}'
         )
 
+    if activity.activity_type == 'bounty_abandonment_warning':
+        bounty = activity.bounty
+        send_notification_to_user(
+            get_user_model().objects.get(username=bounty.bounty_owner_github_username),
+            activity.profile.user,
+            bounty.url,
+            'bounty_abandonment_warning',
+            f'Warning for Abandonment of Bounty: <b>{bounty.title}</b>'
+        )
+        send_notification_to_user(
+            activity.profile.user,
+            get_user_model().objects.get(username=bounty.bounty_owner_github_username),
+            bounty.url,
+            'bounty_abandonment_warning',
+            f'<b>{activity.profile.user}</b> has been warned for Abandonment of Bounty: <b>{bounty.title}</b>'
+        )
+
+    if activity.activity_type == 'bounty_abandonment_escalation_to_mods':
+        bounty = activity.bounty
+        send_notification_to_user(
+            get_user_model().objects.get(username=bounty.bounty_owner_github_username),
+            activity.profile.user,
+            bounty.url,
+            'bounty_abandonment_escalation_to_mods',
+            f'Escalated for Abandonment of Bounty: <b>{bounty.title}</b>'
+        )
+        send_notification_to_user(
+            activity.profile.user,
+            get_user_model().objects.get(username=bounty.bounty_owner_github_username),
+            bounty.url,
+            'bounty_abandonment_escalation_to_mods',
+            f'<b>{activity.profile.user}</b> Escalated for Abandonment of Bounty: <b>{bounty.title}</b>'
+        )
+
     if activity.activity_type == 'new_kudos':
         send_notification_to_user(
             activity.profile.user,
@@ -131,11 +165,8 @@ def create_notification(sender, **kwargs):
 
     # TODO
     # For Funder
-    # Your bounty hunters haven't responded on this issue in a few days.
-    # Remove them if you haven't heard from them?
     # Your bounty is expiring soon
     # For Hunter
-    # You haven't responded to this issue in x days.
     # This issue has been remarketed and has your skill sets. Are you interested?
     # You have been removed from a bounty due to no response
     # Your submission has been declined.
