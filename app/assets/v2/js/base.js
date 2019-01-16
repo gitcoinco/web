@@ -43,7 +43,7 @@ $(document).ready(function() {
 
     var parentSiblings = parent.siblings('.nav-item');
 
-    parent.find('.dropdown-menu').toggle();
+    parent.find('.dropdown-menu').toggle().toggleClass('show');
     parentSiblings.find('.dropdown-menu').hide();
   });
 
