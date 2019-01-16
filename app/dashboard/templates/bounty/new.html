@@ -43,7 +43,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-sm-12 col-lg-12">
+      <div class="col-12">
         <div id="form_container">
           <div class="row d-flex justify-content-center my-5">
             <div id="robot_error" class="hidden">
@@ -97,13 +97,16 @@
                   {% endcomment %}
                 </div>
                 <div id="deadline-section" class="pt-2">
+                  <hr class="mt-4">
                   {% include 'shared/issue_deadline.html' %}
                   <hr class="mt-4">
                 </div>
                 <div id="contact-section" class="pt-2">
                   <h5 class="font-subheader">{% trans "Contact" %}</h5>
-                  {% include 'shared/github_username.html' %}
-                  {% include 'shared/notification_email.html' with show_information_publicly_checkbox=1 %}
+                  <div class="row mt-2">
+                    {% include 'shared/notification_email.html' with show_information_publicly_checkbox=1 %}
+                    {% include 'shared/github_username.html' %}
+                  </div>
                   <div id="advanced_container"></div>
                   <hr class="mt-4">
                 </div>
@@ -146,8 +149,8 @@
                       Gitcoin Core, will be able to take my funds or change this information.{% endblocktrans %}</label>
                   </div>
                 </div>
-                <div class="form__footer form__footer--right pb-5 text-center">
-                  <button class="button button--primary btn-block js-submit" type="submit">Fund Issue</button>
+                <div class="pb-5 text-center">
+                  <button class="button button--primary js-submit" type="submit">Fund Issue</button>
                   <a class="font-caption" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">
                     Your transaction is secured by the audited StandardBounties contract on the Ethereum blockchain.</br>
                     Learn more here.
