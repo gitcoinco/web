@@ -369,6 +369,9 @@ def grant_fund(request, grant_id, grant_slug):
             subscription.active = True
             subscription.new_approved_tx_confirmed = True
             subscription.save()
+            return JsonResponse({
+                'success': True,
+            })
 
         if 'signature' in request.POST:
             sub_new_approve_tx_id = request.POST.get('sub_new_approve_tx_id', '')
@@ -376,6 +379,9 @@ def grant_fund(request, grant_id, grant_slug):
             subscription.subscription_hash = request.POST.get('subscription_hash', '')
             subscription.contributor_signature = request.POST.get('signature', '')
             subscription.save()
+            return JsonResponse({
+                'success': True,
+            })
 
             value_usdt = subscription.get_converted_amount()
             if value_usdt:
@@ -433,22 +439,45 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
     if request.method == 'POST' and (
         profile == subscription.contributor_profile or request.user.has_perm('grants.change_subscription')
     ):
-        subscription.end_approve_tx_id = request.POST.get('sub_end_approve_tx_id', '')
-        subscription.cancel_tx_id = request.POST.get('sub_cancel_tx_id', '')
-        subscription.active = False
-        subscription.save()
+        if 'sub_end_approve_tx_id' in request.POST:
+            subscription.end_approve_tx_id = request.POST.get('sub_end_approve_tx_id', '')
+            subscription.save()
+            return JsonResponse({
+                'success': True,
+            })
 
-        value_usdt = subscription.get_converted_amount
-        if value_usdt:
-            grant.monthly_amount_subscribed -= subscription.get_converted_monthly_amount()
+        if 'sub_cancel_tx_id' in request.POST:
+            subscription.cancel_tx_id = request.POST.get('sub_cancel_tx_id', '')
+            subscription.active = False
+            subscription.save()
+            return JsonResponse({
+                'success': True,
+            })
 
-        grant.save()
-        support_cancellation(grant, subscription)
-        messages.info(
-            request,
-            _('Your subscription has been canceled. We hope you continue to support other open source projects!')
-        )
-        return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
+
+        if 'end_approve_tx_confirmed' in request.POST:
+            subscription.end_approve_tx_confirmed = True
+            subscription.save()
+            return JsonResponse({
+                'success': True,
+            })
+
+        if 'sub_cancel_confirmed' in request.POST:
+            subscription.cancel_tx_confirmed = True
+            subscription.active = False
+            subscription.save()
+
+            value_usdt = subscription.get_converted_amount
+            if value_usdt:
+                grant.monthly_amount_subscribed -= subscription.get_converted_monthly_amount()
+
+            grant.save()
+            support_cancellation(grant, subscription)
+            messages.info(
+                request,
+                _('Your subscription has been canceled. We hope you continue to support other open source projects!')
+            )
+            return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
     params = {
         'active': 'cancel_grant',

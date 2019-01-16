@@ -37,6 +37,8 @@ $(document).ready(() => {
 
         web3.eth.getAccounts(function(err, accounts) {
 
+          let url;
+
           deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(0)).send({from: accounts[0], gasPrice: realGasPrice})
             .on('transactionHash', function(transactionHash) {
               $('#sub_end_approve_tx_id').val(transactionHash);
@@ -45,6 +47,24 @@ $(document).ready(() => {
               document.issueURL = linkURL;
               $('#transaction_url').attr('href', linkURL);
               enableWaitState('#grants_form');
+
+              let data = {
+                'csrfmiddlewaretoken': $("#js-fundGrant input[name='csrfmiddlewaretoken']").val(),
+                'sub_end_approve_tx_id': $('#sub_end_approve_tx_id').val()
+              };
+
+              $.ajax({
+                type: 'post',
+                url: '',
+                data: data,
+                success: json => {
+                  console.log('Your approve 0 call successfully saved');
+                },
+                error: () => {
+                  _alert({ message: gettext('Your approve 0 call failed to save. Please try again.') }, 'error');
+                  url = window.location;
+                }
+              });
 
               deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
 
@@ -66,15 +86,67 @@ $(document).ready(() => {
                 ).send({from: accounts[0], gasPrice: realGasPrice})
                   .on('transactionHash', function(transactionHash) {
                     $('#sub_cancel_tx_id').val(transactionHash);
+                    let data = {
+                      'sub_cancel_tx_id': $('#sub_cancel_tx_id').val()                      'csrfmiddlewaretoken': $("#js-fundGrant input[name='csrfmiddlewaretoken']").val()
+                    };
+
+                    $.ajax({
+                      type: 'post',
+                      url: '',
+                      data: data,
+                      success: json => {
+                        console.log('Cancel subscription successfully saved');
+                      },
+                      error: () => {
+                        _alert({ message: gettext('Your cancel subscription call failed to save. Please try again.') }, 'error');
+                        url = window.location;
+                      }
+                    });
                   }).on('confirmation', function(confirmationNumber, receipt) {
-                    console.log('receipt', receipt);
+
+                    let data = {
+                      'sub_cancel_confirmed': true,
+                      'csrfmiddlewaretoken': $("#js-fundGrant input[name='csrfmiddlewaretoken']").val()
+                    };
+
+                    $.ajax({
+                      type: 'post',
+                      url: '',
+                      data: data,
+                      success: json => {
+                        console.log('Cancel subscription successfully confirmed on chain');
+                        url = json.url;
+                      },
+                      error: () => {
+                        _alert({ message: gettext('Your cancel subscription transaction failed. Please try again.') }, 'error');
+                        url = window.location;
+                      }
+                    });
+
                     document.suppress_loading_leave_code = true;
-                    form.submit();
+                    window.location = url;
                   });
               });
             })
             .on('confirmation', function(confirmationNumber, receipt) {
-              console.log('receipt', receipt);
+              let data = {
+                'end_approve_tx_confirmed': true,
+                'csrfmiddlewaretoken': $("#js-fundGrant input[name='csrfmiddlewaretoken']").val()
+              };
+
+              $.ajax({
+                type: 'post',
+                url: '',
+                data: data,
+                success: json => {
+                  console.log('Cancel subscription successfully confirmed on chain');
+                },
+                error: () => {
+                  _alert({ message: gettext('Your cancel subscription tranasction failed. Please try again.') }, 'error');
+                  url = window.location;
+                }
+              });
+
             })
             .on('error', function(err) {
               console.log('err', err);
