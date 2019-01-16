@@ -76,8 +76,8 @@
 
 .form__select2 .select2-container--default .select2-selection--multiple .select2-selection__rendered li:not(.select2-search){
   align-items: center;
-  border: 1px solid #0D0764;
-  background-color: #0D0764;
+  border: 1px solid #3E00FF;
+  background-color: #3E00FF;
   display: flex;
   color: #ffffff;
   height: 100%;
@@ -114,4 +114,8 @@
 
 .form__select2 .select2-container--default .select2-selection--single .select2-selection__arrow b {
   display: none;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+  color: #ffffff;
 }
