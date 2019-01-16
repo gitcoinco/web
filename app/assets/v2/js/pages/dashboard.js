@@ -452,10 +452,10 @@ var refreshBounties = function(event, offset, append, do_save_search) {
   let featuredBountiesURI;
 
   if (!uri.endsWith('?')) {
-    bountiesURI = uri + '&';
+    bountiesURI = uri;
     featuredBountiesURI = uri + '&';
   }
-  bountiesURI += 'is_featured=False';
+  // bountiesURI += '';
   featuredBountiesURI += 'is_featured=True';
 
   // Abort pending request if any subsequent request
