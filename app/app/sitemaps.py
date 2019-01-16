@@ -4,7 +4,6 @@ from django.urls import reverse
 
 from dashboard.models import Bounty, Profile
 from kudos.models import Token
-from grants.models import Grant, Subscription
 
 
 class StaticViewSitemap(sitemaps.Sitemap):
