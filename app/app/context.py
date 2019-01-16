@@ -45,7 +45,7 @@ def preprocess(request):
     profile = request.user.profile if user_is_authenticated and hasattr(request.user, 'profile') else None
     email_subs = profile.email_subscriptions if profile else None
     email_key = email_subs.first().priv if user_is_authenticated and email_subs and email_subs.exists() else ''
-    if user_is_authenticated and profile:
+    if user_is_authenticated and profile and profile.pk:
         record_visit = not profile.last_visit or profile.last_visit < (
             timezone.now() - timezone.timedelta(seconds=RECORD_VISIT_EVERY_N_SECONDS)
         )
