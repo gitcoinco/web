@@ -25,7 +25,7 @@
 <link rel="stylesheet" href="{% static "v2/css/top-nav.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/base.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
-{% if request.path|matches:"^\/((.*grant))$" %}
+{% if not request.path|matches:"^\/((.*grants.*))$" %}
   <link rel="stylesheet" href="{% static "v2/css/jquery.modal.min.css" %}" />
 {% endif %}
 <link rel="stylesheet" href="{% static "v2/css/jquery.select2.min.css" %}" />
