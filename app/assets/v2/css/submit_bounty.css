@@ -18,7 +18,7 @@ input:-moz-read-only { /* For Firefox */
   background-color: #eaeaea94;
 }
 
-input:read-only { 
+input:read-only {
   background-color: #eaeaea94;
 }
 
@@ -26,7 +26,7 @@ textarea:-moz-read-only { /* For Firefox */
   background-color: #eaeaea94;
 }
 
-textarea:read-only { 
+textarea:read-only {
   background-color: #eaeaea94;
 }
 
@@ -103,7 +103,7 @@ textarea:read-only {
 #issue-details input:read-only,
 #issue-details textarea:read-only {
   border: none;
-  padding-left: 0;  
+  padding-left: 0;
   background-color: #fff;
   outline: none;
 }
@@ -142,4 +142,23 @@ textarea:read-only {
   #pricing-section .form__amount--wrapper {
     width: 100%;
   }
+}
+
+#featured-bounty-add .featured-example {
+  border: 1px solid #E8E8E8;
+  padding: 8px 0 8px 8px;
+  max-width: 100%;
+}
+
+.featured-text {
+  font-size: 0.8em;
+}
+
+.featured-price {
+  display: block;
+  text-indent: 2.3em;
+}
+
+.new {
+  color: #0FCE7C;
 }
