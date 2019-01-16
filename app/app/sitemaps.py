@@ -20,7 +20,6 @@ class StaticViewSitemap(sitemaps.Sitemap):
         ]
 
     def location(self, item):
-        print(item)
         if item == 'grants':
             return reverse('grants:grants')
         return reverse(item)
