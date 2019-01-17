@@ -1,8 +1,10 @@
-.submit_bounty .submit_bounty_content {
+.submit_bounty .submit_bounty_content,
+.fulfill_bounty .submit_bounty_content {
   background-color: #f2f6f9;
 }
 
-.submit_bounty .submit_bounty_form {
+.submit_bounty .submit_bounty_form,
+.fulfill_bounty .submit_bounty_form {
   background-color: #FFFFFF;
 }
 
@@ -80,6 +82,11 @@ textarea:read-only {
   height: 37px;
 }
 
+.select2-container--default .select2-selection--single {
+  border-color:#D3D3D3 !important;
+  font-size: 14px;
+}
+
 #issue-details,
 #no-issue-banner img {
   max-width: 100%;
@@ -134,12 +141,23 @@ textarea:read-only {
   margin-right: .5rem;
 }
 
-@media (max-width: 600px) {
-  #pricing-section .form__flex-group {
-    display: block;
+#reservedForDiv .select2-container--default .select2-selection--single .select2-selection__arrow {
+  top: -1px;
+  right: 3px;
+}
+
+@media (max-width: 767.98px) {
+  .select2-container {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 575.98px) {
+  #pricing-section .form__amount-wrapper {
+    width: 100%;
   }
 
-  #pricing-section .form__amount--wrapper {
-    width: 100%;
+  #pricing-section .form__flex-group {
+    display: block;
   }
 }

@@ -94,9 +94,9 @@ $(document).ready(function() {
   });
 
   $('#cancel_grant').on('click', function(e) {
-    $('#cancelModal').modal({
-      modalClass: 'modal cancel_grants'
-    });
+    // $('#cancelModal').modal({
+    //   modalClass: 'modal cancel_grants'
+    // });
 
     $('.modal-cancel-grants').on('click', function(e) {
       let contract_address = $('#contract_address').val();
@@ -209,3 +209,7 @@ const copyDuplicateDetails = () => {
     });
   });
 };
+
+$(document).ready(() => {
+  setupTabs('#grant-profile-tabs');
+});

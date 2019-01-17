@@ -27,7 +27,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
@@ -103,6 +103,8 @@ def grant_details(request, grant_id, grant_slug):
         milestones = grant.milestones.order_by('due_date')
         updates = grant.updates.order_by('-created_on')
         subscriptions = grant.subscriptions.filter(active=True, error=False)
+        cancelled_subscriptions = grant.subscriptions.filter(active=False, error=False)
+        contributions = Contribution.objects.filter(subscription__in=grant.subscriptions.all())
         user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True, error=False).first()
     except Grant.DoesNotExist:
         raise Http404
@@ -149,6 +151,8 @@ def grant_details(request, grant_id, grant_slug):
         'card_desc': grant.description,
         'avatar_url': grant.logo.url if grant.logo else None,
         'subscriptions': subscriptions,
+        'cancelled_subscriptions': cancelled_subscriptions,
+        'contributions': contributions,
         'user_subscription': user_subscription,
         'is_admin': (grant.admin_profile.id == profile.id) if profile and grant.admin_profile else False,
         'grant_is_inactive': not grant.active,
@@ -178,7 +182,7 @@ def grant_details(request, grant_id, grant_slug):
             change_grant_owner_reject(grant, grant.admin_profile)
             params['change_ownership'] = 'N'
 
-    return TemplateResponse(request, 'grants/detail.html', params)
+    return TemplateResponse(request, 'grants/detail/index.html', params)
 
 
 @login_required
@@ -190,33 +194,45 @@ def grant_new(request):
     profile = get_profile(request)
 
     if request.method == 'POST':
-        logo = request.FILES.get('input_image', None)
-        receipt = json.loads(request.POST.get('receipt', '{}'))
-        team_members = request.POST.getlist('team_members[]')
+        if 'title' in request.POST:
+            logo = request.FILES.get('input_image', None)
+            receipt = json.loads(request.POST.get('receipt', '{}'))
+            team_members = request.POST.getlist('team_members[]')
 
-        grant_kwargs = {
-            'title': request.POST.get('input_title', ''),
-            'description': request.POST.get('description', ''),
-            'reference_url': request.POST.get('reference_url', ''),
-            'admin_address': request.POST.get('admin_address', ''),
-            'contract_owner_address': request.POST.get('contract_owner_address', ''),
-            'token_address': request.POST.get('denomination', ''),
-            'token_symbol': request.POST.get('token_symbol', ''),
-            'amount_goal': request.POST.get('amount_goal', 1),
-            'contract_version': request.POST.get('contract_version', ''),
-            'deploy_tx_id': request.POST.get('transaction_hash', ''),
-            'contract_address': request.POST.get('contract_address', ''),
-            'network': request.POST.get('network', 'mainnet'),
-            'metadata': receipt,
-            'admin_profile': profile,
-            'logo': logo,
-        }
-        grant = Grant.objects.create(**grant_kwargs)
-        new_grant(grant, profile)
+            grant_kwargs = {
+                'title': request.POST.get('title', ''),
+                'description': request.POST.get('description', ''),
+                'reference_url': request.POST.get('reference_url', ''),
+                'admin_address': request.POST.get('admin_address', ''),
+                'contract_owner_address': request.POST.get('contract_owner_address', ''),
+                'token_address': request.POST.get('token_address', ''),
+                'token_symbol': request.POST.get('token_symbol', ''),
+                'amount_goal': request.POST.get('amount_goal', 1),
+                'contract_version': request.POST.get('contract_version', ''),
+                'deploy_tx_id': request.POST.get('transaction_hash', ''),
+                'network': request.POST.get('network', 'mainnet'),
+                'metadata': receipt,
+                'admin_profile': profile,
+                'logo': logo,
+            }
+            grant = Grant.objects.create(**grant_kwargs)
+            team_members.append(profile.id)
+            grant.team_members.add(*list(filter(lambda member_id: member_id > 0, map(int, team_members))))
+            return JsonResponse({
+                'success': True,
+            })
 
-        team_members.append(profile.id)
-        grant.team_members.add(*list(filter(lambda member_id: member_id > 0, map(int, team_members))))
-        return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
+        if 'contract_address' in request.POST:
+            tx_hash = request.POST.get('transaction_hash', '')
+            grant = Grant.objects.filter(deploy_tx_id=tx_hash).first()
+            grant.contract_address = request.POST.get('contract_address', '')
+            grant.save()
+            new_grant(grant, profile)
+            return JsonResponse({
+                'success': True,
+                'url': reverse('grants:details', args=(grant.pk, grant.slug))
+            })
+
 
     params = {
         'active': 'new_grant',
@@ -324,33 +340,47 @@ def grant_fund(request, grant_id, grant_slug):
         return TemplateResponse(request, 'grants/shared/error.html', params)
 
     if request.method == 'POST':
-        subscription = Subscription()
+        if 'contributor_address' in request.POST:
+            subscription = Subscription()
 
-        subscription.subscription_hash = request.POST.get('subscription_hash', '')
-        subscription.contributor_signature = request.POST.get('signature', '')
-        subscription.contributor_address = request.POST.get('contributor_address', '')
-        subscription.amount_per_period = request.POST.get('amount_per_period', 0)
-        subscription.real_period_seconds = request.POST.get('real_period_seconds', 2592000)
-        subscription.frequency = request.POST.get('frequency', 30)
-        subscription.frequency_unit = request.POST.get('frequency_unit', 'days')
-        subscription.token_address = request.POST.get('denomination', '')
-        subscription.token_symbol = request.POST.get('token_symbol', '')
-        subscription.gas_price = request.POST.get('gas_price', 0)
-        subscription.new_approve_tx_id = request.POST.get('sub_new_approve_tx_id', '')
-        subscription.num_tx_approved = request.POST.get('num_periods', 1)
-        subscription.network = request.POST.get('network', '')
-        subscription.contributor_profile = profile
-        subscription.grant = grant
-        subscription.save()
+            subscription.active = False
+            subscription.contributor_address = request.POST.get('contributor_address', '')
+            subscription.amount_per_period = request.POST.get('amount_per_period', 0)
+            subscription.real_period_seconds = request.POST.get('real_period_seconds', 2592000)
+            subscription.frequency = request.POST.get('frequency', 30)
+            subscription.frequency_unit = request.POST.get('frequency_unit', 'days')
+            subscription.token_address = request.POST.get('token_address', '')
+            subscription.token_symbol = request.POST.get('token_symbol', '')
+            subscription.gas_price = request.POST.get('gas_price', 0)
+            subscription.new_approve_tx_id = request.POST.get('sub_new_approve_tx_id', '')
+            subscription.num_tx_approved = request.POST.get('num_tx_approved', 1)
+            subscription.network = request.POST.get('network', '')
+            subscription.contributor_profile = profile
+            subscription.grant = grant
+            subscription.save()
+            return JsonResponse({
+                'success': True,
+            })
 
-        value_usdt = subscription.get_converted_amount()
-        if value_usdt:
-            grant.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
+        if 'signature' in request.POST:
+            sub_new_approve_tx_id = request.POST.get('sub_new_approve_tx_id', '')
+            subscription = Subscription.objects.filter(new_approve_tx_id=sub_new_approve_tx_id).first()
+            subscription.active = True
+            subscription.subscription_hash = request.POST.get('subscription_hash', '')
+            subscription.contributor_signature = request.POST.get('signature', '')
+            subscription.save()
 
-        grant.save()
-        new_supporter(grant, subscription)
-        thank_you_for_supporting(grant, subscription)
-        return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
+            value_usdt = subscription.get_converted_amount()
+            if value_usdt:
+                grant.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
+
+            grant.save()
+            new_supporter(grant, subscription)
+            thank_you_for_supporting(grant, subscription)
+            return JsonResponse({
+                'success': True,
+                'url': reverse('grants:details', args=(grant.pk, grant.slug))
+            })
 
     params = {
         'active': 'fund_grant',
