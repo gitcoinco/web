@@ -129,7 +129,11 @@ def listen_for_tx(grant, subscription, tx, network, tx_type):
             grant.confirm_grant_deploy(tx_contract_address)
             new_grant(grant, grant.admin_profile)
         elif tx_type == 'grant_cancel':
+            subscriptions = grant.subscriptions.filter(active=True, error=False)
             grant.confirm_grant_cancel()
+            grant_cancellation(grant)
+            for sub in subscriptions:
+                subscription_terminated(grant, sub)
         elif tx_type == 'new_approve':
             subscription.confirm_new_approve()
             new_supporter(subscription.grant, subscription)

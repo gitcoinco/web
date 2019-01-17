@@ -110,11 +110,12 @@ def grant_details(request, grant_id, grant_slug):
         raise Http404
 
     if request.method == 'POST' and (profile == grant.admin_profile or request.user.is_staff):
-        if 'contract_address' in request.POST:
+        if 'grant_cancel_tx_id' in request.POST:
             grant.cancel_tx_id = request.POST.get('grant_cancel_tx_id', '')
-            grant.active = False
             grant.save()
-            grant_cancellation(grant, user_subscription)
+        elif 'confirmed' in request.POST:
+            grant.confirm_grant_cancel()
+            grant_cancellation(grant)
             for sub in subscriptions:
                 subscription_terminated(grant, sub)
         elif 'input-title' in request.POST:
@@ -224,9 +225,8 @@ def grant_new(request):
         if 'contract_address' in request.POST:
             tx_hash = request.POST.get('transaction_hash', '')
             grant = Grant.objects.filter(deploy_tx_id=tx_hash).first()
-            grant.contract_address = request.POST.get('contract_address', '')
-            grant.deploy_tx_confirmed = True
-            grant.save()
+            contract_address = request.POST.get('contract_address', '')
+            grant.confirm_grant_deploy(contract_address)
             new_grant(grant, profile)
             return JsonResponse({
                 'success': True,

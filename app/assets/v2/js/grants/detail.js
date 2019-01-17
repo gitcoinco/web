@@ -100,7 +100,6 @@ $(document).ready(function() {
 
     $('.modal-cancel-grants').on('click', function(e) {
       let contract_address = $('#contract_address').val();
-      let grant_cancel_tx_id;
       let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, contract_address);
 
       web3.eth.getAccounts(function(err, accounts) {
@@ -110,7 +109,6 @@ $(document).ready(function() {
             gas: 3000000,
             gasPrice: web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9))
           }).on('transactionHash', function(transactionHash) {
-            grant_cancel_tx_id = $('#grant_cancel_tx_id').val();
             const linkURL = etherscan_tx_url(transactionHash);
 
             document.issueURL = linkURL;
@@ -122,8 +120,7 @@ $(document).ready(function() {
               type: 'post',
               url: '',
               data: {
-                'contract_address': contract_address,
-                'grant_cancel_tx_id': grant_cancel_tx_id,
+                'grant_cancel_tx_id': transactionHash,
                 'csrfmiddlewaretoken': $("#grants-details input[name='csrfmiddlewaretoken']").val(),
               },
               success: function(json) {
