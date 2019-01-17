@@ -122,7 +122,7 @@ def listen_for_tx(grant, subscription, tx, network, tx_type):
     was_success = status == 'success'
     if not was_success:
             logger.warning('tx processing failed')
-            # execute alert logic
+            # TODO: Add failed_transaction email
     else:
         logger.info('tx processing successful')
         if tx_type == 'grant_deploy':

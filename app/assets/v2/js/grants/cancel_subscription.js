@@ -145,6 +145,8 @@ $(document).ready(() => {
                 data: data,
                 success: json => {
                   console.log('Approve 0 successfully confirmed on chain');
+                  url = json.url;
+                  $('#wait2').val('false');
                 },
                 error: () => {
                   _alert({ message: gettext('Your cancel subscription tranasction failed. Please try again.') }, 'error');
@@ -163,7 +165,7 @@ $(document).ready(() => {
 });
 
 const waitforData = (callback) => {
-  if ($('#wait1').val() === 'false') {
+  if ($('#wait1').val() === 'false' && $('#wait2').val() === 'false') {
     callback();
   } else {
     var wait_callback = () => {

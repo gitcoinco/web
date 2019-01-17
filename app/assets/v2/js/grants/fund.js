@@ -154,7 +154,7 @@ $(document).ready(function() {
                       },
                       error: () => {
                         _alert({ message: gettext('Your subscription failed to save. Please try again.') }, 'error');
-                        url = window.location;
+                        window.location.reload(false);
                       }
                     });
                   }
@@ -173,6 +173,7 @@ $(document).ready(function() {
               url: '',
               data: data,
               success: json => {
+                console.log(json);
                 console.log('approve successfully confirmed on chain');
                 url = json.url;
                 console.log('url', url);
@@ -181,13 +182,14 @@ $(document).ready(function() {
               },
               error: () => {
                 _alert({ message: gettext('Your approve tranasction failed. Please try again.') }, 'error');
-                url = window.location;
+                window.location.reload(false);
               }
             });
 
             waitforData(() => {
               console.log('redirect');
               document.suppress_loading_leave_code = true;
+              console.log('final url', url);
               window.location = url;
             });
           });

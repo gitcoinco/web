@@ -453,6 +453,7 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
             subscription.save()
             return JsonResponse({
                 'success': True,
+                'url': reverse('grants:details', args=(grant.pk, grant.slug))
             })
 
         if 'sub_cancel_confirmed' in request.POST:

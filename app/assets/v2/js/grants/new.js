@@ -149,8 +149,9 @@ const init = () => {
                     url: '',
                     data: data,
                     success: json => {
+                      console.log('Grant confirmed on chain');
                       document.suppress_loading_leave_code = true;
-                      // window.location = json.url;
+                      window.location = json.url;
                     },
                     error: () => {
                       _alert({ message: gettext('Your grant failed to save. Please try again.') }, 'error');
