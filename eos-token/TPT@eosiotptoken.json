@@ -1,0 +1,16 @@
+{
+    "symbol": "TPT",
+    "account_name": "eosiotptoken",
+    "overview": {
+        "en": "Applied certification in circulation in TokenPocket ecosystem.",
+        "zh": "TokenPocket生态中流通的应用型通证。"
+    },
+    "email": "service@mytokenpocket.vip",
+    "website": "https://www.mytokenpocket.vip",
+    "links": {
+        "medium": "https://medium.com/@tokenpocket.gm",
+        "twitter": "https://twitter.com/TokenPocket_TP",
+        "telegram": "https://t.me/tokenPocket_en",
+        "github": "https://github.com/tokenbankteam/feedback/issues"
+    }
+}
