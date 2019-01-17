@@ -18,20 +18,22 @@
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from dashboard.models import Bounty, Interest
-from marketing.mails import weekly_roundup
-
+from dashboard.notifications import maybe_market_kudos_to_email
+from kudos.models import KudosTransfer
 
 class Command(BaseCommand):
 
     help = 'sends a test email'
 
     def handle(self, *args, **options):
-        b = Bounty.objects.all().last()
-        i = Interest.objects.all().last()
+        #b = Bounty.objects.all().last()
+        #i = Interest.objects.all().last()
+        kt = KudosTransfer.objects.filter(username='@owocki').last()
+        print(kt.pk)
+        maybe_market_kudos_to_email(kt)
         # new_bounty(b, [settings.CONTACT_EMAIL])
         # new_match([settings.CONTACT_EMAIL, 'ksowocki@gmail.com'], b, 'owocki')
-        weekly_roundup([settings.CONTACT_EMAIL])
+        #weekly_roundup([settings.CONTACT_EMAIL])
         # new_bounty(b, [settings.CONTACT_EMAIL])
         # new_work_submission(b, [settings.CONTACT_EMAIL])
         # new_bounty_rejection(b, [settings.CONTACT_EMAIL])
