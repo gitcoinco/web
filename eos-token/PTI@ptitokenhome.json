@@ -1,0 +1,16 @@
+{
+    "symbol": "PTI",
+    "account_name": "ptitokenhome",
+    "overview": {
+        "en": "Paytomat is a payment system that enables local stores and online businesses to accept encrypted payments without resorting to banking systems, bank cards or centralized electronic payment solutions. Paytomat combines block chain ecosystems with retail businesses to combat risks, speed up payments in a variety of encrypted currencies.",
+        "zh": "Paytomat 是一种使本地商店和在线商家不借助于银行系统、银行卡或集中电子支付解决方案接受加密付款的支付系统。Paytomat将区块链生态系统与零售业联合在一起，对抗风险，提高速度并实现多种加密货币的支付。"
+    },
+    "email": "support@paytomat.com",
+    "website": "https://paytomat.com",
+    "links": {
+        "medium": "https://medium.com/paytomat",
+        "twitter": "https://twitter.com/paytomat",
+        "telegram": "https://twitter.com/paytomat",
+        "github": "https://github.com/Paytomat"
+    }
+}
