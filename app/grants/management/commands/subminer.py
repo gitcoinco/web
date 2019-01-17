@@ -25,7 +25,7 @@ from django.db.models import F
 from django.utils import timezone
 
 from dashboard.utils import get_tx_status, has_tx_mined
-from grants.models import Grant
+from grants.models import Grant, Subscription
 from marketing.mails import warn_subscription_failed
 
 logging.getLogger("urllib3").setLevel(logging.WARNING)
@@ -98,42 +98,40 @@ def process_subscription(subscription, live):
                     subscription.successful_contribution(txid)
                     subscription.save()
 
-    def listen_for_tx(grant, subscription, tx, network, tx_type):
-        if grant:
-            logger.info("  - grant %d", grant.pk)
-            model = grant
-        elif subscription:
-            logger.info("  - sub %d", subscription.pk)
-            model = subscription
+def listen_for_tx(grant, subscription, tx, network, tx_type):
+    if grant:
+        logger.info("  - grant %d %s", grant.pk, tx_type)
+    elif subscription:
+        logger.info("  - sub %d %s", subscription.pk, tx_type)
 
-        status = 'failure'
-        txid = None
-        error = "none"
-        logger.info("   -- *waiting for confirmation* ")
-        while not has_tx_mined(tx, network):
-            time.sleep(SLEEP_TIME)
-            logger.info(f"   -- *waiting {SLEEP_TIME} seconds*")
-        status, __, tx_contract_address = get_tx_status(tx, network, timezone.now())
-        if status != 'success':
-            error = f"tx status from RPC is {status} not success, txid: {tx}"
+    status = 'failure'
+    txid = None
+    error = "none"
+    logger.info("   -- *waiting for confirmation* ")
+    while not has_tx_mined(tx, network):
+        time.sleep(SLEEP_TIME)
+        logger.info(f"   -- *waiting {SLEEP_TIME} seconds*")
+    status, __, tx_contract_address = get_tx_status(tx, network, timezone.now())
+    if status != 'success':
+        error = f"tx status from RPC is {status} not success, txid: {tx}"
 
-        logger.info("   -- *mined* (status: %s / error: %s) ", status, error)
-        was_success = status == 'success'
-        if not was_success:
-                logger.warning('tx processing failed')
-                # execute alert logic
-        else:
-            logger.info('tx processing successful')
-            if tx_type == 'grant_deploy':
-                grant.confirm_grant_deploy(tx_contract_address)
-            elif tx_type == 'grant_cancel':
-                grant.confirm_grant_cancel()
-            elif tx_type == 'new_approve':
-                subscription.confirm_new_approve()
-            elif tx_type == 'end_approve':
-                subscription.confirm_end_approve()
-            elif tx_type == 'sub_cancel':
-                subscription.confirm_sub_cancel()
+    logger.info("   -- *mined* (status: %s / error: %s) ", status, error)
+    was_success = status == 'success'
+    if not was_success:
+            logger.warning('tx processing failed')
+            # execute alert logic
+    else:
+        logger.info('tx processing successful')
+        if tx_type == 'grant_deploy':
+            grant.confirm_grant_deploy(tx_contract_address)
+        elif tx_type == 'grant_cancel':
+            grant.confirm_grant_cancel()
+        elif tx_type == 'new_approve':
+            subscription.confirm_new_approve()
+        elif tx_type == 'end_approve':
+            subscription.confirm_end_approve()
+        elif tx_type == 'sub_cancel':
+            subscription.confirm_sub_cancel()
 
 
 class Command(BaseCommand):
@@ -163,7 +161,8 @@ class Command(BaseCommand):
                 next_contribution_date__lt=timezone.now(),
                 num_tx_processed__lt=F('num_tx_approved')
             )
-            logger.info(" - %d has %d subs ready for execution", grant.pk, subs.count())
+            if subs.count() > 0:
+                logger.info(" - %d has %d subs ready for execution", grant.pk, subs.count())
 
             for subscription in subs:
                 process_subscription(subscription, live)
@@ -212,4 +211,4 @@ class Command(BaseCommand):
         logger.info("got %d unconfirmed cancel_sub_txs", unconfirmed_sub_cancel.count())
 
         for sub in unconfirmed_sub_cancel:
-            listen_for_tx(sub, None, sub.cancel_tx_id, network, 'sub_cancel')
+            listen_for_tx(None, sub, sub.cancel_tx_id, network, 'sub_cancel')

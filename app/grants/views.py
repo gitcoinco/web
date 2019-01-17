@@ -362,16 +362,6 @@ def grant_fund(request, grant_id, grant_slug):
                 'success': True,
             })
 
-        if 'confirmed' in request.POST:
-            sub_new_approve_tx_id = request.POST.get('sub_new_approve_tx_id', '')
-            subscription = Subscription.objects.filter(new_approve_tx_id=sub_new_approve_tx_id).first()
-            subscription.active = True
-            subscription.new_approved_tx_confirmed = True
-            subscription.save()
-            return JsonResponse({
-                'success': True,
-            })
-
         if 'signature' in request.POST:
             sub_new_approve_tx_id = request.POST.get('sub_new_approve_tx_id', '')
             subscription = Subscription.objects.filter(new_approve_tx_id=sub_new_approve_tx_id).first()
@@ -382,10 +372,15 @@ def grant_fund(request, grant_id, grant_slug):
                 'success': True,
             })
 
+        if 'confirmed' in request.POST:
+            sub_new_approve_tx_id = request.POST.get('sub_new_approve_tx_id', '')
+            subscription = Subscription.objects.filter(new_approve_tx_id=sub_new_approve_tx_id).first()
+            subscription.active = True
+            subscription.new_approved_tx_confirmed = True
+            subscription.save()
             value_usdt = subscription.get_converted_amount()
             if value_usdt:
                 grant.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
-
             grant.save()
             new_supporter(grant, subscription)
             thank_you_for_supporting(grant, subscription)
@@ -476,7 +471,10 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
                 request,
                 _('Your subscription has been canceled. We hope you continue to support other open source projects!')
             )
-            return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
+            return JsonResponse({
+                'success': True,
+                'url': reverse('grants:details', args=(grant.pk, grant.slug))
+            })
 
     params = {
         'active': 'cancel_grant',

@@ -149,7 +149,8 @@ $(document).ready(function() {
                       data: data,
                       success: json => {
                         console.log('successfully saved subscriptionHash and signature');
-                        url = json.url;
+                        $('#wait').val('false');
+
                       },
                       error: () => {
                         _alert({ message: gettext('Your subscription failed to save. Please try again.') }, 'error');
@@ -173,7 +174,7 @@ $(document).ready(function() {
               data: data,
               success: json => {
                 console.log('approve successfully confirmed on chain');
-                $('#wait').val('false');
+                url = json.url;
               },
               error: () => {
                 _alert({ message: gettext('Your approve tranasction failed. Please try again.') }, 'error');
@@ -217,7 +218,7 @@ $(document).ready(function() {
 });
 
 const waitforData = (callback) => {
-  if ($('#wait').val() === 'false') {
+  if ($('#wait').val() === 'false' && url) {
     callback();
   } else {
     var wait_callback = () => {

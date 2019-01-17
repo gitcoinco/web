@@ -72,13 +72,14 @@ $(document).ready(() => {
 
                 const parts = [
                   accounts[0], // subscriber address
-                  data.admin_address, // admin_address
-                  data.token_address, // testing token
+
+                  $('#admin_address').val(), // admin_address
+                  $('#token_address').val(), // testing token
                   web3.utils.toTwosComplement(amountSTR), // data.amount_per_period
-                  web3.utils.toTwosComplement(data.real_period_seconds), // data.period_seconds
+                  web3.utils.toTwosComplement($('#real_period_seconds').val()), // data.period_seconds
                   web3.utils.toTwosComplement(realGasPrice), // data.gas_price
                   web3.utils.toTwosComplement(nonce), // nonce
-                  data.signature // contributor_signature
+                  $('#signature').val() // contributor_signature
                 ];
 
                 deployedSubscription.methods.cancelSubscription(
@@ -87,7 +88,8 @@ $(document).ready(() => {
                   .on('transactionHash', function(transactionHash) {
                     $('#sub_cancel_tx_id').val(transactionHash);
                     let data = {
-                      'sub_cancel_tx_id': $('#sub_cancel_tx_id').val()                      'csrfmiddlewaretoken': $("#js-cancelSubscription input[name='csrfmiddlewaretoken']").val()
+                      'sub_cancel_tx_id': $('#sub_cancel_tx_id').val(),
+                      'csrfmiddlewaretoken': $("#js-cancelSubscription input[name='csrfmiddlewaretoken']").val()
                     };
 
                     $.ajax({
