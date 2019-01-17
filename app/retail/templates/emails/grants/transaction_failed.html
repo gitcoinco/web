@@ -1,0 +1,56 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static humanize %}
+{% block content %}
+<style>
+  hr {
+    width: 80%;
+    height: 2px;
+    border-radius: 25px;
+    border: none;
+    background-color: #D2D2D2;
+  }
+
+  .supporter {
+    padding-top: 30px;
+    padding-bottom: 1%;
+  }
+
+  .supporter a img {
+    border-radius: 25px;
+    margin-bottom: 10px;
+  }
+
+  .supporterName {
+    font-size: 18px;
+    color: #0D0764;
+  }
+
+  p > a {
+    color: #4A90E2;
+  }
+
+  #grow-oss {
+    margin-top: 45px;
+    margin-bottom: 30px;
+  }
+</style>
+<img src="{% static "v2/images/obiwan-bot.svg" %}" alt="{% trans "obiwan-bot" %}" title="{% trans "obiwan-bot" %}">
+<h1 style="text-transform: none;">{% trans "Your " %}{{ tx_text }}{% trans " transaction has failed on chain :( Please, try again." %}</h1>
+<hr>
+{% endblock %}

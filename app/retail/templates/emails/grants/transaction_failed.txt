@@ -1,0 +1,7 @@
+{% load i18n humanize %}
+
+{% trans "Your " %}
+
+{{ tx_text }}
+
+{% trans " transaction has failed on chain :( Please, try again." %}

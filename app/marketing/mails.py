@@ -123,6 +123,20 @@ def new_grant(grant, profile):
     finally:
         translation.activate(cur_language)
 
+def transaction_failed(grant, subscription, tx_text):
+    from_email = settings.CONTACT_EMAIL
+    to_email = profile.email
+    cur_language = translation.get_language()
+
+    try:
+        setup_lang(to_email)
+        html, text, subject = render_failed_transaction_email(grant, subscription, tx_text)
+
+        if not should_suppress_notification_email(to_email, 'transaction_failed'):
+            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+    finally:
+        translation.activate(cur_language)
+
 
 def change_grant_owner_request(grant, profile):
     from_email = settings.CONTACT_EMAIL

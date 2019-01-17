@@ -157,6 +157,21 @@ def render_successful_contribution_email(grant, subscription, contribution):
     subject = _('Your Gitcoin Grants contribution was successful!')
     return response_html, response_txt, subject
 
+def render_failed_transaction_email(grant, subscription, tx_text):
+    params = {'grant': grant, 'subscription': subscription, "tx_text": tx_text}
+    response_html = premailer_transform(render_to_string("emails/grants/transaction_failed.html", params))
+    response_txt = render_to_string("emails/grants/transaction_failed.txt", params)
+    subject = _('Your Gitcoin Grants Transaction Failed :(')
+    return response_html, response_txt, subject
+
+
+@staff_member_required
+def failed_transaction(request):
+    grant = Grant.objects.first()
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+    tx_text = "create grant"
+    response_html, __, __ = render_successful_contribution_email(grant, subscription, tx_text)
+    return HttpResponse(response_html)
 
 @staff_member_required
 def successful_contribution(request):
@@ -179,7 +194,7 @@ def subscription_terminated(request):
 def grant_cancellation(request):
     grant = Grant.objects.first()
     subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
-    response_html, __, __ = render_grant_cancellation_email(grant, subscription)
+    response_html, __, __ = render_grant_cancellation_email(grant)
     return HttpResponse(response_html)
 
 
