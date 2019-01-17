@@ -548,7 +548,7 @@ def onboard(request, flow):
     elif flow == 'funder':
         onboard_steps = ['github', 'metamask', 'avatar']
     elif flow == 'contributor':
-        onboard_steps = ['github', 'metamask', 'avatar', 'skills']
+        onboard_steps = ['github', 'metamask', 'avatar', 'skills', 'job']
     elif flow == 'profile':
         onboard_steps = ['avatar']
 
@@ -1090,6 +1090,28 @@ def profile_keywords(request, handle):
     response = {
         'status': 200,
         'keywords': profile.keywords,
+    }
+    return JsonResponse(response)
+
+
+@require_POST
+def profile_job_opportunity(request, handle):
+    """ Save profile job opportunity.
+
+    Args: 
+        handle (str): The profile handle.
+    """
+    try:
+        profile = profile_helper(handle, True)
+        profile.job_search_status = json.loads(request.body).get('job_search_status', None)
+        profile.show_job_status = json.loads(request.body).get('show_job_status', False)
+        profile.save()
+    except (ProfileNotFoundException, ProfileHiddenException):
+        raise Http404
+
+    response = {
+        'status': 200,
+        'message': 'Job search status saved'
     }
     return JsonResponse(response)
 

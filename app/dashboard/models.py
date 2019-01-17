@@ -1689,6 +1689,12 @@ class Profile(SuperModel):
 
     """
 
+    JOB_SEARCH_STATUS = [
+        ('AL', 'Actively Looking'),
+        ('PL', 'Passively Looking'),
+        ('N', 'Not Looking'),
+    ]
+
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
     data = JSONField()
     handle = models.CharField(max_length=255, db_index=True, unique=True)
@@ -1723,6 +1729,11 @@ class Profile(SuperModel):
     max_tip_amount_usdt_per_tx = models.DecimalField(default=500, decimal_places=2, max_digits=50)
     max_tip_amount_usdt_per_week = models.DecimalField(default=1500, decimal_places=2, max_digits=50)
     last_visit = models.DateTimeField(null=True, blank=True)
+    job_search_status = models.CharField(max_length=2, choices=JOB_SEARCH_STATUS, blank=True)
+    show_job_status = models.BooleanField(
+        default=False,
+        help_text='If this option is chosen, we will not show job search status',
+    )
 
     objects = ProfileQuerySet.as_manager()
 
