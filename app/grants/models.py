@@ -683,7 +683,13 @@ next_valid_timestamp: {next_valid_timestamp}
 
     def confirm_new_approve(self):
         self.new_approve_tx_confirmed = True
+        self.active = True
         self.save()
+        grant = self.grant
+        value_usdt = self.get_converted_amount()
+        if value_usdt:
+            grant.monthly_amount_subscribed += self.get_converted_monthly_amount()
+        grant.save()
 
     def confirm_end_approve(self):
         self.end_approve_tx_confirmed = True
@@ -693,6 +699,12 @@ next_valid_timestamp: {next_valid_timestamp}
         self.active = False
         self.cancel_tx_confirmed = True
         self.save()
+        grant = self.grant
+        value_usdt = self.get_converted_amount
+        if value_usdt:
+            grant.monthly_amount_subscribed -= self.get_converted_monthly_amount()
+
+        grant.save()
 
 
 class ContributionQuerySet(models.QuerySet):

@@ -442,7 +442,6 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
 
         if 'sub_cancel_tx_id' in request.POST:
             subscription.cancel_tx_id = request.POST.get('sub_cancel_tx_id', '')
-            subscription.active = False
             subscription.save()
             return JsonResponse({
                 'success': True,
@@ -457,15 +456,7 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
             })
 
         if 'sub_cancel_confirmed' in request.POST:
-            subscription.cancel_tx_confirmed = True
-            subscription.active = False
-            subscription.save()
-
-            value_usdt = subscription.get_converted_amount
-            if value_usdt:
-                grant.monthly_amount_subscribed -= subscription.get_converted_monthly_amount()
-
-            grant.save()
+            subscription.confirm_sub_cancel()
             support_cancellation(grant, subscription)
             messages.info(
                 request,

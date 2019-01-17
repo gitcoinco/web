@@ -26,7 +26,10 @@ from django.utils import timezone
 
 from dashboard.utils import get_tx_status, has_tx_mined
 from grants.models import Grant, Subscription
-from marketing.mails import warn_subscription_failed
+from marketing.mails import (
+    grant_cancellation, new_grant, new_supporter,
+    subscription_terminated, support_cancellation, thank_you_for_supporting, warn_subscription_failed
+)
 
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 logging.getLogger("web3").setLevel(logging.WARNING)
@@ -124,14 +127,18 @@ def listen_for_tx(grant, subscription, tx, network, tx_type):
         logger.info('tx processing successful')
         if tx_type == 'grant_deploy':
             grant.confirm_grant_deploy(tx_contract_address)
+            new_grant(grant, grant.admin_profile)
         elif tx_type == 'grant_cancel':
             grant.confirm_grant_cancel()
         elif tx_type == 'new_approve':
             subscription.confirm_new_approve()
+            new_supporter(subscription.grant, subscription)
+            thank_you_for_supporting(subscription.grant, subscription)
         elif tx_type == 'end_approve':
             subscription.confirm_end_approve()
         elif tx_type == 'sub_cancel':
             subscription.confirm_sub_cancel()
+            support_cancellation(subscription.grant, subscription)
 
 
 class Command(BaseCommand):

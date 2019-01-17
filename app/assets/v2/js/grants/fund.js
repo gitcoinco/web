@@ -149,8 +149,8 @@ $(document).ready(function() {
                       data: data,
                       success: json => {
                         console.log('successfully saved subscriptionHash and signature');
-                        $('#wait').val('false');
-
+                        console.log('fire 1');
+                        $('#wait1').val('false');
                       },
                       error: () => {
                         _alert({ message: gettext('Your subscription failed to save. Please try again.') }, 'error');
@@ -175,6 +175,9 @@ $(document).ready(function() {
               success: json => {
                 console.log('approve successfully confirmed on chain');
                 url = json.url;
+                console.log('url', url);
+                console.log('fire 2');
+                $('#wait2').val('false');
               },
               error: () => {
                 _alert({ message: gettext('Your approve tranasction failed. Please try again.') }, 'error');
@@ -183,6 +186,7 @@ $(document).ready(function() {
             });
 
             waitforData(() => {
+              console.log('redirect');
               document.suppress_loading_leave_code = true;
               window.location = url;
             });
@@ -218,7 +222,8 @@ $(document).ready(function() {
 });
 
 const waitforData = (callback) => {
-  if ($('#wait').val() === 'false' && url) {
+  if ($('#wait1').val() === 'false' && $('#wait2').val() === 'false') {
+    console.log('success');
     callback();
   } else {
     var wait_callback = () => {

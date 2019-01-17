@@ -118,6 +118,7 @@ $(document).ready(() => {
                       success: json => {
                         console.log('Cancel subscription successfully confirmed on chain');
                         url = json.url;
+                        $('#wait1').val('false');
                       },
                       error: () => {
                         _alert({ message: gettext('Your cancel subscription transaction failed. Please try again.') }, 'error');
@@ -125,8 +126,10 @@ $(document).ready(() => {
                       }
                     });
 
-                    document.suppress_loading_leave_code = true;
-                    window.location = url;
+                    waitforData(() => {
+                      document.suppress_loading_leave_code = true;
+                      window.location = url;
+                    });
                   });
               });
             })
@@ -141,7 +144,7 @@ $(document).ready(() => {
                 url: '',
                 data: data,
                 success: json => {
-                  console.log('Cancel subscription successfully confirmed on chain');
+                  console.log('Approve 0 successfully confirmed on chain');
                 },
                 error: () => {
                   _alert({ message: gettext('Your cancel subscription tranasction failed. Please try again.') }, 'error');
@@ -158,3 +161,15 @@ $(document).ready(() => {
     }
   });
 });
+
+const waitforData = (callback) => {
+  if ($('#wait1').val() === 'false') {
+    callback();
+  } else {
+    var wait_callback = () => {
+      waitforData(callback);
+    };
+
+    setTimeout(wait_callback, 3000);
+  }
+};
