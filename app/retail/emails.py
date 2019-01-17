@@ -1002,7 +1002,7 @@ def new_tip(request):
 @staff_member_required
 def new_kudos(request):
     from kudos.models import KudosTransfer
-    kudos_transfer = KudosTransfer.objects.last()
+    kudos_transfer = KudosTransfer.objects.first()
     response_html, _ = render_new_kudos_email(settings.CONTACT_EMAIL, kudos_transfer, True)
 
     return HttpResponse(response_html)
