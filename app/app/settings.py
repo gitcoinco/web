@@ -124,6 +124,7 @@ INSTALLED_APPS = [
     'wagtail.core',
     'cms',
     'revenue',
+    'inbox',
 ]
 
 MIDDLEWARE = [
@@ -155,7 +156,7 @@ AUTHENTICATION_BACKENDS = (
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': ['retail/templates/', 'dataviz/templates', 'kudos/templates'],
+    'DIRS': ['retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates'],
     'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': [

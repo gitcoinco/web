@@ -5,8 +5,8 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
-    <meta name="title" content="{{ card_title }}">
-    <meta name="description" content="{{ card_desc }}">
+    <meta name="title" content="{{ card_title }} Bug Bounty | Gitcoin">
+    <meta name="description" content="{{ card_desc | truncatechars:200 }}">
     <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
   </head>
