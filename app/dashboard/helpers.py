@@ -446,6 +446,8 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     'funding_organisation', 'bounty_reserved_for_user', 'is_featured',
                 ],
             )
+            if latest_old_bounty_dict['bounty_reserved_for_user']:
+                latest_old_bounty_dict['bounty_reserved_for_user'] = Profile.objects.get(pk=latest_old_bounty_dict['bounty_reserved_for_user'])
             bounty_kwargs.update(latest_old_bounty_dict)
 
         try:

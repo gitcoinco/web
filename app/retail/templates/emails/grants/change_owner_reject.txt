@@ -1,0 +1,11 @@
+{% load i18n  %}
+
+{{ grant.title }} {% trans "ownership has not changed." %}
+
+{{ grant.admin_profile.handle }}  {% trans "continue to be the grant owner" %}.
+
+{% trans "Title" %} : {{ grant.title }}
+
+{% trans "Goal" %} : {{ grant.amount_goal }}
+
+{% trans "The details of the grant can be seen here:" %} {{ grant.reference_url }}

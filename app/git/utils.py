@@ -375,7 +375,14 @@ def get_emails_by_category(username):
 
 def get_emails_master(username):
     emails_by_category = get_emails_by_category(username)
-    return list(set([to_email for category, to_email in emails_by_category.items()]))
+    emails = []
+    for category, to_email in emails_by_category.items():
+        if type(to_email) is str:
+            emails.append(to_email)
+        if type(to_email) is list:
+            for email in to_email:
+                emails.append(email)
+    return list(set(emails))
 
 
 def search(query):
