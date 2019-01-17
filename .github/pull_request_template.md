@@ -1,4 +1,4 @@
-### 为确保 Token Profile 的顺利通过，务必逐一确保以下检查项：
+### 为确保 Token Profile 的顺利通过，务必逐一确保以下检查项并补充项目资料：
 
 **.json 及 .png 文件检查项**
 - [ ] logo 尺寸：120*120 px
@@ -15,9 +15,9 @@
 收录的交易所：
 转账所需 Gas Limit（对 ERC-20 项目方）：（默认为 60000）
 
+---
 
-
-### Please check the following to ensure a successful verification of Token profile
+### Please check the following to ensure a successful verification of Token Profile
 
 **.json and .png document checklists**
 - [ ] logo dimensions: 120*120 px
