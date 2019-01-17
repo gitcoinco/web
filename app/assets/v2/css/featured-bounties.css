@@ -32,6 +32,7 @@
   scroll-snap-align: none start;
   transition: .45s all ease-in-out;
   display: flex;
+  flex-wrap: nowrap;
   flex-direction: row;
   flex: 0 0 20%;
   max-width: 20%;
@@ -39,7 +40,7 @@
   border: 1px solid #cfcfcf;
   padding: .5em;
   border-radius: 5px;
-  font-size: 11px;
+  font-size: 12px;
   min-width: 230px;
 }
 
@@ -56,9 +57,14 @@
   text-overflow: ellipsis;
   overflow: hidden;
   margin-bottom: 0;
+  font-weight: 600;
 }
 
-
+.bounty-card__avatar {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+}
 
 .carousel-control-small .carousel-control-next,
 .carousel-control-small .carousel-control-prev {
