@@ -104,4 +104,13 @@ $(document).ready(function() {
       );
     }
   });
+
+  let usdFeaturedPrice = $('.featured-price-usd').text();
+  let ethFeaturedPrice;
+
+  getAmountEstimate(usdFeaturedPrice, 'ETH', function(amountEstimate) {
+    ethFeaturedPrice = amountEstimate['value'];
+    $('.featured-price-eth').text(`+${amountEstimate['value']} ETH`)
+  });
+
 });

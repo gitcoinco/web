@@ -469,3 +469,11 @@ var check_balance_and_alert_user_if_not_enough = function(tokenAddress, amount) 
 
 
 };
+
+let usdFeaturedPrice = $('.featured-price-usd').text();
+let ethFeaturedPrice;
+
+getAmountEstimate(usdFeaturedPrice, 'ETH', function(amountEstimate) {
+  ethFeaturedPrice = amountEstimate['value'];
+  $('.featured-price-eth').text(`+${amountEstimate['value']} ETH`)
+});
