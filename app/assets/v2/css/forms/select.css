@@ -74,7 +74,7 @@
   border-radius: 2px;
 }
 
-.form__select2 .select2-container--default .select2-selection--multiple .select2-selection__rendered li:not(.select2-search){
+.g-multiselect .select2-container--default .select2-selection--multiple .select2-selection__rendered li:not(.select2-search){
   align-items: center;
   border: 1px solid #3E00FF;
   background-color: #3E00FF;
@@ -82,7 +82,7 @@
   color: #ffffff;
   height: 100%;
   min-height: 25px;
-  border-radius: 0;
+  border-radius: 3px;
 }
 
 .form__select2 .select2-container--default .select2-selection--single .select2-selection__rendered {
