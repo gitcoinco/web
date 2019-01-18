@@ -519,7 +519,7 @@ var refreshBounties = function(event, offset, append, do_save_search) {
     results = sanitizeAPIResults(results);
 
     if (results.length === 0 && !append) {
-      $('.featured-bounties').hide()
+      $('.featured-bounties').hide();
       if (localStorage['referrer'] === 'onboard') {
         $('.no-results').removeClass('hidden');
         $('#dashboard-content').addClass('hidden');
@@ -531,7 +531,7 @@ var refreshBounties = function(event, offset, append, do_save_search) {
     var html = renderFeaturedBountiesFromResults(results, true);
 
     if (html) {
-      $('.featured-bounties').show()
+      $('.featured-bounties').show();
       $('#featured-card-container').html(html);
     }
   }).fail(function() {

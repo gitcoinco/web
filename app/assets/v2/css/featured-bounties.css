@@ -25,13 +25,10 @@
   color: #0d003c;
   background-color: #fff;
   border-radius: 4px;
-  padding: 1rem;
-
   position: relative;
   margin: 1rem 0.4rem;
   scroll-snap-align: none start;
   transition: .45s all ease-in-out;
-  display: flex;
   flex-wrap: nowrap;
   flex-direction: row;
   flex: 0 0 20%;
@@ -39,7 +36,6 @@
   align-items: center;
   border: 1px solid #cfcfcf;
   padding: .5em;
-  border-radius: 5px;
   font-size: 12px;
   min-width: 230px;
 }

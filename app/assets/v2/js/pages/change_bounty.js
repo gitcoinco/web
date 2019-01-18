@@ -119,7 +119,7 @@ $(document).ready(function() {
 
   getAmountEstimate(usdFeaturedPrice, 'ETH', function(amountEstimate) {
     ethFeaturedPrice = amountEstimate['value'];
-    $('.featured-price-eth').text(`+${amountEstimate['value']} ETH`)
+    $('.featured-price-eth').text(`+${amountEstimate['value']} ETH`);
   });
 
   var payFeaturedBounty = function() {
@@ -127,8 +127,8 @@ $(document).ready(function() {
       to: '0xeDa95eD3e3436C689376889F9eD0a8f4bA23E866',
       from: web3.eth.coinbase,
       value: web3.toWei(ethFeaturedPrice, 'ether')
-    }, console.log)
+    }, console.log);
 
     return callback();
-  }
+  };
 });
