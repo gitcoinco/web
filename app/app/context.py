@@ -33,6 +33,11 @@ RECORD_VISIT_EVERY_N_SECONDS = 60 * 60
 
 def preprocess(request):
     """Handle inserting pertinent data into the current context."""
+
+    # make lbcheck super lightweight
+    if request.path == '/lbcheck':
+        return {}
+
     from marketing.utils import get_stat
     try:
         num_slack = int(get_stat('slack_users'))
