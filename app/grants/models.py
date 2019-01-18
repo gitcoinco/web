@@ -74,11 +74,27 @@ class Grant(SuperModel):
 
         ordering = ['-created_on']
 
-    active = models.BooleanField(default=True, help_text=_('Whether or not the Grant is active.'))
-    title = models.CharField(default='', max_length=255, help_text=_('The title of the Grant.'))
-    slug = AutoSlugField(populate_from='title')
-    description = models.TextField(default='', blank=True, help_text=_('The description of the Grant.'))
-    reference_url = models.URLField(blank=True, help_text=_('The associated reference URL of the Grant.'))
+    active = models.BooleanField(
+        default=False,
+        help_text=_('Whether or not the Grant is active.')
+    )
+    title = models.CharField(
+        default='',
+        max_length=255,
+        help_text=_('The title of the Grant.')
+    )
+    slug = AutoSlugField(
+        populate_from='title'
+    )
+    description = models.TextField(
+        default='',
+        blank=True,
+        help_text=_('The description of the Grant.')
+    )
+    reference_url = models.URLField(
+        blank=True,
+        help_text=_('The associated reference URL of the Grant.')
+    )
     logo = models.ImageField(
         upload_to=get_upload_filename,
         null=True,
@@ -222,6 +238,7 @@ class Grant(SuperModel):
     def confirm_grant_deploy(self, tx_contract_address):
         self.contract_address = tx_contract_address
         self.deploy_tx_confirmed = True
+        self.active = True
         self.save()
 
     def confirm_grant_cancel(self):
