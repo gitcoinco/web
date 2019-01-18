@@ -80,3 +80,4 @@ redis-semaphore
 watchtower==0.5.4
 Wand==0.4.4
 wagtail==2.3
+setproctitle==1.1.10
