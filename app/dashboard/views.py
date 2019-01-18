@@ -1668,7 +1668,7 @@ def change_bounty(request, bounty_id):
             raise Http404
 
     keys = ['experience_level', 'project_length', 'bounty_type',
-            'permission_type', 'project_type', 'reserved_for_user_handle']
+            'permission_type', 'project_type', 'reserved_for_user_handle', 'is_featured']
 
     if request.body:
         can_change = (bounty.status in Bounty.OPEN_STATUSES) or \
@@ -1731,7 +1731,7 @@ def change_bounty(request, bounty_id):
     params = {
         'title': _('Change Bounty Details'),
         'pk': bounty.pk,
-        'result': result
+        'result': json.dumps(result)
     }
     return TemplateResponse(request, 'bounty/change.html', params)
 

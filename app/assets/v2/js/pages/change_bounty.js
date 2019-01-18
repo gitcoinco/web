@@ -14,6 +14,11 @@ $(document).ready(function() {
     $('#reservedForDiv').hide();
   }
 
+  if (oldBounty.is_featured === true) {
+    $('#featuredBounty').prop( "checked", true );
+    $('#featuredBounty').prop( "disabled", true );
+  }
+
   while (keys.length) {
     const key = keys.pop();
     const val = oldBounty[key];
@@ -72,8 +77,14 @@ $(document).ready(function() {
         formData['reserved_for_user_handle'] = reservedFor.text;
       }
 
+      if (formData['featuredBounty'] === '1'){
+        formData['featuredBounty'] = 'True'
+      }
+
+console.log(formData)
       const bountyId = document.pk;
       const payload = JSON.stringify(formData);
+      console.log(payload)
 
       $.post('/bounty/change/' + bountyId, payload).then(
         function(result) {
