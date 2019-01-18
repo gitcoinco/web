@@ -18,7 +18,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 from datetime import datetime
-from itertools import chain
 
 import django_filters.rest_framework
 from rest_framework import routers, serializers, viewsets
@@ -251,7 +250,7 @@ class BountyViewSet(viewsets.ModelViewSet):
 
         if 'keyword' in param_keys:
             queryset = queryset.keyword(self.request.query_params.get('keyword'))
-        
+
         if 'is_featured' in param_keys:
             queryset = queryset.filter(
                 is_featured=self.request.query_params.get('is_featured'),

@@ -480,10 +480,10 @@ getAmountEstimate(usdFeaturedPrice, 'ETH', function(amountEstimate) {
 
 var payFeaturedBounty = function() {
   web3.eth.sendTransaction({
-    to:'0xeDa95eD3e3436C689376889F9eD0a8f4bA23E866',
+    to: '0xeDa95eD3e3436C689376889F9eD0a8f4bA23E866',
     from: web3.eth.coinbase,
-    value:web3.toWei(ethFeaturedPrice, "ether")
-  }, console.log)
+    value: web3.toWei(ethFeaturedPrice, "ether")
+  }, console.log);
 
   return callback();
-}
+};

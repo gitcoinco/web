@@ -15,8 +15,8 @@ $(document).ready(function() {
   }
 
   if (oldBounty.is_featured === true) {
-    $('#featuredBounty').prop( "checked", true );
-    $('#featuredBounty').prop( "disabled", true );
+    $('#featuredBounty').prop("checked", true);
+    $('#featuredBounty').prop("disabled", true);
   }
 
   while (keys.length) {
@@ -77,14 +77,12 @@ $(document).ready(function() {
         formData['reserved_for_user_handle'] = reservedFor.text;
       }
 
-      if (formData['featuredBounty'] === '1'){
-        formData['featuredBounty'] = 'True'
+      if (formData['featuredBounty'] === '1') {
+        formData['featuredBounty'] = 'True';
       }
 
-console.log(formData)
       const bountyId = document.pk;
       const payload = JSON.stringify(formData);
-      console.log(payload)
 
       $.post('/bounty/change/' + bountyId, payload).then(
         function(result) {
