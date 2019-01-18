@@ -157,6 +157,7 @@ def render_successful_contribution_email(grant, subscription, contribution):
     subject = _('Your Gitcoin Grants contribution was successful!')
     return response_html, response_txt, subject
 
+
 def render_failed_transaction_email(grant, subscription, tx_text):
     params = {'grant': grant, 'subscription': subscription, "tx_text": tx_text}
     response_html = premailer_transform(render_to_string("emails/grants/transaction_failed.html", params))
@@ -172,6 +173,7 @@ def failed_transaction(request):
     tx_text = "create grant"
     response_html, __, __ = render_successful_contribution_email(grant, subscription, tx_text)
     return HttpResponse(response_html)
+
 
 @staff_member_required
 def successful_contribution(request):

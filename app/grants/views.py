@@ -440,7 +440,6 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
                 'success': True,
             })
 
-
         if 'end_approve_tx_confirmed' in request.POST:
             subscription.end_approve_tx_confirmed = True
             subscription.save()

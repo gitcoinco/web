@@ -101,6 +101,7 @@ def process_subscription(subscription, live):
                     subscription.successful_contribution(txid)
                     subscription.save()
 
+
 def listen_for_tx(grant, subscription, tx, network, tx_type):
     if grant:
         logger.info("  - grant %d %s", grant.pk, tx_type)
@@ -108,7 +109,6 @@ def listen_for_tx(grant, subscription, tx, network, tx_type):
         logger.info("  - sub %d %s", subscription.pk, tx_type)
 
     status = 'failure'
-    txid = None
     error = "none"
     logger.info("   -- *waiting for confirmation* ")
     while not has_tx_mined(tx, network):
