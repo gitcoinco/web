@@ -375,13 +375,7 @@ def grant_fund(request, grant_id, grant_slug):
         if 'confirmed' in request.POST:
             sub_new_approve_tx_id = request.POST.get('sub_new_approve_tx_id', '')
             subscription = Subscription.objects.filter(new_approve_tx_id=sub_new_approve_tx_id).first()
-            subscription.active = True
-            subscription.new_approved_tx_confirmed = True
-            subscription.save()
-            value_usdt = subscription.get_converted_amount()
-            if value_usdt:
-                grant.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
-            grant.save()
+            subscription.confirm_new_approve()
             new_supporter(grant, subscription)
             thank_you_for_supporting(grant, subscription)
             return JsonResponse({
