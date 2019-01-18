@@ -121,10 +121,10 @@ $(document).ready(function() {
               url: '',
               data: {
                 'grant_cancel_tx_id': transactionHash,
-                'csrfmiddlewaretoken': $("#grants-details input[name='csrfmiddlewaretoken']").val(),
+                'csrfmiddlewaretoken': $("#grants-details input[name='csrfmiddlewaretoken']").val()
               },
               success: function(json) {
-                  console.log('Your grant_cancel call successfully saved');
+                console.log('Your grant_cancel call successfully saved');
               },
               error: function() {
                 _alert({ message: gettext('Canceling your grant failed to save. Please try again.') }, 'error');
@@ -140,7 +140,7 @@ $(document).ready(function() {
                 'confirmed': true
               },
               success: function(json) {
-                  console.log('Your cancel_grant tx successfully confirmed on chain');
+                console.log('Your cancel_grant tx successfully confirmed on chain');
                 window.location.reload(false);
               },
               error: function() {

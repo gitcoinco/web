@@ -118,7 +118,6 @@ $(document).ready(() => {
                       success: json => {
                         console.log('Cancel subscription successfully confirmed on chain');
                         url = json.url;
-                        console.log('cancel url', url);
                         $('#wait1').val('false');
                       },
                       error: () => {
@@ -148,7 +147,6 @@ $(document).ready(() => {
                 success: json => {
                   console.log('Approve 0 successfully confirmed on chain');
                   url = json.url;
-                  console.log('approve url', url);
                   $('#wait2').val('false');
                 },
                 error: () => {
@@ -168,7 +166,6 @@ $(document).ready(() => {
 });
 
 const waitforData = (callback) => {
-  console.log('loop');
   if ($('#wait1').val() === 'false' && $('#wait2').val() === 'false') {
     callback();
   } else {

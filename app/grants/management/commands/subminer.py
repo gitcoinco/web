@@ -27,8 +27,8 @@ from django.utils import timezone
 from dashboard.utils import get_tx_status, has_tx_mined
 from grants.models import Grant, Subscription
 from marketing.mails import (
-    grant_cancellation, new_grant, new_supporter,
-    subscription_terminated, support_cancellation, thank_you_for_supporting, warn_subscription_failed
+    grant_cancellation, new_grant, new_supporter, subscription_terminated, support_cancellation,
+    thank_you_for_supporting, warn_subscription_failed,
 )
 
 logging.getLogger("urllib3").setLevel(logging.WARNING)

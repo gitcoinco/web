@@ -98,7 +98,6 @@ const init = () => {
           }).on('error', function(error) {
             console.log('1', error);
           }).on('transactionHash', function(transactionHash) {
-            console.log('2', transactionHash);
             $('#transaction_hash').val(transactionHash);
             const linkURL = etherscan_tx_url(transactionHash);
 

@@ -115,7 +115,7 @@ $(document).ready(function() {
             document.issueURL = linkURL;
             $('#transaction_url').attr('href', linkURL);
             enableWaitState('#grants_form');
-            // Should add approval transactions to transaction history
+
             deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
 
               nonce = parseInt(nonce) + 1;
@@ -149,7 +149,6 @@ $(document).ready(function() {
                       data: data,
                       success: json => {
                         console.log('successfully saved subscriptionHash and signature');
-                        console.log('fire 1');
                         $('#wait1').val('false');
                       },
                       error: () => {
@@ -173,11 +172,8 @@ $(document).ready(function() {
               url: '',
               data: data,
               success: json => {
-                console.log(json);
                 console.log('approve successfully confirmed on chain');
                 url = json.url;
-                console.log('url', url);
-                console.log('fire 2');
                 $('#wait2').val('false');
               },
               error: () => {
@@ -225,7 +221,6 @@ $(document).ready(function() {
 
 const waitforData = (callback) => {
   if ($('#wait1').val() === 'false' && $('#wait2').val() === 'false') {
-    console.log('success');
     callback();
   } else {
     var wait_callback = () => {
