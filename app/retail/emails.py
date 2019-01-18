@@ -168,10 +168,8 @@ def render_failed_transaction_email(grant, subscription, tx_text):
 
 @staff_member_required
 def failed_transaction(request):
-    grant = Grant.objects.first()
-    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
     tx_text = "create grant"
-    response_html, __, __ = render_successful_contribution_email(grant, subscription, tx_text)
+    response_html, __, __ = render_successful_contribution_email(__, __, tx_text)
     return HttpResponse(response_html)
 
 
