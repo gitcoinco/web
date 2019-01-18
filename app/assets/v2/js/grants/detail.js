@@ -176,7 +176,7 @@ $(document).ready(function() {
           url: '',
           data: {
             'contract_owner_address': contract_owner_address,
-            'csrfmiddlewaretoken': $("#grants-details input[name='csrfmiddlewaretoken']").val(),
+            'csrfmiddlewaretoken': $("#grants-details input[name='csrfmiddlewaretoken']").val()
           },
           success: function(json) {
             window.location.reload(false);
