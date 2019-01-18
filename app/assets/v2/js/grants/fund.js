@@ -11,6 +11,14 @@ $(document).ready(function() {
 
   updateSummary();
 
+  $('#js-fundGrant-button').on('click', function(e) {
+    console.log('click');
+    $('#cancelModal').attr('aria-hidden', 'false');
+    // $('#cancelModal').modal({
+    //   modalClass: 'modal cancel_grants'
+    // });
+  })
+
   $('#js-fundGrant').validate({
     submitHandler: function(form) {
       var data = {};
