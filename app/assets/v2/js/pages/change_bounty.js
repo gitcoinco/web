@@ -15,8 +15,8 @@ $(document).ready(function() {
   }
 
   if (oldBounty.is_featured === true) {
-    $('#featuredBounty').prop("checked", true);
-    $('#featuredBounty').prop("disabled", true);
+    $('#featuredBounty').prop('checked', true);
+    $('#featuredBounty').prop('disabled', true);
   }
 
   while (keys.length) {
@@ -126,7 +126,7 @@ $(document).ready(function() {
     web3.eth.sendTransaction({
       to:'0xeDa95eD3e3436C689376889F9eD0a8f4bA23E866',
       from: web3.eth.coinbase,
-      value:web3.toWei(ethFeaturedPrice, "ether")
+      value:web3.toWei(ethFeaturedPrice, 'ether')
     }, console.log)
 
     return callback();
