@@ -2,7 +2,6 @@ from django.contrib import sitemaps
 from django.contrib.sitemaps import Sitemap
 from django.contrib.sites.models import Site
 from django.urls import reverse
-from django.utils.text import slugify
 
 from dashboard.models import Bounty, LabsResearch, Profile
 from grants.models import Grant
