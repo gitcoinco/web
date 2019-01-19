@@ -1,13 +1,14 @@
 from django.contrib import sitemaps
 from django.contrib.sitemaps import Sitemap
-from django.urls import reverse
 from django.contrib.sites.models import Site
-
-from dashboard.models import Bounty, Profile, LabsResearch
+from django.urls import reverse
 from django.utils.text import slugify
+
+from dashboard.models import Bounty, LabsResearch, Profile
 from grants.models import Grant
 from kudos.models import Token
 from wagtail.contrib.sitemaps.sitemap_generator import Sitemap as WagtailSitemap
+
 
 class StaticViewSitemap(sitemaps.Sitemap):
     priority = 0.5

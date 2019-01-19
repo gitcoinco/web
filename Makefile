@@ -52,7 +52,7 @@ fix-eslint: ## Run eslint --fix against the project directory. Requires node, np
 	@npm run eslint:fix
 
 fix-isort: ## Run isort against python files in the project directory.
-	@docker-compose exec web isort -rc --atomic .
+	@docker-compose exec web isort -rc --atomic app
 
 fix-stylelint: ## Run stylelint --fix against the project directory. Requires node, npm, and project dependencies.
 	@npm run stylelint:fix
