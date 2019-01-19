@@ -285,6 +285,10 @@ class Token(SuperModel):
     def url(self):
         return f'{settings.BASE_URL}kudos/{self.pk}/{slugify(self.name)}'
 
+    @property
+    def relative_url(self):
+        return f'/kudos/{self.pk}/{slugify(self.name)}'
+
     def send_enabled_for(self, user):
         """
 

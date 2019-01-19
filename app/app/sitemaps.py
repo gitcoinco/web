@@ -1,10 +1,11 @@
 from django.contrib import sitemaps
 from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
+from django.contrib.sites.models import Site
 
-from dashboard.models import Bounty, Profile
+from dashboard.models import Bounty, Profile, LabsResearch
 from kudos.models import Token
-
+from wagtail.contrib.sitemaps.sitemap_generator import Sitemap as WagtailSitemap
 
 class StaticViewSitemap(sitemaps.Sitemap):
 
@@ -23,7 +24,6 @@ class StaticViewSitemap(sitemaps.Sitemap):
             return reverse('grants:grants')
         return reverse(item)
 
-
 class IssueSitemap(Sitemap):
     changefreq = "daily"
     priority = 0.9
@@ -38,6 +38,24 @@ class IssueSitemap(Sitemap):
         return item.get_relative_url()
 
 
+class LabsSitemap(Sitemap):
+    changefreq = "daily"
+    priority = 0.9
+
+    def get_urls(self, site=None, **kwargs):
+        site = Site(domain='', name='')
+        urls = super(LabsSitemap, self).get_urls(site=site, **kwargs)
+        for url in urls:
+            url['location'] = url['location'].split(':', 1)[1].lstrip('/')
+        return urls
+
+    def items(self):
+        return LabsResearch.objects.all()
+
+    def location(self, item):
+        return item.link
+
+
 class KudosSitemap(Sitemap):
     changefreq = "daily"
     priority = 0.9
@@ -49,7 +67,7 @@ class KudosSitemap(Sitemap):
         return obj.modified_on
 
     def location(self, item):
-        return item.url
+        return item.relative_url
 
 
 class ProfileSitemap(Sitemap):
@@ -88,4 +106,6 @@ sitemaps = {
     'issues': IssueSitemap,
     'orgs': ProfileSitemap,
     'kudos': KudosSitemap,
+    'wagtail': WagtailSitemap,
+    'labs': LabsSitemap
 }
