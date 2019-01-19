@@ -1098,7 +1098,7 @@ def profile_keywords(request, handle):
 def profile_job_opportunity(request, handle):
     """ Save profile job opportunity.
 
-    Args: 
+    Args:
         handle (str): The profile handle.
     """
     try:

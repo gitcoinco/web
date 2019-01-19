@@ -249,14 +249,14 @@ $('.search-area input[type=text]').keypress(function(e) {
   }
 });
 
-var save_job_status = function() {
+const save_job_status = function() {
   if (!$('.navbar #navbarDropdown').html()) {
     _alert('No profile', 'error');
   }
-  var job_search_status = $('#jobStatus').find(':selected').val();
-  var show_job_status = $('#showJobStatus').prop('checked');
+  const job_search_status = $('#jobStatus').find(':selected').val();
+  const show_job_status = $('#showJobStatus').prop('checked');
 
-  var profile = {
+  const profile = {
     url: '/api/v0.1/profile/' + $('.navbar #navbarDropdown').html().trim() + '/jobopportunity',
     method: 'POST',
     headers: {'X-CSRFToken': csrftoken},
@@ -267,7 +267,7 @@ var save_job_status = function() {
   };
 
   $.ajax(profile).done(function(response) {
-    console.log(response);
+    _alert(response.message, 'info');
   }).fail(function(error) {
     _alert(error, 'error');
   });
