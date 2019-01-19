@@ -4,11 +4,12 @@ from django.urls import reverse
 from django.contrib.sites.models import Site
 
 from dashboard.models import Bounty, Profile, LabsResearch
+from django.utils.text import slugify
+from grants.models import Grant
 from kudos.models import Token
 from wagtail.contrib.sitemaps.sitemap_generator import Sitemap as WagtailSitemap
 
 class StaticViewSitemap(sitemaps.Sitemap):
-
     priority = 0.5
     changefreq = 'weekly'
 
@@ -23,6 +24,21 @@ class StaticViewSitemap(sitemaps.Sitemap):
         if item == 'grants':
             return reverse('grants:grants')
         return reverse(item)
+
+
+class GrantSitemap(Sitemap):
+    changefreq = "daily"
+    priority = 0.9
+
+    def items(self):
+        return Grant.objects.all()
+
+    def lastmod(self, obj):
+        return obj.modified_on
+
+    def location(self, item):
+        return f"/grants/{item.id}/{item.slug}"
+
 
 class IssueSitemap(Sitemap):
     changefreq = "daily"
@@ -107,5 +123,6 @@ sitemaps = {
     'orgs': ProfileSitemap,
     'kudos': KudosSitemap,
     'wagtail': WagtailSitemap,
-    'labs': LabsSitemap
+    'labs': LabsSitemap,
+    'grant': GrantSitemap,
 }
