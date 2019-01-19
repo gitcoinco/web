@@ -1,0 +1,18 @@
+{
+    "symbol": "BLACK",
+    "account_name": "eosblackteam",
+    "overview": {
+        "en": "EOSBLACK is a platform for users to participate in developing DAPP. Members of the community elect the best DAPP to exhibit on the platform. When DApps receive enough sufficient votes, it will be successfully developed.",
+        "zh": "EOSBLACK 是一个用户参与开发 DAPP 的平台。社区成员选出最好的 DAPP 在平台上展出。获得足够票数的 DAPP 将成功开发。"
+    },
+    "website": "https://eosblack.io",
+    "whitepaper": "https://eosblack.io/whitepaper/",
+    "published_on": "2018-09-06",
+    "total_supply": "3,000,000,000",
+    "links": {
+        "medium": "https://medium.com/eosblack",
+        "twitter": "https://twitter.com/EOSBLACK_IO",
+        "telegram": "https://t.me/eosBLACK_English",
+        "blog": "https://blog.naver.com/eosblackteam"
+    }
+}
