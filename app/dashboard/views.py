@@ -41,7 +41,7 @@ from django.views.decorators.http import require_GET, require_POST
 
 from app.utils import clean_str, ellipses
 from avatar.utils import get_avatar_context_for_user
-from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, profile_helper
+from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, profile_helper, FeedbackEntry
 from economy.utils import convert_token_to_usdt
 from eth_utils import to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
@@ -298,6 +298,42 @@ def new_interest(request, bounty_id):
         'profile': ProfileSerializer(interest.profile).data,
         'msg': msg,
     })
+
+
+@require_POST
+def postComment(request):
+    profile_id = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+    if profile_id is None:
+        return JsonResponse({
+            'success': False,
+            'msg': '',
+        })
+
+    sbid = request.POST.get('standard_bounties_id')
+    bountyObj = Bounty.objects.filter(standard_bounties_id=sbid).first()
+    fbAmount = FeedbackEntry.objects.filter(sender_profile=profile_id, feedbackType='approver', bounty=bountyObj).count()
+    if fbAmount > 0:
+        return JsonResponse({
+            'success': False,
+            'msg': 'There is already a approval comment',
+        })
+    feedback_dict = request.POST.get('review',{})
+    kwargs = {
+        'bounty': bountyObj,
+        'sender_profile': profile_id,
+        'receiver_profile': bountyObj.fulfillments.last().profile,
+        'rating': feedback_dict.get('rating', '-1'),
+        'comment': feedback_dict.get('comment', 'No comment.'),
+        'feedbackType': feedback_dict.get('feedbackType','approver')
+    }
+
+    e = FeedbackEntry.objects.create(**kwargs)
+    e.save()
+    return JsonResponse({
+            'success': False,
+            'msg': 'Finished.',
+            'feedbackEntry': e
+        })
 
 
 @csrf_exempt

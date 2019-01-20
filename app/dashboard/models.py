@@ -2778,6 +2778,7 @@ class BlockedUser(SuperModel):
         """Return the string representation of a Bounty."""
         return f'<BlockedUser: {self.handle}>'
 
+
 class FeedbackEntry(SuperModel):
     bounty = models.ForeignKey(
         'dashboard.Bounty',
