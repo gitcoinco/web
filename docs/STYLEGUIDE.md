@@ -16,7 +16,12 @@ The font variations used in Gitcoin can be found in
 ### Mutiselect (using select2)
 
 _usage_
-- `g-multiselect`
+```
+<div class="g-multiselect">
+    <select class="js-select2" multiple>
+    </select>
+</div>
+```
 
 The form styling used in Gitcoin can be found in
 [select.css](https://github.com/gitcoinco/web/blob/master/app/assets/v2/css/forms/select.css)
