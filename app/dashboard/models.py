@@ -221,6 +221,7 @@ class Bounty(SuperModel):
     token_address = models.CharField(max_length=50)
     bounty_type = models.CharField(max_length=50, choices=BOUNTY_TYPES, blank=True)
     project_length = models.CharField(max_length=50, choices=PROJECT_LENGTHS, blank=True)
+    estimated_hours = models.PositiveIntegerField(blank=True, null=True)
     experience_level = models.CharField(max_length=50, choices=EXPERIENCE_LEVELS, blank=True)
     github_url = models.URLField(db_index=True)
     github_issue_details = JSONField(default=dict, blank=True, null=True)
@@ -231,6 +232,9 @@ class Bounty(SuperModel):
     bounty_owner_name = models.CharField(max_length=255, blank=True)
     bounty_owner_profile = models.ForeignKey(
         'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='bounties_funded', blank=True
+    )
+    bounty_reserved_for_user = models.ForeignKey(
+        'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='reserved_bounties', blank=True
     )
     is_open = models.BooleanField(help_text=_('Whether the bounty is still open for fulfillments.'))
     expires_date = models.DateTimeField()
@@ -988,6 +992,24 @@ class Bounty(SuperModel):
 
         return sentence
 
+    @property
+    def reserved_for_user_handle(self):
+        if self.bounty_reserved_for_user:
+            return self.bounty_reserved_for_user.handle
+        return ''
+
+    @reserved_for_user_handle.setter
+    def reserved_for_user_handle(self, handle):
+        profile = None
+
+        if handle:
+            try:
+                profile = Profile.objects.filter(handle__iexact=handle).first()
+            except:
+                logger.warning(f'reserved_for_user_handle: Unknown handle: ${handle}')
+
+        self.bounty_reserved_for_user = profile
+
 
 class BountyFulfillmentQuerySet(models.QuerySet):
     """Handle the manager queryset for BountyFulfillments."""
@@ -1700,7 +1722,7 @@ class Profile(SuperModel):
     preferred_kudos_wallet = models.OneToOneField('kudos.Wallet', related_name='preferred_kudos_wallet', on_delete=models.SET_NULL, null=True, blank=True)
     max_tip_amount_usdt_per_tx = models.DecimalField(default=500, decimal_places=2, max_digits=50)
     max_tip_amount_usdt_per_week = models.DecimalField(default=1500, decimal_places=2, max_digits=50)
-    last_visit = models.DateTimeField(null=True)
+    last_visit = models.DateTimeField(null=True, blank=True)
 
     objects = ProfileQuerySet.as_manager()
 

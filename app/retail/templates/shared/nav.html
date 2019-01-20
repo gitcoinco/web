@@ -16,8 +16,7 @@
 
 {% endcomment %}
 {% load i18n static matches %}
-<nav class="navbar navbar-expand-md navbar-dark g-font-muli">
-  <div id="gitcoin-background"></div>
+<nav class="navbar navbar-expand-md navbar-dark g-font-muli gitcoin-background">
   <a class="navbar-brand pt-0 pb-0" href="/">
     <img id="logo" src="{% static "v2/images/logo_large.png" %}" data-hover="{% static "v2/images/logo_med_hover.gif" %}" width="150" height="50" />
   </a>
@@ -27,12 +26,17 @@
       <span id="current-network"></span>
     </div>
   {% endif %}
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+  <div class="d-flex order-0 order-md-last">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    {% if user.is_authenticated %}
+      {% include 'shared/notifications.html' %}
+    {% endif %}
+  </div>
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+  <div class="collapse navbar-collapse order-1" id="navbarSupportedContent">
     <nav class="navbar-nav ml-auto mr-3">
       {% if request.path == '/' %}
         <span class="navbar__cta mr-2">{% trans "Want to get help on your repo? Easily get started!" %}</span>
@@ -43,7 +47,7 @@
           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           WHY GITCOIN
         </a>
-        <div class="dropdown-menu" id="why-gitcoin" aria-labelledby="navbarDropdown">
+        <div class="dropdown-menu dropdown-menu-right" id="why-gitcoin" aria-labelledby="navbarDropdown">
           <a class="dropdown-item {% if active == 'about' %} selected{% endif %}" href="{% url "about" %}">
             {% trans "About" %}
           </a>
@@ -67,7 +71,7 @@
           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           {% trans "How it works" %}
         </a>
-        <div class="dropdown-menu" id="how-it-works" aria-labelledby="navbarDropdownHow">
+        <div class="dropdown-menu dropdown-menu-right" id="how-it-works" aria-labelledby="navbarDropdownHow">
           <a class="dropdown-item {% if active == 'how_it_works_funder' %} selected{% endif %}" href="{% url "how_it_works" "funder" %}">
             {% trans "Funder" %}
           </a>
@@ -104,6 +108,7 @@
       {% endif %}
     </nav>
   </div>
+
 </nav>
 {% if request.path|matches:"^\/((explorer)|(issue.*)|(.*new.*)|(.*fund.*)|(.*cancel.*))$" %}
   <p id="navbar-network-banner" class="px-0 py-1 m-0 font-caption hidden"></p>

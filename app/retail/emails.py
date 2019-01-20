@@ -73,7 +73,39 @@ def render_new_grant_email(grant):
     params = {'grant': grant}
     response_html = premailer_transform(render_to_string("emails/grants/new_grant.html", params))
     response_txt = render_to_string("emails/grants/new_grant.txt", params)
-    subject = "Your Gitcoin Grant"
+    subject = _("Your Gitcoin Grant")
+    return response_html, response_txt, subject
+
+
+def render_change_grant_owner_request(grant):
+    params = {'grant': grant}
+    response_html = premailer_transform(render_to_string("emails/grants/change_owner_request.html", params))
+    response_txt = render_to_string("emails/grants/change_owner_request.txt", params)
+    subject = _("You've been chosen to be the owner for a Gitcoin Grant")
+    return response_html, response_txt, subject
+
+
+def render_change_grant_owner_accept(grant):
+    params = {'grant': grant}
+    response_html = premailer_transform(render_to_string("emails/grants/change_owner_accept.html", params))
+    response_txt = render_to_string("emails/grants/change_owner_accept.txt", params)
+    subject = _("Grant Owner has changed")
+    return response_html, response_txt, subject
+
+
+def render_notify_ownership_change(grant):
+    params = {'grant': grant}
+    response_html = premailer_transform(render_to_string("emails/grants/change_owner_notify.html", params))
+    response_txt = render_to_string("emails/grants/change_owner_notify.txt", params)
+    subject = _("Grant ownership has been changed")
+    return response_html, response_txt, subject
+
+
+def render_change_grant_owner_reject(grant):
+    params = {'grant': grant}
+    response_html = premailer_transform(render_to_string("emails/grants/change_owner_reject.html", params))
+    response_txt = render_to_string("emails/grants/change_owner_reject.txt", params)
+    subject = _("Grant has no change in ownership")
     return response_html, response_txt, subject
 
 
@@ -81,7 +113,7 @@ def render_new_supporter_email(grant, subscription):
     params = {'grant': grant, 'subscription': subscription}
     response_html = premailer_transform(render_to_string("emails/grants/new_supporter.html", params))
     response_txt = render_to_string("emails/grants/new_supporter.txt", params)
-    subject = "You have a new Grant supporter!"
+    subject = _("You have a new Grant supporter!")
     return response_html, response_txt, subject
 
 
@@ -89,7 +121,7 @@ def render_thank_you_for_supporting_email(grant, subscription):
     params = {'grant': grant, 'subscription': subscription}
     response_html = premailer_transform(render_to_string("emails/grants/thank_you_for_supporting.html", params))
     response_txt = render_to_string("emails/grants/thank_you_for_supporting.txt", params)
-    subject = "Thank you for supporting Grants on Gitcoin!"
+    subject = _("Thank you for supporting Grants on Gitcoin!")
     return response_html, response_txt, subject
 
 
@@ -97,7 +129,7 @@ def render_support_cancellation_email(grant, subscription):
     params = {'grant': grant, 'subscription': subscription}
     response_html = premailer_transform(render_to_string("emails/grants/support_cancellation.html", params))
     response_txt = render_to_string("emails/grants/support_cancellation.txt", params)
-    subject = "Your subscription on Gitcoin Grants has been cancelled"
+    subject = _("Your subscription on Gitcoin Grants has been cancelled")
 
     return response_html, response_txt, subject
 
@@ -106,7 +138,7 @@ def render_grant_cancellation_email(grant, subscription):
     params = {'grant': grant, 'subscription': subscription}
     response_html = premailer_transform(render_to_string("emails/grants/grant_cancellation.html", params))
     response_txt = render_to_string("emails/grants/grant_cancellation.txt", params)
-    subject = "Your Grant on Gitcoin Grants has been cancelled"
+    subject = _("Your Grant on Gitcoin Grants has been cancelled")
     return response_html, response_txt, subject
 
 
@@ -114,7 +146,7 @@ def render_subscription_terminated_email(grant, subscription):
     params = {'grant': grant, 'subscription': subscription}
     response_html = premailer_transform(render_to_string("emails/grants/subscription_terminated.html", params))
     response_txt = render_to_string("emails/grants/subscription_terminated.txt", params)
-    subject = "Your subscription on Gitcoin Grants has been cancelled by the Grant Creator"
+    subject = _("Your subscription on Gitcoin Grants has been cancelled by the Grant Creator")
     return response_html, response_txt, subject
 
 
@@ -122,13 +154,13 @@ def render_successful_contribution_email(grant, subscription, contribution):
     params = {'grant': grant, 'subscription': subscription, "contribution": contribution}
     response_html = premailer_transform(render_to_string("emails/grants/successful_contribution.html", params))
     response_txt = render_to_string("emails/grants/successful_contribution.txt", params)
-    subject = 'Your Gitcoin Grants contribution was successful!'
+    subject = _('Your Gitcoin Grants contribution was successful!')
     return response_html, response_txt, subject
 
 
 @staff_member_required
 def successful_contribution(request):
-    grant = Grant.objects.all().first()
+    grant = Grant.objects.first()
     subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
     contribution = Contribution.objects.filter(subscription__pk=subscription.pk).first()
     response_html, __, __ = render_successful_contribution_email(grant, subscription, contribution)
@@ -137,7 +169,7 @@ def successful_contribution(request):
 
 @staff_member_required
 def subscription_terminated(request):
-    grant = Grant.objects.all().first()
+    grant = Grant.objects.first()
     subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
     response_html, __, __ = render_subscription_terminated_email(grant, subscription)
     return HttpResponse(response_html)
@@ -145,7 +177,7 @@ def subscription_terminated(request):
 
 @staff_member_required
 def grant_cancellation(request):
-    grant = Grant.objects.all().first()
+    grant = Grant.objects.first()
     subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
     response_html, __, __ = render_grant_cancellation_email(grant, subscription)
     return HttpResponse(response_html)
@@ -153,7 +185,7 @@ def grant_cancellation(request):
 
 @staff_member_required
 def support_cancellation(request):
-    grant = Grant.objects.all().first()
+    grant = Grant.objects.first()
     subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
     response_html, __, __ = render_support_cancellation_email(grant, subscription)
     return HttpResponse(response_html)
@@ -161,7 +193,7 @@ def support_cancellation(request):
 
 @staff_member_required
 def thank_you_for_supporting(request):
-    grant = Grant.objects.all().first()
+    grant = Grant.objects.first()
     subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
     response_html, __, __ = render_thank_you_for_supporting_email(grant, subscription)
     return HttpResponse(response_html)
@@ -169,7 +201,7 @@ def thank_you_for_supporting(request):
 
 @staff_member_required
 def new_supporter(request):
-    grant = Grant.objects.all().first()
+    grant = Grant.objects.first()
     subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
     response_html, __, __ = render_new_supporter_email(grant, subscription)
     return HttpResponse(response_html)
@@ -177,8 +209,36 @@ def new_supporter(request):
 
 @staff_member_required
 def new_grant(request):
-    grant = Grant.objects.all().first()
+    grant = Grant.objects.first()
     response_html, __, __ = render_new_grant_email(grant)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def change_grant_owner_request(request):
+    grant = Grant.objects.first()
+    response_html, __, __ = render_change_grant_owner_request(grant)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def notify_ownership_change(request):
+    grant = Grant.objects.first()
+    response_html, __, __ = render_notify_ownership_change(grant)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def change_grant_owner_accept(request):
+    grant = Grant.objects.first()
+    response_html, __, __ = render_change_grant_owner_accept(grant)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def change_grant_owner_reject(request):
+    grant = Grant.objects.first()
+    response_html, __, __ = render_change_grant_owner_reject(grant)
     return HttpResponse(response_html)
 
 
@@ -690,6 +750,18 @@ def render_gdpr_update(to_email):
     return response_html, response_txt, subject
 
 
+def render_reserved_issue(to_email, user, bounty):
+    params = {
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'user': user,
+        'bounty': bounty
+    }
+    subject = "Reserved Issue"
+    response_html = premailer_transform(render_to_string("emails/reserved_issue.html", params))
+    response_txt = render_to_string("emails/reserved_issue.txt", params)
+    return response_html, response_txt, subject
+
+
 def render_start_work_approved(interest, bounty):
     to_email = interest.profile.email
     params = {
@@ -774,24 +846,24 @@ def render_start_work_applicant_expired(interest, bounty):
 # ROUNDUP_EMAIL
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
-    from external_bounties.models import ExternalBounty
-    subject = "Announcing Gitcoin Grants | Happy New Year!"
-    new_kudos_pks = [153, 185, 150]
+    subject = "Liberal Radicalism In Open Source Software"
+    new_kudos_pks = [1053, 1059, 866]
     new_kudos_size_px = 150
     intro = '''
 <p>
-Happy New Year, Gitcoin family!
+Hi Gitcoiners,
 <p>
 <p>
-We're ringing in the new yaer the best way we know how - with a new product launch. We're proud to formally announce <a href="https://twitter.com/GetGitcoin/status/1080607835120173056">Gitcoin Grants</a>,
-recurring funding for projects in open source software. We're very excited about the prospect of providing funding to OSS projects at the maintainer level.
+This week, we wrote about <a href="https://medium.com/gitcoin/experiments-with-liberal-radicalism-ad68e02efd4">Liberal Radicalism</a>, a paper proposed by Vitalik Buterin, Glen Weyl, and Zoe Hitzig. Our thinking
+describes a public good problem in open source, the CLR mechanism, and how we are experimenting with it via Gitcoin Grants. If you're interested in joining the discussion,
+<a href="https://discourse.gitcoin.co/t/liberal-radicalism-in-open-source-software/16">our Discourse</a> is a good place to start.
 </p>
 <p>
-Want to create a Gitcoin Grant for a project you run? <a href="https://consensys1mac.typeform.com/to/HFcZKe">Let us know</a> and we'll get back to you within 5 days
-to see if there's a good fit on our alpha launch. Want to contribute to a Gitcoin Grant? <a href="https://gitcoin.co/grants/">Take a look at our launch partners</a>, including Prysmatic Labs, Cryptoeconomics Study, and more.
+The potential with Gitcoin Grants is high, and we're excited to explore. <a href="https://consensys1mac.typeform.com/to/HFcZKe">Let us know</a> if you'd like to be in a future cohort and we'll
+reach out with more details. Want to contribute to a Gitcoin Grant? <a href="https://gitcoin.co/grants/">Take a look at our launch partners</a>, including Prysmatic Labs, Ethereum PM, and more.
 </p>
 <p>
-<h3>Happy New Year From Gitcoin</h3>
+<h3>Happy Kudos Friday!</h3>
 </p>
 <p>
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
@@ -805,39 +877,39 @@ to see if there's a good fit on our alpha launch. Want to contribute to a Gitcoi
     </ul>
 </p>
 <p>
-Happy new year,
+Back to shipping,
 </p>
 
 '''
     highlights = [{
-        'who': 'pvienhage',
+        'who': 'lrgeoemtry',
         'who_link': True,
-        'what': 'Worked on Smart Contract Security',
-        'link': 'https://gitcoin.co/issue/SmartContractSecurity/SWC-registry/158/2061',
+        'what': 'Great Linux skills!',
+        'link': 'https://gitcoin.co/issue/HERCone/herc-edge-login/130/2114',
         'link_copy': 'View more',
     }, {
-        'who': 'robin-thomas',
+        'who': 'johngrantuk',
         'who_link': True,
-        'what': 'Worked on Prysmatic Labs on BLS curves',
-        'link': 'https://gitcoin.co/issue/prysmaticlabs/go-bls/9/2047',
+        'what': 'More great work on the Burner Wallet!',
+        'link': 'https://gitcoin.co/issue/austintgriffith/burner-wallet/72/2111',
         'link_copy': 'View more',
     }, {
-        'who': 'bakaoh',
+        'who': 'zyfrank',
         'who_link': True,
-        'what': 'Longtime Gitcoin contributor meets longtime Gitcoin funder!',
-        'link': 'https://gitcoin.co/issue/spacemeshos/go-spacemesh/290/2044',
+        'what': 'Great work on the Centrifuge repo!',
+        'link': 'https://gitcoin.co/issue/centrifuge/precise-proofs/43/2090',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/gitcoinco/web/issues/3370',
-        'primer': 'Help Gitcoin migrate to the Infura Dashboard.',
+        'url': 'https://github.com/austintgriffith/burner-wallet/issues/78',
+        'primer': 'Burner Wallet, a very important crypto project!',
     }, {
-        'url': 'https://github.com/ethereum/pm/issues/69',
-        'primer': 'Take notes for the EF devs call, get $75 USD',
+        'url': 'https://github.com/gitcoinco/web/issues/3561',
+        'primer': 'Help us get images on the Gitcoin Blog!',
     }, {
-        'url': 'https://github.com/austintgriffith/burner-wallet/issues/51',
-        'primer': 'Work with Austin on the Burner Wallet!',
+        'url': 'https://github.com/NethermindEth/nethermind/issues/334',
+        'primer': '.NET skills? Here is the bounty for you!',
     }, ]
 
     num_leadboard_items = 5
@@ -922,7 +994,7 @@ def new_tip(request):
 @staff_member_required
 def new_kudos(request):
     from kudos.models import KudosTransfer
-    kudos_transfer = KudosTransfer.objects.last()
+    kudos_transfer = KudosTransfer.objects.first()
     response_html, _ = render_new_kudos_email(settings.CONTACT_EMAIL, kudos_transfer, True)
 
     return HttpResponse(response_html)

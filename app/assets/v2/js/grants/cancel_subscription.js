@@ -68,6 +68,7 @@ $(document).ready(() => {
                     $('#sub_cancel_tx_id').val(transactionHash);
                   }).on('confirmation', function(confirmationNumber, receipt) {
                     console.log('receipt', receipt);
+                    document.suppress_loading_leave_code = true;
                     form.submit();
                   });
               });

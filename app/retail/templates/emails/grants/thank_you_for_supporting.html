@@ -15,7 +15,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static grants_extra %}
+{% load i18n static grants_extra humanize %}
 
 {% block content %}
 
@@ -130,7 +130,7 @@
     {% trans "You have agreed to give" %}
   </p>
   <p>
-    <strong>{{ subscription.amount_per_period }} {{ subscription.token_symbol }}</strong> {% trans "every" %} <strong>{{ subscription.frequency }} {{ subscription.frequency_unit }}</strong>
+    <strong>{{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }}</strong> {% trans "every" %} <strong>{{ subscription.frequency }} {{ subscription.frequency_unit }}</strong>
   </p>
   <p>{% trans "You can see all the grants you support and your transaction history " %}
       <a href="{% url 'grants:profile' %}">{% trans "here." %}</a>

@@ -37,18 +37,18 @@ $(document).ready(function() {
     $('.header').css('overflow', 'visible');
   }
 
-  $('.nav-link.dropdown-toggle').click(function(e) {
+  $('.nav-link.dropdown-toggle').on('click', function(e) {
     e.preventDefault();
     var parent = $(this).parents('.nav-item');
 
     var parentSiblings = parent.siblings('.nav-item');
 
-    parent.find('.dropdown-menu').toggle();
+    parent.find('.dropdown-menu').toggle().toggleClass('show');
     parentSiblings.find('.dropdown-menu').hide();
   });
 
   // get started modal
-  $("a[href='/get']").click(function(e) {
+  $("a[href='/get']").on('click', function(e) {
     e.preventDefault();
     var url = $(this).attr('href');
 
@@ -60,7 +60,7 @@ $(document).ready(function() {
   });
 
   // bust the cache every time the user interacts with github
-  $("[href^='/_github']").click(function(e) {
+  $("[href^='/_github']").on('click', function(e) {
     var timestamp = Date.now() / 1000 | 0;
 
     Cookies.set('last_github_auth_mutation', timestamp);
@@ -86,7 +86,7 @@ $(document).ready(function() {
     $(this).attr('src', $(this).attr('old-src'));
   });
   if (!$.fn.collapse) {
-    $('.navbar-toggler').click(function() {
+    $('.navbar-toggler').on('click', function() {
       var toggle = $(this).attr('aria-expanded');
 
       console.log(toggle);
@@ -117,70 +117,11 @@ $(document).ready(function() {
     $(event.target).parents('.faq_parent').find('.answer').toggleClass('show');
   });
 
-  // mixpanel integration
-  setTimeout(() => {
-    let web3v = (typeof web3 == 'undefined' || typeof web3.version == 'undefined') ? 'none' : web3.version.api;
-    const params = {
-      page: document.location.pathname,
-      web3: web3v
-    };
+  $('.accordion').on('click', (event) => {
+    const element = $(event.target);
 
-    mixpanel.track('Pageview', params);
-  }, 300);
-
-  const tos = [
-    'slack',
-    'btctalk',
-    'reddit',
-    'twitter',
-    'fb',
-    'medium',
-    'gitter',
-    'github',
-    'youtube',
-    'extension',
-    'get',
-    'watch',
-    'unwatch',
-    'help/repo',
-    'help/dev',
-    'help/portal',
-    'help/faq'
-  ];
-
-  for (let i = 0; i < tos.length; i++) {
-    const to = tos[i];
-    const _params = {
-      'to': $(this).attr('href')
-    };
-
-    const callback = () => {
-      mixpanel.track('Outbound', _params);
-    };
-
-    $('body').delegate("a[href='/" + to + "']", 'click', callback);
-  }
-
-  $('body').delegate("a[href^='https://github.com/']", 'click', () => {
-    const _params = {
-      'to_domain': 'github.com',
-      'to': $(this).attr('href')
-    };
-
-    mixpanel.track('Outbound', _params);
-  });
-
-  $('#newsletter-subscribe').on('click', () => {
-    mixpanel.track('Email Subscribe');
-  });
-
-  $('body.whitepaper .btn-success').on('click', () => {
-    mixpanel.track('Whitepaper Request');
-  });
-
-  $('.accordion').on('click', () => {
-    this.classList.toggle('active');
-    var panel = this.nextElementSibling;
+    element.toggleClass('active');
+    let panel = element[0].nextElementSibling;
 
     if (panel.style.maxHeight) {
       panel.style.maxHeight = null;
