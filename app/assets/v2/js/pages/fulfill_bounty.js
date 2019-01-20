@@ -58,7 +58,7 @@ window.onload = function() {
         var notificationEmail = data.notificationEmail;
         var githubPRLink = data.githubPRLink;
         var hoursWorked = data.hoursWorked;
-		debugger;
+
         localStorage['githubUsername'] = githubUsername;
 
         var account = web3.eth.coinbase;

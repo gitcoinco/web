@@ -205,10 +205,27 @@ window.onload = function() {
               'txid': result
             });
 
-            _alert({ message: gettext('Submitted transaction to web3.') }, 'info');
-            setTimeout(() => {
-              document.location.href = '/funding/details?url=' + issueURL;
-            }, 1000);
+            _alert({ message: gettext('Submitted transaction to web3, saving comment(s)...') }, 'info');
+
+            var submitCommentUrl = '/bounties/postComment';
+            var finishedComment = function() {
+              _alert({ message: gettext('Submitted transaction to web3.') }, 'info');
+              setTimeout(() => {
+                document.location.href = '/funding/details?url=' + issueURL;
+              }, 1000);
+            }
+            var ratVal = $('#rating').val();
+            var revVal = $('#review').val();
+            $.post(submitCommentUrl, {
+              "github_url": issueURL,
+              "network": $('input[name=network]').val(),
+              "standard_bounties_id": $('input[name=standard_bounties_id]').val(),
+              "review": {
+                "rating": ratVal?ratVal:-1,
+                "comment": revVal?revVal"No comment given.",
+                "reviewType": "approver"
+		          }
+              }, finishedComment, 'json');
 
           };
 
