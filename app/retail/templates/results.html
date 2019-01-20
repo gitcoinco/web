@@ -28,8 +28,8 @@
   <body class="{{ active }} g-font-muli">
 
     {% include 'shared/tag_manager_2.html' %}
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
     <div class="container-fluid header">
-      {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav.html' %}
       {% include 'shared/minihero.html' with h1=title position_h1_below_logo=1 %}
     </div>
@@ -58,11 +58,9 @@
 
           <div class="col-md-4 py-5 bounty_status">
             <h5>{% trans "and by Type" %}</h5>
-            <p><span class="lblue_box"></span> {% trans "Tips" %}</p>
-            <p><span class="yellow_box"></span> {% trans "Open Work" %}</p>
-            <p><span class="green_box"></span> {% trans "Started Work" %}</p>
-            <p><span class="blue_box"></span> {% trans "Completed Work" %}</p>
-            <p><span class="pink_box"></span> {% trans "Cancelled Work" %}</p>
+            <p><span class="blue_box"></span> {% trans "Bounties + Tips" %}</p>
+            <p><span class="yellow_box"></span> {% trans "Grants" %}</p>
+            <p><span class="green_box"></span> {% trans "Kudos" %}</p>
           </div>
         </div>
       </div>
@@ -212,7 +210,7 @@
         <div class="row py-5 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
             <h2 class="text-center pb-5">
-              {% trans "Top Mega-Funders" %} 
+              {% trans "Top Mega-Funders" %}
             </h2>
           </div>
           <div class="col-md-12 align-items-center">
@@ -485,7 +483,7 @@
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script src="{% static "v2/js/pages/results.js" %}"></script>
   <script>
-    $("#mesh_preview").click(function(e){
+    $("#mesh_preview").on('click', function(e){
       $("#mesh_network_jobs_holder").html('<iframe src="{% url 'viz_graph' %}?keyword={{keyword}}" style="width: 100%; height: 600px; border-left: 1px #dddddd solid; border-bottom: 1px #dddddd solid;  " frameBorder="0">');
       e.preventDefault();
     });

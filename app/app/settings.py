@@ -101,7 +101,6 @@ INSTALLED_APPS = [
     'linkshortener',
     'credits',
     'gitcoinbot',
-    'external_bounties',
     'dataviz',
     'impersonate',
     'grants',
@@ -125,6 +124,7 @@ INSTALLED_APPS = [
     'wagtail.core',
     'cms',
     'revenue',
+    'inbox',
 ]
 
 MIDDLEWARE = [
@@ -145,6 +145,7 @@ MIDDLEWARE = [
     'wagtail.core.middleware.SiteMiddleware',
     'wagtail.contrib.redirects.middleware.RedirectMiddleware'
 ]
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 ROOT_URLCONF = env('ROOT_URLCONF', default='app.urls')
 
@@ -155,13 +156,13 @@ AUTHENTICATION_BACKENDS = (
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': ['retail/templates/', 'external_bounties/templates/', 'dataviz/templates', 'kudos/templates'],
+    'DIRS': ['retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates'],
     'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': [
             'django.template.context_processors.debug', 'django.template.context_processors.request',
             'django.contrib.auth.context_processors.auth', 'django.contrib.messages.context_processors.messages',
-            'app.context.insert_settings', 'social_django.context_processors.backends',
+            'app.context.preprocess', 'social_django.context_processors.backends',
             'social_django.context_processors.login_redirect',
         ],
     },
@@ -585,9 +586,6 @@ KUDOS_NETWORK = env('KUDOS_NETWORK', default='mainnet')
 GRANTS_OWNER_ACCOUNT = env('GRANTS_OWNER_ACCOUNT', default='0xD386793F1DB5F21609571C0164841E5eA2D33aD8')
 GRANTS_PRIVATE_KEY = env('GRANTS_PRIVATE_KEY', default='')
 
-
-# Reporting Integrations
-MIXPANEL_TOKEN = env('MIXPANEL_TOKEN', default='')
 
 GA_PRIVATE_KEY_PATH = env('GA_PRIVATE_KEY_PATH', default='')
 GA_PRIVATE_KEY = ''

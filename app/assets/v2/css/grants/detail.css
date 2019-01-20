@@ -9,10 +9,6 @@
   display: inline;
 }
 
-.cancel_grants.modal {
-  max-width: 45rem;
-}
-
 .grant__header .grant-item__owner-image img {
   width: 50px;
   height: 50px;
@@ -77,8 +73,9 @@
   font-weight: 500;
 }
 
-.grant__description textarea {
-  background: white;
+.grant__description textarea,
+#contract_owner_address.editable {
+  background: white !important;
 }
 
 input.editable,
@@ -177,13 +174,6 @@ textarea.editable {
 
 .update-milestone {
   background-color: white;
-  border-top: 1px solid #D8D8D8;
-}
-
-.tooltip {
-  position: relative;
-  display: inline-block;
-  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
 }
 
 .update {
@@ -196,26 +186,6 @@ textarea.editable {
 
 .milestones-list li:last-child {
   padding-bottom: 0 !important;
-}
-
-/* Tooltip text */
-.tooltip .tooltiptext {
-  visibility: hidden;
-  width: 120px;
-  background-color: black;
-  color: #fff;
-  text-align: center;
-  padding: 5px 0;
-  border-radius: 6px;
-
-  /* Position the tooltip text - see examples below! */
-  position: absolute;
-  z-index: 1;
-}
-
-/* Show the tooltip text when you mouse over the tooltip container */
-.tooltip:hover .tooltiptext {
-    visibility: visible;
 }
 
 @keyframes rotation {
@@ -250,5 +220,9 @@ textarea.editable {
   #tabs > .ui-widget-header {
     display: flex;
     justify-content: center;
+  }
+
+  #cancelModal .modal-cancel-grants {
+    margin-top: 1rem;
   }
 }

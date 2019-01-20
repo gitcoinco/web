@@ -101,6 +101,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                         </div>
                       {% else %}
                         {{ grant.token_symbol }}
+                        <input type="hidden" id='sub_token_address' name='denomination'>
                       {% endif %}
                     </div>
                   </div>
@@ -186,6 +187,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               <input type="hidden" id="token_symbol" name="token_symbol" value="{{ grant.token_symbol }}">
               <input type="hidden" id="real_period_seconds" name="real_period_seconds" value="">
               <input type="hidden" id="grant-link" value="{% url 'grants:details' grant.id grant.slug %}">
+              <input type="hidden" id="wait" value="true">
             </div>
           </form>
         </div>

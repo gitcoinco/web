@@ -49,6 +49,14 @@ h4,
   background-size: cover;
   background-position: 0px 0px;
   background-repeat: no-repeat;
+  position: relative;
+}
+
+.index .header {
+  overflow: hidden;
+}
+
+.minihero {
   overflow: hidden;
   position: relative;
 }
@@ -69,10 +77,18 @@ h4,
   position: fixed;
   top: 0;
   left: 0;
+  /* right: 0; */
   z-index: -1;
   will-change: transform;
   overflow-y: hidden;
   overflow-x: hidden;
+}
+
+.gitcoin-background {
+  background: url("/static/v2/images/header-bg.png") #0d023b;
+  background-attachment: fixed;
+  background-position: center 0;
+  background-size: 2000px;
 }
 
 .text-white {
@@ -198,6 +214,10 @@ div.button-pink {
   background-size: contain;
   background-position: bottom;
   background-repeat: no-repeat;
+}
+
+.bg-lightblue {
+  background-color: #EFF3F6;
 }
 
 .white-light-bg {
@@ -346,7 +366,7 @@ div.button-pink {
   text-decoration: none;
   padding-right: 1rem;
   padding-left: 1rem;
-  font-size: 0.9rem !important;
+  font-size: 0.9rem;
 }
 
 .footer .nav-link:hover {
@@ -489,8 +509,6 @@ div.button-pink {
   background-color: #FAFAFA;
   border-radius: 0px;
   padding: 0;
-  right: 0;
-  left: auto;
 }
 
 .dropdown-menu .dropdown-divider {
@@ -623,12 +641,24 @@ div.button-pink {
   }
 }
 
-.notification-dot {
-  background-color: #ef3427;
-  width: 0.5rem;
-  height: 0.5rem;
-  position: absolute;
-  top: 6px;
-  border-radius: 30px;
-  left: 6px;
+/* dropdown animation */
+.animation {
+  -webkit-animation-duration: 80ms;
+  animation-duration: 80ms;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+}
+.slideDownIn {
+  -webkit-animation-name: slideDownIn;
+  animation-name: slideDownIn;
+}
+
+@keyframes slideDownIn {
+  0% {
+    -webkit-transform: translateY(-20px) scale(0.9, 0.7);
+  }
+  100% {
+    -webkit-transform: translateY(0) scale(1, 1);
+  }
+
 }

@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static is_in_list %}
+{% load i18n static is_in_list matches %}
 {% include 'shared/tag_manager_1.html' %}
 <meta charset="utf-8">
 <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
@@ -25,7 +25,9 @@
 <link rel="stylesheet" href="{% static "v2/css/top-nav.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/base.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/jquery.modal.min.css" %}" />
+{% if not request.path|matches:"^\/((.*grants.*))$" %}
+  <link rel="stylesheet" href="{% static "v2/css/jquery.modal.min.css" %}" />
+{% endif %}
 <link rel="stylesheet" href="{% static "v2/css/jquery.select2.min.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/animate.min.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/rain.css" %}" />
@@ -45,6 +47,7 @@
 <link rel="stylesheet" href="{% static "v2/css/forms/radio.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/forms/select.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/external_bounties/checkboxes.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/notifications.css" %}">
 
 {% if 'grants' in request.path %}
 <!-- Grants -->
@@ -52,25 +55,8 @@
 <link rel="stylesheet" href="{% static "v2/css/grants/cancel.css" %}">
 {% endif %}
 
-{% if active == 'offchain' %}
-    <!-- External Bounties -->
-    <link rel="stylesheet" href="{% static "v2/css/external_bounties/bounties.css" %}" />
-{% endif %}
-
 <!-- Cookie Consent -->
 <link rel="stylesheet" href="{% static "cookielaw/css/cookielaw.css" %}">
-
-{% if active == 'offchain' %}
-<!-- External Bounties -->
-<link rel="stylesheet" href="{% static "v2/css/external_bounties/bounties.css" %}">
-{% endif %}
-
-{% if request.path == '/ios' %}
-<!-- iOS -->
-<link rel="stylesheet" href="{% static "v2/css/toolbox.css" %}">
-<link rel="stylesheet" href="{% static "v2/css/card.css" %}">
-<link rel="stylesheet" href="{% static "v2/css/ios.css" %}">
-{% endif %}
 
 <title>{% if title %}{{title}}{% else %}{% trans "Grow Open Source" %}{% endif %} | Gitcoin</title>
 {% include 'shared/favicon.html' %}

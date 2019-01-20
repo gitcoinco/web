@@ -30,8 +30,8 @@
 
   <body class="{{ active }} g-font-futura">
     {% include 'shared/tag_manager_2.html' %}
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
     <div class="container-fluid header">
-      {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav.html' %}
       {% include 'shared/minihero.html' with h1='Mission' position_h1_below_logo=1 %}
     </div>
@@ -436,11 +436,6 @@
             />
           </div>
         </div>
-      </div>
-    </div>
-    <div class="row mt-5 pb-3 animatedParent text-center">
-      <div class="col animated pulse fast">
-        <a class="btn btn-lg btn-warning" role="button" href="{% url "get_gitcoin" %}">{% trans "Get Started" %}</a>
       </div>
     </div>
 

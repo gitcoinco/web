@@ -3,6 +3,8 @@
   and ensure your pull request has fulfilled all requirements outlined by the Gitcoin Core team.
 
   Contributors guide: https://docs.gitcoin.co/mk_contributors/
+  
+  Please note that deleting or not properly filling those sections below may result in your PR being rejected.
 -->
 
 ##### Description
@@ -51,7 +53,7 @@
 - [ ] Affirm contributor guidelines have been followed and requested changes made
 - [ ] CI tests and linting pass
 - [ ] No conflicts (migrations, files, etc)
-- [ ] Regression tested against staging
+- [ ] Regression tested against staging or local deployment
 
 ###### Funder
 

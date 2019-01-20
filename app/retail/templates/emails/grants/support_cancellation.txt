@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n humanize %}
 
 {% trans "We are sad to see you go." %}
 
@@ -6,11 +6,11 @@
 
 {% trans "Thank you for everything you have contributed!" %}
 
-{{ grant.description }}
+{% trans "Description:" %} : {{ grant.description }}
 
 {% trans "Your Contribution" %}
 
-{{ subscription.amount_per_period }} {{ subscription.token_symbol }}
+{{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }}
 
 {% trans "Grant % done" %} : {{ grant.percentage_done }}
 

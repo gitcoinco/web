@@ -84,7 +84,6 @@ def about(request):
         hidden=False,
     ).order_by('-popularity_week').cache()
     activities = Activity.objects.select_related('bounty').filter(
-        bounty__network='mainnet',
         activity_type='new_kudos',
     ).order_by('-created').cache()
 

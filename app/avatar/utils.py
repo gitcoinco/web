@@ -111,7 +111,7 @@ def get_avatar_context():
             'title': 'Pick your clothing',
             'options': (
                 'cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater', 'spacecadet', 'suit', 'ethlogo',
-                'cloak', 'robe', 'pjs', 'elf_inspired', 'suspender',
+                'cloak', 'robe', 'pjs', 'elf_inspired', 'business_suit', 'suspender',
             ),
             'paid_options': {
                 'robe': 0.01,
@@ -126,7 +126,9 @@ def get_avatar_context():
             ], ['7-back', '7-front'], ['8-back', '8-front'], ['9-back', '9-front'], ['None', '10'],
                         ['damos_hair-back', 'damos_hair-front'], ['long_swoosh-back', 'long_swoosh-front'],
                         ['None', 'mohawk'], ['None', 'mohawk_inverted'], ['None', 'spikey'], ['None', 'mickey_hair'],
-                        ['None', 'modernhair_1']
+                        ['None', 'modernhair_1'], ['None', 'modernhair_2'], ['modernhair_3-back', 'modernhair_3-front'],
+                        ['None', 'womenhair'], ['None', 'womanhair'], ['None', 'womanhair1'], ['None', 'womanhair2'],
+                        ['None', 'womanhair3'], ['None', 'womanhair4'], ['None', 'womanhair5']
                         ),
             'paid_options': {},
         }, {
@@ -148,11 +150,12 @@ def get_avatar_context():
                 ['Earring-0'], ['Earring-1'], ['EarringBack-2', 'Earring-2'],
                 ['Earring-3'], ['Earring-4'], ['Masks-jack-o-lantern'],
                 ['Masks-guy-fawkes'], ['Masks-jack-o-lantern-lighted'],
-                ['Masks-wolverine_inspired'], ['Masks-captain_inspired'], ['Extras-Parrot'],
+                ['Masks-wolverine_inspired'], ['Masks-captain_inspired'], ['Masks-alien'], ['Extras-Parrot'],
                 ['Extras-wonderwoman_inspired'], ['Extras-santa_inspired'],
                 ['Extras-reindeer'], ['Masks-gitcoinbot'],
                 ['Extras-tattoo'], ['Masks-batman_inspired'], ['Masks-eye-patch'],
                 ['Masks-flash_inspired'], ['Masks-deadpool_inspired'], ['Masks-darth_inspired'],
+                ['Masks-spiderman_inspired'], ['Glasses-5'],
             ),
             'paid_options': {
                 'Extras-Parrot': 0.01,

@@ -2309,5 +2309,127 @@
   - santa
   - elf
   image: 12_days_of_bounties.svg
-
+- name: panvala_holidays
+  to_address: 0xc6b0a4c5BA85d082eCd4Fb05FBF63eb92AC1083a
+  artist: PanvalaMark
+  description: Happy holidays from Panvala! Wishing you a new year full of cooperation!
+  artist: niran
+  platform: panvala
+  priceFinney: 1
+  numClonesAllowed: 50
+  tags:
+    - just for fun
+    - panvala
+    - holidays
+  image: panvala_holidays.svg
+- name: bat_bot
+  artist: mladen
+  description: Limited Edition Crypto Winter Kudos;  Send this bot to contributors who have done a great job!
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto winter
+    - bots
+  image: bat_bot.svg
+- name: bender
+  artist: mladen
+  description: Limited Edition Crypto Winter Kudos;  Send this bot to contributors who have done a great job!
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto winter
+    - bots
+  image: bender_bot.svg
+- name: bufficorn_bot
+  artist: mladen
+  description: Limited Edition Crypto Winter Kudos; In honour of ETHDenver 2019,  Send this bot to contributors who have done a great job!
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto winter
+    - bots
+  image: bufficorn_bot.svg
+- name: heart_bot
+  artist: mladen
+  description: Limited Edition Crypto Winter Kudos;  Send this bot to contributors who have a lot of heart!
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto winter
+    - bots
+  image: heart_bot.svg
+- name: obi_wan_bot
+  artist: mladen
+  description: Limited Edition Crypto Winter Kudos;  Send this bot to contributors for whom 'the force is with you'.
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto winter
+    - bots
+  image: obi_wan_bot.svg
+- name: pika_bot
+  artist: mladen
+  description: Limited Edition Crypto Winter Kudos;  Send this bot to contributors who are *electric*!
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto winter
+    - bots
+  image: pika_bot.svg
+- name: r2_d2_bot
+  artist: mladen
+  description: Limited Edition Crypto Winter Kudos;  Send this bot to contributors who BEEP BEEP BOOP BEEP!
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto winter
+    - bots
+  image: r2_d2_bot.svg
+- name: saber_bot
+  artist: mladen
+  description: Limited Edition Crypto Winter Kudos;  Send this bot to contributors who cut through issues like a light saber would :)
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto winter
+    - bots
+  image: saber_bot.svg
+- name: super_bot
+  artist: mladen
+  description: Limited Edition Crypto Winter Kudos;  Send this bot to contributors who have are SUPER!
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto winter
+    - bots
+  image: super_bot.svg
+- name: v_bot
+  artist: mladen
+  description: Limited Edition Crypto Winter Kudos;  Send this bot to contributors who have done a great job!
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto winter
+    - bots
+  image: v_bot.svg
 

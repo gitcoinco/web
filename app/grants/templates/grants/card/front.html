@@ -31,7 +31,7 @@
               <img src="{% if grant.admin_profile.avatar_url %}{{ grant.admin_profile.avatar_url }}{% else %}https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg{% endif %}">
             </div>
             <div class="grant-item__owner-handle font-body">
-              <span>
+              <span class="ml-2">
                   {{ grant.admin_profile.handle|default:'anonymous' }}
               </span>
             </div>
@@ -43,8 +43,8 @@
       </div>
       <div class="grant-item__funding mt-2">
         <div class="grant-item__funding-item">
-          <div class="grant-item__funding-number font-body">{{ grant.amount_received|floatformat:2|intcomma }} DAI</div>
-          <div class="grant-item__funding-label font-caption">{% trans 'Current' %}</div>
+          <div class="grant-item__funding-number font-body">{{ grant.monthly_amount_subscribed|floatformat:2|intcomma }} DAI</div>
+          <div class="grant-item__funding-label font-caption">{% trans 'Monthly Funded' %}</div>
         </div>
         <div class="grant-item__funding-item">
           <div class="grant-item__funding-number font-body">{{ grant.amount_goal|floatformat:2|intcomma }} DAI</div>

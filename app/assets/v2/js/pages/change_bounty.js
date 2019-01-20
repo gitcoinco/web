@@ -9,6 +9,11 @@ $(document).ready(function() {
   const keys = Object.keys(oldBounty);
   const form = $('#submitBounty');
 
+  // do some form pre-checks
+  if (String(oldBounty.project_type).toLowerCase() !== 'traditional') {
+    $('#reservedForDiv').hide();
+  }
+
   while (keys.length) {
     const key = keys.pop();
     const val = oldBounty[key];
@@ -24,6 +29,29 @@ $(document).ready(function() {
     $(this).select2();
   });
 
+  // show/hide the reserved for selector based on the project type
+  $('.js-select2[name=project_type]').change(function(e) {
+    if (String(e.target.value).toLowerCase() === 'traditional') {
+      $('#reservedForDiv').show();
+    } else {
+      $('#reservedForDiv').hide();
+    }
+  });
+
+  const reservedForHandle = oldBounty['reserved_for_user_handle'];
+
+  userSearch(
+    '#reservedFor',
+    // show address
+    false,
+    // theme
+    '',
+    // initial data
+    reservedForHandle ? [reservedForHandle] : [],
+    // allowClear
+    true
+  );
+
   form.validate({
     submitHandler: function(form) {
       const inputElements = $(form).find(':input');
@@ -37,7 +65,12 @@ $(document).ready(function() {
 
       loading_button($('.js-submit'));
 
-      mixpanel.track('Change Bounty Details Clicked', {});
+      // update bounty reserved for
+      const reservedFor = $('.username-search').select2('data')[0];
+
+      if (reservedFor) {
+        formData['reserved_for_user_handle'] = reservedFor.text;
+      }
 
       const bountyId = document.pk;
       const payload = JSON.stringify(formData);

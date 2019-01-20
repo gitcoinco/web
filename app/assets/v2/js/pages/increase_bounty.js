@@ -31,15 +31,13 @@ $(document).ready(function() {
   });
 
   // submit bounty button click
-  $('#increaseFunding').click(function(e) {
+  $('#increaseFunding').on('click', function(e) {
     try {
       bounty_address();
     } catch (exception) {
       _alert(gettext('You are on an unsupported network.  Please change your network to a supported network.'));
       return;
     }
-
-    mixpanel.track('Increase Bounty Clicked (funder)', {});
 
     // setup
     e.preventDefault();
@@ -106,7 +104,6 @@ $(document).ready(function() {
 
     function web3Callback(error, result) {
       if (error) {
-        mixpanel.track('Increase Bounty Error (funder)', {step: 'post_bounty', error: error});
         _alert({ message: gettext('There was an error.  Please try again or contact support.') }, 'error');
         unloading_button($('#increaseFunding'));
         return;
@@ -120,8 +117,7 @@ $(document).ready(function() {
       localStorage[issueURL] = JSON.stringify(issuePackage);
 
       _alert({ message: gettext('Submission sent to web3.') }, 'info');
-      setTimeout(function() {
-        mixpanel.track('Submit New Bounty Success', {});
+      setTimeout(() => {
         document.location.href = '/funding/details/?url=' + issueURL;
       }, 1000);
     }
@@ -187,7 +183,7 @@ $(document).ready(function() {
         {
           from: account,
           value: ethAmount,
-          gas: web3.toHex(56269),
+          gas: web3.toHex(65269),
           gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
         },
         web3Callback
