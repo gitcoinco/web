@@ -624,7 +624,6 @@ var retrieveIssueDetails = function() {
   var ele = $('input[name=issueURL]');
   var target_eles = {
     'title': $('input[name=title]'),
-    'keywords': $('input[name=keywords]'),
     'description': $('textarea[name=description]')
   };
   var issue_url = ele.val();
@@ -645,7 +644,14 @@ var retrieveIssueDetails = function() {
     if (result['keywords']) {
       var keywords = result['keywords'];
 
-      target_eles['keywords'].val(keywords.join(', '));
+      $('#keywords').val(keywords);
+      $('#keywords').select2({
+        placeholder: 'Select tags',
+        data: keywords,
+        tags: 'true',
+        allowClear: true
+      });
+
     }
     target_eles['description'].val(result['description']);
     target_eles['title'].val(result['title']);
