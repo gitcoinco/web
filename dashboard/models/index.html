@@ -3837,6 +3837,11 @@ many-to-one relation.</p>
 <p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="dashboard.models.Profile.get_job_search_status_display">_method</h3>
+
+<pre><code class="python">Profile._method(self, *, field=&lt;django.db.models.fields.CharField: job_search_status&gt;)
+</code></pre>
+
 <h3 id="dashboard.models.Profile.get_next_by_created_on">_method</h3>
 
 <pre><code class="python">Profile._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=True, **kwargs)
@@ -3970,6 +3975,14 @@ class built by <code>create_forward_many_to_many_manager()</code> defined below.
 <p>Determine whether or not the user is a staff member.</p>
 <p>Returns:
     bool: Whether or not the user is a member of the staff.</p>
+<h3 id="dashboard.models.Profile.JOB_SEARCH_STATUS">JOB_SEARCH_STATUS</h3>
+
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="dashboard.models.Profile.job_search_status">job_search_status</h3></p>
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Profile.keywords">keywords</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -4106,6 +4119,10 @@ many-to-one relation.</p>
 <p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="dashboard.models.Profile.show_job_status">show_job_status</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Profile.slack_channel">slack_channel</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
