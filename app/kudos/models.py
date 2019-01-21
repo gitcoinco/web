@@ -265,16 +265,8 @@ class Token(SuperModel):
         file_path = root('assets') + '/' + self.image
         with open(file_path, 'rb') as f:
             obj = File(f)
-            try:
-                obj_data = obj.read()
-                if obj_data:
-                    image = pyvips.Image.new_from_file(obj.name, scale=3)
-                    return BytesIO(image.write_to_buffer(f'.png'))
-            except VipsError as e:
-                logger.error(e)
-                pass
-            except Exception as e:
-                logger.error(e)
+            from avatar.utils import svg_to_png
+            return svg_to_png(obj.read(), scale=3, width=333, height=384)
         return None
 
     @property
