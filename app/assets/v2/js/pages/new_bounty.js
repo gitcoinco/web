@@ -238,7 +238,7 @@ $(document).ready(function() {
       var metadata = {
         issueTitle: data.title,
         issueDescription: data.description,
-        issueKeywords: data.keywords,
+        issueKeywords: data.keywords ? data.keywords : '',
         githubUsername: data.githubUsername,
         notificationEmail: data.notificationEmail,
         fullName: data.fullName,
@@ -451,7 +451,15 @@ $(document).ready(function() {
           gas: web3.toHex(318730),
           gasLimit: web3.toHex(318730)
         },
-        do_bounty);
+        function(error, result) {
+          saveAttestationData(
+            result,
+            ethFeaturedPrice,
+            '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+            'featuredbounty'
+          );
+          do_bounty();
+        });
       };
 
       if (data.featuredBounty) {
@@ -490,16 +498,3 @@ getAmountEstimate(usdFeaturedPrice, 'ETH', function(amountEstimate) {
   ethFeaturedPrice = amountEstimate['value'];
   $('.featured-price-eth').text(`+${amountEstimate['value']} ETH`);
 });
-
-// var payFeaturedBounty = function() {
-//   web3.eth.sendTransaction({
-//     to: '0xeDa95eD3e3436C689376889F9eD0a8f4bA23E866',
-//     from: web3.eth.coinbase,
-//     value: web3.toWei(ethFeaturedPrice, 'ether'),
-//     gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)),
-//     gas: web3.toHex(318730),
-//     gasLimit: web3.toHex(318730)
-//   }, console.log);
-
-//   return callback();
-// };

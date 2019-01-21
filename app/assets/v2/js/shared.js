@@ -1201,6 +1201,23 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
   return html;
 }
 
+function saveAttestationData(result, cost_eth, to_address, type) {
+  var request_url = '/revenue/attestations/new';
+  var txid = result;
+  var data = {
+    'txid': txid,
+    'amount': cost_eth,
+    'network': document.web3network,
+    'from_address': web3.eth.coinbase,
+    'to_address': to_address,
+    'type': type
+  };
+
+  $.post(request_url, data).then(function(result) {
+    _alert('Success ✅ Loading your purchase now.', 'success');
+  });
+}
+
 function renderFeaturedBountiesFromResults(results, renderForExplorer) {
   let html = '';
   const tmpl = $.templates('#featured-card');
