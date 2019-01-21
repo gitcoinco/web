@@ -443,7 +443,23 @@ $(document).ready(function() {
         ipfs.addJson(ipfsBounty, newIpfsCallback);
       };
 
-      do_bounty();
+      var payFeaturedBounty = function() {
+        web3.eth.sendTransaction({
+          to: '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+          from: web3.eth.coinbase,
+          value: web3.toWei(ethFeaturedPrice, 'ether'),
+          gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)),
+          gas: web3.toHex(318730),
+          gasLimit: web3.toHex(318730)
+        },
+        do_bounty);
+      };
+
+      if (data.featuredBounty) {
+        payFeaturedBounty();
+      } else {
+        do_bounty();
+      }
     }
   });
 });
@@ -478,12 +494,15 @@ getAmountEstimate(usdFeaturedPrice, 'ETH', function(amountEstimate) {
   $('.featured-price-eth').text(`+${amountEstimate['value']} ETH`);
 });
 
-var payFeaturedBounty = function() {
-  web3.eth.sendTransaction({
-    to: '0xeDa95eD3e3436C689376889F9eD0a8f4bA23E866',
-    from: web3.eth.coinbase,
-    value: web3.toWei(ethFeaturedPrice, 'ether')
-  }, console.log);
+// var payFeaturedBounty = function() {
+//   web3.eth.sendTransaction({
+//     to: '0xeDa95eD3e3436C689376889F9eD0a8f4bA23E866',
+//     from: web3.eth.coinbase,
+//     value: web3.toWei(ethFeaturedPrice, 'ether'),
+//     gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)),
+//     gas: web3.toHex(318730),
+//     gasLimit: web3.toHex(318730)
+//   }, console.log);
 
-  return callback();
-};
+//   return callback();
+// };
