@@ -17,7 +17,7 @@ The font variations used in Gitcoin can be found in
 
 _usage_
 ```
-<div class="g-multiselect">
+<div class="form__select2 g-multiselect">
     <select class="js-select2" multiple>
     </select>
 </div>
