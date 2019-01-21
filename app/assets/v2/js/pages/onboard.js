@@ -8,17 +8,17 @@ if ($('.logged-in').length) {
 }
 
 $('.js-select2').each(function() {
-  $(this).select2();
+  $(this).select2({
+    minimumResultsForSearch: Infinity
+  });
 });
 
 // removes tooltip
-$('#job select').each(function(evt) {
-  $('.select2-selection__rendered').removeAttr('title');
-});
-// removes search field in all but the 'denomination' dropdown
-$('.select2-container').on('click', function() {
-  $('.select2-container .select2-search__field').remove();
-});
+if ($('#job').parent().css('display') !== 'none') {
+  $('#job select').each(function(evt) {
+    $('.select2-selection__rendered').tooltip('destroy');
+  });
+}
 
 onboard.showTab = function(num) {
   $($('.step')[num]).addClass('block').outerWidth();
@@ -250,14 +250,14 @@ $('.search-area input[type=text]').keypress(function(e) {
 });
 
 const save_job_status = function() {
-  if (!$('.navbar #navbarDropdown').html()) {
+  if (!document.contxt.github_handle) {
     _alert('No profile', 'error');
   }
   const job_search_status = $('#jobStatus').find(':selected').val();
   const show_job_status = $('#showJobStatus').prop('checked');
 
   const profile = {
-    url: '/api/v0.1/profile/' + $('.navbar #navbarDropdown').html().trim() + '/jobopportunity',
+    url: '/api/v0.1/profile/' + document.contxt.github_handle + '/jobopportunity',
     method: 'POST',
     headers: {'X-CSRFToken': csrftoken},
     data: JSON.stringify({
