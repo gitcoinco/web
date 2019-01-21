@@ -478,6 +478,63 @@ def get_temp_image_file(url):
         logger.error(e)
     return temp_io
 
+def svg_to_png(svg_content, width=100, height=100, scale=1):
+    print('creating svg with pyvips')
+    png = svg_to_png_pyvips(svg_content, scale=scale)
+    if not png:
+        print("failed; using inkscape")
+        return svg_to_png_inkscape(svg_content, height=height, width=width)
+    return None
+
+
+def svg_to_png_pyvips(svg_content, scale=1):
+    input_fmt = 'svg'
+    output_fmt = 'png'
+    try:
+        obj_data = svg_content
+        try:
+            image = pyvips.Image.new_from_buffer(obj_data, f'.svg', scale=scale)
+        except Exception as e:
+            logger.debug('got an exception trying to create a new image from a svg, usually this means that librsvg2 is not installed')
+            logger.debug(e)
+            logger.debug('retrying with out the scale parameter... which should work as long as imagemagick is installed')
+            image = pyvips.Image.new_from_buffer(obj_data, f'.svg')
+        return BytesIO(image.write_to_buffer(f'.{output_fmt}'))
+    except VipsError:
+        pass
+    except Exception as e:
+        logger.error(
+            'Exception encountered in convert_img - Error: (%s) - input: (%s) - output: (%s)', str(e), input_fmt,
+            output_fmt
+        )
+    return None
+
+def svg_to_png_inkscape(svg_content, width=333, height=384):
+    import subprocess               # May want to use subprocess32 instead
+    input_file = 'static/tmp/input.svg'
+    output_file = 'static/tmp/output.png'
+
+    text_file = open(input_file, "w")
+    content = svg_content
+    if type(content) == bytes:
+        content = svg_content.decode('utf-8')
+    text_file.write(content)
+    text_file.close()
+
+    cmd_list = [ '/usr/bin/inkscape', '-z', 
+                 '--export-png', output_file,
+                 '--export-width', f"{width}",
+                 '--export-height', f"{height}",
+                 input_file ]
+    print(" ".join(cmd_list))
+    p = subprocess.Popen( cmd_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE )
+    out, err = p.communicate()
+    if p.returncode:
+        print( 'Inkscape error: ' + (err or '?')  )
+
+    with open(output_file, 'rb') as fin:
+        return BytesIO(fin.read())
+
 
 def get_github_avatar(handle):
     """Pull the latest avatar from Github and store in Avatar.png.
@@ -514,19 +571,7 @@ def convert_img(obj, input_fmt='svg', output_fmt='png'):
         None: If there is an exception, the method returns None.
 
     """
-    try:
-        obj_data = obj.read()
-        if obj_data:
-            image = pyvips.Image.new_from_buffer(obj_data, f'.{input_fmt}')
-            return BytesIO(image.write_to_buffer(f'.{output_fmt}'))
-    except VipsError:
-        pass
-    except Exception as e:
-        logger.error(
-            'Exception encountered in convert_img - Error: (%s) - input: (%s) - output: (%s)', str(e), input_fmt,
-            output_fmt
-        )
-    return None
+    return svg_to_png(obj.read(), height=215, width=215)
 
 
 def convert_wand(img_obj, input_fmt='png', output_fmt='svg'):
