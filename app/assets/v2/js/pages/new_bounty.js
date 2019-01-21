@@ -82,7 +82,6 @@ $('#issueURL').focusout(function() {
 
 $('#last-synced').hide();
 
-// Wait until page is loaded, then run the function
 $(document).ready(function() {
   // Load sidebar radio buttons from localStorage
   if (getParam('source')) {
@@ -464,6 +463,4 @@ var check_balance_and_alert_user_if_not_enough = function(tokenAddress, amount) 
       _alert(msg, 'warning');
     }
   });
-
-
 };
