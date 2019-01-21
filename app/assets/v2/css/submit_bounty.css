@@ -24,13 +24,6 @@ input:read-only {
   background-color: #eaeaea94;
 }
 
-textarea:-moz-read-only { /* For Firefox */
-  background-color: #eaeaea94;
-}
-
-textarea:read-only { 
-  background-color: #eaeaea94;
-}
 
 #primary_form .revisions {
   min-height: 37px;
@@ -141,9 +134,9 @@ textarea:read-only {
   margin-right: .5rem;
 }
 
-#reservedForDiv .select2-container--default .select2-selection--single .select2-selection__arrow {
-  top: -1px;
-  right: 3px;
+#reservedForDiv .select2-selection__arrow {
+  height: 2.5rem !important;
+  right: 6px;
 }
 
 @media (max-width: 767.98px) {
