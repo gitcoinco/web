@@ -84,7 +84,6 @@ def about(request):
         hidden=False,
     ).order_by('-popularity_week').cache()
     activities = Activity.objects.select_related('bounty').filter(
-        bounty__network='mainnet',
         activity_type='new_kudos',
     ).order_by('-created').cache()
 
@@ -626,8 +625,9 @@ def receive_bulk(request, secret):
         kudos_owner_address = Web3.toChecksumAddress(settings.KUDOS_OWNER_ACCOUNT)
         w3 = get_web3(coupon.token.contract.network)
         contract = w3.eth.contract(Web3.toChecksumAddress(kudos_contract_address), abi=kudos_abi())
+        nonce = w3.eth.getTransactionCount(kudos_owner_address)
         tx = contract.functions.clone(address, coupon.token.token_id, 1).buildTransaction({
-            'nonce': get_nonce(coupon.token.contract.network, kudos_owner_address),
+            'nonce': nonce,
             'gas': 500000,
             'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(5) * 10**9),
             'value': int(coupon.token.price_finney / 1000.0 * 10**18),
@@ -656,7 +656,7 @@ def receive_bulk(request, secret):
                     network=coupon.token.contract.network,
                     from_address=settings.KUDOS_OWNER_ACCOUNT,
                     is_for_bounty_fulfiller=False,
-                    metadata={'coupon_redemption': True},
+                    metadata={'coupon_redemption': True, 'nonce': nonce},
                     recipient_profile=profile,
                     sender_profile=coupon.sender_profile,
                     txid=txid,
