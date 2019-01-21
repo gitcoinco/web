@@ -52,6 +52,13 @@ span {
   color: white !important;
 }
 
+.navbar .interior .dropdown-item:hover img{
+  filter: invert(100%);
+}
+.navbar .interior .dropdown-item:hover i{
+  color: white;
+}
+
 #navbarSupportedContent {
   padding-top: 2px;
   padding-bottom: 2px;
