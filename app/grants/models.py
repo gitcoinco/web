@@ -191,7 +191,7 @@ class Grant(SuperModel):
 
     def __str__(self):
         """Return the string representation of a Grant."""
-        return f"id: {self.pk}, active: {self.active}, title: {self.title}, description: {self.description}"
+        return f"id: {self.pk}, active: {self.active}, title: {self.title}"
 
     def percentage_done(self):
         """Return the percentage of token received based on the token goal."""
