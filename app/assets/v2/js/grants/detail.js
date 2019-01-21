@@ -10,6 +10,7 @@ const editableFields = [
 
 $(document).ready(function() {
   showMore();
+  addGrantLogo();
 
   setInterval (() => {
     notifyOwnerAddressMismatch(
@@ -59,6 +60,9 @@ $(document).ready(function() {
     let edit_amount_goal = $('#amount_goal').val();
     let edit_grant_members = $('#grant-members').val();
 
+    if (editableFields['edit_admin_profile'] && editableFields['edit_admin_profile'] != edit_admin_profile)
+      localStorage['request_change'] = 'R';
+
     $.ajax({
       type: 'post',
       url: '',
@@ -91,9 +95,9 @@ $(document).ready(function() {
   });
 
   $('#cancel_grant').on('click', function(e) {
-    $('#cancelModal').modal({
-      modalClass: 'modal cancel_grants'
-    });
+    // $('#cancelModal').modal({
+    //   modalClass: 'modal cancel_grants'
+    // });
 
     $('.modal-cancel-grants').on('click', function(e) {
       let contract_address = $('#contract_address').val();
@@ -206,3 +210,7 @@ const copyDuplicateDetails = () => {
     });
   });
 };
+
+$(document).ready(() => {
+  setupTabs('#grant-profile-tabs');
+});

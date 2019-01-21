@@ -474,10 +474,6 @@ function timedifferenceCvrt(date) {
   return timeDifference(new Date(), new Date(date), false, 60 * 60);
 }
 
-function activitytextCvrt(activity_type) {
-  return activity_names[activity_type];
-}
-
 const activity_names = {
   new_bounty: gettext('New bounty'),
   start_work: gettext('Work started'),
@@ -499,6 +495,10 @@ const activity_names = {
   bounty_removed_by_funder: gettext('Removed from bounty by funder'),
   bounty_changed: gettext('Bounty details changed')
 };
+
+function activitytextCvrt(activity_type) {
+  return activity_names[activity_type];
+}
 
 function timeDifference(current, previous, remaining, now_threshold_seconds) {
 
@@ -621,7 +621,6 @@ var retrieveIssueDetails = function() {
   var ele = $('input[name=issueURL]');
   var target_eles = {
     'title': $('input[name=title]'),
-    'keywords': $('input[name=keywords]'),
     'description': $('textarea[name=description]')
   };
   var issue_url = ele.val();
@@ -642,7 +641,14 @@ var retrieveIssueDetails = function() {
     if (result['keywords']) {
       var keywords = result['keywords'];
 
-      target_eles['keywords'].val(keywords.join(', '));
+      $('#keywords').val(keywords);
+      $('#keywords').select2({
+        placeholder: 'Select tags',
+        data: keywords,
+        tags: 'true',
+        allowClear: true
+      });
+
     }
     target_eles['description'].val(result['description']);
     target_eles['title'].val(result['title']);

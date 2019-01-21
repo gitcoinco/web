@@ -23,6 +23,10 @@
     <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/grants/detail.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/grants/milestones.css" %}">
+    <link rel="stylesheet" href={% static "v2/css/tabs.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
+    <link rel="stylesheet" href="{% static "v2/css/grants/profile.css" %}">
   </head>
   <body class="interior {{ active }} grant grant-detail g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
@@ -44,7 +48,39 @@
       <div class="container">
         <div class="row">
           <div class="grant-banner col-12 col-lg-6 pr-lg-5 p-0 mb-5 my-md-auto">
-            <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
+            {% if is_admin and not grant_is_inactive %}
+              <a id="change-logo" data-toggle="modal" data-target="#changeLogo">
+                <i class="far fa-image"></i>
+                <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
+              </a>
+
+              <div class="modal fade" id="changeLogo" tabindex="-1" role="dialog" aria-labelledby="changeLogoLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <form method="post" enctype="multipart/form-data">
+                      {% csrf_token %}
+                      <div class="modal-body">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h6 class="modal-title text-center" id="changeLogoLabel">Change Grant Logo</h6>
+                        <div class="form__drop" id="js-drop">
+                          <input id="img-project" type="file" name="input_image" accept="image/*">
+                          <span>{% trans "Drag & Drop or Browse" %}</span>
+                          <img id="preview"/>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="button button--warning button__small" data-dismiss="modal">Cancel</button>
+                        <button id="saveLogo" type="submit" class="button button--primary button__small">Save</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            {% else %}
+              <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
+            {% endif %}
           </div>
           <div class="col-12 col-lg-6">
             <div class="row">
@@ -57,15 +93,20 @@
                       <span>{{ grant.title }}</span>
                     {% endif %}
                   </h1>
-                  <span class="grant__url font-subheader {% if not is_admin %}my-4{% endif %}">
+                  <span class="grant__url font-subheader {% if not is_admin %}mt-2 mb-4{% endif %}">
                     {% if is_admin %}
                       <div>
                         <textarea id="form--input__reference-url" class="p-0 m-0 inline-edit" disabled>{{ grant.reference_url }}</textarea>
                       </div>
                     {% else %}
-                      <a href="{{ grant.reference_url }}" target="_blank">
+                      <a href="{{ grant.reference_url }}" target="_blank" data-toggle="tooltip" data-html="true" data-placement="top" title="Project URL">
                         <i class="fas fa-link mr-2"></i>
                         {{ grant.reference_url }}
+                      </a>
+                      <BR>
+                      <a href="https://etherscan.io/address/{{ grant.admin_address }}" target="_blank" data-toggle="tooltip" data-placement="bottom" title="Recipient Funding Address">
+                        <i class="fas fa-lock mr-2"></i>
+                        {{ grant.admin_address }}
                       </a>
                     {% endif %}
                   </span>
@@ -92,8 +133,8 @@
                     </div>
                     {% endif %}
                   </div>
-                  <div class="grant-item__owner my-2">
-                    {% if is_admin and not grant_is_inactive %}
+                  {% if is_admin and not grant_is_inactive %}
+                    <div class="grant-item__owner my-2">
                       <div class="font-body">
                         <p class="font-caption sub-title mb-0">Contract Owner Address</p>
                         <input id="contract_owner_address" class="p-0 m-0 inline-edit" name="contract_owner_address" value="{{ grant.contract_owner_address }}" disabled>
@@ -101,8 +142,8 @@
                           {% trans "Change Contract Owner" %}
                         </button>
                       </div>
-                    {% endif %}
-                  </div>
+                    </div>
+                  {% endif %}
                 </div>
               </div>
               <div class="col-12">
@@ -141,40 +182,45 @@
                 {% elif is_admin %}
                   {% csrf_token %}
                   <div id="js-cancel_grant" class="d-inline-block">
-                    <button class="button button--primary button--warning" id="cancel_grant">{% trans "Cancel this Grant" %}
-                    </button>
                     <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
                     <input type="hidden" id="contract_version" name="contract_version" value="{{ grant.contract_version }}">
                     <input type="hidden" id="grant_cancel_tx_id" name="grant_cancel_tx_id" value="">
-                    <div id="cancelModal" style="display: none;">
-                      <div class="row px-5">
-                        <div class="col-12 closebtn">
-                          <a rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">
-                            <span aria-hidden="true">&times;</span>
-                          </a>
-                        </div>
-                        <div class="col-12 pt-2 pb-2 text-center">
-                          <h2 class="font-title">{% trans "Are you sure you want to cancel this grant?" %}</h2>
-                        </div>
-                        <div class="col-12 text-center">
-                          <img src="{% static "v2/images/grants/cancel-grants-icon.png" %}" />
-                        </div>
-                        <div class="col-12 pt-2 pb-2 font-body">
-                          <p>{% trans "By clicking Cancel, you will be cancelling this grant from Gitcoin." %}</p>
-                          <ul><li>{% trans "Your grant will stay in Gitcoin, but " %}<b>{% trans "marked as inactive." %}</b></li>
-                          <li>{% trans "Funds received till now " %}<b>{% trans "will not be refunded " %}</b>{% trans "to the contributors." %}</li>
-                          <li>{% trans "Once cancelled, it is " %}<b>{% trans "not possible to restart the grant, " %}</b>{% trans "as the smart contract will be destroyed." %}</li></ul>
-                          <p>{% trans "To relaunch the grant, you need to create a new grant." %}</p>
-                        </div>
-                        <div id="gas-section" class="form__group-horizontal">
-                          <h5 class="font-subheader pb-2">{% trans "Gas Settings" %}</h5>
-                          <div>
-                            {% include 'shared/wallet_estimate.html' %}
+                    <button type="button" class="button button--primary button--warning" data-toggle="modal" data-target="#cancelModal" id="cancel_grant">{% trans "Cancel this Grant" %}
+                    </button>
+
+                    <div id="cancelModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="cancelGrantModal" aria-hidden="true">
+                      <div class="modal-dialog modal-lg">
+                        <div class="modal-content px-4 px-lg-5">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
                           </div>
-                        </div>
-                        <div class="col-12 mt-4 mb-2 text-right font-caption">
-                          <a rel="modal:close" href="javascript:void" aria-label="Close dialog" class="button button--primary-o mr-3">{% trans "No, I don\'t want to cancel" %}</a>
-                          <button class="modal-cancel-grants button button--warning">{% trans "Cancel this Grant" %}</button>
+                          <div class="modal-body row">
+                            <div class="col-12 pt-2 pb-2 text-center">
+                              <h2 class="font-title">{% trans "Are you sure you want to cancel this grant?" %}</h2>
+                            </div>
+                            <div class="col-12 text-center">
+                              <img src="{% static "v2/images/grants/cancel-grants-icon.png" %}" />
+                            </div>
+                            <div class="col-12 pt-2 pb-2 font-body">
+                              <p>{% trans "By clicking Cancel, you will be cancelling this grant from Gitcoin." %}</p>
+                              <ul><li>{% trans "Your grant will stay in Gitcoin, but " %}<b>{% trans "marked as inactive." %}</b></li>
+                              <li>{% trans "Funds received till now " %}<b>{% trans "will not be refunded " %}</b>{% trans "to the contributors." %}</li>
+                              <li>{% trans "Once cancelled, it is " %}<b>{% trans "not possible to restart the grant, " %}</b>{% trans "as the smart contract will be destroyed." %}</li></ul>
+                              <p>{% trans "To relaunch the grant, you need to create a new grant." %}</p>
+                            </div>
+                            <div id="gas-section" class="form__group-horizontal">
+                              <h5 class="font-subheader pb-2">{% trans "Gas Settings" %}</h5>
+                              <div>
+                                {% include 'shared/wallet_estimate.html' %}
+                              </div>
+                            </div>
+                            <div class="col-12 mt-4 mb-2 text-center text-md-right font-caption">
+                              <a data-dismiss="modal" aria-label="Close dialog" class="button button--primary-o mr-3">{% trans "No, I don\'t want to cancel" %}</a>
+                              <button class="modal-cancel-grants button button--warning">{% trans "Cancel this Grant" %}</button>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -269,7 +315,7 @@
             <p class="sub-title">{% trans "Supported By" %} ({{ subscriptions|length }})</p>
             <div class="grant__stakeholders-list">
               {% for subscriber in subscriptions %}
-                <a class="grant__stakeholders-item mr-2" href="{% url 'profile' subscriber.contributor_profile.handle %}">
+                <a class="grant__stakeholders-item mr-2 text-center" href="{% url 'profile' subscriber.contributor_profile.handle %}">
                   <img src="{{ subscriber.contributor_profile.avatar_url }}" />
                   <div>
                     <span class="grant-profile">{{ subscriber.contributor_profile.handle }}</span>
@@ -285,83 +331,33 @@
         </div>
       </div>
     </div>
+    </div>
 
-    <div class="update-milestone pt-4">
-      <div class="container mt-4">
-        <div class="row">
-          <div class="col-12 order-md-2 col-md-6">
-            <p class="font-body sub-title">
-              {% trans "Milestones" %}
-              {% if is_admin and not grant_is_inactive %}<a href="{% url 'grants:milestones' grant.id grant.slug %}" class="milestones-edit">{% trans "Edit Milestones" %}</a>{% endif %}
-            </p>
-            <div class="milestones-container px-5 mb-4">
-                {% if milestones %}
-                <ul class="milestones-list mb-0">
-                  {% for milestone in milestones %}
-                    <li class="pb-3 pl-2">
-                      <div class="milestone-date">
-                        <p class="mb-0 pt-2 font-caption">
-                          <span class="font-weight-semibold">{% trans 'Due: ' %}</span>{{ milestone.due_date }}
-                          {% if milestone.completion_date %}
-                           <span class="mx-1">/</span>
-                           <span class="font-weight-semibold">{% trans 'Completed: ' %}</span> {{ milestone.completion_date }}
-                          {% endif %}
-                        </p>
-                      </div>
-                      <div class="font-subheader font-weight-semibold mb-2">{{ milestone.title }}</div>
-                      <p class="milestone-description font-body">{{ milestone.description }}</p>
-                    </li>
-                  {% endfor %}
-                </ul>
-              {% else %}
-                <p class="m-auto text-center font-weight-semibold">{% trans "No milestones added" %}</p>
-              {% endif %}
-            </div>
-          </div>
+    <div class="container py-5">
+      <div id="grant-profile-tabs" class="tab-container font-body mb-4">
+        <button type="button" id="transactions" class="section-tab">
+          {% trans "All Activity" %}
+          {% if not subscriptions and not cancelled_subscriptions and not contributions %}
+            (0)
+          {% endif %}
+        </button>
+        <button type="button" id="summary" class="section-tab">{% trans "Grantee Activity" %}</button>
+      </div>
 
-          <div class="col-12 order-md-1 col-md-6 p-md-0 pr-lg-5">
-            <p class="font-body sub-title">{% trans "Updates" %}</p>
-            <div class="p-0">
-              {% if is_admin and not grant_is_inactive %}
-                <div class="my-4 py-2 pr-3">
-                  <form method="POST" id="js-postUpdate">
-                    {% csrf_token %}
-                    <div class="form__group-horizontal mb-4">
-                      <input class="form__input" type="text" id="input-title" name="input-title" placeholder="{% trans 'Title' %}" required />
-                    </div>
-
-                    <div class="form__group-horizontal">
-                      <textarea rows=8 class="form__input" type="text" id="input-description" name="description" placeholder="{% trans 'Describe the update' %}" required></textarea>
-                    </div>
-
-                    <div class="text-left">
-                      <button class="btn btn-gc-blue">
-                        <span class="font-body">{% trans "Post Update" %}</span>
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              {% endif %}
-              <div class="pl-0">
-                {% for item in updates %}
-                  <div class="py-4 update">
-                    <div class="article-date font-caption mb-2">{{ item.created_on|date:"M d, Y" }}</div>
-                    <div class="article-title font-subheader font-weight-semibold mb-2">{{ item.title }}</div>
-                    <div class="article-description font-body mb-2 wrap-text">{{ item.description }}</div>
-                  </div>
-                {% empty %}
-                  <p class="py-4 font-weight-semibold">
-                    {% trans "No updates added" %}
-                  </p>
-                {% endfor %}
-              </div>
-            </div>
-          </div>
+      <div id="grant-profile-tabs-sections" class="tab-sections section">
+        <div id="section-summary" class="tab-section active">
+          {% include 'grants/detail/summary.html' %}
+        </div>
+        <div id="section-transactions" class="tab-section">
+          {% if not subscriptions and not cancelled_subscriptions and not contributions %}
+            <h4 class="m-auto text-center font-weight-semibold">{% trans "No Activity for this Grant!" %}</h4>
+          {% else %}
+            {% include 'grants/activity.html' %}
+            <span id="grant-network" class="hidden">{{ grant.network }}</span>
+          {% endif %}
         </div>
       </div>
     </div>
-    </div>
-
 
     {% include 'shared/current_profile.html' %}
     {% include 'shared/bottom_notification.html' %}
@@ -371,13 +367,35 @@
     {% include 'grants/shared/shared_scripts.html' %}
   </body>
 
+  <script src="{% static "v2/js/pages/tabs.js" %}"></script>
+  <script src="{% static "v2/js/grants/index.js" %}"></script>
   <script src="{% static "v2/js/grants/compiledSubscriptionContract.js" %}"></script>
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
   <script src="{% static "v2/js/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
+  <script src="{% static "v2/js/popper.min.js" %}"></script>
+  <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
+  <script>
+      var bootstrapTooltip = $.fn.tooltip.noConflict()
+      $.fn.runTooltip = bootstrapTooltip;
+      $('[data-toggle="tooltip"]').runTooltip();
+      $.fn.modal.noConflict();
+  </script>
   <script src="{% static "v2/js/user-search.js" %}"></script>
   <script src="{% static "v2/js/grants/shared.js" %}"></script>
   <script src="{% static "v2/js/grants/detail.js" %}"></script>
   <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
+  <script>
+    {% if change_ownership == 'Y' %}
+      _alert({ message: gettext('You are now the owner of this grant.') }, 'success');
+    {% elif change_ownership == 'N' %}
+      _alert({ message: gettext('Ownership Request has been rejected.') }, 'error');
+    {% endif %}
+
+    if(localStorage['request_change'] === 'R') {
+      _alert({ message: gettext('Ownership Transfer will happen upon confirmation from the requested user.') }, 'success');
+      delete localStorage['request_change'];
+    }
+  </script>
 </html>

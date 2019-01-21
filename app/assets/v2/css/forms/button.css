@@ -5,7 +5,7 @@
   color: #fff;
   cursor: pointer;
   font-size: 14px;
-  font-weight: 300;
+  font-weight: 400;
   padding: 10px 20px;
   -webkit-appearance: none;
 }
@@ -27,6 +27,7 @@
 
 .button--primary {
   background-color: #0D0764;
+  font-weight: 500;
 }
 
 .button--primary:hover {

@@ -59,6 +59,34 @@ const notifyOwnerAddressMismatch = (username, address, button, message) => {
   });
 };
 
+const exceedFileSize = (file, size = 4000000) => {
+  if (file.size > size)
+    return true;
+  return false;
+};
+
+const addGrantLogo = () => {
+  $('#img-project').on('change', function() {
+    if (this.files && this.files[0]) {
+      if (exceedFileSize(this.files[0])) {
+        _alert({ message: 'Grant Image should not exceed 4MB' }, 'error');
+        return;
+      }
+
+      let reader = new FileReader();
+
+      reader.onload = function(e) {
+        $('#preview').attr('src', e.target.result);
+        $('#preview').css('width', '100%');
+        $('#js-drop span').hide();
+        $('#js-drop input').css('visible', 'invisible');
+        $('#js-drop').css('padding', 0);
+      };
+      reader.readAsDataURL(this.files[0]);
+    }
+  });
+};
+
 $(document).ready(function() {
 
   let contractVersion = $('#contract_version').val();
@@ -68,10 +96,6 @@ $(document).ready(function() {
       compiledSubscription = compiledSubscription0;
     }
   }
-
-  var params = {
-    page: document.location.pathname
-  };
 
   const listen_web3_1_changes = () => {
     web3.eth.getCoinbase().then(function(result) {
@@ -88,16 +112,18 @@ $(document).ready(function() {
       } else {
         currentNetwork('locked');
       }
+    }).catch(err => {
+      show_error_banner(null, true);
     });
   };
 
   setInterval(listen_web3_1_changes, 1000);
 
-  const show_error_banner = (result) => {
+  const show_error_banner = (result, web3_not_found) => {
     if ($('#grants_form').length) {
       var is_zero_balance_not_okay = document.location.href.indexOf('/faucet') == -1;
 
-      if (typeof web3 == 'undefined') {
+      if (typeof web3 == 'undefined' || web3_not_found) {
         $('#no_metamask_error').css('display', 'block');
         $('#zero_balance_error').css('display', 'none');
         $('#robot_error').removeClass('hidden');

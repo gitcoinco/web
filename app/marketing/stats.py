@@ -467,7 +467,7 @@ def sendcryptoassets():
     from kudos.models import KudosTransfer
 
     iterate_me = {
-        'tip': Tip,
+        'tips': Tip,
         'kudos': KudosTransfer,
         'dgp': DigitalGoodPurchase,
     }

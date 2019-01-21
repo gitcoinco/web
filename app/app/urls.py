@@ -58,6 +58,9 @@ from .sitemaps import sitemaps
 urlpatterns = [
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
 
+    # inbox
+    path('inbox/', include('inbox.urls', namespace='inbox')),
+
     # kudos
     path('kudos/', kudos.views.about, name='kudos_main'),
     path('kudos/about/', kudos.views.about, name='kudos_about'),
@@ -81,6 +84,11 @@ urlpatterns = [
 
     # api views
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
+    url(
+        r'^api/v0.1/profile/(.*)?/jobopportunity',
+        dashboard.views.profile_job_opportunity,
+        name='profile_job_opportunity'
+    ),
     url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
     url(r'^api/v0.1/', include(dbrouter.urls)),
     url(r'^api/v0.1/', include(kdrouter.urls)),
@@ -276,14 +284,46 @@ urlpatterns = [
 
     # admin views
     re_path(r'^_administration/?', admin.site.urls, name='admin'),
-    path('_administration/email/grant_cancellation', retail.emails.grant_cancellation, name='admin_grant_cancellation'),
+    path(
+        '_administration/email/grant_cancellation',
+        retail.emails.grant_cancellation,
+        name='admin_grant_cancellation'
+    ),
     path(
         '_administration/email/subscription_terminated',
         retail.emails.subscription_terminated,
         name='admin_subscription_terminated'
     ),
-    path('_administration/email/new_grant', retail.emails.new_grant, name='admin_new_grant'),
-    path('_administration/email/new_supporter', retail.emails.new_supporter, name='admin_new_supporter'),
+    path(
+        '_administration/email/new_grant',
+        retail.emails.new_grant,
+        name='admin_new_grant'
+    ),
+    path(
+        '_administration/email/change_grant_owner_request',
+        retail.emails.change_grant_owner_request,
+        name='admin_change_grant_owner_request'
+    ),
+    path(
+        '_administration/email/change_grant_owner_accept',
+        retail.emails.change_grant_owner_accept,
+        name='admin_change_grant_owner_accept'
+    ),
+    path(
+        '_administration/email/notify_ownership_change',
+        retail.emails.notify_ownership_change,
+        name='admin_notify_ownership_change'
+    ),
+    path(
+        '_administration/email/change_grant_owner_reject',
+        retail.emails.change_grant_owner_reject,
+        name='admin_change_grant_owner_reject'
+    ),
+    path(
+        '_administration/email/new_supporter',
+        retail.emails.new_supporter,
+        name='admin_new_supporter'
+    ),
     path(
         '_administration/email/thank_you_for_supporting',
         retail.emails.thank_you_for_supporting,
