@@ -14,11 +14,13 @@ class StaticViewSitemap(sitemaps.Sitemap):
     def items(self):
         return [
             'dashboard', 'new_funding', 'tip', 'terms', 'privacy', 'cookie', 'prirp', 'apitos', 'about', 'index',
-            'help', 'whitepaper', 'whitepaper_access', '_leaderboard', 'faucet', 'mission', 'slack', 'universe_index',
-            'results', 'activity', 'kudos_main', 'kudos_marketplace'
+            'help', 'whitepaper', 'whitepaper_access', '_leaderboard', 'faucet', 'mission', 'slack', 'labs', 'results',
+            'activity', 'kudos_main', 'kudos_marketplace', 'grants'
         ]
 
     def location(self, item):
+        if item == 'grants':
+            return reverse('grants:grants')
         return reverse(item)
 
 

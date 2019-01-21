@@ -27,6 +27,7 @@
 
 .button--primary {
   background-color: #0D0764;
+  font-weight: 500;
 }
 
 .button--primary:hover {

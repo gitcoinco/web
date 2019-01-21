@@ -15,7 +15,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n %}
-<div class="w-100 mt-2">
+<div class="col-12 col-md-6">
   <label class="form__label" for="notificationEmail">{% trans "Notification Email" %}</label>
   <input name='notificationEmail' id='notificationEmail'  class="form__input" type="email" placeholder="you@domain.co (optional, but recommended for notifications)" value="{% if from_email %}{{ from_email }}{% elif email %}{{ email }}{% else %}{{ notificationEmail }}{% endif %}" />
   {% if show_information_publicly_checkbox %}
