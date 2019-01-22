@@ -103,7 +103,7 @@ def grant_details(request, grant_id, grant_slug):
         milestones = grant.milestones.order_by('due_date')
         updates = grant.updates.order_by('-created_on')
         subscriptions = grant.subscriptions.filter(active=True, error=False)
-        cancelled_subscriptions = grant.subscriptions.filter(active=False, error=False)
+        cancelled_subscriptions = grant.subscriptions.filter(Q(active=False, error=False) | Q(error=True))
         contributions = Contribution.objects.filter(subscription__in=grant.subscriptions.all())
         user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True, error=False).first()
     except Grant.DoesNotExist:
