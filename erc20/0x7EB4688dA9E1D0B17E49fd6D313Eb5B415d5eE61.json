@@ -1,0 +1,12 @@
+{
+    "symbol": "SLGC",
+    "address": "0x7EB4688dA9E1D0B17E49fd6D313Eb5B415d5eE61",
+    "overview": {
+        "zh": "SLGC是基于以太坊发布的加密数字货币，用于区块链游戏《比特帝国》及后续产品的流通，游戏内通证经济的流通货币。"
+    },
+    "email": "dev@slgc.io",
+    "website": "http://www.slgc.io",
+    "whitepaper": "http://www.slgc.io/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-12-01"
+}
