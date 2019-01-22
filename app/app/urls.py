@@ -127,6 +127,7 @@ urlpatterns = [
     path('issue/cancel_reason', dashboard.views.cancel_reason, name='cancel_reason'),
     path('issue/contribute', dashboard.views.contribute, name='contribute'),
     path('issue/social_contribution', dashboard.views.social_contribution, name='social_contribution'),
+    path('modal/social_contribution', dashboard.views.social_contribution_modal, name='social_contribution_modal'),
     path(
         'actions/bounty/<int:bounty_id>/extend_expiration/',
         dashboard.views.extend_expiration,
