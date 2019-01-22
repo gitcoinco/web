@@ -478,6 +478,7 @@ def get_temp_image_file(url):
         logger.error(e)
     return temp_io
 
+
 def svg_to_png(svg_content, width=100, height=100, scale=1):
     print('creating svg with pyvips')
     png = svg_to_png_pyvips(svg_content, scale=scale)
@@ -509,8 +510,9 @@ def svg_to_png_pyvips(svg_content, scale=1):
         )
     return None
 
+
 def svg_to_png_inkscape(svg_content, width=333, height=384):
-    import subprocess               # May want to use subprocess32 instead
+    import subprocess # May want to use subprocess32 instead
     input_file = 'static/tmp/input.svg'
     output_file = 'static/tmp/output.png'
 

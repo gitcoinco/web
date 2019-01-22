@@ -18,6 +18,7 @@
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
+
 class Command(BaseCommand):
 
     help = 'stub for local testing'
@@ -35,5 +36,3 @@ class Command(BaseCommand):
         file_path = f"/code/app/assets/{token.image}"
         with open(file_path, 'rb') as f:
             print(svg_to_png_inkscape(f.read()))
-
-
