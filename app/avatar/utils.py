@@ -152,7 +152,7 @@ def get_avatar_context():
                 'title': 'Pick your accessories',
                 'options': (['Glasses-0'], ['Glasses-1'], ['Glasses-2'], ['Glasses-3'], ['Glasses-4'], [
                     'HatShort-backwardscap'
-                ], ['HatShort-redbow'], ['HatShort-yellowbow'], ['HatShort-ballcap'], ['HatShort-cowboy'], [
+                ], ['HatShort-redbow'], ['HatShort-yellowbow'], ['HatShort-ballcap'], ['HatShort-cowboy'], ['HatShort-superwoman-tiara'], [
                     'HatShort-headdress'
                 ], ['HatShort-headphones'], ['HatShort-shortbeanie'], ['HatShort-tallbeanie'], ['HatShort-bunnyears'], [
                     'HatShort-menorah'
