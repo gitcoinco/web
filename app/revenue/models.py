@@ -19,11 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from django.contrib.postgres.fields import JSONField
 from django.db import models
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from dashboard.models import SendCryptoAsset
 from economy.models import SuperModel
-from django.utils.translation import gettext_lazy as _
-from django.utils import timezone
 
 
 class ALaCartePurchase(SendCryptoAsset):
@@ -147,5 +147,3 @@ class Coupon(SuperModel):
     def __str__(self):
         """Return the string representation of this object."""
         return f"{self.code} / {self.discount_per_period}"
-
-
