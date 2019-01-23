@@ -44,11 +44,11 @@ SEMAPHORE_BOUNTY_NS = 'bounty_processor'
 
 
 def all_sendcryptoasset_models():
-    from revenue.models import DigitalGoodPurchase
+    from revenue.models import ALaCartePurchase
     from dashboard.models import Tip
     from kudos.models import KudosTransfer
 
-    return [DigitalGoodPurchase, Tip, KudosTransfer]
+    return [ALaCartePurchase, Tip, KudosTransfer]
 
 
 class ProfileNotFoundException(Exception):
