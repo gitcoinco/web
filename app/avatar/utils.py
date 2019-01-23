@@ -145,7 +145,7 @@ def get_avatar_context():
                 ['Glasses-0'], ['Glasses-1'], ['Glasses-2'], ['Glasses-3'], ['Glasses-4'], ['HatShort-backwardscap'],
                 ['HatShort-redbow'], ['HatShort-yellowbow'], ['HatShort-ballcap'], ['HatShort-cowboy'],
                 ['HatShort-headdress'], ['HatShort-headphones'], ['HatShort-shortbeanie'],
-                ['HatShort-tallbeanie'], ['HatShort-bunnyears'], ['HatShort-menorah'],
+                ['HatShort-tallbeanie'], ['HatShort-bunnyears'], ['HatShort-menorah'], ['HatShort-superwoman-tiara'],
                 ['HatShort-pilgrim'], ['HatShort-santahat'], ['HatShort-elfhat'],
                 ['Earring-0'], ['Earring-1'], ['EarringBack-2', 'Earring-2'],
                 ['Earring-3'], ['Earring-4'], ['Masks-jack-o-lantern'],
