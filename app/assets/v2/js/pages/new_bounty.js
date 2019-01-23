@@ -413,6 +413,7 @@ $(document).ready(function() {
 
         var eth_amount = isETH ? amount : 0;
         var _paysTokens = !isETH;
+        prompt_for_web3_wallet_action();
         var bountyIndex = bounty.issueAndActivateBounty(
           account, // _issuer
           mock_expire_date, // _deadline

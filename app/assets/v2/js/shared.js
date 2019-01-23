@@ -30,6 +30,32 @@ var callFunctionWhenTransactionMined = function(txHash, f) {
   });
 };
 
+/**
+ * Injects an element into the DOM which tells the user that there is a web3 action which requires their attention
+ * Helps with UX of https://github.com/MetaMask/metamask-extension/issues/3759#issuecomment-456908970
+ */
+var prompt_for_web3_wallet_action = function(){
+  var html = `
+  <div id="metamask_arrow" style="position: fixed; top: 0px; right: 100px; width: 100px; color: #ff3232;">
+    <svg width="10px" height="45px" viewBox="0 0 29 133" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path id="Line" d="M14.5,5.55111512e-17 L-1.77635684e-15,29 L29,29 L14.5,5.55111512e-17 Z M17,130.5 L17,26.5 L17,24 L12,24 L12,26.5 L12,130.5 L12,133 L17,133 L17,130.5 Z" fill="#ff3232" fill-rule="nonzero"></path>
+        </g>
+    </svg>
+    <p>
+        Web3 action is pending.  Please check your web3 wallet ^
+    </p>
+  </div>
+  `;  
+  $("body").append(html);
+  setInterval(function(){
+    $( "#metamask_arrow" ).animate({'right': "105"}, 100).animate({'right': "100"}, 100)
+  }, 210);
+  setTimeout(function(){
+    $("#metamask_arrow").remove();
+  }, 4 * 1000);
+}
+
 
 /**
  * Looks for web3.  Won't call the fucntion until its there

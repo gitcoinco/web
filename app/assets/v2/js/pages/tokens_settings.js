@@ -45,6 +45,7 @@ $(document).ready(function() {
       if (error || result.toNumber() == 0) {
         var amount = 10 * 18 * 9999999999999999999999999999999999999999999999999999; // uint256
 
+        prompt_for_web3_wallet_action();
         token_contract.approve(
           to,
           amount,
