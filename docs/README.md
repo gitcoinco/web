@@ -188,7 +188,7 @@ This is the high level flow of a bounty on Gitcoin:
 # Licenses
 
 [Code - GNU AFFERO GENERAL PUBLIC LICENSE](../LICENSE)
-[Creative assets -- Attribution-NonCommercial-NoDerivatives 4.0 International][../app/assets/LISCENSE.txt]
+[Creative assets -- Attribution-NonCommercial-NoDerivatives 4.0 International](../app/assets/LISCENSE.txt)
 
 <!-- Google Analytics -->
 <img src='https://ga-beacon.appspot.com/UA-102304388-1/gitcoinco/web' style='width:1px; height:1px;' >
