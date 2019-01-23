@@ -44,8 +44,8 @@ logger = logging.getLogger(__name__)
 
 
 def get_avatar_context_for_user(user):
-    from revenue.models import DigitalGoodPurchase
-    purchases = DigitalGoodPurchase.objects.filter(from_name=user.username, purchase__type='avatar', ).send_success()
+    from revenue.models import ALaCartePurchase
+    purchases = ALaCartePurchase.objects.filter(from_name=user.username, purchase__type='avatar', ).send_success()
 
     context = get_avatar_context()
     context['has_purchased_everything_package'] = purchases.filter(purchase__option='all').exists()

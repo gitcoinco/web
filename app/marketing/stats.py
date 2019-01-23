@@ -462,14 +462,14 @@ def ens():
 
 
 def sendcryptoassets():
-    from revenue.models import DigitalGoodPurchase
+    from revenue.models import ALaCartePurchase
     from dashboard.models import Tip
     from kudos.models import KudosTransfer
 
     iterate_me = {
         'tips': Tip,
         'kudos': KudosTransfer,
-        'dgp': DigitalGoodPurchase,
+        'dgp': ALaCartePurchase,
     }
 
     for key, SendCryptoAsset in iterate_me.items():
