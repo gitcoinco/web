@@ -833,7 +833,7 @@ var trigger_primary_form_web3_hooks = function() {
       $('#primary_form, .primary_form-meta').addClass('hidden');
       $('.submit_bounty .newsletter').addClass('hidden');
       $('#no_issue_error').css('display', 'none');
-    } else if (!web3.eth.coinbase) {
+    } else if (!web3.version.startsWith('1.0.0') && !web3.eth.coinbase) {
       $('#unlock_metamask_error').css('display', 'block');
       $('#zero_balance_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
@@ -965,8 +965,10 @@ var listen_for_web3_changes = async function() {
       currentNetwork();
       trigger_form_hooks();
     } else if (typeof web3 == 'undefined' || typeof web3.eth == 'undefined' || typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
-      currentNetwork('locked');
-      trigger_form_hooks();
+      if (!web3.version.startsWith('1.0.0')) {
+        currentNetwork('locked');
+        trigger_form_hooks();
+      }
     } else {
       is_metamask_unlocked = true;
       web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {

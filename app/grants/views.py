@@ -75,9 +75,9 @@ def grants(request):
     _grants = None
 
     if state == 'active':
-        _grants = Grant.objects.filter(network=network, hidden=False).active().keyword(keyword).order_by(sort)
+        _grants = Grant.objects.filter(network=network, hidden=False, is_paid_plan=False).active().keyword(keyword).order_by(sort)
     else:
-        _grants = Grant.objects.filter(network=network, hidden=False).keyword(keyword).order_by(sort)
+        _grants = Grant.objects.filter(network=network, hidden=False, is_paid_plan=False).keyword(keyword).order_by(sort)
 
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)

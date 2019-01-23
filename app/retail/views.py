@@ -39,6 +39,7 @@ from cacheops import cached_as, cached_view, cached_view_as
 from dashboard.models import Activity, Profile
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from economy.models import Token
+from grants.models import Grant, Subscription
 from marketing.mails import new_funding_limit_increase_request, new_token_request
 from marketing.models import Alumni, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
@@ -294,14 +295,60 @@ def pricing(request):
 def subscribe(request):
 
     if request.POST:
-        return TemplateResponse(request, 'pricing/subscribe.html', {})
+        grant = Grant.objects.prefetch_related('paid_plan').get(pk=request.POST.get('grant_id'))
+        if 'contributor_address' in request.POST:
+            subscription = Subscription()
+            subscription.active = False
+            subscription.contributor_address = request.POST.get('contributor_address', '')
+            subscription.amount_per_period = request.POST.get('amount_per_period', 0)
+            subscription.real_period_seconds = 2592000
+            subscription.frequency = request.POST.get('frequency', 30)
+            subscription.frequency_unit = request.POST.get('frequency_unit', 'days')
+            subscription.token_address = request.POST.get('token_address', '')
+            subscription.token_symbol = request.POST.get('token_symbol', '')
+            subscription.gas_price = request.POST.get('gas_price', 0)
+            subscription.new_approve_tx_id = request.POST.get('sub_new_approve_tx_id', '')
+            subscription.num_tx_approved = request.POST.get('num_tx_approved', 1)
+            subscription.network = request.POST.get('network', '')
+            subscription.contributor_profile = request.user.profile
+            subscription.grant = grant
+
+            subscription.save()
+
+            return JsonResponse({
+                'success': True,
+            })
+
+        if 'signature' in request.POST:
+            sub_new_approve_tx_id = request.POST.get('sub_new_approve_tx_id', '')
+            subscription = Subscription.objects.filter(new_approve_tx_id=sub_new_approve_tx_id).first()
+            subscription.active = True
+            subscription.subscription_hash = request.POST.get('subscription_hash', '')
+            subscription.contributor_signature = request.POST.get('signature', '')
+            subscription.save()
+
+            value_usdt = subscription.get_converted_amount()
+            if value_usdt:
+                grant.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
+
+            grant.save()
+            from revenue.models import Plan, Subscription as RevenueSubscription
+            rs = RevenueSubscription.objects.create(plan=grant.paid_plan, grant_subscription=subscription)
+            rs.save()
+            return JsonResponse({
+                'success': True,
+                'url': reverse('grants:details', args=(grant.pk, grant.slug))
+            })
+        else:
+            return TemplateResponse(request, 'pricing/subscribe.html', {})
 
     from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 
     plan = {
         'type': 'pro',
         'img': '/v2/images/pricing/sub_pro.svg',
-        'price': 40
+        'price': 40,
+        'grant': Grant.objects.get(paid_plan__name='Lite')
     }
 
     if request.GET:
@@ -309,7 +356,8 @@ def subscribe(request):
             plan = {
                 'type': 'max',
                 'img': '/v2/images/pricing/sub_max.svg',
-                'price': 99
+                'price': 99,
+                'grant': Grant.objects.get(paid_plan__name='Premium')
             }
         if 'pack' in request.GET and request.GET['pack'] == 'annual':
             plan['price'] = plan['price'] - plan['price'] / 10
@@ -323,6 +371,7 @@ def subscribe(request):
         'eth_usd_conv_rate': eth_usd_conv_rate(),
         'conf_time_spread': conf_time_spread(),
         'gas_advisories': gas_advisories(),
+        'grant': plan['grant']
     }
     return TemplateResponse(request, 'pricing/subscribe.html', context)
 

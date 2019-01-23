@@ -53,106 +53,135 @@
       </div>
       <div class="row" id="primary_form">
         <div class="col-12 offset-md-1 col-md-10 offset-lg-2 col-lg-8 my-5 font-subheader mx-0 mx-md-auto">
-          <!-- TODO: ADD FORM -->
-          <div class="row">
-            <div class="col-12 step row">
-              <div class="col-7 pl-0">
-                <h2 class="mb-1">{% trans "Selected Plan" %}</h2>
-                <p class="mb-0">{% trans "Compare plans and features on our" %}
-                  <a href="{% url 'pricing' %}">{% trans "pricing page" %}</a>
+          <form method="POST" id="js-fundGrant">
+          {% csrf_token %}
+            <div class="row">
+              <div class="col-12 step row">
+                <div class="col-7 pl-0">
+                  <h2 class="mb-1">{% trans "Selected Plan" %}</h2>
+                  <p class="mb-0">{% trans "Compare plans and features on our" %}
+                    <a href="{% url 'pricing' %}">{% trans "pricing page" %}</a>
+                  </p>
+                </div>
+                <div class="col-5 pr-0 text-right plan-info">
+                  <img class="mr-1" src="{% static plan.img %}" alt="DEV-FLOW {{ plan.type|upper }} logo">
+                  <p class="font-weight-semibold d-inline-block font-subheader">DEV-FLOW {{ plan.type|upper }}</p>
+                </div>
+              </div>
+              <div class="col-12 step row">
+                <div class="col-6 pl-0">
+                  <div class="billed">
+                    <h2 class="mr-2 my-auto">{% trans "Billed" %}</h2>
+                    <div id="bill-period" class="form__select2 form__group-item">
+                      <select class="js-select2" name="period">
+                        <option value="monthly" selected="selected">Monthly</option>
+                        <option value="annual">Annualy</option>
+                      </select>
+                    </div>
+                  </div>
+                  <p class="save-more font-caption font-weight-semibold mb-0" style="color: limegreen;">{% trans "Save 10% with annual billing" %}</p>
+                </div>
+                <div class="col-6 pr-0 text-right my-auto">
+                  <h2 class="price">
+                    $<span id="monthly-amount">{{ plan.price }}</span>
+                    <span class="month"> / mo</span>
+                  </h2>
+                </div>
+              </div>
+              <div class="col-12 step row">
+                <div class="col-6 pl-0">
+                  <h2>{% trans "Currency" %}</h2>
+                </div>
+                <div class="col-6 pr-0 text-right">
+                  <h2>DAI</h2>
+                </div>
+              </div>
+
+              <div id="gas-section" class="col-12 mt-4 mb-2 py-3 step"> <!-- CHECK -->
+                <h5 class="form__label">{% trans "Gas Settings" %}</h5>
+                <div>
+                  {% include 'shared/wallet_estimate.html' %}
+                </div>
+              </div>
+
+              <div class="summary font-body step pl-md-4 w-100 pb-4"> <!-- CHECK -->
+                <p class="mb-2 font-weight-semibold">{% trans "Summary" %}</p>
+                <p class="annual-pay hidden">
+                  <i class="fas fa-circle mr-2"></i>
+                  {% trans "You are contributing" %}
+                  <span id="summary-amount" class="font-weight-bold">-</span>
+                  <span id="summary-token" class="font-weight-bold">DAI</span>
+                  {% trans "to this grant every" %}
+                  <span id="summary-frequency-unit" class="font-weight-bold">month</span>.
+                </p>
+                <p class="annual-pay hidden">
+                  <i class="fas fa-circle mr-2"></i>
+                  {% trans "Your contribution will stop once this payment has happened" %}
+                  <span id="summary-frequency" class="font-weight-bold">12</span> times.
+                </p>
+                <p>
+                  <i class="fas fa-circle mr-2"></i>
+                  {% trans "The first payment will happen within 5 minutes after you click Contribute to Grant." %}
+                </p>
+                <p>
+                  <i class="fas fa-circle mr-2"></i>
+                  {% trans "Note: You will have to approve 2 transactions via MetaMask on submit." %} <a target="_blank" href="https://github.com/gitcoinco/web/blob/master/docs/GRANTS.md">Read how this works</a>.
                 </p>
               </div>
-              <div class="col-5 pr-0 text-right plan-info">
-                <img class="mr-1" src="{% static plan.img %}" alt="DEV-FLOW {{ plan.type|upper }} logo">
-                <p class="font-weight-semibold d-inline-block font-subheader">DEV-FLOW {{ plan.type|upper }}</p>
-              </div>
-            </div>
-            <div class="col-12 step row">
-              <div class="col-6 pl-0">
-                <div class="billed">
-                  <h2 class="mr-2 my-auto">{% trans "Billed" %}</h2>
-                  <div id="bill-period" class="form__select2 form__group-item">
-                    <select class="js-select2" name="period">
-                      <option value="monthly" selected="selected">Monthly</option>
-                      <option value="annual">Annualy</option>
-                    </select>
-                  </div>
+
+              <div class="col-12 step row">
+                <div class="col-6 pl-0">
+                  <h2>Total</h2>
                 </div>
-                <p class="save-more font-caption font-weight-semibold mb-0" style="color: limegreen;">{% trans "Save 10% with annual billing" %}</p>
+                <div class="col-6 pr-0 text-right">
+                  <h2 class="price">
+                    <span id="total-amount">{{ plan.price }}</span> DAI
+                  </h2>
+                </div>
               </div>
-              <div class="col-6 pr-0 text-right my-auto">
-                <h2 class="price">
-                  $<span id="monthly-amount">{{ plan.price }}</span>
-                  <span class="month"> / mo</span>
-                </h2>
+
+              <div class="col-12 offset-md-2 col-md-8 mt-5">
+                <button class="button button--full btn-gc-blue" id='js-fundGrant-button'>{% trans "Subscribe to Gitcoin Plan" %}</button>
               </div>
+
             </div>
-            <div class="col-12 step row">
-              <div class="col-6 pl-0">
-                <h2>{% trans "Currency" %}</h2>
-              </div>
-              <div class="col-6 pr-0 text-right">
-                <h2>DAI</h2>
-              </div>
+            <div>
+              <input type="hidden" id="grant_id" name="grant_id" value="{{ grant.pk }}">
+              <input type="hidden" id="admin_address" name="admin_address" value="{{ grant.admin_address }}">
+              <input type="hidden" id="token_address" name="token_address" value="{{ grant.token_address }}">
+              <input type="hidden" id="gas_price" name="gas_price" value="">
+              <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
+              <input type="hidden" id="contract_version" name="contract_version" value="{{ grant.contract_version }}">
+              <input type="hidden" id="network" name="network" value="{{ grant.network }}">
+              <input type="hidden" id="subscription_hash" name="subscription_hash" value="">
+              <input type="hidden" id="signature" name="signature" value="">
+              <input type="hidden" id="contributor_address" name="contributor_address" value="">
+              <input type="hidden" id="sub_new_approve_tx_id" name="sub_new_approve_tx_id" value="">
+              <input type="hidden" id="token_symbol" name="token_symbol" value="{{ grant.token_symbol }}">
+              <input type="hidden" id="grant-link" value="{% url 'grants:details' grant.id grant.slug %}">
+              <input type="hidden" id="wait" value="true">
+              <input type="hidden" id="amount_per_period" name="amount_per_period" value="{{plan.price}}">
+              <input type="hidden" id="is_paid_plan" name="is_paid_plan" value="true">
+              <input type="hidden" id="num_periods" name="num_periods" value="1">
             </div>
 
-            <div id="gas-section" class="col-12 mt-4 mb-2 py-3 step"> <!-- CHECK -->
-              <h5 class="form__label">{% trans "Gas Settings" %}</h5>
-              <div>
-                {% include 'shared/wallet_estimate.html' %}
-              </div>
-            </div>
-
-            <div class="summary font-body step pl-md-4 w-100 pb-4"> <!-- CHECK -->
-              <p class="mb-2 font-weight-semibold">{% trans "Summary" %}</p>
-              <p class="annual-pay hidden">
-                <i class="fas fa-circle mr-2"></i>
-                {% trans "You are contributing" %}
-                <span id="summary-amount" class="font-weight-bold">-</span>
-                <span id="summary-token" class="font-weight-bold">DAI</span>
-                {% trans "to this grant every" %}
-                <span id="summary-frequency-unit" class="font-weight-bold">month</span>.
-              </p>
-              <p class="annual-pay hidden">
-                <i class="fas fa-circle mr-2"></i>
-                {% trans "Your contribution will stop once this payment has happened" %}
-                <span id="summary-frequency" class="font-weight-bold">12</span> times.
-              </p>
-              <p>
-                <i class="fas fa-circle mr-2"></i>
-                {% trans "The first payment will happen within 5 minutes after you click Contribute to Grant." %}
-              </p>
-              <p>
-                <i class="fas fa-circle mr-2"></i>
-                {% trans "Note: You will have to approve 2 transactions via MetaMask on submit." %} <a target="_blank" href="https://github.com/gitcoinco/web/blob/master/docs/GRANTS.md">Read how this works</a>.
-              </p>
-            </div>
-
-            <div class="col-12 step row">
-              <div class="col-6 pl-0">
-                <h2>Total</h2>
-              </div>
-              <div class="col-6 pr-0 text-right">
-                <h2 class="price">
-                  <span id="total-amount">{{ plan.price }}</span> DAI
-                </h2>
-              </div>
-            </div>
-
-            <div class="col-12 offset-md-2 col-md-8 mt-5">
-              <button class="button button--full btn-gc-blue" id='js-fundGrant-button'>{% trans "Subscribe to Gitcoin Plan" %}</button>
-            </div>
-
-          </div>
+          </form>
         </div>
       </div>
     </div>
+
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with slim=1 %}
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
+
   </body>
+
+  <script src="{% static "v2/js/web3.min.js" %}"></script>
+  <script>
+    var web3 = new Web3(Web3.givenProvider || "ws://localhost:8546");
+  </script>
 
   <script src="{% static "v2/js/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
@@ -160,12 +189,366 @@
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
-  <script src="{% static "v2/js/user-search.js" %}"></script>
   <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
   <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
   <script src="{% static 'v2/js/animate-number.min.js' %}"></script>
+  <script src="{% static "v2/js/grants/compiledSubscriptionContract.js" %}"></script>
+  <script src="{% static "v2/js/grants/compiledTokenContract.js" %}"></script>
+  <!--<script src="{% static "v2/js/grants/fund.js" %}"></script>-->
+  <!--<script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>-->
+
 
   <script>
+  // outside of document.ready to be in global scope
+  var compiledSubscription;
+
+  // Waiting State screen
+  var enableWaitState = container => {
+    $(container).hide();
+    $('.interior .body').addClass('open');
+    $('.interior .body').addClass('loading');
+    $('.grant_waiting').show();
+    waitingStateActive();
+  };
+
+
+
+  var waitingStateActive = function() {
+    $('.bg-container').show();
+    $('.loading_img').addClass('waiting-state ');
+    $('.waiting_room_entertainment').show();
+    $('.issue-url').html('<a href="' + document.issueURL + '" target="_blank" rel="noopener noreferrer">' + document.issueURL + '</a>');
+    const secondsBetweenQuoteChanges = 30;
+
+    waitingRoomEntertainment();
+    setInterval(waitingRoomEntertainment, secondsBetweenQuoteChanges * 1000);
+    window.addEventListener('beforeunload', function(e) {
+      if (!document.suppress_loading_leave_code) {
+        var confirmationMessage = 'This change has NOT been saved. Please do not leave the page until the tx has confirmed!';
+
+        (e || window.event).returnValue = confirmationMessage; // Gecko + IE
+        return confirmationMessage; // Gecko + Webkit, Safari, Chrome etc.
+      }
+    });
+  }
+
+  /**
+   * Disables button and throws alert with message if logged in user match username
+   * and a different metamask address.
+   * @param {string} username
+   * @param {string} address
+   * @param {string} button
+   * @param {string} message
+   */
+  /*
+  const notifyOwnerAddressMismatch = (username, address, button, message) => {
+    if (!web3 || !web3.eth)
+      return;
+    web3.eth.getAccounts((error, accounts) => {
+      if (document.contxt.github_handle == username &&
+          accounts[0] != address) {
+        if ($(button).attr('disabled') != 'disabled') {
+          $(button).attr('disabled', 'disabled');
+          _alert({
+            message: message
+          }, 'error');
+        }
+      } else {
+        $(button).removeAttr('disabled');
+        $('.alert.error').remove();
+      }
+    });
+  };
+  */
+/* eslint-disable no-console */
+$(document).ready(function() {
+
+  $('.js-select2').each(function() {
+    $(this).select2();
+  });
+
+  $('.select2-selection__rendered').hover(function() {
+    $(this).removeAttr('title');
+  });
+
+  updateSummary();
+
+  $('#frequency_unit, #js-token').on('select2:select', event => {
+    updateSummary();
+  });
+
+  $('input#frequency_count, input#amount, input#period').on('input', () => {
+    updateSummary();
+  });
+
+  $('.contribution_type select').change(function() {
+    if ($('.contribution_type select').val() == 'once') {
+      $('.frequency').addClass('hidden');
+      $('.num_recurring').addClass('hidden');
+      $('.hide_if_onetime').addClass('hidden');
+      $('.hide_if_recurring').removeClass('hidden');
+      $('#period').val(1);
+      updateSummary();
+      $('#amount_label').text('Amount');
+    } else {
+      $('.frequency').removeClass('hidden');
+      $('.num_recurring').removeClass('hidden');
+      $('#amount_label').text('Amount Per Period');
+      $('.hide_if_onetime').removeClass('hidden');
+      $('.hide_if_recurring').addClass('hidden');
+    }
+  });
+
+  $('#js-fundGrant').validate({
+    rules: {
+      num_periods: {
+        required: true,
+        min: 1
+      }
+    },
+    submitHandler: function(form) {
+      var data = {};
+      console.log('fund grant submit handler called');
+      $.each($(form).serializeArray(), function() {
+        data[this.name] = this.value;
+      });
+
+      let realPeriodSeconds = 0;
+
+      if (data.frequency) {
+
+        // translate timeAmount&timeType to requiredPeriodSeconds
+        let periodSeconds = data.frequency;
+
+        if (data.frequency_unit == 'days') {
+          periodSeconds *= 86400;
+        } else if (data.frequency_unit == 'hours') {
+          periodSeconds *= 3600;
+        } else if (data.frequency_unit == 'minutes') {
+          periodSeconds *= 60;
+        } else if (data.frequency_unit == 'months') {
+          periodSeconds *= 2592000;
+        }
+        if (periodSeconds) {
+          realPeriodSeconds = periodSeconds;
+        }
+      }
+
+      let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, data.contract_address);
+      let deployedToken;
+      let selected_token;
+
+      if (data.token_address != '0x0000000000000000000000000000000000000000') {
+        selected_token = data.token_address;
+        deployedToken = new web3.eth.Contract(compiledToken.abi, data.token_address);
+      } else {
+        selected_token = data.denomination;
+        deployedToken = new web3.eth.Contract(compiledToken.abi, data.denomination);
+        $('#token_symbol').val($('#js-token option:selected').text());
+      }
+      if (!selected_token) {
+        _alert('Please select a token', 'error');
+        return;
+      }
+
+      deployedToken.methods.decimals().call(function(err, decimals) {
+        if (err) {
+          _alert('The token you selected is not a valid ERC20 token', 'error');
+          return;
+        }
+        let realGasPrice = Math.ceil($('#gasPrice').val() * Math.pow(10, 9));
+
+        $('#gas_price').val(realGasPrice);
+
+        let realTokenAmount = Number(data.amount_per_period * Math.pow(10, decimals));
+        let amountSTR = realTokenAmount.toLocaleString('fullwide', { useGrouping: false });
+
+        let realApproval = Number((realTokenAmount + realGasPrice) * data.num_periods);
+        let approvalSTR = realApproval.toLocaleString('fullwide', { useGrouping: false });
+
+        web3.eth.getAccounts(function(err, accounts) {
+
+          $('#contributor_address').val(accounts[0]);
+
+          let url;
+
+          var tokenMethod = deployedToken.methods.approve;
+          var arg1 = data.contract_address;
+
+          // one time payments (non-paid-plan grants only)
+          if (data.num_periods == 1) {
+            arg1 = data.admin_address;
+            tokenMethod = deployedToken.methods.transfer;
+          }
+
+          tokenMethod(
+            arg1,
+            web3.utils.toTwosComplement(approvalSTR)
+          ).send({
+            from: accounts[0],
+            gasPrice: realGasPrice
+          }).on('error', function(error) {
+            console.log('1', error);
+            _alert({ message: gettext('Your approval transaction failed. Please try again.')}, 'error');
+          }).on('transactionHash', function(transactionHash) {
+            $('#sub_new_approve_tx_id').val(transactionHash);
+            const linkURL = etherscan_tx_url(transactionHash);
+            let token_address = $('#js-token').length ? $('#js-token').val() : $('#sub_token_address').val();
+            let data = {
+              'contributor_address': $('#contributor_address').val(),
+              'amount_per_period': $('#amount').val(),
+              'real_period_seconds': realPeriodSeconds,
+              'frequency': $('#frequency_count').val(),
+              'frequency_unit': $('#frequency_unit').val(),
+              'token_address': selected_token,
+              'token_symbol': $('#token_symbol').val(),
+              'gas_price': $('#gas_price').val(),
+              'sub_new_approve_tx_id': transactionHash,
+              'num_tx_approved': $('#period').val(),
+              'network': $('#network').val(),
+              'csrfmiddlewaretoken': $("#js-fundGrant input[name='csrfmiddlewaretoken']").val(),
+              'grant_id': {{ grant.pk }}
+            };
+            console.log('grant id is');
+            console.log(data['grant_id']);
+            console.log(JSON.stringify(data));
+            $.ajax({
+              type: 'post',
+              url: '',
+              data: data,
+              success: json => {
+                console.log('successfully saved subscription');
+              },
+              error: () => {
+                _alert({ message: gettext('Your subscription failed to save. Please try again.') }, 'error');
+              }
+            });
+
+            document.issueURL = linkURL;
+            $('#transaction_url').attr('href', linkURL);
+            enableWaitState('#grants_form');
+            // Should add approval transactions to transaction history
+            deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
+
+              nonce = parseInt(nonce) + 1;
+
+              const parts = [
+                web3.utils.toChecksumAddress(accounts[0]), // subscriber address
+                web3.utils.toChecksumAddress($('#admin_address').val()), // admin_address
+                web3.utils.toChecksumAddress(selected_token), // token denomination / address
+                web3.utils.toTwosComplement(amountSTR), // data.amount_per_period
+                web3.utils.toTwosComplement(realPeriodSeconds), // data.period_seconds
+                web3.utils.toTwosComplement(realGasPrice), // data.gas_price
+                web3.utils.toTwosComplement(nonce) // nonce
+              ];
+
+              deployedSubscription.methods.getSubscriptionHash(...parts).call(function(err, subscriptionHash) {
+                $('#subscription_hash').val(subscriptionHash);
+                web3.eth.personal.sign('' + subscriptionHash, accounts[0], function(err, signature) {
+                  if (signature) {
+                    $('#signature').val(signature);
+
+                    let data = {
+                      'subscription_hash': subscriptionHash,
+                      'signature': signature,
+                      'csrfmiddlewaretoken': $("#js-fundGrant input[name='csrfmiddlewaretoken']").val(),
+                      'sub_new_approve_tx_id': $('#sub_new_approve_tx_id').val(),
+                      'grant_id': {{ grant.pk }}
+                    };
+
+                    $.ajax({
+                      type: 'post',
+                      url: '',
+                      data: data,
+                      success: json => {
+                        console.log('saved subscription post signature');
+                        console.log('successfully saved subscriptionHash and signature');
+                        url = json.url;
+                        $('#wait').val('false');
+                      },
+                      error: () => {
+                        _alert({ message: gettext('Your subscription failed to save. Please try again.') }, 'error');
+                        url = window.location;
+                      }
+                    });
+                  }
+                });
+              });
+            });
+          }).on('confirmation', function(confirmationNumber, receipt) {
+
+            waitforData(() => {
+              document.suppress_loading_leave_code = true;
+              window.location = url;
+            });
+          });
+        });
+      });
+    }
+  });
+
+  waitforWeb3(function() {
+    if (document.web3network != $('#network').val()) {
+      $('#js-fundGrant-button').prop('disabled', true);
+      let network = $('#network').val();
+      console.log(network);
+      console.log(document.web3network);
+
+      _alert({ message: gettext('This Grant is on the ' + network + ' network. Please, switch to ' + network + ' to contribute to this grant.') }, 'error');
+    }
+
+    tokens(document.web3network).forEach(function(ele) {
+      let option = document.createElement('option');
+
+      option.text = ele.name;
+      option.value = ele.addr;
+
+      $('#js-token').append($('<option>', {
+        value: ele.addr,
+        text: ele.name
+      }));
+
+      $("#js-token option[value='0x0000000000000000000000000000000000000000']").remove();
+    });
+    $('#js-token').select2();
+  });
+});
+
+const waitforData = (callback) => {
+  if ($('#wait').val() === 'false') {
+    callback();
+  } else {
+    var wait_callback = () => {
+      waitforData(callback);
+    };
+
+    setTimeout(wait_callback, 3000);
+  }
+};
+
+
+const updateSummary = (element) => {
+
+  $('#summary-period').html($('input#frequency_count').val());
+  $('#summary-amount').html($('input#amount').val() ? $('input#amount').val() : 0);
+  $('#summary-frequency').html($('input#period').val() ? $('input#period').val() : 0);
+  $('#summary-frequency-unit').html($('#frequency_unit').val());
+  if ($('#token_symbol').val() === 'Any Token') {
+    $('#summary-token').html($('#js-token option:selected').text());
+  }
+
+};
+
+  $(document).ready(function() {
+
+    let contractVersion = $('#contract_version').val();
+
+    if (contractVersion) {
+      if (contractVersion == 0) {
+        compiledSubscription = compiledSubscription0;
+      }
+    }
+
     $(document).ready(function() {
 
       if(getParam('pack') == 'annual')
@@ -196,7 +579,9 @@
 
         $('#total-amount').animateNumber({
           number: monthly_amount * 12
-        })
+        });
+
+        $('#amount_per_period').val(monthly_amount * 12);
       } else {
         $('.annual-pay').addClass('hidden');
         $('.save-more').removeClass('hidden');
@@ -208,8 +593,11 @@
 
         $('#total-amount').animateNumber({
           number: monthly_amount
-        })
+        });
+
+        $('#amount_per_period').val(monthly_amount);
       }
     }
+  });
   </script>
 </html>

@@ -110,6 +110,9 @@
                   {{ profile.data.bio }}
                 </div>
               {% endif %}
+              <div class="profile-header__bio my-2">
+                Current Plan: {{ profile.plan_name }}
+              </div>
             </div>
             {% if not hidden %}
               {% if profile.is_org %}

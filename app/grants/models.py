@@ -195,6 +195,7 @@ class Grant(SuperModel):
     )
     activeSubscriptions = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     hidden = models.BooleanField(default=False, help_text=_('Hide the grant from the /grants page?'))
+    is_paid_plan = models.BooleanField(default=False, help_text=_('Is this grant part of the gitcoin paid plans or not?'))
 
     # Grant Query Set used as manager.
     objects = GrantQuerySet.as_manager()

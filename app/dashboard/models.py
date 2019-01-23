@@ -2778,6 +2778,27 @@ class Profile(SuperModel):
             pass
         return False
 
+    @property
+    def plan_name(self):
+        return self.plan.name if self.plan else 'Free'
+
+    @property
+    def plan(self):
+        from revenue.models import Subscription as RevenueSubscription
+        subscription = RevenueSubscription.objects.get(
+            grant_subscription__contributor_profile=self, grant_subscription__active=True
+        )
+        return subscription.plan if subscription else None
+
+    @property
+    def plan_discount(self):
+        return self.plan.bounties_discount_percent if self.plan else 0
+
+    @property
+    def can_get_feature(self, feature, units):
+        plan = self.plan if self.plan else None
+        # TODO: return False once we decide restrictions
+        return True
 
 # enforce casing / formatting rules for profiles
 @receiver(pre_save, sender=Profile, dispatch_uid="psave_profile")

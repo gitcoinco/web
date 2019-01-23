@@ -20,11 +20,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from django.contrib import admin
 
-from .models import DigitalGoodPurchase
+from .models import SKU, ALaCartePurchase, Coupon, Plan, PlanItem, Subscription
 
 
 class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
     list_display = ['created_on', '__str__']
 
-admin.site.register(DigitalGoodPurchase, GeneralAdmin)
+admin.site.register(ALaCartePurchase, GeneralAdmin)
+admin.site.register(Coupon, GeneralAdmin)
+admin.site.register(Plan, GeneralAdmin)
+admin.site.register(PlanItem, GeneralAdmin)
+admin.site.register(SKU, GeneralAdmin)
+admin.site.register(Subscription, GeneralAdmin)

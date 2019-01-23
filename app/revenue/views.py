@@ -5,7 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
-from revenue.models import DigitalGoodPurchase
+from revenue.models import ALaCartePurchase
 from web3 import Web3
 
 # Create your views here.
@@ -22,14 +22,14 @@ def new_attestation(request):
 
     if request.POST:
         to_user = 'gitcoinbot'
-        already_exists = DigitalGoodPurchase.objects.filter(txid__iexact=request.GET.get('txid')).exists()
+        already_exists = ALaCartePurchase.objects.filter(txid__iexact=request.GET.get('txid')).exists()
         if not already_exists:
             metadata = {
                 'type': request.POST.get('type'),
                 'option': request.POST.get('option'),
                 'value': request.POST.get('value'),
             }
-            dgp = DigitalGoodPurchase.objects.create(
+            dgp = ALaCartePurchase.objects.create(
                 emails=[request.user.email],
                 # For kudos, `token` is a kudos.models.Token instance.
                 amount=request.POST.get('amount'),

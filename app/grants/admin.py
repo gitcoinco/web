@@ -47,12 +47,12 @@ class GrantAdmin(GeneralAdmin):
         'token_address', 'contract_address', 'network', 'required_gas_price', 'logo_svg_asset',
         'logo_asset', 'created_on', 'modified_on', 'team_member_list',
         'subscriptions_links', 'contributions_links', 'logo', 'logo_svg', 'image_css',
-         'link', 'clr_matching', 'hidden'
+        'link', 'clr_matching', 'hidden', 'is_paid_plan',
     ]
     readonly_fields = [
         'logo_svg_asset', 'logo_asset',
         'team_member_list',
-        'subscriptions_links', 'contributions_links', 'link', 
+        'subscriptions_links', 'contributions_links', 'link',
     ]
     raw_id_fields = ['admin_profile']
 
