@@ -373,6 +373,16 @@
                 </div>
               </div>
             </div>
+            [[else activity_type == 'new_kudos']]
+              <div class="col-12 col-md-7">
+                <div class="activity-tags activity-tag-first align-items-center">
+                  New Kudos sent to
+                  <a href="/profile/[[:kudos_receiver_handle]]">
+                    [[:kudos_receiver_handle]]
+                    <img class="rounded-circle" src="/dynamic/avatar/[[:kudos_receiver_handle]]" width="25" height="25"/>
+                  </a>
+                </div>
+              </div>
           [[else]]
             <div class="col-12 col-md-7">
               <div class="activity-status">

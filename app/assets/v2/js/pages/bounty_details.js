@@ -1319,7 +1319,8 @@ const process_activities = function(result, bounty_activities) {
       token_value_in_usdt_new: new_bounty.token_value_in_usdt,
       token_value_in_usdt_old: old_bounty.token_value_in_usdt,
       token_value_time_peg_new: new_bounty.token_value_time_peg,
-      token_name: result['token_name']
+      token_name: result['token_name'],
+      kudos_receiver_handle: meta.to_username
     };
   });
 };
