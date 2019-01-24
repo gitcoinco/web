@@ -77,15 +77,16 @@ def get_profile(handle):
 
 def about(request):
     """Render the Kudos 'about' page."""
+    activity_limit = 5
     listings = Token.objects.select_related('contract').filter(
         num_clones_allowed__gt=0,
         contract__is_latest=True,
         contract__network=settings.KUDOS_NETWORK,
         hidden=False,
     ).order_by('-popularity_week').cache()
-    activities = Activity.objects.select_related('bounty').filter(
+    activities = Activity.objects.filter(
         activity_type='new_kudos',
-    ).order_by('-created').cache()
+    ).order_by('-created').cache()[0:activity_limit]
 
     context = {
         'is_outside': True,
