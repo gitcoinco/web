@@ -2479,6 +2479,19 @@
     - ethereum
     - sharding
     - serenity
+  image: nimbus_2.svg
+- name: nimbus_contributor
+  artist: nimbus
+  description: Awarded for running Nimbus Contributors
+  platform: gitcoin
+  priceFinney: 5
+  numClonesAllowed: 10000
+  to_address: '0x04bb33C3A8c2D018836a1f938054Ebb59e0036B2'
+  tags:
+    - nimbus
+    - ethereum
+    - sharding
+    - serenity
   image: nimbus.svg
 - name: black_lotus
   artist: mladen
