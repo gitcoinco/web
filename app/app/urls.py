@@ -283,21 +283,13 @@ urlpatterns = [
 
     # admin views
     re_path(r'^_administration/?', admin.site.urls, name='admin'),
-    path(
-        '_administration/email/grant_cancellation',
-        retail.emails.grant_cancellation,
-        name='admin_grant_cancellation'
-    ),
+    path('_administration/email/grant_cancellation', retail.emails.grant_cancellation, name='admin_grant_cancellation'),
     path(
         '_administration/email/subscription_terminated',
         retail.emails.subscription_terminated,
         name='admin_subscription_terminated'
     ),
-    path(
-        '_administration/email/new_grant',
-        retail.emails.new_grant,
-        name='admin_new_grant'
-    ),
+    path('_administration/email/new_grant', retail.emails.new_grant, name='admin_new_grant'),
     path(
         '_administration/email/change_grant_owner_request',
         retail.emails.change_grant_owner_request,
@@ -318,11 +310,7 @@ urlpatterns = [
         retail.emails.change_grant_owner_reject,
         name='admin_change_grant_owner_reject'
     ),
-    path(
-        '_administration/email/new_supporter',
-        retail.emails.new_supporter,
-        name='admin_new_supporter'
-    ),
+    path('_administration/email/new_supporter', retail.emails.new_supporter, name='admin_new_supporter'),
     path(
         '_administration/email/thank_you_for_supporting',
         retail.emails.thank_you_for_supporting,
