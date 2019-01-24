@@ -2480,7 +2480,7 @@
     - sharding
     - serenity
   image: nimbus.svg
-- name: block_lotus
+- name: black_lotus
   artist: mladen
   description: The black lotus is a much feared, oft-discussed, plant.  It is rumored that the sorcerers of the Black Ring use the Black lotus to recover their necromantic powers. Few know the secrets of the alchemy involved and there are few who dare to experiment with such a deadly substance.
   platform: gitcoin
