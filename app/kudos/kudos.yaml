@@ -2695,3 +2695,11 @@
     - be a bufficorn
   image: be_a_bufficorn.svg
 
+- name: rockstar
+  description: This Kudos is for all the of the rockstar individual contributors out there.
+  priceFinney: 10
+  numClonesAllowed: 300
+  tags:
+    - rockstar
+  image: rockstar.svg
+
