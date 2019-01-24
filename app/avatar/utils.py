@@ -499,7 +499,7 @@ def svg_to_png(svg_content, width=100, height=100, scale=1):
     if not png:
         print("failed; using inkscape")
         return svg_to_png_inkscape(svg_content, height=height, width=width)
-    return None
+    return png
 
 
 def svg_to_png_pyvips(svg_content, scale=1):
