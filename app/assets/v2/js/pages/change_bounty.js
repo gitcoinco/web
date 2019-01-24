@@ -78,39 +78,67 @@ $(document).ready(function() {
       }
 
       if (formData['featuredBounty'] === '1') {
-        formData['featuredBounty'] = 'True';
+        formData['is_featured'] = true;
       }
 
       const bountyId = document.pk;
       const payload = JSON.stringify(formData);
 
-      $.post('/bounty/change/' + bountyId, payload).then(
-        function(result) {
-          inputElements.removeAttr('disabled');
-          unloading_button($('.js-submit'));
+      var payFeaturedBounty = function() {
+        web3.eth.sendTransaction({
+          to: '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+          from: web3.eth.coinbase,
+          value: web3.toWei(ethFeaturedPrice, 'ether'),
+          gasPrice: web3.toHex(5 * Math.pow(10, 9)),
+          gas: web3.toHex(318730),
+          gasLimit: web3.toHex(318730)
+        },
+        function(error, result) {
+          saveAttestationData(
+            result,
+            ethFeaturedPrice,
+            '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+            'featuredbounty'
+          );
+          saveBountyChanges();
+        });
+      };
 
-          result = sanitizeAPIResults(result);
-          _alert({ message: result.msg }, 'success');
+      var saveBountyChanges = function() {
+        $.post('/bounty/change/' + bountyId, payload).then(
+          function(result) {
+            inputElements.removeAttr('disabled');
+            unloading_button($('.js-submit'));
 
-          if (result.url) {
-            setTimeout(function() {
-              document.location.href = result.url;
-            }, 1000);
+            result = sanitizeAPIResults(result);
+            _alert({ message: result.msg }, 'success');
+
+            if (result.url) {
+              setTimeout(function() {
+                document.location.href = result.url;
+              }, 1000);
+            }
           }
-        }
-      ).fail(
-        function(result) {
-          inputElements.removeAttr('disabled');
-          unloading_button($('.js-submit'));
+        ).fail(
+          function(result) {
+            inputElements.removeAttr('disabled');
+            unloading_button($('.js-submit'));
 
-          var alertMsg = result && result.responseJSON ? result.responseJSON.error : null;
+            var alertMsg = result && result.responseJSON ? result.responseJSON.error : null;
 
-          if (alertMsg === null) {
-            alertMsg = gettext('Network error. Please reload the page and try again.');
+            if (alertMsg === null) {
+              alertMsg = gettext('Network error. Please reload the page and try again.');
+            }
+            _alert({ message: alertMsg }, 'error');
           }
-          _alert({ message: alertMsg }, 'error');
-        }
-      );
+        );
+      };
+
+      if (formData['is_featured']) {
+        payFeaturedBounty();
+      } else {
+        saveBountyChanges();
+      }
     }
   });
 
@@ -121,14 +149,4 @@ $(document).ready(function() {
     ethFeaturedPrice = amountEstimate['value'];
     $('.featured-price-eth').text(`+${amountEstimate['value']} ETH`);
   });
-
-  var payFeaturedBounty = function() {
-    web3.eth.sendTransaction({
-      to: '0xeDa95eD3e3436C689376889F9eD0a8f4bA23E866',
-      from: web3.eth.coinbase,
-      value: web3.toWei(ethFeaturedPrice, 'ether')
-    }, console.log);
-
-    return callback();
-  };
 });
