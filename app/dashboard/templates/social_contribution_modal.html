@@ -18,38 +18,37 @@
 {% load i18n static %}
   <div class="container-fluid">
     <div class="row">
-      <div class="col-12 body">
+      <div class="col-12">
         <div class="row font-smaller-2" id="form_container">
-          <div id="robot_error" class="hidden">
-            <img src="{% static "v2/images/prime.png" %}">
-          </div>
-          <div class="col offset-md-1 col-md-10 d-flex align-items-center justify-content-center" id="primary_form">
+          <div class="col col-md-10 center-block">
             <div class="d-flex justify-content-center flex-column mt-5 w-100" id="primary_subform">
               <div class="w-100" style="text-align: center;">
-                <h3>{% trans "Social Promotion of Bounty" %}</h3>
-                <img src="{% static "v2/images/prime.png" %}">
-                <p>{% trans "Thank you for considering promotion of this bounty. Your promotion will help your friends & colleague find new, interesting work.  It will also help the bounty funder make sure their issue is turned around" %}</p>
+                <h1>{% trans "Share this Bounty" %}</h1>
+                <img src="{% static 'v2/images/social-sharing.jpg' %}" width="240">
+                <h4>{% trans "Help friends and colleagues find new and interesting work!" %}</h4>
               </div>
-              <div class="w-100">
-                <h4>{% trans "Promotional Text" %}</h4>
-                <textarea class="w-100">Check out this bounty that pays out {{bounty.get_value_true}} {{bounty.token_name}} {{bounty.url}} {% for keyword in bounty.keywords_list %} #{{keyword}}{% endfor %}</textarea>
+              <div class="mt-5">
+                <textarea class="center-block w-75">Check out this bounty that pays out {{bounty.get_value_true}} {{bounty.token_name}} {{bounty.url}} {% for keyword in bounty.keywords_list %} #{{keyword}}{% endfor %}</textarea>
               </div>
               <div class="w-100 mt-2">
-                <h4>{% trans "One Click Social Share Links" %}</h4>
-                <div class="mb-5 mt-5">
-                  <a class="twitter-share-button button button--primary"
+                <h4>{% trans "Click to instantly share on the following networks" %}</h4>
+                <div class="mb-5 mt-5 text-center">
+                  <a class="btn btn-circle btn-twitter"
                   target="_blank"
                   data-size="large"
                   href="https://twitter.com/intent/tweet?text={{promo_text|iriencode}}">
-                  Tweet</a>
-                  <a class="button button--primary"
-                    target="_blank"
-                    href="mailto:?subject=New Bounty&body={{promo_text|iriencode}}">
-                  Email</a>
-                  <a class="button button--primary"
+                    <i class="fab fa-fw fa-twitter"></i>
+                  </a>
+                  <a class="btn btn-circle btn-email"
+                  target="_blank"
+                  href="mailto:?subject=New Bounty&body={{promo_text|iriencode}}">
+                    <i class="fas fa-fw fa-envelope"></i>
+                  </a>
+                  <a class="btn btn-circle btn-facebook"
                     target="_blank"
                     href="https://www.facebook.com/sharer/sharer.php?u={{bounty.url}}">
-                  Facebook</a>
+                    <i class="fab fa-fw fa-facebook-f"></i>
+                  </a>
                 </div>
               </div>
             </div>
