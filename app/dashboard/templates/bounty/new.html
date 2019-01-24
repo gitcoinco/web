@@ -79,7 +79,11 @@
                       </a>
                     </div>
                     <label class="form__label" for="keywords">{% trans "Keywords" %}</label>
-                    <input name='keywords' id='keywords'  class="form__input" type="text" value="{{keywords}}" />
+                    <div class="form__select2 g-multiselect">
+                      <select class="js-select2" id="keywords" name="keywords" multiple>
+                      </select>
+                    </div>
+
                   </div>
                   <hr class="mt-4">
                 </div>
@@ -112,8 +116,8 @@
                 </div>
                 {% include 'shared/pricing.html' %}
                 <div class="w-100 mt-2">
-                  <label class="form__label" for="fundingOrganisation">{% trans "Funding organisation" %}</label>
-                  <input name='fundingOrganisation' id="fundingOrganisation" class="form__input" type="text" placeholder="Ethereum Community Foundation"/>
+                  <label class="form__label" for="fundingOrganisation">{% trans "Funding Organisation Github handle" %}</label>
+                  <input name='fundingOrganisation' id="fundingOrganisation" class="form__input" type="text" placeholder="MetaMask"/>
                   <hr class="mt-4">
 
                   <label class="form__label" for="hiringRightNow">{% trans "Hiring right now?" %}</label>

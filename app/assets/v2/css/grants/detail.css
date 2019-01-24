@@ -73,6 +73,26 @@
   font-weight: 500;
 }
 
+#change-logo {
+  cursor: pointer;
+}
+
+#change-logo i {
+  position: absolute;
+  right: 3.5rem;
+  padding: 0.25rem 0.5rem;
+  background: white;
+  font-size: 1.2rem;
+  border-bottom-right-radius: 2px;
+  border-bottom-left-radius: 2px;
+}
+
+#js-drop span {
+  position: relative;
+  left: 30%;
+  width: 100%;
+}
+
 .grant__description textarea,
 #contract_owner_address.editable {
   background: white !important;

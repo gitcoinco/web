@@ -48,7 +48,39 @@
       <div class="container">
         <div class="row">
           <div class="grant-banner col-12 col-lg-6 pr-lg-5 p-0 mb-5 my-md-auto">
-            <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
+            {% if is_admin and not grant_is_inactive %}
+              <a id="change-logo" data-toggle="modal" data-target="#changeLogo">
+                <i class="far fa-image"></i>
+                <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
+              </a>
+
+              <div class="modal fade" id="changeLogo" tabindex="-1" role="dialog" aria-labelledby="changeLogoLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <form method="post" enctype="multipart/form-data">
+                      {% csrf_token %}
+                      <div class="modal-body">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h6 class="modal-title text-center" id="changeLogoLabel">Change Grant Logo</h6>
+                        <div class="form__drop" id="js-drop">
+                          <input id="img-project" type="file" name="input_image" accept="image/*">
+                          <span>{% trans "Drag & Drop or Browse" %}</span>
+                          <img id="preview"/>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="button button--warning button__small" data-dismiss="modal">Cancel</button>
+                        <button id="saveLogo" type="submit" class="button button--primary button__small">Save</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            {% else %}
+              <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
+            {% endif %}
           </div>
           <div class="col-12 col-lg-6">
             <div class="row">

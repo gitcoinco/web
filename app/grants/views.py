@@ -103,13 +103,18 @@ def grant_details(request, grant_id, grant_slug):
         milestones = grant.milestones.order_by('due_date')
         updates = grant.updates.order_by('-created_on')
         subscriptions = grant.subscriptions.filter(active=True, error=False)
-        cancelled_subscriptions = grant.subscriptions.filter(active=False, error=False)
+        cancelled_subscriptions = grant.subscriptions.filter(Q(active=False, error=False) | Q(error=True))
         contributions = Contribution.objects.filter(subscription__in=grant.subscriptions.all())
         user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True, error=False).first()
     except Grant.DoesNotExist:
         raise Http404
 
     if request.method == 'POST' and (profile == grant.admin_profile or request.user.is_staff):
+        if request.FILES.get('input_image'):
+            logo = request.FILES.get('input_image', None)
+            grant.logo = logo
+            grant.save()
+            return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
         if 'contract_address' in request.POST:
             grant.cancel_tx_id = request.POST.get('grant_cancel_tx_id', '')
             grant.active = False
