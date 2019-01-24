@@ -57,6 +57,9 @@
               {% else %}
                 <div class="my-2" id="preferred-address">No preferred address</div>
               {% endif %}
+              {% if  profile.show_job_status %}
+                <div class="my-2" id="job_status"><i class="fa fa-briefcase mr-2" aria-hidden="true"></i>{{ profile.job_status_verbose }}</div>
+              {% endif %}
               {% if profile.data.bio %}
                 <div class="profile-header__bio my-2">
                   {{ profile.data.bio }}
