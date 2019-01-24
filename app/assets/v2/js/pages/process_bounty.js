@@ -207,7 +207,7 @@ window.onload = function() {
 
             _alert({ message: gettext('Submitted transaction to web3, saving comment(s)...') }, 'info');
 
-            var submitCommentUrl = '/bounties/postComment';
+            var submitCommentUrl = '/postComment';
             var finishedComment = function() {
               _alert({ message: gettext('Submitted transaction to web3.') }, 'info');
               setTimeout(() => {

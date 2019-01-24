@@ -99,6 +99,7 @@ urlpatterns = [
     # dashboard views
     re_path(r'^onboard/(?P<flow>\w+)/$', dashboard.views.onboard, name='onboard'),
     re_path(r'^onboard/contributor/avatar/?$', dashboard.views.onboard_avatar, name='onboard_avatar'),
+    url(r'^postComment/', dashboard.views.postComment, name='postComment'),
     url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
     path('revenue/attestations/new', revenue.views.new_attestation, name='revenue_new_attestation'),
