@@ -264,6 +264,9 @@ class Keyword(SuperModel):
 
     keyword = models.CharField(max_length=255)
 
+    def __str__(self):
+        return f"{self.keyword}; created => {self.created_on}"
+
 
 class SlackUser(SuperModel):
 
