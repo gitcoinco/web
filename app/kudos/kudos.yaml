@@ -2432,4 +2432,33 @@
     - crypto winter
     - bots
   image: v_bot.svg
+- name: i_exec
+  artist: mladen
+  description: For your support in making decentralized cloud computing a reality
+  platform: gitcoin
+  priceFinney: 1
+  numClonesAllowed: 500
+  tags:
+    - cloud
+    - computing
+    - decentralized
+    - iexec
+    - supporter
+    - rlc
+    - open source
+  image: iexces_pionner.svg
+  to_address: 0x44ef6e4d7ab3113f91cf4e64245f1af582cd1e98
+- name: nimbus_pilot
+  artist: nimbus
+  description: Awarded for running Nimbus in production
+  platform: gitcoin
+  priceFinney: 5
+  numClonesAllowed: 10000
+  to_address: 0x04bb33C3A8c2D018836a1f938054Ebb59e0036B2
+  tags:
+    - nimbus
+    - ethereum
+    - sharding
+    - serenity
+  image: nimbus.svg
 
