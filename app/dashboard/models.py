@@ -1692,9 +1692,9 @@ class Profile(SuperModel):
     """
 
     JOB_SEARCH_STATUS = [
-        ('AL', 'Actively Looking'),
-        ('PL', 'Passively Looking'),
-        ('N', 'Not Looking'),
+        ('AL', 'Actively looking for work'),
+        ('PL', 'Passively looking and open to hearing new opportunities'),
+        ('N', 'Not open to hearing new opportunities'),
     ]
 
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
@@ -1776,6 +1776,10 @@ class Profile(SuperModel):
         kudos_transfers = kudos_transfers.distinct('id')
 
         return kudos_transfers
+
+    @property
+    def job_status_verbose(self):
+        return dict(Profile.JOB_SEARCH_STATUS)[self.job_search_status]
 
     @property
     def is_org(self):

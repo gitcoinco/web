@@ -185,29 +185,10 @@ This is the high level flow of a bounty on Gitcoin:
 
 <a href="https://www.draw.io/#G1sTJtQou5FYsHCabhb2JXHDTprpvvkUy0"><img src='https://github.com/gitcoinco/web/raw/master/docs/tip_flow.png'></a>
 
-# Legal
+# Licenses
 
-'''
-    Copyright (C) 2018 Gitcoin Core
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-'''
-
-# License
-
-[GNU AFFERO GENERAL PUBLIC LICENSE](../LICENSE)
+- [Code - GNU AFFERO GENERAL PUBLIC LICENSE](../LICENSE)
+- [Creative assets -- Attribution-NonCommercial-NoDerivatives 4.0 International](../app/assets/LISCENSE.txt)
 
 <!-- Google Analytics -->
 <img src='https://ga-beacon.appspot.com/UA-102304388-1/gitcoinco/web' style='width:1px; height:1px;' >

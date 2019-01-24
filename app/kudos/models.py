@@ -216,8 +216,11 @@ class Token(SuperModel):
 
         """
         from dashboard.models import Profile
-        related_kudos_transfers = KudosTransfer.objects.filter(kudos_token_cloned_from=self.pk).exclude(txid='').exclude(username='')
-        return related_kudos_transfers.values_list('username', flat=True)
+        related_kudos_transfers = KudosTransfer.objects.filter(kudos_token_cloned_from=self.pk).exclude(recipient_profile__isnull=True)
+        related_kudos_transfers = related_kudos_transfers.send_success() | related_kudos_transfers.send_pending()
+        related_kudos_transfers = related_kudos_transfers.distinct('id')
+
+        return related_kudos_transfers.values_list('recipient_profile__handle', flat=True)
 
     @property
     def num_clones_available_counting_indirect_send(self):
@@ -268,7 +271,14 @@ class Token(SuperModel):
             try:
                 obj_data = obj.read()
                 if obj_data:
-                    image = pyvips.Image.new_from_file(obj.name, scale=3)
+                    try:
+                        image = pyvips.Image.new_from_file(obj.name, scale=3)
+                    except Exception as e:
+                        logger.debug('got an exception trying to create a new image from a svg, usually this means that librsvg2 is not installed')
+                        logger.debug(e)
+                        logger.debug('retrying with out the scale parameter... which should work as long as imagemagick is installed')
+                        image = pyvips.Image.new_from_file(obj.name) 
+                        # try again, but without scale
                     return BytesIO(image.write_to_buffer(f'.png'))
             except VipsError as e:
                 logger.error(e)
