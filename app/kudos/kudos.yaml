@@ -1784,7 +1784,7 @@
     - documentation
     - knowledge
   image: kauri_1.svg
-  to_address: 0xF8aE578d5d4e570De6c31F26D42eF369C320aE0b
+  to_address: '0xF8aE578d5d4e570De6c31F26D42eF369C320aE0b'
 - name: Web3 Advocate
   description: Out with the old and in with the new! Kudos to knowledge sharers, crossing the void from web2 to web3.
   priceFinney: 3
@@ -1796,7 +1796,7 @@
     - documentation
     - knowledge
   image: kauri_2.svg
-  to_address: 0xF8aE578d5d4e570De6c31F26D42eF369C320aE0b
+  to_address: '0xF8aE578d5d4e570De6c31F26D42eF369C320aE0b'
 - name: moksha
   description: Moksha is a term in Hinduism, Buddhism, Jainism and Sikhism which refers to various forms of emancipation, enlightenment, liberation, and release.
   priceFinney: 1
@@ -2250,7 +2250,7 @@
   artist: mladen
   platform: gitcoin
   numClonesAllowed: 250
-  to_address: 0x530cF036Ed4Fa58f7301a9C788C9806624ceFD19
+  to_address: '0x530cF036Ed4Fa58f7301a9C788C9806624ceFD19'
   tags:
   - Collaboration
   - Affordable
@@ -2272,7 +2272,7 @@
   artist: jake_rockland
   platform: gitcoin
   numClonesAllowed: 200
-  to_address: 0xF5D4020dCA6a62bB1efFcC9212AAF3c9819E30D7
+  to_address: '0xF5D4020dCA6a62bB1efFcC9212AAF3c9819E30D7'
   tags:
   - programming
   - languages
@@ -2301,7 +2301,7 @@
   artist: mladen
   platform: gitcoin
   numClonesAllowed: 200
-  to_address: 0xbfdb50dc66c8df9fd9688d8fe5a0c34126427645
+  to_address: '0xbfdb50dc66c8df9fd9688d8fe5a0c34126427645'
   tags:
   - holidays
   - christmas
@@ -2310,7 +2310,7 @@
   - elf
   image: 12_days_of_bounties.svg
 - name: panvala_holidays
-  to_address: 0xc6b0a4c5BA85d082eCd4Fb05FBF63eb92AC1083a
+  to_address: '0xc6b0a4c5BA85d082eCd4Fb05FBF63eb92AC1083a'
   artist: PanvalaMark
   description: Happy holidays from Panvala! Wishing you a new year full of cooperation!
   artist: niran
@@ -2447,7 +2447,7 @@
     - rlc
     - open source
   image: iexces_supporter.svg
-  to_address: 0x44ef6e4d7ab3113f91cf4e64245f1af582cd1e98
+  to_address: '0x44ef6e4d7ab3113f91cf4e64245f1af582cd1e98'
 - name: iExec_pioneer
   artist: mladen
   description: Thank you for your participation in one of the iExec Workerdrops
@@ -2466,14 +2466,14 @@
     - rlp
     - open source
   image: iexces_pionner.svg
-  to_address: 0x44ef6e4d7ab3113f91cf4e64245f1af582cd1e98
+  to_address: '0x44ef6e4d7ab3113f91cf4e64245f1af582cd1e98'
 - name: nimbus_pilot
   artist: nimbus
   description: Awarded for running Nimbus in production
   platform: gitcoin
   priceFinney: 5
   numClonesAllowed: 10000
-  to_address: 0x04bb33C3A8c2D018836a1f938054Ebb59e0036B2
+  to_address: '0x04bb33C3A8c2D018836a1f938054Ebb59e0036B2'
   tags:
     - nimbus
     - ethereum
