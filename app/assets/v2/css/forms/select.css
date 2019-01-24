@@ -110,8 +110,10 @@
   border: 1px solid #D3D3D3 !important;
 }
 
-.select2-selection__clear {
+.g-multiselect .select2-container--default .select2-selection--multiple .select2-selection__clear {
   position: absolute;
+  right: 0;
+  margin-top: 8px;
 }
 
 .select2-container--open .select2-dropdown--below {

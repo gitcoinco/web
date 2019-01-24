@@ -2432,4 +2432,65 @@
     - crypto winter
     - bots
   image: v_bot.svg
+- name: iExec_supporter
+  artist: mladen
+  description: For your support in making decentralized cloud computing a reality
+  platform: gitcoin
+  priceFinney: 1
+  numClonesAllowed: 500
+  tags:
+    - cloud
+    - computing
+    - decentralized
+    - iexec
+    - supporter
+    - rlc
+    - open source
+  image: iexces_supporter.svg
+  to_address: 0x44ef6e4d7ab3113f91cf4e64245f1af582cd1e98
+- name: iExec_pioneer
+  artist: mladen
+  description: Thank you for your participation in one of the iExec Workerdrops
+  platform: gitcoin
+  priceFinney: 1
+  numClonesAllowed: 130
+  tags:
+    - cloud
+    - computing
+    - decentralized
+    - testing
+    - tester
+    - worker
+    - airdrop
+    - iexec
+    - rlp
+    - open source
+  image: iexces_pionner.svg
+  to_address: 0x44ef6e4d7ab3113f91cf4e64245f1af582cd1e98
+- name: nimbus_pilot
+  artist: nimbus
+  description: Awarded for running Nimbus in production
+  platform: gitcoin
+  priceFinney: 5
+  numClonesAllowed: 10000
+  to_address: 0x04bb33C3A8c2D018836a1f938054Ebb59e0036B2
+  tags:
+    - nimbus
+    - ethereum
+    - sharding
+    - serenity
+  image: nimbus.svg
+- name: black_lotus
+  artist: mladen
+  description: The black lotus is a much feared, oft-discussed, plant.  It is rumored that the sorcerers of the Black Ring use the Black lotus to recover their necromantic powers. Few know the secrets of the alchemy involved and there are few who dare to experiment with such a deadly substance.
+  platform: gitcoin
+  priceFinney: 7
+  numClonesAllowed: 777
+  tags:
+    - dark
+    - block_lotus
+    - magic
+    - mtg
+    - serenity
+  image: block_lotus.svg
 
