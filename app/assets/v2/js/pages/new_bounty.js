@@ -442,7 +442,7 @@ $(document).ready(function() {
         ipfs.addJson(ipfsBounty, newIpfsCallback);
       };
 
-      var payFeaturedBounty = function() {
+      const payFeaturedBounty = function() {
         web3.eth.sendTransaction({
           to: '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
           from: web3.eth.coinbase,
@@ -494,7 +494,7 @@ var check_balance_and_alert_user_if_not_enough = function(tokenAddress, amount) 
 let usdFeaturedPrice = $('.featured-price-usd').text();
 let ethFeaturedPrice;
 
-getAmountEstimate(usdFeaturedPrice, 'ETH', function(amountEstimate) {
+getAmountEstimate(usdFeaturedPrice, 'ETH', (amountEstimate) => {
   ethFeaturedPrice = amountEstimate['value'];
   $('.featured-price-eth').text(`+${amountEstimate['value']} ETH`);
 });

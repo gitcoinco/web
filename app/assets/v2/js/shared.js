@@ -1201,10 +1201,10 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
   return html;
 }
 
-function saveAttestationData(result, cost_eth, to_address, type) {
-  var request_url = '/revenue/attestations/new';
-  var txid = result;
-  var data = {
+const saveAttestationData = (result, cost_eth, to_address, type) => {
+  let request_url = '/revenue/attestations/new';
+  let txid = result;
+  let data = {
     'txid': txid,
     'amount': cost_eth,
     'network': document.web3network,
@@ -1218,7 +1218,7 @@ function saveAttestationData(result, cost_eth, to_address, type) {
   });
 }
 
-function renderFeaturedBountiesFromResults(results, renderForExplorer) {
+const renderFeaturedBountiesFromResults = (results, renderForExplorer) => {
   let html = '';
   const tmpl = $.templates('#featured-card');
 
@@ -1226,7 +1226,7 @@ function renderFeaturedBountiesFromResults(results, renderForExplorer) {
     return html;
   }
 
-  for (var i = 0; i < results.length; i++) {
+  for (let i = 0; i < results.length; i++) {
     const result = results[i];
 
     html += tmpl.render(result);
