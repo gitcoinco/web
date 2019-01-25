@@ -2471,8 +2471,8 @@
   artist: nimbus
   description: You contributed to the next-gen Ethereum 2.0 client, Nimbus
   platform: gitcoin
-  priceFinney: 50
-  numClonesAllowed: 50
+  priceFinney: 5
+  numClonesAllowed: 10000
   to_address: '0x04bb33C3A8c2D018836a1f938054Ebb59e0036B2'
   tags:
     - nimbus
@@ -2482,7 +2482,7 @@
   image: nimbus_2.svg
 - name: nimbus_contributor
   artist: nimbus
-  description: Awarded for running Nimbus Contributors
+  description: You contributed to the next-gen Ethereum 2.0 client, Nimbus
   platform: gitcoin
   priceFinney: 50
   numClonesAllowed: 500
