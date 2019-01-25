@@ -3,6 +3,7 @@
 import avatar.utils
 import logging
 import django.contrib.postgres.fields.jsonb
+from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
 import economy.models
@@ -17,6 +18,8 @@ import json
 logger = logging.getLogger(__name__)
 
 def resize_gh_avatars(apps, schema_editor):
+    if settings.DEBUG:
+        return False
     social_avatar_model = apps.get_model('avatar', 'SocialAvatar')
     for avatar in social_avatar_model.objects.all():
         try:
@@ -28,6 +31,8 @@ def resize_gh_avatars(apps, schema_editor):
 
 
 def generate_hashes(apps, schema_editor):
+    if settings.DEBUG:
+        return False
     base_avatar_model = apps.get_model('avatar', 'BaseAvatar')
     for base_avatar in base_avatar_model.objects.all():
         try:
@@ -44,7 +49,7 @@ def generate_hashes(apps, schema_editor):
             base_avatar.hash = dhash(Image.open(base_avatar.png))
             base_avatar.save()
         except Exception as e:
-            logger.error('Could not generate hash for avatar pk (%s), error (%s)', avatar.pk, e)
+            logger.error('Could not generate hash for avatar pk (%s), error (%s)', base_avatar.pk, e)
 
 
 class Migration(migrations.Migration):
