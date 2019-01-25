@@ -2632,6 +2632,14 @@
     - relaxation room
     - self care
   image: relaxation_room.svg
+- name: the_graph_ethdenver_2019
+  description: Shredding some world-class pow is what Bufficorns live for. Have you seen the ridiculous Triple McTwist the team from the Graph can do?
+  priceFinney: 100
+  numClonesAllowed: 1000
+  tags:
+    - ethdenver 2019
+    - the graph
+  image: the_graph.svg
 - name: shape_shift_ethdenver_2019
   description: Hittin’ the slopes with its Shapeshift pals is a preferred activity of the Bufficorn almost anytime. Have you ever tried to outski a fox? 
   priceFinney: 100
@@ -2676,15 +2684,6 @@
     - hiking
     - status
   image: status.svg
-- name: the_graph_fix_ethdenver_2019
-  description: Shredding some world-class pow is what Bufficorns live for. Have you seen the ridiculous Triple McTwist the team from the Graph can do?
-  priceFinney: 100
-  numClonesAllowed: 1000
-  tags:
-    - ethdenver 2019
-    - the graph
-    - skiing
-  image: the_graph_fix.svg
 - name: be_a_bufficorn
   description: YOU DID IT! You have completed the ETHDenver Bufficorn Collectibles game. You’ve proven that YOU are indeed a Bufficorn! Congratulations!! Now let’s BUIDL!
   priceFinney: 100
