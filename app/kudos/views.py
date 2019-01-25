@@ -678,6 +678,10 @@ def receive_bulk(request, secret):
                 coupon.current_uses += 1
                 coupon.save()
 
+                # send email
+                maybe_market_kudos_to_email(kudos_transfer)
+
+
     title = f"Redeem AirDropped *{coupon.token.humanized_name}* Kudos"
     desc = f"This Kudos has been AirDropped to you.  About this Kudos: {coupon.token.description}"
     params = {
