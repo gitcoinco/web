@@ -2485,7 +2485,7 @@
   description: You contributed to the next-gen Ethereum 2.0 client, Nimbus
   platform: gitcoin
   priceFinney: 50
-  numClonesAllowed: 50
+  numClonesAllowed: 500
   to_address: '0x04bb33C3A8c2D018836a1f938054Ebb59e0036B2'
   tags:
     - nimbus
