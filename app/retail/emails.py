@@ -846,24 +846,25 @@ def render_start_work_applicant_expired(interest, bounty):
 # ROUNDUP_EMAIL
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
-    subject = "Liberal Radicalism In Open Source Software"
-    new_kudos_pks = [1053, 1059, 866]
+    subject = "A New Type Of Freelance Platform: Gitcoin in Forbes"
+    new_kudos_pks = [1056, 1057, 1058]
     new_kudos_size_px = 150
     intro = '''
 <p>
 Hi Gitcoiners,
 <p>
 <p>
-This week, we wrote about <a href="https://medium.com/gitcoin/experiments-with-liberal-radicalism-ad68e02efd4">Liberal Radicalism</a>, a paper proposed by Vitalik Buterin, Glen Weyl, and Zoe Hitzig. Our thinking
-describes a public good problem in open source, the CLR mechanism, and how we are experimenting with it via Gitcoin Grants. If you're interested in joining the discussion,
-<a href="https://discourse.gitcoin.co/t/liberal-radicalism-in-open-source-software/16">our Discourse</a> is a good place to start.
+This week, <a href="https://www.forbes.com/sites/jeffersonnunn/2019/01/21/bitcoin-autonomous-employment-workers-wanted/">Forbes wrote an article</a> comparing
+Gitcoin to traditional freelance platforms. While it's early days, we're excited about the possibility to do more to improve the
+abiity of individuals to dynamically interact with each other. If you're interested,
+<a href="https://www.forbes.com/sites/jeffersonnunn/2019/01/21/bitcoin-autonomous-employment-workers-wanted/">give it a read here.</a>
 </p>
 <p>
-The potential with Gitcoin Grants is high, and we're excited to explore. <a href="https://consensys1mac.typeform.com/to/HFcZKe">Let us know</a> if you'd like to be in a future cohort and we'll
-reach out with more details. Want to contribute to a Gitcoin Grant? <a href="https://gitcoin.co/grants/">Take a look at our launch partners</a>, including Prysmatic Labs, Ethereum PM, and more.
+<a href="https://gitcoin.co/requests">Gitcoin Requests</a> is a great way to try the platform if you haven't already. Request funding
+for any open source Github issue, and we have funding to bring it onto the platform. Excited to see what you want built!
 </p>
 <p>
-<h3>Happy Kudos Friday!</h3>
+<h3>The Week Of Kudos Bots!</h3>
 </p>
 <p>
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
@@ -872,7 +873,7 @@ reach out with more details. Want to contribute to a Gitcoin Grant? <a href="htt
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream">on Friday at 5PM ET</a>!
+            Gitcoin Livestream is back this week, with a feature from the Aztec team working on ZK-Snarks! Join us <a href="https://gitcoin.co/livestream">on Friday at 5PM ET</a>!
         </li>
     </ul>
 </p>
@@ -882,34 +883,34 @@ Back to shipping,
 
 '''
     highlights = [{
-        'who': 'lrgeoemtry',
+        'who': 'iamonuwa',
         'who_link': True,
-        'what': 'Great Linux skills!',
-        'link': 'https://gitcoin.co/issue/HERCone/herc-edge-login/130/2114',
+        'what': 'Worked with Austin on the Burner Wallet!',
+        'link': 'https://gitcoin.co/issue/austintgriffith/burner-wallet/78/2158',
         'link_copy': 'View more',
     }, {
-        'who': 'johngrantuk',
+        'who': 'pvienhage',
         'who_link': True,
-        'what': 'More great work on the Burner Wallet!',
-        'link': 'https://gitcoin.co/issue/austintgriffith/burner-wallet/72/2111',
+        'what': 'Some more great work with OpenZeppelin!',
+        'link': 'https://gitcoin.co/issue/OpenZeppelin/openzeppelin-solidity/1596/2165',
         'link_copy': 'View more',
     }, {
-        'who': 'zyfrank',
+        'who': 'cpstl',
         'who_link': True,
-        'what': 'Great work on the Centrifuge repo!',
-        'link': 'https://gitcoin.co/issue/centrifuge/precise-proofs/43/2090',
+        'what': 'Our very own Gitcoin Ambassador Charles on the Core Dev calls!',
+        'link': 'https://gitcoin.co/issue/ethereum/pm/72/2163',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/austintgriffith/burner-wallet/issues/78',
-        'primer': 'Burner Wallet, a very important crypto project!',
+        'url': 'https://github.com/goerli/testnet/issues/9',
+        'primer': 'Huge bounty on Goerli, new test-net!',
     }, {
-        'url': 'https://github.com/gitcoinco/web/issues/3561',
-        'primer': 'Help us get images on the Gitcoin Blog!',
+        'url': 'https://github.com/w3f/Web3-collaboration/issues/62',
+        'primer': 'Create videos exploring Polkadot, a blockchain interoperability project!',
     }, {
-        'url': 'https://github.com/NethermindEth/nethermind/issues/334',
-        'primer': '.NET skills? Here is the bounty for you!',
+        'url': 'https://github.com/gitcoinco/web/issues/3514',
+        'primer': 'Help get the word out about Gitcoin with a Wiki!',
     }, ]
 
     num_leadboard_items = 5
