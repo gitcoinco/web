@@ -598,7 +598,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../exceptions/" title="Exceptions" class="md-nav__link">
+    <a href="../exceptions.md" title="Exceptions" class="md-nav__link">
       Exceptions
     </a>
   </li>
@@ -2109,12 +2109,12 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
 
 <p>Get the SVG templates for all avatar categories.
 <h2 id="avatar.utils.handle_avatar_payload">handle_avatar_payload</h2></p>
-<pre><code class="python">handle_avatar_payload(request)
+<pre><code class="python">handle_avatar_payload(body)
 </code></pre>
 
 <p>Handle the Avatar payload.
 <h2 id="avatar.utils.get_temp_image_file">get_temp_image_file</h2></p>
-<pre><code class="python">get_temp_image_file(url)
+<pre><code class="python">get_temp_image_file(image)
 </code></pre>
 
 <p>Fetch an image from a remote URL and hold in temporary IO.</p>
@@ -2122,14 +2122,6 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
     url (str): The remote image URL.</p>
 <p>Returns:
     BytesIO: The temporary BytesIO containing the image.</p>
-<h2 id="avatar.utils.get_github_avatar">get_github_avatar</h2>
-
-<pre><code class="python">get_github_avatar(handle)
-</code></pre>
-
-<p>Pull the latest avatar from Github and store in Avatar.png.</p>
-<p>Returns:
-    bool: Whether or not the Github avatar was updated.</p>
 <h2 id="avatar.utils.convert_img">convert_img</h2>
 
 <pre><code class="python">convert_img(obj, input_fmt='svg', output_fmt='png')

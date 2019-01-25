@@ -605,7 +605,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../exceptions/" title="Exceptions" class="md-nav__link">
+    <a href="../exceptions.md" title="Exceptions" class="md-nav__link">
       Exceptions
     </a>
   </li>
@@ -2116,103 +2116,50 @@ The argument must be an iterable if specified.
 <p>Built-in mutable sequence.</p>
 <p>If no argument is given, the constructor creates a new empty list.
 The argument must be an iterable if specified.
-<h2 id="avatar.admin.ProfileInline">ProfileInline</h2></p>
-<pre><code class="python">ProfileInline(self, parent_model, admin_site)
-</code></pre>
-
-<p>Define the Profile related name inline class.
-<h3 id="avatar.admin.ProfileInline.max_num">max_num</h3></p>
-<p>int([x]) -&gt; integer
-int(x, base=10) -&gt; integer</p>
-<p>Convert a number or string to an integer, or return 0 if no arguments
-are given.  If x is a number, return x.<strong>int</strong>().  For floating point
-numbers, this truncates towards zero.</p>
-<p>If x is not a number or if base is given, then x must be a string,
-bytes, or bytearray instance representing an integer literal in the
-given base.  The literal can be preceded by '+' or '-' and be surrounded
-by whitespace.  The base defaults to 10.  Valid bases are 0 and 2-36.
-Base 0 means to interpret the base from the string as an integer literal.</p>
-<blockquote>
-<blockquote>
-<blockquote>
-<p>int('0b100', base=0)
-4
-<h3 id="avatar.admin.ProfileInline.verbose_name">verbose_name</h3></p>
-</blockquote>
-</blockquote>
-</blockquote>
-<p>str(object='') -&gt; str
-str(bytes_or_buffer[, encoding[, errors]]) -&gt; str</p>
-<p>Create a new string object from the given object. If encoding or
-errors is specified, then the object must expose a data buffer
-that will be decoded using the given encoding and error handler.
-Otherwise, returns the result of object.<strong>str</strong>() (if defined)
-or repr(object).
-encoding defaults to sys.getdefaultencoding().
-errors defaults to 'strict'.
-<h3 id="avatar.admin.ProfileInline.verbose_name_plural">verbose_name_plural</h3></p>
-<p>str(object='') -&gt; str
-str(bytes_or_buffer[, encoding[, errors]]) -&gt; str</p>
-<p>Create a new string object from the given object. If encoding or
-errors is specified, then the object must expose a data buffer
-that will be decoded using the given encoding and error handler.
-Otherwise, returns the result of object.<strong>str</strong>() (if defined)
-or repr(object).
-encoding defaults to sys.getdefaultencoding().
-errors defaults to 'strict'.
-<h3 id="avatar.admin.ProfileInline.model">Profile</h3></p>
-<pre><code class="python">ProfileInline.Profile(self, *args, **kwargs)
-</code></pre>
-
-<p>Define the structure of the user profile.</p>
-<p>TODO:
-    * Remove all duplicate identity related information already stored on User.</p>
-<h2 id="avatar.admin.AvatarAdmin">AvatarAdmin</h2>
-
-<pre><code class="python">AvatarAdmin(self, model, admin_site)
-</code></pre>
-
-<p>Define the Avatar administration layout.
-<h3 id="avatar.admin.AvatarAdmin.fields">fields</h3></p>
+<h3 id="avatar.admin.GeneralAdmin.search_fields">search_fields</h3></p>
 <p>Built-in mutable sequence.</p>
 <p>If no argument is given, the constructor creates a new empty list.
 The argument must be an iterable if specified.
-<h3 id="avatar.admin.AvatarAdmin.inlines">inlines</h3></p>
-<p>Built-in mutable sequence.</p>
-<p>If no argument is given, the constructor creates a new empty list.
-The argument must be an iterable if specified.
-<h3 id="avatar.admin.AvatarAdmin.ordering">ordering</h3></p>
-<p>Built-in mutable sequence.</p>
-<p>If no argument is given, the constructor creates a new empty list.
-The argument must be an iterable if specified.
-<h3 id="avatar.admin.AvatarAdmin.readonly_fields">readonly_fields</h3></p>
-<p>Built-in mutable sequence.</p>
-<p>If no argument is given, the constructor creates a new empty list.
-The argument must be an iterable if specified.
-<h3 id="avatar.admin.AvatarAdmin.search_fields">search_fields</h3></p>
-<p>Built-in mutable sequence.</p>
-<p>If no argument is given, the constructor creates a new empty list.
-The argument must be an iterable if specified.
-<h3 id="avatar.admin.AvatarAdmin.svg_asset">svg_asset</h3></p>
-<pre><code class="python">AvatarAdmin.svg_asset(self, instance)
+<h3 id="avatar.admin.GeneralAdmin.svg_asset">svg_asset</h3></p>
+<pre><code class="python">GeneralAdmin.svg_asset(self, instance)
 </code></pre>
 
 <p>Define the avatar SVG tag to be displayed in the admin.
-<h3 id="avatar.admin.AvatarAdmin.custom_png_asset">custom_png_asset</h3></p>
-<pre><code class="python">AvatarAdmin.custom_png_asset(self, instance)
+<h3 id="avatar.admin.GeneralAdmin.png_asset">png_asset</h3></p>
+<pre><code class="python">GeneralAdmin.png_asset(self, instance)
 </code></pre>
 
-<p>Define the custom avatar PNG tag to be displayed in the admin.
-<h3 id="avatar.admin.AvatarAdmin.github_svg_asset">github_svg_asset</h3></p>
-<pre><code class="python">AvatarAdmin.github_svg_asset(self, instance)
+<p>Define the avatar PNG tag to be displayed in the admin.
+<h2 id="avatar.admin.BaseAvatarAdmin">BaseAvatarAdmin</h2></p>
+<pre><code class="python">BaseAvatarAdmin(self, model, admin_site)
 </code></pre>
 
-<p>Define the Github avatar PNG tag to be displayed in the admin.
-<h3 id="avatar.admin.AvatarAdmin.png_asset">png_asset</h3></p>
-<pre><code class="python">AvatarAdmin.png_asset(self, instance)
+<p>Define the Avatar administration layout.
+<h3 id="avatar.admin.BaseAvatarAdmin.fields">fields</h3></p>
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="avatar.admin.BaseAvatarAdmin.readonly_fields">readonly_fields</h3></p>
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="avatar.admin.BaseAvatarAdmin.search_fields">search_fields</h3></p>
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h2 id="avatar.admin.CustomAvatarAdmin">CustomAvatarAdmin</h2></p>
+<pre><code class="python">CustomAvatarAdmin(self, model, admin_site)
 </code></pre>
 
-<p>Define the avatar PNG tag to be displayed in the admin.</p>
+<p>Define the Avatar administration layout.
+<h3 id="avatar.admin.CustomAvatarAdmin.fields">fields</h3></p>
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="avatar.admin.CustomAvatarAdmin.readonly_fields">readonly_fields</h3></p>
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.</p>
                 
                   
                 
@@ -2248,13 +2195,13 @@ The argument must be an iterable if specified.
           </a>
         
         
-          <a href="../exceptions/" title="Exceptions" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../models/" title="Models" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Exceptions
+                Models
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">
