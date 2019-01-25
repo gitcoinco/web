@@ -2469,10 +2469,10 @@
   to_address: '0x44ef6e4d7ab3113f91cf4e64245f1af582cd1e98'
 - name: nimbus_pilot
   artist: nimbus
-  description: Awarded for running Nimbus in production
+  description: You contributed to the next-gen Ethereum 2.0 client, Nimbus
   platform: gitcoin
-  priceFinney: 5
-  numClonesAllowed: 10000
+  priceFinney: 50
+  numClonesAllowed: 50
   to_address: '0x04bb33C3A8c2D018836a1f938054Ebb59e0036B2'
   tags:
     - nimbus
