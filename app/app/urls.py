@@ -46,6 +46,7 @@ import retail.emails
 import retail.views
 import revenue.views
 import tdi.views
+from avatar.router import router as avatar_router
 from dashboard.router import router as dbrouter
 from grants.router import router as grant_router
 from kudos.router import router as kdrouter
@@ -93,6 +94,7 @@ urlpatterns = [
     url(r'^api/v0.1/', include(dbrouter.urls)),
     url(r'^api/v0.1/', include(kdrouter.urls)),
     url(r'^api/v0.1/', include(grant_router.urls)),
+    url(r'^api/v0.1/', include(avatar_router.urls)),
     url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active
     url(r'^api/v0.1/users_search/', dashboard.views.get_users, name='users_search'),
     url(r'^api/v0.1/kudos_search/', dashboard.views.get_kudos, name='kudos_search'),
