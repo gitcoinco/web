@@ -2484,8 +2484,8 @@
   artist: nimbus
   description: Awarded for running Nimbus Contributors
   platform: gitcoin
-  priceFinney: 5
-  numClonesAllowed: 10000
+  priceFinney: 50
+  numClonesAllowed: 500
   to_address: '0x04bb33C3A8c2D018836a1f938054Ebb59e0036B2'
   tags:
     - nimbus
