@@ -795,10 +795,10 @@ def render_new_bounty_roundup(to_email):
 Hi Gitcoiners,
 <p>
 <p>
-This week, <a href="https://medium.com/gitcoin/experiments-with-liberal-radicalism-ad68e02efd4">Forbes wrote an article</a> comparing
+This week, <a href="https://www.forbes.com/sites/jeffersonnunn/2019/01/21/bitcoin-autonomous-employment-workers-wanted/">Forbes wrote an article</a> comparing
 Gitcoin to traditional freelance platforms. While it's early days, we're excited about the possibility to do more to improve the
 abiity of individuals to dynamically interact with each other. If you're interested,
-<a href="https://medium.com/gitcoin/experiments-with-liberal-radicalism-ad68e02efd4">give it a read here.</a>
+<a href="https://www.forbes.com/sites/jeffersonnunn/2019/01/21/bitcoin-autonomous-employment-workers-wanted/">give it a read here.</a>
 </p>
 <p>
 <a href="https://gitcoin.co/requests">Gitcoin Requests</a> is a great way to try the platform if you haven't already. Request funding
