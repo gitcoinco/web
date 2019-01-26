@@ -1235,9 +1235,11 @@ def profile(request, handle):
 
     owned_kudos = profile.get_my_kudos.order_by('id', order_by)
     sent_kudos = profile.get_sent_kudos.order_by('id', order_by)
-
-    context['kudos'] = owned_kudos
-    context['sent_kudos'] = sent_kudos
+    kudos_limit = 8
+    context['kudos'] = owned_kudos[0:kudos_limit]
+    context['sent_kudos'] = sent_kudos[0:kudos_limit]
+    context['kudos_count'] = owned_kudos.count()
+    context['sent_kudos_count'] = sent_kudos.count()
 
     if request.method == 'POST' and request.is_ajax():
         # Send kudos data when new preferred address
