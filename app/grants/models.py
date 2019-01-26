@@ -185,6 +185,7 @@ class Grant(SuperModel):
         related_name='grant_teams',
         help_text=_('The team members contributing to this Grant.'),
     )
+    image_css = models.CharField(default='', blank=True, max_length=255, help_text=_('additional CSS to attach to the grant-banner img.'))
 
     # Grant Query Set used as manager.
     objects = GrantQuerySet.as_manager()

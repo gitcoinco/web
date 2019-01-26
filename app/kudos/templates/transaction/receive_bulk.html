@@ -39,7 +39,7 @@
       <br>
       <span id="kudosComment" class="d-block">
         {% if coupon.comments_to_put_in_kudos_transfer %}
-        From Sender: {{ coupon.comments_to_put_in_kudos_transfer }}
+        From Sender (<a href="{{coupon.sender_profile.url}}">@{{coupon.sender_profile.handle}}</a>): {{ coupon.comments_to_put_in_kudos_transfer }}
         {% endif %}
       </span>
     </div>

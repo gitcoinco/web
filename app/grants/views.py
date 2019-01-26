@@ -105,7 +105,7 @@ def grant_details(request, grant_id, grant_slug):
         subscriptions = grant.subscriptions.filter(active=True, error=False)
         cancelled_subscriptions = grant.subscriptions.filter(Q(active=False, error=False) | Q(error=True))
         contributions = Contribution.objects.filter(subscription__in=grant.subscriptions.all())
-        user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True, error=False).first()
+        user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
     except Grant.DoesNotExist:
         raise Http404
 

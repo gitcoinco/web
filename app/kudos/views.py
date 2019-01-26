@@ -630,7 +630,7 @@ def receive_bulk(request, secret):
         tx = contract.functions.clone(address, coupon.token.token_id, 1).buildTransaction({
             'nonce': nonce,
             'gas': 500000,
-            'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(5) * 10**9),
+            'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(2) * 10**9),
             'value': int(coupon.token.price_finney / 1000.0 * 10**18),
         })
 
@@ -677,6 +677,10 @@ def receive_bulk(request, secret):
                 coupon.num_uses_remaining -= 1
                 coupon.current_uses += 1
                 coupon.save()
+
+                # send email
+                maybe_market_kudos_to_email(kudos_transfer)
+
 
     title = f"Redeem AirDropped *{coupon.token.humanized_name}* Kudos"
     desc = f"This Kudos has been AirDropped to you.  About this Kudos: {coupon.token.description}"
