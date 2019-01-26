@@ -1272,30 +1272,19 @@ def profile(request, handle):
     context['sent_kudos_count'] = sent_kudos.count()
 
     if request.method == 'POST' and request.is_ajax():
-        # Send kudos data when new preferred address
-        address = request.POST.get('address')
-        context['kudos'] = profile.get_my_kudos.order_by('id', order_by)
-        context['sent_kudos'] = profile.get_sent_kudos.order_by('id', order_by)
-        profile.preferred_payout_address = address
-        kudos_html = loader.render_to_string('shared/profile_kudos.html', context)
-
-        try:
+        # Update profile address data when new preferred address is sent
+        validated = request.user.is_authenticated and request.user.username.lower() == profile.handle.lower()
+        if validated and request.POST.get('address'):
+            address = request.POST.get('address')
+            profile.preferred_payout_address = address
             profile.save()
-        except Exception as e:
-            logger.error(e)
-            msg = {
-                'status': 500,
-                'msg': _('Internal server error'),
-            }
-        else:
             msg = {
                 'status': 200,
                 'msg': _('Success!'),
                 'wallets': [profile.preferred_payout_address, ],
-                'kudos_html': kudos_html,
             }
 
-        return JsonResponse(msg, status=msg.get('status', 200))
+            return JsonResponse(msg, status=msg.get('status', 200))
     return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
 
