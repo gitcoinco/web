@@ -682,7 +682,7 @@ def receive_bulk(request, secret):
                 maybe_market_kudos_to_email(kudos_transfer)
 
 
-    title = f"Redeem AirDropped *{coupon.token.humanized_name}* Kudos"
+    title = f"Redeem {coupon.token.humanized_name} Kudos from @{coupon.sender_profile.handle}"
     desc = f"This Kudos has been AirDropped to you.  About this Kudos: {coupon.token.description}"
     params = {
         'title': title,

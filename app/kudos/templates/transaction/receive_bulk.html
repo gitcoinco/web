@@ -31,15 +31,35 @@
 {% block 'main' %}
 <section id="main" class="box-transaction">
   <header class="text-center">
-    <h1 class="h2 mt-5">{% trans "You've got a" %} <a style='color:black; text-decoration: underline;' href="{% url 'kudos_about' %}">{% trans "Kudos" %}</a></h1>
+    <h1 class="h2 mt-5">
+      <img style="max-height: 50px; max-width: 50px;" src="/dynamic/avatar/{{coupon.sender_profile.handle}}">
+      <a style='color:black; text-decoration: underline;' href="{{coupon.sender_profile.url}}">@{{coupon.sender_profile.handle}}</a>
+
+      {% trans "sent you a" %} <a style='color:black; text-decoration: underline;' href="{{coupon.token.url}}"><span id="kudosName" data-kudosname="{{ coupon.token.name }}" >{{ coupon.token.humanized_name }} </span>{% trans "Kudos" %}</a></h1>
 
     <div class="my-4">
-      <img src="{% static coupon.token.image %}" width="160" alt="" class="mb-2">
-      <h3 id="kudosName" data-kudosname="{{ coupon.token.name }}" class="d-block">{{ coupon.token.humanized_name }} </h3>
+      <img src="{% static coupon.token.image %}" width="320px" alt="" class="mb-2">
+      
       <br>
       <span id="kudosComment" class="d-block">
         {% if coupon.comments_to_put_in_kudos_transfer %}
-        From Sender (<a href="{{coupon.sender_profile.url}}">@{{coupon.sender_profile.handle}}</a>): {{ coupon.comments_to_put_in_kudos_transfer }}
+        with an attached message, just for you: 
+        <p style="  
+    width: 80%;
+    height: 100px;
+    background-color: #D0DEEB;
+    margin-top: 30px;
+    text-align: left;
+    padding: 10px 5px;
+    border-left: 2px solid #295379;
+    margin: 10px auto;
+    border-top: 1px solid #295389;
+    font-family: Muli;
+    background-image: linear-gradient(to bottom right, #D0DEEB, #DFBDD9);
+    font-weight: 600;
+        ">
+            {{ coupon.comments_to_put_in_kudos_transfer }}
+        </p>
         {% endif %}
       </span>
     </div>
@@ -74,7 +94,10 @@
 
 
       <div class="text-center">
-        <input id="receive" type='submit' class="btn btn-gc-purple" value="{% trans "Claim" %} Kudos 🙌" {% if disable_inputs %}disabled=disabled{%endif%} >
+        <input id="receive" type='submit' class="btn btn-gc-purple" value="🌈 {% trans "Redeem" %} Kudos 🏳️‍🌈" {% if disable_inputs %}disabled=disabled{%endif%} >
+        <br>
+        <br>
+        <a href="{% url 'kudos_about' %}">{% trans 'What is Kudos? ' %}🤔</a>
       </div>
     </form>
   </div>
