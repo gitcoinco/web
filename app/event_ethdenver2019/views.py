@@ -4,9 +4,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.http import Http404
 from django.shortcuts import redirect
-from app.utils import get_profile
 from .models import Event_ETHDenver2019_Customizing_Kudos
-from django.http import JsonResponse
 from dashboard.utils import get_nonce, get_web3
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from kudos.utils import kudos_abi
@@ -16,44 +14,6 @@ from web3 import Web3
 from kudos.models import BulkTransferCoupon, BulkTransferRedemption, KudosTransfer, Token
 
 '''
-def ethdenver2019_web3api_getKudos(request):
-    # kudos_select = KudosTransfer.objects.filter(recipient_profile=profile).all()
-
-    i_kudos_item = 0
-    kudos_selection = []
-    kudos_row = []
-    kudos_selected = Event_ETHDenver2019_Customizing_Kudos.objects.filter(active=True).all()
-
-    for kudos in kudos_selected:
-        kudos_obj = {
-            "kudos": kudos.kudos_required,
-            "received": False,
-            "customizing": kudos,
-            # "expanded_kudos": vars(kudos.kudos_required)
-        }
-        recv = kudos_select.filter(kudos_token_cloned_from=kudos.kudos_required).last()
-        if recv:
-            kudos_obj['received'] = True
-            kudos_obj['transfer'] = recv
-
-        kudos_row.append(kudos_obj)
-        i_kudos_item = i_kudos_item + 1
-        if i_kudos_item >= 5:
-            i_kudos_item = 0
-            kudos_selection.append(kudos_row)
-            kudos_row = []
-
-    if i_kudos_item > 0:
-        kudos_selection.append(kudos_row)
-
-    page_ctx = {
-        "kudos_selection": kudos_selection,
-    }
-
-    return JsonResponse(page_ctx)
-
-
-
 def ethdenver2019_redeem(request):
     profile = get_profile(request)
     if profile is None:
@@ -78,48 +38,6 @@ def ethdenver2019_redeem(request):
         page_ctx['success'] = False
 
     return TemplateResponse(request, 'ethdenver2019/redeem.html', page_ctx)
-
-
-def ethdenver2019(request):
-    profile = get_profile(request)
-    if profile is None:
-        return TemplateResponse(request, 'ethdenver2019/notloggedin.html', {})
-
-    kudos_select = KudosTransfer.objects.filter(recipient_profile=profile).all()
-
-    i_kudos_item = 0
-    kudos_selection = []
-    kudos_row = []
-    kudos_selected = Event_ETHDenver2019_Customizing_Kudos.objects.filter(active=True).all()
-
-    for kudos in kudos_selected:
-        kudos_obj = {
-            "kudos": kudos.kudos_required,
-            "received": False,
-            "customizing": kudos,
-            # "expanded_kudos": vars(kudos.kudos_required)
-        }
-        recv = kudos_select.filter(kudos_token_cloned_from=kudos.kudos_required).last()
-        if recv:
-            kudos_obj['received'] = True
-            kudos_obj['transfer'] = recv
-
-        kudos_row.append(kudos_obj)
-        i_kudos_item = i_kudos_item + 1
-        if i_kudos_item >= 5:
-            i_kudos_item = 0
-            kudos_selection.append(kudos_row)
-            kudos_row = []
-
-    if i_kudos_item > 0:
-        kudos_selection.append(kudos_row)
-
-    page_ctx = {
-        "kudos_selection": kudos_selection,
-        "profile": profile
-        }
-
-    return TemplateResponse(request, 'ethdenver2019/kudosprogress.html', page_ctx)
 '''
 
 def ethdenver2019(request):
@@ -131,7 +49,7 @@ def ethdenver2019(request):
     i_kudos_item = 0
     kudos_selection = []
     kudos_row = []
-    kudos_selected = Event_ETHDenver2019_Customizing_Kudos.objects.filter(active=True).all()
+    kudos_selected = Event_ETHDenver2019_Customizing_Kudos.objects.filter(active=True, final=False).all()
 
     for kudos in kudos_selected:
         kudos_obj = {
@@ -169,9 +87,15 @@ def receive_bulk_ethdenver(request, secret):
 
     coupon = coupons.first()
 
-    eventobjs = Event_ETHDenver2019_Customizing_Kudos.objects.filter(active=True).filter(kudos_required=coupon.token)
+    eventobjs = Event_ETHDenver2019_Customizing_Kudos.objects.filter(active=True,final=False).filter(kudos_required=coupon.token)
     if not eventobjs.exists():
         raise Http404
+
+    address = Web3.toChecksumAddress(request.POST.get('forwarding_address'))
+    already_claimed = KudosTransfer.objects.filter(receive_address=address,kudos_token_cloned_from=coupon.token)
+    if already_claimed is not None:
+        messages.info(request, f'You already redeemed this kudos! If you think this wrong contact the ETHDenver Team!')
+        return redirect(coupon.token.url)
 
     if coupon.num_uses_remaining <= 0:
         messages.info(request, f'Sorry but this kudos redeem link has expired! Please contact the person who sent you the coupon link, or contact your nearest Gitcoin representative.')
