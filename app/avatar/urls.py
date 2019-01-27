@@ -24,9 +24,9 @@ from .views import activate_avatar, avatar, save_custom_avatar, save_github_avat
 
 app_name = 'avatar'
 urlpatterns = [
-        re_path(r'^view', avatar, name='view_avatar'),
-        re_path(r'^github/save', save_github_avatar, name='save_github_avatar'),
-        re_path(r'^custom/save', save_custom_avatar, name='save_avatar_custom'),
-        re_path(r'^activate', activate_avatar, name='activate_avatar'),
-        re_path(r'^select-preset', select_preset_avatar, name='select_preset_avatar'),
-    ]
+    re_path(r'^view', avatar, name='view_avatar'),
+    re_path(r'^github/save', save_github_avatar, name='save_github_avatar'),
+    re_path(r'^custom/save', save_custom_avatar, name='save_avatar_custom'),
+    re_path(r'^activate', activate_avatar, name='activate_avatar'),
+    re_path(r'^select-preset', select_preset_avatar, name='select_preset_avatar'),
+]
