@@ -422,7 +422,7 @@ def send_4(request):
     record_kudos_activity(
         kudos_transfer,
         kudos_transfer.from_username,
-        'new_kudos' if kudos_transfer.username else 'new_crowdfund'
+        'new_kudos',
     )
     return JsonResponse(response)
 
@@ -487,7 +487,8 @@ def record_kudos_activity(kudos_transfer, github_handle, event_name):
         return
 
     try:
-        kwargs['bounty'] = kudos_transfer.bounty
+        if kudos_transfer.bounty:
+            kwargs['bounty'] = kudos_transfer.bounty
     except Exception:
         pass
 
