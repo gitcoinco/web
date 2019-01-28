@@ -714,6 +714,36 @@ def social_contribution(request):
     return TemplateResponse(request, 'social_contribution.html', params)
 
 
+def social_contribution_modal(request):
+    # TODO: will be changed to the new share
+    """Social Contributuion to the bounty.
+
+    Args:
+        pk (int): The primary key of the bounty to be accepted.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The accept bounty view.
+
+    """
+    bounty = handle_bounty_views(request)
+    promo_text = str(_("Check out this bounty that pays out ")) + f"{bounty.get_value_true} {bounty.token_name} {bounty.url}"
+    for keyword in bounty.keywords_list:
+        promo_text += f" #{keyword}"
+
+    params = get_context(
+        ref_object=bounty,
+        user=request.user if request.user.is_authenticated else None,
+        confirm_time_minutes_target=confirm_time_minutes_target,
+        active='social_contribute',
+        title=_('Social Contribute'),
+    )
+    params['promo_text'] = promo_text
+    return TemplateResponse(request, 'social_contribution_modal.html', params)
+
+
 def payout_bounty(request):
     """Payout the bounty.
 
