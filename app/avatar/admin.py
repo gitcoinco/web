@@ -58,6 +58,7 @@ class BaseAvatarAdmin(GeneralAdmin):
     fields = ['svg_asset', 'png_asset', 'created_on', 'modified_on', 'profile', 'hash', 'active']
     readonly_fields = ['svg_asset', 'png_asset', 'created_on', 'modified_on', 'hash']
     search_fields = ['profile__handle']
+    raw_id_fields = ['profile']
 
 
 class CustomAvatarAdmin(GeneralAdmin):
@@ -68,6 +69,7 @@ class CustomAvatarAdmin(GeneralAdmin):
         'active'
     ]
     readonly_fields = ['svg_asset', 'png_asset', 'created_on', 'modified_on', 'hash']
+    raw_id_fields = ['profile']
 
     def save_model(self, request, obj, form, change):
         custom_avatar = CustomAvatar.create(None, json.loads(request.POST.get('config')))
