@@ -187,10 +187,10 @@ def get_avatar_context():
                 'options': (
                     'anchors', 'circuit', 'jigsaw', 'lines', 'gears', 'clouds', 'signal', 'polka_dots',
                     'polka_dots_black', 'squares', 'shapes', 'sunburst', 'sunburst_pastel', 'rainbow',
+                    'portal', 'space', 'bokeh', 'bokeh2', 'bokeh3', 'bokeh4', 'bokeh5',
+                    'fire'
                 ),
                 'paid_options': {
-                    'sunburst_pastel': 0.01,
-                    'rainbow': 0.01,
                 },
             }
         ],
