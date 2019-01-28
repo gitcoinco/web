@@ -49,7 +49,7 @@
 
     <div class="my-4">
 
-      <div id="kudos-image" class="w-100" style="height: 600px; width: 60% cursor: grabbing;">
+      <div id="kudos-image" class="w-100" style="">
         {% include 'shared/kudos_levitate.html' %}
         <img src="{% static coupon.token.image %}" style="width: 100%;" alt="{{ coupon.token.name }}" >
       </div>
@@ -135,6 +135,20 @@
   </script>
 {% endif %}
 </section>
+<style>
+  #kudos-image {
+    height: 600px; width: 60%;
+    cursor: grabbing;
+  }
+  @media screen and (max-width: 520px) {
+    #Layer_14{
+      display: none;
+    }
+    #kudos-image{
+      height: 450px;
+    }
+  }
+</style>
 <script src="{% static 'v2/js/tweenlite.js' %}"></script>
 <link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
