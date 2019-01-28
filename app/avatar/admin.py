@@ -63,8 +63,10 @@ class BaseAvatarAdmin(GeneralAdmin):
 class CustomAvatarAdmin(GeneralAdmin):
     """Define the Avatar administration layout."""
 
-    fields = ['svg_asset', 'png_asset', 'created_on', 'modified_on', 'profile', 'hash', 'config',
-              'recommended_by_staff', 'active']
+    fields = [
+        'svg_asset', 'png_asset', 'created_on', 'modified_on', 'profile', 'hash', 'config', 'recommended_by_staff',
+        'active'
+    ]
     readonly_fields = ['svg_asset', 'png_asset', 'created_on', 'modified_on', 'hash']
 
     def save_model(self, request, obj, form, change):

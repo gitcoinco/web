@@ -97,6 +97,8 @@ var rotate_kudos_msg = function() {
 
 
 var start_kudos_levitate = function() {
+  if (document.suppress_kudos_levitate_hover)
+    return false;
   $('.kudos_levitate_container').css('display', 'block');
   var sapphire = document.getElementById('kudos-image');
   var shadow = document.getElementById('shadow');
@@ -134,6 +136,8 @@ var start_kudos_levitate = function() {
 };
 
 var stop_kudos_levitate = function() {
+  if (document.suppress_kudos_levitate_hover)
+    return false;
   $('.kudos_levitate_container').css('display', 'none');
   TweenMax.killAll(false, true, false);
 

@@ -13,8 +13,8 @@ logger = logging.getLogger(__name__)
 class UserAvatarsViewSet(viewsets.ReadOnlyModelViewSet):
 
     serializer_class = BaseAvatarSerializer
-    filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
-    permission_classes = (IsAuthenticated,)
+    filter_backends = (django_filters.rest_framework.DjangoFilterBackend, )
+    permission_classes = (IsAuthenticated, )
 
     def get_queryset(self):
         return BaseAvatar.objects.all().order_by('-id').filter(profile__pk=self.request.user.profile.pk)
@@ -23,8 +23,8 @@ class UserAvatarsViewSet(viewsets.ReadOnlyModelViewSet):
 class RecommendedByStaffAvatarsViewSet(viewsets.ReadOnlyModelViewSet):
 
     serializer_class = CustomAvatarSerializer
-    filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
-    permission_classes = (IsAuthenticated,)
+    filter_backends = (django_filters.rest_framework.DjangoFilterBackend, )
+    permission_classes = (IsAuthenticated, )
 
     def get_queryset(self):
         return CustomAvatar.objects.all().order_by('-id').filter(recommended_by_staff=True)
@@ -32,5 +32,4 @@ class RecommendedByStaffAvatarsViewSet(viewsets.ReadOnlyModelViewSet):
 
 router = routers.DefaultRouter()
 router.register(r'user-avatars', UserAvatarsViewSet, base_name="user_avatars")
-router.register(r'recommended-by-staff', RecommendedByStaffAvatarsViewSet,
-                base_name="recommended_by_staff_avatars")
+router.register(r'recommended-by-staff', RecommendedByStaffAvatarsViewSet, base_name="recommended_by_staff_avatars")
