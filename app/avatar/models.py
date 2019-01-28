@@ -57,6 +57,12 @@ class BaseAvatar(SuperModel):
     hash = models.CharField(max_length=256)
 
     @property
+    def __str__(self):
+        """Return the str representing this avatar."""
+        return f"{self.profile} created {self.created_on}"
+
+
+    @property
     def avatar_url(self):
         """Return the appropriate avatar URL."""
         if self.png:
@@ -185,6 +191,11 @@ class CustomAvatar(BaseAvatar):
 
     def to_dict(self):
         return self.config
+
+    @property
+    def __str__(self):
+        """Return the str representing this avatar."""
+        return f"{self.profile} created {self.created_on}"
 
 
 class SocialAvatar(BaseAvatar):
