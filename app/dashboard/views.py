@@ -1187,7 +1187,7 @@ def profile(request, handle):
 
     try:
         if not handle and not request.user.is_authenticated:
-            return redirect('index')
+            return redirect('funder_bounties')
 
         if not handle:
             handle = request.user.username

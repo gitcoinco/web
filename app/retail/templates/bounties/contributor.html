@@ -40,11 +40,11 @@
     {% include 'shared/nav.html' %}
     <div id="landing_page_wrapper">
       <div class="container-fluid header header-contributor">
-        {% include 'landing/contributor/hero.html' %}
+        {% include 'bounties/contributor/hero.html' %}
       </div>
 
       <div class="container-fluid p-5 benefits_container">
-        {% include 'landing/contributor/benefits.html' %}
+        {% include 'bounties/contributor/benefits.html' %}
       </div>
 
       <div class="container-fluid pb-5 landing__newsletter">
@@ -53,13 +53,13 @@
 
       {% if tech_stack %}
         <div class="container-fluid p-5 open-bounties">
-          {% include 'landing/contributor/explorer.html' %}
+          {% include 'bounties/contributor/explorer.html' %}
         </div>
       {% endif %}
 
       {% if activities|length %}
         <div class="container-fluid p-5 activity">
-          {% include 'landing/contributor/activity.html' %}
+          {% include 'bounties/contributor/activity.html' %}
         </div>
       {% endif %}
 
@@ -72,7 +72,7 @@
       </div>
 
       <div class="container-fluid p-5 pilot-container projects-container">
-        {% include "landing/contributor/projects.html" %}
+        {% include "bounties/contributor/projects.html" %}
       </div>
 
       <div class="container-fluid py-5 px-0 testimonial-container">
@@ -84,7 +84,7 @@
         {% include "shared/testimonials.html" %}
       </div>
 
-      {% include 'landing/contributor/gitcoiners.html' %}
+      {% include 'bounties/contributor/gitcoiners.html' %}
 
       <div class="container-fluid py-5 px-0 contributors-cta">
         <div class="row mb-4 align-items-center">
