@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import json
 import logging
 import re
+import urllib.parse
 
 from django.conf import settings
 from django.contrib import messages
@@ -45,7 +46,6 @@ from git.utils import get_emails_by_category, get_emails_master, get_github_prim
 from kudos.utils import kudos_abi
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
-import urllib.parse
 from web3 import Web3
 
 from .forms import KudosSearchForm
