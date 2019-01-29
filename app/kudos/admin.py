@@ -33,6 +33,11 @@ class BulkTransferCouponAdmin(admin.ModelAdmin):
     ordering = ['-id']
     list_display = ['created_on', '__str__']
     raw_id_fields = ['sender_profile', 'token']
+    readonly_fields = ['claim']
+
+    def claim(self, instance):
+        url = f"/kudos/redeem/{instance.secret}"
+        return format_html(f"<a href={url}>{url}</a>")
 
 
 class BulkTransferRedemptionAdmin(admin.ModelAdmin):

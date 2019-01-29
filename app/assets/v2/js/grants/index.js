@@ -20,13 +20,20 @@ $(document).ready(() => {
     $(e.currentTarget).toggleClass('turn');
   });
 
-  waitforWeb3(function() {
-    const linkURL = etherscan_tx_url($('#tx_id').val());
-    
-    $('#tx_link').attr('href', linkURL);
+  waitforWeb3(() => {
+    let _network = $('#grant-network').html();
+    let links = $('.etherscan_link');
+
+    etherscanUrlConvert(links, _network);
   });
 
 });
+
+const etherscanUrlConvert = (elem, network) => {
+  elem.each(function() {
+    $(this).attr('href', etherscan_tx_url($(this).attr('href'), network));
+  });
+};
 
 const searchGrant = () => {
   $('#sort_option').on('change', function(e) {

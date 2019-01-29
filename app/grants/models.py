@@ -173,18 +173,26 @@ class Grant(SuperModel):
         help_text=_('The Grant administrator\'s profile.'),
         null=True,
     )
+    request_ownership_change = models.ForeignKey(
+        'dashboard.Profile',
+        related_name='request_ownership_change',
+        on_delete=models.CASCADE,
+        help_text=_('The Grant\'s potential new administrator profile.'),
+        null=True,
+    )
     team_members = models.ManyToManyField(
         'dashboard.Profile',
         related_name='grant_teams',
         help_text=_('The team members contributing to this Grant.'),
     )
+    image_css = models.CharField(default='', blank=True, max_length=255, help_text=_('additional CSS to attach to the grant-banner img.'))
 
     # Grant Query Set used as manager.
     objects = GrantQuerySet.as_manager()
 
     def __str__(self):
         """Return the string representation of a Grant."""
-        return f"id: {self.pk}, active: {self.active}, title: {self.title}, description: {self.description}"
+        return f"id: {self.pk}, active: {self.active}, title: {self.title}"
 
     def percentage_done(self):
         """Return the percentage of token received based on the token goal."""

@@ -3,6 +3,17 @@
   color: #0D0764;
 }
 
+.banner-img {
+  max-height: 22rem;
+  overflow-y: hidden;
+}
+
+.banner-img img {
+  height: auto;
+  width: 100%;
+  object-fit: cover;
+}
+
 #grants_form .form__input.error {
   background-position: top 0.55rem right 0.5rem;
 }
@@ -14,12 +25,6 @@
 .select2-container--default .select2-selection--single,
 #grants_form input {
   border-color: #0D0764 !important;
-}
-
-.grant-banner img {
-  max-height: 20rem;
-  width: 100%;
-  overflow-y: hidden;
 }
 
 .grant-banner {

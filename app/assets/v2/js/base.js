@@ -43,7 +43,7 @@ $(document).ready(function() {
 
     var parentSiblings = parent.siblings('.nav-item');
 
-    parent.find('.dropdown-menu').toggle();
+    parent.find('.dropdown-menu').toggle().toggleClass('show');
     parentSiblings.find('.dropdown-menu').hide();
   });
 
@@ -120,8 +120,8 @@ $(document).ready(function() {
   $('.accordion').on('click', (event) => {
     const element = $(event.target);
 
-    element.classList.toggle('active');
-    let panel = element.nextElementSibling;
+    element.toggleClass('active');
+    let panel = element[0].nextElementSibling;
 
     if (panel.style.maxHeight) {
       panel.style.maxHeight = null;

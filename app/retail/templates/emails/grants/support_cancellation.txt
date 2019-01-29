@@ -6,7 +6,7 @@
 
 {% trans "Thank you for everything you have contributed!" %}
 
-{{ grant.description }}
+{% trans "Description:" %} : {{ grant.description }}
 
 {% trans "Your Contribution" %}
 

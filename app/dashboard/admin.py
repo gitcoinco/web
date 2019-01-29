@@ -74,7 +74,7 @@ class FeedbackAdmin(admin.ModelAdmin):
     ordering = ['-id']
 
 class ProfileAdmin(admin.ModelAdmin):
-    raw_id_fields = ['user', 'avatar', 'preferred_kudos_wallet']
+    raw_id_fields = ['user', 'preferred_kudos_wallet']
     ordering = ['-id']
     search_fields = ['email', 'data']
     list_display = ['handle', 'created_on']

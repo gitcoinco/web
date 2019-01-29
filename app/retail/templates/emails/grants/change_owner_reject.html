@@ -1,0 +1,105 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License as published
+ by the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU Affero General Public License for more details.
+
+ You should have received a copy of the GNU Affero General Public License
+ along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static grants_extra %}
+
+{% block content %}
+
+<style>
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+
+  hr {
+    width: 80%;
+    height: 2px;
+    border-radius: 25px;
+    border: none;
+    background-color: #D2D2D2;
+  }
+
+  .grant-info {
+    padding-top: 30px;
+    padding-bottom: 1%;
+  }
+
+  .grant-info a img {
+    margin-bottom: 10px;
+  }
+
+  .grant-info-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #0D0764;
+  }
+
+  #grant-logo {
+    max-width: 25rem;
+    width: 100%;
+    margin-top: 2rem;
+  }
+
+  #grow-oss {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .grant-button {
+    padding: 12px 36px;
+    font-size: 12px;
+    border-radius: 3px;
+    text-decoration: none;
+    background-color: #0D0764;
+    color: white;
+    font-weight: 600;
+  }
+
+  .grant-link {
+    margin-top: 3rem;
+  }
+
+  .reject {
+    background-color: #ca001a;
+  }
+</style>
+
+<img src="{% static "v2/images/grant-ended.png" %}" alt="{% trans "Grant Ended" %}" title="{% trans "Grant Ended" %}" width="75px" height="75px">
+<h1>{{ grant.title }} ownership has not changed.</h1>
+
+<p style="margin-bottom:1.25rem;">
+  {{ grant.admin_profile.handle }}  {% trans "continues to be the grant owner" %}.
+</p>
+<hr>
+
+<div class="grant-info">
+  <a href="{% url 'grants:details' grant.id grant.slug %}">
+    <img id="grant-logo" src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}" alt="grant logo" >
+  </a>
+</div>
+
+<p class="grant-link">
+  <a class="grant-button" href="{% url 'grants:details' grant.pk grant.slug %}">{% trans "View Grant" %}</a>
+</p>
+<br>
+<hr>
+{% endblock %}
