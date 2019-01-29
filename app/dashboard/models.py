@@ -1689,10 +1689,15 @@ class Profile(SuperModel):
 
     """
 
+    JOB_SEARCH_STATUS = [
+        ('AL', 'Actively looking for work'),
+        ('PL', 'Passively looking and open to hearing new opportunities'),
+        ('N', 'Not open to hearing new opportunities'),
+    ]
+
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
     data = JSONField()
     handle = models.CharField(max_length=255, db_index=True, unique=True)
-    avatar = models.ForeignKey('avatar.Avatar', on_delete=models.SET_NULL, null=True, blank=True)
     last_sync_date = models.DateTimeField(null=True)
     email = models.CharField(max_length=255, blank=True, db_index=True)
     github_access_token = models.CharField(max_length=255, blank=True, db_index=True)
@@ -1722,7 +1727,12 @@ class Profile(SuperModel):
     preferred_kudos_wallet = models.OneToOneField('kudos.Wallet', related_name='preferred_kudos_wallet', on_delete=models.SET_NULL, null=True, blank=True)
     max_tip_amount_usdt_per_tx = models.DecimalField(default=500, decimal_places=2, max_digits=50)
     max_tip_amount_usdt_per_week = models.DecimalField(default=1500, decimal_places=2, max_digits=50)
-    last_visit = models.DateTimeField(null=True)
+    last_visit = models.DateTimeField(null=True, blank=True)
+    job_search_status = models.CharField(max_length=2, choices=JOB_SEARCH_STATUS, blank=True)
+    show_job_status = models.BooleanField(
+        default=False,
+        help_text='If this option is chosen, we will not show job search status',
+    )
 
     objects = ProfileQuerySet.as_manager()
 
@@ -1763,6 +1773,10 @@ class Profile(SuperModel):
         kudos_transfers = kudos_transfers.distinct('id')
 
         return kudos_transfers
+
+    @property
+    def job_status_verbose(self):
+        return dict(Profile.JOB_SEARCH_STATUS)[self.job_search_status]
 
     @property
     def is_org(self):
@@ -2061,13 +2075,17 @@ class Profile(SuperModel):
         }
 
     @property
+    def active_avatar(self):
+        return self.avatar_baseavatar_related.filter(active=True).first()
+
+    @property
     def github_url(self):
         return f"https://github.com/{self.handle}"
 
     @property
     def avatar_url(self):
-        if self.avatar:
-            return self.avatar.avatar_url
+        if self.active_avatar:
+            return self.active_avatar.avatar_url
         return f"{settings.BASE_URL}dynamic/avatar/{self.handle}"
 
     @property
@@ -2380,6 +2398,10 @@ class Profile(SuperModel):
 
         return all_activities
 
+    def activate_avatar(self, avatar_pk):
+        self.avatar_baseavatar_related.update(active=False)
+        self.avatar_baseavatar_related.filter(pk=avatar_pk).update(active=True)
+
     def to_dict(self, activities=True, leaderboards=True, network=None, tips=True):
         """Get the dictionary representation with additional data.
 
@@ -2564,7 +2586,6 @@ def normalize_tip_usernames(sender, instance, **kwargs):
 
 
 m2m_changed.connect(m2m_changed_interested, sender=Bounty.interested.through)
-# m2m_changed.connect(changed_fulfillments, sender=Bounty.fulfillments)
 
 
 class UserAction(SuperModel):

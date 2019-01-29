@@ -77,16 +77,16 @@ def get_profile(handle):
 
 def about(request):
     """Render the Kudos 'about' page."""
+    activity_limit = 5
     listings = Token.objects.select_related('contract').filter(
         num_clones_allowed__gt=0,
         contract__is_latest=True,
         contract__network=settings.KUDOS_NETWORK,
         hidden=False,
     ).order_by('-popularity_week').cache()
-    activities = Activity.objects.select_related('bounty').filter(
-        bounty__network='mainnet',
+    activities = Activity.objects.filter(
         activity_type='new_kudos',
-    ).order_by('-created').cache()
+    ).order_by('-created').cache()[0:activity_limit]
 
     context = {
         'is_outside': True,
@@ -422,7 +422,7 @@ def send_4(request):
     record_kudos_activity(
         kudos_transfer,
         kudos_transfer.from_username,
-        'new_kudos' if kudos_transfer.username else 'new_crowdfund'
+        'new_kudos',
     )
     return JsonResponse(response)
 
@@ -487,7 +487,8 @@ def record_kudos_activity(kudos_transfer, github_handle, event_name):
         return
 
     try:
-        kwargs['bounty'] = kudos_transfer.bounty
+        if kudos_transfer.bounty:
+            kwargs['bounty'] = kudos_transfer.bounty
     except Exception:
         pass
 
@@ -626,10 +627,11 @@ def receive_bulk(request, secret):
         kudos_owner_address = Web3.toChecksumAddress(settings.KUDOS_OWNER_ACCOUNT)
         w3 = get_web3(coupon.token.contract.network)
         contract = w3.eth.contract(Web3.toChecksumAddress(kudos_contract_address), abi=kudos_abi())
+        nonce = w3.eth.getTransactionCount(kudos_owner_address)
         tx = contract.functions.clone(address, coupon.token.token_id, 1).buildTransaction({
-            'nonce': get_nonce(coupon.token.contract.network, kudos_owner_address),
+            'nonce': nonce,
             'gas': 500000,
-            'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(5) * 10**9),
+            'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(2) * 10**9),
             'value': int(coupon.token.price_finney / 1000.0 * 10**18),
         })
 
@@ -656,7 +658,7 @@ def receive_bulk(request, secret):
                     network=coupon.token.contract.network,
                     from_address=settings.KUDOS_OWNER_ACCOUNT,
                     is_for_bounty_fulfiller=False,
-                    metadata={'coupon_redemption': True},
+                    metadata={'coupon_redemption': True, 'nonce': nonce},
                     recipient_profile=profile,
                     sender_profile=coupon.sender_profile,
                     txid=txid,
@@ -677,7 +679,11 @@ def receive_bulk(request, secret):
                 coupon.current_uses += 1
                 coupon.save()
 
-    title = f"Redeem AirDropped *{coupon.token.humanized_name}* Kudos"
+                # send email
+                maybe_market_kudos_to_email(kudos_transfer)
+
+
+    title = f"Redeem {coupon.token.humanized_name} Kudos from @{coupon.sender_profile.handle}"
     desc = f"This Kudos has been AirDropped to you.  About this Kudos: {coupon.token.description}"
     params = {
         'title': title,

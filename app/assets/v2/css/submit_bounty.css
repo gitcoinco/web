@@ -1,8 +1,10 @@
-.submit_bounty .submit_bounty_content {
+.submit_bounty .submit_bounty_content,
+.fulfill_bounty .submit_bounty_content {
   background-color: #f2f6f9;
 }
 
-.submit_bounty .submit_bounty_form {
+.submit_bounty .submit_bounty_form,
+.fulfill_bounty .submit_bounty_form {
   background-color: #FFFFFF;
 }
 
@@ -22,13 +24,6 @@ input:read-only {
   background-color: #eaeaea94;
 }
 
-textarea:-moz-read-only { /* For Firefox */
-  background-color: #eaeaea94;
-}
-
-textarea:read-only { 
-  background-color: #eaeaea94;
-}
 
 #primary_form .revisions {
   min-height: 37px;
@@ -78,6 +73,11 @@ textarea:read-only {
 #pricing-section .form__input,
 #pricing-section .form__select2 {
   height: 37px;
+}
+
+.select2-container--default .select2-selection--single {
+  border-color:#D3D3D3 !important;
+  font-size: 14px;
 }
 
 #issue-details,
@@ -134,12 +134,23 @@ textarea:read-only {
   margin-right: .5rem;
 }
 
-@media (max-width: 600px) {
-  #pricing-section .form__flex-group {
-    display: block;
+#reservedForDiv .select2-selection__arrow {
+  height: 2.5rem !important;
+  right: 6px;
+}
+
+@media (max-width: 767.98px) {
+  .select2-container {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 575.98px) {
+  #pricing-section .form__amount-wrapper {
+    width: 100%;
   }
 
-  #pricing-section .form__amount--wrapper {
-    width: 100%;
+  #pricing-section .form__flex-group {
+    display: block;
   }
 }

@@ -22,13 +22,18 @@ $(document).ready(() => {
 
   waitforWeb3(() => {
     let _network = $('#grant-network').html();
+    let links = $('.etherscan_link');
 
-    $('#sub_tx_link').attr('href', etherscan_tx_url($('#sub_tx_link').attr('href'), _network));
-    $('#tx_link').attr('href', etherscan_tx_url($('#tx_link').attr('href'), _network));
-    $('#cancel_tx_link').attr('href', etherscan_tx_url($('#cancel_tx_link').attr('href'), _network));
+    etherscanUrlConvert(links, _network);
   });
 
 });
+
+const etherscanUrlConvert = (elem, network) => {
+  elem.each(function() {
+    $(this).attr('href', etherscan_tx_url($(this).attr('href'), network));
+  });
+};
 
 const searchGrant = () => {
   $('#sort_option').on('change', function(e) {
