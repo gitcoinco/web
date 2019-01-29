@@ -46,16 +46,19 @@ class BaseAvatar(SuperModel):
 
     active = models.BooleanField(default=False)
     profile = models.ForeignKey(
-        'dashboard.Profile', null=True, on_delete=models.CASCADE, related_name="%(app_label)s_%(class)s_related",
+        'dashboard.Profile',
+        null=True,
+        on_delete=models.CASCADE,
+        related_name="%(app_label)s_%(class)s_related",
         blank=True
     )
-    svg = models.FileField(
-        upload_to=get_upload_filename, null=True, blank=True, help_text=_('The avatar SVG.')
-    )
-    png = models.ImageField(
-        upload_to=get_upload_filename, null=True, blank=True, help_text=_('The avatar PNG.'),
-    )
+    svg = models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('The avatar SVG.'))
+    png = models.ImageField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('The avatar PNG.'), )
     hash = models.CharField(max_length=256)
+
+    def __str__(self):
+        """Return the str representing this avatar."""
+        return f"{self.profile} created {self.created_on}"
 
     @property
     def avatar_url(self):
@@ -129,10 +132,7 @@ class CustomAvatar(BaseAvatar):
 
     @classmethod
     def create(cls, profile, config_json):
-        avatar = cls(
-            profile=profile,
-            config=config_json,
-        )
+        avatar = cls(profile=profile, config=config_json, )
         avatar.create_from_config()
         try:
             avatar_png = avatar.convert_field(avatar.svg, 'svg', 'png')
@@ -146,8 +146,7 @@ class CustomAvatar(BaseAvatar):
         return avatar
 
     def select(self, profile):
-        new_avatar = CustomAvatar(profile=profile, config=self.config, svg=self.svg,
-                                  png=self.png, hash=self.hash)
+        new_avatar = CustomAvatar(profile=profile, config=self.config, svg=self.svg, png=self.png, hash=self.hash)
         similar_avatar = new_avatar.find_similar()
         if similar_avatar:
             return similar_avatar
@@ -191,16 +190,17 @@ class CustomAvatar(BaseAvatar):
     def to_dict(self):
         return self.config
 
+    def __str__(self):
+        """Return the str representing this avatar."""
+        return f"{self.profile} created {self.created_on}"
+
 
 class SocialAvatar(BaseAvatar):
 
     @classmethod
     def github_avatar(cls, profile, avatar_img):
         avatar_hash = BaseAvatar.calculate_hash(avatar_img)
-        avatar = cls(
-            profile=profile,
-            hash=avatar_hash
-        )
+        avatar = cls(profile=profile, hash=avatar_hash)
         similar_avatar = avatar.find_similar()
         if similar_avatar:
             return similar_avatar

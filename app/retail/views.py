@@ -278,7 +278,6 @@ def robotstxt(request):
     return TemplateResponse(request, 'robots.txt', context, content_type='text')
 
 
-@cached_view(timeout=60 * 10)
 def about(request):
     core_team = [
         (
@@ -298,15 +297,6 @@ def about(request):
             "pixelant",
             "Tips",
             "Apple Cider Doughnuts"
-        ),
-        (
-            static("v2/images/team/mark-beacom.jpg"),
-            "Mark Beacom",
-            "Engineering",
-            "mbeacom",
-            "mbeacom",
-            "Start/Stop Work",
-            "Dolsot Bibimbap"
         ),
         (
             static("v2/images/team/eric-berry.jpg"),
@@ -374,7 +364,7 @@ def about(request):
         (
             static("v2/images/team/austin-griffith.jpg"),
             "Austin Griffith",
-            "Research",
+            "Gitcoin Labs",
             "austintgriffith",
             None,
             "The #BUIDL",

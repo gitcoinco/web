@@ -422,7 +422,7 @@ def send_4(request):
     record_kudos_activity(
         kudos_transfer,
         kudos_transfer.from_username,
-        'new_kudos' if kudos_transfer.username else 'new_crowdfund'
+        'new_kudos',
     )
     return JsonResponse(response)
 
@@ -487,7 +487,8 @@ def record_kudos_activity(kudos_transfer, github_handle, event_name):
         return
 
     try:
-        kwargs['bounty'] = kudos_transfer.bounty
+        if kudos_transfer.bounty:
+            kwargs['bounty'] = kudos_transfer.bounty
     except Exception:
         pass
 
@@ -630,7 +631,7 @@ def receive_bulk(request, secret):
         tx = contract.functions.clone(address, coupon.token.token_id, 1).buildTransaction({
             'nonce': nonce,
             'gas': 500000,
-            'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(5) * 10**9),
+            'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(2) * 10**9),
             'value': int(coupon.token.price_finney / 1000.0 * 10**18),
         })
 
@@ -678,7 +679,11 @@ def receive_bulk(request, secret):
                 coupon.current_uses += 1
                 coupon.save()
 
-    title = f"Redeem AirDropped *{coupon.token.humanized_name}* Kudos"
+                # send email
+                maybe_market_kudos_to_email(kudos_transfer)
+
+
+    title = f"Redeem {coupon.token.humanized_name} Kudos from @{coupon.sender_profile.handle}"
     desc = f"This Kudos has been AirDropped to you.  About this Kudos: {coupon.token.description}"
     params = {
         'title': title,

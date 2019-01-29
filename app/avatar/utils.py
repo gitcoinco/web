@@ -509,6 +509,7 @@ def get_temp_image_file(image):
         logger.error(e)
     return temp_io
 
+
 def svg_to_png(svg_content, width=100, height=100, scale=1):
     print('creating svg with pyvips')
     png = svg_to_png_pyvips(svg_content, scale=scale)
@@ -526,9 +527,13 @@ def svg_to_png_pyvips(svg_content, scale=1):
         try:
             image = pyvips.Image.new_from_buffer(obj_data, f'.svg', scale=scale)
         except Exception as e:
-            logger.debug('got an exception trying to create a new image from a svg, usually this means that librsvg2 is not installed')
+            logger.debug(
+                'got an exception trying to create a new image from a svg, usually this means that librsvg2 is not installed'
+            )
             logger.debug(e)
-            logger.debug('retrying with out the scale parameter... which should work as long as imagemagick is installed')
+            logger.debug(
+                'retrying with out the scale parameter... which should work as long as imagemagick is installed'
+            )
             image = pyvips.Image.new_from_buffer(obj_data, f'.svg')
         return BytesIO(image.write_to_buffer(f'.{output_fmt}'))
     except VipsError:
@@ -540,8 +545,9 @@ def svg_to_png_pyvips(svg_content, scale=1):
         )
     return None
 
+
 def svg_to_png_inkscape(svg_content, width=333, height=384):
-    import subprocess               # May want to use subprocess32 instead
+    import subprocess  # May want to use subprocess32 instead
     input_file = 'static/tmp/input.svg'
     output_file = 'static/tmp/output.png'
 
@@ -552,16 +558,15 @@ def svg_to_png_inkscape(svg_content, width=333, height=384):
     text_file.write(content)
     text_file.close()
 
-    cmd_list = [ '/usr/bin/inkscape', '-z', 
-                 '--export-png', output_file,
-                 '--export-width', f"{width}",
-                 '--export-height', f"{height}",
-                 input_file ]
+    cmd_list = [
+        '/usr/bin/inkscape', '-z', '--export-png', output_file, '--export-width', f"{width}", '--export-height',
+        f"{height}", input_file
+    ]
     print(" ".join(cmd_list))
-    p = subprocess.Popen( cmd_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE )
+    p = subprocess.Popen(cmd_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = p.communicate()
     if p.returncode:
-        print( 'Inkscape error: ' + (err or '?')  )
+        print('Inkscape error: ' + (err or '?'))
 
     with open(output_file, 'rb') as fin:
         return BytesIO(fin.read())
@@ -618,10 +623,7 @@ def convert_wand(img_obj, input_fmt='png', output_fmt='svg'):
 def dhash(image, hash_size=8):
     # https://blog.iconfinder.com/detecting-duplicate-images-using-python-cb240b05a3b6
     # Grayscale and shrink the image in one step.
-    image = image.convert('L').resize(
-        (hash_size + 1, hash_size),
-        Image.ANTIALIAS,
-    )
+    image = image.convert('L').resize((hash_size + 1, hash_size), Image.ANTIALIAS, )
     # Compare adjacent pixels.
     difference = []
     for row in range(hash_size):
@@ -634,7 +636,7 @@ def dhash(image, hash_size=8):
     hex_string = []
     for index, value in enumerate(difference):
         if value:
-            decimal_value += 2 ** (index % 8)
+            decimal_value += 2**(index % 8)
         if (index % 8) == 7:
             hex_string.append(hex(decimal_value)[2:].rjust(2, '0'))
             decimal_value = 0
