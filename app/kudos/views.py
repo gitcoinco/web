@@ -45,6 +45,7 @@ from git.utils import get_emails_by_category, get_emails_master, get_github_prim
 from kudos.utils import kudos_abi
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
+import urllib.parse
 from web3 import Web3
 
 from .forms import KudosSearchForm
@@ -587,6 +588,7 @@ def receive(request, key, txid, network):
         'key': key,
         'is_authed': is_authed,
         'disable_inputs': kudos_transfer.receive_txid or not_mined_yet or not is_authed,
+        'tweet_text': urllib.parse.quote_plus(f"I just got a {kudos_transfer.kudos_token_cloned_from.humanized_name} Kudos on @GetGitcoin.  ")
     }
 
     return TemplateResponse(request, 'transaction/receive.html', params)
@@ -694,5 +696,6 @@ def receive_bulk(request, secret):
         'user': request.user,
         'is_authed': request.user.is_authenticated,
         'kudos_transfer': kudos_transfer,
+        'tweet_text': urllib.parse.quote_plus(f"I just got a {coupon.token.humanized_name} Kudos on @GetGitcoin.  ")
     }
     return TemplateResponse(request, 'transaction/receive_bulk.html', params)
