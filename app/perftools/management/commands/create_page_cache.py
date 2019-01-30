@@ -18,6 +18,7 @@
 
 import json
 
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models, transaction
@@ -54,6 +55,8 @@ class LazyEncoder(DjangoJSONEncoder):
 def create_results_cache():
     print('results')
     keywords = [''] + programming_languages
+    if settings.DEBUG:
+        keywords = ['']
     view = 'results'
     with transaction.atomic():
         items = []
@@ -74,8 +77,8 @@ def create_results_cache():
 def create_contributor_landing_page_context():
     print('create_contributor_landing_page_context')
     keywords = [''] + programming_languages
-    # TODO
-    keywords = ['']
+    if settings.DEBUG:
+        keywords = ['']
     view = 'contributor_landing_page'
     from retail.views import get_contributor_landing_page_context
     with transaction.atomic():
@@ -101,5 +104,5 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # TODO
-        # create_results_cache()
+        create_results_cache()
         create_contributor_landing_page_context()

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define Gitcoin Bot specific models."""
 from django.db import models
+
 from economy.models import SuperModel
 
 
