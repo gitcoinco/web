@@ -1,0 +1,12 @@
+{
+  "symbol": "PT",
+  "address": "0x094c875704c14783049DDF8136E298B3a099c446",
+  "overview":{
+        "en": "PT (Promo Token) is an ERC20 utility token used by KyberSwap and other token teams for special marketing purposes.",
+        "zh": "PT 是 KyberSwap 用于营销目的的 ERC20 代币."
+  },
+  "email": "hello@kyber.network",
+  "website": "https://kyber.network/swap",
+  "whitepaper": "https://blog.kyber.network/kcc-kyber-community-coupon-77302fbc4333",
+  "published_on": "2018-11-22"
+}
