@@ -53,7 +53,7 @@ class SuperModel(models.Model):
         self.modified_on = get_time()
         return super(SuperModel, self).save(*args, **kwargs)
 
-    def to_standard_dict(self, fields=None, exclude=None):
+    def to_standard_dict(self, fields=None, exclude=None, properties=None):
         """Define the standard to dict representation of the object.
 
         Args:
@@ -72,13 +72,28 @@ class SuperModel(models.Model):
             kwargs['fields'] = fields
         if exclude:
             kwargs['exclude'] = exclude
-        return model_to_dict(self, **kwargs)
+        return_me = model_to_dict(self, **kwargs)
+        if properties:
+            for key in dir(self):
+                if key in properties:
+                    attr = getattr(self, key)
+                    if callable(attr):
+                        return_me[key] = attr()
+                    else:
+                        return_me[key] = attr
+        return return_me
 
 
     @property
     def admin_url(self):
         url = reverse('admin:{0}_{1}_change'.format(self._meta.app_label, self._meta.model_name), args=[self.id])
         return '{0}'.format(url, escape(str(self)))
+
+    @property
+    def created_human_time(self):
+        from django.contrib.humanize.templatetags.humanize import naturaltime
+        return naturaltime(self.created_on)
+
 
 
 class ConversionRate(SuperModel):

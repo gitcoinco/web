@@ -62,7 +62,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 
 
 0 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash create_gas_history  >> /var/log/gitcoin/create_gas_history.log  2>&1
-5 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash create_results  >> /var/log/gitcoin/create_results.log  2>&1
+5 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash create_page_cache  >> /var/log/gitcoin/create_page_cache.log  2>&1
 10 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash create_d3_views  >> /var/log/gitcoin/create_d3_views.log  2>&1
 
 

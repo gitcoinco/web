@@ -1512,7 +1512,7 @@ class ActivityQuerySet(models.QuerySet):
         )
 
 
-class Activity(models.Model):
+class Activity(SuperModel):
     """Represent Start work/Stop work event.
 
     Attributes:
@@ -1603,27 +1603,39 @@ class Activity(models.Model):
             'new_kudos': 'fa-thumbs-up',
         }
 
-        activity = self
-        activity.icon = icons.get(activity.activity_type, 'fa-check-circle')
-        if activity.kudos:
-            activity.kudos_data = Token.objects.get(pk=activity.kudos.kudos_token_cloned_from_id)
-        obj = activity.metadata
-        if 'new_bounty' in activity.metadata:
-            obj = activity.metadata['new_bounty']
-        activity.title = obj.get('title', '')
+        properties = [
+            'i18n_name'
+            'title',
+            'token_name',
+            'created_human_time',
+        ]
+        activity = self.to_standard_dict(properties=properties)
+        for key, value in model_to_dict(self).items():
+            activity[key] = value
+        for fk in ['bounty', 'tip', 'kudos', 'profile']:
+            if getattr(self, fk):
+                activity[fk] = getattr(self, fk).to_standard_dict(properties=properties)
+
+        activity['icon'] = icons.get(self.activity_type, 'fa-check-circle')
+        if activity.get('kudos'):
+            activity['kudos_data'] = Token.objects.get(pk=self.kudos.kudos_token_cloned_from_id)
+        obj = self.metadata
+        if 'new_bounty' in self.metadata:
+            obj = self.metadata['new_bounty']
+        activity['title'] = obj.get('title', '')
         if 'id' in obj:
-            activity.bounty_url = Bounty.objects.get(pk=obj['id']).get_relative_url()
-            if activity.title:
-                activity.urled_title = f'<a href="{activity.bounty_url}">{activity.title}</a>'
+            activity['bounty_url'] = Bounty.objects.get(pk=obj['id']).get_relative_url()
+            if activity.get('title'):
+                activity['urled_title'] = f'<a href="{activity["bounty_url"]}">{activity["title"]}</a>'
             else:
-                activity.urled_title = activity.title
+                activity['urled_title'] = activity.title
         if 'value_in_usdt_now' in obj:
-            activity.value_in_usdt_now = obj['value_in_usdt_now']
+            activity['value_in_usdt_now'] = obj['value_in_usdt_now']
         if 'token_name' in obj:
-            activity.token = token_by_name(obj['token_name'])
-            if 'value_in_token' in obj and activity.token:
-                activity.value_in_token_disp = round((float(obj['value_in_token']) /
-                                                      10 ** activity.token['decimals']) * 1000) / 1000
+            activity['token'] = token_by_name(obj['token_name'])
+            if 'value_in_token' in obj and activity['token']:
+                activity['value_in_token_disp'] = round((float(obj['value_in_token']) /
+                                                      10 ** activity['token']['decimals']) * 1000) / 1000
         return activity
 
     @property
