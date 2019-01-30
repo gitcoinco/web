@@ -78,20 +78,17 @@
               </li>
             {% endfor %}
         </ul>
-        <br>
-        <div style="max-width: 500px; margin: 0px auto;">
-        {% if msg %}
-        <p style="background-color: #fee856; padding: 5px 10px;">
-          {{msg | safe}}
-        </p>
-        {% endif %}
-        {% block settings_content %}
-        {% endblock %}
-        <br>
-        <br>
+        <div class="mt-5">
+          {% if msg %}
+          <p style="background-color: #fee856; padding: 5px 10px;">
+            {{msg | safe}}
+          </p>
+          {% endif %}
+          {% block settings_content %}
+          {% endblock %}
+        </div>
       </div>
     </div>
   </div>
 </div>
-
 {% endblock %}

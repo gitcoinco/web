@@ -51,7 +51,7 @@
     border: 0.2rem solid #1AB56D;
   }
 </style>
-<form id="settings" method="POST">
+<form id="settings" method="POST" class="col-md-8 m-auto">
   <div class="form-group">
     <h5>{% trans "ETH Account Preferences" %}</h5>
   </div>
@@ -63,7 +63,7 @@
   {% csrf_token %}
   <input class='button button--primary' type='submit' name='submit' value="{% trans "Save" %}">
 </form>
-<div>
+<div class="col-md-8 m-auto">
   <h4 class="font-title mb-4 text-left">{% trans "Profile Photo" %}</h4>
   <div class="profile-avatar row mx-0 px-0 major_button_container">
     <div class="col-12 col-md-5 pl-0 pr-0 text-center">
@@ -174,8 +174,5 @@
       });
     });
   });
-</script>
-<script>
-
 </script>
 {% endblock %}

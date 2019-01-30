@@ -1,0 +1,14 @@
+{% extends 'settings/settings.html' %}
+{% load i18n %}
+{% block settings_content %}
+<form id="settings" method="POST">
+  <div class="form-group">
+    {% include 'ftux/job.html' %}
+  </div>
+  {% csrf_token %}
+  <div class="col-md-8 m-auto">
+    <input class='button button--primary' type='submit' name='submit' value="{% trans "Go" %}">
+    <input class='button button--primary' style='margin-left: 0.5em;' type='submit' name='test' value="{% trans "Test" %}">
+  </div>
+</form>
+{% endblock %}

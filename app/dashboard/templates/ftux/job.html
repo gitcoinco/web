@@ -16,15 +16,13 @@
 {% endcomment %}
 
 {% load i18n static %}
-<div id="job" class="row">
+<div id="job" class="row col-12 col-md-8 m-auto">
   <div class="col-12">
-    <h2>{% trans "Job Opportunities" %}</h2>
+    <h2 class="text-center">{% trans "Job Opportunities" %}</h2>
   </div>
-  <div class="col-12 offset-md-2 col-md-8 row px-0 mt-4">
-    <div class="col-12 col-md-12 col-lg-12 pl-0 pr-0">
-      <p class="font-caption label jobStatus">{% trans "Are you currently looking for work?" %}</p>
-    </div>
-    <div class="form__select2 col-12 col-md-12 col-lg-12 pl-0 pr-0">
+  <div class=" col-12 mt-4">
+    <p class="font-caption label jobStatus">{% trans "Are you currently looking for work?" %}</p>
+    <div class="form__select2">
       <select class="w-100 js-select2" id="jobStatus">
         <option value="AL">{% trans "I am actively looking for work" %}</option>
         <option value="PL">{% trans "I am passively looking and open to hearing new opportunities" %}</option>
@@ -32,18 +30,18 @@
       </select>
     </div>
   </div>
-  <div class="col-12 offset-md-2 col-md-8 font-body px-0 mt-4">
+  <div class="col-12 font-body mt-4">
     <div class="form__checkbox">
       <input name='showJobStatus' id='showJobStatus' type="checkbox"/>
       <label class="form__label" for=showJobStatus>{% trans "It's okay to show this information publicly in Gitcoin." %}</label>
     </div>
   </div>
 
-  <div class="col-12 offset-md-2 col-md-8 row px-0 mt-4">
-    <div class="col-12 col-md-12 col-lg-12 pl-0 pr-0">
+  <div class="col-12 row mt-4">
+    <div class="col-12">
       <p class="font-caption label">{% trans "What type of work are you looking for?" %}</p>
     </div>
-    <div class="col-12 col-md-12 col-lg-12 pl-0 pr-0">
+    <div class="col-12">
       <div class="form__checkbox">
         <input name='jobType' id='jobType1' type="checkbox" value="full-time"/>
         <label class="form__label" for=jobType1>{% trans "Full Time" %}</label>
@@ -63,25 +61,25 @@
     </div>
   </div>
 
-  <div class="col-12 offset-md-2 col-md-8 font-body px-0 mt-4">
+  <div class="col-12 font-body mt-4">
     <label class="form__label label d-block" for="jobLocation">{% trans "Looking for companies in (location)" %}</label>
     <input name="jobLocation" id="jobLocation" class="form__input" type="text"/>
     <div class="locations"></div>
   </div>
 
-  <div class="col-12 offset-md-2 col-md-8 font-body px-0 ">
+  <div class="col-12 font-body ">
     <div class="form__checkbox">
       <input name='jobRemote' id='jobRemote' type="checkbox"/>
       <label class="form__label" for=jobRemote>{% trans "I am open to remote work" %}</label>
     </div>
   </div>
 
-  <div class="col-12 offset-md-2 col-md-8 font-body px-0 mt-4">
+  <div class="col-12 font-body mt-4">
     <label class="form__label label d-block" for="jobSalary">{% trans "Compensation expectation (monthly)" %}</label>
     <input name="jobSalary" id="jobSalary" class="form__input" type="text" placeholder="Amount in USD"/>
   </div>
 
-  <div class="col-12 offset-md-2 col-md-8 font-body px-0 mt-4">
+  <div class="col-12 font-body mt-4">
     <label class="form__label label d-block" for="jobCV">{% trans "Upload resume (PDF / max 3MB)" %}</label>
     <p class="text-left">Get discovered and work with the most exciting projects in the space!</p>
     <input name="jobCV" id="jobCV" class="form__input" type="file" accept="application/pdf"/>
