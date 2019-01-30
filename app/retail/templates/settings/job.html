@@ -1,5 +1,5 @@
 {% extends 'settings/settings.html' %}
-{% load i18n %}
+{% load i18n static %}
 {% block settings_content %}
 <form id="settings" method="POST">
   <div class="form-group">
@@ -7,8 +7,14 @@
   </div>
   {% csrf_token %}
   <div class="col-md-8 m-auto">
-    <input class='button button--primary' type='submit' name='submit' value="{% trans "Go" %}">
-    <input class='button button--primary' style='margin-left: 0.5em;' type='submit' name='test' value="{% trans "Test" %}">
+    <input class='button button--primary' type='submit' name='test' value="{% trans "Save" %}">
   </div>
 </form>
+{% endblock %}
+{% block scripts %}
+<script src="{% static 'v2/js/jobs.js' %}"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBaJ6gEXMqjw0Y7d5Ps9VvelzOOvfV6BvQ&libraries=places&callback=initPlacecomplete"></script>
+<script>
+//sdfsdfsdf
+</script>
 {% endblock %}
