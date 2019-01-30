@@ -2701,4 +2701,59 @@
   tags:
     - rockstar
   image: rockstar.svg
+- name: livepeer
+  description: Livepeer is creating a scalable Platform as a Service for developers who want to add live
+    or on-demand video to their project.
+  priceFinney: 100
+  artist: sriharikapu
+  platform: gitcoin
+  numClonesAllowed: 50
+  artist: 'sriharikapu'
+  to_address: '0x42FE987767e39C9c2c19Dd24822f551e01791252'
+  tags:
+  - Livepeer
+  - p2p
+  image: Livepeer.svg
+- name: swarm_developer
+  description: Swarm is a decentralized p2p storage & hosting service running on top of Ethereum blockchain. 
+    Swarm acts as a peer-to-peer storage and servicing solution that has zero downtime, fault-tolerant, 
+    and censorship-resistant, and self-sustaining due to a built-in incentive system.
+  priceFinney: 100
+  artist: sriharikapu
+  platform: gitcoin
+  numClonesAllowed: 100
+  artist: 'sriharikapu'
+  to_address: '0x42FE987767e39C9c2c19Dd24822f551e01791252'
+  tags:
+  - Swarm
+  - Ethereum
+  image: Swarm-dev-min.svg
+- name: swarm_expert
+  description: Swarm is a decentralized p2p storage & hosting service running on top of Ethereum blockchain. 
+    Swarm acts as a peer-to-peer storage and servicing solution that has zero downtime, fault-tolerant, 
+    and censorship-resistant, and self-sustaining due to a built-in incentive system.
+  priceFinney: 500
+  artist: sriharikapu
+  platform: gitcoin
+  numClonesAllowed: 20
+  artist: 'sriharikapu'
+  to_address: '0x42FE987767e39C9c2c19Dd24822f551e01791252'
+  tags:
+  - Swarm
+  - Ethereum
+  image: SwarmRare-min.svg
+- name: sustainability
+  description: You are a promoter of Sustainability, Sustainability is the process of maintaining change in a balanced fashion, 
+    in which the exploitation of resources, the direction of investments, the orientation of technological development and 
+    institutional change are all in harmony and enhance both current and future potential to meet human needs and aspirations.
+  priceFinney: 10
+  artist: sriharikapu
+  platform: gitcoin
+  numClonesAllowed: 1000
+  artist: 'sriharikapu'
+  to_address: '0x42FE987767e39C9c2c19Dd24822f551e01791252'
+  tags:
+  - Sustainability
+  - Sustainy
+  image: sustain0.svg
 

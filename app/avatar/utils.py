@@ -165,7 +165,7 @@ def get_avatar_context():
                 ], ['Extras-santa_inspired'], ['Extras-reindeer'], ['Masks-gitcoinbot'], ['Extras-tattoo'], [
                     'Masks-batman_inspired'
                 ], ['Masks-eye-patch'], ['Masks-flash_inspired'], ['Masks-deadpool_inspired'], ['Masks-darth_inspired'],
-                            ['Masks-spiderman_inspired'], ['Glasses-5'],
+                            ['Masks-spiderman_inspired'], ['Masks-head'], ['Glasses-5'],
                             ),
                 'paid_options': {
                     'Extras-Parrot': 0.01,
