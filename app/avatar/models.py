@@ -56,6 +56,10 @@ class BaseAvatar(SuperModel):
     png = models.ImageField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('The avatar PNG.'), )
     hash = models.CharField(max_length=256)
 
+    def __str__(self):
+        """Return the str representing this avatar."""
+        return f"{self.profile} created {self.created_on}"
+
     @property
     def avatar_url(self):
         """Return the appropriate avatar URL."""
@@ -185,6 +189,10 @@ class CustomAvatar(BaseAvatar):
 
     def to_dict(self):
         return self.config
+
+    def __str__(self):
+        """Return the str representing this avatar."""
+        return f"{self.profile} created {self.created_on}"
 
 
 class SocialAvatar(BaseAvatar):
