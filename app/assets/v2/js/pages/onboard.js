@@ -253,17 +253,30 @@ const save_job_status = function() {
   if (!document.contxt.github_handle) {
     _alert('No profile', 'error');
   }
+  const formData = new FormData();
   const job_search_status = $('#jobStatus').find(':selected').val();
   const show_job_status = $('#showJobStatus').prop('checked');
+  const job_type = $('input[name=jobType]:checked').val();
+  const remote = $('#jobRemote:checked').val();
+  const job_salary = $('#jobSalary').val();
+  const job_cv = $('#jobCV')[0].files;
+
+  formData.append('job_cv', job_cv[0], job_cv[0].name);
+  formData.append('job_search_status', job_search_status);
+  formData.append('show_job_status', show_job_status);
+  formData.append('job_type', job_type);
+  formData.append('locations', jobLocations);
+  formData.append('remote', remote);
+  formData.append('job_salary', job_salary);
 
   const profile = {
     url: '/api/v0.1/profile/' + document.contxt.github_handle + '/jobopportunity',
     method: 'POST',
     headers: {'X-CSRFToken': csrftoken},
-    data: JSON.stringify({
-      'job_search_status': job_search_status,
-      'show_job_status': show_job_status
-    })
+    data: formData,
+    processData: false,
+    dataType: 'json',
+    contentType: false
   };
 
   $.ajax(profile).done(function(response) {
