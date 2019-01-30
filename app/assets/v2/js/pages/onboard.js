@@ -287,3 +287,65 @@ var redirectURL = function() {
 
   document.location.href = url;
 };
+
+let jobLocations = [];
+let autocomplete;
+
+function initPlacecomplete() {
+  let input = document.getElementById('jobLocation');
+
+  var options = {
+    types: ['(regions)']
+  };
+
+  autocomplete = new google.maps.places.Autocomplete(input, options);
+  autocomplete.addListener('place_changed', function() {
+    let place = autocomplete.getPlace();
+
+    jobLocations.push(place);
+    setLocations(jobLocations);
+  });
+}
+
+const setLocations = (jobLocations) => {
+  let locationsHtml = [];
+
+  $.each(jobLocations, function(k, value) {
+    locationsHtml.push(`<a class=filter-tag data-index=${k}><i class="fas fa-times"></i>${value.formatted_address}</a>`);
+  });
+  $('.locations').html(locationsHtml);
+  $('#jobLocation').val('');
+};
+
+const removeLocations = (index) => {
+  jobLocations.splice(index, 1);
+};
+
+$('.locations').on('click', '.filter-tag', function(e) {
+  removeLocations($(this).data('index'));
+  $(this).remove();
+});
+
+$('#jobSalary').on('change', function() {
+  let currentValue = $(this).val();
+
+  $(this).val(Number(currentValue.replace(',', '')).toLocaleString());
+});
+
+
+const checkFileSize = (elem, max_img_size) => {
+  let input = document.getElementById(elem);
+
+  if (input.files && input.files.length == 1) {
+    if (input.files[0].size > max_img_size) {
+      alert(`The file must be less than ${(max_img_size / 1024 / 1024).toFixed(2)}MB`);
+      input.value = '';
+      return false;
+    }
+  }
+  return true;
+};
+
+$('#jobCV').on('change', () =>{
+  checkFileSize('jobCV', 3144000);
+});
