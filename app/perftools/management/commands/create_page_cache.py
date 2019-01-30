@@ -20,11 +20,12 @@ import json
 
 from django.core.management.base import BaseCommand
 from django.core.serializers.json import DjangoJSONEncoder
-from django.db import transaction, models
+from django.db import models, transaction
 from django.db.models.query import QuerySet
 from django.forms.models import model_to_dict
 from django.utils.encoding import force_text
 from django.utils.functional import Promise
+
 from economy.models import SuperModel
 from perftools.models import JSONStore
 from retail.utils import build_stat_results, programming_languages
