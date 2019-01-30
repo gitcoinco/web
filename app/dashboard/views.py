@@ -1187,7 +1187,7 @@ def profile(request, handle):
 
     try:
         if not handle and not request.user.is_authenticated:
-            return redirect('index')
+            return redirect('funder_bounties')
 
         if not handle:
             handle = request.user.username
@@ -1734,12 +1734,15 @@ def change_bounty(request, bounty_id):
             return JsonResponse({'error': 'Invalid JSON.'}, status=400)
 
         bounty_changed = False
+        new_reservation = False
         for key in keys:
             value = params.get(key, '')
             old_value = getattr(bounty, key)
             if value != old_value:
                 setattr(bounty, key, value)
                 bounty_changed = True
+                if key == 'reserved_for_user_handle' and value:
+                    new_reservation = True
 
         if not bounty_changed:
             return JsonResponse({
@@ -1758,7 +1761,7 @@ def change_bounty(request, bounty_id):
         maybe_market_to_user_discord(bounty, 'bounty_changed')
 
         # notify a user that a bounty has been reserved for them
-        if bounty.bounty_reserved_for_user:
+        if new_reservation and bounty.bounty_reserved_for_user:
             new_reserved_issue('founders@gitcoin.co', bounty.bounty_reserved_for_user, bounty)
 
         return JsonResponse({

@@ -30,7 +30,7 @@
     {% include 'shared/nav.html' %}
     <div id="landing_page_wrapper">
       <div class="container-fluid header">
-        {% include 'landing/funder/hero.html' %}
+        {% include 'bounties/funder/hero.html' %}
         <div class="row banner--green px-3 py-4 font-subheader">
           <div class="col-12 col-md-1 offset-lg-1 offset-xl-2 col-xl-1 text-center text-md-right my-auto">
             <img src="{% static "v2/images/landing/robot-banner.svg" %}">
@@ -41,13 +41,13 @@
           </div>
           <div class="col-12 col-md-3 col-xl-3 my-auto text-center">
             <a class="button button--primary" href="{% url "explorer" %}">Get Started</a>
-            <a class="button button--primary btn-green ml-lg-2" href="{% url "contributor_landing" "" %}">Learn More</a>
+            <a class="button button--primary btn-green ml-lg-2" href="{% url "contributor_bounties" "" %}">Learn More</a>
           </div>
         </div>
       </div>
 
       <div class="container-fluid p-5 benefits_container">
-        {% include 'landing/funder/benefits.html' %}
+        {% include 'bounties/funder/benefits.html' %}
       </div>
 
       <div class="container-fluid pb-5 mb-2 landing__newsletter">
@@ -55,7 +55,7 @@
       </div>
 
       <div class="container-fluid p-5 howworks-container">
-        {% include 'landing/funder/howworks.html' %}
+        {% include 'bounties/funder/howworks.html' %}
       </div>
 
       <div class="container-fluid p-5 whatisit_container">
@@ -163,13 +163,13 @@
         </div>
         {% include "shared/testimonials.html" %}
       </div>
-      {% include 'landing/funder/pilot.html' %}
+      {% include 'bounties/funder/pilot.html' %}
 
       <div class="container-fluid p-5 activity">
-        {% include 'landing/contributor/activity.html' %}
+        {% include 'bounties/contributor/activity.html' %}
       </div>
 
-      {% include 'landing/funder/press.html' %}
+      {% include 'bounties/funder/press.html' %}
       {% include 'shared/footer.html' %}
     </div>
     {% include 'shared/footer_scripts.html' with slim=1 %}
