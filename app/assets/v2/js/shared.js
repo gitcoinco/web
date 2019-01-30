@@ -1216,7 +1216,7 @@ const saveAttestationData = (result, cost_eth, to_address, type) => {
   $.post(request_url, data).then(function(result) {
     _alert('Success ✅ Loading your purchase now.', 'success');
   });
-}
+};
 
 const renderFeaturedBountiesFromResults = (results, renderForExplorer) => {
   let html = '';
@@ -1232,7 +1232,7 @@ const renderFeaturedBountiesFromResults = (results, renderForExplorer) => {
     html += tmpl.render(result);
   }
   return html;
-}
+};
 
 /**
  * Fetches results from the API and paints them onto the target element
