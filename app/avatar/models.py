@@ -60,7 +60,6 @@ class BaseAvatar(SuperModel):
         """Return the str representing this avatar."""
         return f"{self.profile} created {self.created_on}"
 
-
     @property
     def avatar_url(self):
         """Return the appropriate avatar URL."""
