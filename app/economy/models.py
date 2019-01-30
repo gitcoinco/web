@@ -32,6 +32,27 @@ from django.utils.html import escape
 from django.utils.timezone import localtime
 
 
+class EncodeAnything(DjangoJSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Promise):
+            return force_text(obj)
+        if isinstance(obj, SuperModel):
+            return (obj.to_standard_dict())
+        if isinstance(obj, models.Model):
+            return (model_to_dict(obj))
+        if isinstance(obj, models.Model):
+            return (model_to_dict(obj))
+        if isinstance(obj, QuerySet):
+            if obj.count() and type(obj.first()) == str:
+                return obj[::1]
+            return [EncodeAnything(instance) for instance in obj]
+        if isinstance(obj, list):
+            return [EncodeAnything(instance) for instance in obj]
+        if(callable(obj)):
+            return None
+        return super(EncodeAnything, self).default(obj)
+
+
 def get_time():
     """Get the local time."""
     return localtime(timezone.now())

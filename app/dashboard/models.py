@@ -1603,6 +1603,7 @@ class Activity(SuperModel):
             'new_kudos': 'fa-thumbs-up',
         }
 
+        # load up this data package with all of the information in the already existing objects
         properties = [
             'i18n_name'
             'title',
@@ -1616,6 +1617,9 @@ class Activity(SuperModel):
             if getattr(self, fk):
                 activity[fk] = getattr(self, fk).to_standard_dict(properties=properties)
 
+        # KO notes 2019/01/30
+        # this is a bunch of bespoke information that is computed for the views
+        # in a later release, it couild be refactored such that its just contained in the above code block ^^.
         activity['icon'] = icons.get(self.activity_type, 'fa-check-circle')
         if activity.get('kudos'):
             activity['kudos_data'] = Token.objects.get(pk=self.kudos.kudos_token_cloned_from_id)
@@ -1636,6 +1640,9 @@ class Activity(SuperModel):
             if 'value_in_token' in obj and activity['token']:
                 activity['value_in_token_disp'] = round((float(obj['value_in_token']) /
                                                       10 ** activity['token']['decimals']) * 1000) / 1000
+        
+        # finally done!
+        
         return activity
 
     @property

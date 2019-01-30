@@ -27,30 +27,10 @@ from django.forms.models import model_to_dict
 from django.utils.encoding import force_text
 from django.utils.functional import Promise
 
-from economy.models import SuperModel
+from economy.models import EncodeAnything, SuperModel
 from perftools.models import JSONStore
 from retail.utils import build_stat_results, programming_languages
 
-
-class LazyEncoder(DjangoJSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, Promise):
-            return force_text(obj)
-        if isinstance(obj, SuperModel):
-            return (obj.to_standard_dict())
-        if isinstance(obj, models.Model):
-            return (model_to_dict(obj))
-        if isinstance(obj, models.Model):
-            return (model_to_dict(obj))
-        if isinstance(obj, QuerySet):
-            if obj.count() and type(obj.first()) == str:
-                return obj[::1]
-            return [LazyEncoder(instance) for instance in obj]
-        if isinstance(obj, list):
-            return [LazyEncoder(instance) for instance in obj]
-        if(callable(obj)):
-            return None
-        return super(LazyEncoder, self).default(obj)
 
 def create_results_cache():
     print('results')
@@ -69,7 +49,7 @@ def create_results_cache():
             items.append(JSONStore(
                 view=view,
                 key=key,
-                data=json.loads(json.dumps(data, cls=LazyEncoder)),
+                data=json.loads(json.dumps(data, cls=EncodeAnything)),
                 ))
         JSONStore.objects.bulk_create(items)
 
@@ -92,7 +72,7 @@ def create_contributor_landing_page_context():
             items.append(JSONStore(
                 view=view,
                 key=key,
-                data=json.loads(json.dumps(data, cls=LazyEncoder)),
+                data=json.loads(json.dumps(data, cls=EncodeAnything)),
                 ))
         JSONStore.objects.bulk_create(items)
 
