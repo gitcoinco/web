@@ -1,3 +1,9 @@
+$('.js-select2').each(function() {
+  $(this).select2({
+    minimumResultsForSearch: Infinity
+  });
+});
+
 const save_job_status = function() {
   if (!document.contxt.github_handle) {
     _alert('No profile', 'error');
@@ -60,7 +66,7 @@ const setLocations = (jobLocations) => {
   $.each(jobLocations, function(k, value) {
     locationsHtml.push(`<a class=filter-tag data-index=${k}><i class="fas fa-times"></i>${value.formatted_address}</a>`);
   });
-  $('.locations').html(locationsHtml);
+  $('.locations-tags').html(locationsHtml);
   $('#jobLocation').val('');
 };
 
@@ -68,7 +74,7 @@ const removeLocations = (index) => {
   jobLocations.splice(index, 1);
 };
 
-$('.locations').on('click', '.filter-tag', function(e) {
+$('.locations-tags').on('click', '.filter-tag', function(e) {
   removeLocations($(this).data('index'));
   $(this).remove();
 });
