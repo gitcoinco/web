@@ -611,76 +611,82 @@ def receive_bulk(request, secret):
         if redemptions.exists():
             kudos_transfer = redemptions.first().kudostransfer
 
+    error = False
     if request.POST:
-        address = Web3.toChecksumAddress(request.POST.get('forwarding_address'))
-        user = request.user
-        profile = user.profile
-        save_addr = request.POST.get('save_addr')
-        ip_address = get_ip(request)
+        try:
+            address = Web3.toChecksumAddress(request.POST.get('forwarding_address'))
+        except:
+            error = "You must enter a valid Ethereum address (so we know where to send your Kudos). Please try again."
+        
+        if not error:
+            user = request.user
+            profile = user.profile
+            save_addr = request.POST.get('save_addr')
+            ip_address = get_ip(request)
 
-        # handle form submission
-        if save_addr:
-            profile.preferred_payout_address = address
-            profile.save()
+            # handle form submission
+            if save_addr:
+                profile.preferred_payout_address = address
+                profile.save()
 
-        kudos_contract_address = Web3.toChecksumAddress(settings.KUDOS_CONTRACT_MAINNET)
-        kudos_owner_address = Web3.toChecksumAddress(settings.KUDOS_OWNER_ACCOUNT)
-        w3 = get_web3(coupon.token.contract.network)
-        contract = w3.eth.contract(Web3.toChecksumAddress(kudos_contract_address), abi=kudos_abi())
-        nonce = w3.eth.getTransactionCount(kudos_owner_address)
-        tx = contract.functions.clone(address, coupon.token.token_id, 1).buildTransaction({
-            'nonce': nonce,
-            'gas': 500000,
-            'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(2) * 10**9),
-            'value': int(coupon.token.price_finney / 1000.0 * 10**18),
-        })
+            kudos_contract_address = Web3.toChecksumAddress(settings.KUDOS_CONTRACT_MAINNET)
+            kudos_owner_address = Web3.toChecksumAddress(settings.KUDOS_OWNER_ACCOUNT)
+            w3 = get_web3(coupon.token.contract.network)
+            contract = w3.eth.contract(Web3.toChecksumAddress(kudos_contract_address), abi=kudos_abi())
+            nonce = w3.eth.getTransactionCount(kudos_owner_address)
+            tx = contract.functions.clone(address, coupon.token.token_id, 1).buildTransaction({
+                'nonce': nonce,
+                'gas': 500000,
+                'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(2) * 10**9),
+                'value': int(coupon.token.price_finney / 1000.0 * 10**18),
+            })
 
-        if not profile.trust_profile and profile.github_created_on > (timezone.now() - timezone.timedelta(days=7)):
-            messages.error(request, f'Your github profile is too new.  Cannot receive kudos.')
-        else:
+            if not profile.trust_profile and profile.github_created_on > (timezone.now() - timezone.timedelta(days=7)):
+                messages.error(request, f'Your github profile is too new.  Cannot receive kudos.')
+            else:
 
-            signed = w3.eth.account.signTransaction(tx, settings.KUDOS_PRIVATE_KEY)
-            txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
+                signed = w3.eth.account.signTransaction(tx, settings.KUDOS_PRIVATE_KEY)
+                txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
 
-            with transaction.atomic():
-                kudos_transfer = KudosTransfer.objects.create(
-                    emails=[request.user.email],
-                    # For kudos, `token` is a kudos.models.Token instance.
-                    kudos_token_cloned_from=coupon.token,
-                    amount=0,
-                    comments_public=coupon.comments_to_put_in_kudos_transfer,
-                    ip=ip_address,
-                    github_url='',
-                    from_name=coupon.sender_profile.handle,
-                    from_email='',
-                    from_username=coupon.sender_profile.handle,
-                    username=profile.handle,
-                    network=coupon.token.contract.network,
-                    from_address=settings.KUDOS_OWNER_ACCOUNT,
-                    is_for_bounty_fulfiller=False,
-                    metadata={'coupon_redemption': True, 'nonce': nonce},
-                    recipient_profile=profile,
-                    sender_profile=coupon.sender_profile,
-                    txid=txid,
-                    receive_txid=txid,
-                    tx_status='pending',
-                    receive_tx_status='pending',
-                )
-
-                # save to DB
-                BulkTransferRedemption.objects.create(
-                    coupon=coupon,
-                    redeemed_by=profile,
-                    ip_address=ip_address,
-                    kudostransfer=kudos_transfer,
+                with transaction.atomic():
+                    kudos_transfer = KudosTransfer.objects.create(
+                        emails=[request.user.email],
+                        # For kudos, `token` is a kudos.models.Token instance.
+                        kudos_token_cloned_from=coupon.token,
+                        amount=0,
+                        comments_public=coupon.comments_to_put_in_kudos_transfer,
+                        ip=ip_address,
+                        github_url='',
+                        from_name=coupon.sender_profile.handle,
+                        from_email='',
+                        from_username=coupon.sender_profile.handle,
+                        username=profile.handle,
+                        network=coupon.token.contract.network,
+                        from_address=settings.KUDOS_OWNER_ACCOUNT,
+                        is_for_bounty_fulfiller=False,
+                        metadata={'coupon_redemption': True, 'nonce': nonce},
+                        recipient_profile=profile,
+                        sender_profile=coupon.sender_profile,
+                        txid=txid,
+                        receive_txid=txid,
+                        tx_status='pending',
+                        receive_tx_status='pending',
                     )
 
-                coupon.num_uses_remaining -= 1
-                coupon.current_uses += 1
-                coupon.save()
+                    # save to DB
+                    BulkTransferRedemption.objects.create(
+                        coupon=coupon,
+                        redeemed_by=profile,
+                        ip_address=ip_address,
+                        kudostransfer=kudos_transfer,
+                        )
 
-                # send email
-                maybe_market_kudos_to_email(kudos_transfer)
+                    coupon.num_uses_remaining -= 1
+                    coupon.current_uses += 1
+                    coupon.save()
+
+                    # send email
+                    maybe_market_kudos_to_email(kudos_transfer)
 
 
     title = f"Redeem {coupon.token.humanized_name} Kudos from @{coupon.sender_profile.handle}"
@@ -689,6 +695,7 @@ def receive_bulk(request, secret):
         'title': title,
         'card_title': title,
         'card_desc': desc,
+        'error': error,
         'avatar_url': coupon.token.img_url,
         'coupon': coupon,
         'user': request.user,
