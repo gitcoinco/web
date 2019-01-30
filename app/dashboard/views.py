@@ -714,6 +714,36 @@ def social_contribution(request):
     return TemplateResponse(request, 'social_contribution.html', params)
 
 
+def social_contribution_modal(request):
+    # TODO: will be changed to the new share
+    """Social Contributuion to the bounty.
+
+    Args:
+        pk (int): The primary key of the bounty to be accepted.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The accept bounty view.
+
+    """
+    bounty = handle_bounty_views(request)
+    promo_text = str(_("Check out this bounty that pays out ")) + f"{bounty.get_value_true} {bounty.token_name} {bounty.url}"
+    for keyword in bounty.keywords_list:
+        promo_text += f" #{keyword}"
+
+    params = get_context(
+        ref_object=bounty,
+        user=request.user if request.user.is_authenticated else None,
+        confirm_time_minutes_target=confirm_time_minutes_target,
+        active='social_contribute',
+        title=_('Social Contribute'),
+    )
+    params['promo_text'] = promo_text
+    return TemplateResponse(request, 'social_contribution_modal.html', params)
+
+
 def payout_bounty(request):
     """Payout the bounty.
 
@@ -1157,7 +1187,7 @@ def profile(request, handle):
 
     try:
         if not handle and not request.user.is_authenticated:
-            return redirect('index')
+            return redirect('funder_bounties')
 
         if not handle:
             handle = request.user.username
@@ -1235,35 +1265,26 @@ def profile(request, handle):
 
     owned_kudos = profile.get_my_kudos.order_by('id', order_by)
     sent_kudos = profile.get_sent_kudos.order_by('id', order_by)
-
-    context['kudos'] = owned_kudos
-    context['sent_kudos'] = sent_kudos
+    kudos_limit = 8
+    context['kudos'] = owned_kudos[0:kudos_limit]
+    context['sent_kudos'] = sent_kudos[0:kudos_limit]
+    context['kudos_count'] = owned_kudos.count()
+    context['sent_kudos_count'] = sent_kudos.count()
 
     if request.method == 'POST' and request.is_ajax():
-        # Send kudos data when new preferred address
-        address = request.POST.get('address')
-        context['kudos'] = profile.get_my_kudos.order_by('id', order_by)
-        context['sent_kudos'] = profile.get_sent_kudos.order_by('id', order_by)
-        profile.preferred_payout_address = address
-        kudos_html = loader.render_to_string('shared/profile_kudos.html', context)
-
-        try:
+        # Update profile address data when new preferred address is sent
+        validated = request.user.is_authenticated and request.user.username.lower() == profile.handle.lower()
+        if validated and request.POST.get('address'):
+            address = request.POST.get('address')
+            profile.preferred_payout_address = address
             profile.save()
-        except Exception as e:
-            logger.error(e)
-            msg = {
-                'status': 500,
-                'msg': _('Internal server error'),
-            }
-        else:
             msg = {
                 'status': 200,
                 'msg': _('Success!'),
                 'wallets': [profile.preferred_payout_address, ],
-                'kudos_html': kudos_html,
             }
 
-        return JsonResponse(msg, status=msg.get('status', 200))
+            return JsonResponse(msg, status=msg.get('status', 200))
     return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
 
@@ -1713,12 +1734,15 @@ def change_bounty(request, bounty_id):
             return JsonResponse({'error': 'Invalid JSON.'}, status=400)
 
         bounty_changed = False
+        new_reservation = False
         for key in keys:
             value = params.get(key, '')
             old_value = getattr(bounty, key)
             if value != old_value:
                 setattr(bounty, key, value)
                 bounty_changed = True
+                if key == 'reserved_for_user_handle' and value:
+                    new_reservation = True
 
         if not bounty_changed:
             return JsonResponse({
@@ -1737,7 +1761,7 @@ def change_bounty(request, bounty_id):
         maybe_market_to_user_discord(bounty, 'bounty_changed')
 
         # notify a user that a bounty has been reserved for them
-        if bounty.bounty_reserved_for_user:
+        if new_reservation and bounty.bounty_reserved_for_user:
             new_reserved_issue('founders@gitcoin.co', bounty.bounty_reserved_for_user, bounty)
 
         return JsonResponse({
@@ -1771,9 +1795,9 @@ def get_users(request):
             profile_json['id'] = user.id
             profile_json['text'] = user.handle
             profile_json['email'] = user.email
-            profile_json['avatar_id'] = user.avatar_id
-            if user.avatar_id:
-                profile_json['avatar_url'] = user.avatar_url
+            if user.avatar_baseavatar_related.exists():
+                profile_json['avatar_id'] = user.avatar_baseavatar_related.first().pk
+                profile_json['avatar_url'] = user.avatar_baseavatar_related.first().avatar_url
             profile_json['preferred_payout_address'] = user.preferred_payout_address
             results.append(profile_json)
         # try github

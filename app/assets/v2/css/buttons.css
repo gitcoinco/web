@@ -193,3 +193,28 @@ button:focus {
   border: 2px solid white;
   border-radius: 4px;
 }
+
+.btn.btn-circle {
+  border-radius: 50px;
+  line-height: 2em;
+}
+
+.btn.btn-circle:hover {
+  color: white;
+  filter: saturate(3);
+}
+
+.btn-twitter {
+  color: white;
+  background-color: #1DA1F2;
+}
+
+.btn-facebook {
+  color: white;
+  background-color: #4267B2;
+}
+
+.btn-email {
+  color: white;
+  background-color: #F24283;
+}

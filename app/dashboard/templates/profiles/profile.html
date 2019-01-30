@@ -19,17 +19,17 @@
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav.html' %}
       {% if not hidden %}
-            {% if is_staff %}
-            <div class="alpha-warning font-caption mb-0">
-              <span class="font-weight-bold">Staff only</span>
-              <a style="color:white;" href="{{profile.admin_url}}">{% trans "Profile Admin" %}</a>
-            </div>
-            {% endif %}
+        {% if is_staff %}
+          <div class="alpha-warning font-caption mb-0">
+            <span class="font-weight-bold">Staff only</span>
+            <a style="color:white;" href="{{profile.admin_url}}">{% trans "Profile Admin" %}</a>
+          </div>
+        {% endif %}
         <div class="container">
           <div class="row">
             <div class="col-12 col-lg-4 profile-header__main-infos">
               <div class="clearfix">
-                <img class="profile-header__avatar mb-1 mr-4" src="{% if profile.avatar and profile.avatar.avatar_url %}{{ profile.avatar.avatar_url }}{% else %}{{ profile.avatar_url }}{% endif %}" />
+                <img class="profile-header__avatar mb-1 mr-4" src="{% if profile.avatar and profile.active_avatar.avatar_url %}{{ profile.active_avatar.avatar_url }}{% else %}{{ profile.avatar_url }}{% endif %}" />
                 <p class="profile-header__handle font-title">
                   {% if profile.data.name %}
                     {{ profile.data.name }}
@@ -56,6 +56,9 @@
                 <div class="my-2" id="preferred-address" data-truncatehash title="{{ preferred_payout_address }}">{{ preferred_payout_address }}</div>
               {% else %}
                 <div class="my-2" id="preferred-address">No preferred address</div>
+              {% endif %}
+              {% if  profile.show_job_status %}
+                <div class="my-2" id="job_status"><i class="fa fa-briefcase mr-2" aria-hidden="true"></i>{{ profile.job_status_verbose }}</div>
               {% endif %}
               {% if profile.data.bio %}
                 <div class="profile-header__bio my-2">
@@ -89,9 +92,9 @@
                               <br>
                               {% endif %}
                               {% for profile, num_times in works_with_collected.items %}
-                                  <a href="{% url 'profile' profile %} ">
-                                    <img src='{% avatar_url profile %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>" />
-                                  </a>
+                                <a href="{% url 'profile' profile %} ">
+                                  <img src='{% avatar_url profile %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>" />
+                                </a>
                               {% endfor %}
                           {% endif %}
                         </li>

@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import json
 import logging
 import re
+import urllib.parse
 
 from django.conf import settings
 from django.contrib import messages
@@ -77,15 +78,16 @@ def get_profile(handle):
 
 def about(request):
     """Render the Kudos 'about' page."""
+    activity_limit = 5
     listings = Token.objects.select_related('contract').filter(
         num_clones_allowed__gt=0,
         contract__is_latest=True,
         contract__network=settings.KUDOS_NETWORK,
         hidden=False,
     ).order_by('-popularity_week').cache()
-    activities = Activity.objects.select_related('bounty').filter(
+    activities = Activity.objects.filter(
         activity_type='new_kudos',
-    ).order_by('-created').cache()
+    ).order_by('-created').cache()[0:activity_limit]
 
     context = {
         'is_outside': True,
@@ -421,7 +423,7 @@ def send_4(request):
     record_kudos_activity(
         kudos_transfer,
         kudos_transfer.from_username,
-        'new_kudos' if kudos_transfer.username else 'new_crowdfund'
+        'new_kudos',
     )
     return JsonResponse(response)
 
@@ -486,7 +488,8 @@ def record_kudos_activity(kudos_transfer, github_handle, event_name):
         return
 
     try:
-        kwargs['bounty'] = kudos_transfer.bounty
+        if kudos_transfer.bounty:
+            kwargs['bounty'] = kudos_transfer.bounty
     except Exception:
         pass
 
@@ -585,6 +588,7 @@ def receive(request, key, txid, network):
         'key': key,
         'is_authed': is_authed,
         'disable_inputs': kudos_transfer.receive_txid or not_mined_yet or not is_authed,
+        'tweet_text': urllib.parse.quote_plus(f"I just got a {kudos_transfer.kudos_token_cloned_from.humanized_name} Kudos on @GetGitcoin.  ")
     }
 
     return TemplateResponse(request, 'transaction/receive.html', params)
@@ -629,7 +633,7 @@ def receive_bulk(request, secret):
         tx = contract.functions.clone(address, coupon.token.token_id, 1).buildTransaction({
             'nonce': nonce,
             'gas': 500000,
-            'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(5) * 10**9),
+            'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(2) * 10**9),
             'value': int(coupon.token.price_finney / 1000.0 * 10**18),
         })
 
@@ -677,7 +681,11 @@ def receive_bulk(request, secret):
                 coupon.current_uses += 1
                 coupon.save()
 
-    title = f"Redeem AirDropped *{coupon.token.humanized_name}* Kudos"
+                # send email
+                maybe_market_kudos_to_email(kudos_transfer)
+
+
+    title = f"Redeem {coupon.token.humanized_name} Kudos from @{coupon.sender_profile.handle}"
     desc = f"This Kudos has been AirDropped to you.  About this Kudos: {coupon.token.description}"
     params = {
         'title': title,
@@ -688,5 +696,6 @@ def receive_bulk(request, secret):
         'user': request.user,
         'is_authed': request.user.is_authenticated,
         'kudos_transfer': kudos_transfer,
+        'tweet_text': urllib.parse.quote_plus(f"I just got a {coupon.token.humanized_name} Kudos on @GetGitcoin.  ")
     }
     return TemplateResponse(request, 'transaction/receive_bulk.html', params)

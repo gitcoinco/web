@@ -20,6 +20,7 @@ from json import loads as json_parse
 from os import walk as walkdir
 
 from django.conf import settings
+from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.core.validators import validate_email
@@ -60,8 +61,12 @@ def get_activities(tech_stack=None, num_activities=15):
     activities = activities[0:num_activities]
     return [a.view_props for a in activities]
 
-
+@staff_member_required
 def index(request):
+    return TemplateResponse(request, 'bounties/funder.html', {})
+
+
+def funder_bounties(request):
     slides = [
         ("Dan Finlay", static("v2/images/testimonials/dan.jpg"),
          _("Once we had merged in multiple language support from a bounty, it unblocked the \
@@ -108,11 +113,11 @@ def index(request):
         'gitcoin_description': gitcoin_description,
         'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter.")
     }
-    return TemplateResponse(request, 'landing/funder.html', context)
+    return TemplateResponse(request, 'bounties/funder.html', context)
 
 
 @cached_view(timeout=60 * 10)
-def contributor_landing(request, tech_stack):
+def contributor_bounties(request, tech_stack):
 
     slides = [
         ("Daniel", static("v2/images/testimonials/gitcoiners/daniel.jpeg"),
@@ -242,7 +247,7 @@ def contributor_landing(request, tech_stack):
         'tech_stack': tech_stack,
     }
 
-    return TemplateResponse(request, 'landing/contributor.html', context)
+    return TemplateResponse(request, 'bounties/contributor.html', context)
 
 
 def how_it_works(request, work_type):
@@ -273,7 +278,6 @@ def robotstxt(request):
     return TemplateResponse(request, 'robots.txt', context, content_type='text')
 
 
-@cached_view(timeout=60 * 10)
 def about(request):
     core_team = [
         (
@@ -293,15 +297,6 @@ def about(request):
             "pixelant",
             "Tips",
             "Apple Cider Doughnuts"
-        ),
-        (
-            static("v2/images/team/mark-beacom.jpg"),
-            "Mark Beacom",
-            "Engineering",
-            "mbeacom",
-            "mbeacom",
-            "Start/Stop Work",
-            "Dolsot Bibimbap"
         ),
         (
             static("v2/images/team/eric-berry.jpg"),
@@ -369,7 +364,7 @@ def about(request):
         (
             static("v2/images/team/austin-griffith.jpg"),
             "Austin Griffith",
-            "Research",
+            "Gitcoin Labs",
             "austintgriffith",
             None,
             "The #BUIDL",
