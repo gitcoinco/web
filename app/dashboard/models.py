@@ -1418,7 +1418,7 @@ class InterestQuerySet(models.QuerySet):
         return self.filter(status=Interest.STATUS_WARNED)
 
 
-class Interest(models.Model):
+class Interest(SuperModel):
     """Define relationship for profiles expressing interest on a bounty."""
 
     STATUS_REVIEW = 'review'
@@ -1668,7 +1668,7 @@ class Activity(SuperModel):
         return model_to_dict(self, **kwargs)
 
 
-class LabsResearch(models.Model):
+class LabsResearch(SuperModel):
     """Define the structure of Labs Research object."""
 
     title = models.CharField(max_length=255)
@@ -2749,7 +2749,7 @@ class Tool(SuperModel):
         return _(self.link_copy)
 
 
-class ToolVote(models.Model):
+class ToolVote(SuperModel):
     """Define the vote placed on a tool."""
 
     profile = models.ForeignKey('dashboard.Profile', related_name='votes', on_delete=models.CASCADE)
