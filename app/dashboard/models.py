@@ -2785,7 +2785,7 @@ class SearchHistory(SuperModel):
 
         verbose_name_plural = 'Search History'
 
-    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     data = JSONField(default=dict)
     ip_address = models.GenericIPAddressField(blank=True, null=True)
 
