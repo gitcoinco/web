@@ -11,6 +11,19 @@ $(document).ready(function() {
 
   updateSummary();
 
+  $(".contribution_type select").change(function(){
+      if($(".contribution_type select").val() == "once"){
+        $(".frequency").addClass('hidden');
+        $(".num_recurring").addClass('hidden');
+        $("#period").val(1);
+        $("#amount_label").text("Amount");
+      } else {
+        $(".frequency").removeClass('hidden');
+        $(".num_recurring").removeClass('hidden');
+        $("#amount_label").text("Amount Per Period");
+      }
+    });
+
   $('#js-fundGrant').validate({
     submitHandler: function(form) {
       var data = {};

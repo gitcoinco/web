@@ -69,6 +69,39 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             {% csrf_token %}
             <div class="row">
               <div class="col-12">
+                
+                <div class="form__group-horizontal">
+                  <label class="form__label" id="amount_label">{% trans "Amount Per Period" %}</label>
+                  <div class="row">
+                    <div class="col-8">
+                      <input type="number" min="0.001" id="amount" name="amount_per_period" class="form__input" required />
+                    </div>
+                    <div class="col-4">
+                      {% if grant_has_no_token %}
+                        <div class="form__select2">
+                          <select class='js-select2' name='denomination' id='js-token'> </select>
+                        </div>
+                      {% else %}
+                        {{ grant.token_symbol }}
+                        <input type="hidden" id='sub_token_address' name='denomination'>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form__group-horizontal contribution_type">
+                  <label class="form__label">{% trans "Contribution Type" %}</label>
+                  <div class="row">
+                    <div class="col-12 font-body">
+                      <select name="frequency_unit" id="frequency_unit" class="js-select2" style="width: 100%">
+                        <option value="once">{% trans "One Time" %}</option>
+                        <option value="recurring" selected="selected">{% trans "Recurring" %}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+
                 <div class="form__group-horizontal frequency">
                   <label class="form__label">{% trans "Payment Period" %}</label>
                   <div class="row">
@@ -88,30 +121,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   </div>
                 </div>
 
-                <div class="form__group-horizontal">
-                  <label class="form__label">{% trans "Amount Per Period" %}</label>
-                  <div class="row">
-                    <div class="col-8">
-                      <input type="number" min="0.001" id="amount" name="amount_per_period" class="form__input" required />
-                    </div>
-                    <div class="col-4">
-                      {% if grant_has_no_token %}
-                        <div class="form__select2">
-                          <select class='js-select2' name='denomination' id='js-token'> </select>
-                        </div>
-                      {% else %}
-                        {{ grant.token_symbol }}
-                        <input type="hidden" id='sub_token_address' name='denomination'>
-                      {% endif %}
-                    </div>
-                  </div>
-                </div>
-
-                <div class="form__group-horizontal">
+                <div class="form__group-horizontal num_recurring">
                   <div class="row">
                     <div class="col-12">
                       <label class="form__label">
-                        {% trans "Number Of Recurring Payments" %}
+                        {% trans "Number Of Payments" %}
                       </label>
                       <input id="period" type="number" min=0 step="1" name="num_periods" class="form__input" required />
                     </div>
