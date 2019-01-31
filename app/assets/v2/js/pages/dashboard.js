@@ -524,7 +524,7 @@ var refreshBounties = function(event, offset, append, do_save_search) {
         $('.no-results').removeClass('hidden');
         $('#dashboard-content').addClass('hidden');
       } else {
-        $('.nonefound').css('display', 'block');
+        $('.nonefound').css('display', 'none');
       }
     }
 

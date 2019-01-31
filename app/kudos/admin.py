@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from django.contrib import admin
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 
 from .models import BulkTransferCoupon, BulkTransferRedemption, Contract, KudosTransfer, Token, Wallet
 
@@ -50,6 +51,11 @@ class TokenAdmin(admin.ModelAdmin):
     ordering = ['-id']
     search_fields = ['name', 'description']
     raw_id_fields = ['contract']
+    readonly_fields = ['link']
+
+    def link(self, instance):
+        html = f"<a href={instance.url}>{instance.url}</a>"
+        return mark_safe(html)
 
 
 class TransferAdmin(admin.ModelAdmin):
