@@ -2756,4 +2756,41 @@
   - Sustainability
   - Sustainy
   image: sustain0.svg
+- name: liberal_radical
+  artist: mladen
+  description: This Kudos to a Liberal Radical who contributed to CLR matching.
+  priceFinney: 100
+  numClonesAllowed: 500
+  image: rxc.svg
+  tags:
+  - Liberal Radicalism
+  - Grants
+- name: wings
+  artist: mladen
+  description: 8 red bulls and 3 integrations later you've got wings!
+  priceFinney: 5
+  numClonesAllowed: 100
+  to_address: 0x5A2a64F7e9C820069378DF45288E593b6768447a
+  tags:
+    - ethereum
+    - hacker
+    - eth
+    - redbull
+    - red bull
+    - wings
+    - integration
+  image: red_bull_wings.svg
+- name: consensys_2_0
+  artist: mladen
+  description: This is a Kudos for those who have meaningfully contributed to Consensys 2.0
+  priceFinney: 10
+  numClonesAllowed: 500
+  to_address: 0x685654d53bef389760135c30f91c404eb000f4c5
+  tags:
+    - consensys
+    - evolution
+    - blopblop
+  image: consensys_2.0.svg
+
+
 
