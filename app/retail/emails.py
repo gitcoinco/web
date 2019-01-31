@@ -787,25 +787,24 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "A New Type Of Freelance Platform: Gitcoin in Forbes"
-    new_kudos_pks = [1056, 1057, 1058]
+    subject = "Gitcoin Is Matching $25K In Contributions To OSS!"
+    new_kudos_pks = [1352, 1349, 1336]
     new_kudos_size_px = 150
     intro = '''
 <p>
 Hi Gitcoiners,
 <p>
 <p>
-This week, <a href="https://www.forbes.com/sites/jeffersonnunn/2019/01/21/bitcoin-autonomous-employment-workers-wanted/">Forbes wrote an article</a> comparing
-Gitcoin to traditional freelance platforms. While it's early days, we're excited about the possibility to do more to improve the
-abiity of individuals to dynamically interact with each other. If you're interested,
-<a href="https://www.forbes.com/sites/jeffersonnunn/2019/01/21/bitcoin-autonomous-employment-workers-wanted/">give it a read here.</a>
+Today, <a href="https://medium.com/gitcoin/gitcoin-grants-clr-matching-ecbc87b10038">we're launching a Radical Experiment.</a>
+From February 1st to February 15th, we'll be matching any contributions you make to these 20 Ethereum projects with $25,000 in funding. Because we are
+using Liberal Radicalism as the mechanism, it's possible a small contribution can lead to large amounts of funding allocated to projects in the space.
 </p>
 <p>
-<a href="https://gitcoin.co/requests">Gitcoin Requests</a> is a great way to try the platform if you haven't already. Request funding
-for any open source Github issue, and we have funding to bring it onto the platform. Excited to see what you want built!
+Head to the <a href="https://gitcoin.co/grants">Gitcoin Grants Explorer</a> to participate. A $5 donation can go a long way. Let us know if you have any
+feedback, and we're excited to continue the experimentation. <a href="https://gitcoin.co/grants">See you on the Grant Explorer</a>!
 </p>
 <p>
-<h3>The Week Of Kudos Bots!</h3>
+<h3>A Week Of New Kudos!</h3>
 </p>
 <p>
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
@@ -814,7 +813,7 @@ for any open source Github issue, and we have funding to bring it onto the platf
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Gitcoin Livestream is back this week, with a feature from the Aztec team working on ZK-Snarks! Join us <a href="https://gitcoin.co/livestream">on Friday at 5PM ET</a>!
+            Gitcoin Livestream is back this week! Great conversations pending. Join us <a href="https://gitcoin.co/livestream">on Friday at 5PM ET</a>!
         </li>
     </ul>
 </p>
@@ -824,34 +823,34 @@ Back to shipping,
 
 '''
     highlights = [{
-        'who': 'iamonuwa',
+        'who': 'jerry40',
         'who_link': True,
-        'what': 'Worked with Austin on the Burner Wallet!',
-        'link': 'https://gitcoin.co/issue/austintgriffith/burner-wallet/78/2158',
+        'what': 'Worked with Diginex on geewallet!',
+        'link': 'https://gitcoin.co/issue/diginex/geewallet/54/2205',
         'link_copy': 'View more',
     }, {
-        'who': 'pvienhage',
+        'who': 'johnlenin00',
         'who_link': True,
-        'what': 'Some more great work with OpenZeppelin!',
-        'link': 'https://gitcoin.co/issue/OpenZeppelin/openzeppelin-solidity/1596/2165',
+        'what': 'Helped with Core Dev call notes!',
+        'link': 'https://gitcoin.co/issue/status-im/pm/12/2175',
         'link_copy': 'View more',
     }, {
-        'who': 'cpstl',
+        'who': 'mukulverm4',
         'who_link': True,
-        'what': 'Our very own Gitcoin Ambassador Charles on the Core Dev calls!',
-        'link': 'https://gitcoin.co/issue/ethereum/pm/72/2163',
+        'what': 'Worked with HERCone who is hiring!',
+        'link': 'https://gitcoin.co/issue/HERCone/herc-edge-login/142/2190',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/goerli/testnet/issues/9',
-        'primer': 'Huge bounty on Goerli, new test-net!',
+        'url': 'https://github.com/plasma-group/plasma-contracts/issues/46',
+        'primer': 'Plasma! Plasma! Plasma!',
     }, {
-        'url': 'https://github.com/w3f/Web3-collaboration/issues/62',
-        'primer': 'Create videos exploring Polkadot, a blockchain interoperability project!',
+        'url': 'https://github.com/status-im/status-react/issues/7045',
+        'primer': 'Status is still BUIDLing!',
     }, {
-        'url': 'https://github.com/gitcoinco/web/issues/3514',
-        'primer': 'Help get the word out about Gitcoin with a Wiki!',
+        'url': 'https://github.com/plasma-group/plasma-contracts/issues/40',
+        'primer': 'And more work on Plasma.',
     }, ]
 
     num_leadboard_items = 5
