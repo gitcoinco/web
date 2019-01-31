@@ -205,6 +205,13 @@ class Grant(SuperModel):
         return abi_v0
 
     @property
+    def url(self):
+        """Return grants url."""
+        from django.urls import reverse
+        return reverse('grants:details', kwargs={'grant_id': self.pk, 'grant_slug': self.slug})
+
+
+    @property
     def contract(self):
         """Return grants contract."""
         from dashboard.utils import get_web3
