@@ -40,12 +40,13 @@ class GrantAdmin(GeneralAdmin):
         'token_address', 'contract_address', 'network', 'required_gas_price', 'logo_svg_asset',
         'logo_asset', 'created_on', 'modified_on', 'team_member_list',
         'subscriptions_links', 'contributions_links', 'logo', 'logo_svg', 'image_css',
+         'link',
     ]
     readonly_fields = [
         'logo_svg_asset', 'logo_asset', 'created_on', 'modified_on', 'token_address', 'contract_address',
         'deploy_tx_id', 'cancel_tx_id', 'token_symbol',
         'network', 'amount_goal', 'amount_received', 'team_member_list',
-        'subscriptions_links', 'contributions_links',
+        'subscriptions_links', 'contributions_links', 'link',
     ]
 
     # Custom Avatars
@@ -63,6 +64,10 @@ class GrantAdmin(GeneralAdmin):
 
         return mark_safe(" , ".join(items))
 
+    def link(self, instance):
+        html = f"<a href={instance.url}>{instance.url}</a>"
+
+        return mark_safe(html)
 
     def logo_asset(self, instance):
         """Define the logo image tag to be displayed in the admin."""

@@ -166,6 +166,9 @@
 <script>
   document.network = '{{coupon.token.contract.network}}';
   $(document).ready(function(){
+    {% if error %}
+      _alert('{{error}}', 'error');
+    {% endif %}
     start_kudos_levitate();
     document.suppress_kudos_levitate_hover = true;
   })

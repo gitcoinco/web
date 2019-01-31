@@ -267,6 +267,8 @@ class Bounty(SuperModel):
     project_type = models.CharField(max_length=50, choices=PROJECT_TYPES, default='traditional')
     permission_type = models.CharField(max_length=50, choices=PERMISSION_TYPES, default='permissionless')
     snooze_warnings_for_days = models.IntegerField(default=0)
+    is_featured = models.BooleanField(
+        default=False, help_text=_('Whether this bounty is featured'))
 
     token_value_time_peg = models.DateTimeField(blank=True, null=True)
     token_value_in_usdt = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
