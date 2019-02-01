@@ -19,23 +19,23 @@ $(document).ready(function() {
     updateSummary();
   });
 
-  $(".contribution_type select").change(function(){
-      if($(".contribution_type select").val() == "once"){
-        $(".frequency").addClass('hidden');
-        $(".num_recurring").addClass('hidden');
-        $(".hide_if_onetime").addClass('hidden');
-        $(".hide_if_recurring").removeClass('hidden');
-        $("#period").val(1);
-        updateSummary();
-        $("#amount_label").text("Amount");
-      } else {
-        $(".frequency").removeClass('hidden');
-        $(".num_recurring").removeClass('hidden');
-        $("#amount_label").text("Amount Per Period");
-        $(".hide_if_onetime").removeClass('hidden');
-        $(".hide_if_recurring").addClass('hidden');
-      }
-    });
+  $('.contribution_type select').change(function() {
+    if ($('.contribution_type select').val() == 'once') {
+      $('.frequency').addClass('hidden');
+      $('.num_recurring').addClass('hidden');
+      $('.hide_if_onetime').addClass('hidden');
+      $('.hide_if_recurring').removeClass('hidden');
+      $('#period').val(1);
+      updateSummary();
+      $('#amount_label').text('Amount');
+    } else {
+      $('.frequency').removeClass('hidden');
+      $('.num_recurring').removeClass('hidden');
+      $('#amount_label').text('Amount Per Period');
+      $('.hide_if_onetime').removeClass('hidden');
+      $('.hide_if_recurring').addClass('hidden');
+    }
+  });
 
   $('#js-fundGrant').validate({
     submitHandler: function(form) {
@@ -235,7 +235,6 @@ const waitforData = (callback) => {
     setTimeout(wait_callback, 3000);
   }
 };
-
 
 
 const updateSummary = (element) => {
