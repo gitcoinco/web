@@ -676,20 +676,12 @@ def receive_bulk(request, secret):
                     kudostransfer=kudos_transfer,
                     )
 
-                    # save to DB
-                    BulkTransferRedemption.objects.create(
-                        coupon=coupon,
-                        redeemed_by=profile,
-                        ip_address=ip_address,
-                        kudostransfer=kudos_transfer,
-                        )
+                coupon.num_uses_remaining -= 1
+                coupon.current_uses += 1
+                coupon.save()
 
-                    coupon.num_uses_remaining -= 1
-                    coupon.current_uses += 1
-                    coupon.save()
-
-                    # send email
-                    maybe_market_kudos_to_email(kudos_transfer)
+                # send email
+                maybe_market_kudos_to_email(kudos_transfer)
 
 
     title = f"Redeem {coupon.token.humanized_name} Kudos from @{coupon.sender_profile.handle}"

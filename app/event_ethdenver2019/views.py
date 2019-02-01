@@ -91,27 +91,20 @@ def receive_bulk_ethdenver(request, secret):
     if not eventobjs.exists():
         raise Http404
 
-    address = Web3.toChecksumAddress(request.POST.get('forwarding_address'))
-    already_claimed = KudosTransfer.objects.filter(receive_address=address,kudos_token_cloned_from=coupon.token)
-    if already_claimed is not None:
-        messages.info(request, f'You already redeemed this kudos! If you think this wrong contact the ETHDenver Team!')
-        return redirect(coupon.token.url)
-
+    kudos_transfer = ""
     if coupon.num_uses_remaining <= 0:
         messages.info(request, f'Sorry but this kudos redeem link has expired! Please contact the person who sent you the coupon link, or contact your nearest Gitcoin representative.')
         return redirect(coupon.token.url)
 
-    kudos_transfer = None
-    if request.user.is_authenticated and request.user and request.user.profile:
-        redemptions = BulkTransferRedemption.objects.filter(redeemed_by=request.user.profile, coupon=coupon)
-        if redemptions.exists():
-            kudos_transfer = redemptions.first().kudostransfer
-
     if request.POST:
         address = Web3.toChecksumAddress(request.POST.get('forwarding_address'))
+        already_claimed = KudosTransfer.objects.filter(receive_address=address,kudos_token_cloned_from=coupon.token)
+        if already_claimed.count() > 0:
+            messages.info(request, f'You already redeemed this kudos! If you think this wrong contact the ETHDenver Team!')
+            return redirect(coupon.token.url)
         ip_address = get_ip(request)
 
-        kudos_contract_address = Web3.toChecksumAddress(settings.KUDOS_CONTRACT_MAINNET)
+        kudos_contract_address = Web3.toChecksumAddress(settings.KUDOS_CONTRACT_RINKEBY)
         kudos_owner_address = Web3.toChecksumAddress(settings.KUDOS_OWNER_ACCOUNT)
         w3 = get_web3(coupon.token.contract.network)
         contract = w3.eth.contract(Web3.toChecksumAddress(kudos_contract_address), abi=kudos_abi())
@@ -127,7 +120,7 @@ def receive_bulk_ethdenver(request, secret):
 
         with transaction.atomic():
             kudos_transfer = KudosTransfer.objects.create(
-                emails=[request.user.email],
+                emails=["ethdenver@spiegeleixxl.de"],
                 # For kudos, `token` is a kudos.models.Token instance.
                 kudos_token_cloned_from=coupon.token,
                 amount=0,
@@ -148,14 +141,6 @@ def receive_bulk_ethdenver(request, secret):
                 tx_status='pending',
                 receive_tx_status='pending',
             )
-            # save to DB
-            if request.user and request.user.profile:
-                BulkTransferRedemption.objects.create(
-                    coupon=coupon,
-                    redeemed_by=request.user.profile,
-                    ip_address=ip_address,
-                    kudostransfer=kudos_transfer,
-                    )
 
             coupon.num_uses_remaining -= 1
             coupon.current_uses += 1
