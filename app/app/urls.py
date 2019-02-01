@@ -281,6 +281,11 @@ urlpatterns = [
         name='admin_grant_cancellation'
     ),
     path(
+        '_administration/email/featured_funded_bounty',
+        retail.emails.featured_funded_bounty,
+        name='admin_featured_funded_bounty'
+    ),
+    path(
         '_administration/email/subscription_terminated',
         retail.emails.subscription_terminated,
         name='admin_subscription_terminated'
