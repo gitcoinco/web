@@ -2891,6 +2891,7 @@
     - trophies
   image: ethdenver_trophies/spirit_of_buidl2.svg
 - name: open_sourceress
+  to_address: '0xa07b3c21ed817f94149231a431d3d4b421648121'
   artist: mladen
   description: The "Open Sourceress" is a master of creating magic via the sorcery that is Open Source.
   priceFinney: 30
