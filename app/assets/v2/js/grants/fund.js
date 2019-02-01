@@ -11,6 +11,32 @@ $(document).ready(function() {
 
   updateSummary();
 
+  $('#frequency_unit, #js-token').on('select2:select', event => {
+    updateSummary();
+  });
+
+  $('input#frequency_count, input#amount, input#period').on('input', () => {
+    updateSummary();
+  });
+
+  $('.contribution_type select').change(function() {
+    if ($('.contribution_type select').val() == 'once') {
+      $('.frequency').addClass('hidden');
+      $('.num_recurring').addClass('hidden');
+      $('.hide_if_onetime').addClass('hidden');
+      $('.hide_if_recurring').removeClass('hidden');
+      $('#period').val(1);
+      updateSummary();
+      $('#amount_label').text('Amount');
+    } else {
+      $('.frequency').removeClass('hidden');
+      $('.num_recurring').removeClass('hidden');
+      $('#amount_label').text('Amount Per Period');
+      $('.hide_if_onetime').removeClass('hidden');
+      $('.hide_if_recurring').addClass('hidden');
+    }
+  });
+
   $('#js-fundGrant').validate({
     submitHandler: function(form) {
       var data = {};
@@ -210,30 +236,13 @@ const waitforData = (callback) => {
   }
 };
 
+
 const updateSummary = (element) => {
 
   $('#summary-period').html($('input#frequency_count').val());
   $('#summary-amount').html($('input#amount').val() ? $('input#amount').val() : 0);
   $('#summary-frequency').html($('input#period').val() ? $('input#period').val() : 0);
   $('#summary-frequency-unit').html($('#frequency_unit').val());
+  $('#summary-token').html($('#js-token option:selected').text());
 
-  $('#js-token').on('select2:select', event => {
-    $('#summary-token').html(event.params.data.text);
-  });
-
-  $('#frequency_unit').on('select2:select', event => {
-    $('#summary-frequency-unit').html(event.params.data.text);
-  });
-
-  $('input#frequency_count').on('input', () => {
-    $('#summary-period').html($('input#frequency_count').val());
-  });
-
-  $('input#amount').on('input', () => {
-    $('#summary-amount').html($('input#amount').val());
-  });
-
-  $('input#period').on('input', () => {
-    $('#summary-frequency').html($('input#period').val());
-  });
 };
