@@ -150,7 +150,10 @@ def grant_details(request, grant_id, grant_slug):
                 change_grant_owner_request(grant, grant.request_ownership_change)
             grant.save()
             return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
-
+    is_admin = (grant.admin_profile.id == profile.id) if profile and grant.admin_profile else False
+    if is_admin:
+        add_cancel_params = True
+        
     params = {
         'active': 'grant_details',
         'grant': grant,
@@ -161,7 +164,7 @@ def grant_details(request, grant_id, grant_slug):
         'cancelled_subscriptions': cancelled_subscriptions,
         'contributions': contributions,
         'user_subscription': user_subscription,
-        'is_admin': (grant.admin_profile.id == profile.id) if profile and grant.admin_profile else False,
+        'is_admin': is_admin,
         'grant_is_inactive': not grant.active,
         'updates': updates,
         'milestones': milestones,
