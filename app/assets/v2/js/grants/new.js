@@ -19,30 +19,11 @@ const init = () => {
     $('#contract_owner_address').val(accounts[0]);
   });
 
-
   $('#js-token').append("<option value='0x0000000000000000000000000000000000000000'>Any Token");
 
   userSearch('.team_members');
 
-  $('#img-project').on('change', function() {
-    if (this.files && this.files[0]) {
-      if (exceedFileSize(this.files[0])) {
-        _alert({ message: 'Grant Image should not exceed 4MB' }, 'error');
-        return;
-      }
-
-      let reader = new FileReader();
-
-      reader.onload = function(e) {
-        $('#preview').attr('src', e.target.result);
-        $('#preview').css('width', '100%');
-        $('#js-drop span').hide();
-        $('#js-drop input').css('visible', 'invisible');
-        $('#js-drop').css('padding', 0);
-      };
-      reader.readAsDataURL(this.files[0]);
-    }
-  });
+  addGrantLogo();
 
   $('.js-select2, #frequency_unit').each(function() {
     $(this).select2();
@@ -50,10 +31,9 @@ const init = () => {
 
   $('#create-grant').validate({
     submitHandler: function(form) {
-      var data = {};
-      var disabled = $(form)
-        .find(':input:disabled')
-        .removeAttr('disabled');
+      let data = {};
+
+      $(form).find(':input:disabled').removeAttr('disabled');
 
       $.each($(form).serializeArray(), function() {
         data[this.name] = this.value;
@@ -201,10 +181,4 @@ const init = () => {
   });
 
   $('.select2-selection__rendered').removeAttr('title');
-};
-
-const exceedFileSize = (file, size = 4000000) => {
-  if (file.size > size)
-    return true;
-  return false;
 };

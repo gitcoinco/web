@@ -842,28 +842,26 @@ def render_start_work_applicant_expired(interest, bounty):
     return response_html, response_txt, subject
 
 
-
 # ROUNDUP_EMAIL
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
-    subject = "Liberal Radicalism In Open Source Software"
-    new_kudos_pks = [1053, 1059, 866]
+    subject = "Gitcoin Is Matching $25K In Contributions To OSS!"
+    new_kudos_pks = [1352, 1349, 1336]
     new_kudos_size_px = 150
     intro = '''
 <p>
 Hi Gitcoiners,
 <p>
 <p>
-This week, we wrote about <a href="https://medium.com/gitcoin/experiments-with-liberal-radicalism-ad68e02efd4">Liberal Radicalism</a>, a paper proposed by Vitalik Buterin, Glen Weyl, and Zoe Hitzig. Our thinking
-describes a public good problem in open source, the CLR mechanism, and how we are experimenting with it via Gitcoin Grants. If you're interested in joining the discussion,
-<a href="https://discourse.gitcoin.co/t/liberal-radicalism-in-open-source-software/16">our Discourse</a> is a good place to start.
+Today, <a href="https://medium.com/gitcoin/gitcoin-grants-clr-matching-ecbc87b10038">we're launching a Radical Experiment.</a>
+From February 1st to February 15th, we'll be matching any contributions you make to these 20 Ethereum projects with $25,000 in funding. Because we are
+using Liberal Radicalism as the mechanism, it's possible a small contribution can lead to large amounts of funding allocated to projects in the space.
 </p>
 <p>
-The potential with Gitcoin Grants is high, and we're excited to explore. <a href="https://consensys1mac.typeform.com/to/HFcZKe">Let us know</a> if you'd like to be in a future cohort and we'll
-reach out with more details. Want to contribute to a Gitcoin Grant? <a href="https://gitcoin.co/grants/">Take a look at our launch partners</a>, including Prysmatic Labs, Ethereum PM, and more.
+Donations of $5 or more will be matched <a href="https://medium.com/gitcoin/gitcoin-grants-clr-matching-ecbc87b10038">via Constrained Capital Liberal Radicalism (CLR)</a>, so act today! Head to the <a href="https://gitcoin.co/grants">Gitcoin Grants Explorer</a> to participate.
 </p>
 <p>
-<h3>Happy Kudos Friday!</h3>
+<h3>A Week Of New Kudos!</h3>
 </p>
 <p>
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
@@ -872,7 +870,7 @@ reach out with more details. Want to contribute to a Gitcoin Grant? <a href="htt
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream">on Friday at 5PM ET</a>!
+            Gitcoin Livestream is back this week! Great conversations pending. Join us <a href="https://gitcoin.co/livestream">on Friday at 5PM ET</a>!
         </li>
     </ul>
 </p>
@@ -882,34 +880,34 @@ Back to shipping,
 
 '''
     highlights = [{
-        'who': 'lrgeoemtry',
+        'who': 'jerry40',
         'who_link': True,
-        'what': 'Great Linux skills!',
-        'link': 'https://gitcoin.co/issue/HERCone/herc-edge-login/130/2114',
+        'what': 'Worked with Diginex on geewallet!',
+        'link': 'https://gitcoin.co/issue/diginex/geewallet/54/2205',
         'link_copy': 'View more',
     }, {
-        'who': 'johngrantuk',
+        'who': 'johnlenin00',
         'who_link': True,
-        'what': 'More great work on the Burner Wallet!',
-        'link': 'https://gitcoin.co/issue/austintgriffith/burner-wallet/72/2111',
+        'what': 'Helped with Core Dev call notes!',
+        'link': 'https://gitcoin.co/issue/status-im/pm/12/2175',
         'link_copy': 'View more',
     }, {
-        'who': 'zyfrank',
+        'who': 'mukulverm4',
         'who_link': True,
-        'what': 'Great work on the Centrifuge repo!',
-        'link': 'https://gitcoin.co/issue/centrifuge/precise-proofs/43/2090',
+        'what': 'Worked with HERCone who is hiring!',
+        'link': 'https://gitcoin.co/issue/HERCone/herc-edge-login/142/2190',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/austintgriffith/burner-wallet/issues/78',
-        'primer': 'Burner Wallet, a very important crypto project!',
+        'url': 'https://github.com/plasma-group/plasma-contracts/issues/46',
+        'primer': 'Plasma! Plasma! Plasma!',
     }, {
-        'url': 'https://github.com/gitcoinco/web/issues/3561',
-        'primer': 'Help us get images on the Gitcoin Blog!',
+        'url': 'https://github.com/status-im/status-react/issues/7045',
+        'primer': 'Status is still BUIDLing!',
     }, {
-        'url': 'https://github.com/NethermindEth/nethermind/issues/334',
-        'primer': '.NET skills? Here is the bounty for you!',
+        'url': 'https://github.com/plasma-group/plasma-contracts/issues/40',
+        'primer': 'And more work on Plasma.',
     }, ]
 
     num_leadboard_items = 5
@@ -972,6 +970,7 @@ Back to shipping,
     response_txt = render_to_string("emails/bounty_roundup.txt", params)
 
     return response_html, response_txt, subject
+
 
 # DJANGO REQUESTS
 

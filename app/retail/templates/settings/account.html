@@ -67,7 +67,7 @@
   <h4 class="font-title mb-4 text-left">{% trans "Profile Photo" %}</h4>
   <div class="profile-avatar row mx-0 px-0 major_button_container">
     <div class="col-12 col-md-5 pl-0 pr-0 text-center">
-      <img id="user_avatar" src="{% if user.profile.avatar %}{{ user.profile.avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
+      <img id="user_avatar" src="{% if user.profile.avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
     </div>
     <div class="col-12 col-md-7 row">
       <div class="col-12 mt-2 mb-2">
@@ -157,23 +157,21 @@
     });
     $("#use_github_avatar").on('click', function(e) {
       var request = $.ajax({
-        url: '/avatar/save',
+        url: '/avatar/github/save',
         type: 'POST',
-        data: JSON.stringify({
-          use_github_avatar: true
-        }),
-        dataType: 'json',
         cache: false,
-        contentType: 'application/json; charset=utf-8',
         success: function(response) {
           $("#user_avatar").attr("src", response.avatar_url);
           _alert({ message: gettext('Your Github Avatar Has Been Saved To your Gitcoin Profile!')}, 'success');
         },
-        error: function() {
-          _alert({ message: gettext('Error occurred while saving. Please try again.')}, 'error');
+        error: function(response) {
+          let text = gettext('Error occurred while saving. Please try again.');
+          if(response.responseJSON && response.responseJSON.message) {
+            text = response.responseJSON.message;
+          }
+          _alert({ message: text}, 'error');
         }
       });
-      console.log(request);
     });
   });
 </script>
