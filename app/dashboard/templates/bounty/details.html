@@ -427,13 +427,38 @@
       let modalUrl = `/modal/social_contribution?pk=${document.result.pk}`;
 
       modals.on('show.bs.modal', function () {
-        modalBody.load(modalUrl);
+        modalBody.load(modalUrl, ()=> {
+          userSearch('.team_members');
+          copyClipboard()
+          // $('.team_members').data('select2').data()
+
+        });
       });
       e.preventDefault();
     });
-  </script>
+
+    const copyClipboard = () => {
+      $('[data-copyclipboard]').each(function(index,elem){
+        $(this).on('click', function(){
+          let input = $(this).data('copyclipboard')
+          $(input).select();
+          document.execCommand("copy");
+          document.getSelection().removeAllRanges();
+          let msgDone = $('<b style="position: absolute;margin: 0.2rem -3.2rem;">Copied!</b>')
+
+          $(input).after(msgDone);
+          msgDone.animate({
+            opacity: 1,
+          }, 5000, function() {
+            $(this).remove();
+          });
+        })
+      })
+    }
+    </script>
   <script src="{% static "v2/js/pages/bounty_details.js" %}"></script>
   <script src="{% static "v2/js/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
+  <script src="{% static "v2/js/user-search.js" %}"></script>
   <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
 </html>
