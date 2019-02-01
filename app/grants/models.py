@@ -490,7 +490,7 @@ next_valid_timestamp: {next_valid_timestamp}
         """Check the return value of the previous function. Returns true if the previous function."""
         return self.grant.contract.functions.checkSuccess().call()
 
-    def _do_helper_via_web3(self, fn, minutes_to_confirm_within=5):
+    def _do_helper_via_web3(self, fn, minutes_to_confirm_within=1):
         """Call the specified function fn"""
         from dashboard.utils import get_web3
         args = self.get_subscription_hash_arguments()
@@ -510,21 +510,21 @@ next_valid_timestamp: {next_valid_timestamp}
         signed_txn = web3.eth.account.signTransaction(tx, private_key=settings.GRANTS_PRIVATE_KEY)
         return web3.eth.sendRawTransaction(signed_txn.rawTransaction).hex()
 
-    def do_cancel_subscription_via_web3(self, minutes_to_confirm_within=5):
+    def do_cancel_subscription_via_web3(self, minutes_to_confirm_within=1):
         """.Cancels the subscripion on the blockchain"""
         return self._do_helper_via_web3(
             self.grant.contract.functions.cancelSubscription,
             minutes_to_confirm_within=minutes_to_confirm_within
         )
 
-    def do_execute_subscription_via_web3(self, minutes_to_confirm_within=5):
+    def do_execute_subscription_via_web3(self, minutes_to_confirm_within=1):
         """.Executes the subscription on the blockchain"""
         return self._do_helper_via_web3(
             self.grant.contract.functions.executeSubscription,
             minutes_to_confirm_within=minutes_to_confirm_within
         )
 
-    def helper_tx_dict(self, minutes_to_confirm_within=5):
+    def helper_tx_dict(self, minutes_to_confirm_within=1):
         """returns a dict like this: {'to': '0xd3cda913deb6f67967b99d67acdfa1712c293601', 'from': web3.eth.coinbase, 'value': 12345}"""
         from dashboard.utils import get_nonce
         return {
