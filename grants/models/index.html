@@ -2691,17 +2691,17 @@ object the first time, the query is executed.</p>
 
 <p>Check the return value of the previous function. Returns true if the previous function.
 <h3 id="grants.models.Subscription.do_cancel_subscription_via_web3">do_cancel_subscription_via_web3</h3></p>
-<pre><code class="python">Subscription.do_cancel_subscription_via_web3(self, minutes_to_confirm_within=5)
+<pre><code class="python">Subscription.do_cancel_subscription_via_web3(self, minutes_to_confirm_within=1)
 </code></pre>
 
 <p>.Cancels the subscripion on the blockchain
 <h3 id="grants.models.Subscription.do_execute_subscription_via_web3">do_execute_subscription_via_web3</h3></p>
-<pre><code class="python">Subscription.do_execute_subscription_via_web3(self, minutes_to_confirm_within=5)
+<pre><code class="python">Subscription.do_execute_subscription_via_web3(self, minutes_to_confirm_within=1)
 </code></pre>
 
 <p>.Executes the subscription on the blockchain
 <h3 id="grants.models.Subscription.helper_tx_dict">helper_tx_dict</h3></p>
-<pre><code class="python">Subscription.helper_tx_dict(self, minutes_to_confirm_within=5)
+<pre><code class="python">Subscription.helper_tx_dict(self, minutes_to_confirm_within=1)
 </code></pre>
 
 <p>returns a dict like this: {'to': '0xd3cda913deb6f67967b99d67acdfa1712c293601', 'from': web3.eth.coinbase, 'value': 12345}
