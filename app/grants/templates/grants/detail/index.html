@@ -86,9 +86,16 @@
             <div class="row">
               <div class="col-12">
                 <div class="grant__specs">
-                  <p style="background-color: #C4A2D4; color: white; padding: 3px 10px; border-radius: 5px;"> 
-                    <strong>NEW 2019/02/01</strong> - This Grant is subject to up to $25k in CLR Matching.  Contribute today and your contribution will be matched.  <a style="color: white;" target="new" href="https://medium.com/gitcoin/gitcoin-grants-clr-matching-ecbc87b10038">Read More Here</a>
-                  </p>
+                  <div id="CLR_banner" class="mt-3 mb-3" style="border: 2px solid #C3B0FF; color: white; padding: 3px 10px; border-radius: 5px;"> 
+                    <img style="float:right; margin-top: 8px;" src="{% static "v2/images/eth_dollar.svg" %}" />
+                    <p style="color: #3E00FF; font-weight: bold;" class="mt-2 mb-1">
+                      $25K CLR Matching Available – Contribute Today!
+                    </p>
+                    <p style="color: #4A4A4A;" class="mt-1 mb-2">
+                      2/1 to 2/15, all contributions will be matched.
+                      <a style="color: #3E00FF;" target="new" href="https://medium.com/gitcoin/gitcoin-grants-clr-matching-ecbc87b10038">Read More Here</a>
+                    </p>
+                  </div>
                   <h1 class="grant__title font-title-lg {% if is_admin %} mt-4 {% endif %}">
                     {% if is_admin %}
                       <textarea id="form--input__title" class="p-0 m-0 inline-edit" disabled>{{ grant.title }}</textarea>
