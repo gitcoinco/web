@@ -58,6 +58,7 @@ TRANSACTIONAL_EMAILS = [
         'bounty_expiration', _('Bounty Expiration Warning Emails'),
         _('Only after you posted a bounty which is going to expire')
     ),
+    ('featured_funded_bounty', _('Featured Funded Bounty Emails'), _('Only when you\'ve paid for a bounty to be featured'))
 ]
 
 ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS
@@ -67,6 +68,14 @@ def premailer_transform(html):
     cssutils.log.setLevel(logging.CRITICAL)
     p = premailer.Premailer(html, base_url=settings.BASE_URL)
     return p.transform()
+
+def render_featured_funded_bounty(bounty):
+    params = {'bounty': bounty}
+    response_html = premailer_transform(render_to_string("emails/funded_featured_bounty.html", params))
+    response_txt = render_to_string("emails/funded_featured_bounty.txt", params)
+    subject = _("You've successfully funded a bounty!")
+
+    return response_html, response_txt, subject
 
 
 def render_new_grant_email(grant):
@@ -156,6 +165,13 @@ def render_successful_contribution_email(grant, subscription, contribution):
     response_txt = render_to_string("emails/grants/successful_contribution.txt", params)
     subject = _('Your Gitcoin Grants contribution was successful!')
     return response_html, response_txt, subject
+
+@staff_member_required
+def featured_funded_bounty(request):
+    from dashboard.models import Bounty
+    bounty = Bounty.objects.first()
+    response_html, __, __ = render_featured_funded_bounty(bounty)
+    return HttpResponse(response_html)
 
 
 @staff_member_required
