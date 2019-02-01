@@ -178,7 +178,8 @@ def grant_details(request, grant_id, grant_slug):
             'conf_time_spread': conf_time_spread(),
             'gas_advisories': gas_advisories(),        
         }
-        params = params.update(add_in_params)
+        for key, value in add_in_params.items():
+            params[key] = value
 
 
     if request.method == 'GET' and grant.request_ownership_change and profile == grant.request_ownership_change:
