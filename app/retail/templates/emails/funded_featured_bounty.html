@@ -1,0 +1,58 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n humanize %}
+{% load static %}
+
+{% block content %}
+<h1>{% trans "You've successfully funded a bounty!" %}</h1>
+
+<div class="primary-content centered-contents">
+    {% block content %}
+    {% endblock %}
+    <img id="funded_featured_bounty" width="400" src="{% static "v2/images/emails/funded_featured_bounty.png" %}" alt="Funded featured bounty" title="Grow Open Source Image">
+
+    <div class="bounty">
+        <div class="bounty_avatar">
+            <img id="funded_featured_bounty" width="400" src="{{ bounty.avatar_url }}" alt="Funded featured bounty" title="Grow Open Source Image">
+
+            <p class="bounty_title">
+                {{ bounty.title }}
+            </p>
+
+            <div style="margin-bottom: 2em; margin-top: 2em;">
+                <a class="button" href="{{ bounty.absolute_url }}">{% trans "View Bounty" %}</a>
+            </div>
+        </div>
+    </div>
+    <div class="bounty_details">
+        <hr>
+            <div class="bounty_avatar">
+                <img src="{{ bounty.avatar_url }}" alt="Featured bounty avatar" id="featured_bounty_detail_image">
+            </div>
+            <div class="bounty_info">
+                <h3 class="bounty_info__title">{% trans "Your bounty is now featured" %}</h3>
+
+                <p>Your bounty will appear at the top of the Issue Explorer for <b>14 days</b></p>
+            </div>
+        <hr>
+    </div>
+
+</div>
+
+{% endblock %}
