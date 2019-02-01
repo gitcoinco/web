@@ -7,6 +7,10 @@
   font-weight: 500;
 }
 
+.rounded-circle {
+  margin-right: 8px;
+}
+
 #search_form button {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;

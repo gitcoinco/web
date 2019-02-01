@@ -27,11 +27,11 @@
     <link rel="stylesheet" href="{% static "v2/css/vision.css" %}" />
   </head>
 
-  <body class="{{ active } g-font-futura}">
+  <body class="{{ active } g-font-muli">
 
     {% include 'shared/tag_manager_2.html' %}
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
     <div class="container-fluid header">
-      {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav.html' %}
       {% include 'shared/minihero.html' with h1='Our Vision' position_h1_below_logo=1 suppress_logo=1 %}
     </div>
@@ -105,11 +105,11 @@
       <div class="tl-component pt-5">
         <div class="tl">
           <div class="tl-event" data-time="2018">
-            <b>{% trans "Now" %}</b>
+            <b>{% trans "Founding" %}</b>
             <ul class="list-special">
               <li class="macro">{% trans "Sharding / POS in research stage" %}</li>
               <li class="market">{% trans "Bear Market" %}</li>
-              <li class="gitcoin">{% trans "Gitcoin is doing some Revenue Testing (Tokenization, Secret Project, CodeFund, Grants, Bounties)" %}</li>
+              <li class="gitcoin">{% trans "Gitcoin is doing some Revenue Testing (Tokenization, Kudos, CodeFund, Grants, Bounties)" %}</li>
             </ul>
           </div>
           <div class="tl-event" data-time="2019">
@@ -163,7 +163,7 @@
     <section class="container-fluid bg-light">
       <div class="row">
         <div class="col pt-5 mb-5 text-center">
-          <h1 class="light mb-3">{% trans "Open Questions about the Web 3.0 Future" %}</h1>
+          <h1 class="light mb-3">{% trans "Open Questions about Web 3.0 " %}</h1>
           <p>{% trans "We're not quite so sure about these parts of the blockchain-ized world." %}</p>
         </div>
       </div>

@@ -10,7 +10,7 @@ const moveBackground = RAFThrottle(e => {
     ((scrollContainer === window) ? window.scrollY : scrollContainer.scrollTop()) * 2;
   let newvalueY = movementStrength / $(window).height() * pageY;
 
-  $('.index #gitcoin-background').css('transform', `translateY(${newvalueY}px)`);
+  $('.gitcoin-background').css('background-position', ` center ${newvalueY}px`);
 });
 
 $(document).ready(function() {

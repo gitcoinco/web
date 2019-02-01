@@ -125,6 +125,11 @@
           <br>
           {% trans "Experience Level:" %} {% if bounty.experience_level %}{{ bounty.experience_level }}{%else%}Not specified{%endif%}
         </p>
+        {% if contributor_plan %}
+          <p>
+            <b>{% trans "Contributor plan" %}:</b> {{ contributor_plan }}
+          </p>
+        {%  endif %}
       {% endif %}
     </div>
   </div>
