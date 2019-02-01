@@ -97,14 +97,14 @@ $(document).ready(function() {
           }).on('transactionHash', function(transactionHash) {
             $('#sub_new_approve_tx_id').val(transactionHash);
             const linkURL = etherscan_tx_url(transactionHash);
-
+            var token_address = $('#js-token').length ? $('#js-token').val() : $('#sub_token_address').val();
             let data = {
               'contributor_address': $('#contributor_address').val(),
               'amount_per_period': $('#amount').val(),
               'real_period_seconds': realPeriodSeconds,
               'frequency': $('#frequency_count').val(),
               'frequency_unit': $('#frequency_unit').val(),
-              'token_address': $('#js-token').val(),
+              'token_address': token_address,
               'token_symbol': $('#token_symbol').val(),
               'gas_price': $('#gas_price').val(),
               'sub_new_approve_tx_id': transactionHash,
