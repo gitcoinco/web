@@ -1,3 +1,21 @@
+nav,
+.banner {
+  background-color: #0D0764;
+}
+
+.nav #logo:hover {
+  background-color: #0D0764;
+}
+
+.metamask-banner > .col-12 {
+  background-color: #0D0764;
+}
+
+.banner{
+  color: #fff;
+  min-height: 10rem;
+}
+
 .plan {
   border-radius: 3px;
   transition: box-shadow .25s ease-out,border-color .25s ease-out;

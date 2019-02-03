@@ -283,6 +283,12 @@ def pricing(request):
     return TemplateResponse(request, 'pricing/plans.html', context)
 
 
+# @staff_member_required
+def subscribe(request):
+
+    return TemplateResponse(request, 'pricing/subscribe.html', {})
+
+
 def funder_bounties(request):
     slides = [
         ("Dan Finlay", static("v2/images/testimonials/dan.jpg"),

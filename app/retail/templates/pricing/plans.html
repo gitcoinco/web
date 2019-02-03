@@ -24,8 +24,19 @@
     <link rel="stylesheet" href="{% static "v2/css/retail/plans.css" %}" />
   </head>
   <body class="g-font-muli plans">
+    {% include 'shared/tag_manager_2.html' %}
+    {% include 'pricing/nav.html' %}
+    {% cookielaw_banner %}
+    <div class="banner text-center m-auto">
+      <h1 class="pt-5 font-title-xl">
+        {% trans "Upgrade your account to continue using Gitcoin" %}
+      </h1>
+      <h2 class="font-title">
+        {%trans "Give your team the package they need to succeed." %}
+      </h2>
+    </div>
     <div class="container">
-      <div class="row mt-4">
+      <div class="row mt-5 pt-4">
         {% for plan in plans %}
           <div class="col-12 col-md-4">
             <div id="{{ plan.type }}" class="py-4 plan text-center">
