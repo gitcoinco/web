@@ -50,6 +50,7 @@ def ethdenver2019(request):
     kudos_selection = []
     kudos_row = []
     kudos_selected = Event_ETHDenver2019_Customizing_Kudos.objects.filter(active=True, final=False).all()
+    all_kudos_collected = True
 
     for kudos in kudos_selected:
         kudos_obj = {
@@ -59,9 +60,11 @@ def ethdenver2019(request):
             # "expanded_kudos": vars(kudos.kudos_required)
         }
         recv = kudos_select.filter(kudos_token_cloned_from=kudos.kudos_required).last()
-        if recv:
-            kudos_obj['received'] = False
+        if recv is not None:
+            kudos_obj['received'] = True
             kudos_obj['transfer'] = recv
+        else:
+            all_kudos_collected = False
 
         kudos_row.append(kudos_obj)
         i_kudos_item = i_kudos_item + 1
@@ -72,7 +75,7 @@ def ethdenver2019(request):
     page_ctx = {
         "kudos_selection": kudos_selection,
         "page2": request.GET and recv_addr != 'invalid',
-        "page3": False
+        "page3": all_kudos_collected
     }
     page_ctx["page1"] = not page_ctx['page2']
     return TemplateResponse(request, 'ethdenver2019/onepager.html', page_ctx)
