@@ -17,40 +17,48 @@
 
 {% endcomment %}
 {% load i18n humanize %}
+  
 {% load static %}
 
 {% block content %}
 <h1>{% trans "You've successfully funded a bounty!" %}</h1>
 
 <div class="primary-content centered-contents">
-    {% block content %}
-    {% endblock %}
     <img id="funded_featured_bounty" width="400" src="{% static "v2/images/emails/funded_featured_bounty.png" %}" alt="Funded featured bounty" title="Grow Open Source Image">
 
     <div class="bounty">
-        <div class="bounty_avatar">
-            <img id="funded_featured_bounty" width="400" src="{{ bounty.avatar_url }}" alt="Funded featured bounty" title="Grow Open Source Image">
+        <div style="margin-bottom: 70px;">
+            <img id="funded_featured_bounty" width="100" src="{{ bounty.avatar_url }}" alt="Funded featured bounty" title="Grow Open Source Image">
 
-            <p class="bounty_title">
+            <p>
                 {{ bounty.title }}
             </p>
+            <div style="display: flex; justify-content: center;">
+                <div style="text-align: center; border-radius: 2px; margin: 4px; padding: 3px 6px; font-size: 11px; font-weight: 400; white-space: nowrap; cursor: pointer; background-color: #e7f0fa; color: var(--gc-blue);">
+                    <p>
+                        {{ bounty.value_in_eth|floatformat:-2 }}
+                        <span>{{ bounty.token_name }}</span>
+                    </p>
+                </div>
+                <div style="text-align: center; border-radius: 2px; margin: 4px; padding: 3px 6px; font-size: 11px; font-weight: 400; white-space: nowrap; cursor: pointer; background-color: #d6fbeb; color: #00A55E;">
+                    <p>
+                        {{ bounty.token_value_in_usdt }}
+                        <span>USD</span>
+                    </p>
+                </div>
+            </div>
 
             <div style="margin-bottom: 2em; margin-top: 2em;">
-                <a class="button" href="{{ bounty.absolute_url }}">{% trans "View Bounty" %}</a>
+                <a class="button" href="{{ bounty.url }}">{% trans "View Bounty" %}</a>
             </div>
         </div>
     </div>
-    <div class="bounty_details">
-        <hr>
-            <div class="bounty_avatar">
-                <img src="{{ bounty.avatar_url }}" alt="Featured bounty avatar" id="featured_bounty_detail_image">
-            </div>
-            <div class="bounty_info">
-                <h3 class="bounty_info__title">{% trans "Your bounty is now featured" %}</h3>
-
-                <p>Your bounty will appear at the top of the Issue Explorer for <b>14 days</b></p>
-            </div>
-        <hr>
+    <div class="centered-contents" style="display: flex; justify-content: center; border-top: 1px solid #979797; border-bottom: 1px solid #979797; padding: 50px; text-align: center">
+        <img src="{{ bounty.avatar_url }}" width="100" style="margin-right: 30px" alt="Featured bounty avatar" id="featured_bounty_detail_image">
+        <div style="margin-top: 30px;">
+            <h3 style="color: #0D0764; text-align: justify;">{% trans "Your bounty is now featured" %}</h3>
+            <span style="text-align: justify;">Your bounty will appear at the top of the Issue Explorer for <b>14 days</b></span>
+        </div>
     </div>
 
 </div>
