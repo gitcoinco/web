@@ -55,17 +55,16 @@
 }
 
 .ribbon {
-  width: 150px;
-  height: 150px;
+  height: 100px;
+  width: 125px;
   overflow: hidden;
   position: absolute;
-  background: red;
 }
 
 .ribbon span {
   position: absolute;
   display: block;
-  width: 225px;
+  width: 201px;
   padding: 3px 0;
   background-color: #3E00FF;
   color: #fff;
@@ -74,12 +73,12 @@
 }
 
 .ribbon-top-right {
-  top: -10px;
-  right: -10px;
+  top: 0px;
+  right: 15px;
 }
 
 .ribbon-top-right span {
-  left: -25px;
-  top: 30px;
+  left: -18px;
+  top: 28px;
   transform: rotate(45deg);
 }
