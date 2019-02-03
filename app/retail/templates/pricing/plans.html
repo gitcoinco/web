@@ -1,0 +1,94 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static cookielaw_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/retail/plans.css" %}" />
+  </head>
+  <body class="g-font-muli plans">
+    <div class="container">
+      <div class="row mt-4">
+        {% for plan in plans %}
+          <div class="col-12 col-md-4">
+            <div id="{{ plan.type }}" class="py-4 plan text-center">
+              {% if plan.type == 'pro' %}
+                <div class="ribbon ribbon-top-right">
+                  <span class="font-caption font-weight-semibold">
+                    {% trans "POPULAR" %}
+                  </span>
+                </div>
+              {% endif %}
+              <div class="plan-header">
+                <img class="mb-2" src="{% static plan.img %}" alt="{{ plan.type }}-logo">
+                <h3 class="font-title-lg font-weight-semibold">DEV-FLOW {{ plan.type|upper }}</h3>
+                {% if plan.type == 'basic' %}
+                  <h2 class="mt-3 mb-0 font-weight-semibold">Free!</h2>
+                  <p>{{ plan.fee }}% {% trans "platform fee" %}</p>
+                {% else %}
+                  <h2 class="mt-3 mb-0 font-weight-semibold">${{ plan.price }} <span> / mo</span></h2>
+                  <p>{% trans "no platform fee" %}</p>
+                {% endif %}
+              </div>
+
+              <div class="text-left font-weight-semibold py-4 mx-lg-5 pl-lg-4">
+                {% for feature in plan.features %}
+                  <p class="features-available">
+                    <i class="fas fa-check mr-3"></i>
+                    {% autoescape off %}
+                    {{ feature }}
+                    {% endautoescape %}
+                  </p>
+                {% endfor %}
+                {% for feature in plan.features_na %}
+                  <p class="features-available-na">
+                    <i class="fas fa-times mr-3"></i>
+                    {{ feature }}
+                  </p>
+                {% endfor %}
+              </div>
+              <div class="plan-button mx-3 pb-2">
+                <a id="{{ plan.type }}-plan"
+                  class="btn button--full px-3 {% if plan.type == 'pro' %} btn-gc-blue {% else %} button--primary {% endif %}">
+                  {% trans "Choose Plan" %}
+                </a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      <div class="row text-center my-5">
+        <div class="col-12 my-4">
+          <h2>{% trans "Trusted by These Great Companies" %}</h2>
+        </div>
+        <div class="col-12 col-md-8 offset-md-2 companies">
+          {% for company in companies %}
+            <img src="{% static company.img %}" alt="{{ company.name }}">
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </body>
+  {% include 'shared/bottom_notification.html' %}
+  {% include 'shared/analytics.html' %}
+  {% include 'shared/footer_scripts.html' with slim=1 %}
+  {% include 'shared/footer.html' %}
+  {% include 'shared/messages.html' %}
+  </html>

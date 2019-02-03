@@ -200,6 +200,89 @@ def index(request):
     return TemplateResponse(request, 'home/index.html', context)
 
 
+# @staff_member_required
+def pricing(request):
+
+    plans= [
+        {
+            'type': 'basic',
+            'img': '/v2/images/pricing/basic.svg',
+            'fee': 10,
+            'features': [
+                '1 free <a href="/kudos">Kudos</a>',
+                'Community Support'
+            ],
+            'features_na': [
+                'Job Board Access',
+                'Contributor Stats',
+                'Multi-Seg Wallet',
+                'Featured Bounties',
+                'Job Listing'
+            ]
+        },
+        {
+            'type': 'pro',
+            'img': '/v2/images/pricing/pro.svg',
+            'price': 40,
+            'features': [
+                '5 Free <a href="/kudos">Kudos</a> / mo',
+                'Community Support',
+                'Job Board - Limited',
+                'Contributor Stats'
+            ],
+            'features_na': [
+                'Multi-Seg Wallet',
+                'Featured Bounties',
+                'Job Listings'
+            ]
+        },
+        {
+            'type': 'max',
+            'img': '/v2/images/pricing/max.svg',
+            'price': 99,
+            'features': [
+                '5 Free <a href="/kudos">Kudos</a> / mo',
+                'Community Support',
+                'Job Board Access',
+                'Contributor Stats',
+                'Multi-Sig Wallet',
+                '5 Featured Bounties',
+                '5 Job Listings'
+            ]
+        }
+    ]
+
+    companies = [
+        {
+            'name': 'Market Protocol',
+            'img': 'v2/images/project_logos/market.png'
+        },
+        {
+            'name': 'Consensys',
+            'img': 'v2/images/consensys.svg'
+        },
+        {
+            'name': 'Metamask',
+            'img': 'v2/images/project_logos/metamask.png'
+        },
+        {
+            'name': 'Ethereum Foundation',
+            'img': 'v2/images/project_logos/eth.png'
+        },
+        {
+            'name': 'Truffle',
+            'img': 'v2/images/project_logos/truffle.png'
+        },
+    ]
+
+    context = {
+        'plans': plans,
+        'companies': companies
+    }
+
+    return TemplateResponse(request, 'pricing/plans.html', context)
+
+
 def funder_bounties(request):
     slides = [
         ("Dan Finlay", static("v2/images/testimonials/dan.jpg"),

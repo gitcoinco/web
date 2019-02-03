@@ -1,0 +1,85 @@
+.plan {
+  border-radius: 3px;
+  transition: box-shadow .25s ease-out,border-color .25s ease-out;
+  box-shadow: 0 0 0 1px rgba(56,60,67,.05), 0 1px 3px 0 rgba(56,60,67,.15);
+}
+
+.plan:hover {
+  cursor: pointer;
+  box-shadow: 0 0 0 1px rgba(56,60,67,.07), 0 8px 14px 1px rgba(56,60,67,.15);
+}
+
+.plan-header h3,
+.plan-header h2  {
+  color: #4A4A4A;
+}
+
+.plan-header h2 span,
+.plan-header p {
+  font-size: 1rem;
+  color: #9B9B9B
+}
+
+.plan-header h2 {
+  font-size: 2rem;
+}
+
+.features-available i {
+  color: #05B66A;
+}
+
+.features-available a {
+  text-decoration: none;
+  color: #4A90E2;
+}
+
+.features-available-na {
+  color: #cacaca;
+}
+
+.companies {
+  display: flex;
+  justify-content: center;
+}
+
+.companies img {
+  height: 5rem;
+  width: auto;
+  margin: auto;
+}
+
+.plan-button .button--full {
+  color: #fff !important;
+  padding: .75rem 1.5rem;
+  font-weight: 600;
+}
+
+.ribbon {
+  width: 150px;
+  height: 150px;
+  overflow: hidden;
+  position: absolute;
+  background: red;
+}
+
+.ribbon span {
+  position: absolute;
+  display: block;
+  width: 225px;
+  padding: 3px 0;
+  background-color: #3E00FF;
+  color: #fff;
+  text-shadow: 0 1px 1px rgba(0,0,0,.2);
+  text-align: center;
+}
+
+.ribbon-top-right {
+  top: -10px;
+  right: -10px;
+}
+
+.ribbon-top-right span {
+  left: -25px;
+  top: 30px;
+  transform: rotate(45deg);
+}
