@@ -21,8 +21,6 @@ generate:
     - app.utils++
   - avatar/admin.md:
     - avatar.admin++
-  - avatar/exceptions.md:
-    - avatar.exceptions++
   - avatar/models.md:
     - avatar.models++
   - avatar/utils.md:
@@ -179,7 +177,7 @@ generate:
     - marketing.management.commands.sync_keywords++
     - marketing.management.commands.sync_mail++
     - marketing.management.commands.sync_slack++
-    - marketing.management.commands.test_email++
+    - marketing.management.commands.debug_test++
   - marketing/admin.md:
     - marketing.admin++
   - marketing/google_analytics.md:

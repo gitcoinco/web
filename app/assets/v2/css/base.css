@@ -52,6 +52,13 @@ span {
   color: white !important;
 }
 
+.navbar .interior .dropdown-item:hover img{
+  filter: invert(100%);
+}
+.navbar .interior .dropdown-item:hover i{
+  color: white;
+}
+
 #navbarSupportedContent {
   padding-top: 2px;
   padding-bottom: 2px;
@@ -362,10 +369,6 @@ p a {
 
 .dashboard .body {
   padding-bottom: 50px;
-}
-
-.dashboard .body .row {
-  margin-left: 0px;
 }
 
 .dashboard .body .avatar {

@@ -8,8 +8,17 @@ if ($('.logged-in').length) {
 }
 
 $('.js-select2').each(function() {
-  $(this).select2();
+  $(this).select2({
+    minimumResultsForSearch: Infinity
+  });
 });
+
+// removes tooltip
+if ($('#job').parent().css('display') !== 'none') {
+  $('#job select').each(function(evt) {
+    $('.select2-selection__rendered').tooltip('destroy');
+  });
+}
 
 onboard.showTab = function(num) {
   $($('.step')[num]).addClass('block').outerWidth();
@@ -170,6 +179,17 @@ var changeStep = function(n) {
 
   var steps = $('.step');
 
+  if ($($('.step')[current]).attr('link') === 'skills') {
+    var level = $('#experienceLevel').find(':selected').val();
+
+    localStorage['experience_level'] = level;
+    localStorage['referrer'] = 'onboard';
+  }
+
+  if ($($('.step')[current]).attr('link') === 'job') {
+    save_job_status();
+  }
+
   $(steps[current]).removeClass('show');
   $(steps[current]).removeClass('block');
   $('.alert').remove();
@@ -229,14 +249,35 @@ $('.search-area input[type=text]').keypress(function(e) {
   }
 });
 
+const save_job_status = function() {
+  if (!document.contxt.github_handle) {
+    _alert('No profile', 'error');
+  }
+  const job_search_status = $('#jobStatus').find(':selected').val();
+  const show_job_status = $('#showJobStatus').prop('checked');
+
+  const profile = {
+    url: '/api/v0.1/profile/' + document.contxt.github_handle + '/jobopportunity',
+    method: 'POST',
+    headers: {'X-CSRFToken': csrftoken},
+    data: JSON.stringify({
+      'job_search_status': job_search_status,
+      'show_job_status': show_job_status
+    })
+  };
+
+  $.ajax(profile).done(function(response) {
+    _alert(response.message, 'info');
+  }).fail(function(error) {
+    _alert(error, 'error');
+  });
+};
+
 var redirectURL = function() {
   var url = '';
 
   if (flow === 'contributor') {
-    var level = $('#experienceLevel').find(':selected').val();
-
-    localStorage['experience_level'] = level;
-    localStorage['referrer'] = 'onboard';
+    save_job_status();
     url = '/explorer?q=' + words.join(',');
   } else if (flow === 'funder') {
     url = '/funding/new';
