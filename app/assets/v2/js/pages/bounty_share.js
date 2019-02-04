@@ -26,10 +26,11 @@ const sendInvites = (users) => {
     usersId.push(elem.id);
   });
 
-  var sendEmail = fetchData ('/api/v0.1/ENDPOING/','POST', {usersId, msg})
+  var sendEmail = fetchData('/api/v0.1/ENDPOING/', 'POST', {usersId, msg});
+
   $.when(sendEmail).then(
     function(payback) {
-      return payback
+      return payback;
     }
   );
   console.log(usersId, msg);
