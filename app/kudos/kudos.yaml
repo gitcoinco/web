@@ -2791,6 +2791,115 @@
     - evolution
     - blopblop
   image: consensys_2.0.svg
+- name: ethdenver_winner_adoption_driver
+  artist: mladen
+  description: For the ETHDenver 2019 winner in the category of 'Adoption Driver'
+  priceFinney: 10
+  numClonesAllowed: 2
+  tags:
+    - ethdenver
+    - trophies
+  image: ethdenver_trophies/adoption_driver2.svg
+- name: ethdenver_winner_best_media_headline
+  artist: mladen
+  description: For the ETHDenver 2019 winner in the category of 'Best Media Headline'
+  priceFinney: 10
+  numClonesAllowed: 2
+  tags:
+    - ethdenver
+    - trophies
+  image: ethdenver_trophies/best_media_headline2.svg
+- name: ethdenver_winner_best_of_ethereum
+  artist: mladen
+  description: For the ETHDenver 2019 winner in the category of 'Best of Ethereum'
+  priceFinney: 10
+  numClonesAllowed: 2
+  tags:
+    - ethdenver
+    - trophies
+  image: ethdenver_trophies/best_of_ethereum2.svg
+- name: ethdenver_winner_bufficorns_best
+  artist: mladen
+  description: For the ETHDenver 2019 winner in the category of 'Bufficorns Best'
+  priceFinney: 10
+  numClonesAllowed: 2
+  tags:
+    - ethdenver
+    - trophies
+  image: ethdenver_trophies/bufficorns_best2.svg
+- name: ethdenver_winner_highest_wow_factor
+  artist: mladen
+  description: For the ETHDenver 2019 winner in the category of 'Highest Wow Factor'
+  priceFinney: 10
+  numClonesAllowed: 2
+  tags:
+    - ethdenver
+    - trophies
+  image: ethdenver_trophies/highest_wow_factor2.svg
+- name: ethdenver_winner_impact_track_finalist
+  artist: mladen
+  description: For the ETHDenver 2019 winner in the category of 'Impact Track Finalist'
+  priceFinney: 10
+  numClonesAllowed: 2
+  tags:
+    - ethdenver
+    - trophies
+  image: ethdenver_trophies/impact_track_finalist2.svg
+- name: ethdenver_winner_most_innovative
+  artist: mladen
+  description: For the ETHDenver 2019 winner in the category of 'Most Innovative'
+  priceFinney: 10
+  numClonesAllowed: 2
+  tags:
+    - ethdenver
+    - trophies
+  image: ethdenver_trophies/most_innovative2.svg
+- name: ethdenver_winner_open_track_finalist
+  artist: mladen
+  description: For the ETHDenver 2019 winner in the category of 'Open Track Finalist'
+  priceFinney: 10
+  numClonesAllowed: 2
+  tags:
+    - ethdenver
+    - trophies
+  image: ethdenver_trophies/open_track_finalist2.svg
+- name: ethdenver_winner_peoples_choice
+  artist: mladen
+  description: For the ETHDenver 2019 winner in the category of 'Peoples Choice'
+  priceFinney: 10
+  numClonesAllowed: 2
+  tags:
+    - ethdenver
+    - trophies
+  image: ethdenver_trophies/peoples_choice2.svg
+- name: ethdenver_winner_runner_up
+  artist: mladen
+  description: For the ETHDenver 2019 winner in the category of 'Runner Up'
+  priceFinney: 10
+  numClonesAllowed: 2
+  tags:
+    - ethdenver
+    - trophies
+  image: ethdenver_trophies/runner_up2.svg
+- name: ethdenver_winner_spirit_of_buidl
+  artist: mladen
+  description: For the ETHDenver 2019 winner in the category of 'Spirit of BUIDL'
+  priceFinney: 10
+  numClonesAllowed: 2
+  tags:
+    - ethdenver
+    - trophies
+  image: ethdenver_trophies/spirit_of_buidl2.svg
+- name: open_sourceress
+  to_address: '0xa07b3c21ed817f94149231a431d3d4b421648121'
+  artist: mladen
+  description: The "Open Sourceress" is a master of creating magic via the sorcery that is Open Source.
+  priceFinney: 30
+  numClonesAllowed: 300
+  tags:
+    - open source
+    - sorcery
+  image: open_sourceress.svg
 
 
 
