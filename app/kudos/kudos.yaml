@@ -2900,6 +2900,16 @@
     - open source
     - sorcery
   image: open_sourceress.svg
+- name: staker_kudo
+  description: Bufficorns understand the importance of making a stand. Staking is how true Bufficorns prove their commitment!
+  priceFinney: 50
+  numClonesAllowed: 1000
+  tags:
+    - ethdenver 2019
+    - staker
+  image: staked_kudos.svg
+
+
 
 
 
