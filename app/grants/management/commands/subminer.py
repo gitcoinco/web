@@ -129,4 +129,7 @@ class Command(BaseCommand):
             logger.info(" - %d has %d subs ready for execution", grant.pk, subs.count())
 
             for subscription in subs:
-                process_subscription(subscription, live)
+                try:
+                    process_subscription(subscription, live)
+                except Exception as e:
+                    logger.exception(e)
