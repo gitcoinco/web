@@ -39,7 +39,7 @@ from dashboard.tokens import addr_to_token
 from economy.utils import convert_amount
 from git.utils import get_gh_issue_details, get_url_dict
 from jsondiff import diff
-from marketing.mails import new_reserved_issue
+from marketing.mails import featured_funded_bounty, new_reserved_issue
 from pytz import UTC
 from ratelimit.decorators import ratelimit
 from redis_semaphore import NotAvailable as SemaphoreExists
@@ -450,12 +450,17 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 latest_old_bounty_dict['bounty_reserved_for_user'] = Profile.objects.get(pk=latest_old_bounty_dict['bounty_reserved_for_user'])
             bounty_kwargs.update(latest_old_bounty_dict)
 
+
         try:
             new_bounty = Bounty.objects.create(**bounty_kwargs)
             new_bounty.fetch_issue_item()
             try:
                 issue_kwargs = get_url_dict(new_bounty.github_url)
                 new_bounty.github_issue_details = get_gh_issue_details(**issue_kwargs)
+
+                # If bounty is_featured flag is on
+                if latest_old_bounty['is_featured']:
+                    featured_funded_bounty(new_bounty)
             except Exception as e:
                 logger.error(e)
 

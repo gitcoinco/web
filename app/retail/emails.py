@@ -166,7 +166,7 @@ def render_successful_contribution_email(grant, subscription, contribution):
     subject = _('Your Gitcoin Grants contribution was successful!')
     return response_html, response_txt, subject
 
-@staff_member_required
+# @staff_member_required
 def featured_funded_bounty(request):
     from dashboard.models import Bounty
     bounty = Bounty.objects.first()

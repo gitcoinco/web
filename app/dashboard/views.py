@@ -50,7 +50,7 @@ from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
 from marketing.mails import (
     admin_contact_funder, bounty_uninterested, new_reserved_issue, start_work_approved, start_work_new_applicant,
-    start_work_rejected, featured_funded_bounty
+    start_work_rejected,
 )
 from marketing.models import Keyword
 from pytz import UTC
@@ -1422,7 +1422,6 @@ def terms(request):
         'title': _('Terms of Use'),
     }
     return TemplateResponse(request, 'legal/terms.html', context)
-
 
 def privacy(request):
     return TemplateResponse(request, 'legal/privacy.html', {})
