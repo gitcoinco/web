@@ -619,7 +619,9 @@ def receive_bulk(request, secret):
             address = Web3.toChecksumAddress(request.POST.get('forwarding_address'))
         except:
             error = "You must enter a valid Ethereum address (so we know where to send your Kudos). Please try again."
-        
+        if request.user.is_anonymous:
+            error = "You must login."
+
         if not error:
             user = request.user
             profile = user.profile
