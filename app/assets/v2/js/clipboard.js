@@ -5,20 +5,21 @@
  *  <button data-copyclipboard="#shareText">Copy Text</button>
  */
 const copyClipboard = () => {
-  $('[data-copyclipboard]').each(function(index,elem){
-    $(this).on('click', function(){
-      let input = $(this).data('copyclipboard')
+  $('[data-copyclipboard]').each(function(index, elem) {
+    $(this).on('click', function() {
+      let input = $(this).data('copyclipboard');
+
       $(input).select();
-      document.execCommand("copy");
+      document.execCommand('copy');
       document.getSelection().removeAllRanges();
-      let msgDone = $('<b style="position: absolute;margin: 0.2rem -3.2rem;">Copied!</b>')
+      let msgDone = $('<b style="position: absolute;margin: 0.2rem -3.2rem;">Copied!</b>');
 
       $(input).after(msgDone);
       msgDone.animate({
-        opacity: 1,
+        opacity: 1
       }, 5000, function() {
         $(this).remove();
       });
-    })
-  })
-}
+    });
+  });
+};
