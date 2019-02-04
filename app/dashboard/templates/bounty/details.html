@@ -417,6 +417,7 @@
   <script src="{% static "v2/js/amounts.js" %}"></script>
   <script src="{% static "v2/js/popper.min.js" %}"></script>
   <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
+  <script src="{% static "v2/js/clipboard.js" %}"></script>
   <script>
     var bootstrapTooltip = $.fn.tooltip.noConflict()
     var bootstrapModal = $.fn.modal.noConflict()
@@ -428,33 +429,29 @@
 
       modals.on('show.bs.modal', function () {
         modalBody.load(modalUrl, ()=> {
-          userSearch('.team_members');
+          userSearch('.users_share');
           copyClipboard()
-          // $('.team_members').data('select2').data()
+          $('#sendInvites').on('click', () =>{
+            let users = $('.users_share').data('select2').data()
+            sendInvites(users)
+          })
 
         });
       });
       e.preventDefault();
     });
 
-    const copyClipboard = () => {
-      $('[data-copyclipboard]').each(function(index,elem){
-        $(this).on('click', function(){
-          let input = $(this).data('copyclipboard')
-          $(input).select();
-          document.execCommand("copy");
-          document.getSelection().removeAllRanges();
-          let msgDone = $('<b style="position: absolute;margin: 0.2rem -3.2rem;">Copied!</b>')
+    const sendInvites = (users) => {
+      let usersId = []
+      let msg = $('#shareText').val()
+      $.each(users, function(index,elem){
+        usersId.push(elem.id)
+      });
 
-          $(input).after(msgDone);
-          msgDone.animate({
-            opacity: 1,
-          }, 5000, function() {
-            $(this).remove();
-          });
-        })
-      })
+      console.log(usersId, msg)
     }
+
+
     </script>
   <script src="{% static "v2/js/pages/bounty_details.js" %}"></script>
   <script src="{% static "v2/js/ipfs-api.js" %}"></script>
