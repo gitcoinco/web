@@ -170,8 +170,8 @@
                   <div class="progress-text mt-2">
                     <div class="row">
                       <div class="col-6">
-                        <span>{{ grant.monthly_amount_subscribed|floatformat:2|intcomma }} DAI</span>
-                        <p>Monthly Funding</p>
+                        <span>{{ grant.amount_received|floatformat:2|intcomma }} DAI</span>
+                        <p>Total Funding</p>
                       </div>
                       <div class="col-6 text-right">
                         <span>{{ grant.amount_goal|floatformat:2|intcomma }} DAI</span>
@@ -180,7 +180,7 @@
                     </div>
                   </div>
                   <p>
-                    {% trans 'Total Funding Received: '%} {{ grant.amount_received }}
+                    {% trans 'Monthly Recurring Funding: '%} {{ grant.monthly_amount_subscribed }}
                   </p>
                 </div>
                 {% if grant_is_inactive %}
