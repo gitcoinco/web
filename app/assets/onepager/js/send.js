@@ -158,7 +158,14 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
     return;
   }
   // setup
-  var fromAccount = web3.eth.accounts[0];
+  var fromAccount
+  if (web3.eth.accounts.length) {
+    return fromAccount = web3.eth.accounts[0];
+  } else {
+    web3.eth.getAccounts().then((accounts) => {
+      return fromAccount = accounts[0]
+    });
+  }
 
   if (username.indexOf('@') == -1) {
     username = '@' + username;
@@ -282,9 +289,10 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
 
         if (isSendingETH) {
           web3.eth.sendTransaction({
+            from: fromAccount,
             to: destinationAccount,
             value: amountInWei,
-            gasPrice: web3.toHex(get_gas_price())
+            gasPrice: web3.toHex ? web3.toHex(get_gas_price()) : web3.utils.toHex(get_gas_price())
           }, post_send_callback);
         } else {
           var send_erc20 = function() {
@@ -306,7 +314,7 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
           } else {
             send_gas_money_and_erc20();
           }
-          
+
         }
       }
     });
