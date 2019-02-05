@@ -60,8 +60,8 @@ from web3 import HTTPProvider, Web3
 
 from .helpers import get_bounty_data_for_activity, handle_bounty_views
 from .models import (
-    Activity, Bounty, CoinRedemption, CoinRedemptionRequest, Interest, LabsResearch, Profile, ProfileSerializer,
-    Subscription, Tool, ToolVote, UserAction,
+    Activity, Bounty, BountyFulfillment, CoinRedemption, CoinRedemptionRequest, Interest, LabsResearch, Profile,
+    ProfileSerializer, Subscription, Tool, ToolVote, UserAction,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -1199,7 +1199,7 @@ def profile(request, handle):
                 handle = handle[:-1]
             profile = profile_helper(handle, current_user=request.user)
 
-        tabs = [
+        activity_tabs = [
             ('all', _('All Activity')),
             ('new_bounty', _('Bounties Funded')),
             ('start_work', _('Work Started')),
@@ -1226,9 +1226,9 @@ def profile(request, handle):
 
         context = profile.to_dict(tips=False)
         all_activities = context.get('activities')
-        activity_tabs = []
+        tabs = []
 
-        for tab, name in tabs:
+        for tab, name in activity_tabs:
             activities = profile_filter_activities(all_activities, tab)
             activities_count = activities.count()
 
@@ -1237,15 +1237,15 @@ def profile(request, handle):
 
             paginator = Paginator(activities, 10)
 
-            obj = {}
-            obj['id'] = tab
-            obj['name'] = name
-            obj['activities'] = paginator.get_page(1)
-            obj['count'] = activities_count
+            obj = {'id': tab,
+                   'name': name,
+                   'objects': paginator.get_page(1),
+                   'count': activities_count,
+                   'type': 'activity'
+                   }
+            tabs.append(obj)
 
-            activity_tabs.append(obj)
-
-            context['activity_tabs'] = activity_tabs
+            context['tabs'] = tabs
 
     except (Http404, ProfileHiddenException, ProfileNotFoundException):
         status = 404
@@ -1270,6 +1270,20 @@ def profile(request, handle):
     context['sent_kudos'] = sent_kudos[0:kudos_limit]
     context['kudos_count'] = owned_kudos.count()
     context['sent_kudos_count'] = sent_kudos.count()
+
+    currently_working_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
+        .filter(interested__pending=False).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)
+    currently_working_bounties_count = currently_working_bounties.count()
+    if currently_working_bounties_count > 0:
+        obj = {'id': 'currently_working',
+               'name': _('Currently Working'),
+               'objects': Paginator(currently_working_bounties, 10).get_page(1),
+               'count': currently_working_bounties_count,
+               'type': 'bounty'
+               }
+        if 'tabs' not in context:
+            context['tabs'] = []
+        context['tabs'].append(obj)
 
     if request.method == 'POST' and request.is_ajax():
         # Update profile address data when new preferred address is sent
