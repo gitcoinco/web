@@ -1,3 +1,13 @@
-.metamask-banner > .col-12 {
-  background-color: #0D0764;
+.step h2 {
+  font-size: 1.5rem;
+}
+
+.summary p {
+  margin: 0 0 4px;
+}
+
+.summary i {
+  font-size: 6px;
+  position: relative;
+  bottom: 2px;
 }

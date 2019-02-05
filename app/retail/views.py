@@ -286,7 +286,27 @@ def pricing(request):
 # @staff_member_required
 def subscribe(request):
 
-    return TemplateResponse(request, 'pricing/subscribe.html', {})
+    if request.POST:
+        return TemplateResponse(request, 'pricing/subscribe.html', {})
+
+    plan = {
+        'type': 'pro',
+        'img': '/v2/images/pricing/sub_pro.svg',
+        'price': '40'
+    }
+
+    if request.GET and request.GET['plan'] == 'max':
+        plan = {
+            'type': 'max',
+            'img': '/v2/images/pricing/sub_max.svg',
+            'price': '99'
+        }
+
+    context = {
+        'plan': plan
+    }
+    return TemplateResponse(request, 'pricing/subscribe.html', context)
+
 
 
 def funder_bounties(request):

@@ -38,7 +38,7 @@
     <div class="container">
       <div class="row mt-5 pt-4">
         {% for plan in plans %}
-          <div class="col-12 col-md-4">
+          <div class="col-12 col-md-6 col-lg-4 mb-5 mb-lg-2">
             <div id="{{ plan.type }}" class="py-4 plan text-center">
               {% if plan.type == 'pro' %}
                 <div class="ribbon ribbon-top-right">
@@ -59,7 +59,7 @@
                 {% endif %}
               </div>
 
-              <div class="text-left font-weight-semibold py-4 mx-lg-5 pl-lg-4">
+              <div class="text-left font-weight-semibold features py-4 mx-auto">
                 {% for feature in plan.features %}
                   <p class="features-available">
                     <i class="fas fa-check mr-3"></i>
@@ -85,7 +85,7 @@
           </div>
         {% endfor %}
       </div>
-      <div class="row text-center my-5">
+      <div class="row text-center mt-3 mb-5">
         <div class="col-12 my-4">
           <h2>{% trans "Trusted by These Great Companies" %}</h2>
         </div>

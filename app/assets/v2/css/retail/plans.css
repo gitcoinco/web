@@ -1,3 +1,8 @@
+.navbar-network {
+  position: relative;
+  bottom: -9px;
+}
+
 nav,
 .banner {
   background-color: #0D0764;
@@ -11,7 +16,7 @@ nav,
   background-color: #0D0764;
 }
 
-.banner{
+.banner {
   color: #fff;
   min-height: 10rem;
 }
@@ -32,6 +37,7 @@ nav,
   color: #4A4A4A;
 }
 
+.price span,
 .plan-header h2 span,
 .plan-header p {
   font-size: 1rem;
@@ -40,6 +46,12 @@ nav,
 
 .plan-header h2 {
   font-size: 2rem;
+}
+
+.features {
+  max-width: 12rem;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .features-available i {
@@ -99,4 +111,50 @@ nav,
   left: -18px;
   top: 28px;
   transform: rotate(45deg);
+}
+
+/* Subscribe  */
+.step {
+  margin-top: 1.5rem;
+  border-bottom: 1px solid #ccc;
+}
+
+.step.row {
+  margin-left: 0 !important;
+  margin-right:0 !important;
+  padding-bottom: 1rem;
+}
+
+.step h2 {
+  font-size: 1.25rem;
+  color: #4A4A4A
+}
+
+.step p {
+  color: #4A4A4A;
+}
+
+.summary p {
+  margin: 0 0 4px;
+}
+
+.summary i {
+  font-size: 6px;
+  position: relative;
+  bottom: 2px;
+}
+
+#primary_form {
+  max-width: none;
+}
+
+@media (max-width: 576px) {
+  #primary_form {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .plan-info {
+    text-align: center !important;
+  }
 }
