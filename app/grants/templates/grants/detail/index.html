@@ -147,7 +147,7 @@
                     <div class="grant-item__owner my-2">
                       <div class="font-body">
                         <p class="font-caption sub-title mb-0">Contract Owner Address</p>
-                        <input id="contract_owner_address" class="p-0 m-0 inline-edit" name="contract_owner_address" value="{{ grant.contract_owner_address }}" disabled>
+                        <input id="contract_owner_address" class="p-0 m-0 inline-edit" name="contract_owner_address" value="{{ grant.contract_owner_address }}" disabled data-toggle="tooltip" data-placement="bottom" title="Beware! Please do not change this to an address you do NOT own.">
                         <button id="contract_owner_button" class="mt-2 button button--primary button__small hidden">
                           {% trans "Change Contract Owner" %}
                         </button>
