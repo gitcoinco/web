@@ -268,23 +268,8 @@ class Token(SuperModel):
         file_path = root('assets') + '/' + self.image
         with open(file_path, 'rb') as f:
             obj = File(f)
-            try:
-                obj_data = obj.read()
-                if obj_data:
-                    try:
-                        image = pyvips.Image.new_from_file(obj.name, scale=3)
-                    except Exception as e:
-                        logger.debug('got an exception trying to create a new image from a svg, usually this means that librsvg2 is not installed')
-                        logger.debug(e)
-                        logger.debug('retrying with out the scale parameter... which should work as long as imagemagick is installed')
-                        image = pyvips.Image.new_from_file(obj.name) 
-                        # try again, but without scale
-                    return BytesIO(image.write_to_buffer(f'.png'))
-            except VipsError as e:
-                logger.error(e)
-                pass
-            except Exception as e:
-                logger.error(e)
+            from avatar.utils import svg_to_png
+            return svg_to_png(obj.read(), scale=3, width=333, height=384)
         return None
 
     @property
