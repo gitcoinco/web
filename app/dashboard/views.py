@@ -1133,8 +1133,12 @@ def profile_job_opportunity(request, handle):
     """
     try:
         profile = profile_helper(handle, True)
-        profile.job_search_status = json.loads(request.body).get('job_search_status', None)
-        profile.show_job_status = json.loads(request.body).get('show_job_status', False)
+        profile.job_search_status = request.POST.get('job_search_status', None)
+        profile.show_job_status = request.POST.get('show_job_status', None) == 'true'
+        profile.job_type = request.POST.get('job_type', None)
+        profile.remote = request.POST.get('remote', None) == 'on'
+        profile.job_salary = float(request.POST.get('job_salary', '0').replace(',', ''))
+        profile.job_location = json.loads(request.POST.get('locations'))
         profile.save()
     except (ProfileNotFoundException, ProfileHiddenException):
         raise Http404

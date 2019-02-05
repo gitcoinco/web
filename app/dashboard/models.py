@@ -1735,6 +1735,13 @@ class Profile(SuperModel):
         default=False,
         help_text='If this option is chosen, we will not show job search status',
     )
+    job_type = models.CharField(max_length=255, default='', blank=True)
+    remote = models.BooleanField(
+        default=False,
+        help_text='If this option is chosen, profile is okay with remote job',
+    )
+    job_salary = models.DecimalField(default=1, decimal_places=2, max_digits=50)
+    job_location = JSONField(default=dict)
 
     objects = ProfileQuerySet.as_manager()
 

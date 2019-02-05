@@ -20,7 +20,7 @@ const save_job_status = function() {
   formData.append('job_search_status', job_search_status);
   formData.append('show_job_status', show_job_status);
   formData.append('job_type', job_type);
-  formData.append('locations', jobLocations);
+  formData.append('locations', JSON.stringify(jobLocations));
   formData.append('remote', remote);
   formData.append('job_salary', job_salary);
 
