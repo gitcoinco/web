@@ -196,7 +196,7 @@ class Grant(SuperModel):
 
     def percentage_done(self):
         """Return the percentage of token received based on the token goal."""
-        return ((self.monthly_amount_subscribed / self.amount_goal) * 100)
+        return ((self.amount_received / self.amount_goal) * 100)
 
     @property
     def abi(self):
