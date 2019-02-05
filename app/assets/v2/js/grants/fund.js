@@ -177,7 +177,7 @@ $(document).ready(function() {
                       success: json => {
                         console.log('successfully saved subscriptionHash and signature');
                         url = json.url;
-                        $('#wait').val('false');
+                        $('#wait1').val('false');
                       },
                       error: () => {
                         _alert({ message: gettext('Your subscription failed to save. Please try again.') }, 'error');
@@ -226,7 +226,7 @@ $(document).ready(function() {
 });
 
 const waitforData = (callback) => {
-  if ($('#wait').val() === 'false') {
+  if ($('#wait1').val() === 'false') {
     callback();
   } else {
     var wait_callback = () => {
@@ -244,7 +244,7 @@ const updateSummary = (element) => {
   $('#summary-amount').html($('input#amount').val() ? $('input#amount').val() : 0);
   $('#summary-frequency').html($('input#period').val() ? $('input#period').val() : 0);
   $('#summary-frequency-unit').html($('#frequency_unit').val());
-  if ($('#token_symbol').val() === '') {
+  if ($('#token_symbol').val() === 'Any Token') {
     $('#summary-token').html($('#js-token option:selected').text());
   }
 
