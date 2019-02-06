@@ -781,7 +781,7 @@ var trigger_primary_form_web3_hooks = function() {
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
       $('#zero_balance_error').css('display', 'none');
-      $('#robot_error').removeClass('hidden');
+      // $('#robot_error').removeClass('hidden');
       $('#primary_form').addClass('hidden');
       $('.submit_bounty .newsletter').addClass('hidden');
       $('#unlock_metamask_error').css('display', 'none');
@@ -792,7 +792,7 @@ var trigger_primary_form_web3_hooks = function() {
       $('#unlock_metamask_error').css('display', 'none');
       $('#zero_balance_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
-      $('#robot_error').removeClass('hidden');
+      // $('#robot_error').removeClass('hidden');
       $('#primary_form').addClass('hidden');
       $('.submit_bounty .newsletter').addClass('hidden');
       $('#no_issue_error').css('display', 'none');
@@ -800,7 +800,7 @@ var trigger_primary_form_web3_hooks = function() {
       $('#unlock_metamask_error').css('display', 'block');
       $('#zero_balance_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
-      $('#robot_error').removeClass('hidden');
+      // $('#robot_error').removeClass('hidden');
       $('#primary_form').addClass('hidden');
       $('#connect_metamask_error').css('display', 'none');
       $('.submit_bounty .newsletter').addClass('hidden');

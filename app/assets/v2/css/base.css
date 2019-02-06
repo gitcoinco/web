@@ -952,13 +952,13 @@ input.is-invalid {
 
 .submit-notification {
   color: #fff;
-  font-size: 10px !important;
+  font-size: 10px;
   min-height: 100px;
   padding: 0.6rem;
 }
 
 .submit-notification h3 {
-  font-size: 20px !important;
+  font-size: 20px;
   text-transform: capitalize;
 }
 
@@ -967,11 +967,11 @@ input.is-invalid {
   text-decoration: none;
 }
 
-.metamask-error {
+.submit-notification.metamask-error {
   background-color: #FF6700;
 }
 
-.metamask-error img {
+.submit-notification.metamask-error img {
   max-width: 100px;
 }
 
@@ -985,12 +985,27 @@ input.is-invalid {
 }
 
 .metamask-banner p {
-  margin-bottom: 0 !important;
+  /* margin-bottom: 0; */
 }
 
 .metamask-banner p,
 .metamask-banner li {
-  font-size: 1rem;
+  /* font-size: 1rem; */
+}
+
+.metamask-links a {
+  text-decoration: underline;
+  color: black;
+  font-size: 0.9rem;
+  margin: 0 1rem;
+}
+
+.metamask-links a:hover {
+  text-decoration: none;
+}
+
+.metamask-links a:first-child {
+  margin-left: 0;
 }
 
 #robot_error {
