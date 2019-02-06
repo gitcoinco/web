@@ -31,7 +31,7 @@ onboard.showTab = function(num) {
     window.history.pushState('', '', '/onboard/' + flow + '/' + $($('.step')[num]).attr('link'));
   }
 
-  if ( num === 2 || $($('.step')[num]).attr('link') === 'avatar') {
+  if (num === 2 || $($('.step')[num]).attr('link') === 'avatar') {
     $('.controls').hide();
   } else {
     $('.controls').show();

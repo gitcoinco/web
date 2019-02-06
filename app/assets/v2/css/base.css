@@ -984,15 +984,6 @@ input.is-invalid {
   padding-bottom: 4px;
 }
 
-.metamask-banner p {
-  /* margin-bottom: 0; */
-}
-
-.metamask-banner p,
-.metamask-banner li {
-  /* font-size: 1rem; */
-}
-
 .metamask-links a {
   text-decoration: underline;
   color: black;

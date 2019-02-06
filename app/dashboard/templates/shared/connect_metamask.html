@@ -20,12 +20,7 @@
     <div class="col-lg-6 col-sm-12 py-5 px-5">
       <h3>{% trans "To continue," %} <br>
         {% trans "you'll need to connect Metamask." %}</h3>
-      <p class="my-4">
-        {% trans "Please connect MetaMask and refresh this page to continue." %}
-      </p>
-
-        <!-- <button id="metamask_connect" class="font-caption mx-1" onclick="approve_metamask()">{% trans "Click here to connect to metamask" %}</button> -->
-
+      <p class="my-4">{% trans "Please connect MetaMask and refresh this page to continue." %}</p>
       <button class="btn btn-metamask btn-lg-padding" onclick="approve_metamask()">{% trans 'Connect Metamask' %}</button>
       <p class="mt-4 font-smaller-2">{% trans "Can't get web3 to work?" %}   <a href="https://github.com/gitcoinco/gitcoinco/issues/4" target="_blank" rel="noopener noreferrer">{% trans "Get help here." %}</a></p>
     </div>
