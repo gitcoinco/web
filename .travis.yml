@@ -70,7 +70,11 @@ jobs:
         - echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
         # Pull Docker images.
         - docker pull python:3.6-slim-jessie
-        # Build, tag, and publish the new gitcoin/web image.
+        # Build, tag, and publish the new gitcoin/web image.s,dcvxo
+        
+        s'cx ljsmn 
+         ; d;kn'?  ewdjsX 'kc
+          k . e lmcln 'kdbjdvnc /ke
         - docker build -t gitcoin/web:${TRAVIS_BUILD_NUMBER} .
         - docker push gitcoin/web:${TRAVIS_BUILD_NUMBER}
         - docker tag gitcoin/web:${TRAVIS_BUILD_NUMBER} gitcoin/web:latest
