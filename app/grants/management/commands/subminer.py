@@ -137,8 +137,17 @@ def listen_for_tx(grant, subscription, tx, network, tx_type):
     logger.info("   -- *mined* (status: %s / error: %s) ", status, error)
     was_success = status == 'success'
     if not was_success:
-            logger.warning('tx processing failed')
-            # TODO: Add failed_transaction email
+        logger.warning('tx processing failed')
+        if tx_type == 'grant_deploy':
+            transaction_failed(grant, subscription, "Grant Deployment")
+        elif tx_type == 'grant_cancel':
+            transaction_failed(grant, subscription, "Grant Cancellation")
+        elif tx_type == 'new_approve':
+            transaction_failed(grant, subscription, "New Approval")
+        elif tx_type == 'end_approve':
+            transaction_failed(grant, subscription, "End Approval")
+        elif tx_type == 'sub_cancel':
+            transaction_failed(grant, subscription, "Subscription Cancellation")
     else:
         logger.info('tx processing successful')
         if tx_type == 'grant_deploy':
