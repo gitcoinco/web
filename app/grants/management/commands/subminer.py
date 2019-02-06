@@ -198,6 +198,7 @@ class Command(BaseCommand):
                     logger.exception(e)
 
         unconfirmed_grant_deploy = Grant.objects.filter(
+            active=False,
             contract_address='0x0',
             deploy_tx_confirmed=False,
             network=network
@@ -208,6 +209,7 @@ class Command(BaseCommand):
             listen_for_tx(grant, None, grant.deploy_tx_id, grant.network, 'grant_deploy')
 
         unconfirmed_grant_cancel = Grant.objects.filter(
+            active=True,
             cancel_tx_confirmed=False,
             network=network
         ).exclude(cancel_tx_id='0x0').exclude(cancel_tx_id='')
@@ -217,6 +219,7 @@ class Command(BaseCommand):
             listen_for_tx(grant, None, grant.cancel_tx_id, network, 'grant_cancel')
 
         unconfirmed_new_approve = Subscription.objects.filter(
+            active=False,
             new_approve_tx_confirmed=False,
             network=network
         ).exclude(new_approve_tx_id='0x0').exclude(new_approve_tx_id='')
@@ -226,6 +229,7 @@ class Command(BaseCommand):
             listen_for_tx(None, sub, sub.new_approve_tx_id, network, 'new_approve')
 
         unconfirmed_end_approve = Subscription.objects.filter(
+            active=True,
             end_approve_tx_confirmed=False,
             network=network
         ).exclude(end_approve_tx_id='0x0').exclude(end_approve_tx_id='')
@@ -235,6 +239,7 @@ class Command(BaseCommand):
             listen_for_tx(None, sub, sub.end_approve_tx_id, network, 'new_approve')
 
         unconfirmed_sub_cancel = Subscription.objects.filter(
+            active=True,
             cancel_tx_confirmed=False,
             network=network
         ).exclude(cancel_tx_id='0x0').exclude(cancel_tx_id='')
