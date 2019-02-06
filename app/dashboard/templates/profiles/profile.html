@@ -213,7 +213,7 @@
         </div>
       {% endif %}
 
-      {% if activity_tabs %}
+      {% if tabs %}
         <div class="row pt-4 py-2">
           <div class="container profile-bounties profile-bounties--activities">
             <div class="row">
@@ -221,17 +221,21 @@
                 <span class="font-caption profile-bounties__sort_label">{% trans 'By Created Date' %}</span>
               </div>
               <div id="activity-tabs" class="tab-container mt-4 font-body">
-                {% for tab in activity_tabs %}
+                {% for tab in tabs %}
                   <button type="button" id="{{ tab.id }}" class="section-tab">{{ tab.name }} ({{ tab.count }})</button>
                 {% endfor %}
               </div>
               <div id="activity-tabs-sections" class="tab-sections section">
-                {% for tab in activity_tabs %}
+                {% for tab in tabs %}
                   <div id="section-{{ tab.id }}" class="tab-section">
                     <div class="container">
                       <div class="row mb-3 p-2">
                         <div id="{{ tab.id }}" class="col-12 activities" count="{{ tab.count }}">
-                          {% include 'profiles/profile_activities.html' with activities=tab.activities %}
+                          {% if tab.type == 'activity' %}
+                            {% include 'profiles/profile_activities.html' with activities=tab.objects %}
+                          {% else %}
+                            {% include 'profiles/profile_bounties.html' with bounties=tab.objects %}
+                          {% endif %}
                         </div>
                       </div>
                     </div>
