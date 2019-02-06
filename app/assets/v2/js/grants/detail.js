@@ -125,7 +125,7 @@ $(document).ready(function() {
                 'csrfmiddlewaretoken': $("#grants-details input[name='csrfmiddlewaretoken']").val()
               },
               success: function(json) {
-                console.log('Your grant_cancel call successfully saved');
+                console.log('Your cancel grant call successfully saved');
               },
               error: function() {
                 _alert({ message: gettext('Canceling your grant failed to save. Please try again.') }, 'error');
@@ -141,11 +141,11 @@ $(document).ready(function() {
                 'confirmed': true
               },
               success: function(json) {
-                console.log('Your cancel_grant tx successfully confirmed on chain');
+                console.log('Your grant deployment tx successfully confirmed on chain');
                 window.location.reload(false);
               },
               error: function() {
-                _alert({ message: gettext('Your cancel_grant tx failed. Please try again.') }, 'error');
+                _alert({ message: gettext('Your cancel grant tx failed on chain. Please try again.') }, 'error');
               }
             });
           });

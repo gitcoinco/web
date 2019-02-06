@@ -96,8 +96,6 @@ $(document).ready(function() {
 
           $('#contributor_address').val(accounts[0]);
 
-          let url;
-
           deployedToken.methods.approve(
             data.contract_address,
             web3.utils.toTwosComplement(approvalSTR)
@@ -192,6 +190,8 @@ $(document).ready(function() {
               'csrfmiddlewaretoken': $("#js-fundGrant input[name='csrfmiddlewaretoken']").val(),
               'sub_new_approve_tx_id': $('#sub_new_approve_tx_id').val()
             };
+
+            let url;
 
             $.ajax({
               type: 'post',
