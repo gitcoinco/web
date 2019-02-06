@@ -175,7 +175,7 @@ $(document).ready(function() {
                       success: json => {
                         console.log('successfully saved subscriptionHash and signature');
                         url = json.url;
-                        $('#wait1').val('false');
+                        $('#wait').val('false');
                       },
                       error: () => {
                         _alert({ message: gettext('Your subscription failed to save. Please try again.') }, 'error');
@@ -224,7 +224,7 @@ $(document).ready(function() {
 });
 
 const waitforData = (callback) => {
-  if ($('#wait1').val() === 'false') {
+  if ($('#wait').val() === 'false') {
     callback();
   } else {
     var wait_callback = () => {
