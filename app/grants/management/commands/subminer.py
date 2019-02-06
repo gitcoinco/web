@@ -139,15 +139,15 @@ def listen_for_tx(grant, subscription, tx, network, tx_type):
     if not was_success:
         logger.warning('tx processing failed')
         if tx_type == 'grant_deploy':
-            transaction_failed(grant, subscription, "Grant Deployment")
+            transaction_failed(grant, grant.subscription, "Grant Deployment")
         elif tx_type == 'grant_cancel':
-            transaction_failed(grant, subscription, "Grant Cancellation")
+            transaction_failed(grant, grant.subscription, "Grant Cancellation")
         elif tx_type == 'new_approve':
-            transaction_failed(grant, subscription, "New Approval")
+            transaction_failed(subscription.grant, subscription, "New Approval")
         elif tx_type == 'end_approve':
-            transaction_failed(grant, subscription, "End Approval")
+            transaction_failed(subscription.grant, subscription, "End Approval")
         elif tx_type == 'sub_cancel':
-            transaction_failed(grant, subscription, "Subscription Cancellation")
+            transaction_failed(subscription.grant, subscription, "Subscription Cancellation")
     else:
         logger.info('tx processing successful')
         if tx_type == 'grant_deploy':
