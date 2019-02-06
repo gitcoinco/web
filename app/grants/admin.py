@@ -48,6 +48,7 @@ class GrantAdmin(GeneralAdmin):
         'network', 'amount_goal', 'amount_received', 'team_member_list',
         'subscriptions_links', 'contributions_links', 'link',
     ]
+    raw_id_fields = ['admin_profile']
 
     # Custom Avatars
     def logo_svg_asset(self, instance):

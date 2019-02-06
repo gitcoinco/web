@@ -86,9 +86,16 @@
             <div class="row">
               <div class="col-12">
                 <div class="grant__specs">
-                  <p style="background-color: #C4A2D4; color: white; padding: 3px 10px; border-radius: 5px;"> 
-                    <strong>NEW 2019/02/01</strong> - This Grant is subject to up to $25k in CLR Matching.  Contribute today and your contribution will be matched.  <a style="color: white;" target="new" href="https://medium.com/gitcoin/gitcoin-grants-clr-matching-ecbc87b10038">Read More Here</a>
-                  </p>
+                  <div id="CLR_banner" class="mt-3 mb-3" style="border: 2px solid #C3B0FF; color: white; padding: 3px 10px; border-radius: 5px;"> 
+                    <img style="float:right; margin-top: 8px; max-height: 60px;" src="{% static "v2/images/eth_dollar.png" %}" />
+                    <p style="color: #3E00FF; font-weight: bold;" class="mt-2 mb-1">
+                      $25K CLR Matching Available – Contribute Today!
+                    </p>
+                    <p style="color: #4A4A4A;" class="mt-1 mb-2">
+                      2/1 to 2/15, all contributions will be matched.
+                      <a style="color: #3E00FF;" target="new" href="https://medium.com/gitcoin/gitcoin-grants-clr-matching-ecbc87b10038">Read More Here</a>
+                    </p>
+                  </div>
                   <h1 class="grant__title font-title-lg {% if is_admin %} mt-4 {% endif %}">
                     {% if is_admin %}
                       <textarea id="form--input__title" class="p-0 m-0 inline-edit" disabled>{{ grant.title }}</textarea>
@@ -106,12 +113,12 @@
                         <i class="fas fa-link mr-2"></i>
                         {{ grant.reference_url }}
                       </a>
-                      <BR>
-                      <a href="https://etherscan.io/address/{{ grant.admin_address }}" target="_blank" data-toggle="tooltip" data-placement="bottom" title="Recipient Funding Address">
-                        <i class="fas fa-lock mr-2"></i>
-                        {{ grant.admin_address }}
-                      </a>
                     {% endif %}
+                    <BR>
+                    <a href="https://etherscan.io/address/{{ grant.admin_address }}" target="_blank" data-toggle="tooltip" data-placement="bottom" title="Recipient Funding Address">
+                      <i class="fas fa-lock mr-2"></i>
+                      {{ grant.admin_address }}
+                    </a>
                   </span>
                   <div class="grant-item__owner my-2">
                     {% if is_admin and not grant_is_inactive %}
@@ -140,7 +147,7 @@
                     <div class="grant-item__owner my-2">
                       <div class="font-body">
                         <p class="font-caption sub-title mb-0">Contract Owner Address</p>
-                        <input id="contract_owner_address" class="p-0 m-0 inline-edit" name="contract_owner_address" value="{{ grant.contract_owner_address }}" disabled>
+                        <input id="contract_owner_address" class="p-0 m-0 inline-edit" name="contract_owner_address" value="{{ grant.contract_owner_address }}" disabled data-toggle="tooltip" data-placement="bottom" title="Beware! Please do not change this to an address you do NOT own.">
                         <button id="contract_owner_button" class="mt-2 button button--primary button__small hidden">
                           {% trans "Change Contract Owner" %}
                         </button>
@@ -163,8 +170,8 @@
                   <div class="progress-text mt-2">
                     <div class="row">
                       <div class="col-6">
-                        <span>{{ grant.monthly_amount_subscribed|floatformat:2|intcomma }} DAI</span>
-                        <p>Monthly Funding</p>
+                        <span>{{ grant.amount_received|floatformat:2|intcomma }} DAI</span>
+                        <p>Total Funding</p>
                       </div>
                       <div class="col-6 text-right">
                         <span>{{ grant.amount_goal|floatformat:2|intcomma }} DAI</span>
@@ -173,7 +180,7 @@
                     </div>
                   </div>
                   <p>
-                    {% trans 'Total Funding Received: '%} {{ grant.amount_received }}
+                    {% trans 'Monthly Recurring Funding: '%} {{ grant.monthly_amount_subscribed }}
                   </p>
                 </div>
                 {% if grant_is_inactive %}

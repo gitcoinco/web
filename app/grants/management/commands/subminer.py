@@ -35,6 +35,7 @@ logging.getLogger("marketing.mails").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
 SLEEP_TIME = 20
+MAX_COUNTER = 30
 
 
 def process_subscription(subscription, live):
@@ -66,14 +67,29 @@ def process_subscription(subscription, live):
             try:
                 if live:
                     logger.info("   -- *executing* ")
+                    counter = 0
                     while not has_tx_mined(subscription.new_approve_tx_id, subscription.grant.network):
                         time.sleep(SLEEP_TIME)
-                        logger.info(f"   -- *waiting {SLEEP_TIME} seconds*")
+                        logger.info(f"   -- *waiting {SLEEP_TIME} seconds for {subscription.new_approve_tx_id} to mine*")
+                        counter += 1
+                        if counter > MAX_COUNTER:
+                            raise Exception(f"waited more than {MAX_COUNTER} times for tx  to mine")
+
                     txid = subscription.do_execute_subscription_via_web3()
                     logger.info("   -- *waiting for mine* (txid %s) ", txid)
-                    while not has_tx_mined(txid, subscription.grant.network):
+                    
+                    override = False
+                    counter = 0
+                    while not has_tx_mined(txid, subscription.grant.network) and not override:
                         time.sleep(SLEEP_TIME)
-                        logger.info(f"   -- *waiting {SLEEP_TIME} seconds*")
+                        logger.info(f"   -- *waiting {SLEEP_TIME} seconds for {txid} to mine*")
+                        counter += 1
+                        if counter > MAX_COUNTER:
+                            override = True
+                            # force the subminer to continue on; this tx is taking too long.  
+                            # an admin will have to look at this later and determine what went wrong
+                            # KO 2019/02/06
+
                     status, __ = get_tx_status(txid, subscription.grant.network, timezone.now())
                     if status != 'success':
                         error = f"tx status from RPC is {status} not success, txid: {txid}"
@@ -129,4 +145,7 @@ class Command(BaseCommand):
             logger.info(" - %d has %d subs ready for execution", grant.pk, subs.count())
 
             for subscription in subs:
-                process_subscription(subscription, live)
+                try:
+                    process_subscription(subscription, live)
+                except Exception as e:
+                    logger.exception(e)
