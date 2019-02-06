@@ -1577,8 +1577,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#how-do-i-gettest-kudos-on-my-local-rpc-node" title="How do I get/test kudos on my local RPC node" class="md-nav__link">
-    How do I get/test kudos on my local RPC node
+  <a href="#how-to-populate-my-db-with-kudos" title="How to populate my DB with kudos" class="md-nav__link">
+    How to populate my DB with kudos
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-do-i-mint-kudos-on-my-local-rpc-node" title="How do I MINT kudos on my local RPC node" class="md-nav__link">
+    How do I MINT kudos on my local RPC node
   </a>
   
 </li>
@@ -2178,8 +2185,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#how-do-i-gettest-kudos-on-my-local-rpc-node" title="How do I get/test kudos on my local RPC node" class="md-nav__link">
-    How do I get/test kudos on my local RPC node
+  <a href="#how-to-populate-my-db-with-kudos" title="How to populate my DB with kudos" class="md-nav__link">
+    How to populate my DB with kudos
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-do-i-mint-kudos-on-my-local-rpc-node" title="How do I MINT kudos on my local RPC node" class="md-nav__link">
+    How do I MINT kudos on my local RPC node
   </a>
   
 </li>
@@ -2253,7 +2267,19 @@
                 
                 
                 <h1 id="kudos-general-documentation">Kudos General Documentation</h1>
-<h2 id="how-do-i-gettest-kudos-on-my-local-rpc-node">How do I get/test kudos on my local RPC node</h2>
+<h2 id="how-to-populate-my-db-with-kudos">How to populate my DB with kudos</h2>
+<p>First be aware to update your <code>.env</code> with this entries</p>
+<pre><code>KUDOS_NETWORK=rinkeby
+KUDOS_OWNER_ACCOUNT= YOUR_ADDRESS
+KUDOS_LOCAL_SYNC=off
+</code></pre>
+
+<p>Then run the commands</p>
+<pre><code class="shell">docker-compose up
+docker-compose exec web bash -c 'cd app &amp;&amp; python manage.py sync_kudos rinkeby filter --start earliest'
+</code></pre>
+
+<h2 id="how-do-i-mint-kudos-on-my-local-rpc-node">How do I MINT kudos on my local RPC node</h2>
 <p>This answer assumes you're using docker.</p>
 <p>Run these commands</p>
 <pre><code class="shell"># start from the directory on your local filesystem that contains the gitcoinco web repo
