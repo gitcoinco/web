@@ -16,26 +16,17 @@
 {% endcomment %}
 {% load i18n static %}
 <link rel="stylesheet" href="{% static "v2/css/search_bar.css" %}">
-<div class="row search_bar my-lg-3">
-  <div class="col-12 ml-lg-5 col-lg-11">
-    <div class="row pb-1">
-      <!-- search history
-        <div class="d-none d-lg-inline col-lg-9">
-          <div id="search_nav"></div>
-        </div>
-      -->
-      <div class="col-4 font-body">
-        <div id="results-count" class="ml-3 ml-lg-0"><span class='num'></span><span class='plus'></span> bounties</div>
-      </div>
-      <div class="col-8 font-caption order_by">
-        <div class="heading">{% trans "Sort by" %} </div>
-        <select name="sort_option" id="sort_option">
-          <option value="-web3_created">{% trans "Created: Recent" %}</option>
-          <option value="web3_created">{% trans "Created: Oldest" %}</option>
-          <option value="-_val_usd_db">{% trans "Value: Highest" %}</option>
-          <option value="_val_usd_db">{% trans "Value: Lowest" %}</option>
-        </select>
-      </div>
-    </div>
+<div class="d-flex search_bar my-lg-3 mx-lg-4">
+  <div class="col-4 font-body">
+    <div id="results-count" class="ml-3 ml-lg-0"><span class='num'></span><span class='plus'></span> bounties</div>
+  </div>
+  <div class="col-8 font-caption order_by">
+    <div class="heading">{% trans "Sort by" %} </div>
+    <select name="sort_option" id="sort_option">
+      <option value="-web3_created">{% trans "Created: Recent" %}</option>
+      <option value="web3_created">{% trans "Created: Oldest" %}</option>
+      <option value="-_val_usd_db">{% trans "Value: Highest" %}</option>
+      <option value="_val_usd_db">{% trans "Value: Lowest" %}</option>
+    </select>
   </div>
 </div>

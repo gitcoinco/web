@@ -11,6 +11,7 @@ $(document).ready(function() {
 
   updateSummary();
 
+
   $('#js-fundGrant-button').on('click', function(e) {
     console.log('click');
     $('#cancelModal').attr('aria-hidden', 'false');
@@ -18,6 +19,33 @@ $(document).ready(function() {
     //   modalClass: 'modal cancel_grants'
     // });
   })
+
+  $('#frequency_unit, #js-token').on('select2:select', event => {
+    updateSummary();
+  });
+
+  $('input#frequency_count, input#amount, input#period').on('input', () => {
+    updateSummary();
+  });
+
+  $('.contribution_type select').change(function() {
+    if ($('.contribution_type select').val() == 'once') {
+      $('.frequency').addClass('hidden');
+      $('.num_recurring').addClass('hidden');
+      $('.hide_if_onetime').addClass('hidden');
+      $('.hide_if_recurring').removeClass('hidden');
+      $('#period').val(1);
+      updateSummary();
+      $('#amount_label').text('Amount');
+    } else {
+      $('.frequency').removeClass('hidden');
+      $('.num_recurring').removeClass('hidden');
+      $('#amount_label').text('Amount Per Period');
+      $('.hide_if_onetime').removeClass('hidden');
+      $('.hide_if_recurring').addClass('hidden');
+    }
+  });
+
 
   $('#js-fundGrant').validate({
     submitHandler: function(form) {
@@ -92,14 +120,14 @@ $(document).ready(function() {
           }).on('transactionHash', function(transactionHash) {
             $('#sub_new_approve_tx_id').val(transactionHash);
             const linkURL = etherscan_tx_url(transactionHash);
-
+            var token_address = $('#js-token').length ? $('#js-token').val() : $('#sub_token_address').val();
             let data = {
               'contributor_address': $('#contributor_address').val(),
               'amount_per_period': $('#amount').val(),
               'real_period_seconds': realPeriodSeconds,
               'frequency': $('#frequency_count').val(),
               'frequency_unit': $('#frequency_unit').val(),
-              'token_address': $('#js-token').val(),
+              'token_address': token_address,
               'token_symbol': $('#token_symbol').val(),
               'gas_price': $('#gas_price').val(),
               'sub_new_approve_tx_id': transactionHash,
@@ -239,30 +267,13 @@ const waitforData = (callback) => {
   }
 };
 
+
 const updateSummary = (element) => {
 
   $('#summary-period').html($('input#frequency_count').val());
   $('#summary-amount').html($('input#amount').val() ? $('input#amount').val() : 0);
   $('#summary-frequency').html($('input#period').val() ? $('input#period').val() : 0);
   $('#summary-frequency-unit').html($('#frequency_unit').val());
+  $('#summary-token').html($('#js-token option:selected').text());
 
-  $('#js-token').on('select2:select', event => {
-    $('#summary-token').html(event.params.data.text);
-  });
-
-  $('#frequency_unit').on('select2:select', event => {
-    $('#summary-frequency-unit').html(event.params.data.text);
-  });
-
-  $('input#frequency_count').on('input', () => {
-    $('#summary-period').html($('input#frequency_count').val());
-  });
-
-  $('input#amount').on('input', () => {
-    $('#summary-amount').html($('input#amount').val());
-  });
-
-  $('input#period').on('input', () => {
-    $('#summary-frequency').html($('input#period').val());
-  });
 };

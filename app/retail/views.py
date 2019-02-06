@@ -20,6 +20,7 @@ from json import loads as json_parse
 from os import walk as walkdir
 
 from django.conf import settings
+from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.core.validators import validate_email
@@ -60,8 +61,146 @@ def get_activities(tech_stack=None, num_activities=15):
     activities = activities[0:num_activities]
     return [a.view_props for a in activities]
 
-
+@staff_member_required
 def index(request):
+    products = [
+        {
+            'group' : 'grow_oss',
+            'products': [
+                {
+                    'img': static('v2/images/home/bounties.svg'),
+                    'name': 'BOUNTIES',
+                    'description': 'Get paid for solving open source bounties.',
+                    'link': '/'  # update to /bounties
+                }
+            ]
+        },
+        {
+            'group' : 'maintain_oss',
+            'products': [
+                {
+                    'img': static('v2/images/home/codefund.svg'),
+                    'name': 'CODEFUND',
+                    'description': 'Ethical advertising for open source.',
+                    'link': 'https://codefund.app'
+                },
+                {
+                    'img': static('v2/images/home/grants.svg'),
+                    'name': 'GRANTS',
+                    'description': 'Sustainable funding for open source.',
+                    'link': '/grants'
+                }
+            ]
+        },
+        {
+            'group' : 'build_oss',
+            'products': [
+                {
+                    'img': static('v2/images/home/kudos.svg'),
+                    'name': 'KUDOS',
+                    'description': 'A new way to show appreciation.',
+                    'link': '/kudos'
+                }
+            ]
+        }
+    ]
+
+    know_us  = [
+        {
+            'text': 'Our Vision',
+            'link': '/vision'
+        },
+        {
+            'text': 'Our Products',
+            'link': '/products'
+        },
+        {
+            'text': 'Our Team',
+            'link': '/about#team'
+        },
+        {
+            'text': 'Our Results',
+            'link': '/results'
+        },
+        {
+            'text': 'Our Values',
+            'link': '/mission'
+        },
+        {
+            'text': 'Our Token',
+            'link': '/not_a_token'
+        }
+    ]
+
+    press = [
+        {
+            'link': 'https://twit.tv/shows/floss-weekly/episodes/474',
+            'img' : 'v2/images/press/floss_weekly.jpg'
+        },
+        {
+            'link': 'https://epicenter.tv/episode/257/',
+            'img' : 'v2/images/press/epicenter.jpg'
+        },
+        {
+            'link': 'http://www.ibtimes.com/how-web-30-will-protect-our-online-identity-2667000',
+            'img': 'v2/images/press/ibtimes.jpg'
+        },
+        {
+            'link': 'https://www.forbes.com/sites/curtissilver/2017/09/25/https://www.forbes.com/sites/jeffersonnunn/2019/01/21/bitcoin-autonomous-employment-workers-wanted/',
+            'img': 'v2/images/press/forbes.jpg'
+        },
+        {
+            'link': 'https://unhashed.com/cryptocurrency-news/gitcoin-introduces-collectible-kudos-rewards/',
+            'img': 'v2/images/press/unhashed.jpg'
+        },
+        {
+            'link': 'https://www.coindesk.com/meet-dapp-market-twist-open-source-winning-developers/',
+            'img': 'v2/images/press/coindesk.png'
+        },
+        {
+            'link': 'https://softwareengineeringdaily.com/2018/04/03/gitcoin-open-source-bounties-with-kevin-owocki/',
+            'img': 'v2/images/press/se_daily.png'
+        },
+        {
+            'link': 'https://www.ethnews.com/gitcoin-offers-bounties-for-ens-integration-into-dapps',
+            'img': 'v2/images/press/ethnews.jpg'
+        }
+    ]
+
+    articles = [
+        {
+            'link': 'https://medium.com/gitcoin/progressive-elaboration-of-scope-on-gitcoin-3167742312b0',
+            'img': 'https://cdn-images-1.medium.com/max/2000/1*ErCNRMzIJguUGUgXgVc-xw.png',
+            'title': _('Progressive Elaboration of Scope on Gitcoin'),
+            'description': _('What is it? Why does it matter? How can you deal with it on Gitcoin?'),
+            'alt': 'gitcoin scope'
+        },
+        {
+            'link': 'https://medium.com/gitcoin/commit-reveal-scheme-on-ethereum-25d1d1a25428',
+            'img': 'https://cdn-images-1.medium.com/max/1600/1*GTEu2R4xIxAApx50rAV_qw.png',
+            'title': _('Commit Reveal Scheme on Ethereum'),
+            'description': _('Hiding Actions and Generating Random Numbers'),
+            'alt': 'commit reveal scheme'
+        },
+        {
+            'link': 'https://medium.com/gitcoin/announcing-open-kudos-e437450f7802',
+            'img': 'https://cdn-images-1.medium.com/max/2000/1*iPQYV3M-JOlYeFFC-iqfcg.png',
+            'title': _('Announcing Open Kudos'),
+            'description': _('Our vision for integrating Kudos in any (d)App'),
+            'alt': 'open kudos'
+        }
+    ]
+
+    context = {
+        'products': products,
+        'know_us': know_us,
+        'press': press,
+        'articles': articles
+    }
+    return TemplateResponse(request, 'home/index.html', context)
+
+
+def funder_bounties(request):
     slides = [
         ("Dan Finlay", static("v2/images/testimonials/dan.jpg"),
          _("Once we had merged in multiple language support from a bounty, it unblocked the \
@@ -108,11 +247,11 @@ def index(request):
         'gitcoin_description': gitcoin_description,
         'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter.")
     }
-    return TemplateResponse(request, 'landing/funder.html', context)
+    return TemplateResponse(request, 'bounties/funder.html', context)
 
 
 @cached_view(timeout=60 * 10)
-def contributor_landing(request, tech_stack):
+def contributor_bounties(request, tech_stack):
 
     slides = [
         ("Daniel", static("v2/images/testimonials/gitcoiners/daniel.jpeg"),
@@ -242,7 +381,7 @@ def contributor_landing(request, tech_stack):
         'tech_stack': tech_stack,
     }
 
-    return TemplateResponse(request, 'landing/contributor.html', context)
+    return TemplateResponse(request, 'bounties/contributor.html', context)
 
 
 def how_it_works(request, work_type):
@@ -273,7 +412,6 @@ def robotstxt(request):
     return TemplateResponse(request, 'robots.txt', context, content_type='text')
 
 
-@cached_view(timeout=60 * 10)
 def about(request):
     core_team = [
         (
@@ -293,15 +431,6 @@ def about(request):
             "pixelant",
             "Tips",
             "Apple Cider Doughnuts"
-        ),
-        (
-            static("v2/images/team/mark-beacom.jpg"),
-            "Mark Beacom",
-            "Engineering",
-            "mbeacom",
-            "mbeacom",
-            "Start/Stop Work",
-            "Dolsot Bibimbap"
         ),
         (
             static("v2/images/team/eric-berry.jpg"),
@@ -369,7 +498,7 @@ def about(request):
         (
             static("v2/images/team/austin-griffith.jpg"),
             "Austin Griffith",
-            "Research",
+            "Gitcoin Labs",
             "austintgriffith",
             None,
             "The #BUIDL",
