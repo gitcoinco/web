@@ -144,7 +144,7 @@
       <ul style="text-align: center;">
         {% for kudos in kudos_highlights %}
         {% if kudos.recipient_profile and kudos.sender_profile %}
-          <li style="list-style:none; margin: 5px; padding: 15px 30px; width: 350px; height: 270px; display: inline-block; float:left; border: 1px solid #cccccc; border-radius: 5px;">
+          <li style="list-style:none; margin: 5px; padding: 15px 30px; width: 350px; min-height: 270px; display: inline-block; float:left; border: 1px solid #cccccc; border-radius: 5px;">
               <a style="font-weight: bold; text-decoration: none;" href="{% url "profile" kudos.recipient_profile.handle %}">{{ kudos.recipient_profile.handle }}</a> received <strong>{{ kudos.kudos_token_cloned_from.name|humanize_name }}</strong> from <a style="font-weight: bold; text-decoration: none;" href="{% url 'profile' kudos.sender_profile.handle %}">{{ kudos.sender_profile.handle }}</a><br>
             <a href="{% url 'kudos_details' kudos.kudos_token_cloned_from.pk kudos.kudos_token_cloned_from.name  %}">
 
