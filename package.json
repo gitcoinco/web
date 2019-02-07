@@ -21,7 +21,6 @@
   },
   "homepage": "https://github.com/gitcoinco/web#readme",
   "devDependencies": {
-    "babel-eslint": "^8.2.6",
     "eslint": "^4.19.1",
     "stylelint": "^8.4.0",
     "stylelint-config-recommended": "^2.1.0"
