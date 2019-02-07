@@ -196,7 +196,7 @@ class Grant(SuperModel):
 
     def percentage_done(self):
         """Return the percentage of token received based on the token goal."""
-        return ((self.monthly_amount_subscribed / self.amount_goal) * 100)
+        return ((self.amount_received / self.amount_goal) * 100)
 
     @property
     def abi(self):
@@ -216,7 +216,7 @@ class Grant(SuperModel):
         """Return grants contract."""
         from dashboard.utils import get_web3
         web3 = get_web3(self.network)
-        grant_contract = web3.eth.contract(self.contract_address, abi=self.abi)
+        grant_contract = web3.eth.contract(Web3.toChecksumAddress(self.contract_address), abi=self.abi)
         return grant_contract
 
 
@@ -296,8 +296,14 @@ class Subscription(SuperModel):
         default='',
         max_length=255,
         help_text=_('The contributor\'s Subscription hash.'),
+        blank=True,
     )
-    contributor_signature = models.CharField(default='', max_length=255, help_text=_('The contributor\'s signature.'))
+    contributor_signature = models.CharField(
+        default='',
+        max_length=255,
+        help_text=_('The contributor\'s signature.'),
+        blank=True,
+        )
     contributor_address = models.CharField(
         default='',
         max_length=255,

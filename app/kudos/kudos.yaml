@@ -2900,6 +2900,24 @@
     - open source
     - sorcery
   image: open_sourceress.svg
+- name: staker_kudo
+  description: Bufficorns understand the importance of making a stand. Staking is how true Bufficorns prove their commitment!
+  priceFinney: 50
+  numClonesAllowed: 1000
+  tags:
+    - ethdenver 2019
+    - staker
+  image: staked_kudos.svg
+- name: livestreamer
+  description: This Kudos is specially made for members of the Gitcoin community who have presented on the Gitcoin weekly livestream (Fridays at 5pm EST)
+  priceFinney: 100
+  numClonesAllowed: 100
+  tags:
+    - gitcoin
+    - livestream
+  image: livestreamer.svg
+
+
 
 
 
