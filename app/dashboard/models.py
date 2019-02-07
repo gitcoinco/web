@@ -41,6 +41,7 @@ from django.utils.translation import gettext_lazy as _
 
 import pytz
 import requests
+from avatar.utils import get_upload_filename
 from dashboard.tokens import addr_to_token
 from economy.models import ConversionRate, SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
@@ -54,7 +55,6 @@ from rest_framework import serializers
 from web3 import Web3
 
 from .signals import m2m_changed_interested
-from avatar.utils import get_upload_filename
 
 logger = logging.getLogger(__name__)
 
