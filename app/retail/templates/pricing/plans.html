@@ -21,6 +21,7 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/lib/slider.css" %}" />
     <link rel="stylesheet" href="{% static "v2/css/retail/plans.css" %}" />
   </head>
   <body class="g-font-muli plans">
@@ -32,11 +33,21 @@
         {% trans "Upgrade your account to continue using Gitcoin" %}
       </h1>
       <h2 class="font-title">
-        {%trans "Give your team the package they need to succeed." %}
+        {% trans "Give your team the package they need to succeed." %}
       </h2>
     </div>
     <div class="container">
       <div class="row mt-5 pt-4">
+        <div class="col-12 mb-4 period">
+          <div>
+              MONTHLY
+              <label class="g-switch">
+                <input id="package-period" type="checkbox">
+                <span class="slider"></span>
+              </label>
+              YEARLY <span class="discount">( Save 10% )</span>
+          </div>
+        </div>
         {% for plan in plans %}
           <div class="col-12 col-md-6 col-lg-4 mb-5 mb-lg-2">
             <div id="{{ plan.type }}" class="py-4 plan text-center">
@@ -54,7 +65,10 @@
                   <h2 class="mt-3 mb-0 font-weight-semibold">Free!</h2>
                   <p>{{ plan.fee }}% {% trans "platform fee" %}</p>
                 {% else %}
-                  <h2 class="mt-3 mb-0 font-weight-semibold">${{ plan.price }} <span> / mo</span></h2>
+                  <h2 class="mt-3 mb-0 font-weight-semibold">
+                    $<span id="{{ plan.type }}-price">{{ plan.price }}</span>
+                    <span class="month"> / mo</span>
+                  </h2>
                   <p>{% trans "no platform fee" %}</p>
                 {% endif %}
               </div>
@@ -76,9 +90,13 @@
                 {% endfor %}
               </div>
               <div class="plan-button mx-3 pb-2">
-                <a id="{{ plan.type }}-plan"
+                <a id="{{ plan.type }}-plan" href="{% if plan.type == 'basic' %} {% url 'index' %} {% else %} /subscribe?plan={{ plan.type }} {% endif %}"
                   class="btn button--full px-3 {% if plan.type == 'pro' %} btn-gc-blue {% else %} button--primary {% endif %}">
-                  {% trans "Choose Plan" %}
+                  {% if plan.type == 'basic' %}
+                    {% trans "Get Started" %}
+                  {% else %}
+                    {% trans "Choose Plan" %}
+                  {% endif %}
                 </a>
               </div>
             </div>
@@ -102,4 +120,27 @@
   {% include 'shared/footer_scripts.html' with slim=1 %}
   {% include 'shared/footer.html' %}
   {% include 'shared/messages.html' %}
+  <script src="{% static 'v2/js/animate-number.js' %}"></script>
+  <script>
+     $('#package-period').change(function() {
+      if($(this).is(":checked")) {
+        const pro_current = Number($('#pro-price').html());
+        const pro_new = pro_current - pro_current / 10;
+        const max_current = Number($('#max-price').html());
+        const max_new = max_current - max_current / 10;
+
+        $('#pro-price').animateNumber({ number: pro_new });
+        $('#max-price').animateNumber({ number: max_new });
+        $('#pro-plan').attr('href', '/subscribe?plan=pro&pack=annual');
+        $('#max-plan').attr('href', '/subscribe?plan=max&pack=annual');
+      } else {
+        $('#pro-price').animateNumber({ number: 40 });
+        $('#max-price').animateNumber({ number: 99 });
+
+        $('#pro-plan').attr('href', '/subscribe?plan=pro&pack=month');
+        $('#max-plan').attr('href', '/subscribe?plan=max&pack=month');
+      }
+    });
+
+  </script>
   </html>
