@@ -188,25 +188,23 @@ div.button-pink {
   color: #12c971;
   font-size: 2em;
   font-weight: 500;
-  font-style: italic;
 }
 
 .header-line-contributors {
-  letter-spacing: 0.5px;
-  font-weight: 700;
+  font-weight: 500;
+  color: #fff;
 }
 
 .subheader-line {
-  color: #70efbe;
+  color: #fff;
   font-size: 1.5em;
   font-weight: 500;
-  font-style: italic;
 }
 
 .subheader-line-contributors {
   color: #ffffff;
   margin-top: 0.6em;
-  font-weight: 100;
+  font-weight: 400;
 }
 
 .font-weight-300 {
@@ -329,7 +327,7 @@ div.button-pink {
 }
 
 .footer__main {
-  background-image: url('/static/v2/images/footer.jpg');
+  background-image: url('/static/v2/images/footer.png');
   background-color: #0d023b;
   background-size: contain;
   background-position: bottom;
