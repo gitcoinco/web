@@ -190,42 +190,36 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             </div>
 
 
-                                <div id="cancelModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="cancelGrantModal" aria-hidden="true">
-                                  <div class="modal-dialog modal-lg">
-                                    <div class="modal-content px-4 px-lg-5">
-                                      <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                          <span aria-hidden="true">&times;</span>
-                                        </button>
-                                      </div>
-                                      <div class="modal-body row">
-                                        <div class="col-12 pt-2 pb-2 text-center">
-                                          <h2 class="font-title">{% trans "Are you sure you want to cancel this grant?" %}</h2>
-                                        </div>
-                                        <div class="col-12 text-center">
-                                          <img src="{% static "v2/images/grants/cancel-grants-icon.png" %}" />
-                                        </div>
-                                        <div class="col-12 pt-2 pb-2 font-body">
-                                          <p>{% trans "By clicking Cancel, you will be cancelling this grant from Gitcoin." %}</p>
-                                          <ul><li>{% trans "Your grant will stay in Gitcoin, but " %}<b>{% trans "marked as inactive." %}</b></li>
-                                          <li>{% trans "Funds received till now " %}<b>{% trans "will not be refunded " %}</b>{% trans "to the contributors." %}</li>
-                                          <li>{% trans "Once cancelled, it is " %}<b>{% trans "not possible to restart the grant, " %}</b>{% trans "as the smart contract will be destroyed." %}</li></ul>
-                                          <p>{% trans "To relaunch the grant, you need to create a new grant." %}</p>
-                                        </div>
-                                        <div id="gas-section" class="form__group-horizontal">
-                                          <h5 class="font-subheader pb-2">{% trans "Gas Settings" %}</h5>
-                                          <div>
-                                            {% include 'shared/wallet_estimate.html' %}
-                                          </div>
-                                        </div>
-                                        <div class="col-12 mt-4 mb-2 text-center text-md-right font-caption">
-                                          <a data-dismiss="modal" aria-label="Close dialog" class="button button--primary-o mr-3">{% trans "No, I don\'t want to cancel" %}</a>
-                                          <button class="modal-cancel-grants button button--warning">{% trans "Cancel this Grant" %}</button>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
+            <div id="cancelModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="cancelGrantModal" aria-hidden="true">
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content px-4 px-lg-5">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body row">
+                    <div class="col-12 pt-2 pb-2 text-center">
+                      <h3>{% trans "Just so you know!" %}</h3>
+                    </div>
+                      <div class="col-12 text-center">
+                        <img src="{% static "v2/images/update-notification.png" %}" />
+                      </div>
+                      <div class="col-12 pt-2 pb-2 font-body text-center">
+                        <h2 class="font-title">{% trans "A few things:" %}</h2>
+                      </div>
+                      <div class="col-12 pt-2 pb-2 font-body">
+                        <p>{% trans "1. You will need to perform TWO transactions in MetaMask for your subscription to work correctly." %}</p>
+                        <p>{% trans "2. Your first contribution will take AT LEAST 5 MINUTES to appear on the grant page. This is because multiple transactions need to confirm on the blockchain." %}</p>
+                      </div>
+                      <hr></hr>
+                      <div class="col-12 mt-4 mb-2 text-center font-caption">
+                        <a data-dismiss="modal" aria-label="Close dialog" class="button button--primary-o mr-3">{% trans "Ok, got it!" %}</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
             <div>
               <input type="hidden" id="grant_id" name="grant_id" value="{{ grant.id }}">

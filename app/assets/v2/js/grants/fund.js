@@ -12,13 +12,13 @@ $(document).ready(function() {
   updateSummary();
 
 
-  $('#js-fundGrant-button').on('click', function(e) {
-    console.log('click');
-    $('#cancelModal').attr('aria-hidden', 'false');
-    // $('#cancelModal').modal({
-    //   modalClass: 'modal cancel_grants'
-    // });
-  })
+  // $('#js-fundGrant-button').on('click', function(e) {
+  //   console.log('click');
+  //   $('#cancelModal').attr('aria-hidden', 'false');
+  //   // $('#cancelModal').modal({
+  //   //   modalClass: 'modal cancel_grants'
+  //   // });
+  // })
 
   $('#frequency_unit, #js-token').on('select2:select', event => {
     updateSummary();
@@ -171,6 +171,8 @@ $(document).ready(function() {
                 web3.eth.personal.sign('' + subscriptionHash, accounts[0], function(err, signature) {
                   if (signature) {
                     $('#signature').val(signature);
+
+                    $('#cancelModal').modal('show');
 
                     let data = {
                       'subscription_hash': subscriptionHash,
