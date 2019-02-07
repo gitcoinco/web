@@ -66,7 +66,7 @@
     <input name="jobLocation" id="jobLocation" class="form__input" type="text" placeholder="{% trans 'Cities, States, or Countries' %}"/>
     <div class="locations-tags">
       {% for location in profile.job_location %}
-      <a class=filter-tag data-index="location"><i class="fas fa-times"></i>{{location.formatted_address}}</a>
+      <a class=filter-tag data-index="{{forloop.counter0}}"><i class="fas fa-times"></i>{{location.formatted_address}}</a>
       {% endfor %}
 
     </div>
@@ -91,7 +91,8 @@
 </div>
 
 <script>
-  let jobLocations = {{profile.job_location}}
+
+
   // var loadGoogleMapsApi = (key, libs) => {
   //   let CALLBACK_NAME = ''
   //   let API_KEY = '123'

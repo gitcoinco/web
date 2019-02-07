@@ -14,6 +14,7 @@
 {% block scripts %}
 <script>
   var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+  var jobLocations = {% if profile.job_location %}{{profile.job_location|safe }};{% else %}[];{% endif %}
 </script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBaJ6gEXMqjw0Y7d5Ps9VvelzOOvfV6BvQ&libraries=places&callback=initPlacecomplete"></script>
 <script src="{% static 'v2/js/jobs.js' %}"></script>

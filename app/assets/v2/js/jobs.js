@@ -41,7 +41,7 @@ const save_job_status = function() {
   });
 };
 
-let jobLocations = [];
+// let jobLocations = [];
 let autocomplete;
 
 function initPlacecomplete() {
