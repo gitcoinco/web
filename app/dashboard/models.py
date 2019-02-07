@@ -54,6 +54,7 @@ from rest_framework import serializers
 from web3 import Web3
 
 from .signals import m2m_changed_interested
+from avatar.utils import get_upload_filename
 
 logger = logging.getLogger(__name__)
 
@@ -1743,6 +1744,7 @@ class Profile(SuperModel):
     )
     job_salary = models.DecimalField(default=1, decimal_places=2, max_digits=50)
     job_location = JSONField(default=dict)
+    resume = models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('The avatar SVG.'))
 
     objects = ProfileQuerySet.as_manager()
 
