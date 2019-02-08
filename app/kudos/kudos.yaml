@@ -2916,6 +2916,17 @@
     - gitcoin
     - livestream
   image: livestreamer.svg
+- name: vaporwave
+  description: Vaporwave is a microgenre of electronic music and an Internet meme that emerged in the early 2010s.  Ethereum is a blockchain that emerged in the blockchain space in the mid 2010s.  Whats not to love about either, or both?
+  priceFinney: 35
+  numClonesAllowed: 350
+  tags:
+    - gitcoin
+    - bender
+  image: vaporwave.svg
+  to_address: '0xdf9B0d723776972C5cAe27FDb4F3Ea827A5Cf283'
+  artist: joe_bender
+
 
 
 
