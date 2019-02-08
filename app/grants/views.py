@@ -153,7 +153,7 @@ def grant_details(request, grant_id, grant_slug):
     is_admin = (grant.admin_profile.id == profile.id) if profile and grant.admin_profile else False
     if is_admin:
         add_cancel_params = True
-        
+
     params = {
         'active': 'grant_details',
         'grant': grant,
@@ -179,7 +179,7 @@ def grant_details(request, grant_id, grant_slug):
             'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(1),
             'eth_usd_conv_rate': eth_usd_conv_rate(),
             'conf_time_spread': conf_time_spread(),
-            'gas_advisories': gas_advisories(),        
+            'gas_advisories': gas_advisories(),
         }
         for key, value in add_in_params.items():
             params[key] = value
