@@ -152,19 +152,21 @@ def get_avatar_context():
                 'title': 'Pick your accessories',
                 'options': (['Glasses-0'], ['Glasses-1'], ['Glasses-2'], ['Glasses-3'], ['Glasses-4'], [
                     'HatShort-backwardscap'
-                ], ['HatShort-redbow'], ['HatShort-yellowbow'], ['HatShort-ballcap'], ['HatShort-cowboy'], ['HatShort-superwoman-tiara'], [
-                    'HatShort-headdress'
-                ], ['HatShort-headphones'], ['HatShort-shortbeanie'], ['HatShort-tallbeanie'], ['HatShort-bunnyears'], [
-                    'HatShort-menorah'
-                ], ['HatShort-pilgrim'], ['HatShort-santahat'], ['HatShort-elfhat'], ['Earring-0'], ['Earring-1'], [
-                    'EarringBack-2', 'Earring-2'
-                ], ['Earring-3'], ['Earring-4'], ['Masks-jack-o-lantern'], ['Masks-guy-fawkes'], ['Masks-bunny'], ['Masks-blackpanther'], [
-                    'Masks-jack-o-lantern-lighted'
-                ], ['Masks-wolverine_inspired'], ['Masks-captain_inspired'], ['Masks-alien'], ['Extras-Parrot'], [
-                    'Extras-wonderwoman_inspired'
-                ], ['Extras-santa_inspired'], ['Extras-reindeer'], ['Masks-gitcoinbot'], ['Extras-tattoo'], [
-                    'Masks-batman_inspired'
-                ], ['Masks-eye-patch'], ['Masks-flash_inspired'], ['Masks-deadpool_inspired'], ['Masks-darth_inspired'],
+                ], ['HatShort-redbow'], ['HatShort-yellowbow'], ['HatShort-ballcap'], ['HatShort-cowboy'], [
+                    'HatShort-superwoman-tiara'
+                ], ['HatShort-headdress'], ['HatShort-headphones'], ['HatShort-shortbeanie'], ['HatShort-tallbeanie'], [
+                    'HatShort-bunnyears'
+                ], ['HatShort-menorah'], ['HatShort-pilgrim'], ['HatShort-santahat'], ['HatShort-elfhat'], [
+                    'Earring-0'
+                ], ['Earring-1'], ['EarringBack-2', 'Earring-2'], ['Earring-3'], ['Earring-4'], [
+                    'Masks-jack-o-lantern'
+                ], ['Masks-guy-fawkes'], ['Masks-bunny'], ['Masks-blackpanther'], ['Masks-jack-o-lantern-lighted'], [
+                    'Masks-wolverine_inspired'
+                ], ['Masks-captain_inspired'], ['Masks-alien'], ['Extras-Parrot'], ['Extras-wonderwoman_inspired'], [
+                    'Extras-santa_inspired'
+                ], ['Extras-reindeer'], ['Masks-gitcoinbot'], ['Extras-tattoo'], ['Masks-batman_inspired'], [
+                    'Masks-eye-patch'
+                ], ['Masks-flash_inspired'], ['Masks-deadpool_inspired'], ['Masks-darth_inspired'],
                             ['Masks-spiderman_inspired'], ['Glasses-5'], ['Glasses-geordi-visor'],
                             ),
                 'paid_options': {
