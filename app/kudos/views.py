@@ -594,6 +594,7 @@ def receive(request, key, txid, network):
     return TemplateResponse(request, 'transaction/receive.html', params)
 
 
+
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
 def receive_bulk(request, secret):
 
