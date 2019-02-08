@@ -10,6 +10,7 @@ app/assets/v2/js/tweenlite.js
 app/assets/v2/js/abi.js
 
 app/assets/onepager/js/confetti.js
+app/assets/v2/js/event_ethdenver2019/blockies.js
 
 app/assets/v2/js/dataviz/*
 app/assets/v2/js/ethereumjs-accounts.js
