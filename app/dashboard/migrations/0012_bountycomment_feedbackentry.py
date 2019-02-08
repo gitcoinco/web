@@ -8,26 +8,10 @@ import economy.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0006_bounty_estimated_hours'),
+        ('dashboard', '0011_auto_20190131_2149'),
     ]
 
     operations = [
-        migrations.CreateModel(
-            name='BountyComment',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_on', models.DateTimeField(db_index=True, default=economy.models.get_time)),
-                ('modified_on', models.DateTimeField(default=economy.models.get_time)),
-                ('comment', models.TextField(blank=True)),
-                ('rating', models.IntegerField(blank=True, null=True)),
-                ('commentreceiver', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='comments_received', to='dashboard.Profile')),
-                ('commentsender', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='comments_given', to='dashboard.Profile')),
-                ('fulfillment', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='comments', to='dashboard.BountyFulfillment')),
-            ],
-            options={
-                'abstract': False,
-            },
-        ),
         migrations.CreateModel(
             name='FeedbackEntry',
             fields=[
