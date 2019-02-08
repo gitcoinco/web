@@ -94,6 +94,10 @@ button:focus {
   }
 }
 
+.btn {
+  border-radius: 2px;
+}
+
 .btn-gc-blue, .btn-gc-green, .btn-gc-purple {
   color: white;
   padding: .75rem 1.5rem;
