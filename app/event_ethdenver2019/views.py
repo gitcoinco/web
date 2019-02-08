@@ -1,17 +1,20 @@
-from django.template.response import TemplateResponse
-from django.db import transaction
 from django.conf import settings
 from django.contrib import messages
+from django.db import transaction
 from django.http import Http404
 from django.shortcuts import redirect
-from .models import Event_ETHDenver2019_Customizing_Kudos
+from django.template.response import TemplateResponse
+
 from dashboard.utils import get_nonce, get_web3
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
+from kudos.models import BulkTransferCoupon, BulkTransferRedemption, KudosTransfer, Token
 from kudos.utils import kudos_abi
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import Web3
-from kudos.models import BulkTransferCoupon, BulkTransferRedemption, KudosTransfer, Token
+
+from .models import Event_ETHDenver2019_Customizing_Kudos
+
 
 '''
 def ethdenver2019_redeem(request):
