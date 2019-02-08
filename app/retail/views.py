@@ -200,7 +200,7 @@ def index(request):
     return TemplateResponse(request, 'home/index.html', context)
 
 
-# @staff_member_required
+@staff_member_required
 def pricing(request):
 
     plans= [
@@ -283,7 +283,7 @@ def pricing(request):
     return TemplateResponse(request, 'pricing/plans.html', context)
 
 
-# @staff_member_required
+@staff_member_required
 def subscribe(request):
 
     if request.POST:
