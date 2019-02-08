@@ -11,9 +11,10 @@ const save_job_status = function() {
   const formData = new FormData();
   const job_search_status = $('#jobStatus').find(':selected').val();
   const show_job_status = $('#showJobStatus').prop('checked');
-  const job_type = $('input[name=jobType]:checked').map(function() {
-                      return $(this).val()
-                    }).get();
+  const job_type = $('input[name=jobType]:checked')
+    .map(function() {
+      return $(this).val();
+    }).get();
   const remote = $('#jobRemote:checked').val();
   const job_salary = $('#jobSalary').val();
   const linkedin_url = $('#linkedinUrl').val();
@@ -21,25 +22,23 @@ const save_job_status = function() {
 
   function checkUndefined(name, value) {
     if (typeof value !== 'undefined') {
-      formData.append(name, value)
-      console.log(name, value)
+      formData.append(name, value);
     }
   }
 
   const dataSend = {
-    'job_cv':job_cv[0],
+    'job_cv': job_cv[0],
     'job_search_status': job_search_status,
     'show_job_status': show_job_status,
     'job_type': job_type,
     'remote': remote,
     'linkedin_url': linkedin_url,
-    'job_salary': job_salary,
-  }
+    'job_salary': job_salary
+  };
 
   $.each(dataSend, (index, input) => {
-    // console.log(index, input)
-    checkUndefined(index, input)
-  })
+    checkUndefined(index, input);
+  });
 
   formData.append('locations', JSON.stringify(jobLocations));
 
