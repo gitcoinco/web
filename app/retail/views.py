@@ -799,7 +799,9 @@ Here are some of our values
      'General': [
         {
             'q': _('Is Gitcoin open source?'),
-            'a': _("Yes, all of Gitcoin's core software systems are open source and available at <a href=https://github.com/gitcoinco/>https://github.com/gitcoinco/</a>.  Please see the liscense.txt file in each repo for more details.")
+            'a': _("Yes, all of Gitcoin's core software systems are open source and available at "
+                   "<a href=https://github.com/gitcoinco/>https://github.com/gitcoinco/</a>.  Please see the "
+                   "LICENSE.txt file in each repo for more details.")
         },
         {
             'q': _('Is a token distribution event planned for Gitcoin?'),
