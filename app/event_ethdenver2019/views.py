@@ -93,10 +93,6 @@ def receive_bulk_ethdenver(request, secret):
 
     coupon = coupons.first()
 
-    eventobjs = Event_ETHDenver2019_Customizing_Kudos.objects.filter(active=True,final=False).filter(kudos_required=coupon.token)
-    if not eventobjs.exists():
-        raise Http404
-
     kudos_transfer = ""
     if coupon.num_uses_remaining <= 0:
         messages.info(request, f'Sorry but this kudos redeem link has expired! Please contact the person who sent you the coupon link, or contact your nearest Gitcoin representative.')
@@ -113,9 +109,10 @@ def receive_bulk_ethdenver(request, secret):
         kudos_contract_address = Web3.toChecksumAddress(settings.KUDOS_CONTRACT_RINKEBY)
         kudos_owner_address = Web3.toChecksumAddress(settings.KUDOS_OWNER_ACCOUNT)
         w3 = get_web3(coupon.token.contract.network)
+        nonce = w3.eth.getTransactionCount(kudos_owner_address)
         contract = w3.eth.contract(Web3.toChecksumAddress(kudos_contract_address), abi=kudos_abi())
         tx = contract.functions.clone(address, coupon.token.token_id, 1).buildTransaction({
-            'nonce': get_nonce(coupon.token.contract.network, kudos_owner_address),
+            'nonce': nonce,
             'gas': 500000,
             'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(5) * 10**9),
             'value': int(coupon.token.price_finney / 1000.0 * 10**18),
@@ -126,7 +123,7 @@ def receive_bulk_ethdenver(request, secret):
 
         with transaction.atomic():
             kudos_transfer = KudosTransfer.objects.create(
-                emails=["ethdenver@spiegeleixxl.de"],
+                emails=["founders@gitcoin.co"],
                 # For kudos, `token` is a kudos.models.Token instance.
                 kudos_token_cloned_from=coupon.token,
                 amount=0,
