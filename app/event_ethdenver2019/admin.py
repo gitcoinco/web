@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 from .models import Event_ETHDenver2019_Customizing_Kudos
 
 
