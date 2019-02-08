@@ -375,6 +375,12 @@ def grant_fund(request, grant_id, grant_slug):
             subscription.contributor_profile = profile
             subscription.grant = grant
             subscription.save()
+
+            messages.info(
+                request,
+                _('Your subscription has been created. It will bill within the next 5 minutes or so. Thank you for supporting Open Source !')
+            )
+
             return JsonResponse({
                 'success': True,
             })

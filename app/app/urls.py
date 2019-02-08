@@ -35,6 +35,8 @@ import dashboard.views
 import dataviz.d3_views
 import dataviz.views
 import enssubdomain.views
+# event:ethdenver2019
+import event_ethdenver2019.views
 import faucet.views
 import gitcoinbot.views
 import healthcheck.views
@@ -458,10 +460,19 @@ urlpatterns = [
     url(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),
     url(r'^impersonate/', include('impersonate.urls')),
 
+    # event:ethdenver2019
+    re_path(
+        r'^ethdenver/redeem/(?P<secret>.*)/?$',
+        event_ethdenver2019.views.receive_bulk_ethdenver,
+        name='kudos_receive_bulk'
+    ),
+    url(r'^ethdenver/', event_ethdenver2019.views.ethdenver2019),
+    # /event:ethdenver2019
+
     # wagtail
     re_path(r'^cms/', include(wagtailadmin_urls)),
     re_path(r'^documents/', include(wagtaildocs_urls)),
-    re_path(r'', include(wagtail_urls))
+    re_path(r'', include(wagtail_urls)),
 ]
 
 if settings.ENABLE_SILK:
