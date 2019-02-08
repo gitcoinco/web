@@ -429,6 +429,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 'project_type': schemes.get('project_type', 'traditional'),
                 'permission_type': schemes.get('permission_type', 'permissionless'),
                 'attached_job_description': bounty_payload.get('hiring', {}).get('jobDescription', None),
+                'is_featured': metadata.get('is_featured', False),
                 'bounty_owner_github_username': bounty_issuer.get('githubUsername', ''),
                 'bounty_owner_address': bounty_issuer.get('address', ''),
                 'bounty_owner_email': bounty_issuer.get('email', ''),
@@ -444,7 +445,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     'bounty_owner_github_username', 'bounty_owner_address', 'bounty_owner_email', 'bounty_owner_name',
                     'github_comments', 'override_status', 'last_comment_date', 'snooze_warnings_for_days',
                     'admin_override_and_hide', 'admin_override_suspend_auto_approval', 'admin_mark_as_remarket_ready',
-                    'funding_organisation', 'bounty_reserved_for_user',
+                    'funding_organisation', 'bounty_reserved_for_user', 'is_featured',
                 ],
             )
             if latest_old_bounty_dict['bounty_reserved_for_user']:

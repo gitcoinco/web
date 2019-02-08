@@ -35,6 +35,14 @@
     <h1>{% trans "Congrats!" %} 🎉</h1>
     <p>You've received a "{{ coupon.token.humanized_name }}" Kudos via transaction <a href="https://etherscan.io/tx/{{kudos_transfer.receive_txid}}"><span id="trans_id">{{kudos_transfer.receive_txid}}</span></a>.</p>
     <p>{% trans "You can see your kudos in any web3 wallet that supports ERC-721-compliant NFTs, or in your" %} <a href="{% url 'profile' %}">Gitcoin {% trans "profile" %}</a>.</p>
+      {% include 'shared/twitter.html' %}
+      <p>
+        <a class="twitter-share-button"
+        data-url="{{coupon.token.url}}"
+        href="https://twitter.com/intent/tweet?text={{tweet_text}}"
+        data-size="large">
+        Tweet It</a>
+      </p>
       <form action="{% url 'profile' %}">
         <input id="receive" type='submit' class="btn btn-gc-purple" value="🌈 {% trans "View Profile" %} 🏳️‍🌈" {% if disable_inputs %}disabled=disabled{%endif%} >
       </form>
@@ -158,6 +166,9 @@
 <script>
   document.network = '{{coupon.token.contract.network}}';
   $(document).ready(function(){
+    {% if error %}
+      _alert('{{error}}', 'error');
+    {% endif %}
     start_kudos_levitate();
     document.suppress_kudos_levitate_hover = true;
   })

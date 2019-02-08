@@ -115,11 +115,15 @@ urlpatterns = [
     path('revenue/attestations/new', revenue.views.new_attestation, name='revenue_new_attestation'),
 
     # action URLs
+    url(r'^$', retail.views.funder_bounties, name='funder_bounties'),  # TODO : Update Path
+    re_path(r'^contributor/?(?P<tech_stack>.*)/?', retail.views.contributor_bounties,
+            name='contributor_bounties'),  # TODO: Update Path
     re_path(r'^bounty/quickstart/?', dashboard.views.quickstart, name='quickstart'),
     url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
     re_path(r'^bounty/change/(?P<bounty_id>.*)?', dashboard.views.change_bounty, name='change_bounty'),
-    url(r'^funding/new/?', dashboard.views.new_bounty, name='new_funding'),
-    url(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),
+    url(r'^funding/new/?', dashboard.views.new_bounty, name='new_funding'),  # TODO: Remove
+    url(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),  # TODO: Remove
+    # TODO: Rename below to bounty/
     path('issue/fulfill', dashboard.views.fulfill_bounty, name='fulfill_bounty'),
     path('issue/accept', dashboard.views.accept_bounty, name='process_funding'),
     path('issue/advanced_payout', dashboard.views.bulk_payout_bounty, name='bulk_payout_bounty'),
@@ -221,6 +225,7 @@ urlpatterns = [
     re_path(r'^modal/extend_issue_deadline/?', dashboard.views.extend_issue_deadline, name='extend_issue_deadline'),
 
     # brochureware views
+    url(r'^homepage/$', retail.views.index, name='index'),  # Update path to ^$
     re_path(r'^about/?', retail.views.about, name='about'),
     re_path(r'^mission/?', retail.views.mission, name='mission'),
     re_path(r'^vision/?', retail.views.vision, name='vision'),
@@ -230,8 +235,6 @@ urlpatterns = [
     re_path(r'^results/?(?P<keyword>.*)/?', retail.views.results, name='results_by_keyword'),
     re_path(r'^results/?', retail.views.results, name='results'),
     re_path(r'^activity/?', retail.views.activity, name='activity'),
-    url(r'^$', retail.views.index, name='index'),
-    re_path(r'^contributor/?(?P<tech_stack>.*)/?', retail.views.contributor_landing, name='contributor_landing'),
     url(r'^help/dev/?', retail.views.help_dev, name='help_dev'),
     url(r'^help/repo/?', retail.views.help_repo, name='help_repo'),
     url(r'^help/faq/?', retail.views.help_faq, name='help_faq'),

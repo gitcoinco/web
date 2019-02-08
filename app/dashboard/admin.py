@@ -119,7 +119,7 @@ class TipAdmin(admin.ModelAdmin):
 
 # Register your models here.
 class BountyAdmin(admin.ModelAdmin):
-    raw_id_fields = ['interested', 'bounty_owner_profile']
+    raw_id_fields = ['interested', 'bounty_owner_profile', 'bounty_reserved_for_user']
     ordering = ['-id']
 
     search_fields = ['raw_data', 'title', 'bounty_owner_github_username', 'token_name']
