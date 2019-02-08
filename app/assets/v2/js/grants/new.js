@@ -82,24 +82,24 @@ const init = () => {
             $('#transaction_hash').val(transactionHash);
             const linkURL = etherscan_tx_url(transactionHash);
 
-            let file = $('#img-project')[0].files[0]
+            let file = $('#img-project')[0].files[0];
             let formData = new FormData();
 
-            formData.append("input_image", file)
-            formData.append("transaction_hash", $('#transaction_hash').val())
-            formData.append("title", $('#input_title').val())
-            formData.append("description", $('#input-description').val())
-            formData.append("reference_url", $('#input-url').val())
-            formData.append("admin_address", $('#input-admin_address').val())
-            formData.append("contract_owner_address", $('#contract_owner_address').val())
-            formData.append("token_address", $('#token_address').val())
-            formData.append("token_symbol", $('#token_symbol').val())
-            formData.append("amount_goal", $('#amount_goal').val())
-            formData.append("contract_version", $('#contract_version').val())
-            formData.append("transaction_hash", $('#transaction_hash').val())
-            formData.append("network", $('#network').val())
-            formData.append("team_members", $('#input-team_members').val())
-            formData.append("csrfmiddlewaretoken", $("#create-grant input[name='csrfmiddlewaretoken']").val())
+            formData.append('input_image', file);
+            formData.append('transaction_hash', $('#transaction_hash').val());
+            formData.append('title', $('#input_title').val());
+            formData.append('description', $('#input-description').val());
+            formData.append('reference_url', $('#input-url').val());
+            formData.append('admin_address', $('#input-admin_address').val());
+            formData.append('contract_owner_address', $('#contract_owner_address').val());
+            formData.append('token_address', $('#token_address').val());
+            formData.append('token_symbol', $('#token_symbol').val());
+            formData.append('amount_goal', $('#amount_goal').val());
+            formData.append('contract_version', $('#contract_version').val());
+            formData.append('transaction_hash', $('#transaction_hash').val());
+            formData.append('network', $('#network').val());
+            formData.append('team_members', $('#input-team_members').val());
+            formData.append('csrfmiddlewaretoken', $("#create-grant input[name='csrfmiddlewaretoken']").val());
 
             $.ajax({
               type: 'POST',
