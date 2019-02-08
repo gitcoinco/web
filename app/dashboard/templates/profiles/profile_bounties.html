@@ -1,0 +1,52 @@
+{% for bounty in bounties %}
+  <a class="row result bounty_row {{ bounty.network }}" target="_blank"
+    {% if bounty.url %} href="{{ bounty.url }}"
+    {% elif bounty.github_url %} href="{{ bounty.github_url }}"
+    {% endif %}>
+    <div class="avatar-container col-1 justify-content-center special_tag hide_min_viewport">
+      {% if bounty.funding_organisation %}
+        <img class="avatar" src="{% url 'org_avatar' bounty.funding_organisation %}">
+      {% else %}
+        <img class="avatar" src="{% url 'org_avatar' bounty.bounty_owner_github_username %}">
+      {% endif %}
+    </div>
+    <div class="col-12 col-md-7 d-flex flex-column">
+      <div class="bounty-detail">
+        <div class="title font-subheader">
+          {{ bounty.title }}
+        </div>
+
+        <div class="bounty-summary col-12">
+          <div class="info font-caption">
+            {% if bounty.experience_level %}
+              {{ bounty.experience_level }} &bull;
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4 tags fixed font-caption align-items-center">
+      {% if bounty.network != 'mainnet' %}
+        <div class="tag network_warning">
+          <p>
+            <span>{{ bounty.network }}</span>
+          </p>
+        </div>
+      {% endif %}
+      <div class="tag token">
+        <p>
+          {{ bounty.value_true }}
+          <span>{{ bounty.token_name }}</span>
+        </p>
+      </div>
+      {% if bounty.value_in_usdt_now %}
+        <div class="tag usd">
+          <p>
+            {{ bounty.value_in_usdt_now }}
+            <span>USD</span>
+          </p>
+        </div>
+      {% endif %}
+    </div>
+  </a>
+{% endfor %}
