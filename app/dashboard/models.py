@@ -211,6 +211,7 @@ class Bounty(SuperModel):
     FUNDED_STATUSES = ['open', 'started', 'submitted', 'done']
     OPEN_STATUSES = ['open', 'started', 'submitted']
     CLOSED_STATUSES = ['expired', 'unknown', 'cancelled', 'done']
+    WORK_IN_PROGRESS_STATUSES = ['open', 'started', 'submitted']
     TERMINAL_STATUSES = ['done', 'expired', 'cancelled']
 
     web3_type = models.CharField(max_length=50, default='bounties_network')
@@ -267,6 +268,8 @@ class Bounty(SuperModel):
     project_type = models.CharField(max_length=50, choices=PROJECT_TYPES, default='traditional')
     permission_type = models.CharField(max_length=50, choices=PERMISSION_TYPES, default='permissionless')
     snooze_warnings_for_days = models.IntegerField(default=0)
+    is_featured = models.BooleanField(
+        default=False, help_text=_('Whether this bounty is featured'))
 
     token_value_time_peg = models.DateTimeField(blank=True, null=True)
     token_value_in_usdt = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
@@ -2783,7 +2786,7 @@ class SearchHistory(SuperModel):
 
         verbose_name_plural = 'Search History'
 
-    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     data = JSONField(default=dict)
     ip_address = models.GenericIPAddressField(blank=True, null=True)
 

@@ -17,6 +17,10 @@ span {
   word-wrap: break-word;
 }
 
+a {
+  color: #3E00FF;
+}
+
 .nav_avatar {
   width: 40px;
   height: 40px;
@@ -369,10 +373,6 @@ p a {
 
 .dashboard .body {
   padding-bottom: 50px;
-}
-
-.dashboard .body .row {
-  margin-left: 0px;
 }
 
 .dashboard .body .avatar {

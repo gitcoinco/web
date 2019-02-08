@@ -15,7 +15,7 @@ class StaticViewSitemap(sitemaps.Sitemap):
         return [
             'dashboard', 'new_funding', 'tip', 'terms', 'privacy', 'cookie', 'prirp', 'apitos', 'about', 'index',
             'help', 'whitepaper', 'whitepaper_access', '_leaderboard', 'faucet', 'mission', 'slack', 'labs', 'results',
-            'activity', 'kudos_main', 'kudos_marketplace', 'grants', 'funder_bounties', 'contributor_bounties'
+            'activity', 'kudos_main', 'kudos_marketplace', 'grants', 'funder_bounties'
         ]
 
     def location(self, item):
@@ -72,7 +72,7 @@ class ContributorLandingPageSitemap(Sitemap):
 
     def items(self):
         from retail.utils import programming_languages
-        return programming_languages
+        return programming_languages + ['']
 
     def lastmod(self, obj):
         from django.utils import timezone
