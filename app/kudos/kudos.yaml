@@ -2961,14 +2961,12 @@
   to_address: '0x96706EB471F875a9a41442f358d3B34ba02F868b'
   artist: the_headspace
 - name: the_journey_begins(TheHeadspace.net)
-  description: You spin up DAPPS on the weekend, just for fun.
-  priceFinney: 1
-  numClonesAllowed: 100
+  description: You are well on your way to becoming the best, look within and find your strength.
+  priceFinney: 20
+  numClonesAllowed: 200
   tags:
-    - ethereum
-    - hacker
-    - hackathon
-    - eth
+    - EthDenver
+    - The Headspace
   image: the_journey_begins.svg
   to_address: '0x96706EB471F875a9a41442f358d3B34ba02F868b'
   artist: the_headspace
