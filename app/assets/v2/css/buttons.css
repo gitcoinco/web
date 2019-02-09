@@ -222,3 +222,17 @@ button:focus {
   color: white;
   background-color: #F24283;
 }
+
+.btn-metamask {
+  background: #FF7F00;
+  color: white;
+}
+
+.btn-metamask:hover {
+  color: white;
+  background: #E17000;
+}
+
+.btn-lg-padding {
+  padding: 0.6rem 2rem;
+}
