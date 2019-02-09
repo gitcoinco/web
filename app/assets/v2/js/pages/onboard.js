@@ -31,7 +31,7 @@ onboard.showTab = function(num) {
     window.history.pushState('', '', '/onboard/' + flow + '/' + $($('.step')[num]).attr('link'));
   }
 
-  if (num === 1 || num === 2 || $($('.step')[num]).attr('link') === 'avatar') {
+  if (num === 2 || $($('.step')[num]).attr('link') === 'avatar') {
     $('.controls').hide();
   } else {
     $('.controls').show();
@@ -74,9 +74,6 @@ onboard.watchMetamask = function() {
         </a>
       </div>`
     );
-    if (current === 1) {
-      $('.controls').hide();
-    }
   } else if (!web3.eth.coinbase) {
     $('.step #metamask').html(`
       <div class="locked">
@@ -87,7 +84,6 @@ onboard.watchMetamask = function() {
       </div>`
     );
     if (current === 1) {
-      $('.controls').hide();
       $('#metamask-video').show();
     }
   } else {
