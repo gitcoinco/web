@@ -1434,3 +1434,22 @@ const showMore = (length = 400) => {
     return false;
   });
 };
+
+/**
+ * Check input file size
+ *
+ * input - input element
+ * max_img_size  - max size
+ *
+ * Useage: checkFileSize($(input), 4000000)
+ */
+const checkFileSize = (input, max_img_size) => {
+  if (input.files && input.files.length > 0) {
+    if (input.files[0].size > max_img_size) {
+      input.value = '';
+      return false;
+    }
+  }
+  return true;
+};
+
