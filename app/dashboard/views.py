@@ -1727,7 +1727,6 @@ def redeem_coin(request, shortcode):
 def new_bounty(request):
     """Create a new bounty."""
     from .utils import clean_bounty_url, avoid_segfault
-    avoid_segfault()
     bounty_params = {
         'newsletter_headline': _('Be the first to know about new funded issues.'),
         'issueURL': clean_bounty_url(request.GET.get('source') or request.GET.get('url', '')),
@@ -1741,8 +1740,9 @@ def new_bounty(request):
         title=_('Create Funded Issue'),
         update=bounty_params,
     )
-    return TemplateResponse(request, 'bounty/new.html', params)
-
+    resp = TemplateResponse(request, 'bounty/new.html', params)
+    avoid_segfault()
+    return resp
 
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)

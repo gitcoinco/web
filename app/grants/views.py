@@ -206,10 +206,11 @@ def grant_details(request, grant_id, grant_slug):
 def grant_new(request):
     """Handle new grant."""
     from dashboard.utils import avoid_segfault
-    avoid_segfault()
 
     if not request.user.has_perm('grants.add_grant'):
-        return redirect('https://consensys1mac.typeform.com/to/HFcZKe/')
+        resp = redirect('https://consensys1mac.typeform.com/to/HFcZKe/')
+        avoid_segfault()
+        return resp
 
     profile = get_profile(request)
 
@@ -238,9 +239,11 @@ def grant_new(request):
             grant = Grant.objects.create(**grant_kwargs)
             team_members.append(profile.id)
             grant.team_members.add(*list(filter(lambda member_id: member_id > 0, map(int, team_members))))
-            return JsonResponse({
+            resp = JsonResponse({
                 'success': True,
             })
+            avoid_segfault()
+            return resp
 
         if 'contract_address' in request.POST:
             tx_hash = request.POST.get('transaction_hash', '')
@@ -248,10 +251,12 @@ def grant_new(request):
             grant.contract_address = request.POST.get('contract_address', '')
             grant.save()
             new_grant(grant, profile)
-            return JsonResponse({
+            resp = JsonResponse({
                 'success': True,
                 'url': reverse('grants:details', args=(grant.pk, grant.slug))
             })
+            avoid_segfault()
+            return resp
 
 
     params = {
@@ -270,7 +275,9 @@ def grant_new(request):
         'gas_advisories': gas_advisories(),
     }
 
-    return TemplateResponse(request, 'grants/new.html', params)
+    resp = TemplateResponse(request, 'grants/new.html', params)
+    avoid_segfault()
+    return resp
 
 
 @login_required
