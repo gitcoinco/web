@@ -2665,7 +2665,7 @@
     - ethdenver 2019
     - shill colorado
     - 14ers
-  image: shill_colorado.svg
+  image: shill_colorado_ethdenver_2019.svg
 - name: skale_labs_ethdenver_2019
   description: Being bold and daring isn’t foreign to Bufficorns. Jumping in frozen lakes in the middle of winter is the perfect way to blow off some steam with friends from Skale Labs. 
   priceFinney: 100
@@ -2908,6 +2908,69 @@
     - ethdenver 2019
     - staker
   image: staked_kudos.svg
+- name: livestreamer
+  description: This Kudos is specially made for members of the Gitcoin community who have presented on the Gitcoin weekly livestream (Fridays at 5pm EST)
+  priceFinney: 100
+  numClonesAllowed: 100
+  tags:
+    - gitcoin
+    - livestream
+  image: livestreamer.svg
+- name: vaporwave
+  description: Vaporwave is a microgenre of electronic music and an Internet meme that emerged in the early 2010s.  Ethereum is a blockchain that emerged in the blockchain space in the mid 2010s.  Whats not to love about either, or both?
+  priceFinney: 35
+  numClonesAllowed: 350
+  tags:
+    - gitcoin
+    - bender
+  image: vaporwave.svg
+  to_address: '0xdf9B0d723776972C5cAe27FDb4F3Ea827A5Cf283'
+  artist: joe_bender
+- name: vyper_pro
+  description: Awarded for a having a notable portfolio of Vyper content, or contributing to the Vyper languge itself.
+  priceFinney: 200
+  numClonesAllowed: 100
+  tags:
+    - Vyper
+    - Ethereum
+    - Serenity
+    - Programming
+  image: vyper.svg
+  to_address: '0x4dA2e85D64bEcE663CCaB06E89B970b6b077f22F'
+  artist: mladen
+- name: solidity_pro
+  description: Awarded for a having a notable portfolio of Solidity content, or contributing to the Solidity languge itself.
+  priceFinney: 200
+  numClonesAllowed: 100
+  tags:
+    - Solidity
+    - Ethereum
+    - Serenity
+    - Programming
+  image: solidity.svg
+  to_address: '0x4dA2e85D64bEcE663CCaB06E89B970b6b077f22F'
+  artist: mladen
+- name: hummingbird_love_(TheHeadspace.net)
+  description: You embody Love, Speed, and Determination. When it comes to code you are as nimble as a hummingbird.
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - EthDenver
+    - The Headspace
+  image: hummingbird.svg
+  to_address: '0x96706EB471F875a9a41442f358d3B34ba02F868b'
+  artist: the_headspace
+- name: the_journey_begins(TheHeadspace.net)
+  description: You are well on your way to becoming the best, look within and find your strength.
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - EthDenver
+    - The Headspace
+  image: the_journey_begins.svg
+  to_address: '0x96706EB471F875a9a41442f358d3B34ba02F868b'
+  artist: the_headspace
+
 
 
 

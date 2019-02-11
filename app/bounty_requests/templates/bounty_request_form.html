@@ -49,7 +49,7 @@
                 </div>
                 <form id="bounty_request_form">
                   {% for field in form %}
-                    <div class="mb-3">
+                    <div class="mb-3 {{ field.name }}">
                       <label for="id_{{ field.name }}" class="form__label">{{ field.label }}</label>
                       {{ field }}
                     </div>
@@ -84,6 +84,11 @@
         document.comments_prefill = '{{comments_prefill}}';
       </script>
     {% endif %}
+    <style type="text/css">
+      #bounty_request_form div.eth_address{
+        display: none;
+      }
+    </style>
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}

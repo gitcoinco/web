@@ -296,8 +296,14 @@ class Subscription(SuperModel):
         default='',
         max_length=255,
         help_text=_('The contributor\'s Subscription hash.'),
+        blank=True,
     )
-    contributor_signature = models.CharField(default='', max_length=255, help_text=_('The contributor\'s signature.'))
+    contributor_signature = models.CharField(
+        default='',
+        max_length=255,
+        help_text=_('The contributor\'s signature.'),
+        blank=True,
+        )
     contributor_address = models.CharField(
         default='',
         max_length=255,
