@@ -13,6 +13,8 @@ _Note: All pages within gitcoin are expected to reuse these classes as applicabl
 The font variations used in Gitcoin can be found in
 [typography.css](https://github.com/gitcoinco/web/blob/master/app/assets/v2/css/lib/typography.css)
 
+_Note: All pages within gitcoin are expected to reuse these classes as applicable as opposed to declaring the `font` within the templates `css` file._
+
 ## Forms
 
 ### Mutiselect (using select2)
@@ -27,6 +29,27 @@ _usage_
 
 The Multiselect styling used in Gitcoin can be found in
 [select.css](https://github.com/gitcoinco/web/blob/master/app/assets/v2/css/forms/select.css)
+
+### Copy to clipboard
+
+_usage_
+
+
+```
+<script src="{% static 'v2/js/clipboard.js' %}"></script>
+```
+
+```
+<textarea id="matchid">This text will be copied</textarea>
+<button data-copyclipboard="#matchid">Copy Text</button>
+```
+_usage with class_
+```
+
+<input type="text" class="matchclass" value="This text will be copied">
+<button data-copyclipboard=".matchclass">Copy Text</button>
+```
+_Note: You can use it with `textarea` or `input` elements._
 
 ### Slider
 

@@ -747,6 +747,37 @@ def social_contribution_modal(request):
     params['promo_text'] = promo_text
     return TemplateResponse(request, 'social_contribution_modal.html', params)
 
+@csrf_exempt
+@require_POST
+def social_contribution_email(request):
+    """Social Contribution Email
+
+    Returns:
+        JsonResponse: Success in sending email.
+    """
+    from marketing.mails import share_bounty
+
+    print (request.POST.getlist('usersId[]', []))
+    emails = [] 
+    user_ids = request.POST.getlist('usersId[]', [])
+    for user_id in user_ids:
+        profile = Profile.objects.get(id=int(user_id))
+        emails.append(profile.email)
+    msg = request.POST.get('msg', '')
+    try:
+        share_bounty(emails, msg)
+        response = {
+            'status': 200,
+            'msg': 'email_sent',
+        }
+    except Exception as e:
+        logging.exception(e)
+        response = {
+            'status': 500,
+            'msg': 'Email not sent',
+        }
+    return JsonResponse(response)
+
 
 def payout_bounty(request):
     """Payout the bounty.
