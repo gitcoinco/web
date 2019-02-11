@@ -112,12 +112,6 @@
   margin-bottom: 0.6rem;
 }
 
-img#cards {
-  position: relative;
-  margin-top: -10rem;
-  margin-bottom: 3rem;
-}
-
 img.play {
   max-height: 3rem;
 }
@@ -254,10 +248,6 @@ figure:hover::before {
 }
 
 @media (max-width: 1199.98px) {
-  img#cards {
-    margin-top: -4rem;
-  }
-
   #banner img {
     position: absolute;
     bottom: -2px;
