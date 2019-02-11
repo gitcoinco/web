@@ -62,6 +62,8 @@ urlpatterns = [
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
 
     # create bounty
+    url(r'^create2?', dashboard.views.new_bounty_back, name='create2'),  # TODO: Remove
+    url(r'^sdfsdf?', dashboard.views.new_bounty, name='sdfsdf'),  # TODO: Remove
     url(r'^create?', dashboard.views.new_bounty, name='create_bounty'),  # TODO: Remove
 
     # inbox
