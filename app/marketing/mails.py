@@ -487,19 +487,19 @@ def gdpr_reconsent(email):
     )
 
 
-def share_bounty(emails, msg):
+def share_bounty(emails, msg, profile):
     for email in emails:
         to_email = email
-        from_email = settings.PERSONAL_CONTACT_EMAIL
+        from_email = profile.email
         subject = "You have been invited to work on a bounty."
-        html, text = render_share_bounty(to_email, msg)
+        html, text = render_share_bounty(to_email, msg, profile)
         send_mail(
             from_email,
             to_email,
             subject,
             text,
             html,
-            from_name="Kevin Owocki (Gitcoin.co)",
+            from_name=f"@{profile.handle}",
             categories=['transactional', func_name()],
         )
 

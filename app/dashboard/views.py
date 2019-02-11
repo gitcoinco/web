@@ -765,7 +765,7 @@ def social_contribution_email(request):
         emails.append(profile.email)
     msg = request.POST.get('msg', '')
     try:
-        share_bounty(emails, msg)
+        share_bounty(emails, msg, request.user.profile)
         response = {
             'status': 200,
             'msg': 'email_sent',

@@ -592,7 +592,7 @@ def render_gdpr_reconsent(to_email):
     return response_html, response_txt
 
 
-def render_share_bounty(to_email, msg):
+def render_share_bounty(to_email, msg, from_profile):
     """Render the share bounty email template.
 
     Args:
@@ -608,6 +608,9 @@ def render_share_bounty(to_email, msg):
 hi {to_email},
 
 {msg}
+
+@{from_profile.handle}
+{from_profile.email}
 
 
 """
@@ -1205,7 +1208,8 @@ def gdpr_reconsent(request):
 
 @staff_member_required
 def share_bounty(request):
-    response_html, _ = render_share_bounty(settings.CONTACT_EMAIL, 'This is a sample message')
+    profile = Profile.objects.filter(handle=handle).first()
+    response_html, _ = render_share_bounty(settings.CONTACT_EMAIL, 'This is a sample message', profile)
     return HttpResponse(response_html)
 
 
