@@ -485,6 +485,11 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 new_bounty.canceled_on = canceled_on
                 new_bounty.save()
 
+            # preserve featured status for bounties where it was set manually
+            new_bounty.is_featured = True if latest_old_bounty and latest_old_bounty.is_featured is True else False
+            if new_bounty.is_featured == True:
+                new_bounty.save()
+
         except Exception as e:
             print(e, 'encountered during new bounty creation for:', url)
             logger.error(f'{e} encountered during new bounty creation for: {url}')
