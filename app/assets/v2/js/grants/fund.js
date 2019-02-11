@@ -80,7 +80,10 @@ $(document).ready(function() {
       }
 
       deployedToken.methods.decimals().call(function(err, decimals) {
-
+        if (err) {
+          _alert('The token you selected is not a valid ERC20 token', 'error');
+          return;
+        }
         let realGasPrice = Math.ceil($('#gasPrice').val() * Math.pow(10, 9));
 
         $('#gas_price').val(realGasPrice);
