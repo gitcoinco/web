@@ -59,13 +59,12 @@ const save_job_status = function() {
   });
 };
 
-// let jobLocations = [];
 let autocomplete;
 
 function initPlacecomplete() {
   let input = document.getElementById('jobLocation');
 
-  var options = {
+  const options = {
     types: ['(regions)']
   };
 
@@ -103,20 +102,8 @@ $('#jobSalary').on('change', function() {
   $(this).val(Number(currentValue.replace(',', '')).toLocaleString());
 });
 
-
-const checkFileSize = (elem, max_img_size) => {
-  let input = document.getElementById(elem);
-
-  if (input.files && input.files.length == 1) {
-    if (input.files[0].size > max_img_size) {
-      alert(`The file must be less than ${(max_img_size / 1024 / 1024).toFixed(2)}MB`);
-      input.value = '';
-      return false;
-    }
-  }
-  return true;
-};
-
 $('#jobCV').on('change', () =>{
-  checkFileSize('jobCV', 3144000);
+  if (checkFileSize(document.getElementById('jobCV'), 3144000) === false) {
+    _alert(`The file must be less than ${(3144000 / 1024 / 1024).toFixed(2)}MB`, 'error');
+  }
 });
