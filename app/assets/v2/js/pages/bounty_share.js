@@ -26,7 +26,7 @@ const sendInvites = (users) => {
     usersId.push(elem.id);
   });
 
-  var sendEmail = fetchData('/api/v0.1/ENDPOING/', 'POST', {usersId, msg});
+  var sendEmail = fetchData('/api/v0.1/social_contribution_email/', 'POST', {usersId, msg}, {'X-CSRFToken': csrftoken});
 
   $.when(sendEmail).then(
     function(payback) {

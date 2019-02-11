@@ -87,6 +87,7 @@ urlpatterns = [
 
     # api views
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
+    url(r'^api/v0.1/social_contribution_email', dashboard.views.social_contribution_email, name='social_contribution_email'),
     url(
         r'^api/v0.1/profile/(.*)?/jobopportunity',
         dashboard.views.profile_job_opportunity,
@@ -366,6 +367,7 @@ urlpatterns = [
     ),
     path('_administration/email/start_work_expired', retail.emails.start_work_expired, name='start_work_expired'),
     path('_administration/email/gdpr_reconsent', retail.emails.gdpr_reconsent, name='gdpr_reconsent'),
+    path('_administration/email/share_bounty', retail.emails.share_bounty, name='share_bounty'),
     path('_administration/email/new_tip/resend', retail.emails.resend_new_tip, name='resend_new_tip'),
     re_path(
         r'^_administration/process_accesscode_request/(.*)$',
