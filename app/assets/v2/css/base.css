@@ -1613,3 +1613,10 @@ div.busyOverlay {
   border: 0.25em solid currentColor;
   border-radius: 100px;
 }
+
+.cta-blue {
+  background: #0D0764;
+  color: white;
+  padding: 1.8rem;
+  border-radius: 0.2rem;
+}

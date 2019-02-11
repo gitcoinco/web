@@ -52,6 +52,38 @@
             <div id="primary_form" class="col-lg-8 col-sm-12">
               <h1 class="text-center title">{% trans "Fund Issue" %}</h1>
               <form id="submitBounty" class="submit_bounty_form px-5 pt-5">
+                <div>
+                  Github Repo Type
+                  <div class="form__radio option">
+                    <input name="repo_type" id="public_repo" type="radio" value="Public repo" checked />
+                    <label class="filter-label" for=public_repo><i class="fas fa-book"></i> {% trans "Public" %}</label>
+                  </div>
+
+                  <div class="form__radio option">
+                    <input name="repo_type" id="private_repo" type="radio" value="Private repo" />
+                    <label class="filter-label" for=private_repo><i class="fas fa-lock"></i> {% trans "Private" %}</label>
+                  </div>
+
+                  <div class="cta-blue d-md-flex justify-content-between mt-3">
+                      <div>
+                        <h5 class="mb-3">Get awesome contributors to work on your private repo issues</h5>
+                        <ul class="list-unstyled mb-4">
+                          <li class="mb-2"><i class="fas fa-check"></i> View contributors’ resumes and proposals</li>
+                          <li class="mb-2"><i class="fas fa-check"></i> Easy NDA signing process</li>
+                          <li class="mb-2"><i class="fas fa-check"></i> Automatically invite the contributors you approve to your repo</li>
+                          <li class="mb-2"><i class="fas fa-check"></i> Automatically remove contributors from your repo once job is done</li>
+                        </ul>
+                        <a href="" class="btn btn-gc-blue">Get Private Repo Bounties</a>
+                      </div>
+                      <div>
+                        <img src="{% static 'v2/images/robots-party.svg' %}" alt="" style="
+                        width: 100%;
+                        max-width: inherit;
+                    ">
+                      </div>
+                  </div>
+
+                </div>
                 <div id="about-section" class="pt-2">
                   <h5 class="font-subheader">{% trans "About" %}</h5>
                   <label class="form__label" for=issueURL>{% trans "Github Issue URL" %}</label>
