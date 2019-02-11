@@ -67,12 +67,9 @@ const exceedFileSize = (file, size = 4000000) => {
 
 const addGrantLogo = () => {
   $('#img-project').on('change', function() {
-    if (this.files && this.files[0]) {
-      if (exceedFileSize(this.files[0])) {
-        _alert({ message: 'Grant Image should not exceed 4MB' }, 'error');
-        return;
-      }
-
+    if (checkFileSize(this, 4000000) === false) {
+      _alert(`Grant Image should not exceed ${(4000000 / 1024 / 1024).toFixed(2)}MB`, 'error');
+    } else {
       let reader = new FileReader();
 
       reader.onload = function(e) {

@@ -69,7 +69,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             {% csrf_token %}
             <div class="row">
               <div class="col-12">
-                
+
                 <div class="form__group-horizontal">
                   <label class="form__label" id="amount_label">{% trans "Amount Per Period" %}</label>
                   <div class="row">
@@ -83,7 +83,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                         </div>
                       {% else %}
                         {{ grant.token_symbol }}
-                        <input type="hidden" id='sub_token_address' name='denomination'>
                       {% endif %}
                     </div>
                   </div>
@@ -150,11 +149,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     {% trans "You are contributing" %}
                     <span id="summary-amount" class="font-weight-bold">-</span>
                     <span id="summary-token" class="font-weight-bold">
-                      {% if not grant_has_no_token %}
                         {{ grant.token_symbol }}
-                      {% else %}
-                        {{ token_symbol }}
-                      {% endif %}
                     </span>
                     {% trans "to this grant every" %}
                     <span id="summary-period" class="font-weight-bold">-</span>

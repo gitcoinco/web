@@ -227,7 +227,9 @@ urlpatterns = [
     re_path(r'^modal/extend_issue_deadline/?', dashboard.views.extend_issue_deadline, name='extend_issue_deadline'),
 
     # brochureware views
-    url(r'^homepage/$', retail.views.index, name='index'),  # Update path to ^$
+    re_path(r'^homepage/$', retail.views.index, name='index'),  # Update path to ^$
+    re_path(r'^pricing/$', retail.views.pricing, name='pricing'),
+    re_path(r'^subscribe/$', retail.views.subscribe, name='subscribe'),
     re_path(r'^about/?', retail.views.about, name='about'),
     re_path(r'^mission/?', retail.views.mission, name='mission'),
     re_path(r'^vision/?', retail.views.vision, name='vision'),
@@ -411,6 +413,7 @@ urlpatterns = [
     re_path(r'^settings/ens/?', marketing.views.ens_settings, name='ens_settings'),
     re_path(r'^settings/account/?', marketing.views.account_settings, name='account_settings'),
     re_path(r'^settings/tokens/?', marketing.views.token_settings, name='token_settings'),
+    re_path(r'^settings/job/?', marketing.views.job_settings, name='job_settings'),
     re_path(r'^settings/(.*)?', marketing.views.email_settings, name='settings'),
 
     # marketing views

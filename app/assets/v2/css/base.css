@@ -248,8 +248,8 @@ a {
 }
 
 p a {
-  color: #212529;
-  text-decoration: underline;
+  color: #3E00FF;
+  text-decoration: outline;
 }
 
 .modal a.close-modal {

@@ -552,6 +552,9 @@ def onboard(request, flow):
     elif flow == 'profile':
         onboard_steps = ['avatar']
 
+    if request.user.is_authenticated and getattr(request.user, 'profile', None):
+        profile = request.user.profile
+
     steps = []
     if request.GET:
         steps = request.GET.get('steps', [])
@@ -576,6 +579,7 @@ def onboard(request, flow):
         'title': _('Onboarding Flow'),
         'steps': steps or onboard_steps,
         'flow': flow,
+        'profile': profile,
     }
     params.update(get_avatar_context_for_user(request.user))
     return TemplateResponse(request, 'ftux/onboard.html', params)
@@ -1164,8 +1168,14 @@ def profile_job_opportunity(request, handle):
     """
     try:
         profile = profile_helper(handle, True)
-        profile.job_search_status = json.loads(request.body).get('job_search_status', None)
-        profile.show_job_status = json.loads(request.body).get('show_job_status', False)
+        profile.job_search_status = request.POST.get('job_search_status', None)
+        profile.show_job_status = request.POST.get('show_job_status', None) == 'true'
+        profile.job_type = request.POST.get('job_type', None)
+        profile.remote = request.POST.get('remote', None) == 'on'
+        profile.job_salary = float(request.POST.get('job_salary', '0').replace(',', ''))
+        profile.job_location = json.loads(request.POST.get('locations'))
+        profile.linkedin_url = request.POST.get('linkedin_url', None)
+        profile.resume = request.FILES.get('job_cv', None)
         profile.save()
     except (ProfileNotFoundException, ProfileHiddenException):
         raise Http404
