@@ -79,6 +79,8 @@ $(document).ready(function() {
 
       if (formData['featuredBounty'] === '1') {
         formData['is_featured'] = true;
+      } else {
+        formData['is_featured'] = false;
       }
 
       const bountyId = document.pk;
@@ -134,7 +136,7 @@ $(document).ready(function() {
         );
       };
 
-      if (formData['is_featured']) {
+      if (formData['is_featured'] && !oldBounty.is_featured) {
         payFeaturedBounty();
       } else {
         saveBountyChanges();
