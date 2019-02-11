@@ -486,6 +486,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#copy-to-clipboard" title="Copy to clipboard" class="md-nav__link">
+    Copy to clipboard
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#slider" title="Slider" class="md-nav__link">
     Slider
   </a>
@@ -2176,6 +2183,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#copy-to-clipboard" title="Copy to clipboard" class="md-nav__link">
+    Copy to clipboard
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#slider" title="Slider" class="md-nav__link">
     Slider
   </a>
@@ -2217,6 +2231,7 @@ All Gitcoin UI styled classes are prefixed with <code>g-</code> to distincly ide
 </ul>
 <p>The font variations used in Gitcoin can be found in
 <a href="https://github.com/gitcoinco/web/blob/master/app/assets/v2/css/lib/typography.css">typography.css</a></p>
+<p><em>Note: All pages within gitcoin are expected to reuse these classes as applicable as opposed to declaring the <code>font</code> within the templates <code>css</code> file.</em></p>
 <h2 id="forms">Forms</h2>
 <h3 id="mutiselect-using-select2">Mutiselect (using select2)</h3>
 <p><em>usage</em></p>
@@ -2228,6 +2243,22 @@ All Gitcoin UI styled classes are prefixed with <code>g-</code> to distincly ide
 
 <p>The Multiselect styling used in Gitcoin can be found in
 <a href="https://github.com/gitcoinco/web/blob/master/app/assets/v2/css/forms/select.css">select.css</a></p>
+<h3 id="copy-to-clipboard">Copy to clipboard</h3>
+<p><em>usage</em></p>
+<pre><code>&lt;script src=&quot;{% static 'v2/js/clipboard.js' %}&quot;&gt;&lt;/script&gt;
+</code></pre>
+
+<pre><code>&lt;textarea id=&quot;matchid&quot;&gt;This text will be copied&lt;/textarea&gt;
+&lt;button data-copyclipboard=&quot;#matchid&quot;&gt;Copy Text&lt;/button&gt;
+</code></pre>
+
+<p><em>usage with class</em></p>
+<pre><code>
+&lt;input type=&quot;text&quot; class=&quot;matchclass&quot; value=&quot;This text will be copied&quot;&gt;
+&lt;button data-copyclipboard=&quot;.matchclass&quot;&gt;Copy Text&lt;/button&gt;
+</code></pre>
+
+<p><em>Note: You can use it with <code>textarea</code> or <code>input</code> elements.</em></p>
 <h3 id="slider">Slider</h3>
 <p><em>usage</em></p>
 <pre><code>&lt;label class=&quot;g-switch&quot;&gt;
