@@ -3981,12 +3981,24 @@ class built by <code>create_forward_many_to_many_manager()</code> defined below.
 <p>Determine whether or not the user is a staff member.</p>
 <p>Returns:
     bool: Whether or not the user is a member of the staff.</p>
+<h3 id="dashboard.models.Profile.job_location">job_location</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Profile.job_salary">job_salary</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Profile.JOB_SEARCH_STATUS">JOB_SEARCH_STATUS</h3>
 
 <p>Built-in mutable sequence.</p>
 <p>If no argument is given, the constructor creates a new empty list.
 The argument must be an iterable if specified.
 <h3 id="dashboard.models.Profile.job_search_status">job_search_status</h3></p>
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Profile.job_type">job_type</h3>
+
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Profile.keywords">keywords</h3>
@@ -4023,6 +4035,10 @@ many-to-one relation.</p>
 <p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="dashboard.models.Profile.linkedin_url">linkedin_url</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Profile.max_num_issues_start_work">max_num_issues_start_work</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -4081,6 +4097,10 @@ many-to-one relation.</p>
 <p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="dashboard.models.Profile.remote">remote</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Profile.request_ownership_change">request_ownership_change</h3>
 
 <p>Accessor to the related objects manager on the reverse side of a
@@ -4103,6 +4123,18 @@ many-to-one relation.</p>
 <p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="dashboard.models.Profile.resume">resume</h3>
+
+<p>The descriptor for the file attribute on the model instance. Return a
+FieldFile when accessed so you can write code like::</p>
+<pre><code>&gt;&gt;&gt; from myapp.models import MyModel
+&gt;&gt;&gt; instance = MyModel.objects.get(pk=1)
+&gt;&gt;&gt; instance.file.size
+</code></pre>
+<p>Assign a file object on assignment so you can do::</p>
+<pre><code>&gt;&gt;&gt; with open('/path/to/hello.world', 'r') as f:
+...     instance.file = File(f)
+</code></pre>
 <h3 id="dashboard.models.Profile.sent_kudos">sent_kudos</h3>
 
 <p>Accessor to the related objects manager on the reverse side of a
