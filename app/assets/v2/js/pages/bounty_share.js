@@ -30,9 +30,10 @@ const sendInvites = (users) => {
 
   $.when(sendEmail).then(
     function(payback) {
+      _alert('The invitation has been sent', 'info');
+      $('.users_share').val(null).trigger('change');
       return payback;
     }
   );
-  console.log(usersId, msg);
 };
 

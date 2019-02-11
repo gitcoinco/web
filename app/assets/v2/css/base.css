@@ -1003,6 +1003,10 @@ input.is-invalid {
   margin-left: 0;
 }
 
+.grant .metamask-error {
+  background: #f2f6f9;
+}
+
 #robot_error {
   margin: auto;
 }
