@@ -35,6 +35,8 @@ import dashboard.views
 import dataviz.d3_views
 import dataviz.views
 import enssubdomain.views
+# event:ethdenver2019
+import event_ethdenver2019.views
 import faucet.views
 import gitcoinbot.views
 import healthcheck.views
@@ -224,7 +226,9 @@ urlpatterns = [
     re_path(r'^modal/extend_issue_deadline/?', dashboard.views.extend_issue_deadline, name='extend_issue_deadline'),
 
     # brochureware views
-    url(r'^homepage/$', retail.views.index, name='index'),  # Update path to ^$
+    re_path(r'^homepage/$', retail.views.index, name='index'),  # Update path to ^$
+    re_path(r'^pricing/$', retail.views.pricing, name='pricing'),
+    re_path(r'^subscribe/$', retail.views.subscribe, name='subscribe'),
     re_path(r'^about/?', retail.views.about, name='about'),
     re_path(r'^mission/?', retail.views.mission, name='mission'),
     re_path(r'^vision/?', retail.views.vision, name='vision'),
@@ -407,6 +411,7 @@ urlpatterns = [
     re_path(r'^settings/ens/?', marketing.views.ens_settings, name='ens_settings'),
     re_path(r'^settings/account/?', marketing.views.account_settings, name='account_settings'),
     re_path(r'^settings/tokens/?', marketing.views.token_settings, name='token_settings'),
+    re_path(r'^settings/job/?', marketing.views.job_settings, name='job_settings'),
     re_path(r'^settings/(.*)?', marketing.views.email_settings, name='settings'),
 
     # marketing views
@@ -458,10 +463,19 @@ urlpatterns = [
     url(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),
     url(r'^impersonate/', include('impersonate.urls')),
 
+    # event:ethdenver2019
+    re_path(
+        r'^ethdenver/redeem/(?P<secret>.*)/?$',
+        event_ethdenver2019.views.receive_bulk_ethdenver,
+        name='kudos_receive_bulk'
+    ),
+    url(r'^ethdenver/', event_ethdenver2019.views.ethdenver2019),
+    # /event:ethdenver2019
+
     # wagtail
     re_path(r'^cms/', include(wagtailadmin_urls)),
     re_path(r'^documents/', include(wagtaildocs_urls)),
-    re_path(r'', include(wagtail_urls))
+    re_path(r'', include(wagtail_urls)),
 ]
 
 if settings.ENABLE_SILK:
