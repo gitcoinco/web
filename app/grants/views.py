@@ -205,6 +205,9 @@ def grant_details(request, grant_id, grant_slug):
 @login_required
 def grant_new(request):
     """Handle new grant."""
+    from dashboard.utils import avoid_segfault
+    avoid_segfault()
+
     if not request.user.has_perm('grants.add_grant'):
         return redirect('https://consensys1mac.typeform.com/to/HFcZKe/')
 

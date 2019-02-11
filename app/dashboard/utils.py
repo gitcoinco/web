@@ -712,6 +712,16 @@ def get_tx_status(txid, network, created_on):
     return status, timestamp
 
 
+def avoid_segfault():
+    import sys
+
+    def trace(frame, event, arg):
+        foo = ("%s, %s:%d" % (event, frame.f_code.co_filename, frame.f_lineno))
+        return trace
+
+    sys.settrace(trace)
+
+
 def is_blocked(handle):
     return BlockedUser.objects.filter(handle__iexact=handle, active=True).exists()
 

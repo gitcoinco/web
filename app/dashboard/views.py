@@ -1724,14 +1724,10 @@ def redeem_coin(request, shortcode):
         raise Http404
 
 
-def new_bounty_back(request):
-    """Create a new bounty."""
-    return TemplateResponse(request, 'bounty/new.html', {})
-
-
 def new_bounty(request):
     """Create a new bounty."""
-    from .utils import clean_bounty_url
+    from .utils import clean_bounty_url, avoid_segfault
+    avoid_segfault()
     bounty_params = {
         'newsletter_headline': _('Be the first to know about new funded issues.'),
         'issueURL': clean_bounty_url(request.GET.get('source') or request.GET.get('url', '')),
