@@ -123,7 +123,6 @@ $(document).ready(function() {
       if (typeof web3 == 'undefined' || web3_not_found) {
         $('#no_metamask_error').css('display', 'block');
         $('#zero_balance_error').css('display', 'none');
-        $('#robot_error').removeClass('hidden');
         $('#grants_form').addClass('hidden');
         $('.submit_bounty .newsletter').addClass('hidden');
         $('#unlock_metamask_error').css('display', 'none');
@@ -135,7 +134,6 @@ $(document).ready(function() {
         $('#unlock_metamask_error').css('display', 'none');
         $('#zero_balance_error').css('display', 'none');
         $('#no_metamask_error').css('display', 'none');
-        $('#robot_error').removeClass('hidden');
         $('#grants_form').addClass('hidden');
         $('.submit_bounty .newsletter').addClass('hidden');
         $('#no_issue_error').css('display', 'none');
@@ -145,7 +143,7 @@ $(document).ready(function() {
         $('#connect_metamask_error').css('display', 'none');
         $('#zero_balance_error').css('display', 'none');
         $('#no_metamask_error').css('display', 'none');
-        $('#robot_error').removeClass('hidden');
+        // $('#robot_error').removeClass('hidden');
         $('#grants_form').addClass('hidden');
         $('.submit_bounty .newsletter').addClass('hidden');
         $('#no_issue_error').css('display', 'none');
