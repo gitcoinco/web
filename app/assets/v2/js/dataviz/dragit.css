@@ -16,10 +16,10 @@ path.lineTrajectoryMonotone {
 }
 
 circle.pointTrajectory {
-   pointer-events: none;
-   stroke: lightgray;
-   fill: black;
-   opacity: .5;
+  pointer-events: none;
+  stroke: lightgray;
+  fill: black;
+  opacity: .5;
 }
 
 line.lineClosestTrajectory {
