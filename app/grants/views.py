@@ -546,3 +546,40 @@ def quickstart(request):
     """Display quickstart guide."""
     params = {'active': 'grants_quickstart', 'title': _('Quickstart')}
     return TemplateResponse(request, 'grants/quickstart.html', params)
+
+
+def leaderboard(request):
+    """Display leaderboard."""
+    params = {
+        'active': 'grants_leaderboard', 
+        'title': _('Leaderboard')
+        }
+    
+    # setup dict
+    handles = Subscription.objects.all().values_list('contributor_profile__handle', flat=True)    
+    default_dict = {
+        'rank': None,
+        'no': 0,
+        'sum': 0,
+        'handle': None,
+    }
+    users_to_results = { ele : default_dict.copy() for ele in handles }
+
+    # get all contribution attributes
+    for contribution in Contribution.objects.all().select_related('subscription'):
+        key = contribution.subscription.contributor_profile.handle
+        users_to_results[key]['handle'] = key
+        amount = contribution.subscription.get_converted_amount()
+        if amount:
+            users_to_results[key]['no'] += 1
+            users_to_results[key]['sum'] += round(amount)
+    # prepare response for view
+    params['items'] = []
+    counter = 1
+    for item in sorted(users_to_results.items(), key=lambda kv: kv[1]['sum'], reverse=True):
+        item = item[1]
+        if item['no']:
+            item['rank'] = counter
+            params['items'].append(item)
+            counter += 1
+    return TemplateResponse(request, 'grants/leaderboard.html', params)
