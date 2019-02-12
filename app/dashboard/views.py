@@ -41,7 +41,7 @@ from django.views.decorators.http import require_GET, require_POST
 
 from app.utils import clean_str, ellipses
 from avatar.utils import get_avatar_context_for_user
-from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, profile_helper, avoid_segfault
+from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, avoid_segfault, profile_helper
 from economy.utils import convert_token_to_usdt
 from eth_utils import to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
