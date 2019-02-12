@@ -552,7 +552,8 @@ def leaderboard(request):
     """Display leaderboard."""
     params = {
         'active': 'grants_leaderboard', 
-        'title': _('Leaderboard')
+        'title': _('Grants Leaderboard'),
+        'card_desc': _('View the top contributors to Gitcoin Grants'),
         }
     
     # setup dict
