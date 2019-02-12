@@ -1724,11 +1724,6 @@ def redeem_coin(request, shortcode):
         raise Http404
 
 
-def new_bounty_back(request):
-    """Create a new bounty."""
-    return TemplateResponse(request, 'bounty/new.html', {})
-
-
 def new_bounty(request):
     """Create a new bounty."""
     from .utils import clean_bounty_url
