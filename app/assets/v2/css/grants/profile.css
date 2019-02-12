@@ -1,0 +1,74 @@
+.header-line {
+  color: #fff;
+  font-style: normal;
+}
+
+h2.title {
+  border-bottom: 1px solid #D0D0D0;
+}
+
+.avatar {
+  max-width: 3.125rem;
+  max-height: 3.125rem;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.transaction-history:hover {
+  background-color: #F9F9F9;
+}
+
+.grants-container .info {
+  color: #9B9B9B;
+}
+
+.grants-container .txn-link a {
+  color: #7F8FA4;
+  text-decoration: none;
+}
+
+.tags {
+  text-align: right;
+}
+
+.no-profile-button {
+  background-color: #3E00FF;
+  color: #FFFFFF;
+  font-size: 0.875rem;
+}
+
+.no-profile-textcolor {
+  color: #666666;
+}
+
+.none-img {
+  height: 5rem;
+}
+
+#cancelled-subscriptions .subtitle {
+  color: #C70018;
+}
+
+#active-subscriptions .subtitle {
+  color: #008EFF;
+}
+
+#contributions .subtitle {
+  color: #00A652;
+}
+
+@media (max-width: 767.98px) {
+  .txn-link,
+  .special_tag {
+    text-align: center;
+  }
+
+  .tags {
+    justify-content: center;
+  }
+
+  .title {
+    padding-left: 10px;
+  }
+
+}

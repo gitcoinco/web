@@ -1,0 +1,16 @@
+{% load i18n  %}
+
+{% trans "Change in Grant Ownership" %}
+
+{{ grant.admin_profile.handle }} {% trans "has elected you to become by the new owner for this grant should you choose to accept it." %}
+
+{% trans "Title" %} : {{ grant.title }}
+
+{% trans "Description" %} : {{ grant.description }}
+
+{% trans "Goal" %} : {{ grant.amount_goal }}
+
+{% trans "The details of the grant can be seen here:" %} {{ grant.reference_url }}
+
+{% trans "Accept Ownership" %} {% url 'grants:details' grant.pk grant.slug %}?ownership=accept"
+{% trans "Reject Ownership" %} {% url 'grants:details' grant.pk grant.slug %}?ownership=reject"

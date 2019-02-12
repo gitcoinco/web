@@ -1,8 +1,14 @@
 #!/usr/local/bin/dumb-init /bin/bash
 
+# Load the .env file into the environment.
+if [ "$ENV" == 'staging' ]; then
+    # shellcheck disable=SC2046
+    export $(grep -v '^#' app/app/.env | xargs)
+fi
+
 # Settings
 # Web
-WEB_WORKER=${WEB_WORKER_TYPE:-runserver_plus}
+GC_WEB_WORKER=${GC_WEB_WORKER_TYPE:-runserver_plus}
 
 # General / Overrides
 FORCE_PROVISION=${FORCE_PROVISION:-'off'}
@@ -21,25 +27,36 @@ if  [ ! -z "${INSTALL_REQS}" ]; then
     echo "Python package installation completed!"
 fi
 
-WEB_OPTS="${WEB_WORKER} ${WEB_INTERFACE:-0.0.0.0}:${WEB_PORT:-8000}"
+GC_WEB_OPTS="${GC_WEB_WORKER} ${GC_WEB_INTERFACE:-0.0.0.0}:${GC_WEB_PORT:-8000}"
 
 if [ "$VSCODE_DEBUGGER_ENABLED" = "on" ]; then
     pip install ptvsd
-    WEB_OPTS="${WEB_OPTS} --nothreading"
+    GC_WEB_OPTS="${GC_WEB_OPTS} --nothreading"
     echo "VSCode remote debugger enabled! This has disabled threading!"
 fi
 
-if [ "$WEB_WORKER" = "runserver_plus" ]; then
-    WEB_OPTS="${WEB_OPTS} --extra-file /code/app/app/.env --nopin"
+if [ "$GC_WEB_WORKER" = "runserver_plus" ]; then
+    GC_WEB_OPTS="${GC_WEB_OPTS} --extra-file /code/app/app/.env --nopin --verbosity 0"
 fi
 
 # Provision the Django test environment.
 if [ ! -f /provisioned ] || [ "$FORCE_PROVISION" = "on" ]; then
     echo "First run - Provisioning the local development environment..."
-    python manage.py createcachetable
-    python manage.py collectstatic --noinput -i other &
-    python manage.py migrate
-    python manage.py loaddata initial
+    if [ "$DISABLE_INITIAL_CACHETABLE" != "on" ]; then
+        python manage.py createcachetable
+    fi
+
+    if [ "$DISABLE_INITIAL_COLLECTSTATIC" != "on" ]; then
+        python manage.py collectstatic --noinput -i other &
+    fi
+
+    if [ "$DISABLE_INITIAL_MIGRATE" != "on" ]; then
+        python manage.py migrate
+    fi
+
+    if [ "$DISABLE_INITIAL_LOADDATA" != "on" ]; then
+        python manage.py loaddata initial
+    fi
     date >> /provisioned
     echo "Provisioning completed!"
 fi
@@ -48,4 +65,9 @@ if [ "$FORCE_GET_PRICES" = "on" ]; then
     python manage.py get_prices
 fi
 
-exec python manage.py $WEB_OPTS
+if [ "$KUDOS_LOCAL_SYNC" = "on" ]; then
+    bash /code/scripts/sync_kudos_listener_local.bash &
+    bash /code/scripts/sync_kudos_local.bash &
+fi
+
+exec python manage.py $GC_WEB_OPTS

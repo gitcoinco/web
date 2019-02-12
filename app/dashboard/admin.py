@@ -23,24 +23,26 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 from .models import (
-    Activity, Bounty, BountyFulfillment, BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Interest, Profile,
-    Subscription, Tip, TokenApproval, Tool, ToolVote, UserAction,
+    Activity, BlockedUser, Bounty, BountyFulfillment, BountySyncRequest, CoinRedemption, CoinRedemptionRequest,
+    Interest, LabsResearch, Profile, SearchHistory, Tip, TokenApproval, Tool, ToolVote, UserAction,
 )
 
 
 class BountyFulfillmentAdmin(admin.ModelAdmin):
     raw_id_fields = ['bounty', 'profile']
-    search_fields = ['fulfiller_address', 'fulfiller_email', 'fulfiller_github_username', 'fulfiller_name', 'fulfiller_metadata', 'fulfiller_github_url']
+    search_fields = ['fulfiller_address', 'fulfiller_email', 'fulfiller_github_username',
+                     'fulfiller_name', 'fulfiller_metadata', 'fulfiller_github_url']
     ordering = ['-id']
 
 
 class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
+    list_display = ['created_on', '__str__']
 
 
 class ActivityAdmin(admin.ModelAdmin):
     ordering = ['-id']
-    raw_id_fields = ['bounty', 'profile', 'tip']
+    raw_id_fields = ['bounty', 'profile', 'tip', 'kudos']
     search_fields = ['metadata', 'activity_type', 'profile__handle']
 
 
@@ -68,10 +70,17 @@ class UserActionAdmin(admin.ModelAdmin):
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    raw_id_fields = ['user', 'avatar']
+    raw_id_fields = ['user', 'preferred_kudos_wallet']
     ordering = ['-id']
     search_fields = ['email', 'data']
     list_display = ['handle', 'created_on']
+
+
+class SearchHistoryAdmin(admin.ModelAdmin):
+    raw_id_fields = ['user']
+    ordering = ['-id']
+    search_fields = ['user', 'data']
+    list_display = ['user', 'data']
 
 
 class TipAdmin(admin.ModelAdmin):
@@ -80,7 +89,7 @@ class TipAdmin(admin.ModelAdmin):
     readonly_fields = ['resend', 'claim']
     search_fields = [
         'tokenName', 'comments_public', 'comments_priv', 'from_name', 'username', 'network', 'github_url', 'url',
-        'emails', 'from_address', 'receive_address', 'ip', 'metadata'
+        'emails', 'from_address', 'receive_address', 'ip', 'metadata', 'txid', 'receive_txid'
     ]
 
     def resend(self, instance):
@@ -106,7 +115,7 @@ class TipAdmin(admin.ModelAdmin):
 
 # Register your models here.
 class BountyAdmin(admin.ModelAdmin):
-    raw_id_fields = ['interested', 'bounty_owner_profile']
+    raw_id_fields = ['interested', 'bounty_owner_profile', 'bounty_reserved_for_user']
     ordering = ['-id']
 
     search_fields = ['raw_data', 'title', 'bounty_owner_github_username', 'token_name']
@@ -143,8 +152,9 @@ class BountyAdmin(admin.ModelAdmin):
         return mark_safe(f"<a href={url}>{copy}</a>")
 
 
+admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
-admin.site.register(Subscription, GeneralAdmin)
+admin.site.register(BlockedUser, GeneralAdmin)
 admin.site.register(UserAction, UserActionAdmin)
 admin.site.register(Interest, InterestAdmin)
 admin.site.register(Profile, ProfileAdmin)
@@ -157,3 +167,4 @@ admin.site.register(CoinRedemption, GeneralAdmin)
 admin.site.register(CoinRedemptionRequest, GeneralAdmin)
 admin.site.register(Tool, GeneralAdmin)
 admin.site.register(ToolVote, ToolVoteAdmin)
+admin.site.register(LabsResearch)

@@ -31,9 +31,13 @@
   </div>
   <div class="transaction-status">
     <div class="ethereum-issue">
-      <a id="transaction_url" href="#" target="blank" rel="noopener">{% trans "Your update is being posted to the Ethereum Blockchain." %}</a>
+      <a id="transaction_url" href="#" target="_blank" rel="noopener">{% trans "Your update is being posted to the Ethereum Blockchain." %}</a>
       <br>
-      {% trans "This page will automatically update when the sync is completed.  You may close your browser." %}
+      {% if can_close %}
+        {% trans "This page will automatically update when the sync is completed.  You may close your browser." %}
+      {% else %}
+        {% trans "Please DO NOT CLOSE YOUR BROWSER. " %}
+      {% endif %}
     </div>
   </div>
   <div class="row loading justify-content-center align-items-center">

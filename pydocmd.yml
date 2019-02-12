@@ -21,8 +21,6 @@ generate:
     - app.utils++
   - avatar/admin.md:
     - avatar.admin++
-  - avatar/exceptions.md:
-    - avatar.exceptions++
   - avatar/models.md:
     - avatar.models++
   - avatar/utils.md:
@@ -45,8 +43,6 @@ generate:
     - dashboard.embed++
   - dashboard/helpers.md:
     - dashboard.helpers++
-  - dashboard/ios.md:
-    - dashboard.ios++
   - dashboard/models.md:
     - dashboard.models++
   - dashboard/notifications.md:
@@ -92,20 +88,6 @@ generate:
     - enssubdomain.utils++
   - enssubdomain/views.md:
     - enssubdomain.views++
-  - external_bounties/commands.md:
-    - external_bounties.management.commands.sync_bounty0x++
-    - external_bounties.management.commands.sync_gitcoin++
-    - external_bounties.management.commands.sync_known_github_repos++
-  - external_bounties/admin.md:
-    - external_bounties.admin++
-  - external_bounties/forms.md:
-    - external_bounties.forms++
-  - external_bounties/models.md:
-    - external_bounties.models++
-  - external_bounties/router.md:
-    - external_bounties.router++
-  - external_bounties/views.md:
-    - external_bounties.views++
   - faucet/admin.md:
     - faucet.admin++
   - faucet/models.md:
@@ -128,8 +110,42 @@ generate:
     - gitcoinbot.models++
   - gitcoinbot/views.md:
     - gitcoinbot.views++
+  - grants/abi.md:
+    - grants.abi++
+  - grants/admin.md:
+    - grants.admin++
+  - grants/commands.md:
+    - grants.management.commands.subminer++
+  - grants/forms.md:
+    - grants.forms++
+  - grants/models.md:
+    - grants.models++
+  - grants/router.md:
+    - grants.router++
+  - grants/serializers.md:
+    - grants.serializers++
+  - grants/templatetags.md:
+    - grants.templatetags.grants_extra++
+  - grants/utils.md:
+    - grants.utils++
+  - grants/views.md:
+    - grants.views++
   - healthcheck/healthchecks.md:
     - healthcheck.healthchecks++
+  - kudos/admin.md:
+    - kudos.admin++
+  - kudos/forms.md:
+    - kudos.forms++
+  - kudos/helpers.md:
+    - kudos.helpers++
+  - kudos/router.md:
+    - kudos.router++
+  - kudos/models.md:
+    - kudos.models++
+  - kudos/utils.md:
+    - kudos.utils++
+  - kudos/views.md:
+    - kudos.views++
   - linkshortener/commands.md:
     - linkshortener.management.commands.create_shortlinks++
   - linkshortener/admin.md:
@@ -161,7 +177,7 @@ generate:
     - marketing.management.commands.sync_keywords++
     - marketing.management.commands.sync_mail++
     - marketing.management.commands.sync_slack++
-    - marketing.management.commands.test_email++
+    - marketing.management.commands.debug_test++
   - marketing/admin.md:
     - marketing.admin++
   - marketing/google_analytics.md:
@@ -243,7 +259,6 @@ pages:
       - Views: dashboard/views.md
       - Healthchecks: dashboard/healthchecks.md
       - Helpers: dashboard/helpers.md
-      - iOS: dashboard/ios.md
       - Notifications: dashboard/notifications.md
       - API Router: dashboard/router.md
       - Signals: dashboard/signals.md
@@ -264,13 +279,6 @@ pages:
       - Models: enssubdomain/models.md
       - Utilities: enssubdomain/utils.md
       - Views: enssubdomain/views.md
-    - External Bounties:
-      - Commands: external_bounties/commands.md
-      - Admin: external_bounties/admin.md
-      - Forms: external_bounties/forms.md
-      - Models: external_bounties/models.md
-      - Router: external_bounties/router.md
-      - Views: external_bounties/views.md
     - Faucet:
       - Admin: faucet/admin.md
       - Models: faucet/models.md
@@ -286,6 +294,27 @@ pages:
       - Admin: gitcoinbot/admin.md
       - Models: gitcoinbot/models.md
       - Views: gitcoinbot/views.md
+    - Grants:
+      - Local Setup: grants_faq.md << docs/GRANTS.md
+      - ABI: grants/abi.md
+      - Admin: grants/admin.md
+      - Commands: grants/commands.md
+      - Forms: grants/forms.md
+      - Models: grants/models.md
+      - Router: grants/router.md
+      - Serializers: grants/serializers.md
+      - Template Tags: grants/templatetags.md
+      - Utilities: grants/utils.md
+      - Views: grants/views.md
+    - Kudos:
+      - Local Setup FAQ: kudos_faq.md << docs/KUDOS.md
+      - Admin: kudos/admin.md
+      - Forms: kudos/forms.md
+      - Helpers: kudos/helpers.md
+      - Models: kudos/models.md
+      - Routers: kudos/router.md
+      - Utilities: kudos/utils.md
+      - Views: kudos/views.md
     - Link Shortener:
       - Commands: linkshortener/commands.md
       - Admin: linkshortener/admin.md

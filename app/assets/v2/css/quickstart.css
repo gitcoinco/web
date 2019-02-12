@@ -33,7 +33,7 @@ body.quickstart,
   padding: 0;
 }
 
-.quickstart .modal {
+.quickstart .modal#video {
   padding: 0;
   line-height: 0;
 }

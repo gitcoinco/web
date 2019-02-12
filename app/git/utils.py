@@ -29,7 +29,7 @@ from django.utils import timezone
 import dateutil.parser
 import requests
 from github import Github
-from github.GithubException import BadCredentialsException, UnknownObjectException
+from github.GithubException import BadCredentialsException, GithubException, UnknownObjectException
 from requests.exceptions import ConnectionError
 from rest_framework.reverse import reverse
 
@@ -357,19 +357,32 @@ def get_github_emails(oauth_token):
     return emails
 
 
-def get_emails_master(username):
+def get_emails_by_category(username):
     from dashboard.models import Profile
-    to_emails = []
+    to_emails = {}
     to_profiles = Profile.objects.filter(handle__iexact=username)
     if to_profiles.exists():
         to_profile = to_profiles.first()
         if to_profile.github_access_token:
-            to_emails = get_github_emails(to_profile.github_access_token)
+            to_emails['primary'] = get_github_emails(to_profile.github_access_token)
         if to_profile.email:
-            to_emails.append(to_profile.email)
+            to_emails['github_profile'] = to_profile.email
+    to_emails['events'] = []
     for email in get_github_event_emails(None, username):
-        to_emails.append(email)
-    return list(set(to_emails))
+        to_emails['events'].append(email)
+    return to_emails
+
+
+def get_emails_master(username):
+    emails_by_category = get_emails_by_category(username)
+    emails = []
+    for category, to_email in emails_by_category.items():
+        if type(to_email) is str:
+            emails.append(to_email)
+        if type(to_email) is list:
+            for email in to_email:
+                emails.append(email)
+    return list(set(emails))
 
 
 def search(query):
@@ -759,4 +772,7 @@ def issue_number(issue_url):
 def get_current_ratelimit(token=None):
     """Get the current Github API ratelimit for the provided token."""
     gh_client = github_connect(token)
-    return gh_client.get_rate_limit()
+    try:
+        return gh_client.get_rate_limit()
+    except GithubException:
+        return {}

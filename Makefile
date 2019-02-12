@@ -25,6 +25,8 @@ autotranslate: ## Automatically translate all untranslated entries for all LOCAL
 
 build: ## Build the Gitcoin Web image.
 	@docker build \
+		--stream \
+		--pull \
 		--build-arg BUILD_DATETIME=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
 		--build-arg "SHA1=${SHA1}" \
 		${VERSION:+--build-arg "VERSION=$VERSION"} \
@@ -38,7 +40,7 @@ push: ## Push the Docker image to the Docker Hub repository.
 	@docker push "${REPO_NAME}"
 
 collect-static: ## Collect newly added static resources from the assets directory.
-	@docker-compose exec -i web bash -c "cd /code/app && python3 manage.py collectstatic -i other"
+	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web bash -c "cd /code/app && python3 manage.py collectstatic -i other --no-input"
 
 compress-images: ## Compress and optimize images throughout the repository. Requires optipng, svgo, and jpeg-recompress.
 	@./scripts/compress_images.bash
@@ -115,6 +117,15 @@ update_fork: ## Update the current fork master branch with upstream master.
 	@git merge upstream/master
 	@git push origin master
 	@echo "Updated!"
+
+update_stable: ## Update the stable branch with master.
+	@echo "This will alter the live state of Gitcoin."
+	@echo "Have you verified your changes and wish to continue? [y/N] " && read response && [ $${response:-N} == y ]
+	@git checkout master; git pull --rebase; git checkout stable; git reset --hard master;
+	@echo "The stable branch has been reset. You might be prompted to enter your password."
+	@echo "Force push changes to Github? [y/N] " && read response && [ $${response:-N} == y ]
+	@git push origin stable --force
+
 
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

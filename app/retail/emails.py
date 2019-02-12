@@ -17,6 +17,8 @@
 
 '''
 import logging
+from datetime import date, timedelta
+from functools import partial
 
 from django.conf import settings
 from django.contrib import messages
@@ -30,9 +32,12 @@ from django.utils.translation import gettext as _
 
 import cssutils
 import premailer
+from grants.models import Contribution, Grant, Subscription
 from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
 from retail.utils import strip_double_chars, strip_html
+
+logger = logging.getLogger(__name__)
 
 # RENDERERS
 
@@ -62,6 +67,179 @@ def premailer_transform(html):
     cssutils.log.setLevel(logging.CRITICAL)
     p = premailer.Premailer(html, base_url=settings.BASE_URL)
     return p.transform()
+
+
+def render_new_grant_email(grant):
+    params = {'grant': grant}
+    response_html = premailer_transform(render_to_string("emails/grants/new_grant.html", params))
+    response_txt = render_to_string("emails/grants/new_grant.txt", params)
+    subject = _("Your Gitcoin Grant")
+    return response_html, response_txt, subject
+
+
+def render_change_grant_owner_request(grant):
+    params = {'grant': grant}
+    response_html = premailer_transform(render_to_string("emails/grants/change_owner_request.html", params))
+    response_txt = render_to_string("emails/grants/change_owner_request.txt", params)
+    subject = _("You've been chosen to be the owner for a Gitcoin Grant")
+    return response_html, response_txt, subject
+
+
+def render_change_grant_owner_accept(grant):
+    params = {'grant': grant}
+    response_html = premailer_transform(render_to_string("emails/grants/change_owner_accept.html", params))
+    response_txt = render_to_string("emails/grants/change_owner_accept.txt", params)
+    subject = _("Grant Owner has changed")
+    return response_html, response_txt, subject
+
+
+def render_notify_ownership_change(grant):
+    params = {'grant': grant}
+    response_html = premailer_transform(render_to_string("emails/grants/change_owner_notify.html", params))
+    response_txt = render_to_string("emails/grants/change_owner_notify.txt", params)
+    subject = _("Grant ownership has been changed")
+    return response_html, response_txt, subject
+
+
+def render_change_grant_owner_reject(grant):
+    params = {'grant': grant}
+    response_html = premailer_transform(render_to_string("emails/grants/change_owner_reject.html", params))
+    response_txt = render_to_string("emails/grants/change_owner_reject.txt", params)
+    subject = _("Grant has no change in ownership")
+    return response_html, response_txt, subject
+
+
+def render_new_supporter_email(grant, subscription):
+    params = {'grant': grant, 'subscription': subscription}
+    response_html = premailer_transform(render_to_string("emails/grants/new_supporter.html", params))
+    response_txt = render_to_string("emails/grants/new_supporter.txt", params)
+    subject = _("You have a new Grant supporter!")
+    return response_html, response_txt, subject
+
+
+def render_thank_you_for_supporting_email(grant, subscription):
+    params = {'grant': grant, 'subscription': subscription}
+    response_html = premailer_transform(render_to_string("emails/grants/thank_you_for_supporting.html", params))
+    response_txt = render_to_string("emails/grants/thank_you_for_supporting.txt", params)
+    subject = _("Thank you for supporting Grants on Gitcoin!")
+    return response_html, response_txt, subject
+
+
+def render_support_cancellation_email(grant, subscription):
+    params = {'grant': grant, 'subscription': subscription}
+    response_html = premailer_transform(render_to_string("emails/grants/support_cancellation.html", params))
+    response_txt = render_to_string("emails/grants/support_cancellation.txt", params)
+    subject = _("Your subscription on Gitcoin Grants has been cancelled")
+
+    return response_html, response_txt, subject
+
+
+def render_grant_cancellation_email(grant, subscription):
+    params = {'grant': grant, 'subscription': subscription}
+    response_html = premailer_transform(render_to_string("emails/grants/grant_cancellation.html", params))
+    response_txt = render_to_string("emails/grants/grant_cancellation.txt", params)
+    subject = _("Your Grant on Gitcoin Grants has been cancelled")
+    return response_html, response_txt, subject
+
+
+def render_subscription_terminated_email(grant, subscription):
+    params = {'grant': grant, 'subscription': subscription}
+    response_html = premailer_transform(render_to_string("emails/grants/subscription_terminated.html", params))
+    response_txt = render_to_string("emails/grants/subscription_terminated.txt", params)
+    subject = _("Your subscription on Gitcoin Grants has been cancelled by the Grant Creator")
+    return response_html, response_txt, subject
+
+
+def render_successful_contribution_email(grant, subscription, contribution):
+    params = {'grant': grant, 'subscription': subscription, "contribution": contribution}
+    response_html = premailer_transform(render_to_string("emails/grants/successful_contribution.html", params))
+    response_txt = render_to_string("emails/grants/successful_contribution.txt", params)
+    subject = _('Your Gitcoin Grants contribution was successful!')
+    return response_html, response_txt, subject
+
+
+@staff_member_required
+def successful_contribution(request):
+    grant = Grant.objects.first()
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+    contribution = Contribution.objects.filter(subscription__pk=subscription.pk).first()
+    response_html, __, __ = render_successful_contribution_email(grant, subscription, contribution)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def subscription_terminated(request):
+    grant = Grant.objects.first()
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+    response_html, __, __ = render_subscription_terminated_email(grant, subscription)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def grant_cancellation(request):
+    grant = Grant.objects.first()
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+    response_html, __, __ = render_grant_cancellation_email(grant, subscription)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def support_cancellation(request):
+    grant = Grant.objects.first()
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+    response_html, __, __ = render_support_cancellation_email(grant, subscription)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def thank_you_for_supporting(request):
+    grant = Grant.objects.first()
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+    response_html, __, __ = render_thank_you_for_supporting_email(grant, subscription)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def new_supporter(request):
+    grant = Grant.objects.first()
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+    response_html, __, __ = render_new_supporter_email(grant, subscription)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def new_grant(request):
+    grant = Grant.objects.first()
+    response_html, __, __ = render_new_grant_email(grant)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def change_grant_owner_request(request):
+    grant = Grant.objects.first()
+    response_html, __, __ = render_change_grant_owner_request(grant)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def notify_ownership_change(request):
+    grant = Grant.objects.first()
+    response_html, __, __ = render_notify_ownership_change(grant)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def change_grant_owner_accept(request):
+    grant = Grant.objects.first()
+    response_html, __, __ = render_change_grant_owner_accept(grant)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def change_grant_owner_reject(request):
+    grant = Grant.objects.first()
+    response_html, __, __ = render_change_grant_owner_reject(grant)
+    return HttpResponse(response_html)
 
 
 def render_tip_email(to_email, tip, is_new):
@@ -94,6 +272,48 @@ def render_tip_email(to_email, tip, is_new):
     return response_html, response_txt
 
 
+def render_kudos_email(to_email, kudos_transfer, is_new, html_template, text_template=None):
+    """Summary
+
+    Args:
+        to_emails (list): An array of email addresses to send the email to.
+        kudos_transfer (model): An instance of the `kudos.model.KudosTransfer` object.  This contains the information about the kudos that will be cloned.
+        is_new (TYPE): Description
+
+    Returns:
+        tup: response_html, response_txt
+    """
+    warning = kudos_transfer.network if kudos_transfer.network != 'mainnet' else ""
+    already_redeemed = bool(kudos_transfer.receive_txid)
+    link = kudos_transfer.receive_url_for_recipient
+    params = {
+        'link': link,
+        'amount': round(kudos_transfer.amount, 5),
+        'token_elem': kudos_transfer.kudos_token or kudos_transfer.kudos_token_cloned_from,
+        'kudos_token:': kudos_transfer.kudos_token,
+        'comments_public': kudos_transfer.comments_public,
+        'kudos_transfer': kudos_transfer,
+        'already_redeemed': already_redeemed,
+        'is_new': is_new,
+        'warning': warning,
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'is_sender': to_email not in kudos_transfer.emails,
+        'is_receiver': to_email in kudos_transfer.emails,
+    }
+
+    response_html = premailer_transform(render_to_string(html_template, params))
+    response_txt = render_to_string(text_template, params) if text_template else None
+
+    return response_html, response_txt
+
+
+render_new_kudos_email = partial(render_kudos_email, html_template='emails/new_kudos.html', text_template='emails/new_kudos.txt')
+render_sent_kudos_email = partial(render_kudos_email, html_template='emails/new_kudos.html', text_template='emails/new_kudos.txt')
+render_kudos_accepted_email = partial(render_kudos_email, html_template='emails/new_kudos.html', text_template='emails/new_kudos.txt')
+render_kudos_mint_email = partial(render_kudos_email, html_template='emails/kudos_mint.html', text_template=None)
+render_kudos_mkt_email = partial(render_kudos_email, html_template='emails/kudos_mkt.html', text_template=None)
+
+
 def render_match_email(bounty, github_username):
     params = {
         'bounty': bounty,
@@ -110,6 +330,7 @@ def render_quarterly_stats(to_email, platform_wide_stats):
     profile = Profile.objects.filter(email=to_email).first()
     quarterly_stats = profile.get_quarterly_stats
     params = {**quarterly_stats, **platform_wide_stats}
+    params['profile'] = profile
     params['subscriber'] = get_or_save_email_subscriber(to_email, 'internal'),
     print(params)
     response_html = premailer_transform(render_to_string("emails/quarterly_stats.html", params))
@@ -138,9 +359,9 @@ in that spirit,  i have a few questions for you.
 
 thanks again for being a member of the community.
 
-kevin
+alisa / frank (gitcoin product team)
 
-PS - i've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+PS - we've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
 
 """
     elif persona == 'funder':
@@ -164,9 +385,9 @@ in that spirit,  i have a few questions for you:
 
 thanks for being a member of the community.
 
-kevin
+alisa / frank (gitcoin product team)
 
-PS - i've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+PS - we've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
 
 """
         elif bounty.status == 'cancelled':
@@ -185,9 +406,9 @@ i have a few questions for you.
 
 thanks again for being a member of the community.
 
-kevin
+alisa / frank (gitcoin product team)
 
-PS - i've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+PS - we've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
 
 """
         else:
@@ -238,7 +459,7 @@ def render_funder_stale(github_username, days=30, time_as_str='about a month'):
     response_txt = f"""
 hi {github_username},
 
-kevin from Gitcoin here (CC scott and vivek too) — i see you haven't funded an issue in {time_as_str}. in the spirit of making Gitcoin better + checking in:
+alisa and frank from Gitcoin here (CC scott and vivek too) — i see you haven't funded an issue in {time_as_str}. in the spirit of making Gitcoin better + checking in:
 
 - has anything been slipping on your issue board which might be bounty worthy?
 - do you have any feedback for Gitcoin Core on how we might improve the product to fit your needs?
@@ -247,7 +468,8 @@ our idea is that gitcoin should be a place you come when priorities stretch long
 
 appreciate you being a part of the community and let me know if you'd like some Gitcoin schwag — just send over a mailing address and a t-shirt size and it'll come your way.
 
-~ kevin
+~ alisa / frank (gitcoin product team)
+
 
 """
 
@@ -271,6 +493,93 @@ def render_new_bounty(to_email, bounties, old_bounties):
     return response_html, response_txt
 
 
+def render_weekly_recap(to_email, from_date=date.today(), days_back=7):
+    sub = get_or_save_email_subscriber(to_email, 'internal')
+    from dashboard.models import Profile
+    prof = Profile.objects.filter(email__iexact=to_email).last()
+    bounties = prof.bounties.all()
+    from_date = from_date + timedelta(days=1)
+    to_date = from_date - timedelta(days=days_back)
+
+    activity_types = {}
+    _sections = []
+    activity_types_def = {
+        "start_work": {
+          "css-class": "status-open",
+          "text": "Started work"
+        },
+        "stop_work": {
+          "css-class": "status-cancelled",
+          "text": "Work stopped"
+        },
+        "worker_approved": {
+          "css-class": "status-open",
+          "text": "Worker got approved"
+        },
+        "worker_applied": {
+          "css-class": "status-submitted",
+          "text": "Worker applied"
+        },
+        "new_bounty": {
+          "css-class": "status-open",
+          "text": "New created bounties"
+        },
+        "work_submitted": {
+          "css-class": "status-submitted",
+          "text": "Work got submitted"
+        },
+    }
+
+    for bounty in bounties:
+        for activity in bounty.activities.filter(created__range=[to_date, from_date]):
+            if activity_types.get(activity.activity_type) is None:
+                activity_types[activity.activity_type] = []
+
+            avatar_url = "about:blank"
+            if activity.profile:
+                avatar_url = activity.profile.avatar_url
+
+            item = {
+                'bounty_image_url': avatar_url,
+                'bounty_action_user': activity.profile.handle,
+                'bounty_action_date': activity.created,
+                'bounty_action': activity.activity_type,
+                'bounty_name': f'{bounty.title}',
+                'bounty_link': bounty.get_absolute_url()
+            }
+            activity_types[activity.activity_type].append(item)
+
+    # TODO: Activities
+    # TODO: Fulfillment
+    # TODO: Interest
+
+    for act_type in activity_types:
+        if activity_types_def.get(act_type):
+            section = {
+              'items': activity_types[act_type],
+              'header_name': activity_types_def[act_type]["text"],
+              'header_css': activity_types_def[act_type]["css-class"],
+            }
+            _sections.append(section)
+
+    params = {
+        'subscriber': sub,
+        'sections': _sections,
+        'profile': prof,
+        'override_back_color': '#f2f6f9',
+        'select_params': {
+          'from': from_date,
+          'to': to_date
+        },
+        'debug': activity_types
+    }
+
+    response_html = premailer_transform(render_to_string("emails/recap/weekly_founder_recap.html", params))
+    response_txt = render_to_string("emails/recap/weekly_founder_recap.txt", params)
+
+    return response_html, response_txt
+
+
 def render_gdpr_reconsent(to_email):
     sub = get_or_save_email_subscriber(to_email, 'internal')
     params = {
@@ -280,6 +589,34 @@ def render_gdpr_reconsent(to_email):
     response_html = premailer_transform(render_to_string("emails/gdpr_reconsent.html", params))
     response_txt = render_to_string("emails/gdpr_reconsent.txt", params)
 
+    return response_html, response_txt
+
+
+def render_share_bounty(to_email, msg, from_profile):
+    """Render the share bounty email template.
+
+    Args:
+        to_email: user to send the email to.
+        msg: the message sent in the email.
+
+    Returns:
+        str: The rendered response as a string.
+
+    """
+    to_email = f"@{to_email}" if to_email else "there"
+    response_txt = f"""
+hi {to_email},
+
+{msg}
+
+@{from_profile.handle}
+{from_profile.email}
+
+
+"""
+
+    params = {'txt': response_txt}
+    response_html = premailer_transform(render_to_string("emails/txt.html", params))
     return response_html, response_txt
 
 
@@ -441,6 +778,18 @@ def render_gdpr_update(to_email):
     return response_html, response_txt, subject
 
 
+def render_reserved_issue(to_email, user, bounty):
+    params = {
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'user': user,
+        'bounty': bounty
+    }
+    subject = "Reserved Issue"
+    response_html = premailer_transform(render_to_string("emails/reserved_issue.html", params))
+    response_txt = render_to_string("emails/reserved_issue.txt", params)
+    return response_html, response_txt, subject
+
+
 def render_start_work_approved(interest, bounty):
     to_email = interest.profile.email
     params = {
@@ -521,75 +870,81 @@ def render_start_work_applicant_expired(interest, bounty):
     return response_html, response_txt, subject
 
 
+
+
 # ROUNDUP_EMAIL
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
-    from external_bounties.models import ExternalBounty
-    subject = "CodeFund Grows | Hacktober Begins"
-
+    subject = "Last Week of CLR Matching | Glen Weyl Joins Livestream"
+    new_kudos_pks = [1404, 1401, 1368]
+    new_kudos_size_px = 150
     intro = '''
+<p>
+Hi Gitcoiners,
+<p>
+<p>
+This week marks the last week of <a href="https://medium.com/gitcoin/gitcoin-grants-clr-matching-ecbc87b10038">our Radical Experiment for funding ETH 2.0 projects.</a>
+For one more week (until February 15th), we'll be matching any contributions you make to <a href="https://gitcoin.co/grants">these 20 Ethereum projects</a> with $25,000 in funding.
+Because we are using Liberal Radicalism as the mechanism, small contributions (even $5!) can go a long way.
+</p>
+<p>
+To continue the discussion, we're hosting Glen Weyl, author of <a href='http://radicalmarkets.com/'>Radical Markets</a>, on the <a href="https://gitcoin.co/livestream">Gitcoin Livestream</a> today. Join us <a href="https://gitcoin.co/livestream">at 5PM ET today</a>
+and add any questions you have to <a href="https://sli.do">the Slido</a> with code D842!
+</p>
+<p>
+<h3>Happy Kudos Friday!</h3>
+</p>
+<p>
+''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
+</p>
 
-<p>
-Hi there,
-</p>
-<p>
-<a href="https://codefund.io/">CodeFund</a> wants to support open source projects everywhere!
-By placing ethical ads in beautiful places, <a href="https://twitter.com/codeberry">Eric Berry</a> and team have been providing Discourse, CodeSandbox, and Material-UI
-and countless others with sources of revenue to support their projects. The CodeFund team just added a superstar, <a href="https://codefund.io/team">Nate Hopkins</a>,
-to the team as CTO, and we're excited about the future of the product. If you want to advertise to developers, there's no better way!
-<br>
-<a href="https://codefund.io">Checkout CodeFund's new website to learn more</a>
-</p>
-<p>
-Hacktoberfest is in full swing! Take a look here for issues tagged <a href="https://gitcoin.co/explorer?network=mainnet&keywords=hacktoberfest&order_by=-web3_created">'Hacktoberfest'</a>
- which have been funded with Gitcoin bounties, across projects like Ruby For Good, Peepeth, Giveth and more.
-</p>
-<p>
-The Gitcoin Core team is on the move! If you'll be at ETH SF (Oct 5-7), Github Universe (Oct 16-17), Web 3 Summit (Oct 22 - 24), SustainOSS (Oct 25), or Devcon 4, give us a shout!
-</p>
 <h3>What else is new?</h3>
     <ul>
         <li>
-        With travel, Gitcoin Livestream is cancelled this week. We'll be back next week as regularly scheduled.
+            Gitcoin Livestream is back this week! Great conversations pending. Join us <a href="https://gitcoin.co/livestream">on Friday at 5PM ET</a>!
         </li>
     </ul>
 </p>
 <p>
-Back to BUIDLing,
+Back to shipping,
 </p>
+
 '''
     highlights = [{
-        'who': 'cryptomental',
+        'who': 'luiserebii',
         'who_link': True,
-        'what': 'Back to help out on Status Embark!',
-        'link': 'https://gitcoin.co/issue/embark-framework/embark/946/1306',
+        'what': 'Completed work on a Plasma bounty!',
+        'link': 'https://gitcoin.co/issue/plasma-group/plasma-core/60/2266',
         'link_copy': 'View more',
     }, {
-        'who': 'evgeniuz',
+        'who': 'dbrettrobertson',
         'who_link': True,
-        'what': 'Fixed an Avatar Bug this week!',
-        'link': 'https://gitcoin.co/issue/diadata-org/coindata/1/1259',
+        'what': 'Helped with Core Dev call notes!',
+        'link': 'https://gitcoin.co/issue/ethereum/pm/75/2242',
         'link_copy': 'View more',
     }, {
-        'who': 'sameer2800',
+        'who': 'lazaridis-com',
         'who_link': True,
-        'what': 'Completed a UI makeover funded in \'RHOC\' token!',
-        'link': 'https://gitcoin.co/issue/JoshOrndorff/BitStory/1/1298',
+        'what': 'Completed work on a Goerli bounty.',
+        'link': 'https://gitcoin.co/issue/goerli/parity-goerli/46/2210',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/matterinc/PeepethClient/issues/14',
-        'primer': 'Hacktoberfest alert! A Peepeth client.',
+        'url': 'https://github.com/trailofbits/manticore/issues/1343',
+        'primer': 'Work with Trail of Bits on manticore!',
     }, {
-        'url': 'https://github.com/EthWorks/UniversalLoginSDK/issues/88',
-        'primer': 'Work on an EthWorks bounty funded by the ECF.',
+        'url': 'https://github.com/dannovikov/crypto-lending/issues/1',
+        'primer': 'Help build a Multi-Sig ETH Wallet.',
     }, {
-        'url': 'https://github.com/walleth/kethereum/issues/44',
-        'primer': 'Work on SpongyCastle with Walleth',
+        'url': 'https://github.com/textileio/textile-explore/issues/1',
+        'primer': 'Build a Flickr import/export tool.',
     }, ]
 
     num_leadboard_items = 5
+    highlight_kudos_ids = []
+    num_kudos_to_show = 10
+
     #### don't need to edit anything below this line
     leaderboard = {
         'quarterly_payers': {
@@ -605,6 +960,13 @@ Back to BUIDLing,
             'items': [],
         },
     }
+
+    from kudos.models import KudosTransfer
+    if highlight_kudos_ids:
+        kudos_highlights = KudosTransfer.objects.filter(id__in=highlight_kudos_ids)
+    else:
+        kudos_highlights = KudosTransfer.objects.exclude(txid='').order_by('-created_on')[:num_kudos_to_show]
+
     for key, __ in leaderboard.items():
         leaderboard[key]['items'] = LeaderboardRank.objects.active() \
             .filter(leaderboard=key).order_by('rank')[0:num_leadboard_items]
@@ -623,18 +985,16 @@ Back to BUIDLing,
         except Exception as e:
             print(e)
 
-    ecosystem_bounties = ExternalBounty.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(weeks=1)).order_by('?')[0:5]
-
     params = {
         'intro': intro,
         'intro_txt': strip_double_chars(strip_double_chars(strip_double_chars(strip_html(intro), ' '), "\n"), "\n "),
         'bounties': bounties,
         'leaderboard': leaderboard,
-        'ecosystem_bounties': ecosystem_bounties,
         'invert_footer': False,
         'hide_header': False,
         'highlights': highlights,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'kudos_highlights': kudos_highlights,
     }
 
     response_html = premailer_transform(render_to_string("emails/bounty_roundup.html", params))
@@ -643,7 +1003,14 @@ Back to BUIDLing,
     return response_html, response_txt, subject
 
 
+
 # DJANGO REQUESTS
+
+
+@staff_member_required
+def weekly_recap(request):
+    response_html, _ = render_weekly_recap("mark.beacom@consensys.net")
+    return HttpResponse(response_html)
 
 
 @staff_member_required
@@ -651,6 +1018,33 @@ def new_tip(request):
     from dashboard.models import Tip
     tip = Tip.objects.last()
     response_html, _ = render_tip_email(settings.CONTACT_EMAIL, tip, True)
+
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def new_kudos(request):
+    from kudos.models import KudosTransfer
+    kudos_transfer = KudosTransfer.objects.first()
+    response_html, _ = render_new_kudos_email(settings.CONTACT_EMAIL, kudos_transfer, True)
+
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def kudos_mint(request):
+    from kudos.models import KudosTransfer
+    kudos_transfer = KudosTransfer.objects.last()
+    response_html, _ = render_kudos_mint_email(settings.CONTACT_EMAIL, kudos_transfer, True)
+
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def kudos_mkt(request):
+    from kudos.models import KudosTransfer
+    kudos_transfer = KudosTransfer.objects.last()
+    response_html, _ = render_kudos_mkt_email(settings.CONTACT_EMAIL, kudos_transfer, True)
 
     return HttpResponse(response_html)
 
@@ -795,8 +1189,13 @@ def roundup(request):
 @staff_member_required
 def quarterly_roundup(request):
     from marketing.utils import get_platform_wide_stats
+    from dashboard.models import Profile
     platform_wide_stats = get_platform_wide_stats()
     email = settings.CONTACT_EMAIL
+    handle = request.GET.get('handle')
+    if handle:
+        profile = Profile.objects.filter(handle=handle).first()
+        email = profile.email
     response_html, _ = render_quarterly_stats(email, platform_wide_stats)
     return HttpResponse(response_html)
 
@@ -804,6 +1203,13 @@ def quarterly_roundup(request):
 @staff_member_required
 def gdpr_reconsent(request):
     response_html, _ = render_gdpr_reconsent(settings.CONTACT_EMAIL)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def share_bounty(request):
+    profile = Profile.objects.filter(handle=handle).first()
+    response_html, _ = render_share_bounty(settings.CONTACT_EMAIL, 'This is a sample message', profile)
     return HttpResponse(response_html)
 
 

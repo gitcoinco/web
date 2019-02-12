@@ -23,6 +23,7 @@
   </head>
   <body class="interior {{ active }}">
     <div class="container-fluid header dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav.html' %}
     </div>
     <div class="row no-gutter">
@@ -76,6 +77,5 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
   </body>
-  <script src="{% static "v2/js/shared.js" %}"></script>
   <script src="{% static "v2/js/pages/increase_funding_limit_request_form.js" %}"></script>
 </html>

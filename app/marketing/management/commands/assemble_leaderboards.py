@@ -19,9 +19,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from django.conf import settings
 from django.core.management.base import BaseCommand
+from django.db import transaction
 from django.utils import timezone
 
+from cacheops import CacheMiss, cache
 from dashboard.models import Bounty, Profile, Tip
+from kudos.models import KudosTransfer
 from marketing.models import LeaderboardRank
 
 # Constants
@@ -39,6 +42,7 @@ FULFILLED = 'fulfilled'
 PAYERS = 'payers'
 EARNERS = 'earners'
 ORGS = 'orgs'
+KUDOS = 'kudos'
 KEYWORDS = 'keywords'
 TOKENS = 'tokens'
 COUNTRIES = 'countries'
@@ -46,7 +50,7 @@ CITIES = 'cities'
 CONTINENTS = 'continents'
 
 TIMES = [ALL, WEEKLY, QUARTERLY, YEARLY, MONTHLY]
-BREAKDOWNS = [FULFILLED, ALL, PAYERS, EARNERS, ORGS, KEYWORDS, TOKENS, COUNTRIES, CITIES, CONTINENTS]
+BREAKDOWNS = [FULFILLED, ALL, PAYERS, EARNERS, ORGS, KEYWORDS, KUDOS, TOKENS, COUNTRIES, CITIES, CONTINENTS]
 
 WEEKLY_CUTOFF = timezone.now() - timezone.timedelta(days=(30 if settings.DEBUG else 7))
 MONTHLY_CUTOFF = timezone.now() - timezone.timedelta(days=30)
@@ -74,9 +78,22 @@ counts = default_ranks()
 
 
 def profile_to_location(handle):
-    # TODO (mbeacom): Debug, fix, and re-enable leaderboards by location on live.
-    if settings.ENV == 'prod':
-        return []
+    timeout = 60 * 20
+    key_salt = '1'
+    key = f'profile_to_location{handle}_{key_salt}'
+    try:
+        results = cache.get(key)
+    except CacheMiss:
+        results = None
+
+    if not results:
+        results = profile_to_location_helper(handle)
+    cache.set(key, results, timeout)
+
+    return results
+
+
+def profile_to_location_helper(handle):
 
     profiles = Profile.objects.filter(handle__iexact=handle)
     if handle and profiles.exists():
@@ -234,6 +251,25 @@ def sum_tip_helper(t, time, index_term, val_usd):
         add_element(f'{time}_{CONTINENTS}', index_term, val_usd)
 
 
+def sum_kudos(kt):
+    val_usd = kt.value_in_usdt_now
+    index_terms = [kt.kudos_token_cloned_from.url]
+    for index_term in index_terms:
+        sum_kudos_helper(kt, ALL, index_term, val_usd)
+        if kt.created_on > WEEKLY_CUTOFF:
+            sum_kudos_helper(kt, WEEKLY, index_term, val_usd)
+        if kt.created_on > MONTHLY_CUTOFF:
+            sum_kudos_helper(kt, MONTHLY, index_term, val_usd)
+        if kt.created_on > QUARTERLY_CUTOFF:
+            sum_kudos_helper(kt, QUARTERLY, index_term, val_usd)
+        if kt.created_on > YEARLY_CUTOFF:
+            sum_kudos_helper(kt, YEARLY, index_term, val_usd)
+
+
+def sum_kudos_helper(keyword, time, index_term, val_usd):
+    add_element(f'{time}_{KUDOS}', index_term, val_usd)
+
+
 def sum_tips(t, index_terms):
     val_usd = t.value_in_usdt_now
     for index_term in index_terms:
@@ -276,7 +312,7 @@ class Command(BaseCommand):
             sum_bounties(b, index_terms)
 
         # get tips
-        tips = Tip.objects.exclude(txid='').filter(network='mainnet')
+        tips = Tip.objects.send_success().filter(network='mainnet')
 
         # iterate
         for t in tips:
@@ -285,33 +321,42 @@ class Command(BaseCommand):
             index_terms = tip_index_terms(t)
             sum_tips(t, index_terms)
 
+        # kudos'
+        for kt in KudosTransfer.objects.send_success().filter(network='mainnet'):
+            sum_kudos(kt)
+
         # set old LR as inactive
-        lrs = LeaderboardRank.objects.active()
-        lrs.update(active=False)
+        with transaction.atomic():
+            lrs = LeaderboardRank.objects.active()
+            lrs.update(active=False)
 
-        # save new LR in DB
-        for key, rankings in ranks.items():
-            rank = 1
-            for index_term, amount in sorted(rankings.items(), key=lambda x: x[1], reverse=True):
-                count = counts[key][index_term]
-                lbr_kwargs = {
-                    'count': count,
-                    'active': True,
-                    'amount': amount,
-                    'rank': rank,
-                    'leaderboard': key,
-                    'github_username': index_term,
-                }
+            # save new LR in DB
+            for key, rankings in ranks.items():
+                rank = 1
+                for index_term, amount in sorted(rankings.items(), key=lambda x: x[1], reverse=True):
+                    count = counts[key][index_term]
+                    lbr_kwargs = {
+                        'count': count,
+                        'active': True,
+                        'amount': amount,
+                        'rank': rank,
+                        'leaderboard': key,
+                        'github_username': index_term
+                    }
 
-                try:
-                    lbr_kwargs['profile'] = Profile.objects.get(handle__iexact=index_term)
-                except Profile.MultipleObjectsReturned:
-                    lbr_kwargs['profile'] = Profile.objects.filter(handle__iexact=index_term).latest('id')
-                    print(f'Multiple profiles found for username: {index_term}')
-                except Profile.DoesNotExist:
-                    print(f'No profiles found for username: {index_term}')
+                    try:
+                        profile = Profile.objects.get(handle__iexact=index_term)
+                        lbr_kwargs['profile'] = profile
+                        lbr_kwargs['tech_keywords'] = profile.keywords
+                    except Profile.MultipleObjectsReturned:
+                        profile = Profile.objects.filter(handle__iexact=index_term).latest('id')
+                        lbr_kwargs['profile'] = profile
+                        lbr_kwargs['tech_keywords'] = profile.keywords
+                        print(f'Multiple profiles found for username: {index_term}')
+                    except Profile.DoesNotExist:
+                        print(f'No profiles found for username: {index_term}')
 
-                # TODO: Bucket LeaderboardRank objects and .bulk_create
-                LeaderboardRank.objects.create(**lbr_kwargs)
-                rank += 1
-                print(key, index_term, amount, count, rank)
+                    # TODO: Bucket LeaderboardRank objects and .bulk_create
+                    LeaderboardRank.objects.create(**lbr_kwargs)
+                    rank += 1
+                    print(key, index_term, amount, count, rank)

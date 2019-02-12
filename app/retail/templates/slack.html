@@ -91,10 +91,9 @@
 {% block scripts %}
 <script>
   $('#whitepaper').validate();
-  $(document).ready(function() {
-    $('#whitepaper input.btn-go').click(function(e){
-      mixpanel.track("Whitepaper New Request", {});
-      setTimeout(function(){
+  $(document).ready(() => {
+    $('#whitepaper input.btn-go').on('click', () => {
+      setTimeout(() => {
         $('#whitepaper input.btn-go').attr('disabled','disabled');
       },1);
     });

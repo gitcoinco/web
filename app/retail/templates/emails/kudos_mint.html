@@ -1,0 +1,96 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+    Copyright (C) 2018 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n humanize static kudos_extras  %}
+
+{% block content %}
+
+<style>
+    .kudos-box {
+        margin-bottom: 2em;
+    }
+    .kudos-contents {
+        text-align: center;
+    }
+    .kudos {
+        display: flex;
+        justify-content: center;
+        padding-top: 0.5em;
+        padding-bottom: 0.5em;
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+    .cols {
+      display: flex;
+      align-content: center;
+      justify-content: center;
+      width: 65%;
+      align-items: center;
+      margin: 3em auto;
+      /* flex-direction: column; */
+    }
+    .col-img {
+      margin: 0 2em;
+    }
+    .col-txt {
+      text-align: left;
+      line-height: 2;
+    }
+
+    hr {
+      width: 80%;
+    }
+    @media screen and (max-width: 48em) {
+      .cols {
+        flex-direction: column;
+      }
+    }
+
+
+</style>
+
+<div>
+  <h1>{% trans "A New Kudos Is Being Minted" %}</h1>
+
+  <h3>
+    {% trans 'Hello!' %} {{kudos_transfer.from_name}} <br>
+    {% trans 'Your minted Kudos is now ready' %}
+  </h3>
+  <div>
+    <img src="{% static 'v2/images/emails/generic-kudos.png' %}" alt="" width="200" class="" style="margin:0 auto 3em; display: block;">
+  </div>
+</div>
+
+<div class="centered-contents kudos-box">
+  <div class="kudos">
+    <div class="kudos-contents">
+
+      {% if comments_public %}
+        <p>
+          {% trans "Description:" %}
+          <pre>{{comments_public}}</pre>
+        </p>
+      {% endif %}
+    </div>
+  </div>
+  <div style="margin: 3em;">
+    <a class="button" href="{{link}}">{% trans "Reveal Kudos" %}</a>
+  </div>
+</div>
+
+{% endblock %}

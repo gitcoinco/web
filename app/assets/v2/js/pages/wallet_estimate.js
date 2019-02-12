@@ -1,8 +1,12 @@
 window.addEventListener('load', function() {
-  if (web3.currentProvider.isTrust) {
-    $('#trust_label').show();
-  } else {
-    $('#metamask_label').show();
+  try {
+    if (web3.currentProvider.isTrust) {
+      $('#trust_label').show();
+    } else {
+      $('#metamask_label').show();
+    }
+  } catch (ignore) {
+    console.log('%c error: web3 not defined', 'color: red');
   }
   setTimeout(prefill_recommended_prices, 1000);
 
@@ -127,4 +131,3 @@ function prefill_recommended_prices() {
   $('#fast-recommended-gas').html('Fast $' + parseFloat(fast_data['usd']).toFixed(2) + ' ~' + fast_data['time'] + ' minutes');
   $('#fast-recommended-gas').data('amount-usd', parseFloat(fast_data['usd']).toFixed(2));
 }
-

@@ -25,10 +25,15 @@
   display: none;
 }
 
+.transaction .rain,
+.tips .rain {
+  position: fixed;
+}
+
 @media (min-width: 768px) {
   .rain {
     display: block;
-  } 
+  }
 }
 
 .rain:nth-of-type(3n+0) {
@@ -45,10 +50,10 @@
 
 .rain.grey {
   background: rgba(241,225,255,0.2);
-}	
+}
 
-.rain.purple {	
-  background-color: rgba(13,7,100, 0.2);	
+.rain.purple {
+  background-color: rgba(13,7,100, 0.2);
 }
 
 @-webkit-keyframes rains-fall {

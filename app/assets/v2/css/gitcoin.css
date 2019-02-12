@@ -31,6 +31,11 @@ h4,
   padding-left: 0;
 }
 
+.no-gutter .carousel div[class*='col-'] {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
 .white {
   color: #eff4ee !important;
 }
@@ -49,6 +54,14 @@ h4,
   background-size: cover;
   background-position: 0px 0px;
   background-repeat: no-repeat;
+  position: relative;
+}
+
+.index .header {
+  overflow: hidden;
+}
+
+.minihero {
   overflow: hidden;
   position: relative;
 }
@@ -69,10 +82,18 @@ h4,
   position: fixed;
   top: 0;
   left: 0;
+  /* right: 0; */
   z-index: -1;
   will-change: transform;
   overflow-y: hidden;
   overflow-x: hidden;
+}
+
+.gitcoin-background {
+  background: url("/static/v2/images/header-bg.png") #0d023b;
+  background-attachment: fixed;
+  background-position: center 0;
+  background-size: 2000px;
 }
 
 .text-white {
@@ -167,26 +188,23 @@ div.button-pink {
   color: #12c971;
   font-size: 2em;
   font-weight: 500;
-  font-style: italic;
-  letter-spacing: 0.1em;
 }
 
 .header-line-contributors {
-  letter-spacing: 0.5px;
-  font-weight: 700;
+  font-weight: 500;
+  color: #fff;
 }
 
 .subheader-line {
-  color: #70efbe;
+  color: #fff;
   font-size: 1.5em;
   font-weight: 500;
-  font-style: italic;
 }
 
 .subheader-line-contributors {
   color: #ffffff;
   margin-top: 0.6em;
-  font-weight: 100;
+  font-weight: 400;
 }
 
 .font-weight-300 {
@@ -199,6 +217,10 @@ div.button-pink {
   background-size: contain;
   background-position: bottom;
   background-repeat: no-repeat;
+}
+
+.bg-lightblue {
+  background-color: #EFF3F6;
 }
 
 .white-light-bg {
@@ -254,6 +276,10 @@ div.button-pink {
   font-size: 0.55rem;
 }
 
+.font-smallest {
+  font-size: 0.1rem;
+}
+
 .center-block {
   margin-left: auto;
   margin-right: auto;
@@ -301,7 +327,7 @@ div.button-pink {
 }
 
 .footer__main {
-  background-image: url('/static/v2/images/footer.jpg');
+  background-image: url('/static/v2/images/footer.png');
   background-color: #0d023b;
   background-size: contain;
   background-position: bottom;
@@ -343,7 +369,7 @@ div.button-pink {
   text-decoration: none;
   padding-right: 1rem;
   padding-left: 1rem;
-  font-size: 0.9rem !important;
+  font-size: 0.9rem;
 }
 
 .footer .nav-link:hover {
@@ -399,6 +425,14 @@ div.button-pink {
   cursor: pointer;
 }
 
+.gc-round-text-input {
+  height: 32px;
+  border: 1px solid #eee;
+  outline: none;
+  padding-left: 10px;
+  font-weight: 300;
+}
+
 .gc-border-black {
   border: 1px solid black !important;
 }
@@ -407,16 +441,12 @@ div.button-pink {
   border: 1px solid #37ea9c !important;
 }
 
-.gc-selected {
-  border: 1px solid #4ef6ad !important;
+.gc-border-blue {
+  border-color: #0D0764;
 }
 
-.gc-round-text-input {
-  height: 32px;
-  border: 1px solid #eee;
-  outline: none;
-  padding-left: 10px;
-  font-weight: 300;
+.gc-selected {
+  border: 1px solid #4ef6ad !important;
 }
 
 .gc-round-text-form {
@@ -467,10 +497,11 @@ div.button-pink {
   /* stylelint-disable-next-line */
   font-family: 'Font Awesome 5 Free';
   content: '\f107';
-  font-size: 16px;
+  font-size: 1.2em;
   margin-right: auto;
   margin-top: auto;
   float: right;
+  font-weight: 600;
 }
 
 .accordion.active:after {
@@ -481,8 +512,6 @@ div.button-pink {
   background-color: #FAFAFA;
   border-radius: 0px;
   padding: 0;
-  right: 0;
-  left: auto;
 }
 
 .dropdown-menu .dropdown-divider {
@@ -554,10 +583,21 @@ div.button-pink {
   }
 }
 
-/* AutoComplete */
-.select2-container .select2-selection--single {
-  height: 2.5rem !important
+.nav-tabs .nav-line {
+  color: #4A4A4A;
+  border-width: 0px 0px 3px 0;
 }
+.nav-tabs .nav-line.active {
+  color: #0D0764;
+  border-color: #0D0764;
+  background-color: transparent;
+}
+
+.border-transparent {
+  border-color: transparent;
+}
+
+/* AutoComplete */
 
 .select2-results__option,
 .select2-search--dropdown .select2-search__field {
@@ -565,6 +605,7 @@ div.button-pink {
 }
 
 .select2-container--default .select2-selection--single {
+  height: 2.5rem !important;
   border-radius: 2px !important;
   border-color: black !important;
 }
@@ -589,70 +630,38 @@ div.button-pink {
   top: 10px;
 }
 
-/* TODO: Remove Post landing revamp */
+@media (min-width: 768px) {
 
-#ios-banner {
-  background-color: #FFFFFF;
-}
-
-#ios-banner > .row {
-  margin-left: auto;
-  margin-right: auto;
-}
-
-#ios-banner img {
-  max-height: 14rem;
-}
-
-#ios-banner .row .right {
-  text-align: right;
-}
-
-#ios-banner .row .left {
-  text-align: left;
-  margin-top: auto;
-  margin-bottom: auto;
-  letter-spacing: 0;
-}
-
-#ios-banner .row .left h5 {
-  text-transform: capitalize;
-  letter-spacing: 0;
-}
-
-#ios-banner .row .left h5 ,
-#ios-banner .row .left a {
-  font-weight: bold;
-}
-
-#ios-banner .row .left a {
-  font-size: 14px;
-}
-
-@media (max-width: 767.98px) {
-
-  .navbar-nav .button--fund {
-    padding-left: 1rem;
-    text-align: left;
+  .d-md-block {
+    display: block!important;
   }
-
-  #ios-banner .row .right,
-  #ios-banner .row .left {
-    text-align: center;
+  .d-md-flex {
+    display: -ms-flexbox!important;
+    display: flex!important;
   }
-
-  #ios-banner .row .left {
-    margin-top: 0.625rem;
-    margin-bottom: 1rem;
-  }
-
-  #ios-banner h5 {
-    font-size: 1.2rem;
-    padding-bottom: 0.2rem;
-  }
-
-  #ios-banner > .row {
-    margin-bottom: 2rem;
+  .d-md-none {
+    display: none!important;
   }
 }
-/* TODO: End */
+
+/* dropdown animation */
+.animation {
+  -webkit-animation-duration: 80ms;
+  animation-duration: 80ms;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+}
+.slideDownIn {
+  -webkit-animation-name: slideDownIn;
+  animation-name: slideDownIn;
+}
+
+@keyframes slideDownIn {
+  0% {
+    -webkit-transform: translateY(-20px) scale(0.9, 0.7);
+  }
+  100% {
+    -webkit-transform: translateY(0) scale(1, 1);
+  }
+
+}

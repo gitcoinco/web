@@ -1,4 +1,4 @@
-FROM python:3.6-alpine3.7
+FROM python:3.7-alpine3.8
 # Specify label-schema specific arguments and labels.
 ARG BUILD_DATE
 ARG VCS_REF
@@ -17,7 +17,7 @@ ENV LANG en_US.utf8
 RUN apk add --no-cache --update bash dumb-init postgresql-client py3-magic && \
     pip install awscli s3cmd && \
     mkdir -p /jobs/backups
-WORKDIR "/jobs"
+WORKDIR /jobs
 COPY entry.sh /bin/entry.sh
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 CMD ["/bin/entry.sh"]

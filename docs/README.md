@@ -111,6 +111,32 @@ try posting a funded issue at [https://gitcoin.co/new](https://gitcoin.co/new).
 
 # Integrating Gitcoin
 
+Basics
+
+* [Getting Started With Gitcoin](https://medium.com/gitcoin/getting-started-with-gitcoin-fa7149f2461a)
+* [Fund an Issue on Gitcoin](https://medium.com/gitcoin/fund-an-issue-on-gitcoin-3d7245e9b3f3)
+
+Advanced
+
+* [Make a Contributor Friendly Repo](https://medium.com/gitcoin/how-to-build-a-contributor-friendly-project-927037f528d9)
+* [Set your OSS repos monetary policy](https://medium.com/gitcoin/setting-your-oss-repos-monetary-policy-9c493118cd34)
+* [Payout Several Contribs at Once](https://medium.com/gitcoin/payout-several-contributors-at-once-8742c13a8fdd)
+* [Crowdfund Bounties](https://medium.com/gitcoin/crowdfunding-bounties-fd821b04309d)
+* [Make a Gitcoin ENS Name](https://medium.com/gitcoin/personalize-your-own-gitcoin-ens-name-f8e5d7438e3e)
+
+Background
+
+* [Everything you need to know about Gitcoin](https://medium.com/gitcoin/everything-you-need-to-know-about-gitcoin-fe2e3e292a21)
+* [Our Vision: Open Source Money will BUIDL the OSS Ecosystem](https://medium.com/gitcoin/open-source-money-will-buidl-the-open-source-ecosystem-f4169def8748)
+
+Testimonials & Case Studies
+
+* [Augur](https://medium.com/gitcoin/gitcoin-testimonials-augur-9bfe97368a30)
+* [Balance](https://medium.com/gitcoin/gitcoin-testimonials-balance-6d027fe01b9f)
+* [uPort](https://medium.com/gitcoin/gitcoin-testimonials-uport-1510222f3744)
+* [Ethereum Foundation](https://medium.com/gitcoin/gitcoin-testimonials-ethereum-foundation-web3py-py-evm-561cd4da92a6)
+* [Market Protocol](https://medium.com/gitcoin/gitcoin-testimonials-market-protocol-722dbb263d19)
+
 ## Integrating the 'available work widget' on your repo.
 
 This widget will help you advertise that you support Gitcoin bounties, so that your community knows the best place to contribute.
@@ -149,35 +175,20 @@ We may introduce Arbitration [via Delphi](http://delphi.network/) at some point 
 
 ### of a Tip
 
-Note: Crowdfunded bounties + bulk payouts are secured by Tips (at least until Standard Bounties 2.0 is released).
+### or of a Kudos
+
+Note: 
+- Crowdfunded bounties + bulk payouts are secured by Tips (at least until Standard Bounties 2.0 is released).
+- Kudos are also secured by Tips
 
 This is the high level flow of a bounty on Gitcoin:
 
 <a href="https://www.draw.io/#G1sTJtQou5FYsHCabhb2JXHDTprpvvkUy0"><img src='https://github.com/gitcoinco/web/raw/master/docs/tip_flow.png'></a>
 
-# Legal
+# Licenses
 
-'''
-    Copyright (C) 2018 Gitcoin Core
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-'''
-
-# License
-
-[GNU AFFERO GENERAL PUBLIC LICENSE](../LICENSE)
+- [Code - GNU AFFERO GENERAL PUBLIC LICENSE](../LICENSE)
+- [Creative assets -- Attribution-NonCommercial-NoDerivatives 4.0 International](../app/assets/LICENSE.txt)
 
 <!-- Google Analytics -->
 <img src='https://ga-beacon.appspot.com/UA-102304388-1/gitcoinco/web' style='width:1px; height:1px;' >

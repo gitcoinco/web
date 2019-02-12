@@ -20,12 +20,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import os
 import socket
 
-from django.http import Http404
 from django.utils.translation import gettext_noop
 
 import environ
 import raven
+from boto3.session import Session
 from easy_thumbnails.conf import Settings as easy_thumbnails_defaults
+
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning, module='psycopg2')
 
 root = environ.Path(__file__) - 2  # Set the base directory to two levels.
 env = environ.Env(DEBUG=(bool, False), )  # set default values and casting
@@ -98,10 +101,31 @@ INSTALLED_APPS = [
     'linkshortener',
     'credits',
     'gitcoinbot',
-    'external_bounties',
     'dataviz',
     'impersonate',
-    'bounty_requests'
+    'grants',
+    'kudos',
+    'django.contrib.postgres',
+    'bounty_requests',
+    'perftools',
+    # wagtail
+    'taggit',
+    'modelcluster',
+    'wagtail.contrib.forms',
+    'wagtail.contrib.redirects',
+    'wagtail.embeds',
+    'wagtail.sites',
+    'wagtail.users',
+    'wagtail.snippets',
+    'wagtail.documents',
+    'wagtail.images',
+    'wagtail.search',
+    'wagtail.admin',
+    'wagtail.core',
+    'cms',
+    'revenue',
+    'event_ethdenver2019',
+    'inbox',
 ]
 
 MIDDLEWARE = [
@@ -119,7 +143,10 @@ MIDDLEWARE = [
     'ratelimit.middleware.RatelimitMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',
     'impersonate.middleware.ImpersonateMiddleware',
+    'wagtail.core.middleware.SiteMiddleware',
+    'wagtail.contrib.redirects.middleware.RedirectMiddleware'
 ]
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 ROOT_URLCONF = env('ROOT_URLCONF', default='app.urls')
 
@@ -130,13 +157,13 @@ AUTHENTICATION_BACKENDS = (
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': ['retail/templates/', 'external_bounties/templates/', 'dataviz/templates', ],
+    'DIRS': ['retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates'],
     'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': [
             'django.template.context_processors.debug', 'django.template.context_processors.request',
             'django.contrib.auth.context_processors.auth', 'django.contrib.messages.context_processors.messages',
-            'app.context.insert_settings', 'social_django.context_processors.backends',
+            'app.context.preprocess', 'social_django.context_processors.backends',
             'social_django.context_processors.login_redirect',
         ],
     },
@@ -170,7 +197,9 @@ REST_FRAMEWORK = {
         'anon': '1000/day',
     },
     'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'],
-    'DEFAULT_AUTHENTICATION_CLASSES': []
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
 }
 
 AUTH_USER_MODEL = 'auth.User'
@@ -213,49 +242,91 @@ if ENABLE_APM:
     if DEBUG and ENV == 'stage':
         ELASTIC_APM['DEBUG'] = True
 
-if ENV not in ['local', 'test']:
+AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
+AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', default='')
+AWS_DEFAULT_REGION = env('AWS_DEFAULT_REGION', default='us-west-2')
+AWS_LOG_GROUP = env('AWS_LOG_GROUP', default='Gitcoin')
+AWS_LOG_LEVEL = env('AWS_LOG_LEVEL', default='INFO')
+AWS_LOG_STREAM = env('AWS_LOG_STREAM', default=f'{ENV}-web')
+
+# Sentry
+SENTRY_USER = env('SENTRY_USER', default='')
+SENTRY_PASSWORD = env('SENTRY_PASSWORD', default='')
+SENTRY_ADDRESS = env('SENTRY_ADDRESS', default='')
+SENTRY_JS_DSN = env.str('SENTRY_JS_DSN', default='')
+SENTRY_PROJECT = env('SENTRY_PROJECT', default='')
+RELEASE = raven.fetch_git_sha(os.path.abspath(os.pardir)) if ENV == 'prod' else ''
+RAVEN_JS_VERSION = env.str('RAVEN_JS_VERSION', default='3.26.4')
+if SENTRY_ADDRESS and SENTRY_PROJECT:
+    RAVEN_CONFIG = {
+        'dsn': f'https://{SENTRY_USER}:{SENTRY_PASSWORD}@{SENTRY_ADDRESS}/{SENTRY_PROJECT}',
+    }
+    if RELEASE:
+        RAVEN_CONFIG['release'] = RELEASE
+
+if ENV not in ['local', 'test', 'staging', 'preview']:
+    boto3_session = Session(
+        aws_access_key_id=AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+        region_name=AWS_DEFAULT_REGION
+    )
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': True,
+        'filters': {
+            'host_filter': {
+                '()': 'app.log_filters.HostFilter',
+            }
+        },
         'root': {
-            'level': 'WARNING',
-            'handlers': ['sentry'],
+            'level': 'INFO',
+            'handlers': ['console', 'watchtower', ],
         },
         'formatters': {
+            'simple': {
+                'format': '%(asctime)s %(name)-12s [%(levelname)-8s] %(message)s',
+                'datefmt': '%Y-%m-%d %H:%M:%S'
+            },
+            'cloudwatch': {
+                'format': '%(hostname)s %(name)-12s [%(levelname)-8s] %(message)s',
+            },
             'verbose': {
-                'format': '%(levelname)s %(asctime)s %(module)s '
-                          '%(process)d %(thread)d %(message)s'
+                'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
             },
         },
         'handlers': {
-            'sentry': {
-                'level': 'ERROR',  # To capture more than ERROR, change to WARNING, INFO, etc.
-                'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
-            },
             'console': {
                 'level': 'DEBUG',
                 'class': 'logging.StreamHandler',
-                'formatter': 'verbose'
-            }
+                'formatter': 'verbose',
+            },
+            'watchtower': {
+                'level': AWS_LOG_LEVEL,
+                'class': 'watchtower.django.DjangoCloudWatchLogHandler',
+                'boto3_session': boto3_session,
+                'log_group': AWS_LOG_GROUP,
+                'stream_name': AWS_LOG_STREAM,
+                'filters': ['host_filter'],
+                'formatter': 'cloudwatch',
+            },
         },
         'loggers': {
             'django.db.backends': {
-                'level': 'WARN',
-                'handlers': ['console'],
-                'propagate': False,
-            },
-            'raven': {
-                'level': 'DEBUG',
-                'handlers': ['console'],
-                'propagate': False,
-            },
-            'sentry.errors': {
-                'level': 'DEBUG',
-                'handlers': ['console'],
+                'level': AWS_LOG_LEVEL,
+                'handlers': ['console', 'watchtower'],
                 'propagate': False,
             },
         },
     }
+
+    if SENTRY_PROJECT:
+        LOGGING['handlers']['sentry'] = {
+            'level': 'ERROR',  # To capture more than ERROR, change to WARNING, INFO, etc.
+            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
+        }
+        for logger in ['sentry.errors', 'raven']:
+            LOGGING['loggers'][logger] = {'level': 'DEBUG', 'handlers': ['console', 'watchtower'], 'propagate': False, }
+        LOGGING['root']['handlers'].append('sentry')
 
     if ENABLE_APM:
         LOGGING['handlers']['elasticapm'] = {
@@ -270,6 +341,7 @@ if ENV not in ['local', 'test']:
         LOGGING['root']['handlers'] = ['sentry', 'elasticapm']
 
     LOGGING['loggers']['django.request'] = LOGGING['loggers']['django.db.backends']
+    LOGGING['loggers']['django.security.*'] = LOGGING['loggers']['django.db.backends']
     for ia in INSTALLED_APPS:
         LOGGING['loggers'][ia] = LOGGING['loggers']['django.db.backends']
 else:
@@ -374,13 +446,23 @@ CACHEOPS = {
     'gas.*': {
         'ops': 'all',
         'timeout': 60 * 10,
-    }
+    },
+    'kudos.token': {
+        'ops': ('get', 'fetch', 'aggregate'),
+        'timeout': 60 * 5,
+    },
+    'kudos.kudostransfer': {
+        'ops': ('get', 'fetch', 'aggregate'),
+        'timeout': 60 * 5,
+    },
 }
 
 DJANGO_REDIS_IGNORE_EXCEPTIONS = env.bool('REDIS_IGNORE_EXCEPTIONS', default=True)
 DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = env.bool('REDIS_LOG_IGNORED_EXCEPTIONS', default=True)
 COLLECTFAST_CACHE = env('COLLECTFAST_CACHE', default='collectfast')
 COLLECTFAST_DEBUG = env.bool('COLLECTFAST_DEBUG', default=False)
+REDIS_URL = env('REDIS_URL', default='rediscache://redis:6379/0?client_class=django_redis.client.DefaultClient')
+SEMAPHORE_REDIS_URL = env('SEMAPHORE_REDIS_URL', default=REDIS_URL)
 
 CACHES = {
     'default': env.cache(
@@ -489,8 +571,22 @@ TWITTER_USERNAME = env('TWITTER_USERNAME', default='')  # TODO
 SLACK_TOKEN = env('SLACK_TOKEN', default='')  # TODO
 SLACK_WELCOMEBOT_TOKEN = env('SLACK_WELCOMEBOT_TOKEN', default='')  # TODO
 
-# Reporting Integrations
-MIXPANEL_TOKEN = env('MIXPANEL_TOKEN', default='')
+# OpenSea API
+OPENSEA_API_KEY = env('OPENSEA_API_KEY', default='')
+
+# Kudos
+KUDOS_OWNER_ACCOUNT = env('KUDOS_OWNER_ACCOUNT', default='0xD386793F1DB5F21609571C0164841E5eA2D33aD8')
+KUDOS_PRIVATE_KEY = env('KUDOS_PRIVATE_KEY', default='')
+KUDOS_CONTRACT_MAINNET = env('KUDOS_CONTRACT_MAINNET', default='0x2aea4add166ebf38b63d09a75de1a7b94aa24163')
+KUDOS_CONTRACT_RINKEBY = env('KUDOS_CONTRACT_RINKEBY', default='0x4077ae95eec529d924571d00e81ecde104601ae8')
+KUDOS_CONTRACT_ROPSTEN = env('KUDOS_CONTRACT_ROPSTEN', default='0xcd520707fc68d153283d518b29ada466f9091ea8')
+KUDOS_CONTRACT_TESTRPC = env('KUDOS_CONTRACT_TESTRPC', default='0x38c48d14a5bbc38c17ced9cd5f0695894336f426')
+KUDOS_NETWORK = env('KUDOS_NETWORK', default='mainnet')
+
+# Grants
+GRANTS_OWNER_ACCOUNT = env('GRANTS_OWNER_ACCOUNT', default='0xD386793F1DB5F21609571C0164841E5eA2D33aD8')
+GRANTS_PRIVATE_KEY = env('GRANTS_PRIVATE_KEY', default='')
+
 
 GA_PRIVATE_KEY_PATH = env('GA_PRIVATE_KEY_PATH', default='')
 GA_PRIVATE_KEY = ''
@@ -514,27 +610,10 @@ GOOGLE_ANALYTICS_AUTH_JSON = {
 }
 HOTJAR_CONFIG = {'hjid': env.int('HOTJAR_ID', default=0), 'hjsv': env.int('HOTJAR_SV', default=0), }
 
-# Sentry
-SENTRY_USER = env('SENTRY_USER', default='')
-SENTRY_PASSWORD = env('SENTRY_PASSWORD', default='')
-SENTRY_ADDRESS = env('SENTRY_ADDRESS', default='')
-SENTRY_JS_DSN = env.str('SENTRY_JS_DSN', default='')
-SENTRY_PROJECT = env('SENTRY_PROJECT', default='')
-RELEASE = raven.fetch_git_sha(os.path.abspath(os.pardir)) if SENTRY_USER else ''
-RAVEN_JS_VERSION = env.str('RAVEN_JS_VERSION', default='3.26.4')
-if SENTRY_ADDRESS and SENTRY_PROJECT:
-    RAVEN_CONFIG = {
-        'dsn': f'https://{SENTRY_USER}:{SENTRY_PASSWORD}@{SENTRY_ADDRESS}/{SENTRY_PROJECT}',
-        'release': RELEASE,
-    }
-
 # List of github usernames to not count as comments on an issue
 IGNORE_COMMENTS_FROM = ['gitcoinbot', ]
 
 # optional: only needed if you run the activity-report management command
-AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
-AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', default='')
-
 AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME', default='')
 AWS_S3_CACHE_MAX_AGE = env.str('AWS_S3_CACHE_MAX_AGE', default='15552000')
 AWS_QUERYSTRING_EXPIRE = env.int('AWS_QUERYSTRING_EXPIRE', default=3600)
@@ -577,6 +656,7 @@ COLO_ACCOUNT_ADDRESS = env('COLO_ACCOUNT_ADDRESS', default='')  # TODO
 COLO_ACCOUNT_PRIVATE_KEY = env('COLO_ACCOUNT_PRIVATE_KEY', default='')  # TODO
 
 IPFS_HOST = env('IPFS_HOST', default='ipfs.infura.io')
+JS_IPFS_HOST = IPFS_HOST if IPFS_HOST != 'ipfs' else 'localhost'
 IPFS_SWARM_PORT = env.int('IPFS_SWARM_PORT', default=4001)
 IPFS_UTP_PORT = env.int('IPFS_UTP_PORT', default=4002)
 IPFS_API_PORT = env.int('IPFS_API_PORT', default=5001)
@@ -586,9 +666,6 @@ IPFS_API_ROOT = env('IPFS_API_ROOT', default='/api/v0')
 IPFS_API_SCHEME = env('IPFS_API_SCHEME', default='https')
 
 STABLE_COINS = ['DAI', 'USDT', 'TUSD']
-
-BLOCKED_USERS = env('BLOCKED_USERS', default=[])
-
 
 # Silk Profiling and Performance Monitoring
 ENABLE_SILK = env.bool('ENABLE_SILK', default=False)
@@ -614,3 +691,6 @@ if ENABLE_SILK:
             'name': 'Index View',
         }]
     SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT = env.int('SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT', default=10)
+
+TAGGIT_CASE_INSENSITIVE = env.bool('TAGGIT_CASE_INSENSITIVE', default=True)
+WAGTAIL_SITE_NAME = 'Gitcoin'

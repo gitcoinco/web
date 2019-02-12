@@ -19,21 +19,11 @@
 <html>
   <head>
     {% include 'shared/tag_manager_1.html' %}
+    {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
-    <title>{{title}} | Gitcoin</title>
-    <meta name="description" content="{{card_desc}}">
-    <meta charset="utf-8" />
-    <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-    <meta name="theme-color" content="#ffffff">
-    <!--[if lte IE 8]><script src="{% static "onepager/js/html5shiv.js" %}"></script><![endif]-->
-    <link rel="stylesheet" href="{% static "v2/css/lib/typography.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/gitcoin.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
     <link rel="stylesheet" href="{% static "onepager/css/main.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/box_redeem.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/rain.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/jquery.select2.min.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/forms/button.css" %}">
-    <link rel="stylesheet" href="{% static "cookielaw/css/cookielaw.css" %}">
 
     <style>
       .d-flex {
@@ -71,46 +61,36 @@
       var static_url = "{{ STATIC_URL }}";
       var media_url = "{{ MEDIA_URL }}";
     </script>
-    <script src="{% static "v2/js/jquery.js" %}"></script>
-    <script src="{% static "v2/js/work_with_gitcoin.js" %}"></script>
-    <!--[if lte IE 9]><link rel="stylesheet" href="{% static "onepager/css/ie9.css" %}"><![endif]-->
-    <!--[if lte IE 8]><link rel="stylesheet" href="{% static "onepager/css/ie8.css" %}"><![endif]-->
     <noscript>
       <link rel="stylesheet" href="{% static "onepager/css/noscript.css" %}">
     </noscript>
-    {% include 'shared/favicon.html' %}
   </head>
-  <body id="yge" class="{{ class }} g-font-muli">
+  <body id="yge" class="{{ class }} tips transaction g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
     {% include 'shared/analytics.html' with suppress_sumo=1 %}
     {% block 'world' %} {% endblock %}
-    {% include 'shared/rain.html' with class="color" %}
+
     <!-- Wrapper -->
-    <div id="wrapper">
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    <div id="wrapper" class="container-fluid">
       {% include 'shared/onepager_auth.html' with source='authed' %}
       {% cookielaw_banner %}
       <!-- Main -->
       {% block 'main' %} {% endblock %}
-      <footer id="footer">
-        <ul class="copyright">
-          <li>
-            <a href="/">&copy; Gitcoin.co</a>
-          </li>
-          {% if not hide_send_tip %}
-          <li>
-            <a href="{% url "tip" %}">{% trans "Send Tip" %}</a>
-          </li>
-          {% endif %}
-        </ul>
+      <footer id="footer" class="copyright d-flex font-smaller-1 justify-content-center mt-5 p-4">
+        <a href="/">&copy; Gitcoin.co</a>
+        {% if not hide_send_tip %}
+          <a href="{% url "tip" %}">{% trans "Send Tip" %}</a>
+        {% endif %}
       </footer>
     </div>
+    {% include 'shared/rain.html' with class="color" %}
     <!-- Scripts -->
     <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
+    {% include 'shared/footer_scripts.html' with slim=1 %}
+
     {% block 'scripts' %}{% endblock %}
-    {% include 'shared/sentry.html' %}
-    <script src="{% static "v2/js/jquery.select2.min.js" %}"></script>
-    <script src="{% static "cookielaw/js/cl.js" %}"></script>
-    <!--[if lte IE 8]><script src="{% static "onepager/js/respond.min.js" %}"></script><![endif]-->
+
     <script>
       if ('addEventListener' in window) {
         window.addEventListener('load', function () {
@@ -119,22 +99,16 @@
         document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
       }
     </script>
-    {% if recommend_gas_price %}
-    <script type="text/javascript">
-      setInterval(function () {
-        defaultGasPrice = parseInt(10 ** 9 * {{ recommend_gas_price }});
-      }, 1000);
-    </script>
-    {% endif %}
-    {% include 'shared/messages.html' %}
 
     <script>
+      var host = ("{{ ipfs_config.host }}" == "ipfs" ? "localhost" : "{{ ipfs_config.host }}");
       var ipfsConfig = {
-        host: "{{ ipfs_config.host }}",
+        host: host,
         port: {{ ipfs_config.port }},
         protocol: "{{ ipfs_config.protocol }}",
         root: "{{ ipfs_config.root }}"
       };
     </script>
+    <script src="{% static "v2/js/metamask-approval.js" %}"></script>
   </body>
 </html>

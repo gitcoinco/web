@@ -54,14 +54,25 @@ var wait_for_metadata = function(callback) {
 };
 
 $(document).ready(function() {
+
+  // upon keypress for the select2, gotta make sure it opens
+  setTimeout(function() {
+    $('.select2').keypress(function() {
+      $(this).siblings('select').select2('open');
+    });
+  }, 100);
+
+  if (typeof userSearch != 'undefined') {
+    userSearch('.username-search', true);
+  }
   set_metadata();
   // jquery bindings
-  $('#advanced_toggle').click(function() {
+  $('#advanced_toggle').on('click', function() {
     advancedToggle();
   });
   $('#amount').on('keyup blur change', updateEstimate);
   $('#token').on('change', updateEstimate);
-  $('#send').click(function(e) {
+  $('#send').on('click', function(e) {
     e.preventDefault();
     if ($(this).hasClass('disabled'))
       return;
@@ -141,7 +152,6 @@ function isNumeric(n) {
 
 
 function sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, is_for_bounty_fulfiller) {
-  mixpanel.track('Tip Step 2 Click', {});
   if (typeof web3 == 'undefined') {
     _alert({ message: gettext('You must have a web3 enabled browser to do this.  Please download Metamask.') }, 'warning');
     failure_callback();

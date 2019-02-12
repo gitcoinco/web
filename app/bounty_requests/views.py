@@ -24,6 +24,7 @@ from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
+from linkshortener.models import Link
 from marketing.mails import new_bounty_request
 from ratelimit.decorators import ratelimit
 
@@ -37,6 +38,14 @@ def bounty_request(request):
     user = request.user if request.user.is_authenticated else None
     profile = request.user.profile if user and hasattr(request.user, 'profile') else None
     network = request.GET.get('network', 'rinkeby')
+
+    comments_prefill = None
+    if request.GET.get('code', False):
+        code = request.GET.get('code')
+        ls = Link.objects.filter(shortcode=code, comments__icontains='Gitcoin Request Coin', uses__lt=5)
+        if ls.exists():
+            ls = ls.first()
+            comments_prefill = f"{ls.comments} : {ls.shortcode}"
 
     if request.body:
         if not user or not profile or not profile.handle:
@@ -63,6 +72,7 @@ def bounty_request(request):
     params = {
         'form': form,
         'title': _('Request a Bounty'),
+        'comments_prefill': comments_prefill,
         'card_title': _('Gitcoin Requests'),
         'card_desc': _('Have an open-source issue that you think would benefit the community? '
                        'Suggest it be given a bounty!')

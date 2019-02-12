@@ -9,6 +9,10 @@
   cursor: pointer;
 }
 
+.tag-lg {
+  padding: 6px 16px;
+}
+
 .tag p {
   margin-bottom: 1px;
 }
@@ -27,6 +31,33 @@
   color: #fff;
 }
 
+.tag.warning {
+  background-color: #7E1518;
+  color: #fff;
+}
+
+.tag.warning:hover {
+  background-color: #D3696C;
+}
+
+.tag.success {
+  background-color: #216A12;
+  color: #fff;
+}
+
+.tag.success:hover {
+  background-color: #68B159;
+}
+
+.tag.in-progress {
+  background-color: #162955;
+  color: #fff;
+}
+
+.tag.in-progress:hover {
+  background-color: #4F628E;
+}
+
 .tag.token {
   background-color: #e7f0fa;
   color: var(--gc-blue);
@@ -42,6 +73,42 @@
 }
 
 .tag.token > a {
-  position: absolute;
-  margin-top: 0.3rem;
+  height: 0;
+  line-height: 1.5rem;
+  float: right;
+}
+
+.keyword-group {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tag.keyword {
+  display: inline-block;
+  min-width: 0;
+  font-size: 11px;
+  background-color: #E7F0FA;
+  color: #6587AE;
+}
+
+.locations-tags {
+  color: white;
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.locations-tags .filter-tag {
+  display: inline-block;
+  background-color: #1AB56D;
+  margin: 5px;
+  border-radius: 3px;
+  font-weight: bolder;
+  padding: 2px 10px 5px;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.locations-tags .filter-tag i {
+  margin-right: 8px;
 }

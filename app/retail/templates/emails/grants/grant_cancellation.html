@@ -1,0 +1,82 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static grants_extra %}
+
+{% block content %}
+
+<style>
+  hr {
+    width: 80%;
+    height: 2px;
+    border-radius: 25px;
+    border: none;
+    background-color: #D2D2D2;
+  }
+
+  #grow-oss {
+    margin-top: 50px;
+    margin-bottom: 40px;
+  }
+
+  img {
+    max-width: 4rem;
+  }
+
+  #grant-logo {
+    max-width: 25rem;
+    width: 100%;
+    margin-top: 2rem;
+  }
+
+  .grant-button {
+    padding: 12px 36px;
+    font-size: 12px;
+    border-radius: 3px;
+    text-decoration: none;
+    background-color: #0D0764;
+    color: white;
+    font-weight: 600;
+  }
+
+  .grant-link {
+    margin-top: 3rem;
+  }
+
+</style>
+<img src="{% static "v2/images/grant-ended.png" %}" alt="{% trans "Grant Ended" %}" title="{% trans "Grant Ended" %}" width="75px" height="75px">
+<h1 style="text-transform: none;">{% trans "Grant" %} '{{ grant.title }}' {% trans "has been cancelled" %}.</h1>
+<a href="{% url 'grants:details' grant.id grant.slug %}">
+  <img id="grant-logo" src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}" alt="grant logo" >
+</a>
+<p>{% trans "Thank you for using Gitcoin, we hope you'll come back to build more open source software!" %}</p>
+<p>{% trans "You can see the grant cancellation transaction on etherscan" %}
+  {% if grant.network == 'mainnet' %}
+    <a href="http://etherscan.io/tx/{{ grant.cancel_tx_id }}">{% trans "here." %}</a>
+  {% else %}
+    <a href="http://{{ grant.network }}.etherscan.io/tx/{{ grant.cancel_tx_id }}">{% trans "here." %}</a>
+  {% endif %}
+</p>
+<p class="grant-link">
+  <a class="grant-button" href="{% url 'grants:details' grant.pk grant.slug %}">{% trans "View Inactive Grant" %}</a>
+</p>
+<br>
+
+<hr>
+
+{% endblock %}

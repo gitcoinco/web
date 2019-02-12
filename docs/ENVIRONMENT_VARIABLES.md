@@ -19,6 +19,10 @@ All of the environment variables used by this application conform to the [`djang
 | --- | --- | --- | --- |
 | FORCE_PROVISION | Whether or not to force provisioning even if the container has been previously provisioned | `bool` | False |
 | FORCE_GET_PRICES | Whether or not to force pulling fresh conversion rate data from etherdelta and poloniex | `bool` | False |
+| DISABLE_INITIAL_CACHETABLE | Whether or not to disable the initial createcachetable | `bool` | False |
+| DISABLE_INITIAL_COLLECTSTATIC | Whether or not to disable the initial collectstatic | `bool` | False |
+| DISABLE_INITIAL_MIGRATE | Whether or not to disable the initial data migration | `bool` | False |
+| DISABLE_INITIAL_LOADDATA | Whether or not to disable the initial loaddata fixture import | `bool` | False |
 
 ## Amazon Web Services
 
@@ -134,3 +138,15 @@ If you opt to modify the port or listener interface, you must update your `launc
 | --- | --- | --- | --- |
 | FAUCET_AMOUNT | The amount of ETH to be distributed for approved faucet requests. | `float` | .0005 |
 | GITTER_TOKEN | The Gitter chat API token. | `str` | False |
+
+
+## Kudos
+
+| Variable | Description | Type | Default |
+| --- | --- | --- | --- |
+| KUDOS_NETWORK | The kudos network you will use `rinkeby` for local | `str` | mainnet |
+| KUDOS_OWNER_ACCOUNT | Wallet address to own the kudos. | `str` | `0xD386793F1DB5F21609571C0164841E5eA2D33aD8` |
+| KUDOS_LOCAL_SYNC | Turns The kudos listener on/off | `on` or `off` | None |
+
+
+

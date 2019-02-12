@@ -10,7 +10,7 @@ $(document).ready(function() {
     $('#admin_faucet_form').submit();
   };
 
-  $('#submitFaucet').click(function(e) {
+  $('#submitFaucet').on('click', function(e) {
     e.preventDefault();
     $('.js-submit').attr('disabled', 'disabled');
     $('#loadingImg').show();
@@ -20,7 +20,7 @@ $(document).ready(function() {
 
     decimals = 6;
     faucetAmount = Math.round(faucetAmount * 10 ** decimals) / 10 ** decimals;
-
+    console.log(fundingAccount, 'from:to', destinationAccount);
     web3.eth.sendTransaction({
       from: fundingAccount,
       to: destinationAccount,

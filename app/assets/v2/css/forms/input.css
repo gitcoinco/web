@@ -1,10 +1,16 @@
 .form__input {
-  background-color: #fff;
-  border-radius: 3px;
-  border: 1px solid #0D0764;
+  background-color: #FFF;
+  border-radius: 2px;
+  border: 1px solid #D3D3D3;
   font-size: 14px;
   padding: 5px 7px;
   width: 100%;
+  letter-spacing: -0.09px;
+  outline: none;
+}
+
+.form__input-lg {
+  font-size: 1rem;
 }
 
 .form__input_lg {

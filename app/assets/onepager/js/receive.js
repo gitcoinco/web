@@ -25,7 +25,7 @@ window.onload = function() {
     }
     ipfs.catText(document.ipfs_key_to_secret, function(err, key2) {
       if (err) {
-        _alert('could not reach IPFS.  please try again later.', 'error');
+        _alert('Could not reach IPFS.  please try again later.', 'error');
         return;
       }
       document.priv_key = combine_secrets(key2, document.gitcoin_secret);
@@ -33,8 +33,14 @@ window.onload = function() {
   });
   waitforWeb3(function() {
     if (document.web3network != document.network) {
-      _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
-    } else {
+      if (document.web3network == 'locked') {
+        _alert({ message: gettext('Please authorize Metamask in order to continue.')}, 'info');
+        approve_metamask();
+      } else {
+        _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
+      }
+
+    } else if (!$('#forwarding_address').val()) {
       $('#forwarding_address').val(web3.eth.coinbase);
     }
     $('#network').val(document.web3network);
@@ -69,6 +75,11 @@ $(document).ready(function() {
 
     if (document.web3network != document.network) {
       _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
+      unloading_button($(this));
+      return;
+    }
+
+    if (!confirm(gettext('Please confirm that ' + forwarding_address + ' is the address for which you wish to redeem this tip.'))) {
       unloading_button($(this));
       return;
     }

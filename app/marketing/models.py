@@ -51,15 +51,15 @@ class EmailSubscriber(SuperModel):
     active = models.BooleanField(default=True)
     newsletter = models.BooleanField(default=True)
     preferences = JSONField(default=dict)
-    metadata = JSONField(default=dict)
+    metadata = JSONField(default=dict, blank=True)
     priv = models.CharField(max_length=30, default='')
-    github = models.CharField(max_length=255, default='')
+    github = models.CharField(max_length=255, default='', blank=True)
     keywords = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     profile = models.ForeignKey(
         'dashboard.Profile',
         on_delete=models.CASCADE,
         related_name='email_subscriptions',
-        null=True)
+        null=True, blank=True)
     form_submission_records = JSONField(default=list, blank=True)
 
     def __str__(self):
@@ -175,7 +175,7 @@ class LeaderboardRankQuerySet(models.QuerySet):
 
     def active(self):
         """Filter results to only active LeaderboardRank objects."""
-        return self.select_related('profile', 'profile__avatar').filter(active=True)
+        return self.select_related('profile').filter(active=True)
 
 
 class LeaderboardRank(SuperModel):
@@ -188,13 +188,21 @@ class LeaderboardRank(SuperModel):
         related_name='leaderboard_ranks',
     )
     github_username = models.CharField(max_length=255)
-    leaderboard = models.CharField(max_length=255)
-    amount = models.FloatField()
+    leaderboard = models.CharField(max_length=255, db_index=True)
+    amount = models.FloatField(db_index=True)
     active = models.BooleanField()
     count = models.IntegerField(default=0)
     rank = models.IntegerField(default=0)
+    tech_keywords = ArrayField(models.CharField(max_length=50), blank=True, default=list)
 
     objects = LeaderboardRankQuerySet.as_manager()
+
+    class Meta:
+
+        index_together = [
+            ["leaderboard", "active"],
+        ]
+
 
     def __str__(self):
         return f"{self.leaderboard}, {self.github_username}: {self.amount}"
@@ -204,27 +212,46 @@ class LeaderboardRank(SuperModel):
         return f"https://github.com/{self.github_username}"
 
     @property
-    def is_user_based(self):
-        profile_keys = ['_tokens', '_keywords', '_cities', '_countries', '_continents']
+    def is_not_user_based(self):
+        profile_keys = ['_tokens', '_keywords', '_cities', '_countries', '_continents', '_kudos']
         return any(sub in self.leaderboard for sub in profile_keys)
 
     @property
+    def is_a_kudos(self):
+        return 'https://gitcoin.co/kudos/' == self.github_username[0:25]
+
+    @property
     def at_ify_username(self):
-        if self.is_user_based:
+        if not self.is_not_user_based:
             return f"@{self.github_username}"
+        if self.is_a_kudos:
+            pk = self.github_username.split('/')[4]
+            from kudos.models import Token
+            return Token.objects.get(pk=pk).humanized_name
         return self.github_username
 
     @property
     def avatar_url(self):
-        if self.profile and self.profile.avatar:
-            return self.profile.avatar.get_avatar_url()
+        if self.is_a_kudos:
+            pk = self.github_username.split('/')[4]
+            from kudos.models import Token
+            return Token.objects.get(pk=pk).img_url
         key = self.github_username
 
         # these two types won't have images
-        if not self.is_user_based:
+        if self.is_not_user_based:
             key = 'None'
 
         return f"/dynamic/avatar/{key}"
+
+    @property
+    def url(self):
+        if self.is_a_kudos:
+            pk = self.github_username.split('/')[4]
+            from kudos.models import Token
+            return Token.objects.get(pk=pk).url
+        ret_url = f"/profile/{self.github_username}"
+        return ret_url
 
 
 class Match(SuperModel):
@@ -245,6 +272,9 @@ class Match(SuperModel):
 class Keyword(SuperModel):
 
     keyword = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"{self.keyword}; created => {self.created_on}"
 
 
 class SlackUser(SuperModel):

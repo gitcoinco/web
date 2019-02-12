@@ -1,0 +1,242 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License as published
+ by the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU Affero General Public License for more details.
+
+ You should have received a copy of the GNU Affero General Public License
+ along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static humanize grants_extra %}
+
+{% block content %}
+
+<style>
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+
+  hr {
+    width: 80%;
+    height: 2px;
+    border-radius: 25px;
+    border: none;
+    background-color: #D2D2D2;
+  }
+
+  .grant-info {
+    padding-top: 30px;
+    padding-bottom: 1%;
+  }
+
+  .grant-info a img {
+    margin-bottom: 10px;
+  }
+
+  .grant-info-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #0D0764;
+  }
+
+  .grant-description {
+    max-width: 50rem;
+    margin: 1.5rem auto;
+    text-align: center;
+  }
+
+  #grow-oss {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .progress {
+    width: 60%;
+    margin-left: 20%;
+    margin-top: 50px;
+    padding-bottom: 75px;
+  }
+
+  .progress > h3 {
+    font-size: 26px;
+    color: #5B3AF0;
+  }
+
+  .progressbar {
+    height: 15px;
+    background-color: #D8D8D8;
+    border-radius: 2.7px;
+  }
+
+  .progress-completed {
+    height: 100%;
+    background-color: #0FCE7C;
+    border-radius: 2.7px;
+    float: left;
+  }
+
+  .progress-removed {
+    height: 100%;
+    background-color: #CF0E0E;
+    border-top-right-radius: 2.7px;
+    border-bottom-right-radius: 2.7px;
+    float: left;
+  }
+
+  .funding {
+    float: left;
+    text-align: left;
+  }
+
+  .funding > h4 {
+    line-height: 0px;
+    text-align: left;
+    color: #0D0764;
+    padding-top: -20px;
+  }
+
+  .progressbar-line {
+    width: 1px;
+    height: 50px;
+    background-color: #979797;
+    float: left;
+    margin-right: 20px;
+  }
+
+  .progressbar-position-margin {
+    padding-left: 20%;
+    padding-right: 20%;
+    margin-top: 4rem;
+  }
+
+  .progressbar-position {
+    transform: translateY(160%);
+  }
+
+  .progressbar-position > p {
+    line-height: 0px;
+    color: #BBBDBF;
+    text-align: left;
+  }
+
+  .progressbar-position > h4 {
+    line-height: 0px;
+    color: #0D0764;
+    padding-top: -20px;
+  }
+
+  .funding > p {
+    line-height: 0px;
+    color: #BBBDBF;
+  }
+
+  #currentFunding {
+    width: 57.5%;
+  }
+
+  #goalFunding {
+    width: 42.5%;
+    text-align: right;
+  }
+
+  #goalFunding h4 {
+    text-align: right;
+  }
+
+  #grant-logo {
+    max-width: 25rem;
+    width: 100%;
+    margin-top: 2rem;
+  }
+
+  .grant-button {
+    padding: 12px 36px;
+    font-size: 12px;
+    border-radius: 3px;
+    text-decoration: none;
+    background-color: #0D0764;
+    color: white;
+    font-weight: 600;
+  }
+
+  .grant-link {
+    margin-top: 3rem;
+  }
+</style>
+<img src="{% static "v2/images/subscription-terminated.png" %}" alt="{% trans "Subscription Terminated." %}" title="{% trans "Subscription Terminated." %}">
+<h1>{% trans "Grant" %} '{{ grant.title }}' {% trans "has been cancelled by its creator." %}</h1>
+<p style="margin-bottom:1.25rem;">{% trans "Your subscription for the project has been cancelled and you will no longer be charged." %}</p>
+<hr>
+
+<div class="grant-info">
+  <a href="{% url 'grants:details' grant.id grant.slug %}">
+    <img id="grant-logo" src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}" alt="grant logo" >
+  </a>
+  <br>
+  <a class="grant-info-name" href="{% url 'grants:details' grant.id grant.slug %}">
+    {{ grant.title }}
+  </a>
+  <p class="grant-description">
+    {{ grant.description }}
+  </p>
+  <div class="progressbar-position-margin">
+    <div class="progressbar-position" style="margin-left: {{ grant.percentage_done|floatformat:0 }}%;">
+      <div class="progressbar-line"></div>
+      <p>{% trans "Your Contribution" %}</p>
+      <h4>
+        <strong>{{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }}</strong>
+      </h4>
+    </div>
+  </div>
+  <div class="progress">
+    <div class="progressbar">
+      <div class="progress-completed" style="width: {{ grant.percentage_done|floatformat:0 }}%;">
+      </div>
+      <!-- #TODO - Change object that takes the percentage value of removed contribution. -->
+      <div class="progress-removed" style="width: {{ grant.percentage_removed|floatformat:0 }}%;">
+      </div>
+    </div>
+    <div class="funding" id="currentFunding">
+      <h4>
+        <strong>{{ grant.amount_received }} {% trans "DAI" %}</strong>
+      </h4>
+      <p>{% trans "Current" %}</p>
+    </div>
+    <div class="funding" id="goalFunding">
+      <h4>
+        <strong>{{ grant.amount_goal }} {% trans "DAI" %}</strong>
+      </h4>
+      <p>{% trans "Goal" %}</p>
+    </div>
+  </div>
+</div>
+
+<br>
+
+<p>{% trans "You can see the grant cancellation transaction on etherscan" %}
+  {% if subscription.network == 'mainnet' %}
+    <a href="http://etherscan.io/tx/{{ grant.cancel_tx_id }}">{% trans "here." %}</a>
+  {% else %}
+    <a href="http://{{ grant.network }}.etherscan.io/tx/{{ grant.cancel_tx_id }}">{% trans "here." %}</a>
+  {% endif %}
+</p>
+<p class="grant-link">
+  <a class="grant-button" href="{% url 'grants:details' grant.pk grant.slug %}">{% trans "View Inactive Grant" %}</a>
+</p>
+<br>
+<hr>
+{% endblock %}

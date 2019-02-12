@@ -17,7 +17,16 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 END
 
-apt-get update
-apt-get install postgresql-client -y
+apk --update add postgresql-client
 
-psql postgres -p 5432 -h db -U postgres
+export $(grep -v '^#' app/app/.env | xargs)
+
+
+# Settings
+PGUSER=$(echo $DATABASE_URL | awk -F '://' '{print $2}'  | awk -F ':' '{print $1}')
+PGHOST=$(echo $DATABASE_URL | awk -F '://' '{print $2}'  | awk -F ':' '{print $2}'  | awk -F '@' '{print $2}')
+PGPORT=$(echo $DATABASE_URL | awk -F '://' '{print $2}'  | awk -F ':' '{print $3}'  | awk -F ':' '{print $1}' | awk -F '/' '{print $1}')
+PGPASS=$(echo $DATABASE_URL | awk -F '://' '{print $2}'  | awk -F ':' '{print $2}' | awk -F '@' '{print $1}')
+
+
+psql gitcoin -p $PGPORT -h $PGHOST -U $PGUSER

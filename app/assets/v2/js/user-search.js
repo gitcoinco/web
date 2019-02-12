@@ -1,5 +1,19 @@
-function userSearch(elem, showAddress) {
+function userSearch(elem, showAddress, theme, initialData, allowClear) {
+  var themeChoice = theme || undefined;
   var selectItem = elem || '.username-search';
+
+  if (initialData) {
+    initialData = initialData.map(
+      function(userHandle) {
+        return {
+          'id': userHandle,
+          'text': userHandle,
+          'avatar_url': '/dynamic/avatar/' + userHandle,
+          'selected': true
+        };
+      }
+    );
+  }
 
   $(selectItem).each(function() {
     if (!$(this).length) {
@@ -26,10 +40,12 @@ function userSearch(elem, showAddress) {
         },
         cache: true
       },
-      placeholder: 'Search by username',
+      data: initialData,
+      allowClear: allowClear,
+      theme: themeChoice,
+      placeholder: 'Search by Github/Gitcoin username',
       minimumInputLength: 3,
       escapeMarkup: function(markup) {
-
         return markup;
       },
       templateResult: formatUser,
@@ -65,7 +81,7 @@ function userSearch(elem, showAddress) {
       if (user.id) {
         selected = `
           <img class="rounded-circle" src="${user.avatar_url || static_url + 'v2/images/user-placeholder.png'}" width="20" height="20"/>
-          ${user.text}`;
+          <span class="ml-2">${user.text}</span>`;
       } else {
         selected = user.text;
       }
@@ -90,7 +106,3 @@ function userSearch(elem, showAddress) {
     }
   });
 }
-
-$('document').ready(function() {
-  userSearch();
-});

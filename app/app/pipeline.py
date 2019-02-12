@@ -17,17 +17,20 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from django.conf import settings
 from django.core.exceptions import SuspiciousOperation
 
 from app.utils import setup_lang, sync_profile
+from dashboard.utils import is_blocked
 
 
 def save_profile(backend, user, response, request, *args, **kwargs):
     """Associate a Profile with a User."""
     if backend.name == 'github':
         handle = user.username
-        if handle in settings.BLOCKED_USERS:
+        if is_blocked(handle):
+            raise SuspiciousOperation('You cannot login')
+
+        if not user.is_active:
             raise SuspiciousOperation('You cannot login')
 
         sync_profile(handle, user, hide_profile=False)
