@@ -69,7 +69,7 @@
   <div id="receove_eth_done" class="text-center" {% if not kudos_transfer.receive_txid %} style="display:none;" {%endif%}>
     <h1>{% trans "Congrats!" %}</h1>
     <p>You've received a "{{ coupon.token.humanized_name }}" Kudos via transaction <span id="trans_id">{{kudos_transfer.receive_txid}}</span>.</p>
-    <p>{% trans "Check back at the ETHDenver event page to see your progress!" %}</p>
+    <p><a href="/ethdenver">{% trans "Check back at the ETHDenver event page to see your progress!" %}</a></p>
   </div>
 {% if kudos_transfer.receive_txid %}
   <script>
