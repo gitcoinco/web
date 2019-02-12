@@ -34,7 +34,7 @@ from retail.emails import (
     render_funder_stale, render_gdpr_reconsent, render_gdpr_update, render_grant_cancellation_email, render_kudos_email,
     render_match_email, render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection,
     render_new_bounty_roundup, render_new_grant_email, render_new_supporter_email, render_new_work_submission,
-    render_notify_ownership_change, render_quarterly_stats, render_reserved_issue,
+    render_notify_ownership_change, render_quarterly_stats, render_reserved_issue, render_share_bounty,
     render_start_work_applicant_about_to_expire, render_start_work_applicant_expired, render_start_work_approved,
     render_start_work_new_applicant, render_start_work_rejected, render_subscription_terminated_email,
     render_successful_contribution_email, render_support_cancellation_email, render_thank_you_for_supporting_email,
@@ -485,6 +485,23 @@ def gdpr_reconsent(email):
         from_name="Kevin Owocki (Gitcoin.co)",
         categories=['marketing', func_name()],
     )
+
+
+def share_bounty(emails, msg, profile):
+    for email in emails:
+        to_email = email
+        from_email = profile.email
+        subject = "You have been invited to work on a bounty."
+        html, text = render_share_bounty(to_email, msg, profile)
+        send_mail(
+            from_email,
+            to_email,
+            subject,
+            text,
+            html,
+            from_name=f"@{profile.handle}",
+            categories=['transactional', func_name()],
+        )
 
 
 def new_reserved_issue(from_email, user, bounty):

@@ -552,6 +552,9 @@ def onboard(request, flow):
     elif flow == 'profile':
         onboard_steps = ['avatar']
 
+    if request.user.is_authenticated and getattr(request.user, 'profile', None):
+        profile = request.user.profile
+
     steps = []
     if request.GET:
         steps = request.GET.get('steps', [])
@@ -576,6 +579,7 @@ def onboard(request, flow):
         'title': _('Onboarding Flow'),
         'steps': steps or onboard_steps,
         'flow': flow,
+        'profile': profile,
     }
     params.update(get_avatar_context_for_user(request.user))
     return TemplateResponse(request, 'ftux/onboard.html', params)
@@ -742,6 +746,37 @@ def social_contribution_modal(request):
     )
     params['promo_text'] = promo_text
     return TemplateResponse(request, 'social_contribution_modal.html', params)
+
+@csrf_exempt
+@require_POST
+def social_contribution_email(request):
+    """Social Contribution Email
+
+    Returns:
+        JsonResponse: Success in sending email.
+    """
+    from marketing.mails import share_bounty
+
+    print (request.POST.getlist('usersId[]', []))
+    emails = [] 
+    user_ids = request.POST.getlist('usersId[]', [])
+    for user_id in user_ids:
+        profile = Profile.objects.get(id=int(user_id))
+        emails.append(profile.email)
+    msg = request.POST.get('msg', '')
+    try:
+        share_bounty(emails, msg, request.user.profile)
+        response = {
+            'status': 200,
+            'msg': 'email_sent',
+        }
+    except Exception as e:
+        logging.exception(e)
+        response = {
+            'status': 500,
+            'msg': 'Email not sent',
+        }
+    return JsonResponse(response)
 
 
 def payout_bounty(request):
@@ -1133,8 +1168,14 @@ def profile_job_opportunity(request, handle):
     """
     try:
         profile = profile_helper(handle, True)
-        profile.job_search_status = json.loads(request.body).get('job_search_status', None)
-        profile.show_job_status = json.loads(request.body).get('show_job_status', False)
+        profile.job_search_status = request.POST.get('job_search_status', None)
+        profile.show_job_status = request.POST.get('show_job_status', None) == 'true'
+        profile.job_type = request.POST.get('job_type', None)
+        profile.remote = request.POST.get('remote', None) == 'on'
+        profile.job_salary = float(request.POST.get('job_salary', '0').replace(',', ''))
+        profile.job_location = json.loads(request.POST.get('locations'))
+        profile.linkedin_url = request.POST.get('linkedin_url', None)
+        profile.resume = request.FILES.get('job_cv', None)
         profile.save()
     except (ProfileNotFoundException, ProfileHiddenException):
         raise Http404

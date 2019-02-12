@@ -44,21 +44,30 @@
           {% trans "Feeling creative?" %} <a href="https://github.com/gitcoinco/kudosbadges/issues/new" target="_blank" class="">{% trans "Mint Your Own!" %}</a>
         </div>
       </div>
+      {% endif %}
+
       <script>
-        if (window.location.search === "?q=konami+code") {
+        if (window.location.search === "?q=konami+code" || window.location.search === "?q=ethdenver") {
           let cursor = 0;
+          // UUDDLRLRBA
           const KONAMI_CODE = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
           document.addEventListener('keydown', (e) => {
-            cursor = (e.keyCode == KONAMI_CODE[cursor]) ? cursor + 1 : 0;
-            if (cursor == KONAMI_CODE.length) activate();
+            cursor = (e.keyCode == KONAMI_CODE[cursor]) ? cursor + 1 : 0; 
+            if (cursor == KONAMI_CODE.length) activate(window.location.search);
           });
 
-          function activate () {
-            window.open('https://gitcoin.co/kudos/redeem/konamicode2018');
+          function activate (keyword) {
+            console.log('konami')
+            if(window.location.search === "?q=konami+code"){
+              window.open('https://gitcoin.co/kudos/redeem/konamicode2018');
+            }
+            if(window.location.search === "?q=ethdenver"){
+              window.open('https://gitcoin.co/kudos/redeem/top_secret_bufficorn_kudos_2019a');
+            }
           }
         }
       </script>
-      {% endif %}
+      
       <div class="row justify-content-center">
         {% for listing in listings %}
           <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">

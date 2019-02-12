@@ -73,7 +73,6 @@ $(document).ready(function() {
       if (data.token_address != '0x0000000000000000000000000000000000000000') {
         selected_token = data.token_address;
         deployedToken = new web3.eth.Contract(compiledToken.abi, data.token_address);
-        $('#sub_token_address').val(data.token_address);
       } else {
         selected_token = data.denomination;
         deployedToken = new web3.eth.Contract(compiledToken.abi, data.denomination);
@@ -81,7 +80,10 @@ $(document).ready(function() {
       }
 
       deployedToken.methods.decimals().call(function(err, decimals) {
-
+        if (err) {
+          _alert('The token you selected is not a valid ERC20 token', 'error');
+          return;
+        }
         let realGasPrice = Math.ceil($('#gasPrice').val() * Math.pow(10, 9));
 
         $('#gas_price').val(realGasPrice);
@@ -110,14 +112,14 @@ $(document).ready(function() {
           }).on('transactionHash', function(transactionHash) {
             $('#sub_new_approve_tx_id').val(transactionHash);
             const linkURL = etherscan_tx_url(transactionHash);
-            var token_address = $('#js-token').length ? $('#js-token').val() : $('#sub_token_address').val();
+
             let data = {
               'contributor_address': $('#contributor_address').val(),
               'amount_per_period': $('#amount').val(),
               'real_period_seconds': realPeriodSeconds,
               'frequency': $('#frequency_count').val(),
               'frequency_unit': $('#frequency_unit').val(),
-              'token_address': token_address,
+              'token_address': selected_token,
               'token_symbol': $('#token_symbol').val(),
               'gas_price': $('#gas_price').val(),
               'sub_new_approve_tx_id': transactionHash,
@@ -243,6 +245,8 @@ const updateSummary = (element) => {
   $('#summary-amount').html($('input#amount').val() ? $('input#amount').val() : 0);
   $('#summary-frequency').html($('input#period').val() ? $('input#period').val() : 0);
   $('#summary-frequency-unit').html($('#frequency_unit').val());
-  $('#summary-token').html($('#js-token option:selected').text());
+  if ($('#token_symbol').val() === 'Any Token') {
+    $('#summary-token').html($('#js-token option:selected').text());
+  }
 
 };
