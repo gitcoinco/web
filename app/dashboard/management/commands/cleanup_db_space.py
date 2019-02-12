@@ -21,7 +21,7 @@ from django.utils import timezone
 
 from economy.models import ConversionRate
 from gas.models import GasGuzzler, GasProfile
-from marketing.models import Stat
+from marketing.models import LeaderboardRank, Stat
 
 
 class Command(BaseCommand):
@@ -56,3 +56,8 @@ class Command(BaseCommand):
                 created_on__hour=1,
             ).delete()
         print(f'Stat: {result}')
+
+        result = LeaderboardRank.objects.filter(
+                created_on__lt=self.get_then(14),
+            ).delete()
+        print(f'LeaderboardRank: {result}')
