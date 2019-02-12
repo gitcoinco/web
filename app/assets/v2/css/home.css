@@ -1,3 +1,23 @@
+.navbar {
+  background-color: #0d023b;
+}
+
+.navbar .interior .dropdown-item span {
+  color: #9B9B9B;
+  font-size: 12px;
+}
+
+.navbar .interior .dropdown-item:hover span {
+  color: #fff;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link:active {
+  border-bottom: 3px solid #fff;
+  border-radius: 0;
+  background-color: transparent;
+}
+
 .homepage .container {
   padding-bottom: 4rem;
   padding-top: 4rem;
@@ -244,6 +264,13 @@ figure:hover::before {
 @keyframes shine {
   100% {
     left: 125%;
+  }
+}
+
+@media (min-width: 992px) {
+  .mx-auto .nav-item {
+    margin-left: 0.75rem;
+    margin-right: 0.75rem;
   }
 }
 
