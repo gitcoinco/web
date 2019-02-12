@@ -41,7 +41,7 @@ from django.views.decorators.http import require_GET, require_POST
 
 from app.utils import clean_str, ellipses
 from avatar.utils import get_avatar_context_for_user
-from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, profile_helper
+from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, profile_helper, avoid_segfault
 from economy.utils import convert_token_to_usdt
 from eth_utils import to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
@@ -620,7 +620,9 @@ def accept_bounty(request):
         title=_('Process Issue'),
     )
     params['open_fulfillments'] = bounty.fulfillments.filter(accepted=False)
-    return TemplateResponse(request, 'process_bounty.html', params)
+    resp = TemplateResponse(request, 'process_bounty.html', params)
+    avoid_segfault()
+    return resp
 
 
 def contribute(request):
@@ -645,7 +647,9 @@ def contribute(request):
         active='contribute_bounty',
         title=_('Contribute'),
     )
-    return TemplateResponse(request, 'contribute_bounty.html', params)
+    resp = TemplateResponse(request, 'contribute_bounty.html', params)
+    avoid_segfault()
+    return resp
 
 
 def invoice(request):
@@ -715,7 +719,9 @@ def social_contribution(request):
         title=_('Social Contribute'),
     )
     params['promo_text'] = promo_text
-    return TemplateResponse(request, 'social_contribution.html', params)
+    resp = TemplateResponse(request, 'social_contribution.html', params)
+    avoid_segfault()
+    return resp
 
 
 def social_contribution_modal(request):
@@ -745,7 +751,9 @@ def social_contribution_modal(request):
         title=_('Social Contribute'),
     )
     params['promo_text'] = promo_text
-    return TemplateResponse(request, 'social_contribution_modal.html', params)
+    resp = TemplateResponse(request, 'social_contribution_modal.html', params)
+    avoid_segfault()
+    return resp
 
 @csrf_exempt
 @require_POST
@@ -801,7 +809,9 @@ def payout_bounty(request):
         active='payout_bounty',
         title=_('Payout'),
     )
-    return TemplateResponse(request, 'payout_bounty.html', params)
+    resp = TemplateResponse(request, 'payout_bounty.html', params)
+    avoid_segfault()
+    return resp
 
 
 def bulk_payout_bounty(request):
@@ -827,7 +837,9 @@ def bulk_payout_bounty(request):
         title=_('Advanced Payout'),
     )
 
-    return TemplateResponse(request, 'bulk_payout_bounty.html', params)
+    resp = TemplateResponse(request, 'bulk_payout_bounty.html', params)
+    avoid_segfault()
+    return resp
 
 
 @require_GET
@@ -858,7 +870,9 @@ def fulfill_bounty(request):
         active='fulfill_bounty',
         title=_('Submit Work'),
     )
-    return TemplateResponse(request, 'bounty/fulfill.html', params)
+    resp = TemplateResponse(request, 'bounty/fulfill.html', params)
+    avoid_segfault()
+    return resp
 
 
 def increase_bounty(request):
@@ -888,7 +902,9 @@ def increase_bounty(request):
 
     params['is_funder'] = json.dumps(is_funder)
 
-    return TemplateResponse(request, 'bounty/increase.html', params)
+    resp = TemplateResponse(request, 'bounty/increase.html', params)
+    avoid_segfault()
+    return resp
 
 
 def cancel_bounty(request):
@@ -912,7 +928,9 @@ def cancel_bounty(request):
         active='kill_bounty',
         title=_('Cancel Bounty'),
     )
-    return TemplateResponse(request, 'bounty/kill.html', params)
+    resp = TemplateResponse(request, 'bounty/kill.html', params)
+    avoid_segfault()
+    return resp
 
 
 def helper_handle_admin_override_and_hide(request, bounty):
@@ -1726,7 +1744,7 @@ def redeem_coin(request, shortcode):
 
 def new_bounty(request):
     """Create a new bounty."""
-    from .utils import clean_bounty_url, avoid_segfault
+    from .utils import clean_bounty_url
     bounty_params = {
         'newsletter_headline': _('Be the first to know about new funded issues.'),
         'issueURL': clean_bounty_url(request.GET.get('source') or request.GET.get('url', '')),
