@@ -557,6 +557,7 @@ def leaderboard(request):
         }
     
     # setup dict
+    # TODO: in the future, store all of this in perftools.models.JSONStore
     handles = Subscription.objects.all().values_list('contributor_profile__handle', flat=True)    
     default_dict = {
         'rank': None,
