@@ -1765,7 +1765,7 @@ def change_bounty(request, bounty_id):
         else:
             raise Http404
 
-    keys = ['experience_level', 'project_length', 'bounty_type',
+    keys = ['experience_level', 'project_length', 'bounty_type', 'featuring_date',
             'permission_type', 'project_type', 'reserved_for_user_handle', 'is_featured']
 
     if request.body:
@@ -1792,6 +1792,10 @@ def change_bounty(request, bounty_id):
         new_reservation = False
         for key in keys:
             value = params.get(key, '')
+            if key == 'featuring_date':
+                value = timezone.make_aware(
+                    timezone.datetime.fromtimestamp(value),
+                    timezone=UTC)
             old_value = getattr(bounty, key)
             if value != old_value:
                 setattr(bounty, key, value)

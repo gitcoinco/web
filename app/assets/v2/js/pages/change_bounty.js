@@ -79,6 +79,7 @@ $(document).ready(function() {
 
       if (formData['featuredBounty'] === '1') {
         formData['is_featured'] = true;
+        formData['featuring_date'] = new Date().getTime() / 1000;
       } else {
         formData['is_featured'] = false;
       }
