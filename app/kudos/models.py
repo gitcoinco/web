@@ -290,11 +290,12 @@ class Token(SuperModel):
             bool: Wehther a send should be enabled for this user
         """
         are_kudos_available = self.num_clones_allowed != 0 and self.num_clones_available_counting_indirect_send != 0
+        if not are_kudos_available:
+            return False
         is_enabled_for_user_in_general = self.send_enabled_for_non_gitcoin_admins
-        is_enabled_for_this_user = is_enabled_for_user_in_general
-        if user.is_authenticated and user.is_staff:
-            is_enabled_for_this_user = True
-        return are_kudos_available and is_enabled_for_this_user
+        is_enabled_for_this_user = hasattr(user, 'profile') and TransferEnabledFor.objects.filter(profile=user.profile).exists()
+        is_enabled_because_staff = user.is_authenticated and user.is_staff
+        return is_enabled_for_this_user or is_enabled_for_user_in_general or is_enabled_because_staff
 
 
 class KudosTransfer(SendCryptoAsset):
@@ -460,3 +461,20 @@ class BulkTransferRedemption(SuperModel):
     def __str__(self):
         """Return the string representation of a model."""
         return f"coupon: {self.coupon} redeemed_by: {self.redeemed_by}"
+
+class TransferEnabledFor(SuperModel):
+    """Model that represents the ability to send a Kudos, i
+    f token.send_enabled_for_non_gitcoin_admins is true.
+
+    """
+
+    token = models.ForeignKey(
+        'kudos.Token', related_name='transfers_enabled', on_delete=models.CASCADE, 
+    )
+    profile = models.ForeignKey(
+        'dashboard.Profile', related_name='transfers_enabled', on_delete=models.CASCADE, 
+    )
+
+    def __str__(self):
+        """Return the string representation of a model."""
+        return f"{self.token} <> {self.profile}"
