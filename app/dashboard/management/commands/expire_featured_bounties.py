@@ -22,6 +22,7 @@ from django.utils import timezone
 
 from dashboard.models import Bounty
 
+
 class Command(BaseCommand):
 
     help = 'expires featured bounties which have been featured for more than 14 days'
