@@ -212,7 +212,7 @@ class LeaderboardRank(SuperModel):
         return f"https://github.com/{self.github_username}"
 
     @property
-    def is_user_based(self):
+    def is_not_user_based(self):
         profile_keys = ['_tokens', '_keywords', '_cities', '_countries', '_continents', '_kudos']
         return any(sub in self.leaderboard for sub in profile_keys)
 
@@ -222,7 +222,7 @@ class LeaderboardRank(SuperModel):
 
     @property
     def at_ify_username(self):
-        if not self.is_user_based:
+        if not self.is_not_user_based:
             return f"@{self.github_username}"
         if self.is_a_kudos:
             pk = self.github_username.split('/')[4]
@@ -239,7 +239,7 @@ class LeaderboardRank(SuperModel):
         key = self.github_username
 
         # these two types won't have images
-        if not self.is_user_based:
+        if self.is_not_user_based:
             key = 'None'
 
         return f"/dynamic/avatar/{key}"
