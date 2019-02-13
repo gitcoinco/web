@@ -109,9 +109,8 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     return response
 
 
-def featured_funded_bounty(bounty):
-    from_email = settings.CONTACT_EMAIL
-    to_email = bounty.bounty_owner_email
+def featured_funded_bounty(from_email, bounty):
+    to_email = bounty.get('bounty_owner_email')
     cur_language = translation.get_language()
 
     try:
