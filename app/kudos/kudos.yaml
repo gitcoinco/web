@@ -2978,6 +2978,27 @@
   image: the_journey_begins.svg
   to_address: '0x96706EB471F875a9a41442f358d3B34ba02F868b'
   artist: the_headspace
+- name: trekkie_bot
+  description: Awarded to those who 'Boldly Go Where No One Has Gone Before!'
+  priceFinney: 25
+  numClonesAllowed: 250
+  tags:
+    - Trekkie
+    - Star Trek
+    - Future
+    - Robots
+  artist: mladen
+  image: trekkie_bot.svg
+- name: molochDAO
+  description: Awarded to contributors who have had a notable contribution to the MolochDAO.
+  priceFinney: 15
+  numClonesAllowed: 250
+  to_address: '0x512E07A093aAA20Ba288392EaDF03838C7a4e522'
+  tags:
+    - Moloch
+    - DAO
+  artist: mladen
+  image: moloch.svg
 
 
 
