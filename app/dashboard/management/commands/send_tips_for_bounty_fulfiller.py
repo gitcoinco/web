@@ -103,6 +103,7 @@ class Command(BaseCommand):
                             msg = f'auto assigneed on {timezone.now()} to via recipients of {bpts_ids}; as done ' \
                                   'bounty w no bountyfulfillment'
                             print("     ", msg)
+                            # TODO: email recipients of the cloned tip
                             tip.metadata['payout_comments'] = msg
                             tip.save()
                     elif bounty.status == 'cancelled':
