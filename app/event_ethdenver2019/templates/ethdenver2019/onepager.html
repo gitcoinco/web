@@ -120,8 +120,24 @@
             padding-top: 3em;
 justify-self: center;
     }
+
+    #overlay {
+      position: fixed;
+      display: table;
+      left: 10%;
+      width: 80%;
+      top: 10%;
+      height: 80%;
+      background-color: rgba(0,0,0,.75);
+      color: rgba(255,255,255,1);
+      z-index: 2;
+      cursor: pointer;
+    }
     </style>
     <script>
+    function off() {
+      document.getElementById("overlay").style.display = "none";
+    }
   {% if page1 %}
   var walletAddr = undefined;
   var getStarted = function(){
@@ -402,35 +418,9 @@ justify-self: center;
     </div>
   {% endif %}
   {% if page3 %}
-    <div class="container" id="page3">
-      <div class="row text-center">
-        <div class="ethdenver2019-prog-header col-12">
-          <div class="container">
-            <div class="row mt-4">
-              <div class="col-12">
-                <img src="{% static 'v2/images/event_ethdenver2019/ethdenver_logo.png' %}" class="rounded mx-auto d-block">
-              </div>
-            </div>
-            <div class="row mt-5 mb-5">
-              <div class="col-12">
-                <div class="ethdenver2019-texts-headers">
-                  SET CHALLENGES
-                </div>
-              </div>
-            </div>
-            <div class="row mt-5 mb-5">
-              <div class="col-12">
-                <img src="{% avatar_url profile %}" width="100px" height="100px" class="circle-cutter">
-              </div>
-              <div class="col-12 ethdenver2019-texts-white">
-                {{ profile.handle }}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+  <div id="overlay" onclick="off()">
+    <div class="container align-middle" id="page3" style="display: table-cell;">
       <div class="ethdenver2019-kudos mt-4 mb-4 align-middle text-center">
-        {% if success %}
         <div class="row">
           <div class="col-12">
             <img src="{% static 'v2/images/event_ethdenver2019/bufficorn-joy.png' %}">
@@ -438,31 +428,20 @@ justify-self: center;
         </div>
         <div class="row">
           <div class="col-12">
-            <div class="ethdenver2019-texts-headers ethdenver2019-texts-black mb-2 mt-2">
-              Horray!
+            <div class="ethdenver2019-texts-headers ethdenver2019-texts-white mb-2 mt-2">
+              Hooray!
             </div>
-            <div class="ethdenver2019-texts-black">
+            <div class="ethdenver2019-texts-white">
               You completed the ETHDenver2019 challenge!
             </div>
             <div>
-              Go to the front desk and show them that you received this kudos:
+              Go to the front desk and show them that you received this message to claim your prize.
             </div>
           </div>
         </div>
-        {% else %}
-         <div class="row">
-          <div class="col-12 sadsmiley">
-            :-(
-          </div>
-        </div>
-         <div class="row mt-5">
-          <div class="col-12">
-            You did not collect all challenge kudos yet. Try again later.
-          </div>
-        </div>
-        {% endif %}
       </div>
     </div>
+  </div>
   {% endif %}
   </body>
 </html>
