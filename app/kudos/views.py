@@ -50,7 +50,7 @@ from web3 import Web3
 
 from .forms import KudosSearchForm
 from .helpers import get_token
-from .models import BulkTransferCoupon, BulkTransferRedemption, KudosTransfer, Token
+from .models import BulkTransferCoupon, BulkTransferRedemption, KudosTransfer, Token, TransferEnabledFor
 
 logger = logging.getLogger(__name__)
 
@@ -203,6 +203,8 @@ def details(request, kudos_id, name):
         context['card_desc'] = kudos.description
         context['avatar_url'] = kudos.img_url
         context['kudos'] = kudos
+        if not kudos.send_enabled_for_non_gitcoin_admins:
+            context['send_enabled_for'] = TransferEnabledFor.objects.filter(token=kudos)
 
     return TemplateResponse(request, 'kudos_details.html', context)
 

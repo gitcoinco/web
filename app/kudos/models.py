@@ -293,7 +293,7 @@ class Token(SuperModel):
         if not are_kudos_available:
             return False
         is_enabled_for_user_in_general = self.send_enabled_for_non_gitcoin_admins
-        is_enabled_for_this_user = hasattr(user, 'profile') and TransferEnabledFor.objects.filter(profile=user.profile).exists()
+        is_enabled_for_this_user = hasattr(user, 'profile') and TransferEnabledFor.objects.filter(profile=user.profile, token=self).exists()
         is_enabled_because_staff = user.is_authenticated and user.is_staff
         return is_enabled_for_this_user or is_enabled_for_user_in_general or is_enabled_because_staff
 
