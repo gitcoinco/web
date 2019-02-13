@@ -47,6 +47,9 @@ def ethdenver2019(request):
     recv_addr = 'invalid'
     if request.GET:
         recv_addr = request.GET.get('eth_addr', 'invalid')
+    if not recv_addr.lower().startswith("0x"):
+        recv_addr = f"0x{recv_addr}"
+        
     kudos_select = KudosTransfer.objects.filter(receive_address=recv_addr).all()
 
     i_kudos_item = 0
