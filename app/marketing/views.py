@@ -35,6 +35,7 @@ from django.utils.translation import LANGUAGE_SESSION_KEY
 from django.utils.translation import gettext_lazy as _
 
 from app.utils import sync_profile
+from cacheops import cached_view
 from dashboard.models import Profile, TokenApproval
 from dashboard.utils import create_user_action
 from enssubdomain.models import ENSSubdomainRegistration
@@ -658,6 +659,7 @@ def _leaderboard(request):
     return leaderboard(request, '')
 
 
+@cached_view(timeout=60*16)
 def leaderboard(request, key=''):
     """Display the leaderboard for top earning or paying profiles.
 
@@ -672,6 +674,7 @@ def leaderboard(request, key=''):
         key = 'quarterly_earners'
 
     keyword_search = request.GET.get('keyword')
+    limit = request.GET.get('limit', 25)
 
     titles = {
         'quarterly_payers': _('Top Payers'),
@@ -711,6 +714,7 @@ def leaderboard(request, key=''):
 
     amount = ranks.values_list('amount').annotate(Max('amount')).order_by('-amount')
     items = ranks.order_by('-amount')
+
     top_earners = ''
     technologies = set()
     for profile_keywords in ranks.values_list('tech_keywords'):
@@ -728,8 +732,9 @@ def leaderboard(request, key=''):
 
     profile_keys = ['_tokens', '_keywords', '_cities', '_countries', '_continents']
     is_linked_to_profile = any(sub in key for sub in profile_keys)
+
     context = {
-        'items': items,
+        'items': items[0:limit],
         'titles': titles,
         'selected': title,
         'is_linked_to_profile': is_linked_to_profile,
@@ -741,4 +746,5 @@ def leaderboard(request, key=''):
         'podium_items': items[:3] if items else [],
         'technologies': technologies
     }
+    
     return TemplateResponse(request, 'leaderboard.html', context)
