@@ -158,7 +158,7 @@ def get_avatar_context():
                     'HatShort-bunnyears'
                 ], ['HatShort-menorah'], ['HatShort-pilgrim'], ['HatShort-santahat'], ['HatShort-elfhat'], [
                     'Earring-0'
-                ], ['Earring-1'], ['EarringBack-2', 'Earring-2'], ['Earring-3'], ['Earring-4'], [
+                ], ['Earring-1'], ['EarringBack-2', 'Earring-2'], ['Earring-3'], ['Earring-4'], ['Earring-5'], [
                     'Masks-jack-o-lantern'
                 ], ['Masks-guy-fawkes'], ['Masks-bunny'], ['Masks-blackpanther'], ['Masks-jack-o-lantern-lighted'], [
                     'Masks-wolverine_inspired'
