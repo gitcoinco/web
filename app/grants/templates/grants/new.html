@@ -64,7 +64,7 @@
                 {% csrf_token %}
                 <div class="form__group-horizontal pb-3">
                   <label class="font-body" for="input_title">{% trans "Title of Project" %}</label>
-                  <input class="form__input form__input-lg " type="text" id="input_title" name="input_title" required />
+                  <input class="form__input form__input-lg " maxlength="150" type="text" id="input_title" name="input_title" required />
                 </div>
 
                 <div class="form__group-horizontal pb-3">
