@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -765,7 +765,7 @@ def social_contribution_email(request):
         emails.append(profile.email)
     msg = request.POST.get('msg', '')
     try:
-        share_bounty(emails, msg)
+        share_bounty(emails, msg, request.user.profile)
         response = {
             'status': 200,
             'msg': 'email_sent',
@@ -1765,7 +1765,7 @@ def change_bounty(request, bounty_id):
         else:
             raise Http404
 
-    keys = ['experience_level', 'project_length', 'bounty_type',
+    keys = ['experience_level', 'project_length', 'bounty_type', 'featuring_date',
             'permission_type', 'project_type', 'reserved_for_user_handle', 'is_featured']
 
     if request.body:
@@ -1792,6 +1792,10 @@ def change_bounty(request, bounty_id):
         new_reservation = False
         for key in keys:
             value = params.get(key, '')
+            if key == 'featuring_date':
+                value = timezone.make_aware(
+                    timezone.datetime.fromtimestamp(value),
+                    timezone=UTC)
             old_value = getattr(bounty, key)
             if value != old_value:
                 setattr(bounty, key, value)

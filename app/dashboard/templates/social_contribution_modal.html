@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -32,7 +32,7 @@
                 <button class="button button__small button--primary" data-copyclipboard="#shareText">Copy Text</button>
               </div>
 
-              <div class="center-block w-75 my-5">
+              <div class="center-block w-75 my-5 {% if not user.is_authenticated %}d-none{%endif%}">
                 <p class="h5">...or invite a Gitcoiner by username</p>
                 <div class="form__select2 g-multiselect">
                   <select id="" class="form__input form__input-lg  users_share" name="users_share[]" multiple="multiple">

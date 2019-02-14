@@ -61,6 +61,9 @@ from .sitemaps import sitemaps
 urlpatterns = [
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
 
+    # create bounty
+    url(r'^create?', dashboard.views.new_bounty, name='create_bounty'),  # TODO: Remove
+
     # inbox
     path('inbox/', include('inbox.urls', namespace='inbox')),
 
