@@ -552,6 +552,7 @@ def onboard(request, flow):
     elif flow == 'profile':
         onboard_steps = ['avatar']
 
+    profile = None
     if request.user.is_authenticated and getattr(request.user, 'profile', None):
         profile = request.user.profile
 
