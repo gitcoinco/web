@@ -157,6 +157,25 @@
     {% endif %}
     start_kudos_levitate();
     document.suppress_kudos_levitate_hover = true;
+    
+    var disableSubmit = function(){ 
+      $(".text-center #receive").attr('disabled', 'disabled').css('background-color', "#aaaaaa");
+    }
+
+    $("#receive").on('click', disableSubmit);
+    $("#receive").on('tap', disableSubmit);
+    $("#receove_eth form").on('submit', disableSubmit);
+
+    setTimeout(function(){
+      if(typeof web3 != 'undefined'){
+        web3.eth.getCoinbase(function(err, result) {
+          $('#forwarding_address').val(result);
+        });
+      }
+
+    },1000);
+
+
   })
 </script>
 {% endblock %}
