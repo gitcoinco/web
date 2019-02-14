@@ -98,7 +98,7 @@
                   </div>
                   <h1 class="grant__title font-title-lg {% if is_admin %} mt-4 {% endif %}">
                     {% if is_admin %}
-                      <textarea id="form--input__title" class="p-0 m-0 inline-edit" disabled>{{ grant.title }}</textarea>
+                      <textarea id="form--input__title" class="p-0 m-0 inline-edit" maxlength="150" disabled>{{ grant.title }}</textarea>
                     {% else %}
                       <span>{{ grant.title }}</span>
                     {% endif %}
