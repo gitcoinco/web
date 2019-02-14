@@ -154,7 +154,7 @@ $(document).ready(function() {
                 web3.utils.toChecksumAddress(selected_token), // token denomination / address
                 web3.utils.toTwosComplement(amountSTR), // data.amount_per_period
                 web3.utils.toTwosComplement(realPeriodSeconds), // data.period_seconds
-                web3.utils.toTwosComplement(realGasPrice), // data.gas_price
+                0, // zero-cost metatx relay
                 web3.utils.toTwosComplement(nonce) // nonce
               ];
 
