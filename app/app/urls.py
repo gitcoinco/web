@@ -61,6 +61,9 @@ from .sitemaps import sitemaps
 urlpatterns = [
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
 
+    # create bounty
+    url(r'^create?', dashboard.views.new_bounty, name='create_bounty'),  # TODO: Remove
+
     # inbox
     path('inbox/', include('inbox.urls', namespace='inbox')),
 
@@ -87,6 +90,11 @@ urlpatterns = [
 
     # api views
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
+    url(
+        r'^api/v0.1/social_contribution_email',
+        dashboard.views.social_contribution_email,
+        name='social_contribution_email'
+    ),
     url(
         r'^api/v0.1/profile/(.*)?/jobopportunity',
         dashboard.views.profile_job_opportunity,
@@ -226,7 +234,9 @@ urlpatterns = [
     re_path(r'^modal/extend_issue_deadline/?', dashboard.views.extend_issue_deadline, name='extend_issue_deadline'),
 
     # brochureware views
-    url(r'^homepage/$', retail.views.index, name='index'),  # Update path to ^$
+    re_path(r'^homepage/$', retail.views.index, name='index'),  # Update path to ^$
+    re_path(r'^pricing/$', retail.views.pricing, name='pricing'),
+    re_path(r'^subscribe/$', retail.views.subscribe, name='subscribe'),
     re_path(r'^about/?', retail.views.about, name='about'),
     re_path(r'^mission/?', retail.views.mission, name='mission'),
     re_path(r'^vision/?', retail.views.vision, name='vision'),
@@ -366,6 +376,7 @@ urlpatterns = [
     ),
     path('_administration/email/start_work_expired', retail.emails.start_work_expired, name='start_work_expired'),
     path('_administration/email/gdpr_reconsent', retail.emails.gdpr_reconsent, name='gdpr_reconsent'),
+    path('_administration/email/share_bounty', retail.emails.share_bounty, name='share_bounty'),
     path('_administration/email/new_tip/resend', retail.emails.resend_new_tip, name='resend_new_tip'),
     re_path(
         r'^_administration/process_accesscode_request/(.*)$',
@@ -409,6 +420,7 @@ urlpatterns = [
     re_path(r'^settings/ens/?', marketing.views.ens_settings, name='ens_settings'),
     re_path(r'^settings/account/?', marketing.views.account_settings, name='account_settings'),
     re_path(r'^settings/tokens/?', marketing.views.token_settings, name='token_settings'),
+    re_path(r'^settings/job/?', marketing.views.job_settings, name='job_settings'),
     re_path(r'^settings/(.*)?', marketing.views.email_settings, name='settings'),
 
     # marketing views

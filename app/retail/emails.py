@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -592,6 +592,34 @@ def render_gdpr_reconsent(to_email):
     return response_html, response_txt
 
 
+def render_share_bounty(to_email, msg, from_profile):
+    """Render the share bounty email template.
+
+    Args:
+        to_email: user to send the email to.
+        msg: the message sent in the email.
+
+    Returns:
+        str: The rendered response as a string.
+
+    """
+    to_email = f"@{to_email}" if to_email else "there"
+    response_txt = f"""
+hi {to_email},
+
+{msg}
+
+@{from_profile.handle}
+{from_profile.email}
+
+
+"""
+
+    params = {'txt': response_txt}
+    response_html = premailer_transform(render_to_string("emails/txt.html", params))
+    return response_html, response_txt
+
+
 def render_new_work_submission(to_email, bounty):
     params = {
         'bounty': bounty,
@@ -1175,6 +1203,13 @@ def quarterly_roundup(request):
 @staff_member_required
 def gdpr_reconsent(request):
     response_html, _ = render_gdpr_reconsent(settings.CONTACT_EMAIL)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def share_bounty(request):
+    profile = Profile.objects.filter(handle=handle).first()
+    response_html, _ = render_share_bounty(settings.CONTACT_EMAIL, 'This is a sample message', profile)
     return HttpResponse(response_html)
 
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -41,6 +41,7 @@ from django.utils.translation import gettext_lazy as _
 
 import pytz
 import requests
+from avatar.utils import get_upload_filename
 from dashboard.tokens import addr_to_token
 from economy.models import ConversionRate, SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
@@ -270,6 +271,7 @@ class Bounty(SuperModel):
     snooze_warnings_for_days = models.IntegerField(default=0)
     is_featured = models.BooleanField(
         default=False, help_text=_('Whether this bounty is featured'))
+    featuring_date = models.DateTimeField(blank=True, null=True)
 
     token_value_time_peg = models.DateTimeField(blank=True, null=True)
     token_value_in_usdt = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
@@ -1736,6 +1738,15 @@ class Profile(SuperModel):
         default=False,
         help_text='If this option is chosen, we will not show job search status',
     )
+    job_type = models.CharField(max_length=255, default='', blank=True)
+    remote = models.BooleanField(
+        default=False,
+        help_text='If this option is chosen, profile is okay with remote job',
+    )
+    job_salary = models.DecimalField(default=1, decimal_places=2, max_digits=50)
+    job_location = JSONField(default=dict)
+    linkedin_url = models.CharField(max_length=255, default='', blank=True, null=True)
+    resume = models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('The avatar SVG.'))
 
     objects = ProfileQuerySet.as_manager()
 

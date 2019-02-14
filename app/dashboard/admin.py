@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -24,7 +24,7 @@ from django.utils.safestring import mark_safe
 
 from .models import (
     Activity, BlockedUser, Bounty, BountyFulfillment, BountySyncRequest, CoinRedemption, CoinRedemptionRequest,
-    Interest, LabsResearch, Profile, SearchHistory, Subscription, Tip, TokenApproval, Tool, ToolVote, UserAction,
+    Interest, LabsResearch, Profile, SearchHistory, Tip, TokenApproval, Tool, ToolVote, UserAction,
 )
 
 
@@ -154,7 +154,6 @@ class BountyAdmin(admin.ModelAdmin):
 
 admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
-admin.site.register(Subscription, GeneralAdmin)
 admin.site.register(BlockedUser, GeneralAdmin)
 admin.site.register(UserAction, UserActionAdmin)
 admin.site.register(Interest, InterestAdmin)

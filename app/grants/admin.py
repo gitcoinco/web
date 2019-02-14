@@ -46,7 +46,7 @@ class GrantAdmin(GeneralAdmin):
         'logo_svg_asset', 'logo_asset', 'created_on', 'modified_on', 'token_address', 'contract_address',
         'deploy_tx_id', 'cancel_tx_id', 'token_symbol',
         'network', 'amount_goal', 'amount_received', 'team_member_list',
-        'subscriptions_links', 'contributions_links', 'link',
+        'subscriptions_links', 'contributions_links', 'link', 
     ]
     raw_id_fields = ['admin_profile']
 
@@ -103,11 +103,14 @@ class GrantAdmin(GeneralAdmin):
     logo_asset.short_description = 'Logo Image Asset'
 
 
+
 class SubscriptionAdmin(GeneralAdmin):
     """Define the Subscription administration layout."""
     raw_id_fields = ['grant', 'contributor_profile']
     readonly_fields = [
         'contributions_links',
+        'error_email_copy_insufficient_balance',
+        'error_email_copy_not_active',
     ]
 
     def contributions_links(self, instance):
@@ -119,6 +122,48 @@ class SubscriptionAdmin(GeneralAdmin):
             eles.append(html)
 
         return mark_safe("<BR>".join(eles))
+
+    def error_email_copy_insufficient_balance(self, instance):
+        if not instance.error:
+            return ''
+        reason = "you dont have enough of a balance of DAI in your account"
+        amount = int(instance.amount_per_period)
+        html = f"""
+<textarea>
+hey there,
+
+just wanted to let you know your contribution to https://gitcoin.co/{instance.grant.url} failed because {reason}.  if you want to add {amount} {instance.token_symbol} to {instance.contributor_address} that will make it so we can process the subscription!
+
+let us know.
+
+best,
+kevin (team gitcoin)
+</textarea>
+        """
+
+        return mark_safe(html)
+
+    def error_email_copy_not_active(self, instance):
+        if not instance.error:
+            return ''
+        reason = "you need to top up your balance of DAI in your account"
+        amount = float(instance.gas_price / 10 ** 18)
+        amount =  str('%.18f' % amount ) + f" {instance.token_symbol} ({amount} {instance.token_symbol})"
+        html = f"""
+<textarea>
+hey there,
+
+just wanted to let you know your contribution to https://gitcoin.co/{instance.grant.url} failed because {reason}.  if you want to add {amount} to {instance.contributor_address} that will make it so we can process the subscription!
+
+let us know.
+
+best,
+kevin (team gitcoin)
+</textarea>
+        """
+
+        return mark_safe(html)
+
 
 
 class ContributionAdmin(GeneralAdmin):

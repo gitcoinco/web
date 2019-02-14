@@ -81,7 +81,7 @@ function userSearch(elem, showAddress, theme, initialData, allowClear) {
       if (user.id) {
         selected = `
           <img class="rounded-circle" src="${user.avatar_url || static_url + 'v2/images/user-placeholder.png'}" width="20" height="20"/>
-          ${user.text}`;
+          <span class="ml-2">${user.text}</span>`;
       } else {
         selected = user.text;
       }
