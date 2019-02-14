@@ -15,25 +15,26 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+from datetime import timedelta
 
-from django.conf import settings
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 
-from dashboard.views import w3
-from marketing.mails import warn_account_out_of_eth
+from dashboard.models import Bounty
 
 
 class Command(BaseCommand):
 
-    help = 'warns the admins when any of the monitored_accounts is out of gas'
+    help = 'expires featured bounties which have been featured for more than 14 days'
 
     def handle(self, *args, **options):
-        monitored_accounts = [settings.ENS_OWNER_ACCOUNT, settings.KUDOS_OWNER_ACCOUNT, settings.GRANTS_OWNER_ACCOUNT]
-        for account in monitored_accounts:
-            balance_eth_threshold = 0.07
 
-            balance_wei = w3.eth.getBalance(account)
-            balance_eth = balance_wei / 10**18
-
-            if balance_eth < balance_eth_threshold:
-                warn_account_out_of_eth(account, balance_eth, 'ETH')
+        expire_date = timezone.now() - timedelta(days=14) # Featured bounties expire in 14 days
+        for bounty in Bounty.objects.filter(
+            is_featured=True,
+            web3_created__lte=expire_date
+        ):
+            if not bounty.featuring_date or \
+                (bounty.featuring_date and bounty.featuring_date < expire_date):
+                bounty.is_featured = False
+                bounty.save()
