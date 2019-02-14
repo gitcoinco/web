@@ -55,16 +55,16 @@
                 <div>
                   Github Repo Type
                   <div class="form__radio option">
-                    <input name="repo_type" id="public_repo" type="radio" value="Public repo" checked />
+                    <input name="repo_type" id="public_repo" type="radio" value="public_repo" checked />
                     <label class="filter-label" for=public_repo><i class="fas fa-book"></i> {% trans "Public" %}</label>
                   </div>
 
                   <div class="form__radio option">
-                    <input name="repo_type" id="private_repo" type="radio" value="Private repo" />
+                    <input name="repo_type" id="private_repo" type="radio" value="private_repo" />
                     <label class="filter-label" for=private_repo><i class="fas fa-lock"></i> {% trans "Private" %}</label>
                   </div>
 
-                  <div class="cta-blue d-md-flex justify-content-between mt-3">
+                  <div id="cta-subscription" class="cta-blue d-md-flex justify-content-between mt-3 d-md-none">
                       <div>
                         <h5 class="mb-3">Get awesome contributors to work on your private repo issues</h5>
                         <ul class="list-unstyled mb-4">
@@ -99,7 +99,7 @@
                   </div>
                   <div id="issue-details" class="mt-4">
                     <label class="form__label mb-0 mt-3" for="title">{% trans "Issue Title" %}</label>
-                    <input name='title' id="title"  class="form__input pb-3 pt-0 hidden" type="text" value="{{ issue_title }}" readonly required/>
+                    <input name='title' id="title"  class="form__input hidden" type="text" value="{{ issue_title }}" readonly required/>
                     <p id="title--text"></p>
                     <label class="form__label" for="description">{% trans "Description" %}</label>
                     <textarea name="description" class="form__input" id="description" readonly></textarea>

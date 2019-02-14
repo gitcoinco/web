@@ -30,6 +30,11 @@
   color: #D50000;
 }
 
+.form__checkbox input:disabled ~ .form__label {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .form__checkbox label.error {
   display: none !important;
 }
