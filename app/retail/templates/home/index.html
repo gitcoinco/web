@@ -24,7 +24,11 @@
     <link rel="stylesheet" href="{% static "v2/css/home.css" %}" />
   </head>
   <body class="g-font-muli homepage">
-
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash px-md-0">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'home/nav.html' %}
+    </div>
     <div id="banner" class="header">
       <div class="row">
         <div class="col-12 col-md-8 col-xl-6 pl-lg-5">
@@ -44,9 +48,17 @@
         </div>
       </div>
     </div>
+
+    <div class="col-12 col-md-6 offset-md-3 text-center">
+      <p class="font-title mt-5 pt-5">
+        <span>{% trans "The weight of maintaining open source falls on the" %}</span> <br>
+        <span class="my-2">{% trans "shoulders of 0.01%." %}</span><br>
+        <span>{% trans "This is not sustainable." %}</span>
+      </p>
+    </div>
     <img id="cards" class="w-100" src="{% static "v2/images/home/cards.svg" %}" />
 
-    <div id="optimize_oss">
+    <div id="optimize_oss" class="mt-5">
       <div class="container pt-0">
         <div class="row">
           <div class="col-12 col-md-8 col-lg-6">
@@ -85,6 +97,15 @@
         </div>
       </div>
     </div>
+
+    <div class="col-12 col-md-6 offset-md-3 text-center">
+      <p class="font-title mt-5">
+        <span>{% trans "Our products help create a world where the" %}</span> <br>
+        <span>{% trans "OSS lifecycle looks like this." %}</span>
+      </p>
+    </div>
+    <img id="cards" class="w-100" src="{% static "v2/images/home/cards_update.svg" %}" />
+
     <div id="products">
       <img class="text-center px-3 bot-circle" src="{% static "v2/images/home/bot-circle.svg" %}"
         alt="gitcoin logo" />

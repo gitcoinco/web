@@ -1,3 +1,23 @@
+.navbar {
+  background-color: #0d023b;
+}
+
+.navbar .interior .dropdown-item span {
+  color: #9B9B9B;
+  font-size: 12px;
+}
+
+.navbar .interior .dropdown-item:hover span {
+  color: #fff;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link:active {
+  border-bottom: 3px solid #fff;
+  border-radius: 0;
+  background-color: transparent;
+}
+
 .homepage .container {
   padding-bottom: 4rem;
   padding-top: 4rem;
@@ -110,12 +130,6 @@
   font-weight: 500;
   font-size: 1.75rem;
   margin-bottom: 0.6rem;
-}
-
-img#cards {
-  position: relative;
-  margin-top: -10rem;
-  margin-bottom: 3rem;
 }
 
 img.play {
@@ -253,11 +267,14 @@ figure:hover::before {
   }
 }
 
-@media (max-width: 1199.98px) {
-  img#cards {
-    margin-top: -4rem;
+@media (min-width: 992px) {
+  .mx-auto .nav-item {
+    margin-left: 0.75rem;
+    margin-right: 0.75rem;
   }
+}
 
+@media (max-width: 1199.98px) {
   #banner img {
     position: absolute;
     bottom: -2px;

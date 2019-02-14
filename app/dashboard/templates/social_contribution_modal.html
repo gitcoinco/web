@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -22,15 +22,27 @@
         <div class="row font-smaller-2" id="form_container">
           <div class="col col-md-10 center-block">
             <div class="d-flex justify-content-center flex-column mt-5 w-100" id="primary_subform">
-              <div class="w-100" style="text-align: center;">
+              <div class="center-block w-75" style="text-align: center;">
                 <h1>{% trans "Share this Bounty" %}</h1>
-                <img src="{% static 'v2/images/social-sharing.jpg' %}" width="240">
+                <img src="{% static 'v2/images/social-sharing.svg' %}" width="240">
                 <h4>{% trans "Help friends and colleagues find new and interesting work!" %}</h4>
               </div>
-              <div class="mt-5">
-                <textarea class="center-block w-75">Check out this bounty that pays out {{bounty.get_value_true}} {{bounty.token_name}} {{bounty.url}} {% for keyword in bounty.keywords_list %} #{{keyword}}{% endfor %}</textarea>
+              <div class="center-block mt-5 text-right w-75">
+                <textarea class="w-100 form__input" id="shareText">Check out this bounty that pays out {{bounty.get_value_true}} {{bounty.token_name}} {{bounty.url}} {% for keyword in bounty.keywords_list %} #{{keyword}}{% endfor %}</textarea>
+                <button class="button button__small button--primary" data-copyclipboard="#shareText">Copy Text</button>
               </div>
-              <div class="w-100 mt-2">
+
+              <div class="center-block w-75 my-5 {% if not user.is_authenticated %}d-none{%endif%}">
+                <p class="h5">...or invite a Gitcoiner by username</p>
+                <div class="form__select2 g-multiselect">
+                  <select id="" class="form__input form__input-lg  users_share" name="users_share[]" multiple="multiple">
+                  </select>
+                </div>
+                <div class="text-right mt-2">
+                  <button class="button button__small button--primary" id="sendInvites">Send Invite</button>
+                </div>
+              </div>
+              <div class="w-75 w-75 center-block mt-2">
                 <h4>{% trans "Click to instantly share on the following networks" %}</h4>
                 <div class="mb-5 mt-5 text-center">
                   <a class="btn btn-circle btn-twitter"
@@ -57,3 +69,7 @@
       </div>
     </div>
   </div>
+  {% csrf_token %}
+  <script type="text/javascript">
+    var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+  </script>
