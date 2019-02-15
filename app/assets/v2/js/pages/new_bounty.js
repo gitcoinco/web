@@ -151,7 +151,7 @@ $(document).ready(function() {
   if ($('input[name=issueURL]').val() != '' && !isPrivateRepo) {
     retrieveIssueDetails();
   }
-  $('input[name=issueURL]').focus();
+  // $('input[name=issueURL]').focus();
 
   // all js select 2 fields
   $('.js-select2').each(function() {
@@ -520,10 +520,13 @@ const setPrivateForm = () => {
   $('#admin_override_suspend_auto_approval').prop('checked', false)
   $('#admin_override_suspend_auto_approval').attr('disabled', true)
   $('#show_email_publicly').attr('disabled', true)
+  $('#cta-subscription, #private-repo-instructions').removeClass('d-md-none');
+  $('#nda-upload').show();
+  $('#issueNDA').prop('required', true);
 
-  $('#project_type').select2().val('traditional').trigger("change")
-  $('#permission_type').select2().val('approval').trigger("change")
-  $('#project_type, #permission_type').select2().prop("disabled", true);
+  $('#project_type').select2().val('traditional');
+  $('#permission_type').select2().val('approval');
+  $('#project_type, #permission_type').select2().prop("disabled", true).trigger("change");
   $('#keywords').select2({
     placeholder: 'Select tags',
     tags: 'true',
@@ -543,18 +546,21 @@ const setPublicForm = () => {
   $('#admin_override_suspend_auto_approval').prop('checked', true)
   $('#admin_override_suspend_auto_approval').attr('disabled', false)
   $('#show_email_publicly').attr('disabled', false)
+  $('#cta-subscription, #private-repo-instructions').addClass('d-md-none');
+  $('#nda-upload').hide()
+  $('#issueNDA').prop('required', false);
 
-  $('#project_type, #permission_type').select2().prop("disabled", false);
+  $('#project_type, #permission_type').select2().prop("disabled", false).trigger("change");
 }
 
 const toggleCtaPlan = (value) => {
   if (value === 'private_repo') {
-    $('#cta-subscription').removeClass('d-md-none');
+
     params.set("type", "private_repo");
     isPrivateRepo = true;
     setPrivateForm()
   } else {
-    $('#cta-subscription').addClass('d-md-none');
+
     params.set("type", "public_repo");
     isPrivateRepo = false;
     setPublicForm()
@@ -562,17 +568,20 @@ const toggleCtaPlan = (value) => {
   window.history.replaceState({}, '', location.pathname + '?' + params);
 }
 
-if (params.has('type')) {
-  let checked = params.get('type');
-  toggleCtaPlan(checked);
-  $(`input[name=repo_type][value=${checked}]`).prop('checked','true');
-} else {
-  params.append("type", "public_repo");
-  window.history.replaceState({}, '', location.pathname + '?' + params);
-}
-$('input[name=repo_type]').change(function() {
-  toggleCtaPlan($(this).val());
+$(document).ready(function() {
+
+  if (params.has('type')) {
+    let checked = params.get('type');
+    toggleCtaPlan(checked);
+    $(`input[name=repo_type][value=${checked}]`).prop('checked','true');
+  } else {
+    params.append("type", "public_repo");
+    window.history.replaceState({}, '', location.pathname + '?' + params);
+  }
+  $('input[name=repo_type]').change(function() {
+    toggleCtaPlan($(this).val());
+
+  })
 
 })
-
 

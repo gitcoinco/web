@@ -65,24 +65,49 @@
                   </div>
 
                   <div id="cta-subscription" class="cta-blue d-md-flex justify-content-between mt-3 d-md-none">
-                      <div>
-                        <h5 class="mb-3">Get awesome contributors to work on your private repo issues</h5>
-                        <ul class="list-unstyled mb-4">
-                          <li class="mb-2"><i class="fas fa-check"></i> View contributors’ resumes and proposals</li>
-                          <li class="mb-2"><i class="fas fa-check"></i> Easy NDA signing process</li>
-                          <li class="mb-2"><i class="fas fa-check"></i> Automatically invite the contributors you approve to your repo</li>
-                          <li class="mb-2"><i class="fas fa-check"></i> Automatically remove contributors from your repo once job is done</li>
-                        </ul>
-                        <a href="" class="btn btn-gc-blue">Get Private Repo Bounties</a>
-                      </div>
-                      <div>
-                        <img src="{% static 'v2/images/robots-party.svg' %}" alt="" style="
-                        width: 100%;
-                        max-width: inherit;
-                    ">
-                      </div>
+                    <div>
+                      <h5 class="mb-3">Get awesome contributors to work on your private repo issues</h5>
+                      <ul class="list-unstyled mb-4">
+                        <li class="mb-2"><i class="fas fa-check"></i> View contributors’ resumes and proposals</li>
+                        <li class="mb-2"><i class="fas fa-check"></i> Easy NDA signing process</li>
+                        <li class="mb-2"><i class="fas fa-check"></i> Automatically invite the contributors you approve to your repo</li>
+                        <li class="mb-2"><i class="fas fa-check"></i> Automatically remove contributors from your repo once job is done</li>
+                      </ul>
+                      <a href="" class="btn btn-gc-blue">Get Private Repo Bounties</a>
+                    </div>
+                    <div>
+                      <img src="{% static 'v2/images/robots-party.svg' %}" alt="" style="
+                      width: 100%;
+                      max-width: inherit;">
+                    </div>
                   </div>
 
+                  <div id="private-repo-instructions" class="d-md-flex justify-content-between mt-3 font-smaller-3 d-md-none privaterepo-instructions">
+                    <div>
+                      <h5 class="font-smaller-3 font-weight-bold mb-2">Important Notes on Private Repo Bounties</h5>
+                      <ul class="pl-3">
+                        <li>Please make sure you are the <b>repo admin</b> to fund the issue</li>
+                        <li>Gitcoin will NOT have any access to your private repo</li>
+                        <li>You have to approve and give repository access to each contributor before they can start work</li>
+                        <li>You can upload an NDA that each contributor has to sign before they can start work</li>
+                      </ul>
+                    </div>
+                    <div class="align-items-center d-flex">
+                      <img src="{% static 'v2/images/prime.png' %}" alt="" style="
+                      width: 100%;
+                      max-width: 64px;">
+                    </div>
+                  </div>
+
+                </div>
+                <div id="nda-upload" style="display: none;">
+                  <hr class="mt-4">
+                  <div>
+                    <h5 class="font-subheader">{% trans "Non-Disclosure Agreement" %}</h5>
+                    <label class="form__label" for=issueNDA>{% trans "Each contributor has to sign your NDA before they can start work. Supported format: pdf, doc, docx." %}</label>
+                    <input name='issueNDA' id="issueNDA" class="form__input" type="file" accept="application/pdf,application/msword, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/vnd.openxmlformats-officedocument.presentationml.presentation" required/>
+                  </div>
+                  <hr class="mt-4">
                 </div>
                 <div id="about-section" class="pt-2">
                   <h5 class="font-subheader">{% trans "About" %}</h5>

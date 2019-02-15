@@ -1630,3 +1630,15 @@ div.busyOverlay {
   padding: 1.8rem;
   border-radius: 0.2rem;
 }
+
+.privaterepo-instructions {
+  background: #F8F8F8;
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .privaterepo-instructions {
+    width: 75%;
+  }
+
+}
