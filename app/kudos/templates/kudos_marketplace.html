@@ -69,7 +69,7 @@
                 script.onload = function(){
                     // remote script has loaded
                 };
-                script.src = 'http://www.midijs.net/lib/midi.js';
+                script.src = '{% static "v2/js/midi.js" %}';
                 d.getElementsByTagName('head')[0].appendChild(script);
             }(document));
 
