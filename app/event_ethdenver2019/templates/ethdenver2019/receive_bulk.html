@@ -34,7 +34,7 @@
   <div id="receove_eth_done" class="text-center" {% if not kudos_transfer.receive_txid %} style="display:none;" {%endif%}>
     <h1>{% trans "Congrats!" %} 🎉</h1>
     <p>You've received a "{{ coupon.token.humanized_name }}" Kudos via transaction <a href="https://etherscan.io/tx/{{kudos_transfer.receive_txid}}"><span id="trans_id">{{kudos_transfer.receive_txid}}</span></a>.</p>
-    <p>{% trans "You can see your kudos in any web3 wallet that supports ERC-721-compliant NFTs, or in your" %} <a href="{% url 'profile' %}">Gitcoin {% trans "profile" %}</a>.</p>
+    <p>{% trans "You can see your kudos in any web3 wallet that supports ERC-721-compliant NFTs, or in your" %} <a href="/ethdenver">ETHDenver {% trans "Profile" %}</a>.</p>
       {% include 'shared/twitter.html' %}
       <p>
         <a class="twitter-share-button"
@@ -43,8 +43,8 @@
         data-size="large">
         Tweet It</a>
       </p>
-      <form action="{% url 'profile' %}">
-        <input id="receive" type='submit' class="btn btn-gc-purple" value="🌈 {% trans "View Profile" %} 🏳️‍🌈" {% if disable_inputs %}disabled=disabled{%endif%} >
+      <form action="/ethdenver">
+        <input id="receive" type='submit' class="btn btn-gc-purple" value="🌈 {% trans "View ETHDenver Profile" %} 🏳️‍🌈" {% if disable_inputs %}disabled=disabled{%endif%} >
       </form>
     <hr>
 
