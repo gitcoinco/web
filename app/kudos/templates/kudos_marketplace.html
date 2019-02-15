@@ -75,7 +75,7 @@
 
             // play sound and go to URL
             setTimeout(function(){
-              var sound_url = '/static/v2/audio/secret-discovery-sound.mid'
+              var sound_url = '{% static 'v2/audio/secret-discovery-sound.mid' %}';
               MIDIjs.play(sound_url);
               setTimeout(function(){
                 if(window.location.search === "?q=ethdenver"){
@@ -84,7 +84,7 @@
                   window.location.href = 'https://gitcoin.co/kudos/redeem/konamicode2018' ;
                 }
               }, 3000);
-            }, 500)
+            }, 200)
           }
         }
       </script>
