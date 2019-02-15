@@ -280,7 +280,7 @@ var removeFilter = function(key, value) {
   refreshBounties(null, 0, false, false);
 };
 
-var get_search_URI = function(offset) {
+var get_search_URI = function(offset, order) {
   var uri = '/api/v0.1/bounties/?';
   var keywords = '';
   var org = '';
@@ -362,8 +362,11 @@ var get_search_URI = function(offset) {
   if (org) {
     uri += '&org=' + org;
   }
-
-  var order_by = localStorage['order_by'];
+  if (order) {
+    var order_by = order
+  } else {
+    var order_by = localStorage['order_by'];
+  }
 
   if (order_by) {
     uri += '&order_by=' + order_by;
@@ -448,12 +451,13 @@ var refreshBounties = function(event, offset, append, do_save_search) {
   }
 
   const uri = get_search_URI(offset);
+  const uriFeatured = get_search_URI(offset, '-featuring_date');
   let bountiesURI;
   let featuredBountiesURI;
 
   if (!uri.endsWith('?')) {
     bountiesURI = uri;
-    featuredBountiesURI = uri + '&';
+    featuredBountiesURI = uriFeatured + '&';
   }
   // bountiesURI += '';
   featuredBountiesURI += 'is_featured=True';
