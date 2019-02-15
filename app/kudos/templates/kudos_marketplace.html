@@ -69,6 +69,17 @@
                 script.onload = function(){
                     // remote script has loaded
                 };
+                script.src = '{% static "v2/js/libtimidity.js" %}';
+                d.getElementsByTagName('head')[0].appendChild(script);
+            }(document));
+
+            (function(d, script) {
+                script = d.createElement('script');
+                script.type = 'text/javascript';
+                script.async = true;
+                script.onload = function(){
+                    // remote script has loaded
+                };
                 script.src = '{% static "v2/js/midi.js" %}';
                 d.getElementsByTagName('head')[0].appendChild(script);
             }(document));
