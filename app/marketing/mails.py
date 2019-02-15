@@ -38,7 +38,7 @@ from retail.emails import (
     render_start_work_applicant_about_to_expire, render_start_work_applicant_expired, render_start_work_approved,
     render_start_work_new_applicant, render_start_work_rejected, render_subscription_terminated_email,
     render_successful_contribution_email, render_support_cancellation_email, render_thank_you_for_supporting_email,
-    render_tip_email, render_weekly_recap,
+    render_tip_email, render_weekly_recap, render_nth_day_email_campaign
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
@@ -545,6 +545,25 @@ def reject_faucet_request(fr):
     finally:
         translation.activate(cur_language)
 
+def nth_day_email_campaign(nth, subscriber):
+
+    firstname = subscriber.email.split('@')[0]
+
+    if subscriber.profile and subscriber.profile.user and subscriber.profile.user.first_name:
+        firstname = subscriber.profile.user.first_name
+
+    if should_suppress_notification_email(subscriber.email, 'roundup'):
+        return False
+
+    cur_language = translation.get_language()
+    try:
+        setup_lang(subscriber.email)
+        from_email = settings.CONTACT_EMAIL
+        if not should_suppress_notification_email(subscriber.email, 'welcome_mail'):
+            html, text, subject, = render_nth_day_email_campaign(subscriber.email, nth, firstname)
+            send_mail(from_email, subscriber.email, subject, text, html)
+    finally:
+        translation.activate(cur_language)
 
 def new_bounty_daily(bounties, old_bounties, to_emails=None):
     if not bounties:
