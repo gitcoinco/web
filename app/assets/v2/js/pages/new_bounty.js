@@ -54,6 +54,11 @@ $('#sync-issue').on('click', function(event) {
 $('#issueURL').focusout(function() {
   if (isPrivateRepo) {
     setPrivateForm();
+    if ($('input[name=issueURL]').val() == '' || !validURL($('input[name=issueURL]').val())) {
+      $('.js-submit').addClass('disabled');
+    } else {
+      $('.js-submit').removeClass('disabled');
+    }
     return;
   }
 
@@ -530,6 +535,7 @@ const setPrivateForm = () => {
   // $('#description')
   $('#title').removeClass('hidden');
   $('#description, #title').prop('readonly', false);
+  $('#description, #title').prop('required', true);
   $('#no-issue-banner').hide();
   $('#issue-details, #issue-details-edit').show();
   $('#sync-issue').removeClass('disabled');
@@ -559,7 +565,7 @@ const setPublicForm = () => {
   $('#no-issue-banner').show();
   $('#issue-details, #issue-details-edit').hide();
   $('#sync-issue').addClass('disabled');
-  // $('.js-submit').addClass('disabled');
+  $('.js-submit').addClass('disabled');
   $('#last-synced, #edit-issue , #sync-issue, #title--text').show();
 
   $('#admin_override_suspend_auto_approval').prop('checked', true);
@@ -587,22 +593,3 @@ const toggleCtaPlan = (value) => {
   }
   window.history.replaceState({}, '', location.pathname + '?' + params);
 };
-
-$(document).ready(function() {
-
-  // if (params.has('type')) {
-  //   let checked = params.get('type');
-
-  //   toggleCtaPlan(checked);
-  //   $(`input[name=repo_type][value=${checked}]`).prop('checked', 'true');
-  // } else {
-  //   params.append('type', 'public');
-  //   window.history.replaceState({}, '', location.pathname + '?' + params);
-  // }
-  // $('input[name=repo_type]').change(function() {
-  //   toggleCtaPlan($(this).val());
-
-  // });
-
-});
-
