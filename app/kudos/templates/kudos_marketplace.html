@@ -47,7 +47,8 @@
       {% endif %}
 
       <script>
-        if (window.location.search === "?q=konami+code" || window.location.search === "?q=ethdenver") {
+        show_konami = true;
+        if (show_konami) {
           let cursor = 0;
           // UUDDLRLRBA
           const KONAMI_CODE = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
@@ -57,13 +58,33 @@
           });
 
           function activate (keyword) {
-            console.log('konami')
-            if(window.location.search === "?q=konami+code"){
-              window.open('https://gitcoin.co/kudos/redeem/konamicode2018');
-            }
-            if(window.location.search === "?q=ethdenver"){
-              window.open('https://gitcoin.co/kudos/redeem/top_secret_bufficorn_kudos_2019a');
-            }
+            console.log('konami');
+
+
+            // load konami
+            (function(d, script) {
+                script = d.createElement('script');
+                script.type = 'text/javascript';
+                script.async = true;
+                script.onload = function(){
+                    // remote script has loaded
+                };
+                script.src = 'http://www.midijs.net/lib/midi.js';
+                d.getElementsByTagName('head')[0].appendChild(script);
+            }(document));
+
+            // play sound and go to URL
+            setTimeout(function(){
+              var sound_url = '/static/v2/audio/secret-discovery-sound.mid'
+              MIDIjs.play(sound_url);
+              setTimeout(function(){
+                if(window.location.search === "?q=ethdenver"){
+                  window.location.href = 'https://gitcoin.co/kudos/redeem/top_secret_bufficorn_kudos_2019a';
+                } else {
+                  window.location.href = 'https://gitcoin.co/kudos/redeem/konamicode2018' ;
+                }
+              }, 3000);
+            }, 500)
           }
         }
       </script>
