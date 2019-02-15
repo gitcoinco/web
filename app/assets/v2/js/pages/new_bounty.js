@@ -56,6 +56,7 @@ $('#issueURL').focusout(function() {
     setPrivateForm();
     return;
   }
+
   setInterval(function() {
     $('#last-synced span').html(timeDifference(new Date(), new_bounty.last_sync));
   }, 6000);
@@ -105,7 +106,8 @@ $(document).ready(function() {
   $('input[name=hours]').blur(setUsdAmount);
   $('select[name=denomination]').change(setUsdAmount);
   $('select[name=denomination]').change(promptForAuth);
-  !isPrivateRepo ? $('input[name=issueURL]').blur(retrieveIssueDetails) : undefined;
+
+  // !isPrivateRepo ? $('input[name=issueURL]').blur(retrieveIssueDetails) : undefined;
   setTimeout(setUsdAmount, 1000);
   waitforWeb3(function() {
     promptForAuth();
@@ -170,6 +172,20 @@ $(document).ready(function() {
   if ($('input[name=amount]').val().trim().length > 0) {
     setUsdAmount();
   }
+
+  if (params.has('type')) {
+    let checked = params.get('type');
+
+    toggleCtaPlan(checked);
+    $(`input[name=repo_type][value=${checked}]`).prop('checked', 'true');
+  } else {
+    params.append('type', 'public');
+    window.history.replaceState({}, '', location.pathname + '?' + params);
+  }
+  $('input[name=repo_type]').change(function() {
+    toggleCtaPlan($(this).val());
+
+  });
   var open_hiring_panel = function(do_focus) {
     setTimeout(function() {
       var hiringRightNow = $('#hiringRightNow').is(':checked');
@@ -517,7 +533,7 @@ const setPrivateForm = () => {
   $('#no-issue-banner').hide();
   $('#issue-details, #issue-details-edit').show();
   $('#sync-issue').removeClass('disabled');
-  $('.js-submit').removeClass('disabled');
+  // $('.js-submit').removeClass('disabled');
   $('#last-synced, #edit-issue, #sync-issue, #title--text').hide();
 
   $('#admin_override_suspend_auto_approval').prop('checked', false);
@@ -543,7 +559,7 @@ const setPublicForm = () => {
   $('#no-issue-banner').show();
   $('#issue-details, #issue-details-edit').hide();
   $('#sync-issue').addClass('disabled');
-  $('.js-submit').addClass('disabled');
+  // $('.js-submit').addClass('disabled');
   $('#last-synced, #edit-issue , #sync-issue, #title--text').show();
 
   $('#admin_override_suspend_auto_approval').prop('checked', true);
@@ -554,6 +570,7 @@ const setPublicForm = () => {
   $('#issueNDA').prop('required', false);
 
   $('#project_type, #permission_type').select2().prop('disabled', false).trigger('change');
+  retrieveIssueDetails();
 };
 
 const toggleCtaPlan = (value) => {
@@ -573,19 +590,19 @@ const toggleCtaPlan = (value) => {
 
 $(document).ready(function() {
 
-  if (params.has('type')) {
-    let checked = params.get('type');
+  // if (params.has('type')) {
+  //   let checked = params.get('type');
 
-    toggleCtaPlan(checked);
-    $(`input[name=repo_type][value=${checked}]`).prop('checked', 'true');
-  } else {
-    params.append('type', 'public');
-    window.history.replaceState({}, '', location.pathname + '?' + params);
-  }
-  $('input[name=repo_type]').change(function() {
-    toggleCtaPlan($(this).val());
+  //   toggleCtaPlan(checked);
+  //   $(`input[name=repo_type][value=${checked}]`).prop('checked', 'true');
+  // } else {
+  //   params.append('type', 'public');
+  //   window.history.replaceState({}, '', location.pathname + '?' + params);
+  // }
+  // $('input[name=repo_type]').change(function() {
+  //   toggleCtaPlan($(this).val());
 
-  });
+  // });
 
 });
 
