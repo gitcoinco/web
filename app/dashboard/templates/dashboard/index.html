@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -22,48 +22,42 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
+    <meta name="description" content="The Gitcoin platform connects freelance developers with open bug bounties or online jobs, paid in crypto (ETH).
+    Leverage a global workforce to quickly complete software development and coding jobs.">
     <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/featured-bounties.css" %}>
     <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/scroll-carousel.css" %}>
   </head>
 
-  <body class="interior {{active}}">
+  <body class="interior {{active}} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav.html' %}
     </div>
     {% include 'dashboard/ftux.html' %}
-    <div id="dashboard-content" class="row no-gutter">
-      <div class="col-12 col-lg-3 col-xl-2 invisible" id="sidebar_container" style="background: #F2F6F9;">
-        {% include 'shared/sidebar_search.html' %}
-      </div>
+    <div id="dashboard-content" class="container-fluid no-gutter">
+      <div class="row">
+        <div class="col-12 col-lg-3 col-xl-2 invisible" id="sidebar_container" style="background: #F2F6F9;">
+          {% include 'dashboard/sidebar_search.html' %}
+        </div>
 
-      <div class="col-12 col-lg-9 col-xl-10 body">
-        <div class="container-fluid" id="bounties">
-          <div id="dashboard-title" class="hidden">
-            {% include 'shared/search_bar.html' %}
-            <div class="row mt-2 mb-2">
-              <div class="col-12 offset-lg-1 col-lg-10 title-row">
-                <div class="col-12 col-md-4">
-                  <span id="filter" class="font-title"></span>
-                  <span id="matches" class="font-body"></span>
-                </div>
-                <div class="col-12 col-md-8 bounty-info" id="funding-info">
-                </div>
-              </div>
+        <div class="col-12 col-lg-9 col-xl-10 body">
+          <div class="container-fluid p-2" id="bounties">
+            <div id="dashboard-title" class="hidden">
+              {% include 'shared/search_bar.html' %}
             </div>
-          </div>
-          <div class="row loading justify-content-center align-items-center loading_img">
-            <img src="{% static "v2/images/loading_v2.gif" %}">
-          </div>
-          <div class="row nonefound" style="display:none;">
+            <div class="row loading justify-content-center align-items-center loading_img">
+              <img src="{% static "v2/images/loading_v2.gif" %}">
+            </div>
+            <div class="row nonefound" style="display:none;">
               <img src="{% static "v2/images/shrug_bot.png" %}">
               <h3>{% trans "No results found." %}</h3>
               <p>{% trans "Please try another query" %}</p>
-              <p>- {% trans "or" %} -</p>
-              <p>
-                {% blocktrans %}<a href="#" class="save_search">save search</a>
-                to be notified when results do appear.{% endblocktrans %}
-              </p>
+            </div>
+            {% include 'dashboard/featured_bounties.html' %}
+
           </div>
         </div>
       </div>
@@ -77,17 +71,24 @@
       </div>
     </div>
     {% include 'shared/result.html' %}
+    {% include 'shared/featured_bounty_cards.html' %}
 
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
-
-    <script src="/static/v2/js/tokens_dynamic.js"></script>
+    <script src="{% static "v2/js/popper.min.js" %}"></script>
+    <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
+    <script>
+      let bootstrapTooltip = $.fn.tooltip.noConflict()
+      $.fn.runTooltip = bootstrapTooltip
+      $('[data-toggle="tooltip"]').runTooltip()
+    </script>
+    <script src="/dynamic/js/tokens_dynamic.js"></script>
     <script src="{% static "v2/js/tokens.js" %}"></script>
     <script src="{% static "v2/js/pages/dashboard.js" %}"></script>
     <script>
-        document.keywords = {{keywords | safe}};
+      document.keywords = {{keywords | safe}};
     </script>
   </body>
 </html>

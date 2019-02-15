@@ -18,20 +18,24 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <meta name="title" content="Faucet Request | Gitcoin">
+    <meta name="description" content="Pursuant to making Ethereum and Gitcoin broadly accessible to everyone Gitcoin may provide a minimal faucet distribution of ether so you may easily claim issues and gain more ether.">
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
   </head>
-  <body class="interior {{ active }}">
+  <body class="interior {{ active }} g-font-muli">
     <div class="container-fluid header dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav.html' %}
     </div>
     <div class="row no-gutter">
       <div class="col body">
         <div class="container-fluid no-gutter">
+          {% include 'shared/no_metamask_error.html' %}
+          {% include 'shared/unlock_metamask.html' %}
+          {% include 'shared/connect_metamask.html' %}
+          {% include 'shared/faucet_over_balance_error.html' %}
           <div class="form-container" id="form_container">
-            {% include 'shared/faucet_no_metamask_error.html' %}
-            {% include 'shared/faucet_over_balance_error.html' %}
-            {% include 'shared/faucet_unlock_metamask.html' %}
             <div id="faucet_form">
               <div class="faucet-form" id="primary_form">
                 <h3>{% trans "Faucet Request" %} <span id="alpha">{% trans "Alpha" %}</span></h3>
@@ -70,7 +74,7 @@
                 </div>
                 <div class="faucet-input-group">
                   <label for="comment" class="form__label float-left"> {% trans "Comment" %} (<span id="charcount">500</span> {% trans "char left" %}):</label>
-                  <textarea id="comment" class="form__input" rows="4" cols="50" placeholder="Why do you need ETH?"></textarea>
+                  <textarea id="comment" class="form__input" rows="4" cols="50" placeholder="Why do you need ETH?  Why should Gitcoin fund your gas costs?  Your request will not be funded without an explanation."></textarea>
                 </div>
                 <div class="faucet-input-group">
                   <label for="ethAddress" class="form__label float-left">{% trans "ETH Address" %}:</label>
@@ -120,7 +124,7 @@
   </body>
   <script src="{% static "v2/js/amounts.js" %}"></script>
   <script src="{% static "v2/js/abi.js" %}"></script>
-  <script src="/static/v2/js/tokens_dynamic.js"></script>
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
   <script src="{% static "v2/js/shared.js" %}"></script>
   <script src="{% static "v2/js/pages/faucet_form.js" %}"></script>

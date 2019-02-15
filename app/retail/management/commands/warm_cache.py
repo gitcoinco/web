@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -47,15 +47,10 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         # build path list
-        paths = [reverse('results') + f"/{pl}" for pl in programming_languages]
-        paths.append(reverse('results'))
+        paths = []
         paths.append(reverse('activity'))
-        for name in ['gas_history_view', 'gas_guzzler_view']:
-            path = reverse(name)
-            paths.append(path)
-            paths.append(path + "?breakdown=daily")
-            paths.append(path + "?breakdown=weekly")
         paths.append(reverse('gas'))
+        paths.append(reverse('gas_heatmap'))
 
         # warm the paths
         print(f"starting at {timezone.now()}")

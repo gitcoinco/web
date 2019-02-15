@@ -1,29 +1,40 @@
 {% comment %}
-    Copyright (C) 2018 Gitcoin Core
+  Copyright (C) 2018 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
-
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
-                    <div id="over_balance_error" class="blocking_error" style="display: none">
-                        <img src="{% static "v2/images/prime.png" %}" style="max-height: 100px;">
-                        <br>
-                        <h3>{% trans "You Appear to Have Ether!" %}</h3>
-                        <p>
-                            {% trans "Thank you for your interest in receiving a faucet distribution." %}
-                        </p>
-                        <p>
-                            {% trans "You have more ether currently in your wallet than the distribution would provide. Please use that ether to pay the transaction cost." %}
-                        </p>
-                    </div>
+<div id="over_balance_error" class="submit-notification metamask-error container-fluid" style="display: none;">
+  <div class="row align-items-center px-4 py-2 text-center text-lg-left">
+    <div class="col-lg-10 col-sm-12 py-2 px-5 font-body">
+      <h3>{% trans "You Appear to Have Ether!" %}</h3>
+      <p>
+        {% trans "Thank you for your interest in receiving a faucet distribution." %} <br>
+        {% trans "You have more ether currently in your wallet than the distribution would provide. Please use that ether to pay the transaction cost." %}
+      </p>
+      <div class="col-lg-2 col-sm-12">
+        <img id="metamask_logo" src="{% static "v2/images/metamask.svg" %}" alt="Metamask Logo">
+      </div>
+    </div>
+  </div>
+</div>
+<style type="text/css">
+  @media only screen and (min-width: 992px) {
+    #metamask_logo {
+      position: absolute;
+      left: 650%;
+      top: -100px;
+    }
+  }
+</style>

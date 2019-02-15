@@ -4,16 +4,16 @@
 Hey there,
 
 
-You started work upon a funded issue {{interest.created | naturaltime}}.  We haven't heard from you on the github thread{% if time_delta_days %} in {{time_delta_days}} days{%endif%}.
+You started work upon a funded issue {{ interest.created|naturaltime }}.  We haven't heard from you on the github thread{% if time_delta_days %} in {{ time_delta_days }} days{% endif %}.
 
 Do you still want to work on this?
 
 
 If so, please leave a comment on the github thread to check in.
 -OR-
-If not, click 'Stop Work' on at {{bounty.absolute_url}}
+If not, click 'Stop Work' on at {{ bounty.absolute_url }}
 
-If you have any questions, feel free to reach out on slack => https://gitcoin.co/slack
+If you have any questions, feel free to reach out on slack => {% url 'slack' %}
 
 Funded Issue Details
 

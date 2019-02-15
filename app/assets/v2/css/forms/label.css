@@ -1,8 +1,9 @@
-label {
-  font-family: 'Muli', sans-serif;
-}
-
 .form__label {
   font-size: 12px;
   margin: .5rem 0;
+}
+
+.form__label-lg {
+  font-size: 1rem;
+  margin: .7rem 0;
 }

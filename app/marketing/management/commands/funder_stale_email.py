@@ -56,9 +56,8 @@ class Command(BaseCommand):
 
         start_time = timezone.now() - timezone.timedelta(days=(days + 1))
         end_time = timezone.now() - timezone.timedelta(days=(days))
-        base_bounties = Bounty.objects.filter(
+        base_bounties = Bounty.objects.current().filter(
             network='mainnet',
-            current_bounty=True,
         )
 
         candidate_bounties = base_bounties.filter(

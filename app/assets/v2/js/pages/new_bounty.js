@@ -82,7 +82,6 @@ $('#issueURL').focusout(function() {
 
 $('#last-synced').hide();
 
-// Wait until page is loaded, then run the function
 $(document).ready(function() {
   // Load sidebar radio buttons from localStorage
   if (getParam('source')) {
@@ -98,6 +97,8 @@ $(document).ready(function() {
   $('input[name=amount]').blur(setUsdAmount);
   $('input[name=usd_amount]').keyup(usdToAmount);
   $('input[name=usd_amount]').blur(usdToAmount);
+  $('input[name=hours]').keyup(setUsdAmount);
+  $('input[name=hours]').blur(setUsdAmount);
   $('select[name=denomination]').change(setUsdAmount);
   $('select[name=denomination]').change(promptForAuth);
   $('input[name=issueURL]').blur(retrieveIssueDetails);
@@ -105,6 +106,26 @@ $(document).ready(function() {
   waitforWeb3(function() {
     promptForAuth();
   });
+  $('select[name=permission_type]').on('change', function() {
+    var val = $('select[name=permission_type] option:selected').val();
+
+    if (val === 'approval') {
+      $('#auto_approve_workers_container').show();
+    } else {
+      $('#auto_approve_workers_container').hide();
+    }
+  });
+
+  // show/hide the reserved for selector based on the project type
+  $('.js-select2[name=project_type]').change(
+    function(e) {
+      if (String(e.target.value).toLowerCase() === 'traditional') {
+        $('#reservedForDiv').show();
+      } else {
+        $('#reservedForDiv').hide();
+      }
+    }
+  );
 
   // revision action buttons
   $('#subtractAction').on('click', function() {
@@ -137,7 +158,7 @@ $(document).ready(function() {
     $('.select2-selection__rendered').removeAttr('title');
   });
   // removes search field in all but the 'denomination' dropdown
-  $('.select2-container').click(function() {
+  $('.select2-container').on('click', function() {
     $('.select2-container .select2-search__field').remove();
   });
   // denomination field
@@ -160,12 +181,12 @@ $(document).ready(function() {
     }, 10);
   };
 
-  $('#hiringRightNow').click(function() {
+  $('#hiringRightNow').on('click', function() {
     open_hiring_panel(true);
   });
 
 
-  $('#advancedLink a').click(function(e) {
+  $('#advancedLink a').on('click', function(e) {
     e.preventDefault();
     var target = $('#advanced_container');
 
@@ -177,6 +198,8 @@ $(document).ready(function() {
       $(this).text('Advanced ⬇ ');
     }
   });
+
+  userSearch('#reservedFor', false);
 
   $('#submitBounty').validate({
     submitHandler: function(form) {
@@ -197,7 +220,6 @@ $(document).ready(function() {
       });
 
       disabled.attr('disabled', 'disabled');
-      mixpanel.track('Submit New Bounty Clicked', {});
 
       // setup
       loading_button($('.js-submit'));
@@ -211,17 +233,22 @@ $(document).ready(function() {
       var tokenName = token['name'];
       var decimalDivisor = Math.pow(10, decimals);
       var expirationTimeDelta = data.expirationTimeDelta;
+      let reservedFor = $('.username-search').select2('data')[0];
 
       var metadata = {
         issueTitle: data.title,
         issueDescription: data.description,
-        issueKeywords: data.keywords,
+        issueKeywords: data.keywords ? data.keywords : '',
         githubUsername: data.githubUsername,
         notificationEmail: data.notificationEmail,
         fullName: data.fullName,
-        experienceLevel: data.experienceLevel,
-        projectLength: data.projectLength,
-        bountyType: data.bountyType,
+        experienceLevel: data.experience_level,
+        projectLength: data.project_length,
+        bountyType: data.bounty_type,
+        estimatedHours: data.hours,
+        fundingOrganisation: data.fundingOrganisation,
+        is_featured: data.featuredBounty,
+        reservedFor: reservedFor ? reservedFor.text : '',
         tokenName
       };
 
@@ -250,12 +277,16 @@ $(document).ready(function() {
           },
           schemes: {
             project_type: data.project_type,
-            permission_type: data.permission_type
+            permission_type: data.permission_type,
+            auto_approve_workers: !!data.auto_approve_workers
           },
           hiring: {
             hiringRightNow: data.hiringRightNow,
             jobDescription: data.jobDescription
           },
+          funding_organisation: metadata.fundingOrganisation,
+          is_featured: metadata.featuredBounty,
+          featuring_date: metadata.featuredBounty && new Date().getTime() / 1000 || 0,
           privacy_preferences: privacy_preferences,
           funders: [],
           categories: metadata.issueKeywords.split(','),
@@ -293,6 +324,10 @@ $(document).ready(function() {
       var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
       var account = web3.eth.coinbase;
 
+      if (!isETH) {
+        check_balance_and_alert_user_if_not_enough(tokenAddress, amount);
+      }
+
       amount = amount * decimalDivisor;
       // Create the bounty object.
       // This function instantiates a contract from the existing deployed Standard Bounties Contract.
@@ -327,9 +362,8 @@ $(document).ready(function() {
         localStorage[issueURL] = JSON.stringify(issuePackage);
 
         _alert({ message: gettext('Submission sent to web3.') }, 'info');
-        setTimeout(function() {
+        setTimeout(() => {
           delete localStorage['issueURL'];
-          mixpanel.track('Submit New Bounty Success', {});
           document.location.href = '/funding/details/?url=' + issueURL;
         }, 1000);
       }
@@ -337,10 +371,6 @@ $(document).ready(function() {
       // web3 callback
       function web3Callback(error, result) {
         if (error) {
-          mixpanel.track('New Bounty Error', {
-            step: 'post_bounty',
-            error: error
-          });
           console.error(error);
           _alert(
             {
@@ -365,10 +395,6 @@ $(document).ready(function() {
 
       function newIpfsCallback(error, result) {
         if (error) {
-          mixpanel.track('New Bounty Error', {
-            step: 'post_ipfs',
-            error: error
-          });
           console.error(error);
           _alert({
             message: gettext('There was an error.  Please try again or contact support.')
@@ -417,7 +443,59 @@ $(document).ready(function() {
         ipfs.addJson(ipfsBounty, newIpfsCallback);
       };
 
-      do_bounty();
+      const payFeaturedBounty = function() {
+        web3.eth.sendTransaction({
+          to: '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+          from: web3.eth.coinbase,
+          value: web3.toWei(ethFeaturedPrice, 'ether'),
+          gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)),
+          gas: web3.toHex(318730),
+          gasLimit: web3.toHex(318730)
+        },
+        function(error, result) {
+          saveAttestationData(
+            result,
+            ethFeaturedPrice,
+            '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+            'featuredbounty'
+          );
+          do_bounty();
+        });
+      };
+
+      if (data.featuredBounty) {
+        payFeaturedBounty();
+      } else {
+        do_bounty();
+      }
     }
   });
+});
+
+var check_balance_and_alert_user_if_not_enough = function(tokenAddress, amount) {
+  var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+  var from = web3.eth.coinbase;
+  var token_details = tokenAddressToDetails(tokenAddress);
+  var token_decimals = token_details['decimals'];
+  var token_name = token_details['name'];
+
+  token_contract.balanceOf.call(from, function(error, result) {
+    if (error) return;
+    var balance = result.toNumber() / Math.pow(10, token_decimals);
+    var balance_rounded = Math.round(balance * 10) / 10;
+
+    if (parseFloat(amount) > balance) {
+      var msg = gettext('You do not have enough tokens to fund this bounty. You have ') + balance_rounded + ' ' + token_name + ' ' + gettext(' but you need ') + amount + ' ' + token_name;
+
+      _alert(msg, 'warning');
+    }
+  });
+};
+
+let usdFeaturedPrice = $('.featured-price-usd').text();
+let ethFeaturedPrice;
+
+getAmountEstimate(usdFeaturedPrice, 'ETH', (amountEstimate) => {
+  ethFeaturedPrice = amountEstimate['value'];
+  $('.featured-price-eth').text(`+${amountEstimate['value']} ETH`);
 });

@@ -1,0 +1,18 @@
+{% load i18n %}
+
+{% trans "Grant Ended" %}
+
+{% trans "Grant" %} {{ grant.title }} {% trans "has been cancelled" %}
+
+{% trans "You can see the transaction on etherscan" %} at
+{% if grant.network == 'mainnet' %}
+  http://etherscan.io/tx/{{ grant.cancel_tx_id }}
+{% else %}
+  http://{{ grant.network }}.etherscan.io/tx/{{ grant.cancel_tx_id }}
+{% endif %}
+
+
+{% trans "View Inactive Grant here" %} {% url 'grants:details' grant.pk grant.slug %}
+
+
+{% trans "Thank you for using Gitcoin, we hope you'll come back to build more open source software!" %}

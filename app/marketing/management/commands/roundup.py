@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -24,6 +24,18 @@ from marketing.mails import weekly_roundup
 from marketing.models import EmailSubscriber
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
+
+
+check_already_sent = False
+
+
+def is_already_sent_this_week(email):
+    from marketing.models import EmailEvent
+    from django.utils import timezone
+    then = timezone.now() - timezone.timedelta(hours=12)
+    QS = EmailEvent.objects.filter(created_on__gt=then)
+    QS = QS.filter(category__contains='weekly_roundup', email__iexact=email, event='processed')
+    return QS.exists()
 
 
 class Command(BaseCommand):
@@ -64,7 +76,8 @@ class Command(BaseCommand):
         if filter_startswith:
             queryset = queryset.filter(email__startswith=filter_startswith)
         queryset = queryset.order_by('email')
-        email_list = set(queryset.values_list('email', flat=True))
+        email_list = list(set(queryset.values_list('email', flat=True)))
+        # list.sort(email_list)
 
         print("got {} emails".format(len(email_list)))
 
@@ -74,8 +87,11 @@ class Command(BaseCommand):
             print("-sending {} / {}".format(counter, to_email))
             if options['live']:
                 try:
-                    weekly_roundup([to_email])
-                    time.sleep(1)
+                    if check_already_sent and is_already_sent_this_week(to_email):
+                        print(' -- already sent')
+                    else:
+                        weekly_roundup([to_email])
+                        time.sleep(1)
                 except Exception as e:
                     print(e)
                     time.sleep(5)

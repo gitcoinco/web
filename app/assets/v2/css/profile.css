@@ -1,4 +1,4 @@
-.container{
+.profile_details .container{
   min-height: 150px;
 }
 
@@ -28,7 +28,6 @@
 
 .profile-header__bio {
   clear: both;
-  font-weight: lighter;
 }
 
 .profile-bounties__group-title > i {
@@ -58,6 +57,22 @@
   height: 1.5rem;
   margin-right: 0.5em;
   filter: invert(100%);
+}
+
+.profile-organizations .organization {
+  display: inline-block;
+}
+
+.profile-bounties--activities{
+  min-height: 200px;
+}
+
+.profile-organizations .organization img{
+  max-height: 4rem;
+  max-width: 4rem;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-radius: 50%;
 }
 
 @media (max-width: 767.98px) {
@@ -213,14 +228,14 @@
   border-top: none;
 }
 
-.works_with_list span {
+.profile_details .works_with_list span {
   font-weight: bolder;
   display: block;
   margin-top: 6px;
   margin-bottom: 6px;
 }
 
-.works_with_list img {
+.profile_details .works_with_list img {
   max-width: 30px;
   border-radius: 50%;
 }
@@ -231,4 +246,14 @@
 
 .profile-header__stats--funder .works_with_list img {
   border: 0.1rem solid #FFCE08;
+}
+
+.no-profile-button {
+  background-color: #3E00FF;
+  color: #FFFFFF;
+  font-size: 0.875rem;
+}
+
+.no-profile-textcolor {
+  color: #666666;
 }

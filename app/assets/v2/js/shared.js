@@ -49,7 +49,7 @@ var callFunctionWhenweb3Available = function(f) {
 var loading_button = function(button) {
   button.prop('disabled', true);
   button.addClass('disabled');
-  button.prepend('<img src=/static/v2/images/loading_white.gif style="max-width:20px; max-height: 20px">').addClass('disabled');
+  button.prepend('<img src=' + static_url + 'v2/images/loading_white.gif style="max-width:20px; max-height: 20px">').addClass('disabled');
 };
 
 var attach_close_button = function() {
@@ -76,10 +76,12 @@ var update_metamask_conf_time_and_cost_estimate = function() {
   var gasPrice = parseFloat($('#gasPrice').val());
 
   if (gasPrice) {
-    ethAmount = Math.round(1000 * gasLimit * gasPrice / Math.pow(10, 9)) / 1000;
-    usdAmount = Math.round(10 * ethAmount * document.eth_usd_conv_rate) / 10;
+    var eth_amount_unrounded = gasLimit * gasPrice / Math.pow(10, 9);
+
+    ethAmount = Math.round(1000000 * eth_amount_unrounded) / 1000000;
+    usdAmount = Math.round(1000 * eth_amount_unrounded * document.eth_usd_conv_rate) / 1000;
   }
-  
+
   if (typeof document.conf_time_spread == 'undefined') return;
 
   for (var i = 0; i < document.conf_time_spread.length - 1; i++) {
@@ -97,7 +99,7 @@ var update_metamask_conf_time_and_cost_estimate = function() {
 };
 
 var get_updated_metamask_conf_time_and_cost = function(gasPrice) {
-  
+
   var confTime = 'unknown';
   var ethAmount = 'unknown';
   var usdAmount = 'unknown';
@@ -105,8 +107,10 @@ var get_updated_metamask_conf_time_and_cost = function(gasPrice) {
   var gasLimit = parseInt($('#gasLimit').val());
 
   if (gasPrice) {
-    ethAmount = Math.round(1000000 * gasLimit * gasPrice / Math.pow(10, 9)) / 1000000;
-    usdAmount = Math.round(10 * ethAmount * document.eth_usd_conv_rate) / 10;
+    var eth_amount_unrounded = gasLimit * gasPrice / Math.pow(10, 9);
+
+    ethAmount = Math.round(1000000 * eth_amount_unrounded) / 1000000;
+    usdAmount = Math.round(100 * eth_amount_unrounded * document.eth_usd_conv_rate) / 100;
   }
 
   for (var i = 0; i < document.conf_time_spread.length - 1; i++) {
@@ -211,7 +215,7 @@ var _alert = function(msg, _class) {
 
   var html = function() {
     return (
-      `<div class="alert ${_class}" style="top: ${top}px">
+      `<div class="alert ${_class} g-font-muli" style="top: ${top}px">
         <div class="message">
           <div class="content">
             ${alertMessage(msg)}
@@ -250,12 +254,20 @@ var showLoading = function() {
   setTimeout(showLoading, 10);
 };
 
+var waitingStateActive = function() {
+  $('.bg-container').show();
+  $('.loading_img').addClass('waiting-state ');
+  $('.waiting_room_entertainment').show();
+  $('.issue-url').html('<a href="' + document.issueURL + '">' + document.issueURL + '</a>');
+  waitingRoomEntertainment();
+};
+
 /** Add the current profile to the interested profiles list. */
 var add_interest = function(bounty_pk, data) {
   if (document.interested) {
     return;
   }
-  mutate_interest(bounty_pk, 'new', data);
+  return mutate_interest(bounty_pk, 'new', data);
 };
 
 /** Remove the current profile from the interested profiles list. */
@@ -271,27 +283,17 @@ var remove_interest = function(bounty_pk, slash = false) {
 var mutate_interest = function(bounty_pk, direction, data) {
   var request_url = '/actions/bounty/' + bounty_pk + '/interest/' + direction + '/';
 
-  $('#submit').toggleClass('none');
-  $('#interest a').toggleClass('btn')
-    .toggleClass('btn-small')
-    .toggleClass('button')
-    .toggleClass('button--primary');
+  showBusyOverlay();
+  return $.post(request_url, data).then(function(result) {
+    hideBusyOverlay();
 
-  if (direction === 'new') {
-    _alert({ message: gettext("Thanks for letting us know that you're ready to start work.") }, 'success');
-    $('#interest a').attr('id', 'btn-white');
-  } else if (direction === 'remove') {
-    _alert({ message: gettext("You've stopped working on this, thanks for letting us know.") }, 'success');
-    $('#interest a').attr('id', '');
-  }
-  
-
-  $.post(request_url, data).then(function(result) {
     result = sanitizeAPIResults(result);
+
     if (result.success) {
       if (direction === 'new') {
         _alert({ message: result.msg }, 'success');
         $('#interest a').attr('id', 'btn-white');
+        return true;
       } else if (direction === 'remove') {
         _alert({ message: result.msg }, 'success');
         $('#interest a').attr('id', '');
@@ -302,6 +304,8 @@ var mutate_interest = function(bounty_pk, direction, data) {
     }
     return false;
   }).fail(function(result) {
+    hideBusyOverlay();
+
     var alertMsg = result && result.responseJSON ? result.responseJSON.error : null;
 
     if (alertMsg === null) {
@@ -309,7 +313,6 @@ var mutate_interest = function(bounty_pk, direction, data) {
     }
 
     _alert({ message: alertMsg }, 'error');
-
   });
 };
 
@@ -325,7 +328,10 @@ var uninterested = function(bounty_pk, profileId, slash) {
 
   var request_url = '/actions/bounty/' + bounty_pk + '/interest/' + profileId + '/uninterested/';
 
+  showBusyOverlay();
   $.post(request_url, data, function(result) {
+    hideBusyOverlay();
+
     result = sanitizeAPIResults(result);
     if (result.success) {
       _alert({ message: gettext(success_message) }, 'success');
@@ -334,6 +340,7 @@ var uninterested = function(bounty_pk, profileId, slash) {
     }
     return false;
   }).fail(function(result) {
+    hideBusyOverlay();
     _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
   });
 };
@@ -341,7 +348,10 @@ var uninterested = function(bounty_pk, profileId, slash) {
 var extend_expiration = function(bounty_pk, data) {
   var request_url = '/actions/bounty/' + bounty_pk + '/extend_expiration/';
 
+  showBusyOverlay();
   $.post(request_url, data, function(result) {
+    hideBusyOverlay();
+
     result = sanitizeAPIResults(result);
     if (result.success) {
       _alert({ message: result.msg }, 'success');
@@ -350,6 +360,7 @@ var extend_expiration = function(bounty_pk, data) {
     }
     return false;
   }).fail(function(result) {
+    hideBusyOverlay();
     _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
   });
 };
@@ -437,6 +448,61 @@ function getParam(parameterName) {
   return result;
 }
 
+if ($('#bounties').length) {
+  $('#bounties').tooltip({
+    items: '.result',
+    classes: {
+      'ui-tooltip': 'tooltip-bubble'
+    },
+    position: {
+      my: 'top',
+      at: 'center bottom',
+      collision: 'flip',
+      using: function(position, feedback) {
+        $(this).addClass(feedback.vertical).css(position);
+      }
+    }
+  });
+}
+
+if ($.views) {
+  $.views.converters({
+    timedifference: timedifferenceCvrt,
+    activitytext: activitytextCvrt
+  });
+
+}
+
+function timedifferenceCvrt(date) {
+  return timeDifference(new Date(), new Date(date), false, 60 * 60);
+}
+
+const activity_names = {
+  new_bounty: gettext('New bounty'),
+  start_work: gettext('Work started'),
+  stop_work: gettext('Work stopped'),
+  work_submitted: gettext('Work submitted'),
+  work_done: gettext('Work done'),
+  worker_approved: gettext('Worker approved'),
+  worker_rejected: gettext('Worker rejected'),
+  worker_applied: gettext('Worker applied'),
+  increased_bounty: gettext('Increased funding'),
+  killed_bounty: gettext('Canceled bounty'),
+  new_crowdfund: gettext('New crowdfund contribution'),
+  new_tip: gettext('New tip'),
+  receive_tip: gettext('Tip received'),
+  bounty_abandonment_escalation_to_mods: gettext('Escalated for abandonment of bounty'),
+  bounty_abandonment_warning: gettext('Warned for abandonment of bounty'),
+  bounty_removed_slashed_by_staff: gettext('Dinged and removed from bounty by staff'),
+  bounty_removed_by_staff: gettext('Removed from bounty by staff'),
+  bounty_removed_by_funder: gettext('Removed from bounty by funder'),
+  bounty_changed: gettext('Bounty details changed')
+};
+
+function activitytextCvrt(activity_type) {
+  return activity_names[activity_type];
+}
+
 function timeDifference(current, previous, remaining, now_threshold_seconds) {
 
   var elapsed = current - previous;
@@ -506,7 +572,7 @@ var retrieveAmount = function() {
   var target_ele = $('#usd_amount');
 
   if (target_ele.html() == '') {
-    target_ele.html('<img style="width: 50px; height: 50px;" src=/static/v2/images/loading_v2.gif>');
+    target_ele.html('<img style="width: 50px; height: 50px;" src=' + static_url + 'v2/images/loading_v2.gif>');
   }
 
   var amount = $('input[name=amount]').val();
@@ -558,7 +624,6 @@ var retrieveIssueDetails = function() {
   var ele = $('input[name=issueURL]');
   var target_eles = {
     'title': $('input[name=title]'),
-    'keywords': $('input[name=keywords]'),
     'description': $('textarea[name=description]')
   };
   var issue_url = ele.val();
@@ -569,7 +634,7 @@ var retrieveIssueDetails = function() {
   if (issue_url.length < 5 || issue_url.indexOf('github') == -1) {
     return;
   }
-  var request_url = '/sync/get_issue_details?url=' + encodeURIComponent(issue_url);
+  var request_url = '/sync/get_issue_details?url=' + encodeURIComponent(issue_url) + '&token=' + currentProfile.githubToken;
 
   $.each(target_eles, function(i, ele) {
     ele.addClass('loading');
@@ -579,7 +644,14 @@ var retrieveIssueDetails = function() {
     if (result['keywords']) {
       var keywords = result['keywords'];
 
-      target_eles['keywords'].val(keywords.join(', '));
+      $('#keywords').val(keywords);
+      $('#keywords').select2({
+        placeholder: 'Select tags',
+        data: keywords,
+        tags: 'true',
+        allowClear: true
+      });
+
     }
     target_eles['description'].val(result['description']);
     target_eles['title'].val(result['title']);
@@ -596,18 +668,12 @@ var retrieveIssueDetails = function() {
 };
 
 
-var randomElement = function(array) {
-  var length = array.length;
-  var randomNumber = Math.random();
-  var randomIndex = Math.floor(randomNumber * length);
+const randomElement = array => {
+  const length = array.length;
+  const randomNumber = Math.random();
+  const randomIndex = Math.floor(randomNumber * length);
 
   return array[randomIndex];
-};
-
-var mixpanel_track_once = function(event, params) {
-  if (document.listen_for_web3_iterations == 1 && mixpanel) {
-    mixpanel.track(event, params);
-  }
 };
 
 /* eslint-disable no-lonely-if */
@@ -632,10 +698,17 @@ var currentNetwork = function(network) {
         $('#current-network').text(gettext('Metamask Not Enabled'));
         $('#navbar-network-banner').html(info);
       } else if (network == 'locked') {
-        info = gettext('Web3 locked. Please unlock ') +
-          '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
-        $('#current-network').text(gettext('Metamask Locked'));
-        $('#navbar-network-banner').html(info);
+        if (is_metamask_approved || !is_metamask_unlocked) {
+          info = gettext('Web3 locked. Please unlock ') +
+            '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
+          $('#current-network').text(gettext('Metamask Locked'));
+          $('#navbar-network-banner').html(info);
+        } else {
+          info = gettext('Metamask not connected. ') +
+            '<button id="metamask_connect" onclick="approve_metamask()">Click here to connect to metamask</button>';
+          $('#current-network').text(gettext('Metamask Not Connected'));
+          $('#navbar-network-banner').html(info);
+        }
       } else {
         info = gettext('Connect to Mainnet via Metamask');
         $('#current-network').text(gettext('Unsupported Network'));
@@ -666,10 +739,17 @@ var currentNetwork = function(network) {
         $('#current-network').text(gettext('Metamask Not Enabled'));
         $('#navbar-network-banner').html(info);
       } else if (network == 'locked') {
-        info = gettext('Web3 locked. Please unlock ') +
-          '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
-        $('#current-network').text(gettext('Metamask Locked'));
-        $('#navbar-network-banner').html(info);
+        if (is_metamask_approved || !is_metamask_unlocked) {
+          info = gettext('Web3 locked. Please unlock ') +
+            '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
+          $('#current-network').text(gettext('Metamask Locked'));
+          $('#navbar-network-banner').html(info);
+        } else {
+          info = gettext('Metamask not connected. ') +
+            '<button id="metamask_connect" onclick="approve_metamask()">Click here to connect to metamask</button>';
+          $('#current-network').text(gettext('Metamask Not Connected'));
+          $('#navbar-network-banner').html(info);
+        }
       } else {
         info = gettext('Connect to Rinkeby / Custom RPC via Metamask');
         $('#current-network').text(gettext('Unsupported Network'));
@@ -701,34 +781,41 @@ var trigger_primary_form_web3_hooks = function() {
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
       $('#zero_balance_error').css('display', 'none');
-      $('#robot_error').removeClass('hidden');
       $('#primary_form').addClass('hidden');
       $('.submit_bounty .newsletter').addClass('hidden');
       $('#unlock_metamask_error').css('display', 'none');
+      $('#connect_metamask_error').css('display', 'none');
       $('#no_issue_error').css('display', 'none');
-      mixpanel_track_once('No Metamask Error', params);
+    } else if (is_metamask_unlocked && !is_metamask_approved) {
+      $('#connect_metamask_error').css('display', 'block');
+      $('#unlock_metamask_error').css('display', 'none');
+      $('#zero_balance_error').css('display', 'none');
+      $('#no_metamask_error').css('display', 'none');
+      $('#primary_form').addClass('hidden');
+      $('.submit_bounty .newsletter').addClass('hidden');
+      $('#no_issue_error').css('display', 'none');
     } else if (!web3.eth.coinbase) {
       $('#unlock_metamask_error').css('display', 'block');
       $('#zero_balance_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
-      $('#robot_error').removeClass('hidden');
       $('#primary_form').addClass('hidden');
+      $('#connect_metamask_error').css('display', 'none');
       $('.submit_bounty .newsletter').addClass('hidden');
       $('#no_issue_error').css('display', 'none');
-      mixpanel_track_once('Unlock Metamask Error', params);
     } else if (is_zero_balance_not_okay && document.balance == 0) {
       $('#zero_balance_error').css('display', 'block');
       $('#robot_error').removeClass('hidden');
       $('#primary_form').addClass('hidden');
       $('.submit_bounty .newsletter').addClass('hidden');
       $('#unlock_metamask_error').css('display', 'none');
+      $('#connect_metamask_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
       $('#no_issue_error').css('display', 'none');
-      mixpanel_track_once('Zero Balance Metamask Error', params);
     } else {
       $('#zero_balance_error').css('display', 'none');
       $('#unlock_metamask_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
+      $('#connect_metamask_error').css('display', 'none');
       $('#no_issue_error').css('display', 'block');
       $('#robot_error').addClass('hidden');
       $('#primary_form').removeClass('hidden');
@@ -750,23 +837,31 @@ var trigger_faucet_form_web3_hooks = function() {
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
-      mixpanel_track_once('No Metamask Error', params);
       return;
+    } else if (is_metamask_unlocked && !is_metamask_approved) {
+      $('#no_metamask_error').css('display', 'none');
+      $('#unlock_metamask_error').css('display', 'none');
+      $('#connect_metamask_error').css('display', 'block');
+      $('#over_balance_error').css('display', 'none');
+      $('#faucet_form').addClass('hidden');
     } else if (!web3.eth.coinbase) {
       $('#no_metamask_error').css('display', 'none');
       $('#unlock_metamask_error').css('display', 'block');
+      $('#connect_metamask_error').css('display', 'none');
+      $('#over_balance_error').css('display', 'none');
       $('#faucet_form').addClass('hidden');
       return;
     } else if (balance >= faucet_amount) {
       $('#no_metamask_error').css('display', 'none');
       $('#unlock_metamask_error').css('display', 'none');
+      $('#connect_metamask_error').css('display', 'none');
       $('#over_balance_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
-      mixpanel_track_once('Faucet Available Funds Metamask Error', params);
     } else {
       $('#over_balance_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
       $('#unlock_metamask_error').css('display', 'none');
+      $('#connect_metamask_error').css('display', 'none');
       $('#faucet_form').removeClass('hidden');
     }
   }
@@ -774,22 +869,27 @@ var trigger_faucet_form_web3_hooks = function() {
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
-      mixpanel_track_once('No Metamask Error', params);
       return;
+    }
+    if (is_metamask_unlocked && !is_metamask_approved) {
+      $('#unlock_metamask_error').css('display', 'none');
+      $('#connect_metamask_error').css('display', 'block');
+      $('#faucet_form').addClass('hidden');
     }
     if (!web3.eth.coinbase) {
       $('#unlock_metamask_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
-      mixpanel_track_once('Unlock Metamask Error', params);
       return;
     }
     web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
+      if (errors) {
+        return;
+      }
       var balance = result.toNumber();
 
       if (balance == 0) {
         $('#zero_balance_error').css('display', 'block');
         $('#admin_faucet_form').remove();
-        mixpanel_track_once('Zero Balance Metamask Error', params);
       }
     });
   }
@@ -813,37 +913,60 @@ function getNetwork(id) {
 }
 
 // figure out what version of web3 this is, whether we're logged in, etc..
-var listen_for_web3_changes = function() {
+var listen_for_web3_changes = async function() {
 
-  if (!document.listen_for_web3_iterations) {
-    document.listen_for_web3_iterations = 1;
-  } else {
-    document.listen_for_web3_iterations += 1;
+  if (document.location.pathname.indexOf('grants') === -1) {
+    if (!document.listen_for_web3_iterations) {
+      document.listen_for_web3_iterations = 1;
+    } else {
+      document.listen_for_web3_iterations += 1;
+    }
+
+    if (typeof web3 == 'undefined') {
+      currentNetwork();
+      trigger_form_hooks();
+    } else if (typeof web3 == 'undefined' || typeof web3.eth == 'undefined' || typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
+      currentNetwork('locked');
+      trigger_form_hooks();
+    } else {
+      is_metamask_unlocked = true;
+      web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
+        if (errors) {
+          return;
+        }
+        if (typeof result != 'undefined' && result !== null) {
+          document.balance = result.toNumber();
+        }
+      });
+
+      web3.version.getNetwork(function(error, netId) {
+        if (error) {
+          currentNetwork();
+        } else {
+          var network = getNetwork(netId);
+
+          currentNetwork(network);
+          trigger_form_hooks();
+        }
+      });
+    }
   }
 
-  if (typeof web3 == 'undefined') {
-    currentNetwork();
-    trigger_form_hooks();
-  } else if (typeof web3 == 'undefined' || typeof web3.eth == 'undefined' || typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
-    currentNetwork('locked');
-    trigger_form_hooks();
-  } else {
-    web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
-      if (typeof result != 'undefined') {
-        document.balance = result.toNumber();
-      }
-    });
+  if (window.ethereum && !document.has_checked_for_ethereum_enable) {
+    document.has_checked_for_ethereum_enable = true;
+    is_metamask_approved = await window.ethereum._metamask.isApproved();
+    is_metamask_unlocked = await window.ethereum._metamask.isUnlocked();
+    if (is_metamask_approved && is_metamask_unlocked) {
+      var start_time = ((new Date()).getTime() / 1000);
 
-    web3.version.getNetwork(function(error, netId) {
-      if (error) {
-        currentNetwork();
-      } else {
-        var network = getNetwork(netId);
+      await ethereum.enable();
+      var now_time = ((new Date()).getTime() / 1000);
+      var did_request_and_user_respond = (now_time - start_time) > 1.0;
 
-        currentNetwork(network);
-        trigger_form_hooks();
+      if (did_request_and_user_respond) {
+        document.location.href = document.location.href;
       }
-    });
+    }
   }
 };
 
@@ -876,7 +999,7 @@ var actions_page_warn_if_not_on_same_network = function() {
 attach_change_element_type();
 
 window.addEventListener('load', function() {
-  setInterval(listen_for_web3_changes, 300);
+  setInterval(listen_for_web3_changes, 1000);
   attach_close_button();
 });
 
@@ -952,67 +1075,170 @@ var usdToAmount = function(event) {
   });
 };
 
-function renderBountyRowsFromResults(results) {
-  var html = '';
-  var tmpl = $.templates('#result');
+function renderBountyRowsFromResults(results, renderForExplorer) {
+  let html = '';
+  const tmpl = $.templates('#result');
 
-  if (results.length == 0) {
-    return false;
+  if (results.length === 0) {
+    return html;
   }
 
   for (var i = 0; i < results.length; i++) {
-    var result = results[i];
-    var related_token_details = tokenAddressToDetails(result['token_address']);
-    var decimals = 18;
+    const result = results[i];
+    const relatedTokenDetails = tokenAddressToDetailsByNetwork(result['token_address'], result['network']);
+    let decimals = 18;
 
-    if (related_token_details && related_token_details.decimals) {
-      decimals = related_token_details.decimals;
+    if (relatedTokenDetails && relatedTokenDetails.decimals) {
+      decimals = relatedTokenDetails.decimals;
     }
 
-    var divisor = Math.pow(10, decimals);
+    const divisor = Math.pow(10, decimals);
 
-    result['rounded_amount'] = Math.round(result['value_in_token'] / divisor * 100) / 100;
-    var is_expired = new Date(result['expires_date']) < new Date() && !result['is_open'];
+    result['rounded_amount'] = normalizeAmount(result['value_in_token'] / divisor, decimals);
+
+    const crowdfunding = result['additional_funding_summary'];
+
+    if (crowdfunding) {
+      const tokenDecimals = 3;
+      const dollarDecimals = 2;
+      const tokens = Object.keys(crowdfunding);
+      let usdValue = 0.0;
+
+      if (tokens.length) {
+        const obj = {};
+
+        while (tokens.length) {
+          const tokenName = tokens.shift();
+          const tokenObj = crowdfunding[tokenName];
+          const amount = tokenObj['amount'];
+          const ratio = tokenObj['ratio'];
+
+          obj[tokenName] =
+            normalizeAmount(amount, tokenDecimals);
+          usdValue += amount * ratio;
+        }
+        result['tokens'] = obj;
+      }
+
+      if (usdValue && result['value_in_usdt']) {
+        result['value_in_usdt'] =
+          normalizeAmount(
+            parseFloat(result['value_in_usdt']) + usdValue,
+            dollarDecimals
+          );
+      }
+    }
+
+    const dateNow = new Date();
+    const dateExpires = new Date(result['expires_date']);
+    const isExpired = dateExpires < dateNow && !result['is_open'];
+    const isInfinite = dateExpires - new Date().setFullYear(new Date().getFullYear() + 1) > 1;
+    const projectType = ucwords(result['project_type']) + ' <span class="separator-bull"></span> ';
 
     result['action'] = result['url'];
     result['title'] = result['title'] ? result['title'] : result['github_url'];
+    result['p'] = projectType + (result['experience_level'] ? (result['experience_level'] + ' <span class="separator-bull"></span> ') : '');
+    result['expired'] = '';
 
-    var timeLeft = timeDifference(new Date(result['expires_date']), new Date(), true);
-
-    result['p'] = ((result['experience_level'] ? result['experience_level'] : 'Unknown Experience Level') + ' &bull; ');
-
-    if (result['status'] === 'done')
+    if (result['status'] === 'done') {
       result['p'] += 'Done';
-    if (result['fulfillment_accepted_on']) {
-      result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_accepted_on']), false, 60 * 60);
+      if (result['fulfillment_accepted_on']) {
+        result['p'] += ' ' + timeDifference(dateNow, new Date(result['fulfillment_accepted_on']), false, 60 * 60);
+      }
     } else if (result['status'] === 'started') {
       result['p'] += 'Started';
-      result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_started_on']), false, 60 * 60);
+      if (result['fulfillment_started_on']) {
+        result['p'] += ' ' + timeDifference(dateNow, new Date(result['fulfillment_started_on']), false, 60 * 60);
+      }
     } else if (result['status'] === 'submitted') {
       result['p'] += 'Submitted';
       if (result['fulfillment_submitted_on']) {
-        result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_submitted_on']), false, 60 * 60);
+        result['p'] += ' ' + timeDifference(dateNow, new Date(result['fulfillment_submitted_on']), false, 60 * 60);
       }
     } else if (result['status'] == 'cancelled') {
       result['p'] += 'Cancelled';
       if (result['canceled_on']) {
-        result['p'] += ' ' + timeDifference(new Date(), new Date(result['canceled_on']), false, 60 * 60);
+        result['p'] += ' ' + timeDifference(dateNow, new Date(result['canceled_on']), false, 60 * 60);
       }
-    } else if (is_expired) {
-      var time_ago = timeDifference(new Date(), new Date(result['expires_date']), true);
+    } else if (isExpired) {
+      const timeAgo = timeDifference(dateNow, dateExpires, true);
 
-      result['p'] += ('Expired ' + time_ago + ' ago');
+      result['expired'] += ('Expired ' + timeAgo + ' ago');
     } else {
-      var opened_when = timeDifference(new Date(), new Date(result['web3_created']), true);
+      const openedWhen = timeDifference(dateNow, new Date(result['web3_created']), true);
 
-      result['p'] += ('Opened ' + opened_when + ' ago, Expires in ' + timeLeft);
+      if (isInfinite) {
+        const expiredExpires = 'Never expires';
+
+        result['p'] += ('Opened ' + openedWhen + ' ago');
+        result['expired'] += (expiredExpires);
+      } else {
+        const timeLeft = timeDifference(dateNow, dateExpires);
+        const expiredExpires = dateNow < dateExpires ? 'Expires' : 'Expired';
+
+        result['p'] += ('Opened ' + openedWhen + ' ago');
+        result['expired'] += (expiredExpires + ' ' + timeLeft);
+      }
     }
 
-    result['hidden'] = (i > 4);
+    if (renderForExplorer) {
+      if (typeof web3 != 'undefined' && web3.eth.coinbase == result['bounty_owner_address']) {
+        result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">mine</span></a>';
+      } else if (result['fulfiller_address'] !== '0x0000000000000000000000000000000000000000') {
+        result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">' + result['status'] + '</span></a>';
+      }
+
+      result['watch'] = 'Watch';
+    } else {
+      result['hidden'] = (i > 4);
+    }
+
     html += tmpl.render(result);
   }
   return html;
 }
+
+const saveAttestationData = (result, cost_eth, to_address, type) => {
+  let request_url = '/revenue/attestations/new';
+  let txid = result;
+  let data = {
+    'txid': txid,
+    'amount': cost_eth,
+    'network': document.web3network,
+    'from_address': web3.eth.coinbase,
+    'to_address': to_address,
+    'type': type
+  };
+
+  $.post(request_url, data).then(function(result) {
+    _alert('Success ✅ Loading your purchase now.', 'success');
+  });
+};
+
+const renderFeaturedBountiesFromResults = (results, renderForExplorer) => {
+  let html = '';
+  const tmpl = $.templates('#featured-card');
+
+  if (results.length === 0) {
+    return html;
+  }
+
+  for (let i = 0; i < results.length; i++) {
+    const result = results[i];
+    let decimals = 18;
+    const divisor = Math.pow(10, decimals);
+    const relatedTokenDetails = tokenAddressToDetailsByNetwork(result['token_address'], result['network']);
+
+    if (relatedTokenDetails && relatedTokenDetails.decimals) {
+      decimals = relatedTokenDetails.decimals;
+    }
+
+    result['rounded_amount'] = normalizeAmount(result['value_in_token'] / divisor, decimals);
+
+    html += tmpl.render(result);
+  }
+  return html;
+};
 
 /**
  * Fetches results from the API and paints them onto the target element
@@ -1023,7 +1249,7 @@ function renderBountyRowsFromResults(results) {
  *
  * TODO: refactor explorer to reuse this
  */
-function fetchBountiesAndAddToList(params, target, limit) {
+function fetchBountiesAndAddToList(params, target, limit, additional_callback) {
   $.get('/api/v0.1/bounties/?' + params, function(results) {
     results = sanitizeAPIResults(results);
 
@@ -1056,5 +1282,174 @@ function fetchBountiesAndAddToList(params, target, limit) {
     } else {
       console.log($(target).parent().closest('.container').addClass('hidden'));
     }
+    if (typeof additional_callback != 'undefined') {
+      additional_callback(results);
+    }
   });
 }
+
+function showBusyOverlay() {
+  let overlay = document.querySelector('.busyOverlay');
+
+  if (overlay) {
+    overlay.style['display'] = 'block';
+    overlay.style['animation-name'] = 'fadeIn';
+    return;
+  }
+
+  overlay = document.createElement('div');
+  overlay.className = 'busyOverlay';
+  overlay.addEventListener(
+    'animationend',
+    function() {
+      if (overlay.style['animation-name'] === 'fadeOut') {
+        overlay.style['display'] = 'none';
+      }
+    },
+    false
+  );
+  document.body.appendChild(overlay);
+}
+
+function hideBusyOverlay() {
+  let overlay = document.querySelector('.busyOverlay');
+
+  if (overlay) {
+    setTimeout(function() {
+      overlay.style['animation-name'] = 'fadeOut';
+    }, 300);
+  }
+}
+
+function toggleExpandableBounty(evt, selector) {
+  evt.preventDefault();
+
+  if (evt.target.id === 'expanded') {
+    evt.target.id = '';
+  } else {
+    evt.target.id = 'expanded';
+  }
+
+  var container = document.body.querySelector(selector).querySelector('.expandable');
+
+  if (container) {
+    if (container.id === 'expanded') {
+      container.id = '';
+      evt.target.id = '';
+      return;
+    }
+    container.id = 'expanded';
+    evt.target.id = 'expanded';
+  }
+}
+
+function normalizeAmount(amount, decimals) {
+  return Math.round(amount * 10 ** decimals) / 10 ** decimals;
+}
+
+function newTokenTag(amount, tokenName, tooltipInfo, isCrowdfunded) {
+  const ele = document.createElement('div');
+  const p = document.createElement('p');
+  const span = document.createElement('span');
+
+  ele.className = 'tag token';
+  span.innerHTML = amount + ' ' + tokenName +
+    (isCrowdfunded ? '<i class="fas fa-users ml-1"></i>' : '');
+
+  p.appendChild(span);
+  ele.appendChild(p);
+
+  if (tooltipInfo) {
+    ele.title =
+      '<div class="tooltip-info tooltip-sm">' +
+      tooltipInfo +
+      '</div>';
+  }
+
+  return ele;
+}
+
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+
+    [ array[i], array[j] ] = [ array[j], array[i] ];
+  }
+  return array;
+}
+
+const getURLParams = (k) => {
+  var p = {};
+
+  location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(s, k, v) {
+    p[k] = v;
+  });
+  return k ? p[k] : p;
+};
+
+const updateParams = (key, value) => {
+  params = new URLSearchParams(window.location.search);
+  if (params.get(key) === value) return;
+  params.set(key, value);
+  window.location.search = params.toString();
+};
+
+/**
+ * shrinks text if it exceeds a given length which introduces a button
+ * which can expand / shrink the text.
+ * useage: <div class="more">...</div>
+ *
+ * @param {number} length - text length to be wrapped.
+ */
+const showMore = (length = 400) => {
+  const placeholder = '...';
+  const expand = 'More';
+  const shrink = 'Less';
+
+  $('.wrap-text').each(function() {
+    const content = $(this).html();
+
+    if (content.length > length) {
+      const shortText = content.substr(0, length);
+      const remainingText = content.substr(length, content.length - length + 1);
+      const html = shortText + '<span class="moreellipses">' + placeholder +
+      '&nbsp;</span><span class="morecontent"><span>' + remainingText +
+      '</span>&nbsp;&nbsp;<a href="#" class="morelink">' + expand +
+      '</a></span>';
+
+      $(this).html(html);
+    }
+  });
+
+  $('.morelink').on('click', function(event) {
+    if ($(event.currentTarget).hasClass('less')) {
+      $(event.currentTarget).removeClass('less');
+      $(event.currentTarget).html(expand);
+    } else {
+      $(event.currentTarget).addClass('less');
+      $(event.currentTarget).html(shrink);
+    }
+    $(event.currentTarget).parent().prev().toggle();
+    $(event.currentTarget).prev().toggle();
+    return false;
+  });
+};
+
+/**
+ * Check input file size
+ *
+ * input - input element
+ * max_img_size  - max size
+ *
+ * Useage: checkFileSize($(input), 4000000)
+ */
+const checkFileSize = (input, max_img_size) => {
+  if (input.files && input.files.length > 0) {
+    if (input.files[0].size > max_img_size) {
+      input.value = '';
+      return false;
+    }
+  }
+  return true;
+};
+

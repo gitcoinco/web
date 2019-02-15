@@ -1,13 +1,13 @@
 # Build Image
-FROM alpine:3.6 as alpine
-ARG VERSION=v1.10.0
+FROM alpine:3.8 as alpine
+ARG VERSION=v1.12.3
 WORKDIR /
 RUN apk add -U --no-cache curl ca-certificates && \
     curl -L "https://storage.googleapis.com/kubernetes-release/release/$VERSION/bin/linux/amd64/kubectl" -o /usr/local/bin/kubectl && \
     chmod +x /usr/local/bin/kubectl
 # Release Image
 FROM scratch
-ARG VERSION=v1.10.0
+ARG VERSION=v1.12.3
 ARG VCS_REF
 ARG BUILD_DATE
 COPY --from=alpine /usr/local/bin/kubectl /bin/kubectl

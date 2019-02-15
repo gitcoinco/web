@@ -158,7 +158,7 @@ def cryptocompare():
     Updates ConversionRates only if data not available.
 
     """
-    for bounty in Bounty.objects.filter(current_bounty=True):
+    for bounty in Bounty.objects.current():
         print(f'CryptoCompare Bounty {bounty.pk}')
         refresh_conv_rate(bounty.web3_created, bounty.token_name)
 

@@ -1,40 +1,20 @@
-var round = function(num, decimals) {
+const round = function(num, decimals) {
   return Math.round(num * 10 ** decimals) / 10 ** decimals;
 };
-var normalizeUsername = function(username) {
+
+const normalizeUsername = function(username) {
   if (username.indexOf('@') != 0) {
     return '@' + username;
   }
   return username;
 };
 
-
 $(document).ready(function($) {
-  var random_id = function() {
-    var id_num = Math.random().toString(9).substr(2, 3);
-    var id_str = Math.random().toString(36).substr(2);
-
-    return id_num + id_str;
-  };
 
   $(document).on('blur', '#amount', function(event) {
     event.preventDefault();
     update_registry();
   });
-
-  $(document).on('paste', '.username', function(event) {
-    var self = $(this);
-
-    setTimeout(function() {
-      self.html(self.html().replace(/(<([^>]+)>)/ig, ''));
-    }, 10);
-  });
-  
-
-  $(document).on('click', '#close_bounty', function(event) {
-    update_registry();
-  });
-
 
   $(document).on('input', '.percent', function(event) {
     event.preventDefault();
@@ -54,22 +34,11 @@ $(document).ready(function($) {
     update_registry();
   });
 
-  $(document).on('input', '.username', function(event) {
-    event.preventDefault();
-    var username = $(this).text();
-
-    if (username == '' || username == '@') {
-      $(this).addClass('error');
-    } else {
-      $(this).removeClass('error');
-    }
-    update_registry();
-  });
-
   $(document).on('click', '.remove', function(event) {
     event.preventDefault();
     $(this).parents('tr').remove();
     $(this).focus();
+    update_registry();
   });
 
   var sendTransaction = function(i) {
@@ -109,8 +78,6 @@ $(document).ready(function($) {
             issuer: web3.eth.coinbase,
             txid: txid
           });
-
-
         }
       };
       var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
@@ -155,18 +122,27 @@ $(document).ready(function($) {
     }
   };
 
-  $('#acceptBounty').click(function(e) {
+  $('#acceptBounty').on('click', function(e) {
     e.preventDefault();
-    
+
     if (!$('#terms').is(':checked')) {
       _alert('Please accept the TOS.', 'error');
       return;
     }
-    if (!document.transactions.length) {
+    if (typeof document.transactions == 'undefined' || !document.transactions.length) {
       _alert('You do not have any transactions to payout.  Please add payees to the form.', 'error');
       return;
     }
+    var usernames = $('.username-search');
 
+    for (var i = 0; i < usernames.length; i++) {
+      var username = usernames[i].textContent.trim();
+
+      if (username === null || username === '' || username === '@') {
+        _alert('Please provide a valid recipient Github username', 'error');
+        return;
+      }
+    }
     sendTransaction(0);
   });
 
@@ -178,103 +154,155 @@ $(document).ready(function($) {
   };
 
   var add_row = function() {
-    var num_rows = $('#payout_table').find('tr').length;
+    var num_rows = $('#payout_table tbody').find('tr').length;
     var percent = num_rows <= 1 ? 100 : '';
     var denomination = $('#token_name').text();
     var amount = get_amount(percent);
-    var html = '<tr><td><div class=username contenteditable="true">@</div></td><td><div class="percent" contenteditable="true">' + percent + '</div></td><td><div><span class=amount>' + amount + '</span> <span class=denomination>' + denomination + '</span></div></td><td><a class=remove href=#>X</a></td></tr>';
+    var html = `
+      <tr>
+        <td class="pl-0 pb-0">
+          <div class="pl-0">
+            <select onchange="update_registry()" class="username-search custom-select w-100 ml-auto mr-auto"></select>
+          </div>
+        </td>
+        <td class="pb-0"><div class="percent" contenteditable="true">` + percent + `</div></td>
+        <td class="pb-0"><div class="amount"><span class=amount>` + amount + '</span> <span class=denomination>' + denomination + `</span></div></td>
+        <td class="pb-0"><a class=remove href=#><i class="fas fa-times mt-2"></i></a>
+        </td>
+      </tr>`;
 
-    $('#payout_table').append(html);
+    $('#payout_table tbody').append(html);
+    userSearch('.username-search:last', true);
     $(this).focus();
-  };
-
-  var get_total_cost = function() {
-    var num_rows = $('#payout_table').find('tr').length;
-    var total = 0;
-    var i = 1;
-
-    for (i = 1; i < num_rows; i += 1) {
-      var $row = $('#payout_table').find('tr:nth-child(' + i + ')');
-      var amount = parseFloat($row.find('.amount').text());
-      var username = $row.find('.username').text();
-      var is_error = !$.isNumeric(amount) || amount <= 0 || username == '' || username == '@';
-
-      if (!is_error) {
-        total += amount;
-      }
-    }
-    return total;
-  };
-
-  var update_registry = function() {
-    var num_rows = $('#payout_table').find('tr').length;
-    var tc = round(get_total_cost(), 2);
-    var denomination = $('#token_name').text();
-    var original_amount = $('#original_amount').val();
-    var net = round(original_amount - tc, 2);
-    var close_bounty = $('#close_bounty').is(':checked');
-
-    $('#total_cost').html(tc + ' ' + denomination);
-    $('#total_net').html(net + ' ' + denomination);
-
-    var transactions = [];
-
-    first_transaction = {
-      'id': 1,
-      'type': 'cancel',
-      'reason': 'Bounty Stake',
-      'amount': '+' + original_amount + ' ' + denomination
-    };
-
-    var i = 0;
-
-    if (close_bounty) {
-      transactions.push(first_transaction);
-      i += 1;
-    }
-
-    for (let j = i; j < num_rows; j += 1) {
-      var $row = $('#payout_table').find('tr:nth-child(' + j + ')');
-      var amount = parseFloat($row.find('.amount').text());
-      var username = $row.find('.username').text();
-
-      transaction = {
-        'id': j + 1,
-        'type': 'tip',
-        'reason': 'Payment to ' + normalizeUsername(username),
-        'amount': '-' + amount + ' ' + denomination,
-        'data': {
-          'to': username,
-          'amount': amount,
-          'denomination': denomination,
-          'token_address': $('#token_address').val()
-        }
-      };
-      var is_error = !$.isNumeric(amount) || amount <= 0 || username == '' || username == '@';
-
-      if (!is_error)
-        transactions.push(transaction);
-    }
-
-    // paint on screen
-    $('#transaction_registry tr.entry').remove();
-    var k = 0;
-
-    for (k = 0; k < transactions.length; k += 1) {
-      var trans = transactions[k];
-      var html = "<tr class='entry entry_" + trans['id'] + "'><td>" + trans['id'] + '</td><td>' + trans['amount'] + '</td><td>' + trans['reason'] + '</td></tr>';
-
-      $('#transaction_registry').append(html);
-    }
-
-    document.transactions = transactions;
   };
 
   $('document').ready(function() {
     add_row();
     update_registry();
 
-    $('.add_another').click(add_row);
-
+    $('.add_another').on('click', function() {
+      add_row();
+    });
   });
 });
+
+var get_total_cost = function() {
+  var rows = $('#payout_table tbody tr');
+  var total = 0;
+
+  for (i = 0; i < rows.length; i += 1) {
+    var $rows = $(rows[i]);
+    var amount = parseFloat($rows.find('.amount').text());
+    var username = $rows.find('.username-search').text();
+    var is_error = !$.isNumeric(amount) || amount <= 0 || username == '' || username == '@';
+
+    if (!is_error) {
+      total += amount;
+    }
+  }
+  return total;
+};
+
+var update_registry = function(coinbase) {
+
+  if (!coinbase) {
+    web3.eth.getCoinbase(function(err, result) {
+      update_registry(result);
+    });
+    return;
+  }
+  
+  var num_rows = $('#payout_table tbody').find('tr').length;
+  var tc = round(get_total_cost(), 2);
+  var denomination = $('#token_name').text();
+  var original_amount = $('#original_amount').val();
+  var net = round(original_amount - tc, 2);
+  var over = round((original_amount - get_total_cost()) * -1, 4);
+  var addr = coinbase.substring(38);
+  var pay_with_bounty = $('#pay_with_bounty').is(':checked');
+  
+  $('#total_cost').html(tc + ' ' + denomination);
+
+  let transactions = [];
+  
+  first_transaction = {
+    'id': 0,
+    'type': 'cancel',
+    'reason': 'Bounty cancellation and refund.',
+    'amount': '+' + original_amount + ' ' + denomination
+  };
+
+  if (over > 0 && pay_with_bounty) {
+    $('#total_net').html(net + ' ' + denomination);
+    $('.overageAlert').css('display', 'inline-block');
+    $('.overagePreview').css('display', 'inline-block');
+    $('#total_overage').html(over + ' ' + denomination);
+    $('#address_ending').html(addr + ' ');
+    $('#preview_ending').html(addr + ' ');
+    $('#preview_overage').html(over + ' ' + denomination);
+    $('.tipAlert').css('display', 'none');
+    $('.asyncAlert').css('display', 'none');
+    $('.tipPreview').css('display', 'none');
+    transactions.push(first_transaction);
+  } else if (pay_with_bounty) {
+    $('#total_net').html(net + ' ' + denomination);
+    $('.overageAlert').css('display', 'none');
+    $('.overagePreview').css('display', 'none');
+    $('.tipAlert').css('display', 'none');
+    $('.asyncAlert').css('display', 'none');
+    $('.tipPreview').css('display', 'none');
+    transactions.push(first_transaction);
+  } else {
+    $('#total_net').html(tc + ' ' + denomination);
+    $('.tipAlert').css('display', 'inline-block');
+    $('.asyncAlert').css('display', 'inline-block');
+    $('.tipPreview').css('display', 'inline-block');
+    $('#total_tip_overage').html(tc + ' ' + denomination);
+    $('#address_tip_ending').html(addr + ' ');
+    $('#preview_tip_ending').html(addr + ' ');
+    $('#preview_tip_overage').html(tc + ' ' + denomination);
+    $('.overageAlert').css('display', 'none');
+    $('.overagePreview').css('display', 'none');
+  }
+
+  for (let j = 1; j <= num_rows; j++) {
+
+    var $row = $('#payout_table tbody').find('tr:nth-child(' + j + ')');
+    var amount = parseFloat($row.find('.amount').text());
+    var username = $row.find('.username-search').text();
+
+    if (username == '')
+      return;
+
+    transaction = {
+      'id': j,
+      'type': 'tip',
+      'reason': 'Payment to ' + normalizeUsername(username),
+      'amount': '-' + amount + ' ' + denomination,
+      'data': {
+        'to': username,
+        'amount': amount,
+        'denomination': denomination,
+        'token_address': $('#token_address').val()
+      }
+    };
+
+    var is_error = !$.isNumeric(amount) || amount <= 0 || username == '' || username == '@';
+
+    if (!is_error)
+      transactions.push(transaction);
+  }
+
+  // paint on screen
+  $('#transaction_registry tr.entry').remove();
+  var k = 0;
+
+  for (k = 0; k < transactions.length; k += 1) {
+    var trans = transactions[k];
+    var html = "<tr class='entry entry_" + trans['id'] + "'><td>" + trans['id'] + '</td><td>' + trans['amount'] + '</td><td>' + trans['reason'] + '</td></tr>';
+
+    $('#transaction_registry').append(html);
+  }
+
+  document.transactions = transactions;
+};

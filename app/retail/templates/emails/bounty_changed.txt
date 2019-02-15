@@ -1,0 +1,3 @@
+Bounty Details Changed
+
+{% include 'emails/bounty.txt' with bounty=bounty %}

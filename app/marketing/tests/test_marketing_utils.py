@@ -18,8 +18,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 from marketing.models import EmailSubscriber, Stat
-from marketing.utils import get_or_save_email_subscriber, get_stat, should_suppress_notification_email
+from marketing.utils import func_name, get_or_save_email_subscriber, get_stat, should_suppress_notification_email
 from test_plus.test import TestCase
+
+
+class MarketingUtilsTestCase(TestCase):
+    """Define tests for general marketing utils."""
+
+    @staticmethod
+    def test_func_name():
+        """Test the func_name method and ensure parent method matches."""
+        function_name = func_name()
+        assert function_name == 'test_func_name'
 
 
 class MarketingStatUtilsTest(TestCase):

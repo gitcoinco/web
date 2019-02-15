@@ -17,12 +17,15 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 END
 
-apt-get update
-apt-get install postgresql-client -y
+apk --update add postgresql-client
+
+if [ "$2" == "1" ]; then
+    echo "DROP SCHEMA public CASCADE;
+    CREATE SCHEMA public;
+    " | psql postgres -p 5432 -h db -U postgres
+
+fi
 
 BFILE=$1
-echo "DROP SCHEMA public CASCADE;
-CREATE SCHEMA public;
-" | psql postgres -p 5432 -h db -U postgres
 cat "$BFILE" | psql postgres -p 5432 -h db -U postgres
 

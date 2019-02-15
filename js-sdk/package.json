@@ -1,6 +1,6 @@
 {
   "name": "gitcoin-sdk",
-  "version": "1.0.2",
+  "version": "1.0.6",
   "description": "Gitcoin SDK.",
   "scripts": {
     "dev": "webpack --config webpack.config.js --mode development --progress --colors",
@@ -12,9 +12,12 @@
     "stylelint:fix": "stylelint --fix ./src/*.css",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["Gitcoin", "SDK"],
-  "author": "Matthew Lilley",
-  "license": "MIT",
+  "keywords": [
+    "Gitcoin",
+    "SDK"
+  ],
+  "author": "Gitcoin",
+  "license": "AGPLv3",
   "files": [
     "dist/index.js"
   ],

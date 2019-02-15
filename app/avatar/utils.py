@@ -17,24 +17,45 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-import json
 import logging
 import os
+import re
 from io import BytesIO
+from secrets import token_hex
 from tempfile import NamedTemporaryFile
 
+from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
 
+import pyvips
 import requests
 from git.utils import get_user
 from PIL import Image, ImageOps
+from pyvips.error import Error as VipsError
+from svgutils import transform
 from svgutils.compose import SVG, Figure, Line
 
 AVATAR_BASE = 'assets/other/avatars/'
 COMPONENT_BASE = 'assets/v2/images/avatar/'
 
 logger = logging.getLogger(__name__)
+
+
+def get_avatar_context_for_user(user):
+    from revenue.models import DigitalGoodPurchase
+    purchases = DigitalGoodPurchase.objects.filter(from_name=user.username, purchase__type='avatar', ).send_success()
+
+    context = get_avatar_context()
+    context['has_purchased_everything_package'] = purchases.filter(purchase__option='all').exists()
+    for i in range(0, len(context['sections'])):
+        purchase_objs = purchases.filter(purchase__option=context['sections'][i]['name'])
+        if context['has_purchased_everything_package']:
+            context['sections'][i]['purchases'] = [obj for obj in context['sections'][i]['options']]
+        else:
+            context['sections'][i]['purchases'] = [obj.purchase['value'] for obj in purchase_objs]
+
+    return context
 
 
 def get_avatar_context():
@@ -44,64 +65,145 @@ def get_avatar_context():
         'defaultClothingColor': 'CCCCCC',
         'defaultBackground': '25E899',
         'optionalSections': ['HairStyle', 'FacialHair', 'Accessories'],
-        'sections': [{
-            'name': 'Head',
-            'title': 'Pick head shape',
-            'options': ('0', '1', '2', '3', '4')
-        }, {
-            'name': 'Eyes',
-            'title': 'Pick eyes shape',
-            'options': ('0', '1', '2', '3', '4')
-        }, {
-            'name': 'Nose',
-            'title': 'Pick nose shape',
-            'options': ('0', '1', '2', '3', '4')
-        }, {
-            'name': 'Mouth',
-            'title': 'Pick mouth shape',
-            'options': ('0', '1', '2', '3', '4')
-        }, {
-            'name': 'Ears',
-            'title': 'Pick ears shape',
-            'options': ('0', '1', '2', '3')
-        }, {
-            'name': 'Clothing',
-            'title': 'Pick your clothing',
-            'options': ('cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt')
-        }, {
-            'name': 'Hair Style',
-            'title': 'Pick a hairstyle',
-            'options': (['None', '0'], ['None', '1'], ['None', '2'], ['None', '3'], ['None', '4'], ['5', 'None'],
-                        ['6-back', '6-front'], ['7-back', '7-front'], ['8-back', '8-front'])
-        }, {
-            'name': 'Facial Hair',
-            'title': 'Pick a facial hair style',
-            'options': (
-                'Mustache-0', 'Mustache-1', 'Mustache-2', 'Mustache-3', 'Beard-0', 'Beard-1', 'Beard-2', 'Beard-3'
-            )
-        }, {
-            'name': 'Accessories',
-            'title': 'Pick your accessories',
-            'options': (['Glasses-0'], ['Glasses-1'], ['Glasses-2'], ['Glasses-3'], ['Glasses-4'], [
-                'HatShort-backwardscap'
-            ], ['HatShort-ballcap'], ['HatShort-headphones'], ['HatShort-shortbeanie'], ['HatShort-tallbeanie'],
-                        ['Earring-0'], ['Earring-1'], ['EarringBack-2', 'Earring-2'], ['Earring-3'], ['Earring-4'])
-        }, {
-            'name': 'Background',
-            'title': 'Pick a background color',
-            'options': (
-                '25E899', '9AB730', '00A55E', '3FCDFF', '3E00FF', '8E2ABE', 'D0021B', 'F9006C', 'FFCE08', 'F8E71C',
-                '15003E', 'FFFFFF'
-            )
-        }],
+        'sections': [
+            {
+                'name': 'Head',
+                'title': 'Pick head shape',
+                'options': ('0', '1', '2', '3', '4'),
+                'paid_options': {}
+            },
+            {
+                'name': 'Makeup',
+                'title': 'Pick a makeup style',
+                'options': (
+                    'ziggy-stardust', 'bolt', 'star2', 'kiss', 'blush', 'eyeliner-green', 'eyeliner-teal',
+                    'eyeliner-pink', 'eyeliner-red', 'eyeliner-blue', 'star',
+                ),
+                'paid_options': {
+                    'ziggy-stardust': 0.02,
+                    'bolt': 0.01,
+                    'star': 0.01,
+                    'kiss': 0.02,
+                },
+            },
+            {
+                'name': 'Eyes',
+                'title': 'Pick eyes shape',
+                'options': ('0', '1', '2', '3', '4', '5', '6'),
+                'paid_options': {},
+            }, {
+                'name': 'Nose',
+                'title': 'Pick nose shape',
+                'options': ('0', '1', '2', '3', '4'),
+                'paid_options': {},
+            }, {
+                'name': 'Mouth',
+                'title': 'Pick mouth shape',
+                'options': ('0', '1', '2', '3', '4'),
+                'paid_options': {},
+            },
+            {
+                'name': 'Ears',
+                'title': 'Pick ears shape',
+                'options': ('0', '1', '2', '3', 'Spock'),
+                'paid_options': {
+                    'Spock': 0.01,
+                },
+            },
+            {
+                'name': 'Clothing',
+                'title': 'Pick your clothing',
+                'options': (
+                    'cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater', 'spacecadet', 'suit',
+                    'ethlogo', 'cloak', 'robe', 'pjs', 'elf_inspired', 'business_suit', 'suspender', 'gitcoinpro',
+                ),
+                'paid_options': {
+                    'robe': 0.01,
+                    'cloak': 0.01,
+                    'spacecadet': 0.01,
+                },
+            },
+            {
+                'name': 'Hair Style',
+                'title': 'Pick a hairstyle',
+                'options': (['None', '0'], ['None', '1'], ['None', '2'], ['None', '3'], ['None', '4'], ['5', 'None'], [
+                    '6-back', '6-front'
+                ], ['7-back', '7-front'], ['8-back', '8-front'], ['9-back', '9-front'], ['None', '10'], [
+                    'damos_hair-back', 'damos_hair-front'
+                ], ['long_swoosh-back', 'long_swoosh-front'], ['None', 'mohawk'], ['None', 'mohawk_inverted'],
+                            ['None', 'spikey'], ['None', 'mickey_hair'], ['None',
+                                                                          'modernhair_1'], ['None', 'modernhair_2'],
+                            ['modernhair_3-back', 'modernhair_3-front'], ['None', 'womenhair'], ['None', 'womanhair'], [
+                                'None', 'womanhair1'
+                            ], ['None', 'womanhair2'], ['None', 'womanhair3'], ['None',
+                                                                                'womanhair4'], ['None', 'womanhair5'], [
+                                                                                'None', 'man-hair']),
+                'paid_options': {},
+            },
+            {
+                'name': 'Facial Hair',
+                'title': 'Pick a facial hair style',
+                'options': (
+                    'Mustache-0', 'Mustache-1', 'Mustache-2', 'Mustache-3', 'Beard-0', 'Beard-1', 'Beard-2', 'Beard-3',
+                ),
+                'paid_options': {},
+            },
+            {
+                'name': 'Accessories',
+                'title': 'Pick your accessories',
+                'options': (['Glasses-0'], ['Glasses-1'], ['Glasses-2'], ['Glasses-3'], ['Glasses-4'], [
+                    'HatShort-backwardscap'
+                ], ['HatShort-redbow'], ['HatShort-yellowbow'], ['HatShort-ballcap'], ['HatShort-cowboy'], [
+                    'HatShort-superwoman-tiara'
+                ], ['HatShort-headdress'], ['HatShort-headphones'], ['HatShort-shortbeanie'], ['HatShort-tallbeanie'], [
+                    'HatShort-bunnyears'
+                ], ['HatShort-menorah'], ['HatShort-pilgrim'], ['HatShort-santahat'], ['HatShort-elfhat'], [
+                    'Earring-0'
+                ], ['Earring-1'], ['EarringBack-2', 'Earring-2'], ['Earring-3'], ['Earring-4'], ['Earring-5'], [
+                    'Masks-jack-o-lantern'
+                ], ['Masks-guy-fawkes'], ['Masks-bunny'], ['Masks-blackpanther'], ['Masks-jack-o-lantern-lighted'], [
+                    'Masks-wolverine_inspired'
+                ], ['Masks-captain_inspired'], ['Masks-alien'], ['Extras-Parrot'], ['Extras-wonderwoman_inspired'], [
+                    'Extras-santa_inspired'
+                ], ['Extras-reindeer'], ['Masks-gitcoinbot'], ['Extras-tattoo'], ['Masks-batman_inspired'], [
+                    'Masks-eye-patch'
+                ], ['Masks-flash_inspired'], ['Masks-deadpool_inspired'], ['Masks-darth_inspired'],
+                            ['Masks-spiderman_inspired'], ['Glasses-5'], ['Glasses-geordi-visor'], 
+                            ['Masks-funny_face'],
+                            ),
+                'paid_options': {
+                    'Extras-Parrot': 0.01,
+                    'Masks-batman': 0.02,
+                },
+            },
+            {
+                'name': 'Background',
+                'title': 'Pick a background color',
+                'options': (
+                    '25E899', '9AB730', '00A55E', '3FCDFF', '3E00FF', '8E2ABE', 'D0021B', 'F9006C', 'FFCE08', 'F8E71C',
+                    '15003E', 'FFFFFF',
+                ),
+                'paid_options': {},
+            },
+            {
+                'name': 'Wallpaper',
+                'title': 'Pick some swag for your back',
+                'options': (
+                    'anchors', 'circuit', 'jigsaw', 'lines', 'gears', 'clouds', 'signal', 'polka_dots',
+                    'polka_dots_black', 'squares', 'shapes', 'sunburst', 'sunburst_pastel', 'rainbow',
+                ),
+                'paid_options': {
+                    'sunburst_pastel': 0.01,
+                    'rainbow': 0.01,
+                },
+            }
+        ],
     }
 
 
 def get_upload_filename(instance, filename):
-    from secrets import token_hex
-    from os.path import basename
     salt = token_hex(16)
-    file_path = basename(filename)
+    file_path = os.path.basename(filename)
     return f"avatars/{getattr(instance, '_path', '')}/{salt}/{file_path}"
 
 
@@ -111,7 +213,9 @@ def get_svg_templates():
         'accessories': {
             'earring': [],
             'glasses': [],
-            'hat': []
+            'hat': [],
+            'masks': [],
+            'extras': [],
         },
         'clothing': [],
         'ears': [],
@@ -122,8 +226,10 @@ def get_svg_templates():
         },
         'hair': [],
         'head': [],
+        'makeup': [],
         'mouth': [],
         'nose': [],
+        'wallpaper': []
     }
 
     for category in template_data:
@@ -150,11 +256,36 @@ def get_svg_template(category, item, primary_color, secondary_color=''):
 
 
 def build_avatar_component(path, icon_size=None, avatar_size=None):
-    icon_size = icon_size or (215, 215)
+    from .models import BaseAvatar
+    icon_size = icon_size or BaseAvatar.ICON_SIZE
     avatar_component_size = avatar_size or (899.2, 1415.7)
     scale_factor = icon_size[1] / avatar_component_size[1]
     x_to_center = (icon_size[0] / 2) - ((avatar_component_size[0] * scale_factor) / 2)
-    svg = SVG(f'{COMPONENT_BASE}{path}').scale(scale_factor).move(x_to_center, 0)
+    svg = SVG(f'{COMPONENT_BASE}{path}')
+    if path.startswith('Wallpaper') or path.startswith('Makeup'):
+        src = transform.fromfile(f'{COMPONENT_BASE}{path}')
+
+        if src.width is not None:
+            src_width = float(re.sub('[^0-9]', '', src.width))
+        else:
+            src_width = 900
+
+        if src.height is not None:
+            src_height = float(re.sub('[^0-9]', '', src.height))
+        else:
+            src_height = 1415
+        scale_factor = icon_size[1] / src_height
+        if path.startswith('Makeup'):
+            scale_factor = scale_factor / 2
+
+        svg = svg.scale(scale_factor)
+        if path.startswith('Makeup'):
+            x_to_center = (icon_size[0] / 2) - ((src_width * scale_factor) / 2)
+            svg = svg.move(x_to_center, src_height * scale_factor / 2)
+
+    if not path.startswith('Wallpaper') and not path.startswith('Makeup'):
+        svg = svg.scale(scale_factor)
+        svg = svg.move(x_to_center, 0)
     return svg
 
 
@@ -166,7 +297,8 @@ def build_temporary_avatar_component(
     component_type='cardigan',
     component_category='clothing'
 ):
-    icon_size = icon_size or (215, 215)
+    from .models import BaseAvatar
+    icon_size = icon_size or BaseAvatar.ICON_SIZE
     avatar_component_size = avatar_size or (899.2, 1415.7)
     scale_factor = icon_size[1] / avatar_component_size[1]
     x_to_center = (icon_size[0] / 2) - ((avatar_component_size[0] * scale_factor) / 2)
@@ -185,7 +317,8 @@ def build_temporary_avatar_component(
 
 
 def build_avatar_svg(svg_path='avatar.svg', line_color='#781623', icon_size=None, payload=None, temp=False):
-    icon_size = icon_size or (215, 215)
+    from .models import BaseAvatar
+    icon_size = icon_size or BaseAvatar.ICON_SIZE
     icon_width = icon_size[0]
     icon_height = icon_size[1]
 
@@ -193,7 +326,7 @@ def build_avatar_svg(svg_path='avatar.svg', line_color='#781623', icon_size=None
         # Sample payload
         payload = {
             'background_color': line_color,
-            'icon_size': (215, 215),
+            'icon_size': BaseAvatar.ICON_SIZE,
             'avatar_size': None,
             'skin_tone': '#3F2918',
             'ears': {
@@ -213,6 +346,7 @@ def build_avatar_svg(svg_path='avatar.svg', line_color='#781623', icon_size=None
             'mouth': '0',
             'nose': '0',
             'eyes': '0',
+            'wallpaper': None
         }
 
     # Build the list of avatar components
@@ -224,7 +358,7 @@ def build_avatar_svg(svg_path='avatar.svg', line_color='#781623', icon_size=None
     ]
 
     customizable_components = ['clothing', 'ears', 'head', 'hair']
-    flat_components = ['eyes', 'mouth', 'nose']
+    flat_components = ['eyes', 'mouth', 'nose', 'wallpaper']
     multi_components = ['accessories']
 
     for component in customizable_components:
@@ -257,18 +391,17 @@ def build_avatar_svg(svg_path='avatar.svg', line_color='#781623', icon_size=None
     return result_path
 
 
-def handle_avatar_payload(request):
+def handle_avatar_payload(body):
     """Handle the Avatar payload."""
     avatar_dict = {}
     valid_component_keys = [
-        'Beard', 'Clothing', 'Earring', 'EarringBack', 'Ears', 'Eyes', 'Glasses', 'HairLong', 'HairShort', 'HatLong',
-        'HatShort', 'Head', 'Mouth', 'Mustache', 'Nose'
+        'Beard', 'Clothing', 'Earring', 'EarringBack', 'Ears', 'Eyes', 'Glasses', 'Masks', 'HairLong', 'HairShort',
+        'HatLong', 'HatShort', 'Head', 'Mouth', 'Mustache', 'Nose', 'Extras', 'Wallpaper', 'Makeup'
     ]
     valid_color_keys = ['Background', 'ClothingColor', 'HairColor', 'SkinTone']
-    body = json.loads(request.body)
     for k, v in body.items():
         if v and k in valid_component_keys:
-            component_type, svg_asset = v.lstrip('v2/images/avatar/').split('/')
+            component_type, svg_asset = v.lstrip(f'{settings.STATIC_URL}v2/images/avatar/').split('/')
             avatar_dict[k] = {'component_type': component_type, 'svg_asset': svg_asset, }
         elif v and k in valid_color_keys:
             avatar_dict[k] = v
@@ -344,7 +477,25 @@ def get_err_response(request, blank_img=False):
     return err_response
 
 
-def get_temp_image_file(url):
+def get_user_github_avatar_image(handle):
+    remote_user = get_user(handle)
+    avatar_url = remote_user.get('avatar_url')
+    if not avatar_url:
+        return None
+    from .models import BaseAvatar
+    temp_avatar = get_github_avatar_image(avatar_url, BaseAvatar.ICON_SIZE)
+    if not temp_avatar:
+        return None
+    return temp_avatar
+
+
+def get_github_avatar_image(url, icon_size):
+    response = requests.get(url)
+    img = Image.open(BytesIO(response.content)).convert('RGBA')
+    return ImageOps.fit(img, icon_size, Image.ANTIALIAS)
+
+
+def get_temp_image_file(image):
     """Fetch an image from a remote URL and hold in temporary IO.
 
     Args:
@@ -356,29 +507,141 @@ def get_temp_image_file(url):
     """
     temp_io = None
     try:
-        response = requests.get(url)
-        img = Image.open(BytesIO(response.content)).convert('RGBA')
         temp_io = BytesIO()
-        img.save(temp_io, format='PNG')
+        image.save(temp_io, format='PNG')
     except Exception as e:
         logger.error(e)
     return temp_io
 
 
-def get_github_avatar(handle):
-    """Pull the latest avatar from Github and store in Avatar.png.
+def svg_to_png(svg_content, width=100, height=100, scale=1):
+    print('creating svg with pyvips')
+    png = svg_to_png_pyvips(svg_content, scale=scale)
+    if not png:
+        print("failed; using inkscape")
+        return svg_to_png_inkscape(svg_content, height=height, width=width)
+    return png
+
+
+def svg_to_png_pyvips(svg_content, scale=1):
+    input_fmt = 'svg'
+    output_fmt = 'png'
+    try:
+        obj_data = svg_content
+        try:
+            image = pyvips.Image.new_from_buffer(obj_data, f'.svg', scale=scale)
+        except Exception as e:
+            logger.debug(
+                'got an exception trying to create a new image from a svg, usually this means that librsvg2 is not installed'
+            )
+            logger.debug(e)
+            logger.debug(
+                'retrying with out the scale parameter... which should work as long as imagemagick is installed'
+            )
+            image = pyvips.Image.new_from_buffer(obj_data, f'.svg')
+        return BytesIO(image.write_to_buffer(f'.{output_fmt}'))
+    except VipsError:
+        pass
+    except Exception as e:
+        logger.error(
+            'Exception encountered in convert_img - Error: (%s) - input: (%s) - output: (%s)', str(e), input_fmt,
+            output_fmt
+        )
+    return None
+
+
+def svg_to_png_inkscape(svg_content, width=333, height=384):
+    import subprocess  # May want to use subprocess32 instead
+    input_file = 'static/tmp/input.svg'
+    output_file = 'static/tmp/output.png'
+
+    text_file = open(input_file, "w")
+    content = svg_content
+    if type(content) == bytes:
+        content = svg_content.decode('utf-8')
+    text_file.write(content)
+    text_file.close()
+
+    cmd_list = [
+        '/usr/bin/inkscape', '-z', '--export-png', output_file, '--export-width', f"{width}", '--export-height',
+        f"{height}", input_file
+    ]
+    print(" ".join(cmd_list))
+    p = subprocess.Popen(cmd_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out, err = p.communicate()
+    if p.returncode:
+        print('Inkscape error: ' + (err or '?'))
+
+    with open(output_file, 'rb') as fin:
+        return BytesIO(fin.read())
+
+
+def convert_img(obj, input_fmt='svg', output_fmt='png'):
+    """Convert the provided buffer to another format.
+
+    Args:
+        obj (File): The File/ContentFile object.
+        input_fmt (str): The input format. Defaults to: svg.
+        output_fmt (str): The output format. Defaults to: png.
+
+    Exceptions:
+        Exception: Cowardly catch blanket exceptions here, log it, and return None.
 
     Returns:
-        bool: Whether or not the Github avatar was updated.
+        BytesIO: The BytesIO stream containing the converted File data.
+        None: If there is an exception, the method returns None.
 
     """
-    remote_user = get_user(handle)
-    avatar_url = remote_user.get('avatar_url')
-    if not avatar_url:
-        return False
+    return svg_to_png(obj.read(), height=215, width=215)
 
-    temp_avatar = get_temp_image_file(avatar_url)
-    if not temp_avatar:
-        return False
 
-    return temp_avatar
+def convert_wand(img_obj, input_fmt='png', output_fmt='svg'):
+    """Convert an SVG to another format.
+
+    Args:
+        img_obj (File): The PNG or other image File/ContentFile.
+        input_fmt (str): The input format. Defaults to: png.
+        output_fmt (str): The output format. Defaults to: svg.
+
+    Returns:
+        BytesIO: The BytesIO stream containing the converted File data.
+        None: If there is an exception, the method returns None.
+
+    """
+    from wand.image import Image as WandImage
+    try:
+        img_data = img_obj.read()
+        with WandImage(blob=img_data, format=input_fmt) as _img:
+            _img.format = output_fmt
+            tmpfile_io = BytesIO()
+            _img.save(file=tmpfile_io)
+            return tmpfile_io
+    except Exception as e:
+        logger.error(
+            'Exception encountered in convert_wand - Error: (%s) - input: (%s) - output: (%s)', str(e), input_fmt,
+            output_fmt
+        )
+    return None
+
+
+def dhash(image, hash_size=8):
+    # https://blog.iconfinder.com/detecting-duplicate-images-using-python-cb240b05a3b6
+    # Grayscale and shrink the image in one step.
+    image = image.convert('L').resize((hash_size + 1, hash_size), Image.ANTIALIAS, )
+    # Compare adjacent pixels.
+    difference = []
+    for row in range(hash_size):
+        for col in range(hash_size):
+            pixel_left = image.getpixel((col, row))
+            pixel_right = image.getpixel((col + 1, row))
+            difference.append(pixel_left > pixel_right)
+    # Convert the binary array to a hexadecimal string.
+    decimal_value = 0
+    hex_string = []
+    for index, value in enumerate(difference):
+        if value:
+            decimal_value += 2**(index % 8)
+        if (index % 8) == 7:
+            hex_string.append(hex(decimal_value)[2:].rjust(2, '0'))
+            decimal_value = 0
+    return ''.join(hex_string)

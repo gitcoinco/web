@@ -1,0 +1,7 @@
+{% for activity in activities %}
+  {% if activity.tip %}
+    {% include "shared/profile_activities_tip.html" with tip=activity.tip %}
+  {% elif activity.bounty %}
+    {% include "shared/profile_activities_bounty.html" %}
+  {% endif %}
+{% endfor %}

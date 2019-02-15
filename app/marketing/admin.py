@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -22,13 +22,20 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 
 from .models import (
-    Alumni, EmailEvent, EmailSubscriber, EmailSupressionList, GithubEvent, GithubOrgToTwitterHandleMapping,
-    LeaderboardRank, Match, SlackPresence, SlackUser, Stat,
+    AccountDeletionRequest, Alumni, EmailEvent, EmailSubscriber, EmailSupressionList, GithubEvent,
+    GithubOrgToTwitterHandleMapping, Keyword, LeaderboardRank, Match, SlackPresence, SlackUser, Stat,
 )
 
 
 class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
+    list_display = ['created_on', '__str__']
+
+
+class LeaderboardRankAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['created_on', '__str__']
+    raw_id_fields = ['profile']
 
 
 class EmailEventAdmin(admin.ModelAdmin):
@@ -106,14 +113,17 @@ class SlackUserAdmin(admin.ModelAdmin):
             return 'Unknown'
 
 
+
+admin.site.register(AccountDeletionRequest, GeneralAdmin)
 admin.site.register(EmailSupressionList, GeneralAdmin)
 admin.site.register(Alumni, AlumniAdmin)
 admin.site.register(GithubEvent, GithubEventAdmin)
 admin.site.register(Match, MatchAdmin)
 admin.site.register(Stat, GeneralAdmin)
+admin.site.register(Keyword, GeneralAdmin)
 admin.site.register(EmailEvent, EmailEventAdmin)
 admin.site.register(EmailSubscriber, EmailSubscriberAdmin)
-admin.site.register(LeaderboardRank, GeneralAdmin)
+admin.site.register(LeaderboardRank, LeaderboardRankAdmin)
 admin.site.register(SlackUser, SlackUserAdmin)
 admin.site.register(SlackPresence, SlackPresenceAdmin)
 admin.site.register(GithubOrgToTwitterHandleMapping, GeneralAdmin)

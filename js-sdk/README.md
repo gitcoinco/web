@@ -23,7 +23,7 @@ Step 2: Place this code wherever you want the plugin to appear on your page.
 <div class="gitcoin-widget"
   data-limit="2"
   data-order-by="-expires_date"
-  data-orginisation="MetaMask"
+  data-organization="MetaMask"
   data-repository="metamask-extension"
 ></div>
 ```
@@ -58,7 +58,7 @@ Widget can be instantiated by passing a selector option, or an element reference
 new Widget({
   limit: 10,
   orderBy: '-expires_date',
-  orginisation: 'MetaMask',
+  organization: 'MetaMask',
   repository: 'metamask-extension',
   selector: '.gitcoin-widget',
 });

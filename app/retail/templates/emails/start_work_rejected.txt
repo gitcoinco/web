@@ -5,4 +5,4 @@ Checkout the issue explorer for other projects on the platform!
  " %}
 
 
-https://gitcon.co/explorer
+{% url 'explorer' %}

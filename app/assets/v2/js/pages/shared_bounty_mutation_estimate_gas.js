@@ -14,12 +14,22 @@ var gas_amount = function(page_url) {
     gasLimitEstimate = 103915;
   } else if (page_url.indexOf('issue/cancel') != -1) { // new kill funding page
     gasLimitEstimate = 67327;
+  } else if (page_url.indexOf('issue/advanced_payout') != -1) { // advanced payout page
+    gasLimitEstimate = 67327;
   } else if (page_url.indexOf('issue/payout') != -1) { // bulk payout
     gasLimitEstimate = 103915;
   } else if (page_url.indexOf('tip/send') != -1) { // tip
     gasLimitEstimate = 21000;
   } else if (page_url.indexOf('tip/receive') != -1) { // tip
     gasLimitEstimate = 21000;
+  } else if (page_url.indexOf('/fund') != -1) { // grant contribution
+    gasLimitEstimate = 318730;
+  } else if (page_url.indexOf('/subscription') != -1) { // cancel grant contribution
+    gasLimitEstimate = 318730;
+  } else if (page_url.indexOf('/grants/') != -1) { // cancel grant contribution
+    gasLimitEstimate = 318730;
+  } else if (page_url.indexOf('/subscribe') != -1) { // gitcoin subscription plans
+    gasLimitEstimate = 318730;
   }
   return gasLimitEstimate;
 };

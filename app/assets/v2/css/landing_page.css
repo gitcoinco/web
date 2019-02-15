@@ -4,7 +4,7 @@ html {
 
 body {
   height: 100vh;
-  color: var(--text-dark);
+  color: #43484d;
 }
 
 .navbar {
@@ -16,7 +16,20 @@ body {
 }
 
 .banner--green {
-  background-color:#0ECF7C;
+  background-color:#25E899;
+  color: #000000;
+}
+
+.banner--green .btn-green {
+  background: transparent;
+  box-shadow: none;
+  color: #0D0764;
+  border: 1px solid #0D0764;
+}
+
+.banner--green p,
+.banner--green a {
+  font-weight: 600;
 }
 
 .youtube iframe {
@@ -57,14 +70,14 @@ body {
   position: absolute;
   top: -50px;
   right: calc(5vw - 50px);
-  max-width: 30vw;
+  max-width: 25vw;
   will-change: transform;
 }
 
 .howworks-container {
   background-color: #ffffff;
   text-align: center;
-  color: var(--text-dark);
+  color: #43484d;
 }
 
 .howworks-container-contributors {
@@ -141,6 +154,19 @@ body {
   margin-bottom: 1rem;
 }
 
+.howworks-step i {
+  font-size: 2rem;
+  padding: 0.5rem 0;
+}
+
+.funder-container .howworks-step i {
+  color: #FFCE08;
+}
+
+.contributor-container .howworks-step i {
+  color: #25E899;
+}
+
 .howworks-step__label {
   border-radius: 50%;
   height: 2rem;
@@ -159,7 +185,8 @@ body {
   color: #fff;
 }
 
-.benefits_container {
+.benefits_container,
+.landing__newsletter {
   background-color: #F9F9F9;
   justify-items: center;
 }
@@ -193,12 +220,6 @@ body {
   padding-top: 2rem;
   padding-bottom: 1rem;
   height: 6rem;
-}
-
-.activity.box {
-  border-left: none;
-  border-top: none;
-  border-right: none;
 }
 
 .activity-info {
@@ -252,6 +273,7 @@ body {
 
 .join-gitcoin-heading {
   font-size: 2.5rem;
+  color: var(--light)
 }
 
 .contributors-cta-text {
@@ -385,6 +407,13 @@ body {
 .in-some-cases-container {
   background-color: #FAFCFD;
 }
+
+.in-some-cases-container .flex-row div {
+  max-width: 12rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .how-it-works-footer {
   background-color: #0D0764;
 }
@@ -397,6 +426,10 @@ body {
 
 .whatisit {
   height: min-content;
+}
+
+.whatisit-title {
+  color: var(--light);
 }
 
 .whatisit .youtube {
@@ -662,6 +695,17 @@ body {
   }
 }
 
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .banner--green a {
+    display: inherit;
+  }
+
+  .banner--green a:first-child {
+    margin-bottom: 0.5rem;
+  }
+}
+
+
 @media (max-width: 768px) {
 
   .howworks-section {
@@ -734,16 +778,25 @@ body {
   }
 
   .newsletter #newsletter-input {
-    padding: 10px !important;
+    padding: 12px 10px !important;
     min-width: 18rem !important;
     font-size: 16px !important;
-    border: 1px solid #888 !important;
+    border: 1px solid #888;
+    border-top-left-radius: 2px !important;
+    border-bottom-left-radius: 2px !important;
+    border-right: none;
   }
 
   #newsletter-subscribe {
-    height: 46px;
-    top: -2px;
+    height: 48px;
+    top: 1px;
+    border-radius: 2px;
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
     position: relative;
+    box-shadow: none;
+    font-weight: 600;
+    left: -4px;
   }
 }
 

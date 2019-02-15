@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -24,26 +24,33 @@ import time
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
-from django.core.cache import cache
-from django.http import Http404, JsonResponse
+from django.core.exceptions import PermissionDenied
+from django.core.paginator import Paginator
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
+from django.template import loader
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
 from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
-from app.utils import clean_str, ellipses, sync_profile
-from avatar.utils import get_avatar_context
-from economy.utils import convert_amount
-from gas.utils import conf_time_spread, gas_advisories, gas_history, recommend_min_gas_price_to_confirm_in_time
-from git.utils import get_auth_url, get_github_user_data, is_github_token_valid
+from app.utils import clean_str, ellipses
+from avatar.utils import get_avatar_context_for_user
+from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, profile_helper
+from economy.utils import convert_token_to_usdt
+from eth_utils import to_checksum_address, to_normalized_address
+from gas.utils import recommend_min_gas_price_to_confirm_in_time
+from git.utils import get_auth_url, get_github_user_data, is_github_token_valid, search_users
+from kudos.models import KudosTransfer, Token, Wallet
+from kudos.utils import humanize_name
 from marketing.mails import (
-    admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,
+    admin_contact_funder, bounty_uninterested, new_reserved_issue, start_work_approved, start_work_new_applicant,
+    start_work_rejected,
 )
 from marketing.models import Keyword
 from pytz import UTC
@@ -53,15 +60,16 @@ from web3 import HTTPProvider, Web3
 
 from .helpers import get_bounty_data_for_activity, handle_bounty_views
 from .models import (
-    Activity, Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip,
-    Tool, ToolVote, UserAction,
+    Activity, Bounty, BountyFulfillment, CoinRedemption, CoinRedemptionRequest, Interest, LabsResearch, Profile,
+    ProfileSerializer, Subscription, Tool, ToolVote, UserAction,
 )
 from .notifications import (
-    maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_github,
-    maybe_market_to_slack, maybe_market_to_twitter, maybe_market_to_user_discord, maybe_market_to_user_slack,
+    maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
+    maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter, maybe_market_to_user_discord,
+    maybe_market_to_user_slack,
 )
 from .utils import (
-    get_bounty, get_bounty_id, get_context, has_tx_mined, record_user_action_on_interest, web3_process_bounty,
+    get_bounty, get_bounty_id, get_context, get_web3, has_tx_mined, record_user_action_on_interest, web3_process_bounty,
 )
 
 logger = logging.getLogger(__name__)
@@ -141,7 +149,6 @@ def record_bounty_activity(bounty, user, event_name, interest=None):
         logger.error(f"error in record_bounty_activity: {e} - {event_name} - {bounty} - {user}")
 
 
-
 def helper_handle_access_token(request, access_token):
     # https://gist.github.com/owocki/614a18fbfec7a5ed87c97d37de70b110
     # interest API via token
@@ -178,8 +185,14 @@ def gh_login(request):
 
 
 def get_interest_modal(request):
+    bounty_id = request.GET.get('pk')
+    if not bounty_id:
+        raise Http404
 
-    bounty = Bounty.objects.get(pk=request.GET.get("pk"))
+    try:
+        bounty = Bounty.objects.get(pk=bounty_id)
+    except Bounty.DoesNotExist:
+        raise Http404
 
     context = {
         'bounty': bounty,
@@ -357,9 +370,9 @@ def remove_interest(request, bounty_id):
 @csrf_exempt
 @require_POST
 def extend_expiration(request, bounty_id):
-    """Unclaim work from the Bounty.
+    """Extend expiration of the Bounty.
 
-    Can only be called by someone who has started work
+    Can only be called by funder or staff of the bounty.
 
     :request method: POST
 
@@ -399,6 +412,53 @@ def extend_expiration(request, bounty_id):
 
     return JsonResponse({
         'error': _("You must be funder to extend expiration"),
+    }, status=200)
+
+
+@csrf_exempt
+@require_POST
+def cancel_reason(request):
+    """Extend expiration of the Bounty.
+
+    Can only be called by funder or staff of the bounty.
+
+    :request method: POST
+
+    Params:
+        pk (int): ID of the Bounty.
+        canceled_bounty_reason (string): STRING with cancel  reason
+
+    Returns:
+        dict: The success key with a boolean value and accompanying error.
+
+    """
+    print(request.POST.get('canceled_bounty_reason'))
+    user = request.user if request.user.is_authenticated else None
+
+    if not user:
+        return JsonResponse(
+            {'error': _('You must be authenticated via github to use this feature!')},
+            status=401)
+
+    try:
+        bounty = Bounty.objects.get(pk=request.POST.get('pk'))
+    except Bounty.DoesNotExist:
+        return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
+                            status=401)
+
+    is_funder = bounty.is_funder(user.username.lower()) if user else False
+    if is_funder:
+        canceled_bounty_reason = request.POST.get('canceled_bounty_reason')
+        bounty.canceled_bounty_reason = canceled_bounty_reason
+        bounty.save()
+
+        return JsonResponse({
+            'success': True,
+            'msg': _("Cancel reason added."),
+        })
+
+    return JsonResponse({
+        'error': _("You must be funder to add a reason"),
     }, status=200)
 
 
@@ -488,9 +548,13 @@ def onboard(request, flow):
     elif flow == 'funder':
         onboard_steps = ['github', 'metamask', 'avatar']
     elif flow == 'contributor':
-        onboard_steps = ['github', 'metamask', 'avatar', 'skills']
+        onboard_steps = ['github', 'metamask', 'avatar', 'skills', 'job']
     elif flow == 'profile':
         onboard_steps = ['avatar']
+
+    profile = None
+    if request.user.is_authenticated and getattr(request.user, 'profile', None):
+        profile = request.user.profile
 
     steps = []
     if request.GET:
@@ -516,16 +580,20 @@ def onboard(request, flow):
         'title': _('Onboarding Flow'),
         'steps': steps or onboard_steps,
         'flow': flow,
+        'profile': profile,
     }
-    params.update(get_avatar_context())
+    params.update(get_avatar_context_for_user(request.user))
     return TemplateResponse(request, 'ftux/onboard.html', params)
 
 
 def dashboard(request):
     """Handle displaying the dashboard."""
+
+    keyword = request.GET.get('keywords', False)
+    title = keyword.title() + str(_(" Bounties ")) if keyword else str(_('Issue Explorer'))
     params = {
         'active': 'dashboard',
-        'title': _('Issue Explorer'),
+        'title': title,
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
     return TemplateResponse(request, 'dashboard/index.html', params)
@@ -545,19 +613,14 @@ def accept_bounty(request):
 
     """
     bounty = handle_bounty_views(request)
-    bounty_params = {
-        'fulfillment_id': request.GET.get('id'),
-        'fulfiller_address': request.GET.get('address'),
-    }
-
     params = get_context(
         ref_object=bounty,
         user=request.user if request.user.is_authenticated else None,
         confirm_time_minutes_target=confirm_time_minutes_target,
         active='accept_bounty',
         title=_('Process Issue'),
-        update=bounty_params,
     )
+    params['open_fulfillments'] = bounty.fulfillments.filter(accepted=False)
     return TemplateResponse(request, 'process_bounty.html', params)
 
 
@@ -584,6 +647,47 @@ def contribute(request):
         title=_('Contribute'),
     )
     return TemplateResponse(request, 'contribute_bounty.html', params)
+
+
+def invoice(request):
+    """invoice view.
+
+    Args:
+        pk (int): The primary key of the bounty to be accepted.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The invoice  view.
+
+    """
+    bounty = handle_bounty_views(request)
+
+    # only allow invoice viewing if admin or iff bounty funder
+    is_funder = bounty.is_funder(request.user.username)
+    is_staff = request.user.is_staff
+    has_view_privs = is_funder or is_staff
+    if not has_view_privs:
+        raise Http404
+
+    params = get_context(
+        ref_object=bounty,
+        user=request.user if request.user.is_authenticated else None,
+        confirm_time_minutes_target=confirm_time_minutes_target,
+        active='invoice_view',
+        title=_('Invoice'),
+    )
+    params['accepted_fulfillments'] = bounty.fulfillments.filter(accepted=True)
+    params['tips'] = [
+        tip for tip in bounty.tips.send_happy_path() if tip.username == request.user.username and tip.username
+    ]
+    params['total'] = bounty._val_usd_db if params['accepted_fulfillments'] else 0
+    for tip in params['tips']:
+        if tip.value_in_usdt:
+            params['total'] += tip.value_in_usdt
+
+    return TemplateResponse(request, 'bounty/invoice.html', params)
 
 
 def social_contribution(request):
@@ -613,6 +717,67 @@ def social_contribution(request):
     )
     params['promo_text'] = promo_text
     return TemplateResponse(request, 'social_contribution.html', params)
+
+
+def social_contribution_modal(request):
+    # TODO: will be changed to the new share
+    """Social Contributuion to the bounty.
+
+    Args:
+        pk (int): The primary key of the bounty to be accepted.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The accept bounty view.
+
+    """
+    bounty = handle_bounty_views(request)
+    promo_text = str(_("Check out this bounty that pays out ")) + f"{bounty.get_value_true} {bounty.token_name} {bounty.url}"
+    for keyword in bounty.keywords_list:
+        promo_text += f" #{keyword}"
+
+    params = get_context(
+        ref_object=bounty,
+        user=request.user if request.user.is_authenticated else None,
+        confirm_time_minutes_target=confirm_time_minutes_target,
+        active='social_contribute',
+        title=_('Social Contribute'),
+    )
+    params['promo_text'] = promo_text
+    return TemplateResponse(request, 'social_contribution_modal.html', params)
+
+@csrf_exempt
+@require_POST
+def social_contribution_email(request):
+    """Social Contribution Email
+
+    Returns:
+        JsonResponse: Success in sending email.
+    """
+    from marketing.mails import share_bounty
+
+    print (request.POST.getlist('usersId[]', []))
+    emails = [] 
+    user_ids = request.POST.getlist('usersId[]', [])
+    for user_id in user_ids:
+        profile = Profile.objects.get(id=int(user_id))
+        emails.append(profile.email)
+    msg = request.POST.get('msg', '')
+    try:
+        share_bounty(emails, msg, request.user.profile)
+        response = {
+            'status': 200,
+            'msg': 'email_sent',
+        }
+    except Exception as e:
+        logging.exception(e)
+        response = {
+            'status': 500,
+            'msg': 'Email not sent',
+        }
+    return JsonResponse(response)
 
 
 def payout_bounty(request):
@@ -660,8 +825,9 @@ def bulk_payout_bounty(request):
         user=request.user if request.user.is_authenticated else None,
         confirm_time_minutes_target=confirm_time_minutes_target,
         active='payout_bounty',
-        title=_('Multi-Party Payout'),
+        title=_('Advanced Payout'),
     )
+
     return TemplateResponse(request, 'bulk_payout_bounty.html', params)
 
 
@@ -683,6 +849,8 @@ def fulfill_bounty(request):
 
     """
     bounty = handle_bounty_views(request)
+    if not bounty.has_started_work(request.user.username):
+        raise PermissionDenied
     params = get_context(
         ref_object=bounty,
         github_username=request.GET.get('githubUsername'),
@@ -804,7 +972,7 @@ def helper_handle_suspend_auto_approval(request, bounty):
 
 def helper_handle_override_status(request, bounty):
     admin_override_satatus = request.GET.get('admin_override_satatus', False)
-    if admin_override_satatus != False:
+    if admin_override_satatus:
         is_staff = request.user.is_staff
         if is_staff:
             valid_statuses = [ele[0] for ele in Bounty.STATUS_CHOICES]
@@ -839,21 +1007,27 @@ def helper_handle_approvals(request, bounty):
     mutate_worker_action = request.GET.get('mutate_worker_action', None)
     mutate_worker_action_past_tense = 'approved' if mutate_worker_action == 'approve' else 'rejected'
     worker = request.GET.get('worker', None)
+
     if mutate_worker_action:
         if not request.user.is_authenticated:
             messages.warning(request, _('You must be logged in to approve or reject worker submissions. Please login and try again.'))
             return
+
+        if not worker:
+            messages.warning(request, _('You must provide the worker\'s username in order to approve or reject them.'))
+            return
+
         is_funder = bounty.is_funder(request.user.username.lower())
         is_staff = request.user.is_staff
         if is_funder or is_staff:
-            interests = bounty.interested.filter(profile__handle=worker)
-            is_interest_invalid = (not interests.filter(pending=True).exists() and mutate_worker_action == 'rejected') or (not interests.exists())
-            if is_interest_invalid:
+            pending_interests = bounty.interested.select_related('profile').filter(profile__handle=worker, pending=True)
+            # Check whether or not there are pending interests.
+            if not pending_interests.exists():
                 messages.warning(
                     request,
                     _('This worker does not exist or is not in a pending state. Perhaps they were already approved or rejected? Please check your link and try again.'))
                 return
-            interest = interests.first()
+            interest = pending_interests.first()
 
             if mutate_worker_action == 'approve':
                 interest.pending = False
@@ -867,7 +1041,6 @@ def helper_handle_approvals(request, bounty):
                 maybe_market_to_user_slack(bounty, 'worker_approved')
                 maybe_market_to_twitter(bounty, 'worker_approved')
                 record_bounty_activity(bounty, request.user, 'worker_approved', interest)
-
             else:
                 start_work_rejected(interest, bounty)
 
@@ -968,64 +1141,6 @@ def quickstart(request):
     return TemplateResponse(request, 'quickstart.html', {})
 
 
-class ProfileHiddenException(Exception):
-    pass
-
-
-def profile_helper(handle, suppress_profile_hidden_exception=False):
-    """Define the profile helper.
-
-    Args:
-        handle (str): The profile handle.
-
-    Raises:
-        DoesNotExist: The exception is raised if a Profile isn't found matching the handle.
-            Remediation is attempted by syncing the profile data.
-        MultipleObjectsReturned: The exception is raised if multiple Profiles are found.
-            The latest Profile will be returned.
-
-    Returns:
-        dashboard.models.Profile: The Profile associated with the provided handle.
-
-    """
-    try:
-        profile = Profile.objects.get(handle__iexact=handle)
-    except Profile.DoesNotExist:
-        profile = sync_profile(handle)
-        if not profile:
-            raise Http404
-    except Profile.MultipleObjectsReturned as e:
-        # Handle edge case where multiple Profile objects exist for the same handle.
-        # We should consider setting Profile.handle to unique.
-        # TODO: Should we handle merging or removing duplicate profiles?
-        profile = Profile.objects.filter(handle__iexact=handle).latest('id')
-        logger.error(e)
-
-    if profile.hide_profile and not profile.is_org and not suppress_profile_hidden_exception:
-        raise ProfileHiddenException
-
-    return profile
-
-
-def profile_keywords_helper(handle):
-    """Define the profile keywords helper.
-
-    Args:
-        handle (str): The profile handle.
-
-    """
-    profile = profile_helper(handle, True)
-
-    keywords = []
-    for repo in profile.repos_data:
-        language = repo.get('language') if repo.get('language') else ''
-        _keywords = language.split(',')
-        for key in _keywords:
-            if key != '' and key not in keywords:
-                keywords.append(key)
-    return keywords
-
-
 def profile_keywords(request, handle):
     """Display profile keywords.
 
@@ -1033,13 +1148,62 @@ def profile_keywords(request, handle):
         handle (str): The profile handle.
 
     """
-    keywords = profile_keywords_helper(handle)
+    try:
+        profile = profile_helper(handle, True)
+    except (ProfileNotFoundException, ProfileHiddenException):
+        raise Http404
 
     response = {
         'status': 200,
-        'keywords': keywords,
+        'keywords': profile.keywords,
     }
     return JsonResponse(response)
+
+
+@require_POST
+def profile_job_opportunity(request, handle):
+    """ Save profile job opportunity.
+
+    Args:
+        handle (str): The profile handle.
+    """
+    try:
+        profile = profile_helper(handle, True)
+        profile.job_search_status = request.POST.get('job_search_status', None)
+        profile.show_job_status = request.POST.get('show_job_status', None) == 'true'
+        profile.job_type = request.POST.get('job_type', None)
+        profile.remote = request.POST.get('remote', None) == 'on'
+        profile.job_salary = float(request.POST.get('job_salary', '0').replace(',', ''))
+        profile.job_location = json.loads(request.POST.get('locations'))
+        profile.linkedin_url = request.POST.get('linkedin_url', None)
+        profile.resume = request.FILES.get('job_cv', None)
+        profile.save()
+    except (ProfileNotFoundException, ProfileHiddenException):
+        raise Http404
+
+    response = {
+        'status': 200,
+        'message': 'Job search status saved'
+    }
+    return JsonResponse(response)
+
+
+def profile_filter_activities(activities, activity_name):
+    """A helper function to filter a ActivityQuerySet.
+
+    Args:
+        activities (ActivityQuerySet): The ActivityQuerySet.
+        activity_name (str): The activity_type to filter.
+
+    Returns:
+        ActivityQuerySet: The filtered results.
+
+    """
+    if not activity_name or activity_name == 'all':
+        return activities
+    if activity_name == 'start_work':
+        return activities.filter(activity_type__in=['start_work', 'worker_approved'])
+    return activities.filter(activity_type=activity_name)
 
 
 def profile(request, handle):
@@ -1048,63 +1212,166 @@ def profile(request, handle):
     Args:
         handle (str): The profile handle.
 
+    Variables:
+        context (dict): The template context to be used for template rendering.
+        profile (dashboard.models.Profile): The Profile object to be used.
+        status (int): The status code of the response.
+
+    Returns:
+        TemplateResponse: The profile templated view.
+
     """
-    show_hidden_profile = False
+    status = 200
+    order_by = request.GET.get('order_by', '-modified_on')
+    owned_kudos = None
+    sent_kudos = None
+    handle = handle.replace("@", "")
+
     try:
         if not handle and not request.user.is_authenticated:
-            return redirect('index')
-        elif not handle:
+            return redirect('funder_bounties')
+
+        if not handle:
             handle = request.user.username
-            profile = request.user.profile
+            profile = getattr(request.user, 'profile', None)
+            if not profile:
+                profile = profile_helper(handle)
         else:
             if handle.endswith('/'):
                 handle = handle[:-1]
-            profile = profile_helper(handle)
-    except Http404:
-        show_hidden_profile = True
-    except ProfileHiddenException:
-        show_hidden_profile = True
-    if show_hidden_profile:
-        params = {
+            profile = profile_helper(handle, current_user=request.user)
+
+        activity_tabs = [
+            ('all', _('All Activity')),
+            ('new_bounty', _('Bounties Funded')),
+            ('start_work', _('Work Started')),
+            ('work_submitted', _('Work Submitted')),
+            ('work_done', _('Bounties Completed')),
+            ('new_tip', _('Tips Sent')),
+            ('receive_tip', _('Tips Received')),
+        ]
+        page = request.GET.get('p', None)
+
+        if page:
+            page = int(page)
+            activity_type = request.GET.get('a', '')
+            all_activities = profile.get_bounty_and_tip_activities()
+            paginator = Paginator(profile_filter_activities(all_activities, activity_type), 10)
+
+            if page > paginator.num_pages:
+                return HttpResponse(status=204)
+
+            context = {}
+            context['activities'] = paginator.get_page(page)
+
+            return TemplateResponse(request, 'profiles/profile_activities.html', context, status=status)
+
+        context = profile.to_dict(tips=False)
+        all_activities = context.get('activities')
+        tabs = []
+
+        for tab, name in activity_tabs:
+            activities = profile_filter_activities(all_activities, tab)
+            activities_count = activities.count()
+
+            if activities_count == 0:
+                continue
+
+            paginator = Paginator(activities, 10)
+
+            obj = {'id': tab,
+                   'name': name,
+                   'objects': paginator.get_page(1),
+                   'count': activities_count,
+                   'type': 'activity'
+                   }
+            tabs.append(obj)
+
+            context['tabs'] = tabs
+
+    except (Http404, ProfileHiddenException, ProfileNotFoundException):
+        status = 404
+        context = {
             'hidden': True,
             'profile': {
                 'handle': handle,
-                'avatar_url': f"/static/avatar/Self",
+                'avatar_url': f"/dynamic/avatar/Self",
                 'data': {
                     'name': f"@{handle}",
                 },
             },
         }
-        return TemplateResponse(request, 'profiles/profile.html', params, status=404)
+        return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
-    params = profile.to_dict()
+    context['preferred_payout_address'] = profile.preferred_payout_address
 
-    return TemplateResponse(request, 'profiles/profile.html', params)
+    owned_kudos = profile.get_my_kudos.order_by('id', order_by)
+    sent_kudos = profile.get_sent_kudos.order_by('id', order_by)
+    kudos_limit = 8
+    context['kudos'] = owned_kudos[0:kudos_limit]
+    context['sent_kudos'] = sent_kudos[0:kudos_limit]
+    context['kudos_count'] = owned_kudos.count()
+    context['sent_kudos_count'] = sent_kudos.count()
+
+    currently_working_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
+        .filter(interested__pending=False).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)
+    currently_working_bounties_count = currently_working_bounties.count()
+    if currently_working_bounties_count > 0:
+        obj = {'id': 'currently_working',
+               'name': _('Currently Working'),
+               'objects': Paginator(currently_working_bounties, 10).get_page(1),
+               'count': currently_working_bounties_count,
+               'type': 'bounty'
+               }
+        if 'tabs' not in context:
+            context['tabs'] = []
+        context['tabs'].append(obj)
+
+    if request.method == 'POST' and request.is_ajax():
+        # Update profile address data when new preferred address is sent
+        validated = request.user.is_authenticated and request.user.username.lower() == profile.handle.lower()
+        if validated and request.POST.get('address'):
+            address = request.POST.get('address')
+            profile.preferred_payout_address = address
+            profile.save()
+            msg = {
+                'status': 200,
+                'msg': _('Success!'),
+                'wallets': [profile.preferred_payout_address, ],
+            }
+
+            return JsonResponse(msg, status=msg.get('status', 200))
+    return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
 
 @csrf_exempt
-@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
-def save_search(request):
-    """Save the search."""
-    email = request.POST.get('email')
-    if email:
-        raw_data = request.POST.get('raw_data')
-        Subscription.objects.create(
-            email=email,
-            raw_data=raw_data,
-            ip=get_ip(request),
-        )
-        response = {
-            'status': 200,
-            'msg': 'Success!',
-        }
-        return JsonResponse(response)
+def lazy_load_kudos(request):
+    page = request.POST.get('page', 1)
+    context = {}
+    datarequest = request.POST.get('request')
+    order_by = request.GET.get('order_by', '-modified_on')
+    limit = int(request.GET.get('limit', 8))
+    handle = request.POST.get('handle')
 
-    context = {
-        'active': 'save',
-        'title': _('Save Search'),
-    }
-    return TemplateResponse(request, 'save_search.html', context)
+    if handle:
+        try:
+            profile = Profile.objects.get(handle=handle)
+            if datarequest == 'mykudos':
+                key = 'kudos'
+                context[key] = profile.get_my_kudos.order_by('id', order_by)
+            else:
+                key = 'sent_kudos'
+                context[key] = profile.get_sent_kudos.order_by('id', order_by)
+        except Profile.DoesNotExist:
+            pass
+
+    paginator = Paginator(context[key], limit)
+    kudos = paginator.get_page(page)
+    html_context = {}
+    html_context[key] = kudos
+    html_context['kudos_data'] = key
+    kudos_html = loader.render_to_string('shared/kudos_card_profile.html', html_context)
+    return JsonResponse({'kudos_html': kudos_html, 'has_next': kudos.has_next()})
 
 
 @csrf_exempt
@@ -1205,7 +1472,7 @@ def sync_web3(request):
 
 
 # LEGAL
-
+@xframe_options_exempt
 def terms(request):
     context = {
         'title': _('Terms of Use'),
@@ -1296,6 +1563,36 @@ def toolbox(request):
         'profile_down_votes_tool_ids': profile_down_votes_tool_ids
     }
     return TemplateResponse(request, 'toolbox.html', context)
+
+
+def labs(request):
+    labs = LabsResearch.objects.all()
+    tools = Tool.objects.prefetch_related('votes').filter(category=Tool.CAT_ALPHA)
+
+    socials = [{
+        "name": _("GitHub Repo"),
+        "link": "https://github.com/gitcoinco/labs/",
+        "class": "fab fa-github fa-2x"
+    }, {
+        "name": _("Slack"),
+        "link": "https://gitcoin.co/slack",
+        "class": "fab fa-slack fa-2x"
+    }, {
+        "name": _("Contact the Team"),
+        "link": "mailto:founders@gitcoin.co",
+        "class": "fa fa-envelope fa-2x"
+    }]
+
+    context = {
+        'active': "labs",
+        'title': _("Labs"),
+        'card_desc': _("Gitcoin Labs provides advanced tools for busy developers"),
+        'avatar_url': 'https://c.gitcoin.co/labs/Articles-Announcing_Gitcoin_Labs.png',
+        'tools': tools,
+        'labs': labs,
+        'socials': socials
+    }
+    return TemplateResponse(request, 'labs.html', context)
 
 
 @csrf_exempt
@@ -1427,6 +1724,7 @@ def redeem_coin(request, shortcode):
     except CoinRedemption.DoesNotExist:
         raise Http404
 
+
 def new_bounty(request):
     """Create a new bounty."""
     from .utils import clean_bounty_url
@@ -1444,3 +1742,192 @@ def new_bounty(request):
         update=bounty_params,
     )
     return TemplateResponse(request, 'bounty/new.html', params)
+
+
+@csrf_exempt
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def change_bounty(request, bounty_id):
+    user = request.user if request.user.is_authenticated else None
+
+    if not user:
+        if request.body:
+            return JsonResponse(
+                {'error': _('You must be authenticated via github to use this feature!')},
+                status=401)
+        else:
+            return redirect('/login/github?next=' + request.get_full_path())
+
+    try:
+        bounty_id = int(bounty_id)
+        bounty = Bounty.objects.get(pk=bounty_id)
+    except:
+        if request.body:
+            return JsonResponse({'error': _('Bounty doesn\'t exist!')}, status=404)
+        else:
+            raise Http404
+
+    keys = ['experience_level', 'project_length', 'bounty_type', 'featuring_date',
+            'permission_type', 'project_type', 'reserved_for_user_handle', 'is_featured']
+
+    if request.body:
+        can_change = (bounty.status in Bounty.OPEN_STATUSES) or \
+                (bounty.can_submit_after_expiration_date and bounty.status is 'expired')
+        if not can_change:
+            return JsonResponse({
+                'error': _('The bounty can not be changed anymore.')
+            }, status=405)
+
+        is_funder = bounty.is_funder(user.username.lower()) if user else False
+        is_staff = request.user.is_staff if user else False
+        if not is_funder and not is_staff:
+            return JsonResponse({
+                'error': _('You are not authorized to change the bounty.')
+            }, status=401)
+
+        try:
+            params = json.loads(request.body)
+        except Exception:
+            return JsonResponse({'error': 'Invalid JSON.'}, status=400)
+
+        bounty_changed = False
+        new_reservation = False
+        for key in keys:
+            value = params.get(key, '')
+            if key == 'featuring_date':
+                value = timezone.make_aware(
+                    timezone.datetime.fromtimestamp(value),
+                    timezone=UTC)
+            old_value = getattr(bounty, key)
+            if value != old_value:
+                setattr(bounty, key, value)
+                bounty_changed = True
+                if key == 'reserved_for_user_handle' and value:
+                    new_reservation = True
+
+        if not bounty_changed:
+            return JsonResponse({
+                'success': True,
+                'msg': _('Bounty details are unchanged.'),
+                'url': bounty.absolute_url,
+            })
+
+        bounty.save()
+        record_bounty_activity(bounty, user, 'bounty_changed')
+        record_user_action(user, 'bounty_changed', bounty)
+
+        maybe_market_to_email(bounty, 'bounty_changed')
+        maybe_market_to_slack(bounty, 'bounty_changed')
+        maybe_market_to_user_slack(bounty, 'bounty_changed')
+        maybe_market_to_user_discord(bounty, 'bounty_changed')
+
+        # notify a user that a bounty has been reserved for them
+        if new_reservation and bounty.bounty_reserved_for_user:
+            new_reserved_issue('founders@gitcoin.co', bounty.bounty_reserved_for_user, bounty)
+
+        return JsonResponse({
+            'success': True,
+            'msg': _('You successfully changed bounty details.'),
+            'url': bounty.absolute_url,
+        })
+
+    result = {}
+    for key in keys:
+        result[key] = getattr(bounty, key)
+
+    params = {
+        'title': _('Change Bounty Details'),
+        'pk': bounty.pk,
+        'result': json.dumps(result)
+    }
+    return TemplateResponse(request, 'bounty/change.html', params)
+
+
+def get_users(request):
+    token = request.GET.get('token', None)
+
+    if request.is_ajax():
+        q = request.GET.get('term')
+        profiles = Profile.objects.filter(handle__icontains=q)
+        results = []
+        # try gitcoin
+        for user in profiles:
+            profile_json = {}
+            profile_json['id'] = user.id
+            profile_json['text'] = user.handle
+            profile_json['email'] = user.email
+            if user.avatar_baseavatar_related.exists():
+                profile_json['avatar_id'] = user.avatar_baseavatar_related.first().pk
+                profile_json['avatar_url'] = user.avatar_baseavatar_related.first().avatar_url
+            profile_json['preferred_payout_address'] = user.preferred_payout_address
+            results.append(profile_json)
+        # try github
+        if not len(results):
+            search_results = search_users(q, token=token)
+            for result in search_results:
+                profile_json = {}
+                profile_json['id'] = -1
+                profile_json['text'] = result.login
+                profile_json['email'] = None
+                profile_json['avatar_id'] = None
+                profile_json['avatar_url'] = result.avatar_url
+                profile_json['preferred_payout_address'] = None
+                # dont dupe github profiles and gitcoin profiles in user search
+                if profile_json['text'].lower() not in [p['text'].lower() for p in profiles]:
+                    results.append(profile_json)
+        # just take users word for it
+        if not len(results):
+            profile_json = {}
+            profile_json['id'] = -1
+            profile_json['text'] = q
+            profile_json['email'] = None
+            profile_json['avatar_id'] = None
+            profile_json['preferred_payout_address'] = None
+            results.append(profile_json)
+        data = json.dumps(results)
+    else:
+        raise Http404
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
+
+
+def get_kudos(request):
+    autocomplete_kudos = {
+        'copy': "No results found.  Try these categories: ",
+        'autocomplete': ['rare','common','ninja','soft skills','programming']
+    }
+    if request.is_ajax():
+        q = request.GET.get('term')
+        network = request.GET.get('network', None)
+        eth_to_usd = convert_token_to_usdt('ETH')
+        kudos_by_name = Token.objects.filter(name__icontains=q)
+        kudos_by_desc = Token.objects.filter(description__icontains=q)
+        kudos_by_tags = Token.objects.filter(tags__icontains=q)
+        kudos_pks = (kudos_by_desc | kudos_by_name | kudos_by_tags).values_list('pk', flat=True)
+        kudos = Token.objects.filter(pk__in=kudos_pks, hidden=False, num_clones_allowed__gt=0).order_by('name')
+        is_staff = request.user.is_staff if request.user.is_authenticated else False
+        if not is_staff:
+            kudos = kudos.filter(send_enabled_for_non_gitcoin_admins=True)
+        if network:
+            kudos = kudos.filter(contract__network=network)
+        results = []
+        for token in kudos:
+            kudos_json = {}
+            kudos_json['id'] = token.id
+            kudos_json['token_id'] = token.token_id
+            kudos_json['name'] = token.name
+            kudos_json['name_human'] = humanize_name(token.name)
+            kudos_json['description'] = token.description
+            kudos_json['image'] = token.image
+
+            kudos_json['price_finney'] = token.price_finney / 1000
+            kudos_json['price_usd'] = eth_to_usd * kudos_json['price_finney']
+            kudos_json['price_usd_humanized'] = f"${round(kudos_json['price_usd'], 2)}"
+
+            results.append(kudos_json)
+        if not results:
+            results = [autocomplete_kudos]
+        data = json.dumps(results)
+    else:
+        raise Http404
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)

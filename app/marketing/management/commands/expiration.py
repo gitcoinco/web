@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -29,9 +29,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         days = [1, 2]
         for day in days:
-            bounties = Bounty.objects.filter(
+            bounties = Bounty.objects.current().filter(
                 is_open=True,
-                current_bounty=True,
                 network='mainnet',
                 expires_date__lt=(timezone.now() + timezone.timedelta(days=(day+1))),
                 expires_date__gte=(timezone.now() + timezone.timedelta(days=day)),
