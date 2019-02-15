@@ -120,7 +120,7 @@ def receive_bulk_ethdenver(request, secret):
                 return redirect(coupon.token.url)
             ip_address = get_ip(request)
 
-            kudos_contract_address = Web3.toChecksumAddress(settings.KUDOS_CONTRACT_RINKEBY)
+            kudos_contract_address = Web3.toChecksumAddress(settings.KUDOS_CONTRACT_MAINNET)
             kudos_owner_address = Web3.toChecksumAddress(settings.KUDOS_OWNER_ACCOUNT)
             w3 = get_web3(coupon.token.contract.network)
             nonce = w3.eth.getTransactionCount(kudos_owner_address)
