@@ -53,7 +53,7 @@ $('#sync-issue').on('click', function(event) {
 
 $('#issueURL').focusout(function() {
   if (isPrivateRepo) {
-    setPrivateForm()
+    setPrivateForm();
     return;
   }
   setInterval(function() {
@@ -105,7 +105,7 @@ $(document).ready(function() {
   $('input[name=hours]').blur(setUsdAmount);
   $('select[name=denomination]').change(setUsdAmount);
   $('select[name=denomination]').change(promptForAuth);
-  !isPrivateRepo ? $('input[name=issueURL]').blur(retrieveIssueDetails): undefined;
+  !isPrivateRepo ? $('input[name=issueURL]').blur(retrieveIssueDetails) : undefined;
   setTimeout(setUsdAmount, 1000);
   waitforWeb3(function() {
     promptForAuth();
@@ -520,22 +520,22 @@ const setPrivateForm = () => {
   $('.js-submit').removeClass('disabled');
   $('#last-synced, #edit-issue, #sync-issue, #title--text').hide();
 
-  $('#admin_override_suspend_auto_approval').prop('checked', false)
-  $('#admin_override_suspend_auto_approval').attr('disabled', true)
-  $('#show_email_publicly').attr('disabled', true)
+  $('#admin_override_suspend_auto_approval').prop('checked', false);
+  $('#admin_override_suspend_auto_approval').attr('disabled', true);
+  $('#show_email_publicly').attr('disabled', true);
   $('#cta-subscription, #private-repo-instructions').removeClass('d-md-none');
   $('#nda-upload').show();
   $('#issueNDA').prop('required', true);
 
   $('#project_type').select2().val('traditional');
   $('#permission_type').select2().val('approval');
-  $('#project_type, #permission_type').select2().prop("disabled", true).trigger("change");
+  $('#project_type, #permission_type').select2().prop('disabled', true).trigger('change');
   $('#keywords').select2({
     placeholder: 'Select tags',
     tags: 'true',
     allowClear: true
   });
-}
+};
 
 const setPublicForm = () => {
   $('#title').addClass('hidden');
@@ -546,45 +546,46 @@ const setPublicForm = () => {
   $('.js-submit').addClass('disabled');
   $('#last-synced, #edit-issue , #sync-issue, #title--text').show();
 
-  $('#admin_override_suspend_auto_approval').prop('checked', true)
-  $('#admin_override_suspend_auto_approval').attr('disabled', false)
-  $('#show_email_publicly').attr('disabled', false)
+  $('#admin_override_suspend_auto_approval').prop('checked', true);
+  $('#admin_override_suspend_auto_approval').attr('disabled', false);
+  $('#show_email_publicly').attr('disabled', false);
   $('#cta-subscription, #private-repo-instructions').addClass('d-md-none');
-  $('#nda-upload').hide()
+  $('#nda-upload').hide();
   $('#issueNDA').prop('required', false);
 
-  $('#project_type, #permission_type').select2().prop("disabled", false).trigger("change");
-}
+  $('#project_type, #permission_type').select2().prop('disabled', false).trigger('change');
+};
 
 const toggleCtaPlan = (value) => {
   if (value === 'private') {
 
-    params.set("type", "private");
+    params.set('type', 'private');
     isPrivateRepo = true;
-    setPrivateForm()
+    setPrivateForm();
   } else {
 
-    params.set("type", "public");
+    params.set('type', 'public');
     isPrivateRepo = false;
-    setPublicForm()
+    setPublicForm();
   }
   window.history.replaceState({}, '', location.pathname + '?' + params);
-}
+};
 
 $(document).ready(function() {
 
   if (params.has('type')) {
     let checked = params.get('type');
+
     toggleCtaPlan(checked);
-    $(`input[name=repo_type][value=${checked}]`).prop('checked','true');
+    $(`input[name=repo_type][value=${checked}]`).prop('checked', 'true');
   } else {
-    params.append("type", "public");
+    params.append('type', 'public');
     window.history.replaceState({}, '', location.pathname + '?' + params);
   }
   $('input[name=repo_type]').change(function() {
     toggleCtaPlan($(this).val());
 
-  })
+  });
 
-})
+});
 
