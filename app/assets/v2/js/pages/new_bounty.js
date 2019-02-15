@@ -214,6 +214,10 @@ $(document).ready(function() {
         return;
       }
 
+      if (data.repo_type == 'private' && data.project_type != 'traditional' && data.permission_type != 'approval') {
+        _alert(gettext('The project type and/or permission type of bounty does not validate for a private repo'));
+      }
+
       var data = {};
       var disabled = $(form)
         .find(':input:disabled')
