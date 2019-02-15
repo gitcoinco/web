@@ -252,6 +252,7 @@ $(document).ready(function() {
         estimatedHours: data.hours,
         fundingOrganisation: data.fundingOrganisation,
         is_featured: data.featuredBounty,
+        repo_type: data.repo_type,
         reservedFor: reservedFor ? reservedFor.text : '',
         tokenName
       };
@@ -289,7 +290,9 @@ $(document).ready(function() {
             jobDescription: data.jobDescription
           },
           funding_organisation: metadata.fundingOrganisation,
-          is_featured: metadata.featuredBounty,
+          is_featured: metadata.is_featured,
+          repo_type: metadata.repo_type,
+          featuring_date: metadata.featuredBounty && new Date().getTime() / 1000 || 0,
           privacy_preferences: privacy_preferences,
           funders: [],
           categories: metadata.issueKeywords.split(','),
@@ -554,14 +557,14 @@ const setPublicForm = () => {
 }
 
 const toggleCtaPlan = (value) => {
-  if (value === 'private_repo') {
+  if (value === 'private') {
 
-    params.set("type", "private_repo");
+    params.set("type", "private");
     isPrivateRepo = true;
     setPrivateForm()
   } else {
 
-    params.set("type", "public_repo");
+    params.set("type", "public");
     isPrivateRepo = false;
     setPublicForm()
   }
@@ -575,7 +578,7 @@ $(document).ready(function() {
     toggleCtaPlan(checked);
     $(`input[name=repo_type][value=${checked}]`).prop('checked','true');
   } else {
-    params.append("type", "public_repo");
+    params.append("type", "public");
     window.history.replaceState({}, '', location.pathname + '?' + params);
   }
   $('input[name=repo_type]').change(function() {

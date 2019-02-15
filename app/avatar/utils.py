@@ -136,7 +136,8 @@ def get_avatar_context():
                             ['modernhair_3-back', 'modernhair_3-front'], ['None', 'womenhair'], ['None', 'womanhair'], [
                                 'None', 'womanhair1'
                             ], ['None', 'womanhair2'], ['None', 'womanhair3'], ['None',
-                                                                                'womanhair4'], ['None', 'womanhair5']),
+                                                                                'womanhair4'], ['None', 'womanhair5'], [
+                                                                                'None', 'man-hair']),
                 'paid_options': {},
             },
             {
@@ -158,7 +159,7 @@ def get_avatar_context():
                     'HatShort-bunnyears'
                 ], ['HatShort-menorah'], ['HatShort-pilgrim'], ['HatShort-santahat'], ['HatShort-elfhat'], [
                     'Earring-0'
-                ], ['Earring-1'], ['EarringBack-2', 'Earring-2'], ['Earring-3'], ['Earring-4'], [
+                ], ['Earring-1'], ['EarringBack-2', 'Earring-2'], ['Earring-3'], ['Earring-4'], ['Earring-5'], [
                     'Masks-jack-o-lantern'
                 ], ['Masks-guy-fawkes'], ['Masks-bunny'], ['Masks-blackpanther'], ['Masks-jack-o-lantern-lighted'], [
                     'Masks-wolverine_inspired'
@@ -167,7 +168,8 @@ def get_avatar_context():
                 ], ['Extras-reindeer'], ['Masks-gitcoinbot'], ['Extras-tattoo'], ['Masks-batman_inspired'], [
                     'Masks-eye-patch'
                 ], ['Masks-flash_inspired'], ['Masks-deadpool_inspired'], ['Masks-darth_inspired'],
-                            ['Masks-spiderman_inspired'], ['Glasses-5'], ['Glasses-geordi-visor'],
+                            ['Masks-spiderman_inspired'], ['Glasses-5'], ['Glasses-geordi-visor'], 
+                            ['Masks-funny_face'],
                             ),
                 'paid_options': {
                     'Extras-Parrot': 0.01,

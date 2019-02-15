@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -552,6 +552,7 @@ def onboard(request, flow):
     elif flow == 'profile':
         onboard_steps = ['avatar']
 
+    profile = None
     if request.user.is_authenticated and getattr(request.user, 'profile', None):
         profile = request.user.profile
 
@@ -1765,7 +1766,7 @@ def change_bounty(request, bounty_id):
         else:
             raise Http404
 
-    keys = ['experience_level', 'project_length', 'bounty_type',
+    keys = ['experience_level', 'project_length', 'bounty_type', 'featuring_date',
             'permission_type', 'project_type', 'reserved_for_user_handle', 'is_featured']
 
     if request.body:
@@ -1792,6 +1793,10 @@ def change_bounty(request, bounty_id):
         new_reservation = False
         for key in keys:
             value = params.get(key, '')
+            if key == 'featuring_date':
+                value = timezone.make_aware(
+                    timezone.datetime.fromtimestamp(value),
+                    timezone=UTC)
             old_value = getattr(bounty, key)
             if value != old_value:
                 setattr(bounty, key, value)

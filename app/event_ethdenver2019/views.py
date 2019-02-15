@@ -80,7 +80,12 @@ def ethdenver2019(request):
         "page2": request.GET and recv_addr != 'invalid',
         "page3": all_kudos_collected
     }
+
     page_ctx["page1"] = not page_ctx['page2']
+    if page_ctx["page1"] == True:
+        #disable popover
+        page_ctx["page3"] = False
+
     return TemplateResponse(request, 'ethdenver2019/onepager.html', page_ctx)
 
 

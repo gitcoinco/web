@@ -17,7 +17,6 @@ import geoip2.database
 import requests
 from avatar.models import SocialAvatar
 from avatar.utils import get_user_github_avatar_image
-from dashboard.models import Profile
 from geoip2.errors import AddressNotFoundError
 from git.utils import _AUTH, HEADERS, get_user
 from ipware.ip import get_real_ip
@@ -161,6 +160,7 @@ def setup_lang(request, user):
         DoesNotExist: The exception is raised if no profile is found for the specified handle.
 
     """
+    from dashboard.models import Profile
     profile = None
     if user.is_authenticated and hasattr(user, 'profile'):
         profile = user.profile
@@ -174,7 +174,14 @@ def setup_lang(request, user):
         request.session.modified = True
 
 
+def get_upload_filename(instance, filename):
+    salt = token_hex(16)
+    file_path = os.path.basename(filename)
+    return f"docs/{getattr(instance, '_path', '')}/{salt}/{file_path}"
+
+
 def sync_profile(handle, user=None, hide_profile=True):
+    from dashboard.models import Profile
     handle = handle.strip().replace('@', '')
     data = get_user(handle)
     email = ''
