@@ -362,13 +362,15 @@ var get_search_URI = function(offset, order) {
   if (org) {
     uri += '&org=' + org;
   }
+  let order_by;
+
   if (order) {
-    var order_by = order
+    order_by = order;
   } else {
-    var order_by = localStorage['order_by'];
+    order_by = localStorage['order_by'];
   }
 
-  if (order_by) {
+  if (typeof order_by !== 'undefined') {
     uri += '&order_by=' + order_by;
   }
   uri += '&offset=' + offset;
