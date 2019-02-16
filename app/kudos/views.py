@@ -653,47 +653,50 @@ def receive_bulk(request, secret):
             else:
 
                 signed = w3.eth.account.signTransaction(tx, settings.KUDOS_PRIVATE_KEY)
-                txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
+                try:
+                    txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
 
-                with transaction.atomic():
-                    kudos_transfer = KudosTransfer.objects.create(
-                        emails=[request.user.email],
-                        # For kudos, `token` is a kudos.models.Token instance.
-                        kudos_token_cloned_from=coupon.token,
-                        amount=0,
-                        comments_public=coupon.comments_to_put_in_kudos_transfer,
-                        ip=ip_address,
-                        github_url='',
-                        from_name=coupon.sender_profile.handle,
-                        from_email='',
-                        from_username=coupon.sender_profile.handle,
-                        username=profile.handle,
-                        network=coupon.token.contract.network,
-                        from_address=settings.KUDOS_OWNER_ACCOUNT,
-                        is_for_bounty_fulfiller=False,
-                        metadata={'coupon_redemption': True, 'nonce': nonce},
-                        recipient_profile=profile,
-                        sender_profile=coupon.sender_profile,
-                        txid=txid,
-                        receive_txid=txid,
-                        tx_status='pending',
-                        receive_tx_status='pending',
-                    )
-
-                    # save to DB
-                    BulkTransferRedemption.objects.create(
-                        coupon=coupon,
-                        redeemed_by=profile,
-                        ip_address=ip_address,
-                        kudostransfer=kudos_transfer,
+                    with transaction.atomic():
+                        kudos_transfer = KudosTransfer.objects.create(
+                            emails=[request.user.email],
+                            # For kudos, `token` is a kudos.models.Token instance.
+                            kudos_token_cloned_from=coupon.token,
+                            amount=0,
+                            comments_public=coupon.comments_to_put_in_kudos_transfer,
+                            ip=ip_address,
+                            github_url='',
+                            from_name=coupon.sender_profile.handle,
+                            from_email='',
+                            from_username=coupon.sender_profile.handle,
+                            username=profile.handle,
+                            network=coupon.token.contract.network,
+                            from_address=settings.KUDOS_OWNER_ACCOUNT,
+                            is_for_bounty_fulfiller=False,
+                            metadata={'coupon_redemption': True, 'nonce': nonce},
+                            recipient_profile=profile,
+                            sender_profile=coupon.sender_profile,
+                            txid=txid,
+                            receive_txid=txid,
+                            tx_status='pending',
+                            receive_tx_status='pending',
                         )
 
-                    coupon.num_uses_remaining -= 1
-                    coupon.current_uses += 1
-                    coupon.save()
+                        # save to DB
+                        BulkTransferRedemption.objects.create(
+                            coupon=coupon,
+                            redeemed_by=profile,
+                            ip_address=ip_address,
+                            kudostransfer=kudos_transfer,
+                            )
 
-                    # send email
-                    maybe_market_kudos_to_email(kudos_transfer)
+                        coupon.num_uses_remaining -= 1
+                        coupon.current_uses += 1
+                        coupon.save()
+
+                        # send email
+                        maybe_market_kudos_to_email(kudos_transfer)
+                except:
+                    error = "Could not redeem your kudos.  Please try again soon."
 
 
     title = f"Redeem {coupon.token.humanized_name} Kudos from @{coupon.sender_profile.handle}"

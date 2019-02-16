@@ -128,40 +128,43 @@ def receive_bulk_ethdenver(request, secret):
             tx = contract.functions.clone(address, coupon.token.token_id, 1).buildTransaction({
                 'nonce': nonce,
                 'gas': 500000,
-                'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(5) * 10**9),
+                'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(1) * 10**9),
                 'value': int(coupon.token.price_finney / 1000.0 * 10**18),
             })
 
-            signed = w3.eth.account.signTransaction(tx, settings.KUDOS_PRIVATE_KEY)
-            txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
+            try:
+                signed = w3.eth.account.signTransaction(tx, settings.KUDOS_PRIVATE_KEY)
+                txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
 
-            with transaction.atomic():
-                kudos_transfer = KudosTransfer.objects.create(
-                    emails=["founders@gitcoin.co"],
-                    # For kudos, `token` is a kudos.models.Token instance.
-                    kudos_token_cloned_from=coupon.token,
-                    amount=0,
-                    comments_public=coupon.comments_to_put_in_kudos_transfer,
-                    ip=ip_address,
-                    github_url='',
-                    from_name=coupon.sender_profile.handle,
-                    from_email='',
-                    from_username=coupon.sender_profile.handle,
-                    network=coupon.token.contract.network,
-                    from_address=settings.KUDOS_OWNER_ACCOUNT,
-                    receive_address=address,
-                    is_for_bounty_fulfiller=False,
-                    metadata={'coupon_redemption': True},
-                    sender_profile=coupon.sender_profile,
-                    txid=txid,
-                    receive_txid=txid,
-                    tx_status='pending',
-                    receive_tx_status='pending',
-                )
+                with transaction.atomic():
+                    kudos_transfer = KudosTransfer.objects.create(
+                        emails=["founders@gitcoin.co"],
+                        # For kudos, `token` is a kudos.models.Token instance.
+                        kudos_token_cloned_from=coupon.token,
+                        amount=0,
+                        comments_public=coupon.comments_to_put_in_kudos_transfer,
+                        ip=ip_address,
+                        github_url='',
+                        from_name=coupon.sender_profile.handle,
+                        from_email='',
+                        from_username=coupon.sender_profile.handle,
+                        network=coupon.token.contract.network,
+                        from_address=settings.KUDOS_OWNER_ACCOUNT,
+                        receive_address=address,
+                        is_for_bounty_fulfiller=False,
+                        metadata={'coupon_redemption': True},
+                        sender_profile=coupon.sender_profile,
+                        txid=txid,
+                        receive_txid=txid,
+                        tx_status='pending',
+                        receive_tx_status='pending',
+                    )
 
-                coupon.num_uses_remaining -= 1
-                coupon.current_uses += 1
-                coupon.save()
+                    coupon.num_uses_remaining -= 1
+                    coupon.current_uses += 1
+                    coupon.save()
+            except:
+                error = "Could not redeem your kudos.  Please try again soon."
 
     title = f"Redeem ETHDenver event kudos: *{coupon.token.humanized_name}*"
     desc = f"Thank you for joining the event! About this Kudos: {coupon.token.description}"

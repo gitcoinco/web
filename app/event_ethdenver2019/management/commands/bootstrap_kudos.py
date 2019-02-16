@@ -38,8 +38,8 @@ class Command(BaseCommand):
         num_qr_codes_to_create = 1000
         key_len = 12
 
-        trophy_kudos = Token.objects.filter(name__contains='ethdenver_winner')
-        plaque_kudos = Token.objects.filter(Q(name__contains='_ethdenver_2019') | Q(name__contains='be_a_bufficorn'))
+        trophy_kudos = Token.objects.filter(name__contains='ethdenver_winner', contract__network='mainnet')
+        plaque_kudos = Token.objects.filter(Q(name__contains='_ethdenver_2019') | Q(name__contains='be_a_bufficorn')).filter(contract__network='mainnet')
         all_kudos = plaque_kudos | trophy_kudos
 
         # print(f"got {trophy_kudos.count()} trophies")
