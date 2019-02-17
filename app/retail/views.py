@@ -38,7 +38,8 @@ from cacheops import cached_as, cached_view, cached_view_as
 from dashboard.models import Activity, Profile
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from economy.models import Token
-from marketing.mails import new_funding_limit_increase_request, new_token_request, render_nth_day_email_campaign
+from marketing.mails import new_funding_limit_increase_request, new_token_request
+from retail.emails import render_nth_day_email_campaign
 from marketing.models import Alumni, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 from perftools.models import JSONStore
