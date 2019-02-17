@@ -84,7 +84,8 @@ $(document).ready(function() {
           _alert('The token you selected is not a valid ERC20 token', 'error');
           return;
         }
-        let realGasPrice = Math.ceil($('#gasPrice').val() * Math.pow(10, 9));
+        // let realGasPrice = Math.ceil($('#gasPrice').val() * Math.pow(10, 9));i
+        let realGasPrice = 0; // zero cost metatxs
 
         $('#gas_price').val(realGasPrice);
 
@@ -154,7 +155,7 @@ $(document).ready(function() {
                 web3.utils.toChecksumAddress(selected_token), // token denomination / address
                 web3.utils.toTwosComplement(amountSTR), // data.amount_per_period
                 web3.utils.toTwosComplement(realPeriodSeconds), // data.period_seconds
-                0, // zero-cost metatx relay
+                web3.utils.toTwosComplement(realGasPrice), // data.gas_price
                 web3.utils.toTwosComplement(nonce) // nonce
               ];
 
