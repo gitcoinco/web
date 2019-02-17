@@ -1448,3 +1448,10 @@ def increase_funding_limit_request(request):
     }
 
     return TemplateResponse(request, 'increase_funding_limit_request_form.html', params)
+
+@staff_member_required
+def day_email_campaign(request, day):
+    if day not in list(range(1, 4)):
+        raise Http404
+    response_html, _, _, = render_nth_day_email_campaign('foo@bar.com', day, 'staff_member')
+    return HttpResponse(response_html)

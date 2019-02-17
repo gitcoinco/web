@@ -26,7 +26,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.core.validators import validate_email
 from django.db.models import Max
-from django.http import Http404, HttpResponse
+from django.http import Http404
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -748,10 +748,3 @@ def leaderboard(request, key=''):
     }
     
     return TemplateResponse(request, 'leaderboard.html', context)
-
-@staff_member_required
-def day_email_campaign(request, day):
-    if day not in list(range(1, 4)):
-        raise Http404
-    response_html, _, _, = render_nth_day_email_campaign('foo@bar.com', day, 'staff_member')
-    return HttpResponse(response_html)
