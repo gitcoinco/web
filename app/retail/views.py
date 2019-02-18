@@ -1468,35 +1468,6 @@ def tokens(request):
     return TemplateResponse(request, 'tokens_js.txt', context, content_type='text/javascript')
 
 
-def ui(request):
-    svgs = []
-    pngs = []
-    gifs = []
-    for path, __, files in walkdir('assets/v2/images'):
-        if path.find('/avatar') != -1:
-            continue
-        for f in files:
-            if f.endswith('.svg'):
-                svgs.append(f'{path[7:]}/{f}')
-                continue
-            if f.endswith('.png'):
-                pngs.append(f'{path[7:]}/{f}')
-                continue
-            if f.endswith('.gif'):
-                gifs.append(f'{path[7:]}/{f}')
-                continue
-
-    context = {
-        'is_outside': True,
-        'active': 'ui_inventory ',
-        'title': 'UI Inventory',
-        'svgs': svgs,
-        'pngs': pngs,
-        'gifs': gifs,
-    }
-    return TemplateResponse(request, 'ui_inventory.html', context)
-
-
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def increase_funding_limit_request(request):
