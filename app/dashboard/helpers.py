@@ -452,13 +452,12 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
 
         try:
             new_bounty = Bounty.objects.create(**bounty_kwargs)
+            featured_funded_bounty('founders@gitcoin.co', new_bounty)
             new_bounty.fetch_issue_item()
             try:
                 issue_kwargs = get_url_dict(new_bounty.github_url)
                 new_bounty.github_issue_details = get_gh_issue_details(**issue_kwargs)
 
-                if latest_old_bounty['is_featured']:
-                    featured_funded_bounty(new_bounty)
             except Exception as e:
                 logger.error(e)
 
