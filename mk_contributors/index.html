@@ -2615,14 +2615,13 @@ precommit hooks and <code>pre-commit install</code> from your <code>gitcoinco/we
 <p>User facing copy / text should be run through <a href="https://docs.djangoproject.com/en/2.0/topics/i18n/translation/">Django Translation Framework</a>. For example,</p>
 <ol>
 <li>HTML user-facing pieces of copy are in <code>{% blocktrans %}</code> or <code>{% trans %}</code> fields.</li>
-<li>javascript user-facing pieces of copy are in <code>ngettext</code> fields.</li>
+<li>javascript user-facing pieces of copy are in <code>gettext</code> fields.</li>
 <li>each of the <code>views.py</code> user-facing pieces of copy are in <code>gettext_lazy</code> fields</li>
 <li>each of the models <code>help_text</code>s are internationalized</li>
 <li>as are all the emails in <code>marketing/mails.py</code></li>
 <li>run <code>make autotranslate</code> or a combination of the necessary <code>./manage.py makemessages</code> and <code>./manage.py compilemessages</code> commands.</li>
 </ol>
-<p>Take a look at <code>/styleguide-alpha</code> (ui_inventory.html), for a quick reference of user interface components.
-If you are contributing user-facing assets, interface components or other relevant visuals,
+<p>If you are contributing user-facing assets, interface components or other relevant visuals,
 then please add them to our UI Inventory page.</p>
 <h3 id="step-1-fork">Step 1: Fork</h3>
 <p>Fork the project <a href="https://github.com/gitcoinco/web">on GitHub</a> and clone your
@@ -2703,7 +2702,7 @@ git rebase upstream/master
 <li>Title is descriptive and generally focused on what the PR addresses (If your PR is a work in progress, include <code>WIP</code> in the title. Once the PR is ready for review, please remove <code>WIP</code>)</li>
 <li>Description explains what the PR achieves or addresses</li>
 <li>If the PR modifies the frontend in any way, please attach screenshots and/or GIFs of all purposeful changes (before and after screens are recommended)</li>
-<li>The PR passes all CI checks, to include: Stickler, Codecov, and CI.</li>
+<li>The PR passes all CI checks, to include: Stickler, and Travis CI.</li>
 <li>If tests are failing or coverage is decreased while adding logic to any backend code, you will be asked to include relevant tests and your PR will not be merged until all checks pass.</li>
 </ul>
 <h2 id="python">Python</h2>
