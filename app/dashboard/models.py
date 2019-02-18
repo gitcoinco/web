@@ -240,6 +240,7 @@ class Bounty(SuperModel):
     bounty_reserved_for_user = models.ForeignKey(
         'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='reserved_bounties', blank=True
     )
+    bounty_reserved_till = models.DateTimeField(null=True, blank=True)
     is_open = models.BooleanField(help_text=_('Whether the bounty is still open for fulfillments.'))
     expires_date = models.DateTimeField()
     raw_data = JSONField()

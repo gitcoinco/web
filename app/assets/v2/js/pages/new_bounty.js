@@ -234,6 +234,7 @@ $(document).ready(function() {
       var decimalDivisor = Math.pow(10, decimals);
       var expirationTimeDelta = data.expirationTimeDelta;
       let reservedFor = $('.username-search').select2('data')[0];
+      let hoursReserved = parseInt($('.hours-reserved')[0].value)
 
       var metadata = {
         issueTitle: data.title,
@@ -249,6 +250,7 @@ $(document).ready(function() {
         fundingOrganisation: data.fundingOrganisation,
         is_featured: data.featuredBounty,
         reservedFor: reservedFor ? reservedFor.text : '',
+        hoursReserved: hoursReserved ? hoursReserved.text : 0,
         tokenName
       };
 

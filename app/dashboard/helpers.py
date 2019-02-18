@@ -474,6 +474,10 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     new_bounty.activities.add(activity)
 
             bounty_reserved_for_user = metadata.get('reservedFor', '')
+            bounty_reserved_for_hours = metadata.get('hoursReserved', '')
+            print(metadata)
+            print(bounty_reserved_for_user)
+            print(bounty_reserved_for_hours)
             if bounty_reserved_for_user:
                 new_bounty.reserved_for_user_handle = bounty_reserved_for_user
                 new_bounty.save()
