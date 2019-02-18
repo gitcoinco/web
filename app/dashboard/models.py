@@ -277,7 +277,7 @@ class Bounty(SuperModel):
     is_featured = models.BooleanField(
         default=False, help_text=_('Whether this bounty is featured'))
     featuring_date = models.DateTimeField(blank=True, null=True)
-    unsigned_nda = models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('NDA for private repos.'))
+    unsigned_nda = models.ForeignKey('dashboard.BountyDocuments', blank=True, null=True, related_name='unsignednda', on_delete=models.SET_NULL)
 
     token_value_time_peg = models.DateTimeField(blank=True, null=True)
     token_value_in_usdt = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
@@ -1105,6 +1105,12 @@ class Subscription(SuperModel):
         return f"{self.email} {self.created_on}"
 
 
+class BountyDocuments(SuperModel):
+
+    doc = models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('Bounty documents.'))
+    doc_type = models.CharField(max_length=50)
+
+
 class SendCryptoAssetQuerySet(models.QuerySet):
     """Handle the manager queryset for SendCryptoAsset."""
 
@@ -1461,7 +1467,7 @@ class Interest(models.Model):
         max_length=7,
         help_text=_('Whether or not the interest requires review'),
         verbose_name=_('Needs Review'))
-    nda_signed = models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('NDA signed by applicant.'))
+    signed_nda = models.ForeignKey('dashboard.BountyDocuments', blank=True, null=True, related_name='signednda', on_delete=models.SET_NULL)
 
     # Interest QuerySet Manager
     objects = InterestQuerySet.as_manager()

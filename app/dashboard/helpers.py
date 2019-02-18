@@ -349,6 +349,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
 
     """
     bounty_issuer = bounty_payload.get('issuer', {})
+    print(bounty_payload)
     metadata = bounty_payload.get('metadata', {})
     # fulfillments metadata will be empty when bounty is first created
     fulfillments = bounty_details.get('fulfillments', {})
@@ -365,8 +366,8 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
     
     # check conditions for private repos
     if metadata.get('repo_type', None) == 'private' and \
-        schemes.get('permission_type', 'permissionless') != 'approval' and \
-            schemes.get('project_type', 'traditional') != 'traditional':
+        bounty_payload.get('schemes', {}).get('permission_type', 'permissionless') != 'approval' and \
+            bounty_payload.get('schemes', {}).get('project_type', 'traditional') != 'traditional':
             raise UnsupportedSchemaException('The project type or permission does not match for private repo')
 
 

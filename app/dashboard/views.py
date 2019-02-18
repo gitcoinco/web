@@ -60,7 +60,7 @@ from web3 import HTTPProvider, Web3
 
 from .helpers import get_bounty_data_for_activity, handle_bounty_views
 from .models import (
-    Activity, Bounty, BountyFulfillment, CoinRedemption, CoinRedemptionRequest, Interest, LabsResearch, Profile,
+    Activity, Bounty, BountyDocuments, BountyFulfillment, CoinRedemption, CoinRedemptionRequest, Interest, LabsResearch, Profile,
     ProfileSerializer, Subscription, Tool, ToolVote, UserAction,
 )
 from .notifications import (
@@ -1186,6 +1186,37 @@ def profile_job_opportunity(request, handle):
         'message': 'Job search status saved'
     }
     return JsonResponse(response)
+
+
+@csrf_exempt
+@require_POST
+def bounty_upload_nda(request):
+    """ Save Bounty related docs like NDA.
+
+    Args:
+        bounty_id (int): The bounty id.
+    """
+
+    print(request.FILES)
+    print(request.POST)
+    if request.FILES.get('docs', None):
+        bountydoc = BountyDocuments.objects.create(
+            doc=request.FILES.get('docs', None),
+            doc_type=request.POST.get('doc_type', None)
+        )
+        response = {
+            'status': 200,
+            'bounty_doc_id': bountydoc.pk,
+            'message': 'NDA saved'
+        }
+    else:
+        response = {
+            'status': 400,
+            'message': 'No File Found'
+        }
+    return JsonResponse(response)
+
+
 
 
 def profile_filter_activities(activities, activity_name):

@@ -214,10 +214,6 @@ $(document).ready(function() {
         return;
       }
 
-      if (data.repo_type == 'private' && data.project_type != 'traditional' && data.permission_type != 'approval') {
-        _alert(gettext('The project type and/or permission type of bounty does not validate for a private repo'));
-      }
-
       var data = {};
       var disabled = $(form)
         .find(':input:disabled')
@@ -226,6 +222,10 @@ $(document).ready(function() {
       $.each($(form).serializeArray(), function() {
         data[this.name] = this.value;
       });
+
+      if (data.repo_type == 'private' && data.project_type != 'traditional' && data.permission_type != 'approval') {
+        _alert(gettext('The project type and/or permission type of bounty does not validate for a private repo'));
+      }
 
       disabled.attr('disabled', 'disabled');
 
@@ -399,8 +399,31 @@ $(document).ready(function() {
         issuePackage['txid'] = result;
         localStorage[issueURL] = JSON.stringify(issuePackage);
 
-        // sync db
-        syncDb();
+        const formData = new FormData();
+
+        formData.append('docs', $('#issueNDA')[0].files[0]);
+        formData.append('doc_type', 'unsigned_nda');
+        const settings = {
+          url: '/api/v0.1/bountydocument',
+          method: 'POST',
+          processData: false,
+          dataType: 'json',
+          contentType: false,
+          data: formData
+        };
+      
+        $.ajax(settings).done(function(response) {
+          _alert(response.message, 'info');
+          // sync db
+          // update localStorage issuePackage
+          var issuePackage = JSON.parse(localStorage[issueURL]);
+
+          issuePackage['unsigned_nda'] = result.bounty_doc_id;
+          localStorage[issueURL] = JSON.stringify(issuePackage);
+          syncDb();
+        }).fail(function(error) {
+          _alert(error, 'error');
+        });
       }
 
       function newIpfsCallback(error, result) {
