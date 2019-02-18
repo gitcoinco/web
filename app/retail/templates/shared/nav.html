@@ -41,12 +41,14 @@
       {% if request.path == '/' %}
         <span class="navbar__cta mr-2">{% trans "Want to get help on your repo? Easily get started!" %}</span>
       {% endif %}
-      <!-- TODO : Remove WHY GITCOIN when new homepage is live -->
       <div class="nav-item dropdown interior">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          WHY GITCOIN
-        </a>
+        {% if not user.is_authenticated %}
+          <!-- TODO : Remove WHY GITCOIN when new homepage is live -->
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            WHY GITCOIN
+          </a>
+        {% endif %}
         <div class="dropdown-menu dropdown-menu-right" id="why-gitcoin" aria-labelledby="navbarDropdown">
           <a class="dropdown-item {% if active == 'mission' %} selected{% endif %}" href="{% url "mission" %}">
             {% trans "Mission" %}
