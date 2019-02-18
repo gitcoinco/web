@@ -53,7 +53,7 @@
               <h1 class="text-center title">{% trans "Fund Issue" %}</h1>
               <form id="submitBounty" class="submit_bounty_form px-5 pt-5">
                 <div>
-                  Github Repo Type
+                  <p>Github Repo Type</p>
                   <div class="form__radio option">
                     <input name="repo_type" id="public_repo" type="radio" value="public" checked />
                     <label class="filter-label" for=public_repo><i class="fas fa-book"></i> {% trans "Public" %}</label>
@@ -63,8 +63,8 @@
                     <input name="repo_type" id="private_repo" type="radio" value="private" />
                     <label class="filter-label" for=private_repo><i class="fas fa-lock"></i> {% trans "Private" %}</label>
                   </div>
-
-                  <div id="cta-subscription" class="cta-blue d-md-flex justify-content-between mt-3 d-md-none">
+                  <!-- Commented for v2 -->
+                  <!-- <div id="cta-subscription" class="cta-blue d-md-flex justify-content-between mt-3 d-md-none">
                     <div>
                       <h5 class="mb-3">Get awesome contributors to work on your private repo issues</h5>
                       <ul class="list-unstyled mb-4">
@@ -80,7 +80,7 @@
                       width: 100%;
                       max-width: inherit;">
                     </div>
-                  </div>
+                  </div> -->
 
                   <div id="private-repo-instructions" class="d-md-flex justify-content-between mt-3 font-smaller-3 d-md-none privaterepo-instructions">
                     <div>
@@ -211,7 +211,7 @@
                   </div>
                 </div>
                 <div class="pb-5 text-center">
-                  <button class="w-100 mb-3 button button--primary js-submit" type="submit">Fund Issue</button>
+                  <button class="w-100 mb-3 button button--primary js-submit disabled" type="submit">Fund Issue</button>
                   <a class="w-100 font-caption" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">
                     Your transaction is secured by the audited StandardBounties contract on the Ethereum blockchain.</br>
                     Learn more here.
