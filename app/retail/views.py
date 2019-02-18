@@ -366,7 +366,9 @@ def funder_bounties(request):
         'hide_newsletter_caption': True,
         'hide_newsletter_consent': True,
         'gitcoin_description': gitcoin_description,
-        'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter.")
+        'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter."),
+        'meta_title': "Grow Open Source: Find Freelance Developers & Open Source Bug Bounties - Gitcoin",
+        'meta_description': "The Gitcoin platform connects freelance developers with open bug bounties or online jobs, paid in crypto (ETH). Leverage a global workforce to quickly complete software development and coding jobs."
     }
     return TemplateResponse(request, 'bounties/funder.html', context)
 
