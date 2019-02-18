@@ -1,9 +1,11 @@
-from dashboard.utils import get_web3
-from kudos.utils import kudos_abi
-from django.conf import settings
-from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from web3 import Web3
 import time
+
+from django.conf import settings
+
+from dashboard.utils import get_web3
+from gas.utils import recommend_min_gas_price_to_confirm_in_time
+from kudos.utils import kudos_abi
+from web3 import Web3
 
 #setup
 w3 = get_web3('mainnet')
