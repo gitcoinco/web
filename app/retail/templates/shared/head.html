@@ -29,7 +29,6 @@
   <link rel="stylesheet" href="{% static "v2/css/jquery.modal.min.css" %}" />
 {% endif %}
 <link rel="stylesheet" href="{% static "v2/css/jquery.select2.min.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/animate.min.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/rain.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/buttons.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/timeline.css" %}" />
@@ -61,7 +60,8 @@
 <title>{% if title %}{{title}}{% else %}{% trans "Grow Open Source" %}{% endif %} | Gitcoin</title>
 {% include 'shared/favicon.html' %}
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-
+{% if meta_title %}<meta name="title" content="{{meta_title}}" />{% endif %}
+{% if meta_description %}<meta name="description" content="{{meta_description}}" />{% endif %}
 <script src="{% static "v2/js/metamask-approval.js" %}"></script>
 
 {% if env == 'prod' %}
