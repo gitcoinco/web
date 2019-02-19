@@ -286,6 +286,7 @@ $(document).ready(function() {
           },
           funding_organisation: metadata.fundingOrganisation,
           is_featured: metadata.featuredBounty,
+          featuring_date: metadata.featuredBounty && new Date().getTime() / 1000 || 0,
           privacy_preferences: privacy_preferences,
           funders: [],
           categories: metadata.issueKeywords.split(','),

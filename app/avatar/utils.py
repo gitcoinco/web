@@ -136,7 +136,8 @@ def get_avatar_context():
                             ['modernhair_3-back', 'modernhair_3-front'], ['None', 'womenhair'], ['None', 'womanhair'], [
                                 'None', 'womanhair1'
                             ], ['None', 'womanhair2'], ['None', 'womanhair3'], ['None',
-                                                                                'womanhair4'], ['None', 'womanhair5']),
+                                                                                'womanhair4'], ['None', 'womanhair5'], [
+                                                                                'None', 'man-hair']),
                 'paid_options': {},
             },
             {
@@ -158,7 +159,7 @@ def get_avatar_context():
                     'HatShort-bunnyears'
                 ], ['HatShort-menorah'], ['HatShort-pilgrim'], ['HatShort-santahat'], ['HatShort-elfhat'], [
                     'Earring-0'
-                ], ['Earring-1'], ['EarringBack-2', 'Earring-2'], ['Earring-3'], ['Earring-4'], [
+                ], ['Earring-1'], ['EarringBack-2', 'Earring-2'], ['Earring-3'], ['Earring-4'], ['Earring-5'], [
                     'Masks-jack-o-lantern'
                 ], ['Masks-guy-fawkes'], ['Masks-bunny'], ['Masks-blackpanther'], ['Masks-jack-o-lantern-lighted'], [
                     'Masks-wolverine_inspired'
@@ -168,7 +169,9 @@ def get_avatar_context():
                     'Masks-eye-patch'
                 ], ['Masks-flash_inspired'], ['Masks-deadpool_inspired'], ['Masks-darth_inspired'],
                             ['Masks-spiderman_inspired'], ['Glasses-5'], ['Glasses-geordi-visor'], 
-                            ['Masks-gas'],
+                            ['Masks-funny_face'], ['Masks-viking'], ['Masks-construction_helmet'], 
+                            ['Glasses-6'], ['HatShort-green'], ['Earring-6'], ['Extras-necklace'], 
+                            ['Masks-gas'], 
                             ),
                 'paid_options': {
                     'Extras-Parrot': 0.01,

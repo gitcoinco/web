@@ -242,7 +242,6 @@ urlpatterns = [
     re_path(r'^vision/?', retail.views.vision, name='vision'),
     re_path(r'^products/?', retail.views.products, name='products'),
     path('not_a_token', retail.views.not_a_token, name='not_a_token'),
-    re_path(r'^styleguide-alpha/?', retail.views.ui, name='ui'),
     re_path(r'^results/?(?P<keyword>.*)/?', retail.views.results, name='results_by_keyword'),
     re_path(r'^results/?', retail.views.results, name='results'),
     re_path(r'^activity/?', retail.views.activity, name='activity'),
