@@ -111,24 +111,26 @@ Vue.mixin({
 
 });
 
-var app = new Vue({
-  delimiters: [ '[[', ']]' ],
-  el: '#gc-notifications',
-  data: {
-    page,
-    notifications,
-    unreadNotifications,
-    hasNext,
-    numPages,
-    numNotifications
-  },
-  mounted() {
-    this.fetchNotifications();
-  },
-  created() {
-    this.sendState();
-  }
-});
+if (document.getElementById('gc-notifications')) {
+  var app = new Vue({
+    delimiters: [ '[[', ']]' ],
+    el: '#gc-notifications',
+    data: {
+      page,
+      notifications,
+      unreadNotifications,
+      hasNext,
+      numPages,
+      numNotifications
+    },
+    mounted() {
+      this.fetchNotifications();
+    },
+    created() {
+      this.sendState();
+    }
+  });
+}
 
 if (document.getElementById('gc-inbox')) {
   var appInbox = new Vue({
