@@ -366,7 +366,9 @@ def funder_bounties(request):
         'hide_newsletter_caption': True,
         'hide_newsletter_consent': True,
         'gitcoin_description': gitcoin_description,
-        'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter.")
+        'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter."),
+        'meta_title': "Grow Open Source: Find Freelance Developers & Open Source Bug Bounties - Gitcoin",
+        'meta_description': "The Gitcoin platform connects freelance developers with open bug bounties or online jobs, paid in crypto (ETH). Leverage a global workforce to quickly complete software development and coding jobs."
     }
     return TemplateResponse(request, 'bounties/funder.html', context)
 
@@ -634,6 +636,16 @@ def about(request):
             "Bounties",
             "Chicken tikka masala"
         ),
+        (
+            static("v2/images/team/dan-lipert.png"),
+            "Dan Lipert",
+            "Engineering",
+            "danlipert",
+            "danlipert",
+            "EIP 1337",
+            "Tantan Ramen"
+        )
+
     ]
     exclude_community = ['kziemiane', 'owocki', 'mbeacom']
     community_members = [
@@ -1464,35 +1476,6 @@ def tokens(request):
         key = f"{network}_tokens"
         context[key] = Token.objects.filter(network=network, approved=True)
     return TemplateResponse(request, 'tokens_js.txt', context, content_type='text/javascript')
-
-
-def ui(request):
-    svgs = []
-    pngs = []
-    gifs = []
-    for path, __, files in walkdir('assets/v2/images'):
-        if path.find('/avatar') != -1:
-            continue
-        for f in files:
-            if f.endswith('.svg'):
-                svgs.append(f'{path[7:]}/{f}')
-                continue
-            if f.endswith('.png'):
-                pngs.append(f'{path[7:]}/{f}')
-                continue
-            if f.endswith('.gif'):
-                gifs.append(f'{path[7:]}/{f}')
-                continue
-
-    context = {
-        'is_outside': True,
-        'active': 'ui_inventory ',
-        'title': 'UI Inventory',
-        'svgs': svgs,
-        'pngs': pngs,
-        'gifs': gifs,
-    }
-    return TemplateResponse(request, 'ui_inventory.html', context)
 
 
 @csrf_exempt
