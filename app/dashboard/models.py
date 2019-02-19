@@ -112,11 +112,11 @@ class BountyQuerySet(models.QuerySet):
 
     def needs_review(self):
         """Filter results by bounties that need reviewed."""
-        return self.prefetch_related('activities') \
-            .filter(
-                activities__activity_type__in=['bounty_abandonment_escalation_to_mods', 'bounty_abandonment_warning'],
-                activities__needs_review=True,
-            )
+        if hasattr(self, 'activities_needs_review'):
+            return self.activities_needs_review
+        if self.activities.filter(needs_review=True).exists():
+            return True
+        return False
 
     def reviewed(self):
         """Filter results by bounties that have been reviewed."""
@@ -590,8 +590,12 @@ class Bounty(SuperModel):
             if self.pk and self.project_type in ['contest', 'cooperative']:
                 return 'open'
             if self.num_fulfillments == 0:
-                if self.pk and self.interested.filter(pending=False).exists():
-                    return 'started'
+                if self.pk:
+                    if hasattr(self, 'interested_not_pending'):
+                        if len(self.interested_not_pending):
+                            return 'started'
+                    elif self.interested.filter(pending=False).exists():
+                        return 'started'
                 return 'open'
             return 'submitted'
         except Exception as e:
@@ -886,6 +890,8 @@ class Bounty(SuperModel):
 
     @property
     def needs_review(self):
+        if hasattr(self, 'activities_needs_review'):
+            return self.activities_needs_review
         if self.activities.filter(needs_review=True).exists():
             return True
         return False
