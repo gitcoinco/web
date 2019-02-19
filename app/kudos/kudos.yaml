@@ -3036,7 +3036,7 @@
     - doge
     - gold 
   image: doge.svg
-name: captain
+- name: captain
   to_address: 0xb9c4668CEf8B52b1A0751Dcf14605Cd90F8c9Fce
   artist: mehul0698
   description: You are Captain Kudos!
