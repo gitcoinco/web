@@ -420,31 +420,7 @@ $(document).ready(function() {
         issuePackage['txid'] = result;
         localStorage[issueURL] = JSON.stringify(issuePackage);
 
-        const formData = new FormData();
-
-        formData.append('docs', $('#issueNDA')[0].files[0]);
-        formData.append('doc_type', 'unsigned_nda');
-        const settings = {
-          url: '/api/v0.1/bountydocument',
-          method: 'POST',
-          processData: false,
-          dataType: 'json',
-          contentType: false,
-          data: formData
-        };
-      
-        $.ajax(settings).done(function(response) {
-          _alert(response.message, 'info');
-          // sync db
-          // update localStorage issuePackage
-          var issuePackage = JSON.parse(localStorage[issueURL]);
-
-          issuePackage['unsigned_nda'] = result.bounty_doc_id;
-          localStorage[issueURL] = JSON.stringify(issuePackage);
-          syncDb();
-        }).fail(function(error) {
-          _alert(error, 'error');
-        });
+        syncDb();
       }
 
       function newIpfsCallback(error, result) {
@@ -492,9 +468,29 @@ $(document).ready(function() {
       }
 
       var do_bounty = function(callback) {
-      // Add data to IPFS and kick off all the callbacks.
-        ipfsBounty.payload.issuer.address = account;
-        ipfs.addJson(ipfsBounty, newIpfsCallback);
+        const formData = new FormData();
+
+        formData.append('docs', $('#issueNDA')[0].files[0]);
+        formData.append('doc_type', 'unsigned_nda');
+        const settings = {
+          url: '/api/v0.1/bountydocument',
+          method: 'POST',
+          processData: false,
+          dataType: 'json',
+          contentType: false,
+          data: formData
+        };
+      
+        $.ajax(settings).done(function(response) {
+          _alert(response.message, 'info');
+          // sync db
+          // Add data to IPFS and kick off all the callbacks.
+          ipfsBounty.payload.issuer.address = account;
+          ipfsBounty.payload.unsigned_nda = response.bounty_doc_id;
+          ipfs.addJson(ipfsBounty, newIpfsCallback);
+        }).fail(function(error) {
+          _alert(error, 'error');
+        });
       };
 
       const payFeaturedBounty = function() {

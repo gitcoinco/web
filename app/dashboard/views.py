@@ -158,7 +158,7 @@ def helper_handle_access_token(request, access_token):
     request.session['profile_id'] = profile.pk
 
 
-def create_new_interest_helper(bounty, user, issue_message):
+def create_new_interest_helper(bounty, user, issue_message, signed_nda=None):
     approval_required = bounty.permission_type == 'approval'
     acceptance_date = timezone.now() if not approval_required else None
     profile_id = user.profile.pk
@@ -168,6 +168,7 @@ def create_new_interest_helper(bounty, user, issue_message):
         issue_message=issue_message,
         pending=approval_required,
         acceptance_date=acceptance_date,
+        signed_nda=signed_nda,
     )
     bounty.interested.add(interest)
     record_user_action(user, 'start_work', interest)
@@ -271,7 +272,8 @@ def new_interest(request, bounty_id):
             status=401)
     except Interest.DoesNotExist:
         issue_message = request.POST.get("issue_message")
-        interest = create_new_interest_helper(bounty, request.user, issue_message)
+        signed_nda = request.POST.get("signed_nda", None)
+        interest = create_new_interest_helper(bounty, request.user, issue_message, signed_nda)
         if interest.pending:
             start_work_new_applicant(interest, bounty)
 
@@ -1196,9 +1198,6 @@ def bounty_upload_nda(request):
     Args:
         bounty_id (int): The bounty id.
     """
-
-    print(request.FILES)
-    print(request.POST)
     if request.FILES.get('docs', None):
         bountydoc = BountyDocuments.objects.create(
             doc=request.FILES.get('docs', None),

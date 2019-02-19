@@ -349,7 +349,6 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
 
     """
     bounty_issuer = bounty_payload.get('issuer', {})
-    print(bounty_payload)
     metadata = bounty_payload.get('metadata', {})
     # fulfillments metadata will be empty when bounty is first created
     fulfillments = bounty_details.get('fulfillments', {})
@@ -437,9 +436,10 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 'attached_job_description': bounty_payload.get('hiring', {}).get('jobDescription', None),
                 'is_featured': metadata.get('is_featured', False),
                 'featuring_date': timezone.make_aware(
-                    timezone.datetime.fromtimestamp(metadata.get('featuring_date')),
+                    timezone.datetime.fromtimestamp(metadata.get('featuring_date', 0)),
                     timezone=UTC),
                 'repo_type': metadata.get('repo_type', None),
+                'unsigned_nda': bounty_payload.get('unsigned_nda', None),
                 'bounty_owner_github_username': bounty_issuer.get('githubUsername', ''),
                 'bounty_owner_address': bounty_issuer.get('address', ''),
                 'bounty_owner_email': bounty_issuer.get('email', ''),
@@ -456,6 +456,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     'github_comments', 'override_status', 'last_comment_date', 'snooze_warnings_for_days',
                     'admin_override_and_hide', 'admin_override_suspend_auto_approval', 'admin_mark_as_remarket_ready',
                     'funding_organisation', 'bounty_reserved_for_user', 'is_featured', 'featuring_date', 'repo_type',
+                    'unsigned_nda'
                 ],
             )
             if latest_old_bounty_dict['bounty_reserved_for_user']:

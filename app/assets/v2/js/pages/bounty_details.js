@@ -665,9 +665,10 @@ var show_interest_modal = function() {
         if (typeof issueNDA[0] !== 'undefined') {
           const formData = new FormData();
 
-          formData.append('nda_signed', issueNDA[0]);
+          formData.append('docs', issueNDA[0]);
+          formData.append('doc_type', 'signed_nda');
           const ndaSend = {
-            url: '/api/v0.1/sendNDAENDPOINT',
+            url: '/api/v0.1/bountydocument',
             method: 'POST',
             // headers: {'X-CSRFToken': csrftoken},
             data: formData,
@@ -678,25 +679,26 @@ var show_interest_modal = function() {
 
           $.ajax(ndaSend).done(function(response) {
             _alert(response.message, 'info');
+            add_interest(document.result['pk'], {
+              issue_message: msg,
+              signed_nda: response.bounty_doc_id
+            }).then(success => {
+              if (success) {
+                $(self).attr('href', '/uninterested');
+                $(self).find('span').text(gettext('Stop Work'));
+                $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
+                $.modal.close();
+              }
+            }).catch((error) => {
+              if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
+                return;
+              throw error;
+            });
           }).fail(function(error) {
             _alert(error, 'error');
           });
         }
 
-        add_interest(document.result['pk'], {
-          issue_message: msg
-        }).then(success => {
-          if (success) {
-            $(self).attr('href', '/uninterested');
-            $(self).find('span').text(gettext('Stop Work'));
-            $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
-            $.modal.close();
-          }
-        }).catch((error) => {
-          if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
-            return;
-          throw error;
-        });
       });
 
     });
