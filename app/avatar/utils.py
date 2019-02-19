@@ -170,7 +170,7 @@ def get_avatar_context():
                 ], ['Masks-flash_inspired'], ['Masks-deadpool_inspired'], ['Masks-darth_inspired'],
                             ['Masks-spiderman_inspired'], ['Glasses-5'], ['Glasses-geordi-visor'], 
                             ['Masks-funny_face'], ['Masks-viking'], ['Masks-construction_helmet'], 
-                            ['Glasses-6'],
+                            ['Glasses-6'], ['HatShort-green'], 
                             ),
                 'paid_options': {
                     'Extras-Parrot': 0.01,
