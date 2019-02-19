@@ -16,38 +16,38 @@
 
 {% endcomment %}
 {% load static %}
+<!-- THIS IS LIGHT -->
 <script type="text/javascript">
   var static_url = "{{ STATIC_URL }}";
   var media_url = "{{ MEDIA_URL }}";
 </script>
 <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
 <script src="{% static "v2/js/jquery.js" %}"></script>
-{% if env == 'prod' %}
+{% if user_logged_in and env == 'prod' %}
   <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-{% else %}
+{% elif user_logged_in %}
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 {% endif %}
 {% include 'shared/sentry.html' %}
+<script src="{% static "v2/js/popper.min.js" %}"></script>
+<script src="{% static "v2/js/bootstrap.min.js" %}"></script>
+<script>
+  var bootstrapTooltip = $.fn.tooltip.noConflict()
+  var bootstrapModal = $.fn.modal.noConflict()
+  $.fn.bootstrapModal = bootstrapModal
+</script>
 <script src="{% static "v2/js/jquery.cookie.js" %}"></script>
-{% if not slim %}
-  <script src="{% static "v2/js/jquery-ui.js" %}"></script>
-  <script src="{% static "v2/js/tooltip.js" %}"></script>
-{% endif %}
-<script src="{% static "v2/js/jquery.modal.min.js" %}"></script>
 <script src="{% static "v2/js/jquery.select2.min.js" %}"></script>
-<script src="{% static "v2/js/jquery.validate.min.js" %}"></script>
-<script src="{% static "v2/js/jsrender.js" %}"></script>
 <script src="{% static "v2/js/moment.min.js" %}"></script>
-<script src="{% static "v2/js/base.js" %}"></script>
-<script src="{% static "v2/js/purify.min.js" %}"></script>
-<script src="{% static "v2/js/shared.js" %}"></script>
-<script src="{% static "v2/js/truncate-hash.js" %}"></script>
-<script defer src="{% static "v2/js/work_with_gitcoin.js" %}"></script>
 <script src="{% static "v2/js/note.js" %}"></script>
+<script src="{% static "v2/js/base.js" %}"></script>
 <script src="{% static "v2/js/ajax-helper.js" %}"></script>
-<script src="{% static "v2/js/pages/carousel.js" %}"></script>
+{% if user_logged_in %}
 <script src="{% static "v2/js/notifications.js" %}"></script>
+{% endif %}
+
 <script src="{% static "cookielaw/js/cl.js" %}"></script>
+<script defer src="{% static "v2/js/work_with_gitcoin.js" %}"></script>
 
 <script>
   var host = ("{{ ipfs_config.host }}" == "ipfs" ? "localhost" : "{{ ipfs_config.host }}");
