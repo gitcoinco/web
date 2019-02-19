@@ -18,8 +18,8 @@
 '''
 from __future__ import unicode_literals
 
-import collections
 import base64
+import collections
 import logging
 from datetime import datetime, timedelta
 from urllib.parse import urlsplit
