@@ -2999,7 +2999,7 @@
     - DAO
   artist: mladen
   image: moloch.svg
-- name: Grammar Programmer
+- name: grammar_programmer
   artist: uivlis
   description: Not only did you fix the code, you also fixed that comment that no one noticed!
   priceFinney: 50
