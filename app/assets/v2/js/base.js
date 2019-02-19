@@ -160,7 +160,6 @@ if ($('#is-authenticated').val() === 'True' && !localStorage['notify_policy_upda
       </div>
     </div>`);
 
-  $(content).appendTo('body')
+  $(content).appendTo('body');
   $('#notify_policy_update').bootstrapModal('show');
-  // .modal({ modalClass: 'modal notify_policy_update' });
 }
