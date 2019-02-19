@@ -1290,7 +1290,7 @@ const process_activities = function(result, bounty_activities) {
     const slash_possible = currentProfile.isStaff;
     const is_logged_in = currentProfile.username;
     const uninterest_possible = is_logged_in && ((isBountyOwnerPerLogin(result) || currentProfile.isStaff) && is_open && has_interest);
-
+    
     return {
       profileId: _activity.profile.id,
       name: _activity.profile.handle,
@@ -1337,7 +1337,9 @@ const only_one_approve = function(activities) {
       }
     }
     if (activity.uninterest_possible) {
-      if (!iseen[activity.name]) {
+      if(activity.activity_type == 'bounty_abandonment_escalation_to_mods' || activity.activity_type == 'bounty_abandonment_escalation_to_mods'){
+        // pass
+      } else if (!iseen[activity.name]) {
         iseen[activity.name] = true;
       } else if (activity.activity_type != 'start_work') {
         activity.uninterest_possible = false;
