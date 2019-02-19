@@ -29,7 +29,7 @@
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 {% endif %}
 {% include 'shared/sentry.html' %}
-<script src="{% static "v2/js/jquery.modal.min.js" %}"></script>
+<!-- <script src="{% static "v2/js/jquery.modal.min.js" %}"></script> -->
 <script src="{% static "v2/js/popper.min.js" %}"></script>
 <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
 <script>
@@ -40,18 +40,18 @@
 <script src="{% static "v2/js/jquery.cookie.js" %}"></script>
 <script src="{% static "v2/js/jquery.select2.min.js" %}"></script>
 <script src="{% static "v2/js/moment.min.js" %}"></script>
-<script src="{% static "v2/js/base.js" %}"></script>
-<!-- <script src="{% static "v2/js/purify.min.js" %}"></script> -->
-<!-- <script src="{% static "v2/js/shared.js" %}"></script> -->
-
-<script defer src="{% static "v2/js/work_with_gitcoin.js" %}"></script>
 <script src="{% static "v2/js/note.js" %}"></script>
+<script src="{% static "v2/js/base.js" %}"></script>
 <script src="{% static "v2/js/ajax-helper.js" %}"></script>
-<!-- <script src="{% static "v2/js/pages/carousel.js" %}"></script> -->
 {% if user_logged_in %}
 <script src="{% static "v2/js/notifications.js" %}"></script>
 {% endif %}
+<!-- <script src="{% static "v2/js/purify.min.js" %}"></script> -->
+<!-- <script src="{% static "v2/js/shared.js" %}"></script> -->
+
+<!-- <script src="{% static "v2/js/pages/carousel.js" %}"></script> -->
 <script src="{% static "cookielaw/js/cl.js" %}"></script>
+<script defer src="{% static "v2/js/work_with_gitcoin.js" %}"></script>
 
 <script>
   var host = ("{{ ipfs_config.host }}" == "ipfs" ? "localhost" : "{{ ipfs_config.host }}");
