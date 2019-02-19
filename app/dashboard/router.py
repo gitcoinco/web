@@ -294,7 +294,7 @@ class BountyViewSet(viewsets.ModelViewSet):
              Prefetch('interested', queryset=Interest.objects.filter(pending=False), to_attr='interested_not_pending'),
              Prefetch('activities__profile__avatar_baseavatar_related', 
                queryset=
-                 Activity.objects.prefetch_related('activities__profile__avatar_baseavatar_related').filter(profile__avatar_baseavatar_related__active=True), 
+                 Activity.objects.prefetch_related('profile__avatar_baseavatar_related').filter(profile__avatar_baseavatar_related__active=True), 
                to_attr='activities_avatars'
              ),
              Prefetch('activities', 
