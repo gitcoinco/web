@@ -636,6 +636,16 @@ def about(request):
             "Bounties",
             "Chicken tikka masala"
         ),
+        (
+            static("v2/images/team/dan-lipert.png"),
+            "Dan Lipert",
+            "Engineering",
+            "danlipert",
+            "danlipert",
+            "EIP 1337",
+            "Tantan Ramen"
+        )
+
     ]
     exclude_community = ['kziemiane', 'owocki', 'mbeacom']
     community_members = [
