@@ -2999,7 +2999,73 @@
     - DAO
   artist: mladen
   image: moloch.svg
-
+- name: Grammar Programmer
+  artist: uivlis
+  description: Not only did you fix the code, you also fixed that comment that no one noticed!
+  priceFinney: 50
+  numClonesAllowed: 500
+  tags:
+    - spelling
+    - typo
+    - programmer
+    - grammar
+    - comment
+  image: grammar-programmer.svg
+- name: shut_up_and_take_my_ether
+  to_address: 0x4b00a17a8A4c7dC2f71777207B1C1Bd6C132D394
+  artist: cryptodesign
+  description: Shut up and take my ether.
+  priceFinney: 2
+  numClonesAllowed: 500
+  tags:
+    - just for fun
+    - meme
+    - fry
+    - common
+    - ethereum
+  image: fry_shut_up.svg
+- name: golden_doge
+  to_address: 0x4b00a17a8A4c7dC2f71777207B1C1Bd6C132D394
+  artist: cryptodesign
+  description: Such rare, much shiny, very affordable.
+  priceFinney: 2
+  numClonesAllowed: 300
+  tags:
+    - just for fun
+    - meme
+    - doge
+    - gold 
+  image: doge.svg
+name: captain
+  to_address: 0xb9c4668CEf8B52b1A0751Dcf14605Cd90F8c9Fce
+  artist: mehul0698
+  description: You are Captain Kudos!
+  priceFinney: 50
+  numClonesAllowed: 500
+  tags: 
+    - programming
+    - leader
+    - captain
+  image: captain.svg
+- name: ally_guide_denver
+  to_address: 0xc6b0a4c5BA85d082eCd4Fb05FBF63eb92AC1083a
+  artist: PanvalaMark
+  description: For loyal Panvala Allies who shopped at Ally Guide merchants at ETHDenver 2019
+  priceFinney: 10
+  numClonesAllowed: 50
+  tags:
+    - panvala
+    - ally guide
+  image: ally_guide_denver.svg
+- name: alchemist
+  artist: You are a master of the alchemy of code!
+  description: You are a master of the alchemy of code!
+  priceFinney: 10
+  numClonesAllowed: 50
+  tags:
+    - alchemy
+    - code
+  image: alchemist.svg
 
 
 
