@@ -975,6 +975,10 @@ input.is-invalid {
   background-color: #FF6700;
 }
 
+#zero_balance_error {
+  background-color: #FF6700;
+}
+
 .submit-notification.metamask-error img {
   max-width: 100px;
 }
