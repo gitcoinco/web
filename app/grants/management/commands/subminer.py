@@ -49,7 +49,7 @@ def process_subscription(subscription, live):
 
         # FOR DEBUGGING
         if not live:
-            is_ready_to_be_processed_web3 = subscription.get_is_subscription_ready_from_web3()
+            is_ready_to_be_processed_web3 = subscription.get_are_we_past_next_valid_timestamp()
             is_active_web3 = subscription.get_is_active_from_web3()
             signer = subscription.get_subscription_signer_from_web3()
             logger.info("    ---  DEBUG INFO")
