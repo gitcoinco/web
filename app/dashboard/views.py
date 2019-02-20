@@ -272,7 +272,11 @@ def new_interest(request, bounty_id):
             status=401)
     except Interest.DoesNotExist:
         issue_message = request.POST.get("issue_message")
-        signed_nda = request.POST.get("signed_nda", None)
+        signed_nda = None
+        if request.POST.get("signed_nda", None):
+            signed_nda = BountyDocuments.objects.filter(
+                pk=request.POST.get("signed_nda")
+            ).first()
         interest = create_new_interest_helper(bounty, request.user, issue_message, signed_nda)
         if interest.pending:
             start_work_new_applicant(interest, bounty)

@@ -24,7 +24,7 @@ import django_filters.rest_framework
 from rest_framework import routers, serializers, viewsets
 from retail.helpers import get_ip
 
-from .models import Activity, Bounty, BountyFulfillment, Interest, ProfileSerializer, SearchHistory
+from .models import Activity, Bounty, BountyDocuments, BountyFulfillment, Interest, ProfileSerializer, SearchHistory
 
 
 class BountyFulfillmentSerializer(serializers.ModelSerializer):
@@ -63,6 +63,16 @@ class ActivitySerializer(serializers.ModelSerializer):
         fields = ('activity_type', 'created', 'profile', 'metadata', 'bounty', 'tip')
 
 
+class BountyDocumentsSerializer(serializers.ModelSerializer):
+    """Handle serializing the Activity object."""
+
+    class Meta:
+        """Define the activity serializer metadata."""
+
+        model = BountyDocuments
+        fields = ('doc', 'doc_type')
+
+
 # Serializers define the API representation.
 class BountySerializer(serializers.HyperlinkedModelSerializer):
     """Handle serializing the Bounty object."""
@@ -70,6 +80,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
     fulfillments = BountyFulfillmentSerializer(many=True)
     interested = InterestSerializer(many=True)
     activities = ActivitySerializer(many=True)
+    unsigned_nda = BountyDocumentsSerializer(many=False)
     bounty_owner_email = serializers.SerializerMethodField('override_bounty_owner_email')
     bounty_owner_name = serializers.SerializerMethodField('override_bounty_owner_name')
 
@@ -122,7 +133,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
 
 class BountyViewSet(viewsets.ModelViewSet):
     """Handle the Bounty view behavior."""
-    queryset = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile', 'activities') \
+    queryset = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile', 'activities', 'unsigned_nda') \
         .all().order_by('-web3_created')
     serializer_class = BountySerializer
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
@@ -136,7 +147,7 @@ class BountyViewSet(viewsets.ModelViewSet):
         """
         param_keys = self.request.query_params.keys()
         queryset = Bounty.objects.prefetch_related(
-            'fulfillments', 'interested', 'interested__profile', 'activities')
+            'fulfillments', 'interested', 'interested__profile', 'activities', 'unsigned_nda')
         if 'not_current' not in param_keys:
             queryset = queryset.current()
 

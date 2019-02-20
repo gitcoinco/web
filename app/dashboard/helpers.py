@@ -30,7 +30,7 @@ from django.http import Http404, JsonResponse
 from django.utils import timezone
 
 from app.utils import get_semaphore, sync_profile
-from dashboard.models import Activity, Bounty, BountyFulfillment, BountySyncRequest, UserAction
+from dashboard.models import Activity, Bounty, BountyDocuments, BountyFulfillment, BountySyncRequest, UserAction
 from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
     maybe_market_to_user_discord, maybe_market_to_user_slack,
@@ -408,6 +408,11 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
         }
         if not latest_old_bounty:
             schemes = bounty_payload.get('schemes', {})
+            unsigned_nda = None
+            if bounty_payload.get('unsigned_nda', None):
+                unsigned_nda = BountyDocuments.objects.filter(
+                    pk=bounty_payload.get('unsigned_nda')
+                ).first()
             bounty_kwargs.update({
                 # info to xfr over from latest_old_bounty as override fields (this is because sometimes
                 # ppl dont login when they first submit issue and it needs to be overridden)
@@ -439,7 +444,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     timezone.datetime.fromtimestamp(metadata.get('featuring_date', 0)),
                     timezone=UTC),
                 'repo_type': metadata.get('repo_type', None),
-                'unsigned_nda': bounty_payload.get('unsigned_nda', None),
+                'unsigned_nda': unsigned_nda if unsigned_nda else None,
                 'bounty_owner_github_username': bounty_issuer.get('githubUsername', ''),
                 'bounty_owner_address': bounty_issuer.get('address', ''),
                 'bounty_owner_email': bounty_issuer.get('email', ''),
