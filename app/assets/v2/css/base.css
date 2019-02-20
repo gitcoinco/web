@@ -1559,8 +1559,8 @@ div.busyOverlay {
   max-width: 35em;
   font-size: 12px;
 }
-.popover-bounty.bs-popover-auto[x-placement^=top]>.arrow::after,
-.popover-bounty.bs-popover-top>.arrow::after {
+.popover-bounty.bs-popover-auto[x-placement^=top] > .arrow::after,
+.popover-bounty.bs-popover-top > .arrow::after {
   border-top-color: #F8F8F8;
 }
 
