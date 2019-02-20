@@ -1337,7 +1337,7 @@ const only_one_approve = function(activities) {
       }
     }
     if (activity.uninterest_possible) {
-      if(activity.activity_type == 'bounty_abandonment_escalation_to_mods' || activity.activity_type == 'bounty_abandonment_escalation_to_mods'){
+      if (activity.activity_type == 'bounty_abandonment_escalation_to_mods' || activity.activity_type == 'bounty_abandonment_escalation_to_mods') {
         // pass
       } else if (!iseen[activity.name]) {
         iseen[activity.name] = true;
