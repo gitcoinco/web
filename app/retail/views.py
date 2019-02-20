@@ -24,7 +24,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.core.validators import validate_email
-from django.http import Http404, HttpResponse, JsonResponse
+from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
@@ -1449,10 +1449,3 @@ def increase_funding_limit_request(request):
     }
 
     return TemplateResponse(request, 'increase_funding_limit_request_form.html', params)
-
-@staff_member_required
-def day_email_campaign(request, day):
-    if day not in list(range(1, 4)):
-        raise Http404
-    response_html, _, _, = render_nth_day_email_campaign('foo@bar.com', day, 'staff_member')
-    return HttpResponse(response_html)

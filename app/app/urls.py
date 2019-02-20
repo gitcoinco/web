@@ -380,7 +380,7 @@ urlpatterns = [
     path('_administration/email/new_tip/resend', retail.emails.resend_new_tip, name='resend_new_tip'),
     path(
         '_administration/email/day_email_campaign/<int:day>',
-        retail.views.day_email_campaign,
+        marketing.views.day_email_campaign,
         name='day_email_campaign'
     ),
     re_path(
