@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -42,13 +42,12 @@ def create_results_cache():
         items = []
         JSONStore.objects.filter(view=view).all().delete()
         for keyword in keywords:
-            key = keyword
             print(f"- executing {keyword}")
             data = build_stat_results(keyword)
             print("- creating")
             items.append(JSONStore(
                 view=view,
-                key=key,
+                key=keyword,
                 data=json.loads(json.dumps(data, cls=EncodeAnything)),
                 ))
         JSONStore.objects.bulk_create(items)
@@ -65,13 +64,12 @@ def create_contributor_landing_page_context():
         items = []
         JSONStore.objects.filter(view=view).all().delete()
         for keyword in keywords:
-            key = keyword
             print(f"- executing {keyword}")
             data = get_contributor_landing_page_context(keyword)
             print("- creating")
             items.append(JSONStore(
                 view=view,
-                key=key,
+                key=keyword,
                 data=json.loads(json.dumps(data, cls=EncodeAnything)),
                 ))
         JSONStore.objects.bulk_create(items)

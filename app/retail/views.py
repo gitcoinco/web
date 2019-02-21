@@ -18,6 +18,7 @@
 '''
 from json import loads as json_parse
 from os import walk as walkdir
+import logging
 
 from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
@@ -48,6 +49,7 @@ from retail.helpers import get_ip
 from .forms import FundingLimitIncreaseRequestForm
 from .utils import programming_languages
 
+logger = logging.getLogger(__name__)
 
 @cached_as(
     Activity.objects.select_related('bounty').filter(bounty__network='mainnet').order_by('-created'),
@@ -246,7 +248,7 @@ def contributor_bounties(request, tech_stack):
         for key, value in new_context.items():
             context[key] = value
     except Exception as e:
-        print(e)
+        logger.exception(e)
         raise Http404
 
     return TemplateResponse(request, 'bounties/contributor.html', context)
@@ -258,7 +260,7 @@ def get_contributor_landing_page_context(tech_stack):
     activities = get_activities(tech_stack)
     return {
         'activities': activities,
-        'title': tech_stack.title() + str(_(" Open Source Opportunities")) if tech_stack else "Open Source Opportunities",
+        'title': tech_stack.title() + str(_(" Open Source Opportunities")) if tech_stack else str(_("Open Source Opportunities")),
         'available_bounties_count': available_bounties_count,
         'available_bounties_worth': available_bounties_worth,
         'tech_stack': tech_stack,

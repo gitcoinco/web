@@ -30,25 +30,24 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import escape
 from django.utils.timezone import localtime
+from django.core.serializers.json import DjangoJSONEncoder
 
 
 class EncodeAnything(DjangoJSONEncoder):
     def default(self, obj):
         if isinstance(obj, Promise):
             return force_text(obj)
-        if isinstance(obj, SuperModel):
+        elif isinstance(obj, SuperModel):
             return (obj.to_standard_dict())
-        if isinstance(obj, models.Model):
+        elif isinstance(obj, models.Model):
             return (model_to_dict(obj))
-        if isinstance(obj, models.Model):
-            return (model_to_dict(obj))
-        if isinstance(obj, QuerySet):
+        elif isinstance(obj, QuerySet):
             if obj.count() and type(obj.first()) == str:
                 return obj[::1]
             return [EncodeAnything(instance) for instance in obj]
-        if isinstance(obj, list):
+        elif isinstance(obj, list):
             return [EncodeAnything(instance) for instance in obj]
-        if(callable(obj)):
+        elif(callable(obj)):
             return None
         return super(EncodeAnything, self).default(obj)
 
@@ -95,7 +94,8 @@ class SuperModel(models.Model):
             kwargs['exclude'] = exclude
         return_me = model_to_dict(self, **kwargs)
         if properties:
-            for key in dir(self):
+            keys = [k for k in dir(self) if not k.startswith('_')]
+            for key in keys:
                 if key in properties:
                     attr = getattr(self, key)
                     if callable(attr):
