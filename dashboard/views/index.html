@@ -2448,6 +2448,16 @@ The class bool is a subclass of the class int, and cannot be subclassed.
     Http404: The exception is raised if no associated Bounty is found.</p>
 <p>Returns:
     TemplateResponse: The cancel bounty view.</p>
+<h2 id="dashboard.views.bounty_invite_url">bounty_invite_url</h2>
+
+<pre><code class="python">bounty_invite_url(request, invitecode)
+</code></pre>
+
+<p>Decode the bounty details and redirect to correct bounty</p>
+<p>Args:
+    invitecode (str): Unique invite code with bounty details and handle</p>
+<p>Returns:
+    django.template.response.TemplateResponse: The Bounty details template response.</p>
 <h2 id="dashboard.views.bounty_details">bounty_details</h2>
 
 <pre><code class="python">bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None)
