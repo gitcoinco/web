@@ -39,18 +39,6 @@ class BountyFulfillmentSerializer(serializers.ModelSerializer):
                   'fulfillment_id', 'accepted', 'profile', 'created_on', 'accepted_on', 'fulfiller_github_url')
 
 
-class InterestSerializer(serializers.ModelSerializer):
-    """Handle serializing the Interest object."""
-
-    profile = ProfileSerializer()
-
-    class Meta:
-        """Define the Interest serializer metadata."""
-
-        model = Interest
-        fields = ('profile', 'created', 'pending')
-
-
 class ActivitySerializer(serializers.ModelSerializer):
     """Handle serializing the Activity object."""
 
@@ -71,6 +59,19 @@ class BountyDocumentsSerializer(serializers.ModelSerializer):
 
         model = BountyDocuments
         fields = ('doc', 'doc_type')
+
+
+class InterestSerializer(serializers.ModelSerializer):
+    """Handle serializing the Interest object."""
+
+    profile = ProfileSerializer()
+    signed_nda = BountyDocumentsSerializer()
+
+    class Meta:
+        """Define the Interest serializer metadata."""
+
+        model = Interest
+        fields = ('profile', 'created', 'pending', 'signed_nda')
 
 
 # Serializers define the API representation.
@@ -268,7 +269,7 @@ class BountyViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(
                 is_featured=self.request.query_params.get('is_featured'),
             )
-        
+
         if 'repo_type' in param_keys:
             queryset = queryset.filter(
                 repo_type=self.request.query_params.get('repo_type'),

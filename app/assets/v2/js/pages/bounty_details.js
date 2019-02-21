@@ -1374,6 +1374,12 @@ const process_activities = function(result, bounty_activities) {
     const fulfillment = meta.fulfillment || {};
     const new_bounty = meta.new_bounty || {};
     const old_bounty = meta.old_bounty || {};
+    const has_signed_nda = result.interested.map(interest => {
+      if (interest.profile.handle === _activity.profile.handle && interest.signed_nda) {
+        return interest.signed_nda.doc;
+      }
+      return false;
+    });
     const has_pending_interest = !!result.interested.find(interest =>
       interest.profile.handle === _activity.profile.handle && interest.pending);
     const has_interest = !!result.interested.find(interest =>
@@ -1390,6 +1396,7 @@ const process_activities = function(result, bounty_activities) {
       age: timeDifference(now, new Date(_activity.created)),
       activity_type: _activity.activity_type,
       status: _activity.activity_type === 'work_started' ? 'started' : 'stopped',
+      signed_nda: has_signed_nda,
       uninterest_possible: uninterest_possible,
       slash_possible: slash_possible,
       approve_worker_url: meta.approve_worker_url,
