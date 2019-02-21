@@ -81,4 +81,5 @@ class Command(BaseCommand):
     help = 'generates some /results data'
 
     def handle(self, *args, **options):
+        create_results_cache()
         create_contributor_landing_page_context()
