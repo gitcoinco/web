@@ -10,12 +10,14 @@ $(document).ready(function() {
 });
 
 function saveGrant(grantData, isFinal) {
-  let csrftoken = $("#create-grant input[name='csrfmiddlewaretoken']").val()
+  let csrftoken = $("#create-grant input[name='csrfmiddlewaretoken']").val();
+
   $.ajax({
     type: 'post',
     url: '',
     processData: false,
     contentType: false,
+    data: grantData,
     headers: {'X-CSRFToken': csrftoken},
     success: json => {
       if (isFinal) {
@@ -30,13 +32,12 @@ function saveGrant(grantData, isFinal) {
 }
 
 const processReceipt = receipt => {
-  let data = {
-    'contract_address': receipt.contractAddress,
-    'csrfmiddlewaretoken': $("#create-grant input[name='csrfmiddlewaretoken']").val(),
-    'transaction_hash': $('#transaction_hash').val()
-  };
+  let formData = new FormData();
 
-  saveGrant(data, true);
+  formData.append('contract_address', receipt.contractAddress);
+  formData.append('transaction_hash', $('#transaction_hash').val());
+
+  saveGrant(formData, true);
 };
 
 const init = () => {
@@ -111,10 +112,9 @@ const init = () => {
             console.log('2', transactionHash);
             $('#transaction_hash').val(transactionHash);
             const linkURL = etherscan_tx_url(transactionHash);
-
             let file = $('#img-project')[0].files[0];
-
             let formData = new FormData();
+
             formData.append('input_image', file);
             formData.append('transaction_hash', $('#transaction_hash').val());
             formData.append('title', $('#input_title').val());
@@ -129,27 +129,7 @@ const init = () => {
             formData.append('transaction_hash', $('#transaction_hash').val());
             formData.append('network', $('#network').val());
             formData.append('team_members', $('#input-team_members').val());
-            formData.append('csrfmiddlewaretoken', $("#create-grant input[name='csrfmiddlewaretoken']").val());
             saveGrant(formData, false);
-
-/*
-            let data = {
-              'input_image': file,
-              'title': $('#input_title').val(),
-              'description': $('#input-description').val(),
-              'reference_url': $('#input-url').val(),
-              'admin_address': $('#input-admin_address').val(),
-              'contract_owner_address': $('#contract_owner_address').val(),
-              'token_address': $('#token_address').val(),
-              'token_symbol': $('#token_symbol').val(),
-              'amount_goal': $('#amount_goal').val(),
-              'contract_version': $('#contract_version').val(),
-              'transaction_hash': $('#transaction_hash').val(),
-              'network': $('#network').val(),
-              'team_members': $('#input-team_members').val(),
-              'csrfmiddlewaretoken': $("#create-grant input[name='csrfmiddlewaretoken']").val()
-            };
-*/
 
             document.issueURL = linkURL;
             $('#transaction_url').attr('href', linkURL);
