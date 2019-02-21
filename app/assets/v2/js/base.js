@@ -2,8 +2,11 @@
 /* eslint-disable no-console */
 /* eslint-disable nonblock-statement-body-position */
 $(document).ready(function() {
-  if (typeof ($(document).tooltip) != 'undefined') {
-    $(document).tooltip();
+
+  if (typeof ($('body').tooltip) != 'undefined') {
+    $('body').tooltip({
+      items: ':not([data-toggle])'
+    });
   }
 
   var force_no_www = function() {
