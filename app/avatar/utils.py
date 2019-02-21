@@ -99,7 +99,7 @@ def get_avatar_context():
             }, {
                 'name': 'Mouth',
                 'title': 'Pick mouth shape',
-                'options': ('0', '1', '2', '3', '4'),
+                'options': ('0', '1', '2', '3', '4', '5'),
                 'paid_options': {},
             },
             {
@@ -171,7 +171,7 @@ def get_avatar_context():
                             ['Masks-spiderman_inspired'], ['Glasses-5'], ['Glasses-geordi-visor'], 
                             ['Masks-funny_face'], ['Masks-viking'], ['Masks-construction_helmet'], 
                             ['Glasses-6'], ['HatShort-green'], ['Earring-6'], ['Extras-necklace'], 
-                            ['Masks-carnival'], 
+                            ['Masks-carnival'], ['Masks-gas'], ['Masks-surgical'], ['Extras-monkey'],
                             ['Masks-power'], ['Glasses-7'],['Glasses-8'],['HatShort-angel'],['HatShort-devil'],
                             ['Extras-necklace1'],['Extras-necklace2'],['Extras-necklace3'],['Glasses-9'],
                             ['Masks-clown'],
