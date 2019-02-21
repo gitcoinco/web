@@ -74,10 +74,7 @@ def grants(request):
 
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
-
-    for _grant in grants:
-        _grant.activeSubscriptions = Subscription.objects.filter(grant=_grant, active=True).distinct('contributor_profile')
-
+    
     params = {
         'active': 'grants_landing',
         'title': _('Grants Explorer'),
