@@ -22,7 +22,7 @@
         <h3 class="font-subheader font-weight-bold mb-3">{% trans 'Contributors' %} ({{ grant.activeSubscriptions|length }})</h3>
         {% for handle in grant.activeSubscriptions %}
           <a class="grant__stakeholders-item ml-2" href="{% url 'profile' handle %}">
-            <img src="{% avatar_url handle  %}" />
+            <img data-src="{% avatar_url handle  %}" />
           </a>
         {% endfor %}
       </div>
