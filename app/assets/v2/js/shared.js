@@ -1277,6 +1277,7 @@ function showBusyOverlay() {
   if (overlay) {
     overlay.style['display'] = 'block';
     overlay.style['animation-name'] = 'fadeIn';
+    $(overlay).fadeIn('slow');
     return;
   }
 
@@ -1299,6 +1300,7 @@ function hideBusyOverlay() {
 
   if (overlay) {
     setTimeout(function() {
+      $(overlay).fadeOut('slow');
       overlay.style['animation-name'] = 'fadeOut';
     }, 300);
   }
