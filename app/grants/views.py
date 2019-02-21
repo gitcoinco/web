@@ -36,6 +36,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
 from app.utils import get_profile
+from cacheops import cached_view
 from dashboard.models import Profile
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.forms import MilestoneForm
@@ -548,6 +549,7 @@ def quickstart(request):
     return TemplateResponse(request, 'grants/quickstart.html', params)
 
 
+@cached_view(timeout=60)
 def leaderboard(request):
     """Display leaderboard."""
     params = {
