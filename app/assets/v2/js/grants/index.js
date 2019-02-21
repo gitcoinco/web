@@ -7,7 +7,7 @@ $(document).ready(() => {
     minimumResultsForSearch: Infinity
   });
 
-  $('.grant-item').click(function() {
+  $(document).on('click', '.grant-item', function() {
     $(this).find('img').each(function() {
       var src_url = $(this).data('src');
 
@@ -20,7 +20,7 @@ $(document).ready(() => {
 
   $('.select2-selection__rendered').removeAttr('title');
 
-  $('.flip-card').on('click keypress', e => {
+  $(document).on('click keypress', '.flip-card', e => {
     if ($(e.target).is('a') || $(e.target).is('img')) {
       e.stopPropagation();
       return;
