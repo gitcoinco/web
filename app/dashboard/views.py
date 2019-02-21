@@ -552,6 +552,7 @@ def onboard(request, flow):
     elif flow == 'profile':
         onboard_steps = ['avatar']
 
+    profile = None
     if request.user.is_authenticated and getattr(request.user, 'profile', None):
         profile = request.user.profile
 
@@ -593,6 +594,8 @@ def dashboard(request):
     params = {
         'active': 'dashboard',
         'title': title,
+        'meta_title': "Issue & Open Bug Bounty Explorer | Gitcoin",
+        'meta_description': "Find open bug bounties & freelance development jobs including crypto bounty reward value in USD, expiration date and bounty age.",
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
     return TemplateResponse(request, 'dashboard/index.html', params)
