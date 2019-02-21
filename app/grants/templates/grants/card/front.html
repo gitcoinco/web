@@ -51,6 +51,7 @@
           <div class="grant-item__funding-label font-caption">{% trans ' Monthly Goal' %}</div>
         </div>
       </div>
+      {% include 'grants/detail/matching.html' %}
       <div class="grant-item__state mt-3 row">
         <div class="col-6">
           {% if grant.active %}
