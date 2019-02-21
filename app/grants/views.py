@@ -59,7 +59,7 @@ def get_keywords():
 
 def grants(request):
     """Handle grants explorer."""
-    limit = request.GET.get('limit', 24)
+    limit = request.GET.get('limit', 6)
     page = request.GET.get('page', 1)
     sort = request.GET.get('sort_option', '-created_on')
     network = request.GET.get('network', 'mainnet')
@@ -74,10 +74,7 @@ def grants(request):
 
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
-
-    for _grant in grants:
-        _grant.activeSubscriptions = Subscription.objects.filter(grant=_grant, active=True).distinct('contributor_profile')
-
+    
     params = {
         'active': 'grants_landing',
         'title': _('Grants Explorer'),
