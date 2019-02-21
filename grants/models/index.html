@@ -2173,6 +2173,10 @@ object the first time, the query is executed.</p>
 <h3 id="grants.models.Grant.active">active</h3></p>
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="grants.models.Grant.activeSubscriptions">activeSubscriptions</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="grants.models.Grant.admin_address">admin_address</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -2374,6 +2378,11 @@ class built by <code>create_forward_many_to_many_manager()</code> defined below.
 </code></pre>
 
 <p>Return the percentage of token received based on the token goal.
+<h3 id="grants.models.Grant.updateActiveSubscriptions">updateActiveSubscriptions</h3></p>
+<pre><code class="python">Grant.updateActiveSubscriptions(self)
+</code></pre>
+
+<p>updates the active subscriptions list
 <h2 id="grants.models.Milestone">Milestone</h2></p>
 <pre><code class="python">Milestone(self, *args, **kwargs)
 </code></pre>
