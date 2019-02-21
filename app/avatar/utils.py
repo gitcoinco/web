@@ -171,7 +171,9 @@ def get_avatar_context():
                             ['Masks-spiderman_inspired'], ['Glasses-5'], ['Glasses-geordi-visor'], 
                             ['Masks-funny_face'], ['Masks-viking'], ['Masks-construction_helmet'], 
                             ['Glasses-6'], ['HatShort-green'], ['Earring-6'], ['Extras-necklace'], 
-                            ['Masks-carnival'],
+                            ['Masks-carnival'], 
+                            ['Masks-power'], ['Glasses-7'],['Glasses-8'],['HatShort-angel'],['HatShort-devil'],
+                            ['Extras-necklace1'],['Extras-necklace2'],['Extras-necklace3'],
                             ),
                 'paid_options': {
                     'Extras-Parrot': 0.01,
