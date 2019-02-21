@@ -174,6 +174,7 @@ urlpatterns = [
         name='issue_details_new2'
     ),
     re_path(r'^funding/details/?', dashboard.views.bounty_details, name='funding_details'),
+    re_path(r'^issue/(?P<invitecode>.*)', dashboard.views.bounty_invite_url, name='unique_bounty_invite'),
 
     # Tips
     url(

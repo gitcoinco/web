@@ -41,7 +41,7 @@ from django.views.decorators.http import require_GET, require_POST
 
 from app.utils import clean_str, ellipses
 from avatar.utils import get_avatar_context_for_user
-from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, profile_helper
+from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, profile_helper
 from economy.utils import convert_token_to_usdt
 from eth_utils import to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
@@ -171,10 +171,10 @@ def create_new_interest_helper(bounty, user, issue_message):
     )
     bounty.interested.add(interest)
     record_user_action(user, 'start_work', interest)
-    maybe_market_to_slack(bounty, 'start_work')
-    maybe_market_to_user_slack(bounty, 'start_work')
-    maybe_market_to_user_discord(bounty, 'start_work')
-    maybe_market_to_twitter(bounty, 'start_work')
+    maybe_market_to_slack(bounty, 'start_work' if not approval_required else 'worker_applied')
+    maybe_market_to_user_slack(bounty, 'start_work' if not approval_required else 'worker_applied')
+    maybe_market_to_user_discord(bounty, 'start_work' if not approval_required else 'worker_applied')
+    maybe_market_to_twitter(bounty, 'start_work' if not approval_required else 'worker_applied')
     return interest
 
 
@@ -1057,6 +1057,21 @@ def helper_handle_approvals(request, bounty):
             messages.success(request, _(f'{worker} has been {mutate_worker_action_past_tense}'))
         else:
             messages.warning(request, _('Only the funder of this bounty may perform this action.'))
+
+
+def bounty_invite_url(request, invitecode):
+    """Decode the bounty details and redirect to correct bounty
+
+    Args:
+        invitecode (str): Unique invite code with bounty details and handle
+    
+    Returns:
+        django.template.response.TemplateResponse: The Bounty details template response.
+    """
+    decoded_data = get_bounty_from_invite_url(invitecode)
+    bounty = Bounty.objects.current().filter(pk=decoded_data['bounty_id'])
+    return redirect('/funding/details/?url=' + bounty.github_url)
+    
 
 
 def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None):
