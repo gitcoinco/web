@@ -644,7 +644,7 @@ var show_interest_modal = function() {
       if (document.result['repo_type'] === 'private') {
         $('#nda-upload').show();
         $('#issueNDA').prop('required', true);
-        $('.nda-download-link').attr("href", document.result.unsigned_nda.doc)
+        $('.nda-download-link').attr('href', document.result.unsigned_nda.doc);
       }
 
       let actionPlanForm = $('#action_plan');
@@ -664,7 +664,6 @@ var show_interest_modal = function() {
         }
 
         if (typeof issueNDA[0] !== 'undefined') {
-          console.log('not undeff')
           const formData = new FormData();
 
           formData.append('docs', issueNDA[0]);
