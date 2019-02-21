@@ -14,15 +14,15 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static humanize grants_extra %}
+{% load i18n static humanize grants_extra avatar_tags %}
 <div class="row h-100">
   {% if grant.active %}
     {% if grant.activeSubscriptions %}
       <div class="col-12 my-2">
-        <h3 class="font-subheader font-weight-bold mb-3">{% trans 'Contributors' %} ({{ grant.activeSubscriptions.count }})</h3>
-        {% for subscription in grant.activeSubscriptions %}
-          <a class="grant__stakeholders-item ml-2" href="{% url 'profile' subscription.contributor_profile.handle %}">
-            <img src="{{ subscription.contributor_profile.avatar_url }}" />
+        <h3 class="font-subheader font-weight-bold mb-3">{% trans 'Contributors' %} ({{ grant.activeSubscriptions|length }})</h3>
+        {% for handle in grant.activeSubscriptions %}
+          <a class="grant__stakeholders-item ml-2" href="{% url 'profile' handle %}">
+            <img src="{% avatar_url handle  %}" />
           </a>
         {% endfor %}
       </div>

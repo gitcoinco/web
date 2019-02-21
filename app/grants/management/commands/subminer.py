@@ -104,6 +104,9 @@ def process_subscription(subscription, live):
                     error_comments = f"{error}\n\ndebug info: {subscription.get_debug_info()}"
                     subscription.subminer_comments = error_comments
                     subscription.save()
+                    grant = subscription.grant
+                    grant.updateActiveSubscriptions()
+                    grant.save()
                     warn_subscription_failed(subscription)
                 else:
                     logger.info('subscription processing successful')
