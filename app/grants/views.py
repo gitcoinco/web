@@ -553,14 +553,14 @@ def quickstart(request):
 def leaderboard(request):
     """Display leaderboard."""
     params = {
-        'active': 'grants_leaderboard', 
+        'active': 'grants_leaderboard',
         'title': _('Grants Leaderboard'),
         'card_desc': _('View the top contributors to Gitcoin Grants'),
         }
-    
+
     # setup dict
     # TODO: in the future, store all of this in perftools.models.JSONStore
-    handles = Subscription.objects.all().values_list('contributor_profile__handle', flat=True)    
+    handles = Subscription.objects.all().values_list('contributor_profile__handle', flat=True)
     default_dict = {
         'rank': None,
         'no': 0,
