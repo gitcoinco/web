@@ -16,9 +16,9 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+import logging
 from json import loads as json_parse
 from os import walk as walkdir
-import logging
 
 from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required

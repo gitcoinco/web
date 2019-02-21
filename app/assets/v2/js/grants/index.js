@@ -7,12 +7,13 @@ $(document).ready(() => {
     minimumResultsForSearch: Infinity
   });
 
-  $(".grant-item").click(function(){
-    $(this).find('img').each(function(){
+  $('.grant-item').click(function() {
+    $(this).find('img').each(function() {
       var src_url = $(this).data('src');
+
       $(this).attr('src', src_url);
-    })
-  })
+    });
+  });
 
   searchGrant();
   populateFilters();

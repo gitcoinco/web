@@ -22,6 +22,7 @@ from __future__ import unicode_literals
 
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.contrib.postgres.fields import JSONField
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -30,7 +31,6 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import escape
 from django.utils.timezone import localtime
-from django.core.serializers.json import DjangoJSONEncoder
 
 
 class EncodeAnything(DjangoJSONEncoder):
