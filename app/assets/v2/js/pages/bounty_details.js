@@ -1102,7 +1102,8 @@ var do_actions = function(result) {
     const _entry = {
       enabled: true,
       href: github_url,
-      text: gettext('View On Github') +
+      text: (result['repo_type'] === 'private' ? '<i class="fas fa-lock"></i> ' +
+            gettext('Private Repo') : gettext('View On Github')) +
             (result['is_issue_closed'] ? gettext(' (Issue is closed)') : ''),
       parent: 'right_actions',
       title: gettext('View issue details and comments on Github'),
