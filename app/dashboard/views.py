@@ -171,10 +171,10 @@ def create_new_interest_helper(bounty, user, issue_message):
     )
     bounty.interested.add(interest)
     record_user_action(user, 'start_work', interest)
-    maybe_market_to_slack(bounty, 'start_work')
-    maybe_market_to_user_slack(bounty, 'start_work')
-    maybe_market_to_user_discord(bounty, 'start_work')
-    maybe_market_to_twitter(bounty, 'start_work')
+    maybe_market_to_slack(bounty, 'start_work' if not approval_required else 'worker_applied')
+    maybe_market_to_user_slack(bounty, 'start_work' if not approval_required else 'worker_applied')
+    maybe_market_to_user_discord(bounty, 'start_work' if not approval_required else 'worker_applied')
+    maybe_market_to_twitter(bounty, 'start_work' if not approval_required else 'worker_applied')
     return interest
 
 
