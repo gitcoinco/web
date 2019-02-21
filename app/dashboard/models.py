@@ -18,6 +18,7 @@
 '''
 from __future__ import unicode_literals
 
+import base64
 import collections
 import logging
 from datetime import datetime, timedelta
@@ -1800,6 +1801,10 @@ class Profile(SuperModel):
         kudos_transfers = kudos_transfers.distinct('id')
 
         return kudos_transfers
+
+    @property
+    def get_profile_referral_code(self):
+        return base64.urlsafe_b64encode(self.handle.encode()).decode()
 
     @property
     def job_status_verbose(self):
