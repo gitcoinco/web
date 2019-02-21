@@ -24,9 +24,11 @@ var gas_amount = function(page_url) {
     gasLimitEstimate = 21000;
   } else if (page_url.indexOf('/fund') != -1) { // grant contribution
     gasLimitEstimate = 318730;
-  } else if (page_url.indexOf('/subscription') != -1) { // canacel grant contribution
+  } else if (page_url.indexOf('/subscription') != -1) { // cancel grant contribution
     gasLimitEstimate = 318730;
-  } else if (page_url.indexOf('/grants/') != -1) { // canacel grant contribution
+  } else if (page_url.indexOf('/grants/') != -1) { // cancel grant contribution
+    gasLimitEstimate = 318730;
+  } else if (page_url.indexOf('/subscribe') != -1) { // gitcoin subscription plans
     gasLimitEstimate = 318730;
   }
   return gasLimitEstimate;

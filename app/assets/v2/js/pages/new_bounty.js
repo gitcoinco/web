@@ -82,7 +82,6 @@ $('#issueURL').focusout(function() {
 
 $('#last-synced').hide();
 
-// Wait until page is loaded, then run the function
 $(document).ready(function() {
   // Load sidebar radio buttons from localStorage
   if (getParam('source')) {
@@ -239,7 +238,7 @@ $(document).ready(function() {
       var metadata = {
         issueTitle: data.title,
         issueDescription: data.description,
-        issueKeywords: data.keywords,
+        issueKeywords: data.keywords ? data.keywords : '',
         githubUsername: data.githubUsername,
         notificationEmail: data.notificationEmail,
         fullName: data.fullName,
@@ -248,6 +247,7 @@ $(document).ready(function() {
         bountyType: data.bounty_type,
         estimatedHours: data.hours,
         fundingOrganisation: data.fundingOrganisation,
+        is_featured: data.featuredBounty,
         reservedFor: reservedFor ? reservedFor.text : '',
         tokenName
       };
@@ -285,6 +285,8 @@ $(document).ready(function() {
             jobDescription: data.jobDescription
           },
           funding_organisation: metadata.fundingOrganisation,
+          is_featured: metadata.featuredBounty,
+          featuring_date: metadata.featuredBounty && new Date().getTime() / 1000 || 0,
           privacy_preferences: privacy_preferences,
           funders: [],
           categories: metadata.issueKeywords.split(','),
@@ -441,7 +443,31 @@ $(document).ready(function() {
         ipfs.addJson(ipfsBounty, newIpfsCallback);
       };
 
-      do_bounty();
+      const payFeaturedBounty = function() {
+        web3.eth.sendTransaction({
+          to: '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+          from: web3.eth.coinbase,
+          value: web3.toWei(ethFeaturedPrice, 'ether'),
+          gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)),
+          gas: web3.toHex(318730),
+          gasLimit: web3.toHex(318730)
+        },
+        function(error, result) {
+          saveAttestationData(
+            result,
+            ethFeaturedPrice,
+            '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+            'featuredbounty'
+          );
+          do_bounty();
+        });
+      };
+
+      if (data.featuredBounty) {
+        payFeaturedBounty();
+      } else {
+        do_bounty();
+      }
     }
   });
 });
@@ -464,6 +490,12 @@ var check_balance_and_alert_user_if_not_enough = function(tokenAddress, amount) 
       _alert(msg, 'warning');
     }
   });
-
-
 };
+
+let usdFeaturedPrice = $('.featured-price-usd').text();
+let ethFeaturedPrice;
+
+getAmountEstimate(usdFeaturedPrice, 'ETH', (amountEstimate) => {
+  ethFeaturedPrice = amountEstimate['value'];
+  $('.featured-price-eth').text(`+${amountEstimate['value']} ETH`);
+});

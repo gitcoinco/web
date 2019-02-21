@@ -59,6 +59,31 @@ const notifyOwnerAddressMismatch = (username, address, button, message) => {
   });
 };
 
+const exceedFileSize = (file, size = 4000000) => {
+  if (file.size > size)
+    return true;
+  return false;
+};
+
+const addGrantLogo = () => {
+  $('#img-project').on('change', function() {
+    if (checkFileSize(this, 4000000) === false) {
+      _alert(`Grant Image should not exceed ${(4000000 / 1024 / 1024).toFixed(2)}MB`, 'error');
+    } else {
+      let reader = new FileReader();
+
+      reader.onload = function(e) {
+        $('#preview').attr('src', e.target.result);
+        $('#preview').css('width', '100%');
+        $('#js-drop span').hide();
+        $('#js-drop input').css('visible', 'invisible');
+        $('#js-drop').css('padding', 0);
+      };
+      reader.readAsDataURL(this.files[0]);
+    }
+  });
+};
+
 $(document).ready(function() {
 
   let contractVersion = $('#contract_version').val();
@@ -98,7 +123,6 @@ $(document).ready(function() {
       if (typeof web3 == 'undefined' || web3_not_found) {
         $('#no_metamask_error').css('display', 'block');
         $('#zero_balance_error').css('display', 'none');
-        $('#robot_error').removeClass('hidden');
         $('#grants_form').addClass('hidden');
         $('.submit_bounty .newsletter').addClass('hidden');
         $('#unlock_metamask_error').css('display', 'none');
@@ -110,7 +134,6 @@ $(document).ready(function() {
         $('#unlock_metamask_error').css('display', 'none');
         $('#zero_balance_error').css('display', 'none');
         $('#no_metamask_error').css('display', 'none');
-        $('#robot_error').removeClass('hidden');
         $('#grants_form').addClass('hidden');
         $('.submit_bounty .newsletter').addClass('hidden');
         $('#no_issue_error').css('display', 'none');
@@ -120,7 +143,7 @@ $(document).ready(function() {
         $('#connect_metamask_error').css('display', 'none');
         $('#zero_balance_error').css('display', 'none');
         $('#no_metamask_error').css('display', 'none');
-        $('#robot_error').removeClass('hidden');
+        // $('#robot_error').removeClass('hidden');
         $('#grants_form').addClass('hidden');
         $('.submit_bounty .newsletter').addClass('hidden');
         $('#no_issue_error').css('display', 'none');

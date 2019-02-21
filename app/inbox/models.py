@@ -66,7 +66,8 @@ class Notification(SuperModel):
     to_user = models.ForeignKey(
         get_user_model(),
         on_delete=models.CASCADE,
-        related_name='received_notifications'
+        related_name='received_notifications',
+        db_index=True,
     )
     from_user = models.ForeignKey(
         get_user_model(),
@@ -75,4 +76,4 @@ class Notification(SuperModel):
     )
 
     def __str__(self):
-        return str(self.id)
+        return f"{self.pk} from {self.from_user} to {self.to_user}: {self.message_html}"

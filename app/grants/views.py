@@ -95,6 +95,7 @@ def grants(request):
 def grant_details(request, grant_id, grant_slug):
     """Display the Grant details page."""
     profile = get_profile(request)
+    add_cancel_params = False
 
     try:
         grant = Grant.objects.prefetch_related('subscriptions', 'milestones', 'updates').get(
@@ -103,13 +104,19 @@ def grant_details(request, grant_id, grant_slug):
         milestones = grant.milestones.order_by('due_date')
         updates = grant.updates.order_by('-created_on')
         subscriptions = grant.subscriptions.filter(active=True, error=False)
-        cancelled_subscriptions = grant.subscriptions.filter(active=False, error=False)
+        cancelled_subscriptions = grant.subscriptions.filter(Q(active=False, error=False) | Q(error=True))
         contributions = Contribution.objects.filter(subscription__in=grant.subscriptions.all())
-        user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True, error=False).first()
+        user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
+        add_cancel_params = user_subscription
     except Grant.DoesNotExist:
         raise Http404
 
     if request.method == 'POST' and (profile == grant.admin_profile or request.user.is_staff):
+        if request.FILES.get('input_image'):
+            logo = request.FILES.get('input_image', None)
+            grant.logo = logo
+            grant.save()
+            return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
         if 'contract_address' in request.POST:
             grant.cancel_tx_id = request.POST.get('grant_cancel_tx_id', '')
             grant.active = False
@@ -143,6 +150,9 @@ def grant_details(request, grant_id, grant_slug):
                 change_grant_owner_request(grant, grant.request_ownership_change)
             grant.save()
             return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
+    is_admin = (grant.admin_profile.id == profile.id) if profile and grant.admin_profile else False
+    if is_admin:
+        add_cancel_params = True
 
     params = {
         'active': 'grant_details',
@@ -154,19 +164,26 @@ def grant_details(request, grant_id, grant_slug):
         'cancelled_subscriptions': cancelled_subscriptions,
         'contributions': contributions,
         'user_subscription': user_subscription,
-        'is_admin': (grant.admin_profile.id == profile.id) if profile and grant.admin_profile else False,
+        'is_admin': is_admin,
         'grant_is_inactive': not grant.active,
         'updates': updates,
         'milestones': milestones,
         'keywords': get_keywords(),
-        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
-        'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(120),
-        'recommend_gas_price_avg': recommend_min_gas_price_to_confirm_in_time(15),
-        'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(1),
-        'eth_usd_conv_rate': eth_usd_conv_rate(),
-        'conf_time_spread': conf_time_spread(),
-        'gas_advisories': gas_advisories(),
     }
+
+    if add_cancel_params:
+        add_in_params = {
+            'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
+            'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(120),
+            'recommend_gas_price_avg': recommend_min_gas_price_to_confirm_in_time(15),
+            'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(1),
+            'eth_usd_conv_rate': eth_usd_conv_rate(),
+            'conf_time_spread': conf_time_spread(),
+            'gas_advisories': gas_advisories(),
+        }
+        for key, value in add_in_params.items():
+            params[key] = value
+
 
     if request.method == 'GET' and grant.request_ownership_change and profile == grant.request_ownership_change:
         if request.GET.get('ownership', None) == 'accept':
@@ -358,6 +375,12 @@ def grant_fund(request, grant_id, grant_slug):
             subscription.contributor_profile = profile
             subscription.grant = grant
             subscription.save()
+
+            messages.info(
+                request,
+                _('Your subscription has been created. It will bill within the next 5 minutes or so. Thank you for supporting Open Source !')
+            )
+
             return JsonResponse({
                 'success': True,
             })
@@ -523,3 +546,42 @@ def quickstart(request):
     """Display quickstart guide."""
     params = {'active': 'grants_quickstart', 'title': _('Quickstart')}
     return TemplateResponse(request, 'grants/quickstart.html', params)
+
+
+def leaderboard(request):
+    """Display leaderboard."""
+    params = {
+        'active': 'grants_leaderboard', 
+        'title': _('Grants Leaderboard'),
+        'card_desc': _('View the top contributors to Gitcoin Grants'),
+        }
+    
+    # setup dict
+    # TODO: in the future, store all of this in perftools.models.JSONStore
+    handles = Subscription.objects.all().values_list('contributor_profile__handle', flat=True)    
+    default_dict = {
+        'rank': None,
+        'no': 0,
+        'sum': 0,
+        'handle': None,
+    }
+    users_to_results = { ele : default_dict.copy() for ele in handles }
+
+    # get all contribution attributes
+    for contribution in Contribution.objects.all().select_related('subscription'):
+        key = contribution.subscription.contributor_profile.handle
+        users_to_results[key]['handle'] = key
+        amount = contribution.subscription.get_converted_amount()
+        if amount:
+            users_to_results[key]['no'] += 1
+            users_to_results[key]['sum'] += round(amount)
+    # prepare response for view
+    params['items'] = []
+    counter = 1
+    for item in sorted(users_to_results.items(), key=lambda kv: kv[1]['sum'], reverse=True):
+        item = item[1]
+        if item['no']:
+            item['rank'] = counter
+            params['items'].append(item)
+            counter += 1
+    return TemplateResponse(request, 'grants/leaderboard.html', params)

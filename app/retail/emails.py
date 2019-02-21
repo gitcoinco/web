@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -592,6 +592,34 @@ def render_gdpr_reconsent(to_email):
     return response_html, response_txt
 
 
+def render_share_bounty(to_email, msg, from_profile):
+    """Render the share bounty email template.
+
+    Args:
+        to_email: user to send the email to.
+        msg: the message sent in the email.
+
+    Returns:
+        str: The rendered response as a string.
+
+    """
+    to_email = f"@{to_email}" if to_email else "there"
+    response_txt = f"""
+hi {to_email},
+
+{msg}
+
+@{from_profile.handle}
+{from_profile.email}
+
+
+"""
+
+    params = {'txt': response_txt}
+    response_html = premailer_transform(render_to_string("emails/txt.html", params))
+    return response_html, response_txt
+
+
 def render_new_work_submission(to_email, bounty):
     params = {
         'bounty': bounty,
@@ -843,31 +871,28 @@ def render_start_work_applicant_expired(interest, bounty):
 
 
 
+
 # ROUNDUP_EMAIL
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
-    subject = "CodeFund 2.0 | Gitcoin Grants Grows"
-    new_kudos_pks = [806, 394, 387]
+    subject = "Last Week of CLR Matching | Glen Weyl Joins Livestream"
+    new_kudos_pks = [1404, 1401, 1368]
     new_kudos_size_px = 150
     intro = '''
 <p>
 Hi Gitcoiners,
 <p>
 <p>
-Over the past 3 months, Eric Berry and Nate Hopkins been heads-down on rebuilding our ethical ad platform
- from the ground up.We are excited to announce that our new and improved version of
- <a href="https://blog.codefund.app/introducing-codefund-2-0/">CodeFund has been released!</a>
-CodeFund provides a simple way for open source projects to generate passive income through ethical advertising.
-We take care of the details and allow contributors to stay focused on the project.
-Running an OSS repo? <a href="https://codefund.app/publishers">Let us know</a>
-if you'd be open to ethical, sustainable, developer centric ads on your site or repo.
+This week marks the last week of <a href="https://medium.com/gitcoin/gitcoin-grants-clr-matching-ecbc87b10038">our Radical Experiment for funding ETH 2.0 projects.</a>
+For one more week (until February 15th), we'll be matching any contributions you make to <a href="https://gitcoin.co/grants">these 20 Ethereum projects</a> with $25,000 in funding.
+Because we are using Liberal Radicalism as the mechanism, small contributions (even $5!) can go a long way.
 </p>
 <p>
-We're hard at work making our first round of Gitcoin Grants successful. <a href="https://consensys1mac.typeform.com/to/HFcZKe">Let us know</a> if you'd like to be in a future cohort and we'll
-reach out with more details. Want to contribute to a Gitcoin Grant? <a href="https://gitcoin.co/grants/">Take a look at our launch partners</a>, including Prysmatic Labs, Lighthouse, and more.
+To continue the discussion, we're hosting Glen Weyl, author of <a href='http://radicalmarkets.com/'>Radical Markets</a>, on the <a href="https://gitcoin.co/livestream">Gitcoin Livestream</a> today. Join us <a href="https://gitcoin.co/livestream">at 5PM ET today</a>
+and add any questions you have to <a href="https://sli.do">the Slido</a> with code D842!
 </p>
 <p>
-<h3>Kudos On Open Sea!</h3>
+<h3>Happy Kudos Friday!</h3>
 </p>
 <p>
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
@@ -876,11 +901,7 @@ reach out with more details. Want to contribute to a Gitcoin Grant? <a href="htt
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Kudos are now live on Open Sea. Want to send a sincere compliment to friends, co-workers, or family? <a href="https://medium.com/opensea/gitcoin-kudos-are-now-tradeable-opensea-ff2e96e74c27">Check
-            out our integration details </a>to find out how you can do so on OpenSea.
-        </li>
-        <li>
-            Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream">on Friday at 5PM ET</a>!
+            Gitcoin Livestream is back this week! Great conversations pending. Join us <a href="https://gitcoin.co/livestream">on Friday at 5PM ET</a>!
         </li>
     </ul>
 </p>
@@ -890,34 +911,34 @@ Back to shipping,
 
 '''
     highlights = [{
-        'who': 'joemphilips',
+        'who': 'luiserebii',
         'who_link': True,
-        'what': 'Completed bounty with Diginex, cool project!',
-        'link': 'https://gitcoin.co/issue/diginex/geewallet/39/2088',
+        'what': 'Completed work on a Plasma bounty!',
+        'link': 'https://gitcoin.co/issue/plasma-group/plasma-core/60/2266',
         'link_copy': 'View more',
     }, {
-        'who': 'annavladi',
+        'who': 'dbrettrobertson',
         'who_link': True,
-        'what': 'Took notes for ETH Core Devs Call last week!',
-        'link': 'https://gitcoin.co/issue/ethereum/pm/69/2062',
+        'what': 'Helped with Core Dev call notes!',
+        'link': 'https://gitcoin.co/issue/ethereum/pm/75/2242',
         'link_copy': 'View more',
     }, {
-        'who': 'mul1sh',
+        'who': 'lazaridis-com',
         'who_link': True,
-        'what': 'Completed a bounty with HERCone by fixing a bug!',
-        'link': 'https://gitcoin.co/issue/HERCone/herc-igvc-registrar/1/2081',
+        'what': 'Completed work on a Goerli bounty.',
+        'link': 'https://gitcoin.co/issue/goerli/parity-goerli/46/2210',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/OpenZeppelin/openzeppelin-solidity/issues/1596',
-        'primer': 'Interesting bounty for a new feature on Gitcoin Kudos.',
+        'url': 'https://github.com/trailofbits/manticore/issues/1343',
+        'primer': 'Work with Trail of Bits on manticore!',
     }, {
-        'url': 'https://github.com/ethereumjs/rustbn.js/issues/25',
-        'primer': 'Bounty on ethereumjs for $60!',
+        'url': 'https://github.com/dannovikov/crypto-lending/issues/1',
+        'primer': 'Help build a Multi-Sig ETH Wallet.',
     }, {
-        'url': 'https://github.com/status-im/status-react/issues/7204',
-        'primer': 'Extension event for transacation data on Status-React!',
+        'url': 'https://github.com/textileio/textile-explore/issues/1',
+        'primer': 'Build a Flickr import/export tool.',
     }, ]
 
     num_leadboard_items = 5
@@ -981,6 +1002,8 @@ Back to shipping,
 
     return response_html, response_txt, subject
 
+
+
 # DJANGO REQUESTS
 
 
@@ -1002,7 +1025,7 @@ def new_tip(request):
 @staff_member_required
 def new_kudos(request):
     from kudos.models import KudosTransfer
-    kudos_transfer = KudosTransfer.objects.last()
+    kudos_transfer = KudosTransfer.objects.first()
     response_html, _ = render_new_kudos_email(settings.CONTACT_EMAIL, kudos_transfer, True)
 
     return HttpResponse(response_html)
@@ -1180,6 +1203,13 @@ def quarterly_roundup(request):
 @staff_member_required
 def gdpr_reconsent(request):
     response_html, _ = render_gdpr_reconsent(settings.CONTACT_EMAIL)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def share_bounty(request):
+    profile = Profile.objects.filter(handle=handle).first()
+    response_html, _ = render_share_bounty(settings.CONTACT_EMAIL, 'This is a sample message', profile)
     return HttpResponse(response_html)
 
 

@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -109,7 +109,7 @@
 
     {% if activities|length %}
       <section class="container-fluid p-5 activity">
-        {% include 'landing/contributor/activity.html' with title='Recently Sent Kudos' suppress_cta=1 %}
+        {% include 'bounties/contributor/activity.html' with title='Recently Sent Kudos' suppress_cta=1 %}
       </section>
     {% endif %}
 
