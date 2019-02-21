@@ -649,7 +649,6 @@ var show_interest_modal = function() {
 
       let actionPlanForm = $('#action_plan');
       let issueMessage = $('#issue_message');
-      let issueNDA = $('#issueNDA')[0].files;
 
       issueMessage.attr('placeholder', gettext('What steps will you take to complete this task? (min 30 chars)'));
 
@@ -657,6 +656,7 @@ var show_interest_modal = function() {
         event.preventDefault();
 
         let msg = issueMessage.val().trim();
+        let issueNDA = $('#issueNDA')[0].files;
 
         if (!msg || msg.length < 30) {
           _alert({message: gettext('Please provide an action plan for this ticket. (min 30 chars)')}, 'error');
@@ -664,6 +664,7 @@ var show_interest_modal = function() {
         }
 
         if (typeof issueNDA[0] !== 'undefined') {
+          console.log('not undeff')
           const formData = new FormData();
 
           formData.append('docs', issueNDA[0]);
@@ -671,7 +672,6 @@ var show_interest_modal = function() {
           const ndaSend = {
             url: '/api/v0.1/bountydocument',
             method: 'POST',
-            // headers: {'X-CSRFToken': csrftoken},
             data: formData,
             processData: false,
             dataType: 'json',
@@ -697,6 +697,21 @@ var show_interest_modal = function() {
             });
           }).fail(function(error) {
             _alert(error, 'error');
+          });
+        } else {
+          add_interest(document.result['pk'], {
+            issue_message: msg
+          }).then(success => {
+            if (success) {
+              $(self).attr('href', '/uninterested');
+              $(self).find('span').text(gettext('Stop Work'));
+              $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
+              $.modal.close();
+            }
+          }).catch((error) => {
+            if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
+              return;
+            throw error;
           });
         }
 
