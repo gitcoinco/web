@@ -124,7 +124,14 @@
           {% trans "Type:" %} {% if bounty.bounty_type %}{{ bounty.bounty_type }}{%else%}Not specified{%endif%}
           <br>
           {% trans "Experience Level:" %} {% if bounty.experience_level %}{{ bounty.experience_level }}{%else%}Not specified{%endif%}
+          <br>
+          {% trans "Featured Bounty:" %} {% if bounty.is_featured %}Yes{%else%}Not featured{%endif%}
         </p>
+        {% if contributor_plan %}
+          <p>
+            <b>{% trans "Contributor plan" %}:</b> {{ contributor_plan }}
+          </p>
+        {%  endif %}
       {% endif %}
     </div>
   </div>

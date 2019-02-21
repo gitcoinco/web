@@ -57,7 +57,7 @@
                 {{ transaction.created_on|date:"d M" }}
               </div>
               <div class="col-2 col-md-1 justify-content-center special_tag">
-                <a href="{% url 'profile' subscription.contributor_profile.handle %}">
+                <a href="{% url 'profile' transaction.subscription.contributor_profile.handle %}">
                   <img class="avatar rounded-circle" src="{{ transaction.subscription.contributor_profile.avatar_url }}">
                 </a>
               </div>

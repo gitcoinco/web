@@ -448,23 +448,6 @@ function getParam(parameterName) {
   return result;
 }
 
-if ($('#bounties').length) {
-  $('#bounties').tooltip({
-    items: '.result',
-    classes: {
-      'ui-tooltip': 'tooltip-bubble'
-    },
-    position: {
-      my: 'top',
-      at: 'center bottom',
-      collision: 'flip',
-      using: function(position, feedback) {
-        $(this).addClass(feedback.vertical).css(position);
-      }
-    }
-  });
-}
-
 if ($.views) {
   $.views.converters({
     timedifference: timedifferenceCvrt,
@@ -781,7 +764,6 @@ var trigger_primary_form_web3_hooks = function() {
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
       $('#zero_balance_error').css('display', 'none');
-      $('#robot_error').removeClass('hidden');
       $('#primary_form').addClass('hidden');
       $('.submit_bounty .newsletter').addClass('hidden');
       $('#unlock_metamask_error').css('display', 'none');
@@ -792,7 +774,6 @@ var trigger_primary_form_web3_hooks = function() {
       $('#unlock_metamask_error').css('display', 'none');
       $('#zero_balance_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
-      $('#robot_error').removeClass('hidden');
       $('#primary_form').addClass('hidden');
       $('.submit_bounty .newsletter').addClass('hidden');
       $('#no_issue_error').css('display', 'none');
@@ -800,7 +781,6 @@ var trigger_primary_form_web3_hooks = function() {
       $('#unlock_metamask_error').css('display', 'block');
       $('#zero_balance_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
-      $('#robot_error').removeClass('hidden');
       $('#primary_form').addClass('hidden');
       $('#connect_metamask_error').css('display', 'none');
       $('.submit_bounty .newsletter').addClass('hidden');
@@ -1201,6 +1181,48 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
   return html;
 }
 
+const saveAttestationData = (result, cost_eth, to_address, type) => {
+  let request_url = '/revenue/attestations/new';
+  let txid = result;
+  let data = {
+    'txid': txid,
+    'amount': cost_eth,
+    'network': document.web3network,
+    'from_address': web3.eth.coinbase,
+    'to_address': to_address,
+    'type': type
+  };
+
+  $.post(request_url, data).then(function(result) {
+    _alert('Success ✅ Loading your purchase now.', 'success');
+  });
+};
+
+const renderFeaturedBountiesFromResults = (results, renderForExplorer) => {
+  let html = '';
+  const tmpl = $.templates('#featured-card');
+
+  if (results.length === 0) {
+    return html;
+  }
+
+  for (let i = 0; i < results.length; i++) {
+    const result = results[i];
+    let decimals = 18;
+    const divisor = Math.pow(10, decimals);
+    const relatedTokenDetails = tokenAddressToDetailsByNetwork(result['token_address'], result['network']);
+
+    if (relatedTokenDetails && relatedTokenDetails.decimals) {
+      decimals = relatedTokenDetails.decimals;
+    }
+
+    result['rounded_amount'] = normalizeAmount(result['value_in_token'] / divisor, decimals);
+
+    html += tmpl.render(result);
+  }
+  return html;
+};
+
 /**
  * Fetches results from the API and paints them onto the target element
  *
@@ -1395,3 +1417,22 @@ const showMore = (length = 400) => {
     return false;
   });
 };
+
+/**
+ * Check input file size
+ *
+ * input - input element
+ * max_img_size  - max size
+ *
+ * Useage: checkFileSize($(input), 4000000)
+ */
+const checkFileSize = (input, max_img_size) => {
+  if (input.files && input.files.length > 0) {
+    if (input.files[0].size > max_img_size) {
+      input.value = '';
+      return false;
+    }
+  }
+  return true;
+};
+

@@ -124,6 +124,7 @@ INSTALLED_APPS = [
     'wagtail.core',
     'cms',
     'revenue',
+    'event_ethdenver2019',
     'inbox',
 ]
 

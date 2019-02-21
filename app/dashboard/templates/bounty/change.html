@@ -39,6 +39,10 @@
                 <div id="details-section" class="pt-2">
                   {% include 'shared/issue_details.html' %}
                 </div>
+                <hr class="mt-5">
+                <div class="pt-4">
+                  {% include 'shared/featured.html' %}
+                </div>
                 <div class="form__footer pb-5">
                   <button class="button button--primary btn-block js-submit" type="submit">{% trans 'Update Issue Details' %}</button>
                 </div>
@@ -60,6 +64,7 @@
   document.pk = {{ pk }};
   document.result = {{ result|safe }};
 </script>
+<script src="{% static "v2/js/amounts.js" %}"></script>
 <script src="{% static "v2/js/user-search.js" %}"></script>
 <script src="{% static "v2/js/pages/change_bounty.js" %}"></script>
 </html>

@@ -99,7 +99,7 @@
                     </td>
                     <td class="col-2 d-flex align-items-center">
                         {% if not is_linked_to_profile %}
-                          <a href="{% url "profile" %}{{item.github_username}}" target="_blank" >
+                          <a href="/profile/{{item.github_username}} target="_blank" >
                             {{item.at_ify_username}}
                           </a>
                         {% else %}

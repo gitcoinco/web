@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -41,7 +41,7 @@ from django.views.decorators.http import require_GET, require_POST
 
 from app.utils import clean_str, ellipses
 from avatar.utils import get_avatar_context_for_user
-from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, profile_helper
+from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, profile_helper
 from economy.utils import convert_token_to_usdt
 from eth_utils import to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
@@ -60,8 +60,8 @@ from web3 import HTTPProvider, Web3
 
 from .helpers import get_bounty_data_for_activity, handle_bounty_views
 from .models import (
-    Activity, Bounty, CoinRedemption, CoinRedemptionRequest, Interest, LabsResearch, Profile, ProfileSerializer,
-    Subscription, Tool, ToolVote, UserAction,
+    Activity, Bounty, BountyFulfillment, CoinRedemption, CoinRedemptionRequest, Interest, LabsResearch, Profile,
+    ProfileSerializer, Subscription, Tool, ToolVote, UserAction,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -552,6 +552,10 @@ def onboard(request, flow):
     elif flow == 'profile':
         onboard_steps = ['avatar']
 
+    profile = None
+    if request.user.is_authenticated and getattr(request.user, 'profile', None):
+        profile = request.user.profile
+
     steps = []
     if request.GET:
         steps = request.GET.get('steps', [])
@@ -576,6 +580,7 @@ def onboard(request, flow):
         'title': _('Onboarding Flow'),
         'steps': steps or onboard_steps,
         'flow': flow,
+        'profile': profile,
     }
     params.update(get_avatar_context_for_user(request.user))
     return TemplateResponse(request, 'ftux/onboard.html', params)
@@ -589,6 +594,8 @@ def dashboard(request):
     params = {
         'active': 'dashboard',
         'title': title,
+        'meta_title': "Issue & Open Bug Bounty Explorer | Gitcoin",
+        'meta_description': "Find open bug bounties & freelance development jobs including crypto bounty reward value in USD, expiration date and bounty age.",
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
     return TemplateResponse(request, 'dashboard/index.html', params)
@@ -742,6 +749,37 @@ def social_contribution_modal(request):
     )
     params['promo_text'] = promo_text
     return TemplateResponse(request, 'social_contribution_modal.html', params)
+
+@csrf_exempt
+@require_POST
+def social_contribution_email(request):
+    """Social Contribution Email
+
+    Returns:
+        JsonResponse: Success in sending email.
+    """
+    from marketing.mails import share_bounty
+
+    print (request.POST.getlist('usersId[]', []))
+    emails = [] 
+    user_ids = request.POST.getlist('usersId[]', [])
+    for user_id in user_ids:
+        profile = Profile.objects.get(id=int(user_id))
+        emails.append(profile.email)
+    msg = request.POST.get('msg', '')
+    try:
+        share_bounty(emails, msg, request.user.profile)
+        response = {
+            'status': 200,
+            'msg': 'email_sent',
+        }
+    except Exception as e:
+        logging.exception(e)
+        response = {
+            'status': 500,
+            'msg': 'Email not sent',
+        }
+    return JsonResponse(response)
 
 
 def payout_bounty(request):
@@ -1021,6 +1059,21 @@ def helper_handle_approvals(request, bounty):
             messages.warning(request, _('Only the funder of this bounty may perform this action.'))
 
 
+def bounty_invite_url(request, invitecode):
+    """Decode the bounty details and redirect to correct bounty
+
+    Args:
+        invitecode (str): Unique invite code with bounty details and handle
+    
+    Returns:
+        django.template.response.TemplateResponse: The Bounty details template response.
+    """
+    decoded_data = get_bounty_from_invite_url(invitecode)
+    bounty = Bounty.objects.current().filter(pk=decoded_data['bounty_id'])
+    return redirect('/funding/details/?url=' + bounty.github_url)
+    
+
+
 def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None):
     """Display the bounty details.
 
@@ -1133,8 +1186,14 @@ def profile_job_opportunity(request, handle):
     """
     try:
         profile = profile_helper(handle, True)
-        profile.job_search_status = json.loads(request.body).get('job_search_status', None)
-        profile.show_job_status = json.loads(request.body).get('show_job_status', False)
+        profile.job_search_status = request.POST.get('job_search_status', None)
+        profile.show_job_status = request.POST.get('show_job_status', None) == 'true'
+        profile.job_type = request.POST.get('job_type', None)
+        profile.remote = request.POST.get('remote', None) == 'on'
+        profile.job_salary = float(request.POST.get('job_salary', '0').replace(',', ''))
+        profile.job_location = json.loads(request.POST.get('locations'))
+        profile.linkedin_url = request.POST.get('linkedin_url', None)
+        profile.resume = request.FILES.get('job_cv', None)
         profile.save()
     except (ProfileNotFoundException, ProfileHiddenException):
         raise Http404
@@ -1199,7 +1258,7 @@ def profile(request, handle):
                 handle = handle[:-1]
             profile = profile_helper(handle, current_user=request.user)
 
-        tabs = [
+        activity_tabs = [
             ('all', _('All Activity')),
             ('new_bounty', _('Bounties Funded')),
             ('start_work', _('Work Started')),
@@ -1226,9 +1285,9 @@ def profile(request, handle):
 
         context = profile.to_dict(tips=False)
         all_activities = context.get('activities')
-        activity_tabs = []
+        tabs = []
 
-        for tab, name in tabs:
+        for tab, name in activity_tabs:
             activities = profile_filter_activities(all_activities, tab)
             activities_count = activities.count()
 
@@ -1237,15 +1296,15 @@ def profile(request, handle):
 
             paginator = Paginator(activities, 10)
 
-            obj = {}
-            obj['id'] = tab
-            obj['name'] = name
-            obj['activities'] = paginator.get_page(1)
-            obj['count'] = activities_count
+            obj = {'id': tab,
+                   'name': name,
+                   'objects': paginator.get_page(1),
+                   'count': activities_count,
+                   'type': 'activity'
+                   }
+            tabs.append(obj)
 
-            activity_tabs.append(obj)
-
-            context['activity_tabs'] = activity_tabs
+            context['tabs'] = tabs
 
     except (Http404, ProfileHiddenException, ProfileNotFoundException):
         status = 404
@@ -1270,6 +1329,20 @@ def profile(request, handle):
     context['sent_kudos'] = sent_kudos[0:kudos_limit]
     context['kudos_count'] = owned_kudos.count()
     context['sent_kudos_count'] = sent_kudos.count()
+
+    currently_working_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
+        .filter(interested__pending=False).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)
+    currently_working_bounties_count = currently_working_bounties.count()
+    if currently_working_bounties_count > 0:
+        obj = {'id': 'currently_working',
+               'name': _('Currently Working'),
+               'objects': Paginator(currently_working_bounties, 10).get_page(1),
+               'count': currently_working_bounties_count,
+               'type': 'bounty'
+               }
+        if 'tabs' not in context:
+            context['tabs'] = []
+        context['tabs'].append(obj)
 
     if request.method == 'POST' and request.is_ajax():
         # Update profile address data when new preferred address is sent
@@ -1710,8 +1783,8 @@ def change_bounty(request, bounty_id):
         else:
             raise Http404
 
-    keys = ['experience_level', 'project_length', 'bounty_type',
-            'permission_type', 'project_type', 'reserved_for_user_handle']
+    keys = ['experience_level', 'project_length', 'bounty_type', 'featuring_date',
+            'permission_type', 'project_type', 'reserved_for_user_handle', 'is_featured']
 
     if request.body:
         can_change = (bounty.status in Bounty.OPEN_STATUSES) or \
@@ -1737,6 +1810,10 @@ def change_bounty(request, bounty_id):
         new_reservation = False
         for key in keys:
             value = params.get(key, '')
+            if key == 'featuring_date':
+                value = timezone.make_aware(
+                    timezone.datetime.fromtimestamp(value),
+                    timezone=UTC)
             old_value = getattr(bounty, key)
             if value != old_value:
                 setattr(bounty, key, value)
@@ -1777,7 +1854,7 @@ def change_bounty(request, bounty_id):
     params = {
         'title': _('Change Bounty Details'),
         'pk': bounty.pk,
-        'result': result
+        'result': json.dumps(result)
     }
     return TemplateResponse(request, 'bounty/change.html', params)
 

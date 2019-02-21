@@ -19,7 +19,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    {% include 'shared/head.html' %}
+    {% include 'shared/head.html' with slim=1 %}
     {% include 'shared/cards.html' %}
     <link rel="stylesheet" href="{% static "v2/css/landing_page.css" %}" />
   </head>
@@ -40,7 +40,7 @@
             <p class="font-subheader mb-0">{% trans "Contribute to exciting OSS project and get paid!" %}</p>
           </div>
           <div class="col-12 col-md-3 col-xl-3 my-auto text-center">
-            <a class="button button--primary" href="{% url "explorer" %}">Get Started</a>
+            <a class="button button--primary" href="{% url "onboard" "contributor" %}">Get Started</a>
             <a class="button button--primary btn-green ml-lg-2" href="{% url "contributor_bounties" "" %}">Learn More</a>
           </div>
         </div>
@@ -172,7 +172,7 @@
       {% include 'bounties/funder/press.html' %}
       {% include 'shared/footer.html' %}
     </div>
-    {% include 'shared/footer_scripts.html' with slim=1 %}
+    {% include 'shared/footer_scripts_lite.html' with slim=1 %}
     <script src="{% static "v2/js/landing_page.js" %}"></script>
   </body>
   {% include 'shared/analytics.html' %}
