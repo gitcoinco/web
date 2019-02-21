@@ -43,14 +43,15 @@
       </div>
       <div class="grant-item__funding mt-2">
         <div class="grant-item__funding-item">
-          <div class="grant-item__funding-number font-body">{{ grant.monthly_amount_subscribed|floatformat:2|intcomma }} DAI</div>
-          <div class="grant-item__funding-label font-caption">{% trans 'Monthly Funded' %}</div>
+          <div class="grant-item__funding-number font-body">{{ grant.amount_received|floatformat:2|intcomma }} DAI</div>
+          <div class="grant-item__funding-label font-caption">{% trans 'Funded' %}</div>
         </div>
         <div class="grant-item__funding-item">
           <div class="grant-item__funding-number font-body">{{ grant.amount_goal|floatformat:2|intcomma }} DAI</div>
           <div class="grant-item__funding-label font-caption">{% trans ' Monthly Goal' %}</div>
         </div>
       </div>
+      {% include 'grants/detail/matching.html' %}
       <div class="grant-item__state mt-3 row">
         <div class="col-6">
           {% if grant.active %}
@@ -67,8 +68,8 @@
         </div>
         {% if grant.active and grant.activeSubscriptions %}
           <div class="col-6 text-right my-auto font-caption font-weight-semibold">
-            {{ grant.activeSubscriptions.count}}
-            subscription{% if grant.activeSubscriptions.count > 1 %}s{% endif %}
+            {{ grant.activeSubscriptions|length}}
+            subscription{% if grant.activeSubscriptions|length > 1 %}s{% endif %}
           </div>
         {% endif %}
       </div>

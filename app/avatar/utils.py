@@ -99,7 +99,7 @@ def get_avatar_context():
             }, {
                 'name': 'Mouth',
                 'title': 'Pick mouth shape',
-                'options': ('0', '1', '2', '3', '4'),
+                'options': ('0', '1', '2', '3', '4', '5'),
                 'paid_options': {},
             },
             {
@@ -136,7 +136,8 @@ def get_avatar_context():
                             ['modernhair_3-back', 'modernhair_3-front'], ['None', 'womenhair'], ['None', 'womanhair'], [
                                 'None', 'womanhair1'
                             ], ['None', 'womanhair2'], ['None', 'womanhair3'], ['None',
-                                                                                'womanhair4'], ['None', 'womanhair5']),
+                                                                                'womanhair4'], ['None', 'womanhair5'], [
+                                                                                'None', 'man-hair']),
                 'paid_options': {},
             },
             {
@@ -153,19 +154,27 @@ def get_avatar_context():
                 'options': (['Glasses-0'], ['Glasses-1'], ['Glasses-2'], ['Glasses-3'], ['Glasses-4'], [
                     'HatShort-backwardscap'
                 ], ['HatShort-redbow'], ['HatShort-yellowbow'], ['HatShort-ballcap'], ['HatShort-cowboy'], [
-                    'HatShort-headdress'
-                ], ['HatShort-headphones'], ['HatShort-shortbeanie'], ['HatShort-tallbeanie'], ['HatShort-bunnyears'], [
-                    'HatShort-menorah'
-                ], ['HatShort-pilgrim'], ['HatShort-santahat'], ['HatShort-elfhat'], ['Earring-0'], ['Earring-1'], [
-                    'EarringBack-2', 'Earring-2'
-                ], ['Earring-3'], ['Earring-4'], ['Masks-jack-o-lantern'], ['Masks-guy-fawkes'], [
-                    'Masks-jack-o-lantern-lighted'
-                ], ['Masks-wolverine_inspired'], ['Masks-captain_inspired'], ['Masks-alien'], ['Extras-Parrot'], [
-                    'Extras-wonderwoman_inspired'
-                ], ['Extras-santa_inspired'], ['Extras-reindeer'], ['Masks-gitcoinbot'], ['Extras-tattoo'], [
-                    'Masks-batman_inspired'
-                ], ['Masks-eye-patch'], ['Masks-flash_inspired'], ['Masks-deadpool_inspired'], ['Masks-darth_inspired'],
-                            ['Masks-spiderman_inspired'], ['Masks-head'], ['Glasses-5'],
+                    'HatShort-superwoman-tiara'
+                ], ['HatShort-headdress'], ['HatShort-headphones'], ['HatShort-shortbeanie'], ['HatShort-tallbeanie'], [
+                    'HatShort-bunnyears'
+                ], ['HatShort-menorah'], ['HatShort-pilgrim'], ['HatShort-santahat'], ['HatShort-elfhat'], [
+                    'Earring-0'
+                ], ['Earring-1'], ['EarringBack-2', 'Earring-2'], ['Earring-3'], ['Earring-4'], ['Earring-5'], [
+                    'Masks-jack-o-lantern'
+                ], ['Masks-guy-fawkes'], ['Masks-bunny'], ['Masks-blackpanther'], ['Masks-jack-o-lantern-lighted'], [
+                    'Masks-wolverine_inspired'
+                ], ['Masks-captain_inspired'], ['Masks-alien'], ['Extras-Parrot'], ['Extras-wonderwoman_inspired'], [
+                    'Extras-santa_inspired'
+                ], ['Extras-reindeer'], ['Masks-gitcoinbot'], ['Extras-tattoo'], ['Masks-batman_inspired'], [
+                    'Masks-eye-patch'
+                ], ['Masks-flash_inspired'], ['Masks-deadpool_inspired'], ['Masks-darth_inspired'],
+                            ['Masks-spiderman_inspired'], ['Glasses-5'], ['Glasses-geordi-visor'], 
+                            ['Masks-funny_face'], ['Masks-viking'], ['Masks-construction_helmet'], 
+                            ['Glasses-6'], ['HatShort-green'], ['Earring-6'], ['Extras-necklace'], 
+                            ['Masks-carnival'], ['Masks-gas'], ['Masks-surgical'], ['Extras-monkey'],
+                            ['Masks-power'], ['Glasses-7'],['Glasses-8'],['HatShort-angel'],['HatShort-devil'],
+                            ['Extras-necklace1'],['Extras-necklace2'],['Extras-necklace3'],['Glasses-9'],
+                            ['Masks-clown'],
                             ),
                 'paid_options': {
                     'Extras-Parrot': 0.01,

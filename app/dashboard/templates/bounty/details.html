@@ -108,13 +108,13 @@
                     <span class="bounty-info-text bounty-info-row-span-right" id="experience_level"></span>
                   </div>
                 </div>
-
-                <div>
-                  <span class="bounty-info-heading" title='{% include "shared/permissions_type_tooltip.html" %}'>{% trans "Permissions" %}</span>
-                  <span class="bounty-info-text" id="permission_type" title='{% include "shared/permissions_type_tooltip.html" %}'></span>
-                  <i class="fas fa-info-circle" title='{% include "shared/permissions_type_tooltip.html" %}'></i>
+                <div class="col-12 col-sm-6 col-xl-3 offset-xl-1 bounty-info">
+                  <div class="bounty-info-row-div">
+                    <span class="bounty-info-heading bounty-info-row-span-left mr-1" title='{% include "shared/permissions_type_tooltip.html" %}'>{% trans "Permissions" %}</span>
+                    <i class="fas fa-info-circle" title='{% include "shared/permissions_type_tooltip.html" %}'></i>
+                    <span class="bounty-info-text bounty-info-row-span-right" id="permission_type" title='{% include "shared/permissions_type_tooltip.html" %}'></span>
+                  </div>
                 </div>
-
                 <div class="bounty-info-row-div">
                   <span class="bounty-info-heading" id="bounty_reserved_for_label">{% trans "Reserved For" %} </span>
                   <span class="bounty-info-text" id="bounty_reserved_for"></span>
@@ -417,23 +417,15 @@
   <script src="{% static "v2/js/amounts.js" %}"></script>
   <script src="{% static "v2/js/popper.min.js" %}"></script>
   <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
+  <script src="{% static "v2/js/clipboard.js" %}"></script>
   <script>
     var bootstrapTooltip = $.fn.tooltip.noConflict()
     var bootstrapModal = $.fn.modal.noConflict()
-
-    $('.modal-link').click(function(e) {
-      let modals = $('#modal');
-      let modalBody = $('#modal .modal-content');
-      let modalUrl = `/modal/social_contribution?pk=${document.result.pk}`;
-
-      modals.on('show.bs.modal', function () {
-        modalBody.load(modalUrl);
-      });
-      e.preventDefault();
-    });
   </script>
+  <script src="{% static "v2/js/pages/bounty_share.js" %}"></script>
   <script src="{% static "v2/js/pages/bounty_details.js" %}"></script>
   <script src="{% static "v2/js/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
+  <script src="{% static "v2/js/user-search.js" %}"></script>
   <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
 </html>

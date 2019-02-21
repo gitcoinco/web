@@ -111,12 +111,12 @@
       <div class="row pb-5 pt-5">
         <div class="col pb-4">
           <h4>{% trans "The Solution" %}</h4>
-          <h6 style="text-align: center;" >{% trans "A double sided market that connects coders to funding." %}</h6>
+          <h6 class="text-center">{% trans "A double sided market that connects coders to funding." %}</h6>
         </div>
       </div>
       <div class="row">
         <div class="col pb-4">
-          <div class="align-items-center justify-content-center" style="text-align: center;">
+          <div class="align-items-center justify-content-center text-center">
             <a href="{% url 'products' %}">
               <img src="{% static "v2/images/about/flywheel_2019.png" %}" style="width: 100%;  max-width: 700px;">
             </a>
@@ -220,23 +220,7 @@
       {% include 'community.html' with h1="Community"  h2="Gitcoin's Top Community Members" community_members=community_members %}
       {% include 'community.html' with h1="Alumni"  h2=total_alumnis|add:" community members have 'graduated' into full time work in the space (that we know of!)" community_members=alumni %}
     </div>
-    <div class="row" id="jobs">
-      <div class="col-12 row section font-body">
-        <div class="col-12">
-          <h4 class="font-heading">{% trans "Join Us" %}</h4>
-          <p class="font-subheader caption" >{% trans "Want to Grow Open Source? We want to hear from you." %}</p>
-        </div>
-        <div class="col-12 col-md-6 left">
-          <p class="font-heading">{% trans "Open Gitcoin Roles" %}</p>
-          <p>
-            {% trans "Lead / Principal Full Stack Engineer" %}
-            <a  class="title font-caption" href="https://boards.greenhouse.io/consensys/jobs/1333457" target="_blank" rel="noopener noreferrer">
-              {% trans "Learn More" %}
-            </a>
-          </p>
-        </div>
-      </div>
-    </div>
+
     <div class="container-fluid text-center white-light-bg" id="features">
       <div class="row pb-1 pt-4">
         <div class="col text-center">
@@ -296,12 +280,12 @@
       <div class="row">
         <div class="col pb-4">
           <h4 >{% trans "Mission-Driven" %}</h4>
-          <h6 style="text-align: center;" >{% trans "Everything we do is to support our mission to 'Grow Open Source'" %}  </h6>
+          <h6 class="text-center">{% trans "Everything we do is to support our mission to 'Grow Open Source'" %}  </h6>
         </div>
       </div>
       <div class="row">
         <div class="col d-flex flex-column pb-5">
-          <div class="p-4" style="text-align: center;">
+          <div class="p-4 text-center">
             {% include 'shared/tree.html' %}
           </div>
           <div class="col mb-2">
