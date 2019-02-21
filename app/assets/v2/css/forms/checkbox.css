@@ -30,8 +30,9 @@
   color: #D50000;
 }
 
-.form__checkbox input:disabled ~ .form__label {
-  opacity: 0.6;
+.form__checkbox input:disabled ~ .form__label::before {
+  background-color: #d0d0d0 !important;
+  border-color: #d0d0d0 !important;
   cursor: not-allowed;
 }
 
