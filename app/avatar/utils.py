@@ -173,7 +173,8 @@ def get_avatar_context():
                             ['Glasses-6'], ['HatShort-green'], ['Earring-6'], ['Extras-necklace'], 
                             ['Masks-carnival'], 
                             ['Masks-power'], ['Glasses-7'],['Glasses-8'],['HatShort-angel'],['HatShort-devil'],
-                            ['Extras-necklace1'],['Extras-necklace2'],['Extras-necklace3'],
+                            ['Extras-necklace1'],['Extras-necklace2'],['Extras-necklace3'],['Glasses-9'],
+                            ['Masks-clown'],
                             ),
                 'paid_options': {
                     'Extras-Parrot': 0.01,
