@@ -66,9 +66,12 @@ class GrantAdmin(GeneralAdmin):
         return mark_safe(" , ".join(items))
 
     def link(self, instance):
-        html = f"<a href={instance.url}>{instance.url}</a>"
+        try:
+            html = f"<a href={instance.url}>{instance.url}</a>"
 
-        return mark_safe(html)
+            return mark_safe(html)
+        except:
+            return "N/A"
 
     def logo_asset(self, instance):
         """Define the logo image tag to be displayed in the admin."""
