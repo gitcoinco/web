@@ -787,21 +787,23 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Last Week of CLR Matching | Glen Weyl Joins Livestream"
-    new_kudos_pks = [1404, 1401, 1368]
+    subject = "$40K To OSS | Gitcoin's ETHDenver "
+    new_kudos_pks = [1839, 1838, 1837]
     new_kudos_size_px = 150
     intro = '''
 <p>
 Hi Gitcoiners,
 <p>
 <p>
-This week marks the last week of <a href="https://medium.com/gitcoin/gitcoin-grants-clr-matching-ecbc87b10038">our Radical Experiment.</a>
-For one more week (until February 15th), we'll be matching any contributions you make to <a href="https://gitcoin.co/grants">these 20 Ethereum projects</a> with $25,000 in funding.
-Because we are using Liberal Radicalism as the mechanism, small contributions (even $5!) can go a long way.
+This week we announced the results of <a href="https://twitter.com/vsinghdothings/status/1098996827704180736">our Radical Experiment.</a>
+From 2/1 - 2/15, we matched $13K in contributions across <a href="https://gitcoin.co/grants">25 Ethereum projects</a> with $25,000 in funding.
+We used Liberal Radicalism matching as the mechanism, which made small contributions (less than $5!) go a long way. To learn more about the match, check out our <a href="https://www.youtube.com/watch?v=GBVJKB-qZuM">interview with Glen Weyl</a>,
+who co-wrote the Liberal Radicalism paper.
 </p>
 <p>
-To continue the discussion, we're hosting Glen Weyl on the <a href="https://gitcoin.co/livestream">Gitcoin Livestream</a> today. Join us <a href="https://gitcoin.co/livestream">at 5PM ET today</a>
-and add any questions you have to <a href="https://sli.do">the Slido</a> with code D842!
+Aside from CLR, we're catching up from <a href="https://medium.com/gitcoin/a-recap-gitcoin-at-ethdenver-1e48bfc93805">a fantastic weekend at ETHDenver.</a> Gitcoin was involved via CLR,
+Kudos (Trophies), the Burner Wallet, and of course - a massive Plinko Board. <a href="https://medium.com/gitcoin/a-recap-gitcoin-at-ethdenver-1e48bfc93805">Read more here</a> to learn
+about what's likely to be the biggest crypto hackathon of 2019.
 </p>
 <p>
 <h3>Happy Kudos Friday!</h3>
@@ -823,34 +825,34 @@ Back to shipping,
 
 '''
     highlights = [{
-        'who': 'luiserebii',
+        'who': 'charlie4biz',
         'who_link': True,
-        'what': 'Completed work on a Plasma bounty!',
-        'link': 'https://gitcoin.co/issue/plasma-group/plasma-core/60/2266',
+        'what': 'Worked with W3F on a PolkaDot post!',
+        'link': 'https://gitcoin.co/issue/w3f/Web3-collaboration/63/2437',
         'link_copy': 'View more',
     }, {
-        'who': 'dbrettrobertson',
+        'who': 'stevenjnpearce',
         'who_link': True,
-        'what': 'Helped with Core Dev call notes!',
-        'link': 'https://gitcoin.co/issue/ethereum/pm/75/2242',
+        'what': 'Created an Under Maintenance website for MyBitFoundation',
+        'link': 'https://gitcoin.co/issue/MyBitFoundation/MyBit.website/72/2431',
         'link_copy': 'View more',
     }, {
-        'who': 'lazaridis-com',
+        'who': 'eswarasai',
         'who_link': True,
-        'what': 'Completed work on a Goerli bounty.',
-        'link': 'https://gitcoin.co/issue/goerli/parity-goerli/46/2210',
+        'what': 'Compile Precise-Proofs to Web Assembly.',
+        'link': 'https://gitcoin.co/issue/centrifuge/precise-proofs/63/2383',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/trailofbits/manticore/issues/1343',
-        'primer': 'Work with Trail of Bits on manticore!',
+        'url': 'https://github.com/TrustWallet/wallet-core/issues/3',
+        'primer': 'Add Cosmos support to TrustWallet!',
     }, {
-        'url': 'https://github.com/dannovikov/crypto-lending/issues/1',
-        'primer': 'Help build a Multi-Sig ETH Wallet.',
+        'url': 'https://github.com/status-im/status-react/issues/7472',
+        'primer': 'Continue work on Status-React with Hutch.',
     }, {
-        'url': 'https://github.com/textileio/textile-explore/issues/1',
-        'primer': 'Build a Flickr import/export tool.',
+        'url': 'https://github.com/Giveth/giveth-dapp/issues/342',
+        'primer': 'Work on Giveth milestones with Griff / Scott.',
     }, ]
 
     num_leadboard_items = 5
