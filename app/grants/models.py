@@ -188,7 +188,7 @@ class Grant(SuperModel):
     image_css = models.CharField(default='', blank=True, max_length=255, help_text=_('additional CSS to attach to the grant-banner img.'))
     clr_matching = models.DecimalField(
         default=0,
-        decimal_places=0,
+        decimal_places=2,
         max_digits=20,
         help_text=_('The CLR matching amount'),
     )
