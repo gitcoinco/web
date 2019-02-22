@@ -496,6 +496,7 @@ def uninterested(request, bounty_id, profile_id):
             status=401)
 
     slashed = request.POST.get('slashed')
+    interest = None
     try:
         interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
         bounty.interested.remove(interest)
