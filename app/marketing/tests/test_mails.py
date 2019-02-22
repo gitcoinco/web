@@ -23,6 +23,7 @@ from django.utils import timezone
 
 from dashboard.models import Profile
 from marketing.mails import setup_lang
+from retail.emails import render_nth_day_email_campaign
 from test_plus.test import TestCase
 
 
@@ -41,6 +42,7 @@ class MarketingMailsTest(TestCase):
             data={},
         )
         self.user.save()
+        self.days = [1, 2, 3]
 
     @patch('django.utils.translation.activate')
     def test_setup_lang(self, mock_translation_activate):
