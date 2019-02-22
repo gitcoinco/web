@@ -197,7 +197,7 @@ def get_avatar_context():
                     'anchors', 'circuit', 'jigsaw', 'lines', 'gears', 'clouds', 'signal', 'polka_dots',
                     'polka_dots_black', 'squares', 'shapes', 'sunburst', 'sunburst_pastel', 'rainbow',
                     'portal', 'space', 'bokeh', 'bokeh2', 'bokeh3', 'bokeh4', 'bokeh5',
-                    'fire'
+                    'fire', 'trees', 'trees2', 'trees3', 'flowers', 'city', 'city2', 'mountains'
                 ),
                 'paid_options': {
                     'sunburst_pastel': 0.01,
