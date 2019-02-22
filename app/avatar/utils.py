@@ -200,6 +200,8 @@ def get_avatar_context():
                     'fire'
                 ),
                 'paid_options': {
+                    'sunburst_pastel': 0.01,
+                    'rainbow': 0.01,
                 },
             }
         ],
