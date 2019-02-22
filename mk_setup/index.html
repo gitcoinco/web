@@ -2533,11 +2533,7 @@ Check out the <a href="https://docs.docker.com/compose/reference/">Docker Compos
 </ol>
 <h2 id="optional-import-bounty-data-from-web3-to-your-database">Optional: Import bounty data from web3 to your database</h2>
 <p>This can be useful if you'd like data to test with:</p>
-<pre><code class="shell">docker-compose exec web python3 app/manage.py sync_geth
-</code></pre>
-
-<p>or equivalently:</p>
-<pre><code class="shell">docker-compose exec web python3 app/manage.py sync_geth rinkeby 402 99999999999
+<pre><code class="shell">docker-compose exec web python3 app/manage.py sync_geth rinkeby -20 99999999999
 </code></pre>
 
 <h3 id="faq">FAQ</h3>
