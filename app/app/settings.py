@@ -294,7 +294,7 @@ if ENV not in ['local', 'test', 'staging', 'preview']:
         'handlers': {
             'console': {
                 'level': 'DEBUG',
-                'class': 'logging.StreamHandler',
+                'class': 'loggging.StreamHandler',
                 'formatter': 'verbose',
             },
             'watchtower': {
@@ -336,19 +336,7 @@ else:
     LOGGING = {}
 
 if SENTRY_DSN:
-    if LOGGING:
-        LOGGING['handlers']['sentry'] = {
-            'level': 'ERROR',  # To capture more than ERROR, change to WARNING, INFO, etc.
-            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
-        }
-        LOGGING['loggers']['root']['handlers'].append('sentry');
-        for logger in ['raven', 'sentry.errors']:
-            LOGGING['loggers'][logger] = {
-                'level': 'DEBUG',
-                'handlers': ['console'],
-                'propagate': False,
-            }
-    else:
+    if ENV == 'prod':
         LOGGING = {
             'version': 1,
             'disable_existing_loggers': True,
