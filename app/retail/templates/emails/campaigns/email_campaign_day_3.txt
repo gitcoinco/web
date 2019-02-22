@@ -1,0 +1,16 @@
+Day 3: Leveraging the community
+
+Gitcoin Core is 11 team members, yet we’ve seen contributions from well over 100 developers using Gitcoin. We’d like to see you do the same!  Here’s how to leverage a firehose of developer talent to do more, faster. 
+
+Posting a bounty can be done in 90 seconds, once you know Gitcoin is an option to accelerate your development.  Adding bounties to an existing project is like adding icing to a cake.  We take what’s already great about OSS (mission,  freedom, and great people) and add financial incentivization, a home base for projects seeking contributors, funding for developer, and community.
+
+Alongside posting bounties on the Issue Explorer, Gitcoin offers two complimentary products for open source software enthusiasts. 
+
+Codefund: Sustain your OSS project with ethical advertising
+
+Gitcoin Kudos: Have a contributor that’s doing fantastic work? Send them a token of appreciation using Kudos! Here’s one for you :) 
+
+Gitcoin Grants: Recurring funding for open source projects.
+
+Community is what makes Open Source work.  A strong OSS community is inclusive, helpful, and mission-oriented. The Gitcoin community is 10,000 software developers who are focused on the tooling for the new world. Is there a chance that your next career connection could come from the Gitcoin community? Come find out!     
+

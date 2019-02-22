@@ -37,7 +37,7 @@
           @{{ row.metadata.to_username }}
         </a>
       {% elif row.activity_type == 'new_kudos' %}
-        {% trans "send a" %}
+        {% trans "sent a" %}
         {{ row.i18n_name|lower }}
         {% trans "to" %}
         <a href="/profile/{{ row.metadata.to_username|cut:'@' }}">

@@ -996,7 +996,7 @@ input.is-invalid {
   text-decoration: none;
   color: black;
   font-size: 0.9rem;
-  margin: 0 1rem;
+  margin: 0 0.5rem;
 }
 
 .metamask-links a:hover {

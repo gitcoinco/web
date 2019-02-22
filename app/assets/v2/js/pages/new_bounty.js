@@ -384,7 +384,9 @@ $(document).ready(function() {
       function syncDb() {
         // Need to pass the bountydetails as well, since I can't grab it from the
         // Standard Bounties contract.
-        dataLayer.push({ event: 'fundissue' });
+        if (typeof dataLayer !== 'undefined') {
+          dataLayer.push({ event: 'fundissue' });
+        }
 
         // update localStorage issuePackage
         var issuePackage = JSON.parse(localStorage[issueURL]);
