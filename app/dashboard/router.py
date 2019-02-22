@@ -17,6 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import time
 from datetime import datetime
 
 import django_filters.rest_framework
@@ -98,7 +99,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
             'fulfillment_submitted_on', 'fulfillment_started_on', 'canceled_on', 'canceled_bounty_reason',
             'action_urls', 'project_type', 'permission_type', 'attached_job_description', 'needs_review',
             'github_issue_state', 'is_issue_closed', 'additional_funding_summary', 'funding_organisation', 'paid',
-            'admin_override_suspend_auto_approval', 'reserved_for_user_handle',
+            'admin_override_suspend_auto_approval', 'reserved_for_user_handle', 'is_featured', 'featuring_date',
         )
 
     def create(self, validated_data):
@@ -251,6 +252,11 @@ class BountyViewSet(viewsets.ModelViewSet):
         if 'keyword' in param_keys:
             queryset = queryset.keyword(self.request.query_params.get('keyword'))
 
+        if 'is_featured' in param_keys:
+            queryset = queryset.filter(
+                is_featured=self.request.query_params.get('is_featured'),
+            )
+
         # order
         order_by = self.request.query_params.get('order_by')
         if order_by and order_by != 'null':
@@ -259,25 +265,30 @@ class BountyViewSet(viewsets.ModelViewSet):
         queryset = queryset.distinct()
 
         # offset / limit
-        limit = int(self.request.query_params.get('limit', 100))
-        max_bounties = 100
-        if limit > max_bounties:
-            limit = max_bounties
-        offset = self.request.query_params.get('offset', 0)
-        if limit:
-            start = int(offset)
-            end = start + int(limit)
-            queryset = queryset[start:end]
+        if 'is_featured' not in param_keys:
+            limit = int(self.request.query_params.get('limit', 5))
+            max_bounties = 100
+            if limit > max_bounties:
+                limit = max_bounties
+            offset = self.request.query_params.get('offset', 0)
+            if limit:
+                start = int(offset)
+                end = start + int(limit)
+                queryset = queryset[start:end]
 
-        # save search history
-        if self.request.user and self.request.user.is_authenticated:
-            SearchHistory.objects.update_or_create(
-                user=self.request.user,
-                defaults={
-                    'data': dict(self.request.query_params),
-                    'ip_address': get_ip(self.request)
-                }
-            )
+        data = dict(self.request.query_params)
+        data.pop('is_featured', None)
+
+        # save search history, but only not is_featured
+        if 'is_featured' not in param_keys:
+            if self.request.user and self.request.user.is_authenticated:
+                data['nonce'] = int(time.time() / 1000)
+                SearchHistory.objects.update_or_create(
+                    user=self.request.user,
+                    data=data,
+                    ip_address=get_ip(self.request)
+                )
+
 
         return queryset
 

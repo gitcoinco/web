@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -31,7 +31,7 @@
     <img style="max-width: 33rem;" src="{% static "v2/images/shrug_bot.png" %}">
   {% endif %}
   {% comment %}
-  {% if code == 500 and sentry_address and request.sentry.id %}
+  {% if code == 500 and request.sentry.id %}
     {% load raven %}
     <script src="https://cdn.ravenjs.com/{{ raven_js_version }}/raven.min.js"></script>
     <script>

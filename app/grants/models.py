@@ -22,7 +22,7 @@ from datetime import timedelta
 from decimal import Decimal
 
 from django.conf import settings
-from django.contrib.postgres.fields import JSONField
+from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
@@ -186,6 +186,13 @@ class Grant(SuperModel):
         help_text=_('The team members contributing to this Grant.'),
     )
     image_css = models.CharField(default='', blank=True, max_length=255, help_text=_('additional CSS to attach to the grant-banner img.'))
+    clr_matching = models.DecimalField(
+        default=0,
+        decimal_places=0,
+        max_digits=20,
+        help_text=_('The CLR matching amount'),
+    )
+    activeSubscriptions = ArrayField(models.CharField(max_length=200), blank=True, default=list)
 
     # Grant Query Set used as manager.
     objects = GrantQuerySet.as_manager()
@@ -196,7 +203,15 @@ class Grant(SuperModel):
 
     def percentage_done(self):
         """Return the percentage of token received based on the token goal."""
-        return ((self.monthly_amount_subscribed / self.amount_goal) * 100)
+        return ((self.amount_received / self.amount_goal) * 100)
+
+
+    def updateActiveSubscriptions(self):
+        """updates the active subscriptions list"""
+        handles = []
+        for handle in Subscription.objects.filter(grant=self, active=True).distinct('contributor_profile').values_list('contributor_profile__handle', flat=True):
+            handles.append(handle)
+        self.activeSubscriptions = handles
 
     @property
     def abi(self):
@@ -205,11 +220,18 @@ class Grant(SuperModel):
         return abi_v0
 
     @property
+    def url(self):
+        """Return grants url."""
+        from django.urls import reverse
+        return reverse('grants:details', kwargs={'grant_id': self.pk, 'grant_slug': self.slug})
+
+
+    @property
     def contract(self):
         """Return grants contract."""
         from dashboard.utils import get_web3
         web3 = get_web3(self.network)
-        grant_contract = web3.eth.contract(self.contract_address, abi=self.abi)
+        grant_contract = web3.eth.contract(Web3.toChecksumAddress(self.contract_address), abi=self.abi)
         return grant_contract
 
 
@@ -289,8 +311,14 @@ class Subscription(SuperModel):
         default='',
         max_length=255,
         help_text=_('The contributor\'s Subscription hash.'),
+        blank=True,
     )
-    contributor_signature = models.CharField(default='', max_length=255, help_text=_('The contributor\'s signature.'))
+    contributor_signature = models.CharField(
+        default='',
+        max_length=255,
+        help_text=_('The contributor\'s signature.'),
+        blank=True,
+        )
     contributor_address = models.CharField(
         default='',
         max_length=255,
@@ -483,7 +511,7 @@ next_valid_timestamp: {next_valid_timestamp}
         """Check the return value of the previous function. Returns true if the previous function."""
         return self.grant.contract.functions.checkSuccess().call()
 
-    def _do_helper_via_web3(self, fn, minutes_to_confirm_within=5):
+    def _do_helper_via_web3(self, fn, minutes_to_confirm_within=1):
         """Call the specified function fn"""
         from dashboard.utils import get_web3
         args = self.get_subscription_hash_arguments()
@@ -503,21 +531,21 @@ next_valid_timestamp: {next_valid_timestamp}
         signed_txn = web3.eth.account.signTransaction(tx, private_key=settings.GRANTS_PRIVATE_KEY)
         return web3.eth.sendRawTransaction(signed_txn.rawTransaction).hex()
 
-    def do_cancel_subscription_via_web3(self, minutes_to_confirm_within=5):
+    def do_cancel_subscription_via_web3(self, minutes_to_confirm_within=1):
         """.Cancels the subscripion on the blockchain"""
         return self._do_helper_via_web3(
             self.grant.contract.functions.cancelSubscription,
             minutes_to_confirm_within=minutes_to_confirm_within
         )
 
-    def do_execute_subscription_via_web3(self, minutes_to_confirm_within=5):
+    def do_execute_subscription_via_web3(self, minutes_to_confirm_within=1):
         """.Executes the subscription on the blockchain"""
         return self._do_helper_via_web3(
             self.grant.contract.functions.executeSubscription,
             minutes_to_confirm_within=minutes_to_confirm_within
         )
 
-    def helper_tx_dict(self, minutes_to_confirm_within=5):
+    def helper_tx_dict(self, minutes_to_confirm_within=1):
         """returns a dict like this: {'to': '0xd3cda913deb6f67967b99d67acdfa1712c293601', 'from': web3.eth.coinbase, 'value': 12345}"""
         from dashboard.utils import get_nonce
         return {
@@ -648,6 +676,7 @@ next_valid_timestamp: {next_valid_timestamp}
             self.active = False
 
         self.save()
+        grant.updateActiveSubscriptions()
         grant.save()
         successful_contribution(self.grant, self, contribution)
         return contribution

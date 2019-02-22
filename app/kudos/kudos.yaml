@@ -2506,6 +2506,14 @@
     - mtg
     - serenity
   image: block_lotus.svg
+- name: ethdenver_2019_final_table
+  description: For all of our Bufficorn friends who made it to the ETHDenver Final Poker Table in 2019.
+  priceFinney: 100
+  numClonesAllowed: 13
+  tags:
+    - ethdenver 2019
+    - poker
+  image: ethdenver_2019_final_table.svg
 - name: aave_ethdenver_2019
   description: The Bufficorn loves rafting with its friends at AAVE on the Colorado River. Nothing better than breaking eddy walls with great partners!
   priceFinney: 100
@@ -2665,7 +2673,7 @@
     - ethdenver 2019
     - shill colorado
     - 14ers
-  image: shill_colorado.svg
+  image: shill_colorado_ethdenver_2019.svg
 - name: skale_labs_ethdenver_2019
   description: Being bold and daring isn’t foreign to Bufficorns. Jumping in frozen lakes in the middle of winter is the perfect way to blow off some steam with friends from Skale Labs. 
   priceFinney: 100
@@ -2701,4 +2709,365 @@
   tags:
     - rockstar
   image: rockstar.svg
+- name: livepeer
+  description: Livepeer is creating a scalable Platform as a Service for developers who want to add live
+    or on-demand video to their project.
+  priceFinney: 100
+  artist: sriharikapu
+  platform: gitcoin
+  numClonesAllowed: 50
+  artist: 'sriharikapu'
+  to_address: '0x42FE987767e39C9c2c19Dd24822f551e01791252'
+  tags:
+  - Livepeer
+  - p2p
+  image: Livepeer.svg
+- name: swarm_developer
+  description: Swarm is a decentralized p2p storage & hosting service running on top of Ethereum blockchain. 
+    Swarm acts as a peer-to-peer storage and servicing solution that has zero downtime, fault-tolerant, 
+    and censorship-resistant, and self-sustaining due to a built-in incentive system.
+  priceFinney: 100
+  artist: sriharikapu
+  platform: gitcoin
+  numClonesAllowed: 100
+  artist: 'sriharikapu'
+  to_address: '0x42FE987767e39C9c2c19Dd24822f551e01791252'
+  tags:
+  - Swarm
+  - Ethereum
+  image: Swarm-dev-min.svg
+- name: swarm_expert
+  description: Swarm is a decentralized p2p storage & hosting service running on top of Ethereum blockchain. 
+    Swarm acts as a peer-to-peer storage and servicing solution that has zero downtime, fault-tolerant, 
+    and censorship-resistant, and self-sustaining due to a built-in incentive system.
+  priceFinney: 500
+  artist: sriharikapu
+  platform: gitcoin
+  numClonesAllowed: 20
+  artist: 'sriharikapu'
+  to_address: '0x42FE987767e39C9c2c19Dd24822f551e01791252'
+  tags:
+  - Swarm
+  - Ethereum
+  image: SwarmRare-min.svg
+- name: sustainability
+  description: You are a promoter of Sustainability, Sustainability is the process of maintaining change in a balanced fashion, 
+    in which the exploitation of resources, the direction of investments, the orientation of technological development and 
+    institutional change are all in harmony and enhance both current and future potential to meet human needs and aspirations.
+  priceFinney: 10
+  artist: sriharikapu
+  platform: gitcoin
+  numClonesAllowed: 1000
+  artist: 'sriharikapu'
+  to_address: '0x42FE987767e39C9c2c19Dd24822f551e01791252'
+  tags:
+  - Sustainability
+  - Sustainy
+  image: sustain0.svg
+- name: liberal_radical
+  artist: mladen
+  description: This Kudos to a Liberal Radical who contributed to CLR matching.
+  priceFinney: 100
+  numClonesAllowed: 500
+  image: rxc.svg
+  tags:
+  - Liberal Radicalism
+  - Grants
+- name: wings
+  artist: mladen
+  description: 8 red bulls and 3 integrations later you've got wings!
+  priceFinney: 5
+  numClonesAllowed: 100
+  to_address: 0x5A2a64F7e9C820069378DF45288E593b6768447a
+  tags:
+    - ethereum
+    - hacker
+    - eth
+    - redbull
+    - red bull
+    - wings
+    - integration
+  image: red_bull_wings.svg
+- name: consensys_2_0
+  artist: mladen
+  description: This is a Kudos for those who have meaningfully contributed to Consensys 2.0
+  priceFinney: 10
+  numClonesAllowed: 500
+  to_address: 0x685654d53bef389760135c30f91c404eb000f4c5
+  tags:
+    - consensys
+    - evolution
+    - blopblop
+  image: consensys_2.0.svg
+- name: ethdenver_winner_adoption_driver
+  artist: mladen
+  description: For the ETHDenver 2019 winner in the category of 'Adoption Driver'
+  priceFinney: 10
+  numClonesAllowed: 2
+  tags:
+    - ethdenver
+    - trophies
+  image: ethdenver_trophies/adoption_driver2.svg
+- name: ethdenver_winner_best_media_headline
+  artist: mladen
+  description: For the ETHDenver 2019 winner in the category of 'Best Media Headline'
+  priceFinney: 10
+  numClonesAllowed: 2
+  tags:
+    - ethdenver
+    - trophies
+  image: ethdenver_trophies/best_media_headline2.svg
+- name: ethdenver_winner_best_of_ethereum
+  artist: mladen
+  description: For the ETHDenver 2019 winner in the category of 'Best of Ethereum'
+  priceFinney: 10
+  numClonesAllowed: 2
+  tags:
+    - ethdenver
+    - trophies
+  image: ethdenver_trophies/best_of_ethereum2.svg
+- name: ethdenver_winner_bufficorns_best
+  artist: mladen
+  description: For the ETHDenver 2019 winner in the category of 'Bufficorns Best'
+  priceFinney: 10
+  numClonesAllowed: 2
+  tags:
+    - ethdenver
+    - trophies
+  image: ethdenver_trophies/bufficorns_best2.svg
+- name: ethdenver_winner_highest_wow_factor
+  artist: mladen
+  description: For the ETHDenver 2019 winner in the category of 'Highest Wow Factor'
+  priceFinney: 10
+  numClonesAllowed: 2
+  tags:
+    - ethdenver
+    - trophies
+  image: ethdenver_trophies/highest_wow_factor2.svg
+- name: ethdenver_winner_impact_track_finalist
+  artist: mladen
+  description: For the ETHDenver 2019 winner in the category of 'Impact Track Finalist'
+  priceFinney: 10
+  numClonesAllowed: 2
+  tags:
+    - ethdenver
+    - trophies
+  image: ethdenver_trophies/impact_track_finalist2.svg
+- name: ethdenver_winner_most_innovative
+  artist: mladen
+  description: For the ETHDenver 2019 winner in the category of 'Most Innovative'
+  priceFinney: 10
+  numClonesAllowed: 2
+  tags:
+    - ethdenver
+    - trophies
+  image: ethdenver_trophies/most_innovative2.svg
+- name: ethdenver_winner_open_track_finalist
+  artist: mladen
+  description: For the ETHDenver 2019 winner in the category of 'Open Track Finalist'
+  priceFinney: 10
+  numClonesAllowed: 2
+  tags:
+    - ethdenver
+    - trophies
+  image: ethdenver_trophies/open_track_finalist2.svg
+- name: ethdenver_winner_peoples_choice
+  artist: mladen
+  description: For the ETHDenver 2019 winner in the category of 'Peoples Choice'
+  priceFinney: 10
+  numClonesAllowed: 2
+  tags:
+    - ethdenver
+    - trophies
+  image: ethdenver_trophies/peoples_choice2.svg
+- name: ethdenver_winner_runner_up
+  artist: mladen
+  description: For the ETHDenver 2019 winner in the category of 'Runner Up'
+  priceFinney: 10
+  numClonesAllowed: 2
+  tags:
+    - ethdenver
+    - trophies
+  image: ethdenver_trophies/runner_up2.svg
+- name: ethdenver_winner_spirit_of_buidl
+  artist: mladen
+  description: For the ETHDenver 2019 winner in the category of 'Spirit of BUIDL'
+  priceFinney: 10
+  numClonesAllowed: 2
+  tags:
+    - ethdenver
+    - trophies
+  image: ethdenver_trophies/spirit_of_buidl2.svg
+- name: open_sourceress
+  to_address: '0xa07b3c21ed817f94149231a431d3d4b421648121'
+  artist: mladen
+  description: The "Open Sourceress" is a master of creating magic via the sorcery that is Open Source.
+  priceFinney: 30
+  numClonesAllowed: 300
+  tags:
+    - open source
+    - sorcery
+  image: open_sourceress.svg
+- name: staker_kudo
+  description: Bufficorns understand the importance of making a stand. Staking is how true Bufficorns prove their commitment!
+  priceFinney: 50
+  numClonesAllowed: 1000
+  tags:
+    - ethdenver 2019
+    - staker
+  image: staked_kudos.svg
+- name: livestreamer
+  description: This Kudos is specially made for members of the Gitcoin community who have presented on the Gitcoin weekly livestream (Fridays at 5pm EST)
+  priceFinney: 100
+  numClonesAllowed: 100
+  tags:
+    - gitcoin
+    - livestream
+  image: livestreamer.svg
+- name: vaporwave
+  description: Vaporwave is a microgenre of electronic music and an Internet meme that emerged in the early 2010s.  Ethereum is a blockchain that emerged in the blockchain space in the mid 2010s.  Whats not to love about either, or both?
+  priceFinney: 35
+  numClonesAllowed: 350
+  tags:
+    - gitcoin
+    - bender
+  image: vaporwave.svg
+  to_address: '0xdf9B0d723776972C5cAe27FDb4F3Ea827A5Cf283'
+  artist: joe_bender
+- name: vyper_pro
+  description: Awarded for a having a notable portfolio of Vyper content, or contributing to the Vyper languge itself.
+  priceFinney: 200
+  numClonesAllowed: 100
+  tags:
+    - Vyper
+    - Ethereum
+    - Serenity
+    - Programming
+  image: vyper.svg
+  to_address: '0x4dA2e85D64bEcE663CCaB06E89B970b6b077f22F'
+  artist: mladen
+- name: solidity_pro
+  description: Awarded for a having a notable portfolio of Solidity content, or contributing to the Solidity languge itself.
+  priceFinney: 200
+  numClonesAllowed: 100
+  tags:
+    - Solidity
+    - Ethereum
+    - Serenity
+    - Programming
+  image: solidity.svg
+  to_address: '0x4dA2e85D64bEcE663CCaB06E89B970b6b077f22F'
+  artist: mladen
+- name: hummingbird_love_(TheHeadspace.net)
+  description: You embody Love, Speed, and Determination. When it comes to code you are as nimble as a hummingbird.
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - EthDenver
+    - The Headspace
+  image: hummingbird.svg
+  to_address: '0x96706EB471F875a9a41442f358d3B34ba02F868b'
+  artist: the_headspace
+- name: the_journey_begins(TheHeadspace.net)
+  description: You are well on your way to becoming the best, look within and find your strength.
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - EthDenver
+    - The Headspace
+  image: the_journey_begins.svg
+  to_address: '0x96706EB471F875a9a41442f358d3B34ba02F868b'
+  artist: the_headspace
+- name: trekkie_bot
+  description: Awarded to those who 'Boldly Go Where No One Has Gone Before!'
+  priceFinney: 25
+  numClonesAllowed: 250
+  tags:
+    - Trekkie
+    - Star Trek
+    - Future
+    - Robots
+  artist: mladen
+  image: trekkie_bot.svg
+- name: molochDAO
+  description: Awarded to contributors who have had a notable contribution to the MolochDAO.
+  priceFinney: 15
+  numClonesAllowed: 250
+  to_address: '0x512E07A093aAA20Ba288392EaDF03838C7a4e522'
+  tags:
+    - Moloch
+    - DAO
+  artist: mladen
+  image: moloch.svg
+- name: grammar_programmer
+  artist: uivlis
+  description: Not only did you fix the code, you also fixed that comment that no one noticed!
+  priceFinney: 50
+  numClonesAllowed: 500
+  tags:
+    - spelling
+    - typo
+    - programmer
+    - grammar
+    - comment
+  image: grammar-programmer.svg
+- name: shut_up_and_take_my_ether
+  to_address: 0x4b00a17a8A4c7dC2f71777207B1C1Bd6C132D394
+  artist: cryptodesign
+  description: Shut up and take my ether.
+  priceFinney: 2
+  numClonesAllowed: 500
+  tags:
+    - just for fun
+    - meme
+    - fry
+    - common
+    - ethereum
+  image: fry_shut_up.svg
+- name: golden_doge
+  to_address: 0x4b00a17a8A4c7dC2f71777207B1C1Bd6C132D394
+  artist: cryptodesign
+  description: Such rare, much shiny, very affordable.
+  priceFinney: 2
+  numClonesAllowed: 300
+  tags:
+    - just for fun
+    - meme
+    - doge
+    - gold 
+  image: doge.svg
+- name: captain
+  to_address: 0xb9c4668CEf8B52b1A0751Dcf14605Cd90F8c9Fce
+  artist: mehul0698
+  description: You are Captain Kudos!
+  priceFinney: 50
+  numClonesAllowed: 500
+  tags: 
+    - programming
+    - leader
+    - captain
+  image: captain.svg
+- name: ally_guide_denver
+  to_address: 0xc6b0a4c5BA85d082eCd4Fb05FBF63eb92AC1083a
+  artist: PanvalaMark
+  description: For loyal Panvala Allies who shopped at Ally Guide merchants at ETHDenver 2019
+  priceFinney: 10
+  numClonesAllowed: 50
+  tags:
+    - panvala
+    - ally guide
+  image: ally_guide_denver.svg
+- name: alchemist
+  artist: You are a master of the alchemy of code!
+  description: You are a master of the alchemy of code!
+  priceFinney: 10
+  numClonesAllowed: 50
+  tags:
+    - alchemy
+    - code
+  image: alchemist.svg
+
+
+
+
 

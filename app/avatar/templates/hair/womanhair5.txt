@@ -1,13 +1,1 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 23.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 899.2 1499.2" style="enable-background:new 0 0 899.2 1499.2;" xml:space="preserve">
-<style type="text/css">
-	.st0{stroke:#000000;stroke-width:26.9;stroke-miterlimit:10;}
-</style>
-<g transform="translate(0 -1)">
-	<path class="st0" d="M820.5,1023.4c11.4,0,20.4-9.7,19.5-21.1l-49.3-625c-4.5-131-100.2-209.2-189-253.7
-		c-94.8-47.6-207.5-47.6-302.3,0C210.7,168,115,246.2,110.5,377.2l-49.3,625c-0.9,11.4,8.1,21.1,19.5,21.1h129.3
-		c10.8,0,19.6-8.8,19.6-19.6V488.2c0-33.2,26.9-60,60-60h161h161c33.2,0,60,26.9,60,60v515.5c0,10.8,8.8,19.6,19.6,19.6H820.5z"/>
-</g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 899.2 1499.2"><path d="M826.5 1062.4c11.4 0 20.4-9.7 19.5-21.1l-49.3-625c-4.5-131-100.2-209.2-189-253.7-94.8-47.6-207.5-47.6-302.3 0C216.7 207 121 285.2 116.5 416.2l-49.3 625c-.9 11.4 8.1 21.1 19.5 21.1H216c10.8 0 19.6-8.8 19.6-19.6V527.2c0-33.2 26.9-60 60-60h322c33.2 0 60 26.9 60 60v515.5c0 10.8 8.8 19.6 19.6 19.6h129.3z" stroke-miterlimit="10" stroke="#333" stroke-width="26.974"/></svg>

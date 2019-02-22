@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -592,6 +592,34 @@ def render_gdpr_reconsent(to_email):
     return response_html, response_txt
 
 
+def render_share_bounty(to_email, msg, from_profile):
+    """Render the share bounty email template.
+
+    Args:
+        to_email: user to send the email to.
+        msg: the message sent in the email.
+
+    Returns:
+        str: The rendered response as a string.
+
+    """
+    to_email = f"@{to_email}" if to_email else "there"
+    response_txt = f"""
+hi {to_email},
+
+{msg}
+
+@{from_profile.handle}
+{from_profile.email}
+
+
+"""
+
+    params = {'txt': response_txt}
+    response_html = premailer_transform(render_to_string("emails/txt.html", params))
+    return response_html, response_txt
+
+
 def render_new_work_submission(to_email, bounty):
     params = {
         'bounty': bounty,
@@ -843,28 +871,28 @@ def render_start_work_applicant_expired(interest, bounty):
 
 
 
+
 # ROUNDUP_EMAIL
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
-    subject = "A New Type Of Freelance Platform: Gitcoin in Forbes"
-    new_kudos_pks = [1056, 1057, 1058]
+    subject = "Last Week of CLR Matching | Glen Weyl Joins Livestream"
+    new_kudos_pks = [1404, 1401, 1368]
     new_kudos_size_px = 150
     intro = '''
 <p>
 Hi Gitcoiners,
 <p>
 <p>
-This week, <a href="https://www.forbes.com/sites/jeffersonnunn/2019/01/21/bitcoin-autonomous-employment-workers-wanted/">Forbes wrote an article</a> comparing
-Gitcoin to traditional freelance platforms. While it's early days, we're excited about the possibility to do more to improve the
-abiity of individuals to dynamically interact with each other. If you're interested,
-<a href="https://www.forbes.com/sites/jeffersonnunn/2019/01/21/bitcoin-autonomous-employment-workers-wanted/">give it a read here.</a>
+This week marks the last week of <a href="https://medium.com/gitcoin/gitcoin-grants-clr-matching-ecbc87b10038">our Radical Experiment for funding ETH 2.0 projects.</a>
+For one more week (until February 15th), we'll be matching any contributions you make to <a href="https://gitcoin.co/grants">these 20 Ethereum projects</a> with $25,000 in funding.
+Because we are using Liberal Radicalism as the mechanism, small contributions (even $5!) can go a long way.
 </p>
 <p>
-<a href="https://gitcoin.co/requests">Gitcoin Requests</a> is a great way to try the platform if you haven't already. Request funding
-for any open source Github issue, and we have funding to bring it onto the platform. Excited to see what you want built!
+To continue the discussion, we're hosting Glen Weyl, author of <a href='http://radicalmarkets.com/'>Radical Markets</a>, on the <a href="https://gitcoin.co/livestream">Gitcoin Livestream</a> today. Join us <a href="https://gitcoin.co/livestream">at 5PM ET today</a>
+and add any questions you have to <a href="https://sli.do">the Slido</a> with code D842!
 </p>
 <p>
-<h3>The Week Of Kudos Bots!</h3>
+<h3>Happy Kudos Friday!</h3>
 </p>
 <p>
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
@@ -873,7 +901,7 @@ for any open source Github issue, and we have funding to bring it onto the platf
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Gitcoin Livestream is back this week, with a feature from the Aztec team working on ZK-Snarks! Join us <a href="https://gitcoin.co/livestream">on Friday at 5PM ET</a>!
+            Gitcoin Livestream is back this week! Great conversations pending. Join us <a href="https://gitcoin.co/livestream">on Friday at 5PM ET</a>!
         </li>
     </ul>
 </p>
@@ -883,34 +911,34 @@ Back to shipping,
 
 '''
     highlights = [{
-        'who': 'iamonuwa',
+        'who': 'luiserebii',
         'who_link': True,
-        'what': 'Worked with Austin on the Burner Wallet!',
-        'link': 'https://gitcoin.co/issue/austintgriffith/burner-wallet/78/2158',
+        'what': 'Completed work on a Plasma bounty!',
+        'link': 'https://gitcoin.co/issue/plasma-group/plasma-core/60/2266',
         'link_copy': 'View more',
     }, {
-        'who': 'pvienhage',
+        'who': 'dbrettrobertson',
         'who_link': True,
-        'what': 'Some more great work with OpenZeppelin!',
-        'link': 'https://gitcoin.co/issue/OpenZeppelin/openzeppelin-solidity/1596/2165',
+        'what': 'Helped with Core Dev call notes!',
+        'link': 'https://gitcoin.co/issue/ethereum/pm/75/2242',
         'link_copy': 'View more',
     }, {
-        'who': 'cpstl',
+        'who': 'lazaridis-com',
         'who_link': True,
-        'what': 'Our very own Gitcoin Ambassador Charles on the Core Dev calls!',
-        'link': 'https://gitcoin.co/issue/ethereum/pm/72/2163',
+        'what': 'Completed work on a Goerli bounty.',
+        'link': 'https://gitcoin.co/issue/goerli/parity-goerli/46/2210',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/goerli/testnet/issues/9',
-        'primer': 'Huge bounty on Goerli, new test-net!',
+        'url': 'https://github.com/trailofbits/manticore/issues/1343',
+        'primer': 'Work with Trail of Bits on manticore!',
     }, {
-        'url': 'https://github.com/w3f/Web3-collaboration/issues/62',
-        'primer': 'Create videos exploring Polkadot, a blockchain interoperability project!',
+        'url': 'https://github.com/dannovikov/crypto-lending/issues/1',
+        'primer': 'Help build a Multi-Sig ETH Wallet.',
     }, {
-        'url': 'https://github.com/gitcoinco/web/issues/3514',
-        'primer': 'Help get the word out about Gitcoin with a Wiki!',
+        'url': 'https://github.com/textileio/textile-explore/issues/1',
+        'primer': 'Build a Flickr import/export tool.',
     }, ]
 
     num_leadboard_items = 5
@@ -973,6 +1001,8 @@ Back to shipping,
     response_txt = render_to_string("emails/bounty_roundup.txt", params)
 
     return response_html, response_txt, subject
+
+
 
 # DJANGO REQUESTS
 
@@ -1173,6 +1203,13 @@ def quarterly_roundup(request):
 @staff_member_required
 def gdpr_reconsent(request):
     response_html, _ = render_gdpr_reconsent(settings.CONTACT_EMAIL)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def share_bounty(request):
+    profile = Profile.objects.filter(handle=handle).first()
+    response_html, _ = render_share_bounty(settings.CONTACT_EMAIL, 'This is a sample message', profile)
     return HttpResponse(response_html)
 
 
