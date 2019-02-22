@@ -1,5 +1,5 @@
 {% comment %}
-Copyright (C) 2017 Gitcoin Core
+Copyright (C) 2019 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -55,7 +55,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               value="{{bounty.value_in_token}}">
             <div class="col offset-md-1 col-md-10 d-flex align-items-center justify-content-center" id="primary_form">
               <div class="d-flex justify-content-center flex-column mt-5" id="primary_subform">
-                <div class="w-100" style="text-align: center;">
+                <div class="w-100 text-center">
                   <h3>Increase Funding</h3>
                   <img src="{% static "v2/images/prime.png" %}">
                 </div>
@@ -90,13 +90,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 </div>
                 <div class="form__footer form__footer--right text-center">
                   <button class="button button--primary" type="submit" id="increaseFunding">Increase Funding</button>
-                  <br />
+                </div>
+                <div class="form__footer form__footer--right text-center">
                   <a class="font-caption" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">
                     Your transaction is secured by the audited StandardBounties contract on the Ethereum blockchain. </br>
                     Learn more here.
                   </a>
                 </div>
-                {% include 'shared/newsletter.html' %}
               </div>
             </div>
           </div>

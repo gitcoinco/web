@@ -206,7 +206,7 @@
         [[else color == 'white']]
           <a class="btn btn-small [[if !enabled]]disabled[[/if]] [[:buttonclass]]" id="btn-white" role="button" target="_blank" href="[[:href]]" target="[[:target]]">
             [[if comments]]
-              <span class="font-caption">
+              <span class="font-caption d-inline-flex">
                 [[:text]]
                 <span class="comment">
                   <img src={% static "v2/images/comment.svg" %}>
@@ -417,23 +417,15 @@
   <script src="{% static "v2/js/amounts.js" %}"></script>
   <script src="{% static "v2/js/popper.min.js" %}"></script>
   <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
+  <script src="{% static "v2/js/clipboard.js" %}"></script>
   <script>
     var bootstrapTooltip = $.fn.tooltip.noConflict()
     var bootstrapModal = $.fn.modal.noConflict()
-
-    $('.modal-link').click(function(e) {
-      let modals = $('#modal');
-      let modalBody = $('#modal .modal-content');
-      let modalUrl = `/modal/social_contribution?pk=${document.result.pk}`;
-
-      modals.on('show.bs.modal', function () {
-        modalBody.load(modalUrl);
-      });
-      e.preventDefault();
-    });
   </script>
+  <script src="{% static "v2/js/pages/bounty_share.js" %}"></script>
   <script src="{% static "v2/js/pages/bounty_details.js" %}"></script>
   <script src="{% static "v2/js/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
+  <script src="{% static "v2/js/user-search.js" %}"></script>
   <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
 </html>

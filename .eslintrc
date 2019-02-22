@@ -13,10 +13,9 @@
     "$": true
   },
   "plugins": [],
-  "parser": "babel-eslint",
   "parserOptions": {
     "sourceType": "module",
-    "ecmaVersion": 6,
+    "ecmaVersion": 8,
     "ecmaFeatures": {
       "modules": true,
       "arrowFunctions": true,

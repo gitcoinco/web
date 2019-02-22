@@ -2506,6 +2506,14 @@
     - mtg
     - serenity
   image: block_lotus.svg
+- name: ethdenver_2019_final_table
+  description: For all of our Bufficorn friends who made it to the ETHDenver Final Poker Table in 2019.
+  priceFinney: 100
+  numClonesAllowed: 13
+  tags:
+    - ethdenver 2019
+    - poker
+  image: ethdenver_2019_final_table.svg
 - name: aave_ethdenver_2019
   description: The Bufficorn loves rafting with its friends at AAVE on the Colorado River. Nothing better than breaking eddy walls with great partners!
   priceFinney: 100
@@ -2665,7 +2673,7 @@
     - ethdenver 2019
     - shill colorado
     - 14ers
-  image: shill_colorado.svg
+  image: shill_colorado_ethdenver_2019.svg
 - name: skale_labs_ethdenver_2019
   description: Being bold and daring isn’t foreign to Bufficorns. Jumping in frozen lakes in the middle of winter is the perfect way to blow off some steam with friends from Skale Labs. 
   priceFinney: 100
@@ -2926,7 +2934,138 @@
   image: vaporwave.svg
   to_address: '0xdf9B0d723776972C5cAe27FDb4F3Ea827A5Cf283'
   artist: joe_bender
-
+- name: vyper_pro
+  description: Awarded for a having a notable portfolio of Vyper content, or contributing to the Vyper languge itself.
+  priceFinney: 200
+  numClonesAllowed: 100
+  tags:
+    - Vyper
+    - Ethereum
+    - Serenity
+    - Programming
+  image: vyper.svg
+  to_address: '0x4dA2e85D64bEcE663CCaB06E89B970b6b077f22F'
+  artist: mladen
+- name: solidity_pro
+  description: Awarded for a having a notable portfolio of Solidity content, or contributing to the Solidity languge itself.
+  priceFinney: 200
+  numClonesAllowed: 100
+  tags:
+    - Solidity
+    - Ethereum
+    - Serenity
+    - Programming
+  image: solidity.svg
+  to_address: '0x4dA2e85D64bEcE663CCaB06E89B970b6b077f22F'
+  artist: mladen
+- name: hummingbird_love_(TheHeadspace.net)
+  description: You embody Love, Speed, and Determination. When it comes to code you are as nimble as a hummingbird.
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - EthDenver
+    - The Headspace
+  image: hummingbird.svg
+  to_address: '0x96706EB471F875a9a41442f358d3B34ba02F868b'
+  artist: the_headspace
+- name: the_journey_begins(TheHeadspace.net)
+  description: You are well on your way to becoming the best, look within and find your strength.
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - EthDenver
+    - The Headspace
+  image: the_journey_begins.svg
+  to_address: '0x96706EB471F875a9a41442f358d3B34ba02F868b'
+  artist: the_headspace
+- name: trekkie_bot
+  description: Awarded to those who 'Boldly Go Where No One Has Gone Before!'
+  priceFinney: 25
+  numClonesAllowed: 250
+  tags:
+    - Trekkie
+    - Star Trek
+    - Future
+    - Robots
+  artist: mladen
+  image: trekkie_bot.svg
+- name: molochDAO
+  description: Awarded to contributors who have had a notable contribution to the MolochDAO.
+  priceFinney: 15
+  numClonesAllowed: 250
+  to_address: '0x512E07A093aAA20Ba288392EaDF03838C7a4e522'
+  tags:
+    - Moloch
+    - DAO
+  artist: mladen
+  image: moloch.svg
+- name: grammar_programmer
+  artist: uivlis
+  description: Not only did you fix the code, you also fixed that comment that no one noticed!
+  priceFinney: 50
+  numClonesAllowed: 500
+  tags:
+    - spelling
+    - typo
+    - programmer
+    - grammar
+    - comment
+  image: grammar-programmer.svg
+- name: shut_up_and_take_my_ether
+  to_address: 0x4b00a17a8A4c7dC2f71777207B1C1Bd6C132D394
+  artist: cryptodesign
+  description: Shut up and take my ether.
+  priceFinney: 2
+  numClonesAllowed: 500
+  tags:
+    - just for fun
+    - meme
+    - fry
+    - common
+    - ethereum
+  image: fry_shut_up.svg
+- name: golden_doge
+  to_address: 0x4b00a17a8A4c7dC2f71777207B1C1Bd6C132D394
+  artist: cryptodesign
+  description: Such rare, much shiny, very affordable.
+  priceFinney: 2
+  numClonesAllowed: 300
+  tags:
+    - just for fun
+    - meme
+    - doge
+    - gold 
+  image: doge.svg
+- name: captain
+  to_address: 0xb9c4668CEf8B52b1A0751Dcf14605Cd90F8c9Fce
+  artist: mehul0698
+  description: You are Captain Kudos!
+  priceFinney: 50
+  numClonesAllowed: 500
+  tags: 
+    - programming
+    - leader
+    - captain
+  image: captain.svg
+- name: ally_guide_denver
+  to_address: 0xc6b0a4c5BA85d082eCd4Fb05FBF63eb92AC1083a
+  artist: PanvalaMark
+  description: For loyal Panvala Allies who shopped at Ally Guide merchants at ETHDenver 2019
+  priceFinney: 10
+  numClonesAllowed: 50
+  tags:
+    - panvala
+    - ally guide
+  image: ally_guide_denver.svg
+- name: alchemist
+  artist: You are a master of the alchemy of code!
+  description: You are a master of the alchemy of code!
+  priceFinney: 10
+  numClonesAllowed: 50
+  tags:
+    - alchemy
+    - code
+  image: alchemist.svg
 
 
 

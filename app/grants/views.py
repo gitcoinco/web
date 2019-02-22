@@ -36,6 +36,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
 from app.utils import get_profile
+from cacheops import cached_view
 from dashboard.models import Profile
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.forms import MilestoneForm
@@ -58,7 +59,7 @@ def get_keywords():
 
 def grants(request):
     """Handle grants explorer."""
-    limit = request.GET.get('limit', 24)
+    limit = request.GET.get('limit', 6)
     page = request.GET.get('page', 1)
     sort = request.GET.get('sort_option', '-created_on')
     network = request.GET.get('network', 'mainnet')
@@ -73,13 +74,13 @@ def grants(request):
 
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
-
-    for _grant in grants:
-        _grant.activeSubscriptions = Subscription.objects.filter(grant=_grant, active=True).distinct('contributor_profile')
-
+    
     params = {
         'active': 'grants_landing',
         'title': _('Grants Explorer'),
+        'sort': sort,
+        'network': network,
+        'keyword': keyword,
         'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
         'card_player_override': 'https://www.youtube.com/embed/eVgEWSPFR2o',
         'card_player_stream_override': static('v2/card/grants.mp4'),
@@ -153,7 +154,7 @@ def grant_details(request, grant_id, grant_slug):
     is_admin = (grant.admin_profile.id == profile.id) if profile and grant.admin_profile else False
     if is_admin:
         add_cancel_params = True
-        
+
     params = {
         'active': 'grant_details',
         'grant': grant,
@@ -179,7 +180,7 @@ def grant_details(request, grant_id, grant_slug):
             'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(1),
             'eth_usd_conv_rate': eth_usd_conv_rate(),
             'conf_time_spread': conf_time_spread(),
-            'gas_advisories': gas_advisories(),        
+            'gas_advisories': gas_advisories(),
         }
         for key, value in add_in_params.items():
             params[key] = value
@@ -243,6 +244,7 @@ def grant_new(request):
             tx_hash = request.POST.get('transaction_hash', '')
             grant = Grant.objects.filter(deploy_tx_id=tx_hash).first()
             grant.contract_address = request.POST.get('contract_address', '')
+            print(tx_hash, grant.contract_address)
             grant.save()
             new_grant(grant, profile)
             return JsonResponse({
@@ -375,6 +377,12 @@ def grant_fund(request, grant_id, grant_slug):
             subscription.contributor_profile = profile
             subscription.grant = grant
             subscription.save()
+
+            messages.info(
+                request,
+                _('Your subscription has been created. It will bill within the next 5 minutes or so. Thank you for supporting Open Source !')
+            )
+
             return JsonResponse({
                 'success': True,
             })
@@ -540,3 +548,43 @@ def quickstart(request):
     """Display quickstart guide."""
     params = {'active': 'grants_quickstart', 'title': _('Quickstart')}
     return TemplateResponse(request, 'grants/quickstart.html', params)
+
+
+@cached_view(timeout=60)
+def leaderboard(request):
+    """Display leaderboard."""
+    params = {
+        'active': 'grants_leaderboard',
+        'title': _('Grants Leaderboard'),
+        'card_desc': _('View the top contributors to Gitcoin Grants'),
+        }
+
+    # setup dict
+    # TODO: in the future, store all of this in perftools.models.JSONStore
+    handles = Subscription.objects.all().values_list('contributor_profile__handle', flat=True)
+    default_dict = {
+        'rank': None,
+        'no': 0,
+        'sum': 0,
+        'handle': None,
+    }
+    users_to_results = { ele : default_dict.copy() for ele in handles }
+
+    # get all contribution attributes
+    for contribution in Contribution.objects.all().select_related('subscription'):
+        key = contribution.subscription.contributor_profile.handle
+        users_to_results[key]['handle'] = key
+        amount = contribution.subscription.get_converted_amount()
+        if amount:
+            users_to_results[key]['no'] += 1
+            users_to_results[key]['sum'] += round(amount)
+    # prepare response for view
+    params['items'] = []
+    counter = 1
+    for item in sorted(users_to_results.items(), key=lambda kv: kv[1]['sum'], reverse=True):
+        item = item[1]
+        if item['no']:
+            item['rank'] = counter
+            params['items'].append(item)
+            counter += 1
+    return TemplateResponse(request, 'grants/leaderboard.html', params)
