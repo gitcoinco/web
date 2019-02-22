@@ -373,7 +373,6 @@ def funder_bounties(request):
     return TemplateResponse(request, 'bounties/funder.html', context)
 
 
-@cached_view(timeout=60 * 10)
 def contributor_bounties(request, tech_stack):
 
     slides = [
@@ -880,10 +879,9 @@ def results(request, keyword=None):
     return TemplateResponse(request, 'results.html', context)
 
 
-@cached_view_as(Activity.objects.all().order_by('-created'))
 def activity(request):
     """Render the Activity response."""
-    page_size = 300
+    page_size = 30
     activities = Activity.objects.all().order_by('-created')
     p = Paginator(activities, page_size)
     page = request.GET.get('page', 1)

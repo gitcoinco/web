@@ -47,7 +47,6 @@ lines = {
 }
 
 
-@cached_view(timeout=60*16)
 def gas(request):
     _cts = conf_time_spread()
     recommended_gas_price = recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target)
@@ -78,7 +77,6 @@ def gas_intro(request):
     return TemplateResponse(request, 'gas_intro.html', context)
 
 
-@cached_view(timeout=60*16)
 def gas_heatmap(request):
     gas_histories = {}
     mins = request.GET.get('mins', 60)
@@ -118,7 +116,6 @@ def gas_faucet_list(request):
     return TemplateResponse(request, 'gas_faucet_list.html', context)
 
 
-@cached_view(timeout=60*16)
 def gas_calculator(request):
     recommended_gas_price = recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target)
     _cts = conf_time_spread()
@@ -171,7 +168,6 @@ def gas_calculator(request):
     return TemplateResponse(request, 'gas_calculator.html', context)
 
 
-@cached_view_as(GasGuzzler, timeout=60*3)
 def gas_guzzler_view(request):
     breakdown = request.GET.get('breakdown', 'hourly')
     breakdown_ui = breakdown.replace('ly', '') if breakdown != 'daily' else 'day'
@@ -221,7 +217,6 @@ def gas_guzzler_view(request):
     return TemplateResponse(request, 'gas_guzzler.html', context)
 
 
-@cached_view(timeout=60*16)
 def gas_history_view(request):
     breakdown = request.GET.get('breakdown', 'hourly')
     granularity_options = ['hourly', 'daily', 'weekly']

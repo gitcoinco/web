@@ -659,7 +659,6 @@ def _leaderboard(request):
     return leaderboard(request, '')
 
 
-@cached_view(timeout=60*16)
 def leaderboard(request, key=''):
     """Display the leaderboard for top earning or paying profiles.
 

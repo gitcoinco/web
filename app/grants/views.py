@@ -557,7 +557,6 @@ def quickstart(request):
     return TemplateResponse(request, 'grants/quickstart.html', params)
 
 
-@cached_view(timeout=60)
 def leaderboard(request):
     """Display leaderboard."""
     params = {
