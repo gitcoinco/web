@@ -78,6 +78,9 @@ def grants(request):
     params = {
         'active': 'grants_landing',
         'title': _('Grants Explorer'),
+        'sort': sort,
+        'network': network,
+        'keyword': keyword,
         'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
         'card_player_override': 'https://www.youtube.com/embed/eVgEWSPFR2o',
         'card_player_stream_override': static('v2/card/grants.mp4'),

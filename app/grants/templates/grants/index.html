@@ -87,8 +87,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               <select name="sort_option" id="sort_option">
                 <option value="-created_on">{% trans "Created: Recent" %}</option>
                 <option value="created_on">{% trans "Created: Oldest" %}</option>
-                <option value="-amount_goal">{% trans "Value: Highest" %}</option>
-                <option value="amount_goal">{% trans "Value: Lowest" %}</option>
+                <option value="-amount_goal">{% trans "Goal: Highest" %}</option>
+                <option value="amount_goal">{% trans "Goal: Lowest" %}</option>
+                <option value="-amount_received">{% trans "Amount Raised: Highest" %}</option>
+                <option value="amount_received">{% trans "Amount Raised: Lowest" %}</option>
+                <option value="-clr_matching">{% trans "CLR Match: Highest" %}</option>
+                <option value="clr_matching">{% trans "CLR Match: Lowest" %}</option>
               </select>
             </div>
           </div>
@@ -107,7 +111,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             {% endfor %}
           </div>
           {% if grants.has_next %}
-            <a class="infinite-more-link" href="?page={{ grants.next_page_number }}">More</a>
+            <a class="infinite-more-link" href="?network={{network}}&keyword={{keyword}}&sort_option={{sort}}&page={{ grants.next_page_number }}">More</a>
           {% endif %}
         {% else %}
           <div class="col-12 mb-3 mx-auto col-md-6 text-center">
