@@ -1810,10 +1810,10 @@ def change_bounty(request, bounty_id):
         bounty_changed = False
         new_reservation = False
         for key in keys:
-            value = params.get(key, '')
+            value = params.get(key, 0)
             if key == 'featuring_date':
                 value = timezone.make_aware(
-                    timezone.datetime.fromtimestamp(value),
+                    timezone.datetime.fromtimestamp(int(value)),
                     timezone=UTC)
             old_value = getattr(bounty, key)
             if value != old_value:
