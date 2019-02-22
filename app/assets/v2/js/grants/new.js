@@ -9,11 +9,16 @@ $(document).ready(function() {
   }
 });
 
-function saveGrant({grantData = [], isFinal = false}) {
+function saveGrant(grantData, isFinal) {
+  let csrftoken = $("#create-grant input[name='csrfmiddlewaretoken']").val();
+
   $.ajax({
     type: 'post',
     url: '',
+    processData: false,
+    contentType: false,
     data: grantData,
+    headers: {'X-CSRFToken': csrftoken},
     success: json => {
       if (isFinal) {
         document.suppress_loading_leave_code = true;
@@ -27,13 +32,12 @@ function saveGrant({grantData = [], isFinal = false}) {
 }
 
 const processReceipt = receipt => {
-  let data = {
-    'contract_address': receipt.contractAddress,
-    'csrfmiddlewaretoken': $("#create-grant input[name='csrfmiddlewaretoken']").val(),
-    'transaction_hash': $('#transaction_hash').val()
-  };
+  let formData = new FormData();
 
-  saveGrant({grantData: data, isFinal: true});
+  formData.append('contract_address', receipt.contractAddress);
+  formData.append('transaction_hash', $('#transaction_hash').val());
+
+  saveGrant(formData, true);
 };
 
 const init = () => {
@@ -108,7 +112,6 @@ const init = () => {
             console.log('2', transactionHash);
             $('#transaction_hash').val(transactionHash);
             const linkURL = etherscan_tx_url(transactionHash);
-
             let file = $('#img-project')[0].files[0];
             let formData = new FormData();
 
@@ -126,9 +129,7 @@ const init = () => {
             formData.append('transaction_hash', $('#transaction_hash').val());
             formData.append('network', $('#network').val());
             formData.append('team_members', $('#input-team_members').val());
-            formData.append('csrfmiddlewaretoken', $("#create-grant input[name='csrfmiddlewaretoken']").val());
-
-            saveGrant({grantData: data});
+            saveGrant(formData, false);
 
             document.issueURL = linkURL;
             $('#transaction_url').attr('href', linkURL);

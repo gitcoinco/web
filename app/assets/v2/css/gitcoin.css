@@ -545,6 +545,22 @@ div.button-pink {
   width: 15px;
 }
 
+.g-fadein {
+  opacity: 0;
+}
+
+.g-fadein[data-fade-direction="left"] {
+  left: -5rem;
+}
+
+.g-fadein[data-fade-direction="mid"] {
+  bottom: -5em;
+}
+
+.g-fadein[data-fade-direction="right"] {
+  left: 5rem;
+}
+
 @media (max-width: 389.9px) {
 
   .footer__main {
