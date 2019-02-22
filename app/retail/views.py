@@ -881,7 +881,7 @@ def results(request, keyword=None):
 
 def activity(request):
     """Render the Activity response."""
-    page_size = 30
+    page_size = 15
     activities = Activity.objects.all().order_by('-created')
     p = Paginator(activities, page_size)
     page = request.GET.get('page', 1)

@@ -1553,6 +1553,10 @@ def toolbox(request):
         "title": _("Just for Fun"),
         "description": _("Some tools that the community built *just because* they should exist."),
         "tools": tools.filter(category=Tool.CAT_FOR_FUN)
+    }, {
+        "title": _("Retired Tools"),
+        "description": _("These are tools that we've sunsetted.  Pour one out for them 🍻"),
+        "tools": tools.filter(category=Tool.CAT_RETIRED)
     }]
 
     # setup slug

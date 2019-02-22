@@ -2682,6 +2682,7 @@ class Tool(SuperModel):
     CAT_COMMUNITY = 'CO'
     CAT_FOR_FUN = 'FF'
     GAS_TOOLS = "TO"
+    CAT_RETIRED = "CR"
 
     TOOL_CATEGORIES = (
         (CAT_ADVANCED, 'advanced'),
@@ -2692,6 +2693,7 @@ class Tool(SuperModel):
         (CAT_COMING_SOON, 'coming soon'),
         (CAT_COMMUNITY, 'community'),
         (CAT_FOR_FUN, 'just for fun'),
+        (CAT_RETIRED, 'retired'),
     )
 
     name = models.CharField(max_length=255)
