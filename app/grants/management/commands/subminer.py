@@ -45,10 +45,11 @@ def process_subscription(subscription, live):
     if is_ready_to_be_processed_db:
         logger.info("   -- (ready via db) ")
         are_we_past_next_valid_timestamp = subscription.get_are_we_past_next_valid_timestamp()
+        has_approve_tx_mined = has_tx_mined(subscription.new_approve_tx_id, subscription.grant.network)
 
         # FOR DEBUGGING
         if not live:
-            is_ready_to_be_processed_web3 = subscription.get_is_subscription_ready_from_web3()
+            is_ready_to_be_processed_web3 = subscription.get_are_we_past_next_valid_timestamp()
             is_active_web3 = subscription.get_is_active_from_web3()
             signer = subscription.get_subscription_signer_from_web3()
             logger.info("    ---  DEBUG INFO")
@@ -59,6 +60,8 @@ def process_subscription(subscription, live):
 
         if not are_we_past_next_valid_timestamp:
             logger.info(f"   -- ( NOT ready via web3, will be ready on {subscription.get_next_valid_timestamp()}) ")
+        elif not has_approve_tx_mined:
+            logger.info(f"   -- ( NOT ready via approve tx, will be ready when {subscription.new_approve_tx_id} mines) ")
         else:
             logger.info("   -- (ready via web3) ")
             status = 'failure'
@@ -67,13 +70,6 @@ def process_subscription(subscription, live):
             try:
                 if live:
                     logger.info("   -- *executing* ")
-                    counter = 0
-                    while not has_tx_mined(subscription.new_approve_tx_id, subscription.grant.network):
-                        time.sleep(SLEEP_TIME)
-                        logger.info(f"   -- *waiting {SLEEP_TIME} seconds for {subscription.new_approve_tx_id} to mine*")
-                        counter += 1
-                        if counter > MAX_COUNTER:
-                            raise Exception(f"waited more than {MAX_COUNTER} times for tx  to mine")
 
                     txid = subscription.do_execute_subscription_via_web3()
                     logger.info("   -- *waiting for mine* (txid %s) ", txid)
@@ -108,6 +104,9 @@ def process_subscription(subscription, live):
                     error_comments = f"{error}\n\ndebug info: {subscription.get_debug_info()}"
                     subscription.subminer_comments = error_comments
                     subscription.save()
+                    grant = subscription.grant
+                    grant.updateActiveSubscriptions()
+                    grant.save()
                     warn_subscription_failed(subscription)
                 else:
                     logger.info('subscription processing successful')

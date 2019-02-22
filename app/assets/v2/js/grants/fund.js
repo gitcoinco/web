@@ -38,6 +38,12 @@ $(document).ready(function() {
   });
 
   $('#js-fundGrant').validate({
+    rules: {
+      num_periods: {
+        required: true,
+        min: 1
+      }
+    },
     submitHandler: function(form) {
       var data = {};
 
@@ -77,6 +83,10 @@ $(document).ready(function() {
         selected_token = data.denomination;
         deployedToken = new web3.eth.Contract(compiledToken.abi, data.denomination);
         $('#token_symbol').val($('#js-token option:selected').text());
+      }
+      if (!selected_token) {
+        _alert('Please select a token', 'error');
+        return;
       }
 
       deployedToken.methods.decimals().call(function(err, decimals) {

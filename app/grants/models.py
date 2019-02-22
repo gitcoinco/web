@@ -22,7 +22,7 @@ from datetime import timedelta
 from decimal import Decimal
 
 from django.conf import settings
-from django.contrib.postgres.fields import JSONField
+from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
@@ -186,6 +186,13 @@ class Grant(SuperModel):
         help_text=_('The team members contributing to this Grant.'),
     )
     image_css = models.CharField(default='', blank=True, max_length=255, help_text=_('additional CSS to attach to the grant-banner img.'))
+    clr_matching = models.DecimalField(
+        default=0,
+        decimal_places=0,
+        max_digits=20,
+        help_text=_('The CLR matching amount'),
+    )
+    activeSubscriptions = ArrayField(models.CharField(max_length=200), blank=True, default=list)
 
     # Grant Query Set used as manager.
     objects = GrantQuerySet.as_manager()
@@ -197,6 +204,14 @@ class Grant(SuperModel):
     def percentage_done(self):
         """Return the percentage of token received based on the token goal."""
         return ((self.amount_received / self.amount_goal) * 100)
+
+
+    def updateActiveSubscriptions(self):
+        """updates the active subscriptions list"""
+        handles = []
+        for handle in Subscription.objects.filter(grant=self, active=True).distinct('contributor_profile').values_list('contributor_profile__handle', flat=True):
+            handles.append(handle)
+        self.activeSubscriptions = handles
 
     @property
     def abi(self):
@@ -661,6 +676,7 @@ next_valid_timestamp: {next_valid_timestamp}
             self.active = False
 
         self.save()
+        grant.updateActiveSubscriptions()
         grant.save()
         successful_contribution(self.grant, self, contribution)
         return contribution

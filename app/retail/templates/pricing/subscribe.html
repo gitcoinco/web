@@ -28,6 +28,9 @@
     {% include 'shared/tag_manager_2.html' %}
     {% include 'pricing/nav.html' %}
     <div class="row no-gutters metamask-banner">
+      {% if request.path|matches:"^\/(subscribe.*)$" %}
+        <p id="navbar-network-banner" class="px-0 py-1 m-0 font-caption hidden"></p>
+      {% endif %}
       <div class="col-12">
         {% include 'shared/no_metamask_error.html' %}
         {% include 'shared/zero_balance_error.html' %}
@@ -35,11 +38,8 @@
         {% include 'shared/connect_metamask.html' %}
       </div>
     </div>
-    {% if request.path|matches:"^\/(subscribe.*)$" %}
-      <p id="navbar-network-banner" class="px-0 py-1 m-0 font-caption hidden"></p>
-    {% endif %}
     {% cookielaw_banner %}
-    <div class="banner text-center m-auto">
+    <div class="banner text-center m-auto primary_form-meta">
       <h1 class="pt-5 font-title-xl">
         {% trans "Let’s Get You On Your Way!" %}
       </h1>
