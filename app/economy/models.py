@@ -24,6 +24,7 @@ from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.contrib.postgres.fields import JSONField
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
+from django.db.models.fields.files import FieldFile
 from django.db.models.query import QuerySet
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -31,7 +32,6 @@ from django.forms.models import model_to_dict
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.functional import Promise
-from django.db.models.fields.files import FieldFile
 from django.utils.html import escape
 from django.utils.timezone import localtime
 
@@ -40,7 +40,7 @@ class EncodeAnything(DjangoJSONEncoder):
     def default(self, obj):
         if isinstance(obj, Promise):
             return force_text(obj)
-        if isinstance(obj, FieldFile):
+        elif isinstance(obj, FieldFile):
             return bool(obj)
         elif isinstance(obj, SuperModel):
             return (obj.to_standard_dict())
