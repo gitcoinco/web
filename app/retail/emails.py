@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -608,6 +608,34 @@ def render_gdpr_reconsent(to_email):
     return response_html, response_txt
 
 
+def render_share_bounty(to_email, msg, from_profile):
+    """Render the share bounty email template.
+
+    Args:
+        to_email: user to send the email to.
+        msg: the message sent in the email.
+
+    Returns:
+        str: The rendered response as a string.
+
+    """
+    to_email = f"@{to_email}" if to_email else "there"
+    response_txt = f"""
+hi {to_email},
+
+{msg}
+
+@{from_profile.handle}
+{from_profile.email}
+
+
+"""
+
+    params = {'txt': response_txt}
+    response_html = premailer_transform(render_to_string("emails/txt.html", params))
+    return response_html, response_txt
+
+
 def render_new_work_submission(to_email, bounty):
     params = {
         'bounty': bounty,
@@ -858,26 +886,29 @@ def render_start_work_applicant_expired(interest, bounty):
     return response_html, response_txt, subject
 
 
+
+
 # ROUNDUP_EMAIL
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
-    subject = "Gitcoin Is Matching $25K In Contributions To OSS!"
-    new_kudos_pks = [1352, 1349, 1336]
+    subject = "Last Week of CLR Matching | Glen Weyl Joins Livestream"
+    new_kudos_pks = [1404, 1401, 1368]
     new_kudos_size_px = 150
     intro = '''
 <p>
 Hi Gitcoiners,
 <p>
 <p>
-Today, <a href="https://medium.com/gitcoin/gitcoin-grants-clr-matching-ecbc87b10038">we're launching a Radical Experiment.</a>
-From February 1st to February 15th, we'll be matching any contributions you make to these 20 Ethereum projects with $25,000 in funding. Because we are
-using Liberal Radicalism as the mechanism, it's possible a small contribution can lead to large amounts of funding allocated to projects in the space.
+This week marks the last week of <a href="https://medium.com/gitcoin/gitcoin-grants-clr-matching-ecbc87b10038">our Radical Experiment for funding ETH 2.0 projects.</a>
+For one more week (until February 15th), we'll be matching any contributions you make to <a href="https://gitcoin.co/grants">these 20 Ethereum projects</a> with $25,000 in funding.
+Because we are using Liberal Radicalism as the mechanism, small contributions (even $5!) can go a long way.
 </p>
 <p>
-Donations of $5 or more will be matched <a href="https://medium.com/gitcoin/gitcoin-grants-clr-matching-ecbc87b10038">via Constrained Capital Liberal Radicalism (CLR)</a>, so act today! Head to the <a href="https://gitcoin.co/grants">Gitcoin Grants Explorer</a> to participate.
+To continue the discussion, we're hosting Glen Weyl, author of <a href='http://radicalmarkets.com/'>Radical Markets</a>, on the <a href="https://gitcoin.co/livestream">Gitcoin Livestream</a> today. Join us <a href="https://gitcoin.co/livestream">at 5PM ET today</a>
+and add any questions you have to <a href="https://sli.do">the Slido</a> with code D842!
 </p>
 <p>
-<h3>A Week Of New Kudos!</h3>
+<h3>Happy Kudos Friday!</h3>
 </p>
 <p>
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
@@ -896,34 +927,34 @@ Back to shipping,
 
 '''
     highlights = [{
-        'who': 'jerry40',
+        'who': 'luiserebii',
         'who_link': True,
-        'what': 'Worked with Diginex on geewallet!',
-        'link': 'https://gitcoin.co/issue/diginex/geewallet/54/2205',
+        'what': 'Completed work on a Plasma bounty!',
+        'link': 'https://gitcoin.co/issue/plasma-group/plasma-core/60/2266',
         'link_copy': 'View more',
     }, {
-        'who': 'johnlenin00',
+        'who': 'dbrettrobertson',
         'who_link': True,
         'what': 'Helped with Core Dev call notes!',
-        'link': 'https://gitcoin.co/issue/status-im/pm/12/2175',
+        'link': 'https://gitcoin.co/issue/ethereum/pm/75/2242',
         'link_copy': 'View more',
     }, {
-        'who': 'mukulverm4',
+        'who': 'lazaridis-com',
         'who_link': True,
-        'what': 'Worked with HERCone who is hiring!',
-        'link': 'https://gitcoin.co/issue/HERCone/herc-edge-login/142/2190',
+        'what': 'Completed work on a Goerli bounty.',
+        'link': 'https://gitcoin.co/issue/goerli/parity-goerli/46/2210',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/plasma-group/plasma-contracts/issues/46',
-        'primer': 'Plasma! Plasma! Plasma!',
+        'url': 'https://github.com/trailofbits/manticore/issues/1343',
+        'primer': 'Work with Trail of Bits on manticore!',
     }, {
-        'url': 'https://github.com/status-im/status-react/issues/7045',
-        'primer': 'Status is still BUIDLing!',
+        'url': 'https://github.com/dannovikov/crypto-lending/issues/1',
+        'primer': 'Help build a Multi-Sig ETH Wallet.',
     }, {
-        'url': 'https://github.com/plasma-group/plasma-contracts/issues/40',
-        'primer': 'And more work on Plasma.',
+        'url': 'https://github.com/textileio/textile-explore/issues/1',
+        'primer': 'Build a Flickr import/export tool.',
     }, ]
 
     num_leadboard_items = 5
@@ -986,6 +1017,7 @@ Back to shipping,
     response_txt = render_to_string("emails/bounty_roundup.txt", params)
 
     return response_html, response_txt, subject
+
 
 
 # DJANGO REQUESTS
@@ -1187,6 +1219,13 @@ def quarterly_roundup(request):
 @staff_member_required
 def gdpr_reconsent(request):
     response_html, _ = render_gdpr_reconsent(settings.CONTACT_EMAIL)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def share_bounty(request):
+    profile = Profile.objects.filter(handle=handle).first()
+    response_html, _ = render_share_bounty(settings.CONTACT_EMAIL, 'This is a sample message', profile)
     return HttpResponse(response_html)
 
 

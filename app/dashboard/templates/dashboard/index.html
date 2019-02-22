@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -22,8 +22,6 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
-    <meta name="description" content="The Gitcoin platform connects freelance developers with open bug bounties or online jobs, paid in crypto (ETH).
-    Leverage a global workforce to quickly complete software development and coding jobs.">
     <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
     <link rel="stylesheet" href={% static "v2/css/featured-bounties.css" %}>
     <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
@@ -82,7 +80,20 @@
     <script>
       let bootstrapTooltip = $.fn.tooltip.noConflict()
       $.fn.runTooltip = bootstrapTooltip
-      $('[data-toggle="tooltip"]').runTooltip()
+
+      $('[data-toggle="popover"]').popover()
+
+      $('body').popover({
+        selector: '.bounty_row',
+        html: true,
+        trigger: 'hover',
+        placement: 'auto',
+        template: `<div class="popover popover-bounty" role="tooltip">
+                    <div class="arrow"></div>
+                    <div class="popover-body p-0"></div>
+                    <h3 class="popover-header"></h3>
+                  </div>`
+      });
     </script>
     <script src="/dynamic/js/tokens_dynamic.js"></script>
     <script src="{% static "v2/js/tokens.js" %}"></script>

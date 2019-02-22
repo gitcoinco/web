@@ -286,6 +286,7 @@ $(document).ready(function() {
           },
           funding_organisation: metadata.fundingOrganisation,
           is_featured: metadata.featuredBounty,
+          featuring_date: metadata.featuredBounty && new Date().getTime() / 1000 || 0,
           privacy_preferences: privacy_preferences,
           funders: [],
           categories: metadata.issueKeywords.split(','),
@@ -352,7 +353,9 @@ $(document).ready(function() {
       function syncDb() {
         // Need to pass the bountydetails as well, since I can't grab it from the
         // Standard Bounties contract.
-        dataLayer.push({ event: 'fundissue' });
+        if (typeof dataLayer !== 'undefined') {
+          dataLayer.push({ event: 'fundissue' });
+        }
 
         // update localStorage issuePackage
         var issuePackage = JSON.parse(localStorage[issueURL]);
