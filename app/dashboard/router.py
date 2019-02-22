@@ -266,7 +266,7 @@ class BountyViewSet(viewsets.ModelViewSet):
 
         # offset / limit
         if 'is_featured' not in param_keys:
-            limit = int(self.request.query_params.get('limit', 100))
+            limit = int(self.request.query_params.get('limit', 5))
             max_bounties = 100
             if limit > max_bounties:
                 limit = max_bounties
