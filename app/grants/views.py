@@ -244,6 +244,7 @@ def grant_new(request):
             tx_hash = request.POST.get('transaction_hash', '')
             grant = Grant.objects.filter(deploy_tx_id=tx_hash).first()
             grant.contract_address = request.POST.get('contract_address', '')
+            print(tx_hash, grant.contract_address)
             grant.save()
             new_grant(grant, profile)
             return JsonResponse({
@@ -553,14 +554,14 @@ def quickstart(request):
 def leaderboard(request):
     """Display leaderboard."""
     params = {
-        'active': 'grants_leaderboard', 
+        'active': 'grants_leaderboard',
         'title': _('Grants Leaderboard'),
         'card_desc': _('View the top contributors to Gitcoin Grants'),
         }
-    
+
     # setup dict
     # TODO: in the future, store all of this in perftools.models.JSONStore
-    handles = Subscription.objects.all().values_list('contributor_profile__handle', flat=True)    
+    handles = Subscription.objects.all().values_list('contributor_profile__handle', flat=True)
     default_dict = {
         'rank': None,
         'no': 0,

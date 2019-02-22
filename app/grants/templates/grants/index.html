@@ -1,16 +1,13 @@
 {% comment %}
 Copyright (C) 2018 Gitcoin Core
-
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
 by the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
-
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU Affero General Public License for more details.
-
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
@@ -29,7 +26,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <div class="container-fluid header dash">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'grants/nav.html' %}
-
       <div class="container py-5">
         <div class="grants-hero white">
           <div class="row">
@@ -56,16 +52,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         </div>
       </div>
     </div>
-
     <div class="container-fluid py-5 grants-search">
       <div class="container">
         <form method="POST" id="search_form">
           {% csrf_token %}
-          <div class="row">
-            <div class="search px-0 col-7 col-sm-9 col-md-5 offset-md-2 col-lg-6 form__flex-group">
+          <div class="row justify-content-center">
+            <div class="search px-0 col-7 col-sm-9 col-md-5 col-lg-6 form__flex-group">
               <input type="search" class="form__input" id="keyword" name="keyword" placeholder="Search Grants">
             </div>
-            <div class="col-3 col-lg-1 px-0">
+            <div class="col-3 col-lg-2 px-0">
               <button class="btn btn-gc-blue">
                 <span class="d-sm-inline">{% trans "Search" %}</span>
                 <i class="ml-2 fas fa-search"></i>
@@ -99,7 +94,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         </form>
       </div>
     </div>
-
     <div class="container-fluid grants-container">
       <div class="container">
         {% if grants %}
@@ -130,14 +124,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         {% endif %}
       </div>
     </div>
-
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
     {% include 'grants/shared/shared_scripts.html' %}
   </body>
-
   <script src="{% static "v2/js/jquery.waypoints.min.js" %}"></script>
   <script src="{% static "v2/js/infinite.min.js" %}"></script>
   <script src="{% static "v2/js/abi.js" %}"></script>
