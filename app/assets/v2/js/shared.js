@@ -752,19 +752,21 @@ var currentNetwork = function(network) {
 };
 /* eslint-enable no-lonely-if */
 
+/**
+ * Throws custom alert based on user
+ * - has not installed metamask
+ * - metamask is locked
+ * - metmask connection needs to be authorized
+ * - logged in address has no ETH
+ */
 var trigger_primary_form_web3_hooks = function() {
-  // detect web3, and if not, display a form telling users they must be web3 enabled.
-  var params = {
-    page: document.location.pathname
-  };
-
   if ($('#primary_form').length) {
     var is_zero_balance_not_okay = document.location.href.indexOf('/faucet') == -1;
 
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
       $('#zero_balance_error').css('display', 'none');
-      $('#primary_form').addClass('hidden');
+      $('#primary_form, .primary_form-meta').addClass('hidden');
       $('.submit_bounty .newsletter').addClass('hidden');
       $('#unlock_metamask_error').css('display', 'none');
       $('#connect_metamask_error').css('display', 'none');
@@ -774,21 +776,21 @@ var trigger_primary_form_web3_hooks = function() {
       $('#unlock_metamask_error').css('display', 'none');
       $('#zero_balance_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
-      $('#primary_form').addClass('hidden');
+      $('#primary_form, .primary_form-meta').addClass('hidden');
       $('.submit_bounty .newsletter').addClass('hidden');
       $('#no_issue_error').css('display', 'none');
     } else if (!web3.eth.coinbase) {
       $('#unlock_metamask_error').css('display', 'block');
       $('#zero_balance_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
-      $('#primary_form').addClass('hidden');
+      $('#primary_form, .primary_form-meta').addClass('hidden');
       $('#connect_metamask_error').css('display', 'none');
       $('.submit_bounty .newsletter').addClass('hidden');
       $('#no_issue_error').css('display', 'none');
     } else if (is_zero_balance_not_okay && document.balance == 0) {
       $('#zero_balance_error').css('display', 'block');
       $('#robot_error').removeClass('hidden');
-      $('#primary_form').addClass('hidden');
+      $('#primary_form, .primary_form-meta').addClass('hidden');
       $('.submit_bounty .newsletter').addClass('hidden');
       $('#unlock_metamask_error').css('display', 'none');
       $('#connect_metamask_error').css('display', 'none');
@@ -801,7 +803,7 @@ var trigger_primary_form_web3_hooks = function() {
       $('#connect_metamask_error').css('display', 'none');
       $('#no_issue_error').css('display', 'block');
       $('#robot_error').addClass('hidden');
-      $('#primary_form').removeClass('hidden');
+      $('#primary_form, .primary_form-meta').removeClass('hidden');
       $('.submit_bounty .newsletter').removeClass('hidden');
     }
   }
@@ -1438,3 +1440,29 @@ const checkFileSize = (input, max_img_size) => {
   return true;
 };
 
+$(document).ready(function() {
+  $(window).scroll(function() {
+    $('.g-fadein').each(function(i) {
+      let duration = $(this).attr('data-fade-duration') ? $(this).attr('data-fade-duration') : 1500;
+      let direction = $(this).attr('data-fade-direction') ? $(this).attr('data-fade-direction') : 'mid';
+      let animateProps;
+
+      switch (direction) {
+        case 'left':
+          animateProps = { 'opacity': '1', 'left': '0' };
+          break;
+        case 'right':
+          animateProps = { 'opacity': '1', 'left': '0' };
+          break;
+        default:
+          animateProps = { 'opacity': '1', 'bottom': '0' };
+      }
+
+      let bottom_of_object = $(this).position().top + $(this).outerHeight() / 2;
+      let bottom_of_window = $(window).scrollTop() + $(window).height();
+
+      if (bottom_of_window > bottom_of_object)
+        $(this).animate(animateProps, duration);
+    });
+  });
+});
