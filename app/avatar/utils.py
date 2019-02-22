@@ -194,10 +194,9 @@ def get_avatar_context():
                 'name': 'Wallpaper',
                 'title': 'Pick some swag for your back',
                 'options': (
-                    'portal', 'space', 'bokeh', 'bokeh2', 'bokeh3', 'bokeh4', 'bokeh5',
-                    'fire', 'trees', 'trees2', 'trees3', 'flowers', 'city', 'city2', 'mountains',
-                    'code', 'code2', 'code3', 'bokeh3', 'bokeh6', 'abstract',
-                    'anchors', 'circuit', 'jigsaw', 'lines', 'gears', 'clouds', 'signal', 'polka_dots',
+                    'portal', 'space', 'bokeh', 'bokeh2', 'bokeh3', 'bokeh4', 'bokeh5', 'fire', 'trees', 'trees2',
+                    'trees3', 'flowers', 'city', 'city2', 'mountains', 'code', 'code2', 'code3', 'bokeh3', 'bokeh6',
+                    'abstract', 'anchors', 'circuit', 'jigsaw', 'lines', 'gears', 'clouds', 'signal', 'polka_dots',
                     'polka_dots_black', 'squares', 'shapes', 'sunburst', 'sunburst_pastel', 'rainbow',
                 ),
                 'paid_options': {

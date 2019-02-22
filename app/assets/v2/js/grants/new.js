@@ -21,16 +21,16 @@ function saveGrant(grantData, isFinal) {
     headers: {'X-CSRFToken': csrftoken},
     success: json => {
       if (isFinal) {
-        if(json.url){
+        if (json.url) {
           document.suppress_loading_leave_code = true;
           window.location = json.url;
         } else {
-          console.error("Grant failed to save");
+          console.error('Grant failed to save');
         }
       }
     },
     error: () => {
-      console.error("Grant failed to save");
+      console.error('Grant failed to save');
       _alert({ message: gettext('Your grant failed to save. Please try again.') }, 'error');
     }
   });
