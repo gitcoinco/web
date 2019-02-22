@@ -57,7 +57,7 @@ const init = () => {
 
   $('#js-token').append("<option value='0x0000000000000000000000000000000000000000'>Any Token");
 
-  userSearch('.team_members');
+  userSearch('.team_members', false, undefined, false, false, true);
 
   addGrantLogo();
 

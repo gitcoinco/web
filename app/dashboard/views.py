@@ -1863,6 +1863,7 @@ def change_bounty(request, bounty_id):
 
 def get_users(request):
     token = request.GET.get('token', None)
+    add_non_gitcoin_users = not request.GET.get('suppress_non_gitcoiners', None)
 
     if request.is_ajax():
         q = request.GET.get('term')
@@ -1880,7 +1881,7 @@ def get_users(request):
             profile_json['preferred_payout_address'] = user.preferred_payout_address
             results.append(profile_json)
         # try github
-        if not len(results):
+        if not len(results) and add_non_gitcoin_users:
             search_results = search_users(q, token=token)
             for result in search_results:
                 profile_json = {}
@@ -1894,7 +1895,7 @@ def get_users(request):
                 if profile_json['text'].lower() not in [p['text'].lower() for p in profiles]:
                     results.append(profile_json)
         # just take users word for it
-        if not len(results):
+        if not len(results) and add_non_gitcoin_users:
             profile_json = {}
             profile_json['id'] = -1
             profile_json['text'] = q
