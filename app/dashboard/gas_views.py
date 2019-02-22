@@ -155,6 +155,21 @@ def gas_calculator(request):
         'target': 'tip/receive',
         'persona': 'developer',
         'product': 'tips',
+    }, {
+        'name': _('Create Grant'),
+        'target': 'grants/new',
+        'persona': 'developer',
+        'product': 'grants',
+    }, {
+        'name': _('Fund Grant'),
+        'target': 'grants/fund',
+        'persona': 'funder',
+        'product': 'grants',
+    }, {
+        'name': _('Cancel Grant Funding'),
+        'target': 'grants/cancel',
+        'persona': 'funder',
+        'product': 'grants',
     }]
     context = {
         'title': _('Live Ethereum (ETH) Gas Calculator'),
