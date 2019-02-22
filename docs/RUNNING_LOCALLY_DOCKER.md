@@ -75,14 +75,9 @@ docker-compose exec web python3 app/manage.py createsuperuser
 
 This can be useful if you'd like data to test with:
 
-```shell
-docker-compose exec web python3 app/manage.py sync_geth
-```
-
-or equivalently:
 
 ```shell
-docker-compose exec web python3 app/manage.py sync_geth rinkeby 402 99999999999
+docker-compose exec web python3 app/manage.py sync_geth rinkeby -20 99999999999
 ```
 
 ### FAQ
