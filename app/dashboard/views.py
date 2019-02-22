@@ -448,7 +448,7 @@ def cancel_reason(request):
 
     is_funder = bounty.is_funder(user.username.lower()) if user else False
     if is_funder:
-        canceled_bounty_reason = request.POST.get('canceled_bounty_reason')
+        canceled_bounty_reason = request.POST.get('canceled_bounty_reason', '')
         bounty.canceled_bounty_reason = canceled_bounty_reason
         bounty.save()
 
