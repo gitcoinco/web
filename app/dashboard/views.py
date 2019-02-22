@@ -1538,8 +1538,8 @@ def toolbox(request):
         "description": _("Friendship, mentorship, and community are all part of the process."),
         "tools": tools.filter(category=Tool.CAT_COMMUNITY)
     }, {
-        "title": _("Tools to BUIDL Gitcoin"),
-        "description": _("Gitcoin is built using Gitcoin.  Purdy cool, huh? "),
+        "title": _("Developer Tools"),
+        "description": _("Gitcoin is a platform that's built using Gitcoin.  Purdy cool, huh? "),
         "tools": tools.filter(category=Tool.CAT_BUILD)
     }, {
         "title": _("Tools in Alpha"),
