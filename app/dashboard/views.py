@@ -1851,6 +1851,7 @@ def change_bounty(request, bounty_id):
     result = {}
     for key in keys:
         result[key] = getattr(bounty, key)
+    del result['featuring_date']
 
     params = {
         'title': _('Change Bounty Details'),
