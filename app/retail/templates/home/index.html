@@ -111,7 +111,7 @@
         alt="gitcoin logo" />
       <div class="container pt-0">
         <div class="row">
-          <div class="col-12 col-md-6 col-lg-4">
+          <div class="col-12 col-md-6 col-lg-4 g-fadein" data-fade-duration=1000 data-fade-direction="left">
             <h4 class="font-title mb-4">{% trans "Grow OSS" %}</h4>
             {% for groups in products %}
               {% if groups.group == 'grow_oss' %}
@@ -130,7 +130,7 @@
               {% endif %}
             {% endfor %}
           </div>
-          <div class="col-12 col-md-6 col-lg-4">
+          <div class="col-12 col-md-6 col-lg-4 g-fadein" data-fade-duration=1000 data-fade-direction="mid">
             <h4 class="font-title mb-4">{% trans "Maintain OSS" %}</h4>
             {% for groups in products %}
               {% if groups.group == 'maintain_oss' %}
@@ -149,7 +149,7 @@
               {% endif %}
             {% endfor %}
           </div>
-          <div class="col-12 col-md-6 col-lg-4">
+          <div class="col-12 col-md-6 col-lg-4 g-fadein" data-fade-duration=1000 data-fade-direction="right">
             <h4 class="font-title mb-4">{% trans "Build  Relationships" %}</h4>
             {% for groups in products %}
               {% if groups.group == 'build_oss' %}
@@ -291,6 +291,5 @@
       $(this).find('iframe').css('visibility', 'visible');
       $(this).find('iframe').attr('src', 'https://www.youtube.com/embed/oe7oD8ThKx8?autoplay=1');
     })
-
   </script>
 </html>
