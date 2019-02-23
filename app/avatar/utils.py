@@ -114,7 +114,7 @@ def get_avatar_context():
             {
                 'name': 'Clothing',
                 'title': 'Pick your clothing',
-                'options': (
+                'options': ('suit_business',
                     'cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater', 'spacecadet', 'suit',
                     'ethlogo', 'cloak', 'robe', 'pjs', 'elf_inspired', 'business_suit', 'suspender', 'gitcoinpro',
                 ),
