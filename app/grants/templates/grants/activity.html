@@ -32,7 +32,7 @@
                 </div>
               </div>
               <div class="d-none d-md-block col-4 col-md-2 my-auto font-body">
-                <a class="sub_tx_link etherscan_link" href="{{ subscription.new_approve_tx_id }}" target="_blank" rel="noopener noreferrer">
+                <a class="sub_tx_link" href="https://etherscan.io/tx/{{ subscription.new_approve_tx_id }}" target="_blank" rel="noopener noreferrer">
                   View Etherscan
                 </a>
               </div>
@@ -73,7 +73,7 @@
                 </div>
               </div>
               <div class="d-none d-md-block col-md-2 font-body my-auto txn-link">
-                <a class="tx_link etherscan_link" href="{{ transaction.tx_id }}" target="_blank" rel="noopener noreferrer">
+                <a class="tx_link" href="https://etherscan.io/tx/{{ transaction.tx_id }}" target="_blank" rel="noopener noreferrer">
                   View Etherscan
                 </a>
               </div>
@@ -128,9 +128,11 @@
               </div>
             </div>
             <div class="d-none d-md-block col-md-2 my-auto font-body">
-              <a class="cancel_tx_link etherscan_link" href="{{ subscription.cancel_tx_id }}" target="_blank" rel="noopener noreferrer">
-                View Etherscan
-              </a>
+              {% if subscription.cancel_tx_id != '0x0' %}
+                <a class="cancel_tx_link" href="https://etherscan.io/tx/{{ subscription.cancel_tx_id }}" target="_blank" rel="noopener noreferrer">
+                  View Etherscan
+                </a>
+              {% endif %}
             </div>
             <div class="col-4 col-md-2 offset-lg-1 my-auto tags font-caption">
               <div class="tag tag-lg token">
