@@ -110,7 +110,14 @@ $(document).ready(function() {
 
           let url;
 
-          deployedToken.methods.approve(
+          var tokenMethod = deployedToken.methods.approve;
+
+          // one time payments
+          if (data.num_periods == 1) {
+            tokenMethod = deployedToken.methods.transfer;
+          }
+
+          tokenMethod(
             data.contract_address,
             web3.utils.toTwosComplement(approvalSTR)
           ).send({

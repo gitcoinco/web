@@ -355,7 +355,7 @@ def grant_fund(request, grant_id, grant_slug):
         return TemplateResponse(request, 'grants/shared/error.html', params)
 
     active_subscription = Subscription.objects.select_related('grant').filter(
-        grant=grant_id, active=True, contributor_profile=request.user.profile
+        grant=grant_id, active=True, error=False, contributor_profile=request.user.profile
     )
 
     if active_subscription:
@@ -386,6 +386,12 @@ def grant_fund(request, grant_id, grant_slug):
             subscription.contributor_profile = profile
             subscription.grant = grant
             subscription.save()
+
+            # one time payments
+            if subscription.num_tx_approved == '1':
+                subscription.successful_contribution(subscription.new_approve_tx_id);
+                subscription.error = True #cancel subs so it doesnt try to bill again
+                subscription.save()
 
             messages.info(
                 request,
