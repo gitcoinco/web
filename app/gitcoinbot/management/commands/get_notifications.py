@@ -25,6 +25,7 @@ from django.utils import timezone
 from git.utils import (
     get_gh_notifications, get_issue_comments, issue_number, org_name, post_issue_comment_reaction, repo_name,
 )
+from github import RateLimitExceededException
 
 
 class Command(BaseCommand):
@@ -59,6 +60,9 @@ class Command(BaseCommand):
                         if num_reactions == 0 and not is_from_gitcoinbot:
                             print("unprocessed")
                             post_issue_comment_reaction(_org_name, _repo_name, _comment_id, 'heart')
+                except RateLimitExceededException as e:
+                    logging.debug(e)
+                    print(e)
                 except Exception as e:
                     logging.exception(e)
                     print(e)
