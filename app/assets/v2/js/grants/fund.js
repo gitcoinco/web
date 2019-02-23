@@ -111,14 +111,16 @@ $(document).ready(function() {
           let url;
 
           var tokenMethod = deployedToken.methods.approve;
-
+          var arg1 = data.contract_address;
+          
           // one time payments
           if (data.num_periods == 1) {
+            arg1 = data.admin_address;
             tokenMethod = deployedToken.methods.transfer;
           }
 
           tokenMethod(
-            data.contract_address,
+            arg1,
             web3.utils.toTwosComplement(approvalSTR)
           ).send({
             from: accounts[0],

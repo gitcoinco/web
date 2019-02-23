@@ -522,7 +522,7 @@ def profile(request):
     sub_contributions = []
     contributions = []
 
-    for contribution in Contribution.objects.filter(subscription__contributor_profile=profile):
+    for contribution in Contribution.objects.filter(subscription__contributor_profile=profile).order_by('-pk'):
         instance = {
             "cont": contribution,
             "sub": contribution.subscription,
