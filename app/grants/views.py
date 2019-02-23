@@ -391,6 +391,7 @@ def grant_fund(request, grant_id, grant_slug):
             if subscription.num_tx_approved == '1':
                 subscription.successful_contribution(subscription.new_approve_tx_id);
                 subscription.error = True #cancel subs so it doesnt try to bill again
+                subscription.subminer_comments = "skipping subminer bc this is a 1 and done subscription, and tokens were alredy sent".
                 subscription.save()
 
             messages.info(
