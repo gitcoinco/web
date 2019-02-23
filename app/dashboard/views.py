@@ -1575,8 +1575,8 @@ def toolbox(request):
 
     context = {
         "active": "tools",
-        'title': _("Toolbox"),
-        'card_title': _("Gitcoin Toolbox"),
+        'title': _("Tools"),
+        'card_title': _("Community Tools"),
         'avatar_url': static('v2/images/tools/api.jpg'),
         "card_desc": _("Accelerate your dev workflow with Gitcoin\'s incentivization tools."),
         'actors': actors,
