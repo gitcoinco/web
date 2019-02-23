@@ -174,7 +174,9 @@ def get_avatar_context():
                             ['Masks-carnival'], ['Masks-gas'], ['Masks-surgical'], ['Extras-monkey'],
                             ['Masks-power'], ['Glasses-7'],['Glasses-8'],['HatShort-angel'],['HatShort-devil'],
                             ['Extras-necklace1'],['Extras-necklace2'],['Extras-necklace3'],['Glasses-9'],
-                            ['Masks-clown'],
+                            ['Masks-clown'],['Extras-bird'],['HatShort-sleepy'],['Extras-necklace4'],
+                            ['Earring-tribal'],['Glasses-google'],['Masks-marshmellow'],['Masks-pirate'],
+                            ['Masks-power1'],['HatShort-elf'],
                             ),
                 'paid_options': {
                     'Extras-Parrot': 0.01,
