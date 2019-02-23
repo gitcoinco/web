@@ -17,6 +17,7 @@
 '''
 
 import logging
+import time
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -63,6 +64,7 @@ class Command(BaseCommand):
                 except RateLimitExceededException as e:
                     logging.debug(e)
                     print(e)
+                    time.sleep(60)
                 except Exception as e:
                     logging.exception(e)
                     print(e)
