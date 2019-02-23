@@ -1526,17 +1526,13 @@ def toolbox(request):
         "description": _("Accelerate your dev workflow with Gitcoin\'s incentivization tools."),
         "tools": tools.filter(category=Tool.CAT_BASIC)
     }, {
-        "title": _("Gas Tools"),
-        "description": _("Paying Gas is a part of using Ethereum.  It's much easier with our suite of gas tools."),
-        "tools": tools.filter(category=Tool.GAS_TOOLS)
-    }, {
-        "title": _("Advanced"),
-        "description": _("Take your OSS game to the next level!"),
-        "tools": tools.filter(category=Tool.CAT_ADVANCED)
-    }, {
         "title": _("Community"),
         "description": _("Friendship, mentorship, and community are all part of the process."),
         "tools": tools.filter(category=Tool.CAT_COMMUNITY)
+    }, {
+        "title": _("Gas Tools"),
+        "description": _("Paying Gas is a part of using Ethereum.  It's much easier with our suite of gas tools."),
+        "tools": tools.filter(category=Tool.GAS_TOOLS)
     }, {
         "title": _("Developer Tools"),
         "description": _("Gitcoin is a platform that's built using Gitcoin.  Purdy cool, huh? "),
@@ -1546,13 +1542,17 @@ def toolbox(request):
         "description": _("These fresh new tools are looking for someone to test ride them!"),
         "tools": tools.filter(category=Tool.CAT_ALPHA)
     }, {
-        "title": _("Tools Coming Soon"),
-        "description": _("These tools will be ready soon.  They'll get here sooner if you help BUIDL them :)"),
-        "tools": tools.filter(category=Tool.CAT_COMING_SOON)
-    }, {
         "title": _("Just for Fun"),
         "description": _("Some tools that the community built *just because* they should exist."),
         "tools": tools.filter(category=Tool.CAT_FOR_FUN)
+    }, {
+        "title": _("Advanced"),
+        "description": _("Take your OSS game to the next level!"),
+        "tools": tools.filter(category=Tool.CAT_ADVANCED)
+    }, {
+        "title": _("Roadmap"),
+        "description": _("These ideas have been floating around the community.  They'll be BUIDLt sooner if you help BUIDL them :)"),
+        "tools": tools.filter(category=Tool.CAT_COMING_SOON)
     }, {
         "title": _("Retired Tools"),
         "description": _("These are tools that we've sunsetted.  Pour one out for them 🍻"),
