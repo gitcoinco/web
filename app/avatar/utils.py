@@ -172,12 +172,12 @@ def get_avatar_context():
                 ], ['Glasses-5'], ['Glasses-geordi-visor'], ['Masks-funny_face'], ['Masks-viking'], [
                     'Masks-construction_helmet'
                 ], ['Glasses-6'], ['HatShort-green'], ['Earring-6'], ['Extras-necklace'], ['Masks-carnival'],
-                            ['Masks-gas'], ['Masks-surgical'], ['Extras-monkey'], ['Masks-power'], ['Glasses-7'],
-                            ['Glasses-8'], ['HatShort-angel'], ['HatShort-devil'], ['Extras-necklace1'],
-                            ['Extras-necklace2'], ['Extras-necklace3'], ['Glasses-9'], ['Masks-clown'],
-                            ['Extras-bird'],['HatShort-sleepy'],
-                            ['Earring-tribal'],['Glasses-google'],['Masks-marshmellow'],['Masks-pirate'],
-                            ['Masks-power1'],['HatShort-elf'],['Extras-necklaceb'],
+                ['Masks-gas'], ['Masks-surgical'], ['Extras-monkey'], ['Masks-power'], ['Glasses-7'],
+                ['Glasses-8'], ['HatShort-angel'], ['HatShort-devil'], ['Extras-necklace1'],
+                ['Extras-necklace2'], ['Extras-necklace3'], ['Glasses-9'], ['Masks-clown'],
+                ['Extras-bird'],['HatShort-sleepy'],
+                ['Earring-tribal'],['Glasses-google'],['Masks-marshmellow'],['Masks-pirate'],
+                ['Masks-power1'],['HatShort-elf'],['Extras-necklaceb'],
                             ),
                 'paid_options': {
                     'Extras-Parrot': 0.01,

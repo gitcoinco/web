@@ -22,7 +22,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -50,7 +50,7 @@
      inkscape:current-layer="svg26" />
   <g
      id="g111"
-     transform="matrix(1.7683616,0,0,1.5033277,202.48587,-1383.5505)">
+     transform="matrix(2.0282487,0,0,1.5033277,141.74011,-1383.5505)">
     <path
        style="fill:#22a037"
        inkscape:connector-curvature="0"
