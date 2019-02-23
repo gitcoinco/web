@@ -82,6 +82,7 @@ if ! [ "$JOBS_NODE" ]; then
     echo "- gunicorn"
     for pid in $(pgrep -fl "gunicorn: worke" | awk '{print $1}'); do
     sudo kill -1 $pid
+    sleep 0.5
     done
 
 fi
