@@ -96,7 +96,8 @@ def get_avatar_context():
                 'title': 'Pick nose shape',
                 'options': ('0', '1', '2', '3', '4'),
                 'paid_options': {},
-            }, {
+            },
+            {
                 'name': 'Mouth',
                 'title': 'Pick mouth shape',
                 'options': ('0', '1', '2', '3', '4', '5'),
@@ -131,13 +132,12 @@ def get_avatar_context():
                 ], ['7-back', '7-front'], ['8-back', '8-front'], ['9-back', '9-front'], ['None', '10'], [
                     'damos_hair-back', 'damos_hair-front'
                 ], ['long_swoosh-back', 'long_swoosh-front'], ['None', 'mohawk'], ['None', 'mohawk_inverted'],
-                            ['None', 'spikey'], ['None', 'mickey_hair'], ['None',
-                                                                          'modernhair_1'], ['None', 'modernhair_2'],
-                            ['modernhair_3-back', 'modernhair_3-front'], ['None', 'womenhair'], ['None', 'womanhair'], [
-                                'None', 'womanhair1'
-                            ], ['None', 'womanhair2'], ['None', 'womanhair3'], ['None',
-                                                                                'womanhair4'], ['None', 'womanhair5'], [
-                                                                                'None', 'man-hair']),
+                            ['None', 'spikey'], ['None', 'mickey_hair'], ['None', 'modernhair_1'], [
+                                'None', 'modernhair_2'
+                            ], ['modernhair_3-back', 'modernhair_3-front'], ['None', 'womenhair'], [
+                                'None', 'womanhair'
+                            ], ['None', 'womanhair1'], ['None', 'womanhair2'], ['None', 'womanhair3'],
+                            ['None', 'womanhair4'], ['None', 'womanhair5'], ['None', 'man-hair']),
                 'paid_options': {},
             },
             {
@@ -172,12 +172,9 @@ def get_avatar_context():
                 ], ['Glasses-5'], ['Glasses-geordi-visor'], ['Masks-funny_face'], ['Masks-viking'], [
                     'Masks-construction_helmet'
                 ], ['Glasses-6'], ['HatShort-green'], ['Earring-6'], ['Extras-necklace'], ['Masks-carnival'],
-                ['Masks-gas'], ['Masks-surgical'], ['Extras-monkey'], ['Masks-power'], ['Glasses-7'],
-                ['Glasses-8'], ['HatShort-angel'], ['HatShort-devil'], ['Extras-necklace1'],
-                ['Extras-necklace2'], ['Extras-necklace3'], ['Glasses-9'], ['Masks-clown'],
-                ['Extras-bird'],['HatShort-sleepy'],
-                ['Earring-tribal'],['Glasses-google'],['Masks-marshmellow'],['Masks-pirate'],
-                ['Masks-power1'],['HatShort-elf'],['Extras-necklaceb'],
+                            ['Masks-gas'], ['Masks-surgical'], ['Extras-monkey'], ['Masks-power'], ['Glasses-7'],
+                            ['Glasses-8'], ['HatShort-angel'], ['HatShort-devil'], ['Extras-necklace1'],
+                            ['Extras-necklace2'], ['Extras-necklace3'], ['Glasses-9'], ['Masks-clown'],
                             ),
                 'paid_options': {
                     'Extras-Parrot': 0.01,
@@ -199,6 +196,8 @@ def get_avatar_context():
                 'options': (
                     'anchors', 'circuit', 'jigsaw', 'lines', 'gears', 'clouds', 'signal', 'polka_dots',
                     'polka_dots_black', 'squares', 'shapes', 'sunburst', 'sunburst_pastel', 'rainbow',
+                    'portal', 'space', 'bokeh', 'bokeh2', 'bokeh3', 'bokeh4', 'bokeh5',
+                    'fire'
                 ),
                 'paid_options': {
                     'sunburst_pastel': 0.01,
