@@ -122,7 +122,7 @@ $(document).ready(function() {
           }).on('transactionHash', function(transactionHash) {
             $('#sub_new_approve_tx_id').val(transactionHash);
             const linkURL = etherscan_tx_url(transactionHash);
-            var token_address = $('#js-token').length ? $('#js-token').val() : $('#sub_token_address').val();
+            let token_address = $('#js-token').length ? $('#js-token').val() : $('#sub_token_address').val();
             let data = {
               'contributor_address': $('#contributor_address').val(),
               'amount_per_period': $('#amount').val(),

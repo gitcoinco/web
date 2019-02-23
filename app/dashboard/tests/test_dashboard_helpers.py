@@ -45,7 +45,6 @@ class DashboardHelpersTest(TestCase):
             from_currency='ETH',
             to_currency='USDT',
         )
-        # Bounty.objects.create()
 
     def test_amount(self):
         """Test the dashboard helper amount method."""

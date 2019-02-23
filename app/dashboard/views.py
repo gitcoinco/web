@@ -1496,6 +1496,7 @@ def terms(request):
     }
     return TemplateResponse(request, 'legal/terms.html', context)
 
+
 def privacy(request):
     return TemplateResponse(request, 'legal/privacy.html', {})
 
