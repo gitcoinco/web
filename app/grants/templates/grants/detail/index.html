@@ -226,7 +226,7 @@
                       </div>
                     </div>
                   </div>
-                {% elif user_subscription %}
+                {% elif user_non_errored_subscription %}
                   <a href="{% url 'grants:subscription_cancel' grant.id grant.slug user_subscription.id %}">
                     <button class="button button--primary button--warning button--full">{% trans "Cancel Your Funding" %}</button>
                   </a>

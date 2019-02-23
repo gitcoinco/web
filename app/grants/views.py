@@ -108,6 +108,7 @@ def grant_details(request, grant_id, grant_slug):
         cancelled_subscriptions = grant.subscriptions.filter(Q(active=False, error=False) | Q(error=True))
         contributions = Contribution.objects.filter(subscription__in=grant.subscriptions.all())
         user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
+        user_non_errored_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True, error=True).first()
         add_cancel_params = user_subscription
     except Grant.DoesNotExist:
         raise Http404
@@ -165,6 +166,7 @@ def grant_details(request, grant_id, grant_slug):
         'cancelled_subscriptions': cancelled_subscriptions,
         'contributions': contributions,
         'user_subscription': user_subscription,
+        'user_non_errored_subscription': user_non_errored_subscription,
         'is_admin': is_admin,
         'grant_is_inactive': not grant.active,
         'updates': updates,
