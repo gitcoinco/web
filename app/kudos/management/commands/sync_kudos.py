@@ -28,6 +28,7 @@ import requests
 import web3
 from kudos.models import Token
 from kudos.utils import KudosContract
+from python_http_client.exceptions import HTTPError
 
 # from web3.middleware import local_filter_middleware
 
@@ -83,6 +84,8 @@ class Command(BaseCommand):
                 kudos_contract.sync_db(kudos_id=int(asset_token_id), txid=transaction_hash)
             except IndexError:
                 continue
+            except HTTPError:
+                logger.debug(e)
             except Exception as e:
                 logger.error(e)
 
