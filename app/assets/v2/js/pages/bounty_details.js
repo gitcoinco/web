@@ -184,7 +184,7 @@ var callbacks = {
     } else {
       $('#auto_approve_workers_wrapper').hide();
     }
-    return [ 'admin_override_suspend_auto_approval', val ? 'off' : 'on' ];
+    return [ 'admin_override_suspend_auto_approval', val ? 'Off' : 'On' ];
   },
   'issue_keywords': function(key, val, result) {
     if (!result.keywords || result.keywords.length == 0)
