@@ -81,16 +81,18 @@ def strip_double_chars(txt, char=' '):
 
 def get_bounty_history_row(label, date, keyword):
     bounties = get_bounty_history_at_date(['done'], date, keyword)
-    tips = get_tip_history_at_date(date, keyword)
+    ecosystem = get_ecosystem_history_at_date(date, keyword)
+    tips = get_tip_history_at_date(date, keyword) - ecosystem
     core_platform = bounties + tips
 
-    print(label, date, core_platform, keyword, bounties, tips)
+    print(label, date, core_platform, keyword, bounties, tips, ecosystem)
     return [
         label,
         bounties,
         tips,
         get_grants_history_at_date(date, keyword),
         get_kudos_history_at_date(date, keyword),
+        ecosystem,
     ]
 
 
@@ -122,6 +124,17 @@ def get_grants_history_at_date(date, keyword):
 def get_kudos_history_at_date(date, keyword):
     return get_cryptoasset_history_at_date(date, keyword, 'kudos')
 
+
+def get_ecosystem_history_at_date(date, keyword):
+    date = date.replace(tzinfo=None)
+
+    if date < timezone.datetime(2019, 1, 2):
+        if date > timezone.datetime(2018, 12, 30):
+            return 184043 + 24033
+    if date < timezone.datetime(2018, 12, 2):
+        if date > timezone.datetime(2018, 11, 30):
+            return 51087.23
+    return 0
 
 def get_tip_history_at_date(date, keyword):
     return get_cryptoasset_history_at_date(date, keyword, 'tips')
@@ -290,14 +303,14 @@ def get_bounty_median_turnaround_time(func='turnaround_time_started', keyword=No
 
 def get_bounty_history(keyword=None, cumulative=True):
     bh = [
-        ['', 'Bounties', 'Tips', 'Grants', 'Kudos'],
+        ['', 'Bounties', 'Tips', 'Grants', 'Kudos', 'Ecosystem'],
     ]
     initial_stats = [
-        ["December 2017", 5534, 2011, 0, 0],
-        ["January 2018", 15930, 5093, 0, 0],
-        ["February 2018", 16302, 7391, 0, 0],
-        ["March 2018", 26390, 8302, 0, 0],
-        ["April 2018", 37342, 10109, 0, 0],
+        ["December 2017", 5534, 2011, 0, 0, 0],
+        ["January 2018", 15930, 5093, 0, 0, 0],
+        ["February 2018", 16302, 7391, 0, 0, 0],
+        ["March 2018", 26390, 8302, 0, 0, 0],
+        ["April 2018", 37342, 10109, 0, 0, 0],
     ]
     if not keyword:
         bh = bh + initial_stats
