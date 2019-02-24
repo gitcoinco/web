@@ -12,7 +12,7 @@ function drawChart() {
   var options = {
     legend: { position: 'none' },
     bar: { groupWidth: '50%' },
-    colors: [ '#3E00FF', '#8E60FF', '#FFCE08', '#25E899', '#fbd0e6', '#fbd0e6', '#DDDDDD' ],
+    colors: [ '#3E00FF', '#8E60FF', '#FFCE08', '#25E899', '#fbd0e6', '#aaaaaa', '#DDDDDD' ],
     isStacked: true,
     backgroundColor: 'transparent',
     height: 400,

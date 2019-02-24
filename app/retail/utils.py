@@ -82,6 +82,7 @@ def strip_double_chars(txt, char=' '):
 def get_bounty_history_row(label, date, keyword):
     bounties = get_bounty_history_at_date(['done'], date, keyword)
     ecosystem = get_ecosystem_history_at_date(date, keyword)
+    codefund = get_codefund_history_at_date(date, keyword)
     tips = get_tip_history_at_date(date, keyword) - ecosystem
     core_platform = bounties + tips
 
@@ -92,6 +93,7 @@ def get_bounty_history_row(label, date, keyword):
         tips,
         get_grants_history_at_date(date, keyword),
         get_kudos_history_at_date(date, keyword),
+        codefund,
         ecosystem,
     ]
 
@@ -133,6 +135,31 @@ def get_ecosystem_history_at_date(date, keyword):
     if date > timezone.datetime(2018, 12, 23):
         amount += 51087.23
     return amount
+
+
+def get_codefund_history_at_date(date, keyword):
+    date = date.replace(tzinfo=None)
+    amount = 0
+    # July => Feb 2019
+    # $5,500.00 $4,400.00   $9,000.00   $8,500.00   $7,450.00   $6,150.00   $9,700.00 $6,258.31
+    if date > timezone.datetime(2018, 7, 23):
+        amount += 5500
+    if date > timezone.datetime(2018, 8, 23):
+        amount += 4400
+    if date > timezone.datetime(2018, 9, 23):
+        amount += 9000
+    if date > timezone.datetime(2018, 10, 23):
+        amount += 8500
+    if date > timezone.datetime(2018, 11, 23):
+        amount += 7450
+    if date > timezone.datetime(2018, 12, 23):
+        amount += 6150
+    if date > timezone.datetime(2019, 1, 23):
+        amount += 9700
+    if date > timezone.datetime(2019, 2, 23):
+        amount += 6258 # MTD
+    return amount
+
 
 def get_tip_history_at_date(date, keyword):
     return get_cryptoasset_history_at_date(date, keyword, 'tips')
@@ -301,14 +328,14 @@ def get_bounty_median_turnaround_time(func='turnaround_time_started', keyword=No
 
 def get_bounty_history(keyword=None, cumulative=True):
     bh = [
-        ['', 'Bounties', 'Tips', 'Grants', 'Kudos', 'Ecosystem'],
+        ['', 'Bounties', 'Tips', 'Grants', 'Kudos', 'Ads', 'Ecosystem'],
     ]
     initial_stats = [
-        ["December 2017", 5534, 2011, 0, 0, 0],
-        ["January 2018", 15930, 5093, 0, 0, 0],
-        ["February 2018", 16302, 7391, 0, 0, 0],
-        ["March 2018", 26390, 8302, 0, 0, 0],
-        ["April 2018", 37342, 10109, 0, 0, 0],
+        ["December 2017", 5534, 2011, 0, 0, 0, 0],
+        ["January 2018", 15930, 5093, 0, 0, 0, 0],
+        ["February 2018", 16302, 7391, 0, 0, 0, 0],
+        ["March 2018", 26390, 8302, 0, 0, 0, 0],
+        ["April 2018", 37342, 10109, 0, 0, 0, 0],
     ]
     if not keyword:
         bh = bh + initial_stats
