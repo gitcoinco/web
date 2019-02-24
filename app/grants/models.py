@@ -417,6 +417,12 @@ class Subscription(SuperModel):
         help_text=_('The next contribution date'),
         default=timezone.datetime(1990, 1, 1),
     )
+    amount_per_period_usdt = models.DecimalField(
+        default=0,
+        decimal_places=18,
+        max_digits=64,
+        help_text=_('The amount per contribution period in USDT'),
+    )
 
     @property
     def status(self):
@@ -669,6 +675,7 @@ next_valid_timestamp: {next_valid_timestamp}
 
         value_usdt = self.get_converted_amount()
         if value_usdt:
+            self.amount_per_period_usdt = value_usdt
             grant.amount_received += Decimal(value_usdt)
 
         if self.num_tx_processed == self.num_tx_approved and value_usdt:
