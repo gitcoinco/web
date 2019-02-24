@@ -468,7 +468,15 @@ def build_stat_results(keyword=None):
     ])
     total_grants_usd = get_grants_history_at_date(timezone.now(), [])
     total_kudos_usd = get_kudos_history_at_date(timezone.now(), [])
-    context['universe_total_usd'] = float(total_bounties_usd) + float(total_tips_usd) + float(total_grants_usd) + float(total_kudos_usd)
+    total_codefund_usd = get_codefund_history_at_date(timezone.now(), '')
+    all_platforms = [
+        float(total_bounties_usd),
+        float(total_tips_usd),
+        float(total_grants_usd),
+        float(total_kudos_usd),
+        float(total_codefund_usd)
+        ]
+    context['universe_total_usd'] = sum(all_platforms)
     pp.profile_time('universe_total_usd')
     context['max_bounty_history'] = float(context['universe_total_usd']) * .15
     context['bounty_abandonment_rate'] = bounty_abandonment_rate
