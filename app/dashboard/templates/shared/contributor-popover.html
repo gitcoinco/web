@@ -17,34 +17,34 @@
 {% load i18n %}
   <div class="popover-bounty__content">
     <div class="d-flex justify-content-between mb-2">
-      <span class="font-subheader title text-truncate">iamonuwa</span>
-      <span class="specialty">Specialty: css, javascript, react</span>
+      <span class="title font-subheader username">[[:name]]</span>
+      <span class="text-muted">Specialty: css, javascript, react</span>
       <div class="org_logos">
         <span>Logos here</span>
       </div>
     </div>
-    <span>~2.5 ETH earned</span>
+    <span class="earned">~2.5 ETH earned</span>
     <div class="statistics d-flex justify-content-between mt-2">
-      <div class="popover_card">
-        <span>#128</span>
-        <span>Gitcoin Contributor</span>
+      <div class="popover_card text-center mr-4 p-2">
+        <span class="contributor-position">#128</span>
+        <p class="mt-2">Gitcoin Contributor</p>
       </div>
       <div class="contributions d-flex justify-content-between">
-        <div class="popover_card">
-          <span>34</span>
-          <span>Bounties Contributor</span>
+        <div class="popover_card text-center mr-2">
+          <span class="completed-bounties">34</span>
+          <p class="mt-2">Bounties Completed</p>
         </div>
-        <div class="popover_card">
-          <span>2</span>
-          <span>Bounties In Progress</span>
+        <div class="popover_card text-center mr-2">
+          <span class="in-progress text-center">2</span>
+          <p class="mt-2">Bounties In Progress</p>
         </div>
-        <div class="popover_card">
-          <span>1</span>
-          <span>Bounties Abandoned</span>
+        <div class="popover_card text-center mr-2">
+          <span class="abandoned-bounties">1</span>
+          <p class="mt-2">Bounties Abandoned</p>
         </div>
-        <div class="popover_card">
-          <span>2</span>
-          <span>Bounties Removed</span>
+        <div class="popover_card text-center mr-2">
+          <span class="removed-bounties">2</span>
+          <p class="mt-2">Bounties Removed</p>
         </div>
       </div>
     </div>
@@ -52,9 +52,9 @@
 
   <div class="popover-bounty__footer">
       <div class="d-flex justify-content-between">
-        <span class="title">{% trans 'Latest Activity' %}</span>
-        <span class="status">Submitted Work</span>
-        <span class="expires-in">30 mins ago</span>
+        <span class="text-muted">{% trans 'Latest Activity' %}</span>
+        <span class="current_status">Submitted Work</span>
+        <span class="text-muted">30 mins ago</span>
       </div>
-      <p class="pt-3">Build Front End of Uport Login Page - Issue #2337</p>
+      <p class="text-muted pt-2">Build Front End of Uport Login Page - Issue #2337</p>
   </div>

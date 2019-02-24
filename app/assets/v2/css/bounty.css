@@ -468,6 +468,22 @@ a.btn {
   margin-bottom: 2em;
 }
 
+.earned {
+  color: #8E2ABE;
+}
+
+.username, .contributor-position, .in-progress, .current_status {
+  color: #0D0764;
+}
+
+.completed-bounties {
+  color: #05B66A;
+}
+
+.abandoned-bounties, .removed-bounties {
+  color: #F5A623;
+}
+
 .code-snippet {
   background-color: #F2F6F9;
   padding: 1rem;
