@@ -127,14 +127,12 @@ def get_kudos_history_at_date(date, keyword):
 
 def get_ecosystem_history_at_date(date, keyword):
     date = date.replace(tzinfo=None)
-
-    if date < timezone.datetime(2019, 1, 2):
-        if date > timezone.datetime(2018, 12, 30):
-            return 184043 + 24033
-    if date < timezone.datetime(2018, 12, 2):
-        if date > timezone.datetime(2018, 11, 30):
-            return 51087.23
-    return 0
+    amount = 0
+    if date > timezone.datetime(2019, 1, 23):
+        amount += 184043 + 24033
+    if date > timezone.datetime(2018, 12, 23):
+        amount += 51087.23
+    return amount
 
 def get_tip_history_at_date(date, keyword):
     return get_cryptoasset_history_at_date(date, keyword, 'tips')
