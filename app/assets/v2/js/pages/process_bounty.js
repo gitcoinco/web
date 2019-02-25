@@ -132,7 +132,7 @@ window.onload = function() {
       e.preventDefault();
       var issueURL = $('input[name=issueURL]').val();
       var fulfillmentId = getSelectedFulfillment().getAttribute('value');
-
+      const contract_version = $('input[name=contract_version]').val();
       var isError = false;
 
       if ($('#terms:checked').length == 0) {
@@ -153,7 +153,8 @@ window.onload = function() {
         return;
       }
 
-      var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+      var bounty = web3.eth.contract(getBountyABI(contract_version)).
+        at(bounty_address(contract_version));
 
       loading_button($(this));
 

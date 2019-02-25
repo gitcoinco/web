@@ -48,7 +48,8 @@ window.onload = function() {
         localStorage['githubUsername'] = githubUsername;
 
         var account = web3.eth.coinbase;
-        var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+        var bounty = web3.eth.contract(getBountyABI(data.contract_version)).
+          at(bounty_address(data.contract_version));
 
         ipfs.ipfsApi = IpfsApi(ipfsConfig);
         ipfs.setProvider(ipfsConfig);
@@ -56,6 +57,7 @@ window.onload = function() {
         // https://github.com/ConsenSys/StandardBounties/issues/21
         var ipfsFulfill = {
           payload: {
+            contract_version: data.contract_version,
             description: issueURL,
             sourceFileName: '',
             sourceFileHash: '',

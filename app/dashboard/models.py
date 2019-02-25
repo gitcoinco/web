@@ -211,12 +211,19 @@ class Bounty(SuperModel):
         ('submitted', 'submitted'),
         ('unknown', 'unknown'),
     )
+
+    VERSION_CHOICES = (
+        ('1.0', '1.0'),
+        ('1.1', '1.1')
+    )
+
     FUNDED_STATUSES = ['open', 'started', 'submitted', 'done']
     OPEN_STATUSES = ['open', 'started', 'submitted']
     CLOSED_STATUSES = ['expired', 'unknown', 'cancelled', 'done']
     WORK_IN_PROGRESS_STATUSES = ['open', 'started', 'submitted']
     TERMINAL_STATUSES = ['done', 'expired', 'cancelled']
 
+    contract_version = models.CharField(max_length=5, choices=VERSION_CHOICES, default='1.1', blank=True)
     web3_type = models.CharField(max_length=50, default='bounties_network')
     title = models.CharField(max_length=255)
     web3_created = models.DateTimeField(db_index=True)
@@ -317,6 +324,10 @@ class Bounty(SuperModel):
         if self.github_url:
             self.github_url = clean_bounty_url(self.github_url)
         super().save(*args, **kwargs)
+
+    @property
+    def get_contract_version(self):
+        return self.contract_version
 
     @property
     def profile_pairs(self):

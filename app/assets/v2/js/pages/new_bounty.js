@@ -234,8 +234,8 @@ $(document).ready(function() {
       var decimalDivisor = Math.pow(10, decimals);
       var expirationTimeDelta = data.expirationTimeDelta;
       let reservedFor = $('.username-search').select2('data')[0];
-
       var metadata = {
+        contact_version: data.contract_version,
         issueTitle: data.title,
         issueDescription: data.description,
         issueKeywords: data.keywords ? data.keywords : '',
@@ -264,6 +264,7 @@ $(document).ready(function() {
       // https://github.com/ConsenSys/StandardBounties/issues/21
       var ipfsBounty = {
         payload: {
+          contract_version: metadata.contract_version,
           title: metadata.issueTitle,
           description: metadata.issueDescription,
           sourceFileName: '',
@@ -333,7 +334,8 @@ $(document).ready(function() {
       // This function instantiates a contract from the existing deployed Standard Bounties Contract.
       // bounty_abi is a giant object containing the different network options
       // bounty_address() is a function that looks up the name of the network and returns the hash code
-      var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+      var bounty = web3.eth.contract(getBountyABI(metadata.contract_version))
+        .at(bounty_address(metadata.contract_version));
       // StandardBounties integration begins here
       // Set up Interplanetary file storage
       // IpfsApi is defined in the ipfs-api.js.

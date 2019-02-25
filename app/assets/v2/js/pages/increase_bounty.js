@@ -46,6 +46,7 @@ $(document).ready(function() {
     var issueURL = $('input[name=issueURL]').val();
     var amount = $('input[name=amount]').val();
     var tokenAddress = $('select[name=denomination]').val();
+    const contract_version = $('input[name=contract_version]').val();
 
     // validation
     var isError = false;
@@ -94,9 +95,10 @@ $(document).ready(function() {
     // This function instantiates a contract from the existing deployed Standard Bounties Contract.
     // bounty_abi is a giant object containing the different network options
     // bounty_address() is a function that looks up the name of the network and returns the hash code
-    var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
-
+    var bounty = web3.eth.contract(getBountyABI(contract_version)).
+      at(bounty_address(contract_version));
     // setup inter page state
+
     localStorage[issueURL] = JSON.stringify({
       'timestamp': null,
       'txid': null

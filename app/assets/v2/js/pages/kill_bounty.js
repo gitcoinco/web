@@ -54,7 +54,8 @@ window.onload = function() {
         loading_button($('.js-submit'));
         const issueURL = data.issueURL;
 
-        var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+        var bounty = web3.eth.contract(getBountyABI(data.contract_version)).
+          at(bounty_address(data.contract_version));
 
         var apiCallback = function(results, status) {
           if (status != 'success') {

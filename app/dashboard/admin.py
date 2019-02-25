@@ -126,7 +126,7 @@ class BountyAdmin(admin.ModelAdmin):
 
     search_fields = ['raw_data', 'title', 'bounty_owner_github_username', 'token_name']
     list_display = ['pk', 'img', 'idx_status', 'network_link', 'standard_bounties_id_link', 'bounty_link', 'what']
-    readonly_fields = ['what', 'img', 'fulfillments_link', 'standard_bounties_id_link', 'bounty_link', 'network_link']
+    readonly_fields = ['what', 'img', 'fulfillments_link', 'standard_bounties_id_link', 'bounty_link', 'network_link', 'contract_version']
 
     def img(self, instance):
         if not instance.avatar_url:
@@ -156,6 +156,9 @@ class BountyAdmin(admin.ModelAdmin):
         copy = f'{instance.network}'
         url = f'/_administrationdashboard/bounty/?network={instance.network}'
         return mark_safe(f"<a href={url}>{copy}</a>")
+
+    def contract_version(self, instance):
+        return str(instance.contract_version)
 
 
 admin.site.register(SearchHistory, SearchHistoryAdmin)
