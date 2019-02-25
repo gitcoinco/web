@@ -21,6 +21,8 @@ import time
 from datetime import datetime
 
 import django_filters.rest_framework
+from django.db.models import Prefetch
+
 from rest_framework import routers, serializers, viewsets
 from retail.helpers import get_ip
 
