@@ -117,7 +117,7 @@ def get_avatar_context():
                 'options': (
                     'cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater', 'spacecadet', 'suit',
                     'ethlogo', 'cloak', 'robe', 'pjs', 'elf_inspired', 'business_suit', 'suspender', 'gitcoinpro',
-                    'star_uniform', 'jersey',
+                    'star_uniform', 'jersey', 'charlie',
                 ),
                 'paid_options': {
                     'robe': 0.01,
