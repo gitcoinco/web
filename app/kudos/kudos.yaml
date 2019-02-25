@@ -3106,6 +3106,50 @@
     - just for fun
     - meme
   image: ShowMeWhatYouGot.svg
+- name: psf_supporter
+  description: Preserving Pythons in the wild. Donated to Python Software Foundation.
+  priceFinney: 1
+  platform: gitcoin
+  numClonesAllowed: 5000
+  artist: 'mladen'
+  to_address: '0xa463e312f508d519b1c15d65d6744ede1d302587'
+  tags:
+  - python
+  - money
+  - sustainoss
+  image: psf.svg
+- name: logical
+  description: You, like Mr. Spock, are a very logical crew member.
+  priceFinney: 5
+  platform: gitcoin
+  numClonesAllowed: 500
+  artist: 'mladen'
+  tags:
+  - star trek
+  - spock
+  - logic
+  image: logical.svg
+- name: canada_hacker_meetup
+  description: For members of the canada hacker meetup
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 50
+  artist: 'mladen'
+  tags:
+  - rare
+  - open source
+  image: canada_hacker_meetup.svg
+- name: joe_ken
+  description: This is a kudos called the Joeken, it's exclusively for the og Joker himself, Joe Lubin to send to people/projects of his choosing!
+  priceFinney: 300
+  platform: gitcoin
+  numClonesAllowed: 45
+  artist: 'mladen'
+  tags:
+  - consensys
+  - open source
+  - ultimate baackup
+  image: joe_ker.svg
 
 
 
