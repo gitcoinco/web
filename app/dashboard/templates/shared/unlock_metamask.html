@@ -15,20 +15,16 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
-<div id="unlock_metamask_error" class="submit-notification metamask-error container-fluid" style="display: none;">
-  <div class="row align-items-center px-4 py-2 text-center text-lg-left">
-    <div class="col-lg-10 col-sm-12 py-2 px-5">
-      <h3>{% trans "Please Unlock Metamask to Continue" %}</h3>
-      <p>
-        {% trans "In order to continue, you'll need to unlock metamask." %}
-      </p>
-      <p>
-        {% trans "Please unlock Metamask and refresh the page." %}
-        <a href="https://github.com/gitcoinco/gitcoinco/issues/4" target="_blank" rel="noopener noreferrer">{% trans "Can't get web3 to work?  Get help here." %}</a>
-      </p>
+<div id="unlock_metamask_error" class="metamask-error container-fluid" style="display: none;">
+  <div class="row align-items-center px-4 py-5 text-center text-lg-left mx-lg-5">
+    <div class="col-12 col-lg-6 offset-xl-1 col-xl-5 py-2 px-5">
+      <h3>{% trans "To continue," %} <br>
+        {% trans "you'll need to unlock Metamask." %}</h3>
+      <p>{% trans "Please unlock MetaMask and refresh this page to continue." %}</p>
+      <p class="font-smaller-2">{% trans "Can't get web3 to work?" %}   <a href="https://github.com/gitcoinco/gitcoinco/issues/4" target="_blank" rel="noopener noreferrer">{% trans "Get help here." %}</a></p>
     </div>
-    <div class="col-lg-2 col-sm-12">
-      <img src="{% static "v2/images/metamask.svg" %}" alt="Metamask Logo">
+    <div class="col-12 col-lg-6 col-xl-5 text-center">
+      <img src="{% static "v2/images/metamask/unlock-metamask.svg" %}" alt="Metamask Logo" class="mw-100">
     </div>
   </div>
 </div>

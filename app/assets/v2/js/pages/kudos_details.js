@@ -34,7 +34,7 @@ $(document).ready(function() {
   });
 
 
-  $('.kudos_levitate_container, #kudos-image').click(function() {
+  $('.kudos_levitate_container, #kudos-image').on('click', function() {
 
     pct_msg_should_be_shown = 0; // Disabled, *for now*.  I will convince people that
     // the Kudos should say something at some point :) - KO
@@ -58,9 +58,9 @@ $(document).ready(function() {
     return;
   }
 
-  $('#getKudos').click(function() {
+  $('#getKudos').on('click', function() {
     if (numClones > kudosNumClonesAvailable) {
-      alert('Cannot make ' + numClones + ' clone(s).  ' + kudosNumClonesAvailable + ' clones available!');
+      _alert({ message: gettext('Cannot make ' + numClones + ' clone(s).  ' + kudosNumClonesAvailable + ' clones available!')}, 'error');
       return;
     }
 
@@ -97,6 +97,8 @@ var rotate_kudos_msg = function() {
 
 
 var start_kudos_levitate = function() {
+  if (document.suppress_kudos_levitate_hover)
+    return false;
   $('.kudos_levitate_container').css('display', 'block');
   var sapphire = document.getElementById('kudos-image');
   var shadow = document.getElementById('shadow');
@@ -134,6 +136,8 @@ var start_kudos_levitate = function() {
 };
 
 var stop_kudos_levitate = function() {
+  if (document.suppress_kudos_levitate_hover)
+    return false;
   $('.kudos_levitate_container').css('display', 'none');
   TweenMax.killAll(false, true, false);
 
@@ -158,18 +162,3 @@ $('#copyLink').on('click', () => {
   document.execCommand('copy');
   $('.tooltip-share .title-tooltip').html('Copied Link');
 });
-
-// $('#getKudos').click(function() {
-
-
-// $(document).ready(function() {
-//   let address = web3.eth.coinbase;
-//   console.log(address);
-//   $.get('/api/v0.1/kudos?lister=' + address, function(results, status) {
-//     console.log(status)
-//     console.log(results)
-//     let numKudos = results.length;
-//     results.forEach(renderKudos)
-//     // renderKudos(results)
-//   })
-// })

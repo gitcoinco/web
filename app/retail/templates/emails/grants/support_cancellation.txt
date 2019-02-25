@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n humanize %}
 
 {% trans "We are sad to see you go." %}
 
@@ -6,30 +6,22 @@
 
 {% trans "Thank you for everything you have contributed!" %}
 
-{{ grant.logo.url }}
-
-{{ grant.description }}
-
-{{ grant.percentage_done }}
-
-{{ transaction.value_true }} {{ transaction.token_name }}
+{% trans "Description:" %} : {{ grant.description }}
 
 {% trans "Your Contribution" %}
 
-{{ grant.percentage_removed }}
+{{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }}
 
-{{ grant.amount_received }} {% trans "ETH" %}
+{% trans "Grant % done" %} : {{ grant.percentage_done }}
 
-{% trans "Current" %}
-
-{{ grant.amount_goal }} {% trans "ETH" %}
+{% trans "Grant Received" %} : {{ grant.amount_received }}
+{% trans "Grant Goal" %} : {{ grant.amount_goal }}
 
 {% trans "Goal" %}
 
-{% trans "You can see your cancellation transaction on etherscan" %}
-
-{{ transaction.link }}
-
-{% trans "here." %}
-
-{% trans "View Transaction" %}
+{% trans "You can see the transaction on etherscan" %} at
+{% if subscription.network == 'mainnet' %}
+  http://etherscan.io/tx/{{ subscription.cancel_tx_id }}
+{% else %}
+  http://{{ grant.network }}.etherscan.io/tx/{{ subscription.cancel_tx_id }}
+{% endif %}

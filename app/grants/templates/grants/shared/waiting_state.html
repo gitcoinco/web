@@ -17,12 +17,12 @@
 {% load static i18n %}
 <div class="row no-gutter grant_waiting" style="display: none;">
   <div class="col-12 offset-md-1 col-md-10 offset-lg-1 col-lg-8 body ">
-    {% include 'shared/bounty_waiting_state.html' %}
+    {% include 'shared/bounty_waiting_state.html' with can_close=False %}
     <div class="row ml-2 mr-2 pl-4 pr-4 waiting_room_entertainment" style="display: none; text-align: center">
       {% include 'shared/rain.html' with class="color" %}
       <div class="quote-container">
         <img src="{% static "v2/images/quotes.png" %}" style="float: left; max-width: 22px;" />
-        <div class="quote_text"></div>body
+        <div class="quote_text"></div>
         <div class="quote_author"></div>
         <input id="quoteRefresh" class="button button--primary" name="refresh" type='submit' onclick='javascript:waitingRoomEntertainment()' value="Refresh Quote" >
       </div>

@@ -39,6 +39,7 @@ from dashboard.tokens import addr_to_token
 from economy.utils import convert_amount
 from git.utils import get_gh_issue_details, get_url_dict
 from jsondiff import diff
+from marketing.mails import new_reserved_issue
 from pytz import UTC
 from ratelimit.decorators import ratelimit
 from redis_semaphore import NotAvailable as SemaphoreExists
@@ -421,10 +422,15 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 'bounty_type': metadata.get('bountyType', ''),
                 'funding_organisation': metadata.get('fundingOrganisation', ''),
                 'project_length': metadata.get('projectLength', ''),
+                'estimated_hours': metadata.get('estimatedHours'),
                 'experience_level': metadata.get('experienceLevel', ''),
                 'project_type': schemes.get('project_type', 'traditional'),
                 'permission_type': schemes.get('permission_type', 'permissionless'),
                 'attached_job_description': bounty_payload.get('hiring', {}).get('jobDescription', None),
+                'is_featured': metadata.get('is_featured', False),
+                'featuring_date': timezone.make_aware(
+                    timezone.datetime.fromtimestamp(metadata.get('featuring_date', 0)),
+                    timezone=UTC),
                 'bounty_owner_github_username': bounty_issuer.get('githubUsername', ''),
                 'bounty_owner_address': bounty_issuer.get('address', ''),
                 'bounty_owner_email': bounty_issuer.get('email', ''),
@@ -440,9 +446,11 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     'bounty_owner_github_username', 'bounty_owner_address', 'bounty_owner_email', 'bounty_owner_name',
                     'github_comments', 'override_status', 'last_comment_date', 'snooze_warnings_for_days',
                     'admin_override_and_hide', 'admin_override_suspend_auto_approval', 'admin_mark_as_remarket_ready',
-                    'funding_organisation'
+                    'funding_organisation', 'bounty_reserved_for_user', 'is_featured', 'featuring_date',
                 ],
             )
+            if latest_old_bounty_dict['bounty_reserved_for_user']:
+                latest_old_bounty_dict['bounty_reserved_for_user'] = Profile.objects.get(pk=latest_old_bounty_dict['bounty_reserved_for_user'])
             bounty_kwargs.update(latest_old_bounty_dict)
 
         try:
@@ -464,12 +472,25 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 for activity in latest_old_bounty.activities.all().nocache():
                     new_bounty.activities.add(activity)
 
+            bounty_reserved_for_user = metadata.get('reservedFor', '')
+            if bounty_reserved_for_user:
+                new_bounty.reserved_for_user_handle = bounty_reserved_for_user
+                new_bounty.save()
+                if new_bounty.bounty_reserved_for_user:
+                    # notify a user that a bounty has been reserved for them
+                    new_reserved_issue('founders@gitcoin.co', new_bounty.bounty_reserved_for_user, new_bounty)
+
             # set cancel date of this bounty
             canceled_on = latest_old_bounty.canceled_on if latest_old_bounty and latest_old_bounty.canceled_on else None
             if not canceled_on and new_bounty.status == 'cancelled':
                 canceled_on = timezone.now()
             if canceled_on:
                 new_bounty.canceled_on = canceled_on
+                new_bounty.save()
+
+            # preserve featured status for bounties where it was set manually
+            new_bounty.is_featured = True if latest_old_bounty and latest_old_bounty.is_featured is True else False
+            if new_bounty.is_featured == True:
                 new_bounty.save()
 
         except Exception as e:

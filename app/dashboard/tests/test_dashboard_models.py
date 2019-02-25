@@ -23,6 +23,7 @@ from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
 
 import pytz
+from avatar.models import CustomAvatar, SocialAvatar
 from dashboard.models import Bounty, BountyFulfillment, Interest, Profile, Tip, Tool, ToolVote
 from economy.models import ConversionRate, Token
 from test_plus.test import TestCase
@@ -30,6 +31,8 @@ from test_plus.test import TestCase
 
 class DashboardModelsTest(TestCase):
     """Define tests for dashboard models."""
+
+    fixtures = ['tokens.json']
 
     def setUp(self):
         """Perform setup for the testcase."""
@@ -67,6 +70,7 @@ class DashboardModelsTest(TestCase):
             bounty_type='Feature',
             experience_level='Intermediate',
             raw_data={},
+            estimated_hours=7,
         )
         bounty_fulfillment = BountyFulfillment.objects.create(
             fulfiller_address='0x0000000000000000000000000000000000000000',
@@ -76,7 +80,7 @@ class DashboardModelsTest(TestCase):
             bounty=bounty,
             profile=fulfiller_profile,
         )
-        assert str(bounty) == f'5: foo, 0 ETH @ {naturaltime(bounty.web3_created)}'
+        assert str(bounty) == f'{bounty.pk}: foo, 0 ETH @ {naturaltime(bounty.web3_created)}'
         assert bounty.url == f'{settings.BASE_URL}issue/gitcoinco/web/11/{bounty.standard_bounties_id}'
         assert bounty.title_or_desc == 'foo'
         assert bounty.issue_description_text == 'hello world'
@@ -92,6 +96,7 @@ class DashboardModelsTest(TestCase):
         assert 'ago 5 Feature Intermediate' in bounty.desc
         assert bounty.is_legacy is False
         assert bounty.get_github_api_url() == 'https://api.github.com/repos/gitcoinco/web/issues/11'
+        assert bounty.estimated_hours == 7
         assert bounty_fulfillment.profile.handle == 'fred'
         assert bounty_fulfillment.bounty.title == 'foo'
 
@@ -417,6 +422,20 @@ class DashboardModelsTest(TestCase):
         tool.votes.add(vote)
         assert tool.vote_score() == 11
         assert tool.link_url == 'http://gitcoin.co/explorer'
+
+    @staticmethod
+    def test_profile_activate_avatar():
+        """Test the dashboard Profile model activate_avatar method."""
+        profile = Profile.objects.create(
+            data={},
+            handle='fred',
+            email='fred@localhost'
+        )
+        CustomAvatar.objects.create(profile=profile, config="{}")
+        social_avatar = SocialAvatar.objects.create(profile=profile)
+        profile.activate_avatar(social_avatar.pk)
+        assert profile.avatar_baseavatar_related.get(pk=1).active is False
+        assert profile.avatar_baseavatar_related.get(pk=2).active is True
 
     @staticmethod
     def test_bounty_snooze_url():

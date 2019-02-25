@@ -18,7 +18,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    {% include 'shared/head.html' %}
+    {% include 'shared/head.html' with slim=1 %}
     {% include 'shared/cards.html' %}
     <link rel="stylesheet" href="{% static "v2/css/grants/new.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
@@ -49,11 +49,14 @@
           </div>
           <div class="col-sm-12 col-md-10 col-lg-8 mt-5" id="grants_form">
             <div class="form__intro my-4 text-center">
+              <img src="{% static "v2/images/grants/new.svg" %}">
               <h1 class="text-center font-title-xl">{% trans "Create a Grant" %}</h1>
               <p class="mb-1">
                 {% trans "We're excited to learn about your project." %}
                 <br>
-                {% trans "Complete the form below to get funding for your project." %}
+                {% trans "Gitcoin Grants can help you accelerate your journey to funding." %}
+                <br>
+                {% trans "Complete the form below to get started." %}
               </p>
             </div>
             <div class="primary-form py-5">
@@ -61,7 +64,7 @@
                 {% csrf_token %}
                 <div class="form__group-horizontal pb-3">
                   <label class="font-body" for="input_title">{% trans "Title of Project" %}</label>
-                  <input class="form__input form__input-lg " type="text" id="input_title" name="input_title" required />
+                  <input class="form__input form__input-lg " maxlength="150" type="text" id="input_title" name="input_title" required />
                 </div>
 
                 <div class="form__group-horizontal pb-3">
@@ -76,7 +79,7 @@
 
                 <div class="form__group-horizontal pb-3">
                   <label class="font-body" for="input-team_members">{% trans "Team members" %}</label>
-                  <div class="form__select2">
+                  <div class="form__select2 g-multiselect">
                     <select id="input-team_members" class="form__input form__input-lg  team_members" name="team_members[]" multiple="multiple">
                     </select>
                   </div>
@@ -86,7 +89,7 @@
                   <div class="row">
                     <div class="col-12 col-md-6">
                       <label class="font-body">{% trans "Monthly amount sought in DAI" %}</label>
-                      <input type="number" name="amount_goal" class="form__input form__input-lg" min="1" required />
+                      <input type="number" id="amount_goal" name="amount_goal" class="form__input form__input-lg" min="0.001" required />
                     </div>
                     <div class="col-12 col-md-6">
                       <label class="font-body">{% trans "Required Token For Subscription" %}</label>
@@ -102,12 +105,20 @@
                   <input type="text" class="form__input form__input-lg " id="input-admin_address" value="" name="admin_address" required/>
                 </div>
 
+
                 <div class="form__group-horizontal pb-3">
                   <label class="font-body">{% trans "Project Logo" %}</label>
                   <div class="form__drop" id="js-drop">
                     <input id="img-project" type="file" name="input_image" accept="image/*">
                     <span>{% trans "Drag & Drop or Browse" %}</span>
                     <img id="preview"/>
+                  </div>
+                </div>
+
+                <div id="gas-section" class="pb-2">
+                  <h5 class="font-subheader pb-2">{% trans "Gas Settings" %}</h5>
+                  <div>
+                    {% include 'shared/wallet_estimate.html' %}
                   </div>
                 </div>
 
@@ -118,7 +129,9 @@
                 <div>
                   <input type="hidden" id="transaction_hash" name="transaction_hash" />
                   <input type="hidden" id="contract_address" name="contract_address" />
+                  <input type="hidden" id="contract_owner_address" name="contract_owner_address">
                   <input type="hidden" id="contract_version" name="contract_version" value="0">
+                    <input type="hidden" id="token_address" name="token_address" value="">
                   <input type="hidden" id="token_symbol" name="token_symbol" value="">
                   <input type="hidden" id="network" name="network">
                 </div>
@@ -146,6 +159,7 @@
   <script src="{% static "v2/js/user-search.js" %}"></script>
   <script src="{% static "v2/js/grants/compiledSubscriptionContract.js" %}"></script>
   <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
+  <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
   <script src="{% static "v2/js/grants/shared.js" %}"></script>
   <script src="{% static "v2/js/grants/new.js" %}"></script>
 </html>

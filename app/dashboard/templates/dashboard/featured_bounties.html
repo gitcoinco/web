@@ -1,0 +1,13 @@
+{% load static i18n %}
+<div class="featured-bounties my-4" style="display: none;">
+  <div>
+    <h3 class="featured-bounties__title">
+      {% trans 'Featured Bounties' %}
+      <span class="status-open">
+        <i class="g-icon g-icon__dot-circle"></i>
+        {% trans 'Ready to work' %}
+      </span>
+    </h3>
+  </div>
+  <div class="scroll-carousel" id="featured-card-container"></div>
+</div>

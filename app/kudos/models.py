@@ -216,8 +216,11 @@ class Token(SuperModel):
 
         """
         from dashboard.models import Profile
-        related_kudos_transfers = KudosTransfer.objects.filter(kudos_token_cloned_from=self.pk).exclude(txid='').exclude(username='')
-        return related_kudos_transfers.values_list('username', flat=True)
+        related_kudos_transfers = KudosTransfer.objects.filter(kudos_token_cloned_from=self.pk).exclude(recipient_profile__isnull=True)
+        related_kudos_transfers = related_kudos_transfers.send_success() | related_kudos_transfers.send_pending()
+        related_kudos_transfers = related_kudos_transfers.distinct('id')
+
+        return related_kudos_transfers.values_list('recipient_profile__handle', flat=True)
 
     @property
     def num_clones_available_counting_indirect_send(self):
@@ -265,16 +268,8 @@ class Token(SuperModel):
         file_path = root('assets') + '/' + self.image
         with open(file_path, 'rb') as f:
             obj = File(f)
-            try:
-                obj_data = obj.read()
-                if obj_data:
-                    image = pyvips.Image.new_from_file(obj.name, scale=3)
-                    return BytesIO(image.write_to_buffer(f'.png'))
-            except VipsError as e:
-                logger.error(e)
-                pass
-            except Exception as e:
-                logger.error(e)
+            from avatar.utils import svg_to_png
+            return svg_to_png(obj.read(), scale=3, width=333, height=384)
         return None
 
     @property
@@ -295,11 +290,12 @@ class Token(SuperModel):
             bool: Wehther a send should be enabled for this user
         """
         are_kudos_available = self.num_clones_allowed != 0 and self.num_clones_available_counting_indirect_send != 0
+        if not are_kudos_available:
+            return False
         is_enabled_for_user_in_general = self.send_enabled_for_non_gitcoin_admins
-        is_enabled_for_this_user = is_enabled_for_user_in_general
-        if user.is_authenticated and user.is_staff:
-            is_enabled_for_this_user = True
-        return are_kudos_available and is_enabled_for_this_user
+        is_enabled_for_this_user = hasattr(user, 'profile') and TransferEnabledFor.objects.filter(profile=user.profile, token=self).exists()
+        is_enabled_because_staff = user.is_authenticated and user.is_staff
+        return is_enabled_for_this_user or is_enabled_for_user_in_general or is_enabled_because_staff
 
 
 class KudosTransfer(SendCryptoAsset):
@@ -373,7 +369,7 @@ class KudosTransfer(SendCryptoAsset):
         status = 'funded' if self.txid else 'not funded'
         if self.receive_txid:
             status = 'received'
-        to = self.username if self.username else self.metadata['address']
+        to = self.username if self.username else self.receive_address
         return f"({status}) transfer of {self.kudos_token_cloned_from} from {self.sender_profile} to {to} on {self.network}"
 
 
@@ -465,3 +461,20 @@ class BulkTransferRedemption(SuperModel):
     def __str__(self):
         """Return the string representation of a model."""
         return f"coupon: {self.coupon} redeemed_by: {self.redeemed_by}"
+
+class TransferEnabledFor(SuperModel):
+    """Model that represents the ability to send a Kudos, i
+    f token.send_enabled_for_non_gitcoin_admins is true.
+
+    """
+
+    token = models.ForeignKey(
+        'kudos.Token', related_name='transfers_enabled', on_delete=models.CASCADE, 
+    )
+    profile = models.ForeignKey(
+        'dashboard.Profile', related_name='transfers_enabled', on_delete=models.CASCADE, 
+    )
+
+    def __str__(self):
+        """Return the string representation of a model."""
+        return f"{self.token} <> {self.profile}"

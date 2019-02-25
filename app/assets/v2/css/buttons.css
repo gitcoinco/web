@@ -79,8 +79,6 @@ button {
 
 button:hover,
 button:focus {
-  border-color: var(--hover);
-  color: #fff;
   outline: none;
 }
 
@@ -94,6 +92,10 @@ button:focus {
   0% {
     box-shadow: 0 0 0 0 var(--hover);
   }
+}
+
+.btn {
+  border-radius: 2px;
 }
 
 .btn-gc-blue, .btn-gc-green, .btn-gc-purple {
@@ -194,4 +196,43 @@ button:focus {
   color: white;
   border: 2px solid white;
   border-radius: 4px;
+}
+
+.btn.btn-circle {
+  border-radius: 50px;
+  line-height: 2em;
+}
+
+.btn.btn-circle:hover {
+  color: white;
+  filter: saturate(3);
+}
+
+.btn-twitter {
+  color: white;
+  background-color: #1DA1F2;
+}
+
+.btn-facebook {
+  color: white;
+  background-color: #4267B2;
+}
+
+.btn-email {
+  color: white;
+  background-color: #F24283;
+}
+
+.btn-metamask {
+  background: #FF7F00;
+  color: white;
+}
+
+.btn-metamask:hover {
+  color: white;
+  background: #E17000;
+}
+
+.btn-lg-padding {
+  padding: 0.6rem 2rem;
 }

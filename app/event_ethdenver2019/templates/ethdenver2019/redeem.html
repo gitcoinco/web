@@ -1,0 +1,94 @@
+{% comment %}
+Copyright (C) 2018 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load static avatar_tags %}
+{% include "ethdenver2019/base.html" %}
+{% block style %}
+<style type="text/css">
+.ethdenver2019-prog-header {
+  background-image: url("{% static 'v2/images/event_ethdenver2019/background.png' %}");
+  background-size: 100% 100%;
+}
+.sadsmiley {
+  font-size: 140px;
+  transform: rotate(90deg);
+}
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="row text-center">
+    <div class="ethdenver2019-prog-header col-12">
+      <div class="container">
+        <div class="row mt-4">
+          <div class="col-12">
+            <img src="{% static 'v2/images/event_ethdenver2019/ethdenver_logo.png' %}" class="rounded mx-auto d-block">
+          </div>
+        </div>
+        <div class="row mt-5 mb-5">
+          <div class="col-12">
+            <div class="ethdenver2019-texts-headers">
+              SET CHALLENGES
+            </div>
+          </div>
+        </div>
+        <div class="row mt-5 mb-5">
+          <div class="col-12">
+            <img src="{% avatar_url profile %}" width="100px" height="100px" class="circle-cutter">
+          </div>
+          <div class="col-12 ethdenver2019-texts-white">
+            {{ profile.handle }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ethdenver2019-kudos mt-4 mb-4 align-middle text-center">
+    {% if success %}
+    <div class="row">
+      <div class="col-12">
+        <img src="{% static 'v2/images/event_ethdenver2019/bufficorn-joy.png' %}">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div class="ethdenver2019-texts-headers ethdenver2019-texts-black mb-2 mt-2">
+          Horray!
+        </div>
+        <div class="ethdenver2019-texts-black">
+          You completed the ETHDenver2019 challenge!
+        </div>
+        <div>
+          Go to the front desk and show them that you received this kudos:
+        </div>
+      </div>
+    </div>
+    {% else %}
+     <div class="row">
+      <div class="col-12 sadsmiley">
+        :-(
+      </div>
+    </div>
+     <div class="row mt-5">
+      <div class="col-12">
+        You did not collect all challenge kudos yet. Try again later.
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

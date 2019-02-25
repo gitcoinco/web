@@ -20,7 +20,7 @@
 <div class="container-fluid">
   <div class=" row ">
     <div class="col-4 pb-4">
-      <div class="align-items-right justify-content-right" style="text-align: right;">
+      <div class="align-items-right justify-content-right text-right">
         <img src="{% static "v2/images/tree/dark.png" %}" style="max-width:80%; margin: 0px auto;">
       </div>
     </div>
@@ -29,7 +29,7 @@
     <div class="col-6 pb-4">
       <div class="form_container pr-2 pl-2 ">
         <div style="max-width: 500px; margin: 0px auto;">
-          <span style="text-align: center;">
+          <span class="text-center">
             <h2>{% trans "Hey, you!" %}</h2>
           </span>
           <h4 class="pt-1">{% trans "Gitcoin is *not* a token." %}</h4>
@@ -142,12 +142,11 @@
 {% endblock %}
 {% block scripts %}
 <script>
-  $(document).ready(function() {
-    $('#whitepaper input.btn-go').click(function(e){
-      mixpanel.track("Whitepaper New Request", {});
-      setTimeout(function(){
+  $(document).ready(() => {
+    $('#whitepaper input.btn-go').on('click', () => {
+      setTimeout(() => {
         $('#whitepaper input.btn-go').attr('disabled','disabled');
-      },1);
+      }, 1);
     });
   });
 </script>

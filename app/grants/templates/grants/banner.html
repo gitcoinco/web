@@ -18,17 +18,17 @@
 
     <div class="grant__progress mt-4">
       <div class="progress">
-        <div class="progress-bar" style="width:{{ grant.percent_completed }}%"></div>
+          <div class="progress-bar" role="progressbar" style="width: {{ grant.percentage_done }}%" aria-valuenow="{{ grant.percentage_done }}%" aria-valuemin="0" aria-valuemax="100"></div>
       </div>
       <div class="progress-text mt-2">
         <div class="row">
           <div class="col-6">
-            <span>{{ grant.amount_received|floatformat:2|intcomma }} DAI</span>
-            <p>Current</p>
+            <span>{{ grant.monthly_amount_subscribed|floatformat:2|intcomma }} DAI</span>
+            <p>Monthly Funding</p>
           </div>
           <div class="col-6 text-right">
             <span>{{ grant.amount_goal|floatformat:2|intcomma }} DAI</span>
-            <p>Goal</p>
+            <p> Monthly Goal</p>
           </div>
         </div>
       </div>

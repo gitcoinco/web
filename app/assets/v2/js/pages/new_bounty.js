@@ -82,7 +82,6 @@ $('#issueURL').focusout(function() {
 
 $('#last-synced').hide();
 
-// Wait until page is loaded, then run the function
 $(document).ready(function() {
   // Load sidebar radio buttons from localStorage
   if (getParam('source')) {
@@ -117,6 +116,17 @@ $(document).ready(function() {
     }
   });
 
+  // show/hide the reserved for selector based on the project type
+  $('.js-select2[name=project_type]').change(
+    function(e) {
+      if (String(e.target.value).toLowerCase() === 'traditional') {
+        $('#reservedForDiv').show();
+      } else {
+        $('#reservedForDiv').hide();
+      }
+    }
+  );
+
   // revision action buttons
   $('#subtractAction').on('click', function() {
     var revision = parseInt($('input[name=revisions]').val());
@@ -148,7 +158,7 @@ $(document).ready(function() {
     $('.select2-selection__rendered').removeAttr('title');
   });
   // removes search field in all but the 'denomination' dropdown
-  $('.select2-container').click(function() {
+  $('.select2-container').on('click', function() {
     $('.select2-container .select2-search__field').remove();
   });
   // denomination field
@@ -171,12 +181,12 @@ $(document).ready(function() {
     }, 10);
   };
 
-  $('#hiringRightNow').click(function() {
+  $('#hiringRightNow').on('click', function() {
     open_hiring_panel(true);
   });
 
 
-  $('#advancedLink a').click(function(e) {
+  $('#advancedLink a').on('click', function(e) {
     e.preventDefault();
     var target = $('#advanced_container');
 
@@ -188,6 +198,8 @@ $(document).ready(function() {
       $(this).text('Advanced ⬇ ');
     }
   });
+
+  userSearch('#reservedFor', false);
 
   $('#submitBounty').validate({
     submitHandler: function(form) {
@@ -208,7 +220,6 @@ $(document).ready(function() {
       });
 
       disabled.attr('disabled', 'disabled');
-      mixpanel.track('Submit New Bounty Clicked', {});
 
       // setup
       loading_button($('.js-submit'));
@@ -222,18 +233,22 @@ $(document).ready(function() {
       var tokenName = token['name'];
       var decimalDivisor = Math.pow(10, decimals);
       var expirationTimeDelta = data.expirationTimeDelta;
+      let reservedFor = $('.username-search').select2('data')[0];
 
       var metadata = {
         issueTitle: data.title,
         issueDescription: data.description,
-        issueKeywords: data.keywords,
+        issueKeywords: data.keywords ? data.keywords : '',
         githubUsername: data.githubUsername,
         notificationEmail: data.notificationEmail,
         fullName: data.fullName,
         experienceLevel: data.experience_level,
         projectLength: data.project_length,
         bountyType: data.bounty_type,
+        estimatedHours: data.hours,
         fundingOrganisation: data.fundingOrganisation,
+        is_featured: data.featuredBounty,
+        reservedFor: reservedFor ? reservedFor.text : '',
         tokenName
       };
 
@@ -270,6 +285,8 @@ $(document).ready(function() {
             jobDescription: data.jobDescription
           },
           funding_organisation: metadata.fundingOrganisation,
+          is_featured: metadata.featuredBounty,
+          featuring_date: metadata.featuredBounty && new Date().getTime() / 1000 || 0,
           privacy_preferences: privacy_preferences,
           funders: [],
           categories: metadata.issueKeywords.split(','),
@@ -336,7 +353,9 @@ $(document).ready(function() {
       function syncDb() {
         // Need to pass the bountydetails as well, since I can't grab it from the
         // Standard Bounties contract.
-        dataLayer.push({ event: 'fundissue' });
+        if (typeof dataLayer !== 'undefined') {
+          dataLayer.push({ event: 'fundissue' });
+        }
 
         // update localStorage issuePackage
         var issuePackage = JSON.parse(localStorage[issueURL]);
@@ -345,9 +364,8 @@ $(document).ready(function() {
         localStorage[issueURL] = JSON.stringify(issuePackage);
 
         _alert({ message: gettext('Submission sent to web3.') }, 'info');
-        setTimeout(function() {
+        setTimeout(() => {
           delete localStorage['issueURL'];
-          mixpanel.track('Submit New Bounty Success', {});
           document.location.href = '/funding/details/?url=' + issueURL;
         }, 1000);
       }
@@ -355,10 +373,6 @@ $(document).ready(function() {
       // web3 callback
       function web3Callback(error, result) {
         if (error) {
-          mixpanel.track('New Bounty Error', {
-            step: 'post_bounty',
-            error: error
-          });
           console.error(error);
           _alert(
             {
@@ -383,10 +397,6 @@ $(document).ready(function() {
 
       function newIpfsCallback(error, result) {
         if (error) {
-          mixpanel.track('New Bounty Error', {
-            step: 'post_ipfs',
-            error: error
-          });
           console.error(error);
           _alert({
             message: gettext('There was an error.  Please try again or contact support.')
@@ -435,7 +445,31 @@ $(document).ready(function() {
         ipfs.addJson(ipfsBounty, newIpfsCallback);
       };
 
-      do_bounty();
+      const payFeaturedBounty = function() {
+        web3.eth.sendTransaction({
+          to: '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+          from: web3.eth.coinbase,
+          value: web3.toWei(ethFeaturedPrice, 'ether'),
+          gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)),
+          gas: web3.toHex(318730),
+          gasLimit: web3.toHex(318730)
+        },
+        function(error, result) {
+          saveAttestationData(
+            result,
+            ethFeaturedPrice,
+            '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+            'featuredbounty'
+          );
+          do_bounty();
+        });
+      };
+
+      if (data.featuredBounty) {
+        payFeaturedBounty();
+      } else {
+        do_bounty();
+      }
     }
   });
 });
@@ -458,6 +492,12 @@ var check_balance_and_alert_user_if_not_enough = function(tokenAddress, amount) 
       _alert(msg, 'warning');
     }
   });
-
-
 };
+
+let usdFeaturedPrice = $('.featured-price-usd').text();
+let ethFeaturedPrice;
+
+getAmountEstimate(usdFeaturedPrice, 'ETH', (amountEstimate) => {
+  ethFeaturedPrice = amountEstimate['value'];
+  $('.featured-price-eth').text(`+${amountEstimate['value']} ETH`);
+});

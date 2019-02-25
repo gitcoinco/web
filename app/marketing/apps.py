@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -24,3 +24,6 @@ from django.apps import AppConfig
 class MarketingConfig(AppConfig):
 
     name = 'marketing'
+
+    def ready(self):
+        from .signals import create_email_subscriber

@@ -9,10 +9,6 @@
   display: inline;
 }
 
-.cancel_grants.modal {
-  max-width: 45rem;
-}
-
 .grant__header .grant-item__owner-image img {
   width: 50px;
   height: 50px;
@@ -77,8 +73,29 @@
   font-weight: 500;
 }
 
-.grant__description textarea {
+#change-logo {
+  cursor: pointer;
+}
+
+#change-logo i {
+  position: absolute;
+  right: 3.5rem;
+  padding: 0.25rem 0.5rem;
   background: white;
+  font-size: 1.2rem;
+  border-bottom-right-radius: 2px;
+  border-bottom-left-radius: 2px;
+}
+
+#js-drop span {
+  position: relative;
+  left: 30%;
+  width: 100%;
+}
+
+.grant__description textarea,
+#contract_owner_address.editable {
+  background: white !important;
 }
 
 input.editable,
@@ -96,7 +113,8 @@ textarea.editable {
 
 #form--input__description,
 #form--input__reference-url,
-#form--input__title {
+#form--input__title,
+#contract_owner_address {
   width: 100%;
   text-align: justify;
   resize: none;
@@ -176,33 +194,18 @@ textarea.editable {
 
 .update-milestone {
   background-color: white;
-  border-top: 1px solid #D8D8D8;
 }
 
-.tooltip {
-  position: relative;
-  display: inline-block;
-  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+.update {
+  border-bottom: 1px solid #D8D8D8;
 }
 
-/* Tooltip text */
-.tooltip .tooltiptext {
-  visibility: hidden;
-  width: 120px;
-  background-color: black;
-  color: #fff;
-  text-align: center;
-  padding: 5px 0;
-  border-radius: 6px;
-
-  /* Position the tooltip text - see examples below! */
-  position: absolute;
-  z-index: 1;
+.update:first-child {
+  padding-top: 0 !important;
 }
 
-/* Show the tooltip text when you mouse over the tooltip container */
-.tooltip:hover .tooltiptext {
-    visibility: visible;
+.milestones-list li:last-child {
+  padding-bottom: 0 !important;
 }
 
 @keyframes rotation {
@@ -237,5 +240,9 @@ textarea.editable {
   #tabs > .ui-widget-header {
     display: flex;
     justify-content: center;
+  }
+
+  #cancelModal .modal-cancel-grants {
+    margin-top: 1rem;
   }
 }

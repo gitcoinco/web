@@ -23,18 +23,20 @@
     <h2 class="grant-item__title font-subheader"><a href="{% url 'grants:details' grant.id grant.slug %}">{{ grant.title|truncatechars:60 }}</a></h2>
     <p class="grant-item__pitch font-caption">{{ grant.description|truncatechars:145 }}</p>
     <div class="grant-item__footer">
-      <div class="grant-item__owner mt-3 mb-4">
-        <div class="grant-item__owner-image mr-2">
-          <img src="{% if grant.admin_profile.avatar_url %}{{ grant.admin_profile.avatar_url }}{% else %}https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg{% endif %}">
-        </div>
-        <div class="grant-item__owner-handle font-body">
-          {% trans 'by' %}
-          <span>
-            <a href="{% url 'profile' grant.admin_profile.handle %}" target="_blank" rel="noopener noreferrer">
-              {{ grant.admin_profile.handle|default:'anonymous' }}
-            </a>
-          </span>
-        </div>
+      <div class="grant-item__owner">
+        <span class="grant-item__owner-handle font-body">{% trans 'by' %}</span>
+        <a href="{% url 'profile' grant.admin_profile.handle %}" target="_blank" rel="noopener noreferrer">
+          <div class="grant-item__owner mt-3 mb-4">
+            <div class="grant-item__owner-image ml-2">
+              <img src="{% if grant.admin_profile.avatar_url %}{{ grant.admin_profile.avatar_url }}{% else %}https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg{% endif %}">
+            </div>
+            <div class="grant-item__owner-handle font-body">
+              <span class="ml-2">
+                  {{ grant.admin_profile.handle|default:'anonymous' }}
+              </span>
+            </div>
+          </div>
+        </a>
       </div>
       <div class="progress progress--small">
         <div class="progress-bar" role="progressbar" style="width: {{ grant.percentage_done }}%" aria-valuenow="{{ grant.percentage_done }}%" aria-valuemin="0" aria-valuemax="100"></div>
@@ -42,13 +44,14 @@
       <div class="grant-item__funding mt-2">
         <div class="grant-item__funding-item">
           <div class="grant-item__funding-number font-body">{{ grant.amount_received|floatformat:2|intcomma }} DAI</div>
-          <div class="grant-item__funding-label font-caption">{% trans 'Current' %}</div>
+          <div class="grant-item__funding-label font-caption">{% trans 'Funded' %}</div>
         </div>
         <div class="grant-item__funding-item">
           <div class="grant-item__funding-number font-body">{{ grant.amount_goal|floatformat:2|intcomma }} DAI</div>
-          <div class="grant-item__funding-label font-caption">{% trans 'Goal' %}</div>
+          <div class="grant-item__funding-label font-caption">{% trans ' Monthly Goal' %}</div>
         </div>
       </div>
+      {% include 'grants/detail/matching.html' %}
       <div class="grant-item__state mt-3 row">
         <div class="col-6">
           {% if grant.active %}
@@ -65,8 +68,8 @@
         </div>
         {% if grant.active and grant.activeSubscriptions %}
           <div class="col-6 text-right my-auto font-caption font-weight-semibold">
-            {{ grant.activeSubscriptions.count}}
-            subscription{% if grant.activeSubscriptions.count > 1 %}s{% endif %}
+            {{ grant.activeSubscriptions|length}}
+            subscription{% if grant.activeSubscriptions|length > 1 %}s{% endif %}
           </div>
         {% endif %}
       </div>

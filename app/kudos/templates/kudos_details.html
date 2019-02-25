@@ -19,6 +19,13 @@
       </div>
     </header>
 
+    {% if is_staff %}
+    <div class="alpha-warning font-caption mb-0">
+      <span class="font-weight-bold">Staff only</span>
+      <a style="color:white;" href="{{kudos.admin_url}}">{% trans "kudos Admin" %}</a>
+    </div>
+    {% endif %}
+
     <div class="container py-5">
       <a href="{% url 'kudos_marketplace' %}">&lt; {% trans "Kudos Marketplace" %}</a>
     </div>
@@ -78,7 +85,22 @@
                 <a href="{% url 'kudos_send' %}?id={{ kudos.id}}" class="btn btn-gc-blue">{% trans "Send Kudos" %}</a>
               {% else %}
                 <button type="button" class="btn btn-gc-blue" disabled>{% trans "Not Available" %}</button>
-                <small class="d-block mt-2">{% trans "There are no clones available but you can still look at the beautiful artwork!" %}</small>
+                <small class="d-block mt-2">
+                  {% if send_enabled_for|length %}
+                    {% trans "These users have the power to send this Kudos.  Contact them if you want this Kudos:" %}
+                    <ul>
+                      {% for sef in send_enabled_for %}
+                      <li>
+                        <a href="{% url 'profile' sef.profile.handle %}" title="{{sef.profile.handle}}">
+                        <img src="{% avatar_url sef.profile.handle  %}" alts="{{sef.profile.handle}}" width="70" class="rounded-circle border m-1">
+                        </a>
+                      </li>
+                      {% endfor %}
+                    </ul>
+                  {% else %}
+                    {% trans "There are no clones available but you can still look at the beautiful artwork!" %}
+                  {% endif %}
+                </small>
               {% endif %}
             </div>
           </div>
@@ -118,11 +140,8 @@
     <script src="{% static "v2/js/amounts.js" %}"></script>
     <script src="{% static "v2/js/eth-price.js" %}"></script>
     <script>
-      var bootstrapTooltip = $.fn.tooltip.noConflict()
-      $.fn.runTooltip = bootstrapTooltip
-      $('[data-toggle="tooltip"]').runTooltip()
-
-
+      $.fn.runTooltip = $.fn.tooltip.noConflict()
+      $('[data-toggle="tooltip"]').runTooltip();
     </script>
     <script src="{% static "v2/js/pages/kudos-search.js" %}"></script>
     {% include 'shared/messages.html' %}

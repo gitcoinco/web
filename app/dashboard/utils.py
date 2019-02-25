@@ -17,6 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import base64
 import json
 import logging
 from json.decoder import JSONDecodeError
@@ -271,6 +272,40 @@ def get_web3(network, sockets=False):
         return Web3(Web3.HTTPProvider("http://testrpc:8545", request_kwargs={'timeout': 60}))
 
     raise UnsupportedNetworkException(network)
+
+
+def get_bounty_invite_url(handle, bounty_id):
+    """Returns a unique url for each bounty and one who is inviting
+
+    Returns:
+        A unique string for each bounty
+    """
+    salt = "X96gRAVvwx52uS6w4QYCUHRfR3OaoB"
+    string = handle + salt + bounty_id
+    return base64.urlsafe_b64encode(string.encode()).decode()
+
+
+def get_profile_from_referral_code(code):
+    """Returns a profile from the unique code
+
+    Returns:
+        A unique string for each profile
+    """
+    return base64.urlsafe_b64decode(code.encode()).decode()
+
+
+def get_bounty_from_invite_url(invite_url):
+    """Returns a unique url for each bounty and one who is inviting
+
+    Returns:
+        A unique string for each bounty
+    """
+    salt = "X96gRAVvwx52uS6w4QYCUHRfR3OaoB"
+    decoded_string = base64.urlsafe_b64decode(invite_url.encode()).decode()
+    data_array = decoded_string.split(salt)
+    handle = data_array[0]
+    bounty_id = data_array[1]
+    return {'handle': handle, 'bounty_id': bounty_id}
 
 
 def getStandardBountiesContractAddresss(network):
@@ -670,6 +705,8 @@ def get_tx_status(txid, network, created_on):
     from dashboard.utils import get_web3
     import pytz
 
+    DROPPED_DAYS = 4
+
     # get status
     status = None
     if txid == 'override':
@@ -678,7 +715,7 @@ def get_tx_status(txid, network, created_on):
         web3 = get_web3(network)
         tx = web3.eth.getTransactionReceipt(txid)
         if not tx:
-            drop_dead_date = created_on + timezone.timedelta(days=1)
+            drop_dead_date = created_on + timezone.timedelta(days=DROPPED_DAYS)
             if timezone.now() > drop_dead_date:
                 status = 'dropped'
             else:

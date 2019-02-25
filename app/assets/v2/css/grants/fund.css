@@ -3,6 +3,21 @@
   color: #0D0764;
 }
 
+.banner-img {
+  max-height: 22rem;
+  overflow-y: hidden;
+}
+
+.banner-img img {
+  height: auto;
+  width: 100%;
+  object-fit: cover;
+}
+
+#grants_form .form__input.error {
+  background-position: top 0.55rem right 0.5rem;
+}
+
 #grants_form input {
   height: 2.5rem !important;
 }
@@ -10,12 +25,6 @@
 .select2-container--default .select2-selection--single,
 #grants_form input {
   border-color: #0D0764 !important;
-}
-
-.grant-banner img {
-  max-height: 20rem;
-  width: 100%;
-  overflow-y: hidden;
 }
 
 .grant-banner {
@@ -39,6 +48,10 @@
   font-size: 6px;
   position: relative;
   bottom: 2px;
+}
+
+#accordion-set-own-limit {
+  font-size: 12px;
 }
 
 @media (max-width: 767.98px) {

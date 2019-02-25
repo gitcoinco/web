@@ -1,0 +1,22 @@
+{% extends 'settings/settings.html' %}
+{% load i18n static %}
+{% block settings_content %}
+<form id="settings" name="job" method="POST">
+  <div class="form-group">
+    {% include 'ftux/job.html' %}
+  </div>
+  {% csrf_token %}
+  <div class="col-md-8 m-auto">
+    <button class='button button--primary' type="button" onClick="save_job_status()">{% trans "Save" %}</button>
+  </div>
+</form>
+{% endblock %}
+{% block scripts %}
+<script>
+  var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+  var jobLocations = {% if profile.job_location %}{{profile.job_location|safe }};{% else %}[];{% endif %}
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBaJ6gEXMqjw0Y7d5Ps9VvelzOOvfV6BvQ&libraries=places&callback=initPlacecomplete"></script>
+<script src="{% static 'v2/js/jobs.js' %}"></script>
+{{ block.super }}
+{% endblock %}

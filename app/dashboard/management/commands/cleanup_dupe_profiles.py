@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -15,11 +15,12 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-
+from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
 from django.db.models import Count
 from django.db.models.functions import Lower
 
+from app.utils import sync_profile
 from dashboard.models import Profile
 
 
@@ -33,7 +34,7 @@ def combine_profiles(p1, p2):
 
     p1.github_access_token = p2.github_access_token if p2.github_access_token else p1.github_access_token
     p1.slack_token = p2.slack_token if p2.slack_token else p1.slack_token
-    p1.avatar = p2.avatar if p2.avatar else p1.avatar
+    p1.avatar = p2.active_avatar if p2.active_avatar else p1.active_avatar
     p1.slack_repos = p2.slack_repos if p2.slack_repos else p1.slack_repos
     p1.slack_channel = p2.slack_channel if p2.slack_channel else p1.slack_channel
     p1.email = p2.email if p2.email else p1.email
@@ -123,3 +124,16 @@ class Command(BaseCommand):
             profile.hide_profile = False
             profile.save()
             print(profile.handle)
+
+        # KO Hack 2019/01/07
+        # For some reason, these proiles keep getting
+        # removed from their useres.  this mgmt command fixes that
+        for user in User.objects.filter(profile__isnull=True):
+            profiles = Profile.objects.filter(handle__iexact=user.username)
+            if profiles.exists():
+                print(user.username)
+                profile = profiles.first()
+                profile.user = user
+                profile.save()
+            else:
+                sync_profile(user.username, user, hide_profile=True)

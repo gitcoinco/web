@@ -15,21 +15,23 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
-<div id="no_metamask_error" class="submit-notification metamask-error container-fluid" style="display: none;">
-  <div class="row align-items-center px-4 py-2 text-center text-lg-left">
-    <div class="col-lg-10 col-sm-12 py-2 px-5">
-      <h3>{% trans "Please Enable Metamask to Continue." %}</h3>
-      <p>
-         {% blocktrans %}To interact with the Ethereum Blockchain, you need to install the Metamask Browser Extension.
-        <a target="_blank" rel="noopener noreferrer"
-          href="https://github.com/gitcoinco/gitcoinco/issues/4">Can't get web3 to work? Get help here.</a>{% endblocktrans %}
-      </p>
-      <p>
-        {% blocktrans %}The fastest and easiest way to add Web3 to your browser is to install <a target="_blank" rel="noopener noreferrer" href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral">Metamask</a>. To continue submitting a bounty, please install Metamask and return to this page.{% endblocktrans %}
-      </p>
+<div id="no_metamask_error" class="metamask-error container-fluid my-5" style="display: none;">
+  <div class="row align-items-center px-4 py-5 text-center text-lg-left mx-lg-5">
+    <div class="col-12 col-lg-6 offset-xl-1 col-xl-5 py-2 px-5">
+      <h3>{% trans "To make transactions on Gitcoin, you’ll need MetaMask." %}</h3>
+      {% blocktrans %}
+      <p>MetaMask is an extension that enables your browser to use Ethereum dApps like Gitcoin. You’ll also be able to send and receive ETH and ERC20 tokens.</p>
+      <p class="mb-4">Please install MetaMask and refresh this page to continue.</p>
+      {% endblocktrans %}
+      <a class="btn btn-metamask btn-lg-padding" target="_blank" rel="noopener noreferrer" href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral">{% trans 'Install Metamask' %}</a>
+      <div class="mt-5 metamask-links font-weight-semibold">
+        <a target="_blank" href="https://metamask.zendesk.com/hc/en-us/sections/360002148511-MetaMask-FAQs?utm_source=gitcoin.co&utm_medium=referral">{% trans 'MetaMask FAQ' %}</a> &bull;
+        <a target="_blank" href="https://www.youtube.com/watch?v=ZIGUC9JAAw8">{% trans 'How MetaMask work?' %}</a> &bull;
+        <a target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/gitcoinco/issues/4">{% trans 'Need Help?' %}</a>
+      </div>
     </div>
-    <div class="col-lg-2 col-sm-12">
-      <img src="{% static "v2/images/metamask.svg" %}" alt="Metamask Logo">
+    <div class="col-12 col-lg-6 col-xl-5 text-center">
+      <img src="{% static "v2/images/metamask/install-metamask.svg" %}" alt="Metamask Logo" class="mw-100">
     </div>
   </div>
 </div>
