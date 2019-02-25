@@ -73,11 +73,6 @@ class CustomAvatarAdmin(GeneralAdmin):
     list_display = ['svg_asset', 'created_on', '__str__']
     raw_id_fields = ['profile']
 
-    def save_model(self, request, obj, form, change):
-        custom_avatar = CustomAvatar.create(None, json.loads(request.POST.get('config')))
-        custom_avatar.recommended_by_staff = request.POST.get('recommended_by_staff') == 'on'
-        custom_avatar.save()
-
 
 admin.site.register(BaseAvatar, BaseAvatarAdmin)
 admin.site.register(CustomAvatar, CustomAvatarAdmin)
