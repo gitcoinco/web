@@ -66,7 +66,9 @@
               </div>
               <div class="col-4 col-xl-5 my-auto">
                 <div class="font-weight-bold font-body">
-                  {{ transaction.subscription.contributor_profile }}
+                  <a href="{% url 'profile' transaction.subscription.contributor_profile.handle %}">
+                    {{ transaction.subscription.contributor_profile }}
+                  </a>
                 </div>
                 <div class="info font-caption">
                   {{ transaction.subscription.amount_per_period|floatformat:4|intcomma }} {{ transaction.subscription.token_symbol }}
