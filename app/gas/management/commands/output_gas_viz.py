@@ -12,8 +12,8 @@ from numpy import array
 from perftools.models import JSONStore
 
 
-def convert_to_movie():
-    command = "ffmpeg -framerate 30 -pattern_type glob -i 'cache/frames/*.jpg' -c:v libx264 -pix_fmt yuv420p cache/out.mp4"
+def convert_to_movie(framerate=30):
+    command = f"ffmpeg -framerate {framerate} -pattern_type glob -i 'cache/frames/*.jpg' -c:v libx264 -pix_fmt yuv420p cache/out.mp4"
     print("converting to movie")
     os.system(command)
 

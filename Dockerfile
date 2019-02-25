@@ -10,6 +10,7 @@ WORKDIR /code
 RUN apk add --no-cache --update $PACKAGES && \
     apk add --no-cache --update --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/ vips && \
     apk add --no-cache --update --virtual .builder $BUILD_DEPS
+RUN apk add make automake gcc g++ subversion python3-dev ffmpeg
 
 # GeoIP2 Data Files
 RUN mkdir -p /usr/share/GeoIP/ && \
