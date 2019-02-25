@@ -175,6 +175,9 @@ def get_avatar_context():
                             ['Masks-gas'], ['Masks-surgical'], ['Extras-monkey'], ['Masks-power'], ['Glasses-7'],
                             ['Glasses-8'], ['HatShort-angel'], ['HatShort-devil'], ['Extras-necklace1'],
                             ['Extras-necklace2'], ['Extras-necklace3'], ['Glasses-9'], ['Masks-clown'],
+                            ['Extras-bird'],['HatShort-sleepy'],
+                            ['Earring-tribal'],['Glasses-google'],['Masks-marshmellow'],['Masks-pirate'],
+                            ['Masks-power1'],['HatShort-elf'],['Extras-necklaceb'],
                             ),
                 'paid_options': {
                     'Extras-Parrot': 0.01,
@@ -198,6 +201,8 @@ def get_avatar_context():
                     'trees3', 'flowers', 'city', 'city2', 'mountains', 'code', 'code2', 'code3', 'bokeh3', 'bokeh6',
                     'abstract', 'anchors', 'circuit', 'jigsaw', 'lines', 'gears', 'clouds', 'signal', 'polka_dots',
                     'polka_dots_black', 'squares', 'shapes', 'sunburst', 'sunburst_pastel', 'rainbow',
+                    'portal', 'space', 'bokeh', 'bokeh2', 'bokeh3', 'bokeh4', 'bokeh5',
+                    'fire'
                 ),
                 'paid_options': {
                     'sunburst_pastel': 0.01,
