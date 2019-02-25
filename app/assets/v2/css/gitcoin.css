@@ -93,7 +93,6 @@ h4,
   background: url("/static/v2/images/header-bg.png") #0d023b;
   background-attachment: fixed;
   background-position: center 0;
-  background-size: 2000px;
 }
 
 .dropdown-toggle::after {

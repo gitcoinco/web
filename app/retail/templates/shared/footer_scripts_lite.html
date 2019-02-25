@@ -30,7 +30,7 @@
 {% endif %}
 {% include 'shared/sentry.html' %}
 <script src="{% static "v2/js/popper.min.js" %}"></script>
-<script src="{% static "v2/js/bootstrap.min.js" %}"></script>
+<script src="{% static "v2/js/bootstrap.min.js" %}" crossorigin="anonymous"></script>
 <script>
   var bootstrapTooltip = $.fn.tooltip.noConflict()
   var bootstrapModal = $.fn.modal.noConflict()
