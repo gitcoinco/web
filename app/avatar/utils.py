@@ -177,6 +177,10 @@ def get_avatar_context():
                     'charlie',
                     'doctor',
                     'chinese',
+                    'blouse',
+                    'polkadotblouse',
+                    'coat',
+                    'crochettop',
                 ),
                 'paid_options': {
                     'robe': 0.01,
