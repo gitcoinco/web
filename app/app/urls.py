@@ -378,6 +378,11 @@ urlpatterns = [
     path('_administration/email/gdpr_reconsent', retail.emails.gdpr_reconsent, name='gdpr_reconsent'),
     path('_administration/email/share_bounty', retail.emails.share_bounty, name='share_bounty'),
     path('_administration/email/new_tip/resend', retail.emails.resend_new_tip, name='resend_new_tip'),
+    path(
+        '_administration/email/day_email_campaign/<int:day>',
+        marketing.views.day_email_campaign,
+        name='day_email_campaign'
+    ),
     re_path(
         r'^_administration/process_accesscode_request/(.*)$',
         tdi.views.process_accesscode_request,

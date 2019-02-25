@@ -68,8 +68,8 @@
         </div>
         {% if grant.active and grant.activeSubscriptions %}
           <div class="col-6 text-right my-auto font-caption font-weight-semibold">
-            {{ grant.activeSubscriptions.count}}
-            subscription{% if grant.activeSubscriptions.count > 1 %}s{% endif %}
+            {{ grant.activeSubscriptions|length}}
+            subscription{% if grant.activeSubscriptions|length > 1 %}s{% endif %}
           </div>
         {% endif %}
       </div>

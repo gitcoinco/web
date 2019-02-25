@@ -93,7 +93,6 @@ h4,
   background: url("/static/v2/images/header-bg.png") #0d023b;
   background-attachment: fixed;
   background-position: center 0;
-  background-size: 2000px;
 }
 
 .dropdown-toggle::after {
@@ -543,6 +542,22 @@ div.button-pink {
   margin-left: 0px;
   margin-right: 20px;
   width: 15px;
+}
+
+.g-fadein {
+  opacity: 0;
+}
+
+.g-fadein[data-fade-direction="left"] {
+  left: -5rem;
+}
+
+.g-fadein[data-fade-direction="mid"] {
+  bottom: -5em;
+}
+
+.g-fadein[data-fade-direction="right"] {
+  left: 5rem;
 }
 
 @media (max-width: 389.9px) {

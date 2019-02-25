@@ -81,15 +81,20 @@ def strip_double_chars(txt, char=' '):
 
 def get_bounty_history_row(label, date, keyword):
     bounties = get_bounty_history_at_date(['done'], date, keyword)
-    tips = get_tip_history_at_date(date, keyword)
+    ecosystem = get_ecosystem_history_at_date(date, keyword)
+    codefund = get_codefund_history_at_date(date, keyword)
+    tips = get_tip_history_at_date(date, keyword) - ecosystem
     core_platform = bounties + tips
 
-    print(label, date, core_platform, keyword, bounties, tips)
+    print(label, date, core_platform, keyword, bounties, tips, ecosystem)
     return [
         label,
-        core_platform,
+        bounties,
+        tips,
         get_grants_history_at_date(date, keyword),
         get_kudos_history_at_date(date, keyword),
+        codefund,
+        ecosystem,
     ]
 
 
@@ -120,6 +125,40 @@ def get_grants_history_at_date(date, keyword):
 
 def get_kudos_history_at_date(date, keyword):
     return get_cryptoasset_history_at_date(date, keyword, 'kudos')
+
+
+def get_ecosystem_history_at_date(date, keyword):
+    date = date.replace(tzinfo=None)
+    amount = 0
+    if date > timezone.datetime(2019, 1, 23):
+        amount += 184043 + 24033
+    if date > timezone.datetime(2018, 12, 23):
+        amount += 51087.23
+    return amount
+
+
+def get_codefund_history_at_date(date, keyword):
+    date = date.replace(tzinfo=None)
+    amount = 0
+    # July => Feb 2019
+    # $5,500.00 $4,400.00   $9,000.00   $8,500.00   $7,450.00   $6,150.00   $9,700.00 $6,258.31
+    if date > timezone.datetime(2018, 7, 23):
+        amount += 5500
+    if date > timezone.datetime(2018, 8, 23):
+        amount += 4400
+    if date > timezone.datetime(2018, 9, 23):
+        amount += 9000
+    if date > timezone.datetime(2018, 10, 23):
+        amount += 8500
+    if date > timezone.datetime(2018, 11, 23):
+        amount += 7450
+    if date > timezone.datetime(2018, 12, 23):
+        amount += 6150
+    if date > timezone.datetime(2019, 1, 23):
+        amount += 9700
+    if date > timezone.datetime(2019, 2, 23):
+        amount += 6258 # MTD
+    return amount
 
 
 def get_tip_history_at_date(date, keyword):
@@ -289,14 +328,14 @@ def get_bounty_median_turnaround_time(func='turnaround_time_started', keyword=No
 
 def get_bounty_history(keyword=None, cumulative=True):
     bh = [
-        ['', 'Core Platform', 'Grants', 'Kudos'],
+        ['', 'Bounties', 'Tips', 'Grants', 'Kudos', 'Ads', 'Ecosystem'],
     ]
     initial_stats = [
-        ["December 2017", 2011 + 5534, 0, 0],
-        ["January 2018", 5093 + 15930, 0, 0],
-        ["February 2018", 7391 + 16302, 0, 0],
-        ["March 2018", 8302 + 26390, 0, 0],
-        ["April 2018", 10109 + 37342, 0, 0],
+        ["December 2017", 5534, 2011, 0, 0, 0, 0],
+        ["January 2018", 15930, 5093, 0, 0, 0, 0],
+        ["February 2018", 16302, 7391, 0, 0, 0, 0],
+        ["March 2018", 26390, 8302, 0, 0, 0, 0],
+        ["April 2018", 37342, 10109, 0, 0, 0, 0],
     ]
     if not keyword:
         bh = bh + initial_stats
@@ -429,7 +468,15 @@ def build_stat_results(keyword=None):
     ])
     total_grants_usd = get_grants_history_at_date(timezone.now(), [])
     total_kudos_usd = get_kudos_history_at_date(timezone.now(), [])
-    context['universe_total_usd'] = float(total_bounties_usd) + float(total_tips_usd) + float(total_grants_usd) + float(total_kudos_usd)
+    total_codefund_usd = get_codefund_history_at_date(timezone.now(), '')
+    all_platforms = [
+        float(total_bounties_usd),
+        float(total_tips_usd),
+        float(total_grants_usd),
+        float(total_kudos_usd),
+        float(total_codefund_usd)
+        ]
+    context['universe_total_usd'] = sum(all_platforms)
     pp.profile_time('universe_total_usd')
     context['max_bounty_history'] = float(context['universe_total_usd']) * .15
     context['bounty_abandonment_rate'] = bounty_abandonment_rate

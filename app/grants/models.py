@@ -22,7 +22,7 @@ from datetime import timedelta
 from decimal import Decimal
 
 from django.conf import settings
-from django.contrib.postgres.fields import JSONField
+from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
@@ -188,10 +188,11 @@ class Grant(SuperModel):
     image_css = models.CharField(default='', blank=True, max_length=255, help_text=_('additional CSS to attach to the grant-banner img.'))
     clr_matching = models.DecimalField(
         default=0,
-        decimal_places=0,
+        decimal_places=2,
         max_digits=20,
         help_text=_('The CLR matching amount'),
     )
+    activeSubscriptions = ArrayField(models.CharField(max_length=200), blank=True, default=list)
 
     # Grant Query Set used as manager.
     objects = GrantQuerySet.as_manager()
@@ -203,6 +204,14 @@ class Grant(SuperModel):
     def percentage_done(self):
         """Return the percentage of token received based on the token goal."""
         return ((self.amount_received / self.amount_goal) * 100)
+
+
+    def updateActiveSubscriptions(self):
+        """updates the active subscriptions list"""
+        handles = []
+        for handle in Subscription.objects.filter(grant=self, active=True).distinct('contributor_profile').values_list('contributor_profile__handle', flat=True):
+            handles.append(handle)
+        self.activeSubscriptions = handles
 
     @property
     def abi(self):
@@ -407,6 +416,12 @@ class Subscription(SuperModel):
     next_contribution_date = models.DateTimeField(
         help_text=_('The next contribution date'),
         default=timezone.datetime(1990, 1, 1),
+    )
+    amount_per_period_usdt = models.DecimalField(
+        default=0,
+        decimal_places=18,
+        max_digits=64,
+        help_text=_('The amount per contribution period in USDT'),
     )
 
     @property
@@ -649,7 +664,7 @@ next_valid_timestamp: {next_valid_timestamp}
         """Create a contribution object."""
         from marketing.mails import successful_contribution
         self.last_contribution_date = timezone.now()
-        self.next_contribution_date = timezone.now() + timedelta(0, round(self.real_period_seconds))
+        self.next_contribution_date = timezone.now() + timedelta(0, int(self.real_period_seconds))
         self.num_tx_processed += 1
         contribution_kwargs = {
             'tx_id': tx_id,
@@ -660,6 +675,7 @@ next_valid_timestamp: {next_valid_timestamp}
 
         value_usdt = self.get_converted_amount()
         if value_usdt:
+            self.amount_per_period_usdt = value_usdt
             grant.amount_received += Decimal(value_usdt)
 
         if self.num_tx_processed == self.num_tx_approved and value_usdt:
@@ -667,6 +683,7 @@ next_valid_timestamp: {next_valid_timestamp}
             self.active = False
 
         self.save()
+        grant.updateActiveSubscriptions()
         grant.save()
         successful_contribution(self.grant, self, contribution)
         return contribution
@@ -699,3 +716,27 @@ class Contribution(SuperModel):
         from django.contrib.humanize.templatetags.humanize import naturaltime
         txid_shortened = self.tx_id[0:10] + "..."
         return f"id: {self.pk}; {txid_shortened} => subs:{self.subscription}; {naturaltime(self.created_on)}"
+
+
+class MatchPledge(SuperModel):
+    """Define the structure of a MatchingPledge."""
+
+    active = models.BooleanField(default=False, help_text=_('Whether or not the MatchingPledge is active.'))
+    profile = models.ForeignKey(
+        'dashboard.Profile',
+        related_name='matchPledges',
+        on_delete=models.CASCADE,
+        help_text=_('The MatchingPledgers profile.'),
+        null=True,
+    )
+    amount = models.DecimalField(
+        default=1,
+        decimal_places=4,
+        max_digits=50,
+        help_text=_('The matching pledge amount in DAI.'),
+    )
+    comments = models.TextField(default='', blank=True, help_text=_('The comments.'))
+
+    def __str__(self):
+        """Return the string representation of this object."""
+        return f"{self.profile} <> {self.amount} DAI"

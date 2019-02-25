@@ -996,7 +996,7 @@ input.is-invalid {
   text-decoration: none;
   color: black;
   font-size: 0.9rem;
-  margin: 0 1rem;
+  margin: 0 0.5rem;
 }
 
 .metamask-links a:hover {
@@ -1426,7 +1426,12 @@ input.is-invalid {
   width: 100%;
 }
 
-.results .bounty_status .yellow_box, .green_box, .blue_box, .pink_box, .lblue_box {
+.results .bounty_status .box_1,
+.box_2,
+.box_3,
+.box_4,
+.box_5,
+.box_6 {
   float: left;
   width: 1rem;
   height: 1rem;
@@ -1450,29 +1455,34 @@ input.is-invalid {
   background-color: #eee;
 }
 
-.yellow_box {
-  color: #FFCE08;
-  border: 10px solid #FFCE08;
+.box_1 {
+  color: #011f4b;
+  border: 10px solid #011f4b;
 }
 
-.green_box {
-  color: #F2F6F9;
-  border: 10px solid #25E899;
+.box_2 {
+  color: #03396c;
+  border: 10px solid #03396c;
 }
 
-.blue_box {
-  color: #3E00FF;
-  border: 10px solid #3E00FF;
+.box_3 {
+  color: #005b96;
+  border: 10px solid #005b96;
 }
 
-.lblue_box {
-  color: #fbd0e6;
-  border: 10px solid #fbd0e6;
+.box_4 {
+  color: #6497b1;
+  border: 10px solid #6497b1;
 }
 
-.pink_box {
-  color: #F9006C;
-  border: 10px solid #F9006C;
+.box_5 {
+  color: #b3cde0;
+  border: 10px solid #b3cde0;
+}
+
+.box_6 {
+  color: #d3ddf0;
+  border: 10px solid #d3ddf0;
 }
 
 .results .icon {

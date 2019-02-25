@@ -116,16 +116,11 @@ Navigate to `http://localhost:8000/`.
 
 This can be useful if you'd like data to test with:
 
-```shell
-
-~/web/app$ ./manage.py sync_geth
-
-```
 
 or equivalently:
 
 ```shell
 
-~/web/app$ ./manage.py sync_geth rinkeby 402 99999999999
+~/web/app$ ./manage.py sync_geth rinkeby -20 99999999999
 
 ```
