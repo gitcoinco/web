@@ -716,3 +716,27 @@ class Contribution(SuperModel):
         from django.contrib.humanize.templatetags.humanize import naturaltime
         txid_shortened = self.tx_id[0:10] + "..."
         return f"id: {self.pk}; {txid_shortened} => subs:{self.subscription}; {naturaltime(self.created_on)}"
+
+
+class MatchPledge(SuperModel):
+    """Define the structure of a MatchingPledge."""
+
+    active = models.BooleanField(default=False, help_text=_('Whether or not the MatchingPledge is active.'))
+    profile = models.ForeignKey(
+        'dashboard.Profile',
+        related_name='matchPledges',
+        on_delete=models.CASCADE,
+        help_text=_('The MatchingPledgers profile.'),
+        null=True,
+    )
+    amount = models.DecimalField(
+        default=1,
+        decimal_places=4,
+        max_digits=50,
+        help_text=_('The matching pledge amount in DAI.'),
+    )
+    comments = models.TextField(default='', blank=True, help_text=_('The comments.'))
+
+    def __str__(self):
+        """Return the string representation of this object."""
+        return f"{self.profile} <> {self.amount} DAI"

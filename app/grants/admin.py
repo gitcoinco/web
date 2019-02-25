@@ -20,13 +20,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from grants.models import Contribution, Grant, Subscription
+from grants.models import Contribution, Grant, MatchPledge, Subscription
 
 
 class GeneralAdmin(admin.ModelAdmin):
     """Define the GeneralAdmin administration layout."""
 
     ordering = ['-id']
+
+
+class MatchPledgeAdmin(admin.ModelAdmin):
+    """Define the MatchPledge administration layout."""
+
+    ordering = ['-id']
+    raw_id_fields = ['profile']
 
 
 class GrantAdmin(GeneralAdmin):
@@ -173,6 +180,7 @@ class ContributionAdmin(GeneralAdmin):
     raw_id_fields = ['subscription']
 
 
+admin.site.register(MatchPledge, MatchPledgeAdmin)
 admin.site.register(Grant, GrantAdmin)
 admin.site.register(Subscription, SubscriptionAdmin)
 admin.site.register(Contribution, ContributionAdmin)

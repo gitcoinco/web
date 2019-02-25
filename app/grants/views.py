@@ -40,7 +40,7 @@ from cacheops import cached_view
 from dashboard.models import Profile
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.forms import MilestoneForm
-from grants.models import Contribution, Grant, Milestone, Subscription, Update
+from grants.models import Contribution, Grant, MatchPledge, Milestone, Subscription, Update
 from marketing.mails import (
     change_grant_owner_accept, change_grant_owner_reject, change_grant_owner_request, grant_cancellation, new_grant,
     new_supporter, subscription_terminated, support_cancellation, thank_you_for_supporting,
@@ -81,6 +81,7 @@ def grants(request):
         'sort': sort,
         'network': network,
         'keyword': keyword,
+        'matchpledges': MatchPledge.objects.filter(active=True).order_by('-amount'),
         'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
         'card_player_override': 'https://www.youtube.com/embed/eVgEWSPFR2o',
         'card_player_stream_override': static('v2/card/grants.mp4'),
