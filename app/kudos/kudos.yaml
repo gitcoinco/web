@@ -3066,6 +3066,46 @@
     - alchemy
     - code
   image: alchemist.svg
+- name: logical_spock
+  to_address: 0xb9c4668CEf8B52b1A0751Dcf14605Cd90F8c9Fce
+  artist: mehul0698
+  description: For those who have a very good logic in solving the problem/issue in hand.
+  priceFinney: 50
+  numClonesAllowed: 100
+  tags: 
+    - programming
+    - lanugages
+    - c++
+    - javascript
+    - python
+    - java
+    - php
+    - go
+    - ruby
+    - algorithms
+    - compliments
+  image: logical_spock.svg
+- name: nyan_cat
+  to_address: 0x4b00a17a8A4c7dC2f71777207B1C1Bd6C132D394
+  artist: cryptodesign
+  description: Everywhere you go, you leave a rainbow trail of great work behind you.
+  priceFinney: 4
+  numClonesAllowed: 150
+  tags:
+    - nyan
+    - cat
+    - rainbow
+  image: nyan.svg  
+- name: show_me_what_you_got
+  artist: emiwatanabe422
+  description: You showed me what you got!
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+    - just for fun
+    - meme
+  image: ShowMeWhatYouGot.svg
 
 
 

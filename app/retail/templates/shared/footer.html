@@ -55,21 +55,23 @@
     <div class="sitenav sitenav__product">
       <h5>{% trans "Product" %}</h5>
       <a href="{% url "explorer" %}">{% trans "Issue Explorer" %}</a>
-      <a href="{% url "tools" %}">{% trans "Tools" %}</a>
       <a href="{% url "kudos_main" %}">{% trans "Kudos" %}</a>
       <a href="{% url "grants:grants" %}">{% trans "Grants" %}</a>
+      <a href="{% url "labs" %}">{% trans "Labs" %}</a>
     </div>
     <div class="sitenav">
       <h5>{% trans "Business" %}</h5>
       <a href="{% url "about" %}">{% trans "About" %}</a>
       <a href="{% url "mission" %}">{% trans "Mission" %}</a>
       <a href="{% url "results" %}">{% trans "Results" %}</a>
+      <a href="{% url "tools" %}">{% trans "Tools" %}</a>
     </div>
     <div class="sitenav">
       <h5>{% trans "Community" %}</h5>
       <a class="slack{% if active == 'slack' %} selected{% endif %}" href="{% url "slack" %}">
         Slack ({{num_slack}})
       </a>
+      <a href="{% url "activity" %}">{% trans "Activity Feed" %}</a>
       <a href="{% url "help" %}">{% trans "Help" %}</a>
     </div>
     <div class="sitenav">

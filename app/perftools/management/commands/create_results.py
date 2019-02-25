@@ -46,7 +46,7 @@ class Command(BaseCommand):
     help = 'generates some /results data'
 
     def handle(self, *args, **options):
-        keywords = [''] + programming_languages
+        keywords = ['']
         # DEBUG OPTIONS
         # keywords = [''] 
         view = 'results'
