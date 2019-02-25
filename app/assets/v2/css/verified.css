@@ -1,0 +1,12 @@
+.text-center {
+    text-align: center;
+}
+
+.small-row {
+    max-width: 650px;
+    display: inline-block;
+}
+
+.header-text {
+    line-height: 1.5;
+}

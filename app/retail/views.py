@@ -1244,6 +1244,13 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
     }
     return TemplateResponse(request, 'help.html', context)
 
+def verified(request):
+
+    context = {
+        'active': 'verified',
+        'title': _('Verified'),
+    }
+    return TemplateResponse(request, 'verified.html', context)
 
 def presskit(request):
 
