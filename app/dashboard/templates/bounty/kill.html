@@ -34,6 +34,48 @@
         text-decoration: none;
         color: #0D0764;
       }
+
+      .tipRefund {
+        background-color: #F8F8F8;
+        border-radius: 2px;
+        padding: 15px 20px 10px 20px;
+        font-size: 14px;
+        margin-bottom: 10px;
+      }
+
+      .tipRefund > div:first-child {
+        width: calc(100% - 105px);
+        display: inline-block;
+        vertical-align: middle;
+      }
+
+      .tipRefund > div:first-child > div {
+        background-color: #e6f0fa;
+        width: 36px;
+        padding: 2px 0px 2px 0px;
+        border-radius: 5px;
+        display: inline-block;
+      }
+
+      .tipRefund > div:first-child > h6 {
+        padding-left: 5px;
+        display: inline-block;
+      }
+
+      .tipRefund > div:first-child > p {
+        padding-top: 10px;
+      }
+
+      .tipRefund > div:first-child > div > i {
+        color: #3d03ff !important;
+        background-color: e6f0fa;
+        padding: 5px 10px 5px 10px;
+      }
+
+      .tipRefund > img {
+        width: 100px;
+        display: inline-block;
+      }
     </style>
   </head>
   <body class="{{active}} g-font-muli">
@@ -74,6 +116,16 @@
                   <p class="font-body font-weight-semibold">
                     <a class="link" href="{{ bounty.github_url }}">{% trans "Back to Bounty" %}</a>
                   </p>
+                  <div class="tipRefund">
+                    <div>
+                      <div>
+                        <i class="fa fa-users"></i>
+                      </div>
+                      <h6><strong>{% trans "Where will my crowdfunding go?" %}</strong></h6></br>
+                      <p>{% trans "Crowdfunded amount will be returned to you as a Tip. To claim, click the profile dropdown and select" %} <strong>{% trans "Claim Tip" %}</strong>.</p>
+                    </div>
+                    <img src="{% static "v2/images/claim-tip.png" %}">
+                  </div>
                   <label class="form__label" for="issueURL">{% trans "Issue URL" %}</label>
                   <input name='issueURL' id="issueURL" class="form__input" type="url" required placeholder="https://github.com/user/repo/issues/n" value="{% if bounty %}{{bounty.github_url}}{%endif%}" />
                 </div>
