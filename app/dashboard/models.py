@@ -1768,7 +1768,7 @@ class Profile(SuperModel):
         help_text='If this option is chosen, profile is okay with remote job',
     )
     job_salary = models.DecimalField(default=1, decimal_places=2, max_digits=50)
-    job_location = JSONField(default=dict)
+    job_location = JSONField(default=dict, blank=True)
     linkedin_url = models.CharField(max_length=255, default='', blank=True, null=True)
     resume = models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('The avatar SVG.'))
 
@@ -2705,6 +2705,7 @@ class Tool(SuperModel):
     CAT_COMMUNITY = 'CO'
     CAT_FOR_FUN = 'FF'
     GAS_TOOLS = "TO"
+    CAT_RETIRED = "CR"
 
     TOOL_CATEGORIES = (
         (CAT_ADVANCED, 'advanced'),
@@ -2715,6 +2716,7 @@ class Tool(SuperModel):
         (CAT_COMING_SOON, 'coming soon'),
         (CAT_COMMUNITY, 'community'),
         (CAT_FOR_FUN, 'just for fun'),
+        (CAT_RETIRED, 'retired'),
     )
 
     name = models.CharField(max_length=255)

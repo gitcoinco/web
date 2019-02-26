@@ -141,7 +141,7 @@ def receive_bulk_ethdenver(request, secret):
                         emails=["founders@gitcoin.co"],
                         # For kudos, `token` is a kudos.models.Token instance.
                         kudos_token_cloned_from=coupon.token,
-                        amount=0,
+                        amount=coupon.token.price_in_eth,
                         comments_public=coupon.comments_to_put_in_kudos_transfer,
                         ip=ip_address,
                         github_url='',

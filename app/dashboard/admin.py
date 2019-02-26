@@ -40,6 +40,12 @@ class GeneralAdmin(admin.ModelAdmin):
     list_display = ['created_on', '__str__']
 
 
+class ToolAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['created_on', '__str__']
+    raw_id_fields = ['votes']
+
+
 class ActivityAdmin(admin.ModelAdmin):
     ordering = ['-id']
     raw_id_fields = ['bounty', 'profile', 'tip', 'kudos']
@@ -165,6 +171,6 @@ admin.site.register(Tip, TipAdmin)
 admin.site.register(TokenApproval, TokenApprovalAdmin)
 admin.site.register(CoinRedemption, GeneralAdmin)
 admin.site.register(CoinRedemptionRequest, GeneralAdmin)
-admin.site.register(Tool, GeneralAdmin)
+admin.site.register(Tool, ToolAdmin)
 admin.site.register(ToolVote, ToolVoteAdmin)
 admin.site.register(LabsResearch)
