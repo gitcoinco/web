@@ -250,7 +250,7 @@ $(document).ready(function() {
         fundingOrganisation: data.fundingOrganisation,
         is_featured: data.featuredBounty,
         reservedFor: reservedFor ? reservedFor.text : '',
-        hoursReserved: hoursReserved ? hoursReserved.text : 0,
+        hoursReserved: hoursReserved,
         tokenName
       };
 

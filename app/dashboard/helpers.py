@@ -21,6 +21,7 @@ import logging
 import pprint
 from decimal import Decimal
 from enum import Enum
+from datetime import timedelta
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -475,11 +476,9 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
 
             bounty_reserved_for_user = metadata.get('reservedFor', '')
             bounty_reserved_for_hours = metadata.get('hoursReserved', '')
-            print(metadata)
-            print(bounty_reserved_for_user)
-            print(bounty_reserved_for_hours)
             if bounty_reserved_for_user:
                 new_bounty.reserved_for_user_handle = bounty_reserved_for_user
+                new_bounty.bounty_reserved_till = timezone.now() + timedelta(hours=bounty_reserved_for_hours)
                 new_bounty.save()
                 if new_bounty.bounty_reserved_for_user:
                     # notify a user that a bounty has been reserved for them
