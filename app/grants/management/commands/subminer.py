@@ -36,7 +36,8 @@ logger = logging.getLogger(__name__)
 
 SLEEP_TIME = 20
 MAX_COUNTER = 30
-
+METATX_GAS_PRICE_THRESHOLD = 100000.0 # in wei?
+METATX_FREE_INTERVAL = 27 * 24 * 60 * 60 # less than a month-ish has to pay
 
 def process_subscription(subscription, live):
     is_ready_to_be_processed_db = subscription.get_is_ready_to_be_processed_from_db()
@@ -60,6 +61,14 @@ def process_subscription(subscription, live):
         if not are_we_past_next_valid_timestamp:
             logger.info(f"   -- ( NOT ready via web3, will be ready on {subscription.get_next_valid_timestamp()}) ")
         else:
+            web3_hash_arguments = subscription.get_subscription_hash_arguments()
+            if web3_hash_arguments['periodSeconds'] < METATX_FREE_INTERVAL_SECONDS and web3_hash_arguments['gasPrice'] <= METATX_GAS_PRICE_THRESHOLD:
+                subscription.error = True
+                subscription.subminer_comments = "Gas price was too low to process"
+                subscription.save()
+                warn_subscription_failed(subscription)
+                return
+
             logger.info("   -- (ready via web3) ")
             status = 'failure'
             txid = None
@@ -77,7 +86,7 @@ def process_subscription(subscription, live):
 
                     txid = subscription.do_execute_subscription_via_web3()
                     logger.info("   -- *waiting for mine* (txid %s) ", txid)
-                    
+
                     override = False
                     counter = 0
                     while not has_tx_mined(txid, subscription.grant.network) and not override:
@@ -86,7 +95,7 @@ def process_subscription(subscription, live):
                         counter += 1
                         if counter > MAX_COUNTER:
                             override = True
-                            # force the subminer to continue on; this tx is taking too long.  
+                            # force the subminer to continue on; this tx is taking too long.
                             # an admin will have to look at this later and determine what went wrong
                             # KO 2019/02/06
 
