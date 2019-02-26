@@ -51,6 +51,7 @@ from git.utils import (
     _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_gh_issue_details, get_issue_comments, issue_number, org_name,
     repo_name,
 )
+from marketing.mails import featured_funded_bounty
 from marketing.models import LeaderboardRank
 from rest_framework import serializers
 from web3 import Web3
@@ -1016,6 +1017,11 @@ class Bounty(SuperModel):
 
         self.bounty_reserved_for_user = profile
 
+@receiver(post_save, sender=Bounty, dispatch_uid="psave_bounty")
+def psave_bounty(sender, instance, created, **kwargs):
+    if created:
+        featured_funded_bounty('founders@gitcoin.co', bounty=instance)
+
 
 class BountyFulfillmentQuerySet(models.QuerySet):
     """Handle the manager queryset for BountyFulfillments."""
@@ -1365,7 +1371,6 @@ class Tip(SendCryptoAsset):
 class TipPayoutException(Exception):
     pass
 
-
 @receiver(pre_save, sender=Tip, dispatch_uid="psave_tip")
 def psave_tip(sender, instance, **kwargs):
     # when a new tip is saved, make sure it doesnt have whitespace in it
@@ -1488,8 +1493,7 @@ def psave_interest(sender, instance, **kwargs):
     # when a new interest is saved, update the status on frontend
     print("signal: updating bounties psave_interest")
     for bounty in Bounty.objects.filter(interested=instance):
-        bounty.save()
-
+        bounty.save()      
 
 class ActivityQuerySet(models.QuerySet):
     """Handle the manager queryset for Activities."""
@@ -1764,7 +1768,7 @@ class Profile(SuperModel):
         help_text='If this option is chosen, profile is okay with remote job',
     )
     job_salary = models.DecimalField(default=1, decimal_places=2, max_digits=50)
-    job_location = JSONField(default=dict)
+    job_location = JSONField(default=dict, blank=True)
     linkedin_url = models.CharField(max_length=255, default='', blank=True, null=True)
     resume = models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('The avatar SVG.'))
 
@@ -2701,6 +2705,7 @@ class Tool(SuperModel):
     CAT_COMMUNITY = 'CO'
     CAT_FOR_FUN = 'FF'
     GAS_TOOLS = "TO"
+    CAT_RETIRED = "CR"
 
     TOOL_CATEGORIES = (
         (CAT_ADVANCED, 'advanced'),
@@ -2711,6 +2716,7 @@ class Tool(SuperModel):
         (CAT_COMING_SOON, 'coming soon'),
         (CAT_COMMUNITY, 'community'),
         (CAT_FOR_FUN, 'just for fun'),
+        (CAT_RETIRED, 'retired'),
     )
 
     name = models.CharField(max_length=255)

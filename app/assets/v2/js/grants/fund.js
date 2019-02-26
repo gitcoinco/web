@@ -110,8 +110,17 @@ $(document).ready(function() {
 
           let url;
 
-          deployedToken.methods.approve(
-            data.contract_address,
+          var tokenMethod = deployedToken.methods.approve;
+          var arg1 = data.contract_address;
+          
+          // one time payments
+          if (data.num_periods == 1) {
+            arg1 = data.admin_address;
+            tokenMethod = deployedToken.methods.transfer;
+          }
+
+          tokenMethod(
+            arg1,
             web3.utils.toTwosComplement(approvalSTR)
           ).send({
             from: accounts[0],
@@ -122,7 +131,7 @@ $(document).ready(function() {
           }).on('transactionHash', function(transactionHash) {
             $('#sub_new_approve_tx_id').val(transactionHash);
             const linkURL = etherscan_tx_url(transactionHash);
-
+            let token_address = $('#js-token').length ? $('#js-token').val() : $('#sub_token_address').val();
             let data = {
               'contributor_address': $('#contributor_address').val(),
               'amount_per_period': $('#amount').val(),

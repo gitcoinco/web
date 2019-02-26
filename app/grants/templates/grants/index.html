@@ -52,6 +52,22 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         </div>
       </div>
     </div>
+    {% if matchpledges %}
+      <div class="container-fluid py-5 grants-matching">
+        <div class="container">
+          <h2>Matching Partners</h2>
+          <p>A special thanks to the following partners who have offered to match contributions to Gitcoin Grants.  <a href="https://medium.com/gitcoin/gitcoin-grants-clr-matching-ecbc87b10038">(Read Announcement Here)</a></p>
+          {% for mp in matchpledges %}
+            <div style="text-align:center; display: inline-block; padding: 10px;">
+              <h5>@{{mp.profile.handle}}</h5>
+              <img style="max-width:100px;" src="/dynamic/avatar/{{mp.profile.handle}}">
+              <p>${{mp.amount|floatformat}}</p>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
     <div class="container-fluid py-5 grants-search">
       <div class="container">
         <form method="POST" id="search_form">
@@ -80,14 +96,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <div class="col-12 col-md-6 pt-1 font-caption order_by d-md-inline text-center text-sm-right">
               <div class="heading">{% trans "SORT" %}</div>
               <select name="sort_option" id="sort_option">
+                <option value="-clr_matching">{% trans "CLR Match: Highest" %}</option>
+                <option value="clr_matching">{% trans "CLR Match: Lowest" %}</option>
                 <option value="-created_on">{% trans "Created: Recent" %}</option>
                 <option value="created_on">{% trans "Created: Oldest" %}</option>
                 <option value="-amount_goal">{% trans "Goal: Highest" %}</option>
                 <option value="amount_goal">{% trans "Goal: Lowest" %}</option>
                 <option value="-amount_received">{% trans "Amount Raised: Highest" %}</option>
                 <option value="amount_received">{% trans "Amount Raised: Lowest" %}</option>
-                <option value="-clr_matching">{% trans "CLR Match: Highest" %}</option>
-                <option value="clr_matching">{% trans "CLR Match: Lowest" %}</option>
               </select>
             </div>
           </div>

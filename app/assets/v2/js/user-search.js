@@ -1,4 +1,4 @@
-function userSearch(elem, showAddress, theme, initialData, allowClear) {
+function userSearch(elem, showAddress, theme, initialData, allowClear, suppress_non_gitcoiners) {
   var themeChoice = theme || undefined;
   var selectItem = elem || '.username-search';
 
@@ -19,10 +19,14 @@ function userSearch(elem, showAddress, theme, initialData, allowClear) {
     if (!$(this).length) {
       return;
     }
+    var url = '/api/v0.1/users_search/?token=' + currentProfile.githubToken;
 
+    if (suppress_non_gitcoiners) {
+      url += '&suppress_non_gitcoiners=true';
+    }
     $(this).select2({
       ajax: {
-        url: '/api/v0.1/users_search/?token=' + currentProfile.githubToken,
+        url: url,
         dataType: 'json',
         delay: 250,
         data: function(params) {
