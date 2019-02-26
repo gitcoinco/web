@@ -1364,6 +1364,10 @@ var pull_bounty_from_api = function() {
         render_activity(result, results);
 
         document.result = result;
+
+        if (typeof promptPrivateInstructions != 'undefined' && result.repo_type === 'private') {
+          repoInstructions();
+        }
         return;
       }
     }
