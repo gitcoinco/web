@@ -32,26 +32,68 @@
     <div class="container-fluid header">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav.html' %}
-      {% include 'shared/minihero.html' with h1='Verified Helper' suppress_logo=1 %}
+      {% include 'shared/minihero.html' with h1='Verified Contributor' suppress_logo=0 %}
     </div>
 
-    <div class="container-fluid white-light-bg text-center">
+    <div class="container-fluid text-center">
         <div class="small-row">
             <div class="header-text">
                 <h4><strong>Verified Contributors</strong> are outstanding contributors who have proven themselves by doing awesome work.</h4>
             </div>
         </div>
-        <div class="row">
-
+        <div class="row p-5 verified-cta">
+            <div>
+                <img src="{% static "v2/images/verified-contributor.png" %}">
+            </div>
+            <div>
+                <h5 class="mt-5 text-left">To be a <strong>Verified Contributor</strong>, a contributor has to:</h5>
+                <ul>
+                    <li><h5 class="text-left">Be speedy and responsive</h5></li>
+                    <li><h5 class="text-left">Have great communication</h5></li>
+                    <li><h5 class="text-left">Write clean, bug-free code</h5></li>
+                    <li><h5 class="text-left">Complete X bounties</h5></li>
+                </ul>
+            </div>
         </div>
         <div class="small-row">
             <h4>Interested in being verified?</h4>
-            <a href="" class="btn btn-gc-blue m-4">
-
+            <a href="" class="btn btn-gc-blue m-2 rounded">
+                <span class="pl-1">Request Verification</span>
             </a>
         </div>
-        <div class="row">
+        <div class="row pb-5">
+            <div class="container">
+                <h3 class="my-5">FAQ</h3>
 
+                <div class="mb-3 faq-item">
+                    <h5 class="accordion">Lorem ipsum dolor sit amet, consectetur adipiscing elit</h5>
+                    <div class="panel">
+                    <p>It's a common practice for on-site teams to be able to celebrate the work they've done together after shipping. We wanted to create a similar experience for distributed, open-source, teams to celebrate their wins and to celebrate each other.</p>
+                    </div>
+                </div>
+
+                <div class="mb-3 faq-item">
+                    <h5 class="accordion">Lorem ipsum dolor sit amet, consectetur adipiscing elit</h5>
+                    <div class="panel">
+                    <p>It's a common practice for on-site teams to be able to celebrate the work they've done together after shipping. We wanted to create a similar experience for distributed, open-source, teams to celebrate their wins and to celebrate each other.</p>
+                    </div>
+                </div>
+
+                <div class="mb-3 faq-item">
+                    <h5 class="accordion">Lorem ipsum dolor sit amet, consectetur adipiscing elit</h5>
+                    <div class="panel">
+                    <p>It's a common practice for on-site teams to be able to celebrate the work they've done together after shipping. We wanted to create a similar experience for distributed, open-source, teams to celebrate their wins and to celebrate each other.</p>
+                    </div>
+                </div>
+
+                <div class="mb-3 faq-item">
+                    <h5 class="accordion">Lorem ipsum dolor sit amet, consectetur adipiscing elit</h5>
+                    <div class="panel">
+                    <p>It's a common practice for on-site teams to be able to celebrate the work they've done together after shipping. We wanted to create a similar experience for distributed, open-source, teams to celebrate their wins and to celebrate each other.</p>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
 
