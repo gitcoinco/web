@@ -178,19 +178,6 @@ $(document).ready(function() {
     setUsdAmount();
   }
 
-  if (params.has('type')) {
-    let checked = params.get('type');
-
-    toggleCtaPlan(checked);
-    $(`input[name=repo_type][value=${checked}]`).prop('checked', 'true');
-  } else {
-    params.append('type', 'public');
-    window.history.replaceState({}, '', location.pathname + '?' + params);
-  }
-  $('input[name=repo_type]').change(function() {
-    toggleCtaPlan($(this).val());
-
-  });
   var open_hiring_panel = function(do_focus) {
     setTimeout(function() {
       var hiringRightNow = $('#hiringRightNow').is(':checked');
@@ -482,7 +469,7 @@ $(document).ready(function() {
           contentType: false,
           data: formData
         };
-      
+
         $.ajax(settings).done(function(response) {
           _alert(response.message, 'info');
           // sync db
@@ -521,6 +508,21 @@ $(document).ready(function() {
         do_bounty();
       }
     }
+  });
+});
+
+$(window).on('load', function() {
+  if (params.has('type')) {
+    let checked = params.get('type');
+
+    toggleCtaPlan(checked);
+    $(`input[name=repo_type][value=${checked}]`).prop('checked', 'true');
+  } else {
+    params.append('type', 'public');
+    window.history.replaceState({}, '', location.pathname + '?' + params);
+  }
+  $('input[name=repo_type]').change(function() {
+    toggleCtaPlan($(this).val());
   });
 });
 

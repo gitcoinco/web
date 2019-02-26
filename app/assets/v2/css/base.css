@@ -1616,3 +1616,8 @@ div.busyOverlay {
   }
 
 }
+
+.g-modal .modal-header,
+.g-modal .modal-footer {
+  border: none;
+}

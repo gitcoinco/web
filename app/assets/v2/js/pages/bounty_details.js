@@ -644,7 +644,7 @@ var show_interest_modal = function() {
       if (document.result['repo_type'] === 'private') {
         $('#nda-upload').show();
         $('#issueNDA').prop('required', true);
-        $('.nda-download-link').attr('href', document.result.unsigned_nda.doc);
+        document.result.unsigned_nda ? $('.nda-download-link').attr('href', document.result.unsigned_nda.doc) : $('#nda-upload').hide();
       }
 
       let actionPlanForm = $('#action_plan');
@@ -768,6 +768,46 @@ var show_interest_modal = function() {
   //     });
   //   });
   // });
+};
+
+const repoInstructions = () => {
+  let linkToSettings = `https://github.com/${document.result.github_org_name}/${document.result.github_repo_name}/settings/collaboration`;
+
+
+  let modalTmp = `
+  <div class="modal fade g-modal" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body text-center center-block w-75">
+          <h5>
+            You have successfully approved the contributor to work on your bounty!
+          </h5>
+          <div>
+            <img src="${document.contxt.STATIC_URL}v2/images/repo-instructions.png" class="mw-100 my-4" alt="">
+          </div>
+          <p class="mb-4">Now you need to invite the contributor to your private repo on GitHub You can find it under <b>GitHub repository > Settings > Collaborators</b></p>
+          <div>
+            <img src="${document.contxt.STATIC_URL}v2/images/repo-settings.png" class="mw-100" alt="">
+          </div>
+        </div>
+        <div class="modal-footer justify-content-center">
+          <a href="${linkToSettings}" target="_blank" class="button button--primary"><i class="fab fa-github"></i> Go to Repo Settings</a>
+        </div>
+      </div>
+    </div>
+  </div>`;
+
+  $(modalTmp).bootstrapModal('show');
+
+  $(document, modalTmp).on('hidden.bs.modal', function(e) {
+    $('#exampleModalCenter').remove();
+    $(modalTmp).bootstrapModal('dispose');
+  });
 };
 
 var set_extended_time_html = function(extendedDuration, currentExpires) {
