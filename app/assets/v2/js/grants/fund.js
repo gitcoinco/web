@@ -84,8 +84,11 @@ $(document).ready(function() {
           _alert('The token you selected is not a valid ERC20 token', 'error');
           return;
         }
-        // let realGasPrice = Math.ceil($('#gasPrice').val() * Math.pow(10, 9));i
+
         let realGasPrice = 0; // zero cost metatxs
+        if periodSeconds < 2592000:
+          // charge gas for intervals less than a month 
+          realGasPrice = Math.ceil($('#gasPrice').val() * Math.pow(10, 9));
 
         $('#gas_price').val(realGasPrice);
 
