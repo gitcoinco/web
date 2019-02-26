@@ -1,12 +1,32 @@
-.text-center {
-    text-align: center;
-}
-
 .small-row {
     max-width: 650px;
     display: inline-block;
 }
 
-.header-text {
+.header-text > h4 {
     line-height: 1.5;
+}
+
+.faq-item {
+    text-align: left;
+    border-bottom: 1px solid #ccc;
+    padding: 5px 0px 5px 0px;
+    max-width: 800px;
+    display: inline-block;
+}
+
+.header-line {
+    color: #fff;
+    font-weight: 600;
+}
+
+.verified-cta > div {
+    display: inline-block;
+    width: 50%;
+    background-color: #ccc;
+}
+
+.verified-cta > div > img {
+    width: 400px;
+    float: right;
 }
