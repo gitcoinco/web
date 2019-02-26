@@ -35,7 +35,8 @@ def create_activities(bounty):
     approval_required = bounty.permission_type == 'approval'
     for interest in bounty.interested.all():
         event_name = 'start_work' if not approval_required else 'worker_applied'
-        act = record_bounty_activity_interest(bounty, interest.profile.user, event_name, interest)
+        user = { 'profile': interest.profile }
+        act = record_bounty_activity_interest(bounty, user, event_name, interest)
         set_created(act, interest.created)
         if approval_required and interest.status != Interest.STATUS_REVIEW:
             act = record_bounty_activity_interest(bounty, interest.profile.user, 'worker_approved', interest)

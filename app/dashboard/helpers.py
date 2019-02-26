@@ -428,9 +428,6 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 'permission_type': schemes.get('permission_type', 'permissionless'),
                 'attached_job_description': bounty_payload.get('hiring', {}).get('jobDescription', None),
                 'is_featured': metadata.get('is_featured', False),
-                'featuring_date': timezone.make_aware(
-                    timezone.datetime.fromtimestamp(metadata.get('featuring_date')),
-                    timezone=UTC),
                 'bounty_owner_github_username': bounty_issuer.get('githubUsername', ''),
                 'bounty_owner_address': bounty_issuer.get('address', ''),
                 'bounty_owner_email': bounty_issuer.get('email', ''),

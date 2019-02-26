@@ -25,6 +25,8 @@ from inbox.utils import send_notification_to_user
 
 
 def create_notification(sender, **kwargs):
+    return
+    '''
     activity = kwargs['instance']
     if activity.activity_type == 'new_tip':
         tip = activity.tip
@@ -143,3 +145,5 @@ def create_notification(sender, **kwargs):
 
 
 post_save.connect(create_notification, sender=Activity)
+'''
+

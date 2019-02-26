@@ -671,7 +671,7 @@ STABLE_COINS = ['DAI', 'USDT', 'TUSD']
 ENABLE_SILK = env.bool('ENABLE_SILK', default=False)
 if ENABLE_SILK:
     INSTALLED_APPS += ['silk']
-    MIDDLEWARE.append('silk.middleware.SilkyMiddleware')
+    MIDDLEWARE.insert(0, 'silk.middleware.SilkyMiddleware')
     SILKY_PYTHON_PROFILER = env.bool('SILKY_PYTHON_PROFILER', default=True)
     SILKY_PYTHON_PROFILER_BINARY = env.bool('SILKY_PYTHON_PROFILER_BINARY', default=False)
     SILKY_AUTHENTICATION = env.bool('SILKY_AUTHENTICATION', default=False)
@@ -680,16 +680,27 @@ if ENABLE_SILK:
     SILKY_INTERCEPT_PERCENT = env.int('SILKY_INTERCEPT_PERCENT', default=50)
     SILKY_MAX_RECORDED_REQUESTS = env.int('SILKY_MAX_RECORDED_REQUESTS', default=10000)
     SILKY_DYNAMIC_PROFILING = env.list('SILKY_DYNAMIC_PROFILING', default=[])
-    if ENV == 'stage':
-        SILKY_DYNAMIC_PROFILING += [{
-            'module': 'dashboard.views',
-            'function': 'profile',
-            'name': 'Profile View',
-        }, {
-            'module': 'retail.views',
-            'function': 'index',
-            'name': 'Index View',
-        }]
+    #if ENV == 'stage':
+    SILKY_DYNAMIC_PROFILING += [{
+        'module': 'dashboard.views',
+        'function': 'profile',
+        'name': 'Profile View',
+    }, {
+        'module': 'retail.views',
+        'function': 'index',
+        'name': 'Index View',
+    },
+    {
+        'module': 'dashboard.router',
+        'function': 'BountyViewSet.get_queryset',
+        'name': 'ViewSet',
+    },
+    {
+        'module': 'django.template.response.TemplateResponse',
+        'function': 'render',
+        'name': 'Render',
+    }
+    ]
     SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT = env.int('SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT', default=10)
 
 TAGGIT_CASE_INSENSITIVE = env.bool('TAGGIT_CASE_INSENSITIVE', default=True)
