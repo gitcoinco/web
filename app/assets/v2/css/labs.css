@@ -6,10 +6,6 @@ body {
   flex-shrink: 0;
 }
 
-.navbar-nav > .img__spaceship {
-  display: none !important;
-}
-
 .lab-hero-bg {
   position: relative;
   align-content: center;
