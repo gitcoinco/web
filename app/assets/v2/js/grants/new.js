@@ -5,8 +5,21 @@ $(document).ready(function() {
     web3.eth.net.isListening((error, connectionStatus) => {
       if (connectionStatus)
         init();
+        document.init = true
     });
   }
+  setTimeout(function(){
+      if(!document.init){
+        $('#connect_metamask_error').css('display', 'block');
+        $('#unlock_metamask_error').css('display', 'none');
+        $('#zero_balance_error').css('display', 'none');
+        $('#no_metamask_error').css('display', 'none');
+        $('#grants_form').addClass('hidden');
+        $('.submit_bounty .newsletter').addClass('hidden');
+        $('#no_issue_error').css('display', 'none');
+        $('.alpha-warning').addClass('hidden');    
+      }
+    }, 1000);
 });
 
 function saveGrant(grantData, isFinal) {
