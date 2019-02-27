@@ -301,8 +301,9 @@ def new_interest(request, bounty_id):
     })
 
 
+@csrf_exempt
 @require_POST
-def postComment(request):
+def post_comment(request):
     profile_id = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
     if profile_id is None:
         return JsonResponse({
@@ -312,28 +313,30 @@ def postComment(request):
 
     sbid = request.POST.get('standard_bounties_id')
     bountyObj = Bounty.objects.filter(standard_bounties_id=sbid).first()
-    fbAmount = FeedbackEntry.objects.filter(sender_profile=profile_id, feedbackType='approver', bounty=bountyObj).count()
+    fbAmount = FeedbackEntry.objects.filter(sender_profile=profile_id, feedbackType=request.POST.get('review[reviewType]', 'approver'), bounty=bountyObj).count()
     if fbAmount > 0:
         return JsonResponse({
             'success': False,
             'msg': 'There is already a approval comment',
         })
-    feedback_dict = request.POST.get('review',{})
+    if request.POST.get('review[reviewType]','approver') == 'approver':
+        receiver_profile = Profile.objects.filter(handle=request.POST.get('review[receiver]', '')).first()
+    else:
+        receiver_profile = bountyObj.bounty_owner_profile
     kwargs = {
         'bounty': bountyObj,
         'sender_profile': profile_id,
-        'receiver_profile': bountyObj.fulfillments.last().profile,
-        'rating': feedback_dict.get('rating', '-1'),
-        'comment': feedback_dict.get('comment', 'No comment.'),
-        'feedbackType': feedback_dict.get('feedbackType','approver')
+        'receiver_profile': receiver_profile,
+        'rating': request.POST.get('review[rating]', '-1'),
+        'comment': request.POST.get('review[comment]', 'No comment.'),
+        'feedbackType': request.POST.get('review[reviewType]','approver')
     }
 
-    e = FeedbackEntry.objects.create(**kwargs)
-    e.save()
+    feedback = FeedbackEntry.objects.create(**kwargs)
+    feedback.save()
     return JsonResponse({
             'success': False,
-            'msg': 'Finished.',
-            'feedbackEntry': e
+            'msg': 'Finished.'
         })
 
 

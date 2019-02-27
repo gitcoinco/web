@@ -88,11 +88,11 @@ window.onload = function() {
             schemaVersion: '0.1',
             schemaName: 'gitcoinFulfillment'
           },
-		  review: {
-			  rating: data.rating?data.rating:-1,
-			  comment: data.review?data.review:"No comment given.",
-			  reviewType: "worker"
-		  }
+          review: {
+            rating: data.rating?data.rating:-1,
+            comment: data.review?data.review:"No comment given.",
+            reviewType: "worker"
+          }
         };
 
         var _callback = function(error, result) {
@@ -121,11 +121,28 @@ window.onload = function() {
                     txid: result
                   });
 
-                  dataLayer.push({ event: 'claimissue' });
-                  _alert({ message: gettext('Fulfillment submitted to web3.') }, 'info');
-                  setTimeout(() => {
-                    document.location.href = '/funding/details?url=' + issueURL;
-                  }, 1000);
+                  var submitCommentUrl = '/postcomment/';
+                  var finishedComment = function() {
+                    dataLayer.push({ event: 'claimissue' });
+                    _alert({ message: gettext('Fulfillment submitted to web3.') }, 'info');
+                    setTimeout(() => {
+                      document.location.href = '/funding/details?url=' + issueURL;
+                    }, 1000);
+                  };
+                  var ratVal = $('input:radio[name=rating]:checked').val();
+                  var revVal = $('#review').val();
+
+                  $.post(submitCommentUrl, {
+                    'github_url': issueURL,
+                    'network': $('input[name=network]').val(),
+                    'standard_bounties_id': $('input[name=standard_bounties_id]').val(),
+                    'review': {
+                      'rating': ratVal ? ratVal : -1,
+                      'comment': revVal ? revVal : 'No comment given.',
+                      'reviewType': 'worker',
+                      'receiver': ''
+                    }
+                  }, finishedComment, 'json');
                 };
 
                 if (error) {
