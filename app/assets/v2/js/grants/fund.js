@@ -94,14 +94,20 @@ $(document).ready(function() {
           _alert('The token you selected is not a valid ERC20 token', 'error');
           return;
         }
+        // calculate gas amount
         let realGasPrice = Math.ceil($('#gasPrice').val() * Math.pow(10, 9));
-
         $('#gas_price').val(realGasPrice);
 
-        let realTokenAmount = Number(data.amount_per_period * Math.pow(10, decimals));
-        let amountSTR = realTokenAmount.toLocaleString('fullwide', { useGrouping: false });
+        // calculate fee amount for grant
+        let totalTokenAmount = Number(data.amount_per_period * Math.pow(10, decimals));
+        var fee_amount_pct = 5;
+        var real_fee_amount = Number(totalTokenAmount * fee_amount_pct / 100.0)
+        var real_grantee_amount = Number(totalTokenAmount * ( 100 - fee_amount_pct ) / 100.0)
+        let realApproval = Number((totalTokenAmount) * data.num_periods);
 
-        let realApproval = Number((realTokenAmount + realGasPrice) * data.num_periods);
+        // get STR versions of hte above
+        let totalAmountSTR = totalTokenAmount.toLocaleString('fullwide', { useGrouping: false });
+        let totalGranteeAmountSTR = real_grantee_amount.toLocaleString('fullwide', { useGrouping: false });
         let approvalSTR = realApproval.toLocaleString('fullwide', { useGrouping: false });
 
         web3.eth.getAccounts(function(err, accounts) {
@@ -114,7 +120,9 @@ $(document).ready(function() {
           var arg1 = data.contract_address;
           
           // one time payments
-          if (data.num_periods == 1) {
+          // TODO: re-introduce direct payments down the line
+          // once we figure out how to do fees on them
+          if (data.num_periods == 1 && false) {
             arg1 = data.admin_address;
             tokenMethod = deployedToken.methods.transfer;
           }
@@ -134,13 +142,13 @@ $(document).ready(function() {
             let token_address = $('#js-token').length ? $('#js-token').val() : $('#sub_token_address').val();
             let data = {
               'contributor_address': $('#contributor_address').val(),
-              'amount_per_period': $('#amount').val(),
+              'amount_per_period': $('#amount').val() * (100 - fee_amount_pct) / 100.0,
               'real_period_seconds': realPeriodSeconds,
               'frequency': $('#frequency_count').val(),
               'frequency_unit': $('#frequency_unit').val(),
               'token_address': selected_token,
               'token_symbol': $('#token_symbol').val(),
-              'gas_price': $('#gas_price').val(),
+              'gas_price': ('#amount').val() * (fee_amount_pct) / 100.0,
               'sub_new_approve_tx_id': transactionHash,
               'num_tx_approved': $('#period').val(),
               'network': $('#network').val(),
@@ -171,9 +179,9 @@ $(document).ready(function() {
                 web3.utils.toChecksumAddress(accounts[0]), // subscriber address
                 web3.utils.toChecksumAddress($('#admin_address').val()), // admin_address
                 web3.utils.toChecksumAddress(selected_token), // token denomination / address
-                web3.utils.toTwosComplement(amountSTR), // data.amount_per_period
+                web3.utils.toTwosComplement(totalGranteeAmountSTR), // data.amount_per_period
                 web3.utils.toTwosComplement(realPeriodSeconds), // data.period_seconds
-                web3.utils.toTwosComplement(realGasPrice), // data.gas_price
+                web3.utils.toTwosComplement(real_fee_amount), // real_fee_amount
                 web3.utils.toTwosComplement(nonce) // nonce
               ];
 
