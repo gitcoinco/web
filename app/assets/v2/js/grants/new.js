@@ -67,6 +67,7 @@ const init = () => {
 
   $('#create-grant').validate({
     submitHandler: function(form) {
+      metamaskApproval();
       let data = {};
 
       $(form).find(':input:disabled').removeAttr('disabled');
