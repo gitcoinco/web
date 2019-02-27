@@ -37,7 +37,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from app.utils import get_profile
 from cacheops import cached_view
-from dashboard.models import Profile
+from dashboard.models import Profile, Activity
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.forms import MilestoneForm
 from grants.models import Contribution, Grant, MatchPledge, Milestone, Subscription, Update
@@ -387,6 +387,11 @@ def grant_fund(request, grant_id, grant_slug):
             subscription.contributor_profile = profile
             subscription.grant = grant
             subscription.save()
+            activity_kwargs = {
+                'profile': profile,
+                'subscription': subscription,
+                'activity_type': 'new_grant_subscription',
+            }
 
             # one time payments
             if subscription.num_tx_approved == '1':
@@ -394,6 +399,8 @@ def grant_fund(request, grant_id, grant_slug):
                 subscription.error = True #cancel subs so it doesnt try to bill again
                 subscription.subminer_comments = "skipping subminer bc this is a 1 and done subscription, and tokens were alredy sent"
                 subscription.save()
+                activity_kwargs['activity_type'] = 'new_grant_contribution'
+            Activity.objects.create(**kwargs)
 
             messages.info(
                 request,
@@ -472,6 +479,12 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
         subscription.cancel_tx_id = request.POST.get('sub_cancel_tx_id', '')
         subscription.active = False
         subscription.save()
+        activity_kwargs = {
+            'profile': profile,
+            'subscription': subscription,
+            'activity_type': 'killed_grant_contribution',
+        }
+        Activity.objects.create(**activity_kwargs)
 
         value_usdt = subscription.get_converted_amount
         if value_usdt:

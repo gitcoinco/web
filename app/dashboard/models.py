@@ -1554,6 +1554,7 @@ class Activity(SuperModel):
         ('update_grant', 'Updated Grant'),
         ('killed_grant', 'Cancelled Grant'),
         ('new_grant_contribution', 'Contributed to Grant'),
+        ('new_grant_subscription', 'Subscribed to Grant'),
         ('killed_grant_contribution', 'Cancelled Grant Contribution'),
         ('new_milestone', 'New Milestone'),
         ('update_milestone', 'Updated Milestone'),
@@ -1581,6 +1582,12 @@ class Activity(SuperModel):
     )
     kudos = models.ForeignKey(
         'kudos.KudosTransfer',
+        related_name='activities',
+        on_delete=models.CASCADE,
+        blank=True, null=True
+    )
+    subscription = models.ForeignKey(
+        'grants.Subscription',
         related_name='activities',
         on_delete=models.CASCADE,
         blank=True, null=True
