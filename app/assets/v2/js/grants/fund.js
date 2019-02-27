@@ -45,6 +45,7 @@ $(document).ready(function() {
       }
     },
     submitHandler: function(form) {
+      metamaskApproval();
       var data = {};
 
       $.each($(form).serializeArray(), function() {
@@ -112,7 +113,7 @@ $(document).ready(function() {
 
           var tokenMethod = deployedToken.methods.approve;
           var arg1 = data.contract_address;
-          
+
           // one time payments
           if (data.num_periods == 1) {
             arg1 = data.admin_address;
