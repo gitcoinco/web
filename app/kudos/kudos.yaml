@@ -3262,9 +3262,9 @@
     - issues
   image: blockeye.svg
 - name: Money_Maker
-  to_address: '0xD27D4fE82aCF5eaBb78723eC0F624c8127c64972
+  to_address: '0xD27D4fE82aCF5eaBb78723eC0F624c8127c64972'
   artist: yash412
-  description: For someone who's just earned a huge bounty! 
+  description: For someone who has just earned a huge bounty! 
   priceFinney: 40
   numClonesAllowed: 50
   tags:
