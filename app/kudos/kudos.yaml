@@ -3235,6 +3235,110 @@
     - grants
     - torchbearer
   image: gitcoin_torchbearer.svg
+- name: Network_Security_God
+  to_address: '0xD27D4fE82aCF5eaBb78723eC0F624c8127c64972'
+  artist: yash412
+  description: For someone who's a knows how to keep his network safe. 
+  priceFinney: 40
+  numClonesAllowed: 50
+  tags:
+    - coder
+    - blockchain
+    - cypherpunk
+    - security
+    - networks
+  image: netsec.svg
+- name: Watchful_Protector
+  to_address: '0xD27D4fE82aCF5eaBb78723eC0F624c8127c64972'
+  artist: yash412
+  description: For someone who's keeps a watch out for bugs & issues. 
+  priceFinney: 40
+  numClonesAllowed: 50
+  tags:
+    - coder
+    - blockchain
+    - cypherpunk
+    - bugs
+    - issues
+  image: blockeye.svg
+- name: Money_Maker
+  to_address: '0xD27D4fE82aCF5eaBb78723eC0F624c8127c64972
+  artist: yash412
+  description: For someone who's just earned a huge bounty! 
+  priceFinney: 40
+  numClonesAllowed: 50
+  tags:
+    - coder
+    - blockchain
+    - gitcoin
+    - bounty
+  image: money.svg
+- name: Honest_Abe
+  to_address: '0x11328DFcD09ae7d2F40AAc3D544D0700bB222C47'
+  artist: j0ker1234
+  description: For someone who is always honest.
+  priceFinney: 50
+  numClonesAllowed: 50
+  tags:
+    - honest
+    - superhuman
+    - lincoln
+  image: lincoln.svg
+- name: Rainbow
+  to_address: '0x11328DFcD09ae7d2F40AAc3D544D0700bB222C47'
+  artist: j0ker1234
+  description: For someone who is colourful.
+  priceFinney: 50
+  numClonesAllowed: 50
+  tags:
+    - rainbow
+    - colourful
+    - gold
+  image: rainbow.svg
+- name: Narwhal
+  to_address: '0x11328DFcD09ae7d2F40AAc3D544D0700bB222C47'
+  artist: j0ker1234
+  description: For someone who is like a narwhal.
+  priceFinney: 50
+  numClonesAllowed: 50
+  tags:
+    - ocean
+    - fish
+    - narwhal
+    - horn
+  image: rainbow.svg
+- name: first_grant_funded
+  artist: mladen
+  description: This Kudos is to commemerate your first Gitcoin Grant funded!
+  priceFinney: 50
+  numClonesAllowed: 500
+  tags:
+    - gitcoin
+    - grants
+    - funding
+  image: first_grant_funded.svg
+- name: the_alchemist
+  artist: mladen
+  description: Behold, the power of alchemy!  You take ideas and bits and alchemize them into something magical!
+  priceFinney: 25
+  numClonesAllowed: 500
+  tags:
+    - gitcoin
+    - alchemy
+    - fun
+    - soft skills
+  image: alchemist1.svg
+- name: the_alchemist
+  artist: mladen
+  description: Behold, the power of alchemy!  You take ideas and bits and alchemize them into something magical!
+  priceFinney: 25
+  numClonesAllowed: 500
+  tags:
+    - gitcoin
+    - alchemy
+    - fun
+    - soft skills
+  image: alchemist2.svg
 
 
 
