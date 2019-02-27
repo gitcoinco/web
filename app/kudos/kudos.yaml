@@ -3306,7 +3306,7 @@
     - fish
     - narwhal
     - horn
-  image: rainbow.svg
+  image: narwhal.svg
 - name: first_grant_funded
   artist: mladen
   description: This Kudos is to commemerate your first Gitcoin Grant funded!
