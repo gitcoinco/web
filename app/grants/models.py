@@ -26,6 +26,7 @@ from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
+from django.utils.timezone import localtime
 from django.utils.translation import gettext_lazy as _
 
 from django_extensions.db.fields import AutoSlugField
@@ -718,6 +719,11 @@ class Contribution(SuperModel):
         return f"id: {self.pk}; {txid_shortened} => subs:{self.subscription}; {naturaltime(self.created_on)}"
 
 
+def next_month():
+    """Get the next month time."""
+    return localtime(timezone.now() + timedelta(days=30))
+
+
 class MatchPledge(SuperModel):
     """Define the structure of a MatchingPledge."""
 
@@ -736,6 +742,7 @@ class MatchPledge(SuperModel):
         help_text=_('The matching pledge amount in DAI.'),
     )
     comments = models.TextField(default='', blank=True, help_text=_('The comments.'))
+    end_date = models.DateTimeField(null=False, default=next_month)
 
     def __str__(self):
         """Return the string representation of this object."""
