@@ -488,7 +488,7 @@ def cancel_reason(request):
 
     is_funder = bounty.is_funder(user.username.lower()) if user else False
     if is_funder:
-        canceled_bounty_reason = request.POST.get('canceled_bounty_reason')
+        canceled_bounty_reason = request.POST.get('canceled_bounty_reason', '')
         bounty.canceled_bounty_reason = canceled_bounty_reason
         bounty.save()
 
@@ -536,6 +536,7 @@ def uninterested(request, bounty_id, profile_id):
             status=401)
 
     slashed = request.POST.get('slashed')
+    interest = None
     try:
         interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
         bounty.interested.remove(interest)
@@ -1565,33 +1566,37 @@ def toolbox(request):
         "description": _("Accelerate your dev workflow with Gitcoin\'s incentivization tools."),
         "tools": tools.filter(category=Tool.CAT_BASIC)
     }, {
-        "title": _("Gas Tools"),
-        "description": _("Paying Gas is a part of using Ethereum.  It's much easier with our suite of gas tools."),
-        "tools": tools.filter(category=Tool.GAS_TOOLS)
-    }, {
-        "title": _("Advanced"),
-        "description": _("Take your OSS game to the next level!"),
-        "tools": tools.filter(category=Tool.CAT_ADVANCED)
-    }, {
         "title": _("Community"),
         "description": _("Friendship, mentorship, and community are all part of the process."),
         "tools": tools.filter(category=Tool.CAT_COMMUNITY)
     }, {
-        "title": _("Tools to BUIDL Gitcoin"),
-        "description": _("Gitcoin is built using Gitcoin.  Purdy cool, huh? "),
+        "title": _("Gas Tools"),
+        "description": _("Paying Gas is a part of using Ethereum.  It's much easier with our suite of gas tools."),
+        "tools": tools.filter(category=Tool.GAS_TOOLS)
+    }, {
+        "title": _("Developer Tools"),
+        "description": _("Gitcoin is a platform that's built using Gitcoin.  Purdy cool, huh? "),
         "tools": tools.filter(category=Tool.CAT_BUILD)
     }, {
         "title": _("Tools in Alpha"),
         "description": _("These fresh new tools are looking for someone to test ride them!"),
         "tools": tools.filter(category=Tool.CAT_ALPHA)
     }, {
-        "title": _("Tools Coming Soon"),
-        "description": _("These tools will be ready soon.  They'll get here sooner if you help BUIDL them :)"),
-        "tools": tools.filter(category=Tool.CAT_COMING_SOON)
-    }, {
         "title": _("Just for Fun"),
         "description": _("Some tools that the community built *just because* they should exist."),
         "tools": tools.filter(category=Tool.CAT_FOR_FUN)
+    }, {
+        "title": _("Advanced"),
+        "description": _("Take your OSS game to the next level!"),
+        "tools": tools.filter(category=Tool.CAT_ADVANCED)
+    }, {
+        "title": _("Roadmap"),
+        "description": _("These ideas have been floating around the community.  They'll be BUIDLt sooner if you help BUIDL them :)"),
+        "tools": tools.filter(category=Tool.CAT_COMING_SOON)
+    }, {
+        "title": _("Retired Tools"),
+        "description": _("These are tools that we've sunsetted.  Pour one out for them 🍻"),
+        "tools": tools.filter(category=Tool.CAT_RETIRED)
     }]
 
     # setup slug
@@ -1610,8 +1615,8 @@ def toolbox(request):
 
     context = {
         "active": "tools",
-        'title': _("Toolbox"),
-        'card_title': _("Gitcoin Toolbox"),
+        'title': _("Tools"),
+        'card_title': _("Community Tools"),
         'avatar_url': static('v2/images/tools/api.jpg'),
         "card_desc": _("Accelerate your dev workflow with Gitcoin\'s incentivization tools."),
         'actors': actors,
@@ -1849,10 +1854,10 @@ def change_bounty(request, bounty_id):
         bounty_changed = False
         new_reservation = False
         for key in keys:
-            value = params.get(key, '')
+            value = params.get(key, 0)
             if key == 'featuring_date':
                 value = timezone.make_aware(
-                    timezone.datetime.fromtimestamp(value),
+                    timezone.datetime.fromtimestamp(int(value)),
                     timezone=UTC)
             old_value = getattr(bounty, key)
             if value != old_value:
@@ -1890,6 +1895,7 @@ def change_bounty(request, bounty_id):
     result = {}
     for key in keys:
         result[key] = getattr(bounty, key)
+    del result['featuring_date']
 
     params = {
         'title': _('Change Bounty Details'),
@@ -1901,6 +1907,7 @@ def change_bounty(request, bounty_id):
 
 def get_users(request):
     token = request.GET.get('token', None)
+    add_non_gitcoin_users = not request.GET.get('suppress_non_gitcoiners', None)
 
     if request.is_ajax():
         q = request.GET.get('term')
@@ -1918,7 +1925,7 @@ def get_users(request):
             profile_json['preferred_payout_address'] = user.preferred_payout_address
             results.append(profile_json)
         # try github
-        if not len(results):
+        if not len(results) and add_non_gitcoin_users:
             search_results = search_users(q, token=token)
             for result in search_results:
                 profile_json = {}
@@ -1932,7 +1939,7 @@ def get_users(request):
                 if profile_json['text'].lower() not in [p['text'].lower() for p in profiles]:
                     results.append(profile_json)
         # just take users word for it
-        if not len(results):
+        if not len(results) and add_non_gitcoin_users:
             profile_json = {}
             profile_json['id'] = -1
             profile_json['text'] = q

@@ -21,11 +21,16 @@ function saveGrant(grantData, isFinal) {
     headers: {'X-CSRFToken': csrftoken},
     success: json => {
       if (isFinal) {
-        document.suppress_loading_leave_code = true;
-        window.location = json.url;
+        if (json.url) {
+          document.suppress_loading_leave_code = true;
+          window.location = json.url;
+        } else {
+          console.error('Grant failed to save');
+        }
       }
     },
     error: () => {
+      console.error('Grant failed to save');
       _alert({ message: gettext('Your grant failed to save. Please try again.') }, 'error');
     }
   });
@@ -52,7 +57,7 @@ const init = () => {
 
   $('#js-token').append("<option value='0x0000000000000000000000000000000000000000'>Any Token");
 
-  userSearch('.team_members');
+  userSearch('.team_members', false, undefined, false, false, true);
 
   addGrantLogo();
 

@@ -51,6 +51,7 @@ from git.utils import (
     _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_gh_issue_details, get_issue_comments, issue_number, org_name,
     repo_name,
 )
+from marketing.mails import featured_funded_bounty
 from marketing.models import LeaderboardRank
 from rest_framework import serializers
 from web3 import Web3
@@ -1016,6 +1017,11 @@ class Bounty(SuperModel):
 
         self.bounty_reserved_for_user = profile
 
+@receiver(post_save, sender=Bounty, dispatch_uid="psave_bounty")
+def psave_bounty(sender, instance, created, **kwargs):
+    if created:
+        featured_funded_bounty('founders@gitcoin.co', bounty=instance)
+
 
 class BountyFulfillmentQuerySet(models.QuerySet):
     """Handle the manager queryset for BountyFulfillments."""
@@ -1364,7 +1370,6 @@ class Tip(SendCryptoAsset):
 class TipPayoutException(Exception):
     pass
 
-
 @receiver(pre_save, sender=Tip, dispatch_uid="psave_tip")
 def psave_tip(sender, instance, **kwargs):
     # when a new tip is saved, make sure it doesnt have whitespace in it
@@ -1423,7 +1428,7 @@ class InterestQuerySet(models.QuerySet):
         return self.filter(status=Interest.STATUS_WARNED)
 
 
-class Interest(models.Model):
+class Interest(SuperModel):
     """Define relationship for profiles expressing interest on a bounty."""
 
     STATUS_REVIEW = 'review'
@@ -1487,8 +1492,7 @@ def psave_interest(sender, instance, **kwargs):
     # when a new interest is saved, update the status on frontend
     print("signal: updating bounties psave_interest")
     for bounty in Bounty.objects.filter(interested=instance):
-        bounty.save()
-
+        bounty.save()      
 
 class ActivityQuerySet(models.QuerySet):
     """Handle the manager queryset for Activities."""
@@ -1517,7 +1521,7 @@ class ActivityQuerySet(models.QuerySet):
         )
 
 
-class Activity(models.Model):
+class Activity(SuperModel):
     """Represent Start work/Stop work event.
 
     Attributes:
@@ -1608,27 +1612,46 @@ class Activity(models.Model):
             'new_kudos': 'fa-thumbs-up',
         }
 
-        activity = self
-        activity.icon = icons.get(activity.activity_type, 'fa-check-circle')
-        if activity.kudos:
-            activity.kudos_data = Token.objects.get(pk=activity.kudos.kudos_token_cloned_from_id)
-        obj = activity.metadata
-        if 'new_bounty' in activity.metadata:
-            obj = activity.metadata['new_bounty']
-        activity.title = obj.get('title', '')
+        # load up this data package with all of the information in the already existing objects
+        properties = [
+            'i18n_name'
+            'title',
+            'token_name',
+            'created_human_time',
+        ]
+        activity = self.to_standard_dict(properties=properties)
+        for key, value in model_to_dict(self).items():
+            activity[key] = value
+        for fk in ['bounty', 'tip', 'kudos', 'profile']:
+            if getattr(self, fk):
+                activity[fk] = getattr(self, fk).to_standard_dict(properties=properties)
+
+        # KO notes 2019/01/30
+        # this is a bunch of bespoke information that is computed for the views
+        # in a later release, it couild be refactored such that its just contained in the above code block ^^.
+        activity['icon'] = icons.get(self.activity_type, 'fa-check-circle')
+        if activity.get('kudos'):
+            activity['kudos_data'] = Token.objects.get(pk=self.kudos.kudos_token_cloned_from_id)
+        obj = self.metadata
+        if 'new_bounty' in self.metadata:
+            obj = self.metadata['new_bounty']
+        activity['title'] = obj.get('title', '')
         if 'id' in obj:
-            activity.bounty_url = Bounty.objects.get(pk=obj['id']).get_relative_url()
-            if activity.title:
-                activity.urled_title = f'<a href="{activity.bounty_url}">{activity.title}</a>'
+            activity['bounty_url'] = Bounty.objects.get(pk=obj['id']).get_relative_url()
+            if activity.get('title'):
+                activity['urled_title'] = f'<a href="{activity["bounty_url"]}">{activity["title"]}</a>'
             else:
-                activity.urled_title = activity.title
+                activity['urled_title'] = activity.title
         if 'value_in_usdt_now' in obj:
-            activity.value_in_usdt_now = obj['value_in_usdt_now']
+            activity['value_in_usdt_now'] = obj['value_in_usdt_now']
         if 'token_name' in obj:
-            activity.token = token_by_name(obj['token_name'])
-            if 'value_in_token' in obj and activity.token:
-                activity.value_in_token_disp = round((float(obj['value_in_token']) /
-                                                      10 ** activity.token['decimals']) * 1000) / 1000
+            activity['token'] = token_by_name(obj['token_name'])
+            if 'value_in_token' in obj and activity['token']:
+                activity['value_in_token_disp'] = round((float(obj['value_in_token']) /
+                                                      10 ** activity['token']['decimals']) * 1000) / 1000
+        
+        # finally done!
+        
         return activity
 
     @property
@@ -1661,7 +1684,7 @@ class Activity(models.Model):
         return model_to_dict(self, **kwargs)
 
 
-class LabsResearch(models.Model):
+class LabsResearch(SuperModel):
     """Define the structure of Labs Research object."""
 
     title = models.CharField(max_length=255)
@@ -1744,7 +1767,7 @@ class Profile(SuperModel):
         help_text='If this option is chosen, profile is okay with remote job',
     )
     job_salary = models.DecimalField(default=1, decimal_places=2, max_digits=50)
-    job_location = JSONField(default=dict)
+    job_location = JSONField(default=dict, blank=True)
     linkedin_url = models.CharField(max_length=255, default='', blank=True, null=True)
     resume = models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('The avatar SVG.'))
 
@@ -2681,6 +2704,7 @@ class Tool(SuperModel):
     CAT_COMMUNITY = 'CO'
     CAT_FOR_FUN = 'FF'
     GAS_TOOLS = "TO"
+    CAT_RETIRED = "CR"
 
     TOOL_CATEGORIES = (
         (CAT_ADVANCED, 'advanced'),
@@ -2691,6 +2715,7 @@ class Tool(SuperModel):
         (CAT_COMING_SOON, 'coming soon'),
         (CAT_COMMUNITY, 'community'),
         (CAT_FOR_FUN, 'just for fun'),
+        (CAT_RETIRED, 'retired'),
     )
 
     name = models.CharField(max_length=255)
@@ -2755,7 +2780,7 @@ class Tool(SuperModel):
         return _(self.link_copy)
 
 
-class ToolVote(models.Model):
+class ToolVote(SuperModel):
     """Define the vote placed on a tool."""
 
     profile = models.ForeignKey('dashboard.Profile', related_name='votes', on_delete=models.CASCADE)

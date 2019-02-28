@@ -301,7 +301,7 @@ def get_bounty_from_invite_url(invite_url):
         A unique string for each bounty
     """
     salt = "X96gRAVvwx52uS6w4QYCUHRfR3OaoB"
-    decoded_string = base64.urlsafe_b64decode(string.encode()).decode()
+    decoded_string = base64.urlsafe_b64decode(invite_url.encode()).decode()
     data_array = decoded_string.split(salt)
     handle = data_array[0]
     bounty_id = data_array[1]
