@@ -38,7 +38,7 @@
               make new relationships, earn kudos, and get paid for the work you already love.{% endblocktrans %}
             </p>
             <div class="buttons">
-              <a class="btn btn-gc-green mr-2" href="{% url "new_funding" %}">{% trans "Fund an Issue" %}</a>
+              <a class="btn btn-gc-green mr-2" href="{% url "new_bounty" %}">{% trans "Fund an Issue" %}</a>
               <a class="btn btn-outline-white ml-2" href="{% url "products" %}">{% trans "See Our Products" %}</a>
             </div>
           </div>
@@ -61,7 +61,7 @@
     <div id="optimize_oss" class="mt-5">
       <div class="container pt-0">
         <div class="row">
-          <div class="col-12 col-md-8 col-lg-6">
+          <div class="col-12 col-md-8 col-lg-6 g-fadein" data-fade-duration=1000 data-fade-direction="left">
             <h2>
               {% trans "Tools to optimize the oss life cycle for users, contributors, and maintainers" %}
             </h2>
@@ -88,7 +88,7 @@
             </div>
 
           </div>
-          <div class="text-center col-12 offset-lg-1 col-md-4">
+          <div class="text-center col-12 offset-lg-1 col-md-4 g-fadein" data-fade-duration=1000 data-fade-direction="right">
             <figure>
                 <img class="optimize-img text-center px-3 w-100" src="{% static "v2/images/home/optimize_oss.svg" %}"
                 alt="optimize_oss lifecyle with gitcoin" />
@@ -178,9 +178,9 @@
       </div>
     </div>
     <div id="realign">
-      <div class="container">
-        <div class="row">
-          <div class="ol-12 col-md-8 col-lg-6">
+      <div class="container" >
+        <div class="row mt-5">
+          <div class="col-12 col-md-8 col-lg-6 g-fadein" data-fade-duration=1000 data-fade-direction="left">
             <h2>{% trans "Realign open source incentives" %}</h2>
             <p>
               {% blocktrans %}Open source contributors provide value that is often not
@@ -197,7 +197,7 @@
             </p>
             <a class="font-weight-semibold" href="{% url "results" %}">{% trans "Learn more" %}</a>
           </div>
-          <div class="col-12 offset-lg-1 col-md-4 text-center">
+          <div class="col-12 offset-lg-1 col-md-4 text-center g-fadein" data-fade-duration=1000 data-fade-direction="right">
             <figure>
               <img class="realign-img px-3 w-100" src="{% static "v2/images/home/realign.svg" %}" alt="realign open source incentives" />
             </figure>

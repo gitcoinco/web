@@ -38,34 +38,9 @@
 
   <div class="collapse navbar-collapse order-1" id="navbarSupportedContent">
     <nav class="navbar-nav ml-auto mr-3">
-      {% if request.path == '/' %}
+      {% if request.path == '/bounties/funder' %}
         <span class="navbar__cta mr-2">{% trans "Want to get help on your repo? Easily get started!" %}</span>
       {% endif %}
-      <!-- TODO : Remove WHY GITCOIN when new homepage is live -->
-      <div class="nav-item dropdown interior">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          WHY GITCOIN
-        </a>
-        <div class="dropdown-menu dropdown-menu-right" id="why-gitcoin" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item {% if active == 'mission' %} selected{% endif %}" href="{% url "mission" %}">
-            {% trans "Mission" %}
-          </a>
-          <a class="dropdown-item {% if active == 'about' %} selected{% endif %}" href="{% url "about" %}">
-            {% trans "About" %}
-          </a>
-          <a class="dropdown-item {% if active == 'vision' %} selected{% endif %}" href="{% url "vision" %}">
-            {% trans "Vision" %}
-          </a>
-          <a class="dropdown-item {% if active == 'results' %} selected{% endif %}" href="{% url "results" %}">
-            {% trans "Results" %}
-          </a>
-          <a class="dropdown-item {% if active == 'not_a_token' %} selected{% endif %}" href="{% url "not_a_token" %}">
-            {% trans "We're Not Tokenized" %}
-          </a>
-        </div>
-      </div>
-      <!-- End TODO -->
       <div class="nav-item dropdown interior">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownHow" role="button"
           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -89,18 +64,10 @@
           <i class="fab fa-slack-hash" aria-hidden="true"></i><span class="nav-link__text">Slack ({{num_slack}})</span>
         </a>
       {% endif %}
-      <a href="{% url "new_funding" %}" class={% if request.path != '/' %}"nav-link interior button--fund"{% else %}"btn btn-gc-blue interior button--fund"{% endif %}>
+      <a href="{% url "new_bounty" %}" class={% if request.path != '/bounties/funder' %}"nav-link interior button--fund"{% else %}"btn btn-gc-blue interior button--fund"{% endif %}>
         <i class="fab fa-ethereum mr-1" role="aria-hidden"></i>
         {% trans "FUND ISSUE" %}
       </a>
-      {% if request.path == '/' %}
-        {% if not user.is_authenticated %}
-          <a href="{% url 'social:begin' 'github' %}?next=/" class="nav-link interior">
-            <i class="fab fa-github mr-1" role="aria-hidden"></i>
-            {% trans "LOG IN" %}
-          </a>
-        {% endif %}
-      {% endif %}
       {% if request.path != '/' or user.is_authenticated %}
         {% include 'shared/nav_auth.html' with source='authed' %}
       {% endif %}
