@@ -35,11 +35,12 @@ from retail.emails import (
     render_featured_funded_bounty, render_funder_stale, render_gdpr_reconsent, render_gdpr_update,
     render_grant_cancellation_email, render_kudos_email, render_match_email, render_new_bounty,
     render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup, render_new_grant_email,
-    render_new_supporter_email, render_new_work_submission, render_notify_ownership_change, render_quarterly_stats,
-    render_reserved_issue, render_share_bounty, render_start_work_applicant_about_to_expire,
-    render_start_work_applicant_expired, render_start_work_approved, render_start_work_new_applicant,
-    render_start_work_rejected, render_subscription_terminated_email, render_successful_contribution_email,
-    render_support_cancellation_email, render_thank_you_for_supporting_email, render_tip_email, render_weekly_recap,
+    render_new_supporter_email, render_new_work_submission, render_notify_ownership_change,
+    render_nth_day_email_campaign, render_quarterly_stats, render_reserved_issue, render_share_bounty,
+    render_start_work_applicant_about_to_expire, render_start_work_applicant_expired, render_start_work_approved,
+    render_start_work_new_applicant, render_start_work_rejected, render_subscription_terminated_email,
+    render_successful_contribution_email, render_support_cancellation_email, render_thank_you_for_supporting_email,
+    render_tip_email, render_weekly_recap,
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
@@ -110,10 +111,29 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     return response
 
 
-def featured_funded_bounty(from_email, bounty):
-    to_email = bounty.get('bounty_owner_email')
+def nth_day_email_campaign(nth, subscriber):
+    firstname = subscriber.email.split('@')[0]
+
+    if subscriber.profile and subscriber.profile.user and subscriber.profile.user.first_name:
+        firstname = subscriber.profile.user.first_name
+
+    if should_suppress_notification_email(subscriber.email, 'roundup'):
+        return False
     cur_language = translation.get_language()
 
+    try:
+        setup_lang(subscriber.email)
+        from_email = settings.CONTACT_EMAIL
+        if not should_suppress_notification_email(subscriber.email, 'welcome_mail'):
+            html, text, subject = render_nth_day_email_campaign(subscriber.email, nth, firstname)
+            send_mail(from_email, subscriber.email, subject, text, html)
+    finally:
+        translation.activate(cur_language)
+
+
+def featured_funded_bounty(from_email, bounty):
+    to_email = bounty.bounty_owner_email
+    cur_language = translation.get_language()
     try:
         setup_lang(to_email)
         html, text, subject = render_featured_funded_bounty(bounty)
