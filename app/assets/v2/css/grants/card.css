@@ -103,3 +103,11 @@
   background-color: white;
   border-radius: 50%
 }
+
+.grant-item__footer #CLR_banner {
+  font-size: 0.8rem;
+}
+
+.grant-item__footer #CLR_banner img {
+  margin-top: 6px;
+}

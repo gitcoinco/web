@@ -94,7 +94,7 @@ $('.kudos-search').on('select2:select select2:unselecting', function(e) {
 
 function checkVariable() {
   bountyKeywords = $('input[name=keywords]').val().split(',');
-  waitforWeb3(function(){
+  waitforWeb3(function() {
     getSuggestions(bountyKeywords);
     console.log(bountyKeywords);
   });
