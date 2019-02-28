@@ -226,7 +226,7 @@
                       </div>
                     </div>
                   </div>
-                {% elif user_subscription %}
+                {% elif user_non_errored_subscription %}
                   <a href="{% url 'grants:subscription_cancel' grant.id grant.slug user_subscription.id %}">
                     <button class="button button--primary button--warning button--full">{% trans "Cancel Your Funding" %}</button>
                   </a>
@@ -253,9 +253,9 @@
                     </button>
                   </div>
                 {% endif %}
-                {% if user_subscription %}
+                {% if user_non_errored_subscription %}
                   <h5 class="font-body mt-2 font-weight-semibold">
-                    {% trans 'You have agreed to contribute' %} {{ user_subscription.amount_per_period|floatformat:2|intcomma }} {{ user_subscription.token_symbol }} every {{ user_subscription.frequency }} {{ user_subscription.frequency_unit }}
+                    {% trans 'You have agreed to contribute' %} {{ user_non_errored_subscription.amount_per_period|floatformat:2|intcomma }} {{ user_non_errored_subscription.token_symbol }} every {{ user_non_errored_subscription.frequency }} {{ user_non_errored_subscription.frequency_unit }}
                   </h5>
                 {% endif %}
               </div>

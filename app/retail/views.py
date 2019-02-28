@@ -16,6 +16,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+import logging
 from json import loads as json_parse
 from os import walk as walkdir
 
@@ -49,6 +50,7 @@ from retail.helpers import get_ip
 from .forms import FundingLimitIncreaseRequestForm
 from .utils import programming_languages
 
+logger = logging.getLogger(__name__)
 
 @cached_as(
     Activity.objects.select_related('bounty').filter(bounty__network='mainnet').order_by('-created'),
@@ -374,7 +376,6 @@ def funder_bounties(request):
     return TemplateResponse(request, 'bounties/funder.html', context)
 
 
-@cached_view(timeout=60 * 10)
 def contributor_bounties(request, tech_stack):
 
     slides = [
@@ -486,26 +487,42 @@ def contributor_bounties(request, tech_stack):
         }
     ]
 
-    available_bounties_count = open_bounties().count()
-    available_bounties_worth = amount_usdt_open_work()
     # tech_stack = '' #uncomment this if you wish to disable contributor specific LPs
     context = {
-        'activities': get_activities(tech_stack),
-        'title': tech_stack.title() + str(_(" Open Source Opportunities")) if tech_stack else "Open Source Opportunities",
         'slides': slides,
         'slideDurationInMs': 6000,
         'active': 'home',
         'newsletter_headline': _("Be the first to find out about newly posted bounties."),
         'hide_newsletter_caption': True,
         'hide_newsletter_consent': True,
-        'projects': projects,
         'gitcoin_description': gitcoin_description,
+        'projects': projects,
+    }
+
+    try:
+        new_context = JSONStore.objects.get(view='contributor_landing_page', key=tech_stack).data
+
+        for key, value in new_context.items():
+            context[key] = value
+    except Exception as e:
+        logger.exception(e)
+        raise Http404
+
+    return TemplateResponse(request, 'bounties/contributor.html', context)
+
+
+def get_contributor_landing_page_context(tech_stack):
+    available_bounties_count = open_bounties().count()
+    available_bounties_worth = amount_usdt_open_work()
+    activities = get_activities(tech_stack)
+    return {
+        'activities': activities,
+        'title': tech_stack.title() + str(_(" Open Source Opportunities")) if tech_stack else str(_("Open Source Opportunities")),
         'available_bounties_count': available_bounties_count,
         'available_bounties_worth': available_bounties_worth,
         'tech_stack': tech_stack,
-    }
 
-    return TemplateResponse(request, 'bounties/contributor.html', context)
+    }
 
 
 def how_it_works(request, work_type):
@@ -881,10 +898,9 @@ def results(request, keyword=None):
     return TemplateResponse(request, 'results.html', context)
 
 
-@cached_view_as(Activity.objects.all().order_by('-created'))
 def activity(request):
     """Render the Activity response."""
-    page_size = 300
+    page_size = 15
     activities = Activity.objects.all().order_by('-created')
     p = Paginator(activities, page_size)
     page = request.GET.get('page', 1)
