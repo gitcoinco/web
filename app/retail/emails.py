@@ -941,7 +941,7 @@ Back to shipping,
 
     num_leadboard_items = 5
     highlight_kudos_ids = []
-    num_kudos_to_show = 10
+    num_kudos_to_show = 15
 
     #### don't need to edit anything below this line
     leaderboard = {
@@ -963,7 +963,7 @@ Back to shipping,
     if highlight_kudos_ids:
         kudos_highlights = KudosTransfer.objects.filter(id__in=highlight_kudos_ids)
     else:
-        kudos_highlights = KudosTransfer.objects.exclude(txid='').order_by('-created_on')[:num_kudos_to_show]
+        kudos_highlights = KudosTransfer.objects.exclude(network='mainnet', txid='').order_by('-created_on')[:num_kudos_to_show]
 
     for key, __ in leaderboard.items():
         leaderboard[key]['items'] = LeaderboardRank.objects.active() \
