@@ -1048,12 +1048,12 @@ input.is-invalid {
 
 .rating span:hover ~ span label i,
 .rating span:hover label i {
-	opacity: 0.5;
+  opacity: 0.5;
 }
 .rating span.checked label i,
 .rating span.checked ~ span label i 
 {
-	opacity: 1;
+  opacity: 1;
 }
 
 .rating span:hover ~ span label i,
