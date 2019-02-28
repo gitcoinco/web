@@ -52,7 +52,6 @@ from marketing.mails import (
     admin_contact_funder, bounty_uninterested, new_reserved_issue, start_work_approved, start_work_new_applicant,
     start_work_rejected,
 )
-from .models import FeedbackEntry
 from marketing.models import Keyword
 from pytz import UTC
 from ratelimit.decorators import ratelimit
@@ -61,8 +60,8 @@ from web3 import HTTPProvider, Web3
 
 from .helpers import get_bounty_data_for_activity, handle_bounty_views
 from .models import (
-    Activity, Bounty, BountyFulfillment, CoinRedemption, CoinRedemptionRequest, Interest, LabsResearch, Profile,
-    ProfileSerializer, Subscription, Tool, ToolVote, UserAction,
+    Activity, Bounty, BountyFulfillment, CoinRedemption, CoinRedemptionRequest, FeedbackEntry, Interest, LabsResearch,
+    Profile, ProfileSerializer, Subscription, Tool, ToolVote, UserAction,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,

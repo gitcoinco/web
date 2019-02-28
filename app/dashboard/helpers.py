@@ -44,7 +44,7 @@ from pytz import UTC
 from ratelimit.decorators import ratelimit
 from redis_semaphore import NotAvailable as SemaphoreExists
 
-from .models import Profile, FeedbackEntry
+from .models import FeedbackEntry, Profile
 
 logger = logging.getLogger(__name__)
 
