@@ -16,7 +16,7 @@
 {% endcomment %}
 {% load i18n %}
 <div class="w-100 mt-2" style="height: 70px;">
-<label class="form__label" for="notificationEmail">{% trans "Rating" %}</label>
+<label class="form__label" for="notificationEmail">{% trans "Rate your experience with " %}{{ rater }}</label>
   <div class="rating">
     {% for i in "54321" %}
       <span><input type="radio" name="rating" id="str{{ i }}" value="{{ i }}"><label for="str{{ i }}"><i class="fas fa-star"></i></label></span>
