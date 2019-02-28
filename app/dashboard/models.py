@@ -1017,10 +1017,11 @@ class Bounty(SuperModel):
 
         self.bounty_reserved_for_user = profile
 
-@receiver(post_save, sender=Bounty, dispatch_uid="psave_bounty")
-def psave_bounty(sender, instance, created, **kwargs):
+@receiver(post_save, sender=Bounty, dispatch_uid="postsave_bounty")
+def postsave_bounty(sender, instance, created, **kwargs):
     if created:
-        featured_funded_bounty('founders@gitcoin.co', bounty=instance)
+        if instance.status == 'open':
+            featured_funded_bounty(settings.CONTACT_EMAIL, bounty=instance)
 
 
 class BountyFulfillmentQuerySet(models.QuerySet):
@@ -1493,7 +1494,7 @@ def psave_interest(sender, instance, **kwargs):
     # when a new interest is saved, update the status on frontend
     print("signal: updating bounties psave_interest")
     for bounty in Bounty.objects.filter(interested=instance):
-        bounty.save()      
+        bounty.save()
 
 class ActivityQuerySet(models.QuerySet):
     """Handle the manager queryset for Activities."""
@@ -1650,9 +1651,9 @@ class Activity(SuperModel):
             if 'value_in_token' in obj and activity['token']:
                 activity['value_in_token_disp'] = round((float(obj['value_in_token']) /
                                                       10 ** activity['token']['decimals']) * 1000) / 1000
-        
+
         # finally done!
-        
+
         return activity
 
     @property
