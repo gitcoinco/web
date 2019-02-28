@@ -8,7 +8,7 @@ import economy.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0013_bounty_featuring_date'),
+        ('dashboard', '0014_merge_20190221_2246'),
     ]
 
     operations = [
