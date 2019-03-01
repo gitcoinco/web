@@ -33,6 +33,10 @@
   padding-top: 8rem;
 }
 
+.issue span {
+  color: #3E00FF;
+}
+
 #optimize_oss p,
 #realign p {
   color: #4A4A4A;

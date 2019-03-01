@@ -49,14 +49,20 @@
       </div>
     </div>
 
-    <div class="col-12 col-md-6 offset-md-3 text-center">
-      <p class="font-title mt-5 pt-5">
-        <span>{% trans "The weight of maintaining open source falls on the" %}</span> <br>
-        <span class="my-2">{% trans "shoulders of 0.01%." %}</span><br>
-        <span>{% trans "This is not sustainable." %}</span>
-      </p>
+    <div class="col-12 col-md-8 offset-md-2 text-center my-5 p-5 font-weight-semibold issue">
+      {% blocktrans %}
+        <h2 class="font-title-xl mt-3 mb-5">
+          The weight of
+          <span>maintaining open source falls</span><br>
+          shoulders of <span class="mt-4">0.01% developers.</span>
+        </h2>
+        <h2 class="font-title-xl g-fadein mb-3" data-fade-duration=1000>
+          This is not sustainable
+        </h2>
+      {% endblocktrans %}
     </div>
-    <img id="cards" class="w-100" src="{% static "v2/images/home/cards.svg" %}" />
+
+    <img class="w-100 mb-5" src="{% static "v2/images/home/story.svg" %}" />
 
     <div id="optimize_oss" class="mt-5">
       <div class="container pt-0">
