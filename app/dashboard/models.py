@@ -51,6 +51,7 @@ from git.utils import (
     _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_gh_issue_details, get_issue_comments, issue_number, org_name,
     repo_name,
 )
+from marketing.mails import featured_funded_bounty
 from marketing.models import LeaderboardRank
 from rest_framework import serializers
 from web3 import Web3
@@ -1016,6 +1017,12 @@ class Bounty(SuperModel):
 
         self.bounty_reserved_for_user = profile
 
+@receiver(post_save, sender=Bounty, dispatch_uid="postsave_bounty")
+def postsave_bounty(sender, instance, created, **kwargs):
+    if created:
+        if instance.status == 'open':
+            featured_funded_bounty(settings.CONTACT_EMAIL, bounty=instance)
+
 
 class BountyFulfillmentQuerySet(models.QuerySet):
     """Handle the manager queryset for BountyFulfillments."""
@@ -1365,7 +1372,6 @@ class Tip(SendCryptoAsset):
 class TipPayoutException(Exception):
     pass
 
-
 @receiver(pre_save, sender=Tip, dispatch_uid="psave_tip")
 def psave_tip(sender, instance, **kwargs):
     # when a new tip is saved, make sure it doesnt have whitespace in it
@@ -1489,7 +1495,6 @@ def psave_interest(sender, instance, **kwargs):
     print("signal: updating bounties psave_interest")
     for bounty in Bounty.objects.filter(interested=instance):
         bounty.save()
-
 
 class ActivityQuerySet(models.QuerySet):
     """Handle the manager queryset for Activities."""
@@ -1646,9 +1651,9 @@ class Activity(SuperModel):
             if 'value_in_token' in obj and activity['token']:
                 activity['value_in_token_disp'] = round((float(obj['value_in_token']) /
                                                       10 ** activity['token']['decimals']) * 1000) / 1000
-        
+
         # finally done!
-        
+
         return activity
 
     @property
