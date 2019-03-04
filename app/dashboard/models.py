@@ -1721,7 +1721,7 @@ class UserVerificationModel(SuperModel):
     )
 
     def __str__(self):
-        return self.verified
+        return f"{self.verified}"
 
 
 class ProfileQuerySet(models.QuerySet):
