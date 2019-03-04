@@ -2,6 +2,10 @@
   background-color: #0d023b;
 }
 
+.issue span {
+  color: #3E00FF;
+}
+
 .navbar .interior .dropdown-item span {
   color: #9B9B9B;
   font-size: 12px;
@@ -33,10 +37,6 @@
   padding-top: 8rem;
 }
 
-.issue span {
-  color: #3E00FF;
-}
-
 #optimize_oss p,
 #realign p {
   color: #4A4A4A;
@@ -63,6 +63,10 @@
 
 .watch a {
   color: #0D0764;
+}
+
+.homepage #tree-svg svg {
+  max-width: 17rem;
 }
 
 #articles .article {

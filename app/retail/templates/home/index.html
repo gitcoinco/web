@@ -51,15 +51,16 @@
 
     <div class="col-12 col-md-8 offset-md-2 text-center my-5 p-5 font-weight-semibold issue">
       {% blocktrans %}
-        <h2 class="font-title-xl mt-3 mb-5">
+        <h2 class="font-title-xl mt-4 mb-4">
           The weight of
           <span>maintaining open source falls</span><br>
           shoulders of <span class="mt-4">0.01% developers.</span>
         </h2>
-        <h2 class="font-title-xl g-fadein mb-3" data-fade-duration=1000>
-          This is not sustainable
+        {% endblocktrans %}
+        {% include 'shared/tree.html' %}
+        <h2 class="font-title-xl g-fadein mt-3 mb-4" data-fade-duration=1000>
+          {% trans "This is not sustainable" %}
         </h2>
-      {% endblocktrans %}
     </div>
 
     <img class="w-100 mb-5" src="{% static "v2/images/home/story.svg" %}" />
@@ -110,7 +111,6 @@
         <span>{% trans "OSS lifecycle looks like this." %}</span>
       </p>
     </div>
-    <img id="cards" class="w-100" src="{% static "v2/images/home/cards_update.svg" %}" />
 
     <div id="products">
       <img class="text-center px-3 bot-circle" src="{% static "v2/images/home/bot-circle.svg" %}"
