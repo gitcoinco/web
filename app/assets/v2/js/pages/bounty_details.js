@@ -65,11 +65,9 @@ const token_value_to_display = function(val) {
   return Math.round((parseInt(val) / Math.pow(10, document.decimals)) * 1000) / 1000;
 };
 
-const case_insensitive_cmp = function(val1, val2) {
-  if (val1 && val2) {
-    if (typeof val1 === 'string' && typeof val2 === 'string') {
-      return val1.toLowerCase() === val2.toLowerCase();
-    }
+const case_insensitive_cmp = (val1, val2) => {
+  if (val1 && val2 && typeof val1 === 'string' && typeof val2 === 'string') {
+    return val1.toLowerCase() === val2.toLowerCase();
   }
   return false;
 };
