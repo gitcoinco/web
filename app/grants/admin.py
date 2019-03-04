@@ -50,9 +50,9 @@ class GrantAdmin(GeneralAdmin):
          'link', 'clr_matching', 'is_paid_plan',
     ]
     readonly_fields = [
-        'logo_svg_asset', 'logo_asset', 'created_on', 'modified_on', 'token_address', 'contract_address',
+        'logo_svg_asset', 'logo_asset', 'created_on', 'modified_on', 'contract_address',
         'network', 'team_member_list',
-        'subscriptions_links', 'contributions_links', 'link', 
+        'subscriptions_links', 'contributions_links', 'link',
     ]
     raw_id_fields = ['admin_profile']
 
