@@ -66,7 +66,7 @@ class Plan(SuperModel):
         help_text=_('Cost of this plan in USD'),
     )
     period_length_seconds = models.PositiveIntegerField()
-    grant = models.ForeignKey('grants.grant', related_name='paid_plan', on_delete=models.CASCADE, null=True, blank=True)
+    grant = models.OneToOneField('grants.grant', related_name='paid_plan', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         """Return the string representation of this object."""

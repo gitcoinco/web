@@ -2568,14 +2568,14 @@ class Profile(SuperModel):
 
     @property
     def plan_name(self):
-        return self.plan.name if self.plan else None
+        return self.plan.name if self.plan else 'Free'
 
     @property
     def plan(self):
         from revenue.models import Subscription as RevenueSubscription
-        subscription = RevenueSubscription.objects.filter(
-            grant_subscription__contributor_profile=request.user.profile, grant_subscription__active=True
-        ).one()
+        subscription = RevenueSubscription.objects.get(
+            grant_subscription__contributor_profile=self, grant_subscription__active=True
+        )
         return subscription.plan if subscription else None
 
     @property

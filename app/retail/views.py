@@ -292,7 +292,7 @@ def subscribe(request):
 
     if request.POST:
         print("grant id is {}".format(request.POST.get('grant_id')))
-        grant = Grant.objects.get(pk=request.POST.get('grant_id'))
+        grant = Grant.objects.prefetch_related('paid_plan').get(pk=request.POST.get('grant_id'))
         if 'contributor_address' in request.POST:
             subscription = Subscription()
             print('creating subscription')
@@ -333,6 +333,11 @@ def subscribe(request):
 
             grant.save()
             # new_supporter(grant, subscription)
+            from revenue.models import Plan, Subscription as RevenueSubscription
+            print('the grants paid plan is')
+            print(grant.paid_plan.pk)
+            rs = RevenueSubscription.objects.create(plan=grant.paid_plan, grant_subscription=subscription)
+            rs.save()
             return JsonResponse({
                 'success': True,
                 'url': reverse('grants:details', args=(grant.pk, grant.slug))
