@@ -315,10 +315,6 @@ def subscribe(request):
 
             subscription.save()
 
-            messages.info(
-                request,
-                _('Your subscription has been created. It will bill within the next 5 minutes or so. Thank you for supporting Open Source !')
-            )
             return JsonResponse({
                 'success': True,
             })
@@ -336,7 +332,7 @@ def subscribe(request):
                 grant.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
 
             grant.save()
-            new_supporter(grant, subscription)
+            # new_supporter(grant, subscription)
             return JsonResponse({
                 'success': True,
                 'url': reverse('grants:details', args=(grant.pk, grant.slug))

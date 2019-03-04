@@ -146,7 +146,7 @@ $(document).ready(function() {
               'network': $('#network').val(),
               'csrfmiddlewaretoken': $("#js-fundGrant input[name='csrfmiddlewaretoken']").val()
             };
-
+            console.log(JSON.stringify(data));
             $.ajax({
               type: 'post',
               url: '',
