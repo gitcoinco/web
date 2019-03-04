@@ -158,8 +158,7 @@
 }
 
 .profile-header__stats--contributor .card-header {
-  /* border-color: #00e996; */
-    background-color: transparent;
+  background-color: transparent;
 }
 
 .card-header::after {
