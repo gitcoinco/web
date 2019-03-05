@@ -1,0 +1,55 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="row" id="form_container">
+        <form id="notify_funder_modal_form" class="w-100">
+          <div class="col center-block w-100">
+            <div class="d-flex justify-content-center flex-column w-100" id="primary_subform">
+              <div class="d-flex modal-header w-100 pt-1 pr-2">
+                <div class="d-flex pl-10 modal-title w-100 justify-content-center mt-3">
+                  <h5 class="font-title text-center">{% trans "Send Payment Reminder" %}</h5>
+	        </div>
+	        <div class="pt-0 mt-0 font-weight-light">
+	          <button class="close align-middle" data-dismiss="modal" aria-label="Close dialog">&times;</button>
+	        </div>
+              </div>
+              <div class="modal-body mt-4 mx-5 font-body">
+                {% trans "This button sends a notification to the funder to pay out the bounty." %}
+	          <div class="mt-3 checkbox_container">
+		    <input class="form-check-input form__input" type="checkbox" id="checkbox2" style="z-index: 1051" value="" required></input>
+		    <span class="checkbox"></span>
+		      <label class="form-check-label mx-2" for="checkbox2">
+		        {% trans "I have completed this bounty to the specifications set by the funder." %}
+		      </label>
+		    </div>
+                  </div>
+                  <div class="modal-footer w-100 mt-3">
+                    <button id="notify_funder_submit" class="btn btn-primary button__small button button--primary button-primary-o mr-3" type="submit" data-dismiss="modal">
+	              {% trans "Send Reminder" %}
+		    </button>
+                  </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

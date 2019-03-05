@@ -541,6 +541,18 @@ def get_ordinal_repr(num):
     return f'{num}{suffix}'
 
 
+def record_funder_inaction_on_fulfillment(bounty_fulfillment):
+    payload = {
+        'profile': bounty_fulfillment.bounty.bounty_owner_profile,
+        'metadata': {
+            'bounties': list(bounty_fulfillment.bounty.pk),
+            'bounty_fulfillment_pk': bounty_fulfillment.pk,
+            'needs_review': True
+        }
+    }
+    Activity.objects.create(activity_type='bounty_abandonment_escalation_to_mods', bounty=bounty_fulfillment.bounty, **payload)
+
+
 def record_user_action_on_interest(interest, event_name, last_heard_from_user_days):
     """Record User actions and activity for the associated Interest."""
     payload = {
