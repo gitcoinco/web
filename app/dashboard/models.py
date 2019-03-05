@@ -1721,7 +1721,7 @@ class UserVerificationModel(SuperModel):
     )
 
     def __str__(self):
-        return f"{self.verified}"
+        return f"User: {self.user}; Verified: {self.verified}"
 
 
 class ProfileQuerySet(models.QuerySet):
@@ -1837,6 +1837,11 @@ class Profile(SuperModel):
         kudos_transfers = kudos_transfers.distinct('id')
 
         return kudos_transfers
+
+    @property
+    def get_my_verified_check(self):
+        verification = UserVerificationModel.objects.filter(user=self.user).first()
+        return verification
 
     @property
     def get_profile_referral_code(self):

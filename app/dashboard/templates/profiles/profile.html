@@ -36,11 +36,13 @@
                   {% if profile.data.name %}
                     {{ profile.data.name }}
                   {% endif %}
-                  <button class="btn btn-sm animate-verify" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='
-                  <p class="h6 my-2 text-left">Gitcoin Verified <img width="18" src="{% static "v2/images/badge-verify.svg" %}"></p>
-                  <p>This contributor has completed criteria where the core team deems trusted.</p>
-                  <p>Please note - use your judgement on whether this is the right contributor for your task.</p>
-                  '><img src="{% static 'v2/images/badge-verify.svg' %}" alt=""></button>
+                  {% if verification.verified %}
+                    <button class="btn btn-sm animate-verify" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='
+                    <p class="h6 my-2 text-left">Gitcoin Verified <img width="18" src="{% static "v2/images/badge-verify.svg" %}"></p>
+                    <p>This contributor has completed criteria where the core team deems trusted.</p>
+                    <p>Please note - use your judgement on whether this is the right contributor for your task.</p>
+                    '><img src="{% static 'v2/images/badge-verify.svg' %}" alt=""></button>
+                  {% endif %}
                 </h1>
                 <p class="mb-0">{{ profile.handle }}</p>
                 <p class="profile-header__links clearfix mt-1">
@@ -78,7 +80,6 @@
                 <div class="my-2" id="job_status">
                   <i class="fa fa-briefcase mr-2" aria-hidden="true"></i>{{ profile.job_status_verbose }}
                   {% if profile.resume %}<a href="{{ MEDIA_URL }}{{profile.resume}}" download>View Resume</a>{% endif %}
-                  {{profile.verified}}
                 </div>
               {% endif %}
               {% if profile.data.bio %}
