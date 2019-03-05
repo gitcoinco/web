@@ -126,8 +126,6 @@ def backwards_func(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    replaces = [('revenue', '0002_auto_20190123_2203'), ('revenue', '0003_auto_20190123_2218'), ('revenue', '0004_auto_20190123_2221'), ('revenue', '0005_auto_20190123_2229'), ('revenue', '0006_auto_20190123_2231'), ('revenue', '0007_plan_grant'), ('revenue', '0008_auto_20190304_1330')]
-
     dependencies = [
         ('grants', '0006_grant_request_ownership_change'),
         ('grants', '0016_grant_is_paid_plan'),
@@ -135,10 +133,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RenameModel(
-            old_name='DigitalGoodPurchase',
-            new_name='ALaCartePurchase',
-        ),
         migrations.CreateModel(
             name='Coupon',
             fields=[
@@ -224,18 +218,10 @@ class Migration(migrations.Migration):
             name='sku',
             field=models.ForeignKey(help_text='The feature that was purchased', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='alacartegoodpurchases', to='revenue.SKU'),
         ),
-        migrations.RunPython(
-            code=revenue.migrations.0004_auto_20190123_2221.forwards_func,
-            reverse_code=revenue.migrations.0004_auto_20190123_2221.backwards_func,
-        ),
         migrations.AlterField(
             model_name='alacartepurchase',
             name='sku',
             field=models.ForeignKey(help_text='The feature that was purchased', on_delete=django.db.models.deletion.CASCADE, related_name='alacartegoodpurchases', to='revenue.SKU'),
-        ),
-        migrations.RunPython(
-            code=revenue.migrations.0006_auto_20190123_2231.forwards_func,
-            reverse_code=revenue.migrations.0006_auto_20190123_2231.backwards_func,
         ),
         migrations.AddField(
             model_name='plan',
