@@ -235,7 +235,7 @@ $(document).ready(function() {
       var expirationTimeDelta = data.expirationTimeDelta;
       let reservedFor = $('.username-search').select2('data')[0];
       var metadata = {
-        contact_version: data.contract_version,
+        contact_version: '1.1', // data.contract_version
         issueTitle: data.title,
         issueDescription: data.description,
         issueKeywords: data.keywords ? data.keywords : '',
