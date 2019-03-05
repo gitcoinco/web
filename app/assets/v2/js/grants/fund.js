@@ -46,6 +46,7 @@ $(document).ready(function() {
     },
     submitHandler: function(form) {
       var data = {};
+
       $.each($(form).serializeArray(), function() {
         data[this.name] = this.value;
       });
@@ -111,7 +112,7 @@ $(document).ready(function() {
 
           var tokenMethod = deployedToken.methods.approve;
           var arg1 = data.contract_address;
-
+          
           // one time payments
           if (data.num_periods == 1) {
             arg1 = data.admin_address;
@@ -145,6 +146,7 @@ $(document).ready(function() {
               'network': $('#network').val(),
               'csrfmiddlewaretoken': $("#js-fundGrant input[name='csrfmiddlewaretoken']").val()
             };
+
             $.ajax({
               type: 'post',
               url: '',
@@ -193,6 +195,7 @@ $(document).ready(function() {
                       url: '',
                       data: data,
                       success: json => {
+                        console.log('successfully saved subscriptionHash and signature');
                         url = json.url;
                         $('#wait').val('false');
                       },
