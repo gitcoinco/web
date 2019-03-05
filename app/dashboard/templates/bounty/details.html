@@ -232,7 +232,7 @@
       [[if activity_type != 'unknown_event']]
         <div class="row box activity">
           <div class="col-12 col-md-1">
-            <div class="activity-avatar bounty_row [[if hidden]]bounty_row--hidden[[/if]]" data-container="body" data-toggle="popover" data-content='{% include "shared/contributor-popover.html" %}'>
+            <div class="activity-avatar bounty_row [[if hidden]]bounty_row--hidden[[/if]]" data-username="[[:name]]" data-container="body" data-toggle="popover" data-content='{% include "shared/contributor-popover.html" %}'>
               <img class="avatar" src="/dynamic/avatar/[[:name]]"/>
             </div>
           </div>
@@ -427,11 +427,10 @@
   <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
   <script src="{% static "v2/js/clipboard.js" %}"></script>
   <script>
-    // var bootstrapTooltip = $.fn.tooltip.noConflict()
-    // var bootstrapModal = $.fn.modal.noConflict()
+    var bootstrapTooltip = $.fn.tooltip.noConflict()
+    var bootstrapModal = $.fn.modal.noConflict()
   </script>
   <script>
-    let bootstrapTooltip = $.fn.tooltip.noConflict()
     $.fn.runTooltip = bootstrapTooltip
 
     $('[data-toggle="popover"]').popover()
@@ -446,7 +445,18 @@
                   <div class="popover-body p-0"></div>
                   <h3 class="popover-header"></h3>
                 </div>`
-    });
+    }).on('inserted.bs.popover', function() {
+      var username = $('.bounty_row').attr('data-username');
+      fetch('/api/v0.1/profile/'+ username, {
+        method: 'GET'
+      }).then(function(response) {
+        return response.json();
+      }).then(function(json) {
+        return json;
+      }).catch(function(err) {
+        console.log(err)
+      })
+    })
   </script>
   <script src="{% static "v2/js/pages/bounty_funder_payout_reminder.js" %}"></script>
   <script src="{% static "v2/js/pages/bounty_share.js" %}"></script>
