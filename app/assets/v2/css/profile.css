@@ -297,6 +297,11 @@
   justify-content: center;
 }
 
+.profile_details .works_with_list a:hover {
+  text-decoration: none;
+  transform: scale(1.1);
+}
+
 .no-profile-button {
   background-color: #3E00FF;
   color: #FFFFFF;
