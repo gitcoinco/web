@@ -181,6 +181,9 @@ def get_avatar_context():
                     'polkadotblouse',
                     'coat',
                     'crochettop',
+                    'space_suit',
+                    'armour',
+                    'pilot',
                 ),
                 'paid_options': {
                     'robe': 0.01,
