@@ -15,31 +15,33 @@
   </head>
   <body class="interior {{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header profile-header dash position-static">
+    <div class="container-fluid header profile-header dash" style="min-height: 300px;">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav.html' %}
+      {% if not hidden and is_staff %}
+        <div class="alpha-warning font-caption mb-0">
+          <span class="font-weight-bold">Staff only</span>
+          <a style="color:white;" href="{{profile.admin_url}}">{% trans "Profile Admin" %}</a>
+        </div>
+      {% endif %}
+    </div>
+    <div class="container-fluid bg-light pb-5">
       {% if not hidden %}
-        {% if is_staff %}
-          <div class="alpha-warning font-caption mb-0">
-            <span class="font-weight-bold">Staff only</span>
-            <a style="color:white;" href="{{profile.admin_url}}">{% trans "Profile Admin" %}</a>
-          </div>
-        {% endif %}
         <div class="container profile-card">
           <div class="row">
             <div class="col-12 col-lg-6 profile-header__main-infos">
               <div class="clearfix">
                 <img class="profile-header__avatar mb-1 mr-4" src="{% if profile.avatar and profile.active_avatar.avatar_url %}{{ profile.active_avatar.avatar_url }}{% else %}{{ profile.avatar_url }}{% endif %}" />
-                <p class="profile-header__handle font-title">
+                <h1 class="profile-header__handle">
                   {% if profile.data.name %}
                     {{ profile.data.name }}
                   {% endif %}
-                  <button class="btn btn-sm" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='
+                  <button class="btn btn-sm animate-verify" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='
                   <p class="h6 my-2 text-left">Gitcoin Verified <img width="18" src="{% static "v2/images/badge-verify.svg" %}"></p>
                   <p>This contributor has completed criteria where the core team deems trusted.</p>
                   <p>Please note - use your judgement on whether this is the right contributor for your task.</p>
                   '><img src="{% static 'v2/images/badge-verify.svg' %}" alt=""></button>
-                </p>
+                </h1>
                 <p class="mb-0">{{ profile.handle }}</p>
                 <p class="profile-header__links clearfix mt-1">
                   <a href="{{ profile.data.html_url }}?tab=repositories" target="_blank" rel="noopener noreferrer" >
@@ -60,19 +62,7 @@
               {% if preferred_payout_address %}
 
                 <div class="my-2">
-                  <svg width="10px" height="16px" viewBox="0 0 10 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="mr-2 mb-1">
-                      <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                          <g id="PROFILE" transform="translate(-193.000000, -386.000000)" fill="#000000" fill-rule="nonzero">
-                              <g id="Header" transform="translate(150.000000, 192.000000)">
-                                  <g id="bio" transform="translate(29.000000, 36.000000)">
-                                      <g id="account" transform="translate(14.000000, 156.000000)">
-                                          <path d="M10,10.1131222 L5.00164528,13 L0,10.1131222 L5.00164528,2 L10,10.1131222 Z M5,13.934056 L0,11 L5,18 L10,11 L5,13.934056 L5,13.934056 Z" id="Shape"></path>
-                                      </g>
-                                  </g>
-                              </g>
-                          </g>
-                      </g>
-                  </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="10" height="16" class="mr-2 mb-1"><path fill="#000" fill-rule="nonzero" d="M10 8.113L5.002 11 0 8.113 5.002 0 10 8.113zm-5 3.821L0 9l5 7 5-7-5 2.934z"/></svg>
                   <span id="preferred-address" data-truncatehash title="{{ preferred_payout_address }}">{{ preferred_payout_address }}</span>
                 </div>
               {% else %}
@@ -88,6 +78,7 @@
                 <div class="my-2" id="job_status">
                   <i class="fa fa-briefcase mr-2" aria-hidden="true"></i>{{ profile.job_status_verbose }}
                   {% if profile.resume %}<a href="{{ MEDIA_URL }}{{profile.resume}}" download>View Resume</a>{% endif %}
+                  {{profile.verified}}
                 </div>
               {% endif %}
               {% if profile.data.bio %}
@@ -118,11 +109,14 @@
                               {% if works_with_collected|length > 2 %}
                               <br>
                               {% endif %}
-                              {% for profile, num_times in works_with_collected.items %}
+                              {% for profile, num_times in works_with_collected.items|slice:":5" %}
                                 <a href="{% url 'profile' profile %} ">
                                   <img src='{% avatar_url profile %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>" />
                                 </a>
                               {% endfor %}
+                              {% if works_with_collected|length > 5 %}
+                                <div href="" class="plus-img" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='{% for profile in works_with_collected.items|slice:"5:" %}<a href="{% url "profile" profile %}"><img src="{% avatar_url profile %}"/></a>{% endfor %}'><span>+10</span></div>
+                              {% endif %}
                           {% endif %}
                         </li>
                       </ul>
@@ -145,11 +139,14 @@
                               {% if works_with_funded|length > 2 %}
                               <br>
                               {% endif %}
-                              {% for profile, num_times in works_with_funded.items %}
+                              {% for profile, num_times in works_with_funded.items|slice:":5" %}
                                 <a href="{% url 'profile' profile %} ">
                                   <img src='{% avatar_url profile %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>" />
                                 </a>
                               {% endfor %}
+                              {% if works_with_funded|length > 5 %}
+                                <div href="" class="plus-img" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='{% for profile in works_with_funded.items|slice:"5:" %}<a href="{% url "profile" profile %}"><img src="{% avatar_url profile %}"/></a>{% endfor %}'><span>+10</span></div>
+                              {% endif %}
                           {% endif %}
                         </li>
                       </ul>
@@ -160,17 +157,16 @@
             {% endif %}
           </div>
         </div>
-      {% endif %}
-    </div>
-    {% if not hidden and not profile.is_org %}
-    <div class="container-fluid bg-light py-5">
+      {% endif%}
+
+      {% if not hidden and not profile.is_org %}
       <div class="container" >
         <div id="kudos-section">
           {% include "shared/profile_kudos.html" %}
         </div>
       </div>
+      {% endif %}
     </div>
-    {% endif %}
 
 
     <div class="container">

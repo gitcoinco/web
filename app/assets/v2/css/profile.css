@@ -5,11 +5,10 @@
 .overflow-visible {
   overflow: visible;
 }
+
 .profile-card {
   background: white;
   border-radius: 5px;
-  margin-top: 50px;
-  margin-bottom: -50px;
   z-index: 1;
   position: relative;
   padding: 2rem;
@@ -23,10 +22,11 @@
 }
 
 .profile-header__handle {
-  padding-top: 1.5rem;
+  padding-top: 0.8rem;
   margin-bottom: 0;
-  text-transform: uppercase;
   line-height: 1;
+  font-weight: 700;
+  font-size: 1.7rem;
 }
 
 .profile-header__handle small {
@@ -105,6 +105,12 @@
   }
 }
 
+@media (min-width: 388px) {
+  .profile-card {
+    margin-top: -5rem;
+  }
+}
+
 
 .profile-header__stats {
   border: none;
@@ -171,6 +177,10 @@
   animation: grow 1s ease-in-out;
 }
 
+.animate-verify {
+  animation: verify 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
 @keyframes grow {
   0% {
     width: 2%;
@@ -180,6 +190,15 @@
   }
   100% {
     width: 100%;
+  }
+}
+
+@keyframes verify {
+  0% {
+    transform: scale(1.5, 1.3);
+  }
+  100% {
+    transform: scale(1);
   }
 }
 
@@ -277,14 +296,19 @@
 .profile_details .works_with_list img {
   max-width: 30px;
   border-radius: 50%;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.10);
 }
 
-.profile-header__stats--contributor .works_with_list img {
-  border: 0.1rem solid #25E899;
-}
-
-.profile-header__stats--funder .works_with_list img {
-  border: 0.1rem solid #FFCE08;
+.profile_details .works_with_list .plus-img{
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  background: #F8F9FA;
+  border-radius: 30px;
+  align-items: center;
+  vertical-align: middle;
+  font-size: 10px;
+  justify-content: center;
 }
 
 .no-profile-button {
