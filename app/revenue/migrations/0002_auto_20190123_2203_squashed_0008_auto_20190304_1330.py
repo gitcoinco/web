@@ -3,7 +3,9 @@
 import datetime
 from django.db import migrations, models
 import django.db.models.deletion
+from django.utils.text import slugify
 import economy.models
+from revenue.utils import sku_generator
 
 
 # Functions from the following migrations need manual copying.
