@@ -57,7 +57,6 @@
 
 .profile-header__links a:hover i {
   color: #1AB56D;
-  /* transform: scale(1.5) rotate(360deg); */
 }
 
 .profile-header__links img {
@@ -159,10 +158,6 @@
   margin-top: 0;
 }
 
-.profile-header__stats--contributor {
-  /* border: 0.2rem solid #25E899; */
-}
-
 .profile-header__stats--contributor .card-header {
   background-color: transparent;
 }
@@ -210,17 +205,8 @@
   background: #FFCE08;
 }
 
-.profile-header__stats--funder {
-  /* border: 0.2rem solid #FFCE08; */
-}
-
 .profile-header__stats--funder .card-header {
-  /* background-color: #FFCE08; */
   background-color: transparent;
-}
-
-.profile-header__stats--funder .highlight {
-  color: #FFCE08;
 }
 
 .profile-section-title {
