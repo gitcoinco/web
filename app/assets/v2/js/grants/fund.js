@@ -86,9 +86,11 @@ $(document).ready(function() {
         }
 
         let realGasPrice = 0; // zero cost metatxs
-        if periodSeconds < 2592000:
-          // charge gas for intervals less than a month 
+
+        if (periodSeconds < 2592000) {
+          // charge gas for intervals less than a month
           realGasPrice = Math.ceil($('#gasPrice').val() * Math.pow(10, 9));
+        }
 
         $('#gas_price').val(realGasPrice);
 
