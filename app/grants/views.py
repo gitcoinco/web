@@ -368,6 +368,14 @@ def grant_fund(request, grant_id, grant_slug):
         }
         return TemplateResponse(request, 'grants/shared/error.html', params)
 
+    if grant.contract_address == '0x0':
+        messages.info(
+            request,
+            _('This grant is not configured to accept funding at this time.  Please contact founders@gitcoin.co if you believe this message is in error!')
+        )
+        logger.error(f"Grant {grant.pk} is not properly configured for funding.  Please set grant.contract_address on this grant")
+        return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
+
     if request.method == 'POST':
         if 'contributor_address' in request.POST:
             subscription = Subscription()
