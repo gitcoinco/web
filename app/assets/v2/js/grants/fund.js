@@ -46,7 +46,6 @@ $(document).ready(function() {
     },
     submitHandler: function(form) {
       var data = {};
-      console.log('fund grant submit handler called');
       $.each($(form).serializeArray(), function() {
         data[this.name] = this.value;
       });
@@ -113,7 +112,7 @@ $(document).ready(function() {
           var tokenMethod = deployedToken.methods.approve;
           var arg1 = data.contract_address;
 
-          // one time payments (non-paid-plan grants only)
+          // one time payments
           if (data.num_periods == 1) {
             arg1 = data.admin_address;
             tokenMethod = deployedToken.methods.transfer;
@@ -146,7 +145,6 @@ $(document).ready(function() {
               'network': $('#network').val(),
               'csrfmiddlewaretoken': $("#js-fundGrant input[name='csrfmiddlewaretoken']").val()
             };
-            console.log(JSON.stringify(data));
             $.ajax({
               type: 'post',
               url: '',
@@ -195,7 +193,6 @@ $(document).ready(function() {
                       url: '',
                       data: data,
                       success: json => {
-                        console.log('successfully saved subscriptionHash and signature');
                         url = json.url;
                         $('#wait').val('false');
                       },
@@ -224,8 +221,6 @@ $(document).ready(function() {
     if (document.web3network != $('#network').val()) {
       $('#js-fundGrant-button').prop('disabled', true);
       let network = $('#network').val();
-      console.log(network);
-      console.log(document.web3network);
 
       _alert({ message: gettext('This Grant is on the ' + network + ' network. Please, switch to ' + network + ' to contribute to this grant.') }, 'error');
     }

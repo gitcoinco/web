@@ -764,7 +764,6 @@ var trigger_primary_form_web3_hooks = function() {
     var is_zero_balance_not_okay = document.location.href.indexOf('/faucet') == -1;
 
     if (typeof web3 == 'undefined') {
-      console.log('1st');
       $('#no_metamask_error').css('display', 'block');
       $('#zero_balance_error').css('display', 'none');
       $('#primary_form, .primary_form-meta').addClass('hidden');
@@ -773,8 +772,6 @@ var trigger_primary_form_web3_hooks = function() {
       $('#connect_metamask_error').css('display', 'none');
       $('#no_issue_error').css('display', 'none');
     } else if (is_metamask_unlocked && !is_metamask_approved) {
-      console.log('2nd');
-
       $('#connect_metamask_error').css('display', 'block');
       $('#unlock_metamask_error').css('display', 'none');
       $('#zero_balance_error').css('display', 'none');
@@ -783,8 +780,6 @@ var trigger_primary_form_web3_hooks = function() {
       $('.submit_bounty .newsletter').addClass('hidden');
       $('#no_issue_error').css('display', 'none');
     } else if (!web3.version.startsWith("1.0.0") && !web3.eth.coinbase) {
-      console.log('3rd');
-      console.log(web3.version);
       $('#unlock_metamask_error').css('display', 'block');
       $('#zero_balance_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
@@ -793,8 +788,6 @@ var trigger_primary_form_web3_hooks = function() {
       $('.submit_bounty .newsletter').addClass('hidden');
       $('#no_issue_error').css('display', 'none');
     } else if (is_zero_balance_not_okay && document.balance == 0) {
-      console.log('4th');
-
       $('#zero_balance_error').css('display', 'block');
       $('#robot_error').removeClass('hidden');
       $('#primary_form, .primary_form-meta').addClass('hidden');
@@ -804,8 +797,6 @@ var trigger_primary_form_web3_hooks = function() {
       $('#no_metamask_error').css('display', 'none');
       $('#no_issue_error').css('display', 'none');
     } else {
-      console.log('5th');
-
       $('#zero_balance_error').css('display', 'none');
       $('#unlock_metamask_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');

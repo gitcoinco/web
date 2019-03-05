@@ -85,11 +85,8 @@ const addGrantLogo = () => {
 };
 
 const show_error_banner = (result, web3_not_found) => {
-  console.log('WTF');
   if ($('#grants_form').length || $('#primary_form').length) {
     var is_zero_balance_not_okay = document.location.href.indexOf('/faucet') == -1;
-    console.log(JSON.stringify(result));
-    console.log(JSON.stringify(web3_not_found));
     if (typeof web3 == 'undefined' || web3_not_found) {
       $('#no_metamask_error').css('display', 'block');
       $('#zero_balance_error').css('display', 'none');

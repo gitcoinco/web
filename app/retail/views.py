@@ -291,11 +291,9 @@ def pricing(request):
 def subscribe(request):
 
     if request.POST:
-        print("grant id is {}".format(request.POST.get('grant_id')))
         grant = Grant.objects.prefetch_related('paid_plan').get(pk=request.POST.get('grant_id'))
         if 'contributor_address' in request.POST:
             subscription = Subscription()
-            print('creating subscription')
             subscription.active = False
             subscription.contributor_address = request.POST.get('contributor_address', '')
             subscription.amount_per_period = request.POST.get('amount_per_period', 0)
@@ -310,8 +308,6 @@ def subscribe(request):
             subscription.network = request.POST.get('network', '')
             subscription.contributor_profile = request.user.profile
             subscription.grant = grant
-            print('saving subscription')
-            print(request.POST)
 
             subscription.save()
 
@@ -332,10 +328,7 @@ def subscribe(request):
                 grant.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
 
             grant.save()
-            # new_supporter(grant, subscription)
             from revenue.models import Plan, Subscription as RevenueSubscription
-            print('the grants paid plan is')
-            print(grant.paid_plan.pk)
             rs = RevenueSubscription.objects.create(plan=grant.paid_plan, grant_subscription=subscription)
             rs.save()
             return JsonResponse({
