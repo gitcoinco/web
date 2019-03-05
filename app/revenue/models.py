@@ -66,6 +66,7 @@ class Plan(SuperModel):
         help_text=_('Cost of this plan in USD'),
     )
     period_length_seconds = models.PositiveIntegerField()
+    bounties_discount_percent = models.IntegerField(default=0)
     grant = models.OneToOneField('grants.grant', related_name='paid_plan', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):

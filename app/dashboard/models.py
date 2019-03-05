@@ -2579,6 +2579,10 @@ class Profile(SuperModel):
         return subscription.plan if subscription else None
 
     @property
+    def plan_discount(self):
+        return self.plan.bounties_discount_percent if self.plan else 0
+
+    @property
     def can_get_feature(self, feature, units):
         plan = self.plan if self.plan else None
         # TODO: return False once we decide restrictions
