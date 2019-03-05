@@ -432,7 +432,7 @@ const isAvailableIfReserved = function(bounty) {
   const reservedFor = bounty['reserved_for_user_handle'];
 
   if (reservedFor) {
-    if (reservedFor === document.contxt['github_handle']) {
+    if (caseInsensitiveCompare(reservedFor, document.contxt['github_handle'])) {
       return true;
     }
 
@@ -457,13 +457,13 @@ var isBountyOwner = function(result) {
     return false;
   }
 
-  return (web3.eth.coinbase.toLowerCase() == bountyAddress.toLowerCase());
+  return caseInsensitiveCompare(web3.eth.coinbase, bountyAddress);
 };
 
 var isBountyOwnerPerLogin = function(result) {
   var bounty_owner_github_username = result['bounty_owner_github_username'];
 
-  return bounty_owner_github_username == document.contxt['github_handle'];
+  return caseInsensitiveCompare(bounty_owner_github_username, document.contxt['github_handle']);
 };
 
 var update_title = function() {
@@ -830,7 +830,7 @@ const is_current_user_interested = function(result) {
   if (!document.contxt.github_handle) {
     return false;
   }
-  return !!(result.interested || []).find(interest => interest.profile.handle.toLowerCase() == document.contxt.github_handle.toLowerCase());
+  return !!(result.interested || []).find(interest => caseInsensitiveCompare(interest.profile.handle, document.contxt.github_handle));
 };
 
 const is_current_user_approved = function(result) {
@@ -845,7 +845,7 @@ const is_current_user_approved = function(result) {
     const interest = interested[len];
     const handle = interest.profile ? interest.profile.handle : '';
 
-    if (handle && handle.toLowerCase() === document.contxt.github_handle.toLowerCase()) {
+    if (handle && caseInsensitiveCompare(handle, document.contxt.github_handle)) {
       return needs_approval ? interest.pending === false : true;
     }
   }
@@ -866,7 +866,7 @@ var do_actions = function(result) {
   // Find interest information
   const is_interested = is_current_user_interested(result);
 
-  const has_fulfilled = result['fulfillments'].filter(fulfiller => fulfiller.fulfiller_github_username === document.contxt['github_handle']).length > 0;
+  const has_fulfilled = result['fulfillments'].filter(fulfiller => caseInsensitiveCompare(fulfiller.fulfiller_github_username, document.contxt['github_handle'])).length > 0;
 
   document.interested = is_interested;
 

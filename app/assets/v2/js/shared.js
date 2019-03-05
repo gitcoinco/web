@@ -1440,6 +1440,18 @@ const checkFileSize = (input, max_img_size) => {
   return true;
 };
 
+/**
+ * Compare two strings in a case insensitive way
+ *
+ * Usage: caseInsensitiveCompare('gitcoinco', 'GitcoinCo')
+ */
+const caseInsensitiveCompare = (val1, val2) => {
+  if (val1 && val2 && typeof val1 === 'string' && typeof val2 === 'string') {
+    return val1.toLowerCase() === val2.toLowerCase();
+  }
+  return false;
+};
+
 $(document).ready(function() {
   $(window).scroll(function() {
     $('.g-fadein').each(function(i) {
