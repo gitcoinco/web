@@ -24,9 +24,10 @@ import logging
 
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
 from django.core.validators import validate_email
 from django.db.models import Max
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -44,7 +45,7 @@ from mailchimp3 import MailChimp
 from marketing.mails import new_feedback
 from marketing.models import AccountDeletionRequest, EmailSubscriber, Keyword, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, validate_discord_integration, validate_slack_integration
-from retail.emails import ALL_EMAILS
+from retail.emails import ALL_EMAILS, render_nth_day_email_campaign
 from retail.helpers import get_ip
 
 logger = logging.getLogger(__name__)
@@ -747,3 +748,10 @@ def leaderboard(request, key=''):
     }
     
     return TemplateResponse(request, 'leaderboard.html', context)
+
+@staff_member_required
+def day_email_campaign(request, day):
+    if day not in list(range(1, 3)):
+        raise Http404
+    response_html, _, _, = render_nth_day_email_campaign('foo@bar.com', day, 'staff member')
+    return HttpResponse(response_html)

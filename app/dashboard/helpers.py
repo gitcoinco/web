@@ -459,6 +459,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
             try:
                 issue_kwargs = get_url_dict(new_bounty.github_url)
                 new_bounty.github_issue_details = get_gh_issue_details(**issue_kwargs)
+
             except Exception as e:
                 logger.error(e)
 

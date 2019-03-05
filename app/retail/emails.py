@@ -43,6 +43,7 @@ logger = logging.getLogger(__name__)
 
 # key, name, frequency
 MARKETING_EMAILS = [
+    ('welcome_mail', _('Welcome Emails'), _('First 3 days after you sign up')),
     ('roundup', _('Roundup Emails'), _('Weekly')),
     ('new_bounty_notifications', _('New Bounty Notification Emails'), _('(up to) Daily')),
     ('important_product_updates', _('Product Update Emails'), _('Quarterly')),
@@ -58,6 +59,7 @@ TRANSACTIONAL_EMAILS = [
         'bounty_expiration', _('Bounty Expiration Warning Emails'),
         _('Only after you posted a bounty which is going to expire')
     ),
+    ('featured_funded_bounty', _('Featured Funded Bounty Emails'), _('Only when you\'ve paid for a bounty to be featured'))
 ]
 
 ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS
@@ -68,6 +70,32 @@ def premailer_transform(html):
     p = premailer.Premailer(html, base_url=settings.BASE_URL)
     return p.transform()
 
+def render_featured_funded_bounty(bounty):
+    params = {'bounty': bounty}
+    response_html = premailer_transform(render_to_string("emails/funded_featured_bounty.html", params))
+    response_txt = render_to_string("emails/funded_featured_bounty.txt", params)
+    subject = _("You've successfully funded a bounty!")
+
+    return response_html, response_txt, subject
+
+
+def render_nth_day_email_campaign(to_email, nth, firstname):
+    subject_map = {
+        1: "Day 1: Growing Open Source",
+        2: "Day 2: Using Gitcoin's Issue Explorer",
+        3: "Learning Blockchain"
+    }
+
+    subject = subject_map[nth]
+
+    params = {
+        "firstname": firstname,
+        "subscriber": get_or_save_email_subscriber(to_email, "internal"),
+    }
+    response_html = premailer_transform(render_to_string(f"emails/campaigns/email_campaign_day_{nth}.html", params))
+    response_txt = render_to_string(f"emails/campaigns/email_campaign_day_{nth}.txt", params)
+
+    return response_html, response_txt, subject
 
 def render_new_grant_email(grant):
     params = {'grant': grant}
@@ -156,6 +184,12 @@ def render_successful_contribution_email(grant, subscription, contribution):
     response_txt = render_to_string("emails/grants/successful_contribution.txt", params)
     subject = _('Your Gitcoin Grants contribution was successful!')
     return response_html, response_txt, subject
+
+def featured_funded_bounty(request):
+    from dashboard.models import Bounty
+    bounty = Bounty.objects.first()
+    response_html, __, __ = render_featured_funded_bounty(bounty)
+    return HttpResponse(response_html)
 
 
 @staff_member_required
