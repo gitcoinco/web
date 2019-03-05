@@ -87,7 +87,10 @@ $(document).ready(function() {
     var comments_public = $('#comments_public').val();
     var from_email = $('#fromEmail').val();
     var accept_tos = $('#tos').is(':checked');
-    var tokenAddress = $('#token').val();
+    var tokenAddress = (
+      ($('#token').val()=='0x0') ?
+          '0x0000000000000000000000000000000000000000'
+          :$('#token').val());
     var expires = parseInt($('#expires').val());
 
     // derived info
@@ -175,12 +178,13 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
   if (!isSendingETH) {
     tokenName = tokenDetails.name;
     denomFactor = Math.pow(10, tokenDetails.decimals);
-
-    check_balance_and_alert_user_if_not_enough(
-      tokenAddress,
-      amount,
-      'You do not have enough tokens to send this tip.');
   }
+
+  check_balance_and_alert_user_if_not_enough(
+    tokenAddress,
+    amount,
+    'You do not have enough ' + tokenName +' to send this tip.');
+
   var amountInDenom = amount * 1.0 * denomFactor;
   // validation
   var hasEmail = email != '';
