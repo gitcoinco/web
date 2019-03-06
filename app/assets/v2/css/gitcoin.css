@@ -45,7 +45,7 @@ h4,
 }
 
 .gitcoin-gray {
-  color: lightgray !important
+  color: lightgray !important;
 }
 
 .header {
@@ -573,6 +573,12 @@ div.button-pink {
   }
 }
 
+@media (max-width: 820px) {
+  .navbar-nav .nav_avatar {
+    display: none !important;
+  }
+}
+
 @media (min-width: 768px) and (max-width: 991.98px) {
 
   .navbar-brand #logo {
@@ -586,18 +592,30 @@ div.button-pink {
   }
 }
 
-@media (min-width: 768px) and (max-width: 1024px) {
+@media (min-width: 768px) and (max-width: 1240px) {
+  .navbar-expand-md .navbar-nav .nav-link,
+  .navbar-nav .btn-gc-blue.button--fund {
+    font-size: 0.8rem;
+  }
+
+  .nav-link__text {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1028px) {
 
   .nav-link {
     text-align: center;
   }
 
-  .nav-link__icon.hidden {
-    display: inline !important;
+  .navbar-expand-md .navbar-nav .nav-link,
+  .navbar-nav .btn-gc-blue.button--fund {
+    font-size: 0.7rem;
   }
 
-  .nav-link__text {
-    display: none;
+  .nav-link__icon.hidden {
+    display: inline !important;
   }
 
   .navbar-brand img {
@@ -622,6 +640,16 @@ div.button-pink {
 
 .border-transparent {
   border-color: transparent;
+}
+
+#codefund .cf-wrapper {
+  font-family: 'Muli', sans-serif !important;
+  text-align: center !important;
+}
+
+#codefund a {
+  float: none !important;
+  text-align: center !important;
 }
 
 /* AutoComplete */

@@ -263,6 +263,7 @@ class Bounty(SuperModel):
     submissions_comment = models.IntegerField(null=True, blank=True)
     override_status = models.CharField(max_length=255, blank=True)
     last_comment_date = models.DateTimeField(null=True, blank=True)
+    funder_last_messaged_on = models.DateTimeField(null=True, blank=True)
     fulfillment_accepted_on = models.DateTimeField(null=True, blank=True)
     fulfillment_submitted_on = models.DateTimeField(null=True, blank=True)
     fulfillment_started_on = models.DateTimeField(null=True, blank=True)
@@ -1017,10 +1018,11 @@ class Bounty(SuperModel):
 
         self.bounty_reserved_for_user = profile
 
-@receiver(post_save, sender=Bounty, dispatch_uid="psave_bounty")
-def psave_bounty(sender, instance, created, **kwargs):
+@receiver(post_save, sender=Bounty, dispatch_uid="postsave_bounty")
+def postsave_bounty(sender, instance, created, **kwargs):
     if created:
-        featured_funded_bounty('founders@gitcoin.co', bounty=instance)
+        if instance.status == 'open':
+            featured_funded_bounty(settings.CONTACT_EMAIL, bounty=instance)
 
 
 class BountyFulfillmentQuerySet(models.QuerySet):
@@ -1046,6 +1048,7 @@ class BountyFulfillment(SuperModel):
     fulfillment_id = models.IntegerField(null=True, blank=True)
     fulfiller_hours_worked = models.DecimalField(null=True, blank=True, decimal_places=2, max_digits=50)
     fulfiller_github_url = models.CharField(max_length=255, blank=True, null=True)
+    funder_last_notified_on = models.DateTimeField(null=True, blank=True)
     accepted = models.BooleanField(default=False)
     accepted_on = models.DateTimeField(null=True, blank=True)
 
@@ -1493,7 +1496,7 @@ def psave_interest(sender, instance, **kwargs):
     # when a new interest is saved, update the status on frontend
     print("signal: updating bounties psave_interest")
     for bounty in Bounty.objects.filter(interested=instance):
-        bounty.save()      
+        bounty.save()
 
 class ActivityQuerySet(models.QuerySet):
     """Handle the manager queryset for Activities."""
@@ -1650,9 +1653,9 @@ class Activity(SuperModel):
             if 'value_in_token' in obj and activity['token']:
                 activity['value_in_token_disp'] = round((float(obj['value_in_token']) /
                                                       10 ** activity['token']['decimals']) * 1000) / 1000
-        
+
         # finally done!
-        
+
         return activity
 
     @property
@@ -1696,6 +1699,31 @@ class LabsResearch(SuperModel):
 
     def __str__(self):
         return self.title
+
+
+class UserVerificationModel(SuperModel):
+    """Define the checkboxes for user verification."""
+
+    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
+    verified = models.BooleanField(
+        default=False,
+        help_text='Select to display the Verified checkmark on the user\'s profile',
+    )
+    speedy_and_responsive = models.BooleanField(
+        default=False,
+    )
+    great_communication = models.BooleanField(
+        default=False,
+    )
+    bug_free_code = models.BooleanField(
+        default=False,
+    )
+    completed_x_bounties = models.BooleanField(
+        default=False,
+    )
+
+    def __str__(self):
+        return f"User: {self.user}; Verified: {self.verified}"
 
 
 class ProfileQuerySet(models.QuerySet):
@@ -1811,6 +1839,11 @@ class Profile(SuperModel):
         kudos_transfers = kudos_transfers.distinct('id')
 
         return kudos_transfers
+
+    @property
+    def get_my_verified_check(self):
+        verification = UserVerificationModel.objects.filter(user=self.user).first()
+        return verification
 
     @property
     def get_profile_referral_code(self):

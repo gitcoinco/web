@@ -43,7 +43,9 @@
         {% include 'bounties/contributor/hero.html' %}
       </div>
 
-      <div class="container-fluid p-5 benefits_container">
+      <div class="pt-2" id="codefund"></div>
+
+      <div class="container-fluid px-5 pb-5 pt-2 benefits_container">
         {% include 'bounties/contributor/benefits.html' %}
       </div>
 
@@ -124,5 +126,6 @@
       fetchBountiesAndAddToList(uri, '.featured-bounties', 5, additional_callback);
     </script>
   {% endif %}
+  <script src="https://codefund.app/properties/189/funder.js" async="async"></script>
 </html>
 
