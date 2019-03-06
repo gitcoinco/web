@@ -39,7 +39,7 @@ class MetatxTest(TestCase):
     def test_fast_contributions_are_not_free(self):
         try:
             process_subscription(self.daily_subscription_free, live=False)
-        except:
+        except Exception as e:
             pass
         assert self.daily_subscription_free.error == True
 

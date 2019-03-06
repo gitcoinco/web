@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import logging
 import time
 
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db.models import F
 from django.utils import timezone
@@ -36,7 +37,7 @@ logger = logging.getLogger(__name__)
 
 SLEEP_TIME = 20
 MAX_COUNTER = 30
-METATX_GAS_PRICE_THRESHOLD = 100000.0 # in wei?
+METATX_GAS_PRICE_THRESHOLD = settings.METATX_GAS_PRICE_THRESHOLD # in wei?
 METATX_FREE_INTERVAL_SECONDS = 27 * 24 * 60 * 60 # less than a month-ish has to pay
 
 def process_subscription(subscription, live):
