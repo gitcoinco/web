@@ -15,7 +15,7 @@
 }
 
 .profile-header.dash{
-  height: 450px;
+  height: 500px;
 }
 
 .profile-header__avatar {
@@ -314,13 +314,20 @@
 #float_avatar_image{
   z-index: 9999999;
   position: absolute;
-  left: 33%;
-  margin-top: -220px;
+  left: 40%;
+  margin-top: -260px;
 }  
 
 #float_avatar_image img{
   height: 300px;
   width: 300px;
+  border-top: 10px #25e899 solid;
+  border-left: 2px white solid;
+}  
+
+#float_avatar_image.is_my_profile:hover img{
+  border-top: 10px #0fce7c solid;
+  border-left: 2px #eeeeee solid;
 }  
 
 .is_my_profile{
@@ -354,4 +361,39 @@
 #avatar_edit:hover #avatar_edit_text {
   color: #aaaaaa;
 }
+
+@media (max-width: 1500px) {
+    #float_avatar_image{
+      left: 35%;
+    }  
+}
+
+
+@media (max-width: 800px) {
+    #float_avatar_image{
+      left: 30%;
+      margin-top: -270px;
+    }  
+}
+
+@media (max-width: 600px) {
+    #float_avatar_image{
+      left: 20%;
+      margin-top: -260px;
+    }  
+}
+
+
+@media (max-width: 500px) {
+    #float_avatar_image{
+      left: 15%;
+      margin-top: -280px;
+    }  
+
+    .profile-header.dash{
+      height: 600px;
+    }
+
+}
+
 
