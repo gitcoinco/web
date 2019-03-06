@@ -657,6 +657,7 @@ a.btn {
   float: right;
   padding: 0.375rem 0.9375rem;
   font-size: 12px;
+  text-align: center;
 }
 
 .btn-cancel {
