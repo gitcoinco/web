@@ -452,6 +452,15 @@
       }).then(function(response) {
         return response.json();
       }).then(function(json) {
+        $('.earned').html('~' + json.profile.total_earned + ' ETH earned')
+        $('.contributor-position').html(json.profile.position)
+        $('.completed-bounties').html(json.statistics.work_completed)
+        $('.in-progress').html(json.statistics.work_in_progress)
+        $('.abandoned-bounties').html(json.statistics.work_abandoned)
+        $('.removed-bounties').html(json.statistics.work_removed)
+        $('.activity-title').html(json.recent_activity.activity_metadata.title)
+        $('.current_status').html(json.recent_activity.activity_type)
+        $('.time-ago').html(json.recent_activity.created)
         return json;
       }).catch(function(err) {
         console.log(err)

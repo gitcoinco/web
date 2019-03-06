@@ -17,33 +17,33 @@
 {% load i18n %}
   <div class="popover-bounty__content">
     <div class="d-flex justify-content-between mb-2">
-      <span class="title font-subheader username">[[:name]]</span>
+      <h2 class="title font-subheader username">[[:name]]</h2>
       <span class="text-muted">Specialty: css, javascript, react</span>
       <div class="org_logos">
-        <span>{{ json.status }}</span>
+        <span class="eth_earn"></span>
       </div>
     </div>
-    <span class="earned">~2.5 ETH earned</span>
+    <span class="earned"></span>
     <div class="statistics d-flex justify-content-between mt-2">
       <div class="popover_card text-center mr-4 p-2">
-        <span class="contributor-position">#128</span>
+        <span class="contributor-position"></span>
         <p class="mt-2">Gitcoin Contributor</p>
       </div>
       <div class="contributions d-flex justify-content-between">
         <div class="popover_card text-center mr-2">
-          <span class="completed-bounties">34</span>
+          <span class="completed-bounties"></span>
           <p class="mt-2">Bounties Completed</p>
         </div>
         <div class="popover_card text-center mr-2">
-          <span class="in-progress text-center">2</span>
+          <span class="in-progress text-center"></span>
           <p class="mt-2">Bounties In Progress</p>
         </div>
         <div class="popover_card text-center mr-2">
-          <span class="abandoned-bounties">1</span>
+          <span class="abandoned-bounties"></span>
           <p class="mt-2">Bounties Abandoned</p>
         </div>
         <div class="popover_card text-center mr-2">
-          <span class="removed-bounties">2</span>
+          <span class="removed-bounties"></span>
           <p class="mt-2">Bounties Removed</p>
         </div>
       </div>
@@ -52,9 +52,10 @@
 
   <div class="popover-bounty__footer">
       <div class="d-flex justify-content-between">
-        <span class="text-muted">{% trans 'Latest Activity' %}</span>
-        <span class="current_status">Submitted Work</span>
-        <span class="text-muted">30 mins ago</span>
+        <span class="text-muted">{% trans 'Latest Activity' %}
+          <span class="current_status"></span>
+        </span>
+        <span class="text-muted time-ago"></span>
       </div>
-      <p class="text-muted pt-2">Build Front End of Uport Login Page - Issue #2337</p>
+      <p class="text-muted pt-2 activity-title"></p>
   </div>
