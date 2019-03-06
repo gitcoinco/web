@@ -5,6 +5,7 @@ from grants.management.commands.subminer import process_subscription
 from grants.models import Grant, Subscription
 from test_plus.test import TestCase
 
+
 class MetatxTest(TestCase):
 
     def setUp(self):
