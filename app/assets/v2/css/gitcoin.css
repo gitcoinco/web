@@ -45,7 +45,7 @@ h4,
 }
 
 .gitcoin-gray {
-  color: lightgray !important
+  color: lightgray !important;
 }
 
 .header {
@@ -82,7 +82,6 @@ h4,
   position: fixed;
   top: 0;
   left: 0;
-  /* right: 0; */
   z-index: -1;
   will-change: transform;
   overflow-y: hidden;
@@ -93,7 +92,6 @@ h4,
   background: url("/static/v2/images/header-bg.png") #0d023b;
   background-attachment: fixed;
   background-position: center 0;
-  background-size: 2000px;
 }
 
 .dropdown-toggle::after {
@@ -545,6 +543,22 @@ div.button-pink {
   width: 15px;
 }
 
+.g-fadein {
+  opacity: 0;
+}
+
+.g-fadein[data-fade-direction="left"] {
+  left: -5rem;
+}
+
+.g-fadein[data-fade-direction="mid"] {
+  bottom: -5em;
+}
+
+.g-fadein[data-fade-direction="right"] {
+  left: 5rem;
+}
+
 @media (max-width: 389.9px) {
 
   .footer__main {
@@ -556,6 +570,12 @@ div.button-pink {
 @media (max-width: 767.98px) {
   .navbar-collapse {
     margin-top: 1.5rem;
+  }
+}
+
+@media (max-width: 820px) {
+  .navbar-nav .nav_avatar {
+    display: none !important;
   }
 }
 
@@ -572,18 +592,30 @@ div.button-pink {
   }
 }
 
-@media (min-width: 768px) and (max-width: 1024px) {
+@media (min-width: 768px) and (max-width: 1240px) {
+  .navbar-expand-md .navbar-nav .nav-link,
+  .navbar-nav .btn-gc-blue.button--fund {
+    font-size: 0.8rem;
+  }
+
+  .nav-link__text {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1028px) {
 
   .nav-link {
     text-align: center;
   }
 
-  .nav-link__icon.hidden {
-    display: inline !important;
+  .navbar-expand-md .navbar-nav .nav-link,
+  .navbar-nav .btn-gc-blue.button--fund {
+    font-size: 0.7rem;
   }
 
-  .nav-link__text {
-    display: none;
+  .nav-link__icon.hidden {
+    display: inline !important;
   }
 
   .navbar-brand img {
@@ -608,6 +640,16 @@ div.button-pink {
 
 .border-transparent {
   border-color: transparent;
+}
+
+#codefund .cf-wrapper {
+  font-family: 'Muli', sans-serif !important;
+  text-align: center !important;
+}
+
+#codefund a {
+  float: none !important;
+  text-align: center !important;
 }
 
 /* AutoComplete */

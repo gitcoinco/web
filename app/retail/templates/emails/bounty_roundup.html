@@ -54,7 +54,7 @@
     <h1>{% trans "The Gitcoin Weekly" %}</h1>
   </div>
 
-  <div style="text-align: left;" class='intro'>
+  <div class='intro text-left'>
     {{ intro|safe }}
     <div style="text-align: center; ">
       <a href="https://twitter.com/owocki">
@@ -113,7 +113,7 @@
     <h3>{% trans "Who's leading the Leaderboard?" %}</h3>
     <h5>{% trans "See the top Gitcoin Network Members For the last 90 Days" %}</h5>
 
-    <div style="text-align: left;">
+    <div class="text-left">
       {% for key, package in leaderboard.items %}
         <div style="width: 30%; display: inline-block; min-width: 250px;">
           <h4>{{ package.title }}</h4>
@@ -131,7 +131,7 @@
     <br>
     <br>
     <div style="margin-bottom: 2em;">
-      <a class="button" href="{% url "leaderboard" 'top_payers' %}">{% trans "View Leaderboard" %}</a>
+      <a class="button" href="{% url "leaderboard" 'quarterly_payers' %}">{% trans "View Leaderboard" %}</a>
     </div>
     <hr>
   {% endif %}

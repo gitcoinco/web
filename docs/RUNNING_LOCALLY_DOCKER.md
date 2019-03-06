@@ -51,7 +51,7 @@ If you're testing in a staging or production style environment behind a CDN, pas
 
 For example:
 
-`DJANGO_STATIC_HOST='https://gitcoin.co`
+`DJANGO_STATIC_HOST='https://gitcoin.co'`
 
 ## Create Django Admin
 
@@ -75,14 +75,9 @@ docker-compose exec web python3 app/manage.py createsuperuser
 
 This can be useful if you'd like data to test with:
 
-```shell
-docker-compose exec web python3 app/manage.py sync_geth
-```
-
-or equivalently:
 
 ```shell
-docker-compose exec web python3 app/manage.py sync_geth rinkeby 402 99999999999
+docker-compose exec web python3 app/manage.py sync_geth rinkeby -20 99999999999
 ```
 
 ### FAQ
@@ -170,10 +165,6 @@ Simply run: `make get_django_shell` or `docker-compose exec web python app/manag
 Run: `docker-compose exec web bash`
 
 
-
-
 #### I have a question about Kudos.  Is there a FAQ for that product?
 
 Yes [click here](https://github.com/gitcoinco/web/blob/master/docs/KUDOS.md).
-
-

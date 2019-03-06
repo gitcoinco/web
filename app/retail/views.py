@@ -16,6 +16,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+import logging
 from json import loads as json_parse
 from os import walk as walkdir
 
@@ -24,7 +25,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.core.validators import validate_email
-from django.http import Http404, HttpResponse, JsonResponse
+from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
@@ -43,11 +44,13 @@ from marketing.models import Alumni, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
+from retail.emails import render_nth_day_email_campaign
 from retail.helpers import get_ip
 
 from .forms import FundingLimitIncreaseRequestForm
 from .utils import programming_languages
 
+logger = logging.getLogger(__name__)
 
 @cached_as(
     Activity.objects.select_related('bounty').filter(bounty__network='mainnet').order_by('-created'),
@@ -366,12 +369,13 @@ def funder_bounties(request):
         'hide_newsletter_caption': True,
         'hide_newsletter_consent': True,
         'gitcoin_description': gitcoin_description,
-        'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter.")
+        'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter."),
+        'meta_title': "Grow Open Source: Find Freelance Developers & Open Source Bug Bounties - Gitcoin",
+        'meta_description': "The Gitcoin platform connects freelance developers with open bug bounties or online jobs, paid in crypto (ETH). Leverage a global workforce to quickly complete software development and coding jobs."
     }
     return TemplateResponse(request, 'bounties/funder.html', context)
 
 
-@cached_view(timeout=60 * 10)
 def contributor_bounties(request, tech_stack):
 
     slides = [
@@ -483,26 +487,42 @@ def contributor_bounties(request, tech_stack):
         }
     ]
 
-    available_bounties_count = open_bounties().count()
-    available_bounties_worth = amount_usdt_open_work()
     # tech_stack = '' #uncomment this if you wish to disable contributor specific LPs
     context = {
-        'activities': get_activities(tech_stack),
-        'title': tech_stack.title() + str(_(" Open Source Opportunities")) if tech_stack else "Open Source Opportunities",
         'slides': slides,
         'slideDurationInMs': 6000,
         'active': 'home',
         'newsletter_headline': _("Be the first to find out about newly posted bounties."),
         'hide_newsletter_caption': True,
         'hide_newsletter_consent': True,
-        'projects': projects,
         'gitcoin_description': gitcoin_description,
+        'projects': projects,
+    }
+
+    try:
+        new_context = JSONStore.objects.get(view='contributor_landing_page', key=tech_stack).data
+
+        for key, value in new_context.items():
+            context[key] = value
+    except Exception as e:
+        logger.exception(e)
+        raise Http404
+
+    return TemplateResponse(request, 'bounties/contributor.html', context)
+
+
+def get_contributor_landing_page_context(tech_stack):
+    available_bounties_count = open_bounties().count()
+    available_bounties_worth = amount_usdt_open_work()
+    activities = get_activities(tech_stack)
+    return {
+        'activities': activities,
+        'title': tech_stack.title() + str(_(" Open Source Opportunities")) if tech_stack else str(_("Open Source Opportunities")),
         'available_bounties_count': available_bounties_count,
         'available_bounties_worth': available_bounties_worth,
         'tech_stack': tech_stack,
-    }
 
-    return TemplateResponse(request, 'bounties/contributor.html', context)
+    }
 
 
 def how_it_works(request, work_type):
@@ -634,6 +654,16 @@ def about(request):
             "Bounties",
             "Chicken tikka masala"
         ),
+        (
+            static("v2/images/team/dan-lipert.png"),
+            "Dan Lipert",
+            "Engineering",
+            "danlipert",
+            "danlipert",
+            "EIP 1337",
+            "Tantan Ramen"
+        )
+
     ]
     exclude_community = ['kziemiane', 'owocki', 'mbeacom']
     community_members = [
@@ -663,6 +693,98 @@ def about(request):
 
 def mission(request):
     """Render the Mission response."""
+
+    values = [
+        {
+            'name': _('Collaboration'),
+            'img': 'v2/images/mission/value/collaborative.svg',
+            'alt': 'we-collobarate-icon'
+        },
+        {
+            'name': _('Intellectual honesty'),
+            'img': 'v2/images/mission/value/love_hands.svg',
+            'alt': 'intellectual-honesty-icon'
+        },
+        {
+            'name': _('Collaboration'),
+            'img': 'v2/images/mission/value/humble.svg',
+            'alt': 'humble-icon'
+        },
+        {
+            'name': _('Empathy'),
+            'img': 'v2/images/mission/value/empathetic.svg',
+            'alt': 'empathy-icon'
+        },
+        {
+            'name': _('Stress Reducers'),
+            'img': 'v2/images/mission/value/stress_reducing.svg',
+            'alt': 'stress-reduce-icon'
+        },
+        {
+            'name': _('Inclusivity'),
+            'img': 'v2/images/mission/value/inclusive.svg',
+            'alt': 'inclusive-icon'
+        },
+        {
+            'name': _('Giving first'),
+            'img': 'v2/images/mission/value/give_first.svg',
+            'alt': 'give-first-icon'
+        }
+    ]
+
+    interactions = [
+        {
+            'text': _('We happen to the world. We don\'t let the world happen to us.'),
+            'img': 'v2/images/mission/interact/world.svg',
+            'alt': 'world-icon'
+        },
+        {
+            'text': _('We show, don\'t tell.'),
+            'img': 'v2/images/mission/interact/book.svg',
+            'alt': 'openness-icon'
+        },
+        {
+            'text': _('We are thoughtful, clear, and direct.'),
+            'img': 'v2/images/mission/interact/head.svg',
+            'alt': 'thoughtful-icon'
+        },
+        {
+            'text': _('We seek balance.'),
+            'img': 'v2/images/mission/interact/scale.svg',
+            'alt': 'balance-icon'
+        },
+        {
+            'text': _('We challenge the status quo &amp; are willing to be challenged.'),
+            'img': 'v2/images/mission/interact/goal.svg',
+            'alt': 'goal-icon'
+        },
+        {
+            'text': _('We fix things twice.'),
+            'img': 'v2/images/mission/interact/hammer.svg',
+            'alt': 'fix-twicw-icon'
+        },
+        {
+            'text': _('We identify and validate our assumptions.'),
+            'img': 'v2/images/mission/interact/microscope.svg',
+            'alt': 'microscope-icon'
+        },
+        {
+            'text': _('We care about people (not just tasks)'),
+            'img': 'v2/images/mission/interact/people_care.svg',
+            'alt': 'care-icon'
+        },
+        {
+            'text': _('We listen.'),
+            'img': 'v2/images/mission/interact/hear.svg',
+            'alt': 'microscope-icon'
+        },
+        {
+            'text': _('We value pragmatism over dogmatism.'),
+            'img': 'v2/images/mission/interact/swiss_army.svg',
+            'alt': 'pargma-icon'
+        }
+    ]
+
     context = {
         'is_outside': True,
         'active': 'mission',
@@ -670,6 +792,8 @@ def mission(request):
         'card_title': _('Gitcoin is a mission-driven organization.'),
         'card_desc': _('Our mission is to grow open source.'),
         'avatar_url': static('v2/images/grow_open_source.png'),
+        'values': values,
+        'interactions': interactions
     }
     return TemplateResponse(request, 'mission.html', context)
 
@@ -774,10 +898,9 @@ def results(request, keyword=None):
     return TemplateResponse(request, 'results.html', context)
 
 
-@cached_view_as(Activity.objects.all().order_by('-created'))
 def activity(request):
     """Render the Activity response."""
-    page_size = 300
+    page_size = 15
     activities = Activity.objects.all().order_by('-created')
     p = Paginator(activities, page_size)
     page = request.GET.get('page', 1)
@@ -1370,35 +1493,6 @@ def tokens(request):
         key = f"{network}_tokens"
         context[key] = Token.objects.filter(network=network, approved=True)
     return TemplateResponse(request, 'tokens_js.txt', context, content_type='text/javascript')
-
-
-def ui(request):
-    svgs = []
-    pngs = []
-    gifs = []
-    for path, __, files in walkdir('assets/v2/images'):
-        if path.find('/avatar') != -1:
-            continue
-        for f in files:
-            if f.endswith('.svg'):
-                svgs.append(f'{path[7:]}/{f}')
-                continue
-            if f.endswith('.png'):
-                pngs.append(f'{path[7:]}/{f}')
-                continue
-            if f.endswith('.gif'):
-                gifs.append(f'{path[7:]}/{f}')
-                continue
-
-    context = {
-        'is_outside': True,
-        'active': 'ui_inventory ',
-        'title': 'UI Inventory',
-        'svgs': svgs,
-        'pngs': pngs,
-        'gifs': gifs,
-    }
-    return TemplateResponse(request, 'ui_inventory.html', context)
 
 
 @csrf_exempt

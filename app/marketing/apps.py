@@ -24,3 +24,6 @@ from django.apps import AppConfig
 class MarketingConfig(AppConfig):
 
     name = 'marketing'
+
+    def ready(self):
+        from .signals import create_email_subscriber

@@ -20,13 +20,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from grants.models import Contribution, Grant, Subscription
+from grants.models import Contribution, Grant, MatchPledge, Subscription
 
 
 class GeneralAdmin(admin.ModelAdmin):
     """Define the GeneralAdmin administration layout."""
 
     ordering = ['-id']
+
+
+class MatchPledgeAdmin(admin.ModelAdmin):
+    """Define the MatchPledge administration layout."""
+
+    ordering = ['-id']
+    raw_id_fields = ['profile']
 
 
 class GrantAdmin(GeneralAdmin):
@@ -40,12 +47,11 @@ class GrantAdmin(GeneralAdmin):
         'token_address', 'contract_address', 'network', 'required_gas_price', 'logo_svg_asset',
         'logo_asset', 'created_on', 'modified_on', 'team_member_list',
         'subscriptions_links', 'contributions_links', 'logo', 'logo_svg', 'image_css',
-         'link',
+         'link', 'clr_matching',
     ]
     readonly_fields = [
-        'logo_svg_asset', 'logo_asset', 'created_on', 'modified_on', 'token_address', 'contract_address',
-        'deploy_tx_id', 'cancel_tx_id', 'token_symbol',
-        'network', 'amount_goal', 'amount_received', 'team_member_list',
+        'logo_svg_asset', 'logo_asset',
+        'team_member_list',
         'subscriptions_links', 'contributions_links', 'link', 
     ]
     raw_id_fields = ['admin_profile']
@@ -66,9 +72,12 @@ class GrantAdmin(GeneralAdmin):
         return mark_safe(" , ".join(items))
 
     def link(self, instance):
-        html = f"<a href={instance.url}>{instance.url}</a>"
+        try:
+            html = f"<a href={instance.url}>{instance.url}</a>"
 
-        return mark_safe(html)
+            return mark_safe(html)
+        except:
+            return "N/A"
 
     def logo_asset(self, instance):
         """Define the logo image tag to be displayed in the admin."""
@@ -171,6 +180,7 @@ class ContributionAdmin(GeneralAdmin):
     raw_id_fields = ['subscription']
 
 
+admin.site.register(MatchPledge, MatchPledgeAdmin)
 admin.site.register(Grant, GrantAdmin)
 admin.site.register(Subscription, SubscriptionAdmin)
 admin.site.register(Contribution, ContributionAdmin)
