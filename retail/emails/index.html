@@ -2136,6 +2136,16 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
     msg: the message sent in the email.</p>
 <p>Returns:
     str: The rendered response as a string.</p>
+<h2 id="retail.emails.funder_payout_reminder">funder_payout_reminder</h2>
+
+<pre><code class="python">funder_payout_reminder(request)
+</code></pre>
+
+<p>Display the funder payment reminder email template.</p>
+<p>Params:
+    username (str): The Github username to reference in the email.</p>
+<p>Returns:
+    HttpResponse: The HTML version of the templated HTTP response.</p>
 <h2 id="retail.emails.funder_stale">funder_stale</h2>
 
 <pre><code class="python">funder_stale(request)
