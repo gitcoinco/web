@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static hash strip_char is_in_list_type_iexact %}
+{% load i18n static hash strip_char is_in_list_type_iexact jsonify %}
 
 
 <ul id="avatar-tabs" class="nav nav-tabs my-5" role="tablist">
@@ -126,6 +126,11 @@
             {% endfor %}
           </div>
           <div id="color-picker"></div>
+          <div>
+            <button type="button" id="random-avatar-button" class="button button--primary" onclick='randomAvatar({{ sections|jsonify }}, {{ optionalSections }})'>
+              {% trans "Random Avatar" %}
+            </button>
+          </div>
         </div>
       </div>
       <!-- Button Row -->
