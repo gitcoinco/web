@@ -373,6 +373,13 @@ def render_quarterly_stats(to_email, platform_wide_stats):
     return response_html, response_txt
 
 
+def render_funder_payout_reminder(**kwargs):
+    kwargs['bounty_fulfillment'] = kwargs['bounty'].fulfillments.filter(fulfiller_github_username=kwargs['github_username']).last()
+    response_html = premailer_transform(render_to_string("emails/funder_payout_reminder.html", kwargs))
+    response_txt = ''
+    return response_html, response_txt
+
+
 def render_bounty_feedback(bounty, persona='submitter', previous_bounties=[]):
     previous_bounties_str = ", ".join([bounty.github_url for bounty in previous_bounties])
     if persona == 'fulfiller':
@@ -1157,6 +1164,23 @@ def bounty_feedback(request):
     response_html, _ = render_bounty_feedback(Bounty.objects.current().filter(idx_status='done').last(), 'foo')
     return HttpResponse(response_html)
 
+
+@staff_member_required
+def funder_payout_reminder(request):
+    """Display the funder payment reminder email template.
+
+    Params:
+        username (str): The Github username to reference in the email.
+
+    Returns:
+        HttpResponse: The HTML version of the templated HTTP response.
+
+    """
+    from dashboard.models import Bounty
+    bounty = Bounty.objects.filter(fulfillment_submitted_on__isnull=False).first()
+    github_username = request.GET.get('username', '@foo')
+    response_html, _ = render_funder_payout_reminder(bounty=bounty, github_username=github_username)
+    return HttpResponse(response_html)
 
 @staff_member_required
 def funder_stale(request):
