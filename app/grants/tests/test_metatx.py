@@ -30,6 +30,7 @@ class MetatxTest(TestCase):
             s.get_is_subscription_ready_from_web3 = lambda: True
             s.get_is_active_from_web3 = lambda: True
             s.get_subscription_signer_from_web3 = lambda: 'asdfasdf'
+            s.is_ready_to_be_processed_web3 = lambda: True
 
 
     def test_slow_contributions_are_free(self):
