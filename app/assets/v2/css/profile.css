@@ -14,6 +14,10 @@
   padding: 2rem;
 }
 
+.profile-header.dash{
+  height: 450px;
+}
+
 .profile-header__avatar {
   float: left;
   width: 6.75rem;
@@ -306,3 +310,48 @@
 .no-profile-textcolor {
   color: #666666;
 }
+
+#float_avatar_image{
+  z-index: 9999999;
+  position: absolute;
+  left: 33%;
+  margin-top: -220px;
+}  
+
+#float_avatar_image img{
+  height: 300px;
+  width: 300px;
+}  
+
+.is_my_profile{
+  cursor: pointer;
+}
+#avatar_edit{
+  text-align: center;
+  background-color: white;
+  border-radius: 30% 30% 50% 50%;
+  opacity: 0.4;
+  filter: alpha(opacity=40);
+  color: black;
+  vertical-align: text-top;
+  height: 245px;
+  margin-top: 60px;
+  width: 93%;
+}
+#avatar_edit_text {
+  position: absolute;
+  top: 80%;
+  left: 30%;
+  color: black;
+  font-weight: bold;
+  z-index: 999999;
+  font-size: 20px;
+}
+#avatar_edit:hover {
+  opacity: 0.7;
+  filter: alpha(opacity=70);
+}
+#avatar_edit:hover #avatar_edit_text {
+  color: #aaaaaa;
+}
+

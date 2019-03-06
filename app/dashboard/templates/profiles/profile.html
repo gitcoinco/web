@@ -27,11 +27,24 @@
     </div>
     <div class="container-fluid bg-light pb-5">
       {% if not hidden %}
+      <div id="float_avatar_image">
+        {% if is_my_profile %}
+          <a href="{% url "onboard" "profile" %}?steps=avatar">
+        {% endif %}
+            <img class="profile-header__avatar mb-1 mr-4 {% if is_my_profile %}is_my_profile{% endif %}" src="{% if profile.avatar and profile.active_avatar.avatar_url %}{{ profile.active_avatar.avatar_url }}{% else %}{{ profile.avatar_url }}{% endif %}" />
+        {% if is_my_profile %}
+            <div id="avatar_edit">
+              <div id="avatar_edit_text">
+                Edit Avatar
+              </div>
+            </div>
+          </a>
+        {% endif %}
+      </div>
         <div class="container profile-card">
           <div class="row">
             <div class="col-12 col-lg-6 profile-header__main-infos">
               <div class="clearfix">
-                <img class="profile-header__avatar mb-1 mr-4" src="{% if profile.avatar and profile.active_avatar.avatar_url %}{{ profile.active_avatar.avatar_url }}{% else %}{{ profile.avatar_url }}{% endif %}" />
                 <h1 class="profile-header__handle">
                   {% if profile.data.name %}
                     {{ profile.data.name }}
