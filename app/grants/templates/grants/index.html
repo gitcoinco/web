@@ -1,16 +1,13 @@
 {% comment %}
 Copyright (C) 2018 Gitcoin Core
-
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
 by the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
-
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU Affero General Public License for more details.
-
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
@@ -19,7 +16,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 <html lang="en">
   <head>
     <link rel="stylesheet" href="{% static "v2/css/search_bar.css" %}">
-    {% include 'shared/head.html' %}
+    {% include 'shared/head.html' with slim=1 %}
     {% include 'shared/cards.html' %}
     <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
     <link rel="stylesheet" href="{% static "v2/css/grants/card.css" %}">
@@ -29,7 +26,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <div class="container-fluid header dash">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'grants/nav.html' %}
-
       <div class="container py-5">
         <div class="grants-hero white">
           <div class="row">
@@ -56,16 +52,31 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         </div>
       </div>
     </div>
+    {% if matchpledges %}
+      <div class="container-fluid py-5 grants-matching">
+        <div class="container">
+          <h2>Matching Partners</h2>
+          <p>A special thanks to the following partners who have offered to match contributions to Gitcoin Grants.  <a href="https://medium.com/gitcoin/gitcoin-grants-clr-matching-ecbc87b10038">(Read Announcement Here)</a></p>
+          {% for mp in matchpledges %}
+            <div style="text-align:center; display: inline-block; padding: 10px;">
+              <h5>@{{mp.profile.handle}}</h5>
+              <img style="max-width:100px;" src="/dynamic/avatar/{{mp.profile.handle}}">
+              <p>${{mp.amount|floatformat}}</p>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
 
     <div class="container-fluid py-5 grants-search">
       <div class="container">
         <form method="POST" id="search_form">
           {% csrf_token %}
-          <div class="row">
-            <div class="search px-0 col-7 col-sm-9 col-md-5 offset-md-2 col-lg-6 form__flex-group">
+          <div class="row justify-content-center">
+            <div class="search px-0 col-7 col-sm-9 col-md-5 col-lg-6 form__flex-group">
               <input type="search" class="form__input" id="keyword" name="keyword" placeholder="Search Grants">
             </div>
-            <div class="col-3 col-lg-1 px-0">
+            <div class="col-3 col-lg-2 px-0">
               <button class="btn btn-gc-blue">
                 <span class="d-sm-inline">{% trans "Search" %}</span>
                 <i class="ml-2 fas fa-search"></i>
@@ -85,17 +96,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <div class="col-12 col-md-6 pt-1 font-caption order_by d-md-inline text-center text-sm-right">
               <div class="heading">{% trans "SORT" %}</div>
               <select name="sort_option" id="sort_option">
+                <option value="-clr_matching">{% trans "CLR Match: Highest" %}</option>
+                <option value="clr_matching">{% trans "CLR Match: Lowest" %}</option>
                 <option value="-created_on">{% trans "Created: Recent" %}</option>
                 <option value="created_on">{% trans "Created: Oldest" %}</option>
-                <option value="-amount_goal">{% trans "Value: Highest" %}</option>
-                <option value="amount_goal">{% trans "Value: Lowest" %}</option>
+                <option value="-amount_goal">{% trans "Goal: Highest" %}</option>
+                <option value="amount_goal">{% trans "Goal: Lowest" %}</option>
+                <option value="-amount_received">{% trans "Amount Raised: Highest" %}</option>
+                <option value="amount_received">{% trans "Amount Raised: Lowest" %}</option>
               </select>
             </div>
           </div>
         </form>
       </div>
     </div>
-
     <div class="container-fluid grants-container">
       <div class="container">
         {% if grants %}
@@ -107,7 +121,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             {% endfor %}
           </div>
           {% if grants.has_next %}
-            <a class="infinite-more-link" href="?page={{ grants.next_page_number }}">More</a>
+            <a class="infinite-more-link" href="?network={{network}}&keyword={{keyword}}&sort_option={{sort}}&page={{ grants.next_page_number }}">More</a>
           {% endif %}
         {% else %}
           <div class="col-12 mb-3 mx-auto col-md-6 text-center">
@@ -126,14 +140,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         {% endif %}
       </div>
     </div>
-
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
     {% include 'grants/shared/shared_scripts.html' %}
   </body>
-
   <script src="{% static "v2/js/jquery.waypoints.min.js" %}"></script>
   <script src="{% static "v2/js/infinite.min.js" %}"></script>
   <script src="{% static "v2/js/abi.js" %}"></script>

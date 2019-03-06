@@ -5,9 +5,52 @@ $(document).ready(function() {
     web3.eth.net.isListening((error, connectionStatus) => {
       if (connectionStatus)
         init();
+      document.init = true;
     });
   }
+  // fix for triage bug https://gitcoincore.slack.com/archives/CAXQ7PT60/p1551220641086800
+  setTimeout(function() {
+    if (!document.init) {
+      show_error_banner();
+    }
+  }, 1000);
 });
+
+function saveGrant(grantData, isFinal) {
+  let csrftoken = $("#create-grant input[name='csrfmiddlewaretoken']").val();
+
+  $.ajax({
+    type: 'post',
+    url: '',
+    processData: false,
+    contentType: false,
+    data: grantData,
+    headers: {'X-CSRFToken': csrftoken},
+    success: json => {
+      if (isFinal) {
+        if (json.url) {
+          document.suppress_loading_leave_code = true;
+          window.location = json.url;
+        } else {
+          console.error('Grant failed to save');
+        }
+      }
+    },
+    error: () => {
+      console.error('Grant failed to save');
+      _alert({ message: gettext('Your grant failed to save. Please try again.') }, 'error');
+    }
+  });
+}
+
+const processReceipt = receipt => {
+  let formData = new FormData();
+
+  formData.append('contract_address', receipt.contractAddress);
+  formData.append('transaction_hash', $('#transaction_hash').val());
+
+  saveGrant(formData, true);
+};
 
 const init = () => {
   if (localStorage['grants_quickstart_disable'] !== 'true') {
@@ -21,7 +64,7 @@ const init = () => {
 
   $('#js-token').append("<option value='0x0000000000000000000000000000000000000000'>Any Token");
 
-  userSearch('.team_members');
+  userSearch('.team_members', false, undefined, false, false, true);
 
   addGrantLogo();
 
@@ -81,7 +124,6 @@ const init = () => {
             console.log('2', transactionHash);
             $('#transaction_hash').val(transactionHash);
             const linkURL = etherscan_tx_url(transactionHash);
-
             let file = $('#img-project')[0].files[0];
             let formData = new FormData();
 
@@ -99,69 +141,75 @@ const init = () => {
             formData.append('transaction_hash', $('#transaction_hash').val());
             formData.append('network', $('#network').val());
             formData.append('team_members', $('#input-team_members').val());
-            formData.append('csrfmiddlewaretoken', $("#create-grant input[name='csrfmiddlewaretoken']").val());
-
-            $.ajax({
-              type: 'POST',
-              url: '',
-              data: formData,
-              contentType: false,
-              processData: false,
-              success: json => {
-                console.log('successfully saved grant');
-              },
-              error: () => {
-                _alert({ message: gettext('Your grant failed to save. Please try again.') }, 'error');
-              }
-            });
+            saveGrant(formData, false);
 
             document.issueURL = linkURL;
             $('#transaction_url').attr('href', linkURL);
             enableWaitState('#new-grant');
 
-            var callFunctionWhenTransactionMined = function(transactionHash) {
-              web3.eth.getTransactionReceipt(transactionHash, function(error, result) {
-                if (result) {
+            let checkedBlocks = [];
+            let blockToCheck = null;
 
-                  let data = {
-                    'contract_address': result.contractAddress,
-                    'csrfmiddlewaretoken': $("#create-grant input[name='csrfmiddlewaretoken']").val(),
-                    'transaction_hash': $('#transaction_hash').val()
-                  };
+            const checkForContractCreation = transactionHash => {
 
-                  $.ajax({
-                    type: 'post',
-                    url: '',
-                    data: data,
-                    success: json => {
-                      document.suppress_loading_leave_code = true;
-                      window.location = json.url;
-                    },
-                    error: () => {
-                      _alert({ message: gettext('Your grant failed to save. Please try again.') }, 'error');
+              web3.eth.getTransactionReceipt(transactionHash, (error, receipt) => {
+                if (receipt && receipt.contractAddress) {
+                  processReceipt(receipt);
+                } else if (blockToCheck === null) {
+                  // start watching for re-issued transaction with same sender, TODO: nonce, contract hash, etc?
+                  web3.eth.getBlockNumber((error, blockNumber) => {
+                    blockToCheck = blockNumber;
+                    setTimeout(() => {
+                      checkForContractCreation(transactionHash);
+                    }, 1000);
+                  });
+                } else if (blockToCheck in checkedBlocks) {
+                  setTimeout(() => {
+                    checkForContractCreation(transactionHash);
+                  }, 1000);
+                } else {
+                  web3.eth.getBlock(blockToCheck, true, (error, block) => {
+                    if (error) {
+                      setTimeout(() => {
+                        checkForContractCreation(transactionHash);
+                      }, 1000);
+                    } else if (block && block.transactions) {
+                      checkedBlocks.push(blockToCheck);
+                      blockToCheck = blockToCheck + 1;
+
+                      let didFindTransaction = false;
+
+                      for (let i = 0; i < block.transactions.length; i += 1) {
+                        if (block.transactions[i].from == accounts[0]) {
+                          didFindTransaction = true;
+                          web3.eth.getTransactionReceipt(block.transactions[i].hash, (error, result) => {
+                            if (result && result.contractAddress) {
+                              processReceipt(result);
+                              return;
+                            }
+                          });
+                        }
+                      }
+
+                      if (!didFindTransaction) {
+                        setTimeout(() => {
+                          checkForContractCreation(transactionHash);
+                        }, 1000);
+                      }
+
+                    } else {
+                      setTimeout(() => {
+                        checkForContractCreation(transactionHash);
+                      }, 1000);
                     }
                   });
-
-                } else {
-                  setTimeout(() => {
-                    callFunctionWhenTransactionMined(transactionHash);
-                  }, 1000);
                 }
               });
             };
 
-            callFunctionWhenTransactionMined(transactionHash);
+            checkForContractCreation(transactionHash);
+
           });
-          // .on('receipt', function(receipt) {
-          //   $('#contract_address').val(receipt.contractAddress);
-          // }).then(function(contractInstance) {
-          //   console.log(contractInstance);
-          //   $.each($(form).serializeArray(), function() {
-          //     data[this.name] = this.value;
-          //   });
-          //   console.log(data);
-          //   // form.submit();
-          // });
         });
       });
     }

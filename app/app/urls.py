@@ -145,6 +145,18 @@ urlpatterns = [
     path('issue/social_contribution', dashboard.views.social_contribution, name='social_contribution'),
     path('modal/social_contribution', dashboard.views.social_contribution_modal, name='social_contribution_modal'),
     path(
+        '<str:bounty_network>/<int:stdbounties_id>/modal/funder_payout_reminder/',
+        dashboard.views.funder_payout_reminder_modal,
+        name='funder_payout_reminder_modal'
+    ),
+
+    # Notify Funder Modal Submission
+    path(
+        'actions/bounty/<str:bounty_network>/<int:stdbounties_id>/notify/funder_payout_reminder/',
+        dashboard.views.funder_payout_reminder,
+        name='funder_payout_reminder'
+    ),
+    path(
         'actions/bounty/<int:bounty_id>/extend_expiration/',
         dashboard.views.extend_expiration,
         name='extend_expiration'
@@ -174,6 +186,7 @@ urlpatterns = [
         name='issue_details_new2'
     ),
     re_path(r'^funding/details/?', dashboard.views.bounty_details, name='funding_details'),
+    re_path(r'^issue/(?P<invitecode>.*)', dashboard.views.bounty_invite_url, name='unique_bounty_invite'),
 
     # Tips
     url(
@@ -242,7 +255,6 @@ urlpatterns = [
     re_path(r'^vision/?', retail.views.vision, name='vision'),
     re_path(r'^products/?', retail.views.products, name='products'),
     path('not_a_token', retail.views.not_a_token, name='not_a_token'),
-    re_path(r'^styleguide-alpha/?', retail.views.ui, name='ui'),
     re_path(r'^results/?(?P<keyword>.*)/?', retail.views.results, name='results_by_keyword'),
     re_path(r'^results/?', retail.views.results, name='results'),
     re_path(r'^activity/?', retail.views.activity, name='activity'),
@@ -302,6 +314,11 @@ urlpatterns = [
     # admin views
     re_path(r'^_administration/?', admin.site.urls, name='admin'),
     path('_administration/email/grant_cancellation', retail.emails.grant_cancellation, name='admin_grant_cancellation'),
+    path(
+        '_administration/email/featured_funded_bounty',
+        retail.emails.featured_funded_bounty,
+        name='admin_featured_funded_bounty'
+    ),
     path(
         '_administration/email/subscription_terminated',
         retail.emails.subscription_terminated,
@@ -378,6 +395,11 @@ urlpatterns = [
     path('_administration/email/gdpr_reconsent', retail.emails.gdpr_reconsent, name='gdpr_reconsent'),
     path('_administration/email/share_bounty', retail.emails.share_bounty, name='share_bounty'),
     path('_administration/email/new_tip/resend', retail.emails.resend_new_tip, name='resend_new_tip'),
+    path(
+        '_administration/email/day_email_campaign/<int:day>',
+        marketing.views.day_email_campaign,
+        name='day_email_campaign'
+    ),
     re_path(
         r'^_administration/process_accesscode_request/(.*)$',
         tdi.views.process_accesscode_request,
@@ -408,6 +430,11 @@ urlpatterns = [
         r'^_administration/email/start_work_applicant_expired$',
         retail.emails.start_work_applicant_expired,
         name='start_work_applicant_expired'
+    ),
+    re_path(
+        r'^_administration/email/funder_payout_reminder$',
+        retail.emails.funder_payout_reminder,
+        name='funder_payout_reminder'
     ),
 
     # settings

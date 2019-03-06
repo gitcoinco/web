@@ -17,19 +17,32 @@
 {% load i18n static is_in_list matches %}
 {% include 'shared/tag_manager_1.html' %}
 <meta charset="utf-8">
+<link rel="preload" href="{% static "v2/css/base.css" %}" as="style">
+<link rel="preload" href="{% static "v2/css/gitcoin.css" %}" as="style">
+<link rel="preload" href="{% static "v2/css/bootstrap.min.css" %}" as="style" crossorigin="anonymous">
+<link rel="preload" href="{% static "v2/css/top-nav.css" %}" as="style">
+<link rel="preload" href="{% static "v2/css/fontawesome-all.min.css" %}" as="style">
+<link rel="preload" href="{% static "v2/css/lib/typography.css" %}" as="style">
+<link rel="preload" href="{% static "v2/css/jquery.select2.min.css" %}" as="style">
+<link rel="preload" href="/static/v2/fonts/muli/muli-v12-latin-200.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/static/v2/fonts/muli/muli-v12-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/static/v2/fonts/muli/muli-v12-latin-600.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/static/v2/fonts/muli/muli-v12-latin-700.woff2" as="font" type="font/woff2" crossorigin>
+
+<link rel="preload" href="{% static "v2/js/bootstrap.min.js" %}" as="script" crossorigin="anonymous">
+
 <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
-<link rel="stylesheet" href="{% static "v2/css/fontawesome-all.min.css" %}">
 <link rel="stylesheet" href="{% static "v2/css/bootstrap.min.css" %}" crossorigin="anonymous">
 <link rel="stylesheet" href="{% static "v2/css/lib/typography.css" %}">
+<link rel="stylesheet" href="{% static "v2/css/fontawesome-all.min.css" %}">
 <link rel="stylesheet" href="{% static "v2/css/gitcoin.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/top-nav.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/base.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
-{% if not request.path|matches:"^\/((.*grants.*))$" %}
+{% if not slim %}
+  <link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
   <link rel="stylesheet" href="{% static "v2/css/jquery.modal.min.css" %}" />
 {% endif %}
 <link rel="stylesheet" href="{% static "v2/css/jquery.select2.min.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/animate.min.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/rain.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/buttons.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/timeline.css" %}" />
@@ -61,8 +74,10 @@
 <title>{% if title %}{{title}}{% else %}{% trans "Grow Open Source" %}{% endif %} | Gitcoin</title>
 {% include 'shared/favicon.html' %}
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+{% if meta_title %}<meta name="title" content="{{meta_title}}" />{% endif %}
+{% if meta_description %}<meta name="description" content="{{meta_description}}" />{% endif %}
+<script async src="{% static "v2/js/metamask-approval.js" %}"></script>
 
-<script src="{% static "v2/js/metamask-approval.js" %}"></script>
 
 {% if env == 'prod' %}
 <!-- Hotjar Tracking Code for gitcoin.co -->

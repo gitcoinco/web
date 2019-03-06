@@ -36,10 +36,11 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
 from app.utils import get_profile
+from cacheops import cached_view
 from dashboard.models import Profile
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.forms import MilestoneForm
-from grants.models import Contribution, Grant, Milestone, Subscription, Update
+from grants.models import Contribution, Grant, MatchPledge, Milestone, Subscription, Update
 from marketing.mails import (
     change_grant_owner_accept, change_grant_owner_reject, change_grant_owner_request, grant_cancellation, new_grant,
     new_supporter, subscription_terminated, support_cancellation, thank_you_for_supporting,
@@ -58,9 +59,9 @@ def get_keywords():
 
 def grants(request):
     """Handle grants explorer."""
-    limit = request.GET.get('limit', 24)
+    limit = request.GET.get('limit', 6)
     page = request.GET.get('page', 1)
-    sort = request.GET.get('sort_option', '-created_on')
+    sort = request.GET.get('sort_option', '-clr_matching')
     network = request.GET.get('network', 'mainnet')
     keyword = request.GET.get('keyword', '')
     state = request.GET.get('state', 'active')
@@ -73,13 +74,14 @@ def grants(request):
 
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
-
-    for _grant in grants:
-        _grant.activeSubscriptions = Subscription.objects.filter(grant=_grant, active=True).distinct('contributor_profile')
-
+    
     params = {
         'active': 'grants_landing',
         'title': _('Grants Explorer'),
+        'sort': sort,
+        'network': network,
+        'keyword': keyword,
+        'matchpledges': MatchPledge.objects.filter(active=True).order_by('-amount'),
         'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
         'card_player_override': 'https://www.youtube.com/embed/eVgEWSPFR2o',
         'card_player_stream_override': static('v2/card/grants.mp4'),
@@ -107,6 +109,7 @@ def grant_details(request, grant_id, grant_slug):
         cancelled_subscriptions = grant.subscriptions.filter(Q(active=False, error=False) | Q(error=True))
         contributions = Contribution.objects.filter(subscription__in=grant.subscriptions.all())
         user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
+        user_non_errored_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True, error=False).first()
         add_cancel_params = user_subscription
     except Grant.DoesNotExist:
         raise Http404
@@ -164,6 +167,7 @@ def grant_details(request, grant_id, grant_slug):
         'cancelled_subscriptions': cancelled_subscriptions,
         'contributions': contributions,
         'user_subscription': user_subscription,
+        'user_non_errored_subscription': user_non_errored_subscription,
         'is_admin': is_admin,
         'grant_is_inactive': not grant.active,
         'updates': updates,
@@ -241,8 +245,16 @@ def grant_new(request):
 
         if 'contract_address' in request.POST:
             tx_hash = request.POST.get('transaction_hash', '')
+            if not tx_hash:
+                return JsonResponse({
+                    'success': False,
+                    'info': 'no tx hash',
+                    'url': None,
+                })
+
             grant = Grant.objects.filter(deploy_tx_id=tx_hash).first()
             grant.contract_address = request.POST.get('contract_address', '')
+            print(tx_hash, grant.contract_address)
             grant.save()
             new_grant(grant, profile)
             return JsonResponse({
@@ -344,7 +356,7 @@ def grant_fund(request, grant_id, grant_slug):
         return TemplateResponse(request, 'grants/shared/error.html', params)
 
     active_subscription = Subscription.objects.select_related('grant').filter(
-        grant=grant_id, active=True, contributor_profile=request.user.profile
+        grant=grant_id, active=True, error=False, contributor_profile=request.user.profile
     )
 
     if active_subscription:
@@ -355,6 +367,14 @@ def grant_fund(request, grant_id, grant_slug):
             'text': _('You already have an active subscription for this grant.')
         }
         return TemplateResponse(request, 'grants/shared/error.html', params)
+
+    if grant.contract_address == '0x0':
+        messages.info(
+            request,
+            _('This grant is not configured to accept funding at this time.  Please contact founders@gitcoin.co if you believe this message is in error!')
+        )
+        logger.error(f"Grant {grant.pk} is not properly configured for funding.  Please set grant.contract_address on this grant")
+        return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
     if request.method == 'POST':
         if 'contributor_address' in request.POST:
@@ -375,6 +395,13 @@ def grant_fund(request, grant_id, grant_slug):
             subscription.contributor_profile = profile
             subscription.grant = grant
             subscription.save()
+
+            # one time payments
+            if subscription.num_tx_approved == '1':
+                subscription.successful_contribution(subscription.new_approve_tx_id);
+                subscription.error = True #cancel subs so it doesnt try to bill again
+                subscription.subminer_comments = "skipping subminer bc this is a 1 and done subscription, and tokens were alredy sent"
+                subscription.save()
 
             messages.info(
                 request,
@@ -504,7 +531,7 @@ def profile(request):
     sub_contributions = []
     contributions = []
 
-    for contribution in Contribution.objects.filter(subscription__contributor_profile=profile):
+    for contribution in Contribution.objects.filter(subscription__contributor_profile=profile).order_by('-pk'):
         instance = {
             "cont": contribution,
             "sub": contribution.subscription,
@@ -551,14 +578,14 @@ def quickstart(request):
 def leaderboard(request):
     """Display leaderboard."""
     params = {
-        'active': 'grants_leaderboard', 
+        'active': 'grants_leaderboard',
         'title': _('Grants Leaderboard'),
         'card_desc': _('View the top contributors to Gitcoin Grants'),
         }
-    
+
     # setup dict
     # TODO: in the future, store all of this in perftools.models.JSONStore
-    handles = Subscription.objects.all().values_list('contributor_profile__handle', flat=True)    
+    handles = Subscription.objects.all().values_list('contributor_profile__handle', flat=True)
     default_dict = {
         'rank': None,
         'no': 0,

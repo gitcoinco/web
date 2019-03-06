@@ -1,0 +1,45 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<div id="notify_funder_modal" class="white-light-bg">
+  <div class="row">
+    <div class="col-12 closebtn">
+      <a rel="modal:close" href="javascript:void" class="closebtn purple" aria-label="Close dialog"></a>
+    </div>
+    <div class="col-12">
+      <h5 class="text-center font-title">{% trans "Send Payment Reminder" %}</h5>
+      <div class="col-12 text-center">
+        <div class="message">
+          <div class="message__text">
+            {% trans "This button sends a notification to the funder to pay out the bounty. Are you sure the bounty has been completed?" %}
+          </div>
+        <form id="notify_funder" class="font-body">
+          <button id="submit" class="row button button--primary btn-interested" type="submit">{% trans "Yes" %}</button>
+        </form>
+        </div>
+      </div>
+  </div>
+</div>
+<script>
+$('#notify_funder').on('submit', (event) => {
+  event.preventDefault();
+
+  notify_funder(document.result['network'], document.result['standard_bounties_id'], {});
+  $('#notifyFunder .button').addClass('disabled');
+  $.modal.close();
+});
+</script>

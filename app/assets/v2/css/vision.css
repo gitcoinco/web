@@ -86,6 +86,12 @@
 /* Special lists icons */
 .list-special {
   padding-left: 20px;
+  font-weight: 500;
+  font-size: 1.08rem;
+}
+
+.list-special li {
+  padding-bottom: 4px;
 }
 
 li.consensys {

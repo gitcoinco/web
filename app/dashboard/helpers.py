@@ -429,7 +429,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 'attached_job_description': bounty_payload.get('hiring', {}).get('jobDescription', None),
                 'is_featured': metadata.get('is_featured', False),
                 'featuring_date': timezone.make_aware(
-                    timezone.datetime.fromtimestamp(metadata.get('featuring_date')),
+                    timezone.datetime.fromtimestamp(metadata.get('featuring_date', 0)),
                     timezone=UTC),
                 'bounty_owner_github_username': bounty_issuer.get('githubUsername', ''),
                 'bounty_owner_address': bounty_issuer.get('address', ''),
@@ -459,6 +459,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
             try:
                 issue_kwargs = get_url_dict(new_bounty.github_url)
                 new_bounty.github_issue_details = get_gh_issue_details(**issue_kwargs)
+
             except Exception as e:
                 logger.error(e)
 
