@@ -37,7 +37,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from app.utils import get_profile
 from cacheops import cached_view
-from dashboard.models import Profile, Activity
+from dashboard.models import Activity, Profile
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.forms import MilestoneForm
 from grants.models import Contribution, Grant, MatchPledge, Milestone, Subscription, Update
