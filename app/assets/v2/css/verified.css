@@ -1,52 +1,12 @@
-.small-row {
-    max-width: 650px;
-    display: inline-block;
-}
-
-.header-text > h4 {
-    line-height: 1.5;
-}
 
 .faq-item {
-    text-align: left;
-    border-bottom: 1px solid #ccc;
-    padding: 5px 0px 5px 0px;
-    max-width: 800px;
-    display: inline-block;
+  border-bottom: 1px solid #ccc;
+  padding: 5px 0px 5px 0px;
+  max-width: 800px;
+  margin: auto;
 }
 
 .header-line {
-    color: #fff;
-    font-weight: 600;
-}
-
-.verified-cta > div {
-    display: inline-block;
-    width: 50%;
-    padding-left: 20px;
-    padding-right: 20px;
-}
-
-.verified-cta > div:last-child {
-    display: flex;
-    align-items: center;
-}
-
-.verified-cta > div > img {
-    width: 400px;
-    float: right;
-}
-
-@media screen and (max-width: 900px) {
-    .verified-cta > div {
-        width: 100% !important;
-    }
-    .verified-cta > div:last-child > div {
-        width: 50%;
-        margin: 0 auto;
-    }
-    .verified-cta > div > img {
-        width: 200px;
-        float: none;
-    }
+  color: #fff;
+  font-weight: 600;
 }
