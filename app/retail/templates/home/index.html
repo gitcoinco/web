@@ -58,8 +58,14 @@
         </h2>
         {% endblocktrans %}
         {% include 'shared/tree.html' %}
-        <h2 class="font-title-xl g-fadein mt-3 mb-4" data-fade-duration=1000>
-          {% trans "This is not sustainable" %}
+        <h2 class="font-title-xl g-fadein mt-3 mb-1" data-fade-duration=1000>
+          {% trans "This is" %} <strong>{% trans "not sustainable." %}</strong>
+        </h2>
+        <h2 class="font-title-xl g-fadein mt-1 mb-1" data-fade-duration=1000>
+          {% trans "This is" %} <strong>{% trans "not right." %}</strong>
+        </h2>
+        <h2 class="font-title-xl g-fadein mt-1 mb-2" data-fade-duration=1000>
+          {% trans "This is" %} <strong>{% trans "why built Gitcoin." %}</strong>
         </h2>
     </div>
 
@@ -75,7 +81,7 @@
             <p class="mb-4">{% blocktrans %}Gitcoin grows open source through a suite of products, capturing and retaining
               contributor value through an on-demand bounty marketplace and recurring funding, and
               sustains open source projects through ethical advertising. Our suite of products meet
-              open source contributors where they are from the start of a project to later lifecycles
+              open source contributors where they are, from the start of a project, to later lifecycles
               of project maintenance and appreciation.{% endblocktrans %}
             </p>
             <a class="font-weight-semibold mt-1" href="{% url "products" %}" target="_blank">
