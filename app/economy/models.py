@@ -20,6 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import unicode_literals
 
+import json
+
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.contrib.postgres.fields import JSONField
 from django.core.serializers.json import DjangoJSONEncoder
@@ -50,9 +52,9 @@ class EncodeAnything(DjangoJSONEncoder):
         elif isinstance(obj, QuerySet):
             if obj.count() and type(obj.first()) == str:
                 return obj[::1]
-            return [EncodeAnything(instance) for instance in obj]
+            return [json.dumps(instance, cls=EncodeAnything) for instance in obj]
         elif isinstance(obj, list):
-            return [EncodeAnything(instance) for instance in obj]
+            return [json.dumps(instance, cls=EncodeAnything) for instance in obj]
         elif(callable(obj)):
             return None
         return super(EncodeAnything, self).default(obj)
