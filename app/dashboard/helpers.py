@@ -44,7 +44,7 @@ from pytz import UTC
 from ratelimit.decorators import ratelimit
 from redis_semaphore import NotAvailable as SemaphoreExists
 
-from .models import FeedbackEntry, Profile
+from .models import Profile
 
 logger = logging.getLogger(__name__)
 
@@ -533,7 +533,6 @@ def process_bounty_details(bounty_details):
     bounty_data = bounty_details.get('data') or {}
     bounty_payload = bounty_data.get('payload', {})
     meta = bounty_data.get('meta', {})
-    bounty_review = bounty_data.get('review', {})
 
     # what schema are we working with?
     schema_name = meta.get('schemaName', 'Unknown')
@@ -557,33 +556,11 @@ def process_bounty_details(bounty_details):
             new_bounty = create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id)
 
             if new_bounty:
-                create_new_feedback(new_bounty, bounty_review)
                 return (did_change, latest_old_bounty, new_bounty)
             return (did_change, latest_old_bounty, latest_old_bounty)
     except SemaphoreExists:
         return (did_change, latest_old_bounty, latest_old_bounty)
 
-def create_new_feedback(new_bounty, feedback_dict):
-    feedbackType = feedback_dict.get('feedbackType','???')
-    if feedbackType == 'worker':
-        sender = new_bounty.bounty_owner_profile
-        receiver = new_bounty.activities.last().profile
-    else:
-        receiver = new_bounty.bounty_owner_profile
-        sender = new_bounty.activities.last().profile
-
-    kwargs = {
-        'bounty': new_bounty,
-        'sender_profile': sender,
-        'receiver_profile': receiver,
-        'rating': feedback_dict.get('rating', '-1'),
-        'comment': feedback_dict.get('comment', 'No comment in IPFS entry.'),
-        'feedbackType': feedbackType
-    }
-
-    e = FeedbackEntry.objects.create(**kwargs)
-    e.save()
-    pass
 
 def get_bounty_data_for_activity(bounty):
     """Get data from bounty to be saved in activity records.
@@ -659,24 +636,18 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
                           'increased_bounty',
                           'worker_rejected',
                           'bounty_changed']
-        logger.info(f"record_bounty_activity > profile at start: {user_profile}")
         if event_name not in funder_actions:
             if not fulfillment:
-                logger.info(f"record_bounty_activity > not fulfillment, event_name: {event_name}")
                 fulfillment = new_bounty.fulfillments.order_by('-pk').first()
                 if event_name == 'work_done':
                     fulfillment = new_bounty.fulfillments.filter(accepted=True).latest('fulfillment_id')
             if fulfillment:
-                logger.info(f"record_bounty_activity > fulfillment! {fulfillment}")
                 user_profile = Profile.objects.filter(handle__iexact=fulfillment.fulfiller_github_username).first()
                 if not user_profile:
-                    logger.info(f"record_bounty_activity > not user_profile :-(")
                     user_profile = sync_profile(fulfillment.fulfiller_github_username)
                 
     except Exception as e:
         logger.error(f'{e} during record_bounty_activity for {new_bounty}')
-
-    logger.info(f"record_bounty_activity > user_profile: {user_profile}")
 
     if user_profile:
         return Activity.objects.create(
@@ -770,7 +741,6 @@ def process_bounty_changes(old_bounty, new_bounty):
     # record a useraction for this
     record_user_action(event_name, old_bounty, new_bounty)
     record_bounty_activity(event_name, old_bounty, new_bounty)
-    # check for review{} in here, create review object, wheeee.
 
 
     # Build profile pairs list

@@ -16,15 +16,11 @@
 
 '''
 
-import logging
-
 from django.core.management.base import BaseCommand
 
 from dashboard.helpers import record_bounty_activity
 from dashboard.models import Activity, Bounty, Interest
 from dashboard.views import record_bounty_activity as record_bounty_activity_interest
-
-logger = logging.getLogger(__name__)
 
 def set_created(activity, date):
     if activity and date:
@@ -44,11 +40,9 @@ def create_activities(bounty):
             act = record_bounty_activity_interest(bounty, interest.profile.user, 'worker_approved', interest)
             set_created(act, interest.acceptance_date)
     done_recorded = False
-    logger.info(f"create_activities started!")
     for fulfillment in bounty.fulfillments.all():
         act = record_bounty_activity('work_submitted', bounty.prev_bounty, bounty, fulfillment)
         set_created(act, fulfillment.created_on)
-        logger.info(f"fulfillment accepted? {fulfillment.accepted}")
         if fulfillment.accepted:
             act = record_bounty_activity('work_done', bounty.prev_bounty, bounty, fulfillment)
             set_created(act, fulfillment.accepted_on)
