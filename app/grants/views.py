@@ -74,14 +74,17 @@ def grants(request):
 
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
-    
+    partners = MatchPledge.objects.filter(active=True)
+
+    now = datetime.datetime.now()
     params = {
         'active': 'grants_landing',
         'title': _('Grants Explorer'),
         'sort': sort,
         'network': network,
         'keyword': keyword,
-        'matchpledges': MatchPledge.objects.filter(active=True).order_by('-amount'),
+        'current_partners': partners.filter(end_date__gte=now).order_by('-amount'),
+        'past_partners': partners.filter(end_date__lt=now).order_by('-amount'),
         'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
         'card_player_override': 'https://www.youtube.com/embed/eVgEWSPFR2o',
         'card_player_stream_override': static('v2/card/grants.mp4'),

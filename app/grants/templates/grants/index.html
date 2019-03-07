@@ -52,18 +52,51 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         </div>
       </div>
     </div>
-    {% if matchpledges %}
+
+    {% if current_partners or past_partners %}
+
       <div class="container-fluid py-5 grants-matching">
         <div class="container">
-          <h2>Matching Partners</h2>
-          <p>A special thanks to the following partners who have offered to match contributions to Gitcoin Grants.  <a href="https://medium.com/gitcoin/gitcoin-grants-clr-matching-ecbc87b10038">(Read Announcement Here)</a></p>
-          {% for mp in matchpledges %}
-            <div style="text-align:center; display: inline-block; padding: 10px;">
-              <h5>@{{mp.profile.handle}}</h5>
-              <img style="max-width:100px;" src="/dynamic/avatar/{{mp.profile.handle}}">
-              <p>${{mp.amount|floatformat}}</p>
+          <div class="row">
+          <div class="col-md-6">
+            <h2>Matching Partners</h2>
+            <p>A special thanks to the following partners who have offered to match contributions to Gitcoin Grants.  <a href="https://medium.com/gitcoin/gitcoin-grants-clr-matching-ecbc87b10038">(Read Announcement Here)</a></p>
+
+            <ul class="nav nav-tabs my-5" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link nav-line active" id="currentpartners-tab" data-toggle="tab" href="#currentpartners" role="tab" aria-controls="currentpartners" aria-selected="true">Current Partners</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link nav-line" id="pastpartners-tab" data-toggle="tab" href="#pastpartners" role="tab" aria-controls="pastpartners" aria-selected="false">Past Partners</a>
+              </li>
+              <li class="align-self-center ml-auto font-smaller-2">
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-6"><img src="{% static 'v2/images/grants/robots.png' %}" class="rounded mx-auto d-block"/></div>
+          </div>
+          <div class="tab-content">
+              <div class="tab-pane fade show active" id="currentpartners" role="tabpanel" aria-labelledby="currentpartners-tab">
+                {% for current_partner in current_partners %}
+                  <div style="text-align:center; display: inline-block; padding: 10px;">
+                    <h5>@{{current_partner.profile.handle}}</h5>
+                    <img style="max-width:100px;" src="/dynamic/avatar/{{current_partner.profile.handle}}">
+                    <p>${{current_partner.amount|floatformat}}</p>
+                  </div>
+                {% endfor %}
+              </div>
+
+            <div class="tab-pane fade" id="pastpartners" role="tabpanel" aria-labelledby="pastpartners-tab">
+              {% for past_partner in past_partners %}
+                <div style="text-align:center; display: inline-block; padding: 10px;">
+                  <h5>@{{past_partner.profile.handle}}</h5>
+                  <img style="max-width:100px;" src="/dynamic/avatar/{{past_partner.profile.handle}}">
+                  <p>${{past_partner.amount|floatformat}}</p>
+                </div>
+              {% endfor %}
             </div>
-          {% endfor %}
+          </div>
+
         </div>
       </div>
     {% endif %}
@@ -154,6 +187,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   <script src="{% static "v2/js/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
   <script src="{% static "v2/js/grants/index.js" %}"></script>
+  <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
   <script>
     var infinite = new Waypoint.Infinite({
       element: $('.infinite-container')[0]
