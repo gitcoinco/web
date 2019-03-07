@@ -32,7 +32,7 @@ import requests
 import twitter
 from economy.utils import convert_token_to_usdt
 from git.utils import delete_issue_comment, org_name, patch_issue_comment, post_issue_comment, repo_name
-from marketing.mails import send_mail, setup_lang, tip_email, featured_funded_bounty
+from marketing.mails import featured_funded_bounty, send_mail, setup_lang, tip_email
 from marketing.models import GithubOrgToTwitterHandleMapping
 from marketing.utils import should_suppress_notification_email
 from pyshorteners import Shortener
