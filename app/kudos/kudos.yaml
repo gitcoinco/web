@@ -3306,7 +3306,7 @@
     - fish
     - narwhal
     - horn
-  image: rainbow.svg
+  image: narwhal.svg
 - name: first_grant_funded
   artist: mladen
   description: This Kudos is to commemerate your first Gitcoin Grant funded!
@@ -3339,7 +3339,97 @@
     - fun
     - soft skills
   image: alchemist2.svg
-
+- name: Appreciation
+  to_address: '0xD27D4fE82aCF5eaBb78723eC0F624c8127c64972'
+  artist: yash412
+  description: For someone who deserves great appreciation :')
+  priceFinney: 40
+  numClonesAllowed: 50
+  tags:
+    - clap
+    - appreciation
+  image: clap.svg
+- name: Bug_Detective
+  to_address: '0xD27D4fE82aCF5eaBb78723eC0F624c8127c64972'
+  artist: yash412
+  description: Professional Bug Killer.  
+  priceFinney: 40
+  numClonesAllowed: 50
+  tags:
+    - coder
+    - bug
+    - debug
+    - debugger 
+  image: bug21.svg
+- name: Natural_Coder
+  to_address: '0xD27D4fE82aCF5eaBb78723eC0F624c8127c64972'
+  artist: yash412
+  description: Codes flow within you. 
+  priceFinney: 40
+  numClonesAllowed: 50
+  tags:
+    - coder
+    - blockchain
+    - gitcoin
+    - natural
+  image: natural.svg
+- name: Invite_a_Friend
+  to_address: '0x11328DFcD09ae7d2F40AAc3D544D0700bB222C47'
+  artist: j0ker1234
+  description: This is for a friend who is new to gitcoin. 
+  priceFinney: 20
+  numClonesAllowed: 300
+  tags:
+    - friend
+    - beginner
+  image: friend.svg
+- name: Problem_Solver
+  to_address: '0x11328DFcD09ae7d2F40AAc3D544D0700bB222C47'
+  artist: j0ker1234
+  description: This is for someone who is a good problem solver.
+  priceFinney: 40
+  numClonesAllowed: 100
+  tags:
+    - problem
+    - algorithm
+  image: prob_solver.svg
+- name: People_Connector
+  to_address: '0x11328DFcD09ae7d2F40AAc3D544D0700bB222C47'
+  artist: j0ker1234
+  description: This is for someone who connects people.
+  priceFinney: 25
+  numClonesAllowed: 200
+  tags:
+    - connecter
+    - people
+  image: connector.svg
+- name: Deadly_Coder
+  to_address: '0xD27D4fE82aCF5eaBb78723eC0F624c8127c64972'
+  artist: yash412
+  description: The badge says enough already.  
+  priceFinney: 40
+  numClonesAllowed: 50
+  tags:
+    - coder
+    - blockchain
+    - deadly
+    - skull
+  image: deadly.svg
+- name: 3box_space_narwhal
+  to_address: '0xa8ee0babe72cd9a80ae45dd74cd3eae7a82fd5d1'
+  description: Space narwhals can be found traversing spacetime, showing appreciation to 3Box community members
+  priceFinney: 3
+  numClonesAllowed: 300
+  tags:
+    - 3box
+    - community
+    - appreciation
+    - supporters
+    - user data
+    - social profiles
+    - IPFS
+    - web3
+  image: 3box.svg
 
 
 
