@@ -273,6 +273,7 @@ urlpatterns = [
     # basic redirect retail views
     re_path(r'^press/?', retail.views.presskit, name='press'),
     re_path(r'^presskit/?', retail.views.presskit, name='presskit'),
+    re_path(r'^verified/?', retail.views.verified, name='verified'),
     re_path(r'^community/?', retail.views.community, name='community'),
     re_path(r'^slack/?', retail.views.slack, name='slack'),
     re_path(r'^submittoken/?', retail.views.newtoken, name='newtoken'),
