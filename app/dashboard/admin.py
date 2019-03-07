@@ -25,6 +25,7 @@ from django.utils.safestring import mark_safe
 from .models import (
     Activity, BlockedUser, Bounty, BountyFulfillment, BountySyncRequest, CoinRedemption, CoinRedemptionRequest,
     FeedbackEntry, Interest, LabsResearch, Profile, SearchHistory, Tip, TokenApproval, Tool, ToolVote, UserAction,
+    UserVerificationModel,
 )
 
 
@@ -178,3 +179,4 @@ admin.site.register(Tool, ToolAdmin)
 admin.site.register(ToolVote, ToolVoteAdmin)
 admin.site.register(FeedbackEntry, FeedbackAdmin)
 admin.site.register(LabsResearch)
+admin.site.register(UserVerificationModel)
