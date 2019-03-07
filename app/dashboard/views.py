@@ -59,8 +59,8 @@ from web3 import HTTPProvider, Web3
 
 from .helpers import get_bounty_data_for_activity, handle_bounty_views
 from .models import (
-    Activity, Bounty, BountyFulfillment, CoinRedemption, CoinRedemptionRequest, Interest, LabsResearch, Profile,
-    ProfileSerializer, Subscription, Tool, ToolVote, UserAction,
+    Activity, Bounty, BountyFulfillment, CoinRedemption, CoinRedemptionRequest, FeedbackEntry, Interest, LabsResearch,
+    Profile, ProfileSerializer, Subscription, Tool, ToolVote, UserAction,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -297,6 +297,45 @@ def new_interest(request, bounty_id):
         'profile': ProfileSerializer(interest.profile).data,
         'msg': msg,
     })
+
+
+@csrf_exempt
+@require_POST
+def post_comment(request):
+    profile_id = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+    if profile_id is None:
+        return JsonResponse({
+            'success': False,
+            'msg': '',
+        })
+
+    sbid = request.POST.get('standard_bounties_id')
+    bountyObj = Bounty.objects.filter(standard_bounties_id=sbid).first()
+    fbAmount = FeedbackEntry.objects.filter(sender_profile=profile_id, feedbackType=request.POST.get('review[reviewType]', 'approver'), bounty=bountyObj).count()
+    if fbAmount > 0:
+        return JsonResponse({
+            'success': False,
+            'msg': 'There is already a approval comment',
+        })
+    if request.POST.get('review[reviewType]','approver') == 'approver':
+        receiver_profile = Profile.objects.filter(handle=request.POST.get('review[receiver]', '')).first()
+    else:
+        receiver_profile = bountyObj.bounty_owner_profile
+    kwargs = {
+        'bounty': bountyObj,
+        'sender_profile': profile_id,
+        'receiver_profile': receiver_profile,
+        'rating': request.POST.get('review[rating]', '-1'),
+        'comment': request.POST.get('review[comment]', 'No comment.'),
+        'feedbackType': request.POST.get('review[reviewType]','approver')
+    }
+
+    feedback = FeedbackEntry.objects.create(**kwargs)
+    feedback.save()
+    return JsonResponse({
+            'success': False,
+            'msg': 'Finished.'
+        })
 
 
 @csrf_exempt

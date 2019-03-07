@@ -396,6 +396,7 @@ def get_bounty(bounty_enum, network):
         'token': token,
         'fulfillments': fulfillments,
         'network': network,
+        'review': bounty_data.get('review',{}),
     }
     return bounty
 
