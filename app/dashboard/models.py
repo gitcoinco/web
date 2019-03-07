@@ -1017,13 +1017,7 @@ class Bounty(SuperModel):
                 logger.warning(f'reserved_for_user_handle: Unknown handle: ${handle}')
 
         self.bounty_reserved_for_user = profile
-
-@receiver(post_save, sender=Bounty, dispatch_uid="postsave_bounty")
-def postsave_bounty(sender, instance, created, **kwargs):
-    if created:
-        if instance.status == 'open':
-            featured_funded_bounty(settings.CONTACT_EMAIL, bounty=instance)
-
+    
 
 class BountyFulfillmentQuerySet(models.QuerySet):
     """Handle the manager queryset for BountyFulfillments."""
