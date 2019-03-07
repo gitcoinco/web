@@ -22,6 +22,7 @@ from dashboard.helpers import record_bounty_activity
 from dashboard.models import Activity, Bounty, Interest
 from dashboard.views import record_bounty_activity as record_bounty_activity_interest
 
+
 def set_created(activity, date):
     if activity and date:
         activity.created = date
