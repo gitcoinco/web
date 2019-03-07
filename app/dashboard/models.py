@@ -263,6 +263,7 @@ class Bounty(SuperModel):
     submissions_comment = models.IntegerField(null=True, blank=True)
     override_status = models.CharField(max_length=255, blank=True)
     last_comment_date = models.DateTimeField(null=True, blank=True)
+    funder_last_messaged_on = models.DateTimeField(null=True, blank=True)
     fulfillment_accepted_on = models.DateTimeField(null=True, blank=True)
     fulfillment_submitted_on = models.DateTimeField(null=True, blank=True)
     fulfillment_started_on = models.DateTimeField(null=True, blank=True)
@@ -1047,6 +1048,7 @@ class BountyFulfillment(SuperModel):
     fulfillment_id = models.IntegerField(null=True, blank=True)
     fulfiller_hours_worked = models.DecimalField(null=True, blank=True, decimal_places=2, max_digits=50)
     fulfiller_github_url = models.CharField(max_length=255, blank=True, null=True)
+    funder_last_notified_on = models.DateTimeField(null=True, blank=True)
     accepted = models.BooleanField(default=False)
     accepted_on = models.DateTimeField(null=True, blank=True)
 
@@ -1699,6 +1701,31 @@ class LabsResearch(SuperModel):
         return self.title
 
 
+class UserVerificationModel(SuperModel):
+    """Define the checkboxes for user verification."""
+
+    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
+    verified = models.BooleanField(
+        default=False,
+        help_text='Select to display the Verified checkmark on the user\'s profile',
+    )
+    speedy_and_responsive = models.BooleanField(
+        default=False,
+    )
+    great_communication = models.BooleanField(
+        default=False,
+    )
+    bug_free_code = models.BooleanField(
+        default=False,
+    )
+    completed_x_bounties = models.BooleanField(
+        default=False,
+    )
+
+    def __str__(self):
+        return f"User: {self.user}; Verified: {self.verified}"
+
+
 class ProfileQuerySet(models.QuerySet):
     """Define the Profile QuerySet to be used as the objects manager."""
 
@@ -1814,6 +1841,11 @@ class Profile(SuperModel):
         return kudos_transfers
 
     @property
+    def get_my_verified_check(self):
+        verification = UserVerificationModel.objects.filter(user=self.user).first()
+        return verification
+
+    @property
     def get_profile_referral_code(self):
         return base64.urlsafe_b64encode(self.handle.encode()).decode()
 
@@ -1845,6 +1877,19 @@ class Profile(SuperModel):
         on_repo = Tip.objects.filter(github_url__startswith=self.github_url).order_by('-id')
         tipped_for = Tip.objects.filter(username__iexact=self.handle).order_by('-id')
         return on_repo | tipped_for
+
+    def build_random_avatar(self):
+        from avatar.utils import build_random_avatar
+        from avatar.models import CustomAvatar
+        payload = build_random_avatar()
+        try:
+            custom_avatar = CustomAvatar.create(self, payload)
+            custom_avatar.save()
+            self.activate_avatar(custom_avatar.pk)
+            self.save()
+            return custom_avatar
+        except Exception as e:
+            logger.warning('Save Random Avatar - Error: (%s) - Handle: (%s)', e, profile.handle if profile else '')
 
     def no_times_slashed_by_staff(self):
         user_actions = UserAction.objects.filter(

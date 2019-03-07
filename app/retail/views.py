@@ -64,7 +64,6 @@ def get_activities(tech_stack=None, num_activities=15):
     activities = activities[0:num_activities]
     return [a.view_props for a in activities]
 
-@staff_member_required
 def index(request):
     products = [
         {
@@ -74,7 +73,7 @@ def index(request):
                     'img': static('v2/images/home/bounties.svg'),
                     'name': 'BOUNTIES',
                     'description': 'Get paid for solving open source bounties.',
-                    'link': '/'  # update to /bounties
+                    'link': '/bounties/funder'
                 }
             ]
         },
@@ -1244,6 +1243,13 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
     }
     return TemplateResponse(request, 'help.html', context)
 
+def verified(request):
+
+    context = {
+        'active': 'verified',
+        'title': _('Verified'),
+    }
+    return TemplateResponse(request, 'verified.html', context)
 
 def presskit(request):
 

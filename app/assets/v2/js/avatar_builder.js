@@ -339,6 +339,66 @@ function setOption(option, value, target) {
   }
 }
 
+function setRandomColor(section) {
+  let palette = sectionPalettes[section];
+  let availableColors = colorOptions[palette];
+  let randomChoice = Math.floor(Math.random() * availableColors.length);
+
+  changeColor(palette, availableColors[randomChoice]);
+}
+
+function randomAvatar(sections, optionalSections) {
+
+  // Random skin color
+  setRandomColor('Head');
+  // Random clothing color
+  setRandomColor('Clothing');
+  // Random hair color
+  setRandomColor('HairStyle');
+
+  // Random avatar components
+  sections.forEach((section, idx) => {
+    const paidOptions = Object.keys(section.paid_options);
+    let options = section.options.filter((option) => !paidOptions.includes(option));
+    let totalOpts = options.length;
+    let componentName = section.name.replace(' ', '');
+    let optional = optionalSections.includes(componentName) ? 0 : 1;
+
+    randomChoice = Math.floor(Math.random() * totalOpts) + optional;
+
+    if (randomChoice != 0) {
+      let option = options[randomChoice - 1];
+      let htmlComponent = null;
+
+      switch (componentName) {
+        case 'HairStyle':
+          option = option.join('-');
+          htmlComponent = $(`#avatar-option-${componentName}-${option}`)[0];
+          setOption(componentName, option, htmlComponent);
+          break;
+        case 'Accessories':
+          // removing previously selected accesories
+          $('button[id^="avatar-option-Accessories-"].selected').each((idx, component) => {
+            let id = component.id.replace('avatar-option-Accessories-', '');
+
+            setOption(componentName, JSON.stringify([id]), component);
+          });
+          option.forEach((part, idx) => {
+            htmlComponent = $(`#avatar-option-${componentName}-${part}`)[0];
+            setOption(componentName, JSON.stringify(option), htmlComponent);
+          });
+          
+          break;
+        default:
+          htmlComponent = $(`#avatar-option-${componentName}-${option}`)[0];
+          setOption(componentName, option, htmlComponent);
+          break;
+      }
+    }
+  });
+  
+}
+
 function saveAvatar() {
   $(document).ajaxStart(function() {
     loading_button($('#save-avatar'));

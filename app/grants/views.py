@@ -74,14 +74,17 @@ def grants(request):
 
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
-    
+    partners = MatchPledge.objects.filter(active=True)
+
+    now = datetime.datetime.now()
     params = {
         'active': 'grants_landing',
         'title': _('Grants Explorer'),
         'sort': sort,
         'network': network,
         'keyword': keyword,
-        'matchpledges': MatchPledge.objects.filter(active=True).order_by('-amount'),
+        'current_partners': partners.filter(end_date__gte=now).order_by('-amount'),
+        'past_partners': partners.filter(end_date__lt=now).order_by('-amount'),
         'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
         'card_player_override': 'https://www.youtube.com/embed/eVgEWSPFR2o',
         'card_player_stream_override': static('v2/card/grants.mp4'),
@@ -367,6 +370,14 @@ def grant_fund(request, grant_id, grant_slug):
             'text': _('You already have an active subscription for this grant.')
         }
         return TemplateResponse(request, 'grants/shared/error.html', params)
+
+    if grant.contract_address == '0x0':
+        messages.info(
+            request,
+            _('This grant is not configured to accept funding at this time.  Please contact founders@gitcoin.co if you believe this message is in error!')
+        )
+        logger.error(f"Grant {grant.pk} is not properly configured for funding.  Please set grant.contract_address on this grant")
+        return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
     if request.method == 'POST':
         if 'contributor_address' in request.POST:
