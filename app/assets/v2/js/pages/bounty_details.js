@@ -432,7 +432,7 @@ const isAvailableIfReserved = function(bounty) {
   const reservedFor = bounty['reserved_for_user_handle'];
 
   if (reservedFor) {
-    if (reservedFor === document.contxt['github_handle']) {
+    if (caseInsensitiveCompare(reservedFor, document.contxt['github_handle'])) {
       return true;
     }
 
@@ -457,13 +457,13 @@ var isBountyOwner = function(result) {
     return false;
   }
 
-  return (web3.eth.coinbase.toLowerCase() == bountyAddress.toLowerCase());
+  return caseInsensitiveCompare(web3.eth.coinbase, bountyAddress);
 };
 
 var isBountyOwnerPerLogin = function(result) {
   var bounty_owner_github_username = result['bounty_owner_github_username'];
 
-  return bounty_owner_github_username == document.contxt['github_handle'];
+  return caseInsensitiveCompare(bounty_owner_github_username, document.contxt['github_handle']);
 };
 
 var update_title = function() {
@@ -830,7 +830,7 @@ const is_current_user_interested = function(result) {
   if (!document.contxt.github_handle) {
     return false;
   }
-  return !!(result.interested || []).find(interest => interest.profile.handle.toLowerCase() == document.contxt.github_handle.toLowerCase());
+  return !!(result.interested || []).find(interest => caseInsensitiveCompare(interest.profile.handle, document.contxt.github_handle));
 };
 
 const is_current_user_approved = function(result) {
@@ -845,12 +845,19 @@ const is_current_user_approved = function(result) {
     const interest = interested[len];
     const handle = interest.profile ? interest.profile.handle : '';
 
-    if (handle && handle.toLowerCase() === document.contxt.github_handle.toLowerCase()) {
+    if (handle && caseInsensitiveCompare(handle, document.contxt.github_handle)) {
       return needs_approval ? interest.pending === false : true;
     }
   }
 
   return false;
+};
+
+const is_funder_notifiable = (result) => {
+  if (result['funder_last_messaged_on']) {
+	      return false;
+  }
+  return true;
 };
 
 var do_actions = function(result) {
@@ -862,11 +869,13 @@ var do_actions = function(result) {
   var is_still_on_happy_path = result['status'] == 'open' || result['status'] == 'started' || result['status'] == 'submitted' || (can_submit_after_expiration_date && result['status'] == 'expired');
   var needs_review = result['needs_review'];
   const is_open = result['is_open'];
+  let bounty_path = result['network'] + '/' + result['standard_bounties_id'];
+
 
   // Find interest information
   const is_interested = is_current_user_interested(result);
 
-  const has_fulfilled = result['fulfillments'].filter(fulfiller => fulfiller.fulfiller_github_username === document.contxt['github_handle']).length > 0;
+  const has_fulfilled = result['fulfillments'].filter(fulfiller => caseInsensitiveCompare(fulfiller.fulfiller_github_username, document.contxt['github_handle'])).length > 0;
 
   document.interested = is_interested;
 
@@ -881,9 +890,12 @@ var do_actions = function(result) {
   let show_job_description = result['attached_job_description'] && result['attached_job_description'].startsWith('http');
   const show_increase_bounty = !is_status_done && !is_status_expired && !is_status_cancelled;
   const submit_work_enabled = !isBountyOwner(result) && current_user_is_approved;
+  const notify_funder_enabled = is_funder_notifiable(result);
   let show_payout = !is_status_expired && !is_status_done && isBountyOwner(result);
   let show_extend_deadline = isBountyOwner(result) && !is_status_expired && !is_status_done;
   let show_invoice = isBountyOwner(result);
+  let show_notify_funder = is_open && has_fulfilled;
+
 
   const show_suspend_auto_approval = currentProfile.isStaff && result['permission_type'] == 'approval' && !result['admin_override_suspend_auto_approval'];
   const show_admin_methods = currentProfile.isStaff;
@@ -912,6 +924,23 @@ var do_actions = function(result) {
       work_started: is_interested,
       id: 'submit'
     };
+
+    actions.push(_entry);
+  }
+
+  if (show_notify_funder) {
+    const enabled = notify_funder_enabled;
+    const url = '/' + bounty_path + '/modal/funder_payout_reminder/';
+    const _entry = {
+	    enabled: enabled,
+	    href: '#',
+	    text: gettext('Send Payment Reminder'),
+	    parent: 'right_actions',
+	    title: gettext('Send Payment Reminder'),
+	    id: 'notifyFunder',
+	    clickhandler: show_modal_handler(url),
+	    modal: true
+	  };
 
     actions.push(_entry);
   }
@@ -1194,7 +1223,11 @@ const render_actions = function(actions) {
     const tmpl = $.templates('#action');
     const html = tmpl.render(actions[l]);
 
-    $('#' + target).append(html);
+    let el = $(html).appendTo('#' + target);
+
+    if (actions[l].clickhandler) {
+      el.children('.button').click(actions[l].clickhandler);
+    }
   }
 };
 

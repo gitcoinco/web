@@ -85,7 +85,8 @@
                     {% endfor %}
                   </select>
                 </div>
-                <div class="w-100 my-2">
+                {% include 'shared/rating.html' with counterparty='contributor' %}
+                <div class="w-100 mt-2">
                   <label for=tipPercent>{% trans "(Optional) Add a tip of:" %}</label>
                   <input name='tipPercent' id="tipPercent" class="gc-round-text-input gc-border-blue" style="width: 50px;" type="number" placeholder="" value="0" min="0" /> % worth <span id="tipEstimate">0</span> {{bounty.token_name}}
                 </div>
