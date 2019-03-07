@@ -256,7 +256,7 @@ class BountyViewSet(viewsets.ModelViewSet):
         if 'is_featured' in param_keys:
             queryset = queryset.filter(
                 is_featured=self.request.query_params.get('is_featured'),
-                is_open=(self.request.query_params.get('is_open').lower() == 'true'),
+                is_open=True,
             )
 
         # order
