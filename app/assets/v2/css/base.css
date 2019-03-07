@@ -1051,7 +1051,7 @@ input.is-invalid {
   opacity: 0.5;
 }
 .rating span.checked label i,
-.rating span.checked ~ span label i 
+.rating span.checked ~ span label i
 {
   opacity: 1;
 }
@@ -1628,6 +1628,10 @@ div.busyOverlay {
 
 .popover-bounty__content {
   padding: 1.4em 1.3em 1.3em;
+}
+
+.big-popover {
+  max-width: 482px;
 }
 
 /* Custom icons */
