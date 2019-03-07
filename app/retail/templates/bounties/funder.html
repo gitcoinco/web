@@ -46,7 +46,9 @@
         </div>
       </div>
 
-      <div class="container-fluid p-5 benefits_container">
+      <div class="pt-2" id="codefund"></div>
+
+      <div class="container-fluid px-5 pb-5 pt-2 benefits_container">
         {% include 'bounties/funder/benefits.html' %}
       </div>
 
@@ -177,4 +179,5 @@
   </body>
   {% include 'shared/analytics.html' %}
   {% block scripts %}{% endblock %}
+  <script src="https://codefund.app/properties/189/funder.js" async="async"></script>
 </html>

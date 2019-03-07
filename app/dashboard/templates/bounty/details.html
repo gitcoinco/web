@@ -221,7 +221,7 @@
             [[/if]]
           </a>
         [[else]]
-          <a class="button button--primary [[if !enabled]]disabled[[/if]] [[:buttonclass]]" role="button" href="[[:href]]" target="[[:target]]">
+          <a class="button button--primary [[if !enabled]]disabled[[/if]] [[:buttonclass]]" role="button" href="[[:href]]" target="[[:target]]" [[if modal]] data-toggle="modal" data-target=".share-modal" [[/if]]>
             <span class="font-caption">[[:text]]</span>
           </a>
         [[/if]]
@@ -423,6 +423,7 @@
     var bootstrapTooltip = $.fn.tooltip.noConflict()
     var bootstrapModal = $.fn.modal.noConflict()
   </script>
+  <script src="{% static "v2/js/pages/bounty_funder_payout_reminder.js" %}"></script>
   <script src="{% static "v2/js/pages/bounty_share.js" %}"></script>
   <script src="{% static "v2/js/pages/bounty_details.js" %}"></script>
   <script src="{% static "v2/js/ipfs-api.js" %}"></script>

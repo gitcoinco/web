@@ -145,6 +145,18 @@ urlpatterns = [
     path('issue/social_contribution', dashboard.views.social_contribution, name='social_contribution'),
     path('modal/social_contribution', dashboard.views.social_contribution_modal, name='social_contribution_modal'),
     path(
+        '<str:bounty_network>/<int:stdbounties_id>/modal/funder_payout_reminder/',
+        dashboard.views.funder_payout_reminder_modal,
+        name='funder_payout_reminder_modal'
+    ),
+
+    # Notify Funder Modal Submission
+    path(
+        'actions/bounty/<str:bounty_network>/<int:stdbounties_id>/notify/funder_payout_reminder/',
+        dashboard.views.funder_payout_reminder,
+        name='funder_payout_reminder'
+    ),
+    path(
         'actions/bounty/<int:bounty_id>/extend_expiration/',
         dashboard.views.extend_expiration,
         name='extend_expiration'
@@ -418,6 +430,11 @@ urlpatterns = [
         r'^_administration/email/start_work_applicant_expired$',
         retail.emails.start_work_applicant_expired,
         name='start_work_applicant_expired'
+    ),
+    re_path(
+        r'^_administration/email/funder_payout_reminder$',
+        retail.emails.funder_payout_reminder,
+        name='funder_payout_reminder'
     ),
 
     # settings
