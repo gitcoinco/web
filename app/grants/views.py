@@ -400,7 +400,7 @@ def grant_fund(request, grant_id, grant_slug):
                 subscription.subminer_comments = "skipping subminer bc this is a 1 and done subscription, and tokens were alredy sent"
                 subscription.save()
                 activity_kwargs['activity_type'] = 'new_grant_contribution'
-            Activity.objects.create(**kwargs)
+            Activity.objects.create(**activity_kwargs)
 
             messages.info(
                 request,

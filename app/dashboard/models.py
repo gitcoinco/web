@@ -2442,8 +2442,9 @@ class Profile(SuperModel):
 
         all_activities = all_activities.filter(
             Q(bounty__network=network) |
-            Q(tip__network=network),
-        ).select_related('bounty', 'tip').all().order_by('-created')
+            Q(tip__network=network) |
+            Q(subscription__network=network)
+        ).select_related('bounty', 'tip', 'subscription').all().order_by('-created')
 
         return all_activities
 

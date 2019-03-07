@@ -1267,6 +1267,9 @@ def profile(request, handle):
             ('work_done', _('Bounties Completed')),
             ('new_tip', _('Tips Sent')),
             ('receive_tip', _('Tips Received')),
+            ('new_grant_contribution', _('Grants contributed to')),
+            ('new_grant_subscription', _('Grants subscribed to')),
+            ('killed_grant_contribution', _('Grants unsubscribed from')),
         ]
         page = request.GET.get('p', None)
 
