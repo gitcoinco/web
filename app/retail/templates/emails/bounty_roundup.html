@@ -29,6 +29,7 @@
     color: #353535;
     line-height: 26px;
     font-size: 16px;
+    list-style: none;
   }
   .intro li{
     margin-bottom: 15px;
@@ -141,10 +142,10 @@
     <h3>{% trans "Kudos" %}</h3>
     <h5>{% trans "Recognition throughout the platform" %}</h5>
     <div style="text-align: center;">
-      <ul style="text-align: center;">
+      <ul style="text-align: center; padding-left: 20px;">
         {% for kudos in kudos_highlights %}
         {% if kudos.recipient_profile and kudos.sender_profile %}
-          <li style="list-style:none; margin: 5px; padding: 15px 30px; width: 350px; min-height: 270px; display: inline-block; float:left; border: 1px solid #cccccc; border-radius: 5px;">
+          <li style="list-style:none; margin: 5px; padding: 15px 30px; min-height: 310px; display: inline-block; float:left; border: 1px solid #cccccc; border-radius: 5px; width: 220px;">
               <a style="font-weight: bold; text-decoration: none;" href="{% url "profile" kudos.recipient_profile.handle %}">{{ kudos.recipient_profile.handle }}</a> received <strong>{{ kudos.kudos_token_cloned_from.name|humanize_name }}</strong> from <a style="font-weight: bold; text-decoration: none;" href="{% url 'profile' kudos.sender_profile.handle %}">{{ kudos.sender_profile.handle }}</a><br>
             <a href="{% url 'kudos_details' kudos.kudos_token_cloned_from.pk kudos.kudos_token_cloned_from.name  %}">
 

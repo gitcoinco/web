@@ -31,6 +31,7 @@ from django.dispatch import receiver
 from django.forms.models import model_to_dict
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.encoding import force_text
 from django.utils.functional import Promise
 from django.utils.html import escape
 from django.utils.timezone import localtime

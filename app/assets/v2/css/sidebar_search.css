@@ -1,7 +1,5 @@
 .sidebar_search {
-  margin-left: 10px;
-  margin-right: 10px;
-  padding: 20px 20px 10px;
+  padding: 20px 20px 10px 40px;
 }
 
 .subheading {
@@ -83,5 +81,13 @@
 
   .search_bar div {
     padding-right: 15px !important;
+  }
+}
+
+@media (max-width: 1199.98px) {
+  .sidebar_search {
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 20px 20px 10px;
   }
 }

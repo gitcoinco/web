@@ -24,7 +24,8 @@ from django.utils.safestring import mark_safe
 
 from .models import (
     Activity, BlockedUser, Bounty, BountyFulfillment, BountySyncRequest, CoinRedemption, CoinRedemptionRequest,
-    Interest, LabsResearch, Profile, SearchHistory, Tip, TokenApproval, Tool, ToolVote, UserAction,
+    FeedbackEntry, Interest, LabsResearch, Profile, SearchHistory, Tip, TokenApproval, Tool, ToolVote, UserAction,
+    UserVerificationModel,
 )
 
 
@@ -74,6 +75,9 @@ class UserActionAdmin(admin.ModelAdmin):
     search_fields = ['action', 'ip_address', 'metadata', 'profile__handle']
     ordering = ['-id']
 
+class FeedbackAdmin(admin.ModelAdmin):
+    search_fields = ['sender_profile','receiver_profile','bounty','feedbackType']
+    ordering = ['-id']
 
 class ProfileAdmin(admin.ModelAdmin):
     raw_id_fields = ['user', 'preferred_kudos_wallet']
@@ -173,4 +177,6 @@ admin.site.register(CoinRedemption, GeneralAdmin)
 admin.site.register(CoinRedemptionRequest, GeneralAdmin)
 admin.site.register(Tool, ToolAdmin)
 admin.site.register(ToolVote, ToolVoteAdmin)
+admin.site.register(FeedbackEntry, FeedbackAdmin)
 admin.site.register(LabsResearch)
+admin.site.register(UserVerificationModel)

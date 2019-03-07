@@ -248,6 +248,7 @@ $(document).ready(function() {
         estimatedHours: data.hours,
         fundingOrganisation: data.fundingOrganisation,
         is_featured: data.featuredBounty,
+        featuring_date: data.featuredBounty && ((new Date().getTime() / 1000) | 0) || 0,
         reservedFor: reservedFor ? reservedFor.text : '',
         tokenName
       };
@@ -285,8 +286,8 @@ $(document).ready(function() {
             jobDescription: data.jobDescription
           },
           funding_organisation: metadata.fundingOrganisation,
-          is_featured: metadata.featuredBounty,
-          featuring_date: metadata.featuredBounty && new Date().getTime() / 1000 || 0,
+          is_featured: metadata.is_featured,
+          featuring_date: metadata.featuring_date,
           privacy_preferences: privacy_preferences,
           funders: [],
           categories: metadata.issueKeywords.split(','),

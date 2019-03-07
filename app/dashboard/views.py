@@ -48,10 +48,9 @@ from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_auth_url, get_github_user_data, is_github_token_valid, search_users
 from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
-from marketing.mails import (
-    admin_contact_funder, bounty_uninterested, new_reserved_issue, start_work_approved, start_work_new_applicant,
-    start_work_rejected,
-)
+from marketing.mails import admin_contact_funder, bounty_uninterested
+from marketing.mails import funder_payout_reminder as funder_payout_reminder_mail
+from marketing.mails import new_reserved_issue, start_work_approved, start_work_new_applicant, start_work_rejected
 from marketing.models import Keyword
 from pytz import UTC
 from ratelimit.decorators import ratelimit
@@ -60,8 +59,8 @@ from web3 import HTTPProvider, Web3
 
 from .helpers import get_bounty_data_for_activity, handle_bounty_views
 from .models import (
-    Activity, Bounty, BountyFulfillment, CoinRedemption, CoinRedemptionRequest, Interest, LabsResearch, Profile,
-    ProfileSerializer, Subscription, Tool, ToolVote, UserAction,
+    Activity, Bounty, BountyFulfillment, CoinRedemption, CoinRedemptionRequest, FeedbackEntry, Interest, LabsResearch,
+    Profile, ProfileSerializer, Subscription, Tool, ToolVote, UserAction,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -298,6 +297,45 @@ def new_interest(request, bounty_id):
         'profile': ProfileSerializer(interest.profile).data,
         'msg': msg,
     })
+
+
+@csrf_exempt
+@require_POST
+def post_comment(request):
+    profile_id = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+    if profile_id is None:
+        return JsonResponse({
+            'success': False,
+            'msg': '',
+        })
+
+    sbid = request.POST.get('standard_bounties_id')
+    bountyObj = Bounty.objects.filter(standard_bounties_id=sbid).first()
+    fbAmount = FeedbackEntry.objects.filter(sender_profile=profile_id, feedbackType=request.POST.get('review[reviewType]', 'approver'), bounty=bountyObj).count()
+    if fbAmount > 0:
+        return JsonResponse({
+            'success': False,
+            'msg': 'There is already a approval comment',
+        })
+    if request.POST.get('review[reviewType]','approver') == 'approver':
+        receiver_profile = Profile.objects.filter(handle=request.POST.get('review[receiver]', '')).first()
+    else:
+        receiver_profile = bountyObj.bounty_owner_profile
+    kwargs = {
+        'bounty': bountyObj,
+        'sender_profile': profile_id,
+        'receiver_profile': receiver_profile,
+        'rating': request.POST.get('review[rating]', '-1'),
+        'comment': request.POST.get('review[comment]', 'No comment.'),
+        'feedbackType': request.POST.get('review[reviewType]','approver')
+    }
+
+    feedback = FeedbackEntry.objects.create(**kwargs)
+    feedback.save()
+    return JsonResponse({
+            'success': False,
+            'msg': 'Finished.'
+        })
 
 
 @csrf_exempt
@@ -1154,6 +1192,59 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
     return TemplateResponse(request, 'bounty/details.html', params)
 
 
+def funder_payout_reminder_modal(request, bounty_network, stdbounties_id):
+    bounty = Bounty.objects.current().filter(network=bounty_network, standard_bounties_id=stdbounties_id).first()
+
+    context = {
+        'bounty': bounty,
+        'active': 'funder_payout_reminder_modal',
+        'title': _('Send Payout Reminder')
+    }
+    return TemplateResponse(request, 'funder_payout_reminder_modal.html', context)
+
+
+@csrf_exempt
+def funder_payout_reminder(request, bounty_network, stdbounties_id):
+    if not request.user.is_authenticated:
+        return JsonResponse(
+            {'error': 'You must be authenticated via github to use this feature!'},
+            status=401)
+
+    if hasattr(request.user, 'profile'):
+        access_token = request.user.profile.get_access_token()
+    else:
+        access_token = request.session.get('access_token')
+    github_user_data = get_github_user_data(access_token)
+
+    try:
+        bounty = Bounty.objects.current().filter(network=bounty_network, standard_bounties_id=stdbounties_id).first()
+    except Bounty.DoesNotExist:
+        raise Http404
+
+    has_fulfilled = bounty.fulfillments.filter(fulfiller_github_username=github_user_data['login']).count()
+    if has_fulfilled == 0:
+        return JsonResponse({
+            'success': False,
+          },
+          status=403)
+
+    #  410 Gone Indicates that the resource requested is no longer available and will not be available again.
+    if bounty.funder_last_messaged_on:
+        return JsonResponse({
+            'success': False,
+          },
+          status=410)
+
+    user = request.user
+    funder_payout_reminder_mail(to_email=bounty.bounty_owner_email, bounty=bounty, github_username=user, live=True)
+    bounty.funder_last_messaged_on = timezone.now()
+    bounty.save()
+    return JsonResponse({
+          'success': True
+        },
+        status=200)
+
+
 def quickstart(request):
     """Display quickstart guide."""
     return TemplateResponse(request, 'quickstart.html', {})
@@ -1330,6 +1421,7 @@ def profile(request, handle):
     context['sent_kudos'] = sent_kudos[0:kudos_limit]
     context['kudos_count'] = owned_kudos.count()
     context['sent_kudos_count'] = sent_kudos.count()
+    context['verification'] = profile.get_my_verified_check
 
     currently_working_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
         .filter(interested__pending=False).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)
