@@ -124,9 +124,9 @@ urlpatterns = [
     path('revenue/attestations/new', revenue.views.new_attestation, name='revenue_new_attestation'),
 
     # action URLs
-    url(r'^$', retail.views.funder_bounties, name='funder_bounties'),  # TODO : Update Path
-    re_path(r'^contributor/?(?P<tech_stack>.*)/?', retail.views.contributor_bounties,
-            name='contributor_bounties'),  # TODO: Update Path
+    url(r'^bounties/funder', retail.views.funder_bounties, name='funder_bounties'),
+    re_path(r'^bounties/contributor/?(?P<tech_stack>.*)/?', retail.views.contributor_bounties,
+            name='contributor_bounties'),
     re_path(r'^bounty/quickstart/?', dashboard.views.quickstart, name='quickstart'),
     url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
     re_path(r'^bounty/change/(?P<bounty_id>.*)?', dashboard.views.change_bounty, name='change_bounty'),
@@ -247,7 +247,7 @@ urlpatterns = [
     re_path(r'^modal/extend_issue_deadline/?', dashboard.views.extend_issue_deadline, name='extend_issue_deadline'),
 
     # brochureware views
-    re_path(r'^homepage/$', retail.views.index, name='index'),  # Update path to ^$
+    re_path(r'^$', retail.views.index, name='index'),
     re_path(r'^pricing/$', retail.views.pricing, name='pricing'),
     re_path(r'^subscribe/$', retail.views.subscribe, name='subscribe'),
     re_path(r'^about/?', retail.views.about, name='about'),
