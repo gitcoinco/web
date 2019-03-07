@@ -97,7 +97,7 @@ $(document).ready(function() {
 
         let realGasPrice = 0; // zero cost metatxs
 
-        if (periodSeconds < 2592000) {
+        if (realPeriodSeconds < 2592000) {
           // charge gas for intervals less than a month
           realGasPrice = Math.ceil($('#gasPrice').val() * Math.pow(10, 9));
         }
@@ -118,7 +118,7 @@ $(document).ready(function() {
 
           var tokenMethod = deployedToken.methods.approve;
           var arg1 = data.contract_address;
-          
+
           // one time payments
           if (data.num_periods == 1) {
             arg1 = data.admin_address;
