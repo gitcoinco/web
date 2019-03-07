@@ -453,17 +453,18 @@
         return response.json();
       }).then(function(json) {
         $('.earned').html('~' + json.profile.total_earned + ' ETH earned')
-        $('.contributor-position').html(json.profile.position)
+        $('.contributor-position').html('#' + json.profile.position)
         $('.completed-bounties').html(json.statistics.work_completed)
+        $('.specialty').html('Specialty: ' + json.profile.keywords.slice(0, 3).toString())
         $('.in-progress').html(json.statistics.work_in_progress)
         $('.abandoned-bounties').html(json.statistics.work_abandoned)
         $('.removed-bounties').html(json.statistics.work_removed)
         $('.activity-title').html(json.recent_activity.activity_metadata.title)
         $('.current_status').html(json.recent_activity.activity_type)
-        $('.time-ago').html(json.recent_activity.created)
-        return json;
+        $('.time-ago').html(moment(json.recent_activity.created, 'YYYYMMDD').fromNow())
       }).catch(function(err) {
-        console.log(err)
+        $('body').popover('hide')
+        return _alert({ message: err }, 'error');
       })
     })
   </script>
