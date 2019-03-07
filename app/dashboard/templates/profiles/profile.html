@@ -35,6 +35,8 @@
                 <h1 class="profile-header__handle">
                   {% if profile.data.name %}
                     {{ profile.data.name }}
+                  {% else %}
+                    {{ profile.handle }}
                   {% endif %}
                   {% if verification.verified %}
                     <button class="btn btn-sm animate-verify" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='
@@ -102,21 +104,20 @@
                         <li><b>{{ count_bounties_completed }}</b> {% trans "bounties completed" %}</li>
                         <li><b>{{ sum_eth_collected|floatformat:2 }} ETH</b> {% trans "collected" %}</li>
                         {% if no_times_been_removed %}
-                            <li> - {% trans "removed from" %} <b>{{ no_times_been_removed }}</b> {% trans "bounties" %}</li>
+                          <li> - {% trans "removed from" %} <b>{{ no_times_been_removed }}</b> {% trans "bounties" %}</li>
                         {% endif %}
                         <li class="works_with_list">
-                          {% if works_with_collected|length != 0 %}
+                          {% if works_with_collected|length %}
                               <span class="font-body"><i class="fa fa-code"></i> Contributes To:</span>
-                              {% if works_with_collected|length > 2 %}
-                              <br>
-                              {% endif %}
-                              {% for profile, num_times in works_with_collected.items|slice:":5" %}
-                                <a href="{% url 'profile' profile %} ">
-                                  <img src='{% avatar_url profile %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>" />
-                                </a>
+                              {% for profile, num_times in works_with_collected.items %}
+                                {% if forloop.counter < 6 %}
+                                  <a href="{% url 'profile' profile %} ">
+                                    <img src='{% avatar_url profile %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
+                                  </a>
+                                {% endif %}
                               {% endfor %}
                               {% if works_with_collected|length > 5 %}
-                                <div href="" class="plus-img" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='{% for profile in works_with_collected.items|slice:"5:" %}<a href="{% url "profile" profile %}"><img src="{% avatar_url profile %}"/></a>{% endfor %}'><span>+10</span></div>
+                                <div href="" class="plus-img" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='{% for profile, num_times in works_with_collected.items %}<a href="{% url "profile" profile %}"><img class="rounded-circle m-1" width="30" height="30" title="{{profile}}: {{ num_times }} times" src="{% avatar_url profile %}"/></a>{% endfor %}'><span>+{{works_with_collected|length|add:"-5"}}</span></div>
                               {% endif %}
                           {% endif %}
                         </li>
@@ -133,21 +134,19 @@
                       <ul>
                         <li><b>{{ funded_bounties_count }}</b> {% trans "bounties funded" %}</li>
                         <li><b>{{ sum_eth_funded|floatformat:2 }} ETH</b> {% trans "funded" %}</li>
-
                         <li class="works_with_list">
                           {% if works_with_funded|length %}
-                              <span class="font-body"><i class="fab fa-ethereum"></i> {% trans "Funds" %}:</span>
-                              {% if works_with_funded|length > 2 %}
-                              <br>
-                              {% endif %}
-                              {% for profile, num_times in works_with_funded.items|slice:":5" %}
+                            <span class="font-body"><i class="fab fa-ethereum"></i> {% trans "Funds" %}:</span>
+                            {% for profile, num_times in works_with_funded.items %}
+                              {% if forloop.counter < 6 %}
                                 <a href="{% url 'profile' profile %} ">
-                                  <img src='{% avatar_url profile %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>" />
+                                  <img src='{% avatar_url profile %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
                                 </a>
-                              {% endfor %}
-                              {% if works_with_funded|length > 5 %}
-                                <div href="" class="plus-img" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='{% for profile in works_with_funded.items|slice:"5:" %}<a href="{% url "profile" profile %}"><img src="{% avatar_url profile %}"/></a>{% endfor %}'><span>+10</span></div>
                               {% endif %}
+                            {% endfor %}
+                            {% if works_with_funded|length > 5 %}
+                              <div href="" class="plus-img" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='{% for profile, num_times in works_with_funded.items %}<a href="{% url "profile" profile %}"><img class="rounded-circle m-1" width="30" height="30" title="{{profile}}: {{ num_times }} times" src="{% avatar_url profile %}"/></a>{% endfor %}'><span>+{{works_with_funded|length|add:"-5"}}</span></div>
+                            {% endif %}
                           {% endif %}
                         </li>
                       </ul>
