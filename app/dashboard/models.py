@@ -1878,6 +1878,19 @@ class Profile(SuperModel):
         tipped_for = Tip.objects.filter(username__iexact=self.handle).order_by('-id')
         return on_repo | tipped_for
 
+    def build_random_avatar(self):
+        from avatar.utils import build_random_avatar
+        from avatar.models import CustomAvatar
+        payload = build_random_avatar()
+        try:
+            custom_avatar = CustomAvatar.create(self, payload)
+            custom_avatar.save()
+            self.activate_avatar(custom_avatar.pk)
+            self.save()
+            return custom_avatar
+        except Exception as e:
+            logger.warning('Save Random Avatar - Error: (%s) - Handle: (%s)', e, profile.handle if profile else '')
+
     def no_times_slashed_by_staff(self):
         user_actions = UserAction.objects.filter(
             profile=self,
