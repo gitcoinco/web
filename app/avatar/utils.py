@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import logging
 import os
+import random
 import re
 from io import BytesIO
 from secrets import token_hex
@@ -181,6 +182,11 @@ def get_avatar_context():
                     'polkadotblouse',
                     'coat',
                     'crochettop',
+                    'space_suit',
+                    'armour',
+                    'pilot',
+                    'baseball',
+                    'football',
                 ),
                 'paid_options': {
                     'robe': 0.01,
@@ -320,6 +326,7 @@ def get_avatar_context():
                     ['Masks-power1'],
                     ['HatShort-elf'],
                     ['Extras-necklaceb'],
+                    ['Masks-football'],
                 ),
                 'paid_options': {
                     'Extras-Parrot': 0.01,
@@ -592,29 +599,75 @@ def build_avatar_svg(svg_path='avatar.svg', line_color='#781623', icon_size=None
     return result_path
 
 
+def build_random_avatar():
+    """Build an random avatar payload using context properties"""
+    default_path = f'{settings.STATIC_URL}v2/images/avatar/'
+    context = get_avatar_context()
+    optional = context['optionalSections']
+    optional.append('Makeup') # Also include Makeup as optional
+
+    payload = dict()
+    payload['SkinTone'] = context['defaultSkinTone']
+    payload['HairColor'] = context['defaultHairColor']
+    payload['ClothingColor'] = context['defaultClothingColor']
+
+    for section in context['sections']:
+        section_name = section['name'].replace(' ', '')
+        paid_options = section['paid_options'].keys()
+
+        set_optional = random.choice([False, True]) if section_name in optional else True
+
+        if set_optional == True:
+            options = dict()
+            if section_name not in ['HairStyle', 'Accessories']:
+                options = [option for option in section['options'] if option not in paid_options]
+            else:
+                options = [option for option in section['options'] if option[0] not in paid_options]
+
+            random_choice = random.choice(options)
+
+            if section_name == 'Wallpaper':
+                continue
+            elif section_name == 'HairStyle':
+                payload['HairLong'] = f'{default_path}{section_name}/{random_choice[0]}-{payload["HairColor"]}.svg' if random_choice[0] != 'None' else None
+                payload['HairShort'] = f'{default_path}{section_name}/{random_choice[1]}-{payload["HairColor"]}.svg' if random_choice[1] != 'None' else None
+            elif section_name == 'FacialHair':
+                key = random_choice[:random_choice.find('-')]
+                payload[key] = f'{default_path}{section_name}/{random_choice}-{payload["HairColor"]}.svg'
+            elif section_name == 'Accessories':
+                for k in random_choice:
+                    key = k[:k.find('-')]
+                    payload[key] = f'{default_path}{section_name}/{k}.svg'
+            else:
+                color = (f'-{payload["SkinTone"]}') if section_name in ['Head', 'Ears'] else ((f'-{payload["ClothingColor"]}') if section_name == 'Clothing' else '')
+                payload[section_name] = (f'{default_path}{section_name}/{random_choice}{color}.svg') if section_name != 'Background' else random_choice
+
+    return handle_avatar_payload(payload)
+
+
 def handle_avatar_payload(body):
     """Handle the Avatar payload."""
     avatar_dict = {}
     valid_component_keys = [
-        'Beard',
-        'Clothing',
-        'Earring',
+        'Wallpaper',
+        'HatLong',
+        'HairLong',
         'EarringBack',
+        'Clothing',
         'Ears',
+        'Head',
+        'Makeup',
+        'HairShort',
+        'Earring',
+        'Beard',
+        'HatShort',
+        'Mustache',
+        'Mouth',
+        'Nose',
         'Eyes',
         'Glasses',
         'Masks',
-        'HairLong',
-        'HairShort',
-        'HatLong',
-        'HatShort',
-        'Head',
-        'Mouth',
-        'Mustache',
-        'Nose',
         'Extras',
-        'Wallpaper',
-        'Makeup',
     ]
     valid_color_keys = ['Background', 'ClothingColor', 'HairColor', 'SkinTone']
     for k, v in body.items():
@@ -623,6 +676,11 @@ def handle_avatar_payload(body):
             avatar_dict[k] = {'component_type': component_type, 'svg_asset': svg_asset, }
         elif v and k in valid_color_keys:
             avatar_dict[k] = v
+
+    # ensure correct ordering of components
+    layers = valid_component_keys + valid_color_keys
+    avatar_dict = {key: avatar_dict[key] for key in layers if key in avatar_dict.keys()}
+
     return avatar_dict
 
 

@@ -265,6 +265,7 @@ $(document).ready(function() {
         fundingOrganisation: data.fundingOrganisation,
         is_featured: data.featuredBounty,
         repo_type: data.repo_type,
+        featuring_date: data.featuredBounty && ((new Date().getTime() / 1000) | 0) || 0,
         reservedFor: reservedFor ? reservedFor.text : '',
         tokenName
       };
@@ -304,7 +305,7 @@ $(document).ready(function() {
           funding_organisation: metadata.fundingOrganisation,
           is_featured: metadata.is_featured,
           repo_type: metadata.repo_type,
-          featuring_date: metadata.featuredBounty && new Date().getTime() / 1000 || 0,
+          featuring_date: metadata.featuring_date,
           privacy_preferences: privacy_preferences,
           funders: [],
           categories: metadata.issueKeywords.split(','),
