@@ -38,7 +38,7 @@ logger = logging.getLogger(__name__)
 SLEEP_TIME = 20
 MAX_COUNTER = 30
 METATX_GAS_PRICE_THRESHOLD = settings.METATX_GAS_PRICE_THRESHOLD # in wei?
-METATX_FREE_INTERVAL_SECONDS = 27 * 24 * 60 * 60 # less than a month-ish has to pay
+METATX_FREE_INTERVAL_SECONDS = 2592000
 
 def process_subscription(subscription, live):
     is_ready_to_be_processed_db = subscription.get_is_ready_to_be_processed_from_db()
