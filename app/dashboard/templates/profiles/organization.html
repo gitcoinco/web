@@ -25,15 +25,17 @@
         <li><b>{{ count_bounties_on_repo }}</b> {% trans "bounties" %}</li>
         <li><b>{{ sum_eth_on_repos|floatformat:2 }}</b> {% trans "ETH" %}</li>
         <li class="works_with_list">
-          {% if works_with_org|length != 0 %}
+          {% if works_with_org|length %}
             <span class="font-body"><i class="fa fa-code"></i> {% trans "Contributors" %}:</span>
-            {% for profile, num_times in works_with_org.items|slice:":5" %}
-              <a href="{% url 'profile' profile %} ">
-                <img src='{% avatar_url profile %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
-              </a>
+            {% for profile, num_times in works_with_org.items %}
+              {% if forloop.counter < 9 %}
+                <a href="{% url 'profile' profile %} ">
+                  <img src='{% avatar_url profile %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
+                </a>
+              {% endif %}
             {% endfor %}
-            {% if works_with_org|length > 5 %}
-              <div href="" class="plus-img" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='{% for profile in works_with_org.items|slice:"5:" %}<a href="{% url "profile" profile %}"><img src="{% avatar_url profile %}"/></a>{% endfor %}'><span>+10</span></div>
+            {% if works_with_org|length > 8 %}
+              <div href="" class="plus-img" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='{% for profile, num_times in works_with_org.items|slice:"5:" %}<a href="{% url "profile" profile %}"><img class="rounded-circle m-1" width="30" height="30" title="{{profile}}: {{ num_times }} times" src="{% avatar_url profile %}"/></a>{% endfor %}'><span>+{{works_with_org|length|add:"-8"}}</span></div>
             {% endif %}
           {% endif %}
         </li>
