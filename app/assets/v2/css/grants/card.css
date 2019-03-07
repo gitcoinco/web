@@ -44,8 +44,7 @@
 }
 
 .grant-item__owner-image,
-.flip-card__flipper .grant__stakeholders-item,
-.flip-card__flipper .grant__stakeholders-item img  {
+.flip-card__flipper .grant__stakeholders-item {
   height: 35px;
   width: 35px;
 }
@@ -57,6 +56,9 @@
 
 .flip-card__flipper .grant__stakeholders-item img {
   border-radius: 50%;
+  height: 50px;
+  width: 50px;
+  margin-bottom: 1rem;
 }
 
 .grant-item__footer {
