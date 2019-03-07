@@ -915,32 +915,67 @@ def render_start_work_applicant_expired(interest, bounty):
 
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
-    subject = "The CodeFund Referral Program"
+    from django.conf import settings
+    subject = "A Free Gitcoin Avatar For YOU!"
     new_kudos_pks = [1904, 1923, 1933]
     new_kudos_size_px = 150
-    intro = '''
-<p>
-Hi Gitcoiners,
-<p>
-<p>
-Do you know a maintainer of an open source repo, looking for money? <a href="https://blog.codefund.app/introducing-the-codefund-referral-program/">CodeFund will pay for a referral.</a> We have $50K in advertising dollars
-aiming to make it's way into open source hands, and are looking for projects who get lots of traffic and want an ethical way to monetize their project. <a href="https://blog.codefund.app/introducing-the-codefund-referral-program/">Get paid to make a referral today!</a>
-</p>
-<p>
-CodeFund has been shipping great features for both publishers and advertisers interested in developers - including <a href="https://blog.codefund.app/introducing-global-pricing/">global pricing</a> and including <a href="https://blog.codefund.app/introducing-codefund-jobs/">CodeFund Jobs</a>, which makes it easier than ever to hire developers.
-We're very excited for the future of CodeFund, and hope you'll be a part!
-</p>
-<p>
+
+
+    from dashboard.models import Profile
+    from django.templatetags.static import static
+    profile = Profile.objects.get(email=to_email)
+    if not profile:
+        return
+    avatars = profile.avatar_baseavatar_related.filter(active=True)
+    always_generate_new_avatar = settings.DEBUG
+    if not avatars.last() or always_generate_new_avatar:
+        avatar = profile.build_random_avatar()
+        avatar_url = avatar.avatar_url
+    else:
+        avatar_url = avatars.first().avatar_url
+
+    kudos_friday = f'''
 <h3>Happy Kudos Friday!</h3>
 </p>
 <p>
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
 </p>
+    '''
+    kudos_friday = ''    
+    animated_avatars = settings.BASE_URL + static('/static/v2/images/animated_avatars.gif')
+    intro = f'''
+<p>
+Hi Gitcoiners,
+<p>
+There are thousands of community members at Gitcoin.  They each have a diverse set of skills, attributes, preferences, and backgrounds.
+</p>
+<p>
+<a href="https://gitcoin.co/onboard/profile/?steps=avatar#section-title">
+<img src='{animated_avatars}'>
+</a>
+</p>
+<p>
+In order to celebrate this, we built the <a href="https://gitcoin.co/onboard/profile/?steps=avatar#section-title">Gitcoin avatar builder</a>. The Gitcoin avatar builder allows you to express yourself with 100s of unique items, that together allow you to create millions of permutations of unique avatars.
+</p>
+<p>
+This week, I have a special treat for you.  We've made you a special Gitcoin avatar.
+</p>
+<p>
+Here it is!
+</p>
+<p>
+<img src={avatar_url}
+</p>
+<p>
+Of course, this avatar was just generated for fun :)  We recommend you head over to the <a href="https://gitcoin.co/onboard/profile/?steps=avatar#section-title">Gitcoin Avatar Builder</a> and create an avatar that you think is uniquely *you* today!
+</p>
 
+<p>
+{kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream">on Friday at 5PM ET or catch it on Twitter</a>!
+            Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream">on Friday at 5PM ET or catch it on <a href="https://twitter.com/GetGitcoin">Twitter</a>!
         </li>
     </ul>
 </p>
