@@ -30,6 +30,7 @@ from django.http import HttpResponse, JsonResponse
 from django.template import loader
 
 import pyvips
+import random
 import requests
 from git.utils import get_user
 from PIL import Image, ImageOps
@@ -62,8 +63,11 @@ def get_avatar_context_for_user(user):
 def get_avatar_context():
     return {
         'defaultSkinTone': 'AE7242',
+        'skin_tones': ['FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031', '593D26' ],
         'defaultHairColor': '000000',
+        'hair_colors': ['000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'],
         'defaultClothingColor': 'CCCCCC',
+        'clothing_colors': ['CCCCCC', '684A23', 'FFCC3B', '4242F4', '43B9F9', 'F48914'],
         'defaultBackground': '25E899',
         'optionalSections': [
             'HairStyle', 
@@ -607,9 +611,9 @@ def build_random_avatar():
     optional.append('Makeup') # Also include Makeup as optional
 
     payload = dict()
-    payload['SkinTone'] = context['defaultSkinTone']
-    payload['HairColor'] = context['defaultHairColor']
-    payload['ClothingColor'] = context['defaultClothingColor']
+    payload['SkinTone'] = random.choice(context['skin_tones'])
+    payload['HairColor'] = random.choice(context['hair_colors'])
+    payload['ClothingColor'] = random.choice(context['clothing_colors'])
 
     for section in context['sections']:
         section_name = section['name'].replace(' ', '')
@@ -641,7 +645,6 @@ def build_random_avatar():
             else:
                 color = (f'-{payload["SkinTone"]}') if section_name in ['Head', 'Ears'] else ((f'-{payload["ClothingColor"]}') if section_name == 'Clothing' else '')
                 payload[section_name] = (f'{default_path}{section_name}/{random_choice}{color}.svg') if section_name != 'Background' else random_choice
-
     return handle_avatar_payload(payload)
 
 
