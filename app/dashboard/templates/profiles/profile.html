@@ -6,7 +6,6 @@
       <meta name="robots" content="noindex">
     {% endif %}
     {% include 'shared/head.html' %}
-    {% include 'shared/rain.html' with class="color" %}
     {% include 'shared/cards_pic.html' %}
     <link rel="stylesheet" href={% static "v2/css/dashboard.css" %} />
     <link rel="stylesheet" href={% static "v2/css/profile.css" %} />
@@ -27,25 +26,30 @@
       {% endif %}
     </div>
     <div class="container-fluid bg-light pb-5">
-      {% if not hidden %}
-      <div id="float_avatar_image" class="{% if is_my_profile %}is_my_profile{% endif %}">
-        {% if is_my_profile %}
-          <a href="{% url "onboard" "profile" %}?steps=avatar">
-        {% endif %}
-            <img class="profile-header__avatar mb-1 mr-4" src="{% if profile.avatar and profile.active_avatar.avatar_url %}{{ profile.active_avatar.avatar_url }}{% else %}{{ profile.avatar_url }}{% endif %}" />
-        {% if is_my_profile %}
-            <div id="avatar_edit">
-              <div id="avatar_edit_text">
-                Edit Avatar
-              </div>
-            </div>
-          </a>
-        {% endif %}
       </div>
         <div class="container profile-card">
           <div class="row">
             <div class="col-12 col-lg-6 profile-header__main-infos">
+              {% if not hidden %}
+              <div id="float_avatar_image" class="{% if is_my_profile %}is_my_profile{% endif %}">
+                {% if is_my_profile %}
+                  <a href="{% url "onboard" "profile" %}?steps=avatar">
+                {% endif %}
+                    <img class="profile-header__avatar mb-1 mr-4" src="{% if profile.avatar and profile.active_avatar.avatar_url %}{{ profile.active_avatar.avatar_url }}{% else %}{{ profile.avatar_url }}{% endif %}" />
+                {% if is_my_profile %}
+                    <div id="avatar_edit">
+                      <div id="avatar_edit_text">
+                        Edit Avatar
+                      </div>
+                    </div>
+                  </a>
+                {% endif %}
+              </div>
+
               <div class="clearfix">
+
+              </div>
+
                 <h1 class="profile-header__handle">
                   {% if profile.data.name %}
                     {{ profile.data.name }}
@@ -74,8 +78,9 @@
                     </a>
                   {% endif %}
                 </p>
-              </div>
+
               {% if preferred_payout_address %}
+
 
                 <div class="my-2">
                   <svg xmlns="http://www.w3.org/2000/svg" width="10" height="16" class="mr-2 mb-1"><path fill="#000" fill-rule="nonzero" d="M10 8.113L5.002 11 0 8.113 5.002 0 10 8.113zm-5 3.821L0 9l5 7 5-7-5 2.934z"/></svg>

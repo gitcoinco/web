@@ -313,8 +313,6 @@
 
 #float_avatar_image{
   z-index: 9999999;
-  position: absolute;
-  left: 40%;
   margin-top: -260px;
 }  
 
@@ -336,19 +334,18 @@
 #avatar_edit{
   text-align: center;
   background-color: white;
-  border-radius: 30% 30% 50% 50%;
+  border-radius: 50%;
   opacity: 0.4;
   filter: alpha(opacity=40);
   color: black;
   vertical-align: text-top;
-  height: 245px;
-  margin-top: 60px;
-  width: 93%;
+  height: 300px;
+  width: 300px;
 }
 #avatar_edit_text {
   position: absolute;
-  top: 80%;
-  left: 30%;
+  top: -25px;
+  left: 115px;
   color: black;
   font-weight: bold;
   z-index: 999999;
@@ -364,32 +361,30 @@
 
 @media (max-width: 1500px) {
     #float_avatar_image{
-      left: 35%;
     }  
 }
 
 
 @media (max-width: 800px) {
     #float_avatar_image{
-      left: 30%;
       margin-top: -270px;
     }  
 }
 
-@media (max-width: 600px) {
+@media (max-width: 790px) {
     #float_avatar_image{
-      left: 20%;
       margin-top: -260px;
     }  
+    #avatar_edit {
+      display: none;
+    }
 }
 
 
 @media (max-width: 500px) {
     #float_avatar_image{
-      left: 15%;
       margin-top: -280px;
     }  
-
     .profile-header.dash{
       height: 600px;
     }
