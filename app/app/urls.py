@@ -119,14 +119,16 @@ urlpatterns = [
     # dashboard views
     re_path(r'^onboard/(?P<flow>\w+)/$', dashboard.views.onboard, name='onboard'),
     re_path(r'^onboard/contributor/avatar/?$', dashboard.views.onboard_avatar, name='onboard_avatar'),
+    url(r'^postcomment/', dashboard.views.post_comment, name='post_comment'),
     url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
     path('revenue/attestations/new', revenue.views.new_attestation, name='revenue_new_attestation'),
 
     # action URLs
-    url(r'^$', retail.views.funder_bounties, name='funder_bounties'),  # TODO : Update Path
-    re_path(r'^contributor/?(?P<tech_stack>.*)/?', retail.views.contributor_bounties,
-            name='contributor_bounties'),  # TODO: Update Path
+    url(r'^bounties/funder', retail.views.funder_bounties, name='funder_bounties'),
+    re_path(
+        r'^bounties/contributor/?(?P<tech_stack>.*)/?', retail.views.contributor_bounties, name='contributor_bounties'
+    ),
     re_path(r'^bounty/quickstart/?', dashboard.views.quickstart, name='quickstart'),
     url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
     re_path(r'^bounty/change/(?P<bounty_id>.*)?', dashboard.views.change_bounty, name='change_bounty'),
@@ -247,7 +249,7 @@ urlpatterns = [
     re_path(r'^modal/extend_issue_deadline/?', dashboard.views.extend_issue_deadline, name='extend_issue_deadline'),
 
     # brochureware views
-    re_path(r'^homepage/$', retail.views.index, name='index'),  # Update path to ^$
+    re_path(r'^$', retail.views.index, name='index'),
     re_path(r'^pricing/$', retail.views.pricing, name='pricing'),
     re_path(r'^subscribe/$', retail.views.subscribe, name='subscribe'),
     re_path(r'^about/?', retail.views.about, name='about'),
@@ -273,6 +275,7 @@ urlpatterns = [
     # basic redirect retail views
     re_path(r'^press/?', retail.views.presskit, name='press'),
     re_path(r'^presskit/?', retail.views.presskit, name='presskit'),
+    re_path(r'^verified/?', retail.views.verified, name='verified'),
     re_path(r'^community/?', retail.views.community, name='community'),
     re_path(r'^slack/?', retail.views.slack, name='slack'),
     re_path(r'^submittoken/?', retail.views.newtoken, name='newtoken'),

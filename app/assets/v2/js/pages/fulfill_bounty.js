@@ -1,5 +1,19 @@
 /* eslint-disable no-console */
 window.onload = function() {
+
+  // Check Radio-box
+  $('.rating input:radio').attr('checked', false);
+
+  $('.rating input').click(function() {
+    $('.rating span').removeClass('checked');
+    $(this).parent().addClass('checked');
+  });
+
+  $('input:radio').change(
+    function() {
+      var userRating = this.value;
+    });
+
   // a little time for web3 injection
   setTimeout(function() {
     waitforWeb3(actions_page_warn_if_not_on_same_network);
@@ -102,11 +116,28 @@ window.onload = function() {
                     txid: result
                   });
 
-                  dataLayer.push({ event: 'claimissue' });
-                  _alert({ message: gettext('Fulfillment submitted to web3.') }, 'info');
-                  setTimeout(() => {
-                    document.location.href = '/funding/details?url=' + issueURL;
-                  }, 1000);
+                  var submitCommentUrl = '/postcomment/';
+                  var finishedComment = function() {
+                    dataLayer.push({ event: 'claimissue' });
+                    _alert({ message: gettext('Fulfillment submitted to web3.') }, 'info');
+                    setTimeout(() => {
+                      document.location.href = '/funding/details?url=' + issueURL;
+                    }, 1000);
+                  };
+                  var ratVal = $('input:radio[name=rating]:checked').val();
+                  var revVal = $('#review').val();
+
+                  $.post(submitCommentUrl, {
+                    'github_url': issueURL,
+                    'network': $('input[name=network]').val(),
+                    'standard_bounties_id': $('input[name=standard_bounties_id]').val(),
+                    'review': {
+                      'rating': ratVal ? ratVal : -1,
+                      'comment': revVal ? revVal : 'No comment given.',
+                      'reviewType': 'worker',
+                      'receiver': ''
+                    }
+                  }, finishedComment, 'json');
                 };
 
                 if (error) {

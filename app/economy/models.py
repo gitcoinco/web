@@ -20,6 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import unicode_literals
 
+import json
+
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.contrib.postgres.fields import JSONField
 from django.core.serializers.json import DjangoJSONEncoder
@@ -31,6 +33,7 @@ from django.dispatch import receiver
 from django.forms.models import model_to_dict
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.encoding import force_text
 from django.utils.functional import Promise
 from django.utils.html import escape
 from django.utils.timezone import localtime
@@ -49,9 +52,9 @@ class EncodeAnything(DjangoJSONEncoder):
         elif isinstance(obj, QuerySet):
             if obj.count() and type(obj.first()) == str:
                 return obj[::1]
-            return [EncodeAnything(instance) for instance in obj]
+            return [json.dumps(instance, cls=EncodeAnything) for instance in obj]
         elif isinstance(obj, list):
-            return [EncodeAnything(instance) for instance in obj]
+            return [json.dumps(instance, cls=EncodeAnything) for instance in obj]
         elif(callable(obj)):
             return None
         return super(EncodeAnything, self).default(obj)

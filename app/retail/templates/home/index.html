@@ -38,7 +38,7 @@
               make new relationships, earn kudos, and get paid for the work you already love.{% endblocktrans %}
             </p>
             <div class="buttons">
-              <a class="btn btn-gc-green mr-2" href="{% url "new_funding" %}">{% trans "Fund an Issue" %}</a>
+              <a class="btn btn-gc-green mr-2" href="{% url "new_bounty" %}">{% trans "Fund an Issue" %}</a>
               <a class="btn btn-outline-white ml-2" href="{% url "products" %}">{% trans "See Our Products" %}</a>
             </div>
           </div>
@@ -49,26 +49,39 @@
       </div>
     </div>
 
-    <div class="col-12 col-md-6 offset-md-3 text-center">
-      <p class="font-title mt-5 pt-5">
-        <span>{% trans "The weight of maintaining open source falls on the" %}</span> <br>
-        <span class="my-2">{% trans "shoulders of 0.01%." %}</span><br>
-        <span>{% trans "This is not sustainable." %}</span>
-      </p>
+    <div class="col-12 col-md-8 offset-md-2 text-center my-5 p-5 font-weight-semibold issue">
+      {% blocktrans %}
+        <h2 class="font-title-xl mt-4 mb-4">
+          The weight of
+          <span>maintaining open source falls</span><br>
+          shoulders of <span class="mt-4">0.01% developers.</span>
+        </h2>
+        {% endblocktrans %}
+        {% include 'shared/tree.html' %}
+        <h2 class="font-title-xl g-fadein mt-3 mb-1" data-fade-duration=1000>
+          {% trans "This is" %} <strong>{% trans "not sustainable." %}</strong>
+        </h2>
+        <h2 class="font-title-xl g-fadein mt-1 mb-1" data-fade-duration=1000>
+          {% trans "This is" %} <strong>{% trans "not right." %}</strong>
+        </h2>
+        <h2 class="font-title-xl g-fadein mt-1 mb-2" data-fade-duration=1000>
+          {% trans "This is" %} <strong>{% trans "why we built Gitcoin." %}</strong>
+        </h2>
     </div>
-    <img id="cards" class="w-100" src="{% static "v2/images/home/cards.svg" %}" />
+
+    <img class="w-100 mb-5" src="{% static "v2/images/home/story.svg" %}" />
 
     <div id="optimize_oss" class="mt-5">
       <div class="container pt-0">
         <div class="row">
-          <div class="col-12 col-md-8 col-lg-6">
+          <div class="col-12 col-md-8 col-lg-6 g-fadein" data-fade-duration=1000 data-fade-direction="left">
             <h2>
               {% trans "Tools to optimize the oss life cycle for users, contributors, and maintainers" %}
             </h2>
             <p class="mb-4">{% blocktrans %}Gitcoin grows open source through a suite of products, capturing and retaining
               contributor value through an on-demand bounty marketplace and recurring funding, and
               sustains open source projects through ethical advertising. Our suite of products meet
-              open source contributors where they are from the start of a project to later lifecycles
+              open source contributors where they are, from the start of a project, to later lifecycles
               of project maintenance and appreciation.{% endblocktrans %}
             </p>
             <a class="font-weight-semibold mt-1" href="{% url "products" %}" target="_blank">
@@ -88,7 +101,7 @@
             </div>
 
           </div>
-          <div class="text-center col-12 offset-lg-1 col-md-4">
+          <div class="text-center col-12 offset-lg-1 col-md-4 g-fadein" data-fade-duration=1000 data-fade-direction="right">
             <figure>
                 <img class="optimize-img text-center px-3 w-100" src="{% static "v2/images/home/optimize_oss.svg" %}"
                 alt="optimize_oss lifecyle with gitcoin" />
@@ -104,7 +117,6 @@
         <span>{% trans "OSS lifecycle looks like this." %}</span>
       </p>
     </div>
-    <img id="cards" class="w-100" src="{% static "v2/images/home/cards_update.svg" %}" />
 
     <div id="products">
       <img class="text-center px-3 bot-circle" src="{% static "v2/images/home/bot-circle.svg" %}"
@@ -178,9 +190,9 @@
       </div>
     </div>
     <div id="realign">
-      <div class="container">
-        <div class="row">
-          <div class="ol-12 col-md-8 col-lg-6">
+      <div class="container" >
+        <div class="row mt-5">
+          <div class="col-12 col-md-8 col-lg-6 g-fadein" data-fade-duration=1000 data-fade-direction="left">
             <h2>{% trans "Realign open source incentives" %}</h2>
             <p>
               {% blocktrans %}Open source contributors provide value that is often not
@@ -197,7 +209,7 @@
             </p>
             <a class="font-weight-semibold" href="{% url "results" %}">{% trans "Learn more" %}</a>
           </div>
-          <div class="col-12 offset-lg-1 col-md-4 text-center">
+          <div class="col-12 offset-lg-1 col-md-4 text-center g-fadein" data-fade-duration=1000 data-fade-direction="right">
             <figure>
               <img class="realign-img px-3 w-100" src="{% static "v2/images/home/realign.svg" %}" alt="realign open source incentives" />
             </figure>
