@@ -1,0 +1,9 @@
+{% load i18n  %}
+
+Ownershipt of {{ grant.title }} has been transferred over to  {{ grant.admin_profile.handle }}
+
+{% trans "Title" %} : {{ grant.title }}
+
+{% trans "Goal" %} : {{ grant.amount_goal }}
+
+{% trans "The details of the grant can be seen here:" %} {{ grant.reference_url }}

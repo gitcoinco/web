@@ -15,6 +15,8 @@ Gitcoin Grows Open Source. Learn more at [https://gitcoin.co](https://gitcoin.co
 [![Waffle.io - Columns and their card count](https://badge.waffle.io/gitcoinco/web.svg?columns=all)](https://waffle.io/gitcoinco/web)
 
 This is the website that is live at [gitcoin.co](https://gitcoin.co)
+```master``` branch - staging
+```stable``` branch - live on gitcoin.co
 
 ## Documentation
 
@@ -58,7 +60,7 @@ Also,
 
 [Check out the available open issues on Gitcoin](https://gitcoin.co/explorer/?q=https://github.com/gitcoinco/web).
 
-## What
+## What is Gitcoin?
 
 Functionally, the app has several key features:
 
@@ -137,7 +139,7 @@ Testimonials & Case Studies
 * [Ethereum Foundation](https://medium.com/gitcoin/gitcoin-testimonials-ethereum-foundation-web3py-py-evm-561cd4da92a6)
 * [Market Protocol](https://medium.com/gitcoin/gitcoin-testimonials-market-protocol-722dbb263d19)
 
-## Integrating the 'available work widget' on your repo.
+## Integrating the 'available work widget' into your repository
 
 This widget will help you advertise that you support Gitcoin bounties, so that your community knows the best place to contribute.
 
@@ -151,11 +153,11 @@ Gitcoinbot will allow you to add issues straight from github.
 
 ## Adding your token to Gitcoin
 
-Have an ERC20 compatible token that you'ud like to add support for?  Great!  Submit [this form](https://gitcoin.co/submittoken) to submit it to the system
+Have an ERC20 compatible token that you'd like to use on the platform?  Great!  Submit [this form](https://gitcoin.co/submittoken) to submit it to the system
 
-## High Level flows
+## High Level flows...
 
-### of a Bounty
+### ... of a Bounty
 
 This is the high level flow of a bounty on Gitcoin:
 
@@ -171,13 +173,16 @@ Chain of Custody
 
 Anywhere between 2 and 4 above, Funder may withdraw their funds via 'Cancel Bounty' function for any reason.
 
-We may introduce Arbitration [via Delphi](http://delphi.network/) at some point in the future.  Until then, we are lucky that Github users are very protective of their reputation, and therefore very kind to each other, and disputes have not generally arisen.
+### ... of a Tip
 
-### of a Tip
+*ToDo*
 
-### or of a Kudos
+### ... of a Kudos
 
-Note: 
+*ToDo*
+
+### Notes
+
 - Crowdfunded bounties + bulk payouts are secured by Tips (at least until Standard Bounties 2.0 is released).
 - Kudos are also secured by Tips
 
@@ -185,29 +190,10 @@ This is the high level flow of a bounty on Gitcoin:
 
 <a href="https://www.draw.io/#G1sTJtQou5FYsHCabhb2JXHDTprpvvkUy0"><img src='https://github.com/gitcoinco/web/raw/master/docs/tip_flow.png'></a>
 
-# Legal
+# Licenses
 
-'''
-    Copyright (C) 2018 Gitcoin Core
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-'''
-
-# License
-
-[GNU AFFERO GENERAL PUBLIC LICENSE](../LICENSE)
+- [Code - GNU AFFERO GENERAL PUBLIC LICENSE](../LICENSE)
+- [Creative assets -- Attribution-NonCommercial-NoDerivatives 4.0 International](../app/assets/LICENSE.txt)
 
 <!-- Google Analytics -->
 <img src='https://ga-beacon.appspot.com/UA-102304388-1/gitcoinco/web' style='width:1px; height:1px;' >

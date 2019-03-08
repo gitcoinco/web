@@ -21,8 +21,9 @@
   outline: none;
   border: none;
   cursor: pointer;
-  color: var(--gc-purple);
+  color: black;
   padding: 0;
+  font-weight: 600;
 }
 
 .section-tab:hover,

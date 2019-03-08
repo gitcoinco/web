@@ -1,5 +1,19 @@
 /* eslint-disable no-console */
 window.onload = function() {
+
+  // Check Radio-box
+  $('.rating input:radio').attr('checked', false);
+
+  $('.rating input').click(function() {
+    $('.rating span').removeClass('checked');
+    $(this).parent().addClass('checked');
+  });
+
+  $('input:radio').change(
+    function() {
+      var userRating = this.value;
+    });
+
   // a little time for web3 injection
   setTimeout(function() {
     waitforWeb3(actions_page_warn_if_not_on_same_network);
@@ -21,7 +35,32 @@ window.onload = function() {
       $('#tipEstimate').text(estimate);
     });
 
-    $('#goBack').click(function(e) {
+    var fulfillmentCallback = function(results, status) {
+      if (status != 'success') {
+        _alert({ message: gettext('Could not get fulfillment details') }, 'warning');
+        console.error(error);
+        unloading_button($('.submitBounty'));
+        return;
+      }
+      results = sanitizeAPIResults(results);
+      result = results[0];
+      if (result === null) {
+        _alert({ message: gettext('No bounty fulfillments found for this Github URL.  Please use the advanced payout tool instead.') }, 'warning');
+        unloading_button($('.submitBounty'));
+        return;
+      }
+
+    };
+
+    var issueURL = $('input[name=issueURL]').val();
+
+    waitforWeb3(function() {
+      var uri = '/api/v0.1/bounties/?github_url=' + issueURL + '&network=' + document.web3network;
+
+      $.get(uri, fulfillmentCallback);
+    });
+
+    $('#goBack').on('click', function(e) {
       var url = window.location.href;
       var new_url = url.replace('process?source', 'details?url');
 
@@ -96,7 +135,7 @@ window.onload = function() {
     };
 
 
-    $('#acceptBounty').click(function(e) {
+    $('#acceptBounty').on('click', function(e) {
       try {
         bounty_address();
       } catch (exception) {
@@ -104,9 +143,7 @@ window.onload = function() {
         return;
       }
 
-      mixpanel.track('Process Bounty Clicked', {});
       e.preventDefault();
-      var whatAction = $(this).html().trim();
       var issueURL = $('input[name=issueURL]').val();
       var fulfillmentId = getSelectedFulfillment().getAttribute('value');
 
@@ -136,7 +173,6 @@ window.onload = function() {
 
       var apiCallback = function(results, status) {
         if (status != 'success') {
-          mixpanel.track('Process Bounty Error', {step: 'apiCallback', error: error});
           _alert({ message: gettext('Could not get bounty details') }, 'warning');
           console.error(error);
           unloading_button($('.submitBounty'));
@@ -183,16 +219,33 @@ window.onload = function() {
               'txid': result
             });
 
-            _alert({ message: gettext('Submitted transaction to web3.') }, 'info');
-            setTimeout(function() {
-              mixpanel.track('Process Bounty Success', {});
-              document.location.href = '/funding/details?url=' + issueURL;
-            }, 1000);
+            _alert({ message: gettext('Submitted transaction to web3, saving comment(s)...') }, 'info');
+
+            var submitCommentUrl = '/postcomment/';
+            var finishedComment = function() {
+              _alert({ message: gettext('Submitted transaction to web3.') }, 'info');
+              setTimeout(() => {
+                document.location.href = '/funding/details?url=' + issueURL;
+              }, 1000);
+            };
+            var ratVal = $('input:radio[name=rating]:checked').val();
+            var revVal = $('#review').val();
+
+            $.post(submitCommentUrl, {
+              'github_url': issueURL,
+              'network': $('input[name=network]').val(),
+              'standard_bounties_id': $('input[name=standard_bounties_id]').val(),
+              'review': {
+                'rating': ratVal ? ratVal : -1,
+                'comment': revVal ? revVal : 'No comment given.',
+                'reviewType': 'approver',
+                'receiver': getSelectedFulfillment().getAttribute('username')
+		          }
+            }, finishedComment, 'json');
 
           };
 
           if (error) {
-            mixpanel.track('Process Bounty Error', {step: 'final_callback', error: error});
             _alert({ message: gettext('There was an error') }, 'error');
             console.error(error);
             unloading_button($('.submitBounty'));

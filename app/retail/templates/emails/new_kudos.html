@@ -21,9 +21,11 @@
   .kudos-box {
     margin-bottom: 2em;
   }
+
   .kudos-contents {
     text-align: center;
   }
+
   .kudos {
     display: flex;
     justify-content: center;
@@ -32,6 +34,7 @@
     padding-left: 1em;
     padding-right: 1em;
   }
+
   .cols {
     display: flex;
     align-content: center;
@@ -39,14 +42,16 @@
     width: 65%;
     align-items: center;
     margin: 3em auto;
-    /* flex-direction: column; */
   }
+
   .col {
     width: 100%;
   }
+
   .col-img {
     margin: 0 2em;
   }
+
   .col-txt {
     text-align: left;
     line-height: 2;
@@ -55,61 +60,138 @@
   hr {
     width: 80%;
   }
+
   @media screen and (max-width: 48em) {
     .cols {
       flex-direction: column;
     }
+  }  
+
+  .kudos-fancy-bg {
+    background-color: #3E00FF;
+    background-image: url("{% static 'v2/images/kudos/kudos-bg.png' %}");
+    background-position: center;
+    background-size: cover;
+    padding: .5em;
+  }
+
+  .kudos-fancy-bg h1 {
+    color: #FFFFFF;
+    letter-spacing: 0;
+    text-align: center;
+    line-height: 59px;
+  }
+
+  .kudos-fancy-bg h3 {
+    color: #FFFFFF;
+    letter-spacing: 0;
+    text-align: center;
+    line-height: 50px;
+  }
+
+  .kudos-fancy-bg p {
+    color: #FFFFFF;
+  }
+
+  .kudos-fancy-bg .kudos-sparkle {
+    position: absolute;
+    background-image: url("{% static 'v2/images/kudos/kudos-sparkle.png' %}");
+    width: 185px;
+    height: 178px;
+    top: 85%;
+    left: 15%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 70px;
+    display: inline;
+}
+
+  .kudos-fancy-bg .kudos-sparkle-reverse {
+    transform: scaleX(-1) scaleY(-1);
+    left: 60%;
+    top: -10%;
+  }
+
+  .kudos-fancy-bg .kudos-hex-container {
+    position: relative;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 150px;
+    height: 360px;
+  }
+
+  .kudos-fancy-bg .kudos-hex-content {
+    position: relative;
+    top: 10%;
+  }
+
+  .kudos-fancy-bg .kudos-hex-content img {
+    position: relative;
+    width: 330px;
+    max-width: 100%;
   }
 </style>
-
 <div>
-  {% if is_new %}
-  <h1>{% trans "You've Received a Kudos" %}</h1>
-  {% else %}
-  <h1>🕑 {% trans "Reminder: Kudos Expires Soon" %} 🕝</h1>
-  {% endif %}
-  <h3>
-    {% if kudos_transfer.from_name %}
-      {{ kudos_transfer.from_name }} {% blocktrans %} sent you a {% endblocktrans %}<b>{{ token_elem.name|humanize_name }}</b> kudos!
-    {% else %}
-      {% trans "Someone sent you a" %} <b>{{ token_elem.name|humanize_name }}</b> kudos.
-    {% endif %}{% if not is_new %} {{ kudos_transfer.created_on|naturaltime }}{% endif %}
-  </h3>
-  <div>
-    <img src="{{ token_elem.img_url }}" alt="{{ token_elem.name|humanize_name }}" width="200" style="margin:auto;">
-  </div>
-</div>
-
-<div class="centered-contents kudos-box">
-  <div class="kudos">
-    <div class="kudos-contents">
-      {% if kudos_transfer.github_url %}
-        <p>
-        {% if kudos_transfer.from_name %}{{ kudos_transfer.from_name }}{% else %}The sender{% endif %} said it was for your work on <a href="{{ kudos_transfer.github_url }}">{{ kudos_transfer.github_url }}</a>.
-        {% if comments %}
-          {% trans "They had the following comments:" %}
-          <pre>{{ comments }}</pre>
-        {% endif %}
-        </p>
+  <div class="kudos-fancy-bg">
+    <h1>
+      {% if is_new %}
+        {% trans "Awesome!" %}
+      {% else %}
+         🕑 {% trans "Reminder: Kudos Expires Soon" %} 🕝
       {% endif %}
-
+    </h1>
+    <h3>
+      {% trans "You received a" %} <a href="{{ token_elem.kudos_token_cloned_from.url }}"><b style="  font-weight: lighter;  text-transform: capitalize;  line-height: 50px;  font-size: 1.3rem;  color: #FFF;  letter-spacing: 0;  text-align: center;">{{ token_elem.name|humanize_name }}</b></a> {% trans "kudos" %}
+      {% if kudos_transfer.from_name %}
+        {% trans "from" %} <b>{{ kudos_transfer.from_name }}</b>
+      {% endif %}
+      !
+    </h3>
+    {% if not is_new %}
+      {{ kudos_transfer.created_on|naturaltime }}
+    {% endif %}
+    <div class="kudos-hex-container">
+      <div class="kudos-sparkle">
+        &nbsp;
+      </div>
+      <div class="kudos-sparkle kudos-sparkle-reverse">
+        &nbsp;
+      </div>
+      <div class="kudos-hex-content">
+        <a href="{{ token_elem.kudos_token_cloned_from.url }}">
+          <img src="{{ token_elem.img_url }}" alt="{{ token_elem.name|humanize_name }}">
+        </a>
+      </div>
+    </div>
+    <br>
+    <p>
       {% if comments_priv %}
-        <p>
-          {% trans "They had the following private comments:" %}
-          <pre>{{ comments_priv }}</pre>
-        </p>
+        {{ comments_priv }}<br>
       {% endif %}
-
       {% if comments_public %}
-        <p>
-          {% trans "Comment:" %}
-          <pre>{{ comments_public }}</pre>
-        </p>
+        {{ comments }}<br>
+      {% endif %}
+      {% if kudos_transfer.github_url %}
+        {% if kudos_transfer.from_name %}
+          {{ kudos_transfer.from_name }}
+        {% else %}
+          {% trans "The sender" %}
+        {% endif %}
+         {% trans " said it was for your work on" %} <a href="{{ kudos_transfer.github_url }}">{{ kudos_transfer.github_url }}</a>.
+      {% endif %}
+    </p>
+    <div style="margin: 3em;">
+      {% if not already_redeemed %}
+        <a style="color:#fff; text-decoration:none; font-size:14px; background-color:#15003e; border-radius:5px; line-height:1.5; padding:15px 20px; text-align:center" bgcolor="#15003e" href="{{ link }}">{% trans "Accept Kudos" %}</a>
       {% endif %}
       {% if already_redeemed %}
         <p>
-          {% trans "This kudos has been remitted automatically to the Ethereum address on file for your account via txid " %}{{kudos_transfer.txid}}
+          {% trans "This kudos has been remitted automatically to the Ethereum address on file (and to your Gitcoin profile). " %}
         </p>
+        <BR>
+        <a style="color:#fff; text-decoration:none; font-size:14px; background-color:#15003e; border-radius:5px; line-height:1.5; padding:15px 20px; text-align:center" bgcolor="#15003e" href="https://gitcoin.co/profile/{{kudos_transfer.username}}">{% trans "View Profile" %}</a>
+        <a style="color:#fff; text-decoration:none; font-size:14px; background-color:#15003e; border-radius:5px; line-height:1.5; padding:15px 20px; text-align:center" bgcolor="#15003e" href="https:/etherscan.io/tx/{{kudos_transfer.txid}}">{% trans "View Transaction" %}</a>
+
       {% elif show_expires %}
         <p>
           {% trans "The kudos expires on" %} <strong>{{ kudos_transfer.expires_date }}, {% trans "in just" %} {{ kudos_transfer.expires_date|naturaltime }}</strong>. {% trans "No pressure, but if you wanted to redeem your kudos sooner rather than later that'd be 👌:" %}
@@ -117,25 +199,16 @@
       {% endif %}
     </div>
   </div>
-  {% if not already_redeemed %}
-    <div style="margin: 3em;">
-      <a class="button" href="{{ link }}">{% trans "Accept Kudos" %}</a>
+  <div class="cols">
+    <div class="col">
+      <img src="{% static 'v2/images/emails/email-kudos.png' %}" alt="{{ token_elem.name|humanize_name }}" width="134" height="155" class="col-img">
     </div>
-  {% endif %}
-</div>
-
-<hr>
-
-<div class="cols">
-  <div class="col">
-    <img src="{% static 'v2/images/emails/email-kudos.png' %}" alt="{{ token_elem.name|humanize_name }}" width="134" height="155" class="col-img">
+    <div class="col">
+      <p class="col-txt">{% trans "Kudos is a way of showing your appreciation for another Gitcoin member. It's also a way to showcase special skills that a member might have, such as Pythonista, or Design Star." %} {% trans "Kudos are non-fungible tokens that can also be bought and sold on the" %} <b>{% trans "Kudos Marketplace" %}</b>{% trans "." %}</p>
+    </div>
   </div>
-  <div class="col">
-    <p class="col-txt">Kudos is a way of showing your appreciation for another Gitcoin member. It's also a way to showcase special skills that a member might have, such as Pythonista, or Design Star. Kudos are non-fungible tokens that can also be bought and sold on the <b>Kudos Marketplace</b>.</p>
+  <div style="margin: 3em 0 5em;">
+    <a class="button" href="{% url 'kudos_about' %}">{% trans "Learn More" %}</a>
   </div>
 </div>
-<div style="margin: 3em 0 5em;">
-  <a class="button" href="{% url 'kudos_about' %}">{% trans "Learn More" %}</a>
-</div>
-
 {% endblock %}

@@ -21,6 +21,15 @@
 {% block content %}
 
 <style>
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+
   hr {
     width: 80%;
     height: 2px;
@@ -29,31 +38,28 @@
     background-color: #D2D2D2;
   }
 
-  .grantInfo {
+  .grant-info {
+    padding-top: 30px;
     padding-bottom: 1%;
   }
 
-  .grantInfo a img {
-    border-radius: 25px;
+  .grant-info a img {
     margin-bottom: 10px;
   }
 
-  .grantInfoName {
-    font-size: 20px;
+  .grant-info-name {
+    font-size: 1.5rem;
+    font-weight: 600;
     color: #0D0764;
   }
 
-  .grantInfo h5 {
-    font-size: 14px;
-    margin-top: 15px;
-    margin-top: 30px;
+  .grant-description {
+    max-width: 50rem;
+    margin: 1.5rem auto;
+    text-align: justify;
   }
 
-  .grantInfo h3 {
-    margin-top: -20px;
-  }
-
-  .updatesButton {
+  .grant-button {
     padding: 12px 36px;
     font-size: 12px;
     border-radius: 3px;
@@ -63,11 +69,11 @@
   }
 
   #grow-oss {
-    margin-top: 70px;
-    margin-bottom: 40px;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
   }
 
-  .grantUpdate {
+  .grant-update {
     width: 100%;
     margin-top: 30px;
     padding-bottom: 10px;
@@ -79,62 +85,68 @@
   }
 
   @media screen and (min-width: 900px) {
-    .grantUpdateIcon {
+    .grant-update-icon {
       width: 5%;
       float: left;
       margin-top: 20px;
     }
-    .grantUpdate {
+
+    .grant-update {
       width: 100%;
       padding-left: 10%;
       padding-bottom: 200px;
       transform: translateY(-150%);
     }
-    .grantUpdateContent {
+
+    .grant-update-content {
       width: 93%;
       float: left;
       text-align: left;
       margin-left: 2%;
     }
-    .grantUpdateContent > p:last-child {
+
+    .grant-update-content > p:last-child {
       padding-right: 25%;
       color: #43484D;
     }
-    .grantUpdateContent > h3 {
+
+    .grant-update-content > h3 {
       color: #43484D;
     }
   }
 
 </style>
-<img id="newSupporter" src="{% static "v2/images/update-notification.png" %}" alt="{% trans "Update!" %}" title="{% trans "Update!" %}">
-<h1 style="text-transform: none;">{% trans "An update has been posted for:" %}</h1>
-<div class="grantInfo">
-  <a href="{% url 'grant:details' grant.id %}">
-    <img src="{{ grant.logo.url }}" style="width: 50px; height: 50px;"/>
+<img src="{% static "v2/images/update-notification.png" %}" alt="{% trans "Update!" %}" title="{% trans "Update!" %}">
+<h1 style="margin-bottom:1.25rem;">{% trans "An update has been posted for:" %}</h1>
+<div class="grant-info">
+  <a href="{% url 'grants:details' grant.id grant.slug %}">
+    <img id="grant-logo" src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}" alt="grant logo" >
   </a>
   <br>
-  <a class="grantInfoName" href="{% url 'grant:details' grant.id %}">{{ grant.title }}</a>
-  <p>{{ grant.description }}</p>
-</div>
-
-<br>
+  <a class="grant-info-name" href="{% url 'grants:details' grant.id grant.slug %}">
+    {{ grant.title }}
+  </a>
+  <p class="grant-description">
+    {{ grant.description }}
+  </p>
 
 <hr>
-<div class="grantUpdate">
-  <div class="grantUpdateIcon">
+
+<div class="grant-update">
+  <div class="grant-update-icon">
     <img src="{% static "v2/images/file-text.png" %}" alt="{% trans "New Grant Update." %}" title="{% trans "New Grant Update" %}">
   </div>
-  <div class="grantUpdateContent">
+  <div class="grant-update-content">
     <h3>{{ activity.title }}</h3>
     <p class="upDate">{{ activity.date }}</p>
     <p>{{ activity.description }}</p>
   </div>
 </div>
+
 <hr>
 
 <br>
-<br>
-<a class="updatesButton" href="{% url 'grant:details' grant.id %}">{% trans "View Grant" %}</a>
+<a class="grant-button" href="{% url 'grant:details' grant.id %}">{% trans "View Grant" %}</a>
 <br>
 
 {% endblock %}

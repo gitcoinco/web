@@ -45,6 +45,18 @@ h2.title {
   height: 5rem;
 }
 
+#cancelled-subscriptions .subtitle {
+  color: #C70018;
+}
+
+#active-subscriptions .subtitle {
+  color: #008EFF;
+}
+
+#contributions .subtitle {
+  color: #00A652;
+}
+
 @media (max-width: 767.98px) {
   .txn-link,
   .special_tag {

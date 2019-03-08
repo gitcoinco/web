@@ -13,11 +13,12 @@
  *
 */
 
-var fetchData = function(urlRequest, methodType, data) {
+var fetchData = function(urlRequest, methodType, data, headers) {
   // Return the $.ajax promise
   return $.ajax({
     url: urlRequest,
     type: methodType,
+    headers: headers,
     dataType: 'json',
     data: data
   });

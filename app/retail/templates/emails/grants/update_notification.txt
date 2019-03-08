@@ -4,8 +4,6 @@
 
 {% trans "An update has been posted for:" %}
 
-{{ grant.logo.url }}
-
 {{ grant.title }}
 
 {{ grant.desciption }}
@@ -18,4 +16,4 @@
 
 {{ activity.description }}
 
-{% trans "View Grant" %}
+{% trans "View Grant" %} {{ grant.reference_url }}

@@ -92,12 +92,13 @@ $('.kudos-search').on('select2:select select2:unselecting', function(e) {
   }
 });
 
-var refreshIntervalId = setInterval(checkVariable, 1000);
-
 function checkVariable() {
-  if (typeof result !== 'undefined') {
-    clearInterval(refreshIntervalId);
-    bountyKeywords = result.keywords.split(',');
+  bountyKeywords = $('input[name=keywords]').val().split(',');
+  waitforWeb3(function() {
     getSuggestions(bountyKeywords);
-  }
+    console.log(bountyKeywords);
+  });
 }
+$(document).ready(function() {
+  checkVariable();
+});

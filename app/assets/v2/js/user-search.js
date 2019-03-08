@@ -1,15 +1,32 @@
-function userSearch(elem, showAddress, theme) {
+function userSearch(elem, showAddress, theme, initialData, allowClear, suppress_non_gitcoiners) {
   var themeChoice = theme || undefined;
   var selectItem = elem || '.username-search';
+
+  if (initialData) {
+    initialData = initialData.map(
+      function(userHandle) {
+        return {
+          'id': userHandle,
+          'text': userHandle,
+          'avatar_url': '/dynamic/avatar/' + userHandle,
+          'selected': true
+        };
+      }
+    );
+  }
 
   $(selectItem).each(function() {
     if (!$(this).length) {
       return;
     }
+    var url = '/api/v0.1/users_search/?token=' + currentProfile.githubToken;
 
+    if (suppress_non_gitcoiners) {
+      url += '&suppress_non_gitcoiners=true';
+    }
     $(this).select2({
       ajax: {
-        url: '/api/v0.1/users_search/?token=' + currentProfile.githubToken,
+        url: url,
         dataType: 'json',
         delay: 250,
         data: function(params) {
@@ -27,6 +44,8 @@ function userSearch(elem, showAddress, theme) {
         },
         cache: true
       },
+      data: initialData,
+      allowClear: allowClear,
       theme: themeChoice,
       placeholder: 'Search by Github/Gitcoin username',
       minimumInputLength: 3,
@@ -66,7 +85,7 @@ function userSearch(elem, showAddress, theme) {
       if (user.id) {
         selected = `
           <img class="rounded-circle" src="${user.avatar_url || static_url + 'v2/images/user-placeholder.png'}" width="20" height="20"/>
-          ${user.text}`;
+          <span class="ml-2">${user.text}</span>`;
       } else {
         selected = user.text;
       }

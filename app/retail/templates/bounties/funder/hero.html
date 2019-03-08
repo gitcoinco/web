@@ -1,0 +1,42 @@
+{% comment %}
+  Copyright (C) 2019 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+<div class="row ml-5">
+  <div class="col-12 header-line mt-5">{% trans "Do More Work, Faster" %}</div>
+  <div class="col-12 subheader-line mt-3">
+    <span>{% trans "Gitcoin is the easiest way" %}</span><br>
+    <span>{% trans "to leverage the open source community" %}</span><br>
+    <span>{% trans "to incentivize or monetize work." %}</span>
+  </div>
+</div>
+<div id="hero_cta" class="row">
+  <div class="col d-flex justify-content-end  mt-5 mb-5 mr-5">
+    <div class="text-center">
+      <div>
+        <a class="btn btn-gc-blue" role="button" href="{% url "new_funding" %}" target="_blank" rel="noopener noreferrer">
+          <i class="fab fa-ethereum mr-1" aria-hidden="true"></i>
+          <span>{% trans "Fund an Issue" %}</span>
+        </a>
+        <a class="btn btn-outline-gc-green ml-3" role="button" href="{% url "how_it_works" 'funder' %}">
+          <i class="fas fa-map mr-1" aria-hidden="true"></i>
+          <span>{% trans "How it works" %}</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% include 'shared/rain.html' with class="grey" %}

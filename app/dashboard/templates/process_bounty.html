@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -61,7 +61,7 @@
             </div>
             <div class="col offset-md-1 col-md-10 d-flex align-items-center justify-content-center" id="primary_form">
               <div class="d-flex justify-content-center flex-column mt-5" id="primary_subform">
-                <div class="w-100" style="text-align: center;">
+                <div class="w-100 text-center">
                   <h3>{% trans "Basic Payout" %}</h3>
                   <p><a href="{{action_urls.advanced_payout}}">Switch to Advanced Payout</a></p>
                   <img src="{% static "v2/images/prime.png" %}">
@@ -73,7 +73,7 @@
                 </div>
                 <div class="w-100 my-2">
                   <label for='bountyFulfillment'>{% trans "Bounty Submission:" %}</label>
-                  <label id="tooltip">{% trans "Where is my Eth going? " %}<i class='fa fa-info-circle'></i></label>
+                  <label id="tooltip" class="ethinfo-hover">{% trans "Where is my Eth going? " %}<i class='fa fa-info-circle'></i></label>
                   <select class='custom-select w-100 btn-sm' name='bountyFulfillment' id='bountyFulfillment'>
                     {% for fulfillment in open_fulfillments %}
                       <option value='{{ fulfillment.fulfillment_id }}'
@@ -85,7 +85,8 @@
                     {% endfor %}
                   </select>
                 </div>
-                <div class="w-100 my-2">
+                {% include 'shared/rating.html' with counterparty='contributor' %}
+                <div class="w-100 mt-2">
                   <label for=tipPercent>{% trans "(Optional) Add a tip of:" %}</label>
                   <input name='tipPercent' id="tipPercent" class="gc-round-text-input gc-border-blue" style="width: 50px;" type="number" placeholder="" value="0" min="0" /> % worth <span id="tipEstimate">0</span> {{bounty.token_name}}
                 </div>

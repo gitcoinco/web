@@ -5,8 +5,8 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
-    <meta name="title" content="{{ card_title }}">
-    <meta name="description" content="{{ card_desc }}">
+    <meta name="title" content="{{ card_title }} Bug Bounty | Gitcoin">
+    <meta name="description" content="{{ card_desc | truncatechars:200 }}">
     <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
   </head>
@@ -25,7 +25,7 @@
       </div>
 
       <div class="col-12 offset-md-1 col-md-10 offset-lg-1 col-lg-8 body">
-        {% include 'shared/bounty_waiting_state.html' %}
+        {% include 'shared/bounty_waiting_state.html' with can_close=True %}
         <div class="row nonefound" style="display:none;">
           <img src="{% static "v2/images/shrug_bot.png" %}">
           <h3>{% trans "No funded issue found." %}</h3>
@@ -48,13 +48,13 @@
         <div class="col-12" id="moderator-admin-actions"></div>
         <div class="col-12" id="bounty_details">
           <div class="row font-body">
-            <div class="d-none d-lg-block col-lg-1">
+            <div class="d-none d-lg-block col-lg-2 col-xl-1">
               <div id="avatar_url"></div>
             </div>
-            <div class="col-12 col-lg-11 pl-lg-4">
+            <div class="col-12 col-lg-10 col-xl-11 pl-xl-4">
               <div class="col-12">
                 <h4 id="title" class="font-title"></h4>
-                <div class="col-12">
+                <div class="col-12 text-center text-lg-left">
                   <div class="tags font-caption align-items-center">
                     <div class="tag token">
                       <p>
@@ -70,59 +70,66 @@
                   </div>
                 </div>
                 <div class="notif-info mb-3 font-caption" id="funder_notif_info"></div>
-                <span id="network"></span>
               </div>
-              <div class="col-12">
-                <div id="status"></div>
-              </div>
-              <div class="col-12 bounty-info">
-                <div id="timer">
-                  <div>
-                    <span class="bounty-info-heading timeleft">{% trans "Time left" %} </span>
-                    <span class="bounty-info-text" id="expires_date"></span>
-                  </div>
-                  <div>
-                    <span class="progress-bar">
-                      <span class="progress"></span>
-                    </span>
-                  </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <span class="font-caption text-center" id="network"></span>
+            </div>
+            <div class="col-12 text-center text-lg-left my-3 my-lg-0">
+              <div id="status" class="font-weight-semibold"></div>
+            </div>
+            <div id="bounty-info-row" class="row font-body">
+              <div class="col-12 col-sm-5 col-xl-3 bounty-info">
+                <div class="bounty-info-row-div">
+                  <span class="bounty-info-heading timeleft bounty-info-row-span-left">{% trans "Time left" %} </span>
+                  <span class="bounty-info-text bounty-info-row-span-right" id="expires_date"></span>
                 </div>
-                <div>
-                  <span class="bounty-info-heading">{% trans "Opened" %} </span>
-                  <span class="bounty-info-text" id="web3_created"></span>
+                <div class="bounty-info-row-div">
+                  <span class="bounty-info-heading bounty-info-row-span-left">{% trans "Opened" %} </span>
+                  <span class="bounty-info-text bounty-info-row-span-right" id="web3_created"></span>
                 </div>
-                <div id="fulfillment_accepted_on_wrapper">
-                  <span class="bounty-info-heading">{% trans "Accepted" %} </span>
-                  <span class="bounty-info-text" id="fulfillment_accepted_on"></span>
+                <div class="bounty-info-row-div">
+                  <span class="bounty-info-heading bounty-info-row-span-left">{% trans "Issue Type" %} </span>
+                  <span class="bounty-info-text bounty-info-row-span-right" id="bounty_type"></span>
                 </div>
-                <div>
-                  <span class="bounty-info-heading">{% trans "Experience Level" %} </span>
-                  <span class="bounty-info-text" id="experience_level"></span>
-                </div>
-                <div>
-                  <span class="bounty-info-heading">{% trans "Issue Type" %} </span>
-                  <span class="bounty-info-text" id="bounty_type"></span>
-                </div>
-                <div>
-                  <span class="bounty-info-heading" title='{% include "shared/project_type_tooltip.html" %}'>{% trans "Project Type" %} </span>
-                  <span class="bounty-info-text" id="project_type" title='{% include "shared/project_type_tooltip.html" %}'>></span>
-                  <i class="fas fa-info-circle" title='{% include "shared/project_type_tooltip.html" %}'></i>
-                </div>
-
-                <div>
-                  <span class="bounty-info-heading">{% trans "Time Commitment" %}</span>
-                  <span class="bounty-info-text" id="project_length"></span>
-                </div>
-
-                <div>
-                  <span class="bounty-info-heading" title='{% include "shared/permissions_type_tooltip.html" %}'>{% trans "Permissions" %}</span>
-                  <span class="bounty-info-text" id="permission_type" title='{% include "shared/permissions_type_tooltip.html" %}'></span>
-                  <i class="fas fa-info-circle" title='{% include "shared/permissions_type_tooltip.html" %}'></i>
-                </div>
-
-                <div id="auto_approve_workers_wrapper">
+                <div class="bounty-info-row-div" id="auto_approve_workers_wrapper">
                   <span class="bounty-info-heading">{% trans "Workers Auto Approve" %} </span>
-                  <span class="bounty-info-text" id="admin_override_suspend_auto_approval"></span>
+                  <span class="bounty-info-text bounty-info-row-span-right" id="admin_override_suspend_auto_approval"></span>
+                </div>
+              </div>
+              <div class="col-12 col-sm-5 offset-sm-1 col-xl-3 offset-xl-1 bounty-info">
+                <div class="bounty-info-row-div">
+                  <span class="bounty-info-heading bounty-info-row-span-left mr-1" title='{% include "shared/project_type_tooltip.html" %}'>
+                   {% trans "Project Type" %}
+                  </span>
+                  <i class="fas fa-info-circle" title='{% include "shared/project_type_tooltip.html" %}'></i>
+                  <span class="bounty-info-text bounty-info-row-span-right" id="project_type" title='{% include "shared/project_type_tooltip.html" %}'>
+                  </span>
+                </div>
+                <div class="bounty-info-row-div">
+                  <span class="bounty-info-heading bounty-info-row-span-left">{% trans "Time Commitment" %}</span>
+                  <span class="bounty-info-text bounty-info-row-span-right" id="project_length"></span>
+                </div>
+                <div class="bounty-info-row-div">
+                  <span class="bounty-info-heading bounty-info-row-span-left">{% trans "Experience Level" %} </span>
+                  <span class="bounty-info-text bounty-info-row-span-right" id="experience_level"></span>
+                </div>
+              </div>
+              <div class="col-12 col-sm-5 col-xl-3 offset-xl-1 bounty-info">
+                <div class="bounty-info-row-div">
+                  <span class="bounty-info-heading bounty-info-row-span-left mr-1" title='{% include "shared/permissions_type_tooltip.html" %}'>{% trans "Permissions" %}</span>
+                  <i class="fas fa-info-circle" title='{% include "shared/permissions_type_tooltip.html" %}'></i>
+                  <span class="bounty-info-text bounty-info-row-span-right" id="permission_type" title='{% include "shared/permissions_type_tooltip.html" %}'></span>
+                </div>
+                <div class="bounty-info-row-div" id="fulfillment_accepted_on_wrapper">
+                  <span class="bounty-info-heading">{% trans "Accepted" %} </span>
+                  <span class="bounty-info-text bounty-info-row-span-right" id="fulfillment_accepted_on"></span>
+                </div>
+                <div class="bounty-info-row-div">
+                  <span class="bounty-info-heading" id="bounty_reserved_for_label">{% trans "Reserved For" %} </span>
+                  <span class="bounty-info-text bounty-info-row-span-right" id="bounty_reserved_for"></span>
                 </div>
               </div>
             </div>
@@ -130,7 +137,9 @@
           <div class="row">
             <div class="col-12 bounty-actions">
                 <div class="col-12">
-                  <div id="right_actions"></div>
+                  <div id="right_actions">
+                    <button type="button" class="modal-link button button--primary float-right" data-toggle="modal" data-target=".share-modal"><span class="font-caption"><i class="fas fa-share-alt"></i> Share</span></a>
+                  </div>
                 </div>
             </div>
             <div class="col-12">
@@ -198,7 +207,7 @@
         [[else color == 'white']]
           <a class="btn btn-small [[if !enabled]]disabled[[/if]] [[:buttonclass]]" id="btn-white" role="button" target="_blank" href="[[:href]]" target="[[:target]]">
             [[if comments]]
-              <span class="font-caption">
+              <span class="font-caption d-inline-flex">
                 [[:text]]
                 <span class="comment">
                   <img src={% static "v2/images/comment.svg" %}>
@@ -212,7 +221,7 @@
             [[/if]]
           </a>
         [[else]]
-          <a class="button button--primary [[if !enabled]]disabled[[/if]] [[:buttonclass]]" role="button" href="[[:href]]" target="[[:target]]">
+          <a class="button button--primary [[if !enabled]]disabled[[/if]] [[:buttonclass]]" role="button" href="[[:href]]" target="[[:target]]" [[if modal]] data-toggle="modal" data-target=".share-modal" [[/if]]>
             <span class="font-caption">[[:text]]</span>
           </a>
         [[/if]]
@@ -380,6 +389,12 @@
         </div>
       [[/if]]
     </script>
+    <div id="modal" class="modal fade share-modal" tabindex="-1" role="dialog" aria-labelledby="shareModal" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+        </div>
+      </div>
+    </div>
 
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
@@ -404,8 +419,18 @@
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
   <script src="{% static "v2/js/amounts.js" %}"></script>
+  <script src="{% static "v2/js/popper.min.js" %}"></script>
+  <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
+  <script src="{% static "v2/js/clipboard.js" %}"></script>
+  <script>
+    var bootstrapTooltip = $.fn.tooltip.noConflict()
+    var bootstrapModal = $.fn.modal.noConflict()
+  </script>
+  <script src="{% static "v2/js/pages/bounty_funder_payout_reminder.js" %}"></script>
+  <script src="{% static "v2/js/pages/bounty_share.js" %}"></script>
   <script src="{% static "v2/js/pages/bounty_details.js" %}"></script>
   <script src="{% static "v2/js/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
+  <script src="{% static "v2/js/user-search.js" %}"></script>
   <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
 </html>

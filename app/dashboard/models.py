@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -18,6 +18,7 @@
 '''
 from __future__ import unicode_literals
 
+import base64
 import collections
 import logging
 from datetime import datetime, timedelta
@@ -41,6 +42,7 @@ from django.utils.translation import gettext_lazy as _
 
 import pytz
 import requests
+from avatar.utils import get_upload_filename
 from dashboard.tokens import addr_to_token
 from economy.models import ConversionRate, SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
@@ -49,6 +51,7 @@ from git.utils import (
     _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_gh_issue_details, get_issue_comments, issue_number, org_name,
     repo_name,
 )
+from marketing.mails import featured_funded_bounty
 from marketing.models import LeaderboardRank
 from rest_framework import serializers
 from web3 import Web3
@@ -211,6 +214,7 @@ class Bounty(SuperModel):
     FUNDED_STATUSES = ['open', 'started', 'submitted', 'done']
     OPEN_STATUSES = ['open', 'started', 'submitted']
     CLOSED_STATUSES = ['expired', 'unknown', 'cancelled', 'done']
+    WORK_IN_PROGRESS_STATUSES = ['open', 'started', 'submitted']
     TERMINAL_STATUSES = ['done', 'expired', 'cancelled']
 
     web3_type = models.CharField(max_length=50, default='bounties_network')
@@ -221,6 +225,7 @@ class Bounty(SuperModel):
     token_address = models.CharField(max_length=50)
     bounty_type = models.CharField(max_length=50, choices=BOUNTY_TYPES, blank=True)
     project_length = models.CharField(max_length=50, choices=PROJECT_LENGTHS, blank=True)
+    estimated_hours = models.PositiveIntegerField(blank=True, null=True)
     experience_level = models.CharField(max_length=50, choices=EXPERIENCE_LEVELS, blank=True)
     github_url = models.URLField(db_index=True)
     github_issue_details = JSONField(default=dict, blank=True, null=True)
@@ -231,6 +236,9 @@ class Bounty(SuperModel):
     bounty_owner_name = models.CharField(max_length=255, blank=True)
     bounty_owner_profile = models.ForeignKey(
         'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='bounties_funded', blank=True
+    )
+    bounty_reserved_for_user = models.ForeignKey(
+        'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='reserved_bounties', blank=True
     )
     is_open = models.BooleanField(help_text=_('Whether the bounty is still open for fulfillments.'))
     expires_date = models.DateTimeField()
@@ -255,13 +263,18 @@ class Bounty(SuperModel):
     submissions_comment = models.IntegerField(null=True, blank=True)
     override_status = models.CharField(max_length=255, blank=True)
     last_comment_date = models.DateTimeField(null=True, blank=True)
+    funder_last_messaged_on = models.DateTimeField(null=True, blank=True)
     fulfillment_accepted_on = models.DateTimeField(null=True, blank=True)
     fulfillment_submitted_on = models.DateTimeField(null=True, blank=True)
     fulfillment_started_on = models.DateTimeField(null=True, blank=True)
     canceled_on = models.DateTimeField(null=True, blank=True)
+    canceled_bounty_reason = models.TextField(default='', blank=True, verbose_name=_('Cancelation reason'))
     project_type = models.CharField(max_length=50, choices=PROJECT_TYPES, default='traditional')
     permission_type = models.CharField(max_length=50, choices=PERMISSION_TYPES, default='permissionless')
     snooze_warnings_for_days = models.IntegerField(default=0)
+    is_featured = models.BooleanField(
+        default=False, help_text=_('Whether this bounty is featured'))
+    featuring_date = models.DateTimeField(blank=True, null=True)
 
     token_value_time_peg = models.DateTimeField(blank=True, null=True)
     token_value_in_usdt = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
@@ -916,7 +929,7 @@ class Bounty(SuperModel):
     @property
     def bulk_payout_tips(self):
         """Return the Bulk payout tips associated with this bounty."""
-        queryset = self.tips.filter(is_for_bounty_fulfiller=False, metadata__is_clone__isnull=True, metadata__direct_address__isnull=True)
+        queryset = self.tips.filter(is_for_bounty_fulfiller=False, metadata__is_clone__isnull=True)
         return (queryset.filter(from_address=self.bounty_owner_address) |
                 queryset.filter(from_name=self.bounty_owner_github_username))
 
@@ -988,6 +1001,24 @@ class Bounty(SuperModel):
 
         return sentence
 
+    @property
+    def reserved_for_user_handle(self):
+        if self.bounty_reserved_for_user:
+            return self.bounty_reserved_for_user.handle
+        return ''
+
+    @reserved_for_user_handle.setter
+    def reserved_for_user_handle(self, handle):
+        profile = None
+
+        if handle:
+            try:
+                profile = Profile.objects.filter(handle__iexact=handle).first()
+            except:
+                logger.warning(f'reserved_for_user_handle: Unknown handle: ${handle}')
+
+        self.bounty_reserved_for_user = profile
+    
 
 class BountyFulfillmentQuerySet(models.QuerySet):
     """Handle the manager queryset for BountyFulfillments."""
@@ -1000,7 +1031,6 @@ class BountyFulfillmentQuerySet(models.QuerySet):
         """Exclude results that have not been submitted."""
         return self.exclude(fulfiller_address='0x0000000000000000000000000000000000000000')
 
-
 class BountyFulfillment(SuperModel):
     """The structure of a fulfillment on a Bounty."""
 
@@ -1012,6 +1042,7 @@ class BountyFulfillment(SuperModel):
     fulfillment_id = models.IntegerField(null=True, blank=True)
     fulfiller_hours_worked = models.DecimalField(null=True, blank=True, decimal_places=2, max_digits=50)
     fulfiller_github_url = models.CharField(max_length=255, blank=True, null=True)
+    funder_last_notified_on = models.DateTimeField(null=True, blank=True)
     accepted = models.BooleanField(default=False)
     accepted_on = models.DateTimeField(null=True, blank=True)
 
@@ -1337,7 +1368,6 @@ class Tip(SendCryptoAsset):
 class TipPayoutException(Exception):
     pass
 
-
 @receiver(pre_save, sender=Tip, dispatch_uid="psave_tip")
 def psave_tip(sender, instance, **kwargs):
     # when a new tip is saved, make sure it doesnt have whitespace in it
@@ -1396,7 +1426,7 @@ class InterestQuerySet(models.QuerySet):
         return self.filter(status=Interest.STATUS_WARNED)
 
 
-class Interest(models.Model):
+class Interest(SuperModel):
     """Define relationship for profiles expressing interest on a bounty."""
 
     STATUS_REVIEW = 'review'
@@ -1462,7 +1492,6 @@ def psave_interest(sender, instance, **kwargs):
     for bounty in Bounty.objects.filter(interested=instance):
         bounty.save()
 
-
 class ActivityQuerySet(models.QuerySet):
     """Handle the manager queryset for Activities."""
 
@@ -1490,7 +1519,7 @@ class ActivityQuerySet(models.QuerySet):
         )
 
 
-class Activity(models.Model):
+class Activity(SuperModel):
     """Represent Start work/Stop work event.
 
     Attributes:
@@ -1581,27 +1610,46 @@ class Activity(models.Model):
             'new_kudos': 'fa-thumbs-up',
         }
 
-        activity = self
-        activity.icon = icons.get(activity.activity_type, 'fa-check-circle')
-        if activity.kudos:
-            activity.kudos_data = Token.objects.get(pk=activity.kudos.kudos_token_cloned_from_id)
-        obj = activity.metadata
-        if 'new_bounty' in activity.metadata:
-            obj = activity.metadata['new_bounty']
-        activity.title = obj.get('title', '')
+        # load up this data package with all of the information in the already existing objects
+        properties = [
+            'i18n_name'
+            'title',
+            'token_name',
+            'created_human_time',
+        ]
+        activity = self.to_standard_dict(properties=properties)
+        for key, value in model_to_dict(self).items():
+            activity[key] = value
+        for fk in ['bounty', 'tip', 'kudos', 'profile']:
+            if getattr(self, fk):
+                activity[fk] = getattr(self, fk).to_standard_dict(properties=properties)
+
+        # KO notes 2019/01/30
+        # this is a bunch of bespoke information that is computed for the views
+        # in a later release, it couild be refactored such that its just contained in the above code block ^^.
+        activity['icon'] = icons.get(self.activity_type, 'fa-check-circle')
+        if activity.get('kudos'):
+            activity['kudos_data'] = Token.objects.get(pk=self.kudos.kudos_token_cloned_from_id)
+        obj = self.metadata
+        if 'new_bounty' in self.metadata:
+            obj = self.metadata['new_bounty']
+        activity['title'] = obj.get('title', '')
         if 'id' in obj:
-            activity.bounty_url = Bounty.objects.get(pk=obj['id']).get_relative_url()
-            if activity.title:
-                activity.urled_title = f'<a href="{activity.bounty_url}">{activity.title}</a>'
+            activity['bounty_url'] = Bounty.objects.get(pk=obj['id']).get_relative_url()
+            if activity.get('title'):
+                activity['urled_title'] = f'<a href="{activity["bounty_url"]}">{activity["title"]}</a>'
             else:
-                activity.urled_title = activity.title
+                activity['urled_title'] = activity.title
         if 'value_in_usdt_now' in obj:
-            activity.value_in_usdt_now = obj['value_in_usdt_now']
+            activity['value_in_usdt_now'] = obj['value_in_usdt_now']
         if 'token_name' in obj:
-            activity.token = token_by_name(obj['token_name'])
-            if 'value_in_token' in obj and activity.token:
-                activity.value_in_token_disp = round((float(obj['value_in_token']) /
-                                                      10 ** activity.token['decimals']) * 1000) / 1000
+            activity['token'] = token_by_name(obj['token_name'])
+            if 'value_in_token' in obj and activity['token']:
+                activity['value_in_token_disp'] = round((float(obj['value_in_token']) /
+                                                      10 ** activity['token']['decimals']) * 1000) / 1000
+
+        # finally done!
+
         return activity
 
     @property
@@ -1634,6 +1682,44 @@ class Activity(models.Model):
         return model_to_dict(self, **kwargs)
 
 
+class LabsResearch(SuperModel):
+    """Define the structure of Labs Research object."""
+
+    title = models.CharField(max_length=255)
+    description = models.CharField(max_length=1000)
+    link = models.URLField(null=True)
+    image = models.ImageField(upload_to='labs', blank=True, null=True)
+    upcoming = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.title
+
+
+class UserVerificationModel(SuperModel):
+    """Define the checkboxes for user verification."""
+
+    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
+    verified = models.BooleanField(
+        default=False,
+        help_text='Select to display the Verified checkmark on the user\'s profile',
+    )
+    speedy_and_responsive = models.BooleanField(
+        default=False,
+    )
+    great_communication = models.BooleanField(
+        default=False,
+    )
+    bug_free_code = models.BooleanField(
+        default=False,
+    )
+    completed_x_bounties = models.BooleanField(
+        default=False,
+    )
+
+    def __str__(self):
+        return f"User: {self.user}; Verified: {self.verified}"
+
+
 class ProfileQuerySet(models.QuerySet):
     """Define the Profile QuerySet to be used as the objects manager."""
 
@@ -1654,10 +1740,15 @@ class Profile(SuperModel):
 
     """
 
+    JOB_SEARCH_STATUS = [
+        ('AL', 'Actively looking for work'),
+        ('PL', 'Passively looking and open to hearing new opportunities'),
+        ('N', 'Not open to hearing new opportunities'),
+    ]
+
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
     data = JSONField()
     handle = models.CharField(max_length=255, db_index=True, unique=True)
-    avatar = models.ForeignKey('avatar.Avatar', on_delete=models.SET_NULL, null=True, blank=True)
     last_sync_date = models.DateTimeField(null=True)
     email = models.CharField(max_length=255, blank=True, db_index=True)
     github_access_token = models.CharField(max_length=255, blank=True, db_index=True)
@@ -1687,6 +1778,21 @@ class Profile(SuperModel):
     preferred_kudos_wallet = models.OneToOneField('kudos.Wallet', related_name='preferred_kudos_wallet', on_delete=models.SET_NULL, null=True, blank=True)
     max_tip_amount_usdt_per_tx = models.DecimalField(default=500, decimal_places=2, max_digits=50)
     max_tip_amount_usdt_per_week = models.DecimalField(default=1500, decimal_places=2, max_digits=50)
+    last_visit = models.DateTimeField(null=True, blank=True)
+    job_search_status = models.CharField(max_length=2, choices=JOB_SEARCH_STATUS, blank=True)
+    show_job_status = models.BooleanField(
+        default=False,
+        help_text='If this option is chosen, we will not show job search status',
+    )
+    job_type = models.CharField(max_length=255, default='', blank=True)
+    remote = models.BooleanField(
+        default=False,
+        help_text='If this option is chosen, profile is okay with remote job',
+    )
+    job_salary = models.DecimalField(default=1, decimal_places=2, max_digits=50)
+    job_location = JSONField(default=dict, blank=True)
+    linkedin_url = models.CharField(max_length=255, default='', blank=True, null=True)
+    resume = models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('The avatar SVG.'))
 
     objects = ProfileQuerySet.as_manager()
 
@@ -1729,6 +1835,19 @@ class Profile(SuperModel):
         return kudos_transfers
 
     @property
+    def get_my_verified_check(self):
+        verification = UserVerificationModel.objects.filter(user=self.user).first()
+        return verification
+
+    @property
+    def get_profile_referral_code(self):
+        return base64.urlsafe_b64encode(self.handle.encode()).decode()
+
+    @property
+    def job_status_verbose(self):
+        return dict(Profile.JOB_SEARCH_STATUS)[self.job_search_status]
+
+    @property
     def is_org(self):
         try:
             return self.data['type'] == 'Organization'
@@ -1752,6 +1871,20 @@ class Profile(SuperModel):
         on_repo = Tip.objects.filter(github_url__startswith=self.github_url).order_by('-id')
         tipped_for = Tip.objects.filter(username__iexact=self.handle).order_by('-id')
         return on_repo | tipped_for
+
+    def build_random_avatar(self):
+        from avatar.utils import build_random_avatar
+        from avatar.models import CustomAvatar
+        payload = build_random_avatar()
+        try:
+            custom_avatar = CustomAvatar.create(self, payload)
+            custom_avatar.autogenerated = True
+            custom_avatar.save()
+            self.activate_avatar(custom_avatar.pk)
+            self.save()
+            return custom_avatar
+        except Exception as e:
+            logger.warning('Save Random Avatar - Error: (%s) - Handle: (%s)', e, profile.handle if profile else '')
 
     def no_times_slashed_by_staff(self):
         user_actions = UserAction.objects.filter(
@@ -2025,13 +2158,17 @@ class Profile(SuperModel):
         }
 
     @property
+    def active_avatar(self):
+        return self.avatar_baseavatar_related.filter(active=True).first()
+
+    @property
     def github_url(self):
         return f"https://github.com/{self.handle}"
 
     @property
     def avatar_url(self):
-        if self.avatar:
-            return self.avatar.avatar_url
+        if self.active_avatar:
+            return self.active_avatar.avatar_url
         return f"{settings.BASE_URL}dynamic/avatar/{self.handle}"
 
     @property
@@ -2344,6 +2481,10 @@ class Profile(SuperModel):
 
         return all_activities
 
+    def activate_avatar(self, avatar_pk):
+        self.avatar_baseavatar_related.update(active=False)
+        self.avatar_baseavatar_related.filter(pk=avatar_pk).update(active=True)
+
     def to_dict(self, activities=True, leaderboards=True, network=None, tips=True):
         """Get the dictionary representation with additional data.
 
@@ -2528,7 +2669,6 @@ def normalize_tip_usernames(sender, instance, **kwargs):
 
 
 m2m_changed.connect(m2m_changed_interested, sender=Bounty.interested.through)
-# m2m_changed.connect(changed_fulfillments, sender=Bounty.fulfillments)
 
 
 class UserAction(SuperModel):
@@ -2537,6 +2677,7 @@ class UserAction(SuperModel):
     ACTION_TYPES = [
         ('Login', 'Login'),
         ('Logout', 'Logout'),
+        ('Visit', 'Visit'),
         ('added_slack_integration', 'Added Slack Integration'),
         ('removed_slack_integration', 'Removed Slack Integration'),
         ('updated_avatar', 'Updated Avatar'),
@@ -2605,6 +2746,7 @@ class Tool(SuperModel):
     CAT_COMMUNITY = 'CO'
     CAT_FOR_FUN = 'FF'
     GAS_TOOLS = "TO"
+    CAT_RETIRED = "CR"
 
     TOOL_CATEGORIES = (
         (CAT_ADVANCED, 'advanced'),
@@ -2615,6 +2757,7 @@ class Tool(SuperModel):
         (CAT_COMING_SOON, 'coming soon'),
         (CAT_COMMUNITY, 'community'),
         (CAT_FOR_FUN, 'just for fun'),
+        (CAT_RETIRED, 'retired'),
     )
 
     name = models.CharField(max_length=255)
@@ -2679,7 +2822,7 @@ class Tool(SuperModel):
         return _(self.link_copy)
 
 
-class ToolVote(models.Model):
+class ToolVote(SuperModel):
     """Define the vote placed on a tool."""
 
     profile = models.ForeignKey('dashboard.Profile', related_name='votes', on_delete=models.CASCADE)
@@ -2725,7 +2868,7 @@ class SearchHistory(SuperModel):
 
         verbose_name_plural = 'Search History'
 
-    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     data = JSONField(default=dict)
     ip_address = models.GenericIPAddressField(blank=True, null=True)
 
@@ -2767,3 +2910,33 @@ class HackathonEvent(SuperModel):
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+
+class FeedbackEntry(SuperModel):
+    bounty = models.ForeignKey(
+        'dashboard.Bounty',
+        related_name='feedbacks',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True
+    )
+    sender_profile = models.ForeignKey(
+        'dashboard.Profile',
+        related_name='feedbacks_sent',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True
+    )
+    receiver_profile = models.ForeignKey(
+        'dashboard.Profile',
+        related_name='feedbacks_got',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True
+    )
+    rating = models.SmallIntegerField(blank=True, default=0)
+    comment = models.TextField(default='', blank=True)
+    feedbackType = models.TextField(default='', blank=True, max_length=20)
+
+    def __str__(self):
+        """Return the string representation of a Bounty."""
+        return f'<Feedback Bounty #{self.bounty} - from: {self.sender_profile} to: {self.receiver_profile}>'

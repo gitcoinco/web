@@ -1,7 +1,6 @@
 
 #main {
-  max-width: 100%;
-  min-width: 27em;
+  max-width: 440px;
   padding: 4.5em 3em 3em 3em;
   background: #ffffff;
   border-radius: 4px;
@@ -20,9 +19,9 @@
   -webkit-transition: opacity 1s ease, -webkit-transform 1s ease;
   -ms-transition: opacity 1s ease, -ms-transform 1s ease;
   transition: opacity 1s ease, transform 1s ease;
-  z-index: 9999;
+  z-index: 1;
   position: relative;
-  margin-top: 2rem;
+  margin: 2rem auto;
 }
 
 #main #ens_subdomain h1 {

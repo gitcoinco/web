@@ -18,7 +18,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    {% include 'shared/head.html' %}
+    {% include 'shared/head.html' with slim=1 %}
     {% include 'shared/cards.html' %}
     <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/grants/fund.css" %}">
@@ -73,16 +73,25 @@
         <div class="col-12 my-4">
           <form method="POST" id="js-cancelSubscription">
             {% csrf_token %}
-            <button class="button button--primary button--warning button--full">{% trans "Cancel Contribution" %}
+            <div id="gas-section" class="form__group-horizontal">
+              <h5 class="font-subheader pb-2">{% trans "Gas Settings" %}</h5>
+              <div>
+                {% include 'shared/wallet_estimate.html' %}
+              </div>
+            </div>
+            <button id="cancel-subscription" class="button button--primary button--warning button--full">{% trans "Cancel Contribution" %}
             </button>
             <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
             <input type="hidden" id="contract_version" name="contract_version" value="{{ grant.contract_version }}">
             <input type="hidden" id="admin_address" name="admin_address" value="{{ grant.admin_address }}">
             <input type="hidden" id="token_address" name="token_address" value="{{ subscription.token_address }}">
+            <input type="hidden" id="sub_end_approve_tx_id" name="sub_end_approve_tx_id" value="">
+            <input type="hidden" id="sub_cancel_tx_id" name="sub_cancel_tx_id" value="">
             <input type="hidden" id="amount_per_period" name="amount_per_period" value="{{ subscription.amount_per_period }}">
             <input type="hidden" id="real_period_seconds" name="real_period_seconds" value="{{ subscription.real_period_seconds }}">
             <input type="hidden" id="signature" name="signature" value="{{ subscription.contributor_signature }}">
-            <input type="hidden" id="gas_price" name="gas_price" value="{{ subscription.gas_price }}">
+            <input type="hidden" id="subscriber-handle" name="subscriber-handle" value="{{ subscription.contributor_profile }}">
+            <input type="hidden" id="subscriber-address" name="subscriber-address" value="{{ subscription.contributor_address }}">
           </form>
         </div>
 

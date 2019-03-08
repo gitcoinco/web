@@ -3,6 +3,25 @@
 // helper functions
 
 /**
+ *  * Generates a boostrap modal handler for when a user clicks a link to launch a boostrap modal.
+ *   * @param {string} modalUrl - content url for the modal
+ *    */
+var show_modal_handler = (modalUrl) => {
+	  const url = modalUrl;
+	
+	   return (e) => {
+		       var modals = $('#modal');
+		       var modalBody = $('#modal .modal-content');
+		   
+	        modals.off('show.bs.modal');
+		       modals.on('show.bs.modal', () => {
+		         $('#modal .modal-content').load(modalUrl);
+		       });
+		       e.preventDefault();
+		     };
+};
+
+/**
  * Validates if input is a valid URL
  * @param {string} input - Input String
  */
@@ -262,12 +281,29 @@ var waitingStateActive = function() {
   waitingRoomEntertainment();
 };
 
+const notify_funder = (network, std_bounties_id, data) => {
+	  var request_url = '/actions/bounty/' + network + '/' + std_bounties_id + '/notify/funder_payout_reminder/';
+	
+	   showBusyOverlay();
+	  $.post(request_url, data).then(result => {
+		      hideBusyOverlay();
+		  
+		       _alert({message: gettext('Sent payout reminder')}, 'success');
+		      $('#notifyFunder a').addClass('disabled');
+		      return true;
+		    }).fail(result => {
+			        hideBusyOverlay();
+			    
+			         _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
+			      });
+};
+
 /** Add the current profile to the interested profiles list. */
 var add_interest = function(bounty_pk, data) {
   if (document.interested) {
     return;
   }
-  mutate_interest(bounty_pk, 'new', data);
+  return mutate_interest(bounty_pk, 'new', data);
 };
 
 /** Remove the current profile from the interested profiles list. */
@@ -284,7 +320,7 @@ var mutate_interest = function(bounty_pk, direction, data) {
   var request_url = '/actions/bounty/' + bounty_pk + '/interest/' + direction + '/';
 
   showBusyOverlay();
-  $.post(request_url, data).then(function(result) {
+  return $.post(request_url, data).then(function(result) {
     hideBusyOverlay();
 
     result = sanitizeAPIResults(result);
@@ -293,6 +329,7 @@ var mutate_interest = function(bounty_pk, direction, data) {
       if (direction === 'new') {
         _alert({ message: result.msg }, 'success');
         $('#interest a').attr('id', 'btn-white');
+        return true;
       } else if (direction === 'remove') {
         _alert({ message: result.msg }, 'success');
         $('#interest a').attr('id', '');
@@ -312,7 +349,6 @@ var mutate_interest = function(bounty_pk, direction, data) {
     }
 
     _alert({ message: alertMsg }, 'error');
-
   });
 };
 
@@ -448,23 +484,6 @@ function getParam(parameterName) {
   return result;
 }
 
-if ($('#bounties').length) {
-  $('#bounties').tooltip({
-    items: '.result',
-    classes: {
-      'ui-tooltip': 'tooltip-bubble'
-    },
-    position: {
-      my: 'top',
-      at: 'center bottom',
-      collision: 'flip',
-      using: function(position, feedback) {
-        $(this).addClass(feedback.vertical).css(position);
-      }
-    }
-  });
-}
-
 if ($.views) {
   $.views.converters({
     timedifference: timedifferenceCvrt,
@@ -475,10 +494,6 @@ if ($.views) {
 
 function timedifferenceCvrt(date) {
   return timeDifference(new Date(), new Date(date), false, 60 * 60);
-}
-
-function activitytextCvrt(activity_type) {
-  return activity_names[activity_type];
 }
 
 const activity_names = {
@@ -502,6 +517,10 @@ const activity_names = {
   bounty_removed_by_funder: gettext('Removed from bounty by funder'),
   bounty_changed: gettext('Bounty details changed')
 };
+
+function activitytextCvrt(activity_type) {
+  return activity_names[activity_type];
+}
 
 function timeDifference(current, previous, remaining, now_threshold_seconds) {
 
@@ -624,7 +643,6 @@ var retrieveIssueDetails = function() {
   var ele = $('input[name=issueURL]');
   var target_eles = {
     'title': $('input[name=title]'),
-    'keywords': $('input[name=keywords]'),
     'description': $('textarea[name=description]')
   };
   var issue_url = ele.val();
@@ -645,7 +663,14 @@ var retrieveIssueDetails = function() {
     if (result['keywords']) {
       var keywords = result['keywords'];
 
-      target_eles['keywords'].val(keywords.join(', '));
+      $('#keywords').val(keywords);
+      $('#keywords').select2({
+        placeholder: 'Select tags',
+        data: keywords,
+        tags: 'true',
+        allowClear: true
+      });
+
     }
     target_eles['description'].val(result['description']);
     target_eles['title'].val(result['title']);
@@ -662,18 +687,12 @@ var retrieveIssueDetails = function() {
 };
 
 
-var randomElement = function(array) {
-  var length = array.length;
-  var randomNumber = Math.random();
-  var randomIndex = Math.floor(randomNumber * length);
+const randomElement = array => {
+  const length = array.length;
+  const randomNumber = Math.random();
+  const randomIndex = Math.floor(randomNumber * length);
 
   return array[randomIndex];
-};
-
-var mixpanel_track_once = function(event, params) {
-  if (document.listen_for_web3_iterations == 1 && mixpanel) {
-    mixpanel.track(event, params);
-  }
 };
 
 /* eslint-disable no-lonely-if */
@@ -769,55 +788,50 @@ var currentNetwork = function(network) {
 };
 /* eslint-enable no-lonely-if */
 
+/**
+ * Throws custom alert based on user
+ * - has not installed metamask
+ * - metamask is locked
+ * - metmask connection needs to be authorized
+ * - logged in address has no ETH
+ */
 var trigger_primary_form_web3_hooks = function() {
-  // detect web3, and if not, display a form telling users they must be web3 enabled.
-  var params = {
-    page: document.location.pathname
-  };
-
   if ($('#primary_form').length) {
     var is_zero_balance_not_okay = document.location.href.indexOf('/faucet') == -1;
 
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
       $('#zero_balance_error').css('display', 'none');
-      $('#robot_error').removeClass('hidden');
-      $('#primary_form').addClass('hidden');
+      $('#primary_form, .primary_form-meta').addClass('hidden');
       $('.submit_bounty .newsletter').addClass('hidden');
       $('#unlock_metamask_error').css('display', 'none');
       $('#connect_metamask_error').css('display', 'none');
       $('#no_issue_error').css('display', 'none');
-      mixpanel_track_once('No Metamask Error', params);
     } else if (is_metamask_unlocked && !is_metamask_approved) {
       $('#connect_metamask_error').css('display', 'block');
       $('#unlock_metamask_error').css('display', 'none');
       $('#zero_balance_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
-      $('#robot_error').removeClass('hidden');
-      $('#primary_form').addClass('hidden');
+      $('#primary_form, .primary_form-meta').addClass('hidden');
       $('.submit_bounty .newsletter').addClass('hidden');
       $('#no_issue_error').css('display', 'none');
-      mixpanel_track_once('Unlock Metamask Error', params);
     } else if (!web3.eth.coinbase) {
       $('#unlock_metamask_error').css('display', 'block');
       $('#zero_balance_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
-      $('#robot_error').removeClass('hidden');
-      $('#primary_form').addClass('hidden');
+      $('#primary_form, .primary_form-meta').addClass('hidden');
       $('#connect_metamask_error').css('display', 'none');
       $('.submit_bounty .newsletter').addClass('hidden');
       $('#no_issue_error').css('display', 'none');
-      mixpanel_track_once('Unlock Metamask Error', params);
     } else if (is_zero_balance_not_okay && document.balance == 0) {
       $('#zero_balance_error').css('display', 'block');
       $('#robot_error').removeClass('hidden');
-      $('#primary_form').addClass('hidden');
+      $('#primary_form, .primary_form-meta').addClass('hidden');
       $('.submit_bounty .newsletter').addClass('hidden');
       $('#unlock_metamask_error').css('display', 'none');
       $('#connect_metamask_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
       $('#no_issue_error').css('display', 'none');
-      mixpanel_track_once('Zero Balance Metamask Error', params);
     } else {
       $('#zero_balance_error').css('display', 'none');
       $('#unlock_metamask_error').css('display', 'none');
@@ -825,7 +839,7 @@ var trigger_primary_form_web3_hooks = function() {
       $('#connect_metamask_error').css('display', 'none');
       $('#no_issue_error').css('display', 'block');
       $('#robot_error').addClass('hidden');
-      $('#primary_form').removeClass('hidden');
+      $('#primary_form, .primary_form-meta').removeClass('hidden');
       $('.submit_bounty .newsletter').removeClass('hidden');
     }
   }
@@ -844,7 +858,6 @@ var trigger_faucet_form_web3_hooks = function() {
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
-      mixpanel_track_once('No Metamask Error', params);
       return;
     } else if (is_metamask_unlocked && !is_metamask_approved) {
       $('#no_metamask_error').css('display', 'none');
@@ -865,7 +878,6 @@ var trigger_faucet_form_web3_hooks = function() {
       $('#connect_metamask_error').css('display', 'none');
       $('#over_balance_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
-      mixpanel_track_once('Faucet Available Funds Metamask Error', params);
     } else {
       $('#over_balance_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
@@ -878,7 +890,6 @@ var trigger_faucet_form_web3_hooks = function() {
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
-      mixpanel_track_once('No Metamask Error', params);
       return;
     }
     if (is_metamask_unlocked && !is_metamask_approved) {
@@ -889,7 +900,6 @@ var trigger_faucet_form_web3_hooks = function() {
     if (!web3.eth.coinbase) {
       $('#unlock_metamask_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
-      mixpanel_track_once('Unlock Metamask Error', params);
       return;
     }
     web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
@@ -901,7 +911,6 @@ var trigger_faucet_form_web3_hooks = function() {
       if (balance == 0) {
         $('#zero_balance_error').css('display', 'block');
         $('#admin_faucet_form').remove();
-        mixpanel_track_once('Zero Balance Metamask Error', params);
       }
     });
   }
@@ -1210,6 +1219,48 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
   return html;
 }
 
+const saveAttestationData = (result, cost_eth, to_address, type) => {
+  let request_url = '/revenue/attestations/new';
+  let txid = result;
+  let data = {
+    'txid': txid,
+    'amount': cost_eth,
+    'network': document.web3network,
+    'from_address': web3.eth.coinbase,
+    'to_address': to_address,
+    'type': type
+  };
+
+  $.post(request_url, data).then(function(result) {
+    _alert('Success ✅ Loading your purchase now.', 'success');
+  });
+};
+
+const renderFeaturedBountiesFromResults = (results, renderForExplorer) => {
+  let html = '';
+  const tmpl = $.templates('#featured-card');
+
+  if (results.length === 0) {
+    return html;
+  }
+
+  for (let i = 0; i < results.length; i++) {
+    const result = results[i];
+    let decimals = 18;
+    const divisor = Math.pow(10, decimals);
+    const relatedTokenDetails = tokenAddressToDetailsByNetwork(result['token_address'], result['network']);
+
+    if (relatedTokenDetails && relatedTokenDetails.decimals) {
+      decimals = relatedTokenDetails.decimals;
+    }
+
+    result['rounded_amount'] = normalizeAmount(result['value_in_token'] / divisor, decimals);
+
+    html += tmpl.render(result);
+  }
+  return html;
+};
+
 /**
  * Fetches results from the API and paints them onto the target element
  *
@@ -1264,6 +1315,7 @@ function showBusyOverlay() {
   if (overlay) {
     overlay.style['display'] = 'block';
     overlay.style['animation-name'] = 'fadeIn';
+    $(overlay).fadeIn('slow');
     return;
   }
 
@@ -1286,6 +1338,7 @@ function hideBusyOverlay() {
 
   if (overlay) {
     setTimeout(function() {
+      $(overlay).fadeOut('slow');
       overlay.style['animation-name'] = 'fadeOut';
     }, 300);
   }
@@ -1347,3 +1400,117 @@ function shuffleArray(array) {
   }
   return array;
 }
+
+const getURLParams = (k) => {
+  var p = {};
+
+  location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(s, k, v) {
+    p[k] = v;
+  });
+  return k ? p[k] : p;
+};
+
+const updateParams = (key, value) => {
+  params = new URLSearchParams(window.location.search);
+  if (params.get(key) === value) return;
+  params.set(key, value);
+  window.location.search = params.toString();
+};
+
+/**
+ * shrinks text if it exceeds a given length which introduces a button
+ * which can expand / shrink the text.
+ * useage: <div class="more">...</div>
+ *
+ * @param {number} length - text length to be wrapped.
+ */
+const showMore = (length = 400) => {
+  const placeholder = '...';
+  const expand = 'More';
+  const shrink = 'Less';
+
+  $('.wrap-text').each(function() {
+    const content = $(this).html();
+
+    if (content.length > length) {
+      const shortText = content.substr(0, length);
+      const remainingText = content.substr(length, content.length - length + 1);
+      const html = shortText + '<span class="moreellipses">' + placeholder +
+      '&nbsp;</span><span class="morecontent"><span>' + remainingText +
+      '</span>&nbsp;&nbsp;<a href="#" class="morelink">' + expand +
+      '</a></span>';
+
+      $(this).html(html);
+    }
+  });
+
+  $('.morelink').on('click', function(event) {
+    if ($(event.currentTarget).hasClass('less')) {
+      $(event.currentTarget).removeClass('less');
+      $(event.currentTarget).html(expand);
+    } else {
+      $(event.currentTarget).addClass('less');
+      $(event.currentTarget).html(shrink);
+    }
+    $(event.currentTarget).parent().prev().toggle();
+    $(event.currentTarget).prev().toggle();
+    return false;
+  });
+};
+
+/**
+ * Check input file size
+ *
+ * input - input element
+ * max_img_size  - max size
+ *
+ * Useage: checkFileSize($(input), 4000000)
+ */
+const checkFileSize = (input, max_img_size) => {
+  if (input.files && input.files.length > 0) {
+    if (input.files[0].size > max_img_size) {
+      input.value = '';
+      return false;
+    }
+  }
+  return true;
+};
+
+/**
+ * Compare two strings in a case insensitive way
+ *
+ * Usage: caseInsensitiveCompare('gitcoinco', 'GitcoinCo')
+ */
+const caseInsensitiveCompare = (val1, val2) => {
+  if (val1 && val2 && typeof val1 === 'string' && typeof val2 === 'string') {
+    return val1.toLowerCase() === val2.toLowerCase();
+  }
+  return false;
+};
+
+$(document).ready(function() {
+  $(window).scroll(function() {
+    $('.g-fadein').each(function(i) {
+      let duration = $(this).attr('data-fade-duration') ? $(this).attr('data-fade-duration') : 1500;
+      let direction = $(this).attr('data-fade-direction') ? $(this).attr('data-fade-direction') : 'mid';
+      let animateProps;
+
+      switch (direction) {
+        case 'left':
+          animateProps = { 'opacity': '1', 'left': '0' };
+          break;
+        case 'right':
+          animateProps = { 'opacity': '1', 'left': '0' };
+          break;
+        default:
+          animateProps = { 'opacity': '1', 'bottom': '0' };
+      }
+
+      let bottom_of_object = $(this).position().top + $(this).outerHeight() / 2;
+      let bottom_of_window = $(window).scrollTop() + $(window).height();
+
+      if (bottom_of_window > bottom_of_object)
+        $(this).animate(animateProps, duration);
+    });
+  });
+});

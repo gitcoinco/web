@@ -669,20 +669,9 @@ a.cellarius-partner:before {
     left: 1em; }
 
 .faq-item {
-  background-color: #F2F6F9;
-  padding: 15px;
-  padding-bottom: 10px;
-  padding-top: 15px;
-  border-radius: 5px;
+  border-bottom: 1px solid #eee;
+  padding: 10px 15px;
   transition: 0.1s ease-in-out;
-}
-
-.faq-item:hover {
-  background-color: #fefefe;
-}
-
-.faq-item:focus {
-  background-color: #fefefe;
 }
 
 .faq-item > h5 {

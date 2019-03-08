@@ -1,0 +1,307 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static cookielaw_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/home.css" %}" />
+  </head>
+  <body class="g-font-muli homepage">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash px-md-0">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'home/nav.html' %}
+    </div>
+    <div id="banner" class="header">
+      <div class="row">
+        <div class="col-12 col-md-8 col-xl-6 pl-lg-5">
+          <div class="mx-4 mx-lg-5 px-lg-5 pb-lg-5">
+            <h1>{% trans "A new way to work and grow open source" %}</h1>
+            <p class="font-title">{% blocktrans %}Gitcoin lets you get paid for working on open source software. Build new skills,
+              make new relationships, earn kudos, and get paid for the work you already love.{% endblocktrans %}
+            </p>
+            <div class="buttons">
+              <a class="btn btn-gc-green mr-2" href="{% url "new_bounty" %}">{% trans "Fund an Issue" %}</a>
+              <a class="btn btn-outline-white ml-2" href="{% url "products" %}">{% trans "See Our Products" %}</a>
+            </div>
+          </div>
+        </div>
+        <div class="bots-img col-4 col-xl-6 pt-2 mt-5">
+          <img class="w-100" src="{% static "v2/images/home/bots.svg" %}" />
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-8 offset-md-2 text-center my-5 p-5 font-weight-semibold issue">
+      {% blocktrans %}
+        <h2 class="font-title-xl mt-4 mb-4">
+          The weight of
+          <span>maintaining open source falls</span><br>
+          shoulders of <span class="mt-4">0.01% developers.</span>
+        </h2>
+        {% endblocktrans %}
+        {% include 'shared/tree.html' %}
+        <h2 class="font-title-xl g-fadein mt-3 mb-1" data-fade-duration=1000>
+          {% trans "This is" %} <strong>{% trans "not sustainable." %}</strong>
+        </h2>
+        <h2 class="font-title-xl g-fadein mt-1 mb-1" data-fade-duration=1000>
+          {% trans "This is" %} <strong>{% trans "not right." %}</strong>
+        </h2>
+        <h2 class="font-title-xl g-fadein mt-1 mb-2" data-fade-duration=1000>
+          {% trans "This is" %} <strong>{% trans "why we built Gitcoin." %}</strong>
+        </h2>
+    </div>
+
+    <img class="w-100 mb-5" src="{% static "v2/images/home/story.svg" %}" />
+
+    <div id="optimize_oss" class="mt-5">
+      <div class="container pt-0">
+        <div class="row">
+          <div class="col-12 col-md-8 col-lg-6 g-fadein" data-fade-duration=1000 data-fade-direction="left">
+            <h2>
+              {% trans "Tools to optimize the oss life cycle for users, contributors, and maintainers" %}
+            </h2>
+            <p class="mb-4">{% blocktrans %}Gitcoin grows open source through a suite of products, capturing and retaining
+              contributor value through an on-demand bounty marketplace and recurring funding, and
+              sustains open source projects through ethical advertising. Our suite of products meet
+              open source contributors where they are, from the start of a project, to later lifecycles
+              of project maintenance and appreciation.{% endblocktrans %}
+            </p>
+            <a class="font-weight-semibold mt-1" href="{% url "products" %}" target="_blank">
+              {% trans "See how our products are growing open source" %}
+            </a>
+
+            <div class="row mx-0 watch font-weight-semibold">
+              <p class="col-12 mt-5 mb-2 pl-0 font-body">{% trans "WATCH" %}</p>
+              <div class="pl-0 col-3 col-md-2">
+                <img class="play" src="{% static 'v2/images/home/play.svg' %}">
+              </div>
+              <div class="pl-lg-0 col-9 col-md-8">
+                <a href="https://youtu.be/b6LSf-zQnlI" target="_blank" rel="noopener noreferrer">
+                  {% trans "What’s currently broken about open source sustainability?" %}
+                </a>
+              </div>
+            </div>
+
+          </div>
+          <div class="text-center col-12 offset-lg-1 col-md-4 g-fadein" data-fade-duration=1000 data-fade-direction="right">
+            <figure>
+                <img class="optimize-img text-center px-3 w-100" src="{% static "v2/images/home/optimize_oss.svg" %}"
+                alt="optimize_oss lifecyle with gitcoin" />
+            </figure>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-6 offset-md-3 text-center">
+      <p class="font-title mt-5">
+        <span>{% trans "Our products help create a world where the" %}</span> <br>
+        <span>{% trans "OSS lifecycle looks like this." %}</span>
+      </p>
+    </div>
+
+    <div id="products">
+      <img class="text-center px-3 bot-circle" src="{% static "v2/images/home/bot-circle.svg" %}"
+        alt="gitcoin logo" />
+      <div class="container pt-0">
+        <div class="row">
+          <div class="col-12 col-md-6 col-lg-4 g-fadein" data-fade-duration=1000 data-fade-direction="left">
+            <h4 class="font-title mb-4">{% trans "Grow OSS" %}</h4>
+            {% for groups in products %}
+              {% if groups.group == 'grow_oss' %}
+                {% for product in groups.products %}
+                  <div class="col-12 product">
+                    <h2>
+                      <img src="{{ product.img }}"> {{ product.name }}
+                    </h2>
+                    <p>{{ product.description }}</p>
+                    <a href="{{ product.link }}">
+                      {% trans "Learn more" %}
+                      <i class="ml-2 fas fa-chevron-right"></i>
+                    </a>
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endfor %}
+          </div>
+          <div class="col-12 col-md-6 col-lg-4 g-fadein" data-fade-duration=1000 data-fade-direction="mid">
+            <h4 class="font-title mb-4">{% trans "Maintain OSS" %}</h4>
+            {% for groups in products %}
+              {% if groups.group == 'maintain_oss' %}
+                {% for product in groups.products %}
+                  <div class="col-12 product">
+                    <h2>
+                      <img src="{{ product.img }}"> {{ product.name }}
+                    </h2>
+                    <p>{{ product.description }}</p>
+                    <a href="{{ product.link }}">
+                      {% trans "Learn more" %}
+                      <i class="ml-2 fas fa-chevron-right"></i>
+                    </a>
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endfor %}
+          </div>
+          <div class="col-12 col-md-6 col-lg-4 g-fadein" data-fade-duration=1000 data-fade-direction="right">
+            <h4 class="font-title mb-4">{% trans "Build  Relationships" %}</h4>
+            {% for groups in products %}
+              {% if groups.group == 'build_oss' %}
+                {% for product in groups.products %}
+                  <div class="col-12 product">
+                    <h2>
+                      <img src="{{ product.img }}"> {{ product.name }}
+                    </h2>
+                    <p>{{ product.description }}</p>
+                    <a href="{{ product.link }}">
+                      {% trans "Learn more" %}
+                      <i class="ml-2 fas fa-chevron-right"></i>
+                    </a>
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endfor %}
+          </div>
+
+          <div class="col-12 text-center mt-5">
+            <a class="btn btn-gc-green text-center font-weight-semibold" href="{% url "products" %}">
+              {% trans "Learn about our products" %}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="realign">
+      <div class="container" >
+        <div class="row mt-5">
+          <div class="col-12 col-md-8 col-lg-6 g-fadein" data-fade-duration=1000 data-fade-direction="left">
+            <h2>{% trans "Realign open source incentives" %}</h2>
+            <p>
+              {% blocktrans %}Open source contributors provide value that is often not
+              rewarded or captured. Open source maintainers burn out and stop working
+              on their OSS projects because they lose or can’t find funding, are under
+              pressure to retain developer talent, or simply don’t have the resources
+              or time to fully devote themselves.{% endblocktrans %}
+            </p>
+            <p>
+              {% blocktrans %}We're proudly built on Ethereum, an open source blockchain which
+              allows us to make payments across the world in an open fashion.<br>
+              Gitcoin is the one stop shop solution for making OSS contributions
+              self-sustaining.{% endblocktrans %}
+            </p>
+            <a class="font-weight-semibold" href="{% url "results" %}">{% trans "Learn more" %}</a>
+          </div>
+          <div class="col-12 offset-lg-1 col-md-4 text-center g-fadein" data-fade-duration=1000 data-fade-direction="right">
+            <figure>
+              <img class="realign-img px-3 w-100" src="{% static "v2/images/home/realign.svg" %}" alt="realign open source incentives" />
+            </figure>
+          </div>
+          <div class="col-12">
+            <div class="row mx-0 watch font-weight-semibold">
+              <p class="col-12 mt-4 mb-2 pl-0 font-body">{% trans "WATCH" %}</p>
+              <div id="sustainability" class="col-12 col-lg-5 video pl-lg-0">
+                <img src="{% static "v2/images/home/play-oss.svg" %}" class="video-thumbnail">
+                <iframe class="video-frame" width="507" height="255" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+              </div>
+              <div id="world" class="col-12 offset-lg-1 col-lg-5 video">
+                <img src="{% static "v2/images/home/play-sustain.svg" %}" class="video-thumbnail">
+                <iframe class="video-frame" width="560" height="255" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="press">
+      <div class="container">
+        <div class="row">
+          <h2 class="col-12 mb-4">{% trans "What are people saying?" %}</h2>
+          {% for article in press %}
+            <a href="{{ article.link }}" target="_blank" rel="noopener noreferrer">
+              <div class="explain-img-wrapper">
+                <img src="{% static article.img %}" alt="{{ article.alt }}">
+              </div>
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <div id="know_us">
+      <div class="container">
+        <div class="row">
+          <div class="col-12 text-center mb-2">
+            <h2>{% trans "Get to know us better" %}</h2>
+          </div>
+          {% for item in know_us %}
+            <div class="col-12 col-md-4 text-center">
+              <a class="btn button__home button__outline" href="{{ item.link }}">
+                {{ item.text }}
+                <i class="fas fa-chevron-right"></i>
+              </a>
+            </div>
+          {% endfor %}
+          <div class="col-12 text-center">
+            <a class="btn button__home button__blue text-center" href="mailto:founders@gitcoin.co">
+              {% trans "Get in touch" %}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="articles">
+      <div class="container">
+        <div class="row">
+          <div class="col-12 text-center mb-4">
+            <h2>{% trans "Gitcoin on Medium" %}</h2>
+          </div>
+          {% for article in articles %}
+            <div class="col-12 col-md-4">
+              <a class="article" href="{{ article.link }}" target="_blank" rel="noopener noreferrer">
+                <img src="{{ article.img }}" alt="{{ article.alt }}">
+                <h3 class="mt-3 mb-2">{{ article.title }}</h3>
+                <p class="font-weight-semibold">{{ article.description }}</p>
+              </a>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </body>
+  {% include 'shared/bottom_notification.html' %}
+  {% include 'shared/analytics.html' %}
+  {% include 'shared/footer_scripts.html' with slim=1 %}
+  {% include 'shared/footer.html' %}
+  {% include 'shared/messages.html' %}
+  <script>
+
+    $('#sustainability').on('click', function(){
+      $(this).find('img').css('display', 'none');
+      $(this).find('iframe').css('visibility', 'visible');
+      $(this).find('iframe').attr('src', 'https://www.youtube.com/embed/i2JKN_6iuiw?autoplay=1');
+    })
+
+    $('#world').on('click', function(){
+      $(this).find('img').css('display', 'none');
+      $(this).find('iframe').css('visibility', 'visible');
+      $(this).find('iframe').attr('src', 'https://www.youtube.com/embed/oe7oD8ThKx8?autoplay=1');
+    })
+  </script>
+</html>

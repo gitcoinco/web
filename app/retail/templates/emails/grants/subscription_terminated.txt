@@ -6,22 +6,26 @@
 
 {% trans "Your subscription for the project has been cancelled and you will no longer be charged." %}
 
-{{ grant.logo.url }}
+{% trans "Description" %} : {{ grant.description }}
 
-{{ grant.description }}
+{% trans "Status" %} : {{ grant.status }}
 
-{{ grant.status }}
+{% trans "Goal" %} : {{ grant.amount_goal }} {% trans "DAI" %}
 
-{{ grant.percentage_done }}
+{% trans "Percentage done" %}: {{ grant.percentage_done }}
 
-{{ grant.amount_goal }} {% trans "ETH" %}
+{% trans "You can see the  cancelled subscription on etherscan" %} at
+{% if subscription.network == 'mainnet' %}
+  http://etherscan.io/tx/{{ subscription.cancel_tx_id }}
+{% else %}
+  http://{{ grant.network }}.etherscan.io/tx/{{ subscription.cancel_tx_id }}
+{% endif %}
 
-{% trans "Goal" %}
+{% trans "You can see the  cancelled grant on etherscan" %} at
+{% if grant.network == 'mainnet' %}
+  http://etherscan.io/tx/{{ grant.cancel_tx_id }}
+{% else %}
+  http://{{ grant.network }}.etherscan.io/tx/{{ grant.cancel_tx_id }}
+{% endif %}
 
-{% trans "You can see the subscription cancelation transaction" %} 
-
-{{ transaction.link }} 
-
-{% trans "here." %}
-
-{% trans "View Transaction" %}
+{% trans "View Inactive Grant here" %} {% url 'grants:details' grant.pk grant.slug %}

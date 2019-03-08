@@ -7,12 +7,16 @@
   font-weight: 500;
 }
 
+.rounded-circle {
+  margin-right: 8px;
+}
+
 #search_form button {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
 }
 
-#search_grants {
+#keyword {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
 }
@@ -47,8 +51,9 @@
   max-width: 100%;
 }
 
-.progress-bar {
+.progress .progress-bar {
   background-color: #0FCE7C;
+  height: auto;
 }
 
 .progress-bar.progress-bar--cancel {
@@ -163,21 +168,12 @@
   margin-top: 0;
 }
 
-.order_by .select2-container {
+#search_form .select2-container {
   width: auto !important;
   font-weight: normal;
   text-align: left;
   min-width: 9rem;
-}
-
-.alpha-warning {
-  background-color: #fb9470;
-  color: #fbe0d6;
-  padding: 5px 10px;
-  border-radius: 2px;
-  margin-bottom: 15px;
-  display: block;
-  text-align: center;
+  font-size: 12px;
 }
 
 @media (max-width: 767.98px) {

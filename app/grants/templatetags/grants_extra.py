@@ -24,17 +24,17 @@ register = template.Library()
 
 @register.filter
 def addstr(value, arg):
-    """Concats argument to string
+    """Concats argument to string.
 
-        Args:
-            value : Original string
-            arg : String to be concated
+    Args:
+        value (str): Original string
+        arg (str): String to be concated
 
-        Usage:
-            {{ value|addstr(arg) }}
+    Usage:
+        {{ value|addstr(arg) }}
 
-        Returns:
-            str: Concatenated string
+    Returns:
+        str: The concatenated string.
 
     """
     return str(value) + str(arg)
@@ -44,15 +44,15 @@ def addstr(value, arg):
 def modulo(num, val):
     """Get the modulo of the provided number and value.
 
-        Args:
-            num (int): Something describing the number.
-            val (int): Something describing the value.
+    Args:
+        num (int): Something describing the number.
+        val (int): Something describing the value.
 
-        Usage:
-            {{ num|modulo(val) }}
+    Usage:
+        {{ num|modulo(val) }}
 
-        Returns:
-            int: The modulo of number and value.
+    Returns:
+        int: The modulo of number and value.
 
     """
     return num % val

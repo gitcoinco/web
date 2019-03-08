@@ -33,12 +33,12 @@
       <input name='usd_amount' id='usd_amount'  class="form__input" type="text" min="0.00"/>
     </div>
     <div class="form__amount-wrapper">
-	  <label class="form__label" for="amount">{% trans "Estimated Hours of Work" %}</label>
+	  <label class="form__label" for="amount">{% trans "Est. Hours of Work" %}</label>
       <input name='hours' id='hours'  class="form__input" type="number" value="{{amount|default:'1'}}" step="1" 
       min="1" required="required"/>
 		</div>
   </div>
 
   <small class="form__input-help form__input-help--dynamic" id="usd_amount_text"></small>
-  <hr class="mt-5">
+  <hr class="mt-4">
 </div>

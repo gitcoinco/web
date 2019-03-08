@@ -1,8 +1,10 @@
-.submit_bounty .submit_bounty_content {
+.submit_bounty .submit_bounty_content,
+.fulfill_bounty .submit_bounty_content {
   background-color: #f2f6f9;
 }
 
-.submit_bounty .submit_bounty_form {
+.submit_bounty .submit_bounty_form,
+.fulfill_bounty .submit_bounty_form {
   background-color: #FFFFFF;
 }
 
@@ -18,7 +20,7 @@ input:-moz-read-only { /* For Firefox */
   background-color: #eaeaea94;
 }
 
-input:read-only { 
+input:read-only {
   background-color: #eaeaea94;
 }
 
@@ -26,7 +28,7 @@ textarea:-moz-read-only { /* For Firefox */
   background-color: #eaeaea94;
 }
 
-textarea:read-only { 
+textarea:read-only {
   background-color: #eaeaea94;
 }
 
@@ -80,6 +82,11 @@ textarea:read-only {
   height: 37px;
 }
 
+.select2-container--default .select2-selection--single {
+  border-color:#D3D3D3 !important;
+  font-size: 14px;
+}
+
 #issue-details,
 #no-issue-banner img {
   max-width: 100%;
@@ -103,7 +110,7 @@ textarea:read-only {
 #issue-details input:read-only,
 #issue-details textarea:read-only {
   border: none;
-  padding-left: 0;  
+  padding-left: 0;
   background-color: #fff;
   outline: none;
 }
@@ -134,12 +141,42 @@ textarea:read-only {
   margin-right: .5rem;
 }
 
-@media (max-width: 600px) {
+#reservedForDiv .select2-selection__arrow {
+  height: 2.5rem !important;
+  right: 6px;
+}
+
+@media (max-width: 767.98px) {
+  .select2-container {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 575.98px) {
+  #pricing-section .form__amount-wrapper {
+    width: 100%;
+  }
+
   #pricing-section .form__flex-group {
     display: block;
   }
+}
 
-  #pricing-section .form__amount--wrapper {
-    width: 100%;
-  }
+#featured-bounty-add .featured-example {
+  border: 1px solid #E8E8E8;
+  padding: 8px 0 8px 8px;
+  max-width: 100%;
+}
+
+.featured-text {
+  font-size: 0.8em;
+}
+
+.featured-price {
+  display: block;
+  text-indent: 2.3em;
+}
+
+.new {
+  color: #0FCE7C;
 }

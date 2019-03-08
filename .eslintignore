@@ -1,5 +1,6 @@
 *.min.js
 
+app/assets/v2/js/event_ethdenver2019/blockies.js
 app/assets/v2/js/ipfs-api.js
 app/assets/v2/js/jquery*.js
 app/assets/v2/js/jsrender.js

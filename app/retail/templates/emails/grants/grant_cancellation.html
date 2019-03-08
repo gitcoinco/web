@@ -16,7 +16,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static grants_extra %}
 
 {% block content %}
 
@@ -38,13 +38,20 @@
     max-width: 4rem;
   }
 
-  .updatesButton {
+  #grant-logo {
+    max-width: 25rem;
+    width: 100%;
+    margin-top: 2rem;
+  }
+
+  .grant-button {
     padding: 12px 36px;
     font-size: 12px;
     border-radius: 3px;
     text-decoration: none;
     background-color: #0D0764;
     color: white;
+    font-weight: 600;
   }
 
   .grant-link {
@@ -52,14 +59,21 @@
   }
 
 </style>
-<img src="{% static "v2/images/grant-ended.png" %}" alt="{% trans "Grant Ended" %}" title="{% trans "Grant Ended" %}">
+<img src="{% static "v2/images/grant-ended.png" %}" alt="{% trans "Grant Ended" %}" title="{% trans "Grant Ended" %}" width="75px" height="75px">
 <h1 style="text-transform: none;">{% trans "Grant" %} '{{ grant.title }}' {% trans "has been cancelled" %}.</h1>
+<a href="{% url 'grants:details' grant.id grant.slug %}">
+  <img id="grant-logo" src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}" alt="grant logo" >
+</a>
 <p>{% trans "Thank you for using Gitcoin, we hope you'll come back to build more open source software!" %}</p>
-<p>{% trans "You can see your cancellation transaction on etherscan" %}
-  <a href="{{ transaction.link }}">{% trans "here." %}</a>
+<p>{% trans "You can see the grant cancellation transaction on etherscan" %}
+  {% if grant.network == 'mainnet' %}
+    <a href="http://etherscan.io/tx/{{ grant.cancel_tx_id }}">{% trans "here." %}</a>
+  {% else %}
+    <a href="http://{{ grant.network }}.etherscan.io/tx/{{ grant.cancel_tx_id }}">{% trans "here." %}</a>
+  {% endif %}
 </p>
 <p class="grant-link">
-  <a class="updatesButton" href="{% url 'grants:details' grant.pk grant.slug %}">{% trans "View Inactive Grant" %}</a>
+  <a class="grant-button" href="{% url 'grants:details' grant.pk grant.slug %}">{% trans "View Inactive Grant" %}</a>
 </p>
 <br>
 

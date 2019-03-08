@@ -18,7 +18,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    {% include 'shared/head.html' %}
+    {% include 'shared/head.html' with slim=1 %}
     {% include 'shared/cards.html' %}
     <link rel="stylesheet" href={% static "v2/css/tabs.css" %}>
     <style>
@@ -167,6 +167,7 @@
         </div>
       </div>
     </div>
+    {% include 'grants/faq.html' %}
 
   </body>
   {% include 'shared/analytics.html' %}

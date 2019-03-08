@@ -60,7 +60,7 @@
             </div>
             <div class="col offset-md-1 col-md-10 d-flex align-items-center justify-content-center" id="primary_form">
               <div class="d-flex justify-content-center flex-column mt-5" id="primary_subform">
-                <div class="w-100" style="text-align: center;">
+                <div class="w-100 text-center">
                   <h3>{% trans "Advanced Payout" %}</h3>
                   <p><a href="{{ action_urls.accept }}">{% trans "Switch to Basic Payout" %}</a></p>
                 </div>
@@ -94,6 +94,14 @@
                   </div>
                   <div>
                     <p>{% trans "You are not paying using bounty funds. The amount of " %}<span id="total_tip_overage"></span> {% trans "will be paid from your metamask wallet ending in ..." %}<span id="address_tip_ending"></span></p>
+                  </div>
+                </div>
+                <div class="w-100 paymentAlert asyncAlert">
+                  <div>
+                    <img src="{% static "v2/images/warning.svg" %}">
+                  </div>
+                  <div>
+                    <p>{% trans "Note: The refund and payout from bounty funds will be processed as asynchronous transactions, which means the payout will not happen until the refund transaction is confirmed. If you would like the payout to occur immediately, you must have the payout amount available in your wallet." %}</p>
                   </div>
                 </div>
                 <div class="w-100 my-3">

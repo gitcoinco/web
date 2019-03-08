@@ -1,0 +1,104 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+
+{% load i18n static %}
+<div id="job" class="row col-12 col-md-8 m-auto">
+  <div class="col-12">
+    <h2 class="text-center">{% trans "Job Opportunities" %}</h2>
+  </div>
+  <div class=" col-12 mt-4">
+    <p class="font-caption label jobStatus">{% trans "Are you currently looking for work?" %}</p>
+    <div class="form__select2">
+      <select class="w-100 js-select2" id="jobStatus">
+        <option value="AL" {% if profile.job_search_status == 'AL' %} selected='selected'{% endif %}>{% trans "I am actively looking for work" %}</option>
+        <option value="PL" {% if profile.job_search_status == 'PL' %} selected='selected'{% endif %}>{% trans "I am passively looking and open to hearing new opportunities" %}</option>
+        <option value="N" {% if profile.job_search_status == 'N' %} selected='selected'{% endif %}>{% trans "I am not open to hearing new opportunities" %}</option>
+      </select>
+    </div>
+  </div>
+  <div class="col-12 font-body mt-4">
+    <div class="form__checkbox">
+      <input name='showJobStatus' id='showJobStatus' type="checkbox" value="1" {% if profile.show_job_status == True %} checked{% endif %}/>
+      <label class="form__label" for=showJobStatus>{% trans "It's okay to show this information publicly in Gitcoin." %}</label>
+    </div>
+  </div>
+
+  <div class="col-12 row mt-4">{{ profile.job_type}}
+
+      <!-- {% for job_type in profile.job_type %}
+      {{job_type}}
+      {% endfor %} -->
+    <div class="col-12">
+      <p class="font-caption label">{% trans "What type of work are you looking for?" %}</p>
+    </div>
+    <div class="col-12">
+      <div class="form__checkbox">
+        <input name='jobType' id='jobType1' type="checkbox" value="full-time" {% if 'full-time' in profile.job_type %} checked{% endif %}/>
+        <label class="form__label" for=jobType1>{% trans "Full Time" %}</label>
+      </div>
+      <div class="form__checkbox">
+        <input name='jobType' id='jobType2' type="checkbox" value="part-time" {% if 'part-time' in profile.job_type %} checked{% endif %}/>
+        <label class="form__label" for=jobType2>{% trans "Part Time" %}</label>
+      </div>
+      <div class="form__checkbox">
+        <input name='jobType' id='jobType3' type="checkbox" value="contract" {% if 'contract' in profile.job_type %} checked{% endif %}/>
+        <label class="form__label" for=jobType3>{% trans "Contract" %}</label>
+      </div>
+      <div class="form__checkbox">
+        <input name='jobType' id='jobType4' type="checkbox" value="bounties" {% if 'bounties' in profile.job_type %} checked{% endif %}/>
+        <label class="form__label" for=jobType4>{% trans "Bounties only" %}</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 font-body mt-4">
+    <label class="form__label label d-block" for="jobLocation">{% trans "Looking for companies in (location)" %}</label>
+    <input name="jobLocation" id="jobLocation" class="form__input" type="text" placeholder="{% trans 'Cities, States, or Countries' %}"/>
+    <div class="locations-tags">
+      {% for location in profile.job_location %}
+      <a class=filter-tag data-index="{{forloop.counter0}}"><i class="fas fa-times"></i>{{location.formatted_address}}</a>
+      {% endfor %}
+
+    </div>
+  </div>
+  <div class="col-12 font-body ">
+    <div class="form__checkbox">
+      <input name='jobRemote' id='jobRemote' type="checkbox" {% if profile.remote == True %} checked{% endif %}/>
+      <label class="form__label" for=jobRemote>{% trans "I am open to remote work" %}</label>
+    </div>
+  </div>
+
+  <div class="col-12 font-body mt-4">
+    <label class="form__label label d-block" for="jobSalary">{% trans "Compensation expectation (monthly / USD)" %}</label>
+    <input name="jobSalary" value="{{profile.job_salary}}" id="jobSalary" class="form__input" type="text" placeholder="Amount in USD"/>
+  </div>
+
+  <div class="col-12 font-body mt-4">
+    <label class="form__label label d-block" for="linkedinUrl">{% trans "Linkedin profile" %}</label>
+    <div class="d-flex align-items-center">
+      <span>https://www.linkedin.com/in/</span><input name="linkedinUrl" id="linkedinUrl" value="{{profile.linkedin_url}}" class="form__input" type="text" placeholder="username" />
+    </div>
+  </div>
+
+  <div class="col-12 font-body mt-4">
+    <label class="form__label label d-block" for="jobCV">{% trans "Upload resume (PDF / max 3MB)" %}</label>
+    <p class="text-left">Get discovered and work with the most exciting projects in the space!</p>
+    <input name="jobCV" id="jobCV" class="form__input" type="file" accept="application/pdf"/>
+    {% if profile.resume %}<a href="{{ MEDIA_URL }}{{profile.resume}}" class="btn btn-sm float-right">Download Resume</a>{% endif %}
+  </div>
+
+</div>

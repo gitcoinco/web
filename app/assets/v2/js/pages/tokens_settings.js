@@ -16,7 +16,7 @@ $(document).ready(function() {
     $('.select2-selection__rendered').removeAttr('title');
   });
   
-  $('input[type=submit]').click(function(e) {
+  $('input[type=submit]').on('click', function(e) {
     // acutally submit form if data is present
     if ($('#network').val()) {
       return;

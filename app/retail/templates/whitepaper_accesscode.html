@@ -20,7 +20,7 @@
 <div class="container-fluid" style="">
   <div class=" row ">
     <div class="col-4 pb-4">
-      <div class="align-items-right justify-content-right" style="text-align: right;">
+      <div class="align-items-right justify-content-right text-right">
         <img src="{% static "v2/images/tree/dark.png" %}" style="max-width:300px; margin: 0px auto;">
       </div>
     </div>
@@ -60,12 +60,11 @@
 {% endblock %}
 {% block scripts %}
 <script>
-  $(document).ready(function() {
-    $('#whitepaper input.btn-go').click(function(e){
-      mixpanel.track("Whitepaper Access Code Request", {});
-      setTimeout(function(){
+  $(document).ready(() => {
+    $('#whitepaper input.btn-go').on('click', () => {
+      setTimeout(() => {
         $('#whitepaper input.btn-go').attr('disabled','disabled');
-      },1);
+      }, 1);
     });
   });
 </script>

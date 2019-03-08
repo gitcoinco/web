@@ -16,7 +16,7 @@ var local_storage_keys = JSON.parse(JSON.stringify(filters));
 
 local_storage_keys.push('keywords');
 local_storage_keys.push('org');
-results_limit = 25;
+results_limit = 15;
 
 var localStorage;
 
@@ -27,6 +27,32 @@ try {
 } catch (e) {
   localStorage = {};
 }
+
+var paint_search_tabs = function() {
+  if (!localStorage['searches'])
+    return;
+
+  var container = $('#dashboard-title');
+  var target = $('#search_nav');
+
+  searches = localStorage['searches'].split(',');
+
+  if (searches.length <= 1)
+    return target.html('');
+
+  var html = "<ul class='nav'><i class='fas fa-history'></i>";
+
+  for (var i = 0; i < searches.length; i++) {
+    var search_no = searches[i];
+    var title = get_search_tab_name(search_no);
+
+    if (title) {
+      html += "<li class='nav-item' data-num='" + search_no + "'><span>" + title + '</span><a><i class="fas fa-times"></i></a></li>';
+    }
+  }
+  html += '</ul>';
+  target.html(html);
+};
 
 function debounce(func, wait, immediate) {
   var timeout;
@@ -254,7 +280,7 @@ var removeFilter = function(key, value) {
   refreshBounties(null, 0, false, false);
 };
 
-var get_search_URI = function(offset) {
+var get_search_URI = function(offset, order) {
   var uri = '/api/v0.1/bounties/?';
   var keywords = '';
   var org = '';
@@ -336,11 +362,16 @@ var get_search_URI = function(offset) {
   if (org) {
     uri += '&org=' + org;
   }
+  let order_by;
 
-  var order_by = localStorage['order_by'];
+  if (order) {
+    order_by = order;
+  } else {
+    order_by = localStorage['order_by'];
+  }
 
   if (!document.hackathon) {
-    if (order_by != 'undefined') {
+    if (typeof order_by !== 'undefined') {
       uri += '&order_by=' + order_by;
     }
   } else {
@@ -427,18 +458,25 @@ var refreshBounties = function(event, offset, append, do_save_search) {
     $('.loading').css('display', 'block');
     $('.bounty_row').remove();
   }
-  // filter
-  var uri = get_search_URI(offset);
 
-  // analytics
-  mixpanel.track('Refresh Bounties', { uri: uri });
+  const uri = get_search_URI(offset);
+  const uriFeatured = get_search_URI(offset, '-featuring_date');
+  let bountiesURI;
+  let featuredBountiesURI;
+
+  if (!uri.endsWith('?')) {
+    bountiesURI = uri;
+    featuredBountiesURI = uriFeatured + '&';
+  }
+  // bountiesURI += '';
+  featuredBountiesURI += 'is_featured=True';
 
   // Abort pending request if any subsequent request
   if (explorer.bounties_request && explorer.bounties_request.readyState !== 4) {
     explorer.bounties_request.abort();
   }
 
-  explorer.bounties_request = $.get(uri, function(results, x) {
+  explorer.bounties_request = $.get(bountiesURI, function(results, x) {
     results = sanitizeAPIResults(results);
 
     if (results.length === 0 && !append) {
@@ -489,6 +527,32 @@ var refreshBounties = function(event, offset, append, do_save_search) {
   }).always(function() {
     $('.loading').css('display', 'none');
   });
+
+  explorer.bounties_request = $.get(featuredBountiesURI, function(results, x) {
+    results = sanitizeAPIResults(results);
+
+    if (results.length === 0 && !append) {
+      $('.featured-bounties').hide();
+      if (localStorage['referrer'] === 'onboard') {
+        $('.no-results').removeClass('hidden');
+        $('#dashboard-content').addClass('hidden');
+      } else {
+        $('.nonefound').css('display', 'none');
+      }
+    }
+
+    var html = renderFeaturedBountiesFromResults(results, true);
+
+    if (html) {
+      $('.featured-bounties').show();
+      $('#featured-card-container').html(html);
+    }
+  }).fail(function() {
+    if (explorer.bounties_request.readyState !== 0)
+      _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
+  }).always(function() {
+    $('.loading').css('display', 'none');
+  });
 };
 
 window.addEventListener('load', function() {
@@ -496,15 +560,6 @@ window.addEventListener('load', function() {
   reset_offset();
   refreshBounties(null, 0, false, false);
 });
-
-function getURLParams(k) {
-  var p = {};
-
-  location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(s, k, v) {
-    p[k] = v;
-  });
-  return k ? p[k] : p;
-}
 
 /**
  * removed all filters from the sidebar search
@@ -548,7 +603,7 @@ var resetFilters = function(resetKeyword) {
     $('input[name=idx_status][value=open]').prop('checked', true);
     $('.search-area input[type=text]').text(getURLParams('q'));
 
-    $('#onboard-alert').click(function(e) {
+    $('#onboard-alert').on('click', function(e) {
 
       if (!$('.no-results').hasClass('hidden'))
         $('.nonefound').css('display', 'block');
@@ -650,7 +705,7 @@ $(document).ready(function() {
     });
 
   // sidebar clear
-  $('.dashboard #clear').click(function(e) {
+  $('.dashboard #clear').on('click', function(e) {
     e.preventDefault();
     resetFilters(true);
     reset_offset();
@@ -774,33 +829,6 @@ var get_search_tab_name = function(n) {
 
 };
 
-var paint_search_tabs = function() {
-  if (!localStorage['searches'])
-    return;
-
-  var container = $('#dashboard-title');
-  var target = $('#search_nav');
-
-  searches = localStorage['searches'].split(',');
-
-  if (searches.length <= 1)
-    return target.html('');
-
-  var html = "<ul class='nav'>";
-
-  for (var i = 0; i < searches.length; i++) {
-    var search_no = searches[i];
-    var title = get_search_tab_name(search_no);
-
-    if (title) {
-      html += "<li class='nav-item' data-num='" + search_no + "'><span>" + title + '</span><a><i class="fas fa-times"></i></a></li>';
-    }
-  }
-  html += '</ul>';
-  target.html(html);
-};
-
-
 // gets available searches
 var get_available_searches = function() {
   if (typeof localStorage['searches'] == 'undefined') {
@@ -835,4 +863,3 @@ var remove_search = function(n) {
 
   localStorage.removeItem(key);
 };
-

@@ -4,15 +4,11 @@ html {
 
 body {
   height: 100vh;
-  color: var(--text-dark);
+  color: #43484d;
 }
 
 .navbar {
   flex-shrink: 0;
-}
-
-.navbar-nav > .img__spaceship {
-  display: none !important;
 }
 
 .banner--green {
@@ -77,7 +73,7 @@ body {
 .howworks-container {
   background-color: #ffffff;
   text-align: center;
-  color: var(--text-dark);
+  color: #43484d;
 }
 
 .howworks-container-contributors {
@@ -273,6 +269,7 @@ body {
 
 .join-gitcoin-heading {
   font-size: 2.5rem;
+  color: var(--light)
 }
 
 .contributors-cta-text {
@@ -425,6 +422,10 @@ body {
 
 .whatisit {
   height: min-content;
+}
+
+.whatisit-title {
+  color: var(--light);
 }
 
 .whatisit .youtube {
@@ -773,16 +774,25 @@ body {
   }
 
   .newsletter #newsletter-input {
-    padding: 10px !important;
+    padding: 12px 10px !important;
     min-width: 18rem !important;
     font-size: 16px !important;
-    border: 1px solid #888 !important;
+    border: 1px solid #888;
+    border-top-left-radius: 2px !important;
+    border-bottom-left-radius: 2px !important;
+    border-right: none;
   }
 
   #newsletter-subscribe {
-    height: 46px;
-    top: -2px;
+    height: 48px;
+    top: 1px;
+    border-radius: 2px;
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
     position: relative;
+    box-shadow: none;
+    font-weight: 600;
+    left: -4px;
   }
 }
 

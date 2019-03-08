@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -48,10 +48,11 @@ class Command(BaseCommand):
             stats.slack_users_active,
             stats.twitter_followers,
             stats.bounties,
-            stats.tips,
+            stats.grants,
             stats.subs,
             stats.whitepaper_access,
             stats.whitepaper_access_request,
+            stats.sendcryptoassets,
             stats.tips_received,
             stats.bounties_fulfilled,
             stats.bounties_open,

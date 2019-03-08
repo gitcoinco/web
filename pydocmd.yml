@@ -21,8 +21,6 @@ generate:
     - app.utils++
   - avatar/admin.md:
     - avatar.admin++
-  - avatar/exceptions.md:
-    - avatar.exceptions++
   - avatar/models.md:
     - avatar.models++
   - avatar/utils.md:
@@ -45,8 +43,6 @@ generate:
     - dashboard.embed++
   - dashboard/helpers.md:
     - dashboard.helpers++
-  - dashboard/ios.md:
-    - dashboard.ios++
   - dashboard/models.md:
     - dashboard.models++
   - dashboard/notifications.md:
@@ -92,20 +88,6 @@ generate:
     - enssubdomain.utils++
   - enssubdomain/views.md:
     - enssubdomain.views++
-  - external_bounties/commands.md:
-    - external_bounties.management.commands.sync_bounty0x++
-    - external_bounties.management.commands.sync_gitcoin++
-    - external_bounties.management.commands.sync_known_github_repos++
-  - external_bounties/admin.md:
-    - external_bounties.admin++
-  - external_bounties/forms.md:
-    - external_bounties.forms++
-  - external_bounties/models.md:
-    - external_bounties.models++
-  - external_bounties/router.md:
-    - external_bounties.router++
-  - external_bounties/views.md:
-    - external_bounties.views++
   - faucet/admin.md:
     - faucet.admin++
   - faucet/models.md:
@@ -195,7 +177,7 @@ generate:
     - marketing.management.commands.sync_keywords++
     - marketing.management.commands.sync_mail++
     - marketing.management.commands.sync_slack++
-    - marketing.management.commands.test_email++
+    - marketing.management.commands.debug_test++
   - marketing/admin.md:
     - marketing.admin++
   - marketing/google_analytics.md:
@@ -277,7 +259,6 @@ pages:
       - Views: dashboard/views.md
       - Healthchecks: dashboard/healthchecks.md
       - Helpers: dashboard/helpers.md
-      - iOS: dashboard/ios.md
       - Notifications: dashboard/notifications.md
       - API Router: dashboard/router.md
       - Signals: dashboard/signals.md
@@ -298,13 +279,6 @@ pages:
       - Models: enssubdomain/models.md
       - Utilities: enssubdomain/utils.md
       - Views: enssubdomain/views.md
-    - External Bounties:
-      - Commands: external_bounties/commands.md
-      - Admin: external_bounties/admin.md
-      - Forms: external_bounties/forms.md
-      - Models: external_bounties/models.md
-      - Router: external_bounties/router.md
-      - Views: external_bounties/views.md
     - Faucet:
       - Admin: faucet/admin.md
       - Models: faucet/models.md

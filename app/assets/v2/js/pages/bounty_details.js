@@ -88,6 +88,7 @@ var rows = [
   'fulfillments',
   'network',
   'experience_level',
+  'reserved_for_user_handle',
   'bounty_type',
   'expires_date',
   'issue_keywords',
@@ -183,7 +184,7 @@ var callbacks = {
     } else {
       $('#auto_approve_workers_wrapper').hide();
     }
-    return [ 'admin_override_suspend_auto_approval', val ? 'off' : 'on' ];
+    return [ 'admin_override_suspend_auto_approval', val ? 'Off' : 'On' ];
   },
   'issue_keywords': function(key, val, result) {
     if (!result.keywords || result.keywords.length == 0)
@@ -405,7 +406,45 @@ var callbacks = {
       }
     }
     return [ 'fulfilled_owners_username', accepted ];
+  },
+  'reserved_for_user_handle': function(key, val, bounty) {
+    if (val) {
+      const reservedForHoursLeft = 72 - Math.abs(new Date() - new Date(bounty['created_on'])) / 3600000;
+
+      // check if 24 hours have passed before setting the issue as reserved
+      if (Math.round(reservedForHoursLeft) > 0) {
+        const reservedForHtmlLink = '<a href="/profile/' + val + '">' + val + '</a>';
+        const reservedForAvatar = '<img class="rounded-circle" src="/dynamic/avatar/' + val + '" width="25" height="25"/>';
+
+        $('#bounty_reserved_for').html(reservedForHtmlLink + reservedForAvatar);
+        return [ key, val ];
+      }
+    }
+
+    $('#bounty_reserved_for').css('display', 'none');
+    $('#bounty_reserved_for_label').css('display', 'none');
+
+    return [ key, val ];
   }
+};
+
+const isAvailableIfReserved = function(bounty) {
+  const reservedFor = bounty['reserved_for_user_handle'];
+
+  if (reservedFor) {
+    if (caseInsensitiveCompare(reservedFor, document.contxt['github_handle'])) {
+      return true;
+    }
+
+    const reservedForHoursLeft = 72 - Math.abs(new Date() - new Date(bounty['created_on'])) / 3600000;
+
+    // check if 24 hours have passed before setting the issue as reserved
+    if (Math.round(reservedForHoursLeft) > 0) {
+      return false;
+    }
+  }
+
+  return true;
 };
 
 var isBountyOwner = function(result) {
@@ -418,13 +457,13 @@ var isBountyOwner = function(result) {
     return false;
   }
 
-  return (web3.eth.coinbase.toLowerCase() == bountyAddress.toLowerCase());
+  return caseInsensitiveCompare(web3.eth.coinbase, bountyAddress);
 };
 
 var isBountyOwnerPerLogin = function(result) {
   var bounty_owner_github_username = result['bounty_owner_github_username'];
 
-  return bounty_owner_github_username == document.contxt['github_handle'];
+  return caseInsensitiveCompare(bounty_owner_github_username, document.contxt['github_handle']);
 };
 
 var update_title = function() {
@@ -621,13 +660,21 @@ var show_interest_modal = function() {
           return false;
         }
 
-        $(self).attr('href', '/uninterested');
-        $(self).find('span').text(gettext('Stop Work'));
-        $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
+
         add_interest(document.result['pk'], {
           issue_message: msg
+        }).then(success => {
+          if (success) {
+            $(self).attr('href', '/uninterested');
+            $(self).find('span').text(gettext('Stop Work'));
+            $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
+            $.modal.close();
+          }
+        }).catch((error) => {
+          if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
+            return;
+          throw error;
         });
-        $.modal.close();
       });
     });
   });
@@ -667,7 +714,7 @@ var show_extend_deadline_modal = function() {
         $('.select2-selection__rendered').removeAttr('title');
       });
       // removes search field in all but the 'denomination' dropdown
-      $('.select2-container').click(function() {
+      $('.select2-container').on('click', function() {
         $('.select2-container .select2-search__field').remove();
       });
 
@@ -783,7 +830,7 @@ const is_current_user_interested = function(result) {
   if (!document.contxt.github_handle) {
     return false;
   }
-  return !!(result.interested || []).find(interest => interest.profile.handle.toLowerCase() == document.contxt.github_handle.toLowerCase());
+  return !!(result.interested || []).find(interest => caseInsensitiveCompare(interest.profile.handle, document.contxt.github_handle));
 };
 
 const is_current_user_approved = function(result) {
@@ -798,12 +845,19 @@ const is_current_user_approved = function(result) {
     const interest = interested[len];
     const handle = interest.profile ? interest.profile.handle : '';
 
-    if (handle && handle.toLowerCase() === document.contxt.github_handle.toLowerCase()) {
+    if (handle && caseInsensitiveCompare(handle, document.contxt.github_handle)) {
       return needs_approval ? interest.pending === false : true;
     }
   }
 
   return false;
+};
+
+const is_funder_notifiable = (result) => {
+  if (result['funder_last_messaged_on']) {
+	      return false;
+  }
+  return true;
 };
 
 var do_actions = function(result) {
@@ -815,27 +869,33 @@ var do_actions = function(result) {
   var is_still_on_happy_path = result['status'] == 'open' || result['status'] == 'started' || result['status'] == 'submitted' || (can_submit_after_expiration_date && result['status'] == 'expired');
   var needs_review = result['needs_review'];
   const is_open = result['is_open'];
+  let bounty_path = result['network'] + '/' + result['standard_bounties_id'];
+
 
   // Find interest information
   const is_interested = is_current_user_interested(result);
 
-  const has_fulfilled = result['fulfillments'].filter(fulfiller => fulfiller.fulfiller_github_username === document.contxt['github_handle']).length > 0;
+  const has_fulfilled = result['fulfillments'].filter(fulfiller => caseInsensitiveCompare(fulfiller.fulfiller_github_username, document.contxt['github_handle'])).length > 0;
 
   document.interested = is_interested;
 
   const current_user_is_approved = is_current_user_approved(result);
   // which actions should we show?
   const should_block_from_starting_work = !is_interested && result['project_type'] == 'traditional' && (result['status'] == 'started' || result['status'] == 'submitted');
-  let show_start_stop_work = is_still_on_happy_path && !should_block_from_starting_work && is_open && !isBountyOwner(result);
+  let show_start_stop_work = is_still_on_happy_path && !should_block_from_starting_work &&
+    is_open && !isBountyOwner(result) && isAvailableIfReserved(result);
   let show_github_link = result['github_url'].substring(0, 4) == 'http';
   let show_submit_work = is_open && !has_fulfilled;
   let show_kill_bounty = !is_status_done && !is_status_expired && !is_status_cancelled && isBountyOwner(result);
   let show_job_description = result['attached_job_description'] && result['attached_job_description'].startsWith('http');
   const show_increase_bounty = !is_status_done && !is_status_expired && !is_status_cancelled;
   const submit_work_enabled = !isBountyOwner(result) && current_user_is_approved;
+  const notify_funder_enabled = is_funder_notifiable(result);
   let show_payout = !is_status_expired && !is_status_done && isBountyOwner(result);
   let show_extend_deadline = isBountyOwner(result) && !is_status_expired && !is_status_done;
   let show_invoice = isBountyOwner(result);
+  let show_notify_funder = is_open && has_fulfilled;
+
 
   const show_suspend_auto_approval = currentProfile.isStaff && result['permission_type'] == 'approval' && !result['admin_override_suspend_auto_approval'];
   const show_admin_methods = currentProfile.isStaff;
@@ -868,12 +928,36 @@ var do_actions = function(result) {
     actions.push(_entry);
   }
 
+  if (show_notify_funder) {
+    const enabled = notify_funder_enabled;
+    const url = '/' + bounty_path + '/modal/funder_payout_reminder/';
+    const _entry = {
+	    enabled: enabled,
+	    href: '#',
+	    text: gettext('Send Payment Reminder'),
+	    parent: 'right_actions',
+	    title: gettext('Send Payment Reminder'),
+	    id: 'notifyFunder',
+	    clickhandler: show_modal_handler(url),
+	    modal: true
+	  };
+
+    actions.push(_entry);
+  }
+
   if (show_start_stop_work) {
     const enabled = true;
+    let text;
+
+    if (result['permission_type'] === 'approval')
+      text = is_interested ? gettext('Stop') : gettext('Express Interest');
+    else
+      text = is_interested ? gettext('Stop Work') : gettext('Start Work');
+
     const interest_entry = {
       enabled: enabled,
       href: is_interested ? '/uninterested' : '/interested',
-      text: is_interested ? gettext('Stop Work') : gettext('Start Work'),
+      text: text,
       parent: 'right_actions',
       title: is_interested ? gettext('Notify the funder that you will not be working on this project') : gettext('Notify the funder that you would like to take on this project'),
       color: is_interested ? '' : '',
@@ -1139,7 +1223,11 @@ const render_actions = function(actions) {
     const tmpl = $.templates('#action');
     const html = tmpl.render(actions[l]);
 
-    $('#' + target).append(html);
+    let el = $(html).appendTo('#' + target);
+
+    if (actions[l].clickhandler) {
+      el.children('.button').click(actions[l].clickhandler);
+    }
   }
 };
 
@@ -1219,13 +1307,22 @@ const process_activities = function(result, bounty_activities) {
     bounty_removed_slashed_by_staff: gettext('Dinged and Removed from Bounty by Staff'),
     bounty_removed_by_staff: gettext('Removed from Bounty by Staff'),
     bounty_removed_by_funder: gettext('Removed from Bounty by Funder'),
-    bounty_changed: gettext('Bounty Details Changed')
+    bounty_changed: gettext('Bounty Details Changed'),
+    extend_expiration: gettext('Extended Bounty Expiration')
   };
 
   const now = new Date(result['now']);
   const is_open = result['is_open'];
+  const _result = [];
 
-  return (bounty_activities || []).map(function(_activity) {
+  bounty_activities = bounty_activities || [];
+  bounty_activities.forEach(function(_activity) {
+    const type = _activity.activity_type;
+
+    if (type === 'unknown_event') {
+      return;
+    }
+
     const meta = _activity.metadata || {};
     const fulfillment = meta.fulfillment || {};
     const new_bounty = meta.new_bounty || {};
@@ -1238,9 +1335,18 @@ const process_activities = function(result, bounty_activities) {
     const is_logged_in = currentProfile.username;
     const uninterest_possible = is_logged_in && ((isBountyOwnerPerLogin(result) || currentProfile.isStaff) && is_open && has_interest);
 
-    return {
-      profileId: _activity.profile.id,
-      name: _activity.profile.handle,
+    let profile_id = _activity.profile.id;
+    let profile_handle = _activity.profile.handle;
+
+    if (type === 'receive_tip') {
+      // TODO: is not important for now, but maybe in the future?
+      profile_id = 0;
+      profile_handle = _activity.metadata.to_username;
+    }
+
+    _result.push({
+      profileId: profile_id,
+      name: profile_handle,
       text: activity_names[_activity.activity_type],
       created_on: _activity.created,
       age: timeDifference(now, new Date(_activity.created)),
@@ -1267,8 +1373,10 @@ const process_activities = function(result, bounty_activities) {
       token_value_in_usdt_old: old_bounty.token_value_in_usdt,
       token_value_time_peg_new: new_bounty.token_value_time_peg,
       token_name: result['token_name']
-    };
+    });
   });
+
+  return _result;
 };
 
 const only_one_approve = function(activities) {
@@ -1284,7 +1392,9 @@ const only_one_approve = function(activities) {
       }
     }
     if (activity.uninterest_possible) {
-      if (!iseen[activity.name]) {
+      if (activity.activity_type == 'bounty_abandonment_escalation_to_mods' || activity.activity_type == 'bounty_abandonment_escalation_to_mods') {
+        // pass
+      } else if (!iseen[activity.name]) {
         iseen[activity.name] = true;
       } else if (activity.activity_type != 'start_work') {
         activity.uninterest_possible = false;
@@ -1320,11 +1430,11 @@ const render_activity = function(result, all_results) {
   activities.filter(function(activity) {
     return activity.uninterest_possible;
   }).forEach(function(activity) {
-    $('#remove-' + activity.name).click(() => {
+    $('#remove-' + activity.name).on('click', function() {
       uninterested(result.pk, activity.profileId);
       return false;
     });
-    $('#remove-slash-' + activity.name).click(() => {
+    $('#remove-slash-' + activity.name).on('click', function() {
       uninterested(result.pk, activity.profileId, true);
       return false;
     });
