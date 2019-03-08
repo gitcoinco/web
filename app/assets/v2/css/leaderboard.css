@@ -1,3 +1,9 @@
+.gitcoin-background {
+  background: url("/static/v2/images/header-bg.png") #0d023b;
+  background-attachment: fixed;
+  background-position: center 0;
+}
+
 #leaderboard .leaderboard_entry {
   padding: 10px 0px;
   color: #5C5D5F;
@@ -205,6 +211,7 @@
     max-width: 30%;
     overflow-x: hidden;
   }
+
 
   #leaderboard .progress_container {
     padding-top: 1.5em;

@@ -17,12 +17,12 @@
       {% include 'shared/nav.html' %}
     </div>
     <div class="row no-gutter">
-      <div class="col body">
+      <div class="col body gitcoin-background">
         <div class="container-fluid" id="leaderboard">
 
           <!-- PODIUM -->
 
-          <div class="row offset-md-1 col-sm-12 col-md-10 mt-0 mb-2 pt-1 podium text-center justify-content-center">
+          <div class="row offset-md-1 col-sm-12 col-md-10 mt-0 mb-2 pt-1 podium text-center justify-content-center" style="background-color: #0d023b">
               {% for podium_item in podium_items %}
                 <div class="col-2 winner mt-5">
                   {% if not is_linked_to_profile %}
