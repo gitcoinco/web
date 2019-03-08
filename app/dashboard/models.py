@@ -1594,6 +1594,20 @@ class Activity(SuperModel):
         return f"{self.profile.handle} type: {self.activity_type} created: {naturalday(self.created)} " \
                f"needs review: {self.needs_review}"
 
+
+    @property
+    def humanized_activity_type(self):
+        """Turn snake_case into Snake Case.
+
+        Returns:
+            str: The humanized nameactivity_type
+        """
+        for activity_type in self.ACTIVITY_TYPES:
+            if activity_type[0] == self.activity_type:
+                return activity_type[1]
+        return ' '.join([x.capitalize() for x in self.activity_type.split('_')])
+
+
     def i18n_name(self):
         return _(next((x[1] for x in self.ACTIVITY_TYPES if x[0] == self.activity_type), 'Unknown type'))
 
@@ -1615,6 +1629,8 @@ class Activity(SuperModel):
             'title',
             'token_name',
             'created_human_time',
+            'humanized_name',
+            'url',
         ]
         activity = self.to_standard_dict(properties=properties)
         for key, value in model_to_dict(self).items():
@@ -1622,7 +1638,7 @@ class Activity(SuperModel):
         for fk in ['bounty', 'tip', 'kudos', 'profile']:
             if getattr(self, fk):
                 activity[fk] = getattr(self, fk).to_standard_dict(properties=properties)
-
+        print(activity['kudos'])
         # KO notes 2019/01/30
         # this is a bunch of bespoke information that is computed for the views
         # in a later release, it couild be refactored such that its just contained in the above code block ^^.
@@ -1639,6 +1655,7 @@ class Activity(SuperModel):
                 activity['urled_title'] = f'<a href="{activity["bounty_url"]}">{activity["title"]}</a>'
             else:
                 activity['urled_title'] = activity.title
+        activity['humanized_activity_type'] = self.humanized_activity_type
         if 'value_in_usdt_now' in obj:
             activity['value_in_usdt_now'] = obj['value_in_usdt_now']
         if 'token_name' in obj:
