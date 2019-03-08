@@ -1871,6 +1871,10 @@ class Profile(SuperModel):
         tipped_for = Tip.objects.filter(username__iexact=self.handle).order_by('-id')
         return on_repo | tipped_for
 
+    def has_custom_avatar(self):
+        from avatar.models import CustomAvatar
+        return CustomAvatar.objects.filter(active=True, profile=self).exists()
+
     def build_random_avatar(self):
         from avatar.utils import build_random_avatar
         from avatar.models import CustomAvatar

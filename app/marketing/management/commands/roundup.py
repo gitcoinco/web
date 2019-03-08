@@ -64,11 +64,19 @@ class Command(BaseCommand):
             default=None,
             help="filter_startswith (optional)",
         )
+        parser.add_argument(
+            '--start_counter',
+            dest='start_counter',
+            type=str,
+            default=0,
+            help="start_counter (optional)",
+        )
 
     def handle(self, *args, **options):
 
         exclude_startswith = options['exclude_startswith']
         filter_startswith = options['filter_startswith']
+        start_counter = options['start_counter']
 
         queryset = EmailSubscriber.objects.all()
         if exclude_startswith:
@@ -84,6 +92,11 @@ class Command(BaseCommand):
         counter = 0
         for to_email in email_list:
             counter += 1
+
+            # skip any that are below the start counter
+            if counter < start_counter:
+                continue
+
             print("-sending {} / {}".format(counter, to_email))
             if options['live']:
                 try:
