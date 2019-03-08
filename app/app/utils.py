@@ -15,8 +15,8 @@ from django.utils.translation import LANGUAGE_SESSION_KEY
 
 import geoip2.database
 import requests
-from avatar.models import CustomAvatar, SocialAvatar
-from avatar.utils import build_random_avatar, get_svg_templates, get_user_github_avatar_image
+from avatar.models import SocialAvatar
+from avatar.utils import get_svg_templates, get_user_github_avatar_image
 from dashboard.models import Profile
 from geoip2.errors import AddressNotFoundError
 from git.utils import _AUTH, HEADERS, get_user
@@ -241,14 +241,7 @@ def sync_profile(handle, user=None, hide_profile=True):
                 logger.warning(f'Encountered ({e}) while attempting to save a user\'s github avatar')
 
     if profile and created:
-        payload = build_random_avatar()
-        try:
-            custom_avatar = CustomAvatar.create(profile, payload)
-            custom_avatar.save()
-            profile.activate_avatar(custom_avatar.pk)
-            profile.save()
-        except Exception as e:
-            logger.warning('Save Random Avatar - Error: (%s) - Handle: (%s)', e, profile.handle if profile else '')
+        profile.build_random_avatar()
 
     return profile
 

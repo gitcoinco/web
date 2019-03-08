@@ -1020,6 +1020,49 @@ input.is-invalid {
   width: auto;
 }
 
+.rating {
+  width:160px;
+}
+.rating span { float:right; position:relative; }
+.rating span input {
+  position:absolute;
+  top:0px;
+  left:0px;
+  opacity:0;
+}
+.rating span label {
+  display:inline-block;
+  width:30px;
+  height:30px;
+  text-align:center;
+  color:#FFF;
+  font-size:25px;
+  margin-right:2px;
+  line-height:30px;
+  border-radius:50%;
+  -webkit-border-radius:50%;
+}
+.rating span label i {
+  color:#ccc;
+}
+
+.rating span:hover ~ span label i,
+.rating span:hover label i {
+  opacity: 0.5;
+}
+.rating span.checked label i,
+.rating span.checked ~ span label i
+{
+  opacity: 1;
+}
+
+.rating span:hover ~ span label i,
+.rating span:hover label i,
+.rating span.checked label i,
+.rating span.checked ~ span label i {
+  color: rgb(18,199,113);
+}
+
 .bounty_box {
   border: 5px solid white;
   width: 100%;
@@ -1585,6 +1628,10 @@ div.busyOverlay {
 
 .popover-bounty__content {
   padding: 1.4em 1.3em 1.3em;
+}
+
+.big-popover {
+  max-width: 482px;
 }
 
 /* Custom icons */

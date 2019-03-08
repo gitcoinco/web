@@ -182,6 +182,11 @@ def get_avatar_context():
                     'polkadotblouse',
                     'coat',
                     'crochettop',
+                    'space_suit',
+                    'armour',
+                    'pilot',
+                    'baseball',
+                    'football',
                 ),
                 'paid_options': {
                     'robe': 0.01,
@@ -321,6 +326,7 @@ def get_avatar_context():
                     ['Masks-power1'],
                     ['HatShort-elf'],
                     ['Extras-necklaceb'],
+                    ['Masks-football'],
                 ),
                 'paid_options': {
                     'Extras-Parrot': 0.01,

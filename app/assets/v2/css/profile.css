@@ -16,8 +16,8 @@
 
 .profile-header__avatar {
   float: left;
-  width: 6.75rem;
-  height: 6.75rem;
+  width: 7.25rem;
+  height: 7.25rem;
   border-radius: 50%;
 }
 
@@ -276,10 +276,11 @@
 .profile_details .works_with_list img {
   max-width: 30px;
   border-radius: 50%;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.10);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.20);
 }
 
 .profile_details .works_with_list .plus-img {
+  color: #3E00FF;
   width: 30px;
   height: 30px;
   display: inline-flex;
@@ -289,6 +290,11 @@
   vertical-align: middle;
   font-size: 10px;
   justify-content: center;
+}
+
+.profile_details .works_with_list a:hover {
+  text-decoration: none;
+  transform: scale(1.1);
 }
 
 .no-profile-button {
