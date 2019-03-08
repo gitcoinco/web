@@ -744,7 +744,8 @@ def leaderboard(request, key=''):
         'action_past_tense': 'Transacted' if 'submitted' in key else 'bountied',
         'amount_max': amount_max,
         'podium_items': items[:5] if items else [],
-        'technologies': technologies
+        'technologies': technologies,
+        'active': 'leaderboard'
     }
 
     return TemplateResponse(request, 'leaderboard.html', context)
