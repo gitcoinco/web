@@ -1,5 +1,5 @@
 {% load static humanize i18n grants_extra %}
-{% if 1 %}
+{% if grant.clr_matching or clr_matching_banners_style == "pledging" %}
   <div>
     <div id="CLR_banner" class="mt-3 mb-3" style="border: 2px solid #C3B0FF; color: white; padding: 3px 10px; border-radius: 5px;"> 
       
@@ -13,7 +13,7 @@
         <p style="color: #4A4A4A;" class="mt-1 mb-2">
            This project had contributions matched 2/1 - 2/15
         </p>
-
+        
       {% else %}
 
         <a style="color: #3E00FF;" target="new" href="https://medium.com/gitcoin/gitcoin-grants-clr-matching-ecbc87b10038">
