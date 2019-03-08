@@ -67,7 +67,7 @@ class Command(BaseCommand):
         parser.add_argument(
             '--start_counter',
             dest='start_counter',
-            type=str,
+            type=int,
             default=0,
             help="start_counter (optional)",
         )
