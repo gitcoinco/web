@@ -927,7 +927,8 @@ def render_new_bounty_roundup(to_email):
     # can't do this if not profile
     if not profile:
         return None, None, None
-
+    always_generate_new_avatar = settings.DEBUG
+    
     if not profile.has_custom_avatar() or always_generate_new_avatar:
         avatar = profile.build_random_avatar()
         avatar_url = avatar.avatar_url
