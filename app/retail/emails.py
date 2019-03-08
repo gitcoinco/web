@@ -911,8 +911,6 @@ def render_start_work_applicant_expired(interest, bounty):
     return response_html, response_txt, subject
 
 
-
-
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
@@ -920,19 +918,24 @@ def render_new_bounty_roundup(to_email):
     new_kudos_pks = [1971, 1970, 1969, 1968]
     new_kudos_size_px = 150
 
-
+    # generate an avatar
     from dashboard.models import Profile
     from django.templatetags.static import static
-    profile = Profile.objects.get(email=to_email)
+    profile = Profile.objects.get(email__iexact=to_email)
+    avatar_url = None
+
+    # can't do this if not profile
     if not profile:
         return None, None, None
-    avatars = profile.avatar_baseavatar_related.filter(active=True)
     always_generate_new_avatar = settings.DEBUG
-    if not avatars.last() or always_generate_new_avatar:
+    
+    if not profile.has_custom_avatar() or always_generate_new_avatar:
         avatar = profile.build_random_avatar()
         avatar_url = avatar.avatar_url
     else:
+        avatars = profile.avatar_baseavatar_related.filter(active=True)
         avatar_url = avatars.first().avatar_url
+    #### end avatar generator
 
     kudos_friday = f'''
 <h3>Happy Kudos Friday!</h3>
