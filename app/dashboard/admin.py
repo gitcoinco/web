@@ -75,9 +75,11 @@ class UserActionAdmin(admin.ModelAdmin):
     search_fields = ['action', 'ip_address', 'metadata', 'profile__handle']
     ordering = ['-id']
 
+
 class FeedbackAdmin(admin.ModelAdmin):
     search_fields = ['sender_profile','receiver_profile','bounty','feedbackType']
     ordering = ['-id']
+    raw_id_fields = ['sender_profile', 'receiver_profile', 'bounty']
 
 class ProfileAdmin(admin.ModelAdmin):
     raw_id_fields = ['user', 'preferred_kudos_wallet']
