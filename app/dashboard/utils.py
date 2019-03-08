@@ -274,17 +274,6 @@ def get_web3(network, sockets=False):
     raise UnsupportedNetworkException(network)
 
 
-def get_bounty_invite_url(handle, bounty_id):
-    """Returns a unique url for each bounty and one who is inviting
-
-    Returns:
-        A unique string for each bounty
-    """
-    salt = "X96gRAVvwx52uS6w4QYCUHRfR3OaoB"
-    string = handle + salt + bounty_id
-    return base64.urlsafe_b64encode(string.encode()).decode()
-
-
 def get_profile_from_referral_code(code):
     """Returns a profile from the unique code
 
@@ -292,6 +281,17 @@ def get_profile_from_referral_code(code):
         A unique string for each profile
     """
     return base64.urlsafe_b64decode(code.encode()).decode()
+
+
+def get_bounty_invite_url(inviter, bounty_id):
+    """Returns a unique url for each bounty and one who is inviting
+
+    Returns:
+        A unique string for each bounty
+    """
+    salt = "X96gRAVvwx52uS6w4QYCUHRfR3OaoB"
+    string = str(inviter) + salt + str(bounty_id)
+    return base64.urlsafe_b64encode(string.encode()).decode()
 
 
 def get_bounty_from_invite_url(invite_url):
@@ -303,9 +303,9 @@ def get_bounty_from_invite_url(invite_url):
     salt = "X96gRAVvwx52uS6w4QYCUHRfR3OaoB"
     decoded_string = base64.urlsafe_b64decode(invite_url.encode()).decode()
     data_array = decoded_string.split(salt)
-    handle = data_array[0]
-    bounty_id = data_array[1]
-    return {'handle': handle, 'bounty_id': bounty_id}
+    inviter = data_array[0]
+    bounty = data_array[1]
+    return {'inviter': inviter, 'bounty': bounty}
 
 
 def getStandardBountiesContractAddresss(network):

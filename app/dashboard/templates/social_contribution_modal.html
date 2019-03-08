@@ -37,7 +37,7 @@
               </div>
               <div class="center-block mt-5 text-right w-75">
                 <p class="font-body text-left">{% trans "Help friends and colleagues find new and interesting work!" %}</p>
-                <textarea class="w-100 form__input" id="shareText">Check out this bounty that pays out {{bounty.get_value_true}} {{bounty.token_name}} {{bounty.url}} {% for keyword in bounty.keywords_list %} #{{keyword}}{% endfor %}</textarea>
+                <textarea class="w-100 form__input" id="shareText">Check out this bounty that pays out {{bounty.get_value_true}} {{bounty.token_name}} {{invite_url}} {% for keyword in bounty.keywords_list %} #{{keyword}}{% endfor %}</textarea>
                 <button class="button button__small button--primary" data-copyclipboard="#shareText">Copy Text</button>
               </div>
 

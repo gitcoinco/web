@@ -60,7 +60,7 @@ from web3 import HTTPProvider, Web3
 
 from .helpers import get_bounty_data_for_activity, handle_bounty_views
 from .models import (
-    Activity, Bounty, BountyFulfillment, CoinRedemption, CoinRedemptionRequest, Interest, LabsResearch, Profile,
+    Activity, Bounty, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest, Interest, LabsResearch, Profile,
     ProfileSerializer, Subscription, Tool, ToolVote, UserAction,
 )
 from .notifications import (
@@ -736,6 +736,7 @@ def social_contribution_modal(request):
         TemplateResponse: The accept bounty view.
 
     """
+    from .utils import get_bounty_invite_url
     bounty = handle_bounty_views(request)
     promo_text = str(_("Check out this bounty that pays out ")) + f"{bounty.get_value_true} {bounty.token_name} {bounty.url}"
     for keyword in bounty.keywords_list:
@@ -749,6 +750,7 @@ def social_contribution_modal(request):
         title=_('Social Contribute'),
     )
     params['promo_text'] = promo_text
+    params['invite_url'] = f'{settings.BASE_URL}issue/{get_bounty_invite_url(request.user.username, bounty.pk)}'
     return TemplateResponse(request, 'social_contribution_modal.html', params)
 
 @csrf_exempt
@@ -761,12 +763,21 @@ def social_contribution_email(request):
     """
     from marketing.mails import share_bounty
 
-    print (request.POST.getlist('usersId[]', []))
     emails = [] 
     user_ids = request.POST.getlist('usersId[]', [])
+    url = request.POST.get('url', '')
+    inviter = request.user if request.user.is_authenticated else None
+    bounty = Bounty.objects.current().get(github_url=url)
     for user_id in user_ids:
         profile = Profile.objects.get(id=int(user_id))
+        bounty_invite = BountyInvites.objects.create(
+            status='pending'
+        )
+        bounty_invite.bounty.add(bounty)
+        bounty_invite.inviter.add(inviter)
+        bounty_invite.invitee.add(profile.user)
         emails.append(profile.email)
+
     msg = request.POST.get('msg', '')
     try:
         share_bounty(emails, msg, request.user.profile)
@@ -1070,7 +1081,15 @@ def bounty_invite_url(request, invitecode):
         django.template.response.TemplateResponse: The Bounty details template response.
     """
     decoded_data = get_bounty_from_invite_url(invitecode)
-    bounty = Bounty.objects.current().filter(pk=decoded_data['bounty_id'])
+    bounty = Bounty.objects.current().filter(pk=decoded_data['bounty']).first()
+    inviter = User.objects.filter(username=decoded_data['inviter']).first()
+    bounty_invite = BountyInvites.objects.filter(
+        bounty=bounty,
+        inviter=inviter,
+        invitee=request.user
+    ).first()
+    bounty_invite.status = 'accepted'
+    bounty_invite.save()
     return redirect('/funding/details/?url=' + bounty.github_url)
     
 
