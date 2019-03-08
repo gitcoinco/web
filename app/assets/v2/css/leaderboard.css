@@ -1,26 +1,26 @@
 #leaderboard .leaderboard_entry {
   padding: 10px 0px;
-  color: black;
+  color: #5C5D5F;
   text-decoration: none;
 }
 
 #leaderboard .leaderboard_entry img {
-  max-height: 100px;
+  max-height: 70px;
   border-radius: 50%;
 }
 
 #leaderboard .leaderboard_entry a {
-  color: #8b8b8b;
+  color: #5C5D5F;
 }
 
 #leaderboard .leaderboard_entry .item-amount {
   font-size: 1.5em;
   font-weight: bold;
-  color: #86eec4;
+  color: #5C5D5F;
 }
 
 #leaderboard .leaderboard_entry .item-position {
-  color: #8b8b8b;
+  color: #5C5D5F;
 }
 
 #leaderboard .table-striped tbody tr:nth-of-type(2n+1) {
@@ -42,20 +42,12 @@
 #leaderboard .podium {
   border-bottom-left-radius: 2px;
   border-bottom-right-radius: 2px;
-  background: #f5136e;
-  /* For browsers that do not support gradients */
-  background: -webkit-gradient(linear, center top, center bottom, from(#f5136e), to(#0f023c));
-  background: -webkit-linear-gradient(#f5136e, #0f023c);
-  background: -moz-linear-gradient(#f5136e, #0f023c);
-  background: -o-linear-gradient(#f5136e, #0f023c);
-  background: -ms-linear-gradient(#f5136e, #0f023c);
-  background: linear-gradient(#f5136e, #0f023c);
+  background: #150069;
 }
 
 #leaderboard .winner {
   position: relative;
   padding: 0px;
-  min-height: 23em;
   text-align: center;
 }
 
@@ -87,8 +79,28 @@
 }
 
 #leaderboard .winner img {
-  opacity: 0.5;
-  min-height: 23em;
+  opacity: 1;
+  display: flex;
+}
+
+.interior .body {
+  background-color: #140069;
+}
+
+.restext {
+  font-size: 1rem !important;
+}
+
+.restext2 {
+  font-size: 1.5rem !important;
+}
+.restext3 {
+  font-size: 1.75rem !important;
+}
+.restext4 {
+  font-size: 1rem !important;
+  font-weight: bold;
+  color: #CECFD1;
 }
 
 #leaderboard .winner img:hover {
@@ -96,7 +108,7 @@
 }
 
 #leaderboard .winner a {
-  color: white;
+  color: #2B75D2;
 }
 
 #leaderboard .clickable-row {
@@ -105,7 +117,7 @@
 
 @media (max-width: 1300px) {
   #leaderboard .winner img {
-    min-height: 20em;
+    display: flex
   }
 }
 
@@ -128,7 +140,21 @@
   }
 
   #leaderboard .winner img {
-    min-height: 18em;
+    display: flex;
+  }
+  .restext {
+    font-size: 0.7rem !important;
+  }
+  .restext2 {
+    font-size: 1rem !important;
+  }
+  .restext3 {
+    font-size: 1.2rem !important;
+  }
+  .restext4 {
+    font-size: 0.9rem !important;
+    font-weight: bold;
+    color: #CECFD1;
   }
 }
 
@@ -166,7 +192,7 @@
   }
 
   #leaderboard .winner img {
-    min-height: 12em;
+    display: flex;
   }
 
   #leaderboard .col-6 {
@@ -182,6 +208,20 @@
 
   #leaderboard .progress_container {
     padding-top: 1.5em;
+  }
+  .restext {
+    font-size: 0.6rem !important;
+  }
+  .restext2 {
+    font-size: 0.8rem !important;
+  }
+  .restext3 {
+    font-size: 1rem !important;
+  }
+  .restext4 {
+    font-size: 0.7rem !important;
+    font-weight: bold;
+    color: #CECFD1 !important;
   }
 }
 
@@ -203,6 +243,6 @@
   }
 
   #leaderboard .winner img {
-    min-height: 6em;
+    display: flex;
   }
 }

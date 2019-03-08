@@ -724,7 +724,7 @@ def leaderboard(request, key=''):
 
     if amount:
         amount_max = amount[0][0]
-        top_earners = ranks.order_by('-amount')[0:3].values_list('github_username', flat=True)
+        top_earners = ranks.order_by('-amount')[0:5].values_list('github_username', flat=True)
         top_earners = ['@' + username for username in top_earners]
         top_earners = f'The top earners of this period are {", ".join(top_earners)}'
     else:
@@ -743,10 +743,10 @@ def leaderboard(request, key=''):
         'card_desc': f'See the most valued members in the Gitcoin community recently . {top_earners}',
         'action_past_tense': 'Transacted' if 'submitted' in key else 'bountied',
         'amount_max': amount_max,
-        'podium_items': items[:3] if items else [],
+        'podium_items': items[:5] if items else [],
         'technologies': technologies
     }
-    
+
     return TemplateResponse(request, 'leaderboard.html', context)
 
 @staff_member_required
