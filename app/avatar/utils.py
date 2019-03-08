@@ -187,6 +187,12 @@ def get_avatar_context():
                     'pilot',
                     'baseball',
                     'football',
+                    'lifevest',
+                    'firefighter',
+                    'leatherjacket',
+                    'martialarts',
+                    'raincoat',
+                    'recycle',
                 ),
                 'paid_options': {
                     'robe': 0.01,
