@@ -387,11 +387,6 @@ def grant_fund(request, grant_id, grant_slug):
             subscription.contributor_profile = profile
             subscription.grant = grant
             subscription.save()
-            activity_kwargs = {
-                'profile': profile,
-                'subscription': subscription,
-                'activity_type': 'new_grant_subscription',
-            }
 
             # one time payments
             if subscription.num_tx_approved == '1':
@@ -399,8 +394,9 @@ def grant_fund(request, grant_id, grant_slug):
                 subscription.error = True #cancel subs so it doesnt try to bill again
                 subscription.subminer_comments = "skipping subminer bc this is a 1 and done subscription, and tokens were alredy sent"
                 subscription.save()
-                activity_kwargs['activity_type'] = 'new_grant_contribution'
-            Activity.objects.create(**activity_kwargs)
+                record_grant_activity_helper('new_grant_contribution', subscription, profile)
+            else:
+                record_grant_activity_helper('new_grant_subscription', subscription, profile)
 
             messages.info(
                 request,
@@ -479,12 +475,7 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
         subscription.cancel_tx_id = request.POST.get('sub_cancel_tx_id', '')
         subscription.active = False
         subscription.save()
-        activity_kwargs = {
-            'profile': profile,
-            'subscription': subscription,
-            'activity_type': 'killed_grant_contribution',
-        }
-        Activity.objects.create(**activity_kwargs)
+        record_grant_activity_helper('killed_grant_contribution', subscription, profile)
 
         value_usdt = subscription.get_converted_amount
         if value_usdt:
@@ -617,3 +608,20 @@ def leaderboard(request):
             params['items'].append(item)
             counter += 1
     return TemplateResponse(request, 'grants/leaderboard.html', params)
+
+
+def record_grant_activity_helper(activity_type, subscription, profile):
+    """Registers a new activity concerning a grant subscription
+
+    Args:
+        activity_type (str): The type of activity, as defined in dashboard.models.Activity.
+        subscription (grants.models.Subscription): The subscription in question.
+        profile (dashboard.models.Profile): The current user's profile.
+
+    """
+    activity_kwargs = {
+        'profile': profile,
+        'subscription': subscription,
+        'activity_type': activity_type,
+    }
+    Activity.objects.create(**activity_kwargs)
