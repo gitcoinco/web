@@ -15,7 +15,7 @@
   </head>
   <body class="interior {{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header profile-header dash" style="min-height: 300px;">
+    <div class="container-fluid header profile-header dash" style="min-height: 350px;">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav.html' %}
       {% if not hidden and is_staff %}
@@ -26,19 +26,19 @@
       {% endif %}
     </div>
     <div class="container-fluid bg-light pb-5">
-      </div>
-        <div class="container profile-card">
+
+        <div class="container profile-card mt-md-n5">
           <div class="row">
             <div class="col-12 col-lg-6 profile-header__main-infos">
               {% if not hidden %}
-              <div class="float_avatar_image {% if is_my_profile %}is_my_profile{% endif %}">
+              <div class="float_avatar_image d-inline-block d-inline-block {% if is_my_profile %}is_my_profile{% endif %}">
                 {% if is_my_profile %}
                   <a href="{% url "onboard" "profile" %}?steps=avatar">
                 {% endif %}
-                    <img class="profile-header__avatar mb-1 mr-4" src="{% if profile.avatar and profile.active_avatar.avatar_url %}{{ profile.active_avatar.avatar_url }}{% else %}{{ profile.avatar_url }}{% endif %}" />
+                    <img class="profile-header__avatar mb-1" src="{% if profile.avatar and profile.active_avatar.avatar_url %}{{ profile.active_avatar.avatar_url }}{% else %}{{ profile.avatar_url }}{% endif %}" />
                 {% if is_my_profile %}
-                    <div id="avatar_edit">
-                      <div id="avatar_edit_text">
+                    <div class="avatar_edit">
+                      <div class="avatar_edit_text">
                         Edit Avatar
                       </div>
                     </div>
