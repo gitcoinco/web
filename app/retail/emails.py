@@ -942,7 +942,7 @@ def render_new_bounty_roundup(to_email):
 </p>
     '''
     kudos_friday = ''    
-    animated_avatars = settings.BASE_URL + static('/static/v2/images/animated_avatars.gif')
+    animated_avatars = 'https://s.gitcoin.co/static/v2/images/animated_avatars.gif'
     intro = f'''
 <p>
 Hi Gitcoiners,
