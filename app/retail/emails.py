@@ -917,7 +917,7 @@ def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
     subject = "A Free Gitcoin Avatar For YOU!"
-    new_kudos_pks = [1904, 1923, 1933]
+    new_kudos_pks = [1971, 1970, 1969, 1968]
     new_kudos_size_px = 150
 
 
@@ -925,7 +925,7 @@ def render_new_bounty_roundup(to_email):
     from django.templatetags.static import static
     profile = Profile.objects.get(email=to_email)
     if not profile:
-        return
+        return None, None, None
     avatars = profile.avatar_baseavatar_related.filter(active=True)
     always_generate_new_avatar = settings.DEBUG
     if not avatars.last() or always_generate_new_avatar:
@@ -985,34 +985,34 @@ Back to shipping,
 
 '''
     highlights = [{
-        'who': 'malihawrites',
+        'who': 'anish-agnihotri',
         'who_link': True,
-        'what': 'Created an overview of MetaMask!',
-        'link': 'https://gitcoin.co/issue/kauri-io/Content/19/2441',
-        'link_copy': 'View more',
-    }, {
-        'who': 'jacobcreech',
-        'who_link': True,
-        'what': 'Created taxonomy for ETHMagicians Business Ring site',
-        'link': 'https://gitcoin.co/issue/FEMBusinessModelsRing/web3_revenue_primitives/12/2473',
+        'what': 'Wrote about web3 business models!',
+        'link': 'https://gitcoin.co/issue/FEMBusinessModelsRing/web3_revenue_primitives/8/2471',
         'link_copy': 'View more',
     }, {
         'who': 'eswarasai',
         'who_link': True,
-        'what': 'Worked on ESLint Formatting issue on Sabre.',
-        'link': 'https://gitcoin.co/issue/b-mueller/sabre/5/2460',
+        'what': 'Worked on an auto-detector for Solidity Compilers',
+        'link': 'https://gitcoin.co/issue/b-mueller/sabre/7/2541',
+        'link_copy': 'View more',
+    }, {
+        'who': 'poojaranjan',
+        'who_link': True,
+        'what': 'Take Notes For All Core Devs Meeting #56',
+        'link': 'https://gitcoin.co/issue/ethereum-cat-herders/PM/9/2478',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/status-im/status-react/issues/4158',
-        'primer': 'Status React featured bounty!',
+        'url': 'https://github.com/paritytech/parity-ethereum/issues/10085',
+        'primer': 'Parity featured bounty!',
     }, {
-        'url': 'https://github.com/status-im/status-channels-dapp/issues/3',
-        'primer': 'Big R&D Bounty on Status-Channels-dApp.',
+        'url': 'https://github.com/status-im/status-react/issues/7667',
+        'primer': 'Its always a pleasure to work with the Status Team!',
     }, {
-        'url': 'https://github.com/Remmeauth/gitcoin-remme-contest/issues/1',
-        'primer': 'Build a smart-home solution based on Remme Protocol',
+        'url': 'https://github.com/matter-labs/FranklinPay-iOS/issues/13',
+        'primer': 'An opportunity to work on NFT interfaces!',
     }, ]
 
     num_leadboard_items = 5
