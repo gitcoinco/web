@@ -313,19 +313,18 @@
 
 #float_avatar_image{
   z-index: 9999999;
-  margin-top: -260px;
+  margin-top: -140px;
 }  
 
 #float_avatar_image img{
-  height: 300px;
-  width: 300px;
-  border-top: 10px #25e899 solid;
-  border-left: 2px white solid;
+  height: 186px;
+  width: 186px;
+  border: 3px solid #FFFFFF;
+  box-shadow: 0 -2px 4px 0 rgba(0,0,0,0.50);
 }  
 
 #float_avatar_image.is_my_profile:hover img{
-  border-top: 10px #0fce7c solid;
-  border-left: 2px #eeeeee solid;
+  border: 3px solid #0fce7c;
 }  
 
 .is_my_profile{
@@ -339,13 +338,13 @@
   filter: alpha(opacity=40);
   color: black;
   vertical-align: text-top;
-  height: 300px;
-  width: 300px;
+  height: 186px;
+  width: 186px;
 }
 #avatar_edit_text {
   position: absolute;
   top: -25px;
-  left: 115px;
+  left: 55px;
   color: black;
   font-weight: bold;
   z-index: 999999;
