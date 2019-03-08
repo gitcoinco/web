@@ -639,6 +639,10 @@ def weekly_roundup(to_emails=None):
             setup_lang(to_email)
             html, text, subject = render_new_bounty_roundup(to_email)
             from_email = settings.PERSONAL_CONTACT_EMAIL
+            
+            if not html:
+                print("no content")
+                return
 
             if not should_suppress_notification_email(to_email, 'roundup'):
                 send_mail(
