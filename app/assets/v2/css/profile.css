@@ -14,10 +14,6 @@
   padding: 2rem;
 }
 
-.profile-header.dash{
-  height: 500px;
-}
-
 .profile-header__avatar {
   float: left;
   width: 6.75rem;
@@ -311,19 +307,18 @@
   color: #666666;
 }
 
-#float_avatar_image{
-  z-index: 9999999;
+.float_avatar_image{
   margin-top: -140px;
 }  
 
-#float_avatar_image img{
+.float_avatar_image img{
   height: 186px;
   width: 186px;
   border: 3px solid #FFFFFF;
   box-shadow: 0 -2px 4px 0 rgba(0,0,0,0.50);
 }  
 
-#float_avatar_image.is_my_profile:hover img{
+.is_my_profile:hover img{
   border: 3px solid #0fce7c;
 }  
 
@@ -335,7 +330,6 @@
   background-color: white;
   border-radius: 50%;
   opacity: 0.4;
-  filter: alpha(opacity=40);
   color: black;
   vertical-align: text-top;
   height: 186px;
@@ -347,47 +341,21 @@
   left: 55px;
   color: black;
   font-weight: bold;
-  z-index: 999999;
   font-size: 20px;
 }
 #avatar_edit:hover {
   opacity: 0.7;
-  filter: alpha(opacity=70);
 }
 #avatar_edit:hover #avatar_edit_text {
   color: #aaaaaa;
 }
 
-@media (max-width: 1500px) {
-    #float_avatar_image{
-    }  
-}
 
 
-@media (max-width: 800px) {
-    #float_avatar_image{
-      margin-top: -270px;
-    }  
-}
 
-@media (max-width: 790px) {
-    #float_avatar_image{
-      margin-top: -260px;
-    }  
     #avatar_edit {
       display: none;
     }
-}
-
-
-@media (max-width: 500px) {
-    #float_avatar_image{
-      margin-top: -280px;
-    }  
-    .profile-header.dash{
-      height: 600px;
-    }
-
 }
 
 

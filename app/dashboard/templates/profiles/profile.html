@@ -31,7 +31,7 @@
           <div class="row">
             <div class="col-12 col-lg-6 profile-header__main-infos">
               {% if not hidden %}
-              <div id="float_avatar_image" class="{% if is_my_profile %}is_my_profile{% endif %}">
+              <div class="float_avatar_image {% if is_my_profile %}is_my_profile{% endif %}">
                 {% if is_my_profile %}
                   <a href="{% url "onboard" "profile" %}?steps=avatar">
                 {% endif %}
