@@ -303,6 +303,7 @@
 
 .float_avatar_image{
   margin-top: -140px;
+  position: relative;
 }
 
 .float_avatar_image img{
@@ -327,9 +328,11 @@
   color: black;
   height: 90px;
   width: 180px;
-  position: relative;
+  position: absolute;
   top: 93px;
   margin: auto;
+  right: 0;
+  left: 0;
   transition: .2s all linear;
 }
 .avatar_edit_text {
