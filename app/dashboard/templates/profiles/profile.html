@@ -37,7 +37,7 @@
                 {% endif %}
                     <img class="profile-header__avatar" src="{% if profile.avatar and profile.active_avatar.avatar_url %}{{ profile.active_avatar.avatar_url }}{% else %}{{ profile.avatar_url }}{% endif %}" />
                 {% if is_my_profile %}
-                    <div class="avatar_edit">
+                    <div class="avatar_edit d-md-block d-sm-none">
                       <div class="avatar_edit_text">
                         Edit Avatar
                       </div>
