@@ -55,7 +55,7 @@ from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
 from marketing.mails import admin_contact_funder, bounty_uninterested
 from marketing.mails import funder_payout_reminder as funder_payout_reminder_mail
-from marketing.mails import new_reserved_issue, start_work_approved, start_work_new_applicant, start_work_rejected
+from marketing.mails import new_reserved_issue, start_work_approved, start_work_new_applicant, start_work_rejected, unread_notification_email_weekly_roundup
 from marketing.models import Keyword
 from pytz import UTC
 from ratelimit.decorators import ratelimit
@@ -1785,7 +1785,13 @@ def terms(request):
         'title': _('Terms of Use'),
     }
     return TemplateResponse(request, 'legal/terms.html', context)
-
+    
+def test(request):
+    result = {
+        'message': 'Hello World',
+    }
+    unread_notification_email_weekly_roundup(to_emails=['matrix4u2002@gmail.com'])
+    return JsonResponse(result)
 
 def privacy(request):
     return TemplateResponse(request, 'legal/privacy.html', {})

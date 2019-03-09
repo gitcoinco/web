@@ -217,6 +217,7 @@ urlpatterns = [
 
     # Legal
     re_path(r'^terms/?', dashboard.views.terms, name='_terms'),
+    re_path(r'^test/?', dashboard.views.test, name='test'),
     re_path(r'^legal/terms/?', dashboard.views.terms, name='terms'),
     re_path(r'^legal/privacy/?', dashboard.views.privacy, name='privacy'),
     re_path(r'^legal/cookie/?', dashboard.views.cookie, name='cookie'),
@@ -387,6 +388,7 @@ urlpatterns = [
     path('_administration/email/quarterly_roundup', retail.emails.quarterly_roundup, name='quarterly_roundup'),
     path('_administration/email/new_work_submission', retail.emails.new_work_submission, name='new_work_submission'),
     path('_administration/email/weekly_founder_recap', retail.emails.weekly_recap, name='weekly_founder_recap'),
+    path('_administration/email/weekly_unread_notifications_email', retail.emails.unread_notification_email_weekly_roundup, name='unread_notifications_email_weekly_roundup'),
     path('_administration/email/new_bounty_rejection', retail.emails.new_bounty_rejection, name='new_bounty_rejection'),
     path(
         '_administration/email/new_bounty_acceptance',

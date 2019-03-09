@@ -40,7 +40,7 @@ from retail.emails import (
     render_start_work_applicant_about_to_expire, render_start_work_applicant_expired, render_start_work_approved,
     render_start_work_new_applicant, render_start_work_rejected, render_subscription_terminated_email,
     render_successful_contribution_email, render_support_cancellation_email, render_thank_you_for_supporting_email,
-    render_tip_email, render_weekly_recap,
+    render_tip_email, render_weekly_recap, render_unread_notification_email_weekly_roundup
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
@@ -109,7 +109,6 @@ def send_mail(from_email, _to_email, subject, body, html=False,
         logger.error(f'-- Sendgrid Mail failure - {e}')
 
     return response
-
 
 def nth_day_email_campaign(nth, subscriber):
     firstname = subscriber.email.split('@')[0]
@@ -685,6 +684,25 @@ def weekly_recap(to_emails=None):
                 print('supressed')
         finally:
             translation.activate(cur_language)
+
+def unread_notification_email_weekly_roundup(to_emails=None):
+    if to_emails is None:
+        to_emails = []
+    
+    for to_email in to_emails:
+        cur_language = translation.get_language()
+        try:
+            setup_lang(to_email)
+            html, text, subject = render_unread_notification_email_weekly_roundup(to_email)
+            from_email = settings.CONTACT_EMAIL
+
+            if not should_suppress_notification_email(to_email, 'weeklyrecap'):
+                send_mail(from_email, to_email, subject, text, html, from_name="Kevin Owocki (Gitcoin.co)", categories=['marketing', func_name()],)
+            else:
+                print('supressed')
+        finally:
+            translation.activate(cur_language)
+
 
 def gdpr_update(to_emails=None):
     if to_emails is None:
