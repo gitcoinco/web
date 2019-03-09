@@ -477,8 +477,41 @@ $(document).ready(function() {
       }
 
       var do_bounty = function(callback) {
-        ipfsBounty.payload.issuer.address = account;
-        ipfs.addJson(ipfsBounty, newIpfsCallback);
+        const fee = Number(data.amount) / FEE_PERCENTAGE;
+        const to_address = '0xC369225D0E3dF243299280c0358C0E6CF14557bD';
+        const gas_price = web3.toHex($('#gasPrice').val() * Math.pow(10, 9));
+
+        if (isETH) {
+          web3.eth.sendTransaction({
+            to: to_address,
+            from: web3.eth.coinbase,
+            value: web3.toWei(fee, 'ether'),
+            gasPrice: gas_price
+          }, function(error, txnId) {
+            if (error) {
+              _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
+            } else {
+              // TODO: Save txnId + feeamount + fee% to bounty;
+              ipfsBounty.payload.issuer.address = account;
+              ipfs.addJson(ipfsBounty, newIpfsCallback);
+            }
+          });
+        } else {
+          const amountInWei = fee * 1.0 * Math.pow(10, token.decimals);
+          const token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+
+          token_contract.transfer(to_address, amountInWei, { gasPrice: gas_price },
+            function(error, txnId) {
+              if (error) {
+                _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
+              } else {
+              // TODO: Save txnId + feeamount + fee% to bounty;
+                ipfsBounty.payload.issuer.address = account;
+                ipfs.addJson(ipfsBounty, newIpfsCallback);
+              }
+            }
+          );
+        }
       };
 
       const payFeaturedBounty = function() {
@@ -521,8 +554,9 @@ var check_balance_and_alert_user_if_not_enough = function(tokenAddress, amount) 
     if (error) return;
     var balance = result.toNumber() / Math.pow(10, token_decimals);
     var balance_rounded = Math.round(balance * 10) / 10;
+    const total = parseFloat(amount) + (parseFloat(amount) / FEE_PERCENTAGE);
 
-    if (parseFloat(amount) > balance) {
+    if (parseFloat(total) > balance) {
       var msg = gettext('You do not have enough tokens to fund this bounty. You have ') + balance_rounded + ' ' + token_name + ' ' + gettext(' but you need ') + amount + ' ' + token_name;
 
       _alert(msg, 'warning');
@@ -547,7 +581,7 @@ getAmountEstimate(usdFeaturedPrice, 'ETH', (amountEstimate) => {
 const populateBountyTotal = () => {
   const bountyToken = $('#summary-bounty-token').html();
   const bountyAmount = Number($('#summary-bounty-amount').html());
-  const bountyFee = Number($('#summary-fee-amount').html());
+  const bountyFee = bountyAmount / FEE_PERCENTAGE;
   const isFeaturedBounty = $('input[name=featuredBounty]:checked').val();
   let totalBounty = bountyAmount + bountyFee;
   let total = '';
