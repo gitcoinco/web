@@ -6,6 +6,8 @@ load_tokens();
 var localStorage;
 var quickstartURL = document.location.origin + '/bounty/quickstart';
 
+const FEE_PERCENTAGE = 10;
+
 var new_bounty = {
   last_sync: new Date()
 };
@@ -83,6 +85,11 @@ $('#issueURL').focusout(function() {
 $('#last-synced').hide();
 
 $(document).ready(function() {
+
+  $('#summary-bounty-amount').html($('input[name=amount]').val());
+  $('#summary-fee-amount').html($('input[name=amount]').val() / FEE_PERCENTAGE);
+  populateBountyTotal();
+
   // Load sidebar radio buttons from localStorage
   if (getParam('source')) {
     $('input[name=issueURL]').val(getParam('source'));
@@ -116,7 +123,30 @@ $(document).ready(function() {
     }
   });
 
-  // show/hide the reserved for selector based on the project type
+  $('input[name=amount]').on('change', function() {
+    const amount = $('input[name=amount]').val();
+
+    $('#summary-bounty-amount').html(amount);
+    $('#summary-fee-amount').html(amount / FEE_PERCENTAGE);
+    populateBountyTotal();
+  });
+
+  $('.js-select2[name=denomination]').change(function(e) {
+    const token = e.target.value;
+
+    $('#summary-bounty-token').html(token);
+    $('#summary-fee-token').html(token);
+    populateBountyTotal();
+  });
+
+  $('#featuredBounty').on('change', function() {
+    if ($(this).prop('checked'))
+      $('.feature-amount').show();
+    else
+      $('.feature-amount').hide();
+    populateBountyTotal();
+  });
+
   $('.js-select2[name=project_type]').change(
     function(e) {
       if (String(e.target.value).toLowerCase() === 'traditional') {
@@ -149,19 +179,18 @@ $(document).ready(function() {
   }
   $('input[name=issueURL]').focus();
 
-  // all js select 2 fields
   $('.js-select2').each(function() {
     $(this).select2();
   });
-  // removes tooltip
+
   $('.submit_bounty select').each(function(evt) {
     $('.select2-selection__rendered').removeAttr('title');
   });
-  // removes search field in all but the 'denomination' dropdown
+
   $('.select2-container').on('click', function() {
     $('.select2-container .select2-search__field').remove();
   });
-  // denomination field
+
   $('select[name=denomination]').select2();
   if ($('input[name=amount]').val().trim().length > 0) {
     setUsdAmount();
@@ -400,7 +429,6 @@ $(document).ready(function() {
         issuePackage['txid'] = result;
         localStorage[issueURL] = JSON.stringify(issuePackage);
 
-        // sync db
         syncDb();
       }
 
@@ -449,7 +477,6 @@ $(document).ready(function() {
       }
 
       var do_bounty = function(callback) {
-      // Add data to IPFS and kick off all the callbacks.
         ipfsBounty.payload.issuer.address = account;
         ipfs.addJson(ipfsBounty, newIpfsCallback);
       };
@@ -505,8 +532,38 @@ var check_balance_and_alert_user_if_not_enough = function(tokenAddress, amount) 
 
 let usdFeaturedPrice = $('.featured-price-usd').text();
 let ethFeaturedPrice;
+let bountyFee;
 
 getAmountEstimate(usdFeaturedPrice, 'ETH', (amountEstimate) => {
   ethFeaturedPrice = amountEstimate['value'];
   $('.featured-price-eth').text(`+${amountEstimate['value']} ETH`);
+  $('#summary-feature-amount').text(`${amountEstimate['value']}`);
 });
+
+/**
+ * Calculates total amount needed to fund the bounty
+ * Bounty Amount + Fee + Featured Bounty
+ */
+const populateBountyTotal = () => {
+  const bountyToken = $('#summary-bounty-token').html();
+  const bountyAmount = Number($('#summary-bounty-amount').html());
+  const bountyFee = Number($('#summary-fee-amount').html());
+  const isFeaturedBounty = $('input[name=featuredBounty]:checked').val();
+  let totalBounty = bountyAmount + bountyFee;
+  let total = '';
+
+  if (isFeaturedBounty) {
+    const featuredBountyAmount = Number($('#summary-feature-amount').html());
+
+    if (bountyToken == 'ETH') {
+      totalBounty += featuredBountyAmount;
+      total = `${totalBounty} ETH`;
+    } else {
+      total = `${totalBounty} ${bountyToken} + ${featuredBountyAmount} ETH`;
+    }
+  } else {
+    total = `${totalBounty} ${bountyToken}`;
+  }
+
+  $('#summary-total-amount').html(total);
+};
