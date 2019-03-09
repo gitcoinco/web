@@ -1904,7 +1904,7 @@ class Profile(SuperModel):
             self.save()
             return custom_avatar
         except Exception as e:
-            logger.warning('Save Random Avatar - Error: (%s) - Handle: (%s)', e, profile.handle if profile else '')
+            logger.warning('Save Random Avatar - Error: (%s) - Handle: (%s)', e, self.handle)
 
     def no_times_slashed_by_staff(self):
         user_actions = UserAction.objects.filter(
