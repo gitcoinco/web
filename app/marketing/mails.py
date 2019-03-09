@@ -40,7 +40,7 @@ from retail.emails import (
     render_start_work_applicant_about_to_expire, render_start_work_applicant_expired, render_start_work_approved,
     render_start_work_new_applicant, render_start_work_rejected, render_subscription_terminated_email,
     render_successful_contribution_email, render_support_cancellation_email, render_thank_you_for_supporting_email,
-    render_tip_email, render_weekly_recap, render_unread_notification_email_weekly_roundup
+    render_tip_email, render_unread_notification_email_weekly_roundup, render_weekly_recap,
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
@@ -694,10 +694,18 @@ def unread_notification_email_weekly_roundup(to_emails=None):
         try:
             setup_lang(to_email)
             html, text, subject = render_unread_notification_email_weekly_roundup(to_email)
-            from_email = settings.CONTACT_EMAIL
+            from_email = settings.PERSONAL_CONTACT_EMAIL
 
             if not should_suppress_notification_email(to_email, 'weeklyrecap'):
-                send_mail(from_email, to_email, subject, text, html, from_name="Kevin Owocki (Gitcoin.co)", categories=['marketing', func_name()],)
+                send_mail(
+                    from_email, 
+                    to_email, 
+                    subject, 
+                    text, 
+                    html, 
+                    from_name="Kevin Owocki (Gitcoin.co)", 
+                    categories=['marketing', func_name()],
+                )
             else:
                 print('supressed')
         finally:

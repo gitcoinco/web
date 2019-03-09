@@ -217,7 +217,6 @@ urlpatterns = [
 
     # Legal
     re_path(r'^terms/?', dashboard.views.terms, name='_terms'),
-    re_path(r'^test/?', dashboard.views.test, name='test'),
     re_path(r'^legal/terms/?', dashboard.views.terms, name='terms'),
     re_path(r'^legal/privacy/?', dashboard.views.privacy, name='privacy'),
     re_path(r'^legal/cookie/?', dashboard.views.cookie, name='cookie'),

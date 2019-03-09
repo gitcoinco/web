@@ -22,7 +22,7 @@ from unittest.mock import patch
 from django.utils import timezone
 
 from dashboard.models import Profile
-from marketing.mails import nth_day_email_campaign, setup_lang, notification_email
+from marketing.mails import nth_day_email_campaign, setup_lang, unread_notification_email_weekly_roundup
 from retail.emails import render_nth_day_email_campaign
 from test_plus.test import TestCase
 
@@ -82,5 +82,5 @@ class MarketingMailsTest(TestCase):
     def test_notification_email(self, mock_send_mail):
         """Test sending weekly email notification."""
 
-        notification_email(self.profile, {})
+        unread_notification_email_weekly_roundup(to_emails=[self.email])
         assert mock_send_mail.call_count == 1

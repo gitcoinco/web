@@ -550,10 +550,12 @@ def render_unread_notification_email_weekly_roundup(to_email, from_date=date.tod
         'notifications': notifications,
     }
 
+    subject = "Your unread notifications"
+
     response_html = premailer_transform(render_to_string("emails/unread_notifications_roundup/unread_notification_email_weekly_roundup.html", params))
     response_txt = render_to_string("emails/unread_notifications_roundup/unread_notification_email_weekly_roundup.txt", params)
 
-    return response_html, response_txt
+    return response_html, response_txt, subject
 
 def render_weekly_recap(to_email, from_date=date.today(), days_back=7):
     sub = get_or_save_email_subscriber(to_email, 'internal')

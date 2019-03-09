@@ -18,31 +18,27 @@
 {% load i18n humanize %}
 {% load static %}
 {% block content %}
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 <style>
-    .wrapper {
-        background: #979797;
-    }
-    .inner-wrapper {
-        background-color: #ffffff;
-        display: flex;
-        justify-content: space-between;
-        padding-left: 2em;
-        padding-right: 2em;
-        border-bottom: 1px solid #979797;
+    .roundup {
+        padding: 5em;
     }
 </style>
-<div class="wrapper">
-    <div class="inner-wrapper">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous"/>
+<div class="primary-content centered-contents">
+    <div class="d-flex justify-content-center roundup">
         <div style="margin-top: 30px">
             <h5 style="color: #0D0764; text-align: left;">
             <b>{% trans "Hi" %} {{ profile }}</b></h5>
-            <p style="text-align: left;">{% trans "You’ve got" %} 
+            <h3 style="text-align: left;">{% trans "You’ve got" %} 
             <b>{{ notifications }}</b>
-            {% trans "recent notifications on Gitcoin." %}</p>
-            <a href="#" class="button">{% trans "Take a look" %}</a>
+            {% trans "recent notifications on Gitcoin." %}</h3>
+            <div style="text-align: left;" class="mt-4">
+                <a href="#" class="btn-sm button">{% trans "Take a look" %}</a>
+            </div>
         </div>
-        <img src="{% static "v2/images/emails/email-notification-bell.png" %}" width="100" style="margin-left: 30px" alt="Email Notification Roundup" id="email_notification_roundup">
+        <div style="margin-top: 30px">
+            <img src="{% static "v2/images/emails/email-notification-bell.png" %}" width="120" style="margin-left: 30px" alt="Email Notification Roundup" id="email_notification_roundup">
+        </div>
     </div>
 </div>
 {% endblock %}
