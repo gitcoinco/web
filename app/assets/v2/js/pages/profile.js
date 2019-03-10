@@ -8,6 +8,21 @@ $(document).ready(function() {
     $(e.currentTarget).toggleClass('turn');
   });
 
+  $('#kudos-section').on('click', '.pin_to_profile', e => {
+  e.preventDefault();
+  var pk = $(e.target).data('pk');
+  var position = parseInt(prompt("Which position do you want to pin this kudos? (1-5)","1"));
+  var is_invalid = isNaN(position) || position < 1 || position > 5;
+  if(is_invalid){
+    _alert('Herp Derp!  Invalid input');
+  } else {
+    var target_url = window.location.href.split('?')[0] + "?action=mutate_pinned_kudos&pk=" + pk + "&position=" + position;
+    document.location.href = target_url;
+  }
+});
+
+  
+
   setupTabs('#activity-tabs');
 
   const tabSection = document.querySelector('#activity-tabs-sections');

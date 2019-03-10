@@ -1315,6 +1315,40 @@ def profile_filter_activities(activities, activity_name):
     return activities.filter(activity_type=activity_name)
 
 
+def handle_kudos_pinning_helper(profile, pk, position):
+    """A helper function pin kudos to a profile.
+    Presumes that user is authenticated as this profile before it takes action
+
+    Args:
+        pk - a KudosTransfer id.
+        position - int - a position 1 -5.
+
+    Returns:
+        nothing
+
+    """
+    if not pk.isdigit():
+        return
+    if not position.isdigit():
+        return
+    position = int(position)
+    if position < 1 or position > 5:
+        return
+    kudos_transfer = KudosTransfer.objects.filter(pk=pk)
+    if not kudos_transfer.exists():
+        return
+    # clear previous pin in this location
+    preexisting_kudos = KudosTransfer.objects.filter(recipient_profile=profile, pin_rank=position)
+    for pek in preexisting_kudos:
+        pek.pin_rank = -1
+        pek.save()
+    # update this pin
+    kudos_transfer = kudos_transfer.first()
+    kudos_transfer.pin_rank = position
+    kudos_transfer.save()
+    #return _('Your Pinned Kudos have been updated!')
+
+
 def profile(request, handle):
     """Display profile details.
 
@@ -1414,11 +1448,17 @@ def profile(request, handle):
         return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
     context['preferred_payout_address'] = profile.preferred_payout_address
-
+    if context['is_my_profile'] and request.GET.get('action') == 'mutate_pinned_kudos':
+        msg = handle_kudos_pinning_helper(profile, request.GET.get('pk'), request.GET.get('position'))
+        if msg:
+            messages.success(request, msg)
+    pinned_kudos = profile.get_pinned_kudos.order_by('id', order_by)
     owned_kudos = profile.get_my_kudos.order_by('id', order_by)
     sent_kudos = profile.get_sent_kudos.order_by('id', order_by)
     kudos_limit = 8
+    pinned_kudos_limit = 5
     context['kudos'] = owned_kudos[0:kudos_limit]
+    context['pinned_kudos'] = pinned_kudos[0:pinned_kudos_limit]
     context['sent_kudos'] = sent_kudos[0:kudos_limit]
     context['kudos_count'] = owned_kudos.count()
     context['sent_kudos_count'] = sent_kudos.count()
@@ -1463,7 +1503,8 @@ def lazy_load_kudos(request):
     order_by = request.GET.get('order_by', '-modified_on')
     limit = int(request.GET.get('limit', 8))
     handle = request.POST.get('handle')
-
+    is_my_profile = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    
     if handle:
         try:
             profile = Profile.objects.get(handle=handle)
@@ -1480,6 +1521,7 @@ def lazy_load_kudos(request):
     kudos = paginator.get_page(page)
     html_context = {}
     html_context[key] = kudos
+    html_context['is_my_profile'] = is_my_profile
     html_context['kudos_data'] = key
     kudos_html = loader.render_to_string('shared/kudos_card_profile.html', html_context)
     return JsonResponse({'kudos_html': kudos_html, 'has_next': kudos.has_next()})

@@ -1815,6 +1815,16 @@ class Profile(SuperModel):
         return kudos_transfers
 
     @property
+    def get_pinned_kudos(self):
+        my_kudos = self.get_my_kudos.order_by('pin_rank')
+        pinned_kudos = my_kudos.filter(pin_rank__gt=0)
+        # bootstrap pinned kudos by allowing non-pins to show up temporarily
+        if not pinned_kudos.exists():
+            return my_kudos
+        return pinned_kudos
+
+
+    @property
     def get_sent_kudos(self):
         from kudos.models import KudosTransfer
         kt_address = KudosTransfer.objects.filter(

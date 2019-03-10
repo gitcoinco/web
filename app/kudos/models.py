@@ -274,7 +274,7 @@ class Token(SuperModel):
 
     @property
     def img_url(self):
-        return f'{settings.BASE_URL}dynamic/kudos/{self.pk}/{slugify(self.name)}'
+        return f'{settings.BASE_URL}dynamic/kudos/{self.pk}/{slugify(self.name)}'.replace('http://localhost:8000', 'https://gitcoin.co')
 
     @property
     def url(self):
@@ -330,6 +330,7 @@ class KudosTransfer(SendCryptoAsset):
         'dashboard.Profile', related_name='sent_kudos', on_delete=models.SET_NULL, null=True, blank=True
     )
     trust_url = models.BooleanField(default=False)
+    pin_rank = models.IntegerField(default=-1)
 
     def save(self, *args, **kwargs):
         if self.from_address:

@@ -70,7 +70,7 @@ class TransferAdmin(admin.ModelAdmin):
     raw_id_fields = ['recipient_profile', 'sender_profile', 'kudos_token', 'kudos_token_cloned_from']
     ordering = ['-id']
     readonly_fields = ['claim']
-    search_fields = ['tokenName', 'comments_public', 'from_name', 'username', 'network', 'github_url', 'url', 'emails', 'from_address', 'receive_address', 'txid', 'receive_txid']
+    search_fields = ['tokenName', 'comments_public', 'from_name', 'username', 'network', 'github_url', 'url', 'emails', 'from_address', 'receive_address', 'txid', 'receive_txid', 'pin_rank']
     list_display = ['created_on', '__str__']
 
     def claim(self, instance):

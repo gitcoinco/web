@@ -141,7 +141,11 @@ a:hover .avatar_edit .avatar_edit_text {
 }
 
 @media (max-width: 767.98px) {
-
+  #pinned_kudos{
+    position: absolute;
+    top: 35px;
+    left: 28%;    
+  }
   .profile-header__main-infos {
     text-align: center;
   }
@@ -161,6 +165,20 @@ a:hover .avatar_edit .avatar_edit_text {
     margin-right: 0;
   }
 }
+
+@media (max-width: 550px) {
+  #pinned_kudos{
+    left: 25%;    
+  }
+}
+
+@media (max-width: 450px) {
+  #pinned_kudos{
+    left: 22%;    
+  }
+}
+
+
 
 
 .profile-header__stats {
@@ -226,6 +244,43 @@ a:hover .avatar_edit .avatar_edit_text {
 
 .animate-verify {
   animation: verify 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+
+#pinned_kudos li {
+  list-style: none;
+}
+#pinned_kudos li img{
+  width: 32px;
+  height: 36px;
+  filter: grayscale(30%);
+}
+#pinned_kudos li a{
+  position: absolute;
+  z-index: 999;
+}
+#pinned_kudos li:hover img{
+  filter: grayscale(0%);
+}
+#pinned_kudos li.one a{
+  top: -125px;
+  left: -10px;
+}
+#pinned_kudos li.two a{
+  top: -165px;
+  left: 40px;
+}
+#pinned_kudos li.three a{
+  top: -185px;
+  left: 90px;
+}
+#pinned_kudos li.four a{
+  top: -165px;
+  left: 140px;
+}
+#pinned_kudos li.five a{
+  top: -125px;
+  left: 190px;
 }
 
 @keyframes grow {

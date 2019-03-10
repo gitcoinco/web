@@ -31,6 +31,15 @@
           <div class="row">
             <div class="col-12 col-lg-6 profile-header__main-infos">
               {% if not hidden %}
+              <ul id=pinned_kudos>
+                {% for kudo in pinned_kudos %}
+                <li class="{{ forloop.counter|apnumber }}">
+                    <a href={{kudo.kudos_token_cloned_from.url}} title="{{kudo.kudos_token_cloned_from.humanized_name}}">
+                      <img title="<div class='tooltip-info tooltip-s'>{{kudo.kudos_token_cloned_from.humanized_name}}</div>" src={{kudo.kudos_token_cloned_from.img_url}}>
+                    </a>
+                </li>
+                {% endfor %}
+              </ul>
               <div class="float_avatar_image d-inline-block d-inline-block mb-1 {% if is_my_profile %}is_my_profile{% endif %}">
                 {% if is_my_profile %}
                   <a href="{% url "onboard" "profile" %}?steps=avatar">
@@ -127,7 +136,7 @@
                               {% for profile, num_times in works_with_collected.items %}
                                 {% if forloop.counter < 6 %}
                                   <a href="{% url 'profile' profile %} ">
-                                    <img src='{% avatar_url profile %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
+                                    <img src='{% avatar_url profile %}' title="<div class='tooltip-info tooltip-sm'>{{ profile }}: {{ num_times }} times</div>">
                                   </a>
                                 {% endif %}
                               {% endfor %}

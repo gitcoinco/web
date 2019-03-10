@@ -43,9 +43,22 @@
     </div>
   {% endif %}
   <div class="flip-card__extra-data">
-    {% if tk.github_url %}
-      <a href="{{tk.github_url}}" target="_blank">{% trans 'Issue url' %}</a>
+    {% if kt.github_url %}
+      <a href="{{kt.github_url}}" target="_blank">{% trans 'Issue url' %}</a>
     {% endif %}
-    <a title="{% trans 'tx in etherscan' %}" href="{% if not kt.network == 'mainnet' %}https://{{ kt.network }}.etherscan.io/tx/{{ kt.txid }}{% else %}https://etherscan.io/tx/{{ kt.txid }}{% endif %}" target="_blank" class="mb-1">{{ kt.txid|humanize_address }}</a>
+    <div>
+      <a title="{% trans 'tx in etherscan' %}" href="{% if not kt.network == 'mainnet' %}https://{{ kt.network }}.etherscan.io/tx/{{ kt.txid }}{% else %}https://etherscan.io/tx/{{ kt.txid }}{% endif %}" target="_blank" class="mb-1">{{ kt.txid|humanize_address }}</a>
+    </div>
+  {% if is_my_profile %}
+    <div class="pin_to_profile">
+      <p>
+          <a data-pk="{{kt.pk}}" class="font-title btn btn-outline-white" href="TODO" rel="noreferrer">
+            Pin to Profile
+          </a>
+      </p>
+    </div>
+  {% endif %}
+
+
   </div>
 {% endfor %}
