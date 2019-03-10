@@ -828,14 +828,6 @@ input.is-invalid {
   display: none;
 }
 
-.faucet_response .frheader {
-  font-size: xx-large;
-}
-
-.faucet_response .frmessage {
-  font-size: large;
-}
-
 .tooltip-info {
   padding: 10px 20px;
   margin: 0;
