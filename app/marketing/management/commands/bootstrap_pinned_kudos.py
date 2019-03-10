@@ -17,8 +17,10 @@
 '''
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from kudos.models import KudosTransfer
+
 from dashboard.models import Profile
+from kudos.models import KudosTransfer
+
 
 class Command(BaseCommand):
 
@@ -44,4 +46,3 @@ class Command(BaseCommand):
                     if counter < 5:
                         kudo.pin_rank = counter;
                         kudo.save()
-
