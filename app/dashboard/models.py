@@ -1654,7 +1654,7 @@ class Activity(SuperModel):
             if activity.get('title'):
                 activity['urled_title'] = f'<a href="{activity["bounty_url"]}">{activity["title"]}</a>'
             else:
-                activity['urled_title'] = activity.title
+                activity['urled_title'] = activity.get('title')
         activity['humanized_activity_type'] = self.humanized_activity_type
         if 'value_in_usdt_now' in obj:
             activity['value_in_usdt_now'] = obj['value_in_usdt_now']
