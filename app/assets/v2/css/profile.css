@@ -246,43 +246,6 @@ a:hover .avatar_edit .avatar_edit_text {
   animation: verify 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
 }
 
-
-#pinned_kudos li {
-  list-style: none;
-}
-#pinned_kudos li img{
-  width: 32px;
-  height: 36px;
-  filter: grayscale(30%);
-}
-#pinned_kudos li a{
-  position: absolute;
-  z-index: 999;
-}
-#pinned_kudos li:hover img{
-  filter: grayscale(0%);
-}
-#pinned_kudos li.one a{
-  top: -125px;
-  left: -10px;
-}
-#pinned_kudos li.two a{
-  top: -165px;
-  left: 40px;
-}
-#pinned_kudos li.three a{
-  top: -185px;
-  left: 90px;
-}
-#pinned_kudos li.four a{
-  top: -165px;
-  left: 140px;
-}
-#pinned_kudos li.five a{
-  top: -125px;
-  left: 190px;
-}
-
 @keyframes grow {
   0% {
     width: 2%;
@@ -418,4 +381,42 @@ a:hover .avatar_edit .avatar_edit_text {
 
 .no-profile-textcolor {
   color: #666666;
+}
+
+
+
+#pinned_kudos li {
+  list-style: none;
+}
+#pinned_kudos li img{
+  width: 32px;
+  height: 36px;
+  filter: grayscale(30%);
+}
+#pinned_kudos li a{
+  position: absolute;
+  z-index: 999;
+}
+#pinned_kudos li:hover img{
+  filter: grayscale(0%);
+}
+#pinned_kudos li.one a{
+  top: -125px;
+  left: -10px;
+}
+#pinned_kudos li.two a{
+  top: -165px;
+  left: 40px;
+}
+#pinned_kudos li.three a{
+  top: -185px;
+  left: 90px;
+}
+#pinned_kudos li.four a{
+  top: -165px;
+  left: 140px;
+}
+#pinned_kudos li.five a{
+  top: -125px;
+  left: 190px;
 }
