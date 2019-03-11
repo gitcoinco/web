@@ -23,9 +23,9 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 from .models import (
-    Activity, BlockedUser, Bounty, BountyFulfillment, BountyInvites, BountySyncRequest, CoinRedemption, CoinRedemptionRequest,
-    FeedbackEntry, Interest, LabsResearch, Profile, SearchHistory, Tip, TokenApproval, Tool, ToolVote, UserAction,
-    UserVerificationModel,
+    Activity, BlockedUser, Bounty, BountyFulfillment, BountyInvites, BountySyncRequest, CoinRedemption,
+    CoinRedemptionRequest, FeedbackEntry, Interest, LabsResearch, Profile, SearchHistory, Tip, TokenApproval, Tool,
+    ToolVote, UserAction, UserVerificationModel,
 )
 
 
