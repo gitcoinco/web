@@ -1895,7 +1895,7 @@ class Profile(SuperModel):
     def build_random_avatar(self):
         from avatar.utils import build_random_avatar
         from avatar.models import CustomAvatar
-        purple = '8A2BE4'
+        purple = '8A2BE2'
         payload = build_random_avatar(purple, '000000')
         try:
             custom_avatar = CustomAvatar.create(self, payload)
