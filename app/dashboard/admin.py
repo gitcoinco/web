@@ -212,4 +212,3 @@ admin.site.register(HackathonEvent, HackathonEventAdmin)
 admin.site.register(FeedbackEntry, FeedbackAdmin)
 admin.site.register(LabsResearch)
 admin.site.register(UserVerificationModel)
-
