@@ -76,6 +76,17 @@ def grants(request):
     grants = paginator.get_page(page)
     partners = MatchPledge.objects.filter(active=True)
 
+    nav_options = [
+        {'label': 'All', 'keyword': ''},
+        {'label': 'Security', 'keyword': 'security'},
+        {'label': 'Scalability', 'keyword': 'scalability'},
+        {'label': 'UI/UX', 'keyword': 'UI'},
+        {'label': 'DeFI', 'keyword': 'defi'},
+        {'label': 'Education', 'keyword': 'education'},
+        {'label': 'ETH 2.0', 'keyword': 'ETH 2.0'},
+        {'label': 'ETH 1.x', 'keyword': 'ETH 1.x'},
+    ]
+
     now = datetime.datetime.now()
     params = {
         'active': 'grants_landing',
@@ -83,6 +94,7 @@ def grants(request):
         'sort': sort,
         'network': network,
         'keyword': keyword,
+        'nav_options': nav_options,
         'current_partners': partners.filter(end_date__gte=now).order_by('-amount'),
         'past_partners': partners.filter(end_date__lt=now).order_by('-amount'),
         'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),

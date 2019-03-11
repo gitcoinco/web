@@ -117,6 +117,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             </div>
           </div>
           <div class="row mt-5">
+            <ul id="grants_nav">
+              {% for nav_option in nav_options %}
+                <a href="/grants/?keyword={{nav_option.keyword}}" class="{% if keyword == nav_option.keyword %}selected{%endif%}"  >
+                  {{nav_option.label}}
+                </a>
+              {% endfor %}
+            </ul>
+          </div>
+          <div class="row mt-5">
             <div class="col-12 col-md-6 pt-1 text-center text-sm-left pl-sm-0">
               {{ grants_count }} {% trans "Grants available on" %}
               <span class="ml-2">
