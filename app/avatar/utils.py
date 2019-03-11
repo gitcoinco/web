@@ -418,7 +418,7 @@ def build_avatar_svg(svg_path='avatar.svg', line_color='#781623', icon_size=None
     return result_path
 
 
-def build_random_avatar():
+def build_random_avatar(override_skin_tone=None, override_hair_color=None):
     """Build an random avatar payload using context properties"""
     default_path = f'{settings.STATIC_URL}v2/images/avatar/'
     context = get_avatar_context()
@@ -427,7 +427,11 @@ def build_random_avatar():
 
     payload = dict()
     payload['SkinTone'] = random.choice(context['skin_tones'])
+    if override_skin_tone:
+        payload['SkinTone'] = override_skin_tone
     payload['HairColor'] = random.choice(context['hair_colors'])
+    if override_hair_color:
+        payload['HairColor'] = override_hair_color
     payload['ClothingColor'] = random.choice(context['clothing_colors'])
 
     for section in context['sections']:
