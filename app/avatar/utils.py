@@ -420,6 +420,7 @@ def build_avatar_svg(svg_path='avatar.svg', line_color='#781623', icon_size=None
 
 def build_random_avatar(override_skin_tone=None, override_hair_color=None, add_makeup=True):
     """Build an random avatar payload using context properties"""
+    ignore_options = ['eyeliner-blue', 'eyeliner-green', 'eyeliner-pink', 'eyeliner-red', 'eyeliner-teal' ]
     default_path = f'{settings.STATIC_URL}v2/images/avatar/'
     context = get_avatar_context()
     optional = context['optionalSections']
@@ -444,9 +445,9 @@ def build_random_avatar(override_skin_tone=None, override_hair_color=None, add_m
         if set_optional == True:
             options = dict()
             if section_name not in ['HairStyle', 'Accessories']:
-                options = [option for option in section['options'] if option not in paid_options]
+                options = [option for option in section['options'] if option not in paid_options and option not in ignore_options]
             else:
-                options = [option for option in section['options'] if option[0] not in paid_options]
+                options = [option for option in section['options'] if option[0] not in paid_options and option not in ignore_options]
 
             random_choice = random.choice(options)
 
