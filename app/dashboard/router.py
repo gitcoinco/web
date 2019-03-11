@@ -23,6 +23,7 @@ from datetime import datetime
 import django_filters.rest_framework
 from rest_framework import routers, serializers, viewsets
 from retail.helpers import get_ip
+
 from .models import Activity, Bounty, BountyFulfillment, HackathonEvent, Interest, ProfileSerializer, SearchHistory
 
 
