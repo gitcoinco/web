@@ -35,7 +35,7 @@
               {% endif %}
             {% endfor %}
             {% if works_with_org|length > 8 %}
-              <div href="" class="plus-img" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='{% for profile, num_times in works_with_org.items|slice:"5:" %}<a href="{% url "profile" profile %}"><img class="rounded-circle m-1" width="30" height="30" title="{{profile}}: {{ num_times }} times" src="{% avatar_url profile %}"/></a>{% endfor %}'><span>+{{works_with_org|length|add:"-8"}}</span></div>
+              <div href="" class="plus-img" data-container="body" data-toggle="popover" data-template='<div class="popover big-popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>' data-html="true" data-placement="bottom" data-trigger="hover click" data-content='{% for profile, num_times in works_with_org.items|slice:"5:" %}<a href="{% url "profile" profile %}"><img class="rounded-circle m-1" width="30" height="30" title="{{profile}}: {{ num_times }} times" src="{% avatar_url profile %}"/></a>{% endfor %}'><span>+{{works_with_org|length|add:"-8"}}</span></div>
             {% endif %}
           {% endif %}
         </li>
