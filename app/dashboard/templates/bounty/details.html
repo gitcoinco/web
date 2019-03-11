@@ -376,6 +376,15 @@
                 </div>
               </div>
             </div>
+          [[else activity_type == 'new_kudos']]
+            <div class="col-12 col-md-7">
+              <div class="activity-status activity-tag-first align-items-center">
+                New Kudos sent to <a href="/profile/[[:to_username]]">[[:to_username]]</a>
+              </div>
+              <div class="activity-status acitivty-kudos col-md-1">
+                <img class="w-100" src="/static/[[:kudos]]"></img>
+              </div>
+            </div>
           [[else]]
             <div class="col-12 col-md-7">
               <div class="activity-status">

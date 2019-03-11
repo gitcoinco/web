@@ -443,6 +443,11 @@ a.btn {
   color: #0ECF7C;
 }
 
+.activity-kudos {
+  text-align: right;
+  display: none;
+}
+
 .activity .bounty-subheading,
 .activity .bounty-text {
   font-size: 12px;
