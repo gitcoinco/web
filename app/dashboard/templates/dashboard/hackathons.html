@@ -38,14 +38,17 @@
         <div class="col-xs-12 col-sm-6 col-lg-3">
           <div class="card">
               {% if hackathon.logo_svg %}
-              <img class="card-img-top" width="364" src="{{MEDIA_URL}}{{ hackathon.logo_svg }}"/>
+              <img class="card-img-top" width="364" src="{{MEDIA_URL}}{{ hackathon.logo_svg }}" style="
+              height: 253px;
+              padding: 1rem;
+          "/>
               {% elif hackathon.logo %}
               <img class="card-img-top" width="364" src="{{MEDIA_URL}}{{ hackathon.logo }}"/>
               {% endif %}
               <div class="card-body">
-                <h5 class="card-title">{{ hackathon.name }}</h5>
+                <h5 class="card-title"><a href="{% url 'hackathon' hackathon.slug %}">{{ hackathon.name }}</a></h5>
                 <p class="card-text"><small>{{ hackathon.start_date}} / {{ hackathon.end_date }}</small></p>
-                <a href="{% url 'hackathon' hackathon.slug %}" class="btn btn-primary">See bounties</a>
+
               </div>
             </div>
         </div>
