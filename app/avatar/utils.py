@@ -444,9 +444,15 @@ def build_random_avatar(override_skin_tone=None, override_hair_color=None, add_f
         if set_optional == True:
             options = dict()
             if section_name not in ['HairStyle', 'Accessories']:
-                options = [option for option in section['options'] if option not in paid_options and option not in ignore_options]
+                options = [
+                    option for option in section['options']
+                    if option not in paid_options and option not in ignore_options
+                ]
             else:
-                options = [option for option in section['options'] if option[0] not in paid_options and option not in ignore_options]
+                options = [
+                    option for option in section['options']
+                    if option[0] not in paid_options and option not in ignore_options
+                ]
 
             random_choice = random.choice(options)
 
