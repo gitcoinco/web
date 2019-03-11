@@ -100,6 +100,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
             'action_urls', 'project_type', 'permission_type', 'attached_job_description', 'needs_review',
             'github_issue_state', 'is_issue_closed', 'additional_funding_summary', 'funding_organisation', 'paid',
             'admin_override_suspend_auto_approval', 'reserved_for_user_handle', 'is_featured', 'featuring_date',
+            'funder_last_messaged_on',
         )
 
     def create(self, validated_data):
@@ -255,6 +256,7 @@ class BountyViewSet(viewsets.ModelViewSet):
         if 'is_featured' in param_keys:
             queryset = queryset.filter(
                 is_featured=self.request.query_params.get('is_featured'),
+                is_open=True,
             )
 
         # order

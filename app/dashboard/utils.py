@@ -396,6 +396,7 @@ def get_bounty(bounty_enum, network):
         'token': token,
         'fulfillments': fulfillments,
         'network': network,
+        'review': bounty_data.get('review',{}),
     }
     return bounty
 
@@ -539,6 +540,18 @@ def get_ordinal_repr(num):
     else:
         suffix = ordinal_suffixes.get(num % 10, 'th')
     return f'{num}{suffix}'
+
+
+def record_funder_inaction_on_fulfillment(bounty_fulfillment):
+    payload = {
+        'profile': bounty_fulfillment.bounty.bounty_owner_profile,
+        'metadata': {
+            'bounties': list(bounty_fulfillment.bounty.pk),
+            'bounty_fulfillment_pk': bounty_fulfillment.pk,
+            'needs_review': True
+        }
+    }
+    Activity.objects.create(activity_type='bounty_abandonment_escalation_to_mods', bounty=bounty_fulfillment.bounty, **payload)
 
 
 def record_user_action_on_interest(interest, event_name, last_heard_from_user_days):

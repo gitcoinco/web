@@ -17,7 +17,7 @@
 
 {% endcomment %}
 {% load i18n humanize %}
-  
+
 {% load static %}
 
 {% block content %}
@@ -31,19 +31,19 @@
       <img id="funded_featured_bounty" width="100" src="{{ bounty.avatar_url }}" alt="Funded featured bounty" title="Grow Open Source Image">
 
       <p>{{ bounty.title }}</p>
-      <div style="display: flex; justify-content: center;">
-        <div style="text-align: center; border-radius: 2px; margin: 4px; padding: 3px 6px; font-size: 11px; font-weight: 400; white-space: nowrap; cursor: pointer; background-color: #e7f0fa; color: var(--gc-blue);">
-          <p>
-            {{ bounty.value_in_eth|floatformat:-2 }}
+      <div style="text-align: center;">
+        <span style="text-align: center; border-radius: 2px; margin: 4px; padding: 3px 6px; font-size: 11px; font-weight: 400; white-space: nowrap; background-color: #e7f0fa; color: var(--gc-blue);    display: inline-block;">
+          <p style="font-size:15px;">
+            {{ bounty.value_true }}
             <span>{{ bounty.token_name }}</span>
-          </p>
-        </div>
-        <div style="text-align: center; border-radius: 2px; margin: 4px; padding: 3px 6px; font-size: 11px; font-weight: 400; white-space: nowrap; cursor: pointer; background-color: #d6fbeb; color: #00A55E;">
-          <p>
+          </p style="font-size:15px;">
+        </span>
+        <span style="text-align: center; border-radius: 2px; margin: 4px; padding: 3px 6px; font-size: 11px; font-weight: 400; white-space: nowrap; background-color: #d6fbeb; color: #00A55E;    display: inline-block;">
+          <p style="font-size:15px;">
             {{ bounty.token_value_in_usdt }}
             <span>USD</span>
           </p>
-        </div>
+        </span>
       </div>
 
       <div style="margin-bottom: 2em; margin-top: 2em;">
@@ -60,7 +60,7 @@
       </div>
     </div>
   {% endif %}
-    
+
 </div>
 
 {% endblock %}

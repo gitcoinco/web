@@ -32,8 +32,8 @@ from retail.emails import (
     render_admin_contact_funder, render_bounty_changed, render_bounty_expire_warning, render_bounty_feedback,
     render_bounty_startwork_expire_warning, render_bounty_unintersted, render_change_grant_owner_accept,
     render_change_grant_owner_reject, render_change_grant_owner_request, render_faucet_rejected, render_faucet_request,
-    render_featured_funded_bounty, render_funder_stale, render_gdpr_reconsent, render_gdpr_update,
-    render_grant_cancellation_email, render_kudos_email, render_match_email, render_new_bounty,
+    render_featured_funded_bounty, render_funder_payout_reminder, render_funder_stale, render_gdpr_reconsent,
+    render_gdpr_update, render_grant_cancellation_email, render_kudos_email, render_match_email, render_new_bounty,
     render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup, render_new_grant_email,
     render_new_supporter_email, render_new_work_submission, render_notify_ownership_change,
     render_nth_day_email_campaign, render_quarterly_stats, render_reserved_issue, render_share_bounty,
@@ -522,6 +522,29 @@ def gdpr_reconsent(email):
     )
 
 
+def funder_payout_reminder(to_email, bounty, github_username, live):
+    from_email = settings.PERSONAL_CONTACT_EMAIL
+    subject = "Payout reminder"
+    html, text = render_funder_payout_reminder(to_email=to_email, bounty=bounty, github_username=github_username)
+    if (live):
+        try:
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                text,
+                html,
+                from_name="Kevin Owocki (Gitcoin.co)",
+                categories=['marketing', func_name()],
+            )
+        except Exception as e:
+            logger.warning(e)
+            return False
+        return True
+    else:
+        return html
+
+
 def share_bounty(emails, msg, profile):
     for email in emails:
         to_email = email
@@ -616,6 +639,10 @@ def weekly_roundup(to_emails=None):
             setup_lang(to_email)
             html, text, subject = render_new_bounty_roundup(to_email)
             from_email = settings.PERSONAL_CONTACT_EMAIL
+            
+            if not html:
+                print("no content")
+                return
 
             if not should_suppress_notification_email(to_email, 'roundup'):
                 send_mail(

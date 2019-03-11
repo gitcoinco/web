@@ -3,6 +3,25 @@
 // helper functions
 
 /**
+ *  * Generates a boostrap modal handler for when a user clicks a link to launch a boostrap modal.
+ *   * @param {string} modalUrl - content url for the modal
+ *    */
+var show_modal_handler = (modalUrl) => {
+	  const url = modalUrl;
+	
+	   return (e) => {
+		       var modals = $('#modal');
+		       var modalBody = $('#modal .modal-content');
+		   
+	        modals.off('show.bs.modal');
+		       modals.on('show.bs.modal', () => {
+		         $('#modal .modal-content').load(modalUrl);
+		       });
+		       e.preventDefault();
+		     };
+};
+
+/**
  * Validates if input is a valid URL
  * @param {string} input - Input String
  */
@@ -260,6 +279,23 @@ var waitingStateActive = function() {
   $('.waiting_room_entertainment').show();
   $('.issue-url').html('<a href="' + document.issueURL + '">' + document.issueURL + '</a>');
   waitingRoomEntertainment();
+};
+
+const notify_funder = (network, std_bounties_id, data) => {
+	  var request_url = '/actions/bounty/' + network + '/' + std_bounties_id + '/notify/funder_payout_reminder/';
+	
+	   showBusyOverlay();
+	  $.post(request_url, data).then(result => {
+		      hideBusyOverlay();
+		  
+		       _alert({message: gettext('Sent payout reminder')}, 'success');
+		      $('#notifyFunder a').addClass('disabled');
+		      return true;
+		    }).fail(result => {
+			        hideBusyOverlay();
+			    
+			         _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
+			      });
 };
 
 /** Add the current profile to the interested profiles list. */
