@@ -418,14 +418,13 @@ def build_avatar_svg(svg_path='avatar.svg', line_color='#781623', icon_size=None
     return result_path
 
 
-def build_random_avatar(override_skin_tone=None, override_hair_color=None, add_makeup=True):
+def build_random_avatar(override_skin_tone=None, override_hair_color=None, add_facial_hair=True):
     """Build an random avatar payload using context properties"""
-    ignore_options = ['eyeliner-blue', 'eyeliner-green', 'eyeliner-pink', 'eyeliner-red', 'eyeliner-teal' ]
+    ignore_options = ['eyeliner-blue', 'eyeliner-green', 'eyeliner-pink', 'eyeliner-red', 'eyeliner-teal', 'blush']
     default_path = f'{settings.STATIC_URL}v2/images/avatar/'
     context = get_avatar_context()
     optional = context['optionalSections']
-    if add_makeup:
-        optional.append('Makeup')  # Also include Makeup as optional
+    optional.append('Makeup')  # Also include Makeup as optional
 
     payload = dict()
     payload['SkinTone'] = random.choice(context['skin_tones'])
@@ -463,8 +462,9 @@ def build_random_avatar(override_skin_tone=None, override_hair_color=None, add_m
                 ] = f'{default_path}{section_name}/{random_choice[1]}-{payload["HairColor"]}.svg' if random_choice[
                     1] != 'None' else None
             elif section_name == 'FacialHair':
-                key = random_choice[:random_choice.find('-')]
-                payload[key] = f'{default_path}{section_name}/{random_choice}-{payload["HairColor"]}.svg'
+                if add_facial_hair:
+                    key = random_choice[:random_choice.find('-')]
+                    payload[key] = f'{default_path}{section_name}/{random_choice}-{payload["HairColor"]}.svg'
             elif section_name == 'Accessories':
                 for k in random_choice:
                     key = k[:k.find('-')]
