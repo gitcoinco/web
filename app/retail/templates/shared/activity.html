@@ -38,7 +38,7 @@
         </a>
       {% elif row.activity_type == 'new_kudos' %}
         {% trans "sent a" %}
-        {{ row.i18n_name|lower }}
+        Kudos
         {% trans "to" %}
         <a href="/profile/{{ row.metadata.to_username|cut:'@' }}">
           {{ row.metadata.to_username }}
@@ -53,8 +53,11 @@
         <span>{% trans "canceled bounty: " %}</span>{{ row.urled_title | safe }}
       {% elif row.activity_type == 'increased_bounty' %}
         <span>{% trans "increased funding: " %}</span>{{ row.urled_title | safe }}
+      {% elif row.activity_type == 'unknown_event' %}
+        <span>{% trans "made an update to: " %}</span>{{ row.urled_title | safe }}
       {% else %}
         {{ row.i18n_name }}
+        {{row.humanized_activity_type }}
         {% if row.bounty %}
           : <a href="{{ row.bounty.url }}">{{ row.bounty.title }}</a>
         {% endif %}
