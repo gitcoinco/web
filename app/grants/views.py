@@ -38,6 +38,7 @@ from django.views.decorators.csrf import csrf_exempt
 from app.utils import get_profile
 from cacheops import cached_view
 from dashboard.models import Profile
+from dashboard.utils import get_web3
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.forms import MilestoneForm
 from grants.models import Contribution, Grant, MatchPledge, Milestone, Subscription, Update
@@ -615,3 +616,31 @@ def leaderboard(request):
             params['items'].append(item)
             counter += 1
     return TemplateResponse(request, 'grants/leaderboard.html', params)
+
+
+@csrf_exempt
+def new_matching_partner(request):
+
+    def get_json_response(message, status):
+        return JsonResponse(
+            {'status': status, 'message': message},
+            status=status
+        )
+
+    if not request.user.is_authenticated:
+        return get_json_response("Not Authorized", 403)
+
+    tx_hash = request.POST.get('hash')
+    profile = get_profile(request)
+    gitcoin_account = '0x00De4B13153673BCAE2616b67bf822500d325Fc3'
+
+    if request.POST and tx_hash and profile:
+        web3 = get_web3('mainnet')
+        tx = web3.eth.getTransaction(tx_hash)
+        if tx.to == gitcoin_account:
+            MatchPledge(
+                profile=profile,
+                amount=tx.value
+            ).save()
+
+    return get_json_response("OK", 203)

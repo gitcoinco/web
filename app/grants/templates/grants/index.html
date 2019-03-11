@@ -61,9 +61,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           <div class="col-md-6">
             <h2>Matching Partners</h2>
             <p>A special thanks to the following partners who have offered to match contributions to Gitcoin Grants.  <a href="https://medium.com/gitcoin/gitcoin-grants-clr-matching-ecbc87b10038">(Read Announcement Here)</a></p>
-            <div class="btn btn-gc-blue" onclick="processPayment()">
-              {% trans 'Become a Matching Partner' %}
-            </div>
+
+            {% if not user.is_authenticated %}
+              <a class="btn btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">{% trans 'Become a Matching Partner' %}</a>
+            {% else %}
+              <div class="btn btn-gc-blue" onclick="processPayment()">
+                {% trans 'Become a Matching Partner' %}
+              </div>
+            {% endif %}
+
             <ul class="nav nav-tabs my-5" role="tablist">
               <li class="nav-item">
                 <a class="nav-link nav-line active" id="currentpartners-tab" data-toggle="tab" href="#currentpartners" role="tab" aria-controls="currentpartners" aria-selected="true">Current Partners</a>
