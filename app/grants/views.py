@@ -83,6 +83,8 @@ def grants(request):
         {'label': 'UI/UX', 'keyword': 'UI'},
         {'label': 'DeFI', 'keyword': 'defi'},
         {'label': 'Education', 'keyword': 'education'},
+        {'label': 'Wallets', 'keyword': 'wallet'},
+        {'label': 'Community', 'keyword': 'community'},
         {'label': 'ETH 2.0', 'keyword': 'ETH 2.0'},
         {'label': 'ETH 1.x', 'keyword': 'ETH 1.x'},
     ]
