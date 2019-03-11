@@ -3430,6 +3430,83 @@
     - IPFS
     - web3
   image: 3box.svg
+- name: ally_guide_paris_spring_2019
+  to_address: '0xc6b0a4c5BA85d082eCd4Fb05FBF63eb92AC1083a'
+  artist: PanvalaMark
+  description: For loyal Panvala Allies who shopped at merchants in the Spring 2019 issue of Ally Guide Paris.
+  priceFinney: 10
+  numClonesAllowed: 200
+  tags:
+    - panvala
+    - ally guide
+    - paris
+  image: ally_guide_paris_spring_2019.svg
+- name: batman_bot
+  artist: mladen
+  description: Limited Edition Crypto Spring Kudos;  Send this bot to contributors who have done a great job!
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto spring
+    - bots
+  image: batman_bot.svg
+- name: c3po_bot
+  artist: mladen
+  description: Limited Edition Crypto Spring Kudos;  Send this bot to contributors who have done a great job!
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto spring
+    - bots
+  image: c3po_bot.svg
+- name: hello_kitty_bot
+  artist: mladen
+  description: Limited Edition Crypto Spring Kudos;  Send this bot to contributors who have done a great job!
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto spring
+    - bots
+  image: hello_kitty_bot.svg
+- name: loki_bot
+  artist: mladen
+  description: Limited Edition Crypto Spring Kudos;  Send this bot to contributors who have done a great job!
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto spring
+    - bots
+  image: loki_bot.svg
+- name: spider_bot
+  artist: mladen
+  description: Limited Edition Crypto Spring Kudos;  Send this bot to contributors who have done a great job!
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto spring
+    - bots
+  image: spider_bot.svg
+- name: trek_bot
+  artist: mladen
+  description: Limited Edition Crypto Spring Kudos;  Send this bot to contributors who have done a great job!
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto spring
+    - bots
+  image: trek_bot.svg
 
 
 
