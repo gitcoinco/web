@@ -1,18 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="690px" height="181px" viewBox="0 0 690 181" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 51.3 (57544) - http://www.bohemiancoding.com/sketch -->
-    <title>0-3F2918 copy</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="0-3F2918-copy" transform="translate(0.000000, -39.000000)">
-            <path d="M58,204.9 C32.6,198.8 13.6,175.9 13.6,148.7 L13.6,111.2 C13.6,83.9 32.6,61 58,55 L58,204.9 Z" id="Shape" fill="#DBDBDB" fill-rule="nonzero"></path>
-            <path d="M44.5,75.9 L44.5,183.9 C33.9,175.8 27,163 27,148.6 L27,111.1 C27.1,96.8 33.9,84 44.5,75.9 Z M71.4,39.9 C32,39.9 0.1,71.8 0.1,111.2 L0.1,148.7 C0.1,188.1 32,220 71.4,220 L71.4,39.9 Z" id="Shape" fill="#333333" fill-rule="nonzero"></path>
-            <path d="M631.2,54.2 C656.6,60.3 675.6,83.2 675.6,110.4 L675.6,147.9 C675.6,175.2 656.6,198.1 631.2,204.1 L631.2,54.2 Z" id="Shape" fill="#8A2BE2" fill-rule="nonzero"></path>
-            <path d="M644.7,75.2 C655.3,83.3 662.2,96.1 662.2,110.5 L662.2,148 C662.2,162.4 655.3,175.2 644.7,183.3 L644.7,75.2 Z M617.8,39.2 L617.8,219.2 C657.2,219.2 689.1,187.3 689.1,147.9 L689.1,110.4 C689,71.1 657.1,39.2 617.8,39.2 Z" id="Shape" fill="#333333" fill-rule="nonzero"></path>
-            <path d="M58,204.2 C32.6,198.1 13.6,175.2 13.6,148 L13.6,110.5 C13.6,83.2 32.6,60.3 58,54.3 L58,204.2 Z" id="Shape" fill="#8A2BE2" fill-rule="nonzero"></path>
-            <path d="M44.5,75.2 L44.5,183.2 C33.9,175.1 27,162.3 27,147.9 L27,110.4 C27.1,96.1 33.9,83.3 44.5,75.2 Z M71.4,39.2 C32,39.2 0.1,71.1 0.1,110.5 L0.1,148 C0.1,187.4 32,219.3 71.4,219.3 L71.4,39.2 Z" id="Shape" fill="#333333" fill-rule="nonzero"></path>
-            <polygon id="Shape" points="43 0.4 646.7 0.4 646.7 241.9 43 241.9"></polygon>
-        </g>
-    </g>
-</svg>
+<svg width="899" height="1415" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M163 774.9c-25.4-6.1-44.4-29-44.4-56.2v-37.5c0-27.3 19-50.2 44.4-56.2v149.9z" fill="#DBDBDB"/><path d="M149.5 645.9v108c-10.6-8.1-17.5-20.9-17.5-35.3v-37.5c.1-14.3 6.9-27.1 17.5-35.2zm26.9-36c-39.4 0-71.3 31.9-71.3 71.3v37.5c0 39.4 31.9 71.3 71.3 71.3V609.9z" fill="#333" fill-rule="nonzero"/><path d="M736.2 624.2c25.4 6.1 44.4 29 44.4 56.2v37.5c0 27.3-19 50.2-44.4 56.2V624.2z" fill="#8A2BE2"/><path d="M749.7 645.2c10.6 8.1 17.5 20.9 17.5 35.3V718c0 14.4-6.9 27.2-17.5 35.3V645.2zm-26.9-36v180c39.4 0 71.3-31.9 71.3-71.3v-37.5c-.1-39.3-32-71.2-71.3-71.2z" fill="#333" fill-rule="nonzero"/><path d="M163 774.2c-25.4-6.1-44.4-29-44.4-56.2v-37.5c0-27.3 19-50.2 44.4-56.2v149.9z" fill="#8A2BE2"/><path d="M149.5 645.2v108c-10.6-8.1-17.5-20.9-17.5-35.3v-37.5c.1-14.3 6.9-27.1 17.5-35.2zm26.9-36c-39.4 0-71.3 31.9-71.3 71.3V718c0 39.4 31.9 71.3 71.3 71.3V609.2z" fill="#333" fill-rule="nonzero"/><path d="M148 570.4h603.7v241.5H148z"/></g></svg>
