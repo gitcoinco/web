@@ -15,7 +15,7 @@
   </head>
   <body class="interior {{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header profile-header dash" style="min-height: 300px;">
+    <div class="container-fluid header profile-header dash" style="min-height: 350px;">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav.html' %}
       {% if not hidden and is_staff %}
@@ -26,12 +26,26 @@
       {% endif %}
     </div>
     <div class="container-fluid bg-light pb-5">
-      {% if not hidden %}
-        <div class="container profile-card">
+
+        <div class="container profile-card mt-md-n5">
           <div class="row">
             <div class="col-12 col-lg-6 profile-header__main-infos">
-              <div class="clearfix">
-                <img class="profile-header__avatar mb-1 mr-4" src="{% if profile.avatar and profile.active_avatar.avatar_url %}{{ profile.active_avatar.avatar_url }}{% else %}{{ profile.avatar_url }}{% endif %}" />
+              {% if not hidden %}
+              <div class="float_avatar_image d-inline-block d-inline-block mb-1 {% if is_my_profile %}is_my_profile{% endif %}">
+                {% if is_my_profile %}
+                  <a href="{% url "onboard" "profile" %}?steps=avatar">
+                {% endif %}
+                    <img class="profile-header__avatar" src="{% if profile.avatar and profile.active_avatar.avatar_url %}{{ profile.active_avatar.avatar_url }}{% else %}{{ profile.avatar_url }}{% endif %}" />
+                {% if is_my_profile %}
+                    <div class="avatar_edit d-md-block d-sm-none">
+                      <div class="avatar_edit_text">
+                        Edit Avatar
+                      </div>
+                    </div>
+                  </a>
+                {% endif %}
+              </div>
+
                 <h1 class="profile-header__handle">
                   {% if profile.data.name %}
                     {{ profile.data.name }}
@@ -62,8 +76,9 @@
                     </a>
                   {% endif %}
                 </p>
-              </div>
+
               {% if preferred_payout_address %}
+
 
                 <div class="my-2">
                   <svg xmlns="http://www.w3.org/2000/svg" width="10" height="16" class="mr-2 mb-1"><path fill="#000" fill-rule="nonzero" d="M10 8.113L5.002 11 0 8.113 5.002 0 10 8.113zm-5 3.821L0 9l5 7 5-7-5 2.934z"/></svg>
@@ -117,7 +132,7 @@
                                 {% endif %}
                               {% endfor %}
                               {% if works_with_collected|length > 5 %}
-                                <div href="" class="plus-img" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='{% for profile, num_times in works_with_collected.items %}<a href="{% url "profile" profile %}"><img class="rounded-circle m-1" width="30" height="30" title="{{profile}}: {{ num_times }} times" src="{% avatar_url profile %}"/></a>{% endfor %}'><span>+{{works_with_collected|length|add:"-5"}}</span></div>
+                                <div href="" class="plus-img" data-container="body" data-toggle="popover" data-template='<div class="popover big-popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>' data-html="true" data-placement="bottom" data-trigger="hover click" data-content='{% for profile, num_times in works_with_collected.items %}<a href="{% url "profile" profile %}"><img class="rounded-circle m-1" width="30" height="30" title="{{profile}}: {{ num_times }} times" src="{% avatar_url profile %}"/></a>{% endfor %}'><span>+{{works_with_collected|length|add:"-5"}}</span></div>
                               {% endif %}
                           {% endif %}
                         </li>
@@ -145,7 +160,7 @@
                               {% endif %}
                             {% endfor %}
                             {% if works_with_funded|length > 5 %}
-                              <div href="" class="plus-img" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='{% for profile, num_times in works_with_funded.items %}<a href="{% url "profile" profile %}"><img class="rounded-circle m-1" width="30" height="30" title="{{profile}}: {{ num_times }} times" src="{% avatar_url profile %}"/></a>{% endfor %}'><span>+{{works_with_funded|length|add:"-5"}}</span></div>
+                              <div href="" class="plus-img" data-container="body" data-toggle="popover" data-template='<div class="popover big-popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>' data-html="true" data-placement="bottom" data-trigger="hover click" data-content='{% for profile, num_times in works_with_funded.items %}<a href="{% url "profile" profile %}"><img class="rounded-circle m-1" width="30" height="30" title="{{profile}}: {{ num_times }} times" src="{% avatar_url profile %}"/></a>{% endfor %}'><span>+{{works_with_funded|length|add:"-5"}}</span></div>
                             {% endif %}
                           {% endif %}
                         </li>
