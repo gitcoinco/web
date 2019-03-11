@@ -21,6 +21,7 @@ import time
 from datetime import datetime
 
 import django_filters.rest_framework
+from kudos.models import KudosTransfer
 from rest_framework import routers, serializers, viewsets
 from retail.helpers import get_ip
 
@@ -51,16 +52,28 @@ class InterestSerializer(serializers.ModelSerializer):
         fields = ('profile', 'created', 'pending')
 
 
+class KudosSerializer(serializers.ModelSerializer):
+    """Handle serializing the Kudos object."""
+
+    class Meta:
+        """Define the kudos serializer metadata."""
+
+        model = KudosTransfer
+        depth = 1
+        fields = ('kudos_token_cloned_from', )
+
+
 class ActivitySerializer(serializers.ModelSerializer):
     """Handle serializing the Activity object."""
 
     profile = ProfileSerializer()
+    kudos = KudosSerializer()
 
     class Meta:
         """Define the activity serializer metadata."""
 
         model = Activity
-        fields = ('activity_type', 'created', 'profile', 'metadata', 'bounty', 'tip')
+        fields = ('activity_type', 'created', 'profile', 'metadata', 'bounty', 'tip', 'kudos')
 
 
 # Serializers define the API representation.
