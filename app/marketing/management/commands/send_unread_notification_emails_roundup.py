@@ -20,15 +20,27 @@ import warnings
 
 from django.core.management.base import BaseCommand
 
-from dashboard.models import Profile
 from marketing.mails import unread_notification_email_weekly_roundup
+from marketing.models import EmailSubscriber
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 
+check_already_sent = False
+
+
+def is_already_sent_this_week(email):
+    from marketing.models import EmailEvent
+    from django.utils import timezone
+    then = timezone.now() - timezone.timedelta(hours=12)
+    QS = EmailEvent.objects.filter(created_on__gt=then)
+    QS = QS.filter(category__contains='weekly_roundup', email__iexact=email, event='processed')
+    return QS.exists()
+
+
 class Command(BaseCommand):
 
-    help = 'send unread notifications weekly roundup'
+    help = 'the weekly roundup emails'
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -38,19 +50,61 @@ class Command(BaseCommand):
             default=False,
             help='Actually Send the emails'
         )
+        parser.add_argument(
+            '--exclude_startswith',
+            dest='exclude_startswith',
+            type=str,
+            default=None,
+            help="exclude_startswith (optional)",
+        )
+        parser.add_argument(
+            '--filter_startswith',
+            dest='filter_startswith',
+            type=str,
+            default=None,
+            help="filter_startswith (optional)",
+        )
+        parser.add_argument(
+            '--start_counter',
+            dest='start_counter',
+            type=int,
+            default=0,
+            help="start_counter (optional)",
+        )
 
     def handle(self, *args, **options):
-        profiles = Profile.objects.active()
-        email_list = profiles.values_list('email', flat=True)
-        email_list = list(set(email_list))
-        print("trying to send to the following amount of receipients: "+str(len(email_list)))
 
-        for counter, to_email in enumerate(email_list):
-            print(f"- sending {counter+1} / {to_email}")
-            if options['live'] and to_email:
+        exclude_startswith = options['exclude_startswith']
+        filter_startswith = options['filter_startswith']
+        start_counter = options['start_counter']
+
+        queryset = EmailSubscriber.objects.all()
+        if exclude_startswith:
+            queryset = queryset.exclude(email__startswith=exclude_startswith)
+        if filter_startswith:
+            queryset = queryset.filter(email__startswith=filter_startswith)
+        queryset = queryset.order_by('email')
+        email_list = list(set(queryset.values_list('email', flat=True)))
+        # list.sort(email_list)
+
+        print("got {} emails".format(len(email_list)))
+
+        counter = 0
+        for to_email in email_list:
+            counter += 1
+
+            # skip any that are below the start counter
+            if counter < start_counter:
+                continue
+
+            print("-sending {} / {}".format(counter, to_email))
+            if options['live']:
                 try:
-                    unread_notification_email_weekly_roundup([to_email])
-                    time.sleep(1)
+                    if check_already_sent and is_already_sent_this_week(to_email):
+                        print(' -- already sent')
+                    else:
+                        unread_notification_email_weekly_roundup([to_email])
+                        time.sleep(1)
                 except Exception as e:
                     print(e)
                     time.sleep(5)
