@@ -130,7 +130,7 @@ $(document).ready(function() {
         } else {
           $('#reservedForOptionID').prop('disabled', true);
         }   
-      });
+      } );
 
   // revision action buttons
   $('#subtractAction').on('click', function() {
