@@ -444,8 +444,8 @@ a.btn {
 }
 
 .activity-kudos {
-  text-align: right;
-  display: none;
+  width: 60px;
+  float: right;
 }
 
 .activity .bounty-subheading,
