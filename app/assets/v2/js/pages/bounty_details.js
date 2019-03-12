@@ -949,10 +949,10 @@ var do_actions = function(result) {
     const enabled = true;
     let text;
 
-    if (result['permission_type'] === 'approval')
-      text = is_interested ? gettext('Stop') : gettext('Express Interest');
-    else
+    if (result['permission_type'] === 'permissionless')
       text = is_interested ? gettext('Stop Work') : gettext('Start Work');
+    else
+      text = is_interested ? gettext('Stop') : gettext('Express Interest');    
 
     const interest_entry = {
       enabled: enabled,

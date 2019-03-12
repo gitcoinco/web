@@ -176,6 +176,7 @@ class Bounty(SuperModel):
     PERMISSION_TYPES = [
         ('permissionless', 'permissionless'),
         ('approval', 'approval'),
+        ('reserved', 'reserved'),
     ]
     PROJECT_TYPES = [
         ('traditional', 'traditional'),

@@ -91,7 +91,7 @@ class Migration(migrations.Migration):
                 ('canceled_on', models.DateTimeField(blank=True, null=True)),
                 ('canceled_bounty_reason', models.TextField(blank=True, default='', verbose_name='Cancelation reason')),
                 ('project_type', models.CharField(choices=[('traditional', 'traditional'), ('contest', 'contest'), ('cooperative', 'cooperative')], default='traditional', max_length=50)),
-                ('permission_type', models.CharField(choices=[('permissionless', 'permissionless'), ('approval', 'approval')], default='permissionless', max_length=50)),
+                ('permission_type', models.CharField(choices=[('permissionless', 'permissionless'), ('approval', 'approval'), ('reserved', 'reserved'),], default='permissionless', max_length=50)),
                 ('snooze_warnings_for_days', models.IntegerField(default=0)),
                 ('token_value_time_peg', models.DateTimeField(blank=True, null=True)),
                 ('token_value_in_usdt', models.DecimalField(blank=True, decimal_places=2, default=0, max_digits=50, null=True)),
