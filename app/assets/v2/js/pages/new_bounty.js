@@ -131,8 +131,8 @@ $(document).ready(function() {
     populateBountyTotal();
   });
 
-  $('.js-select2[name=denomination]').change(function(e) {
-    const token = e.target.value;
+  $('select[name=denomination]').change(function(e) {
+    const token = tokenAddressToDetails(e.target.value).name;
 
     $('#summary-bounty-token').html(token);
     $('#summary-fee-token').html(token);
@@ -599,5 +599,8 @@ const populateBountyTotal = () => {
     total = `${totalBounty} ${bountyToken}`;
   }
 
+  $('#fee-percentage').html(FEE_PERCENTAGE);
+  $('#fee-amount').html(bountyFee);
+  $('#fee-token').html(bountyToken);
   $('#summary-total-amount').html(total);
 };

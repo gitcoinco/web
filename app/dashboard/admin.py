@@ -24,8 +24,8 @@ from django.utils.safestring import mark_safe
 
 from .models import (
     Activity, BlockedUser, Bounty, BountyFulfillment, BountyInvites, BountySyncRequest, CoinRedemption,
-    CoinRedemptionRequest, FeedbackEntry, Interest, LabsResearch, Profile, SearchHistory, Tip, TokenApproval, Tool,
-    ToolVote, UserAction, UserVerificationModel,
+    CoinRedemptionRequest, FeedbackEntry, Interest, LabsResearch, Profile, RefundFeeRequest, SearchHistory,
+    Tip, TokenApproval, Tool, ToolVote, UserAction, UserVerificationModel,
 )
 
 
@@ -174,6 +174,30 @@ class BountyAdmin(admin.ModelAdmin):
         return mark_safe(f"<a href={url}>{copy}</a>")
 
 
+class RefundFeeRequestAdmin(admin.ModelAdmin):
+
+    # Display fulfilled + rejected status + bounty + user in table
+    # Add review link for admin to visit and take action
+    raw_id_fields = ['bounty', 'profile']
+    ordering = ['-created_on']
+    readonly_fields = ['pk', 'token', 'fee_amount', 'comment', 'address', 'txnId', 'link']
+    search_fields = ['created_on', 'fulfilled', 'rejected']
+
+    def link(self, instance):
+        """Handle refund fee request specific links.
+
+        Args:
+            instance (RefundFeeRequest): The refund request to build a link for.
+
+        Returns:
+            str: The HTML element for the refund request link.
+
+        """
+        if instance.fulfilled or instance.rejected:
+            return 'n/a'
+        return mark_safe(f"<a href=/_administration/process_refund_request/{instance.pk}>process me</a>")
+
+
 admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
 admin.site.register(BlockedUser, GeneralAdmin)
@@ -193,3 +217,4 @@ admin.site.register(ToolVote, ToolVoteAdmin)
 admin.site.register(FeedbackEntry, FeedbackAdmin)
 admin.site.register(LabsResearch)
 admin.site.register(UserVerificationModel, VerificationAdmin)
+admin.site.register(RefundFeeRequest)
