@@ -87,6 +87,7 @@
 #leaderboard .winner img {
   opacity: 1;
   display: flex;
+  border-radius: 50%;
 }
 
 .interior .body {

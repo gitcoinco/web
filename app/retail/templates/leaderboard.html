@@ -26,7 +26,9 @@
               {% for podium_item in podium_items %}
                 <div class="col-2 winner mt-5">
                   {% if not is_linked_to_profile %}
-                    <img class="img-fluid"  src="{{podium_item.avatar_url}}" >
+                    <a href="{{podium_item.url}}" target="_blank">
+                      <img class="img-fluid"  src="{{podium_item.avatar_url}}" >
+                    </a>
                   {% endif %}
                   <div class="container winner-content">
                     <div class="row align-items-center">
@@ -37,7 +39,7 @@
 
                   </div>
 
-                  <h6 class="pt-3 pb-3 text-left restext" style="color:#3f78cd; white-space: nowrap;">
+                  <h6 class="pt-3 pb-3 text-center restext" style="color:#3f78cd; white-space: nowrap;">
                     {% if forloop.counter == 1 %}
                       <img src="/static/v2/images/leaderboard-1.png" style="width: 17.5px; height: 20px; float: left"></img>
                     {% endif %}
