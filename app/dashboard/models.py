@@ -1742,6 +1742,7 @@ class BountyInvites(SuperModel):
     INVITE_STATUS = [
         ('pending', 'pending'),
         ('accepted', 'accepted'),
+        ('completed', 'completed'),
     ]
 
     bounty = models.ManyToManyField('dashboard.Bounty', related_name='bounty', blank=True)
