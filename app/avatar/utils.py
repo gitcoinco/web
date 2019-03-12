@@ -181,9 +181,10 @@ def get_avatar_context():
                     'None', 'spikey'
                 ], ['None', 'mickey_hair'], ['None', 'modernhair_1'], ['None', 'modernhair_2'], [
                     'modernhair_3-back', 'modernhair_3-front'
-                ], ['None', 'womenhair'], ['None', 'womanhair'], ['None', 'womanhair1'], ['None', 'womanhair2'],
-                            ['None', 'womanhair3'], ['None', 'womanhair4'], ['None',
-                                                                             'womanhair5'], ['None', 'man-hair'],
+                ], ['None', 'womenhair'], ['None', 'womanhair'], ['None', 'womanhair1'], ['None', 'womanhair2'], [
+                    'None', 'womanhair3'], ['None', 'womanhair4'], ['None', 'womanhair5'], ['None', 'man-hair'
+                ], ['None', 'girl_hairstyle1'], ['None', 'girl_hairstyle2'], ['None', 'men_hairstyle1'], [
+                    'None', 'men_hairstyle2'], ['None', 'girl_hairstyle3']
                             ),
                 'paid_options': {},
             },
