@@ -131,7 +131,6 @@ $(document).ready(function() {
     } else {
       $('#auto_approve_workers_container').hide();
     }
-  });
 
   $('input[name=amount]').on('change', function() {
     const amount = $('input[name=amount]').val();
@@ -167,8 +166,23 @@ $(document).ready(function() {
       } else {
         $('#reservedForDiv').hide();
       }
+    if (val === 'reserved') {
+      $('#reservedForDiv').show();
+    } else {
+      $('#reservedForDiv').hide();
     }
-  );
+});
+
+    // show/hide the reserved for selector based on the project type
+    $('.js-select2[name=project_type]').change(
+      function(e) {
+        if (String(e.target.value).toLowerCase() === 'traditional') {
+          $('#reservedForOptionID').prop('disabled', false);
+        } else {
+          $('#reservedForOptionID').prop('disabled', true);
+        }
+      }
+    );
 
   // revision action buttons
   $('#subtractAction').on('click', function() {
@@ -192,7 +206,7 @@ $(document).ready(function() {
   }
 
   $('.js-select2').each(function() {
-    $(this).select2();
+    $(this).select2();cp app/app/local.env app/app/.env
   });
 
   $('.submit_bounty select').each(function(evt) {
