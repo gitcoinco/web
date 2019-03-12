@@ -24,7 +24,7 @@ from marketing.models import EmailSubscriber
 from test_plus.test import TestCase
 
 
-class TestRoundup(TestCase):
+class TestSendUnreadNotificationEmailsRoundup(TestCase):
     """Define tests for roundup."""
 
     def setUp(self):
