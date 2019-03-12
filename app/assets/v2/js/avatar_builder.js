@@ -243,11 +243,14 @@ function purchaseOption(option, value, target) {
   return;
 }
 
-
 function setOption(option, value, target) {
   if (target.classList.contains('not_paid')) {
     return purchaseOption(option, value, target);
   }
+  return setOptionHelper(option, value, target);
+}
+
+function setOptionHelper(option, value, target) {
 
   const section = $(`#options-${option}`);
   let deselectingFlag = true;
@@ -374,24 +377,24 @@ function randomAvatar(sections, optionalSections) {
         case 'HairStyle':
           option = option.join('-');
           htmlComponent = $(`#avatar-option-${componentName}-${option}`)[0];
-          setOption(componentName, option, htmlComponent);
+          setOptionHelper(componentName, option, htmlComponent);
           break;
         case 'Accessories':
           // removing previously selected accesories
           $('button[id^="avatar-option-Accessories-"].selected').each((idx, component) => {
             let id = component.id.replace('avatar-option-Accessories-', '');
 
-            setOption(componentName, JSON.stringify([id]), component);
+            setOptionHelper(componentName, JSON.stringify([id]), component);
           });
           option.forEach((part, idx) => {
             htmlComponent = $(`#avatar-option-${componentName}-${part}`)[0];
-            setOption(componentName, JSON.stringify(option), htmlComponent);
+            setOptionHelper(componentName, JSON.stringify(option), htmlComponent);
           });
           
           break;
         default:
           htmlComponent = $(`#avatar-option-${componentName}-${option}`)[0];
-          setOption(componentName, option, htmlComponent);
+          setOptionHelper(componentName, option, htmlComponent);
           break;
       }
     }

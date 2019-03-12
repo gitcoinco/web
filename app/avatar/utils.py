@@ -62,14 +62,17 @@ def get_avatar_context_for_user(user):
 def get_avatar_context():
     return {
         'defaultSkinTone': 'AE7242',
-        'defaultHairColor': '000000',
-        'defaultClothingColor': 'CCCCCC',
-        'defaultBackground': '25E899',
-        'optionalSections': [
-            'HairStyle', 
-            'FacialHair', 
-            'Accessories',
+        'skin_tones': [
+            'FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031', '593D26'
         ],
+        'defaultHairColor': '000000',
+        'hair_colors': [
+            '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'
+        ],
+        'defaultClothingColor': 'CCCCCC',
+        'clothing_colors': ['CCCCCC', '684A23', 'FFCC3B', '4242F4', '43B9F9', 'F48914'],
+        'defaultBackground': '25E899',
+        'optionalSections': ['HairStyle', 'FacialHair', 'Accessories', ],
         'sections': [
             {
                 'name': 'Head',
@@ -81,17 +84,8 @@ def get_avatar_context():
                 'name': 'Makeup',
                 'title': 'Pick a makeup style',
                 'options': (
-                    'ziggy-stardust', 
-                    'bolt', 
-                    'star2', 
-                    'kiss', 
-                    'blush', 
-                    'eyeliner-green', 
-                    'eyeliner-teal',
-                    'eyeliner-pink', 
-                    'eyeliner-red', 
-                    'eyeliner-blue', 
-                    'star',
+                    'ziggy-stardust', 'bolt', 'star2', 'kiss', 'blush', 'eyeliner-green', 'eyeliner-teal',
+                    'eyeliner-pink', 'eyeliner-red', 'eyeliner-blue', 'star',
                 ),
                 'paid_options': {
                     'ziggy-stardust': 0.02,
@@ -103,52 +97,28 @@ def get_avatar_context():
             {
                 'name': 'Eyes',
                 'title': 'Pick eyes shape',
-                'options': (
-                    '0', 
-                    '1', 
-                    '2', 
-                    '3', 
-                    '4', 
-                    '5', 
-                    '6',
-                ),
+                'options': ('0', '1', '2', '3', '4', '5', '6',
+                            ),
                 'paid_options': {},
-            }, 
-            {
+            }, {
                 'name': 'Nose',
                 'title': 'Pick nose shape',
-                'options': (
-                    '0', 
-                    '1', 
-                    '2', 
-                    '3', 
-                    '4',
-                ),
+                'options': ('0', '1', '2', '3', '4',
+                            ),
                 'paid_options': {},
             },
             {
                 'name': 'Mouth',
                 'title': 'Pick mouth shape',
-                'options': (
-                    '0', 
-                    '1', 
-                    '2', 
-                    '3', 
-                    '4', 
-                    '5',
-                ),
+                'options': ('0', '1', '2', '3', '4', '5',
+                            ),
                 'paid_options': {},
             },
             {
                 'name': 'Ears',
                 'title': 'Pick ears shape',
-                'options': (
-                    '0', 
-                    '1', 
-                    '2', 
-                    '3', 
-                    'Spock',
-                ),
+                'options': ('0', '1', '2', '3', 'Spock',
+                            ),
                 'paid_options': {
                     'Spock': 0.01,
                 },
@@ -157,36 +127,10 @@ def get_avatar_context():
                 'name': 'Clothing',
                 'title': 'Pick your clothing',
                 'options': (
-                    'cardigan', 
-                    'hoodie', 
-                    'knitsweater', 
-                    'plaid', 
-                    'shirt', 
-                    'shirtsweater', 
-                    'spacecadet', 
-                    'suit',
-                    'ethlogo', 
-                    'cloak', 
-                    'robe', 
-                    'pjs', 
-                    'elf_inspired', 
-                    'business_suit', 
-                    'suspender', 
-                    'gitcoinpro',
-                    'star_uniform',
-                    'jersey',
-                    'charlie',
-                    'doctor',
-                    'chinese',
-                    'blouse',
-                    'polkadotblouse',
-                    'coat',
-                    'crochettop',
-                    'space_suit',
-                    'armour',
-                    'pilot',
-                    'baseball',
-                    'football',
+                    'cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater', 'spacecadet', 'suit',
+                    'ethlogo', 'cloak', 'robe', 'pjs', 'elf_inspired', 'business_suit', 'suspender', 'gitcoinpro',
+                    'star_uniform', 'jersey', 'charlie', 'doctor', 'chinese', 'blouse', 'polkadotblouse', 'coat',
+                    'crochettop', 'space_suit', 'armour', 'pilot', 'baseball', 'football',
                 ),
                 'paid_options': {
                     'robe': 0.01,
@@ -197,137 +141,60 @@ def get_avatar_context():
             {
                 'name': 'Hair Style',
                 'title': 'Pick a hairstyle',
-                'options': (
-                    ['None', '0'], 
-                    ['None', '1'], 
-                    ['None', '2'], 
-                    ['None', '3'], 
-                    ['None', '4'], 
-                    ['5', 'None'], 
-                    ['6-back', '6-front'], 
-                    ['7-back', '7-front'], 
-                    ['8-back', '8-front'], 
-                    ['9-back', '9-front'], 
-                    ['None', '10'], 
-                    ['damos_hair-back', 'damos_hair-front'], 
-                    ['long_swoosh-back', 'long_swoosh-front'],
-                    ['None', 'mohawk'],
-                    ['None', 'mohawk_inverted'],
-                    ['None', 'spikey'],
-                    ['None', 'mickey_hair'],
-                    ['None', 'modernhair_1'],
-                    ['None', 'modernhair_2'], 
-                    ['modernhair_3-back', 'modernhair_3-front'],
-                    ['None', 'womenhair'],
-                    ['None', 'womanhair'], 
-                    ['None', 'womanhair1'],
-                    ['None', 'womanhair2'],
-                    ['None', 'womanhair3'],
-                    ['None', 'womanhair4'],
-                    ['None', 'womanhair5'],
-                    ['None', 'man-hair'],
-                ),
+                'options': (['None', '0'], ['None', '1'], ['None', '2'], ['None', '3'], ['None', '4'], ['5', 'None'], [
+                    '6-back', '6-front'
+                ], ['7-back', '7-front'], ['8-back', '8-front'], ['9-back', '9-front'], ['None', '10'], [
+                    'damos_hair-back', 'damos_hair-front'
+                ], ['long_swoosh-back', 'long_swoosh-front'], ['None', 'mohawk'], ['None', 'mohawk_inverted'], [
+                    'None', 'spikey'
+                ], ['None', 'mickey_hair'], ['None', 'modernhair_1'], ['None', 'modernhair_2'], [
+                    'modernhair_3-back', 'modernhair_3-front'
+                ], ['None', 'womenhair'], ['None', 'womanhair'], ['None', 'womanhair1'], ['None', 'womanhair2'],
+                            ['None', 'womanhair3'], ['None', 'womanhair4'], ['None',
+                                                                             'womanhair5'], ['None', 'man-hair'],
+                            ),
                 'paid_options': {},
             },
             {
                 'name': 'Facial Hair',
                 'title': 'Pick a facial hair style',
                 'options': (
-                    'Mustache-0', 
-                    'Mustache-1', 
-                    'Mustache-2',
-                    'Mustache-3',
-                    'Beard-0',
-                    'Beard-1',
-                    'Beard-2',
-                    'Beard-3',
+                    'Mustache-0', 'Mustache-1', 'Mustache-2', 'Mustache-3', 'Beard-0', 'Beard-1', 'Beard-2', 'Beard-3',
                 ),
                 'paid_options': {},
             },
             {
                 'name': 'Accessories',
                 'title': 'Pick your accessories',
-                'options': (
-                    ['Glasses-0'],
-                    ['Glasses-1'],
-                    ['Glasses-2'],
-                    ['Glasses-3'],
-                    ['Glasses-4'],
-                    ['HatShort-backwardscap'],
-                    ['HatShort-redbow'],
-                    ['HatShort-yellowbow'],
-                    ['HatShort-ballcap'],
-                    ['HatShort-cowboy'],
-                    ['HatShort-superwoman-tiara'],
-                    ['HatShort-headdress'],
-                    ['HatShort-headphones'],
-                    ['HatShort-shortbeanie'],
-                    ['HatShort-tallbeanie'],
-                    ['HatShort-bunnyears'],
-                    ['HatShort-menorah'],
-                    ['HatShort-pilgrim'],
-                    ['HatShort-santahat'],
-                    ['HatShort-elfhat'],
-                    ['Earring-0'],
-                    ['Earring-1'],
-                    ['EarringBack-2', 'Earring-2'],
-                    ['Earring-3'],
-                    ['Earring-4'],
-                    ['Earring-5'],
-                    ['Masks-jack-o-lantern'],
-                    ['Masks-guy-fawkes'],
-                    ['Masks-bunny'],
-                    ['Masks-blackpanther'],
-                    ['Masks-jack-o-lantern-lighted'],
-                    ['Masks-wolverine_inspired'],
-                    ['Masks-captain_inspired'],
-                    ['Masks-alien'],
-                    ['Extras-Parrot'],
-                    ['Extras-wonderwoman_inspired'],
-                    ['Extras-santa_inspired'],
-                    ['Extras-reindeer'],
-                    ['Masks-gitcoinbot'],
-                    ['Extras-tattoo'],
-                    ['Masks-batman_inspired'],
-                    ['Masks-eye-patch'],
-                    ['Masks-flash_inspired'],
-                    ['Masks-deadpool_inspired'],
-                    ['Masks-darth_inspired'],
-                    ['Masks-spiderman_inspired'],
-                    ['Glasses-5'],
-                    ['Glasses-geordi-visor'],
-                    ['Masks-funny_face'],
-                    ['Masks-viking'],
-                    ['Masks-construction_helmet'],
-                    ['Glasses-6'],
-                    ['HatShort-green'],
-                    ['Earring-6'],
-                    ['Extras-necklace'],
-                    ['Masks-carnival'],
-                    ['Masks-gas'],
-                    ['Masks-surgical'],
-                    ['Extras-monkey'],
-                    ['Masks-power'],
-                    ['Glasses-7'],
-                    ['Glasses-8'],
-                    ['HatShort-angel'],
-                    ['HatShort-devil'],
-                    ['Extras-necklace1'],
-                    ['Extras-necklace2'],
-                    ['Extras-necklace3'],
-                    ['Glasses-9'],
-                    ['Masks-clown'],
-                    ['Extras-bird'],
-                    ['HatShort-sleepy'],
-                    ['Earring-tribal'],
-                    ['Glasses-google'],
-                    ['Masks-marshmellow'],
-                    ['Masks-pirate'],
-                    ['Masks-power1'],
-                    ['HatShort-elf'],
-                    ['Extras-necklaceb'],
-                    ['Masks-football'],
-                ),
+                'options': (['Glasses-0'], ['Glasses-1'], ['Glasses-2'], ['Glasses-3'], ['Glasses-4'], [
+                    'HatShort-backwardscap'
+                ], ['HatShort-redbow'], ['HatShort-yellowbow'], ['HatShort-ballcap'], ['HatShort-cowboy'], [
+                    'HatShort-superwoman-tiara'
+                ], ['HatShort-headdress'], ['HatShort-headphones'], ['HatShort-shortbeanie'], ['HatShort-tallbeanie'], [
+                    'HatShort-bunnyears'
+                ], ['HatShort-menorah'], ['HatShort-pilgrim'], ['HatShort-santahat'], ['HatShort-elfhat'], [
+                    'Earring-0'
+                ], ['Earring-1'], ['EarringBack-2', 'Earring-2'], ['Earring-3'], ['Earring-4'], ['Earring-5'], [
+                    'Masks-jack-o-lantern'
+                ], ['Masks-guy-fawkes'], ['Masks-bunny'], ['Masks-blackpanther'], ['Masks-jack-o-lantern-lighted'], [
+                    'Masks-wolverine_inspired'
+                ], ['Masks-captain_inspired'], ['Masks-alien'], ['Extras-Parrot'], ['Extras-wonderwoman_inspired'], [
+                    'Extras-santa_inspired'
+                ], ['Extras-reindeer'], ['Masks-gitcoinbot'], ['Extras-tattoo'], ['Masks-batman_inspired'], [
+                    'Masks-eye-patch'
+                ], ['Masks-flash_inspired'], ['Masks-deadpool_inspired'], ['Masks-darth_inspired'], [
+                    'Masks-spiderman_inspired'
+                ], ['Glasses-5'], ['Glasses-geordi-visor'], ['Masks-funny_face'], ['Masks-viking'], [
+                    'Masks-construction_helmet'
+                ], ['Glasses-6'], ['HatShort-green'], ['Earring-6'], ['Extras-necklace'], ['Masks-carnival'], [
+                    'Masks-gas'
+                ], ['Masks-surgical'], ['Extras-monkey'], ['Masks-power'], ['Glasses-7'], ['Glasses-8'], [
+                    'HatShort-angel'
+                ], ['HatShort-devil'], ['Extras-necklace1'], ['Extras-necklace2'], ['Extras-necklace3'], ['Glasses-9'],
+                            ['Masks-clown'], ['Extras-bird'], ['HatShort-sleepy'], ['Earring-tribal'],
+                            ['Glasses-google'], ['Masks-marshmellow'], ['Masks-pirate'], ['Masks-power1'],
+                            ['HatShort-elf'], ['Extras-necklaceb'], ['Masks-football'],
+                            ),
                 'paid_options': {
                     'Extras-Parrot': 0.01,
                     'Masks-batman': 0.02,
@@ -337,18 +204,8 @@ def get_avatar_context():
                 'name': 'Background',
                 'title': 'Pick a background color',
                 'options': (
-                    '25E899', 
-                    '9AB730',
-                    '00A55E',
-                    '3FCDFF',
-                    '3E00FF',
-                    '8E2ABE',
-                    'D0021B',
-                    'F9006C',
-                    'FFCE08',
-                    'F8E71C',
-                    '15003E',
-                    'FFFFFF',
+                    '25E899', '9AB730', '00A55E', '3FCDFF', '3E00FF', '8E2ABE', 'D0021B', 'F9006C', 'FFCE08', 'F8E71C',
+                    '15003E', 'FFFFFF',
                 ),
                 'paid_options': {},
             },
@@ -356,49 +213,11 @@ def get_avatar_context():
                 'name': 'Wallpaper',
                 'title': 'Pick some swag for your back',
                 'options': (
-                    'portal',
-                    'space',
-                    'bokeh',
-                    'bokeh2',
-                    'bokeh3',
-                    'bokeh4',
-                    'bokeh5',
-                    'fire',
-                    'trees',
-                    'trees2',
-                    'trees3',
-                    'flowers',
-                    'city',
-                    'city2',
-                    'mountains',
-                    'code',
-                    'code2',
-                    'code3',
-                    'bokeh3',
-                    'bokeh6',
-                    'abstract',
-                    'anchors',
-                    'circuit',
-                    'jigsaw',
-                    'lines',
-                    'gears',
-                    'clouds',
-                    'signal',
-                    'polka_dots',
-                    'polka_dots_black',
-                    'squares',
-                    'shapes',
-                    'sunburst',
-                    'sunburst_pastel',
-                    'rainbow',
-                    'portal',
-                    'space',
-                    'bokeh',
-                    'bokeh2',
-                    'bokeh3',
-                    'bokeh4',
-                    'bokeh5',
-                    'fire'
+                    'portal', 'space', 'bokeh', 'bokeh2', 'bokeh3', 'bokeh4', 'bokeh5', 'fire', 'trees', 'trees2',
+                    'trees3', 'flowers', 'city', 'city2', 'mountains', 'code', 'code2', 'code3', 'bokeh3', 'bokeh6',
+                    'abstract', 'anchors', 'circuit', 'jigsaw', 'lines', 'gears', 'clouds', 'signal', 'polka_dots',
+                    'polka_dots_black', 'squares', 'shapes', 'sunburst', 'sunburst_pastel', 'rainbow', 'portal',
+                    'space', 'bokeh', 'bokeh2', 'bokeh3', 'bokeh4', 'bokeh5', 'fire'
                 ),
                 'paid_options': {
                     'sunburst_pastel': 0.01,
@@ -604,12 +423,12 @@ def build_random_avatar():
     default_path = f'{settings.STATIC_URL}v2/images/avatar/'
     context = get_avatar_context()
     optional = context['optionalSections']
-    optional.append('Makeup') # Also include Makeup as optional
+    optional.append('Makeup')  # Also include Makeup as optional
 
     payload = dict()
-    payload['SkinTone'] = context['defaultSkinTone']
-    payload['HairColor'] = context['defaultHairColor']
-    payload['ClothingColor'] = context['defaultClothingColor']
+    payload['SkinTone'] = random.choice(context['skin_tones'])
+    payload['HairColor'] = random.choice(context['hair_colors'])
+    payload['ClothingColor'] = random.choice(context['clothing_colors'])
 
     for section in context['sections']:
         section_name = section['name'].replace(' ', '')
@@ -629,8 +448,14 @@ def build_random_avatar():
             if section_name == 'Wallpaper':
                 continue
             elif section_name == 'HairStyle':
-                payload['HairLong'] = f'{default_path}{section_name}/{random_choice[0]}-{payload["HairColor"]}.svg' if random_choice[0] != 'None' else None
-                payload['HairShort'] = f'{default_path}{section_name}/{random_choice[1]}-{payload["HairColor"]}.svg' if random_choice[1] != 'None' else None
+                payload[
+                    'HairLong'
+                ] = f'{default_path}{section_name}/{random_choice[0]}-{payload["HairColor"]}.svg' if random_choice[
+                    0] != 'None' else None
+                payload[
+                    'HairShort'
+                ] = f'{default_path}{section_name}/{random_choice[1]}-{payload["HairColor"]}.svg' if random_choice[
+                    1] != 'None' else None
             elif section_name == 'FacialHair':
                 key = random_choice[:random_choice.find('-')]
                 payload[key] = f'{default_path}{section_name}/{random_choice}-{payload["HairColor"]}.svg'
@@ -639,9 +464,12 @@ def build_random_avatar():
                     key = k[:k.find('-')]
                     payload[key] = f'{default_path}{section_name}/{k}.svg'
             else:
-                color = (f'-{payload["SkinTone"]}') if section_name in ['Head', 'Ears'] else ((f'-{payload["ClothingColor"]}') if section_name == 'Clothing' else '')
-                payload[section_name] = (f'{default_path}{section_name}/{random_choice}{color}.svg') if section_name != 'Background' else random_choice
-
+                color = (f'-{payload["SkinTone"]}') if section_name in [
+                    'Head', 'Ears'
+                ] else ((f'-{payload["ClothingColor"]}') if section_name == 'Clothing' else '')
+                payload[section_name] = (
+                    f'{default_path}{section_name}/{random_choice}{color}.svg'
+                ) if section_name != 'Background' else random_choice
     return handle_avatar_payload(payload)
 
 
@@ -649,25 +477,8 @@ def handle_avatar_payload(body):
     """Handle the Avatar payload."""
     avatar_dict = {}
     valid_component_keys = [
-        'Wallpaper',
-        'HatLong',
-        'HairLong',
-        'EarringBack',
-        'Clothing',
-        'Ears',
-        'Head',
-        'Makeup',
-        'HairShort',
-        'Earring',
-        'Beard',
-        'HatShort',
-        'Mustache',
-        'Mouth',
-        'Nose',
-        'Eyes',
-        'Glasses',
-        'Masks',
-        'Extras',
+        'Wallpaper', 'HatLong', 'HairLong', 'EarringBack', 'Clothing', 'Ears', 'Head', 'Makeup', 'HairShort', 'Earring',
+        'Beard', 'HatShort', 'Mustache', 'Mouth', 'Nose', 'Eyes', 'Glasses', 'Masks', 'Extras',
     ]
     valid_color_keys = ['Background', 'ClothingColor', 'HairColor', 'SkinTone']
     for k, v in body.items():
