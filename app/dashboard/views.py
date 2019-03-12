@@ -642,7 +642,7 @@ def dashboard(request):
 def ethhack(request):
     """Handle displaying ethhack landing page."""
 
-    title = str(_(" Eth hackathon 2019"))
+    title = str(_(" Ethereal Hackathon | Gitcoin"))
     params = {
         'title': title
     }
@@ -808,7 +808,7 @@ def social_contribution_email(request):
     from marketing.mails import share_bounty
 
     print (request.POST.getlist('usersId[]', []))
-    emails = [] 
+    emails = []
     user_ids = request.POST.getlist('usersId[]', [])
     for user_id in user_ids:
         profile = Profile.objects.get(id=int(user_id))
@@ -1111,14 +1111,14 @@ def bounty_invite_url(request, invitecode):
 
     Args:
         invitecode (str): Unique invite code with bounty details and handle
-    
+
     Returns:
         django.template.response.TemplateResponse: The Bounty details template response.
     """
     decoded_data = get_bounty_from_invite_url(invitecode)
     bounty = Bounty.objects.current().filter(pk=decoded_data['bounty_id'])
     return redirect('/funding/details/?url=' + bounty.github_url)
-    
+
 
 
 def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None):

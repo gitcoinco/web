@@ -1,3 +1,50 @@
-<div>
-    Hackathon page here
-</div>
+<!DOCTYPE html>
+{% load i18n static %}
+<html lang="en">
+<head>
+  {% include 'shared/head.html' %}
+  <link rel="stylesheet" href="{% static "v2/css/dashboard.css" %}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Ethereal Hackathon | Gitcoin</title>
+  <style>
+    @media screen and (min-width: 800px) {
+      .topnav {
+        font-size: 1em !important;
+      }
+      .ethsvg {
+        margin-top: 6rem !important
+      }
+      .ethsvg3 {
+        margin-top: 7rem !important
+      }
+      .ethtitle {
+        font-size: 4rem !important
+      }
+    }
+    @media screen and (min-width: 800px) {
+      .ethsvg2 {
+        padding-top: 1rem !important
+      }
+    }
+  </style>
+</head>
+  <body class="text-center" style="background-color: #180944">
+
+    <div class="text-center topnav" style="width: 100%; line-height: 2.75em; background-color: #3E00FF; color: white; font-size: 0.4em">
+      <div class="container">
+        <span>Join Gitcoin for a pre-Ethereal NY virtual hackathon this April!</span>
+        <span style="float: right;">Fund a Prize</span>
+      </div>
+    </div>
+    <img class="img-fluid ethsvg" style="max-width: 20%; height: auto; margin-top: 2rem" src="{% static "v2/images/hackathon/ethereal.svg" %}" />
+    <h1 class="font-weight-bolder mt-3 ethtitle" style="color: white; font-size: .5rem">Ethereal Virtual Hackathon</h1>
+
+    <img class="img-fluid ethsvg" style="max-width: 20%; height: auto; margin-top: 2rem" src="{% static "v2/images/logo.png" %}">
+    <img class="img-fluid ethsvg ethsvg3" style="max-width: 2%; height: auto; margin-top: 2.25rem; margin-right: 1rem; margin-left: 1rem" src="{% static "v2/images/hackathon/plus.svg" %}">
+    <img class="img-fluid ethsvg ethsvg2" style="max-width: 20%; height: auto; margin-top: 2rem; padding-top: .3rem" src="{% static "v2/images/hackathon/microsoft.svg" %}" />
+
+    <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
+  </body>
+</html>
