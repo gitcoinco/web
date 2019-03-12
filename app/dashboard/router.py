@@ -189,7 +189,7 @@ class BountyViewSet(viewsets.ModelViewSet):
 
         # filter by is open or not
         if 'is_open' in param_keys:
-            queryset = queryset.filter(is_open=self.request.query_params.get('is_open').lower() == 'true')
+            queryset = queryset.filter(is_open=self.request.query_params.get('is_open', '').lower() == 'true')
             queryset = queryset.filter(expires_date__gt=datetime.now())
 
         # filter by urls
