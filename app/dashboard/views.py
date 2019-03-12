@@ -639,6 +639,14 @@ def dashboard(request):
     }
     return TemplateResponse(request, 'dashboard/index.html', params)
 
+def ethhack(request):
+    """Handle displaying ethhack landing page."""
+
+    title = str(_(" Eth hackathon 2019"))
+    params = {
+        'title': title
+    }
+    return TemplateResponse(request, 'dashboard/hackathon/ethhack_2019.html', params)
 
 def accept_bounty(request):
     """Process the bounty.
