@@ -50,11 +50,10 @@
 
           <!-- END PODIUM -->
 
-              <div class="offset-md-1 col-sm-12 col-md-10">
+          <div class="offset-md-1 col-sm-12 col-md-10">
 
-                <div class="card shadow-lg">
-                  <div class="card-body">
-
+            <div class="card shadow-lg">
+              <div class="card-body">
                 <div class="row mt-0 ml-1 pt-1 pl-1" style="height: 4em; padding: 0.5em;">
 
                   <!-- RESULTS TITLE & FILTER -->
@@ -94,15 +93,14 @@
                 {% endif %}
 
                 <table class="table table-hover leaderboard_entry">
-
                   <thead>
-        <tr class="clickable-row  d-flex  align-items-stretch">
-            <td class="col-3 d-flex align-items-center item-position restext4">RANK</td>
-            <td class="col-5 d-flex align-items-center item-position restext4">NAME</td>
-            <td class="col-2 d-flex align-items-center item-position item-count-bounties restext4">COMPLETED</td>
-            <td class="col-2 d-flex align-items-center item-position restext4">EARNINGS</td>
-        </tr>
-    </thead>
+                    <tr class="clickable-row  d-flex  align-items-stretch">
+                        <td class="col-3 d-flex align-items-center item-position restext4">RANK</td>
+                        <td class="col-5 d-flex align-items-center item-position restext4">NAME</td>
+                        <td class="col-2 d-flex align-items-center item-position item-count-bounties restext4">COMPLETED</td>
+                        <td class="col-2 d-flex align-items-center item-position restext4">EARNINGS</td>
+                    </tr>
+                  </thead>
 
                   <tbody>
                     {% for item in items %}
@@ -131,15 +129,14 @@
                       </tr>
                     {% endfor %}
                   </tbody>
-              </table>
+                </table>
 
+              </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>
-
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
