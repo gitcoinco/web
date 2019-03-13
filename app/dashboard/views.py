@@ -642,7 +642,7 @@ def dashboard(request):
 def ethhack(request):
     """Handle displaying ethhack landing page."""
 
-    title = str(_(" Ethereal Hackathon | Gitcoin"))
+    title = str(_(" Eth Hackathon 2019"))
     params = {
         'title': title
     }

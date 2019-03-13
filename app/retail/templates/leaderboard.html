@@ -26,29 +26,21 @@
               {% for podium_item in podium_items %}
                 <div class="col-2 winner mt-5">
                   {% if not is_linked_to_profile %}
-                    <a href="{{podium_item.url}}" target="_blank">
-                      <img class="img-fluid"  src="{{podium_item.avatar_url}}" >
+                    <a href="{{ podium_item.url }}" target="_blank">
+                      <img class="img-fluid"  src="{{ podium_item.avatar_url }}" >
                     </a>
                   {% endif %}
-                  <div class="container winner-content">
-                    <div class="row align-items-center">
-                      {% if forloop.counter == 1 %}
-                        <!--<div class="col-12 winner-position winner-position-first"></div>-->
-                      {% endif %}
-                    </div>
-
-                  </div>
 
                   <h6 class="pt-3 pb-3 text-center restext" style="color:#3f78cd; white-space: nowrap;">
                     {% if forloop.counter == 1 %}
                       <img src="/static/v2/images/leaderboard-1.png" style="width: 17.5px; height: 20px; float: left"></img>
                     {% endif %}
                     {% if not is_linked_to_profile %}
-                    <a href="{{podium_item.url}}" target="_blank">
-                      {{podium_item.at_ify_username}}
-                    </a>
+                      <a href="{{ podium_item.url }}" target="_blank">
+                        {{ podium_item.at_ify_username }}
+                      </a>
                     {% else %}
-                      {{podium_item.at_ify_username}}
+                      {{ podium_item.at_ify_username }}
                     {% endif %}
                   </h6>
 
@@ -68,7 +60,7 @@
                   <!-- RESULTS TITLE & FILTER -->
 
                   <div class="col-7" style="padding-top: 0.5em;">
-                    <h3 class="restext3">{{title}} <!--<span id="alpha">Alpha</span>--></h3>
+                    <h3 class="restext3">{{ title }} <!--<span id="alpha">Alpha</span>--></h3>
                   </div>
                   <div class="col-2 filter">
                     <div class="form-group">
