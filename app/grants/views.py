@@ -51,6 +51,7 @@ from web3 import HTTPProvider, Web3
 logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
+clr_matching_banners_style = 'pledging'
 
 def get_keywords():
     """Get all Keywords."""
@@ -61,7 +62,7 @@ def grants(request):
     """Handle grants explorer."""
     limit = request.GET.get('limit', 6)
     page = request.GET.get('page', 1)
-    sort = request.GET.get('sort_option', '-clr_matching')
+    sort = request.GET.get('sort_option', '-created_on')
     network = request.GET.get('network', 'mainnet')
     keyword = request.GET.get('keyword', '')
     state = request.GET.get('state', 'active')
@@ -83,6 +84,8 @@ def grants(request):
         {'label': 'UI/UX', 'keyword': 'UI'},
         {'label': 'DeFI', 'keyword': 'defi'},
         {'label': 'Education', 'keyword': 'education'},
+        {'label': 'Wallets', 'keyword': 'wallet'},
+        {'label': 'Community', 'keyword': 'community'},
         {'label': 'ETH 2.0', 'keyword': 'ETH 2.0'},
         {'label': 'ETH 1.x', 'keyword': 'ETH 1.x'},
     ]
@@ -174,6 +177,7 @@ def grant_details(request, grant_id, grant_slug):
 
     params = {
         'active': 'grant_details',
+        'clr_matching_banners_style': clr_matching_banners_style,
         'grant': grant,
         'title': grant.title,
         'card_desc': grant.description,
