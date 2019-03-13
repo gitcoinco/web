@@ -1618,6 +1618,9 @@ class Activity(SuperModel):
             'new_bounty': 'fa-money-bill-alt',
             'work_done': 'fa-check-circle',
             'new_kudos': 'fa-thumbs-up',
+            'new_grant_contribution': 'fa-coins',
+            'new_grant_subscription': 'fa-calendar-check',
+            'killed_grant_contribution': 'fa-calendar-times',
         }
 
         # load up this data package with all of the information in the already existing objects
@@ -1645,11 +1648,12 @@ class Activity(SuperModel):
             obj = self.metadata['new_bounty']
         activity['title'] = obj.get('title', '')
         if 'id' in obj:
-            activity['bounty_url'] = Bounty.objects.get(pk=obj['id']).get_relative_url()
-            if activity.get('title'):
-                activity['urled_title'] = f'<a href="{activity["bounty_url"]}">{activity["title"]}</a>'
-            else:
-                activity['urled_title'] = activity.title
+            if 'category' not in obj or obj['category'] == 'bounty': # backwards-compatible for category-lacking metadata
+                activity['bounty_url'] = Bounty.objects.get(pk=obj['id']).get_relative_url()
+                if activity.get('title'):
+                    activity['urled_title'] = f'<a href="{activity["bounty_url"]}">{activity["title"]}</a>'
+                else:
+                    activity['urled_title'] = activity.title
         if 'value_in_usdt_now' in obj:
             activity['value_in_usdt_now'] = obj['value_in_usdt_now']
         if 'token_name' in obj:

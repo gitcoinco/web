@@ -619,9 +619,20 @@ def record_grant_activity_helper(activity_type, subscription, profile):
         profile (dashboard.models.Profile): The current user's profile.
 
     """
-    activity_kwargs = {
+    metadata = {
+        'id': subscription.id,
+        'value_in_token': str(subscription.amount_per_period),
+        'value_in_usdt_now': str(subscription.amount_per_period_usdt),
+        'token_name': subscription.token_symbol,
+        'title': subscription.grant.title,
+        'grant_logo': subscription.grant.logo.url,
+        'grant_url': subscription.grant.url,
+        'category': 'grant',
+    }
+    kwargs = {
         'profile': profile,
         'subscription': subscription,
         'activity_type': activity_type,
+        'metadata': metadata,
     }
-    Activity.objects.create(**activity_kwargs)
+    Activity.objects.create(**kwargs)

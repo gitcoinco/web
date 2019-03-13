@@ -23,6 +23,8 @@
       {% if row.metadata.to_username %}
         <img class="avatar" src="/dynamic/avatar/{{ row.metadata.to_username|cut:'@' }}" style="
       width: 30px; height: 30px; bottom: 0; right: 0; position: absolute;"/>
+      {% elif row.metadata.grant_logo %}
+        <img class="avatar" src="{{ row.metadata.grant_logo }}" style="width: 30px; height: 30px; bottom: 0; right: 0; position: absolute;"/>
       {% endif %}
     </div>
   </div>
@@ -42,6 +44,21 @@
         {% trans "to" %}
         <a href="/profile/{{ row.metadata.to_username|cut:'@' }}">
           {{ row.metadata.to_username }}
+        </a>
+      {% elif row.activity_type == 'new_grant_contribution' %}
+        {% trans "contributed to" %}
+        <a href="{{ row.metadata.grant_url }}" target="_blank">
+          {{ row.metadata.title }}
+        </a>
+      {% elif row.activity_type == 'new_grant_subscription' %}
+        {% trans "subscribed to" %}
+        <a href="{{ row.metadata.grant_url }}" target="_blank">
+          {{ row.metadata.title }}
+        </a>
+      {% elif row.activity_type == 'killed_grant_contribution' %}
+        {% trans "unsubscribed from" %}
+        <a href="{{ row.metadata.grant_url }}" target="_blank">
+          {{ row.metadata.title }}
         </a>
       {% elif row.activity_type == 'new_bounty' %}
         <span>{% trans "funded a new issue: " %}</span>{{ row.urled_title | safe }}
