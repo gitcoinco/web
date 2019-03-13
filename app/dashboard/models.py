@@ -1586,6 +1586,12 @@ class Activity(SuperModel):
         on_delete=models.CASCADE,
         blank=True, null=True
     )
+    grant = models.ForeignKey(
+        'grants.Grant',
+        related_name='activities',
+        on_delete=models.CASCADE,
+        blank=True, null=True
+    )
     subscription = models.ForeignKey(
         'grants.Subscription',
         related_name='activities',
