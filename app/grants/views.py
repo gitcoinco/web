@@ -627,13 +627,17 @@ def record_subscription_activity_helper(activity_type, subscription, profile):
         profile (dashboard.models.Profile): The current user's profile.
 
     """
+    try:
+        grant_logo = subscription.grant.logo.url
+    except:
+        grant_logo = None
     metadata = {
         'id': subscription.id,
         'value_in_token': str(subscription.amount_per_period),
         'value_in_usdt_now': str(subscription.amount_per_period_usdt),
         'token_name': subscription.token_symbol,
         'title': subscription.grant.title,
-        'grant_logo': subscription.grant.logo.url,
+        'grant_logo': grant_logo,
         'grant_url': subscription.grant.url,
         'category': 'grant',
     }
@@ -654,12 +658,17 @@ def record_grant_activity_helper(activity_type, grant, profile):
         profile (dashboard.models.Profile): The current user's profile.
 
     """
+    try:
+        grant_logo = grant.logo.url
+    except:
+        grant_logo = None
     metadata = {
         'id': grant.id,
-        'value_in_token': str(grant.amount_received),
+        'value_in_token': '{0:.2f}'.format(grant.amount_received),
+        'amount_goal': '{0:.2f}'.format(grant.amount_goal),
         'token_name': grant.token_symbol,
         'title': grant.title,
-        'grant_logo': grant.logo.url,
+        'grant_logo': grant_logo,
         'grant_url': grant.url,
         'category': 'grant',
     }
