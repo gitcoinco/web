@@ -87,7 +87,7 @@
               {% else %}
                 <div class="my-2" id="preferred-address">
                   {% if user.is_authenticated and request.path == '/profile/' %}
-                    <a href="http://localhost:8000/settings/account" class=""><i class="fas fa-plus-circle"></i> Add a preferred address</a>
+                    <a href="/settings/account" class=""><i class="fas fa-plus-circle"></i> Add a preferred address</a>
                   {% else %}
                     No preferred address
                   {% endif %}
