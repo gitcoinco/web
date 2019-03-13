@@ -1,48 +1,48 @@
 {% load i18n humanize %}
-<a class="row result bounty_row {{ activity.subscription.network }}" target="_blank"
- {% if activity.subscription.grant.url %} href="{{ activity.subscription.grant.url }}"
- {% elif activity.subscription.grant.reference_url %} href="{{ activity.subscription.grant.reference_url }}"
+<a class="row result bounty_row {{ activity.grant.network }}" target="_blank"
+ {% if activity.grant.url %} href="{{ activity.grant.url }}"
+ {% elif activity.grant.reference_url %} href="{{ activity.grant.reference_url }}"
  {% endif %}>
   <div class="avatar-container col-1 justify-content-center special_tag hide_min_viewport">
-    {% if activity.subscription.grant.logo %}
-      <img class="avatar" src="{{ activity.subscription.grant.logo.url }}">
+    {% if activity.grant.logo %}
+      <img class="avatar" src="{{ activity.grant.logo.url }}">
     {% else %}
-      <img class="avatar" src="{% url 'org_avatar' activity.subscription.grant.admin_profile.handle %}">
+      <img class="avatar" src="{% url 'org_avatar' activity.grant.admin_profile.handle %}">
     {% endif %}
   </div>
   <div class="col-12 col-md-7 d-flex flex-column">
     <div class="bounty-detail">
       <div class="title font-subheader">
-        {{ activity.subscription.grant.title }}
+        {{ activity.grant.title }}
       </div>
 
       <div class="bounty-summary col-12">
         <div class="info font-caption">
-          {{ activity.subscription.grant.amount_received | floatformat:2 }} /
-          {{ activity.subscription.grant.amount_goal | floatformat:2 }}
-          {{ activity.subscription.grant.token_symbol }}
+          {{ activity.grant.amount_received | floatformat:2 }} /
+          {{ activity.grant.amount_goal | floatformat:2 }}
+          {{ activity.grant.token_symbol }}
           &bull; {{ activity.created | naturaltime }}
         </div>
       </div>
     </div>
   </div>
   <div class="col-12 col-md-4 tags fixed font-caption align-items-center">
-    {% if activity.activity_type == 'new_grant_contribution' %}
+    {% if activity.activity_type == 'new_grant' %}
       <div class="tag success">
         <p>
-          <span>{% trans "Contributed " %}</span>
+          <span>{% trans "Created " %}</span>
         </p>
       </div>
-    {% elif activity.activity_type == 'new_grant_subscription' %}
+    {% elif activity.activity_type == 'update_grant' %}
       <div class="tag success">
         <p>
-          <span>{% trans "Subscribed " %}</span>
+          <span>{% trans "Updated " %}</span>
         </p>
       </div>
-    {% elif activity.activity_type == 'killed_grant_contribution' %}
+    {% elif activity.activity_type == 'killed_grant' %}
       <div class="tag warning">
         <p>
-          <span>{% trans "Canceled subscription " %}</span>
+          <span>{% trans "Cancelled " %}</span>
         </p>
       </div>
     {% else %}
@@ -52,26 +52,12 @@
         </p>
       </div>
     {% endif %}
-    {% if activity.subscription.network != 'mainnet' %}
+    {% if activity.grant.network != 'mainnet' %}
     <div class="tag network_warning">
       <p>
-        <span>{{ activity.subscription.network }}</span>
+        <span>{{ activity.grant.network }}</span>
       </p>
     </div>
-    {% endif %}
-    <div class="tag token">
-      <p>
-        {{ activity.subscription.amount_per_period | floatformat:2 }}
-        <span>{{ activity.subscription.token_symbol }}</span>
-      </p>
-    </div>
-    {% if activity.subscription.value_in_usdt_now %}
-      <div class="tag usd">
-        <p>
-          {{ activity.subscription.value_in_usdt_now }}
-          <span>USD</span>
-        </p>
-      </div>
     {% endif %}
   </div>
 </a>

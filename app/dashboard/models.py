@@ -2430,8 +2430,8 @@ class Profile(SuperModel):
         )
         return funded_bounties
 
-    def get_bounty_and_tip_activities(self, network='mainnet'):
-        """Get bounty and tip related activities for this profile.
+    def get_various_activities(self, network='mainnet'):
+        """Get bounty, tip and grant related activities for this profile.
 
         Args:
             network (str): The network to query results for.
@@ -2447,14 +2447,17 @@ class Profile(SuperModel):
             url = self.github_url
             all_activities = Activity.objects.filter(
                 Q(bounty__github_url__startswith=url) |
-                Q(tip__github_url__startswith=url),
+                Q(tip__github_url__startswith=url) |
+                Q(grant__isnull=False) |
+                Q(subscription__isnull=False)
             )
 
         all_activities = all_activities.filter(
             Q(bounty__network=network) |
             Q(tip__network=network) |
+            Q(grant__network=network) |
             Q(subscription__network=network)
-        ).select_related('bounty', 'tip', 'subscription').all().order_by('-created')
+        ).select_related('bounty', 'tip', 'grant', 'subscription').all().order_by('-created')
 
         return all_activities
 
@@ -2543,7 +2546,7 @@ class Profile(SuperModel):
         }
 
         if activities:
-            params['activities'] = self.get_bounty_and_tip_activities(network=network)
+            params['activities'] = self.get_various_activities(network=network)
 
         if tips:
             params['tips'] = self.tips.filter(**query_kwargs).send_happy_path()
