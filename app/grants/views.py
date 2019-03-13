@@ -99,6 +99,7 @@ def grants(request):
         'sort': sort,
         'network': network,
         'keyword': keyword,
+        'clr_matching_banners_style': clr_matching_banners_style,
         'nav_options': nav_options,
         'current_partners': partners.filter(end_date__gte=now).order_by('-amount'),
         'past_partners': partners.filter(end_date__lt=now).order_by('-amount'),
