@@ -81,11 +81,16 @@ class FeedbackAdmin(admin.ModelAdmin):
     ordering = ['-id']
     raw_id_fields = ['sender_profile', 'receiver_profile', 'bounty']
 
+
 class ProfileAdmin(admin.ModelAdmin):
     raw_id_fields = ['user', 'preferred_kudos_wallet']
     ordering = ['-id']
     search_fields = ['email', 'data']
     list_display = ['handle', 'created_on']
+
+
+class VerificationAdmin(admin.ModelAdmin):
+    raw_id_fields = ['user']
 
 
 class SearchHistoryAdmin(admin.ModelAdmin):
@@ -181,4 +186,4 @@ admin.site.register(Tool, ToolAdmin)
 admin.site.register(ToolVote, ToolVoteAdmin)
 admin.site.register(FeedbackEntry, FeedbackAdmin)
 admin.site.register(LabsResearch)
-admin.site.register(UserVerificationModel)
+admin.site.register(UserVerificationModel, VerificationAdmin)
