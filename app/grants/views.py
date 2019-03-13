@@ -52,6 +52,8 @@ logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 clr_matching_banners_style = 'pledging'
+matching_live = '($50K matching live now!) '
+
 
 def get_keywords():
     """Get all Keywords."""
@@ -93,10 +95,11 @@ def grants(request):
     now = datetime.datetime.now()
     params = {
         'active': 'grants_landing',
-        'title': _('Grants Explorer'),
+        'title': matching_live + str(_('Gitcoin Grants Explorer')),
         'sort': sort,
         'network': network,
         'keyword': keyword,
+        'clr_matching_banners_style': clr_matching_banners_style,
         'nav_options': nav_options,
         'current_partners': partners.filter(end_date__gte=now).order_by('-amount'),
         'past_partners': partners.filter(end_date__lt=now).order_by('-amount'),
@@ -179,7 +182,7 @@ def grant_details(request, grant_id, grant_slug):
         'active': 'grant_details',
         'clr_matching_banners_style': clr_matching_banners_style,
         'grant': grant,
-        'title': grant.title,
+        'title': matching_live + grant.title,
         'card_desc': grant.description,
         'avatar_url': grant.logo.url if grant.logo else None,
         'subscriptions': subscriptions,

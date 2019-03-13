@@ -59,8 +59,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <div class="container">
           <div class="row">
           <div class="col-md-6">
-            <h2>Matching Partners</h2>
-            <p>A special thanks to the following partners who have offered to match contributions to Gitcoin Grants.  <a href="https://medium.com/gitcoin/gitcoin-grants-clr-matching-ecbc87b10038">(Read Announcement Here)</a></p>
+            <h2>Round 2 of Matching is Live Now!</h2>
+            <h5>Contribute from 3/6 to 4/19 and have up to $50k in contributions matched.</h5>
+            <p>A special thanks to the following partners who have offered to match contributions to Gitcoin Grants.  <a href="https://medium.com/gitcoin/gitcoin-grants-50k-oss-fund-e20e09dc2110">(Read Announcement Here)</a></p>
 
             <ul class="nav nav-tabs my-5" role="tablist">
               <li class="nav-item">
@@ -79,8 +80,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               <div class="tab-pane fade show active" id="currentpartners" role="tabpanel" aria-labelledby="currentpartners-tab">
                 {% for current_partner in current_partners %}
                   <div style="text-align:center; display: inline-block; padding: 10px;">
-                    <h5>@{{current_partner.profile.handle}}</h5>
-                    <img style="max-width:100px;" src="/dynamic/avatar/{{current_partner.profile.handle}}">
+                    <h5>
+                      <a href="/profile/{{current_partner.profile.handle}}">
+                        @{{current_partner.profile.handle}}
+                      </a>
+                    </h5>
+                      <a href="/profile/{{current_partner.profile.handle}}">
+                        <img style="max-width:100px; border-radius: 50px;" src="/dynamic/avatar/{{current_partner.profile.handle}}">
+                      </a>
                     <p>${{current_partner.amount|floatformat}}</p>
                   </div>
                 {% endfor %}
