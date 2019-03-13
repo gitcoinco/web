@@ -1,0 +1,35 @@
+{% comment %}
+  Copyright (C) 2019 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n staticfiles %}
+<div class="container">
+  <ul class="nav nav-tabs my-5" id="myTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link nav-line" id="worksubmitted-tab" data-toggle="tab" href="#worksubmitted" role="tab" aria-controls="worksubmitted" aria-selected="false">{% trans "Work Submitted" %} (7)</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link nav-line" id="funded-tab" data-toggle="tab" href="#funded" role="tab" aria-controls="funded" aria-selected="false">{% trans "Funded" %} (7)</a>
+    </li>
+  </ul>
+  <div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="worksubmitted" role="tabpanel" aria-labelledby="home-tab">
+    worksubmitted
+    </div>
+    <div class="tab-pane fade" id="funded" role="tabpanel" aria-labelledby="home-tab">
+    funded
+    </div>
+  </div>
+</div>
