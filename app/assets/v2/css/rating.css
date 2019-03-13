@@ -1,0 +1,19 @@
+.card-rating {
+  display: flex;
+  color: #0d003c;
+  background-color: #fff;
+  border-radius: 4px;
+  position: relative;
+  margin: 1rem 0.4rem;
+  scroll-snap-align: none start;
+  transition: .45s all ease-in-out;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  flex: 0 0 20%;
+  max-width: 20%;
+  align-items: center;
+  padding: .5em;
+  font-size: 12px;
+  min-width: 230px;
+  box-shadow: 0 0 8px 0px #000;
+}
