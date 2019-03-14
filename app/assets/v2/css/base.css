@@ -1020,7 +1020,7 @@ input.is-invalid {
   width: auto;
 }
 
-.rating {
+/* .rating {
   width:160px;
 }
 .rating span { float:right; position:relative; }
@@ -1063,7 +1063,7 @@ input.is-invalid {
 .rating span.checked label i,
 .rating span.checked ~ span label i {
   color: rgb(18,199,113);
-}
+} */
 
 .bounty_box {
   border: 5px solid white;

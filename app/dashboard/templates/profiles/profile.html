@@ -279,6 +279,7 @@
       var bootstrapTooltip = $.fn.tooltip.noConflict()
       $.fn.runTooltip = bootstrapTooltip
       $('[data-toggle="popover"]').popover()
+      $('[data-toggle="tooltip"]').runTooltip();
 
     </script>
     <script src="{% static "v2/js/pages/tabs.js" %}"></script>

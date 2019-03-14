@@ -44,6 +44,7 @@
         <div class="tab-content" id="myTabContent">
           <div class="tab-pane fade show active" id="worksubmitted" role="tabpanel" aria-labelledby="home-tab">
             <div class="scroll-carousel">
+
               <div class="card-rating">
                 <img src="http://localhost:8000/dynamic/avatar/gitcoinco" alt="" width="56" height="56" class="bounty-card__avatar rounded-circle">
                 <div class="">
@@ -57,16 +58,18 @@
               </div>
 
               <div class="card-rating">
-                  <img src="http://localhost:8000/dynamic/avatar/gitcoinco" alt="" width="56" height="56" class="bounty-card__avatar rounded-circle">
-                  <div class="">
-                    <p class="bounty-card__title">PR Review: Kubes Migration</p>
-                    <div class="d-flex">
-                      <div class="tag token">0.001 <span>ETH</span></div>
-                      <div class="tag usd">0.00 <span>USD</span></div>
+                  <div class="card-rating__header">
+                    <img src="http://localhost:8000/dynamic/avatar/gitcoinco" alt="" width="56" height="56" class="bounty-card__avatar rounded-circle">
+                    <div class="">
+                      <p class="bounty-card__title">PR Review: Kubes Migration</p>
+                      by PixelantDesign <img src="http://localhost:8000/dynamic/avatar/octavioamu" alt="" width="21" height="21" class="rounded-circle">
+                      <div class="d-flex">
+                        <div class="tag token">0.001 <span>ETH</span></div>
+                        <div class="tag usd">0.00 <span>USD</span></div>
+                      </div>
                     </div>
-                    <a href="http://localhost:8000/issue/gitcoinco/web/3925/1857" class="bounty-card__link">View Bounty</a>
-                    {% include 'shared/rating.html' with counterparty='contributor' %}
                   </div>
+                  {% include 'shared/rating.html' with counterparty='contributor' id='str' %}
                 </div>
 
             </div>

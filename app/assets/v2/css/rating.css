@@ -1,5 +1,5 @@
 .card-rating {
-  display: flex;
+
   color: #0d003c;
   background-color: #fff;
   border-radius: 4px;
@@ -9,11 +9,54 @@
   transition: .45s all ease-in-out;
   flex-wrap: nowrap;
   flex-direction: row;
-  flex: 0 0 20%;
-  max-width: 20%;
+  flex: 0 0 24.2%;
+  max-width: 24.2%;
   align-items: center;
-  padding: .5em;
   font-size: 12px;
   min-width: 230px;
   box-shadow: 0 2px 2px 1px rgba(0, 0, 0, 0.1);
+}
+
+.card-rating__header {
+  display: flex;
+  background-color: #F8F9FA;
+  padding: 1rem .5em;
+  border-radius: 4px 4px 0 0;
+}
+
+.rating {
+  direction: rtl;
+}
+
+.rating > input { display: none; }
+.rating > label:before {
+  margin: 1px;
+  font-size: 2.35em;
+  font-family: 'Font Awesome\ 5 Free';
+  display: inline-block;
+  content: "\f005";
+}
+
+.rating > .half:before {
+  content: "\f089";
+  position: absolute;
+}
+
+.rating > label {
+  color: #ddd;
+ /* float: right; */
+}
+
+.rating > input:checked ~ label,
+.rating:not(:checked) > label:hover,
+.rating:not(:checked) > label:hover ~ label {
+  color: #25E899;
+  font-weight: 800;
+}
+
+.rating > input:checked + label:hover,
+.rating > input:checked ~ label:hover,
+.rating > label:hover ~ input:checked ~ label,
+.rating > input:checked ~ label:hover ~ label {
+  color: rgb(11, 253, 156);
 }
