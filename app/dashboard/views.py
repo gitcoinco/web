@@ -776,9 +776,6 @@ def social_contribution_modal(request):
     """
     from .utils import get_bounty_invite_url
     bounty = handle_bounty_views(request)
-    promo_text = str(_("Check out this bounty that pays out ")) + f"{bounty.get_value_true} {bounty.token_name} {bounty.url}"
-    for keyword in bounty.keywords_list:
-        promo_text += f" #{keyword}"
 
     params = get_context(
         ref_object=bounty,
@@ -787,8 +784,11 @@ def social_contribution_modal(request):
         active='social_contribute',
         title=_('Social Contribute'),
     )
-    params['promo_text'] = promo_text
     params['invite_url'] = f'{settings.BASE_URL}issue/{get_bounty_invite_url(request.user.username, bounty.pk)}'
+    promo_text = str(_("Check out this bounty that pays out ")) + f"{bounty.get_value_true} {bounty.token_name} {params['invite_url']}"
+    for keyword in bounty.keywords_list:
+        promo_text += f" #{keyword}"
+    params['promo_text'] = promo_text
     return TemplateResponse(request, 'social_contribution_modal.html', params)
 
 @csrf_exempt
