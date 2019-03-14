@@ -15,5 +15,5 @@
   padding: .5em;
   font-size: 12px;
   min-width: 230px;
-  box-shadow: 0 0 8px 0px #000;
+  box-shadow: 0 2px 2px 1px rgba(0, 0, 0, 0.1);
 }

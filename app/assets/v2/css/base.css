@@ -1044,11 +1044,13 @@ input.is-invalid {
 }
 .rating span label i {
   color:#ccc;
+  font-weight: 400;
 }
 
 .rating span:hover ~ span label i,
 .rating span:hover label i {
   opacity: 0.5;
+  font-weight: 600;
 }
 .rating span.checked label i,
 .rating span.checked ~ span label i
