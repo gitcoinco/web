@@ -719,55 +719,6 @@ var show_interest_modal = function() {
     });
   });
   modals.bootstrapModal('show');
-
-
-  // setTimeout(function() {
-  //   var url = '/interest/modal?redirect=' + window.location.pathname + '&pk=' + document.result['pk'];
-
-  //   if (document.result['repo_type'] === 'private') {
-  //     console.log('is here',$('#nda-upload') )
-  //     $('#nda-upload').show();
-  //     $('#issueNDA').prop('required', true);
-  //   }
-
-  //   $.get(url, function(newHTML) {
-  //     var modal = $(newHTML).appendTo('body').modal({
-  //       modalClass: 'modal add-interest-modal'
-  //     });
-
-  //     var actionPlanForm = modal.find('form#action_plan');
-  //     var issueMessage = actionPlanForm.find('#issue_message');
-
-  //     issueMessage.attr('placeholder', gettext('What steps will you take to complete this task? (min 30 chars)'));
-
-  //     modal.on('submit', function(event) {
-  //       event.preventDefault();
-
-  //       var msg = issueMessage.val().trim();
-
-  //       if (!msg || msg.length < 30) {
-  //         _alert({message: gettext('Please provide an action plan for this ticket. (min 30 chars)')}, 'error');
-  //         return false;
-  //       }
-
-
-  //       add_interest(document.result['pk'], {
-  //         issue_message: msg
-  //       }).then(success => {
-  //         if (success) {
-  //           $(self).attr('href', '/uninterested');
-  //           $(self).find('span').text(gettext('Stop Work'));
-  //           $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
-  //           $.modal.close();
-  //         }
-  //       }).catch((error) => {
-  //         if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
-  //           return;
-  //         throw error;
-  //       });
-  //     });
-  //   });
-  // });
 };
 
 const repoInstructions = () => {
@@ -1398,7 +1349,7 @@ var pull_bounty_from_api = function() {
 
         document.result = result;
 
-        if (typeof promptPrivateInstructions != 'undefined' && result.repo_type === 'private') {
+        if (typeof promptPrivateInstructions !== 'undefined' && result.repo_type === 'private') {
           repoInstructions();
         }
         return;

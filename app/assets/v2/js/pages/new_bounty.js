@@ -112,7 +112,6 @@ $(document).ready(function() {
   $('select[name=denomination]').change(setUsdAmount);
   $('select[name=denomination]').change(promptForAuth);
 
-  // !isPrivateRepo ? $('input[name=issueURL]').blur(retrieveIssueDetails) : undefined;
   setTimeout(setUsdAmount, 1000);
   waitforWeb3(function() {
     promptForAuth();
@@ -158,7 +157,6 @@ $(document).ready(function() {
   if ($('input[name=issueURL]').val() != '' && !isPrivateRepo) {
     retrieveIssueDetails();
   }
-  // $('input[name=issueURL]').focus();
 
   // all js select 2 fields
   $('.js-select2').each(function() {
@@ -568,7 +566,6 @@ let isPrivateRepo = false;
 let params = (new URL(document.location)).searchParams;
 
 const setPrivateForm = () => {
-  // $('#description')
   $('#title').removeClass('hidden');
   $('#description, #title').prop('readonly', false);
   $('#description, #title').prop('required', true);
