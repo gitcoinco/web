@@ -18,7 +18,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    {% include 'shared/head.html' %}
+    {% include 'shared/head.html' with slim=1 %}
     {% include 'shared/cards.html' %}
     <link rel="stylesheet" href="{% static "v2/css/grants/new.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
@@ -64,7 +64,7 @@
                 {% csrf_token %}
                 <div class="form__group-horizontal pb-3">
                   <label class="font-body" for="input_title">{% trans "Title of Project" %}</label>
-                  <input class="form__input form__input-lg " type="text" id="input_title" name="input_title" required />
+                  <input class="form__input form__input-lg " maxlength="150" type="text" id="input_title" name="input_title" required />
                 </div>
 
                 <div class="form__group-horizontal pb-3">
@@ -79,7 +79,7 @@
 
                 <div class="form__group-horizontal pb-3">
                   <label class="font-body" for="input-team_members">{% trans "Team members" %}</label>
-                  <div class="form__select2">
+                  <div class="form__select2 g-multiselect">
                     <select id="input-team_members" class="form__input form__input-lg  team_members" name="team_members[]" multiple="multiple">
                     </select>
                   </div>

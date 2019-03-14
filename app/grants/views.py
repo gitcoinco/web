@@ -36,10 +36,11 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
 from app.utils import get_profile
+from cacheops import cached_view
 from dashboard.models import Profile
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.forms import MilestoneForm
-from grants.models import Contribution, Grant, Milestone, Subscription, Update
+from grants.models import Contribution, Grant, MatchPledge, Milestone, Subscription, Update
 from marketing.mails import (
     change_grant_owner_accept, change_grant_owner_reject, change_grant_owner_request, grant_cancellation, new_grant,
     new_supporter, subscription_terminated, support_cancellation, thank_you_for_supporting,
@@ -50,6 +51,9 @@ from web3 import HTTPProvider, Web3
 logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
+clr_matching_banners_style = 'pledging'
+matching_live = '($50K matching live now!) '
+
 
 def get_keywords():
     """Get all Keywords."""
@@ -58,7 +62,7 @@ def get_keywords():
 
 def grants(request):
     """Handle grants explorer."""
-    limit = request.GET.get('limit', 24)
+    limit = request.GET.get('limit', 6)
     page = request.GET.get('page', 1)
     sort = request.GET.get('sort_option', '-created_on')
     network = request.GET.get('network', 'mainnet')
@@ -73,13 +77,32 @@ def grants(request):
 
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
+    partners = MatchPledge.objects.filter(active=True)
 
-    for _grant in grants:
-        _grant.activeSubscriptions = Subscription.objects.filter(grant=_grant, active=True).distinct('contributor_profile')
+    nav_options = [
+        {'label': 'All', 'keyword': ''},
+        {'label': 'Security', 'keyword': 'security'},
+        {'label': 'Scalability', 'keyword': 'scalability'},
+        {'label': 'UI/UX', 'keyword': 'UI'},
+        {'label': 'DeFI', 'keyword': 'defi'},
+        {'label': 'Education', 'keyword': 'education'},
+        {'label': 'Wallets', 'keyword': 'wallet'},
+        {'label': 'Community', 'keyword': 'community'},
+        {'label': 'ETH 2.0', 'keyword': 'ETH 2.0'},
+        {'label': 'ETH 1.x', 'keyword': 'ETH 1.x'},
+    ]
 
+    now = datetime.datetime.now()
     params = {
         'active': 'grants_landing',
-        'title': _('Grants Explorer'),
+        'title': matching_live + str(_('Gitcoin Grants Explorer')),
+        'sort': sort,
+        'network': network,
+        'keyword': keyword,
+        'clr_matching_banners_style': clr_matching_banners_style,
+        'nav_options': nav_options,
+        'current_partners': partners.filter(end_date__gte=now).order_by('-amount'),
+        'past_partners': partners.filter(end_date__lt=now).order_by('-amount'),
         'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
         'card_player_override': 'https://www.youtube.com/embed/eVgEWSPFR2o',
         'card_player_stream_override': static('v2/card/grants.mp4'),
@@ -95,6 +118,7 @@ def grants(request):
 def grant_details(request, grant_id, grant_slug):
     """Display the Grant details page."""
     profile = get_profile(request)
+    add_cancel_params = False
 
     try:
         grant = Grant.objects.prefetch_related('subscriptions', 'milestones', 'updates').get(
@@ -105,7 +129,9 @@ def grant_details(request, grant_id, grant_slug):
         subscriptions = grant.subscriptions.filter(active=True, error=False)
         cancelled_subscriptions = grant.subscriptions.filter(Q(active=False, error=False) | Q(error=True))
         contributions = Contribution.objects.filter(subscription__in=grant.subscriptions.all())
-        user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True, error=False).first()
+        user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
+        user_non_errored_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True, error=False).first()
+        add_cancel_params = user_subscription
     except Grant.DoesNotExist:
         raise Http404
 
@@ -148,30 +174,42 @@ def grant_details(request, grant_id, grant_slug):
                 change_grant_owner_request(grant, grant.request_ownership_change)
             grant.save()
             return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
+    is_admin = (grant.admin_profile.id == profile.id) if profile and grant.admin_profile else False
+    if is_admin:
+        add_cancel_params = True
 
     params = {
         'active': 'grant_details',
+        'clr_matching_banners_style': clr_matching_banners_style,
         'grant': grant,
-        'title': grant.title,
+        'title': matching_live + grant.title,
         'card_desc': grant.description,
         'avatar_url': grant.logo.url if grant.logo else None,
         'subscriptions': subscriptions,
         'cancelled_subscriptions': cancelled_subscriptions,
         'contributions': contributions,
         'user_subscription': user_subscription,
-        'is_admin': (grant.admin_profile.id == profile.id) if profile and grant.admin_profile else False,
+        'user_non_errored_subscription': user_non_errored_subscription,
+        'is_admin': is_admin,
         'grant_is_inactive': not grant.active,
         'updates': updates,
         'milestones': milestones,
         'keywords': get_keywords(),
-        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
-        'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(120),
-        'recommend_gas_price_avg': recommend_min_gas_price_to_confirm_in_time(15),
-        'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(1),
-        'eth_usd_conv_rate': eth_usd_conv_rate(),
-        'conf_time_spread': conf_time_spread(),
-        'gas_advisories': gas_advisories(),
     }
+
+    if add_cancel_params:
+        add_in_params = {
+            'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
+            'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(120),
+            'recommend_gas_price_avg': recommend_min_gas_price_to_confirm_in_time(15),
+            'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(1),
+            'eth_usd_conv_rate': eth_usd_conv_rate(),
+            'conf_time_spread': conf_time_spread(),
+            'gas_advisories': gas_advisories(),
+        }
+        for key, value in add_in_params.items():
+            params[key] = value
+
 
     if request.method == 'GET' and grant.request_ownership_change and profile == grant.request_ownership_change:
         if request.GET.get('ownership', None) == 'accept':
@@ -229,8 +267,16 @@ def grant_new(request):
 
         if 'contract_address' in request.POST:
             tx_hash = request.POST.get('transaction_hash', '')
+            if not tx_hash:
+                return JsonResponse({
+                    'success': False,
+                    'info': 'no tx hash',
+                    'url': None,
+                })
+
             grant = Grant.objects.filter(deploy_tx_id=tx_hash).first()
             grant.contract_address = request.POST.get('contract_address', '')
+            print(tx_hash, grant.contract_address)
             grant.save()
             new_grant(grant, profile)
             return JsonResponse({
@@ -332,7 +378,7 @@ def grant_fund(request, grant_id, grant_slug):
         return TemplateResponse(request, 'grants/shared/error.html', params)
 
     active_subscription = Subscription.objects.select_related('grant').filter(
-        grant=grant_id, active=True, contributor_profile=request.user.profile
+        grant=grant_id, active=True, error=False, contributor_profile=request.user.profile
     )
 
     if active_subscription:
@@ -343,6 +389,14 @@ def grant_fund(request, grant_id, grant_slug):
             'text': _('You already have an active subscription for this grant.')
         }
         return TemplateResponse(request, 'grants/shared/error.html', params)
+
+    if grant.contract_address == '0x0':
+        messages.info(
+            request,
+            _('This grant is not configured to accept funding at this time.  Please contact founders@gitcoin.co if you believe this message is in error!')
+        )
+        logger.error(f"Grant {grant.pk} is not properly configured for funding.  Please set grant.contract_address on this grant")
+        return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
     if request.method == 'POST':
         if 'contributor_address' in request.POST:
@@ -363,6 +417,19 @@ def grant_fund(request, grant_id, grant_slug):
             subscription.contributor_profile = profile
             subscription.grant = grant
             subscription.save()
+
+            # one time payments
+            if subscription.num_tx_approved == '1':
+                subscription.successful_contribution(subscription.new_approve_tx_id);
+                subscription.error = True #cancel subs so it doesnt try to bill again
+                subscription.subminer_comments = "skipping subminer bc this is a 1 and done subscription, and tokens were alredy sent"
+                subscription.save()
+
+            messages.info(
+                request,
+                _('Your subscription has been created. It will bill within the next 5 minutes or so. Thank you for supporting Open Source !')
+            )
+
             return JsonResponse({
                 'success': True,
             })
@@ -486,7 +553,7 @@ def profile(request):
     sub_contributions = []
     contributions = []
 
-    for contribution in Contribution.objects.filter(subscription__contributor_profile=profile):
+    for contribution in Contribution.objects.filter(subscription__contributor_profile=profile).order_by('-pk'):
         instance = {
             "cont": contribution,
             "sub": contribution.subscription,
@@ -528,3 +595,42 @@ def quickstart(request):
     """Display quickstart guide."""
     params = {'active': 'grants_quickstart', 'title': _('Quickstart')}
     return TemplateResponse(request, 'grants/quickstart.html', params)
+
+
+def leaderboard(request):
+    """Display leaderboard."""
+    params = {
+        'active': 'grants_leaderboard',
+        'title': _('Grants Leaderboard'),
+        'card_desc': _('View the top contributors to Gitcoin Grants'),
+        }
+
+    # setup dict
+    # TODO: in the future, store all of this in perftools.models.JSONStore
+    handles = Subscription.objects.all().values_list('contributor_profile__handle', flat=True)
+    default_dict = {
+        'rank': None,
+        'no': 0,
+        'sum': 0,
+        'handle': None,
+    }
+    users_to_results = { ele : default_dict.copy() for ele in handles }
+
+    # get all contribution attributes
+    for contribution in Contribution.objects.all().select_related('subscription'):
+        key = contribution.subscription.contributor_profile.handle
+        users_to_results[key]['handle'] = key
+        amount = contribution.subscription.get_converted_amount()
+        if amount:
+            users_to_results[key]['no'] += 1
+            users_to_results[key]['sum'] += round(amount)
+    # prepare response for view
+    params['items'] = []
+    counter = 1
+    for item in sorted(users_to_results.items(), key=lambda kv: kv[1]['sum'], reverse=True):
+        item = item[1]
+        if item['no']:
+            item['rank'] = counter
+            params['items'].append(item)
+            counter += 1
+    return TemplateResponse(request, 'grants/leaderboard.html', params)

@@ -22,11 +22,19 @@ var gas_amount = function(page_url) {
     gasLimitEstimate = 21000;
   } else if (page_url.includes('tip/receive')) { // tip
     gasLimitEstimate = 21000;
+  } else if (page_url.includes('subscription')) { // cancel grant contribution
+    gasLimitEstimate = 318730;
+  } else if (page_url.includes('grants/new')) { // cancel grant contribution
+    gasLimitEstimate = 3000000;
+  } else if (page_url.includes('grants/fund')) { // cancel grant contribution
+    gasLimitEstimate = 69169;
+  } else if (page_url.includes('grants/cancel')) { // cancel grant contribution
+    gasLimitEstimate = 45805;
+  } else if (page_url.includes('grants/')) { // cancel grant contribution
+    gasLimitEstimate = 318730;
   } else if (page_url.includes('/fund')) { // grant contribution
     gasLimitEstimate = 318730;
-  } else if (page_url.includes('/subscription')) { // canacel grant contribution
-    gasLimitEstimate = 318730;
-  } else if (page_url.includes('/grants/')) { // canacel grant contribution
+  } else if (page_url.includes('subscribe')) { // gitcoin subscription plans
     gasLimitEstimate = 318730;
   }
   return gasLimitEstimate;

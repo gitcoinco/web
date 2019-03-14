@@ -24,7 +24,7 @@
     {% endif %}
   </a>
 
-  <div class="navbar-network ml-5 py-1 px-2 hidden">
+  <div class="navbar-network ml-xl-5 py-1 px-2 hidden">
     <i class="fas fa-circle pr-1"></i>
     <span id="current-network"></span>
   </div>
@@ -33,7 +33,7 @@
   <div class="d-flex order-0 order-md-last">
     <a class="nav-link login" href="{% url 'profile' %}">
       <img class="nav_avatar" width=25 height=25
-      src="{% if user.profile.avatar %}{{ user.profile.avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
+      src="{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
       {{ user }}
     </a>
     {% include 'shared/notifications.html' %}

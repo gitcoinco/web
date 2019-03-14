@@ -18,7 +18,7 @@
 {% load is_in_list %}
 
 <div class="navbar navbar-expand-md w-100 p-0 m-0 mb-2 justify-content-between">
-  <a class="navbar-brand py-0" href="/" style="text-align: center;">
+  <a class="navbar-brand py-0 text-center" href="/">
     <img id="logo" src="{% static "v2/images/logo_large.png" %}" width="150" height="50" />
     {% if request.path|is_in_list:"/gas,/gas/history,/gas/intro,/gas/calculator,/gas/faq,/gas/heatmap,/gas/guzzlers,/gas/faucets" %}
     <img id="addon" src="{% static "v2/images/gas_white.gif" %}"/>
@@ -26,7 +26,7 @@
     {% endif %}
   </a>
 
-  <div class="navbar-network ml-5 py-1 px-2 hidden">
+  <div class="navbar-network ml-xl-5 py-1 px-2 hidden">
     <i class="fas fa-circle pr-1"></i>
     <span id="current-network"></span>
   </div>
@@ -35,7 +35,7 @@
   <div class="d-flex order-0 order-md-last">
     <a class="nav-link login" href="{% url 'profile' %}">
       <img class="nav_avatar" width=25 height=25
-        src="{% if user.profile.avatar %}{{ user.profile.avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
+        src="{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
       {{ user }}
     </a>
     {% include 'shared/notifications.html' %}

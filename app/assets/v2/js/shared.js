@@ -3,6 +3,25 @@
 // helper functions
 
 /**
+ *  * Generates a boostrap modal handler for when a user clicks a link to launch a boostrap modal.
+ *   * @param {string} modalUrl - content url for the modal
+ *    */
+var show_modal_handler = (modalUrl) => {
+	  const url = modalUrl;
+	
+	   return (e) => {
+		       var modals = $('#modal');
+		       var modalBody = $('#modal .modal-content');
+		   
+	        modals.off('show.bs.modal');
+		       modals.on('show.bs.modal', () => {
+		         $('#modal .modal-content').load(modalUrl);
+		       });
+		       e.preventDefault();
+		     };
+};
+
+/**
  * Validates if input is a valid URL
  * @param {string} input - Input String
  */
@@ -262,6 +281,23 @@ var waitingStateActive = function() {
   waitingRoomEntertainment();
 };
 
+const notify_funder = (network, std_bounties_id, data) => {
+	  var request_url = '/actions/bounty/' + network + '/' + std_bounties_id + '/notify/funder_payout_reminder/';
+	
+	   showBusyOverlay();
+	  $.post(request_url, data).then(result => {
+		      hideBusyOverlay();
+		  
+		       _alert({message: gettext('Sent payout reminder')}, 'success');
+		      $('#notifyFunder a').addClass('disabled');
+		      return true;
+		    }).fail(result => {
+			        hideBusyOverlay();
+			    
+			         _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
+			      });
+};
+
 /** Add the current profile to the interested profiles list. */
 var add_interest = function(bounty_pk, data) {
   if (document.interested) {
@@ -446,23 +482,6 @@ function getParam(parameterName) {
         result = decodeURIComponent(tmp[1]);
     });
   return result;
-}
-
-if ($('#bounties').length) {
-  $('#bounties').tooltip({
-    items: '.result',
-    classes: {
-      'ui-tooltip': 'tooltip-bubble'
-    },
-    position: {
-      my: 'top',
-      at: 'center bottom',
-      collision: 'flip',
-      using: function(position, feedback) {
-        $(this).addClass(feedback.vertical).css(position);
-      }
-    }
-  });
 }
 
 if ($.views) {
@@ -769,20 +788,21 @@ var currentNetwork = function(network) {
 };
 /* eslint-enable no-lonely-if */
 
+/**
+ * Throws custom alert based on user
+ * - has not installed metamask
+ * - metamask is locked
+ * - metmask connection needs to be authorized
+ * - logged in address has no ETH
+ */
 var trigger_primary_form_web3_hooks = function() {
-  // detect web3, and if not, display a form telling users they must be web3 enabled.
-  var params = {
-    page: document.location.pathname
-  };
-
   if ($('#primary_form').length) {
     var is_zero_balance_not_okay = document.location.href.indexOf('/faucet') == -1;
 
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
       $('#zero_balance_error').css('display', 'none');
-      $('#robot_error').removeClass('hidden');
-      $('#primary_form').addClass('hidden');
+      $('#primary_form, .primary_form-meta').addClass('hidden');
       $('.submit_bounty .newsletter').addClass('hidden');
       $('#unlock_metamask_error').css('display', 'none');
       $('#connect_metamask_error').css('display', 'none');
@@ -792,23 +812,21 @@ var trigger_primary_form_web3_hooks = function() {
       $('#unlock_metamask_error').css('display', 'none');
       $('#zero_balance_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
-      $('#robot_error').removeClass('hidden');
-      $('#primary_form').addClass('hidden');
+      $('#primary_form, .primary_form-meta').addClass('hidden');
       $('.submit_bounty .newsletter').addClass('hidden');
       $('#no_issue_error').css('display', 'none');
     } else if (!web3.eth.coinbase) {
       $('#unlock_metamask_error').css('display', 'block');
       $('#zero_balance_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
-      $('#robot_error').removeClass('hidden');
-      $('#primary_form').addClass('hidden');
+      $('#primary_form, .primary_form-meta').addClass('hidden');
       $('#connect_metamask_error').css('display', 'none');
       $('.submit_bounty .newsletter').addClass('hidden');
       $('#no_issue_error').css('display', 'none');
     } else if (is_zero_balance_not_okay && document.balance == 0) {
       $('#zero_balance_error').css('display', 'block');
       $('#robot_error').removeClass('hidden');
-      $('#primary_form').addClass('hidden');
+      $('#primary_form, .primary_form-meta').addClass('hidden');
       $('.submit_bounty .newsletter').addClass('hidden');
       $('#unlock_metamask_error').css('display', 'none');
       $('#connect_metamask_error').css('display', 'none');
@@ -821,7 +839,7 @@ var trigger_primary_form_web3_hooks = function() {
       $('#connect_metamask_error').css('display', 'none');
       $('#no_issue_error').css('display', 'block');
       $('#robot_error').addClass('hidden');
-      $('#primary_form').removeClass('hidden');
+      $('#primary_form, .primary_form-meta').removeClass('hidden');
       $('.submit_bounty .newsletter').removeClass('hidden');
     }
   }
@@ -1201,6 +1219,48 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
   return html;
 }
 
+const saveAttestationData = (result, cost_eth, to_address, type) => {
+  let request_url = '/revenue/attestations/new';
+  let txid = result;
+  let data = {
+    'txid': txid,
+    'amount': cost_eth,
+    'network': document.web3network,
+    'from_address': web3.eth.coinbase,
+    'to_address': to_address,
+    'type': type
+  };
+
+  $.post(request_url, data).then(function(result) {
+    _alert('Success ✅ Loading your purchase now.', 'success');
+  });
+};
+
+const renderFeaturedBountiesFromResults = (results, renderForExplorer) => {
+  let html = '';
+  const tmpl = $.templates('#featured-card');
+
+  if (results.length === 0) {
+    return html;
+  }
+
+  for (let i = 0; i < results.length; i++) {
+    const result = results[i];
+    let decimals = 18;
+    const divisor = Math.pow(10, decimals);
+    const relatedTokenDetails = tokenAddressToDetailsByNetwork(result['token_address'], result['network']);
+
+    if (relatedTokenDetails && relatedTokenDetails.decimals) {
+      decimals = relatedTokenDetails.decimals;
+    }
+
+    result['rounded_amount'] = normalizeAmount(result['value_in_token'] / divisor, decimals);
+
+    html += tmpl.render(result);
+  }
+  return html;
+};
+
 /**
  * Fetches results from the API and paints them onto the target element
  *
@@ -1255,6 +1315,7 @@ function showBusyOverlay() {
   if (overlay) {
     overlay.style['display'] = 'block';
     overlay.style['animation-name'] = 'fadeIn';
+    $(overlay).fadeIn('slow');
     return;
   }
 
@@ -1277,6 +1338,7 @@ function hideBusyOverlay() {
 
   if (overlay) {
     setTimeout(function() {
+      $(overlay).fadeOut('slow');
       overlay.style['animation-name'] = 'fadeOut';
     }, 300);
   }
@@ -1395,3 +1457,60 @@ const showMore = (length = 400) => {
     return false;
   });
 };
+
+/**
+ * Check input file size
+ *
+ * input - input element
+ * max_img_size  - max size
+ *
+ * Useage: checkFileSize($(input), 4000000)
+ */
+const checkFileSize = (input, max_img_size) => {
+  if (input.files && input.files.length > 0) {
+    if (input.files[0].size > max_img_size) {
+      input.value = '';
+      return false;
+    }
+  }
+  return true;
+};
+
+/**
+ * Compare two strings in a case insensitive way
+ *
+ * Usage: caseInsensitiveCompare('gitcoinco', 'GitcoinCo')
+ */
+const caseInsensitiveCompare = (val1, val2) => {
+  if (val1 && val2 && typeof val1 === 'string' && typeof val2 === 'string') {
+    return val1.toLowerCase() === val2.toLowerCase();
+  }
+  return false;
+};
+
+$(document).ready(function() {
+  $(window).scroll(function() {
+    $('.g-fadein').each(function(i) {
+      let duration = $(this).attr('data-fade-duration') ? $(this).attr('data-fade-duration') : 1500;
+      let direction = $(this).attr('data-fade-direction') ? $(this).attr('data-fade-direction') : 'mid';
+      let animateProps;
+
+      switch (direction) {
+        case 'left':
+          animateProps = { 'opacity': '1', 'left': '0' };
+          break;
+        case 'right':
+          animateProps = { 'opacity': '1', 'left': '0' };
+          break;
+        default:
+          animateProps = { 'opacity': '1', 'bottom': '0' };
+      }
+
+      let bottom_of_object = $(this).position().top + $(this).outerHeight() / 2;
+      let bottom_of_window = $(window).scrollTop() + $(window).height();
+
+      if (bottom_of_window > bottom_of_object)
+        $(this).animate(animateProps, duration);
+    });
+  });
+});

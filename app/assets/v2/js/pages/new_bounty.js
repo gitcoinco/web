@@ -209,6 +209,9 @@ $(document).ready(function() {
         _alert(gettext('You are on an unsupported network.  Please change your network to a supported network.'));
         return;
       }
+      if (typeof ga != 'undefined') {
+        ga('send', 'event', 'new_bounty', 'new_bounty_form_submit');
+      }
 
       var data = {};
       var disabled = $(form)
@@ -238,7 +241,7 @@ $(document).ready(function() {
       var metadata = {
         issueTitle: data.title,
         issueDescription: data.description,
-        issueKeywords: data.keywords,
+        issueKeywords: data.keywords ? data.keywords : '',
         githubUsername: data.githubUsername,
         notificationEmail: data.notificationEmail,
         fullName: data.fullName,
@@ -247,6 +250,8 @@ $(document).ready(function() {
         bountyType: data.bounty_type,
         estimatedHours: data.hours,
         fundingOrganisation: data.fundingOrganisation,
+        is_featured: data.featuredBounty,
+        featuring_date: data.featuredBounty && ((new Date().getTime() / 1000) | 0) || 0,
         reservedFor: reservedFor ? reservedFor.text : '',
         tokenName
       };
@@ -284,6 +289,8 @@ $(document).ready(function() {
             jobDescription: data.jobDescription
           },
           funding_organisation: metadata.fundingOrganisation,
+          is_featured: metadata.is_featured,
+          featuring_date: metadata.featuring_date,
           privacy_preferences: privacy_preferences,
           funders: [],
           categories: metadata.issueKeywords.split(','),
@@ -350,7 +357,9 @@ $(document).ready(function() {
       function syncDb() {
         // Need to pass the bountydetails as well, since I can't grab it from the
         // Standard Bounties contract.
-        dataLayer.push({ event: 'fundissue' });
+        if (typeof dataLayer !== 'undefined') {
+          dataLayer.push({ event: 'fundissue' });
+        }
 
         // update localStorage issuePackage
         var issuePackage = JSON.parse(localStorage[issueURL]);
@@ -379,6 +388,11 @@ $(document).ready(function() {
           unloading_button($('.js-submit'));
           return;
         }
+
+        if (typeof ga != 'undefined') {
+          ga('send', 'event', 'new_bounty', 'metamask_signature_achieved');
+        }
+
 
         // update localStorage issuePackage
         var issuePackage = JSON.parse(localStorage[issueURL]);
@@ -440,7 +454,31 @@ $(document).ready(function() {
         ipfs.addJson(ipfsBounty, newIpfsCallback);
       };
 
-      do_bounty();
+      const payFeaturedBounty = function() {
+        web3.eth.sendTransaction({
+          to: '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+          from: web3.eth.coinbase,
+          value: web3.toWei(ethFeaturedPrice, 'ether'),
+          gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)),
+          gas: web3.toHex(318730),
+          gasLimit: web3.toHex(318730)
+        },
+        function(error, result) {
+          saveAttestationData(
+            result,
+            ethFeaturedPrice,
+            '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+            'featuredbounty'
+          );
+          do_bounty();
+        });
+      };
+
+      if (data.featuredBounty) {
+        payFeaturedBounty();
+      } else {
+        do_bounty();
+      }
     }
   });
 });
@@ -464,3 +502,11 @@ var check_balance_and_alert_user_if_not_enough = function(tokenAddress, amount) 
     }
   });
 };
+
+let usdFeaturedPrice = $('.featured-price-usd').text();
+let ethFeaturedPrice;
+
+getAmountEstimate(usdFeaturedPrice, 'ETH', (amountEstimate) => {
+  ethFeaturedPrice = amountEstimate['value'];
+  $('.featured-price-eth').text(`+${amountEstimate['value']} ETH`);
+});

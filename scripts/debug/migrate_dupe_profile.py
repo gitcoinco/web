@@ -6,6 +6,10 @@ from dashboard.models import Profile
 old_profile = Profile.objects.get(handle__iexact=old_username)
 new_profile = Profile.objects.get(handle__iexact=new_username)
 
+user = old_profile.user
+user.username = new_username
+user.save()
+
 new_profile.user = old_profile.user
 old_profile.user = None
 old_profile.save()

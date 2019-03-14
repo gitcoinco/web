@@ -1,8 +1,4 @@
 $(document).ready(function() {
-  if (typeof web3 == 'undefined') {
-    _alert({ message: gettext('You are not on a web3 browser.  Please switch to a web3 browser.') }, 'error');
-    $('#receive').attr('disabled', 'disabled');
-  }
   if (!$('#user').val()) {
     $('#receive').attr('disabled', 'disabled');
   }

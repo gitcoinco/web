@@ -7,6 +7,10 @@
   font-weight: 500;
 }
 
+.rounded-circle {
+  margin-right: 8px;
+}
+
 #search_form button {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
@@ -192,4 +196,21 @@
 
 #grants-details {
   padding-bottom: 1em;
+}
+
+#grants_nav{
+  border-bottom: 1px solid #333333;
+  text-align: left;
+  width: 100%;
+}
+#grants_nav a{
+  color: #333333;
+  margin-right: 30px;
+}
+#grants_nav a:hover{
+  font-weight: 700;
+}
+#grants_nav .selected{
+  font-weight: 1000;
+  color: #3f24f9;
 }

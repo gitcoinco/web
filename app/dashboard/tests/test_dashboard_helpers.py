@@ -18,12 +18,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 import json
+from datetime import date, datetime, timedelta
+from unittest.mock import patch
 
 from django.test.client import RequestFactory
 
+import pytz
 import requests_mock
-from dashboard.helpers import amount, issue_details, normalize_url
+from dashboard.helpers import amount, issue_details, normalize_url, process_bounty_details
+from dashboard.models import Bounty
 from economy.models import ConversionRate
+from marketing.mails import featured_funded_bounty
 from test_plus.test import TestCase
 
 

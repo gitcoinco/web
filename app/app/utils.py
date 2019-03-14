@@ -15,6 +15,8 @@ from django.utils.translation import LANGUAGE_SESSION_KEY
 
 import geoip2.database
 import requests
+from avatar.models import SocialAvatar
+from avatar.utils import get_svg_templates, get_user_github_avatar_image
 from dashboard.models import Profile
 from geoip2.errors import AddressNotFoundError
 from git.utils import _AUTH, HEADERS, get_user
@@ -226,6 +228,20 @@ def sync_profile(handle, user=None, hide_profile=True):
         token = profile.get_access_token(save=False)
         profile.github_access_token = token
         profile.save()
+
+    if profile and not profile.avatar_baseavatar_related.last():
+        github_avatar_img = get_user_github_avatar_image(profile.handle)
+        if github_avatar_img:
+            try:
+                github_avatar = SocialAvatar.github_avatar(profile, github_avatar_img)
+                github_avatar.save()
+                profile.activate_avatar(github_avatar.pk)
+                profile.save()
+            except Exception as e:
+                logger.warning(f'Encountered ({e}) while attempting to save a user\'s github avatar')
+
+    if profile and created:
+        profile.build_random_avatar()
 
     return profile
 

@@ -1,0 +1,7 @@
+* Github URL: {{bounty.github_url}}
+* Value: {{bounty.value_true}} {{bounty.token_name}}
+{% if bounty.value_in_usdt_now %}
+  (about {{bounty.value_in_usdt_now}} USD @ ${{bounty.token_value_in_usdt_now}}/{{bounty.token_name}})
+{% endif %}
+* Status: {{bounty.status}}
+* View More: {{bounty.absolute_url}}

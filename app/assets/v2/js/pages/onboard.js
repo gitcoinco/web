@@ -31,7 +31,7 @@ onboard.showTab = function(num) {
     window.history.pushState('', '', '/onboard/' + flow + '/' + $($('.step')[num]).attr('link'));
   }
 
-  if (num === 1 || num === 2 || $($('.step')[num]).attr('link') === 'avatar') {
+  if (num === 2 || $($('.step')[num]).attr('link') === 'avatar') {
     $('.controls').hide();
   } else {
     $('.controls').show();
@@ -74,9 +74,6 @@ onboard.watchMetamask = function() {
         </a>
       </div>`
     );
-    if (current === 1) {
-      $('.controls').hide();
-    }
   } else if (!web3.eth.coinbase) {
     $('.step #metamask').html(`
       <div class="locked">
@@ -87,7 +84,6 @@ onboard.watchMetamask = function() {
       </div>`
     );
     if (current === 1) {
-      $('.controls').hide();
       $('#metamask-video').show();
     }
   } else {
@@ -248,30 +244,6 @@ $('.search-area input[type=text]').keypress(function(e) {
     e.preventDefault();
   }
 });
-
-const save_job_status = function() {
-  if (!document.contxt.github_handle) {
-    _alert('No profile', 'error');
-  }
-  const job_search_status = $('#jobStatus').find(':selected').val();
-  const show_job_status = $('#showJobStatus').prop('checked');
-
-  const profile = {
-    url: '/api/v0.1/profile/' + document.contxt.github_handle + '/jobopportunity',
-    method: 'POST',
-    headers: {'X-CSRFToken': csrftoken},
-    data: JSON.stringify({
-      'job_search_status': job_search_status,
-      'show_job_status': show_job_status
-    })
-  };
-
-  $.ajax(profile).done(function(response) {
-    _alert(response.message, 'info');
-  }).fail(function(error) {
-    _alert(error, 'error');
-  });
-};
 
 var redirectURL = function() {
   var url = '';

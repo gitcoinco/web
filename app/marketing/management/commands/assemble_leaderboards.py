@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from django.conf import settings
 from django.core.management.base import BaseCommand
+from django.db import transaction
 from django.utils import timezone
 
 from cacheops import CacheMiss, cache
@@ -325,36 +326,37 @@ class Command(BaseCommand):
             sum_kudos(kt)
 
         # set old LR as inactive
-        lrs = LeaderboardRank.objects.active()
-        lrs.update(active=False)
+        with transaction.atomic():
+            lrs = LeaderboardRank.objects.active()
+            lrs.update(active=False)
 
-        # save new LR in DB
-        for key, rankings in ranks.items():
-            rank = 1
-            for index_term, amount in sorted(rankings.items(), key=lambda x: x[1], reverse=True):
-                count = counts[key][index_term]
-                lbr_kwargs = {
-                    'count': count,
-                    'active': True,
-                    'amount': amount,
-                    'rank': rank,
-                    'leaderboard': key,
-                    'github_username': index_term
-                }
+            # save new LR in DB
+            for key, rankings in ranks.items():
+                rank = 1
+                for index_term, amount in sorted(rankings.items(), key=lambda x: x[1], reverse=True):
+                    count = counts[key][index_term]
+                    lbr_kwargs = {
+                        'count': count,
+                        'active': True,
+                        'amount': amount,
+                        'rank': rank,
+                        'leaderboard': key,
+                        'github_username': index_term
+                    }
 
-                try:
-                    profile = Profile.objects.get(handle__iexact=index_term)
-                    lbr_kwargs['profile'] = profile
-                    lbr_kwargs['tech_keywords'] = profile.keywords
-                except Profile.MultipleObjectsReturned:
-                    profile = Profile.objects.filter(handle__iexact=index_term).latest('id')
-                    lbr_kwargs['profile'] = profile
-                    lbr_kwargs['tech_keywords'] = profile.keywords
-                    print(f'Multiple profiles found for username: {index_term}')
-                except Profile.DoesNotExist:
-                    print(f'No profiles found for username: {index_term}')
+                    try:
+                        profile = Profile.objects.get(handle__iexact=index_term)
+                        lbr_kwargs['profile'] = profile
+                        lbr_kwargs['tech_keywords'] = profile.keywords
+                    except Profile.MultipleObjectsReturned:
+                        profile = Profile.objects.filter(handle__iexact=index_term).latest('id')
+                        lbr_kwargs['profile'] = profile
+                        lbr_kwargs['tech_keywords'] = profile.keywords
+                        print(f'Multiple profiles found for username: {index_term}')
+                    except Profile.DoesNotExist:
+                        print(f'No profiles found for username: {index_term}')
 
-                # TODO: Bucket LeaderboardRank objects and .bulk_create
-                LeaderboardRank.objects.create(**lbr_kwargs)
-                rank += 1
-                print(key, index_term, amount, count, rank)
+                    # TODO: Bucket LeaderboardRank objects and .bulk_create
+                    LeaderboardRank.objects.create(**lbr_kwargs)
+                    rank += 1
+                    print(key, index_term, amount, count, rank)

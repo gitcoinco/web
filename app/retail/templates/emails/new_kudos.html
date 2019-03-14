@@ -141,7 +141,7 @@
       {% endif %}
     </h1>
     <h3>
-      {% trans "You received a" %} <b>{{ token_elem.name|humanize_name }}</b> {% trans "kudos" %}
+      {% trans "You received a" %} <a href="{{ token_elem.kudos_token_cloned_from.url }}"><b style="  font-weight: lighter;  text-transform: capitalize;  line-height: 50px;  font-size: 1.3rem;  color: #FFF;  letter-spacing: 0;  text-align: center;">{{ token_elem.name|humanize_name }}</b></a> {% trans "kudos" %}
       {% if kudos_transfer.from_name %}
         {% trans "from" %} <b>{{ kudos_transfer.from_name }}</b>
       {% endif %}
@@ -158,7 +158,9 @@
         &nbsp;
       </div>
       <div class="kudos-hex-content">
-        <img src="{{ token_elem.img_url }}" alt="{{ token_elem.name|humanize_name }}">
+        <a href="{{ token_elem.kudos_token_cloned_from.url }}">
+          <img src="{{ token_elem.img_url }}" alt="{{ token_elem.name|humanize_name }}">
+        </a>
       </div>
     </div>
     <br>
@@ -184,8 +186,12 @@
       {% endif %}
       {% if already_redeemed %}
         <p>
-          {% trans "This kudos has been remitted automatically to the Ethereum address on file for your account via txid " %}{{kudos_transfer.txid}}
+          {% trans "This kudos has been remitted automatically to the Ethereum address on file (and to your Gitcoin profile). " %}
         </p>
+        <BR>
+        <a style="color:#fff; text-decoration:none; font-size:14px; background-color:#15003e; border-radius:5px; line-height:1.5; padding:15px 20px; text-align:center" bgcolor="#15003e" href="https://gitcoin.co/profile/{{kudos_transfer.username}}">{% trans "View Profile" %}</a>
+        <a style="color:#fff; text-decoration:none; font-size:14px; background-color:#15003e; border-radius:5px; line-height:1.5; padding:15px 20px; text-align:center" bgcolor="#15003e" href="https:/etherscan.io/tx/{{kudos_transfer.txid}}">{% trans "View Transaction" %}</a>
+
       {% elif show_expires %}
         <p>
           {% trans "The kudos expires on" %} <strong>{{ kudos_transfer.expires_date }}, {% trans "in just" %} {{ kudos_transfer.expires_date|naturaltime }}</strong>. {% trans "No pressure, but if you wanted to redeem your kudos sooner rather than later that'd be 👌:" %}

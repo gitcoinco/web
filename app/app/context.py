@@ -73,7 +73,6 @@ def preprocess(request):
         'github_handle': request.user.username if user_is_authenticated else False,
         'email': request.user.email if user_is_authenticated else False,
         'name': request.user.get_full_name() if user_is_authenticated else False,
-        'sentry_address': settings.SENTRY_ADDRESS,
         'raven_js_version': settings.RAVEN_JS_VERSION,
         'raven_js_dsn': settings.SENTRY_JS_DSN,
         'release': settings.RELEASE,

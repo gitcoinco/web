@@ -24,12 +24,15 @@
                   </a>
                 </div>
                 <div class="info font-caption">
-                  {{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }} /
-                  {{ subscription.frequency }} {{ subscription.frequency_unit }}
+                  {{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }} 
+                  {% if subscription.num_tx_approved > 1 %}
+                    / {{ subscription.frequency }} {{ subscription.frequency_unit }},
+                  {% endif %}
+                  {{subscription.num_tx_approved|floatformat}} time{{ subscription.num_tx_approved|pluralize }}
                 </div>
               </div>
               <div class="d-none d-md-block col-4 col-md-2 my-auto font-body">
-                <a id="sub_tx_link" href="{{ subscription.new_approve_tx_id }}" target="_blank" rel="noopener noreferrer">
+                <a class="sub_tx_link" href="https://etherscan.io/tx/{{ subscription.new_approve_tx_id }}" target="_blank" rel="noopener noreferrer">
                   View Etherscan
                 </a>
               </div>
@@ -57,20 +60,22 @@
                 {{ transaction.created_on|date:"d M" }}
               </div>
               <div class="col-2 col-md-1 justify-content-center special_tag">
-                <a href="{% url 'profile' subscription.contributor_profile.handle %}">
+                <a href="{% url 'profile' transaction.subscription.contributor_profile.handle %}">
                   <img class="avatar rounded-circle" src="{{ transaction.subscription.contributor_profile.avatar_url }}">
                 </a>
               </div>
               <div class="col-4 col-xl-5 my-auto">
                 <div class="font-weight-bold font-body">
-                  {{ transaction.subscription.contributor_profile }}
+                  <a href="{% url 'profile' transaction.subscription.contributor_profile.handle %}">
+                    {{ transaction.subscription.contributor_profile }}
+                  </a>
                 </div>
                 <div class="info font-caption">
-                  {{ transaction.subscription.amount_per_period|floatformat:4|intcomma }} {{ transaction.subscription.token_symbol }} / {{ transaction.subscription.frequency }} {{ transaction.subscription.frequency_unit }}
+                  {{ transaction.subscription.amount_per_period|floatformat:4|intcomma }} {{ transaction.subscription.token_symbol }}
                 </div>
               </div>
               <div class="d-none d-md-block col-md-2 font-body my-auto txn-link">
-                <a id="tx_link" href="{{ transaction.tx_id }}" target="_blank" rel="noopener noreferrer">
+                <a class="tx_link" href="https://etherscan.io/tx/{{ transaction.tx_id }}" target="_blank" rel="noopener noreferrer">
                   View Etherscan
                 </a>
               </div>
@@ -98,7 +103,7 @@
         <hr>
         <div id="cancelled-subscriptions">
           <p class="font-body font-weight-semibold subtitle">
-            <i class="g-icon g-icon__dot-circle mr-2"></i> {% trans "Cancelled Subscriptions" %}
+            <i class="g-icon g-icon__dot-circle mr-2"></i> {% trans "Inactive Subscriptions" %}
           </p>
           {% for subscription in cancelled_subscriptions %}
           <div class="py-3 mx-sm-0 row transaction-history">
@@ -117,13 +122,19 @@
                 </a>
               </div>
               <div class="info font-caption">
-                {{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }} / {{ subscription.frequency }} {{ subscription.frequency_unit }}
+                {{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }} 
+                {% if subscription.num_tx_approved > 1 %}
+                  / {{ subscription.frequency }} {{ subscription.frequency_unit }},
+                {% endif %}
+                {{subscription.num_tx_approved|floatformat}} time{{ subscription.num_tx_approved|pluralize }}
               </div>
             </div>
             <div class="d-none d-md-block col-md-2 my-auto font-body">
-              <a id="cancel_tx_link" href="{{ subscription.cancel_tx_id }}" target="_blank" rel="noopener noreferrer">
-                View Etherscan
-              </a>
+              {% if subscription.cancel_tx_id != '0x0' %}
+                <a class="cancel_tx_link" href="https://etherscan.io/tx/{{ subscription.cancel_tx_id }}" target="_blank" rel="noopener noreferrer">
+                  View Etherscan
+                </a>
+              {% endif %}
             </div>
             <div class="col-4 col-md-2 offset-lg-1 my-auto tags font-caption">
               <div class="tag tag-lg token">

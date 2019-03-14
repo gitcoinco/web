@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    {% include 'shared/head.html' %}
+    {% include 'shared/head.html' with slim=1 %}
     {% include 'shared/cards.html' %}
     <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/grants/fund.css" %}">
@@ -69,6 +69,38 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             {% csrf_token %}
             <div class="row">
               <div class="col-12">
+
+                <div class="form__group-horizontal">
+                  <label class="form__label" id="amount_label">{% trans "Amount Per Period" %}</label>
+                  <div class="row">
+                    <div class="col-8">
+                      <input type="number" min="0.001" id="amount" name="amount_per_period" class="form__input" value="5" required />
+                    </div>
+                    <div class="col-4">
+                      {% if grant_has_no_token %}
+                        <div class="form__select2">
+                          <select class='js-select2' name='denomination' id='js-token'> </select>
+                        </div>
+                      {% else %}
+                        {{ grant.token_symbol }}
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form__group-horizontal contribution_type">
+                  <label class="form__label">{% trans "Contribution Type" %}</label>
+                  <div class="row">
+                    <div class="col-12 font-body">
+                      <select name="recurring_or_not" id="recurring_or_not" class="js-select2" style="width: 100%">
+                        <option value="once">{% trans "One Time" %}</option>
+                        <option value="recurring" selected="selected">{% trans "Recurring" %}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+
                 <div class="form__group-horizontal frequency">
                   <label class="form__label">{% trans "Payment Period" %}</label>
                   <div class="row">
@@ -88,32 +120,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   </div>
                 </div>
 
-                <div class="form__group-horizontal">
-                  <label class="form__label">{% trans "Amount Per Period" %}</label>
-                  <div class="row">
-                    <div class="col-8">
-                      <input type="number" min="0.001" id="amount" name="amount_per_period" class="form__input" required />
-                    </div>
-                    <div class="col-4">
-                      {% if grant_has_no_token %}
-                        <div class="form__select2">
-                          <select class='js-select2' name='denomination' id='js-token'> </select>
-                        </div>
-                      {% else %}
-                        {{ grant.token_symbol }}
-                        <input type="hidden" id='sub_token_address' name='denomination'>
-                      {% endif %}
-                    </div>
-                  </div>
-                </div>
-
-                <div class="form__group-horizontal">
+                <div class="form__group-horizontal num_recurring">
                   <div class="row">
                     <div class="col-12">
                       <label class="form__label">
-                        {% trans "Number Of Recurring Payments" %}
+                        {% trans "Number of Contribution Periods" %}
                       </label>
-                      <input id="period" type="number" min=0 step="1" name="num_periods" class="form__input" required />
+                      <input id="period" type="number" min="1" step="1" name="num_periods" class="form__input" value="12" required />
                     </div>
                   </div>
                 </div>
@@ -131,33 +144,33 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
                 <div class="summary font-body mt-4">
                   <p class="mb-2 font-weight-semibold">Summary</p>
-                  <p>
-                    <i class="fas fa-circle mr-2"></i>
-                    {% trans "Your contribution will stop once this payment has happened" %}
-                    <span id="summary-frequency" class="font-weight-bold">-</span> times.
-                  </p>
-                  <p>
+                  <p class="hide_if_onetime">
                     <i class="fas fa-circle mr-2"></i>
                     {% trans "You are contributing" %}
                     <span id="summary-amount" class="font-weight-bold">-</span>
                     <span id="summary-token" class="font-weight-bold">
-                      {% if not grant_has_no_token %}
                         {{ grant.token_symbol }}
-                      {% else %}
-                        {{ token_symbol }}
-                      {% endif %}
                     </span>
                     {% trans "to this grant every" %}
                     <span id="summary-period" class="font-weight-bold">-</span>
                     <span id="summary-frequency-unit" class="font-weight-bold">-</span>.
                   </p>
-                  <p>
+                  <p class="hide_if_onetime">
                     <i class="fas fa-circle mr-2"></i>
-                    {% trans "The first payment will happen immediately after you click Contribute to Grant." %}
+                    {% trans "Your contribution will stop once this payment has happened" %}
+                    <span id="summary-frequency" class="font-weight-bold">-</span> times.
+                  </p>
+                  <p class="hide_if_onetime">
+                    <i class="fas fa-circle mr-2"></i>
+                    {% trans "The first payment will happen within 5 minutes after you click Contribute to Grant." %}
+                  </p>
+                  <p class="hide_if_recurring hidden">
+                    <i class="fas fa-circle mr-2"></i>
+                    {% trans "This payment will be made one time." %}
                   </p>
                   <p>
                     <i class="fas fa-circle mr-2"></i>
-                    {% trans "Note: You will have to approve 2 transactions via MetaMask on submit." %}
+                    {% trans "Note: You will have to approve 2 transactions via MetaMask on submit." %} <a target="_blank" href="https://github.com/gitcoinco/web/blob/master/docs/GRANTS.md">Read how this works</a>.
                   </p>
                 </div>
 

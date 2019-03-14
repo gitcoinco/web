@@ -4,15 +4,11 @@ html {
 
 body {
   height: 100vh;
-  color: var(--text-dark);
+  color: #43484d;
 }
 
 .navbar {
   flex-shrink: 0;
-}
-
-.navbar-nav > .img__spaceship {
-  display: none !important;
 }
 
 .banner--green {
@@ -77,7 +73,7 @@ body {
 .howworks-container {
   background-color: #ffffff;
   text-align: center;
-  color: var(--text-dark);
+  color: #43484d;
 }
 
 .howworks-container-contributors {

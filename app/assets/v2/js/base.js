@@ -2,8 +2,11 @@
 /* eslint-disable no-console */
 /* eslint-disable nonblock-statement-body-position */
 $(document).ready(function() {
-  if (typeof ($(document).tooltip) != 'undefined') {
-    $(document).tooltip();
+
+  if (typeof ($('body').tooltip) != 'undefined') {
+    $('body').tooltip({
+      items: ':not([data-toggle])'
+    });
   }
 
   var force_no_www = function() {
@@ -137,34 +140,29 @@ if ($('#is-authenticated').val() === 'True' && !localStorage['notify_policy_upda
   localStorage['notify_policy_update'] = true;
 
   const content = $.parseHTML(
-    '<div><div class="row">' +
-      '<div class="col-12 closebtn">' +
-        '<a rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">' +
-          '<span aria-hidden="true">&times;</span>' +
-        '</a>' +
-      '</div>' +
-      '<div class="col-12 pt-2 pb-2 text-center">' +
-        '<h2 class="font-title">' + gettext('We Care About Your Privacy') + '</h2>' +
-      '</div>' +
-      '<div class="col-12 pt-2 pb-2 font-body">' +
-        '<p>' + gettext('As a Web 3.0 company, we think carefully about user data and privacy ' +
-          'and how the internet is evolving. We hope Web 3.0 will bring more control ' +
-          'of data to users. With this ethos in mind, we are always careful about how ' +
-          'we use your information.') + '</p>' +
-        '<p>' + gettext('We recently reviewed our Privacy Policy to comply with requirements of ' +
-          'General Data Protection Regulation (GDPR), improving our Terms of Use, ' +
-          'Privacy Policy and Cookie Policy. These changes are in effect ' +
-          'and your continued use of the Gitcoin will be ' +
-          'subjected to our updated Terms of Use and Privacy Policy.') +
-        '</p>' +
-      '</div>' +
-      '<div class="col-12 font-caption"><a href="/legal/policy" target="_blank">' +
-        gettext('Read Our Updated Terms') +
-      '</a></div>' +
-      '<div class="col-12 mt-4 mb-2 text-right font-caption">' +
-        '<a rel="modal:close" href="javascript:void" aria-label="Close dialog" class="button button--primary">Ok</a>' +
-      '</div>' +
-    '</div></div>');
+    `<div id="notify_policy_update" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content px-4 py-3">
+          <div class="col-12">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+          </div>
+          <div class="col-12 pt-2 pb-2 text-center">
+            <h2 class="font-title">${gettext('We Care About Your Privacy')}</h2>
+          </div>
+          <div class="col-12 pt-2 pb-2 font-body">
+            <p>${gettext('As a Web 3.0 company, we think carefully about user data and privacy and how the internet is evolving. We hope Web 3.0 will bring more control of data to users. With this ethos in mind, we are always careful about how we use your information.')}</p>
+            <p>${gettext('We recently reviewed our Privacy Policy to comply with requirements of General Data Protection Regulation (GDPR), improving our Terms of Use, Privacy Policy and Cookie Policy. These changes are in effect and your continued use of the Gitcoin will be subjected to our updated Terms of Use and Privacy Policy.')}</p>
+          </div>
+          <div class="col-12 font-caption">
+            <a href="/legal/policy" target="_blank">${gettext('Read Our Updated Terms')}</a>
+          </div>
+          <div class="col-12 mt-4 mb-2 text-right font-caption">
+            <a rel="modal:close" href="javascript:void" aria-label="Close dialog" class="button button--primary">Ok</a>
+          </div>
+        </div>
+      </div>
+    </div>`);
 
-  $(content).appendTo('body').modal({ modalClass: 'modal notify_policy_update' });
+  $(content).appendTo('body');
+  $('#notify_policy_update').bootstrapModal('show');
 }

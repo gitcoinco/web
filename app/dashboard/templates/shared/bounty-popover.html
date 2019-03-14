@@ -16,7 +16,7 @@
 {% endcomment %}
 {% load i18n %}
 <div>
-  <div class="tooltip-bubble__content">
+  <div class="popover-bounty__content">
     <div class="d-flex justify-content-between mb-2">
       <span class="status-[[:status]]">
         <i class="g-icon g-icon__dot-circle"></i>
@@ -49,7 +49,7 @@
     </div>
   </div>
   [[if activities.length]]
-    <div class="tooltip-bubble__footer">
+    <div class="popover-bounty__footer">
       <span class="title">{% trans "Latest Activity" %}</span>
       [[for activities.slice(-1)  ]]
         <div class="d-flex justify-content-between">

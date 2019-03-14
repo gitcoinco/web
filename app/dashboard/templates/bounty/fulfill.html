@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -60,6 +60,7 @@
                     </div>
                     {% include 'shared/github_link.html' %}
                     {% include 'shared/hours_worked.html' %}
+                    {% include 'shared/rating.html' with counterparty='funder' %}
                     <div id="gas-section" class="mt-4">
                       {% include 'shared/bounty_actions_hidden_vars.html' %}
                       {% include 'shared/wallet_estimate.html' %}

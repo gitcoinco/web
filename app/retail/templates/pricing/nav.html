@@ -1,0 +1,35 @@
+{% comment %}
+    Copyright (C) 2019 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static matches %}
+<nav class="navbar navbar-expand-md navbar-dark g-font-muli">
+  <a class="navbar-brand pt-0 pb-0" href="/">
+    <img id="logo" src="{% static "v2/images/logo_large.png" %}" width="150" height="50" />
+  </a>
+  {% if request.path|matches:"^\/(subscribe.*)$" %}
+    <div class="navbar-network ml-xl-5 py-1 px-2 hidden">
+      <i class="fas fa-circle pr-1"></i>
+      <span id="current-network"></span>
+    </div>
+  {% endif %}
+  <div class="d-flex order-0 order-md-last">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </div>
+</nav>

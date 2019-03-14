@@ -14,26 +14,26 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static humanize grants_extra %}
+{% load i18n static humanize grants_extra avatar_tags %}
 <div class="row h-100">
   {% if grant.active %}
     {% if grant.activeSubscriptions %}
       <div class="col-12 my-2">
-        <h3 class="font-subheader font-weight-bold mb-3">{% trans 'Contributors' %} ({{ grant.activeSubscriptions.count }})</h3>
-        {% for subscription in grant.activeSubscriptions %}
-          <a class="grant__stakeholders-item ml-2" href="{% url 'profile' subscription.contributor_profile.handle %}">
-            <img src="{{ subscription.contributor_profile.avatar_url }}" />
+        <h3 class="font-subheader font-weight-bold mb-3">{% trans 'Contributors' %} ({{ grant.activeSubscriptions|length }})</h3>
+        {% for handle in grant.activeSubscriptions %}
+          <a class="grant__stakeholders-item ml-2" href="{% url 'profile' handle %}">
+            <img data-src="{% avatar_url handle  %}" />
           </a>
         {% endfor %}
       </div>
       <div class="col-12 text-center">
         <p>
-          <a class="font-title btn btn-outline-white" href="{% url 'grants:fund' grant.id grant.slug %}" target="_blank" rel="noreferrer">
+          <a class="font-title btn btn-outline-white" href="{% url 'grants:fund' grant.id grant.slug %}" rel="noreferrer">
             {% trans 'Fund this Grant' %}
           </a>
         </p>
         <p>
-          <a class="font-title btn btn-outline-white" href="{% url 'grants:details' grant.id grant.slug %}" target="_blank" rel="noreferrer">
+          <a class="font-title btn btn-outline-white" href="{% url 'grants:details' grant.id grant.slug %}" rel="noreferrer">
             {% trans 'View Details' %}
           </a>
         </p>
@@ -42,12 +42,12 @@
       <div class="col-12 mt-2 m-auto text-center">
         <p class="font-weight-bold">No active subscriptions</p>
         <p>
-          <a class="font-title btn btn-outline-white" href="{% url 'grants:fund' grant.id grant.slug %}" target="_blank" rel="noreferrer">
+          <a class="font-title btn btn-outline-white" href="{% url 'grants:fund' grant.id grant.slug %}" rel="noreferrer">
             {% trans 'Fund this Grant' %}
           </a>
         </p>
         <p>
-          <a class="font-title btn btn-outline-white" href="{% url 'grants:details' grant.id grant.slug %}" target="_blank" rel="noreferrer">
+          <a class="font-title btn btn-outline-white" href="{% url 'grants:details' grant.id grant.slug %}" rel="noreferrer">
             {% trans 'View Details' %}
           </a>
         </p>

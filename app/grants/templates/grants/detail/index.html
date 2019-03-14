@@ -18,7 +18,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    {% include 'shared/head.html' %}
+    {% include 'shared/head.html' with slim=1 %}
     {% include 'shared/cards_pic.html' %}
     <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/grants/detail.css" %}">
@@ -51,7 +51,7 @@
             {% if is_admin and not grant_is_inactive %}
               <a id="change-logo" data-toggle="modal" data-target="#changeLogo">
                 <i class="far fa-image"></i>
-                <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
+                <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}" style="{{grant.image_css}}">
               </a>
 
               <div class="modal fade" id="changeLogo" tabindex="-1" role="dialog" aria-labelledby="changeLogoLabel" aria-hidden="true">
@@ -79,16 +79,17 @@
                 </div>
               </div>
             {% else %}
-              <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
+              <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}" style="{{grant.image_css}}">
             {% endif %}
           </div>
           <div class="col-12 col-lg-6">
             <div class="row">
               <div class="col-12">
                 <div class="grant__specs">
+                  {% include 'grants/detail/matching.html' %}
                   <h1 class="grant__title font-title-lg {% if is_admin %} mt-4 {% endif %}">
                     {% if is_admin %}
-                      <textarea id="form--input__title" class="p-0 m-0 inline-edit" disabled>{{ grant.title }}</textarea>
+                      <textarea id="form--input__title" class="p-0 m-0 inline-edit" maxlength="150" disabled>{{ grant.title }}</textarea>
                     {% else %}
                       <span>{{ grant.title }}</span>
                     {% endif %}
@@ -103,12 +104,12 @@
                         <i class="fas fa-link mr-2"></i>
                         {{ grant.reference_url }}
                       </a>
-                      <BR>
-                      <a href="https://etherscan.io/address/{{ grant.admin_address }}" target="_blank" data-toggle="tooltip" data-placement="bottom" title="Recipient Funding Address">
-                        <i class="fas fa-lock mr-2"></i>
-                        {{ grant.admin_address }}
-                      </a>
                     {% endif %}
+                    <BR>
+                    <a href="https://etherscan.io/address/{{ grant.admin_address }}" target="_blank" data-toggle="tooltip" data-placement="bottom" title="Recipient Funding Address">
+                      <i class="fas fa-lock mr-2"></i>
+                      {{ grant.admin_address }}
+                    </a>
                   </span>
                   <div class="grant-item__owner my-2">
                     {% if is_admin and not grant_is_inactive %}
@@ -137,7 +138,7 @@
                     <div class="grant-item__owner my-2">
                       <div class="font-body">
                         <p class="font-caption sub-title mb-0">Contract Owner Address</p>
-                        <input id="contract_owner_address" class="p-0 m-0 inline-edit" name="contract_owner_address" value="{{ grant.contract_owner_address }}" disabled>
+                        <input id="contract_owner_address" class="p-0 m-0 inline-edit" name="contract_owner_address" value="{{ grant.contract_owner_address }}" disabled data-toggle="tooltip" data-placement="bottom" title="Beware! Please do not change this to an address you do NOT own.">
                         <button id="contract_owner_button" class="mt-2 button button--primary button__small hidden">
                           {% trans "Change Contract Owner" %}
                         </button>
@@ -160,8 +161,8 @@
                   <div class="progress-text mt-2">
                     <div class="row">
                       <div class="col-6">
-                        <span>{{ grant.monthly_amount_subscribed|floatformat:2|intcomma }} DAI</span>
-                        <p>Monthly Funding</p>
+                        <span>{{ grant.amount_received|floatformat:2|intcomma }} DAI</span>
+                        <p>Total Funding</p>
                       </div>
                       <div class="col-6 text-right">
                         <span>{{ grant.amount_goal|floatformat:2|intcomma }} DAI</span>
@@ -170,7 +171,7 @@
                     </div>
                   </div>
                   <p>
-                    {% trans 'Total Funding Received: '%} {{ grant.amount_received }}
+                    {% trans 'Monthly Recurring Funding: '%} {{ grant.monthly_amount_subscribed }}
                   </p>
                 </div>
                 {% if grant_is_inactive %}
@@ -225,7 +226,7 @@
                       </div>
                     </div>
                   </div>
-                {% elif user_subscription %}
+                {% elif user_non_errored_subscription %}
                   <a href="{% url 'grants:subscription_cancel' grant.id grant.slug user_subscription.id %}">
                     <button class="button button--primary button--warning button--full">{% trans "Cancel Your Funding" %}</button>
                   </a>
@@ -252,9 +253,9 @@
                     </button>
                   </div>
                 {% endif %}
-                {% if user_subscription %}
+                {% if user_non_errored_subscription %}
                   <h5 class="font-body mt-2 font-weight-semibold">
-                    {% trans 'You have agreed to contribute' %} {{ user_subscription.amount_per_period|floatformat:2|intcomma }} {{ user_subscription.token_symbol }} every {{ user_subscription.frequency }} {{ user_subscription.frequency_unit }}
+                    {% trans 'You have agreed to contribute' %} {{ user_non_errored_subscription.amount_per_period|floatformat:2|intcomma }} {{ user_non_errored_subscription.token_symbol }} every {{ user_non_errored_subscription.frequency }} {{ user_non_errored_subscription.frequency_unit }}
                   </h5>
                 {% endif %}
               </div>

@@ -81,7 +81,8 @@ def record_tip_activity(tip, github_handle, event_name):
         kwargs['profile'] = associated_profile
 
     try:
-        kwargs['bounty'] = tip.bounty
+        if tip.bounty:
+            kwargs['bounty'] = tip.bounty
     except Exception:
         pass
 

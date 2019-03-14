@@ -16,7 +16,7 @@ var local_storage_keys = JSON.parse(JSON.stringify(filters));
 
 local_storage_keys.push('keywords');
 local_storage_keys.push('org');
-results_limit = 25;
+results_limit = 15;
 
 var localStorage;
 
@@ -280,7 +280,7 @@ var removeFilter = function(key, value) {
   refreshBounties(null, 0, false, false);
 };
 
-var get_search_URI = function(offset) {
+var get_search_URI = function(offset, order) {
   var uri = '/api/v0.1/bounties/?';
   var keywords = '';
   var org = '';
@@ -362,10 +362,15 @@ var get_search_URI = function(offset) {
   if (org) {
     uri += '&org=' + org;
   }
+  let order_by;
 
-  var order_by = localStorage['order_by'];
+  if (order) {
+    order_by = order;
+  } else {
+    order_by = localStorage['order_by'];
+  }
 
-  if (order_by) {
+  if (typeof order_by !== 'undefined') {
     uri += '&order_by=' + order_by;
   }
   uri += '&offset=' + offset;
@@ -448,13 +453,23 @@ var refreshBounties = function(event, offset, append, do_save_search) {
   }
 
   const uri = get_search_URI(offset);
+  const uriFeatured = get_search_URI(offset, '-featuring_date');
+  let bountiesURI;
+  let featuredBountiesURI;
+
+  if (!uri.endsWith('?')) {
+    bountiesURI = uri;
+    featuredBountiesURI = uriFeatured + '&';
+  }
+  // bountiesURI += '';
+  featuredBountiesURI += 'is_featured=True';
 
   // Abort pending request if any subsequent request
   if (explorer.bounties_request && explorer.bounties_request.readyState !== 4) {
     explorer.bounties_request.abort();
   }
 
-  explorer.bounties_request = $.get(uri, function(results, x) {
+  explorer.bounties_request = $.get(bountiesURI, function(results, x) {
     results = sanitizeAPIResults(results);
 
     if (results.length === 0 && !append) {
@@ -498,6 +513,32 @@ var refreshBounties = function(event, offset, append, do_save_search) {
       $('#results-count span.plus').html('+');
     } else {
       $('#results-count span.plus').html('');
+    }
+  }).fail(function() {
+    if (explorer.bounties_request.readyState !== 0)
+      _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
+  }).always(function() {
+    $('.loading').css('display', 'none');
+  });
+
+  explorer.bounties_request = $.get(featuredBountiesURI, function(results, x) {
+    results = sanitizeAPIResults(results);
+
+    if (results.length === 0 && !append) {
+      $('.featured-bounties').hide();
+      if (localStorage['referrer'] === 'onboard') {
+        $('.no-results').removeClass('hidden');
+        $('#dashboard-content').addClass('hidden');
+      } else {
+        $('.nonefound').css('display', 'none');
+      }
+    }
+
+    var html = renderFeaturedBountiesFromResults(results, true);
+
+    if (html) {
+      $('.featured-bounties').show();
+      $('#featured-card-container').html(html);
     }
   }).fail(function() {
     if (explorer.bounties_request.readyState !== 0)

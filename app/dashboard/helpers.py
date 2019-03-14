@@ -333,7 +333,9 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
         except Exception as e:
             logger.error(f'{e} during new fulfillment creation for {new_bounty}')
             continue
-    return new_bounty.fulfillments.all()
+
+    if new_bounty:
+        return new_bounty.fulfillments.all()
 
 
 def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
@@ -427,6 +429,10 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 'project_type': schemes.get('project_type', 'traditional'),
                 'permission_type': schemes.get('permission_type', 'permissionless'),
                 'attached_job_description': bounty_payload.get('hiring', {}).get('jobDescription', None),
+                'is_featured': metadata.get('is_featured', False),
+                'featuring_date': timezone.make_aware(
+                    timezone.datetime.fromtimestamp(metadata.get('featuring_date', 0)),
+                    timezone=UTC),
                 'bounty_owner_github_username': bounty_issuer.get('githubUsername', ''),
                 'bounty_owner_address': bounty_issuer.get('address', ''),
                 'bounty_owner_email': bounty_issuer.get('email', ''),
@@ -442,7 +448,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     'bounty_owner_github_username', 'bounty_owner_address', 'bounty_owner_email', 'bounty_owner_name',
                     'github_comments', 'override_status', 'last_comment_date', 'snooze_warnings_for_days',
                     'admin_override_and_hide', 'admin_override_suspend_auto_approval', 'admin_mark_as_remarket_ready',
-                    'funding_organisation', 'bounty_reserved_for_user',
+                    'funding_organisation', 'bounty_reserved_for_user', 'is_featured', 'featuring_date',
                 ],
             )
             if latest_old_bounty_dict['bounty_reserved_for_user']:
@@ -455,6 +461,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
             try:
                 issue_kwargs = get_url_dict(new_bounty.github_url)
                 new_bounty.github_issue_details = get_gh_issue_details(**issue_kwargs)
+
             except Exception as e:
                 logger.error(e)
 
@@ -482,6 +489,11 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 canceled_on = timezone.now()
             if canceled_on:
                 new_bounty.canceled_on = canceled_on
+                new_bounty.save()
+
+            # preserve featured status for bounties where it was set manually
+            new_bounty.is_featured = True if latest_old_bounty and latest_old_bounty.is_featured is True else False
+            if new_bounty.is_featured == True:
                 new_bounty.save()
 
         except Exception as e:
@@ -523,10 +535,10 @@ def process_bounty_details(bounty_details):
     meta = bounty_data.get('meta', {})
 
     # what schema are we working with?
-    schema_name = meta.get('schemaName')
+    schema_name = meta.get('schemaName', 'Unknown')
     schema_version = meta.get('schemaVersion', 'Unknown')
     if not schema_name or schema_name != 'gitcoinBounty':
-        logger.info('Unknown Schema: Unknown - Version: %s', schema_version)
+        logger.info('Unknown Schema: %s - Version: %s', schema_name, schema_version)
         return (False, None, None)
 
     # Create new bounty (but only if things have changed)
@@ -633,6 +645,7 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
                 user_profile = Profile.objects.filter(handle__iexact=fulfillment.fulfiller_github_username).first()
                 if not user_profile:
                     user_profile = sync_profile(fulfillment.fulfiller_github_username)
+                
     except Exception as e:
         logger.error(f'{e} during record_bounty_activity for {new_bounty}')
 
@@ -728,6 +741,7 @@ def process_bounty_changes(old_bounty, new_bounty):
     # record a useraction for this
     record_user_action(event_name, old_bounty, new_bounty)
     record_bounty_activity(event_name, old_bounty, new_bounty)
+
 
     # Build profile pairs list
     if new_bounty.fulfillments.exists():

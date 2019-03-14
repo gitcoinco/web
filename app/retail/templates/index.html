@@ -19,7 +19,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    {% include 'shared/head.html' %}
+    {% include 'shared/head.html' with slim=1 %}
     {% include 'shared/cards.html' %}
     <link rel="stylesheet" href="{% static "v2/css/landing_page.css" %}" />
   </head>
@@ -202,7 +202,7 @@
                    and grow a healthy open source ecosystem.{% endblocktrans %}</p>
               </div>
             </div>
-            <a href="{% url "new_funding" %}" class="btn btn-gc-blue m-4">
+            <a href="{% url "new_bounty" %}" class="btn btn-gc-blue m-4">
               <i class="fab fa-ethereum" aria-hidden="true"></i>
               <span class="pl-1">{% trans "Fund an Issue" %}</span>
             </a>
@@ -349,16 +349,16 @@
         </div>
         {% include "shared/testimonials.html" %}
       </div>
-      {% include 'landing/pilot.html' %}
+      {% include 'bounties/pilot.html' %}
 
       <div class="container-fluid p-5 activity">
-        {% include 'landing/contributor/activity.html' %}
+        {% include 'bounties/contributor/activity.html' %}
       </div>
 
-      {% include 'landing/press.html' %}
+      {% include 'bounties/press.html' %}
       {% include 'shared/footer.html' %}
     </div>
-    {% include 'shared/footer_scripts.html' with slim=1 %}
+    {% include 'shared/footer_scripts_lite.html' with slim=1 %}
     <script src="{% static "v2/js/landing_page.js" %}"></script>
   </body>
   {% include 'shared/analytics.html' %}

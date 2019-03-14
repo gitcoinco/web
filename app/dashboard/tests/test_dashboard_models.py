@@ -23,6 +23,7 @@ from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
 
 import pytz
+from avatar.models import CustomAvatar, SocialAvatar
 from dashboard.models import Bounty, BountyFulfillment, Interest, Profile, Tip, Tool, ToolVote
 from economy.models import ConversionRate, Token
 from test_plus.test import TestCase
@@ -421,6 +422,20 @@ class DashboardModelsTest(TestCase):
         tool.votes.add(vote)
         assert tool.vote_score() == 11
         assert tool.link_url == 'http://gitcoin.co/explorer'
+
+    @staticmethod
+    def test_profile_activate_avatar():
+        """Test the dashboard Profile model activate_avatar method."""
+        profile = Profile.objects.create(
+            data={},
+            handle='fred',
+            email='fred@localhost'
+        )
+        CustomAvatar.objects.create(profile=profile, config="{}")
+        social_avatar = SocialAvatar.objects.create(profile=profile)
+        profile.activate_avatar(social_avatar.pk)
+        assert profile.avatar_baseavatar_related.get(pk=1).active is False
+        assert profile.avatar_baseavatar_related.get(pk=2).active is True
 
     @staticmethod
     def test_bounty_snooze_url():

@@ -243,11 +243,14 @@ function purchaseOption(option, value, target) {
   return;
 }
 
-
 function setOption(option, value, target) {
   if (target.classList.contains('not_paid')) {
     return purchaseOption(option, value, target);
   }
+  return setOptionHelper(option, value, target);
+}
+
+function setOptionHelper(option, value, target) {
 
   const section = $(`#options-${option}`);
   let deselectingFlag = true;
@@ -339,6 +342,66 @@ function setOption(option, value, target) {
   }
 }
 
+function setRandomColor(section) {
+  let palette = sectionPalettes[section];
+  let availableColors = colorOptions[palette];
+  let randomChoice = Math.floor(Math.random() * availableColors.length);
+
+  changeColor(palette, availableColors[randomChoice]);
+}
+
+function randomAvatar(sections, optionalSections) {
+
+  // Random skin color
+  setRandomColor('Head');
+  // Random clothing color
+  setRandomColor('Clothing');
+  // Random hair color
+  setRandomColor('HairStyle');
+
+  // Random avatar components
+  sections.forEach((section, idx) => {
+    const paidOptions = Object.keys(section.paid_options);
+    let options = section.options.filter((option) => !paidOptions.includes(option));
+    let totalOpts = options.length;
+    let componentName = section.name.replace(' ', '');
+    let optional = optionalSections.includes(componentName) ? 0 : 1;
+
+    randomChoice = Math.floor(Math.random() * totalOpts) + optional;
+
+    if (randomChoice != 0) {
+      let option = options[randomChoice - 1];
+      let htmlComponent = null;
+
+      switch (componentName) {
+        case 'HairStyle':
+          option = option.join('-');
+          htmlComponent = $(`#avatar-option-${componentName}-${option}`)[0];
+          setOptionHelper(componentName, option, htmlComponent);
+          break;
+        case 'Accessories':
+          // removing previously selected accesories
+          $('button[id^="avatar-option-Accessories-"].selected').each((idx, component) => {
+            let id = component.id.replace('avatar-option-Accessories-', '');
+
+            setOptionHelper(componentName, JSON.stringify([id]), component);
+          });
+          option.forEach((part, idx) => {
+            htmlComponent = $(`#avatar-option-${componentName}-${part}`)[0];
+            setOptionHelper(componentName, JSON.stringify(option), htmlComponent);
+          });
+          
+          break;
+        default:
+          htmlComponent = $(`#avatar-option-${componentName}-${option}`)[0];
+          setOptionHelper(componentName, option, htmlComponent);
+          break;
+      }
+    }
+  });
+  
+}
+
 function saveAvatar() {
   $(document).ajaxStart(function() {
     loading_button($('#save-avatar'));
@@ -352,7 +415,7 @@ function saveAvatar() {
   $('#later-button').hide();
 
   var request = $.ajax({
-    url: '/avatar/save',
+    url: '/avatar/custom/save',
     type: 'POST',
     data: JSON.stringify(options),
     dataType: 'json',
@@ -361,9 +424,14 @@ function saveAvatar() {
       _alert({ message: gettext('Your Avatar Has Been Saved To your Gitcoin Profile!')}, 'success');
       changeStep(1);
     },
-    error: function() {
+    error: function(response) {
+      let text = gettext('Error occurred while saving. Please try again.');
+
+      if (response.responseJSON && response.responseJSON.message) {
+        text = response.responseJSON.message;
+      }
       $('#later-button').show();
-      _alert({ message: gettext('Error occurred while saving. Please try again.')}, 'error');
+      _alert({ message: text}, 'error');
     }
   });
 }

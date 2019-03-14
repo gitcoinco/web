@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -17,6 +17,7 @@
 '''
 
 import logging
+import time
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -25,6 +26,7 @@ from django.utils import timezone
 from git.utils import (
     get_gh_notifications, get_issue_comments, issue_number, org_name, post_issue_comment_reaction, repo_name,
 )
+from github import RateLimitExceededException
 
 
 class Command(BaseCommand):
@@ -59,6 +61,10 @@ class Command(BaseCommand):
                         if num_reactions == 0 and not is_from_gitcoinbot:
                             print("unprocessed")
                             post_issue_comment_reaction(_org_name, _repo_name, _comment_id, 'heart')
+                except RateLimitExceededException as e:
+                    logging.debug(e)
+                    print(e)
+                    time.sleep(60)
                 except Exception as e:
                     logging.exception(e)
                     print(e)

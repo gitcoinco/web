@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -55,22 +55,23 @@
     <div class="sitenav sitenav__product">
       <h5>{% trans "Product" %}</h5>
       <a href="{% url "explorer" %}">{% trans "Issue Explorer" %}</a>
-      <a href="{% url "tools" %}">{% trans "Tools" %}</a>
       <a href="{% url "kudos_main" %}">{% trans "Kudos" %}</a>
       <a href="{% url "grants:grants" %}">{% trans "Grants" %}</a>
+      <a href="{% url "labs" %}">{% trans "Labs" %}</a>
     </div>
     <div class="sitenav">
       <h5>{% trans "Business" %}</h5>
       <a href="{% url "about" %}">{% trans "About" %}</a>
       <a href="{% url "mission" %}">{% trans "Mission" %}</a>
-      <a href="{% url "about" %}#jobs">{% trans "Careers" %}</a>
       <a href="{% url "results" %}">{% trans "Results" %}</a>
+      <a href="{% url "tools" %}">{% trans "Tools" %}</a>
     </div>
     <div class="sitenav">
       <h5>{% trans "Community" %}</h5>
       <a class="slack{% if active == 'slack' %} selected{% endif %}" href="{% url "slack" %}">
         Slack ({{num_slack}})
       </a>
+      <a href="{% url "activity" %}">{% trans "Activity Feed" %}</a>
       <a href="{% url "help" %}">{% trans "Help" %}</a>
     </div>
     <div class="sitenav">
@@ -79,9 +80,9 @@
       <a href="{% url "privacy" %}" target="_blank" rel="noopener noreferrer">{% trans "Privacy" %}</a>
     </div>
   </div>
-  <div class="row footer__consensys">
+  <div class="d-flex footer__consensys">
     <a href="https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-projects-f5a0955de9d6" style="margin: 10px auto;" target="_blank" rel="noopener noreferrer">
-      <img src="{% static "v2/images/consensys-logo-white-small.png" %}" style="filter: none; width: 100px; height: 35px;"/>
+      <img src="{% static "v2/images/consensys-logo-white-small.png" %}" width="100" height="35"/>
     </a>
   </div>
 </div>

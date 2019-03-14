@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -43,6 +43,7 @@ logger = logging.getLogger(__name__)
 
 # key, name, frequency
 MARKETING_EMAILS = [
+    ('welcome_mail', _('Welcome Emails'), _('First 3 days after you sign up')),
     ('roundup', _('Roundup Emails'), _('Weekly')),
     ('new_bounty_notifications', _('New Bounty Notification Emails'), _('(up to) Daily')),
     ('important_product_updates', _('Product Update Emails'), _('Quarterly')),
@@ -58,6 +59,7 @@ TRANSACTIONAL_EMAILS = [
         'bounty_expiration', _('Bounty Expiration Warning Emails'),
         _('Only after you posted a bounty which is going to expire')
     ),
+    ('featured_funded_bounty', _('Featured Funded Bounty Emails'), _('Only when you\'ve paid for a bounty to be featured'))
 ]
 
 ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS
@@ -68,6 +70,32 @@ def premailer_transform(html):
     p = premailer.Premailer(html, base_url=settings.BASE_URL)
     return p.transform()
 
+def render_featured_funded_bounty(bounty):
+    params = {'bounty': bounty}
+    response_html = premailer_transform(render_to_string("emails/funded_featured_bounty.html", params))
+    response_txt = render_to_string("emails/funded_featured_bounty.txt", params)
+    subject = _("You've successfully funded a bounty!")
+
+    return response_html, response_txt, subject
+
+
+def render_nth_day_email_campaign(to_email, nth, firstname):
+    subject_map = {
+        1: "Day 1: Growing Open Source",
+        2: "Day 2: Using Gitcoin's Issue Explorer",
+        3: "Learning Blockchain"
+    }
+
+    subject = subject_map[nth]
+
+    params = {
+        "firstname": firstname,
+        "subscriber": get_or_save_email_subscriber(to_email, "internal"),
+    }
+    response_html = premailer_transform(render_to_string(f"emails/campaigns/email_campaign_day_{nth}.html", params))
+    response_txt = render_to_string(f"emails/campaigns/email_campaign_day_{nth}.txt", params)
+
+    return response_html, response_txt, subject
 
 def render_new_grant_email(grant):
     params = {'grant': grant}
@@ -156,6 +184,12 @@ def render_successful_contribution_email(grant, subscription, contribution):
     response_txt = render_to_string("emails/grants/successful_contribution.txt", params)
     subject = _('Your Gitcoin Grants contribution was successful!')
     return response_html, response_txt, subject
+
+def featured_funded_bounty(request):
+    from dashboard.models import Bounty
+    bounty = Bounty.objects.first()
+    response_html, __, __ = render_featured_funded_bounty(bounty)
+    return HttpResponse(response_html)
 
 
 @staff_member_required
@@ -336,6 +370,13 @@ def render_quarterly_stats(to_email, platform_wide_stats):
     response_html = premailer_transform(render_to_string("emails/quarterly_stats.html", params))
     response_txt = render_to_string("emails/quarterly_stats.txt", params)
 
+    return response_html, response_txt
+
+
+def render_funder_payout_reminder(**kwargs):
+    kwargs['bounty_fulfillment'] = kwargs['bounty'].fulfillments.filter(fulfiller_github_username=kwargs['github_username']).last()
+    response_html = premailer_transform(render_to_string("emails/funder_payout_reminder.html", kwargs))
+    response_txt = ''
     return response_html, response_txt
 
 
@@ -592,6 +633,34 @@ def render_gdpr_reconsent(to_email):
     return response_html, response_txt
 
 
+def render_share_bounty(to_email, msg, from_profile):
+    """Render the share bounty email template.
+
+    Args:
+        to_email: user to send the email to.
+        msg: the message sent in the email.
+
+    Returns:
+        str: The rendered response as a string.
+
+    """
+    to_email = f"@{to_email}" if to_email else "there"
+    response_txt = f"""
+hi {to_email},
+
+{msg}
+
+@{from_profile.handle}
+{from_profile.email}
+
+
+"""
+
+    params = {'txt': response_txt}
+    response_html = premailer_transform(render_to_string("emails/txt.html", params))
+    return response_html, response_txt
+
+
 def render_new_work_submission(to_email, bounty):
     params = {
         'bounty': bounty,
@@ -842,37 +911,74 @@ def render_start_work_applicant_expired(interest, bounty):
     return response_html, response_txt, subject
 
 
-
-# ROUNDUP_EMAIL
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
-    subject = "Liberal Radicalism In Open Source Software"
-    new_kudos_pks = [1053, 1059, 866]
+    from django.conf import settings
+    subject = "A Free Gitcoin Avatar For YOU!"
+    new_kudos_pks = [1971, 1970, 1969, 1968]
     new_kudos_size_px = 150
-    intro = '''
-<p>
-Hi Gitcoiners,
-<p>
-<p>
-This week, we wrote about <a href="https://medium.com/gitcoin/experiments-with-liberal-radicalism-ad68e02efd4">Liberal Radicalism</a>, a paper proposed by Vitalik Buterin, Glen Weyl, and Zoe Hitzig. Our thinking
-describes a public good problem in open source, the CLR mechanism, and how we are experimenting with it via Gitcoin Grants. If you're interested in joining the discussion,
-<a href="https://discourse.gitcoin.co/t/liberal-radicalism-in-open-source-software/16">our Discourse</a> is a good place to start.
-</p>
-<p>
-The potential with Gitcoin Grants is high, and we're excited to explore. <a href="https://consensys1mac.typeform.com/to/HFcZKe">Let us know</a> if you'd like to be in a future cohort and we'll
-reach out with more details. Want to contribute to a Gitcoin Grant? <a href="https://gitcoin.co/grants/">Take a look at our launch partners</a>, including Prysmatic Labs, Ethereum PM, and more.
-</p>
-<p>
+
+    # generate an avatar
+    from dashboard.models import Profile
+    from django.templatetags.static import static
+    profile = Profile.objects.get(email__iexact=to_email)
+    avatar_url = None
+
+    # can't do this if not profile
+    if not profile:
+        return None, None, None
+    always_generate_new_avatar = settings.DEBUG
+    
+    if not profile.has_custom_avatar() or always_generate_new_avatar:
+        avatar = profile.build_random_avatar()
+        avatar_url = avatar.avatar_url
+    else:
+        avatars = profile.avatar_baseavatar_related.filter(active=True)
+        avatar_url = avatars.first().avatar_url
+    #### end avatar generator
+
+    kudos_friday = f'''
 <h3>Happy Kudos Friday!</h3>
 </p>
 <p>
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
 </p>
+    '''
+    kudos_friday = ''    
+    animated_avatars = 'https://s.gitcoin.co/static/v2/images/animated_avatars.gif'
+    intro = f'''
+<p>
+Hi Gitcoiners,
+<p>
+There are thousands of community members at Gitcoin.  They each have a diverse set of skills, attributes, preferences, and backgrounds.
+</p>
+<p>
+<a href="https://gitcoin.co/onboard/profile/?steps=avatar#section-title">
+<img src='{animated_avatars}'>
+</a>
+</p>
+<p>
+In order to celebrate this, we built the <a href="https://gitcoin.co/onboard/profile/?steps=avatar#section-title">Gitcoin avatar builder</a>. The Gitcoin avatar builder allows you to express yourself with 100s of unique items, that together allow you to create millions of permutations of unique avatars.
+</p>
+<p>
+This week, I have a special treat for you.  We've made you a special Gitcoin avatar.
+</p>
+<p>
+Here it is!
+</p>
+<p>
+<img src={avatar_url}
+</p>
+<p>
+Of course, this avatar was just generated for fun :)  We recommend you head over to the <a href="https://gitcoin.co/onboard/profile/?steps=avatar#section-title">Gitcoin Avatar Builder</a> and create an avatar that you think is uniquely *you* today!
+</p>
 
+<p>
+{kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream">on Friday at 5PM ET</a>!
+            Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream">on Friday at 5PM ET or catch it on <a href="https://twitter.com/GetGitcoin">Twitter</a>!
         </li>
     </ul>
 </p>
@@ -882,39 +988,39 @@ Back to shipping,
 
 '''
     highlights = [{
-        'who': 'lrgeoemtry',
+        'who': 'anish-agnihotri',
         'who_link': True,
-        'what': 'Great Linux skills!',
-        'link': 'https://gitcoin.co/issue/HERCone/herc-edge-login/130/2114',
+        'what': 'Wrote about web3 business models!',
+        'link': 'https://gitcoin.co/issue/FEMBusinessModelsRing/web3_revenue_primitives/8/2471',
         'link_copy': 'View more',
     }, {
-        'who': 'johngrantuk',
+        'who': 'eswarasai',
         'who_link': True,
-        'what': 'More great work on the Burner Wallet!',
-        'link': 'https://gitcoin.co/issue/austintgriffith/burner-wallet/72/2111',
+        'what': 'Worked on an auto-detector for Solidity Compilers',
+        'link': 'https://gitcoin.co/issue/b-mueller/sabre/7/2541',
         'link_copy': 'View more',
     }, {
-        'who': 'zyfrank',
+        'who': 'poojaranjan',
         'who_link': True,
-        'what': 'Great work on the Centrifuge repo!',
-        'link': 'https://gitcoin.co/issue/centrifuge/precise-proofs/43/2090',
+        'what': 'Take Notes For All Core Devs Meeting #56',
+        'link': 'https://gitcoin.co/issue/ethereum-cat-herders/PM/9/2478',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/austintgriffith/burner-wallet/issues/78',
-        'primer': 'Burner Wallet, a very important crypto project!',
+        'url': 'https://github.com/paritytech/parity-ethereum/issues/10085',
+        'primer': 'Parity featured bounty!',
     }, {
-        'url': 'https://github.com/gitcoinco/web/issues/3561',
-        'primer': 'Help us get images on the Gitcoin Blog!',
+        'url': 'https://github.com/status-im/status-react/issues/7667',
+        'primer': 'Its always a pleasure to work with the Status Team!',
     }, {
-        'url': 'https://github.com/NethermindEth/nethermind/issues/334',
-        'primer': '.NET skills? Here is the bounty for you!',
+        'url': 'https://github.com/matter-labs/FranklinPay-iOS/issues/13',
+        'primer': 'An opportunity to work on NFT interfaces!',
     }, ]
 
     num_leadboard_items = 5
     highlight_kudos_ids = []
-    num_kudos_to_show = 10
+    num_kudos_to_show = 15
 
     #### don't need to edit anything below this line
     leaderboard = {
@@ -936,7 +1042,7 @@ Back to shipping,
     if highlight_kudos_ids:
         kudos_highlights = KudosTransfer.objects.filter(id__in=highlight_kudos_ids)
     else:
-        kudos_highlights = KudosTransfer.objects.exclude(txid='').order_by('-created_on')[:num_kudos_to_show]
+        kudos_highlights = KudosTransfer.objects.exclude(network='mainnet', txid='').order_by('-created_on')[:num_kudos_to_show]
 
     for key, __ in leaderboard.items():
         leaderboard[key]['items'] = LeaderboardRank.objects.active() \
@@ -972,6 +1078,8 @@ Back to shipping,
     response_txt = render_to_string("emails/bounty_roundup.txt", params)
 
     return response_html, response_txt, subject
+
+
 
 # DJANGO REQUESTS
 
@@ -1093,6 +1201,23 @@ def bounty_feedback(request):
 
 
 @staff_member_required
+def funder_payout_reminder(request):
+    """Display the funder payment reminder email template.
+
+    Params:
+        username (str): The Github username to reference in the email.
+
+    Returns:
+        HttpResponse: The HTML version of the templated HTTP response.
+
+    """
+    from dashboard.models import Bounty
+    bounty = Bounty.objects.filter(fulfillment_submitted_on__isnull=False).first()
+    github_username = request.GET.get('username', '@foo')
+    response_html, _ = render_funder_payout_reminder(bounty=bounty, github_username=github_username)
+    return HttpResponse(response_html)
+
+@staff_member_required
 def funder_stale(request):
     """Display the stale funder email template.
 
@@ -1172,6 +1297,13 @@ def quarterly_roundup(request):
 @staff_member_required
 def gdpr_reconsent(request):
     response_html, _ = render_gdpr_reconsent(settings.CONTACT_EMAIL)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def share_bounty(request):
+    profile = Profile.objects.filter(handle=handle).first()
+    response_html, _ = render_share_bounty(settings.CONTACT_EMAIL, 'This is a sample message', profile)
     return HttpResponse(response_html)
 
 

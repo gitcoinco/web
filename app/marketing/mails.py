@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import logging
 
 from django.conf import settings
+from django.http import Http404, HttpResponse
 from django.utils import timezone, translation
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
@@ -31,10 +32,11 @@ from retail.emails import (
     render_admin_contact_funder, render_bounty_changed, render_bounty_expire_warning, render_bounty_feedback,
     render_bounty_startwork_expire_warning, render_bounty_unintersted, render_change_grant_owner_accept,
     render_change_grant_owner_reject, render_change_grant_owner_request, render_faucet_rejected, render_faucet_request,
-    render_funder_stale, render_gdpr_reconsent, render_gdpr_update, render_grant_cancellation_email, render_kudos_email,
-    render_match_email, render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection,
-    render_new_bounty_roundup, render_new_grant_email, render_new_supporter_email, render_new_work_submission,
-    render_notify_ownership_change, render_quarterly_stats, render_reserved_issue,
+    render_featured_funded_bounty, render_funder_payout_reminder, render_funder_stale, render_gdpr_reconsent,
+    render_gdpr_update, render_grant_cancellation_email, render_kudos_email, render_match_email, render_new_bounty,
+    render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup, render_new_grant_email,
+    render_new_supporter_email, render_new_work_submission, render_notify_ownership_change,
+    render_nth_day_email_campaign, render_quarterly_stats, render_reserved_issue, render_share_bounty,
     render_start_work_applicant_about_to_expire, render_start_work_applicant_expired, render_start_work_approved,
     render_start_work_new_applicant, render_start_work_rejected, render_subscription_terminated_email,
     render_successful_contribution_email, render_support_cancellation_email, render_thank_you_for_supporting_email,
@@ -107,6 +109,39 @@ def send_mail(from_email, _to_email, subject, body, html=False,
         logger.error(f'-- Sendgrid Mail failure - {e}')
 
     return response
+
+
+def nth_day_email_campaign(nth, subscriber):
+    firstname = subscriber.email.split('@')[0]
+
+    if subscriber.profile and subscriber.profile.user and subscriber.profile.user.first_name:
+        firstname = subscriber.profile.user.first_name
+
+    if should_suppress_notification_email(subscriber.email, 'roundup'):
+        return False
+    cur_language = translation.get_language()
+
+    try:
+        setup_lang(subscriber.email)
+        from_email = settings.CONTACT_EMAIL
+        if not should_suppress_notification_email(subscriber.email, 'welcome_mail'):
+            html, text, subject = render_nth_day_email_campaign(subscriber.email, nth, firstname)
+            send_mail(from_email, subscriber.email, subject, text, html)
+    finally:
+        translation.activate(cur_language)
+
+
+def featured_funded_bounty(from_email, bounty):
+    to_email = bounty.bounty_owner_email
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        html, text, subject = render_featured_funded_bounty(bounty)
+
+        if not should_suppress_notification_email(to_email, 'featured_funded_bounty'):
+            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+    finally:
+        translation.activate(cur_language)
 
 
 def new_grant(grant, profile):
@@ -487,6 +522,46 @@ def gdpr_reconsent(email):
     )
 
 
+def funder_payout_reminder(to_email, bounty, github_username, live):
+    from_email = settings.PERSONAL_CONTACT_EMAIL
+    subject = "Payout reminder"
+    html, text = render_funder_payout_reminder(to_email=to_email, bounty=bounty, github_username=github_username)
+    if (live):
+        try:
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                text,
+                html,
+                from_name="Kevin Owocki (Gitcoin.co)",
+                categories=['marketing', func_name()],
+            )
+        except Exception as e:
+            logger.warning(e)
+            return False
+        return True
+    else:
+        return html
+
+
+def share_bounty(emails, msg, profile):
+    for email in emails:
+        to_email = email
+        from_email = profile.email
+        subject = "You have been invited to work on a bounty."
+        html, text = render_share_bounty(to_email, msg, profile)
+        send_mail(
+            from_email,
+            to_email,
+            subject,
+            text,
+            html,
+            from_name=f"@{profile.handle}",
+            categories=['transactional', func_name()],
+        )
+
+
 def new_reserved_issue(from_email, user, bounty):
     to_email = user.email
     cur_language = translation.get_language()
@@ -528,7 +603,6 @@ def reject_faucet_request(fr):
     finally:
         translation.activate(cur_language)
 
-
 def new_bounty_daily(bounties, old_bounties, to_emails=None):
     if not bounties:
         return
@@ -565,6 +639,10 @@ def weekly_roundup(to_emails=None):
             setup_lang(to_email)
             html, text, subject = render_new_bounty_roundup(to_email)
             from_email = settings.PERSONAL_CONTACT_EMAIL
+            
+            if not html:
+                print("no content")
+                return
 
             if not should_suppress_notification_email(to_email, 'roundup'):
                 send_mail(

@@ -11,7 +11,39 @@ $(document).ready(function() {
 
   updateSummary();
 
+  $('#frequency_unit, #js-token').on('select2:select', event => {
+    updateSummary();
+  });
+
+  $('input#frequency_count, input#amount, input#period').on('input', () => {
+    updateSummary();
+  });
+
+  $('.contribution_type select').change(function() {
+    if ($('.contribution_type select').val() == 'once') {
+      $('.frequency').addClass('hidden');
+      $('.num_recurring').addClass('hidden');
+      $('.hide_if_onetime').addClass('hidden');
+      $('.hide_if_recurring').removeClass('hidden');
+      $('#period').val(1);
+      updateSummary();
+      $('#amount_label').text('Amount');
+    } else {
+      $('.frequency').removeClass('hidden');
+      $('.num_recurring').removeClass('hidden');
+      $('#amount_label').text('Amount Per Period');
+      $('.hide_if_onetime').removeClass('hidden');
+      $('.hide_if_recurring').addClass('hidden');
+    }
+  });
+
   $('#js-fundGrant').validate({
+    rules: {
+      num_periods: {
+        required: true,
+        min: 1
+      }
+    },
     submitHandler: function(form) {
       var data = {};
 
@@ -47,16 +79,28 @@ $(document).ready(function() {
       if (data.token_address != '0x0000000000000000000000000000000000000000') {
         selected_token = data.token_address;
         deployedToken = new web3.eth.Contract(compiledToken.abi, data.token_address);
-        $('#sub_token_address').val(data.token_address);
       } else {
         selected_token = data.denomination;
         deployedToken = new web3.eth.Contract(compiledToken.abi, data.denomination);
         $('#token_symbol').val($('#js-token option:selected').text());
       }
+      if (!selected_token) {
+        _alert('Please select a token', 'error');
+        return;
+      }
 
       deployedToken.methods.decimals().call(function(err, decimals) {
+        if (err) {
+          _alert('The token you selected is not a valid ERC20 token', 'error');
+          return;
+        }
 
-        let realGasPrice = Math.ceil($('#gasPrice').val() * 10 ** 9);
+        let realGasPrice = 0; // zero cost metatxs
+
+        if (realPeriodSeconds < 2592000) {
+          // charge gas for intervals less than a month
+          realGasPrice = Math.ceil($('#gasPrice').val() * 10 ** 9);
+        }
 
         $('#gas_price').val(realGasPrice);
 
@@ -72,8 +116,17 @@ $(document).ready(function() {
 
           let url;
 
-          deployedToken.methods.approve(
-            data.contract_address,
+          var tokenMethod = deployedToken.methods.approve;
+          var arg1 = data.contract_address;
+
+          // one time payments
+          if (data.num_periods == 1) {
+            arg1 = data.admin_address;
+            tokenMethod = deployedToken.methods.transfer;
+          }
+
+          tokenMethod(
+            arg1,
             web3.utils.toTwosComplement(approvalSTR)
           ).send({
             from: accounts[0],
@@ -84,14 +137,14 @@ $(document).ready(function() {
           }).on('transactionHash', function(transactionHash) {
             $('#sub_new_approve_tx_id').val(transactionHash);
             const linkURL = etherscan_tx_url(transactionHash);
-
+            let token_address = $('#js-token').length ? $('#js-token').val() : $('#sub_token_address').val();
             let data = {
               'contributor_address': $('#contributor_address').val(),
               'amount_per_period': $('#amount').val(),
               'real_period_seconds': realPeriodSeconds,
               'frequency': $('#frequency_count').val(),
               'frequency_unit': $('#frequency_unit').val(),
-              'token_address': $('#js-token').val(),
+              'token_address': selected_token,
               'token_symbol': $('#token_symbol').val(),
               'gas_price': $('#gas_price').val(),
               'sub_new_approve_tx_id': transactionHash,
@@ -210,30 +263,15 @@ const waitforData = (callback) => {
   }
 };
 
+
 const updateSummary = (element) => {
 
   $('#summary-period').html($('input#frequency_count').val());
   $('#summary-amount').html($('input#amount').val() ? $('input#amount').val() : 0);
   $('#summary-frequency').html($('input#period').val() ? $('input#period').val() : 0);
   $('#summary-frequency-unit').html($('#frequency_unit').val());
+  if ($('#token_symbol').val() === 'Any Token') {
+    $('#summary-token').html($('#js-token option:selected').text());
+  }
 
-  $('#js-token').on('select2:select', event => {
-    $('#summary-token').html(event.params.data.text);
-  });
-
-  $('#frequency_unit').on('select2:select', event => {
-    $('#summary-frequency-unit').html(event.params.data.text);
-  });
-
-  $('input#frequency_count').on('input', () => {
-    $('#summary-period').html($('input#frequency_count').val());
-  });
-
-  $('input#amount').on('input', () => {
-    $('#summary-amount').html($('input#amount').val());
-  });
-
-  $('input#period').on('input', () => {
-    $('#summary-frequency').html($('input#period').val());
-  });
 };

@@ -21,8 +21,8 @@ $(document).ready(function() {
     );
   }, 1000);
 
-  userSearch('#grant-admin');
-  userSearch('#grant-members');
+  userSearch('#grant-admin', false, undefined, false, false, true);
+  userSearch('#grant-members', false, undefined, false, false, true);
   $('.select2-selection__rendered').removeAttr('title');
   $('#form--input__description').height($('#form--input__description').prop('scrollHeight'));
   $('#form--input__title').height($('#form--input__title').prop('scrollHeight'));

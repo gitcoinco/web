@@ -7,12 +7,20 @@ $(document).ready(() => {
     minimumResultsForSearch: Infinity
   });
 
+  $(document).on('click', '.grant-item', function() {
+    $(this).find('img').each(function() {
+      var src_url = $(this).data('src');
+
+      $(this).attr('src', src_url);
+    });
+  });
+
   searchGrant();
   populateFilters();
 
   $('.select2-selection__rendered').removeAttr('title');
 
-  $('.flip-card').on('click keypress', e => {
+  $(document).on('click keypress', '.flip-card', e => {
     if ($(e.target).is('a') || $(e.target).is('img')) {
       e.stopPropagation();
       return;
@@ -22,13 +30,18 @@ $(document).ready(() => {
 
   waitforWeb3(() => {
     let _network = $('#grant-network').html();
+    let links = $('.etherscan_link');
 
-    $('#sub_tx_link').attr('href', etherscan_tx_url($('#sub_tx_link').attr('href'), _network));
-    $('#tx_link').attr('href', etherscan_tx_url($('#tx_link').attr('href'), _network));
-    $('#cancel_tx_link').attr('href', etherscan_tx_url($('#cancel_tx_link').attr('href'), _network));
+    etherscanUrlConvert(links, _network);
   });
 
 });
+
+const etherscanUrlConvert = (elem, network) => {
+  elem.each(function() {
+    $(this).attr('href', etherscan_tx_url($(this).attr('href'), network));
+  });
+};
 
 const searchGrant = () => {
   $('#sort_option').on('change', function(e) {

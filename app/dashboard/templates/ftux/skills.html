@@ -16,15 +16,15 @@
 {% endcomment %}
 
 {% load i18n static %}
-<div id="skills" class="row">
+<div id="skills" class="row col-md-8 m-auto">
   <div class="col-12">
     <h2>{% trans "What's Your Skill Set?" %}</h2>
   </div>
-  <div class="col-12 offset-md-2 col-md-8 font-body pl-0 pr-0">
+  <div class="col-12 font-body">
     <p class="font-caption label">{% trans "Select Skills that Apply" %}</p>
     <div id="suggested-tags"></div>
   </div>
-  <div class="search col-12 offset-md-2 col-md-8 pl-0 pr-0">
+  <div class="search col-12">
     <p class="font-caption label">{% trans "Add Skills" %}</p>
     <div class="search-area col-12">
       <input class="focus-effect form__input form__input_lg" id="keywords" type="text" placeholder="{% trans 'List out : Skill 1, Skill 2 ...' %}" />
@@ -33,20 +33,20 @@
       </span>
     </div>
   </div>
-  <div class="col-12 offset-md-2 col-md-8 font-body pl-0 pr-0">
+  <div class="col-12 font-body">
     <div class="filter-tags"></div>
   </div>
-  <div class="col-12 offset-md-2 col-md-8 row pl-0 pr-0">
-    <div class="col-12 col-md-4 col-lg-3 pl-0 pr-0">
+  <div class="col-12">
+    <div class="">
       <p class="font-caption label experienceLabel">{% trans "Experience Level" %}</p>
     </div>
-    <div class="form__select2 col-12 col-md-8 col-lg-9 pl-0 pr-0">
-        <select class="w-100 js-select2" id="experienceLevel">
-            <option value="">{% trans "Any" %}</option>
-            <option value="beginner">{% trans "Beginner ( < 3 years Experience )" %}</option>
-            <option value="intermediate">{% trans "Intermediate ( 4 - 6 years Experience )" %}</option>
-            <option value="advanced">{% trans "Advanced ( 7+ years Experience )" %}</option>
-        </select>
+    <div class="form__select2">
+      <select class="w-100 js-select2" id="experienceLevel">
+        <option value="">{% trans "Any" %}</option>
+        <option value="beginner">{% trans "Beginner ( < 3 years Experience )" %}</option>
+        <option value="intermediate">{% trans "Intermediate ( 4 - 6 years Experience )" %}</option>
+        <option value="advanced">{% trans "Advanced ( 7+ years Experience )" %}</option>
+      </select>
     </div>
   </div>
 </div>
