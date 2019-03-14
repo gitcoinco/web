@@ -126,7 +126,7 @@ urlpatterns = [
 
     # Hackathons / special events
     re_path(r'^hackathon/(?P<hackathon>.*)?/', dashboard.views.hackathon, name='hackathon'),
-    path('list_hackathon/', dashboard.views.get_hackathons, name='get_hackathons'),
+    path('hackathon-list/', dashboard.views.get_hackathons, name='get_hackathons'),
 
     # action URLs
     url(r'^bounties/funder', retail.views.funder_bounties, name='funder_bounties'),

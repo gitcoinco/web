@@ -148,7 +148,7 @@ class BountyViewSet(viewsets.ModelViewSet):
             try:
                 evt = HackathonEvent.objects.filter(slug__iexact=event_tag).latest('id')
                 queryset = queryset.filter(event__pk=evt.pk)
-            except:
+            except HackathonEvent.DoesNotExist:
                 return Bounty.objects.none()
         else:
             queryset = queryset.filter(event=None)

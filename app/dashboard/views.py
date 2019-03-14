@@ -2064,7 +2064,7 @@ def hackathon(request, hackathon=''):
     try:
         evt = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
         title = evt.name
-    except:
+    except HackathonEvent.DoesNotExist:
         raise Http404
 
     params = {
@@ -2081,7 +2081,7 @@ def get_hackathons(request):
     evt = None
     try:
         evt = HackathonEvent.objects.values()
-    except:
+    except HackathonEvent.DoesNotExist:
         raise Http404
 
     params = {
