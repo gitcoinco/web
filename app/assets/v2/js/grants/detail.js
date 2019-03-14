@@ -109,7 +109,7 @@ $(document).ready(function() {
           .send({
             from: accounts[0],
             gas: 3000000,
-            gasPrice: web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9))
+            gasPrice: web3.utils.toHex($('#gasPrice').val() * 10 ** 9)
           }).on('transactionHash', function(transactionHash) {
             grant_cancel_tx_id = $('#grant_cancel_tx_id').val();
             const linkURL = etherscan_tx_url(transactionHash);

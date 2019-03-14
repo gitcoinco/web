@@ -121,7 +121,7 @@ $(document).ready(function() {
 
   const show_error_banner = (result, web3_not_found) => {
     if ($('#grants_form').length) {
-      var is_zero_balance_not_okay = document.location.href.indexOf('/faucet') == -1;
+      var is_zero_balance_not_okay = !document.location.href.includes('/faucet');
 
       if (typeof web3 == 'undefined' || web3_not_found) {
         $('#no_metamask_error').css('display', 'block');

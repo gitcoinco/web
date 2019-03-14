@@ -62,7 +62,7 @@ const token_value_to_display = function(val) {
   if (!val) {
     return '';
   }
-  return Math.round((parseInt(val) / Math.pow(10, document.decimals)) * 1000) / 1000;
+  return Math.round((parseInt(val) / 10 ** document.decimals) * 1000) / 1000;
 };
 
 // rows in the 'about' page
@@ -202,7 +202,7 @@ var callbacks = {
     if (result['token_name'] == 'ETH' || val === null) {
       return [ null, null ];
     }
-    return [ 'Amount (ETH)', Math.round((parseInt(val) / Math.pow(10, 18)) * 1000) / 1000 ];
+    return [ 'Amount (ETH)', Math.round((parseInt(val) / 10 ** 18) * 1000) / 1000 ];
   },
   'value_in_usdt': function(key, val, result) {
     if (val === null) {
@@ -490,7 +490,7 @@ var showWarningMessage = function(txid) {
   $('.interior .body').addClass('open');
   $('.interior .body').addClass('loading');
 
-  if (typeof txid != 'undefined' && txid.indexOf('0x') != -1) {
+  if (typeof txid != 'undefined' && txid.includes('0x')) {
     waitforWeb3(function() {
       clearInterval(interval);
       var link_url = etherscan_tx_url(txid);
@@ -603,7 +603,7 @@ var attach_contact_funder_options = function() {
   $('body').delegate('a.contact_bounty_hunter', 'click', function(e) {
     e.preventDefault();
     var text = window.prompt('What would you like to say to the funder?', '');
-    var connector_char = document.location.href.indexOf('?') == -1 ? '?' : '&';
+    var connector_char = !document.location.href.includes('?') ? '?' : '&';
     var url = document.location + connector_char + 'admin_contact_funder=' + text;
 
     document.location.href = url;
@@ -615,7 +615,7 @@ var attach_snoozee_options = function() {
   $('body').delegate('a.snooze_gitcoin_bot', 'click', function(e) {
     e.preventDefault();
     var text = window.prompt('How many days do you want to snooze?', '');
-    var connector_char = document.location.href.indexOf('?') == -1 ? '?' : '&';
+    var connector_char = !document.location.href.includes('?') ? '?' : '&';
     var url = document.location + connector_char + 'snooze=' + text;
 
     document.location.href = url;
@@ -626,7 +626,7 @@ var attach_override_status = function() {
   $('body').delegate('a.admin_override_satatus', 'click', function(e) {
     e.preventDefault();
     var text = window.prompt('What new status (valid choices: "open", "started", "submitted", "done", "expired", "cancelled", "" to remove override )?', '');
-    var connector_char = document.location.href.indexOf('?') == -1 ? '?' : '&';
+    var connector_char = !document.location.href.includes('?') ? '?' : '&';
     var url = document.location + connector_char + 'admin_override_satatus=' + text;
 
     document.location.href = url;
@@ -1054,7 +1054,7 @@ var do_actions = function(result) {
 
 
   if (show_suspend_auto_approval) {
-    const connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
+    const connector_char = !result['url'].includes('?') ? '?' : '&';
     const url = result['url'] + connector_char + 'suspend_auto_approval=1';
 
     const _entry = {
@@ -1071,7 +1071,7 @@ var do_actions = function(result) {
   }
 
   if (show_admin_methods) {
-    const connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
+    const connector_char = !result['url'].includes('?') ? '?' : '&';
     const url = result['url'] + connector_char + 'admin_override_and_hide=1';
 
     const _entry = {
@@ -1088,7 +1088,7 @@ var do_actions = function(result) {
   }
 
   if (show_admin_methods || show_moderator_methods) {
-    const connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
+    const connector_char = !result['url'].includes('?') ? '?' : '&';
     const url = result['url'] + connector_char + 'admin_toggle_as_remarket_ready=1';
 
     const _entry = {
@@ -1105,7 +1105,7 @@ var do_actions = function(result) {
   }
 
   if ((show_admin_methods || show_moderator_methods) && needs_review) {
-    const connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
+    const connector_char = !result['url'].includes('?') ? '?' : '&';
     const url = result['url'] + connector_char + 'mark_reviewed=1';
 
     const _entry = {

@@ -4,29 +4,29 @@ var gas_amount = function(page_url) {
   var gasLimitEstimate = 0;
   // new new funding page
 
-  if (page_url.indexOf('issue/fulfill') != -1) {
+  if (page_url.includes('issue/fulfill')) {
     gasLimitEstimate = 207103;
-  } else if (page_url.indexOf('/new') != -1) { // new fulfill funding page
+  } else if (page_url.includes('/new')) { // new fulfill funding page
     gasLimitEstimate = 318730;
-  } else if (page_url.indexOf('issue/increase') != -1) { // new fulfill funding page
+  } else if (page_url.includes('issue/increase')) { // new fulfill funding page
     gasLimitEstimate = 56269;
-  } else if (page_url.indexOf('issue/accept') != -1) { // new process funding page
+  } else if (page_url.includes('issue/accept')) { // new process funding page
     gasLimitEstimate = 103915;
-  } else if (page_url.indexOf('issue/cancel') != -1) { // new kill funding page
+  } else if (page_url.includes('issue/cancel')) { // new kill funding page
     gasLimitEstimate = 67327;
-  } else if (page_url.indexOf('issue/advanced_payout') != -1) { // advanced payout page
+  } else if (page_url.includes('issue/advanced_payout')) { // advanced payout page
     gasLimitEstimate = 67327;
-  } else if (page_url.indexOf('issue/payout') != -1) { // bulk payout
+  } else if (page_url.includes('issue/payout')) { // bulk payout
     gasLimitEstimate = 103915;
-  } else if (page_url.indexOf('tip/send') != -1) { // tip
+  } else if (page_url.includes('tip/send')) { // tip
     gasLimitEstimate = 21000;
-  } else if (page_url.indexOf('tip/receive') != -1) { // tip
+  } else if (page_url.includes('tip/receive')) { // tip
     gasLimitEstimate = 21000;
-  } else if (page_url.indexOf('/fund') != -1) { // grant contribution
+  } else if (page_url.includes('/fund')) { // grant contribution
     gasLimitEstimate = 318730;
-  } else if (page_url.indexOf('/subscription') != -1) { // canacel grant contribution
+  } else if (page_url.includes('/subscription')) { // canacel grant contribution
     gasLimitEstimate = 318730;
-  } else if (page_url.indexOf('/grants/') != -1) { // canacel grant contribution
+  } else if (page_url.includes('/grants/')) { // canacel grant contribution
     gasLimitEstimate = 318730;
   }
   return gasLimitEstimate;

@@ -56,11 +56,11 @@ $(document).ready(function() {
 
       deployedToken.methods.decimals().call(function(err, decimals) {
 
-        let realGasPrice = Math.ceil($('#gasPrice').val() * Math.pow(10, 9));
+        let realGasPrice = Math.ceil($('#gasPrice').val() * 10 ** 9);
 
         $('#gas_price').val(realGasPrice);
 
-        let realTokenAmount = Number(data.amount_per_period * Math.pow(10, decimals));
+        let realTokenAmount = Number(data.amount_per_period * 10 ** decimals);
         let amountSTR = realTokenAmount.toLocaleString('fullwide', { useGrouping: false });
 
         let realApproval = Number((realTokenAmount + realGasPrice) * data.num_periods);

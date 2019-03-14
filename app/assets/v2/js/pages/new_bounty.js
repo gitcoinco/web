@@ -231,7 +231,7 @@ $(document).ready(function() {
       var token = tokenAddressToDetails(tokenAddress);
       var decimals = token['decimals'];
       var tokenName = token['name'];
-      var decimalDivisor = Math.pow(10, decimals);
+      var decimalDivisor = 10 ** decimals;
       var expirationTimeDelta = data.expirationTimeDelta;
       let reservedFor = $('.username-search').select2('data')[0];
 
@@ -426,7 +426,7 @@ $(document).ready(function() {
           // {from: x, to: y}
             from: account,
             value: eth_amount,
-            gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)),
+            gasPrice: web3.toHex($('#gasPrice').val() * 10 ** 9),
             gas: web3.toHex(318730),
             gasLimit: web3.toHex(318730)
           },
@@ -454,7 +454,7 @@ var check_balance_and_alert_user_if_not_enough = function(tokenAddress, amount) 
 
   token_contract.balanceOf.call(from, function(error, result) {
     if (error) return;
-    var balance = result.toNumber() / Math.pow(10, token_decimals);
+    var balance = result.toNumber() / 10 ** token_decimals;
     var balance_rounded = Math.round(balance * 10) / 10;
 
     if (parseFloat(amount) > balance) {

@@ -149,7 +149,7 @@ $(document).ready(function() {
         var kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice'));
 
         console.log(kudosPriceInEth);
-        var kudosPriceInWei = new web3.BigNumber(kudosPriceInEth * 1.0 * Math.pow(10, 18));
+        var kudosPriceInWei = new web3.BigNumber(kudosPriceInEth * 1.0 * 10 ** 18);
 
         var params = {
           forwarding_address: forwarding_address,

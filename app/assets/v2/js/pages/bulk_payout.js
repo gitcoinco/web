@@ -81,7 +81,7 @@ $(document).ready(function($) {
         }
       };
       var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
-      var gas_dict = { gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)) };
+      var gas_dict = { gasPrice: web3.toHex($('#gasPrice').val() * 10 ** 9) };
 
       bounty.killBounty(
         $('#standard_bounties_id').val(),

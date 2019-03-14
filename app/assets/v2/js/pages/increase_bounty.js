@@ -60,8 +60,8 @@ $(document).ready(function() {
     }
     var is_issueURL_invalid = issueURL == '' ||
         issueURL.indexOf('http') != 0 ||
-        issueURL.indexOf('github') == -1 ||
-        issueURL.indexOf('javascript:') != -1
+        !issueURL.includes('github') ||
+        issueURL.includes('javascript:')
 
     ;
     if (is_issueURL_invalid) {
@@ -84,7 +84,7 @@ $(document).ready(function() {
     var isETH = tokenAddress == '0x0000000000000000000000000000000000000000';
     var token = tokenAddressToDetails(tokenAddress);
     var decimals = token['decimals'];
-    var decimalDivisor = Math.pow(10, decimals);
+    var decimalDivisor = 10 ** decimals;
     var tokenName = token['name'];
     var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
     var account = web3.eth.coinbase;
@@ -184,7 +184,7 @@ $(document).ready(function() {
           from: account,
           value: ethAmount,
           gas: web3.toHex(65269),
-          gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
+          gasPrice: web3.toHex($('#gasPrice').val() * 10 ** 9)
         },
         web3Callback
       );

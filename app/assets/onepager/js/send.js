@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 var get_gas_price = function() {
   if ($('#gasPrice').length) {
-    return $('#gasPrice').val() * Math.pow(10, 9);
+    return $('#gasPrice').val() * 10 ** 9;
   }
   if (typeof defaultGasPrice != 'undefined') {
     return defaultGasPrice;
@@ -160,21 +160,21 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
   // setup
   var fromAccount = web3.eth.accounts[0];
 
-  if (username.indexOf('@') == -1) {
+  if (!username.includes('@')) {
     username = '@' + username;
   }
 
-  var gas_money = parseInt(Math.pow(10, (9 + 5)) * ((defaultGasPrice * 1.001) / Math.pow(10, 9)));
+  var gas_money = parseInt(10 ** (9 + 5) * ((defaultGasPrice * 1.001) / 10 ** 9));
   var isSendingETH = (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000');
   var tokenDetails = tokenAddressToDetails(tokenAddress);
   var tokenName = 'ETH';
-  var weiConvert = Math.pow(10, 18);
+  var weiConvert = 10 ** 18;
   var creation_time = Math.round((new Date()).getTime() / 1000);
   var salt = parseInt((Math.random() * 1000000));
 
   if (!isSendingETH) {
     tokenName = tokenDetails.name;
-    weiConvert = Math.pow(10, tokenDetails.decimals);
+    weiConvert = 10 ** tokenDetails.decimals;
   }
   var amountInWei = amountInEth * 1.0 * weiConvert;
   // validation

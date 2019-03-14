@@ -2,7 +2,7 @@
 
 var get_gas_price = function() {
   if ($('#gasPrice').length) {
-    return $('#gasPrice').val() * Math.pow(10, 9);
+    return $('#gasPrice').val() * 10 ** 9;
   }
   if (typeof defaultGasPrice != 'undefined') {
     return defaultGasPrice;
@@ -263,7 +263,7 @@ $(document).ready(function() {
 
     // get kudosPrice from the HTML
     kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice'));
-    kudosPriceInWei = new web3.BigNumber((kudosPriceInEth * 1.0 * Math.pow(10, 18)).toString());
+    kudosPriceInWei = new web3.BigNumber((kudosPriceInEth * 1.0 * 10 ** 18).toString());
 
     var formData = {
       email: email,
@@ -285,7 +285,7 @@ $(document).ready(function() {
 
     // derived info
     var tokenName = 'ETH';
-    var weiConvert = Math.pow(10, 18);
+    var weiConvert = 10 ** 18;
 
     // Step 11 (LAST STEP)
     // Show the congragulation screen
@@ -346,16 +346,16 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
   }
   // setup
 
-  if (username && username.indexOf('@') == -1) {
+  if (username && !username.includes('@')) {
     username = '@' + username;
   }
   var _disableDeveloperTip = true;
   var observedKudosGasLimit = 505552;
   var buffer_pct = 1.005;
-  var wei_to_gwei = Math.pow(10, 9);
+  var wei_to_gwei = 10 ** 9;
   var gas_money = parseInt((wei_to_gwei * observedKudosGasLimit) * (buffer_pct * defaultGasPrice / wei_to_gwei));
   var tokenName = 'ETH';
-  var weiConvert = Math.pow(10, 18);
+  var weiConvert = 10 ** 18;
   var creation_time = Math.round((new Date()).getTime() / 1000);
   var salt = parseInt((Math.random() * 1000000));
 
@@ -504,7 +504,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
         console.log('destinationAccount:' + destinationAccount);
 
         var kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice')) || $('.kudos-search').select2('data')[0].price_finney;
-        var kudosPriceInWei = new web3.BigNumber((kudosPriceInEth * 1.0 * Math.pow(10, 18)).toString());
+        var kudosPriceInWei = new web3.BigNumber((kudosPriceInEth * 1.0 * 10 ** 18).toString());
 
         if (is_direct_to_recipient) {
           // Step 9

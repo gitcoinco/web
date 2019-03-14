@@ -139,7 +139,7 @@ var set_sidebar_defaults = function() {
 
     if (localStorage['keywords']) {
       keywords.split(',').forEach(function(v, k) {
-        if (localStorage['keywords'].indexOf(v) === -1) {
+        if (!localStorage['keywords'].includes(v)) {
           localStorage['keywords'] += ',' + v;
         }
       });
@@ -149,7 +149,7 @@ var set_sidebar_defaults = function() {
 
     if (localStorage['org']) {
       org.split(',').forEach(function(v, k) {
-        if (localStorage['org'].indexOf(v) === -1) {
+        if (!localStorage['org'].includes(v)) {
           localStorage['org'] += ',' + v;
         }
       });
@@ -203,8 +203,8 @@ var addTechStackKeywordFilters = function(value) {
     const new_value = ',' + value;
 
     if (keywords === value ||
-        keywords.indexOf(new_value) !== -1 ||
-        keywords.indexOf(value + ',') !== -1) {
+        keywords.includes(new_value) ||
+        keywords.includes(value + ',')) {
 
       return;
     }
@@ -223,8 +223,8 @@ var addTechStackOrgFilters = function(value) {
     const new_value = ',' + value;
 
     if (org === value ||
-        org.indexOf(new_value) !== -1 ||
-        org.indexOf(value + ',') !== -1) {
+        org.includes(new_value) ||
+        org.includes(value + ',')) {
 
       return;
     }

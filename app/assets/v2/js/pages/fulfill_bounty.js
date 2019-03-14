@@ -81,7 +81,7 @@ window.onload = function() {
 
           if (error) {
             console.error(error);
-            ignore_error = String(error).indexOf('BigNumber') != -1;
+            ignore_error = String(error).includes('BigNumber');
           }
           document.ipfsDataHash = result; // Cache IPFS data hash
           var run_main = !error || ignore_error;
@@ -138,7 +138,7 @@ window.onload = function() {
                   bountyId,
                   document.ipfsDataHash,
                   {
-                    gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
+                    gasPrice: web3.toHex($('#gasPrice').val() * 10 ** 9)
                   },
                   web3Callback
                 );

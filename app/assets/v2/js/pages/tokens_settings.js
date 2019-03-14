@@ -51,7 +51,7 @@ $(document).ready(function() {
           {
             from: from,
             value: 0,
-            gasPrice: web3.toHex(document.gas_price * Math.pow(10, 9))
+            gasPrice: web3.toHex(document.gas_price * 10 ** 9)
           }, function(error, result) {
             if (error) {
               _alert('Token request denied - no permission for this token');

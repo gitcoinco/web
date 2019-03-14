@@ -41,7 +41,7 @@ window.addEventListener('load', function() {
 
 function gasToUSD(gasPrice) {
   var gasLimit = parseInt($('#gasLimit').val());
-  var ethAmount = Math.round(1000 * gasLimit * gasPrice / Math.pow(10, 9)) / 1000;
+  var ethAmount = Math.round(1000 * gasLimit * gasPrice / 10 ** 9) / 1000;
   var usdAmount = Math.round(10 * ethAmount * document.eth_usd_conv_rate) / 10;
 
   return usdAmount;

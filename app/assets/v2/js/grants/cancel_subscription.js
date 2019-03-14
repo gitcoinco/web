@@ -33,7 +33,7 @@ $(document).ready(() => {
         let realTokenAmount = Number(data.amount_per_period * 10 ** decimals);
         let amountSTR = realTokenAmount.toLocaleString('fullwide', { useGrouping: false });
 
-        let realGasPrice = $('#gasPrice').val() * Math.pow(10, 9);
+        let realGasPrice = $('#gasPrice').val() * 10 ** 9;
 
         web3.eth.getAccounts(function(err, accounts) {
 
