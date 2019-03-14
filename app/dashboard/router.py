@@ -113,8 +113,9 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
                 bounty=bounty,
                 invitee=bounty_fulfillment.profile.user
             ).first()
-            bounty_invitee.status = 'completed'
-            bounty_invitee.save()
+            if bounty_invite:
+                bounty_invitee.status = 'completed'
+                bounty_invitee.save()
         return bounty
 
     def update(self, validated_data):
@@ -127,8 +128,9 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
                 bounty=bounty,
                 invitee=bounty_fulfillment.profile.user
             ).first()
-            bounty_invitee.status = 'completed'
-            bounty_invitee.save()
+            if bounty_invite:
+                bounty_invitee.status = 'completed'
+                bounty_invitee.save()
         return bounty
 
 
