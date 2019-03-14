@@ -1121,15 +1121,15 @@ def bounty_invite_url(request, invitecode):
     decoded_data = get_bounty_from_invite_url(invitecode)
     bounty = Bounty.objects.current().filter(pk=decoded_data['bounty']).first()
     inviter = User.objects.filter(username=decoded_data['inviter']).first()
-    try:
-        bounty_invite = BountyInvites.objects.filter(
-            bounty=bounty,
-            inviter=inviter,
-            invitee=request.user
-        ).first()
+    bounty_invite = BountyInvites.objects.filter(
+        bounty=bounty,
+        inviter=inviter,
+        invitee=request.user
+    ).first()
+    if bounty_invite:
         bounty_invite.status = 'accepted'
         bounty_invite.save()
-    except BountyInvites.DoesNotExist:
+    else:
         bounty_invite = BountyInvites.objects.create(
             status='accepted'
         )
