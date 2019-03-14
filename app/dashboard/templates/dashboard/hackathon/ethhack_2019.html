@@ -9,6 +9,27 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Eth Hackathon 2019</title>
   <style>
+
+    .centered1 {
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .centered2 {
+      position: absolute;
+      bottom: 25%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .centered3 {
+      position: absolute;
+      bottom: 10%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
     @media screen and (min-width: 800px) {
       .topnav {
         font-size: 1em !important;
@@ -16,34 +37,132 @@
       .ethsvg {
         margin-top: 6rem !important
       }
-      .ethsvg3 {
-        margin-top: 7rem !important
-      }
       .ethtitle {
         font-size: 4rem !important
       }
-    }
-    @media screen and (min-width: 800px) {
+      .poweredby {
+        font-size: 1.5rem !important;
+        margin-top: 4rem !important;
+      }
       .ethsvg2 {
-        padding-top: 1rem !important
+        margin-top: 0.7rem !important;
+      }
+      .btns{
+        width: 200px !important;
+        font-size: 1rem !important;
+      }
+      .btns-wrapper{
+        margin: 5rem !important
+      }
+      .centered1 {
+        position: absolute;
+        top: 20%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 3rem !important;
+      }
+      .centered2 {
+        position: absolute;
+        bottom: 25%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 1.75rem !important;
+      }
+      .centered3 {
+        position: absolute;
+        bottom: 10%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 1.75rem !important;
+        width: 12rem !important;
+        font-size: 1rem !important;
+      }
+      .part {
+        padding-top: 10rem !important;
+        font-size: 3.5rem !important;
+      }
+      .pbtn {
+        margin-top: 5rem !important;
+        margin-bottom: 7rem !important;
+      }
+      .pdesc {
+        font-size: 1.75rem !important;
+        padding-right: 10rem !important;
+        padding-left: 10rem !important;
+        padding-top: 4rem !important;
+      }
+      .bottomnav {
+        padding: 5rem !important;
       }
     }
   </style>
 </head>
-  <body class="text-center" style="background-color: #180944">
+  <body class="text-center" style="background-color: #180944; color: white">
 
-    <div class="text-center topnav" style="width: 100%; line-height: 2.75em; background-color: #3E00FF; color: white; font-size: 0.4em">
+    <div class="text-center topnav" style="width: 100%; line-height: 2.75em; background-color: #3E00FF; font-size: 0.4em">
       <div class="container">
         <span>Join Gitcoin for a pre-Ethereal NY virtual hackathon this April!</span>
         <span style="float: right;">Fund a Prize</span>
       </div>
     </div>
-    <img class="img-fluid ethsvg" style="max-width: 20%; height: auto; margin-top: 2rem" src="{% static "v2/images/hackathon/ethereal.svg" %}" />
-    <h1 class="font-weight-bolder mt-3 ethtitle" style="color: white; font-size: .5rem">Ethereal Virtual Hackathon</h1>
+    <img class="img-fluid ethsvg" style="max-width: 30%; height: auto; margin-top: 2rem" src="{% static "v2/images/hackathon/ethereal.svg" %}" />
+    <h1 class="font-weight-bolder mt-3 ethtitle" style="font-size: 1.25rem">Ethereal Virtual Hackathon</h1>
 
-    <img class="img-fluid ethsvg" style="max-width: 20%; height: auto; margin-top: 2rem" src="{% static "v2/images/logo.png" %}">
-    <img class="img-fluid ethsvg ethsvg3" style="max-width: 2%; height: auto; margin-top: 2.25rem; margin-right: 1rem; margin-left: 1rem" src="{% static "v2/images/hackathon/plus.svg" %}">
-    <img class="img-fluid ethsvg ethsvg2" style="max-width: 20%; height: auto; margin-top: 2rem; padding-top: .3rem" src="{% static "v2/images/hackathon/microsoft.svg" %}" />
+    <h3 class="font-weight-bold poweredby" style="font-size: .6rem; margin-top: 1rem; opacity: .7">Powered by</h3>
+    <img class="img-fluid" style="max-width: 25%; height: auto" src="{% static "v2/images/logo.png" %}">
+    <img class="img-fluid ethsvg2" style="max-width: 2%; height: auto; margin-right: 1rem; margin-left: 1rem" src="{% static "v2/images/hackathon/plus.svg" %}">
+    <img class="img-fluid ethsvg2" style="max-width: 25%; height: auto; margin-top: 0.2rem" src="{% static "v2/images/hackathon/microsoft.svg" %}" />
+
+    <div class="btns-wrapper" style="margin: 1rem">
+      <a class="btn font-weight-bold mr-2 btns" style="background-color: #f9006c; border-radius: 30px; width: 70px; font-size: .4rem">Register</a>
+      <a class="btn font-weight-bold ml-2 btns" style="background-color: #3e00ff; border-radius: 30px; width: 70px; font-size: .4rem">Fund a Prize</a>
+    </div>
+
+    <div class="text-center" style="position: relative">
+      <h2 class="centered1 font-weight-bolder" style="font-size: 1rem">April 1st &#8212; 30th</h2>
+      <h2 class="centered2" style="font-size: .5rem; width: 70%">
+        Hackathon challenges will be posted as bounties, with the best hacks receiving prizes in ETH & ERC-20 tokens. Main track winners will receive free tickets to Ethereal NY to present their project live on stage.
+      </h2>
+      <img style="width: 100%; z-index: -1" src="{% static "v2/images/hackathon/ethback.jpg" %}">
+    </div>
+
+    <section style="background: white">
+      <h2 class="font-weight-bolder part" style="color: black; padding-top: 3rem; font-size: 1.2rem; text-decoration: underline; text-underline-position: under">Participate</h2>
+      <h2 class="pdesc" style="color: black; padding-top: 1.25rem; padding-right: 3rem; padding-left: 3rem; font-size: 0.6rem">Register by April 1st for updates on key dates, prizes, teams, and instructions on how to start bounty hunting.</h2>
+      <a class="btn font-weight-bold pbtn" style="background-color: #f9006c; border-radius: 30px; width: 12rem; font-size: 1rem; margin-top: 2rem; margin-bottom: 3rem">Register</a>
+    </section>
+
+    <div style="position: relative">
+      <h2 class="centered1 font-weight-bolder" style="font-size: 1rem; text-decoration: underline; text-underline-position: under">Fund a Prize Bounty</h2>
+      <h2 class="centered2" style="font-size: .5rem; width: 70%">
+        Hackathon challenges will be posted as bounties, with the best hacks receiving prizes in ETH & ERC-20 tokens. Main track winners will receive free tickets to Ethereal NY to present their project live on stage.
+      </h2>
+      <a class="btn font-weight-bold centered3" style="background-color: #00A55E; border-radius: 30px; width: 5rem; font-size: .5rem;">Fund a Prize</a>
+      <img style="width: 100%; z-index: -1;" src="{% static "v2/images/hackathon/ethback2.png" %}">
+    </div>
+
+    <section style="background: white">
+      <h2 class="font-weight-bolder part" style="color: black; padding-top: 3rem; font-size: 1.2rem; text-decoration: underline; text-underline-position: under">Join the Commmunity</h2>
+      <h2 class="pdesc" style="color: black; padding-top: 1.25rem; padding-right: 3rem; padding-left: 3rem; font-size: 0.6rem">Register by April 1st for updates on key dates, prizes, teams, and instructions on how to start bounty hunting.</h2>
+      <a class="btn font-weight-bold pbtn" style="background-color: #f9006c; border-radius: 30px; width: 12rem; font-size: 1rem; margin-top: 2rem; margin-bottom: 3rem">Join</a>
+    </section>
+
+    <section style="background: black">
+      <div class="row align-items-center bottomnav" style="padding: 1rem">
+        <div class="col-3">
+          <img class="img-fluid" style="width: 100%" src="{% static "v2/images/logo.png" %}" />
+        </div>
+        <div class="col-3">
+          <img class="img-fluid" style="width: 100%" src="{% static "v2/images/hackathon/microsoft.svg" %}" />
+        </div>
+        <div class="col-3">
+          <img class="img-fluid align-middle" style="width: 100%" src="{% static "v2/images/hackathon/consensys.png" %}" />
+        </div>
+        <div class="col-3">
+          <img class="img-fluid" style="width: 100%" src="{% static "v2/images/hackathon/ethmain.svg" %}" />
+        </div>
+      </div>
+    </section>
 
     <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
   </body>
