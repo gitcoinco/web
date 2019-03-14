@@ -197,7 +197,8 @@ def index(request):
         'products': products,
         'know_us': know_us,
         'press': press,
-        'articles': articles
+        'articles': articles,
+        'title': _('Grow Open Source: Find Freelance Developers & Open Source Bug Bounties - Gitcoin')
     }
     return TemplateResponse(request, 'home/index.html', context)
 
