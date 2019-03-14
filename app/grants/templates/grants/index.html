@@ -59,8 +59,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <div class="container">
           <div class="row">
           <div class="col-md-6">
-            <h2>Matching Partners</h2>
-            <p>A special thanks to the following partners who have offered to match contributions to Gitcoin Grants.  <a href="https://medium.com/gitcoin/gitcoin-grants-clr-matching-ecbc87b10038">(Read Announcement Here)</a></p>
+            <h2>Round 2 of Matching is Live Now!</h2>
+            <h5>Contribute from 3/6 to 4/19 and have up to $50k in contributions matched.</h5>
+            <p>A special thanks to the following partners who have offered to match contributions to Gitcoin Grants.  <a href="https://medium.com/gitcoin/gitcoin-grants-50k-oss-fund-e20e09dc2110">(Read Announcement Here)</a></p>
 
             {% if not user.is_authenticated %}
               <a class="btn btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">{% trans 'Become a Matching Partner' %}</a>
@@ -87,8 +88,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               <div class="tab-pane fade show active" id="currentpartners" role="tabpanel" aria-labelledby="currentpartners-tab">
                 {% for current_partner in current_partners %}
                   <div style="text-align:center; display: inline-block; padding: 10px;">
-                    <h5>@{{current_partner.profile.handle}}</h5>
-                    <img style="max-width:100px;" src="/dynamic/avatar/{{current_partner.profile.handle}}">
+                    <h5>
+                      <a href="/profile/{{current_partner.profile.handle}}">
+                        @{{current_partner.profile.handle}}
+                      </a>
+                    </h5>
+                      <a href="/profile/{{current_partner.profile.handle}}">
+                        <img style="max-width:100px; border-radius: 50px;" src="/dynamic/avatar/{{current_partner.profile.handle}}">
+                      </a>
                     <p>${{current_partner.amount|floatformat}}</p>
                   </div>
                 {% endfor %}
@@ -125,6 +132,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             </div>
           </div>
           <div class="row mt-5">
+            <ul id="grants_nav">
+              {% for nav_option in nav_options %}
+                <a href="/grants/?keyword={{nav_option.keyword}}" class="{% if keyword == nav_option.keyword %}selected{%endif%}"  >
+                  {{nav_option.label}}
+                </a>
+              {% endfor %}
+            </ul>
+          </div>
+          <div class="row mt-5">
             <div class="col-12 col-md-6 pt-1 text-center text-sm-left pl-sm-0">
               {{ grants_count }} {% trans "Grants available on" %}
               <span class="ml-2">
@@ -137,10 +153,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <div class="col-12 col-md-6 pt-1 font-caption order_by d-md-inline text-center text-sm-right">
               <div class="heading">{% trans "SORT" %}</div>
               <select name="sort_option" id="sort_option">
-                <option value="-clr_matching">{% trans "CLR Match: Highest" %}</option>
-                <option value="clr_matching">{% trans "CLR Match: Lowest" %}</option>
                 <option value="-created_on">{% trans "Created: Recent" %}</option>
                 <option value="created_on">{% trans "Created: Oldest" %}</option>
+                <option value="-clr_matching">{% trans "CLR Match: Highest" %}</option>
+                <option value="clr_matching">{% trans "CLR Match: Lowest" %}</option>
                 <option value="-amount_goal">{% trans "Goal: Highest" %}</option>
                 <option value="amount_goal">{% trans "Goal: Lowest" %}</option>
                 <option value="-amount_received">{% trans "Amount Raised: Highest" %}</option>
@@ -195,6 +211,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   <script src="{% static "v2/js/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
   <script src="{% static "v2/js/grants/index.js" %}"></script>
+  <script src="{% static "v2/js/popper.min.js" %}"></script>
   <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
   <script src="{% static "v2/js/grants/newMatchingPartner.js" %}"></script>
   <script>

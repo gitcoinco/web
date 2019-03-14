@@ -209,6 +209,9 @@ $(document).ready(function() {
         _alert(gettext('You are on an unsupported network.  Please change your network to a supported network.'));
         return;
       }
+      if (typeof ga != 'undefined') {
+        ga('send', 'event', 'new_bounty', 'new_bounty_form_submit');
+      }
 
       var data = {};
       var disabled = $(form)
@@ -385,6 +388,11 @@ $(document).ready(function() {
           unloading_button($('.js-submit'));
           return;
         }
+
+        if (typeof ga != 'undefined') {
+          ga('send', 'event', 'new_bounty', 'metamask_signature_achieved');
+        }
+
 
         // update localStorage issuePackage
         var issuePackage = JSON.parse(localStorage[issueURL]);
