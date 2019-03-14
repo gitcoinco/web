@@ -1,9 +1,9 @@
 const GITCOIN_ADDRESS = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
 
-function createMatchingPartner(transactionID) {
+function createMatchingPartner(transactionID, transactionAmount) {
   let newMatchPledgeUrl = '/grants/matching-partners/new';
 
-  $.post(newMatchPledgeUrl, {hash: transactionID}).then(function(result) {
+  $.post(newMatchPledgeUrl, {hash: transactionID, amount: transactionAmount}).then(function(result) {
     _alert(
       'Thank you for volunteering to match on Gitcoin Grants. You are supporting open source, and we thank you',
       'success'
@@ -27,7 +27,7 @@ function saveTransactionDetails(transactionID) {
     let newAttestationsUrl = '/revenue/attestations/new';
 
     $.post(newAttestationsUrl, data).then(function(result) {
-      createMatchingPartner(transactionID);
+      createMatchingPartner(transactionID, amount);
     });
 
   });

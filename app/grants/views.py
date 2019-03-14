@@ -38,7 +38,7 @@ from django.views.decorators.csrf import csrf_exempt
 from app.utils import get_profile
 from cacheops import cached_view
 from dashboard.models import Profile
-from dashboard.utils import get_web3
+from dashboard.utils import get_web3, has_tx_mined
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.forms import MilestoneForm
 from grants.models import Contribution, Grant, MatchPledge, Milestone, Subscription, Update
@@ -627,17 +627,24 @@ def new_matching_partner(request):
             status=status
         )
 
+    def is_verified(tx_details, tx_hash, tx_amount, network):
+        gitcoin_account = '0x00De4B13153673BCAE2616b67bf822500d325Fc3'
+        return has_tx_mined(
+            tx_hash, network
+        ) and tx.to == gitcoin_account and tx.value == tx_amount
+
     if not request.user.is_authenticated:
         return get_json_response("Not Authorized", 403)
 
     tx_hash = request.POST.get('hash')
+    tx_amount = request.POST.get('amount')
     profile = get_profile(request)
-    gitcoin_account = '0x00De4B13153673BCAE2616b67bf822500d325Fc3'
 
     if request.POST and tx_hash and profile:
-        web3 = get_web3('mainnet')
+        network = 'mainnet'
+        web3 = get_web3(network)
         tx = web3.eth.getTransaction(tx_hash)
-        if tx.to == gitcoin_account:
+        if is_verified(tx, tx_hash, tx_amount, network):
             MatchPledge(
                 profile=profile,
                 amount=tx.value
