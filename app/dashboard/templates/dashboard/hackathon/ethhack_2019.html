@@ -19,18 +19,46 @@
 
     .centered2 {
       position: absolute;
-      bottom: 25%;
+      bottom: 20%;
       left: 50%;
       transform: translate(-50%, -50%);
     }
     .centered3 {
       position: absolute;
-      bottom: 10%;
+      bottom: 5%;
       left: 50%;
       transform: translate(-50%, -50%);
     }
 
-    @media screen and (min-width: 800px) {
+    @media screen and (min-width: 550px) {
+      .centered1 {
+        position: absolute;
+        top: 20%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 3rem !important;
+      }
+      .centered2 {
+        position: absolute;
+        bottom: 25%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 1rem !important;
+      }
+      .centered3 {
+        position: absolute;
+        bottom: 10%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 12rem !important;
+        font-size: 1rem !important;
+      }
+      .pdesc {
+        font-size: 1rem !important
+      }
+    }
+
+    @media screen and (min-width: 920px) {
       .topnav {
         font-size: 1em !important;
       }
@@ -95,6 +123,18 @@
         padding: 5rem !important;
       }
     }
+    @media screen and (min-width: 1500px) {
+      .centered2 {
+        position: absolute;
+        bottom: 30%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 3rem !important;
+      }
+      .pdesc {
+        font-size: 3rem !important;
+      }
+    }
   </style>
 </head>
   <body class="text-center" style="background-color: #180944; color: white">
@@ -114,8 +154,8 @@
     <img class="img-fluid ethsvg2" style="max-width: 25%; height: auto; margin-top: 0.2rem" src="{% static "v2/images/hackathon/microsoft.svg" %}" />
 
     <div class="btns-wrapper" style="margin: 1rem">
-      <a class="btn font-weight-bold mr-2 btns" style="background-color: #f9006c; border-radius: 30px; width: 70px; font-size: .4rem">Register</a>
-      <a class="btn font-weight-bold ml-2 btns" style="background-color: #3e00ff; border-radius: 30px; width: 70px; font-size: .4rem">Fund a Prize</a>
+      <a class="btn font-weight-bold mr-2 btns" style="background-color: #f9006c; border-radius: 30px; width: 100px; font-size: .4rem">Register</a>
+      <a class="btn font-weight-bold ml-2 btns" style="background-color: #3e00ff; border-radius: 30px; width: 100px; font-size: .4rem">Fund a Prize</a>
     </div>
 
     <div class="text-center" style="position: relative">
@@ -137,7 +177,7 @@
       <h2 class="centered2" style="font-size: .5rem; width: 70%">
         Hackathon challenges will be posted as bounties, with the best hacks receiving prizes in ETH & ERC-20 tokens. Main track winners will receive free tickets to Ethereal NY to present their project live on stage.
       </h2>
-      <a class="btn font-weight-bold centered3" style="background-color: #00A55E; border-radius: 30px; width: 5rem; font-size: .5rem;">Fund a Prize</a>
+      <a class="btn font-weight-bold centered3" style="background-color: #00A55E; border-radius: 30px; width: 100px; font-size: .5rem;">Fund a Prize</a>
       <img style="width: 100%; z-index: -1;" src="{% static "v2/images/hackathon/ethback2.png" %}">
     </div>
 
