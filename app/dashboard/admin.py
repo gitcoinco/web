@@ -23,9 +23,9 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 from .models import (
-    Activity, BlockedUser, Bounty, BountyFulfillment, BountySyncRequest, CoinRedemption, CoinRedemptionRequest,
-    FeedbackEntry, Interest, LabsResearch, Profile, SearchHistory, Tip, TokenApproval, Tool, ToolVote, UserAction,
-    UserVerificationModel,
+    Activity, BlockedUser, Bounty, BountyFulfillment, BountyInvites, BountySyncRequest, CoinRedemption,
+    CoinRedemptionRequest, FeedbackEntry, Interest, LabsResearch, Profile, SearchHistory, Tip, TokenApproval, Tool,
+    ToolVote, UserAction, UserVerificationModel,
 )
 
 
@@ -61,6 +61,11 @@ class TokenApprovalAdmin(admin.ModelAdmin):
 
 class ToolVoteAdmin(admin.ModelAdmin):
     raw_id_fields = ['profile']
+    ordering = ['-id']
+
+
+class BountyInvitesAdmin(admin.ModelAdmin):
+    raw_id_fields = ['bounty']
     ordering = ['-id']
 
 
@@ -178,6 +183,7 @@ admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Bounty, BountyAdmin)
 admin.site.register(BountyFulfillment, BountyFulfillmentAdmin)
 admin.site.register(BountySyncRequest, GeneralAdmin)
+admin.site.register(BountyInvites, BountyInvitesAdmin)
 admin.site.register(Tip, TipAdmin)
 admin.site.register(TokenApproval, TokenApprovalAdmin)
 admin.site.register(CoinRedemption, GeneralAdmin)
