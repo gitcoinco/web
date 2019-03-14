@@ -1121,13 +1121,21 @@ def bounty_invite_url(request, invitecode):
     decoded_data = get_bounty_from_invite_url(invitecode)
     bounty = Bounty.objects.current().filter(pk=decoded_data['bounty']).first()
     inviter = User.objects.filter(username=decoded_data['inviter']).first()
-    bounty_invite = BountyInvites.objects.filter(
-        bounty=bounty,
-        inviter=inviter,
-        invitee=request.user
-    ).first()
-    bounty_invite.status = 'accepted'
-    bounty_invite.save()
+    try:
+        bounty_invite = BountyInvites.objects.filter(
+            bounty=bounty,
+            inviter=inviter,
+            invitee=request.user
+        ).first()
+        bounty_invite.status = 'accepted'
+        bounty_invite.save()
+    except BountyInvites.DoesNotExist:
+        bounty_invite = BountyInvites.objects.create(
+            status='accepted'
+        )
+        bounty_invite.bounty.add(bounty)
+        bounty_invite.inviter.add(inviter)
+        bounty_invite.invitee.add(request.user)
     return redirect('/funding/details/?url=' + bounty.github_url)
     
 
