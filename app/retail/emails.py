@@ -914,28 +914,9 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "A Free Gitcoin Avatar For YOU!"
-    new_kudos_pks = [1971, 1970, 1969, 1968]
+    subject = "Sneak Peek: A Gitcoin Virtual Hackathon Is Coming"
+    new_kudos_pks = [2050, 2051, 2049]
     new_kudos_size_px = 150
-
-    # generate an avatar
-    from dashboard.models import Profile
-    from django.templatetags.static import static
-    profile = Profile.objects.get(email__iexact=to_email)
-    avatar_url = None
-
-    # can't do this if not profile
-    if not profile:
-        return None, None, None
-    always_generate_new_avatar = settings.DEBUG
-    
-    if not profile.has_custom_avatar() or always_generate_new_avatar:
-        avatar = profile.build_random_avatar()
-        avatar_url = avatar.avatar_url
-    else:
-        avatars = profile.avatar_baseavatar_related.filter(active=True)
-        avatar_url = avatars.first().avatar_url
-    #### end avatar generator
 
     kudos_friday = f'''
 <h3>Happy Kudos Friday!</h3>
@@ -944,41 +925,24 @@ def render_new_bounty_roundup(to_email):
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
 </p>
     '''
-    kudos_friday = ''    
-    animated_avatars = 'https://s.gitcoin.co/static/v2/images/animated_avatars.gif'
     intro = f'''
 <p>
 Hi Gitcoiners,
-<p>
-There are thousands of community members at Gitcoin.  They each have a diverse set of skills, attributes, preferences, and backgrounds.
 </p>
 <p>
-<a href="https://gitcoin.co/onboard/profile/?steps=avatar#section-title">
-<img src='{animated_avatars}'>
-</a>
+A Gitcoin Virtual Hackathon is coming soon. <a href="https://gitcoin.typeform.com/to/j7CSbV">Pre-register now!</a> We're incredibly excited to bring our
+community together for a fantastic few weeks of building, prizes, and more. <a href="https://gitcoin.typeform.com/to/j7CSbV">Join the waitlist</a> and let us know
+what you'd like to see in the additional comments section. See you there.
 </p>
 <p>
-In order to celebrate this, we built the <a href="https://gitcoin.co/onboard/profile/?steps=avatar#section-title">Gitcoin avatar builder</a>. The Gitcoin avatar builder allows you to express yourself with 100s of unique items, that together allow you to create millions of permutations of unique avatars.
+This week, we wrote up <a href="https://medium.com/gitcoin/whats-new-in-gitcoin-ef69f69cbb81">a Gitcoin product update.</a> We've built a lot
+of things in Q1 and we're excited for you to see them all!
 </p>
-<p>
-This week, I have a special treat for you.  We've made you a special Gitcoin avatar.
-</p>
-<p>
-Here it is!
-</p>
-<p>
-<img src={avatar_url}
-</p>
-<p>
-Of course, this avatar was just generated for fun :)  We recommend you head over to the <a href="https://gitcoin.co/onboard/profile/?steps=avatar#section-title">Gitcoin Avatar Builder</a> and create an avatar that you think is uniquely *you* today!
-</p>
-
-<p>
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream">on Friday at 5PM ET or catch it on <a href="https://twitter.com/GetGitcoin">Twitter</a>!
+            Gitcoin Livestream is back this week with Cosmos + SourceCred! Join us <a href="https://gitcoin.co/livestream"> at 5PM ET or catch it on <a href="https://twitter.com/GetGitcoin">Twitter</a>!
         </li>
     </ul>
 </p>
@@ -988,34 +952,34 @@ Back to shipping,
 
 '''
     highlights = [{
-        'who': 'anish-agnihotri',
+        'who': 'iamonuwa',
         'who_link': True,
-        'what': 'Wrote about web3 business models!',
-        'link': 'https://gitcoin.co/issue/FEMBusinessModelsRing/web3_revenue_primitives/8/2471',
+        'what': 'Great work on Storj by Onuwa!',
+        'link': 'https://gitcoin.co/issue/jschiarizzi/storj-ipfs-gateway/2/2590',
+        'link_copy': 'View more',
+    }, {
+        'who': 'cryptokat',
+        'who_link': True,
+        'what': 'Good work on ethereum-ts',
+        'link': 'https://gitcoin.co/issue/ethereum-ts/TypeChain/135/2574',
         'link_copy': 'View more',
     }, {
         'who': 'eswarasai',
         'who_link': True,
-        'what': 'Worked on an auto-detector for Solidity Compilers',
-        'link': 'https://gitcoin.co/issue/b-mueller/sabre/7/2541',
-        'link_copy': 'View more',
-    }, {
-        'who': 'poojaranjan',
-        'who_link': True,
-        'what': 'Take Notes For All Core Devs Meeting #56',
-        'link': 'https://gitcoin.co/issue/ethereum-cat-herders/PM/9/2478',
+        'what': 'Work on Sabre by a longtime contributor!',
+        'link': 'https://gitcoin.co/issue/b-mueller/sabre/8/2540',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
+        'url': 'https://github.com/status-im/status-components/issues/3',
+        'primer': 'React Native support for Status!',
+    }, {
+        'url': 'https://github.com/counterfactual/monorepo/issues/950',
+        'primer': 'Work with the Counter Factual team on state channels!',
+    }, {
         'url': 'https://github.com/paritytech/parity-ethereum/issues/10085',
-        'primer': 'Parity featured bounty!',
-    }, {
-        'url': 'https://github.com/status-im/status-react/issues/7667',
-        'primer': 'Its always a pleasure to work with the Status Team!',
-    }, {
-        'url': 'https://github.com/matter-labs/FranklinPay-iOS/issues/13',
-        'primer': 'An opportunity to work on NFT interfaces!',
+        'primer': 'Work on Parity Ethereum!',
     }, ]
 
     num_leadboard_items = 5
