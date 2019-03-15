@@ -1,10 +1,9 @@
 .card-rating {
-
   color: #0d003c;
   background-color: #fff;
   border-radius: 4px;
   position: relative;
-  margin: 1rem 0.4rem;
+  margin: 1rem 0.6rem;
   scroll-snap-align: none start;
   transition: .45s all ease-in-out;
   flex-wrap: nowrap;
