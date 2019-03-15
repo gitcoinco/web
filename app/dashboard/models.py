@@ -275,6 +275,8 @@ class Bounty(SuperModel):
     is_featured = models.BooleanField(
         default=False, help_text=_('Whether this bounty is featured'))
     featuring_date = models.DateTimeField(blank=True, null=True)
+    fee_amount = models.DecimalField(default=0, decimal_places=18, max_digits=50)
+    fee_tx_id = models.CharField(default="0x0", max_length=255, blank=True)
 
     token_value_time_peg = models.DateTimeField(blank=True, null=True)
     token_value_in_usdt = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
@@ -1017,7 +1019,7 @@ class Bounty(SuperModel):
                 logger.warning(f'reserved_for_user_handle: Unknown handle: ${handle}')
 
         self.bounty_reserved_for_user = profile
-    
+
 
 class BountyFulfillmentQuerySet(models.QuerySet):
     """Handle the manager queryset for BountyFulfillments."""

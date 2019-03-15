@@ -325,6 +325,8 @@ $(document).ready(function() {
           categories: metadata.issueKeywords.split(','),
           created: (new Date().getTime() / 1000) | 0,
           webReferenceURL: issueURL,
+          fee_amount: 0,
+          fee_tx_id: "0x0",
           // optional fields
           metadata: metadata,
           tokenName: tokenName,
@@ -493,6 +495,8 @@ $(document).ready(function() {
             } else {
               // TODO: Save txnId + feeamount + fee% to bounty;
               ipfsBounty.payload.issuer.address = account;
+              ipfsBounty.payload.fee_tx_id = txnId;
+              ipfsBounty.payload.fee_amount = fee;
               ipfs.addJson(ipfsBounty, newIpfsCallback);
             }
           });
@@ -507,6 +511,8 @@ $(document).ready(function() {
               } else {
               // TODO: Save txnId + feeamount + fee% to bounty;
                 ipfsBounty.payload.issuer.address = account;
+                ipfsBounty.payload.fee_tx_id = txnId;
+                ipfsBounty.payload.fee_amount = fee;
                 ipfs.addJson(ipfsBounty, newIpfsCallback);
               }
             }
