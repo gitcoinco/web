@@ -53,7 +53,7 @@ class TestRoundup(TestCase):
     @patch('marketing.management.commands.roundup.weekly_roundup')
     def test_handle_no_options(self, mock_weekly_roundup, *args):
         """Test command roundup when live option is False."""
-        Command().handle(exclude_startswith=None, filter_startswith=None, live=False)
+        Command().handle(exclude_startswith=None, filter_startswith=None, start_counter=0, live=False)
 
         assert mock_weekly_roundup.call_count == 0
 
@@ -61,7 +61,7 @@ class TestRoundup(TestCase):
     @patch('marketing.management.commands.roundup.weekly_roundup')
     def test_handle_with_options(self, mock_weekly_roundup, *args):
         """Test command roundup which various options."""
-        Command().handle(exclude_startswith='f', filter_startswith='jack', live=True)
+        Command().handle(exclude_startswith='f', filter_startswith='jack', start_counter=0, live=True)
 
         assert mock_weekly_roundup.call_count == 1
 
