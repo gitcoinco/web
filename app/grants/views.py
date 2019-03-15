@@ -51,6 +51,9 @@ from web3 import HTTPProvider, Web3
 logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
+clr_matching_banners_style = 'pledging'
+matching_live = '($50K matching live now!) '
+
 
 def get_keywords():
     """Get all Keywords."""
@@ -61,7 +64,7 @@ def grants(request):
     """Handle grants explorer."""
     limit = request.GET.get('limit', 6)
     page = request.GET.get('page', 1)
-    sort = request.GET.get('sort_option', '-clr_matching')
+    sort = request.GET.get('sort_option', '-created_on')
     network = request.GET.get('network', 'mainnet')
     keyword = request.GET.get('keyword', '')
     state = request.GET.get('state', 'active')
@@ -74,14 +77,32 @@ def grants(request):
 
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
-    
+    partners = MatchPledge.objects.filter(active=True)
+
+    nav_options = [
+        {'label': 'All', 'keyword': ''},
+        {'label': 'Security', 'keyword': 'security'},
+        {'label': 'Scalability', 'keyword': 'scalability'},
+        {'label': 'UI/UX', 'keyword': 'UI'},
+        {'label': 'DeFI', 'keyword': 'defi'},
+        {'label': 'Education', 'keyword': 'education'},
+        {'label': 'Wallets', 'keyword': 'wallet'},
+        {'label': 'Community', 'keyword': 'community'},
+        {'label': 'ETH 2.0', 'keyword': 'ETH 2.0'},
+        {'label': 'ETH 1.x', 'keyword': 'ETH 1.x'},
+    ]
+
+    now = datetime.datetime.now()
     params = {
         'active': 'grants_landing',
-        'title': _('Grants Explorer'),
+        'title': matching_live + str(_('Gitcoin Grants Explorer')),
         'sort': sort,
         'network': network,
         'keyword': keyword,
-        'matchpledges': MatchPledge.objects.filter(active=True).order_by('-amount'),
+        'clr_matching_banners_style': clr_matching_banners_style,
+        'nav_options': nav_options,
+        'current_partners': partners.filter(end_date__gte=now).order_by('-amount'),
+        'past_partners': partners.filter(end_date__lt=now).order_by('-amount'),
         'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
         'card_player_override': 'https://www.youtube.com/embed/eVgEWSPFR2o',
         'card_player_stream_override': static('v2/card/grants.mp4'),
@@ -164,8 +185,9 @@ def grant_details(request, grant_id, grant_slug):
 
     params = {
         'active': 'grant_details',
+        'clr_matching_banners_style': clr_matching_banners_style,
         'grant': grant,
-        'title': grant.title,
+        'title': matching_live + grant.title,
         'card_desc': grant.description,
         'avatar_url': grant.logo.url if grant.logo else None,
         'subscriptions': subscriptions,
@@ -375,6 +397,14 @@ def grant_fund(request, grant_id, grant_slug):
             'text': _('You already have an active subscription for this grant.')
         }
         return TemplateResponse(request, 'grants/shared/error.html', params)
+
+    if grant.contract_address == '0x0':
+        messages.info(
+            request,
+            _('This grant is not configured to accept funding at this time.  Please contact founders@gitcoin.co if you believe this message is in error!')
+        )
+        logger.error(f"Grant {grant.pk} is not properly configured for funding.  Please set grant.contract_address on this grant")
+        return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
     if request.method == 'POST':
         if 'contributor_address' in request.POST:

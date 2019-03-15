@@ -21,6 +21,7 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
+    <meta name="description" content="The Gitcoin platform connects freelance developers with open bug bounties or online jobs, paid in crypto (ETH). Leverage a global workforce to quickly complete software development projects and coding jobs."/>
     <link rel="stylesheet" href="{% static "v2/css/home.css" %}" />
   </head>
   <body class="g-font-muli homepage">
@@ -38,7 +39,7 @@
               make new relationships, earn kudos, and get paid for the work you already love.{% endblocktrans %}
             </p>
             <div class="buttons">
-              <a class="btn btn-gc-green mr-2" href="{% url "new_funding" %}">{% trans "Fund an Issue" %}</a>
+              <a class="btn btn-gc-green mr-2" href="{% url "new_bounty" %}">{% trans "Fund an Issue" %}</a>
               <a class="btn btn-outline-white ml-2" href="{% url "products" %}">{% trans "See Our Products" %}</a>
             </div>
           </div>
@@ -49,26 +50,37 @@
       </div>
     </div>
 
-    <div class="col-12 col-md-6 offset-md-3 text-center">
-      <p class="font-title mt-5 pt-5">
-        <span>{% trans "The weight of maintaining open source falls on the" %}</span> <br>
-        <span class="my-2">{% trans "shoulders of 0.01%." %}</span><br>
-        <span>{% trans "This is not sustainable." %}</span>
+    <div class="col-12 col-md-8 offset-md-2 text-center my-5 p-5 font-weight-semibold issue">
+      {% blocktrans %}
+        <h2 class="font-title-xl mt-4">
+          The weight of
+          <span>maintaining open source</span> falls<br>  on the
+          shoulders of <span class="mt-4">0.01% of developers</span>.
+        </h2>
+        <p class="font-title-lg g-fadein my-5" data-fade-duration=1000>
+          This is <strong>not sustainable.</strong> <br>
+          This is <strong>not right.</strong>
+        </p>
+      {% endblocktrans %}
+      {% include 'shared/tree.html' %}
+      <p class="font-title-xl g-fadein mt-4 mb-2" data-fade-duration=1000>
+        {% trans "This is" %} <strong>{% trans "why we built Gitcoin." %}</strong>
       </p>
     </div>
-    <img id="cards" class="w-100" src="{% static "v2/images/home/cards.svg" %}" />
+
+    <img class="w-100 mb-5" src="{% static "v2/images/home/story.svg" %}" />
 
     <div id="optimize_oss" class="mt-5">
       <div class="container pt-0">
         <div class="row">
-          <div class="col-12 col-md-8 col-lg-6">
+          <div class="col-12 col-md-8 col-lg-6 g-fadein" data-fade-duration=1000 data-fade-direction="left">
             <h2>
               {% trans "Tools to optimize the oss life cycle for users, contributors, and maintainers" %}
             </h2>
             <p class="mb-4">{% blocktrans %}Gitcoin grows open source through a suite of products, capturing and retaining
               contributor value through an on-demand bounty marketplace and recurring funding, and
               sustains open source projects through ethical advertising. Our suite of products meet
-              open source contributors where they are from the start of a project to later lifecycles
+              open source contributors where they are, from the start of a project, to later lifecycles
               of project maintenance and appreciation.{% endblocktrans %}
             </p>
             <a class="font-weight-semibold mt-1" href="{% url "products" %}" target="_blank">
@@ -81,14 +93,24 @@
                 <img class="play" src="{% static 'v2/images/home/play.svg' %}">
               </div>
               <div class="pl-lg-0 col-9 col-md-8">
-                <a href="https://youtu.be/b6LSf-zQnlI" target="_blank" rel="noopener noreferrer">
+                <a data-toggle="modal" data-target="#playVideo">
                   {% trans "What’s currently broken about open source sustainability?" %}
                 </a>
               </div>
             </div>
 
+            <div class="modal fade" id="playVideo" tabindex="-1" role="dialog" aria-labelledby="changeLogoLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-body">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/b6LSf-zQnlI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
-          <div class="text-center col-12 offset-lg-1 col-md-4">
+          <div class="text-center col-12 offset-lg-1 col-md-4 g-fadein" data-fade-duration=1000 data-fade-direction="right">
             <figure>
                 <img class="optimize-img text-center px-3 w-100" src="{% static "v2/images/home/optimize_oss.svg" %}"
                 alt="optimize_oss lifecyle with gitcoin" />
@@ -104,7 +126,6 @@
         <span>{% trans "OSS lifecycle looks like this." %}</span>
       </p>
     </div>
-    <img id="cards" class="w-100" src="{% static "v2/images/home/cards_update.svg" %}" />
 
     <div id="products">
       <img class="text-center px-3 bot-circle" src="{% static "v2/images/home/bot-circle.svg" %}"
@@ -178,9 +199,9 @@
       </div>
     </div>
     <div id="realign">
-      <div class="container">
-        <div class="row">
-          <div class="ol-12 col-md-8 col-lg-6">
+      <div class="container" >
+        <div class="row mt-5">
+          <div class="col-12 col-md-8 col-lg-6 g-fadein" data-fade-duration=1000 data-fade-direction="left">
             <h2>{% trans "Realign open source incentives" %}</h2>
             <p>
               {% blocktrans %}Open source contributors provide value that is often not
@@ -197,7 +218,7 @@
             </p>
             <a class="font-weight-semibold" href="{% url "results" %}">{% trans "Learn more" %}</a>
           </div>
-          <div class="col-12 offset-lg-1 col-md-4 text-center">
+          <div class="col-12 offset-lg-1 col-md-4 text-center g-fadein" data-fade-duration=1000 data-fade-direction="right">
             <figure>
               <img class="realign-img px-3 w-100" src="{% static "v2/images/home/realign.svg" %}" alt="realign open source incentives" />
             </figure>
@@ -278,6 +299,14 @@
   {% include 'shared/footer_scripts.html' with slim=1 %}
   {% include 'shared/footer.html' %}
   {% include 'shared/messages.html' %}
+  <script src="{% static "v2/js/popper.min.js" %}"></script>
+  <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
+  <script>
+      var bootstrapTooltip = $.fn.tooltip.noConflict()
+      $.fn.runTooltip = bootstrapTooltip;
+      $('[data-toggle="tooltip"]').runTooltip();
+      $.fn.modal.noConflict();
+  </script>
   <script>
 
     $('#sustainability').on('click', function(){

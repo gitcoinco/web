@@ -45,7 +45,7 @@ h4,
 }
 
 .gitcoin-gray {
-  color: lightgray !important
+  color: lightgray !important;
 }
 
 .header {
@@ -640,6 +640,16 @@ div.button-pink {
 
 .border-transparent {
   border-color: transparent;
+}
+
+#codefund .cf-wrapper {
+  font-family: 'Muli', sans-serif !important;
+  text-align: center !important;
+}
+
+#codefund a {
+  float: none !important;
+  text-align: center !important;
 }
 
 /* AutoComplete */

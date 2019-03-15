@@ -21,12 +21,18 @@ $('.modal-link').click(function(e) {
 const sendInvites = (users) => {
   let usersId = [];
   let msg = $('#shareText').val();
+  const url = document.issueURL;
 
   $.each(users, function(index, elem) {
     usersId.push(elem.id);
   });
 
-  var sendEmail = fetchData('/api/v0.1/social_contribution_email/', 'POST', {usersId, msg}, {'X-CSRFToken': csrftoken});
+  var sendEmail = fetchData(
+    '/api/v0.1/social_contribution_email/',
+    'POST',
+    {usersId, msg, url},
+    {'X-CSRFToken': csrftoken}
+  );
 
   $.when(sendEmail).then(
     function(payback) {
