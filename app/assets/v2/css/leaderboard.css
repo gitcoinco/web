@@ -1,32 +1,26 @@
-.gitcoin-background {
-  background: url("/static/v2/images/header-bg.png") #0d023b;
-  background-attachment: fixed;
-  background-position: center 0;
-}
-
 #leaderboard .leaderboard_entry {
   padding: 10px 0px;
-  color: #5C5D5F;
+  color: black;
   text-decoration: none;
 }
 
 #leaderboard .leaderboard_entry img {
-  max-height: 70px;
+  max-height: 100px;
   border-radius: 50%;
 }
 
 #leaderboard .leaderboard_entry a {
-  color: #5C5D5F;
+  color: #8b8b8b;
 }
 
 #leaderboard .leaderboard_entry .item-amount {
   font-size: 1.5em;
   font-weight: bold;
-  color: #5C5D5F;
+  color: #86eec4;
 }
 
 #leaderboard .leaderboard_entry .item-position {
-  color: #5C5D5F;
+  color: #8b8b8b;
 }
 
 #leaderboard .table-striped tbody tr:nth-of-type(2n+1) {
@@ -48,12 +42,20 @@
 #leaderboard .podium {
   border-bottom-left-radius: 2px;
   border-bottom-right-radius: 2px;
-  background: #150069;
+  background: #f5136e;
+  /* For browsers that do not support gradients */
+  background: -webkit-gradient(linear, center top, center bottom, from(#f5136e), to(#0f023c));
+  background: -webkit-linear-gradient(#f5136e, #0f023c);
+  background: -moz-linear-gradient(#f5136e, #0f023c);
+  background: -o-linear-gradient(#f5136e, #0f023c);
+  background: -ms-linear-gradient(#f5136e, #0f023c);
+  background: linear-gradient(#f5136e, #0f023c);
 }
 
 #leaderboard .winner {
   position: relative;
   padding: 0px;
+  min-height: 23em;
   text-align: center;
 }
 
@@ -85,29 +87,8 @@
 }
 
 #leaderboard .winner img {
-  opacity: 1;
-  display: flex;
-  border-radius: 50%;
-}
-
-.interior .body {
-  background-color: #140069;
-}
-
-.restext {
-  font-size: 1rem !important;
-}
-
-.restext2 {
-  font-size: 1.5rem !important;
-}
-.restext3 {
-  font-size: 1.75rem !important;
-}
-.restext4 {
-  font-size: 1rem !important;
-  font-weight: bold;
-  color: #CECFD1;
+  opacity: 0.5;
+  min-height: 23em;
 }
 
 #leaderboard .winner img:hover {
@@ -115,7 +96,7 @@
 }
 
 #leaderboard .winner a {
-  color: #2B75D2;
+  color: white;
 }
 
 #leaderboard .clickable-row {
@@ -124,7 +105,7 @@
 
 @media (max-width: 1300px) {
   #leaderboard .winner img {
-    display: flex
+    min-height: 20em;
   }
 }
 
@@ -147,21 +128,7 @@
   }
 
   #leaderboard .winner img {
-    display: flex;
-  }
-  .restext {
-    font-size: 0.7rem !important;
-  }
-  .restext2 {
-    font-size: 1rem !important;
-  }
-  .restext3 {
-    font-size: 1.2rem !important;
-  }
-  .restext4 {
-    font-size: 0.9rem !important;
-    font-weight: bold;
-    color: #CECFD1;
+    min-height: 18em;
   }
 }
 
@@ -199,7 +166,7 @@
   }
 
   #leaderboard .winner img {
-    display: flex;
+    min-height: 12em;
   }
 
   #leaderboard .col-6 {
@@ -213,23 +180,8 @@
     overflow-x: hidden;
   }
 
-
   #leaderboard .progress_container {
     padding-top: 1.5em;
-  }
-  .restext {
-    font-size: 0.6rem !important;
-  }
-  .restext2 {
-    font-size: 0.8rem !important;
-  }
-  .restext3 {
-    font-size: 1rem !important;
-  }
-  .restext4 {
-    font-size: 0.7rem !important;
-    font-weight: bold;
-    color: #CECFD1 !important;
   }
 }
 
@@ -251,6 +203,6 @@
   }
 
   #leaderboard .winner img {
-    display: flex;
+    min-height: 6em;
   }
 }
