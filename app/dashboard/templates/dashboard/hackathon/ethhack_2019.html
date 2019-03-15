@@ -4,166 +4,11 @@
 <head>
   {% include 'shared/head.html' %}
   <link rel="stylesheet" href="{% static "v2/css/dashboard.css" %}">
+  <link rel="stylesheet" href="{% static "v2/css/ethhack2019.css" %}">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Eth Hackathon 2019</title>
-  <style>
-    .header{
-      background-image: url(/static/v2/images/hackathon/ethback2.png);
-      background-color: #0d023b;
-      background-size: cover;
-      background-position: 0px 0px;
-      background-repeat: no-repeat;
-      position: relative;
-    }
-
-    .centered1 {
-      position: absolute;
-      top: 20%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-
-    .centered2 {
-      position: absolute;
-      bottom: 20%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-    .centered3 {
-      position: absolute;
-      bottom: 5%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-
-    @media screen and (min-width: 550px) {
-      .centered1 {
-        position: absolute;
-        top: 20%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 3rem !important;
-      }
-      .centered2 {
-        position: absolute;
-        bottom: 25%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 1rem !important;
-      }
-      .centered3 {
-        position: absolute;
-        bottom: 10%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 12rem !important;
-        font-size: 1rem !important;
-      }
-      .pdesc {
-        font-size: 1rem !important
-      }
-      .pdesc2 {
-        font-size: 1rem !important
-      }
-      .topnav {
-        font-size: 1em !important
-      }
-      .part {
-        font-size: 3rem !important
-      }
-    }
-
-    @media screen and (min-width: 920px) {
-      .topnav {
-        font-size: 1em !important;
-      }
-      .ethsvg {
-        margin-top: 6rem !important
-      }
-      .ethtitle {
-        font-size: 4rem !important
-      }
-      .poweredby {
-        font-size: 1.5rem !important;
-        margin-top: 4rem !important;
-      }
-      .ethsvg2 {
-        margin-top: 0.7rem !important;
-      }
-      .btns{
-        width: 200px !important;
-        font-size: 1rem !important;
-      }
-      .btns-wrapper{
-        margin: 5rem !important
-      }
-      .centered1 {
-        position: absolute;
-        top: 20%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 3rem !important;
-      }
-      .centered2 {
-        position: absolute;
-        bottom: 25%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 1.75rem !important;
-      }
-      .centered3 {
-        position: absolute;
-        bottom: 10%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 1.75rem !important;
-        width: 12rem !important;
-        font-size: 1rem !important;
-      }
-      .part {
-        padding-top: 10rem !important;
-        font-size: 3.5rem !important;
-      }
-      .pbtn {
-        margin-top: 5rem !important;
-        margin-bottom: 7rem !important;
-      }
-      .pdesc {
-        font-size: 1.75rem !important;
-        padding-right: 10rem !important;
-        padding-left: 10rem !important;
-        padding-top: 4rem !important;
-      }
-      .pdesc2 {
-        font-size: 1.75rem !important;
-        padding-right: 10rem !important;
-        padding-top: 4rem !important;
-      }
-      .bottomnav {
-        padding: 5rem !important;
-      }
-    }
-    @media screen and (min-width: 1500px) {
-      .centered2 {
-        position: absolute;
-        bottom: 30%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 3rem !important;
-      }
-      .pdesc {
-        font-size: 3rem !important;
-      }
-      .pdesc2 {
-        font-size: 3rem !important;
-      }
-      .topnav {
-        font-size: 2rem !important;
-      }
-    }
-  </style>
 </head>
   <body class="text-center" style="background-color: #180944; color: white">
 
@@ -186,13 +31,10 @@
       <a class="btn font-weight-bold ml-2 btns" style="background-color: #3e00ff; border-radius: 30px; width: 100px; font-size: .4rem">Fund a Prize</a>
     </div>
 
-    <div class="text-center" style="position: relative">
-      <h2 class="centered1 font-weight-bolder" style="font-size: 1rem">April 1st &#8212; 30th</h2>
-      <h2 class="centered2" style="font-size: .5rem; width: 70%">
-        Hackathon challenges will be posted as bounties, with the best hacks receiving prizes in ETH & ERC-20 tokens. Main track winners will receive free tickets to Ethereal NY to present their project live on stage.
-      </h2>
-      <img style="width: 100%; z-index: -1" src="{% static "v2/images/hackathon/ethback.jpg" %}">
-    </div>
+    <section class="container-fluid header" style="overflow: visible; background-image: url(/static/v2/images/hackathon/ethback.jpg);">
+      <h2 class="font-weight-bolder part" style="color: white; padding-top: 3rem; font-size: 1.2rem; text-decoration: underline; text-underline-position: under;">April 1st &#8212; 30th</h2>
+      <h2 class="pdesc3" style="color: white; padding-top: 1.25rem; padding-left: 3rem; padding-right: 3rem; padding-bottom: 3rem; font-size: 0.6rem">Hackathon challenges will be posted as bounties, with the best hacks receiving prizes in ETH & ERC-20 tokens. Main track winners will receive free tickets to Ethereal NY to present their project live on stage.</h2>
+    </section>
 
     <section style="background: white">
       <h2 class="font-weight-bolder part" style="color: black; padding-top: 3rem; font-size: 1.2rem; text-decoration: underline; text-underline-position: under">Participate</h2>
@@ -200,16 +42,7 @@
       <a class="btn font-weight-bold pbtn" style="background-color: #f9006c; border-radius: 30px; width: 12rem; font-size: 1rem; margin-top: 2rem; margin-bottom: 3rem">Register</a>
     </section>
 
-    <!--<div style="position: relative">
-      <h2 class="centered1 font-weight-bolder" style="font-size: 1rem; text-decoration: underline; text-underline-position: under">Fund a Prize Bounty</h2>
-      <h2 class="centered2" style="font-size: .5rem; width: 70%">
-        Have an epic challenge you want to see the community tackle? Want to see how bounty hunters from around the world use your tools? Reach out to us to sponsor and post a prize bounty!
-      </h2>
-      <a class="btn font-weight-bold centered3" style="background-color: #00A55E; border-radius: 30px; width: 100px; font-size: .5rem;">Fund a Prize</a>
-      <img style="width: 100%; z-index: -1;" src="{% static "v2/images/hackathon/ethback2.png" %}">
-    </div>-->
-
-    <section class="container-fluid header" style="overflow: visible; background-position: -11.9783px -17.7394px;">
+    <section class="container-fluid header" style="overflow: visible; background-image: url(/static/v2/images/hackathon/ethback2.png);">
       <h2 class="font-weight-bolder part" style="color: white; padding-top: 3rem; font-size: 1.2rem; text-decoration: underline; text-underline-position: under;">Fund a Prize Bounty</h2>
       <div class="container">
         <div class="row align-items-center">
