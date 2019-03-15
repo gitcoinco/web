@@ -1012,7 +1012,7 @@ def refund_request(request):
             comment=comment,
             token=bounty.token_name,
             address=bounty.bounty_owner_address,
-            fee_amount=0.003 # TODO: update to bounty.fee
+            fee_amount=bounty.fee_amount
         )
 
         # TODO: Send Mail
