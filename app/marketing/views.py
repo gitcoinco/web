@@ -743,7 +743,7 @@ def leaderboard(request, key=''):
         'card_desc': f'See the most valued members in the Gitcoin community recently . {top_earners}',
         'action_past_tense': 'Transacted' if 'submitted' in key else 'bountied',
         'amount_max': amount_max,
-        'podium_items': items[:5] if items else [],
+        'podium_items': items[:3] if items else [],
         'technologies': technologies,
         'active': 'leaderboard'
     }

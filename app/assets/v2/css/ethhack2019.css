@@ -6,49 +6,7 @@
   position: relative;
 }
 
-.centered1 {
-  position: absolute;
-  top: 20%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.centered2 {
-  position: absolute;
-  bottom: 20%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-.centered3 {
-  position: absolute;
-  bottom: 5%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
 @media screen and (min-width: 550px) {
-  .centered1 {
-    position: absolute;
-    top: 20%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 3rem !important;
-  }
-  .centered2 {
-    position: absolute;
-    bottom: 25%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 1rem !important;
-  }
-  .centered3 {
-    position: absolute;
-    bottom: 10%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 12rem !important;
-    font-size: 1rem !important;
-  }
   .pdesc {
     font-size: 1rem !important
   }
@@ -90,29 +48,6 @@
   .btns-wrapper{
     margin: 5rem !important
   }
-  .centered1 {
-    position: absolute;
-    top: 20%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 3rem !important;
-  }
-  .centered2 {
-    position: absolute;
-    bottom: 25%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 1.75rem !important;
-  }
-  .centered3 {
-    position: absolute;
-    bottom: 10%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 1.75rem !important;
-    width: 12rem !important;
-    font-size: 1rem !important;
-  }
   .part {
     padding-top: 10rem !important;
     font-size: 3.5rem !important;
@@ -144,10 +79,6 @@
 }
 @media screen and (min-width: 1500px) {
   .centered2 {
-    position: absolute;
-    bottom: 30%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     font-size: 3rem !important;
   }
   .pdesc {
