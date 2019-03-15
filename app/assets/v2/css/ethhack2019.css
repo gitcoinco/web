@@ -1,3 +1,8 @@
+a {
+  color: white !important;
+  text-decoration: none; /* no underline */
+}
+
 .header{
   background-color: #0d023b;
   background-size: cover;
