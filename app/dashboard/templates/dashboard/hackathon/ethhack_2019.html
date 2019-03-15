@@ -9,6 +9,14 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Eth Hackathon 2019</title>
   <style>
+    .header{
+      background-image: url(/static/v2/images/hackathon/ethback2.png);
+      background-color: #0d023b;
+      background-size: cover;
+      background-position: 0px 0px;
+      background-repeat: no-repeat;
+      position: relative;
+    }
 
     .centered1 {
       position: absolute;
@@ -56,8 +64,14 @@
       .pdesc {
         font-size: 1rem !important
       }
+      .pdesc2 {
+        font-size: 1rem !important
+      }
       .topnav {
         font-size: 1em !important
+      }
+      .part {
+        font-size: 3rem !important
       }
     }
 
@@ -122,6 +136,11 @@
         padding-left: 10rem !important;
         padding-top: 4rem !important;
       }
+      .pdesc2 {
+        font-size: 1.75rem !important;
+        padding-right: 10rem !important;
+        padding-top: 4rem !important;
+      }
       .bottomnav {
         padding: 5rem !important;
       }
@@ -135,6 +154,9 @@
         font-size: 3rem !important;
       }
       .pdesc {
+        font-size: 3rem !important;
+      }
+      .pdesc2 {
         font-size: 3rem !important;
       }
       .topnav {
@@ -178,14 +200,28 @@
       <a class="btn font-weight-bold pbtn" style="background-color: #f9006c; border-radius: 30px; width: 12rem; font-size: 1rem; margin-top: 2rem; margin-bottom: 3rem">Register</a>
     </section>
 
-    <div style="position: relative">
+    <!--<div style="position: relative">
       <h2 class="centered1 font-weight-bolder" style="font-size: 1rem; text-decoration: underline; text-underline-position: under">Fund a Prize Bounty</h2>
       <h2 class="centered2" style="font-size: .5rem; width: 70%">
-        Hackathon challenges will be posted as bounties, with the best hacks receiving prizes in ETH & ERC-20 tokens. Main track winners will receive free tickets to Ethereal NY to present their project live on stage.
+        Have an epic challenge you want to see the community tackle? Want to see how bounty hunters from around the world use your tools? Reach out to us to sponsor and post a prize bounty!
       </h2>
       <a class="btn font-weight-bold centered3" style="background-color: #00A55E; border-radius: 30px; width: 100px; font-size: .5rem;">Fund a Prize</a>
       <img style="width: 100%; z-index: -1;" src="{% static "v2/images/hackathon/ethback2.png" %}">
-    </div>
+    </div>-->
+
+    <section class="container-fluid header" style="overflow: visible; background-position: -11.9783px -17.7394px;">
+      <h2 class="font-weight-bolder part" style="color: white; padding-top: 3rem; font-size: 1.2rem; text-decoration: underline; text-underline-position: under;">Fund a Bounty</h2>
+      <div class="container">
+        <div class="row">
+          <div class="col-8 text-left">
+            <h2 class="pdesc2" style="color: white; padding-top: 1.25rem; padding-right: 3rem; font-size: 0.6rem">Have an epic challenge you want to see the community tackle? Want to see how bounty hunters from around the world use your tools? Reach out to us to sponsor and post a prize bounty!</h2>
+            <a class="btn font-weight-bold pbtn" style="background-color: #f9006c; border-radius: 30px; width: 12rem; font-size: 1rem; margin-top: 2rem; margin-bottom: 3rem">Fund a Prize</a>
+          </div>
+          <div class="col-4">
+            <img class="img-fluid" style="width: 100%" src="{% static "v2/images/hackathon/bot.svg" %}" />
+        </div>
+      </div>
+    </section>
 
     <section style="background: white">
       <h2 class="font-weight-bolder part" style="color: black; padding-top: 3rem; font-size: 1.2rem; text-decoration: underline; text-underline-position: under">Join the Commmunity</h2>
