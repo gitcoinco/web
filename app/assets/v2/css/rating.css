@@ -16,6 +16,25 @@
   min-width: 230px;
   box-shadow: 0 2px 2px 1px rgba(0, 0, 0, 0.1);
 }
+.card-rating .tag {
+  font-weight: 700;
+}
+.card-rating__title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.card-rating__avatar {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+}
 
 .card-rating__header {
   display: flex;
@@ -44,7 +63,7 @@
 
 .rating > label {
   color: #ddd;
- /* float: right; */
+  margin-bottom: 0;
 }
 
 .rating > input:checked ~ label,
