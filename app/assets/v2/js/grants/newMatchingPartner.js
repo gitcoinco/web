@@ -5,15 +5,20 @@ function createMatchingPartner(transactionID, transactionAmount) {
 
   $.post(newMatchPledgeUrl, {hash: transactionID, amount: transactionAmount}).then(function(result) {
     _alert(
-      'Thank you for volunteering to match on Gitcoin Grants. You are supporting open source, and we thank you',
+      result.message,
       'success'
+    );
+  }).fail(function(data) {
+    _alert(
+      data.responseJSON['message'],
+      'error'
     );
   });
 }
 
 function saveTransactionDetails(transactionID) {
 
-  web3.eth.getTransaction(hash).then(function(transactionDetails) {
+  web3.eth.getTransaction(transactionID).then(function(transactionDetails) {
     let network = document.web3network || 'mainnet';
     let data = {
       'txid': transactionID,
@@ -27,7 +32,7 @@ function saveTransactionDetails(transactionID) {
     let newAttestationsUrl = '/revenue/attestations/new';
 
     $.post(newAttestationsUrl, data).then(function(result) {
-      createMatchingPartner(transactionID, amount);
+      createMatchingPartner(transactionID, transactionDetails.value);
     });
 
   });

@@ -640,6 +640,10 @@ def leaderboard(request):
 @csrf_exempt
 def new_matching_partner(request):
 
+    tx_hash = request.POST.get('hash')
+    tx_amount = request.POST.get('amount')
+    profile = get_profile(request)
+
     def get_json_response(message, status):
         return JsonResponse(
             {'status': status, 'message': message},
@@ -648,25 +652,36 @@ def new_matching_partner(request):
 
     def is_verified(tx_details, tx_hash, tx_amount, network):
         gitcoin_account = '0x00De4B13153673BCAE2616b67bf822500d325Fc3'
-        return has_tx_mined(
-            tx_hash, network
-        ) and tx.to == gitcoin_account and tx.value == tx_amount
+        return has_tx_mined(tx_hash, network) and\
+            tx_details.to == gitcoin_account and\
+            str(tx_details.value) == str(tx_amount)
 
     if not request.user.is_authenticated:
         return get_json_response("Not Authorized", 403)
 
-    tx_hash = request.POST.get('hash')
-    tx_amount = request.POST.get('amount')
-    profile = get_profile(request)
+    if profile:
+        return get_json_response("Profile not found.", 404)
 
-    if request.POST and tx_hash and profile:
+    if request.POST and tx_hash:
         network = 'mainnet'
         web3 = get_web3(network)
         tx = web3.eth.getTransaction(tx_hash)
         if is_verified(tx, tx_hash, tx_amount, network):
             MatchPledge(
                 profile=profile,
-                amount=tx.value
+                amount=tx.value,
+                data=json.dumps({
+                    'tx_hash': tx_hash,
+                    'network': network,
+                    'from': tx['from'],
+                    'to': tx.to,
+                    'tx_amount': tx.value
+                })
             ).save()
 
-    return get_json_response("OK", 203)
+            return get_json_response(
+                """Thank you for volunteering to match on Gitcoin Grants. 
+                You are supporting open source, and we thank you""", 201
+            )
+        return get_json_response("Transaction wasn't verified.", 400)
+    return get_json_response("Wrong request.", 400)

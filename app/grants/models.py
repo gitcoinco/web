@@ -743,6 +743,7 @@ class MatchPledge(SuperModel):
     )
     comments = models.TextField(default='', blank=True, help_text=_('The comments.'))
     end_date = models.DateTimeField(null=False, default=next_month)
+    data = models.TextField(blank=True)
 
     def __str__(self):
         """Return the string representation of this object."""

@@ -53,8 +53,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       </div>
     </div>
 
-    {% if current_partners or past_partners %}
-
       <div class="container-fluid py-5 grants-matching">
         <div class="container">
           <div class="row">
@@ -63,27 +61,31 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <h5>Contribute from 3/6 to 4/19 and have up to $50k in contributions matched.</h5>
             <p>A special thanks to the following partners who have offered to match contributions to Gitcoin Grants.  <a href="https://medium.com/gitcoin/gitcoin-grants-50k-oss-fund-e20e09dc2110">(Read Announcement Here)</a></p>
 
-            {% if not user.is_authenticated %}
-              <a class="btn btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">{% trans 'Become a Matching Partner' %}</a>
-            {% else %}
-              <div class="btn btn-gc-blue" onclick="processPayment()">
-                {% trans 'Become a Matching Partner' %}
-              </div>
-            {% endif %}
+              {% if not user.is_authenticated %}
+                <a class="btn btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">{% trans 'Become a Matching Partner' %}</a>
+              {% else %}
+                <div class="btn btn-gc-blue" onclick="processPayment()">
+                  {% trans 'Become a Matching Partner' %}
+                </div>
+              {% endif %}
 
-            <ul class="nav nav-tabs my-5" role="tablist">
-              <li class="nav-item">
-                <a class="nav-link nav-line active" id="currentpartners-tab" data-toggle="tab" href="#currentpartners" role="tab" aria-controls="currentpartners" aria-selected="true">Current Partners</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link nav-line" id="pastpartners-tab" data-toggle="tab" href="#pastpartners" role="tab" aria-controls="pastpartners" aria-selected="false">Past Partners</a>
-              </li>
-              <li class="align-self-center ml-auto font-smaller-2">
-              </li>
-            </ul>
-          </div>
+
+            </div>
           <div class="col-md-6"><img src="{% static 'v2/images/grants/robots.png' %}" class="rounded mx-auto d-block"/></div>
           </div>
+          {% if current_partners or past_partners %}
+          <ul class="nav nav-tabs my-5" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link nav-line active" id="currentpartners-tab" data-toggle="tab" href="#currentpartners" role="tab" aria-controls="currentpartners" aria-selected="true">Current Partners</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link nav-line" id="pastpartners-tab" data-toggle="tab" href="#pastpartners" role="tab" aria-controls="pastpartners" aria-selected="false">Past Partners</a>
+            </li>
+            <li class="align-self-center ml-auto font-smaller-2">
+            </li>
+          </ul>
+
+
           <div class="tab-content">
               <div class="tab-pane fade show active" id="currentpartners" role="tabpanel" aria-labelledby="currentpartners-tab">
                 {% for current_partner in current_partners %}
@@ -111,10 +113,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               {% endfor %}
             </div>
           </div>
-
+          {% endif %}
         </div>
       </div>
-    {% endif %}
+
 
     <div class="container-fluid py-5 grants-search">
       <div class="container">
