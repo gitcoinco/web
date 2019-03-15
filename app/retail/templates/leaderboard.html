@@ -131,21 +131,26 @@
         </div>
       </div>
     </div>
+                                                                                               
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
+                                                                                               
   </body>
+                                                                                               
   <script>
     var technologies = []
     {% for tech in technologies %}
       technologies.push('{{tech}}')
     {% endfor %}
   </script>
+                                                                                               
   <!-- jQuery -->
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
   <script src="{% static "v2/js/pages/leaderboard.js" %}"></script>
+                                                         
 </html>
