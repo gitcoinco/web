@@ -127,10 +127,42 @@ def get_avatar_context():
                 'name': 'Clothing',
                 'title': 'Pick your clothing',
                 'options': (
-                    'cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater', 'spacecadet', 'suit',
-                    'ethlogo', 'cloak', 'robe', 'pjs', 'elf_inspired', 'business_suit', 'suspender', 'gitcoinpro',
-                    'star_uniform', 'jersey', 'charlie', 'doctor', 'chinese', 'blouse', 'polkadotblouse', 'coat',
-                    'crochettop', 'space_suit', 'armour', 'pilot', 'baseball', 'football',
+                    'cardigan', 
+                    'hoodie', 
+                    'knitsweater', 
+                    'plaid', 
+                    'shirt', 
+                    'shirtsweater', 
+                    'spacecadet', 
+                    'suit',
+                    'ethlogo', 
+                    'cloak', 
+                    'robe', 
+                    'pjs', 
+                    'elf_inspired', 
+                    'business_suit', 
+                    'suspender', 
+                    'gitcoinpro',
+                    'star_uniform',
+                    'jersey',
+                    'charlie',
+                    'doctor',
+                    'chinese',
+                    'blouse',
+                    'polkadotblouse',
+                    'coat',
+                    'crochettop',
+                    'space_suit',
+                    'armour',
+                    'pilot',
+                    'baseball',
+                    'football',
+                    'lifevest',
+                    'firefighter',
+                    'leatherjacket',
+                    'martialarts',
+                    'raincoat',
+                    'recycle',
                 ),
                 'paid_options': {
                     'robe': 0.01,
@@ -418,8 +450,9 @@ def build_avatar_svg(svg_path='avatar.svg', line_color='#781623', icon_size=None
     return result_path
 
 
-def build_random_avatar():
+def build_random_avatar(override_skin_tone=None, override_hair_color=None, add_facial_hair=True):
     """Build an random avatar payload using context properties"""
+    ignore_options = ['eyeliner-blue', 'eyeliner-green', 'eyeliner-pink', 'eyeliner-red', 'eyeliner-teal', 'blush']
     default_path = f'{settings.STATIC_URL}v2/images/avatar/'
     context = get_avatar_context()
     optional = context['optionalSections']
@@ -427,7 +460,11 @@ def build_random_avatar():
 
     payload = dict()
     payload['SkinTone'] = random.choice(context['skin_tones'])
+    if override_skin_tone:
+        payload['SkinTone'] = override_skin_tone
     payload['HairColor'] = random.choice(context['hair_colors'])
+    if override_hair_color:
+        payload['HairColor'] = override_hair_color
     payload['ClothingColor'] = random.choice(context['clothing_colors'])
 
     for section in context['sections']:
@@ -439,9 +476,15 @@ def build_random_avatar():
         if set_optional == True:
             options = dict()
             if section_name not in ['HairStyle', 'Accessories']:
-                options = [option for option in section['options'] if option not in paid_options]
+                options = [
+                    option for option in section['options']
+                    if option not in paid_options and option not in ignore_options
+                ]
             else:
-                options = [option for option in section['options'] if option[0] not in paid_options]
+                options = [
+                    option for option in section['options']
+                    if option[0] not in paid_options and option not in ignore_options
+                ]
 
             random_choice = random.choice(options)
 
@@ -457,8 +500,9 @@ def build_random_avatar():
                 ] = f'{default_path}{section_name}/{random_choice[1]}-{payload["HairColor"]}.svg' if random_choice[
                     1] != 'None' else None
             elif section_name == 'FacialHair':
-                key = random_choice[:random_choice.find('-')]
-                payload[key] = f'{default_path}{section_name}/{random_choice}-{payload["HairColor"]}.svg'
+                if add_facial_hair:
+                    key = random_choice[:random_choice.find('-')]
+                    payload[key] = f'{default_path}{section_name}/{random_choice}-{payload["HairColor"]}.svg'
             elif section_name == 'Accessories':
                 for k in random_choice:
                     key = k[:k.find('-')]
