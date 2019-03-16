@@ -47,7 +47,7 @@ git checkout xxx-token
 
 4. 在 erc20 目录里添加一个新的 json 文件，使用你的代币合约地址命名这个文件，注意合约地址需要有大小写做了 [checksum](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-55.md)
   举例：
-  *0xf90f1648926005A8bb3ed8ec883164De7F768743.json*
+  *0xf90f1648926005A8bb3ed8ec883164De7F768743.json* [Checksum 转化工具](https://ethsum.netlify.com/)
 
 5. json 文件请使用 UTF-8 编码，否则 Travis-CI 会构建失败。请参照模版文件补充完整的代币资料：[$template.json](../erc20/$template.json)
 6. 代币 Logo 放到 images 目录里，图片名称也是使用 **checksum** 代币合约地址命名
