@@ -52,7 +52,7 @@ git checkout xxx-token
 
 4. Add a new json file to the erc20 directory, named by your token contract address. Please note the contract address should be done with capitalization with [checksum](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-55.md) 
   For example:
-  *0xf90f1648926005A8bb3ed8ec883164De7F768743.json*
+  *0xf90f1648926005A8bb3ed8ec883164De7F768743.json* [Checksum tool](https://ethsum.netlify.com/)
 
 
 5. Please ensure to use UTF-8 encoding in the json file to avoid Travis-CI build error. Please check the template file to fill in the complete token information: [$template.json](../erc20/$template.json)
@@ -79,7 +79,9 @@ git push origin xxx-token
 ## Frequently asked questions
 
 ### How to display token price:
-In imToken, the current displayed token prices are provided by the block.cc API. If you want your project’s token price to be displayed in imToken, your token price must be supported on block.cc and you have to provide us the corresponding link. Please refer to this page for more information: https://mifengcha.com/q/eth 
+In imToken, the current displayed token prices are provided by the block.cc API. If you want your project’s token price to be displayed in imToken, your token price must be supported on block.cc and you have to provide us the corresponding link in your GitHub submission. 
+
+Sample: https://github.com/consenlabs/token-profile/issues/3595 
 
 
 ### Regarding Duplicated Token Names or Contract Amendment
