@@ -326,7 +326,7 @@ $(document).ready(function() {
           created: (new Date().getTime() / 1000) | 0,
           webReferenceURL: issueURL,
           fee_amount: 0,
-          fee_tx_id: "0x0",
+          fee_tx_id: '0x0',
           // optional fields
           metadata: metadata,
           tokenName: tokenName,

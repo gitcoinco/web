@@ -1,5 +1,6 @@
 $(document).ready(function() {
 
+  load_tokens();
   $('#rejectRefund').prop('disabled', true);
 
   $('#reject_comments').on('change keyup paste', function() {
@@ -55,6 +56,29 @@ $(document).ready(function() {
       });
     } else {
       // ERC 20 token
+      const _token = tokenNameToDetails(document.web3network, token);
+      const amountInWei = amount * 1.0 * Math.pow(10, _token.decimals);
+      const token_contract = web3.eth.contract(token_abi).at(_token.addr);
+
+      token_contract.transfer(to, amountInWei, { gasPrice: gasPrice },
+        function(error, txnId) {
+          if (error) {
+            console.log ('Unable to refund bounty fee. Please try again.', error);
+            $('#errResponse').show();
+            $('#loadingImg').hide();
+          } else {
+            $('#sucessResponse').show();
+            $('#loadingImg').hide();
+            console.log('transaction', txnId);
+            const data = {
+              txnId: txnId,
+              fulfill: true
+            };
+
+            handleRequest(data);
+          }
+        }
+      );
     }
 
   });
