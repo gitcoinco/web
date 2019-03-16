@@ -337,6 +337,40 @@ def post_comment(request):
             'msg': 'Finished.'
         })
 
+def rating_modal(request, bounty_id):
+    # TODO: will be changed to the new share
+    """Social Contributuion to the bounty.
+
+    Args:
+        pk (int): The primary key of the bounty to be accepted.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The accept bounty view.
+
+    """
+    # bounty = handle_bounty_views(request)
+    # promo_text = str(_("Check out this bounty that pays out ")) + f"{bounty.get_value_true} {bounty.token_name} {bounty.url}"
+    # for keyword in bounty.keywords_list:
+    #     promo_text += f" #{keyword}"
+    try:
+        bounty = Bounty.objects.get(pk=bounty_id)
+        print(bounty)
+    except Bounty.DoesNotExist:
+        return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
+                            status=401)
+
+    params = get_context(
+        ref_object=bounty,
+        # user=request.user if request.user.is_authenticated else None,
+        # confirm_time_minutes_target=confirm_time_minutes_target,
+        # active='social_contribute',
+        # title=_('Social Contribute'),
+    )
+    # params['promo_text'] = promo_text
+    return TemplateResponse(request, 'rating_modal.html', params)
 
 @csrf_exempt
 @require_POST
@@ -800,7 +834,7 @@ def social_contribution_email(request):
     from marketing.mails import share_bounty
 
     print (request.POST.getlist('usersId[]', []))
-    emails = [] 
+    emails = []
     user_ids = request.POST.getlist('usersId[]', [])
     for user_id in user_ids:
         profile = Profile.objects.get(id=int(user_id))
@@ -1103,14 +1137,14 @@ def bounty_invite_url(request, invitecode):
 
     Args:
         invitecode (str): Unique invite code with bounty details and handle
-    
+
     Returns:
         django.template.response.TemplateResponse: The Bounty details template response.
     """
     decoded_data = get_bounty_from_invite_url(invitecode)
     bounty = Bounty.objects.current().filter(pk=decoded_data['bounty_id'])
     return redirect('/funding/details/?url=' + bounty.github_url)
-    
+
 
 
 def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None):

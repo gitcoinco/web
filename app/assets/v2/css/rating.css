@@ -46,6 +46,10 @@
   direction: rtl;
 }
 
+.rating--small {
+  font-size: 0.6rem;
+}
+
 .rating > input { display: none; }
 .rating > label:before {
   margin: 1px;
