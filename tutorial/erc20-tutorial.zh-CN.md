@@ -68,7 +68,8 @@ git push origin xxx-token
 ## 常见问题
 
 ### 如何显示价格？
-imToken 目前的价格显示对接 block.cc 的 API，如需在 imToken 中显示价格，你们的代币要求被 block.cc 收录；并提供我们相应的链接，参考：https://mifengcha.com/q/eth 
+imToken 目前的价格显示对接 block.cc 的 API，如需在 imToken 中显示价格，你们的代币要求被 block.cc 收录；并在 GitHub Issues 提供相关资料，提交示例模版：
+https://github.com/consenlabs/token-profile/issues/3565 
 
 ### 关于重名及修改合约
 
