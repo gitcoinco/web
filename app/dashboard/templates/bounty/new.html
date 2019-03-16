@@ -181,10 +181,14 @@
                       <span id="summary-fee-amount" class="font-weight-bold">0</span>
                       <span id="summary-fee-token" class="font-weight-bold">ETH</span> Gitcoin Platform Fee )
                     </p>
-
+                    <p class="font-caption mb-0">
+                      You will have to approve
+                      <span id="confirmation" class="font-weight-bold">2</span>
+                      Metamask confirmations.
+                    </p>
                   </div>
                 </div>
-                <div class="terms_container pt-4">
+                <div class="terms_container pt-3">
                   <div class="form__checkbox">
                     <input name='terms' id='terms' type="checkbox" value=1 required />
                       <label class="form__label" for=terms>{% trans "I have read, understand, and agree to, the" %}
@@ -192,10 +196,10 @@
                     </label>
                   </div>
                 </div>
-                <div class="w-100 mb-2 terms_container">
+                <div class="w-100 mb-3 terms_container">
                   <div class="form__checkbox">
                     <input name='blockchain_tos' id='blockchain_tos' type="checkbox" value=1 required />
-                    <label class="form__label" for=blockchain_tos style="display: flex;">{% blocktrans %}I understand that this information is being submitted to a public, immutable, blockchain. No one, including
+                    <label class="form__label mt-0" for=blockchain_tos style="display: flex;">{% blocktrans %}I understand that this information is being submitted to a public, immutable, blockchain. No one, including
                       Gitcoin Core, will be able to take my funds or change this information.{% endblocktrans %}</label>
                   </div>
                 </div>

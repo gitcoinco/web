@@ -140,10 +140,13 @@ $(document).ready(function() {
   });
 
   $('#featuredBounty').on('change', function() {
-    if ($(this).prop('checked'))
+    if ($(this).prop('checked')) {
+      $('#confirmation').html('3');
       $('.feature-amount').show();
-    else
+    } else {
       $('.feature-amount').hide();
+      $('#confirmation').html('2');
+    }
     populateBountyTotal();
   });
 
