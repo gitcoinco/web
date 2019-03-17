@@ -5,8 +5,15 @@ $(document).ready(function() {
     web3.eth.net.isListening((error, connectionStatus) => {
       if (connectionStatus)
         init();
+      document.init = true;
     });
   }
+  // fix for triage bug https://gitcoincore.slack.com/archives/CAXQ7PT60/p1551220641086800
+  setTimeout(function() {
+    if (!document.init) {
+      show_error_banner();
+    }
+  }, 1000);
 });
 
 function saveGrant(grantData, isFinal) {

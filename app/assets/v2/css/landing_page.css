@@ -11,10 +11,6 @@ body {
   flex-shrink: 0;
 }
 
-.navbar-nav > .img__spaceship {
-  display: none !important;
-}
-
 .banner--green {
   background-color:#25E899;
   color: #000000;

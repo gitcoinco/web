@@ -333,7 +333,9 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
         except Exception as e:
             logger.error(f'{e} during new fulfillment creation for {new_bounty}')
             continue
-    return new_bounty.fulfillments.all()
+
+    if new_bounty:
+        return new_bounty.fulfillments.all()
 
 
 def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
@@ -459,6 +461,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
             try:
                 issue_kwargs = get_url_dict(new_bounty.github_url)
                 new_bounty.github_issue_details = get_gh_issue_details(**issue_kwargs)
+
             except Exception as e:
                 logger.error(e)
 
@@ -532,10 +535,10 @@ def process_bounty_details(bounty_details):
     meta = bounty_data.get('meta', {})
 
     # what schema are we working with?
-    schema_name = meta.get('schemaName')
+    schema_name = meta.get('schemaName', 'Unknown')
     schema_version = meta.get('schemaVersion', 'Unknown')
     if not schema_name or schema_name != 'gitcoinBounty':
-        logger.info('Unknown Schema: Unknown - Version: %s', schema_version)
+        logger.info('Unknown Schema: %s - Version: %s', schema_name, schema_version)
         return (False, None, None)
 
     # Create new bounty (but only if things have changed)
@@ -642,6 +645,7 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
                 user_profile = Profile.objects.filter(handle__iexact=fulfillment.fulfiller_github_username).first()
                 if not user_profile:
                     user_profile = sync_profile(fulfillment.fulfiller_github_username)
+                
     except Exception as e:
         logger.error(f'{e} during record_bounty_activity for {new_bounty}')
 
@@ -737,6 +741,7 @@ def process_bounty_changes(old_bounty, new_bounty):
     # record a useraction for this
     record_user_action(event_name, old_bounty, new_bounty)
     record_bounty_activity(event_name, old_bounty, new_bounty)
+
 
     # Build profile pairs list
     if new_bounty.fulfillments.exists():

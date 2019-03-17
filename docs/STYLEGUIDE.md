@@ -63,3 +63,19 @@ _usage_
 
 The Slider styling used in Gitcoin can be found in
 [slider.css](https://github.com/gitcoinco/web/blob/master/app/assets/v2/css/lib/slider.css)
+
+
+## Animations
+
+### FadeIn
+
+Container has a fade in animation when it becomes into viewport.
+
+_values_
+
+`data-fade-direction`: `left` | `mid` | `right` _(defaut: `mid`)_
+`data-fade-duration`: `Number` _(default: `1500`)_
+
+_usage_
+
+```<div class="g-fadein" data-fade-duration=1000 data-fade-direction="mid">```

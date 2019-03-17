@@ -274,17 +274,6 @@ def get_web3(network, sockets=False):
     raise UnsupportedNetworkException(network)
 
 
-def get_bounty_invite_url(handle, bounty_id):
-    """Returns a unique url for each bounty and one who is inviting
-
-    Returns:
-        A unique string for each bounty
-    """
-    salt = "X96gRAVvwx52uS6w4QYCUHRfR3OaoB"
-    string = handle + salt + bounty_id
-    return base64.urlsafe_b64encode(string.encode()).decode()
-
-
 def get_profile_from_referral_code(code):
     """Returns a profile from the unique code
 
@@ -292,6 +281,17 @@ def get_profile_from_referral_code(code):
         A unique string for each profile
     """
     return base64.urlsafe_b64decode(code.encode()).decode()
+
+
+def get_bounty_invite_url(inviter, bounty_id):
+    """Returns a unique url for each bounty and one who is inviting
+
+    Returns:
+        A unique string for each bounty
+    """
+    salt = "X96gRAVvwx52uS6w4QYCUHRfR3OaoB"
+    string = str(inviter) + salt + str(bounty_id)
+    return base64.urlsafe_b64encode(string.encode()).decode()
 
 
 def get_bounty_from_invite_url(invite_url):
@@ -303,9 +303,9 @@ def get_bounty_from_invite_url(invite_url):
     salt = "X96gRAVvwx52uS6w4QYCUHRfR3OaoB"
     decoded_string = base64.urlsafe_b64decode(invite_url.encode()).decode()
     data_array = decoded_string.split(salt)
-    handle = data_array[0]
-    bounty_id = data_array[1]
-    return {'handle': handle, 'bounty_id': bounty_id}
+    inviter = data_array[0]
+    bounty = data_array[1]
+    return {'inviter': inviter, 'bounty': bounty}
 
 
 def getStandardBountiesContractAddresss(network):
@@ -396,6 +396,7 @@ def get_bounty(bounty_enum, network):
         'token': token,
         'fulfillments': fulfillments,
         'network': network,
+        'review': bounty_data.get('review',{}),
     }
     return bounty
 
@@ -539,6 +540,18 @@ def get_ordinal_repr(num):
     else:
         suffix = ordinal_suffixes.get(num % 10, 'th')
     return f'{num}{suffix}'
+
+
+def record_funder_inaction_on_fulfillment(bounty_fulfillment):
+    payload = {
+        'profile': bounty_fulfillment.bounty.bounty_owner_profile,
+        'metadata': {
+            'bounties': list(bounty_fulfillment.bounty.pk),
+            'bounty_fulfillment_pk': bounty_fulfillment.pk,
+            'needs_review': True
+        }
+    }
+    Activity.objects.create(activity_type='bounty_abandonment_escalation_to_mods', bounty=bounty_fulfillment.bounty, **payload)
 
 
 def record_user_action_on_interest(interest, event_name, last_heard_from_user_days):

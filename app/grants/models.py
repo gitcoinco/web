@@ -26,6 +26,7 @@ from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
+from django.utils.timezone import localtime
 from django.utils.translation import gettext_lazy as _
 
 from django_extensions.db.fields import AutoSlugField
@@ -193,6 +194,7 @@ class Grant(SuperModel):
         help_text=_('The CLR matching amount'),
     )
     activeSubscriptions = ArrayField(models.CharField(max_length=200), blank=True, default=list)
+    hidden = models.BooleanField(default=False, help_text=_('Hide the grant from the /grants page?'))
 
     # Grant Query Set used as manager.
     objects = GrantQuerySet.as_manager()
@@ -716,3 +718,33 @@ class Contribution(SuperModel):
         from django.contrib.humanize.templatetags.humanize import naturaltime
         txid_shortened = self.tx_id[0:10] + "..."
         return f"id: {self.pk}; {txid_shortened} => subs:{self.subscription}; {naturaltime(self.created_on)}"
+
+
+def next_month():
+    """Get the next month time."""
+    return localtime(timezone.now() + timedelta(days=30))
+
+
+class MatchPledge(SuperModel):
+    """Define the structure of a MatchingPledge."""
+
+    active = models.BooleanField(default=False, help_text=_('Whether or not the MatchingPledge is active.'))
+    profile = models.ForeignKey(
+        'dashboard.Profile',
+        related_name='matchPledges',
+        on_delete=models.CASCADE,
+        help_text=_('The MatchingPledgers profile.'),
+        null=True,
+    )
+    amount = models.DecimalField(
+        default=1,
+        decimal_places=4,
+        max_digits=50,
+        help_text=_('The matching pledge amount in DAI.'),
+    )
+    comments = models.TextField(default='', blank=True, help_text=_('The comments.'))
+    end_date = models.DateTimeField(null=False, default=next_month)
+
+    def __str__(self):
+        """Return the string representation of this object."""
+        return f"{self.profile} <> {self.amount} DAI"

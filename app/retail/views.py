@@ -16,6 +16,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+import logging
 from json import loads as json_parse
 from os import walk as walkdir
 
@@ -24,7 +25,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.core.validators import validate_email
-from django.http import Http404, HttpResponse, JsonResponse
+from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
@@ -43,11 +44,13 @@ from marketing.models import Alumni, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
+from retail.emails import render_nth_day_email_campaign
 from retail.helpers import get_ip
 
 from .forms import FundingLimitIncreaseRequestForm
 from .utils import programming_languages
 
+logger = logging.getLogger(__name__)
 
 @cached_as(
     Activity.objects.select_related('bounty').filter(bounty__network='mainnet').order_by('-created'),
@@ -61,7 +64,6 @@ def get_activities(tech_stack=None, num_activities=15):
     activities = activities[0:num_activities]
     return [a.view_props for a in activities]
 
-@staff_member_required
 def index(request):
     products = [
         {
@@ -71,7 +73,7 @@ def index(request):
                     'img': static('v2/images/home/bounties.svg'),
                     'name': 'BOUNTIES',
                     'description': 'Get paid for solving open source bounties.',
-                    'link': '/'  # update to /bounties
+                    'link': '/bounties/funder'
                 }
             ]
         },
@@ -195,7 +197,8 @@ def index(request):
         'products': products,
         'know_us': know_us,
         'press': press,
-        'articles': articles
+        'articles': articles,
+        'title': _('Grow Open Source: Find Freelance Developers & Open Source Bug Bounties - Gitcoin')
     }
     return TemplateResponse(request, 'home/index.html', context)
 
@@ -484,26 +487,42 @@ def contributor_bounties(request, tech_stack):
         }
     ]
 
-    available_bounties_count = open_bounties().count()
-    available_bounties_worth = amount_usdt_open_work()
     # tech_stack = '' #uncomment this if you wish to disable contributor specific LPs
     context = {
-        'activities': get_activities(tech_stack),
-        'title': tech_stack.title() + str(_(" Open Source Opportunities")) if tech_stack else "Open Source Opportunities",
         'slides': slides,
         'slideDurationInMs': 6000,
         'active': 'home',
         'newsletter_headline': _("Be the first to find out about newly posted bounties."),
         'hide_newsletter_caption': True,
         'hide_newsletter_consent': True,
-        'projects': projects,
         'gitcoin_description': gitcoin_description,
+        'projects': projects,
+    }
+
+    try:
+        new_context = JSONStore.objects.get(view='contributor_landing_page', key=tech_stack).data
+
+        for key, value in new_context.items():
+            context[key] = value
+    except Exception as e:
+        logger.exception(e)
+        raise Http404
+
+    return TemplateResponse(request, 'bounties/contributor.html', context)
+
+
+def get_contributor_landing_page_context(tech_stack):
+    available_bounties_count = open_bounties().count()
+    available_bounties_worth = amount_usdt_open_work()
+    activities = get_activities(tech_stack)
+    return {
+        'activities': activities,
+        'title': tech_stack.title() + str(_(" Open Source Opportunities")) if tech_stack else str(_("Open Source Opportunities")),
         'available_bounties_count': available_bounties_count,
         'available_bounties_worth': available_bounties_worth,
         'tech_stack': tech_stack,
-    }
 
-    return TemplateResponse(request, 'bounties/contributor.html', context)
+    }
 
 
 def how_it_works(request, work_type):
@@ -1225,6 +1244,13 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
     }
     return TemplateResponse(request, 'help.html', context)
 
+def verified(request):
+
+    context = {
+        'active': 'verified',
+        'title': _('Verified'),
+    }
+    return TemplateResponse(request, 'verified.html', context)
 
 def presskit(request):
 

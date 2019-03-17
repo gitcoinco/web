@@ -94,7 +94,13 @@ $(document).ready(function() {
           _alert('The token you selected is not a valid ERC20 token', 'error');
           return;
         }
-        let realGasPrice = Math.ceil($('#gasPrice').val() * Math.pow(10, 9));
+
+        let realGasPrice = 0; // zero cost metatxs
+
+        if (realPeriodSeconds < 2592000) {
+          // charge gas for intervals less than a month
+          realGasPrice = Math.ceil($('#gasPrice').val() * Math.pow(10, 9));
+        }
 
         $('#gas_price').val(realGasPrice);
 
@@ -112,7 +118,7 @@ $(document).ready(function() {
 
           var tokenMethod = deployedToken.methods.approve;
           var arg1 = data.contract_address;
-          
+
           // one time payments
           if (data.num_periods == 1) {
             arg1 = data.admin_address;
@@ -131,7 +137,7 @@ $(document).ready(function() {
           }).on('transactionHash', function(transactionHash) {
             $('#sub_new_approve_tx_id').val(transactionHash);
             const linkURL = etherscan_tx_url(transactionHash);
-
+            let token_address = $('#js-token').length ? $('#js-token').val() : $('#sub_token_address').val();
             let data = {
               'contributor_address': $('#contributor_address').val(),
               'amount_per_period': $('#amount').val(),

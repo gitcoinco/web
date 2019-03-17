@@ -22,9 +22,9 @@
 </script>
 <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
 <script src="{% static "v2/js/jquery.js" %}"></script>
-{% if env == 'prod' %}
+{% if user.is_authenticated and env == 'prod' %}
   <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-{% else %}
+{% elif user.is_authenticated %}
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 {% endif %}
 {% include 'shared/sentry.html' %}
@@ -46,7 +46,9 @@
 <script src="{% static "v2/js/note.js" %}"></script>
 <script src="{% static "v2/js/ajax-helper.js" %}"></script>
 <script src="{% static "v2/js/pages/carousel.js" %}"></script>
-<script src="{% static "v2/js/notifications.js" %}"></script>
+{% if user.is_authenticated %}
+  <script src="{% static "v2/js/notifications.js" %}"></script>
+{% endif %}
 <script src="{% static "cookielaw/js/cl.js" %}"></script>
 
 <script>

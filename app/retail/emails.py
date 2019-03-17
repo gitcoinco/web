@@ -43,6 +43,7 @@ logger = logging.getLogger(__name__)
 
 # key, name, frequency
 MARKETING_EMAILS = [
+    ('welcome_mail', _('Welcome Emails'), _('First 3 days after you sign up')),
     ('roundup', _('Roundup Emails'), _('Weekly')),
     ('new_bounty_notifications', _('New Bounty Notification Emails'), _('(up to) Daily')),
     ('important_product_updates', _('Product Update Emails'), _('Quarterly')),
@@ -58,6 +59,7 @@ TRANSACTIONAL_EMAILS = [
         'bounty_expiration', _('Bounty Expiration Warning Emails'),
         _('Only after you posted a bounty which is going to expire')
     ),
+    ('featured_funded_bounty', _('Featured Funded Bounty Emails'), _('Only when you\'ve paid for a bounty to be featured'))
 ]
 
 ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS
@@ -68,6 +70,32 @@ def premailer_transform(html):
     p = premailer.Premailer(html, base_url=settings.BASE_URL)
     return p.transform()
 
+def render_featured_funded_bounty(bounty):
+    params = {'bounty': bounty}
+    response_html = premailer_transform(render_to_string("emails/funded_featured_bounty.html", params))
+    response_txt = render_to_string("emails/funded_featured_bounty.txt", params)
+    subject = _("You've successfully funded a bounty!")
+
+    return response_html, response_txt, subject
+
+
+def render_nth_day_email_campaign(to_email, nth, firstname):
+    subject_map = {
+        1: "Day 1: Growing Open Source",
+        2: "Day 2: Using Gitcoin's Issue Explorer",
+        3: "Learning Blockchain"
+    }
+
+    subject = subject_map[nth]
+
+    params = {
+        "firstname": firstname,
+        "subscriber": get_or_save_email_subscriber(to_email, "internal"),
+    }
+    response_html = premailer_transform(render_to_string(f"emails/campaigns/email_campaign_day_{nth}.html", params))
+    response_txt = render_to_string(f"emails/campaigns/email_campaign_day_{nth}.txt", params)
+
+    return response_html, response_txt, subject
 
 def render_new_grant_email(grant):
     params = {'grant': grant}
@@ -156,6 +184,12 @@ def render_successful_contribution_email(grant, subscription, contribution):
     response_txt = render_to_string("emails/grants/successful_contribution.txt", params)
     subject = _('Your Gitcoin Grants contribution was successful!')
     return response_html, response_txt, subject
+
+def featured_funded_bounty(request):
+    from dashboard.models import Bounty
+    bounty = Bounty.objects.first()
+    response_html, __, __ = render_featured_funded_bounty(bounty)
+    return HttpResponse(response_html)
 
 
 @staff_member_required
@@ -336,6 +370,13 @@ def render_quarterly_stats(to_email, platform_wide_stats):
     response_html = premailer_transform(render_to_string("emails/quarterly_stats.html", params))
     response_txt = render_to_string("emails/quarterly_stats.txt", params)
 
+    return response_html, response_txt
+
+
+def render_funder_payout_reminder(**kwargs):
+    kwargs['bounty_fulfillment'] = kwargs['bounty'].fulfillments.filter(fulfiller_github_username=kwargs['github_username']).last()
+    response_html = premailer_transform(render_to_string("emails/funder_payout_reminder.html", kwargs))
+    response_txt = ''
     return response_html, response_txt
 
 
@@ -870,40 +911,38 @@ def render_start_work_applicant_expired(interest, bounty):
     return response_html, response_txt, subject
 
 
-
-
-# ROUNDUP_EMAIL
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
-    subject = "$40K To OSS | Gitcoin's ETHDenver "
-    new_kudos_pks = [1839, 1838, 1837]
+    from django.conf import settings
+    subject = "Sneak Peek: A Gitcoin Virtual Hackathon Is Coming"
+    new_kudos_pks = [2050, 2051, 2049]
     new_kudos_size_px = 150
-    intro = '''
-<p>
-Hi Gitcoiners,
-<p>
-<p>
-This week we announced the results of <a href="https://twitter.com/vsinghdothings/status/1098996827704180736">our Radical Experiment.</a>
-From 2/1 - 2/15, we matched $13K in contributions across <a href="https://gitcoin.co/grants">25 Ethereum projects</a> with $25,000 in funding.
-We used Liberal Radicalism matching as the mechanism, which made small contributions (less than $5!) go a long way. To learn more about the match, check out our <a href="https://www.youtube.com/watch?v=GBVJKB-qZuM">interview with Glen Weyl</a>,
-who co-wrote the Liberal Radicalism paper.
-</p>
-<p>
-Aside from CLR, we're catching up from <a href="https://medium.com/gitcoin/a-recap-gitcoin-at-ethdenver-1e48bfc93805">a fantastic weekend at ETHDenver.</a> Gitcoin was involved via CLR,
-Kudos (Trophies), the Burner Wallet, and of course - a massive Plinko Board. <a href="https://medium.com/gitcoin/a-recap-gitcoin-at-ethdenver-1e48bfc93805">Read more here</a> to learn
-about what's likely to be the biggest crypto hackathon of 2019.
-</p>
-<p>
+
+    kudos_friday = f'''
 <h3>Happy Kudos Friday!</h3>
 </p>
 <p>
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
 </p>
-
+    '''
+    intro = f'''
+<p>
+Hi Gitcoiners,
+</p>
+<p>
+A Gitcoin Virtual Hackathon is coming soon. <a href="https://gitcoin.typeform.com/to/j7CSbV">Pre-register now!</a> We're incredibly excited to bring our
+community together for a fantastic few weeks of building, prizes, and more. <a href="https://gitcoin.typeform.com/to/j7CSbV">Join the waitlist</a> and let us know
+what you'd like to see in the additional comments section. See you there.
+</p>
+<p>
+This week, we wrote up <a href="https://medium.com/gitcoin/whats-new-in-gitcoin-ef69f69cbb81">a Gitcoin product update.</a> We've built a lot
+of things in Q1 and we're excited for you to see them all!
+</p>
+{kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Gitcoin Livestream is back this week! Great conversations pending. Join us <a href="https://gitcoin.co/livestream">on Friday at 5PM ET</a>!
+            Gitcoin Livestream is back this week with Cosmos + SourceCred! Join us <a href="https://gitcoin.co/livestream"> at 5PM ET or catch it on <a href="https://twitter.com/GetGitcoin">Twitter</a>!
         </li>
     </ul>
 </p>
@@ -913,39 +952,39 @@ Back to shipping,
 
 '''
     highlights = [{
-        'who': 'charlie4biz',
+        'who': 'iamonuwa',
         'who_link': True,
-        'what': 'Worked with W3F on a PolkaDot post!',
-        'link': 'https://gitcoin.co/issue/w3f/Web3-collaboration/63/2437',
+        'what': 'Great work on Storj by Onuwa!',
+        'link': 'https://gitcoin.co/issue/jschiarizzi/storj-ipfs-gateway/2/2590',
         'link_copy': 'View more',
     }, {
-        'who': 'stevenjnpearce',
+        'who': 'cryptokat',
         'who_link': True,
-        'what': 'Created an Under Maintenance website for MyBitFoundation',
-        'link': 'https://gitcoin.co/issue/MyBitFoundation/MyBit.website/72/2431',
+        'what': 'Good work on ethereum-ts',
+        'link': 'https://gitcoin.co/issue/ethereum-ts/TypeChain/135/2574',
         'link_copy': 'View more',
     }, {
         'who': 'eswarasai',
         'who_link': True,
-        'what': 'Compile Precise-Proofs to Web Assembly.',
-        'link': 'https://gitcoin.co/issue/centrifuge/precise-proofs/63/2383',
+        'what': 'Work on Sabre by a longtime contributor!',
+        'link': 'https://gitcoin.co/issue/b-mueller/sabre/8/2540',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/TrustWallet/wallet-core/issues/3',
-        'primer': 'Add Cosmos support to TrustWallet!',
+        'url': 'https://github.com/status-im/status-components/issues/3',
+        'primer': 'React Native support for Status!',
     }, {
-        'url': 'https://github.com/status-im/status-react/issues/7472',
-        'primer': 'Continue work on Status-React with Hutch.',
+        'url': 'https://github.com/counterfactual/monorepo/issues/950',
+        'primer': 'Work with the Counter Factual team on state channels!',
     }, {
-        'url': 'https://github.com/Giveth/giveth-dapp/issues/342',
-        'primer': 'Work on Giveth milestones with Griff / Scott.',
+        'url': 'https://github.com/paritytech/parity-ethereum/issues/10085',
+        'primer': 'Work on Parity Ethereum!',
     }, ]
 
     num_leadboard_items = 5
     highlight_kudos_ids = []
-    num_kudos_to_show = 10
+    num_kudos_to_show = 15
 
     #### don't need to edit anything below this line
     leaderboard = {
@@ -967,11 +1006,13 @@ Back to shipping,
     if highlight_kudos_ids:
         kudos_highlights = KudosTransfer.objects.filter(id__in=highlight_kudos_ids)
     else:
-        kudos_highlights = KudosTransfer.objects.exclude(txid='').order_by('-created_on')[:num_kudos_to_show]
+        kudos_highlights = KudosTransfer.objects.exclude(network='mainnet', txid='').order_by('-created_on')[:num_kudos_to_show]
 
     for key, __ in leaderboard.items():
         leaderboard[key]['items'] = LeaderboardRank.objects.active() \
             .filter(leaderboard=key).order_by('rank')[0:num_leadboard_items]
+    if not len(leaderboard['quarterly_payers']['items']):
+        leaderboard = []
 
     bounties = []
     for nb in bounties_spec:
@@ -1003,6 +1044,7 @@ Back to shipping,
     response_txt = render_to_string("emails/bounty_roundup.txt", params)
 
     return response_html, response_txt, subject
+
 
 
 # DJANGO REQUESTS
@@ -1123,6 +1165,23 @@ def bounty_feedback(request):
     response_html, _ = render_bounty_feedback(Bounty.objects.current().filter(idx_status='done').last(), 'foo')
     return HttpResponse(response_html)
 
+
+@staff_member_required
+def funder_payout_reminder(request):
+    """Display the funder payment reminder email template.
+
+    Params:
+        username (str): The Github username to reference in the email.
+
+    Returns:
+        HttpResponse: The HTML version of the templated HTTP response.
+
+    """
+    from dashboard.models import Bounty
+    bounty = Bounty.objects.filter(fulfillment_submitted_on__isnull=False).first()
+    github_username = request.GET.get('username', '@foo')
+    response_html, _ = render_funder_payout_reminder(bounty=bounty, github_username=github_username)
+    return HttpResponse(response_html)
 
 @staff_member_required
 def funder_stale(request):
