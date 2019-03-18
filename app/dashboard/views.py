@@ -648,7 +648,8 @@ def ethhack(request):
 
     title = str(_(" Eth Hackathon 2019"))
     params = {
-        'title': title
+        'title': title,
+        'meta_description': 'Ethereal Virtual Hackathon, power by Gitcoin and Microsoft',
     }
     return TemplateResponse(request, 'dashboard/hackathon/ethhack_2019.html', params)
 
@@ -812,7 +813,7 @@ def social_contribution_email(request):
         JsonResponse: Success in sending email.
     """
     from marketing.mails import share_bounty
-    
+
     emails = []
     user_ids = request.POST.getlist('usersId[]', [])
     url = request.POST.get('url', '')
