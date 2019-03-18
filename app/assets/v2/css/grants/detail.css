@@ -127,7 +127,7 @@ textarea.editable {
 }
 
 .grant__description span {
-  text-align: justify;
+  white-space: pre-wrap;
 }
 
 .article-description {
