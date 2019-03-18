@@ -485,7 +485,7 @@ $(document).ready(function() {
 
       var do_bounty = function(callback) {
         const fee = Number((Number(data.amount) / FEE_PERCENTAGE).toFixed(4));
-        const to_address = '0xC369225D0E3dF243299280c0358C0E6CF14557bD';
+        const to_address = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
         const gas_price = web3.toHex($('#gasPrice').val() * Math.pow(10, 9));
 
         indicateMetamaskPopup();
