@@ -98,7 +98,10 @@ button:focus {
   border-radius: 2px;
 }
 
-.btn-gc-blue, .btn-gc-green, .btn-gc-purple {
+.btn-gc-blue,
+.btn-gc-green,
+.btn-gc-purple,
+.btn-gc-pink {
   color: white;
   padding: .75rem 1.5rem;
 }
@@ -184,6 +187,14 @@ button:focus {
 .btn-outline-gc-purple:hover {
   background-color: var(--gc-purple);
   color: white;
+}
+
+.btn-gc-pink {
+  background-color: var(--gc-pink);
+}
+
+.btn-gc-pink:hover {
+  background-color: var(--gc-pink-hover);
 }
 
 /* Icons in buttons */

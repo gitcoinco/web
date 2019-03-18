@@ -35,8 +35,13 @@ p {
   margin-top: 1rem;
 }
 
-.btn-hachathon {
-  background-color: #f9006c;
+.btn-hackathon {
+  font-size: 1.5rem;
+  padding: 0.25rem 1.6rem;
+  font-weight: bold;
+  min-width: 100px;
+
+  /* background-color: #f9006c; */
 }
 /*
 @media screen and (min-width: 550px) {
