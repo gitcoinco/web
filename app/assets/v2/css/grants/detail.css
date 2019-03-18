@@ -40,6 +40,7 @@
 .grant-item__members {
   display: flex;
   text-align: center;
+  flex-wrap: wrap;
 }
 
 .grant__header .grant-item__member-image img {
