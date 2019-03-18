@@ -12,6 +12,14 @@ h4,
   padding-top: 40px;
 }
 
+#indicate-popup {
+  position: fixed;
+  top: 0.25rem;
+  right: 2rem;
+  animation: shake 1.75s cubic-bezier(.36,.07,.19,.97) both;
+  animation-iteration-count: infinite;
+}
+
 .lighter {
   font-weight: lighter;
 }
@@ -571,6 +579,10 @@ div.button-pink {
   .navbar-collapse {
     margin-top: 1.5rem;
   }
+
+  #indicate-popup {
+    display: none;
+  }
 }
 
 @media (max-width: 820px) {
@@ -685,6 +697,13 @@ div.button-pink {
   top: 10px;
 }
 
+@keyframes shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+  40%, 60% { transform: translate3d(4px, 0, 0); }
+}
+
 @media (min-width: 768px) {
 
   .d-md-block {
@@ -706,6 +725,7 @@ div.button-pink {
   -webkit-animation-fill-mode: forwards;
   animation-fill-mode: forwards;
 }
+
 .slideDownIn {
   -webkit-animation-name: slideDownIn;
   animation-name: slideDownIn;
@@ -718,5 +738,4 @@ div.button-pink {
   100% {
     -webkit-transform: translateY(0) scale(1, 1);
   }
-
 }

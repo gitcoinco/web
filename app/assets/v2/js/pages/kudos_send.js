@@ -459,6 +459,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
         var destinationAccount = to_eth_address ? to_eth_address : metadata['address'];
 
         var post_send_callback = function(errors, txid, kudos_id) {
+          indicateMetamaskPopup(true);
           if (errors) {
             _alert({ message: gettext('There was an error.') }, 'warning');
             failure_callback();
@@ -552,6 +553,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
               kudosPriceInWei: kudosPriceInWei.toNumber()
             };
             console.log(money);
+            indicateMetamaskPopup();
             web3.eth.sendTransaction({
               to: destinationAccount,
               // Add gas_money + gas cost for kudos contract transaction + cost of kudos token (Gitcoin keeps this amount?)

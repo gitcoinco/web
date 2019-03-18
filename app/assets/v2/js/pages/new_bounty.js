@@ -410,6 +410,7 @@ $(document).ready(function() {
 
       // web3 callback
       function web3Callback(error, result) {
+        indicateMetamaskPopup(true);
         if (error) {
           console.error(error);
           _alert(
@@ -438,6 +439,7 @@ $(document).ready(function() {
       }
 
       function newIpfsCallback(error, result) {
+        indicateMetamaskPopup();
         if (error) {
           console.error(error);
           _alert({
@@ -486,6 +488,7 @@ $(document).ready(function() {
         const to_address = '0xC369225D0E3dF243299280c0358C0E6CF14557bD';
         const gas_price = web3.toHex($('#gasPrice').val() * Math.pow(10, 9));
 
+        indicateMetamaskPopup();
         if (isETH) {
           web3.eth.sendTransaction({
             to: to_address,
@@ -493,6 +496,7 @@ $(document).ready(function() {
             value: web3.toWei(fee, 'ether'),
             gasPrice: gas_price
           }, function(error, txnId) {
+            indicateMetamaskPopup(true);
             if (error) {
               _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
             } else {
@@ -509,6 +513,7 @@ $(document).ready(function() {
 
           token_contract.transfer(to_address, amountInWei, { gasPrice: gas_price },
             function(error, txnId) {
+              indicateMetamaskPopup(true);
               if (error) {
                 _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
               } else {
@@ -524,6 +529,7 @@ $(document).ready(function() {
       };
 
       const payFeaturedBounty = function() {
+        indicateMetamaskPopup();
         web3.eth.sendTransaction({
           to: '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
           from: web3.eth.coinbase,
@@ -533,6 +539,7 @@ $(document).ready(function() {
           gasLimit: web3.toHex(318730)
         },
         function(error, result) {
+          indicateMetamaskPopup(true);
           saveAttestationData(
             result,
             ethFeaturedPrice,

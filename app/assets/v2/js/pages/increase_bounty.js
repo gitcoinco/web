@@ -103,6 +103,7 @@ $(document).ready(function() {
     });
 
     function web3Callback(error, result) {
+      indicateMetamaskPopup(true);
       if (error) {
         _alert({ message: gettext('There was an error.  Please try again or contact support.') }, 'error');
         unloading_button($('#increaseFunding'));
@@ -176,6 +177,7 @@ $(document).ready(function() {
     }
 
     function do_as_funder() {
+      indicateMetamaskPopup();
       bounty.increasePayout(
         bountyId,
         bountyAmount + amount,
