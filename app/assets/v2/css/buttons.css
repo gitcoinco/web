@@ -214,7 +214,7 @@ button:focus {
   line-height: 2em;
 }
 
-.btn.btn-circle:hover {
+.btn.btn-social:hover {
   color: white;
   filter: saturate(3);
 }
