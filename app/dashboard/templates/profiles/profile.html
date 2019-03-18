@@ -15,7 +15,7 @@
   </head>
   <body class="interior {{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header profile-header dash" style="min-height: 350px;">
+    <div class="container-fluid {% if not hidden %} header {% endif %} profile-header dash" {% if not hidden %} style="min-height: 350px;"{% endif %}>
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav.html' %}
       {% if not hidden and is_staff %}
@@ -27,7 +27,7 @@
     </div>
     <div class="container-fluid bg-light pb-5">
 
-        <div class="container profile-card mt-md-n5">
+        <div class="container profile-card {% if hidden %} px-0 {% else %} mt-md-n5 {% endif %}" {% if hidden %} style="max-width:100%" {% endif %}>
           <div class="row">
             <div class="col-12 col-lg-6 profile-header__main-infos">
               {% if not hidden %}
