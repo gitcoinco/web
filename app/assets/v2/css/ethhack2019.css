@@ -4,13 +4,41 @@ a {
 }
 
 .header{
-  background-color: #0d023b;
-  background-size: cover;
-  background-position: 0px 0px;
-  background-repeat: no-repeat;
-  position: relative;
+  background-position: 0px 50%;
+  background-attachment: fixed;
 }
 
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: Arial-Black, Helvetica, sans-serif;
+  font-size: 52px;
+  letter-spacing: -1px;
+  line-height: 58px;
+}
+
+p {
+  font-size: 1.5rem;
+}
+.title-line:after {
+  content: '';
+  width: 300px;
+  height: 7px;
+  margin: auto;
+  display: block;
+  background: currentColor;
+  margin-top: 1rem;
+}
+
+.btn-hachathon {
+  background-color: #f9006c;
+}
+/*
 @media screen and (min-width: 550px) {
   .pdesc {
     font-size: 1rem !important
@@ -98,4 +126,4 @@ a {
   .topnav {
     font-size: 2rem !important;
   }
-}
+} */
