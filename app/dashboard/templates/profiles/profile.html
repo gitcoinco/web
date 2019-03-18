@@ -112,7 +112,12 @@
                 <div class="col-12 col-lg-3">
                   <div class="profile-header__stats profile-header__stats--contributor card mb-4">
                     <div class="card-header font-subheader">
-                     <b>#{{ scoreboard_position_contributor }}</b> {% trans "Contributor" %}
+                      {% if scoreboard_position_contributor %}
+                        <b>#{{ scoreboard_position_contributor }}</b> 
+                      {% else %}
+                        <b>&nbsp;</b> 
+                      {% endif %}
+                      {% trans "Contributor" %}
                     </div>
                     <div class="card-body">
                       <ul>
@@ -143,7 +148,12 @@
                 <div class="col-12 col-lg-3">
                   <div class="profile-header__stats profile-header__stats--funder card mb-4">
                     <div class="card-header font-subheader">
-                      <b>#{{ scoreboard_position_funder }}</b> {% trans "Funder" %}
+                      {% if scoreboard_position_funder %}
+                        <b>#{{ scoreboard_position_funder }}</b> 
+                      {% else %}
+                        <b>&nbsp;</b> 
+                      {% endif %}
+                      {% trans "Funder" %}
                     </div>
                     <div class="card-body font-subheader">
                       <ul>
