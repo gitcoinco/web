@@ -28,6 +28,7 @@ p {
 .title-line:after {
   content: '';
   width: 300px;
+  max-width: 100%;
   height: 7px;
   margin: auto;
   display: block;
