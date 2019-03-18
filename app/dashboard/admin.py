@@ -175,13 +175,32 @@ class BountyAdmin(admin.ModelAdmin):
 
 
 class RefundFeeRequestAdmin(admin.ModelAdmin):
+    """Setup the RefundFeeRequest admin results display."""
 
-    # Display fulfilled + rejected status + bounty + user in table
-    # Add review link for admin to visit and take action
     raw_id_fields = ['bounty', 'profile']
     ordering = ['-created_on']
-    readonly_fields = ['pk', 'token', 'fee_amount', 'comment', 'address', 'txnId', 'link']
-    search_fields = ['created_on', 'fulfilled', 'rejected']
+    list_display = ['pk', 'created_on', 'fulfilled', 'rejected', 'link', 'get_bounty_link', 'get_profile_handle',]
+    readonly_fields = ['pk', 'token', 'fee_amount', 'comment', 'address', 'txnId', 'link', 'get_bounty_link',]
+    search_fields = ['created_on', 'fulfilled', 'rejected', 'bounty', 'profile']
+
+    def get_bounty_link(self, obj):
+        bounty = getattr(obj, 'bounty', None)
+        url = bounty.url
+        return mark_safe(f"<a href={url}>{bounty}</a>")
+
+    def get_profile_handle(self, obj):
+        """Get the profile handle."""
+        profile = getattr(obj, 'profile', None)
+        if profile and profile.handle:
+            return mark_safe(
+                f'<a href=/_administration/dashboard/profile/{profile.pk}/change/>{profile.handle}</a>'
+            )
+        if obj.github_username:
+            return obj.github_username
+        return 'N/A'
+
+    get_profile_handle.admin_order_field = 'handle'
+    get_profile_handle.short_description = 'Profile Handle'
 
     def link(self, instance):
         """Handle refund fee request specific links.
@@ -196,7 +215,7 @@ class RefundFeeRequestAdmin(admin.ModelAdmin):
         if instance.fulfilled or instance.rejected:
             return 'n/a'
         return mark_safe(f"<a href=/_administration/process_refund_request/{instance.pk}>process me</a>")
-
+    link.allow_tags = True
 
 admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
@@ -217,4 +236,4 @@ admin.site.register(ToolVote, ToolVoteAdmin)
 admin.site.register(FeedbackEntry, FeedbackAdmin)
 admin.site.register(LabsResearch)
 admin.site.register(UserVerificationModel, VerificationAdmin)
-admin.site.register(RefundFeeRequest)
+admin.site.register(RefundFeeRequest, RefundFeeRequestAdmin)
