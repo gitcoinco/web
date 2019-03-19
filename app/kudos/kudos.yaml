@@ -3572,6 +3572,14 @@
     - soft skills
     - consensys
   image: diversity_inclusion_advocate.svg
-  
+- name: Master_At_Arms
+  description: You are a leader, analytical thinker, scientific marketer, fearless, patient, and a supportive teammate.
+  priceFinney: 1
+  numClonesAllowed: 100
+  tags:
+   - blockchain marketing
+   - ethereum marketing
+   - consensys marketing
+  image: brett_li.svg
 
 
