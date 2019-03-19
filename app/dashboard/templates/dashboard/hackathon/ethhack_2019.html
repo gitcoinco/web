@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+{% load i18n static %}
+<html lang="en">
+<head>
+  {% include 'shared/head.html' %}
+  <link rel="stylesheet" href="{% static "v2/css/ethhack2019.css" %}">
+</head>
+  <body class="text-center" >
+
+    <div class="container-fluid" style="background-color: #180944; color: white; min-height: 100vh;">
+      <div class="row">
+        <div class="col-12">
+          <img class="img-fluid mt-5" width="256" src="{% static "v2/images/hackathon/ethereal.svg" %}" />
+          <h1 class="font-weight-bolder my-5">Ethereal Virtual Hackathon</h1>
+          <p class="font-weight-bold" style="opacity: .7;font-family: arial-black;">Powered by</p>
+          <div class="d-flex justify-content-center align-items-center flex-column flex-md-row">
+            <img class="img-fluid" width="270" height="67" style="" src="{% static "v2/images/top-bar/gitcoin-logo.svg" %}">
+            <i class="fa-plus fas mx-5 mb-0 font-bigger-3"></i>
+            <img class=" img-fluid" height="67" width="313" style=" margin-top: 0.2rem" src="{% static "v2/images/hackathon/microsoft.svg" %}" />
+          </div>
+          <div class="m-5">
+              <a target="_blank" rel="noopener noreferrer" href="https://gitcoin.typeform.com/to/j7CSbV" class="btn btn-hackathon btn-circle btn-gc-pink m-3">Register</a>
+              <a target="_blank" rel="noopener noreferrer" href="https://gitcoin.typeform.com/to/YeIflB" class="btn btn-hackathon btn-circle btn-gc-blue m-3">Fund a Prize</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="container-fluid header white p-md-5 py-5" style="background-image: url({% static 'v2/images/hackathon/bg.jpg' %});">
+      <div class="row justify-content-center p-md-5">
+        <div class="col-12 col-md-9">
+          <h2 class="font-weight-bolder title-line mt-5">April 15th &#8212; 30th</h2>
+          <p class=" m-md-5 mt-5">Hackathon challenges will be posted as bounties, with the best hacks receiving prizes in ETH & ERC-20 tokens. Main track winners will receive free tickets to Ethereal NY to present their project live on stage.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-white p-md-5 py-5">
+      <div class="row justify-content-center p-md-5 p-2">
+        <div class="col-12 col-md-9">
+          <h2 class="font-weight-bolder title-line mt-5">Register as a Hacker</h2>
+          <p class=" m-md-5 mt-5">Register by April 15th for updates on key dates, prizes, teams, and instructions on how to start bounty hunting.</p>
+          <a target="_blank" rel="noopener noreferrer" href="https://gitcoin.typeform.com/to/j7CSbV" class="btn btn-hackathon btn-circle btn-gc-pink">Register</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="container-fluid header white p-md-5 py-5" style="background-image: url({% static 'v2/images/hackathon/bg2.jpg' %})">
+      <h2 class="font-weight-bolder title-line mt-5">Fund a Prize Bounty</h2>
+      <div class="container">
+        <div class="row align-items-center justify-content-center m-md-5">
+          <div class="col-12 col-md-4 order-md-1 my-5">
+            <img class="img-fluid w-100" src="{% static "v2/images/hackathon/bot.svg" %}" />
+          </div>
+          <div class="col-12 col-md-7 text-left order-md-0">
+            <p class="">Have an epic challenge you want to see the community tackle? Want to see how bounty hunters from around the world use your tools? Reach out to us to sponsor and post a prize bounty!</p>
+            <a target="_blank" rel="noopener noreferrer" href="https://gitcoin.typeform.com/to/YeIflB" class="btn btn-hackathon btn-circle btn-gc-green mt-4">Fund a Prize</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer style="background: black" class="pt-5">
+      <div class="d-flex align-items-center justify-content-around p-5 flex-column flex-md-row">
+        <a target="_blank" rel="noopener noreferrer" href="https://gitcoin.co/"><img class="img-fluid m-md-5 my-5" width="295" height="68" src="{% static "v2/images/top-bar/gitcoin-logo.svg" %}" /></a>
+        <a target="_blank" rel="noopener noreferrer" href="https://www.microsoft.com"><img class="img-fluid m-md-5 my-5" width="206" height="44" src="{% static "v2/images/hackathon/microsoft.svg" %}" /></a>
+        <a target="_blank" rel="noopener noreferrer" href="https://etherealsummit.com/"><img class="img-fluid m-md-5 my-5" width="214" height="77" src="{% static "v2/images/hackathon/ethmain.svg" %}" /></a>
+      </div>
+    </footer>
+  </body>
+</html>
