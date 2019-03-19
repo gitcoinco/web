@@ -65,6 +65,14 @@
   color: #0D0764;
 }
 
+.watch div {
+  cursor: pointer;
+}
+
+#playVideo .modal-content {
+  background-color: transparent;
+}
+
 .homepage #tree-svg svg {
   max-width: 17rem;
 }

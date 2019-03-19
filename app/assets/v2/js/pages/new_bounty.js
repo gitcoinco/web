@@ -213,7 +213,7 @@ $(document).ready(function() {
         _alert(gettext('You are on an unsupported network.  Please change your network to a supported network.'));
         return;
       }
-      if (typeof qa != 'undefined') {
+      if (typeof ga != 'undefined') {
         ga('send', 'event', 'new_bounty', 'new_bounty_form_submit');
       }
 
@@ -394,7 +394,7 @@ $(document).ready(function() {
           return;
         }
 
-        if (typeof qa != 'undefined') {
+        if (typeof ga != 'undefined') {
           ga('send', 'event', 'new_bounty', 'metamask_signature_achieved');
         }
 

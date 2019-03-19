@@ -21,6 +21,7 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
+    <meta name="description" content="The Gitcoin platform connects freelance developers with open bug bounties or online jobs, paid in crypto (ETH). Leverage a global workforce to quickly complete software development projects and coding jobs."/>
     <link rel="stylesheet" href="{% static "v2/css/home.css" %}" />
   </head>
   <body class="g-font-muli homepage">
@@ -51,22 +52,20 @@
 
     <div class="col-12 col-md-8 offset-md-2 text-center my-5 p-5 font-weight-semibold issue">
       {% blocktrans %}
-        <h2 class="font-title-xl mt-4 mb-4">
+        <h2 class="font-title-xl mt-4">
           The weight of
           <span>maintaining open source</span> falls<br>  on the
           shoulders of <span class="mt-4">0.01% of developers</span>.
         </h2>
-        {% endblocktrans %}
-        {% include 'shared/tree.html' %}
-        <h2 class="font-title-xl g-fadein mt-3 mb-1" data-fade-duration=1000>
-          {% trans "This is" %} <strong>{% trans "not sustainable." %}</strong>
-        </h2>
-        <h2 class="font-title-xl g-fadein mt-1 mb-1" data-fade-duration=1000>
-          {% trans "This is" %} <strong>{% trans "not right." %}</strong>
-        </h2>
-        <h2 class="font-title-xl g-fadein mt-1 mb-2" data-fade-duration=1000>
-          {% trans "This is" %} <strong>{% trans "why we built Gitcoin." %}</strong>
-        </h2>
+        <p class="font-title-lg g-fadein my-5" data-fade-duration=1000>
+          This is <strong>not sustainable.</strong> <br>
+          This is <strong>not right.</strong>
+        </p>
+      {% endblocktrans %}
+      {% include 'shared/tree.html' %}
+      <p class="font-title-xl g-fadein mt-4 mb-2" data-fade-duration=1000>
+        {% trans "This is" %} <strong>{% trans "why we built Gitcoin." %}</strong>
+      </p>
     </div>
 
     <img class="w-100 mb-5" src="{% static "v2/images/home/story.svg" %}" />
@@ -94,9 +93,19 @@
                 <img class="play" src="{% static 'v2/images/home/play.svg' %}">
               </div>
               <div class="pl-lg-0 col-9 col-md-8">
-                <a href="https://youtu.be/b6LSf-zQnlI" target="_blank" rel="noopener noreferrer">
+                <a data-toggle="modal" data-target="#playVideo">
                   {% trans "What’s currently broken about open source sustainability?" %}
                 </a>
+              </div>
+            </div>
+
+            <div class="modal fade" id="playVideo" tabindex="-1" role="dialog" aria-labelledby="changeLogoLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-body">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/b6LSf-zQnlI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -290,6 +299,14 @@
   {% include 'shared/footer_scripts.html' with slim=1 %}
   {% include 'shared/footer.html' %}
   {% include 'shared/messages.html' %}
+  <script src="{% static "v2/js/popper.min.js" %}"></script>
+  <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
+  <script>
+      var bootstrapTooltip = $.fn.tooltip.noConflict()
+      $.fn.runTooltip = bootstrapTooltip;
+      $('[data-toggle="tooltip"]').runTooltip();
+      $.fn.modal.noConflict();
+  </script>
   <script>
 
     $('#sustainability').on('click', function(){
