@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='bounty',
             name='fee_amount',
-            field=models.DecimalField(decimal_places=2, default=0, max_digits=50),
+            field=models.DecimalField(decimal_places=18, default=0, max_digits=50),
         ),
         migrations.AddField(
             model_name='bounty',
