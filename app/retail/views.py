@@ -197,7 +197,8 @@ def index(request):
         'products': products,
         'know_us': know_us,
         'press': press,
-        'articles': articles
+        'articles': articles,
+        'title': _('Grow Open Source: Find Freelance Developers & Open Source Bug Bounties - Gitcoin')
     }
     return TemplateResponse(request, 'home/index.html', context)
 
@@ -1244,10 +1245,13 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
     return TemplateResponse(request, 'help.html', context)
 
 def verified(request):
+    user = request.user if request.user.is_authenticated else None
+    profile = request.user.profile if user and hasattr(request.user, 'profile') else None
 
     context = {
         'active': 'verified',
         'title': _('Verified'),
+        'profile': profile,
     }
     return TemplateResponse(request, 'verified.html', context)
 

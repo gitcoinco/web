@@ -24,7 +24,7 @@ import django_filters.rest_framework
 from rest_framework import routers, serializers, viewsets
 from retail.helpers import get_ip
 
-from .models import Activity, Bounty, BountyDocuments, BountyFulfillment, Interest, ProfileSerializer, SearchHistory
+from .models import Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, Interest, ProfileSerializer, SearchHistory
 
 
 class BountyFulfillmentSerializer(serializers.ModelSerializer):
@@ -120,7 +120,14 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
         fulfillments_data = validated_data.pop('fulfillments')
         bounty = Bounty.objects.create(**validated_data)
         for fulfillment_data in fulfillments_data:
-            BountyFulfillment.objects.create(bounty=bounty, **fulfillment_data)
+            bounty_fulfillment = BountyFulfillment.objects.create(bounty=bounty, **fulfillment_data)
+            bounty_invitee = BountyInvites.objects.filter(
+                bounty=bounty,
+                invitee=bounty_fulfillment.profile.user
+            ).first()
+            if bounty_invite:
+                bounty_invitee.status = 'completed'
+                bounty_invitee.save()
         return bounty
 
     def update(self, validated_data):
@@ -128,7 +135,14 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
         fulfillments_data = validated_data.pop('fulfillments')
         bounty = Bounty.objects.update(**validated_data)
         for fulfillment_data in fulfillments_data:
-            BountyFulfillment.objects.update(bounty=bounty, **fulfillment_data)
+            bounty_fulfillment = BountyFulfillment.objects.create(bounty=bounty, **fulfillment_data)
+            bounty_invitee = BountyInvites.objects.filter(
+                bounty=bounty,
+                invitee=bounty_fulfillment.profile.user
+            ).first()
+            if bounty_invite:
+                bounty_invitee.status = 'completed'
+                bounty_invitee.save()
         return bounty
 
 

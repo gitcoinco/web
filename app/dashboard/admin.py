@@ -23,9 +23,9 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 from .models import (
-    Activity, BlockedUser, Bounty, BountyFulfillment, BountySyncRequest, CoinRedemption, CoinRedemptionRequest,
-    FeedbackEntry, Interest, LabsResearch, Profile, SearchHistory, Tip, TokenApproval, Tool, ToolVote, UserAction,
-    UserVerificationModel,
+    Activity, BlockedUser, Bounty, BountyFulfillment, BountyInvites, BountySyncRequest, CoinRedemption,
+    CoinRedemptionRequest, FeedbackEntry, Interest, LabsResearch, Profile, SearchHistory, Tip, TokenApproval, Tool,
+    ToolVote, UserAction, UserVerificationModel,
 )
 
 
@@ -64,6 +64,11 @@ class ToolVoteAdmin(admin.ModelAdmin):
     ordering = ['-id']
 
 
+class BountyInvitesAdmin(admin.ModelAdmin):
+    raw_id_fields = ['bounty']
+    ordering = ['-id']
+
+
 class InterestAdmin(admin.ModelAdmin):
     raw_id_fields = ['profile']
     ordering = ['-id']
@@ -81,11 +86,16 @@ class FeedbackAdmin(admin.ModelAdmin):
     ordering = ['-id']
     raw_id_fields = ['sender_profile', 'receiver_profile', 'bounty']
 
+
 class ProfileAdmin(admin.ModelAdmin):
     raw_id_fields = ['user', 'preferred_kudos_wallet']
     ordering = ['-id']
     search_fields = ['email', 'data']
     list_display = ['handle', 'created_on']
+
+
+class VerificationAdmin(admin.ModelAdmin):
+    raw_id_fields = ['user']
 
 
 class SearchHistoryAdmin(admin.ModelAdmin):
@@ -173,6 +183,7 @@ admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Bounty, BountyAdmin)
 admin.site.register(BountyFulfillment, BountyFulfillmentAdmin)
 admin.site.register(BountySyncRequest, GeneralAdmin)
+admin.site.register(BountyInvites, BountyInvitesAdmin)
 admin.site.register(Tip, TipAdmin)
 admin.site.register(TokenApproval, TokenApprovalAdmin)
 admin.site.register(CoinRedemption, GeneralAdmin)
@@ -181,4 +192,4 @@ admin.site.register(Tool, ToolAdmin)
 admin.site.register(ToolVote, ToolVoteAdmin)
 admin.site.register(FeedbackEntry, FeedbackAdmin)
 admin.site.register(LabsResearch)
-admin.site.register(UserVerificationModel)
+admin.site.register(UserVerificationModel, VerificationAdmin)
