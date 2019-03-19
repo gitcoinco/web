@@ -24,7 +24,9 @@ import django_filters.rest_framework
 from rest_framework import routers, serializers, viewsets
 from retail.helpers import get_ip
 
-from .models import Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, Interest, ProfileSerializer, SearchHistory
+from .models import (
+    Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, Interest, ProfileSerializer, SearchHistory,
+)
 
 
 class BountyFulfillmentSerializer(serializers.ModelSerializer):
