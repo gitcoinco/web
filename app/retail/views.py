@@ -1245,10 +1245,13 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
     return TemplateResponse(request, 'help.html', context)
 
 def verified(request):
+    user = request.user if request.user.is_authenticated else None
+    profile = request.user.profile if user and hasattr(request.user, 'profile') else None
 
     context = {
         'active': 'verified',
         'title': _('Verified'),
+        'profile': profile,
     }
     return TemplateResponse(request, 'verified.html', context)
 
