@@ -104,8 +104,8 @@
             {% elif row.metadata.value_in_eth %}
             <span>{{ row.metadata.value_in_eth }} {{row.token_name}}</span>
             {% elif row.grant %}
-            {{ row.metadata.value_in_token | floatformat:2 }} / {{ row.metadata.amount_goal | floatformat:2 }}
-            {{ row.metadata.token_name }}
+              {{ row.metadata.value_in_token | floatformat:2 }} / {{ row.metadata.amount_goal | floatformat:2 }}
+              {{ row.metadata.token_name }}
             {% else %}
             <span>{{row.metadata.value_in_token_old}}  - {{row.metadata.value_in_token}}  {{row.metadata.token_name}}</span>
             {% endif %}
