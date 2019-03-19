@@ -540,12 +540,17 @@ $(document).ready(function() {
         },
         function(error, result) {
           indicateMetamaskPopup(true);
-          saveAttestationData(
-            result,
-            ethFeaturedPrice,
-            '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
-            'featuredbounty'
-          );
+          if (error) {
+            _alert({ message: gettext('Unable to upgrade to featured bounty. Please try again.') }, 'error');
+            console.log(error);
+          } else {
+            saveAttestationData(
+              result,
+              ethFeaturedPrice,
+              '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+              'featuredbounty'
+            );
+          }
           do_bounty();
         });
       };
