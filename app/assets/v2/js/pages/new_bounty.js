@@ -500,11 +500,13 @@ $(document).ready(function() {
             if (error) {
               _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
             } else {
-              // TODO: Save txnId + feeamount + fee% to bounty;
               ipfsBounty.payload.issuer.address = account;
               ipfsBounty.payload.fee_tx_id = txnId;
               ipfsBounty.payload.fee_amount = fee;
               ipfs.addJson(ipfsBounty, newIpfsCallback);
+              if (typeof ga != 'undefined') {
+                ga('send', 'event', 'new_bounty', 'new_bounty_fee_paid');
+              }
             }
           });
         } else {
@@ -517,11 +519,13 @@ $(document).ready(function() {
               if (error) {
                 _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
               } else {
-              // TODO: Save txnId + feeamount + fee% to bounty;
                 ipfsBounty.payload.issuer.address = account;
                 ipfsBounty.payload.fee_tx_id = txnId;
                 ipfsBounty.payload.fee_amount = fee;
                 ipfs.addJson(ipfsBounty, newIpfsCallback);
+                if (typeof ga != 'undefined') {
+                  ga('send', 'event', 'new_bounty', 'new_bounty_fee_paid');
+                }
               }
             }
           );
