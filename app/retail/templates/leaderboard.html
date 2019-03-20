@@ -22,16 +22,16 @@
 
           <!-- PODIUM -->
 
-          <div class="row offset-md-1 col-sm-12 col-md-10 mt-0 mb-2 pt-1 podium text-center justify-content-center" style="background-color: #0d023b">
+          <div class="row offset-md-1 col-sm-12 col-md-10 mt-0 mb-2 p-1 podium text-center" style="background-color: #0d023b">
               {% for podium_item in podium_items %}
-                <div class="col-2 winner mt-5">
+                <div class="winner mt-5">
                   {% if not is_linked_to_profile %}
                     <a href="{{ podium_item.url }}" target="_blank">
                       <img class="img-fluid"  src="{{ podium_item.avatar_url }}" >
                     </a>
                   {% endif %}
 
-                  <h6 class="pt-3 pb-3 text-center restext" style="color:#3f78cd; white-space: nowrap;">
+                  <h6 class="pt-3 pb-3 text-center">
                     {% if forloop.counter == 1 %}
                       <img src="/static/v2/images/leaderboard-1.png" style="width: 17.5px; height: 20px; float: left"></img>
                     {% endif %}
@@ -59,7 +59,7 @@
                   <!-- RESULTS TITLE & FILTER -->
 
                   <div class="col-7" style="padding-top: 0.5em;">
-                    <h3 class="restext3">{{ title }} <!--<span id="alpha">Alpha</span>--></h3>
+                    <h3>{{ title }}</h3>
                   </div>
                   <div class="col-2 filter">
                     <div class="form-group">
@@ -95,24 +95,24 @@
                 <table class="table table-hover leaderboard_entry">
                   <thead>
                     <tr class="clickable-row  d-flex  align-items-stretch">
-                        <td class="col-3 d-flex align-items-center item-position restext4">RANK</td>
-                        <td class="col-5 d-flex align-items-center item-position restext4">NAME</td>
-                        <td class="col-2 d-flex align-items-center item-position item-count-bounties restext4">COMPLETED</td>
-                        <td class="col-2 d-flex align-items-center item-position restext4">EARNINGS</td>
+                        <td class="col-3 d-flex align-items-center item-position tableheaders">RANK</td>
+                        <td class="col-5 d-flex align-items-center item-position tableheaders">NAME</td>
+                        <td class="col-2 d-flex align-items-center item-position tableheaders">COMPLETED</td>
+                        <td class="col-2 d-flex align-items-center item-position tableheaders">EARNINGS</td>
                     </tr>
                   </thead>
 
                   <tbody>
                     {% for item in items %}
-                      <tr class='{% if not is_linked_to_profile %} clickable-row {% endif %} d-flex  align-items-stretch ' {% if not is_linked_to_profile %} data-href="{{item.url}}" {% endif %} >
-                        <td class="col-3 d-flex align-items-center item-position" style="font-size: 1.5em; font-weight: bold; color: #5C5D5F;">#{{forloop.counter}}</td>
+                      <tr class='{% if not is_linked_to_profile %} clickable-row {% endif %} d-flex  align-items-stretch' {% if not is_linked_to_profile %} data-href="{{item.url}}" {% endif %} >
+                        <td class="col-3 d-flex align-items-center item-position">#{{forloop.counter}}</td>
                         <td class="col-5 d-flex align-items-center" >
                           {% if not is_linked_to_profile %}
                             <img class="img-fluid"  src="{{item.avatar_url}}">
                           {% endif %}
                           <div class="ml-3 item-count-bounties" style="white-space:nowrap">
                             {% if not is_linked_to_profile %}
-                              <a class="restext2" style="font-weight: bold; color: #5C5D5F;" href="/profile/{{item.github_username}}" target="_blank" >
+                              <a href="/profile/{{item.github_username}}" target="_blank" >
                                 {{item.at_ify_username}}
                               </a>
                             {% else %}
@@ -120,10 +120,10 @@
                             {% endif %}
                           </div>
                         </td>
-                        <td class="col-2 d-flex align-items-center item-count item-count-bounties restext2" style="font-weight: bold; color: #5C5D5F;">
+                        <td class="col-2 d-flex align-items-center">
                           {{item.count}} Bounties
                         </td>
-                        <td class="col-2 d-flex align-items-center item-amount item-amount-revenue restext2">
+                        <td class="col-2 d-flex align-items-center">
                           ${{item.amount|floatformat:2|intcomma}}
                         </td>
                       </tr>
