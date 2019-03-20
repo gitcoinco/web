@@ -60,14 +60,16 @@
         /metrics\.itunes\.apple\.com\.edgesuite\.net\//i
       ]
     };
-    Raven.config('{{ raven_js_dsn }}', ravenOptions).install()
-    {% if github_handle %}
-    Raven.setUserContext({
-      email: '{{ user.email|default_if_none:"anonymous" }}',
-      id: '{{ user.id|default_if_none:"0" }}',
-      handle: '{{ github_handle }}',
-      profile_id: '{{ profile_id|default_if_none:"0" }}'
-    });
+    Raven.context(function() {
+        Raven.config('{{ raven_js_dsn }}', ravenOptions).install()
+        {% if github_handle %}
+        Raven.setUserContext({
+            email: '{{ user.email|default_if_none:"anonymous" }}',
+            id: '{{ user.id|default_if_none:"0" }}',
+            handle: '{{ github_handle }}',
+            profile_id: '{{ profile_id|default_if_none:"0" }}'
+        });
+    })
     {% endif %}
   </script>
 {% endif %}
