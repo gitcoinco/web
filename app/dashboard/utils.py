@@ -267,9 +267,9 @@ def get_web3(network, sockets=False):
                 provider = WebsocketProvider(f'wss://{network}.infura.io/ws')
         else:
             if settings.INFURA_USE_V3:
-                provider = HTTPProvider(f'https://{network}.infura.io')
-            else:
                 provider = HTTPProvider(f'https://{network}.infura.io/v3/{settings.INFURA_V3_PROJECT_ID}')
+            else:
+                provider = HTTPProvider(f'https://{network}.infura.io')
 
         w3 = Web3(provider)
         if network == 'rinkeby':
