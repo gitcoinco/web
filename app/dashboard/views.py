@@ -625,6 +625,31 @@ def onboard(request, flow):
     return TemplateResponse(request, 'ftux/onboard.html', params)
 
 
+def users(request):
+    """Handle displaying the users."""
+
+    # q = request.GET.get('q')
+    order_by = request.GET.get('order_by', '-created_on')
+
+    # Only show the latest contract Kudos for the current network.
+    query_kwargs = {
+
+    }
+    user_list = Profile.objects.all()
+    # if q:
+    #     user_list = user_list.keyword(q)
+
+    users = user_list.order_by(order_by).cache()
+
+    params = {
+        'active': 'users',
+        'title': 'Users',
+        'meta_title': "",
+        'meta_description': "",
+        'users': users,
+    }
+    return TemplateResponse(request, 'dashboard/users.html', params)
+
 def dashboard(request):
     """Handle displaying the dashboard."""
 
