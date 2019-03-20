@@ -71,7 +71,8 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 ## INFRASTRUCTURE
 */15 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash warm_cache  >> /var/log/gitcoin/warm_cache.log  2>&1
 
-
+* * * * * date >> /var/log/gitcoin/running_procs.log; ps -aux | grep python3 >> /var/log/gitcoin/running_procs.log  2>&1
+1 1 * * * rm -f /var/log/gitcoin/running_procs.log
 11 10 * * * cd gitcoin/coin; bash scripts/run_management_command.bash expiration_tip  >> /var/log/gitcoin/expiration_tip.log  2>&1
 1 10 * * 4 cd gitcoin/coin; bash scripts/run_management_command.bash assemble_leaderboards  >> /var/log/gitcoin/assemble_leaderboards.log  2>&1
 10 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash pull_stats  >> /var/log/gitcoin/pull_stats.log  2>&1
