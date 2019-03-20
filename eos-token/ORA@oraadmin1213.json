@@ -1,0 +1,20 @@
+{
+    "symbol": "ORA",
+    "account_name": "oraadmin1213",
+    "overview": {
+        "en": "Oracle Data Chain (ORA) is the bottom public chain and infrastructure for the autonomy of the whole industry ecological database based on building a credible blockchain. It is a de-centralized data clearing system."
+    },
+    "email": "community@orachain.top",
+    "website": "https://www.orachain.top/",
+    "whitepaper": "https://www.orachain.top/ORA_Chain_Whitepaper_EN.pdf",
+    "published_on": "2019-01-17",
+    "initial_price": {
+        "EOS": "0.1201 EOS",
+        "USD": "0.3399 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/ChainOracle",
+        "telegram": "https://t.me/orachain",
+        "github": "https://github.com/ORAChain/token-profile"
+    }
+}
