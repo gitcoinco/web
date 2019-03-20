@@ -1,0 +1,8 @@
+{
+    "symbol": "EETH",
+    "account_name": "ethsidechain",
+    "overview": {
+        "en": "EOS side chain, realize EOS ecology and ether square ecology interworking."
+    },
+    "website": "http://anyos.io"
+}

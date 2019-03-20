@@ -1,0 +1,8 @@
+{
+    "symbol": "HVT",
+    "account_name": "hirevibeshvt",
+    "overview": {
+        "en": "HireVibes is an EOS-based decentralized recruitment platform that will be governed by the HireVibes Decentralized Autonomous Community (DAC) using HVT tokens. This platform connects job seekers, employers, referrers and recruiters, encouraging people to apply directly or recommend job for others.\nThrough this platform, the enterprises will reduce recruiting cost to half of that paid to traditional centralized recruitment platforms, and job seekers and referrers will be incentivized with HVT token rewards. Upon successful hires, HireVibes Dapp will charge employers 7.5% HVT tokens based on the salary of job seekers. After the job seeker has been employed for a period of time, HireVibes Dapp will automatically redistribute 5% tokens back to the successful candidate:\nIf the candidate applied directly to the job ad at the beginning of the process: 4% token reward is sent to the candidate in HireVibes tokens (HVT); while 1% is sent to the candidate for donating to Humanitarian and Environmental projects.\nIf the candidate was referred to the job ad at the beginning of the process: 2% token reward is sent to the candidate in HVT tokens, 2% is sent to the referrer and 1% donated to charity."
+    },
+    "website": "https://www.hirevibes.io"
+}

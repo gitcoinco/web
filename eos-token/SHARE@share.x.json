@@ -1,0 +1,8 @@
+{
+    "symbol": "SHARE",
+    "account_name": "share.x",
+    "overview": {
+        "en": "SHARE is an EOSIO app that allows users to SHARE their wonderful lives, including moments, video, commonweal and knowledge q&amp;a with EOSIO."
+    },
+    "website": "https://eoshare.org"
+}

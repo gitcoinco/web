@@ -1,11 +1,11 @@
 {
     "website": "http://www.tutorcoin.net/",
-	"whitepaper": "http://tutorcoin.net/Whitepaper(EN).pdf",
+    "whitepaper": "http://tutorcoin.net/Whitepaper(EN).pdf",
     "published_on": "2018-10-01",
     "links": {
-	    "twitter": "https://twitter.com/Tutorcoin_net",
-	    "telegram": "https://t.me/tutor_coin",
-	    "github": "https://github.com/tutorcoin"
+        "twitter": "https://twitter.com/Tutorcoin_net",
+        "telegram": "https://t.me/tutor_coin",
+        "github": "https://github.com/tutorcoin"
     },
     "overview": {
         "en": "TTC: Tutorcoin is a smart contract for online education platform. We are building a next generation online education & knowledge share platform. Though our platform, every people can get educated or share his/her knowledge easily and efficiently.",

@@ -1,19 +1,19 @@
 {
-  "symbol": "FTN_Old",
-  "address": "0x82Cf44bE0768A3600c4BDeA58607783A3A7c51AE",
-  "overview":{
+    "symbol": "FTN_Old",
+    "address": "0x82Cf44bE0768A3600c4BDeA58607783A3A7c51AE",
+    "overview": {
         "en": "A block-chained content ecosystem based on Proof of Contribution.",
         "zh": "Fountain 是一个基于贡献证明 ( Proof of Contribution ) 的区块链化内容生态系统。"
-  },
-  "email": "contact@fountainhub.com",
-  "website": "https://fountainhub.com/",
-  "whitepaper": "https://github.com/FountainHub/Fountain-Whitepaper",
-  "state": "NORMAL",
-  "published_on": "2018-09-26",
-  "links": {
-    "medium": "https://medium.com/@FountainHub",
-    "twitter": "https://twitter.com/fountainhub",
-    "telegram": "https://t.me/FountainOfficial",
-    "github": "https://github.com/FountainHub/"
-  }
+    },
+    "email": "contact@fountainhub.com",
+    "website": "https://fountainhub.com/",
+    "whitepaper": "https://github.com/FountainHub/Fountain-Whitepaper",
+    "state": "NORMAL",
+    "published_on": "2018-09-26",
+    "links": {
+        "medium": "https://medium.com/@FountainHub",
+        "twitter": "https://twitter.com/fountainhub",
+        "telegram": "https://t.me/FountainOfficial",
+        "github": "https://github.com/FountainHub/"
+    }
 }

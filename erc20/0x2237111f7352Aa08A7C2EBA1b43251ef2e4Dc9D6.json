@@ -9,12 +9,12 @@
     "website": "http://www.zbt.com",
     "state": "NORMAL",
     "published_on": "2018-11-01",
-    "initial_price":{
-        "ETH":"0.000039814 ETH",
-        "USD":"0.009 USD"
-  },
+    "initial_price": {
+        "ETH": "0.000039814 ETH",
+        "USD": "0.009 USD"
+    },
     "links": {
-    	"twitter": "https://twitter.com/zbt_com",
-      "facebook": "https://www.facebook.com/Bithaw-Game-205153960134995/"
+        "twitter": "https://twitter.com/zbt_com",
+        "facebook": "https://www.facebook.com/Bithaw-Game-205153960134995/"
     }
 }

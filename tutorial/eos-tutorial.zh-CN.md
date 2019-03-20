@@ -67,6 +67,9 @@ git push origin xxx-token
 ### 如何显示价格？
 imToken 目前的价格显示对接 block.cc 的 API，如需在 imToken 中显示价格，你们的代币要求被 block.cc 收录；并提供我们相应的链接，参考：https://mifengcha.com/q/eos 
 
+## 相关
+* [EOSPark](https://github.com/BlockABC/eos-tokens)
+
 ## Copyright
 
 2018&copy;imToken PTE. LTD.

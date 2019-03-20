@@ -1,20 +1,19 @@
 {
-  "symbol": "ARM",
-  "address": "0xa9Ff725189fe00da9C5F27a580DC67FEA61E3Fb2",
-  "overview":{
-        "en": "ERC20 Token of Armors.io",
-        "zh": ""
-  },
-  "email": "contact@armors.io",
-  "website": "https://armors.io/",
-  "whitepaper": "https://armors.io/armors.whitepaper.pdf",
-  "state": "NORMAL",
-  "published_on": "2019-02-01",
-  "links": {
-    "blog": "https://blog.armors.io",
-    "twitter": "https://twitter.com/LabsArmors",
-    "telegram": "https://t.me/ArmorsLabs",
-    "github": "https://github.com/armors",
-    "facebook": "https://www.facebook.com/ArmorsLabs"
-  }
+    "symbol": "ARM",
+    "address": "0xa9Ff725189fe00da9C5F27a580DC67FEA61E3Fb2",
+    "overview": {
+        "en": "ERC20 Token of Armors.io"
+    },
+    "email": "contact@armors.io",
+    "website": "https://armors.io/",
+    "whitepaper": "https://armors.io/armors.whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-02-01",
+    "links": {
+        "blog": "https://blog.armors.io",
+        "twitter": "https://twitter.com/LabsArmors",
+        "telegram": "https://t.me/ArmorsLabs",
+        "github": "https://github.com/armors",
+        "facebook": "https://www.facebook.com/ArmorsLabs"
+    }
 }
