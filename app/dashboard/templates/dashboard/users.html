@@ -77,6 +77,10 @@
               <option value="name">{% trans 'Name' %}</option>
               <option value="-rarity">{% trans 'Rarity' %}</option>
             </select>
+
+          </div>
+          <div class="navbar-nav">
+            <select class="keywords-filter form-control" multiple="multiple" style="width:300px; height: 37px;"></select>
           </div>
           <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
@@ -108,7 +112,6 @@
       </nav>
     </div>
     <div class="container">
-
           <div class="py-5 mt-5">
             <div class="grid-4">
               {% for user in users %}
@@ -183,6 +186,13 @@
       let bootstrapTooltip = $.fn.tooltip.noConflict()
       $.fn.runTooltip = bootstrapTooltip;
       $('[data-toggle="tooltip"]').runTooltip();
+      document.keywords = {{keywords | safe}};
+
+      $(".keywords-filter").select2({
+          tags: true,
+          placeholder: 'Skill',
+          data: document.keywords
+      })
     </script>
 
   </body>

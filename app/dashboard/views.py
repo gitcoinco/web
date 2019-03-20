@@ -736,7 +736,7 @@ def users(request):
 
     # q = request.GET.get('q')
     order_by = request.GET.get('order_by', '-created_on')
-
+    keyword = request.GET.get('keywords', False)
     # Only show the latest contract Kudos for the current network.
     query_kwargs = {
 
@@ -753,6 +753,7 @@ def users(request):
         'meta_title': "",
         'meta_description': "",
         'users': users,
+        'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
     return TemplateResponse(request, 'dashboard/users.html', params)
 
