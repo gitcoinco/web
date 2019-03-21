@@ -1,12 +1,21 @@
 load_tokens();
 
+const FEE_PERCENTAGE = 10;
 // Wait until page is loaded, then run the function
+
+const is_funder = function() {
+  return document.is_funder_github_user_same && $('input[name=bountyOwnerAddress]').val() == web3.eth.coinbase;
+};
+
 $(document).ready(function() {
+
+  if (!is_funder()) {
+    $('#total-section').hide();
+    $('#fee-section').hide();
+  }
+
+  populateBountyTotal();
   waitforWeb3(actions_page_warn_if_not_on_same_network);
-  
-  var is_funder = function() {
-    return document.is_funder_github_user_same && $('input[name=bountyOwnerAddress]').val() == web3.eth.coinbase;
-  };
 
   waitforWeb3(function() {
     if (!is_funder()) {
@@ -18,6 +27,14 @@ $(document).ready(function() {
   $('input[name=amount]').blur(setUsdAmount);
   $('select[name=denomination]').change(setUsdAmount);
 
+
+  $('input[name=amount]').on('change', function() {
+    const amount = $('input[name=amount]').val();
+
+    $('#summary-bounty-amount').html(amount);
+    $('#summary-fee-amount').html((amount / FEE_PERCENTAGE).toFixed(4));
+    populateBountyTotal();
+  });
 
   $('input[name=amount]').focus();
 
@@ -177,7 +194,6 @@ $(document).ready(function() {
     }
 
     function do_as_funder() {
-      indicateMetamaskPopup();
       bounty.increasePayout(
         bountyId,
         bountyAmount + amount,
@@ -195,10 +211,60 @@ $(document).ready(function() {
     var act_as_funder = is_funder();
 
     if (act_as_funder) {
-      do_as_funder();
+      const to_address = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
+      const gas_price = web3.toHex($('#gasPrice').val() * Math.pow(10, 9));
+      const fee = (Number($('#summary-bounty-amount').html()) / FEE_PERCENTAGE).toFixed(4);
+
+      indicateMetamaskPopup();
+      if (isETH) {
+        web3.eth.sendTransaction({
+          to: to_address,
+          from: web3.eth.coinbase,
+          value: web3.toWei(fee, 'ether'),
+          gasPrice: gas_price
+        }, function(error, txnId) {
+          indicateMetamaskPopup(true);
+          if (error) {
+            _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
+          } else {
+            // TODO: Save txnId + feeamount to bounty;
+            do_as_funder();
+          }
+        });
+      } else {
+        const amountInWei = fee * 1.0 * Math.pow(10, token.decimals);
+        const token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+
+        token_contract.transfer(to_address, amountInWei, { gasPrice: gas_price },
+          function(error, txnId) {
+            indicateMetamaskPopup(true);
+            if (error) {
+              _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
+            } else {
+              // TODO: Save txnId + feeamount to bounty;
+              do_as_funder();
+            }
+          });
+      }
     } else {
       do_as_crowd();
     }
-
   });
 });
+
+/**
+ * Calculates total amount needed to fund the bounty
+ * Bounty Amount + Fee + Featured Bounty
+ */
+const populateBountyTotal = () => {
+  const bountyToken = $('#summary-bounty-token').html();
+  const bountyAmount = Number($('#summary-bounty-amount').html());
+  const bountyFee = Number((bountyAmount / FEE_PERCENTAGE).toFixed(4));
+  const totalBounty = bountyAmount + bountyFee;
+  const total = `${totalBounty} ${bountyToken}`;
+
+  $('#fee-percentage').html(FEE_PERCENTAGE);
+  $('#fee-amount').html(bountyFee);
+  $('#fee-token').html(bountyToken);
+  $('#summary-total-amount').html(total);
+};
