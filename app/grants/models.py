@@ -194,6 +194,7 @@ class Grant(SuperModel):
         help_text=_('The CLR matching amount'),
     )
     activeSubscriptions = ArrayField(models.CharField(max_length=200), blank=True, default=list)
+    hidden = models.BooleanField(default=False, help_text=_('Hide the grant from the /grants page?'))
 
     # Grant Query Set used as manager.
     objects = GrantQuerySet.as_manager()
