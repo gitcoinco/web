@@ -311,7 +311,11 @@ def post_comment(request):
 
     sbid = request.POST.get('standard_bounties_id')
     bountyObj = Bounty.objects.filter(standard_bounties_id=sbid).first()
-    fbAmount = FeedbackEntry.objects.filter(sender_profile=profile_id, feedbackType=request.POST.get('review[reviewType]', 'approver'), bounty=bountyObj).count()
+    fbAmount = FeedbackEntry.objects.filter(
+        sender_profile=profile_id,
+        feedbackType=request.POST.get('review[reviewType]', 'approver'),
+        bounty=bountyObj
+    ).count()
     if fbAmount > 0:
         return JsonResponse({
             'success': False,
@@ -325,7 +329,12 @@ def post_comment(request):
         'bounty': bountyObj,
         'sender_profile': profile_id,
         'receiver_profile': receiver_profile,
-        'rating': request.POST.get('review[rating]', '-1'),
+        'rating': request.POST.get('review[rating]', '0'),
+        'satisfaction_rating': request.POST.get('review[satisfaction_rating]', '0'),
+        'communication_rating': request.POST.get('review[communication_rating]', '0'),
+        'speed_rating': request.POST.get('review[speed_rating]', '0'),
+        'code_quality_rating': request.POST.get('review[code_quality_rating]', '0'),
+        'recommendation_rating': request.POST.get('review[recommendation_rating]', '0'),
         'comment': request.POST.get('review[comment]', 'No comment.'),
         'feedbackType': request.POST.get('review[reviewType]','approver')
     }
