@@ -163,6 +163,8 @@ def get_avatar_context():
                     'martialarts',
                     'raincoat',
                     'recycle',
+                    'chef',
+                    'sailor',
                 ),
                 'paid_options': {
                     'robe': 0.01,
@@ -225,7 +227,9 @@ def get_avatar_context():
                 ], ['HatShort-devil'], ['Extras-necklace1'], ['Extras-necklace2'], ['Extras-necklace3'], ['Glasses-9'],
                             ['Masks-clown'], ['Extras-bird'], ['HatShort-sleepy'], ['Earring-tribal'],
                             ['Glasses-google'], ['Masks-marshmellow'], ['Masks-pirate'], ['Masks-power1'],
-                            ['HatShort-elf'], ['Extras-necklaceb'], ['Masks-football'],
+                            ['HatShort-elf'], ['Extras-necklaceb'], ['Masks-football'], ['HatShort-chefHat'],
+                            ['HatShort-captain'], ['HatShort-beanie'], ['Masks-egypt'], ['HatShort-nefertiti'], 
+                            ['Masks-frankenstein'], 
                             ),
                 'paid_options': {
                     'Extras-Parrot': 0.01,

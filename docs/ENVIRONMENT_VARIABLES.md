@@ -79,9 +79,7 @@ For further information, please check out the [Gitcoin Bot Documentation](https:
 | Variable | Description | Type | Default |
 | --- | --- | --- | --- |
 | SENTRY_DSN | The [Sentry](https://sentry.io) DSN. | `str` | '' |
-| SENTRY_TOKEN | A bearer token with project:releases permissions. | `str` | '' |
-| SENTRY_ORG | The name of your Sentry organization. | `str` | '' |
-| SENTRY_PROJECT | The name of your Sentry project. | `str` | '' |
+| SENTRY_JS_DSN | The DSN for Javascript Sentry reporting (defaults to SENTRY_DSN). | `str` | '' |
 
 ## SendGrid
 

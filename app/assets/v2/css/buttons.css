@@ -98,7 +98,10 @@ button:focus {
   border-radius: 2px;
 }
 
-.btn-gc-blue, .btn-gc-green, .btn-gc-purple {
+.btn-gc-blue,
+.btn-gc-green,
+.btn-gc-purple,
+.btn-gc-pink {
   color: white;
   padding: .75rem 1.5rem;
 }
@@ -186,6 +189,14 @@ button:focus {
   color: white;
 }
 
+.btn-gc-pink {
+  background-color: var(--gc-pink);
+}
+
+.btn-gc-pink:hover {
+  background-color: var(--gc-pink-hover);
+}
+
 /* Icons in buttons */
 .btn > svg:first-child {
   margin-right: .5rem;
@@ -203,7 +214,7 @@ button:focus {
   line-height: 2em;
 }
 
-.btn.btn-circle:hover {
+.btn.btn-social:hover {
   color: white;
   filter: saturate(3);
 }
