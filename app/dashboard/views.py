@@ -21,6 +21,7 @@ from __future__ import print_function, unicode_literals
 import json
 import logging
 import time
+from datetime import datetime
 
 from django.conf import settings
 from django.contrib import messages
@@ -42,7 +43,6 @@ from django.views.decorators.http import require_GET, require_POST
 from app.utils import clean_str, ellipses
 from avatar.utils import get_avatar_context_for_user
 from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, profile_helper
-from datetime import datetime
 from economy.utils import convert_token_to_usdt
 from eth_utils import to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
