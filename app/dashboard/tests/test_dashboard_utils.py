@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from unittest.mock import patch
 
+from django.conf import settings
 from django.test.client import RequestFactory
 
 from dashboard.utils import (
