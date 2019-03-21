@@ -92,43 +92,43 @@
           </div>
 
           <div class="col-6 col-md-4 text-center py-4">
-            <img class="icon" src="{% static "v2/images/results/clock.svg" %}" />
-            <h3 class="text-highlight-green mt-3">{{ bounty_median_pickup_time }} {% trans "Hours" %}</h3>
+            <img class="icon" src="{% static "v2/images/results/media-start-time.svg" %}" />
+            <h3 class="text-highlight-black mt-3">{{ bounty_median_pickup_time }} {% trans "Hours" %}</h3>
             <p>{% trans "Median Bounty Start Time" %}</p>
             <span class="mt-0">(after Funding)</span>
           </div>
 
           <div class="col-6 col-md-4 text-center py-4">
-            <img class="icon" src="{% static "v2/images/results/MAUs.svg" %}" />
-            <h3 class="text-highlight-purple mt-3">18,689</h3>
+            <img class="icon" src="{% static "v2/images/results/monthly-active-users.svg" %}" />
+            <h3 class="text-highlight-black mt-3">18,689</h3>
             <p>{% trans "Monthly Active Users" %}</p>
             <span class="mt-0">(but only 1% of them create on-chain tx's)</span>
           </div>
 
           <div class="col-6 col-md-4 text-center py-4">
-            <img class="icon" src="{% static "v2/images/results/hourly_rate_distribution.svg" %}" />
-            <h3 class="text-highlight-light-blue mt-3">{{ hourly_rate_distribution }}</h3>
+            <img class="icon" src="{% static "v2/images/results/hourly-rate-distribution.svg" %}" />
+            <h3 class="text-highlight-black mt-3">{{ hourly_rate_distribution }}</h3>
             <p>{% trans "Hourly Rate Distribution" %}</p>
             <span class="mt-0">(for most bounties; <a href="#price_per_hour">more details here</a>)</span>
           </div>
 
           <div class="col-6 col-md-4 text-center py-4">
-            <img class="icon" src="{% static "v2/images/results/calendar_icon.svg" %}" />
-            <h3 class="text-highlight-green mt-3">{{ bounty_average_turnaround }}</h3>
+            <img class="icon" src="{% static "v2/images/results/median-turnaround-time.svg" %}" />
+            <h3 class="text-highlight-black mt-3">{{ bounty_average_turnaround }}</h3>
             <p>{% trans "Median Bounty Turnaround Time" %}</p>
             <span class="mt-0">(after Start Work)</span>
           </div>
 
           <div class="col-6 col-md-4 text-center py-4">
-            <img class="icon" src="{% static "v2/images/results/completed_bounties.svg" %}" />
-            <h3 class="text-highlight-purple mt-3">{{ bounty_claimed_completion_rate|floatformat:1 }}%</h3>
+            <img class="icon" src="{% static "v2/images/results/bounty-completion-rate.svg" %}" />
+            <h3 class="text-highlight-black mt-3">{{ bounty_claimed_completion_rate|floatformat:1 }}%</h3>
             <p>{% trans "Bounty Completion Rate" %}</p>
             <span class="mt-0">(after Start Work)</span>
           </div>
 
           <div class="col-6 col-md-4 text-center py-4">
-            <img class="icon" src="{% static "v2/images/results/gitcoin_alumni.svg" %}" />
-            <h3 class="text-highlight-light-blue mt-3">{{ alumni_count }}</h3>
+            <img class="icon" src="{% static "v2/images/results/bounty-hunters-hired.svg" %}" />
+            <h3 class="text-highlight-black mt-3">{{ alumni_count }}</h3>
             <p>GitCoin {% trans "Bounty Hunters Hired Full Time" %}</p>
             <span class="mt-0">(that we know of, at least 🤷‍♀️)</span>
           </div>
