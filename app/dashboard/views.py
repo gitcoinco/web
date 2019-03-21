@@ -1467,6 +1467,23 @@ def profile(request, handle):
     context['sent_kudos_count'] = sent_kudos.count()
     context['verification'] = profile.get_my_verified_check
 
+    unrated_funded_bounties = Bounty.objects.current().filter(
+        bounty_owner_profile=profile,
+        idx_status='done'
+    )
+    unrated_contributed_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
+        .filter(interested__pending=False).filter(idx_status='done')
+    
+    context['unrated_funded_bounties'] = []
+    context['unrated_contributed_bounties'] = []
+    for bounty in unrated_funded_bounties:
+        if not FeedbackEntry.objects.filter(bounty=bounty):
+            context['unrated_funded_bounties'].append(bounty)
+    
+    for bounty in unrated_contributed_bounties:
+        if not FeedbackEntry.objects.filter(bounty=bounty):
+            context['unrated_contributed_bounties'].append(bounty)
+
     currently_working_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
         .filter(interested__pending=False).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)
     currently_working_bounties_count = currently_working_bounties.count()
