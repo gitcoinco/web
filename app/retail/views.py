@@ -492,7 +492,7 @@ def contributor_bounties(request, tech_stack):
         'slides': slides,
         'slideDurationInMs': 6000,
         'active': 'home',
-        'newsletter_headline': _("Be the first to find out about newly posted bounties."),
+        'newsletter_headline': _("Be the first to find out about newly posted freelance jobs."),
         'hide_newsletter_caption': True,
         'hide_newsletter_consent': True,
         'gitcoin_description': gitcoin_description,

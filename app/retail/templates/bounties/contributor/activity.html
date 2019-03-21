@@ -16,31 +16,24 @@
 {% endcomment %}
 {% load i18n static  %}
 <link rel="stylesheet" href={% static "v2/css/activity_stream.css" %}>
+<style>
+  .contributor-page .box {
+    border-bottom: none;
+  }
+</style>
 <div class="col text-center mb-2">
-  <h2 class="mb-4">
+  <h3 class="mb-5 font-weight-semibold">
   {% if title %}
     {{ title }}
   {% else %}
-    {% trans "Recent" %} {{ tech_stack|capfirst }} {% trans "Activity on Gitcoin" %}
+    {% trans "Recent Activity On Our" %} {{ tech_stack|capfirst }} {% trans " Programming Bounties" %}
   {% endif %}
-  </h2>
+  </h3>
 </div>
 <div id=activity_stream style="max-height: 400px; overflow-y: scroll;">
-  <div class="mb-4 col offset-lg-1 col-lg-10">
+  <div class="mb-4 col offset-lg-2 col-lg-8">
     {% for row in activities %}
       {% include 'shared/activity.html' %}
     {% endfor %}
   </div>
 </div>
-
-{% if not suppress_cta %}
-<div class="col text-center mt-5">
-  <a href="/explorer?q={{ tech_stack }}" class="button button--primary" target="_blank" rel="noopener noreferrer">
-    {% if tech_stack %}
-      {% trans "Get Started With" %} {{ tech_stack|capfirst }}
-    {% else %}
-      {% trans "Get Started" %}
-    {% endif %}
-  </a>
-</div>
-{% endif %}

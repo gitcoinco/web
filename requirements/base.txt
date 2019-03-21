@@ -64,7 +64,6 @@ ecdsa
 pysha3
 oyaml
 pygithub==1.43.2
-raven==6.9.0
 django-cacheops==4.0.7
 django-redis==4.10.0
 collectfast==0.6.2
@@ -80,3 +79,5 @@ redis-semaphore
 watchtower==0.5.4
 Wand==0.4.4
 wagtail==2.3
+raven==6.9.0
+sentry-sdk
