@@ -823,7 +823,7 @@ var build_detail_page = function(result) {
     });
   });
 
-  $('#bounty_details #issue_description code').parent().addClass('code-snippet');
+  $('#bounty_details #issue_description').parent().addClass('code-snippet');
 };
 
 const is_current_user_interested = function(result) {
