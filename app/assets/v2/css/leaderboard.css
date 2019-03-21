@@ -4,7 +4,7 @@
   background-position: center 0;
 }
 
-#leaderboard .key {
+.leaderboard .key {
   right: 0px;
   display: block;
   position: absolute;
@@ -12,14 +12,14 @@
   margin-top: 5px;
 }
 
-#leaderboard .podium {
+.leaderboard .podium {
   border-bottom-left-radius: 2px;
   border-bottom-right-radius: 2px;
   background: #150069;
   justify-content: space-around;
 }
 
-#leaderboard .winner {
+.leaderboard .winner {
   position: relative;
   padding: 0px;
   text-align: center;
@@ -29,33 +29,33 @@
   background-color: #140069;
 }
 
-#leaderboard .clickable-row {
+.leaderboard .clickable-row {
   cursor: pointer;
 }
 
-#leaderboard .winner img:hover {
+.leaderboard .winner img:hover {
   opacity: 0.55;
 }
 
-#leaderboard .winner img {
+.leaderboard .winner img {
   max-height: 100px;
 }
 
-#leaderboard .winner a {
+.leaderboard .winner a {
   color: #2B75D2;
 }
 
-#leaderboard img {
+.leaderboard img {
   border-radius: 50%;
   display: flex;
 }
 
-#leaderboard .winner h6 {
+.leaderboard .winner h6 {
   font-size: color: #3f78cd;
   white-space: nowrap;
 }
 
-#leaderboard .leaderboard_entry img {
+.leaderboard .leaderboard_entry img {
   max-height: 50px;
   border-radius: 50%;
 }
@@ -72,7 +72,7 @@ tbody {
   color: #5C5D5F
 }
 
-#leaderboard .leaderboard_entry {
+.leaderboard .leaderboard_entry {
   padding: 10px 0px;
   text-decoration: none;
 }
@@ -81,11 +81,11 @@ tbody {
   display: none;
 }
 
-#leaderboard .select {
+.leaderboard .select {
   display: none;
 }
 
-#leaderboard .winner h6 {
+.leaderboard .winner h6 {
   font-size: 0.6rem;
   color: #2B75D2;
 }
@@ -94,7 +94,7 @@ tbody {
   font-size: 0.8rem;
 }
 
-#leaderboard h3 {
+.leaderboard h3 {
   font-size: 1rem;
 }
 
@@ -103,30 +103,30 @@ tbody {
 }
 
 @media (min-width: 1000px) {
-  #leaderboard .leaderboard_entry {
+  .leaderboard .leaderboard_entry {
     padding: 10px 0px;
     text-decoration: none;
   }
 
-  #leaderboard .leaderboard_entry img {
+  .leaderboard .leaderboard_entry img {
     max-height: 70px;
     border-radius: 50%;
   }
 
-  #leaderboard .winner img {
+  .leaderboard .winner img {
     max-height: 150px;
   }
 
-  #leaderboard .winner h6 {
-    font-size: 1rem !important;
+  .leaderboard .winner h6 {
+    font-size: 1rem ;
   }
 
   tbody {
-    font-size: 3rem !important;
+    font-size: 3rem ;
   }
 
-  #leaderboard h3 {
-    font-size: 1.75rem !important;
+  .leaderboard h3 {
+    font-size: 1.75rem ;
   }
 
   .tableheaders {
@@ -137,39 +137,39 @@ tbody {
 
 @media (min-width: 700px) {
   .item-count-bounties {
-    display: block !important
+    display: block
   }
 
   .podium {
-    justify-content: space-between !important;
+    justify-content: space-between ;
   }
 
-  #leaderboard .select {
-    display: block !important;
+  .leaderboard .select {
+    display: block ;
   }
 
-  #leaderboard .leaderboard_entry div {
+  .leaderboard .leaderboard_entry div {
     width: 100%;
   }
 
-  #leaderboard .leaderboard_entry div:nth-child(2) {
+  .leaderboard .leaderboard_entry div:nth-child(2) {
     width: 30%;
   }
 
-  #leaderboard .leaderboard_entry div.progress {
+  .leaderboard .leaderboard_entry div.progress {
     width: 100%;
   }
 
-  #leaderboard .winner h6 {
+  .leaderboard .winner h6 {
     font-size: 0.7rem;
   }
 
   tbody {
-    font-size: 1rem !important;
+    font-size: 1rem ;
   }
 
-  #leaderboard h3 {
-    font-size: 1.2rem !important;
+  .leaderboard h3 {
+    font-size: 1.2rem ;
   }
 
   .tableheaders {
