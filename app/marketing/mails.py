@@ -689,8 +689,8 @@ def unread_notification_email_weekly_roundup(to_emails=None):
     if to_emails is None:
         to_emails = []
     
+    cur_language = translation.get_language()
     for to_email in to_emails:
-        cur_language = translation.get_language()
         try:
             setup_lang(to_email)
             html, text, subject = render_unread_notification_email_weekly_roundup(to_email)

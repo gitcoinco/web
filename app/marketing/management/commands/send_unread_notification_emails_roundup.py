@@ -21,7 +21,7 @@ import warnings
 from django.core.management.base import BaseCommand
 
 from marketing.mails import unread_notification_email_weekly_roundup
-from marketing.models import EmailSubscriber
+from marketing.models import EmailEvent, EmailSubscriber
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
@@ -30,12 +30,11 @@ check_already_sent = False
 
 
 def is_already_sent_this_week(email):
-    from marketing.models import EmailEvent
     from django.utils import timezone
     then = timezone.now() - timezone.timedelta(hours=12)
-    QS = EmailEvent.objects.filter(created_on__gt=then)
-    QS = QS.filter(category__contains='weekly_roundup', email__iexact=email, event='processed')
-    return QS.exists()
+    qs = EmailEvent.objects.filter(created_on__gt=then)
+    qs = qs.filter(category__contains='weekly_roundup', email__iexact=email, event='processed')
+    return qs.exists()
 
 
 class Command(BaseCommand):
@@ -85,19 +84,16 @@ class Command(BaseCommand):
             queryset = queryset.filter(email__startswith=filter_startswith)
         queryset = queryset.order_by('email')
         email_list = list(set(queryset.values_list('email', flat=True)))
-        # list.sort(email_list)
 
         print("got {} emails".format(len(email_list)))
 
-        counter = 0
-        for to_email in email_list:
-            counter += 1
+        for index, to_email in enumerate(email_list):
 
             # skip any that are below the start counter
-            if counter < start_counter:
+            if index < start_counter:
                 continue
 
-            print("-sending {} / {}".format(counter, to_email))
+            print("-sending {} / {}".format(index, to_email))
             if options['live']:
                 try:
                     if check_already_sent and is_already_sent_this_week(to_email):

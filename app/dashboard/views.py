@@ -55,9 +55,7 @@ from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
 from marketing.mails import admin_contact_funder, bounty_uninterested
 from marketing.mails import funder_payout_reminder as funder_payout_reminder_mail
-from marketing.mails import (
-    new_reserved_issue, start_work_approved, start_work_new_applicant, start_work_rejected
-)
+from marketing.mails import new_reserved_issue, start_work_approved, start_work_new_applicant, start_work_rejected
 from marketing.models import Keyword
 from pytz import UTC
 from ratelimit.decorators import ratelimit
