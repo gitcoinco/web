@@ -2331,10 +2331,7 @@ GITCOIN_BOT_CERT_PATH=app/gitcoin_bot_secret.pem  # If pem file is located at we
 <p>Error tracking is entirely optional and primarily for internal staging and production tracking.
 If you would like to track errors of your local environment, setup an account at: <a href="https://sentry.io">Sentry.io</a></p>
 <p>Once you have access to your project secrets, you can enable Sentry error tracking for both the backend and frontend by adding the following environment variables to <code>web/app/app/.env</code>:</p>
-<pre><code class="shell">SENTRY_USER=xxx
-SENTRY_PASSWORD=xxx
-SENTRY_ADDRESS=https://sentry.example.xxx
-SENTRY_PROJECT=2
+<pre><code class="shell">SENTRY_DSN=xxx
 </code></pre>
                 
                   
