@@ -1736,6 +1736,35 @@ class UserVerificationModel(SuperModel):
         return f"User: {self.user}; Verified: {self.verified}"
 
 
+class BountyInvites(SuperModel):
+    """Define the structure of bounty invites."""
+
+    INVITE_STATUS = [
+        ('pending', 'pending'),
+        ('accepted', 'accepted'),
+        ('completed', 'completed'),
+    ]
+
+    bounty = models.ManyToManyField('dashboard.Bounty', related_name='bounty', blank=True)
+    inviter = models.ManyToManyField(User, related_name='inviter', blank=True)
+    invitee = models.ManyToManyField(User, related_name='invitee', blank=True)
+    status = models.CharField(max_length=20, choices=INVITE_STATUS, blank=True)
+
+    def __str__(self):
+        return f"Inviter: {self.inviter}; Invitee: {self.invitee}; Bounty: {self.bounty}"
+
+    @property
+    def get_bounty_invite_url(self):
+        """Returns a unique url for each bounty and one who is inviting
+
+        Returns:
+            A unique string for each bounty
+        """
+        salt = "X96gRAVvwx52uS6w4QYCUHRfR3OaoB"
+        string = self.inviter.username + salt + self.bounty
+        return base64.urlsafe_b64encode(string.encode()).decode()
+
+
 class ProfileQuerySet(models.QuerySet):
     """Define the Profile QuerySet to be used as the objects manager."""
 
@@ -1771,6 +1800,7 @@ class Profile(SuperModel):
     pref_lang_code = models.CharField(max_length=2, choices=settings.LANGUAGES, blank=True)
     slack_repos = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     slack_token = models.CharField(max_length=255, default='', blank=True)
+    custom_tagline = models.CharField(max_length=255, default='', blank=True)
     slack_channel = models.CharField(max_length=255, default='', blank=True)
     discord_repos = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     discord_webhook_url = models.CharField(max_length=400, default='', blank=True)

@@ -40,7 +40,7 @@
         </span>
         <span style="text-align: center; border-radius: 2px; margin: 4px; padding: 3px 6px; font-size: 11px; font-weight: 400; white-space: nowrap; background-color: #d6fbeb; color: #00A55E;    display: inline-block;">
           <p style="font-size:15px;">
-            {{ bounty.token_value_in_usdt }}
+            {{ bounty.value_in_usdt_now }}
             <span>USD</span>
           </p>
         </span>
@@ -51,7 +51,7 @@
       </div>
     </div>
   </div>
-  {% if bounty.is_featured == 'true' %}
+  {% if bounty.is_featured %}
     <div class="centered-contents" style="display: flex; justify-content: center; border-top: 1px solid #979797; border-bottom: 1px solid #979797; padding: 50px; text-align: center">
       <img src="{% static "v2/images/emails/funded_featured_bounty_banner.png" %}" width="100" style="margin-right: 30px" alt="Featured bounty avatar" id="featured_bounty_detail_image">
       <div style="margin-top: 30px;">

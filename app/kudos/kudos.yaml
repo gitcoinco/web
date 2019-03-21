@@ -3430,6 +3430,156 @@
     - IPFS
     - web3
   image: 3box.svg
-
+- name: ally_guide_paris_spring_2019
+  to_address: '0xc6b0a4c5BA85d082eCd4Fb05FBF63eb92AC1083a'
+  artist: PanvalaMark
+  description: For loyal Panvala Allies who shopped at merchants in the Spring 2019 issue of Ally Guide Paris.
+  priceFinney: 10
+  numClonesAllowed: 200
+  tags:
+    - panvala
+    - ally guide
+    - paris
+  image: ally_guide_paris_spring_2019.svg
+- name: batman_bot
+  artist: mladen
+  description: Limited Edition Crypto Spring Kudos;  Send this bot to contributors who have done a great job!
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto spring
+    - bots
+  image: batman_bot.svg
+- name: c3po_bot
+  artist: mladen
+  description: Limited Edition Crypto Spring Kudos;  Send this bot to contributors who have done a great job!
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto spring
+    - bots
+  image: c3po_bot.svg
+- name: hello_kitty_bot
+  artist: mladen
+  description: Limited Edition Crypto Spring Kudos;  Send this bot to contributors who have done a great job!
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto spring
+    - bots
+  image: hello_kitty_bot.svg
+- name: loki_bot
+  artist: mladen
+  description: Limited Edition Crypto Spring Kudos;  Send this bot to contributors who have done a great job!
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto spring
+    - bots
+  image: loki_bot.svg
+- name: spider_bot
+  artist: mladen
+  description: Limited Edition Crypto Spring Kudos;  Send this bot to contributors who have done a great job!
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto spring
+    - bots
+  image: spider_bot.svg
+- name: trek_bot
+  artist: mladen
+  description: Limited Edition Crypto Spring Kudos;  Send this bot to contributors who have done a great job!
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto spring
+    - bots
+  image: trek_bot.svg
+- name: Tamagotchi
+  artist: cryptodesign
+  description: Your very own handheld digital roboto pet, don't forget to feed him ether.
+  priceFinney: 20
+  numClonesAllowed: 90
+  tags:
+    - pet
+    - roboto
+    - tamagotchi
+  image: Tamagotchi.svg 
+- name: Ethereal-gameboy
+  artist: cryptodesign
+  description: Booting up Ethereal Summit 2019.
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - animated
+    - gameboy
+    - ethereal
+  image: Gameboy.svg 
+- name: youre_a_star
+  artist: Mladen
+  description: For the brightest shining stars in your network!
+  priceFinney: 10
+  numClonesAllowed: 500
+  tags:
+    - soft skills
+    - star
+  image: youre_a_star.svg
+- name: top_presenter
+  artist: Mladen
+  description: You were the most tipped presenter on a bi-weekly or tri-weekly!
+  priceFinney: 10
+  numClonesAllowed: 500
+  tags:
+    - soft skills
+    - consensys
+  image: top_presenter.svg
+- name: solid_presenter
+  artist: Mladen
+  description: You may not have been no 1, but you were in the top 10 of most tipped performers on a bi-weekly or tri-weekly!
+  priceFinney: 10
+  numClonesAllowed: 500
+  tags:
+    - soft skills
+    - consensys
+  image: solid_presenter.svg
+- name: proactive
+  artist: Mladen
+  description: For the most pro-active of contirbutors!
+  priceFinney: 10
+  numClonesAllowed: 500
+  tags:
+    - soft skills
+    - proactive
+  image: proactive.svg
+- name: diversity_inclusion_advocate
+  artist: Mladen
+  description: Thanks for helping to promote diversity and inclusivity at ConsenSys or beyond!
+  priceFinney: 10
+  numClonesAllowed: 500
+  tags:
+    - soft skills
+    - consensys
+  image: diversity_inclusion_advocate.svg
+- name: Master_At_Arms
+  description: You are a leader, analytical thinker, scientific marketer, fearless, patient, and a supportive teammate.
+  priceFinney: 1
+  numClonesAllowed: 100
+  tags:
+   - blockchain marketing
+   - ethereum marketing
+   - consensys marketing
+  image: brett_li.svg
 
 

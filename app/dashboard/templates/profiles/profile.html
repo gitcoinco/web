@@ -27,7 +27,7 @@
         </div>
       {% endif %}
     </div>
-    <div class="container-fluid bg-light pb-5">
+    <div class="container-fluid bg-light">
 
         <div class="container profile-card mt-md-n5">
           <div class="row">
@@ -62,7 +62,11 @@
                     '><img src="{% static 'v2/images/badge-verify.svg' %}" alt=""></button>
                   {% endif %}
                 </h1>
-                <p class="mb-0">{{ profile.handle }}</p>
+                <p class="mb-0">{{ profile.handle }}
+                  {% if profile.custom_tagline %}
+                    <span style="font-size: 14px; font-color: #000;">- {{ profile.custom_tagline }}</span>
+                  {% endif %}
+                </p>
                 <p class="profile-header__links clearfix mt-1">
                   <a href="{{ profile.data.html_url }}?tab=repositories" target="_blank" rel="noopener noreferrer" >
                     <i class="fab fa-github"></i>
@@ -89,7 +93,7 @@
               {% else %}
                 <div class="my-2" id="preferred-address">
                   {% if user.is_authenticated and request.path == '/profile/' %}
-                    <a href="http://localhost:8000/settings/account" class=""><i class="fas fa-plus-circle"></i> Add a preferred address</a>
+                    <a href="/settings/account" class=""><i class="fas fa-plus-circle"></i> Add a preferred address</a>
                   {% else %}
                     No preferred address
                   {% endif %}
@@ -114,7 +118,12 @@
                 <div class="col-12 col-lg-3">
                   <div class="profile-header__stats profile-header__stats--contributor card mb-4">
                     <div class="card-header font-subheader">
-                     <b>#{{ scoreboard_position_contributor }}</b> {% trans "Contributor" %}
+                      {% if scoreboard_position_contributor %}
+                        <b>#{{ scoreboard_position_contributor }}</b> 
+                      {% else %}
+                        <b>&nbsp;</b> 
+                      {% endif %}
+                      {% trans "Contributor" %}
                     </div>
                     <div class="card-body">
                       <ul>
@@ -145,7 +154,12 @@
                 <div class="col-12 col-lg-3">
                   <div class="profile-header__stats profile-header__stats--funder card mb-4">
                     <div class="card-header font-subheader">
-                      <b>#{{ scoreboard_position_funder }}</b> {% trans "Funder" %}
+                      {% if scoreboard_position_funder %}
+                        <b>#{{ scoreboard_position_funder }}</b> 
+                      {% else %}
+                        <b>&nbsp;</b> 
+                      {% endif %}
+                      {% trans "Funder" %}
                     </div>
                     <div class="card-body font-subheader">
                       <ul>
@@ -261,12 +275,14 @@
       {% endif %}
     {% endif %}
     </div>
+    </div>
+  </div>
 
     {% include 'shared/result.html' %}
     {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html'%}
-    {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
 
     <!-- jQuery -->
