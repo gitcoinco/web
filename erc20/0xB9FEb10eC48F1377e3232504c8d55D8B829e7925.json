@@ -1,0 +1,26 @@
+{
+  "symbol": "ASC",
+  "address": "0xB9FEb10eC48F1377e3232504c8d55D8B829e7925",
+  "overview":{
+        "en": "The ASC full name All Spring Chain (Chinese name: Daquan Chain) project strives to create a perfect combination of block chains and e-commerce business ecosystem. Through block chain technology to create a fair incentive system, reconstruct the credit system of e-commerce platform, help consumers reduce trial and error costs, and build word-of-mouth brand for high-quality businesses. Through the data warehouse and large data analysis system, it provides a decentralized information sharing solution for small and medium-sized micro-e-commerce enterprises to realize a symbiotic and win-win harmonious ecological circle. The ASC project was initiated by the Silicon Valley Block Technology Research Center of the United States and jointly created by the Digital Development Institute of Block Chain of the United Kingdom as a consultant unit. At present, we are cooperating with many institutions such as Chain Capital, Longyi Capital, Luchen Capital, Shengchuang Capital, Dior, Shengyin Capital, Huayao Capital, Mercury Capital, Hunan Chain Capital, Wu's Investment and Lesheng Holdings.",
+        "zh": "ASC 全称All Spring Chain(中文名：大泉链）项目力求打造区块链和电子商务完美结合的商业生态系统。通过区块链技术打造公平激励体系，重构电商平台信用体系，帮助消费者降低试错成本，为优质商家打造口碑品牌。通过数据存证及大数据分析系统为中小微电商企业提供去中心化信息共享解决方案，实现共生、共赢的和谐生态圈。 ASC项目由美国硅谷区块技术研究中心发起，英国区块链数字发展研究所作为顾问单位共同打造。目前与链上资本、龙翌资本、麓晨资本、盛创资本、法国迪奥、盛银资本、华耀资本、水银资本、湘链资本、吴氏投资、乐晟控股等机构开展合作。"
+  },
+  "email": "ascchain@outlook.com",
+  "website": "http://www.ascchain.com/",
+  "whitepaper": "http://www.ascchain.com/refs.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-01-01",
+  "initial_price":{
+        "ETH":"0.00106666 ETH",
+        "USD":"0.1 USD",
+        "BTC":"0.00002137 BTC"
+  },
+  "links": {
+    "jinse": "https://www.jinse.com/bitcoin/233702.html",
+    "sohu": "http://www.sohu.com/a/285506963_100183501",
+    "163": "http://news.163.com/19/0308/15/E9OONIC8000189DG.html",
+    "github": "https://github.com/ezoonet",
+    "facebook": "https://www.facebook.com/ascchain",
+    "sohu2": "http://www.sohu.com/a/244979425_236399"
+  }
+}
