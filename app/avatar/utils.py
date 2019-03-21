@@ -214,9 +214,8 @@ def get_avatar_context():
                     'Masks-wolverine_inspired'
                 ], ['Masks-captain_inspired'], ['Masks-alien'], ['Extras-Parrot'], ['Extras-wonderwoman_inspired'], [
                     'Extras-santa_inspired'
-                ], ['Extras-reindeer'], ['Masks-gitcoinbot'], ['Extras-tattoo'], ['Masks-batman_inspired'], [
-                    'Masks-eye-patch'
-                ], ['Masks-flash_inspired'], ['Masks-deadpool_inspired'], ['Masks-darth_inspired'], [
+                ], ['Extras-reindeer'], ['Masks-gitcoinbot'], ['Extras-tattoo'], ['Masks-batman_inspired'], 
+                ['Masks-flash_inspired'], ['Masks-deadpool_inspired'], ['Masks-darth_inspired'], [
                     'Masks-spiderman_inspired'
                 ], ['Glasses-5'], ['Glasses-geordi-visor'], ['Masks-funny_face'], ['Masks-viking'], [
                     'Masks-construction_helmet'
@@ -225,11 +224,13 @@ def get_avatar_context():
                 ], ['Masks-surgical'], ['Extras-monkey'], ['Masks-power'], ['Glasses-7'], ['Glasses-8'], [
                     'HatShort-angel'
                 ], ['HatShort-devil'], ['Extras-necklace1'], ['Extras-necklace2'], ['Extras-necklace3'], ['Glasses-9'],
-                            ['Masks-clown'], ['Extras-bird'], ['HatShort-sleepy'], ['Earring-tribal'],
-                            ['Glasses-google'], ['Masks-marshmellow'], ['Masks-pirate'], ['Masks-power1'],
+                            ['Masks-clown'], ['HatShort-sleepy'], ['Earring-tribal'],
+                            ['Glasses-google'], ['Masks-marshmellow'], ['Masks-power1'],
                             ['HatShort-elf'], ['Extras-necklaceb'], ['Masks-football'], ['HatShort-chefHat'],
                             ['HatShort-captain'], ['HatShort-beanie'], ['Masks-egypt'], ['HatShort-nefertiti'], 
-                            ['Masks-frankenstein'], 
+                            ['Masks-frankenstein'], ['Masks-diving'], ['HatShort-1'], ['HatShort-artist'],
+                            ['HatShort-pirate'], ['HatShort-grad'], ['HatShort-antlers'], ['Extras-sword'], 
+                            ['Masks-pirate'], ['Extras-bird'], 
                             ),
                 'paid_options': {
                     'Extras-Parrot': 0.01,
