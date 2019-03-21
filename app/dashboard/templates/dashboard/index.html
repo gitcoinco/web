@@ -35,15 +35,19 @@
       {% include 'shared/nav.html' %}
     </div>
     {% if hackathon %}
-      <div class="row pt-5 pb-5 text-center" style="background: rgb(25, 0, 63);">
+      <div class="row pt-5 pb-5 text-center" style="
+        background: rgb(25, 0, 63);
+        background-image: url({% static '/v2/images/header-bg.png' %});
+        background-size: cover;
+      ">
         <div class="col g-font-muli">
-          <span class="col-2 font-title-xl text-white font-weight-300">{{ hackathon.name }}</span>
+          <span class="d-block font-title-xl text-white">{{ hackathon.name }}</span>
           {% if hackathon.logo_svg %}
-            <img class="col-2" max-width="364" src="{{ hackathon.logo_svg.url }}"/>
+            <img class="d-block mx-auto my-4" max-width="364" src="{{ hackathon.logo_svg.url }}"/>
           {% elif hackathon.logo %}
-            <img class="col-2" max-width="364" src="{{ hackathon.logo.url }}"/>
+            <img class="d-block mx-auto my-4" max-width="364" src="{{ hackathon.logo.url }}"/>
           {% endif %}
-          <span class="col-2 font-title-xl text-white font-weight-300" style="white-space: nowrap;">
+          <span class="d-block font-title-xl text-white font-weight-300" style="white-space: nowrap;">
             {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
           </span>
         </div>

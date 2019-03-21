@@ -42,6 +42,7 @@ from django.views.decorators.http import require_GET, require_POST
 from app.utils import clean_str, ellipses
 from avatar.utils import get_avatar_context_for_user
 from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, profile_helper
+from datetime import datetime
 from economy.utils import convert_token_to_usdt
 from eth_utils import to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
@@ -810,7 +811,6 @@ def social_contribution_email(request):
     """
     from marketing.mails import share_bounty
 
-    print (request.POST.getlist('usersId[]', []))
     emails = []
     user_ids = request.POST.getlist('usersId[]', [])
     url = request.POST.get('url', '')
@@ -1883,7 +1883,6 @@ def redeem_coin(request, shortcode):
 def new_bounty(request):
     """Create a new bounty."""
     from .utils import clean_bounty_url
-    from datetime import datetime
 
     events = HackathonEvent.objects.filter(end_date__gt=datetime.today())
     bounty_params = {
@@ -2097,7 +2096,6 @@ def get_kudos(request):
 def hackathon(request, hackathon=''):
     """Handle rendering of HackathonEvents. Reuses the dashboard template."""
 
-    evt = None
     try:
         evt = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
         title = evt.name
@@ -2115,15 +2113,15 @@ def hackathon(request, hackathon=''):
 
 def get_hackathons(request):
     """Handle rendering all Hackathons."""
-    evt = None
+
     try:
-        evt = HackathonEvent.objects.values()
+        events = HackathonEvent.objects.values()
     except HackathonEvent.DoesNotExist:
         raise Http404
 
     params = {
         'active': 'hackathons',
         'title': 'hackathons',
-        'hackathons': evt,
+        'hackathons': events,
     }
     return TemplateResponse(request, 'dashboard/hackathons.html', params)
