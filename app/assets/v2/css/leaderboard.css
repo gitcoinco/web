@@ -39,15 +39,12 @@
 
 .leaderboard .winner img {
   max-height: 100px;
+  display: flex;
+  border-radius: 50%;
 }
 
 .leaderboard .winner a {
   color: #2B75D2;
-}
-
-.leaderboard img {
-  border-radius: 50%;
-  display: flex;
 }
 
 .leaderboard .winner h6 {
