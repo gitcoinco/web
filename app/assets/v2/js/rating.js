@@ -1,17 +1,16 @@
 const ratingModal = (bountyId) => {
-
   let modalUrl = `/modal/rating/${bountyId}`;
-  console.log(modalUrl)
+
+  console.log(modalUrl);
 
   $.ajax({
     url: modalUrl,
     type: 'GET',
-    cache: false,
-    // data: {id: id},
-}).done(function(result){
+    cache: false
+  }).done(function(result) {
     $('body').append(result);
     $('#modalRating').bootstrapModal('show');
-});
+  });
 
   // let modalTmp = `
   // <div class="modal fade g-modal" id="modalRating" tabindex="-1" role="dialog" aria-labelledby="modalRatingTitle" aria-hidden="true">
