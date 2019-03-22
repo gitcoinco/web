@@ -32,12 +32,10 @@
 </style>
 <div>
   <div class="col text-center">
-    <h2 class="mb-4">{% trans "Open Funded" %} {{ tech_stack|capfirst }} {% trans "Work" %}</h2>
+    <h3 class="mb-2 font-weight-semibold">{% trans "Available " %} {{ tech_stack|capfirst }} {% trans "Programming Jobs" %}</h3>
+    <p class="mb-5 font-title">{% trans "Click one to start contributing!" %}</p>
   </div>
   <div class="mb-4 col offset-lg-1 col-lg-10 profile-bounties featured-bounties profile-bounties--loading ">
-  </div>
-  <div class="col text-center">
-    <a href="/explorer?q={{ tech_stack }}" class="button button--primary" target="_blank" rel="noopener noreferrer">{% trans "Get Started With" %} {{ tech_stack|capfirst }} </a> <!-- TODO: Need to invoke resetFilters & set localStorage props -->
   </div>
 </div>
 {% include 'shared/result.html' %}

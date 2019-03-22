@@ -27,11 +27,15 @@
   <img src="{% static "v2/images/update-notification.png" %}" style="padding: 40px 0;"><br>
 
   {% if bounty_fulfillment.fulfiller_github_url %}
-   {% blocktrans %}
-    Heads up! The funded issue that you posted (below) has work submitted by 
-    <a href="https://github.com/{{ github_username }}">@{{ github_username }}.</a><br>
-   {% endblocktrans %}
-   <a class="button button--primary" href="{{pr.absolute_url}}">{% trans "View work" %}</a><br>
+    <p>
+      {% blocktrans %}
+      Heads up! The funded issue that you posted (below) has work submitted by
+      <a href="https://github.com/{{ github_username }}">@{{ github_username }}.</a><br>
+      {% endblocktrans %}
+    </p>
+    <div style="margin-bottom: 2em; margin-top: 2em;">
+      <a class="button button--primary" href="{{bounty_fulfillment.fulfiller_github_url}}">{% trans "View work" %}</a><br>
+    </div>
   {% else %}
     <br>
     {% trans "There is a currently pending claim against this funded issue. Please make sure you process them!" %}<br>
@@ -39,7 +43,7 @@
 
   <br>
   {% blocktrans %}
-   If you have any questions, feel free to reach out 
+   If you have any questions, feel free to reach out
    <a href="https://gitcoin.co/slack">on slack</a>.
   {% endblocktrans %}
 
@@ -52,7 +56,7 @@
 {% include 'emails/bounty.html' with bounty=bounty %}
 
 <p>
- {% trans "You are receiving this email because your email address is listed as the reviewing funder for this issue." %} 
+ {% trans "You are receiving this email because your email address is listed as the reviewing funder for this issue." %}
  <a href="{{bounty.url}}">{% trans "View Bounty" %}</a>.
 </p>
 
