@@ -1,6 +1,7 @@
 window.onload = function() {
   var registerBtn = $('#register');
-  if(registerBtn.length > 0) {
+
+  if (registerBtn.length > 0) {
     registerBtn[0].onclick = function(e) {
       if ($('#tos')[0].checked === false) {
         return _alert({ message: gettext('Please check the TOS checkbox.')}, 'error');
