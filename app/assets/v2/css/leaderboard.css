@@ -57,10 +57,6 @@
   border-radius: 50%;
 }
 
-table {
-  font-weight: bold;
-}
-
 thead {
   color: #CECFD1;
 }
@@ -138,7 +134,7 @@ tbody {
   }
 
   .podium {
-    justify-content: space-between ;
+    justify-content: space-between;
   }
 
   .leaderboard .select {
