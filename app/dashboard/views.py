@@ -800,7 +800,6 @@ def social_contribution_email(request):
     """
     from marketing.mails import share_bounty
 
-    print (request.POST.getlist('usersId[]', []))
     emails = []
     user_ids = request.POST.getlist('usersId[]', [])
     url = request.POST.get('url', '')
