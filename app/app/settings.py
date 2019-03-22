@@ -333,8 +333,10 @@ if ENV not in ['local', 'test', 'staging', 'preview']:
             'filters': ['host_filter'],
             'formatter': 'cloudwatch',
     }
+    '''
     LOGGING['root']['handlers'].append('watchtower')
     LOGGING['loggers']['django.db.backends']['handlers'].append('watchtower')
+    '''
     LOGGING['loggers']['django.db.backends']['level'] = AWS_LOG_LEVEL
 
     LOGGING['loggers']['django.request'] = LOGGING['loggers']['django.db.backends']
