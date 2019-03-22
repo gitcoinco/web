@@ -21,6 +21,7 @@ gcoin/
 .cache/
 webpack-stats.json
 .sass-cache
+*.sql
 
 # Sensitive environment files
 .env

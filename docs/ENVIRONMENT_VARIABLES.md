@@ -79,9 +79,7 @@ For further information, please check out the [Gitcoin Bot Documentation](https:
 | Variable | Description | Type | Default |
 | --- | --- | --- | --- |
 | SENTRY_DSN | The [Sentry](https://sentry.io) DSN. | `str` | '' |
-| SENTRY_TOKEN | A bearer token with project:releases permissions. | `str` | '' |
-| SENTRY_ORG | The name of your Sentry organization. | `str` | '' |
-| SENTRY_PROJECT | The name of your Sentry project. | `str` | '' |
+| SENTRY_JS_DSN | The DSN for Javascript Sentry reporting (defaults to SENTRY_DSN). | `str` | '' |
 
 ## SendGrid
 
@@ -120,6 +118,8 @@ The below environment variables are useful for overwriting [Django Silk](https:/
 | Variable | Description | Type | Default |
 | --- | --- | --- | --- |
 | WEB3_HTTP_PROVIDER | The Web3 HTTP provider URI to be used. | `str` | https://rinkeby.infura.io |
+| INFURA_USE_V3 | Use new API | `bool` | False |
+| INFURA_V3_PROJECT_ID | Infura Project ID | `str` | 1e0a90928efe4bb78bb1eeceb8aacc27 |
 
 ## VSCode Remote Debugging
 

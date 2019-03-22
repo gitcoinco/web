@@ -24,6 +24,9 @@ from django.utils.translation import gettext_noop
 
 import environ
 import raven
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 from boto3.session import Session
 from easy_thumbnails.conf import Settings as easy_thumbnails_defaults
 
@@ -75,7 +78,6 @@ INSTALLED_APPS = [
     'autotranslate',
     'django_extensions',
     'easy_thumbnails',
-    'raven.contrib.django.raven_compat',
     'health_check',
     'health_check.db',
     'health_check.cache',
@@ -131,7 +133,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'app.middleware.drop_accept_langauge',
     'django.middleware.locale.LocaleMiddleware',
@@ -255,67 +256,93 @@ SENTRY_JS_DSN = env.str('SENTRY_JS_DSN', default=SENTRY_DSN)
 RELEASE = raven.fetch_git_sha(os.path.abspath(os.pardir)) if ENV == 'prod' else ''
 RAVEN_JS_VERSION = env.str('RAVEN_JS_VERSION', default='3.26.4')
 if SENTRY_DSN:
+    sentry_sdk.init(
+        SENTRY_DSN,
+        integrations=[DjangoIntegration()]
+    )
     RAVEN_CONFIG = {
         'dsn': SENTRY_DSN,
     }
     if RELEASE:
         RAVEN_CONFIG['release'] = RELEASE
 
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'host_filter': {
+            '()': 'app.log_filters.HostFilter',
+        }
+    },
+    'root': {
+        'level': 'INFO',
+        'handlers': ['console'],
+    },
+    'formatters': {
+        'simple': {
+            'format': '%(asctime)s %(name)-12s [%(levelname)-8s] %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S'
+        },
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django.db.backends': {
+            'level': 'INFO',
+            'handlers': ['console'],
+            'propagate': False,
+        },
+        'django.security.*': {
+            'handlers': ['console'],
+            'level': DEBUG and 'DEBUG' or 'INFO',
+        },
+        'django.request': {
+            'handlers': ['console'],
+            'level': DEBUG and 'DEBUG' or 'INFO',
+        },
+    },
+}
+
+# Production logging
 if ENV not in ['local', 'test', 'staging', 'preview']:
+    # add AWS monitoring
     boto3_session = Session(
         aws_access_key_id=AWS_ACCESS_KEY_ID,
         aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
         region_name=AWS_DEFAULT_REGION
     )
-    LOGGING = {
-        'version': 1,
-        'disable_existing_loggers': True,
-        'filters': {
-            'host_filter': {
-                '()': 'app.log_filters.HostFilter',
-            }
-        },
-        'root': {
-            'level': 'INFO',
-            'handlers': ['console', 'watchtower', ],
-        },
-        'formatters': {
-            'simple': {
-                'format': '%(asctime)s %(name)-12s [%(levelname)-8s] %(message)s',
-                'datefmt': '%Y-%m-%d %H:%M:%S'
-            },
-            'cloudwatch': {
-                'format': '%(hostname)s %(name)-12s [%(levelname)-8s] %(message)s',
-            },
-            'verbose': {
-                'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
-            },
-        },
-        'handlers': {
-            'console': {
-                'level': 'DEBUG',
-                'class': 'loggging.StreamHandler',
-                'formatter': 'verbose',
-            },
-            'watchtower': {
-                'level': AWS_LOG_LEVEL,
-                'class': 'watchtower.django.DjangoCloudWatchLogHandler',
-                'boto3_session': boto3_session,
-                'log_group': AWS_LOG_GROUP,
-                'stream_name': AWS_LOG_STREAM,
-                'filters': ['host_filter'],
-                'formatter': 'cloudwatch',
-            },
-        },
-        'loggers': {
-            'django.db.backends': {
-                'level': AWS_LOG_LEVEL,
-                'handlers': ['console', 'watchtower'],
-                'propagate': False,
-            },
-        },
-    }
 
+    LOGGING['formatters']['cloudwatch'] = {
+        'format': '%(hostname)s %(name)-12s [%(levelname)-8s] %(message)s',
+    }
+    LOGGING['handlers']['watchtower'] = {
+            'level': AWS_LOG_LEVEL,
+            'class': 'watchtower.django.DjangoCloudWatchLogHandler',
+            'boto3_session': boto3_session,
+            'log_group': AWS_LOG_GROUP,
+            'stream_name': AWS_LOG_STREAM,
+            'filters': ['host_filter'],
+            'formatter': 'cloudwatch',
+    }
+    LOGGING['root']['handlers'].append('watchtower')
+    LOGGING['loggers']['django.db.backends']['handlers'].append('watchtower')
+    LOGGING['loggers']['django.db.backends']['level'] = AWS_LOG_LEVEL
+
+    LOGGING['loggers']['django.request'] = LOGGING['loggers']['django.db.backends']
+    LOGGING['loggers']['django.security.*'] = LOGGING['loggers']['django.db.backends']
+    for ia in INSTALLED_APPS:
+        LOGGING['loggers'][ia] = LOGGING['loggers']['django.db.backends']
+
+    # add elasticsearch monitoring
     if ENABLE_APM:
         LOGGING['handlers']['elasticapm'] = {
             'level': 'WARNING',
@@ -327,66 +354,6 @@ if ENV not in ['local', 'test', 'staging', 'preview']:
             'propagate': False,
         }
         LOGGING['root']['handlers'] = ['sentry', 'elasticapm']
-
-    LOGGING['loggers']['django.request'] = LOGGING['loggers']['django.db.backends']
-    LOGGING['loggers']['django.security.*'] = LOGGING['loggers']['django.db.backends']
-    for ia in INSTALLED_APPS:
-        LOGGING['loggers'][ia] = LOGGING['loggers']['django.db.backends']
-else:
-    LOGGING = {}
-
-if SENTRY_DSN:
-    if ENV == 'prod':
-        LOGGING = {
-            'version': 1,
-            'disable_existing_loggers': True,
-            'filters': {
-                'host_filter': {
-                    '()': 'app.log_filters.HostFilter',
-                }
-            },
-            'formatters': {
-                'simple': {
-                    'format': '%(asctime)s %(name)-12s [%(levelname)-8s] %(message)s',
-                    'datefmt': '%Y-%m-%d %H:%M:%S'
-                },
-                'verbose': {
-                    'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
-                },
-            },
-            'handlers': {
-                'console': {
-                    'level': 'INFO',
-                    'class': 'logging.StreamHandler',
-                    'formatter': 'verbose',
-                },
-                'sentry': {
-                    'level': 'INFO',  # To capture more than ERROR, change to WARNING, INFO, etc.
-                    'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
-                },
-            },
-            'loggers': {
-                'django.db.backends': {
-                    'level': 'DEBUG',
-                    'handlers': ['console'],
-                    'propagate': False,
-                },
-                'root': {
-                    'level': 'WARNING',
-                    'handlers': ['sentry'],
-                },
-                'raven': {
-                    'level': 'DEBUG',
-                    'handlers': ['console'],
-                    'propagate': False,
-                },
-                'sentry.errors': {
-                    'level': 'DEBUG',
-                    'handlers': ['console'],
-                    'propagate': False,
-                },
-            },
-        }
 
 GEOIP_PATH = env('GEOIP_PATH', default='/usr/share/GeoIP/')
 
@@ -692,6 +659,8 @@ GITHUB_EVENT_HOOK_URL = env('GITHUB_EVENT_HOOK_URL', default='github/payload/')
 
 # Web3
 WEB3_HTTP_PROVIDER = env('WEB3_HTTP_PROVIDER', default='https://rinkeby.infura.io')
+INFURA_USE_V3 = env.bool('INFURA_USE_V3', False)
+INFURA_V3_PROJECT_ID = env('INFURA_V3_PROJECT_ID', default='1e0a90928efe4bb78bb1eeceb8aacc27')
 
 # COLO Coin
 COLO_ACCOUNT_ADDRESS = env('COLO_ACCOUNT_ADDRESS', default='')  # TODO
