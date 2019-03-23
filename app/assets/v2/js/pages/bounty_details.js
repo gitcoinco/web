@@ -1341,6 +1341,14 @@ const process_activities = function(result, bounty_activities) {
       profile_handle = _activity.metadata.to_username;
     }
 
+    let to_username = null;
+    let kudos = null;
+
+    if (type === 'new_kudos') {
+      to_username = meta.to_username.slice(1);
+      kudos = _activity.kudos.kudos_token_cloned_from.image;
+    }
+
     _result.push({
       profileId: profile_id,
       name: profile_handle,
@@ -1369,7 +1377,9 @@ const process_activities = function(result, bounty_activities) {
       token_value_in_usdt_new: new_bounty.token_value_in_usdt,
       token_value_in_usdt_old: old_bounty.token_value_in_usdt,
       token_value_time_peg_new: new_bounty.token_value_time_peg,
-      token_name: result['token_name']
+      token_name: result['token_name'],
+      to_username: to_username,
+      kudos: kudos
     });
   });
 
