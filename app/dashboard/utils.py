@@ -261,9 +261,16 @@ def get_web3(network, sockets=False):
     """
     if network in ['mainnet', 'rinkeby', 'ropsten']:
         if sockets:
-            provider = WebsocketProvider(f'wss://{network}.infura.io/ws')
+            if settings.INFURA_USE_V3:
+                provider = WebsocketProvider(f'wss://{network}.infura.io/ws/v3/{settings.INFURA_V3_PROJECT_ID}')
+            else:
+                provider = WebsocketProvider(f'wss://{network}.infura.io/ws')
         else:
-            provider = HTTPProvider(f'https://{network}.infura.io')
+            if settings.INFURA_USE_V3:
+                provider = HTTPProvider(f'https://{network}.infura.io/v3/{settings.INFURA_V3_PROJECT_ID}')
+            else:
+                provider = HTTPProvider(f'https://{network}.infura.io')
+
         w3 = Web3(provider)
         if network == 'rinkeby':
             w3.middleware_stack.inject(geth_poa_middleware, layer=0)
