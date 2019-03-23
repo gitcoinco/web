@@ -524,7 +524,7 @@ waitforWeb3(function() {
 
     if (hasChanged) {
       _alert(gettext('Detected a web3 change.  Refreshing the page. '), 'info');
-      document.location.href = document.location.href;
+      document.location.reload();
       document.web3Changed = true;
     }
 
@@ -548,7 +548,7 @@ var wait_for_tx_to_mine_and_then_ping_server = function() {
         };
         var error = function(response) {
           // refresh upon error
-          document.location.href = document.location.href;
+          document.location.reload();
         };
         var success = function(response) {
           if (response.status == '200') {
@@ -559,7 +559,7 @@ var wait_for_tx_to_mine_and_then_ping_server = function() {
             if (response['url']) {
               document.location.href = response['url'];
             } else {
-              document.location.href = document.location.href;
+              document.location.reload();
             }
           } else {
             console.log('error from sync/web', response);
