@@ -1041,14 +1041,14 @@ var do_actions = function(result) {
         text: gettext('Edit Issue Details'),
         parent: 'right_actions',
         title: gettext('Update your Bounty Settings to get the right Crowd')
-      },
-      {
-        enabled: true,
-        href: '/issue/refund_request?pk=' + result['pk'],
-        text: gettext('Request Fee Refund'),
-        parent: 'right_actions',
-        title: gettext('Raise a request if you believe you need your fee refunded')
-      }
+      }//,
+      // {
+      //   enabled: true,
+      //   href: '/issue/refund_request?pk=' + result['pk'],
+      //   text: gettext('Request Fee Refund'),
+      //   parent: 'right_actions',
+      //   title: gettext('Raise a request if you believe you need your fee refunded')
+      // }
     ];
 
     actions.push(..._entry);
