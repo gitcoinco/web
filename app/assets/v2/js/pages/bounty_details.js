@@ -952,8 +952,7 @@ var do_actions = function(result) {
     if (result['permission_type'] === 'permissionless')
       text = is_interested ? gettext('Stop Work') : gettext('Start Work');
     else
-      text = is_interested ? gettext('Stop') : gettext('Express Interest');    
-
+      text = is_interested ? gettext('Stop') : gettext('Express Interest');
     const interest_entry = {
       enabled: enabled,
       href: is_interested ? '/uninterested' : '/interested',
