@@ -126,7 +126,7 @@ $(document).ready(function() {
   });
 
 
-  var option = "<option id='reservedForOptionID' value='reserved'>Reserved For - I will select a Gitcoin user.</option>";
+  var option = gettext('Reserved For - I will select a Gitcoin user.');
 
   $('select[name=project_type]').on('change', function() {
     var val = $('select[name=project_type] option:selected').val();
@@ -134,7 +134,7 @@ $(document).ready(function() {
     if (String(val).toLowerCase() != 'traditional') {
       $("#permission_type option[value='reserved']").remove();
     } else {
-      $('#permission_type').append(option);
+      $('#permission_type').append('<option id="reservedForOptionID" value="reserved">' + option + '</option>');
     }
   });
 
