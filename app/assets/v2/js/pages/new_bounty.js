@@ -123,6 +123,9 @@ $(document).ready(function() {
   waitforWeb3(function() {
     promptForAuth();
   });
+
+  $('#reservedForDiv').hide();
+  
   $('select[name=permission_type]').on('change', function() {
     var val = $('select[name=permission_type] option:selected').val();
 
@@ -173,15 +176,18 @@ $(document).ready(function() {
     }
   });
 
-  // show/hide the reserved for selector based on the project type
-  $('.js-select2[name=project_type]').change(
-    function(e) {
-      if (String(e.target.value).toLowerCase() === 'traditional') {
-          $('#reservedForOptionID').prop('disabled', false);
-        } else {
-          $('#reservedForOptionID').prop('disabled', true);
-        }   
-      } );
+
+  var option = "<option id='reservedForOptionID' value='reserved'>Reserved For - I will select a Gitcoin user.</option>";
+
+  $('select[name=project_type]').on('change', function() {
+    var val = $('select[name=project_type] option:selected').val();
+
+    if (String(val).toLowerCase() != 'traditional') {
+      $("#permission_type option[value='reserved']").remove();
+    } else {
+      $('#permission_type').append(option);
+    }
+  });
 
   // revision action buttons
   $('#subtractAction').on('click', function() {
