@@ -299,7 +299,8 @@ $(document).ready(function() {
       $('#send_eth').css('display', 'none');
       $('#send_eth_done').css('display', 'block');
       if (username) {
-        $('#new_username').html(username);
+        var username_html = "<a href='/profile/" + username + "'>" + username + "</a>"
+        $('#new_username').html(username_html);
       } else {
         $('#new_username').html(to_eth_address);
       }
