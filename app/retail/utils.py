@@ -130,6 +130,12 @@ def get_kudos_history_at_date(date, keyword):
 def get_ecosystem_history_at_date(date, keyword):
     date = date.replace(tzinfo=None)
     amount = 0
+    if date > timezone.datetime(2018, 9, 23):
+        amount += 17380
+    if date > timezone.datetime(2018, 10, 23):
+        amount += 8021
+    if date > timezone.datetime(2018, 11, 23):
+        amount += 16917
     if date > timezone.datetime(2019, 1, 23):
         amount += 184043 + 24033
     if date > timezone.datetime(2018, 12, 23):
@@ -157,7 +163,9 @@ def get_codefund_history_at_date(date, keyword):
     if date > timezone.datetime(2019, 1, 23):
         amount += 9700
     if date > timezone.datetime(2019, 2, 23):
-        amount += 6258 # MTD
+        amount += 11272
+    if date > timezone.datetime(2019, 3, 23):
+        amount += 7038.64 # MTD
     return amount
 
 

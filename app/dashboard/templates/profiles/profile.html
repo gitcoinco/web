@@ -60,7 +60,11 @@
                     '><img src="{% static 'v2/images/badge-verify.svg' %}" alt=""></button>
                   {% endif %}
                 </h1>
-                <p class="mb-0">{{ profile.handle }}</p>
+                <p class="mb-0">{{ profile.handle }}
+                  {% if profile.custom_tagline %}
+                    <span style="font-size: 14px; font-color: #000;">- {{ profile.custom_tagline }}</span>
+                  {% endif %}
+                </p>
                 <p class="profile-header__links clearfix mt-1">
                   <a href="{{ profile.data.html_url }}?tab=repositories" target="_blank" rel="noopener noreferrer" >
                     <i class="fab fa-github"></i>
@@ -112,7 +116,12 @@
                 <div class="col-12 col-lg-3">
                   <div class="profile-header__stats profile-header__stats--contributor card mb-4">
                     <div class="card-header font-subheader">
-                     <b>#{{ scoreboard_position_contributor }}</b> {% trans "Contributor" %}
+                      {% if scoreboard_position_contributor %}
+                        <b>#{{ scoreboard_position_contributor }}</b> 
+                      {% else %}
+                        <b>&nbsp;</b> 
+                      {% endif %}
+                      {% trans "Contributor" %}
                     </div>
                     <div class="card-body">
                       <ul>
@@ -143,7 +152,12 @@
                 <div class="col-12 col-lg-3">
                   <div class="profile-header__stats profile-header__stats--funder card mb-4">
                     <div class="card-header font-subheader">
-                      <b>#{{ scoreboard_position_funder }}</b> {% trans "Funder" %}
+                      {% if scoreboard_position_funder %}
+                        <b>#{{ scoreboard_position_funder }}</b> 
+                      {% else %}
+                        <b>&nbsp;</b> 
+                      {% endif %}
+                      {% trans "Funder" %}
                     </div>
                     <div class="card-body font-subheader">
                       <ul>

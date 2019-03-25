@@ -190,8 +190,14 @@ div.button-pink {
 
 .header-line {
   color: #12c971;
-  font-size: 2em;
+  font-size: 2rem;
   font-weight: 500;
+}
+
+.header-line h1 {
+  font-size: 1.8rem;
+  font-weight: bolder;
+  color: #FFFFFF;
 }
 
 .header-line-contributors {
@@ -209,6 +215,10 @@ div.button-pink {
   color: #ffffff;
   margin-top: 0.6em;
   font-weight: 400;
+}
+
+.subheader-line p {
+  font-size: 1.1rem;
 }
 
 .font-weight-300 {
@@ -650,6 +660,14 @@ div.button-pink {
 #codefund a {
   float: none !important;
   text-align: center !important;
+}
+
+#codefund.contributor,
+#codefund.contributor .cf-wrapper {
+  background: white;
+  background-color: white !important;
+  margin: 0 !important;
+  padding: 20px 11px !important;
 }
 
 /* AutoComplete */
