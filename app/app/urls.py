@@ -404,6 +404,9 @@ urlpatterns = [
         marketing.views.day_email_campaign,
         name='day_email_campaign'
     ),
+    path('_administration/email/weekly_unread_notifications_email',
+        retail.emails.unread_notification_email_weekly_roundup,
+        name='unread_notifications_email_weekly_roundup')
     re_path(
         r'^_administration/process_accesscode_request/(.*)$',
         tdi.views.process_accesscode_request,
