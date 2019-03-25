@@ -280,7 +280,7 @@ class Bounty(SuperModel):
     is_featured = models.BooleanField(
         default=False, help_text=_('Whether this bounty is featured'))
     featuring_date = models.DateTimeField(blank=True, null=True)
-    unsigned_nda = models.ForeignKey('dashboard.BountyDocuments', blank=True, null=True, related_name='unsignednda', on_delete=models.SET_NULL)
+    unsigned_nda = models.ForeignKey('dashboard.BountyDocuments', blank=True, null=True, related_name='bounty', on_delete=models.SET_NULL)
 
     token_value_time_peg = models.DateTimeField(blank=True, null=True)
     token_value_in_usdt = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
@@ -1469,7 +1469,7 @@ class Interest(SuperModel):
         max_length=7,
         help_text=_('Whether or not the interest requires review'),
         verbose_name=_('Needs Review'))
-    signed_nda = models.ForeignKey('dashboard.BountyDocuments', blank=True, null=True, related_name='signednda', on_delete=models.SET_NULL)
+    signed_nda = models.ForeignKey('dashboard.BountyDocuments', blank=True, null=True, related_name='interest', on_delete=models.SET_NULL)
 
     # Interest QuerySet Manager
     objects = InterestQuerySet.as_manager()
@@ -1758,7 +1758,7 @@ class BountyInvites(SuperModel):
         ('completed', 'completed'),
     ]
 
-    bounty = models.ManyToManyField('dashboard.Bounty', related_name='bounty', blank=True)
+    bounty = models.ManyToManyField('dashboard.Bounty', related_name='bountyinvites', blank=True)
     inviter = models.ManyToManyField(User, related_name='inviter', blank=True)
     invitee = models.ManyToManyField(User, related_name='invitee', blank=True)
     status = models.CharField(max_length=20, choices=INVITE_STATUS, blank=True)
