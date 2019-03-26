@@ -62,7 +62,7 @@ from web3 import HTTPProvider, Web3
 from .helpers import get_bounty_data_for_activity, handle_bounty_views
 from .models import (
     Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest,
-    FeedbackEntry, HackathonEvent, Interest, LabsResearch, Profile, ProfileSerializer, Subscription, Tool, ToolVote, 
+    FeedbackEntry, HackathonEvent, Interest, LabsResearch, Profile, ProfileSerializer, Subscription, Tool, ToolVote,
     UserAction,
 )
 from .notifications import (

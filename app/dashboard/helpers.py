@@ -30,10 +30,8 @@ from django.http import Http404, JsonResponse
 from django.utils import timezone
 
 from app.utils import get_semaphore, sync_profile
-
 from dashboard.models import (
-  Activity, Bounty, BountyDocuments, BountyFulfillment, BountySyncRequest, HackathonEvent,
-  UserAction
+    Activity, Bounty, BountyDocuments, BountyFulfillment, BountySyncRequest, HackathonEvent, UserAction,
 )
 from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
