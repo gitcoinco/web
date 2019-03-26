@@ -130,6 +130,12 @@ def get_kudos_history_at_date(date, keyword):
 def get_ecosystem_history_at_date(date, keyword):
     date = date.replace(tzinfo=None)
     amount = 0
+    if date > timezone.datetime(2018, 9, 23):
+        amount += 17380
+    if date > timezone.datetime(2018, 10, 23):
+        amount += 8021
+    if date > timezone.datetime(2018, 11, 23):
+        amount += 16917
     if date > timezone.datetime(2019, 1, 23):
         amount += 184043 + 24033
     if date > timezone.datetime(2018, 12, 23):
@@ -386,7 +392,7 @@ def build_stat_results(keyword=None):
     context = {
         'active': 'results',
         'title': _('Results'),
-        'card_desc': _('Gitcoin is transparent by design.  Here are some stats about our core bounty product.'),
+        'card_desc': _('Gitcoin is transparent by design.  Here are some stats about our suite of OSS incentivization products.'),
     }
     pp = PerformanceProfiler()
     pp.profile_time('start')

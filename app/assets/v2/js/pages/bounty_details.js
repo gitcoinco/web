@@ -524,7 +524,7 @@ waitforWeb3(function() {
 
     if (hasChanged) {
       _alert(gettext('Detected a web3 change.  Refreshing the page. '), 'info');
-      document.location.href = document.location.href;
+      document.location.reload();
       document.web3Changed = true;
     }
 
@@ -548,7 +548,7 @@ var wait_for_tx_to_mine_and_then_ping_server = function() {
         };
         var error = function(response) {
           // refresh upon error
-          document.location.href = document.location.href;
+          document.location.reload();
         };
         var success = function(response) {
           if (response.status == '200') {
@@ -559,7 +559,7 @@ var wait_for_tx_to_mine_and_then_ping_server = function() {
             if (response['url']) {
               document.location.href = response['url'];
             } else {
-              document.location.href = document.location.href;
+              document.location.reload();
             }
           } else {
             console.log('error from sync/web', response);
@@ -1344,6 +1344,14 @@ const process_activities = function(result, bounty_activities) {
       profile_handle = _activity.metadata.to_username;
     }
 
+    let to_username = null;
+    let kudos = null;
+
+    if (type === 'new_kudos') {
+      to_username = meta.to_username.slice(1);
+      kudos = _activity.kudos.kudos_token_cloned_from.image;
+    }
+
     _result.push({
       profileId: profile_id,
       name: profile_handle,
@@ -1372,7 +1380,9 @@ const process_activities = function(result, bounty_activities) {
       token_value_in_usdt_new: new_bounty.token_value_in_usdt,
       token_value_in_usdt_old: old_bounty.token_value_in_usdt,
       token_value_time_peg_new: new_bounty.token_value_time_peg,
-      token_name: result['token_name']
+      token_name: result['token_name'],
+      to_username: to_username,
+      kudos: kudos
     });
   });
 
