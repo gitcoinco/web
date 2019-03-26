@@ -75,6 +75,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         graph_type = 'scatter'
+        graph_type = 'tree'
+        graph_type = 'chart'
         clear_cache()
 
         d1 = Contribution.objects.first().created_on
@@ -129,7 +131,7 @@ class Command(BaseCommand):
                 _plt.legend((0, 0), ('Crowd', 'Matching'))
                 _plt.xlabel('Value of all Contributions')
                 _plt.ylabel('Num Contributors')
-                _plt.axis([-1, 6000, -1, 40])
+                _plt.axis([-1, 10000, -1, 40])
                 for j in range(0, len(sizes)):
                     _plt.text(sizes[j]+.03, counts[j]+.03, labels[j], fontsize=9)
 
