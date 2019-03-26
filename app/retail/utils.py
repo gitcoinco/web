@@ -165,7 +165,7 @@ def get_codefund_history_at_date(date, keyword):
     if date > timezone.datetime(2019, 2, 23):
         amount += 11272
     if date > timezone.datetime(2019, 3, 23):
-        amount += 7038.64 # MTD
+        amount += 13029 # MTD
     return amount
 
 
@@ -392,7 +392,7 @@ def build_stat_results(keyword=None):
     context = {
         'active': 'results',
         'title': _('Results'),
-        'card_desc': _('Gitcoin is transparent by design.  Here are some stats about our core bounty product.'),
+        'card_desc': _('Gitcoin is transparent by design.  Here are some stats about our suite of OSS incentivization products.'),
     }
     pp = PerformanceProfiler()
     pp.profile_time('start')

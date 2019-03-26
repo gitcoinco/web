@@ -273,9 +273,12 @@
               [[/if]]
             </div>
           [[else activity_type == 'start_work' || activity_type == 'worker_approved' || activity_type == 'bounty_abandonment_warning' || activity_type == 'worker_applied']]
-            <div class="col-12 col-md-7 started-status-column">
+            <div class="col-12 col-md-7 started-status-column d-flex">
               <div class="activity-status">
                 [[:text]]
+                [[if signed_nda ]]
+                  <a href="[[:signed_nda]]" download class="d-flex">View signed NDA</a>
+                [[/if]]
               </div>
               [[if can_approve_worker ]]
                 <div class="stop-work">
@@ -402,6 +405,15 @@
         </div>
       </div>
     </div>
+    <div id="modalInterest" class="modal fade interest-modal" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="row loading justify-content-center align-items-center loading_img">
+            <img src="{% static 'v2/images/loading_v2.gif' %}">
+          </div>
+        </div>
+      </div>
+    </div>
 
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
@@ -429,6 +441,7 @@
   <script>
     var bootstrapTooltip = $.fn.tooltip.noConflict()
     var bootstrapModal = $.fn.modal.noConflict()
+    $.fn.bootstrapModal = bootstrapModal
   </script>
   <script src="{% static "v2/js/pages/bounty_funder_payout_reminder.js" %}"></script>
   <script src="{% static "v2/js/pages/bounty_share.js" %}"></script>
@@ -437,4 +450,12 @@
   <script src="{% static "v2/js/ipfs.js" %}"></script>
   <script src="{% static "v2/js/user-search.js" %}"></script>
   <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
+  {% for message in messages %}
+    {% if message.tags == 'success'%}
+    <script>
+      var promptPrivateInstructions = true;
+    </script>
+    {% endif %}
+
+  {% endfor %}
 </html>
