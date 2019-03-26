@@ -1,0 +1,17 @@
+{
+    "symbol": "ST",
+    "address": "0x744E098e9d3FA11D96C2860B49D33f46dd2Ae167",
+    "overview": {
+        "en": "StatEX is a comprehensive service platform that integrates transaction, storage and financial management. It provides spot and derivative trading services for digital assets such as Bitcoin and ETF to users around the world. The aim is to construct a decentralized business ecosystem, connecting the value of digital assets and real business, connecting the various ecological chains, perfectly combining offline experiential services with block chain Internet finance, and realizing the block chain transformation of business services for the vast number of users.",
+        "zh": "StatEX是一个集交易、存储以及理财为一体的综合性服务平台，向全球用户提供比特币、以太坊等数字资产的现货和衍生品交易服务。旨在构建一个去中心化的商业生态圈，通过打通数字资产与实体商业的价值对接，连接各生态链，将线下体验式服务与区块链互联网金融完美结合，为广大用户实现商业服务的区块链转型。"
+    },
+    "email": "jacksongithub@gmail.com",
+    "website": "http://statex.co",
+    "whitepaper": "https://s3-ap-southeast-1.amazonaws.com/statex/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-01-30",
+    "initial_price": {
+        "ETH": "0.0005 ETH",
+        "USD": "0.07142 USD"
+    }
+}
