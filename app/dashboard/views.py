@@ -60,8 +60,8 @@ from web3 import HTTPProvider, Web3
 
 from .helpers import get_bounty_data_for_activity, handle_bounty_views
 from .models import (
-    Activity, Bounty, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest, FeedbackEntry, Interest,
-    LabsResearch, Profile, ProfileSerializer, Subscription, Tool, ToolVote, UserAction,
+    Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest,
+    FeedbackEntry, Interest, LabsResearch, Profile, ProfileSerializer, Subscription, Tool, ToolVote, UserAction,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -158,7 +158,7 @@ def helper_handle_access_token(request, access_token):
     request.session['profile_id'] = profile.pk
 
 
-def create_new_interest_helper(bounty, user, issue_message):
+def create_new_interest_helper(bounty, user, issue_message, signed_nda=None):
     approval_required = bounty.permission_type == 'approval'
     acceptance_date = timezone.now() if not approval_required else None
     profile_id = user.profile.pk
@@ -168,6 +168,7 @@ def create_new_interest_helper(bounty, user, issue_message):
         issue_message=issue_message,
         pending=approval_required,
         acceptance_date=acceptance_date,
+        signed_nda=signed_nda,
     )
     bounty.interested.add(interest)
     record_user_action(user, 'start_work', interest)
@@ -271,7 +272,12 @@ def new_interest(request, bounty_id):
             status=401)
     except Interest.DoesNotExist:
         issue_message = request.POST.get("issue_message")
-        interest = create_new_interest_helper(bounty, request.user, issue_message)
+        signed_nda = None
+        if request.POST.get("signed_nda", None):
+            signed_nda = BountyDocuments.objects.filter(
+                pk=request.POST.get("signed_nda")
+            ).first()
+        interest = create_new_interest_helper(bounty, request.user, issue_message, signed_nda)
         if interest.pending:
             start_work_new_applicant(interest, bounty)
 
@@ -1333,6 +1339,34 @@ def profile_job_opportunity(request, handle):
         'message': 'Job search status saved'
     }
     return JsonResponse(response)
+
+
+@csrf_exempt
+@require_POST
+def bounty_upload_nda(request):
+    """ Save Bounty related docs like NDA.
+
+    Args:
+        bounty_id (int): The bounty id.
+    """
+    if request.FILES.get('docs', None):
+        bountydoc = BountyDocuments.objects.create(
+            doc=request.FILES.get('docs', None),
+            doc_type=request.POST.get('doc_type', None)
+        )
+        response = {
+            'status': 200,
+            'bounty_doc_id': bountydoc.pk,
+            'message': 'NDA saved'
+        }
+    else:
+        response = {
+            'status': 400,
+            'message': 'No File Found'
+        }
+    return JsonResponse(response)
+
+
 
 
 def profile_filter_activities(activities, activity_name):
