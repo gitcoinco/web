@@ -392,7 +392,7 @@ def build_stat_results(keyword=None):
     context = {
         'active': 'results',
         'title': _('Results'),
-        'card_desc': _('Gitcoin is transparent by design.  Here are some stats about our core bounty product.'),
+        'card_desc': _('Gitcoin is transparent by design.  Here are some stats about our suite of OSS incentivization products.'),
     }
     pp = PerformanceProfiler()
     pp.profile_time('start')

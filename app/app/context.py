@@ -58,9 +58,7 @@ def preprocess(request):
             ip_address = get_ip(request)
             profile.last_visit = timezone.now()
             profile.save()
-            metadata = {
-                'useragent': request.META['HTTP_USER_AGENT'],
-            }
+            metadata = {'useragent': request.META['HTTP_USER_AGENT'], }
             UserAction.objects.create(
                 user=request.user,
                 profile=profile,
