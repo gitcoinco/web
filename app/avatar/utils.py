@@ -233,7 +233,7 @@ def get_avatar_context():
                             ['Masks-frankenstein'], ['Masks-diving'], ['HatShort-1'], ['HatShort-artist'],
                             ['HatShort-pirate'], ['HatShort-grad'], ['HatShort-antlers'], ['Extras-sword'], 
                             ['Masks-pirate'], ['Extras-bird'], ['Extras-fire'], ['Masks-hockey'],
-                            ['Masks-snorkel'], 
+                            ['Masks-snorkel'], ['Glasses-monocle'],
                             ),
                 'paid_options': {
                     'Extras-Parrot': 0.01,
