@@ -182,25 +182,12 @@ $(document).ready(function() {
     }, 10);
   };
 
-  $('#hiringRightNow').on('click', function() {
-    open_hiring_panel(true);
+  $('#hiringRightNow').on('click', () => {
+    open_panel('#hiringRightNow', '#jobDescription', true);
   });
 
-  $('#specialEvent').click(function() {
+  $('#specialEvent').on('click', () => {
     open_panel('#specialEvent', '#eventTag', true);
-  });
-
-  $('#advancedLink a').on('click', function(e) {
-    e.preventDefault();
-    var target = $('#advanced_container');
-
-    if (target.css('display') == 'none') {
-      target.css('display', 'block');
-      $(this).text('Advanced ⬆');
-    } else {
-      target.css('display', 'none');
-      $(this).text('Advanced ⬇ ');
-    }
   });
 
   userSearch('#reservedFor', false);
