@@ -24,6 +24,7 @@ import time
 
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
@@ -1118,6 +1119,7 @@ def helper_handle_approvals(request, bounty):
             messages.warning(request, _('Only the funder of this bounty may perform this action.'))
 
 
+@login_required
 def bounty_invite_url(request, invitecode):
     """Decode the bounty details and redirect to correct bounty
 
