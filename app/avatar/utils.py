@@ -186,6 +186,8 @@ def get_avatar_context():
                 ], ['None', 'womenhair'], ['None', 'womanhair'], ['None', 'womanhair1'], ['None', 'womanhair2'],
                             ['None', 'womanhair3'], ['None', 'womanhair4'], ['None',
                                                                              'womanhair5'], ['None', 'man-hair'],
+                   ['None', 'girl_hairstyle1'], ['None', 'girl_hairstyle2'], ['None', 'girl_hairstyle3'], ['None',
+                                                                                                           'men_hairstyle1'], ['None', 'men_hairstyle2'],
                             ),
                 'paid_options': {},
             },
