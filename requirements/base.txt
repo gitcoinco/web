@@ -64,7 +64,6 @@ ecdsa
 pysha3
 oyaml
 pygithub==1.43.2
-raven==6.9.0
 django-cacheops==4.0.7
 django-redis==4.10.0
 collectfast==0.6.2
@@ -83,3 +82,5 @@ wagtail==2.3
 numpy==1.16.1
 squarify
 pandas
+raven==6.9.0
+sentry-sdk

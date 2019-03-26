@@ -24,6 +24,7 @@ import time
 
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
@@ -639,6 +640,15 @@ def dashboard(request):
     }
     return TemplateResponse(request, 'dashboard/index.html', params)
 
+def ethhack(request):
+    """Handle displaying ethhack landing page."""
+
+    title = str(_(" Eth Hackathon 2019"))
+    params = {
+        'title': title,
+        'meta_description': 'Ethereal Virtual Hackathon, power by Gitcoin and Microsoft',
+    }
+    return TemplateResponse(request, 'dashboard/hackathon/ethhack_2019.html', params)
 
 def accept_bounty(request):
     """Process the bounty.
@@ -801,7 +811,7 @@ def social_contribution_email(request):
     """
     from marketing.mails import share_bounty
 
-    emails = [] 
+    emails = []
     user_ids = request.POST.getlist('usersId[]', [])
     url = request.POST.get('url', '')
     inviter = request.user if request.user.is_authenticated else None
@@ -1109,12 +1119,13 @@ def helper_handle_approvals(request, bounty):
             messages.warning(request, _('Only the funder of this bounty may perform this action.'))
 
 
+@login_required
 def bounty_invite_url(request, invitecode):
     """Decode the bounty details and redirect to correct bounty
 
     Args:
         invitecode (str): Unique invite code with bounty details and handle
-    
+
     Returns:
         django.template.response.TemplateResponse: The Bounty details template response.
     """
@@ -1137,7 +1148,7 @@ def bounty_invite_url(request, invitecode):
         bounty_invite.inviter.add(inviter)
         bounty_invite.invitee.add(request.user)
     return redirect('/funding/details/?url=' + bounty.github_url)
-    
+
 
 
 def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None):

@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from unittest.mock import patch
 
+from django.conf import settings
 from django.test.client import RequestFactory
 
 from dashboard.utils import (
@@ -42,7 +43,10 @@ class DashboardUtilsTest(TestCase):
             assert isinstance(web3_provider, Web3)
             assert len(web3_provider.providers) == 1
             assert isinstance(web3_provider.providers[0], HTTPProvider)
-            assert web3_provider.providers[0].endpoint_uri == f'https://{network}.infura.io'
+            if settings.INFURA_USE_V3:
+                assert web3_provider.providers[0].endpoint_uri == f'https://{network}.infura.io/v3/{settings.INFURA_V3_PROJECT_ID}'
+            else:
+                assert web3_provider.providers[0].endpoint_uri == f'https://{network}.infura.io'
 
     @staticmethod
     def test_get_bounty_contract():
