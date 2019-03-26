@@ -35,36 +35,63 @@
     <div class="tab-pane fade show active" id="rating" role="tabpanel" aria-labelledby="home-tab">
         <ul class="nav nav-tabs" id="myTab" role="tablist">
           <li class="nav-item">
-            <a class="nav-link nav-line active" id="worksubmitted-tab" data-toggle="tab" href="#worksubmitted" role="tab" aria-controls="worksubmitted" aria-selected="false">{% trans "Work Submitted" %} (7)</a>
+            <a class="nav-link nav-line {% if unrated_contributed_bounties|length > 0 or  unrated_funded_bounties|length < 1 %} active {% endif %}" id="worksubmitted-tab" data-toggle="tab" href="#worksubmitted" role="tab" aria-controls="worksubmitted" aria-selected="true">{% trans "Work Submitted" %} ({{ unrated_contributed_bounties|length }})</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link nav-line" id="funded-tab" data-toggle="tab" href="#funded" role="tab" aria-controls="funded" aria-selected="false">{% trans "Funded" %} (7)</a>
+            <a class="nav-link nav-line {% if unrated_funded_bounties|length > 0 and  unrated_contributed_bounties|length < 1 %} active {% endif %}" id="funded-tab" data-toggle="tab" href="#funded" role="tab" aria-controls="funded" aria-selected="false">{% trans "Funded" %} ({{ unrated_funded_bounties|length }})</a>
           </li>
         </ul>
         <div class="tab-content" id="myTabContent">
-          <div class="tab-pane fade show active" id="worksubmitted" role="tabpanel" aria-labelledby="home-tab">
+          <div class="tab-pane fade {% if unrated_contributed_bounties|length > 0 or  unrated_funded_bounties|length < 1 %} show active {% endif %}" id="worksubmitted" role="tabpanel" aria-labelledby="home-tab">
             <div class="scroll-carousel">
-              {% for i in "54321" %}
+              {% for bounty in unrated_contributed_bounties %}
                 <div class="card-rating">
                   <div class="card-rating__header">
-                    <img src="http://localhost:8000/dynamic/avatar/gitcoinco" alt="" width="56" height="56" class="card-rating__avatar rounded-circle">
-                    <div class="ml-2">
-                      <p class="card-rating__title">PR Review: Kubes Migration</p>
-                      by PixelantDesign <img src="http://localhost:8000/dynamic/avatar/octavioamu" alt="" width="21" height="21" class="rounded-circle">
+                    {% if bounty.funding_organisation %}
+                      <img class="card-rating__avatar rounded-circle" alt="{{ bounty.funding_organisation }}" width="56" height="56" src="{% url 'org_avatar' bounty.funding_organisation %}">
+                    {% else %}
+                      <img class="card-rating__avatar rounded-circle" alt="{{ bounty.bounty_owner_github_username }}" width="56" height="56" src="{% url 'org_avatar' bounty.bounty_owner_github_username %}">
+                    {% endif %}
+                    <div class="ml-2 text-dark">
+                      <a href="{{ bounty.url }}" class="card-rating__title">{{ bounty.title }}</a>
+                      by {{ bounty.bounty_owner_github_username }} <img src="{% url 'org_avatar' bounty.bounty_owner_github_username %}" alt="{{ bounty.bounty_owner_github_username }}" width="21" height="21" class="rounded-circle">
                       <div class="d-flex mt-2">
-                        <div class="tag token">0.001 <span>ETH</span></div>
-                        <div class="tag usd">0.00 <span>USD</span></div>
+                        <div class="tag token">{{ bounty.value_true }} <span>{{ bounty.token_name }}</span></div>
+                        {% if bounty.value_in_usdt_now %}
+                          <div class="tag usd">{{ bounty.value_in_usdt_now }} <span>USD</span></div>
+                        {% endif %}
                       </div>
                     </div>
                   </div>
-                  {% include 'shared/rating.html' with counterparty='contributor' id='str' %}
+                  {% include 'shared/rating.html' with counterparty='contributor' id='str' data='true' %}
                 </div>
               {% endfor %}
 
             </div>
           </div>
-          <div class="tab-pane fade" id="funded" role="tabpanel" aria-labelledby="home-tab">
-          funded
+          <div class="tab-pane fade {% if unrated_funded_bounties|length > 0 and  unrated_contributed_bounties|length < 1 %} show active {% endif %}" id="funded" role="tabpanel" aria-labelledby="home-tab">
+            {% for bounty in unrated_funded_bounties %}
+              <div class="card-rating">
+                <div class="card-rating__header">
+                  {% if bounty.funding_organisation %}
+                    <img class="card-rating__avatar rounded-circle" alt="{{ bounty.funding_organisation }}" width="56" height="56" src="{% url 'org_avatar' bounty.funding_organisation %}">
+                  {% else %}
+                    <img class="card-rating__avatar rounded-circle" alt="{{ bounty.bounty_owner_github_username }}" width="56" height="56" src="{% url 'org_avatar' bounty.bounty_owner_github_username %}">
+                  {% endif %}
+                  <div class="ml-2 text-dark">
+                    <a href="{{ bounty.url }}" class="card-rating__title">{{ bounty.title }}</a>
+                    by {{ bounty.bounty_owner_github_username }} <img src="{% url 'org_avatar' bounty.bounty_owner_github_username %}" alt="{{ bounty.bounty_owner_github_username }}" width="21" height="21" class="rounded-circle">
+                    <div class="d-flex mt-2">
+                      <div class="tag token">{{ bounty.value_true }} <span>{{ bounty.token_name }}</span></div>
+                      {% if bounty.value_in_usdt_now %}
+                        <div class="tag usd">{{ bounty.value_in_usdt_now }} <span>USD</span></div>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+                {% include 'shared/rating.html' with counterparty='contributor' id='str' data='true' %}
+              </div>
+            {% endfor %}
           </div>
         </div>
 

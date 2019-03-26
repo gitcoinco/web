@@ -104,6 +104,18 @@ h4,
   color: #ffffff;
 }
 
+.text-black-60 {
+  color: rgba(0, 0, 0, 0.6)!important;
+}
+
+.text-black-70 {
+  color: rgba(0, 0, 0, 0.7)!important;
+}
+
+.text-current {
+  color: currentColor !important;
+}
+
 .underline {
   text-decoration: underline;
 }

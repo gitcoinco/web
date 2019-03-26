@@ -1508,13 +1508,13 @@ def profile(request, handle):
     )
     unrated_contributed_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
         .filter(interested__pending=False).filter(idx_status='done')
-    
+
     context['unrated_funded_bounties'] = []
     context['unrated_contributed_bounties'] = []
     for bounty in unrated_funded_bounties:
         if not FeedbackEntry.objects.filter(bounty=bounty):
             context['unrated_funded_bounties'].append(bounty)
-    
+
     for bounty in unrated_contributed_bounties:
         if not FeedbackEntry.objects.filter(bounty=bounty):
             context['unrated_contributed_bounties'].append(bounty)

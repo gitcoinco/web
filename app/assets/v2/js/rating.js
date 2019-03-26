@@ -1,7 +1,17 @@
-const ratingModal = (bountyId) => {
+$('[data-open-rating] input').on('click', function(e) {
+  // e.stopPropagation();
+
+  console.log(this)
+  console.log($(this))
+  // $('input[name="rating"]').filter('[value="'+ $(this).val() +'"]').prop('checked', true)
+  console.log($(this).parent().data('openRating'))
+  ratingModal($(this).parent().data('openRating'), $(this))
+})
+
+const ratingModal = (bountyId, val) => {
   let modalUrl = `/modal/rating/${bountyId}`;
 
-  console.log(modalUrl);
+  console.log(modalUrl, val.id);
 
   $.ajax({
     url: modalUrl,
@@ -10,6 +20,8 @@ const ratingModal = (bountyId) => {
   }).done(function(result) {
     $('body').append(result);
     $('#modalRating').bootstrapModal('show');
+    $('[data-toggle="tooltip"]').runTooltip();
+    $('input[name="rating"]').filter('[value="'+ val.val() +'"]').prop('checked', true)
   });
 
   // let modalTmp = `
@@ -43,6 +55,10 @@ const ratingModal = (bountyId) => {
   // $(modalTmp).bootstrapModal('show');
 
   $(document, '#modalRating').on('hidden.bs.modal', function(e) {
+    // let selected = $('input[name="rating"]:checked').val()
+    // console.log('closing', val.parent(), $('input[name="rating"]:checked').val())
+    // $('input[name="'+ val[0].name +'"]').filter('[value="'+ $('input[name="rating"]:checked').val() +'"]').prop('checked', true)
+    val.closest('.card-rating').hide()
     $('#modalRating').remove();
     $('#modalRating').bootstrapModal('dispose');
   });

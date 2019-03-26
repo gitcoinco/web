@@ -19,6 +19,7 @@
   font-weight: 700;
 }
 .card-rating__title {
+  color: #000;
   font-weight: 600;
   font-size: 0.9rem;
   display: -webkit-box;
@@ -31,8 +32,8 @@
 
 .card-rating__avatar {
   flex-shrink: 0;
-  width: 56px;
-  height: 56px;
+  /* width: 56px;
+  height: 56px; */
 }
 
 .card-rating__header {
@@ -46,12 +47,12 @@
   direction: rtl;
 }
 
-.rating--small {
+.rating--small .rating-star {
   font-size: 0.6rem;
 }
 
 .rating > input { display: none; }
-.rating > label:before {
+.rating > .rating-star:before {
   margin: 1px;
   font-size: 2.35em;
   font-family: 'Font Awesome\ 5 Free', sans-serif;
@@ -64,21 +65,21 @@
   position: absolute;
 }
 
-.rating > label {
+.rating > .rating-star {
   color: #ddd;
   margin-bottom: 0;
 }
 
-.rating > input:checked ~ label,
-.rating:not(:checked) > label:hover,
-.rating:not(:checked) > label:hover ~ label {
+.rating > input:checked ~ .rating-star,
+.rating:not(:checked) > .rating-star:hover,
+.rating:not(:checked) > .rating-star:hover ~ .rating-star {
   color: #25E899;
   font-weight: 800;
 }
 
-.rating > input:checked + label:hover,
-.rating > input:checked ~ label:hover,
-.rating > label:hover ~ input:checked ~ label,
-.rating > input:checked ~ label:hover ~ label {
+.rating > input:checked + .rating-star:hover,
+.rating > input:checked ~ .rating-star:hover,
+.rating > .rating-star:hover ~ input:checked ~ .rating-star,
+.rating > input:checked ~ .rating-star:hover ~ .rating-star {
   color: rgb(11, 253, 156);
 }

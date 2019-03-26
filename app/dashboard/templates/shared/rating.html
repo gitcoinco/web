@@ -16,23 +16,19 @@
 {% endcomment %}
 {% load i18n %}
 <div class="w-100 p-2">
-<!-- <label class="form__label" for="notificationEmail">{% trans "Rate your experience with the " %}{{ counterparty }}</label> -->
-  <!-- <div class="rating">
-    {% for i in "54321" %}
-      <span><input type="radio" name="rating" id="str{{ i }}" value="{{ i }}"><label for="str{{ i }}"><i class="fas fa-star"></i></label></span>
-    {% endfor %}
-  </div> -->
-
-  <fieldset class="rating" id="str-{{bounty.id}}" data-id={{bounty.id}}>
-    <input type="radio" id="str-{{bounty.id}}-5" name="rating" value="5" /><label class = "full" for="str-{{bounty.id}}-5" data-toggle="tooltip" title="Awesome - 5 stars"></label>
-    <input type="radio" id="str-{{bounty.id}}-4" name="rating" value="4" /><label class = "full" for="str-{{bounty.id}}-4" data-toggle="tooltip" title="Pretty good - 4 stars"></label>
-    <input type="radio" id="str-{{bounty.id}}-3" name="rating" value="3" /><label class = "full" for="str-{{bounty.id}}-3" data-toggle="tooltip" title="Meh - 3 stars"></label>
-    <input type="radio" id="str-{{bounty.id}}-2" name="rating" value="2" /><label class = "full" for="str-{{bounty.id}}-2" data-toggle="tooltip" title="Kinda bad - 2 stars"></label>
-    <input type="radio" id="str-{{bounty.id}}-1" name="rating" value="1" /><label class = "full" for="str-{{bounty.id}}-1" data-toggle="tooltip" title="Sucks big time - 1 star"></label>
+  <fieldset class="{% if class %}{{ class }}{% endif %}" id="{{ id }}-{{ bounty.id }}" >
+    {% if label %}<label for="" class="form__label">{{ label }}</label> {% endif %}
+    <div class="rating" {% if data %}data-open-rating={{ bounty.id }}{% endif %}>
+    	<input type="radio" id="{{ id }}-{{ bounty.id }}-5" name="{{ id }}{% if data %}{{ bounty.id }}{% endif %}" value="5" />
+    	<label class ="rating-star full" for="{{ id }}-{{ bounty.id }}-5" data-toggle="tooltip" title="Awesome - 5 stars"></label>
+    	<input type="radio" id="{{ id }}-{{ bounty.id }}-4" name="{{ id }}{% if data %}{{ bounty.id }}{% endif %}" value="4" />
+    	<label class ="rating-star full" for="{{ id }}-{{ bounty.id }}-4" data-toggle="tooltip" title="Pretty good - 4 stars"></label>
+    	<input type="radio" id="{{ id }}-{{ bounty.id }}-3" name="{{ id }}{% if data %}{{ bounty.id }}{% endif %}" value="3" />
+    	<label class ="rating-star full" for="{{ id }}-{{ bounty.id }}-3" data-toggle="tooltip" title="Meh - 3 stars"></label>
+    	<input type="radio" id="{{ id }}-{{ bounty.id }}-2" name="{{ id }}{% if data %}{{ bounty.id }}{% endif %}" value="2" />
+    	<label class ="rating-star full" for="{{ id }}-{{ bounty.id }}-2" data-toggle="tooltip" title="Kinda bad - 2 stars"></label>
+    	<input type="radio" id="{{ id }}-{{ bounty.id }}-1" name="{{ id }}{% if data %}{{ bounty.id }}{% endif %}" value="1" />
+    	<label class ="rating-star full" for="{{ id }}-{{ bounty.id }}-1" data-toggle="tooltip" title="Sucks big time - 1 star"></label>
+    </div>
   </fieldset>
 </div>
-<!-- <div class="w-100 mt-2">
-  <label class="form__label" for="review">{% trans "Review" %}</label>
-  <textarea name='review' id='review' class="form__input" placeholder="{% trans "Any feedback for the " %} {{ counterparty }}?  {% trans "Write it here" %}" ></textarea>
-</div> -->
-
