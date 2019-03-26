@@ -1,0 +1,16 @@
+{
+  "symbol": "OWT",
+  "address": "0xC2494604e9DcEfa2A70dCEbf81e6D7BE064a334e",
+  "overview":{
+        "en": "OpenWeb Network is a blockchain powered, decentralised, open source network that allows anyone to host websites to make internet open for everyone."
+  },
+  "email": "hello@openweb.network",
+  "website": "https://openweb.network",
+  "whitepaper": "https://openweb.network/openweb_network_whitepaper.pdf",
+  "links": {
+    "twitter": "https://twitter.com/openweb_network",
+    "telegram": "https://t.me/openweb_network",
+    "github": "https://github.com/openweb-network",
+    "medium": "https://medium.com/openweb-network"
+  }
+}
