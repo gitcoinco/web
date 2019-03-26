@@ -752,7 +752,7 @@ def get_tx_status(txid, network, created_on):
         else:
             status = 'unknown'
     except Exception as e:
-        logger.error(f'Failure in get_tx_status for {txid} - ({e})')
+        logger.debug(f'Failure in get_tx_status for {txid} - ({e})')
         status = 'unknown'
 
     # get timestamp
