@@ -2356,7 +2356,35 @@ The argument must be an iterable if specified.
 <h3 id="dashboard.admin.BountyAdmin.search_fields">search_fields</h3></p>
 <p>Built-in mutable sequence.</p>
 <p>If no argument is given, the constructor creates a new empty list.
-The argument must be an iterable if specified.</p>
+The argument must be an iterable if specified.
+<h2 id="dashboard.admin.HackathonEventAdmin">HackathonEventAdmin</h2></p>
+<pre><code class="python">HackathonEventAdmin(self, model, admin_site)
+</code></pre>
+
+<p>The admin object for the HackathonEvent model.
+<h3 id="dashboard.admin.HackathonEventAdmin.list_display">list_display</h3></p>
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="dashboard.admin.HackathonEventAdmin.readonly_fields">readonly_fields</h3></p>
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="dashboard.admin.HackathonEventAdmin.img">img</h3></p>
+<pre><code class="python">HackathonEventAdmin.img(self, instance)
+</code></pre>
+
+<p>Returns a formatted HTML img node or 'n/a' if the HackathonEvent has no logo.</p>
+<p>Returns:
+    str: A formatted HTML img node or 'n/a' if the HackathonEvent has no logo.</p>
+<h3 id="dashboard.admin.HackathonEventAdmin.explorer_link">explorer_link</h3>
+
+<pre><code class="python">HackathonEventAdmin.explorer_link(self, instance)
+</code></pre>
+
+<p>Returns a formatted HTML <a> node.</p>
+<p>Returns:
+    str: A formatted HTML <a> node.</p>
                 
                   
                 
