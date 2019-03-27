@@ -219,7 +219,11 @@ $(document).ready(function() {
         .removeAttr('disabled');
 
       $.each($(form).serializeArray(), function() {
-        data[this.name] = this.value;
+        if (data[this.name]) {
+          data[this.name] += ',' + this.value;
+        } else {
+          data[this.name] = this.value;
+        }
       });
 
       if (data.repo_type == 'private' && data.project_type != 'traditional' && data.permission_type != 'approval') {
