@@ -347,7 +347,7 @@ var get_search_URI = function(offset, order) {
   }
 
   if (keywords) {
-    uri += '&raw_data=' + keywords;
+    uri += '&keywords=' + keywords;
   }
 
   if (localStorage['org']) {
