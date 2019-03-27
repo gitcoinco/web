@@ -593,9 +593,10 @@ $(document).ready(function() {
 
       if ($("input[type='radio'][name='repo_type']:checked").val() == 'private' && $('#issueNDA')[0].files[0]) {
         uploadNDA();
+      } else if (data.featuredBounty) {
+        payFeaturedBounty();
       } else {
-        if (data.featuredBounty) payFeaturedBounty();
-        else do_bounty();
+        do_bounty();
       }
     }
   });
