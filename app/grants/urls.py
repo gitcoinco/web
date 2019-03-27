@@ -28,6 +28,7 @@ app_name = 'grants'
 urlpatterns = [
     path('', grants, name='grants'),
     path('<int:grant_id>/<slug:grant_slug>', grant_details, name='details'),
+    path('<int:grant_id>/<slug:grant_slug>/', grant_details, name='details2'),
     re_path(r'^new', grant_new, name='new'),
     path('<int:grant_id>/<slug:grant_slug>/milestones', milestones, name='milestones'),
     path('<int:grant_id>/<slug:grant_slug>/fund', grant_fund, name='fund'),
