@@ -556,7 +556,8 @@ $(document).ready(function() {
         $.ajax(settings).done(function(response) {
           _alert(response.message, 'info');
           ipfsBounty.payload.unsigned_nda = response.bounty_doc_id;
-          ipfs.addJson(ipfsBounty, newIpfsCallback);
+          if (data.featuredBounty) payFeaturedBounty();
+          else do_bounty();
         }).fail(function(error) {
           _alert('Unable to upload NDA. ', 'error');
           console.log('NDA error:', error);
@@ -590,12 +591,12 @@ $(document).ready(function() {
         });
       };
 
-      if ($('#issueNDA')[0].files[0]) {
+      if ($("input[type='radio'][name='repo_type']:checked").val() == 'private' && $('#issueNDA')[0].files[0]) {
         uploadNDA();
+      } else {
         if (data.featuredBounty) payFeaturedBounty();
         else do_bounty();
-      } else if (data.featuredBounty) payFeaturedBounty();
-      else do_bounty();
+      }
     }
   });
 });
