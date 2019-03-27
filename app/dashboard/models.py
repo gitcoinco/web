@@ -280,6 +280,8 @@ class Bounty(SuperModel):
     is_featured = models.BooleanField(
         default=False, help_text=_('Whether this bounty is featured'))
     featuring_date = models.DateTimeField(blank=True, null=True)
+    fee_amount = models.DecimalField(default=0, decimal_places=18, max_digits=50)
+    fee_tx_id = models.CharField(default="0x0", max_length=255, blank=True)
     unsigned_nda = models.ForeignKey('dashboard.BountyDocuments', blank=True, null=True, related_name='bounty', on_delete=models.SET_NULL)
 
     token_value_time_peg = models.DateTimeField(blank=True, null=True)
@@ -299,6 +301,7 @@ class Bounty(SuperModel):
         default=False, help_text=_('Admin override to mark as remarketing ready')
     )
     attached_job_description = models.URLField(blank=True, null=True)
+    event = models.ForeignKey('dashboard.HackathonEvent', related_name='bounties', null=True, on_delete=models.SET_NULL)
 
     # Bounty QuerySet Manager
     objects = BountyQuerySet.as_manager()
@@ -1023,7 +1026,7 @@ class Bounty(SuperModel):
                 logger.warning(f'reserved_for_user_handle: Unknown handle: ${handle}')
 
         self.bounty_reserved_for_user = profile
-    
+
 
 class BountyFulfillmentQuerySet(models.QuerySet):
     """Handle the manager queryset for BountyFulfillments."""
@@ -1096,6 +1099,32 @@ class BountySyncRequest(SuperModel):
 
     github_url = models.URLField()
     processed = models.BooleanField()
+
+
+class RefundFeeRequest(SuperModel):
+    """Define the Refund Fee Request model."""
+    profile = models.ForeignKey(
+        'dashboard.Profile',
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='refund_requests',
+    )
+    bounty = models.ForeignKey(
+        'dashboard.Bounty',
+        on_delete=models.CASCADE
+    )
+    fulfilled = models.BooleanField(default=False)
+    rejected = models.BooleanField(default=False)
+    comment = models.TextField(max_length=500, blank=True)
+    comment_admin = models.TextField(max_length=500, blank=True)
+    fee_amount = models.FloatField()
+    token = models.CharField(max_length=10)
+    address = models.CharField(max_length=255)
+    txnId = models.CharField(max_length=255, blank=True)
+
+    def __str__(self):
+        """Return the string representation of RefundFeeRequest."""
+        return f"bounty: {self.bounty}, fee: {self.fee_amount}, token: {self.token}. Time: {self.created_on}"
 
 
 class Subscription(SuperModel):
@@ -2949,6 +2978,31 @@ class BlockedUser(SuperModel):
         """Return the string representation of a Bounty."""
         return f'<BlockedUser: {self.handle}>'
 
+
+class HackathonEvent(SuperModel):
+    """Defines the HackathonEvent model."""
+
+    name = models.CharField(max_length=255)
+    slug = models.SlugField(blank=True)
+    logo = models.ImageField(blank=True)
+    logo_svg = models.FileField(blank=True)
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+
+    def __str__(self):
+        """String representation for HackathonEvent.
+
+        Returns:
+            str: The string representation of a HackathonEvent.
+        """
+        return f'{self.name} - {self.start_date}'
+
+    def save(self, *args, **kwargs):
+        """Define custom handling for saving HackathonEvent."""
+        from django.utils.text import slugify
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
 class FeedbackEntry(SuperModel):
     bounty = models.ForeignKey(
