@@ -427,6 +427,9 @@
     document.issueURL = '{{ issueURL }}';
     document.issueNetwork = '{{ network }}';
     document.issue_stdbounties_id = '{{ stdbounties_id }}';
+    {% if event_tag %}
+      document.eventTag = '{{ event_tag }}';
+    {% endif %}
   </script>
 
   <!-- jQuery -->
