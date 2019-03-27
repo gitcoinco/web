@@ -17,7 +17,7 @@ async function metamaskApproval() {
         var did_request_and_user_respond = (now_time - start_time) > 1.0;
 
         if (did_request_and_user_respond) {
-          document.location.href = document.location.href;
+          document.location.reload();
         }
       }
     } catch (error) {
@@ -38,7 +38,7 @@ async function approve_metamask() {
     var did_request_and_user_respond = (now_time - start_time) > 1.0;
 
     if (did_request_and_user_respond) {
-      document.location.href = document.location.href;
+      document.location.reload();
     }
     is_metamask_approved = true;
   } catch (error) {

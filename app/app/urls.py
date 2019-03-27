@@ -100,6 +100,11 @@ urlpatterns = [
         dashboard.views.profile_job_opportunity,
         name='profile_job_opportunity'
     ),
+    url(
+        r'^api/v0.1/bountydocument',
+        dashboard.views.bounty_upload_nda,
+        name='bounty_upload_nda'
+    ),
     url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
     url(r'^api/v0.1/', include(dbrouter.urls)),
     url(r'^api/v0.1/', include(kdrouter.urls)),
@@ -124,6 +129,10 @@ urlpatterns = [
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
     url(r'^hackathon/ethhack2019', dashboard.views.ethhack, name='ethhack_2019'),
     path('revenue/attestations/new', revenue.views.new_attestation, name='revenue_new_attestation'),
+
+    # Hackathons / special events
+    re_path(r'^hackathon/(?P<hackathon>.*)?/', dashboard.views.hackathon, name='hackathon'),
+    path('hackathon-list/', dashboard.views.get_hackathons, name='get_hackathons'),
 
     # action URLs
     url(r'^bounties/funder', retail.views.funder_bounties, name='funder_bounties'),

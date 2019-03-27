@@ -176,11 +176,6 @@ h2 {
 }
 
 @media (max-width: 991px) {
-  .contributor-hero-bg,
-  .ethereum-icon {
-    display: none;
-  }
-
   .how-it-works__step {
     margin-bottom: 4em;
   }

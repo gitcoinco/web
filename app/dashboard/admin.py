@@ -24,8 +24,8 @@ from django.utils.safestring import mark_safe
 
 from .models import (
     Activity, BlockedUser, Bounty, BountyFulfillment, BountyInvites, BountySyncRequest, CoinRedemption,
-    CoinRedemptionRequest, FeedbackEntry, Interest, LabsResearch, Profile, RefundFeeRequest, SearchHistory, Tip,
-    TokenApproval, Tool, ToolVote, UserAction, UserVerificationModel,
+    CoinRedemptionRequest, FeedbackEntry, HackathonEvent, Interest, LabsResearch, Profile, RefundFeeRequest,
+    SearchHistory, Tip, TokenApproval, Tool, ToolVote, UserAction, UserVerificationModel,
 )
 
 
@@ -217,6 +217,36 @@ class RefundFeeRequestAdmin(admin.ModelAdmin):
         return mark_safe(f"<a href=/_administration/process_refund_request/{instance.pk}>process me</a>")
     link.allow_tags = True
 
+
+class HackathonEventAdmin(admin.ModelAdmin):
+    """The admin object for the HackathonEvent model."""
+
+    list_display = ['pk', 'img', 'name', 'start_date', 'end_date', 'explorer_link']
+    readonly_fields = ['img', 'explorer_link']
+
+    def img(self, instance):
+        """Returns a formatted HTML img node or 'n/a' if the HackathonEvent has no logo.
+
+        Returns:
+            str: A formatted HTML img node or 'n/a' if the HackathonEvent has no logo.
+        """
+        logo = instance.logo_svg or instance.logo
+        if not logo:
+            return 'n/a'
+        img_html = format_html('<img src={} style="max-width:30px; max-height: 30px">', mark_safe(logo.url))
+        return img_html
+
+    def explorer_link(self, instance):
+        """Returns a formatted HTML <a> node.
+
+        Returns:
+            str: A formatted HTML <a> node.
+        """
+
+        url = f'/hackathon/{instance.slug}'
+        return mark_safe(f'<a href="{url}">Explorer Link</a>')
+
+
 admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
 admin.site.register(BlockedUser, GeneralAdmin)
@@ -233,6 +263,7 @@ admin.site.register(CoinRedemption, GeneralAdmin)
 admin.site.register(CoinRedemptionRequest, GeneralAdmin)
 admin.site.register(Tool, ToolAdmin)
 admin.site.register(ToolVote, ToolVoteAdmin)
+admin.site.register(HackathonEvent, HackathonEventAdmin)
 admin.site.register(FeedbackEntry, FeedbackAdmin)
 admin.site.register(LabsResearch)
 admin.site.register(UserVerificationModel, VerificationAdmin)

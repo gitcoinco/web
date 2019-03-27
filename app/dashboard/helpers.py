@@ -30,7 +30,9 @@ from django.http import Http404, JsonResponse
 from django.utils import timezone
 
 from app.utils import get_semaphore, sync_profile
-from dashboard.models import Activity, Bounty, BountyFulfillment, BountySyncRequest, UserAction
+from dashboard.models import (
+    Activity, Bounty, BountyDocuments, BountyFulfillment, BountySyncRequest, HackathonEvent, UserAction,
+)
 from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
     maybe_market_to_user_discord, maybe_market_to_user_slack,
@@ -364,6 +366,13 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
         url = normalize_url(url)
     else:
         raise UnsupportedSchemaException('No webReferenceURL found. Cannot continue!')
+    
+    # check conditions for private repos
+    if metadata.get('repo_type', None) == 'private' and \
+        bounty_payload.get('schemes', {}).get('permission_type', 'permissionless') != 'approval' and \
+            bounty_payload.get('schemes', {}).get('project_type', 'traditional') != 'traditional':
+            raise UnsupportedSchemaException('The project type or permission does not match for private repo')
+
 
     # Check if we have any fulfillments.  If so, check if they are accepted.
     # If there are no fulfillments, accepted is automatically False.
@@ -407,6 +416,11 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
         if not latest_old_bounty:
             print("no latest old bounty")
             schemes = bounty_payload.get('schemes', {})
+            unsigned_nda = None
+            if bounty_payload.get('unsigned_nda', None):
+                unsigned_nda = BountyDocuments.objects.filter(
+                    pk=bounty_payload.get('unsigned_nda')
+                ).first()
             bounty_kwargs.update({
                 # info to xfr over from latest_old_bounty as override fields (this is because sometimes
                 # ppl dont login when they first submit issue and it needs to be overridden)
@@ -437,6 +451,8 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 'featuring_date': timezone.make_aware(
                     timezone.datetime.fromtimestamp(metadata.get('featuring_date', 0)),
                     timezone=UTC),
+                'repo_type': metadata.get('repo_type', None),
+                'unsigned_nda': unsigned_nda,
                 'bounty_owner_github_username': bounty_issuer.get('githubUsername', ''),
                 'bounty_owner_address': bounty_issuer.get('address', ''),
                 'bounty_owner_email': bounty_issuer.get('email', ''),
@@ -456,7 +472,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     'github_comments', 'override_status', 'last_comment_date', 'snooze_warnings_for_days',
                     'admin_override_and_hide', 'admin_override_suspend_auto_approval', 'admin_mark_as_remarket_ready',
                     'funding_organisation', 'bounty_reserved_for_user', 'is_featured', 'featuring_date', 'fee_tx_id',
-                    'fee_amount',
+                    'fee_amount', 'repo_type', 'unsigned_nda'
                 ],
             )
             if latest_old_bounty_dict['bounty_reserved_for_user']:
@@ -474,6 +490,15 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
 
             except Exception as e:
                 logger.error(e)
+
+            event_tag = metadata.get('eventTag', '')
+            if event_tag:
+                try:
+                    evt = HackathonEvent.objects.filter(name__iexact=event_tag).latest('id')
+                    new_bounty.event = evt
+                    new_bounty.save()
+                except Exception as e:
+                    logger.error(e)
 
             # migrate data objects from old bounty
             if latest_old_bounty:

@@ -21,6 +21,7 @@ from __future__ import print_function, unicode_literals
 import json
 import logging
 import time
+from datetime import datetime
 
 from django.conf import settings
 from django.contrib import messages
@@ -63,8 +64,9 @@ from web3 import HTTPProvider, Web3
 
 from .helpers import get_bounty_data_for_activity, handle_bounty_views
 from .models import (
-    Activity, Bounty, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest, FeedbackEntry, Interest,
-    LabsResearch, Profile, ProfileSerializer, RefundFeeRequest, Subscription, Tool, ToolVote, UserAction,
+    Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest,
+    FeedbackEntry, HackathonEvent, Interest, LabsResearch, Profile, ProfileSerializer, RefundFeeRequest, Subscription,
+    Tool, ToolVote, UserAction,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -161,7 +163,7 @@ def helper_handle_access_token(request, access_token):
     request.session['profile_id'] = profile.pk
 
 
-def create_new_interest_helper(bounty, user, issue_message):
+def create_new_interest_helper(bounty, user, issue_message, signed_nda=None):
     approval_required = bounty.permission_type == 'approval'
     acceptance_date = timezone.now() if not approval_required else None
     profile_id = user.profile.pk
@@ -171,6 +173,7 @@ def create_new_interest_helper(bounty, user, issue_message):
         issue_message=issue_message,
         pending=approval_required,
         acceptance_date=acceptance_date,
+        signed_nda=signed_nda,
     )
     bounty.interested.add(interest)
     record_user_action(user, 'start_work', interest)
@@ -274,7 +277,12 @@ def new_interest(request, bounty_id):
             status=401)
     except Interest.DoesNotExist:
         issue_message = request.POST.get("issue_message")
-        interest = create_new_interest_helper(bounty, request.user, issue_message)
+        signed_nda = None
+        if request.POST.get("signed_nda", None):
+            signed_nda = BountyDocuments.objects.filter(
+                pk=request.POST.get("signed_nda")
+            ).first()
+        interest = create_new_interest_helper(bounty, request.user, issue_message, signed_nda)
         if interest.pending:
             start_work_new_applicant(interest, bounty)
 
@@ -648,7 +656,8 @@ def ethhack(request):
 
     title = str(_(" Eth Hackathon 2019"))
     params = {
-        'title': title
+        'title': title,
+        'meta_description': 'Ethereal Virtual Hackathon, power by Gitcoin and Microsoft',
     }
     return TemplateResponse(request, 'dashboard/hackathon/ethhack_2019.html', params)
 
@@ -812,7 +821,7 @@ def social_contribution_email(request):
         JsonResponse: Success in sending email.
     """
     from marketing.mails import share_bounty
-    
+
     emails = []
     user_ids = request.POST.getlist('usersId[]', [])
     url = request.POST.get('url', '')
@@ -1234,6 +1243,7 @@ def helper_handle_approvals(request, bounty):
             messages.warning(request, _('Only the funder of this bounty may perform this action.'))
 
 
+@login_required
 def bounty_invite_url(request, invitecode):
     """Decode the bounty details and redirect to correct bounty
 
@@ -1328,6 +1338,9 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 params['stdbounties_id'] = bounty.standard_bounties_id if not stdbounties_id else stdbounties_id
                 params['interested_profiles'] = bounty.interested.select_related('profile').all()
                 params['avatar_url'] = bounty.get_avatar_url(True)
+
+                if bounty.event:
+                    params['event_tag'] = bounty.event.slug
 
                 helper_handle_snooze(request, bounty)
                 helper_handle_approvals(request, bounty)
@@ -1447,6 +1460,34 @@ def profile_job_opportunity(request, handle):
         'message': 'Job search status saved'
     }
     return JsonResponse(response)
+
+
+@csrf_exempt
+@require_POST
+def bounty_upload_nda(request):
+    """ Save Bounty related docs like NDA.
+
+    Args:
+        bounty_id (int): The bounty id.
+    """
+    if request.FILES.get('docs', None):
+        bountydoc = BountyDocuments.objects.create(
+            doc=request.FILES.get('docs', None),
+            doc_type=request.POST.get('doc_type', None)
+        )
+        response = {
+            'status': 200,
+            'bounty_doc_id': bountydoc.pk,
+            'message': 'NDA saved'
+        }
+    else:
+        response = {
+            'status': 400,
+            'message': 'No File Found'
+        }
+    return JsonResponse(response)
+
+
 
 
 def profile_filter_activities(activities, activity_name):
@@ -1995,10 +2036,13 @@ def redeem_coin(request, shortcode):
 def new_bounty(request):
     """Create a new bounty."""
     from .utils import clean_bounty_url
+
+    events = HackathonEvent.objects.filter(end_date__gt=datetime.today())
     bounty_params = {
         'newsletter_headline': _('Be the first to know about new funded issues.'),
         'issueURL': clean_bounty_url(request.GET.get('source') or request.GET.get('url', '')),
         'amount': request.GET.get('amount'),
+        'events': events,
     }
 
     params = get_context(
@@ -2200,3 +2244,37 @@ def get_kudos(request):
         raise Http404
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)
+
+
+def hackathon(request, hackathon=''):
+    """Handle rendering of HackathonEvents. Reuses the dashboard template."""
+
+    try:
+        evt = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
+        title = evt.name
+    except HackathonEvent.DoesNotExist:
+        raise Http404
+
+    params = {
+        'active': 'dashboard',
+        'title': title,
+        'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
+        'hackathon': evt,
+    }
+    return TemplateResponse(request, 'dashboard/index.html', params)
+
+
+def get_hackathons(request):
+    """Handle rendering all Hackathons."""
+
+    try:
+        events = HackathonEvent.objects.values()
+    except HackathonEvent.DoesNotExist:
+        raise Http404
+
+    params = {
+        'active': 'hackathons',
+        'title': 'hackathons',
+        'hackathons': events,
+    }
+    return TemplateResponse(request, 'dashboard/hackathons.html', params)

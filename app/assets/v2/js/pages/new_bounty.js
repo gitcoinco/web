@@ -54,6 +54,16 @@ $('#sync-issue').on('click', function(event) {
 });
 
 $('#issueURL').focusout(function() {
+  if (isPrivateRepo) {
+    setPrivateForm();
+    if ($('input[name=issueURL]').val() == '' || !validURL($('input[name=issueURL]').val())) {
+      $('.js-submit').addClass('disabled');
+    } else {
+      $('.js-submit').removeClass('disabled');
+    }
+    return;
+  }
+
   setInterval(function() {
     $('#last-synced span').html(timeDifference(new Date(), new_bounty.last_sync));
   }, 6000);
@@ -108,7 +118,7 @@ $(document).ready(function() {
   $('input[name=hours]').blur(setUsdAmount);
   $('select[name=denomination]').change(setUsdAmount);
   $('select[name=denomination]').change(promptForAuth);
-  $('input[name=issueURL]').blur(retrieveIssueDetails);
+
   setTimeout(setUsdAmount, 1000);
   waitforWeb3(function() {
     promptForAuth();
@@ -177,10 +187,9 @@ $(document).ready(function() {
     $('input[name=revisions]').val(revision);
   });
 
-  if ($('input[name=issueURL]').val() != '') {
+  if ($('input[name=issueURL]').val() != '' && !isPrivateRepo) {
     retrieveIssueDetails();
   }
-  $('input[name=issueURL]').focus();
 
   $('.js-select2').each(function() {
     $(this).select2();
@@ -198,37 +207,28 @@ $(document).ready(function() {
   if ($('input[name=amount]').val().trim().length > 0) {
     setUsdAmount();
   }
-  var open_hiring_panel = function(do_focus) {
-    setTimeout(function() {
-      var hiringRightNow = $('#hiringRightNow').is(':checked');
 
-      if (hiringRightNow) {
-        $('#jobDescription').removeClass('hidden');
+  var open_panel = function(checkboxSelector, targetSelector, do_focus) {
+    setTimeout(function() {
+      var isChecked = $(checkboxSelector).is(':checked');
+
+      if (isChecked) {
+        $(targetSelector).removeClass('hidden');
         if (do_focus) {
-          $('#jobDescription').focus();
+          $(targetSelector).focus();
         }
       } else {
-        $('#jobDescription').addClass('hidden');
+        $(targetSelector).addClass('hidden');
       }
     }, 10);
   };
 
-  $('#hiringRightNow').on('click', function() {
-    open_hiring_panel(true);
+  $('#hiringRightNow').on('click', () => {
+    open_panel('#hiringRightNow', '#jobDescription', true);
   });
 
-
-  $('#advancedLink a').on('click', function(e) {
-    e.preventDefault();
-    var target = $('#advanced_container');
-
-    if (target.css('display') == 'none') {
-      target.css('display', 'block');
-      $(this).text('Advanced ⬆');
-    } else {
-      target.css('display', 'none');
-      $(this).text('Advanced ⬇ ');
-    }
+  $('#specialEvent').on('click', () => {
+    open_panel('#specialEvent', '#eventTag', true);
   });
 
   userSearch('#reservedFor', false);
@@ -253,6 +253,10 @@ $(document).ready(function() {
       $.each($(form).serializeArray(), function() {
         data[this.name] = this.value;
       });
+
+      if (data.repo_type == 'private' && data.project_type != 'traditional' && data.permission_type != 'approval') {
+        _alert(gettext('The project type and/or permission type of bounty does not validate for a private repo'));
+      }
 
       disabled.attr('disabled', 'disabled');
 
@@ -282,7 +286,9 @@ $(document).ready(function() {
         bountyType: data.bounty_type,
         estimatedHours: data.hours,
         fundingOrganisation: data.fundingOrganisation,
+        eventTag: data.specialEvent ? (data.eventTag || '') : '',
         is_featured: data.featuredBounty,
+        repo_type: data.repo_type,
         featuring_date: data.featuredBounty && ((new Date().getTime() / 1000) | 0) || 0,
         reservedFor: reservedFor ? reservedFor.text : '',
         tokenName
@@ -317,11 +323,12 @@ $(document).ready(function() {
             auto_approve_workers: !!data.auto_approve_workers
           },
           hiring: {
-            hiringRightNow: data.hiringRightNow,
+            hiringRightNow: !!data.hiringRightNow,
             jobDescription: data.jobDescription
           },
           funding_organisation: metadata.fundingOrganisation,
           is_featured: metadata.is_featured,
+          repo_type: metadata.repo_type,
           featuring_date: metadata.featuring_date,
           privacy_preferences: privacy_preferences,
           funders: [],
@@ -532,6 +539,30 @@ $(document).ready(function() {
         }
       };
 
+      const uploadNDA = function() {
+        const formData = new FormData();
+
+        formData.append('docs', $('#issueNDA')[0].files[0]);
+        formData.append('doc_type', 'unsigned_nda');
+        const settings = {
+          url: '/api/v0.1/bountydocument',
+          method: 'POST',
+          processData: false,
+          dataType: 'json',
+          contentType: false,
+          data: formData
+        };
+
+        $.ajax(settings).done(function(response) {
+          _alert(response.message, 'info');
+          ipfsBounty.payload.unsigned_nda = response.bounty_doc_id;
+          ipfs.addJson(ipfsBounty, newIpfsCallback);
+        }).fail(function(error) {
+          _alert('Unable to upload NDA. ', 'error');
+          console.log('NDA error:', error);
+        });
+      };
+
       const payFeaturedBounty = function() {
         indicateMetamaskPopup();
         web3.eth.sendTransaction({
@@ -559,12 +590,28 @@ $(document).ready(function() {
         });
       };
 
-      if (data.featuredBounty) {
-        payFeaturedBounty();
-      } else {
-        do_bounty();
-      }
+      if ($('#issueNDA')[0].files[0]) {
+        uploadNDA();
+        if (data.featuredBounty) payFeaturedBounty();
+        else do_bounty();
+      } else if (data.featuredBounty) payFeaturedBounty();
+      else do_bounty();
     }
+  });
+});
+
+$(window).on('load', function() {
+  if (params.has('type')) {
+    let checked = params.get('type');
+
+    toggleCtaPlan(checked);
+    $(`input[name=repo_type][value=${checked}]`).prop('checked', 'true');
+  } else {
+    params.append('type', 'public');
+    window.history.replaceState({}, '', location.pathname + '?' + params);
+  }
+  $('input[name=repo_type]').change(function() {
+    toggleCtaPlan($(this).val());
   });
 });
 
@@ -628,4 +675,68 @@ const populateBountyTotal = () => {
   $('#fee-amount').html(bountyFee);
   $('#fee-token').html(bountyToken);
   $('#summary-total-amount').html(total);
+};
+
+let isPrivateRepo = false;
+let params = (new URL(document.location)).searchParams;
+
+const setPrivateForm = () => {
+  $('#title').removeClass('hidden');
+  $('#description, #title').prop('readonly', false);
+  $('#description, #title').prop('required', true);
+  $('#no-issue-banner').hide();
+  $('#issue-details, #issue-details-edit').show();
+  $('#sync-issue').removeClass('disabled');
+  $('#last-synced, #edit-issue, #sync-issue, #title--text').hide();
+
+  $('#admin_override_suspend_auto_approval').prop('checked', false);
+  $('#admin_override_suspend_auto_approval').attr('disabled', true);
+  $('#show_email_publicly').attr('disabled', true);
+  $('#cta-subscription, #private-repo-instructions').removeClass('d-md-none');
+  $('#nda-upload').show();
+  $('#issueNDA').prop('required', true);
+
+  $('#project_type').select2().val('traditional');
+  $('#permission_type').select2().val('approval');
+  $('#project_type, #permission_type').select2().prop('disabled', true).trigger('change');
+  $('#keywords').select2({
+    placeholder: 'Select tags',
+    tags: 'true',
+    allowClear: true
+  });
+};
+
+const setPublicForm = () => {
+  $('#title').addClass('hidden');
+  $('#description, #title').prop('readonly', true);
+  $('#no-issue-banner').show();
+  $('#issue-details, #issue-details-edit').hide();
+  $('#sync-issue').addClass('disabled');
+  $('.js-submit').addClass('disabled');
+  $('#last-synced, #edit-issue , #sync-issue, #title--text').show();
+
+  $('#admin_override_suspend_auto_approval').prop('checked', true);
+  $('#admin_override_suspend_auto_approval').attr('disabled', false);
+  $('#show_email_publicly').attr('disabled', false);
+  $('#cta-subscription, #private-repo-instructions').addClass('d-md-none');
+  $('#nda-upload').hide();
+  $('#issueNDA').prop('required', false);
+
+  $('#project_type, #permission_type').select2().prop('disabled', false).trigger('change');
+  retrieveIssueDetails();
+};
+
+const toggleCtaPlan = (value) => {
+  if (value === 'private') {
+
+    params.set('type', 'private');
+    isPrivateRepo = true;
+    setPrivateForm();
+  } else {
+
+    params.set('type', 'public');
+    isPrivateRepo = false;
+    setPublicForm();
+  }
+  window.history.replaceState({}, '', location.pathname + '?' + params);
 };
