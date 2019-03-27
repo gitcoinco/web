@@ -1115,15 +1115,24 @@ var do_actions = function(result) {
   }
 
   if (show_change_bounty) {
-    const _entry = {
-      enabled: true,
-      href: '/bounty/change/' + result['pk'],
-      text: gettext('Edit Issue Details'),
-      parent: 'right_actions',
-      title: gettext('Update your Bounty Settings to get the right Crowd')
-    };
+    const _entry = [
+      {
+        enabled: true,
+        href: '/bounty/change/' + result['pk'],
+        text: gettext('Edit Issue Details'),
+        parent: 'right_actions',
+        title: gettext('Update your Bounty Settings to get the right Crowd')
+      }// ,
+      // {
+      //   enabled: true,
+      //   href: '/issue/refund_request?pk=' + result['pk'],
+      //   text: gettext('Request Fee Refund'),
+      //   parent: 'right_actions',
+      //   title: gettext('Raise a request if you believe you need your fee refunded')
+      // }
+    ];
 
-    actions.push(_entry);
+    actions.push(..._entry);
   }
 
   if (show_github_link) {
