@@ -635,7 +635,7 @@ var attach_override_status = function() {
 
 var show_interest_modal = function() {
   var self = this;
-  let modals = $('#modalInterest');
+  var modals = $('#modalInterest');
   let modalBody = $('#modalInterest .modal-content');
   let modalUrl = `/interest/modal?redirect=${window.location.pathname}&pk=${document.result['pk']}`;
 
@@ -687,7 +687,7 @@ var show_interest_modal = function() {
                 $(self).attr('href', '/uninterested');
                 $(self).find('span').text(gettext('Stop Work'));
                 $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
-                $.modal.close();
+                modals.bootstrapModal('hide');
               }
             }).catch((error) => {
               if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
@@ -705,7 +705,7 @@ var show_interest_modal = function() {
               $(self).attr('href', '/uninterested');
               $(self).find('span').text(gettext('Stop Work'));
               $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
-              $.modal.close();
+              modals.bootstrapModal('hide');
             }
           }).catch((error) => {
             if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
@@ -1422,12 +1422,13 @@ const process_activities = function(result, bounty_activities) {
     const fulfillment = meta.fulfillment || {};
     const new_bounty = meta.new_bounty || {};
     const old_bounty = meta.old_bounty || {};
-    const has_signed_nda = result.interested.map(interest => {
-      if (interest.profile.handle === _activity.profile.handle && interest.signed_nda) {
-        return interest.signed_nda.doc;
-      }
-      return false;
-    });
+    const has_signed_nda = result.interested.length ?
+      result.interested.map(interest => {
+        if (interest.profile.handle === _activity.profile.handle && interest.signed_nda) {
+          return interest.signed_nda.doc;
+        }
+        return false;
+      }) : false;
     const has_pending_interest = !!result.interested.find(interest =>
       interest.profile.handle === _activity.profile.handle && interest.pending);
     const has_interest = !!result.interested.find(interest =>
