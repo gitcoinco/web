@@ -30,7 +30,9 @@ from django.http import Http404, JsonResponse
 from django.utils import timezone
 
 from app.utils import get_semaphore, sync_profile
-from dashboard.models import Activity, Bounty, BountyDocuments, BountyFulfillment, BountySyncRequest, UserAction
+from dashboard.models import (
+    Activity, Bounty, BountyDocuments, BountyFulfillment, BountySyncRequest, HackathonEvent, UserAction,
+)
 from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
     maybe_market_to_user_discord, maybe_market_to_user_slack,
@@ -479,6 +481,15 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
 
             except Exception as e:
                 logger.error(e)
+
+            event_tag = metadata.get('eventTag', '')
+            if event_tag:
+                try:
+                    evt = HackathonEvent.objects.filter(name__iexact=event_tag).latest('id')
+                    new_bounty.event = evt
+                    new_bounty.save()
+                except Exception as e:
+                    logger.error(e)
 
             # migrate data objects from old bounty
             if latest_old_bounty:

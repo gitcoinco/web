@@ -130,6 +130,10 @@ urlpatterns = [
     url(r'^hackathon/ethhack2019', dashboard.views.ethhack, name='ethhack_2019'),
     path('revenue/attestations/new', revenue.views.new_attestation, name='revenue_new_attestation'),
 
+    # Hackathons / special events
+    re_path(r'^hackathon/(?P<hackathon>.*)?/', dashboard.views.hackathon, name='hackathon'),
+    path('hackathon-list/', dashboard.views.get_hackathons, name='get_hackathons'),
+
     # action URLs
     url(r'^bounties/funder', retail.views.funder_bounties, name='funder_bounties'),
     re_path(

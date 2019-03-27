@@ -176,37 +176,27 @@ $(document).ready(function() {
     setUsdAmount();
   }
 
-  var open_hiring_panel = function(do_focus) {
+  var open_panel = function(checkboxSelector, targetSelector, do_focus) {
     setTimeout(function() {
-      var hiringRightNow = $('#hiringRightNow').is(':checked');
+      var isChecked = $(checkboxSelector).is(':checked');
 
-      if (hiringRightNow) {
-        $('#jobDescription').removeClass('hidden');
+      if (isChecked) {
+        $(targetSelector).removeClass('hidden');
         if (do_focus) {
-          $('#jobDescription').focus();
+          $(targetSelector).focus();
         }
       } else {
-        $('#jobDescription').addClass('hidden');
+        $(targetSelector).addClass('hidden');
       }
     }, 10);
   };
 
-  $('#hiringRightNow').on('click', function() {
-    open_hiring_panel(true);
+  $('#hiringRightNow').on('click', () => {
+    open_panel('#hiringRightNow', '#jobDescription', true);
   });
 
-
-  $('#advancedLink a').on('click', function(e) {
-    e.preventDefault();
-    var target = $('#advanced_container');
-
-    if (target.css('display') == 'none') {
-      target.css('display', 'block');
-      $(this).text('Advanced ⬆');
-    } else {
-      target.css('display', 'none');
-      $(this).text('Advanced ⬇ ');
-    }
+  $('#specialEvent').on('click', () => {
+    open_panel('#specialEvent', '#eventTag', true);
   });
 
   userSearch('#reservedFor', false);
@@ -264,6 +254,7 @@ $(document).ready(function() {
         bountyType: data.bounty_type,
         estimatedHours: data.hours,
         fundingOrganisation: data.fundingOrganisation,
+        eventTag: data.specialEvent ? (data.eventTag || '') : '',
         is_featured: data.featuredBounty,
         repo_type: data.repo_type,
         featuring_date: data.featuredBounty && ((new Date().getTime() / 1000) | 0) || 0,
@@ -300,7 +291,7 @@ $(document).ready(function() {
             auto_approve_workers: !!data.auto_approve_workers
           },
           hiring: {
-            hiringRightNow: data.hiringRightNow,
+            hiringRightNow: !!data.hiringRightNow,
             jobDescription: data.jobDescription
           },
           funding_organisation: metadata.fundingOrganisation,

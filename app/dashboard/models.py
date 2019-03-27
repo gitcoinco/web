@@ -299,6 +299,7 @@ class Bounty(SuperModel):
         default=False, help_text=_('Admin override to mark as remarketing ready')
     )
     attached_job_description = models.URLField(blank=True, null=True)
+    event = models.ForeignKey('dashboard.HackathonEvent', related_name='bounties', null=True, on_delete=models.SET_NULL)
 
     # Bounty QuerySet Manager
     objects = BountyQuerySet.as_manager()
@@ -2949,6 +2950,31 @@ class BlockedUser(SuperModel):
         """Return the string representation of a Bounty."""
         return f'<BlockedUser: {self.handle}>'
 
+
+class HackathonEvent(SuperModel):
+    """Defines the HackathonEvent model."""
+
+    name = models.CharField(max_length=255)
+    slug = models.SlugField(blank=True)
+    logo = models.ImageField(blank=True)
+    logo_svg = models.FileField(blank=True)
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+
+    def __str__(self):
+        """String representation for HackathonEvent.
+
+        Returns:
+            str: The string representation of a HackathonEvent.
+        """
+        return f'{self.name} - {self.start_date}'
+
+    def save(self, *args, **kwargs):
+        """Define custom handling for saving HackathonEvent."""
+        from django.utils.text import slugify
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
 class FeedbackEntry(SuperModel):
     bounty = models.ForeignKey(

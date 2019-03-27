@@ -1322,6 +1322,9 @@ const build_uri_for_pull_bounty_from_api = function() {
   if (typeof document.issue_stdbounties_id != 'undefined') {
     uri = uri + '&standard_bounties_id=' + document.issue_stdbounties_id;
   }
+  if (typeof document.eventTag != 'undefined') {
+    uri = uri + '&event_tag=' + document.eventTag;
+  }
   return uri;
 };
 
