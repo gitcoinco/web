@@ -21,10 +21,14 @@ import time
 from datetime import datetime
 
 import django_filters.rest_framework
+from kudos.models import KudosTransfer
 from rest_framework import routers, serializers, viewsets
 from retail.helpers import get_ip
 
-from .models import Activity, Bounty, BountyFulfillment, BountyInvites, Interest, ProfileSerializer, SearchHistory
+from .models import (
+    Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, HackathonEvent, Interest, ProfileSerializer,
+    SearchHistory,
+)
 
 
 class BountyFulfillmentSerializer(serializers.ModelSerializer):
@@ -39,18 +43,6 @@ class BountyFulfillmentSerializer(serializers.ModelSerializer):
                   'fulfillment_id', 'accepted', 'profile', 'created_on', 'accepted_on', 'fulfiller_github_url')
 
 
-class InterestSerializer(serializers.ModelSerializer):
-    """Handle serializing the Interest object."""
-
-    profile = ProfileSerializer()
-
-    class Meta:
-        """Define the Interest serializer metadata."""
-
-        model = Interest
-        fields = ('profile', 'created', 'pending')
-
-
 class ActivitySerializer(serializers.ModelSerializer):
     """Handle serializing the Activity object."""
 
@@ -63,6 +55,52 @@ class ActivitySerializer(serializers.ModelSerializer):
         fields = ('activity_type', 'created', 'profile', 'metadata', 'bounty', 'tip')
 
 
+class BountyDocumentsSerializer(serializers.ModelSerializer):
+    """Handle serializing the Activity object."""
+
+    class Meta:
+        """Define the activity serializer metadata."""
+
+        model = BountyDocuments
+        fields = ('doc', 'doc_type')
+
+
+class KudosSerializer(serializers.ModelSerializer):
+    """Handle serializing the Kudos object."""
+
+    class Meta:
+        """Define the kudos serializer metadata."""
+
+        model = KudosTransfer
+        depth = 1
+        fields = ('kudos_token_cloned_from', )
+
+
+class ActivitySerializer(serializers.ModelSerializer):
+    """Handle serializing the Activity object."""
+
+    profile = ProfileSerializer()
+    kudos = KudosSerializer()
+
+    class Meta:
+        """Define the activity serializer metadata."""
+
+        model = Activity
+        fields = ('activity_type', 'created', 'profile', 'metadata', 'bounty', 'tip', 'kudos')
+
+
+class InterestSerializer(serializers.ModelSerializer):
+    """Handle serializing the Interest object."""
+
+    profile = ProfileSerializer()
+    signed_nda = BountyDocumentsSerializer()
+
+    class Meta:
+        """Define the Interest serializer metadata."""
+        model = Interest
+        fields = ('profile', 'created', 'pending', 'signed_nda')
+
+
 # Serializers define the API representation.
 class BountySerializer(serializers.HyperlinkedModelSerializer):
     """Handle serializing the Bounty object."""
@@ -70,6 +108,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
     fulfillments = BountyFulfillmentSerializer(many=True)
     interested = InterestSerializer(many=True)
     activities = ActivitySerializer(many=True)
+    unsigned_nda = BountyDocumentsSerializer(many=False)
     bounty_owner_email = serializers.SerializerMethodField('override_bounty_owner_email')
     bounty_owner_name = serializers.SerializerMethodField('override_bounty_owner_name')
 
@@ -99,8 +138,8 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
             'fulfillment_submitted_on', 'fulfillment_started_on', 'canceled_on', 'canceled_bounty_reason',
             'action_urls', 'project_type', 'permission_type', 'attached_job_description', 'needs_review',
             'github_issue_state', 'is_issue_closed', 'additional_funding_summary', 'funding_organisation', 'paid',
-            'admin_override_suspend_auto_approval', 'reserved_for_user_handle', 'is_featured', 'featuring_date',
-            'funder_last_messaged_on',
+            'admin_override_suspend_auto_approval', 'reserved_for_user_handle', 'is_featured', 'featuring_date', 'repo_type',
+            'unsigned_nda', 'funder_last_messaged_on',
         )
 
     def create(self, validated_data):
@@ -136,7 +175,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
 
 class BountyViewSet(viewsets.ModelViewSet):
     """Handle the Bounty view behavior."""
-    queryset = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile', 'activities') \
+    queryset = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile', 'activities', 'unsigned_nda') \
         .all().order_by('-web3_created')
     serializer_class = BountySerializer
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
@@ -150,13 +189,23 @@ class BountyViewSet(viewsets.ModelViewSet):
         """
         param_keys = self.request.query_params.keys()
         queryset = Bounty.objects.prefetch_related(
-            'fulfillments', 'interested', 'interested__profile', 'activities')
+            'fulfillments', 'interested', 'interested__profile', 'activities', 'unsigned_nda')
         if 'not_current' not in param_keys:
             queryset = queryset.current()
 
         queryset = queryset.order_by('-web3_created')
 
         # filtering
+        event_tag = self.request.query_params.get('event_tag', '')
+        if event_tag:
+            try:
+                evt = HackathonEvent.objects.filter(slug__iexact=event_tag).latest('id')
+                queryset = queryset.filter(event__pk=evt.pk)
+            except HackathonEvent.DoesNotExist:
+                return Bounty.objects.none()
+        else:
+            queryset = queryset.filter(event=None)
+
         for key in ['raw_data', 'experience_level', 'project_length', 'bounty_type', 'bounty_owner_address',
                     'idx_status', 'network', 'bounty_owner_github_username', 'standard_bounties_id',
                     'permission_type', 'project_type']:
@@ -271,6 +320,11 @@ class BountyViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(
                 is_featured=self.request.query_params.get('is_featured'),
                 is_open=True,
+            )
+
+        if 'repo_type' in param_keys:
+            queryset = queryset.filter(
+                repo_type=self.request.query_params.get('repo_type'),
             )
 
         # order

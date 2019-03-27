@@ -333,8 +333,10 @@ if ENV not in ['local', 'test', 'staging', 'preview']:
             'filters': ['host_filter'],
             'formatter': 'cloudwatch',
     }
-    LOGGING['root']['handlers'].push('watchtower')
-    LOGGING['loggers']['django.db.backends']['handlers'].push('watchtower')
+    '''
+    LOGGING['root']['handlers'].append('watchtower')
+    LOGGING['loggers']['django.db.backends']['handlers'].append('watchtower')
+    '''
     LOGGING['loggers']['django.db.backends']['level'] = AWS_LOG_LEVEL
 
     LOGGING['loggers']['django.request'] = LOGGING['loggers']['django.db.backends']
@@ -659,6 +661,8 @@ GITHUB_EVENT_HOOK_URL = env('GITHUB_EVENT_HOOK_URL', default='github/payload/')
 
 # Web3
 WEB3_HTTP_PROVIDER = env('WEB3_HTTP_PROVIDER', default='https://rinkeby.infura.io')
+INFURA_USE_V3 = env.bool('INFURA_USE_V3', False)
+INFURA_V3_PROJECT_ID = env('INFURA_V3_PROJECT_ID', default='1e0a90928efe4bb78bb1eeceb8aacc27')
 
 # COLO Coin
 COLO_ACCOUNT_ADDRESS = env('COLO_ACCOUNT_ADDRESS', default='')  # TODO

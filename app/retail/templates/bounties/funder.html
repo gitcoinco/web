@@ -31,20 +31,9 @@
     <div id="landing_page_wrapper">
       <div class="container-fluid header">
         {% include 'bounties/funder/hero.html' %}
-        <div class="row banner--green px-3 py-4 font-subheader">
-          <div class="col-12 col-md-1 offset-xl-1 offset-xl-2 col-xl-1 text-center text-md-right my-auto">
-            <img src="{% static "v2/images/landing/robot-banner.svg" %}">
-          </div>
-          <div class="col-12 col-md-7 col-lg-6 col-xl-4 mt-3 mb-4 my-md-auto text-center">
-            <p class="font-title-lg mb-0">{% trans "Are you a developer or designer?" %}</p>
-            <p class="font-subheader mb-0">{% trans "Contribute to exciting OSS project and get paid!" %}</p>
-          </div>
-          <div class="col-12 col-md-4 col-xl-3 my-auto text-center">
-            <a class="button button--primary" href="{% url "onboard" "contributor" %}">Get Started</a>
-            <a class="button button--primary btn-green ml-lg-2" href="{% url "contributor_bounties" "" %}">Learn More</a>
-          </div>
-        </div>
       </div>
+
+      {% include 'shared/onboard_slider.html' %}
 
       <div class="pt-2" id="codefund"></div>
 

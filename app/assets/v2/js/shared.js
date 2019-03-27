@@ -985,7 +985,7 @@ var listen_for_web3_changes = async function() {
       var did_request_and_user_respond = (now_time - start_time) > 1.0;
 
       if (did_request_and_user_respond) {
-        document.location.href = document.location.href;
+        document.location.reload();
       }
     }
   }

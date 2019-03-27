@@ -118,6 +118,8 @@ The below environment variables are useful for overwriting [Django Silk](https:/
 | Variable | Description | Type | Default |
 | --- | --- | --- | --- |
 | WEB3_HTTP_PROVIDER | The Web3 HTTP provider URI to be used. | `str` | https://rinkeby.infura.io |
+| INFURA_USE_V3 | Use new API | `bool` | False |
+| INFURA_V3_PROJECT_ID | Infura Project ID | `str` | 1e0a90928efe4bb78bb1eeceb8aacc27 |
 
 ## VSCode Remote Debugging
 

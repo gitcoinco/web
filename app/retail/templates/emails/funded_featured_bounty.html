@@ -24,7 +24,7 @@
 <h1 style="margin-top: 50px;">{% trans "You've successfully funded a bounty!" %}</h1>
 
 <div class="primary-content centered-contents" style="margin-top: 40px;">
-  <img id="funded_featured_bounty" width="400" src="{% static "v2/images/emails/funded_featured_bounty.png" %}" alt="Funded featured bounty" title="Grow Open Source Image">
+  <img id="funded_featured_bounty" width="400" src="{% static "v2/images/emails/funded_featured_bounty.png" %}" alt="Funded featured bounty" title="Grow Open Source Image" style="max-width: 100%;">
 
   <div class="bounty">
     <div style="margin-bottom: 40px;">
@@ -51,12 +51,53 @@
       </div>
     </div>
   </div>
+</div>
+<div class="centered-contents" >
+  {% if bounty.is_featured == 'true' %}
+    <div class="centered-contents desktop-col" style="justify-content: center; border-top: 1px solid #979797; border-bottom: 1px solid #979797; padding: 50px; text-align: center; align-items: center;">
+      <img src="{% static "v2/images/emails/funded_featured_bounty_banner.png" %}" width="100" height="100" style="margin-right: 30px; flex-shrink: 0;" alt="Featured bounty avatar" id="featured_bounty_detail_image">
+<div class="centered-contents" >
   {% if bounty.is_featured %}
     <div class="centered-contents" style="display: flex; justify-content: center; border-top: 1px solid #979797; border-bottom: 1px solid #979797; padding: 50px; text-align: center">
       <img src="{% static "v2/images/emails/funded_featured_bounty_banner.png" %}" width="100" style="margin-right: 30px" alt="Featured bounty avatar" id="featured_bounty_detail_image">
       <div style="margin-top: 30px;">
         <h3 style="color: #0D0764; text-align: justify;">{% trans "Your bounty is now featured" %}</h3>
         <span style="text-align: justify;">Your bounty will appear at the top of the Issue Explorer for <b>14 days</b></span>
+      </div>
+    </div>
+  {% endif %}
+  {% if bounty.repo_type == 'private' %}
+    <div class="centered-contents" style="border-top: 1px solid #979797; border-bottom: 1px solid #979797; padding: 50px; text-align: center;">
+      <h3 style="font-size: 2.1em;">{% trans "What to do next" %}</h3>
+
+      <div style="padding: 20px 10px 20px; text-align: center;" class="desktop-col">
+        <img src="{% static "v2/images/emails/private-repo-1.png" %}" width="185" height="147" style="margin-right: 30px; flex-shrink: 0;" alt="Featured bounty avatar">
+        <div style="">
+          <h3 style="color: #0D0764; text-align: left;">{% trans "Get Applications from Awesome Talents" %}</h3>
+          <p style="text-align: left;">{% trans "Contributors will apply to work on your bounty with a signed NDA. You can view the applications on the Issue Details page." %}</p>
+          <p style="text-align: left;">(<b>{% trans "Note:" %}</b> {% trans "Contributors will NOT have access to your private repo until you approve them)" %}</p>
+        </div>
+      </div>
+      <div style="padding: 20px 10px 20px; text-align: center;" class="desktop-col">
+        <img src="{% static "v2/images/emails/private-repo-2.png" %}" width="185" height="102" style="margin-right: 30px; flex-shrink: 0;" alt="Featured bounty avatar">
+        <div style="">
+          <h3 style="color: #0D0764; text-align: left;">{% trans "Approve Worker" %}</h3>
+          <p style="text-align: left;">{% trans "Approve Worker to assign them to your bounty." %}</p>
+        </div>
+      </div>
+      <div style="padding: 20px 10px 20px; text-align: center;" class="desktop-col">
+        <img src="{% static "v2/images/emails/private-repo-3.png" %}" width="185" height="151" style="margin-right: 30px; flex-shrink: 0;" alt="Featured bounty avatar">
+        <div style="">
+          <h3 style="color: #0D0764; text-align: left;">{% trans "Invite Worker to Your Repo" %}</h3>
+          <p style="text-align: left;">{% trans "Invite the approved worker to your GitHub private repo. You can do this through" %} <b>{% trans "GitHub > Settings > Collaborators." %}</b></p>
+        </div>
+      </div>
+      <div style="padding: 20px 10px 20px; text-align: center;" class="desktop-col">
+        <img src="{% static "v2/images/emails/private-repo-4.png" %}" width="185" height="112" style="margin-right: 30px; flex-shrink: 0;" alt="Featured bounty avatar">
+        <div style="">
+          <h3 style="color: #0D0764; text-align: left;">{% trans "Complete Bounty" %}</h3>
+          <p style="text-align: left;">{% trans "Once the bounty is completed, you can remove the contributor from your repo through GitHub." %}</p>
+        </div>
       </div>
     </div>
   {% endif %}
