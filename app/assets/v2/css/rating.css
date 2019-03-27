@@ -1,3 +1,4 @@
+/* stylelint-disable no-descending-specificity  */
 .card-rating {
   color: #0d003c;
   background-color: #fff;
@@ -71,15 +72,19 @@
 }
 
 .rating > input:checked ~ .rating-star,
-.rating:not(:checked) > .rating-star:hover,
-.rating:not(:checked) > .rating-star:hover ~ .rating-star {
+fieldset:not(:disabled) .rating:not(:checked) > .rating-star:hover,
+fieldset:not(:disabled) .rating:not(:checked) > .rating-star:hover ~ .rating-star {
   color: #25E899;
   font-weight: 800;
 }
 
-.rating > input:checked + .rating-star:hover,
-.rating > input:checked ~ .rating-star:hover,
-.rating > .rating-star:hover ~ input:checked ~ .rating-star,
-.rating > input:checked ~ .rating-star:hover ~ .rating-star {
+fieldset:not(:disabled) .rating > input:checked + .rating-star:hover,
+fieldset:not(:disabled) .rating > input:checked ~ .rating-star:hover,
+fieldset:not(:disabled) .rating > .rating-star:hover ~ input:checked ~ .rating-star,
+fieldset:not(:disabled) .rating > input:checked ~ .rating-star:hover ~ .rating-star {
   color: rgb(11, 253, 156);
+}
+
+fieldset:disabled .rating {
+  filter: grayscale(1);
 }

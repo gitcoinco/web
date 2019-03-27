@@ -342,7 +342,7 @@ def post_comment(request):
     feedback = FeedbackEntry.objects.create(**kwargs)
     feedback.save()
     return JsonResponse({
-            'success': False,
+            'success': True,
             'msg': 'Finished.'
         })
 

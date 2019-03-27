@@ -35,8 +35,11 @@
               by <a class="font-weight-semibold text-current" href="{% url "profile" bounty.bounty_owner_github_username %}">{{ bounty.bounty_owner_github_username }}</a> <img src="{% url 'org_avatar' bounty.bounty_owner_github_username %}" alt="{{ bounty.bounty_owner_github_username }}" width="21" height="21" class="rounded-circle">
             </div>
           </div>
-          <form action="">
-            {% include 'shared/rating.html' with counterparty='contributor' id='rating' class="text-center" %}
+          <form id="ratingForm">
+            <input type="hidden" name="standard_bounties_id" value="{{ bounty.standard_bounties_id }}">
+            <!-- <input type="hidden" name="review[reviewType]" value="approver"> -->
+            <input type="hidden" name="review[receiver]" value="{{ bounty.bounty_owner_github_username }}">
+            {% include 'shared/rating.html' with counterparty='contributor' id='review[rating]' class="text-center" %}
             <div>
               <p class="p-2 my-4 font-smaller-1 text-black-60">{% trans 'Your feedback is very valuable for us! Only Gitcoin admins are able to see your feedback.' %}</p>
 
@@ -44,15 +47,15 @@
                 {% trans 'How was your experience with the contributor?' %}
               </p>
 
-              {% include 'shared/rating.html' with counterparty='contributor' id='satisfaction_rating' label="Satisfaction" class="rating--small text-left" %}
-              {% include 'shared/rating.html' with counterparty='contributor' id='communication_rating' label="Comunication/Responsiveness" class="rating--small text-left" %}
-              {% include 'shared/rating.html' with counterparty='contributor' id='speed_rating' label="Speed" class="rating--small text-left" %}
-              {% include 'shared/rating.html' with counterparty='contributor' id='code_quality_rating' label="Quality of code or submission" class="rating--small text-left" %}
-              {% include 'shared/rating.html' with counterparty='contributor' id='recommendation_rating' label="Recommended to other funders" class="rating--small text-left" %}
+              {% include 'shared/rating.html' with counterparty='contributor' id='review[satisfaction_rating]' label="Satisfaction" class="rating--small text-left" %}
+              {% include 'shared/rating.html' with counterparty='contributor' id='review[communication_rating]' label="Comunication/Responsiveness" class="rating--small text-left" %}
+              {% include 'shared/rating.html' with counterparty='contributor' id='review[speed_rating]' label="Speed" class="rating--small text-left" %}
+              {% include 'shared/rating.html' with counterparty='contributor' id='review[code_quality_rating]' label="Quality of code or submission" class="rating--small text-left" %}
+              {% include 'shared/rating.html' with counterparty='contributor' id='review[recommendation_rating]' label="Recommended to other funders" class="rating--small text-left" %}
 
               <div class="w-100 mt-2 p-2">
                 <label class="form__label text-weight_semibold" for="review">{% trans "Anything else you’d like to share?" %}</label>
-                <textarea name='review' id='review' class="form-control gc-border-blue" placeholder="{% trans 'Let us know here...' %}"></textarea>
+                <textarea name='review[comment]' id='review' class="form-control gc-border-blue" placeholder="{% trans 'Let us know here...' %}"></textarea>
               </div>
 
             </div>
