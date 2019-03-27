@@ -861,6 +861,11 @@ body.funder-page {
     display: none;
   }
 
+  .feature_container img {
+    margin-bottom: 2rem;
+    min-width: 5rem;
+  }
+
   #start img {
     top: 1rem;
   }
@@ -887,11 +892,6 @@ body.funder-page {
 
   .whatisit_container iframe {
     min-height: 0;
-  }
-
-  .feature_container img {
-    margin-bottom: 2rem;
-    min-width: 5rem;
   }
 }
 
