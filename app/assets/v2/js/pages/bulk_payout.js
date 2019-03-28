@@ -61,6 +61,7 @@ $(document).ready(function($) {
     // cancel bounty
     if (transaction['type'] == 'cancel') {
       var callback = function(error, txid) {
+        indicateMetamaskPopup(true);
         if (error) {
           _alert({ message: error }, 'error');
         } else {
@@ -83,6 +84,7 @@ $(document).ready(function($) {
       var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
       var gas_dict = { gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)) };
 
+      indicateMetamaskPopup();
       bounty.killBounty(
         $('#standard_bounties_id').val(),
         gas_dict,

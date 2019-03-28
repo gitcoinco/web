@@ -25,6 +25,7 @@ from datetime import datetime
 
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
@@ -34,7 +35,9 @@ from django.shortcuts import redirect
 from django.template import loader
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
+from django.urls import reverse
 from django.utils import timezone
+from django.utils.html import escape, strip_tags
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -62,8 +65,8 @@ from web3 import HTTPProvider, Web3
 from .helpers import get_bounty_data_for_activity, handle_bounty_views
 from .models import (
     Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest,
-    FeedbackEntry, HackathonEvent, Interest, LabsResearch, Profile, ProfileSerializer, Subscription, Tool, ToolVote,
-    UserAction,
+    FeedbackEntry, HackathonEvent, Interest, LabsResearch, Profile, ProfileSerializer, RefundFeeRequest, Subscription,
+    Tool, ToolVote, UserAction,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -697,7 +700,10 @@ def ethhack(request):
     title = str(_(" Eth Hackathon 2019"))
     params = {
         'title': title,
-        'meta_description': 'Ethereal Virtual Hackathon, power by Gitcoin and Microsoft',
+        'meta_description': _('Ethereal Virtual Hackathon, powered by Gitcoin and Microsoft'),
+        'card_title': title,
+        'card_desc': _('Ethereal Virtual Hackathon, powered by Gitcoin and Microsoft'),
+        'avatar_url': static('v2/images/ethhack_2019_media.png'),
     }
     return TemplateResponse(request, 'dashboard/hackathon/ethhack_2019.html', params)
 
@@ -1026,6 +1032,119 @@ def cancel_bounty(request):
         title=_('Cancel Bounty'),
     )
     return TemplateResponse(request, 'bounty/kill.html', params)
+
+
+def refund_request(request):
+    """Request refund for bounty
+
+    Args:
+        pk (int): The primary key of the bounty to be cancelled.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The request refund view.
+
+    """
+
+    if request.method == 'POST':
+        is_authenticated = request.user.is_authenticated
+        profile = request.user.profile if is_authenticated and hasattr(request.user, 'profile') else None
+        bounty = Bounty.objects.get(pk=request.GET.get('pk'))
+
+        if not profile or not bounty or profile.username != bounty.bounty_owner_github_username :
+            return JsonResponse({
+                'message': _('Only bounty funder can raise this request!')
+            }, status=401)
+
+        comment = escape(strip_tags(request.POST.get('comment')))
+
+        review_req = RefundFeeRequest.objects.create(
+            profile=profile,
+            bounty=bounty,
+            comment=comment,
+            token=bounty.token_name,
+            address=bounty.bounty_owner_address,
+            fee_amount=bounty.fee_amount
+        )
+
+        # TODO: Send Mail
+
+        return JsonResponse({'message': _('Request Submitted.')}, status=201)
+
+    bounty = handle_bounty_views(request)
+
+    if RefundFeeRequest.objects.filter(bounty=bounty).exists():
+        params = get_context(
+            ref_object=bounty,
+            active='refund_request',
+            title=_('Request Bounty Refund'),
+        )
+        params['duplicate'] = True
+        return TemplateResponse(request, 'bounty/refund_request.html', params)
+
+    params = get_context(
+        ref_object=bounty,
+        user=request.user if request.user.is_authenticated else None,
+        active='refund_request',
+        title=_('Request Bounty Refund'),
+    )
+
+    return TemplateResponse(request, 'bounty/refund_request.html', params)
+
+
+@staff_member_required
+def process_refund_request(request, pk):
+    """Request refund for bounty
+
+    Args:
+        pk (int): The primary key of the bounty to be cancelled.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: Admin view for request refund view.
+
+    """
+
+    try :
+       refund_request =  RefundFeeRequest.objects.get(pk=pk)
+    except RefundFeeRequest.DoesNotExist:
+        raise Http404
+
+    if refund_request.fulfilled:
+        messages.info(request, 'refund request already fulfilled')
+        return redirect(reverse('admin:index'))
+
+    if refund_request.rejected:
+        messages.info(request, 'refund request already rejected')
+        return redirect(reverse('admin:index'))
+
+    if request.POST:
+
+        if request.POST.get('fulfill'):
+            refund_request.fulfilled = True
+            refund_request.txnId = request.POST.get('txnId')
+            messages.success(request, 'fulfilled')
+
+        else:
+            refund_request.comment_admin = request.POST.get('comment')
+            refund_request.rejected = True
+            messages.success(request, 'rejected')
+
+        refund_request.save()
+        messages.info(request, 'Complete')
+        # TODO: send mail
+        return redirect('admin:index')
+
+    context = {
+        'obj': refund_request,
+        'recommend_gas_price': round(recommend_min_gas_price_to_confirm_in_time(1), 1),
+    }
+
+    return TemplateResponse(request, 'bounty/process_refund_request.html', context)
 
 
 def helper_handle_admin_override_and_hide(request, bounty):

@@ -261,7 +261,7 @@ p a {
 }
 
 #gas-section .gas-image {
-  height: 5rem;
+  height: 4.5rem;
 }
 
 #gas-section .font-body {
@@ -270,6 +270,7 @@ p a {
 
 #gas-section .recommended-prices {
   cursor: pointer;
+  text-align: center;
 }
 
 #gas-section .gas-dark-bg {
@@ -277,7 +278,7 @@ p a {
 }
 
 #gas-section .gas-rates .active {
-  font-weight: bolder;
+  font-weight: 600;
   background-color: #0ECF7C;
 }
 
@@ -518,7 +519,7 @@ input[type=text].loading {
 }
 
 #primary_form #amount {
-  height: 37px;
+  height: 40px;
 }
 
 .bounty_nav {
@@ -825,14 +826,6 @@ input.is-invalid {
 
 .faucet_response {
   display: none;
-}
-
-.faucet_response .frheader {
-  font-size: xx-large;
-}
-
-.faucet_response .frmessage {
-  font-size: large;
 }
 
 .tooltip-info {

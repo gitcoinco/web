@@ -379,6 +379,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
     # Currently we are only considering the latest fulfillment.  Std bounties supports multiple.
     # If any of the fulfillments have been accepted, the bounty is now accepted and complete.
     accepted = any([fulfillment.get('accepted') for fulfillment in fulfillments])
+    print('create new bounty with payload:{}'.format(bounty_payload))
 
     with transaction.atomic():
         old_bounties = old_bounties.distinct().order_by('created_on')
@@ -408,9 +409,12 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
             'submissions_comment': submissions_comment_id,
             'standard_bounties_id': bounty_id,
             'num_fulfillments': len(fulfillments),
-            'value_in_token': bounty_details.get('fulfillmentAmount', Decimal(1.0))
+            'value_in_token': bounty_details.get('fulfillmentAmount', Decimal(1.0)),
+            'fee_tx_id': bounty_payload.get('fee_tx_id', '0x0'),
+            'fee_amount': bounty_payload.get('fee_amount', 0)
         }
         if not latest_old_bounty:
+            print("no latest old bounty")
             schemes = bounty_payload.get('schemes', {})
             unsigned_nda = None
             if bounty_payload.get('unsigned_nda', None):
@@ -454,8 +458,11 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 'bounty_owner_email': bounty_issuer.get('email', ''),
                 'bounty_owner_name': bounty_issuer.get('name', ''),
                 'admin_override_suspend_auto_approval': not schemes.get('auto_approve_workers', True),
+                'fee_tx_id': bounty_payload.get('fee_tx_id', '0x0'),
+                'fee_amount': bounty_payload.get('fee_amount', 0)
             })
         else:
+            print('latest old bounty found {}'.format(latest_old_bounty))
             latest_old_bounty_dict = latest_old_bounty.to_standard_dict(
                 fields=[
                     'web3_created', 'github_url', 'token_name', 'token_address', 'privacy_preferences', 'expires_date',
@@ -464,8 +471,8 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     'bounty_owner_github_username', 'bounty_owner_address', 'bounty_owner_email', 'bounty_owner_name',
                     'github_comments', 'override_status', 'last_comment_date', 'snooze_warnings_for_days',
                     'admin_override_and_hide', 'admin_override_suspend_auto_approval', 'admin_mark_as_remarket_ready',
-                    'funding_organisation', 'bounty_reserved_for_user', 'is_featured', 'featuring_date', 'repo_type',
-                    'unsigned_nda'
+                    'funding_organisation', 'bounty_reserved_for_user', 'is_featured', 'featuring_date', 'fee_tx_id',
+                    'fee_amount', 'repo_type', 'unsigned_nda'
                 ],
             )
             if latest_old_bounty_dict['bounty_reserved_for_user']:
@@ -473,7 +480,9 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
             bounty_kwargs.update(latest_old_bounty_dict)
 
         try:
+            print('new bounty with kwargs:{}'.format(bounty_kwargs))
             new_bounty = Bounty.objects.create(**bounty_kwargs)
+            print('new bounty is:{}'.format(new_bounty.to_standard_dict()))
             new_bounty.fetch_issue_item()
             try:
                 issue_kwargs = get_url_dict(new_bounty.github_url)
@@ -555,6 +564,7 @@ def process_bounty_details(bounty_details):
     """
     from dashboard.utils import get_bounty_semaphore_ns
     # See dashboard/utils.py:get_bounty from details on this data
+    print(bounty_details)
     bounty_id = bounty_details.get('id', {})
     bounty_data = bounty_details.get('data') or {}
     bounty_payload = bounty_data.get('payload', {})
@@ -671,7 +681,7 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
                 user_profile = Profile.objects.filter(handle__iexact=fulfillment.fulfiller_github_username).first()
                 if not user_profile:
                     user_profile = sync_profile(fulfillment.fulfiller_github_username)
-                
+
     except Exception as e:
         logger.error(f'{e} during record_bounty_activity for {new_bounty}')
 
