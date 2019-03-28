@@ -36,7 +36,7 @@
             </div>
           </div>
           <form id="ratingForm">
-            <input type="hidden" name="standard_bounties_id" value="{{ bounty.standard_bounties_id }}">
+            <input type="hidden" name="bounty_id" value="{{ bounty.id }}">
             <!-- <input type="hidden" name="review[reviewType]" value="approver"> -->
             <input type="hidden" name="review[receiver]" value="{{ bounty.bounty_owner_github_username }}">
             {% include 'shared/rating.html' with counterparty='contributor' id='review[rating]' class="text-center" %}

@@ -119,9 +119,9 @@
                   <div class="profile-header__stats profile-header__stats--contributor card mb-4">
                     <div class="card-header font-subheader">
                       {% if scoreboard_position_contributor %}
-                        <b>#{{ scoreboard_position_contributor }}</b> 
+                        <b>#{{ scoreboard_position_contributor }}</b>
                       {% else %}
-                        <b>&nbsp;</b> 
+                        <b>&nbsp;</b>
                       {% endif %}
                       {% trans "Contributor" %}
                     </div>
@@ -155,9 +155,9 @@
                   <div class="profile-header__stats profile-header__stats--funder card mb-4">
                     <div class="card-header font-subheader">
                       {% if scoreboard_position_funder %}
-                        <b>#{{ scoreboard_position_funder }}</b> 
+                        <b>#{{ scoreboard_position_funder }}</b>
                       {% else %}
-                        <b>&nbsp;</b> 
+                        <b>&nbsp;</b>
                       {% endif %}
                       {% trans "Funder" %}
                     </div>
@@ -290,7 +290,7 @@
     <script src="/dynamic/js/tokens_dynamic.js"></script>
     <script src="{% static "v2/js/tokens.js" %}"></script>
     <script src="{% static "v2/js/popper.min.js" %}"></script>
-    <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
+    <script src="{% static "v2/js/bootstrap.min.js" %}" crossorigin="anonymous"></script>
     <script>
       var bootstrapTooltip = $.fn.tooltip.noConflict()
       var bootstrapModal = $.fn.modal.noConflict()
