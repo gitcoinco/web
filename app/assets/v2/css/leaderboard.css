@@ -27,17 +27,9 @@
   cursor: pointer;
 }
 
-.leaderboard .winner img:hover {
-  opacity: 0.55;
-}
-
 .leaderboard .winner img {
   max-height: 50px;
   display: flex;
-}
-
-.leaderboard .winner a {
-  color: #2B75D2;
 }
 
 .leaderboard .winner h6 {
@@ -55,11 +47,16 @@ thead {
 }
 
 tbody {
-  color: #5C5D5F
+  color: #5C5D5F;
+  font-size: 0.8rem;
 }
 
 tbody, a {
   color: #5C5D5F
+}
+
+.leaderboard .winner a {
+  color: #2B75D2;
 }
 
 .leaderboard .leaderboard_entry {
@@ -69,10 +66,6 @@ tbody, a {
 
 .item-count-bounties {
   display: none;
-}
-
-tbody {
-  font-size: 0.8rem;
 }
 
 .leaderboard h3 {
@@ -85,6 +78,10 @@ tbody {
 
 .hidemobile {
   visibility: hidden;
+}
+
+.leaderboard .winner img:hover {
+  opacity: 0.55;
 }
 
 @media (min-width: 700px) {
