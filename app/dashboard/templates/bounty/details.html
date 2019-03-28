@@ -278,7 +278,7 @@
             <div class="col-12 col-md-7 started-status-column d-flex">
               <div class="activity-status">
                 [[:text]]
-                [[if signed_nda ]]
+                [[if signed_nda && signed_nda != 'false']]
                   <a href="[[:signed_nda]]" download class="d-flex">View signed NDA</a>
                 [[/if]]
               </div>
@@ -389,7 +389,7 @@
               </div>
             </div>
           [[else]]
-            <div class="col-12 col-md-7">
+            <div class="col-12 col-md-7 d-flex started-status-column">
               <div class="activity-status">
                 [[:text]]
               </div>
