@@ -17,12 +17,12 @@
       {% include 'shared/nav.html' %}
     </div>
     <div class="row no-gutter">
-      <div class="col body gitcoin-background">
+      <div class="col body">
         <div class="container-fluid leaderboard">
 
           <!-- PODIUM -->
 
-          <div class="row offset-md-1 col-sm-12 col-md-10 mt-0 mb-2 p-1 podium text-center" style="background-color: #0d023b">
+          <div class="row offset-md-1 col-sm-12 col-md-10 mt-0 mb-2 p-1 podium text-center">
               {% for podium_item in podium_items %}
                 <div class="winner mt-5">
                   {% if not is_linked_to_profile %}
@@ -31,7 +31,7 @@
                     </a>
                   {% endif %}
 
-                  <h6 class="pt-3 pb-3 text-center">
+                  <h6 class="pt-3 pb-2 text-left">
                     {% if forloop.counter == 1 %}
                       <img src="/static/v2/images/leaderboard-1.png" style="width: 17.5px; height: 20px; float: left"></img>
                     {% endif %}
@@ -61,9 +61,9 @@
                   <div class="col-7" style="padding-top: 0.5em;">
                     <h3>{{ title }}</h3>
                   </div>
-                  <div class="col-2 filter">
+                  <div class="col-2">
                     <div class="form-group">
-                      {% if technologies|length  > 0%}
+                      {% if technologies|length > 0 %}
                         <select id="tech-keyword" class="form-control tech-options key">
                           <option value="all">All</option>
                         </select>
@@ -73,7 +73,7 @@
 
                   <!-- END RESULTS TITLE & FILTER -->
 
-                  <div class="col-2 select" style="margin-left: 1.5em;">
+                  <div class="col-2 select">
                     <div class="form-group">
                       <select id="key" class="form-control key">
                         {% for this_title in titles.items %}
@@ -87,18 +87,19 @@
                 </div>
 
                 {% if items|length == 0 %}
-                  <div class="row mt-0 ml-0 pl-3">
-                    {% trans "None found." %}
+                  <div class="row mt-0 ml-0 pl-3 justify-content-center">
+                    <h2>{% trans "None found." %}</h2>
                   </div>
                 {% endif %}
 
+                {% if items|length != 0 %}
                 <table class="table table-hover leaderboard_entry font-weight-bold">
                   <thead>
-                    <tr class="clickable-row  d-flex  align-items-stretch">
+                    <tr class="clickable-row d-flex align-items-stretch">
                         <td class="col-3 d-flex align-items-center item-position tableheaders">RANK</td>
                         <td class="col-5 d-flex align-items-center item-position tableheaders">NAME</td>
                         <td class="col-2 d-flex align-items-center item-position tableheaders">COMPLETED</td>
-                        <td class="col-2 d-flex align-items-center item-position tableheaders">EARNINGS</td>
+                        <td class="col-2 d-flex align-items-center item-position tableheaders hidemobile">EARNINGS</td>
                     </tr>
                   </thead>
 
@@ -110,7 +111,7 @@
                           {% if not is_linked_to_profile %}
                             <img class="img-fluid"  src="{{item.avatar_url}}">
                           {% endif %}
-                          <div class="ml-3 item-count-bounties" style="white-space:nowrap">
+                          <div class="ml-3 item-count-bounties" style="white-space: nowrap">
                             {% if not is_linked_to_profile %}
                               <a href="/profile/{{item.github_username}}" target="_blank" >
                                 {{item.at_ify_username}}
@@ -120,16 +121,17 @@
                             {% endif %}
                           </div>
                         </td>
-                        <td class="col-2 d-flex align-items-center">
+                        <td style="white-space: nowrap" class="col-2 d-flex align-items-center">
                           {{item.count}} Bounties
                         </td>
-                        <td class="col-2 d-flex align-items-center">
+                        <td class="col-2 d-flex align-items-center hidemobile">
                           ${{item.amount|floatformat:2|intcomma}}
                         </td>
                       </tr>
                     {% endfor %}
                   </tbody>
                 </table>
+                {% endif %}
 
               </div>
             </div>
@@ -137,26 +139,26 @@
         </div>
       </div>
     </div>
-                                                                                               
+
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
-                                                                                               
+
   </body>
-                                                                                               
+
   <script>
     var technologies = []
     {% for tech in technologies %}
       technologies.push('{{tech}}')
     {% endfor %}
   </script>
-                                                                                               
+
   <!-- jQuery -->
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
   <script src="{% static "v2/js/pages/leaderboard.js" %}"></script>
-                                                         
+
 </html>

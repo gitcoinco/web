@@ -1,9 +1,3 @@
-.gitcoin-background {
-  background: url("/static/v2/images/header-bg.png") #0d023b;
-  background-attachment: fixed;
-  background-position: center 0;
-}
-
 .leaderboard .key {
   right: 0px;
   display: block;
@@ -38,9 +32,8 @@
 }
 
 .leaderboard .winner img {
-  max-height: 100px;
+  max-height: 50px;
   display: flex;
-  border-radius: 50%;
 }
 
 .leaderboard .winner a {
@@ -48,8 +41,8 @@
 }
 
 .leaderboard .winner h6 {
-  font-size: color: #3f78cd;
-  white-space: nowrap;
+  font-size: 8px;
+  color: #2B75D2;
 }
 
 .leaderboard .leaderboard_entry img {
@@ -65,6 +58,10 @@ tbody {
   color: #5C5D5F
 }
 
+tbody, a {
+  color: #5C5D5F
+}
+
 .leaderboard .leaderboard_entry {
   padding: 10px 0px;
   text-decoration: none;
@@ -74,58 +71,20 @@ tbody {
   display: none;
 }
 
-.leaderboard .select {
-  display: none;
-}
-
-.leaderboard .winner h6 {
-  font-size: 0.6rem;
-  color: #2B75D2;
-}
-
 tbody {
   font-size: 0.8rem;
 }
 
 .leaderboard h3 {
-  font-size: 1rem;
+  font-size: .85rem;
 }
 
 .tableheaders {
   font-size: 0.7rem;
 }
 
-@media (min-width: 1000px) {
-  .leaderboard .leaderboard_entry {
-    padding: 10px 0px;
-    text-decoration: none;
-  }
-
-  .leaderboard .leaderboard_entry img {
-    max-height: 70px;
-    border-radius: 50%;
-  }
-
-  .leaderboard .winner img {
-    max-height: 150px;
-  }
-
-  .leaderboard .winner h6 {
-    font-size: 1rem ;
-  }
-
-  tbody {
-    font-size: 3rem ;
-  }
-
-  .leaderboard h3 {
-    font-size: 1.75rem ;
-  }
-
-  .tableheaders {
-    font-size: 1rem;
-  }
-
+.hidemobile {
+  visibility: hidden;
 }
 
 @media (min-width: 700px) {
@@ -154,7 +113,7 @@ tbody {
   }
 
   .leaderboard .winner h6 {
-    font-size: 0.7rem;
+    font-size: 0.5rem;
   }
 
   tbody {
@@ -168,4 +127,44 @@ tbody {
   .tableheaders {
     font-size: 0.9rem;
   }
+
+  .hidemobile{
+    visibility: visible;
+  }
+  .leaderboard .winner img {
+    max-height: 120px;
+  }
+}
+
+@media (min-width: 1000px) {
+  .leaderboard .leaderboard_entry {
+    padding: 10px 0px;
+    text-decoration: none;
+  }
+
+  .leaderboard .leaderboard_entry img {
+    max-height: 70px;
+    border-radius: 50%;
+  }
+
+  .leaderboard .winner img {
+    max-height: 150px;
+  }
+
+  .leaderboard .winner h6 {
+    font-size: 1rem ;
+  }
+
+  tbody {
+    font-size: 1.5rem ;
+  }
+
+  .leaderboard h3 {
+    font-size: 1.75rem ;
+  }
+
+  .tableheaders {
+    font-size: 1rem;
+  }
+
 }
