@@ -1127,25 +1127,29 @@ def bounty_invite_url(request, invitecode):
     Returns:
         django.template.response.TemplateResponse: The Bounty details template response.
     """
-    decoded_data = get_bounty_from_invite_url(invitecode)
-    bounty = Bounty.objects.current().filter(pk=decoded_data['bounty']).first()
-    inviter = User.objects.filter(username=decoded_data['inviter']).first()
-    bounty_invite = BountyInvites.objects.filter(
-        bounty=bounty,
-        inviter=inviter,
-        invitee=request.user
-    ).first()
-    if bounty_invite:
-        bounty_invite.status = 'accepted'
-        bounty_invite.save()
-    else:
-        bounty_invite = BountyInvites.objects.create(
-            status='accepted'
-        )
-        bounty_invite.bounty.add(bounty)
-        bounty_invite.inviter.add(inviter)
-        bounty_invite.invitee.add(request.user)
-    return redirect('/funding/details/?url=' + bounty.github_url)
+    try:
+        decoded_data = get_bounty_from_invite_url(invitecode)
+        bounty = Bounty.objects.current().filter(pk=decoded_data['bounty']).first()
+        inviter = User.objects.filter(username=decoded_data['inviter']).first()
+        bounty_invite = BountyInvites.objects.filter(
+            bounty=bounty,
+            inviter=inviter,
+            invitee=request.user
+        ).first()
+        if bounty_invite:
+            bounty_invite.status = 'accepted'
+            bounty_invite.save()
+        else:
+            bounty_invite = BountyInvites.objects.create(
+                status='accepted'
+            )
+            bounty_invite.bounty.add(bounty)
+            bounty_invite.inviter.add(inviter)
+            bounty_invite.invitee.add(request.user)
+        return redirect('/funding/details/?url=' + bounty.github_url)
+    except Exception as e:
+        logger.debug(e)
+        raise Http404
 
 
 
