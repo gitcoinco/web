@@ -3581,5 +3581,194 @@
    - ethereum marketing
    - consensys marketing
   image: brett_li.svg
+- name: Ethereal-computer
+  artist: yash412
+  description: Old School Coder. 
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - 90s
+    - computer
+    - retro
+    - ethereal
+  image: 90_1.svg
+- name: Ethereal-poloroid
+  artist: yash412
+  description: Snapshot of the 90s. 
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - 90s
+    - poloroid
+    - retro
+    - ethereal
+  image: 90_2.svg
+- name: Ethereal-radio
+  artist: yash412
+  description: Good with legacy signals.
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - 90s
+    - retro
+    - radio
+    - ethereal
+  image: 90_3.svg
+- name: Ethereal-ipod
+  artist: yash412
+  description: Classic iPod
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - 90s
+    - retro
+    - iPod
+    - ethereal
+  image: 90_11.svg
+  - name: Ethereal-apple
+  artist: yash412
+  description: Good with legacy mac tools
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - 90s
+    - apple
+    - mac
+    - retro
+    - ethereal
+  image: 90_10.svg
+- name: Ethereal-space-invaders
+  artist: yash412
+  description: Arcadian times.
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - 90s
+    - retro
+    - arcade
+    - ethereal
+  image: 90_6.svg
+- name: Ethereal-snakes
+  artist: yash412
+  description: You're 100% a nokia snakes kid.
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - 90s
+    - retro
+    - ethereal
+    - snake
+    - arcade
+  image: 90_5.svg
+- name: Ethereal-arcade
+  artist: yash412
+  description: Old school gamer
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - 90s
+    - retro
+    - arcade
+    - ethereal
+  image: 90_9.svg
+- name: Ethereal-Donatello
+  artist: yash412
+  description: Technological genius of the group. 
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - 90s
+    - retro
+    - ninja turles
+    - ethereal
+  image: 90_12.svg
+- name: Ethereal-Michelangelo
+  artist: yash412
+  description: The carefree jokester of the group.
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - 90s
+    - retro
+    - ninja turles
+    - ethereal
+  image: 90_7.svg
+- name: Ethereal-Leonardo
+  artist: yash412
+  description: The responsible leader of the group.
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - 90s
+    - retro
+    - ninja turles
+    - ethereal
+  image: 90_8.svg
+- name: Ethereal-Raphael
+  artist: yash412
+  description: The aggressive member. 
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - 90s
+    - retro
+    - ninja turles
+    - ethereal
+  image: 90_12.svg
+- name: Ethereal-Consensys
+  artist: yash412
+  description: Retro Consensys Logo
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - 90s
+    - retro
+    - consensys
+    - ethereal
+  image: consensys_2.svg
+- name: Ethereal-Ethereum
+  artist: yash412
+  description: Retro Ethereum Logo
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - 90s
+    - retro
+    - ethereum
+    - ethereal
+  image: ethpl.svg
+- name: Ethereal-Saved_By_The_Bell!
+  artist: yash412
+  description: The timer saved your butt.
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - retro
+    - bell
+    - timer
+    - ethereal
+  image: saved_by_bell.svg
+- name: Shepherd
+  artist: yash412
+  description: Countryside Shepherd; Give this kudos to someone who has done a great job of shepherd-ing a project across teh finish line!
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - Shepherd
+    - Country
+    - Sheep
+    - Landscape
+  image: shepherd.svg
+- name: Hackathon_Judge
+  artist: yash412
+  description: You were a judge for the Ethereal Hackathon 2019!
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - Ethereal
+    - hackathon
+    - judge
+    - gitcoin
+  image: judge.svg
 
 
