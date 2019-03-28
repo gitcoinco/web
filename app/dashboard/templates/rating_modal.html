@@ -46,6 +46,7 @@
               <p class="p-2 mb-0 font-weight-bold">
                 {% trans 'How was your experience with the contributor?' %}
               </p>
+              {{user.email}}
 
               {% include 'shared/rating.html' with counterparty='contributor' id='review[satisfaction_rating]' label="Satisfaction" class="rating--small text-left" %}
               {% include 'shared/rating.html' with counterparty='contributor' id='review[communication_rating]' label="Comunication/Responsiveness" class="rating--small text-left" %}

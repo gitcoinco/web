@@ -382,8 +382,8 @@ def rating_modal(request, bounty_id):
 
     params = get_context(
         ref_object=bounty,
-        user=request.user if request.user.is_authenticated else None,
     )
+    params['user'] = request.user if request.user.is_authenticated else None
 
     return TemplateResponse(request, 'rating_modal.html', params)
 
@@ -1658,7 +1658,7 @@ def profile(request, handle):
     context['verification'] = profile.get_my_verified_check
 
     unrated_funded_bounties = Bounty.objects.current().filter(
-        bounty_owner_profile=profile,
+        bounty_owner_github_username=profile.handle,
         idx_status='done'
     )
     unrated_contributed_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
