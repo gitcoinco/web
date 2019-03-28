@@ -1667,11 +1667,11 @@ def profile(request, handle):
     context['unrated_funded_bounties'] = []
     context['unrated_contributed_bounties'] = []
     for bounty in unrated_funded_bounties:
-        if not FeedbackEntry.objects.filter(bounty=bounty):
+        if not FeedbackEntry.objects.filter(bounty=bounty, feedbackType='approver'):
             context['unrated_funded_bounties'].append(bounty)
 
     for bounty in unrated_contributed_bounties:
-        if not FeedbackEntry.objects.filter(bounty=bounty):
+        if not FeedbackEntry.objects.filter(bounty=bounty, feedbackType='worker'):
             context['unrated_contributed_bounties'].append(bounty)
 
     currently_working_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
