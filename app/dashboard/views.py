@@ -657,7 +657,10 @@ def ethhack(request):
     title = str(_(" Eth Hackathon 2019"))
     params = {
         'title': title,
-        'meta_description': 'Ethereal Virtual Hackathon, power by Gitcoin and Microsoft',
+        'meta_description': _('Ethereal Virtual Hackathon, powered by Gitcoin and Microsoft'),
+        'card_title': title,
+        'card_desc': _('Ethereal Virtual Hackathon, powered by Gitcoin and Microsoft'),
+        'avatar_url': static('v2/images/ethhack_2019_media.png'),
     }
     return TemplateResponse(request, 'dashboard/hackathon/ethhack_2019.html', params)
 
