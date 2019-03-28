@@ -17,42 +17,43 @@
       {% include 'shared/nav.html' %}
     </div>
     <div class="row no-gutter">
-      <div class="col body">
+      <div class="col body" style="background-color: #FBFBFD">
         <div class="container-fluid leaderboard">
 
           <!-- PODIUM -->
-
-          <div class="row offset-md-1 col-sm-12 col-md-10 mt-0 mb-2 p-1 podium text-center">
-              {% for podium_item in podium_items %}
-                <div class="winner mt-5">
-                  {% if not is_linked_to_profile %}
-                    <a href="{{ podium_item.url }}" target="_blank">
-                      <img class="img-fluid"  src="{{ podium_item.avatar_url }}" >
-                    </a>
-                  {% endif %}
-
-                  <h6 class="pt-3 pb-2 text-left">
-                    {% if forloop.counter == 1 %}
-                      <img src="/static/v2/images/leaderboard-1.png" style="width: 17.5px; height: 20px; float: left"></img>
-                    {% endif %}
+          <div class="row col-sm-12 col-md-12" style="background-color: #150069; padding:0 !important; margin: 0 !important">
+            <div class="row offset-md-1 col-sm-12 col-md-10 mt-0 mb-2 p-1 podium text-center">
+                {% for podium_item in podium_items %}
+                  <div class="winner mt-5">
                     {% if not is_linked_to_profile %}
                       <a href="{{ podium_item.url }}" target="_blank">
-                        {{ podium_item.at_ify_username }}
+                        <img class="img-fluid"  src="{{ podium_item.avatar_url }}" >
                       </a>
-                    {% else %}
-                      {{ podium_item.at_ify_username }}
                     {% endif %}
-                  </h6>
 
-                </div>
-              {% endfor %}
+                    <h6 class="pt-3 pb-2 text-left">
+                      {% if forloop.counter == 1 %}
+                        <img src="/static/v2/images/leaderboard-1.png" style="width: 17.5px; height: 20px; float: left"></img>
+                      {% endif %}
+                      {% if not is_linked_to_profile %}
+                        <a href="{{ podium_item.url }}" target="_blank">
+                          {{ podium_item.at_ify_username }}
+                        </a>
+                      {% else %}
+                        {{ podium_item.at_ify_username }}
+                      {% endif %}
+                    </h6>
+
+                  </div>
+                {% endfor %}
+            </div>
           </div>
 
           <!-- END PODIUM -->
 
-          <div class="offset-md-1 col-sm-12 col-md-10">
+          <div class="offset-md-1 col-sm-12 col-md-10 pt-2">
 
-            <div class="card shadow-lg">
+            <div class="card">
               <div class="card-body">
                 <div class="row mt-0 ml-1 pt-1 pl-1" style="height: 4em; padding: 0.5em;">
 
