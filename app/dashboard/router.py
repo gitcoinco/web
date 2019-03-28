@@ -313,8 +313,14 @@ class BountyViewSet(viewsets.ModelViewSet):
             if self.request.query_params.get('misc') == 'hiring':
                 queryset = queryset.exclude(attached_job_description__isnull=True).exclude(attached_job_description='')
 
-        if 'keyword' in param_keys:
-            queryset = queryset.keyword(self.request.query_params.get('keyword'))
+        # Keyword search to search all comma separated keywords
+        queryset_original = queryset
+        if 'keywords' in param_keys:
+            for index, keyword in enumerate(self.request.query_params.get('keywords').split(',')):
+                if index == 0:
+                    queryset = queryset_original.keyword(keyword)
+                else:
+                    queryset |= queryset_original.keyword(keyword)
 
         if 'is_featured' in param_keys:
             queryset = queryset.filter(
