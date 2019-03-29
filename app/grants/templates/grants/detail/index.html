@@ -313,18 +313,18 @@
             {% endif %}
           </div>
           <div class="font-body">
-            <p class="sub-title">{% trans "Supported By" %} ({{ subscriptions|length }})</p>
+            <p class="sub-title">{% trans "Contributions" %} ({{ contributions|length }})</p>
             <div class="grant__stakeholders-list">
-              {% for subscriber in subscriptions %}
-                <a class="grant__stakeholders-item mr-2 text-center" href="{% url 'profile' subscriber.contributor_profile.handle %}">
-                  <img src="{{ subscriber.contributor_profile.avatar_url }}" />
+              {% for contribution in contributions %}
+                <a class="grant__stakeholders-item mr-2 text-center" href="{% url 'profile' contribution.subscription.contributor_profile.handle %}">
+                  <img src="{{ contribution.subscription.contributor_profile.avatar_url }}" />
                   <div>
-                    <span class="grant-profile">{{ subscriber.contributor_profile.handle }}</span>
+                    <span class="grant-profile">{{ contribution.subscription.contributor_profile.handle }}</span>
                   </div>
                 </a>
               {% empty %}
                 <div class="no-subscriptions">
-                  <p class="mb-1">{% trans "No active subscriptions." %}</p>
+                  <p class="mb-1">{% trans "No contributors." %}</p>
                 </div>
               {% endfor %}
             </div>
