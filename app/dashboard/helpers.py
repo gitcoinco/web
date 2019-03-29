@@ -451,7 +451,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 'featuring_date': timezone.make_aware(
                     timezone.datetime.fromtimestamp(metadata.get('featuring_date', 0)),
                     timezone=UTC),
-                'repo_type': metadata.get('repo_type', None),
+                'repo_type': metadata.get('repo_type', 'public'),
                 'unsigned_nda': unsigned_nda,
                 'bounty_owner_github_username': bounty_issuer.get('githubUsername', ''),
                 'bounty_owner_address': bounty_issuer.get('address', ''),
