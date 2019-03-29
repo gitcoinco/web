@@ -1881,6 +1881,7 @@ class Profile(SuperModel):
     job_location = JSONField(default=dict, blank=True)
     linkedin_url = models.CharField(max_length=255, default='', blank=True, null=True)
     resume = models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('The profile resume.'))
+    fee_percentage = models.IntegerField(default=10)
 
     objects = ProfileQuerySet.as_manager()
 
