@@ -325,6 +325,25 @@ def subscribe(request):
 
 
 def funder_bounties(request):
+
+    onboard_slides = [
+        {
+            'img': static("v2/images/presskit/illustrations/prime.svg"),
+            'title': _('Are you a developer or designer?'),
+            'subtitle': _('Contribute to exciting OSS project and get paid!'),
+            'type': 'contributor',
+            'active': 'active',
+            'more': '/bounties/contributor'
+        },
+        {
+            'img': static("v2/images/presskit/illustrations/regulus-white.svg"),
+            'title': _('Are you a funder or project organizer?'),
+            'subtitle': _('Fund your OSS bounties and get work done!'),
+            'type': 'funder',
+            'more': '/how/funder'
+        }
+    ]
+
     slides = [
         ("Dan Finlay", static("v2/images/testimonials/dan.jpg"),
          _("Once we had merged in multiple language support from a bounty, it unblocked the \
@@ -361,6 +380,7 @@ def funder_bounties(request):
     )
 
     context = {
+        'onboard_slides': onboard_slides,
         'activities': get_activities(),
         'is_outside': True,
         'slides': slides,
@@ -377,6 +397,24 @@ def funder_bounties(request):
 
 
 def contributor_bounties(request, tech_stack):
+
+    onboard_slides = [
+        {
+            'img': static("v2/images/presskit/illustrations/regulus-white.svg"),
+            'title': _('Are you a funder or project organizer?'),
+            'subtitle': _('Fund your OSS bounties and get work done!'),
+            'type': 'funder',
+            'active': 'active',
+            'more': '/bounties/funder'
+        },
+        {
+            'img': static("v2/images/presskit/illustrations/prime.svg"),
+            'title': _('Are you a developer or designer?'),
+            'subtitle': _('Contribute to exciting OSS project and get paid!'),
+            'type': 'contributor',
+            'more': '/how/contributor'
+        }
+    ]
 
     slides = [
         ("Daniel", static("v2/images/testimonials/gitcoiners/daniel.jpeg"),
@@ -489,6 +527,7 @@ def contributor_bounties(request, tech_stack):
 
     # tech_stack = '' #uncomment this if you wish to disable contributor specific LPs
     context = {
+        'onboard_slides': onboard_slides,
         'slides': slides,
         'slideDurationInMs': 6000,
         'active': 'home',

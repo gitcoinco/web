@@ -347,7 +347,7 @@ var get_search_URI = function(offset, order) {
   }
 
   if (keywords) {
-    uri += '&raw_data=' + keywords;
+    uri += '&keywords=' + keywords;
   }
 
   if (localStorage['org']) {
@@ -370,9 +370,14 @@ var get_search_URI = function(offset, order) {
     order_by = localStorage['order_by'];
   }
 
-  if (typeof order_by !== 'undefined') {
-    uri += '&order_by=' + order_by;
+  if (!document.hackathon) {
+    if (typeof order_by !== 'undefined') {
+      uri += '&order_by=' + order_by;
+    }
+  } else {
+    uri += '&event_tag=' + document.hackathon;
   }
+
   uri += '&offset=' + offset;
   uri += '&limit=' + results_limit;
   return uri;
@@ -420,31 +425,33 @@ var refreshBounties = function(event, offset, append, do_save_search) {
   var orgInput = $('#org')[0];
 
   $('#results-count span.num').html('<i class="fas fa-spinner fa-spin"></i>');
-  if (searchInput.value.length > 0) {
+  if (searchInput && searchInput.value.length > 0) {
     addTechStackKeywordFilters(searchInput.value.trim());
     searchInput.value = '';
     searchInput.blur();
     $('.close-icon').hide();
   }
 
-  if (orgInput.value.length > 0) {
-    addTechStackOrgFilters(orgInput.value.trim());
-    orgInput.value = '';
-    orgInput.blur();
-    $('.close-icon').hide();
-  }
+  if (!document.hackathon) {
+    if (orgInput.value.length > 0) {
+      addTechStackOrgFilters(orgInput.value.trim());
+      orgInput.value = '';
+      orgInput.blur();
+      $('.close-icon').hide();
+    }
 
-  save_sidebar_latest();
-  toggleAny(event);
-  getFilters();
-  if (do_save_search) {
-    if (!is_search_already_saved()) {
-      save_search();
+    save_sidebar_latest();
+    toggleAny(event);
+    getFilters();
+    if (do_save_search) {
+      if (!is_search_already_saved()) {
+        save_search();
+      }
+
+      paint_search_tabs();
+      window.history.pushState('', '', window.location.pathname + '?' + buildURI());
     }
   }
-  paint_search_tabs();
-
-  window.history.pushState('', '', '/explorer?' + buildURI());
 
   if (!append) {
     $('.nonefound').css('display', 'none');

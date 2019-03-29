@@ -524,7 +524,7 @@ waitforWeb3(function() {
 
     if (hasChanged) {
       _alert(gettext('Detected a web3 change.  Refreshing the page. '), 'info');
-      document.location.href = document.location.href;
+      document.location.reload();
       document.web3Changed = true;
     }
 
@@ -548,7 +548,7 @@ var wait_for_tx_to_mine_and_then_ping_server = function() {
         };
         var error = function(response) {
           // refresh upon error
-          document.location.href = document.location.href;
+          document.location.reload();
         };
         var success = function(response) {
           if (response.status == '200') {
@@ -559,7 +559,7 @@ var wait_for_tx_to_mine_and_then_ping_server = function() {
             if (response['url']) {
               document.location.href = response['url'];
             } else {
-              document.location.href = document.location.href;
+              document.location.reload();
             }
           } else {
             console.log('error from sync/web', response);
@@ -633,50 +633,131 @@ var attach_override_status = function() {
   });
 };
 
-
 var show_interest_modal = function() {
   var self = this;
+  var modals = $('#modalInterest');
+  let modalBody = $('#modalInterest .modal-content');
+  let modalUrl = `/interest/modal?redirect=${window.location.pathname}&pk=${document.result['pk']}`;
 
-  setTimeout(function() {
-    var url = '/interest/modal?redirect=' + window.location.pathname + '&pk=' + document.result['pk'];
+  modals.on('show.bs.modal', function() {
+    modalBody.load(modalUrl, ()=> {
+      if (document.result['repo_type'] === 'private') {
+        $('#nda-upload').show();
+        $('#issueNDA').prop('required', true);
+        document.result.unsigned_nda ? $('.nda-download-link').attr('href', document.result.unsigned_nda.doc) : $('#nda-upload').hide();
+      }
 
-    $.get(url, function(newHTML) {
-      var modal = $(newHTML).appendTo('body').modal({
-        modalClass: 'modal add-interest-modal'
-      });
-
-      var actionPlanForm = modal.find('form#action_plan');
-      var issueMessage = actionPlanForm.find('#issue_message');
+      let actionPlanForm = $('#action_plan');
+      let issueMessage = $('#issue_message');
 
       issueMessage.attr('placeholder', gettext('What steps will you take to complete this task? (min 30 chars)'));
 
-      modal.on('submit', function(event) {
+      actionPlanForm.on('submit', function(event) {
         event.preventDefault();
 
-        var msg = issueMessage.val().trim();
+        let msg = issueMessage.val().trim();
+        let issueNDA = $('#issueNDA')[0].files;
 
         if (!msg || msg.length < 30) {
           _alert({message: gettext('Please provide an action plan for this ticket. (min 30 chars)')}, 'error');
           return false;
         }
 
+        if (typeof issueNDA[0] !== 'undefined') {
+          const formData = new FormData();
 
-        add_interest(document.result['pk'], {
-          issue_message: msg
-        }).then(success => {
-          if (success) {
-            $(self).attr('href', '/uninterested');
-            $(self).find('span').text(gettext('Stop Work'));
-            $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
-            $.modal.close();
-          }
-        }).catch((error) => {
-          if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
-            return;
-          throw error;
-        });
+          formData.append('docs', issueNDA[0]);
+          formData.append('doc_type', 'signed_nda');
+          const ndaSend = {
+            url: '/api/v0.1/bountydocument',
+            method: 'POST',
+            data: formData,
+            processData: false,
+            dataType: 'json',
+            contentType: false
+          };
+
+          $.ajax(ndaSend).done(function(response) {
+            _alert(response.message, 'info');
+            add_interest(document.result['pk'], {
+              issue_message: msg,
+              signed_nda: response.bounty_doc_id
+            }).then(success => {
+              if (success) {
+                $(self).attr('href', '/uninterested');
+                $(self).find('span').text(gettext('Stop Work'));
+                $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
+                modals.bootstrapModal('hide');
+              }
+            }).catch((error) => {
+              if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
+                return;
+              throw error;
+            });
+          }).fail(function(error) {
+            _alert(error, 'error');
+          });
+        } else {
+          add_interest(document.result['pk'], {
+            issue_message: msg
+          }).then(success => {
+            if (success) {
+              $(self).attr('href', '/uninterested');
+              $(self).find('span').text(gettext('Stop Work'));
+              $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
+              modals.bootstrapModal('hide');
+            }
+          }).catch((error) => {
+            if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
+              return;
+            throw error;
+          });
+        }
+
       });
+
     });
+  });
+  modals.bootstrapModal('show');
+};
+
+const repoInstructions = () => {
+  let linkToSettings = `https://github.com/${document.result.github_org_name}/${document.result.github_repo_name}/settings/collaboration`;
+
+
+  let modalTmp = `
+  <div class="modal fade g-modal" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body text-center center-block w-75">
+          <h5>
+            You have successfully approved the contributor to work on your bounty!
+          </h5>
+          <div>
+            <img src="${document.contxt.STATIC_URL}v2/images/repo-instructions.png" class="mw-100 my-4" alt="">
+          </div>
+          <p class="mb-4">Now you need to invite the contributor to your private repo on GitHub You can find it under <b>GitHub repository > Settings > Collaborators</b></p>
+          <div>
+            <img src="${document.contxt.STATIC_URL}v2/images/repo-settings.png" class="mw-100" alt="">
+          </div>
+        </div>
+        <div class="modal-footer justify-content-center">
+          <a href="${linkToSettings}" target="_blank" class="button button--primary"><i class="fab fa-github"></i> Go to Repo Settings</a>
+        </div>
+      </div>
+    </div>
+  </div>`;
+
+  $(modalTmp).bootstrapModal('show');
+
+  $(document, modalTmp).on('hidden.bs.modal', function(e) {
+    $('#exampleModalCenter').remove();
+    $(modalTmp).bootstrapModal('dispose');
   });
 };
 
@@ -1034,15 +1115,24 @@ var do_actions = function(result) {
   }
 
   if (show_change_bounty) {
-    const _entry = {
-      enabled: true,
-      href: '/bounty/change/' + result['pk'],
-      text: gettext('Edit Issue Details'),
-      parent: 'right_actions',
-      title: gettext('Update your Bounty Settings to get the right Crowd')
-    };
+    const _entry = [
+      {
+        enabled: true,
+        href: '/bounty/change/' + result['pk'],
+        text: gettext('Edit Issue Details'),
+        parent: 'right_actions',
+        title: gettext('Update your Bounty Settings to get the right Crowd')
+      }// ,
+      // {
+      //   enabled: true,
+      //   href: '/issue/refund_request?pk=' + result['pk'],
+      //   text: gettext('Request Fee Refund'),
+      //   parent: 'right_actions',
+      //   title: gettext('Raise a request if you believe you need your fee refunded')
+      // }
+    ];
 
-    actions.push(_entry);
+    actions.push(..._entry);
   }
 
   if (show_github_link) {
@@ -1055,7 +1145,8 @@ var do_actions = function(result) {
     const _entry = {
       enabled: true,
       href: github_url,
-      text: gettext('View On Github') +
+      text: (result['repo_type'] === 'private' ? '<i class="fas fa-lock"></i> ' +
+            gettext('Private Repo') : gettext('View On Github')) +
             (result['is_issue_closed'] ? gettext(' (Issue is closed)') : ''),
       parent: 'right_actions',
       title: gettext('View issue details and comments on Github'),
@@ -1240,6 +1331,9 @@ const build_uri_for_pull_bounty_from_api = function() {
   if (typeof document.issue_stdbounties_id != 'undefined') {
     uri = uri + '&standard_bounties_id=' + document.issue_stdbounties_id;
   }
+  if (typeof document.eventTag != 'undefined') {
+    uri = uri + '&event_tag=' + document.eventTag;
+  }
   return uri;
 };
 
@@ -1266,6 +1360,10 @@ var pull_bounty_from_api = function() {
         render_activity(result, results);
 
         document.result = result;
+
+        if (typeof promptPrivateInstructions !== 'undefined' && result.repo_type === 'private') {
+          repoInstructions();
+        }
         return;
       }
     }
@@ -1324,6 +1422,13 @@ const process_activities = function(result, bounty_activities) {
     const fulfillment = meta.fulfillment || {};
     const new_bounty = meta.new_bounty || {};
     const old_bounty = meta.old_bounty || {};
+    const has_signed_nda = result.interested.length ?
+      result.interested.map(interest => {
+        if (interest.profile.handle === _activity.profile.handle && interest.signed_nda) {
+          return interest.signed_nda.doc;
+        }
+        return false;
+      }) : false;
     const has_pending_interest = !!result.interested.find(interest =>
       interest.profile.handle === _activity.profile.handle && interest.pending);
     const has_interest = !!result.interested.find(interest =>
@@ -1341,6 +1446,14 @@ const process_activities = function(result, bounty_activities) {
       profile_handle = _activity.metadata.to_username;
     }
 
+    let to_username = null;
+    let kudos = null;
+
+    if (type === 'new_kudos') {
+      to_username = meta.to_username.slice(1);
+      kudos = _activity.kudos.kudos_token_cloned_from.image;
+    }
+
     _result.push({
       profileId: profile_id,
       name: profile_handle,
@@ -1349,6 +1462,7 @@ const process_activities = function(result, bounty_activities) {
       age: timeDifference(now, new Date(_activity.created)),
       activity_type: _activity.activity_type,
       status: _activity.activity_type === 'work_started' ? 'started' : 'stopped',
+      signed_nda: has_signed_nda,
       uninterest_possible: uninterest_possible,
       slash_possible: slash_possible,
       approve_worker_url: meta.approve_worker_url,
@@ -1369,7 +1483,9 @@ const process_activities = function(result, bounty_activities) {
       token_value_in_usdt_new: new_bounty.token_value_in_usdt,
       token_value_in_usdt_old: old_bounty.token_value_in_usdt,
       token_value_time_peg_new: new_bounty.token_value_time_peg,
-      token_name: result['token_name']
+      token_name: result['token_name'],
+      to_username: to_username,
+      kudos: kudos
     });
   });
 

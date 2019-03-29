@@ -88,6 +88,7 @@ $(document).ready(function() {
       const payload = JSON.stringify(formData);
 
       var payFeaturedBounty = function() {
+        indicateMetamaskPopup();
         web3.eth.sendTransaction({
           to: '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
           from: web3.eth.coinbase,
@@ -97,13 +98,19 @@ $(document).ready(function() {
           gasLimit: web3.toHex(318730)
         },
         function(error, result) {
-          saveAttestationData(
-            result,
-            ethFeaturedPrice,
-            '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
-            'featuredbounty'
-          );
-          saveBountyChanges();
+          indicateMetamaskPopup(true);
+          if (error) {
+            _alert({ message: gettext('Unable to upgrade to featured bounty. Please try again.') }, 'error');
+            console.log(error);
+          } else {
+            saveAttestationData(
+              result,
+              ethFeaturedPrice,
+              '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+              'featuredbounty'
+            );
+            saveBountyChanges();
+          }
         });
       };
 

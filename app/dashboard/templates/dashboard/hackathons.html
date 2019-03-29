@@ -1,0 +1,71 @@
+{% comment %}
+    Copyright (C) 2019 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static humanize %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+
+    <style>
+      .card-img-top {
+        height: 253px;
+        padding: 1rem;
+        background: rgb(25, 0, 63);
+        object-fit: contain;
+      }
+    </style>
+  </head>
+  <body class="interior {{active}} g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'shared/nav.html' %}
+      {% include 'shared/minihero.html' with h1='Hackathons' suppress_logo=0 position_h1_below_logo=True hide_rain=True %}
+
+    </div>
+
+    <div class="container">
+      <div class="row justify-content-around my-5">
+        {% for hackathon in hackathons %}
+        <div class="col-xs-12 col-sm-6 col-lg-3">
+          <div class="card">
+            {% if hackathon.logo_svg %}
+              <img class="card-img-top" width="364" src="{{MEDIA_URL}}{{ hackathon.logo_svg }}"/>
+            {% elif hackathon.logo %}
+              <img class="card-img-top" width="364" src="{{MEDIA_URL}}{{ hackathon.logo }}"/>
+            {% endif %}
+            <div class="card-body">
+              <h5 class="card-title"><a href="{% url 'hackathon' hackathon.slug %}">{{ hackathon.name }}</a></h5>
+              <div class="small">
+                Starts: <time class="" datetime="{{ hackathon.start_date|date:'c' }}" title="{{ hackathon.start_date }}">{{ hackathon.start_date|date:"m/d/Y" }}</time>
+              </div>
+              <div class="small">
+                Ends: <time class="" datetime="{{ hackathon.end_date|date:'c' }}" title="{{ hackathon.end_date }}">{{ hackathon.end_date|date:"m/d/Y" }}</time>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+    {% include 'shared/messages.html' %}
+  </body>

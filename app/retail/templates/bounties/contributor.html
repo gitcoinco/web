@@ -43,6 +43,8 @@
         {% include 'bounties/contributor/hero.html' %}
       </div>
 
+      {% include 'shared/onboard_slider.html' %}
+
       <div class="contributor" id="codefund"></div>
 
       <div class="container-fluid px-5 pb-5 pt-2 story_container">
@@ -110,6 +112,13 @@
       </div>
     </div>
     {% include 'shared/footer_scripts.html' with slim=1 %}
+    <script src="{% static "v2/js/popper.min.js" %}"></script>
+    <script src="{% static "v2/js/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+    <script>
+      var bootstrapTooltip = $.fn.tooltip.noConflict()
+      var bootstrapModal = $.fn.modal.noConflict()
+      $.fn.bootstrapModal = bootstrapModal
+    </script>
   </body>
   {% if tech_stack %}
     <script>
