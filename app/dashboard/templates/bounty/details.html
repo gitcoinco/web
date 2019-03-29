@@ -440,12 +440,13 @@
       html: true,
       title: function() {
         var element = $(this);
-        var username = element.attr('data-username');
-          fetch('/api/v0.1/profile/'+ username, {
+        var data = '';
+          fetch('/api/v0.1/profile/'+ element.attr('data-username'), {
           method: 'GET'
           }).then(function(response) {
             return response.json();
           }).then(function(json) {
+            $('.org_logos').html(convertToImage(json.profile.organizations));
             $('.earned').html('~' + json.profile.total_earned + ' ETH earned')
             $('.contributor-position').html('#' + json.profile.position)
             $('.completed-bounties').html(json.statistics.work_completed)
@@ -454,13 +455,13 @@
             $('.abandoned-bounties').html(json.statistics.work_abandoned)
             $('.removed-bounties').html(json.statistics.work_removed)
             $('.activity-title').html(json.recent_activity.activity_metadata.title)
-            $('.current_status').html(json.recent_activity.activity_type)
+            $('.current_status').html(currentStatus(json.recent_activity.activity_type))
             $('.time-ago').html(moment(json.recent_activity.created, 'YYYYMMDD').fromNow())
           }).catch(function(err) {
             $('body').popover('hide')
             return _alert({ message: err }, 'error');
           })
-        return username;
+        return data;
       },
       trigger: 'hover',
       placement: 'auto',
@@ -469,6 +470,26 @@
                   <div class="popover-body p-0"></div>
                 </div>`
     })
+    function currentStatus(status) {
+      if (status === 'worker_applied') {
+        return 'Work Applied';
+      } else if (status === 'start_work') {
+        return 'Work Started';
+      } else if (status === 'stop_work') {
+        return 'Work Stopped';
+      } else {
+        return status;
+      }
+    }
+    function convertToImage(images) {
+      var a = [];
+      $.each(images, function(image) {
+        var image_url = "/dynamic/avatar/"+image;
+        var link = "<img src=\""+ image_url + "\" alt=\"" + image + "\" width=\"30px\" />";
+        a.push(link);
+      })
+      return a;
+    }
   </script>
   <script src="{% static "v2/js/pages/bounty_funder_payout_reminder.js" %}"></script>
   <script src="{% static "v2/js/pages/bounty_share.js" %}"></script>

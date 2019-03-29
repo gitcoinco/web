@@ -1318,7 +1318,7 @@ def profile_keywords(request, handle):
             'work_removed': count_work_removed
         }
     }
-    return JsonResponse(response)
+    return JsonResponse(response, safe=False)
 
 
 def profile_details(request, handle):
