@@ -213,6 +213,8 @@ def change_grant_owner_reject(grant, profile):
 def new_supporter(grant, subscription):
     from_email = settings.CONTACT_EMAIL
     to_email = grant.admin_profile.email
+    if not to_email:
+        to_email = grant.admin_profile.user.email
     cur_language = translation.get_language()
 
     try:
