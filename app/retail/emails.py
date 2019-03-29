@@ -935,7 +935,7 @@ community together for a fantastic few weeks of building, prizes, and more. If y
 </p>
 <p>
 This week, we passed $1 million in platform value. This means $1 million worth of bounties, grants, and kudos have been created and fulfilled over the course of the last 18 months. It's been an incredible ride, and we're excited
-for the next 18 months. This milestone (and the proof of our value to the ecosystem) brings a renewed focus on a sustainable Gitcoin. <a href="https://medium.com/gitcoin/a-gitcoin-platform-fee-905a0507961f">Read more about our new 10% platform fee.</a>
+for the next 18 months. This milestone (and the proof of our value to the ecosystem) brings a renewed focus on a sustainable Gitcoin. <a href="https://medium.com/gitcoin/a-gitcoin-platform-fee-905a0507961f">Read more about our new 10% bounty platform fee.</a>
 </p>
 
 {kudos_friday}
