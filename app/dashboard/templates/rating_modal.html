@@ -37,8 +37,20 @@
           </div>
           <form id="ratingForm">
             <input type="hidden" name="bounty_id" value="{{ bounty.id }}">
-            <!-- <input type="hidden" name="review[reviewType]" value="approver"> -->
-            <input type="hidden" name="review[receiver]" value="{{ bounty.bounty_owner_github_username }}">
+
+            {% if user.username|lower ==  bounty.bounty_owner_github_username|lower %}
+              <!-- funder -->
+              <input type="hidden" name="review[reviewType]" value="approver">
+              {% if fulfillments %}
+                {% for fulfillment in fulfillments|slice:":1" %}
+                  <input type="hidden" name="review[receiver]" value="{{ fulfillment.fulfiller_github_username }}">
+                {% endfor %}
+              {% endif %}
+            {% else %}
+                <!-- contributor -->
+              <input type="hidden" name="review[reviewType]" value="worker">
+              <input type="hidden" name="review[receiver]" value="{{ bounty.bounty_owner_github_username }}">
+            {% endif %}
             {% include 'shared/rating.html' with counterparty='contributor' id='review[rating]' class="text-center" %}
             <div>
               <p class="p-2 my-4 font-smaller-1 text-black-60">{% trans 'Your feedback is very valuable for us! Only Gitcoin admins are able to see your feedback.' %}</p>
@@ -46,7 +58,6 @@
               <p class="p-2 mb-0 font-weight-bold">
                 {% trans 'How was your experience with the contributor?' %}
               </p>
-              {{user.email}}
 
               {% include 'shared/rating.html' with counterparty='contributor' id='review[satisfaction_rating]' label="Satisfaction" class="rating--small text-left" %}
               {% include 'shared/rating.html' with counterparty='contributor' id='review[communication_rating]' label="Comunication/Responsiveness" class="rating--small text-left" %}

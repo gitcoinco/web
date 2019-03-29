@@ -335,8 +335,8 @@ def post_comment(request):
             'success': False,
             'msg': 'There is already a approval comment',
         })
-    if request.POST.get('review[reviewType]','approver') == 'approver':
-        receiver_profile = Profile.objects.filter(handle=request.POST.get('review[receiver]', '')).first()
+    if request.POST.get('review[reviewType]') == 'worker':
+        receiver_profile = Profile.objects.filter(handle=request.POST.get('review[receiver]')).first()
     else:
         receiver_profile = bountyObj.bounty_owner_profile
     kwargs = {
@@ -383,6 +383,7 @@ def rating_modal(request, bounty_id):
     params = get_context(
         ref_object=bounty,
     )
+    params['fulfillments'] = bounty.fulfillments.filter(bounty_id=bounty)
     params['user'] = request.user if request.user.is_authenticated else None
 
     return TemplateResponse(request, 'rating_modal.html', params)
@@ -1657,10 +1658,16 @@ def profile(request, handle):
     context['sent_kudos_count'] = sent_kudos.count()
     context['verification'] = profile.get_my_verified_check
 
-    unrated_funded_bounties = Bounty.objects.current().filter(
+    # unrated_funded_bounties = Bounty.objects.current().filter(
+    #     bounty_owner_github_username=profile.handle,
+    #     idx_status='done'
+    # )
+
+    unrated_funded_bounties = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile') \
+        .filter(
         bounty_owner_github_username=profile.handle,
-        idx_status='done'
-    )
+        idx_status='done')
+
     unrated_contributed_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
         .filter(interested__pending=False).filter(idx_status='done')
 
