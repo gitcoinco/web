@@ -513,6 +513,6 @@ def build_stat_results(keyword=None):
     pp.profile_time('kudos_tokens')
     pp.profile_time('final')
     context['keyword'] = keyword
-    context['title'] = f"{keyword.capitalize() if keyword else ''} Results"
+    context['title'] = f"${round(context['universe_total_usd'] / 1000000, 1)}m in " + f"{keyword.capitalize() if keyword else ''} Results"
     context['programming_languages'] = ['All'] + programming_languages
     return context
