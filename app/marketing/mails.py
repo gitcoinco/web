@@ -103,10 +103,10 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     try:
         response = sg.client.mail.send.post(request_body=mail.get())
     except UnauthorizedError as e:
-        logger.error(f'-- Sendgrid Mail failure - Unauthorized - Check sendgrid credentials')
+        logger.error(f'-- Sendgrid Mail failure - {_to_email} / {categories} - Unauthorized - Check sendgrid credentials')
         logger.error(e)
     except HTTPError as e:
-        logger.error(f'-- Sendgrid Mail failure - {e}')
+        logger.error(f'-- Sendgrid Mail failure - {_to_email} / {categories} - {e}')
 
     return response
 
