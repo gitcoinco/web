@@ -19,7 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from unittest.mock import patch
 
-from marketing.mails import setup_lang, unread_notification_email_weekly_roundup
+from marketing.management.commands.send_unread_notification_emails_roundup import Command
+from marketing.models import EmailSubscriber
 from test_plus.test import TestCase
 
 
@@ -28,12 +29,40 @@ class TestSendUnreadNotificationEmailsRoundup(TestCase):
 
     def setUp(self):
         """Perform setup for the testcase."""
-        self.email = 'matrix4u2002@gmail.com'
+        EmailSubscriber.objects.create(
+            email='john@bar.com',
+            source='mysource',
+            newsletter=True
+        )
+        EmailSubscriber.objects.create(
+            email='jackson@bar.com',
+            source='mysource',
+            newsletter=True
+        )
+        EmailSubscriber.objects.create(
+            email='fred@bar.com',
+            source='mysource',
+            newsletter=True
+        )
+        EmailSubscriber.objects.create(
+            email='paul@bar.com',
+            source='mysource'
+        )
 
-    @patch('marketing.mails.send_mail')
-    def test_send_unread_notification_emails(self, mock_send_mail, *args):
-        """Test command send unread notification"""
+    @patch('time.sleep')
+    @patch('marketing.management.commands.send_unread_notification_emails_roundup.unread_notification_email_weekly_roundup')
+    def test_handle_no_options(self, mock_unread_notification_email_weekly_roundup, *args):
+        """Test command roundup when live option is False."""
+        Command().handle(exclude_startswith=None, filter_startswith=None, start_counter=0, live=False)
 
-        setup_lang(self.email)
-        unread_notification_email_weekly_roundup(to_emails=[self.email])
-        assert mock_send_mail.call_count == 1
+        assert mock_unread_notification_email_weekly_roundup.call_count == 0
+
+    @patch('time.sleep')
+    @patch('marketing.management.commands.send_unread_notification_emails_roundup.unread_notification_email_weekly_roundup')
+    def test_handle_with_options(self, mock_unread_notification_email_weekly_roundup, *args):
+        """Test command roundup which various options."""
+        Command().handle(exclude_startswith='f', filter_startswith='jack', start_counter=0, live=True)
+
+        assert mock_unread_notification_email_weekly_roundup.call_count == 1
+
+        mock_unread_notification_email_weekly_roundup.assert_called_once_with(['jackson@bar.com'])
