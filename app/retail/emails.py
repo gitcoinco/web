@@ -914,8 +914,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Sneak Peek: A Gitcoin Hackathon Is Coming"
-    new_kudos_pks = [2050, 2051, 2049]
+    subject = "The Ethereal Hackathon Grows | $1MM In Platform Value"
+    new_kudos_pks = [2244, 2238, 2240]
     new_kudos_size_px = 150
 
     # generate an avatar
@@ -951,19 +951,18 @@ def render_new_bounty_roundup(to_email):
 Hi Gitcoiners,
 </p>
 <p>
-A Gitcoin Hackathon is coming soon. <a href="https://gitcoin.typeform.com/to/j7CSbV">Pre-register now!</a> We're incredibly excited to bring our
-community together for a fantastic few weeks of building, prizes, and more. <a href="https://gitcoin.typeform.com/to/j7CSbV">Join the waitlist</a> and let us know
-what you'd like to see in the additional comments section. See you there.
+The Ethereal Hackacthon now has $40K in prizes and 150+ confirmed hackers, and we have a lot more time for you to sign up. <a href="https://gitcoin.typeform.com/to/j7CSbV">Register now!</a> We're incredibly excited to bring our
+community together for a fantastic few weeks of building, prizes, and more. If you're interested in joining Microsoft, ConsenSys, and many other sponsors, <a href="https://gitcoin.typeform.com/to/YeIflB">let us know here.</a>
 </p>
 <p>
-This week, we wrote up <a href="https://medium.com/gitcoin/whats-new-in-gitcoin-ef69f69cbb81">a Gitcoin product update.</a> We've built a lot
-of things in Q1 and we're excited for you to see them all!
+This week, we passed $1 million in platform value. This means $1 million worth of bounties, grants, and kudos have been created and fulfilled over the course of the last 18 months. It's been an incredible ride, and we're excited
+for the next 18 months. This milestone (and the proof of our value to the ecosystem) brings a renewed focus on a sustainable Gitcoin. <a href="https://medium.com/gitcoin/a-gitcoin-platform-fee-905a0507961f">Read more about our new 10% platform fee.</a>
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Gitcoin Livestream is back this week with Cosmos + SourceCred! Join us <a href="https://gitcoin.co/livestream"> at 5PM ET or catch it on <a href="https://twitter.com/GetGitcoin">Twitter</a>!
+            Gitcoin Livestream is back this week with MetaMask + Bunz! Join us <a href="https://gitcoin.co/livestream"> at 5PM ET or catch it on <a href="https://twitter.com/GetGitcoin">Twitter</a>!
         </li>
     </ul>
 </p>
@@ -973,34 +972,34 @@ Back to shipping,
 
 '''
     highlights = [{
-        'who': 'iamonuwa',
-        'who_link': True,
-        'what': 'Great work on Storj by Onuwa!',
-        'link': 'https://gitcoin.co/issue/jschiarizzi/storj-ipfs-gateway/2/2590',
-        'link_copy': 'View more',
-    }, {
-        'who': 'cryptokat',
-        'who_link': True,
-        'what': 'Good work on ethereum-ts',
-        'link': 'https://gitcoin.co/issue/ethereum-ts/TypeChain/135/2574',
-        'link_copy': 'View more',
-    }, {
         'who': 'eswarasai',
         'who_link': True,
-        'what': 'Work on Sabre by a longtime contributor!',
-        'link': 'https://gitcoin.co/issue/b-mueller/sabre/8/2540',
+        'what': 'Great work on sabre by Eswarasai!',
+        'link': 'https://gitcoin.co/issue/b-mueller/sabre/25/2689',
+        'link_copy': 'View more',
+    }, {
+        'who': 'dappproletariat',
+        'who_link': True,
+        'what': 'Great content work on collectibles',
+        'link': 'https://gitcoin.co/issue/kauri-io/Content/22/2629',
+        'link_copy': 'View more',
+    }, {
+        'who': 'mirshko',
+        'who_link': True,
+        'what': 'Help on missing bounties on Centrifuge!',
+        'link': 'https://gitcoin.co/issue/centrifuge/website/97/2647',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/status-im/status-components/issues/3',
-        'primer': 'React Native support for Status!',
+        'url': 'https://github.com/jschiarizzi/storj-ipfs-gateway/issues/9',
+        'primer': 'How can we drive IPFS adoption? Help and get paid!',
     }, {
-        'url': 'https://github.com/counterfactual/monorepo/issues/950',
-        'primer': 'Work with the Counter Factual team on state channels!',
+        'url': 'https://github.com/poanetwork/blockscout/issues/811',
+        'primer': 'Help improve blockscout, a POA Network project',
     }, {
-        'url': 'https://github.com/paritytech/parity-ethereum/issues/10085',
-        'primer': 'Work on Parity Ethereum!',
+        'url': 'https://github.com/prysmaticlabs/prysm/issues/1889',
+        'primer': 'Work on sharding with the Prysm team!',
     }, ]
 
     num_leadboard_items = 5
