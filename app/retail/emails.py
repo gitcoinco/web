@@ -914,8 +914,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Save the date; Ethereal Virtual Hackathon April 15th — 30th"
-    new_kudos_pks = [1106, 2110, 2050, 2116]
+    subject = "The Ethereal Hackathon Grows | $1MM In Platform Value"
+    new_kudos_pks = [2244, 2238, 2240]
     new_kudos_size_px = 150
 
     kudos_friday = f'''
@@ -930,13 +930,19 @@ def render_new_bounty_roundup(to_email):
 Hi Gitcoiners,
 </p>
 <p>
-We're excited to announce the date for the <a href="https://gitcoin.co/hackathon/ethhack2019">Ethereal Virtual hackathon</a>.  Join us April 15th-30th for Hackathon challenges, which will be posted as bounties, with the best hacks receiving prizes in ETH & ERC-20 tokens. Main track winners will receive free tickets to Ethereal NY to present their project live on stage!  <a href="https://medium.com/gitcoin/the-ethereal-hackathon-4f5dc2eb56d6">More details here</a>. 
+The Ethereal Hackacthon now has $40K in prizes and 150+ confirmed hackers, and we have a lot more time for you to sign up. <a href="https://gitcoin.typeform.com/to/j7CSbV">Register now!</a> We're incredibly excited to bring our
+community together for a fantastic few weeks of building, prizes, and more. If you're interested in joining Microsoft, ConsenSys, and many other sponsors, <a href="https://gitcoin.typeform.com/to/YeIflB">let us know here.</a>
 </p>
+<p>
+This week, we passed $1 million in platform value. This means $1 million worth of bounties, grants, and kudos have been created and fulfilled over the course of the last 18 months. It's been an incredible ride, and we're excited
+for the next 18 months. This milestone (and the proof of our value to the ecosystem) brings a renewed focus on a sustainable Gitcoin. <a href="https://medium.com/gitcoin/a-gitcoin-platform-fee-905a0507961f">Read more about our new 10% platform fee.</a>
+</p>
+
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Gitcoin Livestream is back this week with Eric Conner and Anthony Sassano from EthHub and Igor from POA! Join us <a href="https://gitcoin.co/livestream"> at 5PM ET or catch it on <a href="https://twitter.com/GetGitcoin">Twitter</a>!
+            Gitcoin Livestream is back this week with MetaMask + Bunz! Join us <a href="https://gitcoin.co/livestream"> at 5PM ET or catch it on <a href="https://twitter.com/GetGitcoin">Twitter</a>!
         </li>
     </ul>
 </p>
@@ -946,34 +952,34 @@ Back to shipping,
 
 '''
     highlights = [{
-        'who': 'e18r ',
-        'who_link': True,
-        'what': 'Some nice work on this giveth bounty :)',
-        'link': 'https://gitcoin.co/issue/Giveth/giveth-dapp/522/2418',
-        'link_copy': 'View more',
-    }, {
-        'who': 'rsercano ',
-        'who_link': True,
-        'what': 'Good work on this CI and CD pipeline..',
-        'link': 'https://gitcoin.co/issue/status-im/status-components/5/2608',
-        'link_copy': 'View more',
-    }, {
         'who': 'eswarasai',
         'who_link': True,
-        'what': 'Eswara is one of our longtime community members!',
-        'link': 'https://gitcoin.co/issue/centrifuge/go-centrifuge/835/2593',
+        'what': 'Great work on sabre by Eswarasai!',
+        'link': 'https://gitcoin.co/issue/b-mueller/sabre/25/2689',
+        'link_copy': 'View more',
+    }, {
+        'who': 'dappproletariat',
+        'who_link': True,
+        'what': 'Great content work on collectibles',
+        'link': 'https://gitcoin.co/issue/kauri-io/Content/22/2629',
+        'link_copy': 'View more',
+    }, {
+        'who': 'mirshko',
+        'who_link': True,
+        'what': 'Help on missing bounties on Centrifuge!',
+        'link': 'https://gitcoin.co/issue/centrifuge/website/97/2647',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/gitcoinco/skunkworks/issues/89',
-        'primer': '20ETH Security bounty for Ethereum Istanbul Hard Fork!',
+        'url': 'https://github.com/jschiarizzi/storj-ipfs-gateway/issues/9',
+        'primer': 'How can we drive IPFS adoption? Help and get paid!',
     }, {
-        'url': 'https://github.com/ShipChain/hydra/issues/3',
-        'primer': 'ShipChain sidechain test network evaluation bounty!',
+        'url': 'https://github.com/poanetwork/blockscout/issues/811',
+        'primer': 'Help improve blockscout, a POA Network project',
     }, {
-        'url': 'https://github.com/gitcoinco/creative/issues/51',
-        'primer': 'Print your own Gitcoin Stickers & get ETH for it!',
+        'url': 'https://github.com/prysmaticlabs/prysm/issues/1889',
+        'primer': 'Work on sharding with the Prysm team!',
     }, ]
 
     num_leadboard_items = 5
