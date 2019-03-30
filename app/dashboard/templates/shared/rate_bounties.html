@@ -74,26 +74,28 @@
         <div class="tab-pane fade {% if unrated_funded_bounties|length > 0 and  unrated_contributed_bounties|length < 1 %} show active {% endif %}" id="funded" role="tabpanel" aria-labelledby="home-tab">
           <div class="scroll-carousel">
             {% for bounty in unrated_funded_bounties %}
-              <div class="card-rating">
-                <div class="card-rating__header">
-                  {% if bounty.funding_organisation %}
-                    <img class="card-rating__avatar rounded-circle" alt="{{ bounty.funding_organisation }}" width="56" height="56" src="{% url 'org_avatar' bounty.funding_organisation %}">
-                  {% else %}
-                    <img class="card-rating__avatar rounded-circle" alt="{{ bounty.bounty_owner_github_username }}" width="56" height="56" src="{% url 'org_avatar' bounty.bounty_owner_github_username %}">
-                  {% endif %}
-                  <div class="ml-2 text-dark">
-                    <a href="{{ bounty.url }}" class="card-rating__title">{{ bounty.title }}</a>
-                    by {{ bounty.bounty_owner_github_username }} <img src="{% url 'org_avatar' bounty.bounty_owner_github_username %}" alt="{{ bounty.bounty_owner_github_username }}" width="21" height="21" class="rounded-circle">
-                    <div class="d-flex mt-2">
-                      <div class="tag token">{{ bounty.value_true }} <span>{{ bounty.token_name }}</span></div>
-                      {% if bounty.value_in_usdt_now %}
-                        <div class="tag usd">{{ bounty.value_in_usdt_now }} <span>USD</span></div>
-                      {% endif %}
+              {% for fulfilment in bounty.fulfillments.all %}
+                <div class="card-rating">
+                  <div class="card-rating__header">
+                    {% if bounty.funding_organisation %}
+                      <img class="card-rating__avatar rounded-circle" alt="{{ bounty.funding_organisation }}" width="56" height="56" src="{% url 'org_avatar' bounty.funding_organisation %}">
+                    {% else %}
+                      <img class="card-rating__avatar rounded-circle" alt="{{ bounty.bounty_owner_github_username }}" width="56" height="56" src="{% url 'org_avatar' bounty.bounty_owner_github_username %}">
+                    {% endif %}
+                    <div class="ml-2 text-dark">
+                      <a href="{{ bounty.url }}" class="card-rating__title">{{ bounty.title }}</a>
+                      {{ fulfilment.fulfiller_github_username }} <img src="{% url 'org_avatar' fulfilment.fulfiller_github_username %}" alt="{{ fulfilment.fulfiller_github_username }}" width="21" height="21" class="rounded-circle">
+                      <div class="d-flex mt-2">
+                        <div class="tag token">{{ bounty.value_true }} <span>{{ bounty.token_name }}</span></div>
+                        {% if bounty.value_in_usdt_now %}
+                          <div class="tag usd">{{ bounty.value_in_usdt_now }} <span>USD</span></div>
+                        {% endif %}
+                      </div>
                     </div>
                   </div>
+                  {% include 'shared/rating.html' with counterparty='funder' id='str' data='true' username=fulfilment.fulfiller_github_username %}
                 </div>
-                {% include 'shared/rating.html' with counterparty='funder' id='str' data='true' %}
-              </div>
+              {% endfor %}
             {% endfor %}
           </div>
           {% if not unrated_funded_bounties %}

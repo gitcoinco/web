@@ -24,6 +24,15 @@
           </button>
         </div>
         <div class="modal-body center-block">
+          <h2 class="h5 text-center font-weight-bold">
+            Rate this
+            {% if user.username|lower ==  bounty.bounty_owner_github_username|lower %}
+              Contributor
+            {% else %}
+              Funder
+            {% endif %}
+          </h2>
+          <p class="p-2 text-center font-smaller-1 text-black-60">{% trans 'Your feedback is very valuable for us! Only Gitcoin admins are able to see your feedback.' %}</p>
           <div class="text-center">
             {% if bounty.funding_organisation %}
               <img class="card-rating__avatar rounded-circle" alt="{{ bounty.funding_organisation }}" width="63" height="63" src="{% url 'org_avatar' bounty.funding_organisation %}">
@@ -32,7 +41,12 @@
             {% endif %}
             <h6 class="font-weight-semibold mt-3">{{ bounty.title }}</h6>
             <div class="small text-black-60">
-              by <a class="font-weight-semibold text-current" href="{% url "profile" bounty.bounty_owner_github_username %}">{{ bounty.bounty_owner_github_username }}</a> <img src="{% url 'org_avatar' bounty.bounty_owner_github_username %}" alt="{{ bounty.bounty_owner_github_username }}" width="21" height="21" class="rounded-circle">
+              {% if user.username|lower ==  bounty.bounty_owner_github_username|lower %}
+                Work submitted by
+              {% else %}
+                Funded by
+              {% endif %}
+              <a class="font-weight-semibold text-current" href="{% url "profile" receiver %}">{{ receiver }}</a> <img src="{% url 'org_avatar' receiver %}" alt="{{ receiver }}" width="21" height="21" class="rounded-circle">
             </div>
           </div>
           <form id="ratingForm">
@@ -41,24 +55,13 @@
             {% if user.username|lower ==  bounty.bounty_owner_github_username|lower %}
               <!-- funder -->
               <input type="hidden" name="review[reviewType]" value="approver">
-              {% if fulfillments %}
-                {% for fulfillment in fulfillments|slice:":1" %}
-                  <input type="hidden" name="review[receiver]" value="{{ fulfillment.fulfiller_github_username }}">
-                {% endfor %}
-              {% endif %}
             {% else %}
                 <!-- contributor -->
               <input type="hidden" name="review[reviewType]" value="worker">
-              <input type="hidden" name="review[receiver]" value="{{ bounty.bounty_owner_github_username }}">
             {% endif %}
+            <input type="hidden" name="review[receiver]" value="{{ receiver }}">
             {% include 'shared/rating.html' with counterparty='contributor' id='review[rating]' class="text-center" %}
             <div>
-              <p class="p-2 my-4 font-smaller-1 text-black-60">{% trans 'Your feedback is very valuable for us! Only Gitcoin admins are able to see your feedback.' %}</p>
-
-              <p class="p-2 mb-0 font-weight-bold">
-                {% trans 'How was your experience with the contributor?' %}
-              </p>
-
               {% include 'shared/rating.html' with counterparty='contributor' id='review[satisfaction_rating]' label="Satisfaction" class="rating--small text-left" %}
               {% include 'shared/rating.html' with counterparty='contributor' id='review[communication_rating]' label="Comunication/Responsiveness" class="rating--small text-left" %}
               {% include 'shared/rating.html' with counterparty='contributor' id='review[speed_rating]' label="Speed" class="rating--small text-left" %}

@@ -18,7 +18,7 @@
 <div class="w-100 p-2">
   <fieldset class="{% if class %}{{ class }}{% endif %}" id="{{ id }}-{{ bounty.id }}" >
     {% if label %}<label for="" class="form__label">{{ label }}</label> {% endif %}
-    <div class="rating" {% if data %}data-open-rating={{ bounty.id }}{% endif %}>
+    <div class="rating" {% if data %}data-open-rating={{ bounty.id }} data-open-username={% if username %} {{username}} {% else %} {{bounty.bounty_owner_github_username}} {% endif %}{% endif %}>
     	<input type="radio" id="{{ id }}-{{ bounty.id }}-5" name="{{ id }}{% if data %}{{ bounty.id }}{% endif %}" value="5" />
     	<label class ="rating-star full" for="{{ id }}-{{ bounty.id }}-5" data-toggle="tooltip" title="It was great - 5 stars"></label>
     	<input type="radio" id="{{ id }}-{{ bounty.id }}-4" name="{{ id }}{% if data %}{{ bounty.id }}{% endif %}" value="4" />

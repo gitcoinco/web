@@ -360,7 +360,7 @@ def post_comment(request):
             'msg': 'Finished.'
         })
 
-def rating_modal(request, bounty_id):
+def rating_modal(request, bounty_id, username):
     # TODO: will be changed to the new share
     """Rating modal.
 
@@ -383,7 +383,7 @@ def rating_modal(request, bounty_id):
     params = get_context(
         ref_object=bounty,
     )
-    params['fulfillments'] = bounty.fulfillments.filter(bounty_id=bounty)
+    params['receiver']=username
     params['user'] = request.user if request.user.is_authenticated else None
 
     return TemplateResponse(request, 'rating_modal.html', params)
@@ -1667,6 +1667,7 @@ def profile(request, handle):
         .filter(
         bounty_owner_github_username=profile.handle,
         idx_status='done')
+    # print(unrated_funded_bounties.first().fulfillments.all())
 
     unrated_contributed_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
         .filter(interested__pending=False).filter(idx_status='done')

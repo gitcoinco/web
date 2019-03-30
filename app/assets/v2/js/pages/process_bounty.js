@@ -1,6 +1,16 @@
 /* eslint-disable no-console */
 window.onload = function() {
 
+  const changeRateUser = () => {
+    let userSelected = $('#bountyFulfillment').select2('data')[0].text;
+    $('[data-open-rating]').data("openUsername", userSelected.trim())
+  }
+
+
+  $('#bountyFulfillment').on('select2:select', event => {
+    changeRateUser();
+  });
+
   // Check Radio-box
   $('.rating input:radio').attr('checked', false);
 
@@ -316,6 +326,7 @@ window.onload = function() {
         }
       }
     );
+    changeRateUser()
 
   }, 100);
 };

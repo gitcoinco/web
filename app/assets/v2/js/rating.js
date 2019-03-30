@@ -1,9 +1,9 @@
-$('[data-open-rating] input').on('click', function(e) {
-  ratingModal($(this).parent().data('openRating'), $(this));
+$('body').on('click', '[data-open-rating] input', function(e) {
+  ratingModal($(this).parent().data('openRating'), $(this).parent().data('openUsername'), $(this));
 });
 
-const ratingModal = (bountyId, val) => {
-  let modalUrl = `/modal/rating/${bountyId}`;
+const ratingModal = (bountyId, receiver, elem) => {
+  let modalUrl = `/modal/rating/${bountyId}/${receiver}`;
 
   $.ajax({
     url: modalUrl,
@@ -13,7 +13,7 @@ const ratingModal = (bountyId, val) => {
     $('body').append(result);
     $('#modalRating').bootstrapModal('show');
     $('[data-toggle="tooltip"]').runTooltip();
-    $('input[name="rating"]').filter('[value="' + val.val() + '"]').prop('checked', true);
+    $('input[name="review[rating]"]').filter('[value="' + elem.val() + '"]').prop('checked', true);
 
     $('#ratingForm').on('submit', function(e) {
       e.preventDefault();
@@ -21,10 +21,10 @@ const ratingModal = (bountyId, val) => {
       let sendRating = fetchData ('/postcomment/', 'POST', data);
 
       $.when(sendRating).then(response => {
-        val.closest('fieldset').attr('disabled', true);
         if (!response.success) {
           return _alert(response.msg, 'error');
         }
+        elem.closest('fieldset').attr('disabled', true);
 
         $('#modalRating').bootstrapModal('hide');
         return _alert({message: gettext('Thanks for your feedback.')}, 'info');
@@ -33,10 +33,9 @@ const ratingModal = (bountyId, val) => {
   });
 
   $(document, '#modalRating').on('hidden.bs.modal', function(e) {
-    // let selected = $('input[name="rating"]:checked').val()
-    // console.log('closing', val.parent(), $('input[name="rating"]:checked').val())
-    // $('input[name="'+ val[0].name +'"]').filter('[value="'+ $('input[name="rating"]:checked').val() +'"]').prop('checked', true)
+    let value = $('input[name="review[rating]"]:checked').val()
 
+    elem.siblings('input').filter('[value="'+ value +'"]').prop('checked', true);
     $('#modalRating').remove();
     $('#modalRating').bootstrapModal('dispose');
   });
