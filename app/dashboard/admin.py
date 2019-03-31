@@ -24,8 +24,8 @@ from django.utils.safestring import mark_safe
 
 from .models import (
     Activity, BlockedUser, Bounty, BountyFulfillment, BountyInvites, BountySyncRequest, CoinRedemption,
-    CoinRedemptionRequest, FeedbackEntry, Interest, LabsResearch, Profile, SearchHistory, Tip, TokenApproval, Tool,
-    ToolVote, UserAction, UserVerificationModel,
+    CoinRedemptionRequest, FeedbackEntry, HackathonEvent, Interest, LabsResearch, Profile, RefundFeeRequest,
+    SearchHistory, Tip, TokenApproval, Tool, ToolVote, UserAction, UserVerificationModel,
 )
 
 
@@ -174,6 +174,79 @@ class BountyAdmin(admin.ModelAdmin):
         return mark_safe(f"<a href={url}>{copy}</a>")
 
 
+class RefundFeeRequestAdmin(admin.ModelAdmin):
+    """Setup the RefundFeeRequest admin results display."""
+
+    raw_id_fields = ['bounty', 'profile']
+    ordering = ['-created_on']
+    list_display = ['pk', 'created_on', 'fulfilled', 'rejected', 'link', 'get_bounty_link', 'get_profile_handle',]
+    readonly_fields = ['pk', 'token', 'fee_amount', 'comment', 'address', 'txnId', 'link', 'get_bounty_link',]
+    search_fields = ['created_on', 'fulfilled', 'rejected', 'bounty', 'profile']
+
+    def get_bounty_link(self, obj):
+        bounty = getattr(obj, 'bounty', None)
+        url = bounty.url
+        return mark_safe(f"<a href={url}>{bounty}</a>")
+
+    def get_profile_handle(self, obj):
+        """Get the profile handle."""
+        profile = getattr(obj, 'profile', None)
+        if profile and profile.handle:
+            return mark_safe(
+                f'<a href=/_administration/dashboard/profile/{profile.pk}/change/>{profile.handle}</a>'
+            )
+        if obj.github_username:
+            return obj.github_username
+        return 'N/A'
+
+    get_profile_handle.admin_order_field = 'handle'
+    get_profile_handle.short_description = 'Profile Handle'
+
+    def link(self, instance):
+        """Handle refund fee request specific links.
+
+        Args:
+            instance (RefundFeeRequest): The refund request to build a link for.
+
+        Returns:
+            str: The HTML element for the refund request link.
+
+        """
+        if instance.fulfilled or instance.rejected:
+            return 'n/a'
+        return mark_safe(f"<a href=/_administration/process_refund_request/{instance.pk}>process me</a>")
+    link.allow_tags = True
+
+
+class HackathonEventAdmin(admin.ModelAdmin):
+    """The admin object for the HackathonEvent model."""
+
+    list_display = ['pk', 'img', 'name', 'start_date', 'end_date', 'explorer_link']
+    readonly_fields = ['img', 'explorer_link']
+
+    def img(self, instance):
+        """Returns a formatted HTML img node or 'n/a' if the HackathonEvent has no logo.
+
+        Returns:
+            str: A formatted HTML img node or 'n/a' if the HackathonEvent has no logo.
+        """
+        logo = instance.logo_svg or instance.logo
+        if not logo:
+            return 'n/a'
+        img_html = format_html('<img src={} style="max-width:30px; max-height: 30px">', mark_safe(logo.url))
+        return img_html
+
+    def explorer_link(self, instance):
+        """Returns a formatted HTML <a> node.
+
+        Returns:
+            str: A formatted HTML <a> node.
+        """
+
+        url = f'/hackathon/{instance.slug}'
+        return mark_safe(f'<a href="{url}">Explorer Link</a>')
+
+
 admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
 admin.site.register(BlockedUser, GeneralAdmin)
@@ -190,6 +263,8 @@ admin.site.register(CoinRedemption, GeneralAdmin)
 admin.site.register(CoinRedemptionRequest, GeneralAdmin)
 admin.site.register(Tool, ToolAdmin)
 admin.site.register(ToolVote, ToolVoteAdmin)
+admin.site.register(HackathonEvent, HackathonEventAdmin)
 admin.site.register(FeedbackEntry, FeedbackAdmin)
 admin.site.register(LabsResearch)
 admin.site.register(UserVerificationModel, VerificationAdmin)
+admin.site.register(RefundFeeRequest, RefundFeeRequestAdmin)

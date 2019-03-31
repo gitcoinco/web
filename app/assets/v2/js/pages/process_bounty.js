@@ -210,6 +210,7 @@ window.onload = function() {
         }
 
         var final_callback = function(error, result) {
+          indicateMetamaskPopup();
           var next = function() {
             // setup inter page state
             localStorage[issueURL] = JSON.stringify({
@@ -260,7 +261,7 @@ window.onload = function() {
 
         // send both tip and payout
         var send_tip_and_payout_callback = function() {
-          _alert({ message: gettext('You will now be asked to confirm another transaction (please check metamask, sometimes the second popup doesnt come up).') }, 'info');
+          indicateMetamaskPopup();
           if ($('#tipPercent').val() > 0) {
             attach_and_send_tip(send_payout);
           } else {

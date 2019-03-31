@@ -12,6 +12,12 @@ h4,
   padding-top: 40px;
 }
 
+#indicate-popup {
+  position: fixed;
+  top: 0.25rem;
+  right: 2rem;
+}
+
 .lighter {
   font-weight: lighter;
 }
@@ -581,6 +587,10 @@ div.button-pink {
   .navbar-collapse {
     margin-top: 1.5rem;
   }
+
+  #indicate-popup {
+    display: none;
+  }
 }
 
 @media (max-width: 820px) {
@@ -724,6 +734,7 @@ div.button-pink {
   -webkit-animation-fill-mode: forwards;
   animation-fill-mode: forwards;
 }
+
 .slideDownIn {
   -webkit-animation-name: slideDownIn;
   animation-name: slideDownIn;
@@ -736,5 +747,4 @@ div.button-pink {
   100% {
     -webkit-transform: translateY(0) scale(1, 1);
   }
-
 }
