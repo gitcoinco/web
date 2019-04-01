@@ -248,6 +248,7 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
         var is_direct_to_recipient = metadata['is_direct'];
         var destinationAccount = is_direct_to_recipient ? metadata['direct_address'] : metadata['address'];
         var post_send_callback = function(errors, txid) {
+          indicateMetamaskPopup(true);
           if (errors) {
             _alert({ message: gettext('There was an error.') }, 'warning');
             failure_callback();
@@ -280,6 +281,7 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
           }
         };
 
+        indicateMetamaskPopup();
         if (isSendingETH) {
           web3.eth.sendTransaction({
             to: destinationAccount,

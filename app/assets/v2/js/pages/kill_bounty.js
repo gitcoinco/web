@@ -96,6 +96,7 @@ window.onload = function() {
           }
 
           var final_callback = function(error, result) {
+            indicateMetamaskPopup(true);
             var next = function() {
               // setup inter page state
               localStorage[issueURL] = JSON.stringify({
@@ -120,6 +121,7 @@ window.onload = function() {
             }
           };
 
+          indicateMetamaskPopup();
           bounty.killBounty(
             bountyId,
             { gasPrice: web3.toHex($('#gasPrice').val() * 10 ** 9) },

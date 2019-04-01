@@ -18,7 +18,12 @@
 <div class="col-12 col-lg-4">
   <div class="profile-header__stats profile-header__stats--contributor card mb-4">
     <div class="card-header font-subheader">
-      <b>#{{ scoreboard_position_org }}</b> {% trans "Organization" %}
+      {% if scoreboard_position_org %}
+        <b>#{{ scoreboard_position_org }}</b> 
+      {% else %}
+        <b>&nbsp;</b> 
+      {% endif %}
+      {% trans "Organization" %}
     </div>
     <div class="card-body font-subheader">
       <ul>

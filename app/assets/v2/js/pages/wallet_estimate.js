@@ -85,7 +85,7 @@ function prefill_recommended_prices() {
 
   if (fast_data['time'] == 'unknown') {
     $('#default-recommended-gas').show();
-    $('#default-recommended-gas').html('The confirmation time is unknown. However we recommend a gas price of $' + parseFloat(fast_data['usd']).toFixed(2));
+    $('#default-recommended-gas').html('The confirmation time is unknown. <br> However we recommend a gas price of $' + parseFloat(fast_data['usd']).toFixed(2));
     $('#default-recommended-gas').data('amount-usd', parseFloat(fast_data['usd']).toFixed(2));
     $('#gasPriceRecommended').val($('#average-recommended-gas').data('amount'));
     $('#slow-recommended-gas').hide();

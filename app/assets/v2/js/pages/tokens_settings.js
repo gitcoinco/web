@@ -45,6 +45,7 @@ $(document).ready(function() {
       if (error || result.toNumber() == 0) {
         var amount = 10 * 18 * 9999999999999999999999999999999999999999999999999999; // uint256
 
+        indicateMetamaskPopup();
         token_contract.approve(
           to,
           amount,
@@ -53,6 +54,7 @@ $(document).ready(function() {
             value: 0,
             gasPrice: web3.toHex(document.gas_price * 10 ** 9)
           }, function(error, result) {
+            indicateMetamaskPopup(true);
             if (error) {
               _alert('Token request denied - no permission for this token');
               return;

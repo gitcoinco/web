@@ -194,6 +194,7 @@ class Grant(SuperModel):
         help_text=_('The CLR matching amount'),
     )
     activeSubscriptions = ArrayField(models.CharField(max_length=200), blank=True, default=list)
+    hidden = models.BooleanField(default=False, help_text=_('Hide the grant from the /grants page?'))
 
     # Grant Query Set used as manager.
     objects = GrantQuerySet.as_manager()
@@ -743,6 +744,7 @@ class MatchPledge(SuperModel):
     )
     comments = models.TextField(default='', blank=True, help_text=_('The comments.'))
     end_date = models.DateTimeField(null=False, default=next_month)
+    data = models.TextField(blank=True)
 
     def __str__(self):
         """Return the string representation of this object."""

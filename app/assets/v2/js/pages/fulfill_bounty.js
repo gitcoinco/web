@@ -107,6 +107,7 @@ window.onload = function() {
           if (run_main) {
             if (!ignore_error) {
               var web3Callback = function(error, result) {
+                indicateMetamaskPopup(true);
                 var next = function() {
                   // setup inter page state
                   localStorage[issueURL] = JSON.stringify({
@@ -165,6 +166,7 @@ window.onload = function() {
 
                 var bountyId = result['standard_bounties_id'];
 
+                indicateMetamaskPopup();
                 bounty.fulfillBounty(
                   bountyId,
                   document.ipfsDataHash,
