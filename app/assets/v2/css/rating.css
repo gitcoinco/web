@@ -33,8 +33,6 @@
 
 .card-rating__avatar {
   flex-shrink: 0;
-  /* width: 56px;
-  height: 56px; */
 }
 
 .card-rating__header {

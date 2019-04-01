@@ -3,7 +3,7 @@ const round = function(num, decimals) {
 };
 
 
-const changeRateUser = (elem) => {
+const rateUser = (elem) => {
   let userSelected = $(elem).select2('data')[0].text;
 
   $(elem).parents('.new-user').next().find('[data-open-rating]').data('openUsername', userSelected.trim());
@@ -206,7 +206,7 @@ $(document).ready(function($) {
     userSearch('.username-search:last', true);
     $('body .username-search').each(function() {
       $(this).on('select2:select', event => {
-        changeRateUser($(this));
+        rateUser($(this));
       });
     });
 

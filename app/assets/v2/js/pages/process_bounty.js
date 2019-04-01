@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 window.onload = function() {
 
-  const changeRateUser = () => {
+  const rateUser = () => {
     let userSelected = $('#bountyFulfillment').select2('data')[0].text;
 
     $('[data-open-rating]').data('openUsername', userSelected.trim());
@@ -9,7 +9,7 @@ window.onload = function() {
 
 
   $('#bountyFulfillment').on('select2:select', event => {
-    changeRateUser();
+    rateUser();
   });
 
   // Check Radio-box
@@ -312,7 +312,7 @@ window.onload = function() {
         }
       }
     );
-    changeRateUser();
+    rateUser();
 
   }, 100);
 };
