@@ -1658,16 +1658,10 @@ def profile(request, handle):
     context['sent_kudos_count'] = sent_kudos.count()
     context['verification'] = profile.get_my_verified_check
 
-    # unrated_funded_bounties = Bounty.objects.current().filter(
-    #     bounty_owner_github_username=profile.handle,
-    #     idx_status='done'
-    # )
-
     unrated_funded_bounties = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile') \
         .filter(
         bounty_owner_github_username=profile.handle,
         idx_status='done')
-    # print(unrated_funded_bounties.first().fulfillments.all())
 
     unrated_contributed_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
         .filter(interested__pending=False).filter(idx_status='done')
