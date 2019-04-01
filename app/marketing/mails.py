@@ -230,6 +230,8 @@ def new_supporter(grant, subscription):
 def thank_you_for_supporting(grant, subscription):
     from_email = settings.CONTACT_EMAIL
     to_email = subscription.contributor_profile.email
+    if not to_email:
+        to_email = subscription.contributor_profile.user.email
     cur_language = translation.get_language()
 
     try:
