@@ -156,6 +156,12 @@ def featured_funded_bounty(from_email, bounty):
 def new_grant(grant, profile):
     from_email = settings.CONTACT_EMAIL
     to_email = profile.email
+    if not to_email:
+        if profile and profile.user:
+            to_email = profile.user.email
+    if not to_email:
+        return
+
     cur_language = translation.get_language()
 
     try:
@@ -171,6 +177,11 @@ def new_grant(grant, profile):
 def change_grant_owner_request(grant, profile):
     from_email = settings.CONTACT_EMAIL
     to_email = profile.email
+    if not to_email:
+        if profile and profile.user:
+            to_email = profile.user.email
+    if not to_email:
+        return
     cur_language = translation.get_language()
 
     try:
@@ -207,6 +218,11 @@ def change_grant_owner_accept(grant, new_profile, old_profile):
 def change_grant_owner_reject(grant, profile):
     from_email = settings.CONTACT_EMAIL
     to_email = profile.email
+    if not to_email:
+        if profile and profile.user:
+            to_email = profile.user.email
+    if not to_email:
+        return
     cur_language = translation.get_language()
 
     try:
@@ -316,6 +332,14 @@ def successful_contribution(grant, subscription, contribution):
 def admin_contact_funder(bounty, text, from_user):
     from_email = from_user.email
     to_email = bounty.bounty_owner_email
+    if not to_email:
+        if bounty.bounty_owner_profile:
+            to_email = bounty.bounty_owner_profile.email
+    if not to_email:
+        if bounty.bounty_owner_profile and bounty.bounty_owner_profile.user:
+            to_email = bounty.bounty_owner_profile.user.email
+    if not to_email:
+        return
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
@@ -374,6 +398,14 @@ def bounty_feedback(bounty, persona='fulfiller', previous_bounties=None):
             to_email = accepted_fulfillments.first().fulfiller_email if accepted_fulfillments.exists() else ""
         elif persona == 'funder':
             to_email = bounty.bounty_owner_email
+            if not to_email:
+                if bounty.bounty_owner_profile:
+                    to_email = bounty.bounty_owner_profile.email
+            if not to_email:
+                if bounty.bounty_owner_profile and bounty.bounty_owner_profile.user:
+                    to_email = bounty.bounty_owner_profile.user.email
+        if not to_email:
+            return
 
         subject = bounty.github_url
         __, text = render_bounty_feedback(bounty, persona, previous_bounties)
@@ -946,6 +978,11 @@ def bounty_uninterested(to_email, bounty, interest):
 def start_work_approved(interest, bounty):
     from_email = settings.CONTACT_EMAIL
     to_email = interest.profile.email
+    if not to_email:
+        if interest.profile and interest.profile.user:
+            to_email = interest.profile.user.email
+    if not to_email:
+        return
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
@@ -960,6 +997,11 @@ def start_work_approved(interest, bounty):
 def start_work_rejected(interest, bounty):
     from_email = settings.CONTACT_EMAIL
     to_email = interest.profile.email
+    if not to_email:
+        if interest.profile and interest.profile.user:
+            to_email = interest.profile.user.email
+    if not to_email:
+        return
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
@@ -974,6 +1016,14 @@ def start_work_rejected(interest, bounty):
 def start_work_new_applicant(interest, bounty):
     from_email = settings.CONTACT_EMAIL
     to_email = bounty.bounty_owner_email
+    if not to_email:
+        if bounty.bounty_owner_profile:
+            to_email = bounty.bounty_owner_profile.email
+    if not to_email:
+        if bounty.bounty_owner_profile and bounty.bounty_owner_profile.user:
+            to_email = bounty.bounty_owner_profile.user.email
+    if not to_email:
+        return
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
@@ -988,6 +1038,14 @@ def start_work_new_applicant(interest, bounty):
 def start_work_applicant_about_to_expire(interest, bounty):
     from_email = settings.CONTACT_EMAIL
     to_email = bounty.bounty_owner_email
+    if not to_email:
+        if bounty.bounty_owner_profile:
+            to_email = bounty.bounty_owner_profile.email
+    if not to_email:
+        if bounty.bounty_owner_profile and bounty.bounty_owner_profile.user:
+            to_email = bounty.bounty_owner_profile.user.email
+    if not to_email:
+        return
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
@@ -1002,6 +1060,14 @@ def start_work_applicant_about_to_expire(interest, bounty):
 def start_work_applicant_expired(interest, bounty):
     from_email = settings.CONTACT_EMAIL
     to_email = bounty.bounty_owner_email
+    if not to_email:
+        if bounty.bounty_owner_profile:
+            to_email = bounty.bounty_owner_profile.email
+    if not to_email:
+        if bounty.bounty_owner_profile and bounty.bounty_owner_profile.user:
+            to_email = bounty.bounty_owner_profile.user.email
+    if not to_email:
+        return
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
@@ -1088,6 +1154,11 @@ def new_funding_limit_increase_request(profile, cleaned_data):
 def bounty_request_feedback(profile):
     from_email = 'vivek.singh@consensys.net'
     to_email = profile.email
+    if not to_email:
+        if profile and profile.user:
+            to_email = profile.user.email
+    if not to_email:
+        return
     cur_language = translation.get_language()
 
     try:
