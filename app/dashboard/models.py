@@ -301,7 +301,7 @@ class Bounty(SuperModel):
         default=False, help_text=_('Admin override to mark as remarketing ready')
     )
     attached_job_description = models.URLField(blank=True, null=True)
-    event = models.ForeignKey('dashboard.HackathonEvent', related_name='bounties', null=True, on_delete=models.SET_NULL)
+    event = models.ForeignKey('dashboard.HackathonEvent', related_name='bounties', null=True, on_delete=models.SET_NULL, blank=True)
 
     # Bounty QuerySet Manager
     objects = BountyQuerySet.as_manager()

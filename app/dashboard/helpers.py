@@ -477,6 +477,10 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
             )
             if latest_old_bounty_dict['bounty_reserved_for_user']:
                 latest_old_bounty_dict['bounty_reserved_for_user'] = Profile.objects.get(pk=latest_old_bounty_dict['bounty_reserved_for_user'])
+            if latest_old_bounty_dict['unsigned_nda']:
+                latest_old_bounty_dict['unsigned_nda'] = BountyDocuments.objects.filter(
+                    pk=latest_old_bounty_dict['unsigned_nda']
+                ).first()
             bounty_kwargs.update(latest_old_bounty_dict)
 
         try:

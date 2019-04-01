@@ -26,34 +26,18 @@ from marketing.mails import new_bounty_daily
 from marketing.models import EmailSubscriber
 
 
-def does_bounty_match_keyword(bounty, keyword):
-    if keyword.lower() in [keyword.lower() for keyword in bounty.keywords_list]:
-        return True
-
-    if keyword.lower() in bounty.title_or_desc.lower():
-        return True
-
-    if keyword.lower() in bounty.issue_description.lower():
-        return True
-
-    return False
-
-
 def get_bounties_for_keywords(keywords, hours_back):
     new_bounties_pks = []
     all_bounties_pks = []
     for keyword in keywords:
         relevant_bounties = Bounty.objects.current().filter(
             network='mainnet',
-            metadata__issueKeywords__icontains=keyword,
             idx_status__in=['open'],
-            )
+        ).keyword(keyword)
         for bounty in relevant_bounties.filter(web3_created__gt=(timezone.now() - timezone.timedelta(hours=hours_back))):
-            if does_bounty_match_keyword(bounty, keyword):
-                    new_bounties_pks.append(bounty.pk)
+            new_bounties_pks.append(bounty.pk)
         for bounty in relevant_bounties:
-            if does_bounty_match_keyword(bounty, keyword):
-                all_bounties_pks.append(bounty.pk)
+            all_bounties_pks.append(bounty.pk)
     new_bounties = Bounty.objects.filter(pk__in=new_bounties_pks).order_by('-_val_usd_db')
     all_bounties = Bounty.objects.filter(pk__in=all_bounties_pks).exclude(pk__in=new_bounties_pks).order_by('-_val_usd_db')
 
