@@ -38,7 +38,7 @@ from dashboard.notifications import (
     maybe_market_to_user_discord, maybe_market_to_user_slack,
 )
 from dashboard.tokens import addr_to_token
-from economy.utils import convert_amount
+from economy.utils import ConversionRateNotFoundError, convert_amount
 from git.utils import get_gh_issue_details, get_url_dict
 from jsondiff import diff
 from marketing.mails import new_reserved_issue
@@ -132,6 +132,9 @@ def amount(request):
             'usdt': amount_in_usdt,
         }
         return JsonResponse(response)
+    except ConversionRateNotFoundError as e:
+        logger.debug(e)
+        raise Http404
     except Exception as e:
         logger.error(e)
         raise Http404
