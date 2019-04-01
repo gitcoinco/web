@@ -798,6 +798,38 @@ def mission(request):
     return TemplateResponse(request, 'mission.html', context)
 
 
+def jobs(request):
+    job_listings = [
+        {
+            'title': "Software Engineer",
+            'description': [
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut",
+                "labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip",
+                "ex ea commodo consequat. Duis aute irure dolor in..."]
+        },
+        {
+            'title': "Software Engineer",
+            'description': [
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut",
+                "labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip",
+                "ex ea commodo consequat. Duis aute irure dolor in..."]
+        },
+        {
+            'title': "Software Engineer",
+            'description': [
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut",
+                "labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip",
+                "ex ea commodo consequat. Duis aute irure dolor in..."]
+        }
+    ]
+    context = {
+        'active': 'jobs',
+        'title': 'Jobs',
+        'job_listings': job_listings
+    }
+    return TemplateResponse(request, 'jobs.html', context)
+
+
 def vision(request):
     """Render the Vision response."""
     context = {
