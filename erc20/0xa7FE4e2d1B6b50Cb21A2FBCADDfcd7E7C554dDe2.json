@@ -1,0 +1,24 @@
+{
+  "symbol": "vca",
+  "address": "0xa7FE4e2d1B6b50Cb21A2FBCADDfcd7E7C554dDe2",
+  "overview":{
+        "en": "Vca token is a credit exchange system dedicated to the block chain e-commerce industry",
+        "zh": "Vca token 是致力于区块链电商产业积分兑换系统"
+  },
+  "email": "juliandianshang1@gmail.com",
+  "website":"www.jlcjv.com",
+  "whitepaper": "http://www.jlcjv.com:100/jlcjvwhitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-03-24",
+  "initial_price":{
+        "ETH":"0 ETH",
+        "USD":"0 USD",
+        "BTC":"0 BTC"
+  },
+  "links": {
+    "blog": "http://zx.jlcjv.com",
+    "twitter": "https://twitter.com/oreno36821/status/1107905618289922048?s=19",
+    "telegram": "https://t.me/jlcjv",
+    "facebook": "https://www.facebook.com/story.php?story_fbid=2225729901022834&id=2225726071023217"
+  }
+}
