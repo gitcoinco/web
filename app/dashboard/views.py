@@ -1340,7 +1340,6 @@ def profile_details(request, handle):
     return JsonResponse(response)
 
 
-
 @require_POST
 def profile_job_opportunity(request, handle):
     """ Save profile job opportunity.

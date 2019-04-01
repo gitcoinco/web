@@ -2445,7 +2445,7 @@ class Profile(SuperModel):
 
         return eth_sum
 
-    def get_who_works_with(self, work_type='collected', network='rinkeby', bounties=None):
+    def get_who_works_with(self, work_type='collected', network='mainnet', bounties=None):
         """Get an array of profiles that this user works with.
 
         Args:

@@ -427,8 +427,8 @@
   <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
   <script src="{% static "v2/js/clipboard.js" %}"></script>
   <script>
-    var bootstrapTooltip = $.fn.tooltip.noConflict()
-    var bootstrapModal = $.fn.modal.noConflict()
+    let bootstrapTooltip = $.fn.tooltip.noConflict()
+    let bootstrapModal = $.fn.modal.noConflict()
   </script>
   <script>
     $.fn.runTooltip = bootstrapTooltip
@@ -439,8 +439,8 @@
       selector: '.bounty_row',
       html: true,
       title: function() {
-        var element = $(this);
-        var data = '';
+        let element = $(this);
+        let data = '';
           fetch('/api/v0.1/profile/'+ element.attr('data-username'), {
           method: 'GET'
           }).then(function(response) {
@@ -482,10 +482,10 @@
       }
     }
     function convertToImage(images) {
-      var a = [];
+      let a = [];
       $.each(images, function(image) {
-        var image_url = "/dynamic/avatar/"+image;
-        var link = "<img src=\""+ image_url + "\" alt=\"" + image + "\" width=\"30px\" />";
+        let image_url = "/dynamic/avatar/"+image;
+        let link = "<img src=\""+ image_url + "\" alt=\"" + image + "\" width=\"30px\" />";
         a.push(link);
       })
       return a;
