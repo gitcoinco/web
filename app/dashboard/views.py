@@ -1619,6 +1619,7 @@ def profile(request, handle):
     context['kudos_count'] = owned_kudos.count()
     context['sent_kudos_count'] = sent_kudos.count()
     context['verification'] = profile.get_my_verified_check
+    context['avg_rating'] = profile.get_average_star_rating
 
     currently_working_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
         .filter(interested__pending=False).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)
