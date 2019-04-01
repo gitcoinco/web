@@ -553,7 +553,13 @@ def account_settings(request):
                         'ip': get_ip(request),
                     }
                 )
-            profile.delete()
+            profile.avatar_baseavatar_related.all().delete()
+            try:
+                profile.delete()
+            except:
+                profile.github_access_token = ''
+                profile.hide_profile = True
+                profile.save()
             messages.success(request, _('Your account has been deleted.'))
             logout_redirect = redirect(reverse('logout') + '?next=/')
             return logout_redirect
