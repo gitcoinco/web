@@ -1,0 +1,19 @@
+{
+    "symbol": "YST",
+    "address": "0xD2031D93ea7E051472E811E144c08497eaA7bCD0",
+    "overview": {
+        "en": "YST is a global trading platform YOOsourcing internal circulation token. Through YST, the rights and interests and services within the platform can be obtained, and mining and decision-making governance of the platform can be carried out",
+        "zh": "YST是全球贸易平台YOOsourcing内部流通代币，通过YST可以获得平台内的权益与服务，并可通过YST进行挖矿与参与平台决策治理"
+    },
+    "email": "contact@yoosourcing.com",
+    "website": "https://yst.global/",
+    "whitepaper": "https://yst.global/YOOsourcingcn.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-03-21",
+    "initial_price": {
+        "USD": "0.1 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/YOOSourcing"
+    }
+}
