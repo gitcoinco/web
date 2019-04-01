@@ -133,6 +133,15 @@ def nth_day_email_campaign(nth, subscriber):
 
 def featured_funded_bounty(from_email, bounty):
     to_email = bounty.bounty_owner_email
+    if not to_email:
+        if bounty.bounty_owner_profile:
+            to_email = bounty.bounty_owner_profile.email
+    if not to_email:
+        if bounty.bounty_owner_profile and bounty.bounty_owner_profile.user:
+            to_email = bounty.bounty_owner_profile.user.email
+    if not to_email:
+        return
+
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
