@@ -3,8 +3,9 @@ window.onload = function() {
 
   const changeRateUser = () => {
     let userSelected = $('#bountyFulfillment').select2('data')[0].text;
-    $('[data-open-rating]').data("openUsername", userSelected.trim())
-  }
+
+    $('[data-open-rating]').data('openUsername', userSelected.trim());
+  };
 
 
   $('#bountyFulfillment').on('select2:select', event => {
@@ -239,6 +240,7 @@ window.onload = function() {
                 document.location.href = '/funding/details?url=' + issueURL;
               }, 1000);
             };
+
             finishedComment();
             // var ratVal = $('input:radio[name=rating]:checked').val();
             // var revVal = $('#review').val();
@@ -326,7 +328,7 @@ window.onload = function() {
         }
       }
     );
-    changeRateUser()
+    changeRateUser();
 
   }, 100);
 };

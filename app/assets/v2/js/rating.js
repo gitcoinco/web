@@ -33,9 +33,9 @@ const ratingModal = (bountyId, receiver, elem) => {
   });
 
   $(document, '#modalRating').on('hidden.bs.modal', function(e) {
-    let value = $('input[name="review[rating]"]:checked').val()
+    let value = $('input[name="review[rating]"]:checked').val();
 
-    elem.siblings('input').filter('[value="'+ value +'"]').prop('checked', true);
+    elem.siblings('input').filter('[value="' + value + '"]').prop('checked', true);
     $('#modalRating').remove();
     $('#modalRating').bootstrapModal('dispose');
   });

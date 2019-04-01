@@ -125,6 +125,7 @@ window.onload = function() {
                       document.location.href = '/funding/details?url=' + issueURL;
                     }, 1000);
                   };
+
                   finishedComment();
                   // var ratVal = $('input:radio[name=rating]:checked').val();
                   // var revVal = $('#review').val();
