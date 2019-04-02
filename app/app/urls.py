@@ -518,7 +518,8 @@ urlpatterns = [
     re_path(r'', include(wagtail_urls)),
 
     # users
-    path('users',dashboard.views.users, name='users'),
+    path('users',dashboard.views.users_directory, name='users_directory'),
+    url(r'^api/v0.1/users_fetch/', dashboard.views.users_fetch, name='users_fetch'),
 ]
 
 if settings.ENABLE_SILK:

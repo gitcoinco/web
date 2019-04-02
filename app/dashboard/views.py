@@ -625,8 +625,8 @@ def onboard(request, flow):
     return TemplateResponse(request, 'ftux/onboard.html', params)
 
 
-def users(request):
-    """Handle displaying the users."""
+def users_directory(request):
+    """Handle displaying users directory page."""
 
     # q = request.GET.get('q')
     order_by = request.GET.get('order_by', '-created_on')
@@ -650,6 +650,54 @@ def users(request):
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
     return TemplateResponse(request, 'dashboard/users.html', params)
+
+
+@require_GET
+def users_fetch(request):
+    """Handle displaying users."""
+    # order_by = request.GET.get('order_by', '-created_on')
+    # query_kwargs = {
+
+    # }
+    # user_list = Profile.objects.all()
+    # users = user_list.order_by(order_by).cache()
+
+    # params = {
+    #     'active': 'users',
+    #     'title': 'Users',
+    #     'meta_title': "",
+    #     'meta_description': "",
+    #     'users': users,
+    #     'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
+    # }
+
+
+    limit = int(request.GET.get('limit', 10))
+    page = int(request.GET.get('page', 1))
+    order_by = request.GET.get('order_by', '-created_on')
+    user_list = Profile.objects.all()
+    users = user_list.order_by(order_by).cache()
+    # all_notifs = Notification.objects.filter(to_user_id=request.user.id).order_by('-id')
+    params = dict()
+    all_pages = Paginator(users, limit)
+    if page <= 0 or page > all_pages.num_pages:
+        page = 1
+    all_users = []
+    # all_users = all_pages.page(page)
+    for user in all_pages.page(page):
+        print(user)
+        profile_json = {}
+        if user.avatar_baseavatar_related.exists():
+            profile_json['avatar_id'] = user.avatar_baseavatar_related.first().pk
+            profile_json['avatar_url'] = user.avatar_baseavatar_related.first().avatar_url
+        profile_json = user.to_standard_dict()
+        all_users.append(profile_json)
+    params['data'] = json.dumps(all_users)
+    params['has_next'] = all_pages.page(page).has_next()
+    params['count'] = all_pages.count
+    params['num_pages'] = all_pages.num_pages
+    return JsonResponse(params, status=200, safe=False)
+
 
 def dashboard(request):
     """Handle displaying the dashboard."""
