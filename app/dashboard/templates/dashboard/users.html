@@ -58,120 +58,122 @@
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav.html' %}
     </div>
-    <div class="container-fluid">
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#usersFilters" aria-controls="usersFilters" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
+    <div class="" id="gc-users-directory">
+      <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#usersFilters" aria-controls="usersFilters" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
 
-        <div class="collapse navbar-collapse" id="usersFilters">
-          <div class="navbar-nav mr-4">
-            <label for="">{% trans 'Sort by:' %}</label>
-            <select name="" id="sort_order">
-              <option value="-created_on">{% trans 'Newest' %}</option>
-              <option value="created_on">{% trans 'Oldest' %}</option>
-              <option value="-popularity">{% trans 'All Time Popularity' %}</option>
-              <option value="-popularity_week">{% trans 'Trending' %}</option>
-              <option value="price_finney">{% trans 'Low price' %}</option>
-              <option value="-price_finney">{% trans 'High price' %}</option>
-              <option value="name">{% trans 'Name' %}</option>
-              <option value="-rarity">{% trans 'Rarity' %}</option>
-            </select>
+          <div class="collapse navbar-collapse" id="usersFilters">
+            <div class="navbar-nav mr-4">
+              <label for="">{% trans 'Sort by:' %}</label>
+              <select name="" id="sort_order">
+                <option value="-created_on">{% trans 'Newest' %}</option>
+                <option value="created_on">{% trans 'Oldest' %}</option>
+                <option value="-popularity">{% trans 'All Time Popularity' %}</option>
+                <option value="-popularity_week">{% trans 'Trending' %}</option>
+                <option value="price_finney">{% trans 'Low price' %}</option>
+                <option value="-price_finney">{% trans 'High price' %}</option>
+                <option value="name">{% trans 'Name' %}</option>
+                <option value="-rarity">{% trans 'Rarity' %}</option>
+              </select>
 
-          </div>
-          <div class="navbar-nav">
-            <select class="keywords-filter form-control" multiple="multiple" style="width:300px; height: 37px;"></select>
-          </div>
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Link</a>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Dropdown
-              </a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Something else here</a>
-              </div>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-            </li>
-          </ul>
-          <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-          </form>
-        </div>
-      </nav>
-    </div>
-    <div class="container">
-          <div class="py-5 mt-5">
-            <div class="grid-4">
-              {% for user in users %}
-              <div class="card shadow-sm border-0">
-                <img class="rounded-circle shadow mx-auto mt-n5" width="140" height="140" src="{% if user.avatar and user.active_avatar.avatar_url %}{{ user.active_avatar.avatar_url }}{% else %}{{ user.avatar_url }}{% endif %}" />
-                <div class="card-body">
-
-                  <h5 class="text-center">
-                    {% if user.data.name %}
-                    {{ user.data.name }}
-                    {% else %}
-                    @{{ user.handle }}
-                    {% endif %}
-                  </h5>
-                  <a href="{% url "profile" user %}" class="text-center d-block">
-                    @{{ user.handle }}
-                  </a>
-                  {% if user.keywords %}
-                  <div>
-                    {% for keyword in user.keywords %}
-                      <span class="badge badge--greenlight">{{ keyword }}</span>
-                    {% endfor %}
-                  </div>
-                  {% endif %}
-                  <div class="">
-                    <a href="{{ user.data.html_url }}?tab=repositories" target="_blank" rel="noopener noreferrer" >
-                      <i class="fab fa-github"></i>
-                    </a>
-                  {% if user.data.blog %}
-                    <a href="{{ user.data.blog|add_url_schema }}" target="_blank" rel="noopener noreferrer" >
-                      <i class="fas fa-home"></i>
-                    </a>
-                  {% endif %}
-                  {% if user.data.email %}
-                    <a href="mailto:{{user.data.email | obfuscate}}">
-                      <i class="far fa-envelope"></i>
-                    </a>
-                  {% endif %}
-                  </div>
-                  {% if  user.show_job_status %}
-                  <div class="my-2 font-smaller-3" id="job_status">
-                    {% if user.resume %}
-                    <a href="{{ MEDIA_URL }}{{user.resume}}" download data-toggle="tooltip" title="Download resume">
-                      <i class="fa fa-briefcase mr-2" aria-hidden="true"></i>{{ user.job_status_verbose }}
-                    </a>
-                    {% else %}
-                      <i class="fa fa-briefcase mr-2" aria-hidden="true"></i>{{ user.job_status_verbose }}
-                    {% endif %}
-                  </div>
-                {% endif %}
-                <small>
-                  Joined: <time datetime="{{ user.created_on }}" title="{{ user.created_on }}">{{ user.created_on|date:"Y/m/d"}}</time>
-                </small>
-
-
-                </div>
-              </div>
-              {% endfor %}
             </div>
+            <div class="navbar-nav">
+              <select class="keywords-filter form-control" multiple="multiple" style="width:300px; height: 37px;"></select>
+            </div>
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item active">
+                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Link</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Dropdown
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="#">Action</a>
+                  <a class="dropdown-item" href="#">Another action</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="#">Something else here</a>
+                </div>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+              </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+              <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
           </div>
+        </nav>
+      </div>
+      <div class="container">
+            <div class="py-5 mt-5">
+              <div class="grid-4">
+                {% for user in users %}
+                <div class="card shadow-sm border-0">
+                  <img class="rounded-circle shadow mx-auto mt-n5" width="140" height="140" src="{% if user.avatar and user.active_avatar.avatar_url %}{{ user.active_avatar.avatar_url }}{% else %}{{ user.avatar_url }}{% endif %}" />
+                  <div class="card-body">
+
+                    <h5 class="text-center">
+                      {% if user.data.name %}
+                      {{ user.data.name }}
+                      {% else %}
+                      @{{ user.handle }}
+                      {% endif %}
+                    </h5>
+                    <a href="{% url "profile" user %}" class="text-center d-block">
+                      @{{ user.handle }}
+                    </a>
+                    {% if user.keywords %}
+                    <div>
+                      {% for keyword in user.keywords %}
+                        <span class="badge badge--greenlight">{{ keyword }}</span>
+                      {% endfor %}
+                    </div>
+                    {% endif %}
+                    <div class="">
+                      <a href="{{ user.data.html_url }}?tab=repositories" target="_blank" rel="noopener noreferrer" >
+                        <i class="fab fa-github"></i>
+                      </a>
+                    {% if user.data.blog %}
+                      <a href="{{ user.data.blog|add_url_schema }}" target="_blank" rel="noopener noreferrer" >
+                        <i class="fas fa-home"></i>
+                      </a>
+                    {% endif %}
+                    {% if user.data.email %}
+                      <a href="mailto:{{user.data.email | obfuscate}}">
+                        <i class="far fa-envelope"></i>
+                      </a>
+                    {% endif %}
+                    </div>
+                    {% if  user.show_job_status %}
+                    <div class="my-2 font-smaller-3" id="job_status">
+                      {% if user.resume %}
+                      <a href="{{ MEDIA_URL }}{{user.resume}}" download data-toggle="tooltip" title="Download resume">
+                        <i class="fa fa-briefcase mr-2" aria-hidden="true"></i>{{ user.job_status_verbose }}
+                      </a>
+                      {% else %}
+                        <i class="fa fa-briefcase mr-2" aria-hidden="true"></i>{{ user.job_status_verbose }}
+                      {% endif %}
+                    </div>
+                  {% endif %}
+                  <small>
+                    Joined: <time datetime="{{ user.created_on }}" title="{{ user.created_on }}">{{ user.created_on|date:"Y/m/d"}}</time>
+                  </small>
+
+
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+      </div>
     </div>
 
 
@@ -194,6 +196,7 @@
           data: document.keywords
       })
     </script>
+    <script src="{% static "v2/js/users.js" %}"></script>
 
   </body>
 </html>
