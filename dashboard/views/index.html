@@ -2233,7 +2233,19 @@ The class bool is a subclass of the class int, and cannot be subclassed.
 <p>Returns True when the argument x is true, False otherwise.
 The builtins True and False are the only two instances of the class bool.
 The class bool is a subclass of the class int, and cannot be subclassed.
-<h2 id="dashboard.views.remove_interest">remove_interest</h2></p>
+<h2 id="dashboard.views.rating_modal">rating_modal</h2></p>
+<pre><code class="python">rating_modal(request, bounty_id, username)
+</code></pre>
+
+<p>Rating modal.</p>
+<p>Args:
+    pk (int): The primary key of the bounty to be rated.</p>
+<p>Raises:
+    Http404: The exception is raised if no associated Bounty is found.</p>
+<p>Returns:
+    TemplateResponse: The rate bounty view.</p>
+<h2 id="dashboard.views.remove_interest">remove_interest</h2>
+
 <pre><code class="python">remove_interest(request, bounty_id)
 </code></pre>
 
