@@ -118,7 +118,7 @@ def amount(request):
     try:
         amount = request.GET.get('amount')
         if not amount.isnumeric():
-            return HttpResponseBadRequest
+            return HttpResponseBadRequest('not number')
         denomination = request.GET.get('denomination', 'ETH')
         if not denomination:
             denomination = 'ETH'
