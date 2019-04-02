@@ -28,9 +28,9 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core import serializers
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
-from django.core import serializers
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template import loader
