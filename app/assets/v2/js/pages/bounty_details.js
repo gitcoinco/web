@@ -660,9 +660,9 @@ var show_interest_modal = function() {
           return false;
         }
 
-        const issueNDA = document.result['repo_type'] === 'private' ? $('#issueNDA')[0].files : '';
+        const issueNDA = document.result['repo_type'] === 'private' ? $('#issueNDA')[0].files : undefined;
 
-        if (typeof issueNDA[0] !== 'undefined') {
+        if (issueNDA && typeof issueNDA[0] !== 'undefined') {
 
           const formData = new FormData();
 
