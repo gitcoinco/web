@@ -30,6 +30,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
+from django.core import serializers
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template import loader
@@ -387,6 +388,72 @@ def rating_modal(request, bounty_id, username):
     params['user'] = request.user if request.user.is_authenticated else None
 
     return TemplateResponse(request, 'rating_modal.html', params)
+
+
+def rating_capture(request):
+    # TODO: will be changed to the new share
+    """Rating capture.
+
+    Args:
+        pk (int): The primary key of the bounty to be rated.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The rate bounty capture modal.
+
+    """
+    user = request.user if request.user.is_authenticated else None
+    if not user:
+        return JsonResponse(
+            {'error': _('You must be authenticated via github to use this feature!')},
+            status=401)
+
+    return TemplateResponse(request, 'rating_capture.html')
+
+
+def unrated_bounties(request):
+    # TODO: will be changed to the new share
+    """Rating capture.
+
+    Args:
+        pk (int): The primary key of the bounty to be rated.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The rate bounty capture modal.
+
+    """
+    # request.user.profile if request.user.is_authenticated and getattr(request.user, 'profile', None) else None
+    unrated_bounties = []
+    user = request.user.profile if request.user.is_authenticated else None
+    if not user:
+        return JsonResponse(
+            {'error': _('You must be authenticated via github to use this feature!')},
+            status=401)
+
+    if user:
+        unrated = Bounty.objects.current().filter(interested__profile=user) \
+            .filter(interested__status='okay') \
+            .filter(interested__pending=False).filter(idx_status='done')
+    print(unrated.count())
+    # for bounty in unrated:
+    #     unrated_bounties_json = {}
+    #     if not FeedbackEntry.objects.filter(bounty=bounty):
+    #         unrated_bounties_json['unrated'] = bounty
+    #         unrated_bounties.append(bounty)
+
+    # data = json.dumps(unrated_bounties_json)
+    # data = serializers.serialize('json', unrated, fields=('id',))
+
+    # data = json.dumps(unrated)
+
+    return JsonResponse({
+        'unrated': unrated.count(),
+    }, status=200)
 
 
 @csrf_exempt
@@ -1842,7 +1909,7 @@ def terms(request):
         'title': _('Terms of Use'),
     }
     return TemplateResponse(request, 'legal/terms.html', context)
-    
+
 def privacy(request):
     return TemplateResponse(request, 'legal/privacy.html', {})
 
