@@ -558,6 +558,7 @@ def account_settings(request):
                 profile.delete()
             except:
                 profile.github_access_token = ''
+                profile.user = None
                 profile.hide_profile = True
                 profile.save()
             messages.success(request, _('Your account has been deleted.'))
