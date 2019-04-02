@@ -24,11 +24,12 @@
           </button>
         </div>
         <div class="modal-body center-block text-center">
-          <img src="{% static 'v2/images/special-kudos.svg' %}" width="150" class="d-block mx-auto mb-4">
+          <img src="{% static 'v2/images/rate-capture.svg' %}" width="170" class="d-block mx-auto mb-4">
           <h2 class="h5 text-center font-weight-bold">
               {% trans 'How was your bounty experience?' %}
           </h2>
-          <p class="p-2 font-smaller-1 text-black-60">{% trans 'Your feedback is very valuable for us! Only Gitcoin admins are able to see your feedback.' %}</p>
+          <p class="font-smaller-1 text-black-60 mx-3 px-2 mt-4">{% trans 'You’ve recently completed one or more bounties on Gitcoin. Help us improve Gitcoin by rating your bounty experience!' %}</p>
+          <p class="p-2 mx-3 font-smaller-1 text-black-60">{% trans 'Only Gitcoin admins are able to see your feedback.' %}</p>
           <div class="my-4">
             <a href="{% url "profile" %}#ratingTabs" class="button button--primary shadow-none">{% trans 'Rate your bounty experience' %}</a>
           </div>
