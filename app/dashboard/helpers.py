@@ -38,6 +38,7 @@ from dashboard.notifications import (
     maybe_market_to_user_discord, maybe_market_to_user_slack,
 )
 from dashboard.tokens import addr_to_token
+from django.http import HttpResponseBadRequest
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from git.utils import get_gh_issue_details, get_url_dict
 from jsondiff import diff
@@ -116,6 +117,8 @@ def amount(request):
 
     try:
         amount = request.GET.get('amount')
+        if not amount.isnumeric():
+            return HttpResponseBadRequest
         denomination = request.GET.get('denomination', 'ETH')
         if not denomination:
             denomination = 'ETH'
