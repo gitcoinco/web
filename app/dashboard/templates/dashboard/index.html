@@ -105,7 +105,7 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
     <script src="{% static "v2/js/popper.min.js" %}"></script>
-    <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
+    <script src="{% static "v2/js/bootstrap.min.js" %}" crossorigin="anonymous"></script>
     <script>
       let bootstrapTooltip = $.fn.tooltip.noConflict()
       $.fn.runTooltip = bootstrapTooltip

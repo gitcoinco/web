@@ -117,7 +117,6 @@ window.onload = function() {
                     txid: result
                   });
 
-                  var submitCommentUrl = '/postcomment/';
                   var finishedComment = function() {
                     dataLayer.push({ event: 'claimissue' });
                     _alert({ message: gettext('Fulfillment submitted to web3.') }, 'info');
@@ -125,20 +124,8 @@ window.onload = function() {
                       document.location.href = '/funding/details?url=' + issueURL;
                     }, 1000);
                   };
-                  var ratVal = $('input:radio[name=rating]:checked').val();
-                  var revVal = $('#review').val();
 
-                  $.post(submitCommentUrl, {
-                    'github_url': issueURL,
-                    'network': $('input[name=network]').val(),
-                    'standard_bounties_id': $('input[name=standard_bounties_id]').val(),
-                    'review': {
-                      'rating': ratVal ? ratVal : -1,
-                      'comment': revVal ? revVal : 'No comment given.',
-                      'reviewType': 'worker',
-                      'receiver': ''
-                    }
-                  }, finishedComment, 'json');
+                  finishedComment();
                 };
 
                 if (error) {
