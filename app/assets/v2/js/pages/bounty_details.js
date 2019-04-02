@@ -642,8 +642,6 @@ var show_interest_modal = function() {
   modals.on('show.bs.modal', function() {
     modalBody.load(modalUrl, ()=> {
       if (document.result['repo_type'] === 'private') {
-        $('#nda-upload').show();
-        $('#issueNDA').prop('required', true);
         document.result.unsigned_nda ? $('.nda-download-link').attr('href', document.result.unsigned_nda.doc) : $('#nda-upload').hide();
       }
 
@@ -656,18 +654,21 @@ var show_interest_modal = function() {
         event.preventDefault();
 
         let msg = issueMessage.val().trim();
-        let issueNDA = $('#issueNDA')[0].files;
 
         if (!msg || msg.length < 30) {
           _alert({message: gettext('Please provide an action plan for this ticket. (min 30 chars)')}, 'error');
           return false;
         }
 
-        if (typeof issueNDA[0] !== 'undefined') {
+        const issueNDA = document.result['repo_type'] === 'private' ? $('#issueNDA')[0].files : undefined;
+
+        if (issueNDA && typeof issueNDA[0] !== 'undefined') {
+
           const formData = new FormData();
 
           formData.append('docs', issueNDA[0]);
           formData.append('doc_type', 'signed_nda');
+
           const ndaSend = {
             url: '/api/v0.1/bountydocument',
             method: 'POST',
@@ -764,9 +765,8 @@ const repoInstructions = () => {
 var set_extended_time_html = function(extendedDuration, currentExpires) {
   currentExpires.setTime(currentExpires.getTime() + (extendedDuration * 1000));
   $('input[name=updatedExpires]').val(currentExpires.getTime());
-  var date = getFormattedDate(currentExpires);
-  var days = timeDifference(now, currentExpires).split(' ');
-  var time = getTimeFromDate(currentExpires);
+  const date = getFormattedDate(currentExpires);
+  let days = timeDifference(now, currentExpires).split(' ');
 
   days.shift();
   days = days.join(' ');
