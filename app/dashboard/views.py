@@ -321,23 +321,34 @@ def post_comment(request):
             'msg': '',
         })
 
-    sbid = request.POST.get('standard_bounties_id')
-    bountyObj = Bounty.objects.filter(standard_bounties_id=sbid).first()
-    fbAmount = FeedbackEntry.objects.filter(sender_profile=profile_id, feedbackType=request.POST.get('review[reviewType]', 'approver'), bounty=bountyObj).count()
+    # sbid = request.POST.get('standard_bounties_id')
+    bounty_id = request.POST.get('bounty_id')
+    # bountyObj = Bounty.objects.filter(standard_bounties_id=sbid).first()
+    bountyObj = Bounty.objects.get(pk=bounty_id)
+    fbAmount = FeedbackEntry.objects.filter(
+        sender_profile=profile_id,
+        feedbackType=request.POST.get('review[reviewType]', 'approver'),
+        bounty=bountyObj
+    ).count()
     if fbAmount > 0:
         return JsonResponse({
             'success': False,
             'msg': 'There is already a approval comment',
         })
-    if request.POST.get('review[reviewType]','approver') == 'approver':
-        receiver_profile = Profile.objects.filter(handle=request.POST.get('review[receiver]', '')).first()
+    if request.POST.get('review[reviewType]') == 'worker':
+        receiver_profile = Profile.objects.filter(handle=request.POST.get('review[receiver]')).first()
     else:
         receiver_profile = bountyObj.bounty_owner_profile
     kwargs = {
         'bounty': bountyObj,
         'sender_profile': profile_id,
         'receiver_profile': receiver_profile,
-        'rating': request.POST.get('review[rating]', '-1'),
+        'rating': request.POST.get('review[rating]', '0'),
+        'satisfaction_rating': request.POST.get('review[satisfaction_rating]', '0'),
+        'communication_rating': request.POST.get('review[communication_rating]', '0'),
+        'speed_rating': request.POST.get('review[speed_rating]', '0'),
+        'code_quality_rating': request.POST.get('review[code_quality_rating]', '0'),
+        'recommendation_rating': request.POST.get('review[recommendation_rating]', '0'),
         'comment': request.POST.get('review[comment]', 'No comment.'),
         'feedbackType': request.POST.get('review[reviewType]','approver')
     }
@@ -345,9 +356,37 @@ def post_comment(request):
     feedback = FeedbackEntry.objects.create(**kwargs)
     feedback.save()
     return JsonResponse({
-            'success': False,
+            'success': True,
             'msg': 'Finished.'
         })
+
+def rating_modal(request, bounty_id, username):
+    # TODO: will be changed to the new share
+    """Rating modal.
+
+    Args:
+        pk (int): The primary key of the bounty to be rated.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The rate bounty view.
+
+    """
+    try:
+        bounty = Bounty.objects.get(pk=bounty_id)
+    except Bounty.DoesNotExist:
+        return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
+                            status=401)
+
+    params = get_context(
+        ref_object=bounty,
+    )
+    params['receiver']=username
+    params['user'] = request.user if request.user.is_authenticated else None
+
+    return TemplateResponse(request, 'rating_modal.html', params)
 
 
 @csrf_exempt
@@ -824,7 +863,6 @@ def social_contribution_email(request):
         JsonResponse: Success in sending email.
     """
     from marketing.mails import share_bounty
-
     emails = []
     user_ids = request.POST.getlist('usersId[]', [])
     url = request.POST.get('url', '')
@@ -1619,6 +1657,24 @@ def profile(request, handle):
     context['kudos_count'] = owned_kudos.count()
     context['sent_kudos_count'] = sent_kudos.count()
     context['verification'] = profile.get_my_verified_check
+
+    unrated_funded_bounties = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile') \
+        .filter(
+        bounty_owner_github_username=profile.handle,
+        idx_status='done')
+
+    unrated_contributed_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
+        .filter(interested__pending=False).filter(idx_status='done')
+
+    context['unrated_funded_bounties'] = []
+    context['unrated_contributed_bounties'] = []
+    for bounty in unrated_funded_bounties:
+        if not FeedbackEntry.objects.filter(bounty=bounty, feedbackType='approver'):
+            context['unrated_funded_bounties'].append(bounty)
+
+    for bounty in unrated_contributed_bounties:
+        if not FeedbackEntry.objects.filter(bounty=bounty, feedbackType='worker'):
+            context['unrated_contributed_bounties'].append(bounty)
 
     currently_working_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
         .filter(interested__pending=False).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)

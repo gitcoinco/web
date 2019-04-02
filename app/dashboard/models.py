@@ -3027,6 +3027,11 @@ class FeedbackEntry(SuperModel):
         null=True
     )
     rating = models.SmallIntegerField(blank=True, default=0)
+    satisfaction_rating = models.SmallIntegerField(blank=True, default=0)
+    communication_rating = models.SmallIntegerField(blank=True, default=0)
+    speed_rating = models.SmallIntegerField(blank=True, default=0)
+    code_quality_rating = models.SmallIntegerField(blank=True, default=0)
+    recommendation_rating = models.SmallIntegerField(blank=True, default=0)
     comment = models.TextField(default='', blank=True)
     feedbackType = models.TextField(default='', blank=True, max_length=20)
 
