@@ -414,7 +414,6 @@ def rating_capture(request):
 
 
 def unrated_bounties(request):
-    # TODO: will be changed to the new share
     """Rating capture.
 
     Args:
@@ -428,7 +427,7 @@ def unrated_bounties(request):
 
     """
     # request.user.profile if request.user.is_authenticated and getattr(request.user, 'profile', None) else None
-    unrated_bounties = []
+    unrated_count = 0
     user = request.user.profile if request.user.is_authenticated else None
     if not user:
         return JsonResponse(
@@ -436,23 +435,26 @@ def unrated_bounties(request):
             status=401)
 
     if user:
-        unrated = Bounty.objects.current().filter(interested__profile=user) \
+        unrated_contributed = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=user) \
             .filter(interested__status='okay') \
-            .filter(interested__pending=False).filter(idx_status='done')
-    print(unrated.count())
-    # for bounty in unrated:
-    #     unrated_bounties_json = {}
-    #     if not FeedbackEntry.objects.filter(bounty=bounty):
-    #         unrated_bounties_json['unrated'] = bounty
-    #         unrated_bounties.append(bounty)
-
-    # data = json.dumps(unrated_bounties_json)
-    # data = serializers.serialize('json', unrated, fields=('id',))
+            .filter(interested__pending=False).filter(idx_status='done') \
+            .exclude(
+                feedbacks__feedbackType='worker',
+                feedbacks__sender_profile=user
+            )
+        unrated_funded = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
+        .filter(
+            bounty_owner_github_username__iexact=user.handle,
+            idx_status='done'
+        ).exclude(
+            feedbacks__feedbackType='approver',
+            feedbacks__sender_profile=user,
+        )
+        unrated_count = unrated_funded.count() + unrated_contributed.count()
 
     # data = json.dumps(unrated)
-
     return JsonResponse({
-        'unrated': unrated.count(),
+        'unrated': unrated_count,
     }, status=200)
 
 
@@ -1726,23 +1728,21 @@ def profile(request, handle):
     context['verification'] = profile.get_my_verified_check
     context['avg_rating'] = profile.get_average_star_rating
 
-    unrated_funded_bounties = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile') \
+    context['unrated_funded_bounties'] = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
         .filter(
-        bounty_owner_github_username=profile.handle,
-        idx_status='done')
+            bounty_owner_github_username__iexact=profile.handle,
+        ).exclude(
+            feedbacks__feedbackType='approver',
+            feedbacks__sender_profile=profile,
+        )
 
-    unrated_contributed_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
-        .filter(interested__pending=False).filter(idx_status='done')
-
-    context['unrated_funded_bounties'] = []
-    context['unrated_contributed_bounties'] = []
-    for bounty in unrated_funded_bounties:
-        if not FeedbackEntry.objects.filter(bounty=bounty, feedbackType='approver'):
-            context['unrated_funded_bounties'].append(bounty)
-
-    for bounty in unrated_contributed_bounties:
-        if not FeedbackEntry.objects.filter(bounty=bounty, feedbackType='worker'):
-            context['unrated_contributed_bounties'].append(bounty)
+    context['unrated_contributed_bounties'] = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=profile) \
+            .filter(interested__status='okay') \
+            .filter(interested__pending=False).filter(idx_status='done') \
+            .exclude(
+                feedbacks__feedbackType='worker',
+                feedbacks__sender_profile=profile
+            )
 
     currently_working_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
         .filter(interested__pending=False).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)
