@@ -97,4 +97,4 @@ If you can't search via the contract address, please check if there is no succes
 
 ## Copyright
 
-2018&copy;imToken PTE. LTD.
+2019&copy;imToken PTE. LTD.
