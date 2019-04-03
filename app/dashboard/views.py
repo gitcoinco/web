@@ -788,25 +788,20 @@ def users_fetch(request):
     paginator = Paginator(user_list, limit)
     users = paginator.get_page(page)
     # all_users = all_pages.page(page)
-    # for user in all_pages.page(page):
-    #     print(user)
-    #     profile_json = {}
-    #     # if user.avatar_baseavatar_related.exists():
-    #     #     profile_json['avatar_id'] = user.avatar_baseavatar_related.first().pk
-    #     #     profile_json['avatar_url'] = user.avatar_baseavatar_related.first().avatar_url
-    #     profile_json = user
-    #     all_users.append(profile_json)
-    # params['data'] = json.dumps(all_users)
-    # params = serializers.serialize('json', users)
-    usersas = list(users)
-    params = serializers.serialize('json', usersas)
-    # params['has_next'] = all_pages.page(page).has_next()
-    # params['count'] = all_pages.count
-    # params['num_pages'] = all_pages.num_pages
-    # return JsonResponse(params, status=200, safe=False)
-    return JsonResponse({'data': params, 'has_next': users.has_next()}, status=200, safe=False)
-
-    # return HttpResponse(params, content_type='application/json')
+    for user in all_pages.page(page):
+        print(user)
+        profile_json = {}
+        if user.avatar_baseavatar_related.exists():
+            profile_json['avatar_id'] = user.avatar_baseavatar_related.first().pk
+            profile_json['avatar_url'] = user.avatar_baseavatar_related.first().avatar_url
+        profile_json = user.to_standard_dict()
+        all_users.append(profile_json)
+    # dumping and loading the json here quickly passes serialization issues - definitely can be a better solution 
+    params['data'] = json.loads(json.dumps(all_users, default=str))
+    params['has_next'] = all_pages.page(page).has_next()
+    params['count'] = all_pages.count
+    params['num_pages'] = all_pages.num_pages
+    return JsonResponse(params, status=200, safe=False)
 
 
 def dashboard(request):
