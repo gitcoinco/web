@@ -26,7 +26,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 from django.db import transaction
-from django.http import Http404, JsonResponse
+from django.http import Http404, HttpResponseBadRequest, JsonResponse
 from django.utils import timezone
 
 from app.utils import get_semaphore, sync_profile
@@ -38,7 +38,6 @@ from dashboard.notifications import (
     maybe_market_to_user_discord, maybe_market_to_user_slack,
 )
 from dashboard.tokens import addr_to_token
-from django.http import HttpResponseBadRequest
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from git.utils import get_gh_issue_details, get_url_dict
 from jsondiff import diff

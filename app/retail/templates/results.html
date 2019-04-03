@@ -39,12 +39,24 @@
         <div class="row py-5">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
             <h2 class="text-center">
-              ${{ universe_total_usd|floatformat:2|intcomma }} of {% blocktrans %}
-               Total Platform Value
+              {% blocktrans %}
+               Total Platform Value:
               {% endblocktrans %}
+              ${{ universe_total_usd|floatformat:0|intcomma }}
               {% if keyword %}({{keyword}}){%endif%}
             </h2>
           </div>
+        </div>
+        <div class="row py-1">
+          <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
+            <p style="text-align:center;">
+              In <span style="margin: 3px 3px; font-weight: bold;">{{prev_month_name}}</span>, Gitcoin facilitated $<span style="margin: 3px 3px;font-weight: bold;">{{last_month_amount|floatformat:0}}k in value transfer</span>.  That's about $<span style="margin: 3px 3px;font-weight: bold;">{{last_month_amount_hourly|floatformat:0}} per hour</span>, for every hour during {{prev_month_name_short}}.
+            </p>
+          </div>
+        </div>
+        <div class="row py-1">
+          <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
+
           <script>
             document.max_bounty_history = {{max_bounty_history}};
             document.bounty_history = {{bounty_history|safe}};
@@ -69,8 +81,7 @@
       </div>
     </div>
 
-
-    <div style="background-color: #fafafa;">
+    <div style="border-top: 2px solid #F2F6F9; background-color: #fafafa;">
       <div class="container" id="">
         <div class="row py-2">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex flex-sm-row flex-column justify-content-center align-items-center">
@@ -81,7 +92,6 @@
         </div>
       </div>
     </div>
-
 
 
     <div style="background: #F2F6F9;">

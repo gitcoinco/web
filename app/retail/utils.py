@@ -459,7 +459,8 @@ def build_stat_results(keyword=None):
 
     # bounties history
     cumulative = False
-    context['bounty_history'] = json.dumps(get_bounty_history(keyword, cumulative))
+    bounty_history = get_bounty_history(keyword, cumulative)
+    context['bounty_history'] = json.dumps(bounty_history)
     pp.profile_time('bounty_history')
 
     # Bounties
@@ -517,4 +518,17 @@ def build_stat_results(keyword=None):
     context['keyword'] = keyword
     context['title'] = f"${round(context['universe_total_usd'] / 1000000, 1)}m in " + f"{keyword.capitalize() if keyword else ''} Results"
     context['programming_languages'] = ['All'] + programming_languages
+
+
+    # last month data
+    today = timezone.now()
+    first = today.replace(day=1)
+    lastMonth = first - timezone.timedelta(days=1)
+    context['prev_month_name'] = lastMonth.strftime("%B %Y")
+    context['prev_month_name_short'] = lastMonth.strftime("%B")
+    bh = bounty_history[-1] if context['prev_month_name'] == bounty_history[-1][0] else bounty_history[-2]
+    bh[0] = 0
+    context['last_month_amount'] = round(sum(bh)/1000)
+    context['last_month_amount_hourly'] = sum(bh) / 30 / 24
+
     return context
