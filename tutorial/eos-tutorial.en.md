@@ -87,4 +87,4 @@ In imToken, the current displayed token prices are provided by the block.cc API.
 
 ## Copyright
 
-2018&copy;imToken PTE. LTD.
+2019&copy;imToken PTE. LTD.
