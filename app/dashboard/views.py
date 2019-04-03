@@ -25,6 +25,7 @@ import time
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.core import serializers
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.http import Http404, HttpResponse, JsonResponse
@@ -675,14 +676,12 @@ def users_fetch(request):
     limit = int(request.GET.get('limit', 10))
     page = int(request.GET.get('page', 1))
     order_by = request.GET.get('order_by', '-created_on')
-    user_list = Profile.objects.all()
-    users = user_list.order_by(order_by).cache()
+    context = {}
+    user_list = Profile.objects.all().order_by(order_by).cache()
     # all_notifs = Notification.objects.filter(to_user_id=request.user.id).order_by('-id')
     params = dict()
-    all_pages = Paginator(users, limit)
-    if page <= 0 or page > all_pages.num_pages:
-        page = 1
-    all_users = []
+    paginator = Paginator(user_list, limit)
+    users = paginator.get_page(page)
     # all_users = all_pages.page(page)
     for user in all_pages.page(page):
         print(user)
@@ -692,7 +691,7 @@ def users_fetch(request):
             profile_json['avatar_url'] = user.avatar_baseavatar_related.first().avatar_url
         profile_json = user.to_standard_dict()
         all_users.append(profile_json)
-    # dumping and loading the json here quickly passes serialization issues - definitely can be a better solution 
+    # dumping and loading the json here quickly passes serialization issues - definitely can be a better solution
     params['data'] = json.loads(json.dumps(all_users, default=str))
     params['has_next'] = all_pages.page(page).has_next()
     params['count'] = all_pages.count
