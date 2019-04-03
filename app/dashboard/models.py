@@ -1922,6 +1922,23 @@ class Profile(SuperModel):
 
         return kudos_transfers
 
+
+    @property
+    def get_average_star_rating(self):
+        """Returns the average star ratings (overall and individual topic)
+        for a particular user"""
+
+        feedbacks = FeedbackEntry.objects.filter(receiver_profile=self).all()
+        average_rating = {}
+        average_rating['overall'] = sum([feedback.rating for feedback in feedbacks]) / feedbacks.count()
+        average_rating['code_quality_rating'] = sum([feedback.code_quality_rating for feedback in feedbacks]) / feedbacks.count()
+        average_rating['communication_rating'] = sum([feedback.communication_rating for feedback in feedbacks]) / feedbacks.count()
+        average_rating['recommendation_rating'] = sum([feedback.recommendation_rating for feedback in feedbacks]) / feedbacks.count()
+        average_rating['satisfaction_rating'] = sum([feedback.satisfaction_rating for feedback in feedbacks]) / feedbacks.count()
+        average_rating['speed_rating'] = sum([feedback.speed_rating for feedback in feedbacks]) / feedbacks.count()
+        return average_rating
+
+
     @property
     def get_my_verified_check(self):
         verification = UserVerificationModel.objects.filter(user=self.user).first()

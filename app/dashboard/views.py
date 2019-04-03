@@ -1657,6 +1657,7 @@ def profile(request, handle):
     context['kudos_count'] = owned_kudos.count()
     context['sent_kudos_count'] = sent_kudos.count()
     context['verification'] = profile.get_my_verified_check
+    context['avg_rating'] = profile.get_average_star_rating
 
     unrated_funded_bounties = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile') \
         .filter(
