@@ -692,7 +692,8 @@ def users_fetch(request):
             profile_json['avatar_url'] = user.avatar_baseavatar_related.first().avatar_url
         profile_json = user.to_standard_dict()
         all_users.append(profile_json)
-    params['data'] = json.dumps(all_users)
+    # dumping and loading the json here quickly passes serialization issues - definitely can be a better solution 
+    params['data'] = json.loads(json.dumps(all_users, default=str))
     params['has_next'] = all_pages.page(page).has_next()
     params['count'] = all_pages.count
     params['num_pages'] = all_pages.num_pages
