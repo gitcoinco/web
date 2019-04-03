@@ -15,13 +15,19 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load static %}
+{% load i18n static %}
 <!DOCTYPE html>
 <html lang="en">
 
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
+    <style>
+      #primary_form {
+        max-width: 40rem;
+      }
+    </style>
+    <link rel="stylesheet" href={% static "v2/css/submit_bounty.css" %}>
   </head>
 
   <body class="interior {{active}} g-font-muli">
@@ -71,7 +77,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     <div class="form__amount-wrapper">
                       <input name='amount' id='amount' step="0.0001" class="form__input" type="number" placeholder="Amount" />
                     </div>
-                    <div class="form__group-item">
+                    <div class="form__group-item font-body">
                       <div class="form__select2">
                         <select name='denomination' id='token' data-token-address='{{bounty.token_address}}' disabled></select>
                       </div>
@@ -79,20 +85,61 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   </div>
                   <small class="form__input-help form__input-help--dynamic" id="usd_amount"></small>
                 </div>
-                <div id="gas-section">
+                <div id="gas-section" class="mt-">
                   {% include 'shared/wallet_estimate.html' %}
                 </div>
-                <div class="w-100 mt-2 terms_container" style="padding-top:5px;">
+                <div id="fee-section" class="mt-4">
+                  <h5 class="font-subheader">{% trans "No Suprises" %}</h5>
+                  <div class="row">
+                    <div class="col-12 col-sm-9 mt-3 font-body">
+                      <p>
+                        {% blocktrans %}
+                        Simply pay the bounty amount ( plus a standard <span class="fee-percentage font-weight-bold">10%</span> Gitcoin platform fee ).
+                        This covers our costs for finding quality contributors to join our platform so that you get the best work.
+                        If your business requires additional assitance, please contact us <a href="mailto:founders@gitcoin.co">founders@gitcoin.co</a>
+                        {% endblocktrans %}
+                      </p>
+                    </div>
+                    <div class="col-12 col-sm-3 order-first order-sm-last mt-4 mt-sm-2 mt-md-0 mb-4 mb-sm-3">
+                      <div class="fee-circle text-center">
+                        <p class="font-title mb-0"><span id="fee-amount">0</span> <span id="fee-token">{{ bounty.token_name }}</span></p>
+                        <p class="font-body font-weight-semibold">
+                          (<span class="fee-percentage">10</span>%)
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div id="total-section" class="row mt-3 py-3">
+                  <div class="col-sm-2 my-auto">
+                    <h5 class="font-title-lg mb-0">{% trans "Total"%} </h5>
+                  </div>
+                  <div class="col-sm-10 text-sm-right my-auto">
+                    <p class="mb-1">{% trans "Payment Due = " %} <span id="summary-total-amount" class="font-weight-bold"></span></p>
+
+                    <p class="font-caption mb-1">
+                      ( Increased Bounty <span id="summary-bounty-amount" class="font-weight-bold">0</span>
+                      <span id="summary-bounty-token" class="font-weight-bold">{{ bounty.token_name }}</span> +
+
+                      <span id="summary-fee-amount" class="font-weight-bold">0</span>
+                      <span id="summary-fee-token" class="font-weight-bold">{{ bounty.token_name }}</span> Gitcoin Platform Fee )
+                    </p>
+                    <p class="font-caption mb-0">
+                      You will have to approve
+                      <span id="confirmation" class="font-weight-bold">2</span>
+                      Metamask confirmations.
+                    </p>
+                  </div>
+                </div>
+                <div class="w-100 terms_container mb-3" style="padding-top:5px;">
                   <div class="form__checkbox">
                     <input name='terms' id='terms' type="checkbox" value=1 required />
                     <label class="form__label" for=terms>I have read, understand, and agree to, the <a href="{% url "terms" %}" target=new>Terms of Service</a>.</label>
                   </div>
                 </div>
-                <div class="form__footer form__footer--right text-center">
-                  <button class="button button--primary" type="submit" id="increaseFunding">Increase Funding</button>
-                </div>
-                <div class="form__footer form__footer--right text-center">
-                  <a class="font-caption" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">
+                <button class="button button--primary w-100" type="submit" id="increaseFunding">Increase Funding</button>
+                <div class="mt-3 text-center">
+                  <a class="font-caption text-center" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">
                     Your transaction is secured by the audited StandardBounties contract on the Ethereum blockchain. </br>
                     Learn more here.
                   </a>

@@ -15,10 +15,10 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
-<div id="add_interest" class="white-light-bg">
+<div id="add_interest" class="px-4 py-3">
   <div class="row">
-    <div class="col-12 closebtn">
-      <a rel="modal:close" href="javascript:void" class="closebtn purple" aria-label="Close dialog"></a>
+    <div class="col-12">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
     </div>
     <div class="col-12">
       <h5 class="text-center font-title">{% trans "Submit a Plan" %}</h5>
@@ -26,6 +26,20 @@
     {% if user_logged_in %}
       <div class="col-12">
         <form id="action_plan" class="font-body">
+          {% if bounty.repo_type == 'private' %}
+            <div id="nda-upload">
+              <hr class="mt-4">
+              <div>
+                <h5 class="font-subheader">{% trans "Non-Disclosure Agreement" %}</h5>
+                {% blocktrans %}
+                  <p>Download the repo’s <a href="" class="nda-download-link" download>Non-Disclosure Agreement</a> and upload the signed document.</p>
+                {% endblocktrans %}
+                <label class="form__label" for=issueNDA>{% trans "Each contributor has to sign your NDA before they can start work. Supported format: pdf, doc, docx." %}</label>
+                <input required name='issueNDA' id="issueNDA" class="form__input" type="file" accept="application/pdf,application/msword, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/vnd.openxmlformats-officedocument.presentationml.presentation"/>
+              </div>
+              <hr class="mt-4">
+            </div>
+          {% endif %}
           <div>
             <label for="issue_message">
               <span>

@@ -42,7 +42,7 @@ from django.utils.translation import gettext_lazy as _
 
 import pytz
 import requests
-from avatar.utils import get_upload_filename
+from app.utils import get_upload_filename
 from dashboard.tokens import addr_to_token
 from economy.models import ConversionRate, SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
@@ -178,6 +178,10 @@ class Bounty(SuperModel):
         ('approval', 'approval'),
         ('reserved', 'reserved'),
     ]
+    REPO_TYPES = [
+        ('public', 'public'),
+        ('private', 'private'),
+    ]
     PROJECT_TYPES = [
         ('traditional', 'traditional'),
         ('contest', 'contest'),
@@ -272,10 +276,14 @@ class Bounty(SuperModel):
     canceled_bounty_reason = models.TextField(default='', blank=True, verbose_name=_('Cancelation reason'))
     project_type = models.CharField(max_length=50, choices=PROJECT_TYPES, default='traditional')
     permission_type = models.CharField(max_length=50, choices=PERMISSION_TYPES, default='permissionless')
+    repo_type = models.CharField(max_length=50, choices=REPO_TYPES, default='public')
     snooze_warnings_for_days = models.IntegerField(default=0)
     is_featured = models.BooleanField(
         default=False, help_text=_('Whether this bounty is featured'))
     featuring_date = models.DateTimeField(blank=True, null=True)
+    fee_amount = models.DecimalField(default=0, decimal_places=18, max_digits=50)
+    fee_tx_id = models.CharField(default="0x0", max_length=255, blank=True)
+    unsigned_nda = models.ForeignKey('dashboard.BountyDocuments', blank=True, null=True, related_name='bounty', on_delete=models.SET_NULL)
 
     token_value_time_peg = models.DateTimeField(blank=True, null=True)
     token_value_in_usdt = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
@@ -294,6 +302,7 @@ class Bounty(SuperModel):
         default=False, help_text=_('Admin override to mark as remarketing ready')
     )
     attached_job_description = models.URLField(blank=True, null=True)
+    event = models.ForeignKey('dashboard.HackathonEvent', related_name='bounties', null=True, on_delete=models.SET_NULL, blank=True)
 
     # Bounty QuerySet Manager
     objects = BountyQuerySet.as_manager()
@@ -1018,7 +1027,7 @@ class Bounty(SuperModel):
                 logger.warning(f'reserved_for_user_handle: Unknown handle: ${handle}')
 
         self.bounty_reserved_for_user = profile
-    
+
 
 class BountyFulfillmentQuerySet(models.QuerySet):
     """Handle the manager queryset for BountyFulfillments."""
@@ -1093,6 +1102,32 @@ class BountySyncRequest(SuperModel):
     processed = models.BooleanField()
 
 
+class RefundFeeRequest(SuperModel):
+    """Define the Refund Fee Request model."""
+    profile = models.ForeignKey(
+        'dashboard.Profile',
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='refund_requests',
+    )
+    bounty = models.ForeignKey(
+        'dashboard.Bounty',
+        on_delete=models.CASCADE
+    )
+    fulfilled = models.BooleanField(default=False)
+    rejected = models.BooleanField(default=False)
+    comment = models.TextField(max_length=500, blank=True)
+    comment_admin = models.TextField(max_length=500, blank=True)
+    fee_amount = models.FloatField()
+    token = models.CharField(max_length=10)
+    address = models.CharField(max_length=255)
+    txnId = models.CharField(max_length=255, blank=True)
+
+    def __str__(self):
+        """Return the string representation of RefundFeeRequest."""
+        return f"bounty: {self.bounty}, fee: {self.fee_amount}, token: {self.token}. Time: {self.created_on}"
+
+
 class Subscription(SuperModel):
 
     email = models.EmailField(max_length=255)
@@ -1101,6 +1136,12 @@ class Subscription(SuperModel):
 
     def __str__(self):
         return f"{self.email} {self.created_on}"
+
+
+class BountyDocuments(SuperModel):
+
+    doc = models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('Bounty documents.'))
+    doc_type = models.CharField(max_length=50)
 
 
 class SendCryptoAssetQuerySet(models.QuerySet):
@@ -1458,6 +1499,7 @@ class Interest(SuperModel):
         max_length=7,
         help_text=_('Whether or not the interest requires review'),
         verbose_name=_('Needs Review'))
+    signed_nda = models.ForeignKey('dashboard.BountyDocuments', blank=True, null=True, related_name='interest', on_delete=models.SET_NULL)
 
     # Interest QuerySet Manager
     objects = InterestQuerySet.as_manager()
@@ -1595,6 +1637,20 @@ class Activity(SuperModel):
         return f"{self.profile.handle} type: {self.activity_type} created: {naturalday(self.created)} " \
                f"needs review: {self.needs_review}"
 
+
+    @property
+    def humanized_activity_type(self):
+        """Turn snake_case into Snake Case.
+
+        Returns:
+            str: The humanized nameactivity_type
+        """
+        for activity_type in self.ACTIVITY_TYPES:
+            if activity_type[0] == self.activity_type:
+                return activity_type[1]
+        return ' '.join([x.capitalize() for x in self.activity_type.split('_')])
+
+
     def i18n_name(self):
         return _(next((x[1] for x in self.ACTIVITY_TYPES if x[0] == self.activity_type), 'Unknown type'))
 
@@ -1616,6 +1672,8 @@ class Activity(SuperModel):
             'title',
             'token_name',
             'created_human_time',
+            'humanized_name',
+            'url',
         ]
         activity = self.to_standard_dict(properties=properties)
         for key, value in model_to_dict(self).items():
@@ -1623,7 +1681,7 @@ class Activity(SuperModel):
         for fk in ['bounty', 'tip', 'kudos', 'profile']:
             if getattr(self, fk):
                 activity[fk] = getattr(self, fk).to_standard_dict(properties=properties)
-
+        print(activity['kudos'])
         # KO notes 2019/01/30
         # this is a bunch of bespoke information that is computed for the views
         # in a later release, it couild be refactored such that its just contained in the above code block ^^.
@@ -1639,7 +1697,8 @@ class Activity(SuperModel):
             if activity.get('title'):
                 activity['urled_title'] = f'<a href="{activity["bounty_url"]}">{activity["title"]}</a>'
             else:
-                activity['urled_title'] = activity.title
+                activity['urled_title'] = activity.get('title')
+        activity['humanized_activity_type'] = self.humanized_activity_type
         if 'value_in_usdt_now' in obj:
             activity['value_in_usdt_now'] = obj['value_in_usdt_now']
         if 'token_name' in obj:
@@ -1720,6 +1779,35 @@ class UserVerificationModel(SuperModel):
         return f"User: {self.user}; Verified: {self.verified}"
 
 
+class BountyInvites(SuperModel):
+    """Define the structure of bounty invites."""
+
+    INVITE_STATUS = [
+        ('pending', 'pending'),
+        ('accepted', 'accepted'),
+        ('completed', 'completed'),
+    ]
+
+    bounty = models.ManyToManyField('dashboard.Bounty', related_name='bountyinvites', blank=True)
+    inviter = models.ManyToManyField(User, related_name='inviter', blank=True)
+    invitee = models.ManyToManyField(User, related_name='invitee', blank=True)
+    status = models.CharField(max_length=20, choices=INVITE_STATUS, blank=True)
+
+    def __str__(self):
+        return f"Inviter: {self.inviter}; Invitee: {self.invitee}; Bounty: {self.bounty}"
+
+    @property
+    def get_bounty_invite_url(self):
+        """Returns a unique url for each bounty and one who is inviting
+
+        Returns:
+            A unique string for each bounty
+        """
+        salt = "X96gRAVvwx52uS6w4QYCUHRfR3OaoB"
+        string = self.inviter.username + salt + self.bounty
+        return base64.urlsafe_b64encode(string.encode()).decode()
+
+
 class ProfileQuerySet(models.QuerySet):
     """Define the Profile QuerySet to be used as the objects manager."""
 
@@ -1755,6 +1843,7 @@ class Profile(SuperModel):
     pref_lang_code = models.CharField(max_length=2, choices=settings.LANGUAGES, blank=True)
     slack_repos = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     slack_token = models.CharField(max_length=255, default='', blank=True)
+    custom_tagline = models.CharField(max_length=255, default='', blank=True)
     slack_channel = models.CharField(max_length=255, default='', blank=True)
     discord_repos = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     discord_webhook_url = models.CharField(max_length=400, default='', blank=True)
@@ -1792,7 +1881,7 @@ class Profile(SuperModel):
     job_salary = models.DecimalField(default=1, decimal_places=2, max_digits=50)
     job_location = JSONField(default=dict, blank=True)
     linkedin_url = models.CharField(max_length=255, default='', blank=True, null=True)
-    resume = models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('The avatar SVG.'))
+    resume = models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('The profile resume.'))
 
     objects = ProfileQuerySet.as_manager()
 
@@ -1833,6 +1922,23 @@ class Profile(SuperModel):
         kudos_transfers = kudos_transfers.distinct('id')
 
         return kudos_transfers
+
+
+    @property
+    def get_average_star_rating(self):
+        """Returns the average star ratings (overall and individual topic)
+        for a particular user"""
+
+        feedbacks = FeedbackEntry.objects.filter(receiver_profile=self).all()
+        average_rating = {}
+        average_rating['overall'] = sum([feedback.rating for feedback in feedbacks]) / feedbacks.count()
+        average_rating['code_quality_rating'] = sum([feedback.code_quality_rating for feedback in feedbacks]) / feedbacks.count()
+        average_rating['communication_rating'] = sum([feedback.communication_rating for feedback in feedbacks]) / feedbacks.count()
+        average_rating['recommendation_rating'] = sum([feedback.recommendation_rating for feedback in feedbacks]) / feedbacks.count()
+        average_rating['satisfaction_rating'] = sum([feedback.satisfaction_rating for feedback in feedbacks]) / feedbacks.count()
+        average_rating['speed_rating'] = sum([feedback.speed_rating for feedback in feedbacks]) / feedbacks.count()
+        return average_rating
+
 
     @property
     def get_my_verified_check(self):
@@ -1879,7 +1985,8 @@ class Profile(SuperModel):
     def build_random_avatar(self):
         from avatar.utils import build_random_avatar
         from avatar.models import CustomAvatar
-        payload = build_random_avatar()
+        purple = '8A2BE2'
+        payload = build_random_avatar(purple, '000000', False)
         try:
             custom_avatar = CustomAvatar.create(self, payload)
             custom_avatar.autogenerated = True
@@ -1888,7 +1995,7 @@ class Profile(SuperModel):
             self.save()
             return custom_avatar
         except Exception as e:
-            logger.warning('Save Random Avatar - Error: (%s) - Handle: (%s)', e, profile.handle if profile else '')
+            logger.warning('Save Random Avatar - Error: (%s) - Handle: (%s)', e, self.handle)
 
     def no_times_slashed_by_staff(self):
         user_actions = UserAction.objects.filter(
@@ -2890,6 +2997,31 @@ class BlockedUser(SuperModel):
         return f'<BlockedUser: {self.handle}>'
 
 
+class HackathonEvent(SuperModel):
+    """Defines the HackathonEvent model."""
+
+    name = models.CharField(max_length=255)
+    slug = models.SlugField(blank=True)
+    logo = models.ImageField(blank=True)
+    logo_svg = models.FileField(blank=True)
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+
+    def __str__(self):
+        """String representation for HackathonEvent.
+
+        Returns:
+            str: The string representation of a HackathonEvent.
+        """
+        return f'{self.name} - {self.start_date}'
+
+    def save(self, *args, **kwargs):
+        """Define custom handling for saving HackathonEvent."""
+        from django.utils.text import slugify
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
 class FeedbackEntry(SuperModel):
     bounty = models.ForeignKey(
         'dashboard.Bounty',
@@ -2913,6 +3045,11 @@ class FeedbackEntry(SuperModel):
         null=True
     )
     rating = models.SmallIntegerField(blank=True, default=0)
+    satisfaction_rating = models.SmallIntegerField(blank=True, default=0)
+    communication_rating = models.SmallIntegerField(blank=True, default=0)
+    speed_rating = models.SmallIntegerField(blank=True, default=0)
+    code_quality_rating = models.SmallIntegerField(blank=True, default=0)
+    recommendation_rating = models.SmallIntegerField(blank=True, default=0)
     comment = models.TextField(default='', blank=True)
     feedbackType = models.TextField(default='', blank=True, max_length=20)
 

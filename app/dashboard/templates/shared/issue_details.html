@@ -18,7 +18,7 @@
 <h5 class="font-subheader">{% trans "Details" %}</h5>
 <label class="form__label" for="project_type">{% trans "Project Type" %}</label>
 <div class="form__select2">
-  <select class="js-select2" id="project_type" name="project_type">
+  <select class="js-select2" name="project_type" id="project_type">
     <option value="traditional">{% trans "Traditional -- 1 worker at a time, 1 is paid out" %}</option>
     <option value="contest">{% trans "Contest -- many workers at a time, 1 is paid out" %}</option>
     <option value="cooperative">{% trans "Cooperative -- many workers at a time, many are paid out" %}</option>
@@ -26,7 +26,7 @@
 </div>
 <label class="form__label" for="permission_type">{% trans "Permissions" %}</label>
 <div class="form__select2">
-  <select class="js-select2" id="permission_type" name="permission_type">
+  <select class="js-select2" name="permission_type" id="permission_type">
     <option value="permissionless">{% trans "Permissionless - Anyone can start work." %}</option>
     <option value="approval" selected>{% trans "Approval Required - I will approve bounty hunters." %}</option>
     <option id="reservedForOptionID" value="reserved">{% trans "Reserved For - I will select a Gitcoin user." %}</option>

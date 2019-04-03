@@ -127,10 +127,44 @@ def get_avatar_context():
                 'name': 'Clothing',
                 'title': 'Pick your clothing',
                 'options': (
-                    'cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater', 'spacecadet', 'suit',
-                    'ethlogo', 'cloak', 'robe', 'pjs', 'elf_inspired', 'business_suit', 'suspender', 'gitcoinpro',
-                    'star_uniform', 'jersey', 'charlie', 'doctor', 'chinese', 'blouse', 'polkadotblouse', 'coat',
-                    'crochettop', 'space_suit', 'armour', 'pilot', 'baseball', 'football',
+                    'cardigan', 
+                    'hoodie', 
+                    'knitsweater', 
+                    'plaid', 
+                    'shirt', 
+                    'shirtsweater', 
+                    'spacecadet', 
+                    'suit',
+                    'ethlogo', 
+                    'cloak', 
+                    'robe', 
+                    'pjs', 
+                    'elf_inspired', 
+                    'business_suit', 
+                    'suspender', 
+                    'gitcoinpro',
+                    'star_uniform',
+                    'jersey',
+                    'charlie',
+                    'doctor',
+                    'chinese',
+                    'blouse',
+                    'polkadotblouse',
+                    'coat',
+                    'crochettop',
+                    'space_suit',
+                    'armour',
+                    'pilot',
+                    'baseball',
+                    'football',
+                    'lifevest',
+                    'firefighter',
+                    'leatherjacket',
+                    'martialarts',
+                    'raincoat',
+                    'recycle',
+                    'chef',
+                    'sailor',
                 ),
                 'paid_options': {
                     'robe': 0.01,
@@ -152,6 +186,8 @@ def get_avatar_context():
                 ], ['None', 'womenhair'], ['None', 'womanhair'], ['None', 'womanhair1'], ['None', 'womanhair2'],
                             ['None', 'womanhair3'], ['None', 'womanhair4'], ['None',
                                                                              'womanhair5'], ['None', 'man-hair'],
+                   ['None', 'girl_hairstyle1'], ['None', 'girl_hairstyle2'], ['None', 'girl_hairstyle3'], ['None',
+                                                                                                           'men_hairstyle1'], ['None', 'men_hairstyle2'],
                             ),
                 'paid_options': {},
             },
@@ -180,9 +216,8 @@ def get_avatar_context():
                     'Masks-wolverine_inspired'
                 ], ['Masks-captain_inspired'], ['Masks-alien'], ['Extras-Parrot'], ['Extras-wonderwoman_inspired'], [
                     'Extras-santa_inspired'
-                ], ['Extras-reindeer'], ['Masks-gitcoinbot'], ['Extras-tattoo'], ['Masks-batman_inspired'], [
-                    'Masks-eye-patch'
-                ], ['Masks-flash_inspired'], ['Masks-deadpool_inspired'], ['Masks-darth_inspired'], [
+                ], ['Extras-reindeer'], ['Masks-gitcoinbot'], ['Extras-tattoo'], ['Masks-batman_inspired'], 
+                ['Masks-flash_inspired'], ['Masks-deadpool_inspired'], ['Masks-darth_inspired'], [
                     'Masks-spiderman_inspired'
                 ], ['Glasses-5'], ['Glasses-geordi-visor'], ['Masks-funny_face'], ['Masks-viking'], [
                     'Masks-construction_helmet'
@@ -191,9 +226,15 @@ def get_avatar_context():
                 ], ['Masks-surgical'], ['Extras-monkey'], ['Masks-power'], ['Glasses-7'], ['Glasses-8'], [
                     'HatShort-angel'
                 ], ['HatShort-devil'], ['Extras-necklace1'], ['Extras-necklace2'], ['Extras-necklace3'], ['Glasses-9'],
-                            ['Masks-clown'], ['Extras-bird'], ['HatShort-sleepy'], ['Earring-tribal'],
-                            ['Glasses-google'], ['Masks-marshmellow'], ['Masks-pirate'], ['Masks-power1'],
-                            ['HatShort-elf'], ['Extras-necklaceb'], ['Masks-football'],
+                            ['Masks-clown'], ['HatShort-sleepy'], ['Earring-tribal'],
+                            ['Glasses-google'], ['Masks-marshmellow'], ['Masks-power1'],
+                            ['HatShort-elf'], ['Extras-necklaceb'], ['Masks-football'], ['HatShort-chefHat'],
+                            ['HatShort-captain'], ['HatShort-beanie'], ['Masks-egypt'], ['HatShort-nefertiti'], 
+                            ['Masks-frankenstein'], ['Masks-diving'], ['HatShort-1'], ['HatShort-artist'],
+                            ['HatShort-pirate'], ['HatShort-grad'], ['HatShort-antlers'], ['Extras-sword'], 
+                            ['Masks-pirate'], ['Extras-bird'], ['Extras-fire'], ['Masks-hockey'],
+                            ['Masks-snorkel'], ['Glasses-monocle'], ['HatShort-police'], ['HatShort-mexican'], 
+                            ['HatShort-fez'],
                             ),
                 'paid_options': {
                     'Extras-Parrot': 0.01,
@@ -418,8 +459,9 @@ def build_avatar_svg(svg_path='avatar.svg', line_color='#781623', icon_size=None
     return result_path
 
 
-def build_random_avatar():
+def build_random_avatar(override_skin_tone=None, override_hair_color=None, add_facial_hair=True):
     """Build an random avatar payload using context properties"""
+    ignore_options = ['eyeliner-blue', 'eyeliner-green', 'eyeliner-pink', 'eyeliner-red', 'eyeliner-teal', 'blush']
     default_path = f'{settings.STATIC_URL}v2/images/avatar/'
     context = get_avatar_context()
     optional = context['optionalSections']
@@ -427,7 +469,11 @@ def build_random_avatar():
 
     payload = dict()
     payload['SkinTone'] = random.choice(context['skin_tones'])
+    if override_skin_tone:
+        payload['SkinTone'] = override_skin_tone
     payload['HairColor'] = random.choice(context['hair_colors'])
+    if override_hair_color:
+        payload['HairColor'] = override_hair_color
     payload['ClothingColor'] = random.choice(context['clothing_colors'])
 
     for section in context['sections']:
@@ -439,9 +485,15 @@ def build_random_avatar():
         if set_optional == True:
             options = dict()
             if section_name not in ['HairStyle', 'Accessories']:
-                options = [option for option in section['options'] if option not in paid_options]
+                options = [
+                    option for option in section['options']
+                    if option not in paid_options and option not in ignore_options
+                ]
             else:
-                options = [option for option in section['options'] if option[0] not in paid_options]
+                options = [
+                    option for option in section['options']
+                    if option[0] not in paid_options and option not in ignore_options
+                ]
 
             random_choice = random.choice(options)
 
@@ -457,8 +509,9 @@ def build_random_avatar():
                 ] = f'{default_path}{section_name}/{random_choice[1]}-{payload["HairColor"]}.svg' if random_choice[
                     1] != 'None' else None
             elif section_name == 'FacialHair':
-                key = random_choice[:random_choice.find('-')]
-                payload[key] = f'{default_path}{section_name}/{random_choice}-{payload["HairColor"]}.svg'
+                if add_facial_hair:
+                    key = random_choice[:random_choice.find('-')]
+                    payload[key] = f'{default_path}{section_name}/{random_choice}-{payload["HairColor"]}.svg'
             elif section_name == 'Accessories':
                 for k in random_choice:
                     key = k[:k.find('-')]

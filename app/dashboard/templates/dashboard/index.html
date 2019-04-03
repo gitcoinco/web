@@ -34,32 +34,61 @@
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav.html' %}
     </div>
-    {% include 'dashboard/ftux.html' %}
+    {% if hackathon %}
+      <div class="row pt-5 pb-5 text-center" style="
+        background: rgb(25, 0, 63);
+        background-image: url({% static '/v2/images/header-bg.png' %});
+        background-size: cover;
+      ">
+        <div class="col g-font-muli">
+          <span class="d-block font-title-xl text-white">{{ hackathon.name }}</span>
+          {% if hackathon.logo_svg %}
+            <img class="d-block mx-auto my-4" max-width="364" src="{{ hackathon.logo_svg.url }}"/>
+          {% elif hackathon.logo %}
+            <img class="d-block mx-auto my-4" max-width="364" src="{{ hackathon.logo.url }}"/>
+          {% endif %}
+          <span class="d-block font-title-xl text-white font-weight-300" style="white-space: nowrap;">
+            {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
+          </span>
+        </div>
+      </div>
+    {% else %}
+      {% include 'dashboard/ftux.html' %}
+    {% endif %}
     <div id="dashboard-content" class="container-fluid no-gutter">
       <div class="row">
-        <div class="col-12 col-lg-3 col-xl-2 invisible" id="sidebar_container" style="background: #F2F6F9;">
-          {% include 'dashboard/sidebar_search.html' %}
-        </div>
-
-        <div class="col-12 col-lg-9 col-xl-10 body">
-          <div class="container-fluid p-2" id="bounties">
-            <div id="dashboard-title" class="hidden">
-              {% include 'shared/search_bar.html' %}
-            </div>
-            <div class="row loading justify-content-center align-items-center loading_img">
-              <img src="{% static "v2/images/loading_v2.gif" %}">
-            </div>
-            <div class="row nonefound" style="display:none;">
-              <img src="{% static "v2/images/shrug_bot.png" %}">
-              <h3>{% trans "No results found." %}</h3>
-              <p>{% trans "Please try another query" %}</p>
-            </div>
-            {% include 'dashboard/featured_bounties.html' %}
-
+        {% if hackathon %}
+          <div class="col-12 col-lg-12 col-xl-12 body">
+            <div class="container p-2" id="bounties">
+              <div class="col-12 col-lg-12 pl-2 pb-1 title-row">
+                <span class="font-title ml-1 text-highlight-gc-blue">{% trans 'Bounties' %}</span>
+              </div>
+              <div style="clear: right;"></div>
+        {% else %}
+          <div class="col-12 col-lg-3 col-xl-2 invisible" id="sidebar_container" style="background: #F2F6F9;">
+            {% include 'dashboard/sidebar_search.html' %}
           </div>
+
+          <div class="col-12 col-lg-9 col-xl-10 body">
+            <div class="container-fluid p-2" id="bounties">
+              <div id="dashboard-title" class="hidden">
+                {% include 'shared/search_bar.html' %}
+              </div>
+        {% endif %}
+          <div class="row loading justify-content-center align-items-center loading_img">
+            <img src="{% static "v2/images/loading_v2.gif" %}">
+          </div>
+          <div class="row nonefound" style="display:none;">
+            <img src="{% static "v2/images/shrug_bot.png" %}">
+            <h3>{% trans "No results found." %}</h3>
+            <p>{% trans "Please try another query" %}</p>
+          </div>
+          {% include 'dashboard/featured_bounties.html' %}
+
         </div>
       </div>
     </div>
+  </div>
 
     <div id="onboard-footer" class="row hidden font-body">
       <div class="col-12">
@@ -76,7 +105,7 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
     <script src="{% static "v2/js/popper.min.js" %}"></script>
-    <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
+    <script src="{% static "v2/js/bootstrap.min.js" %}" crossorigin="anonymous"></script>
     <script>
       let bootstrapTooltip = $.fn.tooltip.noConflict()
       $.fn.runTooltip = bootstrapTooltip
@@ -100,6 +129,9 @@
     <script src="{% static "v2/js/pages/dashboard.js" %}"></script>
     <script>
       document.keywords = {{keywords | safe}};
+      {% if hackathon %}
+        document.hackathon = "{{ hackathon.slug | safe }}";
+      {% endif %}
     </script>
   </body>
 </html>

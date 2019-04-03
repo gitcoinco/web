@@ -33,7 +33,7 @@
     <link rel="stylesheet" href="{% static "v2/css/landing_page.css" %}" />
     <link rel="stylesheet" href="{% static "v2/css/howitworks.css" %}" />
   </head>
-  <body class="index d-flex flex-column g-font-muli">
+  <body class="index d-flex flex-column g-font-muli contributor-page">
     {% include 'shared/tag_manager_2.html' %}
     {% cookielaw_banner %}
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
@@ -43,31 +43,33 @@
         {% include 'bounties/contributor/hero.html' %}
       </div>
 
-      <div class="pt-2" id="codefund"></div>
+      {% include 'shared/onboard_slider.html' %}
 
-      <div class="container-fluid px-5 pb-5 pt-2 benefits_container">
-        {% include 'bounties/contributor/benefits.html' %}
+      <div class="contributor" id="codefund"></div>
+
+      <div class="container-fluid px-5 pb-5 pt-2 story_container">
+        {% include 'bounties/contributor/story.html' %}
       </div>
 
-      <div class="container-fluid pb-5 landing__newsletter">
-        {% include 'shared/newsletter.html' %}
+      <div class="container-fluid px-5 pb-5 pt-2 feature_container">
+        {% include 'bounties/contributor/feature.html' %}
       </div>
 
       {% if tech_stack %}
-        <div class="container-fluid p-5 open-bounties">
+        <div class="container-fluid py-5 px-sm-5 open-bounties">
           {% include 'bounties/contributor/explorer.html' %}
         </div>
       {% endif %}
 
+      <div class="container-fluid py-5 landing__newsletter">
+        {% include 'shared/newsletter.html' %}
+      </div>
+  
       {% if activities|length %}
         <div class="container-fluid p-5 activity">
           {% include 'bounties/contributor/activity.html' %}
         </div>
       {% endif %}
-
-      <div class="container-fluid p-5 whatisit_container">
-        {% include 'shared/what_is_gitcoin.html' with video='DJartWzDn0E' %}
-      </div>
 
       <div class="container-fluid p-5 howworks-container howworks-container-contributors">
         {% include "how_it_works/contributor.html" %}
@@ -110,6 +112,13 @@
       </div>
     </div>
     {% include 'shared/footer_scripts.html' with slim=1 %}
+    <script src="{% static "v2/js/popper.min.js" %}"></script>
+    <script src="{% static "v2/js/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+    <script>
+      var bootstrapTooltip = $.fn.tooltip.noConflict()
+      var bootstrapModal = $.fn.modal.noConflict()
+      $.fn.bootstrapModal = bootstrapModal
+    </script>
   </body>
   {% if tech_stack %}
     <script>
