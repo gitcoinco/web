@@ -48,7 +48,8 @@ if (document.getElementById('gc-users-directory')) {
       users,
       usersPage,
       usersNumPages,
-      usersHasNext
+      usersHasNext,
+      media_url
     },
     mounted() {
       this.fetchUsers();
