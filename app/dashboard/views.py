@@ -75,7 +75,8 @@ from .notifications import (
     maybe_market_to_user_slack,
 )
 from .utils import (
-    get_bounty, get_bounty_id, get_context, get_web3, has_tx_mined, record_user_action_on_interest, web3_process_bounty,
+    get_bounty, get_bounty_id, get_context, get_unrated_bounties_count, get_web3, has_tx_mined,
+    record_user_action_on_interest, web3_process_bounty,
 )
 
 logger = logging.getLogger(__name__)
@@ -435,22 +436,7 @@ def unrated_bounties(request):
             status=401)
 
     if user:
-        unrated_contributed = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=user) \
-            .filter(interested__status='okay') \
-            .filter(interested__pending=False).filter(idx_status='done') \
-            .exclude(
-                feedbacks__feedbackType='worker',
-                feedbacks__sender_profile=user
-            )
-        unrated_funded = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
-        .filter(
-            bounty_owner_github_username__iexact=user.handle,
-            idx_status='done'
-        ).exclude(
-            feedbacks__feedbackType='approver',
-            feedbacks__sender_profile=user,
-        )
-        unrated_count = unrated_funded.count() + unrated_contributed.count()
+        unrated_count = get_unrated_bounties_count(user)
 
     # data = json.dumps(unrated)
     return JsonResponse({

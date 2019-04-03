@@ -1,6 +1,9 @@
 🌈 Funds Paid! 🌈
 
 Your funded issue has been accepted, and the fulfillment transaction is now on the Etherum network!
+{% if unrated_count > 0 %}
+    Rate!!!!
+{% endif %}
 
 {% include 'emails/bounty.txt' with bounty=bounty %}
 
