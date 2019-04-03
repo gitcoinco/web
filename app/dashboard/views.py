@@ -785,9 +785,8 @@ def users_fetch(request):
     user_list = Profile.objects.all().order_by(order_by).cache()
     # all_notifs = Notification.objects.filter(to_user_id=request.user.id).order_by('-id')
     params = dict()
-    paginator = Paginator(user_list, limit)
-    users = paginator.get_page(page)
-    # all_users = all_pages.page(page)
+    all_pages = Paginator(user_list, limit)
+    all_users = []
     for user in all_pages.page(page):
         print(user)
         profile_json = {}
