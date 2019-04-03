@@ -69,6 +69,7 @@ imToken 目前的价格显示对接 block.cc 的 API，如需在 imToken 中显�
 
 ## 相关
 * [EOSPark](https://github.com/BlockABC/eos-tokens)
+* [Newdex](https://newdex.io)
 
 ## Copyright
 

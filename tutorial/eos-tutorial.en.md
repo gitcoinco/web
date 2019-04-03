@@ -83,6 +83,7 @@ In imToken, the current displayed token prices are provided by the block.cc API.
 
 ## Related
 * [EOSPark](https://github.com/BlockABC/eos-tokens)
+* [Newdex](https://newdex.io)
 
 ## Copyright
 
