@@ -73,4 +73,4 @@ imToken 目前的价格显示对接 block.cc 的 API，如需在 imToken 中显�
 
 ## Copyright
 
-2018&copy;imToken PTE. LTD.
+2019&copy;imToken PTE. LTD.
