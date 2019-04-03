@@ -15,16 +15,18 @@ Vue.mixin({
       var getNotifications = fetchData (`/api/v0.1/users_fetch/?page=${vm.usersPage}`, 'GET');
 
       $.when(getNotifications).then(function(response) {
-        newNotifications = newData(response.data, vm.notifications);
-        newNotifications.forEach(function(item) {
-          vm.notifications.push(item);
-        });
+        console.log(response.data)
+        vm.users = response.data;
+        
+        // newNotifications = newData(response.data, vm.notifications);
+        // newNotifications.forEach(function(item) {
+          // vm.notifications.push(item);
+        // });
 
         vm.usersNumPages = response.num_pages;
         vm.usersHasNext = response.has_next;
         vm.numNotifications = response.count;
 
-        vm.checkUnread();
         if (vm.usersHasNext) {
           vm.usersPage = ++vm.usersPage;
 
