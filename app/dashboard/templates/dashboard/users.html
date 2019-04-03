@@ -58,13 +58,8 @@
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav.html' %}
     </div>
-    <div class="" id="gc-users-directory">
+    <div class="" id="gc-users-directory" v-cloak>
 
-        <ul class="" >
-          <li v-for="user in users" class="" :key="user.id">
-            [[user]]
-          </li>
-        </ul>
       <div class="container-fluid">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#usersFilters" aria-controls="usersFilters" aria-expanded="false" aria-label="Toggle navigation">
@@ -119,66 +114,49 @@
         </nav>
       </div>
       <div class="container">
-            <div class="py-5 mt-5">
-              <div class="grid-4">
-                {% for user in users %}
-                <div class="card shadow-sm border-0">
-                  <img class="rounded-circle shadow mx-auto mt-n5" width="140" height="140" src="{% if user.avatar and user.active_avatar.avatar_url %}{{ user.active_avatar.avatar_url }}{% else %}{{ user.avatar_url }}{% endif %}" />
-                  <div class="card-body">
-
-                    <h5 class="text-center">
-                      {% if user.data.name %}
-                      {{ user.data.name }}
-                      {% else %}
-                      @{{ user.handle }}
-                      {% endif %}
-                    </h5>
-                    <a href="{% url "profile" user %}" class="text-center d-block">
-                      @{{ user.handle }}
-                    </a>
-                    {% if user.keywords %}
-                    <div>
-                      {% for keyword in user.keywords %}
-                        <span class="badge badge--greenlight">{{ keyword }}</span>
-                      {% endfor %}
-                    </div>
-                    {% endif %}
-                    <div class="">
-                      <a href="{{ user.data.html_url }}?tab=repositories" target="_blank" rel="noopener noreferrer" >
-                        <i class="fab fa-github"></i>
-                      </a>
-                    {% if user.data.blog %}
-                      <a href="{{ user.data.blog|add_url_schema }}" target="_blank" rel="noopener noreferrer" >
-                        <i class="fas fa-home"></i>
-                      </a>
-                    {% endif %}
-                    {% if user.data.email %}
-                      <a href="mailto:{{user.data.email | obfuscate}}">
-                        <i class="far fa-envelope"></i>
-                      </a>
-                    {% endif %}
-                    </div>
-                    {% if  user.show_job_status %}
-                    <div class="my-2 font-smaller-3" id="job_status">
-                      {% if user.resume %}
-                      <a href="{{ MEDIA_URL }}{{user.resume}}" download data-toggle="tooltip" title="Download resume">
-                        <i class="fa fa-briefcase mr-2" aria-hidden="true"></i>{{ user.job_status_verbose }}
-                      </a>
-                      {% else %}
-                        <i class="fa fa-briefcase mr-2" aria-hidden="true"></i>{{ user.job_status_verbose }}
-                      {% endif %}
-                    </div>
-                  {% endif %}
-                  <small>
-                    Joined: <time datetime="{{ user.created_on }}" title="{{ user.created_on }}">{{ user.created_on|date:"Y/m/d"}}</time>
-                  </small>
-
-
-                  </div>
+        <div class="py-5 mt-5">
+          <div class="grid-4">
+            <div v-for="user in users" class="card shadow-sm border-0" :key="user.id">
+              <img class="rounded-circle shadow mx-auto mt-n5" width="140" height="140" :src="`/dynamic/avatar/${ user.handle }`"/>
+              <div class="card-body">
+                <h5 class="text-center">
+                  [[ user.data.name || user.handle ]]
+                  <span v-if="user.trust_profile">
+                    <img src="{% static 'v2/images/badge-verify.svg' %}" alt="">
+                  </span>
+                </h5>
+                <a :href="`/profile/${ user.handle }`" class="text-center d-block">
+                  @[[ user.handle ]]
+                </a>
+                <div v-if="user.keywords">   
+                  <template v-for="keyword in user.keywords">
+                    <span class="badge badge--greenlight">[[ keyword ]]</span>[[ ' ' ]]
+                  </template>
                 </div>
-                {% endfor %}
+                <div class="">
+                  <a :href="`${ user.data.html_url }?tab=repositories`" target="_blank" rel="noopener noreferrer" >
+                    <i class="fab fa-github"></i>
+                  </a>
+                  <a :href="`${ user.data.blog }`" target="_blank" rel="noopener noreferrer" v-if="user.data.blog">
+                    <i class="fas fa-home"></i>
+                  </a>
+                  <a :href="`mailto:${ user.data.email }`" v-if="user.data.email">
+                    <i class="far fa-envelope"></i>
+                  </a>
+                </div>
+                <div class="my-2 font-smaller-3" id="job_status">
+                  <a :href="`${media_url}${user.resume}`" download data-toggle="tooltip" title="Download resume" v-if="user.show_job_status">
+                    <i class="fa fa-briefcase mr-2" aria-hidden="true"></i> 
+                  </a>
+                </div>
+                <small>
+                  Joined: <time :datetime="[[ user.created_on ]]" :title="[[ user.created_on ]]">[[ user.created_on ]]</time>
+                </small>
               </div>
+              <!-- [[user]] -->
             </div>
+          </div>
+        </div>
       </div>
     </div>
 
