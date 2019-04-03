@@ -30,4 +30,4 @@ Since the submission of the Token Profile involves many aspects: GitHub usage, L
 
 ## Copyright
 
-2018&copy;imToken PTE. LTD.
+2019&copy;imToken PTE. LTD.
