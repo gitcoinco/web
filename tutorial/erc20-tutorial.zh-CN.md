@@ -84,4 +84,4 @@ https://github.com/consenlabs/token-profile/issues/3565
 
 ## Copyright
 
-2018&copy;imToken PTE. LTD.
+2019&copy;imToken PTE. LTD.
