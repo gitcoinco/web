@@ -74,6 +74,8 @@ function debounce(func, wait, immediate) {
   };
 }
 
+const scrub = value => value.replace(/[\W]+/g, '');
+
 /**
  * Fetches all filters options from the URI
  */
@@ -212,9 +214,8 @@ var addTechStackKeywordFilters = function(value) {
   } else {
     localStorage['keywords'] = value;
   }
-
-  $('.filter-tags').append('<a class="filter-tag keywords"><span>' + value + '</span>' +
-    '<i class="fas fa-times" onclick="removeFilter(\'keywords\', \'' + value + '\')"></i></a>');
+  $('.filter-tags').append('<a class="filter-tag keywords"><span>' + scrub(value) + '</span>' +
+    '<i class="fas fa-times" onclick="removeFilter(\'keywords\', \'' + scrub(value) + '\')"></i></a>');
 };
 
 var addTechStackOrgFilters = function(value) {
@@ -233,8 +234,8 @@ var addTechStackOrgFilters = function(value) {
     localStorage['org'] = value;
   }
 
-  $('.filter-tags').append('<a class="filter-tag keywords"><span>' + value + '</span>' +
-    '<i class="fas fa-times" onclick="removeFilter(\'org\', \'' + value + '\')"></i></a>');
+  $('.filter-tags').append('<a class="filter-tag keywords"><span>' + scrub(value) + '</span>' +
+    '<i class="fas fa-times" onclick="removeFilter(\'org\', \'' + scrub(value) + '\')"></i></a>');
 };
 
 var getFilters = function() {
@@ -251,15 +252,15 @@ var getFilters = function() {
 
   if (localStorage['keywords']) {
     localStorage['keywords'].split(',').forEach(function(v, k) {
-      _filters.push('<a class="filter-tag keywords"><span>' + v + '</span>' +
-        '<i class="fas fa-times" onclick="removeFilter(\'keywords\', \'' + v + '\')"></i></a>');
+      _filters.push('<a class="filter-tag keywords"><span>' + scrub(v) + '</span>' +
+        '<i class="fas fa-times" onclick="removeFilter(\'keywords\', \'' + scrub(v) + '\')"></i></a>');
     });
   }
 
   if (localStorage['org']) {
     localStorage['org'].split(',').forEach(function(v, k) {
-      _filters.push('<a class="filter-tag keywords"><span>' + v + '</span>' +
-        '<i class="fas fa-times" onclick="removeFilter(\'org\', \'' + v + '\')"></i></a>');
+      _filters.push('<a class="filter-tag keywords"><span>' + scrub(v) + '</span>' +
+        '<i class="fas fa-times" onclick="removeFilter(\'org\', \'' + scrub(v) + '\')"></i></a>');
     });
   }
 
