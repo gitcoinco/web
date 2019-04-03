@@ -26,4 +26,4 @@ imToken 支持 ERC20 和 EOS 代币 Token Profile 的提交，选择对应教程
 
 ## Copyright
 
-2018&copy;imToken PTE. LTD.
+2019&copy;imToken PTE. LTD.
