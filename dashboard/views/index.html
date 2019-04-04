@@ -2244,6 +2244,30 @@ The class bool is a subclass of the class int, and cannot be subclassed.
     Http404: The exception is raised if no associated Bounty is found.</p>
 <p>Returns:
     TemplateResponse: The rate bounty view.</p>
+<h2 id="dashboard.views.rating_capture">rating_capture</h2>
+
+<pre><code class="python">rating_capture(request)
+</code></pre>
+
+<p>Rating capture.</p>
+<p>Args:
+    pk (int): The primary key of the bounty to be rated.</p>
+<p>Raises:
+    Http404: The exception is raised if no associated Bounty is found.</p>
+<p>Returns:
+    TemplateResponse: The rate bounty capture modal.</p>
+<h2 id="dashboard.views.unrated_bounties">unrated_bounties</h2>
+
+<pre><code class="python">unrated_bounties(request)
+</code></pre>
+
+<p>Rating capture.</p>
+<p>Args:
+    pk (int): The primary key of the bounty to be rated.</p>
+<p>Raises:
+    Http404: The exception is raised if no associated Bounty is found.</p>
+<p>Returns:
+    TemplateResponse: The rate bounty capture modal.</p>
 <h2 id="dashboard.views.remove_interest">remove_interest</h2>
 
 <pre><code class="python">remove_interest(request, bounty_id)
