@@ -28,6 +28,7 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core import serializers
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.http import Http404, HttpResponse, JsonResponse
@@ -74,7 +75,8 @@ from .notifications import (
     maybe_market_to_user_slack,
 )
 from .utils import (
-    get_bounty, get_bounty_id, get_context, get_web3, has_tx_mined, record_user_action_on_interest, web3_process_bounty,
+    get_bounty, get_bounty_id, get_context, get_unrated_bounties_count, get_web3, has_tx_mined,
+    record_user_action_on_interest, web3_process_bounty,
 )
 
 logger = logging.getLogger(__name__)
@@ -387,6 +389,59 @@ def rating_modal(request, bounty_id, username):
     params['user'] = request.user if request.user.is_authenticated else None
 
     return TemplateResponse(request, 'rating_modal.html', params)
+
+
+def rating_capture(request):
+    # TODO: will be changed to the new share
+    """Rating capture.
+
+    Args:
+        pk (int): The primary key of the bounty to be rated.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The rate bounty capture modal.
+
+    """
+    user = request.user if request.user.is_authenticated else None
+    if not user:
+        return JsonResponse(
+            {'error': _('You must be authenticated via github to use this feature!')},
+            status=401)
+
+    return TemplateResponse(request, 'rating_capture.html')
+
+
+def unrated_bounties(request):
+    """Rating capture.
+
+    Args:
+        pk (int): The primary key of the bounty to be rated.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The rate bounty capture modal.
+
+    """
+    # request.user.profile if request.user.is_authenticated and getattr(request.user, 'profile', None) else None
+    unrated_count = 0
+    user = request.user.profile if request.user.is_authenticated else None
+    if not user:
+        return JsonResponse(
+            {'error': _('You must be authenticated via github to use this feature!')},
+            status=401)
+
+    if user:
+        unrated_count = get_unrated_bounties_count(user)
+
+    # data = json.dumps(unrated)
+    return JsonResponse({
+        'unrated': unrated_count,
+    }, status=200)
 
 
 @csrf_exempt
@@ -1659,23 +1714,21 @@ def profile(request, handle):
     context['verification'] = profile.get_my_verified_check
     context['avg_rating'] = profile.get_average_star_rating
 
-    unrated_funded_bounties = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile') \
+    context['unrated_funded_bounties'] = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
         .filter(
-        bounty_owner_github_username=profile.handle,
-        idx_status='done')
+            bounty_owner_github_username__iexact=profile.handle,
+        ).exclude(
+            feedbacks__feedbackType='approver',
+            feedbacks__sender_profile=profile,
+        )
 
-    unrated_contributed_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
-        .filter(interested__pending=False).filter(idx_status='done')
-
-    context['unrated_funded_bounties'] = []
-    context['unrated_contributed_bounties'] = []
-    for bounty in unrated_funded_bounties:
-        if not FeedbackEntry.objects.filter(bounty=bounty, feedbackType='approver'):
-            context['unrated_funded_bounties'].append(bounty)
-
-    for bounty in unrated_contributed_bounties:
-        if not FeedbackEntry.objects.filter(bounty=bounty, feedbackType='worker'):
-            context['unrated_contributed_bounties'].append(bounty)
+    context['unrated_contributed_bounties'] = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=profile) \
+            .filter(interested__status='okay') \
+            .filter(interested__pending=False).filter(idx_status='done') \
+            .exclude(
+                feedbacks__feedbackType='worker',
+                feedbacks__sender_profile=profile
+            )
 
     currently_working_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
         .filter(interested__pending=False).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)
@@ -1842,7 +1895,7 @@ def terms(request):
         'title': _('Terms of Use'),
     }
     return TemplateResponse(request, 'legal/terms.html', context)
-    
+
 def privacy(request):
     return TemplateResponse(request, 'legal/privacy.html', {})
 

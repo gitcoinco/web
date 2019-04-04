@@ -315,6 +315,26 @@ def get_bounty_from_invite_url(invite_url):
     return {'inviter': inviter, 'bounty': bounty}
 
 
+def get_unrated_bounties_count(user):
+    unrated_contributed = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=user) \
+        .filter(interested__status='okay') \
+        .filter(interested__pending=False).filter(idx_status='done') \
+        .exclude(
+            feedbacks__feedbackType='worker',
+            feedbacks__sender_profile=user
+        )
+    unrated_funded = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
+    .filter(
+        bounty_owner_github_username__iexact=user.handle,
+        idx_status='done'
+    ).exclude(
+        feedbacks__feedbackType='approver',
+        feedbacks__sender_profile=user,
+    )
+    unrated_count = unrated_funded.count() + unrated_contributed.count()
+    return unrated_count
+
+
 def getStandardBountiesContractAddresss(network):
     if network == 'mainnet':
         return to_checksum_address('0x2af47a65da8cd66729b4209c22017d6a5c2d2400')

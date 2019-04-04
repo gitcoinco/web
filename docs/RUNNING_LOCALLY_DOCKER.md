@@ -94,6 +94,12 @@ make tests # docker-compose exec -e DJANGO_SETTINGS_MODULE=app.settings web pyte
 
 The above make command will run `eslint` and `pytest`.
 
+You can also run the Cypress regression tests by opening the Cypress UI by running:
+
+```shell
+make cypress
+```
+
 #### Fresh rebuild
 
 `Q: My environment is erroring out due to missing modules/packages or postgresql errors. How can I fix it?`
