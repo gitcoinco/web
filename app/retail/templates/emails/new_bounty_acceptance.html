@@ -15,20 +15,64 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n humanize %}
+{% load i18n humanize static %}
 
 {% block content %}
 
 <h1>🌈 {% trans "Funds Paid!" %} 🌈</h1>
-
 
 <p>
 {% trans "Your claim has been accepted, and the fulfillment transaction is now on the Ethereum network!" %}
 </p>
 
 <br>
+<div class=""  style="border-top: 1px solid #979797; border-bottom: 1px solid #979797; padding: 20px 50px; text-align: center">
+  <div style="display: flex;">
+    <div>
+      <img style="border-radius: 100%;" height="85" src="{{ bounty.avatar_url }}">
+      <b>{{ bounty.org_name }}</b>
+    </div>
+    <div>
+      {% if bounty.title %}
+        <p class="" style="text-align: left;">
+          <a style="color:#15003e; font-size: 18px;" href="{{ bounty.absolute_url }}">{{ bounty.title }}</a>
+        </p>
+      {% endif %}
+      <div style="text-align: left;">
+        <span style="text-align: center; border-radius: 2px; margin: 4px; padding: 3px 6px; font-size: 11px; font-weight: 400; white-space: nowrap; background-color: #e7f0fa; color: var(--gc-blue);    display: inline-block;">
+          <p style="font-size:15px; margin:0.6em;">
+            {{ bounty.value_true }}
+            <span>{{ bounty.token_name }}</span>
+          </p>
+        </span>
+        <span style="text-align: center; border-radius: 2px; margin: 4px; padding: 3px 6px; font-size: 11px; font-weight: 400; white-space: nowrap; background-color: #d6fbeb; color: #00A55E;    display: inline-block;">
+          <p style="font-size:15px; margin:0.6em;">
+            {{ bounty.value_in_usdt_now }}
+            <span>USD</span>
+          </p>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
 
-{% include 'emails/bounty.html' with bounty=bounty %}
+<p>
+  <b>Github:</b> <a href="{{ bounty.github_url }}">{{ bounty.github_url }}</a>
+</p>
+<!-- {% include 'emails/bounty.html' with bounty=bounty %} -->
+
+{% if unrated_count > 0 %}
+<div class="centered-contents" style="border-bottom: 1px solid #979797; padding: 50px; text-align: center">
+  <img src="{% static "v2/images/emails/rate-capture.png" %}" width="341" style="max-width: 100%;" alt="capture rating" id="capture_rating">
+  <div style="margin-top: 30px;">
+    <h3 style="color: #0D0764; text-align: center;">{% trans "How was your experience?" %}</h3>
+    <span style="">{% trans "Help us improve Gitcoin by rating your bounty experience! Only Gitcoin admins are able to see your feedback." %}</span>
+  </div>
+  <div style="margin-bottom: 2em; margin-top: 4em;">
+    <a class="button" href="{% url "profile"  %}#ratingTabs">{% trans "Rate your bounty experience" %}</a>
+  </div>
+</div>
+{% endif %}
 
 <p>
 {% trans "You are receiving this email because your email address is on the bounty notification list for this funded issue." %}   <a href="{% url 'email_settings' subscriber.priv %}">{% trans "Manage Email Settings" %}</a>.

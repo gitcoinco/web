@@ -159,6 +159,11 @@ urlpatterns = [
         name='funder_payout_reminder_modal'
     ),
 
+    # Rating
+    path('modal/rating/<int:bounty_id>/<str:username>/', dashboard.views.rating_modal, name='rating_modal'),
+    path('modal/rating_capture/', dashboard.views.rating_capture, name='rating_capture'),
+    url(r'^api/v0.1/unrated_bounties/', dashboard.views.unrated_bounties, name='unrated_bounties'),
+
     # Notify Funder Modal Submission
     path(
         'actions/bounty/<str:bounty_network>/<int:stdbounties_id>/notify/funder_payout_reminder/',
@@ -383,6 +388,11 @@ urlpatterns = [
     path('_administration/email/quarterly_roundup', retail.emails.quarterly_roundup, name='quarterly_roundup'),
     path('_administration/email/new_work_submission', retail.emails.new_work_submission, name='new_work_submission'),
     path('_administration/email/weekly_founder_recap', retail.emails.weekly_recap, name='weekly_founder_recap'),
+    path(
+        '_administration/email/weekly_unread_notifications_email',
+        retail.emails.unread_notification_email_weekly_roundup,
+        name='unread_notifications_email_weekly_roundup'
+    ),
     path('_administration/email/new_bounty_rejection', retail.emails.new_bounty_rejection, name='new_bounty_rejection'),
     path(
         '_administration/email/new_bounty_acceptance',
