@@ -2544,6 +2544,10 @@ Check out the <a href="https://docs.docker.com/compose/reference/">Docker Compos
 </code></pre>
 
 <p>The above make command will run <code>eslint</code> and <code>pytest</code>.</p>
+<p>You can also run the Cypress regression tests by opening the Cypress UI by running:</p>
+<pre><code class="shell">make cypress
+</code></pre>
+
 <h4 id="fresh-rebuild">Fresh rebuild</h4>
 <p><code>Q: My environment is erroring out due to missing modules/packages or postgresql errors. How can I fix it?</code></p>
 <pre><code class="shell">make fresh # docker-compose down -v; docker-compose up -d --build;
