@@ -1,11 +1,14 @@
 🌈 Funds Paid! 🌈
 
 Your funded issue has been accepted, and the fulfillment transaction is now on the Etherum network!
-{% if unrated_count > 0 %}
-    Rate!!!!
-{% endif %}
 
 {% include 'emails/bounty.txt' with bounty=bounty %}
+
+{% if unrated_count > 0 %}
+    How was your experience?
+    Help us improve Gitcoin by rating your bounty experience! Only Gitcoin admins are able to see your feedback.
+    Rate your bounty experience: {% url "profile"  %}#ratingTabs
+{% endif %}
 
 You are receiving this email because your email address is on the notification list for this funded issue.
 
