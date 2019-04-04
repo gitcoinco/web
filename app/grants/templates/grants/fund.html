@@ -205,15 +205,38 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           </form>
         </div>
       </div>
-    </div>
 
+    </div>
+    <div class="modal fade" id="tweetModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body mt-4 mx-5 font-body">
+            <div class="row mb-3 justify-content-center">
+              <img class="icon w-75 h-75" src="{% static "v2/images/grants/torchbearer.svg" %}" />
+            </div>
+            <h5>Thanks for Contributing!</h5>
+            <span>{% trans "Tell your network about this Gitcoin Grant. If they fund a grant, the grant owner will get even more Matching Funds!" %}</span>
+          </div>
+          <div class="row my-4 justify-content-center">
+            <a class="button button--primary" role="button" href="https://twitter.com/intent/tweet?text=I just funded this grant on Gitcoin.co! https://{{ request.META.HTTP_HOST }}{% url 'grants:details' grant.id grant.slug %}"
+              target="_blank" rel="noopener noreferrer">
+              {% trans "Tweet About it!" %}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
     {% include 'grants/shared/shared_scripts.html' %}
   </body>
-
   <script src="{% static "v2/js/grants/compiledSubscriptionContract.js" %}"></script>
   <script src="{% static "v2/js/grants/compiledTokenContract.js" %}"></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>
@@ -224,5 +247,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   <script src="{% static "v2/js/grants/fund.js" %}"></script>
   <script src="{% static "v2/js/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
+  <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
   <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
 </html>
