@@ -54,6 +54,16 @@ textarea:read-only {
   font-size: 13px;
 }
 
+#keyword-suggestion-container {
+  display: flex;
+  align-items: center;
+}
+
+#keyword-suggestions {
+  display: flex;
+  margin-left: 15px;
+}
+
 .revisions input {
   width: 35%;
   height: 35px;

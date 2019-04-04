@@ -639,6 +639,24 @@ var updateAmountUI = function(target_ele, usd_amount) {
   target_ele.html('Approx: ' + usd_amount + ' USD');
 };
 
+const showChoices = (choice_id, selector_id, choices) => {
+  let html = '';
+  let selected_choices = [];
+
+  for (let i = 0; i < choices.length; i++) {
+    html += '<li class="select2-available__choice">\
+      <span class="select2-available__choice__remove" role="presentation">×</span>\
+      <span class="text">' + choices[i] + '</span>\
+      </li>';
+  }
+  $(choice_id).html(html);
+  $('.select2-available__choice').on('click', function() {
+    selected_choices.push($(this).find('.text').text());
+    $(selector_id).val(selected_choices).trigger('change');
+    $(this).remove();
+  });
+};
+
 var retrieveIssueDetails = function() {
   var ele = $('input[name=issueURL]');
   var target_eles = {
@@ -663,7 +681,7 @@ var retrieveIssueDetails = function() {
     if (result['keywords']) {
       var keywords = result['keywords'];
 
-      $('#keywords').val(keywords);
+      showChoices('#keyword-suggestions', '#keywords', keywords);
       $('#keywords').select2({
         placeholder: 'Select tags',
         data: keywords,
