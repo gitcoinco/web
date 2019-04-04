@@ -777,12 +777,13 @@ def users_fetch(request):
     #     'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     # }
 
-
+    q = request.GET.get('search','')
     limit = int(request.GET.get('limit', 10))
     page = int(request.GET.get('page', 1))
     order_by = request.GET.get('order_by', '-created_on')
     context = {}
-    user_list = Profile.objects.all().order_by(order_by).cache()
+    user_list = Profile.objects.all().order_by(order_by).filter(handle__icontains=q).cache()
+
     # all_notifs = Notification.objects.filter(to_user_id=request.user.id).order_by('-id')
     params = dict()
     all_pages = Paginator(user_list, limit)
