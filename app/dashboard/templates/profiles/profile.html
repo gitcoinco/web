@@ -197,7 +197,9 @@
         </div>
       </div>
       {% endif %}
-      {% include "shared/rate_bounties.html" %}
+      {% if is_my_profile and not hidden %}
+        {% include "shared/rate_bounties.html" %}
+      {% endif %}
     </div>
 
     <div class="container">

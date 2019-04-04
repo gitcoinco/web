@@ -16,7 +16,7 @@
 {% endcomment %}
 {% load i18n staticfiles %}
 <div class="container">
-
+  {% if unrated_contributed_bounties|length > 0 or  unrated_funded_bounties|length > 0 %}
   <ul class="nav nav-tabs border-0" id="ratingTabs" role="tablist">
     <li class="nav-item">
       <a class="nav-link active text-uppercase border-0" id="rating-tab" data-toggle="tab" href="#rating" role="tab" aria-controls="rating" aria-selected="false">{% trans "Rate your bounties" %}</a>
@@ -104,6 +104,6 @@
     </div>
 
   </div>
-
+  {% endif %}
 
 </div>
