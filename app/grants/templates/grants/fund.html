@@ -224,7 +224,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           </div>
           <div class="row my-4 justify-content-center">
             <a class="button button--primary" role="button" href="https://twitter.com/intent/tweet?text=I just funded this grant on Gitcoin.co! https://{{ request.META.HTTP_HOST }}{% url 'grants:details' grant.id grant.slug %}"
-              target="_blank" rel="noopener noreferrer">
+              target="_blank" rel="noopener noreferrer" OnClick="ga('send', 'event', 'Tweet Button', 'click', 'Grant Funder')">
               {% trans "Tweet About it!" %}
             </a>
           </div>
