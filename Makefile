@@ -71,6 +71,9 @@ load_initial_data: ## Load initial development fixtures.
 logs: ## Print and actively tail the docker compose logs.
 	@docker-compose logs -f
 
+cypress: ## Open cypress testing UI
+	@npx cypress open
+
 pytest: ## Run pytest (Backend)
 	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web pytest -p no:ethereum
 
