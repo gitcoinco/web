@@ -696,9 +696,10 @@ def render_new_work_submission(to_email, bounty):
     return response_html, response_txt
 
 
-def render_new_bounty_acceptance(to_email, bounty):
+def render_new_bounty_acceptance(to_email, bounty, unrated_count):
     params = {
         'bounty': bounty,
+        'unrated_count': unrated_count,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 

@@ -162,7 +162,11 @@ urlpatterns = [
         dashboard.views.funder_payout_reminder_modal,
         name='funder_payout_reminder_modal'
     ),
+
+    # Rating
     path('modal/rating/<int:bounty_id>/<str:username>/', dashboard.views.rating_modal, name='rating_modal'),
+    path('modal/rating_capture/', dashboard.views.rating_capture, name='rating_capture'),
+    url(r'^api/v0.1/unrated_bounties/', dashboard.views.unrated_bounties, name='unrated_bounties'),
 
     # Notify Funder Modal Submission
     path(
