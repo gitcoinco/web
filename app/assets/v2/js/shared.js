@@ -639,11 +639,11 @@ var updateAmountUI = function(target_ele, usd_amount) {
   target_ele.html('Approx: ' + usd_amount + ' USD');
 };
 
-var showChoices = function(choice_id, selector_id, choices) {
-  var html = '';
-  var selected_choices = [];
+const showChoices = (choice_id, selector_id, choices) => {
+  let html = '';
+  let selected_choices = [];
 
-  for (var i = 0; i < choices.length; i++) {
+  for (let i = 0; i < choices.length; i++) {
     html += '<li class="select2-available__choice">\
       <span class="select2-available__choice__remove" role="presentation">×</span>\
       <span class="text">' + choices[i] + '</span>\
