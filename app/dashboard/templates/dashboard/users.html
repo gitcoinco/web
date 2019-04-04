@@ -107,13 +107,13 @@
               </li>
             </ul>
             <form class="form-inline my-2 my-lg-0">
-              <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+              <input class="form-control mr-sm-2" v-model="searchTerm" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success my-2 my-sm-0" @click.prevent="searchUsers()">Search</button>
             </form>
           </div>
         </nav>
       </div>
-      <div class="container">
+      <div class="container" @scroll.passive="onScroll($event)">
         <div class="py-5 mt-5">
           <div class="grid-4">
             <div v-for="user in users" class="card shadow-sm border-0" :key="user.id">
@@ -150,7 +150,7 @@
                   </a>
                 </div>
                 <small>
-                  Joined: <time :datetime="[[ user.created_on ]]" :title="[[ user.created_on ]]">[[ user.created_on ]]</time>
+                  Joined: <time :datetime="[[ user.created_on ]]" :title="[[ user.created_on ]]">[[ user.created_on | moment ]]</time>
                 </small>
               </div>
               <!-- [[user]] -->
