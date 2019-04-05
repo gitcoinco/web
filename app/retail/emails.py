@@ -938,8 +938,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "The Ethereal Hackathon Grows | $1MM In Platform Value"
-    new_kudos_pks = [2244, 2238, 2240]
+    subject = "$40K In Prizes: Sign Up For Ethereal Virtual Hackathon!"
+    new_kudos_pks = [2247, 2246, 2245]
     new_kudos_size_px = 150
 
     kudos_friday = f'''
@@ -954,8 +954,8 @@ def render_new_bounty_roundup(to_email):
 Hi Gitcoiners,
 </p>
 <p>
-The Ethereal Hackacthon now has $40K in prizes and 150+ confirmed hackers, and we have a lot more time for you to sign up. <a href="https://gitcoin.typeform.com/to/j7CSbV">Register now!</a> We're incredibly excited to bring our
-community together for a fantastic few weeks of building, prizes, and more. If you're interested in joining Microsoft, ConsenSys, and many other sponsors, <a href="https://gitcoin.typeform.com/to/YeIflB">let us know here.</a>
+One week till the <a href="https://gitcoin.co/hackathon/ethhack2019">Ethereal Virtual hackathon</a>.  Join us April 15th-30th for Hackathon challenges, which will be posted as bounties,
+with the best hacks receiving prizes in ETH & ERC-20 tokens. Main track winners will receive free tickets to Ethereal NY to present their project live on stage!  <a href="https://gitcoin.co/hackathon/ethhack2019/">Sign up here</a>.
 </p>
 <p>
 This week, we passed $1 million in platform value. This means $1 million worth of bounties, grants, and kudos have been created and fulfilled over the course of the last 18 months. It's been an incredible ride, and we're excited
@@ -966,7 +966,13 @@ for the next 18 months. This milestone (and the proof of our value to the ecosys
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Gitcoin Livestream is back this week with MetaMask + Bunz! Join us <a href="https://gitcoin.co/livestream"> at 5PM ET or catch it on <a href="https://twitter.com/GetGitcoin">Twitter</a>!
+            Our <a href="https://medium.com/gitcoin/a-gitcoin-platform-fee-905a0507961f">10% platform fee is now live.</a> <a href="https://twitter.com/owocki/status/1114198908274503680">Join the conversation</a> on how we monetize Gitcoin from here. We'd love to hear your feedback!
+        </li>
+        <li>
+            Our friends at <a href="http://oscoin.io">OS Coin</a> released their white paper. <a href="http://oscoin.io">Check it out</a> and see their innovative approach for funding open source.
+        </li>
+        <li>
+            Gitcoin Livestream is back this week with Niran from Panvala! Join us <a href="https://gitcoin.co/livestream"> at 5PM ET or catch it on <a href="https://twitter.com/GetGitcoin">Twitter</a>!
         </li>
     </ul>
 </p>
@@ -976,34 +982,34 @@ Back to shipping,
 
 '''
     highlights = [{
-        'who': 'eswarasai',
+        'who': 'pumpkingwok',
         'who_link': True,
-        'what': 'Great work on sabre by Eswarasai!',
-        'link': 'https://gitcoin.co/issue/b-mueller/sabre/25/2689',
+        'what': 'Worked on Sabre',
+        'link': 'https://gitcoin.co/issue/b-mueller/sabre/34/2709',
         'link_copy': 'View more',
     }, {
-        'who': 'dappproletariat',
+        'who': 'skyge',
         'who_link': True,
-        'what': 'Great content work on collectibles',
-        'link': 'https://gitcoin.co/issue/kauri-io/Content/22/2629',
+        'what': 'Worked on smart contract refactoring.',
+        'link': 'https://gitcoin.co/issue/GitcoinContracts/SmartContracts/1/2699',
         'link_copy': 'View more',
     }, {
-        'who': 'mirshko',
+        'who': 'distributeddoge',
         'who_link': True,
-        'what': 'Help on missing bounties on Centrifuge!',
-        'link': 'https://gitcoin.co/issue/centrifuge/website/97/2647',
+        'what': 'Private repo work on Gitcoin!',
+        'link': 'https://gitcoin.co/issue/owocki/foobarnow/1/2698',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/jschiarizzi/storj-ipfs-gateway/issues/9',
-        'primer': 'How can we drive IPFS adoption? Help and get paid!',
+        'url': 'https://github.com/status-im/status-react/issues/5242',
+        'primer': 'Work on the Status React project!',
     }, {
-        'url': 'https://github.com/poanetwork/blockscout/issues/811',
-        'primer': 'Help improve blockscout, a POA Network project',
+        'url': 'https://github.com/blockstatecom/dtree/issues/2',
+        'primer': 'Skills with Corda? This one is for you!',
     }, {
-        'url': 'https://github.com/prysmaticlabs/prysm/issues/1889',
-        'primer': 'Work on sharding with the Prysm team!',
+        'url': 'https://github.com/ethereum/solidity/issues/6202',
+        'primer': 'Work on Solidity with the EF!',
     }, ]
 
     num_leadboard_items = 5
