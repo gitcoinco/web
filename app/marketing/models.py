@@ -324,7 +324,7 @@ class EmailEvent(SuperModel):
 
     email = models.EmailField(max_length=255, db_index=True)
     event = models.CharField(max_length=255, db_index=True)
-    category = models.CharField(max_length=255, db_index=True, blank=True, default='')
+    categories = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     ip_address = models.GenericIPAddressField(default=None, null=True)
 
     def __str__(self):

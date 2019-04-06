@@ -34,7 +34,7 @@ def is_already_sent_this_week(email):
     from django.utils import timezone
     then = timezone.now() - timezone.timedelta(hours=12)
     QS = EmailEvent.objects.filter(created_on__gt=then)
-    QS = QS.filter(category__contains='weekly_roundup', email__iexact=email, event='processed')
+    QS = QS.filter(categories__contains='weekly_roundup', email__iexact=email, event='processed')
     return QS.exists()
 
 
