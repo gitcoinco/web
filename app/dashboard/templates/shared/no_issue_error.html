@@ -89,4 +89,18 @@
     </div>
   </div>
 </div>
+{% elif page == 'refund_bounty_fee' %}
+<div id="no_issue_error" class="submit-notification container-fluid" style="display: block; background-color: #d43247;">
+  <div class="row align-items-center px-4 py-2 text-center text-lg-left">
+    <div class="col-lg-10 col-sm-12 py-2 px-5">
+      <h3>{% trans "Did you get charged extra fee ?" %}</h3>
+      <p class="font-smaller-1">
+        {% trans "Let us know and we'll look into it" %}
+      </p>
+    </div>
+    <div class="col-lg-2 col-sm-12">
+      <img src="{% static "v2/images/refund.svg" %}">
+    </div>
+  </div>
+</div>
 {% endif %}

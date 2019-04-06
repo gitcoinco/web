@@ -138,7 +138,9 @@
             <div class="col-12 bounty-actions">
                 <div class="col-12">
                   <div id="right_actions">
-                    <button type="button" class="modal-link button button--primary float-right" data-toggle="modal" data-target=".share-modal"><span class="font-caption"><i class="fas fa-share-alt"></i> Share</span></a>
+                    <button type="button" class="modal-link button button--primary float-right" data-toggle="modal" data-target=".share-modal">
+                      <span class="font-caption"><i class="fas fa-share-alt mr-2"></i> Share</span>
+                    </button>
                   </div>
                 </div>
             </div>
@@ -276,7 +278,7 @@
             <div class="col-12 col-md-7 started-status-column d-flex">
               <div class="activity-status">
                 [[:text]]
-                [[if signed_nda ]]
+                [[if signed_nda && signed_nda != 'false']]
                   <a href="[[:signed_nda]]" download class="d-flex">View signed NDA</a>
                 [[/if]]
               </div>
@@ -387,7 +389,7 @@
               </div>
             </div>
           [[else]]
-            <div class="col-12 col-md-7">
+            <div class="col-12 col-md-7 d-flex started-status-column">
               <div class="activity-status">
                 [[:text]]
               </div>
@@ -427,6 +429,9 @@
     document.issueURL = '{{ issueURL }}';
     document.issueNetwork = '{{ network }}';
     document.issue_stdbounties_id = '{{ stdbounties_id }}';
+    {% if event_tag %}
+      document.eventTag = '{{ event_tag }}';
+    {% endif %}
   </script>
 
   <!-- jQuery -->
@@ -436,7 +441,7 @@
   <script src="{% static "v2/js/tokens.js" %}"></script>
   <script src="{% static "v2/js/amounts.js" %}"></script>
   <script src="{% static "v2/js/popper.min.js" %}"></script>
-  <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
+  <script src="{% static "v2/js/bootstrap.min.js" %}" crossorigin="anonymous"></script>
   <script src="{% static "v2/js/clipboard.js" %}"></script>
   <script>
     var bootstrapTooltip = $.fn.tooltip.noConflict()

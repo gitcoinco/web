@@ -130,6 +130,10 @@ urlpatterns = [
     url(r'^hackathon/ethhack2019', dashboard.views.ethhack, name='ethhack_2019'),
     path('revenue/attestations/new', revenue.views.new_attestation, name='revenue_new_attestation'),
 
+    # Hackathons / special events
+    re_path(r'^hackathon/(?P<hackathon>.*)?/', dashboard.views.hackathon, name='hackathon'),
+    path('hackathon-list/', dashboard.views.get_hackathons, name='get_hackathons'),
+
     # action URLs
     url(r'^bounties/funder', retail.views.funder_bounties, name='funder_bounties'),
     re_path(
@@ -148,6 +152,7 @@ urlpatterns = [
     path('issue/payout', dashboard.views.payout_bounty, name='payout_bounty'),
     path('issue/increase', dashboard.views.increase_bounty, name='increase_bounty'),
     path('issue/cancel', dashboard.views.cancel_bounty, name='kill_bounty'),
+    path('issue/refund_request', dashboard.views.refund_request, name='refund_request'),
     path('issue/cancel_reason', dashboard.views.cancel_reason, name='cancel_reason'),
     path('issue/contribute', dashboard.views.contribute, name='contribute'),
     path('issue/social_contribution', dashboard.views.social_contribution, name='social_contribution'),
@@ -157,6 +162,11 @@ urlpatterns = [
         dashboard.views.funder_payout_reminder_modal,
         name='funder_payout_reminder_modal'
     ),
+
+    # Rating
+    path('modal/rating/<int:bounty_id>/<str:username>/', dashboard.views.rating_modal, name='rating_modal'),
+    path('modal/rating_capture/', dashboard.views.rating_capture, name='rating_capture'),
+    url(r'^api/v0.1/unrated_bounties/', dashboard.views.unrated_bounties, name='unrated_bounties'),
 
     # Notify Funder Modal Submission
     path(
@@ -382,6 +392,11 @@ urlpatterns = [
     path('_administration/email/quarterly_roundup', retail.emails.quarterly_roundup, name='quarterly_roundup'),
     path('_administration/email/new_work_submission', retail.emails.new_work_submission, name='new_work_submission'),
     path('_administration/email/weekly_founder_recap', retail.emails.weekly_recap, name='weekly_founder_recap'),
+    path(
+        '_administration/email/weekly_unread_notifications_email',
+        retail.emails.unread_notification_email_weekly_roundup,
+        name='unread_notifications_email_weekly_roundup'
+    ),
     path('_administration/email/new_bounty_rejection', retail.emails.new_bounty_rejection, name='new_bounty_rejection'),
     path(
         '_administration/email/new_bounty_acceptance',
@@ -418,6 +433,11 @@ urlpatterns = [
         r'^_administration/process_faucet_request/(.*)$',
         faucet.views.process_faucet_request,
         name='process_faucet_request'
+    ),
+    re_path(
+        r'^_administration/process_refund_request/(.*)$',
+        dashboard.views.process_refund_request,
+        name='process_refund_request'
     ),
     re_path(
         r'^_administration/email/start_work_approved$', retail.emails.start_work_approved, name='start_work_approved'

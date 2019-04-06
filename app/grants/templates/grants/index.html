@@ -62,9 +62,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <p>A special thanks to the following partners who have offered to match contributions to Gitcoin Grants.  <a href="https://medium.com/gitcoin/gitcoin-grants-50k-oss-fund-e20e09dc2110">(Read Announcement Here)</a></p>
 
               {% if not user.is_authenticated %}
-                <a class="btn btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">{% trans 'Become a Matching Partner' %}</a>
+                <a style="display:none;" class="btn btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">{% trans 'Become a Matching Partner' %}</a>
               {% else %}
-                <div class="btn btn-gc-blue" onclick="processPayment()">
+                <div style="display:none;" class="btn btn-gc-blue" onclick="processPayment()">
                   {% trans 'Become a Matching Partner' %}
                 </div>
               {% endif %}
@@ -214,7 +214,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   <script src="{% static "v2/js/ipfs.js" %}"></script>
   <script src="{% static "v2/js/grants/index.js" %}"></script>
   <script src="{% static "v2/js/popper.min.js" %}"></script>
-  <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
+  <script src="{% static "v2/js/bootstrap.min.js" %}" crossorigin="anonymous"></script>
   <script src="{% static "v2/js/grants/newMatchingPartner.js" %}"></script>
   <script>
     var infinite = new Waypoint.Infinite({

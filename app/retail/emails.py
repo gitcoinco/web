@@ -533,6 +533,29 @@ def render_new_bounty(to_email, bounties, old_bounties):
 
     return response_html, response_txt
 
+def render_unread_notification_email_weekly_roundup(to_email, from_date=date.today(), days_ago=7):
+    subscriber = get_or_save_email_subscriber(to_email, 'internal')
+    from dashboard.models import Profile
+    from inbox.models import Notification
+    profile = Profile.objects.filter(email__iexact=to_email).last()
+
+    from_date = from_date + timedelta(days=1)
+    to_date = from_date - timedelta(days=days_ago)
+
+    notifications = Notification.objects.filter(to_user=profile.id, is_read=False, created_on__range=[to_date, from_date]).count()
+
+    params = {
+        'subscriber': subscriber,
+        'profile': profile.handle,
+        'notifications': notifications,
+    }
+
+    subject = "Your unread notifications"
+
+    response_html = premailer_transform(render_to_string("emails/unread_notifications_roundup/unread_notification_email_weekly_roundup.html", params))
+    response_txt = render_to_string("emails/unread_notifications_roundup/unread_notification_email_weekly_roundup.txt", params)
+
+    return response_html, response_txt, subject
 
 def render_weekly_recap(to_email, from_date=date.today(), days_back=7):
     sub = get_or_save_email_subscriber(to_email, 'internal')
@@ -673,9 +696,10 @@ def render_new_work_submission(to_email, bounty):
     return response_html, response_txt
 
 
-def render_new_bounty_acceptance(to_email, bounty):
+def render_new_bounty_acceptance(to_email, bounty, unrated_count=0):
     params = {
         'bounty': bounty,
+        'unrated_count': unrated_count,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -914,8 +938,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Sneak Peek: A Gitcoin Virtual Hackathon Is Coming"
-    new_kudos_pks = [2050, 2051, 2049]
+    subject = "Save the date; Ethereal Virtual Hackathon April 15th — 30th"
+    new_kudos_pks = [1106, 2110, 2050, 2116]
     new_kudos_size_px = 150
 
     kudos_friday = f'''
@@ -930,19 +954,13 @@ def render_new_bounty_roundup(to_email):
 Hi Gitcoiners,
 </p>
 <p>
-A Gitcoin Virtual Hackathon is coming soon. <a href="https://gitcoin.typeform.com/to/j7CSbV">Pre-register now!</a> We're incredibly excited to bring our
-community together for a fantastic few weeks of building, prizes, and more. <a href="https://gitcoin.typeform.com/to/j7CSbV">Join the waitlist</a> and let us know
-what you'd like to see in the additional comments section. See you there.
-</p>
-<p>
-This week, we wrote up <a href="https://medium.com/gitcoin/whats-new-in-gitcoin-ef69f69cbb81">a Gitcoin product update.</a> We've built a lot
-of things in Q1 and we're excited for you to see them all!
+We're excited to announce the date for the <a href="https://gitcoin.co/hackathon/ethhack2019">Ethereal Virtual hackathon</a>.  Join us April 15th-30th for Hackathon challenges, which will be posted as bounties, with the best hacks receiving prizes in ETH & ERC-20 tokens. Main track winners will receive free tickets to Ethereal NY to present their project live on stage!  <a href="https://medium.com/gitcoin/the-ethereal-hackathon-4f5dc2eb56d6">More details here</a>. 
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Gitcoin Livestream is back this week with Cosmos + SourceCred! Join us <a href="https://gitcoin.co/livestream"> at 5PM ET or catch it on <a href="https://twitter.com/GetGitcoin">Twitter</a>!
+            Gitcoin Livestream is back this week with Eric Conner and Anthony Sassano from EthHub and Igor from POA! Join us <a href="https://gitcoin.co/livestream"> at 5PM ET or catch it on <a href="https://twitter.com/GetGitcoin">Twitter</a>!
         </li>
     </ul>
 </p>
@@ -952,34 +970,34 @@ Back to shipping,
 
 '''
     highlights = [{
-        'who': 'iamonuwa',
+        'who': 'e18r ',
         'who_link': True,
-        'what': 'Great work on Storj by Onuwa!',
-        'link': 'https://gitcoin.co/issue/jschiarizzi/storj-ipfs-gateway/2/2590',
+        'what': 'Some nice work on this giveth bounty :)',
+        'link': 'https://gitcoin.co/issue/Giveth/giveth-dapp/522/2418',
         'link_copy': 'View more',
     }, {
-        'who': 'cryptokat',
+        'who': 'rsercano ',
         'who_link': True,
-        'what': 'Good work on ethereum-ts',
-        'link': 'https://gitcoin.co/issue/ethereum-ts/TypeChain/135/2574',
+        'what': 'Good work on this CI and CD pipeline..',
+        'link': 'https://gitcoin.co/issue/status-im/status-components/5/2608',
         'link_copy': 'View more',
     }, {
         'who': 'eswarasai',
         'who_link': True,
-        'what': 'Work on Sabre by a longtime contributor!',
-        'link': 'https://gitcoin.co/issue/b-mueller/sabre/8/2540',
+        'what': 'Eswara is one of our longtime community members!',
+        'link': 'https://gitcoin.co/issue/centrifuge/go-centrifuge/835/2593',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/status-im/status-components/issues/3',
-        'primer': 'React Native support for Status!',
+        'url': 'https://github.com/gitcoinco/skunkworks/issues/89',
+        'primer': '20ETH Security bounty for Ethereum Istanbul Hard Fork!',
     }, {
-        'url': 'https://github.com/counterfactual/monorepo/issues/950',
-        'primer': 'Work with the Counter Factual team on state channels!',
+        'url': 'https://github.com/ShipChain/hydra/issues/3',
+        'primer': 'ShipChain sidechain test network evaluation bounty!',
     }, {
-        'url': 'https://github.com/paritytech/parity-ethereum/issues/10085',
-        'primer': 'Work on Parity Ethereum!',
+        'url': 'https://github.com/gitcoinco/creative/issues/51',
+        'primer': 'Print your own Gitcoin Stickers & get ETH for it!',
     }, ]
 
     num_leadboard_items = 5
@@ -1055,6 +1073,11 @@ def weekly_recap(request):
     response_html, _ = render_weekly_recap("mark.beacom@consensys.net")
     return HttpResponse(response_html)
 
+
+@staff_member_required
+def unread_notification_email_weekly_roundup(request):
+    response_html, _ = render_unread_notification_email_weekly_roundup('mark.beacom@consensys.net')
+    return HttpResponse(response_html)
 
 @staff_member_required
 def new_tip(request):

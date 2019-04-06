@@ -26,7 +26,8 @@ from rest_framework import routers, serializers, viewsets
 from retail.helpers import get_ip
 
 from .models import (
-    Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, Interest, ProfileSerializer, SearchHistory,
+    Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, HackathonEvent, Interest, ProfileSerializer,
+    SearchHistory,
 )
 
 
@@ -195,6 +196,16 @@ class BountyViewSet(viewsets.ModelViewSet):
         queryset = queryset.order_by('-web3_created')
 
         # filtering
+        event_tag = self.request.query_params.get('event_tag', '')
+        if event_tag:
+            try:
+                evt = HackathonEvent.objects.filter(slug__iexact=event_tag).latest('id')
+                queryset = queryset.filter(event__pk=evt.pk)
+            except HackathonEvent.DoesNotExist:
+                return Bounty.objects.none()
+        else:
+            queryset = queryset.filter(event=None)
+
         for key in ['raw_data', 'experience_level', 'project_length', 'bounty_type', 'bounty_owner_address',
                     'idx_status', 'network', 'bounty_owner_github_username', 'standard_bounties_id',
                     'permission_type', 'project_type']:
@@ -302,8 +313,14 @@ class BountyViewSet(viewsets.ModelViewSet):
             if self.request.query_params.get('misc') == 'hiring':
                 queryset = queryset.exclude(attached_job_description__isnull=True).exclude(attached_job_description='')
 
-        if 'keyword' in param_keys:
-            queryset = queryset.keyword(self.request.query_params.get('keyword'))
+        # Keyword search to search all comma separated keywords
+        queryset_original = queryset
+        if 'keywords' in param_keys:
+            for index, keyword in enumerate(self.request.query_params.get('keywords').split(',')):
+                if index == 0:
+                    queryset = queryset_original.keyword(keyword)
+                else:
+                    queryset |= queryset_original.keyword(keyword)
 
         if 'is_featured' in param_keys:
             queryset = queryset.filter(
