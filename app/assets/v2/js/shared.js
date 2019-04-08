@@ -991,7 +991,7 @@ var listen_for_web3_changes = async function() {
     }
   }
 
-  if (window.ethereum && !document.has_checked_for_ethereum_enable) {
+  if (window.ethereum && !document.has_checked_for_ethereum_enable && window.ethereum._metamask) {
     document.has_checked_for_ethereum_enable = true;
     is_metamask_approved = await window.ethereum._metamask.isApproved();
     is_metamask_unlocked = await window.ethereum._metamask.isUnlocked();
