@@ -543,7 +543,7 @@ def account_settings(request):
                     subscriber_hash=subscriber_hash,
                 )
             except Exception as e:
-                logger.exception(e)
+                logger.debug(e)
             if es:
                 es.delete()
             request.user.delete()
