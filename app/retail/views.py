@@ -22,11 +22,12 @@ def load_module(name, path):
     return imp.load_source(name, os.path.join(os.path.dirname(__file__), path))
 
 
-load_module('twitter2', '../twitter/utils.py')
+load_module('twitter_utils', '../twitter/utils.py')
 
 import logging
 from json import loads as json_parse
-import json
+from json import load as json_load
+from json import dump as json_dump
 from os import walk as walkdir
 
 from django.conf import settings
@@ -56,8 +57,8 @@ from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
 from retail.emails import render_nth_day_email_campaign
 from retail.helpers import get_ip
-# ???
-import twitter2
+
+import twitter_utils
 
 from .forms import FundingLimitIncreaseRequestForm
 from .utils import programming_languages
@@ -1551,11 +1552,11 @@ def twitter_login(request):
     token_list = []
     try:
         with open('temp1', 'r') as fi:
-            token_list = json.load(fi)
+            token_list = json_load(fi)
     except Exception as e:
         print(e)
         with open('temp1', 'w') as fo:
-            json.dump([], fo)
+            json_dump([], fo)
             print('1 created')
 
     for every_token in token_list:
@@ -1567,12 +1568,12 @@ def twitter_login(request):
     if new_token == {}:
         logger_m('obtain new token')
         new_token = \
-            twitter2.request_oauth_token(settings.MYSITE_DOMAIN+'/twilogin/callback')
+            twitter_utils.request_oauth_token(settings.MYSITE_DOMAIN+'/twilogin/callback')
         new_token['status'] = 1
         # save as hash value?
         token_list.append(new_token)
     with open('temp1', 'w') as fo:
-        json.dump(token_list, fo)
+        json_dump(token_list, fo)
 
     new_oauth_token = new_token['oauth_token']
 
@@ -1586,11 +1587,11 @@ def twitter_callback(request):
     token_list = []
     try:
         with open('temp1', 'r') as fi:
-            token_list = json.load(fi)
+            token_list = json_load(fi)
     except Exception as e:
         print(e)
         with open('temp1', 'w') as fo:
-            json.dump([], fo)
+            json_dump([], fo)
             print('1 created')
 
 
@@ -1607,12 +1608,12 @@ def twitter_callback(request):
 
     if token_flag:
         future_token = \
-            twitter2.access_oauth_token(reply_token, reply_verifier)
+            twitter_utils.access_oauth_token(reply_token, reply_verifier)
 
         future_token['status'] = 0
         # save as hash value?
         with open('temp1', 'w') as fo:
-            json.dump(token_list.append(future_token), fo)
+            json_dump(token_list.append(future_token), fo)
 
     logger_m('ready to return callback')
 
