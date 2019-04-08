@@ -249,8 +249,6 @@ def sync_profile(handle, user=None, hide_profile=True):
             except Exception as e:
                 logger.warning(f'Encountered ({e}) while attempting to save a user\'s github avatar')
 
-    if profile and created:
-        profile.build_random_avatar()
 
     return profile
 
