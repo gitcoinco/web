@@ -517,9 +517,9 @@ def receive(request, key, txid, network):
     if not kudos_transfer:
         raise Http404
 
-    is_authed = kudos_transfer.trust_url or request.user.username.replace('@', '') in [
-        kudos_transfer.username.replace('@', ''),
-        kudos_transfer.from_username.replace('@', '')
+    is_authed = kudos_transfer.trust_url or request.user.username.replace('@', '').lower() in [
+        kudos_transfer.username.replace('@', '').lower(),
+        kudos_transfer.from_username.replace('@', '').lower()
     ]
     not_mined_yet = get_web3(kudos_transfer.network).eth.getBalance(
         Web3.toChecksumAddress(kudos_transfer.metadata['address'])) == 0
