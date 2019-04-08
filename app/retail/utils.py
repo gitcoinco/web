@@ -247,14 +247,28 @@ def get_funder_receiver_stats(keyword):
     tip_recipients = list(eligible_tips.values_list('receive_address', flat=True))
     bounty_recipients = list(eligible_bounty_fulfillments.values_list('fulfiller_address', flat=True))
 
+    tip_values = [tip.value_in_usdt for tip in eligible_tips]
+    bounty_values = [bounty.value_in_usdt for bounty in eligible_bounties]
+    all_values = bounty_values + tip_values
+
+    bounty_value = sum([float(ele) for ele in bounty_values if ele])
+    tip_value = sum([float(ele) for ele in tip_values if ele])
+    all_value = [float(ele) for ele in all_values if ele]
+
     num_funders = len(set(bounty_funders + tip_funders))
     num_recipients = len(set(bounty_recipients + tip_recipients))
     num_transactions = eligible_tips.count() + eligible_bounties.count()
+
+    total_value = bounty_value + tip_value
+    avg_value = round(total_value / num_transactions)
+    median_value = statistics.median(all_value)
 
     return {
         'funders': num_funders,
         'recipients': num_recipients,
         'transactions': num_transactions,
+        'avg_value': avg_value,
+        'median_value': median_value,
     }
 
 
@@ -467,6 +481,8 @@ def build_stat_results(keyword=None):
     completion_rate = get_completion_rate(keyword)
     funder_receiver_stats = get_funder_receiver_stats(keyword)
     context['funders'] = funder_receiver_stats['funders']
+    context['avg_value'] = funder_receiver_stats['avg_value']
+    context['median_value'] = funder_receiver_stats['median_value']
     context['transactions'] = funder_receiver_stats['transactions']
     context['recipients'] = funder_receiver_stats['recipients']
     context['audience'] = json.loads(context['members_history'])[-1][1]
