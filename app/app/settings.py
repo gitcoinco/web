@@ -128,6 +128,7 @@ INSTALLED_APPS = [
     'revenue',
     'event_ethdenver2019',
     'inbox',
+    'twitter',
 ]
 
 MIDDLEWARE = [
@@ -703,3 +704,6 @@ if ENABLE_SILK:
 
 TAGGIT_CASE_INSENSITIVE = env.bool('TAGGIT_CASE_INSENSITIVE', default=True)
 WAGTAIL_SITE_NAME = 'Gitcoin'
+
+OAUTH_TOKEN_SECRET=env('OAUTH_TOKEN_SECRET', default='')
+MYSITE_DOMAIN=env('MYSITE_DOMAIN', default='')

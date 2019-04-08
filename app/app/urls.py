@@ -100,7 +100,11 @@ urlpatterns = [
         dashboard.views.profile_job_opportunity,
         name='profile_job_opportunity'
     ),
-    url(r'^api/v0.1/bountydocument', dashboard.views.bounty_upload_nda, name='bounty_upload_nda'),
+    url(
+        r'^api/v0.1/bountydocument',
+        dashboard.views.bounty_upload_nda,
+        name='bounty_upload_nda'
+    ),
     url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
     url(r'^api/v0.1/', include(dbrouter.urls)),
     url(r'^api/v0.1/', include(kdrouter.urls)),
@@ -537,6 +541,10 @@ urlpatterns = [
     re_path(r'^cms/', include(wagtailadmin_urls)),
     re_path(r'^documents/', include(wagtaildocs_urls)),
     re_path(r'', include(wagtail_urls)),
+
+    # for login with twitter
+    url(r'twilogin/login', retail.views.twitter_login),
+    url(r'twilogin/callback', retail.views.twitter_callback)
 ]
 
 if settings.ENABLE_SILK:

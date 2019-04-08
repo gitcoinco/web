@@ -16,8 +16,17 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+
+def load_module(name, path):
+    import os, imp
+    return imp.load_source(name, os.path.join(os.path.dirname(__file__), path))
+
+
+load_module('twitter2', '../twitter/utils.py')
+
 import logging
 from json import loads as json_parse
+import json
 from os import walk as walkdir
 
 from django.conf import settings
@@ -33,6 +42,7 @@ from django.urls import reverse
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
 
 from app.utils import get_default_network
 from cacheops import cached_as, cached_view, cached_view_as
@@ -46,6 +56,8 @@ from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
 from retail.emails import render_nth_day_email_campaign
 from retail.helpers import get_ip
+# ???
+import twitter2
 
 from .forms import FundingLimitIncreaseRequestForm
 from .utils import programming_languages
@@ -1532,6 +1544,88 @@ def youtube(request):
 
 def web3(request):
     return redirect('https://www.youtube.com/watch?v=cZZMDOrIo2k')
+
+
+def twitter_login(request):
+    new_token = {}
+    token_list = []
+    try:
+        with open('temp1', 'r') as fi:
+            token_list = json.load(fi)
+    except Exception as e:
+        print(e)
+        with open('temp1', 'w') as fo:
+            json.dump([], fo)
+            print('1 created')
+
+    for every_token in token_list:
+        if every_token['status'] == 0:
+            logger_m('use existed token')
+            new_token = every_token
+            every_token['status'] = 1
+
+    if new_token == {}:
+        logger_m('obtain new token')
+        new_token = \
+            twitter2.request_oauth_token(settings.MYSITE_DOMAIN+'/twilogin/callback')
+        new_token['status'] = 1
+        # save as hash value?
+        token_list.append(new_token)
+    with open('temp1', 'w') as fo:
+        json.dump(token_list, fo)
+
+    new_oauth_token = new_token['oauth_token']
+
+    logger_m('ready to return redirect')
+
+    return redirect(f'https://api.twitter.com/oauth/authenticate' +
+                    f'oauth_token={new_oauth_token}')
+
+
+def twitter_callback(request):
+    token_list = []
+    try:
+        with open('temp1', 'r') as fi:
+            token_list = json.load(fi)
+    except Exception as e:
+        print(e)
+        with open('temp1', 'w') as fo:
+            json.dump([], fo)
+            print('1 created')
+
+
+    # handle error: token_list is void
+    reply_token = request.GET.get('oauth_token')
+    reply_verifier = request.GET.get('oauth_verifier')
+
+    token_flag = 0
+    for every_token in token_list:
+        if reply_token == every_token['oauth_token']:
+            logger_m('token verified')
+            token_flag = 1
+            del every_token
+
+    if token_flag:
+        future_token = \
+            twitter2.access_oauth_token(reply_token, reply_verifier)
+
+        future_token['status'] = 0
+        # save as hash value?
+        with open('temp1', 'w') as fo:
+            json.dump(token_list.append(future_token), fo)
+
+    logger_m('ready to return callback')
+
+    return HttpResponse('<h1>login successfully</h1>')
+
+
+def logger_m(msg):
+    import datetime
+    time_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    msg = time_str + ': ' + msg + '\n'
+    print(msg)
+    with open('log2', 'a') as fo:
+        fo.write(msg)
 
 
 @cached_view_as(Token.objects.filter(network=get_default_network, approved=True))
