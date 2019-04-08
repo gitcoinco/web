@@ -72,3 +72,6 @@ class Command(BaseCommand):
         except RateLimitExceededException as e:
             logging.debug(e)
             print(e)
+        except AttributeError as e:
+            logging.debug(e)
+            print(e)
