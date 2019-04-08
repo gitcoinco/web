@@ -361,7 +361,7 @@ class BountyViewSet(viewsets.ModelViewSet):
         # save search history, but only not is_featured
         if 'is_featured' not in param_keys:
             if self.request.user and self.request.user.is_authenticated:
-                data['nonce'] = int(time.time() / 1000)
+                data['nonce'] = int(time.time()  * 1000000)
                 try:
                     SearchHistory.objects.update_or_create(
                         user=self.request.user,
