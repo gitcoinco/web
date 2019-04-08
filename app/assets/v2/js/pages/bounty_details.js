@@ -1423,7 +1423,7 @@ const process_activities = function(result, bounty_activities) {
     const new_bounty = meta.new_bounty || {};
     const old_bounty = meta.old_bounty || {};
     const has_signed_nda = result.interested.length ?
-      result.interested.map(interest => {
+      result.interested.find(interest => {
         if (interest.profile.handle === _activity.profile.handle && interest.signed_nda) {
           return interest.signed_nda.doc;
         }
