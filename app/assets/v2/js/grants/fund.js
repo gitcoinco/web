@@ -168,6 +168,7 @@ $(document).ready(function() {
             document.issueURL = linkURL;
             $('#transaction_url').attr('href', linkURL);
             enableWaitState('#grants_form');
+            $('#tweetModal').modal('show');
             // Should add approval transactions to transaction history
             deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
 
