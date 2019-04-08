@@ -87,6 +87,9 @@ var getActiveFilters = function() {
   let _filters = filters.slice();
 
   _filters.push('keywords', 'order_by', 'org');
+  if (document.hackathon) {
+    filters.push('org');
+  }
   _filters.forEach(filter => {
     if (getParam(filter)) {
       localStorage[filter] = getParam(filter).replace(/^,|,\s*$/g, '');
@@ -380,7 +383,7 @@ var get_search_URI = function(offset, order) {
   } else {
     uri += `&event_tag=${document.hackathon}`;
     uri += '&offset=' + offset;
-    uri += '&limit=100';
+    uri += '&limit=51';
   }
 
   return uri;
@@ -457,8 +460,7 @@ var refreshBounties = function(event, offset, append, do_save_search) {
       window.history.pushState('', '', window.location.pathname + '?' + buildURI());
     }
   } else {
-    
-
+    toggleAny(event);
   }
 
   if (!append) {
@@ -494,21 +496,19 @@ var refreshBounties = function(event, offset, append, do_save_search) {
       $('#list-orgs').append(`
       ${organizations.map((org, index) => `
       <div class="form__radio option">
-      <input name="org" id="org-${org}" type="radio" value="${org}" val-ui="${org}" />
-      <label class="filter-label" for=org-${org}>
-      <img src="/dynamic/avatar/${org}" class="rounded-circle" width="24" height="24"> ${org}
-      </label>
+        <input name="org" id="${org}" type="radio" value="${org}" val-ui="${org}" />
+        <label class="filter-label" for=${org}>
+          <img src="/dynamic/avatar/${org}" class="rounded-circle" width="24" height="24"> ${org}
+        </label>
       </div>
       `).join(' ')}
       `);
     }
-
   };
   // console.log(organ)
 
   explorer.bounties_request = $.get(bountiesURI, function(results, x) {
     results = sanitizeAPIResults(results);
-    console.log(results)
     getOrgs(results);
     if (results.length === 0 && !append) {
       if (localStorage['referrer'] === 'onboard') {
@@ -778,7 +778,7 @@ $(document).ready(function() {
   });
 
   // sidebar filters
-  $('.sidebar_search input[type=radio], .sidebar_search label').change(function(e) {
+  $('.sidebar_search , .sidebar_search label').change('input[type=radio]', function(e) {
     reset_offset();
     refreshBounties(null, 0, false, true);
     e.preventDefault();
