@@ -31,6 +31,7 @@ from django.contrib.auth.models import User
 from django.core import serializers
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
+from django.db.models import Count
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template import loader
@@ -2150,11 +2151,20 @@ def new_bounty(request):
     from .utils import clean_bounty_url
 
     events = HackathonEvent.objects.filter(end_date__gt=datetime.today())
+    suggested_developers = []
+    if request.user.is_authenticated:
+        suggested_developers = BountyFulfillment.objects.prefetch_related('bounty')\
+            .filter(
+                bounty__bounty_owner_github_username__iexact=request.user.profile.handle,
+                bounty__idx_status='done'
+            ).values('fulfiller_github_username').annotate(fulfillment_count=Count('bounty')) \
+            .order_by('-fulfillment_count')[:3]
     bounty_params = {
         'newsletter_headline': _('Be the first to know about new funded issues.'),
         'issueURL': clean_bounty_url(request.GET.get('source') or request.GET.get('url', '')),
         'amount': request.GET.get('amount'),
         'events': events,
+        'suggested_developers': suggested_developers
     }
 
     params = get_context(
