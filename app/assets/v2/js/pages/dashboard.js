@@ -88,6 +88,7 @@ var getActiveFilters = function() {
 
   _filters.push('keywords', 'order_by', 'org');
   if (document.hackathon) {
+    resetFilters(true);
     filters.push('org');
   }
   _filters.forEach(filter => {
