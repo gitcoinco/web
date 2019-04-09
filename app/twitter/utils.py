@@ -43,10 +43,10 @@ def request_oauth_token(callback_url='example.com/callback'):
         callback_url (str): URL for the Twitter OAuth API to call back.
 
     Returns:
-
+        Dict: A dict containing received parameters.
     """
     url = 'https://api.twitter.com/oauth/request_token'
-    callback_url_percent=percent_encoding(callback_url)
+    callback_url_percent = percent_encoding(callback_url)
     key = settings.TWITTER_CONSUMER_KEY
     nonce = generate_nonce()
     timestamp = generate_timestamp()
@@ -89,7 +89,7 @@ def request_oauth_token_with_lib(callback_url='example.com/callback'):
         callback_url (str): URL for the Twitter OAuth API to call back.
 
     Returns:
-
+        Dict: A dict containing received parameters.
     """
     consumer = oauth.Consumer(key=settings.TWITTER_CONSUMER_KEY,
                               secret=settings.TWITTER_CONSUMER_SECRET)
@@ -97,8 +97,8 @@ def request_oauth_token_with_lib(callback_url='example.com/callback'):
     signature_method_hmac_sha1 = oauth.SignatureMethod_HMAC_SHA1()
     request_url = 'https://api.twitter.com/oauth/request_token'
 
-    token_string=f'oauth_token_secret={settings.OAUTH_TOKEN_SECRET}&' \
-        f'oauth_token={settings.OAUTH_TOKEN_BASIC}'
+    token_string=f'oauth_token_secret={settings.TWITTER_ACCESS_SECRET}&' \
+        f'oauth_token={settings.TWITTER_ACCESS_TOKEN}'
     token = oauth.Token.from_string(token_string)
     token.set_callback(callback_url)
     oauth_request = oauth.Request.from_consumer_and_token(
@@ -125,7 +125,7 @@ def access_oauth_token(token, verify_str):
         verify_str (str):
 
     Returns:
-
+        Dict: A dict containing received parameters.
     """
     url = 'https://api.twitter.com/oauth/access_token'
     key = settings.TWITTER_CONSUMER_KEY
@@ -212,7 +212,6 @@ def generate_hmac(step, nonce, timestamp, token=None, callback=None):
         step (int): Obtain token: 1; Access token: 3.
         nonce (str): Random nonce word.
         timestamp (str): Seconds since the Unix epoch
-        key (str): Key for Encryption.
         token (str): Old token to access for a new token.
                     For accessing new token only.
 
@@ -227,7 +226,7 @@ def generate_hmac(step, nonce, timestamp, token=None, callback=None):
             f'%26oauth_nonce%3D{nonce}' \
             f'%26oauth_signature_method%3DHMAC-SHA1' \
             f'%26oauth_timestamp%3D{timestamp}' \
-            f'%26oauth_token%3D{settings.OAUTH_TOKEN_BASIC}' \
+            f'%26oauth_token%3D{settings.TWITTER_ACCESS_TOKEN}' \
             f'%26oauth_version%3D1.0'
     elif step == 3:
         msg = f'POST&https%3A%2F%2Fapi.twitter.com%2Foauth%2Faccess_token&' \
@@ -242,7 +241,7 @@ def generate_hmac(step, nonce, timestamp, token=None, callback=None):
 
     key = settings.TWITTER_CONSUMER_SECRET
     key += '&'
-    key += settings.OAUTH_TOKEN_SECRET
+    key += settings.TWITTER_ACCESS_SECRET
     logger_m(key)
 
     message_bytes = bytes(msg, 'ascii')
