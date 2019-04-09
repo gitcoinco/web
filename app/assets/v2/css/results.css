@@ -1,0 +1,137 @@
+
+/* Results */
+
+.results h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.results h3 {
+  font-weight: 700;
+}
+
+.results h5 {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.results .bounty_status {
+  margin-top: 1.5rem;
+}
+
+.results .bounty_status p {
+  font-size: 1.2rem;
+}
+
+.results #price_per_hour img{
+  width: 100%;
+}
+
+.results .bounty_status .box_1,
+.box_2,
+.box_3,
+.box_4,
+.box_5,
+.box_6 {
+  float: left;
+  width: 1rem;
+  height: 1rem;
+  margin-top: .2rem;
+  margin-right: 1rem;
+}
+
+.results ul#programming_languages {
+  text-align: center;
+}
+
+.results ul#programming_languages li {
+  list-style: none;
+  padding: 0.5rem 2rem;
+  margin-bottom: 1.5rem;
+  display: inline-block;
+  border: 1px solid #999;
+}
+
+.results ul#programming_languages li.selected{
+  background-color: #eee;
+}
+
+.results .icon {
+  height: 6rem;
+  width: auto;
+}
+
+.grey-block{
+  background-color: #fafafa;
+  padding: 3rem 1rem;
+}
+
+.blue-grey-block{
+  background-color: #f2f6f9;
+  padding: 3rem 1rem;
+}
+
+.text-align-center{
+  text-align: center;
+}
+
+.title-text{
+  color: #212529;
+  text-align: center;
+  font-size: 32px;
+  margin-bottom: 1em;
+}
+
+.promo-text{
+  margin: 0;
+  font-size: 28px;
+}
+
+.platform-stats-container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  --stat-container-width: 350px;
+}
+
+.single-stat {
+  --image-size: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: var(--stat-container-width);
+  margin-bottom: 20px;
+}
+
+.single-stat p,
+.single-stat h3 {
+  margin: 0;
+  text-align: center;
+}
+
+.single-stat img {
+  width: var(--image-size);
+  height: auto;
+  margin-bottom: 0;
+}
+
+h3.single-stat__title {
+  font-size: 24px;
+  font-weight: 900;
+  margin: 0;
+  margin-bottom: 4px;
+  color: #212529;
+}
+
+p.single-stat__subtitle {
+  font-size: 20px;
+  margin-bottom: 4px;
+  color: #3d3d3d;
+}
+
+p.single-stat__fineprint {
+  font-size: 14px;
+  color: #868789;
+}
