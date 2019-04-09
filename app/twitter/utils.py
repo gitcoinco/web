@@ -29,6 +29,8 @@ import datetime
 import secrets
 import json
 
+import oauth2 as oauth
+
 from django.conf import settings
 
 logger = logging.getLogger(__name__)
@@ -44,16 +46,17 @@ def request_oauth_token(callback_url='example.com/callback'):
 
     """
     url = 'https://api.twitter.com/oauth/request_token'
+    callback_url_percent=percent_encoding(callback_url)
     key = settings.TWITTER_CONSUMER_KEY
     nonce = generate_nonce()
     timestamp = generate_timestamp()
-    signature = generate_hmac(1, nonce, timestamp, callback=callback_url)
+    signature = generate_hmac(1, nonce, timestamp, callback=callback_url_percent)
     signature = str(signature)[2:-1]
     signature = percent_encoding(signature)
 
     authorization_header = f'OAuth ' \
         f'oauth_nonce="{nonce}",' \
-        f'oauth_callback="{callback_url}",' \
+        f'oauth_callback="{callback_url_percent}",' \
         f'oauth_signature_method="HMAC-SHA1",' \
         f'oauth_timestamp="{timestamp}",' \
         f'oauth_consumer_key="{key}",' \
@@ -63,8 +66,10 @@ def request_oauth_token(callback_url='example.com/callback'):
     logger_m('header: ' + authorization_header)
 
     try:
-        response = requests.post(url, headers={'Accept': '*/*',
-                                               'Authorization': authorization_header})
+        response = requests.post(url,
+                                 headers={'Accept': '*/*',
+                                          'Authorization': authorization_header},
+                                 data={'oauth_callback': callback_url})
         # To be formatted....
         logger_m(response.text)
         return response_to_json(response.text)
@@ -74,6 +79,42 @@ def request_oauth_token(callback_url='example.com/callback'):
         logger_m(str(e))
         logger_m(authorization_header)
     return {}
+
+
+def request_oauth_token_with_lib(callback_url='example.com/callback'):
+    """Obtain a request token from Twitter OAth API.
+        Using oauth2 library.
+
+    Args:
+        callback_url (str): URL for the Twitter OAuth API to call back.
+
+    Returns:
+
+    """
+    consumer = oauth.Consumer(key=settings.TWITTER_CONSUMER_KEY,
+                              secret=settings.TWITTER_CONSUMER_SECRET)
+    signature_method_plaintext = oauth.SignatureMethod_PLAINTEXT()
+    signature_method_hmac_sha1 = oauth.SignatureMethod_HMAC_SHA1()
+    request_url = 'https://api.twitter.com/oauth/request_token'
+
+    token_string=f'oauth_token_secret={settings.OAUTH_TOKEN_SECRET}&' \
+        f'oauth_token={settings.OAUTH_TOKEN_BASIC}'
+    token = oauth.Token.from_string(token_string)
+    token.set_callback(callback_url)
+    oauth_request = oauth.Request.from_consumer_and_token(
+        consumer,
+        token=token,
+        http_method='POST',
+        http_url=request_url
+    )
+    oauth_request.sign_request(signature_method_hmac_sha1,
+                               consumer,
+                               token)
+    request_header=oauth_request.to_header()
+    logger_m(request_header)
+    response = requests.post(request_url, headers=request_header)
+    logger_m(response.text)
+    return response_to_json(response.text)
 
 
 def access_oauth_token(token, verify_str):
@@ -227,15 +268,16 @@ def percent_encoding(str_raw):
     str_raw = str_raw.replace('=', '%3D')
     str_raw = str_raw.replace('+', '%2B')
     str_raw = str_raw.replace('/', '%2F')
-    str_raw = str_raw.replace('&', '%3A')
+    str_raw = str_raw.replace(':', '%3A')
     return str_raw
 
 
-def logger_m(msg):
+def logger_m(msg_raw):
+    msg = str(msg_raw)
     time_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     msg = time_str + ': ' + msg + '\n'
     print(msg)
-    with open('log2', 'a') as fo:
+    with open('log272503', 'a') as fo:
         fo.write(msg)
 
 
