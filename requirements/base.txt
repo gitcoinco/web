@@ -79,4 +79,5 @@ watchtower==0.5.4
 Wand==0.4.4
 wagtail==2.3
 raven==6.9.0
+oauth2
 sentry-sdk
