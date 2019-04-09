@@ -327,20 +327,20 @@ def post_comment(request):
     bounty_id = request.POST.get('bounty_id')
     # bountyObj = Bounty.objects.filter(standard_bounties_id=sbid).first()
     bountyObj = Bounty.objects.get(pk=bounty_id)
-    fbAmount = FeedbackEntry.objects.filter(
-        sender_profile=profile_id,
-        feedbackType=request.POST.get('review[reviewType]', 'approver'),
-        bounty=bountyObj
-    ).count()
-    if fbAmount > 0:
-        return JsonResponse({
-            'success': False,
-            'msg': 'There is already a approval comment',
-        })
-    if request.POST.get('review[reviewType]') == 'worker':
-        receiver_profile = Profile.objects.filter(handle=request.POST.get('review[receiver]')).first()
-    else:
-        receiver_profile = bountyObj.bounty_owner_profile
+    # fbAmount = FeedbackEntry.objects.filter(
+    #     sender_profile=profile_id,
+    #     feedbackType=request.POST.get('review[reviewType]', 'approver'),
+    #     bounty=bountyObj
+    # ).count()
+    # if fbAmount > 0:
+    #     return JsonResponse({
+    #         'success': False,
+    #         'msg': 'There is already a approval comment',
+    #     })
+    # if request.POST.get('review[reviewType]') == 'worker':
+    #     receiver_profile = bountyObj.bounty_owner_github_username
+    # else:
+    receiver_profile = Profile.objects.filter(handle=request.POST.get('review[receiver]')).first()
     kwargs = {
         'bounty': bountyObj,
         'sender_profile': profile_id,
