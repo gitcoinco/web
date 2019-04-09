@@ -1598,17 +1598,23 @@ def twitter_callback(request):
             json_dump([], fo)
             print('1 created')
 
-
     # handle error: token_list is void
     reply_token = request.GET.get('oauth_token')
     reply_verifier = request.GET.get('oauth_verifier')
+    logger_m(reply_token)
+    logger_m(reply_verifier)
 
     token_flag = 0
     for every_token in token_list:
-        if reply_token == every_token['oauth_token']:
-            logger_m('token verified')
-            token_flag = 1
+        if every_token['oauth_token'] == reply_token:
+            if reply_verifier == every_token['oauth_token_secret']:
+                logger_m('token verified')
+                token_flag = 1
             del every_token
+
+    # update token list, delete used token.
+    with open(settings.TOKEN_PATH+'temp1', 'w') as fo:
+        json_dump(token_list, fo)
 
     if token_flag:
         future_token = \
@@ -1616,12 +1622,14 @@ def twitter_callback(request):
 
         future_token['status'] = 0
         # save as hash value?
-        with open('temp1', 'w') as fo:
-            json_dump(token_list.append(future_token), fo)
+        with open(settings.TOKEN_PATH+'temp2', 'w') as fo:
+            json_dump(future_token, fo)
 
-    logger_m('ready to return callback')
-
-    return HttpResponse('<h1>login successfully</h1>')
+        logger_m('ready to return callback')
+        return HttpResponse('<h1>login successfully</h1>')
+    else:
+        logger_m('verify failed')
+        return HttpResponse('<h1>Failed to login</h1>')
 
 
 def logger_m(msg):
