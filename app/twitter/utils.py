@@ -47,17 +47,17 @@ def request_oauth_token(callback_url='example.com/callback'):
     key = settings.TWITTER_CONSUMER_KEY
     nonce = generate_nonce()
     timestamp = generate_timestamp()
-    signature = generate_hmac(1, nonce, timestamp, key)
+    signature = generate_hmac(1, nonce, timestamp, callback=callback_url)
     signature = str(signature)[2:-1]
-
+    signature = percent_encoding(signature)
 
     authorization_header = f'OAuth ' \
-        f'oauth_callback="{callback_url}",' \
-        f'oauth_customer_key="{key}",' \
         f'oauth_nonce="{nonce}",' \
-        f'oauth_signature="{signature}",' \
+        f'oauth_callback="{callback_url}",' \
         f'oauth_signature_method="HMAC-SHA1",' \
         f'oauth_timestamp="{timestamp}",' \
+        f'oauth_consumer_key="{key}",' \
+        f'oauth_signature="{signature}",' \
         f'oauth_version="1.0"'
 
     logger_m('header: ' + authorization_header)
@@ -90,10 +90,10 @@ def access_oauth_token(token, verify_str):
     key = settings.TWITTER_CONSUMER_KEY
     nonce = generate_nonce()
     timestamp = generate_timestamp()
-    signature = generate_hmac(3, nonce, timestamp, key, token)
+    signature = generate_hmac(3, nonce, timestamp, token)
 
     authorization_header = f'OAuth ' \
-        f'oauth_customer_key="{key}",' \
+        f'oauth_consumer_key="{key}",' \
         f'oauth_nonce="{nonce}",' \
         f'oauth_signature="{signature}",' \
         f'oauth_signature_method="HMAC-SHA1",' \
@@ -162,10 +162,12 @@ def generate_nonce():
     return secrets.token_hex(16)
 
 
-def generate_hmac(step, nonce, timestamp, key, token=None):
+def generate_hmac(step, nonce, timestamp, token=None, callback=None):
     """Generate HMAC-SHA1 signature for the request in first step.
 
     Args:
+        callback (str): The callback url,
+                    For obtain token only.
         step (int): Obtain token: 1; Access token: 3.
         nonce (str): Random nonce word.
         timestamp (str): Seconds since the Unix epoch
@@ -176,24 +178,34 @@ def generate_hmac(step, nonce, timestamp, key, token=None):
     Return:
         signature (str): Encoded string.
     """
+    msg = ''
     if step == 1:
         msg = f'POST&https%3A%2F%2Fapi.twitter.com%2Foauth%2Frequest_token&' \
+            f'oauth_callback%3D{callback}' \
             f'%26oauth_consumer_key%3D{settings.TWITTER_CONSUMER_KEY}' \
             f'%26oauth_nonce%3D{nonce}' \
             f'%26oauth_signature_method%3DHMAC-SHA1' \
             f'%26oauth_timestamp%3D{timestamp}' \
-            f'%26oath_version%3D1.0'
+            f'%26oauth_token%3D{settings.OAUTH_TOKEN_BASIC}' \
+            f'%26oauth_version%3D1.0'
     elif step == 3:
         msg = f'POST&https%3A%2F%2Fapi.twitter.com%2Foauth%2Faccess_token&' \
-            f'%26oauth_consumer_key%3D{settings.TWITTER_CONSUMER_KEY}' \
+            f'oauth_consumer_key%3D{settings.TWITTER_CONSUMER_KEY}' \
             f'%26oauth_nonce%3D{nonce}' \
             f'%26oauth_signature_method%3DHMAC-SHA1' \
             f'%26oauth_timestamp%3D{timestamp}' \
             f'%26oauth_token%3D{token}' \
-            f'%26oath_version%3D1.0'
+            f'%26oauth_version%3D1.0'
+
+    logger_m(msg)
+
+    key = settings.TWITTER_CONSUMER_SECRET
+    key += '&'
     key += settings.OAUTH_TOKEN_SECRET
-    message_bytes = bytes(msg, 'utf-8')
-    key_bytes = bytes(key, 'utf-8')
+    logger_m(key)
+
+    message_bytes = bytes(msg, 'ascii')
+    key_bytes = bytes(key, 'ascii')
 
     signature = base64.b64encode(
         hmac.new(key_bytes, message_bytes, digestmod=hashlib.sha1).digest())
@@ -203,11 +215,27 @@ def generate_hmac(step, nonce, timestamp, key, token=None):
     return signature
 
 
+def percent_encoding(str_raw):
+    """Convert string into Percent Encoding value.
+
+    Args:
+        str_raw (str): String to be converted.
+
+    Returns:
+        str_raw (str): Encoded str.
+    """
+    str_raw = str_raw.replace('=', '%3D')
+    str_raw = str_raw.replace('+', '%2B')
+    str_raw = str_raw.replace('/', '%2F')
+    str_raw = str_raw.replace('&', '%3A')
+    return str_raw
+
+
 def logger_m(msg):
     time_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     msg = time_str + ': ' + msg + '\n'
     print(msg)
-    with open('log1', 'a') as fo:
+    with open('log2', 'a') as fo:
         fo.write(msg)
 
 
