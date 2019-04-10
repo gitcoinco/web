@@ -95,7 +95,7 @@ def request_oauth_token_with_lib(callback_url='example.com/callback'):
     signature_method_hmac_sha1 = oauth.SignatureMethod_HMAC_SHA1()
     request_url = 'https://api.twitter.com/oauth/request_token'
 
-    token_string=f'oauth_token_secret={settings.TWITTER_ACCESS_SECRET}&' \
+    token_string = f'oauth_token_secret={settings.TWITTER_ACCESS_SECRET}&' \
         f'oauth_token={settings.TWITTER_ACCESS_TOKEN}'
     token = oauth.Token.from_string(token_string)
     token.set_callback(callback_url)
@@ -108,7 +108,7 @@ def request_oauth_token_with_lib(callback_url='example.com/callback'):
     oauth_request.sign_request(signature_method_hmac_sha1,
                                consumer,
                                token)
-    request_header=oauth_request.to_header()
+    request_header = oauth_request.to_header()
     logger_m(request_header)
     response = requests.post(request_url, headers=request_header)
     logger_m(response.text)
@@ -119,8 +119,9 @@ def access_oauth_token(token, verify_str):
     """Convert the request token to an access token.
 
     Args:
-        token (str):
-        verify_str (str):
+        token (str): Token obtained from previous request.
+                    We call it request_token.
+        verify_str (str): Verify string obtained from previous request.
 
     Returns:
         Dict: A dict containing received parameters.
@@ -143,7 +144,8 @@ def access_oauth_token(token, verify_str):
 
     try:
         response = requests.post(url, headers={'Accept': '*/*',
-                                               'Authorization': authorization_header})
+                                               'Authorization': authorization_header,
+                                               'data': f'oauth_verifier={verify_str}'})
         # To be formatted....
         logger_m(response.text)
         return response_to_json(response.text)
@@ -153,6 +155,46 @@ def access_oauth_token(token, verify_str):
         logger_m(str(e))
         logger_m(authorization_header)
     return {}
+
+
+def access_oauth_token_with_lib(request_token, verify_str):
+    """Convert the request token to an access token.
+        Using oauth2 library.
+
+    Args:
+        request_token (str): Token obtained from previous request.
+                    We call it request_token.
+        verify_str (str): Verify string obtained from previous request.
+
+    Returns:
+        Dict: A dict containing received parameters.
+    """
+    consumer = oauth.Consumer(key=settings.TWITTER_CONSUMER_KEY,
+                              secret=settings.TWITTER_CONSUMER_SECRET)
+    signature_method_plaintext = oauth.SignatureMethod_PLAINTEXT()
+    signature_method_hmac_sha1 = oauth.SignatureMethod_HMAC_SHA1()
+    request_url = 'https://api.twitter.com/oauth/access_token'
+
+    token_string = f'oauth_token_secret={settings.TWITTER_ACCESS_SECRET}&' \
+        f'oauth_token={request_token}'
+    token = oauth.Token.from_string(token_string)
+    oauth_request = oauth.Request.from_consumer_and_token(
+        consumer,
+        token=token,
+        # verifier=verify_str,
+        http_url=request_url,
+        parameters={'oauth_verifier': verify_str}
+    )
+    oauth_request.sign_request(signature_method_hmac_sha1,
+                               consumer,
+                               token)
+    request_header = oauth_request.to_header()
+    logger_m(request_header, 'header: ')
+    response = requests.post(request_url,
+                             headers=request_header,
+                             data=f'oauth_verifier={verify_str}')
+    logger_m(response.text, 'response: ')
+    return response_to_json(response.text)
 
 
 def response_to_json(response_str):
@@ -269,8 +311,8 @@ def percent_encoding(str_raw):
     return str_raw
 
 
-def logger_m(msg_raw):
-    msg = str(msg_raw)
+def logger_m(msg_raw, comment=''):
+    msg = comment + str(msg_raw)
     time_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     msg = time_str + ': ' + msg + '\n'
     print(msg)
