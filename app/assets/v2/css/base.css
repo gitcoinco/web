@@ -2,6 +2,16 @@
 
 /* ...because sometimes descending-specificity is a PIA to clean up */
 
+:root{
+  --brand-white: #ffffff;
+  --brand-pink: #f6146d;
+  --brand-green: #37ec9b;
+  --brand-light-violet: #bbafd0;
+  --brand-vivid-violet: #773ae0;
+  --brand-dark-violet: #130b88;
+  --brand-black: #0d023a;
+}
+
 div.body {
   min-height: 400px;
 }
