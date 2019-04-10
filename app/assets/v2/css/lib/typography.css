@@ -9,9 +9,9 @@
   font-style: normal;
   font-weight: 200;
   src: local('Muli ExtraLight'), local('Muli-ExtraLight'),
-       url('/static/v2/fonts/muli/muli-v12-latin-200.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-       url('/static/v2/fonts/muli/muli-v12-latin-200.woff') format('woff'), /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
-       url('/static/v2/fonts/muli/muli-v12-latin-200.ttf') format('truetype');
+    url('/static/v2/fonts/muli/muli-v12-latin-200.woff2') format('woff2'), 
+       url('/static/v2/fonts/muli/muli-v    n-200.woff') format('woff'), 
+       url('/static/v2/fonts/muli/muli-v12-latin-200.ttf') format('truetype')    ;
 }
 /* muli-regular - latin */
 @font-face {
@@ -19,9 +19,9 @@
   font-style: normal;
   font-weight: 400;
   src: local('Muli Regular'), local('Muli-Regular'),
-       url('/static/v2/fonts/muli/muli-v12-latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-       url('/static/v2/fonts/muli/muli-v12-latin-regular.woff') format('woff'), /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
-       url('/static/v2/fonts/muli/muli-v12-latin-regular.ttf') format('truetype');
+    url('/static/v2/fonts/muli/muli-v12-latin-regular.woff2') format('woff2'), 
+       url('/static/v2/fonts/muli/muli-v    n-regular.woff') format('woff'), 
+       url('/static/v2/fonts/muli/muli-v12-latin-regular.ttf') format('truetype')    ;
 }
 /* muli-600 - latin */
 @font-face {
@@ -29,9 +29,9 @@
   font-style: normal;
   font-weight: 600;
   src: local('Muli SemiBold'), local('Muli-SemiBold'),
-       url('/static/v2/fonts/muli/muli-v12-latin-600.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-       url('/static/v2/fonts/muli/muli-v12-latin-600.woff') format('woff'), /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
-       url('/static/v2/fonts/muli/muli-v12-latin-600.ttf') format('truetype');
+    url('/static/v2/fonts/muli/muli-v12-latin-600.woff2') format('woff2'), 
+       url('/static/v2/fonts/muli/muli-v    n-600.woff') format('woff'), 
+       url('/static/v2/fonts/muli/muli-v12-latin-600.ttf') format('truetype')    ;
 }
 /* muli-700 - latin */
 @font-face {
@@ -39,9 +39,9 @@
   font-style: normal;
   font-weight: 700;
   src: local('Muli Bold'), local('Muli-Bold'),
-       url('/static/v2/fonts/muli/muli-v12-latin-700.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-       url('/static/v2/fonts/muli/muli-v12-latin-700.woff') format('woff'), /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
-       url('/static/v2/fonts/muli/muli-v12-latin-700.ttf') format('truetype');
+    url('/static/v2/fonts/muli/muli-v12-latin-700.woff2') format('woff2'), 
+       url('/static/v2/fonts/muli/muli-v    n-700.woff') format('woff'), 
+       url('/static/v2/fonts/muli/muli-v12-latin-700.ttf') format('truetype')    ;
 }
 
 .g-font-futura {
