@@ -121,7 +121,7 @@
               <div class="card-body">
                 <h5 class="text-center">
                   [[ user.data.name || user.handle ]]
-                  <span v-if="user.trust_profile">
+                  <span v-if="user.verification">
                     <img src="{% static 'v2/images/badge-verify.svg' %}" alt="">
                   </span>
                 </h5>
