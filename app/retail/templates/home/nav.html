@@ -100,9 +100,13 @@
       {% if user.is_authenticated %}
         {% include 'shared/nav_auth.html' with source='authed' %}
       {% else %}
+        <a href="/twilogin/login" class="nav-link interior">
+          <i class="fab fa-github mr-1" role="aria-hidden"></i>
+          {% trans "LOG IN WITH TWITTER" %}
+        </a>
         <a href="{% url 'social:begin' 'github' %}?next=/" class="nav-link interior">
           <i class="fab fa-github mr-1" role="aria-hidden"></i>
-          {% trans "LOG IN" %}
+          {% trans "LOG IN WITH GITHUB" %}
         </a>
       {% endif %}
     </nav>
