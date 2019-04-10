@@ -1572,7 +1572,7 @@ def twitter_login(request):
     if new_token == {}:
         logger_m('obtain new token')
         new_token = \
-            twitter_utils.request_oauth_token(settings.MYSITE_DOMAIN+'/twilogin/callback')
+            twitter_utils.request_oauth_token_with_lib(settings.MYSITE_DOMAIN+'/twilogin/callback')
         new_token['status'] = 1
         # save as hash value?
         token_list.append(new_token)
