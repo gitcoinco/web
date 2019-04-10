@@ -17,12 +17,6 @@
 
 '''
 
-def load_module(name, path):
-    import os, imp
-    return imp.load_source(name, os.path.join(os.path.dirname(__file__), path))
-
-
-load_module('twitter_utils', '../twitter/utils.py')
 
 import logging
 from json import loads as json_parse
@@ -32,7 +26,7 @@ from os import walk as walkdir
 
 from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.core.paginator import Paginator
 from django.core.validators import validate_email
 from django.http import Http404, JsonResponse
@@ -58,7 +52,11 @@ from ratelimit.decorators import ratelimit
 from retail.emails import render_nth_day_email_campaign
 from retail.helpers import get_ip
 
-import twitter_utils
+# import twitter_utils
+# #from twitter_models import TwitterLogin
+# from models import TwitterLogin
+from twitter.utils import request_oauth_token_with_lib, access_oauth_token_with_lib
+from twitter.models import TwitterLogin
 
 from .forms import FundingLimitIncreaseRequestForm
 from .utils import programming_languages
@@ -1552,87 +1550,66 @@ def web3(request):
 
 
 def twitter_login(request):
-    new_token = {}
-    token_list = []
-    try:
-        with open('temp1', 'r') as fi:
-            token_list = json_load(fi)
-    except Exception as e:
-        print(e)
-        with open('temp1', 'w') as fo:
-            json_dump([], fo)
-            print('1 created')
+    # if new_token == {}:
+    logger_m('obtain new token')
+    new_token = \
+        request_oauth_token_with_lib(settings.MYSITE_DOMAIN+'/twilogin/callback')
 
-    for every_token in token_list:
-        if every_token['status'] == 0:
-            logger_m('use existed token')
-            new_token = every_token
-            every_token['status'] = 1
+    if 'oauth_token' in new_token:
+        new_oauth_token = new_token['oauth_token']
 
-    if new_token == {}:
-        logger_m('obtain new token')
-        new_token = \
-            twitter_utils.request_oauth_token_with_lib(settings.MYSITE_DOMAIN+'/twilogin/callback')
-        new_token['status'] = 1
-        # save as hash value?
-        token_list.append(new_token)
-    with open('temp1', 'w') as fo:
-        json_dump(token_list, fo)
+        logger_m('saving request token...')
+        NewLogin = TwitterLogin(request_token=new_oauth_token,
+                                login_status=1)
+        NewLogin.save()
 
-    new_oauth_token = new_token['oauth_token']
+        logger_m('ready to return redirect')
 
-    logger_m('ready to return redirect')
-
-    return redirect(f'https://api.twitter.com/oauth/authenticate?' +
-                    f'oauth_token={new_oauth_token}')
+        return redirect(f'https://api.twitter.com/oauth/authenticate?' +
+                        f'oauth_token={new_oauth_token}')
+    else:
+        return HttpResponse('<h1>verify filed</h1>')
 
 
 def twitter_callback(request):
-    token_list = []
-    try:
-        with open('temp1', 'r') as fi:
-            token_list = json_load(fi)
-    except Exception as e:
-        print(e)
-        with open('temp1', 'w') as fo:
-            json_dump([], fo)
-            print('1 created')
-
     # handle error: token_list is void
     reply_token = request.GET.get('oauth_token')
     reply_verifier = request.GET.get('oauth_verifier')
     logger_m(reply_token)
-    logger_m(reply_verifier)
+    logger_m(reply_verifier, 'verifier: ')
 
-    token_flag = 0
-    for every_token in token_list:
-        if every_token['oauth_token'] == reply_token:
-            if reply_verifier == every_token['oauth_token_secret']:
-                logger_m('token verified')
-                token_flag = 1
-            del every_token
+    try:
+        saved_login = TwitterLogin.objects.get(request_token=reply_token)
+    except ObjectDoesNotExist:
+        saved_login = None
 
-    # update token list, delete used token.
-    with open(settings.TOKEN_PATH+'temp1', 'w') as fo:
-        json_dump(token_list, fo)
-
-    if token_flag:
+    if saved_login:
         future_token = \
-            twitter_utils.access_oauth_token(reply_token, reply_verifier)
+            access_oauth_token_with_lib(reply_token, reply_verifier)
 
-        future_token['status'] = 0
-        # save as hash value?
-        with open(settings.TOKEN_PATH+'temp2', 'w') as fo:
-            json_dump(future_token, fo)
+        logger_m(future_token, 'future_token')
 
-        logger_m('ready to return callback')
-        return HttpResponse('<h1>login successfully</h1>')
+        if 'oauth_token' in future_token:
+
+            # save the access token pair for future usage.
+            saved_login.access_token = future_token['oauth_token']
+            saved_login.access_secret = future_token['oauth_token_secret']
+            saved_login.user_id = user_id = future_token['user_id']
+            saved_login.user_name = user_name = future_token['screen_name']
+            saved_login.login_status = 2
+            saved_login.save()
+
+            logger_m('ready to return callback')
+            return HttpResponse(f'<h1>Welcome!, {user_id}-{user_name}</h1>')
+        else:
+            return HttpResponse('<h1>Failed to login: Verify Failed</h1>')
     else:
         logger_m('verify failed')
-        return HttpResponse('<h1>Failed to login</h1>')
+        return HttpResponse('<h1>Failed to login: Token Not Exist</h1>')
 
 
-def logger_m(msg):
+def logger_m(msg_raw, comment=''):
+    msg = comment + str(msg_raw)
     import datetime
     time_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     msg = time_str + ': ' + msg + '\n'
