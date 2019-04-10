@@ -1,43 +1,20 @@
 
 /* Results */
 
-.results h2 {
-  font-size: 1.8rem;
-  font-weight: 700;
-}
-
-.results h3 {
-  font-weight: 700;
-}
-
 .results h5 {
   font-weight: 700;
   text-decoration: underline;
 }
 
-.results .bounty_status {
-  margin-top: 1.5rem;
-}
-
-.results .bounty_status p {
-  font-size: 1.2rem;
-}
-
-.results #price_per_hour img{
-  width: 100%;
-}
-
-.results .bounty_status .box_1,
+.box_1,
 .box_2,
 .box_3,
 .box_4,
 .box_5,
 .box_6 {
-  float: left;
-  width: 1rem;
-  height: 1rem;
-  margin-top: .2rem;
-  margin-right: 1rem;
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
 }
 
 .results ul#programming_languages {
@@ -61,18 +38,39 @@
   width: auto;
 }
 
-.grey-block{
-  background-color: #fafafa;
-  padding: 3rem 1rem;
-}
+/* BEM based styles*/
 
-.blue-grey-block{
-  background-color: #f2f6f9;
+.content-block{
   padding: 3rem 1rem;
-}
-
-.text-align-center{
   text-align: center;
+}
+
+.content-block--white{
+  background-color: var(--brand-white);
+}
+
+.content-block--grey{
+  background-color: #fafafa;
+}
+
+.content-block--blue-grey{
+  background-color: #f2f6f9;
+}
+
+.content-block__title{
+  color: var(--brand-black);
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 1em;
+}
+
+.content-block__title--small-margin{
+  margin-bottom: 0.25em;
+}
+
+.content-block__subtitle{
+  color: var(--brand-dark-violet);
+  font-size: 18px;
 }
 
 .title-text{
@@ -80,6 +78,37 @@
   text-align: center;
   font-size: 32px;
   margin-bottom: 1em;
+}
+
+.value-container{
+  display: flex;
+  justify-content: center;
+}
+
+.chart_container{
+  display: flex;
+  flex-direction: column;
+}
+
+.chart_container--big{
+  width: 75%;
+}
+
+.chart_container__content{
+  flex: 1;
+}
+
+.chart_container--flex{
+  display: flex;
+  align-items: center;
+}
+
+.chart_container__title
+{
+  color: var(--brand-light-violet);
+  font-size: 20px;
+  margin-bottom: 10px;
+  font-weight: 700;
 }
 
 .promo-text{
@@ -134,4 +163,60 @@ p.single-stat__subtitle {
 p.single-stat__fineprint {
   font-size: 14px;
   color: #868789;
+}
+
+
+.bounty-status-breakdown{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bounty-status-list{
+  text-align: left;
+  margin-left: 2rem;
+}
+
+.bounty-status-list p{
+  display: flex;
+  align-items: center;
+  margin: 0;
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: var(--brand-dark-violet);
+}
+
+
+.bounty-grid {
+  display: flex;
+  max-width: 960px;
+  margin: 0 auto;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.single-bounty{
+  padding: 20px 20px 16px;
+  margin: 10px;
+  text-align: center;
+  border: 1px solid #ccc;
+}
+
+.single-bounty__title {
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 4px;
+  color: var(--brand-dark-violet);
+}
+
+.single-bounty__label{
+  font-size: 14px;
+  text-transform: lowercase;
+  margin-bottom: 4px;
+  color: #777;
+}
+.single-bounty__payout{
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--brand-vivid-violet);
 }
