@@ -1579,7 +1579,7 @@ def twitter_login(request):
 
     logger_m('ready to return redirect')
 
-    return redirect(f'https://api.twitter.com/oauth/authenticate' +
+    return redirect(f'https://api.twitter.com/oauth/authenticate?' +
                     f'oauth_token={new_oauth_token}')
 
 
