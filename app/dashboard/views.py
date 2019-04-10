@@ -791,15 +791,12 @@ def users_fetch(request):
     for user in all_pages.page(page):
         print(user)
         profile_json = {}
+        profile_json = user.to_standard_dict()
         if user.avatar_baseavatar_related.exists():
             profile_json['avatar_id'] = user.avatar_baseavatar_related.first().pk
             profile_json['avatar_url'] = user.avatar_baseavatar_related.first().avatar_url
 
-        if user.get_my_verified_check:
-            profile_json['verification'] = user.get_my_verified_check
-            print(profile_json['verification'])
-            
-        profile_json = user.to_standard_dict()
+        profile_json['verification'] = user.get_my_verified_check
         all_users.append(profile_json)
     # dumping and loading the json here quickly passes serialization issues - definitely can be a better solution 
     params['data'] = json.loads(json.dumps(all_users, default=str))
