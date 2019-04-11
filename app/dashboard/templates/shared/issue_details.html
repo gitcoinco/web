@@ -43,8 +43,8 @@
   <label class="form__label w-100" for="reservedFor">{% trans 'Reserved For' %}</label>
   <select name="reservedFor" id="reservedFor" class="username-search custom-select"></select>
 </div>
-<div>
-  <label class="form__label" for="invite-contributors">{% trans "Keywords" %}</label>
+<div id="inviteContributors" class="font-body">
+  <label class="form__label w-100" for="invite-contributors">{% trans "Invite Contributors" %}</label>
   <div class="form__select2 g-multiselect">
     <select class="js-select2" id="invite-contributors" name="invite-contributors" multiple>
         {% for contributor in suggested_developers %}

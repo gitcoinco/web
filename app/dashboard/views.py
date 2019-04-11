@@ -33,6 +33,7 @@ from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.db.models import Count
 from django.http import Http404, HttpResponse, JsonResponse
+from django.db.models import Q
 from django.shortcuts import redirect
 from django.template import loader
 from django.template.response import TemplateResponse
@@ -2180,6 +2181,7 @@ def new_bounty(request):
 @csrf_exempt
 def get_suggested_contributors(request):
     previously_worked_developers = []
+    keyword = request.GET.get('keywords', '')
     if request.user.is_authenticated:
         previously_worked_developers = BountyFulfillment.objects.prefetch_related('bounty')\
             .filter(
@@ -2193,15 +2195,15 @@ def get_suggested_contributors(request):
             Q(bounty__metadata__issueKeywords__icontains=keyword) | \
             Q(bounty__title__icontains=keyword) | \
             Q(bounty__issue_description__icontains=keyword)
-        ).values('fulfiller_github_username')
+        ).values('fulfiller_github_username').distinct()
     verified_developers = UserVerificationModel.objects.filter(verified=True).values('user__profile__handle')
     print(verified_developers)
 
     return JsonResponse(
                 {
-                    'contributors': previously_worked_developers,
-                    'recommended_developers': recommended_developers,
-                    'verified_developers': verified_developers
+                    'contributors': list(previously_worked_developers),
+                    'recommended_developers': list(recommended_developers),
+                    'verified_developers': list(verified_developers)
                 },
                 status=200)
 

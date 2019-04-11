@@ -46,6 +46,24 @@ $('.select2-available__choice').on('click', function() {
   $(this).remove();
 });
 
+$(document).on('click', '#inviteContributors .select2-selection', function() {
+  console.log("hello");
+  const settings = {
+    url: '/api/v0.1/get_suggested_contributors',
+    method: 'GET',
+    processData: false,
+    dataType: 'json',
+    contentType: false,
+    data: {'keywords': $('#keywords').val()[0]}
+  };
+
+  $.ajax(settings).done(function(response) {
+    console.log(response);
+  }).fail(function(error) {
+    console.log('Could not fetch contributors', error);
+  });
+});
+
 function lastSynced(current, last_sync) {
   var time = timeDifference(current, last_sync);
 
