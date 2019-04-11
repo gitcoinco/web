@@ -7,7 +7,7 @@
 #### Complete project information and related blockchain media reports are appreciated, including but not limited to the following items:
 
 - Official announcement: (see details in **[Completeness and Accuracy of the information](https://github.com/consenlabs/token-profile/blob/master/tutorial/eos-tutorial.en.md#completeness-and-accuracy-of-the-information)**)
-- - Project team background:
+- Project team background:
 - Project basic information:
 - Media publications:
 - Supported Exchanges:
