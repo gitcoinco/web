@@ -506,7 +506,6 @@ var refreshBounties = function(event, offset, append, do_save_search) {
       `);
     }
   };
-  // console.log(organ)
 
   explorer.bounties_request = $.get(bountiesURI, function(results, x) {
     results = sanitizeAPIResults(results);
