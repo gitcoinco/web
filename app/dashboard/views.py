@@ -746,25 +746,22 @@ def users_directory(request):
 @require_GET
 def users_fetch(request):
     """Handle displaying users."""
-    q = request.GET.get('search','')
+    q = request.GET.get('search', '')
     limit = int(request.GET.get('limit', 10))
     page = int(request.GET.get('page', 1))
     order_by = request.GET.get('order_by', '-created_on')
     context = {}
     user_list = Profile.objects.all().order_by(order_by).filter(handle__icontains=q).cache()
-
-    # all_notifs = Notification.objects.filter(to_user_id=request.user.id).order_by('-id')
     params = dict()
     all_pages = Paginator(user_list, limit)
     all_users = []
     for user in all_pages.page(page):
-        print(user)
         profile_json = {}
         profile_json = user.to_standard_dict()
         if user.avatar_baseavatar_related.exists():
-            profile_json['avatar_id'] = user.avatar_baseavatar_related.first().pk
-            profile_json['avatar_url'] = user.avatar_baseavatar_related.first().avatar_url
-
+            user_avatar = user.avatar_baseavatar_related.first()
+            profile_json['avatar_id'] = user_avatar.pk
+            profile_json['avatar_url'] = user_avatar.avatar_url
         profile_json['verification'] = user.get_my_verified_check
         all_users.append(profile_json)
     # dumping and loading the json here quickly passes serialization issues - definitely can be a better solution 
