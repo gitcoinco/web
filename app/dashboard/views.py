@@ -996,7 +996,7 @@ def bulk_payout_bounty(request):
         active='payout_bounty',
         title=_('Advanced Payout'),
     )
-
+    params['open_fulfillments'] = bounty.fulfillments.filter(accepted=False)
     return TemplateResponse(request, 'bulk_payout_bounty.html', params)
 
 
