@@ -107,7 +107,7 @@ $(document).ready(function() {
         let realTokenAmount = Number(data.amount_per_period * Math.pow(10, decimals));
         let amountSTR = realTokenAmount.toLocaleString('fullwide', { useGrouping: false });
 
-        let realApproval = Number((realTokenAmount + realGasPrice) * data.num_periods);
+        let realApproval = Number(((realTokenAmount + realGasPrice) * data.num_periods) + 1);
         let approvalSTR = realApproval.toLocaleString('fullwide', { useGrouping: false });
 
         web3.eth.getAccounts(function(err, accounts) {
