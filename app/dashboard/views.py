@@ -962,6 +962,7 @@ def social_contribution_email(request):
     emails = []
     user_ids = request.POST.getlist('usersId[]', [])
     url = request.POST.get('url', '')
+    invite_url = request.POST.get('invite_url', '')
     inviter = request.user if request.user.is_authenticated else None
     bounty = Bounty.objects.current().get(github_url=url)
     for user_id in user_ids:
@@ -976,7 +977,7 @@ def social_contribution_email(request):
 
     msg = request.POST.get('msg', '')
     try:
-        share_bounty(emails, msg, request.user.profile)
+        share_bounty(emails, msg, request.user.profile, invite_url, True)
         response = {
             'status': 200,
             'msg': 'email_sent',
