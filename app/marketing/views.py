@@ -664,7 +664,10 @@ def _leaderboard(request):
         TemplateResponse: The leaderboard template response.
 
     """
-    return leaderboard(request, '')
+    context = {
+        'active': 'leaderboard',
+    }
+    return leaderboard(request, context)
 
 
 def leaderboard(request, key=''):

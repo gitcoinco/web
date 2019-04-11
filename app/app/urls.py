@@ -131,10 +131,10 @@ urlpatterns = [
     path('hackathon-list/', dashboard.views.get_hackathons, name='get_hackathons'),
 
     # action URLs
+    url(r'^funder', retail.views.funder_bounties_redirect, name='funder_bounties_redirect'),
+    re_path( r'^contributor/?(?P<tech_stack>.*)/?', retail.views.contributor_bounties_redirect, name='contributor_bounties_redirect'),
     url(r'^bounties/funder', retail.views.funder_bounties, name='funder_bounties'),
-    re_path(
-        r'^bounties/contributor/?(?P<tech_stack>.*)/?', retail.views.contributor_bounties, name='contributor_bounties'
-    ),
+    re_path(r'^bounties/contributor/?(?P<tech_stack>.*)/?', retail.views.contributor_bounties, name='contributor_bounties'),
     re_path(r'^bounty/quickstart/?', dashboard.views.quickstart, name='quickstart'),
     url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
     re_path(r'^bounty/change/(?P<bounty_id>.*)?', dashboard.views.change_bounty, name='change_bounty'),
@@ -537,6 +537,10 @@ urlpatterns = [
     re_path(r'^cms/', include(wagtailadmin_urls)),
     re_path(r'^documents/', include(wagtaildocs_urls)),
     re_path(r'', include(wagtail_urls)),
+
+    # users
+    path('users',dashboard.views.users_directory, name='users_directory'),
+    url(r'^api/v0.1/users_fetch/', dashboard.views.users_fetch, name='users_fetch'),
 ]
 
 if settings.ENABLE_SILK:
