@@ -166,6 +166,10 @@ def index(request):
         {
             'link': 'https://www.ethnews.com/gitcoin-offers-bounties-for-ens-integration-into-dapps',
             'img': 'v2/images/press/ethnews.jpg'
+        },
+        {
+            'link': 'https://www.hostingadvice.com/blog/grow-open-source-projects-with-gitcoin/',
+            'img': 'v2/images/press/hosting-advice.png'
         }
     ]
 

@@ -3,7 +3,7 @@ var is_metamask_approved = is_metamask_approved || false;
 var is_metamask_unlocked = is_metamask_unlocked || false;
 
 async function metamaskApproval() {
-  if (window.ethereum) {
+  if (window.ethereum && window.ethereum._metamask) {
     window.web3 = new Web3(ethereum);
     is_metamask_approved = await window.ethereum._metamask.isApproved();
     is_metamask_unlocked = await window.ethereum._metamask.isUnlocked();
