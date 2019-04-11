@@ -403,7 +403,7 @@ def funder_bounties(request):
 
 
 def contributor_bounties_redirect(request, tech_stack):
-    return redirect(contributor_bounties, tech_stack=tech_stack)
+    return redirect(contributor_bounties, tech_stack= '/'+ tech_stack)
 
 
 def contributor_bounties(request, tech_stack):
