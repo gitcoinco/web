@@ -15,6 +15,15 @@
   font-size: 0.8rem;
 }
 
+.close-icon {
+  position: absolute;
+  top: 13px;
+  right: 25px;
+  width: 15px;
+  display: none;
+  cursor: pointer;
+}
+
 .sidebar_search .options .option {
   margin-bottom: 2px;
 }
