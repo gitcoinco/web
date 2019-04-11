@@ -172,13 +172,7 @@
       let bootstrapTooltip = $.fn.tooltip.noConflict()
       $.fn.runTooltip = bootstrapTooltip;
       $('[data-toggle="tooltip"]').runTooltip();
-      document.keywords = {{keywords | safe}};
-
-      $(".keywords-filter").select2({
-          tags: true,
-          placeholder: 'Skill',
-          data: document.keywords
-      })
+  
     </script>
     <script src="{% static "v2/js/users.js" %}"></script>
 

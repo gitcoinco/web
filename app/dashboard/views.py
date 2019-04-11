@@ -734,26 +734,11 @@ def onboard(request, flow):
 def users_directory(request):
     """Handle displaying users directory page."""
 
-    # q = request.GET.get('q')
-    order_by = request.GET.get('order_by', '-created_on')
-    keyword = request.GET.get('keywords', False)
-    # Only show the latest contract Kudos for the current network.
-    query_kwargs = {
-
-    }
-    user_list = Profile.objects.all()
-    # if q:
-    #     user_list = user_list.keyword(q)
-
-    users = user_list.order_by(order_by).cache()
-
     params = {
         'active': 'users',
         'title': 'Users',
         'meta_title': "",
-        'meta_description': "",
-        'users': users,
-        'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
+        'meta_description': ""
     }
     return TemplateResponse(request, 'dashboard/users.html', params)
 
@@ -761,22 +746,6 @@ def users_directory(request):
 @require_GET
 def users_fetch(request):
     """Handle displaying users."""
-    # order_by = request.GET.get('order_by', '-created_on')
-    # query_kwargs = {
-
-    # }
-    # user_list = Profile.objects.all()
-    # users = user_list.order_by(order_by).cache()
-
-    # params = {
-    #     'active': 'users',
-    #     'title': 'Users',
-    #     'meta_title': "",
-    #     'meta_description': "",
-    #     'users': users,
-    #     'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
-    # }
-
     q = request.GET.get('search','')
     limit = int(request.GET.get('limit', 10))
     page = int(request.GET.get('page', 1))
