@@ -72,6 +72,12 @@ h4,
   position: relative;
 }
 
+.minihero__title{
+  font-weight: 300;
+  font-size: 2rem;
+  color: var(--gc-green);
+}
+
 .header.dash {
   overflow: visible;
 }
