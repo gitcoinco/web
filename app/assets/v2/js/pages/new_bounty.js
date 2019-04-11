@@ -38,6 +38,14 @@ function doShowQuickstart(url) {
   return true;
 }
 
+let selected_contributor = [];
+
+$('.select2-available__choice').on('click', function() {
+  selected_contributor.push($(this).find('.text').text());
+  $('#invite-contributors').val(selected_contributor).trigger('change');
+  $(this).remove();
+});
+
 function lastSynced(current, last_sync) {
   var time = timeDifference(current, last_sync);
 

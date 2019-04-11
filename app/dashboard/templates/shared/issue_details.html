@@ -44,6 +44,27 @@
   <select name="reservedFor" id="reservedFor" class="username-search custom-select"></select>
 </div>
 <div>
+  <label class="form__label" for="invite-contributors">{% trans "Keywords" %}</label>
+  <div class="form__select2 g-multiselect">
+    <select class="js-select2" id="invite-contributors" name="invite-contributors" multiple>
+        {% for contributor in suggested_developers %}
+          <option value="{{ contributor.fulfiller_github_username }}">{{ contributor.fulfiller_github_username }}</option>
+        {% endfor %}
+    </select>
+  </div>
+  <div id="contributor-suggestion-container">
+    <b>Suggested Contributors: </b>
+    <div id="contributor-suggestions">
+      {% for contributor in suggested_developers %}
+        <li class="select2-available__choice">
+          <span class="select2-available__choice__remove" role="presentation">×</span>
+          <span class="text">{{ contributor.fulfiller_github_username }}</span>
+        </li>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+<div>
   <label class="form__label">{% trans "Issue Details" %}</label>
 </div>
 <div class="form__group">
