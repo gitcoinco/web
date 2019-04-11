@@ -327,20 +327,20 @@ def post_comment(request):
     bounty_id = request.POST.get('bounty_id')
     # bountyObj = Bounty.objects.filter(standard_bounties_id=sbid).first()
     bountyObj = Bounty.objects.get(pk=bounty_id)
-    fbAmount = FeedbackEntry.objects.filter(
-        sender_profile=profile_id,
-        feedbackType=request.POST.get('review[reviewType]', 'approver'),
-        bounty=bountyObj
-    ).count()
-    if fbAmount > 0:
-        return JsonResponse({
-            'success': False,
-            'msg': 'There is already a approval comment',
-        })
-    if request.POST.get('review[reviewType]') == 'worker':
-        receiver_profile = Profile.objects.filter(handle=request.POST.get('review[receiver]')).first()
-    else:
-        receiver_profile = bountyObj.bounty_owner_profile
+    # fbAmount = FeedbackEntry.objects.filter(
+    #     sender_profile=profile_id,
+    #     feedbackType=request.POST.get('review[reviewType]', 'approver'),
+    #     bounty=bountyObj
+    # ).count()
+    # if fbAmount > 0:
+    #     return JsonResponse({
+    #         'success': False,
+    #         'msg': 'There is already a approval comment',
+    #     })
+    # if request.POST.get('review[reviewType]') == 'worker':
+    #     receiver_profile = bountyObj.bounty_owner_github_username
+    # else:
+    receiver_profile = Profile.objects.filter(handle=request.POST.get('review[receiver]')).first()
     kwargs = {
         'bounty': bountyObj,
         'sender_profile': profile_id,
@@ -921,6 +921,7 @@ def social_contribution_email(request):
     emails = []
     user_ids = request.POST.getlist('usersId[]', [])
     url = request.POST.get('url', '')
+    invite_url = request.POST.get('invite_url', '')
     inviter = request.user if request.user.is_authenticated else None
     bounty = Bounty.objects.current().get(github_url=url)
     for user_id in user_ids:
@@ -935,7 +936,7 @@ def social_contribution_email(request):
 
     msg = request.POST.get('msg', '')
     try:
-        share_bounty(emails, msg, request.user.profile)
+        share_bounty(emails, msg, request.user.profile, invite_url, True)
         response = {
             'status': 200,
             'msg': 'email_sent',
