@@ -68,7 +68,7 @@ from .helpers import get_bounty_data_for_activity, handle_bounty_views
 from .models import (
     Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest,
     FeedbackEntry, HackathonEvent, Interest, LabsResearch, Profile, ProfileSerializer, RefundFeeRequest, Subscription,
-    Tool, ToolVote, UserAction,
+    Tool, ToolVote, UserAction, UserVerificationModel
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -2158,7 +2158,7 @@ def new_bounty(request):
                 bounty__bounty_owner_github_username__iexact=request.user.profile.handle,
                 bounty__idx_status='done'
             ).values('fulfiller_github_username').annotate(fulfillment_count=Count('bounty')) \
-            .order_by('-fulfillment_count')[:3]
+            .order_by('-fulfillment_count')[:5]
     bounty_params = {
         'newsletter_headline': _('Be the first to know about new funded issues.'),
         'issueURL': clean_bounty_url(request.GET.get('source') or request.GET.get('url', '')),
@@ -2176,6 +2176,34 @@ def new_bounty(request):
     )
     return TemplateResponse(request, 'bounty/new.html', params)
 
+
+@csrf_exempt
+def get_suggested_contributors(request):
+    previously_worked_developers = []
+    if request.user.is_authenticated:
+        previously_worked_developers = BountyFulfillment.objects.prefetch_related('bounty')\
+            .filter(
+                bounty__bounty_owner_github_username__iexact=request.user.profile.handle,
+                bounty__idx_status='done'
+            ).values('fulfiller_github_username').annotate(fulfillment_count=Count('bounty')) \
+            .order_by('-fulfillment_count')
+        
+    recommended_developers = BountyFulfillment.objects.prefetch_related('bounty', 'profile')\
+        .filter(
+            Q(bounty__metadata__issueKeywords__icontains=keyword) | \
+            Q(bounty__title__icontains=keyword) | \
+            Q(bounty__issue_description__icontains=keyword)
+        ).values('fulfiller_github_username')
+    verified_developers = UserVerificationModel.objects.filter(verified=True).values('user__profile__handle')
+    print(verified_developers)
+
+    return JsonResponse(
+                {
+                    'contributors': previously_worked_developers,
+                    'recommended_developers': recommended_developers,
+                    'verified_developers': verified_developers
+                },
+                status=200)
 
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
