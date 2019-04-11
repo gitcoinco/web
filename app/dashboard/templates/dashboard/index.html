@@ -51,6 +51,7 @@
             {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
           </span>
         </div>
+        {% include 'shared/hackathon_sponsors.html' %}
       </div>
     {% else %}
       {% include 'dashboard/ftux.html' %}
