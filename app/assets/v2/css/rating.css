@@ -84,5 +84,5 @@ fieldset:not(:disabled) .rating > input:checked ~ .rating-star:hover ~ .rating-s
 }
 
 fieldset:disabled .rating {
-  filter: grayscale(1);
+  filter: saturate(0.4);
 }
