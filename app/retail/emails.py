@@ -976,7 +976,7 @@ Back to shipping,
     highlights = [{
         'who': 'iamonuwa',
         'who_link': True,
-        'what': 'Work on Status discovery features,
+        'what': 'Work on Status discovery features',
         'link': 'https://gitcoin.co/issue/status-im/discover-dapps/21/2794',
         'link_copy': 'View more',
     }, {
