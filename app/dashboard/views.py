@@ -738,7 +738,8 @@ def users_directory(request):
         'active': 'users',
         'title': 'Users',
         'meta_title': "",
-        'meta_description': ""
+        'meta_description': "",
+        'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
     return TemplateResponse(request, 'dashboard/users.html', params)
 
@@ -747,11 +748,15 @@ def users_directory(request):
 def users_fetch(request):
     """Handle displaying users."""
     q = request.GET.get('search', '')
+    keywords = request.GET.get('keywords', '')
     limit = int(request.GET.get('limit', 10))
     page = int(request.GET.get('page', 1))
     order_by = request.GET.get('order_by', '-created_on')
+
     context = {}
     user_list = Profile.objects.all().order_by(order_by).filter(handle__icontains=q).cache()
+    for keyword in keywords:
+        user_list = user_list.filter(keywords__icontains=keyword)
     params = dict()
     all_pages = Paginator(user_list, limit)
     all_users = []

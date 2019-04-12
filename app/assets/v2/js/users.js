@@ -1,3 +1,31 @@
+Vue.component('select2', {
+  props: [ 'options', 'value' ],
+  template: '#select2-template',
+  mounted: function() {
+    var vm = this;
+
+    $(this.$el).select2({ data: this.options })
+      .val(this.value)
+      .trigger('change')
+      .on('change', function() {
+        vm.$emit('input', this.value);
+      });
+  },
+  watch: {
+    value: function(value) {
+      // update value
+      $(this.$el).val(value).trigger('change');
+    },
+    options: function(options) {
+      // update options
+      $(this.$el).empty().select2({ data: options });
+    }
+  },
+  destroyed: function() {
+    $(this.$el).off().select2('destroy');
+  }
+});
+
 let users = [];
 let usersPage = 1;
 let usersNumPages = '';
@@ -19,6 +47,13 @@ Vue.mixin({
       } else {
         delete vm.params['search'];
       }
+
+      if (vm.selectedSkills) {
+        vm.params.keywords = vm.selectedSkills;
+      } else {
+        delete vm.params['keywords'];
+      }
+
       let searchParams = new URLSearchParams(vm.params);
       
       let apiUrlUsers = `/api/v0.1/users_fetch/?${searchParams.toString()}`;
@@ -49,6 +84,11 @@ Vue.mixin({
 
       vm.fetchUsers(1);
 
+    },
+    searchFilters: function() {
+      vm = this;
+      vm.users = [];
+      vm.fetchUsers(1);
     },
     bottomVisible: function() {
       vm = this;
@@ -81,6 +121,8 @@ if (document.getElementById('gc-users-directory')) {
       numUsers,
       media_url,
       searchTerm: null,
+      skills: document.keywords,
+      selectedSkills: [],
       bottom: false,
       params: {}
     },
@@ -99,3 +141,13 @@ if (document.getElementById('gc-users-directory')) {
     }
   });
 }
+
+
+// $('#skills').select2({
+//   placeholder: 'Select skills',
+//   tags: 'true',
+//   allowClear: true,
+//   data: document.keywords
+// });
+
+

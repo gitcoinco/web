@@ -109,7 +109,17 @@
             <form class="form-inline my-2 my-lg-0">
               <input class="form-control mr-sm-2" v-model="searchTerm" type="search" placeholder="Search" aria-label="Search">
               <button class="btn btn-outline-success my-2 my-sm-0" @click.prevent="searchUsers()">Search</button>
+
+              <div class="form__select2 g-multiselect">
+                <select2 :options="skills" v-model="selectedSkills" data-tags="true" multiple>
+                  <option disabled value="0">Select one</option>
+                </select2>
+              </div>
+              <button class="btn btn-outline-success my-2 my-sm-0" @click.prevent="searchFilters()">Search</button>
             </form>
+            <div v-show="selectedSkills.length">
+              searching: [[ selectedSkills ]]
+            </div>
           </div>
         </nav>
       </div>
@@ -160,6 +170,12 @@
       </div>
     </div>
 
+    <script type="text/x-template" id="select2-template">
+      <select>
+        <slot></slot>
+      </select>
+    </script>
+
 
 
     {% include 'shared/analytics.html' %}
@@ -172,7 +188,8 @@
       let bootstrapTooltip = $.fn.tooltip.noConflict()
       $.fn.runTooltip = bootstrapTooltip;
       $('[data-toggle="tooltip"]').runTooltip();
-  
+      document.keywords = {{keywords | safe}};
+      
     </script>
     <script src="{% static "v2/js/users.js" %}"></script>
 
