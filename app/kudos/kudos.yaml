@@ -4157,7 +4157,7 @@
     - Ambo
     - MyCrypto
   image: ambo_lambo.svg
-- name: cryptokitty
+- name: bot_kitty
   artist: emiwatanabe422
   to_address: '0x9a5eF5D1AE95ca2c16872e8Dd4065b88a8441A5c'
   description: A whole Crypto Kitty bot. Collect all of the Crypto Kitty bot Kudos for a chance to win a real genuine Crypto Kitty!
