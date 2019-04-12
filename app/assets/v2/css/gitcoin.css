@@ -137,27 +137,27 @@ h4,
 }
 
 .font-title-xl {
-  font-size: 1.8rem;
+  font-size: var(--fs-title-xl);
 }
 
 .font-title-lg {
-  font-size: 22px;
+  font-size: var(--fs-title-lg);
 }
 
 .font-title {
-  font-size: 1.25rem;
+  font-size: var(--fs-title);
 }
 
 .font-header {
-  font-size: 1.125rem;
+  font-size: var(--fs-header);
 }
 
 .font-subheader {
-  font-size: 1rem;
+  font-size: var(--fs-subheader);
 }
 
 .font-body {
-  font-size: 0.875rem;
+  font-size: var(--fs-body);
 }
 
 .font-caption {
