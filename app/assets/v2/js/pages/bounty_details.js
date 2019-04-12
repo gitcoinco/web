@@ -123,33 +123,38 @@ var callbacks = {
       '"><img class=avatar src="/dynamic/avatar/' + username + '"></a>' ];
   },
   'status': function(key, val, result) {
-    var ui_status = val;
+    let ui_status = val;
 
-    if (ui_status == 'open') {
+    if (ui_status === 'open') {
       ui_status = '<span>' + gettext('OPEN ISSUE') + '</span>';
 
-      let soft = result['can_submit_after_expiration_date'];
+      let can_submit = result['can_submit_after_expiration_date'];
 
-      if (soft && is_bounty_expired(result)) {
-        ui_status += '<p class="text-highlight-light-blue" style="text-transform: none;">' +
+      if (!isBountyOwner && can_submit && is_bounty_expired(result)) {
+        ui_status += '<p class="text-highlight-light-blue font-weight-light font-body" style="text-transform: none;">' +
           gettext('This issue is past its expiration date, but it is still active.') +
           '<br>' +
           gettext('Check with the submitter to see if they still want to see it fulfilled.') +
           '</p>';
       }
-    }
-    if (ui_status == 'started') {
+    } else if (ui_status === 'started') {
       ui_status = '<span>' + gettext('work started') + '</span>';
-    }
-    if (ui_status == 'submitted') {
+    } else if (ui_status === 'submitted') {
       ui_status = '<span>' + gettext('work submitted') + '</span>';
-    }
-    if (ui_status == 'done') {
+    } else if (ui_status === 'done') {
       ui_status = '<span>' + gettext('done') + '</span>';
-    }
-    if (ui_status == 'cancelled') {
+    } else if (ui_status === 'cancelled') {
       ui_status = '<span style="color: #f9006c;">' + gettext('cancelled') + '</span>';
     }
+
+    if (isBountyOwner && is_bounty_expired(result) &&
+      ui_status !== 'done' && ui_status !== 'cancelled') {
+
+      ui_status += '<p class="font-weight-light font-body" style="color: black; text-transform: none;">' +
+      'This issue has expired. Click <a class="text-highlight-light-blue font-weight-semibold" href="/extend-deadlines">here to extend expiration</a> ' +
+      'before taking any bounty actions. </p>';
+    }
+
     return [ 'status', ui_status ];
   },
   'issue_description': function(key, val, result) {
@@ -1423,7 +1428,7 @@ const process_activities = function(result, bounty_activities) {
     const new_bounty = meta.new_bounty || {};
     const old_bounty = meta.old_bounty || {};
     const has_signed_nda = result.interested.length ?
-      result.interested.map(interest => {
+      result.interested.find(interest => {
         if (interest.profile.handle === _activity.profile.handle && interest.signed_nda) {
           return interest.signed_nda.doc;
         }

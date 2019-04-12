@@ -166,6 +166,10 @@ def index(request):
         {
             'link': 'https://www.ethnews.com/gitcoin-offers-bounties-for-ens-integration-into-dapps',
             'img': 'v2/images/press/ethnews.jpg'
+        },
+        {
+            'link': 'https://www.hostingadvice.com/blog/grow-open-source-projects-with-gitcoin/',
+            'img': 'v2/images/press/hosting-advice.png'
         }
     ]
 
@@ -322,6 +326,8 @@ def subscribe(request):
     }
     return TemplateResponse(request, 'pricing/subscribe.html', context)
 
+def funder_bounties_redirect(request):
+    return redirect(funder_bounties)
 
 
 def funder_bounties(request):
@@ -394,6 +400,10 @@ def funder_bounties(request):
         'meta_description': "The Gitcoin platform connects freelance developers with open bug bounties or online jobs, paid in crypto (ETH). Leverage a global workforce to quickly complete software development and coding jobs."
     }
     return TemplateResponse(request, 'bounties/funder.html', context)
+
+
+def contributor_bounties_redirect(request, tech_stack):
+    return redirect(contributor_bounties, tech_stack= '/'+ tech_stack)
 
 
 def contributor_bounties(request, tech_stack):

@@ -31,6 +31,7 @@ from django.contrib.auth.models import User
 from django.core import serializers
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template import loader
@@ -327,20 +328,20 @@ def post_comment(request):
     bounty_id = request.POST.get('bounty_id')
     # bountyObj = Bounty.objects.filter(standard_bounties_id=sbid).first()
     bountyObj = Bounty.objects.get(pk=bounty_id)
-    fbAmount = FeedbackEntry.objects.filter(
-        sender_profile=profile_id,
-        feedbackType=request.POST.get('review[reviewType]', 'approver'),
-        bounty=bountyObj
-    ).count()
-    if fbAmount > 0:
-        return JsonResponse({
-            'success': False,
-            'msg': 'There is already a approval comment',
-        })
-    if request.POST.get('review[reviewType]') == 'worker':
-        receiver_profile = Profile.objects.filter(handle=request.POST.get('review[receiver]')).first()
-    else:
-        receiver_profile = bountyObj.bounty_owner_profile
+    # fbAmount = FeedbackEntry.objects.filter(
+    #     sender_profile=profile_id,
+    #     feedbackType=request.POST.get('review[reviewType]', 'approver'),
+    #     bounty=bountyObj
+    # ).count()
+    # if fbAmount > 0:
+    #     return JsonResponse({
+    #         'success': False,
+    #         'msg': 'There is already a approval comment',
+    #     })
+    # if request.POST.get('review[reviewType]') == 'worker':
+    #     receiver_profile = bountyObj.bounty_owner_github_username
+    # else:
+    receiver_profile = Profile.objects.filter(handle=request.POST.get('review[receiver]')).first()
     kwargs = {
         'bounty': bountyObj,
         'sender_profile': profile_id,
@@ -731,6 +732,52 @@ def onboard(request, flow):
     return TemplateResponse(request, 'ftux/onboard.html', params)
 
 
+def users_directory(request):
+    """Handle displaying users directory page."""
+
+    if not request.user.is_authenticated:
+        return redirect('/login/github?next=' + request.get_full_path())
+
+    params = {
+        'active': 'users',
+        'title': 'Users',
+        'meta_title': "",
+        'meta_description': ""
+    }
+    return TemplateResponse(request, 'dashboard/users.html', params)
+
+
+@require_GET
+def users_fetch(request):
+    """Handle displaying users."""
+    q = request.GET.get('search', '')
+    limit = int(request.GET.get('limit', 10))
+    page = int(request.GET.get('page', 1))
+    order_by = request.GET.get('order_by', '-created_on')
+
+    context = {}
+    user_list = Profile.objects.all().order_by(order_by).filter(Q(handle__icontains=q) | Q(keywords__icontains=q)).cache()
+
+    params = dict()
+    all_pages = Paginator(user_list, limit)
+    all_users = []
+    for user in all_pages.page(page):
+        profile_json = {}
+        profile_json = user.to_standard_dict()
+        if user.avatar_baseavatar_related.exists():
+            user_avatar = user.avatar_baseavatar_related.first()
+            profile_json['avatar_id'] = user_avatar.pk
+            profile_json['avatar_url'] = user_avatar.avatar_url
+        profile_json['verification'] = user.get_my_verified_check
+        all_users.append(profile_json)
+    # dumping and loading the json here quickly passes serialization issues - definitely can be a better solution 
+    params['data'] = json.loads(json.dumps(all_users, default=str))
+    params['has_next'] = all_pages.page(page).has_next()
+    params['count'] = all_pages.count
+    params['num_pages'] = all_pages.num_pages
+    return JsonResponse(params, status=200, safe=False)
+
+
 def dashboard(request):
     """Handle displaying the dashboard."""
 
@@ -921,6 +968,7 @@ def social_contribution_email(request):
     emails = []
     user_ids = request.POST.getlist('usersId[]', [])
     url = request.POST.get('url', '')
+    invite_url = request.POST.get('invite_url', '')
     inviter = request.user if request.user.is_authenticated else None
     bounty = Bounty.objects.current().get(github_url=url)
     for user_id in user_ids:
@@ -935,7 +983,7 @@ def social_contribution_email(request):
 
     msg = request.POST.get('msg', '')
     try:
-        share_bounty(emails, msg, request.user.profile)
+        share_bounty(emails, msg, request.user.profile, invite_url, True)
         response = {
             'status': 200,
             'msg': 'email_sent',

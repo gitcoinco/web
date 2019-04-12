@@ -30,7 +30,7 @@ const sendInvites = (users) => {
   var sendEmail = fetchData(
     '/api/v0.1/social_contribution_email/',
     'POST',
-    {usersId, msg, url},
+    {usersId, msg, url, invite_url},
     {'X-CSRFToken': csrftoken}
   );
 
