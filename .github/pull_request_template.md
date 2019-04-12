@@ -7,8 +7,9 @@
 - [ ] 此项对于 ERC-20 项目方：合约地址有大小写（做 checksum）
 - [ ] .json 和 .png 文件名一致（包括大小写）
 
-**项目资料补充：**
+**项目资料：**
 
+官方公告：
 团队背景：
 项目基本情况：
 媒体报道：
@@ -26,10 +27,11 @@
 - [ ] For ERC-20 project teams: Upper and lower capitalized alphabets in token address (For checksum purposes)
 - [ ] Same document name for both .json and .png (Including capitalization)
 
-**Project background details:**
+**Project background:**
 
-Team background:
-Current situation of the project:
-Media exposures:
+Official announcement:
+Project team background:
+Project basic information:
+Media publications:
 Tradeable exchanges:
 Recommended Gas Limit (For ERC-20 project teams) for transaction: (Default is 60,000)
