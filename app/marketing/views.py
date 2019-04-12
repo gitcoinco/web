@@ -660,7 +660,7 @@ def _leaderboard(request):
     context = {
         'active': 'leaderboard',
     }
-    return leaderboard(request, context)
+    return leaderboard(request, '')
 
 
 def leaderboard(request, key=''):
