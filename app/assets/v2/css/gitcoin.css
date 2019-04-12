@@ -73,8 +73,8 @@ h4,
 }
 
 .minihero__title{
-  font-weight: 300;
-  font-size: 2rem;
+  font-weight: var(--fw-light);
+  font-size: var(--fs-title-xl);
   color: var(--gc-green);
 }
 
@@ -359,7 +359,7 @@ div.button-pink {
 }
 
 .dash-filter-label {
-  font-weight: 300;
+  font-weight: var(--fw-light);
   font-size: 0.9rem;
   letter-spacing: 0.1em;
 }
@@ -468,7 +468,7 @@ div.button-pink {
   border: 1px solid #eee;
   outline: none;
   padding-left: 10px;
-  font-weight: 300;
+  font-weight: var(--fw-light);
 }
 
 .gc-border-black {
@@ -493,7 +493,7 @@ div.button-pink {
   border: 1px solid #eee;
   outline: none;
   padding-left: 10px;
-  font-weight: 300;
+  font-weight: var(--fw-light);
 }
 
 .dash-link {
