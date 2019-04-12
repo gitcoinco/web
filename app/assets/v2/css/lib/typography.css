@@ -55,7 +55,10 @@
   font-family: 'Muli', sans-serif;
 }
 
-/* fs stands for "font size" */
+/* Font variables
+   fs -> font size
+   fw -> font weight
+ */
 :root{
   --fs-title-xl: 1.8rem;
   --fs-title-lg: 1.4rem;
@@ -63,4 +66,7 @@
   --fs-header: 1.125rem;
   --fs-subheader: 1rem;
   --fs-body: 0.875rem;
+
+  --fw-light: 300;
+  --fw-bold: 700;
 }
