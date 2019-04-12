@@ -28,8 +28,10 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core import serializers
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template import loader
@@ -74,7 +76,8 @@ from .notifications import (
     maybe_market_to_user_slack,
 )
 from .utils import (
-    get_bounty, get_bounty_id, get_context, get_web3, has_tx_mined, record_user_action_on_interest, web3_process_bounty,
+    get_bounty, get_bounty_id, get_context, get_unrated_bounties_count, get_web3, has_tx_mined,
+    record_user_action_on_interest, web3_process_bounty,
 )
 
 logger = logging.getLogger(__name__)
@@ -321,23 +324,34 @@ def post_comment(request):
             'msg': '',
         })
 
-    sbid = request.POST.get('standard_bounties_id')
-    bountyObj = Bounty.objects.filter(standard_bounties_id=sbid).first()
-    fbAmount = FeedbackEntry.objects.filter(sender_profile=profile_id, feedbackType=request.POST.get('review[reviewType]', 'approver'), bounty=bountyObj).count()
-    if fbAmount > 0:
-        return JsonResponse({
-            'success': False,
-            'msg': 'There is already a approval comment',
-        })
-    if request.POST.get('review[reviewType]','approver') == 'approver':
-        receiver_profile = Profile.objects.filter(handle=request.POST.get('review[receiver]', '')).first()
-    else:
-        receiver_profile = bountyObj.bounty_owner_profile
+    # sbid = request.POST.get('standard_bounties_id')
+    bounty_id = request.POST.get('bounty_id')
+    # bountyObj = Bounty.objects.filter(standard_bounties_id=sbid).first()
+    bountyObj = Bounty.objects.get(pk=bounty_id)
+    # fbAmount = FeedbackEntry.objects.filter(
+    #     sender_profile=profile_id,
+    #     feedbackType=request.POST.get('review[reviewType]', 'approver'),
+    #     bounty=bountyObj
+    # ).count()
+    # if fbAmount > 0:
+    #     return JsonResponse({
+    #         'success': False,
+    #         'msg': 'There is already a approval comment',
+    #     })
+    # if request.POST.get('review[reviewType]') == 'worker':
+    #     receiver_profile = bountyObj.bounty_owner_github_username
+    # else:
+    receiver_profile = Profile.objects.filter(handle=request.POST.get('review[receiver]')).first()
     kwargs = {
         'bounty': bountyObj,
         'sender_profile': profile_id,
         'receiver_profile': receiver_profile,
-        'rating': request.POST.get('review[rating]', '-1'),
+        'rating': request.POST.get('review[rating]', '0'),
+        'satisfaction_rating': request.POST.get('review[satisfaction_rating]', '0'),
+        'communication_rating': request.POST.get('review[communication_rating]', '0'),
+        'speed_rating': request.POST.get('review[speed_rating]', '0'),
+        'code_quality_rating': request.POST.get('review[code_quality_rating]', '0'),
+        'recommendation_rating': request.POST.get('review[recommendation_rating]', '0'),
         'comment': request.POST.get('review[comment]', 'No comment.'),
         'feedbackType': request.POST.get('review[reviewType]','approver')
     }
@@ -345,9 +359,90 @@ def post_comment(request):
     feedback = FeedbackEntry.objects.create(**kwargs)
     feedback.save()
     return JsonResponse({
-            'success': False,
+            'success': True,
             'msg': 'Finished.'
         })
+
+def rating_modal(request, bounty_id, username):
+    # TODO: will be changed to the new share
+    """Rating modal.
+
+    Args:
+        pk (int): The primary key of the bounty to be rated.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The rate bounty view.
+
+    """
+    try:
+        bounty = Bounty.objects.get(pk=bounty_id)
+    except Bounty.DoesNotExist:
+        return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
+                            status=401)
+
+    params = get_context(
+        ref_object=bounty,
+    )
+    params['receiver']=username
+    params['user'] = request.user if request.user.is_authenticated else None
+
+    return TemplateResponse(request, 'rating_modal.html', params)
+
+
+def rating_capture(request):
+    # TODO: will be changed to the new share
+    """Rating capture.
+
+    Args:
+        pk (int): The primary key of the bounty to be rated.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The rate bounty capture modal.
+
+    """
+    user = request.user if request.user.is_authenticated else None
+    if not user:
+        return JsonResponse(
+            {'error': _('You must be authenticated via github to use this feature!')},
+            status=401)
+
+    return TemplateResponse(request, 'rating_capture.html')
+
+
+def unrated_bounties(request):
+    """Rating capture.
+
+    Args:
+        pk (int): The primary key of the bounty to be rated.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The rate bounty capture modal.
+
+    """
+    # request.user.profile if request.user.is_authenticated and getattr(request.user, 'profile', None) else None
+    unrated_count = 0
+    user = request.user.profile if request.user.is_authenticated else None
+    if not user:
+        return JsonResponse(
+            {'error': _('You must be authenticated via github to use this feature!')},
+            status=401)
+
+    if user:
+        unrated_count = get_unrated_bounties_count(user)
+
+    # data = json.dumps(unrated)
+    return JsonResponse({
+        'unrated': unrated_count,
+    }, status=200)
 
 
 @csrf_exempt
@@ -637,6 +732,52 @@ def onboard(request, flow):
     return TemplateResponse(request, 'ftux/onboard.html', params)
 
 
+def users_directory(request):
+    """Handle displaying users directory page."""
+
+    if not request.user.is_authenticated:
+        return redirect('/login/github?next=' + request.get_full_path())
+
+    params = {
+        'active': 'users',
+        'title': 'Users',
+        'meta_title': "",
+        'meta_description': ""
+    }
+    return TemplateResponse(request, 'dashboard/users.html', params)
+
+
+@require_GET
+def users_fetch(request):
+    """Handle displaying users."""
+    q = request.GET.get('search', '')
+    limit = int(request.GET.get('limit', 10))
+    page = int(request.GET.get('page', 1))
+    order_by = request.GET.get('order_by', '-created_on')
+
+    context = {}
+    user_list = Profile.objects.all().order_by(order_by).filter(Q(handle__icontains=q) | Q(keywords__icontains=q)).cache()
+
+    params = dict()
+    all_pages = Paginator(user_list, limit)
+    all_users = []
+    for user in all_pages.page(page):
+        profile_json = {}
+        profile_json = user.to_standard_dict()
+        if user.avatar_baseavatar_related.exists():
+            user_avatar = user.avatar_baseavatar_related.first()
+            profile_json['avatar_id'] = user_avatar.pk
+            profile_json['avatar_url'] = user_avatar.avatar_url
+        profile_json['verification'] = user.get_my_verified_check
+        all_users.append(profile_json)
+    # dumping and loading the json here quickly passes serialization issues - definitely can be a better solution 
+    params['data'] = json.loads(json.dumps(all_users, default=str))
+    params['has_next'] = all_pages.page(page).has_next()
+    params['count'] = all_pages.count
+    params['num_pages'] = all_pages.num_pages
+    return JsonResponse(params, status=200, safe=False)
+
+
 def dashboard(request):
     """Handle displaying the dashboard."""
 
@@ -824,10 +965,10 @@ def social_contribution_email(request):
         JsonResponse: Success in sending email.
     """
     from marketing.mails import share_bounty
-
     emails = []
     user_ids = request.POST.getlist('usersId[]', [])
     url = request.POST.get('url', '')
+    invite_url = request.POST.get('invite_url', '')
     inviter = request.user if request.user.is_authenticated else None
     bounty = Bounty.objects.current().get(github_url=url)
     for user_id in user_ids:
@@ -842,7 +983,7 @@ def social_contribution_email(request):
 
     msg = request.POST.get('msg', '')
     try:
-        share_bounty(emails, msg, request.user.profile)
+        share_bounty(emails, msg, request.user.profile, invite_url, True)
         response = {
             'status': 200,
             'msg': 'email_sent',
@@ -1619,6 +1760,23 @@ def profile(request, handle):
     context['kudos_count'] = owned_kudos.count()
     context['sent_kudos_count'] = sent_kudos.count()
     context['verification'] = profile.get_my_verified_check
+    context['avg_rating'] = profile.get_average_star_rating
+
+    context['unrated_funded_bounties'] = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
+        .filter(
+            bounty_owner_github_username__iexact=profile.handle,
+        ).exclude(
+            feedbacks__feedbackType='approver',
+            feedbacks__sender_profile=profile,
+        )
+
+    context['unrated_contributed_bounties'] = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=profile) \
+            .filter(interested__status='okay') \
+            .filter(interested__pending=False).filter(idx_status='done') \
+            .exclude(
+                feedbacks__feedbackType='worker',
+                feedbacks__sender_profile=profile
+            )
 
     currently_working_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
         .filter(interested__pending=False).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)
@@ -1785,7 +1943,7 @@ def terms(request):
         'title': _('Terms of Use'),
     }
     return TemplateResponse(request, 'legal/terms.html', context)
-    
+
 def privacy(request):
     return TemplateResponse(request, 'legal/privacy.html', {})
 

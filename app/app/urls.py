@@ -100,11 +100,7 @@ urlpatterns = [
         dashboard.views.profile_job_opportunity,
         name='profile_job_opportunity'
     ),
-    url(
-        r'^api/v0.1/bountydocument',
-        dashboard.views.bounty_upload_nda,
-        name='bounty_upload_nda'
-    ),
+    url(r'^api/v0.1/bountydocument', dashboard.views.bounty_upload_nda, name='bounty_upload_nda'),
     url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
     url(r'^api/v0.1/', include(dbrouter.urls)),
     url(r'^api/v0.1/', include(kdrouter.urls)),
@@ -135,6 +131,12 @@ urlpatterns = [
     path('hackathon-list/', dashboard.views.get_hackathons, name='get_hackathons'),
 
     # action URLs
+    url(r'^funder', retail.views.funder_bounties_redirect, name='funder_bounties_redirect'),
+    re_path(
+        r'^contributor/?(?P<tech_stack>.*)/?',
+        retail.views.contributor_bounties_redirect,
+        name='contributor_bounties_redirect'
+    ),
     url(r'^bounties/funder', retail.views.funder_bounties, name='funder_bounties'),
     re_path(
         r'^bounties/contributor/?(?P<tech_stack>.*)/?', retail.views.contributor_bounties, name='contributor_bounties'
@@ -162,6 +164,11 @@ urlpatterns = [
         dashboard.views.funder_payout_reminder_modal,
         name='funder_payout_reminder_modal'
     ),
+
+    # Rating
+    path('modal/rating/<int:bounty_id>/<str:username>/', dashboard.views.rating_modal, name='rating_modal'),
+    path('modal/rating_capture/', dashboard.views.rating_capture, name='rating_capture'),
+    url(r'^api/v0.1/unrated_bounties/', dashboard.views.unrated_bounties, name='unrated_bounties'),
 
     # Notify Funder Modal Submission
     path(
@@ -536,6 +543,10 @@ urlpatterns = [
     re_path(r'^cms/', include(wagtailadmin_urls)),
     re_path(r'^documents/', include(wagtaildocs_urls)),
     re_path(r'', include(wagtail_urls)),
+
+    # users
+    path('users', dashboard.views.users_directory, name='users_directory'),
+    url(r'^api/v0.1/users_fetch/', dashboard.views.users_fetch, name='users_fetch'),
 ]
 
 if settings.ENABLE_SILK:

@@ -782,6 +782,8 @@ def new_bounty_rejection(bounty, to_emails=None):
 
 
 def new_bounty_acceptance(bounty, to_emails=None):
+    from dashboard.models import Profile
+    from dashboard.utils import get_unrated_bounties_count
     if not bounty or not bounty.value_in_usdt_now:
         return
 
@@ -792,10 +794,12 @@ def new_bounty_acceptance(bounty, to_emails=None):
 
     for to_email in to_emails:
         cur_language = translation.get_language()
+        profile = Profile.objects.filter(email=to_email).first()
+        unrated_count = get_unrated_bounties_count(profile)
         try:
             setup_lang(to_email)
             from_email = settings.CONTACT_EMAIL
-            html, text = render_new_bounty_acceptance(to_email, bounty)
+            html, text = render_new_bounty_acceptance(to_email, bounty, unrated_count)
 
             if not should_suppress_notification_email(to_email, 'bounty'):
                 send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])

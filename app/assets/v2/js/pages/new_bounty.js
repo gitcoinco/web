@@ -676,6 +676,7 @@ const setPrivateForm = () => {
   $('#issue-details, #issue-details-edit').show();
   $('#sync-issue').removeClass('disabled');
   $('#last-synced, #edit-issue, #sync-issue, #title--text').hide();
+  $('#featured-bounty-add').hide();
 
   $('#admin_override_suspend_auto_approval').prop('checked', false);
   $('#admin_override_suspend_auto_approval').attr('disabled', true);
@@ -702,6 +703,7 @@ const setPublicForm = () => {
   $('#sync-issue').addClass('disabled');
   $('.js-submit').addClass('disabled');
   $('#last-synced, #edit-issue , #sync-issue, #title--text').show();
+  $('#featured-bounty-add').show();
 
   $('#admin_override_suspend_auto_approval').prop('checked', true);
   $('#admin_override_suspend_auto_approval').attr('disabled', false);

@@ -278,8 +278,8 @@
             <div class="col-12 col-md-7 started-status-column d-flex">
               <div class="activity-status">
                 [[:text]]
-                [[if signed_nda && signed_nda != 'false']]
-                  <a href="[[:signed_nda]]" download class="d-flex">View signed NDA</a>
+                [[if signed_nda]]
+                  <a href="[[:signed_nda.signed_nda.doc]]" download class="d-flex">View signed NDA</a>
                 [[/if]]
               </div>
               [[if can_approve_worker ]]
@@ -441,7 +441,7 @@
   <script src="{% static "v2/js/tokens.js" %}"></script>
   <script src="{% static "v2/js/amounts.js" %}"></script>
   <script src="{% static "v2/js/popper.min.js" %}"></script>
-  <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
+  <script src="{% static "v2/js/bootstrap.min.js" %}" crossorigin="anonymous"></script>
   <script src="{% static "v2/js/clipboard.js" %}"></script>
   <script>
     var bootstrapTooltip = $.fn.tooltip.noConflict()
