@@ -753,7 +753,7 @@ def users_fetch(request):
     q = request.GET.get('search', '')
     limit = int(request.GET.get('limit', 10))
     page = int(request.GET.get('page', 1))
-    order_by = request.GET.get('order_by', '-created_on')
+    order_by = request.GET.get('order_by', '-actions_count')
 
     context = {}
     user_list = Profile.objects.all().order_by(order_by).filter(Q(handle__icontains=q) | Q(keywords__icontains=q)).cache()

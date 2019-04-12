@@ -249,7 +249,6 @@ def sync_profile(handle, user=None, hide_profile=True):
             except Exception as e:
                 logger.warning(f'Encountered ({e}) while attempting to save a user\'s github avatar')
 
-
     return profile
 
 
