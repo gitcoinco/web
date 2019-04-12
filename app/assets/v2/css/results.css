@@ -138,21 +138,21 @@
 }
 
 h3.single-stat__title {
-  font-size: 32px;
+  color: var(--gc-black);
+  font-size: var(--fs-title-xl);
   font-weight: bold;
   margin: 0;
   margin-bottom: 4px;
-  color: var(--gc-black);
 }
 
 p.single-stat__subtitle {
-  font-size: 20px;
-  margin-bottom: 4px;
+  font-size: var(--fs-title);
   color: var(--gc-darker-grey);
+  margin-bottom: 4px;
 }
 
 p.single-stat__fineprint {
-  font-size: 14px;
+  font-size: var(--fs-body);
   color: var(--gc-dark-grey);
 }
 
