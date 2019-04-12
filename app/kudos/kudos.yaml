@@ -4246,9 +4246,9 @@
     - game
     - School
   image: 90_games.svg
-- name: Helper Fox
+- name: Helper_Fox
   description: You are a cherished member of the MetaMask community. Thanks for helping!
-  priceFinney: 
+  priceFinney: 10
   numClonesAllowed: 500
   to_address: "0x12c8ff915ad423cfA1c03E6D0749F1eBAc582959"
   tags: 
