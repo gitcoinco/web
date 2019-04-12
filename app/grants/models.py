@@ -704,6 +704,8 @@ class ContributionQuerySet(models.QuerySet):
 class Contribution(SuperModel):
     """Define the structure of a subscription agreement."""
 
+    success = models.BooleanField(default=True, help_text=_('Whether or not success.'))
+    tx_cleared = models.BooleanField(default=False, help_text=_('Whether or not tx cleared.'))
     tx_id = models.CharField(
         max_length=255,
         default='0x0',
@@ -723,10 +725,19 @@ class Contribution(SuperModel):
         txid_shortened = self.tx_id[0:10] + "..."
         return f"id: {self.pk}; {txid_shortened} => subs:{self.subscription}; {naturaltime(self.created_on)}"
 
+    def update_tx_status(self):
+        """Updates tx status."""
+        from dashboard.utils import get_tx_status
+        tx_status, tx_time = get_tx_status(self.tx_id, self.subscription.network, self.created_on)
+        self.success = tx_status == 'success'
+        self.tx_cleared = True
 
 def next_month():
     """Get the next month time."""
     return localtime(timezone.now() + timedelta(days=30))
+
+
+
 
 
 class MatchPledge(SuperModel):
