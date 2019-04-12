@@ -50,7 +50,7 @@
 .content-block__title {
   color: var(--gc-black);
   font-size: 32px;
-  font-weight: 700;
+  font-weight: var(--fw-bold);
   margin-bottom: 1em;
 }
 
@@ -98,7 +98,7 @@
   color: var(--gc-light-violet);
   font-size: 20px;
   margin-bottom: 10px;
-  font-weight: 700;
+  font-weight: var(--fw-bold);
 }
 
 .promo-text {
@@ -178,7 +178,7 @@ p.single-stat__fineprint {
 
 .bounty-list-title {
   font-size: 32px;
-  font-weight: 700;
+  font-weight: var(--fw-bold);
   margin-bottom: 1em;
 }
 
@@ -199,7 +199,7 @@ p.single-stat__fineprint {
 }
 
 .single-bounty__title {
-  font-weight: 700;
+  font-weight: var(--fw-bold);
   font-size: 18px;
   margin-bottom: 4px;
   color: var(--gc-dark-violet);
@@ -213,7 +213,7 @@ p.single-stat__fineprint {
 }
 
 .single-bounty__payout {
-  font-weight: 700;
+  font-weight: var(--fw-bold);
   font-size: 20px;
   color: var(--gc-blue);
 }
