@@ -461,19 +461,18 @@ class Subscription(SuperModel):
             balance = token_contract.functions.balanceOf(Web3.toChecksumAddress(self.contributor_address)).call()
             allowance = token_contract.functions.allowance(Web3.toChecksumAddress(self.contributor_address), Web3.toChecksumAddress(self.grant.contract_address)).call()
             gasPrice = self.gas_price
-            allowance_plus_gasPrice = allowance + gasPrice
             is_active = self.get_is_active_from_web3()
             token = addr_to_token(self.token_address, self.network)
             next_valid_timestamp = self.get_next_valid_timestamp()
             decimals = token.get('decimals', 0)
             balance = balance / 10 ** decimals
-            allowance = allowance_plus_gasPrice / 10 ** decimals
+            allowance = allowance / 10 ** decimals
             error_reason = "unknown"
             if not is_active:
                 error_reason = 'not_active'
             if timezone.now().timestamp() < next_valid_timestamp:
                 error_reason = 'before_next_valid_timestamp'
-            if balance < self.amount_per_period:
+            if (balance + gasPrice) < self.amount_per_period:
                 error_reason = "insufficient_balance"
             if allowance < self.amount_per_period:
                 error_reason = "insufficient_allowance"
