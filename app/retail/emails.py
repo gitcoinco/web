@@ -933,7 +933,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "$40K In Prizes: Sign Up For Ethereal Virtual Hackathon!"
+    subject = "The Ethereal Hackathon Is Here"
     new_kudos_pks = [2247, 2246, 2245]
     new_kudos_size_px = 150
 
@@ -949,12 +949,12 @@ def render_new_bounty_roundup(to_email):
 Hi Gitcoiners,
 </p>
 <p>
-One week till the <a href="https://gitcoin.co/hackathon/ethhack2019">Ethereal Virtual hackathon</a>.  Join us April 15th-30th for Hackathon challenges, which will be posted as bounties,
-with the best hacks receiving prizes in ETH & ERC-20 tokens. Main track winners will receive free tickets to Ethereal NY to present their project live on stage!  <a href="https://gitcoin.co/hackathon/ethhack2019/">Sign up here</a>.
+The <a href="https://gitcoin.co/hackathon/ethhack2019">Ethereal Virtual hackathon</a> is here. <a href="https://gitcoin.co/hackathon/ethereal-virtual-hackathon/">Check out prizes</a> from Microsoft, ConsenSys, ChainLink, LeapDAO, and many more. When
+it is all said and done, we expect over $50K in prizes up for grabs in the next two weeks.
 </p>
 <p>
-This week, we passed $1 million in platform value. This means $1 million worth of bounties, grants, and kudos have been created and fulfilled over the course of the last 18 months. It's been an incredible ride, and we're excited
-for the next 18 months. This milestone (and the proof of our value to the ecosystem) brings a renewed focus on a sustainable Gitcoin. <a href="https://medium.com/gitcoin/a-gitcoin-platform-fee-905a0507961f">Read more about our new 10% bounty platform fee.</a>
+There is still time to join! <a href="https://gitcoin.co/hackathon/ethhack2019/">Sign up here!</a> The hacks start April 15th-30th.
+Main track winners will receive free tickets to Ethereal NY to present their project live on stage!
 </p>
 
 {kudos_friday}
@@ -964,10 +964,7 @@ for the next 18 months. This milestone (and the proof of our value to the ecosys
             Our <a href="https://medium.com/gitcoin/a-gitcoin-platform-fee-905a0507961f">10% platform fee is now live.</a> <a href="https://twitter.com/owocki/status/1114198908274503680">Join the conversation</a> on how we monetize Gitcoin from here. We'd love to hear your feedback!
         </li>
         <li>
-            Our friends at <a href="http://oscoin.io">OS Coin</a> released their white paper. <a href="http://oscoin.io">Check it out</a> and see their innovative approach for funding open source.
-        </li>
-        <li>
-            Gitcoin Livestream is back this week with Niran from Panvala! Join us <a href="https://gitcoin.co/livestream"> at 5PM ET or catch it on <a href="https://twitter.com/GetGitcoin">Twitter</a>!
+            Gitcoin Livestream is back this week with Yorke Rhodes from MSFT discussing the hackathon! Join us <a href="https://gitcoin.co/livestream"> at 5PM ET or catch it on <a href="https://twitter.com/GetGitcoin">Twitter</a>!
         </li>
     </ul>
 </p>
@@ -977,34 +974,34 @@ Back to shipping,
 
 '''
     highlights = [{
-        'who': 'pumpkingwok',
+        'who': 'iamonuwa',
         'who_link': True,
-        'what': 'Worked on Sabre',
-        'link': 'https://gitcoin.co/issue/b-mueller/sabre/34/2709',
+        'what': 'Work on Status discovery features,
+        'link': 'https://gitcoin.co/issue/status-im/discover-dapps/21/2794',
         'link_copy': 'View more',
     }, {
-        'who': 'skyge',
+        'who': 'zyfrank',
         'who_link': True,
-        'what': 'Worked on smart contract refactoring.',
-        'link': 'https://gitcoin.co/issue/GitcoinContracts/SmartContracts/1/2699',
+        'what': 'Created a function for unsigned transactions on LeapDAO.',
+        'link': 'https://gitcoin.co/issue/leapdao/leap-node/116/2719',
         'link_copy': 'View more',
     }, {
-        'who': 'distributeddoge',
+        'who': 'stevenjnpearce',
         'who_link': True,
-        'what': 'Private repo work on Gitcoin!',
-        'link': 'https://gitcoin.co/issue/owocki/foobarnow/1/2698',
+        'what': 'One of the first completed bounties on PolkaDot',
+        'link': 'https://gitcoin.co/issue/polkawallet-io/polkawallet-RN/31/2774',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/status-im/status-react/issues/5242',
-        'primer': 'Work on the Status React project!',
+        'url': 'https://github.com/ArweaveTeam/weavemail/issues/2',
+        'primer': 'Work with Arweave on an early bounty!',
     }, {
-        'url': 'https://github.com/blockstatecom/dtree/issues/2',
-        'primer': 'Skills with Corda? This one is for you!',
+        'url': 'https://github.com/TrustWallet/wallet-core/issues/7',
+        'primer': 'Integrate Zilliqa!',
     }, {
-        'url': 'https://github.com/ethereum/solidity/issues/6202',
-        'primer': 'Work on Solidity with the EF!',
+        'url': 'https://github.com/knocte/fsx/issues/1',
+        'primer': 'First bounty by knocte!',
     }, ]
 
     num_leadboard_items = 5
