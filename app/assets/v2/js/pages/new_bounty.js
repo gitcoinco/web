@@ -42,27 +42,63 @@ let selected_contributor = [];
 
 $('.select2-available__choice').on('click', function() {
   selected_contributor.push($(this).find('.text').text());
-  $('#invite-contributors').val(selected_contributor).trigger('change');
+  console.log(selected_contributor);
+  $('#invite-contributors').val($(this).data('id')).trigger('change');
   $(this).remove();
 });
 
-$(document).on('click', '#inviteContributors .select2-selection', function() {
-  console.log("hello");
-  const settings = {
-    url: '/api/v0.1/get_suggested_contributors',
-    method: 'GET',
-    processData: false,
-    dataType: 'json',
-    contentType: false,
-    data: {'keywords': $('#keywords').val()[0]}
-  };
+// $(document).on('click', '#inviteContributors .select2-selection', function() {
+const settings = {
+  url: '/api/v0.1/get_suggested_contributors',
+  method: 'GET',
+  processData: false,
+  dataType: 'json',
+  contentType: false,
+  data: {'keywords': $('#keywords').val()[0]}
+};
 
-  $.ajax(settings).done(function(response) {
-    console.log(response);
-  }).fail(function(error) {
-    console.log('Could not fetch contributors', error);
+$.ajax(settings).done(function(response) {
+  console.log(response);
+  var groups = {
+    'contributors': 'Recently worked with you',
+    'recommended_developers': 'Recomended based on skills',
+    'verified_developers': 'Verified contributors'
+  };
+  
+  let data = Object.entries(response).map(([ text, children ]) => (
+    { text: groups[text], children }
+  ));
+
+  console.log(data);
+  var generalIndex = 0;
+  var procesedData = $.map(data, function(obj, index) {
+    console.log(index, obj);
+    obj.children.forEach((children, childIndex) => {
+      children.text = children.fulfiller_github_username || children.user__profile__handle; // replace name with the property used for the text
+      children.id = generalIndex; // replace pk with your identifier
+      generalIndex++;
+    });
+    return obj;
   });
+  
+  
+  // var dataAdapter = $('#inviteContributors .js-select2').data('select2').dataAdapter;
+  
+  
+  // var option = dataAdapter.option(JSON.stringify(procesedData));
+
+  console.log(procesedData);
+  // dataAdapter.addOptions(option);
+  $('#inviteContributors .js-select2').select2({
+    data: procesedData,
+    placeholder: 'Select contributors'
+
+  });
+
+}).fail(function(error) {
+  console.log('Could not fetch contributors', error);
 });
+// });
 
 function lastSynced(current, last_sync) {
   var time = timeDifference(current, last_sync);

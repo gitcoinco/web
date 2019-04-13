@@ -103,8 +103,6 @@ li.select2-available__choice {
   color: #000;
 }
 
-
-.select2-container--default .select2-results__option:hover,
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
   background-color: #3E00FF;
   color: #fff;
