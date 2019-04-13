@@ -1286,7 +1286,7 @@ def quickstart(request):
     return TemplateResponse(request, 'quickstart.html', {})
 
 
-def profile_keywords(request, handle):
+def profile_details(request, handle):
     """Display profile keywords.
 
     Args:
@@ -1321,7 +1321,7 @@ def profile_keywords(request, handle):
     return JsonResponse(response, safe=False)
 
 
-def profile_details(request, handle):
+def profile_keywords(request, handle):
     """Display profile details.
 
     Args:

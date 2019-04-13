@@ -232,7 +232,7 @@
       [[if activity_type != 'unknown_event']]
         <div class="row box activity">
           <div class="col-12 col-md-1">
-            <div class="activity-avatar bounty_row [[if hidden]]bounty_row--hidden[[/if]]" data-username="[[:name]]" data-container="body" data-toggle="popover" data-content='{% include "shared/contributor-popover.html" %}'>
+            <div class="activity-avatar bounty_row user-popover" data-username="[[:name]]" data-container="body" data-toggle="popover" data-content='{% include "shared/contributor-popover.html" %}'>
               <img class="avatar" src="/dynamic/avatar/[[:name]]"/>
             </div>
           </div>
@@ -436,7 +436,7 @@
     $('[data-toggle="popover"]').popover()
 
     $('body').popover({
-      selector: '.bounty_row',
+      selector: '.user-popover',
       html: true,
       title: function() {
         let element = $(this);
@@ -446,6 +446,7 @@
           }).then(function(response) {
             return response.json();
           }).then(function(json) {
+            $('.username').html(json.profile.handle);
             $('.org_logos').html(convertToImage(json.profile.organizations));
             $('.earned').html('~' + json.profile.total_earned + ' ETH earned')
             $('.contributor-position').html('#' + json.profile.position)
@@ -484,8 +485,8 @@
     function convertToImage(images) {
       let a = [];
       $.each(images, function(image) {
-        let image_url = "/dynamic/avatar/"+image;
-        let link = "<img src=\""+ image_url + "\" alt=\"" + image + "\" width=\"30px\" />";
+        let image_url = `/dynamic/avatar/${image}`;
+        let link = `<img src="/dynamic/avatar/${image_url}" alt="${image}" class="rounded-circle" width="24" height="24">`
         a.push(link);
       })
       return a;
