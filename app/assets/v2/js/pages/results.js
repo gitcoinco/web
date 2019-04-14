@@ -33,7 +33,7 @@ function repoChart() {
     legend: 'none',
     height: 300,
     width: 300,
-    colors: [ '#3E00FF', '#25E899', '#FFCE08' ]
+    colors: [ '#011f4b', '#03396c', '#005b96' ]
   };
 
   var chart = new google.visualization.PieChart(document.getElementById('repo_chart'));

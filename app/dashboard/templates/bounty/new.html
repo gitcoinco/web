@@ -52,6 +52,63 @@
             <div id="primary_form" class="col-lg-8 col-sm-12">
               <h1 class="text-center title">{% trans "Fund Issue" %}</h1>
               <form id="submitBounty" class="submit_bounty_form px-5 pt-5">
+                <div>
+                  <p>Github Repo Type</p>
+                  <div class="form__radio option">
+                    <input name="repo_type" id="public_repo" type="radio" value="public" checked />
+                    <label class="filter-label" for=public_repo><i class="fas fa-book"></i> {% trans "Public" %}</label>
+                  </div>
+
+                  <div class="form__radio option">
+                    <input name="repo_type" id="private_repo" type="radio" value="private" />
+                    <label class="filter-label" for=private_repo><i class="fas fa-lock"></i> {% trans "Private" %}</label>
+                  </div>
+                  <!-- Commented for v2 -->
+                  <!-- <div id="cta-subscription" class="cta-blue d-md-flex justify-content-between mt-3 d-md-none">
+                    <div>
+                      <h5 class="mb-3">Get awesome contributors to work on your private repo issues</h5>
+                      <ul class="list-unstyled mb-4">
+                        <li class="mb-2"><i class="fas fa-check"></i> View contributors’ resumes and proposals</li>
+                        <li class="mb-2"><i class="fas fa-check"></i> Easy NDA signing process</li>
+                        <li class="mb-2"><i class="fas fa-check"></i> Automatically invite the contributors you approve to your repo</li>
+                        <li class="mb-2"><i class="fas fa-check"></i> Automatically remove contributors from your repo once job is done</li>
+                      </ul>
+                      <a href="" class="btn btn-gc-blue">Get Private Repo Bounties</a>
+                    </div>
+                    <div>
+                      <img src="{% static 'v2/images/robots-party.svg' %}" alt="" style="
+                      width: 100%;
+                      max-width: inherit;">
+                    </div>
+                  </div> -->
+
+                  <div id="private-repo-instructions" class="d-md-flex justify-content-between mt-3 font-smaller-3 d-md-none privaterepo-instructions">
+                    <div>
+                      <h5 class="font-smaller-3 font-weight-bold mb-2">Important Notes on Private Repo Bounties</h5>
+                      <ul class="pl-3">
+                        <li>Please make sure you are the <b>repo admin</b> to fund the issue</li>
+                        <li>Gitcoin will NOT have any access to your private repo</li>
+                        <li>You have to approve and give repository access to each contributor before they can start work</li>
+                        <li>You can upload an NDA that each contributor has to sign before they can start work</li>
+                      </ul>
+                    </div>
+                    <div class="align-items-center d-flex">
+                      <img src="{% static 'v2/images/prime.png' %}" alt="" style="
+                      width: 100%;
+                      max-width: 64px;">
+                    </div>
+                  </div>
+
+                </div>
+                <div id="nda-upload" style="display: none;">
+                  <hr class="mt-4">
+                  <div>
+                    <h5 class="font-subheader">{% trans "Non-Disclosure Agreement" %}</h5>
+                    <label class="form__label" for=issueNDA>{% trans "Each contributor has to sign your NDA before they can start work. Supported format: pdf, doc, docx." %}</label>
+                    <input name='issueNDA' id="issueNDA" class="form__input" type="file" accept="application/pdf,application/msword, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/vnd.openxmlformats-officedocument.presentationml.presentation" required/>
+                  </div>
+                  <hr class="mt-4">
+                </div>
                 <div id="about-section" class="pt-2">
                   <h5 class="font-subheader">{% trans "About" %}</h5>
                   <label class="form__label" for=issueURL>{% trans "Github Issue URL" %}</label>
@@ -67,7 +124,7 @@
                   </div>
                   <div id="issue-details" class="mt-4">
                     <label class="form__label mb-0 mt-3" for="title">{% trans "Issue Title" %}</label>
-                    <input name='title' id="title"  class="form__input pb-3 pt-0 hidden" type="text" value="{{ issue_title }}" readonly required/>
+                    <input name='title' id="title"  class="form__input hidden" type="text" value="{{ issue_title }}" readonly required/>
                     <p id="title--text"></p>
                     <label class="form__label" for="description">{% trans "Description" %}</label>
                     <textarea name="description" class="form__input" id="description" readonly></textarea>
@@ -82,6 +139,10 @@
                     <div class="form__select2 g-multiselect">
                       <select class="js-select2" id="keywords" name="keywords" multiple>
                       </select>
+                    </div>
+                    <div id="keyword-suggestion-container">
+                      <b>Add tags from your repo: </b>
+                      <div id="keyword-suggestions"></div>
                     </div>
 
                   </div>
@@ -111,7 +172,6 @@
                     {% include 'shared/notification_email.html' with show_information_publicly_checkbox=1 %}
                     {% include 'shared/github_username.html' %}
                   </div>
-                  <div id="advanced_container"></div>
                   <hr class="mt-4">
                 </div>
                 {% include 'shared/pricing.html' %}
@@ -127,9 +187,28 @@
                         <label class="form__label" for=hiringRightNow>{% trans "I am hiring for a full time, part time, or contract position, right now and would like Gitcoin to attach this job description to the bounty." %}
                       </label>
                     </div>
-                  <hr class="mt-4">
+                    <input name='jobDescription' id='jobDescription' type="url" class="form__input hidden" type="text" placeholder="https://link.to/job/description" value="" />
+                    <hr class="mt-4">
                   </div>
-                  <input name='jobDescription' id='jobDescription' type="url" class="form__input hidden" type="text" placeholder="https://link.to/job/description" value="" />
+                </div>
+                <div class="w-100 mt-2">
+                  <div class="form__checkbox">
+                    <input name="specialEvent" id="specialEvent" type="checkbox" value=1 />
+                    <label class="form__label" for="specialEvent">
+                      {% trans 'Is this Bounty part of a Hackathon or Special Event?' %}
+                    </label>
+                  </div>
+                  <div id="eventTag" class="hidden">
+                    <label class="form__label" for="eventTag">{% trans "Choose Event" %}</label>
+                    <div class="form__select2">
+                      <select class="js-select2" name="eventTag" id="eventTag">
+                        {% for evt in events %}
+                          <option value="{{ evt.name }}">{{ evt.name }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                  <hr class="mt-4"/>
                 </div>
                 <div id="gas-section" class="pt-2">
                   <h5 class="font-subheader pb-2">{% trans "Gas Settings" %}</h5>
@@ -138,7 +217,57 @@
                     {% include 'shared/wallet_estimate.html' %}
                   </div>
                 </div>
-                <div class="terms_container pt-4">
+                <div id="fee-section" class="mt-5">
+                  <h5 class="font-subheader">{% trans "No Suprises" %}</h5>
+                  <div class="row">
+                    <div class="col-12 col-sm-9 mt-3 font-body mb-sm-3">
+                      <p>
+                        {% blocktrans %}
+                        Simply pay the bounty amount ( plus a standard <span class="fee-percentage font-weight-bold">10%</span> Gitcoin platform fee ).
+                        This covers our costs for finding quality contributors to join our platform so that you get the best work.
+                        If your business requires additional assitance, please contact us <a href="mailto:founders@gitcoin.co">founders@gitcoin.co</a>
+                        {% endblocktrans %}
+                      </p>
+                    </div>
+                    <div class="col-12 col-sm-3 order-first order-sm-last mt-4 mt-sm-2 mt-md-0 mb-4 mb-sm-3">
+                      <div class="fee-circle text-center">
+                        <p class="font-title mb-0"><span id="fee-amount"></span> <span id="fee-token"></span></p>
+                        <p class="font-body font-weight-semibold">
+                          (<span class="fee-percentage">10</span>%)
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div id="total-section" class="row mt-5 py-3">
+                  <div class="col-sm-2 my-auto">
+                    <h5 class="font-title-lg mb-0">{% trans "Total"%} </h5>
+                  </div>
+                  <div class="col-sm-10 text-sm-right my-auto">
+                    <p class="mb-1">{% trans "Payment Due = " %} <span id="summary-total-amount" class="font-weight-bold"></span></p>
+
+                    <p class="font-caption mb-1">
+                      ( Bounty <span id="summary-bounty-amount" class="font-weight-bold">0</span>
+                      <span id="summary-bounty-token" class="font-weight-bold">ETH</span> +
+
+                      <span class="feature-amount" style="display: none;">
+                        Featured Bounty
+                        <span id="summary-feature-amount" class="font-weight-bold"></span>
+                        <span class="font-weight-bold">ETH</span>
+                        +
+                      </span>
+
+                      <span id="summary-fee-amount" class="font-weight-bold">0</span>
+                      <span id="summary-fee-token" class="font-weight-bold">ETH</span> Gitcoin Platform Fee )
+                    </p>
+                    <p class="font-caption mb-0">
+                      You will have to approve
+                      <span id="confirmation" class="font-weight-bold">2</span>
+                      Metamask confirmations.
+                    </p>
+                  </div>
+                </div>
+                <div class="terms_container pt-3">
                   <div class="form__checkbox">
                     <input name='terms' id='terms' type="checkbox" value=1 required />
                       <label class="form__label" for=terms>{% trans "I have read, understand, and agree to, the" %}
@@ -146,15 +275,15 @@
                     </label>
                   </div>
                 </div>
-                <div class="w-100 my-2 terms_container">
+                <div class="w-100 mb-3 terms_container">
                   <div class="form__checkbox">
                     <input name='blockchain_tos' id='blockchain_tos' type="checkbox" value=1 required />
-                    <label class="form__label" for=blockchain_tos style="display: flex;">{% blocktrans %}I understand that this information is being submitted to a public, immutable, blockchain. No one, including
+                    <label class="form__label mt-0" for=blockchain_tos style="display: flex;">{% blocktrans %}I understand that this information is being submitted to a public, immutable, blockchain. No one, including
                       Gitcoin Core, will be able to take my funds or change this information.{% endblocktrans %}</label>
                   </div>
                 </div>
                 <div class="pb-5 text-center">
-                  <button class="w-100 mb-3 button button--primary js-submit" type="submit">Fund Issue</button>
+                  <button class="w-100 mb-3 button button--primary js-submit disabled" type="submit">Fund Issue</button>
                   <a class="w-100 font-caption" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">
                     Your transaction is secured by the audited StandardBounties contract on the Ethereum blockchain.</br>
                     Learn more here.

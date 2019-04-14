@@ -1,0 +1,109 @@
+{% comment %}
+  Copyright (C) 2019 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n staticfiles %}
+<div class="container">
+  {% if unrated_contributed_bounties|length > 0 or  unrated_funded_bounties|length > 0 %}
+  <ul class="nav nav-tabs border-0" id="ratingTabs" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active text-uppercase border-0" id="rating-tab" data-toggle="tab" href="#rating" role="tab" aria-controls="rating" aria-selected="false">{% trans "Rate your bounties" %}</a>
+    </li>
+    <li class="align-self-center ml-5 font-smaller-2">
+      <i class="fas fa-eye"></i> Only visible to you
+    </li>
+  </ul>
+  <div class="tab-content bg-white p-5" id="ratingTabsContent">
+    <div class="tab-pane fade" id="rating2" role="tabpanel" aria-labelledby="home-tab">
+      sdf
+    </div>
+    <div class="tab-pane fade show active" id="rating" role="tabpanel" aria-labelledby="home-tab">
+      <ul class="nav nav-tabs" id="tabsRatingSelection" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link nav-line {% if unrated_contributed_bounties|length > 0 or  unrated_funded_bounties|length < 1 %} active {% endif %}" id="worksubmitted-tab" data-toggle="tab" href="#worksubmitted" role="tab" aria-controls="worksubmitted" aria-selected="true">{% trans "Work Submitted" %} ({{ unrated_contributed_bounties|length }})</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link nav-line {% if unrated_funded_bounties|length > 0 and  unrated_contributed_bounties|length < 1 %} active {% endif %}" id="funded-tab" data-toggle="tab" href="#funded" role="tab" aria-controls="funded" aria-selected="false">{% trans "Funded" %} ({{ unrated_funded_bounties|length }})</a>
+        </li>
+      </ul>
+      <div class="tab-content" id="unratedContent">
+        <div class="tab-pane fade {% if unrated_contributed_bounties|length > 0 or  unrated_funded_bounties|length < 1 %} show active {% endif %}" id="worksubmitted" role="tabpanel" aria-labelledby="home-tab">
+          <div class="scroll-carousel">
+            {% for bounty in unrated_contributed_bounties %}
+              <div class="card-rating">
+                <div class="card-rating__header">
+                  {% if bounty.funding_organisation %}
+                    <img class="card-rating__avatar rounded-circle" alt="{{ bounty.funding_organisation }}" width="56" height="56" src="{% url 'org_avatar' bounty.funding_organisation %}">
+                  {% else %}
+                    <img class="card-rating__avatar rounded-circle" alt="{{ bounty.bounty_owner_github_username }}" width="56" height="56" src="{% url 'org_avatar' bounty.bounty_owner_github_username %}">
+                  {% endif %}
+                  <div class="ml-2 text-dark">
+                    <a href="{{ bounty.url }}" class="card-rating__title">{{ bounty.title }}</a>
+                    by {{ bounty.bounty_owner_github_username }} <img src="{% url 'org_avatar' bounty.bounty_owner_github_username %}" alt="{{ bounty.bounty_owner_github_username }}" width="21" height="21" class="rounded-circle">
+                    <div class="d-flex mt-2">
+                      <div class="tag token">{{ bounty.value_true }} <span>{{ bounty.token_name }}</span></div>
+                      {% if bounty.value_in_usdt_now %}
+                        <div class="tag usd">{{ bounty.value_in_usdt_now }} <span>USD</span></div>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+                {% include 'shared/rating.html' with counterparty='contributor' id='str' data='true' %}
+              </div>
+            {% endfor %}
+          </div>
+          {% if not unrated_contributed_bounties %}
+            <div class="p-5 font-bigger-1 text-center">No pending rates </div>
+          {% endif%}
+        </div>
+        <div class="tab-pane fade {% if unrated_funded_bounties|length > 0 and  unrated_contributed_bounties|length < 1 %} show active {% endif %}" id="funded" role="tabpanel" aria-labelledby="home-tab">
+          <div class="scroll-carousel">
+            {% for bounty in unrated_funded_bounties %}
+              {% for fulfilment in bounty.fulfillments.all %}
+                <div class="card-rating">
+                  <div class="card-rating__header">
+                    {% if bounty.funding_organisation %}
+                      <img class="card-rating__avatar rounded-circle" alt="{{ bounty.funding_organisation }}" width="56" height="56" src="{% url 'org_avatar' bounty.funding_organisation %}">
+                    {% else %}
+                      <img class="card-rating__avatar rounded-circle" alt="{{ bounty.bounty_owner_github_username }}" width="56" height="56" src="{% url 'org_avatar' bounty.bounty_owner_github_username %}">
+                    {% endif %}
+                    <div class="ml-2 text-dark">
+                      <a href="{{ bounty.url }}" class="card-rating__title">{{ bounty.title }}</a>
+                      {{ fulfilment.fulfiller_github_username }} <img src="{% url 'org_avatar' fulfilment.fulfiller_github_username %}" alt="{{ fulfilment.fulfiller_github_username }}" width="21" height="21" class="rounded-circle">
+                      <div class="d-flex mt-2">
+                        <div class="tag token">{{ bounty.value_true }} <span>{{ bounty.token_name }}</span></div>
+                        {% if bounty.value_in_usdt_now %}
+                          <div class="tag usd">{{ bounty.value_in_usdt_now }} <span>USD</span></div>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                  {% include 'shared/rating.html' with counterparty='funder' id='str' data='true' username=fulfilment.fulfiller_github_username %}
+                </div>
+              {% endfor %}
+            {% endfor %}
+          </div>
+          {% if not unrated_funded_bounties %}
+            <div class="p-5 font-bigger-1 text-center">No pending rates </div>
+          {% endif%}
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  {% endif %}
+
+</div>

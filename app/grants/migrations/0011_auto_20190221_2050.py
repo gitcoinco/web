@@ -21,6 +21,6 @@ class Migration(migrations.Migration):
         ('grants', '0010_auto_20190221_2050'),
     ]
 
-    operations = [
-            migrations.RunPython(forwards, backwards),
-    ]
+    # operations = [
+    #         migrations.RunPython(forwards, backwards),
+    # ]

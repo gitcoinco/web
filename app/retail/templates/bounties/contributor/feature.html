@@ -1,0 +1,61 @@
+{% comment %}
+  Copyright (C) 2019 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<div class="feature mx-lg-5 py-4 px-md-5">
+  <div class="row my-3">
+    <div class="col-12 col-md-5 row my-5 g-fadein" data-fade-duration=1000>
+      <div class="col-12 text-center col-sm-2">
+        <img src="{% static "v2/images/landing/contributor/feat-1.svg" %}" alt="freelance">
+      </div>
+      <div class="col-12 col-sm-10">
+        <h3 class="font-title-lg font-weight-semibold">Get Paid for Contributing to Freelance {% if tech_stack %} {{ tech_stack|title }} {% endif %} Issues</h3>
+        <p class="font-subheader">Get paid with ETH or any ERC-20 tokens for working on freelance {% if tech_stack %} {{ tech_stack }} {% endif %} jobs.</p>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-5 offset-md-2 row mb-3 mt-5 g-fadein" data-fade-duration=1000>
+      <div class="col-12 text-center col-sm-2">
+        <img src="{% static "v2/images/landing/contributor/feat-2.svg" %}" alt="freelance">
+      </div>
+      <div class="col-12 col-sm-10">
+        <h3 class="font-title-lg font-weight-semibold">Sharpen Your {% if tech_stack %} {{ tech_stack }} {% endif %} Coding Skills</h3>
+        <p class="font-subheader">Get paid with ETH or any ERC-20 tokens for working on freelance {% if tech_stack %} {{ tech_stack|title }} {% endif %} jobs.</p>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-5 row mt-5 g-fadein" data-fade-duration=1000>
+      <div class="col-12 text-center col-sm-2 feat-3">
+        <img src="{% static "v2/images/landing/contributor/feat-3.svg" %}" alt="community">
+      </div>
+      <div class="col-12 col-sm-10">
+        <h3 class="font-title-lg font-weight-semibold">Join Our Community of {% if tech_stack %} {{ tech_stack|title }} {% endif %} Developers</h3>
+        <p class="font-subheader">Collaborate on {% if tech_stack %} {{ tech_stack|title }} {% endif %} bug bounties, share and build amazing stuff together with new {% if tech_stack %} {{ tech_stack }} {% endif %} developer friends from all over the world.</p>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-5 offset-md-2 row mb-3 mt-5 g-fadein" data-fade-duration=1000>
+      <div class="col-12 text-center col-sm-2">
+        <img src="{% static "v2/images/landing/contributor/feat-4.svg" %}" alt="oss-movement">
+      </div>
+      <div class="col-12 col-sm-10">
+        <h3 class="font-title-lg font-weight-semibold">Help Grow the Open Source Movement</h3>
+        <p class="font-subheader">Contribute directly to leading {% if tech_stack %} {{ tech_stack|title }} {% endif %} projects such as Metamask and build your resume.</p>
+      </div>
+    </div>
+
+  </div>
+</div>

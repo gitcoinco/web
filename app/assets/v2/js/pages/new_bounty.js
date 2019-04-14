@@ -6,6 +6,8 @@ load_tokens();
 var localStorage;
 var quickstartURL = document.location.origin + '/bounty/quickstart';
 
+const FEE_PERCENTAGE = 10;
+
 var new_bounty = {
   last_sync: new Date()
 };
@@ -52,6 +54,16 @@ $('#sync-issue').on('click', function(event) {
 });
 
 $('#issueURL').focusout(function() {
+  if (isPrivateRepo) {
+    setPrivateForm();
+    if ($('input[name=issueURL]').val() == '' || !validURL($('input[name=issueURL]').val())) {
+      $('.js-submit').addClass('disabled');
+    } else {
+      $('.js-submit').removeClass('disabled');
+    }
+    return;
+  }
+
   setInterval(function() {
     $('#last-synced span').html(timeDifference(new Date(), new_bounty.last_sync));
   }, 6000);
@@ -83,6 +95,11 @@ $('#issueURL').focusout(function() {
 $('#last-synced').hide();
 
 $(document).ready(function() {
+
+  $('#summary-bounty-amount').html($('input[name=amount]').val());
+  $('#summary-fee-amount').html(($('input[name=amount]').val() / FEE_PERCENTAGE).toFixed(4));
+  populateBountyTotal();
+
   // Load sidebar radio buttons from localStorage
   if (getParam('source')) {
     $('input[name=issueURL]').val(getParam('source'));
@@ -101,7 +118,7 @@ $(document).ready(function() {
   $('input[name=hours]').blur(setUsdAmount);
   $('select[name=denomination]').change(setUsdAmount);
   $('select[name=denomination]').change(promptForAuth);
-  $('input[name=issueURL]').blur(retrieveIssueDetails);
+
   setTimeout(setUsdAmount, 1000);
   waitforWeb3(function() {
     promptForAuth();
@@ -116,7 +133,33 @@ $(document).ready(function() {
     }
   });
 
-  // show/hide the reserved for selector based on the project type
+  $('input[name=amount]').on('change', function() {
+    const amount = $('input[name=amount]').val();
+
+    $('#summary-bounty-amount').html(amount);
+    $('#summary-fee-amount').html((amount / FEE_PERCENTAGE).toFixed(4));
+    populateBountyTotal();
+  });
+
+  $('select[name=denomination]').change(function(e) {
+    const token = tokenAddressToDetails(e.target.value).name;
+
+    $('#summary-bounty-token').html(token);
+    $('#summary-fee-token').html(token);
+    populateBountyTotal();
+  });
+
+  $('#featuredBounty').on('change', function() {
+    if ($(this).prop('checked')) {
+      $('#confirmation').html('3');
+      $('.feature-amount').show();
+    } else {
+      $('.feature-amount').hide();
+      $('#confirmation').html('2');
+    }
+    populateBountyTotal();
+  });
+
   $('.js-select2[name=project_type]').change(
     function(e) {
       if (String(e.target.value).toLowerCase() === 'traditional') {
@@ -144,59 +187,48 @@ $(document).ready(function() {
     $('input[name=revisions]').val(revision);
   });
 
-  if ($('input[name=issueURL]').val() != '') {
+  if ($('input[name=issueURL]').val() != '' && !isPrivateRepo) {
     retrieveIssueDetails();
   }
-  $('input[name=issueURL]').focus();
 
-  // all js select 2 fields
   $('.js-select2').each(function() {
     $(this).select2();
   });
-  // removes tooltip
+
   $('.submit_bounty select').each(function(evt) {
     $('.select2-selection__rendered').removeAttr('title');
   });
-  // removes search field in all but the 'denomination' dropdown
+
   $('.select2-container').on('click', function() {
     $('.select2-container .select2-search__field').remove();
   });
-  // denomination field
+
   $('select[name=denomination]').select2();
   if ($('input[name=amount]').val().trim().length > 0) {
     setUsdAmount();
   }
-  var open_hiring_panel = function(do_focus) {
-    setTimeout(function() {
-      var hiringRightNow = $('#hiringRightNow').is(':checked');
 
-      if (hiringRightNow) {
-        $('#jobDescription').removeClass('hidden');
+  var open_panel = function(checkboxSelector, targetSelector, do_focus) {
+    setTimeout(function() {
+      var isChecked = $(checkboxSelector).is(':checked');
+
+      if (isChecked) {
+        $(targetSelector).removeClass('hidden');
         if (do_focus) {
-          $('#jobDescription').focus();
+          $(targetSelector).focus();
         }
       } else {
-        $('#jobDescription').addClass('hidden');
+        $(targetSelector).addClass('hidden');
       }
     }, 10);
   };
 
-  $('#hiringRightNow').on('click', function() {
-    open_hiring_panel(true);
+  $('#hiringRightNow').on('click', () => {
+    open_panel('#hiringRightNow', '#jobDescription', true);
   });
 
-
-  $('#advancedLink a').on('click', function(e) {
-    e.preventDefault();
-    var target = $('#advanced_container');
-
-    if (target.css('display') == 'none') {
-      target.css('display', 'block');
-      $(this).text('Advanced ⬆');
-    } else {
-      target.css('display', 'none');
-      $(this).text('Advanced ⬇ ');
-    }
+  $('#specialEvent').on('click', () => {
+    open_panel('#specialEvent', '#eventTag', true);
   });
 
   userSearch('#reservedFor', false);
@@ -209,7 +241,7 @@ $(document).ready(function() {
         _alert(gettext('You are on an unsupported network.  Please change your network to a supported network.'));
         return;
       }
-      if (typeof qa != 'undefined') {
+      if (typeof ga != 'undefined') {
         ga('send', 'event', 'new_bounty', 'new_bounty_form_submit');
       }
 
@@ -219,8 +251,16 @@ $(document).ready(function() {
         .removeAttr('disabled');
 
       $.each($(form).serializeArray(), function() {
-        data[this.name] = this.value;
+        if (data[this.name]) {
+          data[this.name] += ',' + this.value;
+        } else {
+          data[this.name] = this.value;
+        }
       });
+
+      if (data.repo_type == 'private' && data.project_type != 'traditional' && data.permission_type != 'approval') {
+        _alert(gettext('The project type and/or permission type of bounty does not validate for a private repo'));
+      }
 
       disabled.attr('disabled', 'disabled');
 
@@ -250,7 +290,9 @@ $(document).ready(function() {
         bountyType: data.bounty_type,
         estimatedHours: data.hours,
         fundingOrganisation: data.fundingOrganisation,
+        eventTag: data.specialEvent ? (data.eventTag || '') : '',
         is_featured: data.featuredBounty,
+        repo_type: data.repo_type,
         featuring_date: data.featuredBounty && ((new Date().getTime() / 1000) | 0) || 0,
         reservedFor: reservedFor ? reservedFor.text : '',
         tokenName
@@ -285,17 +327,20 @@ $(document).ready(function() {
             auto_approve_workers: !!data.auto_approve_workers
           },
           hiring: {
-            hiringRightNow: data.hiringRightNow,
+            hiringRightNow: !!data.hiringRightNow,
             jobDescription: data.jobDescription
           },
           funding_organisation: metadata.fundingOrganisation,
           is_featured: metadata.is_featured,
+          repo_type: metadata.repo_type,
           featuring_date: metadata.featuring_date,
           privacy_preferences: privacy_preferences,
           funders: [],
           categories: metadata.issueKeywords.split(','),
           created: (new Date().getTime() / 1000) | 0,
           webReferenceURL: issueURL,
+          fee_amount: 0,
+          fee_tx_id: '0x0',
           // optional fields
           metadata: metadata,
           tokenName: tokenName,
@@ -329,7 +374,10 @@ $(document).ready(function() {
       var account = web3.eth.coinbase;
 
       if (!isETH) {
-        check_balance_and_alert_user_if_not_enough(tokenAddress, amount);
+        check_balance_and_alert_user_if_not_enough(
+          tokenAddress,
+          amount,
+          'You do not have enough tokens to fund this bounty.');
       }
 
       amount = amount * decimalDivisor;
@@ -376,6 +424,7 @@ $(document).ready(function() {
 
       // web3 callback
       function web3Callback(error, result) {
+        indicateMetamaskPopup(true);
         if (error) {
           console.error(error);
           _alert(
@@ -389,7 +438,7 @@ $(document).ready(function() {
           return;
         }
 
-        if (typeof qa != 'undefined') {
+        if (typeof ga != 'undefined') {
           ga('send', 'event', 'new_bounty', 'metamask_signature_achieved');
         }
 
@@ -400,11 +449,11 @@ $(document).ready(function() {
         issuePackage['txid'] = result;
         localStorage[issueURL] = JSON.stringify(issuePackage);
 
-        // sync db
         syncDb();
       }
 
       function newIpfsCallback(error, result) {
+        indicateMetamaskPopup();
         if (error) {
           console.error(error);
           _alert({
@@ -449,12 +498,81 @@ $(document).ready(function() {
       }
 
       var do_bounty = function(callback) {
-      // Add data to IPFS and kick off all the callbacks.
-        ipfsBounty.payload.issuer.address = account;
-        ipfs.addJson(ipfsBounty, newIpfsCallback);
+        const fee = Number((Number(data.amount) / FEE_PERCENTAGE).toFixed(4));
+        const to_address = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
+        const gas_price = web3.toHex($('#gasPrice').val() * Math.pow(10, 9));
+
+        indicateMetamaskPopup();
+        if (isETH) {
+          web3.eth.sendTransaction({
+            to: to_address,
+            from: web3.eth.coinbase,
+            value: web3.toWei(fee, 'ether'),
+            gasPrice: gas_price
+          }, function(error, txnId) {
+            indicateMetamaskPopup(true);
+            if (error) {
+              _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
+            } else {
+              ipfsBounty.payload.issuer.address = account;
+              ipfsBounty.payload.fee_tx_id = txnId;
+              ipfsBounty.payload.fee_amount = fee;
+              ipfs.addJson(ipfsBounty, newIpfsCallback);
+              if (typeof ga != 'undefined') {
+                ga('send', 'event', 'new_bounty', 'new_bounty_fee_paid');
+              }
+            }
+          });
+        } else {
+          const amountInWei = fee * 1.0 * Math.pow(10, token.decimals);
+          const token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+
+          token_contract.transfer(to_address, amountInWei, { gasPrice: gas_price },
+            function(error, txnId) {
+              indicateMetamaskPopup(true);
+              if (error) {
+                _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
+              } else {
+                ipfsBounty.payload.issuer.address = account;
+                ipfsBounty.payload.fee_tx_id = txnId;
+                ipfsBounty.payload.fee_amount = fee;
+                ipfs.addJson(ipfsBounty, newIpfsCallback);
+                if (typeof ga != 'undefined') {
+                  ga('send', 'event', 'new_bounty', 'new_bounty_fee_paid');
+                }
+              }
+            }
+          );
+        }
+      };
+
+      const uploadNDA = function() {
+        const formData = new FormData();
+
+        formData.append('docs', $('#issueNDA')[0].files[0]);
+        formData.append('doc_type', 'unsigned_nda');
+        const settings = {
+          url: '/api/v0.1/bountydocument',
+          method: 'POST',
+          processData: false,
+          dataType: 'json',
+          contentType: false,
+          data: formData
+        };
+
+        $.ajax(settings).done(function(response) {
+          _alert(response.message, 'info');
+          ipfsBounty.payload.unsigned_nda = response.bounty_doc_id;
+          if (data.featuredBounty) payFeaturedBounty();
+          else do_bounty();
+        }).fail(function(error) {
+          _alert('Unable to upload NDA. ', 'error');
+          console.log('NDA error:', error);
+        });
       };
 
       const payFeaturedBounty = function() {
+        indicateMetamaskPopup();
         web3.eth.sendTransaction({
           to: '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
           from: web3.eth.coinbase,
@@ -464,17 +582,25 @@ $(document).ready(function() {
           gasLimit: web3.toHex(318730)
         },
         function(error, result) {
-          saveAttestationData(
-            result,
-            ethFeaturedPrice,
-            '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
-            'featuredbounty'
-          );
+          indicateMetamaskPopup(true);
+          if (error) {
+            _alert({ message: gettext('Unable to upgrade to featured bounty. Please try again.') }, 'error');
+            console.log(error);
+          } else {
+            saveAttestationData(
+              result,
+              ethFeaturedPrice,
+              '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+              'featuredbounty'
+            );
+          }
           do_bounty();
         });
       };
 
-      if (data.featuredBounty) {
+      if ($("input[type='radio'][name='repo_type']:checked").val() == 'private' && $('#issueNDA')[0].files[0]) {
+        uploadNDA();
+      } else if (data.featuredBounty) {
         payFeaturedBounty();
       } else {
         do_bounty();
@@ -483,30 +609,124 @@ $(document).ready(function() {
   });
 });
 
-var check_balance_and_alert_user_if_not_enough = function(tokenAddress, amount) {
-  var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
-  var from = web3.eth.coinbase;
-  var token_details = tokenAddressToDetails(tokenAddress);
-  var token_decimals = token_details['decimals'];
-  var token_name = token_details['name'];
+$(window).on('load', function() {
+  if (params.has('type')) {
+    let checked = params.get('type');
 
-  token_contract.balanceOf.call(from, function(error, result) {
-    if (error) return;
-    var balance = result.toNumber() / Math.pow(10, token_decimals);
-    var balance_rounded = Math.round(balance * 10) / 10;
-
-    if (parseFloat(amount) > balance) {
-      var msg = gettext('You do not have enough tokens to fund this bounty. You have ') + balance_rounded + ' ' + token_name + ' ' + gettext(' but you need ') + amount + ' ' + token_name;
-
-      _alert(msg, 'warning');
-    }
+    toggleCtaPlan(checked);
+    $(`input[name=repo_type][value=${checked}]`).prop('checked', 'true');
+  } else {
+    params.append('type', 'public');
+    window.history.replaceState({}, '', location.pathname + '?' + params);
+  }
+  $('input[name=repo_type]').change(function() {
+    toggleCtaPlan($(this).val());
   });
-};
+});
 
 let usdFeaturedPrice = $('.featured-price-usd').text();
 let ethFeaturedPrice;
+let bountyFee;
 
 getAmountEstimate(usdFeaturedPrice, 'ETH', (amountEstimate) => {
   ethFeaturedPrice = amountEstimate['value'];
   $('.featured-price-eth').text(`+${amountEstimate['value']} ETH`);
+  $('#summary-feature-amount').text(`${amountEstimate['value']}`);
 });
+
+/**
+ * Calculates total amount needed to fund the bounty
+ * Bounty Amount + Fee + Featured Bounty
+ */
+const populateBountyTotal = () => {
+  const bountyToken = $('#summary-bounty-token').html();
+  const bountyAmount = Number($('#summary-bounty-amount').html());
+  const bountyFee = Number((bountyAmount / FEE_PERCENTAGE).toFixed(4));
+  const isFeaturedBounty = $('input[name=featuredBounty]:checked').val();
+  let totalBounty = bountyAmount + bountyFee;
+  let total = '';
+
+  if (isFeaturedBounty) {
+    const featuredBountyAmount = Number($('#summary-feature-amount').html());
+
+    if (bountyToken == 'ETH') {
+      totalBounty = (totalBounty + featuredBountyAmount).toFixed(4);
+      total = `${totalBounty} ETH`;
+    } else {
+      total = `${totalBounty} ${bountyToken} + ${featuredBountyAmount} ETH`;
+    }
+  } else {
+    total = `${totalBounty} ${bountyToken}`;
+  }
+
+  $('#fee-percentage').html(FEE_PERCENTAGE);
+  $('#fee-amount').html(bountyFee);
+  $('#fee-token').html(bountyToken);
+  $('#summary-total-amount').html(total);
+};
+
+let isPrivateRepo = false;
+let params = (new URL(document.location)).searchParams;
+
+const setPrivateForm = () => {
+  $('#title').removeClass('hidden');
+  $('#description, #title').prop('readonly', false);
+  $('#description, #title').prop('required', true);
+  $('#no-issue-banner').hide();
+  $('#issue-details, #issue-details-edit').show();
+  $('#sync-issue').removeClass('disabled');
+  $('#last-synced, #edit-issue, #sync-issue, #title--text').hide();
+  $('#featured-bounty-add').hide();
+
+  $('#admin_override_suspend_auto_approval').prop('checked', false);
+  $('#admin_override_suspend_auto_approval').attr('disabled', true);
+  $('#show_email_publicly').attr('disabled', true);
+  $('#cta-subscription, #private-repo-instructions').removeClass('d-md-none');
+  $('#nda-upload').show();
+  $('#issueNDA').prop('required', true);
+
+  $('#project_type').select2().val('traditional');
+  $('#permission_type').select2().val('approval');
+  $('#project_type, #permission_type').select2().prop('disabled', true).trigger('change');
+  $('#keywords').select2({
+    placeholder: 'Select tags',
+    tags: 'true',
+    allowClear: true
+  });
+};
+
+const setPublicForm = () => {
+  $('#title').addClass('hidden');
+  $('#description, #title').prop('readonly', true);
+  $('#no-issue-banner').show();
+  $('#issue-details, #issue-details-edit').hide();
+  $('#sync-issue').addClass('disabled');
+  $('.js-submit').addClass('disabled');
+  $('#last-synced, #edit-issue , #sync-issue, #title--text').show();
+  $('#featured-bounty-add').show();
+
+  $('#admin_override_suspend_auto_approval').prop('checked', true);
+  $('#admin_override_suspend_auto_approval').attr('disabled', false);
+  $('#show_email_publicly').attr('disabled', false);
+  $('#cta-subscription, #private-repo-instructions').addClass('d-md-none');
+  $('#nda-upload').hide();
+  $('#issueNDA').prop('required', false);
+
+  $('#project_type, #permission_type').select2().prop('disabled', false).trigger('change');
+  retrieveIssueDetails();
+};
+
+const toggleCtaPlan = (value) => {
+  if (value === 'private') {
+
+    params.set('type', 'private');
+    isPrivateRepo = true;
+    setPrivateForm();
+  } else {
+
+    params.set('type', 'public');
+    isPrivateRepo = false;
+    setPublicForm();
+  }
+  window.history.replaceState({}, '', location.pathname + '?' + params);
+};
