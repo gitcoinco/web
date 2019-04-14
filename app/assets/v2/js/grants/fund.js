@@ -107,7 +107,7 @@ $(document).ready(function() {
         let realTokenAmount = Number(data.amount_per_period * Math.pow(10, decimals));
         let amountSTR = realTokenAmount.toLocaleString('fullwide', { useGrouping: false });
 
-        let realApproval = Number((realTokenAmount + realGasPrice) * data.num_periods);
+        let realApproval = Number(((realTokenAmount + realGasPrice) * data.num_periods) + 1);
         let approvalSTR = realApproval.toLocaleString('fullwide', { useGrouping: false });
 
         web3.eth.getAccounts(function(err, accounts) {
@@ -168,6 +168,7 @@ $(document).ready(function() {
             document.issueURL = linkURL;
             $('#transaction_url').attr('href', linkURL);
             enableWaitState('#grants_form');
+            $('#tweetModal').modal('show');
             // Should add approval transactions to transaction history
             deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
 

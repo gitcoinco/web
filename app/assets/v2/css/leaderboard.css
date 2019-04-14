@@ -1,16 +1,34 @@
-.leaderboard .key {
-  right: 0px;
-  display: block;
-  position: absolute;
-  margin-right: 10px;
-  margin-top: 5px;
+
+.interior .body.leaderboard-container {
+  background-color: #fff;
+}
+
+.leaderboard .card-body {
+  border-radius: 3px;
+}
+
+.leaderboard .podium-items {
+  background-color: #150069;
+}
+
+.key-title {
+  display: inline;
+}
+
+.key {
+  max-width: 12rem;
+  display: inline;
+}
+
+.table-hover tbody tr:hover {
+  background-color: whitesmoke;
 }
 
 .leaderboard .podium {
   border-bottom-left-radius: 2px;
   border-bottom-right-radius: 2px;
   background: #150069;
-  justify-content: space-around;
+  justify-content: space-evenly;
 }
 
 .leaderboard .winner {
@@ -28,27 +46,13 @@
 }
 
 .leaderboard .winner img {
-  max-height: 50px;
-  display: flex;
-}
-
-.leaderboard .winner h6 {
-  font-size: 8px;
-  color: #2B75D2;
-}
-
-.leaderboard .leaderboard_entry img {
-  max-height: 50px;
+  max-height: 10rem;
   border-radius: 50%;
 }
 
-thead {
-  color: #CECFD1;
-}
-
-tbody {
-  color: #5C5D5F;
-  font-size: 0.8rem;
+.leaderboard .leaderboard_entry img {
+  max-height: 4rem;
+  border-radius: 50%;
 }
 
 tbody, a {
@@ -56,7 +60,7 @@ tbody, a {
 }
 
 .leaderboard .winner a {
-  color: #2B75D2;
+  color: #fff;
 }
 
 .leaderboard .leaderboard_entry {
@@ -68,20 +72,8 @@ tbody, a {
   display: none;
 }
 
-.leaderboard h3 {
-  font-size: .85rem;
-}
-
-.tableheaders {
-  font-size: 0.7rem;
-}
-
 .hidemobile {
   visibility: hidden;
-}
-
-.leaderboard .winner img:hover {
-  opacity: 0.55;
 }
 
 @media (min-width: 700px) {
@@ -109,27 +101,8 @@ tbody, a {
     width: 100%;
   }
 
-  .leaderboard .winner h6 {
-    font-size: 0.5rem;
-  }
-
-  tbody {
-    font-size: 1rem ;
-  }
-
-  .leaderboard h3 {
-    font-size: 1.2rem ;
-  }
-
-  .tableheaders {
-    font-size: 0.9rem;
-  }
-
-  .hidemobile{
+  .hidemobile {
     visibility: visible;
-  }
-  .leaderboard .winner img {
-    max-height: 120px;
   }
 }
 
@@ -138,30 +111,4 @@ tbody, a {
     padding: 10px 0px;
     text-decoration: none;
   }
-
-  .leaderboard .leaderboard_entry img {
-    max-height: 70px;
-    border-radius: 50%;
-  }
-
-  .leaderboard .winner img {
-    max-height: 150px;
-  }
-
-  .leaderboard .winner h6 {
-    font-size: 1rem ;
-  }
-
-  tbody {
-    font-size: 1.5rem ;
-  }
-
-  .leaderboard h3 {
-    font-size: 1.75rem ;
-  }
-
-  .tableheaders {
-    font-size: 1rem;
-  }
-
 }

@@ -639,6 +639,24 @@ var updateAmountUI = function(target_ele, usd_amount) {
   target_ele.html('Approx: ' + usd_amount + ' USD');
 };
 
+const showChoices = (choice_id, selector_id, choices) => {
+  let html = '';
+  let selected_choices = [];
+
+  for (let i = 0; i < choices.length; i++) {
+    html += '<li class="select2-available__choice">\
+      <span class="select2-available__choice__remove" role="presentation">×</span>\
+      <span class="text">' + choices[i] + '</span>\
+      </li>';
+  }
+  $(choice_id).html(html);
+  $('.select2-available__choice').on('click', function() {
+    selected_choices.push($(this).find('.text').text());
+    $(selector_id).val(selected_choices).trigger('change');
+    $(this).remove();
+  });
+};
+
 var retrieveIssueDetails = function() {
   var ele = $('input[name=issueURL]');
   var target_eles = {
@@ -663,7 +681,7 @@ var retrieveIssueDetails = function() {
     if (result['keywords']) {
       var keywords = result['keywords'];
 
-      $('#keywords').val(keywords);
+      showChoices('#keyword-suggestions', '#keywords', keywords);
       $('#keywords').select2({
         placeholder: 'Select tags',
         data: keywords,
@@ -973,7 +991,7 @@ var listen_for_web3_changes = async function() {
     }
   }
 
-  if (window.ethereum && !document.has_checked_for_ethereum_enable) {
+  if (window.ethereum && !document.has_checked_for_ethereum_enable && window.ethereum._metamask) {
     document.has_checked_for_ethereum_enable = true;
     is_metamask_approved = await window.ethereum._metamask.isApproved();
     is_metamask_unlocked = await window.ethereum._metamask.isUnlocked();
@@ -1532,3 +1550,29 @@ $(document).ready(function() {
     });
   });
 });
+
+function check_balance_and_alert_user_if_not_enough(
+  tokenAddress,
+  amount,
+  msg = 'You do not have enough tokens to perform this action.') {
+
+  let token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+  let from = web3.eth.coinbase;
+  let token_details = tokenAddressToDetails(tokenAddress);
+  let token_decimals = token_details['decimals'];
+  let token_name = token_details['name'];
+
+  token_contract.balanceOf.call(from, function(error, result) {
+    if (error) return;
+    let balance = result.toNumber() / Math.pow(10, token_decimals);
+    let balance_rounded = Math.round(balance * 10) / 10;
+
+    if (parseFloat(amount) > balance) {
+      let msg1 = gettext(msg);
+      let msg2 = gettext(' You have ') + balance_rounded + ' ' + token_name + ' ' + gettext(' but you need ') + amount + ' ' + token_name;
+
+      _alert(msg1 + msg2, 'warning');
+    }
+  });
+
+}

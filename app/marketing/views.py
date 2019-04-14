@@ -657,6 +657,9 @@ def _leaderboard(request):
         TemplateResponse: The leaderboard template response.
 
     """
+    context = {
+        'active': 'leaderboard',
+    }
     return leaderboard(request, '')
 
 
