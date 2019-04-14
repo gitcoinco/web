@@ -16,6 +16,18 @@
 
 {% endcomment %}
 {% load i18n static matches %}
+
+<!--- Top Row Notification -->
+<div class="row bottom_notification font-caption" style="text-align: center;">
+  <span style="text-align: center; margin: auto;">
+    {% blocktrans %}<strong>The Ethereal Hackathon is now live!</strong> - Earn over $40k of prizes and a chance to meet the top teams in web3; <a href="https://gitcoin.co/hackathon/ethhack2019">Participate today!</a>.{% endblocktrans %}
+  </span>
+  <span style="cursor: pointer;" id="top_nav_notification">
+    X
+  </span>
+</div>
+<!--- /Top Row Notification -->
+
 <div class="top-nav g-font-muli {{class}}">
   <a class="link d-md-block d-none" href="{% url 'products' %}">Grow Open Source</a>
   <a class="{% if request.path == '/' %}selected{% endif %}" href="{% url 'funder_bounties' %}">
