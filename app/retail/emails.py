@@ -964,7 +964,7 @@ Main track winners will receive free tickets to Ethereal NY to present their pro
             Our <a href="https://medium.com/gitcoin/a-gitcoin-platform-fee-905a0507961f">10% platform fee is now live.</a> <a href="https://twitter.com/owocki/status/1114198908274503680">Join the conversation</a> on how we monetize Gitcoin from here. We'd love to hear your feedback!
         </li>
         <li>
-            Gitcoin Livestream is back this week with Yorke Rhodes from MSFT discussing the hackathon! Join us <a href="https://gitcoin.co/livestream"> at 5PM ET or catch it on <a href="https://twitter.com/GetGitcoin">Twitter</a>!
+            Gitcoin Livestream is back this week with Yorke Rhodes from MSFT discussing the hackathon! Join us <a href="https://gitcoin.co/livestream"> at 5PM ET or catch it on <a href="https://twitter.com/gitcoin">Twitter</a>!
         </li>
     </ul>
 </p>
