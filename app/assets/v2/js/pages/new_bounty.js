@@ -125,6 +125,14 @@ $(document).ready(function() {
   });
 
   $('#reservedForDiv').hide();
+
+  $('input[name=amount]').on('change', function() {
+    const amount = $('input[name=amount]').val();
+
+    $('#summary-bounty-amount').html(amount);
+    $('#summary-fee-amount').html((amount / FEE_PERCENTAGE).toFixed(4));
+    populateBountyTotal();
+  });
   
   $('select[name=permission_type]').on('change', function() {
     var val = $('select[name=permission_type] option:selected').val();
@@ -135,47 +143,12 @@ $(document).ready(function() {
       $('#auto_approve_workers_container').hide();
     }
 
-  $('input[name=amount]').on('change', function() {
-    const amount = $('input[name=amount]').val();
-
-    $('#summary-bounty-amount').html(amount);
-    $('#summary-fee-amount').html((amount / FEE_PERCENTAGE).toFixed(4));
-    populateBountyTotal();
-  });
-
-  $('select[name=denomination]').change(function(e) {
-    const token = tokenAddressToDetails(e.target.value).name;
-
-    $('#summary-bounty-token').html(token);
-    $('#summary-fee-token').html(token);
-    populateBountyTotal();
-  });
-
-  $('#featuredBounty').on('change', function() {
-    if ($(this).prop('checked')) {
-      $('#confirmation').html('3');
-      $('.feature-amount').show();
-    } else {
-      $('.feature-amount').hide();
-      $('#confirmation').html('2');
-    }
-    populateBountyTotal();
-  });
-
-  $('.js-select2[name=project_type]').change(
-    function(e) {
-      if (String(e.target.value).toLowerCase() === 'traditional') {
-        $('#reservedForDiv').show();
-      } else {
-        $('#reservedForDiv').hide();
-      }
     if (val === 'reserved') {
       $('#reservedForDiv').show();
     } else {
       $('#reservedForDiv').hide();
     }
   });
-
 
   var option = gettext('Reserved For - I will select a Gitcoin user.');
 
