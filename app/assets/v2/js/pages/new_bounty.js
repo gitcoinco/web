@@ -133,6 +133,25 @@ $(document).ready(function() {
     $('#summary-fee-amount').html((amount / FEE_PERCENTAGE).toFixed(4));
     populateBountyTotal();
   });
+
+  $('select[name=denomination]').change(function(e) {
+    const token = tokenAddressToDetails(e.target.value).name;
+
+    $('#summary-bounty-token').html(token);
+    $('#summary-fee-token').html(token);
+    populateBountyTotal();
+  });
+
+  $('#featuredBounty').on('change', function() {
+    if ($(this).prop('checked')) {
+      $('#confirmation').html('3');
+      $('.feature-amount').show();
+    } else {
+      $('.feature-amount').hide();
+      $('#confirmation').html('2');
+    }
+    populateBountyTotal();
+  });
   
   $('select[name=permission_type]').on('change', function() {
     var val = $('select[name=permission_type] option:selected').val();
