@@ -1,0 +1,16 @@
+{
+    "website": "https://www.coinpinpin.com",
+    "published_on": "2019-03-10",
+    "links": {
+        "telegram": "https://t.me/coinpinpin"
+    },
+    "overview": {
+        "zh": "Coinpinpin通证经济下的电商区块链"
+    },
+    "symbol": "CPP",
+    "initial_price": {
+        "ETH": "0.0000125 ETH"
+    },
+    "whitepaper": "https://www.coinpinpin.com/static/pdf/index.html",
+    "address": "0xD206F09a797Fd5a939071Ee67ea2b167D12b81eD"
+}
