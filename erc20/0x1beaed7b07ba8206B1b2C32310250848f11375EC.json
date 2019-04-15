@@ -1,0 +1,20 @@
+{
+  "symbol": "DUSD",
+  "address": "0x1beaed7b07ba8206B1b2C32310250848f11375EC",
+  "overview":{
+    "en": "Registered in New York City, NY, DUSD is a dollar pegged stablecoin and plans to serve a worldwide client base.",
+    "zh": "华尔街数字美元稳定币Digital USD （简称DUSD）是一款与美元1：1锚定的稳定币。"
+  },
+  "email": "compliance@dusd.com",
+  "website": "https://www.dusd.com",
+  "whitepaper": "https://www.dusd.com",
+  "state": "NORMAL",
+  "published_on": "2018-11-08",
+  "initial_price":{
+    "USD":"1 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/digitalusd",
+    "facebook": "https://www.facebook.com/ny.dusd"
+  }
+}
