@@ -160,13 +160,13 @@ def get_codefund_history_at_date(date, keyword):
         amount += 7450
     if date > timezone.datetime(2018, 12, 23):
         amount += 6150
-    if date > timezone.datetime(2019, 1, 23):
+    if date > timezone.datetime(2019, 1, 9):
         amount += 9700
-    if date > timezone.datetime(2019, 2, 23):
+    if date > timezone.datetime(2019, 2, 9):
         amount += 11272
-    if date > timezone.datetime(2019, 3, 23):
+    if date > timezone.datetime(2019, 3, 9):
         amount += 18726
-    if date > timezone.datetime(2019, 4, 23):
+    if date > timezone.datetime(2019, 4, 9):
         amount += 13643 # MTD
     return amount
 
