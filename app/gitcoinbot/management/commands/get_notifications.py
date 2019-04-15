@@ -44,6 +44,9 @@ class Command(BaseCommand):
                         url = url.replace('/repos', '')
                         url = url.replace('//api.github', '//github')
                         latest_comment_url = notification.subject.latest_comment_url
+                        if latest_comment_url is None:
+                            print("no latest comment url")
+                            continue
                         _org_name = org_name(url)
                         _repo_name = repo_name(url)
                         _issue_number = issue_number(url)

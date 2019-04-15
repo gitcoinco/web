@@ -31,6 +31,7 @@ from django.contrib.auth.models import User
 from django.core import serializers
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template import loader
@@ -734,6 +735,9 @@ def onboard(request, flow):
 def users_directory(request):
     """Handle displaying users directory page."""
 
+    if not request.user.is_authenticated:
+        return redirect('/login/github?next=' + request.get_full_path())
+
     params = {
         'active': 'users',
         'title': 'Users',
@@ -750,8 +754,10 @@ def users_fetch(request):
     limit = int(request.GET.get('limit', 10))
     page = int(request.GET.get('page', 1))
     order_by = request.GET.get('order_by', '-created_on')
+
     context = {}
-    user_list = Profile.objects.all().order_by(order_by).filter(handle__icontains=q).cache()
+    user_list = Profile.objects.all().order_by(order_by).filter(Q(handle__icontains=q) | Q(keywords__icontains=q)).cache()
+
     params = dict()
     all_pages = Paginator(user_list, limit)
     all_users = []
