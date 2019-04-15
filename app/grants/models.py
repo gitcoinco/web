@@ -472,7 +472,7 @@ class Subscription(SuperModel):
                 error_reason = 'not_active'
             if timezone.now().timestamp() < next_valid_timestamp:
                 error_reason = 'before_next_valid_timestamp'
-            if (balance + gasPrice) < self.amount_per_period:
+            if (float(balance) + float(gasPrice)) < float(self.amount_per_period):
                 error_reason = "insufficient_balance"
             if allowance < self.amount_per_period:
                 error_reason = "insufficient_allowance"
