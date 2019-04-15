@@ -327,6 +327,7 @@ var update_registry = function(coinbase) {
     };
 
     var is_error = !$.isNumeric(amount) || amount <= 0 || username == '' || username == '@';
+
     if (!is_error)
       transactions.push(transaction);
   }
