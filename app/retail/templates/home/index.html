@@ -298,16 +298,21 @@
   </script>
   <script>
 
-    $('#sustainability').on('click', function(){
-      $(this).find('img').css('display', 'none');
-      $(this).find('iframe').css('visibility', 'visible');
-      $(this).find('iframe').attr('src', 'https://www.youtube.com/embed/i2JKN_6iuiw?autoplay=1');
-    })
+    var options = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture";
+    var videoTemplate = function(url){
+      return `<iframe
+      class="video-frame"
+      frameborder="0"
+      allow=${options}
+      allowfullscreen="true"
+      src=${url}></iframe>`;
+    };
 
-    $('#world').on('click', function(){
-      $(this).find('img').css('display', 'none');
-      $(this).find('iframe').css('visibility', 'visible');
-      $(this).find('iframe').attr('src', 'https://www.youtube.com/embed/oe7oD8ThKx8?autoplay=1');
-    })
+    $('.video-preview').on('click', function(){
+      var url = $(this).data('url');
+      $(this).addClass('video-preview--video');
+      $(this).html(videoTemplate(url));
+    });
+
   </script>
 </html>
