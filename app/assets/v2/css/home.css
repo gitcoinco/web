@@ -37,8 +37,8 @@
   padding-top: 8rem;
 }
 
-#optimize_oss p,
-#realign p {
+.optimize_oss p,
+.realign p {
   color: #4A4A4A;
 }
 
@@ -93,7 +93,7 @@
 }
 
 #articles p {
-  color: rgba(0,0,0,.54);
+  color: rgba(0, 0, 0, .54);
 }
 
 #press img {
@@ -121,7 +121,7 @@
   color: #3E00FF;
   font-weight: 600;
   text-align: left;
-  padding:  1rem 1.8rem;
+  padding: 1rem 1.8rem;
   margin-bottom: 1.9rem;
 }
 
@@ -207,27 +207,69 @@ img.play {
   border-bottom: 1px solid #fff;
 }
 
-#realign iframe {
-  max-width: 100%;
+.video-row {
+  display: grid;
+  grid-gap: 16px;
+  grid-template-columns: repeat(2, 1fr);
+  width: 100%;
 }
 
-#realign .video-thumbnail {
-  z-index:300;
-  position:absolute;
-  top:-4px;
-  left:0;
-  width:100%;
-  height: 100%;
-  display:block;
-}
-
-#realign .video-frame {
-  z-index:100;
+.video-preview {
+  cursor: pointer;
+  --padding: 40px;
+  background-color: var(--gc-green-hover);
+  background-image: url('../images/home/bg-video-preview.svg');
+  background-position: 15% -20%;
+  background-size: 150% 150%;
+  background-repeat: no-repeat;
+  color: #fff;
+  padding: var(--padding);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
   position: relative;
-  top:0;
-  left:0;
-  width:100%;
+  min-height: 300px;
 }
+
+.video-preview--video {
+  padding: 0;
+  background-color: rgba(0, 0, 0, 0.1);
+  position: relative;
+  line-height: 0;
+}
+
+p.video-preview__index {
+  font-size: 64px;
+  margin-bottom: 1em;
+  line-height: 1;
+  font-weight: bold;
+  color: #fff;
+}
+
+.video-preview__title {
+  font-size: 32px;
+  font-weight: bold;
+  color: #fff;
+  max-width: 14em;
+  line-height: 1.35;
+}
+
+.video-preview__icon {
+  position: absolute;
+  top: var(--padding);
+  right: var(--padding);
+  width: auto;
+  height: 60px;
+}
+
+.video-frame {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  min-height: 300px;
+}
+
 
 .button__blue {
   background-color: #3E00FF;
@@ -268,8 +310,41 @@ figure::before {
 figure:hover::before {
   -webkit-animation: shine .75s;
   animation: shine .75s;
-  background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,.3) 100%);
+  background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, .3) 100%);
 }
+
+.compass{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-height: 300px;
+}
+
+.compass img{
+  position: absolute;
+}
+
+.compass__dashes{
+  width: 50%;
+}
+
+.compass__inner{
+  width: 120%;
+  animation: rock_small ease-in-out 6s infinite;
+}
+
+.compass__outer{
+  width: 80%;
+  animation: rock_big ease-in-out 7s infinite;
+}
+
+.compass__arrow{
+  width: 20%;
+  animation: rock_arrow ease-in-out 4s infinite;
+}
+
 
 @-webkit-keyframes shine {
   100% {
@@ -283,6 +358,33 @@ figure:hover::before {
   }
 }
 
+@keyframes rock_small {
+  0%, 100%{
+    transform: rotate(-5deg);
+  }
+  50%{
+    transform: rotate(5deg);
+  }
+}
+
+@keyframes rock_big {
+  0%, 100%{
+    transform: rotate(-4deg);
+  }
+  50%{
+    transform: rotate(4deg);
+  }
+}
+
+@keyframes rock_arrow {
+  0%, 100%{
+    transform: rotate(35deg);
+  }
+  50%{
+    transform: rotate(50deg);
+  }
+}
+
 @media (min-width: 992px) {
   .mx-auto .nav-item {
     margin-left: 0.75rem;
@@ -290,14 +392,14 @@ figure:hover::before {
   }
 }
 
-@media (max-width: 1199.98px) {
+@media (max-width: 1200px) {
   #banner img {
     position: absolute;
     bottom: -2px;
   }
 }
 
-@media (max-width: 991.98px) {
+@media (max-width: 1024px) {
   .realign-img,
   .optimize-img {
     max-width: 15rem;
@@ -305,14 +407,6 @@ figure:hover::before {
 
   .optimize-img {
     margin-top: 4rem;
-  }
-
-  #realign #sustainability {
-    margin-bottom: 10rem;
-  }
-
-  #realign .video-thumbnail {
-    height: auto;
   }
 
   .bots-img {
@@ -328,13 +422,43 @@ figure:hover::before {
   }
 }
 
-@media (max-width: 767.98px) {
-
-  #realign #sustainability {
-    margin-bottom: 0rem;
-  }
-
+@media (max-width: 768px) {
   .row h2 {
     margin-bottom: 1.5rem;
   }
+
+  .video-row{
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .compass{
+    height: 300px;
+  }
+
+  .compass__dashes{
+    width: auto;
+  }
+  .compass__inner{
+    width: auto;
+  }
+
+  .compass__outer{
+    width: auto;
+  }
+
+  .compass__arrow{
+    width: auto;
+  }
+}
+
+@media (max-width: 375px) {
+  .video-preview{
+    --padding: 2rem;
+  }
+  .video-preview__title {
+    font-size: 24px;
+  }
+
 }
