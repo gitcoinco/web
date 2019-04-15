@@ -2415,9 +2415,10 @@ def hackathon(request, hackathon=''):
 
     try:
         evt = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
-        title = evt.name
     except HackathonEvent.DoesNotExist:
-        raise Http404
+        evt = HackathonEvent.objects.last()
+
+    title = evt.name
 
     params = {
         'active': 'dashboard',
