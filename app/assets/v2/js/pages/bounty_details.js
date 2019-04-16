@@ -459,7 +459,7 @@ var isBountyOwner = function(result) {
     return false;
   }
   
-  if (typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
+  if (!web3.eth || typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
     return false;
   }
 
