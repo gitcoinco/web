@@ -516,7 +516,7 @@ var refreshBounties = function(event, offset, append, do_save_search) {
     results = sanitizeAPIResults(results);
     getOrgs(results);
     if (results.length === 0 && !append) {
-      if (localStorage['referrer'] === 'onboard') {
+      if (localStorage['referrer'] === 'onboard' && !document.hackathon) {
         $('.no-results').removeClass('hidden');
         $('#dashboard-content').addClass('hidden');
       } else {
@@ -632,7 +632,7 @@ var resetFilters = function(resetKeyword) {
 };
 
 (function() {
-  if (localStorage['referrer'] === 'onboard') {
+  if (localStorage['referrer'] === 'onboard' && !document.hackathon) {
     $('#sidebar_container').addClass('invisible');
     $('#dashboard-title').addClass('hidden');
     $('#onboard-dashboard').removeClass('hidden');
