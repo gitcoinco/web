@@ -69,8 +69,8 @@ const getSuggestions = () => {
     
     procesedData = $.map(options, function(obj, index) {
       obj.children.forEach((children, childIndex) => {
-        children.text = children.fulfiller_github_username || children.user__profile__handle; // replace name with the property used for the text
-        children.id = generalIndex; // replace pk with your identifier
+        children.text = children.fulfiller_github_username || children.user__profile__handle;
+        children.id = generalIndex;
         generalIndex++;
       });
       return obj;
@@ -85,9 +85,7 @@ const getSuggestions = () => {
       },
       templateResult: formatUser,
       templateSelection: formatUserSelection
-
     });
-
 
   }).fail(function(error) {
     console.log('Could not fetch contributors', error);
