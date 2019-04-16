@@ -16,7 +16,12 @@ var local_storage_keys = JSON.parse(JSON.stringify(filters));
 
 local_storage_keys.push('keywords');
 local_storage_keys.push('org');
+
 results_limit = 15;
+
+if (document.hackathon) {
+  results_limit = 50;
+}
 
 var localStorage;
 
@@ -375,17 +380,16 @@ var get_search_URI = function(offset, order) {
     order_by = localStorage['order_by'];
   }
 
-  if (!document.hackathon) {
-    if (typeof order_by !== 'undefined') {
-      uri += '&order_by=' + order_by;
-      uri += '&offset=' + offset;
-      uri += '&limit=' + results_limit;
-    }
-  } else {
+  if (document.hackathon) {
     uri += `&event_tag=${document.hackathon}`;
-    uri += '&offset=' + offset;
-    uri += '&limit=51';
   }
+
+  if (typeof order_by !== 'undefined') {
+    uri += '&order_by=' + order_by;
+  }
+  
+  uri += '&offset=' + offset;
+  uri += '&limit=' + results_limit;
 
   return uri;
 };
@@ -462,6 +466,7 @@ var refreshBounties = function(event, offset, append, do_save_search) {
     }
   } else {
     toggleAny(event);
+    localStorage['order_by'] = $('#sort_option').val();
   }
 
   if (!append) {
