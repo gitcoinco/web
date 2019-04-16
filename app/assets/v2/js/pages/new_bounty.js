@@ -284,7 +284,7 @@ $(document).ready(function() {
   });
 
   $('.select2-container').on('click', function() {
-    // $('.select2-container .select2-search__field').remove();
+    $('.select2-container .select2-search__field').remove();
   });
 
   $('select[name=denomination]').select2();
