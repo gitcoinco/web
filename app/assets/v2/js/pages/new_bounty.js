@@ -38,67 +38,93 @@ function doShowQuickstart(url) {
   return true;
 }
 
-let selected_contributor = [];
+var procesedData;
 
-$('.select2-available__choice').on('click', function() {
-  selected_contributor.push($(this).find('.text').text());
-  console.log(selected_contributor);
-  $('#invite-contributors').val($(this).data('id')).trigger('change');
-  $(this).remove();
+$('.select2-tag__choice').on('click', function() {
+  $('#invite-contributors.js-select2').data('select2').dataAdapter.select(procesedData[0].children[$(this).data('id')]);
 });
 
-// $(document).on('click', '#inviteContributors .select2-selection', function() {
-const settings = {
-  url: '/api/v0.1/get_suggested_contributors',
-  method: 'GET',
-  processData: false,
-  dataType: 'json',
-  contentType: false,
-  data: {'keywords': $('#keywords').val()[0]}
-};
-
-$.ajax(settings).done(function(response) {
-  console.log(response);
-  var groups = {
-    'contributors': 'Recently worked with you',
-    'recommended_developers': 'Recomended based on skills',
-    'verified_developers': 'Verified contributors'
+const getSuggestions = () => {
+  
+  const settings = {
+    url: `/api/v0.1/get_suggested_contributors?keywords=${$('#keywords').val()}`,
+    method: 'GET',
+    processData: false,
+    dataType: 'json',
+    contentType: false
   };
   
-  let data = Object.entries(response).map(([ text, children ]) => (
-    { text: groups[text], children }
-  ));
+  $.ajax(settings).done(function(response) {
+    let groups = {
+      'contributors': 'Recently worked with you',
+      'recommended_developers': 'Recomended based on skills',
+      'verified_developers': 'Verified contributors'
+    };
+    
+    let options = Object.entries(response).map(([ text, children ]) => (
+      { text: groups[text], children }
+    ));
 
-  console.log(data);
-  var generalIndex = 0;
-  var procesedData = $.map(data, function(obj, index) {
-    console.log(index, obj);
-    obj.children.forEach((children, childIndex) => {
-      children.text = children.fulfiller_github_username || children.user__profile__handle; // replace name with the property used for the text
-      children.id = generalIndex; // replace pk with your identifier
-      generalIndex++;
+    var generalIndex = 0;
+    
+    procesedData = $.map(options, function(obj, index) {
+      if (obj.children.length < 1) {
+        return;
+      }
+      
+      obj.children.forEach((children, childIndex) => {
+        children.text = children.fulfiller_github_username || children.user__profile__handle;
+        children.id = generalIndex;
+        generalIndex++;
+      });
+      return obj;
     });
-    return obj;
+    
+    $('#invite-contributors').select2().empty();
+    $('#invite-contributors.js-select2').select2({
+      data: procesedData,
+      placeholder: 'Select contributors',
+      escapeMarkup: function(markup) {
+        return markup;
+      },
+      templateResult: formatUser,
+      templateSelection: formatUserSelection
+    });
+
+  }).fail(function(error) {
+    console.log('Could not fetch contributors', error);
   });
-  
-  
-  // var dataAdapter = $('#inviteContributors .js-select2').data('select2').dataAdapter;
-  
-  
-  // var option = dataAdapter.option(JSON.stringify(procesedData));
+};
 
-  console.log(procesedData);
-  // dataAdapter.addOptions(option);
-  $('#inviteContributors .js-select2').select2({
-    data: procesedData,
-    placeholder: 'Select contributors'
+getSuggestions();
+$('#keywords').on('change', getSuggestions);
 
-  });
+function formatUser(user) {
+  if (!user.text || user.children) {
+    return user.text;
+  }
+  let markup = `<div class="d-flex align-items-baseline">
+                  <div class="mr-2">
+                    <img class="rounded-circle" src="${'/dynamic/avatar/' + user.text }" width="20" height="20"/>
+                  </div>
+                  <div>${user.text}</div>
+                </div>`;
 
-}).fail(function(error) {
-  console.log('Could not fetch contributors', error);
-});
-// });
+  return markup;
+}
+
+function formatUserSelection(user) {
+  let selected;
+
+  if (user.id) {
+    selected = `
+      <img class="rounded-circle" src="${'/dynamic/avatar/' + user.text }" width="20" height="20"/>
+      <span class="ml-2">${user.text}</span>`;
+  } else {
+    selected = user.text;
+  }
+  return selected;
+}
 
 function lastSynced(current, last_sync) {
   var time = timeDifference(current, last_sync);
@@ -339,6 +365,9 @@ $(document).ready(function() {
       var decimalDivisor = Math.pow(10, decimals);
       var expirationTimeDelta = data.expirationTimeDelta;
       let reservedFor = $('.username-search').select2('data')[0];
+      let inviteContributors = $('#invite-contributors.js-select2').select2('data').map((user) => {
+        return user.text;
+      });
 
       var metadata = {
         issueTitle: data.title,
@@ -357,7 +386,8 @@ $(document).ready(function() {
         repo_type: data.repo_type,
         featuring_date: data.featuredBounty && ((new Date().getTime() / 1000) | 0) || 0,
         reservedFor: reservedFor ? reservedFor.text : '',
-        tokenName
+        tokenName,
+        invite: inviteContributors
       };
 
       var privacy_preferences = {

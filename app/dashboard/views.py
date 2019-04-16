@@ -31,9 +31,12 @@ from django.contrib.auth.models import User
 from django.core import serializers
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
+<<<<<<< HEAD
 from django.db.models import Q, Count
+=======
+from django.db.models import Count, Q
+>>>>>>> e8ce1d13a6fd4211e87ac715a43948b084c42675
 from django.http import Http404, HttpResponse, JsonResponse
-from django.db.models import Q
 from django.shortcuts import redirect
 from django.template import loader
 from django.template.response import TemplateResponse
@@ -69,7 +72,7 @@ from .helpers import get_bounty_data_for_activity, handle_bounty_views
 from .models import (
     Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest,
     FeedbackEntry, HackathonEvent, Interest, LabsResearch, Profile, ProfileSerializer, RefundFeeRequest, Subscription,
-    Tool, ToolVote, UserAction, UserVerificationModel
+    Tool, ToolVote, UserAction, UserVerificationModel,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -2228,7 +2231,7 @@ def new_bounty(request):
 @csrf_exempt
 def get_suggested_contributors(request):
     previously_worked_developers = []
-    keyword = request.GET.get('keywords', '')
+    keywords = request.GET.get('keywords', '').split(',')
     if request.user.is_authenticated:
         previously_worked_developers = BountyFulfillment.objects.prefetch_related('bounty')\
             .filter(
@@ -2237,12 +2240,15 @@ def get_suggested_contributors(request):
             ).values('fulfiller_github_username').annotate(fulfillment_count=Count('bounty')) \
             .order_by('-fulfillment_count')
         
-    recommended_developers = BountyFulfillment.objects.prefetch_related('bounty', 'profile')\
-        .filter(
-            Q(bounty__metadata__issueKeywords__icontains=keyword) | \
-            Q(bounty__title__icontains=keyword) | \
-            Q(bounty__issue_description__icontains=keyword)
-        ).values('fulfiller_github_username').distinct()
+    keywords_filter = Q()
+    for keyword in keywords:
+        keywords_filter = keywords_filter | Q(bounty__metadata__issueKeywords__icontains=keyword) | \
+        Q(bounty__title__icontains=keyword) | \
+        Q(bounty__issue_description__icontains=keyword)
+    
+    recommended_developers = BountyFulfillment.objects.prefetch_related('bounty', 'profile') \
+        .filter(keywords_filter).values('fulfiller_github_username').distinct()[:10]
+  
     verified_developers = UserVerificationModel.objects.filter(verified=True).values('user__profile__handle')
     print(verified_developers)
 
