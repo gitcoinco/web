@@ -656,7 +656,7 @@ def render_gdpr_reconsent(to_email):
     return response_html, response_txt
 
 
-def render_share_bounty(to_email, msg, from_profile):
+def render_share_bounty(to_email, msg, from_profile, invite_url=None, kudos_invite=False):
     """Render the share bounty email template.
 
     Args:
@@ -667,20 +667,15 @@ def render_share_bounty(to_email, msg, from_profile):
         str: The rendered response as a string.
 
     """
-    to_email = f"@{to_email}" if to_email else "there"
-    response_txt = f"""
-hi {to_email},
-
-{msg}
-
-@{from_profile.handle}
-{from_profile.email}
-
-
-"""
-
-    params = {'txt': response_txt}
-    response_html = premailer_transform(render_to_string("emails/txt.html", params))
+    params = {
+        'msg': msg,
+        'from_profile': from_profile,
+        'to_email': to_email,
+        'invite_url': invite_url,
+        'kudos_invite': kudos_invite
+    }
+    response_html = premailer_transform(render_to_string("emails/share_bounty_email.html", params))
+    response_txt = render_to_string("emails/share_bounty_email.txt", params)
     return response_html, response_txt
 
 
@@ -1291,6 +1286,8 @@ def gdpr_reconsent(request):
 
 @staff_member_required
 def share_bounty(request):
+    from dashboard.models import Profile
+    handle = request.GET.get('handle')
     profile = Profile.objects.filter(handle=handle).first()
     response_html, _ = render_share_bounty(settings.CONTACT_EMAIL, 'This is a sample message', profile)
     return HttpResponse(response_html)
