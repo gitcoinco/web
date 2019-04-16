@@ -140,6 +140,10 @@
                       <select class="js-select2" id="keywords" name="keywords" multiple>
                       </select>
                     </div>
+                    <div id="keyword-suggestion-container">
+                      <b>Add tags from your repo: </b>
+                      <div id="keyword-suggestions"></div>
+                    </div>
 
                   </div>
                   <hr class="mt-4">
@@ -168,7 +172,6 @@
                     {% include 'shared/notification_email.html' with show_information_publicly_checkbox=1 %}
                     {% include 'shared/github_username.html' %}
                   </div>
-                  <div id="advanced_container"></div>
                   <hr class="mt-4">
                 </div>
                 {% include 'shared/pricing.html' %}
@@ -184,9 +187,28 @@
                         <label class="form__label" for=hiringRightNow>{% trans "I am hiring for a full time, part time, or contract position, right now and would like Gitcoin to attach this job description to the bounty." %}
                       </label>
                     </div>
-                  <hr class="mt-4">
+                    <input name='jobDescription' id='jobDescription' type="url" class="form__input hidden" type="text" placeholder="https://link.to/job/description" value="" />
+                    <hr class="mt-4">
                   </div>
-                  <input name='jobDescription' id='jobDescription' type="url" class="form__input hidden" type="text" placeholder="https://link.to/job/description" value="" />
+                </div>
+                <div class="w-100 mt-2">
+                  <div class="form__checkbox">
+                    <input name="specialEvent" id="specialEvent" type="checkbox" value=1 />
+                    <label class="form__label" for="specialEvent">
+                      {% trans 'Is this Bounty part of a Hackathon or Special Event?' %}
+                    </label>
+                  </div>
+                  <div id="eventTag" class="hidden">
+                    <label class="form__label" for="eventTag">{% trans "Choose Event" %}</label>
+                    <div class="form__select2">
+                      <select class="js-select2" name="eventTag" id="eventTag">
+                        {% for evt in events %}
+                          <option value="{{ evt.name }}">{{ evt.name }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                  <hr class="mt-4"/>
                 </div>
                 <div id="gas-section" class="pt-2">
                   <h5 class="font-subheader pb-2">{% trans "Gas Settings" %}</h5>
@@ -195,7 +217,57 @@
                     {% include 'shared/wallet_estimate.html' %}
                   </div>
                 </div>
-                <div class="terms_container pt-4">
+                <div id="fee-section" class="mt-5">
+                  <h5 class="font-subheader">{% trans "No Suprises" %}</h5>
+                  <div class="row">
+                    <div class="col-12 col-sm-9 mt-3 font-body mb-sm-3">
+                      <p>
+                        {% blocktrans %}
+                        Simply pay the bounty amount ( plus a standard <span class="fee-percentage font-weight-bold">10%</span> Gitcoin platform fee ).
+                        This covers our costs for finding quality contributors to join our platform so that you get the best work.
+                        If your business requires additional assitance, please contact us <a href="mailto:founders@gitcoin.co">founders@gitcoin.co</a>
+                        {% endblocktrans %}
+                      </p>
+                    </div>
+                    <div class="col-12 col-sm-3 order-first order-sm-last mt-4 mt-sm-2 mt-md-0 mb-4 mb-sm-3">
+                      <div class="fee-circle text-center">
+                        <p class="font-title mb-0"><span id="fee-amount"></span> <span id="fee-token"></span></p>
+                        <p class="font-body font-weight-semibold">
+                          (<span class="fee-percentage">10</span>%)
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div id="total-section" class="row mt-5 py-3">
+                  <div class="col-sm-2 my-auto">
+                    <h5 class="font-title-lg mb-0">{% trans "Total"%} </h5>
+                  </div>
+                  <div class="col-sm-10 text-sm-right my-auto">
+                    <p class="mb-1">{% trans "Payment Due = " %} <span id="summary-total-amount" class="font-weight-bold"></span></p>
+
+                    <p class="font-caption mb-1">
+                      ( Bounty <span id="summary-bounty-amount" class="font-weight-bold">0</span>
+                      <span id="summary-bounty-token" class="font-weight-bold">ETH</span> +
+
+                      <span class="feature-amount" style="display: none;">
+                        Featured Bounty
+                        <span id="summary-feature-amount" class="font-weight-bold"></span>
+                        <span class="font-weight-bold">ETH</span>
+                        +
+                      </span>
+
+                      <span id="summary-fee-amount" class="font-weight-bold">0</span>
+                      <span id="summary-fee-token" class="font-weight-bold">ETH</span> Gitcoin Platform Fee )
+                    </p>
+                    <p class="font-caption mb-0">
+                      You will have to approve
+                      <span id="confirmation" class="font-weight-bold">2</span>
+                      Metamask confirmations.
+                    </p>
+                  </div>
+                </div>
+                <div class="terms_container pt-3">
                   <div class="form__checkbox">
                     <input name='terms' id='terms' type="checkbox" value=1 required />
                       <label class="form__label" for=terms>{% trans "I have read, understand, and agree to, the" %}
@@ -203,10 +275,10 @@
                     </label>
                   </div>
                 </div>
-                <div class="w-100 my-2 terms_container">
+                <div class="w-100 mb-3 terms_container">
                   <div class="form__checkbox">
                     <input name='blockchain_tos' id='blockchain_tos' type="checkbox" value=1 required />
-                    <label class="form__label" for=blockchain_tos style="display: flex;">{% blocktrans %}I understand that this information is being submitted to a public, immutable, blockchain. No one, including
+                    <label class="form__label mt-0" for=blockchain_tos style="display: flex;">{% blocktrans %}I understand that this information is being submitted to a public, immutable, blockchain. No one, including
                       Gitcoin Core, will be able to take my funds or change this information.{% endblocktrans %}</label>
                   </div>
                 </div>

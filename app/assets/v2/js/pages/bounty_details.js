@@ -123,33 +123,38 @@ var callbacks = {
       '"><img class=avatar src="/dynamic/avatar/' + username + '"></a>' ];
   },
   'status': function(key, val, result) {
-    var ui_status = val;
+    let ui_status = val;
 
-    if (ui_status == 'open') {
+    if (ui_status === 'open') {
       ui_status = '<span>' + gettext('OPEN ISSUE') + '</span>';
 
-      let soft = result['can_submit_after_expiration_date'];
+      let can_submit = result['can_submit_after_expiration_date'];
 
-      if (soft && is_bounty_expired(result)) {
-        ui_status += '<p class="text-highlight-light-blue" style="text-transform: none;">' +
+      if (!isBountyOwner && can_submit && is_bounty_expired(result)) {
+        ui_status += '<p class="text-highlight-light-blue font-weight-light font-body" style="text-transform: none;">' +
           gettext('This issue is past its expiration date, but it is still active.') +
           '<br>' +
           gettext('Check with the submitter to see if they still want to see it fulfilled.') +
           '</p>';
       }
-    }
-    if (ui_status == 'started') {
+    } else if (ui_status === 'started') {
       ui_status = '<span>' + gettext('work started') + '</span>';
-    }
-    if (ui_status == 'submitted') {
+    } else if (ui_status === 'submitted') {
       ui_status = '<span>' + gettext('work submitted') + '</span>';
-    }
-    if (ui_status == 'done') {
+    } else if (ui_status === 'done') {
       ui_status = '<span>' + gettext('done') + '</span>';
-    }
-    if (ui_status == 'cancelled') {
+    } else if (ui_status === 'cancelled') {
       ui_status = '<span style="color: #f9006c;">' + gettext('cancelled') + '</span>';
     }
+
+    if (isBountyOwner && is_bounty_expired(result) &&
+      ui_status !== 'done' && ui_status !== 'cancelled') {
+
+      ui_status += '<p class="font-weight-light font-body" style="color: black; text-transform: none;">' +
+      'This issue has expired. Click <a class="text-highlight-light-blue font-weight-semibold" href="/extend-deadlines">here to extend expiration</a> ' +
+      'before taking any bounty actions. </p>';
+    }
+
     return [ 'status', ui_status ];
   },
   'issue_description': function(key, val, result) {
@@ -635,15 +640,13 @@ var attach_override_status = function() {
 
 var show_interest_modal = function() {
   var self = this;
-  let modals = $('#modalInterest');
+  var modals = $('#modalInterest');
   let modalBody = $('#modalInterest .modal-content');
   let modalUrl = `/interest/modal?redirect=${window.location.pathname}&pk=${document.result['pk']}`;
 
   modals.on('show.bs.modal', function() {
     modalBody.load(modalUrl, ()=> {
       if (document.result['repo_type'] === 'private') {
-        $('#nda-upload').show();
-        $('#issueNDA').prop('required', true);
         document.result.unsigned_nda ? $('.nda-download-link').attr('href', document.result.unsigned_nda.doc) : $('#nda-upload').hide();
       }
 
@@ -656,18 +659,21 @@ var show_interest_modal = function() {
         event.preventDefault();
 
         let msg = issueMessage.val().trim();
-        let issueNDA = $('#issueNDA')[0].files;
 
         if (!msg || msg.length < 30) {
           _alert({message: gettext('Please provide an action plan for this ticket. (min 30 chars)')}, 'error');
           return false;
         }
 
-        if (typeof issueNDA[0] !== 'undefined') {
+        const issueNDA = document.result['repo_type'] === 'private' ? $('#issueNDA')[0].files : undefined;
+
+        if (issueNDA && typeof issueNDA[0] !== 'undefined') {
+
           const formData = new FormData();
 
           formData.append('docs', issueNDA[0]);
           formData.append('doc_type', 'signed_nda');
+
           const ndaSend = {
             url: '/api/v0.1/bountydocument',
             method: 'POST',
@@ -687,7 +693,7 @@ var show_interest_modal = function() {
                 $(self).attr('href', '/uninterested');
                 $(self).find('span').text(gettext('Stop Work'));
                 $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
-                $.modal.close();
+                modals.bootstrapModal('hide');
               }
             }).catch((error) => {
               if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
@@ -705,7 +711,7 @@ var show_interest_modal = function() {
               $(self).attr('href', '/uninterested');
               $(self).find('span').text(gettext('Stop Work'));
               $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
-              $.modal.close();
+              modals.bootstrapModal('hide');
             }
           }).catch((error) => {
             if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
@@ -764,9 +770,8 @@ const repoInstructions = () => {
 var set_extended_time_html = function(extendedDuration, currentExpires) {
   currentExpires.setTime(currentExpires.getTime() + (extendedDuration * 1000));
   $('input[name=updatedExpires]').val(currentExpires.getTime());
-  var date = getFormattedDate(currentExpires);
-  var days = timeDifference(now, currentExpires).split(' ');
-  var time = getTimeFromDate(currentExpires);
+  const date = getFormattedDate(currentExpires);
+  let days = timeDifference(now, currentExpires).split(' ');
 
   days.shift();
   days = days.join(' ');
@@ -1115,15 +1120,24 @@ var do_actions = function(result) {
   }
 
   if (show_change_bounty) {
-    const _entry = {
-      enabled: true,
-      href: '/bounty/change/' + result['pk'],
-      text: gettext('Edit Issue Details'),
-      parent: 'right_actions',
-      title: gettext('Update your Bounty Settings to get the right Crowd')
-    };
+    const _entry = [
+      {
+        enabled: true,
+        href: '/bounty/change/' + result['pk'],
+        text: gettext('Edit Issue Details'),
+        parent: 'right_actions',
+        title: gettext('Update your Bounty Settings to get the right Crowd')
+      }// ,
+      // {
+      //   enabled: true,
+      //   href: '/issue/refund_request?pk=' + result['pk'],
+      //   text: gettext('Request Fee Refund'),
+      //   parent: 'right_actions',
+      //   title: gettext('Raise a request if you believe you need your fee refunded')
+      // }
+    ];
 
-    actions.push(_entry);
+    actions.push(..._entry);
   }
 
   if (show_github_link) {
@@ -1322,6 +1336,9 @@ const build_uri_for_pull_bounty_from_api = function() {
   if (typeof document.issue_stdbounties_id != 'undefined') {
     uri = uri + '&standard_bounties_id=' + document.issue_stdbounties_id;
   }
+  if (typeof document.eventTag != 'undefined') {
+    uri = uri + '&event_tag=' + document.eventTag;
+  }
   return uri;
 };
 
@@ -1410,12 +1427,13 @@ const process_activities = function(result, bounty_activities) {
     const fulfillment = meta.fulfillment || {};
     const new_bounty = meta.new_bounty || {};
     const old_bounty = meta.old_bounty || {};
-    const has_signed_nda = result.interested.map(interest => {
-      if (interest.profile.handle === _activity.profile.handle && interest.signed_nda) {
-        return interest.signed_nda.doc;
-      }
-      return false;
-    });
+    const has_signed_nda = result.interested.length ?
+      result.interested.find(interest => {
+        if (interest.profile.handle === _activity.profile.handle && interest.signed_nda) {
+          return interest.signed_nda.doc;
+        }
+        return false;
+      }) : false;
     const has_pending_interest = !!result.interested.find(interest =>
       interest.profile.handle === _activity.profile.handle && interest.pending);
     const has_interest = !!result.interested.find(interest =>

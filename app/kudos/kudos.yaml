@@ -3517,7 +3517,7 @@
     - roboto
     - tamagotchi
   image: Tamagotchi.svg 
-- name: Ethereal-gameboy
+- name: Ethereal_gameboy
   artist: cryptodesign
   description: Booting up Ethereal Summit 2019.
   priceFinney: 20
@@ -3581,5 +3581,473 @@
    - ethereum marketing
    - consensys marketing
   image: brett_li.svg
+- name: Ethereal_computer
+  artist: yash412
+  description: Old School Coder. 
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - 90s
+    - computer
+    - retro
+    - ethereal
+  image: 90_1.svg
+- name: Ethereal_poloroid
+  artist: yash412
+  description: Snapshot of the 90s. 
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - 90s
+    - poloroid
+    - retro
+    - ethereal
+  image: 90_2.svg
+- name: Ethereal_radio
+  artist: yash412
+  description: Good with legacy signals.
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - 90s
+    - retro
+    - radio
+    - ethereal
+  image: 90_3.svg
+- name: Ethereal_ipod
+  artist: yash412
+  description: Classic iPod
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - 90s
+    - retro
+    - iPod
+    - ethereal
+  image: 90_11.svg
+- name: Ethereal_apple
+  artist: yash412
+  description: Good with legacy mac tools
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - 90s
+    - apple
+    - mac
+    - retro
+    - ethereal
+  image: 90_10.svg
+- name: Ethereal_space-invaders
+  artist: yash412
+  description: Arcadian times.
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - 90s
+    - retro
+    - arcade
+    - ethereal
+  image: 90_6.svg
+- name: Ethereal_snakes
+  artist: yash412
+  description: You're 100% a nokia snakes kid.
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - 90s
+    - retro
+    - ethereal
+    - snake
+    - arcade
+  image: 90_5.svg
+- name: Ethereal_arcade
+  artist: yash412
+  description: Old school gamer
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - 90s
+    - retro
+    - arcade
+    - ethereal
+  image: 90_9.svg
+- name: Ethereal_Donatello
+  artist: yash412
+  description: Technological genius of the group. 
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - 90s
+    - retro
+    - ninja turles
+    - ethereal
+  image: 90_12.svg
+- name: Ethereal_Michelangelo
+  artist: yash412
+  description: The carefree jokester of the group.
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - 90s
+    - retro
+    - ninja turles
+    - ethereal
+  image: 90_7.svg
+- name: Ethereal_Leonardo
+  artist: yash412
+  description: The responsible leader of the group.
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - 90s
+    - retro
+    - ninja turles
+    - ethereal
+  image: 90_8.svg
+- name: Ethereal_Raphael
+  artist: yash412
+  description: The aggressive member. 
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - 90s
+    - retro
+    - ninja turles
+    - ethereal
+  image: 90_4.svg
+- name: Ethereal_Consensys
+  artist: yash412
+  description: Retro Consensys Logo
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - 90s
+    - retro
+    - consensys
+    - ethereal
+  image: consensys_2.svg
+- name: Ethereal_Ethereum
+  artist: yash412
+  description: Retro Ethereum Logo
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - 90s
+    - retro
+    - ethereum
+    - ethereal
+  image: ethpl.svg
+- name: Ethereal_Saved_By_The_Bell!
+  artist: yash412
+  description: The timer saved your butt.
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - retro
+    - bell
+    - timer
+    - ethereal
+  image: saved_by_bell.svg
+- name: Shepherd
+  artist: yash412
+  description: Countryside Shepherd; Give this kudos to someone who has done a great job of shepherd-ing a project across teh finish line!
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - Shepherd
+    - Country
+    - Sheep
+    - Landscape
+  image: shepherd.svg
+- name: Hackathon_Judge
+  artist: yash412
+  description: You were a judge for the Ethereal Hackathon 2019!
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - Ethereal
+    - hackathon
+    - judge
+    - gitcoin
+  image: judge.svg
+- name: bane_bot
+  artist: mladen
+  description: Limited Edition Crypto Spring Kudos;  Send this bot to contributors who did a great job on your project.
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto spring
+    - bots
+  image: bane.svg
+- name: big_bot
+  artist: mladen
+  description: Limited Edition Crypto Spring Kudos;  Send this bot to contributors who did a great job on your project.
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto spring
+    - bots
+  image: big_bot.svg
+- name: duck_hunter_bot
+  artist: mladen
+  description: Limited Edition Crypto Spring Kudos;  Send this bot to contributors who did a great job on your project.
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto spring
+    - bots
+  image: duck_hunt.svg
+- name: wizard_bot
+  artist: mladen
+  description: Limited Edition Crypto Spring Kudos;  Send this bot to contributors who did a great job on your project.
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto spring
+    - bots
+  image: gandalf.svg
+- name: green_monster_bot
+  artist: mladen
+  description: Limited Edition Crypto Spring Kudos;  Send this bot to contributors who did a great job on your project.
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto spring
+    - bots
+  image: hulk.svg
+- name: strong_man_bot
+  artist: mladen
+  description: Limited Edition Crypto Spring Kudos;  Send this bot to contributors who did a great job on your project.
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto spring
+    - bots
+  image: iron_man.svg
+- name: click_bot
+  artist: mladen
+  description: Limited Edition Crypto Spring Kudos;  Send this bot to contributors who did a great job on your project.
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto spring
+    - bots
+  image: lego.svg
+- name: narwhal_bot
+  artist: mladen
+  description: Limited Edition Crypto Spring Kudos;  Send this bot to contributors who did a great job on your project.
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto spring
+    - bots
+  image: narwhal_2.svg
+- name: professor_bot
+  artist: mladen
+  description: Limited Edition Crypto Spring Kudos;  Send this bot to contributors who did a great job on your project.
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto spring
+    - bots
+  image: professor_x.svg
+- name: hedgehog_bot
+  artist: mladen
+  description: Limited Edition Crypto Spring Kudos;  Send this bot to contributors who did a great job on your project.
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto spring
+    - bots
+  image: sonic.svg
+- name: under_the_sea_bot
+  artist: mladen
+  description: Limited Edition Crypto Spring Kudos;  Send this bot to contributors who did a great job on your project.
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto spring
+    - bots
+  image: sponge_bob.svg
+- name: super_plumber_bot
+  artist: mladen
+  description: Limited Edition Crypto Spring Kudos;  Send this bot to contributors who did a great job on your project.
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto spring
+    - bots
+  image: super_mario.svg
+- name: bug_terminator_bot
+  artist: mladen
+  description: Limited Edition Crypto Spring Kudos;  Send this bot to contributors who did a great job on your project.
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto spring
+    - bots
+  image: terminator.svg
+- name: trooper_bot
+  artist: mladen
+  description: Limited Edition Crypto Spring Kudos;  Send this bot to contributors who did a great job on your project.
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto spring
+    - bots
+  image: trooper.svg
+- name: animal_bot
+  artist: mladen
+  description: Limited Edition Crypto Spring Kudos;  Send this bot to contributors who did a great job on your project.
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto spring
+    - bots
+  image: wolverin.svg
+- name: wookie_bot
+  artist: mladen
+  description: Limited Edition Crypto Spring Kudos;  Send this bot to contributors who did a great job on your project.
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto spring
+    - bots
+  image: wookie.svg
+- name: master_bot
+  artist: mladen
+  description: Limited Edition Crypto Spring Kudos;  Send this bot to contributors who did a great job on your project.
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - crypto spring
+    - bots
+  image: yoda.svg
+- name: walkman
+  artist: joe_bender
+  to_address: '0xdf9B0d723776972C5cAe27FDb4F3Ea827A5Cf283'
+  description: Limited Edition 90s Kudos! Imagine having all of your records, turntable, cumbersome wires, bulky headphones, and studio receiver…..all in your pocket! Now you can take Duran Duran, Bon Jovi, and R.E.M. with you wherever you go! Be the coolest kid walking down the street with the new Hi-Fi Walkman from Sony with stereo sound. 
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - ethereal
+    - 90s
+  image: walkman.svg
+- name: tetris
+  artist: joe_bender
+  to_address: '0xdf9B0d723776972C5cAe27FDb4F3Ea827A5Cf283'
+  description: Limited Edition 90s Kudos! Chain these blocks correctly, and the high score will be yours! This classic arcade puzzle game, first debuted in 1984, is still revered over 30 years later. Bring back fond memories of zoning out in gradeschool as you played Tetris on your TI-84 with this kudos!
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - ethereal
+    - 90s
+  image: tetris.svg
+- name: technology
+  artist: joe_bender
+  to_address: '0xdf9B0d723776972C5cAe27FDb4F3Ea827A5Cf283'
+  description: Limited Edition 90s Kudos! Welcome to the future! The exponential technologicalizationing that has occurred will forever change globoculture. Futuroinnovation and synergeticisms will agiley disruptify the incumbenthorities of the legacynical industromarkets. 
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - ethereal
+    - 90s
+  image: technology.svg
+- name: solitare
+  artist: joe_bender
+  to_address: '0xdf9B0d723776972C5cAe27FDb4F3Ea827A5Cf283'
+  description:  Limited Edition 90s Kudos! Are you the queen of card games? Do you think you’re the king of counting? If you don’t know jack about Solitaire, you certainly won’t ace this test. This special kudos is sure to bring back the frustration of ending up with an unwinnable endgame.
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - ethereal
+    - 90s
+  image: solitare.svg
+- name: minesweeper
+  artist: joe_bender
+  to_address: '0xdf9B0d723776972C5cAe27FDb4F3Ea827A5Cf283'
+  description:  Limited Edition 90s Kudos! 3...2...1...BOOM! One wrong click and your smile can turn into a frown real quick. Relive the nostalgia of Windows 95 and dial-up tones with this explosive kudos. 
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - ethereal
+    - 90s
+  image: minesweeper.svg
+- name: blockbuster
+  artist: joe_bender
+  to_address: '0xdf9B0d723776972C5cAe27FDb4F3Ea827A5Cf283'
+  description: Limited Edition 90s Kudos! Your TV dinner is done. Long day at the office. The new Furby is finally distracting the kids. How are you gonna spend your single hour of peace in the evening?! Well if you stopped at Blockbuster on the way home, you could already be halfway through Tim Burton’s new hit film, Edward Scissorhands!
+  platform: gitcoin
+  priceFinney: 22
+  numClonesAllowed: 88
+  tags:
+    - just for fun
+    - ethereal
+    - 90s
+  image: blockbuster.svg  
+- name: code_eating_hippo
+  artist: mladen
+  to_address: '0x5dD03D36358d6Da50D758F2EF6e18423F6CF42C4'
+  description: Comuka is a code-eating hippo living in nonce community. Hang out and code together every Saturday with Comuka.
+  priceFinney: 1
+  numClonesAllowed: 1000
+  tags: 
+   - Saturday Coding Salon
+   - Weekly casual hackathon
+  image: code_eating_hippo.svg
+- name: ENS Enabled
+  description: You set yourself up with an ENS name!
+  priceFinney: 10
+  artist: Mladen
+  numClonesAllowed: 1000
+  to_address: '0x911143d946ba5d467bfc476491fdb235fef4d667'
+  tags: 
+   - ENS
+   - Naming
+  image: ENS.svg
 
 
