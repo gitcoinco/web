@@ -30,7 +30,7 @@
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'home/nav.html' %}
     </div>
-    <div id="banner" class="header">
+    <div class="banner header">
       <div class="row">
         <div class="col-12 col-md-8 col-xl-6 pl-lg-5">
           <div class="mx-4 mx-lg-5 px-lg-5 pb-lg-5">
@@ -70,7 +70,7 @@
 
     <img class="w-100 mb-5" src="{% static "v2/images/home/story.svg" %}" />
 
-    <div id="optimize_oss" class="mt-5">
+    <div id="optimize_oss" class="mt-5 optimize_oss">
       <div class="container pt-0">
         <div class="row">
           <div class="col-12 col-md-8 col-lg-6 g-fadein" data-fade-duration=1000 data-fade-direction="left">
@@ -88,14 +88,9 @@
             </a>
 
             <div class="row mx-0 watch font-weight-semibold">
-              <p class="col-12 mt-5 mb-2 pl-0 font-body">{% trans "WATCH" %}</p>
-              <div class="pl-0 col-3 col-md-2">
-                <img class="play" src="{% static 'v2/images/home/play.svg' %}">
-              </div>
-              <div class="pl-lg-0 col-9 col-md-8">
-                <a data-toggle="modal" data-target="#playVideo">
-                  {% trans "What’s currently broken about open source sustainability?" %}
-                </a>
+              <div class="col-12 mt-5 mb-2 pl-0">
+                <p class=" font-body">{% trans "WATCH" %}</p>
+                {% include "shared/video_preview_block.html" with index="1" title="Open Source Sustainability. What is broken?" url="https://www.youtube.com/embed/b6LSf-zQnlI?autoplay=1" %}
               </div>
             </div>
 
@@ -127,7 +122,7 @@
       </p>
     </div>
 
-    <div id="products">
+    <div class="products" id="products">
       <img class="text-center px-3 bot-circle" src="{% static "v2/images/home/bot-circle.svg" %}"
         alt="gitcoin logo" />
       <div class="container pt-0">
@@ -198,7 +193,7 @@
         </div>
       </div>
     </div>
-    <div id="realign">
+    <div id="realign" class="realign">
       <div class="container" >
         <div class="row mt-5">
           <div class="col-12 col-md-8 col-lg-6 g-fadein" data-fade-duration=1000 data-fade-direction="left">
@@ -219,27 +214,21 @@
             <a class="font-weight-semibold" href="{% url "results" %}">{% trans "Learn more" %}</a>
           </div>
           <div class="col-12 offset-lg-1 col-md-4 text-center g-fadein" data-fade-duration=1000 data-fade-direction="right">
-            <figure>
-              <img class="realign-img px-3 w-100" src="{% static "v2/images/home/realign.svg" %}" alt="realign open source incentives" />
-            </figure>
+            {% include 'shared/compass.html' %}
           </div>
           <div class="col-12">
             <div class="row mx-0 watch font-weight-semibold">
               <p class="col-12 mt-4 mb-2 pl-0 font-body">{% trans "WATCH" %}</p>
-              <div id="sustainability" class="col-12 col-lg-5 video pl-lg-0">
-                <img src="{% static "v2/images/home/play-oss.svg" %}" class="video-thumbnail">
-                <iframe class="video-frame" width="507" height="255" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-              </div>
-              <div id="world" class="col-12 offset-lg-1 col-lg-5 video">
-                <img src="{% static "v2/images/home/play-sustain.svg" %}" class="video-thumbnail">
-                <iframe class="video-frame" width="560" height="255" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+              <div class="video-row">
+                {% include "shared/video_preview_block.html" with index="2" title="How do you define Sustainability?" url="https://www.youtube.com/embed/i2JKN_6iuiw?autoplay=1" %}
+                {% include "shared/video_preview_block.html" with index="3" title="World with Open Source Sustainability" url="https://www.youtube.com/embed/oe7oD8ThKx8?autoplay=1" %}
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div id="press">
+    <div id="press" class="press">
       <div class="container">
         <div class="row">
           <h2 class="col-12 mb-4">{% trans "What are people saying?" %}</h2>
@@ -253,7 +242,7 @@
         </div>
       </div>
     </div>
-    <div id="know_us">
+    <div id="know_us" class="know_us">
       <div class="container">
         <div class="row">
           <div class="col-12 text-center mb-2">
@@ -275,7 +264,7 @@
         </div>
       </div>
     </div>
-    <div id="articles">
+    <div id="articles" class="articles">
       <div class="container">
         <div class="row">
           <div class="col-12 text-center mb-4">
@@ -302,23 +291,28 @@
   <script src="{% static "v2/js/popper.min.js" %}"></script>
   <script src="{% static "v2/js/bootstrap.min.js" %}" crossorigin="anonymous"></script>
   <script>
-      var bootstrapTooltip = $.fn.tooltip.noConflict()
+      const bootstrapTooltip = $.fn.tooltip.noConflict()
       $.fn.runTooltip = bootstrapTooltip;
       $('[data-toggle="tooltip"]').runTooltip();
       $.fn.modal.noConflict();
   </script>
   <script>
 
-    $('#sustainability').on('click', function(){
-      $(this).find('img').css('display', 'none');
-      $(this).find('iframe').css('visibility', 'visible');
-      $(this).find('iframe').attr('src', 'https://www.youtube.com/embed/i2JKN_6iuiw?autoplay=1');
-    })
+    const options = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture";
+    const videoTemplate = (url) => {
+      return `<iframe
+      class="video-frame"
+      frameborder="0"
+      allow=${options}
+      allowfullscreen="true"
+      src=${url}></iframe>`;
+    };
 
-    $('#world').on('click', function(){
-      $(this).find('img').css('display', 'none');
-      $(this).find('iframe').css('visibility', 'visible');
-      $(this).find('iframe').attr('src', 'https://www.youtube.com/embed/oe7oD8ThKx8?autoplay=1');
-    })
+    $('.video-preview').on('click', function(){
+      const url = $(this).data('url');
+      $(this).addClass('video-preview--video');
+      $(this).html(videoTemplate(url));
+    });
+
   </script>
 </html>
