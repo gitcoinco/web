@@ -291,15 +291,15 @@
   <script src="{% static "v2/js/popper.min.js" %}"></script>
   <script src="{% static "v2/js/bootstrap.min.js" %}" crossorigin="anonymous"></script>
   <script>
-      var bootstrapTooltip = $.fn.tooltip.noConflict()
+      const bootstrapTooltip = $.fn.tooltip.noConflict()
       $.fn.runTooltip = bootstrapTooltip;
       $('[data-toggle="tooltip"]').runTooltip();
       $.fn.modal.noConflict();
   </script>
   <script>
 
-    var options = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture";
-    var videoTemplate = function(url){
+    const options = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture";
+    const videoTemplate = (url) => {
       return `<iframe
       class="video-frame"
       frameborder="0"
@@ -309,7 +309,7 @@
     };
 
     $('.video-preview').on('click', function(){
-      var url = $(this).data('url');
+      const url = $(this).data('url');
       $(this).addClass('video-preview--video');
       $(this).html(videoTemplate(url));
     });
