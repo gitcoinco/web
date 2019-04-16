@@ -68,6 +68,10 @@ const getSuggestions = () => {
     var generalIndex = 0;
     
     procesedData = $.map(options, function(obj, index) {
+      if (obj.children.length < 1) {
+        return;
+      }
+      
       obj.children.forEach((children, childIndex) => {
         children.text = children.fulfiller_github_username || children.user__profile__handle;
         children.id = generalIndex;

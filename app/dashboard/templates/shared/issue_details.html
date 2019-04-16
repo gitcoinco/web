@@ -50,16 +50,18 @@
     </select>
   </div>
   <div id="contributor-suggestion-container">
-    <b>Suggested Contributors: </b>
-    <div id="contributor-suggestions">
-      {% for contributor in suggested_developers %}
-        <li class="select2-tag__choice p-1" data-id="{{ forloop.counter0 }}">
-          <img src="/dynamic/avatar/{{ contributor.fulfiller_github_username }}" alt="" class="rounded-circle mx-2" width="20">
-          <span class="text">{{ contributor.fulfiller_github_username }}</span>
-          <i class="fas fa-plus ml-2"></i>
-        </li>
-      {% endfor %}
-    </div>
+    {% if suggested_developers %}
+      <b>Suggested Contributors: </b>
+      <div id="contributor-suggestions">
+        {% for contributor in suggested_developers %}
+          <li class="select2-tag__choice p-1" data-id="{{ forloop.counter0 }}">
+            <img src="/dynamic/avatar/{{ contributor.fulfiller_github_username }}" alt="" class="rounded-circle mx-2" width="20">
+            <span class="text">{{ contributor.fulfiller_github_username }}</span>
+            <i class="fas fa-plus ml-2"></i>
+          </li>
+        {% endfor %}
+      </div>
+    {% endif %}
   </div>
 </div>
 <div>
