@@ -2229,11 +2229,11 @@ def get_suggested_contributors(request):
     previously_worked_developers = []
     keywords = request.GET.get('keywords', '').split(',')
     if request.user.is_authenticated:
-        previously_worked_developers = BountyFulfillment.objects.prefetch_related('bounty')\
+        previously_worked_developers = BountyFulfillment.objects.prefetch_related('bounty', 'profile')\
             .filter(
                 bounty__bounty_owner_github_username__iexact=request.user.profile.handle,
                 bounty__idx_status='done'
-            ).values('fulfiller_github_username').annotate(fulfillment_count=Count('bounty')) \
+            ).values('fulfiller_github_username', 'profile__id').annotate(fulfillment_count=Count('bounty')) \
             .order_by('-fulfillment_count')
         
     keywords_filter = Q()
@@ -2243,10 +2243,9 @@ def get_suggested_contributors(request):
         Q(bounty__issue_description__icontains=keyword)
     
     recommended_developers = BountyFulfillment.objects.prefetch_related('bounty', 'profile') \
-        .filter(keywords_filter).values('fulfiller_github_username').distinct()[:10]
+        .filter(keywords_filter).values('fulfiller_github_username', 'profile__id').distinct()[:10]
   
-    verified_developers = UserVerificationModel.objects.filter(verified=True).values('user__profile__handle')
-    print(verified_developers)
+    verified_developers = UserVerificationModel.objects.filter(verified=True).values('user__profile__handle', 'user__profile__id')
 
     return JsonResponse(
                 {
