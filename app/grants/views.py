@@ -233,7 +233,7 @@ def grant_details(request, grant_id, grant_slug):
 def grant_new(request):
     """Handle new grant."""
     if not request.user.has_perm('grants.add_grant'):
-        return redirect('https://consensys1mac.typeform.com/to/HFcZKe/')
+        return redirect('https://gitcoin.typeform.com/to/C2IocD')
 
     profile = get_profile(request)
 

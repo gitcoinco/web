@@ -16,7 +16,12 @@ var local_storage_keys = JSON.parse(JSON.stringify(filters));
 
 local_storage_keys.push('keywords');
 local_storage_keys.push('org');
+
 results_limit = 15;
+
+if (document.hackathon) {
+  results_limit = 50;
+}
 
 var localStorage;
 
@@ -87,6 +92,10 @@ var getActiveFilters = function() {
   let _filters = filters.slice();
 
   _filters.push('keywords', 'order_by', 'org');
+  if (document.hackathon) {
+    resetFilters(true);
+    filters.push('org');
+  }
   _filters.forEach(filter => {
     if (getParam(filter)) {
       localStorage[filter] = getParam(filter).replace(/^,|,\s*$/g, '');
@@ -371,16 +380,17 @@ var get_search_URI = function(offset, order) {
     order_by = localStorage['order_by'];
   }
 
-  if (!document.hackathon) {
-    if (typeof order_by !== 'undefined') {
-      uri += '&order_by=' + order_by;
-    }
-  } else {
-    uri += '&event_tag=' + document.hackathon;
+  if (document.hackathon) {
+    uri += `&event_tag=${document.hackathon}`;
   }
 
+  if (typeof order_by !== 'undefined') {
+    uri += '&order_by=' + order_by;
+  }
+  
   uri += '&offset=' + offset;
   uri += '&limit=' + results_limit;
+
   return uri;
 };
 
@@ -419,6 +429,8 @@ var reset_offset = function() {
   document.offset = 0;
 };
 
+let organizations = [];
+
 var refreshBounties = function(event, offset, append, do_save_search) {
 
   // Allow search for freeform text
@@ -452,6 +464,9 @@ var refreshBounties = function(event, offset, append, do_save_search) {
       paint_search_tabs();
       window.history.pushState('', '', window.location.pathname + '?' + buildURI());
     }
+  } else {
+    toggleAny(event);
+    localStorage['order_by'] = $('#sort_option').val();
   }
 
   if (!append) {
@@ -477,9 +492,29 @@ var refreshBounties = function(event, offset, append, do_save_search) {
     explorer.bounties_request.abort();
   }
 
+  const getOrgs = (results) => {
+    if (organizations.length === 0) {
+      results.filter((bounty)=>{
+        organizations.push(bounty.org_name);
+      });
+      organizations = [...new Set(organizations)];
+      
+      $('#list-orgs').append(`
+      ${organizations.map((org, index) => `
+      <div class="form__radio option">
+        <input name="org" id="${org}" type="radio" value="${org}" val-ui="${org}" />
+        <label class="filter-label" for=${org}>
+          <img src="/dynamic/avatar/${org}" class="rounded-circle" width="24" height="24"> ${org}
+        </label>
+      </div>
+      `).join(' ')}
+      `);
+    }
+  };
+
   explorer.bounties_request = $.get(bountiesURI, function(results, x) {
     results = sanitizeAPIResults(results);
-
+    getOrgs(results);
     if (results.length === 0 && !append) {
       if (localStorage['referrer'] === 'onboard') {
         $('.no-results').removeClass('hidden');
@@ -529,31 +564,33 @@ var refreshBounties = function(event, offset, append, do_save_search) {
     $('.loading').css('display', 'none');
   });
 
-  explorer.bounties_request = $.get(featuredBountiesURI, function(results, x) {
-    results = sanitizeAPIResults(results);
+  if (!document.hackathon) {
+    explorer.bounties_request = $.get(featuredBountiesURI, function(results, x) {
+      results = sanitizeAPIResults(results);
 
-    if (results.length === 0 && !append) {
-      $('.featured-bounties').hide();
-      if (localStorage['referrer'] === 'onboard') {
-        $('.no-results').removeClass('hidden');
-        $('#dashboard-content').addClass('hidden');
-      } else {
-        $('.nonefound').css('display', 'none');
+      if (results.length === 0 && !append) {
+        $('.featured-bounties').hide();
+        if (localStorage['referrer'] === 'onboard') {
+          $('.no-results').removeClass('hidden');
+          $('#dashboard-content').addClass('hidden');
+        } else {
+          $('.nonefound').css('display', 'none');
+        }
       }
-    }
 
-    var html = renderFeaturedBountiesFromResults(results, true);
+      var html = renderFeaturedBountiesFromResults(results, true);
 
-    if (html) {
-      $('.featured-bounties').show();
-      $('#featured-card-container').html(html);
-    }
-  }).fail(function() {
-    if (explorer.bounties_request.readyState !== 0)
-      _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
-  }).always(function() {
-    $('.loading').css('display', 'none');
-  });
+      if (html) {
+        $('.featured-bounties').show();
+        $('#featured-card-container').html(html);
+      }
+    }).fail(function() {
+      if (explorer.bounties_request.readyState !== 0)
+        _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
+    }).always(function() {
+      $('.loading').css('display', 'none');
+    });
+  }
 };
 
 window.addEventListener('load', function() {
@@ -746,7 +783,7 @@ $(document).ready(function() {
   });
 
   // sidebar filters
-  $('.sidebar_search input[type=radio], .sidebar_search label').change(function(e) {
+  $('.sidebar_search , .sidebar_search label').change('input[type=radio]', function(e) {
     reset_offset();
     refreshBounties(null, 0, false, true);
     e.preventDefault();

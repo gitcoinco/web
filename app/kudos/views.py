@@ -605,7 +605,7 @@ def receive_bulk(request, secret):
         raise Http404
 
     coupon = coupons.first()
-
+    _class = request.GET.get('class', '')
     if coupon.num_uses_remaining <= 0:
         messages.info(request, f'Sorry but the coupon for a free kudos has has expired.  Contact the person who sent you the coupon link, or you can still purchase one on this page.')
         return redirect(coupon.token.url)
@@ -711,6 +711,7 @@ def receive_bulk(request, secret):
         'user': request.user,
         'is_authed': request.user.is_authenticated,
         'kudos_transfer': kudos_transfer,
+        'class': _class,
         'tweet_text': urllib.parse.quote_plus(f"I just got a {coupon.token.humanized_name} Kudos on @GetGitcoin.  ")
     }
     return TemplateResponse(request, 'transaction/receive_bulk.html', params)
