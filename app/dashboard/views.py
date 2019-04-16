@@ -31,11 +31,7 @@ from django.contrib.auth.models import User
 from django.core import serializers
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
-<<<<<<< HEAD
-from django.db.models import Q, Count
-=======
 from django.db.models import Count, Q
->>>>>>> e8ce1d13a6fd4211e87ac715a43948b084c42675
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template import loader
