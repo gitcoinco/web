@@ -47,9 +47,6 @@
   <label class="form__label w-100" for="invite-contributors">{% trans "Invite Contributors" %}</label>
   <div class="form__select2 g-multiselect">
     <select class="js-select2" id="invite-contributors" name="invite-contributors" multiple>
-        {% comment %} {% for contributor in suggested_developers %}
-          <option value="{{ forloop.counter0 }}">{{ contributor.fulfiller_github_username }}</option>
-        {% endfor %} {% endcomment %}
     </select>
   </div>
   <div id="contributor-suggestion-container">

@@ -2197,11 +2197,7 @@ def get_suggested_contributors(request):
     
     recommended_developers = BountyFulfillment.objects.prefetch_related('bounty', 'profile') \
         .filter(keywords_filter).values('fulfiller_github_username').distinct()[:10]
-        # .filter(
-        #     Q(bounty__metadata__issueKeywords__icontains=keyword) | \
-        #     Q(bounty__title__icontains=keyword) | \
-        #     Q(bounty__issue_description__icontains=keyword)
-        # ).values('fulfiller_github_username').distinct()
+  
     verified_developers = UserVerificationModel.objects.filter(verified=True).values('user__profile__handle')
     print(verified_developers)
 

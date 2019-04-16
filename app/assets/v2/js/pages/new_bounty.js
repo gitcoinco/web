@@ -363,6 +363,9 @@ $(document).ready(function() {
       var decimalDivisor = Math.pow(10, decimals);
       var expirationTimeDelta = data.expirationTimeDelta;
       let reservedFor = $('.username-search').select2('data')[0];
+      let inviteContributors = $('#invite-contributors.js-select2').select2('data').map((user) => {
+        return user.text;
+      });
 
       var metadata = {
         issueTitle: data.title,
@@ -381,7 +384,8 @@ $(document).ready(function() {
         repo_type: data.repo_type,
         featuring_date: data.featuredBounty && ((new Date().getTime() / 1000) | 0) || 0,
         reservedFor: reservedFor ? reservedFor.text : '',
-        tokenName
+        tokenName,
+        invite: inviteContributors
       };
 
       var privacy_preferences = {
