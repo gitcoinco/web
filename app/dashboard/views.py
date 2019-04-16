@@ -2197,7 +2197,7 @@ def get_suggested_contributors(request):
         Q(bounty__issue_description__icontains=keyword)
     
     recommended_developers = BountyFulfillment.objects.prefetch_related('bounty', 'profile') \
-        .filter(keywords_filter).values('fulfiller_github_username').distinct()
+        .filter(keywords_filter).values('fulfiller_github_username').distinct()[:10]
         # .filter(
         #     Q(bounty__metadata__issueKeywords__icontains=keyword) | \
         #     Q(bounty__title__icontains=keyword) | \

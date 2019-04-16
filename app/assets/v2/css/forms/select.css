@@ -76,7 +76,8 @@
 
 /* Multi-select */
 .g-multiselect .select2-container--default .select2-selection--multiple .select2-selection__rendered li:not(.select2-search),
-li.select2-available__choice{
+li.select2-available__choice,
+li.select2-tag__choice {
   align-items: center;
   border: 1px solid #3E00FF;
   background-color: #3E00FF;
@@ -87,7 +88,8 @@ li.select2-available__choice{
   border-radius: 3px;
 }
 
-li.select2-available__choice {
+li.select2-available__choice,
+li.select2-tag__choice {
   margin-right: 5px;
   margin-top: 5px;
   padding: 0 5px;
@@ -161,7 +163,8 @@ li.select2-available__choice {
 }
 
 .select2-container--default .select2-selection--multiple .select2-selection__choice__remove,
-.select2-available__choice__remove {
+.select2-available__choice__remove,
+.select2-tag__choice__remove {
   color: #ffffff;
   margin-right: 10px;
 }

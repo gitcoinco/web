@@ -47,18 +47,19 @@
   <label class="form__label w-100" for="invite-contributors">{% trans "Invite Contributors" %}</label>
   <div class="form__select2 g-multiselect">
     <select class="js-select2" id="invite-contributors" name="invite-contributors" multiple>
-        {% for contributor in suggested_developers %}
+        {% comment %} {% for contributor in suggested_developers %}
           <option value="{{ forloop.counter0 }}">{{ contributor.fulfiller_github_username }}</option>
-        {% endfor %}
+        {% endfor %} {% endcomment %}
     </select>
   </div>
   <div id="contributor-suggestion-container">
     <b>Suggested Contributors: </b>
     <div id="contributor-suggestions">
       {% for contributor in suggested_developers %}
-        <li class="select2-available__choice p-1" data-id="{{ forloop.counter0 }}">
-          <img src="/dynamic/avatar/{{ contributor.fulfiller_github_username }}" alt="" class="rounded-circle mr-1" width="24">
+        <li class="select2-tag__choice p-1" data-id="{{ forloop.counter0 }}">
+          <img src="/dynamic/avatar/{{ contributor.fulfiller_github_username }}" alt="" class="rounded-circle mx-2" width="20">
           <span class="text">{{ contributor.fulfiller_github_username }}</span>
+          <i class="fas fa-plus ml-2"></i>
         </li>
       {% endfor %}
     </div>
