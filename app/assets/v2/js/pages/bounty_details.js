@@ -114,7 +114,7 @@ var callbacks = {
     return [ 'amount', token_value_to_display(val) + ' ' + result['token_name'] ];
   },
   'avatar_url': function(key, val, result) {
-    return [ 'avatar', '<a href="/profile/' + result['org_name'] + '"><img class=avatar src="' + val + '"></a>' ];
+    return [ 'avatar', '<a href="/profile/' + result['org_name'] + '"><img class="avatar ' + result['github_org_name'] + '" src="' + val + '"></a>' ];
   },
   'issuer_avatar_url': function(key, val, result) {
     const username = result['bounty_owner_github_username'] ? result['bounty_owner_github_username'] : 'Self';
@@ -456,6 +456,9 @@ var isBountyOwner = function(result) {
   var bountyAddress = result['bounty_owner_address'];
 
   if (typeof web3 == 'undefined') {
+    return false;
+  }
+  if (typeof web3.coinbase == 'undefined') {
     return false;
   }
   if (typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {

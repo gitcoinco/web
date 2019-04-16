@@ -1221,7 +1221,7 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
     }
 
     if (renderForExplorer) {
-      if (typeof web3 != 'undefined' && web3.eth.coinbase == result['bounty_owner_address']) {
+      if (typeof web3 != 'undefined' && typeof web3.eth != 'undefined' && web3.eth.coinbase == result['bounty_owner_address']) {
         result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">mine</span></a>';
       } else if (result['fulfiller_address'] !== '0x0000000000000000000000000000000000000000') {
         result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">' + result['status'] + '</span></a>';
