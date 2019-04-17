@@ -138,7 +138,7 @@ window.onload = function() {
               };
 
               // Get bountyId from the database
-              var uri = '/api/v0.1/bounties/?github_url=' + issueURL + '&network=' + $('input[name=network]').val() + '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
+              var uri = '/api/v0.1/bounties/?event_tag=all&github_url=' + issueURL + '&network=' + $('input[name=network]').val() + '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
 
               $.get(uri, function(results, status) {
                 results = sanitizeAPIResults(results);
