@@ -28,6 +28,10 @@
   margin-bottom: 2px;
 }
 
+.sidebar_search .option.Azure-Samples img {
+  border-radius: 0px !important;
+}
+
 .option label:before,
 .option label:after {
   width: 16px;
