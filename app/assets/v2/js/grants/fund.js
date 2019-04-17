@@ -95,17 +95,12 @@ $(document).ready(function() {
           return;
         }
 
-        let realGasPrice = 0; // zero cost metatxs
-
-        if (realPeriodSeconds < 2592000) {
-          // charge gas for intervals less than a month
-          realGasPrice = Math.ceil($('#gasPrice').val() * Math.pow(10, 9));
-        }
-
         $('#gas_price').val(realGasPrice);
 
         let realTokenAmount = Number(data.amount_per_period * Math.pow(10, decimals));
         let amountSTR = realTokenAmount.toLocaleString('fullwide', { useGrouping: false });
+        // 10% grants fee
+        let realGasPrice = realTokenAmount * 0.1
 
         let realApproval = Number(((realTokenAmount + realGasPrice) * data.num_periods) + 1);
         let approvalSTR = realApproval.toLocaleString('fullwide', { useGrouping: false });
