@@ -67,7 +67,7 @@
                   We believe in <strong>try-before-you-buy hiring</strong>.
                 {% endblocktrans %}
               </h5>
-              <h6>{% trans "Contribute to some bounties before applying to jobs." %}</h6>
+              <h6>{% trans "Want to show off your chops?  Contribute to some bounties before applying to jobs." %}</h6>
             </div>
             <div class="col-lg-3 d-flex justify-content-center">
               <img class="icon" src="{% static "v2/images/jobs/coathanger.svg" %}" />
@@ -115,7 +115,7 @@
       <div class="row pt-5 pb-3 justify-content-center">
         <div class="col-lg-auto align-items-center">
           <h4 class="text-center">
-            {% trans "Get started with some Bounties!" %}
+            {% trans "Want to try out working with us?  Get started with some Bounties!" %}
           </h4>
         </div>
       </div>
@@ -144,7 +144,7 @@
               </div>
             </div>
             <div class="row mt-5 pt-1 pb-5 justify-content-center">
-              <a class="button button--primary-o" role="button" href="https://gitcoin.co/explorer"
+              <a class="button button--primary-o" role="button" href="{{ job.link }}"
                 target="_blank" rel="noopener noreferrer">
                 {% trans "Apply" %}
               </a>

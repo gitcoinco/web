@@ -801,25 +801,28 @@ def mission(request):
 def jobs(request):
     job_listings = [
         {
+            'link': "mailto:founders@gitcoin.co",
             'title': "Software Engineer",
             'description': [
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut",
-                "labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip",
-                "ex ea commodo consequat. Duis aute irure dolor in..."]
+                "Gitcoin is always looking for a few good software engineers.",
+                "If you are an active member of the community, have python + django + html chops",
+                "then we want to talk to you!"]
         },
         {
-            'title': "Software Engineer",
+            'link': "mailto:founders@gitcoin.co",
+            'title': "Community Manager",
             'description': [
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut",
-                "labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip",
-                "ex ea commodo consequat. Duis aute irure dolor in..."]
+                "We believe that community management is an important skill in the blockchain space.",
+                "We're looking for a solid community, proactive thinker, and someone who loves people",
+                "to be our next community manager.  Sound like you?  Apply below!"]
         },
         {
-            'title': "Software Engineer",
+            'link': "mailto:founders@gitcoin.co",
+            'title': "Ad Sales Engineer",
             'description': [
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut",
-                "labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip",
-                "ex ea commodo consequat. Duis aute irure dolor in..."]
+                "CodeFund is growing like a weed.  We could use a helping hand",
+                "to put CodeFund in front of more great advertisers and publishers.",
+                "If you want to be our next highly technical, highly engaging, sales engineer apply below!"]
         }
     ]
     context = {
