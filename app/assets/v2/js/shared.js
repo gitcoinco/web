@@ -1556,6 +1556,10 @@ function check_balance_and_alert_user_if_not_enough(
   amount,
   msg = 'You do not have enough tokens to perform this action.') {
 
+  if (tokenAddress == "0x0" || tokenAddress == "0x0000000000000000000000000000000000000000") {
+    return;
+  }
+
   let token_contract = web3.eth.contract(token_abi).at(tokenAddress);
   let from = web3.eth.coinbase;
   let token_details = tokenAddressToDetails(tokenAddress);
