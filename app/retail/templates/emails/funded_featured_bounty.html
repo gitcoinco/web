@@ -53,11 +53,6 @@
   </div>
 </div>
 <div class="centered-contents" >
-  {% if bounty.is_featured == 'true' %}
-    <div class="centered-contents desktop-col" style="justify-content: center; border-top: 1px solid #979797; border-bottom: 1px solid #979797; padding: 50px; text-align: center; align-items: center;">
-      <img src="{% static "v2/images/emails/funded_featured_bounty_banner.png" %}" width="100" height="100" style="margin-right: 30px; flex-shrink: 0;" alt="Featured bounty avatar" id="featured_bounty_detail_image">
-    {% endif %}
-<div class="centered-contents" >
   {% if bounty.is_featured %}
     <div class="centered-contents" style="display: flex; justify-content: center; border-top: 1px solid #979797; border-bottom: 1px solid #979797; padding: 50px; text-align: center">
       <img src="{% static "v2/images/emails/funded_featured_bounty_banner.png" %}" width="100" style="margin-right: 30px" alt="Featured bounty avatar" id="featured_bounty_detail_image">

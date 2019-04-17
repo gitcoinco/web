@@ -810,7 +810,7 @@ def maybe_market_to_email(b, event_name):
     if b.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
         return False
 
-    if event_name == 'new_bounty' and not settings.DEBUG:
+    if event_name == 'new_bounty':
         featured_funded_bounty(settings.CONTACT_EMAIL, bounty=b)
         return
     elif event_name == 'work_submitted':
