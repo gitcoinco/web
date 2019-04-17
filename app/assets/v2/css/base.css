@@ -381,6 +381,9 @@ p a {
   max-width: 50px;
   border-radius: 100%;
 }
+.dashboard .body .avatar.Azure-Samples {
+  border-radius: 0%;
+}
 
 .body .nonefound {
   margin-left: 100px;

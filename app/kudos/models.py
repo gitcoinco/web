@@ -361,7 +361,7 @@ class KudosTransfer(SendCryptoAsset):
             key = self.metadata['reference_hash_for_receipient']
             return f"{settings.BASE_URL}kudos/receive/v3/{key}/{self.txid}/{self.network}"
         except KeyError as e:
-            logger.error(e)
+            logger.debug(e)
             return ''
 
     def __str__(self):

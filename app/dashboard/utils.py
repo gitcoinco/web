@@ -316,6 +316,8 @@ def get_bounty_from_invite_url(invite_url):
 
 
 def get_unrated_bounties_count(user):
+    if not user:
+        return 0
     unrated_contributed = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=user) \
         .filter(interested__status='okay') \
         .filter(interested__pending=False).filter(idx_status='done') \
