@@ -504,7 +504,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 except Exception as e:
                     logger.error(e)
 
-            bounty_invitees = metadata.get('inviteContributors', '')
+            bounty_invitees = metadata.get('invite', '')
             print (bounty_invitees)
             if bounty_invitees:
                 from marketing.mails import share_bounty
@@ -528,7 +528,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 print(emails)
                 print(msg)
                 try:
-                    share_bounty(emails, msg, request.user.profile, invite_url, True)
+                    share_bounty(emails, msg, inviter, invite_url, False)
                     response = {
                         'status': 200,
                         'msg': 'email_sent',
