@@ -2204,7 +2204,7 @@ def new_bounty(request):
             .filter(
                 bounty__bounty_owner_github_username__iexact=request.user.profile.handle,
                 bounty__idx_status='done'
-            ).values('fulfiller_github_username').annotate(fulfillment_count=Count('bounty')) \
+            ).values('fulfiller_github_username', 'profile__id').annotate(fulfillment_count=Count('bounty')) \
             .order_by('-fulfillment_count')[:5]
     bounty_params = {
         'newsletter_headline': _('Be the first to know about new funded issues.'),
