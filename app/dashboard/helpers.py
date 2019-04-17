@@ -504,6 +504,41 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 except Exception as e:
                     logger.error(e)
 
+            bounty_invitees = metadata.get('invite', '')
+            print (bounty_invitees)
+            if bounty_invitees:
+                from marketing.mails import share_bounty
+                from dashboard.utils import get_bounty_invite_url
+                emails = []
+                inviter = Profile.objects.get(handle=new_bounty.bounty_owner_github_username)
+                invite_url = get_bounty_invite_url(inviter, new_bounty.id)
+                msg = _("Check out this bounty that pays out") + \
+                    new_bounty.get_value_true + new_bounty.token_name + invite_url
+                for keyword in new_bounty.keywords_list:
+                    msg += " #" + keyword
+                for user_id in bounty_invitees:
+                    profile = Profile.objects.get(id=int(user_id))
+                    bounty_invite = BountyInvites.objects.create(
+                        status='pending'
+                    )
+                    bounty_invite.bounty.add(new_bounty)
+                    bounty_invite.inviter.add(inviter.user)
+                    bounty_invite.invitee.add(profile.user)
+                    emails.append(profile.email)
+                print(emails)
+                print(msg)
+                try:
+                    share_bounty(emails, msg, request.user.profile, invite_url, True)
+                    response = {
+                        'status': 200,
+                        'msg': 'email_sent',
+                    }
+                except Exception as e:
+                    logging.exception(e)
+                    response = {
+                        'status': 500,
+                        'msg': 'Email not sent',
+                    }
             # migrate data objects from old bounty
             if latest_old_bounty:
                 # Pull the interested parties off the last old_bounty
