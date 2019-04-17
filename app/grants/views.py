@@ -39,6 +39,7 @@ from app.utils import get_profile
 from cacheops import cached_view
 from dashboard.models import Profile
 from dashboard.utils import get_web3, has_tx_mined
+from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.forms import MilestoneForm
 from grants.models import Contribution, Grant, MatchPledge, Milestone, Subscription, Update
@@ -653,8 +654,7 @@ def new_matching_partner(request):
     def is_verified(tx_details, tx_hash, tx_amount, network):
         gitcoin_account = '0x00De4B13153673BCAE2616b67bf822500d325Fc3'
         return has_tx_mined(tx_hash, network) and\
-            tx_details.to == gitcoin_account and\
-            str(tx_details.value) == str(tx_amount)
+            tx_details.to.lower() == gitcoin_account.lower()
 
     if not request.user.is_authenticated:
         return get_json_response("Not Authorized", 403)
@@ -666,9 +666,11 @@ def new_matching_partner(request):
         network = 'mainnet'
         web3 = get_web3(network)
         tx = web3.eth.getTransaction(tx_hash)
-        match_pledge = MatchPledge(
+        if not tx:
+            raise Http404
+        match_pledge = MatchPledge.objects.create(
             profile=profile,
-            amount=tx.value,
+            amount=convert_amount(tx.value / 10**18, 'ETH', 'USDT'),
             data=json.dumps({
                 'tx_hash': tx_hash,
                 'network': network,
@@ -682,7 +684,7 @@ def new_matching_partner(request):
 
         return get_json_response(
             """Thank you for volunteering to match on Gitcoin Grants. 
-            You are supporting open source, and we thank you""", 201
+            You are supporting open source, and we thank you.""", 201
         )
 
     return get_json_response("Wrong request.", 400)

@@ -62,9 +62,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <p>A special thanks to the following partners who have offered to match contributions to Gitcoin Grants.  <a href="https://medium.com/gitcoin/gitcoin-grants-50k-oss-fund-e20e09dc2110">(Read Announcement Here)</a></p>
 
               {% if not user.is_authenticated %}
-                <a style="display:none;" class="btn btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">{% trans 'Become a Matching Partner' %}</a>
+                <a class="btn btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">{% trans 'Become a Matching Partner' %}</a>
               {% else %}
-                <div style="display:none;" class="btn btn-gc-blue" onclick="processPayment()">
+                <div class="btn btn-gc-blue" onclick="processPayment()">
                   {% trans 'Become a Matching Partner' %}
                 </div>
               {% endif %}
@@ -88,6 +88,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
           <div class="tab-content">
               <div class="tab-pane fade show active" id="currentpartners" role="tabpanel" aria-labelledby="currentpartners-tab">
+                {% if current_partners|length == 0 %}
+                  No current partners.
+                {% endif %}
                 {% for current_partner in current_partners %}
                   <div style="text-align:center; display: inline-block; padding: 10px;">
                     <h5>
