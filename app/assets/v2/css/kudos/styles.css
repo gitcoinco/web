@@ -682,3 +682,14 @@ a.cellarius-partner:before {
   color: #0D0764;
 }
 /*# sourceMappingURL=styles.css.map */
+
+/* CK Enggagement */
+body.ck{
+  background-image: url("/static/v2/images/ck.png") !important;
+}
+body.ck .top-nav{
+  display: none !important;
+}
+body.ck img.mw-100{
+  display: none !important;
+}
