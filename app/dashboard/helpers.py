@@ -512,7 +512,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 emails = []
                 inviter = Profile.objects.get(handle=new_bounty.bounty_owner_github_username)
                 invite_url = get_bounty_invite_url(inviter, new_bounty.id)
-                msg = _("Check out this bounty that pays out") + \
+                msg = "Check out this bounty that pays out" + \
                     new_bounty.get_value_true + new_bounty.token_name + invite_url
                 for keyword in new_bounty.keywords_list:
                     msg += " #" + keyword
