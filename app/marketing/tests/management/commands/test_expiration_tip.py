@@ -33,6 +33,7 @@ class TestExpirationTip(TestCase):
     def setUp(self):
         self.tip = Tip.objects.create(
             emails=['john@bar.com'],
+            primary_email=['john@bar.com'],
             tokenName='USDT',
             amount=7,
             username='john',

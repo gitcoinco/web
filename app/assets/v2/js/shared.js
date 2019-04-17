@@ -1556,7 +1556,7 @@ function check_balance_and_alert_user_if_not_enough(
   amount,
   msg = 'You do not have enough tokens to perform this action.') {
 
-  if (tokenAddress == "0x0" || tokenAddress == "0x0000000000000000000000000000000000000000") {
+  if (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000') {
     return;
   }
 
