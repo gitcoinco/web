@@ -366,7 +366,7 @@ $(document).ready(function() {
       var expirationTimeDelta = data.expirationTimeDelta;
       let reservedFor = $('.username-search').select2('data')[0];
       let inviteContributors = $('#invite-contributors.js-select2').select2('data').map((user) => {
-        return user.text;
+        return user.profile__id;
       });
 
       var metadata = {
