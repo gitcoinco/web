@@ -1,0 +1,180 @@
+{% comment %}
+    Copyright (C) 2019 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static email_obfuscator add_url_schema avatar_tags %}
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+
+    <style>
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);;
+      grid-gap: 5rem 3rem;
+    }
+
+    @media (min-width: 768px) {
+      .grid-4 {
+        grid-template-columns: repeat(2, 1fr);;
+      }
+    }
+
+    @media (min-width: 992px) {
+      .grid-4 {
+        grid-template-columns: repeat(3, 1fr);;
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .grid-4 {
+        grid-template-columns: repeat(4, 1fr);;
+      }
+    }
+
+    </style>
+
+  </head>
+
+  <body class="interior {{active}} g-font-muli bg-lightblue">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'shared/nav.html' %}
+    </div>
+    <div class="" id="gc-users-directory" v-cloak>
+
+      <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#usersFilters" aria-controls="usersFilters" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="usersFilters">
+            <!-- <div class="navbar-nav mr-4">
+              <label for="">{% trans 'Sort by:' %}</label>
+              <select name="" id="sort_order">
+                <option value="-created_on">{% trans 'Newest' %}</option>
+                <option value="created_on">{% trans 'Oldest' %}</option>
+                <option value="-popularity">{% trans 'All Time Popularity' %}</option>
+                <option value="-popularity_week">{% trans 'Trending' %}</option>
+                <option value="price_finney">{% trans 'Low price' %}</option>
+                <option value="-price_finney">{% trans 'High price' %}</option>
+                <option value="name">{% trans 'Name' %}</option>
+                <option value="-rarity">{% trans 'Rarity' %}</option>
+              </select>
+
+            </div>
+            <div class="navbar-nav">
+              <select class="keywords-filter form-control" multiple="multiple" style="width:300px; height: 37px;"></select>
+            </div>
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item active">
+                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Link</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Dropdown
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="#">Action</a>
+                  <a class="dropdown-item" href="#">Another action</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="#">Something else here</a>
+                </div>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+              </li>
+            </ul> -->
+            <form class="form-inline my-2 my-lg-0">
+              <input class="form-control mr-sm-2" v-model="searchTerm" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success my-2 my-sm-0" @click.prevent="searchUsers()">Search</button>
+            </form>
+          </div>
+        </nav>
+      </div>
+      <div class="container" @scroll.passive="onScroll($event)">
+        <div class="py-5 mt-5">
+          <div class="grid-4">
+            <div v-for="user in users" class="card shadow-sm border-0" :key="user.id">
+              <img class="rounded-circle shadow mx-auto mt-n5" width="140" height="140" :src="`/dynamic/avatar/${ user.handle }`"/>
+              <div class="card-body">
+                <h5 class="text-center">
+                  [[ user.data.name || user.handle ]]
+                  <span v-if="user.verification">
+                    <img src="{% static 'v2/images/badge-verify.svg' %}" alt="">
+                  </span>
+                </h5>
+                <a :href="`/profile/${ user.handle }`" class="text-center d-block">
+                  @[[ user.handle ]]
+                </a>
+                <div v-if="user.keywords">   
+                  <template v-for="keyword in user.keywords">
+                    <span class="badge badge--greenlight">[[ keyword ]]</span>[[ ' ' ]]
+                  </template>
+                </div>
+                <div class="">
+                  <a :href="`${ user.data.html_url }?tab=repositories`" target="_blank" rel="noopener noreferrer" >
+                    <i class="fab fa-github"></i>
+                  </a>
+                  <a :href="`${ user.data.blog }`" target="_blank" rel="noopener noreferrer" v-if="user.data.blog">
+                    <i class="fas fa-home"></i>
+                  </a>
+                  <a :href="`mailto:${ user.data.email }`" v-if="user.data.email">
+                    <i class="far fa-envelope"></i>
+                  </a>
+                </div>
+                <div class="my-2 font-smaller-3" id="job_status">
+                  <a :href="`${media_url}${user.resume}`" download data-toggle="tooltip" title="Download resume" v-if="user.show_job_status">
+                    <i class="fa fa-briefcase mr-2" aria-hidden="true"></i> 
+                  </a>
+                </div>
+                <small>
+                  Joined: <time :datetime="[[ user.created_on ]]" :title="[[ user.created_on ]]">[[ user.created_on | moment ]]</time> | [[user.actions_count]] actions
+                </small>
+              </div>
+              <!-- [[user]] -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+    {% include 'shared/messages.html' %}
+    <script src="{% static "v2/js/popper.min.js" %}"></script>
+    <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
+    <script>
+      let bootstrapTooltip = $.fn.tooltip.noConflict()
+      $.fn.runTooltip = bootstrapTooltip;
+      $('[data-toggle="tooltip"]').runTooltip();
+  
+    </script>
+    <script src="{% static "v2/js/users.js" %}"></script>
+
+  </body>
+</html>

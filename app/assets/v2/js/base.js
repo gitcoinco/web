@@ -103,6 +103,16 @@ $(document).ready(function() {
     });
   }
 
+  var remove_top_row = function() {
+    $('#top_nav_notification').parents('.row').remove();
+    localStorage['top_nav_notification_remove'] = true;
+  };
+
+  if (localStorage['top_nav_notification_remove']) {
+    remove_top_row();
+  }
+  $('#top_nav_notification').click(remove_top_row);
+
   // pulse animation on click
   $('.pulseClick').on('click', (event) => {
     let element = $(event.target);
@@ -135,6 +145,7 @@ $(document).ready(function() {
     }
   });
 });
+
 
 if ($('#is-authenticated').val() === 'True' && !localStorage['notify_policy_update']) {
   localStorage['notify_policy_update'] = true;

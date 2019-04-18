@@ -26,7 +26,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 from django.db import transaction
-from django.http import Http404, JsonResponse
+from django.http import Http404, HttpResponseBadRequest, JsonResponse
 from django.utils import timezone
 
 from app.utils import get_semaphore, sync_profile
@@ -38,7 +38,7 @@ from dashboard.notifications import (
     maybe_market_to_user_discord, maybe_market_to_user_slack,
 )
 from dashboard.tokens import addr_to_token
-from economy.utils import convert_amount
+from economy.utils import ConversionRateNotFoundError, convert_amount
 from git.utils import get_gh_issue_details, get_url_dict
 from jsondiff import diff
 from marketing.mails import new_reserved_issue
@@ -115,7 +115,9 @@ def amount(request):
     response = {}
 
     try:
-        amount = request.GET.get('amount')
+        amount = str(request.GET.get('amount'))
+        if not amount.replace('.','').isnumeric():
+            return HttpResponseBadRequest('not number')
         denomination = request.GET.get('denomination', 'ETH')
         if not denomination:
             denomination = 'ETH'
@@ -132,6 +134,9 @@ def amount(request):
             'usdt': amount_in_usdt,
         }
         return JsonResponse(response)
+    except ConversionRateNotFoundError as e:
+        logger.debug(e)
+        raise Http404
     except Exception as e:
         logger.error(e)
         raise Http404
@@ -451,7 +456,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 'featuring_date': timezone.make_aware(
                     timezone.datetime.fromtimestamp(metadata.get('featuring_date', 0)),
                     timezone=UTC),
-                'repo_type': metadata.get('repo_type', None),
+                'repo_type': metadata.get('repo_type', 'public'),
                 'unsigned_nda': unsigned_nda,
                 'bounty_owner_github_username': bounty_issuer.get('githubUsername', ''),
                 'bounty_owner_address': bounty_issuer.get('address', ''),
@@ -477,6 +482,8 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
             )
             if latest_old_bounty_dict['bounty_reserved_for_user']:
                 latest_old_bounty_dict['bounty_reserved_for_user'] = Profile.objects.get(pk=latest_old_bounty_dict['bounty_reserved_for_user'])
+            if latest_old_bounty_dict.get('bounty_owner_profile'):
+                latest_old_bounty_dict['bounty_owner_profile'] = Profile.objects.get(pk=latest_old_bounty_dict['bounty_owner_profile'])
             if latest_old_bounty_dict['unsigned_nda']:
                 latest_old_bounty_dict['unsigned_nda'] = BountyDocuments.objects.filter(
                     pk=latest_old_bounty_dict['unsigned_nda']

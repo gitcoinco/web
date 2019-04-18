@@ -517,9 +517,9 @@ def receive(request, key, txid, network):
     if not kudos_transfer:
         raise Http404
 
-    is_authed = kudos_transfer.trust_url or request.user.username.replace('@', '') in [
-        kudos_transfer.username.replace('@', ''),
-        kudos_transfer.from_username.replace('@', '')
+    is_authed = kudos_transfer.trust_url or request.user.username.replace('@', '').lower() in [
+        kudos_transfer.username.replace('@', '').lower(),
+        kudos_transfer.from_username.replace('@', '').lower()
     ]
     not_mined_yet = get_web3(kudos_transfer.network).eth.getBalance(
         Web3.toChecksumAddress(kudos_transfer.metadata['address'])) == 0
@@ -590,7 +590,7 @@ def receive(request, key, txid, network):
         'key': key,
         'is_authed': is_authed,
         'disable_inputs': kudos_transfer.receive_txid or not_mined_yet or not is_authed,
-        'tweet_text': urllib.parse.quote_plus(f"I just got a {kudos_transfer.kudos_token_cloned_from.humanized_name} Kudos on @GetGitcoin.  ")
+        'tweet_text': urllib.parse.quote_plus(f"I just got a {kudos_transfer.kudos_token_cloned_from.humanized_name} Kudos on @gitcoin.  ")
     }
 
     return TemplateResponse(request, 'transaction/receive.html', params)
@@ -605,7 +605,7 @@ def receive_bulk(request, secret):
         raise Http404
 
     coupon = coupons.first()
-
+    _class = request.GET.get('class', '')
     if coupon.num_uses_remaining <= 0:
         messages.info(request, f'Sorry but the coupon for a free kudos has has expired.  Contact the person who sent you the coupon link, or you can still purchase one on this page.')
         return redirect(coupon.token.url)
@@ -711,6 +711,6 @@ def receive_bulk(request, secret):
         'user': request.user,
         'is_authed': request.user.is_authenticated,
         'kudos_transfer': kudos_transfer,
-        'tweet_text': urllib.parse.quote_plus(f"I just got a {coupon.token.humanized_name} Kudos on @GetGitcoin.  ")
+        'tweet_text': urllib.parse.quote_plus(f"I just got a {coupon.token.humanized_name} Kudos on @gitcoin.  ")
     }
     return TemplateResponse(request, 'transaction/receive_bulk.html', params)

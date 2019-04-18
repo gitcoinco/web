@@ -65,6 +65,9 @@ body {
   border-radius: 50px;
   margin-top: 0px;
 }
+.bounty_details .avatar.Azure-Samples {
+  border-radius: 0px;
+}
 
 #avatar_url .avatar {
   width: 80px;

@@ -132,9 +132,16 @@ urlpatterns = [
 
     # Hackathons / special events
     re_path(r'^hackathon/(?P<hackathon>.*)?/', dashboard.views.hackathon, name='hackathon'),
+    re_path(r'^hackathon?/', dashboard.views.hackathon, name='hackathon_idx'),
     path('hackathon-list/', dashboard.views.get_hackathons, name='get_hackathons'),
 
     # action URLs
+    url(r'^funder', retail.views.funder_bounties_redirect, name='funder_bounties_redirect'),
+    re_path(
+        r'^contributor/?(?P<tech_stack>.*)/?',
+        retail.views.contributor_bounties_redirect,
+        name='contributor_bounties_redirect'
+    ),
     url(r'^bounties/funder', retail.views.funder_bounties, name='funder_bounties'),
     re_path(
         r'^bounties/contributor/?(?P<tech_stack>.*)/?', retail.views.contributor_bounties, name='contributor_bounties'
@@ -270,6 +277,7 @@ urlpatterns = [
     re_path(r'^subscribe/$', retail.views.subscribe, name='subscribe'),
     re_path(r'^about/?', retail.views.about, name='about'),
     re_path(r'^mission/?', retail.views.mission, name='mission'),
+    re_path(r'^jobs/?', retail.views.jobs, name='jobs'),
     re_path(r'^vision/?', retail.views.vision, name='vision'),
     re_path(r'^products/?', retail.views.products, name='products'),
     path('not_a_token', retail.views.not_a_token, name='not_a_token'),
@@ -545,6 +553,9 @@ urlpatterns = [
     # for login with twitter
     url(r'twilogin/login', retail.views.twitter_login),
     url(r'twilogin/callback', retail.views.twitter_callback)
+    # users
+    path('users', dashboard.views.users_directory, name='users_directory'),
+    url(r'^api/v0.1/users_fetch/', dashboard.views.users_fetch, name='users_fetch'),
 ]
 
 if settings.ENABLE_SILK:
