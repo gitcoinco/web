@@ -348,10 +348,22 @@ var update_registry = function(coinbase) {
 
 
 $(document).on('click', '.user-fulfiller', function(event) {
-  var elem = $('.username-search')
-  var term = $(this).data('username')
-  var $search = elem.data('select2').dropdown.$search || elem.data('select2').selection.$search;
+  let elem = $('.username-search');
+  let term = $(this).data('username');
+  let count = elem.length;
+  let $search;
 
+  elem.each((index, select) => {
+    if (!select.value) {
+      $search = $(select).data('select2').dropdown.$search || $(select).data('select2').selection.$search;
+    } else if (index === count - 1) {
+      add_row();
+      let newSelect = $('.username-search:last');
+
+      $search = newSelect.data('select2').dropdown.$search || newSelect.data('select2').selection.$search;
+    }
+  });
   $search.val(term);
   $search.trigger('input');
-})
+
+});

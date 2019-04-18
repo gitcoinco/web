@@ -77,14 +77,15 @@
                   <input type="hidden" id="token_address" value="{{ bounty.token_address }}">
                   <input type="hidden" id="original_amount" value="{{ bounty.value_true }}">
                   <span id="token_name">{{ bounty.token_name }}</span>
-                  <div class="my-2">
-                    + Crowdfunding
-                    {% for key, token in bounty.additional_funding_summary.items %}
-                      <input name='crowdfundedAmount' class="w-20 gc-round-text-input" type="number" value="{{ token.amount }}" disabled style="width: 80px;"/> {{ key }}
-                    {% endfor %}
-                    <p><b>Note</b> Crowdfunded alocation % is internally based on bounty payment allocation.</p>
-                  </div>
+                  {% if bounty.additional_funding_summary %}
+                    <div class="my-2">
+                      {% trans '+ Crowdfunding' %}
+                      {% for key, token in bounty.additional_funding_summary.items %}
+                        <input name='crowdfundedAmount' class="w-20 gc-round-text-input" type="number" value="{{ token.amount }}" disabled style="width: 80px;"/> {{ key }}
+                      {% endfor %}
                      
+                    </div>
+                  {% endif %}
                 </div>
                 <div class="w-100 mt-2 terms_container">
                   <input name="pay_with_bounty" id="pay_with_bounty" type="checkbox" value=1 checked="checked" onchange="update_registry()"/>
@@ -114,43 +115,22 @@
                     <p>{% trans "Note: The refund and payout from bounty funds will be processed as asynchronous transactions, which means the payout will not happen until the refund transaction is confirmed. If you would like the payout to occur immediately, you must have the payout amount available in your wallet." %}</p>
                   </div>
                 </div>
-                <div class="">
-                  These contributors had submitted work
-                  {% for fulfillment in open_fulfillments %}
-                    <span class="badge badge-primary user-fulfiller" data-username="{{ fulfillment.fulfiller_github_username }}">
-                    <img src="{{ fulfillment.profile.avatar_url }}" alt="" width="20" class="rounded-circle">
-                    {{ fulfillment.fulfiller_github_username }}
-                    </span>
-                  {% endfor %}
-
-                  <script>
-                 
-
-// Fetch the preselected item, and add to the control
-// var studentSelect = $('.username-search');
-// var url = `/api/v0.1/users_search/?token=${currentProfile.githubToken}&term=octavioamu`;
-// $.ajax({
-//     type: 'GET',
-//     url: url
-// }).then(function (data) {
-//     // create the option and append to Select2
-//     var option = new Option(data.avatar_id, data.avatar_url, data.email,data.id, data.preferred_payout_address ,data.text, true, true);
-//     studentSelect.append(option).trigger('change');
-
-//     // manually trigger the `select2:select` event
-//     studentSelect.trigger({
-//         type: 'select2:select',
-//         params: {
-//             data: data
-//         }
-//     });
-// });
-                  
-                  </script>
-                </div>
                 <div class="w-100 my-3">
                   <label for=bountyFulfillment>{% trans "Payout" %}</label>
                   <label id="tooltip" class="ethinfo-hover">{% trans "Where is my Eth going? " %}<i class='fa fa-info-circle'></i></label>
+                  {% if open_fulfillments %}
+                    <div class="mb-2">
+                      <p>
+                        {% trans 'These contributors had submitted work: (click to add)' %}
+                      </p>
+                      {% for fulfillment in open_fulfillments %}
+                        <span class="badge badge-primary user-fulfiller" data-username="{{ fulfillment.fulfiller_github_username }}">
+                        <img src="{{ fulfillment.profile.avatar_url }}" alt="" width="20" class="rounded-circle">
+                        {{ fulfillment.fulfiller_github_username }}
+                        </span>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
                   <div>
                     <div class="w-100 mt-2" style="display: inline-block;">
                       {% include 'shared/bulk_payout_form.html' %}
@@ -161,6 +141,9 @@
                       <p class="mb-0 tipPreview"><strong><span id="preview_tip_overage"></span>{% trans ' to be paid as tip(s) from wallet ending in ...' %}<span id="preview_tip_ending"></span></strong></p>
                       <p class="mb-0">{% trans 'Paid' %}: -<span id="total_cost"></span></p>
                       <p class="mb-0">{% trans 'Net' %}: <span id="total_net"></span></p>
+                      {% if bounty.additional_funding_summary %}
+                        <p class="my-2"><b>{% trans 'Note' %}</b> {% trans 'Crowdfunded alocation % is internally based on bounty payment allocation.' %}</p>
+                      {% endif %}
                       <p class="mt-1 mb-0">{% trans 'Transactions:' %}</p>
                       <table id="transaction_registry">
                         <tr>
