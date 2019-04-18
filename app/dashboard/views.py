@@ -778,6 +778,46 @@ def users_fetch(request):
     return JsonResponse(params, status=200, safe=False)
 
 
+def get_user_bounties(request):
+    token = request.GET.get('token', None)
+
+    print('wrewr')
+    print(request)
+    """Get user open bounties.
+
+    Args:
+        request (str): get user id or use authenticated.
+
+    Variables:
+
+    Returns:
+        json: array of bounties.
+
+    """
+    # if request.is_ajax():
+    print('ajax')
+        # userId = request.GET.get('user', None)
+
+        # if userId:
+        #     profile = 
+        # else:
+    profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+    params = dict()
+    results = []
+    open_bounties = Bounty.objects.current().filter(bounty_owner_github_username__iexact=profile.handle) \
+                        .filter(idx_status='open')
+    for bounty in open_bounties:
+        bounty_json = {}
+        bounty_json = bounty.to_standard_dict()
+
+        results.append(bounty_json)
+    # else:
+        # raise Http404
+    print(open_bounties)
+    params['data'] = json.loads(json.dumps(results, default=str))
+    return JsonResponse(params, status=200, safe=False)
+
+
 def dashboard(request):
     """Handle displaying the dashboard."""
 

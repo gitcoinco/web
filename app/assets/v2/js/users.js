@@ -3,6 +3,7 @@ let usersPage = 1;
 let usersNumPages = '';
 let usersHasNext = false;
 let numUsers = '';
+let funderBounties = [];
 
 Vue.mixin({
   methods: {
@@ -64,6 +65,19 @@ Vue.mixin({
           vm.usersHasNext = false;
         }
       }
+    },
+    fetchBounties: function() {
+      vm = this;
+      
+      // fetch bounties
+      vm.funderBounties = [];
+      console.log(vm.funderBounties);
+    },
+    openBounties: function(userIds) {
+      vm = this;
+      console.log(userIds);
+      vm.showModal = true;
+
     }
   }
 
@@ -82,10 +96,13 @@ if (document.getElementById('gc-users-directory')) {
       media_url,
       searchTerm: null,
       bottom: false,
-      params: {}
+      params: {},
+      funderBounties,
+      showModal: false
     },
     mounted() {
       this.fetchUsers();
+      this.fetchBounties();
     },
     beforeMount() {
       window.addEventListener('scroll', () => {
@@ -99,3 +116,7 @@ if (document.getElementById('gc-users-directory')) {
     }
   });
 }
+
+Vue.component('modal', {
+  template: '#modal-template'
+});

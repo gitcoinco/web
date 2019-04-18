@@ -103,7 +103,7 @@ button:focus {
 .btn-gc-purple,
 .btn-gc-pink {
   color: white;
-  padding: .75rem 1.5rem;
+  /* padding: .75rem 1.5rem; */
 }
 
 .btn-outline-gc-blue,
