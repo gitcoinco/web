@@ -635,15 +635,13 @@ var attach_override_status = function() {
 
 var show_interest_modal = function() {
   var self = this;
-  let modals = $('#modalInterest');
+  var modals = $('#modalInterest');
   let modalBody = $('#modalInterest .modal-content');
   let modalUrl = `/interest/modal?redirect=${window.location.pathname}&pk=${document.result['pk']}`;
 
   modals.on('show.bs.modal', function() {
     modalBody.load(modalUrl, ()=> {
       if (document.result['repo_type'] === 'private') {
-        $('#nda-upload').show();
-        $('#issueNDA').prop('required', true);
         document.result.unsigned_nda ? $('.nda-download-link').attr('href', document.result.unsigned_nda.doc) : $('#nda-upload').hide();
       }
 
@@ -656,18 +654,21 @@ var show_interest_modal = function() {
         event.preventDefault();
 
         let msg = issueMessage.val().trim();
-        let issueNDA = $('#issueNDA')[0].files;
 
         if (!msg || msg.length < 30) {
           _alert({message: gettext('Please provide an action plan for this ticket. (min 30 chars)')}, 'error');
           return false;
         }
 
-        if (typeof issueNDA[0] !== 'undefined') {
+        const issueNDA = document.result['repo_type'] === 'private' ? $('#issueNDA')[0].files : undefined;
+
+        if (issueNDA && typeof issueNDA[0] !== 'undefined') {
+
           const formData = new FormData();
 
           formData.append('docs', issueNDA[0]);
           formData.append('doc_type', 'signed_nda');
+
           const ndaSend = {
             url: '/api/v0.1/bountydocument',
             method: 'POST',
@@ -687,7 +688,7 @@ var show_interest_modal = function() {
                 $(self).attr('href', '/uninterested');
                 $(self).find('span').text(gettext('Stop Work'));
                 $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
-                $.modal.close();
+                modals.bootstrapModal('hide');
               }
             }).catch((error) => {
               if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
@@ -705,7 +706,7 @@ var show_interest_modal = function() {
               $(self).attr('href', '/uninterested');
               $(self).find('span').text(gettext('Stop Work'));
               $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
-              $.modal.close();
+              modals.bootstrapModal('hide');
             }
           }).catch((error) => {
             if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
@@ -764,9 +765,8 @@ const repoInstructions = () => {
 var set_extended_time_html = function(extendedDuration, currentExpires) {
   currentExpires.setTime(currentExpires.getTime() + (extendedDuration * 1000));
   $('input[name=updatedExpires]').val(currentExpires.getTime());
-  var date = getFormattedDate(currentExpires);
-  var days = timeDifference(now, currentExpires).split(' ');
-  var time = getTimeFromDate(currentExpires);
+  const date = getFormattedDate(currentExpires);
+  let days = timeDifference(now, currentExpires).split(' ');
 
   days.shift();
   days = days.join(' ');
@@ -1422,12 +1422,13 @@ const process_activities = function(result, bounty_activities) {
     const fulfillment = meta.fulfillment || {};
     const new_bounty = meta.new_bounty || {};
     const old_bounty = meta.old_bounty || {};
-    const has_signed_nda = result.interested.map(interest => {
-      if (interest.profile.handle === _activity.profile.handle && interest.signed_nda) {
-        return interest.signed_nda.doc;
-      }
-      return false;
-    });
+    const has_signed_nda = result.interested.length ?
+      result.interested.map(interest => {
+        if (interest.profile.handle === _activity.profile.handle && interest.signed_nda) {
+          return interest.signed_nda.doc;
+        }
+        return false;
+      }) : false;
     const has_pending_interest = !!result.interested.find(interest =>
       interest.profile.handle === _activity.profile.handle && interest.pending);
     const has_interest = !!result.interested.find(interest =>

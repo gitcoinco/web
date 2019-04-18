@@ -1,0 +1,85 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+<div class="modal fade g-modal" id="modalRating" tabindex="-1" role="dialog" aria-labelledby="modalRatingTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header border-0">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body center-block">
+          <h2 class="h5 text-center font-weight-bold">
+            Rate this
+            {% if user.username|lower ==  bounty.bounty_owner_github_username|lower %}
+              Contributor
+            {% else %}
+              Funder
+            {% endif %}
+          </h2>
+          <p class="p-2 text-center font-smaller-1 text-black-60">{% trans 'Your feedback is very valuable for us! Only Gitcoin admins are able to see your feedback.' %}</p>
+          <div class="text-center">
+            {% if bounty.funding_organisation %}
+              <img class="card-rating__avatar rounded-circle" alt="{{ bounty.funding_organisation }}" width="63" height="63" src="{% url 'org_avatar' bounty.funding_organisation %}">
+            {% else %}
+              <img class="card-rating__avatar rounded-circle" alt="{{ bounty.bounty_owner_github_username }}" width="63" height="63" src="{% url 'org_avatar' bounty.bounty_owner_github_username %}">
+            {% endif %}
+            <h6 class="font-weight-semibold mt-3">{{ bounty.title }}</h6>
+            <div class="small text-black-60">
+              {% if user.username|lower ==  bounty.bounty_owner_github_username|lower %}
+                Work submitted by
+              {% else %}
+                Funded by
+              {% endif %}
+              <a class="font-weight-semibold text-current" href="{% url "profile" receiver %}">{{ receiver }}</a> <img src="{% url 'org_avatar' receiver %}" alt="{{ receiver }}" width="21" height="21" class="rounded-circle">
+            </div>
+          </div>
+          <form id="ratingForm">
+            <input type="hidden" name="bounty_id" value="{{ bounty.id }}">
+
+            {% if user.username|lower ==  bounty.bounty_owner_github_username|lower %}
+              <!-- funder -->
+              <input type="hidden" name="review[reviewType]" value="approver">
+            {% else %}
+                <!-- contributor -->
+              <input type="hidden" name="review[reviewType]" value="worker">
+            {% endif %}
+            <input type="hidden" name="review[receiver]" value="{{ receiver }}">
+            {% include 'shared/rating.html' with counterparty='contributor' id='review[rating]' class="text-center" %}
+            <div>
+              {% include 'shared/rating.html' with counterparty='contributor' id='review[satisfaction_rating]' label="Satisfaction" class="rating--small text-left" %}
+              {% include 'shared/rating.html' with counterparty='contributor' id='review[communication_rating]' label="Comunication/Responsiveness" class="rating--small text-left" %}
+              {% include 'shared/rating.html' with counterparty='contributor' id='review[speed_rating]' label="Speed" class="rating--small text-left" %}
+              {% include 'shared/rating.html' with counterparty='contributor' id='review[code_quality_rating]' label="Quality of code or submission" class="rating--small text-left" %}
+              {% include 'shared/rating.html' with counterparty='contributor' id='review[recommendation_rating]' label="Recommended to other funders" class="rating--small text-left" %}
+
+              <div class="w-100 mt-2 p-2">
+                <label class="form__label text-weight_semibold" for="review">{% trans "Anything else you’d like to share?" %}</label>
+                <textarea name='review[comment]' id='review' class="form-control gc-border-blue" placeholder="{% trans 'Let us know here...' %}"></textarea>
+              </div>
+
+            </div>
+            <div class="p-2 text-right">
+              <button type="button" class="button button--primary-o shadow-none" data-dismiss="modal" aria-label="Close">Cancel</button>
+              <button class="button button--primary shadow-none ml-2" id="sendInvites">Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
