@@ -37,7 +37,7 @@
     {% if hackathon %}
       <div class="row pt-5 pb-5 text-center" style="
         background: rgb(25, 0, 63);
-        background-image: url({% static '/v2/images/header-bg.png' %});
+        background-image: url({% static 'v2/images/header-bg.png' %});
         background-size: cover;
       ">
         <div class="col g-font-muli">
@@ -51,6 +51,7 @@
             {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
           </span>
         </div>
+        {% include 'shared/hackathon_sponsors.html' %}
       </div>
     {% else %}
       {% include 'dashboard/ftux.html' %}
@@ -94,6 +95,9 @@
         </div>
       </div>
     </div>
+  </div>
+  <div class="row bottom_notification font-caption">
+    {% blocktrans %}<strong>Did you know?</strong> - Gitcoin has delivered over $1mm to Open Source developers in the last year. <a href="https://gitcoin.co/results">See our results</a>.{% endblocktrans %}
   </div>
 
     <div id="onboard-footer" class="row hidden font-body">

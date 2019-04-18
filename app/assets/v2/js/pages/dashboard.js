@@ -501,7 +501,7 @@ var refreshBounties = function(event, offset, append, do_save_search) {
       
       $('#list-orgs').append(`
       ${organizations.map((org, index) => `
-      <div class="form__radio option">
+      <div class="form__radio option ${org}">
         <input name="org" id="${org}" type="radio" value="${org}" val-ui="${org}" />
         <label class="filter-label" for=${org}>
           <img src="/dynamic/avatar/${org}" class="rounded-circle" width="24" height="24"> ${org}
