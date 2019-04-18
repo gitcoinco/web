@@ -23,7 +23,7 @@ def getTokenList(walletAddress):
                         address = transaction['contractAddress']
                         if address not in tokenList:                        
                                 exchangeAddress = factoryContract.functions.getExchange(web3.toChecksumAddress(address)).call()
-                                if exchangeAddress != '0x0000000000000000000000000000000000000000':
+                                if exchangeAddress != '0x0000000000000000000000000000000000000000':  #Indicates no Uniswap exchange so not added to tokenList
                                         tokenList[address]={'tokenName':transaction['tokenName'],'tokenSymbol':transaction['tokenSymbol'],'exchangeAddress':exchangeAddress}
                                         print('Token Name: ' + tokenList[address]['tokenName']+ ' and Token Symbol is: ' + tokenList[address]['tokenSymbol'])
                                         print('Token address is: ' + address)
@@ -39,7 +39,7 @@ def getTokenList(walletAddress):
                         for token in r.json()['tokens']:
                                 address = token['tokenInfo']['address']
                                 exchangeAddress = factoryContract.functions.getExchange(web3.toChecksumAddress(address)).call()
-                                if exchangeAddress != '0x0000000000000000000000000000000000000000':
+                                if exchangeAddress != '0x0000000000000000000000000000000000000000': #Indicates no Uniswap exchange so not added to tokenList
                                         tokenList[address] = {'tokenName':token['tokenInfo']['name'],'tokenSymbol':token['tokenInfo']['symbol'],'exchangeAddress':exchangeAddress}
                                         print('Token Name: ' + tokenList[address]['tokenName'] + ' and Token Symbol is: ' + tokenList[address]['tokenSymbol'])
                                         print('Token address is: ' + address)
@@ -50,7 +50,7 @@ def getTokenList(walletAddress):
                                 address = transaction['contractAddress']
                                 if address not in tokenList:                        
                                         exchangeAddress = factoryContract.functions.getExchange(web3.toChecksumAddress(address)).call()
-                                        if exchangeAddress != '0x0000000000000000000000000000000000000000':
+                                        if exchangeAddress != '0x0000000000000000000000000000000000000000': #Indicates no Uniswap exchange so not added to tokenList
                                                 tokenList[exchangeAddress]={'tokenName':transaction['tokenName'],'tokenSymbol':transaction['tokenSymbol'],'exchangeAddress':exchangeAddress}
                                                 print('Token Name: ' + tokenList[address]['tokenName']+ ' and Token Symbol is: ' + tokenList[address]['tokenSymbol'])
                                                 print('Token address is: ' + address)
@@ -58,8 +58,7 @@ def getTokenList(walletAddress):
 
         return tokenList
 
-# Swap total balance of ERC-20 token associated with Uniswap exchange address to ETH
-## Doesn't work currently.
+# Swap total balance of ERC-20 token associated with Uniswap exchange address to ETH  -- DOES NOT WORK CURRENTLY. Transactions fail when submitted to Uniswap exchange
 def sell_token(exchangeAddress):
         if (tests == True):
                 chain = 4
