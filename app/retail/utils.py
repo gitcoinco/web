@@ -160,12 +160,14 @@ def get_codefund_history_at_date(date, keyword):
         amount += 7450
     if date > timezone.datetime(2018, 12, 23):
         amount += 6150
-    if date > timezone.datetime(2019, 1, 23):
+    if date > timezone.datetime(2019, 1, 9):
         amount += 9700
-    if date > timezone.datetime(2019, 2, 23):
+    if date > timezone.datetime(2019, 2, 9):
         amount += 11272
-    if date > timezone.datetime(2019, 3, 23):
-        amount += 13029 # MTD
+    if date > timezone.datetime(2019, 3, 9):
+        amount += 18726
+    if date > timezone.datetime(2019, 4, 9):
+        amount += 13643 # MTD
     return amount
 
 
@@ -245,14 +247,28 @@ def get_funder_receiver_stats(keyword):
     tip_recipients = list(eligible_tips.values_list('receive_address', flat=True))
     bounty_recipients = list(eligible_bounty_fulfillments.values_list('fulfiller_address', flat=True))
 
+    tip_values = [tip.value_in_usdt for tip in eligible_tips]
+    bounty_values = [bounty.value_in_usdt for bounty in eligible_bounties]
+    all_values = bounty_values + tip_values
+
+    bounty_value = sum([float(ele) for ele in bounty_values if ele])
+    tip_value = sum([float(ele) for ele in tip_values if ele])
+    all_value = [float(ele) for ele in all_values if ele]
+
     num_funders = len(set(bounty_funders + tip_funders))
     num_recipients = len(set(bounty_recipients + tip_recipients))
     num_transactions = eligible_tips.count() + eligible_bounties.count()
+
+    total_value = bounty_value + tip_value
+    avg_value = round(total_value / num_transactions)
+    median_value = statistics.median(all_value)
 
     return {
         'funders': num_funders,
         'recipients': num_recipients,
         'transactions': num_transactions,
+        'avg_value': avg_value,
+        'median_value': median_value,
     }
 
 
@@ -457,13 +473,16 @@ def build_stat_results(keyword=None):
 
     # bounties history
     cumulative = False
-    context['bounty_history'] = json.dumps(get_bounty_history(keyword, cumulative))
+    bounty_history = get_bounty_history(keyword, cumulative)
+    context['bounty_history'] = json.dumps(bounty_history)
     pp.profile_time('bounty_history')
 
     # Bounties
     completion_rate = get_completion_rate(keyword)
     funder_receiver_stats = get_funder_receiver_stats(keyword)
     context['funders'] = funder_receiver_stats['funders']
+    context['avg_value'] = funder_receiver_stats['avg_value']
+    context['median_value'] = funder_receiver_stats['median_value']
     context['transactions'] = funder_receiver_stats['transactions']
     context['recipients'] = funder_receiver_stats['recipients']
     context['audience'] = json.loads(context['members_history'])[-1][1]
@@ -513,6 +532,19 @@ def build_stat_results(keyword=None):
     pp.profile_time('kudos_tokens')
     pp.profile_time('final')
     context['keyword'] = keyword
-    context['title'] = f"{keyword.capitalize() if keyword else ''} Results"
+    context['title'] = f"${round(context['universe_total_usd'] / 1000000, 1)}m in " + f"{keyword.capitalize() if keyword else ''} Results"
     context['programming_languages'] = ['All'] + programming_languages
+
+
+    # last month data
+    today = timezone.now()
+    first = today.replace(day=1)
+    lastMonth = first - timezone.timedelta(days=1)
+    context['prev_month_name'] = lastMonth.strftime("%B %Y")
+    context['prev_month_name_short'] = lastMonth.strftime("%B")
+    bh = bounty_history[-1] if context['prev_month_name'] == bounty_history[-1][0] else bounty_history[-2]
+    bh[0] = 0
+    context['last_month_amount'] = round(sum(bh)/1000)
+    context['last_month_amount_hourly'] = sum(bh) / 30 / 24
+
     return context

@@ -1221,7 +1221,7 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
     }
 
     if (renderForExplorer) {
-      if (typeof web3 != 'undefined' && web3.eth.coinbase == result['bounty_owner_address']) {
+      if (typeof web3 != 'undefined' && typeof web3.eth != 'undefined' && web3.eth.coinbase == result['bounty_owner_address']) {
         result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">mine</span></a>';
       } else if (result['fulfiller_address'] !== '0x0000000000000000000000000000000000000000') {
         result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">' + result['status'] + '</span></a>';
@@ -1550,3 +1550,33 @@ $(document).ready(function() {
     });
   });
 });
+
+function check_balance_and_alert_user_if_not_enough(
+  tokenAddress,
+  amount,
+  msg = 'You do not have enough tokens to perform this action.') {
+
+  if (tokenAddress == "0x0" || tokenAddress == "0x0000000000000000000000000000000000000000") {
+    return;
+  }
+
+  let token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+  let from = web3.eth.coinbase;
+  let token_details = tokenAddressToDetails(tokenAddress);
+  let token_decimals = token_details['decimals'];
+  let token_name = token_details['name'];
+
+  token_contract.balanceOf.call(from, function(error, result) {
+    if (error) return;
+    let balance = result.toNumber() / Math.pow(10, token_decimals);
+    let balance_rounded = Math.round(balance * 10) / 10;
+
+    if (parseFloat(amount) > balance) {
+      let msg1 = gettext(msg);
+      let msg2 = gettext(' You have ') + balance_rounded + ' ' + token_name + ' ' + gettext(' but you need ') + amount + ' ' + token_name;
+
+      _alert(msg1 + msg2, 'warning');
+    }
+  });
+
+}

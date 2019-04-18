@@ -326,6 +326,8 @@ def subscribe(request):
     }
     return TemplateResponse(request, 'pricing/subscribe.html', context)
 
+def funder_bounties_redirect(request):
+    return redirect(funder_bounties)
 
 
 def funder_bounties(request):
@@ -398,6 +400,10 @@ def funder_bounties(request):
         'meta_description': "The Gitcoin platform connects freelance developers with open bug bounties or online jobs, paid in crypto (ETH). Leverage a global workforce to quickly complete software development and coding jobs."
     }
     return TemplateResponse(request, 'bounties/funder.html', context)
+
+
+def contributor_bounties_redirect(request, tech_stack):
+    return redirect(contributor_bounties, tech_stack= '/'+ tech_stack)
 
 
 def contributor_bounties(request, tech_stack):
@@ -1507,7 +1513,7 @@ def livestream(request):
 
 
 def twitter(request):
-    return redirect('http://twitter.com/getgitcoin')
+    return redirect('http://twitter.com/gitcoin')
 
 
 def fb(request):

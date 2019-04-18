@@ -37,7 +37,7 @@
     {% if hackathon %}
       <div class="row pt-5 pb-5 text-center" style="
         background: rgb(25, 0, 63);
-        background-image: url({% static '/v2/images/header-bg.png' %});
+        background-image: url({% static 'v2/images/header-bg.png' %});
         background-size: cover;
       ">
         <div class="col g-font-muli">
@@ -51,6 +51,7 @@
             {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
           </span>
         </div>
+        {% include 'shared/hackathon_sponsors.html' %}
       </div>
     {% else %}
       {% include 'dashboard/ftux.html' %}
@@ -58,8 +59,14 @@
     <div id="dashboard-content" class="container-fluid no-gutter">
       <div class="row">
         {% if hackathon %}
-          <div class="col-12 col-lg-12 col-xl-12 body">
+          <div class="col-12 col-lg-3 col-xl-2 invisible" id="sidebar_container" style="background: #F2F6F9;">
+            {% include 'dashboard/sidebar_search_hackathon.html' %}
+          </div>
+          <div class="col-12 col-lg-9 col-xl-10 body">
             <div class="container p-2" id="bounties">
+                <div id="dashboard-title" class="hidden">
+                  {% include 'shared/search_bar.html' %}
+                </div>
               <div class="col-12 col-lg-12 pl-2 pb-1 title-row">
                 <span class="font-title ml-1 text-highlight-gc-blue">{% trans 'Bounties' %}</span>
               </div>
@@ -88,6 +95,9 @@
         </div>
       </div>
     </div>
+  </div>
+  <div class="row bottom_notification font-caption">
+    {% blocktrans %}<strong>Did you know?</strong> - Gitcoin has delivered over $1mm to Open Source developers in the last year. <a href="https://gitcoin.co/results">See our results</a>.{% endblocktrans %}
   </div>
 
     <div id="onboard-footer" class="row hidden font-body">
@@ -126,16 +136,16 @@
 
       var bootstrapModal = $.fn.modal.noConflict()
       $.fn.bootstrapModal = bootstrapModal
-    </script>
-    <script src="/dynamic/js/tokens_dynamic.js"></script>
-    <script src="{% static "v2/js/tokens.js" %}"></script>
-    <script src="{% static "v2/js/pages/dashboard.js" %}"></script>
-    <script src="{% static "v2/js/capture-rating.js" %}"></script>
-    <script>
-      document.keywords = {{keywords | safe}};
       {% if hackathon %}
         document.hackathon = "{{ hackathon.slug | safe }}";
       {% endif %}
+    </script>
+    <script src="/dynamic/js/tokens_dynamic.js"></script>
+    <script src="{% static "v2/js/tokens.js" %}"></script>
+    <script src="{% static "v2/js/capture-rating.js" %}"></script>
+    <script src="{% static "v2/js/pages/dashboard.js" %}"></script>
+    <script>
+      document.keywords = {{keywords | safe}};
     </script>
   </body>
 </html>

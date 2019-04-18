@@ -1,0 +1,96 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<style>
+  .img-holder {
+    margin: 1em;
+    align-items: center;
+    display: flex;
+  }
+
+  .img-holder--dark {
+    background-color:#333;
+  }
+
+  .img-holder--light {
+    background-color:#eee;    
+  }
+
+  .big-sponsors .img-holder  {
+    width: 113px;
+    height: 113px;
+    padding: 1em;
+  }
+
+  .small-sponsors .img-holder  {
+    width: 75px;
+    height: 75px;
+    padding: 0.8em;
+  }
+</style>
+<div class="col-12 sponsors text-white mt-3 mb-5">
+  Supported by
+  <div class="big-sponsors d-flex flex-wrap justify-content-center mt-4">
+    <div class="img-holder rounded-circle img-holder--dark">
+      <img src="{% static 'v2/images/hackathon-sponsors/big/quorum.svg' %}" alt="Quorum" title="Quorum" class="mw-100 mh-100 img-cover" width="113" height="113">
+    </div>
+    <div class="img-holder rounded-circle img-holder--light">
+      <img src="{% static 'v2/images/hackathon-sponsors/big/labs-logo-blue.svg' %}" alt="Consensys Labs" title="Consensys Labs" class="mw-100 mh-100 img-cover" width="113" height="113">
+    </div>
+    <div class="img-holder rounded-circle img-holder--dark">
+      <img src="{% static 'v2/images/hackathon-sponsors/big/mythx-light.png' %}" alt="MythX" title="MythX" class="mw-100 mh-100 img-cover" width="113" height="">
+    </div>
+    <div class="img-holder rounded-circle img-holder--light">
+      <img src="{% static 'v2/images/hackathon-sponsors/big/pegasys-logo.svg' %}" alt="Pegasys" title="Pegasys" class="mw-100 mh-100 img-cover" width="113" height="113">
+    </div>
+    <div class="img-holder rounded-circle img-holder--light">
+      <img src="{% static 'v2/images/hackathon-sponsors/big/microsoft.svg' %}" alt="Microsoft" title="Microsoft" class="mw-100 mh-100 img-cover" width="113" height="">
+    </div>
+    <div class="img-holder rounded-circle img-holder--light">
+      <img src="{% static 'v2/images/hackathon-sponsors/big/adex-vector-logo.svg' %}" alt="Adex" title="Adex" class="mw-100 mh-100 img-cover" width="113" height="113">
+    </div>
+  </div>
+  <div class="small-sponsors d-flex flex-wrap justify-content-center">
+    <div class="img-holder rounded-circle img-holder--light">
+      <img src="{% static 'v2/images/hackathon-sponsors/small/chainlink-hexagon.svg' %}" alt="Chainlink" title="Chainlink" class="mw-100 mh-100 img-cover" width="75" height="75">
+    </div>
+    <div class="img-holder rounded-circle img-holder--light">
+      <img src="{% static 'v2/images/hackathon-sponsors/small/kauri_logo_vertical.svg' %}" alt="Kauri" title="Kauri" class="mw-100 mh-100 img-cover" width="75" height="75">
+    </div>
+    <div class="img-holder rounded-circle img-holder--light">
+      <img src="{% static 'v2/images/hackathon-sponsors/small/leapdao.svg' %}" alt="LeapDAO" title="LeapDAO" class="mw-100 mh-100 img-cover" width="75" height="">
+    </div>
+    <div class="img-holder rounded-circle img-holder--light">
+      <img src="{% static 'v2/images/hackathon-sponsors/small/kleros-logo-vertical.svg' %}" alt="Kleros" title="Kleros" class="mw-100 mh-100 img-cover" width="75" height="75">
+    </div>
+    <div class="img-holder rounded-circle img-holder--light">
+      <img src="{% static 'v2/images/hackathon-sponsors/small/alethio-no-bg.svg' %}" alt="Alethio" title="Alethio" class="mw-100 mh-100 img-cover" width="75" height="">
+    </div>
+    <div class="img-holder rounded-circle img-holder--light">
+      <img src="{% static 'v2/images/hackathon-sponsors/small/coinmark_blue_lg.svg' %}" alt="Coinmark" title="Coinmark" class="mw-100 mh-100 img-cover" width="75" height="75">
+    </div>
+    <div class="img-holder rounded-circle img-holder--light">
+      <img src="{% static 'v2/images/hackathon-sponsors/small/autom8.svg' %}" alt="Autom(8)" title="Autom(8)" class="mw-100 mh-100 img-cover" width="75" height="75">
+    </div>
+    <div class="img-holder rounded-circle img-holder--light">
+      <img src="{% static 'v2/images/hackathon-sponsors/small/logo_poa.svg' %}" alt="POA" title="POA" class="mw-100 mh-100 img-cover" width="75" height="">
+    </div>
+    <div class="img-holder rounded-circle img-holder--light">
+      <img src="{% static 'v2/images/hackathon-sponsors/small/fluence-h.svg' %}" alt="Fluence" title="Fluence" class="mw-100 mh-100 img-cover" width="75" height="75">
+    </div>
+  </div>
+</div>

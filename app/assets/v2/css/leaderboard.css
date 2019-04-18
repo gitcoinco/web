@@ -47,6 +47,7 @@
 
 .leaderboard .winner img {
   max-height: 10rem;
+  border-radius: 50%;
 }
 
 .leaderboard .leaderboard_entry img {

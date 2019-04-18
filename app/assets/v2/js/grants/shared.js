@@ -151,6 +151,9 @@ $(document).ready(function() {
   }
 
   const listen_web3_1_changes = () => {
+    if (typeof web3 == 'undefined') {
+      return;
+    }
     web3.eth.getCoinbase().then(function(result) {
       show_error_banner(result);
       if (result) {

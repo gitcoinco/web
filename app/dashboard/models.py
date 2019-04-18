@@ -1881,8 +1881,30 @@ class Profile(SuperModel):
     job_location = JSONField(default=dict, blank=True)
     linkedin_url = models.CharField(max_length=255, default='', blank=True, null=True)
     resume = models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('The profile resume.'))
+    actions_count = models.IntegerField(default=3)
 
     objects = ProfileQuerySet.as_manager()
+
+    @property
+    def get_my_tips(self):
+        return Tip.objects.filter(username__iexact=self.handle)
+
+    @property
+    def get_sent_tips(self):
+        return Tip.objects.filter(from_username__iexact=self.handle)
+
+    @property
+    def get_my_bounties(self):
+        return self.bounties
+
+    @property
+    def get_sent_bounties(self):
+        return Bounty.objects.current().filter(bounty_owner_github_username__iexact=self.handle)
+
+    @property
+    def get_my_grants(self):
+        from grants.models import Grant
+        return Grant.objects.filter(Q(admin_profile=self) | Q(team_members__in=[self]) | Q(subscriptions__contributor_profile=self))
 
     @property
     def get_my_kudos(self):
@@ -1922,6 +1944,15 @@ class Profile(SuperModel):
 
         return kudos_transfers
 
+    @property
+    def get_num_actions(self):
+        num = 0
+        num += self.get_sent_kudos.count()
+        num += self.get_my_kudos.count()
+        num += self.get_my_tips.count()
+        num += self.get_sent_tips.count()
+        num += self.get_my_grants.count()
+        return num
 
     @property
     def get_average_star_rating(self):
@@ -2729,6 +2760,7 @@ def psave_profile(sender, instance, **kwargs):
     instance.handle = instance.handle.replace(' ', '')
     instance.handle = instance.handle.replace('@', '')
     instance.handle = instance.handle.lower()
+    instance.actions_count = instance.get_num_actions
 
 
 @receiver(user_logged_in)
