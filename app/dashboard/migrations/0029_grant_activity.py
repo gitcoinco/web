@@ -7,8 +7,8 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0018_matchpledge_data'),
-        ('dashboard', '0023_auto_20190325_1404'),
+        ('grants', '0019_auto_20190412_0321'),
+        ('dashboard', '0028_profile_actions_count'),
     ]
 
     operations = [
