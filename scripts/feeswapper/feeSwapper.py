@@ -10,55 +10,30 @@ from web3.middleware import geth_poa_middleware
 
 
 # Get all ERC-20 tokens and associated Uniswap Exchange addresses (if any).
-# Returns a dict with keys being token ERC-20 contracts and associated name/symbol/Uniswap exchange address
+# Returns a dict with keys being token ERC-20 contracts and associated name/symbol/Uniswap exchange address/wallet balance in that token
 
-## If running tests, Ethplorer API isn't available so always calls Etherscan API 
-## and then looks through every ERC-20 token transaction to see if there is an associated Uniswap exchange
 def getTokenList(walletAddress):
         if (tests == True): 
-                tokenList = {}
-                print(walletAddress)
-                r = requests.get('http://api-rinkeby.etherscan.io/api?module=account&action=tokentx&address='+walletAddress+'&startblock=0&endblock=999999999&sort=asc&apikey='+etherscanAPIKey)
-                for transaction in r.json()['result']:
-                        address = transaction['contractAddress']
-                        if address not in tokenList:                        
-                                exchangeAddress = factoryContract.functions.getExchange(web3.toChecksumAddress(address)).call()
-                                if exchangeAddress != '0x0000000000000000000000000000000000000000':  #Indicates no Uniswap exchange so not added to tokenList
-                                        tokenList[address]={'tokenName':transaction['tokenName'],'tokenSymbol':transaction['tokenSymbol'],'exchangeAddress':exchangeAddress}
-                                        print('Token Name: ' + tokenList[address]['tokenName']+ ' and Token Symbol is: ' + tokenList[address]['tokenSymbol'])
-                                        print('Token address is: ' + address)
-                                        print('Uniswap Exchange address is: '+ exchangeAddress)
-
-## If not running tests, first tries Ethplorer API as this returns only ERC-20 tokens with a balance on that address.  
-## If Ethplorer is unavailable, calls Etherscan API and then checks every ERC-20 transaction for associated Uniswap exchanges
-
-        else:        
-                tokenList = {}   
-                r = requests.get('http://api.ethplorer.io/getAddressInfo/'+walletAddress+'?apiKey=freekey')
-                if r.ok:
-                        for token in r.json()['tokens']:
-                                address = token['tokenInfo']['address']
-                                exchangeAddress = factoryContract.functions.getExchange(web3.toChecksumAddress(address)).call()
-                                if exchangeAddress != '0x0000000000000000000000000000000000000000': #Indicates no Uniswap exchange so not added to tokenList
-                                        tokenList[address] = {'tokenName':token['tokenInfo']['name'],'tokenSymbol':token['tokenInfo']['symbol'],'exchangeAddress':exchangeAddress}
-                                        print('Token Name: ' + tokenList[address]['tokenName'] + ' and Token Symbol is: ' + tokenList[address]['tokenSymbol'])
-                                        print('Token address is: ' + address)
-                                        print('Uniswap Exchange address is: '+exchangeAddress)
-                else:  
-                        r = requests.get('http://api.etherscan.io/api?module=account&action=tokentx&address='+walletAddress+'&startblock=0&endblock=999999999&sort=asc&apikey='+etherscanAPIKey)
-                        for transaction in r.json()['result']:
-                                address = transaction['contractAddress']
-                                if address not in tokenList:                        
-                                        exchangeAddress = factoryContract.functions.getExchange(web3.toChecksumAddress(address)).call()
-                                        if exchangeAddress != '0x0000000000000000000000000000000000000000': #Indicates no Uniswap exchange so not added to tokenList
-                                                tokenList[exchangeAddress]={'tokenName':transaction['tokenName'],'tokenSymbol':transaction['tokenSymbol'],'exchangeAddress':exchangeAddress}
-                                                print('Token Name: ' + tokenList[address]['tokenName']+ ' and Token Symbol is: ' + tokenList[address]['tokenSymbol'])
-                                                print('Token address is: ' + address)
-                                                print('Uniswap Exchange address is: '+ exchangeAddress)
-
+                network = 'rinkeby'
+        else:
+                network = 'mainnet'
+        tokenList = {}
+        r = requests.get('https://blockscout.com/eth/'+network+'/api?module=account&action=tokenlist&address='+walletAddress)
+        for transaction in r.json()['result']:
+                address = transaction['contractAddress']
+                if address not in tokenList:                        
+                        exchangeAddress = factoryContract.functions.getExchange(web3.toChecksumAddress(address)).call()
+                        if exchangeAddress != '0x0000000000000000000000000000000000000000':
+                                tokenList[address]={'tokenName':transaction['name'],'tokenSymbol':transaction['symbol'],'exchangeAddress':exchangeAddress,'balance':transaction['balance']}
+                                print('Token Name: ' + tokenList[address]['tokenName']+ ' and Token Symbol is: ' + tokenList[address]['tokenSymbol'])
+                                print('Token address is: ' + address)
+                                print('Uniswap Exchange address is: '+ exchangeAddress)
+                                print('Token balance is: ' + tokenList[address]['balance'])
         return tokenList
 
-# Swap total balance of ERC-20 token associated with Uniswap exchange address to ETH  -- DOES NOT WORK CURRENTLY. Transactions fail when submitted to Uniswap exchange
+
+# Swap total balance of ERC-20 token associated with Uniswap exchange address to ETH
+## Doesn't work currently.
 def sell_token(exchangeAddress):
         if (tests == True):
                 chain = 4
@@ -99,7 +74,6 @@ def sell_token(exchangeAddress):
 # Arguments needed to run script.  Will convert to Django command once bugs are worked out
 parser = argparse.ArgumentParser(description='Fee Address Altcoint Swapper')
 parser.add_argument('-t','--test', action='store_true', help='Run on Rinkeby testnet', required=False)
-parser.add_argument('-e','--etherscan', help='provide your Etherscan API key', required=True)
 parser.add_argument('-w','--wallet', help='Provide the wallet address to use', required=True)
 parser.add_argument('-k','--key', help='Provide the private key for the wallet address to use', required=True)
 parser.add_argument('-r','--rpc', help='Provide RPC provider for web3 access', required=True)
@@ -108,7 +82,7 @@ if args['test']:
         tests = True
 else:
         tests = False
-etherscanAPIKey=args['etherscan']
+
 walletAddress=args['wallet']
 privateKey=args['key']
 rpcProvider=args['rpc']
