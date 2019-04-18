@@ -75,6 +75,7 @@ const init = () => {
   $('#create-grant').validate({
     submitHandler: function(form) {
       let data = {};
+      const SUBMINER_ADDRESS = "0x0";
 
       $(form).find(':input:disabled').removeAttr('disabled');
 
@@ -106,7 +107,9 @@ const init = () => {
         // data.gas_price
         web3.utils.toTwosComplement(0),
         // contract version
-        web3.utils.toTwosComplement(0)
+        web3.utils.toTwosComplement(0),
+        // specified relayer
+        web3.utils.toChecksumAddress(SUBMINER_ADDRESS)
       ];
 
       web3.eth.getAccounts(function(err, accounts) {
