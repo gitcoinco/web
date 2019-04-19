@@ -8,6 +8,8 @@ from tokenABI import tokenABI
 from exchangeABI import exchangeABI
 from web3.middleware import geth_poa_middleware
 
+#Amount of slippage from target Ether price from estimated price on exchange allowed when trading tokens back to ETH
+SLIPPAGE = 0.05  
 
 # Get all ERC-20 tokens and associated Uniswap Exchange addresses (if any).
 # Returns a dict with keys being token ERC-20 contracts and associated name/symbol/Uniswap exchange address/wallet balance in that token
@@ -20,15 +22,14 @@ def getTokenList(walletAddress):
         tokenList = {}
         r = requests.get('https://blockscout.com/eth/'+network+'/api?module=account&action=tokenlist&address='+walletAddress)
         for transaction in r.json()['result']:
-                address = transaction['contractAddress']
-                if address not in tokenList:                        
-                        exchangeAddress = factoryContract.functions.getExchange(web3.toChecksumAddress(address)).call()
-                        if exchangeAddress != '0x0000000000000000000000000000000000000000':
-                                tokenList[address]={'tokenName':transaction['name'],'tokenSymbol':transaction['symbol'],'exchangeAddress':exchangeAddress,'balance':transaction['balance']}
-                                print('Token Name: ' + tokenList[address]['tokenName']+ ' and Token Symbol is: ' + tokenList[address]['tokenSymbol'])
-                                print('Token address is: ' + address)
-                                print('Uniswap Exchange address is: '+ exchangeAddress)
-                                print('Token balance is: ' + tokenList[address]['balance'])
+                address = transaction['contractAddress']                      
+                exchangeAddress = factoryContract.functions.getExchange(web3.toChecksumAddress(address)).call()
+                if exchangeAddress != '0x0000000000000000000000000000000000000000':
+                        tokenList[address]={'tokenName':transaction['name'],'tokenSymbol':transaction['symbol'],'exchangeAddress':exchangeAddress,'balance':transaction['balance']}
+                        print('Token Name: ' + tokenList[address]['tokenName']+ ' and Token Symbol is: ' + tokenList[address]['tokenSymbol'])
+                        print('Token address is: ' + address)
+                        print('Uniswap Exchange address is: '+ exchangeAddress)
+                        print('Token balance is: ' + tokenList[address]['balance'])
         return tokenList
 
 
@@ -43,6 +44,8 @@ def sell_token(exchangeAddress):
         tokenAddress = exchangeContract.functions.tokenAddress().call()
         tokenContract = web3.eth.contract(address = tokenAddress, abi = tokenABI)
         walletBalance = tokenContract.functions.balanceOf(walletAddress).call()
+        if walletBalance == 0:
+                return
         outputReserve = web3.eth.getBalance(exchangeAddress)
         inputReserve = tokenContract.functions.balanceOf(exchangeAddress).call()
         numerator = walletBalance * outputReserve * 997
@@ -70,9 +73,9 @@ def sell_token(exchangeAddress):
                 tx_receipt = web3.eth.getTransactionReceipt(result)
         print(tx_receipt)
 
-## Submit token -> ETH exchange trade to Uniswap with 5% slippage.  Transaction always fails.
+## Submit token -> ETH exchange trade to Uniswap.  Transaction only works for BAT exchange on Rinkeby.
         nonce = web3.eth.getTransactionCount(walletAddress)
-        txn_dict = exchangeContract.functions.tokenToEthSwapInput(web3.toWei(walletBalance,'wei'),web3.toWei(outputAmount*0.95,'wei'),deadline=deadline).buildTransaction({
+        txn_dict = exchangeContract.functions.tokenToEthSwapInput(web3.toWei(walletBalance,'wei'),web3.toWei(outputAmount*(1-SLIPPAGE),'wei'),deadline=deadline).buildTransaction({
                 'chainId': chain,
                 'gas': 300000,
                 'gasPrice': web3.toWei(4,'gwei'),
