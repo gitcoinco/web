@@ -52,8 +52,27 @@ def sell_token(exchangeAddress):
         print('Current token balance is : '+ str(web3.fromWei(walletBalance,'ether')))
         print('Amount of ETH to be bought is :' + str(web3.fromWei(outputAmount,'ether')))
         print('Exchange rate is : ' + str(outputAmount/walletBalance)+ ' ETH/token')
+
+## Approve exchange to spend ERC-20 token balance
         nonce = web3.eth.getTransactionCount(walletAddress)
-        txn_dict = exchangeContract.functions.tokenToEthSwapInput(web3.toWei(walletBalance,'wei'),web3.toWei(outputAmount,'wei'),deadline=deadline).buildTransaction({
+        txn_dict = exchangeContract.functions.approve(walletAddress,web3.toWei(walletBalance,'wei')).buildTransaction({
+                'chainId': chain,
+                'gas': 300000,
+                'gasPrice': web3.toWei(4,'gwei'),
+                'nonce':nonce,
+        })
+        signed_txn = web3.eth.account.signTransaction(txn_dict,private_key=privateKey)
+        result = web3.eth.sendRawTransaction(signed_txn.rawTransaction)
+        tx_receipt = web3.eth.getTransactionReceipt(result)
+        count = 0
+        while tx_receipt is None and (count < 30):
+                time.sleep(10)
+                tx_receipt = web3.eth.getTransactionReceipt(result)
+        print(tx_receipt)
+
+## Submit token -> ETH exchange trade to Uniswap with 5% slippage.  Transaction always fails.
+        nonce = web3.eth.getTransactionCount(walletAddress)
+        txn_dict = exchangeContract.functions.tokenToEthSwapInput(web3.toWei(walletBalance,'wei'),web3.toWei(outputAmount*0.95,'wei'),deadline=deadline).buildTransaction({
                 'chainId': chain,
                 'gas': 300000,
                 'gasPrice': web3.toWei(4,'gwei'),
@@ -69,7 +88,6 @@ def sell_token(exchangeAddress):
                 tx_receipt = web3.eth.getTransactionReceipt(result)
 
         print(tx_receipt)
-  
 
 # Arguments needed to run script.  Will convert to Django command once bugs are worked out
 parser = argparse.ArgumentParser(description='Fee Address Altcoint Swapper')
