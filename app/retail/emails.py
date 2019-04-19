@@ -933,7 +933,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Last Day Of Gitcoin Grants | $65K In Prizes"
+    subject = "Last Day Of Gitcoin Grants Round 2 | $65K In Prizes @ MSFT Hackathon"
     new_kudos_pks = [2240, 2243, 2242]
     new_kudos_size_px = 150
 
