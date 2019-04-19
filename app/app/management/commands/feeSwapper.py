@@ -8,6 +8,7 @@ from web3 import Web3
 #import exchangeABI
 from web3.middleware import geth_poa_middleware
 from django.core.management.base import BaseCommand, CommandError
+from django.conf import settings
 
 #Amount of slippage from target Ether price from estimated price on exchange allowed when trading tokens back to ETH
 SLIPPAGE = 0.05  
@@ -26,8 +27,6 @@ exchangeABI = """[{"name": "TokenPurchase", "inputs": [{"type": "address", "name
 # Returns a dict with keys being token ERC-20 contracts and associated name/symbol/Uniswap exchange address/wallet balance in that token
 class Command(BaseCommand):
         help="Convert ERC-20 token balances in .env/FEE_ADDRESS to ETH where a Uniswap exchange is available"
-        privateKey = ''
-        walletAddress = ''
         rpcProvider = ''
         tests = ''
         web3 = ''
@@ -37,8 +36,6 @@ class Command(BaseCommand):
         def add_arguments(self, parser):
                 # Optional arguments for testing
                 parser.add_argument('-t','--test', action='store_true', help='Run on Rinkeby testnet')
-                parser.add_argument('-w','--wallet', help='Provide the wallet address to use')
-                parser.add_argument('-k','--key', help='Provide the private key for the wallet address to use')
                 parser.add_argument('-r','--rpc', help='Provide RPC provider for web3 access')
 
         def getTokenList(self, walletAddress):
@@ -73,7 +70,7 @@ class Command(BaseCommand):
                 exchangeContract = self.web3.eth.contract(address = exchangeAddress, abi = exchangeABI)
                 tokenAddress = exchangeContract.functions.tokenAddress().call()
                 tokenContract = self.web3.eth.contract(address = tokenAddress, abi = tokenABI)
-                walletBalance = tokenContract.functions.balanceOf(self.walletAddress).call()
+                walletBalance = tokenContract.functions.balanceOf(settings.FEE_ADDRESS).call()
                 if walletBalance == 0:
                         return
                 outputReserve = self.web3.eth.getBalance(exchangeAddress)
@@ -87,14 +84,14 @@ class Command(BaseCommand):
                 self.stdout.write('Exchange rate is : ' + str(outputAmount/walletBalance)+ ' ETH/token')
 
         ## Approve exchange to spend ERC-20 token balance
-                nonce = self.web3.eth.getTransactionCount(self.walletAddress)
-                txn_dict = exchangeContract.functions.approve(self.walletAddress,self.web3.toWei(walletBalance,'wei')).buildTransaction({
+                nonce = self.web3.eth.getTransactionCount(settings.FEE_ADDRESS)
+                txn_dict = exchangeContract.functions.approve(settings.FEE_ADDRESS,self.web3.toWei(walletBalance,'wei')).buildTransaction({
                         'chainId': chain,
                         'gas': 300000,
                         'gasPrice': self.web3.toWei(4,'gwei'),
                         'nonce':nonce,
                 })
-                signed_txn = self.web3.eth.account.signTransaction(txn_dict,private_key=self.privateKey)
+                signed_txn = self.web3.eth.account.signTransaction(txn_dict,private_key=settings.FEE_ADDRESS_PRIVATE_KEY)
                 result = self.web3.eth.sendRawTransaction(signed_txn.rawTransaction)
                 tx_receipt = self.web3.eth.getTransactionReceipt(result)
                 count = 0
@@ -104,14 +101,14 @@ class Command(BaseCommand):
                 print(tx_receipt)
 
         ## Submit token -> ETH exchange trade to Uniswap.  Transaction only works for BAT exchange on Rinkeby.
-                nonce = self.web3.eth.getTransactionCount(self.walletAddress)
+                nonce = self.web3.eth.getTransactionCount(settings.FEE_ADDRESS)
                 txn_dict = exchangeContract.functions.tokenToEthSwapInput(self.web3.toWei(walletBalance,'wei'),self.web3.toWei(outputAmount*(1-SLIPPAGE),'wei'),deadline=deadline).buildTransaction({
                         'chainId': chain,
                         'gas': 300000,
                         'gasPrice': self.web3.toWei(4,'gwei'),
                         'nonce':nonce,
                 })
-                signed_txn = self.web3.eth.account.signTransaction(txn_dict,private_key=self.privateKey)
+                signed_txn = self.web3.eth.account.signTransaction(txn_dict,private_key=settings.FEE_ADDRESS_PRIVATE_KEY)
                 result = self.web3.eth.sendRawTransaction(signed_txn.rawTransaction)
 
                 tx_receipt = self.web3.eth.getTransactionReceipt(result)
@@ -130,8 +127,6 @@ class Command(BaseCommand):
                 else:
                         self.tests = False   
                 
-                self.walletAddress=options['wallet']
-                self.privateKey=options['key']
                 self.rpcProvider=options['rpc']
 
                 # Setup web3 connectivity
@@ -148,7 +143,7 @@ class Command(BaseCommand):
                 self.factoryContract = self.web3.eth.contract(address = self.factoryAddress, abi = factoryABI)
 
                 # Get all potential ERC-20 tokens that have associated Uniswap exchanges
-                self.tokenList = self.getTokenList(self.walletAddress)
+                self.tokenList = self.getTokenList(settings.FEE_ADDRESS)
                 # Loop through all tokens and swap to ETH
                 for address, details in self.tokenList.items():
                         print(details['exchangeAddress'])
