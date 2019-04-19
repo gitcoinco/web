@@ -779,14 +779,10 @@ def users_fetch(request):
 
 
 def get_user_bounties(request):
-    token = request.GET.get('token', None)
-
-    print('wrewr')
-    print(request)
     """Get user open bounties.
 
     Args:
-        request (str): get user id or use authenticated.
+        request (int): get user by id or use authenticated.
 
     Variables:
 
@@ -794,18 +790,15 @@ def get_user_bounties(request):
         json: array of bounties.
 
     """
-    # if request.is_ajax():
-    print('ajax')
-        # userId = request.GET.get('user', None)
-
-        # if userId:
-        #     profile = 
-        # else:
-    profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+    user_id = request.GET.get('user', None)
+    if user_id:
+        profile = Profile.objects.get(id=int(user_id))
+    else:
+        profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
     params = dict()
     results = []
     open_bounties = Bounty.objects.current().filter(bounty_owner_github_username__iexact=profile.handle) \
-                        .filter(idx_status='open')
+                        .exclude(idx_status='cancelled').exclude(idx_status='done')
     for bounty in open_bounties:
         bounty_json = {}
         bounty_json = bounty.to_standard_dict()

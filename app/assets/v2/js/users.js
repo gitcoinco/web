@@ -3,12 +3,12 @@ let usersPage = 1;
 let usersNumPages = '';
 let usersHasNext = false;
 let numUsers = '';
-let funderBounties = [];
+// let funderBounties = [];
 
 Vue.mixin({
   methods: {
     fetchUsers: function(newPage) {
-      var vm = this;
+      let vm = this;
 
       if (newPage) {
         vm.usersPage = newPage;
@@ -45,14 +45,15 @@ Vue.mixin({
       });
     },
     searchUsers: function() {
-      vm = this;
+      let vm = this;
+
       vm.users = [];
 
       vm.fetchUsers(1);
 
     },
     bottomVisible: function() {
-      vm = this;
+      let vm = this;
 
       const scrollY = window.scrollY;
       const visible = document.documentElement.clientHeight;
@@ -67,16 +68,40 @@ Vue.mixin({
       }
     },
     fetchBounties: function() {
-      vm = this;
+      let vm = this;
       
       // fetch bounties
-      vm.funderBounties = [];
-      console.log(vm.funderBounties);
+      let apiUrlBounties = '/api/v0.1/user_bounties/';
+
+      let getBounties = fetchData(apiUrlBounties, 'GET');
+
+      $.when(getBounties).then((response) => {
+        // response.data.forEach(function(item) {
+        //   console.log(item)
+        // });
+        vm.funderBounties = response.data;
+        console.log(vm.funderBounties);
+      });
+
     },
-    openBounties: function(userIds) {
-      vm = this;
-      console.log(userIds);
+    openBounties: function(user) {
+      let vm = this;
+
+      console.log(user);
+      vm.userSelected = user;
       vm.showModal = true;
+
+    },
+    sendInvite: function(bounty, user) {
+      let vm = this;
+
+      console.log(vm.bountySelected, user)
+      // let apiUrlInvite = '/api/v0.1/social_contribution_email/';
+      // let postInvite = fetchData(apiUrlInvite, 'POST');
+
+      // $.when(postInvite).then((response) => {
+      //   console.log(response);
+      // });
 
     }
   }
@@ -97,11 +122,14 @@ if (document.getElementById('gc-users-directory')) {
       searchTerm: null,
       bottom: false,
       params: {},
-      funderBounties,
-      showModal: false
+      funderBounties: [],
+      showModal: false,
+      bountySelected: null
     },
     mounted() {
       this.fetchUsers();
+    },
+    created() {
       this.fetchBounties();
     },
     beforeMount() {
