@@ -165,4 +165,7 @@ class Command(BaseCommand):
                 for address, details in self.tokenList.items():
                         print(details['exchangeAddress'])
                         self.sell_token(details['exchangeAddress'])
-                return self.tokenList['0xda5b056cfb861282b4b59d29c9b395bcc238d29b']['tokenSymbol']
+                if self.tests == True:
+                        return self.tokenList['0xda5b056cfb861282b4b59d29c9b395bcc238d29b']['tokenSymbol']
+                else:
+                        return self.tokenList
