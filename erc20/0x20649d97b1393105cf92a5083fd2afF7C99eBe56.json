@@ -1,0 +1,21 @@
+{
+  "symbol": "BTCLOVOL",
+  "address": "0x20649d97b1393105cf92a5083fd2afF7C99eBe56",
+  "overview":{
+    "en": "The BTC Low Volatility is a Set Token that captures smaller price swings of BTC in the medium to long term by buying low and selling high"
+  },
+  "email": "hello@setprotocol.com",
+  "website": "https://www.tokensets.com/",
+  "state": "NORMAL",
+  "published_on": "2019-04-22",
+  "initial_price":{
+    "USD":"100 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/SetProtocol",
+    "telegram": "https://t.me/joinchat/Fx8D6wyprLUlM1jMVnaRdg",
+    "github": "https://github.com/setprotocol/",
+    "slack": "https://setprotocol.slack.com/",
+    "medium": "https://medium.com/set-protocol"
+  }
+}
