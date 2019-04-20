@@ -4223,7 +4223,7 @@
     - Rubiks Cube
     - strategy
     - gameboy
-  image: Cassette.svg
+  image: 90_games.svg
 - name: lets_play_some_music
   artist: guistf
   description: For those who like a good classic of the 90's.
@@ -4234,7 +4234,7 @@
     - just for fun
     - cassette
     - play
-  image: pogs.svg
+  image: Cassette.svg
 - name: POGs
   artist: guistf
   description: Fun images printed making them supremely collectible.
@@ -4245,7 +4245,7 @@
     - snakes
     - game
     - School
-  image: 90_games.svg
+  image: pogs.svg
 - name: Helper_Fox
   description: You are a cherished member of the MetaMask community. Thanks for helping!
   priceFinney: 10
