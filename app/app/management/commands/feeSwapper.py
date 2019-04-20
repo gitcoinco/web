@@ -21,8 +21,8 @@ class Command(BaseCommand):
         """ Check FEE_ADDRESS for ERC-20 token balances and tries to convert to ETH using Uniswap if exchange is available"""
 
         help="Convert ERC-20 token balances in .env/FEE_ADDRESS to ETH where a Uniswap exchange is available"
-        rpcProvider = ''
-        tests = ''
+
+        tests = ''   
         web3 = ''
         factoryContract = ''
         tokenList = ''
