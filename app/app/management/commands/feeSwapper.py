@@ -1,11 +1,13 @@
 import argparse
-import time
-import requests
 import json
+import time
+
+from django.conf import settings
+from django.core.management.base import BaseCommand, CommandError
+
+import requests
 from web3 import Web3
 from web3.middleware import geth_poa_middleware
-from django.core.management.base import BaseCommand, CommandError
-from django.conf import settings
 
 # Amount of slippage from target Ether price from estimated price on exchange allowed when trading tokens back to ETH
 SLIPPAGE = 0.05  
@@ -165,7 +167,3 @@ class Command(BaseCommand):
                         self.sell_token(details['exchangeAddress'])
 
                 return self.tokenList
-
-
-
-
