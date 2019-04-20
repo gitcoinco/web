@@ -1,7 +1,6 @@
 load_tokens();
 
-const FEE_PERCENTAGE = 10;
-// Wait until page is loaded, then run the function
+const FEE_PERCENTAGE = 10; // TODO: fetch from backend
 
 const is_funder = function() {
   return document.is_funder_github_user_same && $('input[name=bountyOwnerAddress]').val() == web3.eth.coinbase;
@@ -29,10 +28,6 @@ $(document).ready(function() {
 
 
   $('input[name=amount]').on('change', function() {
-    const amount = $('input[name=amount]').val();
-
-    $('#summary-bounty-amount').html(amount);
-    $('#summary-fee-amount').html((amount / FEE_PERCENTAGE).toFixed(4));
     populateBountyTotal();
   });
 
@@ -257,10 +252,16 @@ $(document).ready(function() {
  * Bounty Amount + Fee + Featured Bounty
  */
 const populateBountyTotal = () => {
+  const amount = $('input[name=amount]').val();
+  const fee = ((amount / 100) * FEE_PERCENTAGE).toFixed(4);
+
+  $('#summary-bounty-amount').html(amount);
+  $('#summary-fee-amount').html(fee);
+
   const bountyToken = $('#summary-bounty-token').html();
   const bountyAmount = Number($('#summary-bounty-amount').html());
-  const bountyFee = Number((bountyAmount / FEE_PERCENTAGE).toFixed(4));
-  const totalBounty = bountyAmount + bountyFee;
+  const bountyFee = Number((bountyAmount / 100 * FEE_PERCENTAGE).toFixed(4));
+  const totalBounty = (bountyAmount + bountyFee).toFixed(4);
   const total = `${totalBounty} ${bountyToken}`;
 
   $('#fee-percentage').html(FEE_PERCENTAGE);

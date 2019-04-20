@@ -6,7 +6,7 @@ load_tokens();
 var localStorage;
 var quickstartURL = document.location.origin + '/bounty/quickstart';
 
-const FEE_PERCENTAGE = 10;
+const FEE_PERCENTAGE = 10; // TODO: fetch from backend
 
 var new_bounty = {
   last_sync: new Date()
@@ -96,8 +96,6 @@ $('#last-synced').hide();
 
 $(document).ready(function() {
 
-  $('#summary-bounty-amount').html($('input[name=amount]').val());
-  $('#summary-fee-amount').html(($('input[name=amount]').val() / FEE_PERCENTAGE).toFixed(4));
   populateBountyTotal();
 
   // Load sidebar radio buttons from localStorage
@@ -134,10 +132,6 @@ $(document).ready(function() {
   });
 
   $('input[name=amount]').on('change', function() {
-    const amount = $('input[name=amount]').val();
-
-    $('#summary-bounty-amount').html(amount);
-    $('#summary-fee-amount').html((amount / FEE_PERCENTAGE).toFixed(4));
     populateBountyTotal();
   });
 
@@ -639,11 +633,18 @@ getAmountEstimate(usdFeaturedPrice, 'ETH', (amountEstimate) => {
  * Bounty Amount + Fee + Featured Bounty
  */
 const populateBountyTotal = () => {
+
+  const amount = $('input[name=amount]').val();
+  const fee = ((amount / 100) * FEE_PERCENTAGE).toFixed(4);
+
+  $('#summary-bounty-amount').html(amount);
+  $('#summary-fee-amount').html(fee);
+
   const bountyToken = $('#summary-bounty-token').html();
   const bountyAmount = Number($('#summary-bounty-amount').html());
-  const bountyFee = Number((bountyAmount / FEE_PERCENTAGE).toFixed(4));
+  const bountyFee = Number((bountyAmount / 100 * FEE_PERCENTAGE).toFixed(4));
   const isFeaturedBounty = $('input[name=featuredBounty]:checked').val();
-  let totalBounty = bountyAmount + bountyFee;
+  let totalBounty = (bountyAmount + bountyFee).toFixed(4);
   let total = '';
 
   if (isFeaturedBounty) {
