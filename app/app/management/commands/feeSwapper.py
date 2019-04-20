@@ -45,8 +45,8 @@ class Command(BaseCommand):
                 else:
                         network = 'mainnet'
                 tokenList = {}
-                print('https://blockscout.com/eth/'+network+'/api?module=account&action=tokenlist&address='+settings.FEE_ADDRESS)
                 r = requests.get('https://blockscout.com/eth/'+network+'/api?module=account&action=tokenlist&address='+settings.FEE_ADDRESS)
+                print(r.json())
                 # Check if API is functioning or not and return null token list if so
                 if not r.ok:
                         return {}
@@ -165,5 +165,4 @@ class Command(BaseCommand):
                 for address, details in self.tokenList.items():
                         print(details['exchangeAddress'])
                         self.sell_token(details['exchangeAddress'])
-
-                return self.tokenList
+                return self.tokenList['0xda5b056cfb861282b4b59d29c9b395bcc238d29b']['tokenSymbol']
