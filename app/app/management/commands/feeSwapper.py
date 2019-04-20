@@ -18,6 +18,8 @@ exchangeABI = """[{"name": "TokenPurchase", "inputs": [{"type": "address", "name
 # Get all ERC-20 tokens and associated Uniswap Exchange addresses (if any).
 # Returns a dict with keys being token ERC-20 contracts and associated name/symbol/Uniswap exchange address/wallet balance in that token
 class Command(BaseCommand):
+        """ Check FEE_ADDRESS for ERC-20 token balances and tries to convert to ETH using Uniswap if exchange is available"""
+
         help="Convert ERC-20 token balances in .env/FEE_ADDRESS to ETH where a Uniswap exchange is available"
         rpcProvider = ''
         tests = ''
@@ -29,20 +31,26 @@ class Command(BaseCommand):
                 # Optional arguments for testing
                 parser.add_argument('-t','--test', action='store_true', help='Run on Rinkeby testnet')
 
-        def getTokenList(self, walletAddress):
-                
-                if (self.tests == True): 
+        def getTokenList(self):
+                """ Queries the blockscout API for ERC-20 token balances"""
+                if (self.tests == True):
                         network = 'rinkeby'
                 else:
                         network = 'mainnet'
                 tokenList = {}
-                print('https://blockscout.com/eth/'+network+'/api?module=account&action=tokenlist&address='+walletAddress)
-                r = requests.get('https://blockscout.com/eth/'+network+'/api?module=account&action=tokenlist&address='+walletAddress)
-                print(r.text)
+                print('https://blockscout.com/eth/'+network+'/api?module=account&action=tokenlist&address='+settings.FEE_ADDRESS)
+                r = requests.get('https://blockscout.com/eth/'+network+'/api?module=account&action=tokenlist&address='+settings.FEE_ADDRESS)
+                # Check if API is functioning or not and return null token list if so
+                if not r.ok:
+                        return {}
+                # Check if API call returned any ERC-20 tokens associated with the FEE_ADDRESS.  Return null token list if not
+                if r.json()['status'] != '1':
+                        return {}
                 for transaction in r.json()['result']:
                         address = transaction['contractAddress']                      
                         exchangeAddress = self.factoryContract.functions.getExchange(self.web3.toChecksumAddress(address)).call()
                         if exchangeAddress != '0x0000000000000000000000000000000000000000':
+                                # Only add token to list to ETH if Uniswap exchange exists
                                 tokenList[address]={'tokenName':transaction['name'],'tokenSymbol':transaction['symbol'],'exchangeAddress':exchangeAddress,'balance':transaction['balance']}
                                 self.stdout.write('Token Name: ' + tokenList[address]['tokenName']+ ' and Token Symbol is: ' + tokenList[address]['tokenSymbol'])
                                 self.stdout.write('Token address is: ' + address)
@@ -50,13 +58,13 @@ class Command(BaseCommand):
                                 self.stdout.write('Token balance is: ' + tokenList[address]['balance'])
                 return tokenList
 
-
-        # Swap total balance of ERC-20 token associated with Uniswap exchange address to ETH
         def sell_token(self, exchangeAddress):
+                """Swap total balance of ERC-20 token associated with Uniswap exchange address to ETH"""
                 if (self.tests == True):
                         chain = 4
                 else:
                         chain = 1
+                # Follow Uniswap doc guidance on calculating conversion
                 exchangeContract = self.web3.eth.contract(address = exchangeAddress, abi = exchangeABI)
                 tokenAddress = exchangeContract.functions.tokenAddress().call()
                 tokenContract = self.web3.eth.contract(address = tokenAddress, abi = tokenABI)
@@ -73,7 +81,8 @@ class Command(BaseCommand):
                 self.stdout.write('Amount of ETH to be bought is :' + str(self.web3.fromWei(outputAmount,'ether')))
                 self.stdout.write('Exchange rate is : ' + str(outputAmount/walletBalance)+ ' ETH/token')
 
-        ## Approve exchange to spend ERC-20 token balance
+                # Call contract function to give exchange approval to spend ERC-20 token balance.  
+                # Required to have exchange perform ERC-20 token transactions on behalf of FEE_ADDRESS
                 nonce = self.web3.eth.getTransactionCount(settings.FEE_ADDRESS)
                 txn_dict = exchangeContract.functions.approve(settings.FEE_ADDRESS,self.web3.toWei(walletBalance,'wei')).buildTransaction({
                         'chainId': chain,
@@ -90,7 +99,7 @@ class Command(BaseCommand):
                         tx_receipt = self.web3.eth.getTransactionReceipt(result)
                 print(tx_receipt)
 
-        ## Submit token -> ETH exchange trade to Uniswap.  Transaction only works for BAT exchange on Rinkeby.
+                # Submit token -> ETH exchange trade to Uniswap.  Transaction only works for BAT exchange on Rinkeby.
                 nonce = self.web3.eth.getTransactionCount(settings.FEE_ADDRESS)
                 txn_dict = exchangeContract.functions.tokenToEthSwapInput(self.web3.toWei(walletBalance,'wei'),self.web3.toWei(outputAmount*(1-SLIPPAGE),'wei'),deadline=deadline).buildTransaction({
                         'chainId': chain,
@@ -111,6 +120,7 @@ class Command(BaseCommand):
 
 
         def handle(self, **options):
+                """ Main management command function"""
                 if options['test']:
                         self.tests = True
                 else:
@@ -126,11 +136,11 @@ class Command(BaseCommand):
                         self.web3 = Web3(Web3.HTTPProvider(self.rpcProvider))
                         self.factoryAddress = '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95'
 
-
+                # Set up factory contract
                 self.factoryContract = self.web3.eth.contract(address = self.factoryAddress, abi = factoryABI)
 
                 # Get all potential ERC-20 tokens that have associated Uniswap exchanges
-                self.tokenList = self.getTokenList(settings.FEE_ADDRESS)
+                self.tokenList = self.getTokenList()
                 # Loop through all tokens and swap to ETH
                 for address, details in self.tokenList.items():
                         print(details['exchangeAddress'])
