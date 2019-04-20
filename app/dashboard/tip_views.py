@@ -374,6 +374,7 @@ def send_tip_2(request):
         'issueURL': request.GET.get('source'),
         'class': 'send2',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
+        'send_user': request.GET.get('send_user', ''),
         'from_email': primary_from_email,
         'from_handle': from_username,
         'title': 'Send Tip | Gitcoin',
