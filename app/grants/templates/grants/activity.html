@@ -72,6 +72,8 @@
                 </div>
                 <div class="info font-caption">
                   {{ transaction.subscription.amount_per_period|floatformat:4|intcomma }} {{ transaction.subscription.token_symbol }}
+                  {% if not transaction.tx_cleared %} (Pending) {% endif %}
+                  {% if not transaction.success %} (Failed) {% endif %}
                 </div>
               </div>
               <div class="d-none d-md-block col-md-2 font-body my-auto txn-link">

@@ -134,6 +134,7 @@ $(document).ready(function($) {
 
   $('#acceptBounty').on('click', function(e) {
     e.preventDefault();
+    update_registry();
 
     if (!$('#terms').is(':checked')) {
       _alert('Please accept the TOS.', 'error');
@@ -303,14 +304,14 @@ var update_registry = function(coinbase) {
     $('.overagePreview').css('display', 'none');
   }
 
-  for (let j = 1; j <= num_rows; j++) {
+  for (let j = 0; j <= num_rows; j++) {
 
-    var $row = $('#payout_table tbody').find('.new-user:nth-child(' + j + ')');
+    var $row = $('#payout_table tbody').find('tr:nth-child(' + ((j * 2) + 1) + ')');
     var amount = parseFloat($row.find('.amount').text());
     var username = $row.find('.username-search').text();
 
     if (username == '')
-      return;
+      continue;
 
     transaction = {
       'id': j,
@@ -330,6 +331,7 @@ var update_registry = function(coinbase) {
     if (!is_error)
       transactions.push(transaction);
   }
+
 
   // paint on screen
   $('#transaction_registry tr.entry').remove();
