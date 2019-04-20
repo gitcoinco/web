@@ -32,7 +32,12 @@ class Command(BaseCommand):
                 parser.add_argument('-t','--test', action='store_true', help='Run on Rinkeby testnet')
 
         def getTokenList(self):
-                """ Queries the blockscout API for ERC-20 token balances"""
+                """ Queries the blockscout API for ERC-20 token balances
+                
+                Returns:
+                  tokenList: A dict with the key being the ERC-20 token address and the value being an object containing
+                  the token name, token symbol, Uniswap exchange address, and the token balance held by the FEE_ADDRESS
+                """
                 if (self.tests == True):
                         network = 'rinkeby'
                 else:
@@ -59,7 +64,13 @@ class Command(BaseCommand):
                 return tokenList
 
         def sell_token(self, exchangeAddress):
-                """Swap total balance of ERC-20 token associated with Uniswap exchange address to ETH"""
+                """Swap total balance of ERC-20 token associated with Uniswap exchange address to ETH
+                
+                Args:
+                        exchangeAddress (str): The address of the Uniswap exchange contract assocciated with the ERC-20 token to convert to ETH
+                
+                Note: This currently only works with the BAT Uniswap exchange on Rinkeby Testnet
+                """
                 if (self.tests == True):
                         chain = 4
                 else:
@@ -120,7 +131,14 @@ class Command(BaseCommand):
 
 
         def handle(self, **options):
-                """ Main management command function"""
+                """ Main management command function
+                
+                Args: 
+                  -t, --test: Tells command to use Rinkeby testnet
+
+                Returns: 
+                  tokenList: Dict containing all ERC-20 tokens held by the FEE_ADDRESS and the balances before any ETH conversions
+                """
                 if options['test']:
                         self.tests = True
                 else:
@@ -145,6 +163,8 @@ class Command(BaseCommand):
                 for address, details in self.tokenList.items():
                         print(details['exchangeAddress'])
                         self.sell_token(details['exchangeAddress'])
+
+                return self.tokenList
 
 
 
