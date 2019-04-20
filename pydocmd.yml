@@ -341,6 +341,8 @@ pages:
       - Admin: tdi/admin.md
       - Models: tdi/models.md
       - Views: tdi/views.md
+    - Twitter:
+      - Utilities: twitter/utils.md
   - Additional Services:
     - Slack WelcomeBot:
       - Readme: mk_welcomebot.md << ops/lambdas/welcomebot/README.md

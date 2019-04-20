@@ -197,6 +197,41 @@ def access_oauth_token_with_lib(request_token, verify_str):
     return response_to_json(response.text)
 
 
+def get_user(user_name=None, user_id=None):
+    """Get user info using twitter's GET/user/show API
+    Args:
+         user_name (str): The screen name of the user for whom to return results.
+            Either a id or screen_name is required for this method.
+         user_id (str): The ID of the user for whom to return results.
+            Either an id or screen_name is required for this method.
+
+    Returns:
+        json: Replied Messages.
+    """
+    consumer = oauth.Consumer(key=settings.TWITTER_CONSUMER_KEY,
+                              secret=settings.TWITTER_CONSUMER_SECRET)
+    signature_method_plaintext = oauth.SignatureMethod_PLAINTEXT()
+    signature_method_hmac_sha1 = oauth.SignatureMethod_HMAC_SHA1()
+    if user_id:
+        request_url = f'https://api.twitter.com/1.1/users/show.json?screen_id={user_id}'
+    elif user_name:
+        request_url = f'https://api.twitter.com/1.1/users/show.json?screen_name={user_name}'
+    else:
+        return {}
+    oauth_request = oauth.Request.from_consumer_and_token(
+        consumer,
+        http_url=request_url
+    )
+    oauth_request.sign_request(signature_method_hmac_sha1,
+                               consumer)
+    request_header = oauth_request.to_header()
+    logger_m(request_header, 'header: ')
+    response = requests.get(request_url,
+                            headers=request_header)
+    logger_m(response.text, 'response: ')
+    return response_to_json(response.text)
+
+
 def response_to_json(response_str):
     """Convert response string into json format.
 
@@ -316,7 +351,7 @@ def logger_m(msg_raw, comment=''):
     time_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     msg = time_str + ': ' + msg + '\n'
     print(msg)
-    with open('log272503', 'a') as fo:
+    with open('log2', 'a') as fo:
         fo.write(msg)
 
 

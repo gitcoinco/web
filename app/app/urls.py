@@ -552,7 +552,7 @@ urlpatterns = [
 
     # for login with twitter
     url(r'twilogin/login', retail.views.twitter_login),
-    url(r'twilogin/callback', retail.views.twitter_callback)
+    url(r'twilogin/callback', retail.views.twitter_callback),
     # users
     path('users', dashboard.views.users_directory, name='users_directory'),
     url(r'^api/v0.1/users_fetch/', dashboard.views.users_fetch, name='users_fetch'),
