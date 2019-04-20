@@ -4415,8 +4415,7 @@
   - safe
   image: smart_contract.svg
 - name: web_assembly_dev
-  description: Do you look for a developer who cares about a fast, efficient and portable code? 
-  Safe, readable and debuggable code? Owners of this badge are known to dominate WebAssembly.
+  description: Do you look for a developer who cares about a fast, efficient and portable code? Safe, readable and debuggable code? Owners of this badge are known to dominate WebAssembly.
   priceFinney: 15
   artist: guistf
   platform: gitcoin
@@ -4431,9 +4430,7 @@
   - project
   image: web_assembly_dev.svg
 - name: think_outside_the_box
-  description: The owners of this kudos do not think of obvious solutions. They are collaborators
-   who have put in the power of creativity in solving problems. They do not think outside the box!
-   They think the box does not exist!
+  description: The owners of this kudos do not think of obvious solutions. They are collaborators who have put in the power of creativity in solving problems. They do not think outside the box! They think the box does not exist!
   priceFinney: 10
   artist: guistf
   platform: gitcoin
@@ -4445,8 +4442,7 @@
   - creative
   image: think_outside_the_box.svg
 - name: artificial_intelligence
-  description: AI will be an essential solution for new challenges in the future. Are you looking for your teacher?
-   You have found the collaborator who is beyond your time and who loves to talk to the machines!
+  description: AI will be an essential solution for new challenges in the future. Are you looking for your teacher? You have found the collaborator who is beyond your time and who loves to talk to the machines!
   priceFinney: 40
   artist: guistf
   platform: gitcoin
