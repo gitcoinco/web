@@ -16,15 +16,24 @@
 {% endcomment %}
 {% load i18n static %}
 <link rel="stylesheet" href={% static "v2/css/sidebar_search.css" %}>
+<style>
+  form .col:first-child {
+    border-top: none;
+  }
+
+  .sidebar_search {
+    padding: 20px 3rem;
+  }
+</style>
 <div class="sidebar_search font-body">
 
   <form>
     <div class="col">
       <div class="col-12 subheading">
-        {% trans "Status" %}
+        {% trans "Sponsors" %}
       </div>
       <div class="col-12 options" id="list-orgs">
-        
+
         <div class="form__radio option mb-2">
           <input name="org" id="any_org" type="radio" value="any" checked/>
           <label class="filter-label" for=any_org>{% trans "All" %}</label>
@@ -32,38 +41,29 @@
 
       </div>
     </div>
-    <div class="col">
-        <div class="col-12 subheading">{% trans "Network" %}</div>
-        <div class="col-12 options">
-          <div class="checkbox_container">
-            <input name="network" id="local" type="checkbox" value="local" val-ui='Custom Network' />
-            <span class="checkbox"></span>
-            <div class="filter-label">
-              <label for=local>{% trans "Custom" %}</label>
-            </div>
+
+    <div class="col" id="network-filter" style="display: hidden;">
+      <div class="col-12 subheading">{% trans "Network" %}</div>
+      <div class="col-12 options">
+        <div class="checkbox_container">
+          <input name="network" id="rinkeby" type="checkbox" value="rinkeby" val-ui='Rinkeby' />
+          <span class="checkbox"></span>
+          <div class="filter-label">
+            <label for=rinkeby>{% trans "Rinkeby" %}</label>
           </div>
-          <div class="checkbox_container">
-            <input name="network" id="ropsten" type="checkbox" value="ropsten" val-ui='Ropsten' />
-            <span class="checkbox"></span>
-            <div class="filter-label">
-              <label for=ropsten>{% trans "Ropsten" %}</label>
-            </div>
-          </div>
-          <div class="checkbox_container">
-            <input name="network" id="rinkeby" type="checkbox" value="rinkeby" val-ui='Rinkeby' />
-            <span class="checkbox"></span>
-            <div class="filter-label">
-              <label for=rinkeby>{% trans "Rinkeby" %}</label>
-            </div>
-          </div>
-          <div class="checkbox_container">
-            <input name="network" id="mainnet" type="checkbox" value="mainnet" val-ui='Mainnet' checked />
-            <span class="checkbox"></span>
-            <div class="filter-label">
-              <label for=mainnet>{% trans "Mainnet" %}</label>
-            </div>
+        </div>
+        <div class="checkbox_container">
+          <input name="network" id="mainnet" type="checkbox" value="mainnet" val-ui='Mainnet' checked />
+          <span class="checkbox"></span>
+          <div class="filter-label">
+            <label for=mainnet>{% trans "Mainnet" %}</label>
           </div>
         </div>
       </div>
+    </div>
   </form>
 </div>
+
+<script>
+  if(location.hostname === 'localhost') $('#network-filter').show();
+</script>
