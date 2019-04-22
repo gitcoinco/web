@@ -16,7 +16,12 @@ var local_storage_keys = JSON.parse(JSON.stringify(filters));
 
 local_storage_keys.push('keywords');
 local_storage_keys.push('org');
+
 results_limit = 15;
+
+if (document.hackathon) {
+  results_limit = 50;
+}
 
 var localStorage;
 
@@ -375,17 +380,16 @@ var get_search_URI = function(offset, order) {
     order_by = localStorage['order_by'];
   }
 
-  if (!document.hackathon) {
-    if (typeof order_by !== 'undefined') {
-      uri += '&order_by=' + order_by;
-      uri += '&offset=' + offset;
-      uri += '&limit=' + results_limit;
-    }
-  } else {
+  if (document.hackathon) {
     uri += `&event_tag=${document.hackathon}`;
-    uri += '&offset=' + offset;
-    uri += '&limit=51';
   }
+
+  if (typeof order_by !== 'undefined') {
+    uri += '&order_by=' + order_by;
+  }
+  
+  uri += '&offset=' + offset;
+  uri += '&limit=' + results_limit;
 
   return uri;
 };
@@ -462,6 +466,7 @@ var refreshBounties = function(event, offset, append, do_save_search) {
     }
   } else {
     toggleAny(event);
+    localStorage['order_by'] = $('#sort_option').val();
   }
 
   if (!append) {
@@ -496,7 +501,7 @@ var refreshBounties = function(event, offset, append, do_save_search) {
       
       $('#list-orgs').append(`
       ${organizations.map((org, index) => `
-      <div class="form__radio option">
+      <div class="form__radio option ${org}">
         <input name="org" id="${org}" type="radio" value="${org}" val-ui="${org}" />
         <label class="filter-label" for=${org}>
           <img src="/dynamic/avatar/${org}" class="rounded-circle" width="24" height="24"> ${org}
@@ -664,6 +669,24 @@ var resetFilters = function(resetKeyword) {
 })();
 
 $(document).ready(function() {
+
+  $('#expand').on('click', () => {
+    $('#expand').hide();
+    $('#minimize').show();
+    $('#sidebar_container form').css({
+      'height': 'auto',
+      'display': 'inherit'
+    });
+  });
+
+  $('#minimize').on('click', () => {
+    $('#minimize').hide();
+    $('#expand').show();
+    $('#sidebar_container form').css({
+      'height': 0,
+      'display': 'none'
+    });
+  });
 
   // Sort select menu
   $('#sort_option').selectmenu({
