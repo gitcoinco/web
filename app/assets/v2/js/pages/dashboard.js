@@ -670,6 +670,24 @@ var resetFilters = function(resetKeyword) {
 
 $(document).ready(function() {
 
+  $('#expand').on('click', () => {
+    $('#expand').hide();
+    $('#minimize').show();
+    $('#sidebar_container form').css({
+      'height': 'auto',
+      'display': 'inherit'
+    });
+  });
+
+  $('#minimize').on('click', () => {
+    $('#minimize').hide();
+    $('#expand').show();
+    $('#sidebar_container form').css({
+      'height': 0,
+      'display': 'none'
+    });
+  });
+
   // Sort select menu
   $('#sort_option').selectmenu({
     select: function(event, ui) {
