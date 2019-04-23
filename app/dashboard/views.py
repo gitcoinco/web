@@ -802,6 +802,7 @@ def get_user_bounties(request):
     for bounty in open_bounties:
         bounty_json = {}
         bounty_json = bounty.to_standard_dict()
+        bounty_json['url'] = bounty.url
 
         results.append(bounty_json)
     # else:
@@ -998,10 +999,17 @@ def social_contribution_email(request):
         JsonResponse: Success in sending email.
     """
     from marketing.mails import share_bounty
+    from .utils import get_bounty_invite_url
+
     emails = []
     user_ids = request.POST.getlist('usersId[]', [])
     url = request.POST.get('url', '')
     invite_url = request.POST.get('invite_url', '')
+    if not invite_url:
+        bounty_id = request.POST.get('bountyId')
+        invite_url = f'{settings.BASE_URL}issue/{get_bounty_invite_url(request.user.username, bounty_id)}'
+        print(request.user.username, bounty_id)
+    
     inviter = request.user if request.user.is_authenticated else None
     bounty = Bounty.objects.current().get(github_url=url)
     for user_id in user_ids:
@@ -1015,6 +1023,7 @@ def social_contribution_email(request):
         emails.append(profile.email)
 
     msg = request.POST.get('msg', '')
+    print(emails, msg, request.user.profile, invite_url)
     try:
         share_bounty(emails, msg, request.user.profile, invite_url, True)
         response = {

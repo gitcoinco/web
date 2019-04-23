@@ -95,10 +95,15 @@ Vue.mixin({
     sendInvite: function(bounty, user) {
       let vm = this;
 
-      console.log(vm.bountySelected, bounty, user)
+      console.log(vm.bountySelected, bounty, user, csrftoken);
       vm.showModal = false;
       let apiUrlInvite = '/api/v0.1/social_contribution_email/';
-      let postInvite = fetchData(apiUrlInvite, 'POST', { 'url': bounty.github_url, user});
+      let postInvite = fetchData(
+        apiUrlInvite,
+        'POST',
+        { 'url': bounty.github_url, 'usersId': [user], 'bountyId': bounty.id, 'msg': 'check this'},
+        {'X-CSRFToken': csrftoken}
+      );
       
       $.when(postInvite).then((response) => {
         console.log(response);

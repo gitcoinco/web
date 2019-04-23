@@ -244,7 +244,7 @@
 
         </div>
         <div slot="body">
-          Select a bounty 
+          <b>Select a bounty</b> 
           <div v-for="bounty in funderBounties" :key="bounty.id" @click="bountySelected = bounty" v-bind:class="{ 'btn-gc-blue': bountySelected && bounty.id === bountySelected.id }" class="py-2 px-3">
             <img :src="`/dynamic/avatar/${ bounty.funding_organisation || bounty.bounty_owner_github_username }`" class="rounded-circle" width="30" height="30">
             [[ bounty.title ]]
@@ -254,6 +254,7 @@
           </div>
         </div>
         <div slot="footer">
+          <a v-if="bountySelected" :href="bountySelected.url" target="_blank" class="mr-5">view bounty</a>
           <button class="btn btn-outline-gc-blue" @click="showModal = false">Cancel</button>
           <button class="btn btn-gc-blue" :disabled="!bountySelected" @click="sendInvite(bountySelected, userSelected.id)">Invite</button>
         </div>
@@ -299,6 +300,7 @@
 
 
 
+    {% csrf_token %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
@@ -309,7 +311,7 @@
       let bootstrapTooltip = $.fn.tooltip.noConflict()
       $.fn.runTooltip = bootstrapTooltip;
       $('[data-toggle="tooltip"]').runTooltip();
-  
+      const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();  
     </script>
     <script src="{% static "v2/js/users.js" %}"></script>
 
