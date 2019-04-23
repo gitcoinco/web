@@ -20,8 +20,8 @@
     <div class="row no-gutter">
       <div class="col-12 col-lg-2 left-rails text-center" style="background: #F2F6F9;">
         <div class="explorer font-body">
-          {% if event %}
-            <a href="/hackathon/{{ event }}"><i class="fas fa-chevron-left"></i> {% trans "Back to Event Issue Explorer" %}</a>
+          {% if event_tag %}
+            <a href="/hackathon/{{ event_tag }}"><i class="fas fa-chevron-left"></i> {% trans "Back to Hackathon Explorer" %}</a>
           {% else %}
             <a href="{% url 'explorer' %}"><i class="fas fa-chevron-left"></i> {% trans "Back to Issue Explorer" %}</a>
           {% endif %}
