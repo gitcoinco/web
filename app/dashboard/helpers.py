@@ -505,14 +505,13 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     logger.error(e)
 
             bounty_invitees = metadata.get('invite', '')
-            print (bounty_invitees)
-            if bounty_invitees:
+            if bounty_invitees and not latest_old_bounty:
                 from marketing.mails import share_bounty
                 from dashboard.utils import get_bounty_invite_url
                 emails = []
                 inviter = Profile.objects.get(handle=new_bounty.bounty_owner_github_username)
                 invite_url = get_bounty_invite_url(inviter, new_bounty.id)
-                msg = "Check out this bounty that pays out" + \
+                msg = "Check out this bounty that pays out " + \
                     str(new_bounty.get_value_true) + new_bounty.token_name + invite_url
                 for keyword in new_bounty.keywords_list:
                     msg += " #" + keyword
@@ -525,8 +524,6 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     bounty_invite.inviter.add(inviter.user)
                     bounty_invite.invitee.add(profile.user)
                     emails.append(profile.email)
-                print(emails)
-                print(msg)
                 try:
                     share_bounty(emails, msg, inviter, invite_url, False)
                     response = {
