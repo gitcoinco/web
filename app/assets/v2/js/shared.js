@@ -639,6 +639,24 @@ var updateAmountUI = function(target_ele, usd_amount) {
   target_ele.html('Approx: ' + usd_amount + ' USD');
 };
 
+const showChoices = (choice_id, selector_id, choices) => {
+  let html = '';
+  let selected_choices = [];
+
+  for (let i = 0; i < choices.length; i++) {
+    html += '<li class="select2-available__choice">\
+      <span class="select2-available__choice__remove" role="presentation">×</span>\
+      <span class="text">' + choices[i] + '</span>\
+      </li>';
+  }
+  $(choice_id).html(html);
+  $('.select2-available__choice').on('click', function() {
+    selected_choices.push($(this).find('.text').text());
+    $(selector_id).val(selected_choices).trigger('change');
+    $(this).remove();
+  });
+};
+
 var retrieveIssueDetails = function() {
   var ele = $('input[name=issueURL]');
   var target_eles = {
@@ -663,7 +681,7 @@ var retrieveIssueDetails = function() {
     if (result['keywords']) {
       var keywords = result['keywords'];
 
-      $('#keywords').val(keywords);
+      showChoices('#keyword-suggestions', '#keywords', keywords);
       $('#keywords').select2({
         placeholder: 'Select tags',
         data: keywords,
@@ -886,7 +904,7 @@ var trigger_faucet_form_web3_hooks = function() {
       $('#faucet_form').removeClass('hidden');
     }
   }
-  if ($('#admin_faucet_form').length) {
+  if ($('#admin_faucet_form').length || $('#admin_refund_form').length) {
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
@@ -973,7 +991,7 @@ var listen_for_web3_changes = async function() {
     }
   }
 
-  if (window.ethereum && !document.has_checked_for_ethereum_enable) {
+  if (window.ethereum && !document.has_checked_for_ethereum_enable && window.ethereum._metamask) {
     document.has_checked_for_ethereum_enable = true;
     is_metamask_approved = await window.ethereum._metamask.isApproved();
     is_metamask_unlocked = await window.ethereum._metamask.isUnlocked();
@@ -1203,7 +1221,7 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
     }
 
     if (renderForExplorer) {
-      if (typeof web3 != 'undefined' && web3.eth.coinbase == result['bounty_owner_address']) {
+      if (typeof web3 != 'undefined' && typeof web3.eth != 'undefined' && web3.eth.coinbase == result['bounty_owner_address']) {
         result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">mine</span></a>';
       } else if (result['fulfiller_address'] !== '0x0000000000000000000000000000000000000000') {
         result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">' + result['status'] + '</span></a>';
@@ -1488,6 +1506,24 @@ const caseInsensitiveCompare = (val1, val2) => {
   return false;
 };
 
+/**
+ * A popup to notify users to approve metamask transaction
+ * @param {*} closePopup [boolean]
+ */
+const indicateMetamaskPopup = (closePopup) => {
+  if (closePopup) {
+    $('#indicate-popup').hide();
+  } else if ($('#indicate-popup').length) {
+    if ($('#indicate-popup').is(':hidden')) {
+      $('#indicate-popup').show();
+    }
+  } else {
+    const svg = '<div id="indicate-popup"><svg width="214" height="165" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="none" fill-rule="evenodd"><g transform="translate(47 25)"><rect fill="#0FCE7C" width="147" height="19" rx="3"/><text font-family="Muli" font-weight="bold" font-size="14" fill="#FFF"><tspan x="15.268" y="13">Web3 Action Pending</tspan></text></g><path d="M119.87 21.316l-5.69 4.714c-.463.383-.014.97 1.129.97h11.377c1.025 0 1.643-.545 1.13-.97l-5.688-4.714c-.506-.42-1.753-.422-2.258 0z" fill="#0FCE7C" fill-rule="nonzero"/><g transform="translate(0 7)"><rect fill="#FF7F00" width="214" height="158" rx="3"/><text font-family="Muli" font-size="14" fill="#FFF"><tspan x="17" y="23">Action Pending</tspan></text><text font-family="Muli" font-size="12" fill="#FFF"><tspan x="18" y="43">In order to use features of the </tspan> <tspan x="18" y="57">Gitcoin network we must </tspan> <tspan x="18" y="71">confirm transactions on the </tspan> <tspan x="18" y="85">ethereum blockchain.</tspan> <tspan x="18" y="127">Please check the pending </tspan> <tspan x="18" y="141">action on your secure wallet.</tspan></text></g><path d="M108.047.974l-7.316 7.071c-.594.575-.018 1.455 1.452 1.455h14.628c1.318 0 2.113-.818 1.452-1.455L110.95.974c-.65-.631-2.253-.633-2.903 0z" fill="#FF7F00" fill-rule="nonzero"/><path fill="#25E899" d="M181.747 30.054h13.298l1.127.422-.848 2.98h-12.74z"/><path d="M181.157 28.822h-.873c-.706 0-1.284-.568-1.284-1.261v-3.203c0-.694.578-1.262 1.284-1.262h.37" fill="#FFF"/><path d="M181.157 28.822h-.873c-.706 0-1.284-.568-1.284-1.261v-3.203c0-.694.578-1.262 1.284-1.262h.37" stroke="#15003E" stroke-width="1.106" stroke-linecap="round"/><path d="M196.781 28.822h.873c.706 0 1.284-.568 1.284-1.261v-3.203c0-.694-.578-1.262-1.284-1.262h-.37" fill="#FFF"/><path d="M196.781 28.822h.873c.706 0 1.284-.568 1.284-1.261v-3.203c0-.694-.578-1.262-1.284-1.262h-.37" stroke="#15003E" stroke-width="1.106" stroke-linecap="round"/><path d="M180.498 25.392c0-4.587 3.786-8.306 8.456-8.306s8.456 3.719 8.456 8.306l-2.086 8.065h-12.74l-2.086-8.065z" fill="#FFF"/><path d="M180.498 25.392c0-4.587 3.786-8.306 8.456-8.306s8.456 3.719 8.456 8.306l-2.086 8.065h-12.74l-2.086-8.065z" stroke="#15003E" stroke-width="1.106" stroke-linecap="round"/><path d="M193.523 37.14h-9.138c-.995 0-1.8-.791-1.8-1.768v-1.915h12.74v1.915c0 .977-.807 1.769-1.802 1.769" fill="#FFF"/><path d="M193.523 37.14h-9.138c-.995 0-1.8-.791-1.8-1.768v-1.915h12.74v1.915c0 .977-.807 1.769-1.802 1.769z" stroke="#15003E" stroke-width="1.106" stroke-linecap="round"/><path d="M186.618 30.054c-2-.863-3.396-2.826-3.396-5.109 0-1.347.486-2.583 1.296-3.547 1.041-1.24 7.593-1.302 8.633-.15a5.5 5.5 0 0 1 1.426 3.697c0 2.283-1.396 4.246-3.396 5.109" fill="#FF7F00"/><path d="M186.26 30.054c-1.98-.946-3.344-2.94-3.344-5.248a5.73 5.73 0 0 1 .934-3.14m9.794-.306a5.737 5.737 0 0 1 1.147 3.446c0 2.283-1.335 4.26-3.281 5.218m-11.012-4.752v-7.905m16.912 7.905V15.135" stroke="#15003E" stroke-width="1.106" stroke-linecap="round"/><path d="M180.59 24.002a11.945 11.945 0 0 1 8.498-3.541c3.138 0 5.996 1.21 8.136 3.192m-15.477 6.4h14.425" stroke="#15003E" stroke-width="1.106" stroke-linecap="round"/><path d="M191.922 23.097c0 .803-.664 1.454-1.481 1.454-.819 0-1.482-.65-1.482-1.454 0-.804.663-1.455 1.482-1.455.817 0 1.48.651 1.48 1.455m1.059 2.175a.593.593 0 0 1-.599.588.594.594 0 0 1-.599-.588c0-.325.268-.589.6-.589.33 0 .598.264.598.589" fill="#FFF"/><path d="M194.069 32.297c-.73 0-.73-1.084-1.46-1.084-.729 0-.729 1.084-1.459 1.084-.73 0-.73-1.084-1.46-1.084s-.73 1.084-1.46 1.084-.73-1.084-1.459-1.084c-.73 0-.73 1.084-1.46 1.084s-.73-1.084-1.461-1.084" stroke="#15003E" stroke-width="1.106" stroke-linecap="round"/></g></svg></div>';
+
+    $('body').append(svg);
+  }
+};
+
 $(document).ready(function() {
   $(window).scroll(function() {
     $('.g-fadein').each(function(i) {
@@ -1514,3 +1550,33 @@ $(document).ready(function() {
     });
   });
 });
+
+function check_balance_and_alert_user_if_not_enough(
+  tokenAddress,
+  amount,
+  msg = 'You do not have enough tokens to perform this action.') {
+
+  if (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000') {
+    return;
+  }
+
+  let token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+  let from = web3.eth.coinbase;
+  let token_details = tokenAddressToDetails(tokenAddress);
+  let token_decimals = token_details['decimals'];
+  let token_name = token_details['name'];
+
+  token_contract.balanceOf.call(from, function(error, result) {
+    if (error) return;
+    let balance = result.toNumber() / Math.pow(10, token_decimals);
+    let balance_rounded = Math.round(balance * 10) / 10;
+
+    if (parseFloat(amount) > balance) {
+      let msg1 = gettext(msg);
+      let msg2 = gettext(' You have ') + balance_rounded + ' ' + token_name + ' ' + gettext(' but you need ') + amount + ' ' + token_name;
+
+      _alert(msg1 + msg2, 'warning');
+    }
+  });
+
+}

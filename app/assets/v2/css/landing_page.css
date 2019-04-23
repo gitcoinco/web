@@ -27,6 +27,28 @@ body.funder-page {
   font-weight: 600;
 }
 
+.carousel-inner .content {
+  display: inline-block;
+  position: relative;
+  top: 1rem;
+}
+
+.carousel-inner img {
+  max-height: 7.5rem;
+  position: relative;
+  top: -1rem;
+}
+
+.carousel-control-prev,
+.carousel-control-prev:hover,
+.carousel-control-prev:focus,
+.carousel-control-next,
+.carousel-control-next:hover,
+.carousel-control-next:focus {
+  color: #000000;
+  font-size: 1.5rem;
+}
+
 .youtube iframe {
   max-width: 100%;
 }
@@ -738,6 +760,11 @@ body.funder-page {
     right: 10px;
   }
 
+  #start .carousel-control-prev,
+  #start .carousel-control-next {
+    display: none;
+  }
+
   .pricing-tiers-container {
     grid-template-columns: 1fr;
     grid-template-rows: repeat(15, min-content);
@@ -834,6 +861,24 @@ body.funder-page {
     display: none;
   }
 
+  .feature_container img {
+    margin-bottom: 2rem;
+    min-width: 5rem;
+  }
+
+  #start img {
+    top: 1rem;
+  }
+
+  #start .carousel-item {
+    min-height: 17rem;
+  }
+
+  .carousel-item .content {
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+  }
+
   .howworks-container {
     padding-left: .5rem !important;
     padding-right: .5rem !important;
@@ -847,11 +892,6 @@ body.funder-page {
 
   .whatisit_container iframe {
     min-height: 0;
-  }
-
-  .feature_container img {
-    margin-bottom: 2rem;
-    min-width: 5rem;
   }
 }
 

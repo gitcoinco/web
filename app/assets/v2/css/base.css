@@ -261,7 +261,7 @@ p a {
 }
 
 #gas-section .gas-image {
-  height: 5rem;
+  height: 4.5rem;
 }
 
 #gas-section .font-body {
@@ -270,6 +270,7 @@ p a {
 
 #gas-section .recommended-prices {
   cursor: pointer;
+  text-align: center;
 }
 
 #gas-section .gas-dark-bg {
@@ -277,7 +278,7 @@ p a {
 }
 
 #gas-section .gas-rates .active {
-  font-weight: bolder;
+  font-weight: 600;
   background-color: #0ECF7C;
 }
 
@@ -379,6 +380,9 @@ p a {
   max-height: 50px;
   max-width: 50px;
   border-radius: 100%;
+}
+.dashboard .body .avatar.Azure-Samples {
+  border-radius: 0%;
 }
 
 .body .nonefound {
@@ -518,7 +522,7 @@ input[type=text].loading {
 }
 
 #primary_form #amount {
-  height: 37px;
+  height: 40px;
 }
 
 .bounty_nav {
@@ -827,14 +831,6 @@ input.is-invalid {
   display: none;
 }
 
-.faucet_response .frheader {
-  font-size: xx-large;
-}
-
-.faucet_response .frmessage {
-  font-size: large;
-}
-
 .tooltip-info {
   padding: 10px 20px;
   margin: 0;
@@ -1018,49 +1014,6 @@ input.is-invalid {
 #robot_error img {
   max-height: 18rem;
   width: auto;
-}
-
-.rating {
-  width:160px;
-}
-.rating span { float:right; position:relative; }
-.rating span input {
-  position:absolute;
-  top:0px;
-  left:0px;
-  opacity:0;
-}
-.rating span label {
-  display:inline-block;
-  width:30px;
-  height:30px;
-  text-align:center;
-  color:#FFF;
-  font-size:25px;
-  margin-right:2px;
-  line-height:30px;
-  border-radius:50%;
-  -webkit-border-radius:50%;
-}
-.rating span label i {
-  color:#ccc;
-}
-
-.rating span:hover ~ span label i,
-.rating span:hover label i {
-  opacity: 0.5;
-}
-.rating span.checked label i,
-.rating span.checked ~ span label i
-{
-  opacity: 1;
-}
-
-.rating span:hover ~ span label i,
-.rating span:hover label i,
-.rating span.checked label i,
-.rating span.checked ~ span label i {
-  color: rgb(18,199,113);
 }
 
 .bounty_box {
@@ -1657,4 +1610,28 @@ div.busyOverlay {
 .g-icon__dot-circle:before {
   border: 0.25em solid currentColor;
   border-radius: 100px;
+}
+
+.cta-blue {
+  background: #0D0764;
+  color: white;
+  padding: 1.8rem;
+  border-radius: 0.2rem;
+}
+
+.privaterepo-instructions {
+  background: #F8F8F8;
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .privaterepo-instructions {
+    width: 75%;
+  }
+
+}
+
+.g-modal .modal-header,
+.g-modal .modal-footer {
+  border: none;
 }

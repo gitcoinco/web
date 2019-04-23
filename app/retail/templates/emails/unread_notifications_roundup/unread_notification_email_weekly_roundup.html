@@ -1,0 +1,236 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<!DOCTYPE html>
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="x-apple-disable-message-reformatting" />
+<head>
+</head>
+
+<style>
+  body {
+    margin: 0px;
+    padding: 0px;
+  }
+
+  h1, h2, h3, h4, h5, h6,
+  .h1, .h2, .h3, .h4, .h5, .h6 {
+    text-transform: capitalize;
+    font-weight: lighter;
+  }
+
+  h3 {
+    line-height: 30px;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  h2 {
+    font-size: 1.6rem;
+  }
+
+  h3 {
+    font-size: 1.3rem;
+  }
+
+  h4 {
+    font-size: 1.1rem;
+  }
+
+  h4, .h4 {
+    text-align: center;
+    padding-top: 40px;
+  }
+
+  a.button{
+    color: #fff;
+    background-color: #15003e;
+    border-radius: 5px;
+    padding: 15px 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  #logo {
+    vertical-align: middle;
+    display: inline-block;
+    max-height: 120px;
+    max-width: 100%;
+  }
+
+  #grow-oss {
+    display: inline-block;
+    max-width: 100%;
+  }
+
+  #header {
+    height: 200px;
+  }
+
+  #header, #footer {
+    color: white;
+    background-color: #15003e;
+    align-content: center;
+    text-align: center;
+    padding: 2em;
+  }
+
+  #footer p, #footer a{
+    color: #ccc;
+  }
+
+  #copyright, #legal-contact {
+    padding-top: 0.5em;
+  }
+
+  a {
+    color: #70b2ff;
+    text-decoration: none;
+  }
+
+  p,
+  a,
+  ul,
+  ol,
+  li {
+    font-size: 15px;
+  }
+
+  .centered-contents {
+    text-align: center;
+  }
+
+  .primary-content {
+    margin: 0 15em;
+    padding: 5em;
+    background-color: #ffffff;
+  }
+
+  .roundup {
+    margin: 5em 5em 5em 7em;
+    border-bottom: 1px solid #D8D8D8;
+  }
+
+  @media screen and (min-width: 35.5em) {
+    .social-img {
+      max-height: 50px;
+      max-width: 50px;
+    }
+
+    .primary-content {
+      margin-left: 20%;
+      margin-right: 20%;
+    }
+  }
+
+  @media screen and (max-width: 35.5em) {
+    .social-img {
+      max-height: 45px;
+      max-width: 45px;
+    }
+  }
+
+  @media screen and (min-width: 48em) {
+    .primary-content {
+      margin-left: 10%;
+      margin-right: 10%;
+    }
+  }
+
+  @media screen and (max-width: 48em) {
+    .primary-content {
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+  .flex {
+      display: flex;
+      justify-content: center;
+  }
+
+  hr {
+      max-width: 400px;
+  }
+</style>
+
+<body class="g-font-muli">
+    <div id="header">
+        <a href="{% url 'funder_bounties' %}">
+        <span style="display: inline-block;height: 100%;vertical-align: middle;"></span><img id="logo" src="{% static "v2/images/logo_large.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+        </a>
+    </div>
+    <div style="background-color: #F2F6F9 !important;">
+        <div class="primary-content centered-contents">
+            <div style="margin-bottom: 50px;">
+                <div class="flex" style="margin-bottom: 80px;">
+                    <div>
+                        <div style="margin-top: 20px; max-width: 300px;">
+                            <h4 style="color: #0D0764; text-align: left;"><b>{% trans "Hi" %} {{ profile }}</b></h4>
+                            <br>
+                            <h2 style="text-align: left; line-height: 30px;">{% trans "You’ve got" %} 
+                            <strong>{{ notifications }}</strong>
+                            {% trans "recent notifications on Gitcoin." %}</h2>
+                        </div>
+                        <br>
+                        <div style="text-align: left; margin-top: 7px;">
+                            <a href="#" class="btn-sm button">{% trans "Take a look" %}</a>
+                        </div>
+                    </div>
+                    <div style="margin-top: 80px">
+                        <img src="{% static "v2/images/emails/email-notification-bell.png" %}" width="64" style="margin-left: 30px" alt="Email Notification Roundup" id="email_notification_roundup">
+                    </div>
+                </div>
+                <hr style="margin-top: 20px; margin-bottom: 20px;"/>
+            </div>
+            <img id="grow-oss" width="259" src="{% static "v2/images/grow_open_source_new.png" %}" alt="Gitcoin Open Source" title="Grow Open Source Image">
+        </div>
+    </div>
+
+  <div id="footer" class="centered-contents">
+    <div>
+      <a href="https://www.twitter.com/gitcoin"><img class="social-img" src="{% static "v2/images/social/twitter_new.png" %}"></a>
+
+      <a href="https://www.medium.com/gitcoin"><img class="social-img" src="{% static "v2/images/social/medium_new.png" %}"></a>
+
+      <a href="https://www.facebook.com/GetGitcoin"><img class="social-img" src="{% static "v2/images/social/facebook_new.png" %}"></a>
+
+      <a href="https://reddit.com/r/gitcoincommunity"><img class="social-img" src="{% static "v2/images/social/reddit_new.png" %}"></a>
+
+      <a href="{% url 'slack' %}"><img class="social-img" src="{% static "v2/images/social/slack_new.png" %}"></a>
+    </div>
+    <div>
+      <div id="copyright">
+        <p>
+          <span>&copy; {% now "Y" %} Gitcoin Core, Inc. {% trans "All rights reserved." %}</span>
+        </p>
+      </div>
+      <div id="legal-contact">
+        <p>
+          {% trans "Want to change how you receive these emails?" %}
+          <br>
+          {% trans "You can update your" %} <a href="{% url "email_settings" subscriber.priv %}">{% trans "preferences" %}</a> {% trans "or" %} <a href="{% url "email_settings" subscriber.priv %}">{% trans "unsubscribe" %}</a> {% trans "from this list." %}
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

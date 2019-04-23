@@ -166,6 +166,10 @@ def index(request):
         {
             'link': 'https://www.ethnews.com/gitcoin-offers-bounties-for-ens-integration-into-dapps',
             'img': 'v2/images/press/ethnews.jpg'
+        },
+        {
+            'link': 'https://www.hostingadvice.com/blog/grow-open-source-projects-with-gitcoin/',
+            'img': 'v2/images/press/hosting-advice.png'
         }
     ]
 
@@ -322,9 +326,30 @@ def subscribe(request):
     }
     return TemplateResponse(request, 'pricing/subscribe.html', context)
 
+def funder_bounties_redirect(request):
+    return redirect(funder_bounties)
 
 
 def funder_bounties(request):
+
+    onboard_slides = [
+        {
+            'img': static("v2/images/presskit/illustrations/prime.svg"),
+            'title': _('Are you a developer or designer?'),
+            'subtitle': _('Contribute to exciting OSS project and get paid!'),
+            'type': 'contributor',
+            'active': 'active',
+            'more': '/bounties/contributor'
+        },
+        {
+            'img': static("v2/images/presskit/illustrations/regulus-white.svg"),
+            'title': _('Are you a funder or project organizer?'),
+            'subtitle': _('Fund your OSS bounties and get work done!'),
+            'type': 'funder',
+            'more': '/how/funder'
+        }
+    ]
+
     slides = [
         ("Dan Finlay", static("v2/images/testimonials/dan.jpg"),
          _("Once we had merged in multiple language support from a bounty, it unblocked the \
@@ -361,6 +386,7 @@ def funder_bounties(request):
     )
 
     context = {
+        'onboard_slides': onboard_slides,
         'activities': get_activities(),
         'is_outside': True,
         'slides': slides,
@@ -376,7 +402,29 @@ def funder_bounties(request):
     return TemplateResponse(request, 'bounties/funder.html', context)
 
 
+def contributor_bounties_redirect(request, tech_stack):
+    return redirect(contributor_bounties, tech_stack= '/'+ tech_stack)
+
+
 def contributor_bounties(request, tech_stack):
+
+    onboard_slides = [
+        {
+            'img': static("v2/images/presskit/illustrations/regulus-white.svg"),
+            'title': _('Are you a funder or project organizer?'),
+            'subtitle': _('Fund your OSS bounties and get work done!'),
+            'type': 'funder',
+            'active': 'active',
+            'more': '/bounties/funder'
+        },
+        {
+            'img': static("v2/images/presskit/illustrations/prime.svg"),
+            'title': _('Are you a developer or designer?'),
+            'subtitle': _('Contribute to exciting OSS project and get paid!'),
+            'type': 'contributor',
+            'more': '/how/contributor'
+        }
+    ]
 
     slides = [
         ("Daniel", static("v2/images/testimonials/gitcoiners/daniel.jpeg"),
@@ -489,6 +537,7 @@ def contributor_bounties(request, tech_stack):
 
     # tech_stack = '' #uncomment this if you wish to disable contributor specific LPs
     context = {
+        'onboard_slides': onboard_slides,
         'slides': slides,
         'slideDurationInMs': 6000,
         'active': 'home',
@@ -796,6 +845,41 @@ def mission(request):
         'interactions': interactions
     }
     return TemplateResponse(request, 'mission.html', context)
+
+
+def jobs(request):
+    job_listings = [
+        {
+            'link': "mailto:founders@gitcoin.co",
+            'title': "Software Engineer",
+            'description': [
+                "Gitcoin is always looking for a few good software engineers.",
+                "If you are an active member of the community, have python + django + html chops",
+                "then we want to talk to you!"]
+        },
+        {
+            'link': "mailto:founders@gitcoin.co",
+            'title': "Community Manager",
+            'description': [
+                "We believe that community management is an important skill in the blockchain space.",
+                "We're looking for a solid community, proactive thinker, and someone who loves people",
+                "to be our next community manager.  Sound like you?  Apply below!"]
+        },
+        {
+            'link': "mailto:founders@gitcoin.co",
+            'title': "Ad Sales Engineer",
+            'description': [
+                "CodeFund is growing like a weed.  We could use a helping hand",
+                "to put CodeFund in front of more great advertisers and publishers.",
+                "If you want to be our next highly technical, highly engaging, sales engineer apply below!"]
+        }
+    ]
+    context = {
+        'active': 'jobs',
+        'title': 'Jobs',
+        'job_listings': job_listings
+    }
+    return TemplateResponse(request, 'jobs.html', context)
 
 
 def vision(request):
@@ -1464,7 +1548,7 @@ def livestream(request):
 
 
 def twitter(request):
-    return redirect('http://twitter.com/getgitcoin')
+    return redirect('http://twitter.com/gitcoin')
 
 
 def fb(request):

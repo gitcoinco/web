@@ -233,7 +233,7 @@ def grant_details(request, grant_id, grant_slug):
 def grant_new(request):
     """Handle new grant."""
     if not request.user.has_perm('grants.add_grant'):
-        return redirect('https://consensys1mac.typeform.com/to/HFcZKe/')
+        return redirect('https://gitcoin.typeform.com/to/C2IocD')
 
     profile = get_profile(request)
 
@@ -659,29 +659,30 @@ def new_matching_partner(request):
     if not request.user.is_authenticated:
         return get_json_response("Not Authorized", 403)
 
-    if profile:
+    if not profile:
         return get_json_response("Profile not found.", 404)
 
     if request.POST and tx_hash:
         network = 'mainnet'
         web3 = get_web3(network)
         tx = web3.eth.getTransaction(tx_hash)
-        if is_verified(tx, tx_hash, tx_amount, network):
-            MatchPledge(
-                profile=profile,
-                amount=tx.value,
-                data=json.dumps({
-                    'tx_hash': tx_hash,
-                    'network': network,
-                    'from': tx['from'],
-                    'to': tx.to,
-                    'tx_amount': tx.value
-                })
-            ).save()
-
-            return get_json_response(
-                """Thank you for volunteering to match on Gitcoin Grants. 
-                You are supporting open source, and we thank you""", 201
+        match_pledge = MatchPledge(
+            profile=profile,
+            amount=tx.value,
+            data=json.dumps({
+                'tx_hash': tx_hash,
+                'network': network,
+                'from': tx['from'],
+                'to': tx.to,
+                'tx_amount': tx.value}
             )
-        return get_json_response("Transaction wasn't verified.", 400)
+        )
+        match_pledge.active = is_verified(tx, tx_hash, tx_amount, network)
+        match_pledge.save()
+
+        return get_json_response(
+            """Thank you for volunteering to match on Gitcoin Grants. 
+            You are supporting open source, and we thank you""", 201
+        )
+
     return get_json_response("Wrong request.", 400)

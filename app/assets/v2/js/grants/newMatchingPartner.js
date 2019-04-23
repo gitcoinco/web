@@ -44,6 +44,10 @@ function processPayment() {
 
   if (ethAmount && ethAmount.length > 0) {
     ethAmount = ethAmount.replace('ETH', '');
+    if (isNaN(ethAmount) === true) {
+      _alert('Please provide correct amount.', 'error');
+      return;
+    }
     var transactionParams = {
       to: GITCOIN_ADDRESS,
       from: web3.currentProvider.selectedAddress,

@@ -107,6 +107,7 @@ window.onload = function() {
           if (run_main) {
             if (!ignore_error) {
               var web3Callback = function(error, result) {
+                indicateMetamaskPopup(true);
                 var next = function() {
                   // setup inter page state
                   localStorage[issueURL] = JSON.stringify({
@@ -116,7 +117,6 @@ window.onload = function() {
                     txid: result
                   });
 
-                  var submitCommentUrl = '/postcomment/';
                   var finishedComment = function() {
                     dataLayer.push({ event: 'claimissue' });
                     _alert({ message: gettext('Fulfillment submitted to web3.') }, 'info');
@@ -124,20 +124,8 @@ window.onload = function() {
                       document.location.href = '/funding/details?url=' + issueURL;
                     }, 1000);
                   };
-                  var ratVal = $('input:radio[name=rating]:checked').val();
-                  var revVal = $('#review').val();
 
-                  $.post(submitCommentUrl, {
-                    'github_url': issueURL,
-                    'network': $('input[name=network]').val(),
-                    'standard_bounties_id': $('input[name=standard_bounties_id]').val(),
-                    'review': {
-                      'rating': ratVal ? ratVal : -1,
-                      'comment': revVal ? revVal : 'No comment given.',
-                      'reviewType': 'worker',
-                      'receiver': ''
-                    }
-                  }, finishedComment, 'json');
+                  finishedComment();
                 };
 
                 if (error) {
@@ -150,7 +138,7 @@ window.onload = function() {
               };
 
               // Get bountyId from the database
-              var uri = '/api/v0.1/bounties/?github_url=' + issueURL + '&network=' + $('input[name=network]').val() + '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
+              var uri = '/api/v0.1/bounties/?event_tag=all&github_url=' + issueURL + '&network=' + $('input[name=network]').val() + '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
 
               $.get(uri, function(results, status) {
                 results = sanitizeAPIResults(results);
@@ -165,6 +153,7 @@ window.onload = function() {
 
                 var bountyId = result['standard_bounties_id'];
 
+                indicateMetamaskPopup();
                 bounty.fulfillBounty(
                   bountyId,
                   document.ipfsDataHash,

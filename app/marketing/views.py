@@ -543,7 +543,7 @@ def account_settings(request):
                     subscriber_hash=subscriber_hash,
                 )
             except Exception as e:
-                logger.exception(e)
+                logger.debug(e)
             if es:
                 es.delete()
             request.user.delete()
@@ -553,7 +553,14 @@ def account_settings(request):
                         'ip': get_ip(request),
                     }
                 )
-            profile.delete()
+            profile.avatar_baseavatar_related.all().delete()
+            try:
+                profile.delete()
+            except:
+                profile.github_access_token = ''
+                profile.user = None
+                profile.hide_profile = True
+                profile.save()
             messages.success(request, _('Your account has been deleted.'))
             logout_redirect = redirect(reverse('logout') + '?next=/')
             return logout_redirect
@@ -657,6 +664,9 @@ def _leaderboard(request):
         TemplateResponse: The leaderboard template response.
 
     """
+    context = {
+        'active': 'leaderboard',
+    }
     return leaderboard(request, '')
 
 
@@ -724,7 +734,7 @@ def leaderboard(request, key=''):
 
     if amount:
         amount_max = amount[0][0]
-        top_earners = ranks.order_by('-amount')[0:3].values_list('github_username', flat=True)
+        top_earners = ranks.order_by('-amount')[0:5].values_list('github_username', flat=True)
         top_earners = ['@' + username for username in top_earners]
         top_earners = f'The top earners of this period are {", ".join(top_earners)}'
     else:
@@ -743,10 +753,11 @@ def leaderboard(request, key=''):
         'card_desc': f'See the most valued members in the Gitcoin community recently . {top_earners}',
         'action_past_tense': 'Transacted' if 'submitted' in key else 'bountied',
         'amount_max': amount_max,
-        'podium_items': items[:3] if items else [],
-        'technologies': technologies
+        'podium_items': items[:5] if items else [],
+        'technologies': technologies,
+        'active': 'leaderboard'
     }
-    
+
     return TemplateResponse(request, 'leaderboard.html', context)
 
 @staff_member_required

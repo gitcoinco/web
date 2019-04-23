@@ -16,7 +16,7 @@ function drawChart() {
     isStacked: true,
     backgroundColor: 'transparent',
     height: 400,
-    vAxis: { title: 'USD', ticks: [ 0, document.max_bounty_history ], format: 'short', gridlines: { color: 'transparent' } }
+    vAxis: { title: 'USD', ticks: [ 0, 10000, 50000, 100000, document.max_bounty_history ], format: 'short', gridlines: { color: 'transparent' } }
   };
 
   var chart = new google.visualization.ColumnChart(document.getElementById('bounty_universe_chart'));
@@ -33,7 +33,7 @@ function repoChart() {
     legend: 'none',
     height: 300,
     width: 300,
-    colors: [ '#3E00FF', '#25E899', '#FFCE08' ]
+    colors: [ '#011f4b', '#03396c', '#005b96' ]
   };
 
   var chart = new google.visualization.PieChart(document.getElementById('repo_chart'));
