@@ -1481,6 +1481,9 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                     params['title'] = params['card_title']
                     params['card_desc'] = ellipses(bounty.issue_description_text, 255)
 
+                if bounty.event and bounty.event.slug:
+                    params['event'] = bounty.event.slug
+
                 params['bounty_pk'] = bounty.pk
                 params['network'] = bounty.network
                 params['stdbounties_id'] = bounty.standard_bounties_id if not stdbounties_id else stdbounties_id
