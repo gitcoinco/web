@@ -8,6 +8,7 @@
     <meta name="title" content="{{ card_title }} Bug Bounty | Gitcoin">
     <meta name="description" content="{{ card_desc | truncatechars:200 }}">
     <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/user_popover.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
   </head>
 
@@ -433,125 +434,15 @@
   <script>
     $.fn.runTooltip = bootstrapTooltip
     $('[data-toggle="popover"]').popover()
-    var popoverData = [];
-
-    function renderPopOverData(json) {
-      $('.username').html(json.profile.handle);
-      $('.org_logos').html(convertToImage(json.profile.organizations));
-      $('.earned').html('~' + json.profile.total_earned + ' ETH earned')
-      $('.contributor-position').html('#' + json.profile.position)
-      $('.completed-bounties').html(json.statistics.work_completed)
-      $('.specialty').html('Specialty: ' + json.profile.keywords.slice(0, 3).toString())
-      $('.in-progress').html(json.statistics.work_in_progress)
-      $('.abandoned-bounties').html(json.statistics.work_abandoned)
-      $('.removed-bounties').html(json.statistics.work_removed)
-      $('.activity-title').html(json.recent_activity.activity_metadata.title)
-      $('.current_status').html(currentStatus(json.recent_activity.activity_type))
-      $('.time-ago').html(moment(json.recent_activity.created, 'YYYYMMDD').fromNow())
-    }
     
-
-    $('body').on('mouseover', '[data-username] img', function(e) {
-      openContributorPopOver($(this).parent().data('username'), $(this));
-    })
-
-    function openContributorPopOver(contributor, element) {
-      let contributorURL = `/api/v0.1/profile/${contributor}`;
-      let popoverContent = `
-      <div class="popover fade show popover-bounty" id="popover" data-toggle="popover" role="tooltip">
-          <div class="arrow"></div>
-          <div class="popover-body p-0">
-          <div class="popover-bounty__content">
-          <div class="d-flex justify-content-between mb-2">
-            <h2 class="title font-subheader font-weight-bold username"></h2>
-            <span class="text-muted specialty pt-2"></span>
-            <div class="org_logos"></div>
-          </div>
-          <span class="earned"></span>
-          <div class="statistics d-flex justify-content-between mt-2">
-            <div class="popover_card text-center mr-4 pt-2">
-              <span class="contributor-position font-weight-semibold"></span>
-              <p class="mt-2">Gitcoin Contributor</p>
-            </div>
-            <div class="contributions d-flex justify-content-between">
-              <div class="popover_card text-center mr-2 pt-2">
-                <span class="completed-bounties font-weight-semibold"></span>
-                <p class="mt-2">Bounties Completed</p>
-              </div>
-              <div class="popover_card text-center mr-2 pt-2">
-                <span class="in-progress text-center font-weight-semibold"></span>
-                <p class="mt-2">Bounties In Progress</p>
-              </div>
-              <div class="popover_card text-center mr-2 pt-2">
-                <span class="abandoned-bounties font-weight-semibold"></span>
-                <p class="mt-2">Bounties Abandoned</p>
-              </div>
-              <div class="popover_card text-center mr-2 pt-2">
-                <span class="removed-bounties font-weight-semibold"></span>
-                <p class="mt-2">Bounties Removed</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-        <div class="popover-bounty__footer">
-            <div class="d-flex justify-content-between">
-              <span class="title text-muted">Latest Activity
-                <span class="current_status font-weight-semibold"></span>
-              </span>
-              <span class="text-muted time-ago"></span>
-            </div>
-            <p class="text-muted pt-2 activity-title"></p>
-        </div>
-      </div>
-    `;
-      if(popoverData.filter(index => index[contributor]).length === 0) {
-        fetch(contributorURL, { method: 'GET' })
-          .then(function(response) {
-            return response.json();
-          }).then(function(response) {
-            renderPopOverData(response)
-            $(popoverContent).popover('show')
-            popoverData.push({[contributor]: response})
-          }).catch(function(err) {
-            return _alert({message: err}, 'error');
-          })
-        } else {
-          renderPopOverData(popoverData.filter(item => item[contributor])[0][contributor])
-          $(popoverContent).popover('show');
-        }
-
-        $(document, popoverContent).on('hidden.bs.modal', function(e) {
-          $('#popover').remove();
-          $(popoverContent).popover('hide');
-        });
-    }
-
-    function currentStatus(status) {
-      if (status === 'worker_applied') {
-        return 'Work Applied';
-      } else if (status === 'start_work') {
-        return 'Work Started';
-      } else if (status === 'worker_approved') {
-        return 'Worker Approved';
-      } else if (status === 'stop_work') {
-      } else {
-        return status;
-      }
-    }
-    function convertToImage(images) {
-      let a = [];
-      $.each(images, function(image) {
-        let image_url = `/dynamic/avatar/${image}`;
-        let link = `<img src="/dynamic/avatar/${image_url}" alt="${image}" class="rounded-circle" width="24" height="24">`
-        a.push(link);
-      })
-      return a;
-    }
+    $("body").on("mouseover", "[data-username] img", function(e) {
+      openContributorPopOver($(this).parent().data("username"), $(this));
+});
   </script>
   <script src="{% static "v2/js/pages/bounty_funder_payout_reminder.js" %}"></script>
   <script src="{% static "v2/js/pages/bounty_share.js" %}"></script>
   <script src="{% static "v2/js/pages/bounty_details.js" %}"></script>
+  <script src="{% static "v2/js/user_popover.js" %}"></script>
   <script src="{% static "v2/js/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
   <script src="{% static "v2/js/user-search.js" %}"></script>
