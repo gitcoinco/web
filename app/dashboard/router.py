@@ -201,11 +201,14 @@ class BountyViewSet(viewsets.ModelViewSet):
         # filtering
         event_tag = self.request.query_params.get('event_tag', '')
         if event_tag:
-            try:
-                evt = HackathonEvent.objects.filter(slug__iexact=event_tag).latest('id')
-                queryset = queryset.filter(event__pk=evt.pk)
-            except HackathonEvent.DoesNotExist:
-                return Bounty.objects.none()
+            if event_tag == 'all':
+                pass
+            else:
+                try:
+                    evt = HackathonEvent.objects.filter(slug__iexact=event_tag).latest('id')
+                    queryset = queryset.filter(event__pk=evt.pk)
+                except HackathonEvent.DoesNotExist:
+                    return Bounty.objects.none()
         else:
             queryset = queryset.filter(event=None)
 
