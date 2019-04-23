@@ -687,7 +687,7 @@ const populateBountyTotal = () => {
     total = `${totalBounty} ${bountyToken}`;
   }
 
-  $('#fee-percentage').html(FEE_PERCENTAGE);
+  $('#fee-percentage').html(FEE_PERCENTAGE * 100);
   $('#fee-amount').html(bountyFee);
   $('#fee-token').html(bountyToken);
   $('#summary-total-amount').html(total);
