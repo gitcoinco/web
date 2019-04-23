@@ -1588,6 +1588,10 @@ div.busyOverlay {
   max-width: 482px;
 }
 
+.popover_card {
+  border-radius: 5px;
+  border: 1px solid #E5E5E5;
+}
 /* Custom icons */
 
 .g-icon {
