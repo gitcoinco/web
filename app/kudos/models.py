@@ -361,7 +361,7 @@ class KudosTransfer(SendCryptoAsset):
             key = self.metadata['reference_hash_for_receipient']
             return f"{settings.BASE_URL}kudos/receive/v3/{key}/{self.txid}/{self.network}"
         except KeyError as e:
-            logger.error(e)
+            logger.debug(e)
             return ''
 
     def __str__(self):
@@ -437,6 +437,9 @@ class BulkTransferCoupon(SuperModel):
     sender_profile = models.ForeignKey(
         'dashboard.Profile', related_name='bulk_transfers', on_delete=models.CASCADE
     )
+
+    sender_address = models.CharField(max_length=255, blank=True)
+    sender_pk = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
         """Return the string representation of a model."""
