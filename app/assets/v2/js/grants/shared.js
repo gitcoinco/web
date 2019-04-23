@@ -151,7 +151,7 @@ $(document).ready(function() {
   }
 
   const listen_web3_1_changes = () => {
-    if (typeof web3 == 'undefined') {
+    if (typeof web3 == 'undefined' || typeof web3.eth.getCoinbase() == 'undefined') {
       return;
     }
     web3.eth.getCoinbase().then(function(result) {
