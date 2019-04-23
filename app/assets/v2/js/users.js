@@ -95,13 +95,20 @@ Vue.mixin({
     sendInvite: function(bounty, user) {
       let vm = this;
 
-      console.log(vm.bountySelected, user)
-      // let apiUrlInvite = '/api/v0.1/social_contribution_email/';
-      // let postInvite = fetchData(apiUrlInvite, 'POST');
-
-      // $.when(postInvite).then((response) => {
-      //   console.log(response);
-      // });
+      console.log(vm.bountySelected, bounty, user)
+      vm.showModal = false;
+      let apiUrlInvite = '/api/v0.1/social_contribution_email/';
+      let postInvite = fetchData(apiUrlInvite, 'POST', { 'url': bounty.github_url, user});
+      
+      $.when(postInvite).then((response) => {
+        console.log(response);
+        if (response.status === 500) {
+          _alert(response.msg, 'error');
+          
+        } else {
+          _alert('The invitation has been sent', 'info');
+        }
+      });
 
     }
   }

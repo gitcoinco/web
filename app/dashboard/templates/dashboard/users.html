@@ -245,9 +245,8 @@
         </div>
         <div slot="body">
           Select a bounty 
-          <div v-for="bounty in funderBounties" @click="bountySelected = bounty">
-            <button @click="bountySelected = bounty">sdfd</button>[[ bounty.id ]]
-            <img :src="`/dynamic/avatar/${ bounty.funding_organisation || bounty.bounty_owner_github_username }`" class="rounded-circle" width="20" height="20">
+          <div v-for="bounty in funderBounties" :key="bounty.id" @click="bountySelected = bounty" v-bind:class="{ 'btn-gc-blue': bountySelected && bounty.id === bountySelected.id }" class="py-2 px-3">
+            <img :src="`/dynamic/avatar/${ bounty.funding_organisation || bounty.bounty_owner_github_username }`" class="rounded-circle" width="30" height="30">
             [[ bounty.title ]]
             <span class="tag token">[[ bounty.value_true ]] [[ bounty.token_name ]]</span>
             <span class="tag usd">[[ bounty.value_in_usdt_now ]] USD</span>
@@ -255,8 +254,8 @@
           </div>
         </div>
         <div slot="footer">
-          <button @click="showModal = false">Cancel</button>
-          <button @click="sendInvite(bountySelected, userSelected.id)">Invite</button>
+          <button class="btn btn-outline-gc-blue" @click="showModal = false">Cancel</button>
+          <button class="btn btn-gc-blue" :disabled="!bountySelected" @click="sendInvite(bountySelected, userSelected.id)">Invite</button>
         </div>
       </modal>
     <script type="text/x-template" id="modal-template">
