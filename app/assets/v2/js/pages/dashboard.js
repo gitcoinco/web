@@ -20,7 +20,7 @@ local_storage_keys.push('org');
 results_limit = 15;
 
 if (document.hackathon) {
-  results_limit = 50;
+  results_limit = 80;
 }
 
 var localStorage;
