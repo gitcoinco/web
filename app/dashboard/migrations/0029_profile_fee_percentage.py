@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0026_auto_20190328_1314'),
+        ('dashboard', '0028_profile_actions_count'),
     ]
 
     operations = [
