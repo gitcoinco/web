@@ -1,0 +1,20 @@
+{
+    "symbol": "CET",
+    "address": "0x6817FFd020576C1B05058fc73127dAF08B45e179",
+    "overview": {
+        "en": "Chain-Energy Games (hereinafter referred to as CEG) is a decentralized public chain games platform that provides game asset distribution, block chain game record on chain, in-game digital asset wallets, in-game digital asset trading and developer SDK packages, game licenses and legal compliance products and services for high-quality game developers and game operators. Reinventing the game industry architecture with the concept of decentralization, creating a global decentralized, safe, reliable, fair, just, and mutually beneficial game ecosystem.",
+        "zh": "Chain-Energy Games(以下简称CEG)是一个去中心化的游戏公链平台，为全球优质的游戏开发者和游戏运营商提供游戏资产发行/区块链游戏上链、游戏内数字资 产钱包、游戏内数字资产交易和开发者SDK包、游戏牌照及法律合规等产品及服务，以去中心化的理念重塑游戏行业体系结构打造全球去中心化、安全可靠、公平、公 正、互利共赢的游戏生态。"
+    },
+    "email": "marketing@g.game",
+    "website": "http://www.g.game/",
+    "whitepaper": "https://cet.im/EN.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-02-14",
+    "initial_price": {
+        "USD": "0.08 USD"
+    },
+    "links": {
+        "telegram": "https://t.me/cetgame",
+        "biyong": "https://0.plus/cetgame"
+    }
+}
