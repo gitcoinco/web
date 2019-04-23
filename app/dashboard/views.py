@@ -1008,8 +1008,7 @@ def social_contribution_email(request):
     if not invite_url:
         bounty_id = request.POST.get('bountyId')
         invite_url = f'{settings.BASE_URL}issue/{get_bounty_invite_url(request.user.username, bounty_id)}'
-        print(request.user.username, bounty_id)
-    
+
     inviter = request.user if request.user.is_authenticated else None
     bounty = Bounty.objects.current().get(github_url=url)
     for user_id in user_ids:
@@ -1023,7 +1022,7 @@ def social_contribution_email(request):
         emails.append(profile.email)
 
     msg = request.POST.get('msg', '')
-    print(emails, msg, request.user.profile, invite_url)
+
     try:
         share_bounty(emails, msg, request.user.profile, invite_url, True)
         response = {
