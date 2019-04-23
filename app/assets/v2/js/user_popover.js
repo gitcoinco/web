@@ -10,9 +10,10 @@ const renderPopOverData = json => {
                 <span class="text-muted specialty pt-2">Specialty: ${json.profile.keywords
     .slice(0, 3)
     .toString()}</span>
-                <div class="org_logos">${convertToImage(
-    json.profile.organizations
-  )}</div>
+                                  ${Object.keys(json.profile.organizations).map(
+    org =>
+      `<img src="/dynamic/avatar/${org}" alt="${org}" class="rounded-circle" width="24" height="24">`
+  )}
               </div>
               <span class="earned">~ ${
   json.profile.total_earned
@@ -120,15 +121,4 @@ const currentStatus = status => {
     return 'Submitted Work';
   }
   return status;
-  
-};
-const convertToImage = images => {
-  let a = [];
-
-  $.each(images, image => {
-    let link = `<img src="/dynamic/avatar/${image}" alt="${image}" class="rounded-circle" width="24" height="24">`;
-
-    a.push(link);
-  });
-  return a;
 };
