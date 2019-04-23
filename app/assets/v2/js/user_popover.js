@@ -108,17 +108,28 @@ const openContributorPopOver = (contributor, element) => {
   }
 };
 
-const currentStatus = status => {
-  if (status === 'worker_applied') {
-    return 'Work Applied';
-  } else if (status === 'start_work') {
-    return 'Work Started';
-  } else if (status === 'worker_approved') {
-    return 'Worker Approved';
-  } else if (status === 'stop_work') {
-    return 'Stopped Work';
-  } else if (status === 'work_submitted') {
-    return 'Submitted Work';
-  }
-  return status;
-};
+const currentStatus = (status) => {
+      const activity_names = {
+        new_bounty: gettext('New Bounty'),
+        start_work: gettext('Work Started'),
+        stop_work: gettext('Work Stopped'),
+        work_submitted: gettext('Work Submitted'),
+        work_done: gettext('Work Done'),
+        worker_approved: gettext('Worker Approved'),
+        worker_rejected: gettext('Worker Rejected'),
+        worker_applied: gettext('Worker Applied'),
+        increased_bounty: gettext('Increased Funding'),
+        killed_bounty: gettext('Canceled Bounty'),
+        new_crowdfund: gettext('New Crowdfund Contribution'),
+        new_tip: gettext('New Tip'),
+        receive_tip: gettext('Tip Received'),
+        bounty_abandonment_escalation_to_mods: gettext('Escalated for Abandonment of Bounty'),
+        bounty_abandonment_warning: gettext('Warned for Abandonment of Bounty'),
+        bounty_removed_slashed_by_staff: gettext('Dinged and Removed from Bounty by Staff'),
+        bounty_removed_by_staff: gettext('Removed from Bounty by Staff'),
+        bounty_removed_by_funder: gettext('Removed from Bounty by Funder'),
+        bounty_changed: gettext('Bounty Details Changed'),
+        extend_expiration: gettext('Extended Bounty Expiration')
+      };
+      return activity_names[status] || 'Unknown activity ';
+    }
