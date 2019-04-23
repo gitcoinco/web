@@ -2219,6 +2219,7 @@ def new_bounty(request):
         title=_('Create Funded Issue'),
         update=bounty_params,
     )
+    params['FEE_PERCENTAGE'] = request.user.profile.fee_percentage if request.user.is_authenticated else 10
     return TemplateResponse(request, 'bounty/new.html', params)
 
 

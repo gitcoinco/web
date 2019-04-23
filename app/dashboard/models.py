@@ -1882,6 +1882,7 @@ class Profile(SuperModel):
     linkedin_url = models.CharField(max_length=255, default='', blank=True, null=True)
     resume = models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('The profile resume.'))
     actions_count = models.IntegerField(default=3)
+    fee_percentage = models.IntegerField(default=10)
 
     objects = ProfileQuerySet.as_manager()
 
