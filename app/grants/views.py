@@ -37,7 +37,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from app.utils import get_profile
 from cacheops import cached_view
-from dashboard.models import Profile
+from dashboard.models import Activity, Profile
 from dashboard.utils import get_web3, has_tx_mined
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.forms import MilestoneForm
@@ -141,6 +141,7 @@ def grant_details(request, grant_id, grant_slug):
             logo = request.FILES.get('input_image', None)
             grant.logo = logo
             grant.save()
+            record_grant_activity_helper('update_grant', grant, profile)
             return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
         if 'contract_address' in request.POST:
             grant.cancel_tx_id = request.POST.get('grant_cancel_tx_id', '')
@@ -149,6 +150,7 @@ def grant_details(request, grant_id, grant_slug):
             grant_cancellation(grant, user_subscription)
             for sub in subscriptions:
                 subscription_terminated(grant, sub)
+            record_grant_activity_helper('killed_grant', grant, profile)
         elif 'input-title' in request.POST:
             update_kwargs = {
                 'title': request.POST.get('input-title', ''),
@@ -156,9 +158,11 @@ def grant_details(request, grant_id, grant_slug):
                 'grant': grant
             }
             Update.objects.create(**update_kwargs)
+            record_grant_activity_helper('update_grant', grant, profile)
         elif 'contract_owner_address' in request.POST:
             grant.contract_owner_address = request.POST.get('contract_owner_address')
             grant.save()
+            record_grant_activity_helper('update_grant', grant, profile)
             return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
         elif 'edit-title' in request.POST:
             grant.title = request.POST.get('edit-title')
@@ -174,6 +178,7 @@ def grant_details(request, grant_id, grant_slug):
                 grant.request_ownership_change = admin_profile
                 change_grant_owner_request(grant, grant.request_ownership_change)
             grant.save()
+            record_grant_activity_helper('update_grant', grant, profile)
             return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
     is_admin = (grant.admin_profile.id == profile.id) if profile and grant.admin_profile else False
     if is_admin:
@@ -218,11 +223,13 @@ def grant_details(request, grant_id, grant_slug):
             grant.admin_profile = grant.request_ownership_change
             grant.request_ownership_change = None
             grant.save()
+            record_grant_activity_helper('update_grant', grant, profile)
             change_grant_owner_accept(grant, grant.admin_profile, previous_owner)
             params['change_ownership'] = 'Y'
         elif request.GET.get('ownership', None) == 'reject':
             grant.request_ownership_change = None
             grant.save()
+            record_grant_activity_helper('update_grant', grant, profile)
             change_grant_owner_reject(grant, grant.admin_profile)
             params['change_ownership'] = 'N'
 
@@ -279,6 +286,7 @@ def grant_new(request):
             grant.contract_address = request.POST.get('contract_address', '')
             print(tx_hash, grant.contract_address)
             grant.save()
+            record_grant_activity_helper('new_grant', grant, profile)
             new_grant(grant, profile)
             return JsonResponse({
                 'success': True,
@@ -425,6 +433,9 @@ def grant_fund(request, grant_id, grant_slug):
                 subscription.error = True #cancel subs so it doesnt try to bill again
                 subscription.subminer_comments = "skipping subminer bc this is a 1 and done subscription, and tokens were alredy sent"
                 subscription.save()
+                record_subscription_activity_helper('new_grant_contribution', subscription, profile)
+            else:
+                record_subscription_activity_helper('new_grant_subscription', subscription, profile)
 
             messages.info(
                 request,
@@ -503,6 +514,7 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
         subscription.cancel_tx_id = request.POST.get('sub_cancel_tx_id', '')
         subscription.active = False
         subscription.save()
+        record_subscription_activity_helper('killed_grant_contribution', subscription, profile)
 
         value_usdt = subscription.get_converted_amount
         if value_usdt:
@@ -635,6 +647,69 @@ def leaderboard(request):
             params['items'].append(item)
             counter += 1
     return TemplateResponse(request, 'grants/leaderboard.html', params)
+
+
+def record_subscription_activity_helper(activity_type, subscription, profile):
+    """Registers a new activity concerning a grant subscription
+
+    Args:
+        activity_type (str): The type of activity, as defined in dashboard.models.Activity.
+        subscription (grants.models.Subscription): The subscription in question.
+        profile (dashboard.models.Profile): The current user's profile.
+
+    """
+    try:
+        grant_logo = subscription.grant.logo.url
+    except:
+        grant_logo = None
+    metadata = {
+        'id': subscription.id,
+        'value_in_token': str(subscription.amount_per_period),
+        'value_in_usdt_now': str(subscription.amount_per_period_usdt),
+        'token_name': subscription.token_symbol,
+        'title': subscription.grant.title,
+        'grant_logo': grant_logo,
+        'grant_url': subscription.grant.url,
+        'category': 'grant',
+    }
+    kwargs = {
+        'profile': profile,
+        'subscription': subscription,
+        'activity_type': activity_type,
+        'metadata': metadata,
+    }
+    Activity.objects.create(**kwargs)
+
+def record_grant_activity_helper(activity_type, grant, profile):
+    """Registers a new activity concerning a grant
+
+    Args:
+        activity_type (str): The type of activity, as defined in dashboard.models.Activity.
+        grant (grants.models.Grant): The grant in question.
+        profile (dashboard.models.Profile): The current user's profile.
+
+    """
+    try:
+        grant_logo = grant.logo.url
+    except:
+        grant_logo = None
+    metadata = {
+        'id': grant.id,
+        'value_in_token': '{0:.2f}'.format(grant.amount_received),
+        'amount_goal': '{0:.2f}'.format(grant.amount_goal),
+        'token_name': grant.token_symbol,
+        'title': grant.title,
+        'grant_logo': grant_logo,
+        'grant_url': grant.url,
+        'category': 'grant',
+    }
+    kwargs = {
+        'profile': profile,
+        'grant': grant,
+        'activity_type': activity_type,
+        'metadata': metadata,
+    }
+    Activity.objects.create(**kwargs)
 
 
 @csrf_exempt
