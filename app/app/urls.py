@@ -524,6 +524,7 @@ urlpatterns = [
     path('legacy/', include('legacy.urls', namespace='legacy')),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     re_path(r'^gh-login/$', dashboard.views.gh_login, name='gh_login'),
+    re_path(r'^twitter-login/$', dashboard.views.twitter_login, name='twitter_login'),
     path('', include('social_django.urls', namespace='social')),
     # webhook routes
     # sendgrid webhook processing
@@ -550,9 +551,6 @@ urlpatterns = [
     re_path(r'^documents/', include(wagtaildocs_urls)),
     re_path(r'', include(wagtail_urls)),
 
-    # for login with twitter
-    url(r'twilogin/login', retail.views.twitter_login),
-    url(r'twilogin/callback', retail.views.twitter_callback),
     # users
     path('users', dashboard.views.users_directory, name='users_directory'),
     url(r'^api/v0.1/users_fetch/', dashboard.views.users_fetch, name='users_fetch'),
