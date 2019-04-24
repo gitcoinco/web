@@ -184,8 +184,6 @@ $('#last-synced').hide();
 
 $(document).ready(function() {
 
-  $('#summary-bounty-amount').html($('input[name=amount]').val());
-  $('#summary-fee-amount').html(($('input[name=amount]').val() * FEE_PERCENTAGE).toFixed(4));
   populateBountyTotal();
 
   // Load sidebar radio buttons from localStorage
@@ -762,7 +760,7 @@ getAmountEstimate(usdFeaturedPrice, 'ETH', (amountEstimate) => {
 const populateBountyTotal = () => {
 
   const amount = $('input[name=amount]').val();
-  const fee = ((amount / 100) * FEE_PERCENTAGE).toFixed(4);
+  const fee = (amount * FEE_PERCENTAGE).toFixed(4);
 
   $('#summary-bounty-amount').html(amount);
   $('#summary-fee-amount').html(fee);
