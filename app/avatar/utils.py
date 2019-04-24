@@ -31,7 +31,8 @@ from django.template import loader
 
 import pyvips
 import requests
-from git.utils import get_user
+from git.utils import get_user as get_github_user
+from twitter.utils import get_user as get_twitter_user
 from PIL import Image, ImageOps
 from pyvips.error import Error as VipsError
 from svgutils import transform
@@ -524,7 +525,7 @@ def get_avatar(_org_name):
     try:
         avatar = Image.open(filepath, 'r').convert("RGBA")
     except (IOError, FileNotFoundError):
-        remote_user = get_user(_org_name)
+        remote_user = get_github_user(_org_name)
         if not remote_user.get('avatar_url', False):
             return JsonResponse({'msg': 'invalid user'}, status=422)
         remote_avatar_url = remote_user['avatar_url']
@@ -585,18 +586,37 @@ def get_err_response(request, blank_img=False):
 
 
 def get_user_github_avatar_image(handle):
-    remote_user = get_user(handle)
+    remote_user = get_github_user(handle)
     avatar_url = remote_user.get('avatar_url')
     if not avatar_url:
         return None
     from .models import BaseAvatar
-    temp_avatar = get_github_avatar_image(avatar_url, BaseAvatar.ICON_SIZE)
+    temp_avatar = get_avatar_image_by_url(avatar_url, BaseAvatar.ICON_SIZE)
     if not temp_avatar:
         return None
     return temp_avatar
 
 
-def get_github_avatar_image(url, icon_size):
+def get_formatted_twitter_avatar_image(handle):
+    """
+
+    :param handle: UserName
+    :return:
+    """
+    remote_user = get_twitter_user(handle)
+    avatar_url = remote_user.get('avatar_url')
+    if not avatar_url:
+        return None
+    from .models import BaseAvatar
+    temp_avatar = get_avatar_image_by_url(avatar_url, BaseAvatar.ICON_SIZE)
+    if not temp_avatar:
+        return None
+    return temp_avatar
+
+
+def get_avatar_image_by_url(url, icon_size):
+    """I have changed the name from get_github to get_by_url.
+       Since it does not only work for github avatars."""
     response = requests.get(url)
     img = Image.open(BytesIO(response.content)).convert('RGBA')
     return ImageOps.fit(img, icon_size, Image.ANTIALIAS)
