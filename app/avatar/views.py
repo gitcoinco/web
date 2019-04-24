@@ -32,7 +32,8 @@ from PIL import Image, ImageOps
 
 from .models import BaseAvatar, CustomAvatar, SocialAvatar
 from .utils import (
-    add_gitcoin_logo_blend, build_avatar_svg, get_avatar, get_err_response, get_user_github_avatar_image,
+    add_gitcoin_logo_blend, build_avatar_svg, get_avatar, get_err_response,
+    get_user_github_avatar_image, get_formatted_twitter_avatar_image,
     handle_avatar_payload,
 )
 
@@ -86,14 +87,19 @@ def avatar(request):
 
 @csrf_exempt
 def save_github_avatar(request):
-    """Save the Github Avatar."""
+    """Save the Github Avatar.
+       Can handle both github and twitter avatars,
+       Differ them by the twitter prefix."""
     response = {'status': 200, 'message': 'Avatar saved'}
     if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
         request.user, 'profile', None
     ):
         return JsonResponse({'status': 405, 'message': 'Authentication required'}, status=405)
     profile = request.user.profile
-    github_avatar_img = get_user_github_avatar_image(profile.handle)
+    if profile.handle[0:8] == 'twitter_':
+        github_avatar_img = get_formatted_twitter_avatar_image(profile.handle)
+    else:
+        github_avatar_img = get_user_github_avatar_image(profile.handle)
     if not github_avatar_img:
         return JsonResponse(response, status=response['status'])
 
