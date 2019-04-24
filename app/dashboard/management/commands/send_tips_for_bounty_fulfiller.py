@@ -56,59 +56,22 @@ class Command(BaseCommand):
                 bounty = tip.bounty
                 if bounty:
                     print(f" - tip {tip.pk} / {bounty.standard_bounties_id} / {bounty.status}")
-                    if bounty.status == 'done':
-                        fulfillment = bounty.fulfillments.filter(accepted=True)
-                        if fulfillment.exists():
-                            fulfillment = fulfillment.latest('fulfillment_id')
-                            ######################################################
-                            # send to fulfiller
-                            ######################################################
-                            print(" - 1 ")
-                            # assign tip to fulfiller and email them
-                            tip = assign_tip_to(tip, fulfillment.fulfiller_github_username)
-                            msg = f'auto assigneed on {timezone.now()} to fulfillment {fulfillment.pk}; as done bountyfulfillment'
-                            print("     " + msg)
-                            tip.metadata['payout_comments'] = msg
-                            tip.save()
-                        else:
-                            ######################################################
-                            # was sent with bulk payout.  send to bulk payout_ees
-                            ######################################################
-                            print(" - 2 ")
-                            bpts = bounty.bulk_payout_tips
-                            bpts_ids = bpts.values_list('pk', flat=True)
-                            bpts_total_amount = sum(bpts.values_list('amount', flat=True))
-                            num_payees = bpts.count()
-                            for bpt in bpts:
-                                print(f"    - {bpt.pk} ")
-                                cloned_tip = bpt
-                                cloned_tip.pk = None  # effectively clones the bpt and inserts a new one
-                                cloned_tip.receive_txid = ''
-                                cloned_tip.amount = (bpt.amount / bpts_total_amount) * tip.amount
-                                cloned_tip.receive_address = ''
-                                cloned_tip.recipient_profile = None
-                                cloned_tip.is_for_bounty_fulfiller = False
-                                cloned_tip.username = bpt.username
-                                cloned_tip.tokenAddress = tip.tokenAddress
-                                cloned_tip.tokenName = tip.tokenName
-                                cloned_tip.emails = []
-                                cloned_tip.metadata = tip.metadata
-                                cloned_tip.metadata['is_clone'] = True
-                                cloned_tip.metadata['debug_info'] = f'created in order to facilitate payout of a crowdfund tip {tip.pk}'
-                                cloned_tip.save()
-                                print(f"    - {cloned_tip.pk} ")
-                                cloned_tip = assign_tip_to(cloned_tip, cloned_tip.username)
-                                cloned_tip.save()
-
-                            tip.receive_txid = f'cloned-and-paid-via-clones-:{bpts_ids}'
-                            tip.metadata['is_for_bounty_fulfiller_handled'] = True
-                            msg = f'auto assigneed on {timezone.now()} to via recipients of {bpts_ids}; as done ' \
-                                  'bounty w no bountyfulfillment'
-                            print("     ", msg)
-                            # TODO: email recipients of the cloned tip
-                            tip.metadata['payout_comments'] = msg
-                            tip.save()
-                    elif bounty.status == 'cancelled':
+                    fulfillment = bounty.fulfillments.filter(accepted=True)
+                    send_to_fulfilled_parties = bounty.status == 'done' and fulfillment.exists()
+                    send_back_to_where_it_came = bounty.status == 'cancelled' or (bounty.status == 'done' and not fulfillment.exists())
+                    if send_to_fulfilled_parties:
+                        fulfillment = fulfillment.latest('fulfillment_id')
+                        ######################################################
+                        # send to fulfiller
+                        ######################################################
+                        print(" - 1 ")
+                        # assign tip to fulfiller and email them
+                        tip = assign_tip_to(tip, fulfillment.fulfiller_github_username)
+                        msg = f'auto assigneed on {timezone.now()} to fulfillment {fulfillment.pk}; as done bountyfulfillment'
+                        print("     " + msg)
+                        tip.metadata['payout_comments'] = msg
+                        tip.save()
+                    elif send_back_to_where_it_came:
                         ######################################################
                         # return to funder
                         ######################################################
