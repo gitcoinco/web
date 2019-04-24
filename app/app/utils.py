@@ -20,7 +20,9 @@ import requests
 from avatar.models import SocialAvatar
 from avatar.utils import get_svg_templates, get_user_github_avatar_image
 from geoip2.errors import AddressNotFoundError
-from git.utils import _AUTH, HEADERS, get_user
+from git.utils import _AUTH, HEADERS
+from git.utils import get_user as get_github_user
+from twitter.utils import get_user as get_twitter_user
 from ipware.ip import get_real_ip
 from marketing.utils import get_or_save_email_subscriber
 from pyshorteners import Shortener
@@ -182,10 +184,18 @@ def get_upload_filename(instance, filename):
     return f"docs/{getattr(instance, '_path', '')}/{salt}/{file_path}"
 
 
-def sync_profile(handle, user=None, hide_profile=True):
+def sync_profile(handle, user=None, hide_profile=True, platform='github'):
     from dashboard.models import Profile
     handle = handle.strip().replace('@', '').lower()
-    data = get_user(handle)
+    if platform == 'github':
+        data = get_github_user(handle)
+    elif platform == 'twitter':
+        data = get_twitter_user(handle)
+    else:
+        print('- error: unknown login platform')
+        logger.warning('Unknown login platform')
+        return None
+
     email = ''
     is_error = 'name' not in data.keys()
     if is_error:
@@ -208,7 +218,7 @@ def sync_profile(handle, user=None, hide_profile=True):
     try:
         profile, created = Profile.objects.update_or_create(handle=handle, defaults=defaults)
         print("Profile:", profile, "- created" if created else "- updated")
-        orgs = get_user(handle, '/orgs')
+        orgs = get_github_user(handle, '/orgs')
         profile.organizations = [ele['login'] for ele in orgs]
         keywords = []
         for repo in profile.repos_data_lite:
