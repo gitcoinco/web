@@ -260,7 +260,7 @@ const populateBountyTotal = () => {
 
   const bountyToken = $('#summary-bounty-token').html();
   const bountyAmount = Number($('#summary-bounty-amount').html());
-  const bountyFee = Number(bountyAmount * FEE_PERCENTAGE).toFixed(4));
+  const bountyFee = Number(bountyAmount * FEE_PERCENTAGE).toFixed(4);
   const totalBounty = (bountyAmount + bountyFee).toFixed(4);
   const total = `${totalBounty} ${bountyToken}`;
 
