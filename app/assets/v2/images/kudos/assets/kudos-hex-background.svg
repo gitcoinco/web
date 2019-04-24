@@ -1,4 +1,3 @@
-<svg class="bg animated" width="222" height="256" viewBox="0 0 222 256" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M10.1488 69.7735L111 11.547L211.851 69.7735V186.227L111 244.453L10.1488 186.227V69.7735Z" stroke="black"
-        stroke-width="20"/>
+<svg class="bg animated" width="222" height="256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M10.15 69.77L111 11.55l100.85 58.22v116.46L111 244.45 10.15 186.23V69.77z" stroke="#000" stroke-width="20"/>
 </svg>
