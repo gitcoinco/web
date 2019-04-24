@@ -20,6 +20,7 @@
     margin: 1em;
     align-items: center;
     display: flex;
+    transition: transform .45s ease-in-out;
   }
 
   .img-holder--dark {
@@ -41,10 +42,25 @@
     height: 75px;
     padding: 0.8em;
   }
+
+  .img-holder:hover {
+    transform:rotate(360deg)
+  }
+
+  .ui-tooltip {
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+
+  .ui-tooltip-content {
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
 </style>
-<div class="col-12 sponsors text-white mt-3 mb-5">
-  Supported by
-  <div class="big-sponsors d-flex flex-wrap justify-content-center mt-4">
+<div class="col-12 sponsors text-white my-5">
+  <p class="font-weight-semibold font-subheader mb-2">SUPPORTED BY</p>
+  <div class="big-sponsors d-flex flex-wrap justify-content-center">
     <div class="img-holder rounded-circle img-holder--dark">
       <img src="{% static 'v2/images/hackathon-sponsors/big/quorum.svg' %}" alt="Quorum" title="Quorum" class="mw-100 mh-100 img-cover" width="113" height="113">
     </div>
@@ -88,9 +104,6 @@
     </div>
     <div class="img-holder rounded-circle img-holder--light">
       <img src="{% static 'v2/images/hackathon-sponsors/small/logo_poa.svg' %}" alt="POA" title="POA" class="mw-100 mh-100 img-cover" width="75" height="">
-    </div>
-    <div class="img-holder rounded-circle img-holder--light">
-      <img src="{% static 'v2/images/hackathon-sponsors/small/fluence-h.svg' %}" alt="Fluence" title="Fluence" class="mw-100 mh-100 img-cover" width="75" height="75">
     </div>
   </div>
 </div>
