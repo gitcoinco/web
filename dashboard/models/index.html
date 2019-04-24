@@ -3963,6 +3963,19 @@ object the first time, the query is executed.</p>
 <pre><code class="python">Activity._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=False, **kwargs)
 </code></pre>
 
+<h3 id="dashboard.models.Activity.grant">grant</h3>
+
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="dashboard.models.Activity.grant_id">grant_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Activity.humanized_activity_type">humanized_activity_type</h3>
 
 <p>Turn snake_case into Snake Case.</p>
@@ -4003,6 +4016,19 @@ one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
 </code></pre>
 <p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
 <h3 id="dashboard.models.Activity.profile_id">profile_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Activity.subscription">subscription</h3>
+
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="dashboard.models.Activity.subscription_id">subscription_id</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
@@ -4959,12 +4985,12 @@ class built by <code>create_forward_many_to_many_manager()</code> defined below.
         Defaults to: mainnet.</p>
 <p>Returns:
     queryset: list of bounties</p>
-<h3 id="dashboard.models.Profile.get_bounty_and_tip_activities">get_bounty_and_tip_activities</h3>
+<h3 id="dashboard.models.Profile.get_various_activities">get_various_activities</h3>
 
-<pre><code class="python">Profile.get_bounty_and_tip_activities(self, network='mainnet')
+<pre><code class="python">Profile.get_various_activities(self, network='mainnet')
 </code></pre>
 
-<p>Get bounty and tip related activities for this profile.</p>
+<p>Get bounty, tip and grant related activities for this profile.</p>
 <p>Args:
     network (str): The network to query results for.
         Defaults to: mainnet.</p>

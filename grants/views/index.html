@@ -2152,7 +2152,26 @@ The class bool is a subclass of the class int, and cannot be subclassed.
 <pre><code class="python">leaderboard(request)
 </code></pre>
 
-<p>Display leaderboard.</p>
+<p>Display leaderboard.
+<h2 id="grants.views.record_subscription_activity_helper">record_subscription_activity_helper</h2></p>
+<pre><code class="python">record_subscription_activity_helper(activity_type, subscription, profile)
+</code></pre>
+
+<p>Registers a new activity concerning a grant subscription</p>
+<p>Args:
+    activity_type (str): The type of activity, as defined in dashboard.models.Activity.
+    subscription (grants.models.Subscription): The subscription in question.
+    profile (dashboard.models.Profile): The current user's profile.</p>
+<h2 id="grants.views.record_grant_activity_helper">record_grant_activity_helper</h2>
+
+<pre><code class="python">record_grant_activity_helper(activity_type, grant, profile)
+</code></pre>
+
+<p>Registers a new activity concerning a grant</p>
+<p>Args:
+    activity_type (str): The type of activity, as defined in dashboard.models.Activity.
+    grant (grants.models.Grant): The grant in question.
+    profile (dashboard.models.Profile): The current user's profile.</p>
                 
                   
                 
