@@ -1737,13 +1737,19 @@ def profile(request, handle):
             ('work_done', _('Bounties Completed')),
             ('new_tip', _('Tips Sent')),
             ('receive_tip', _('Tips Received')),
+            ('new_grant', _('Grants created')),
+            ('update_grant', _('Grants updated')),
+            ('killed_grant', _('Grants cancelled')),
+            ('new_grant_contribution', _('Grants contributed to')),
+            ('new_grant_subscription', _('Grants subscribed to')),
+            ('killed_grant_contribution', _('Grants unsubscribed from')),
         ]
         page = request.GET.get('p', None)
 
         if page:
             page = int(page)
             activity_type = request.GET.get('a', '')
-            all_activities = profile.get_bounty_and_tip_activities()
+            all_activities = profile.get_various_activities()
             paginator = Paginator(profile_filter_activities(all_activities, activity_type), 10)
 
             if page > paginator.num_pages:
