@@ -35,3 +35,20 @@ def save_profile(backend, user, response, request, *args, **kwargs):
 
         sync_profile(handle, user, hide_profile=False)
         setup_lang(request, user)
+    elif backend.name == 'twitter':
+        handle = user.username
+        if is_blocked(handle):
+            raise SuspiciousOperation('You cannot login')
+
+        if not user.is_active:
+            raise SuspiciousOperation('You cannot login')
+
+        sync_profile(handle, user, hide_profile=False, platform='twitter')
+        setup_lang(request, user)
+        
+
+def social_details(backend, details, response, *args, **kwargs):
+    details_dict = dict(backend.get_user_details(response), **details)
+    if backend.name == 'twitter':
+        details_dict['username'] = 'twitter_' + details_dict['username']
+    return {'details': details_dict}
