@@ -126,6 +126,7 @@ class Token(SuperModel):
     )
     hidden = models.BooleanField(default=False)
     send_enabled_for_non_gitcoin_admins = models.BooleanField(default=True)
+    preview_img_mode = models.CharField(max_length=255, default='png')
 
     # Token QuerySet Manager
     objects = TokenQuerySet.as_manager()
@@ -272,9 +273,16 @@ class Token(SuperModel):
             return svg_to_png(obj.read(), scale=3, width=333, height=384, index=self.pk)
         return None
 
+
     @property
     def img_url(self):
         return f'{settings.BASE_URL}dynamic/kudos/{self.pk}/{slugify(self.name)}'
+
+    @property
+    def preview_img_url(self):
+        if self.preview_img_mode == 'png':
+            return self.img_url
+        return self.image
 
     @property
     def url(self):
