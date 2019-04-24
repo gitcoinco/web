@@ -16,19 +16,14 @@ h1, h2, h3, h4, h5 {
   letter-spacing: 0;
 }
 
-input:-moz-read-only { /* For Firefox */
-  background-color: #eaeaea94;
+input {
+  outline: none;
 }
 
+textarea:-moz-read-only,
+input:-moz-read-only,
+textarea:read-only,
 input:read-only {
-  background-color: #eaeaea94;
-}
-
-textarea:-moz-read-only { /* For Firefox */
-  background-color: #eaeaea94;
-}
-
-textarea:read-only {
   background-color: #eaeaea94;
 }
 
@@ -54,12 +49,14 @@ textarea:read-only {
   font-size: 13px;
 }
 
-#keyword-suggestion-container {
+#keyword-suggestion-container,
+#contributor-suggestion-container {
   display: flex;
   align-items: center;
 }
 
-#keyword-suggestions {
+#keyword-suggestions,
+#contributor-suggestions {
   display: flex;
   margin-left: 15px;
 }
