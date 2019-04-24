@@ -49,12 +49,14 @@ input:read-only {
   font-size: 13px;
 }
 
-#keyword-suggestion-container {
+#keyword-suggestion-container,
+#contributor-suggestion-container {
   display: flex;
   align-items: center;
 }
 
-#keyword-suggestions {
+#keyword-suggestions,
+#contributor-suggestions {
   display: flex;
   margin-left: 15px;
 }
