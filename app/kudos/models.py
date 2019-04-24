@@ -26,6 +26,7 @@ from django.db import models
 from django.db.models import Q
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.templatetags.static import static
 from django.utils import timezone
 from django.utils.text import slugify
 
@@ -282,7 +283,7 @@ class Token(SuperModel):
     def preview_img_url(self):
         if self.preview_img_mode == 'png':
             return self.img_url
-        return self.image
+        return static(self.image)
 
     @property
     def url(self):
