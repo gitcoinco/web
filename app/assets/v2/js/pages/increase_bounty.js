@@ -253,7 +253,8 @@ $(document).ready(function() {
  */
 const populateBountyTotal = () => {
   var amount = parseFloat($('input[name=amount]').val());
-  if(isNaN(amount)){
+
+  if (isNaN(amount)) {
     amount = 0;
   }
   const fee = (amount * FEE_PERCENTAGE).toFixed(4);
@@ -265,6 +266,7 @@ const populateBountyTotal = () => {
   const bountyAmount = Number($('#summary-bounty-amount').html());
   const bountyFee = Number(bountyAmount * FEE_PERCENTAGE).toFixed(4);
   var totalBounty = Number(bountyAmount) + Number(bountyFee);
+
   totalBounty = totalBounty.toFixed(4);
   const total = `${totalBounty} ${bountyToken}`;
 
