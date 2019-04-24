@@ -4583,7 +4583,7 @@
   numClonesAllowed: 100
   tags:
     - Ethereal Virtual Hackathon
-  image: evh2019/mythx.svg
+  image: evh2019/mythX.svg
 - name: consensys_labs
   artist: mladenpetronijevic
   to_address: '0x249196a49F367841F5FA1Aa6Fd37657CC2Ea693c'
