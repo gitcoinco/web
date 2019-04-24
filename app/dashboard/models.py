@@ -2801,12 +2801,17 @@ class ProfileSerializer(serializers.BaseSerializer):
             dict: The serialized Profile.
 
         """
+        
         return {
             'id': instance.id,
             'handle': instance.handle,
             'github_url': instance.github_url,
             'avatar_url': instance.avatar_url,
-            'url': instance.get_relative_url()
+            'keywords': instance.keywords,
+            'url': instance.get_relative_url(),
+            'position': instance.get_contributor_leaderboard_index(),
+            'organizations': instance.get_who_works_with(),
+            'total_earned': instance.get_eth_sum()
         }
 
 

@@ -1044,7 +1044,7 @@ def bulk_payout_bounty(request):
         active='payout_bounty',
         title=_('Advanced Payout'),
     )
-
+    params['open_fulfillments'] = bounty.fulfillments.filter(accepted=False)
     return TemplateResponse(request, 'bulk_payout_bounty.html', params)
 
 
@@ -1566,8 +1566,43 @@ def quickstart(request):
     return TemplateResponse(request, 'quickstart.html', {})
 
 
-def profile_keywords(request, handle):
+def profile_details(request, handle):
     """Display profile keywords.
+
+    Args:
+        handle (str): The profile handle.
+
+    """
+    try:
+        profile = profile_helper(handle, True)
+        activity = Activity.objects.filter(profile=profile).order_by('-created_on').first()
+        count_work_completed = Activity.objects.filter(profile=profile, activity_type='work_done').count()
+        count_work_in_progress = Activity.objects.filter(profile=profile, activity_type='start_work').count()
+        count_work_abandoned = Activity.objects.filter(profile=profile, activity_type='stop_work').count()
+        count_work_removed = Activity.objects.filter(profile=profile, activity_type='bounty_removed_by_funder').count()
+
+    except (ProfileNotFoundException, ProfileHiddenException):
+        raise Http404
+
+    response = {
+        'profile': ProfileSerializer(profile).data,
+        'recent_activity': {
+            'activity_metadata': activity.metadata,
+            'activity_type': activity.activity_type,
+            'created': activity.created,
+        },
+        'statistics': {
+            'work_completed': count_work_completed,
+            'work_in_progress': count_work_in_progress,
+            'work_abandoned': count_work_abandoned,
+            'work_removed': count_work_removed
+        }
+    }
+    return JsonResponse(response, safe=False)
+
+
+def profile_keywords(request, handle):
+    """Display profile details.
 
     Args:
         handle (str): The profile handle.
