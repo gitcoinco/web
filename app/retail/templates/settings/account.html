@@ -72,7 +72,7 @@
     <div class="col-12 col-md-7 row">
       <div class="col-12 mt-2 mb-2">
         <button id="use_github_avatar" type="button" class="button button--primary-o">
-          <i class="mr-2 fab fa-github"></i>{% trans "Use Github Avatar" %}
+          <i class="mr-2 fab fa-github"></i>{% trans "Use Github/Twitter Avatar" %}
         </button>
       </div>
       <div class="col-12">
@@ -95,7 +95,7 @@
         {% csrf_token %}
         <input type="submit" class="button button--primary" name="disconnect" value="Disconnect">
       </form>
-      <h5 class="font-subheader">{% trans "Github" %}</h5>
+      <h5 class="font-subheader">{% trans "GitHub/Twitter" %}</h5>
       <p class="font-body">{% trans "Connected as " %}{{ github_handle }}</p>
     </div>
   </div>
