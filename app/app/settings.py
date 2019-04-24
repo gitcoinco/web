@@ -154,6 +154,7 @@ ROOT_URLCONF = env('ROOT_URLCONF', default='app.urls')
 
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.github.GithubOAuth2',  # for Github authentication
+    'social_core.backends.twitter.TwitterOAuth',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -533,22 +534,37 @@ GITHUB_API_USER = env('GITHUB_API_USER', default='')  # TODO
 GITHUB_API_TOKEN = env('GITHUB_API_TOKEN', default='')  # TODO
 GITHUB_APP_NAME = env('GITHUB_APP_NAME', default='gitcoin-local')
 
+# Twitter Integration
+TWITTER_CONSUMER_KEY = env('TWITTER_CONSUMER_KEY', default='')  # TODO
+TWITTER_CONSUMER_SECRET = env('TWITTER_CONSUMER_SECRET', default='')  # TODO
+TWITTER_ACCESS_TOKEN = env('TWITTER_ACCESS_TOKEN', default='')  # TODO
+TWITTER_ACCESS_SECRET = env('TWITTER_ACCESS_SECRET', default='')  # TODO
+TWITTER_USERNAME = env('TWITTER_USERNAME', default='')  # TODO
+
 # Social Auth
 LOGIN_URL = 'gh_login'
+LOGIN_URL = 'twitter_login'
 LOGOUT_URL = 'logout'
 LOGIN_REDIRECT_URL = 'explorer'
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'explorer'
 SOCIAL_AUTH_GITHUB_KEY = GITHUB_CLIENT_ID
 SOCIAL_AUTH_GITHUB_SECRET = GITHUB_CLIENT_SECRET
+SOCIAL_AUTH_TWITTER_KEY = TWITTER_CONSUMER_KEY
+SOCIAL_AUTH_TWITTER_SECRET = TWITTER_CONSUMER_SECRET
 SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'last_name', 'email']
 SOCIAL_AUTH_GITHUB_SCOPE = ['read:public_repo', 'read:user', 'user:email', ]
 
 SOCIAL_AUTH_PIPELINE = (
-    'social_core.pipeline.social_auth.social_details', 'social_core.pipeline.social_auth.social_uid',
-    'social_core.pipeline.social_auth.auth_allowed', 'social_core.pipeline.social_auth.social_user',
-    'social_core.pipeline.user.get_username', 'social_core.pipeline.user.create_user', 'app.pipeline.save_profile',
-    'social_core.pipeline.social_auth.associate_user', 'social_core.pipeline.social_auth.load_extra_data',
+    'app.pipeline.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.user.create_user',
+    'app.pipeline.save_profile',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
     'social_core.pipeline.user.user_details',
 )
 
@@ -566,12 +582,6 @@ if GITCOIN_BOT_CERT_PATH:
 
 GITCOIN_SLACK_ICON_URL = 'https://s.gitcoin.co/static/v2/images/helmet.png'
 
-# Twitter Integration
-TWITTER_CONSUMER_KEY = env('TWITTER_CONSUMER_KEY', default='')  # TODO
-TWITTER_CONSUMER_SECRET = env('TWITTER_CONSUMER_SECRET', default='')  # TODO
-TWITTER_ACCESS_TOKEN = env('TWITTER_ACCESS_TOKEN', default='')  # TODO
-TWITTER_ACCESS_SECRET = env('TWITTER_ACCESS_SECRET', default='')  # TODO
-TWITTER_USERNAME = env('TWITTER_USERNAME', default='')  # TODO
 
 # Slack Integration
 # optional: only needed if you slack things
