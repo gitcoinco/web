@@ -4151,7 +4151,7 @@
   artist: jbhav24
   to_address: '0xCb1D5db9bD5C41b8B3cf223920554cA1A58F6A6C'
   description: A special gift to the early users of the Ambo Wallet! 
-  priceFinney: 20
+  priceFinney: 1
   numClonesAllowed: 1000
   tags:
     - Ambo
