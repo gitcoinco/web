@@ -269,7 +269,7 @@ class Token(SuperModel):
         with open(file_path, 'rb') as f:
             obj = File(f)
             from avatar.utils import svg_to_png
-            return svg_to_png(obj.read(), scale=3, width=333, height=384)
+            return svg_to_png(obj.read(), scale=3, width=333, height=384, index=self.pk)
         return None
 
     @property
