@@ -38,7 +38,7 @@ function doShowQuickstart(url) {
   return true;
 }
 
-var procesedData;
+var processedData;
 
 $('.select2-tag__choice').on('click', function() {
   $('#invite-contributors.js-select2').data('select2').dataAdapter.select(procesedData[0].children[$(this).data('id')]);
@@ -57,7 +57,7 @@ const getSuggestions = () => {
   $.ajax(settings).done(function(response) {
     let groups = {
       'contributors': 'Recently worked with you',
-      'recommended_developers': 'Recomended based on skills',
+      'recommended_developers': 'Recommended based on skills',
       'verified_developers': 'Verified contributors'
     };
     
