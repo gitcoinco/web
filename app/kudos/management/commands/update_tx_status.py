@@ -33,7 +33,15 @@ class Command(BaseCommand):
 
     help = 'gets the tx status of all SendCryptoAssets'
 
-    def handle(self, *args, **options):
+    def process_grants_contribs(self):
+        from grants.models import Contribution
+        for contrib in Contribution.objects.filter(tx_cleared=False):
+            contrib.tx_id
+            contrib.update_tx_status()
+            print(f"syncing contrib / {contrib.pk} / {contrib.subscription.network}")
+            contrib.save()
+
+    def process_acm(self):
         non_terminal_states = ['pending', 'na', 'unknown']
         for obj_type in all_sendcryptoasset_models():
             sent_txs = obj_type.objects.filter(tx_status__in=non_terminal_states).exclude(txid='')
@@ -48,3 +56,7 @@ class Command(BaseCommand):
                     obj.update_receive_tx_status()
                     print(f" - updated {obj.receive_txid} to {obj.receive_tx_status}")
                 obj.save()
+
+    def handle(self, *args, **options):
+        self.process_grants_contribs()
+        self.process_acm()

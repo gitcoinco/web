@@ -4,7 +4,7 @@
 <a class="result bounty_row [[if hidden]]bounty_row--hidden[[/if]] [[:network]] i[[:standard_bounties_id]]" href="[[:action]]" data-container="body" data-toggle="popover" data-content='{% include "shared/bounty-popover.html" %}'>
   [[if avatar_url]]
     <div class="avatar-container col-1 justify-content-center hide_min_viewport">
-      <img src='[[:avatar_url]]' class='avatar'>
+      <img src='[[:avatar_url]]' class='avatar [[:github_org_name]]'>
     </div>
   [[else]]
     <div class="avatar-container col-1 justify-content-center">

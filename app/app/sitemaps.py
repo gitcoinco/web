@@ -79,7 +79,7 @@ class ContributorLandingPageSitemap(Sitemap):
         return timezone.now()
 
     def location(self, item):
-        return f'/contributor/{item}'
+        return f'/bounties/contributor/{item}'
 
 
 class ResultsSitemap(Sitemap):

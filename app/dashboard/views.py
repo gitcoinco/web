@@ -753,7 +753,7 @@ def users_fetch(request):
     q = request.GET.get('search', '')
     limit = int(request.GET.get('limit', 10))
     page = int(request.GET.get('page', 1))
-    order_by = request.GET.get('order_by', '-created_on')
+    order_by = request.GET.get('order_by', '-actions_count')
 
     context = {}
     user_list = Profile.objects.all().order_by(order_by).filter(Q(handle__icontains=q) | Q(keywords__icontains=q)).cache()
@@ -1044,7 +1044,7 @@ def bulk_payout_bounty(request):
         active='payout_bounty',
         title=_('Advanced Payout'),
     )
-
+    params['open_fulfillments'] = bounty.fulfillments.filter(accepted=False)
     return TemplateResponse(request, 'bulk_payout_bounty.html', params)
 
 
@@ -1397,25 +1397,29 @@ def bounty_invite_url(request, invitecode):
     Returns:
         django.template.response.TemplateResponse: The Bounty details template response.
     """
-    decoded_data = get_bounty_from_invite_url(invitecode)
-    bounty = Bounty.objects.current().filter(pk=decoded_data['bounty']).first()
-    inviter = User.objects.filter(username=decoded_data['inviter']).first()
-    bounty_invite = BountyInvites.objects.filter(
-        bounty=bounty,
-        inviter=inviter,
-        invitee=request.user
-    ).first()
-    if bounty_invite:
-        bounty_invite.status = 'accepted'
-        bounty_invite.save()
-    else:
-        bounty_invite = BountyInvites.objects.create(
-            status='accepted'
-        )
-        bounty_invite.bounty.add(bounty)
-        bounty_invite.inviter.add(inviter)
-        bounty_invite.invitee.add(request.user)
-    return redirect('/funding/details/?url=' + bounty.github_url)
+    try:
+        decoded_data = get_bounty_from_invite_url(invitecode)
+        bounty = Bounty.objects.current().filter(pk=decoded_data['bounty']).first()
+        inviter = User.objects.filter(username=decoded_data['inviter']).first()
+        bounty_invite = BountyInvites.objects.filter(
+            bounty=bounty,
+            inviter=inviter,
+            invitee=request.user
+        ).first()
+        if bounty_invite:
+            bounty_invite.status = 'accepted'
+            bounty_invite.save()
+        else:
+            bounty_invite = BountyInvites.objects.create(
+                status='accepted'
+            )
+            bounty_invite.bounty.add(bounty)
+            bounty_invite.inviter.add(inviter)
+            bounty_invite.invitee.add(request.user)
+        return redirect('/funding/details/?url=' + bounty.github_url)
+    except Exception as e:
+        logger.debug(e)
+        raise Http404
 
 
 
@@ -1476,6 +1480,9 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                     params['card_title'] = f'{bounty.title} | {bounty.org_name} Funded Issue Detail | Gitcoin'
                     params['title'] = params['card_title']
                     params['card_desc'] = ellipses(bounty.issue_description_text, 255)
+
+                if bounty.event and bounty.event.slug:
+                    params['event'] = bounty.event.slug
 
                 params['bounty_pk'] = bounty.pk
                 params['network'] = bounty.network
@@ -1559,8 +1566,43 @@ def quickstart(request):
     return TemplateResponse(request, 'quickstart.html', {})
 
 
-def profile_keywords(request, handle):
+def profile_details(request, handle):
     """Display profile keywords.
+
+    Args:
+        handle (str): The profile handle.
+
+    """
+    try:
+        profile = profile_helper(handle, True)
+        activity = Activity.objects.filter(profile=profile).order_by('-created_on').first()
+        count_work_completed = Activity.objects.filter(profile=profile, activity_type='work_done').count()
+        count_work_in_progress = Activity.objects.filter(profile=profile, activity_type='start_work').count()
+        count_work_abandoned = Activity.objects.filter(profile=profile, activity_type='stop_work').count()
+        count_work_removed = Activity.objects.filter(profile=profile, activity_type='bounty_removed_by_funder').count()
+
+    except (ProfileNotFoundException, ProfileHiddenException):
+        raise Http404
+
+    response = {
+        'profile': ProfileSerializer(profile).data,
+        'recent_activity': {
+            'activity_metadata': activity.metadata,
+            'activity_type': activity.activity_type,
+            'created': activity.created,
+        },
+        'statistics': {
+            'work_completed': count_work_completed,
+            'work_in_progress': count_work_in_progress,
+            'work_abandoned': count_work_abandoned,
+            'work_removed': count_work_removed
+        }
+    }
+    return JsonResponse(response, safe=False)
+
+
+def profile_keywords(request, handle):
+    """Display profile details.
 
     Args:
         handle (str): The profile handle.
@@ -2451,9 +2493,10 @@ def hackathon(request, hackathon=''):
 
     try:
         evt = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
-        title = evt.name
     except HackathonEvent.DoesNotExist:
-        raise Http404
+        evt = HackathonEvent.objects.last()
+
+    title = evt.name
 
     params = {
         'active': 'dashboard',
