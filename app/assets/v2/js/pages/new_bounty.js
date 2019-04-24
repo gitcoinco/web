@@ -741,7 +741,7 @@ function check_balance_and_alert_user_if_not_enough(tokenAddress, amount) {
       _alert(msg, 'warning');
     }
   });
-};
+}
 
 let usdFeaturedPrice = $('.featured-price-usd').text();
 let ethFeaturedPrice;
@@ -769,7 +769,7 @@ const populateBountyTotal = () => {
   const bountyAmount = Number($('#summary-bounty-amount').html());
   const bountyFee = Number((bountyAmount * FEE_PERCENTAGE).toFixed(4));
   const isFeaturedBounty = $('input[name=featuredBounty]:checked').val();
-  let totalBounty = (bountyAmount + bountyFee).toFixed(4);
+  let totalBounty = Number((bountyAmount + bountyFee).toFixed(4));
   let total = '';
 
   if (isFeaturedBounty) {
