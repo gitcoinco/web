@@ -41,7 +41,7 @@ function doShowQuickstart(url) {
 var processedData;
 
 $('.select2-tag__choice').on('click', function() {
-  $('#invite-contributors.js-select2').data('select2').dataAdapter.select(procesedData[0].children[$(this).data('id')]);
+  $('#invite-contributors.js-select2').data('select2').dataAdapter.select(processedData[0].children[$(this).data('id')]);
 });
 
 const getSuggestions = () => {
@@ -67,7 +67,7 @@ const getSuggestions = () => {
 
     var generalIndex = 0;
     
-    procesedData = $.map(options, function(obj, index) {
+    processedData = $.map(options, function(obj, index) {
       if (obj.children.length < 1) {
         return;
       }
@@ -82,7 +82,7 @@ const getSuggestions = () => {
     
     $('#invite-contributors').select2().empty();
     $('#invite-contributors.js-select2').select2({
-      data: procesedData,
+      data: processedData,
       placeholder: 'Select contributors',
       escapeMarkup: function(markup) {
         return markup;
