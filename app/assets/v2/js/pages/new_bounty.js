@@ -722,7 +722,7 @@ $(window).on('load', function() {
  * @param {String} tokenAddress
  * @param {Number} amount
  */
-const check_balance_and_alert_user_if_not_enough = (tokenAddress, amount) => {
+function check_balance_and_alert_user_if_not_enough(tokenAddress, amount) {
   const token_contract = web3.eth.contract(token_abi).at(tokenAddress);
   const from = web3.eth.coinbase;
   const token_details = tokenAddressToDetails(tokenAddress);
