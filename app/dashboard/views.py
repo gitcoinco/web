@@ -769,6 +769,8 @@ def users_fetch(request):
             profile_json['avatar_id'] = user_avatar.pk
             profile_json['avatar_url'] = user_avatar.avatar_url
         profile_json['verification'] = user.get_my_verified_check
+        profile_json['avg_rating'] = user.get_average_star_rating
+
         all_users.append(profile_json)
     # dumping and loading the json here quickly passes serialization issues - definitely can be a better solution 
     params['data'] = json.loads(json.dumps(all_users, default=str))

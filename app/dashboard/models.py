@@ -1973,6 +1973,7 @@ class Profile(SuperModel):
             / feedbacks.count() if feedbacks.count() != 0 else 0
         average_rating['speed_rating'] = sum([feedback.speed_rating for feedback in feedbacks]) \
             / feedbacks.count() if feedbacks.count() != 0 else 0
+        average_rating['total_rating'] = feedbacks.count()
         return average_rating
 
 
