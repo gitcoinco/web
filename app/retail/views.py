@@ -52,12 +52,6 @@ from ratelimit.decorators import ratelimit
 from retail.emails import render_nth_day_email_campaign
 from retail.helpers import get_ip
 
-# import twitter_utils
-# #from twitter_models import TwitterLogin
-# from models import TwitterLogin
-from twitter.utils import request_oauth_token_with_lib, access_oauth_token_with_lib
-from twitter.models import TwitterLogin
-
 from .forms import FundingLimitIncreaseRequestForm
 from .utils import programming_languages
 
@@ -1588,75 +1582,6 @@ def youtube(request):
 
 def web3(request):
     return redirect('https://www.youtube.com/watch?v=cZZMDOrIo2k')
-
-
-def twitter_login(request):
-    # if new_token == {}:
-    logger_m('obtain new token')
-    new_token = \
-        request_oauth_token_with_lib(settings.MYSITE_DOMAIN+'/twilogin/callback')
-
-    if 'oauth_token' in new_token:
-        new_oauth_token = new_token['oauth_token']
-
-        logger_m('saving request token...')
-        NewLogin = TwitterLogin(request_token=new_oauth_token,
-                                login_status=1)
-        NewLogin.save()
-
-        logger_m('ready to return redirect')
-
-        return redirect(f'https://api.twitter.com/oauth/authenticate?' +
-                        f'oauth_token={new_oauth_token}')
-    else:
-        return HttpResponse('<h1>verify filed</h1>')
-
-
-def twitter_callback(request):
-    # handle error: token_list is void
-    reply_token = request.GET.get('oauth_token')
-    reply_verifier = request.GET.get('oauth_verifier')
-    logger_m(reply_token)
-    logger_m(reply_verifier, 'verifier: ')
-
-    try:
-        saved_login = TwitterLogin.objects.get(request_token=reply_token)
-    except ObjectDoesNotExist:
-        saved_login = None
-
-    if saved_login:
-        future_token = \
-            access_oauth_token_with_lib(reply_token, reply_verifier)
-
-        logger_m(future_token, 'future_token')
-
-        if 'oauth_token' in future_token:
-
-            # save the access token pair for future usage.
-            saved_login.access_token = future_token['oauth_token']
-            saved_login.access_secret = future_token['oauth_token_secret']
-            saved_login.user_id = user_id = future_token['user_id']
-            saved_login.user_name = user_name = future_token['screen_name']
-            saved_login.login_status = 2
-            saved_login.save()
-
-            logger_m('ready to return callback')
-            return HttpResponse(f'<h1>Welcome!, {user_id}-{user_name}</h1>')
-        else:
-            return HttpResponse('<h1>Failed to login: Verify Failed</h1>')
-    else:
-        logger_m('verify failed')
-        return HttpResponse('<h1>Failed to login: Token Not Exist</h1>')
-
-
-def logger_m(msg_raw, comment=''):
-    msg = comment + str(msg_raw)
-    import datetime
-    time_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    msg = time_str + ': ' + msg + '\n'
-    print(msg)
-    with open('log2', 'a') as fo:
-        fo.write(msg)
 
 
 @cached_view_as(Token.objects.filter(network=get_default_network, approved=True))
