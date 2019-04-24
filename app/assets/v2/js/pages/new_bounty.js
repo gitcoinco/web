@@ -6,7 +6,7 @@ load_tokens();
 var localStorage;
 var quickstartURL = document.location.origin + '/bounty/quickstart';
 
-const FEE_PERCENTAGE = 10;
+const FEE_PERCENTAGE = document.FEE_PERCENTAGE / 100.0;
 
 var new_bounty = {
   last_sync: new Date()
@@ -184,8 +184,6 @@ $('#last-synced').hide();
 
 $(document).ready(function() {
 
-  $('#summary-bounty-amount').html($('input[name=amount]').val());
-  $('#summary-fee-amount').html(($('input[name=amount]').val() / FEE_PERCENTAGE).toFixed(4));
   populateBountyTotal();
 
   // Load sidebar radio buttons from localStorage
@@ -225,7 +223,7 @@ $(document).ready(function() {
     const amount = $('input[name=amount]').val();
 
     $('#summary-bounty-amount').html(amount);
-    $('#summary-fee-amount').html((amount / FEE_PERCENTAGE).toFixed(4));
+    $('#summary-fee-amount').html((amount * FEE_PERCENTAGE).toFixed(4));
     populateBountyTotal();
   });
 
@@ -590,7 +588,7 @@ $(document).ready(function() {
       }
 
       var do_bounty = function(callback) {
-        const fee = Number((Number(data.amount) / FEE_PERCENTAGE).toFixed(4));
+        const fee = Number((Number(data.amount) * FEE_PERCENTAGE).toFixed(4));
         const to_address = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
         const gas_price = web3.toHex($('#gasPrice').val() * Math.pow(10, 9));
 
@@ -716,6 +714,35 @@ $(window).on('load', function() {
   });
 });
 
+/**
+ * Alerts funder if they don't have enough tokens while attempting to
+ * fund a bounty.
+ * @param {String} tokenAddress
+ * @param {Number} amount
+ */
+function check_balance_and_alert_user_if_not_enough(tokenAddress, amount) {
+  const token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+  const from = web3.eth.coinbase;
+  const token_details = tokenAddressToDetails(tokenAddress);
+  const token_decimals = token_details['decimals'];
+  const token_name = token_details['name'];
+
+  token_contract.balanceOf.call(from, function(error, result) {
+    if (error) return;
+    const balance = result.toNumber() / Math.pow(10, token_decimals);
+    const balance_rounded = Math.round(balance * 10) / 10;
+    const total = parseFloat(amount) + parseFloat((parseFloat(amount) * FEE_PERCENTAGE).toFixed(4));
+
+    if (parseFloat(total) > balance) {
+      const msg = gettext('You do not have enough tokens to fund this bounty. You have ') +
+        balance_rounded + ' ' + token_name + ' ' + gettext(' but you need ') + amount +
+        ' ' + token_name;
+
+      _alert(msg, 'warning');
+    }
+  });
+}
+
 let usdFeaturedPrice = $('.featured-price-usd').text();
 let ethFeaturedPrice;
 let bountyFee;
@@ -731,11 +758,18 @@ getAmountEstimate(usdFeaturedPrice, 'ETH', (amountEstimate) => {
  * Bounty Amount + Fee + Featured Bounty
  */
 const populateBountyTotal = () => {
+
+  const amount = $('input[name=amount]').val();
+  const fee = (amount * FEE_PERCENTAGE).toFixed(4);
+
+  $('#summary-bounty-amount').html(amount);
+  $('#summary-fee-amount').html(fee);
+
   const bountyToken = $('#summary-bounty-token').html();
   const bountyAmount = Number($('#summary-bounty-amount').html());
-  const bountyFee = Number((bountyAmount / FEE_PERCENTAGE).toFixed(4));
+  const bountyFee = Number((bountyAmount * FEE_PERCENTAGE).toFixed(4));
   const isFeaturedBounty = $('input[name=featuredBounty]:checked').val();
-  let totalBounty = bountyAmount + bountyFee;
+  let totalBounty = Number((bountyAmount + bountyFee).toFixed(4));
   let total = '';
 
   if (isFeaturedBounty) {
@@ -751,7 +785,7 @@ const populateBountyTotal = () => {
     total = `${totalBounty} ${bountyToken}`;
   }
 
-  $('#fee-percentage').html(FEE_PERCENTAGE);
+  $('#fee-percentage').html(FEE_PERCENTAGE * 100);
   $('#fee-amount').html(bountyFee);
   $('#fee-token').html(bountyToken);
   $('#summary-total-amount').html(total);
