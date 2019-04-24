@@ -193,6 +193,12 @@ def gh_login(request):
     return redirect('social:begin', backend='github')
 
 
+@csrf_exempt
+def twitter_login(request):
+    """Attempt to redirect the user to Twitter for authentication."""
+    return redirect('social:begin', backend='twitter')
+
+
 def get_interest_modal(request):
     bounty_id = request.GET.get('pk')
     if not bounty_id:
