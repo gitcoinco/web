@@ -452,24 +452,18 @@ const isAvailableIfReserved = function(bounty) {
   return true;
 };
 
-var isBountyOwner = function(result) {
-  var bountyAddress = result['bounty_owner_address'];
-
-  if (typeof web3 == 'undefined') {
+const isBountyOwner = result => {
+  if (typeof web3 == 'undefined' || !web3.eth ||
+      typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
     return false;
   }
-  
-  if (!web3.eth || typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
-    return false;
-  }
-
-  return caseInsensitiveCompare(web3.eth.coinbase, bountyAddress);
+  return caseInsensitiveCompare(web3.eth.coinbase, result['bounty_owner_address']);
 };
 
-var isBountyOwnerPerLogin = function(result) {
-  var bounty_owner_github_username = result['bounty_owner_github_username'];
-
-  return caseInsensitiveCompare(bounty_owner_github_username, document.contxt['github_handle']);
+const isBountyOwnerPerLogin = result => {
+  return caseInsensitiveCompare(
+    result['bounty_owner_github_username'], document.contxt['github_handle']
+  );
 };
 
 var update_title = function() {
