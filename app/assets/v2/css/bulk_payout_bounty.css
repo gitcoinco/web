@@ -56,6 +56,7 @@
   position: absolute;
   top: 5rem;
   right: -20rem;
+  max-width: 300px;
 }
 
 #trans_preview h5 {
@@ -84,6 +85,7 @@
     top: 200px;
     left: 72%;
     width: 100%;
+    max-width: initial;
   }
   #primary_form {
     margin: 0px auto;

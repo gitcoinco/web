@@ -15,6 +15,11 @@
   font-size: 0.8rem;
 }
 
+#expand,
+#minimize {
+  display: none;
+}
+
 .close-icon {
   position: absolute;
   top: 13px;
@@ -26,6 +31,10 @@
 
 .sidebar_search .options .option {
   margin-bottom: 2px;
+}
+
+.sidebar_search .option.Azure-Samples img {
+  border-radius: 0px !important;
 }
 
 .option label:before,
@@ -83,9 +92,13 @@
 }
 
 @media (max-width: 991.98px) {
-  #sidebar_container form,
-  .search-history {
+  #sidebar_container form {
+    height: 0;
     display: none;
+  }
+
+  #expand {
+    display: inherit;
   }
 
   .search_bar div {
