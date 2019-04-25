@@ -621,12 +621,14 @@ def get_temp_image_file(image):
     return temp_io
 
 
-def svg_to_png(svg_content, width=100, height=100, scale=1):
+def svg_to_png(svg_content, width=100, height=100, scale=1, index=None):
     print('creating svg with pyvips')
     png = svg_to_png_pyvips(svg_content, scale=scale)
     if not png:
+        if not index:
+            index = random.randint(1000000, 10000000)
         print("failed; using inkscape")
-        return svg_to_png_inkscape(svg_content, height=height, width=width)
+        return svg_to_png_inkscape(svg_content, height=height, width=width, index=index)
     return png
 
 
@@ -657,27 +659,32 @@ def svg_to_png_pyvips(svg_content, scale=1):
     return None
 
 
-def svg_to_png_inkscape(svg_content, width=333, height=384):
+def svg_to_png_inkscape(svg_content, width=333, height=384, index=100):
     import subprocess  # May want to use subprocess32 instead
-    input_file = 'static/tmp/input.svg'
-    output_file = 'static/tmp/output.png'
+    input_file = f'static/tmp/input{index}.svg'
+    output_file = f'static/tmp/output{index}.png'
 
-    text_file = open(input_file, "w")
-    content = svg_content
-    if type(content) == bytes:
-        content = svg_content.decode('utf-8')
-    text_file.write(content)
-    text_file.close()
+    # check filesystem cache, if not, compute image
+    try:
+        with open(output_file, 'rb') as fin:
+            file_input = fin.read()
+    except FileNotFoundError:
+        text_file = open(input_file, "w")
+        content = svg_content
+        if type(content) == bytes:
+            content = svg_content.decode('utf-8')
+        text_file.write(content)
+        text_file.close()
 
-    cmd_list = [
-        '/usr/bin/inkscape', '-z', '--export-png', output_file, '--export-width', f"{width}", '--export-height',
-        f"{height}", input_file
-    ]
-    print(" ".join(cmd_list))
-    p = subprocess.Popen(cmd_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out, err = p.communicate()
-    if p.returncode:
-        print('Inkscape error: ' + (err or '?'))
+        cmd_list = [
+            '/usr/bin/inkscape', '-z', '--export-png', output_file, '--export-width', f"{width}", '--export-height',
+            f"{height}", input_file
+        ]
+        print(" ".join(cmd_list))
+        p = subprocess.Popen(cmd_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = p.communicate()
+        if p.returncode:
+            print('Inkscape error: ' + (err or '?'))
 
     with open(output_file, 'rb') as fin:
         return BytesIO(fin.read())

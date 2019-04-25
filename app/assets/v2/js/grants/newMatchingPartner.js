@@ -31,9 +31,11 @@ function saveTransactionDetails(transactionID) {
 
     let newAttestationsUrl = '/revenue/attestations/new';
 
-    $.post(newAttestationsUrl, data).then(function(result) {
-      createMatchingPartner(transactionID, transactionDetails.value);
-    });
+    setTimeout(function() {
+      $.post(newAttestationsUrl, data).then(function(result) {
+        createMatchingPartner(transactionID, transactionDetails.value);
+      });
+    }, 1000);
 
   });
 
@@ -54,12 +56,15 @@ function processPayment() {
       value: web3.utils.toWei(ethAmount)
     };
 
+    indicateMetamaskPopup();
     web3.eth.sendTransaction(
       transactionParams,
       function(error, hash) {
         if (error) {
           _alert(error.message, 'error');
         } else {
+          indicateMetamaskPopup(true);
+          _alert('Please wait for this tx to confirm.', 'info');
           saveTransactionDetails(hash);
         }
       }
