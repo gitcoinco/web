@@ -589,12 +589,12 @@ def funder_payout_reminder(to_email, bounty, github_username, live):
         return html
 
 
-def share_bounty(emails, msg, profile):
+def share_bounty(emails, msg, profile, invite_url=None, kudos_invite=False):
     for email in emails:
         to_email = email
         from_email = profile.email
         subject = "You have been invited to work on a bounty."
-        html, text = render_share_bounty(to_email, msg, profile)
+        html, text = render_share_bounty(to_email, msg, profile, invite_url, kudos_invite)
         send_mail(
             from_email,
             to_email,

@@ -31,7 +31,7 @@ from django.contrib.auth.models import User
 from django.core import serializers
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Count, Q
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template import loader
@@ -46,7 +46,7 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
-from app.utils import clean_str, ellipses
+from app.utils import clean_str, ellipses, get_default_network
 from avatar.utils import get_avatar_context_for_user
 from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, profile_helper
 from economy.utils import convert_token_to_usdt
@@ -68,7 +68,7 @@ from .helpers import get_bounty_data_for_activity, handle_bounty_views
 from .models import (
     Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest,
     FeedbackEntry, HackathonEvent, Interest, LabsResearch, Profile, ProfileSerializer, RefundFeeRequest, Subscription,
-    Tool, ToolVote, UserAction,
+    Tool, ToolVote, UserAction, UserVerificationModel,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -1105,6 +1105,7 @@ def increase_bounty(request):
     )
 
     params['is_funder'] = json.dumps(is_funder)
+    params['FEE_PERCENTAGE'] = request.user.profile.fee_percentage if request.user.is_authenticated else 10
 
     return TemplateResponse(request, 'bounty/increase.html', params)
 
@@ -1737,13 +1738,19 @@ def profile(request, handle):
             ('work_done', _('Bounties Completed')),
             ('new_tip', _('Tips Sent')),
             ('receive_tip', _('Tips Received')),
+            ('new_grant', _('Grants created')),
+            ('update_grant', _('Grants updated')),
+            ('killed_grant', _('Grants cancelled')),
+            ('new_grant_contribution', _('Grants contributed to')),
+            ('new_grant_subscription', _('Grants subscribed to')),
+            ('killed_grant_contribution', _('Grants unsubscribed from')),
         ]
         page = request.GET.get('p', None)
 
         if page:
             page = int(page)
             activity_type = request.GET.get('a', '')
-            all_activities = profile.get_bounty_and_tip_activities()
+            all_activities = profile.get_various_activities()
             paginator = Paginator(profile_filter_activities(all_activities, activity_type), 10)
 
             if page > paginator.num_pages:
@@ -2240,11 +2247,20 @@ def new_bounty(request):
     from .utils import clean_bounty_url
 
     events = HackathonEvent.objects.filter(end_date__gt=datetime.today())
+    suggested_developers = []
+    if request.user.is_authenticated:
+        suggested_developers = BountyFulfillment.objects.prefetch_related('bounty')\
+            .filter(
+                bounty__bounty_owner_github_username__iexact=request.user.profile.handle,
+                bounty__idx_status='done'
+            ).values('fulfiller_github_username', 'profile__id').annotate(fulfillment_count=Count('bounty')) \
+            .order_by('-fulfillment_count')[:5]
     bounty_params = {
         'newsletter_headline': _('Be the first to know about new funded issues.'),
         'issueURL': clean_bounty_url(request.GET.get('source') or request.GET.get('url', '')),
         'amount': request.GET.get('amount'),
         'events': events,
+        'suggested_developers': suggested_developers
     }
 
     params = get_context(
@@ -2254,8 +2270,40 @@ def new_bounty(request):
         title=_('Create Funded Issue'),
         update=bounty_params,
     )
+    params['FEE_PERCENTAGE'] = request.user.profile.fee_percentage if request.user.is_authenticated else 10
     return TemplateResponse(request, 'bounty/new.html', params)
 
+
+@csrf_exempt
+def get_suggested_contributors(request):
+    previously_worked_developers = []
+    keywords = request.GET.get('keywords', '').split(',')
+    if request.user.is_authenticated:
+        previously_worked_developers = BountyFulfillment.objects.prefetch_related('bounty', 'profile')\
+            .filter(
+                bounty__bounty_owner_github_username__iexact=request.user.profile.handle,
+                bounty__idx_status='done'
+            ).values('fulfiller_github_username', 'profile__id').annotate(fulfillment_count=Count('bounty')) \
+            .order_by('-fulfillment_count')
+        
+    keywords_filter = Q()
+    for keyword in keywords:
+        keywords_filter = keywords_filter | Q(bounty__metadata__issueKeywords__icontains=keyword) | \
+        Q(bounty__title__icontains=keyword) | \
+        Q(bounty__issue_description__icontains=keyword)
+    
+    recommended_developers = BountyFulfillment.objects.prefetch_related('bounty', 'profile') \
+        .filter(keywords_filter).values('fulfiller_github_username', 'profile__id').distinct()[:10]
+  
+    verified_developers = UserVerificationModel.objects.filter(verified=True).values('user__profile__handle', 'user__profile__id')
+
+    return JsonResponse(
+                {
+                    'contributors': list(previously_worked_developers),
+                    'recommended_developers': list(recommended_developers),
+                    'verified_developers': list(verified_developers)
+                },
+                status=200)
 
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
@@ -2457,10 +2505,13 @@ def hackathon(request, hackathon=''):
         evt = HackathonEvent.objects.last()
 
     title = evt.name
+    network = get_default_network()
+    orgs = set([bounty.org_name for bounty in Bounty.objects.filter(event=evt, network=network).current()])
 
     params = {
         'active': 'dashboard',
         'title': title,
+        'orgs': orgs,
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
         'hackathon': evt,
     }

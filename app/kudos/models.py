@@ -26,6 +26,7 @@ from django.db import models
 from django.db.models import Q
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.templatetags.static import static
 from django.utils import timezone
 from django.utils.text import slugify
 
@@ -127,6 +128,8 @@ class Token(SuperModel):
     )
     hidden = models.BooleanField(default=False)
     send_enabled_for_non_gitcoin_admins = models.BooleanField(default=True)
+    preview_img_mode = models.CharField(max_length=255, default='png')
+    suppress_sync = models.BooleanField(default=False)
 
     # Token QuerySet Manager
     objects = TokenQuerySet.as_manager()
@@ -275,12 +278,19 @@ class Token(SuperModel):
         with open(file_path, 'rb') as f:
             obj = File(f)
             from avatar.utils import svg_to_png
-            return svg_to_png(obj.read(), scale=3, width=333, height=384)
+            return svg_to_png(obj.read(), scale=3, width=333, height=384, index=self.pk)
         return None
+
 
     @property
     def img_url(self):
         return f'{settings.BASE_URL}dynamic/kudos/{self.pk}/{slugify(self.name)}'
+
+    @property
+    def preview_img_url(self):
+        if self.preview_img_mode == 'png':
+            return self.img_url
+        return static(self.image)
 
     @property
     def url(self):

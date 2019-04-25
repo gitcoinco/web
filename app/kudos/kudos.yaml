@@ -4151,7 +4151,7 @@
   artist: jbhav24
   to_address: '0xCb1D5db9bD5C41b8B3cf223920554cA1A58F6A6C'
   description: A special gift to the early users of the Ambo Wallet! 
-  priceFinney: 20
+  priceFinney: 1
   numClonesAllowed: 1000
   tags:
     - Ambo
@@ -4223,7 +4223,7 @@
     - Rubiks Cube
     - strategy
     - gameboy
-  image: Cassette.svg
+  image: 90_games.svg
 - name: lets_play_some_music
   artist: guistf
   description: For those who like a good classic of the 90's.
@@ -4234,7 +4234,7 @@
     - just for fun
     - cassette
     - play
-  image: pogs.svg
+  image: Cassette.svg
 - name: POGs
   artist: guistf
   description: Fun images printed making them supremely collectible.
@@ -4245,7 +4245,7 @@
     - snakes
     - game
     - School
-  image: 90_games.svg
+  image: pogs.svg
 - name: Helper_Fox
   description: You are a cherished member of the MetaMask community. Thanks for helping!
   priceFinney: 10
@@ -4377,5 +4377,249 @@
   - just for fun
   - gitcoin
   image: blue_spikey_shells.svg
+- name: pogs_eth_elements
+  description: The Classic 90's Pogs collection with ethereal elements, great for offering unique contributors.
+  priceFinney: 10
+  artist: guistf
+  platform: gitcoin
+  numClonesAllowed: 250
+  to_address: '0xa6d91F3795f934bb5f703724337f39C0f1a95fD5'
+  tags:
+  - pogs
+  - ethereum
+  - gitcoin
+  image: pogs_eth_elements.svg
+- name: ethereal_hackathon
+  description: Do you like epic challenges? Is it euphoric with passion for the development open source
+   between promoters and collaborators ,contributing to technological evolution? So this kudo is for you!
+  priceFinney: 10
+  artist: guistf
+  platform: gitcoin
+  numClonesAllowed: 100
+  to_address: '0xa6d91F3795f934bb5f703724337f39C0f1a95fD5'
+  tags:
+  - ethereal
+  - hackathon
+  - developer
+  image: eth_hackaton.svg
+- name: smart_contract
+  description: This Kudo is to honor the important work of collaborators who audit and report vulnerabilities in smart contracts.
+  priceFinney: 10
+  artist: guistf
+  platform: gitcoin
+  numClonesAllowed: 500
+  to_address: '0xa6d91F3795f934bb5f703724337f39C0f1a95fD5'
+  tags:
+  - smart contract
+  - developer
+  - safe
+  image: smart_contract.svg
+- name: web_assembly_dev
+  description: Do you look for a developer who cares about a fast, efficient and portable code? Safe, readable and debuggable code? Owners of this badge are known to dominate WebAssembly.
+  priceFinney: 15
+  artist: guistf
+  platform: gitcoin
+  numClonesAllowed: 150
+  to_address: '0xa6d91F3795f934bb5f703724337f39C0f1a95fD5'
+  tags:
+  - web assembly
+  - developer
+  - ai
+  - audit
+  - programming
+  - project
+  image: web_assembly_dev.svg
+- name: think_outside_the_box
+  description: The owners of this kudos do not think of obvious solutions. They are collaborators who have put in the power of creativity in solving problems. They do not think outside the box! They think the box does not exist!
+  priceFinney: 10
+  artist: guistf
+  platform: gitcoin
+  numClonesAllowed: 500
+  to_address: '0xa6d91F3795f934bb5f703724337f39C0f1a95fD5'
+  tags:
+  - ideas
+  - agile
+  - creative
+  image: think_outside_the_box.svg
+- name: artificial_intelligence
+  description: AI will be an essential solution for new challenges in the future. Are you looking for your teacher? You have found the collaborator who is beyond your time and who loves to talk to the machines!
+  priceFinney: 40
+  artist: guistf
+  platform: gitcoin
+  numClonesAllowed: 50
+  to_address: '0xa6d91F3795f934bb5f703724337f39C0f1a95fD5'
+  tags:
+  - ai
+  - intelligence
+  - audit
+  - autonomous
+  - machine
+  image: artificial_intelligence.svg
+- name: microsoft
+  artist: mladenpetronijevic
+  to_address: '0x9e3788ff41d4f73051583c6fc8b5642ea5769dc7'
+  description: Kudos from Microsoft!
+  priceFinney: 20
+  numClonesAllowed: 100
+  tags:
+    - Ethereal Virtual Hackathon
+  image: evh2019/microsoft.svg
+- name: quorum
+  artist: mladenpetronijevic
+  to_address: '0x185dc280Db47457550BEf6876a5c9D5a82d228c2'
+  description: Kudos from Quorum!
+  priceFinney: 20
+  numClonesAllowed: 100
+  tags:
+    - Ethereal Virtual Hackathon
+  image: evh2019/quorum.svg
+- name: mythx
+  artist: mladenpetronijevic
+  to_address: '0x393376e59bD40A4FBeDEeD3e44697eC4E00299D9'
+  description: Kudos from MythX!
+  priceFinney: 20
+  numClonesAllowed: 100
+  tags:
+    - Ethereal Virtual Hackathon
+  image: evh2019/mythX.svg
+- name: consensys_labs
+  artist: mladenpetronijevic
+  to_address: '0x249196a49F367841F5FA1Aa6Fd37657CC2Ea693c'
+  description: Kudos from ConsenSys Labs!
+  priceFinney: 20
+  numClonesAllowed: 100
+  tags:
+    - Ethereal Virtual Hackathon
+  image: evh2019/consensys_labs.svg
+- name: fortmatic
+  artist: mladenpetronijevic
+  to_address: '0xE0cef4417a772512E6C95cEf366403839b0D6D6D'
+  description: Kudos from Fortmatic!
+  priceFinney: 20
+  numClonesAllowed: 100
+  tags:
+    - Ethereal Virtual Hackathon
+  image: evh2019/fortmatic.svg
+- name: pegasys
+  artist: jakehaugen
+  to_address: '0xDaA65a7e57766ba333d3f6712937da6D54947085'
+  description: Kudos from PEGASYS!
+  priceFinney: 20
+  numClonesAllowed: 100
+  tags:
+    - Ethereal Virtual Hackathon
+  image: evh2019/pegasys.svg
+- name: ad_ex
+  artist: mladenpetronijevic
+  to_address: '0xd6e371526cdaeE04cd8AF225D42e37Bc14688D9E'
+  description: Kudos from AdEx!
+  priceFinney: 20
+  numClonesAllowed: 100
+  tags:
+    - Ethereal Virtual Hackathon
+  image: evh2019/ad_ex.svg
+- name: BDFL
+  description: Benevolent dictator for life (BDFL) is a title given to a small number of open-source software development leaders, typically project founders who retain the final say in disputes or arguments within the community
+  priceFinney: 10
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 100
+  tags:
+  - just for fun
+  - leadership
+  image: BDFL.svg
+- name: junior_release_manager
+  description: A merit badge for the junior ranger-- err junior release managers in your team.
+  priceFinney: 1
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 100
+  tags:
+  - just for fun
+  - leadership
+  image: junior_release_menager.svg
+- name: glen_award
+  description: GlenAward is created to display the RadicalxChange ideas & other stuff ! Creation inspired by an original idea of @DeanEigenmann !
+  priceFinney: 3000
+  artist: AnonVitalik
+  platform: gitcoin
+  to_address: "0x22e07f416cc960C30139BFef2a4e06bf4d2aA17E"
+  numClonesAllowed: 1
+  tags:
+  - Glen
+  image: glen.svg
+- name: pandoras_box
+  description: For the contributor to your repo who opened Pandoras Box
+  priceFinney: 10
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 100
+  tags:
+  - Pandoras Box
+  image: pandoras_box.svg
+- name: microsoft
+  artist: mladenpetronijevic
+  to_address: '0x9e3788ff41d4f73051583c6fc8b5642ea5769dc7'
+  description: Kudos from Microsoft!
+  priceFinney: 20
+  numClonesAllowed: 100
+  tags:
+    - Ethereal Virtual Hackathon
+  image: evh2019/microsoft.svg
+- name: quorum
+  artist: mladenpetronijevic
+  to_address: '0x185dc280Db47457550BEf6876a5c9D5a82d228c2'
+  description: Kudos from Quorum!
+  priceFinney: 20
+  numClonesAllowed: 100
+  tags:
+    - Ethereal Virtual Hackathon
+  image: evh2019/quorum.svg
+- name: mythx
+  artist: mladenpetronijevic
+  to_address: '0x393376e59bD40A4FBeDEeD3e44697eC4E00299D9'
+  description: Kudos from MythX!
+  priceFinney: 20
+  numClonesAllowed: 100
+  tags:
+    - Ethereal Virtual Hackathon
+  image: evh2019/mythX.svg
+- name: consensys_labs
+  artist: mladenpetronijevic
+  to_address: '0x249196a49F367841F5FA1Aa6Fd37657CC2Ea693c'
+  description: Kudos from ConsenSys Labs!
+  priceFinney: 20
+  numClonesAllowed: 100
+  tags:
+    - Ethereal Virtual Hackathon
+  image: evh2019/consensys_labs.svg
+- name: fortmatic
+  artist: mladenpetronijevic
+  to_address: '0xE0cef4417a772512E6C95cEf366403839b0D6D6D'
+  description: Kudos from Fortmatic!
+  priceFinney: 20
+  numClonesAllowed: 100
+  tags:
+    - Ethereal Virtual Hackathon
+  image: evh2019/fortmatic.svg
+- name: pegasys
+  artist: jakehaugen
+  to_address: '0xDaA65a7e57766ba333d3f6712937da6D54947085'
+  description: Kudos from PEGASYS!
+  priceFinney: 20
+  numClonesAllowed: 100
+  tags:
+    - Ethereal Virtual Hackathon
+  image: evh2019/pegasys.svg
+- name: ad_ex
+  artist: mladenpetronijevic
+  to_address: '0xd6e371526cdaeE04cd8AF225D42e37Bc14688D9E'
+  description: Kudos from AdEx!
+  priceFinney: 20
+  numClonesAllowed: 100
+  tags:
+    - Ethereal Virtual Hackathon
+  image: evh2019/ad_ex.svg
+
 
 
