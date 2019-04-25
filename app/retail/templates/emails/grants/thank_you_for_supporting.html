@@ -124,7 +124,7 @@
     {{ grant.title }}
   </a>
   <p class="grant-description">
-    {{ grant.description }}
+    {{ grant.description|truncatechars:300 }}
   </p>
   <p>
     {% trans "You have agreed to give" %}
