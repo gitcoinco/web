@@ -2506,9 +2506,12 @@ def hackathon(request, hackathon=''):
 
     title = evt.name
 
+    orgs = set([bounty.org_name for bounty in Bounty.objects.filter(event=evt).current()])
+
     params = {
         'active': 'dashboard',
         'title': title,
+        'orgs': orgs,
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
         'hackathon': evt,
     }
