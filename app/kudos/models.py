@@ -109,6 +109,7 @@ class Token(SuperModel):
 
     # Kudos metadata from tokenURI (also in contract)
     name = models.CharField(max_length=255, db_index=True)
+    override_display_name = models.CharField(max_length=255, blank=True)
     description = models.CharField(max_length=510, db_index=True)
     image = models.CharField(max_length=255, null=True)
     rarity = models.CharField(max_length=255, null=True)
@@ -138,6 +139,11 @@ class Token(SuperModel):
             self.owner_address = to_checksum_address(self.owner_address)
 
         super().save(*args, **kwargs)
+
+    @property
+    def ui_name(self):
+        from kudos.utils import humanize_name
+        return self.override_display_name if self.override_display_name else humanize_name(self.name)
 
     @property
     def price_in_eth(self):
