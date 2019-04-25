@@ -128,6 +128,7 @@ class Token(SuperModel):
     hidden = models.BooleanField(default=False)
     send_enabled_for_non_gitcoin_admins = models.BooleanField(default=True)
     preview_img_mode = models.CharField(max_length=255, default='png')
+    suppress_sync = models.BooleanField(default=False)
 
     # Token QuerySet Manager
     objects = TokenQuerySet.as_manager()
