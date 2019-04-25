@@ -778,6 +778,34 @@ def users_fetch(request):
     return JsonResponse(params, status=200, safe=False)
 
 
+def orgs_fetch(request):
+    """Handle displaying orgs."""
+    
+    network = request.GET.get('network', None)
+    event_tag = request.GET.get('event_tag', '')
+    bounties = Bounty.objects.current().filter(network=network)
+    # .values('event', 'funding_organisation').filter(network=network)
+    if event_tag:
+        try:
+            evt = HackathonEvent.objects.filter(slug__iexact=event_tag).latest('id')
+            bounties = bounties.filter(event__pk=evt.pk)
+        except HackathonEvent.DoesNotExist:
+            return Bounty.objects.none()
+    else:
+        bounties = bounties.filter(event=None)
+    print(bounties)
+
+    params = dict()
+    results = []
+    for bounty in bounties:
+        bounty_json = {}
+        bounty_json = bounty.org_name
+        results.append(bounty_json)
+    
+    params['data'] = json.loads(json.dumps(results, default=str))
+    return JsonResponse(params, status=200, safe=False)
+
+
 def dashboard(request):
     """Handle displaying the dashboard."""
 
