@@ -44,7 +44,7 @@ jobs:
         - pip install -r requirements/test.txt
         - npm run eslint
         - npm run stylelint
-        - pytest -p no:ethereum
+        #- pytest -p no:ethereum
         # Publish CodeCov coverage results.
         - codecov
         # Generate Markdown documentation and static docs page.
