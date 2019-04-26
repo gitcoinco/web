@@ -24,14 +24,10 @@ class Command(BaseCommand):
 
         help="Convert ERC-20 token balances in .env/FEE_ADDRESS to ETH where a Uniswap exchange is available"
 
-        tests = ''   
+        network = ''   
         web3 = ''
         factoryContract = ''
         tokenList = ''
-
-        def add_arguments(self, parser):
-                # Optional arguments for testing
-                parser.add_argument('-t','--test', action='store_true', help='Run on Rinkeby testnet')
 
         def getTokenList(self):
                 """ Queries the blockscout API for ERC-20 token balances
@@ -40,12 +36,9 @@ class Command(BaseCommand):
                   tokenList: A dict with the key being the ERC-20 token address and the value being an object containing
                   the token name, token symbol, Uniswap exchange address, and the token balance held by the FEE_ADDRESS
                 """
-                if (self.tests == True):
-                        network = 'rinkeby'
-                else:
-                        network = 'mainnet'
+                
                 tokenList = {}
-                r = requests.get('https://blockscout.com/eth/'+network+'/api?module=account&action=tokenlist&address='+settings.FEE_ADDRESS)
+                r = requests.get('https://blockscout.com/eth/'+self.network+'/api?module=account&action=tokenlist&address='+settings.FEE_ADDRESS)
                 print(r.json())
                 # Check if API is functioning or not and return null token list if so
                 if not r.ok:
@@ -73,7 +66,7 @@ class Command(BaseCommand):
                 
                 Note: This currently only works with the BAT Uniswap exchange on Rinkeby Testnet
                 """
-                if (self.tests == True):
+                if (self.network == 'rinkeby'):
                         chain = 4
                 else:
                         chain = 1
@@ -135,27 +128,22 @@ class Command(BaseCommand):
         def handle(self, **options):
                 """ Main management command function
                 
-                Args: 
-                  -t, --test: Tells command to use Rinkeby testnet
-
                 Returns: 
                   tokenList: Dict containing all ERC-20 tokens held by the FEE_ADDRESS and the balances before any ETH conversions
                 """
-                if options['test']:
-                        self.tests = True
+                if "rinkeby" in settings.WEB3_HTTP_PROVIDER:
+                        self.network = 'rinkeby'
                 else:
-                        self.tests = False   
+                        self.network = 'mainnet' 
 
                 # Setup web3 connectivity
                 self.web3 = Web3(Web3.HTTPProvider(settings.WEB3_HTTP_PROVIDER+'/v3/'+settings.INFURA_V3_PROJECT_ID))
                 
-                if (self.tests == True):
+                if (self.network == 'rinkeby'):
                         self.factoryAddress = '0xf5D915570BC477f9B8D6C0E980aA81757A3AaC36'
-                        #Assumes test network is Rinkeby
                         self.web3.middleware_stack.inject(geth_poa_middleware, layer=0)
 
                 else:
-
                         self.factoryAddress = '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95'
 
                 # Set up factory contract
@@ -167,7 +155,7 @@ class Command(BaseCommand):
                 for address, details in self.tokenList.items():
                         print(details['exchangeAddress'])
                         self.sell_token(details['exchangeAddress'])
-                if self.tests == True:
+                if self.network == 'rinkeby':
                         return self.tokenList['0xda5b056cfb861282b4b59d29c9b395bcc238d29b']['tokenSymbol']
                 else:
                         return self.tokenList
