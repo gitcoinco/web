@@ -142,7 +142,7 @@
                   <b>[[ user.work_done ]]</b> bounties completed
                 </div>
                 <div class="text-center mt-2">
-                  <button v-if="funderBounties.length" class="btn btn-sm btn-gc-blue" @click="openBounties(user)">Invite to Bounty</button>
+                  <button v-if="funderBounties.length" data-toggle="modal" data-target="#userModal" class="btn btn-sm btn-gc-blue" @click="openBounties(user)">Invite to Bounty</button>
                 </div>
               </div>
               <!-- [[user]] -->
@@ -150,76 +150,55 @@
           </div>
         </div>
       </div>
-      <modal v-if="showModal" @close="showModal = false">
-        <!--
-          you can use custom content here to overwrite
-          default content
-        -->
+      <modal v-if="showModal" ref="user-modal">
         <div slot="header">
-          {% comment %} [[ userSelected.id ]] {% endcomment %}
           <div class="d-flex flex-column align-items-center">
-            <img class="rounded-circle mx-auto" width="90" height="90" :src="`/dynamic/avatar/${ userSelected.handle }`"/>
+            <h6 class="font-weight-bold mb-3">Invite User to Bounty</h6>
+            <img class="rounded-circle mx-auto mb-3" width="64" height="64" :src="`/dynamic/avatar/${ userSelected.handle }`"/>
             <span>[[ userSelected.data.name || userSelected.handle ]]</span>
             <a :href="`/profile/${ userSelected.handle }`" class="text-center d-block" target="_blank">
             [[ userSelected.handle ]]
             </a>
           </div>
-
         </div>
         <div slot="body">
           <b>Select a bounty</b>
-          <div v-for="bounty in funderBounties" :key="bounty.id" @click="bountySelected = bounty" v-bind:class="{ 'btn-gc-blue': bountySelected && bounty.id === bountySelected.id }" class="py-2 px-3">
-            <img :src="`/dynamic/avatar/${ bounty.funding_organisation || bounty.bounty_owner_github_username }`" class="rounded-circle" width="30" height="30">
-            [[ bounty.title ]]
-            <span class="tag token">[[ bounty.value_true ]] [[ bounty.token_name ]]</span>
-            <span class="tag usd">[[ bounty.value_in_usdt_now ]] USD</span>
-
+          <div class="bounties-box">
+            <div v-for="bounty in funderBounties" :key="bounty.id" @click="bountySelected = bounty" v-bind:class="{ 'btn-gc-blue': bountySelected && bounty.id === bountySelected.id }" class="py-2 px-3">
+              <img :src="`/dynamic/avatar/${ bounty.funding_organisation || bounty.bounty_owner_github_username }`" class="rounded-circle" width="30" height="30">
+              [[ bounty.title ]]
+              <span class="tag token">[[ bounty.value_true ]] [[ bounty.token_name ]]</span>
+              <span class="tag usd">[[ bounty.value_in_usdt_now ]] USD</span>
+            </div>
           </div>
         </div>
         <div slot="footer">
           <a v-if="bountySelected" :href="bountySelected.url" target="_blank" class="mr-5">view bounty</a>
-          <button class="btn btn-outline-gc-blue" @click="showModal = false">Cancel</button>
+          <button class="btn btn-outline-gc-blue" data-dismiss="modal">Cancel</button>
           <button class="btn btn-gc-blue" :disabled="!bountySelected" @click="sendInvite(bountySelected, userSelected.id)">Invite</button>
         </div>
       </modal>
-    <script type="text/x-template" id="modal-template">
-      <transition name="modal">
-        <div>
-          <div class="vue-modal modal fade g-modal show">
-            <div class="modal-dialog modal-dialog-centered">
-              <div class="modal-content">
-
-                <div class="modal-header">
-                  <button type="button" class="close" @click="$emit('close')" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                  </button>
-                </div>
-
-                <div class="modal-body">
-                  <slot name="header">
-                    default header
-                  </slot>
-                  <slot name="body">
-                    default body
-                  </slot>
-                </div>
-
-                <div class="modal-footer">
-                  <slot name="footer">
-                    default footer
-                    <button class="modal-default-button" @click="$emit('close')">
-                      OK
-                    </button>
-                  </slot>
-                </div>
-              </div>
+    </div>
+    <template id="modal-template">
+      <div class="vue-modal modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" :class="size" role="document">
+          <div class="modal-content">
+            <div class="modal-header border-0">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div class="modal-body pt-0 ">
+              <slot name="header"></slot>
+              <slot name="body"></slot>
+            </div>
+            <div class="modal-footer border-0">
+              <slot name="footer"></slot>
             </div>
           </div>
-          <div class="modal-backdrop fade show"></div>
         </div>
-      </transition>
-    </script>
-    </div>
+      </div>
+    </template>
 
 
 
@@ -233,6 +212,9 @@
     <script>
       let bootstrapTooltip = $.fn.tooltip.noConflict()
       $.fn.runTooltip = bootstrapTooltip;
+      const bootstrapModal = $.fn.modal.noConflict()
+      $.fn.bootstrapModal = bootstrapModal
+
       $('[data-toggle="tooltip"]').runTooltip();
       const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
     </script>
