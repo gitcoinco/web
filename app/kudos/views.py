@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import json
 import logging
+import random
 import re
 import urllib.parse
 
@@ -36,7 +37,7 @@ from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
-import random
+
 from dashboard.models import Activity, Profile
 from dashboard.notifications import maybe_market_kudos_to_email, maybe_market_kudos_to_github
 from dashboard.utils import get_nonce, get_web3
@@ -380,7 +381,7 @@ def send_3(request):
             num_uses_total=1, #TODO: in the future, support more
             current_uses=0,
             secret=random.randint(10**19, 10**20),
-            comments_to_put_in_kudos_transfer='',
+            comments_to_put_in_kudos_transfer=params['comments_public'],
             sender_address=params['metadata']['address'],
             sender_pk=params.get('pk'),
             sender_profile=get_profile(from_username),
