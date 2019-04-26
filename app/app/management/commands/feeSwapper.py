@@ -145,15 +145,17 @@ class Command(BaseCommand):
                         self.tests = True
                 else:
                         self.tests = False   
-                self.web3 = Web3(Web3.HTTPProvider(settings.WEB3_HTTP_PROVIDER+'/v3/'+settings.INFURA_V3_PROJECT_ID))
+
                 # Setup web3 connectivity
+                self.web3 = Web3(Web3.HTTPProvider(settings.WEB3_HTTP_PROVIDER+'/v3/'+settings.INFURA_V3_PROJECT_ID))
+                
                 if (self.tests == True):
                         self.factoryAddress = '0xf5D915570BC477f9B8D6C0E980aA81757A3AaC36'
                         #Assumes test network is Rinkeby
                         self.web3.middleware_stack.inject(geth_poa_middleware, layer=0)
 
                 else:
-                        #self.web3 = Web3(Web3.HTTPProvider(self.rpcProvider))
+
                         self.factoryAddress = '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95'
 
                 # Set up factory contract
