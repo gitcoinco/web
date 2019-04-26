@@ -145,7 +145,7 @@
     {% include 'shared/current_profile.html' %}
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer_scripts.html' with suppress_web3=1 %}
     {% include 'shared/footer.html' %}
     {% include 'grants/shared/shared_scripts.html' %}
   </body>

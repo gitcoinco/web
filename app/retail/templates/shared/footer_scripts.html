@@ -29,6 +29,13 @@
 {% endif %}
 {% include 'shared/sentry.html' %}
 <script src="{% static "v2/js/jquery.cookie.js" %}"></script>
+{% if not suppress_web3 %}
+  <script src="{% static "v2/js/web3.js" %}"></script>
+  <script>
+    var web3 = new Web3(Web3.givenProvider || "ws://localhost:8546");
+  </script>
+{% endif %}
+
 {% if not slim %}
   <script src="{% static "v2/js/jquery-ui.js" %}"></script>
   <script src="{% static "v2/js/tooltip.js" %}"></script>

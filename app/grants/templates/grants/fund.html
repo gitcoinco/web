@@ -233,7 +233,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     </div>
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer_scripts.html' with suppress_web3=1 %}
     {% include 'shared/footer.html' %}
     {% include 'grants/shared/shared_scripts.html' %}
   </body>
