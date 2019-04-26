@@ -23,5 +23,5 @@ class feeSwapperTest(TestCase):
     @mock.patch('app.management.commands.feeSwapper.requests.get',return_value=resp)
     @mock.patch('app.management.commands.feeSwapper.Command.sell_token',return_value=True)
     def test_feeSwapper(self, response, sell_response):
-        tokenList = call_command('feeSwapper','--test')
+        tokenList = call_command('feeSwapper')
         assert tokenList == "BAT"
