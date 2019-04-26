@@ -60,6 +60,7 @@
           </p>
         </div>
       [[/if]]
+      [[if value_in_usdt >= 1]]
       <div class="tag token">
         <p>
           [[:rounded_amount]]
@@ -75,13 +76,16 @@
           </button>
         [[/if]]
       </div>
+      [[/if]]
       [[if value_in_usdt]]
+        [[if value_in_usdt >= 1]]
         <div class="tag usd">
           <p>
             [[:value_in_usdt]]
             <span>USD</span>
           </p>
         </div>
+        [[/if]]
       [[/if]]
     </div>
   </div>

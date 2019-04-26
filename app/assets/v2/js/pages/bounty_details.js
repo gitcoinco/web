@@ -905,6 +905,10 @@ var build_detail_page = function(result) {
   });
 
   $('#bounty_details #issue_description code').parent().addClass('code-snippet');
+  if (result['value_in_usdt_now'] != 'undefined' && result['value_in_usdt_now'] <= 1) {
+    $('#value_in_usdt_wrapper').hide();
+    $('.token').hide();
+  }
 };
 
 const is_current_user_interested = function(result) {
