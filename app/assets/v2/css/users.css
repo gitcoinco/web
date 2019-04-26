@@ -22,6 +22,28 @@
   }
 }
 
+.card-user {
+  font-size: 12px;
+}
+
+.card-user_stars {
+}
+
+.card-user_stars i {
+  font-size: 16px;
+  color: #CCCED0;
+}
+.card-user_stars .fas {
+  color: #25E899;
+
+}
+
+.card-user_name {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+}
+
 .vue-modal {
   display: block;
 }

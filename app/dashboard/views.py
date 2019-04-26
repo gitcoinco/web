@@ -768,11 +768,21 @@ def users_fetch(request):
             user_avatar = user.avatar_baseavatar_related.first()
             profile_json['avatar_id'] = user_avatar.pk
             profile_json['avatar_url'] = user_avatar.avatar_url
+        count_work_completed = Activity.objects.filter(profile=user, activity_type='work_done').count()
+        count_work_in_progress = Activity.objects.filter(profile=user, activity_type='start_work').count()
+        profile_json['position_contributor'] = user.get_contributor_leaderboard_index()
+        profile_json['position_funder'] = user.get_funder_leaderboard_index()
+        profile_json['work_done'] = count_work_completed
+        profile_json['work_inprogress'] = count_work_in_progress
+
+        profile_json['job_status'] = user.job_status_verbose if user.job_search_status else None
         profile_json['verification'] = user.get_my_verified_check
         profile_json['avg_rating'] = user.get_average_star_rating
+        # profile_json['bounties'] = user.get_quarterly_stats
+        profile_json['is_org'] = user.is_org
 
         all_users.append(profile_json)
-    # dumping and loading the json here quickly passes serialization issues - definitely can be a better solution 
+    # dumping and loading the json here quickly passes serialization issues - definitely can be a better solution
     params['data'] = json.loads(json.dumps(all_users, default=str))
     params['has_next'] = all_pages.page(page).has_next()
     params['count'] = all_pages.count
@@ -2327,16 +2337,16 @@ def get_suggested_contributors(request):
                 bounty__idx_status='done'
             ).values('fulfiller_github_username', 'profile__id').annotate(fulfillment_count=Count('bounty')) \
             .order_by('-fulfillment_count')
-        
+
     keywords_filter = Q()
     for keyword in keywords:
         keywords_filter = keywords_filter | Q(bounty__metadata__issueKeywords__icontains=keyword) | \
         Q(bounty__title__icontains=keyword) | \
         Q(bounty__issue_description__icontains=keyword)
-    
+
     recommended_developers = BountyFulfillment.objects.prefetch_related('bounty', 'profile') \
         .filter(keywords_filter).values('fulfiller_github_username', 'profile__id').distinct()[:10]
-  
+
     verified_developers = UserVerificationModel.objects.filter(verified=True).values('user__profile__handle', 'user__profile__id')
 
     return JsonResponse(
