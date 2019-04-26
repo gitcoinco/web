@@ -461,6 +461,9 @@ class BulkTransferCoupon(SuperModel):
         """Return the string representation of a model."""
         return f"Token: {self.token} num_uses_total: {self.num_uses_total}"
 
+    @property
+    def url(self):
+        return f"/kudos/redeem/{self.secret}"
 
 class BulkTransferRedemption(SuperModel):
 

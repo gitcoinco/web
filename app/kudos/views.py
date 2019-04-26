@@ -36,7 +36,7 @@ from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
-
+import random
 from dashboard.models import Activity, Profile
 from dashboard.notifications import maybe_market_kudos_to_email, maybe_market_kudos_to_github
 from dashboard.utils import get_nonce, get_web3
@@ -351,7 +351,7 @@ def send_3(request):
         raise Http404
 
     # db mutations
-    KudosTransfer.objects.create(
+    kt = KudosTransfer.objects.create(
         primary_email=primary_email,
         emails=to_emails,
         # For kudos, `token` is a kudos.models.Token instance.
@@ -372,6 +372,20 @@ def send_3(request):
         recipient_profile=get_profile(to_username),
         sender_profile=get_profile(from_username),
     )
+
+    if params.get('send_type') == 'airdrop':
+        btc = BulkTransferCoupon.objects.create(
+            token=kudos_token_cloned_from,
+            num_uses_remaining=1, #TODO: in the future, support more
+            num_uses_total=1, #TODO: in the future, support more
+            current_uses=0,
+            secret=random.randint(10**19, 10**20),
+            comments_to_put_in_kudos_transfer='',
+            sender_address=params['metadata']['address'],
+            sender_pk=params.get('pk'),
+            sender_profile=get_profile(from_username),
+            )
+        response['url'] = btc.url
 
     return JsonResponse(response)
 

@@ -79,12 +79,25 @@
     <input type="hidden" id="token" value="0x0000000000000000000000000000000000000000">
     <input type="hidden" id="kudosNetwork" value="{{ kudos.contract.network }}">
     <input type="hidden" id="amount" value="{{ kudos.price_in_eth }}">
-    <label for="">{% trans "To:" %} 
-      (<a href="#" id="send_to_toggle" class='eth'>{% trans "Send to ETH Address" %}</a>)
+    <label id="to_label" for="">{% trans "To:" %} 
     </label>
+    <ul id="tip_nav">
+      <li class='github selected'>
+        Github/Gitcoin User
+      </li>
+      <li class='eth'>
+        ETH Address
+      </li>
+      <li class='airdrop'>
+        Airdrop Link
+      </li>
+    </ul>
+    <input type="hidden" name="send_type" value="github">
+
     <div class="form-group">
       <select id="username" class="username-search custom-select" {% if not kudos.name  %}disabled{% endif %}></select>
       <input type="text" placeholder="0x408c49a91e46311ddc35737f8c1aaea6191f36e0" id="to_eth_address" value="" class="form-control eth_address hidden" >
+      <input type="text" placeholder="(link will be displayed after you click Send)" id="airdrop_link" value="" class="form-control airdrop_link hidden" disabled="disabled">
 
     </div>
     <div class="form-group">
@@ -134,7 +147,7 @@
     </div>
     <hr>
     <h3 class="font-weight-300">{% blocktrans %}<span id="new_username">the user</span> has been notified{% endblocktrans %}</h3>
-    <p>{% trans "with instructions about how to receive their kudos." %}</p>
+    <p class="notifier">{% trans "with instructions about how to receive their kudos." %}</p>
     <br>
     <a id="" class="btn btn-gc-purple" href="{% url 'kudos_marketplace' %}">⬅ {% trans "Start Over" %}</a>
   </div>
