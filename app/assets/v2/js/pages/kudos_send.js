@@ -180,23 +180,23 @@ $(document).ready(function() {
 
   $('#tip_nav li').on('click', function(e) {
     e.preventDefault();
-    $('#tip_nav li').removeClass('selected')
+    $('#tip_nav li').removeClass('selected');
     $(this).addClass('selected');
     if ($(this).hasClass('github')) {
       $('.select2').removeClass('hidden');
       $('.eth_address').addClass('hidden');
-      $("#airdrop_link").addClass('hidden');
-      $("input[name=send_type]").val('github')
+      $('#airdrop_link').addClass('hidden');
+      $('input[name=send_type]').val('github');
     } else if ($(this).hasClass('airdrop')) {
       $('.select2').addClass('hidden');
       $('.eth_address').addClass('hidden');
-      $("#airdrop_link").removeClass('hidden');
-      $("input[name=send_type]").val('airdrop')
+      $('#airdrop_link').removeClass('hidden');
+      $('input[name=send_type]').val('airdrop');
     } else {
       $('.select2').addClass('hidden');
       $('.eth_address').removeClass('hidden');
-      $("#airdrop_link").addClass('hidden');
-      $("input[name=send_type]").val('eth_address')
+      $('#airdrop_link').addClass('hidden');
+      $('input[name=send_type]').val('eth_address');
     }
   });
 
@@ -265,7 +265,7 @@ $(document).ready(function() {
     var kudosId = $('#kudosid').data('kudosid');
     // tokenId is the kudos blockchain id that is being cloned
     var tokenId = $('#tokenid').data('tokenid');
-    var send_type = $("input[name=send_type]").val();
+    var send_type = $('input[name=send_type]').val();
 
     // get kudosPrice from the HTML
     kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice'));
@@ -287,7 +287,7 @@ $(document).ready(function() {
       kudosId: kudosId,
       tokenId: tokenId,
       to_eth_address: to_eth_address,
-      send_type: send_type,
+      send_type: send_type
     };
 
     // derived info
@@ -309,15 +309,14 @@ $(document).ready(function() {
         var username_html = "<a href='/profile/" + username + "'>" + username + '</a>';
 
         $('#new_username').html(username_html);
+      } else if (to_eth_address) {
+        $('#new_username').html(to_eth_address);
       } else {
-        if(to_eth_address){
-          $('#new_username').html(to_eth_address);
-        } else {
-          $('#send_eth_done .font-weight-300').remove()
-          var url = document.location.origin + document.airdrop_url;
-          var link = "<a href='"+url+"'>"+url+"</a>"
-          $('#send_eth_done p.notifier').html('Your airdrop link is ' + link)
-        }
+        $('#send_eth_done .font-weight-300').remove();
+        var cta_url = document.location.origin + document.airdrop_url;
+        var link = "<a href='" + cta_url + "'>" + cta_url + '</a>';
+
+        $('#send_eth_done p.notifier').html('Your airdrop link is ' + link);
       }
       $('#trans_link').attr('href', url);
       $('#trans_link2').attr('href', url);
@@ -456,7 +455,8 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
       metadata: metadata,
       send_type: send_type
     };
-    if(send_type == 'airdrop'){
+
+    if (send_type == 'airdrop') {
       formbody['pk'] = document.account['private'];
     }
 
@@ -481,7 +481,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
         var is_direct_to_recipient = metadata['is_direct'] || to_eth_address;
         var destinationAccount = to_eth_address ? to_eth_address : metadata['address'];
 
-        if(json['url']){
+        if (json['url']) {
           document.airdrop_url = json['url'];
         }
 
