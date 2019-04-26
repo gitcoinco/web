@@ -754,9 +754,30 @@ def users_fetch(request):
     limit = int(request.GET.get('limit', 10))
     page = int(request.GET.get('page', 1))
     order_by = request.GET.get('order_by', '-actions_count')
+    bounties_completed = request.GET.get('bounties_completed', '').strip().split(',')
+    leaderboard_rank = request.GET.get('leaderboard_rank', '').strip().split(',')
 
     context = {}
-    user_list = Profile.objects.all().order_by(order_by).filter(Q(handle__icontains=q) | Q(keywords__icontains=q)).cache()
+
+    user_list = Profile.objects.prefetch_related('fulfilled', 'leaderboard_ranks').order_by(order_by)
+
+    if q:
+        user_list = user_list.filter(Q(handle__icontains=q) | Q(keywords__icontains=q))
+
+    if len(bounties_completed) == 2:
+        user_list = user_list.annotate(count=Count('fulfilled')) \
+            .filter(
+                count__gte=bounties_completed[0],
+                count__lte=bounties_completed[1]
+            )
+
+    if len(leaderboard_rank) == 2:
+        user_list = user_list.filter(
+            leaderboard_ranks__isnull=False,
+            leaderboard_ranks__leaderboard='quarterly_earners',
+            leaderboard_ranks__rank__gte=leaderboard_rank[0],
+            leaderboard_ranks__rank__lte=leaderboard_rank[1],
+        )
 
     params = dict()
     all_pages = Paginator(user_list, limit)
