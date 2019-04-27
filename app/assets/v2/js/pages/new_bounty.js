@@ -637,7 +637,10 @@ $(document).ready(function() {
         ipfsBounty.payload.fee_amount = fee;
         ipfs.addJson(ipfsBounty, newIpfsCallback);
         if (typeof ga != 'undefined') {
-          ga('send', 'event', 'new_bounty', 'new_bounty_fee_paid');
+          if (fee == 0)
+            ga('send', 'event', 'new_bounty', 'new_bounty_no_fees');
+          else
+            ga('send', 'event', 'new_bounty', 'new_bounty_fee_paid');
         }
       };
 
