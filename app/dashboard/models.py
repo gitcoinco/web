@@ -1904,6 +1904,9 @@ class Profile(SuperModel):
     actions_count = models.IntegerField(default=3)
     fee_percentage = models.IntegerField(default=10)
 
+    matches_interested = models.ManyToManyField('self', related_name='%(class)s_interested', blank=True)
+    matches_not_interested = models.ManyToManyField('self', related_name='%(class)s_not_interested', blank=True)
+
     objects = ProfileQuerySet.as_manager()
 
     @property

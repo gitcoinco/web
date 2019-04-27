@@ -1,0 +1,42 @@
+{% load i18n humanize static avatar_tags %}
+<script id="match_card_template" type="text/x-jsrender">
+<div class="card" style="width: 18rem;">
+  <div class="profile-header__stats profile-header__stats--contributor card mb-4">
+    <div class="col text-center">
+      <img class="avatar" src="[[:fields.avatar_url]]">
+    </div>
+    <div id='matches_org_name' class="col text-center">
+      <h5>[[:fields.handle]]</h5>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div id='matches_org_score_pos' class="card-header font-subheader">
+          <b>#[[:fields.scoreboard_position_org]]</b>
+          {% trans "Organization" %}
+        </div>
+        <div id='matches_org_details' class="card-body font-subheader">
+          <ul>
+            <li><b>[[:fields.count_bounties_on_repo]]</b> {% trans "bounties" %}</li>
+            <li><b>[[:fields.sum_eth_on_repos]]</b> {% trans "ETH" %}</li>
+            <li class="works_with_list">
+              [[if fields.works_with_org]]
+                <span>Hi</span>
+                <!--
+                <span class="font-body"><i class="fa fa-code"></i> {% trans "Contributors" %}:</span>
+                [[for fields.works_with_org.slice(0, 9)]]
+                  <a href="{% url 'profile' profile %} ">
+                    <img src='{% avatar_url profile %}' title="<div class='tooltip-info tooltip-xs'>[[:profile]]: [[:num_times]] times</div> ">
+                  </a>
+                  <div href="" class="plus-img" data-container="body" data-toggle="popover" data-template='<div class="popover big-popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>' data-html="true" data-placement="bottom" data-trigger="hover click" data-content='[[for works_with_org.slice(5)]]<a href="[[:profile.url]]"><img class="rounded-circle m-1" width="30" height="30" title="[[:profile]]: [[:num_times]] times" src="[[:profile.avatar_url]]"/></a>[[/for]]'>
+                  </div>
+                [[/for]]
+                -->
+              [[/if]]
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</script>

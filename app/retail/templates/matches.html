@@ -1,0 +1,131 @@
+{% comment %}
+  Copyright (C) 2019 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n humanize static avatar_tags %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="title" content="My Matches">
+    <meta name="description" content="Tag projects of interest and manage them">
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards_pic.html' %}
+    <link rel="stylesheet" href={% static "v2/css/profile.css" %} />
+        <link rel="stylesheet" href={% static "v2/css/dashboard.css" %} />
+        <link rel="stylesheet" href={% static "v2/css/tag.css" %} />
+        <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
+        <link rel="stylesheet" href={% static "v2/css/tabs.css" %} />
+        <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
+        <link rel="stylesheet" href={% static "v2/css/scroll-carousel.css" %} />
+    <style>
+    .box {
+    padding: 1.2rem;
+    border-bottom: 1px solid #DBDBDB;
+    }
+    </style>
+  </head>
+  <body class="interior {{active}} g-font-muli">
+    <div class="container-fluid header dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'shared/nav.html' %}
+    </div>
+    <div class="container">
+      <div class="row pt-5">
+        <div class="col-sm">
+          <h5>{% trans "My Matches" %}</h5>
+          <h6>{% trans "Tag projects of interest and manage them" %}</h6>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row pb-5">
+        <div class="col">
+          <ul class="nav nav-tabs my-3" id="myTab" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link nav-line active" id="matchinggame-tab" data-toggle="tab" href="#matchinggame" role="tab" aria-controls="matchinggame" aria-selected="true" onclick="refresh_match_cards()">{% trans "Matching Game" %}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link nav-line" id="pastmatches-tab" data-toggle="tab" href="#pastmatches" role="tab" aria-controls="pastmatches" aria-selected="false" onclick="refresh_match_history()">{% trans "Past Matches" %}</a>
+            </li>
+          </ul>
+
+          <div class="tab-content" id="MatchesTabs">
+            <div class="tab-pane fade show active" id="matchinggame" role="tabpanel" aria-labelledby="matchinggame-tab">
+              <div id="matches_none" class="justify-content-center text-center my-5" style="display:none;">
+                 <h6>There are no more projects to look through.</h6>
+              </div>
+              <div class="row card_game">
+                <div class="col-sm my-2 ">
+                  <h6>{% trans "Are you interested in this project?" %}</h6>
+                </div>
+              </div>
+              <div id=match_card class="row justify-content-center card_game">
+              <!-- MATCH CARD -->
+              </div>
+              <div class="row justify-content-center card_game">
+                <div class="col col-lg-auto my-4">
+                  <a class="button button--primary-o" role="button" href="#"
+                    rel="noopener noreferrer" onclick="post_interest(true)">
+                    {% trans "Interested" %}
+                  </a>
+                </div>
+                <div class="col col-lg-auto my-4">
+                  <a class="button button--primary-o" role="button" href="#"
+                    rel="noopener noreferrer" onclick="post_interest(false)">
+                    {% trans "Not Interested" %}
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane fade" id="pastmatches" role="tabpanel" aria-labelledby="pastmatches-tab">
+            <!-- MATCH HISTORY -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% include 'matches_card.html' %}
+    {% include 'matches_history.html' %}
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+    {% include 'shared/messages.html' %}
+
+	{% csrf_token %}
+	<script type="text/javascript">
+	// using jQuery
+	var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+	</script>
+
+  </body>
+  <!-- jQuery -->
+  <script src="{% static "v2/js/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+  <script src="{% static "v2/js/pages/profile.js" %}"></script>
+  <script src="{% static "v2/js/rating.js" %}"></script>
+  <script src="{% static "v2/js/pages/tabs.js" %}"></script>
+  <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
+  <script src="{% static "v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/pages/matches.js" %}"></script>
+  
+
+  <script>
+    var bootstrapTooltip = $.fn.tooltip.noConflict()
+    $.fn.runTooltip = bootstrapTooltip
+    $('[data-toggle="tooltip"]').runTooltip();
+  </script>
+
+</html>

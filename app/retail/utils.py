@@ -22,6 +22,7 @@ import json
 import re
 import statistics
 import time
+from cytoolz import compose
 
 from django.conf import settings
 from django.utils import timezone
@@ -548,3 +549,22 @@ def build_stat_results(keyword=None):
     context['last_month_amount_hourly'] = sum(bh) / 30 / 24
 
     return context
+
+
+def format_bool_string(val):
+    if val in ['false']:
+        return False
+    elif val in ['true']:
+        return True
+    return val
+
+
+def normalize_post_data(post_data):
+    formatters = compose(
+        format_bool_str,
+    )
+
+    data = { 
+        key: formatters(val) for key, val in post_data.items() 
+    }
+    return data

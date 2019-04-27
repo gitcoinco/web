@@ -1,0 +1,38 @@
+{% load i18n humanize static avatar_tags %}
+<script id="match_history_template" type="text/x-jsrender">
+<div class="row">
+<div class="col-sm">
+  [[if count >= 1]] 
+  <h6>{% trans "Projects you are interested in:" %}</h6>
+  [[/if]]
+  [[if count == 0]]
+  <div class="my-5 text-center">
+    <h6>{% trans "Play the Matching Game to tag projects and see them here." %}</h6>
+  </div>
+  [[/if]]
+</div>
+</div>
+[[if count >= 1]] 
+[[for matched_orgs ]]
+<div class="row box activity my-2" id="row_[[:fields.handle]]">
+  <div class="col-12 col-md-1">
+    <div class="activity-avatar">
+      <img class="avatar" src="[[:fields.avatar_url]]" style="width: 30px; height: 30px; bottom: 0; right: 0; position: absolute;">
+    </div>
+  </div>
+  <div class="col-12 col-md-10 align-items-center">
+    <div class="org-name">
+      <a href="https://gitcoin.co/profile/[[:fields.handle]]" target="_blank">
+        [[:fields.handle]]
+      </a>
+    </div>
+  </div>
+  <div class="col-12 col-md-1 text-center">
+    <a class="delete-button" href="#" onclick="delete_match('[[:fields.handle]]')">
+      <img src="{% static "v2/images/close-grey.png" %}" height="30px" width="30px">
+    </a>
+  </div>
+</div>
+[[/for]]
+[[/if]]
+</script>

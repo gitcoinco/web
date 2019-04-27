@@ -17,6 +17,7 @@
 
 '''
 import logging
+import json
 from json import loads as json_parse
 from os import walk as walkdir
 
@@ -25,7 +26,9 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.core.validators import validate_email
-from django.http import Http404, JsonResponse
+from django.core import serializers
+from django.db.models import Q
+from django.http import Http404, JsonResponse, HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
@@ -48,7 +51,7 @@ from retail.emails import render_nth_day_email_campaign
 from retail.helpers import get_ip
 
 from .forms import FundingLimitIncreaseRequestForm
-from .utils import programming_languages
+from .utils import programming_languages, normalize_post_data
 
 logger = logging.getLogger(__name__)
 
@@ -590,6 +593,74 @@ def how_it_works(request, work_type):
         'desc': desc
     }
     return TemplateResponse(request, 'how_it_works/index.html', context)
+
+def matches(request):
+    """Show My Matches page."""
+    user_profile = get_profile(request)
+
+    context = {
+        'active': 'matches',
+        'title': matches,
+    }
+    return TemplateResponse(request, 'matches.html', context)
+
+
+def matches_api(request):
+    """API to page through a users undecided organization matches"""
+    user_profile = get_profile(request)
+    
+    if request.method == 'POST':
+        data = normalize_post_data(request.POST)
+        if 'org_handle' in data.keys() and 'action' in data.keys():
+            org = Profile.objects.filter(handle=data['org_handle'])[0]
+
+            if data['action'] == 'update' and 'matched' in data:
+                    matched = data['matched']
+                    if matched is True:
+                        org.matches_interested.add(user_profile)
+                        org.save()
+                    elif matched is False:
+                        org.matches_not_interested.add(user_profile)
+                        org.save()
+            elif data['action'] == 'delete':
+                org.matches_interested.remove(user_profile)
+                org.save()
+
+    orgs = Profile.objects.filter(data__type="Organization")
+
+    filtered_orgs = {}
+
+    filtered_orgs['matched'] = orgs.filter(
+        matches_interested__pk=user_profile.pk 
+    )
+
+    filtered_orgs['unmatched'] = orgs.filter(
+        matches_not_interested__pk=user_profile.pk 
+    )
+
+    filtered_orgs['undecided'] = orgs.difference(
+        filtered_orgs["matched"], 
+        filtered_orgs["unmatched"])
+    
+    fields=(
+        'handle', 
+        'scoreboard_pos_org',
+        'sum_eth_on_repos',
+        'works_with_org',
+        'count_bounties_on_repo',
+        'avatar_url',
+    )
+
+    def serialize(qset):
+        return serializers.serialize("json", qset, fields=fields)
+
+    response_data = {
+        'result': {
+            key: serialize(val) for key, val in filtered_orgs.items()
+        }
+    }
+
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 
 @cached_view_as(Profile.objects.hidden())

@@ -62,6 +62,7 @@
         </div>
       </div>
       <a class="nav-link{% if active == 'dashboard' %} selected{% endif %} interior" href="{% url "explorer" %}">{% trans "Issue Explorer" %}</a>
+      <a class="nav-link{% if active == 'dashboard' %} selected{% endif %} interior" href="{% url "retail_matches" %}">{% trans "My Matches" %}</a>
       <a class="nav-link{% if active == 'leaderboard' %} selected{% endif %} interior" href="{% url "_leaderboard" %}">{% trans "Leaderboard" %}</a>
       {% if not user.is_authenticated %}
         <a class="nav-link slack{% if active == 'slack' %} selected{% endif %}" href="{% url "slack" %}">
