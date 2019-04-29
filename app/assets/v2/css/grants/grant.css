@@ -1,3 +1,14 @@
+.header {
+  background-image: none;
+  background: linear-gradient(to right top, #0fce7c, #00a5a1, #0077b5, #0046a1, #0d0764);
+  animation: gradient 40s ease infinite;
+  background-size: 200% 200% !important;
+}
+
+.header .embed-responsive {
+  border-radius: 3px;
+}
+
 .white-icon {
   width: 14px;
   height: 20px;
@@ -176,6 +187,36 @@
   font-size: 12px;
 }
 
+#grants-details {
+  padding-bottom: 1em;
+}
+
+#grants_nav{
+  border-bottom: 1px solid #333333;
+  text-align: left;
+  width: 100%;
+}
+
+#grants_nav a{
+  color: #333333;
+  margin-right: 30px;
+}
+
+#grants_nav a:hover{
+  font-weight: 700;
+}
+
+#grants_nav .selected{
+  font-weight: 1000;
+  color: #3f24f9;
+}
+
+@media (min-width: 1200px) {
+  .header .container {
+    max-width: 1240px;
+  }
+}
+
 @media (max-width: 767.98px) {
   .search {
     margin-left: 0rem;
@@ -194,23 +235,20 @@
   }
 }
 
-#grants-details {
-  padding-bottom: 1em;
+@-webkit-keyframes gradient {
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
 }
 
-#grants_nav{
-  border-bottom: 1px solid #333333;
-  text-align: left;
-  width: 100%;
+@-moz-keyframes gradient {
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
 }
-#grants_nav a{
-  color: #333333;
-  margin-right: 30px;
-}
-#grants_nav a:hover{
-  font-weight: 700;
-}
-#grants_nav .selected{
-  font-weight: 1000;
-  color: #3f24f9;
+
+@keyframes gradient {
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
 }
