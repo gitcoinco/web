@@ -789,13 +789,59 @@ def users_fetch(request):
             user_avatar = user.avatar_baseavatar_related.first()
             profile_json['avatar_id'] = user_avatar.pk
             profile_json['avatar_url'] = user_avatar.avatar_url
+        count_work_completed = Activity.objects.filter(profile=user, activity_type='work_done').count()
+        count_work_in_progress = Activity.objects.filter(profile=user, activity_type='start_work').count()
+        profile_json['position_contributor'] = user.get_contributor_leaderboard_index()
+        profile_json['position_funder'] = user.get_funder_leaderboard_index()
+        profile_json['work_done'] = count_work_completed
+        profile_json['work_inprogress'] = count_work_in_progress
+
+        profile_json['job_status'] = user.job_status_verbose if user.job_search_status else None
         profile_json['verification'] = user.get_my_verified_check
+        profile_json['avg_rating'] = user.get_average_star_rating
+        # profile_json['bounties'] = user.get_quarterly_stats
+        profile_json['is_org'] = user.is_org
+
         all_users.append(profile_json)
-    # dumping and loading the json here quickly passes serialization issues - definitely can be a better solution 
+    # dumping and loading the json here quickly passes serialization issues - definitely can be a better solution
     params['data'] = json.loads(json.dumps(all_users, default=str))
     params['has_next'] = all_pages.page(page).has_next()
     params['count'] = all_pages.count
     params['num_pages'] = all_pages.num_pages
+    return JsonResponse(params, status=200, safe=False)
+
+
+def get_user_bounties(request):
+    """Get user open bounties.
+
+    Args:
+        request (int): get user by id or use authenticated.
+
+    Variables:
+
+    Returns:
+        json: array of bounties.
+
+    """
+    user_id = request.GET.get('user', None)
+    if user_id:
+        profile = Profile.objects.get(id=int(user_id))
+    else:
+        profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+    params = dict()
+    results = []
+    open_bounties = Bounty.objects.current().filter(bounty_owner_github_username__iexact=profile.handle) \
+                        .exclude(idx_status='cancelled').exclude(idx_status='done')
+    for bounty in open_bounties:
+        bounty_json = {}
+        bounty_json = bounty.to_standard_dict()
+        bounty_json['url'] = bounty.url
+
+        results.append(bounty_json)
+    # else:
+        # raise Http404
+    print(open_bounties)
+    params['data'] = json.loads(json.dumps(results, default=str))
     return JsonResponse(params, status=200, safe=False)
 
 
@@ -986,10 +1032,16 @@ def social_contribution_email(request):
         JsonResponse: Success in sending email.
     """
     from marketing.mails import share_bounty
+    from .utils import get_bounty_invite_url
+
     emails = []
     user_ids = request.POST.getlist('usersId[]', [])
     url = request.POST.get('url', '')
     invite_url = request.POST.get('invite_url', '')
+    if not invite_url:
+        bounty_id = request.POST.get('bountyId')
+        invite_url = f'{settings.BASE_URL}issue/{get_bounty_invite_url(request.user.username, bounty_id)}'
+
     inviter = request.user if request.user.is_authenticated else None
     bounty = Bounty.objects.current().get(github_url=url)
     for user_id in user_ids:
@@ -1003,6 +1055,7 @@ def social_contribution_email(request):
         emails.append(profile.email)
 
     msg = request.POST.get('msg', '')
+
     try:
         share_bounty(emails, msg, request.user.profile, invite_url, True)
         response = {
@@ -2306,16 +2359,16 @@ def get_suggested_contributors(request):
                 bounty__idx_status='done'
             ).values('fulfiller_github_username', 'profile__id').annotate(fulfillment_count=Count('bounty')) \
             .order_by('-fulfillment_count')
-        
+
     keywords_filter = Q()
     for keyword in keywords:
         keywords_filter = keywords_filter | Q(bounty__metadata__issueKeywords__icontains=keyword) | \
         Q(bounty__title__icontains=keyword) | \
         Q(bounty__issue_description__icontains=keyword)
-    
+
     recommended_developers = BountyFulfillment.objects.prefetch_related('bounty', 'profile') \
         .filter(keywords_filter).values('fulfiller_github_username', 'profile__id').distinct()[:10]
-  
+
     verified_developers = UserVerificationModel.objects.filter(verified=True).values('user__profile__handle', 'user__profile__id')
 
     return JsonResponse(
