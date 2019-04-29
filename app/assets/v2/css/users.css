@@ -66,3 +66,7 @@
   color: white;
   background-color: var(--gc-blue-hover);
 }
+
+.sidebar-container {
+  display: flex;
+}

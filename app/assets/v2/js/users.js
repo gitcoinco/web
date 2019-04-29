@@ -140,7 +140,8 @@ if (document.getElementById('gc-users-directory')) {
       funderBounties: [],
       bountySelected: null,
       userSelected: [],
-      showModal: false
+      showModal: false,
+      showFilters: true
     },
     mounted() {
       this.fetchUsers();
