@@ -348,3 +348,12 @@ class EmailSupressionList(SuperModel):
 
     def __str__(self):
         return f"{self.email}"
+
+
+class GithubSuppressionList(SuperModel):
+
+    query = models.EmailField(max_length=255)
+    comments = models.TextField(max_length=5000, blank=True)
+
+    def __str__(self):
+        return f"{self.query}"
