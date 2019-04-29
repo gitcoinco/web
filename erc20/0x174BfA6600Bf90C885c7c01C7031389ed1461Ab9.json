@@ -1,0 +1,20 @@
+{
+  "symbol": "MGC",
+  "address": "0x174BfA6600Bf90C885c7c01C7031389ed1461Ab9",
+  "overview":{
+        "en": "MGC is a global general digital asset storage platform. Users can use other encrypted digital assets for transactions. provides a more convenient payment experience.",
+        "zh": "MGC是全球通用的数字资产存储平台,用户可以使用其他加密的数字资产进行交易,提供更便捷的支付体验."
+  },
+  "email": "aone@mgctoken.io",
+  "website": "http://www.mgctoken.io/",
+  "whitepaper": "http://www.mgctoken.io/uploads/20190407/a5cfb71e59075fd3dd4ecd82e8b8bb4f.pdf", 
+  "published_on": "2019-01-25",
+  "initial_price":{
+        "ETH":"0.00055 ETH"       
+  },
+  "links": {   
+    "twitter": "https://twitter.com/mgctoken1",
+    "telegram": "https://t.me/MGC_Token",   
+    "facebook": "https://www.facebook.com/token.mgc.9"   
+  }
+}
