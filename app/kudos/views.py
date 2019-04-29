@@ -712,6 +712,7 @@ def receive_bulk(request, secret):
         'avatar_url': coupon.token.img_url,
         'coupon': coupon,
         'user': request.user,
+        'class': _class,
         'is_authed': request.user.is_authenticated,
         'kudos_transfer': kudos_transfer,
         'tweet_text': urllib.parse.quote_plus(f"I just got a {coupon.token.humanized_name} Kudos on @gitcoin.  ")
