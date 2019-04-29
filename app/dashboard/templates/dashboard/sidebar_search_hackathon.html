@@ -41,13 +41,23 @@
       <div class="col-12 subheading">
         {% trans "Sponsors" %}
       </div>
+
       <div class="col-12 options" id="list-orgs">
 
         <div class="form__radio option mb-2">
-          <input name="org" id="any_org" type="radio" value="any" checked/>
-          <label class="filter-label" for=any_org>{% trans "All" %}</label>
+          <input name="org" id="any_org" type="radio" value="any" checked="">
+          <label class="filter-label" for="any_org">All</label>
         </div>
 
+            
+        {% for org in orgs %}
+          <div class="form__radio option {{org}}">
+            <input name="org" id="{{org}}" type="radio" value="{{org}}" val-ui="Turing-Chain">
+            <label class="filter-label" for="{{org}}">
+              <img src="/dynamic/avatar/{{org}}" class="rounded-circle" width="24" height="24"> {{org}}
+            </label>
+          </div>
+        {% endfor %}
       </div>
     </div>
 
