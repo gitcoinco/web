@@ -60,3 +60,9 @@
 .modal-default-button {
   float: right;
 }
+
+.bounty-select:hover {
+  cursor: pointer;
+  color: white;
+  background-color: var(--gc-blue-hover);
+}

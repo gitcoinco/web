@@ -103,7 +103,7 @@
                   @[[ user.handle ]]
                 </a>
                 <small class="text-center">
-                  Joined: <time :datetime="[[ user.created_on ]]" :title="[[ user.created_on ]]">[[ user.created_on | moment ]]</time> | [[user.actions_count]] actions
+                  Joined: <time :datetime="[[ user.created_on ]]" :title="[[ user.created_on ]]">[[ user.created_on | moment ]]</time>
                 </small>
                 <div class="card-user_stars text-center my-2">
                   <i class="far fa-star" :class="star <= user.avg_rating.overall.toFixed() ? 'fas' : 'far'" v-for="star in user.avg_rating.overall.toFixed(), 5"></i>
@@ -163,18 +163,22 @@
         <div slot="body">
           <b>Select a bounty</b>
           <div class="bounties-box">
-            <div v-for="bounty in funderBounties" :key="bounty.id" @click="bountySelected = bounty" v-bind:class="{ 'btn-gc-blue': bountySelected && bounty.id === bountySelected.id }" class="py-2 px-3">
+            <div v-for="bounty in funderBounties" :key="bounty.id" @click="bountySelected = bounty" v-bind:class="{ 'btn-gc-blue': bountySelected && bounty.id === bountySelected.id }" class="bounty-select py-2 px-3 border-bottom d-flex align-items-center">
               <img :src="`/dynamic/avatar/${ bounty.funding_organisation || bounty.bounty_owner_github_username }`" class="rounded-circle" width="30" height="30">
-              [[ bounty.title ]]
+              <p class="line-clamp font-smaller-2 my-0 mx-2">
+                [[ bounty.title ]]
+              </p>
               <span class="tag token">[[ bounty.value_true ]] [[ bounty.token_name ]]</span>
               <span class="tag usd">[[ bounty.value_in_usdt_now ]] USD</span>
             </div>
           </div>
         </div>
-        <div slot="footer">
+        <div slot="footer" class="d-flex align-items-center flex-fill">
           <a v-if="bountySelected" :href="bountySelected.url" target="_blank" class="mr-5">view bounty</a>
-          <button class="btn btn-outline-gc-blue" data-dismiss="modal">Cancel</button>
-          <button class="btn btn-gc-blue" :disabled="!bountySelected" @click="sendInvite(bountySelected, userSelected.id)">Invite</button>
+          <div class="ml-auto">
+            <button class="btn btn-outline-gc-blue" data-dismiss="modal">Cancel</button>
+            <button class="btn btn-gc-blue" :disabled="!bountySelected" @click="sendInvite(bountySelected, userSelected.id)">Invite</button>
+          </div>
         </div>
       </modal>
     </div>
