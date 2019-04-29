@@ -20,7 +20,7 @@ local_storage_keys.push('org');
 results_limit = 15;
 
 if (document.hackathon) {
-  results_limit = 80;
+  results_limit = 5;
 }
 
 var localStorage;
@@ -492,29 +492,9 @@ var refreshBounties = function(event, offset, append, do_save_search) {
     explorer.bounties_request.abort();
   }
 
-  const getOrgs = (results) => {
-    if (organizations.length === 0) {
-      results.filter((bounty)=>{
-        organizations.push(bounty.org_name);
-      });
-      organizations = [...new Set(organizations)];
-      
-      $('#list-orgs').append(`
-      ${organizations.map((org, index) => `
-      <div class="form__radio option ${org}">
-        <input name="org" id="${org}" type="radio" value="${org}" val-ui="${org}" />
-        <label class="filter-label" for=${org}>
-          <img src="/dynamic/avatar/${org}" class="rounded-circle" width="24" height="24"> ${org}
-        </label>
-      </div>
-      `).join(' ')}
-      `);
-    }
-  };
-
   explorer.bounties_request = $.get(bountiesURI, function(results, x) {
     results = sanitizeAPIResults(results);
-    getOrgs(results);
+
     if (results.length === 0 && !append) {
       if (localStorage['referrer'] === 'onboard' && !document.hackathon) {
         $('.no-results').removeClass('hidden');

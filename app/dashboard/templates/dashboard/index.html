@@ -131,8 +131,7 @@
       $.fn.bootstrapModal = bootstrapModal
       {% if hackathon %}
         document.hackathon = "{{ hackathon.slug | safe }}";
-
-        if(location.hostname === 'localhost') $('#network-filter').show();
+        if(location.hostname === 'gitcoin.co') $('#network-filter').hide();
       {% endif %}
     </script>
     <script src="/dynamic/js/tokens_dynamic.js"></script>
