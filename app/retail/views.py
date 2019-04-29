@@ -1481,6 +1481,7 @@ def slack(request):
     context = {
         'active': 'slack',
         'msg': None,
+        'nav': 'home',
     }
 
     if request.POST:
