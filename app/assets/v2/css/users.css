@@ -1,24 +1,24 @@
 .grid-4 {
   display: grid;
-  grid-template-columns: repeat(1, 1fr);;
+  grid-template-columns: repeat(1, 1fr);
   grid-gap: 5rem 3rem;
 }
 
 @media (min-width: 768px) {
   .grid-4 {
-    grid-template-columns: repeat(2, 1fr);;
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (min-width: 992px) {
   .grid-4 {
-    grid-template-columns: repeat(3, 1fr);;
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
 @media (min-width: 1200px) {
   .grid-4 {
-    grid-template-columns: repeat(4, 1fr);;
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
@@ -26,16 +26,13 @@
   font-size: 12px;
 }
 
-.card-user_stars {
-}
-
 .card-user_stars i {
   font-size: 16px;
   color: #CCCED0;
 }
+
 .card-user_stars .fas {
   color: #25E899;
-
 }
 
 .card-user_name {
@@ -51,38 +48,6 @@
   border-radius: 4px;
 }
 
-.vue-modal {
-  display: block;
-}
-
-.modal-mask {
-  position: fixed;
-  z-index: 9998;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, .5);
-  display: table;
-  transition: opacity .3s ease;
-}
-
-.modal-wrapper {
-  display: table-cell;
-  vertical-align: middle;
-}
-
-.modal-container {
-  width: 300px;
-  margin: 0px auto;
-  padding: 20px 30px;
-  background-color: #fff;
-  border-radius: 2px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
-  transition: all .3s ease;
-  font-family: Helvetica, Arial, sans-serif;
-}
-
 .modal-header h3 {
   margin-top: 0;
   color: #42b983;
@@ -94,27 +59,4 @@
 
 .modal-default-button {
   float: right;
-}
-
-/*
-* The following styles are auto-applied to elements with
-* transition="modal" when their visibility is toggled
-* by Vue.js.
-*
-* You can easily play with the modal transition by editing
-* these styles.
-*/
-
-.modal-enter .modal {
-  opacity: 0;
-}
-
-.modal-leave-active .modal {
-  opacity: 0;
-}
-
-.modal-enter .modal-content,
-.modal-leave-active .modal-content {
-  -webkit-transform: scale(1.1);
-  transform: scale(1.1);
 }
