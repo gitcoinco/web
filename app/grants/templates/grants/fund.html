@@ -55,7 +55,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       {% include 'grants/banner.html' %}
 
       <div class="col-12 offset-md-2 col-md-10 offset-lg-3 col-lg-6 mt-5 font-subheader mx-0 mx-md-auto row">
-        <p class="col-12 font-weight-semibold my-4">
+        <p class="col-12 font-weight-semibold my-4 text-center">
           {{ grant.admin_profile }} {% trans "is accepting contributions in "%}
           {% if grant_has_no_token %}
             {% trans "any token." %}
@@ -67,16 +67,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <div id="grants_form" class="col-12">
           <form method="POST" id="js-fundGrant">
             {% csrf_token %}
-            <div class="row">
+            <div class="row mx-0">
               <div class="col-12">
 
                 <div class="form__group-horizontal">
-                  <label class="form__label" id="amount_label">{% trans "Amount Per Period" %}</label>
                   <div class="row">
-                    <div class="col-8">
+                    <div class="col-6 col-sm-8">
+                      <label class="form__label" id="amount_label">{% trans "Amount Per Period" %}</label>
                       <input type="number" min="0.001" id="amount" name="amount_per_period" class="form__input" value="5" required />
                     </div>
-                    <div class="col-4">
+                    <div class="col-6 col-sm-4">
+                      <label class="form__label" id="token_label">{% trans "Token" %}</label>
                       {% if grant_has_no_token %}
                         <div class="form__select2">
                           <select class='js-select2' name='denomination' id='js-token'> </select>
@@ -89,13 +90,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 </div>
 
                 <div class="form__group-horizontal contribution_type">
-                  <label class="form__label">{% trans "Contribution Type" %}</label>
                   <div class="row">
-                    <div class="col-12 font-body">
+                    <div class="col-12 col-sm-8 font-body">
+                      <label class="form__label">{% trans "Contribution Type" %}</label>
                       <select name="recurring_or_not" id="recurring_or_not" class="js-select2" style="width: 100%">
                         <option value="once">{% trans "One Time" %}</option>
                         <option value="recurring" selected="selected">{% trans "Recurring" %}</option>
                       </select>
+                    </div>
+
+                    <div class="col-12 col-sm-4 font-body num_recurring">
+                      <label class="form__label">
+                        {% trans "Number of Contribution Periods" %}
+                      </label>
+                      <input id="period" type="number" min="1" step="1" name="num_periods" class="form__input" value="12" required />
                     </div>
                   </div>
                 </div>
@@ -104,10 +112,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 <div class="form__group-horizontal frequency">
                   <label class="form__label">{% trans "Payment Period" %}</label>
                   <div class="row">
-                    <div class="col-8">
+                    <div class="col-6 col-sm-8 font-body">
                       <input type="number" min=0 step="1" id="frequency_count" name="frequency" class="form__input" value='30' required />
                     </div>
-                    <div class="col-4 font-body">
+                    <div class="col-6 col-sm-4 font-body">
                       <select name="frequency_unit" id="frequency_unit" class="js-select2" style="width: 100%">
                         {% if user.is_staff %}
                           <option value="minutes" selected="selected">{% trans "minutes" %}</option>
@@ -116,17 +124,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                         <option value="days" selected="selected">{% trans "days" %}</option>
                         <option value="months">{% trans "months" %}</option>
                       </select>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="form__group-horizontal num_recurring">
-                  <div class="row">
-                    <div class="col-12">
-                      <label class="form__label">
-                        {% trans "Number of Contribution Periods" %}
-                      </label>
-                      <input id="period" type="number" min="1" step="1" name="num_periods" class="form__input" value="12" required />
                     </div>
                   </div>
                 </div>
@@ -248,5 +245,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   <script src="{% static "v2/js/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
   <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
+  <script>
+    let bootstrapTooltip = $.fn.tooltip.noConflict()
+    let bootstrapModal = $.fn.modal.noConflict()
+    $.fn.bootstrapModal = bootstrapModal
+  </script>
   <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
 </html>
