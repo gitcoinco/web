@@ -932,7 +932,7 @@ def invoice(request):
     )
     params['accepted_fulfillments'] = bounty.fulfillments.filter(accepted=True)
     params['tips'] = [
-        tip for tip in bounty.tips.send_happy_path() if tip.username == request.user.username and tip.username
+        tip for tip in bounty.tips.send_happy_path() if ((tip.username == request.user.username and tip.username) or (tip.from_username == request.user.username and tip.from_username) or request.user.is_staff)
     ]
     params['total'] = bounty._val_usd_db if params['accepted_fulfillments'] else 0
     for tip in params['tips']:
