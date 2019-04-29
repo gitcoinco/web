@@ -145,7 +145,6 @@
                   <button v-if="funderBounties.length" data-toggle="modal" data-target="#userModal" class="btn btn-sm btn-gc-blue" @click="openBounties(user)">Invite to Bounty</button>
                 </div>
               </div>
-              <!-- [[user]] -->
             </div>
           </div>
         </div>
@@ -157,7 +156,7 @@
             <img class="rounded-circle mx-auto mb-3" width="64" height="64" :src="`/dynamic/avatar/${ userSelected.handle }`"/>
             <span>[[ userSelected.data.name || userSelected.handle ]]</span>
             <a :href="`/profile/${ userSelected.handle }`" class="text-center d-block" target="_blank">
-            [[ userSelected.handle ]]
+              [[ userSelected.handle ]]
             </a>
           </div>
         </div>
@@ -199,8 +198,6 @@
         </div>
       </div>
     </template>
-
-
 
     {% csrf_token %}
     {% include 'shared/analytics.html' %}
