@@ -19,6 +19,47 @@ $(document).ready(function() {
     updateSummary();
   });
 
+  $('#gitcoin-grant-input-amount').on('input', () => {
+    $('.bot-heart').hide();
+    updateSummary();
+
+    if ($('#gitcoin-grant-input-amount').val() == 0) {
+      $('#bot-heartbroken').show();
+    } else if ($('#gitcoin-grant-input-amount').val() >= 20) {
+      $('#bot-heart-20').show();
+    } else if ($('#gitcoin-grant-input-amount').val() >= 15) {
+      $('#bot-heart-15').show();
+    } else if ($('#gitcoin-grant-input-amount').val() >= 10) {
+      $('#bot-heart-10').show();
+    } else if ($('#gitcoin-grant-input-amount').val() > 0) {
+      $('#bot-heart-5').show();
+    }
+  });
+
+  $('#gitcoin-grant-input-amount').on('focus', () => {
+    $('#gitcoin-grant-input-amount').removeClass('inactive');
+    $('#gitcoin-grant-section .badge').addClass('inactive');
+  });
+
+  $('#gitcoin-grant-section .badge').on('click', event => {
+
+    $('#gitcoin-grant-section .badge').removeClass('inactive');
+    $('#gitcoin-grant-input-amount').addClass('inactive');
+
+    const percentage = Number(event.currentTarget.getAttribute('data-percent'));
+
+    $('#gitcoin-grant-input-amount').val(percentage);
+    $('.gitcoin-grant-percent').val(percentage);
+
+    $('#gitcoin-grant-input-amount').trigger('input');
+
+    $('#gitcoin-grant-section .badge').removeClass('badge-active');
+    $('#gitcoin-grant-section .badge').addClass('badge-inactive');
+
+    $(event.currentTarget).removeClass('badge-inactive');
+    $(event.currentTarget).addClass('badge-active');
+  });
+
   $('.contribution_type select').change(function() {
     if ($('.contribution_type select').val() == 'once') {
       $('.frequency').addClass('hidden');
@@ -132,7 +173,6 @@ $(document).ready(function() {
             from: accounts[0],
             gasPrice: realGasPrice
           }).on('error', function(error) {
-            console.log('1', error);
             _alert({ message: gettext('Your approval transaction failed. Please try again.')}, 'error');
           }).on('transactionHash', function(transactionHash) {
             $('#sub_new_approve_tx_id').val(transactionHash);
@@ -264,15 +304,39 @@ const waitforData = (callback) => {
   }
 };
 
-
+// Updates summary section
 const updateSummary = (element) => {
 
-  $('#summary-period').html($('input#frequency_count').val());
-  $('#summary-amount').html($('input#amount').val() ? $('input#amount').val() : 0);
-  $('#summary-frequency').html($('input#period').val() ? $('input#period').val() : 0);
-  $('#summary-frequency-unit').html($('#frequency_unit').val());
+  $('.summary-period').html($('input#frequency_count').val());
+  $('.summary-frequency-unit').html($('#frequency_unit').val());
+  $('.summary-frequency').html($('input#period').val() ? $('input#period').val() : 0);
+
   if ($('#token_symbol').val() === 'Any Token') {
-    $('#summary-token').html($('#js-token option:selected').text());
+    $('.summary-token').html($('#js-token option:selected').text());
   }
 
+  splitGrantAmount();
+};
+
+// Splits the total amount between the grant & gitcoin grant in the summary section
+const splitGrantAmount = () => {
+  const percent = $('#gitcoin-grant-input-amount').val();
+  const total_amount = $('input#amount').val() ? $('input#amount').val() : 0;
+  let gitcoin_grant_amount = 0;
+  let grant_amount = 0;
+
+  if (total_amount != 0) {
+    if (!percent || percent == 0) {
+      $('#summary-gitcoin-grant').hide();
+      grant_amount = Number($('input#amount').val());
+    } else {
+      $('#summary-gitcoin-grant').show();
+      gitcoin_grant_amount = parseFloat(Number(percent / 100 * Number($('input#amount').val())).toFixed(4));
+      grant_amount = parseFloat((Number($('input#amount').val()) - gitcoin_grant_amount).toFixed(4));
+    }
+  }
+
+  $('.gitcoin-grant-percent').html(percent);
+  $('.summary-gitcoin-amount').html(gitcoin_grant_amount);
+  $('#summary-amount').html(grant_amount);
 };
