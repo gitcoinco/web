@@ -1,0 +1,16 @@
+{
+  "symbol": "bzc",
+  "address": "0xE7cEfbE857659690fd0d288752A81C7238A00756",
+  "overview": {
+        "en": "bzc is a new game platform based on blockchain technology. It perfectly displays the technical attributes of the blockchain, and displays the blockchain game in front of the public with a new form, starting the combination of blockchain and game.",
+        "zh": "bzc是基于区块链技术发展出的全新游戏平台，它将区块链技术属性完美的展现出来，用全新的形态把区块链游戏展现在大众面前，开始区块链与游戏的结合。"
+  },
+  "email": "bzcgame@outlook.com",
+  "website": "http://www.bzcgame.xyz/",
+  "whitepaper": "http://www.bzcgame.xyz/qfy-content/uploads/2019/04/4a8ef31bc6758a1184849f8576288fc5.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-04-19",
+  "links": {
+  "twitter": "https://twitter.com/bzcchain1"
+  } 
+} 
