@@ -1691,8 +1691,8 @@ def profile_filter_activities(activities, activity_name):
     if not activity_name or activity_name == 'all':
         return activities
     if activity_name == 'start_work':
-        return activities.filter(activity_type__in=['start_work', 'worker_approved'])
-    return activities.filter(activity_type=activity_name)
+        return [obj for obj in activities if obj['activity_type'] in ['start_work', 'worker_approved']]
+    return [obj for obj in activities if obj['activity_type'] == activity_name]
 
 
 def profile(request, handle):
@@ -1761,14 +1761,14 @@ def profile(request, handle):
 
             return TemplateResponse(request, 'profiles/profile_activities.html', context, status=status)
 
-        context = profile.to_dict(tips=False)
+        context = profile.to_dict()
         all_activities = context.get('activities')
         context['is_my_profile'] = request.user.is_authenticated and request.user.username.lower() == handle.lower()
         tabs = []
 
         for tab, name in activity_tabs:
             activities = profile_filter_activities(all_activities, tab)
-            activities_count = activities.count()
+            activities_count = len(activities)
 
             if activities_count == 0:
                 continue

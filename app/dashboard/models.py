@@ -2658,6 +2658,29 @@ class Profile(SuperModel):
         self.avatar_baseavatar_related.filter(pk=avatar_pk).update(active=True)
 
     def to_dict(self, activities=True, leaderboards=True, network=None, tips=True):
+        from perftools.models import JSONStore
+        network = network or self.get_network()
+        key = f"profile_{self.pk}_{activities}_{leaderboards}_{network}_{tips}"
+        print(key)
+        return JSONStore.objects.get(key=key).data
+
+    def generate_to_dict(self, activities=True, leaderboards=True, network=None, tips=True):
+        from perftools.models import JSONStore
+        from economy.models import EncodeAnything
+        import json
+        key = f"profile_{self.pk}_{activities}_{leaderboards}_{network}_{tips}"
+        data = self._to_dict(activities=activities, leaderboards=leaderboards, network=network, tips=tips)
+        data['profile'] = data['profile'].to_standard_dict()
+        data['bounties'] = [obj.to_standard_dict() for obj in data['bounties']]
+        data['tips'] = [obj.to_standard_dict() for obj in data['tips']]
+        data['activities'] = [obj.to_standard_dict() for obj in data['activities']]
+        defaults = {
+            'view': 'profile_dict',
+            'data': json.loads(json.dumps(data, cls=EncodeAnything)),
+        }
+        JSONStore.objects.update_or_create(key=key, defaults=defaults)
+
+    def _to_dict(self, activities=True, leaderboards=True, network=None, tips=True):
         """Get the dictionary representation with additional data.
 
         Args:
@@ -2786,6 +2809,7 @@ def psave_profile(sender, instance, **kwargs):
     instance.handle = instance.handle.replace('@', '')
     instance.handle = instance.handle.lower()
     instance.actions_count = instance.get_num_actions
+    instance.generate_to_dict(True, True, instance.get_network(), True)
 
 
 @receiver(user_logged_in)
