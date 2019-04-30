@@ -24,6 +24,8 @@
     {% include 'shared/cards.html' %}
     <link rel="stylesheet" href={% static "v2/css/users.css" %} />
     <link rel="stylesheet" href={% static "v2/css/tag.css" %} />
+    <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
+    <link rel="stylesheet" href="{% static "v2/css/forms/select.css" %}" />
   </head>
 
   <body class="interior {{active}} g-font-muli">
@@ -80,19 +82,67 @@
                 <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
               </li>
             </ul> -->
-            <form class="form-inline my-2 my-lg-0">
-              <input class="form-control mr-sm-2" v-model="searchTerm" type="search" placeholder="Search" aria-label="Search">
+            <form class="form-inline my-2 flex-fill justify-content-center">
+              <input class="form-control mr-2 w-50" v-model="searchTerm" type="search" placeholder="Search" aria-label="Search">
               <button class="btn btn-outline-success my-2 my-sm-0" @click.prevent="searchUsers()">Search</button>
             </form>
           </div>
         </nav>
       </div>
-      <div class="sidebar-container">
-        <div v-show="showFilters">
-          sidebar
-        </div>
+      <div class="sidebar-container flex-column flex-lg-row">
+        <transition name="fade">
+          <div v-show="showFilters" class="flex-fill p-3">
+            <div class="g-multiselect">
+              <label for="skills" class="form__label">Skills</label>
+              <select2 :options="skills"  v-model="params.skills" data-placeholder="e.g. HTML, CSS" data-tags="true" multiple class="form-control">
+                <option disabled value="0">Select one</option>
+              </select2>
+            </div>
+            <div class="">
+              <label for="bounty-completed">Bounties Completed</label>
+              <select2 v-model="params.bounties_completed" class="form-control">
+                <option value="" selected="true">All</option>
+                <option value="0,5">0-5</option>
+                <option value="5,10">5-10</option>
+                <option value="10,15">10-15</option>
+                <option value="15,20">15-20</option>
+              </select2>
+            </div>
+            <div class="">
+              <label for="leaderboard_rank">Leaderboard Rank</label>
+              <select2 v-model="params.leaderboard_rank" class="form-control">
+                <option value="" selected="true">All</option>
+                <option value="0,5">0-5</option>
+                <option value="5,10">5-10</option>
+                <option value="10,15">10-15</option>
+                <option value="15,20">15-20</option>
+              </select2>
+            </div>
+            <div>
+              <div class="w-100 p-2">
+                <fieldset class="small">
+                  <label for="" class="form__label">Star Rating</label>
+                  <div class="rating">
+                    <input type="radio" id="rating-5" name="rating" value="5" v-model="params.rating" />
+                    <label class ="rating-star full" for="rating-5" data-toggle="tooltip" title="It was great - 5 stars"></label>
+                    <input type="radio" id="rating-4" name="rating" value="4" v-model="params.rating" />
+                    <label class ="rating-star full" for="rating-4" data-toggle="tooltip" title="It was good - 4 stars"></label>
+                    <input type="radio" id="rating-3" name="rating" value="3" v-model="params.rating" />
+                    <label class ="rating-star full" for="rating-3" data-toggle="tooltip" title="It was okay - 3 stars"></label>
+                    <input type="radio" id="rating-2" name="rating" value="2" v-model="params.rating" />
+                    <label class ="rating-star full" for="rating-2" data-toggle="tooltip" title="It was bad - 2 stars"></label>
+                    <input type="radio" id="rating-1" name="rating" value="1" v-model="params.rating" />
+                    <label class ="rating-star full" for="rating-1" data-toggle="tooltip" title="It was terrible - 1 star"></label>
+                  </div>
+                </fieldset>
+              </div>
+            </div>
+            <button @click="params = {}; searchUsers()">Reset Filters</button>
+            <button @click="searchUsers()">Apply</button>
+          </div>
+        </transition>
         <div class="container" @scroll.passive="onScroll($event)">
-          <button @click="showFilters = !showFilters">Show filters</button>
+          <button @click="showFilters = !showFilters"> <i class="fas fa-filter"></i> Show filters</button>
           <div class="py-5 mt-5">
             <div class="grid-4">
               <div v-for="user in users" class="card card-user shadow-sm border-0" :key="user.id">
@@ -210,6 +260,11 @@
         </div>
       </div>
     </template>
+    <script type="text/x-template" id="select2-template">
+      <select>
+        <slot></slot>
+      </select>
+    </script>
 
     {% csrf_token %}
     {% include 'shared/analytics.html' %}
@@ -226,7 +281,9 @@
 
       $('[data-toggle="tooltip"]').runTooltip();
       const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+      document.keywords = {{keywords | safe}};
     </script>
+    <script src="{% static "v2/js/vue-components.js" %}"></script>
     <script src="{% static "v2/js/users.js" %}"></script>
 
   </body>

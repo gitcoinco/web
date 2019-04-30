@@ -70,3 +70,15 @@
 .sidebar-container {
   display: flex;
 }
+
+.select2 {
+  width: 100% !important;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}

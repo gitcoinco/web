@@ -20,6 +20,11 @@ Vue.mixin({
       } else {
         delete vm.params['search'];
       }
+
+      Object.keys(vm.params).map((key, val) => {
+        console.log(key,val)
+      })
+
       let searchParams = new URLSearchParams(vm.params);
 
       let apiUrlUsers = `/api/v0.1/users_fetch/?${searchParams.toString()}`;
@@ -141,7 +146,9 @@ if (document.getElementById('gc-users-directory')) {
       bountySelected: null,
       userSelected: [],
       showModal: false,
-      showFilters: true
+      showFilters: true,
+      skills: document.keywords,
+      selectedSkills: []
     },
     mounted() {
       this.fetchUsers();
@@ -162,23 +169,3 @@ if (document.getElementById('gc-users-directory')) {
   });
 }
 
-Vue.component('modal', {
-  props: [ 'user', 'size' ],
-  template: '#modal-template',
-  data() {
-    return {
-      jqEl: null
-    };
-  },
-  mounted() {
-    let vm = this;
-
-    vm.jqEl = $(this.$el);
-  },
-  methods: {
-    closeModal() {
-      this.jqEl.bootstrapModal('hide');
-    }
-  }
-
-});

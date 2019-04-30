@@ -737,12 +737,14 @@ def users_directory(request):
 
     if not request.user.is_authenticated:
         return redirect('/login/github?next=' + request.get_full_path())
+    keywords = json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)])
 
     params = {
         'active': 'users',
         'title': 'Users',
         'meta_title': "",
-        'meta_description': ""
+        'meta_description': "",
+        'keywords': keywords
     }
     return TemplateResponse(request, 'dashboard/users.html', params)
 
@@ -751,6 +753,7 @@ def users_directory(request):
 def users_fetch(request):
     """Handle displaying users."""
     q = request.GET.get('search', '')
+    skills = request.GET.get('skills', '')
     limit = int(request.GET.get('limit', 10))
     page = int(request.GET.get('page', 1))
     order_by = request.GET.get('order_by', '-actions_count')
@@ -763,6 +766,9 @@ def users_fetch(request):
 
     if q:
         user_list = user_list.filter(Q(handle__icontains=q) | Q(keywords__icontains=q))
+
+    if skills:
+        user_list = user_list.filter(keywords__icontains=skills)
 
     if len(bounties_completed) == 2:
         user_list = user_list.annotate(count=Count('fulfilled')) \
