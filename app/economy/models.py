@@ -110,6 +110,8 @@ class SuperModel(models.Model):
                         return_me[key] = attr()
                     else:
                         return_me[key] = attr
+                    if issubclass(attr.__class__, SuperModel):
+                        return_me[key] = return_me[key].to_standard_dict()
         return return_me
 
 

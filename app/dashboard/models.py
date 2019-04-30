@@ -2670,10 +2670,6 @@ class Profile(SuperModel):
         import json
         key = f"profile_{self.pk}_{activities}_{leaderboards}_{network}_{tips}"
         data = self._to_dict(activities=activities, leaderboards=leaderboards, network=network, tips=tips)
-        data['profile'] = data['profile'].to_standard_dict()
-        data['bounties'] = [obj.to_standard_dict() for obj in data['bounties']]
-        data['tips'] = [obj.to_standard_dict() for obj in data['tips']]
-        data['activities'] = [obj.to_standard_dict() for obj in data['activities']]
         defaults = {
             'view': 'profile_dict',
             'data': json.loads(json.dumps(data, cls=EncodeAnything)),
@@ -2771,6 +2767,59 @@ class Profile(SuperModel):
             params['scoreboard_position_funder'] = self.get_funder_leaderboard_index()
             if self.is_org:
                 params['scoreboard_position_org'] = self.get_org_leaderboard_index()
+
+
+        params['preferred_payout_address'] = self.preferred_payout_address
+
+        order_by = '-modified_on'
+        owned_kudos = self.get_my_kudos.order_by('id', order_by)
+        sent_kudos = self.get_sent_kudos.order_by('id', order_by)
+        kudos_limit = 8
+        params['kudos'] = owned_kudos[0:kudos_limit]
+        params['sent_kudos'] = sent_kudos[0:kudos_limit]
+        params['kudos_count'] = owned_kudos.count()
+        params['sent_kudos_count'] = sent_kudos.count()
+        params['verification'] = self.get_my_verified_check
+        params['avg_rating'] = self.get_average_star_rating
+
+        params['unrated_funded_bounties'] = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
+            .filter(
+                bounty_owner_github_username__iexact=self.handle,
+            ).exclude(
+                feedbacks__feedbackType='approver',
+                feedbacks__sender_profile=self,
+            )
+
+        params['unrated_contributed_bounties'] = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=self) \
+                .filter(interested__status='okay') \
+                .filter(interested__pending=False).filter(idx_status='done') \
+                .exclude(
+                    feedbacks__feedbackType='worker',
+                    feedbacks__sender_profile=self
+                )
+
+        currently_working_bounties = Bounty.objects.current().filter(interested__profile=self).filter(interested__status='okay') \
+            .filter(interested__pending=False).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)
+        currently_working_bounties_count = currently_working_bounties.count()
+        if currently_working_bounties_count > 0:
+            obj = {'id': 'currently_working',
+                   'name': _('Currently Working'),
+                   'objects': Paginator(currently_working_bounties, 10).get_page(1),
+                   'count': currently_working_bounties_count,
+                   'type': 'bounty'
+                   }
+            if 'tabs' not in params:
+                params['tabs'] = []
+            params['tabs'].append(obj)
+
+        # prepare encoding
+        params['profile'] = params['profile'].to_standard_dict()
+        params['bounties'] = [obj.to_standard_dict() for obj in params['bounties']]
+        #TODO: group the kudos by sender, just like before this PR was made
+        params['kudos'] = [obj.to_standard_dict(properties=['kudos_token_cloned_from', 'kudos_token', 'recipient_profile', 'sender_profile']) for obj in params['kudos']]
+        params['sent_kudos'] = [obj.to_standard_dict(properties=['kudos_token_cloned_from', 'kudos_token', 'recipient_profile', 'sender_profile']) for obj in params['sent_kudos']]
+        params['tips'] = [obj.to_standard_dict() for obj in params['tips']]
+        params['activities'] = [obj.to_standard_dict() for obj in params['activities']]
 
         return params
 

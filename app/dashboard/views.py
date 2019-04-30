@@ -1799,48 +1799,6 @@ def profile(request, handle):
         }
         return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
-    context['preferred_payout_address'] = profile.preferred_payout_address
-
-    owned_kudos = profile.get_my_kudos.order_by('id', order_by)
-    sent_kudos = profile.get_sent_kudos.order_by('id', order_by)
-    kudos_limit = 8
-    context['kudos'] = owned_kudos[0:kudos_limit]
-    context['sent_kudos'] = sent_kudos[0:kudos_limit]
-    context['kudos_count'] = owned_kudos.count()
-    context['sent_kudos_count'] = sent_kudos.count()
-    context['verification'] = profile.get_my_verified_check
-    context['avg_rating'] = profile.get_average_star_rating
-
-    context['unrated_funded_bounties'] = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
-        .filter(
-            bounty_owner_github_username__iexact=profile.handle,
-        ).exclude(
-            feedbacks__feedbackType='approver',
-            feedbacks__sender_profile=profile,
-        )
-
-    context['unrated_contributed_bounties'] = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=profile) \
-            .filter(interested__status='okay') \
-            .filter(interested__pending=False).filter(idx_status='done') \
-            .exclude(
-                feedbacks__feedbackType='worker',
-                feedbacks__sender_profile=profile
-            )
-
-    currently_working_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
-        .filter(interested__pending=False).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)
-    currently_working_bounties_count = currently_working_bounties.count()
-    if currently_working_bounties_count > 0:
-        obj = {'id': 'currently_working',
-               'name': _('Currently Working'),
-               'objects': Paginator(currently_working_bounties, 10).get_page(1),
-               'count': currently_working_bounties_count,
-               'type': 'bounty'
-               }
-        if 'tabs' not in context:
-            context['tabs'] = []
-        context['tabs'].append(obj)
-
     if request.method == 'POST' and request.is_ajax():
         # Update profile address data when new preferred address is sent
         validated = request.user.is_authenticated and request.user.username.lower() == profile.handle.lower()
@@ -1855,6 +1813,7 @@ def profile(request, handle):
             }
 
             return JsonResponse(msg, status=msg.get('status', 200))
+
     return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
 

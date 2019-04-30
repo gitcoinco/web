@@ -29,7 +29,8 @@ class Command(BaseCommand):
         # setup
         profiles = Profile.objects.all()
         if settings.DEBUG:
-            profiles = Profile.objects.filter(handle='owocki')
+            handles = ['danlipert', 'owocki', 'pixelantdesign', 'vs77bb', 'metamask']
+            profiles = Profile.objects.filter(handle__in=handles)
         for profile in profiles:
             print(profile.handle)
             profile.save()
