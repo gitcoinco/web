@@ -38,6 +38,6 @@ Provide a general summary of the issue in the title above and use relevant field
 - Device: 
 - OS: 
 - Browser:
-- Version 
+- Version:
 
 **Additional context**
