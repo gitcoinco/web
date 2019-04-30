@@ -1,0 +1,23 @@
+
+{
+  "symbol": "IX",
+  "address": "0xc7Df14a8289EFe7A2d3399387302FDF86E7adC4e",
+  "overview":{
+    "en": "IX (IX Token) is the platform passport of IX.com Exchange. IX holders can enjoy multiple rights and interests such as exchange dividend, community governance and so on.",
+    "zh": "IX（IX Token）是IX.com交易所的平台通证，IX持有者可享有交易所分红、社区治理等多重权益。"
+  },
+  "email": "service@ix.com",
+  "website": "https://ix.com/",
+  "whitepaper": "https://ix.com/docs/IX+WhitePaper+zh-CN.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-04-18",
+    "initial_price":{
+        "USD":"0.01 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/IXExchange",
+    "telegram": "https://t.me/ixtoken",
+    "github": "https://github.com/sunpowerio",
+    "facebook": "https://www.facebook.com/IXExchange"
+  }
+}
