@@ -16,30 +16,28 @@ Provide a general summary of the issue in the title above and use relevant field
 -->
 
 **Describe the bug**
-[comment]: # (A clear and concise description of what the bug is.)
+<!-- A clear and concise description of what the bug is. -->
 
 **To Reproduce**
-[comment]: # (Steps to reproduce the behavior)
-
+<!-- Steps to reproduce the behavior. -->
 
 **Expected behavior**
-[comment]: # (A clear and concise description of what you expected to happen.)
+<!-- A clear and concise description of what you expected to happen. -->
 
 **Screenshots**
-[comment]: # (If applicable, add screenshots to help explain your problem.)
+<!-- If applicable, add screenshots to help explain your problem.)
 
 **Desktop (please complete the following information):**
 
-- OS: xxxx
-- Browser xxxx
-- Browser Version xxxx
+- OS:
+- Browser:
+- Browser Version:
 
 **Smartphone (please complete the following information):**
 
-- Device: xxxx
-- OS: xxxx
-- Browser [xxxx
-- Version xxxx
+- Device: 
+- OS: 
+- Browser:
+- Version:
 
 **Additional context**
-**Smartphone (Add any other context about the problem here.)
