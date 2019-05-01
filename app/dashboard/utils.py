@@ -821,3 +821,11 @@ def get_nonce(network, address):
     JSONStore.objects.create(key=key, view=view, data=[new_nonce])
 
     return new_nonce
+
+
+def get_fee_for_request(request):
+    if not request.user.is_authenticated:
+        return 10
+    else:
+        calculated_fee = request.user.profile.fee_percentage - request.user.profile.plan_discount
+        return calculated_fee if calculated_fee > 0 else 0

@@ -48,7 +48,7 @@ from django.views.decorators.http import require_GET, require_POST
 
 from app.utils import clean_str, ellipses, get_default_network
 from avatar.utils import get_avatar_context_for_user
-from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, profile_helper
+from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, profile_helper, get_fee_for_request
 from economy.utils import convert_token_to_usdt
 from eth_utils import to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
@@ -770,7 +770,7 @@ def users_fetch(request):
             profile_json['avatar_url'] = user_avatar.avatar_url
         profile_json['verification'] = user.get_my_verified_check
         all_users.append(profile_json)
-    # dumping and loading the json here quickly passes serialization issues - definitely can be a better solution 
+    # dumping and loading the json here quickly passes serialization issues - definitely can be a better solution
     params['data'] = json.loads(json.dumps(all_users, default=str))
     params['has_next'] = all_pages.page(page).has_next()
     params['count'] = all_pages.count
@@ -1105,8 +1105,7 @@ def increase_bounty(request):
     )
 
     params['is_funder'] = json.dumps(is_funder)
-    params['FEE_PERCENTAGE'] = request.user.profile.fee_percentage if request.user.is_authenticated else 10
-
+    params['FEE_PERCENTAGE'] = get_fee_for_request(request)
     return TemplateResponse(request, 'bounty/increase.html', params)
 
 
@@ -2270,9 +2269,8 @@ def new_bounty(request):
         title=_('Create Funded Issue'),
         update=bounty_params,
     )
-    params['FEE_PERCENTAGE'] = request.user.profile.fee_percentage if request.user.is_authenticated else 10
+    params['FEE_PERCENTAGE'] = get_fee_for_request(request)
     return TemplateResponse(request, 'bounty/new.html', params)
-
 
 @csrf_exempt
 def get_suggested_contributors(request):
@@ -2285,16 +2283,16 @@ def get_suggested_contributors(request):
                 bounty__idx_status='done'
             ).values('fulfiller_github_username', 'profile__id').annotate(fulfillment_count=Count('bounty')) \
             .order_by('-fulfillment_count')
-        
+
     keywords_filter = Q()
     for keyword in keywords:
         keywords_filter = keywords_filter | Q(bounty__metadata__issueKeywords__icontains=keyword) | \
         Q(bounty__title__icontains=keyword) | \
         Q(bounty__issue_description__icontains=keyword)
-    
+
     recommended_developers = BountyFulfillment.objects.prefetch_related('bounty', 'profile') \
         .filter(keywords_filter).values('fulfiller_github_username', 'profile__id').distinct()[:10]
-  
+
     verified_developers = UserVerificationModel.objects.filter(verified=True).values('user__profile__handle', 'user__profile__id')
 
     return JsonResponse(
