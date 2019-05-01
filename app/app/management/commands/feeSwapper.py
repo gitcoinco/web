@@ -1,7 +1,7 @@
 import argparse
 import json
 import time
-from datetime import datetime
+from django.utils.timezone import now
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
@@ -61,7 +61,7 @@ class Command(BaseCommand):
                                 self.stdout.write('Token balance is: ' + tokenList[address]['balance'])
                 return tokenList
 
-        def sell_token(self, exchangeAddress):
+        def sell_token(self, exchangeAddress, tokenSymbol):
                 """Swap total balance of ERC-20 token associated with Uniswap exchange address to ETH
                 
                 Args:
@@ -127,8 +127,9 @@ class Command(BaseCommand):
 
                 print(tx_receipt)
                 if tx_receipt['status'] == 1:
-                        transaction_record = CurrencyConversion.objects.create(transaction_date=datetime.now(),from_amount=walletBalance, to_amount=outputAmount,conversion_rate=outputAmount/walletBalance,txid=self.web3.toHex(tx_receipt['transactionHash']),from_token_addr=tokenAddress,from_token_symbol='BAT',to_token_symbol='ETH')
-
+                        transaction_record = CurrencyConversion.objects.create(transaction_date=now(),from_amount=walletBalance, to_amount=outputAmount,conversion_rate=outputAmount/walletBalance,txid=self.web3.toHex(tx_receipt['transactionHash']),from_token_addr=tokenAddress,from_token_symbol=tokenSymbol,to_token_symbol='ETH')
+                else:
+                        # Email gitcoin staff about failed transaction and log failed transaction
                 
 
         def handle(self, **options):
@@ -160,7 +161,7 @@ class Command(BaseCommand):
                 # Loop through all tokens and swap to ETH
                 for address, details in self.tokenList.items():
                         print(details['exchangeAddress'])
-                        self.sell_token(details['exchangeAddress'])
+                        self.sell_token(details['exchangeAddress'],details['tokenSymbol'])
                         #transaction_record = CurrencyConversion.objects.create(from_amount=2, to_amount=1.1,conversion_rate=3/4,txid='0x1234',from_token_addr=details['exchangeAddress'],from_token_symbol='BAT',to_token_symbol='ETH')
                 if self.network == 'rinkeby':
                         return self.tokenList['0xda5b056cfb861282b4b59d29c9b395bcc238d29b']['tokenSymbol']
