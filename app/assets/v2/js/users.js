@@ -10,6 +10,9 @@ Vue.mixin({
     fetchUsers: function(newPage) {
       let vm = this;
 
+      vm.isLoading = true;
+      vm.noResults = false;
+
       if (newPage) {
         vm.usersPage = newPage;
       }
@@ -43,7 +46,13 @@ Vue.mixin({
         } else {
           vm.usersPage = 1;
         }
-        vm.requestFinished = true;
+
+        if (vm.users.length) {
+          vm.noResults = false;
+        } else {
+          vm.noResults = true;
+        }
+        vm.isLoading = false;
       });
     },
     searchUsers: function() {
@@ -146,7 +155,8 @@ if (document.getElementById('gc-users-directory')) {
       showFilters: true,
       skills: document.keywords,
       selectedSkills: [],
-      requestFinished: false
+      noResults: false,
+      isLoading: true
     },
     mounted() {
       this.fetchUsers();
