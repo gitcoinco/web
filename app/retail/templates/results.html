@@ -32,7 +32,7 @@
 
     {% include 'shared/tag_manager_2.html' %}
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    {% include 'shared/nav.html' %}
+    {% include 'home/nav.html' %}
     <div class="container-fluid header">
       {% include 'shared/minihero.html' with h1=title position_h1_below_logo=1 %}
     </div>
@@ -98,7 +98,7 @@
           </div>
           <div class="single-stat">
             <img src="{% static "v2/images/results/monthly-active-users.svg" %}" />
-            <h3 class="single-stat__title">{% trans "18,689" %}</h3>
+            <h3 class="single-stat__title">{% trans "14,336" %}</h3>
             <p class="single-stat__subtitle">{% trans "Monthly Active Users" %}</p>
             <p class="single-stat__fineprint">(but only 1% of them create on-chain tx's)</p>
           </div>
@@ -418,4 +418,3 @@
   });
   </script>
 </html>
-

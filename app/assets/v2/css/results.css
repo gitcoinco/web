@@ -1,7 +1,11 @@
-.box {
+..box {
   width: 20px;
   height: 20px;
   margin-right: 10px;
+}
+
+.navbar{
+  background-color: #0d023b;
 }
 
 .mega-founder {

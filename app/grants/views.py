@@ -39,6 +39,7 @@ from app.utils import get_profile
 from cacheops import cached_view
 from dashboard.models import Activity, Profile
 from dashboard.utils import get_web3, has_tx_mined
+from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.forms import MilestoneForm
 from grants.models import Contribution, Grant, MatchPledge, Milestone, Subscription, Update
@@ -46,7 +47,7 @@ from marketing.mails import (
     change_grant_owner_accept, change_grant_owner_reject, change_grant_owner_request, grant_cancellation, new_grant,
     new_supporter, subscription_terminated, support_cancellation, thank_you_for_supporting,
 )
-from marketing.models import Keyword
+from marketing.models import Keyword, Stat
 from web3 import HTTPProvider, Web3
 
 logger = logging.getLogger(__name__)
@@ -54,7 +55,9 @@ w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 clr_matching_banners_style = 'pledging'
 matching_live = '($50K matching live now!) '
-
+if True:
+    clr_matching_banners_style = 'none'
+    matching_live = ''
 
 def get_keywords():
     """Get all Keywords."""
@@ -79,6 +82,14 @@ def grants(request):
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
     partners = MatchPledge.objects.filter(active=True)
+
+    grant_amount = 0
+    grant_stats = Stat.objects.filter(
+        key='grants',
+        ).order_by('-pk')
+    if grant_stats.exists():
+        grant_amount = grant_stats.first().val
+
 
     nav_options = [
         {'label': 'All', 'keyword': ''},
@@ -111,6 +122,7 @@ def grants(request):
         'grants': grants,
         'grants_count': _grants.count(),
         'keywords': get_keywords(),
+        'grant_amount': grant_amount,
     }
     return TemplateResponse(request, 'grants/index.html', params)
 
@@ -728,8 +740,7 @@ def new_matching_partner(request):
     def is_verified(tx_details, tx_hash, tx_amount, network):
         gitcoin_account = '0x00De4B13153673BCAE2616b67bf822500d325Fc3'
         return has_tx_mined(tx_hash, network) and\
-            tx_details.to == gitcoin_account and\
-            str(tx_details.value) == str(tx_amount)
+            tx_details.to.lower() == gitcoin_account.lower()
 
     if not request.user.is_authenticated:
         return get_json_response("Not Authorized", 403)
@@ -741,9 +752,11 @@ def new_matching_partner(request):
         network = 'mainnet'
         web3 = get_web3(network)
         tx = web3.eth.getTransaction(tx_hash)
-        match_pledge = MatchPledge(
+        if not tx:
+            raise Http404
+        match_pledge = MatchPledge.objects.create(
             profile=profile,
-            amount=tx.value,
+            amount=convert_amount(tx.value / 10**18, 'ETH', 'USDT'),
             data=json.dumps({
                 'tx_hash': tx_hash,
                 'network': network,
@@ -757,7 +770,7 @@ def new_matching_partner(request):
 
         return get_json_response(
             """Thank you for volunteering to match on Gitcoin Grants. 
-            You are supporting open source, and we thank you""", 201
+            You are supporting open source, and we thank you.""", 201
         )
 
     return get_json_response("Wrong request.", 400)

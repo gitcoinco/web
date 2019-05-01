@@ -91,17 +91,21 @@ urlpatterns = [
 
     # api views
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
-    url(r'^api/v0.1/get_suggested_contributors', dashboard.views.get_suggested_contributors, name='get_suggested_contributors'),
-    url(r'^api/v0.1/profile/(?P<handle>.*)', dashboard.views.profile_details, name='profile_details'),
-    url(
-        r'^api/v0.1/social_contribution_email',
-        dashboard.views.social_contribution_email,
-        name='social_contribution_email'
-    ),
     url(
         r'^api/v0.1/profile/(.*)?/jobopportunity',
         dashboard.views.profile_job_opportunity,
         name='profile_job_opportunity'
+    ),
+    url(r'^api/v0.1/profile/(?P<handle>.*)', dashboard.views.profile_details, name='profile_details'),
+    url(
+        r'^api/v0.1/get_suggested_contributors',
+        dashboard.views.get_suggested_contributors,
+        name='get_suggested_contributors'
+    ),
+    url(
+        r'^api/v0.1/social_contribution_email',
+        dashboard.views.social_contribution_email,
+        name='social_contribution_email'
     ),
     url(r'^api/v0.1/bountydocument', dashboard.views.bounty_upload_nda, name='bounty_upload_nda'),
     url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
@@ -555,7 +559,9 @@ urlpatterns = [
 
     # users
     path('users', dashboard.views.users_directory, name='users_directory'),
+    url(r'^api/v0.1/user_bounties/', dashboard.views.get_user_bounties, name='get_user_bounties'),
     url(r'^api/v0.1/users_fetch/', dashboard.views.users_fetch, name='users_fetch'),
+
 ]
 
 if settings.ENABLE_SILK:

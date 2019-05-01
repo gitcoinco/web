@@ -283,6 +283,9 @@ class KudosContract:
         kudos['network'] = self.network
         try:
             kudos_token = Token.objects.get(token_id=kudos_id)
+            if kudos_token.suppress_sync:
+                logger.info(f'Skipped sync-ing "{kudos_token.name}" kudos to the database because suppress_sync.')
+                return
             kudos['txid'] = kudos_token.txid
             Token.objects.create(token_id=kudos_id, **kudos)
         except Token.DoesNotExist:
@@ -317,6 +320,14 @@ class KudosContract:
 
         # Update an existing Kudos in the database or create a new one
         kudos['txid'] = txid
+
+        existing_tokens = Token.objects.filter(token_id=kudos_id, contract=contract)
+        if existing_tokens.exists():
+            kudos_token = existing_tokens.first()
+            if kudos_token.suppress_sync:
+                logger.info(f'Skipped sync-ing "{kudos_token.name}" kudos to the database because suppress_sync.')
+                return
+
         kudos_token, created = Token.objects.update_or_create(token_id=kudos_id, contract=contract, defaults=kudos)
         # Update the cloned_from_id kudos.  Namely the num_clones_in_wild field should be updated.
         if created:
