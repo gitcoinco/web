@@ -50,6 +50,7 @@ services:
       - .:/code
     ports:
       - "8000:8000"
+      - "80:8000"
       - "3030:3030"
     depends_on:
       - db
@@ -67,7 +68,7 @@ services:
     image: trufflesuite/ganache-cli
     ports:
       - "8545:8545"
-    command: '-a 1 --seed 2 --host 0.0.0.0 --mnemonic "${TEST_MNEMONIC}"'
+    command: '-a 2 --seed 2 --host 0.0.0.0 --mnemonic "${TEST_MNEMONIC}"'
     deploy:
       replicas: 1
       resources:
