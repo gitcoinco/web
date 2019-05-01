@@ -14,6 +14,11 @@
       <input type="text" name="keywords" class="form__input" placeholder='comma, seperated, list'  value="{{ keywords }}">
       <small id="kwHelp" class="form__input-help">{% trans "so we know what funded work to route your way" %}</small>
     </div>
+    <div class="form-group">
+      <label class="form__label" for="keywords">{% trans "Expert session rate" %}</label>
+      <input type="text" name="experts_rate" class="form__input" placeholder='42'  value="{{ experts_rate }}">
+      <small id="kwHelp" class="form__input-help">{% trans "rate per hour in USD for Expert sessions" %}</small>
+    </div>
     {% csrf_token %}
     <input class='button button--primary' type='submit' name='submit' value="{% trans "Save" %}">
   </form>

@@ -50,8 +50,8 @@ import revenue.views
 import tdi.views
 from avatar.router import router as avatar_router
 from dashboard.router import router as dbrouter
-from grants.router import router as grant_router
 from experts.router import router as experts_router
+from grants.router import router as grant_router
 from kudos.router import router as kdrouter
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.core import urls as wagtail_urls

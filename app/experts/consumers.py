@@ -1,10 +1,9 @@
-from asgiref.sync import async_to_sync
-from channels.generic.websocket import WebsocketConsumer
 import json
 
-from dashboard.models import ProfileSerializer, Profile
+from asgiref.sync import async_to_sync
+from channels.generic.websocket import WebsocketConsumer
+from dashboard.models import Profile, ProfileSerializer
 from experts.models import ExpertSession
-
 
 USER_CHANNEL_NAME = 'user_{}'
 

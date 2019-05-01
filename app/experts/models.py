@@ -1,8 +1,8 @@
-from asgiref.sync import async_to_sync
-from channels.layers import get_channel_layer
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from economy.models import SuperModel
 
 
@@ -34,7 +34,7 @@ class ExpertSession(SuperModel):
     # How long the requester expects the session to last, in minutes
     # expected_duration = models.IntegerField()
     # How much the requester expects to pay per x?
-    # TODO
+    # TODO should this be a string?
     # value that has accrued so far - wei value
     value = models.BigIntegerField(default=0)
     # tx in which channel was opened
@@ -83,10 +83,9 @@ class ExpertSessionInterest(SuperModel):
         'dashboard.Profile',
         on_delete=models.CASCADE
     )
-    signature = models.CharField(max_length=1024)  # TODO max length
+    signature = models.CharField(max_length=132)
     main_address = models.CharField(max_length=42)
     delegate_address = models.CharField(max_length=42)
 
     class Meta:
         unique_together = (('session', 'profile'), )
-

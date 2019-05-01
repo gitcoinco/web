@@ -28,7 +28,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.http import Http404, JsonResponse, HttpResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
@@ -39,7 +39,7 @@ from django.views.decorators.csrf import csrf_exempt
 from app.utils import get_profile
 from cacheops import cached_view
 from dashboard.models import Activity, Profile
-from dashboard.utils import get_web3, has_tx_mined
+from dashboard.utils import get_context, get_web3, has_tx_mined
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.forms import MilestoneForm
 from grants.models import Contribution, Grant, MatchPledge, Milestone, Subscription, Update
@@ -49,8 +49,6 @@ from marketing.mails import (
 )
 from marketing.models import Keyword
 from web3 import HTTPProvider, Web3
-
-from dashboard.utils import get_context
 
 logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))

@@ -50,4 +50,10 @@
     <img src="{% static "v2/images/labs/gitcoinlabs-logo.svg" %}" height="22" alt="" class="d-md-block d-none" >
     <img src="{% static "v2/images/labs/gitcoin_labs_symbol.svg" %}" height="22" alt="" class="d-md-none">
   </a>
+  <a class="{% if request.path|matches:'^\/((experts.*))$' %}selected{% endif %}" href="{% url 'experts:index' %}">
+{#  TODO mentor images#}
+{#    <img src="{% static "v2/images/labs/gitcoinlabs-logo.svg" %}" height="22" alt="" class="d-md-block d-none" >#}
+{#    <img src="{% static "v2/images/labs/gitcoin_labs_symbol.svg" %}" height="22" alt="" class="d-md-none">#}
+   <span style="color: white">Experts</span>
+  </a>
 </div>

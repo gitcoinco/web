@@ -17,9 +17,9 @@
 {% endcomment %}
 {% load i18n static matches %}
 <nav class="navbar navbar-expand-md navbar-dark gitcoin-background">
-  <a class="navbar-brand pt-0 pb-0 brand-hover" href="{% url 'grants:grants' %}">
-    <img class="mw-100 logo-static" src="{% static "v2/images/grants/grants-logo.svg" %}" alt="Grants" height="50">
-    <img class="mw-100 logo-animated" src="{% static "v2/images/grants/grants-white.gif" %}" alt="Grants" height="50">
+  <a class="navbar-brand pt-0 pb-0 brand-hover" href="{% url 'experts:index' %}">
+       <span style="color: white">Experts</span>
+
   </a>
   {% if request.path|matches:"^\/((.*new)|(.*cancel)|(.*fund))$" %}
     <div class="navbar-network ml-xl-5 py-1 px-2 hidden">

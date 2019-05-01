@@ -184,7 +184,7 @@ def matching_settings(request):
 
     """
     # setup
-    __, es, __, is_logged_in = settings_helper_get_auth(request)
+    profile, es, __, is_logged_in = settings_helper_get_auth(request)
     if not es:
         login_redirect = redirect('/login/github?next=' + request.get_full_path())
         return login_redirect
@@ -194,16 +194,21 @@ def matching_settings(request):
     if request.POST and request.POST.get('submit'):
         github = request.POST.get('github', '')
         keywords = request.POST.get('keywords').split(',')
+        experts_rate = request.POST.get('experts_rate')
         if github:
             es.github = github
         if keywords:
             es.keywords = keywords
+        if experts_rate:
+            profile.experts_rate = experts_rate
+            profile.save()
         es = record_form_submission(request, es, 'match')
         es.save()
         msg = _('Updated your preferences.')
 
     context = {
         'keywords': ",".join(es.keywords),
+        'experts_rate': profile.experts_rate,
         'is_logged_in': is_logged_in,
         'autocomplete_keywords': json.dumps(
             [str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),

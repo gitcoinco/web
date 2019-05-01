@@ -1,14 +1,15 @@
+from django.db import IntegrityError
+from django.http import JsonResponse
+
 import django_filters.rest_framework
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
-from django.db import IntegrityError
-from django.http import JsonResponse
+from dashboard.models import Profile, ProfileSerializer
+from experts.consumers import USER_CHANNEL_NAME
 from rest_framework import routers, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 
-from dashboard.models import Profile, ProfileSerializer
-from experts.consumers import USER_CHANNEL_NAME
 from .models import ExpertSession, ExpertSessionInterest
 from .serializers import ExpertSessionSerializer
 

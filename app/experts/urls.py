@@ -19,10 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from django.urls import path, re_path
 
-from experts.views import (
-    # grant_details, grant_fund, grant_new, experts, leaderboard, milestones, new_matching_partner, profile, quickstart,
-    # subscription_cancel,
-    index, quickstart, frontend
+from experts.views import (  # grant_details, grant_fund, grant_new, experts, leaderboard, milestones, new_matching_partner, profile, quickstart,; subscription_cancel,
+    frontend, index, quickstart,
 )
 
 app_name = 'experts'
