@@ -21,10 +21,6 @@ Vue.mixin({
         delete vm.params['search'];
       }
 
-      Object.keys(vm.params).map((key, val) => {
-        console.log(key,val)
-      })
-
       let searchParams = new URLSearchParams(vm.params);
 
       let apiUrlUsers = `/api/v0.1/users_fetch/?${searchParams.toString()}`;
@@ -47,6 +43,7 @@ Vue.mixin({
         } else {
           vm.usersPage = 1;
         }
+        vm.requestFinished = true;
       });
     },
     searchUsers: function() {
@@ -148,10 +145,16 @@ if (document.getElementById('gc-users-directory')) {
       showModal: false,
       showFilters: true,
       skills: document.keywords,
-      selectedSkills: []
+      selectedSkills: [],
+      requestFinished: false
     },
     mounted() {
       this.fetchUsers();
+      this.$watch('params', function(newVal, oldVal) {
+        this.searchUsers();
+      }, {
+        deep: true
+      });
     },
     created() {
       this.fetchBounties();

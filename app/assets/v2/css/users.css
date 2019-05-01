@@ -71,14 +71,45 @@
   display: flex;
 }
 
+
+@media (min-width: 992px) {
+  .sidebar {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    overflow: auto;
+    height: 100vh;
+    max-width: 300px;
+    will-change: margin-left;
+    background-color: #F2F6F9;
+  }
+}
+
 .select2 {
   width: 100% !important;
 }
 
 .fade-enter-active, .fade-leave-active {
-  transition: opacity .5s;
+  /* transition: opacity .5s; */
+  transition: all 0.2s ease-in-out;
+
 }
 
 .fade-enter, .fade-leave-to {
-  opacity: 0;
+  margin-left: -300px;
+}
+
+.fade-enter-to {
+  margin-left: 0%;
+}
+
+.search-section {
+  background: #0C023B;
+}
+
+.btn-search {
+  font-size: 1.3em;
+  background: white;
+  border-left: 0;
+  color: #3E00FF;
 }

@@ -37,92 +37,60 @@
     <div class="" id="gc-users-directory" v-cloak>
 
       <div class="container-fluid">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#usersFilters" aria-controls="usersFilters" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-
-          <div class="collapse navbar-collapse" id="usersFilters">
-            <!-- <div class="navbar-nav mr-4">
-              <label for="">{% trans 'Sort by:' %}</label>
-              <select name="" id="sort_order">
-                <option value="-created_on">{% trans 'Newest' %}</option>
-                <option value="created_on">{% trans 'Oldest' %}</option>
-                <option value="-popularity">{% trans 'All Time Popularity' %}</option>
-                <option value="-popularity_week">{% trans 'Trending' %}</option>
-                <option value="price_finney">{% trans 'Low price' %}</option>
-                <option value="-price_finney">{% trans 'High price' %}</option>
-                <option value="name">{% trans 'Name' %}</option>
-                <option value="-rarity">{% trans 'Rarity' %}</option>
-              </select>
-
-            </div>
-            <div class="navbar-nav">
-              <select class="keywords-filter form-control" multiple="multiple" style="width:300px; height: 37px;"></select>
-            </div>
-            <ul class="navbar-nav mr-auto">
-              <li class="nav-item active">
-                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Link</a>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Dropdown
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <a class="dropdown-item" href="#">Action</a>
-                  <a class="dropdown-item" href="#">Another action</a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="#">Something else here</a>
-                </div>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-              </li>
-            </ul> -->
+        <nav class="search-section p-5">
+          <div class="d-flex flex-grow-1" id="usersFilters">
             <form class="form-inline my-2 flex-fill justify-content-center">
-              <input class="form-control mr-2 w-50" v-model="searchTerm" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-success my-2 my-sm-0" @click.prevent="searchUsers()">Search</button>
+              <div class="input-group w-50">
+                <input class="form-control form-control-lg" v-model="searchTerm" type="search" placeholder="Search" aria-label="Search">
+                <div class="input-group-append">
+                  <button type="submit" class="btn input-group-text btn-search" @click.prevent="searchUsers()"> <i class="fas fa-search"></i></button>
+                </div>
+                <!-- <button class="btn btn-outline-success my-2 my-sm-0" @click.prevent="searchUsers()">Search</button> -->
+              </div>
             </form>
           </div>
         </nav>
       </div>
       <div class="sidebar-container flex-column flex-lg-row">
         <transition name="fade">
-          <div v-show="showFilters" class="flex-fill p-3">
-            <div class="g-multiselect">
-              <label for="skills" class="form__label">Skills</label>
-              <select2 :options="skills"  v-model="params.skills" data-placeholder="e.g. HTML, CSS" data-tags="true" multiple class="form-control">
-                <option disabled value="0">Select one</option>
-              </select2>
+          <nav v-show="showFilters" class="sidebar flex-fill p-4" role="navigation">
+            <div class="g-multiselect pb-4 border-bottom form-group">
+              <label for="skills" class="font-weight-bold">Skills</label>
+              <div class="form__select2">
+                <select2 :options="skills" v-model="params.skills" data-placeholder="e.g. HTML, CSS" data-tags="true" multiple class="form-control">
+                  <option disabled value="0">Select one</option>
+                </select2>
+              </div>
             </div>
-            <div class="">
-              <label for="bounty-completed">Bounties Completed</label>
-              <select2 v-model="params.bounties_completed" class="form-control">
-                <option value="" selected="true">All</option>
-                <option value="0,5">0-5</option>
-                <option value="5,10">5-10</option>
-                <option value="10,15">10-15</option>
-                <option value="15,20">15-20</option>
-              </select2>
+            <div class="pb-4 border-bottom form-group">
+              <label for="bounty-completed" class="font-weight-bold">Bounties Completed</label>
+              <div class="form__select2">
+                <select2 v-model="params.bounties_completed" data-minimum-results-for-search="Infinity" class="form-control">
+                  <option value="" selected="true">All</option>
+                  <option value="0,5">0-5</option>
+                  <option value="5,10">5-10</option>
+                  <option value="10,15">10-15</option>
+                  <option value="15,20">15-20</option>
+                </select2>
+              </div>
             </div>
-            <div class="">
-              <label for="leaderboard_rank">Leaderboard Rank</label>
-              <select2 v-model="params.leaderboard_rank" class="form-control">
-                <option value="" selected="true">All</option>
-                <option value="0,5">0-5</option>
-                <option value="5,10">5-10</option>
-                <option value="10,15">10-15</option>
-                <option value="15,20">15-20</option>
-              </select2>
+            <div class="pb-4 border-bottom form-group">
+              <label for="leaderboard_rank" class="font-weight-bold">Leaderboard Rank</label>
+              <div class="form__select2">
+                <select2 v-model="params.leaderboard_rank" data-minimum-results-for-search="Infinity" class="form-control">
+                  <option value="" selected="true">All</option>
+                  <option value="0,5">0-5</option>
+                  <option value="5,10">5-10</option>
+                  <option value="10,15">10-15</option>
+                  <option value="15,20">15-20</option>
+                </select2>
+              </div>
             </div>
-            <div>
+            <div class="pb-2 border-bottom form-group">
               <div class="w-100 p-2">
-                <fieldset class="small">
-                  <label for="" class="form__label">Star Rating</label>
-                  <div class="rating">
+                <fieldset class="">
+                  <label for="" class="font-weight-bold">Star Rating</label>
+                  <div class="rating font-smaller-4">
                     <input type="radio" id="rating-5" name="rating" value="5" v-model="params.rating" />
                     <label class ="rating-star full" for="rating-5" data-toggle="tooltip" title="It was great - 5 stars"></label>
                     <input type="radio" id="rating-4" name="rating" value="4" v-model="params.rating" />
@@ -137,13 +105,17 @@
                 </fieldset>
               </div>
             </div>
-            <button @click="params = {}; searchUsers()">Reset Filters</button>
-            <button @click="searchUsers()">Apply</button>
-          </div>
+            <button class="btn blue" @click="params = {}; searchUsers()">Reset Filters</button>
+          </nav>
         </transition>
-        <div class="container" @scroll.passive="onScroll($event)">
-          <button @click="showFilters = !showFilters"> <i class="fas fa-filter"></i> Show filters</button>
-          <div class="py-5 mt-5">
+        <div class="container pt-4" @scroll.passive="onScroll($event)">
+          <button class="blue btn font-smaller-1 font-weight-bold" @click="showFilters = !showFilters">[[ showFilters ? 'Hide' : 'Show' ]] filters <i class="fas fa-filter"></i></button>
+          <div class="py-5 mt-4">
+            <div v-if="!users.length && requestFinished" class="text-center">
+              <img src="{% static 'v2/images/shrug_bot.png' %}" alt="nothing found" width="316" height="221">
+              <p class="mt-4 font-weight-bold mb-0">No users found</p>
+              <button class="btn blue" @click="params = {}; searchUsers()">Reset Filters</button>
+            </div>
             <div class="grid-4">
               <div v-for="user in users" class="card card-user shadow-sm border-0" :key="user.id">
                 <div class="d-flex flex-column py-1 bg-lightblue">
