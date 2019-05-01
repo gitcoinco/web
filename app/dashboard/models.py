@@ -1592,6 +1592,7 @@ class Activity(SuperModel):
         ('update_grant', 'Updated Grant'),
         ('killed_grant', 'Cancelled Grant'),
         ('new_grant_contribution', 'Contributed to Grant'),
+        ('new_grant_subscription', 'Subscribed to Grant'),
         ('killed_grant_contribution', 'Cancelled Grant Contribution'),
         ('new_milestone', 'New Milestone'),
         ('update_milestone', 'Updated Milestone'),
@@ -1619,6 +1620,18 @@ class Activity(SuperModel):
     )
     kudos = models.ForeignKey(
         'kudos.KudosTransfer',
+        related_name='activities',
+        on_delete=models.CASCADE,
+        blank=True, null=True
+    )
+    grant = models.ForeignKey(
+        'grants.Grant',
+        related_name='activities',
+        on_delete=models.CASCADE,
+        blank=True, null=True
+    )
+    subscription = models.ForeignKey(
+        'grants.Subscription',
         related_name='activities',
         on_delete=models.CASCADE,
         blank=True, null=True
@@ -1663,6 +1676,12 @@ class Activity(SuperModel):
             'new_bounty': 'fa-money-bill-alt',
             'work_done': 'fa-check-circle',
             'new_kudos': 'fa-thumbs-up',
+            'new_grant': 'fa-envelope',
+            'update_grant': 'fa-edit',
+            'killed_grant': 'fa-trash',
+            'new_grant_contribution': 'fa-coins',
+            'new_grant_subscription': 'fa-calendar-check',
+            'killed_grant_contribution': 'fa-calendar-times',
         }
 
         # load up this data package with all of the information in the already existing objects
@@ -1692,12 +1711,13 @@ class Activity(SuperModel):
             obj = self.metadata['new_bounty']
         activity['title'] = obj.get('title', '')
         if 'id' in obj:
-            activity['bounty_url'] = Bounty.objects.get(pk=obj['id']).get_relative_url()
-            if activity.get('title'):
-                activity['urled_title'] = f'<a href="{activity["bounty_url"]}">{activity["title"]}</a>'
-            else:
-                activity['urled_title'] = activity.get('title')
-        activity['humanized_activity_type'] = self.humanized_activity_type
+            if 'category' not in obj or obj['category'] == 'bounty': # backwards-compatible for category-lacking metadata
+                activity['bounty_url'] = Bounty.objects.get(pk=obj['id']).get_relative_url()
+                if activity.get('title'):
+                    activity['urled_title'] = f'<a href="{activity["bounty_url"]}">{activity["title"]}</a>'
+                else:
+                    activity['urled_title'] = activity.get('title')
+            activity['humanized_activity_type'] = self.humanized_activity_type
         if 'value_in_usdt_now' in obj:
             activity['value_in_usdt_now'] = obj['value_in_usdt_now']
         if 'token_name' in obj:
@@ -1881,8 +1901,31 @@ class Profile(SuperModel):
     job_location = JSONField(default=dict, blank=True)
     linkedin_url = models.CharField(max_length=255, default='', blank=True, null=True)
     resume = models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('The profile resume.'))
+    actions_count = models.IntegerField(default=3)
+    fee_percentage = models.IntegerField(default=10)
 
     objects = ProfileQuerySet.as_manager()
+
+    @property
+    def get_my_tips(self):
+        return Tip.objects.filter(username__iexact=self.handle)
+
+    @property
+    def get_sent_tips(self):
+        return Tip.objects.filter(from_username__iexact=self.handle)
+
+    @property
+    def get_my_bounties(self):
+        return self.bounties
+
+    @property
+    def get_sent_bounties(self):
+        return Bounty.objects.current().filter(bounty_owner_github_username__iexact=self.handle)
+
+    @property
+    def get_my_grants(self):
+        from grants.models import Grant
+        return Grant.objects.filter(Q(admin_profile=self) | Q(team_members__in=[self]) | Q(subscriptions__contributor_profile=self))
 
     @property
     def get_my_kudos(self):
@@ -1922,6 +1965,15 @@ class Profile(SuperModel):
 
         return kudos_transfers
 
+    @property
+    def get_num_actions(self):
+        num = 0
+        num += self.get_sent_kudos.count()
+        num += self.get_my_kudos.count()
+        num += self.get_my_tips.count()
+        num += self.get_sent_tips.count()
+        num += self.get_my_grants.count()
+        return num
 
     @property
     def get_average_star_rating(self):
@@ -1942,6 +1994,7 @@ class Profile(SuperModel):
             / feedbacks.count() if feedbacks.count() != 0 else 0
         average_rating['speed_rating'] = sum([feedback.speed_rating for feedback in feedbacks]) \
             / feedbacks.count() if feedbacks.count() != 0 else 0
+        average_rating['total_rating'] = feedbacks.count()
         return average_rating
 
 
@@ -2570,8 +2623,8 @@ class Profile(SuperModel):
         )
         return funded_bounties
 
-    def get_bounty_and_tip_activities(self, network='mainnet'):
-        """Get bounty and tip related activities for this profile.
+    def get_various_activities(self, network='mainnet'):
+        """Get bounty, tip and grant related activities for this profile.
 
         Args:
             network (str): The network to query results for.
@@ -2587,13 +2640,17 @@ class Profile(SuperModel):
             url = self.github_url
             all_activities = Activity.objects.filter(
                 Q(bounty__github_url__startswith=url) |
-                Q(tip__github_url__startswith=url),
+                Q(tip__github_url__startswith=url) |
+                Q(grant__isnull=False) |
+                Q(subscription__isnull=False)
             )
 
         all_activities = all_activities.filter(
             Q(bounty__network=network) |
-            Q(tip__network=network),
-        ).select_related('bounty', 'tip').all().order_by('-created')
+            Q(tip__network=network) |
+            Q(grant__network=network) |
+            Q(subscription__network=network)
+        ).select_related('bounty', 'tip', 'grant', 'subscription').all().order_by('-created')
 
         return all_activities
 
@@ -2682,7 +2739,7 @@ class Profile(SuperModel):
         }
 
         if activities:
-            params['activities'] = self.get_bounty_and_tip_activities(network=network)
+            params['activities'] = self.get_various_activities(network=network)
 
         if tips:
             params['tips'] = self.tips.filter(**query_kwargs).send_happy_path()
@@ -2729,6 +2786,7 @@ def psave_profile(sender, instance, **kwargs):
     instance.handle = instance.handle.replace(' ', '')
     instance.handle = instance.handle.replace('@', '')
     instance.handle = instance.handle.lower()
+    instance.actions_count = instance.get_num_actions
 
 
 @receiver(user_logged_in)
@@ -2768,12 +2826,17 @@ class ProfileSerializer(serializers.BaseSerializer):
             dict: The serialized Profile.
 
         """
+        
         return {
             'id': instance.id,
             'handle': instance.handle,
             'github_url': instance.github_url,
             'avatar_url': instance.avatar_url,
-            'url': instance.get_relative_url()
+            'keywords': instance.keywords,
+            'url': instance.get_relative_url(),
+            'position': instance.get_contributor_leaderboard_index(),
+            'organizations': instance.get_who_works_with(),
+            'total_earned': instance.get_eth_sum()
         }
 
 

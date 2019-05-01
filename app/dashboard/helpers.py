@@ -26,19 +26,19 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 from django.db import transaction
-from django.http import Http404, JsonResponse
+from django.http import Http404, HttpResponseBadRequest, JsonResponse
 from django.utils import timezone
 
 from app.utils import get_semaphore, sync_profile
 from dashboard.models import (
-    Activity, Bounty, BountyDocuments, BountyFulfillment, BountySyncRequest, HackathonEvent, UserAction,
+    Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, BountySyncRequest, HackathonEvent, UserAction,
 )
 from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
     maybe_market_to_user_discord, maybe_market_to_user_slack,
 )
 from dashboard.tokens import addr_to_token
-from economy.utils import convert_amount
+from economy.utils import ConversionRateNotFoundError, convert_amount
 from git.utils import get_gh_issue_details, get_url_dict
 from jsondiff import diff
 from marketing.mails import new_reserved_issue
@@ -115,7 +115,9 @@ def amount(request):
     response = {}
 
     try:
-        amount = request.GET.get('amount')
+        amount = str(request.GET.get('amount'))
+        if not amount.replace('.','').isnumeric():
+            return HttpResponseBadRequest('not number')
         denomination = request.GET.get('denomination', 'ETH')
         if not denomination:
             denomination = 'ETH'
@@ -132,6 +134,9 @@ def amount(request):
             'usdt': amount_in_usdt,
         }
         return JsonResponse(response)
+    except ConversionRateNotFoundError as e:
+        logger.debug(e)
+        raise Http404
     except Exception as e:
         logger.error(e)
         raise Http404
@@ -451,7 +456,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 'featuring_date': timezone.make_aware(
                     timezone.datetime.fromtimestamp(metadata.get('featuring_date', 0)),
                     timezone=UTC),
-                'repo_type': metadata.get('repo_type', None),
+                'repo_type': metadata.get('repo_type', 'public'),
                 'unsigned_nda': unsigned_nda,
                 'bounty_owner_github_username': bounty_issuer.get('githubUsername', ''),
                 'bounty_owner_address': bounty_issuer.get('address', ''),
@@ -477,6 +482,8 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
             )
             if latest_old_bounty_dict['bounty_reserved_for_user']:
                 latest_old_bounty_dict['bounty_reserved_for_user'] = Profile.objects.get(pk=latest_old_bounty_dict['bounty_reserved_for_user'])
+            if latest_old_bounty_dict.get('bounty_owner_profile'):
+                latest_old_bounty_dict['bounty_owner_profile'] = Profile.objects.get(pk=latest_old_bounty_dict['bounty_owner_profile'])
             if latest_old_bounty_dict['unsigned_nda']:
                 latest_old_bounty_dict['unsigned_nda'] = BountyDocuments.objects.filter(
                     pk=latest_old_bounty_dict['unsigned_nda']
@@ -504,6 +511,38 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 except Exception as e:
                     logger.error(e)
 
+            bounty_invitees = metadata.get('invite', '')
+            if bounty_invitees and not latest_old_bounty:
+                from marketing.mails import share_bounty
+                from dashboard.utils import get_bounty_invite_url
+                emails = []
+                inviter = Profile.objects.get(handle=new_bounty.bounty_owner_github_username)
+                invite_url = get_bounty_invite_url(inviter, new_bounty.id)
+                msg = "Check out this bounty that pays out " + \
+                    str(new_bounty.get_value_true) + new_bounty.token_name + invite_url
+                for keyword in new_bounty.keywords_list:
+                    msg += " #" + keyword
+                for user_id in bounty_invitees:
+                    profile = Profile.objects.get(id=int(user_id))
+                    bounty_invite = BountyInvites.objects.create(
+                        status='pending'
+                    )
+                    bounty_invite.bounty.add(new_bounty)
+                    bounty_invite.inviter.add(inviter.user)
+                    bounty_invite.invitee.add(profile.user)
+                    emails.append(profile.email)
+                try:
+                    share_bounty(emails, msg, inviter, invite_url, False)
+                    response = {
+                        'status': 200,
+                        'msg': 'email_sent',
+                    }
+                except Exception as e:
+                    logging.exception(e)
+                    response = {
+                        'status': 500,
+                        'msg': 'Email not sent',
+                    }
             # migrate data objects from old bounty
             if latest_old_bounty:
                 # Pull the interested parties off the last old_bounty

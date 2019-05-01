@@ -26,6 +26,7 @@ from django.db import models
 from django.db.models import Q
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.templatetags.static import static
 from django.utils import timezone
 from django.utils.text import slugify
 
@@ -108,6 +109,7 @@ class Token(SuperModel):
 
     # Kudos metadata from tokenURI (also in contract)
     name = models.CharField(max_length=255, db_index=True)
+    override_display_name = models.CharField(max_length=255, blank=True)
     description = models.CharField(max_length=510, db_index=True)
     image = models.CharField(max_length=255, null=True)
     rarity = models.CharField(max_length=255, null=True)
@@ -126,6 +128,8 @@ class Token(SuperModel):
     )
     hidden = models.BooleanField(default=False)
     send_enabled_for_non_gitcoin_admins = models.BooleanField(default=True)
+    preview_img_mode = models.CharField(max_length=255, default='png')
+    suppress_sync = models.BooleanField(default=False)
 
     # Token QuerySet Manager
     objects = TokenQuerySet.as_manager()
@@ -135,6 +139,11 @@ class Token(SuperModel):
             self.owner_address = to_checksum_address(self.owner_address)
 
         super().save(*args, **kwargs)
+
+    @property
+    def ui_name(self):
+        from kudos.utils import humanize_name
+        return self.override_display_name if self.override_display_name else humanize_name(self.name)
 
     @property
     def price_in_eth(self):
@@ -269,12 +278,19 @@ class Token(SuperModel):
         with open(file_path, 'rb') as f:
             obj = File(f)
             from avatar.utils import svg_to_png
-            return svg_to_png(obj.read(), scale=3, width=333, height=384)
+            return svg_to_png(obj.read(), scale=3, width=333, height=384, index=self.pk)
         return None
+
 
     @property
     def img_url(self):
         return f'{settings.BASE_URL}dynamic/kudos/{self.pk}/{slugify(self.name)}'
+
+    @property
+    def preview_img_url(self):
+        if self.preview_img_mode == 'png':
+            return self.img_url
+        return static(self.image)
 
     @property
     def url(self):
@@ -361,7 +377,7 @@ class KudosTransfer(SendCryptoAsset):
             key = self.metadata['reference_hash_for_receipient']
             return f"{settings.BASE_URL}kudos/receive/v3/{key}/{self.txid}/{self.network}"
         except KeyError as e:
-            logger.error(e)
+            logger.debug(e)
             return ''
 
     def __str__(self):
@@ -437,6 +453,9 @@ class BulkTransferCoupon(SuperModel):
     sender_profile = models.ForeignKey(
         'dashboard.Profile', related_name='bulk_transfers', on_delete=models.CASCADE
     )
+
+    sender_address = models.CharField(max_length=255, blank=True)
+    sender_pk = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
         """Return the string representation of a model."""

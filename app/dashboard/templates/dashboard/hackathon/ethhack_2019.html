@@ -20,11 +20,17 @@
             <img class=" img-fluid" height="67" width="313" style=" margin-top: 0.2rem" src="{% static "v2/images/hackathon/microsoft.svg" %}" />
           </div>
           <div class="m-5">
-              <a target="_blank" rel="noopener noreferrer" href="https://gitcoin.co/hackathon/ethereal-virtual-hackathon/" class="btn btn-hackathon btn-circle btn-gc-pink m-3">View Prizes</a>
+              <a href="https://gitcoin.co/hackathon/ethereal-virtual-hackathon/" class="btn btn-hackathon btn-circle btn-gc-pink m-3">View Prizes</a>
               <a target="_blank" rel="noopener noreferrer" href="https://gitcoin.typeform.com/to/j7CSbV" class="btn btn-hackathon btn-circle btn-gc-pink m-3">Register</a>
-              <a target="_blank" rel="noopener noreferrer" href="https://discordapp.com/invite/2Q2VG4" class="btn btn-hackathon btn-circle btn-gc-blue m-3">Join the Discord</a>
+              <a target="_blank" rel="noopener noreferrer" href="https://discord.gg/TxRKTn8" class="btn btn-hackathon btn-circle btn-gc-blue m-3">Join the Discord</a>
+          </div>
+          <div class="m-5">
+            - OR - View our <a style="font-weight: bold;" href="https://medium.com/gitcoin/ethereal-virtual-hackathon-get-started-92084f05d9ee">How to Get Started Guide</a>
           </div>
         </div>
+      </div>
+      <div class="row">
+        {% include 'shared/hackathon_sponsors.html' %}
       </div>
     </div>
 
@@ -32,7 +38,19 @@
       <div class="row justify-content-center p-md-5">
         <div class="col-12 col-md-9">
           <h2 class="font-weight-bolder title-line mt-5">April 15th &#8212; 30th</h2>
-          <p class=" m-md-5 mt-5">Hackathon challenges will be posted as bounties, with the best hacks receiving prizes in ETH & ERC-20 tokens. Main track winners will receive free tickets to Ethereal NY to present their project live on stage.</p>
+          <p class=" m-md-5 mt-5">Hackathon challenges will be posted as bounties, with the best hacks receiving prizes in ETH & ERC-20 tokens.</p>
+          <ul>
+            <li style="list-style:none;">
+              <strong>Main track winners</strong> will receive free tickets to Ethereal NY to present their project live on stage.
+            </li>
+            <li style="list-style:none;">
+              <strong>Bounty winners</strong> can build relationships with the top employers in the space, AND win up to $7k each (varies by sponsor).
+            </li>
+            <li style="list-style:none;">
+              <strong>Referral bountiy now live!</strong> There is a <a href="https://gitcoin.co/issue/gitcoinco/skunkworks/97/2807">$500 bounty</a> to refer hackathon participants to the hackathon. 
+            </li>
+          </ul>
+          
         </div>
       </div>
     </section>
@@ -40,12 +58,15 @@
     <section class="bg-white p-md-5 py-5">
       <div class="row justify-content-center p-md-5 p-2">
         <div class="col-12 col-md-9">
-          <h2 class="font-weight-bolder title-line mt-5">Register as a Hacker</h2>
-          <p class=" m-md-5 mt-5">Register by April 15th for updates on key dates, prizes, teams, and instructions on how to start bounty hunting.</p>
-              <a target="_blank" rel="noopener noreferrer" href="https://gitcoin.co/hackathon/ethereal-virtual-hackathon/" class="btn btn-hackathon btn-circle btn-gc-pink m-3">View Prizes</a>
-              <a target="_blank" rel="noopener noreferrer" href="https://gitcoin.typeform.com/to/j7CSbV" class="btn btn-hackathon btn-circle btn-gc-pink m-3">Register</a>
-              <a target="_blank" rel="noopener noreferrer" href="https://discordapp.com/invite/2Q2VG4" class="btn btn-hackathon btn-circle btn-gc-blue m-3">Join the Discord</a>
+          <h2 class="font-weight-bolder title-line mt-5">Participate today!</h2>
+          <p class=" m-md-5 mt-5">During this hackathon, you can participate in tens of thousands of dollars of bounties, with the TOP projects in the Ethereum space, from anywhere!</p>
+              <a href="https://gitcoin.co/hackathon/ethereal-virtual-hackathon/" class="btn btn-hackathon btn-circle btn-gc-pink m-3">View Prizes</a>
+              <a target="_blank"  href="https://gitcoin.typeform.com/to/j7CSbV" class="btn btn-hackathon btn-circle btn-gc-pink m-3">Register</a>
+              <a target="_blank" href="https://discord.gg/TxRKTn8" class="btn btn-hackathon btn-circle btn-gc-blue m-3">Join the Discord</a>
         </div>
+      </div>
+      <div class="m-5">
+        - OR - View our <a style="font-weight: bold; color: black !important;" href="https://medium.com/gitcoin/ethereal-virtual-hackathon-get-started-92084f05d9ee">How to Get Started Guide</a>
       </div>
     </section>
 
@@ -63,12 +84,14 @@
         </div>
       </div>
     </section>
-
+    <div class="row bottom_notification font-caption">
+      {% blocktrans %}<strong>Did you know?</strong> - Gitcoin has delivered over $1mm to Open Source developers in the last year. <a href="https://gitcoin.co/results">See our results</a>.{% endblocktrans %}
+    </div>
     <footer style="background: black" class="pt-5">
       <div class="d-flex align-items-center justify-content-around p-5 flex-column flex-md-row">
-        <a target="_blank" rel="noopener noreferrer" href="https://gitcoin.co/"><img class="img-fluid m-md-5 my-5" width="295" height="68" src="{% static "v2/images/top-bar/gitcoin-logo.svg" %}" /></a>
-        <a target="_blank" rel="noopener noreferrer" href="https://www.microsoft.com"><img class="img-fluid m-md-5 my-5" width="206" height="44" src="{% static "v2/images/hackathon/microsoft.svg" %}" /></a>
-        <a target="_blank" rel="noopener noreferrer" href="https://etherealsummit.com/"><img class="img-fluid m-md-5 my-5" width="214" height="77" src="{% static "v2/images/hackathon/ethmain.svg" %}" /></a>
+        <a  href="https://gitcoin.co/"><img class="img-fluid m-md-5 my-5" width="295" height="68" src="{% static "v2/images/top-bar/gitcoin-logo.svg" %}" /></a>
+        <a  href="https://www.microsoft.com"><img class="img-fluid m-md-5 my-5" width="206" height="44" src="{% static "v2/images/hackathon/microsoft.svg" %}" /></a>
+        <a  href="https://etherealsummit.com/"><img class="img-fluid m-md-5 my-5" width="214" height="77" src="{% static "v2/images/hackathon/ethmain.svg" %}" /></a>
       </div>
     </footer>
   </body>
