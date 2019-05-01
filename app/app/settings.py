@@ -128,6 +128,7 @@ INSTALLED_APPS = [
     'revenue',
     'event_ethdenver2019',
     'inbox',
+    'feeswapper',
 ]
 
 MIDDLEWARE = [
