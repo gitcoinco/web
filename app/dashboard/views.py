@@ -734,10 +734,12 @@ def onboard(request, flow):
 
 def users_directory(request):
     """Handle displaying users directory page."""
+    from retail.utils import programming_languages, programming_languages_full
 
     if not request.user.is_authenticated:
         return redirect('/login/github?next=' + request.get_full_path())
-    keywords = json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)])
+
+    keywords = programming_languages + programming_languages_full
 
     params = {
         'active': 'users',
