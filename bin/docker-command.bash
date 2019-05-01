@@ -39,6 +39,10 @@ if [ "$GC_WEB_WORKER" = "runserver_plus" ]; then
     GC_WEB_OPTS="${GC_WEB_OPTS} --extra-file /code/app/app/.env --nopin --verbosity 0"
 fi
 
+if [ "$GC_WEB_WORKER" = "runserver" ]; then
+    GC_WEB_OPTS="${GC_WEB_OPTS} --verbosity 0"
+fi
+
 # Provision the Django test environment.
 if [ ! -f /provisioned ] || [ "$FORCE_PROVISION" = "on" ]; then
     echo "First run - Provisioning the local development environment..."
@@ -47,7 +51,7 @@ if [ ! -f /provisioned ] || [ "$FORCE_PROVISION" = "on" ]; then
     fi
 
     if [ "$DISABLE_INITIAL_COLLECTSTATIC" != "on" ]; then
-        python manage.py collectstatic --noinput -i other &
+        python manage.py collectstatic --noinput -i other >/dev/null &
     fi
 
     if [ "$DISABLE_INITIAL_MIGRATE" != "on" ]; then
