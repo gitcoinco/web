@@ -1,0 +1,41 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static humanize grants_extra %}
+<a href="{% url 'profile' expert.handle %}">
+  <div class="grant-item__img">
+    <img src="
+      {% if expert.avatar_url %}{{ expert.avatar_url }}{% else %}https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg{% endif %}">
+  </div>
+  <div class="grant-item__content py-4 px-3">
+    <h2 class="grant-item__title font-subheader"><a
+      href="{% url 'profile' expert.handle %}">{{ expert.handle|truncatechars:60 }}</a></h2>
+    <ul>
+
+      {% for keyword in expert.keywords %}
+        <li>{{ keyword }}</li>
+      {% endfor %}
+    </ul>
+
+    <div class="grant-item__footer">
+      Rate: ${{ expert.experts_rate }}<br/>
+      <button class="btn btn-gc-blue">
+        <span class="d-sm-inline">{% trans "Request Session" %}</span>
+        <i class="ml-2 fas"></i>
+      </button>
+    </div>
+  </div>
+</a>

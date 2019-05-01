@@ -20,6 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import os
 import socket
 
+import daphne.server  # Early import so Daphne is first to register non-asyncio Twisted reactor
+
 from django.utils.translation import gettext_noop
 
 import environ
@@ -31,6 +33,7 @@ from boto3.session import Session
 from easy_thumbnails.conf import Settings as easy_thumbnails_defaults
 
 import warnings
+
 warnings.filterwarnings("ignore", category=UserWarning, module='psycopg2')
 
 root = environ.Path(__file__) - 2  # Set the base directory to two levels.
@@ -60,6 +63,7 @@ ENABLE_NOTIFICATIONS_ON_NETWORK = env('ENABLE_NOTIFICATIONS_ON_NETWORK', default
 
 # Application definition
 INSTALLED_APPS = [
+    'channels',
     'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -128,6 +132,8 @@ INSTALLED_APPS = [
     'revenue',
     'event_ethdenver2019',
     'inbox',
+    'experts',
+    'webpack_loader',
 ]
 
 MIDDLEWARE = [
@@ -192,8 +198,8 @@ AUTH_PASSWORD_VALIDATORS = [{
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
-    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend', ),
-    'DEFAULT_THROTTLE_CLASSES': ('rest_framework.throttling.AnonRateThrottle', ),
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
+    'DEFAULT_THROTTLE_CLASSES': ('rest_framework.throttling.AnonRateThrottle',),
     'DEFAULT_THROTTLE_RATES': {
         'anon': '1000/day',
     },
@@ -213,7 +219,7 @@ USE_L10N = env.bool('USE_L10N', default=True)
 USE_TZ = env.bool('USE_TZ', default=True)
 TIME_ZONE = env.str('TIME_ZONE', default='UTC')
 
-LOCALE_PATHS = ('locale', )
+LOCALE_PATHS = ('locale',)
 
 LANGUAGES = [
     ('en', gettext_noop('English')),
@@ -265,7 +271,6 @@ if SENTRY_DSN:
     }
     if RELEASE:
         RAVEN_CONFIG['release'] = RELEASE
-
 
 LOGGING = {
     'version': 1,
@@ -325,13 +330,13 @@ if ENV not in ['local', 'test', 'staging', 'preview']:
         'format': '%(hostname)s %(name)-12s [%(levelname)-8s] %(message)s',
     }
     LOGGING['handlers']['watchtower'] = {
-            'level': AWS_LOG_LEVEL,
-            'class': 'watchtower.django.DjangoCloudWatchLogHandler',
-            'boto3_session': boto3_session,
-            'log_group': AWS_LOG_GROUP,
-            'stream_name': AWS_LOG_STREAM,
-            'filters': ['host_filter'],
-            'formatter': 'cloudwatch',
+        'level': AWS_LOG_LEVEL,
+        'class': 'watchtower.django.DjangoCloudWatchLogHandler',
+        'boto3_session': boto3_session,
+        'log_group': AWS_LOG_GROUP,
+        'stream_name': AWS_LOG_STREAM,
+        'filters': ['host_filter'],
+        'formatter': 'cloudwatch',
     }
     LOGGING['loggers']['django.db.backends']['level'] = AWS_LOG_LEVEL
 
@@ -357,7 +362,7 @@ GEOIP_PATH = env('GEOIP_PATH', default='/usr/share/GeoIP/')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
-STATICFILES_DIRS = env.tuple('STATICFILES_DIRS', default=('assets/', ))
+STATICFILES_DIRS = env.tuple('STATICFILES_DIRS', default=('assets/',))
 STATIC_ROOT = root('static')
 STATICFILES_LOCATION = env.str('STATICFILES_LOCATION', default='static')
 MEDIAFILES_LOCATION = env.str('MEDIAFILES_LOCATION', default='media')
@@ -382,7 +387,7 @@ else:
 COMPRESS_ROOT = STATIC_ROOT
 COMPRESS_ENABLED = env.bool('COMPRESS_ENABLED', default=True)
 
-THUMBNAIL_PROCESSORS = easy_thumbnails_defaults.THUMBNAIL_PROCESSORS + ('app.thumbnail_processors.circular_processor', )
+THUMBNAIL_PROCESSORS = easy_thumbnails_defaults.THUMBNAIL_PROCESSORS + ('app.thumbnail_processors.circular_processor',)
 
 THUMBNAIL_ALIASES = {
     '': {
@@ -488,7 +493,11 @@ SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT', default=False)
 
 CSRF_COOKIE_SECURE = env.bool('CSRF_COOKIE_SECURE', default=False)
 CSRF_COOKIE_HTTPONLY = env.bool('CSRF_COOKIE_HTTPONLY', default=True)
-SESSION_COOKIE_SECURE = env.bool('SESSION_COOKIE_SECURE', default=False)
+
+# SESSION_COOKIE_SECURE = env.bool('SESSION_COOKIE_SECURE', default=False)
+SESSION_COOKIE_SECURE = False
+SESSION_COOKIE_HTTPONLY = False
+
 SECURE_BROWSER_XSS_FILTER = env.bool('SECURE_BROWSER_XSS_FILTER', default=True)
 SECURE_CONTENT_TYPE_NOSNIFF = env.bool('SECURE_CONTENT_TYPE_NOSNIFF', default=True)
 X_FRAME_OPTIONS = env('X_FRAME_OPTIONS', default='DENY')
@@ -641,8 +650,8 @@ if not AWS_S3_OBJECT_PARAMETERS:
     AWS_S3_OBJECT_PARAMETERS = {'CacheControl': f'max-age={AWS_S3_CACHE_MAX_AGE}', }
 
 CORS_ORIGIN_ALLOW_ALL = False
-CORS_ORIGIN_WHITELIST = ('sumo.com', 'load.sumo.com', 'googleads.g.doubleclick.net', 'gitcoin.co', )
-CORS_ORIGIN_WHITELIST = CORS_ORIGIN_WHITELIST + (AWS_S3_CUSTOM_DOMAIN, MEDIA_CUSTOM_DOMAIN, )
+CORS_ORIGIN_WHITELIST = ('sumo.com', 'load.sumo.com', 'googleads.g.doubleclick.net', 'gitcoin.co',)
+CORS_ORIGIN_WHITELIST = CORS_ORIGIN_WHITELIST + (AWS_S3_CUSTOM_DOMAIN, MEDIA_CUSTOM_DOMAIN,)
 
 S3_REPORT_BUCKET = env('S3_REPORT_BUCKET', default='')  # TODO
 S3_REPORT_PREFIX = env('S3_REPORT_PREFIX', default='')  # TODO
@@ -703,3 +712,30 @@ if ENABLE_SILK:
 
 TAGGIT_CASE_INSENSITIVE = env.bool('TAGGIT_CASE_INSENSITIVE', default=True)
 WAGTAIL_SITE_NAME = 'Gitcoin'
+
+# React/Webpack configuration
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'CACHE': not DEBUG,
+        'BUNDLE_DIR_NAME': 'frontend/',
+        'STATS_FILE': os.path.join(BASE_DIR, 'assets/frontend/webpack-stats.json'),
+        'POLL_INTERVAL': 0.1,
+        'TIMEOUT': None,
+        'IGNORE': [r'.+\.hot-update.js', r'.+\.map']
+    }
+}
+
+# Channels configuration
+ASGI_APPLICATION = "app.routing.application"
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [
+                (
+                    env.str('CHANNELS_REDIS_HOST', default='redis'),
+                    env.str('CHANNELS_REDIS_PORT', default=6379)
+                )],
+        },
+    },
+}
