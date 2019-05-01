@@ -127,10 +127,13 @@
 }
 
 .grants_landing .grants-search,
+.grants_landing .grants-results,
 .grants_landing .grants-container {
   background-color: #F2F6F9;
 }
-
+.grants_landing .grants-results{
+  text-align: center;
+}
 .grant-item {
   background-color: #fff;
 }
