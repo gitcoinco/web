@@ -1886,23 +1886,29 @@ def profile(request, handle):
     context['avg_rating'] = profile.get_average_star_rating
 
     context['unrated_funded_bounties'] = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
-        .filter(
-            bounty_owner_github_username__iexact=profile.handle,
-        ).exclude(
+        .filter(bounty_owner_github_username__iexact=profile.handle) \
+        .filter(network=settings.KUDOS_NETWORK) \
+        .exclude(
             feedbacks__feedbackType='approver',
             feedbacks__sender_profile=profile,
         )
 
     context['unrated_contributed_bounties'] = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=profile) \
             .filter(interested__status='okay') \
-            .filter(interested__pending=False).filter(idx_status='done') \
+            .filter(interested__pending=False) \
+            .filter(idx_status='done') \
+            .filter(network=settings.KUDOS_NETWORK) \
             .exclude(
                 feedbacks__feedbackType='worker',
                 feedbacks__sender_profile=profile
             )
 
-    currently_working_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
-        .filter(interested__pending=False).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)
+    currently_working_bounties = Bounty.objects.current()\
+        .filter(interested__profile=profile)\
+        .filter(interested__status='okay') \
+        .filter(interested__pending=False)\
+        .filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)\
+        .filter(network=settings.KUDOS_NETWORK)
     currently_working_bounties_count = currently_working_bounties.count()
     if currently_working_bounties_count > 0:
         obj = {'id': 'currently_working',
