@@ -1,13 +1,17 @@
 import argparse
 import json
 import time
-
+from django.utils.timezone import now
+import sendgrid
+from sendgrid.helpers.mail import Content, Email, Mail
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
 import requests
 from web3 import Web3
 from web3.middleware import geth_poa_middleware
+
+from feeswapper.models import CurrencyConversion
 
 # Amount of slippage from target Ether price from estimated price on exchange allowed when trading tokens back to ETH
 SLIPPAGE = 0.05  
@@ -58,11 +62,12 @@ class Command(BaseCommand):
                                 self.stdout.write('Token balance is: ' + tokenList[address]['balance'])
                 return tokenList
 
-        def sell_token(self, exchangeAddress):
+        def sell_token(self, exchangeAddress, tokenSymbol):
                 """Swap total balance of ERC-20 token associated with Uniswap exchange address to ETH
                 
                 Args:
                         exchangeAddress (str): The address of the Uniswap exchange contract assocciated with the ERC-20 token to convert to ETH
+                        tokenSymbol (str): The symbol for the ERC-20 token to be converted to ETH. 
                 
                 Note: This currently only works with the BAT Uniswap exchange on Rinkeby Testnet
                 """
@@ -70,7 +75,7 @@ class Command(BaseCommand):
                         chain = 4
                 else:
                         chain = 1
-                # Follow Uniswap doc guidance on calculating conversion
+                # Follows Uniswap doc guidance on calculating conversion
                 exchangeContract = self.web3.eth.contract(address = exchangeAddress, abi = exchangeABI)
                 tokenAddress = exchangeContract.functions.tokenAddress().call()
                 tokenContract = self.web3.eth.contract(address = tokenAddress, abi = tokenABI)
@@ -123,13 +128,22 @@ class Command(BaseCommand):
                         tx_receipt = self.web3.eth.getTransactionReceipt(result)
 
                 print(tx_receipt)
+                if tx_receipt['status'] == 1:
+                        #Post transaction record to database if transaction succeeded
+                        transaction_record = CurrencyConversion.objects.create(transaction_date=now(),from_amount=walletBalance, to_amount=outputAmount,conversion_rate=outputAmount/walletBalance,txid=self.web3.toHex(tx_receipt['transactionHash']),from_token_addr=tokenAddress,from_token_symbol=tokenSymbol,to_token_symbol='ETH')
+                else:
+                        #Email Gitcoin staff if transastion failed
+                        sg = sendgrid.SendGridAPIClient(apikey=settings.SENDGRID_API_KEY)
+                        mail = Mail(Email(settings.CONTACT_EMAIL),'Failed fee conversion', Email('founders@gitcoin.co'),Content('text/plain', tokenSymbol+' conversion to ETH failed'))
+                        response = sg.client.mail.send.post(request_body=mail.get())
 
+                        
 
         def handle(self, **options):
                 """ Main management command function
                 
                 Returns: 
-                  tokenList: Dict containing all ERC-20 tokens held by the FEE_ADDRESS and the balances before any ETH conversions
+                        tokenList: Dict containing all ERC-20 tokens held by the FEE_ADDRESS and their balances
                 """
                 if "rinkeby" in settings.WEB3_HTTP_PROVIDER:
                         self.network = 'rinkeby'
@@ -154,7 +168,8 @@ class Command(BaseCommand):
                 # Loop through all tokens and swap to ETH
                 for address, details in self.tokenList.items():
                         print(details['exchangeAddress'])
-                        self.sell_token(details['exchangeAddress'])
+                        self.sell_token(details['exchangeAddress'],details['tokenSymbol'])
+                        
                 if self.network == 'rinkeby':
                         return self.tokenList['0xda5b056cfb861282b4b59d29c9b395bcc238d29b']['tokenSymbol']
                 else:
