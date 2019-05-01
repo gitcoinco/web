@@ -1,6 +1,7 @@
 import argparse
 import json
 import time
+from datetime import datetime
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
@@ -8,6 +9,8 @@ from django.core.management.base import BaseCommand, CommandError
 import requests
 from web3 import Web3
 from web3.middleware import geth_poa_middleware
+
+from feeswapper.models import CurrencyConversion
 
 # Amount of slippage from target Ether price from estimated price on exchange allowed when trading tokens back to ETH
 SLIPPAGE = 0.05  
@@ -123,7 +126,10 @@ class Command(BaseCommand):
                         tx_receipt = self.web3.eth.getTransactionReceipt(result)
 
                 print(tx_receipt)
+                if tx_receipt['status'] == 1:
+                        transaction_record = CurrencyConversion.objects.create(transaction_date=datetime.now(),from_amount=walletBalance, to_amount=outputAmount,conversion_rate=outputAmount/walletBalance,txid=self.web3.toHex(tx_receipt['transactionHash']),from_token_addr=tokenAddress,from_token_symbol='BAT',to_token_symbol='ETH')
 
+                
 
         def handle(self, **options):
                 """ Main management command function
@@ -155,6 +161,7 @@ class Command(BaseCommand):
                 for address, details in self.tokenList.items():
                         print(details['exchangeAddress'])
                         self.sell_token(details['exchangeAddress'])
+                        #transaction_record = CurrencyConversion.objects.create(from_amount=2, to_amount=1.1,conversion_rate=3/4,txid='0x1234',from_token_addr=details['exchangeAddress'],from_token_symbol='BAT',to_token_symbol='ETH')
                 if self.network == 'rinkeby':
                         return self.tokenList['0xda5b056cfb861282b4b59d29c9b395bcc238d29b']['tokenSymbol']
                 else:
