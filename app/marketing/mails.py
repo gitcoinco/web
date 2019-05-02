@@ -38,7 +38,7 @@ from retail.emails import (
     render_new_supporter_email, render_new_work_submission, render_notify_ownership_change,
     render_nth_day_email_campaign, render_quarterly_stats, render_reserved_issue, render_share_bounty,
     render_start_work_applicant_about_to_expire, render_start_work_applicant_expired, render_start_work_approved,
-    render_start_work_new_applicant, render_start_work_rejected, render_subscription_terminated_email,
+    render_start_work_new_applicant, render_start_work_rejected, render_bounty_worker_rejected_with_reason, render_subscription_terminated_email,
     render_successful_contribution_email, render_support_cancellation_email, render_thank_you_for_supporting_email,
     render_tip_email, render_unread_notification_email_weekly_roundup, render_weekly_recap,
 )
@@ -1023,6 +1023,23 @@ def start_work_approved(interest, bounty):
     finally:
         translation.activate(cur_language)
 
+def bounty_worker_rejected_with_reason(interest, reason, bounty):
+    from_email = settings.CONTACT_EMAIL
+    to_email = interest.profile.emails
+    if not to_email:
+        if interest.profile and interest.profile.user:
+            to_email = interest.profile.user.email
+    if not to_email:
+        return
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        html, text, subject = render_bounty_worker_rejected_with_reason(interest, reason, bounty)
+
+        if not should_suppress_notification_email(to_email, 'bounty'):
+            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+    finally:
+        translation.activate(cur_language)
 
 def start_work_rejected(interest, bounty):
     from_email = settings.CONTACT_EMAIL

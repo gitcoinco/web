@@ -865,6 +865,20 @@ def render_start_work_approved(interest, bounty):
 
     return response_html, response_txt, subject
 
+def render_bounty_worker_rejected_with_reason(interest, reason, bounty):
+    to_email = interest.profile.email
+    params = {
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'interest': interest,
+        'bounty': bounty,
+        'reason': reason,
+        'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
+    }
+    subject = "Application Rejected"
+    response_html = premailer_transform(render_to_string("emails/bounty_worker_rejected_with_reason.html", params))
+    response_txt = render_to_string("emails/bounty_worker_rejected_with_reason.txt", params)
+
+    return response_html, response_txt, subject
 
 def render_start_work_rejected(interest, bounty):
     to_email = interest.profile.email
@@ -1320,6 +1334,14 @@ def start_work_rejected(request):
     response_html, _, _ = render_start_work_rejected(interest, bounty)
     return HttpResponse(response_html)
 
+@staff_member_required
+def bounty_worker_rejected_with_reason(request):
+    from dashboard.models import Interest, Bounty
+    interest = Interest.objects.last()
+    bounty = Bounty.objects.last()
+    reason = request.POST.get('reason')
+    response_html, _, _ = render_bounty_worker_rejected_with_reason(interest, reason, bounty)
+    return HttpResponse(response_html)
 
 @staff_member_required
 def start_work_new_applicant(request):

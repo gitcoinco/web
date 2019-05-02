@@ -1,0 +1,235 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<!DOCTYPE html>
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="x-apple-disable-message-reformatting" />
+<head>
+</head>
+
+<style>
+  body {
+    margin: 0px;
+    padding: 0px;
+  }
+
+  h1, h2, h3, h4, h5, h6,
+  .h1, .h2, .h3, .h4, .h5, .h6 {
+    text-transform: capitalize;
+    font-weight: lighter;
+  }
+
+  h3 {
+    line-height: 30px;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  h2 {
+    font-size: 1.6rem;
+  }
+
+  h3 {
+    font-size: 1.3rem;
+  }
+
+  h4 {
+    font-size: 1.1rem;
+  }
+
+  h4, .h4 {
+    text-align: center;
+    padding-top: 40px;
+  }
+
+  a.button{
+    color: #fff;
+    background-color: #15003e;
+    border-radius: 5px;
+    padding: 15px 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  #logo {
+    vertical-align: middle;
+    display: inline-block;
+    max-height: 120px;
+    max-width: 100%;
+  }
+
+  #grow-oss {
+    display: inline-block;
+    max-width: 100%;
+  }
+
+  #header {
+    height: 200px;
+  }
+
+  #header, #footer {
+    color: white;
+    background-color: #15003e;
+    align-content: center;
+    text-align: center;
+    padding: 2em;
+  }
+
+  #footer p, #footer a{
+    color: #ccc;
+  }
+
+  #copyright, #legal-contact {
+    padding-top: 0.5em;
+  }
+
+  a {
+    color: #70b2ff;
+    text-decoration: none;
+  }
+
+  p,
+  a,
+  ul,
+  ol,
+  li {
+    font-size: 15px;
+  }
+
+  .centered-contents {
+    text-align: center;
+  }
+
+  .primary-content {
+    margin: 0 15em;
+    padding: 5em;
+    background-color: #ffffff;
+  }
+
+  .roundup {
+    margin: 5em 5em 5em 7em;
+    border-bottom: 1px solid #D8D8D8;
+  }
+
+  @media screen and (min-width: 35.5em) {
+    .social-img {
+      max-height: 50px;
+      max-width: 50px;
+    }
+
+    .primary-content {
+      margin-left: 20%;
+      margin-right: 20%;
+    }
+  }
+
+  @media screen and (max-width: 35.5em) {
+    .social-img {
+      max-height: 45px;
+      max-width: 45px;
+    }
+  }
+
+  @media screen and (min-width: 48em) {
+    .primary-content {
+      margin-left: 10%;
+      margin-right: 10%;
+    }
+  }
+
+  @media screen and (max-width: 48em) {
+    .primary-content {
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+  .flex {
+      display: flex;
+      justify-content: center;
+  }
+
+  hr {
+      max-width: 400px;
+  }
+</style>
+
+<body class="g-font-muli">
+    <div style="background-color: #F2F6F9 !important;">
+        <div class="primary-content centered-contents">
+            <div style="margin-top: 80px">
+                <img src="{% static "v2/images/emails/email-notification-bell.png" %}" width="95" height="95" style="text-align: center;" alt="Bounty Worker Rejected With Reason" id="bounty_worker_rejected_with_reason">
+                <p style="text-align: center;">{% trans "Thank you for your application"%}</p>
+                <hr style="text-align: center; width: 300px;"/>
+              </div>
+            <div style="margin-top: 40px;">
+                <img src="{% static "v2/images/helmet_emoji.png" %}" width="95" height="95" style="text-align: center" alt="Bounty Worker Rejected With Reason" id="bounty_worker_rejected_with_reason">
+                <p style="text-align: center;">Add Ability To Select A Contributor Via Autocomplete To Tip</p>
+                <hr style="text-align: center; width: 300px;" />
+            </div>
+            <div>
+              <p style="text-align: center;">{% trans "Unfortunately, you have not been selected for this ticket."%}</p>
+              <p style="text-align: center;"><strong>{% trans "Reason:"%} You did not meet the desired qualifications.</strong></p>
+              <p style="text-align: center;">{% trans "In some cases, the funder might need additional help on this ticket, so be on the lookout for potentially being selected down the road!"%}</p>
+              <p style="text-align: center;">{% trans "Meanwhile, the "%}<a href="{% url "explorer" %}">{% trans "Issue Explorer" %} {% trans "has lots of exciting issues you can work on.%}</a></p>
+              <p style="text-align: center;">{% trans "Why not check it out? 😉"%}</p>
+              <div style="margin-bottom: 2em; text-align: center;">
+                  <a class="button" href="{% url "explorer" %}">{% trans "View Issue Explorer" %}</a>
+                </div>
+              <hr />
+            </div>
+            <div>
+              <p style="text-align: center;">{% trans "P.S. Interested in working on an open source issue that’s not yet funded?"%}</p>
+              <p style="text-align: center;">{% trans "Make a %}<a href="#">{% trans "Gitcoin Request"%}</a></p>
+            </div>
+            <img src="{% static "v2/images/grow_os.png" %}" width="95" height="95" style="text-align: center;" alt="Bounty Worker Rejected With Reason" id="bounty_worker_rejected_with_reason">
+        </div>
+    </div>
+
+  <div id="footer" class="centered-contents">
+    <div>
+      <a href="https://www.twitter.com/gitcoin"><img class="social-img" src="{% static "v2/images/social/twitter_new.png" %}"></a>
+
+      <a href="https://www.medium.com/gitcoin"><img class="social-img" src="{% static "v2/images/social/medium_new.png" %}"></a>
+
+      <a href="https://www.facebook.com/GetGitcoin"><img class="social-img" src="{% static "v2/images/social/facebook_new.png" %}"></a>
+
+      <a href="https://reddit.com/r/gitcoincommunity"><img class="social-img" src="{% static "v2/images/social/reddit_new.png" %}"></a>
+
+      <a href="{% url 'slack' %}"><img class="social-img" src="{% static "v2/images/social/slack_new.png" %}"></a>
+    </div>
+    <div>
+      <div id="copyright">
+        <p>
+          <span>&copy; {% now "Y" %} Gitcoin Core, Inc. {% trans "All rights reserved." %}</span>
+        </p>
+      </div>
+      <div id="legal-contact">
+        <p>
+          {% trans "Want to change how you receive these emails?" %}
+          <br>
+          {% trans "You can update your" %} <a href="{% url "email_settings" subscriber.priv %}">{% trans "preferences" %}</a> {% trans "or" %} <a href="{% url "email_settings" subscriber.priv %}">{% trans "unsubscribe" %}</a> {% trans "from this list." %}
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -456,6 +456,9 @@ urlpatterns = [
         r'^_administration/email/start_work_rejected$', retail.emails.start_work_rejected, name='start_work_rejected'
     ),
     re_path(
+        r'^_administration/email/bounty_worker_rejected_with_reason$', retail.emails.bounty_worker_rejected_with_reason, name='bounty_worker_rejected_with_reason'
+    ),
+    re_path(
         r'^_administration/email/start_work_new_applicant$',
         retail.emails.start_work_new_applicant,
         name='start_work_new_applicant'
