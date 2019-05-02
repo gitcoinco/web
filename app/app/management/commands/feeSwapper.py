@@ -1,17 +1,17 @@
 import argparse
 import json
 import time
-from django.utils.timezone import now
-import sendgrid
-from sendgrid.helpers.mail import Content, Email, Mail
+
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
+from django.utils.timezone import now
 
 import requests
+import sendgrid
+from feeswapper.models import CurrencyConversion
+from sendgrid.helpers.mail import Content, Email, Mail
 from web3 import Web3
 from web3.middleware import geth_poa_middleware
-
-from feeswapper.models import CurrencyConversion
 
 # Amount of slippage from target Ether price from estimated price on exchange allowed when trading tokens back to ETH
 SLIPPAGE = 0.05  
