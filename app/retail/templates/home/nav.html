@@ -33,7 +33,7 @@
       <div class="nav-item dropdown interior">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          {% trans "Our Products" %}
+          {% trans "Products" %}
         </a>
         <div class="dropdown-menu dropdown-menu-right" id="why-gitcoin" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="{% url "funder_bounties" %}">
@@ -61,14 +61,14 @@
       <div class="nav-item dropdown interior">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          {% trans "Our Mission" %}
+          {% trans "Network" %}
         </a>
         <div class="dropdown-menu dropdown-menu-right" id="how-it-works" aria-labelledby="navbarDropdownHow">
           <a class="dropdown-item" href="{% url "vision" %}">
             {% trans "Vision" %}
           </a>
           <a class="dropdown-item" href="{% url "mission" %}">
-            {% trans "Values" %}
+            {% trans "Mission" %}
           </a>
           <a class="dropdown-item" href="{% url "results" %}">
             {% trans "Results" %}
@@ -82,6 +82,9 @@
           {% trans "Company" %}
         </a>
         <div class="dropdown-menu dropdown-menu-right" id="how-it-works" aria-labelledby="navbarDropdownHow">
+          <a class="dropdown-item" href="{% url "about" %}">
+            {% trans "About" %}
+          </a>
           <a class="dropdown-item" href="{% url "about" %}#team">
             {% trans "Team" %}
           </a>
@@ -90,6 +93,9 @@
           </a>
           <a class="dropdown-item" href="{% url "not_a_token" %}">
             {% trans "No Token" %}
+          </a>
+          <a class="dropdown-item" href="{% url "jobs" %}">
+            {% trans "Jobs" %}
           </a>
         </div>
       </div>
