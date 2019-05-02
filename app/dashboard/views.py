@@ -31,7 +31,7 @@ from django.contrib.auth.models import User
 from django.core import serializers
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
-from django.db.models import Count, Q
+from django.db.models import Avg, Count, Q
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template import loader
@@ -761,10 +761,11 @@ def users_fetch(request):
     order_by = request.GET.get('order_by', '-actions_count')
     bounties_completed = request.GET.get('bounties_completed', '').strip().split(',')
     leaderboard_rank = request.GET.get('leaderboard_rank', '').strip().split(',')
+    rating = int(request.GET.get('rating', '0'))
 
     context = {}
 
-    user_list = Profile.objects.prefetch_related('fulfilled', 'leaderboard_ranks').order_by(order_by)
+    user_list = Profile.objects.prefetch_related('fulfilled', 'leaderboard_ranks', 'feedbacks_got').order_by(order_by)
 
     if q:
         user_list = user_list.filter(Q(handle__icontains=q) | Q(keywords__icontains=q))
@@ -785,6 +786,13 @@ def users_fetch(request):
             leaderboard_ranks__leaderboard='quarterly_earners',
             leaderboard_ranks__rank__gte=leaderboard_rank[0],
             leaderboard_ranks__rank__lte=leaderboard_rank[1],
+        )
+
+    if rating != 0:
+        user_list = user_list.annotate(
+            average_rating=Avg('feedbacks_got__rating')
+        ).filter(
+            average_rating__gte=rating
         )
 
     params = dict()
