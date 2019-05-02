@@ -48,7 +48,7 @@ from django.views.decorators.http import require_GET, require_POST
 
 from app.utils import clean_str, ellipses, get_default_network
 from avatar.utils import get_avatar_context_for_user
-from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, profile_helper, get_fee_for_request
+from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, get_fee_for_request, profile_helper
 from economy.utils import convert_token_to_usdt
 from eth_utils import to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
