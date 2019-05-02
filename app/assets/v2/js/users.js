@@ -10,6 +10,9 @@ Vue.mixin({
     fetchUsers: function(newPage) {
       let vm = this;
 
+      vm.isLoading = true;
+      vm.noResults = false;
+
       if (newPage) {
         vm.usersPage = newPage;
       }
@@ -20,6 +23,7 @@ Vue.mixin({
       } else {
         delete vm.params['search'];
       }
+
       let searchParams = new URLSearchParams(vm.params);
 
       let apiUrlUsers = `/api/v0.1/users_fetch/?${searchParams.toString()}`;
@@ -42,6 +46,13 @@ Vue.mixin({
         } else {
           vm.usersPage = 1;
         }
+
+        if (vm.users.length) {
+          vm.noResults = false;
+        } else {
+          vm.noResults = true;
+        }
+        vm.isLoading = false;
       });
     },
     searchUsers: function() {
@@ -140,10 +151,20 @@ if (document.getElementById('gc-users-directory')) {
       funderBounties: [],
       bountySelected: null,
       userSelected: [],
-      showModal: false
+      showModal: false,
+      showFilters: true,
+      skills: document.keywords,
+      selectedSkills: [],
+      noResults: false,
+      isLoading: true
     },
     mounted() {
       this.fetchUsers();
+      this.$watch('params', function(newVal, oldVal) {
+        this.searchUsers();
+      }, {
+        deep: true
+      });
     },
     created() {
       this.fetchBounties();
@@ -161,23 +182,3 @@ if (document.getElementById('gc-users-directory')) {
   });
 }
 
-Vue.component('modal', {
-  props: [ 'user', 'size' ],
-  template: '#modal-template',
-  data() {
-    return {
-      jqEl: null
-    };
-  },
-  mounted() {
-    let vm = this;
-
-    vm.jqEl = $(this.$el);
-  },
-  methods: {
-    closeModal() {
-      this.jqEl.bootstrapModal('hide');
-    }
-  }
-
-});
