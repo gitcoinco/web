@@ -43,7 +43,7 @@ For example, if `settings.GITHUB_API_USER == gitcoinco` only `github.com/gitcoin
 1. Create a new SendGrid Account at https://sendgrid.com
 2. Go to [https://app.sendgrid.com/settings/api_keys](https://app.sendgrid.com/settings/api_keys) and create a new Sendgrid API key:
 
-Update the `web/app/app/.env` file to include the values provided by Github:
+Update the `web/app/app/.env` file to include the values provided by SendGrid:
 
 ```shell
 SENDGRID_API_KEY=xxx
