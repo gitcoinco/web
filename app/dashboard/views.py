@@ -764,6 +764,10 @@ def users_fetch(request):
     rating = int(request.GET.get('rating', '0'))
 
     context = {}
+    if not settings.DEBUG:
+        network = 'mainnet'
+    else:
+        network = 'rinkeby'
 
     user_list = Profile.objects.prefetch_related('fulfilled', 'leaderboard_ranks', 'feedbacks_got').order_by(order_by)
 
@@ -774,10 +778,11 @@ def users_fetch(request):
         user_list = user_list.filter(keywords__icontains=skills)
 
     if len(bounties_completed) == 2:
-        user_list = user_list.annotate(count=Count('fulfilled')) \
-            .filter(
+        user_list = user_list.annotate(
+                count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network))
+            ).filter(
                 count__gte=bounties_completed[0],
-                count__lte=bounties_completed[1]
+                count__lte=bounties_completed[1],
             )
 
     if len(leaderboard_rank) == 2:
@@ -790,7 +795,7 @@ def users_fetch(request):
 
     if rating != 0:
         user_list = user_list.annotate(
-            average_rating=Avg('feedbacks_got__rating')
+            average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
         ).filter(
             average_rating__gte=rating
         )
