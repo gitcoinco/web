@@ -130,7 +130,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('grants', '0006_grant_request_ownership_change'),
-        ('grants', '0016_grant_is_paid_plan'),
+        ('grants', '0020_grant_is_paid_plan'),
         ('revenue', '0001_initial'),
     ]
 
