@@ -138,6 +138,7 @@ img.play {
   text-align: left;
   padding: 1rem 1.8rem;
   margin-bottom: 1.9rem;
+  max-width: 100%;
 }
 
 .button__home i {
