@@ -72,6 +72,12 @@ h4,
   position: relative;
 }
 
+.minihero__title{
+  font-weight: var(--fw-light);
+  font-size: var(--fs-title-xl);
+  color: var(--gc-green);
+}
+
 .header.dash {
   overflow: visible;
 }
@@ -131,27 +137,27 @@ h4,
 }
 
 .font-title-xl {
-  font-size: 1.8rem;
+  font-size: var(--fs-title-xl);
 }
 
 .font-title-lg {
-  font-size: 22px;
+  font-size: var(--fs-title-lg);
 }
 
 .font-title {
-  font-size: 1.25rem;
+  font-size: var(--fs-title);
 }
 
 .font-header {
-  font-size: 1.125rem;
+  font-size: var(--fs-header);
 }
 
 .font-subheader {
-  font-size: 1rem;
+  font-size: var(--fs-subheader);
 }
 
 .font-body {
-  font-size: 0.875rem;
+  font-size: var(--fs-body);
 }
 
 .font-caption {
@@ -353,7 +359,7 @@ div.button-pink {
 }
 
 .dash-filter-label {
-  font-weight: 300;
+  font-weight: var(--fw-light);
   font-size: 0.9rem;
   letter-spacing: 0.1em;
 }
@@ -364,22 +370,16 @@ div.button-pink {
   background-size: contain;
   background-position: bottom;
   background-repeat: no-repeat;
-  max-width: 1000px;
-  margin: 0 auto;
-  min-height: 300px;
+  min-height: 520px;
 }
 
-.footer__top {
-  max-width: 1000px;
-  margin: 0 auto;
+.footer__text,
+.footer__text a {
+  color: white;
 }
 
-.footer__social .nav-link {
-  margin-bottom: 1rem;
-}
-
-.footer .navbar-brand {
-  flex-grow: 1;
+.footer__text a {
+  text-decoration: underline;
 }
 
 .footer {
@@ -462,7 +462,7 @@ div.button-pink {
   border: 1px solid #eee;
   outline: none;
   padding-left: 10px;
-  font-weight: 300;
+  font-weight: var(--fw-light);
 }
 
 .gc-border-black {
@@ -487,7 +487,7 @@ div.button-pink {
   border: 1px solid #eee;
   outline: none;
   padding-left: 10px;
-  font-weight: 300;
+  font-weight: var(--fw-light);
 }
 
 .dash-link {

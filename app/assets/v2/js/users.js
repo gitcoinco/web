@@ -3,11 +3,15 @@ let usersPage = 1;
 let usersNumPages = '';
 let usersHasNext = false;
 let numUsers = '';
+// let funderBounties = [];
 
 Vue.mixin({
   methods: {
     fetchUsers: function(newPage) {
-      var vm = this;
+      let vm = this;
+
+      vm.isLoading = true;
+      vm.noResults = false;
 
       if (newPage) {
         vm.usersPage = newPage;
@@ -19,14 +23,15 @@ Vue.mixin({
       } else {
         delete vm.params['search'];
       }
+
       let searchParams = new URLSearchParams(vm.params);
-      
+
       let apiUrlUsers = `/api/v0.1/users_fetch/?${searchParams.toString()}`;
 
       var getUsers = fetchData (apiUrlUsers, 'GET');
 
       $.when(getUsers).then(function(response) {
-      
+
         response.data.forEach(function(item) {
           vm.users.push(item);
         });
@@ -41,17 +46,25 @@ Vue.mixin({
         } else {
           vm.usersPage = 1;
         }
+
+        if (vm.users.length) {
+          vm.noResults = false;
+        } else {
+          vm.noResults = true;
+        }
+        vm.isLoading = false;
       });
     },
     searchUsers: function() {
-      vm = this;
+      let vm = this;
+
       vm.users = [];
 
       vm.fetchUsers(1);
 
     },
     bottomVisible: function() {
-      vm = this;
+      let vm = this;
 
       const scrollY = window.scrollY;
       const visible = document.documentElement.clientHeight;
@@ -64,6 +77,58 @@ Vue.mixin({
           vm.usersHasNext = false;
         }
       }
+    },
+    fetchBounties: function() {
+      let vm = this;
+
+      // fetch bounties
+      let apiUrlBounties = '/api/v0.1/user_bounties/';
+
+      let getBounties = fetchData(apiUrlBounties, 'GET');
+
+      $.when(getBounties).then((response) => {
+        // response.data.forEach(function(item) {
+        //   console.log(item)
+        // });
+        vm.funderBounties = response.data;
+        console.log(vm.funderBounties);
+      });
+
+    },
+    openBounties: function(user) {
+      let vm = this;
+
+      console.log(user);
+      vm.userSelected = user;
+      vm.showModal = true;
+
+    },
+    sendInvite: function(bounty, user) {
+      let vm = this;
+
+      console.log(vm.bountySelected, bounty, user, csrftoken);
+      let apiUrlInvite = '/api/v0.1/social_contribution_email/';
+      let postInvite = fetchData(
+        apiUrlInvite,
+        'POST',
+        { 'url': bounty.github_url, 'usersId': [user], 'bountyId': bounty.id},
+        {'X-CSRFToken': csrftoken}
+      );
+
+      $.when(postInvite).then((response) => {
+        console.log(response);
+        if (response.status === 500) {
+          _alert(response.msg, 'error');
+
+        } else {
+          vm.$refs['user-modal'].closeModal();
+          _alert('The invitation has been sent', 'info');
+        }
+      });
+
+    },
+    closeModal() {
+      this.$refs['user-modal'].closeModal();
     }
   }
 
@@ -82,10 +147,27 @@ if (document.getElementById('gc-users-directory')) {
       media_url,
       searchTerm: null,
       bottom: false,
-      params: {}
+      params: {},
+      funderBounties: [],
+      bountySelected: null,
+      userSelected: [],
+      showModal: false,
+      showFilters: true,
+      skills: document.keywords,
+      selectedSkills: [],
+      noResults: false,
+      isLoading: true
     },
     mounted() {
       this.fetchUsers();
+      this.$watch('params', function(newVal, oldVal) {
+        this.searchUsers();
+      }, {
+        deep: true
+      });
+    },
+    created() {
+      this.fetchBounties();
     },
     beforeMount() {
       window.addEventListener('scroll', () => {
@@ -99,3 +181,4 @@ if (document.getElementById('gc-users-directory')) {
     }
   });
 }
+

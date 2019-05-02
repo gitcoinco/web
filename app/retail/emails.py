@@ -74,7 +74,7 @@ def render_featured_funded_bounty(bounty):
     params = {'bounty': bounty}
     response_html = premailer_transform(render_to_string("emails/funded_featured_bounty.html", params))
     response_txt = render_to_string("emails/funded_featured_bounty.txt", params)
-    subject = _("You've successfully funded a bounty!")
+    subject = _("Your bounty is now live on Gitcoin!")
 
     return response_html, response_txt, subject
 

@@ -198,7 +198,7 @@ def details(request, kudos_id, name):
         # Create a new attribute to reference number of gen0 clones allowed
         kudos.num_gen0_clones_allowed = token.num_clones_allowed
 
-        context['title'] = kudos.humanized_name
+        context['title'] = kudos.ui_name
         context['card_title'] = kudos.humanized_name
         context['card_desc'] = kudos.description
         context['avatar_url'] = kudos.img_url
