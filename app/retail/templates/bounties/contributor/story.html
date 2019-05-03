@@ -39,14 +39,9 @@
     <div class="col-12 col-md-5 offset-md-2 my-auto mt-4 order-md-2 g-fadein" data-fade-duration=1000 data-fade-direction="right">
       <p>
         There are open issues & bug bounties in our <a href="{% url 'explorer' %}">Issue Explorer</a> for 
-        <a href="{% url 'contributor/python' %}">Python</a>, 
-        <a href="{% url 'contributor/javascript' %}">JavaScript</a>, 
-        <a href="{% url 'contributor/rust' %}">Rust</a>, 
-        <a href="{% url 'contributor/solidity' %}">Solidity</a>,
-        <a href="{% url 'contributor/design' %}">Design</a>,
-        <a href="{% url 'contributor/html' %}">HTML</a>, 
-        <a href="{% url 'contributor/ruby' %}">Ruby</a>,
-        <a href="{% url 'contributor/css' %}">CSS</a>,
+        {% for subject in contributor_list %}
+          <a href="{% url 'contributor_bounties' tech_stack=subject.link %}">{{subject.text}}</a>, 
+        {% endfor %}
           and much more.
       </p>
     </div>
