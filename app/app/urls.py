@@ -237,6 +237,7 @@ urlpatterns = [
     re_path(r'^legal/prirp/?', dashboard.views.prirp, name='prirp'),
     re_path(r'^legal/apitos/?', dashboard.views.apitos, name='apitos'),
     re_path(r'^legal/?', dashboard.views.terms, name='legal'),
+    re_path(r'^users/?', dashboard.views.users_directory, name='users_directory'),
 
     # Alpha functionality
     re_path(r'^profile/(.*)?', dashboard.views.profile, name='profile'),
@@ -553,7 +554,6 @@ urlpatterns = [
     re_path(r'', include(wagtail_urls)),
 
     # users
-    path('users', dashboard.views.users_directory, name='users_directory'),
     url(r'^api/v0.1/user_bounties/', dashboard.views.get_user_bounties, name='get_user_bounties'),
     url(r'^api/v0.1/users_fetch/', dashboard.views.users_fetch, name='users_fetch'),
 
