@@ -55,7 +55,7 @@ from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_auth_url, get_github_user_data, is_github_token_valid, search_users
 from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
-from marketing.mails import admin_contact_funder, bounty_uninterested
+from marketing.mails import admin_contact_funder, bounty_uninterested, bounty_worker_rejected_with_reason
 from marketing.mails import funder_payout_reminder as funder_payout_reminder_mail
 from marketing.mails import new_reserved_issue, start_work_approved, start_work_new_applicant, start_work_rejected
 from marketing.models import Keyword
@@ -1438,6 +1438,7 @@ def helper_handle_approvals(request, bounty):
     mutate_worker_action = request.GET.get('mutate_worker_action', None)
     mutate_worker_action_past_tense = 'approved' if mutate_worker_action == 'approve' else 'rejected'
     worker = request.GET.get('worker', None)
+    reason = request.POST.get('reason', None)
 
     if mutate_worker_action:
         if not request.user.is_authenticated:
@@ -1474,6 +1475,7 @@ def helper_handle_approvals(request, bounty):
                 record_bounty_activity(bounty, request.user, 'worker_approved', interest)
             else:
                 start_work_rejected(interest, bounty)
+                bounty_worker_rejected_with_reason(interest, reason, bounty)
 
                 record_bounty_activity(bounty, request.user, 'worker_rejected', interest)
                 bounty.interested.remove(interest)
@@ -1594,13 +1596,13 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 if bounty.event:
                     params['event_tag'] = bounty.event.slug
 
-                helper_handle_snooze(request, bounty)
+                # helper_handle_snooze(request, bounty)
                 helper_handle_approvals(request, bounty)
-                helper_handle_admin_override_and_hide(request, bounty)
-                helper_handle_suspend_auto_approval(request, bounty)
-                helper_handle_mark_as_remarket_ready(request, bounty)
-                helper_handle_admin_contact_funder(request, bounty)
-                helper_handle_override_status(request, bounty)
+                # helper_handle_admin_override_and_hide(request, bounty)
+                # helper_handle_suspend_auto_approval(request, bounty)
+                # helper_handle_mark_as_remarket_ready(request, bounty)
+                # helper_handle_admin_contact_funder(request, bounty)
+                # helper_handle_override_status(request, bounty)
         except Bounty.DoesNotExist:
             pass
         except Exception as e:
