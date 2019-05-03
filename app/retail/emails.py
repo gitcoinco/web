@@ -933,7 +933,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Developers, Ads, and Kudos"
+    subject = "Developers, Ads, and Kudos, Oh My!"
     new_kudos_pks = [2617, 2555, 2623]
     new_kudos_size_px = 150
 
@@ -955,7 +955,10 @@ for bounties. We're excited to announce winners at Ethereal, soon.
 <p>
 During the event, we relied upon on Kudos, Codefund Ads, and the Gitcoin users to drive engagement. We built <a href="https://github.com/gitcoinco/kudosbadges/issues/new">custom Kudos</a> for each sponsor, showing unique appreciation via a piece of art made specifically for sponsors and developers.
 We ran <a href="https://codefund.app/advertisers/">CodeFund Ads</a> on Etherscan, driving great engagement to our discord. Lastly, Gitcoin is a place for developers, already. We're grateful
-for those who saw prizes, and simply started working as usual. Reach out if you'd like to discuss running a hackathon with us in the future!
+to everyone who participated. Reply to this email if you'd like to discuss running a hackathon with us in the future!
+</p>
+<p>
+So what got BUIDLt?  Winners will be announced next week, in the meantime, <a href=https://github.com/gitcoinco/skunkworks/blob/master/etherealhackathon2019.md>click here</a> to see a list of all entries to the hackathon!
 </p>
 
 {kudos_friday}
