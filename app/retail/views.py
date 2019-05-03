@@ -548,6 +548,9 @@ def contributor_bounties(request, tech_stack):
         'projects': projects,
     }
 
+    if tech_stack == 'new':
+        return redirect('new_funding_short')
+
     try:
         new_context = JSONStore.objects.get(view='contributor_landing_page', key=tech_stack).data
 
