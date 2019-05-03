@@ -14,3 +14,4 @@ class CurrencyConversion(models.Model):
     from_token_addr = models.CharField(max_length=100, db_index=True)
     to_token_symbol = models.CharField(max_length=10, db_index=True)
     from_token_symbol =  models.CharField(max_length=10, db_index=True)
+    transaction_result = models.CharField(max_length=10, default='success')
