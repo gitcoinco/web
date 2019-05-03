@@ -79,3 +79,4 @@ watchtower==0.5.4
 Wand==0.4.4
 raven==6.9.0
 sentry-sdk
+websocket-client
