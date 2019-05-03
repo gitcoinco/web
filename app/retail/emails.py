@@ -933,12 +933,12 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Etherscan + Codefund | Ethereal Hackathon's Finalé"
-    new_kudos_pks = [2240, 2243, 2242]
+    subject = "Developers, Ads, and Kudos"
+    new_kudos_pks = [2617, 2555, 2623]
     new_kudos_size_px = 150
 
     kudos_friday = f'''
-<h3>Happy Kudos Friday!</h3>
+<h3>Happy Kudos Friday from our Ethereal Hackathon sponsors!</h3>
 </p>
 <p>
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
@@ -949,23 +949,23 @@ def render_new_bounty_roundup(to_email):
 Hi Gitcoiners,
 </p>
 <p>
-This week, we announced <a href="https://medium.com/gitcoin/codefund-ads-on-etherscan-fae1a3d35b51">a huge partnership with Etherscan.</a> We're excited to lead the charge in bringing
-ethical ads to the ecosystem. Get in touch if you'd like to post (ethical) ads on one of the most well respected projects in crypto.
+This week, we wrapped up the <a href="https://gitcoin.co/hackathon/ethereal-virtual-hackathon/">Ethereal Virtual Hackathon</a>. We had 600 hackers in our Discord, $65K in prizes, and ultimately received over 80 submissions
+for bounties. We're excited to announce winners at Ethereal, soon.
 </p>
 <p>
-The Ethereal Hackathon is nearing the finish line. 500 hackers, $65K in prizes, and over 50 prizes and bounties to win. <a href="https://gitcoin.co/hackathon/ethhack2019/">Check out the prizes</a>
-and submit work on something interesting.
+During the event, we relied upon on Kudos, Codefund Ads, and the Gitcoin users to drive engagement. We built <a href="https://github.com/gitcoinco/kudosbadges/issues/new">custom Kudos</a> for each sponsor, showing unique appreciation via a piece of art made specifically for sponsors and developers.
+We ran <a href="https://codefund.app/advertisers/">CodeFund Ads</a> on Etherscan, driving great engagement to our discord. Lastly, Gitcoin is a place for developers, already. We're grateful
+for those who saw prizes, and simply started working as usual. Reach out if you'd like to discuss running a hackathon with us in the future!
 </p>
 
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Our <a href="https://medium.com/gitcoin/ethereal-virtual-hackathon-introduction-and-sponsor-profiles-5be917be4544">Ethereal Sponsors are awesome.</a> Get to know them and learn about
-            blockchain projects building from infrastructure to enterprise and everything in between.
+            Check out our new <a href="https://gitcoin.co/users/">Gitcoin user directory</a> and invite great Gitcoiners to work with you today.
         </li>
         <li>
-            Gitcoin Livestream is back this week with Status Embark and others from the Ethereal hackathon! Join us <a href="https://gitcoin.co/livestream"> at a new time, 2PM ET, or catch it on <a href="https://twitter.com/gitcoin">Twitter</a>!
+            Gitcoin Livestream is back this week with Pia Mancini, CEO of Open Collective. Join us <a href="https://gitcoin.co/livestream"> at a new time, 2PM ET, or catch it on <a href="https://twitter.com/gitcoin">Twitter</a>!
         </li>
     </ul>
 </p>
@@ -975,34 +975,34 @@ Back to shipping,
 
 '''
     highlights = [{
+        'who': 'georgiemathews',
+        'who_link': True,
+        'what': 'Share kit for Vue.js with Bloom :)',
+        'link': 'https://gitcoin.co/issue/hellobloom/share-kit/42/2910',
+        'link_copy': 'View more',
+    }, {
         'who': 'iamonuwa',
         'who_link': True,
-        'what': 'More great work by Onuwa on Status :)',
+        'what': 'More great work by Onuwa on Status!',
         'link': 'https://gitcoin.co/issue/status-im/discover-dapps/31/2888',
         'link_copy': 'View more',
     }, {
-        'who': 'cspannos',
+        'who': 'devaman',
         'who_link': True,
-        'what': 'Comparison of all Plasma Implementations!',
-        'link': 'https://gitcoin.co/issue/kauri-io/Content/9/2878',
-        'link_copy': 'View more',
-    }, {
-        'who': 'hilmarx',
-        'who_link': True,
-        'what': 'Integrated DutchX into ETHCapetown project. Very cool.',
-        'link': 'https://gitcoin.co/issue/GnosisEcosystemFund/Gnosis-Bounties-/16/2883',
+        'what': 'Work with Pedro on Wallet Connect by devaman.',
+        'link': 'https://gitcoin.co/issue/WalletConnect/web3connect/12/2921',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/katiejohnson/Labs_Relay/issues/1',
-        'primer': 'Interested in building richer financial reputation? Great bounty by C Labs!',
+        'url': 'https://github.com/AdExNetwork/adex-protocol-eth/issues/62',
+        'primer': 'Work with AdEx on their protocol prizes for ',
     }, {
-        'url': 'https://github.com/leapdao/meta/issues/95',
-        'primer': 'Plasma Watchtower Bounty! Worth checking out.',
+        'url': 'https://github.com/gitcoinco/skunkworks/issues/104',
+        'primer': 'Want to work on Quorum with JP Morgan on Privacy?',
     }, {
-        'url': 'https://github.com/Azure-Samples/bc-community-samples/issues/18',
-        'primer': 'Tolling Sample for Azure - check it out!',
+        'url': 'https://github.com/smartcontractkit/chainlink/issues/1091',
+        'primer': 'Connect smart contracts to external data!',
     }, ]
 
     num_leadboard_items = 5
