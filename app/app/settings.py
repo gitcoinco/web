@@ -110,8 +110,6 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'bounty_requests',
     'perftools',
-    'taggit',
-    'modelcluster',
     'revenue',
     'event_ethdenver2019',
     'inbox',
@@ -686,5 +684,3 @@ if ENABLE_SILK:
             'name': 'Index View',
         }]
     SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT = env.int('SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT', default=10)
-
-TAGGIT_CASE_INSENSITIVE = env.bool('TAGGIT_CASE_INSENSITIVE', default=True)
