@@ -24,8 +24,7 @@
     <link rel="stylesheet" href="{% static "v2/css/jquery.select2.min.css" %}">
     <link rel="stylesheet" href="{% static "cookielaw/css/cookielaw.css" %}">
 
-    <script src="{% static "v2/js/lib/jquery.js" %}"></script>
-    <script src="{% static "v2/js/metamask-approval.js" %}"></script>
+    <script src="{% static "v2/js/jquery.js" %}"></script>
     <script src="{% static "v2/js/work_with_gitcoin.js" %}"></script>
     <!--[if lte IE 9]><link rel="stylesheet" href="{% static "onepager/css/ie9.css" %}"><![endif]-->
     <!--[if lte IE 8]><link rel="stylesheet" href="{% static "onepager/css/ie8.css" %}"><![endif]-->
@@ -56,14 +55,10 @@
       {% block 'main' %}
       {% endblock %}
       <footer id="footer">
-        <ul class="copyright">
-          <li>
-            <a href="/">&copy; {% trans "Gitcoin.co" %}</a>
-          </li>
-          <li>
-            {% blocktrans %}Made with <3 &amp; bounties by <a href="https://github.com/gitcoinco/web/pull/509" target="_blank" rel="noopener noreferrer" class="pull-request-link">Scottydelta and Gitcoin Core</a>{% endblocktrans %}
-          </li>
-        </ul>
+        <div class="copyright">
+          <a href="/">&copy; {% trans "Gitcoin.co" %}</a>
+            &nbsp;&nbsp;{% blocktrans %} Made with <3 &amp; bounties by <a href="https://github.com/gitcoinco/web/pull/509" target="_blank" rel="noopener noreferrer" class="pull-request-link">Scottydelta and Gitcoin Core</a>{% endblocktrans %}
+        </div>
       </footer>
     </div>
     <!-- Scripts -->
