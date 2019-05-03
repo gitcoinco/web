@@ -518,7 +518,7 @@ dl dd {
   line-height: 1;
 }
 
-.copyright a:first-child {
+.copyright a:nth-of-type(odd) {
   border-right: solid 1px rgba(255, 255, 255, 0.5);
 }
 
@@ -560,6 +560,18 @@ body #main a:not(.button):hover {
   margin: auto;
 }
 
+.alert {
+  position: absolute;
+}
+#footer {
+  position: absolute;
+  background-color: #0D0764;
+  padding: 5px;
+  width: 100vw;
+  left: 0px;
+  text-align: center;
+  bottom: 0px;
+}
 p.alert_msg {
   top: 0px;
   width: 100%;
