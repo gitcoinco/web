@@ -1,22 +1,17 @@
 /* eslint-disable no-console */
 /* eslint-disable nonblock-statement-body-position */
+/* eslint-disable no-lonely-if */
 load_tokens();
 
-/* Check if quickstart page is to be shown */
-var localStorage;
-var quickstartURL = document.location.origin + '/bounty/quickstart';
+var localStorage = window.localStorage ? window.localStorage : {};
+
+const quickstartURL = document.location.origin + '/bounty/quickstart';
 
 const FEE_PERCENTAGE = document.FEE_PERCENTAGE / 100.0;
 
 var new_bounty = {
   last_sync: new Date()
 };
-
-try {
-  localStorage = window.localStorage;
-} catch (e) {
-  localStorage = {};
-}
 
 if (localStorage['quickstart_dontshow'] !== 'true' &&
     doShowQuickstart(document.referrer) &&
@@ -45,7 +40,7 @@ $('.select2-tag__choice').on('click', function() {
 });
 
 const getSuggestions = () => {
-  
+
   const settings = {
     url: `/api/v0.1/get_suggested_contributors?keywords=${$('#keywords').val()}`,
     method: 'GET',
@@ -53,25 +48,25 @@ const getSuggestions = () => {
     dataType: 'json',
     contentType: false
   };
-  
+
   $.ajax(settings).done(function(response) {
     let groups = {
       'contributors': 'Recently worked with you',
       'recommended_developers': 'Recommended based on skills',
       'verified_developers': 'Verified contributors'
     };
-    
+
     let options = Object.entries(response).map(([ text, children ]) => (
       { text: groups[text], children }
     ));
 
     var generalIndex = 0;
-    
+
     processedData = $.map(options, function(obj, index) {
       if (obj.children.length < 1) {
         return;
       }
-      
+
       obj.children.forEach((children, childIndex) => {
         children.text = children.fulfiller_github_username || children.user__profile__handle;
         children.id = generalIndex;
@@ -79,7 +74,7 @@ const getSuggestions = () => {
       });
       return obj;
     });
-    
+
     $('#invite-contributors').select2().empty();
     $('#invite-contributors.js-select2').select2({
       data: processedData,
@@ -237,11 +232,19 @@ $(document).ready(function() {
 
   $('#featuredBounty').on('change', function() {
     if ($(this).prop('checked')) {
-      $('#confirmation').html('3');
+      if (document.FEE_PERCENTAGE == 0)
+        $('#confirmation').html('2');
+      else
+        $('#confirmation').html('3');
+
       $('.feature-amount').show();
     } else {
+      if (document.FEE_PERCENTAGE == 0)
+        $('#confirmation').html('1');
+      else
+        $('#confirmation').html('2');
+
       $('.feature-amount').hide();
-      $('#confirmation').html('2');
     }
     populateBountyTotal();
   });
@@ -593,46 +596,51 @@ $(document).ready(function() {
         const gas_price = web3.toHex($('#gasPrice').val() * Math.pow(10, 9));
 
         indicateMetamaskPopup();
-        if (isETH) {
-          web3.eth.sendTransaction({
-            to: to_address,
-            from: web3.eth.coinbase,
-            value: web3.toWei(fee, 'ether'),
-            gasPrice: gas_price
-          }, function(error, txnId) {
-            indicateMetamaskPopup(true);
-            if (error) {
-              _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
-            } else {
-              ipfsBounty.payload.issuer.address = account;
-              ipfsBounty.payload.fee_tx_id = txnId;
-              ipfsBounty.payload.fee_amount = fee;
-              ipfs.addJson(ipfsBounty, newIpfsCallback);
-              if (typeof ga != 'undefined') {
-                ga('send', 'event', 'new_bounty', 'new_bounty_fee_paid');
-              }
-            }
-          });
+        if (FEE_PERCENTAGE == 0) {
+          deductBountyAmount(fee, '');
         } else {
-          const amountInWei = fee * 1.0 * Math.pow(10, token.decimals);
-          const token_contract = web3.eth.contract(token_abi).at(tokenAddress);
-
-          token_contract.transfer(to_address, amountInWei, { gasPrice: gas_price },
-            function(error, txnId) {
+          if (isETH) {
+            web3.eth.sendTransaction({
+              to: to_address,
+              from: web3.eth.coinbase,
+              value: web3.toWei(fee, 'ether'),
+              gasPrice: gas_price
+            }, function(error, txnId) {
               indicateMetamaskPopup(true);
               if (error) {
                 _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
               } else {
-                ipfsBounty.payload.issuer.address = account;
-                ipfsBounty.payload.fee_tx_id = txnId;
-                ipfsBounty.payload.fee_amount = fee;
-                ipfs.addJson(ipfsBounty, newIpfsCallback);
-                if (typeof ga != 'undefined') {
-                  ga('send', 'event', 'new_bounty', 'new_bounty_fee_paid');
+                deductBountyAmount(fee, txnId);
+              }
+            });
+          } else {
+            const amountInWei = fee * 1.0 * Math.pow(10, token.decimals);
+            const token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+
+            token_contract.transfer(to_address, amountInWei, { gasPrice: gas_price },
+              function(error, txnId) {
+                indicateMetamaskPopup(true);
+                if (error) {
+                  _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
+                } else {
+                  deductBountyAmount(fee, txnId);
                 }
               }
-            }
-          );
+            );
+          }
+        }
+      };
+
+      const deductBountyAmount = function(fee, txnId) {
+        ipfsBounty.payload.issuer.address = account;
+        ipfsBounty.payload.fee_tx_id = txnId;
+        ipfsBounty.payload.fee_amount = fee;
+        ipfs.addJson(ipfsBounty, newIpfsCallback);
+        if (typeof ga != 'undefined') {
+          if (fee == 0)
+            ga('send', 'event', 'new_bounty', 'new_bounty_no_fees');
+          else
+            ga('send', 'event', 'new_bounty', 'new_bounty_fee_paid');
         }
       };
 
@@ -785,7 +793,7 @@ const populateBountyTotal = () => {
     total = `${totalBounty} ${bountyToken}`;
   }
 
-  $('#fee-percentage').html(FEE_PERCENTAGE * 100);
+  $('.fee-percentage').html(FEE_PERCENTAGE * 100);
   $('#fee-amount').html(bountyFee);
   $('#fee-token').html(bountyToken);
   $('#summary-total-amount').html(total);
