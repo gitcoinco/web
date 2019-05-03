@@ -215,7 +215,7 @@
           <div>
             {% for org in top_coders %}
               <a href="/profile/{{org}}" title="{{org}}">
-                <img data-src="/dynamic/avatar/{{org}}" alts="{{org}}" src="/dynamic/avatar/{{org}}" />
+                <img data-src="/dynamic/avatar/{{org}}" alts="{{org}}" src="/dynamic/avatar/{{org}}" style="border-radius: 50px; width: 100px;" />
               </a>
             {% endfor %}
           </div>
@@ -291,7 +291,7 @@
               <div>
                 {% for kudos in kudos_tokens %}
                   <a href="/kudos/{{ kudos.id }}/{{ kudos.name }}" title="{{kudos.name|humanize_name}}">
-                    <img data-src="{% static kudos.image %}" alts="{{kudos.name|humanize_name}}" src="{% static kudos.image %}" style="max-width: 100px; max-height: 100px; margin: 5px; border-radius: 50px;">
+                    <img data-src="{% static kudos.image %}" alts="{{kudos.name|humanize_name}}" src="{% static kudos.image %}" style="max-width: 100px; max-height: 100px; margin: 5px;">
                   </a>
                 {% endfor %}
               </div>
@@ -358,11 +358,13 @@
     <div class="content-block content-block--white">
       <div class="container" id="mesh_network_jobs">
       <h2 class="content-block__title">{% trans "TLDR - We're building a Mesh Network of" %} {{keyword|title}} {% trans "Jobs" %}</h2>
-
+      <p style="margin-bottom: 10px;">
+        Each node in this visualization below is a person who has engaged on Gitcoin, and  each edge in our is a transaction between two people on the network.
+      </p>
         <div class="row mt-2 pb-2 text-center">
           <div class="col" style="height: 600px;">
             <div id="mesh_network_jobs_holder">
-              <img src="{% static 'v2/images/results/mesh_network.gif' %}" id="mesh_preview" style="cursor: pointer; max-width: 100%;">
+              <img src="{% static 'v2/images/results/mesh_network.gif' %}" id="mesh_preview" style=" max-width: 100%;">
             </div>
           </div>
         </div>
@@ -408,13 +410,4 @@
   </body>
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script src="{% static "v2/js/pages/results.js" %}"></script>
-  <script>
-    $("#mesh_preview").on('click', function(e){
-      $("#mesh_network_jobs_holder").html('<iframe src="{% url 'viz_graph' %}?keyword={{keyword}}" style="width: 100%; height: 600px; border-left: 1px #dddddd solid; border-bottom: 1px #dddddd solid;  " frameBorder="0">');
-      e.preventDefault();
-    });
-  $(document).ready(function() {
-    $("img").unveil(200);
-  });
-  </script>
 </html>

@@ -981,6 +981,8 @@ def results(request, keyword=None):
         raise Http404
     context = JSONStore.objects.get(view='results', key=keyword).data
     context['is_outside'] = True
+    import json
+    context['kudos_tokens'] = [json.loads(obj) for obj in context['kudos_tokens']]
     context['avatar_url'] = static('v2/images/results_preview.gif')
     return TemplateResponse(request, 'results.html', context)
 
