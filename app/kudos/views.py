@@ -198,7 +198,7 @@ def details(request, kudos_id, name):
         # Create a new attribute to reference number of gen0 clones allowed
         kudos.num_gen0_clones_allowed = token.num_clones_allowed
 
-        context['title'] = kudos.humanized_name
+        context['title'] = kudos.ui_name
         context['card_title'] = kudos.humanized_name
         context['card_desc'] = kudos.description
         context['avatar_url'] = kudos.img_url
@@ -712,6 +712,7 @@ def receive_bulk(request, secret):
         'avatar_url': coupon.token.img_url,
         'coupon': coupon,
         'user': request.user,
+        'class': _class,
         'is_authed': request.user.is_authenticated,
         'kudos_transfer': kudos_transfer,
         'tweet_text': urllib.parse.quote_plus(f"I just got a {coupon.token.humanized_name} Kudos on @gitcoin.  ")

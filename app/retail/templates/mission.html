@@ -32,13 +32,16 @@
     {% include 'shared/tag_manager_2.html' %}
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
     <div class="container-fluid header">
-      {% include 'shared/nav.html' %}
+      {% include 'home/nav.html' %}
       {% include 'shared/minihero.html' with h1='Mission' position_h1_below_logo=1 %}
     </div>
 
     <div class="container-fluid" id="mission_hero">
       <div class="row p-5 p-5">
-        <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex flex-sm-row flex-column text-center">
+        <div class="offset-lg-1 col-1 flex-sm-row flex-column text-center">
+            {% include 'shared/tree.html' %}
+        </div>
+        <div class="col-10 col-lg-10 offset-md-0 d-flex flex-sm-row flex-column text-center">
           <div class="text">
             <div class="font-title-xl">
               {% blocktrans %}

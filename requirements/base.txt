@@ -81,3 +81,4 @@ wagtail==2.3
 raven==6.9.0
 oauth2
 sentry-sdk
+websocket-client

@@ -153,7 +153,7 @@ def index(request):
             'img': 'v2/images/press/ibtimes.jpg'
         },
         {
-            'link': 'https://www.forbes.com/sites/curtissilver/2017/09/25/https://www.forbes.com/sites/jeffersonnunn/2019/01/21/bitcoin-autonomous-employment-workers-wanted/',
+            'link': 'https://www.forbes.com/sites/jeffersonnunn/2019/01/21/bitcoin-autonomous-employment-workers-wanted/',
             'img': 'v2/images/press/forbes.jpg'
         },
         {
@@ -1486,6 +1486,7 @@ def slack(request):
     context = {
         'active': 'slack',
         'msg': None,
+        'nav': 'home',
     }
 
     if request.POST:
