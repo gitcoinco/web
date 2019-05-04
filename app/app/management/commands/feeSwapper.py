@@ -1,4 +1,3 @@
-import argparse
 import json
 import time
 
@@ -131,7 +130,7 @@ class Command(BaseCommand):
                                 time.sleep(10)
                                 tx_receipt = self.web3.eth.getTransactionReceipt(result)
 
-                        #print(tx_receipt)
+                        print(tx_receipt)
 
                         if tx_receipt['status'] == 1:
                                 # Post transaction record to database if transaction succeeded
@@ -140,11 +139,11 @@ class Command(BaseCommand):
                                 # Post failed transaction record to database if transaction failed
                                 transaction_record = CurrencyConversion.objects.create(transaction_date=now(),from_amount=walletBalance, to_amount=outputAmount,conversion_rate=outputAmount/walletBalance,txid=self.web3.toHex(tx_receipt['transactionHash']),from_token_addr=tokenAddress,from_token_symbol=tokenSymbol,to_token_symbol='ETH',transaction_result='failure')
                                 # Email Gitcoin staff if transaction failed
-                                mail = Mail(Email(settings.CONTACT_EMAIL),'Failed fee conversion', Email(settings.SERVER_EMAIL),Content('text/plain', tokenSymbol+' conversion to ETH failed'))
+                                mail = Mail(Email(settings.CONTACT_EMAIL),'Failed fee conversion', Email(settings.CONTACT_EMAIL),Content('text/plain', tokenSymbol+' conversion to ETH failed'))
                                 response = self.sg.client.mail.send.post(request_body=mail.get())
                 else:
                         # Email Gitcoin staff if token balance exists in wallet where previous attempt convert to ETH failed
-                        mail = Mail(Email(settings.CONTACT_EMAIL),'Token in Fee Wallet with previous failed fee conversion', Email(settings.SERVER_EMAIL),Content('text/plain', tokenSymbol+' conversion to ETH failed previously so no conversion was attempted.'))                        
+                        mail = Mail(Email(settings.CONTACT_EMAIL),'Token in Fee Wallet with previous failed fee conversion', Email(settings.CONTACT_EMAIL),Content('text/plain', tokenSymbol+' conversion to ETH failed previously so no conversion was attempted.'))                        
                         response = self.sg.client.mail.send.post(request_body=mail.get())
                         
 
