@@ -164,6 +164,6 @@ class Command(BaseCommand):
                         self.sell_token(details['exchangeAddress'],details['tokenSymbol'])
                         #transaction_record = CurrencyConversion.objects.create(from_amount=2, to_amount=1.1,conversion_rate=3/4,txid='0x1234',from_token_addr=details['exchangeAddress'],from_token_symbol='BAT',to_token_symbol='ETH')
                 if self.network == 'rinkeby':
-                        return self.tokenList['0xda5b056cfb861282b4b59d29c9b395bcc238d29b']['tokenSymbol']
+                        return json.dumps(self.tokenList)
                 else:
-                        return self.tokenList
+                        return str(self.tokenList)
