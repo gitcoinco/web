@@ -179,6 +179,6 @@ class Command(BaseCommand):
                         self.sell_token(details['exchangeAddress'],details['tokenSymbol'])
                         
                 if self.network == 'rinkeby':
-                        return self.tokenList['0xda5b056cfb861282b4b59d29c9b395bcc238d29b']['tokenSymbol']
+                        return json.dumps(self.tokenList)
                 else:
-                        return self.tokenList
+                        return str(self.tokenList)
