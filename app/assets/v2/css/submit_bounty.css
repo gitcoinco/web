@@ -206,3 +206,30 @@ input:read-only {
 .new {
   color: #0FCE7C;
 }
+
+.collapse-header {
+  color: #7c7e81;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1em 0;
+  font-weight: bold;
+  border-bottom: 1px solid #e5e5e5;
+  transition: all .3s linear;
+}
+
+.collapse-header:hover {
+  text-decoration: none;
+}
+
+.collapse-header.collapsed {
+  border-bottom-color: transparent;
+}
+
+.collapse-header .fa:before {
+  content: "\f077";
+}
+
+.collapse-header.collapsed .fa:before {
+  content: "\f078";
+}

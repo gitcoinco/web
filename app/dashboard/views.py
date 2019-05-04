@@ -2371,7 +2371,7 @@ def new_bounty(request):
         update=bounty_params,
     )
     params['FEE_PERCENTAGE'] = request.user.profile.fee_percentage if request.user.is_authenticated else 10
-    return TemplateResponse(request, 'bounty/new.html', params)
+    return TemplateResponse(request, 'bounty/fund.html', params)
 
 
 @csrf_exempt
