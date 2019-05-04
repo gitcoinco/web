@@ -100,11 +100,7 @@
       {% if user.is_authenticated %}
         {% include 'shared/nav_auth.html' with source='authed' %}
       {% else %}
-        <a href="{% url 'social:begin' 'twitter' %}?next=/" class="nav-link interior">
-          <i class="fab fa-github mr-1" role="aria-hidden"></i>
-          {% trans "TWITTER" %}
-        </a>
-        <a href="{% url 'social:begin' 'github' %}?next=/" class="nav-link interior">
+        <a href="{% url 'social:begin' 'LOG IN' %}?next=/" class="nav-link interior">
           <i class="fab fa-github mr-1" role="aria-hidden"></i>
           {% trans "GITHUB" %}
         </a>

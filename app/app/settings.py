@@ -542,8 +542,8 @@ TWITTER_ACCESS_SECRET = env('TWITTER_ACCESS_SECRET', default='')  # TODO
 TWITTER_USERNAME = env('TWITTER_USERNAME', default='')  # TODO
 
 # Social Auth
-LOGIN_URL = 'gh_login'
-LOGIN_URL = 'twitter_login'
+# LOGIN_URL = 'gh_login'
+# LOGIN_URL = 'twitter_login'
 LOGOUT_URL = 'logout'
 LOGIN_REDIRECT_URL = 'explorer'
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'explorer'
