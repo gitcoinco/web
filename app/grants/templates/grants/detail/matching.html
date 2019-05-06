@@ -15,7 +15,7 @@
 
     {% if clr_matching_banners_style == "results" %}
       {% if is_grant_info %}
-        <div class="col-md-3 my-auto">
+        <div class="col-md-4 col-xl-3 my-auto">
       {% endif %}
           <a class="logo" target="new" href="https://medium.com/gitcoin/gitcoin-grants-clr-matching-ecbc87b10038">
             <img src="{% static "v2/images/eth_dollar.png" %}" />
@@ -24,7 +24,7 @@
         </div>
       {% endif %}
 
-      <div class="{% if is_grant_info %} col-md-9 {% endif %} clr-text pl-2">
+      <div class="{% if is_grant_info %} col-md-8 col-xl-9 {% endif %} clr-text pl-2">
         <p class="mt-2 mb-1 font-weight-bold">
           +${{grant.clr_matching}} in CLR Matching
         </p>
@@ -36,7 +36,7 @@
     {% else %}
 
       {% if is_grant_info %}
-        <div class="col-md-3 my-auto">
+        <div class="col-md-4 col-xl-3 my-auto">
       {% endif %}
           <a class="logo" target="new" href="https://medium.com/gitcoin/gitcoin-grants-50k-oss-fund-e20e09dc2110">
             <img src="{% static "v2/images/eth_dollar.png" %}" />
@@ -45,7 +45,7 @@
         </div>
       {% endif %}
 
-      <div class="{% if is_grant_info %} col-md-9 {% endif %} clr-text pl-2">
+      <div class="{% if is_grant_info %} col-md-8 col-xl-9 {% endif %} clr-text pl-2">
         <p class="mt-2 mb-1 font-weight-bold">
           This Grant is accepting Matching Contributions
         </p>
