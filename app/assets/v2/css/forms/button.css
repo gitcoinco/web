@@ -15,8 +15,6 @@
   text-decoration: none;
 }
 
-.button:disabled,
-.button:disabled:hover,
 .button--primary.button.disabled,
 .button--primary.button.disabled:hover {
   background-color: #DFDFDF;
