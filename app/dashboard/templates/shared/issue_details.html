@@ -15,7 +15,8 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n %}
-<h5 class="font-subheader">{% trans "Details" %}</h5>
+<label class="font-caption letter-spacing text-black-60 text-uppercase" for="project_type">{% trans "Project Type" %}</label>
+
 <div class="d-flex row" data-toggle="buttons">
   <div class="col-12 col-md-4 btn-group-toggle">
     <label class="btn btn-block btn-radio traditional my-2 font-weight-bold py-2 px-4 active text-left">
@@ -80,7 +81,6 @@
   </div>
 </div>
 
-<label class="form__label" for="project_type">{% trans "Project Type" %}</label>
 <!-- <div class="form__select2">
   <select class="js-select2" name="project_type" id="project_type">
     <option value="traditional">{% trans "Traditional -- 1 worker at a time, 1 is paid out" %}</option>
@@ -88,7 +88,7 @@
     <option value="cooperative">{% trans "Cooperative -- many workers at a time, many are paid out" %}</option>
   </select>
 </div> -->
-<label class="form__label" for="permission_type">{% trans "Permissions" %}</label>
+<label class="font-caption letter-spacing text-black-60 text-uppercase" for="permission_type">{% trans "Permissions" %}</label>
 <div class="d-flex row" data-toggle="buttons">
   <div class="col-12 col-md-6 btn-group-toggle">
     <label class="btn btn-block btn-radio approval my-2 font-weight-bold py-3 px-4 active text-left">

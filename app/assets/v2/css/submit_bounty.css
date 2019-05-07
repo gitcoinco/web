@@ -167,11 +167,6 @@ input:read-only {
   color: #3E00FF;
 }
 
-#total-section {
-  border-top: 1px solid #000000;
-  border-bottom: 1px solid #000000;
-}
-
 @media (max-width: 767.98px) {
   .select2-container {
     max-width: 100%;
@@ -213,7 +208,6 @@ input:read-only {
   align-items: center;
   justify-content: space-between;
   padding: 1em 0;
-  font-weight: bold;
   border-bottom: 1px solid #e5e5e5;
   transition: all .3s linear;
 }
@@ -232,4 +226,8 @@ input:read-only {
 
 .collapse-header.collapsed .fa:before {
   content: "\f078";
+}
+
+.letter-spacing {
+  letter-spacing: 0.1em;
 }

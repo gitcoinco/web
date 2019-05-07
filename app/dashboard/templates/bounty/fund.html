@@ -52,9 +52,9 @@
 
           <div id="about-section" class="pt-2 bg-white rounded p-5">
             <h1 class="text-center title">{% trans "Fund Issue" %}</h1>
-            <p class="text-center font-bigger-1">Fund your GitHub issue and work with talented developers! </p>
-            <div>
-              <p class="text-uppercase">Github Repo Type</p>
+            <p class="text-center font-bigger-1 text-black-60">Fund your GitHub issue and work with talented developers! </p>
+            <div class="my-4">
+              <p class="font-caption letter-spacing text-black-60 text-uppercase">Github Repo Type</p>
               <!-- <div class="form__radio option">
                 <input name="repo_type" id="public_repo" type="radio" value="public" checked />
                 <label class="filter-label" for=public_repo><i class="fas fa-book"></i> {% trans "Public" %}</label>
@@ -91,7 +91,7 @@
                 </div>
               </div>
             </div>
-            <label class="form__label text-uppercase" for=issueURL>{% trans "Github Issue URL" %} <span class="badge badge-greylight text-capitalize">Required</span></label>
+            <label class="font-caption letter-spacing text-black-60 text-uppercase" for=issueURL>{% trans "Github Issue URL" %} <span class="badge badge-greylight text-capitalize">Required</span></label>
             <input name='issueURL' id="issueURL" class="form__input" type="url" placeholder="https://github.com/user/repo/issues/n" value="{% if issueURL %}{{issueURL}}{%endif%}" required/>
             <div class="text-right mt-2">
               <p class="font-caption" id="last-synced">{% trans "Last Synced " %}<span></span></p>
@@ -103,11 +103,11 @@
               <img class="w-100" src="{% static "v2/images/bounty/no_issue.svg" %}">
             </div>
             <div id="issue-details" class="mt-4">
-              <label class="form__label mb-0 mt-3" for="title">{% trans "Issue Title" %}</label>
+              <label class="font-caption letter-spacing text-black-60 text-uppercase" for="title">{% trans "Issue Title" %} <span class="badge badge-greylight text-capitalize">Required</span></label>
               <input name='title' id="title"  class="form__input hidden" type="text" value="{{ issue_title }}" readonly required/>
               <p id="title--text"></p>
-              <label class="form__label" for="description">{% trans "Description" %}</label>
-              <textarea name="description" class="form__input" id="description" readonly></textarea>
+              <label class="font-caption letter-spacing text-black-60 text-uppercase" for="description">{% trans "Description" %} <span class="badge badge-greylight text-capitalize">Required</span></label>
+              <textarea name="description" class="form__input" id="description" rows="10" readonly></textarea>
             </div>
             <div id="issue-details-edit" class="mt-2">
               <div class="text-right">
@@ -118,49 +118,61 @@
             </div>
             <div id="nda-upload" class="mt-4" style="display: none;">
               <div>
-                <h5 class="font-subheader">{% trans "Non-Disclosure Agreement" %}</h5>
-                <label class="form__label" for=issueNDA>{% trans "Each contributor has to sign your NDA before they can start work. Supported format: pdf, doc, docx." %}</label>
+                <label class="font-caption letter-spacing text-black-60 text-uppercase" for=issueNDA>{% trans "Non-Disclosure Agreement" %}</label>
+                <p class="font-body">{% trans "Each contributor has to sign your NDA before they can start work. Supported format: pdf, doc, docx." %}</p>
                 <input name='issueNDA' id="issueNDA" class="form__input" type="file" accept="application/pdf,application/msword, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/vnd.openxmlformats-officedocument.presentationml.presentation" required/>
               </div>
             </div>
             {% include 'shared/pricing.html' %}
-
-            <div class="form__group">
-              <div class="form__select2 form__group-item">
-                <select class="js-select2" name="experience_level">
-                  <option value="">{% trans "Experience Level" %}</option>
-                  <option>{% trans "Beginner" %}</option>
-                  <option>{% trans "Intermediate" %}</option>
-                  <option>{% trans "Advanced" %}</option>
-                </select>
-              </div>
-              <div class="form__select2 form__group-item">
-                <select class="js-select2" name="project_length">
-                  <option value="Unknown">{% trans "Time Commitment" %}</option>
-                  <option>{% trans "Hours" %}</option>
-                  <option>{% trans "Days" %}</option>
-                  <option>{% trans "Weeks" %}</option>
-                  <option>{% trans "Months" %}</option>
-                </select>
-              </div>
-              <div class="form__select2 form__group-item">
-                <select class="js-select2" name="bounty_type">
-                  <option value="">{% trans "Bounty Type" %}</option>
-                  <option>{% trans "Bug" %}</option>
-                  <option>{% trans "Feature" %}</option>
-                  <option>{% trans "Improvement" %}</option>
-                  <option>{% trans "Security" %}</option>
-                  <option>{% trans "Documentation" %}</option>
-                  <option>{% trans "Design" %}</option>
-                  <option>{% trans "Code Review" %}</option>
-                  <option>{% trans "Other" %}</option>
-                </select>
+            <div class="mt-4">
+              <label class="font-caption letter-spacing text-black-60 text-uppercase">{% trans "Details" %}</label>
+              <div class="d-flex row mb-2">
+                <div class="col-12 col-md-4">
+                  <label class="form__label" for="amount">{% trans "Experience Level" %}</label>
+                  <div class="form__select2">
+                    <select class="js-select2" name="experience_level">
+                      <option disabled selected>{% trans "Experience Level" %}</option>
+                      <option>{% trans "Beginner" %}</option>
+                      <option>{% trans "Intermediate" %}</option>
+                      <option>{% trans "Advanced" %}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-12 col-md-4">
+                  <label class="form__label" for="amount">{% trans "Time Commitment" %}</label>
+                  <div class="form__select2">
+                    <select class="js-select2" name="project_length">
+                      <option disabled selected>{% trans "Time Commitment" %}</option>
+                      <option>{% trans "Hours" %}</option>
+                      <option>{% trans "Days" %}</option>
+                      <option>{% trans "Weeks" %}</option>
+                      <option>{% trans "Months" %}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-12 col-md-4">
+                  <label class="form__label" for="amount">{% trans "Bounty Type" %}</label>
+                  <div class="form__select2">
+                    <select class="js-select2" name="bounty_type">
+                      <option disabled selected>{% trans "Bounty Type" %}</option>
+                      <option>{% trans "Bug" %}</option>
+                      <option>{% trans "Feature" %}</option>
+                      <option>{% trans "Improvement" %}</option>
+                      <option>{% trans "Security" %}</option>
+                      <option>{% trans "Documentation" %}</option>
+                      <option>{% trans "Design" %}</option>
+                      <option>{% trans "Code Review" %}</option>
+                      <option>{% trans "Other" %}</option>
+                    </select>
+                  </div>
+                </div>
               </div>
             </div>
-            <div id="" class="mt-2">
+            <div id="" class="mt-4">
 
 
-              <label class="form__label" for="keywords">{% trans "Keywords" %}</label>
+              <label class="font-caption letter-spacing text-black-60 text-uppercase" for="keywords">{% trans "Keywords" %}</label>
+              <p class="font-body">Insert keywords relevant to your issue to make it easily discoverable by contributors </p>
               <div class="form__select2 g-multiselect">
                 <select class="js-select2" id="keywords" name="keywords" multiple>
                 </select>
@@ -174,26 +186,26 @@
           </div>
           <div class="bg-white my-3 px-5 rounded">
             <a class="collapse-header collapsed" data-toggle="collapse" href="#details-section" role="button" aria-expanded="false" aria-controls="details-section">
-              <span>
-                <span class="d-block text-uppercase">Bounty settings</span>
+              <span class="font-body">
+                <span class="d-block text-uppercase letter-spacing">Bounty settings</span>
                 <span>change project type, permissions, and expiry date</span>
               </span>
               <i class="fa"></i>
             </a>
-            <div id="details-section" class=" collapse pt-2">
+            <div id="details-section" class=" collapse py-4">
               {% include 'shared/issue_details.html' %}
-              <div class="w-100 mt-2">
-                <label class="form__label" for="fundingOrganisation">{% trans "Funding Organisation Github handle" %}</label>
+              {% include 'shared/issue_deadline.html' %}
+              <div class="w-100 mt-4">
+                <label class="font-caption letter-spacing text-black-60 text-uppercase" for="fundingOrganisation">{% trans "Funding Organisation Github handle" %}</label>
                 <input name='fundingOrganisation' id="fundingOrganisation" class="form__input" type="text" placeholder="MetaMask"/>
               </div>
-              {% include 'shared/issue_deadline.html' %}
             </div>
           </div>
 
           <!-- <div class="bg-white my-3 px-5 rounded">
             <a class="collapse-header collapsed" data-toggle="collapse" href="#safsdfsdaf-section" role="button" aria-expanded="false" aria-controls="safsdfsdaf-section">
               <span>
-                <span class="d-block text-uppercase">title</span>
+                <span class="d-block text-uppercase letter-spacing">title</span>
                 <span>afdsafd</span>
               </span>
               <i class="fa"></i>
@@ -205,62 +217,63 @@
 
           <div class="bg-white my-3 px-5 rounded">
             <a class="collapse-header collapsed" data-toggle="collapse" href="#reserve-section" role="button" aria-expanded="false" aria-controls="reserve-section">
-              <span>
-                <span class="d-block text-uppercase">Reserve for / Invite contributors</span>
+              <span class="font-body">
+                <span class="d-block text-uppercase letter-spacing">Reserve for / Invite contributors</span>
                 <span>Choose contributors you want to work on this bounty</span>
               </span>
               <i class="fa"></i>
             </a>
-            <div id="reserve-section" class=" collapse pt-2">
-                <div id="reservedForDiv" class="font-body">
-                  <label class="form__label w-100" for="reservedFor">{% trans 'Reserved For' %}</label>
-                  <select name="reservedFor" id="reservedFor" class="username-search custom-select"></select>
+            <div id="reserve-section" class="collapse py-4">
+              <div id="reservedForDiv" class="">
+                <label class="font-caption letter-spacing text-black-60 text-uppercase" for="reservedFor">{% trans 'Reserved For (Optional)' %}</label>
+                <div class="form__select2">
+                  <select name="reservedFor" id="reservedFor" class="username-search custom-select w-100"></select>
                 </div>
-                <div id="inviteContributors" class="font-body">
-                  <label class="form__label w-100" for="invite-contributors">{% trans "Invite Contributors" %}</label>
-                  <div class="form__select2 g-multiselect">
-                    <select class="js-select2" id="invite-contributors" name="invite-contributors" multiple>
-                    </select>
-                  </div>
-                  <div id="contributor-suggestion-container">
-                    {% if suggested_developers %}
-                      <b>Suggested Contributors: </b>
-                      <div id="contributor-suggestions">
-                        {% for contributor in suggested_developers %}
-                          <li class="select2-tag__choice p-1" data-id="{{ forloop.counter0 }}">
-                            <img src="/dynamic/avatar/{{ contributor.fulfiller_github_username }}" alt="" class="rounded-circle mx-2" width="20">
-                            <span class="text">{{ contributor.fulfiller_github_username }}</span>
-                            <i class="fas fa-plus ml-2"></i>
-                          </li>
-                        {% endfor %}
-                      </div>
-                    {% endif %}
-                  </div>
+              </div>
+              <div id="inviteContributors" class="mt-4">
+                <label class="font-caption letter-spacing text-black-60 text-uppercase" for="invite-contributors">{% trans "Invite Contributors (Optional)" %}</label>
+                <div class="form__select2 g-multiselect">
+                  <select class="js-select2" id="invite-contributors" name="invite-contributors" multiple>
+                  </select>
                 </div>
+                <div id="contributor-suggestion-container" class="font-body">
+                  {% if suggested_developers %}
+                    <b>Suggested Contributors: </b>
+                    <div id="contributor-suggestions">
+                      {% for contributor in suggested_developers %}
+                        <li class="select2-tag__choice p-1" data-id="{{ forloop.counter0 }}">
+                          <img src="/dynamic/avatar/{{ contributor.fulfiller_github_username }}" alt="" class="rounded-circle mx-2" width="20">
+                          <span class="text">{{ contributor.fulfiller_github_username }}</span>
+                          <i class="fas fa-plus ml-2"></i>
+                        </li>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
             </div>
           </div>
 
           <div class="bg-white my-3 px-5 rounded">
             <a class="collapse-header collapsed" data-toggle="collapse" href="#hiring-section" role="button" aria-expanded="false" aria-controls="hiring-section">
-              <span>
-                <span class="d-block text-uppercase">Hiring / Hackathon </span>
-                <span>afdsafd</span>
+              <span class="font-body">
+                <span class="d-block text-uppercase letter-spacing">Hiring / Hackathon </span>
+                <span>Is this bounty part of a hackathon or job opening?</span>
               </span>
               <i class="fa"></i>
             </a>
-            <div id="hiring-section" class=" collapse pt-2">
-              <label class="form__label" for="hiringRightNow">{% trans "Hiring right now?" %}</label>
+            <div id="hiring-section" class="collapse py-4">
               <div class="hiring_container">
+                <label class="font-caption letter-spacing text-black-60 text-uppercase" for="hiringRightNow">{% trans "Hiring right now?" %}</label>
                 <div class="form__checkbox">
                   <input name='hiringRightNow' id='hiringRightNow' type="checkbox" value=1 />
-                    <label class="form__label" for=hiringRightNow>{% trans "I am hiring for a full time, part time, or contract position, right now and would like Gitcoin to attach this job description to the bounty." %}
+                  <label class="form__label" for=hiringRightNow>{% trans "I am hiring for a full time, part time, or contract position, right now and would like Gitcoin to attach this job description to the bounty." %}
                   </label>
                 </div>
                 <input name='jobDescription' id='jobDescription' type="url" class="form__input hidden" type="text" placeholder="https://link.to/job/description" value="" />
-
               </div>
-
-              <div class="w-100 mt-2">
+              <div class="mt-4">
+                <label class="font-caption letter-spacing text-black-60 text-uppercase" for="specialEvent">{% trans "Hackathon?" %}</label>
                 <div class="form__checkbox">
                   <input name="specialEvent" id="specialEvent" type="checkbox" value=1 />
                   <label class="form__label" for="specialEvent">
@@ -278,20 +291,18 @@
                   </div>
                 </div>
               </div>
-
             </div>
           </div>
 
           <div class="bg-white my-3 px-5 rounded">
             <a class="collapse-header collapsed" data-toggle="collapse" href="#contact-section" role="button" aria-expanded="false" aria-controls="contact-section">
-              <span>
-                <span class="d-block text-uppercase">Contact info</span>
-                <span>afdsafd</span>
+              <span class="font-body">
+                <span class="d-block text-uppercase letter-spacing">Contact info</span>
+                <span>Communicate with contributors and get notified of updates </span>
               </span>
               <i class="fa"></i>
             </a>
-            <div id="contact-section" class=" collapse pt-2">
-              <h5 class="font-subheader">{% trans "Contact" %}</h5>
+            <div id="contact-section" class="collapse py-4">
               <div class="row mt-2">
                 {% include 'shared/notification_email.html' with show_information_publicly_checkbox=1 %}
                 {% include 'shared/github_username.html' %}
@@ -301,33 +312,21 @@
 
           <div class="bg-white my-3 px-5 rounded">
             <a class="collapse-header collapsed" data-toggle="collapse" href="#featured-section" role="button" aria-expanded="false" aria-controls="featured-section">
-              <span>
-                <span class="d-block text-uppercase">Feature your bounty</span>
-                <span>afdsafd</span>
+              <span class="font-body">
+                <span class="d-block text-uppercase letter-spacing">Feature your bounty</span>
+                <span>Get more visibility and feature your bounty at the top of Issue Explorer </span>
               </span>
               <i class="fa"></i>
             </a>
-            <div id="featured-section" class=" collapse pt-2">
+            <div id="featured-section" class="collapse py-4">
               {% include 'shared/featured.html' %}
-
             </div>
           </div>
 
-
-
-
           <div class="bg-white my-3 px-5 rounded">
-            <div id="gas-section" class="pt-2">
-              <h5 class="font-subheader pb-2">{% trans "Gas Settings" %}</h5>
-              <div>
-                {% include 'shared/bounty_actions_hidden_vars.html' %}
-                {% include 'shared/wallet_estimate.html' %}
-              </div>
-            </div>
-
             {% if FEE_PERCENTAGE != 0 %}
-              <div id="fee-section" class="mt-5">
-                <h5 class="font-subheader">
+              <div id="fee-section" class="py-4">
+                <h5 class="font-body letter-spacing text-black-60 text-uppercase">
                   {% trans "No Suprises" %}
                 </h5>
                 <div class="row">
@@ -353,33 +352,39 @@
               </div>
             {% endif %}
 
-            <div class="terms_container pt-3">
-                <div class="form__checkbox">
-                  <input name='terms' id='terms' type="checkbox" value=1 required />
-                    <label class="form__label" for=terms>{% trans "I have read, understand, and agree to, the" %}
-                      <a href="{% url "terms" %}" target="_blank" rel="noopener noreferrer">{% trans "Terms of Service" %}</a>.
-                  </label>
-                </div>
+            <div class="py-4">
+              <div class="form__checkbox">
+                <input name='terms' id='terms' type="checkbox" value=1 required />
+                <label class="form__label" for=terms>{% trans "I have read, understand, and agree to, the" %}
+                  <a href="{% url "terms" %}" target="_blank" class="text-reset underline" rel="noopener noreferrer">{% trans "Terms of Service" %}</a>.
+                </label>
               </div>
-              <div class="w-100 mb-3 terms_container">
-                <div class="form__checkbox">
-                  <input name='blockchain_tos' id='blockchain_tos' type="checkbox" value=1 required />
-                  <label class="form__label mt-0" for=blockchain_tos style="display: flex;">{% blocktrans %}I understand that this information is being submitted to a public, immutable, blockchain. No one, including
-                    Gitcoin Core, will be able to take my funds or change this information.{% endblocktrans %}</label>
-                </div>
+              <div class="form__checkbox">
+                <input name='blockchain_tos' id='blockchain_tos' type="checkbox" value=1 required />
+                <label class="form__label mt-0" for=blockchain_tos style="display: flex;">{% blocktrans %}I understand that this information is being submitted to a public, immutable, blockchain. No one, including
+                  Gitcoin Core, will be able to take my funds or change this information.{% endblocktrans %}</label>
               </div>
+            </div>
+            <div id="gas-section" class="py-4">
+              <h5 class="font-subheader pb-2">{% trans "Gas Settings" %}</h5>
+              <div>
+                {% include 'shared/bounty_actions_hidden_vars.html' %}
+                {% include 'shared/wallet_estimate.html' %}
+              </div>
+            </div>
           </div>
 
           <div class="bg-white my-3 px-5 rounded">
             <div id="total-section" class="row mt-5 py-3">
               <div class="col-sm-2 my-auto">
-                <h5 class="font-title-lg mb-0">{% trans "Total"%} </h5>
+                <h5 class="text-uppercase h3 font-weight-bold mb-0">{% trans "Total"%}</h5>
               </div>
-              <div class="col-sm-10 text-sm-right my-auto">
-                <p class="mb-1">{% trans "Payment Due = " %} <span id="summary-total-amount" class="font-weight-bold"></span></p>
+              <div class="col-sm-10 my-auto">
+                <p class="mb-1 text-uppercase text-black-50 font-body">{% trans "Payment Due" %}</p>
+                <span id="summary-total-amount" class="h2 text-darkblue font-weight-bold my-3 d-block"></span>
 
-                <p class="font-caption mb-1">
-                  ( Bounty <span id="summary-bounty-amount" class="font-weight-bold">0</span>
+                <p class="font-caption text-black-50 mb-1">
+                  Bounty <span id="summary-bounty-amount" class="font-weight-bold">0</span>
                   <span id="summary-bounty-token" class="font-weight-bold">ETH</span>
 
                   <span class="feature-amount" style="display: none;">
@@ -394,14 +399,13 @@
                   {% else %}
                     + <span class="font-weight-bold">No Fees</span>
                   {% endif %}
-                  )
                 </p>
-                <p class="font-caption mb-0">
+                <p class="font-caption text-black-50 mb-0">
                   You will have to approve
                   <span id="confirmation" class="font-weight-bold">
                     {% if FEE_PERCENTAGE == 0 %} 1 {% else %} 2 {% endif %}
+                    Metamask confirmations.
                   </span>
-                  Metamask confirmations.
                 </p>
               </div>
             </div>
@@ -410,11 +414,11 @@
 
 
           <div class="pb-5 text-center">
-            <button class="w-100 mb-3 button button--primary js-submit disabled" type="submit">Fund Issue</button>
-            <a class="w-100 font-caption" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">
-              Your transaction is secured by the audited StandardBounties contract on the Ethereum blockchain.</br>
-              Learn more here.
-            </a>
+            <button class="btn btn-gc-blue btn-lg disabled js-submit mb-3 w-25 btn-lg-padding" type="submit">Fund Issue</button>
+            <p class="font-caption blue">
+              Your transaction is secured by the audited StandardBounties contract on the Ethereum blockchain.
+              <a class="text-reset underline" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">Learn more here.</a>
+            </p>
           </div>
         </form>
       </div>

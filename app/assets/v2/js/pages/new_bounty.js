@@ -204,8 +204,8 @@ $(document).ready(function() {
   waitforWeb3(function() {
     promptForAuth();
   });
-  $('select[name=permission_type]').on('change', function() {
-    var val = $('select[name=permission_type] option:selected').val();
+  $('[name=permission_type]').on('change', function() {
+    var val = $('input[name=permission_type]:checked').val()
 
     if (val === 'approval') {
       $('#auto_approve_workers_container').show();
