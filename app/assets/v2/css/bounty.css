@@ -65,6 +65,9 @@ body {
   border-radius: 50px;
   margin-top: 0px;
 }
+.bounty_details .avatar.Azure-Samples {
+  border-radius: 0px;
+}
 
 #avatar_url .avatar {
   width: 80px;
@@ -466,6 +469,30 @@ a.btn {
 #bounty_details {
   display: none;
   margin-bottom: 2em;
+}
+
+.earned {
+  color: #8E2ABE;
+  font-size: 14px;
+  line-height: 13px;
+  font-weight: 600;
+}
+
+.username, .contributor-position, .in-progress, .current_status {
+  color: #0D0764;
+}
+
+.specialty {
+  font-weight: 600;
+  font-size: 10px;
+  line-height: 11px;
+}
+.completed-bounties {
+  color: #05B66A;
+}
+
+.abandoned-bounties, .removed-bounties {
+  color: #F5A623;
 }
 
 .code-snippet {

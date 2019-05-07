@@ -1,22 +1,17 @@
 /* eslint-disable no-console */
 /* eslint-disable nonblock-statement-body-position */
+/* eslint-disable no-lonely-if */
 load_tokens();
 
-/* Check if quickstart page is to be shown */
-var localStorage;
-var quickstartURL = document.location.origin + '/bounty/quickstart';
+var localStorage = window.localStorage ? window.localStorage : {};
 
-const FEE_PERCENTAGE = 10;
+const quickstartURL = document.location.origin + '/bounty/quickstart';
+
+const FEE_PERCENTAGE = document.FEE_PERCENTAGE / 100.0;
 
 var new_bounty = {
   last_sync: new Date()
 };
-
-try {
-  localStorage = window.localStorage;
-} catch (e) {
-  localStorage = {};
-}
 
 if (localStorage['quickstart_dontshow'] !== 'true' &&
     doShowQuickstart(document.referrer) &&
@@ -36,6 +31,94 @@ function doShowQuickstart(url) {
   }
 
   return true;
+}
+
+var processedData;
+
+$('.select2-tag__choice').on('click', function() {
+  $('#invite-contributors.js-select2').data('select2').dataAdapter.select(processedData[0].children[$(this).data('id')]);
+});
+
+const getSuggestions = () => {
+
+  const settings = {
+    url: `/api/v0.1/get_suggested_contributors?keywords=${$('#keywords').val()}`,
+    method: 'GET',
+    processData: false,
+    dataType: 'json',
+    contentType: false
+  };
+
+  $.ajax(settings).done(function(response) {
+    let groups = {
+      'contributors': 'Recently worked with you',
+      'recommended_developers': 'Recommended based on skills',
+      'verified_developers': 'Verified contributors'
+    };
+
+    let options = Object.entries(response).map(([ text, children ]) => (
+      { text: groups[text], children }
+    ));
+
+    var generalIndex = 0;
+
+    processedData = $.map(options, function(obj, index) {
+      if (obj.children.length < 1) {
+        return;
+      }
+
+      obj.children.forEach((children, childIndex) => {
+        children.text = children.fulfiller_github_username || children.user__profile__handle;
+        children.id = generalIndex;
+        generalIndex++;
+      });
+      return obj;
+    });
+
+    $('#invite-contributors').select2().empty();
+    $('#invite-contributors.js-select2').select2({
+      data: processedData,
+      placeholder: 'Select contributors',
+      escapeMarkup: function(markup) {
+        return markup;
+      },
+      templateResult: formatUser,
+      templateSelection: formatUserSelection
+    });
+
+  }).fail(function(error) {
+    console.log('Could not fetch contributors', error);
+  });
+};
+
+getSuggestions();
+$('#keywords').on('change', getSuggestions);
+
+function formatUser(user) {
+  if (!user.text || user.children) {
+    return user.text;
+  }
+  let markup = `<div class="d-flex align-items-baseline">
+                  <div class="mr-2">
+                    <img class="rounded-circle" src="${'/dynamic/avatar/' + user.text }" width="20" height="20"/>
+                  </div>
+                  <div>${user.text}</div>
+                </div>`;
+
+  return markup;
+}
+
+function formatUserSelection(user) {
+  let selected;
+
+  if (user.id) {
+    selected = `
+      <img class="rounded-circle" src="${'/dynamic/avatar/' + user.text }" width="20" height="20"/>
+      <span class="ml-2">${user.text}</span>`;
+  } else {
+    selected = user.text;
+  }
+  return selected;
 }
 
 function lastSynced(current, last_sync) {
@@ -96,8 +179,6 @@ $('#last-synced').hide();
 
 $(document).ready(function() {
 
-  $('#summary-bounty-amount').html($('input[name=amount]').val());
-  $('#summary-fee-amount').html(($('input[name=amount]').val() / FEE_PERCENTAGE).toFixed(4));
   populateBountyTotal();
 
   // Load sidebar radio buttons from localStorage
@@ -130,7 +211,7 @@ $(document).ready(function() {
     const amount = $('input[name=amount]').val();
 
     $('#summary-bounty-amount').html(amount);
-    $('#summary-fee-amount').html((amount / FEE_PERCENTAGE).toFixed(4));
+    $('#summary-fee-amount').html((amount * FEE_PERCENTAGE).toFixed(4));
     populateBountyTotal();
   });
 
@@ -144,11 +225,19 @@ $(document).ready(function() {
 
   $('#featuredBounty').on('change', function() {
     if ($(this).prop('checked')) {
-      $('#confirmation').html('3');
+      if (document.FEE_PERCENTAGE == 0)
+        $('#confirmation').html('2');
+      else
+        $('#confirmation').html('3');
+
       $('.feature-amount').show();
     } else {
+      if (document.FEE_PERCENTAGE == 0)
+        $('#confirmation').html('1');
+      else
+        $('#confirmation').html('2');
+
       $('.feature-amount').hide();
-      $('#confirmation').html('2');
     }
     populateBountyTotal();
   });
@@ -288,6 +377,9 @@ $(document).ready(function() {
       var decimalDivisor = Math.pow(10, decimals);
       var expirationTimeDelta = data.expirationTimeDelta;
       let reservedFor = $('.username-search').select2('data')[0];
+      let inviteContributors = $('#invite-contributors.js-select2').select2('data').map((user) => {
+        return user.profile__id;
+      });
 
       var metadata = {
         issueTitle: data.title,
@@ -306,7 +398,8 @@ $(document).ready(function() {
         repo_type: data.repo_type,
         featuring_date: data.featuredBounty && ((new Date().getTime() / 1000) | 0) || 0,
         reservedFor: reservedFor ? reservedFor.text : '',
-        tokenName
+        tokenName,
+        invite: inviteContributors
       };
 
       var privacy_preferences = {
@@ -509,51 +602,56 @@ $(document).ready(function() {
       }
 
       var do_bounty = function(callback) {
-        const fee = Number((Number(data.amount) / FEE_PERCENTAGE).toFixed(4));
+        const fee = Number((Number(data.amount) * FEE_PERCENTAGE).toFixed(4));
         const to_address = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
         const gas_price = web3.toHex($('#gasPrice').val() * Math.pow(10, 9));
 
         indicateMetamaskPopup();
-        if (isETH) {
-          web3.eth.sendTransaction({
-            to: to_address,
-            from: web3.eth.coinbase,
-            value: web3.toWei(fee, 'ether'),
-            gasPrice: gas_price
-          }, function(error, txnId) {
-            indicateMetamaskPopup(true);
-            if (error) {
-              _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
-            } else {
-              ipfsBounty.payload.issuer.address = account;
-              ipfsBounty.payload.fee_tx_id = txnId;
-              ipfsBounty.payload.fee_amount = fee;
-              ipfs.addJson(ipfsBounty, newIpfsCallback);
-              if (typeof ga != 'undefined') {
-                ga('send', 'event', 'new_bounty', 'new_bounty_fee_paid');
-              }
-            }
-          });
+        if (FEE_PERCENTAGE == 0) {
+          deductBountyAmount(fee, '');
         } else {
-          const amountInWei = fee * 1.0 * Math.pow(10, token.decimals);
-          const token_contract = web3.eth.contract(token_abi).at(tokenAddress);
-
-          token_contract.transfer(to_address, amountInWei, { gasPrice: gas_price },
-            function(error, txnId) {
+          if (isETH) {
+            web3.eth.sendTransaction({
+              to: to_address,
+              from: web3.eth.coinbase,
+              value: web3.toWei(fee, 'ether'),
+              gasPrice: gas_price
+            }, function(error, txnId) {
               indicateMetamaskPopup(true);
               if (error) {
                 _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
               } else {
-                ipfsBounty.payload.issuer.address = account;
-                ipfsBounty.payload.fee_tx_id = txnId;
-                ipfsBounty.payload.fee_amount = fee;
-                ipfs.addJson(ipfsBounty, newIpfsCallback);
-                if (typeof ga != 'undefined') {
-                  ga('send', 'event', 'new_bounty', 'new_bounty_fee_paid');
+                deductBountyAmount(fee, txnId);
+              }
+            });
+          } else {
+            const amountInWei = fee * 1.0 * Math.pow(10, token.decimals);
+            const token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+
+            token_contract.transfer(to_address, amountInWei, { gasPrice: gas_price },
+              function(error, txnId) {
+                indicateMetamaskPopup(true);
+                if (error) {
+                  _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
+                } else {
+                  deductBountyAmount(fee, txnId);
                 }
               }
-            }
-          );
+            );
+          }
+        }
+      };
+
+      const deductBountyAmount = function(fee, txnId) {
+        ipfsBounty.payload.issuer.address = account;
+        ipfsBounty.payload.fee_tx_id = txnId;
+        ipfsBounty.payload.fee_amount = fee;
+        ipfs.addJson(ipfsBounty, newIpfsCallback);
+        if (typeof ga != 'undefined') {
+          if (fee == 0)
+            ga('send', 'event', 'new_bounty', 'new_bounty_no_fees');
+          else
+            ga('send', 'event', 'new_bounty', 'new_bounty_fee_paid');
         }
       };
 
@@ -635,6 +733,35 @@ $(window).on('load', function() {
   });
 });
 
+/**
+ * Alerts funder if they don't have enough tokens while attempting to
+ * fund a bounty.
+ * @param {String} tokenAddress
+ * @param {Number} amount
+ */
+function check_balance_and_alert_user_if_not_enough(tokenAddress, amount) {
+  const token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+  const from = web3.eth.coinbase;
+  const token_details = tokenAddressToDetails(tokenAddress);
+  const token_decimals = token_details['decimals'];
+  const token_name = token_details['name'];
+
+  token_contract.balanceOf.call(from, function(error, result) {
+    if (error) return;
+    const balance = result.toNumber() / Math.pow(10, token_decimals);
+    const balance_rounded = Math.round(balance * 10) / 10;
+    const total = parseFloat(amount) + parseFloat((parseFloat(amount) * FEE_PERCENTAGE).toFixed(4));
+
+    if (parseFloat(total) > balance) {
+      const msg = gettext('You do not have enough tokens to fund this bounty. You have ') +
+        balance_rounded + ' ' + token_name + ' ' + gettext(' but you need ') + amount +
+        ' ' + token_name;
+
+      _alert(msg, 'warning');
+    }
+  });
+}
+
 let usdFeaturedPrice = $('.featured-price-usd').text();
 let ethFeaturedPrice;
 let bountyFee;
@@ -650,11 +777,18 @@ getAmountEstimate(usdFeaturedPrice, 'ETH', (amountEstimate) => {
  * Bounty Amount + Fee + Featured Bounty
  */
 const populateBountyTotal = () => {
+
+  const amount = $('input[name=amount]').val();
+  const fee = (amount * FEE_PERCENTAGE).toFixed(4);
+
+  $('#summary-bounty-amount').html(amount);
+  $('#summary-fee-amount').html(fee);
+
   const bountyToken = $('#summary-bounty-token').html();
   const bountyAmount = Number($('#summary-bounty-amount').html());
-  const bountyFee = Number((bountyAmount / FEE_PERCENTAGE).toFixed(4));
+  const bountyFee = Number((bountyAmount * FEE_PERCENTAGE).toFixed(4));
   const isFeaturedBounty = $('input[name=featuredBounty]:checked').val();
-  let totalBounty = bountyAmount + bountyFee;
+  let totalBounty = Number((bountyAmount + bountyFee).toFixed(4));
   let total = '';
 
   if (isFeaturedBounty) {
@@ -670,7 +804,7 @@ const populateBountyTotal = () => {
     total = `${totalBounty} ${bountyToken}`;
   }
 
-  $('#fee-percentage').html(FEE_PERCENTAGE);
+  $('.fee-percentage').html(FEE_PERCENTAGE * 100);
   $('#fee-amount').html(bountyFee);
   $('#fee-token').html(bountyToken);
   $('#summary-total-amount').html(total);

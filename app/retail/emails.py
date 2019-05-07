@@ -74,7 +74,7 @@ def render_featured_funded_bounty(bounty):
     params = {'bounty': bounty}
     response_html = premailer_transform(render_to_string("emails/funded_featured_bounty.html", params))
     response_txt = render_to_string("emails/funded_featured_bounty.txt", params)
-    subject = _("You've successfully funded a bounty!")
+    subject = _("Your bounty is now live on Gitcoin!")
 
     return response_html, response_txt, subject
 
@@ -933,8 +933,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Save the date; Ethereal Virtual Hackathon April 15th — 30th"
-    new_kudos_pks = [1106, 2110, 2050, 2116]
+    subject = "Etherscan + Codefund | Ethereal Hackathon's Finalé"
+    new_kudos_pks = [2240, 2243, 2242]
     new_kudos_size_px = 150
 
     kudos_friday = f'''
@@ -949,13 +949,23 @@ def render_new_bounty_roundup(to_email):
 Hi Gitcoiners,
 </p>
 <p>
-We're excited to announce the date for the <a href="https://gitcoin.co/hackathon/ethhack2019">Ethereal Virtual hackathon</a>.  Join us April 15th-30th for Hackathon challenges, which will be posted as bounties, with the best hacks receiving prizes in ETH & ERC-20 tokens. Main track winners will receive free tickets to Ethereal NY to present their project live on stage!  <a href="https://medium.com/gitcoin/the-ethereal-hackathon-4f5dc2eb56d6">More details here</a>. 
+This week, we announced <a href="https://medium.com/gitcoin/codefund-ads-on-etherscan-fae1a3d35b51">a huge partnership with Etherscan.</a> We're excited to lead the charge in bringing
+ethical ads to the ecosystem. Get in touch if you'd like to post (ethical) ads on one of the most well respected projects in crypto.
 </p>
+<p>
+The Ethereal Hackathon is nearing the finish line. 500 hackers, $65K in prizes, and over 50 prizes and bounties to win. <a href="https://gitcoin.co/hackathon/ethhack2019/">Check out the prizes</a>
+and submit work on something interesting.
+</p>
+
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Gitcoin Livestream is back this week with Eric Conner and Anthony Sassano from EthHub and Igor from POA! Join us <a href="https://gitcoin.co/livestream"> at 5PM ET or catch it on <a href="https://twitter.com/GetGitcoin">Twitter</a>!
+            Our <a href="https://medium.com/gitcoin/ethereal-virtual-hackathon-introduction-and-sponsor-profiles-5be917be4544">Ethereal Sponsors are awesome.</a> Get to know them and learn about
+            blockchain projects building from infrastructure to enterprise and everything in between.
+        </li>
+        <li>
+            Gitcoin Livestream is back this week with Status Embark and others from the Ethereal hackathon! Join us <a href="https://gitcoin.co/livestream"> at a new time, 2PM ET, or catch it on <a href="https://twitter.com/gitcoin">Twitter</a>!
         </li>
     </ul>
 </p>
@@ -965,34 +975,34 @@ Back to shipping,
 
 '''
     highlights = [{
-        'who': 'e18r ',
+        'who': 'iamonuwa',
         'who_link': True,
-        'what': 'Some nice work on this giveth bounty :)',
-        'link': 'https://gitcoin.co/issue/Giveth/giveth-dapp/522/2418',
+        'what': 'More great work by Onuwa on Status :)',
+        'link': 'https://gitcoin.co/issue/status-im/discover-dapps/31/2888',
         'link_copy': 'View more',
     }, {
-        'who': 'rsercano ',
+        'who': 'cspannos',
         'who_link': True,
-        'what': 'Good work on this CI and CD pipeline..',
-        'link': 'https://gitcoin.co/issue/status-im/status-components/5/2608',
+        'what': 'Comparison of all Plasma Implementations!',
+        'link': 'https://gitcoin.co/issue/kauri-io/Content/9/2878',
         'link_copy': 'View more',
     }, {
-        'who': 'eswarasai',
+        'who': 'hilmarx',
         'who_link': True,
-        'what': 'Eswara is one of our longtime community members!',
-        'link': 'https://gitcoin.co/issue/centrifuge/go-centrifuge/835/2593',
+        'what': 'Integrated DutchX into ETHCapetown project. Very cool.',
+        'link': 'https://gitcoin.co/issue/GnosisEcosystemFund/Gnosis-Bounties-/16/2883',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/gitcoinco/skunkworks/issues/89',
-        'primer': '20ETH Security bounty for Ethereum Istanbul Hard Fork!',
+        'url': 'https://github.com/katiejohnson/Labs_Relay/issues/1',
+        'primer': 'Interested in building richer financial reputation? Great bounty by C Labs!',
     }, {
-        'url': 'https://github.com/ShipChain/hydra/issues/3',
-        'primer': 'ShipChain sidechain test network evaluation bounty!',
+        'url': 'https://github.com/leapdao/meta/issues/95',
+        'primer': 'Plasma Watchtower Bounty! Worth checking out.',
     }, {
-        'url': 'https://github.com/gitcoinco/creative/issues/51',
-        'primer': 'Print your own Gitcoin Stickers & get ETH for it!',
+        'url': 'https://github.com/Azure-Samples/bc-community-samples/issues/18',
+        'primer': 'Tolling Sample for Azure - check it out!',
     }, ]
 
     num_leadboard_items = 5

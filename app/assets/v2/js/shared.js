@@ -67,8 +67,7 @@ var callFunctionWhenweb3Available = function(f) {
 
 var loading_button = function(button) {
   button.prop('disabled', true);
-  button.addClass('disabled');
-  button.prepend('<img src=' + static_url + 'v2/images/loading_white.gif style="max-width:20px; max-height: 20px">').addClass('disabled');
+  button.prepend('<img src=' + static_url + 'v2/images/loading_white.gif style="max-width:20px; max-height: 20px">');
 };
 
 var attach_close_button = function() {
@@ -1221,7 +1220,7 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
     }
 
     if (renderForExplorer) {
-      if (typeof web3 != 'undefined' && web3.eth.coinbase == result['bounty_owner_address']) {
+      if (typeof web3 != 'undefined' && typeof web3.eth != 'undefined' && web3.eth.coinbase == result['bounty_owner_address']) {
         result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">mine</span></a>';
       } else if (result['fulfiller_address'] !== '0x0000000000000000000000000000000000000000') {
         result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">' + result['status'] + '</span></a>';
@@ -1555,6 +1554,10 @@ function check_balance_and_alert_user_if_not_enough(
   tokenAddress,
   amount,
   msg = 'You do not have enough tokens to perform this action.') {
+
+  if (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000') {
+    return;
+  }
 
   let token_contract = web3.eth.contract(token_abi).at(tokenAddress);
   let from = web3.eth.coinbase;

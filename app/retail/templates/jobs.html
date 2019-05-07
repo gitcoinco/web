@@ -1,0 +1,163 @@
+{% comment %}
+    Copyright (C) 2019 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not,see
+    <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards_pic.html' %}
+    <meta name="title" content="Jobs | Gitcoin">
+    <meta name="description" content="Jobs at Gitcoin">
+  </head>
+
+  <body class="{{ active }} g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    <div class="container-fluid header">
+      {% include 'home/nav.html' %}
+      {% include 'shared/minihero.html' with h1='Jobs' position_h1_below_logo=1 %}
+    </div>
+
+    <div class="container" id="built_by">
+      <div class="row py-5 justify-content-center">
+        <div class="col-lg-5 pt-3 align-items-center">
+          <h5 class="text-center">
+            {% trans "We are built by & for coders" %}
+          </h5>
+          <div class="pt-4 text-center">
+            <img class="icon" src="{% static "v2/images/jobs/wrench_hand.svg" %}" />
+          </div>
+        </div>
+        <div class="col-lg-5 pt-3 align-items-center">
+          <div class="text-center">
+            <h5>{% trans "Gitcoin is built with Gitcoin" %}</h5>
+            <h6>{% trans "(we dogfood)" %}</h6>
+          </div>
+          <div class="text-center">
+            <img class="icon" src="{% static "v2/images/jobs/human_pyramid.svg" %}" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid bg-light" id="we_believe_in">
+      <div class="row justify-content-center">
+        <div class="col-lg-7 py-3 align-items-center">
+          <div class="row py-3 justify-content-center align-items-center">
+            <div class="col-lg-7 text-center">
+              <h5>
+                {% blocktrans %}
+                  We believe in <strong>try-before-you-buy hiring</strong>.
+                {% endblocktrans %}
+              </h5>
+              <h6>{% trans "Want to show off your chops?  Contribute to some bounties before applying to jobs." %}</h6>
+            </div>
+            <div class="col-lg-3 d-flex justify-content-center">
+              <img class="icon" src="{% static "v2/images/jobs/coathanger.svg" %}" />
+            </div>
+          </div>
+
+          <div class="row py-3 justify-content-center align-items-center">
+            <div class="col-lg-7 text-center">
+              <h5>
+                {% blocktrans %}
+                  We believe in <strong>remote work</strong>.
+                {% endblocktrans %}
+              <h6>{% trans "We live and travel all over the world." %}</h6>
+            </div>
+            <div class="col-lg-3 d-flex justify-content-center">
+              <img class="icon" src="{% static "v2/images/jobs/palm_tree.svg" %}" />
+            </div>
+          </div>
+
+          <div class="row py-3 justify-content-center align-items-center">
+            <div class="col-lg-7 text-center">
+              <h5>
+                {% blocktrans %}
+                  We believe in <strong>open source</strong>.
+                {% endblocktrans %}
+              </h5>
+              <h6>{% trans "Gitcoin is completely accessible to the public." %}</h6>
+            </div>
+            <div class="col-lg-3 d-flex justify-content-center">
+              <img class="icon" src="{% static "v2/images/jobs/open_source.svg" %}" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row pb-5 justify-content-center">
+        <a class="button button--primary" role="button" href="https://gitcoin.co/mission"
+          target="_blank" rel="noopener noreferrer">
+          {% trans "Click to see our values" %}
+        </a>
+      </div>
+    </div>
+
+    <div class="container" id="get_started">
+      <div class="row pt-5 pb-3 justify-content-center">
+        <div class="col-lg-auto align-items-center">
+          <h4 class="text-center">
+            {% trans "Want to try out working with us?  Get started with some Bounties!" %}
+          </h4>
+        </div>
+      </div>
+      <div class="row mt-3 mb-5 pt-1 pb-5 justify-content-center">
+        <a class="button button--primary" role="button" href="https://gitcoin.co/explorer"
+          target="_blank" rel="noopener noreferrer">
+          {% trans "Check out our Issue Explorer" %}
+        </a>
+      </div>
+    </div>
+
+    <div class="container-fluid bg-light" id="job-listings">
+      <div class="row pt-3 justify-content-center">
+        <div class="col-lg-auto pb-4 text-center">
+          <h4>{% trans "Already done a few bounties?"%}</h4>
+          <h6>{% trans "The best way to apply is below"%}</h6>
+        </div>
+      </div>
+      <div class="row py-4 justify-content-center">
+        {% for job in job_listings %}
+          <div class="col-lg-3 col-xs-3 text-center">
+              <h5>{{ job.title }}</h5>
+            <div class="row px-5 mt-0">
+              <div class="col-lg-auto">
+                <span>{{ job.description|join:" " }}</span>
+              </div>
+            </div>
+            <div class="row mt-5 pt-1 pb-5 justify-content-center">
+              <a class="button button--primary-o" role="button" href="{{ job.link }}"
+                target="_blank" rel="noopener noreferrer">
+                {% trans "Apply" %}
+              </a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+
+    {% include 'shared/footer.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/messages.html' %}
+  </body>
+</html>
