@@ -712,7 +712,9 @@ $(window).on('load', function() {
     let checked = params.get('type');
 
     toggleCtaPlan(checked);
-    $(`input[name=repo_type][value=${checked}]`).prop('checked', 'true');
+    // $(`input[name=repo_type][value=${checked}]`).prop('checked', 'true');
+    $(`.${checked}`).button('toggle')
+
   } else {
     params.append('type', 'public');
     window.history.replaceState({}, '', location.pathname + '?' + params);
@@ -819,8 +821,13 @@ const setPrivateForm = () => {
   $('#nda-upload').show();
   $('#issueNDA').prop('required', true);
 
-  $('#project_type').select2().val('traditional');
-  $('#permission_type').select2().val('approval');
+  // $('#project_type').select2().val('traditional');
+  $('.traditional').button('toggle')
+  // $('#permission_type').select2().val('approval');
+  $('.approval').button('toggle');
+  $('.permissionless').addClass('disabled');
+  $('.permissionless').children('input').attr('disabled', true);
+
   $('#project_type, #permission_type').select2().prop('disabled', true).trigger('change');
   $('#keywords').select2({
     placeholder: 'Select tags',
@@ -845,6 +852,9 @@ const setPublicForm = () => {
   $('#cta-subscription, #private-repo-instructions').addClass('d-md-none');
   $('#nda-upload').hide();
   $('#issueNDA').prop('required', false);
+
+  $('.permissionless').removeClass('disabled');
+  $('.permissionless').children('input').attr('disabled', false);
 
   $('#project_type, #permission_type').select2().prop('disabled', false).trigger('change');
   retrieveIssueDetails();

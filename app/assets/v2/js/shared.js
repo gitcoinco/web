@@ -8,11 +8,11 @@
  *    */
 var show_modal_handler = (modalUrl) => {
 	  const url = modalUrl;
-	
+
 	   return (e) => {
 		       var modals = $('#modal');
 		       var modalBody = $('#modal .modal-content');
-		   
+
 	        modals.off('show.bs.modal');
 		       modals.on('show.bs.modal', () => {
 		         $('#modal .modal-content').load(modalUrl);
@@ -283,17 +283,17 @@ var waitingStateActive = function() {
 
 const notify_funder = (network, std_bounties_id, data) => {
 	  var request_url = '/actions/bounty/' + network + '/' + std_bounties_id + '/notify/funder_payout_reminder/';
-	
+
 	   showBusyOverlay();
 	  $.post(request_url, data).then(result => {
 		      hideBusyOverlay();
-		  
+
 		       _alert({message: gettext('Sent payout reminder')}, 'success');
 		      $('#notifyFunder a').addClass('disabled');
 		      return true;
 		    }).fail(result => {
 			        hideBusyOverlay();
-			    
+
 			         _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
 			      });
 };
@@ -676,6 +676,8 @@ var retrieveIssueDetails = function() {
   $.each(target_eles, function(i, ele) {
     ele.addClass('loading');
   });
+  $('#sync-issue').children('.fas').addClass('fa-spin');
+
   $.get(request_url, function(result) {
     result = sanitizeAPIResults(result);
     if (result['keywords']) {
@@ -697,6 +699,8 @@ var retrieveIssueDetails = function() {
     $.each(target_eles, function(i, ele) {
       ele.removeClass('loading');
     });
+    $('#sync-issue').children('.fas').removeClass('fa-spin');
+
   }).fail(function() {
     $.each(target_eles, function(i, ele) {
       ele.removeClass('loading');

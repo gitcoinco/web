@@ -247,3 +247,21 @@ button:focus {
 .btn-lg-padding {
   padding: 0.6rem 2rem;
 }
+
+.btn-radio {
+  border: 2px solid #D3D3D3;
+}
+
+.btn-radio.active {
+  border-color: #3E00FF;
+}
+
+.btn-radio i {
+  color: #3E00FF;
+}
+
+.badge-greylight {
+  background-color: #F3F3F3;
+  color: #666666;
+  font-weight: 600;
+}

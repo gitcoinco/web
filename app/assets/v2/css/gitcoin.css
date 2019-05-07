@@ -261,6 +261,10 @@ div.button-pink {
   background-color: #EFF3F6;
 }
 
+.bg-lightpurple {
+  background-color: #F5F2FF;
+}
+
 .white-light-bg {
   background-color: white;
   background-image: url('/static/v2/images/light-bg.png');
