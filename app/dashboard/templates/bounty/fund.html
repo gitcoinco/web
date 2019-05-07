@@ -402,17 +402,14 @@
                 </p>
                 <p class="font-caption text-black-50 mb-0">
                   You will have to approve
-                  <span id="confirmation" class="font-weight-bold">
-                    {% if FEE_PERCENTAGE == 0 %} 1 {% else %} 2 {% endif %}
+                  <span class="font-weight-bold">
+                    <span id="confirmation">{% if FEE_PERCENTAGE == 0 %} 1 {% else %} 2 {% endif %}</span>
                     Metamask confirmations.
                   </span>
                 </p>
               </div>
             </div>
           </div>
-
-
-
           <div class="pb-5 text-center">
             <button class="btn btn-gc-blue btn-lg disabled js-submit mb-3 w-25 btn-lg-padding" type="submit">Fund Issue</button>
             <p class="font-caption blue">
