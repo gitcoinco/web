@@ -1,6 +1,6 @@
 .button {
   border: none;
-  border-radius: 2px;
+  border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   color: #fff;
   cursor: pointer;
@@ -15,14 +15,11 @@
   text-decoration: none;
 }
 
-.button:disabled,
-.button:disabled:hover,
 .button--primary.button.disabled,
 .button--primary.button.disabled:hover {
-  background-color: rgba(79, 79, 79, 0.26);
+  background-color: #DFDFDF;
   box-shadow: none;
-  color: rgba(0, 0, 0, 0.26);
-  border-color: rgba(0,0,0, 0.3);
+  color: #9F9F9F;
 }
 
 .button--primary {
