@@ -38,7 +38,8 @@
 
 .progress {
   background-color: #D8D8D8;
-  border-radius: 2px;
+  border-radius: 5px;
+  height: 0.5rem;
 }
 
 .grant-tooltip {
@@ -62,8 +63,12 @@
   max-width: 100%;
 }
 
+.progress-container {
+  color: #0D0764;
+}
+
 .progress .progress-bar {
-  background-color: #0FCE7C;
+  background-color: #0D0764;
   height: auto;
 }
 
@@ -72,13 +77,12 @@
   position: relative;
 }
 
-.progress-bar.progress-bar--fund {
-  background-color: #0D0764;
-  position: relative;
-}
-
 .progress--small {
   height: 7px;
+}
+
+.progress--small .progress-bar {
+  background-color: #0ECF7C;
 }
 
 .grant-item__owner-handle {
