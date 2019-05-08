@@ -204,7 +204,14 @@ img.play {
   text-decoration: none;
 }
 
-.products .product a:hover {
+.content-links a {
+  color: #fff;
+  text-decoration: none;
+  border-bottom: 1px solid #fff;
+}
+
+.products .product a:hover,
+.content-links a:hover {
   border-bottom: 1px solid #fff;
 }
 

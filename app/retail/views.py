@@ -202,7 +202,7 @@ def index(request):
         'know_us': know_us,
         'press': press,
         'articles': articles,
-        'title': _('Grow Open Source: Find Freelance Developers & Open Source Bug Bounties - Gitcoin')
+        'title': _('Grow Open Source: Get crowdfunding and find freelance developers for your software projects, paid in crypto')
     }
     return TemplateResponse(request, 'home/index.html', context)
 
