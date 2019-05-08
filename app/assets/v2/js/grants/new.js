@@ -75,7 +75,7 @@ const init = () => {
   $('#create-grant').validate({
     submitHandler: function(form) {
       let data = {};
-      const SUBMINER_ADDRESS = "0x0";
+      const SUBMINER_ADDRESS = $('#subminer_address').val();
 
       $(form).find(':input:disabled').removeAttr('disabled');
 

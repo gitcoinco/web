@@ -320,6 +320,7 @@ def grant_new(request):
         'eth_usd_conv_rate': eth_usd_conv_rate(),
         'conf_time_spread': conf_time_spread(),
         'gas_advisories': gas_advisories(),
+        'subminer_address': settings.GRANTS_OWNER_ACCOUNT,
     }
 
     return TemplateResponse(request, 'grants/new.html', params)
@@ -769,7 +770,7 @@ def new_matching_partner(request):
         match_pledge.save()
 
         return get_json_response(
-            """Thank you for volunteering to match on Gitcoin Grants. 
+            """Thank you for volunteering to match on Gitcoin Grants.
             You are supporting open source, and we thank you.""", 201
         )
 
