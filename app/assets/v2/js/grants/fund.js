@@ -95,12 +95,12 @@ $(document).ready(function() {
           return;
         }
 
-        $('#gas_price').val(realGasPrice);
 
         let realTokenAmount = Number(data.amount_per_period * Math.pow(10, decimals));
         let amountSTR = realTokenAmount.toLocaleString('fullwide', { useGrouping: false });
         // 10% grants fee
         let realGasPrice = realTokenAmount * 0.1
+        $('#gas_price').val(realGasPrice);
 
         let realApproval = Number(((realTokenAmount + realGasPrice) * data.num_periods) + 1);
         let approvalSTR = realApproval.toLocaleString('fullwide', { useGrouping: false });
@@ -125,7 +125,6 @@ $(document).ready(function() {
             web3.utils.toTwosComplement(approvalSTR)
           ).send({
             from: accounts[0],
-            gasPrice: realGasPrice
           }).on('error', function(error) {
             console.log('1', error);
             _alert({ message: gettext('Your approval transaction failed. Please try again.')}, 'error');
