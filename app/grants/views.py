@@ -47,7 +47,7 @@ from marketing.mails import (
     change_grant_owner_accept, change_grant_owner_reject, change_grant_owner_request, grant_cancellation, new_grant,
     new_supporter, subscription_terminated, support_cancellation, thank_you_for_supporting,
 )
-from marketing.models import Keyword
+from marketing.models import Keyword, Stat
 from web3 import HTTPProvider, Web3
 
 logger = logging.getLogger(__name__)
@@ -83,6 +83,14 @@ def grants(request):
     grants = paginator.get_page(page)
     partners = MatchPledge.objects.filter(active=True)
 
+    grant_amount = 0
+    grant_stats = Stat.objects.filter(
+        key='grants',
+        ).order_by('-pk')
+    if grant_stats.exists():
+        grant_amount = grant_stats.first().val
+
+
     nav_options = [
         {'label': 'All', 'keyword': ''},
         {'label': 'Security', 'keyword': 'security'},
@@ -114,6 +122,7 @@ def grants(request):
         'grants': grants,
         'grants_count': _grants.count(),
         'keywords': get_keywords(),
+        'grant_amount': grant_amount,
     }
     return TemplateResponse(request, 'grants/index.html', params)
 
