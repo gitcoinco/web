@@ -263,7 +263,7 @@
         </div>
       {% else %}
         {% if grant.team_members %}
-          <div class="grant-item__members">
+          <div class="grant-item__members d-flex flex-wrap">
             {% for team_member in grant.team_members.all %}
               <a class="grant-item__member-handle mb-3" href="{% url 'profile' team_member %}">
                 <div class="grant-item__member mr-5">

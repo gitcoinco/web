@@ -68,7 +68,7 @@
     </div>
 
     <div id="section-nav-contributors" class="tab-section">
-      <div class="grant__stakeholders-list">
+      <div class="grant__stakeholders-list d-flex flex-wrap">
         {% for contribution in contributions %}
           <a class="grant__stakeholders-item mr-3 mb-3" href="{% url 'profile' contribution.subscription.contributor_profile.handle %}">
             <div class="mr-2 d-inline-block">

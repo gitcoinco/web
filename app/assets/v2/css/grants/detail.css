@@ -17,10 +17,6 @@
   background-color: #F8FAFC;
 }
 
-.summary-container {
-  background-color: white;
-}
-
 .grant-item__owner-image,
 .grant-item__owner-handle {
   display: inline;
@@ -51,9 +47,7 @@
 }
 
 .grant-item__members {
-  display: flex;
   text-align: center;
-  flex-wrap: wrap;
 }
 
 #grant-profile-tabs .section-tab {
@@ -156,11 +150,6 @@ textarea.editable {
 
 .form__input {
   border-radius: 2px;
-}
-
-.grant__stakeholders-list {
-  display: flex;
-  flex-wrap: wrap;
 }
 
 .grant__header button {
