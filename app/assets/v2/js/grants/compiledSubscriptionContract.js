@@ -1,4 +1,4 @@
-{
+let compiledSubscription0 = {
   "contractName": "Subscription",
   "abi": [
     {

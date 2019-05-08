@@ -76,6 +76,7 @@ const init = () => {
     submitHandler: function(form) {
       let data = {};
       const SUBMINER_ADDRESS = $('#subminer_address').val();
+      console.log('SUBMINER_ADDRESS is ' + SUBMINER_ADDRESS);
 
       $(form).find(':input:disabled').removeAttr('disabled');
 
@@ -107,10 +108,12 @@ const init = () => {
         // data.gas_price
         web3.utils.toTwosComplement(0),
         // contract version
-        web3.utils.toTwosComplement(0),
+        // web3.utils.toTwosComplement(0),
         // specified relayer
         web3.utils.toChecksumAddress(SUBMINER_ADDRESS)
       ];
+
+      console.log('args are: ' + args);
 
       web3.eth.getAccounts(function(err, accounts) {
         web3.eth.net.getId(function(err, network) {
