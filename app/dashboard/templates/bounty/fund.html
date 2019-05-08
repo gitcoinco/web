@@ -103,11 +103,14 @@
               <img class="w-100" src="{% static "v2/images/bounty/no_issue.svg" %}">
             </div>
             <div id="issue-details" class="mt-4">
-              <label class="font-caption letter-spacing text-black-60 text-uppercase" for="title">{% trans "Issue Title" %} <span class="badge badge-greylight text-capitalize">Required</span></label>
-              <input name='title' id="title"  class="form__input hidden" type="text" value="{{ issue_title }}" readonly required/>
-              <p id="title--text"></p>
-              <label class="font-caption letter-spacing text-black-60 text-uppercase" for="description">{% trans "Description" %} <span class="badge badge-greylight text-capitalize">Required</span></label>
-              <textarea name="description" class="form__input" id="description" rows="10" readonly></textarea>
+              <div class="mt-4">
+                <label class="font-caption letter-spacing text-black-60 text-uppercase" for="title">{% trans "Issue Title" %} <span class="badge badge-greylight text-capitalize">Required</span></label>
+                <input name='title' id="title"  class="form__input" type="text" value="{{ issue_title }}" placeholder="{% trans 'Your issue title' %}" readonly required/>
+              </div>
+              <div class="mt-4">
+                <label class="font-caption letter-spacing text-black-60 text-uppercase" for="description">{% trans "Issue Description" %} <span class="badge badge-greylight text-capitalize">Required</span></label>
+                <textarea name="description" class="form__input" id="description" rows="10" placeholder="{% trans 'Your issue details' %}" readonly></textarea>
+              </div>
             </div>
             <div id="issue-details-edit" class="mt-2">
               <div class="text-right">
@@ -266,31 +269,33 @@
               <div class="hiring_container">
                 <label class="font-caption letter-spacing text-black-60 text-uppercase" for="hiringRightNow">{% trans "Hiring right now?" %}</label>
                 <div class="form__checkbox">
-                  <input name='hiringRightNow' id='hiringRightNow' type="checkbox" value=1 />
+                  <input name='hiringRightNow' id='hiringRightNow' type="checkbox"  />
                   <label class="form__label" for=hiringRightNow>{% trans "I am hiring for a full time, part time, or contract position, right now and would like Gitcoin to attach this job description to the bounty." %}
                   </label>
                 </div>
-                <input name='jobDescription' id='jobDescription' type="url" class="form__input hidden" type="text" placeholder="https://link.to/job/description" value="" />
+                <input name='jobDescription' id='jobDescription' type="url" class="form__input " type="text" placeholder="https://link.to/job/description" value="" disabled/>
               </div>
-              <div class="mt-4">
-                <label class="font-caption letter-spacing text-black-60 text-uppercase" for="specialEvent">{% trans "Hackathon?" %}</label>
-                <div class="form__checkbox">
-                  <input name="specialEvent" id="specialEvent" type="checkbox" value=1 />
-                  <label class="form__label" for="specialEvent">
-                    {% trans 'Is this Bounty part of a Hackathon or Special Event?' %}
-                  </label>
-                </div>
-                <div id="eventTag" class="hidden">
-                  <label class="form__label" for="eventTag">{% trans "Choose Event" %}</label>
-                  <div class="form__select2">
-                    <select class="js-select2" name="eventTag" id="eventTag">
-                      {% for evt in events %}
-                        <option value="{{ evt.name }}">{{ evt.name }}</option>
-                      {% endfor %}
-                    </select>
+              {% if events %}
+                <div class="mt-4">
+                  <label class="font-caption letter-spacing text-black-60 text-uppercase" for="specialEvent">{% trans "Hackathon?" %}</label>
+                  <div class="form__checkbox">
+                    <input name="specialEvent" id="specialEvent" type="checkbox"  />
+                    <label class="form__label" for="specialEvent">
+                      {% trans 'Is this Bounty part of a Hackathon or Special Event?' %}
+                    </label>
+                  </div>
+                  <div class="">
+                    <label class="form__label" for="eventTag">{% trans "Choose Event" %}</label>
+                    <div class="form__select2">
+                      <select class="js-select2" name="eventTag" id="eventTag" disabled>
+                        {% for evt in events %}
+                          <option value="{{ evt.name }}">{{ evt.name }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
                   </div>
                 </div>
-              </div>
+              {% endif %}
             </div>
           </div>
 

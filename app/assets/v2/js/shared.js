@@ -694,7 +694,7 @@ var retrieveIssueDetails = function() {
     target_eles['description'].val(result['description']);
     target_eles['title'].val(result['title']);
 
-    $('#title--text').html(result['title']); // TODO: Refactor
+    // $('#title--text').html(result['title']); // TODO: Refactor
     $.each(target_eles, function(i, ele) {
       ele.removeClass('loading');
     });

@@ -208,9 +208,11 @@ $(document).ready(function() {
     var val = $('input[name=permission_type]:checked').val()
 
     if (val === 'approval') {
-      $('#auto_approve_workers_container').show();
+      // $('#auto_approve_workers_container').show();
+      $('#admin_override_suspend_auto_approval').attr('disabled', false);
     } else {
-      $('#auto_approve_workers_container').hide();
+      // $('#auto_approve_workers_container').hide();
+      $('#admin_override_suspend_auto_approval').attr('disabled', true);
     }
   });
 
@@ -298,18 +300,25 @@ $(document).ready(function() {
   }
 
   var open_panel = function(checkboxSelector, targetSelector, do_focus) {
-    setTimeout(function() {
+    // setTimeout(function() {
       var isChecked = $(checkboxSelector).is(':checked');
 
       if (isChecked) {
-        $(targetSelector).removeClass('hidden');
+        // $(targetSelector).removeClass('hidden');
+        $(targetSelector).attr('disabled', false);
+
         if (do_focus) {
           $(targetSelector).focus();
         }
       } else {
-        $(targetSelector).addClass('hidden');
+        // $(targetSelector).addClass('hidden');
+        $(targetSelector).attr('disabled', true);
+        if ($(targetSelector).hasClass("select2-hidden-accessible")) {
+          $(targetSelector).select2().trigger('change')
+        }
+
       }
-    }, 10);
+    // }, 10);
   };
 
   $('#hiringRightNow').on('click', () => {
@@ -805,17 +814,17 @@ let isPrivateRepo = false;
 let params = (new URL(document.location)).searchParams;
 
 const setPrivateForm = () => {
-  $('#title').removeClass('hidden');
+  // $('#title').removeClass('hidden');
   $('#description, #title').prop('readonly', false);
   $('#description, #title').prop('required', true);
   $('#no-issue-banner').hide();
+  $('#issue-details').removeClass('issue-details-public');
+
   $('#issue-details, #issue-details-edit').show();
   $('#sync-issue').removeClass('disabled');
-  $('#last-synced, #edit-issue, #sync-issue, #title--text').hide();
+  $('#last-synced, #edit-issue, #sync-issue').hide();
   $('#featured-bounty-add').hide();
 
-  $('#admin_override_suspend_auto_approval').prop('checked', false);
-  $('#admin_override_suspend_auto_approval').attr('disabled', true);
   $('#show_email_publicly').attr('disabled', true);
   $('#cta-subscription, #private-repo-instructions').removeClass('d-md-none');
   $('#nda-upload').show();
@@ -827,6 +836,8 @@ const setPrivateForm = () => {
   $('.approval').button('toggle');
   $('.permissionless').addClass('disabled');
   $('.permissionless').children('input').attr('disabled', true);
+  $('#admin_override_suspend_auto_approval').prop('checked', false);
+  $('#admin_override_suspend_auto_approval').attr('disabled', true);
 
   $('#project_type, #permission_type').select2().prop('disabled', true).trigger('change');
   $('#keywords').select2({
@@ -837,13 +848,14 @@ const setPrivateForm = () => {
 };
 
 const setPublicForm = () => {
-  $('#title').addClass('hidden');
+  // $('#title').addClass('hidden');
   $('#description, #title').prop('readonly', true);
   $('#no-issue-banner').show();
+  $('#issue-details').addClass('issue-details-public');
   $('#issue-details, #issue-details-edit').hide();
   $('#sync-issue').addClass('disabled');
   $('.js-submit').addClass('disabled');
-  $('#last-synced, #edit-issue , #sync-issue, #title--text').show();
+  $('#last-synced, #edit-issue , #sync-issue').show();
   $('#featured-bounty-add').show();
 
   $('#admin_override_suspend_auto_approval').prop('checked', true);
