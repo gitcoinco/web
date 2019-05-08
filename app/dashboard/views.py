@@ -779,7 +779,7 @@ def users_fetch(request):
 
     if len(bounties_completed) == 2:
         user_list = user_list.annotate(
-                count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network))
+                count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network, fulfilled__accepted=True))
             ).filter(
                 count__gte=bounties_completed[0],
                 count__lte=bounties_completed[1],
@@ -791,6 +791,7 @@ def users_fetch(request):
             leaderboard_ranks__leaderboard='quarterly_earners',
             leaderboard_ranks__rank__gte=leaderboard_rank[0],
             leaderboard_ranks__rank__lte=leaderboard_rank[1],
+            leaderboard_ranks__active=True,
         )
 
     if rating != 0:

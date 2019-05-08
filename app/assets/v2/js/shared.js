@@ -67,8 +67,7 @@ var callFunctionWhenweb3Available = function(f) {
 
 var loading_button = function(button) {
   button.prop('disabled', true);
-  button.addClass('disabled');
-  button.prepend('<img src=' + static_url + 'v2/images/loading_white.gif style="max-width:20px; max-height: 20px">').addClass('disabled');
+  button.prepend('<img src=' + static_url + 'v2/images/loading_white.gif style="max-width:20px; max-height: 20px">');
 };
 
 var attach_close_button = function() {
