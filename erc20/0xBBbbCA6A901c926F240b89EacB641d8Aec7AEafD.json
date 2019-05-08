@@ -11,8 +11,8 @@
   "state": "NORMAL",
   "published_on": "2017-08-01",
   "initial_price": {
-    "ETH": "0.0002ETH",
-    "USD": "0.05USD"
+    "ETH": "0.0002 ETH",
+    "USD": "0.05 USD"
   },
   "links": {
     "blog": "https://blogs.loopring.org",
