@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class CurrencyConversion(models.Model):
     """Model that represents an conversion transaciton between ETH and ERC-20 Tokens
 
