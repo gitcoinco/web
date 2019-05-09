@@ -39,8 +39,10 @@
                 <div id="details-section" class="pt-2">
                   {% include 'shared/issue_details.html' %}
                 </div>
-                <hr class="mt-5">
-                <div class="pt-4">
+                <div class="mt-4">
+                  {% include 'shared/reserved.html' %}
+                </div>
+                <div class="m-4 pt-4">
                   {% include 'shared/featured.html' %}
                 </div>
                 <div class="form__footer pb-5">
@@ -65,6 +67,8 @@
   document.result = {{ result|safe }};
 </script>
 <script src="{% static "v2/js/amounts.js" %}"></script>
+<script src="{% static "v2/js/popper.min.js" %}"></script>
+<script src="{% static "v2/js/bootstrap.min.js" %}"></script>
 <script src="{% static "v2/js/user-search.js" %}"></script>
 <script src="{% static "v2/js/pages/change_bounty.js" %}"></script>
 </html>

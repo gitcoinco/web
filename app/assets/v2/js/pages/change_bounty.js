@@ -10,9 +10,9 @@ $(document).ready(function() {
   const form = $('#submitBounty');
 
   // do some form pre-checks
-  if (String(oldBounty.project_type).toLowerCase() !== 'traditional') {
-    $('#reservedForDiv').hide();
-  }
+  // if (String(oldBounty.project_type).toLowerCase() !== 'traditional') {
+  //   $('#reservedForDiv').hide();
+  // }
 
   if (oldBounty.is_featured === true) {
     $('#featuredBounty').prop('checked', true);
@@ -34,12 +34,15 @@ $(document).ready(function() {
     $(this).select2();
   });
 
-  // show/hide the reserved for selector based on the project type
-  $('.js-select2[name=project_type]').change(function(e) {
-    if (String(e.target.value).toLowerCase() === 'traditional') {
-      $('#reservedForDiv').show();
+  $('[name=project_type]').on('change', function() {
+    let val = $('input[name=project_type]:checked').val();
+
+    if (val !== 'traditional') {
+      $('#reservedFor').attr('disabled', true);
+      $('#reservedFor').select2().trigger('change');
     } else {
-      $('#reservedForDiv').hide();
+      $('#reservedFor').attr('disabled', false);
+      userSearch('#reservedFor', false);
     }
   });
 
