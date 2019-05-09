@@ -1,16 +1,16 @@
-import argparse
 import json
 import time
-from django.utils.timezone import now
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
+from django.utils.timezone import now
 
 import requests
+import sendgrid
+from feeswapper.models import CurrencyConversion
+from sendgrid.helpers.mail import Content, Email, Mail
 from web3 import Web3
 from web3.middleware import geth_poa_middleware
-
-from feeswapper.models import CurrencyConversion
 
 # Amount of slippage from target Ether price from estimated price on exchange allowed when trading tokens back to ETH
 SLIPPAGE = 0.05  
@@ -31,7 +31,8 @@ class Command(BaseCommand):
         web3 = ''
         factoryContract = ''
         tokenList = ''
-
+        sg = sendgrid.SendGridAPIClient(apikey=settings.SENDGRID_API_KEY)
+        
         def getTokenList(self):
                 """ Queries the blockscout API for ERC-20 token balances
                 
@@ -66,6 +67,7 @@ class Command(BaseCommand):
                 
                 Args:
                         exchangeAddress (str): The address of the Uniswap exchange contract assocciated with the ERC-20 token to convert to ETH
+                        tokenSymbol (str): The symbol for the ERC-20 token to be converted to ETH. 
                 
                 Note: This currently only works with the BAT Uniswap exchange on Rinkeby Testnet
                 """
@@ -73,7 +75,7 @@ class Command(BaseCommand):
                         chain = 4
                 else:
                         chain = 1
-                # Follow Uniswap doc guidance on calculating conversion
+                # Follows Uniswap doc guidance on calculating conversion
                 exchangeContract = self.web3.eth.contract(address = exchangeAddress, abi = exchangeABI)
                 tokenAddress = exchangeContract.functions.tokenAddress().call()
                 tokenContract = self.web3.eth.contract(address = tokenAddress, abi = tokenABI)
@@ -90,53 +92,66 @@ class Command(BaseCommand):
                 self.stdout.write('Amount of ETH to be bought is :' + str(self.web3.fromWei(outputAmount,'ether')))
                 self.stdout.write('Exchange rate is : ' + str(outputAmount/walletBalance)+ ' ETH/token')
 
-                # Call contract function to give exchange approval to spend ERC-20 token balance.  
-                # Required to have exchange perform ERC-20 token transactions on behalf of FEE_ADDRESS
-                nonce = self.web3.eth.getTransactionCount(settings.FEE_ADDRESS)
-                txn_dict = exchangeContract.functions.approve(settings.FEE_ADDRESS,self.web3.toWei(walletBalance,'wei')).buildTransaction({
-                        'chainId': chain,
-                        'gas': 300000,
-                        'gasPrice': self.web3.toWei(4,'gwei'),
-                        'nonce':nonce,
-                })
-                signed_txn = self.web3.eth.account.signTransaction(txn_dict,private_key=settings.FEE_ADDRESS_PRIVATE_KEY)
-                result = self.web3.eth.sendRawTransaction(signed_txn.rawTransaction)
-                tx_receipt = self.web3.eth.getTransactionReceipt(result)
-                count = 0
-                while tx_receipt is None and (count < 30):
-                        time.sleep(10)
+                # Check for previous failed transactions in database
+                failure_count = CurrencyConversion.objects.filter(from_token_addr=tokenAddress).exclude(transaction_result='success').count()
+                if failure_count == 0:
+                        # Call contract function to give exchange approval to spend ERC-20 token balance.  
+                        # Required to have exchange perform ERC-20 token transactions on behalf of FEE_ADDRESS
+                        nonce = self.web3.eth.getTransactionCount(settings.FEE_ADDRESS)
+                        txn_dict = exchangeContract.functions.approve(settings.FEE_ADDRESS,self.web3.toWei(walletBalance,'wei')).buildTransaction({
+                                'chainId': chain,
+                                'gas': 300000,
+                                'gasPrice': self.web3.toWei(4,'gwei'),
+                                'nonce':nonce,
+                        })
+                        signed_txn = self.web3.eth.account.signTransaction(txn_dict,private_key=settings.FEE_ADDRESS_PRIVATE_KEY)
+                        result = self.web3.eth.sendRawTransaction(signed_txn.rawTransaction)
                         tx_receipt = self.web3.eth.getTransactionReceipt(result)
-                print(tx_receipt)
+                        count = 0
+                        while tx_receipt is None and (count < 30):
+                                time.sleep(10)
+                                tx_receipt = self.web3.eth.getTransactionReceipt(result)
+                        print(tx_receipt)
 
-                # Submit token -> ETH exchange trade to Uniswap.  Transaction only works for BAT exchange on Rinkeby.
-                nonce = self.web3.eth.getTransactionCount(settings.FEE_ADDRESS)
-                txn_dict = exchangeContract.functions.tokenToEthSwapInput(self.web3.toWei(walletBalance,'wei'),self.web3.toWei(outputAmount*(1-SLIPPAGE),'wei'),deadline=deadline).buildTransaction({
-                        'chainId': chain,
-                        'gas': 300000,
-                        'gasPrice': self.web3.toWei(4,'gwei'),
-                        'nonce':nonce,
-                })
-                signed_txn = self.web3.eth.account.signTransaction(txn_dict,private_key=settings.FEE_ADDRESS_PRIVATE_KEY)
-                result = self.web3.eth.sendRawTransaction(signed_txn.rawTransaction)
+                        # Submit token -> ETH exchange trade to Uniswap.  Transaction only works for BAT exchange on Rinkeby.
+                        nonce = self.web3.eth.getTransactionCount(settings.FEE_ADDRESS)
+                        txn_dict = exchangeContract.functions.tokenToEthSwapInput(self.web3.toWei(walletBalance,'wei'),self.web3.toWei(outputAmount*(1-SLIPPAGE),'wei'),deadline=deadline).buildTransaction({
+                                'chainId': chain,
+                                'gas': 300000,
+                                'gasPrice': self.web3.toWei(4,'gwei'),
+                                'nonce':nonce,
+                        })
+                        signed_txn = self.web3.eth.account.signTransaction(txn_dict,private_key=settings.FEE_ADDRESS_PRIVATE_KEY)
+                        result = self.web3.eth.sendRawTransaction(signed_txn.rawTransaction)
 
-                tx_receipt = self.web3.eth.getTransactionReceipt(result)
-                count = 0
-                while tx_receipt is None and (count < 30):
-                        time.sleep(10)
                         tx_receipt = self.web3.eth.getTransactionReceipt(result)
+                        count = 0
+                        while tx_receipt is None and (count < 30):
+                                time.sleep(10)
+                                tx_receipt = self.web3.eth.getTransactionReceipt(result)
 
-                print(tx_receipt)
-                if tx_receipt['status'] == 1:
-                        transaction_record = CurrencyConversion.objects.create(transaction_date=now(),from_amount=walletBalance, to_amount=outputAmount,conversion_rate=outputAmount/walletBalance,txid=self.web3.toHex(tx_receipt['transactionHash']),from_token_addr=tokenAddress,from_token_symbol=tokenSymbol,to_token_symbol='ETH')
+                        print(tx_receipt)
+
+                        if tx_receipt['status'] == 1:
+                                # Post transaction record to database if transaction succeeded
+                                transaction_record = CurrencyConversion.objects.create(transaction_date=now(),from_amount=walletBalance, to_amount=outputAmount,conversion_rate=outputAmount/walletBalance,txid=self.web3.toHex(tx_receipt['transactionHash']),from_token_addr=tokenAddress,from_token_symbol=tokenSymbol,to_token_symbol='ETH',transaction_result='success')
+                        else:
+                                # Post failed transaction record to database if transaction failed
+                                transaction_record = CurrencyConversion.objects.create(transaction_date=now(),from_amount=walletBalance, to_amount=outputAmount,conversion_rate=outputAmount/walletBalance,txid=self.web3.toHex(tx_receipt['transactionHash']),from_token_addr=tokenAddress,from_token_symbol=tokenSymbol,to_token_symbol='ETH',transaction_result='failure')
+                                # Email Gitcoin staff if transaction failed
+                                mail = Mail(Email(settings.CONTACT_EMAIL),'Failed fee conversion', Email(settings.CONTACT_EMAIL),Content('text/plain', tokenSymbol+' conversion to ETH failed'))
+                                response = self.sg.client.mail.send.post(request_body=mail.get())
                 else:
-                        # Email gitcoin staff about failed transaction and log failed transaction
-                
+                        # Email Gitcoin staff if token balance exists in wallet where previous attempt convert to ETH failed
+                        mail = Mail(Email(settings.CONTACT_EMAIL),'Token in Fee Wallet with previous failed fee conversion', Email(settings.CONTACT_EMAIL),Content('text/plain', tokenSymbol+' conversion to ETH failed previously so no conversion was attempted.'))                        
+                        response = self.sg.client.mail.send.post(request_body=mail.get())
+                        
 
         def handle(self, **options):
                 """ Main management command function
                 
                 Returns: 
-                  tokenList: Dict containing all ERC-20 tokens held by the FEE_ADDRESS and the balances before any ETH conversions
+                        tokenList: Dict containing all ERC-20 tokens held by the FEE_ADDRESS and their balances
                 """
                 if "rinkeby" in settings.WEB3_HTTP_PROVIDER:
                         self.network = 'rinkeby'
@@ -162,7 +177,7 @@ class Command(BaseCommand):
                 for address, details in self.tokenList.items():
                         print(details['exchangeAddress'])
                         self.sell_token(details['exchangeAddress'],details['tokenSymbol'])
-                        #transaction_record = CurrencyConversion.objects.create(from_amount=2, to_amount=1.1,conversion_rate=3/4,txid='0x1234',from_token_addr=details['exchangeAddress'],from_token_symbol='BAT',to_token_symbol='ETH')
+                        
                 if self.network == 'rinkeby':
                         return json.dumps(self.tokenList)
                 else:
