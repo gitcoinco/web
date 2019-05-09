@@ -86,9 +86,13 @@
   line-height: 18px;
 }
 
+.grant-item__member-handle span,
+.grant__stakeholders-item span {
+  color: #000;
+}
+
 .grant-item__owner-handle span,
 .grant-item__owner-handle a,
-.grant-item__member-handle span,
 .progress-text span {
   color: #0D0764;
 }
@@ -188,10 +192,6 @@
   text-align: left;
   min-width: 9rem;
   font-size: 12px;
-}
-
-#grants-details {
-  padding-bottom: 1em;
 }
 
 #grants_nav{
