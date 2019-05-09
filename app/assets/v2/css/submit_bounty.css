@@ -76,14 +76,6 @@ input:read-only {
   cursor: pointer;
 }
 
-/* #pricing-section .form__amount-wrapper {
-  width: 25%;
-}
-
-#pricing-section .form__flex-group {
-  justify-content: space-between;
-} */
-
 .select2-container--default .select2-selection--single {
   border-color:#D3D3D3 !important;
   font-size: 14px;
@@ -103,13 +95,6 @@ input:read-only {
   display: none;
 }
 
-/* #issue-details {
-  padding-left: 12px;
-  padding-right: 12px;
-} */
-
-/* #issue-details input:read-only, */
-/* #issue-details textarea:read-only */
 .issue-details-public {
   background-color: #F9F9F9;
   padding: 1em;
@@ -146,12 +131,6 @@ input:read-only {
 .issue-details-public textarea::-webkit-scrollbar-thumb:window-inactive {
   background:rgba(0,0,0,0.05);
 }
-
-/* #issue-details input:read-only {
-  font-size: 1.1rem;
-  border-bottom: 1px solid #d1d1d1;
-  border-radius: 0;
-} */
 
 #sync-issue,
 #issue-details-edit a {
@@ -196,16 +175,6 @@ input:read-only {
   .select2-container {
     max-width: 100%;
   }
-}
-
-@media (max-width: 575.98px) {
-  /* #pricing-section .form__amount-wrapper {
-    width: 100%;
-  }
-
-  #pricing-section .form__flex-group {
-    display: block;
-  } */
 }
 
 #featured-bounty-add .featured-example {

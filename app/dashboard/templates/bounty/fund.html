@@ -55,16 +55,6 @@
             <p class="text-center font-bigger-1 text-black-60">Fund your GitHub issue and work with talented developers! </p>
             <div class="my-4">
               <p class="font-caption letter-spacing text-black-60 text-uppercase">Github Repo Type</p>
-              <!-- <div class="form__radio option">
-                <input name="repo_type" id="public_repo" type="radio" value="public" checked />
-                <label class="filter-label" for=public_repo><i class="fas fa-book"></i> {% trans "Public" %}</label>
-              </div>
-
-              <div class="form__radio option">
-                <input name="repo_type" id="private_repo" type="radio" value="private" />
-                <label class="filter-label" for=private_repo><i class="fas fa-lock"></i> {% trans "Private" %}</label>
-              </div> -->
-
               <div class="btn-group-toggle" data-toggle="buttons">
                 <label class="btn btn-radio public mr-2 font-weight-bold py-2 px-4 active">
                   <input type="radio" name="repo_type" id="public_repo" value="public" autocomplete="off" checked><i class="fas fa-book mr-2"></i> {% trans "Public" %}
@@ -73,7 +63,6 @@
                   <input type="radio" name="repo_type" id="private_repo" value="private" autocomplete="off"><i class="fas fa-lock mr-2"></i> {% trans "Private" %}
                 </label>
               </div>
-
               <div id="private-repo-instructions" class="d-md-flex justify-content-between mt-3 font-smaller-3 d-md-none privaterepo-instructions">
                 <div>
                   <h5 class="font-smaller-3 font-weight-bold mb-2">Important Notes on Private Repo Bounties</h5>
@@ -171,9 +160,7 @@
                 </div>
               </div>
             </div>
-            <div id="" class="mt-4">
-
-
+            <div class="mt-4">
               <label class="font-caption letter-spacing text-black-60 text-uppercase" for="keywords">{% trans "Keywords" %}</label>
               <p class="font-body">Insert keywords relevant to your issue to make it easily discoverable by contributors </p>
               <div class="form__select2 g-multiselect">
@@ -184,9 +171,9 @@
                 <span>Add tags from your repo: </span>
                 <div id="keyword-suggestions"></div>
               </div>
-
             </div>
           </div>
+
           <div class="bg-white my-3 px-5 rounded">
             <a class="collapse-header collapsed" data-toggle="collapse" href="#details-section" role="button" aria-expanded="false" aria-controls="details-section">
               <span class="font-body">
@@ -195,7 +182,7 @@
               </span>
               <i class="fa"></i>
             </a>
-            <div id="details-section" class=" collapse py-4">
+            <div id="details-section" class=" collapse show py-4">
               {% include 'shared/issue_details.html' %}
               {% include 'shared/issue_deadline.html' %}
               <div class="w-100 mt-4">
@@ -204,19 +191,6 @@
               </div>
             </div>
           </div>
-
-          <!-- <div class="bg-white my-3 px-5 rounded">
-            <a class="collapse-header collapsed" data-toggle="collapse" href="#safsdfsdaf-section" role="button" aria-expanded="false" aria-controls="safsdfsdaf-section">
-              <span>
-                <span class="d-block text-uppercase letter-spacing">title</span>
-                <span>afdsafd</span>
-              </span>
-              <i class="fa"></i>
-            </a>
-            <div id="safsdfsdaf-section" class=" collapse pt-2">
-
-            </div>
-          </div> -->
 
           <div class="bg-white my-3 px-5 rounded">
             <a class="collapse-header collapsed" data-toggle="collapse" href="#reserve-section" role="button" aria-expanded="false" aria-controls="reserve-section">
@@ -366,7 +340,7 @@
               </div>
               <div class="form__checkbox">
                 <input name='blockchain_tos' id='blockchain_tos' type="checkbox" value=1 required />
-                <label class="form__label mt-0" for=blockchain_tos style="display: flex;">{% blocktrans %}I understand that this information is being submitted to a public, immutable, blockchain. No one, including
+                <label class="form__label mt-0" for=blockchain_tos>{% blocktrans %}I understand that this information is being submitted to a public, immutable, blockchain. No one, including
                   Gitcoin Core, will be able to take my funds or change this information.{% endblocktrans %}</label>
               </div>
             </div>
@@ -415,6 +389,7 @@
               </div>
             </div>
           </div>
+
           <div class="pb-5 text-center">
             <button class="btn btn-gc-blue btn-lg disabled js-submit mb-3 w-25 btn-lg-padding" type="submit">Fund Issue</button>
             <p class="font-caption blue">

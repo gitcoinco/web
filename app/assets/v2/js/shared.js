@@ -687,8 +687,9 @@ var retrieveIssueDetails = function() {
         placeholder: 'Select tags',
         data: keywords,
         tags: 'true',
-        allowClear: true
-      });
+        allowClear: true,
+        tokenSeparators: [ ',', ' ' ]
+      }).trigger('change');
 
     }
     target_eles['description'].val(result['description']);
@@ -1053,9 +1054,7 @@ var promptForAuth = function(event) {
     return;
   }
 
-  if (denomination == 'ETH') {
-    $('input, textarea, select').prop('disabled', '');
-  } else {
+  if (denomination !== 'ETH') {
     var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
     var from = web3.eth.coinbase;
     var to = bounty_address();
@@ -1064,23 +1063,21 @@ var promptForAuth = function(event) {
       if (error || result.toNumber() == 0) {
         if (!document.alert_enable_token_shown) {
           _alert(
-            gettext('To enable this token, go to the ') +
-            '<a style="padding-left:5px;" href="/settings/tokens">' +
-            gettext('Token Settings page and enable it.') +
-            '</a> ' +
-            gettext('This is only needed once per token.'),
+            gettext(`To enable this token, go to the
+            <a style="padding-left:5px;" href="/settings/tokens">
+            Token Settings page and enable it.
+            </a> This is only needed once per token.`),
             'warning'
           );
         }
         document.alert_enable_token_shown = true;
 
-        $('input, textarea, select').prop('disabled', 'disabled');
-        $('select[name=denomination]').prop('disabled', '');
-      } else {
-        $('input, textarea, select').prop('disabled', '');
       }
     });
 
+  } else if ($('.alert')) {
+    $('.alert').remove();
+    document.alert_enable_token_shown = false;
   }
 };
 
