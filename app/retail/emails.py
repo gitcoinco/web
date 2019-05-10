@@ -933,12 +933,12 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Developers, Ads, and Kudos, Oh My!"
-    new_kudos_pks = [2617, 2555, 2623]
+    subject = "$106K to Ethereum Projects | Cryptokitties + Kudos!"
+    new_kudos_pks = [2240, 2239, 2236]
     new_kudos_size_px = 150
 
     kudos_friday = f'''
-<h3>Happy Kudos Friday from our Ethereal Hackathon sponsors!</h3>
+<h3>Happy Kudos Friday from 90's themed Ethereal!</h3>
 </p>
 <p>
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
@@ -949,26 +949,30 @@ def render_new_bounty_roundup(to_email):
 Hi Gitcoiners,
 </p>
 <p>
-This week, we wrapped up the <a href="https://gitcoin.co/hackathon/ethereal-virtual-hackathon/">Ethereal Virtual Hackathon</a>. We had 600 hackers in our Discord, $65K in prizes, and ultimately received over 80 submissions
-for bounties. We're excited to announce winners at Ethereal, soon.
+This week, we’re celebrating the <a href="https://medium.com/gitcoin/gitcoin-oss-fund-round-2s-radical-results-9d42bb93f9a6">results of Grants Round 2.</a> The community pledged $56,535 toward 42 projects, which through our CLR matching, added up to over $100k of funding. ProgPow’s technical audit received
+the largest total contribution amount - $13,575, and the largest match, $13,547 - a total of $27,122.
 </p>
 <p>
-During the event, we relied upon on Kudos, Codefund Ads, and the Gitcoin users to drive engagement. We built <a href="https://github.com/gitcoinco/kudosbadges/issues/new">custom Kudos</a> for each sponsor, showing unique appreciation via a piece of art made specifically for sponsors and developers.
-We ran <a href="https://codefund.app/advertisers/">CodeFund Ads</a> on Etherscan, driving great engagement to our discord. Lastly, Gitcoin is a place for developers, already. We're grateful
-to everyone who participated. Reply to this email if you'd like to discuss running a hackathon with us in the future!
+There were a multitude of learnings from using Liberal Radicalism as a matching mechanism this go around.
+You can <a href="https://medium.com/gitcoin/gitcoin-oss-fund-round-2s-radical-results-9d42bb93f9a6">read more about Grants Round 2 here.</a>
+The Gitcoin OSS fund is just getting started. Details for Round 3 will be coming soon.
 </p>
 <p>
-So what got BUIDLt?  Winners will be announced next week, in the meantime, <a href=https://github.com/gitcoinco/skunkworks/blob/master/etherealhackathon2019.md>click here</a> to see a list of all entries to the hackathon!
+The Ethereal Summit is upon us, and <a href="https://gitcoin.co/blog/gitcoin-kudos-cryptokitties-a-kitt-e-game-at-the-ethereal-summit/">we’ve teamed up with CryptoKitties</a>
+to create a scavenger hunt for the event. There are six unique collectible Kudos-Kitty tokens, attendees can collect the unique NFT’s and become eligible
+for rare robot CryptoKitties! <a href="https://gitcoin.co/blog/gitcoin-kudos-cryptokitties-a-kitt-e-game-at-the-ethereal-summit/">check out this blog post</a> to learn about the game.
 </p>
 
 {kudos_friday}
+
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Check out our new <a href="https://gitcoin.co/users/">Gitcoin user directory</a> and invite great Gitcoiners to work with you today.
+            The follow up post from the Ethereal Hackathon is live. <a href="https://github.com/gitcoinco/skunkworks/blob/master/etherealhackathon2019.md">Read it here!</a>
         </li>
         <li>
-            Gitcoin Livestream is back this week with Pia Mancini, CEO of Open Collective. Join us <a href="https://gitcoin.co/livestream"> at a new time, 2PM ET, or catch it on <a href="https://twitter.com/gitcoin">Twitter</a>!
+            Due to Ethereal NY this weekend, the Gitcoin Livestream will not be airing this week. From next week, join us
+            <a href="https://gitcoin.co/livestream"> at a new time, 2PM ET, or catch it on <a href="https://twitter.com/gitcoin">Twitter</a>!
         </li>
     </ul>
 </p>
@@ -978,31 +982,31 @@ Back to shipping,
 
 '''
     highlights = [{
-        'who': 'georgiemathews',
+        'who': 'aerophile',
         'who_link': True,
-        'what': 'Share kit for Vue.js with Bloom :)',
-        'link': 'https://gitcoin.co/issue/hellobloom/share-kit/42/2910',
+        'what': 'A collaborative bounty for jurors.py',
+        'link': 'https://gitcoin.co/issue/marczeller/Kleros-Monitor-Bot/5/2938',
         'link_copy': 'View more',
     }, {
         'who': 'iamonuwa',
         'who_link': True,
-        'what': 'More great work by Onuwa on Status!',
-        'link': 'https://gitcoin.co/issue/status-im/discover-dapps/31/2888',
+        'what': 'More great work by Onuwa on Bloom!',
+        'link': 'https://gitcoin.co/issue/hellobloom/share-kit/42/2910',
         'link_copy': 'View more',
     }, {
         'who': 'devaman',
         'who_link': True,
-        'what': 'Work with Pedro on Wallet Connect by devaman.',
+        'what': 'Work with Pedro on Wallet Connect by devaman!',
         'link': 'https://gitcoin.co/issue/WalletConnect/web3connect/12/2921',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/AdExNetwork/adex-protocol-eth/issues/62',
-        'primer': 'Work with AdEx on their protocol prizes for ',
+        'url': 'https://github.com/centrifuge/precise-proofs/issues/77',
+        'primer': 'Work with Centrifuge on Precise Proofs',
     }, {
-        'url': 'https://github.com/gitcoinco/skunkworks/issues/104',
-        'primer': 'Want to work on Quorum with JP Morgan on Privacy?',
+        'url': 'https://github.com/harmony-one/harmony/issues/767',
+        'primer': 'An early bounty on Harmony!',
     }, {
         'url': 'https://github.com/smartcontractkit/chainlink/issues/1091',
         'primer': 'Connect smart contracts to external data!',
