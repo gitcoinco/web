@@ -88,7 +88,7 @@ def grants(request):
         key='grants',
         ).order_by('-pk')
     if grant_stats.exists():
-        grant_amount = grant_stats.first().val
+        grant_amount = grant_stats.first().val / 1000
 
 
     nav_options = [

@@ -121,9 +121,13 @@
 
     {% else %}
 
-      <a href="{% url 'grants:fund' grant.id grant.slug %}">
-        <button class="btn btn-gc-blue button--full shadow-none font-weight-bold py-3">{% trans "Fund this Grant" %}</button>
-      </a>
+      {% if not is_admin and grant_is_inactive %}
+
+        <a href="{% url 'grants:fund' grant.id grant.slug %}">
+          <button class="btn btn-gc-blue button--full shadow-none font-weight-bold py-3">{% trans "Fund this Grant" %}</button>
+        </a>
+      {% endif %}
+
     {% endif %}
 
     <div class="mt-2 pt-2">
@@ -150,8 +154,11 @@
             </div>
           </div>
         </div>
-        <p class="sub-title">
-          {% trans 'Monthly Recurring Funding: '%} {{ grant.monthly_amount_subscribed }}
+        <p class="sub-title mb-3">
+          {% trans 'Monthly Recurring Funding: '%} 
+        </p>
+        <p>
+          {{ grant.monthly_amount_subscribed|floatformat:0 }} DAI
         </p>
       </div>
       <!-- TODO: CLEAN UP-->
@@ -160,7 +167,7 @@
     {% if is_admin and not grant_is_inactive %}
       <!-- OWNER ACTIONS -->
       <div class="font-body grant-item__owner my-4">
-        <p class="sub-title mb-0">GRANT OWNER</p>
+        <p class="sub-title mb-0" style="font-size: 16px;">GRANT OWNER</p>
         <div class="form__select2">
           <select id="grant-admin" class="form__input" name="grant-admin" disabled>
             <option selected="selected">{{ grant.admin_profile.handle|default:'anonymous' }}</option>
@@ -250,7 +257,7 @@
 
     <!-- TEAM MEMBERS -->
     <div class="grant-item__member my-4 font-body">
-      <p class="sub-title mb-3">TEAM MEMBER{% if grant.team_members.all|length > 1 %} S {% endif %}</p>
+      <p class="sub-title mb-3">Team member{% if grant.team_members.all|length > 1 %}s{% endif %}</p>
       {% if is_admin and not grant_is_inactive %}
         <div>
           <div class="form__select2">
