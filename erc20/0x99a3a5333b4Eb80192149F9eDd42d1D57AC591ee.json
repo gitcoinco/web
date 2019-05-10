@@ -1,0 +1,17 @@
+{
+  "symbol": "CELT",
+  "address": "0x99a3a5333b4Eb80192149F9eDd42d1D57AC591ee",
+  "overview":{
+        "en": "CELT provides Liquidity for crypto assets on Singapore based COSS.io Cryptocurrency Exchange."
+  },
+  "email": "team@celtdao.com",
+  "website": "https://celtdao.com/",
+  "whitepaper": "http://bit.ly/celtdraft",
+  "published_on": "2019-04-16",
+  "initial_price":{
+        "ETH": "0.00100500 ETH"
+  },
+  "links": {
+    "telegram": "https://t.me/CELTinfo"
+  }
+}
