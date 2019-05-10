@@ -16,7 +16,7 @@ $(document).ready(function() {
   $.each(oldBounty, function(key, value) {
     let ctrl = $('[name=' + key + ']', form);
 
-    switch(ctrl.prop('type')) {
+    switch (ctrl.prop('type')) {
       case 'radio':
         $(`.${value}`).button('toggle');
         break;
@@ -46,7 +46,7 @@ $(document).ready(function() {
       $('#reservedFor').attr('disabled', false);
       userSearch('#reservedFor', false);
     }
-  }).triggerHandler("change");
+  }).triggerHandler('change');
 
   $('[name=permission_type]').on('change', function() {
     let val = $('input[name=permission_type]:checked').val();
@@ -57,7 +57,7 @@ $(document).ready(function() {
       $('#admin_override_suspend_auto_approval').prop('checked', false);
       $('#admin_override_suspend_auto_approval').attr('disabled', true);
     }
-  }).triggerHandler("change");
+  }).triggerHandler('change');
 
   const reservedForHandle = oldBounty['reserved_for_user_handle'];
 
