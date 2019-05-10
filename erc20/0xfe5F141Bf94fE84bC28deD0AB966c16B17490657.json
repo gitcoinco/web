@@ -1,0 +1,25 @@
+{
+    "symbol": "LBA",
+    "address": "0xfe5F141Bf94fE84bC28deD0AB966c16B17490657",
+    "overview": {
+        "en": "Cred is a decentralized global financial platform that facilitates open access to inclusive finance anywhere and anytime, harness the power of blockchain to allow everyone to benefit from low-cost financial products and crypto economy.",
+        "zh": "Cred是一个基于区块链和加密数字货币的开放的金融生态系统，已经落地并覆盖120多个国家用户。Cred作为传统和加密数字货币的桥梁，帮助全球的加密数字货币用户高效地享受各类金融服务，通过理财平台CredEarn和借贷平台CredBorrow以及未来诸多产品和生态服务世界。"
+    },
+    "email": "support@mycred.io",
+    "website": "https://www.mycred.io/",
+    "whitepaper": "https://static.mycred.io/CredWhitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-05-01",
+    "initial_price": {
+        "ETH": "0.0001491 ETH",
+        "USD": "0.1 USD",
+        "BTC": "0.00001085 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/ihaveCred",
+        "telegram": "https://t.me/ihaveCred",
+        "reddit": "https://www.reddit.com/r/Libra_Credit/",
+        "Kakaotalk": "https://open.kakao.com/o/gdG1peM",
+        "medium": "https://medium.com/@ihaveCred"
+    }
+}
