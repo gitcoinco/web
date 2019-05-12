@@ -15,7 +15,7 @@ autotranslate: ## Automatically translate all untranslated entries for all LOCAL
 	@echo "Starting makemessages..."
 	@docker-compose exec web python3 app/manage.py makemessages -a -d django -i node_modules -i static -i ipfs
 	@echo "Starting JS makemessages..."
-	@docker-compose exec web python3 app/manage.py makemessages -a -d djangojs -i node_modules -i static -i assets/v2/js/ipfs-api.js
+	@docker-compose exec web python3 app/manage.py makemessages -a -d djangojs -i node_modules -i static -i assets/v2/js/lib/ipfs-api.js
 	@echo "Starting autotranslation of messages..."
 	@docker-compose exec web python3 app/manage.py translate_messages -u
 	# TODO: Add check for messed up python var strings.
