@@ -16,6 +16,8 @@
 {% endcomment %}
 {% load i18n staticfiles kudos_extras %}
 
+{% include 'shared/kudos-hex-images.html'%}
+
 <ul class="nav nav-tabs my-5" id="myTab" role="tablist">
   <li class="nav-item">
     <a class="nav-link nav-line active" id="mykudos-tab" data-toggle="tab" href="#mykudos" role="tab" aria-controls="mykudos" aria-selected="true">{% if request.path == '/profile/' %}{% trans "Your Kudos" %}{% else %}{% trans "Kudos" %}{% endif %} ({{ kudos_count }})</a>
@@ -23,8 +25,7 @@
   <li class="nav-item">
     <a class="nav-link nav-line" id="sentkudos-tab" data-toggle="tab" href="#sentkudos" role="tab" aria-controls="sentkudos" aria-selected="false">{% trans "Sent Kudos" %} ({{ sent_kudos_count }})</a>
   </li>
-  <li class="align-self-center ml-auto font-smaller-2">
-    &nbsp;
+  <li class="align-self-center ml-auto font-smaller-2">&nbsp;
   </li>
 </ul>
 
@@ -40,14 +41,7 @@
       {% endif %}
     </div>
     {% if not kudos %}
-    <div class="text-center">
-      <h2 class="mb-4">What is Kudos?</h2>
-      <div class="mb-5">
-        <img class="img-fluid hidden-desktop" src="{% static "v2/images/kudos/assets/empty-kudos.svg" %}" alt="{% trans "ERC 721" %}" width="854" height="346">
-        <img class="img-fluid hidden-mobile" src="{% static "v2/images/kudos/assets/empty-kudos-desktop.svg" %}" alt="{% trans "ERC 721" %}" width="854" height="346">
-      </div>
-      <a href="{% url 'kudos_about' %}" class="btn btn-gc-blue mb-5">More About Kudos</a>
-    </div>
+      {% include 'shared/profile_kudos_empty.html' %}
     {% endif %}
   </div>
 
@@ -61,14 +55,7 @@
       {% endif %}
     </div>
     {% if not sent_kudos %}
-    <div class="text-center">
-      <h2 class="mb-4">What is Kudos?</h2>
-      <div class="mb-5">
-        <img class="img-fluid hidden-desktop" src="{% static "v2/images/kudos/assets/empty-kudos.svg" %}" alt="{% trans "ERC 721" %}" width="854" height="346">
-        <img class="img-fluid hidden-mobile" src="{% static "v2/images/kudos/assets/empty-kudos-desktop.svg" %}" alt="{% trans "ERC 721" %}" width="854" height="346">
-      </div>
-      <a href="{% url 'kudos_about' %}" class="btn btn-gc-blue mb-5">More About Kudos</a>
-    </div>
+      {% include 'shared/profile_kudos_empty.html' %}
     {% endif %}
   </div>
 
