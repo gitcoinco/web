@@ -164,9 +164,9 @@ $(document).ready(function() {
             enableWaitState('#grants_form');
             $('#tweetModal').modal('show');
             // Should add approval transactions to transaction history
-            //deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
+            deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
 
-              //nonce = parseInt(nonce) + 1;
+              nonce = parseInt(nonce) + 1;
 
               const parts = [
                 web3.utils.toChecksumAddress(accounts[0]), // subscriber address
@@ -175,7 +175,7 @@ $(document).ready(function() {
                 web3.utils.toTwosComplement(amountSTR), // data.amount_per_period
                 web3.utils.toTwosComplement(realPeriodSeconds), // data.period_seconds
                 web3.utils.toTwosComplement(realGasPrice), // data.gas_price
-                //web3.utils.toTwosComplement(nonce) // nonce
+                web3.utils.toTwosComplement(nonce) // nonce
               ];
 
               deployedSubscription.methods.getSubscriptionHash(...parts).call(function(err, subscriptionHash) {
@@ -208,7 +208,7 @@ $(document).ready(function() {
                   }
                 });
               });
-            //});
+            });
           }).on('confirmation', function(confirmationNumber, receipt) {
 
             waitforData(() => {

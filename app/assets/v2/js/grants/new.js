@@ -108,7 +108,7 @@ const init = () => {
         // data.gas_price
         web3.utils.toTwosComplement(0),
         // contract version
-        // web3.utils.toTwosComplement(0),
+        web3.utils.toTwosComplement(1),
         // specified relayer
         web3.utils.toChecksumAddress(SUBMINER_ADDRESS)
       ];
