@@ -213,7 +213,6 @@ def grant_details(request, grant_id, grant_slug):
         'updates': updates,
         'milestones': milestones,
         'keywords': get_keywords(),
-        'is_grant_info': True,
     }
 
     if add_cancel_params:

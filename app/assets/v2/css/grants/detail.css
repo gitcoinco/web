@@ -4,15 +4,6 @@
   }
 }
 
-#CLR_banner img {
-  bottom: 2rem;
-  position: relative;
-}
-
-#CLR_banner .clr-text {
-  display: inline-block;
-}
-
 .grant_details {
   background-color: #F8FAFC;
 }
@@ -176,6 +167,10 @@ textarea.editable {
 .grant-banner {
   overflow : hidden;
   max-height: 22rem;
+}
+
+.wallet-address {
+  font-size: 0.85rem;
 }
 
 .grant__stakeholders-list img,
