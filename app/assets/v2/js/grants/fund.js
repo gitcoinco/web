@@ -173,6 +173,7 @@ $(document).ready(function() {
             from: accounts[0],
             gasPrice: realGasPrice
           }).on('error', function(error) {
+            console.log('1', error);
             _alert({ message: gettext('Your approval transaction failed. Please try again.')}, 'error');
           }).on('transactionHash', function(transactionHash) {
             $('#sub_new_approve_tx_id').val(transactionHash);
