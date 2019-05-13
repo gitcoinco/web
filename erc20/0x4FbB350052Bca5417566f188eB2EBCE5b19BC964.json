@@ -1,0 +1,26 @@
+{
+	"symbol": "GRG",
+	"address": "0x4FbB350052Bca5417566f188eB2EBCE5b19BC964",
+	"overview": {
+		"en": "GRG(Rigo Token) is the utility token for governance and incentives of the RigoBlock protocol, a protocol to create and operate token pools, special purpose smart contracts which facilitate the organization of tokens and the interaction with decentralized exchanges.",
+		"zh": "GRG（Rigo Token）是用于RigoBlock协议的治理和激励的实用程序令牌，用于创建和操作令牌池的协议，用于促进令牌组织以及与分散交换的交互的专用智能合约。"
+	},
+	"email": "admin@rigoblock.com",
+	"website": "https://rigoblock.com",
+	"whitepaper": "https://rigoblock.com/assets/downloads/white-paper.pdf",
+	"state": "NORMAL",
+	"published_on": "2018-11-10",
+	"initial_price": {
+		"ETH": "0.0186 ETH",
+		"USD": "1.6 USD",
+		"BTC": "0.000776 BTC"
+	},
+	"links": {
+    		"blog": "https://medium.com/rigoblock",
+		"twitter": "https://twitter.com/rigoblock",
+		"telegram": "https://t.me/rigoblockprotocol",
+    		"reddit": "https://www.reddit.com/r/rigoblock/",
+    		"github": "https://github.com/rigoblock",
+		"facebook": "https://facebook.com/RigoBlockProtocol"
+	}
+}	
