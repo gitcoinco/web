@@ -1,0 +1,19 @@
+{
+  "symbol": "FISH",
+  "address": "0xA8Cac329F783eDAc931815C5466E283d48c9D7f7",
+  "overview":{
+    "en": "FishChain is a virtual asset trading platform with built-in gameplay, as well as a blockchain game built into the exchange. The unique mechanism integrates investment players and entertainment players. At the same time, FishChain is an open platform providing crypto-assets services for more games.FISH refers to the Token of FishChain. FishChain designed a token with an inside and outside double market—FISH. Inside the game, FISH is the only currency in circulation. The purchase of system items, trading, commissions, etc. all take place with FishCoin's, and this is a market that belongs to players. In the external market, FishCoin can also trade with other valuable mainstream currencies on the market and this part is the for investors. The two parts are connected by FISH to form a complete ecosystem.",
+    "zh": "FishChain是内置游戏玩法的虚拟资产交易平台，也是内置交易所的区块链游戏，独特的机制将投资玩家和娱乐玩家融为⼀体，同时具有开放平台的功能，可为更多游戏提供加密资产服务。FISH是FishChain的Token代币，FishChain设计了一个具有内外双层市场的通证——FISH。在游戏内部，FISH是唯一流通的货币，购买系统物品、交易、手续费等全部使用FISH,此部分为玩家的市场；在外部市场，FISH同时还可以对接市面上有价值的主流虚拟币进行交易，此部分是投资者的市场。二者通过FISH连接起来，构成完整生态。"
+  },
+  "email": "info@fishchain.io",
+  "website": "https://play.fishchain.io/",
+  "whitepaper": "https://fishchain.io/download/FishChain_Whitepaper_EN.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-01-14",
+  "links": {
+    "blog": "https://medium.com/fishchain",
+    "twitter": "https://twitter.com/FishChainGame",
+    "telegram": "https://t.me/FishChain",
+    "medium": "https://medium.com/fishchain"
+  }
+}
