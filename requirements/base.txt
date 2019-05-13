@@ -22,7 +22,7 @@ PyJWT==1.5.3
 PyPdf2
 python-twitter==3.2
 sendgrid==5.6.0
-slackclient
+slackclient==2.0.0
 eth-tester
 websockets
 web3==4.5.0
@@ -80,3 +80,4 @@ Wand==0.4.4
 wagtail==2.3
 raven==6.9.0
 sentry-sdk
+websocket-client

@@ -75,7 +75,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   <label class="form__label" for="amount">Amount</label>
                   <div class="form__flex-group">
                     <div class="form__amount-wrapper">
-                      <input name='amount' id='amount' step="0.0001" class="form__input" type="number" placeholder="Amount" />
+                      <input name='amount' id='amount' value='0.01' min="0.01" step="0.0001" class="form__input" type="number" placeholder="Amount" />
                     </div>
                     <div class="form__group-item font-body">
                       <div class="form__select2">
@@ -85,31 +85,34 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   </div>
                   <small class="form__input-help form__input-help--dynamic" id="usd_amount"></small>
                 </div>
-                <div id="gas-section" class="mt-">
+                <div id="gas-section" class="mt-2">
                   {% include 'shared/wallet_estimate.html' %}
                 </div>
-                <div id="fee-section" class="mt-4">
-                  <h5 class="font-subheader">{% trans "No Suprises" %}</h5>
-                  <div class="row">
-                    <div class="col-12 col-sm-9 mt-3 font-body">
-                      <p>
-                        {% blocktrans %}
-                        Simply pay the bounty amount ( plus a standard <span class="fee-percentage font-weight-bold">10%</span> Gitcoin platform fee ).
-                        This covers our costs for finding quality contributors to join our platform so that you get the best work.
-                        If your business requires additional assitance, please contact us <a href="mailto:founders@gitcoin.co">founders@gitcoin.co</a>
-                        {% endblocktrans %}
-                      </p>
-                    </div>
-                    <div class="col-12 col-sm-3 order-first order-sm-last mt-4 mt-sm-2 mt-md-0 mb-4 mb-sm-3">
-                      <div class="fee-circle text-center">
-                        <p class="font-title mb-0"><span id="fee-amount">0</span> <span id="fee-token">{{ bounty.token_name }}</span></p>
-                        <p class="font-body font-weight-semibold">
-                          (<span class="fee-percentage">10</span>%)
+                {% if FEE_PERCENTAGE != 0 %}
+                  <div id="fee-section" class="mt-4">
+                    <h5 class="font-subheader">{% trans "No Suprises" %}</h5>
+                    <div class="row">
+                      <div class="col-12 col-sm-9 mt-3 font-body">
+                        <p>
+                          {% blocktrans %}
+                          Simply pay the bounty amount ( plus a standard
+                          <span class="fee-percentage font-weight-bold">10</span><span class="font-weight-bold">%</span> Gitcoin platform fee ).
+                          This covers our costs for finding quality contributors to join our platform so that you get the best work.
+                          If your business requires additional assistance, please contact us <a href="mailto:founders@gitcoin.co">founders@gitcoin.co</a>
+                          {% endblocktrans %}
                         </p>
+                      </div>
+                      <div class="col-12 col-sm-3 order-first order-sm-last mt-4 mt-sm-2 mt-md-0 mb-4 mb-sm-3">
+                        <div class="fee-circle text-center">
+                          <p class="font-title mb-0"><span id="fee-amount">0</span> <span id="fee-token">{{ bounty.token_name }}</span></p>
+                          <p class="font-body font-weight-semibold">
+                            (<span class="fee-percentage">10</span>%)
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                {% endif %}
                 <div id="total-section" class="row mt-3 py-3">
                   <div class="col-sm-2 my-auto">
                     <h5 class="font-title-lg mb-0">{% trans "Total"%} </h5>
@@ -121,13 +124,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                       ( Increased Bounty <span id="summary-bounty-amount" class="font-weight-bold">0</span>
                       <span id="summary-bounty-token" class="font-weight-bold">{{ bounty.token_name }}</span> +
 
-                      <span id="summary-fee-amount" class="font-weight-bold">0</span>
-                      <span id="summary-fee-token" class="font-weight-bold">{{ bounty.token_name }}</span> Gitcoin Platform Fee )
+                      {% if FEE_PERCENTAGE == 0 %}
+                        <span class="font-weight-bold">NO</span>
+                      {% else %}
+                        <span id="summary-fee-amount" class="font-weight-bold">0</span>
+                        <span id="summary-fee-token" class="font-weight-bold">{{ bounty.token_name }}</span>
+                      {% endif %}
+                      Gitcoin Platform Fee )
                     </p>
                     <p class="font-caption mb-0">
                       You will have to approve
-                      <span id="confirmation" class="font-weight-bold">2</span>
-                      Metamask confirmations.
+                      <span id="confirmation" class="font-weight-bold">
+                        {% if FEE_PERCENTAGE == 0 %} 1 Metamask confirmation. {% else %} 2 Metamask confirmations.{% endif %}
+                      </span>
                     </p>
                   </div>
                 </div>
@@ -161,10 +170,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
   <script>
     document.is_funder_github_user_same = {{ is_funder }};
-  </script>
-
-  <script>
-    document.FEE_PERCENTAGE = {{FEE_PERCENTAGE}};
+    document.FEE_PERCENTAGE = {{ FEE_PERCENTAGE }};
   </script>
 
   <!-- jQuery -->

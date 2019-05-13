@@ -1,15 +1,15 @@
 {% load static humanize i18n grants_extra %}
-<div class="container px-md-0">
+<div class="px-0">
   <div class="row mb-3 py-2 px-0 mx-sm-0">
     <div class="col-12 px-0">
       {% if subscriptions %}
         <div id="active-subscriptions">
-          <p class="font-body font-weight-semibold subtitle">
+          <p class="font-body font-weight-semibold subtitle mb-0">
             <i class="g-icon g-icon__dot-circle mr-2"></i>{% trans "Active Subscriptions" %}
           </p>
           {% for subscription in subscriptions %}
             <div class="py-3 mx-sm-0 row transaction-history">
-              <div class="col-2 col-xl-1 font-subheader text-center my-auto">
+              <div class="col-2 font-subheader text-center text-md-left my-auto">
                 {{ subscription.created_on|date:"d M" }}
               </div>
               <div class="col-2 col-md-1 justify-content-center special_tag">
@@ -17,7 +17,7 @@
                   <img class="avatar rounded-circle" src="{{ subscription.contributor_profile.avatar_url }}">
                 </a>
               </div>
-              <div class="col-4 col-xl-5 my-auto">
+              <div class="col-4 my-auto">
                 <div class="font-weight-semibold font-body">
                   <a href="{% url 'profile' subscription.contributor_profile.handle %}">
                     {{ subscription.contributor_profile }}
@@ -51,12 +51,12 @@
       {% if contributions %}
         <hr>
         <div id="contributions">
-          <p class="font-body font-weight-semibold subtitle">
+          <p class="font-body font-weight-semibold subtitle mb-0">
             <i class="g-icon g-icon__dot-circle mr-2"></i>  {% trans "Contributions" %}
           </p>
           {% for transaction in contributions %}
             <div class="py-3 mx-sm-0 row transaction-history">
-              <div class="col-2 col-xl-1 font-subheader text-center my-auto">
+              <div class="col-2 font-subheader text-center text-md-left my-auto">
                 {{ transaction.created_on|date:"d M" }}
               </div>
               <div class="col-2 col-md-1 justify-content-center special_tag">
@@ -64,7 +64,7 @@
                   <img class="avatar rounded-circle" src="{{ transaction.subscription.contributor_profile.avatar_url }}">
                 </a>
               </div>
-              <div class="col-4 col-xl-5 my-auto">
+              <div class="col-4 my-auto">
                 <div class="font-weight-bold font-body">
                   <a href="{% url 'profile' transaction.subscription.contributor_profile.handle %}">
                     {{ transaction.subscription.contributor_profile }}
@@ -104,12 +104,12 @@
       {% if cancelled_subscriptions %}
         <hr>
         <div id="cancelled-subscriptions">
-          <p class="font-body font-weight-semibold subtitle">
+          <p class="font-body font-weight-semibold subtitle mb-0">
             <i class="g-icon g-icon__dot-circle mr-2"></i> {% trans "Inactive Subscriptions" %}
           </p>
           {% for subscription in cancelled_subscriptions %}
           <div class="py-3 mx-sm-0 row transaction-history">
-            <div class="col-2 col-xl-1 font-subheader text-center my-auto">
+            <div class="col-2 font-subheader text-center text-md-left my-auto">
               {{ subscription.created_on|date:"d M" }}
             </div>
             <div class="col-2 col-md-1 justify-content-center special_tag">
@@ -117,7 +117,7 @@
                 <img class="avatar rounded-circle" src="{{ subscription.contributor_profile.avatar_url }}">
               </a>
             </div>
-            <div class="col-4 col-xl-5 my-auto">
+            <div class="col-4 my-auto">
               <div class="font-weight-semibold font-body">
                 <a href="{% url 'profile' subscription.contributor_profile.handle %}">
                   {{ subscription.contributor_profile }}

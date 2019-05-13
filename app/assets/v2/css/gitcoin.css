@@ -370,22 +370,16 @@ div.button-pink {
   background-size: contain;
   background-position: bottom;
   background-repeat: no-repeat;
-  max-width: 1000px;
-  margin: 0 auto;
-  min-height: 300px;
+  min-height: 520px;
 }
 
-.footer__top {
-  max-width: 1000px;
-  margin: 0 auto;
+.footer__text,
+.footer__text a {
+  color: white;
 }
 
-.footer__social .nav-link {
-  margin-bottom: 1rem;
-}
-
-.footer .navbar-brand {
-  flex-grow: 1;
+.footer__text a {
+  text-decoration: underline;
 }
 
 .footer {

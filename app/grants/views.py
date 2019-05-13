@@ -88,7 +88,7 @@ def grants(request):
         key='grants',
         ).order_by('-pk')
     if grant_stats.exists():
-        grant_amount = grant_stats.first().val
+        grant_amount = grant_stats.first().val / 1000
 
 
     nav_options = [
@@ -140,7 +140,7 @@ def grant_details(request, grant_id, grant_slug):
         milestones = grant.milestones.order_by('due_date')
         updates = grant.updates.order_by('-created_on')
         subscriptions = grant.subscriptions.filter(active=True, error=False)
-        cancelled_subscriptions = grant.subscriptions.filter(Q(active=False, error=False) | Q(error=True))
+        cancelled_subscriptions = grant.subscriptions.filter(active=False, error=False)
         contributions = Contribution.objects.filter(subscription__in=grant.subscriptions.all())
         user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
         user_non_errored_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True, error=False).first()
@@ -213,6 +213,7 @@ def grant_details(request, grant_id, grant_slug):
         'updates': updates,
         'milestones': milestones,
         'keywords': get_keywords(),
+        'is_grant_info': True,
     }
 
     if add_cancel_params:
