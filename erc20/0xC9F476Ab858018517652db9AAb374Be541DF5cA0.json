@@ -1,0 +1,27 @@
+{
+  "symbol": "iFace",
+  "address": "0xC9F476Ab858018517652db9AAb374Be541DF5cA0",
+  "overview":{
+    "en": "IFace is a technology based on Face Recognition and Artificial Intelligence, which combines distributed computing and storage. Through Face Key unidirectional feature extraction and private key signature technology, portrait data fragmentation and confusion technology, 3D face recognition and living body detection technology,  depth learning technology, it establishes its own proprietary, concealed, autonomous and controllable digital identity for users. IFace can be widely used as the cornerstone technology of Internet applications, providing privacy protection and digital identity services to achieve the dual effects of digital identity security and convenience in users'Internet applications.",
+    "zh": "iFace 以人脸识别及人工智能为技术基础，结合分布式计算和存储，并通过Face Key人脸单向特征提取及人像私钥签名技术，人像数据碎片化及混淆技术、3D人脸识别及活体侦测技术、人像深度学习技术，为用户建立自己专属、隐匿、自主可控的数字身份，为用户提供隐私保护、数字资产防护及数字身份服务，实现用户互联网应用中数字身份安全与便捷双重效果，iFace将作为互联网应用的基石技术而被广泛使用。"
+  },
+  "email": "cooperation@iface.one",
+  "website": "https://www.iface.one/",
+  "whitepaper": "https://docs.google.com/document/d/1aRRa8bVhc9ls_vj-IxWPNfQZm2rJHw0kbk0u3rvziL4/mobilebasic",
+  "state": "NORMAL",
+  "published_on": "2019-05-07",
+  "initial_price":{
+        "ETH":"0.00044118 ETH",
+        "USD":"0.075 USD",
+        "BTC":"0.0000125 BTC"
+  },
+  "links": {
+    "twitter": "https://mobile.twitter.com/FacechainI",
+    "telegram": "https://t.me/ifaceEN",
+    "github": "https://github.com/ifacechain",
+    "facebook": "https://www.facebook.com/IFace-832164347135553/",
+    "reddit": "https://www.reddit.com/r/ifacechain/",
+    "slack": "https://ifacechain.slack.com",
+    "medium": "https://medium.com/iface爱妃链"
+  }
+}
