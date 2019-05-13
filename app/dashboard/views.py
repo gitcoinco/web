@@ -821,6 +821,8 @@ def users_fetch(request):
         profile_json['job_status'] = user.job_status_verbose if user.job_search_status else None
         profile_json['verification'] = user.get_my_verified_check
         profile_json['avg_rating'] = user.get_average_star_rating
+        profile_json['worked_w_you'] = '2'
+
         # profile_json['bounties'] = user.get_quarterly_stats
         profile_json['is_org'] = user.is_org
 

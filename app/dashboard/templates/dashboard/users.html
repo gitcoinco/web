@@ -136,6 +136,9 @@
                     <i class="far fa-star" :class="star <= user.avg_rating.overall.toFixed() ? 'fas' : 'far'" v-for="star in user.avg_rating.overall.toFixed(), 5"></i>
                     ([[ user.avg_rating.total_rating ]] ratings)
                   </div>
+                  <div class="text-center mb-1" v-if="user.worked_w_you">
+                    <i class="far fa-handshake"></i> Worked with you
+                  </div>
                 </div>
                 <div class="card-body  d-flex flex-column justify-content-between">
                   <div v-if="user.keywords" class="text-center">
