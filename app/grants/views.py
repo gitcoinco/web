@@ -427,6 +427,7 @@ def grant_fund(request, grant_id, grant_slug):
             subscription.contributor_address = request.POST.get('contributor_address', '')
             subscription.amount_per_period = request.POST.get('amount_per_period', 0)
             subscription.real_period_seconds = request.POST.get('real_period_seconds', 2592000)
+            print(subscription.real_period_seconds)
             subscription.frequency = request.POST.get('frequency', 30)
             subscription.frequency_unit = request.POST.get('frequency_unit', 'days')
             subscription.token_address = request.POST.get('token_address', '')
@@ -437,6 +438,7 @@ def grant_fund(request, grant_id, grant_slug):
             subscription.network = request.POST.get('network', '')
             subscription.contributor_profile = profile
             subscription.grant = grant
+
             subscription.save()
 
             # one time payments
@@ -769,7 +771,7 @@ def new_matching_partner(request):
         match_pledge.save()
 
         return get_json_response(
-            """Thank you for volunteering to match on Gitcoin Grants. 
+            """Thank you for volunteering to match on Gitcoin Grants.
             You are supporting open source, and we thank you.""", 201
         )
 

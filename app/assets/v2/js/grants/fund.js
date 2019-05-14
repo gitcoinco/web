@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 let deployedToken;
 let tokenAddress;
+let redirectURL;
 
 $(document).ready(function() {
   let gitcoinDonationAddress = "0x0000000000000000000000000000000000000000";
@@ -180,7 +181,7 @@ $(document).ready(function() {
           }).on('confirmation', function(confirmationNumber, receipt) {
             waitforData(() => {
               document.suppress_loading_leave_code = true;
-              window.location = url;
+              window.location = redirectURL;
             }); // waitforData
           }); // approve
         }); // getAccounts
@@ -292,16 +293,22 @@ const processSubscriptionHash = (parts) => {
 }
 
 const saveSubscription = (data) => {
+  console.log(data);
+  data['real_period_seconds'] = 0;
   $.ajax({
     type: 'post',
     url: '',
     data: data,
     success: json => {
+      console.log(json);
       console.log('successfully saved subscriptionHash and signature');
-      url = json.url;
-      $('#wait').val('false');
+      if (json.url != undefined) {
+        redirectURL = json.url;
+        $('#wait').val('false');
+      }
     },
-    error: () => {
+    error: (error) => {
+      console.log(error);
       _alert({ message: gettext('Your subscription failed to save. Please try again.') }, 'error');
       url = window.location;
     }
@@ -309,6 +316,12 @@ const saveSubscription = (data) => {
 }
 
 const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
+  var data = {};
+  var form = $('#js-fundGrant');
+  $.each($(form).serializeArray(), function() {
+    data[this.name] = this.value;
+  });
+  saveSubscription(data);
   let deployedSplitter = new web3.eth.Contract(compiledSplitter.abiDefinition, "0xe2fd6dfe7f371e884e782d46f043552421b3a9d9");
 
   console.log('deployed splitter is ' + deployedSplitter);
@@ -316,14 +329,30 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
   deployedSplitter.methods.splitTransfer(toFirst, toSecond, valueFirst, valueSecond, tokenAddress).send({
     from: account
   }).on('error', function(error) {
-
+    console.log('1', error);
+    _alert({ message: gettext('Your payment transaction failed. Please try again.')}, 'error');
   }).on('transactionHash', function(transactionHash) {
-
-  }).on('confirmation', function(confirmationNumber, receipt) {
     waitforData(() => {
       document.suppress_loading_leave_code = true;
-      window.location = url;
+      console.log('loading url: ' + redirectURL);
+      window.location = redirectURL;
     });
+
+    const linkURL = etherscan_tx_url(transactionHash);
+    document.issueURL = linkURL;
+
+    $('#transaction_url').attr('href', linkURL);
+    enableWaitState('#grants_form');
+    //$('#tweetModal').modal('show');
+  }).on('confirmation', function(confirmationNumber, receipt) {
+    data = {
+      'subscription_hash': 'onetime',
+      'signature': 'onetime',
+      'csrfmiddlewaretoken': $("#js-fundGrant input[name='csrfmiddlewaretoken']").val(),
+      'sub_new_approve_tx_id': $('#sub_new_approve_tx_id').val()
+    };
+    console.log('confirmed!');
+    saveSubscription(data);
   });
 }
 
