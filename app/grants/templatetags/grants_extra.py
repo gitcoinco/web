@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 from django import template
+import logging
 
 register = template.Library()
 
@@ -56,3 +57,32 @@ def modulo(num, val):
 
     """
     return num % val
+
+
+@register.filter
+def remove_duplication(contributions):
+    """Get the contribution list without duplication.
+
+    Args:
+        contributions (QuerySet): Something describing the contributions.
+
+    Usage:
+        {{ QuerySet|remove_duplication }}
+
+    Returns:
+        list: the contribution list without duplication.
+
+    """
+    handle_set = list()
+    result = list()
+
+    for contribution in contributions:
+        handle = contribution.subscription.contributor_profile.handle
+        if handle not in handle_set:
+            temp_result = list()
+            handle_set.append(handle)
+            temp_result.append(handle)
+            temp_result.append(contribution.subscription.contributor_profile.avatar_url)
+            result.append(temp_result)
+
+    return result

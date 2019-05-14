@@ -14,6 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
+{% load grants_extra %}　
 {% load static humanize i18n grants_extra %}
 <div class="px-lg-5">
   <div id="grant-profile-tabs" class="tab-container font-body mt-5 mb-4">
@@ -69,13 +70,13 @@
 
     <div id="section-nav-contributors" class="tab-section">
       <div class="grant__stakeholders-list d-flex flex-wrap">
-        {% for contribution in contributions %}
-          <a class="grant__stakeholders-item mr-3 mb-3" href="{% url 'profile' contribution.subscription.contributor_profile.handle %}">
+        {% for contribution in contributions|remove_duplication %}
+          <a class="grant__stakeholders-item mr-3 mb-3" href="{% url 'profile' contribution.0 %}">
             <div class="mr-2 d-inline-block">
-              <img src="{{ contribution.subscription.contributor_profile.avatar_url }}" />
+              <img src="{{ contribution.1 }}" />
             </div>
             <div class="mt-1 d-inline-block">
-              <span class="grant-profile font-weight-semibold">{{ contribution.subscription.contributor_profile.handle }}</span>
+              <span class="grant-profile font-weight-semibold">{{ contribution.0 }}</span>
             </div>
           </a>
 
