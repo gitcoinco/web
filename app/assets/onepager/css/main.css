@@ -560,6 +560,10 @@ body #main a:not(.button):hover {
   margin: auto;
 }
 
+.alert {
+  position: absolute;
+}
+
 #footer {
   position: absolute;
   background-color: #0D0764;
