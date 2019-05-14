@@ -1,5 +1,7 @@
 // outside of document.ready to be in global scope
 var compiledSubscription;
+var compiledSplitter;
+var splitterAddress;
 
 // Waiting State screen
 var enableWaitState = container => {
@@ -149,6 +151,8 @@ $(document).ready(function() {
       compiledSubscription = compiledSubscription0;
     }
   }
+
+  compiledSplitter = compiledSplitter0;
 
   const listen_web3_1_changes = () => {
     if (typeof web3 == 'undefined' || typeof web3.eth.getCoinbase() == 'undefined') {
