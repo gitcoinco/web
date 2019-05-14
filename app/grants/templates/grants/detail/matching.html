@@ -1,32 +1,45 @@
 {% load static humanize i18n grants_extra %}
 {% if grant.clr_matching or clr_matching_banners_style == "pledging" %}
-  <div>
-    <div id="CLR_banner" class="mt-3 mb-3" style="border: 2px solid #C3B0FF; color: white; padding: 3px 10px; border-radius: 5px;"> 
-      
-      {% if clr_matching_banners_style == "results" %}
-        <a style="color: #3E00FF;" target="new" href="https://medium.com/gitcoin/gitcoin-grants-clr-matching-ecbc87b10038">
-          <img style="float:right; margin-top: 8px; max-height: 60px;" src="{% static "v2/images/eth_dollar.png" %}" />
-        </a>
-        <p style="color: #3E00FF; font-weight: bold;" class="mt-2 mb-1">
+  <style>
+    #CLR_banner {
+      background: rgba(62,0,255,0.03);
+      border-radius: 5px;
+      color: var(--gc-blue);
+    }
+
+    #CLR_banner img {
+      height: 3rem;
+    }
+  </style>
+  <div id="CLR_banner" class="my-2 p-3 d-flex">
+
+    {% if clr_matching_banners_style == "results" %}
+
+      <a class="my-auto logo" target="new" href="https://medium.com/gitcoin/gitcoin-grants-clr-matching-ecbc87b10038">
+        <img src="{% static "v2/images/eth_dollar.png" %}" />
+      </a>
+
+      <div class="clr-text pl-2">
+        <p class="mt-2 mb-1 font-weight-semibold">
           +${{grant.clr_matching}} in CLR Matching
         </p>
-        <p style="color: #4A4A4A;" class="mt-1 mb-2">
-           This project had contributions matched 2/1 - 2/15
+        <p class="mb-0">
+          This project had contributions matched 2/1 - 2/15.
         </p>
-        
-      {% else %}
+      </div>
 
-        <a style="color: #3E00FF;" target="new" href="https://medium.com/gitcoin/gitcoin-grants-50k-oss-fund-e20e09dc2110">
-          <img style="float:right; margin-top: 8px; max-height: 60px;" src="{% static "v2/images/eth_dollar.png" %}" />
-        </a>
-        <p style="color: #3E00FF; font-weight: bold;" class="mt-2 mb-1">
-          This grant is accepting Matching Contributions
+    {% else %}
+
+      <a class="my-auto logo" target="new" href="https://medium.com/gitcoin/gitcoin-grants-50k-oss-fund-e20e09dc2110">
+        <img src="{% static "v2/images/eth_dollar.png" %}" />
+      </a>
+
+      <div class="clr-text pl-2">
+        <p class="mt-2 mb-1 font-weight-semibold">
+          This Grant is accepting Matching Contributions
         </p>
-        <p style="color: #4A4A4A;" class="mt-1 mb-2">
-           Contribute from 3/6 to 4/19 and have up to $50k in contributions matched.
-        </p>
-      {% endif %}
-    
-    </div>
+      </div>
+
+    {% endif %}
   </div>
 {% endif %}

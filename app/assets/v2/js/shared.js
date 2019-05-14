@@ -8,11 +8,11 @@
  *    */
 var show_modal_handler = (modalUrl) => {
 	  const url = modalUrl;
-	
+
 	   return (e) => {
 		       var modals = $('#modal');
 		       var modalBody = $('#modal .modal-content');
-		   
+
 	        modals.off('show.bs.modal');
 		       modals.on('show.bs.modal', () => {
 		         $('#modal .modal-content').load(modalUrl);
@@ -282,17 +282,17 @@ var waitingStateActive = function() {
 
 const notify_funder = (network, std_bounties_id, data) => {
 	  var request_url = '/actions/bounty/' + network + '/' + std_bounties_id + '/notify/funder_payout_reminder/';
-	
+
 	   showBusyOverlay();
 	  $.post(request_url, data).then(result => {
 		      hideBusyOverlay();
-		  
+
 		       _alert({message: gettext('Sent payout reminder')}, 'success');
 		      $('#notifyFunder a').addClass('disabled');
 		      return true;
 		    }).fail(result => {
 			        hideBusyOverlay();
-			    
+
 			         _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
 			      });
 };
@@ -675,6 +675,8 @@ var retrieveIssueDetails = function() {
   $.each(target_eles, function(i, ele) {
     ele.addClass('loading');
   });
+  $('#sync-issue').children('.fas').addClass('fa-spin');
+
   $.get(request_url, function(result) {
     result = sanitizeAPIResults(result);
     if (result['keywords']) {
@@ -685,17 +687,20 @@ var retrieveIssueDetails = function() {
         placeholder: 'Select tags',
         data: keywords,
         tags: 'true',
-        allowClear: true
-      });
+        allowClear: true,
+        tokenSeparators: [ ',', ' ' ]
+      }).trigger('change');
 
     }
     target_eles['description'].val(result['description']);
     target_eles['title'].val(result['title']);
 
-    $('#title--text').html(result['title']); // TODO: Refactor
+    // $('#title--text').html(result['title']); // TODO: Refactor
     $.each(target_eles, function(i, ele) {
       ele.removeClass('loading');
     });
+    $('#sync-issue').children('.fas').removeClass('fa-spin');
+
   }).fail(function() {
     $.each(target_eles, function(i, ele) {
       ele.removeClass('loading');
@@ -1049,9 +1054,7 @@ var promptForAuth = function(event) {
     return;
   }
 
-  if (denomination == 'ETH') {
-    $('input, textarea, select').prop('disabled', '');
-  } else {
+  if (denomination !== 'ETH') {
     var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
     var from = web3.eth.coinbase;
     var to = bounty_address();
@@ -1060,23 +1063,21 @@ var promptForAuth = function(event) {
       if (error || result.toNumber() == 0) {
         if (!document.alert_enable_token_shown) {
           _alert(
-            gettext('To enable this token, go to the ') +
-            '<a style="padding-left:5px;" href="/settings/tokens">' +
-            gettext('Token Settings page and enable it.') +
-            '</a> ' +
-            gettext('This is only needed once per token.'),
+            gettext(`To enable this token, go to the
+            <a style="padding-left:5px;" href="/settings/tokens">
+            Token Settings page and enable it.
+            </a> This is only needed once per token.`),
             'warning'
           );
         }
         document.alert_enable_token_shown = true;
 
-        $('input, textarea, select').prop('disabled', 'disabled');
-        $('select[name=denomination]').prop('disabled', '');
-      } else {
-        $('input, textarea, select').prop('disabled', '');
       }
     });
 
+  } else if ($('.alert')) {
+    $('.alert').remove();
+    document.alert_enable_token_shown = false;
   }
 };
 

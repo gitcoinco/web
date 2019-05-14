@@ -6,12 +6,12 @@
         <div class="container">
           <div class="row">
             <div class="col-12 order-md-2 col-md-6">
-              <p class="font-body sub-title">
-                {% trans "Milestones" %}
+              <p class="sub-title">
+                {% trans "MILESTONES" %}
                 {% if is_admin and not grant_is_inactive %}<a href="{% url 'grants:milestones' grant.id grant.slug %}" class="milestones-edit">{% trans "Edit Milestones" %}</a>{% endif %}
               </p>
-              <div class="milestones-container px-5 mb-4">
-                  {% if milestones %}
+              {% if milestones %}
+                <div class="milestones-container px-5 mb-4">
                   <ul class="milestones-list mb-0">
                     {% for milestone in milestones %}
                       <li class="pb-3 pl-2">
@@ -29,14 +29,14 @@
                       </li>
                     {% endfor %}
                   </ul>
-                {% else %}
-                  <p class="m-auto text-center font-weight-semibold">{% trans "No milestones added" %}</p>
-                {% endif %}
-              </div>
+                </div>
+              {% else %}
+                <p class="m-auto text-center font-weight-semibold py-5">{% trans "No milestones added" %}</p>
+              {% endif %}
             </div>
   
             <div class="col-12 order-md-1 col-md-6 p-md-0 pr-lg-5">
-              <p class="font-body sub-title">{% trans "Updates" %}</p>
+              <p class="sub-title">{% trans "UPDATES" %}</p>
               <div class="p-0">
                 {% if is_admin and not grant_is_inactive %}
                   <div class="my-4 py-2 pr-3">

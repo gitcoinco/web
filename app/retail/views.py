@@ -546,6 +546,16 @@ def contributor_bounties(request, tech_stack):
         'hide_newsletter_consent': True,
         'gitcoin_description': gitcoin_description,
         'projects': projects,
+        'contributor_list': [
+            { 'link': "/python", 'text': "Python"},
+            { 'link': "/javascript", 'text': "JavaScript"},
+            { 'link': "/rust", 'text': "Rust"},
+            { 'link': "/solidity", 'text': "Solidity"},
+            { 'link': "/design", 'text': "Design"},
+            { 'link': "/html", 'text': "HTML"},
+            { 'link': "/ruby", 'text': "Ruby"},
+            { 'link': "/css", 'text': "CSS"},            
+        ]
     }
 
     try:
