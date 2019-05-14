@@ -1,0 +1,233 @@
+{% comment %}
+  Copyright (C) 2019 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+
+<style>
+  .empty-kudos {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    max-width: 960px;
+    margin: 0 auto;
+    margin-bottom: 4rem;
+  }
+
+  .hex-container {
+    flex: 0 0 auto;
+    width: 200px;
+    height: 200px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 40px;
+    box-sizing: border-box;
+    text-align: center;
+    margin: 0 -10px;
+    margin-bottom: -40px;
+  }
+
+  .hex-container__text {
+    margin-bottom: 0;
+    font-size: 18px;
+    line-height: 1.35;
+  }
+
+  svg.bg {
+    stroke-width: 10;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+  }
+
+  .animated {
+    animation: strokeAnimation linear infinite 4s;
+  }
+
+  .animated-fill {
+    animation: fillAnimation linear infinite 4s;
+  }
+
+  @keyframes strokeAnimation {
+    0%,
+    100% {
+      stroke: #e2dcfa;
+    }
+    50% {
+      stroke: #dcecf2;
+    }
+    75% {
+      stroke: #efe8e2;
+    }
+  }
+
+  @keyframes fillAnimation {
+    0%,
+    100% {
+      fill: #2991c1;
+    }
+    50% {
+      fill: #dcecf2;
+    }
+    75% {
+      fill: #db8845;
+    }
+  }
+
+  .outer-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100vw;
+    left: calc(-50vw + 50%);
+    margin-bottom: 5rem;
+  }
+
+  @media (max-width: 960px) {
+    .empty-kudos {
+      --margin: 13vw;
+    }
+
+    .hex-container:nth-of-type(5) {
+      margin-left: var(--margin);
+    }
+
+    .hex-container:nth-of-type(7) {
+      margin-right: var(--margin);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hex-container:nth-of-type(5) {
+      margin-left: 0;
+    }
+
+    .hex-container:nth-of-type(7) {
+      margin-right: 0;
+    }
+
+    .hex-container:nth-of-type(4) {
+      margin-left: var(--margin);
+    }
+
+    .hex-container:nth-of-type(5) {
+      margin-right: var(--margin);
+    }
+
+    .hex-container:nth-of-type(8) {
+      display: none;
+    }
+  }
+
+  @media (max-width: 550px) {
+    .hex-container:nth-of-type(3),
+    .hex-container:nth-of-type(6) {
+      margin-left: 30%;
+      margin-right: 30%;
+    }
+
+    .hex-container:nth-of-type(5) {
+      margin-left: 0;
+    }
+
+    .hex-container:nth-of-type(7) {
+      margin-right: 0;
+    }
+
+    .hex-container:nth-of-type(4) {
+      margin-left: 0;
+    }
+
+    .hex-container:nth-of-type(5) {
+      margin-right: 0;
+    }
+
+    .hex-container:nth-of-type(8) {
+      display: none;
+    }
+  }
+
+  @media (max-width: 410px) {
+    .hex-container:nth-of-type(n),
+    .hex-container:nth-of-type(2n) {
+      margin-left: -75px;
+      margin-right: 0;
+    }
+
+    .hex-container:nth-of-type(8) {
+      display: flex;
+    }
+
+    .hex-container:nth-of-type(2n) {
+      margin-left: 75px;
+    }
+  }
+
+  @media (max-width: 375px) {
+    .hex-container:nth-of-type(n),
+    .hex-container:nth-of-type(2n) {
+      margin-left: 10%;
+      margin-right: 10%;
+      margin-bottom: 0;
+    }
+
+    .hex-container:nth-of-type(2),
+    .hex-container:nth-of-type(5) {
+      display: none;
+    }
+  }
+</style>
+
+<div class="outer-container">
+  <h2 class="mb-4">What is Kudos?</h2>
+  <div class="empty-kudos">
+    {% include 'shared/kudos_hex_container.html' with text="Unique Collectable Work" %}
+    <div class="hex-container">
+      <svg class="bg animated" width="222" height="256" viewBox="0 0 222 256" fill="none">
+        <use href="#kudos-hex"></use>
+      </svg>
+      <svg width="103" height="64" viewBox="0 0 103 64" fill="none">
+        <use href="#kudos-share"></use>
+      </svg>
+    </div>
+    {% include 'shared/kudos_hex_container.html' with text="Showcase special skills & talents" %}
+    {% include 'shared/kudos_hex_container.html' with text="Bought & Sold on the Kudos Marketplace" %}
+    <div class="hex-container">
+      <svg class="bg animated" width="222" height="256" viewBox="0 0 222 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <use href="#kudos-hex"></use>
+      </svg>
+      <svg width="58" height="73" viewBox="0 0 58 73" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <use href="#kudos-marketplace"></use>
+      </svg>
+    </div>
+    {% include 'shared/kudos_hex_container.html' with text="Gifted by another Gitcoin Member" %}
+    {% include 'shared/kudos_hex_container.html' with text="Show appreciation / collaboration" %}
+    <div class="hex-container">
+      <svg class="bg animated" width="222" height="256" viewBox="0 0 222 256" fill="none"
+           xmlns="http://www.w3.org/2000/svg">
+        <use href="#kudos-hex"></use>
+      </svg>
+      <svg width="66" height="100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <use href="#kudos-mint"></use>
+      </svg>
+    </div>
+    {% include 'shared/kudos_hex_container.html' with text="Minted on the blockchain" %}
+  </div>
+  <a href="{% url 'kudos_about' %}" class="btn btn-gc-blue mb-5">More About Kudos</a>
+</div>

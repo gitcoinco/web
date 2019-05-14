@@ -88,7 +88,7 @@ def grants(request):
         key='grants',
         ).order_by('-pk')
     if grant_stats.exists():
-        grant_amount = grant_stats.first().val
+        grant_amount = grant_stats.first().val / 1000
 
 
     nav_options = [
@@ -213,7 +213,6 @@ def grant_details(request, grant_id, grant_slug):
         'updates': updates,
         'milestones': milestones,
         'keywords': get_keywords(),
-        'is_grant_info': True,
     }
 
     if add_cancel_params:
