@@ -560,16 +560,12 @@ body #main a:not(.button):hover {
   margin: auto;
 }
 
-.alert {
-  position: absolute;
-}
 #footer {
   position: absolute;
   background-color: #0D0764;
   padding: 5px;
   width: 100vw;
-  left: 0px;
-  text-align: center;
+  left: 50%;
   bottom: 0px;
 }
 p.alert_msg {
