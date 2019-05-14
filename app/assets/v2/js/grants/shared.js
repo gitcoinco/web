@@ -1,7 +1,8 @@
 // outside of document.ready to be in global scope
 var compiledSubscription;
 var compiledSplitter;
-var splitterAddress;
+var splitterAddress = '0xe2fd6dfe7f371e884e782d46f043552421b3a9d9';
+var contractVersion;
 
 // Waiting State screen
 var enableWaitState = container => {
@@ -144,11 +145,13 @@ const show_error_banner = (result, web3_not_found) => {
 
 $(document).ready(function() {
 
-  let contractVersion = $('#contract_version').val();
+  contractVersion = $('#contract_version').val();
 
   if (contractVersion) {
     if (contractVersion == 0) {
       compiledSubscription = compiledSubscription0;
+    } else if (contractVersion == 1) {
+      compiledSubscription = compiledSubscription1;
     }
   }
 
