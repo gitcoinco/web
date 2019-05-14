@@ -1930,9 +1930,12 @@ class Profile(SuperModel):
     @property
     def get_my_kudos(self):
         from kudos.models import KudosTransfer
+        kt_owner_address = KudosTransfer.objects.filter(
+            receive_address__iexact=self.preferred_payout_address
+        )
         kt_profile = KudosTransfer.objects.filter(recipient_profile=self)
 
-        kudos_transfers = kt_profile
+        kudos_transfers = kt_profile | kt_owner_address
         kudos_transfers = kudos_transfers.filter(
             kudos_token_cloned_from__contract__network=settings.KUDOS_NETWORK
         )
