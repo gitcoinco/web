@@ -2099,6 +2099,13 @@
 <p>This middleware is essentially a hack to allow us to continue to use the
 standard Django LocaleMiddleware without modification, but simply disable
 the autodetection aspect based on the Accept-Language header.</p>
+<h2 id="app.middleware.bleach_requests">bleach_requests</h2>
+
+<pre><code class="python">bleach_requests(get_response)
+</code></pre>
+
+<p>This middleware uses the bleach library to sanitize incoming requests to
+prevent XSS and injection attacks</p>
                 
                   
                 
