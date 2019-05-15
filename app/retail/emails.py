@@ -958,9 +958,9 @@ You can <a href="https://medium.com/gitcoin/gitcoin-oss-fund-round-2s-radical-re
 The Gitcoin OSS fund is just getting started. Details for Round 3 will be coming soon.
 </p>
 <p>
-The Ethereal Summit is upon us, and <a href="https://gitcoin.co/blog/gitcoin-kudos-cryptokitties-a-kitt-e-game-at-the-ethereal-summit/">we’ve teamed up with CryptoKitties</a>
-to create a scavenger hunt for the event. There are six unique collectible Kudos-Kitty tokens, attendees can collect the unique NFT’s and become eligible
-for rare robot CryptoKitties! <a href="https://gitcoin.co/blog/gitcoin-kudos-cryptokitties-a-kitt-e-game-at-the-ethereal-summit/">check out this blog post</a> to learn about the game.
+The Ethereal Summit was this past weekend, and we had a tremendous time. <a href="https://gitcoin.co/blog/gitcoin-kudos-cryptokitties-a-kitt-e-game-at-the-ethereal-summit/">We teamed up with CryptoKitties</a>
+to create a scavenger hunt for the event. There were six unique collectible Kudos-Kitty tokens, which attendees collected to become eligible
+receive rare robot CryptoKitties! <a href="https://gitcoin.co/blog/gitcoin-kudos-cryptokitties-a-kitt-e-game-at-the-ethereal-summit/">Check out this blog post</a> to learn about the game.
 </p>
 
 {kudos_friday}
@@ -968,11 +968,11 @@ for rare robot CryptoKitties! <a href="https://gitcoin.co/blog/gitcoin-kudos-cry
 <h3>What else is new?</h3>
     <ul>
         <li>
-            The follow up post from the Ethereal Hackathon is live. <a href="https://github.com/gitcoinco/skunkworks/blob/master/etherealhackathon2019.md">Read it here!</a>
+            The follow up post from the Ethereal Hackathon is live. <a href="https://gitcoin.co/blog/the-results-msft-gitcoins-ethereal-hackathon/">Read it here!</a>
         </li>
         <li>
-            Due to Ethereal NY this weekend, the Gitcoin Livestream will not be airing this week. From next week, join us
-            <a href="https://gitcoin.co/livestream"> at a new time, 2PM ET, or catch it on <a href="https://twitter.com/gitcoin">Twitter</a>!
+            Due to ETH NY this week, the Gitcoin Livestream will not be airing. Join us next week 
+            <a href="https://gitcoin.co/livestream"> at 2PM ET </a>, or catch it on <a href="https://twitter.com/gitcoin">Twitter</a>!
         </li>
     </ul>
 </p>
