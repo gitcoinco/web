@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 from django import template
-import logging
+from grants.models import Contribution, Grant
 
 register = template.Library()
 
@@ -64,10 +64,10 @@ def remove_duplication(contributions):
     """Get the contribution list without duplication.
 
     Args:
-        contributions (QuerySet): Something describing the contributions.
+        contributions (QuerySet<Contribution>): Something describing the contributions.
 
     Usage:
-        {{ QuerySet|remove_duplication }}
+        {{ contributions|remove_duplication }}
 
     Returns:
         list: the contribution list without duplication.
@@ -87,3 +87,23 @@ def remove_duplication(contributions):
                 result.append(temp_result)
 
     return result
+
+
+@register.filter
+def remove_duplication_by_id(grant_id):
+    """Get the contribution list without duplication by grant id.
+
+        Args:
+            grant_id (int): Grant index.
+
+        Usage:
+            {{ grant_id|remove_duplication_by_id }}
+
+        Returns:
+            list: the contribution list without duplication.
+
+        """
+    grant = Grant.objects.prefetch_related('subscriptions').get(pk=grant_id)
+    contributions = Contribution.objects.filter(subscription__in=grant.subscriptions.all())
+
+    return remove_duplication(contributions)
