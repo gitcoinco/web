@@ -5,13 +5,12 @@
 }
 
 .press_details {
-    display: flex;
-    flex-direction: column;
-    color: #000000;
-    font-size: 16px;
-    font-family: Muli;
-    width: 600px;
-    text-align: justify;
+  display: flex;
+  flex-direction: column;
+  color: #000000;
+  font-size: 16px;
+  width: 600px;
+  text-align: justify;
 }
 .grid {
   width: 100%;
