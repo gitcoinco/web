@@ -302,6 +302,7 @@ urlpatterns = [
     re_path(r'^pricing/$', retail.views.pricing, name='pricing'),
     re_path(r'^subscribe/$', retail.views.subscribe, name='subscribe'),
     re_path(r'^about/?', retail.views.about, name='about'),
+    re_path(r'^press/?', retail.views.press_page, name='press_page'),
     re_path(r'^mission/?', retail.views.mission, name='mission'),
     re_path(r'^jobs/?', retail.views.jobs, name='jobs'),
     re_path(r'^vision/?', retail.views.vision, name='vision'),

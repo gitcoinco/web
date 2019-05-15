@@ -1,0 +1,144 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+  {% include 'shared/head.html' %}
+  <head>
+    <meta name="title" content="About Gitcoin: Find Open Bug Bounties & Freelance Coders">
+    <meta name="description" content="Gitcoin is a community for freelance developers to collaborate and monetize their skills
+    while working on Open Source projects through bounties paid in crypto (ETH or any ERC-20 token).">
+    <link rel="stylesheet" href="{% static "v2/css/landing_page.css" %}" />
+    <link rel="stylesheet" href="{% static "v2/css/press_page.css" %}" />
+  </head>
+  <body class="{{ active }} g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'home/nav.html' %}
+      {% include 'shared/minihero.html' with h1='Press & Media Coverage' hide_logo=true %}
+    </div>
+
+    <div class="container-fluid text-center white-light-bg">
+      <div class="row pb-1 pt-4">
+          <div class="col text-center">
+            <h4 class="">{% trans "Recent Press" %}</h4>
+          </div>
+      </div>
+      <div class="row pb-1 pt-4">
+        <div class="col text-center">
+          
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid bg-lightblue">
+        <div class="row pb-1 pt-4 text-center">
+            <div class="col text-center">
+              <h4 class="">{% trans "Press Releases" %}</h4>
+            </div>
+        </div>
+        <div class="container">
+          <div class="row pb-4 pt-4">
+              <div id="medium-widget"></div>
+            <div class="col text-center pb-4 pt-4">
+              <a href="{% url "medium" %}" target="_blank">See more</a>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <div class="container-fluid text-center white-light-bg">
+        <div class="row pb-1 pt-4">
+            <div class="col text-center">
+              <h4 class="">{% trans "Social Mentions" %}</h4>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container-fluid text-center bg-lightblue">
+        <div class="row pb-1 pt-4">
+            <div class="col text-center">
+              <h4 class="">{% trans "Recent Videos" %}</h4>
+            </div>
+        </div>
+        <div class="container">
+          <div class="row pb-1 pt-4">
+            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                <iframe width="350" height="240" src="https://www.youtube.com/embed/DJartWzDn0E" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                <iframe width="350" height="240" src="https://www.youtube.com/embed/DJartWzDn0E" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                <iframe width="350" height="240" src="https://www.youtube.com/embed/DJartWzDn0E" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+          </div>
+        </div>
+        <div class="col text-center pb-4 pt-4">
+          <a href="https://www.youtube.com/channel/UCeKRqRjzSzq5yP-zUPwc6_w" target="_blank">See more</a>
+        </div>
+    </div>
+
+    <div class="container-fluid text-center white-light-bg">
+      <div class="row pb-1 pt-4">
+          <div class="col">
+            <div class="pb-4 pt-4">
+              <a class="button button--primary" role="button" href="{% url "tools" %}">
+                {% trans "Join the Newsletter" %}
+              </a>
+            </div>
+            <div class="pb-4 pt-4">
+              <a class="button button--primary" role="button" href="{% url "tools" %}">
+                {% trans "Find Freelance Coders" %}
+              </a>
+            </div>
+            <div class="pb-4 pt-4">
+              <a class="button button--primary" role="button" href="{% url "tools" %}">
+                {% trans "Find Freelance Bug Bounties" %}
+              </a>
+            </div>
+              </div>
+      </div>
+    </div>
+
+    {% include 'shared/footer.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/messages.html' %}
+
+  <script src="https://medium-widget.pixelpoint.io/widget.js"></script>
+  <script>MediumWidget.Init({renderTo: '#medium-widget', params: {"resource":"https://medium.com/gitcoin/","postsPerLine":2,"limit":4,"picture":"small","fields":["description","publishAt"],"ratio":"square"}})</script>
+</body>
+</html>

@@ -733,6 +733,18 @@ def about(request):
     return TemplateResponse(request, 'about.html', context)
 
 
+def press_page(request):
+    """Render Gitcoin Press page."""
+
+    context = {
+        'title': 'Press Page',
+        'card_title': _('Gitcoin is a mission-driven organization.'),
+        'card_desc': _('Our mission is to grow open source.'),
+        'avatar_url': static('v2/images/grow_open_source.png'),
+    }
+
+    return TemplateResponse(request, 'press_page.html', context)
+
 def mission(request):
     """Render the Mission response."""
 
