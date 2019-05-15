@@ -652,11 +652,32 @@ $('#submitBounty').validate({
               indicateMetamaskPopup(true);
               if (error) {
                 _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
+                unloading_button($('.js-submit'));
               } else {
                 deductBountyAmount(fee, txnId);
               }
+<<<<<<< HEAD
             }
           );
+=======
+            });
+          } else {
+            const amountInWei = fee * 1.0 * Math.pow(10, token.decimals);
+            const token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+
+            token_contract.transfer(to_address, amountInWei, { gasPrice: gas_price },
+              function(error, txnId) {
+                indicateMetamaskPopup(true);
+                if (error) {
+                  _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
+                  unloading_button($('.js-submit'));
+                } else {
+                  deductBountyAmount(fee, txnId);
+                }
+              }
+            );
+          }
+>>>>>>> stable
         }
       }
     };
@@ -674,6 +695,7 @@ $('#submitBounty').validate({
       }
     };
 
+<<<<<<< HEAD
     const uploadNDA = function() {
       const formData = new FormData();
 
@@ -698,6 +720,61 @@ $('#submitBounty').validate({
         console.log('NDA error:', error);
       });
     };
+=======
+      const uploadNDA = function() {
+        const formData = new FormData();
+
+        formData.append('docs', $('#issueNDA')[0].files[0]);
+        formData.append('doc_type', 'unsigned_nda');
+        const settings = {
+          url: '/api/v0.1/bountydocument',
+          method: 'POST',
+          processData: false,
+          dataType: 'json',
+          contentType: false,
+          data: formData
+        };
+
+        $.ajax(settings).done(function(response) {
+          _alert(response.message, 'info');
+          ipfsBounty.payload.unsigned_nda = response.bounty_doc_id;
+          if (data.featuredBounty) payFeaturedBounty();
+          else do_bounty();
+        }).fail(function(error) {
+          _alert('Unable to upload NDA. ', 'error');
+          unloading_button($('.js-submit'));
+          console.log('NDA error:', error);
+        });
+      };
+
+      const payFeaturedBounty = function() {
+        indicateMetamaskPopup();
+        web3.eth.sendTransaction({
+          to: '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+          from: web3.eth.coinbase,
+          value: web3.toWei(ethFeaturedPrice, 'ether'),
+          gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)),
+          gas: web3.toHex(318730),
+          gasLimit: web3.toHex(318730)
+        },
+        function(error, result) {
+          indicateMetamaskPopup(true);
+          if (error) {
+            _alert({ message: gettext('Unable to upgrade to featured bounty. Please try again.') }, 'error');
+            unloading_button($('.js-submit'));
+            console.log(error);
+          } else {
+            saveAttestationData(
+              result,
+              ethFeaturedPrice,
+              '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+              'featuredbounty'
+            );
+          }
+          do_bounty();
+        });
+      };
+>>>>>>> stable
 
     const payFeaturedBounty = function() {
       indicateMetamaskPopup();
