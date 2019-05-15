@@ -238,7 +238,7 @@ def ipfs_cat_ipfsapi(key):
 
 def ipfs_cat_requests(key):
     try:
-        url = f'https://ipfs.infura.io:5001/api/v0/cat/{key}'
+        url = f'https://ipfs.infura.io:5001/api/v0/cat?arg={key}'
         response = requests.get(url, timeout=1)
         return response.text, response.status_code
     except:
@@ -316,6 +316,8 @@ def get_bounty_from_invite_url(invite_url):
 
 
 def get_unrated_bounties_count(user):
+    if not user:
+        return 0
     unrated_contributed = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=user) \
         .filter(interested__status='okay') \
         .filter(interested__pending=False).filter(idx_status='done') \

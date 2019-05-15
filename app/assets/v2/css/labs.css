@@ -153,16 +153,6 @@ body {
     margin-left: 1em !important;
   }
 
-  .row {
-    padding: 1rem;
-    justify-content: center;
-  }
-
-  .sub-title {
-    align-content: center;
-    text-align: center;
-  }
-
   .social {
     margin-top: 0.2rem;
   }

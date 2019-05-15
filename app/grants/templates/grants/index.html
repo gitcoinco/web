@@ -26,8 +26,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <div class="container-fluid header dash">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'grants/nav.html' %}
-      <div class="container py-5">
-        <div class="grants-hero white">
+      <div class="container py-5 ">
+        <div class="grants-hero white my-5">
           <div class="row">
             <div class="col-12 col-md-6 order-md-last mb-5 mb-md-0">
               <div class="embed-responsive embed-responsive-16by9">
@@ -35,8 +35,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               </div>
             </div>
             <div class="m-auto col-12 col-md-6 offset-lg-1 col-lg-5">
-              <h1 class="font-title-xl">{% trans 'Provide sustainable funding for Open Source with Gitcoin Grants' %}</h1>
-              <p class="my-4 pt-1 font-subheader">
+              <h1 class="font-title-xl font-weight-semibold">{% trans 'Provide sustainable funding for Open Source with Gitcoin Grants' %}</h1>
+              <p class="my-4 pt-1 font-header">
                 {% blocktrans %}
                 Gitcoin Grants, powered by the <a target="_blank" rel="noopener noreferrer" href="http://1337alliance.com/">EIP 1337 standard</a>
                 , are a fast, easy and secure way to provide recurring token contributions to your favorite OSS maintainers. <br/><br/>
@@ -53,27 +53,40 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       </div>
     </div>
 
+
+      <div class="container-fluid py-4 grants-results">
+        <div class="container">
+          <strong>Gitcoin Grants</strong> has facilitated the distribution of <strong>${{grant_amount|floatformat:0}}k</strong> to Open Source since it's launch in January 2019.  <br>
+          <a class="font-body" href="/results">See more results</a>.
+        </div>
+      </div>
+
       <div class="container-fluid py-5 grants-matching">
         <div class="container">
           <div class="row">
           <div class="col-md-6">
-            <h2>Round 2 of Matching is Live Now!</h2>
-            <h5>Contribute from 3/6 to 4/19 and have up to $50k in contributions matched.</h5>
-            <p>A special thanks to the following partners who have offered to match contributions to Gitcoin Grants.  <a href="https://medium.com/gitcoin/gitcoin-grants-50k-oss-fund-e20e09dc2110">(Read Announcement Here)</a></p>
+            <h2 class="mb-1 font-title">Round 3 details coming soon.</h2>
+            <h3 class="mb-4 font-subheader">We will be announcing the match amounts soon!</h5>
+            <h2 class="mb-2 font-header">Round 2 of Matching is now closed!</h2>
+            <p class="mb-4">
+              A special thanks to the following partners who have offered to match contributions to Gitcoin Grants.
+              <a href="https://medium.com/gitcoin/gitcoin-grants-50k-oss-fund-e20e09dc2110">(Read Announcement Here)
+              </a>
+            </p>
 
-              {% if not user.is_authenticated %}
-                <a style="display:none;" class="btn btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">{% trans 'Become a Matching Partner' %}</a>
-              {% else %}
-                <div style="display:none;" class="btn btn-gc-blue" onclick="processPayment()">
-                  {% trans 'Become a Matching Partner' %}
-                </div>
-              {% endif %}
-
-
-            </div>
-          <div class="col-md-6"><img src="{% static 'v2/images/grants/robots.png' %}" class="rounded mx-auto d-block"/></div>
+            {% if not user.is_authenticated %}
+              <a class="btn btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">{% trans 'Become a Matching Partner' %}</a>
+            {% else %}
+              <div class="btn btn-gc-blue font-subtitle font-weight-semibold" onclick="processPayment()">
+                {% trans 'Become a Matching Partner' %}
+              </div>
+            {% endif %}
           </div>
-          {% if current_partners or past_partners %}
+          <div class="col-md-6">
+            <img src="{% static 'v2/images/grants/robots.png' %}" class="rounded mx-auto d-block"/>
+          </div>
+        </div>
+        {% if current_partners or past_partners %}
           <ul class="nav nav-tabs my-5" role="tablist">
             <li class="nav-item">
               <a class="nav-link nav-line active" id="currentpartners-tab" data-toggle="tab" href="#currentpartners" role="tab" aria-controls="currentpartners" aria-selected="true">Current Partners</a>
@@ -85,23 +98,23 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             </li>
           </ul>
 
-
           <div class="tab-content">
-              <div class="tab-pane fade show active" id="currentpartners" role="tabpanel" aria-labelledby="currentpartners-tab">
-                {% for current_partner in current_partners %}
-                  <div style="text-align:center; display: inline-block; padding: 10px;">
-                    <h5>
-                      <a href="/profile/{{current_partner.profile.handle}}">
-                        @{{current_partner.profile.handle}}
-                      </a>
-                    </h5>
-                      <a href="/profile/{{current_partner.profile.handle}}">
-                        <img style="max-width:100px; border-radius: 50px;" src="/dynamic/avatar/{{current_partner.profile.handle}}">
-                      </a>
-                    <p>${{current_partner.amount|floatformat}}</p>
-                  </div>
-                {% endfor %}
-              </div>
+            <div class="tab-pane fade show active" id="currentpartners" role="tabpanel" aria-labelledby="currentpartners-tab">
+              {% if current_partners|length == 0 %} No current partners.{% endif %}
+              {% for current_partner in current_partners %}
+                <div style="text-align:center; display: inline-block; padding: 10px;">
+                  <h5>
+                    <a href="/profile/{{current_partner.profile.handle}}">
+                      @{{current_partner.profile.handle}}
+                    </a>
+                  </h5>
+                    <a href="/profile/{{current_partner.profile.handle}}">
+                      <img style="max-width:100px; border-radius: 50px;" src="/dynamic/avatar/{{current_partner.profile.handle}}">
+                    </a>
+                  <p>${{current_partner.amount|floatformat}}</p>
+                </div>
+              {% endfor %}
+            </div>
 
             <div class="tab-pane fade" id="pastpartners" role="tabpanel" aria-labelledby="pastpartners-tab">
               {% for past_partner in past_partners %}
@@ -113,10 +126,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               {% endfor %}
             </div>
           </div>
-          {% endif %}
-        </div>
+        {% endif %}
       </div>
-
+    </div>
 
     <div class="container-fluid py-5 grants-search">
       <div class="container">

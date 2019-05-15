@@ -49,7 +49,7 @@ class ToolAdmin(admin.ModelAdmin):
 
 class ActivityAdmin(admin.ModelAdmin):
     ordering = ['-id']
-    raw_id_fields = ['bounty', 'profile', 'tip', 'kudos']
+    raw_id_fields = ['bounty', 'profile', 'tip', 'kudos', 'grant', 'subscription']
     search_fields = ['metadata', 'activity_type', 'profile__handle']
 
 
@@ -142,7 +142,7 @@ class BountyAdmin(admin.ModelAdmin):
 
     search_fields = ['raw_data', 'title', 'bounty_owner_github_username', 'token_name']
     list_display = ['pk', 'img', 'idx_status', 'network_link', 'standard_bounties_id_link', 'bounty_link', 'what']
-    readonly_fields = ['what', 'img', 'fulfillments_link', 'standard_bounties_id_link', 'bounty_link', 'network_link']
+    readonly_fields = ['what', 'img', 'fulfillments_link', 'standard_bounties_id_link', 'bounty_link', 'network_link', '_action_urls']
 
     def img(self, instance):
         if not instance.avatar_url:
@@ -162,6 +162,12 @@ class BountyAdmin(admin.ModelAdmin):
         copy = f'{instance.standard_bounties_id}'
         url = f'/_administrationdashboard/bounty/?standard_bounties_id={instance.standard_bounties_id}'
         return mark_safe(f"<a href={url}>{copy}</a>")
+
+    def _action_urls(self, instance):
+        links = []
+        for key, val in instance.action_urls().items():
+            links.append(f"<a href={val}>{key}</a>")
+        return mark_safe(", ".join(links))
 
     def bounty_link(self, instance):
         copy = 'link'

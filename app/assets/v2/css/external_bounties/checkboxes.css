@@ -101,13 +101,13 @@
 
 .gc-checkbox input[type="checkbox"] {
   -moz-appearance: none;
-	-webkit-appearance: none;
-	appearance: none;
-	margin-top: .75em;
-	opacity: .00001;
-	position: relative;
-	vertical-align: top;
-	z-index: 2;
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: .75em;
+  opacity: .00001;
+  position: relative;
+  vertical-align: top;
+  z-index: 2;
 }
 
 .gc-checkbox label {

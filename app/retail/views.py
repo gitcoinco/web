@@ -148,7 +148,7 @@ def index(request):
             'img': 'v2/images/press/ibtimes.jpg'
         },
         {
-            'link': 'https://www.forbes.com/sites/curtissilver/2017/09/25/https://www.forbes.com/sites/jeffersonnunn/2019/01/21/bitcoin-autonomous-employment-workers-wanted/',
+            'link': 'https://www.forbes.com/sites/jeffersonnunn/2019/01/21/bitcoin-autonomous-employment-workers-wanted/',
             'img': 'v2/images/press/forbes.jpg'
         },
         {
@@ -546,6 +546,16 @@ def contributor_bounties(request, tech_stack):
         'hide_newsletter_consent': True,
         'gitcoin_description': gitcoin_description,
         'projects': projects,
+        'contributor_list': [
+            { 'link': "/python", 'text': "Python"},
+            { 'link': "/javascript", 'text': "JavaScript"},
+            { 'link': "/rust", 'text': "Rust"},
+            { 'link': "/solidity", 'text': "Solidity"},
+            { 'link': "/design", 'text': "Design"},
+            { 'link': "/html", 'text': "HTML"},
+            { 'link': "/ruby", 'text': "Ruby"},
+            { 'link': "/css", 'text': "CSS"},            
+        ]
     }
 
     try:
@@ -845,6 +855,41 @@ def mission(request):
         'interactions': interactions
     }
     return TemplateResponse(request, 'mission.html', context)
+
+
+def jobs(request):
+    job_listings = [
+        {
+            'link': "mailto:founders@gitcoin.co",
+            'title': "Software Engineer",
+            'description': [
+                "Gitcoin is always looking for a few good software engineers.",
+                "If you are an active member of the community, have python + django + html chops",
+                "then we want to talk to you!"]
+        },
+        {
+            'link': "mailto:founders@gitcoin.co",
+            'title': "Community Manager",
+            'description': [
+                "We believe that community management is an important skill in the blockchain space.",
+                "We're looking for a solid community, proactive thinker, and someone who loves people",
+                "to be our next community manager.  Sound like you?  Apply below!"]
+        },
+        {
+            'link': "mailto:founders@gitcoin.co",
+            'title': "Ad Sales Engineer",
+            'description': [
+                "CodeFund is growing like a weed.  We could use a helping hand",
+                "to put CodeFund in front of more great advertisers and publishers.",
+                "If you want to be our next highly technical, highly engaging, sales engineer apply below!"]
+        }
+    ]
+    context = {
+        'active': 'jobs',
+        'title': 'Jobs',
+        'job_listings': job_listings
+    }
+    return TemplateResponse(request, 'jobs.html', context)
 
 
 def vision(request):
@@ -1446,6 +1491,7 @@ def slack(request):
     context = {
         'active': 'slack',
         'msg': None,
+        'nav': 'home',
     }
 
     if request.POST:
@@ -1513,7 +1559,7 @@ def livestream(request):
 
 
 def twitter(request):
-    return redirect('http://twitter.com/getgitcoin')
+    return redirect('http://twitter.com/gitcoin')
 
 
 def fb(request):

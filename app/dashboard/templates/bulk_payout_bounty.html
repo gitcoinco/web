@@ -71,12 +71,21 @@
                   <input type="hidden" name="bounty_id" id="bountyId" value="{{ bounty.id }}">
                 </div>
                 <div class="w-100 mt-2">
-                  <label for=amount>{% trans "Amount:" %}</label>
+                  <label for=amount>{% trans "Amount:" %}</label> 
                   <input name='amount' id="amount" class="w-20 gc-round-text-input" type="number" placeholder="amount" value="{{ bounty.value_true }}" disabled/>
                   <input type="hidden" id="standard_bounties_id" value="{{ bounty.standard_bounties_id }}">
                   <input type="hidden" id="token_address" value="{{ bounty.token_address }}">
                   <input type="hidden" id="original_amount" value="{{ bounty.value_true }}">
                   <span id="token_name">{{ bounty.token_name }}</span>
+                  {% if bounty.additional_funding_summary %}
+                    <div class="my-2">
+                      {% trans '+ Crowdfunding' %}
+                      {% for key, token in bounty.additional_funding_summary.items %}
+                        <input name='crowdfundedAmount' class="w-20 gc-round-text-input" type="number" value="{{ token.amount }}" disabled style="width: 80px;"/> {{ key }}
+                      {% endfor %}
+                     
+                    </div>
+                  {% endif %}
                 </div>
                 <div class="w-100 mt-2 terms_container">
                   <input name="pay_with_bounty" id="pay_with_bounty" type="checkbox" value=1 checked="checked" onchange="update_registry()"/>
@@ -109,6 +118,19 @@
                 <div class="w-100 my-3">
                   <label for=bountyFulfillment>{% trans "Payout" %}</label>
                   <label id="tooltip" class="ethinfo-hover">{% trans "Where is my Eth going? " %}<i class='fa fa-info-circle'></i></label>
+                  {% if open_fulfillments %}
+                    <div class="mb-2">
+                      <p>
+                        {% trans 'These contributors had submitted work: (click to add)' %}
+                      </p>
+                      {% for fulfillment in open_fulfillments %}
+                        <span class="badge badge-primary user-fulfiller" data-username="{{ fulfillment.fulfiller_github_username }}">
+                        <img src="{{ fulfillment.profile.avatar_url }}" alt="" width="20" class="rounded-circle">
+                        {{ fulfillment.fulfiller_github_username }}
+                        </span>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
                   <div>
                     <div class="w-100 mt-2" style="display: inline-block;">
                       {% include 'shared/bulk_payout_form.html' %}
@@ -119,6 +141,9 @@
                       <p class="mb-0 tipPreview"><strong><span id="preview_tip_overage"></span>{% trans ' to be paid as tip(s) from wallet ending in ...' %}<span id="preview_tip_ending"></span></strong></p>
                       <p class="mb-0">{% trans 'Paid' %}: -<span id="total_cost"></span></p>
                       <p class="mb-0">{% trans 'Net' %}: <span id="total_net"></span></p>
+                      {% if bounty.additional_funding_summary %}
+                        <p class="my-2"><b>{% trans 'Note' %}</b> {% trans 'Crowdfunded alocation % is internally based on bounty payment allocation.' %}</p>
+                      {% endif %}
                       <p class="mt-1 mb-0">{% trans 'Transactions:' %}</p>
                       <table id="transaction_registry">
                         <tr>
