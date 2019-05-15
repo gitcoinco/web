@@ -111,6 +111,11 @@
   margin: auto;
 }
 
+.content-links a {
+  color: #fff;
+  text-decoration: underline;
+}
+
 .banner .buttons a {
   flex-grow: 1;
   font-weight: 600;
@@ -204,14 +209,7 @@ img.play {
   text-decoration: none;
 }
 
-.content-links a {
-  color: #fff;
-  text-decoration: none;
-  border-bottom: 1px solid #fff;
-}
-
-.products .product a:hover,
-.content-links a:hover {
+.products .product a:hover{
   border-bottom: 1px solid #fff;
 }
 
