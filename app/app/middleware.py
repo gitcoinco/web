@@ -1,5 +1,6 @@
 import bleach
 
+
 def drop_accept_langauge(get_response):
     """Define the middleware to remove accept-language headers from requests.
 
@@ -33,3 +34,5 @@ def bleach_requests(get_response):
         response = get_response(request)
 
         return response
+
+    return middleware
