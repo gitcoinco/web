@@ -36,7 +36,7 @@
   
     <button type="button" id="nav-contributors" class="section-tab">
       {% trans "CONTRIBUTORS" %}
-      <span class="nav-badge">{{ contributions|length }}</span>
+      <span class="nav-badge">{{ contributions|remove_duplication|length }}</span>
     </button>
   
   </div>

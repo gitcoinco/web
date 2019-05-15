@@ -77,12 +77,13 @@ def remove_duplication(contributions):
     result = list()
 
     for contribution in contributions:
-        handle = contribution.subscription.contributor_profile.handle
-        if handle not in handle_set:
-            temp_result = list()
-            handle_set.append(handle)
-            temp_result.append(handle)
-            temp_result.append(contribution.subscription.contributor_profile.avatar_url)
-            result.append(temp_result)
+        if contribution.tx_cleared and contribution.success:
+            handle = contribution.subscription.contributor_profile.handle
+            if handle not in handle_set:
+                temp_result = list()
+                handle_set.append(handle)
+                temp_result.append(handle)
+                temp_result.append(contribution.subscription.contributor_profile.avatar_url)
+                result.append(temp_result)
 
     return result
