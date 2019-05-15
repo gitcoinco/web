@@ -1596,13 +1596,13 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 if bounty.event:
                     params['event_tag'] = bounty.event.slug
 
-                # helper_handle_snooze(request, bounty)
+                helper_handle_snooze(request, bounty)
                 helper_handle_approvals(request, bounty)
-                # helper_handle_admin_override_and_hide(request, bounty)
-                # helper_handle_suspend_auto_approval(request, bounty)
-                # helper_handle_mark_as_remarket_ready(request, bounty)
-                # helper_handle_admin_contact_funder(request, bounty)
-                # helper_handle_override_status(request, bounty)
+                helper_handle_admin_override_and_hide(request, bounty)
+                helper_handle_suspend_auto_approval(request, bounty)
+                helper_handle_mark_as_remarket_ready(request, bounty)
+                helper_handle_admin_contact_funder(request, bounty)
+                helper_handle_override_status(request, bounty)
         except Bounty.DoesNotExist:
             pass
         except Exception as e:
