@@ -1864,6 +1864,7 @@ def profile(request, handle):
 
         context = profile.to_dict(tips=False)
         all_activities = context.get('activities')
+        context['avg_rating'] = profile.get_average_star_rating
         context['is_my_profile'] = request.user.is_authenticated and request.user.username.lower() == handle.lower()
         tabs = []
 
