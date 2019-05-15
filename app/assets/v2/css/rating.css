@@ -86,3 +86,12 @@ fieldset:not(:disabled) .rating > input:checked ~ .rating-star:hover ~ .rating-s
 fieldset:disabled .rating {
   filter: saturate(0.4);
 }
+
+.static-stars .far {
+  font-size: 23px;
+  color: #CCCED0;
+}
+
+.static-stars .fas {
+  color: #25E899;
+}
