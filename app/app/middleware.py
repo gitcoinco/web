@@ -28,8 +28,10 @@ def bleach_requests(get_response):
 
     def middleware(request):
         if request.method == 'POST':
+            # make request mutable
+            request.POST = request.POST.copy()
             for key in request.POST:
-                request.key = bleach.clean(request.key)
+                request.POST[key] = bleach.clean(request.POST[key])
 
         response = get_response(request)
 
