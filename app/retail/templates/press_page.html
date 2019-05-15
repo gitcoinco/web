@@ -40,24 +40,60 @@
     <meta name="description" content="Gitcoin is a community for freelance developers to collaborate and monetize their skills
     while working on Open Source projects through bounties paid in crypto (ETH or any ERC-20 token).">
     <link rel="stylesheet" href="{% static "v2/css/landing_page.css" %}" />
+    <link rel="stylesheet" href="{% static "v2/css/press_page.css" %}" />
+    <script>
+    // Twitter widget is loading.
+    window.twttr = function (d, s, id) {
+    var t, js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return; js = d.createElement(s); js.id = id;
+    js.src = "https://platform.twitter.com/widgets.js";
+    fjs.parentNode.insertBefore(js, fjs);
+    return window.twttr || (t = { _e: [], ready: function (f) { t._e.push(f) } });
+    }(document, 'script', 'twitter-wjs');
+
+  // When widget is ready, run masonry
+  twttr.ready(function (twttr) {
+    twttr.events.bind('loaded', function (event) {
+      $('.grid').masonry({
+        itemSelector : '.grid-item',
+        columnWidth : 300,
+        gutter: 10
+      });
+    });
+  });
+</script>
   </head>
   <body class="{{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'home/nav.html' %}
-      {% include 'shared/minihero.html' with h1='Press & Media Coverage' hide_logo=true %}
+      <div class="minihero row pt-5 pb-5 text-center">
+        <div class="col">
+          <h1 class="minihero__title mb-2">Press & Media Coverage</h1>
+          <div class="w-100"></div>
+        </div>
+        {% include 'shared/rain.html' with class="grey" %}
+      </div>
     </div>
 
-    <div class="container-fluid text-center white-light-bg">
+    <div class="container-fluid white-light-bg">
       <div class="row pb-1 pt-4">
           <div class="col text-center">
             <h4 class="">{% trans "Recent Press" %}</h4>
           </div>
       </div>
-      <div class="row pb-1 pt-4">
+      <div class="container">
+      <div class="row pb-4 pt-4">
         <div class="col text-center">
-          
+            <div class="press_banner">
+                <img src="https://i0.wp.com/softwareengineeringdaily.com/wp-content/uploads/2018/05/logo.png?w=321&ssl=1" alt="Software Engineering logo">
+                <div class="press_details ml-4">
+                  <span class="date">Tuesday, April 3 2018</span>
+                  <span class="title">Gitcoin: Open Source Bounties with Kevin Owocki</span>
+                  <p class="mt-2">Most technology companies rely on open source software projects. But open source software projects are often maintained by a group of people that is not affliated with any particular company. When an open source project.</p>
+                </div>
+              </div>
         </div>
       </div>
     </div>
@@ -77,15 +113,34 @@
         </div>
     </div>
 
-    <div class="container-fluid text-center white-light-bg">
+    <div class="white-light-bg">
         <div class="row pb-1 pt-4">
             <div class="col text-center">
               <h4 class="">{% trans "Social Mentions" %}</h4>
             </div>
         </div>
+        <div class="container">
+            <div class="row">
+                <div class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 300, "gutter":10 }'>
+                    <div class="grid-item"><blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">The day of the Ethereal Hackathon has arrived! Please check out the Hackathon Explorer to see 18 prizes (&amp; growing!) which you can build towards at the event, and join the conversation in Discord! 🎉<a href="https://t.co/macD1KCkz9">https://t.co/macD1KCkz9</a></p>&mdash; Gitcoin (@gitcoin) <a href="https://twitter.com/gitcoin/status/1117811846684250112?ref_src=twsrc%5Etfw">April 15, 2019</a></blockquote></div>
+                    <div class="grid-item"><blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">The day of the Ethereal Hackathon has arrived! Please check out the Hackathon Explorer to see 18 prizes (&amp; growing!) which you can build towards at the event, and join the conversation in Discord! 🎉<a href="https://t.co/macD1KCkz9">https://t.co/macD1KCkz9</a></p>&mdash; Gitcoin (@gitcoin) <a href="https://twitter.com/gitcoin/status/1117811846684250112?ref_src=twsrc%5Etfw">April 15, 2019</a></blockquote></div>
+                    <div class="grid-item"><blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">The day of the Ethereal Hackathon has arrived! Please check out the Hackathon Explorer to see 18 prizes (&amp; growing!) which you can build towards at the event, and join the conversation in Discord! 🎉<a href="https://t.co/macD1KCkz9">https://t.co/macD1KCkz9</a></p>&mdash; Gitcoin (@gitcoin) <a href="https://twitter.com/gitcoin/status/1117811846684250112?ref_src=twsrc%5Etfw">April 15, 2019</a></blockquote></div>
+                    <div class="grid-item"><blockquote class="twitter-tweet" data-cards="hidden" data-lang="en"><p lang="en" dir="ltr">The day of the Ethereal Hackathon has arrived! Please check out the Hackathon Explorer to see 18 prizes (&amp; growing!) which you can build towards at the event, and join the conversation in Discord! 🎉<a href="https://t.co/macD1KCkz9">https://t.co/macD1KCkz9</a></p>&mdash; Gitcoin (@gitcoin) <a href="https://twitter.com/gitcoin/status/1117811846684250112?ref_src=twsrc%5Etfw">April 15, 2019</a></blockquote></div>
+                    <div class="grid-item"><blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">The day of the Ethereal Hackathon has arrived! Please check out the Hackathon Explorer to see 18 prizes (&amp; growing!) which you can build towards at the event, and join the conversation in Discord! 🎉<a href="https://t.co/macD1KCkz9">https://t.co/macD1KCkz9</a></p>&mdash; Gitcoin (@gitcoin) <a href="https://twitter.com/gitcoin/status/1117811846684250112?ref_src=twsrc%5Etfw">April 15, 2019</a></blockquote></div>
+                    <div class="grid-item"><blockquote class="twitter-tweet" data-cards="hidden" data-lang="en"><p lang="en" dir="ltr">The day of the Ethereal Hackathon has arrived! Please check out the Hackathon Explorer to see 18 prizes (&amp; growing!) which you can build towards at the event, and join the conversation in Discord! 🎉<a href="https://t.co/macD1KCkz9">https://t.co/macD1KCkz9</a></p>&mdash; Gitcoin (@gitcoin) <a href="https://twitter.com/gitcoin/status/1117811846684250112?ref_src=twsrc%5Etfw">April 15, 2019</a></blockquote></div>
+                    <div class="grid-item"><blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">The day of the Ethereal Hackathon has arrived! Please check out the Hackathon Explorer to see 18 prizes (&amp; growing!) which you can build towards at the event, and join the conversation in Discord! 🎉<a href="https://t.co/macD1KCkz9">https://t.co/macD1KCkz9</a></p>&mdash; Gitcoin (@gitcoin) <a href="https://twitter.com/gitcoin/status/1117811846684250112?ref_src=twsrc%5Etfw">April 15, 2019</a></blockquote></div>
+                    <div class="grid-item"><blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">The day of the Ethereal Hackathon has arrived! Please check out the Hackathon Explorer to see 18 prizes (&amp; growing!) which you can build towards at the event, and join the conversation in Discord! 🎉<a href="https://t.co/macD1KCkz9">https://t.co/macD1KCkz9</a></p>&mdash; Gitcoin (@gitcoin) <a href="https://twitter.com/gitcoin/status/1117811846684250112?ref_src=twsrc%5Etfw">April 15, 2019</a></blockquote></div>
+                    <div class="grid-item"><blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">The day of the Ethereal Hackathon has arrived! Please check out the Hackathon Explorer to see 18 prizes (&amp; growing!) which you can build towards at the event, and join the conversation in Discord! 🎉<a href="https://t.co/macD1KCkz9">https://t.co/macD1KCkz9</a></p>&mdash; Gitcoin (@gitcoin) <a href="https://twitter.com/gitcoin/status/1117811846684250112?ref_src=twsrc%5Etfw">April 15, 2019</a></blockquote></div>
+                    <div class="grid-item"><blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">The day of the Ethereal Hackathon has arrived! Please check out the Hackathon Explorer to see 18 prizes (&amp; growing!) which you can build towards at the event, and join the conversation in Discord! 🎉<a href="https://t.co/macD1KCkz9">https://t.co/macD1KCkz9</a></p>&mdash; Gitcoin (@gitcoin) <a href="https://twitter.com/gitcoin/status/1117811846684250112?ref_src=twsrc%5Etfw">April 15, 2019</a></blockquote></div>
+                    <div class="grid-item"><blockquote class="twitter-tweet" data-cards="hidden" data-lang="en"><p lang="en" dir="ltr">The day of the Ethereal Hackathon has arrived! Please check out the Hackathon Explorer to see 18 prizes (&amp; growing!) which you can build towards at the event, and join the conversation in Discord! 🎉<a href="https://t.co/macD1KCkz9">https://t.co/macD1KCkz9</a></p>&mdash; Gitcoin (@gitcoin) <a href="https://twitter.com/gitcoin/status/1117811846684250112?ref_src=twsrc%5Etfw">April 15, 2019</a></blockquote></div>
+                    <div class="grid-item"><blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">The day of the Ethereal Hackathon has arrived! Please check out the Hackathon Explorer to see 18 prizes (&amp; growing!) which you can build towards at the event, and join the conversation in Discord! 🎉<a href="https://t.co/macD1KCkz9">https://t.co/macD1KCkz9</a></p>&mdash; Gitcoin (@gitcoin) <a href="https://twitter.com/gitcoin/status/1117811846684250112?ref_src=twsrc%5Etfw">April 15, 2019</a></blockquote></div>
+                    <div class="grid-item"><blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">The day of the Ethereal Hackathon has arrived! Please check out the Hackathon Explorer to see 18 prizes (&amp; growing!) which you can build towards at the event, and join the conversation in Discord! 🎉<a href="https://t.co/macD1KCkz9">https://t.co/macD1KCkz9</a></p>&mdash; Gitcoin (@gitcoin) <a href="https://twitter.com/gitcoin/status/1117811846684250112?ref_src=twsrc%5Etfw">April 15, 2019</a></blockquote></div>
+                    <div class="grid-item"><blockquote class="twitter-tweet" data-cards="hidden" data-lang="en"><p lang="en" dir="ltr">The day of the Ethereal Hackathon has arrived! Please check out the Hackathon Explorer to see 18 prizes (&amp; growing!) which you can build towards at the event, and join the conversation in Discord! 🎉<a href="https://t.co/macD1KCkz9">https://t.co/macD1KCkz9</a></p>&mdash; Gitcoin (@gitcoin) <a href="https://twitter.com/gitcoin/status/1117811846684250112?ref_src=twsrc%5Etfw">April 15, 2019</a></blockquote></div>
+                    <div class="grid-item"><blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">The day of the Ethereal Hackathon has arrived! Please check out the Hackathon Explorer to see 18 prizes (&amp; growing!) which you can build towards at the event, and join the conversation in Discord! 🎉<a href="https://t.co/macD1KCkz9">https://t.co/macD1KCkz9</a></p>&mdash; Gitcoin (@gitcoin) <a href="https://twitter.com/gitcoin/status/1117811846684250112?ref_src=twsrc%5Etfw">April 15, 2019</a></blockquote></div>
+                </div>
+            </div>
+        </div>
     </div>
-
-
     <div class="container-fluid text-center bg-lightblue">
         <div class="row pb-1 pt-4">
             <div class="col text-center">
@@ -111,24 +166,24 @@
     </div>
 
     <div class="container-fluid text-center white-light-bg">
-      <div class="row pb-1 pt-4">
-          <div class="col">
+      <div class="row pb-4 pt-4 d-flex justify-content-center">
+          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
             <div class="pb-4 pt-4">
-              <a class="button button--primary" role="button" href="{% url "tools" %}">
+              <a class="button button--primary btn-block" role="button" href="{% url "tools" %}">
                 {% trans "Join the Newsletter" %}
               </a>
             </div>
             <div class="pb-4 pt-4">
-              <a class="button button--primary" role="button" href="{% url "tools" %}">
+              <a class="button button--primary btn-block" role="button" href="{% url "_leaderboard" %}">
                 {% trans "Find Freelance Coders" %}
               </a>
             </div>
             <div class="pb-4 pt-4">
-              <a class="button button--primary" role="button" href="{% url "tools" %}">
+              <a class="button button--primary btn-block" role="button" href="{% url "explorer" %}">
                 {% trans "Find Freelance Bug Bounties" %}
               </a>
             </div>
-              </div>
+          </div>
       </div>
     </div>
 
@@ -137,7 +192,9 @@
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/messages.html' %}
 
-  <script src="https://medium-widget.pixelpoint.io/widget.js"></script>
-  <script>MediumWidget.Init({renderTo: '#medium-widget', params: {"resource":"https://medium.com/gitcoin/","postsPerLine":2,"limit":4,"picture":"small","fields":["description","publishAt"],"ratio":"square"}})</script>
+
+    <script src="https://npmcdn.com/masonry-layout@4.0/dist/masonry.pkgd.js"></script>
+    <script src="https://medium-widget.pixelpoint.io/widget.js"></script>
+    <script>MediumWidget.Init({renderTo: '#medium-widget', params: {"resource":"https://medium.com/gitcoin/","postsPerLine":2,"limit":4,"picture":"small","fields":["description","publishAt"],"ratio":"square"}})</script>
 </body>
 </html>
