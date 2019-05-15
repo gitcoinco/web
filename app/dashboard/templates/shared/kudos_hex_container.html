@@ -16,7 +16,9 @@
 {% endcomment %}
 
 <div class="hex-container">
-  <object type="image/svg+xml" data="{% static "v2/images/kudos/assets/kudos-hex-background.svg" %}"></object>
+  <svg class="bg animated" width="222" height="256" viewBox="0 0 222 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <use href="#kudos-hex"></use>
+  </svg>
   {% if text %}
     <p class="hex-container__text">{{ text }}</p>
   {% endif %}
