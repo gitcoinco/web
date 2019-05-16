@@ -11,12 +11,17 @@ const renderPopOverData = json => {
     .slice(0, 3)
     .toString()}</span>
                                   ${Object.keys(json.profile.organizations).map(
-    org =>
-      `<img src="/dynamic/avatar/${org}" alt="${org}" class="rounded-circle" width="24" height="24">`
+    (org, index) => {
+      if (index < 3) {
+        `<img src="/dynamic/avatar/${org}" alt="${org}" class="rounded-circle" width="24" height="24">`;
+      } else {
+        `<img class="rounded-circle m-1" width="24" height="24" title=${Object.keys(json.profile.organizations.length)} times" src=""/>`;
+      }
+    }
   )}
               </div>
               <span class="earned">~ ${
-  json.profile.total_earned
+  json.profile.total_earned.toFixed(4)
 } ETH earned</span>
               <div class="statistics d-flex justify-content-between mt-2">
                 <div class="popover_card text-center mr-4 pt-2">
