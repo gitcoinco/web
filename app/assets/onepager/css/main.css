@@ -566,13 +566,11 @@ body #main a:not(.button):hover {
 }
 
 #footer {
-  position: absolute;
   background-color: #0D0764;
   padding: 5px;
   width: 100vw;
   left: 0;
   right: 0;
-  text-align: center;
   bottom: 0px;
 }
 p.alert_msg {
