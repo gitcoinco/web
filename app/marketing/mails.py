@@ -1024,6 +1024,7 @@ def start_work_approved(interest, bounty):
     finally:
         translation.activate(cur_language)
 
+
 def bounty_worker_rejected_with_reason(interest, reason, bounty):
     from_email = settings.CONTACT_EMAIL
     to_email = interest.profile.emails
@@ -1041,6 +1042,7 @@ def bounty_worker_rejected_with_reason(interest, reason, bounty):
             send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
     finally:
         translation.activate(cur_language)
+
 
 def start_work_rejected(interest, bounty):
     from_email = settings.CONTACT_EMAIL

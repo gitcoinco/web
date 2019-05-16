@@ -865,6 +865,7 @@ def render_start_work_approved(interest, bounty):
 
     return response_html, response_txt, subject
 
+
 def render_bounty_worker_rejected_with_reason(interest, reason, bounty):
     to_email = interest.profile.email
     params = {
@@ -879,6 +880,7 @@ def render_bounty_worker_rejected_with_reason(interest, reason, bounty):
     response_txt = render_to_string("emails/bounty_worker_rejected_with_reason.txt", params)
 
     return response_html, response_txt, subject
+
 
 def render_start_work_rejected(interest, bounty):
     to_email = interest.profile.email
@@ -1334,6 +1336,7 @@ def start_work_rejected(request):
     response_html, _, _ = render_start_work_rejected(interest, bounty)
     return HttpResponse(response_html)
 
+
 @staff_member_required
 def bounty_worker_rejected_with_reason(request):
     from dashboard.models import Interest, Bounty
@@ -1342,6 +1345,7 @@ def bounty_worker_rejected_with_reason(request):
     reason = request.POST.get('reason')
     response_html, _, _ = render_bounty_worker_rejected_with_reason(interest, reason, bounty)
     return HttpResponse(response_html)
+
 
 @staff_member_required
 def start_work_new_applicant(request):
