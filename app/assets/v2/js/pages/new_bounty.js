@@ -652,6 +652,7 @@ $('#submitBounty').validate({
               indicateMetamaskPopup(true);
               if (error) {
                 _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
+                unloading_button($('.js-submit'));
               } else {
                 deductBountyAmount(fee, txnId);
               }
@@ -695,6 +696,7 @@ $('#submitBounty').validate({
         else do_bounty();
       }).fail(function(error) {
         _alert('Unable to upload NDA. ', 'error');
+        unloading_button($('.js-submit'));
         console.log('NDA error:', error);
       });
     };
@@ -713,6 +715,7 @@ $('#submitBounty').validate({
         indicateMetamaskPopup(true);
         if (error) {
           _alert({ message: gettext('Unable to upgrade to featured bounty. Please try again.') }, 'error');
+          unloading_button($('.js-submit'));
           console.log(error);
         } else {
           saveAttestationData(
