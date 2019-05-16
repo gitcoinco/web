@@ -135,6 +135,10 @@ def index(request):
         {
             'text': 'Our Token',
             'link': '/not_a_token'
+        },
+        {
+            'text': 'See all press',
+            'link': '/press'
         }
     ]
 
