@@ -105,6 +105,12 @@
                 </fieldset>
               </div>
             </div>
+            <div class="g-multiselect pb-4 border-bottom form-group">
+              <label for="organisations" class="font-weight-bold">Organisation</label>
+              <div class="font-smaller">
+                <input v-model="params.organisation" data-placeholder="e.g. Gitcoin" data-tags="true" class="form-control">
+              </div>
+            </div>
             <button class="btn blue" @click="params = {}; searchUsers()">Reset Filters</button>
           </nav>
         </transition>

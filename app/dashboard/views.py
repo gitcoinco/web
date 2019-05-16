@@ -762,6 +762,7 @@ def users_fetch(request):
     bounties_completed = request.GET.get('bounties_completed', '').strip().split(',')
     leaderboard_rank = request.GET.get('leaderboard_rank', '').strip().split(',')
     rating = int(request.GET.get('rating', '0'))
+    organisation = request.GET.get('organisation', '')
 
     context = {}
     if not settings.DEBUG:
@@ -799,6 +800,14 @@ def users_fetch(request):
             average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
         ).filter(
             average_rating__gte=rating
+        )
+
+    if organisation:
+        print(organisation)
+        user_list = user_list.filter(
+            fulfilled__bounty__network=network,
+            fulfilled__bounty__accepted=True,
+            fulfilled__bounty__github_url__icontains=organisation
         )
 
     params = dict()
