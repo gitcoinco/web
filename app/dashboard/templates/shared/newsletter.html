@@ -16,29 +16,60 @@
 {% endcomment %}
 {% load i18n static %}
 <link rel="stylesheet" href="{% static "v2/css/newsletter.css" %}">
-<div class="row newsletter text-center">
-  <form action="//gitcoin.us16.list-manage.com/subscribe/post?u=f9f93e162a8732673b942cbda&amp;id=791d905ad8"
-    method="post" id="mc-embedded-subscribe-form" class="col-12 validate"
-    name="mc-embedded-subscribe-form" target="_blank" novalidate>
-
+<div class="row newsletter text-center" id="newsletterGroup">
+  <div class="col-12">
     <h4 class="col-12 font-title font-weight-semibold py-1" id="newsletter-title">
       {% if newsletter_headline %}
-        {{ newsletter_headline }}
+      {{ newsletter_headline }}
       {% else %}
-        {% trans "Join Our Newsletter!" %}
+      {% trans "Join Our Newsletter!" %}
       {% endif %}
     </h4>
-    {% if not hide_newsletter_caption %}
-      <label for="newsletter-input">({% trans "Emails once a week max, & we never sell your data" %})</label>
-    {% endif %}
-    <div class="col-12 pt-3">
-      <input name="EMAIL" id="newsletter-input" placeholder="Enter your email" required>
-      <button id="newsletter-subscribe" type="submit" class="button button--primary subscribe ml-lg-2"><i class="far fa-envelope mr-2"></i>Subscribe</button>
+    I want to
+    <nav class="nav justify-content-center d-inline-flex btn-group btn-group-sm my-3" id="myTab" role="tablist">
+      <!-- <li class="nav-item"> -->
+        <a class="nav-link active btn btn-primary" id="funderForm-tab" data-toggle="tab" href="#funderForm" role="tab" aria-controls="funderForm" aria-selected="true">fund bounties</a>
+      <!-- </li> -->
+      <!-- <li class="nav-item"> -->
+        <a class="nav-link btn btn-primary" id="hunterForm-tab" data-toggle="tab" href="#hunterForm" role="tab" aria-controls="hunterForm" aria-selected="false">work on bounties</a>
+      <!-- </li> -->
+    </nav>
+    <div class="tab-content" id="myTabContent">
+      <!-- funders newsletter -->
+      <form action="//gitcoin.us16.list-manage.com/subscribe/post?u=f9f93e162a8732673b942cbda&amp;id=791d905ad8"
+        method="post" id="funderForm" class="col-12 validate tab-pane fade show active" name="mc-embedded-subscribe-form" target="_blank" role="tabpanel" aria-labelledby="funderForm-tab" novalidate>
+        {% if not hide_newsletter_caption %}
+          <label for="newsletter-input">({% trans "Emails once a week max, & we never sell your data" %})</label>
+        {% endif %}
+        <div class="col-12 pt-3">
+          <input name="EMAIL" id="newsletter-input" placeholder="Enter your email" required>
+          <button id="newsletter-subscribe" type="submit" class="button button--primary subscribe ml-lg-2"><i class="far fa-envelope mr-2"></i>Subscribe</button>
+        </div>
+        {% if not hide_newsletter_consent %}
+          <span style="display: block; margin-top: 3px; font-size: 10px;">
+            {% trans "You may withdraw email consent at any time" %} | <a href="{% url 'email_settings' email_key %}">{% trans "Manage preferences" %}</a> | <a href="{% url 'email_settings' email_key %}">{% trans "Opt out" %}</a> | <a href="mailto:privacy@gitcoin.co">{% trans "Email us" %}</a>
+          </span>
+        {% endif %}
+      </form>
+
+      <!-- hunters newsletter -->
+      <form action="https://gmail.us20.list-manage.com/subscribe/post?u=7013bba2daad67052fcd892d1&amp;id=fbc845873e"
+        method="post" id="hunterForm" class="col-12 validate tab-pane fade"
+        name="mc-embedded-subscribe-form" target="_blank" role="tabpanel" aria-labelledby="hunterForm-tab" novalidate>
+        {% if not hide_newsletter_caption %}
+          <label for="newsletter-input">({% trans "Emails once a week max, & we never sell your data" %})</label>
+        {% endif %}
+        <div class="col-12 pt-3">
+          <input name="EMAIL" id="newsletter-input" placeholder="Enter your email" required>
+          <button id="newsletter-subscribe" type="submit" class="button button--primary subscribe ml-lg-2"><i class="far fa-envelope mr-2"></i>Subscribe</button>
+        </div>
+        {% if not hide_newsletter_consent %}
+          <span style="display: block; margin-top: 3px; font-size: 10px;">
+            {% trans "You may withdraw email consent at any time" %} | <a href="{% url 'email_settings' email_key %}">{% trans "Manage preferences" %}</a> | <a href="{% url 'email_settings' email_key %}">{% trans "Opt out" %}</a> | <a href="mailto:privacy@gitcoin.co">{% trans "Email us" %}</a>
+          </span>
+        {% endif %}
+      </form>
     </div>
-    {% if not hide_newsletter_consent %}
-      <span style="display: block; margin-top: 3px; font-size: 10px;">
-        {% trans "You may withdraw email consent at any time" %} | <a href="{% url 'email_settings' email_key %}">{% trans "Manage preferences" %}</a> | <a href="{% url 'email_settings' email_key %}">{% trans "Opt out" %}</a> | <a href="mailto:privacy@gitcoin.co">{% trans "Email us" %}</a>
-      </span>
-    {% endif %}
-  </form>
+  </div>
+
 </div>
