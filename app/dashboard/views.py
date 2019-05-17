@@ -1735,6 +1735,10 @@ def profile_job_opportunity(request, handle):
             status=401)
     try:
         profile = profile_helper(handle, True)
+        if request.user.profile.id != profile.id:
+            return JsonResponse(
+                {'error': 'Bad request'},
+                status=401)
         profile.job_search_status = request.POST.get('job_search_status', None)
         profile.show_job_status = request.POST.get('show_job_status', None) == 'true'
         profile.job_type = request.POST.get('job_type', None)
