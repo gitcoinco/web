@@ -1729,6 +1729,10 @@ def profile_job_opportunity(request, handle):
     Args:
         handle (str): The profile handle.
     """
+    if not request.user.is_authenticated:
+        return JsonResponse(
+            {'error': 'You must be authenticated via github to use this feature!'},
+            status=401)
     try:
         profile = profile_helper(handle, True)
         profile.job_search_status = request.POST.get('job_search_status', None)
