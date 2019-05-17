@@ -33,7 +33,7 @@ def get_bounties_for_keywords(keywords, hours_back):
         relevant_bounties = Bounty.objects.current().filter(
             network='mainnet',
             idx_status__in=['open'],
-        ).keyword(keyword)
+        ).keyword(keyword).exclude(bounty_reserved_for_user__isnull=False)
         for bounty in relevant_bounties.filter(web3_created__gt=(timezone.now() - timezone.timedelta(hours=hours_back))):
             new_bounties_pks.append(bounty.pk)
         for bounty in relevant_bounties:
@@ -52,9 +52,9 @@ class Command(BaseCommand):
     help = 'sends new_bounty_daily _emails'
 
     def handle(self, *args, **options):
-        if settings.DEBUG:
-            print("not active in non prod environments")
-            return
+ #       if settings.DEBUG:
+ #          print("not active in non prod environments")
+ #           return
         hours_back = 24
         eses = EmailSubscriber.objects.filter(active=True)
         print("got {} emails".format(eses.count()))
