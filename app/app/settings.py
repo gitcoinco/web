@@ -346,6 +346,9 @@ STATIC_ROOT = root('static')
 STATICFILES_LOCATION = env.str('STATICFILES_LOCATION', default='static')
 MEDIAFILES_LOCATION = env.str('MEDIAFILES_LOCATION', default='media')
 
+# Maximum file size for uploads (bytes)
+DATA_UPLOAD_MAX_MEMORY_SIZE = 31457280 # 30 MB
+
 if ENV in ['prod', 'stage']:
     DEFAULT_FILE_STORAGE = env('DEFAULT_FILE_STORAGE', default='app.static_storage.MediaFileStorage')
     THUMBNAIL_DEFAULT_STORAGE = DEFAULT_FILE_STORAGE

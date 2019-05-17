@@ -55,6 +55,7 @@ from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_auth_url, get_github_user_data, is_github_token_valid, search_users
 from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
+import magic
 from marketing.mails import admin_contact_funder, bounty_uninterested
 from marketing.mails import funder_payout_reminder as funder_payout_reminder_mail
 from marketing.mails import new_reserved_issue, start_work_approved, start_work_new_applicant, start_work_rejected
@@ -1722,6 +1723,10 @@ def profile_keywords(request, handle):
     return JsonResponse(response)
 
 
+def valid_pdf(uploaded_file):
+    return magic.from_buffer(
+        uploaded_file.read(), mime=True) == 'application/pdf'
+
 @require_POST
 def profile_job_opportunity(request, handle):
     """ Save profile job opportunity.
@@ -1731,6 +1736,11 @@ def profile_job_opportunity(request, handle):
     """
     try:
         profile = profile_helper(handle, True)
+        resume_file = request.FILES.get('job_cv', None)
+        if resume_file and not valid_pdf(resume_file):
+            return JsonResponse(
+                {'error': 'Invalid file'},
+                 status=415)
         profile.job_search_status = request.POST.get('job_search_status', None)
         profile.show_job_status = request.POST.get('show_job_status', None) == 'true'
         profile.job_type = request.POST.get('job_type', None)
@@ -1758,9 +1768,15 @@ def bounty_upload_nda(request):
     Args:
         bounty_id (int): The bounty id.
     """
-    if request.FILES.get('docs', None):
+    nda_file = request.FILES.get('docs', None)
+    if nda_file:
+        if not valid_pdf(nda_file):
+            return JsonResponse(
+                {'error': 'Invalid file'},
+                status=415)
+
         bountydoc = BountyDocuments.objects.create(
-            doc=request.FILES.get('docs', None),
+            doc=nda_file,
             doc_type=request.POST.get('doc_type', None)
         )
         response = {
