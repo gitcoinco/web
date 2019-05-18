@@ -205,7 +205,7 @@ def index(request):
         'know_us': know_us,
         'press': press,
         'articles': articles,
-        'title': _('Grow Open Source: Find Freelance Developers & Open Source Bug Bounties - Gitcoin')
+        'title': _('Grow Open Source: Get crowdfunding and find freelance developers for your software projects, paid in crypto')
     }
     return TemplateResponse(request, 'home/index.html', context)
 
@@ -549,7 +549,20 @@ def contributor_bounties(request, tech_stack):
         'hide_newsletter_consent': True,
         'gitcoin_description': gitcoin_description,
         'projects': projects,
+        'contributor_list': [
+            { 'link': "/python", 'text': "Python"},
+            { 'link': "/javascript", 'text': "JavaScript"},
+            { 'link': "/rust", 'text': "Rust"},
+            { 'link': "/solidity", 'text': "Solidity"},
+            { 'link': "/design", 'text': "Design"},
+            { 'link': "/html", 'text': "HTML"},
+            { 'link': "/ruby", 'text': "Ruby"},
+            { 'link': "/css", 'text': "CSS"},            
+        ]
     }
+
+    if tech_stack == 'new':
+        return redirect('new_funding_short')
 
     try:
         new_context = JSONStore.objects.get(view='contributor_landing_page', key=tech_stack).data
@@ -981,6 +994,8 @@ def results(request, keyword=None):
         raise Http404
     context = JSONStore.objects.get(view='results', key=keyword).data
     context['is_outside'] = True
+    import json
+    context['kudos_tokens'] = [json.loads(obj) for obj in context['kudos_tokens']]
     context['avatar_url'] = static('v2/images/results_preview.gif')
     return TemplateResponse(request, 'results.html', context)
 

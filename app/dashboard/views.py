@@ -785,7 +785,7 @@ def users_fetch(request):
 
     if len(bounties_completed) == 2:
         user_list = user_list.annotate(
-                count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network))
+                count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network, fulfilled__accepted=True))
             ).filter(
                 count__gte=bounties_completed[0],
                 count__lte=bounties_completed[1],
@@ -797,6 +797,7 @@ def users_fetch(request):
             leaderboard_ranks__leaderboard='quarterly_earners',
             leaderboard_ranks__rank__gte=leaderboard_rank[0],
             leaderboard_ranks__rank__lte=leaderboard_rank[1],
+            leaderboard_ranks__active=True,
         )
 
     if rating != 0:
@@ -1872,6 +1873,7 @@ def profile(request, handle):
 
         context = profile.to_dict(tips=False)
         all_activities = context.get('activities')
+        context['avg_rating'] = profile.get_average_star_rating
         context['is_my_profile'] = request.user.is_authenticated and request.user.username.lower() == handle.lower()
         tabs = []
 
@@ -2380,7 +2382,7 @@ def new_bounty(request):
         update=bounty_params,
     )
     params['FEE_PERCENTAGE'] = request.user.profile.fee_percentage if request.user.is_authenticated else 10
-    return TemplateResponse(request, 'bounty/new.html', params)
+    return TemplateResponse(request, 'bounty/fund.html', params)
 
 
 @csrf_exempt
@@ -2437,7 +2439,7 @@ def change_bounty(request, bounty_id):
             raise Http404
 
     keys = ['experience_level', 'project_length', 'bounty_type', 'featuring_date',
-            'permission_type', 'project_type', 'reserved_for_user_handle', 'is_featured']
+            'permission_type', 'project_type', 'reserved_for_user_handle', 'is_featured', 'admin_override_suspend_auto_approval']
 
     if request.body:
         can_change = (bounty.status in Bounty.OPEN_STATUSES) or \

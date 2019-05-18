@@ -110,21 +110,6 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'bounty_requests',
     'perftools',
-    # wagtail
-    'taggit',
-    'modelcluster',
-    'wagtail.contrib.forms',
-    'wagtail.contrib.redirects',
-    'wagtail.embeds',
-    'wagtail.sites',
-    'wagtail.users',
-    'wagtail.snippets',
-    'wagtail.documents',
-    'wagtail.images',
-    'wagtail.search',
-    'wagtail.admin',
-    'wagtail.core',
-    'cms',
     'revenue',
     'event_ethdenver2019',
     'inbox',
@@ -136,6 +121,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'app.middleware.drop_accept_langauge',
+    'app.middleware.bleach_requests',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -145,8 +131,6 @@ MIDDLEWARE = [
     'ratelimit.middleware.RatelimitMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',
     'impersonate.middleware.ImpersonateMiddleware',
-    'wagtail.core.middleware.SiteMiddleware',
-    'wagtail.contrib.redirects.middleware.RedirectMiddleware'
 ]
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
@@ -653,7 +637,7 @@ if not AWS_S3_OBJECT_PARAMETERS:
     AWS_S3_OBJECT_PARAMETERS = {'CacheControl': f'max-age={AWS_S3_CACHE_MAX_AGE}', }
 
 CORS_ORIGIN_ALLOW_ALL = False
-CORS_ORIGIN_WHITELIST = ('sumo.com', 'load.sumo.com', 'googleads.g.doubleclick.net', 'gitcoin.co', )
+CORS_ORIGIN_WHITELIST = ('sumo.com', 'load.sumo.com', 'googleads.g.doubleclick.net', 'gitcoin.co', 'github.com', )
 CORS_ORIGIN_WHITELIST = CORS_ORIGIN_WHITELIST + (AWS_S3_CUSTOM_DOMAIN, MEDIA_CUSTOM_DOMAIN, )
 
 S3_REPORT_BUCKET = env('S3_REPORT_BUCKET', default='')  # TODO

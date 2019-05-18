@@ -72,6 +72,7 @@ a {
   font-size: 0.9rem;
   padding-left: 1rem;
   text-align: left;
+  margin-top: 5px;
 }
 
 .navbar-nav .dropdown-menu {
@@ -515,14 +516,6 @@ input[type=text].loading {
 
 #primary_form img {
   max-width: 100px;
-}
-
-#primary_form small {
-  display: inline;
-}
-
-#primary_form #amount {
-  height: 40px;
 }
 
 .bounty_nav {

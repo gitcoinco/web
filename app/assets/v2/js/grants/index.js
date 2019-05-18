@@ -61,7 +61,7 @@ const searchGrant = () => {
 const populateFilters = () => {
   const sort = getURLParams('sort_option');
   const network = getURLParams('network');
-  const keyword = getURLParams('keyword');
+  const keyword = getURLParams('keyword').replace('%20', ' ');
 
   if (sort)
     $('#sort_option').val(getURLParams('sort_option')).trigger('change');

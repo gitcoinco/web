@@ -111,6 +111,11 @@
   margin: auto;
 }
 
+.content-links a {
+  color: #fff;
+  text-decoration: underline;
+}
+
 .banner .buttons a {
   flex-grow: 1;
   font-weight: 600;
