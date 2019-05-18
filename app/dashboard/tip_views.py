@@ -89,7 +89,7 @@ def record_tip_activity(tip, github_handle, event_name):
     try:
         Activity.objects.create(**kwargs)
     except Exception as e:
-        logger.error('error in record_tip_activity: %s - %s - %s - %s', e, event_name, tip, github_handle)
+        logger.debug('error in record_tip_activity: %s - %s - %s - %s', e, event_name, tip, github_handle)
 
 
 @csrf_exempt

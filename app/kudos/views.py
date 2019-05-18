@@ -461,7 +461,7 @@ def record_kudos_email_activity(kudos_transfer, github_handle, event_name):
     try:
         Activity.objects.create(**kwargs)
     except Exception as e:
-        logger.error(f"error in record_kudos_email_activity: {e} - {event_name} - {kudos_transfer} - {github_handle}")
+        logger.debug(f"error in record_kudos_email_activity: {e} - {event_name} - {kudos_transfer} - {github_handle}")
 
 
 def record_kudos_activity(kudos_transfer, github_handle, event_name):

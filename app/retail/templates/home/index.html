@@ -21,7 +21,7 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
-    <meta name="description" content="The Gitcoin platform connects freelance developers with open bug bounties or online jobs, paid in crypto (ETH). Leverage a global workforce to quickly complete software development projects and coding jobs."/>
+    <meta name="description" content="The Gitcoin platform connects freelance developers with online jobs solving bug bounties, building features and designing creatives paid in crypto (ETH or any token). Leverage a global workforce to quickly complete software development and coding jobs, and find community funding for your project."/>
     <link rel="stylesheet" href="{% static "v2/css/home.css" %}" />
   </head>
   <body class="g-font-muli homepage">
@@ -34,9 +34,23 @@
       <div class="row">
         <div class="col-12 col-md-8 col-xl-6 pl-lg-5">
           <div class="mx-4 mx-lg-5 px-lg-5 pb-lg-5">
-            <h1>{% trans "Open Source Dev Tools, Bug Bounties & Community Resources" %}</h1>
-            <p class="font-title">{% blocktrans %}Gitcoin lets you get paid for working on open source software.
-              Build new skills, make new relationships, earn kudos, and get paid for the work you already love.{% endblocktrans %}
+            <h1>{% trans "Crowdfunding and freelance developers for your software projects" %}</h1>
+            <p>
+              {% blocktrans %}
+              <b>Builders/Project Managers: </b><br>
+              Leverage our global, on-demand workforce. Find expert freelance developers to design, test, code, and build your project teams today. Save time via direct Github integration. Crowdfund for your open source startup or project to increase your budget and bring in more developers.
+              <span class="d-flex mt-3 content-links">
+                <a href="https://gitcoin.co/bounties/funder" class="mr-3">Fund an Issue/Project</a>
+                <a href="https://gitcoin.co/grants/">Grants</a>
+              </span>
+              {% endblocktrans %}
+            </p>
+            <p>
+              {% blocktrans %}
+              <b>Coders/Software Developers: </b><br>
+              Get paid in crypto for freelance jobs, building features, and solving bug bounties! Work with top open source projects and get paid out fast. 
+              {% endblocktrans %}<br>
+              <span class="d-flex mt-3 content-links"><a href="https://gitcoin.co/onboard/contributor/">{% trans "Bug Bounties" %}</a></span>
             </p>
             <div class="buttons">
               <a class="btn btn-gc-green mr-2" href="{% url "new_bounty" %}">{% trans "Fund an Issue" %}</a>

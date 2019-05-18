@@ -762,6 +762,7 @@ def users_fetch(request):
     bounties_completed = request.GET.get('bounties_completed', '').strip().split(',')
     leaderboard_rank = request.GET.get('leaderboard_rank', '').strip().split(',')
     rating = int(request.GET.get('rating', '0'))
+    organisation = request.GET.get('organisation', '')
 
     context = {}
     if not settings.DEBUG:
@@ -799,6 +800,14 @@ def users_fetch(request):
             average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
         ).filter(
             average_rating__gte=rating
+        )
+
+    if organisation:
+        print(organisation)
+        user_list = user_list.filter(
+            fulfilled__bounty__network=network,
+            fulfilled__bounty__accepted=True,
+            fulfilled__bounty__github_url__icontains=organisation
         )
 
     params = dict()
@@ -1864,6 +1873,7 @@ def profile(request, handle):
 
         context = profile.to_dict(tips=False)
         all_activities = context.get('activities')
+        context['avg_rating'] = profile.get_average_star_rating
         context['is_my_profile'] = request.user.is_authenticated and request.user.username.lower() == handle.lower()
         tabs = []
 
@@ -2372,7 +2382,7 @@ def new_bounty(request):
         update=bounty_params,
     )
     params['FEE_PERCENTAGE'] = request.user.profile.fee_percentage if request.user.is_authenticated else 10
-    return TemplateResponse(request, 'bounty/new.html', params)
+    return TemplateResponse(request, 'bounty/fund.html', params)
 
 
 @csrf_exempt
@@ -2429,7 +2439,7 @@ def change_bounty(request, bounty_id):
             raise Http404
 
     keys = ['experience_level', 'project_length', 'bounty_type', 'featuring_date',
-            'permission_type', 'project_type', 'reserved_for_user_handle', 'is_featured']
+            'permission_type', 'project_type', 'reserved_for_user_handle', 'is_featured', 'admin_override_suspend_auto_approval']
 
     if request.body:
         can_change = (bounty.status in Bounty.OPEN_STATUSES) or \

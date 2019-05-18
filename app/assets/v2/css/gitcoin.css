@@ -50,6 +50,10 @@ h4,
   color: #3e24fb
 }
 
+.text-darkblue {
+  color: var(--gc-purple);
+}
+
 .gitcoin-gray {
   color: lightgray !important;
 }
@@ -259,6 +263,10 @@ div.button-pink {
 
 .bg-lightblue {
   background-color: #EFF3F6;
+}
+
+.bg-lightpurple {
+  background-color: #F5F2FF;
 }
 
 .white-light-bg {
