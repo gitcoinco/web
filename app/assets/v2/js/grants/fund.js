@@ -117,8 +117,11 @@ $(document).ready(function() {
           realPeriodSeconds = periodSeconds;
         }
       }
-
-      let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, data.contract_address);
+      if (contractVersion == 0) {
+        let deployedSubscription = new web3.eth.Contract(compiledSubscription0.abi, data.contract_address);
+      } else if (contractVersion == 1) {
+        let deployedSubscription = new web3.eth.Contract(compiledSubscription1.abi, data.contract_address);
+      }
       let selected_token;
 
       if (data.token_address != '0x0000000000000000000000000000000000000000') {
@@ -153,7 +156,13 @@ $(document).ready(function() {
         let realTokenAmount = Number(data.amount_per_period * Math.pow(10, decimals));
         let amountSTR = realTokenAmount.toLocaleString('fullwide', { useGrouping: false });
 
-        let realApproval = Number(((grant_amount + gitcoin_grant_amount) * data.num_periods * Math.pow(10, decimals)) + 1);
+        let realApproval;
+        if (contractVersion == 0) {
+          // version 0 of the contract has no fee
+          realApproval = Number((grant_amount * data.num_periods * Math.pow(10, decimals)) + 1);
+        } else if (contractVersion == 1) {
+          realApproval = Number(((grant_amount + gitcoin_grant_amount) * data.num_periods * Math.pow(10, decimals)) + 1);
+        }
         let approvalSTR = realApproval.toLocaleString('fullwide', { useGrouping: false });
 
         web3.eth.getAccounts(function(err, accounts) {
@@ -167,7 +176,8 @@ $(document).ready(function() {
             web3.utils.toTwosComplement(approvalSTR)
           ).send({
             from: accounts[0],
-            gasPrice: realGasPrice
+            // TODO: this is not the correct variable, this is for the metatx
+            //gasPrice: realGasPrice
           }).on('error', function(error) {
             console.log('1', error);
             _alert({ message: gettext('Your approval transaction failed. Please try again.')}, 'error');
@@ -214,7 +224,7 @@ $(document).ready(function() {
   }); // waitforWeb3
 }); // document ready
 
-const subscribeToGrant = (transactionHash) => {
+const subscribeToGrant = (transactionHash, grant_version) => {
   $('#sub_new_approve_tx_id').val(transactionHash);
   const linkURL = etherscan_tx_url(transactionHash);
   let token_address = $('#js-token').length ? $('#js-token').val() : $('#sub_token_address').val();
