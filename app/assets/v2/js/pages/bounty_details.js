@@ -509,20 +509,21 @@ var showWarningMessage = function(txid) {
 // refresh page if metamask changes
 waitforWeb3(function() {
   setInterval(function() {
-    if (document.web3Changed) {
+    if (document.web3Changed)
       return;
-    }
+
     if (typeof document.lastWeb3Network == 'undefined') {
       document.lastWeb3Network = document.web3network;
       return;
     }
+
     if (typeof document.lastCoinbase == 'undefined') {
-      document.lastCoinbase = web3.eth.coinbase;
+      document.lastCoinbase = web3 ? web3.eth.coinbase : null;
       return;
     }
-    var hasChanged = (document.lastCoinbase != web3.eth.coinbase) || (document.lastWeb3Network != document.web3network);
 
-    if (hasChanged) {
+    if (web3 && (document.lastCoinbase != web3.eth.coinbase) ||
+      (document.lastWeb3Network != document.web3network)) {
       _alert(gettext('Detected a web3 change.  Refreshing the page. '), 'info');
       document.location.reload();
       document.web3Changed = true;
