@@ -20,8 +20,6 @@
 
 import logging
 from json import loads as json_parse
-from json import load as json_load
-from json import dump as json_dump
 from os import walk as walkdir
 
 from django.conf import settings

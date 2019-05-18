@@ -22,6 +22,9 @@
   {% if code == 404 %}
     <p>{% blocktrans %}We can't find the page you are looking for.{% endblocktrans %}</p>
     <img src="{% static "v2/images/404.png" %}">
+  {% elif code == 401 %}
+    <p>{% blocktrans %}Your account do not support this function. Consider login with GitHub?{% endblocktrans %}</p>
+    <img src="{% static "v2/images/404.png" %}">
   {% else %}
     <h1>{% blocktrans %}Error {{code}}.{% endblocktrans %}</h1>
     <p>{% blocktrans %}Even the bots aren't sure what happened, but we'll look into it.<br>

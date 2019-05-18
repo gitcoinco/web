@@ -1529,7 +1529,6 @@ def bounty_invite_url(request, invitecode):
         raise Http404
 
 
-
 def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None):
     """Display the bounty details.
 
@@ -1552,6 +1551,10 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
         _access_token = request.user.profile.get_access_token()
     else:
         _access_token = request.session.get('access_token')
+
+    if request.user.username[0:8] == "twitter_":
+        return TemplateResponse(request, 'error.html', {"code": 401}, status=401)
+
     issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/issues/' + ghissue if ghissue else request_url
 
     # try the /pulls url if it doesn't exist in /issues
