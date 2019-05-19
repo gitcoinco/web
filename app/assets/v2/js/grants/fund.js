@@ -176,8 +176,7 @@ $(document).ready(function() {
             web3.utils.toTwosComplement(approvalSTR)
           ).send({
             from: accounts[0],
-            // TODO: this is not the correct variable, this is for the metatx
-            //gasPrice: realGasPrice
+            gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)),
           }).on('error', function(error) {
             console.log('1', error);
             _alert({ message: gettext('Your approval transaction failed. Please try again.')}, 'error');
