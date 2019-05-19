@@ -20,12 +20,13 @@
   {% include 'shared/head.html' %}
   <head>
     <meta name="title" content="About Gitcoin: Find Open Bug Bounties & Freelance Coders">
-    <meta name="description" content="Gitcoin is a community for freelance developers to collaborate and monetize their skills
-    while working on Open Source projects through bounties paid in crypto (ETH or any ERC-20 token).">
+    <meta name="description" content="Gitcoin is a community for freelance developers to collaborate and monetize their skills while working on Open Source projects through bounties paid in crypto (ETH or any ERC-20 token).">
+    <meta name="keywords" content="about gitcoin" />
     <link rel="stylesheet" href="{% static "v2/css/landing_page.css" %}" />
     <link rel="stylesheet" href="{% static "v2/css/about.css" %}" />
   </head>
   <body class="{{ active }} g-font-muli">
+    <h1 style="display: none;">About Gitcoin - The Freelance Coding Marketplace</h1>
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
