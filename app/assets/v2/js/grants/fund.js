@@ -117,9 +117,9 @@ $(document).ready(function() {
           realPeriodSeconds = periodSeconds;
         }
       }
-      if (contractVersion == 0) {
+      if (data.contract_version == 0) {
         let deployedSubscription = new web3.eth.Contract(compiledSubscription0.abi, data.contract_address);
-      } else if (contractVersion == 1) {
+      } else if (data.contract_version == 1) {
         let deployedSubscription = new web3.eth.Contract(compiledSubscription1.abi, data.contract_address);
       }
       let selected_token;
@@ -157,10 +157,10 @@ $(document).ready(function() {
         let amountSTR = realTokenAmount.toLocaleString('fullwide', { useGrouping: false });
 
         let realApproval;
-        if (contractVersion == 0) {
+        if (data.contract_version == 0) {
           // version 0 of the contract has no fee
           realApproval = Number((grant_amount * data.num_periods * Math.pow(10, decimals)) + 1);
-        } else if (contractVersion == 1) {
+        } else if (data.contract_version == 1) {
           realApproval = Number(((grant_amount + gitcoin_grant_amount) * data.num_periods * Math.pow(10, decimals)) + 1);
         }
         let approvalSTR = realApproval.toLocaleString('fullwide', { useGrouping: false });
