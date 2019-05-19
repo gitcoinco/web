@@ -306,6 +306,8 @@ def get_github_event_emails(oauth_token, username):
         list of str: All of the user's associated email from github.
 
     """
+    if username[0:8] == 'twitter_':
+        return []
     emails = []
     headers = JSON_HEADER
     if oauth_token:
@@ -358,6 +360,8 @@ def get_github_emails(oauth_token):
 
 
 def get_emails_by_category(username):
+    if username[0:8] == 'twitter_':
+        return {}
     from dashboard.models import Profile
     to_emails = {}
     to_profiles = Profile.objects.filter(handle__iexact=username)
@@ -374,6 +378,8 @@ def get_emails_by_category(username):
 
 
 def get_emails_master(username):
+    if username[0:8] == 'twitter_':
+        return []
     emails_by_category = get_emails_by_category(username)
     emails = []
     for category, to_email in emails_by_category.items():
@@ -395,6 +401,8 @@ def search(query):
         request.Response: The github search response.
 
     """
+    if query[0:8] == 'twitter_':
+        return {}
     params = (('q', query), ('sort', 'updated'), )
 
     try:
@@ -416,6 +424,8 @@ def search_user(query, token=None):
         dict: The first matching github user dictionary.
 
     """
+    if query[0:8] == 'twitter_':
+        return {}
     paginated_list = search_users(query, token)
     try:
         user_obj = paginated_list[0]
@@ -443,6 +453,8 @@ def search_users(query, token=None):
         github.PaginatedList: The pygithub paginator object of all results if many True.
 
     """
+    if query[0:8] == 'twitter_':
+        return [] 
     gh_client = github_connect(token)
     try:
         paginated_list = gh_client.search_users(query)
@@ -533,6 +545,8 @@ def get_issue_timeline_events(owner, repo, issue, page=1):
 
 
 def get_interested_actions(github_url, username, email=''):
+    if username[0:8] == 'twitter_':
+        return []
     activity_event_types = ['commented', 'cross-referenced', 'merged', 'referenced', 'review_requested', ]
 
     owner = org_name(github_url)
@@ -592,6 +606,8 @@ def get_interested_actions(github_url, username, email=''):
 
 def get_user(user, sub_path=''):
     """Get the github user details."""
+    if user[0:8] == 'twitter_':
+        return {}
     user = user.replace('@', '')
     url = f'https://api.github.com/users/{user}{sub_path}'
     response = requests.get(url, auth=_AUTH, headers=HEADERS)
