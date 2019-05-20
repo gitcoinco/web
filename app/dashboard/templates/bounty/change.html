@@ -32,19 +32,65 @@
     <div class="row">
       <div class="col-sm-12 col-lg-12">
         <div id="form_container">
-          <div class="row d-flex justify-content-center my-5">
-            <div id="primary_form" class="col-lg-7 col-sm-12">
-              <h1 class="text-center title">{% trans "Change Bounty Details" %}</h1>
+          <div class="row justify-content-center">
+            <div id="primary_form" class="col-lg-8 col-sm-12 my-5">
               <form id="submitBounty" class="submit_bounty_form px-5 pt-5">
+                <h1 class="text-center title">{% trans "Change Bounty Details" %}</h1>
                 <div id="details-section" class="pt-2">
                   {% include 'shared/issue_details.html' %}
                 </div>
-                <hr class="mt-5">
-                <div class="pt-4">
+                <div class="mt-4">
+                  <label class="font-caption letter-spacing text-black-60 text-uppercase">{% trans "Details" %}</label>
+                  <div class="d-flex row mb-2">
+                    <div class="col-12 col-md-4">
+                      <label class="form__label" for="experience_level">{% trans "Experience Level" %}</label>
+                      <div class="form__select2">
+                        <select class="js-select2" name="experience_level" id="experience_level">
+                          <option disabled selected>{% trans "Experience Level" %}</option>
+                          <option>{% trans "Beginner" %}</option>
+                          <option>{% trans "Intermediate" %}</option>
+                          <option>{% trans "Advanced" %}</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                      <label class="form__label" for="project_length">{% trans "Time Commitment" %}</label>
+                      <div class="form__select2">
+                        <select class="js-select2" name="project_length" id="project_length">
+                          <option disabled selected>{% trans "Time Commitment" %}</option>
+                          <option>{% trans "Hours" %}</option>
+                          <option>{% trans "Days" %}</option>
+                          <option>{% trans "Weeks" %}</option>
+                          <option>{% trans "Months" %}</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                      <label class="form__label" for="bounty_type">{% trans "Bounty Type" %}</label>
+                      <div class="form__select2">
+                        <select class="js-select2" name="bounty_type" id="bounty_type">
+                          <option disabled selected>{% trans "Bounty Type" %}</option>
+                          <option>{% trans "Bug" %}</option>
+                          <option>{% trans "Feature" %}</option>
+                          <option>{% trans "Improvement" %}</option>
+                          <option>{% trans "Security" %}</option>
+                          <option>{% trans "Documentation" %}</option>
+                          <option>{% trans "Design" %}</option>
+                          <option>{% trans "Code Review" %}</option>
+                          <option>{% trans "Other" %}</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="mt-4">
+                  {% include 'shared/reserved.html' %}
+                </div>
+                <div class="m-4 pt-4">
                   {% include 'shared/featured.html' %}
                 </div>
-                <div class="form__footer pb-5">
-                  <button class="button button--primary btn-block js-submit" type="submit">{% trans 'Update Issue Details' %}</button>
+                <div class="row justify-content-center p-3">
+                  <button class="btn btn-gc-blue btn-lg disabled js-submit mb-3 btn-lg-padding" type="submit">{% trans 'Update Issue Details' %}</button>
                 </div>
               </form>
             </div>
@@ -65,6 +111,8 @@
   document.result = {{ result|safe }};
 </script>
 <script src="{% static "v2/js/amounts.js" %}"></script>
+<script src="{% static "v2/js/popper.min.js" %}"></script>
+<script src="{% static "v2/js/bootstrap.min.js" %}"></script>
 <script src="{% static "v2/js/user-search.js" %}"></script>
 <script src="{% static "v2/js/pages/change_bounty.js" %}"></script>
 </html>
