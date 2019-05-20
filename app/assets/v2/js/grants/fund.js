@@ -4,7 +4,7 @@ let tokenAddress;
 let redirectURL;
 
 $(document).ready(function() {
-  let gitcoinDonationAddress = "0x0000000000000000000000000000000000000000";
+  let gitcoinDonationAddress = "0x00De4B13153673BCAE2616b67bf822500d325Fc3";
 
   $('.js-select2').each(function() {
     $(this).select2();
@@ -192,7 +192,7 @@ $(document).ready(function() {
               document.suppress_loading_leave_code = true;
               window.location = redirectURL;
             }); // waitforData
-          }); // approve
+          }); // approve on confirmation
         }); // getAccounts
       }); // decimals
     } // submitHandler
@@ -223,7 +223,7 @@ $(document).ready(function() {
   }); // waitforWeb3
 }); // document ready
 
-const subscribeToGrant = (transactionHash, grant_version) => {
+const subscribeToGrant = (transactionHash) => {
   $('#sub_new_approve_tx_id').val(transactionHash);
   const linkURL = etherscan_tx_url(transactionHash);
   let token_address = $('#js-token').length ? $('#js-token').val() : $('#sub_token_address').val();
