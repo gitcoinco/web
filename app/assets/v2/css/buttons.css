@@ -264,3 +264,8 @@ button:focus {
   color: #666666;
   font-weight: 600;
 }
+
+
+.btn-gc-blue:not(:disabled):not(.disabled).active {
+  background-color: #240096;
+}
