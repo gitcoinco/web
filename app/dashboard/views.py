@@ -1846,6 +1846,11 @@ def profile(request, handle):
             ('new_grant_subscription', _('Grants subscribed to')),
             ('killed_grant_contribution', _('Grants unsubscribed from')),
         ]
+        if profile.is_org:
+            activity_tabs = [
+                ('all', _('All Activity')),
+                ]
+
         page = request.GET.get('p', None)
 
         if page:
