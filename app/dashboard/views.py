@@ -1866,6 +1866,7 @@ def profile(request, handle):
         all_activities = context.get('activities')
         context['avg_rating'] = profile.get_average_star_rating
         context['is_my_profile'] = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+        context['ratings'] = range(0,5)
         tabs = []
 
         for tab, name in activity_tabs:
@@ -1891,6 +1892,7 @@ def profile(request, handle):
         status = 404
         context = {
             'hidden': True,
+            'ratings': range(0,5),
             'profile': {
                 'handle': handle,
                 'avatar_url': f"/dynamic/avatar/Self",
