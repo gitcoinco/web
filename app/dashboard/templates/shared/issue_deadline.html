@@ -15,18 +15,20 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n %}
-<h5 class="font-subheader">{% trans "Deadline" %}</h5>
-<label class="form__label" for="expirationTimeDelta">{% trans "Expires in" %}</label>
-<div class="form__select2">
-  <select class="js-select2" name="expirationTimeDelta">
-    <option value="86400">{% trans "1 day" %}</option>
-    <option value="259200">{% trans "3 days" %}</option>
-    <option value="604800">{% trans "1 week" %}</option>
-    <option value="1209600">{% trans "2 weeks" %}</option>
-    <option value="2592000">{% trans "1 month" %}</option>
-    <option value="7776000">{% trans "3 months" %}</option>
-    <option value="15552000">{% trans "6 months" %}</option>
-    <option value="31536000" selected="">{% trans "1 year" %}</option>
-    <option value="9999999999">{% trans "Never" %}</option>
-  </select>
+
+<div class="mt-4">
+  <label class="font-caption letter-spacing text-black-60 text-uppercase" for="expirationTimeDelta">{% trans "Expires in" %}</label>
+  <div class="form__select2">
+    <select class="js-select2" name="expirationTimeDelta">
+      <option value="86400">{% trans "1 day" %}</option>
+      <option value="259200">{% trans "3 days" %}</option>
+      <option value="604800">{% trans "1 week" %}</option>
+      <option value="1209600">{% trans "2 weeks" %}</option>
+      <option value="2592000">{% trans "1 month" %}</option>
+      <option value="7776000">{% trans "3 months" %}</option>
+      <option value="15552000">{% trans "6 months" %}</option>
+      <option value="31536000" selected="">{% trans "1 year" %}</option>
+      <option value="9999999999">{% trans "Never" %}</option>
+    </select>
+  </div>
 </div>
