@@ -2640,12 +2640,11 @@ class Profile(SuperModel):
         if not self.is_org:
             all_activities = self.activities
         else:
+            # orgs
             url = self.github_url
             all_activities = Activity.objects.filter(
-                Q(bounty__github_url__startswith=url) |
-                Q(tip__github_url__startswith=url) |
-                Q(grant__isnull=False) |
-                Q(subscription__isnull=False)
+                Q(bounty__github_url__istartswith=url) |
+                Q(tip__github_url__istartswith=url)
             )
 
         all_activities = all_activities.filter(

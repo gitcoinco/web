@@ -279,6 +279,7 @@ a:hover .avatar_edit .avatar_edit_text {
   margin-right: auto;
   margin-left: auto;
   border-radius: 100%;
+  min-height: 3.125rem;
 }
 
 .profile-bounties .bounty_row {
