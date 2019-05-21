@@ -1933,6 +1933,9 @@ class Profile(SuperModel):
         kt_owner_address = KudosTransfer.objects.filter(
             receive_address__iexact=self.preferred_payout_address
         )
+        if not self.preferred_payout_address:
+            kt_owner_address = KudosTransfer.objects.none()
+            
         kt_profile = KudosTransfer.objects.filter(recipient_profile=self)
 
         kudos_transfers = kt_profile | kt_owner_address
