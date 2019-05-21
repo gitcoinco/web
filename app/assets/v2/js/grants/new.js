@@ -92,6 +92,7 @@ const init = () => {
 
       // Begin New Deploy Subscription Contract
       let SubscriptionContract = new web3.eth.Contract(compiledSubscription.abi);
+      console.log(compiledSubscription.abi);
 
       // These args are baseline requirements for the contract set by the sender. Will set most to zero to abstract complexity from user.
       let args = [
@@ -106,7 +107,9 @@ const init = () => {
         // data.gas_price
         web3.utils.toTwosComplement(0),
         // contract version
-        web3.utils.toTwosComplement(0)
+        web3.utils.toTwosComplement(1),
+        // trusted relayer
+        web3.utils.toChecksumAddress(data.trusted_relayer)
       ];
 
       web3.eth.getAccounts(function(err, accounts) {

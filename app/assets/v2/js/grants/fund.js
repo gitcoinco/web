@@ -1,12 +1,16 @@
 /* eslint-disable no-console */
 let deployedToken;
+let deployedSubscription;
 let tokenAddress;
 let redirectURL;
 let realPeriodSeconds = 0;
 let selected_token;
 
 $(document).ready(function() {
-  let gitcoinDonationAddress = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
+  //let gitcoinDonationAddress = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
+  // for testing
+  let gitcoinDonationAddress = '0x16101fA7bAd6788bcDff881c8e56779c9733407A';
+
 
   $('.js-select2').each(function() {
     $(this).select2();
@@ -119,7 +123,6 @@ $(document).ready(function() {
         }
       }
 
-      let deployedSubscription;
 
       if (data.contract_version == 0) {
         deployedSubscription = new web3.eth.Contract(compiledSubscription0.abi, data.contract_address);
@@ -130,10 +133,14 @@ $(document).ready(function() {
       if (data.token_address != '0x0000000000000000000000000000000000000000') {
         selected_token = data.token_address;
         deployedToken = new web3.eth.Contract(compiledToken.abi, data.token_address);
+        console.log('data.token_address is set, skipping denomination ' + data.token_address);
       } else {
         selected_token = data.denomination;
         deployedToken = new web3.eth.Contract(compiledToken.abi, data.denomination);
+        console.log('data.token_address is 0x0, denomination is ' + selected_token);
         $('#token_symbol').val($('#js-token option:selected').text());
+        $('#token_address').val(selected_token);
+        data.token_address = selected_token;
       }
 
       if (!selected_token) {
@@ -142,6 +149,7 @@ $(document).ready(function() {
       }
 
       tokenAddress = data.token_address;
+      console.log('tokenAddress: ' + tokenAddress);
 
       deployedToken.methods.decimals().call(function(err, decimals) {
         if (err) {
@@ -149,14 +157,9 @@ $(document).ready(function() {
           return;
         }
 
-        let realGasPrice = 0; // zero cost metatxs
 
-        if (realPeriodSeconds < 2592000) {
-          // charge gas for intervals less than a month
-          realGasPrice = Math.ceil($('#gasPrice').val() * Math.pow(10, 9));
-        }
 
-        $('#gas_price').val(realGasPrice);
+
 
         let realTokenAmount = Number(data.amount_per_period * Math.pow(10, decimals));
         let amountSTR = realTokenAmount.toLocaleString('fullwide', { useGrouping: false });
@@ -164,10 +167,24 @@ $(document).ready(function() {
 
         if (data.contract_version == 0) {
           // version 0 of the contract has no fee
+          console.log('feeless');
           realApproval = Number((grant_amount * data.num_periods * Math.pow(10, decimals)) + 1);
         } else if (data.contract_version == 1) {
+          console.log('feefull');
+          console.log('gitcoin amt:' + gitcoin_grant_amount);
+          console.log('grant amt:' + grant_amount);
           realApproval = Number(((grant_amount + gitcoin_grant_amount) * data.num_periods * Math.pow(10, decimals)) + 1);
+          console.log('realApproval: ' + realApproval);
         }
+
+        let realGasPrice = Number(gitcoin_grant_amount * Math.pow(10, decimals)); // optional grants fee
+
+        $('#gas_price').val(realGasPrice);
+
+        // if (realPeriodSeconds < 2592000) {
+        //   charge gas for intervals less than a month
+        //   realGasPrice = Math.ceil($('#gasPrice').val() * Math.pow(10, 9));
+        //}
 
         let approvalSTR = realApproval.toLocaleString('fullwide', { useGrouping: false });
 
@@ -177,12 +194,20 @@ $(document).ready(function() {
 
           let url;
 
+          var approvalAddress;
+
+          if (data.num_periods == 1) {
+            approvalAddress = splitterAddress;
+          } else {
+            approvalAddress = data.contract_address;
+          }
+
           deployedToken.methods.approve(
-            data.contract_address,
+            approvalAddress,
             web3.utils.toTwosComplement(approvalSTR)
           ).send({
             from: accounts[0],
-            gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
+            gasPrice: web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9))
           }).on('error', function(error) {
             console.log('1', error);
             _alert({ message: gettext('Your approval transaction failed. Please try again.')}, 'error');
@@ -266,22 +291,25 @@ const subscribeToGrant = (transactionHash, amountSTR) => {
   // TODO: fix the tweet modal
   $('#tweetModal').modal('show');
   web3.eth.getAccounts(function(err, accounts) {
+    deployedToken.methods.decimals().call(function(err, decimals) {
 
-    deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
+      deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
 
-      nonce = parseInt(nonce) + 1;
+        nonce = parseInt(nonce) + 1;
 
-      const parts = [
-        web3.utils.toChecksumAddress(accounts[0]), // subscriber address
-        web3.utils.toChecksumAddress($('#admin_address').val()), // admin_address
-        web3.utils.toChecksumAddress(selected_token), // token denomination / address
-        web3.utils.toTwosComplement(amountSTR), // data.amount_per_period
-        web3.utils.toTwosComplement(realPeriodSeconds),
-        web3.utils.toTwosComplement(data.gas_price),
-        web3.utils.toTwosComplement(nonce)
-      ];
+        const parts = [
+          web3.utils.toChecksumAddress(accounts[0]), // subscriber address
+          web3.utils.toChecksumAddress($('#admin_address').val()), // admin_address
+          web3.utils.toChecksumAddress(selected_token), // token denomination / address
+          //web3.utils.toTwosComplement(Number(grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false})),
+          web3.utils.toTwosComplement(amountSTR),
+          web3.utils.toTwosComplement(realPeriodSeconds),
+          web3.utils.toTwosComplement(data.gas_price),
+          web3.utils.toTwosComplement(nonce)
+        ];
 
-      processSubscriptionHash(parts);
+        processSubscriptionHash(parts);
+      });
     });
   });
 };
@@ -347,10 +375,20 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
   });
   saveSubscription(data, true);
   // TODO: deploy production splitter and change address on network
-  let deployedSplitter = new web3.eth.Contract(compiledSplitter.abiDefinition, '0xe2fd6dfe7f371e884e782d46f043552421b3a9d9');
+  let deployedSplitter = new web3.eth.Contract(compiledSplitter.abiDefinition, splitterAddress);
+
+  let token_address = $('#js-token').length ? $('#js-token').val() : $('#sub_token_address').val();
+
+  console.log('splitting payment')
+  console.log('tofirst: ' + toFirst);
+  console.log('tosecond: ' + toSecond);
+  console.log('valueFirst: ' + valueFirst);
+  console.log('valueSecond: ' + valueSecond);
+  console.log('tokenADdress: ' + tokenAddress);
 
   deployedSplitter.methods.splitTransfer(toFirst, toSecond, valueFirst, valueSecond, tokenAddress).send({
-    from: account
+    from: account,
+    gas: web3.utils.toHex(100000)
   }).on('error', function(error) {
     console.log('1', error);
     _alert({ message: gettext('Your payment transaction failed. Please try again.')}, 'error');
