@@ -322,7 +322,7 @@ def grant_new(request):
         'gas_advisories': gas_advisories(),
         'trusted_relayer': settings.GRANTS_OWNER_ACCOUNT
     }
-
+    logger.info("v1!")
     return TemplateResponse(request, 'grants/new.html', params)
 
 @login_required
@@ -330,7 +330,7 @@ def grant_new_v0(request):
     """Create a v0 version of a grant contract."""
     if not request.user.has_perm('grants.add_grant'):
         return redirect('https://gitcoin.typeform.com/to/C2IocD')
-
+    logger.info("v0!!!")
     profile = get_profile(request)
 
     if request.method == 'POST':
