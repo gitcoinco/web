@@ -325,6 +325,84 @@ def grant_new(request):
 
     return TemplateResponse(request, 'grants/new.html', params)
 
+@login_required
+def grant_new_v0(request):
+    """Create a v0 version of a grant contract."""
+    if not request.user.has_perm('grants.add_grant'):
+        return redirect('https://gitcoin.typeform.com/to/C2IocD')
+
+    profile = get_profile(request)
+
+    if request.method == 'POST':
+        if 'title' in request.POST:
+            logo = request.FILES.get('input_image', None)
+            receipt = json.loads(request.POST.get('receipt', '{}'))
+            team_members = request.POST.getlist('team_members[]')
+
+            grant_kwargs = {
+                'title': request.POST.get('title', ''),
+                'description': request.POST.get('description', ''),
+                'reference_url': request.POST.get('reference_url', ''),
+                'admin_address': request.POST.get('admin_address', ''),
+                'contract_owner_address': request.POST.get('contract_owner_address', ''),
+                'token_address': request.POST.get('token_address', ''),
+                'token_symbol': request.POST.get('token_symbol', ''),
+                'amount_goal': request.POST.get('amount_goal', 1),
+                'contract_version': request.POST.get('contract_version', ''),
+                'deploy_tx_id': request.POST.get('transaction_hash', ''),
+                'network': request.POST.get('network', 'mainnet'),
+                'metadata': receipt,
+                'admin_profile': profile,
+                'logo': logo,
+            }
+            grant = Grant.objects.create(**grant_kwargs)
+            team_members.append(profile.id)
+            grant.team_members.add(*list(filter(lambda member_id: member_id > 0, map(int, team_members))))
+            return JsonResponse({
+                'success': True,
+            })
+
+        if 'contract_address' in request.POST:
+            tx_hash = request.POST.get('transaction_hash', '')
+            if not tx_hash:
+                return JsonResponse({
+                    'success': False,
+                    'info': 'no tx hash',
+                    'url': None,
+                })
+
+            grant = Grant.objects.filter(deploy_tx_id=tx_hash).first()
+            grant.contract_address = request.POST.get('contract_address', '')
+            print(tx_hash, grant.contract_address)
+            grant.save()
+            record_grant_activity_helper('new_grant', grant, profile)
+            new_grant(grant, profile)
+            return JsonResponse({
+                'success': True,
+                'url': reverse('grants:details', args=(grant.pk, grant.slug))
+            })
+
+
+    params = {
+        'active': 'new_grant',
+        'title': _('New Grant'),
+        'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
+        'profile': profile,
+        'grant': {},
+        'keywords': get_keywords(),
+        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
+        'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(120),
+        'recommend_gas_price_avg': recommend_min_gas_price_to_confirm_in_time(15),
+        'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(1),
+        'eth_usd_conv_rate': eth_usd_conv_rate(),
+        'conf_time_spread': conf_time_spread(),
+        'gas_advisories': gas_advisories(),
+        'trusted_relayer': settings.GRANTS_OWNER_ACCOUNT
+    }
+
+    return TemplateResponse(request, 'grants/newv0.html', params)
+
+
 
 @login_required
 def milestones(request, grant_id, grant_slug):

@@ -95,22 +95,40 @@ const init = () => {
       console.log(compiledSubscription.abi);
 
       // These args are baseline requirements for the contract set by the sender. Will set most to zero to abstract complexity from user.
-      let args = [
-        // admin_address
-        web3.utils.toChecksumAddress(data.admin_address),
-        // required token
-        web3.utils.toChecksumAddress(data.denomination),
-        // required tokenAmount
-        web3.utils.toTwosComplement(0),
-        // data.frequency
-        web3.utils.toTwosComplement(0),
-        // data.gas_price
-        web3.utils.toTwosComplement(0),
-        // contract version
-        web3.utils.toTwosComplement(1),
-        // trusted relayer
-        web3.utils.toChecksumAddress(data.trusted_relayer)
-      ];
+      let args;
+      if ($('#contract_version').val() == 1) {
+        args = [
+          // admin_address
+          web3.utils.toChecksumAddress(data.admin_address),
+          // required token
+          web3.utils.toChecksumAddress(data.denomination),
+          // required tokenAmount
+          web3.utils.toTwosComplement(0),
+          // data.frequency
+          web3.utils.toTwosComplement(0),
+          // data.gas_price
+          web3.utils.toTwosComplement(0),
+          // contract version
+          web3.utils.toTwosComplement(1),
+          // trusted relayer
+          web3.utils.toChecksumAddress(data.trusted_relayer)
+        ];
+      } else if ($('#contract_version').val() == 0) {
+        args = [
+          // admin_address
+          web3.utils.toChecksumAddress(data.admin_address),
+          // required token
+          web3.utils.toChecksumAddress(data.denomination),
+          // required tokenAmount
+          web3.utils.toTwosComplement(0),
+          // data.frequency
+          web3.utils.toTwosComplement(0),
+          // data.gas_price
+          web3.utils.toTwosComplement(0),
+          // contract version
+          web3.utils.toTwosComplement(0),
+        ];
+      }
 
       web3.eth.getAccounts(function(err, accounts) {
         web3.eth.net.getId(function(err, network) {
