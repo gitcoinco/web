@@ -14,7 +14,7 @@ var new_bounty = {
 if (localStorage['quickstart_dontshow'] !== 'true' &&
     doShowQuickstart(document.referrer) &&
     doShowQuickstart(document.URL)) {
-  window.location = quickstartURL
+  window.location = quickstartURL;
 }
 
 function doShowQuickstart(url) {
@@ -31,7 +31,7 @@ function doShowQuickstart(url) {
   }
 
   return true;
-};
+}
 
 var processedData;
 
