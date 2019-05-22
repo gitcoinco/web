@@ -53,20 +53,22 @@
               <b>Coders/Software Developers: </b><br>
               Get paid in crypto for freelance jobs, building features, and solving bug bounties! Work with top open source projects and get paid out fast. 
               {% endblocktrans %}<br>
-              <span class="d-flex mt-3 content-links"><a href="/onboard/contributor/">{% trans "Bug Bounties" %}</a></span>
+              <span class="d-flex mt-3 content-links">
+                <a href="{% url 'contributor_bounties' '/' %}">{% trans "Bug Bounties" %}</a>
+              </span>
             </p>
             <div class="buttons">
               {% if is_new_funder %}
-                <a class="btn btn-gc-green mr-2" href="/onboard/funder/">{% trans "Become a Funder" %}</a>
+                <a class="btn btn-gc-green mr-2 shadow-none font-weight-bold py-3" href="/onboard/funder/">{% trans "Become a Funder" %}</a>
               {% else %}
-                <a class="btn btn-gc-green mr-2" href="{% url "quickstart" %}">{% trans "Fund an Issue" %}</a>
+                <a class="btn btn-gc-green mr-2 shadow-none font-weight-bold py-3" href="{% url "quickstart" %}">{% trans "Fund an Issue" %}</a>
               {% endif %}
-              <a class="btn btn-outline-white ml-2" href="{% url "products" %}">{% trans "See Our Products" %}</a>
+              <a class="btn btn-outline-white ml-2 shadow-none font-weight-bold py-3" href="{% url "products" %}">{% trans "See Our Products" %}</a>
             </div>
           </div>
         </div>
         <div class="bots-img col-4 col-xl-6 pt-2 mt-5">
-          <img class="w-100" src="{% static "v2/images/home/bots.svg" %}" />
+          <img class="w-100 position-absolute" style="bottom:0" src="{% static "v2/images/home/bots.svg" %}" />
         </div>
       </div>
     </div>
