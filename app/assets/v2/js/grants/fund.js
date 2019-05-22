@@ -10,7 +10,7 @@ let gitcoinDonationAddress;
 
 
 $(document).ready(function() {
-  gitcoinDonationAddress = $('gitcoin_donation_address').val();
+  gitcoinDonationAddress = $('#gitcoin_donation_address').val();
   splitterAddress = $('#splitter_contract_address').val();
 
   $('.js-select2').each(function() {
