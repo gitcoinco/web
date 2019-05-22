@@ -22,7 +22,7 @@ $(document).ready(function() {
     }
 
     const activityContainer = document.querySelector('.tab-section.active .activities');
-    const activityCount = parseInt(activityContainer.getAttribute('count')) || 0;
+    const activityCount = activityContainer ? parseInt(activityContainer.getAttribute('count')) || 0 : 0;
     const loadingImg = document.querySelector('.loading_img');
 
     if (activityContainer.children.length < activityCount) {
