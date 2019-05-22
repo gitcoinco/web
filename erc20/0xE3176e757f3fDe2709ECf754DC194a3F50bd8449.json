@@ -1,0 +1,18 @@
+{
+  "symbol": "BT",
+  "address": "0xE3176e757f3fDe2709ECf754DC194a3F50bd8449",
+  "overview":{      
+        "zh": "BToken是交易云平台"
+  },
+  "email": "1292695897@qq.com",
+  "website": "http://btokens.net/home",
+  "whitepaper": "https://github.com/LiHang941/btoken-update-manager/releases/download/1.0.2/BToken.7.pptx",
+  "published_on": "2019-05-01",
+  "initial_price":{
+        "USD":"0.11 USD"        
+  },
+  "links": {
+    "github": "https://github.com/btoken-io/btoken"
+  }
+}
+
