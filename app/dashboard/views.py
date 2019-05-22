@@ -910,6 +910,7 @@ def dashboard(request):
     }
     return TemplateResponse(request, 'dashboard/index.html', params)
 
+
 def ethhack(request):
     """Handle displaying ethhack landing page."""
 
@@ -922,6 +923,7 @@ def ethhack(request):
         'avatar_url': static('v2/images/ethhack_2019_media.png'),
     }
     return TemplateResponse(request, 'dashboard/hackathon/ethhack_2019.html', params)
+
 
 def accept_bounty(request):
     """Process the bounty.
@@ -1073,6 +1075,7 @@ def social_contribution_modal(request):
         promo_text += f" #{keyword}"
     params['promo_text'] = promo_text
     return TemplateResponse(request, 'social_contribution_modal.html', params)
+
 
 @csrf_exempt
 @require_POST
@@ -2368,6 +2371,7 @@ def redeem_coin(request, shortcode):
         raise Http404
 
 
+@login_required
 def new_bounty(request):
     """Create a new bounty."""
     from .utils import clean_bounty_url

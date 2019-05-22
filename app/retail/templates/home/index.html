@@ -36,11 +36,16 @@
           <div class="mx-4 mx-lg-5 px-lg-5 pb-lg-5">
             <h1>{% trans "Crowdfunding and freelance developers for your software projects" %}</h1>
             <p>
-              <b>Builders/Project Managers: </b><br>
-              Leverage our global, on-demand workforce. Find expert freelance developers to design, test, code, and build your project teams today. Save time via direct Github integration. Crowdfund for your open source startup or project to increase your budget and bring in more developers.
+              {% blocktrans %}
+                <b>Builders/Project Managers: </b><br>
+                Leverage our global, on-demand workforce. Find expert freelance developers to design,\
+                test, code, and build your project teams today. Save time via direct Github integration.
+                Crowdfund for your open source startup or project to increase your budget and bring in
+                more developers.
+              {% endblocktrans %}
               <span class="d-flex mt-3 content-links">
-                <a href="{% url 'funder_bounties' %}" class="mr-3">Fund an Issue/Project</a>
-                <a href="{% url 'grants:grants' %}">Grants</a>
+                <a href="{% url "funder_bounties" %}" class="mr-3">Fund an Issue/Project</a>
+                <a href="{% url "grants:grants" %}">Grants</a>
               </span>
             </p>
             <p>
@@ -53,7 +58,11 @@
               </span>
             </p>
             <div class="buttons">
-              <a class="btn btn-gc-green mr-2 shadow-none font-weight-bold py-3" href="{% url "new_bounty" %}">{% trans "Fund an Issue" %}</a>
+              {% if is_new_funder %}
+                <a class="btn btn-gc-green mr-2 shadow-none font-weight-bold py-3" href="/onboard/funder/">{% trans "Become a Funder" %}</a>
+              {% else %}
+                <a class="btn btn-gc-green mr-2 shadow-none font-weight-bold py-3" href="{% url "quickstart" %}">{% trans "Fund an Issue" %}</a>
+              {% endif %}
               <a class="btn btn-outline-white ml-2 shadow-none font-weight-bold py-3" href="{% url "products" %}">{% trans "See Our Products" %}</a>
             </div>
           </div>
