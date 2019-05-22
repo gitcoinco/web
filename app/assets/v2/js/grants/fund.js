@@ -180,8 +180,6 @@ $(document).ready(function() {
 
           $('#contributor_address').val(accounts[0]);
 
-          let url;
-
           var approvalAddress;
 
           if (data.num_periods == 1) {
@@ -346,7 +344,7 @@ const saveSubscription = (data, isOneTimePayment) => {
     error: (error) => {
       console.log(error);
       _alert({ message: gettext('Your subscription failed to save. Please try again.') }, 'error');
-      url = window.location;
+      redirectURL = window.location;
     }
   });
 };
