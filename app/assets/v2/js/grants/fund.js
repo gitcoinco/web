@@ -134,11 +134,9 @@ $(document).ready(function() {
       if (data.token_address != '0x0000000000000000000000000000000000000000') {
         selected_token = data.token_address;
         deployedToken = new web3.eth.Contract(compiledToken.abi, data.token_address);
-        console.log('data.token_address is set, skipping denomination ' + data.token_address);
       } else {
         selected_token = data.denomination;
         deployedToken = new web3.eth.Contract(compiledToken.abi, data.denomination);
-        console.log('data.token_address is 0x0, denomination is ' + selected_token);
         $('#token_symbol').val($('#js-token option:selected').text());
         $('#token_address').val(selected_token);
         data.token_address = selected_token;
@@ -150,7 +148,6 @@ $(document).ready(function() {
       }
 
       tokenAddress = data.token_address;
-      console.log('tokenAddress: ' + tokenAddress);
 
       deployedToken.methods.decimals().call(function(err, decimals) {
         if (err) {
@@ -163,14 +160,9 @@ $(document).ready(function() {
 
         if (data.contract_version == 0) {
           // version 0 of the contract has no fee
-          console.log('feeless');
           realApproval = Number((grant_amount * data.num_periods * Math.pow(10, decimals)) + 1);
         } else if (data.contract_version == 1) {
-          console.log('feefull');
-          console.log('gitcoin amt:' + gitcoin_grant_amount);
-          console.log('grant amt:' + grant_amount);
           realApproval = Number(((grant_amount + gitcoin_grant_amount) * data.num_periods * Math.pow(10, decimals)) + 1);
-          console.log('realApproval: ' + realApproval);
         }
 
         let realGasPrice = Number(gitcoin_grant_amount * Math.pow(10, decimals)); // optional grants fee
@@ -287,7 +279,7 @@ const subscribeToGrant = (transactionHash) => {
       $('#transaction_url').attr('href', linkURL);
       enableWaitState('#grants_form');
       // TODO: fix the tweet modal
-      $('#tweetModal').modal('show');
+      // $('#tweetModal').modal('show');
 
       deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
 
@@ -302,10 +294,6 @@ const subscribeToGrant = (transactionHash) => {
           web3.utils.toTwosComplement(data.gas_price),
           web3.utils.toTwosComplement(nonce)
         ];
-
-        console.log('correct grant amount is: ' + web3.utils.toTwosComplement(Number(grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false})));
-        console.log('current grant amount is: ' + parts[3]);
-        console.log(parts);
 
         processSubscriptionHash(parts);
       });
@@ -341,7 +329,6 @@ const processSubscriptionHash = (parts) => {
 };
 
 const saveSubscription = (data, isOneTimePayment) => {
-  console.log(data);
   if (isOneTimePayment) {
     data['real_period_seconds'] = 0;
   }
@@ -350,7 +337,6 @@ const saveSubscription = (data, isOneTimePayment) => {
     url: '',
     data: data,
     success: json => {
-      console.log(json);
       console.log('successfully saved subscription');
       if (json.url != undefined) {
         redirectURL = json.url;
@@ -373,17 +359,10 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
     data[this.name] = this.value;
   });
   saveSubscription(data, true);
-  // TODO: deploy production splitter and change address on network
+
   let deployedSplitter = new web3.eth.Contract(compiledSplitter.abiDefinition, splitterAddress);
 
   let token_address = $('#js-token').length ? $('#js-token').val() : $('#sub_token_address').val();
-
-  console.log('splitting payment');
-  console.log('tofirst: ' + toFirst);
-  console.log('tosecond: ' + toSecond);
-  console.log('valueFirst: ' + valueFirst);
-  console.log('valueSecond: ' + valueSecond);
-  console.log('tokenADdress: ' + tokenAddress);
 
   deployedSplitter.methods.splitTransfer(toFirst, toSecond, valueFirst, valueSecond, tokenAddress).send({
     from: account,
@@ -394,7 +373,6 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
   }).on('transactionHash', function(transactionHash) {
     waitforData(() => {
       document.suppress_loading_leave_code = true;
-      console.log('loading url: ' + redirectURL);
       window.location = redirectURL;
     });
 
