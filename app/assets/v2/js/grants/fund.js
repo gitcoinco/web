@@ -158,12 +158,7 @@ $(document).ready(function() {
           return;
         }
 
-
-
-
-
         let realTokenAmount = Number(data.amount_per_period * Math.pow(10, decimals));
-        //let amountSTR = realTokenAmount.toLocaleString('fullwide', { useGrouping: false });
         let realApproval;
 
         if (data.contract_version == 0) {
@@ -185,7 +180,7 @@ $(document).ready(function() {
         // if (realPeriodSeconds < 2592000) {
         //   charge gas for intervals less than a month
         //   realGasPrice = Math.ceil($('#gasPrice').val() * Math.pow(10, 9));
-        //}
+        // }
 
         let approvalSTR = realApproval.toLocaleString('fullwide', { useGrouping: false });
 
@@ -303,12 +298,12 @@ const subscribeToGrant = (transactionHash) => {
           web3.utils.toChecksumAddress($('#admin_address').val()), // admin_address
           web3.utils.toChecksumAddress(selected_token), // token denomination / address
           web3.utils.toTwosComplement(Number(grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false})),
-          //web3.utils.toTwosComplement(amountSTR),
           web3.utils.toTwosComplement(realPeriodSeconds),
           web3.utils.toTwosComplement(data.gas_price),
           web3.utils.toTwosComplement(nonce)
         ];
-        console.log('correct grant amount is: ' + web3.utils.toTwosComplement(Number(grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false})))
+
+        console.log('correct grant amount is: ' + web3.utils.toTwosComplement(Number(grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false})));
         console.log('current grant amount is: ' + parts[3]);
         console.log(parts);
 
@@ -383,7 +378,7 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
 
   let token_address = $('#js-token').length ? $('#js-token').val() : $('#sub_token_address').val();
 
-  console.log('splitting payment')
+  console.log('splitting payment');
   console.log('tofirst: ' + toFirst);
   console.log('tosecond: ' + toSecond);
   console.log('valueFirst: ' + valueFirst);
