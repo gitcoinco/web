@@ -220,8 +220,13 @@ class Grant(SuperModel):
     @property
     def abi(self):
         """Return grants abi."""
-        from grants.abi import abi_v0
-        return abi_v0
+        if self.contract_version == 0:
+            from grants.abi import abi_v0
+            return abi_v0
+        elif self.contract_version == 1:
+            from grants.abi import abi_v1
+            return abi_v1
+
 
     @property
     def url(self):
