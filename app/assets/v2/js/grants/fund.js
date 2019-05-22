@@ -5,12 +5,13 @@ let tokenAddress;
 let redirectURL;
 let realPeriodSeconds = 0;
 let selected_token;
+let splitterAddress;
+let gitcoinDonationAddress;
+
 
 $(document).ready(function() {
-  //let gitcoinDonationAddress = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
-  // for testing
-  let gitcoinDonationAddress = '0x16101fA7bAd6788bcDff881c8e56779c9733407A';
-
+  gitcoinDonationAddress = $('gitcoin_donation_address').val();
+  splitterAddress = $('#splitter_contract_address').val();
 
   $('.js-select2').each(function() {
     $(this).select2();

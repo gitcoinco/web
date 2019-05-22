@@ -555,6 +555,8 @@ def grant_fund(request, grant_id, grant_slug):
                 'url': reverse('grants:details', args=(grant.pk, grant.slug))
             })
 
+    splitter_contract_address = settings.SPLITTER_CONTRACT_ADDRESS
+
     params = {
         'active': 'fund_grant',
         'title': _('Fund Grant'),
@@ -570,6 +572,8 @@ def grant_fund(request, grant_id, grant_slug):
         'eth_usd_conv_rate': eth_usd_conv_rate(),
         'conf_time_spread': conf_time_spread(),
         'gas_advisories': gas_advisories(),
+        'splitter_contract_address': settings.SPLITTER_CONTRACT_ADDRESS,
+        'gitcoin_donation_address': settings.GITCOIN_DONATION_ADDRESS
     }
     return TemplateResponse(request, 'grants/fund.html', params)
 
