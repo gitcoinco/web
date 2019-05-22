@@ -81,4 +81,4 @@ raven==6.9.0
 sentry-sdk
 websocket-client
 bleach
-taggit
+django-taggit
