@@ -1027,7 +1027,7 @@ def start_work_approved(interest, bounty):
 
 def bounty_worker_rejected_with_reason(interest, reason, bounty):
     from_email = settings.CONTACT_EMAIL
-    to_email = interest.profile.emails
+    to_email = interest.profile.email
     if not to_email:
         if interest.profile and interest.profile.user:
             to_email = interest.profile.user.email

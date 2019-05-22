@@ -873,7 +873,6 @@ def render_bounty_worker_rejected_with_reason(interest, reason, bounty):
         'interest': interest,
         'bounty': bounty,
         'reason': reason,
-        'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
     }
     subject = "Application Rejected"
     response_html = premailer_transform(render_to_string("emails/bounty_worker_rejected_with_reason.html", params))
