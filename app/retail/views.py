@@ -36,7 +36,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from app.utils import get_default_network
 from cacheops import cached_as, cached_view, cached_view_as
-from dashboard.models import Activity, Profile
+from dashboard.models import Activity, Bounty, Profile
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from economy.models import Token
 from marketing.mails import new_funding_limit_increase_request, new_token_request
@@ -66,6 +66,13 @@ def get_activities(tech_stack=None, num_activities=15):
 
 
 def index(request):
+
+    user = request.user.profile if request.user.is_authenticated else None
+    is_new_funder = True
+
+    if user and Bounty.objects.filter(bounty_owner_github_username=user).count() > 0:
+        is_new_funder = False
+
     products = [
         {
             'group' : 'grow_oss',
@@ -199,6 +206,7 @@ def index(request):
     ]
 
     context = {
+        'is_new_funder': is_new_funder,
         'products': products,
         'know_us': know_us,
         'press': press,
@@ -556,7 +564,7 @@ def contributor_bounties(request, tech_stack):
             { 'link': "/design", 'text': "Design"},
             { 'link': "/html", 'text': "HTML"},
             { 'link': "/ruby", 'text': "Ruby"},
-            { 'link': "/css", 'text': "CSS"},            
+            { 'link': "/css", 'text': "CSS"},
         ]
     }
 
