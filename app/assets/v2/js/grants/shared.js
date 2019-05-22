@@ -1,7 +1,6 @@
 // outside of document.ready to be in global scope
 var compiledSubscription;
 var compiledSplitter;
-var splitterAddress = '0xe2fd6dfe7f371e884e782d46f043552421b3a9d9';
 var contractVersion;
 
 // Waiting State screen
