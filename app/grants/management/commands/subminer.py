@@ -59,8 +59,6 @@ def process_subscription(subscription, live):
                 "    --- %s, %s, %s, %s", are_we_past_next_valid_timestamp, is_ready_to_be_processed_web3,
                 is_active_web3, signer,
             )
-            logger.info("Grant Version is %s" % subscription.grant.contract_version)
-            logger.info("metatx relayer gasPrice is %s" % web3_hash_arguments['gasPrice'])
 
         if not are_we_past_next_valid_timestamp:
             logger.info(f"   -- ( NOT ready via web3, will be ready on {subscription.get_next_valid_timestamp()}) ")

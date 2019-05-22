@@ -322,7 +322,6 @@ def grant_new(request):
         'gas_advisories': gas_advisories(),
         'trusted_relayer': settings.GRANTS_OWNER_ACCOUNT
     }
-    logger.info("v1!")
     return TemplateResponse(request, 'grants/new.html', params)
 
 @login_required
@@ -330,7 +329,6 @@ def grant_new_v0(request):
     """Create a v0 version of a grant contract."""
     if not request.user.has_perm('grants.add_grant'):
         return redirect('https://gitcoin.typeform.com/to/C2IocD')
-    logger.info("v0!!!")
     profile = get_profile(request)
 
     if request.method == 'POST':
@@ -506,7 +504,6 @@ def grant_fund(request, grant_id, grant_slug):
             subscription.contributor_address = request.POST.get('contributor_address', '')
             subscription.amount_per_period = request.POST.get('amount_per_period', 0)
             subscription.real_period_seconds = request.POST.get('real_period_seconds', 2592000)
-            print(subscription.real_period_seconds)
             subscription.frequency = request.POST.get('frequency', 30)
             subscription.frequency_unit = request.POST.get('frequency_unit', 'days')
             subscription.token_address = request.POST.get('token_address', '')
@@ -517,7 +514,6 @@ def grant_fund(request, grant_id, grant_slug):
             subscription.network = request.POST.get('network', '')
             subscription.contributor_profile = profile
             subscription.grant = grant
-
             subscription.save()
 
             # one time payments

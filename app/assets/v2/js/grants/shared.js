@@ -149,10 +149,8 @@ $(document).ready(function() {
 
   if (contractVersion) {
     if (contractVersion == 0) {
-      console.log('loading contract 0');
       compiledSubscription = compiledSubscription0;
     } else if (contractVersion == 1) {
-      console.log('loading contract 1');
       compiledSubscription = compiledSubscription1;
     }
   }
