@@ -1,5 +1,17 @@
 /* eslint-disable no-console */
+let deployedToken;
+let deployedSubscription;
+let tokenAddress;
+let redirectURL;
+let realPeriodSeconds = 0;
+let selected_token;
+let splitterAddress;
+let gitcoinDonationAddress;
+
+
 $(document).ready(function() {
+  gitcoinDonationAddress = $('gitcoin_donation_address').val();
+  splitterAddress = $('#splitter_contract_address').val();
 
   $('.js-select2').each(function() {
     $(this).select2();
@@ -92,7 +104,6 @@ $(document).ready(function() {
         data[this.name] = this.value;
       });
 
-      let realPeriodSeconds = 0;
 
       if (data.frequency) {
 
@@ -113,22 +124,33 @@ $(document).ready(function() {
         }
       }
 
-      let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, data.contract_address);
-      let deployedToken;
-      let selected_token;
+
+      if (data.contract_version == 0) {
+        deployedSubscription = new web3.eth.Contract(compiledSubscription0.abi, data.contract_address);
+      } else if (data.contract_version == 1) {
+        deployedSubscription = new web3.eth.Contract(compiledSubscription1.abi, data.contract_address);
+      }
 
       if (data.token_address != '0x0000000000000000000000000000000000000000') {
         selected_token = data.token_address;
         deployedToken = new web3.eth.Contract(compiledToken.abi, data.token_address);
+        console.log('data.token_address is set, skipping denomination ' + data.token_address);
       } else {
         selected_token = data.denomination;
         deployedToken = new web3.eth.Contract(compiledToken.abi, data.denomination);
+        console.log('data.token_address is 0x0, denomination is ' + selected_token);
         $('#token_symbol').val($('#js-token option:selected').text());
+        $('#token_address').val(selected_token);
+        data.token_address = selected_token;
       }
+
       if (!selected_token) {
         _alert('Please select a token', 'error');
         return;
       }
+
+      tokenAddress = data.token_address;
+      console.log('tokenAddress: ' + tokenAddress);
 
       deployedToken.methods.decimals().call(function(err, decimals) {
         if (err) {
@@ -136,19 +158,30 @@ $(document).ready(function() {
           return;
         }
 
-        let realGasPrice = 0; // zero cost metatxs
+        let realTokenAmount = Number(data.amount_per_period * Math.pow(10, decimals));
+        let realApproval;
 
-        if (realPeriodSeconds < 2592000) {
-          // charge gas for intervals less than a month
-          realGasPrice = Math.ceil($('#gasPrice').val() * Math.pow(10, 9));
+        if (data.contract_version == 0) {
+          // version 0 of the contract has no fee
+          console.log('feeless');
+          realApproval = Number((grant_amount * data.num_periods * Math.pow(10, decimals)) + 1);
+        } else if (data.contract_version == 1) {
+          console.log('feefull');
+          console.log('gitcoin amt:' + gitcoin_grant_amount);
+          console.log('grant amt:' + grant_amount);
+          realApproval = Number(((grant_amount + gitcoin_grant_amount) * data.num_periods * Math.pow(10, decimals)) + 1);
+          console.log('realApproval: ' + realApproval);
         }
+
+        let realGasPrice = Number(gitcoin_grant_amount * Math.pow(10, decimals)); // optional grants fee
 
         $('#gas_price').val(realGasPrice);
 
-        let realTokenAmount = Number(data.amount_per_period * Math.pow(10, decimals));
-        let amountSTR = realTokenAmount.toLocaleString('fullwide', { useGrouping: false });
+        // if (realPeriodSeconds < 2592000) {
+        //   charge gas for intervals less than a month
+        //   realGasPrice = Math.ceil($('#gasPrice').val() * Math.pow(10, 9));
+        // }
 
-        let realApproval = Number(((realTokenAmount + realGasPrice) * data.num_periods) + 1);
         let approvalSTR = realApproval.toLocaleString('fullwide', { useGrouping: false });
 
         web3.eth.getAccounts(function(err, accounts) {
@@ -157,116 +190,40 @@ $(document).ready(function() {
 
           let url;
 
-          var tokenMethod = deployedToken.methods.approve;
-          var arg1 = data.contract_address;
+          var approvalAddress;
 
-          // one time payments
           if (data.num_periods == 1) {
-            arg1 = data.admin_address;
-            tokenMethod = deployedToken.methods.transfer;
+            approvalAddress = splitterAddress;
+          } else {
+            approvalAddress = data.contract_address;
           }
 
-          tokenMethod(
-            arg1,
+          deployedToken.methods.approve(
+            approvalAddress,
             web3.utils.toTwosComplement(approvalSTR)
           ).send({
             from: accounts[0],
-            gasPrice: realGasPrice
+            gasPrice: web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9))
           }).on('error', function(error) {
             console.log('1', error);
             _alert({ message: gettext('Your approval transaction failed. Please try again.')}, 'error');
           }).on('transactionHash', function(transactionHash) {
-            $('#sub_new_approve_tx_id').val(transactionHash);
-            const linkURL = etherscan_tx_url(transactionHash);
-            let token_address = $('#js-token').length ? $('#js-token').val() : $('#sub_token_address').val();
-            let data = {
-              'contributor_address': $('#contributor_address').val(),
-              'amount_per_period': $('#amount').val(),
-              'real_period_seconds': realPeriodSeconds,
-              'frequency': $('#frequency_count').val(),
-              'frequency_unit': $('#frequency_unit').val(),
-              'token_address': selected_token,
-              'token_symbol': $('#token_symbol').val(),
-              'gas_price': $('#gas_price').val(),
-              'sub_new_approve_tx_id': transactionHash,
-              'num_tx_approved': $('#period').val(),
-              'network': $('#network').val(),
-              'csrfmiddlewaretoken': $("#js-fundGrant input[name='csrfmiddlewaretoken']").val()
-            };
-
-            $.ajax({
-              type: 'post',
-              url: '',
-              data: data,
-              success: json => {
-                console.log('successfully saved subscription');
-              },
-              error: () => {
-                _alert({ message: gettext('Your subscription failed to save. Please try again.') }, 'error');
-              }
-            });
-
-            document.issueURL = linkURL;
-            $('#transaction_url').attr('href', linkURL);
-            enableWaitState('#grants_form');
-            $('#tweetModal').modal('show');
-            // Should add approval transactions to transaction history
-            deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
-
-              nonce = parseInt(nonce) + 1;
-
-              const parts = [
-                web3.utils.toChecksumAddress(accounts[0]), // subscriber address
-                web3.utils.toChecksumAddress($('#admin_address').val()), // admin_address
-                web3.utils.toChecksumAddress(selected_token), // token denomination / address
-                web3.utils.toTwosComplement(amountSTR), // data.amount_per_period
-                web3.utils.toTwosComplement(realPeriodSeconds), // data.period_seconds
-                web3.utils.toTwosComplement(realGasPrice), // data.gas_price
-                web3.utils.toTwosComplement(nonce) // nonce
-              ];
-
-              deployedSubscription.methods.getSubscriptionHash(...parts).call(function(err, subscriptionHash) {
-                $('#subscription_hash').val(subscriptionHash);
-                web3.eth.personal.sign('' + subscriptionHash, accounts[0], function(err, signature) {
-                  if (signature) {
-                    $('#signature').val(signature);
-
-                    let data = {
-                      'subscription_hash': subscriptionHash,
-                      'signature': signature,
-                      'csrfmiddlewaretoken': $("#js-fundGrant input[name='csrfmiddlewaretoken']").val(),
-                      'sub_new_approve_tx_id': $('#sub_new_approve_tx_id').val()
-                    };
-
-                    $.ajax({
-                      type: 'post',
-                      url: '',
-                      data: data,
-                      success: json => {
-                        console.log('successfully saved subscriptionHash and signature');
-                        url = json.url;
-                        $('#wait').val('false');
-                      },
-                      error: () => {
-                        _alert({ message: gettext('Your subscription failed to save. Please try again.') }, 'error');
-                        url = window.location;
-                      }
-                    });
-                  }
-                });
-              });
-            });
+            if (data.num_periods == 1) {
+              // call splitter after approval
+              splitPayment(accounts[0], data.admin_address, gitcoinDonationAddress, Number(grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}), Number(gitcoin_grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}));
+            } else {
+              subscribeToGrant(transactionHash);
+            }
           }).on('confirmation', function(confirmationNumber, receipt) {
-
             waitforData(() => {
               document.suppress_loading_leave_code = true;
-              window.location = url;
-            });
-          });
-        });
-      });
-    }
-  });
+              window.location = redirectURL;
+            }); // waitforData
+          }); // approve on confirmation
+        }); // getAccounts
+      }); // decimals
+    } // submitHandler
+  }); // validate
 
   waitforWeb3(function() {
     if (document.web3network != $('#network').val()) {
@@ -290,8 +247,176 @@ $(document).ready(function() {
       $("#js-token option[value='0x0000000000000000000000000000000000000000']").remove();
     });
     $('#js-token').select2();
+  }); // waitforWeb3
+}); // document ready
+
+const subscribeToGrant = (transactionHash) => {
+  web3.eth.getAccounts(function(err, accounts) {
+    deployedToken.methods.decimals().call(function(err, decimals) {
+      $('#sub_new_approve_tx_id').val(transactionHash);
+      const linkURL = etherscan_tx_url(transactionHash);
+      let token_address = $('#js-token').length ? $('#js-token').val() : $('#sub_token_address').val();
+      let data = {
+        'contributor_address': $('#contributor_address').val(),
+        'amount_per_period': grant_amount,
+        'real_period_seconds': realPeriodSeconds,
+        'frequency': $('#frequency_count').val(),
+        'frequency_unit': $('#frequency_unit').val(),
+        'token_address': selected_token,
+        'token_symbol': $('#token_symbol').val(),
+        'gas_price': $('#gas_price').val(),
+        'sub_new_approve_tx_id': transactionHash,
+        'num_tx_approved': $('#period').val(),
+        'network': $('#network').val(),
+        'csrfmiddlewaretoken': $("#js-fundGrant input[name='csrfmiddlewaretoken']").val()
+      };
+
+      $.ajax({
+        type: 'post',
+        url: '',
+        data: data,
+        success: json => {
+          console.log('successfully saved subscription');
+        },
+        error: () => {
+          _alert({ message: gettext('Your subscription failed to save. Please try again.') }, 'error');
+        }
+      });
+
+      document.issueURL = linkURL;
+      $('#transaction_url').attr('href', linkURL);
+      enableWaitState('#grants_form');
+      // TODO: fix the tweet modal
+      $('#tweetModal').modal('show');
+
+      deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
+
+        nonce = parseInt(nonce) + 1;
+
+        const parts = [
+          web3.utils.toChecksumAddress(accounts[0]), // subscriber address
+          web3.utils.toChecksumAddress($('#admin_address').val()), // admin_address
+          web3.utils.toChecksumAddress(selected_token), // token denomination / address
+          web3.utils.toTwosComplement(Number(grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false})),
+          web3.utils.toTwosComplement(realPeriodSeconds),
+          web3.utils.toTwosComplement(data.gas_price),
+          web3.utils.toTwosComplement(nonce)
+        ];
+
+        console.log('correct grant amount is: ' + web3.utils.toTwosComplement(Number(grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false})));
+        console.log('current grant amount is: ' + parts[3]);
+        console.log(parts);
+
+        processSubscriptionHash(parts);
+      });
+    });
   });
-});
+};
+
+const signSubscriptionHash = (subscriptionHash) => {
+  web3.eth.getAccounts(function(err, accounts) {
+
+    web3.eth.personal.sign('' + subscriptionHash, accounts[0], function(err, signature) {
+      if (signature) {
+        $('#signature').val(signature);
+
+        let data = {
+          'subscription_hash': subscriptionHash,
+          'signature': signature,
+          'csrfmiddlewaretoken': $("#js-fundGrant input[name='csrfmiddlewaretoken']").val(),
+          'sub_new_approve_tx_id': $('#sub_new_approve_tx_id').val()
+        };
+
+        saveSubscription(data, false);
+      }
+    });
+  });
+};
+
+const processSubscriptionHash = (parts) => {
+  deployedSubscription.methods.getSubscriptionHash(...parts).call(function(err, subscriptionHash) {
+    $('#subscription_hash').val(subscriptionHash);
+    signSubscriptionHash(subscriptionHash);
+  });
+};
+
+const saveSubscription = (data, isOneTimePayment) => {
+  console.log(data);
+  if (isOneTimePayment) {
+    data['real_period_seconds'] = 0;
+  }
+  $.ajax({
+    type: 'post',
+    url: '',
+    data: data,
+    success: json => {
+      console.log(json);
+      console.log('successfully saved subscription');
+      if (json.url != undefined) {
+        redirectURL = json.url;
+        $('#wait').val('false');
+      }
+    },
+    error: (error) => {
+      console.log(error);
+      _alert({ message: gettext('Your subscription failed to save. Please try again.') }, 'error');
+      url = window.location;
+    }
+  });
+};
+
+const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
+  var data = {};
+  var form = $('#js-fundGrant');
+
+  $.each($(form).serializeArray(), function() {
+    data[this.name] = this.value;
+  });
+  saveSubscription(data, true);
+  // TODO: deploy production splitter and change address on network
+  let deployedSplitter = new web3.eth.Contract(compiledSplitter.abiDefinition, splitterAddress);
+
+  let token_address = $('#js-token').length ? $('#js-token').val() : $('#sub_token_address').val();
+
+  console.log('splitting payment');
+  console.log('tofirst: ' + toFirst);
+  console.log('tosecond: ' + toSecond);
+  console.log('valueFirst: ' + valueFirst);
+  console.log('valueSecond: ' + valueSecond);
+  console.log('tokenADdress: ' + tokenAddress);
+
+  deployedSplitter.methods.splitTransfer(toFirst, toSecond, valueFirst, valueSecond, tokenAddress).send({
+    from: account,
+    gas: web3.utils.toHex(100000)
+  }).on('error', function(error) {
+    console.log('1', error);
+    _alert({ message: gettext('Your payment transaction failed. Please try again.')}, 'error');
+  }).on('transactionHash', function(transactionHash) {
+    waitforData(() => {
+      document.suppress_loading_leave_code = true;
+      console.log('loading url: ' + redirectURL);
+      window.location = redirectURL;
+    });
+
+    const linkURL = etherscan_tx_url(transactionHash);
+
+    document.issueURL = linkURL;
+
+    $('#transaction_url').attr('href', linkURL);
+    enableWaitState('#grants_form');
+    // TODO: Fix tweet modal
+    // $('#tweetModal').modal('show');
+  }).on('confirmation', function(confirmationNumber, receipt) {
+    data = {
+      'subscription_hash': 'onetime',
+      'signature': 'onetime',
+      'csrfmiddlewaretoken': $("#js-fundGrant input[name='csrfmiddlewaretoken']").val(),
+      'sub_new_approve_tx_id': $('#sub_new_approve_tx_id').val()
+    };
+    console.log('confirmed!');
+    saveSubscription(data, true);
+  });
+};
 
 const waitforData = (callback) => {
   if ($('#wait').val() === 'false') {
@@ -319,12 +444,14 @@ const updateSummary = (element) => {
   splitGrantAmount();
 };
 
+let gitcoin_grant_amount = 0;
+let grant_amount = 0;
+
 // Splits the total amount between the grant & gitcoin grant in the summary section
 const splitGrantAmount = () => {
   const percent = $('#gitcoin-grant-input-amount').val();
   const total_amount = $('input#amount').val() ? $('input#amount').val() : 0;
-  let gitcoin_grant_amount = 0;
-  let grant_amount = 0;
+
 
   if (total_amount != 0) {
     if (!percent || percent == 0) {
