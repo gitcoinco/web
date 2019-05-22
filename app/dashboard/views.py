@@ -2388,7 +2388,10 @@ def new_bounty(request):
 @csrf_exempt
 def get_suggested_contributors(request):
     previously_worked_developers = []
+    users_invite = []
     keywords = request.GET.get('keywords', '').split(',')
+    invitees = [int(x) for x in request.GET.get('invite', '').split(',') if x]
+
     if request.user.is_authenticated:
         previously_worked_developers = BountyFulfillment.objects.prefetch_related('bounty', 'profile')\
             .filter(
@@ -2408,11 +2411,21 @@ def get_suggested_contributors(request):
 
     verified_developers = UserVerificationModel.objects.filter(verified=True).values('user__profile__handle', 'user__profile__id')
 
+    if invitees:
+        invitees_filter = Q()
+        print('fuckkkkkkkkkkkkkk')
+        print( invitees)
+        for invite in invitees:
+            invitees_filter = invitees_filter | Q(pk=invite)
+
+        users_invite = Profile.objects.filter(invitees_filter).values('id', 'handle', 'email').distinct()
+
     return JsonResponse(
                 {
                     'contributors': list(previously_worked_developers),
                     'recommended_developers': list(recommended_developers),
-                    'verified_developers': list(verified_developers)
+                    'verified_developers': list(verified_developers),
+                    'invites': list(users_invite)
                 },
                 status=200)
 

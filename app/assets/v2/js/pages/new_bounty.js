@@ -7,6 +7,8 @@ var localStorage = window.localStorage ? window.localStorage : {};
 
 const quickstartURL = document.location.origin + '/bounty/quickstart';
 
+let params = (new URL(document.location)).searchParams;
+
 const FEE_PERCENTAGE = document.FEE_PERCENTAGE / 100.0;
 
 var new_bounty = {
@@ -40,9 +42,15 @@ $('.select2-tag__choice').on('click', function() {
 });
 
 const getSuggestions = () => {
+  console.log(params)
+  let queryParams = {};
+  queryParams.keywords = $('#keywords').val();
+  queryParams.invite = params.get('invite') || '';
+
+  let searchParams = new URLSearchParams(queryParams);
 
   const settings = {
-    url: `/api/v0.1/get_suggested_contributors?keywords=${$('#keywords').val()}`,
+    url: `/api/v0.1/get_suggested_contributors?${searchParams}`,
     method: 'GET',
     processData: false,
     dataType: 'json',
@@ -53,7 +61,8 @@ const getSuggestions = () => {
     let groups = {
       'contributors': 'Recently worked with you',
       'recommended_developers': 'Recommended based on skills',
-      'verified_developers': 'Verified contributors'
+      'verified_developers': 'Verified contributors',
+      'invites': 'Invites'
     };
 
     let options = Object.entries(response).map(([ text, children ]) => (
@@ -68,8 +77,12 @@ const getSuggestions = () => {
       }
 
       obj.children.forEach((children, childIndex) => {
-        children.text = children.fulfiller_github_username || children.user__profile__handle;
+        children.text = children.fulfiller_github_username || children.user__profile__handle || children.handle;
         children.id = generalIndex;
+        if (obj.text == 'Invites') {
+          children.selected= true;
+          $('#reserve-section').collapse('toggle');
+        }
         generalIndex++;
       });
       return obj;
@@ -275,7 +288,18 @@ $(function() {
     setUsdAmount();
   }
 
-  userSearch('#reservedFor', false);
+  userSearch(
+    '#reservedFor',
+    // show address
+    false,
+    // theme
+    '',
+    // initial data
+    params.get('reserved') ? [params.get('reserved')] : [],
+    // allowClear
+    true
+  );
+
 
 });
 
@@ -828,8 +852,8 @@ const populateBountyTotal = () => {
 };
 
 let isPrivateRepo = false;
-let params = (new URL(document.location)).searchParams;
 
+console.log(params)
 const toggleCtaPlan = (value) => {
   if (value === 'private') {
 
