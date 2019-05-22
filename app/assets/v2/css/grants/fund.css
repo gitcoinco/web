@@ -103,6 +103,7 @@
 
 #gitcoin-grant-section .badge {
   padding: 16px 24px;
+  cursor: pointer;
 }
 
 #gitcoin-grant-section .badge-active {

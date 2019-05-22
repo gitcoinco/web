@@ -83,7 +83,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                           <select class='js-select2' name='denomination' id='js-token'> </select>
                         </div>
                       {% else %}
-                        {{ grant.token_symbol }}
+                        <p class="my-2">{{ grant.token_symbol }}</p>
                       {% endif %}
                     </div>
                   </div>
@@ -156,7 +156,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                         <p class="font-title mb-0 text-center">
                           <i class="fas fa-equals font-caption mr-2"></i>
                           <span class="summary-gitcoin-amount">5</span>
-                          <span class="summary-token">-</span>
+                          <span class="summary-token">
+                            {% if grant_has_no_token %} - {% else %} {{ grant.token_symbol }} {% endif %}
+                          </span>
                         </p>
                         <p class="mb-0 mx-0 font-caption text-center">
                           every <span class="font-caption summary-period">-</span>
@@ -186,8 +188,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     <i class="fas fa-circle mr-2"></i>
                     {% trans "You are contributing" %}
                     <span id="summary-amount" class="font-weight-bold">-</span>
-                    <span class="summary-token" class="font-weight-bold">
-                        {{ grant.token_symbol }}
+                    <span class="summary-token font-weight-bold">
+                      {{ grant.token_symbol }}
                     </span>
                     {% trans "to this grant every" %}
                     <span class="summary-period font-weight-bold">-</span>
@@ -198,7 +200,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     <i class="fas fa-circle mr-2"></i>
                     {% trans "You are additionally contributing" %}
                     <span class="summary-gitcoin-amount font-weight-bold">-</span>
-                    <span class="summary-token font-weight-bold"></span>
+                    <span class="summary-token font-weight-bold">
+                      {% if not grant_has_no_token %} {{ grant.token_symbol }} {% endif %}
+                    </span>
                     {% trans "to the gitcoin grant every" %}
                     <span class="summary-period font-weight-bold">-</span>
                     <span class="summary-frequency-unit font-weight-bold">-</span>.
