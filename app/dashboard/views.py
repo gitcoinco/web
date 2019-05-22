@@ -764,6 +764,12 @@ def users_fetch(request):
     rating = int(request.GET.get('rating', '0'))
     organisation = request.GET.get('organisation', '')
 
+    user_id = request.GET.get('user', None)
+    if user_id:
+        profile = Profile.objects.get(id=int(user_id))
+    else:
+        profile = request.user.profile if hasattr(request, 'user') and request.user.is_authenticated and hasattr(request.user, 'profile') else None
+
     context = {}
     if not settings.DEBUG:
         network = 'mainnet'
@@ -803,7 +809,6 @@ def users_fetch(request):
         )
 
     if organisation:
-        print(organisation)
         user_list = user_list.filter(
             fulfilled__bounty__network=network,
             fulfilled__bounty__accepted=True,
@@ -822,10 +827,20 @@ def users_fetch(request):
             profile_json['avatar_url'] = user_avatar.avatar_url
         count_work_completed = Activity.objects.filter(profile=user, activity_type='work_done').count()
         count_work_in_progress = Activity.objects.filter(profile=user, activity_type='start_work').count()
+        previously_worked_with = 0
+        if profile:
+            previously_worked_with = BountyFulfillment.objects.filter(
+                bounty__bounty_owner_github_username__iexact=profile.handle,
+                fulfiller_github_username__iexact=user.handle,
+                bounty__network=network,
+                bounty__accepted=True
+            ).count()
+
         profile_json['position_contributor'] = user.get_contributor_leaderboard_index()
         profile_json['position_funder'] = user.get_funder_leaderboard_index()
         profile_json['work_done'] = count_work_completed
         profile_json['work_inprogress'] = count_work_in_progress
+        profile_json['previously_worked'] = previously_worked_with > 0
 
         profile_json['job_status'] = user.job_status_verbose if user.job_search_status else None
         profile_json['verification'] = user.get_my_verified_check
