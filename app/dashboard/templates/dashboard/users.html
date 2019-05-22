@@ -105,6 +105,12 @@
                 </fieldset>
               </div>
             </div>
+            <div class="g-multiselect pb-4 border-bottom form-group">
+              <label for="organisations" class="font-weight-bold">Organisation</label>
+              <div class="font-smaller">
+                <input v-model="params.organisation" data-placeholder="e.g. Gitcoin" data-tags="true" class="form-control">
+              </div>
+            </div>
             <button class="btn blue" @click="params = {}; searchUsers()">Reset Filters</button>
           </nav>
         </transition>
@@ -136,6 +142,9 @@
                     <i class="far fa-star" :class="star <= user.avg_rating.overall.toFixed() ? 'fas' : 'far'" v-for="star in user.avg_rating.overall.toFixed(), 5"></i>
                     ([[ user.avg_rating.total_rating ]] ratings)
                   </div>
+                  <small class="text-center pb-1" v-if="user.previously_worked">
+                    <i class="far fa-handshake mr-1"></i>Worked with you
+                  </small>
                 </div>
                 <div class="card-body  d-flex flex-column justify-content-between">
                   <div v-if="user.keywords" class="text-center">
