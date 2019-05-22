@@ -933,12 +933,12 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Developers, Ads, and Kudos, Oh My!"
-    new_kudos_pks = [2617, 2555, 2623]
+    subject = "April Updates bring May Create."
+    new_kudos_pks = [2573, 2565, 2617]
     new_kudos_size_px = 150
 
     kudos_friday = f'''
-<h3>Happy Kudos Friday from our Ethereal Hackathon sponsors!</h3>
+<h3>Happy Kudos Friday!</h3>
 </p>
 <p>
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
@@ -949,26 +949,23 @@ def render_new_bounty_roundup(to_email):
 Hi Gitcoiners,
 </p>
 <p>
-This week, we wrapped up the <a href="https://gitcoin.co/hackathon/ethereal-virtual-hackathon/">Ethereal Virtual Hackathon</a>. We had 600 hackers in our Discord, $65K in prizes, and ultimately received over 80 submissions
-for bounties. We're excited to announce winners at Ethereal, soon.
+This week, we reflected on the <a href="https://gitcoin.co/blog/gitcoins-april-product-update/" target="_blank">product updates and progress we made in April.</a> The core team shipped a user directory, a system to invite contributors to bounties, and more. Some assorted improvements:
 </p>
 <p>
-During the event, we relied upon on Kudos, Codefund Ads, and the Gitcoin users to drive engagement. We built <a href="https://github.com/gitcoinco/kudosbadges/issues/new">custom Kudos</a> for each sponsor, showing unique appreciation via a piece of art made specifically for sponsors and developers.
-We ran <a href="https://codefund.app/advertisers/">CodeFund Ads</a> on Etherscan, driving great engagement to our discord. Lastly, Gitcoin is a place for developers, already. We're grateful
-to everyone who participated. Reply to this email if you'd like to discuss running a hackathon with us in the future!
+Gitcoin Grants now has a fresh new look! The Grants Detail page now separates out the description of the grant, the latest contributions, milestones, and contribution profiles for every grant under separate tabs. You can easily click through the tabs and see the organized information for each grant.
 </p>
 <p>
-So what got BUIDLt?  Winners will be announced next week, in the meantime, <a href=https://github.com/gitcoinco/skunkworks/blob/master/etherealhackathon2019.md>click here</a> to see a list of all entries to the hackathon!
+We also now have a way to get a glimpse into a Gitcoiner through our preview cards. See their name, development specialty, web3 projects they’ve contributed to, amount earned, bounties completed, in progress, latest activity, and more by hovering over their user. Thanks to @iamonuwa for helping us build this out!
 </p>
 
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Check out our new <a href="https://gitcoin.co/users/">Gitcoin user directory</a> and invite great Gitcoiners to work with you today.
+            Watch this <a href="https://www.youtube.com/watch?v=Fk8hVxZzNCk&feature=youtu.be" target="_blank">wrap up video</a> from Ethereal NY and hear more about what we were up to.
         </li>
         <li>
-            Gitcoin Livestream is back this week with Pia Mancini, CEO of Open Collective. Join us <a href="https://gitcoin.co/livestream"> at a new time, 2PM ET, or catch it on <a href="https://twitter.com/gitcoin">Twitter</a>!
+            The Gitcoin Livestream is back this week. Join us <a href="https://gitcoin.co/livestream"> at 2PM ET on Friday, or catch it on <a href="https://twitter.com/gitcoin">Twitter</a>!
         </li>
     </ul>
 </p>
@@ -978,34 +975,34 @@ Back to shipping,
 
 '''
     highlights = [{
-        'who': 'georgiemathews',
+        'who': 'industral',
         'who_link': True,
-        'what': 'Share kit for Vue.js with Bloom :)',
-        'link': 'https://gitcoin.co/issue/hellobloom/share-kit/42/2910',
+        'what': 'MetaMask improvements from Industrial',
+        'link': 'https://gitcoin.co/issue/MetaMask/metamask-extension/5524/2980',
         'link_copy': 'View more',
     }, {
-        'who': 'iamonuwa',
+        'who': 'xiaods',
         'who_link': True,
-        'what': 'More great work by Onuwa on Status!',
-        'link': 'https://gitcoin.co/issue/status-im/discover-dapps/31/2888',
+        'what': 'Bug fixes galore!',
+        'link': 'https://gitcoin.co/issue/rook/rook/3190/2998',
         'link_copy': 'View more',
     }, {
-        'who': 'devaman',
+        'who': 'muyaedward',
         'who_link': True,
-        'what': 'Work with Pedro on Wallet Connect by devaman.',
-        'link': 'https://gitcoin.co/issue/WalletConnect/web3connect/12/2921',
+        'what': 'StackOverflow question answers funded via Gitcoin!',
+        'link': 'https://gitcoin.co/issue/VexyCats/Gitcoin_Bounties/1/2983',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/AdExNetwork/adex-protocol-eth/issues/62',
-        'primer': 'Work with AdEx on their protocol prizes for ',
+        'url': 'https://github.com/WalletConnect/web3connect/issues/14',
+        'primer': 'Add missing images to WalletConnect',
     }, {
-        'url': 'https://github.com/gitcoinco/skunkworks/issues/104',
-        'primer': 'Want to work on Quorum with JP Morgan on Privacy?',
+        'url': 'https://github.com/status-im/status-react/issues/7633',
+        'primer': 'Use React-Native-Fast-Image to add remote images',
     }, {
-        'url': 'https://github.com/smartcontractkit/chainlink/issues/1091',
-        'primer': 'Connect smart contracts to external data!',
+        'url': 'https://github.com/julienbrg/hasard/issues/1',
+        'primer': 'Create an on-demand random number generator based on noise using iExec',
     }, ]
 
     num_leadboard_items = 5
