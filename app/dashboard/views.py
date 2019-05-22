@@ -813,7 +813,7 @@ def users_fetch(request):
             fulfilled__bounty__network=network,
             fulfilled__bounty__accepted=True,
             fulfilled__bounty__github_url__icontains=organisation
-        )
+        ).distinct()
 
     params = dict()
     all_pages = Paginator(user_list, limit)
