@@ -509,8 +509,9 @@ var showWarningMessage = function(txid) {
 // refresh page if metamask changes
 waitforWeb3(function() {
   setInterval(function() {
-    if (document.web3Changed)
+    if (document.web3Changed) {
       return;
+    }
 
     if (typeof document.lastWeb3Network == 'undefined') {
       document.lastWeb3Network = document.web3network;
