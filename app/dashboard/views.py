@@ -821,6 +821,12 @@ def users_fetch(request):
     for user in all_pages.page(page):
         profile_json = {}
         profile_json = user.to_standard_dict()
+        del profile_json['email']
+        del profile_json['slack_token']
+        del profile_json['github_access_token']
+        del profile_json['discord_webhook_url']
+        del profile_json['form_submission_records']
+
         if user.avatar_baseavatar_related.exists():
             user_avatar = user.avatar_baseavatar_related.first()
             profile_json['avatar_id'] = user_avatar.pk
