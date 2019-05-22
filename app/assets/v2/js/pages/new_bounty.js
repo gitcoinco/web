@@ -4,7 +4,7 @@
 load_tokens();
 
 var localStorage = window.localStorage ? window.localStorage : {};
-
+const quickstartURL = document.location.origin + '/bounty/quickstart';
 const FEE_PERCENTAGE = document.FEE_PERCENTAGE / 100.0;
 
 var new_bounty = {
@@ -14,10 +14,10 @@ var new_bounty = {
 if (localStorage['quickstart_dontshow'] !== 'true' &&
     doShowQuickstart(document.referrer) &&
     doShowQuickstart(document.URL)) {
-  window.location = document.location.origin + '/bounty/quickstart';
+  window.location = quickstartURL;
 }
 
-const doShowQuickstart = url => {
+function doShowQuickstart(url) {
   let blacklist = [];
 
   blacklist.push(document.location.origin + '/bounty/quickstart');
@@ -31,7 +31,7 @@ const doShowQuickstart = url => {
   }
 
   return true;
-};
+}
 
 var processedData;
 
