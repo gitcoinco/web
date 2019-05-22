@@ -1333,7 +1333,7 @@ def process_refund_request(request, pk):
 
     if refund_request.rejected:
         messages.info(request, 'refund request already rejected')
-        return redirect(reverse('admin: '))
+        return redirect(reverse('admin:index'))
 
     if request.POST:
 
