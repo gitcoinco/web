@@ -828,13 +828,17 @@ def users_fetch(request):
         count_work_completed = Activity.objects.filter(profile=user, activity_type='work_done').count()
         count_work_in_progress = Activity.objects.filter(profile=user, activity_type='start_work').count()
         previously_worked_with = BountyFulfillment.objects.filter(
-            bounty__bounty_owner_github_username=profile.handle
+            bounty__bounty_owner_github_username__iexact=profile.handle,
+            fulfiller_github_username__iexact=user.handle,
+            bounty__network=network,
+            bounty__accepted=True
         ).count()
-        print(previously_worked_with)
+
         profile_json['position_contributor'] = user.get_contributor_leaderboard_index()
         profile_json['position_funder'] = user.get_funder_leaderboard_index()
         profile_json['work_done'] = count_work_completed
         profile_json['work_inprogress'] = count_work_in_progress
+        profile_json['previously_worked'] = previously_worked_with > 0
 
         profile_json['job_status'] = user.job_status_verbose if user.job_search_status else None
         profile_json['verification'] = user.get_my_verified_check
