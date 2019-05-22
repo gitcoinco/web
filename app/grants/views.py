@@ -509,7 +509,7 @@ def grant_fund(request, grant_id, grant_slug):
             subscription.token_address = request.POST.get('token_address', '')
             subscription.token_symbol = request.POST.get('token_symbol', '')
             subscription.gas_price = request.POST.get('gas_price', 0)
-            subscription.new_approve_tx_id = request.POST.get('sub_new_approve_tx_id', '')
+            subscription.new_approve_tx_id = request.POST.get('sub_new_approve_tx_id', '0x0')
             subscription.num_tx_approved = request.POST.get('num_tx_approved', 1)
             subscription.network = request.POST.get('network', '')
             subscription.contributor_profile = profile
