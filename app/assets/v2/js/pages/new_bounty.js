@@ -5,8 +5,6 @@ load_tokens();
 
 var localStorage = window.localStorage ? window.localStorage : {};
 
-const quickstartURL = document.location.origin + '/bounty/quickstart';
-
 const FEE_PERCENTAGE = document.FEE_PERCENTAGE / 100.0;
 
 var new_bounty = {
@@ -16,22 +14,24 @@ var new_bounty = {
 if (localStorage['quickstart_dontshow'] !== 'true' &&
     doShowQuickstart(document.referrer) &&
     doShowQuickstart(document.URL)) {
-  window.location = quickstartURL;
+  window.location = document.location.origin + '/bounty/quickstart';
 }
 
-function doShowQuickstart(url) {
-  var fundingURL = document.location.origin + '/funding/new\\?';
-  var bountyURL = document.location.origin + '/bounty/new\\?';
-  var blacklist = [ fundingURL, bountyURL, quickstartURL ];
+const doShowQuickstart = url => {
+  let blacklist = [];
 
-  for (var i = 0; i < blacklist.length; i++) {
-    if (url.match(blacklist[i])) {
+  blacklist.push(document.location.origin + '/bounty/quickstart');
+  blacklist.push(document.location.origin + '/bounty/new\\?');
+  blacklist.push(document.location.origin + '/funding/new\\?');
+  blacklist.push(document.location.origin + '/new\\?');
+
+  for (let i = 0; i < blacklist.length; i++) {
+    if (url.match(blacklist[i]))
       return false;
-    }
   }
 
   return true;
-}
+};
 
 var processedData;
 
