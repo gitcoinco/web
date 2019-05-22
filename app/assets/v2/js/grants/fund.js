@@ -356,7 +356,8 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
   $.each($(form).serializeArray(), function() {
     data[this.name] = this.value;
   });
-  $.when.apply($, data).then(saveSubscription(data, true););
+
+  saveSubscription(data, true);
 
   let deployedSplitter = new web3.eth.Contract(compiledSplitter.abiDefinition, splitterAddress);
 
