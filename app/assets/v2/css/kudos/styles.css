@@ -449,6 +449,12 @@ a:hover #shape-hexagon {
   margin-left: -60px;
   margin-top: 4rem;
   top: 0; }
+
+  @media (max-width: 768px) {
+  #kudos-section .kudos_card_container {
+    width: 50%;
+    }
+  }
 @media (max-width: 768px) {
   .star-pulse {
     right: -10px;
