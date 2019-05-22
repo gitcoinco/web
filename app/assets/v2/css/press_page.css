@@ -1,9 +1,3 @@
-.press_banner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .press_details {
   display: flex;
   flex-direction: column;
@@ -12,11 +6,13 @@
   width: 600px;
   text-align: justify;
 }
+
 .grid {
   width: 100%;
   max-width: 940px;
   margin: 50px auto;
 }
+
 .grid-item {
   width: 300px;
   float: left;
