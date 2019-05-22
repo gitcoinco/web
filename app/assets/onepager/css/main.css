@@ -513,6 +513,10 @@ dl dd {
   position: absolute;
 }
 
+.copyright {
+  color: #ffffff;
+}
+
 .copyright a {
   padding: 0 0.85em;
   line-height: 1;
