@@ -454,7 +454,7 @@ const splitGrantAmount = () => {
 
 
   if (total_amount != 0) {
-    if (!percent || percent == 0) {
+    if (!percent) {
       $('#summary-gitcoin-grant').hide();
       grant_amount = Number($('input#amount').val());
     } else {
