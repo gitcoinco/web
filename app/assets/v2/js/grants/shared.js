@@ -157,8 +157,6 @@ $(document).ready(function() {
     }
   }
 
-  console.log('compiled subscription is: ' + JSON.stringify(compiledSubscription.abi));
-
   compiledSplitter = compiledSplitter0;
 
   const listen_web3_1_changes = () => {
