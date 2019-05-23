@@ -933,12 +933,12 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "$106K to Ethereum Projects | Cryptokitties + Kudos!"
-    new_kudos_pks = [2240, 2239, 2236]
+    subject = "April BUIDL brings May SHIPL!"
+    new_kudos_pks = [2573, 2565, 2617]
     new_kudos_size_px = 150
 
     kudos_friday = f'''
-<h3>Happy Kudos Friday from 90's themed Ethereal!</h3>
+<h3>Happy Kudos Friday!</h3>
 </p>
 <p>
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
@@ -949,30 +949,26 @@ def render_new_bounty_roundup(to_email):
 Hi Gitcoiners,
 </p>
 <p>
-This week, we’re celebrating the <a href="https://medium.com/gitcoin/gitcoin-oss-fund-round-2s-radical-results-9d42bb93f9a6">results of Grants Round 2.</a> The community pledged $56,535 toward 42 projects, which through our CLR matching, added up to over $100k of funding. ProgPow’s technical audit received
-the largest total contribution amount - $13,575, and the largest match, $13,547 - a total of $27,122.
+This week, we reflected on the <a href="https://gitcoin.co/blog/gitcoins-april-product-update/" target="_blank">product updates and progress we made in April.</a> The core team shipped a <a href="https://gitcoin.co/users">user directory</a>, a system to invite contributors to bounties, and more. Some assorted improvements:
 </p>
 <p>
-There were a multitude of learnings from using Liberal Radicalism as a matching mechanism this go around.
-You can <a href="https://medium.com/gitcoin/gitcoin-oss-fund-round-2s-radical-results-9d42bb93f9a6">read more about Grants Round 2 here.</a>
-The Gitcoin OSS fund is just getting started. Details for Round 3 will be coming soon.
+- <a href="https://gitcoin.co/grants/" target="_blank">Gitcoin Grants</a> now has a fresh new look! The Grants Detail page now separates out the description of the grant, the latest contributions, milestones, and contribution profiles for every grant under separate tabs. You can easily click through the tabs and see the organized information for each grant.
 </p>
 <p>
-The Ethereal Summit was this past weekend, and we had a tremendous time. <a href="https://gitcoin.co/blog/gitcoin-kudos-cryptokitties-a-kitt-e-game-at-the-ethereal-summit/">We teamed up with CryptoKitties</a>
-to create a scavenger hunt for the event. There were six unique collectible Kudos-Kitty tokens, which attendees collected to become eligible
-receive rare robot CryptoKitties! <a href="https://gitcoin.co/blog/gitcoin-kudos-cryptokitties-a-kitt-e-game-at-the-ethereal-summit/">Check out this blog post</a> to learn about the game.
+- Github just launched a product that allows their users to sponsor each other.  We are thrilled to see Github care about OSS Sustainability, and are proud to offer a guide about how to integrate Gitcoin Grants into Github Sponsor. <a href="https://medium.com/gitcoin/gitcoin-grants-github-sponsors-b516192c048" target="_blank">Learn how here</a>.
+</p>
+<p>
+- We also now have a way to get a glimpse into a Gitcoiner through the brand new <a href="http://bits.owocki.com/dd38676964a8/Image%202019-05-23%20at%2012.51.37%20PM.png">preview cards</a>. See their name, development specialty, web3 projects they’ve contributed to, amount earned, bounties completed, in progress, latest activity, and more by hovering over their user. Thanks to @iamonuwa for helping us build this out!
 </p>
 
 {kudos_friday}
-
 <h3>What else is new?</h3>
     <ul>
         <li>
-            The follow up post from the Ethereal Hackathon is live. <a href="https://gitcoin.co/blog/the-results-msft-gitcoins-ethereal-hackathon/">Read it here!</a>
+            Watch this <a href="https://www.youtube.com/watch?v=Fk8hVxZzNCk&feature=youtu.be" target="_blank">wrap up video</a> from Ethereal NY and hear more about what we were up to.
         </li>
         <li>
-            Due to ETH NY this week, the Gitcoin Livestream will not be airing. Join us next week 
-            <a href="https://gitcoin.co/livestream"> at 2PM ET </a>, or catch it on <a href="https://twitter.com/gitcoin">Twitter</a>!
+            The Gitcoin Livestream is back this week. Join us <a href="https://gitcoin.co/livestream"> at 2PM ET on Friday, or catch it on <a href="https://twitter.com/gitcoin">Twitter</a>!
         </li>
     </ul>
 </p>
@@ -982,34 +978,34 @@ Back to shipping,
 
 '''
     highlights = [{
-        'who': 'aerophile',
+        'who': 'industral',
         'who_link': True,
-        'what': 'A collaborative bounty for jurors.py',
-        'link': 'https://gitcoin.co/issue/marczeller/Kleros-Monitor-Bot/5/2938',
+        'what': 'MetaMask improvements from Industrial',
+        'link': 'https://gitcoin.co/issue/MetaMask/metamask-extension/5524/2980',
         'link_copy': 'View more',
     }, {
-        'who': 'iamonuwa',
+        'who': 'xiaods',
         'who_link': True,
-        'what': 'More great work by Onuwa on Bloom!',
-        'link': 'https://gitcoin.co/issue/hellobloom/share-kit/42/2910',
+        'what': 'Bug fixes galore!',
+        'link': 'https://gitcoin.co/issue/rook/rook/3190/2998',
         'link_copy': 'View more',
     }, {
-        'who': 'devaman',
+        'who': 'muyaedward',
         'who_link': True,
-        'what': 'Work with Pedro on Wallet Connect by devaman!',
-        'link': 'https://gitcoin.co/issue/WalletConnect/web3connect/12/2921',
+        'what': 'StackOverflow question answers funded via Gitcoin!',
+        'link': 'https://gitcoin.co/issue/VexyCats/Gitcoin_Bounties/1/2983',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/centrifuge/precise-proofs/issues/77',
-        'primer': 'Work with Centrifuge on Precise Proofs',
+        'url': 'https://github.com/WalletConnect/web3connect/issues/14',
+        'primer': 'Add missing images to WalletConnect',
     }, {
-        'url': 'https://github.com/harmony-one/harmony/issues/767',
-        'primer': 'An early bounty on Harmony!',
+        'url': 'https://github.com/status-im/status-react/issues/7633',
+        'primer': 'Use React-Native-Fast-Image to add remote images',
     }, {
-        'url': 'https://github.com/smartcontractkit/chainlink/issues/1091',
-        'primer': 'Connect smart contracts to external data!',
+        'url': 'https://github.com/julienbrg/hasard/issues/1',
+        'primer': 'Create an on-demand random number generator based on noise using iExec',
     }, ]
 
     num_leadboard_items = 5
