@@ -97,9 +97,16 @@ Sample: https://github.com/consenlabs/token-profile/issues/3595
 
 In imToken 1.0, if duplicated token names are found, imToken team will add a number after the token name for the project, like TFT1, TFT2 etc. If you wish to remove the number, we need to claim, this is a very dangerous operation. Removing the number is not advisable, as amending the token name will cause the token to disappear from imToken display and may cause unnecessary panic among users. For tokens with many holders, we recommend the token project to suggest to your users, to download and use imToken 2.0, as imToken 2.0 distinguish tokens via contract address. Therefore, this mitigates the problem of duplicated token names.
 
-If there are update requests due to contract amendment, projects are required to make an official announcement for respective community for the change of Symbol, and inform users about the need to search and add the token again in imToken. Besides, please submit a new PR in GitHub, add on _OLD to the old contract Symbol (e.g. TFT_OLD), and then resubmit new token contract and logo, as shown in the picture below. Please share your announcement link under the comment section in the PR, imToken team will evaluate the situation.
-
-![old](./old_en.png)
+If there are update requests due to contract amendment, follow the checklist:
+ 
+1. make an official announcement for the upgrade of the contract
+2. submit a new PR in GitHub: 
+   - desaturate the old logo
+(In Photoshop: image - adjustments - desaturate)
+   - resubmit new token contract’s json and logo
+3. share your announcement link under the comment section in the PR
+ 
+imToken team will evaluate the situation.
 
 ### Unable to search via contract address
 If you can't search via the contract address, please check if there is no successful transaction records. Besides, please verify your contract information on [Etherscan] (https://etherscan.io/), then we can help you manually add it.

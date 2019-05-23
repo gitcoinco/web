@@ -1,0 +1,20 @@
+{
+  "symbol": "UZT",
+  "address": "0xfa1004e9c0063E59DBf965B9490f3153B87Fb45f",
+  "overview": {
+    "en": "Uzone Token, UZT for short, will be issued according to ETH standards, and it will become a universal token in various Uzone application scenarios",
+    "zh": "Uzone 将按 ETH 标准发行 Uzone Token 简称 UZT，它将会成为Uzone 各种应用场景中的通用代币"
+  },
+  "email": "uzone.service@gmail.com",
+  "website": "http://uzone.io/",
+  "whitepaper": "http://img.uzone.io/material/Uzone20190323.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-03-18",
+  "initial_price": {
+    "USD": "0.015 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/uzone999",
+    "telegram": "https://t.me/joinchat/Mrou5BTeUC5FqTeE9yGQmQ"
+  }
+}

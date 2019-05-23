@@ -18,10 +18,7 @@ const ethAddressExp = /^(0x)?[0-9a-f]{40}$/i
 const isEthAddress = address => ethAddressExp.test(address)
 
 const isEosToken = (account: string) => {
-  return !!account && (
-    account.search(/^[1-5a-z]{12}$/) === 0 ||
-    account.search(/^[1-5a-z]+\.[1-5a-z]{1,11}$/) === 0
-  )
+  return !!account && account.search(/^[a-z1-5.]{1,11}[a-z1-5]$/) === 0
 }
 
 const isEthAddressJson = (filename) => jsonExp.test(filename) && isEthAddress(filename.replace(jsonExp, ''))

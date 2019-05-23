@@ -1,0 +1,28 @@
+{
+    "symbol": "DUO",
+    "address": "0x56e0B2C7694E6e10391E870774daA45cf6583486",
+    "overview": {
+        "en": "A decentralized platform enabling issuance, trading, and settlement of tokenized digital derivatives",
+        "zh": "一个去中心化的可以发行, 交易以及结算代币化的电子金融衍生品的平台"
+    },
+    "email": "info@finbook.co",
+    "website": "https://duo.network/",
+    "whitepaper": "https://duo.network/papers/duo_economic_white_paper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-04-01",
+    "initial_price": {
+        "ETH": "0.001 ETH",
+        "USD": "0.15 USD",
+        "BTC": "0.000028 BTC"
+    },
+    "links": {
+        "blog": "https://medium.com/duo-network",
+        "twitter": "https://twitter.com/duo_network",
+        "telegram": "t.me/duonetwork",
+        "github": "https://github.com/finbook/",
+        "facebook": "https://twitter.com/duo_network",
+        "reddit": "https://www.reddit.com/search?q=duo+network",
+        "slack": "fblc.slack.com",
+        "medium": "https://medium.com/duo-network"
+    }
+}

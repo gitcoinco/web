@@ -1,0 +1,19 @@
+{
+    "symbol": "MIX",
+    "address": "0x5d285F735998F36631F678FF41fb56A10A4d0429",
+    "overview":{
+        "en": "MixMarvel is the No.1 global game publishing platform powered by blockchain.",
+        "zh": "MixMarvel是全球第一区块链游戏发行平台。"
+    },
+    "email": "support@mixmarvel.com",
+    "website": "https://www.mixmarvel.io/",
+    "whitepaper": "https://www.mixmarvel.io/docs/MIXMARVEL_WHITEPAPER_ENG.pdf",
+    "state": "NORMAL",
+    "links": {
+      "twitter": "https://twitter.com/mixmarvelgame",
+      "telegram": "https://t.me/MixMarvelGlobal",
+      "facebook": "https://www.facebook.com/mixmarvelplatform",
+      "reddit": "https://www.reddit.com/r/MIXMARVEL",
+      "medium": "https://medium.com/@MIXMARVELGAME"
+    }
+  }

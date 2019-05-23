@@ -1,0 +1,15 @@
+{
+    "symbol": "POTB",
+    "address": "0xb1C96f736181Fc1DC89577f752815f96F6AC92c5",
+    "overview": {
+        "zh": "波特幣由被譽為“程序員們的上帝”托瓦慈（Linus Torvwoulsds）先生為總發起人，並獲得了來自英國、美國、法國以及澳大利亞和香港、新加坡等地共57位技術專家組成的技術團隊；英國BAE System技術有限公司和美國矽谷Silversky區塊鏈技術公司為支持顧問；美國卡萊投資集團旗下IDK投資公司與香港康宏資本投資公司旗下KHY公司聯合成立（BTMM）波特曼投資基金。波特幣是在區塊鏈生態應用落地市場極具擴張的屬性下產生的，運行全球對區塊鏈操作系統及應用產業的需求及安全性的服務。未來5年是區塊鏈應用落地產業的初始期，貼近人們生活的新零售、無人駕駛、VR技術、大數據、人工智能、物聯網等無不可以獨立運行在區塊鏈的生態系統之上。"
+    },
+    "email": "admin@pottercoin.top",
+    "website": "https://www.pottercoin.top",
+    "whitepaper": "http://124.225.183.136/18105365.s21d-18.faiusrd.com/0/ABUIABA9GAAg94X-3wUohv6tzwU?f=Potter+coin_+%E6%B3%A2%E7%89%B9%E5%B9%A3%E7%99%BD%E7%9A%AE%E6%9B%B8.pdf&v=1543488247&wsrid_tag=5bffc4d6_PSgddgdx4uh76_24173-23704&wsiphost=local",
+    "state": "NORMAL",
+    "published_on": "2018-09-28",
+	"initial_price":{
+        "USD":"0.1 USD"
+  }
+}

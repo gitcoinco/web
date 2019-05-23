@@ -1,0 +1,23 @@
+{
+	"symbol": "BOB",
+	"address": "0x9161FFceEde0E8b895be72DAED25196e41a2DBec",
+	"overview": {
+		"en": "BOB (BOBO Chain) is the Token issued by the BOBO platform. BOB is issued based on ERC20, with a total of 1 billion pieces. BOBO focuses on content value, through dynamic algorithms, the production of content on the platform, the interaction of content (comment, reward) and the sharing of content will produce corresponding value. BOBO is committed to feeding this value back to all participants in the process, using BOB to achieve value conversion and redemption.",
+
+		"zh": "BOB(全称:BOBO Chain)是BOBO平台发行的Token。BOB基于ERC20发行，总量10亿枚，永不增发。BOBO专注内容价值，通过动态算法，平台上内容的生产、内容的互动(评论、打赏)以及内容的分享传播都会产生对应的价值。而 BOBO 致力于将这种价值反馈给所有在此过程中的所有参与者，利用BOB实现价值兑换和兑现。"
+	},
+	"email": "service@bobobtc.com",
+	"website": "https://bobobtc.com/",
+	"whitepaper": "https://bobobtc.com/market/whitepaper.pdf",
+	"state": "NORMAL",
+	"published_on": "2019-04-15",
+	"initial_price": {
+		"USD": "0.15 USD"
+	},
+	"links": {
+		"twitter": "https://twitter.com/BOBO_Community",
+		"telegram": "https://t.me/bobobtc",
+		"facebook": "https://www.facebook.com/BOBO_Community-2285217428426788/"
+
+	}
+}

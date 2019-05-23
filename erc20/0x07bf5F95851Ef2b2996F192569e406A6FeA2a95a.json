@@ -1,0 +1,18 @@
+{
+  "symbol": "SEAL",
+  "address": "0x07bf5F95851Ef2b2996F192569e406A6FeA2a95a",
+  "overview": {
+    "en": "Sealchain is a financial public chain specifically designed for the circulation of blockchain assets. It aims to created a payment layer using blockchain technology and reshape the global financial payment system,  eventually realizing bringing Wall Street on the chain.",
+    "zh": "Seal希尔链是专为区块链资产流转设计的金融公链，旨在利用区块链技术打造支付层，重塑全球金融支付体系，最终实现链上华尔街。"
+  },
+  "email": "support@seal-chain.org",
+  "website": "https://www.sealchain.io/",
+  "whitepaper": "http://download.seal-chain.net/languageEnglish.pdf",
+  "state": "NORMAL",
+  "links": {
+    "twitter": "https://twitter.com/ChainSeal/",
+    "telegram": "https://t.me/SealchainOfficial",
+    "github": "https://github.com/sealchain-project",
+    "facebook": "https://www.facebook.com/SealBlockchain/"
+  }
+}

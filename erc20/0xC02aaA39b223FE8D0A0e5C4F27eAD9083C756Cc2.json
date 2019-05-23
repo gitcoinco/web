@@ -1,4 +1,15 @@
 {
     "symbol": "WETH",
-    "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+    "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+    "overview":{
+          "en": "In order to securely trade ETH for ERC20 tokens in a decentralized environment without a third party holding your ETH, users need to first 'wrap' ETH into an ERC20 standard called WETH.",
+          "zh": "WETH 是第一个与以太坊 1：1 兑换的 ERC20 代币，完全透明，100％ 可验证，由社区驱动的项目。"
+    },
+    "website": "https://weth.io/",
+    "whitepaper": "https://blog.0xproject.com/canonical-weth-a9aa7d0279dd",
+    "state": "NORMAL",
+    "published_on": "2017-08-11",
+    "initial_price":{
+          "ETH":"1 ETH"
+    }
 }
