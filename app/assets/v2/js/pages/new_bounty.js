@@ -288,6 +288,10 @@ $(function() {
     setUsdAmount();
   }
 
+  if (params.get('reserved')) {
+    $('#reserve-section').collapse('toggle');
+  }
+
   userSearch(
     '#reservedFor',
     // show address

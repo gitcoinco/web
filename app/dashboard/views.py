@@ -866,8 +866,14 @@ def get_user_bounties(request):
 
     params = dict()
     results = []
-    open_bounties = Bounty.objects.current().filter(bounty_owner_github_username__iexact=profile.handle, network=network) \
-                        .exclude(idx_status='cancelled').exclude(idx_status='done')
+    all_bounties = Bounty.objects.current().filter(bounty_owner_github_username__iexact=profile.handle, network=network)
+
+    if len(all_bounties) > 0:
+        is_funder = True
+    else:
+        is_funder = False
+
+    open_bounties = all_bounties.exclude(idx_status='cancelled').exclude(idx_status='done')
     for bounty in open_bounties:
         bounty_json = {}
         bounty_json = bounty.to_standard_dict()
@@ -878,6 +884,7 @@ def get_user_bounties(request):
         # raise Http404
     print(open_bounties)
     params['data'] = json.loads(json.dumps(results, default=str))
+    params['is_funder'] = is_funder
     return JsonResponse(params, status=200, safe=False)
 
 

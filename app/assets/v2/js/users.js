@@ -90,6 +90,7 @@ Vue.mixin({
         // response.data.forEach(function(item) {
         //   console.log(item)
         // });
+        vm.isFunder = response.is_funder
         vm.funderBounties = response.data;
         console.log(vm.funderBounties);
       });
@@ -149,6 +150,7 @@ if (document.getElementById('gc-users-directory')) {
       bottom: false,
       params: {},
       funderBounties: [],
+      isFunder: false,
       bountySelected: null,
       userSelected: [],
       showModal: false,
