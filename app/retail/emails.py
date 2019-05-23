@@ -933,7 +933,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "April Updates bring May Create."
+    subject = "April Update brings May Elate!"
     new_kudos_pks = [2573, 2565, 2617]
     new_kudos_size_px = 150
 
@@ -949,10 +949,10 @@ def render_new_bounty_roundup(to_email):
 Hi Gitcoiners,
 </p>
 <p>
-This week, we reflected on the <a href="https://gitcoin.co/blog/gitcoins-april-product-update/" target="_blank">product updates and progress we made in April.</a> The core team shipped a user directory, a system to invite contributors to bounties, and more. Some assorted improvements:
+This week, we reflected on the <a href="https://gitcoin.co/blog/gitcoins-april-product-update/" target="_blank">product updates and progress we made in April.</a> The core team shipped a <a href="https://gitcoin.co/users">user directory</a>, a system to invite contributors to bounties, and more. Some assorted improvements:
 </p>
 <p>
-Gitcoin Grants now has a fresh new look! The Grants Detail page now separates out the description of the grant, the latest contributions, milestones, and contribution profiles for every grant under separate tabs. You can easily click through the tabs and see the organized information for each grant.
+<a href="https://gitcoin.co/grants/" target="_blank">Gitcoin Grants</a> now has a fresh new look! The Grants Detail page now separates out the description of the grant, the latest contributions, milestones, and contribution profiles for every grant under separate tabs. You can easily click through the tabs and see the organized information for each grant.
 </p>
 <p>
 We also now have a way to get a glimpse into a Gitcoiner through our preview cards. See their name, development specialty, web3 projects they’ve contributed to, amount earned, bounties completed, in progress, latest activity, and more by hovering over their user. Thanks to @iamonuwa for helping us build this out!
