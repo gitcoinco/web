@@ -501,7 +501,6 @@ var showWarningMessage = function(txid) {
 
   $('.left-rails').hide();
   $('#bounty_details').hide();
-  $('#bounty_detail').hide();
 
   waitingStateActive();
 };
