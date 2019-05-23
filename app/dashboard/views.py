@@ -758,7 +758,7 @@ def users_fetch(request):
     skills = request.GET.get('skills', '')
     limit = int(request.GET.get('limit', 10))
     page = int(request.GET.get('page', 1))
-    order_by = request.GET.get('order_by', '-actions_count')
+    order_by = request.GET.get('order_by', 'leaderboard_ranks__rank')
     bounties_completed = request.GET.get('bounties_completed', '').strip().split(',')
     leaderboard_rank = request.GET.get('leaderboard_rank', '').strip().split(',')
     rating = int(request.GET.get('rating', '0'))
@@ -766,9 +766,9 @@ def users_fetch(request):
 
     user_id = request.GET.get('user', None)
     if user_id:
-        profile = Profile.objects.get(id=int(user_id))
+        profile = User.objects.get(id=int(user_id))
     else:
-        profile = request.user.profile if hasattr(request, 'user') and request.user.is_authenticated and hasattr(request.user, 'profile') else None
+        profile = request.user if hasattr(request, 'user') and request.user.is_authenticated else None
 
     context = {}
     if not settings.DEBUG:
@@ -776,7 +776,20 @@ def users_fetch(request):
     else:
         network = 'rinkeby'
 
-    user_list = Profile.objects.prefetch_related('fulfilled', 'leaderboard_ranks', 'feedbacks_got').order_by(order_by)
+
+    user_list = Profile.objects.prefetch_related(
+            'fulfilled', 'leaderboard_ranks', 'feedbacks_got'
+        ).annotate(
+            previous_worked_count=Count('fulfilled', filter=Q(
+                fulfilled__bounty__network=network,
+                fulfilled__accepted=True,
+                fulfilled__bounty__bounty_owner_github_username__iexact=profile.username
+            ))
+        ).order_by(
+            '-previous_worked_count',
+            order_by,
+            '-actions_count'
+        )
 
     if q:
         user_list = user_list.filter(Q(handle__icontains=q) | Q(keywords__icontains=q))
@@ -811,7 +824,7 @@ def users_fetch(request):
     if organisation:
         user_list = user_list.filter(
             fulfilled__bounty__network=network,
-            fulfilled__bounty__accepted=True,
+            fulfilled__accepted=True,
             fulfilled__bounty__github_url__icontains=organisation
         ).distinct()
 
@@ -827,14 +840,12 @@ def users_fetch(request):
             profile_json['avatar_url'] = user_avatar.avatar_url
         count_work_completed = Activity.objects.filter(profile=user, activity_type='work_done').count()
         count_work_in_progress = Activity.objects.filter(profile=user, activity_type='start_work').count()
-        previously_worked_with = 0
-        if profile:
-            previously_worked_with = BountyFulfillment.objects.filter(
-                bounty__bounty_owner_github_username__iexact=profile.handle,
-                fulfiller_github_username__iexact=user.handle,
-                bounty__network=network,
-                bounty__accepted=True
-            ).count()
+        previously_worked_with = BountyFulfillment.objects.filter(
+            bounty__bounty_owner_github_username__iexact=profile.username,
+            fulfiller_github_username__iexact=user.handle,
+            bounty__network=network,
+            accepted=True
+        ).count()
 
         profile_json['position_contributor'] = user.get_contributor_leaderboard_index()
         profile_json['position_funder'] = user.get_funder_leaderboard_index()
