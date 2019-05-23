@@ -48,6 +48,11 @@
                 <!-- <button class="btn btn-outline-success my-2 my-sm-0" @click.prevent="searchUsers()">Search</button> -->
               </div>
             </form>
+
+            <div v-if="reinviteUser" class="hidden">
+              <button id="reinvite-user" data-toggle="modal" data-target="#userModal" @click="openBounties(reinviteUser)">THIS IS HIDDEN and SHOULD AUTO TRIGGER</button>
+            </div>
+
           </div>
         </nav>
       </div>
@@ -184,7 +189,6 @@
                     <b>[[ user.work_done ]]</b> bounties completed
                   </div>
                   <div class="text-center mt-2">
-                    <!-- <button v-if="funderBounties.length" data-toggle="modal" data-target="#userModal" class="btn btn-sm btn-gc-blue" @click="openBounties(user)">Invite to Bounty</button> -->
                     <button data-toggle="modal" data-target="#userModal" class="btn btn-sm btn-gc-blue" @click="openBounties(user)">Invite to Bounty</button>
                   </div>
                 </div>
@@ -237,7 +241,7 @@
           </div>
         </div>
       </modal>
-    </div></div>
+    </div>
     <template id="modal-template">
       <div class="vue-modal modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" :class="size" role="document">

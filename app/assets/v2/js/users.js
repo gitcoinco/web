@@ -101,7 +101,6 @@ Vue.mixin({
       console.log(user);
       vm.userSelected = user;
       vm.showModal = true;
-
     },
     sendInvite: function(bounty, user) {
       let vm = this;
@@ -129,6 +128,21 @@ Vue.mixin({
     },
     closeModal() {
       this.$refs['user-modal'].closeModal();
+    },
+    inviteOnMount: function() {
+      let vm = this;
+      let contributor = getURLParams('invite');
+
+      if (contributor) {
+        let api = `/api/v0.1/users_fetch/?search=${contributor}`;
+        let getUsers = fetchData (api, 'GET');
+
+        $.when(getUsers).then(function(response) {
+          if (response && response.data) {
+            vm.reinviteUser = response.data[0];
+          }
+        });
+      }
     }
   }
 
@@ -156,10 +170,12 @@ if (document.getElementById('gc-users-directory')) {
       skills: document.keywords,
       selectedSkills: [],
       noResults: false,
-      isLoading: true
+      isLoading: true,
+      reinviteUser: ''
     },
     mounted() {
       this.fetchUsers();
+      this.inviteOnMount();
       this.$watch('params', function(newVal, oldVal) {
         this.searchUsers();
       }, {
@@ -182,3 +198,14 @@ if (document.getElementById('gc-users-directory')) {
   });
 }
 
+if (getURLParams('invite')) {
+  let timer = setInterval(function() {
+    if ($('#reinvite-user').length) {
+      $('#reinvite-user').trigger('click');
+      setTimeout(function() {
+        $('#reinvite-user').trigger('click');
+      }, 200);
+      clearInterval(timer);
+    }
+  }, 500);
+}
