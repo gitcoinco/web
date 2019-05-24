@@ -167,9 +167,10 @@
                     </a>
                   </div>
                   <div class="text-center" id="job_status" v-if="user.show_job_status">
-                    <a :href="`${media_url}${user.resume}`" download data-toggle="tooltip" title="Download resume">
+                    <a v-if="user.resume && user.job_search_status !== 'N'" :href="`${media_url}${user.resume}`" download data-toggle="tooltip" title="Download resume">
                       <i class="fa fa-briefcase mr-2" aria-hidden="true"></i> [[ user.job_status ]]
                     </a>
+                    <span v-else><i class="fa fa-briefcase mr-2" aria-hidden="true"></i> [[ user.job_status ]]</span>
                   </div>
                   <div class="text-center">
                     <span v-if="user.position_contributor > 0"><b>#[[ user.position_contributor ]]</b> contributor</span>  <span v-if="user.position_funder > 0"><b>#[[ user.position_funder ]]</b> funder</span>
