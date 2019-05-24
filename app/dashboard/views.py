@@ -1758,7 +1758,7 @@ def profile_job_opportunity(request, handle):
         handle (str): The profile handle.
     """
     uploaded_file = request.FILES.get('job_cv')
-    error_response = invalid_file_response(uploaded_file)
+    error_response = invalid_file_response(uploaded_file, supported=['application/pdf'])
     # 400 is ok because file upload is optional here
     if error_response and error_response['status'] != '400':
         return JsonResponse(error_response)
@@ -1783,7 +1783,7 @@ def profile_job_opportunity(request, handle):
     return JsonResponse(response)
 
 
-def invalid_file_response(uploaded_file):
+def invalid_file_response(uploaded_file, supported):
     response = None
     if not uploaded_file:
         response = {
@@ -1798,10 +1798,10 @@ def invalid_file_response(uploaded_file):
         }
     else:
         file_mime = magic.from_buffer(uploaded_file.chunks[0]);
-        if file_mine != 'application/pdf':
+        if file_mime not in supported:
             response = {
                 'status': 415,
-                'message': 'Invalid PDF File'
+                'message': 'Invalid File Type'
             }
     return response
 
@@ -1814,7 +1814,10 @@ def bounty_upload_nda(request):
         bounty_id (int): The bounty id.
     """
     uploaded_file = request.FILES.get('docs', None)
-    error_response = invalid_file_response(uploaded_file)
+    error_response = invalid_file_response(
+        uploaded_file, supported=['application/pdf',
+                                  'application/msword',
+                                  'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])
     if not error_response:
         bountydoc = BountyDocuments.objects.create(
             doc=uploaded_file,
