@@ -776,7 +776,9 @@ def users_fetch(request):
     else:
         network = 'rinkeby'
 
-    user_list = Profile.objects.prefetch_related('fulfilled', 'leaderboard_ranks', 'feedbacks_got').order_by(order_by)
+    user_list = Profile.objects.prefetch_related(
+        'fulfilled', 'leaderboard_ranks', 'feedbacks_got'
+    ).exclude(hide_profile=True).order_by(order_by)
 
     if q:
         user_list = user_list.filter(Q(handle__icontains=q) | Q(keywords__icontains=q))
