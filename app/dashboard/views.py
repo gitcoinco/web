@@ -1723,16 +1723,13 @@ def profile_keywords(request, handle):
 
 
 @require_POST
+@login_required
 def profile_job_opportunity(request, handle):
     """ Save profile job opportunity.
 
     Args:
         handle (str): The profile handle.
     """
-    if not request.user.is_authenticated:
-        return JsonResponse(
-            {'error': 'You must be authenticated via github to use this feature!'},
-            status=401)
     try:
         profile = profile_helper(handle, True)
         if request.user.profile.id != profile.id:
