@@ -826,8 +826,7 @@ def users_fetch(request):
         profile_json['id'] = user.id
         profile_json['actions_count'] = user.actions_count
         profile_json['created_on'] = user.created_on
-        profile_json['data'] = user.data
-        profile_json['email'] = user.email
+        # profile_json['data'] = user.data
         profile_json['handle'] = user.handle
         profile_json['hide_profile'] = user.hide_profile
         profile_json['job_status'] = user.job_status_verbose if user.job_search_status else None
@@ -853,6 +852,10 @@ def users_fetch(request):
             user_avatar = user.avatar_baseavatar_related.first()
             profile_json['avatar_id'] = user_avatar.pk
             profile_json['avatar_url'] = user_avatar.avatar_url
+        if user.data:
+            user_data = user.data
+            print(user_data)
+            profile_json['blog'] = user_data['blog']
 
         all_users.append(profile_json)
     # dumping and loading the json here quickly passes serialization issues - definitely can be a better solution
