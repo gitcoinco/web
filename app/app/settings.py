@@ -504,6 +504,8 @@ IMAP_PASSWORD = env('IMAP_PASSWORD', default='<password>')
 MAILCHIMP_USER = env.str('MAILCHIMP_USER', default='')
 MAILCHIMP_API_KEY = env.str('MAILCHIMP_API_KEY', default='')
 MAILCHIMP_LIST_ID = env.str('MAILCHIMP_LIST_ID', default='')
+MAILCHIMP_LIST_ID_HUNTERS = env.str('MAILCHIMP_LIST_ID_HUNTERS', default='')
+MAILCHIMP_LIST_ID_FUNDERS = env.str('MAILCHIMP_LIST_ID_FUNDERS', default='')
 
 # Github
 GITHUB_API_BASE_URL = env('GITHUB_API_BASE_URL', default='https://api.github.com')
