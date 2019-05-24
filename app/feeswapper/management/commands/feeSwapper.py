@@ -153,7 +153,7 @@ class Command(BaseCommand):
                 Returns: 
                         tokenList: Dict containing all ERC-20 tokens held by the FEE_ADDRESS and their balances
                 """
-                if "rinkeby" in settings.WEB3_HTTP_PROVIDER:
+                if settings.DEBUG:
                         self.network = 'rinkeby'
                 else:
                         self.network = 'mainnet' 
