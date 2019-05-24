@@ -55,6 +55,7 @@ from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_auth_url, get_github_user_data, is_github_token_valid, search_users
 from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
+import magic
 from marketing.mails import admin_contact_funder, bounty_uninterested
 from marketing.mails import funder_payout_reminder as funder_payout_reminder_mail
 from marketing.mails import new_reserved_issue, start_work_approved, start_work_new_applicant, start_work_rejected
@@ -1756,6 +1757,11 @@ def profile_job_opportunity(request, handle):
     Args:
         handle (str): The profile handle.
     """
+    uploaded_file = request.FILES.get('job_cv')
+    error_response = invalid_file_response(uploaded_file)
+    # 400 is ok because file upload is optional here
+    if error_response and error_response['status'] != '400':
+        return JsonResponse(error_response)
     try:
         profile = profile_helper(handle, True)
         profile.job_search_status = request.POST.get('job_search_status', None)
@@ -1777,6 +1783,28 @@ def profile_job_opportunity(request, handle):
     return JsonResponse(response)
 
 
+def invalid_file_response(uploaded_file):
+    response = None
+    if not uploaded_file:
+        response = {
+            'status': 400,
+            'message': 'No File Found'
+        }
+    elif uploaded_file.size > 31457280:
+        # 30MB max file size
+        response = {
+            'status': 413,
+            'message': 'File Too Large'
+        }
+    else:
+        file_mime = magic.from_buffer(uploaded_file.chunks[0]);
+        if file_mine != 'application/pdf':
+            response = {
+                'status': 415,
+                'message': 'Invalid PDF File'
+            }
+    return response
+
 @csrf_exempt
 @require_POST
 def bounty_upload_nda(request):
@@ -1785,9 +1813,11 @@ def bounty_upload_nda(request):
     Args:
         bounty_id (int): The bounty id.
     """
-    if request.FILES.get('docs', None):
+    uploaded_file = request.FILES.get('docs', None)
+    error_response = invalid_file_response(uploaded_file)
+    if not error_response:
         bountydoc = BountyDocuments.objects.create(
-            doc=request.FILES.get('docs', None),
+            doc=uploaded_file,
             doc_type=request.POST.get('doc_type', None)
         )
         response = {
@@ -1795,12 +1825,8 @@ def bounty_upload_nda(request):
             'bounty_doc_id': bountydoc.pk,
             'message': 'NDA saved'
         }
-    else:
-        response = {
-            'status': 400,
-            'message': 'No File Found'
-        }
-    return JsonResponse(response)
+
+    return JsonResponse(error_response) if error_response else JsonResponse(response)
 
 
 
