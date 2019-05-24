@@ -776,18 +776,18 @@ def users_fetch(request):
     else:
         network = 'rinkeby'
 
-    user_list = Profile.objects.prefetch_related(
+    profile_list = Profile.objects.prefetch_related(
         'fulfilled', 'leaderboard_ranks', 'feedbacks_got'
     ).exclude(hide_profile=True).order_by(order_by)
 
     if q:
-        user_list = user_list.filter(Q(handle__icontains=q) | Q(keywords__icontains=q))
+        profile_list = profile_list.filter(Q(handle__icontains=q) | Q(keywords__icontains=q))
 
     if skills:
-        user_list = user_list.filter(keywords__icontains=skills)
+        profile_list = profile_list.filter(keywords__icontains=skills)
 
     if len(bounties_completed) == 2:
-        user_list = user_list.annotate(
+        profile_list = profile_list.annotate(
                 count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network, fulfilled__accepted=True))
             ).filter(
                 count__gte=bounties_completed[0],
@@ -795,7 +795,7 @@ def users_fetch(request):
             )
 
     if len(leaderboard_rank) == 2:
-        user_list = user_list.filter(
+        profile_list = profile_list.filter(
             leaderboard_ranks__isnull=False,
             leaderboard_ranks__leaderboard='quarterly_earners',
             leaderboard_ranks__rank__gte=leaderboard_rank[0],
@@ -804,59 +804,44 @@ def users_fetch(request):
         )
 
     if rating != 0:
-        user_list = user_list.annotate(
+        profile_list = profile_list.annotate(
             average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
         ).filter(
             average_rating__gte=rating
         )
 
     if organisation:
-        user_list = user_list.filter(
+        profile_list = profile_list.filter(
             fulfilled__bounty__network=network,
             fulfilled__bounty__accepted=True,
             fulfilled__bounty__github_url__icontains=organisation
         ).distinct()
 
     params = dict()
-    all_pages = Paginator(user_list, limit)
+    all_pages = Paginator(profile_list, limit)
     all_users = []
     for user in all_pages.page(page):
         profile_json = {}
-        # profile_json = user.to_standard_dict()
         count_work_completed = Activity.objects.filter(profile=user, activity_type='work_done').count()
         count_work_in_progress = Activity.objects.filter(profile=user, activity_type='start_work').count()
-        profile_json['id'] = user.id
-        profile_json['actions_count'] = user.actions_count
-        profile_json['created_on'] = user.created_on
-        # profile_json['data'] = user.data
-        profile_json['handle'] = user.handle
-        profile_json['hide_profile'] = user.hide_profile
+        profile_json = {k: getattr(user, k) for k in
+        ['id', 'actions_count', 'created_on', 'handle', 'hide_profile',
+        'show_job_status', 'job_location', 'job_salary', 'job_search_status',
+        'job_type', 'linkedin_url', 'resume', 'remote', 'keywords',
+        'organizations', 'is_org']}
         profile_json['job_status'] = user.job_status_verbose if user.job_search_status else None
-        profile_json['show_job_status'] = user.show_job_status
-        profile_json['job_location'] = user.job_location
-        profile_json['job_salary'] = user.job_salary
-        profile_json['job_search_status'] = user.job_search_status
-        profile_json['job_type'] = user.job_type
-        profile_json['linkedin_url'] = user.linkedin_url
-        profile_json['resume'] = user.resume
-        profile_json['remote'] = user.remote
-        profile_json['keywords'] = user.keywords
-        profile_json['organizations'] = user.organizations
         profile_json['position_contributor'] = user.get_contributor_leaderboard_index()
         profile_json['position_funder'] = user.get_funder_leaderboard_index()
         profile_json['work_done'] = count_work_completed
         profile_json['work_inprogress'] = count_work_in_progress
         profile_json['verification'] = user.get_my_verified_check
         profile_json['avg_rating'] = user.get_average_star_rating
-        # profile_json['bounties'] = user.get_quarterly_stats
-        profile_json['is_org'] = user.is_org
         if user.avatar_baseavatar_related.exists():
             user_avatar = user.avatar_baseavatar_related.first()
             profile_json['avatar_id'] = user_avatar.pk
             profile_json['avatar_url'] = user_avatar.avatar_url
         if user.data:
             user_data = user.data
-            print(user_data)
             profile_json['blog'] = user_data['blog']
 
         all_users.append(profile_json)
