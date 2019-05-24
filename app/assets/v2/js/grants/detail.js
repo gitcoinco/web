@@ -189,7 +189,6 @@ const disableEdit = (input) => {
   $(input).prop('disabled', true);
 
   $('#contract_owner_button').addClass('hidden');
-  $('.grant__specs textarea').css('background-color', '#F2F6F9');
 };
 
 const copyDuplicateDetails = () => {

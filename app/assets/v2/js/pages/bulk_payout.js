@@ -2,6 +2,13 @@ const round = function(num, decimals) {
   return Math.round(num * 10 ** decimals) / 10 ** decimals;
 };
 
+
+const rateUser = (elem) => {
+  let userSelected = $(elem).select2('data')[0].text;
+
+  $(elem).parents('.new-user').next().find('[data-open-rating]').data('openUsername', userSelected.trim());
+};
+
 const normalizeUsername = function(username) {
   if (username.indexOf('@') != 0) {
     return '@' + username;
@@ -36,7 +43,8 @@ $(document).ready(function($) {
 
   $(document).on('click', '.remove', function(event) {
     event.preventDefault();
-    $(this).parents('tr').remove();
+    $(this).parents('.new-user').next('tr').remove();
+    $(this).parents('.new-user').remove();
     $(this).focus();
     update_registry();
   });
@@ -126,6 +134,7 @@ $(document).ready(function($) {
 
   $('#acceptBounty').on('click', function(e) {
     e.preventDefault();
+    update_registry();
 
     if (!$('#terms').is(':checked')) {
       _alert('Please accept the TOS.', 'error');
@@ -148,36 +157,6 @@ $(document).ready(function($) {
     sendTransaction(0);
   });
 
-
-  var get_amount = function(percent) {
-    var total_amount = $('#amount').val();
-
-    return percent * 0.01 * total_amount;
-  };
-
-  var add_row = function() {
-    var num_rows = $('#payout_table tbody').find('tr').length;
-    var percent = num_rows <= 1 ? 100 : '';
-    var denomination = $('#token_name').text();
-    var amount = get_amount(percent);
-    var html = `
-      <tr>
-        <td class="pl-0 pb-0">
-          <div class="pl-0">
-            <select onchange="update_registry()" class="username-search custom-select w-100 ml-auto mr-auto"></select>
-          </div>
-        </td>
-        <td class="pb-0"><div class="percent" contenteditable="true">` + percent + `</div></td>
-        <td class="pb-0"><div class="amount"><span class=amount>` + amount + '</span> <span class=denomination>' + denomination + `</span></div></td>
-        <td class="pb-0"><a class=remove href=#><i class="fas fa-times mt-2"></i></a>
-        </td>
-      </tr>`;
-
-    $('#payout_table tbody').append(html);
-    userSearch('.username-search:last', true);
-    $(this).focus();
-  };
-
   $('document').ready(function() {
     add_row();
     update_registry();
@@ -185,11 +164,68 @@ $(document).ready(function($) {
     $('.add_another').on('click', function() {
       add_row();
     });
+
   });
 });
 
+var get_amount = function(percent) {
+  var total_amount = $('#amount').val();
+
+  return percent * 0.01 * total_amount;
+};
+
+var add_row = function() {
+  let bountyId = $('#bountyId').val();
+  var num_rows = $('#payout_table tbody').find('tr.new-user').length;
+  var percent = num_rows <= 1 ? 100 : '';
+  var denomination = $('#token_name').text();
+  var amount = get_amount(percent);
+  let username = '';
+  var html = `
+    <tr class="new-user">
+      <td class="pl-0 pb-0">
+        <div class="pl-0">
+          <select onchange="update_registry()" class="username-search custom-select w-100 ml-auto mr-auto"></select>
+        </div>
+      </td>
+      <td class="pb-0"><div class="percent" contenteditable="true">${percent}</div></td>
+      <td class="pb-0"><div class="amount"><span class=amount>${amount}</span> <span class=denomination>${denomination}</span></div></td>
+      <td class="pb-0"><a class=remove href=#><i class="fas fa-times mt-2"></i></a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <fieldset class="" id="${num_rows}-${bountyId}" >
+          <label for="" class="form__label">Rate contributor</label>
+          <div class="rating" data-open-rating=${bountyId} data-open-username=${username}>
+            <input type="radio" id="${num_rows}-${bountyId}-5" name="${num_rows}${bountyId}" value="5" />
+            <label class ="rating-star full" for="${num_rows}-${bountyId}-5" data-toggle="tooltip" title="It was great - 5 stars"></label>
+            <input type="radio" id="${num_rows}-${bountyId}-4" name="${num_rows}${bountyId}" value="4" />
+            <label class ="rating-star full" for="${num_rows}-${bountyId}-4" data-toggle="tooltip" title="It was good - 4 stars"></label>
+            <input type="radio" id="${num_rows}-${bountyId}-3" name="${num_rows}${bountyId}" value="3" />
+            <label class ="rating-star full" for="${num_rows}-${bountyId}-3" data-toggle="tooltip" title="It was okay - 3 stars"></label>
+            <input type="radio" id="${num_rows}-${bountyId}-2" name="${num_rows}${bountyId}" value="2" />
+            <label class ="rating-star full" for="${num_rows}-${bountyId}-2" data-toggle="tooltip" title="It was bad - 2 stars"></label>
+            <input type="radio" id="${num_rows}-${bountyId}-1" name="${num_rows}${bountyId}" value="1" />
+            <label class ="rating-star full" for="${num_rows}-${bountyId}-1" data-toggle="tooltip" title="It was terrible - 1 star"></label>
+          </div>
+        </fieldset>
+      </td>
+    </tr>`;
+
+  $('#payout_table tbody').append(html);
+  userSearch('.username-search:last', true);
+  $('body .username-search').each(function() {
+    $(this).on('select2:select', event => {
+      rateUser($(this));
+    });
+  });
+
+  $(this).focus();
+};
+
 var get_total_cost = function() {
-  var rows = $('#payout_table tbody tr');
+  var rows = $('#payout_table tbody tr.new-user');
   var total = 0;
 
   for (i = 0; i < rows.length; i += 1) {
@@ -213,8 +249,8 @@ var update_registry = function(coinbase) {
     });
     return;
   }
-  
-  var num_rows = $('#payout_table tbody').find('tr').length;
+
+  var num_rows = $('#payout_table tbody').find('tr.new-user').length;
   var tc = round(get_total_cost(), 2);
   var denomination = $('#token_name').text();
   var original_amount = $('#original_amount').val();
@@ -222,11 +258,11 @@ var update_registry = function(coinbase) {
   var over = round((original_amount - get_total_cost()) * -1, 4);
   var addr = coinbase.substring(38);
   var pay_with_bounty = $('#pay_with_bounty').is(':checked');
-  
+
   $('#total_cost').html(tc + ' ' + denomination);
 
   let transactions = [];
-  
+
   first_transaction = {
     'id': 0,
     'type': 'cancel',
@@ -267,14 +303,14 @@ var update_registry = function(coinbase) {
     $('.overagePreview').css('display', 'none');
   }
 
-  for (let j = 1; j <= num_rows; j++) {
+  for (let j = 0; j <= num_rows; j++) {
 
-    var $row = $('#payout_table tbody').find('tr:nth-child(' + j + ')');
+    var $row = $('#payout_table tbody').find('tr:nth-child(' + ((j * 2) + 1) + ')');
     var amount = parseFloat($row.find('.amount').text());
     var username = $row.find('.username-search').text();
 
     if (username == '')
-      return;
+      continue;
 
     transaction = {
       'id': j,
@@ -295,6 +331,7 @@ var update_registry = function(coinbase) {
       transactions.push(transaction);
   }
 
+
   // paint on screen
   $('#transaction_registry tr.entry').remove();
   var k = 0;
@@ -308,3 +345,25 @@ var update_registry = function(coinbase) {
 
   document.transactions = transactions;
 };
+
+
+$(document).on('click', '.user-fulfiller', function(event) {
+  let elem = $('.username-search');
+  let term = $(this).data('username');
+  let count = elem.length;
+  let $search;
+
+  elem.each((index, select) => {
+    if (!select.value) {
+      $search = $(select).data('select2').dropdown.$search || $(select).data('select2').selection.$search;
+    } else if (index === count - 1) {
+      add_row();
+      let newSelect = $('.username-search:last');
+
+      $search = newSelect.data('select2').dropdown.$search || newSelect.data('select2').selection.$search;
+    }
+  });
+  $search.val(term);
+  $search.trigger('input');
+
+});

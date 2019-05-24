@@ -41,7 +41,7 @@
 }
 
 .form__checkbox input:checked ~ .form__label::before {
-  background-color: #0D0764;
-  border-color: #0D0764;
+  background-color: #3E00FF;
+  border-color: #3E00FF;
   content: url('/static/v2/images/check.svg');
 }

@@ -47,7 +47,7 @@
           <div id="robot_error" class="hidden mt-5">
             <img src="{% static "v2/images/prime.png" %}">
           </div>
-          <div class="col-sm-12 col-md-10 col-lg-8 mt-5" id="grants_form">
+          <div class="col-12 col-md-10 col-lg-8 mt-5" id="grants_form">
             <div class="form__intro my-4 text-center">
               <img src="{% static "v2/images/grants/new.svg" %}">
               <h1 class="text-center font-title-xl">{% trans "Create a Grant" %}</h1>
@@ -130,10 +130,11 @@
                   <input type="hidden" id="transaction_hash" name="transaction_hash" />
                   <input type="hidden" id="contract_address" name="contract_address" />
                   <input type="hidden" id="contract_owner_address" name="contract_owner_address">
-                  <input type="hidden" id="contract_version" name="contract_version" value="0">
+                  <input type="hidden" id="contract_version" name="contract_version" value="1">
                     <input type="hidden" id="token_address" name="token_address" value="">
                   <input type="hidden" id="token_symbol" name="token_symbol" value="">
                   <input type="hidden" id="network" name="network">
+                  <input type="hidden" id="trusted_relayer" name="trusted_relayer" value="{{ trusted_relayer }}"
                 </div>
               </form>
             </div>
@@ -150,14 +151,16 @@
     {% include 'grants/shared/shared_scripts.html' %}
   </body>
 
-  <!-- jQuery -->
+  <script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
-  <script src="{% static "v2/js/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
   <script src="{% static "v2/js/user-search.js" %}"></script>
-  <script src="{% static "v2/js/grants/compiledSubscriptionContract.js" %}"></script>
+  <script src="{% static "v2/js/grants/compiledSplitter.js" %}"></script>
+  <script src="{% static "v2/js/grants/compiledSubscriptionContract0.js" %}"></script>
+  <script src="{% static "v2/js/grants/compiledSubscriptionContract1.js" %}"></script>
   <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
   <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
   <script src="{% static "v2/js/grants/shared.js" %}"></script>

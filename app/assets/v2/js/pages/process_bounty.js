@@ -1,6 +1,17 @@
 /* eslint-disable no-console */
 window.onload = function() {
 
+  const rateUser = () => {
+    let userSelected = $('#bountyFulfillment').select2('data')[0].text;
+
+    $('[data-open-rating]').data('openUsername', userSelected.trim());
+  };
+
+
+  $('#bountyFulfillment').on('select2:select', event => {
+    rateUser();
+  });
+
   // Check Radio-box
   $('.rating input:radio').attr('checked', false);
 
@@ -222,28 +233,14 @@ window.onload = function() {
 
             _alert({ message: gettext('Submitted transaction to web3, saving comment(s)...') }, 'info');
 
-            var submitCommentUrl = '/postcomment/';
             var finishedComment = function() {
               _alert({ message: gettext('Submitted transaction to web3.') }, 'info');
               setTimeout(() => {
                 document.location.href = '/funding/details?url=' + issueURL;
               }, 1000);
             };
-            var ratVal = $('input:radio[name=rating]:checked').val();
-            var revVal = $('#review').val();
 
-            $.post(submitCommentUrl, {
-              'github_url': issueURL,
-              'network': $('input[name=network]').val(),
-              'standard_bounties_id': $('input[name=standard_bounties_id]').val(),
-              'review': {
-                'rating': ratVal ? ratVal : -1,
-                'comment': revVal ? revVal : 'No comment given.',
-                'reviewType': 'approver',
-                'receiver': getSelectedFulfillment().getAttribute('username')
-		          }
-            }, finishedComment, 'json');
-
+            finishedComment();
           };
 
           if (error) {
@@ -279,7 +276,7 @@ window.onload = function() {
       // Get bountyId from the database
 
       waitforWeb3(function() {
-        var uri = '/api/v0.1/bounties/?github_url=' + issueURL + '&network=' + $('input[name=network]').val() + '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
+        var uri = '/api/v0.1/bounties/?event_tag=all&github_url=' + issueURL + '&network=' + $('input[name=network]').val() + '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
 
         $.get(uri, apiCallback);
       });
@@ -315,6 +312,7 @@ window.onload = function() {
         }
       }
     );
+    rateUser();
 
   }, 100);
 };

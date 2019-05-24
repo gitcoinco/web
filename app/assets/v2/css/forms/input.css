@@ -7,6 +7,11 @@
   width: 100%;
   letter-spacing: -0.09px;
   outline: none;
+  height: 40px;
+}
+
+textarea.form__input {
+  height: auto;
 }
 
 .form__input-lg {
@@ -59,8 +64,8 @@
 
 .form__input:disabled {
   background-color: #EAEAEA;
-  border: 1px solid #979797;
   color: #9B9B9B;
+  border-color: #EAEAEA;
 }
 
 .form__input-help {

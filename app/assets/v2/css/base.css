@@ -1,7 +1,6 @@
 /* stylelint-disable no-descending-specificity */
 
 /* ...because sometimes descending-specificity is a PIA to clean up */
-
 div.body {
   min-height: 400px;
 }
@@ -73,6 +72,7 @@ a {
   font-size: 0.9rem;
   padding-left: 1rem;
   text-align: left;
+  margin-top: 5px;
 }
 
 .navbar-nav .dropdown-menu {
@@ -381,6 +381,10 @@ p a {
   max-width: 50px;
   border-radius: 100%;
 }
+.dashboard .body .avatar.Azure-Samples,
+.rounded-circle.Azure-Samples {
+  border-radius: 0%!important;
+}
 
 .body .nonefound {
   margin-left: 100px;
@@ -512,14 +516,6 @@ input[type=text].loading {
 
 #primary_form img {
   max-width: 100px;
-}
-
-#primary_form small {
-  display: inline;
-}
-
-#primary_form #amount {
-  height: 40px;
 }
 
 .bounty_nav {
@@ -1013,49 +1009,6 @@ input.is-invalid {
   width: auto;
 }
 
-.rating {
-  width:160px;
-}
-.rating span { float:right; position:relative; }
-.rating span input {
-  position:absolute;
-  top:0px;
-  left:0px;
-  opacity:0;
-}
-.rating span label {
-  display:inline-block;
-  width:30px;
-  height:30px;
-  text-align:center;
-  color:#FFF;
-  font-size:25px;
-  margin-right:2px;
-  line-height:30px;
-  border-radius:50%;
-  -webkit-border-radius:50%;
-}
-.rating span label i {
-  color:#ccc;
-}
-
-.rating span:hover ~ span label i,
-.rating span:hover label i {
-  opacity: 0.5;
-}
-.rating span.checked label i,
-.rating span.checked ~ span label i
-{
-  opacity: 1;
-}
-
-.rating span:hover ~ span label i,
-.rating span:hover label i,
-.rating span.checked label i,
-.rating span.checked ~ span label i {
-  color: rgb(18,199,113);
-}
-
 .bounty_box {
   border: 5px solid white;
   width: 100%;
@@ -1434,63 +1387,6 @@ input.is-invalid {
   padding: 0.25rem 1.25rem;
 }
 
-/* Results */
-
-.results h2 {
-  font-size: 1.8rem;
-  font-weight: 700;
-}
-
-.results h3 {
-  font-weight: 700;
-}
-
-.results h5 {
-  font-weight: 700;
-  text-decoration: underline;
-}
-
-.results .bounty_status {
-  margin-top: 1.5rem;
-}
-
-.results .bounty_status p {
-  font-size: 1.2rem;
-}
-
-.results #price_per_hour img{
-  width: 100%;
-}
-
-.results .bounty_status .box_1,
-.box_2,
-.box_3,
-.box_4,
-.box_5,
-.box_6 {
-  float: left;
-  width: 1rem;
-  height: 1rem;
-  margin-top: .2rem;
-  margin-right: 1rem;
-}
-
-.results ul#programming_languages {
-  text-align: center;
-}
-
-.results ul#programming_languages li {
-  list-style: none;
-  padding: 0.5rem 2rem;
-  margin-bottom: 1.5rem;
-  display: inline-block;
-  border: 1px solid #999;
-}
-
-.results ul#programming_languages li.selected{
-  background-color: #eee;
-}
-
 .box_1 {
   color: #011f4b;
   border: 10px solid #011f4b;
@@ -1521,16 +1417,6 @@ input.is-invalid {
   border: 10px solid #d3ddf0;
 }
 
-.results .icon {
-  height: 6rem;
-  width: auto;
-}
-
-.results p {
-  font-size: 1.3rem;
-  font-weight: 500;
-  margin-bottom: 0.5rem;
-}
 
 @keyframes busyOverlay {
   from {
@@ -1627,6 +1513,10 @@ div.busyOverlay {
   max-width: 482px;
 }
 
+.popover_card {
+  border-radius: 5px;
+  border: 1px solid #E5E5E5;
+}
 /* Custom icons */
 
 .g-icon {

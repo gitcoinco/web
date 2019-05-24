@@ -198,7 +198,7 @@ def details(request, kudos_id, name):
         # Create a new attribute to reference number of gen0 clones allowed
         kudos.num_gen0_clones_allowed = token.num_clones_allowed
 
-        context['title'] = kudos.humanized_name
+        context['title'] = kudos.ui_name
         context['card_title'] = kudos.humanized_name
         context['card_desc'] = kudos.description
         context['avatar_url'] = kudos.img_url
@@ -461,7 +461,7 @@ def record_kudos_email_activity(kudos_transfer, github_handle, event_name):
     try:
         Activity.objects.create(**kwargs)
     except Exception as e:
-        logger.error(f"error in record_kudos_email_activity: {e} - {event_name} - {kudos_transfer} - {github_handle}")
+        logger.debug(f"error in record_kudos_email_activity: {e} - {event_name} - {kudos_transfer} - {github_handle}")
 
 
 def record_kudos_activity(kudos_transfer, github_handle, event_name):
@@ -517,9 +517,9 @@ def receive(request, key, txid, network):
     if not kudos_transfer:
         raise Http404
 
-    is_authed = kudos_transfer.trust_url or request.user.username.replace('@', '') in [
-        kudos_transfer.username.replace('@', ''),
-        kudos_transfer.from_username.replace('@', '')
+    is_authed = kudos_transfer.trust_url or request.user.username.replace('@', '').lower() in [
+        kudos_transfer.username.replace('@', '').lower(),
+        kudos_transfer.from_username.replace('@', '').lower()
     ]
     not_mined_yet = get_web3(kudos_transfer.network).eth.getBalance(
         Web3.toChecksumAddress(kudos_transfer.metadata['address'])) == 0
@@ -590,7 +590,7 @@ def receive(request, key, txid, network):
         'key': key,
         'is_authed': is_authed,
         'disable_inputs': kudos_transfer.receive_txid or not_mined_yet or not is_authed,
-        'tweet_text': urllib.parse.quote_plus(f"I just got a {kudos_transfer.kudos_token_cloned_from.humanized_name} Kudos on @GetGitcoin.  ")
+        'tweet_text': urllib.parse.quote_plus(f"I just got a {kudos_transfer.kudos_token_cloned_from.humanized_name} Kudos on @gitcoin.  ")
     }
 
     return TemplateResponse(request, 'transaction/receive.html', params)
@@ -605,7 +605,7 @@ def receive_bulk(request, secret):
         raise Http404
 
     coupon = coupons.first()
-
+    _class = request.GET.get('class', '')
     if coupon.num_uses_remaining <= 0:
         messages.info(request, f'Sorry but the coupon for a free kudos has has expired.  Contact the person who sent you the coupon link, or you can still purchase one on this page.')
         return redirect(coupon.token.url)
@@ -636,8 +636,11 @@ def receive_bulk(request, secret):
                 profile.preferred_payout_address = address
                 profile.save()
 
+            private_key = settings.KUDOS_PRIVATE_KEY if not coupon.sender_pk else coupon.sender_pk
+            kudos_owner_address = settings.KUDOS_OWNER_ACCOUNT if not coupon.sender_address else coupon.sender_address
+
             kudos_contract_address = Web3.toChecksumAddress(settings.KUDOS_CONTRACT_MAINNET)
-            kudos_owner_address = Web3.toChecksumAddress(settings.KUDOS_OWNER_ACCOUNT)
+            kudos_owner_address = Web3.toChecksumAddress(kudos_owner_address)
             w3 = get_web3(coupon.token.contract.network)
             contract = w3.eth.contract(Web3.toChecksumAddress(kudos_contract_address), abi=kudos_abi())
             nonce = w3.eth.getTransactionCount(kudos_owner_address)
@@ -652,7 +655,7 @@ def receive_bulk(request, secret):
                 messages.error(request, f'Your github profile is too new.  Cannot receive kudos.')
             else:
 
-                signed = w3.eth.account.signTransaction(tx, settings.KUDOS_PRIVATE_KEY)
+                signed = w3.eth.account.signTransaction(tx, private_key)
                 try:
                     txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
 
@@ -670,7 +673,7 @@ def receive_bulk(request, secret):
                             from_username=coupon.sender_profile.handle,
                             username=profile.handle,
                             network=coupon.token.contract.network,
-                            from_address=settings.KUDOS_OWNER_ACCOUNT,
+                            from_address=kudos_owner_address,
                             is_for_bounty_fulfiller=False,
                             metadata={'coupon_redemption': True, 'nonce': nonce},
                             recipient_profile=profile,
@@ -709,8 +712,9 @@ def receive_bulk(request, secret):
         'avatar_url': coupon.token.img_url,
         'coupon': coupon,
         'user': request.user,
+        'class': _class,
         'is_authed': request.user.is_authenticated,
         'kudos_transfer': kudos_transfer,
-        'tweet_text': urllib.parse.quote_plus(f"I just got a {coupon.token.humanized_name} Kudos on @GetGitcoin.  ")
+        'tweet_text': urllib.parse.quote_plus(f"I just got a {coupon.token.humanized_name} Kudos on @gitcoin.  ")
     }
     return TemplateResponse(request, 'transaction/receive_bulk.html', params)

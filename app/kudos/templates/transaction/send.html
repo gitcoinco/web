@@ -18,12 +18,12 @@
 {% load i18n static kudos_extras %}
 {% block 'scripts' %}
   {% include 'shared/current_profile.html' %}
-  <script src="{% static "v2/js/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="{% static "v2/js/amounts.js" %}"></script>
-  <script src="{% static "v2/js/secrets.min.js" %}"></script>
+  <script src="{% static "v2/js/lib/secrets.min.js" %}"></script>
   <script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script>
@@ -56,7 +56,7 @@
     <div class="my-4">
       {% if kudos.name %}
         <a href="{% url 'kudos_details' kudos.id kudos.name %}"><img src="{% static kudos.image %}" alt="{{ kudos.name }}" width="160" alt="" class="mb-2"></a>
-        <span class="d-block">{{ kudos.name|humanize_name }}</span>
+        <span class="d-block">{{ kudos.ui_name }}</span>
         <p class="hidden" id="kudosid" data-kudosid="{{ kudos.id }}">{{ kudos.id }}</p>
         <p class="hidden" id="tokenid" data-tokenid="{{ kudos.token_id }}">{{ kudos.token_id }}</p>
         <span id="kudosPrice" class="d-block" data-ethprice="{{ kudos.price_in_eth }}">{{ kudos.price_in_eth }} ETH <small>USD</small></span>

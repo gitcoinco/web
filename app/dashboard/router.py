@@ -17,6 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import logging
 import time
 from datetime import datetime
 
@@ -29,6 +30,8 @@ from .models import (
     Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, HackathonEvent, Interest, ProfileSerializer,
     SearchHistory,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class BountyFulfillmentSerializer(serializers.ModelSerializer):
@@ -198,11 +201,14 @@ class BountyViewSet(viewsets.ModelViewSet):
         # filtering
         event_tag = self.request.query_params.get('event_tag', '')
         if event_tag:
-            try:
-                evt = HackathonEvent.objects.filter(slug__iexact=event_tag).latest('id')
-                queryset = queryset.filter(event__pk=evt.pk)
-            except HackathonEvent.DoesNotExist:
-                return Bounty.objects.none()
+            if event_tag == 'all':
+                pass
+            else:
+                try:
+                    evt = HackathonEvent.objects.filter(slug__iexact=event_tag).latest('id')
+                    queryset = queryset.filter(event__pk=evt.pk)
+                except HackathonEvent.DoesNotExist:
+                    return Bounty.objects.none()
         else:
             queryset = queryset.filter(event=None)
 
@@ -358,12 +364,16 @@ class BountyViewSet(viewsets.ModelViewSet):
         # save search history, but only not is_featured
         if 'is_featured' not in param_keys:
             if self.request.user and self.request.user.is_authenticated:
-                data['nonce'] = int(time.time() / 1000)
-                SearchHistory.objects.update_or_create(
-                    user=self.request.user,
-                    data=data,
-                    ip_address=get_ip(self.request)
-                )
+                data['nonce'] = int(time.time()  * 1000000)
+                try:
+                    SearchHistory.objects.update_or_create(
+                        user=self.request.user,
+                        data=data,
+                        ip_address=get_ip(self.request)
+                    )
+                except Exception as e:
+                    logger.debug(e)
+                    pass
 
 
         return queryset

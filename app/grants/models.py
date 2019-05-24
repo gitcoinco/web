@@ -205,6 +205,8 @@ class Grant(SuperModel):
 
     def percentage_done(self):
         """Return the percentage of token received based on the token goal."""
+        if not self.amount_goal:
+            return 0
         return ((self.amount_received / self.amount_goal) * 100)
 
 
@@ -218,8 +220,13 @@ class Grant(SuperModel):
     @property
     def abi(self):
         """Return grants abi."""
-        from grants.abi import abi_v0
-        return abi_v0
+        if self.contract_version == 0:
+            from grants.abi import abi_v0
+            return abi_v0
+        elif self.contract_version == 1:
+            from grants.abi import abi_v1
+            return abi_v1
+
 
     @property
     def url(self):
@@ -458,6 +465,7 @@ class Subscription(SuperModel):
             token_contract = web3.eth.contract(Web3.toChecksumAddress(self.token_address), abi=erc20_abi)
             balance = token_contract.functions.balanceOf(Web3.toChecksumAddress(self.contributor_address)).call()
             allowance = token_contract.functions.allowance(Web3.toChecksumAddress(self.contributor_address), Web3.toChecksumAddress(self.grant.contract_address)).call()
+            gasPrice = self.gas_price
             is_active = self.get_is_active_from_web3()
             token = addr_to_token(self.token_address, self.network)
             next_valid_timestamp = self.get_next_valid_timestamp()
@@ -469,7 +477,7 @@ class Subscription(SuperModel):
                 error_reason = 'not_active'
             if timezone.now().timestamp() < next_valid_timestamp:
                 error_reason = 'before_next_valid_timestamp'
-            if balance < self.amount_per_period:
+            if (float(balance) + float(gasPrice)) < float(self.amount_per_period):
                 error_reason = "insufficient_balance"
             if allowance < self.amount_per_period:
                 error_reason = "insufficient_allowance"
@@ -700,6 +708,8 @@ class ContributionQuerySet(models.QuerySet):
 class Contribution(SuperModel):
     """Define the structure of a subscription agreement."""
 
+    success = models.BooleanField(default=True, help_text=_('Whether or not success.'))
+    tx_cleared = models.BooleanField(default=False, help_text=_('Whether or not tx cleared.'))
     tx_id = models.CharField(
         max_length=255,
         default='0x0',
@@ -719,10 +729,19 @@ class Contribution(SuperModel):
         txid_shortened = self.tx_id[0:10] + "..."
         return f"id: {self.pk}; {txid_shortened} => subs:{self.subscription}; {naturaltime(self.created_on)}"
 
+    def update_tx_status(self):
+        """Updates tx status."""
+        from dashboard.utils import get_tx_status
+        tx_status, tx_time = get_tx_status(self.tx_id, self.subscription.network, self.created_on)
+        self.success = tx_status == 'success'
+        self.tx_cleared = True
 
 def next_month():
     """Get the next month time."""
     return localtime(timezone.now() + timedelta(days=30))
+
+
+
 
 
 class MatchPledge(SuperModel):

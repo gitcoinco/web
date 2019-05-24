@@ -22,7 +22,7 @@ $(document).ready(function() {
     }
 
     const activityContainer = document.querySelector('.tab-section.active .activities');
-    const activityCount = parseInt(activityContainer.getAttribute('count')) || 0;
+    const activityCount = activityContainer ? parseInt(activityContainer.getAttribute('count')) || 0 : 0;
     const loadingImg = document.querySelector('.loading_img');
 
     if (activityContainer.children.length < activityCount) {
@@ -39,7 +39,7 @@ $(document).ready(function() {
       fetchInProgress = true;
       loadingImg.className = loadingImg.className.replace('hidden', 'visible');
 
-      fetch(document.location.href + '?p=' + (++page) + '&a=' + activityName).then(
+      fetch(location.href.replace(location.hash, '') + '?p=' + (++page) + '&a=' + activityName).then(
         function(response) {
           if (response.status === 200) {
             response.text().then(

@@ -53,7 +53,7 @@
           // UUDDLRLRBA
           const KONAMI_CODE = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
           document.addEventListener('keydown', (e) => {
-            cursor = (e.keyCode == KONAMI_CODE[cursor]) ? cursor + 1 : 0; 
+            cursor = (e.keyCode == KONAMI_CODE[cursor]) ? cursor + 1 : 0;
             if (cursor == KONAMI_CODE.length) activate(window.location.search);
           });
 
@@ -76,7 +76,7 @@
           }
         }
       </script>
-      
+
       <div class="row justify-content-center">
         {% for listing in listings %}
           <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
@@ -104,9 +104,9 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with slim=1 %}
-    <script src="{% static "v2/js/popper.min.js" %}"></script>
-    <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
-    <script src="{% static "v2/js/jquery-unveil.js" %}"></script>
+    <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
+    <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+    <script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
     <script>
       $(document).ready(function() {
         $("img").unveil(200);

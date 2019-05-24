@@ -238,7 +238,7 @@ def ipfs_cat_ipfsapi(key):
 
 def ipfs_cat_requests(key):
     try:
-        url = f'https://ipfs.infura.io:5001/api/v0/cat/{key}'
+        url = f'https://ipfs.infura.io:5001/api/v0/cat?arg={key}'
         response = requests.get(url, timeout=1)
         return response.text, response.status_code
     except:
@@ -313,6 +313,28 @@ def get_bounty_from_invite_url(invite_url):
     inviter = data_array[0]
     bounty = data_array[1]
     return {'inviter': inviter, 'bounty': bounty}
+
+
+def get_unrated_bounties_count(user):
+    if not user:
+        return 0
+    unrated_contributed = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=user) \
+        .filter(interested__status='okay') \
+        .filter(interested__pending=False).filter(idx_status='done') \
+        .exclude(
+            feedbacks__feedbackType='worker',
+            feedbacks__sender_profile=user
+        )
+    unrated_funded = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
+    .filter(
+        bounty_owner_github_username__iexact=user.handle,
+        idx_status='done'
+    ).exclude(
+        feedbacks__feedbackType='approver',
+        feedbacks__sender_profile=user,
+    )
+    unrated_count = unrated_funded.count() + unrated_contributed.count()
+    return unrated_count
 
 
 def getStandardBountiesContractAddresss(network):

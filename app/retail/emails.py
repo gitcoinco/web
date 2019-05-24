@@ -74,7 +74,7 @@ def render_featured_funded_bounty(bounty):
     params = {'bounty': bounty}
     response_html = premailer_transform(render_to_string("emails/funded_featured_bounty.html", params))
     response_txt = render_to_string("emails/funded_featured_bounty.txt", params)
-    subject = _("You've successfully funded a bounty!")
+    subject = _("Your bounty is now live on Gitcoin!")
 
     return response_html, response_txt, subject
 
@@ -533,6 +533,29 @@ def render_new_bounty(to_email, bounties, old_bounties):
 
     return response_html, response_txt
 
+def render_unread_notification_email_weekly_roundup(to_email, from_date=date.today(), days_ago=7):
+    subscriber = get_or_save_email_subscriber(to_email, 'internal')
+    from dashboard.models import Profile
+    from inbox.models import Notification
+    profile = Profile.objects.filter(email__iexact=to_email).last()
+
+    from_date = from_date + timedelta(days=1)
+    to_date = from_date - timedelta(days=days_ago)
+
+    notifications = Notification.objects.filter(to_user=profile.id, is_read=False, created_on__range=[to_date, from_date]).count()
+
+    params = {
+        'subscriber': subscriber,
+        'profile': profile.handle,
+        'notifications': notifications,
+    }
+
+    subject = "Your unread notifications"
+
+    response_html = premailer_transform(render_to_string("emails/unread_notifications_roundup/unread_notification_email_weekly_roundup.html", params))
+    response_txt = render_to_string("emails/unread_notifications_roundup/unread_notification_email_weekly_roundup.txt", params)
+
+    return response_html, response_txt, subject
 
 def render_weekly_recap(to_email, from_date=date.today(), days_back=7):
     sub = get_or_save_email_subscriber(to_email, 'internal')
@@ -633,7 +656,7 @@ def render_gdpr_reconsent(to_email):
     return response_html, response_txt
 
 
-def render_share_bounty(to_email, msg, from_profile):
+def render_share_bounty(to_email, msg, from_profile, invite_url=None, kudos_invite=False):
     """Render the share bounty email template.
 
     Args:
@@ -644,20 +667,15 @@ def render_share_bounty(to_email, msg, from_profile):
         str: The rendered response as a string.
 
     """
-    to_email = f"@{to_email}" if to_email else "there"
-    response_txt = f"""
-hi {to_email},
-
-{msg}
-
-@{from_profile.handle}
-{from_profile.email}
-
-
-"""
-
-    params = {'txt': response_txt}
-    response_html = premailer_transform(render_to_string("emails/txt.html", params))
+    params = {
+        'msg': msg,
+        'from_profile': from_profile,
+        'to_email': to_email,
+        'invite_url': invite_url,
+        'kudos_invite': kudos_invite
+    }
+    response_html = premailer_transform(render_to_string("emails/share_bounty_email.html", params))
+    response_txt = render_to_string("emails/share_bounty_email.txt", params)
     return response_html, response_txt
 
 
@@ -673,9 +691,10 @@ def render_new_work_submission(to_email, bounty):
     return response_html, response_txt
 
 
-def render_new_bounty_acceptance(to_email, bounty):
+def render_new_bounty_acceptance(to_email, bounty, unrated_count=0):
     params = {
         'bounty': bounty,
+        'unrated_count': unrated_count,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -914,12 +933,12 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Save the date; Ethereal Virtual Hackathon April 15th — 30th"
-    new_kudos_pks = [1106, 2110, 2050, 2116]
+    subject = "Developers, Ads, and Kudos, Oh My!"
+    new_kudos_pks = [2617, 2555, 2623]
     new_kudos_size_px = 150
 
     kudos_friday = f'''
-<h3>Happy Kudos Friday!</h3>
+<h3>Happy Kudos Friday from our Ethereal Hackathon sponsors!</h3>
 </p>
 <p>
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
@@ -930,13 +949,26 @@ def render_new_bounty_roundup(to_email):
 Hi Gitcoiners,
 </p>
 <p>
-We're excited to announce the date for the <a href="https://gitcoin.co/hackathon/ethhack2019">Ethereal Virtual hackathon</a>.  Join us April 15th-30th for Hackathon challenges, which will be posted as bounties, with the best hacks receiving prizes in ETH & ERC-20 tokens. Main track winners will receive free tickets to Ethereal NY to present their project live on stage!  <a href="https://medium.com/gitcoin/the-ethereal-hackathon-4f5dc2eb56d6">More details here</a>. 
+This week, we wrapped up the <a href="https://gitcoin.co/hackathon/ethereal-virtual-hackathon/">Ethereal Virtual Hackathon</a>. We had 600 hackers in our Discord, $65K in prizes, and ultimately received over 80 submissions
+for bounties. We're excited to announce winners at Ethereal, soon.
 </p>
+<p>
+During the event, we relied upon on Kudos, Codefund Ads, and the Gitcoin users to drive engagement. We built <a href="https://github.com/gitcoinco/kudosbadges/issues/new">custom Kudos</a> for each sponsor, showing unique appreciation via a piece of art made specifically for sponsors and developers.
+We ran <a href="https://codefund.app/advertisers/">CodeFund Ads</a> on Etherscan, driving great engagement to our discord. Lastly, Gitcoin is a place for developers, already. We're grateful
+to everyone who participated. Reply to this email if you'd like to discuss running a hackathon with us in the future!
+</p>
+<p>
+So what got BUIDLt?  Winners will be announced next week, in the meantime, <a href=https://github.com/gitcoinco/skunkworks/blob/master/etherealhackathon2019.md>click here</a> to see a list of all entries to the hackathon!
+</p>
+
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Gitcoin Livestream is back this week with Eric Conner and Anthony Sassano from EthHub and Igor from POA! Join us <a href="https://gitcoin.co/livestream"> at 5PM ET or catch it on <a href="https://twitter.com/GetGitcoin">Twitter</a>!
+            Check out our new <a href="https://gitcoin.co/users/">Gitcoin user directory</a> and invite great Gitcoiners to work with you today.
+        </li>
+        <li>
+            Gitcoin Livestream is back this week with Pia Mancini, CEO of Open Collective. Join us <a href="https://gitcoin.co/livestream"> at a new time, 2PM ET, or catch it on <a href="https://twitter.com/gitcoin">Twitter</a>!
         </li>
     </ul>
 </p>
@@ -946,34 +978,34 @@ Back to shipping,
 
 '''
     highlights = [{
-        'who': 'e18r ',
+        'who': 'georgiemathews',
         'who_link': True,
-        'what': 'Some nice work on this giveth bounty :)',
-        'link': 'https://gitcoin.co/issue/Giveth/giveth-dapp/522/2418',
+        'what': 'Share kit for Vue.js with Bloom :)',
+        'link': 'https://gitcoin.co/issue/hellobloom/share-kit/42/2910',
         'link_copy': 'View more',
     }, {
-        'who': 'rsercano ',
+        'who': 'iamonuwa',
         'who_link': True,
-        'what': 'Good work on this CI and CD pipeline..',
-        'link': 'https://gitcoin.co/issue/status-im/status-components/5/2608',
+        'what': 'More great work by Onuwa on Status!',
+        'link': 'https://gitcoin.co/issue/status-im/discover-dapps/31/2888',
         'link_copy': 'View more',
     }, {
-        'who': 'eswarasai',
+        'who': 'devaman',
         'who_link': True,
-        'what': 'Eswara is one of our longtime community members!',
-        'link': 'https://gitcoin.co/issue/centrifuge/go-centrifuge/835/2593',
+        'what': 'Work with Pedro on Wallet Connect by devaman.',
+        'link': 'https://gitcoin.co/issue/WalletConnect/web3connect/12/2921',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/gitcoinco/skunkworks/issues/89',
-        'primer': '20ETH Security bounty for Ethereum Istanbul Hard Fork!',
+        'url': 'https://github.com/AdExNetwork/adex-protocol-eth/issues/62',
+        'primer': 'Work with AdEx on their protocol prizes for ',
     }, {
-        'url': 'https://github.com/ShipChain/hydra/issues/3',
-        'primer': 'ShipChain sidechain test network evaluation bounty!',
+        'url': 'https://github.com/gitcoinco/skunkworks/issues/104',
+        'primer': 'Want to work on Quorum with JP Morgan on Privacy?',
     }, {
-        'url': 'https://github.com/gitcoinco/creative/issues/51',
-        'primer': 'Print your own Gitcoin Stickers & get ETH for it!',
+        'url': 'https://github.com/smartcontractkit/chainlink/issues/1091',
+        'primer': 'Connect smart contracts to external data!',
     }, ]
 
     num_leadboard_items = 5
@@ -1049,6 +1081,11 @@ def weekly_recap(request):
     response_html, _ = render_weekly_recap("mark.beacom@consensys.net")
     return HttpResponse(response_html)
 
+
+@staff_member_required
+def unread_notification_email_weekly_roundup(request):
+    response_html, _ = render_unread_notification_email_weekly_roundup('mark.beacom@consensys.net')
+    return HttpResponse(response_html)
 
 @staff_member_required
 def new_tip(request):
@@ -1262,6 +1299,8 @@ def gdpr_reconsent(request):
 
 @staff_member_required
 def share_bounty(request):
+    from dashboard.models import Profile
+    handle = request.GET.get('handle')
     profile = Profile.objects.filter(handle=handle).first()
     response_html, _ = render_share_bounty(settings.CONTACT_EMAIL, 'This is a sample message', profile)
     return HttpResponse(response_html)

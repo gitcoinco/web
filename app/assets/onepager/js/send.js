@@ -82,12 +82,15 @@ $(document).ready(function() {
     var github_url = $('#issueURL').val();
     var from_name = $('#fromName').val();
     var username = $('.username-search').select2('data')[0].text;
-    var amountInEth = parseFloat($('#amount').val());
+    var amount = parseFloat($('#amount').val());
     var comments_priv = $('#comments_priv').val();
     var comments_public = $('#comments_public').val();
     var from_email = $('#fromEmail').val();
     var accept_tos = $('#tos').is(':checked');
-    var tokenAddress = $('#token').val();
+    var tokenAddress = (
+      ($('#token').val() == '0x0') ?
+        '0x0000000000000000000000000000000000000000'
+        : $('#token').val());
     var expires = parseInt($('#expires').val());
 
     // derived info
@@ -117,7 +120,7 @@ $(document).ready(function() {
       unloading_button($('#send'));
     };
 
-    return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, false);
+    return sendTip(email, github_url, from_name, username, amount, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, false);
 
   });
 
@@ -151,7 +154,7 @@ function isNumeric(n) {
 }
 
 
-function sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, is_for_bounty_fulfiller) {
+function sendTip(email, github_url, from_name, username, amount, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, is_for_bounty_fulfiller) {
   if (typeof web3 == 'undefined') {
     _alert({ message: gettext('You must have a web3 enabled browser to do this.  Please download Metamask.') }, 'warning');
     failure_callback();
@@ -168,15 +171,21 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
   var isSendingETH = (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000');
   var tokenDetails = tokenAddressToDetails(tokenAddress);
   var tokenName = 'ETH';
-  var weiConvert = 10 ** 18;
+  var denomFactor = 10 ** 18;
   var creation_time = Math.round((new Date()).getTime() / 1000);
   var salt = parseInt((Math.random() * 1000000));
 
   if (!isSendingETH) {
     tokenName = tokenDetails.name;
-    weiConvert = 10 ** tokenDetails.decimals;
+    denomFactor = 10 ** tokenDetails.decimals;
   }
-  var amountInWei = amountInEth * 1.0 * weiConvert;
+
+  check_balance_and_alert_user_if_not_enough(
+    tokenAddress,
+    amount,
+    'You do not have enough ' + tokenName + ' to send this tip.');
+
+  var amountInDenom = amount * 1.0 * denomFactor;
   // validation
   var hasEmail = email != '';
 
@@ -191,7 +200,7 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
     failure_callback();
     return;
   }
-  if (!isNumeric(amountInWei) || amountInWei == 0) {
+  if (!isNumeric(amountInDenom) || amountInDenom == 0) {
     _alert({ message: gettext('You must enter an number for the amount!') }, 'warning');
     failure_callback();
     return;
@@ -207,7 +216,6 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
     return;
   }
 
-
   var got_metadata_callback = function(metadata) {
     const url = '/tip/send/3';
 
@@ -222,7 +230,7 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
         username: username,
         email: email,
         tokenName: tokenName,
-        amount: amountInEth,
+        amount: amount,
         comments_priv: comments_priv,
         comments_public: comments_public,
         expires_date: expires,
@@ -285,14 +293,14 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
         if (isSendingETH) {
           web3.eth.sendTransaction({
             to: destinationAccount,
-            value: amountInWei,
+            value: amountInDenom,
             gasPrice: web3.toHex(get_gas_price())
           }, post_send_callback);
         } else {
           var send_erc20 = function() {
             var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
 
-            token_contract.transfer(destinationAccount, amountInWei, {gasPrice: web3.toHex(get_gas_price())}, post_send_callback);
+            token_contract.transfer(destinationAccount, amountInDenom, {gasPrice: web3.toHex(get_gas_price())}, post_send_callback);
           };
           var send_gas_money_and_erc20 = function() {
             _alert({ message: gettext('You will now be asked to confirm two transactions.  The first is gas money, so your receipient doesnt have to pay it.  The second is the actual token transfer. (note: check Metamask extension, sometimes the 2nd confirmation window doesnt popup)') }, 'info');
@@ -308,7 +316,7 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
           } else {
             send_gas_money_and_erc20();
           }
-          
+
         }
       }
     });

@@ -36,7 +36,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from app.utils import get_default_network
 from cacheops import cached_as, cached_view, cached_view_as
-from dashboard.models import Activity, Profile
+from dashboard.models import Activity, Bounty, Profile
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from economy.models import Token
 from marketing.mails import new_funding_limit_increase_request, new_token_request
@@ -64,7 +64,15 @@ def get_activities(tech_stack=None, num_activities=15):
     activities = activities[0:num_activities]
     return [a.view_props for a in activities]
 
+
 def index(request):
+
+    user = request.user.profile if request.user.is_authenticated else None
+    is_new_funder = True
+
+    if user and Bounty.objects.filter(bounty_owner_github_username=user).count() > 0:
+        is_new_funder = False
+
     products = [
         {
             'group' : 'grow_oss',
@@ -148,7 +156,7 @@ def index(request):
             'img': 'v2/images/press/ibtimes.jpg'
         },
         {
-            'link': 'https://www.forbes.com/sites/curtissilver/2017/09/25/https://www.forbes.com/sites/jeffersonnunn/2019/01/21/bitcoin-autonomous-employment-workers-wanted/',
+            'link': 'https://www.forbes.com/sites/jeffersonnunn/2019/01/21/bitcoin-autonomous-employment-workers-wanted/',
             'img': 'v2/images/press/forbes.jpg'
         },
         {
@@ -166,6 +174,10 @@ def index(request):
         {
             'link': 'https://www.ethnews.com/gitcoin-offers-bounties-for-ens-integration-into-dapps',
             'img': 'v2/images/press/ethnews.jpg'
+        },
+        {
+            'link': 'https://www.hostingadvice.com/blog/grow-open-source-projects-with-gitcoin/',
+            'img': 'v2/images/press/hosting-advice.png'
         }
     ]
 
@@ -194,11 +206,12 @@ def index(request):
     ]
 
     context = {
+        'is_new_funder': is_new_funder,
         'products': products,
         'know_us': know_us,
         'press': press,
         'articles': articles,
-        'title': _('Grow Open Source: Find Freelance Developers & Open Source Bug Bounties - Gitcoin')
+        'title': _('Grow Open Source: Get crowdfunding and find freelance developers for your software projects, paid in crypto')
     }
     return TemplateResponse(request, 'home/index.html', context)
 
@@ -323,6 +336,9 @@ def subscribe(request):
     return TemplateResponse(request, 'pricing/subscribe.html', context)
 
 
+def funder_bounties_redirect(request):
+    return redirect(funder_bounties)
+
 
 def funder_bounties(request):
 
@@ -394,6 +410,10 @@ def funder_bounties(request):
         'meta_description': "The Gitcoin platform connects freelance developers with open bug bounties or online jobs, paid in crypto (ETH). Leverage a global workforce to quickly complete software development and coding jobs."
     }
     return TemplateResponse(request, 'bounties/funder.html', context)
+
+
+def contributor_bounties_redirect(request, tech_stack):
+    return redirect(contributor_bounties, tech_stack= '/'+ tech_stack)
 
 
 def contributor_bounties(request, tech_stack):
@@ -536,7 +556,20 @@ def contributor_bounties(request, tech_stack):
         'hide_newsletter_consent': True,
         'gitcoin_description': gitcoin_description,
         'projects': projects,
+        'contributor_list': [
+            { 'link': "/python", 'text': "Python"},
+            { 'link': "/javascript", 'text': "JavaScript"},
+            { 'link': "/rust", 'text': "Rust"},
+            { 'link': "/solidity", 'text': "Solidity"},
+            { 'link': "/design", 'text': "Design"},
+            { 'link': "/html", 'text': "HTML"},
+            { 'link': "/ruby", 'text': "Ruby"},
+            { 'link': "/css", 'text': "CSS"},
+        ]
     }
+
+    if tech_stack == 'new':
+        return redirect('new_funding_short')
 
     try:
         new_context = JSONStore.objects.get(view='contributor_landing_page', key=tech_stack).data
@@ -837,6 +870,41 @@ def mission(request):
     return TemplateResponse(request, 'mission.html', context)
 
 
+def jobs(request):
+    job_listings = [
+        {
+            'link': "mailto:founders@gitcoin.co",
+            'title': "Software Engineer",
+            'description': [
+                "Gitcoin is always looking for a few good software engineers.",
+                "If you are an active member of the community, have python + django + html chops",
+                "then we want to talk to you!"]
+        },
+        {
+            'link': "mailto:founders@gitcoin.co",
+            'title': "Community Manager",
+            'description': [
+                "We believe that community management is an important skill in the blockchain space.",
+                "We're looking for a solid community, proactive thinker, and someone who loves people",
+                "to be our next community manager.  Sound like you?  Apply below!"]
+        },
+        {
+            'link': "mailto:founders@gitcoin.co",
+            'title': "Ad Sales Engineer",
+            'description': [
+                "CodeFund is growing like a weed.  We could use a helping hand",
+                "to put CodeFund in front of more great advertisers and publishers.",
+                "If you want to be our next highly technical, highly engaging, sales engineer apply below!"]
+        }
+    ]
+    context = {
+        'active': 'jobs',
+        'title': 'Jobs',
+        'job_listings': job_listings
+    }
+    return TemplateResponse(request, 'jobs.html', context)
+
+
 def vision(request):
     """Render the Vision response."""
     context = {
@@ -933,6 +1001,8 @@ def results(request, keyword=None):
         raise Http404
     context = JSONStore.objects.get(view='results', key=keyword).data
     context['is_outside'] = True
+    import json
+    context['kudos_tokens'] = [json.loads(obj) for obj in context['kudos_tokens']]
     context['avatar_url'] = static('v2/images/results_preview.gif')
     return TemplateResponse(request, 'results.html', context)
 
@@ -1283,6 +1353,7 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
     }
     return TemplateResponse(request, 'help.html', context)
 
+
 def verified(request):
     user = request.user if request.user.is_authenticated else None
     profile = request.user.profile if user and hasattr(request.user, 'profile') else None
@@ -1293,6 +1364,7 @@ def verified(request):
         'profile': profile,
     }
     return TemplateResponse(request, 'verified.html', context)
+
 
 def presskit(request):
 
@@ -1436,6 +1508,7 @@ def slack(request):
     context = {
         'active': 'slack',
         'msg': None,
+        'nav': 'home',
     }
 
     if request.POST:
@@ -1456,6 +1529,7 @@ def slack(request):
                 context['msg'] = _('Invalid email')
 
     return TemplateResponse(request, 'slack.html', context)
+
 
 @csrf_exempt
 def newtoken(request):
@@ -1503,7 +1577,7 @@ def livestream(request):
 
 
 def twitter(request):
-    return redirect('http://twitter.com/getgitcoin')
+    return redirect('http://twitter.com/gitcoin')
 
 
 def fb(request):

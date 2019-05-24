@@ -127,44 +127,11 @@ def get_avatar_context():
                 'name': 'Clothing',
                 'title': 'Pick your clothing',
                 'options': (
-                    'cardigan', 
-                    'hoodie', 
-                    'knitsweater', 
-                    'plaid', 
-                    'shirt', 
-                    'shirtsweater', 
-                    'spacecadet', 
-                    'suit',
-                    'ethlogo', 
-                    'cloak', 
-                    'robe', 
-                    'pjs', 
-                    'elf_inspired', 
-                    'business_suit', 
-                    'suspender', 
-                    'gitcoinpro',
-                    'star_uniform',
-                    'jersey',
-                    'charlie',
-                    'doctor',
-                    'chinese',
-                    'blouse',
-                    'polkadotblouse',
-                    'coat',
-                    'crochettop',
-                    'space_suit',
-                    'armour',
-                    'pilot',
-                    'baseball',
-                    'football',
-                    'lifevest',
-                    'firefighter',
-                    'leatherjacket',
-                    'martialarts',
-                    'raincoat',
-                    'recycle',
-                    'chef',
-                    'sailor',
+                    'cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater', 'spacecadet', 'suit',
+                    'ethlogo', 'cloak', 'robe', 'pjs', 'elf_inspired', 'business_suit', 'suspender', 'gitcoinpro',
+                    'star_uniform', 'jersey', 'charlie', 'doctor', 'chinese', 'blouse', 'polkadotblouse', 'coat',
+                    'crochettop', 'space_suit', 'armour', 'pilot', 'baseball', 'football', 'lifevest', 'firefighter',
+                    'leatherjacket', 'martialarts', 'raincoat', 'recycle', 'chef', 'sailor',
                 ),
                 'paid_options': {
                     'robe': 0.01,
@@ -184,10 +151,9 @@ def get_avatar_context():
                 ], ['None', 'mickey_hair'], ['None', 'modernhair_1'], ['None', 'modernhair_2'], [
                     'modernhair_3-back', 'modernhair_3-front'
                 ], ['None', 'womenhair'], ['None', 'womanhair'], ['None', 'womanhair1'], ['None', 'womanhair2'],
-                            ['None', 'womanhair3'], ['None', 'womanhair4'], ['None',
-                                                                             'womanhair5'], ['None', 'man-hair'],
-                   ['None', 'girl_hairstyle1'], ['None', 'girl_hairstyle2'], ['None', 'girl_hairstyle3'], ['None',
-                                                                                                           'men_hairstyle1'], ['None', 'men_hairstyle2'],
+                            ['None', 'womanhair3'], ['None', 'womanhair4'], ['None', 'womanhair5'],
+                            ['None', 'man-hair'], ['None', 'girl_hairstyle1'], ['None', 'girl_hairstyle2'],
+                            ['None', 'girl_hairstyle3'], ['None', 'men_hairstyle1'], ['None', 'men_hairstyle2'],
                             ),
                 'paid_options': {},
             },
@@ -216,25 +182,26 @@ def get_avatar_context():
                     'Masks-wolverine_inspired'
                 ], ['Masks-captain_inspired'], ['Masks-alien'], ['Extras-Parrot'], ['Extras-wonderwoman_inspired'], [
                     'Extras-santa_inspired'
-                ], ['Extras-reindeer'], ['Masks-gitcoinbot'], ['Extras-tattoo'], ['Masks-batman_inspired'], 
-                ['Masks-flash_inspired'], ['Masks-deadpool_inspired'], ['Masks-darth_inspired'], [
-                    'Masks-spiderman_inspired'
-                ], ['Glasses-5'], ['Glasses-geordi-visor'], ['Masks-funny_face'], ['Masks-viking'], [
-                    'Masks-construction_helmet'
-                ], ['Glasses-6'], ['HatShort-green'], ['Earring-6'], ['Extras-necklace'], ['Masks-carnival'], [
-                    'Masks-gas'
-                ], ['Masks-surgical'], ['Extras-monkey'], ['Masks-power'], ['Glasses-7'], ['Glasses-8'], [
-                    'HatShort-angel'
-                ], ['HatShort-devil'], ['Extras-necklace1'], ['Extras-necklace2'], ['Extras-necklace3'], ['Glasses-9'],
-                            ['Masks-clown'], ['HatShort-sleepy'], ['Earring-tribal'],
-                            ['Glasses-google'], ['Masks-marshmellow'], ['Masks-power1'],
-                            ['HatShort-elf'], ['Extras-necklaceb'], ['Masks-football'], ['HatShort-chefHat'],
-                            ['HatShort-captain'], ['HatShort-beanie'], ['Masks-egypt'], ['HatShort-nefertiti'], 
-                            ['Masks-frankenstein'], ['Masks-diving'], ['HatShort-1'], ['HatShort-artist'],
-                            ['HatShort-pirate'], ['HatShort-grad'], ['HatShort-antlers'], ['Extras-sword'], 
-                            ['Masks-pirate'], ['Extras-bird'], ['Extras-fire'], ['Masks-hockey'],
-                            ['Masks-snorkel'], ['Glasses-monocle'], ['HatShort-police'], ['HatShort-mexican'], 
-                            ['HatShort-fez'],
+                ], ['Extras-reindeer'], ['Masks-gitcoinbot'], ['Extras-tattoo'], ['Masks-batman_inspired'], [
+                    'Masks-flash_inspired'
+                ], ['Masks-deadpool_inspired'], ['Masks-darth_inspired'], ['Masks-spiderman_inspired'], ['Glasses-5'], [
+                    'Glasses-geordi-visor'
+                ], ['Masks-funny_face'], ['Masks-viking'], ['Masks-construction_helmet'], ['Glasses-6'], [
+                    'HatShort-green'
+                ], ['Earring-6'], ['Extras-necklace'], ['Masks-carnival'], ['Masks-gas'], ['Masks-surgical'], [
+                    'Extras-monkey'
+                ], ['Masks-power'], ['Glasses-7'], ['Glasses-8'], ['HatShort-angel'], ['HatShort-devil'], [
+                    'Extras-necklace1'
+                ], ['Extras-necklace2'], ['Extras-necklace3'], ['Glasses-9'], ['Masks-clown'], ['HatShort-sleepy'], [
+                    'Earring-tribal'
+                ], ['Glasses-google'], ['Masks-marshmellow'], ['Masks-power1'], ['HatShort-elf'], ['Extras-necklaceb'],
+                            ['Masks-football'], ['HatShort-chefHat'], ['HatShort-captain'], ['HatShort-beanie'], [
+                                'Masks-egypt'
+                            ], ['HatShort-nefertiti'], ['Masks-frankenstein'], ['Masks-diving'], ['HatShort-1'], [
+                                'HatShort-artist'
+                            ], ['HatShort-pirate'], ['HatShort-grad'], ['HatShort-antlers'], ['Extras-sword'],
+                            ['Masks-pirate'], ['Extras-bird'], ['Extras-fire'], ['Masks-hockey'], ['Masks-snorkel'],
+                            ['Glasses-monocle'], ['HatShort-police'], ['HatShort-mexican'], ['HatShort-fez'],
                             ),
                 'paid_options': {
                     'Extras-Parrot': 0.01,
@@ -654,12 +621,14 @@ def get_temp_image_file(image):
     return temp_io
 
 
-def svg_to_png(svg_content, width=100, height=100, scale=1):
+def svg_to_png(svg_content, width=100, height=100, scale=1, index=None):
     print('creating svg with pyvips')
     png = svg_to_png_pyvips(svg_content, scale=scale)
     if not png:
+        if not index:
+            index = random.randint(1000000, 10000000)
         print("failed; using inkscape")
-        return svg_to_png_inkscape(svg_content, height=height, width=width)
+        return svg_to_png_inkscape(svg_content, height=height, width=width, index=index)
     return png
 
 
@@ -690,27 +659,32 @@ def svg_to_png_pyvips(svg_content, scale=1):
     return None
 
 
-def svg_to_png_inkscape(svg_content, width=333, height=384):
+def svg_to_png_inkscape(svg_content, width=333, height=384, index=100):
     import subprocess  # May want to use subprocess32 instead
-    input_file = 'static/tmp/input.svg'
-    output_file = 'static/tmp/output.png'
+    input_file = f'static/tmp/input{index}.svg'
+    output_file = f'static/tmp/output{index}.png'
 
-    text_file = open(input_file, "w")
-    content = svg_content
-    if type(content) == bytes:
-        content = svg_content.decode('utf-8')
-    text_file.write(content)
-    text_file.close()
+    # check filesystem cache, if not, compute image
+    try:
+        with open(output_file, 'rb') as fin:
+            file_input = fin.read()
+    except FileNotFoundError:
+        text_file = open(input_file, "w")
+        content = svg_content
+        if type(content) == bytes:
+            content = svg_content.decode('utf-8')
+        text_file.write(content)
+        text_file.close()
 
-    cmd_list = [
-        '/usr/bin/inkscape', '-z', '--export-png', output_file, '--export-width', f"{width}", '--export-height',
-        f"{height}", input_file
-    ]
-    print(" ".join(cmd_list))
-    p = subprocess.Popen(cmd_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out, err = p.communicate()
-    if p.returncode:
-        print('Inkscape error: ' + (err or '?'))
+        cmd_list = [
+            '/usr/bin/inkscape', '-z', '--export-png', output_file, '--export-width', f"{width}", '--export-height',
+            f"{height}", input_file
+        ]
+        print(" ".join(cmd_list))
+        p = subprocess.Popen(cmd_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = p.communicate()
+        if p.returncode:
+            print('Inkscape error: ' + (err or '?'))
 
     with open(output_file, 'rb') as fin:
         return BytesIO(fin.read())
