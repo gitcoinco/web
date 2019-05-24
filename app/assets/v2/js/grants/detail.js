@@ -211,5 +211,7 @@ const copyDuplicateDetails = () => {
 };
 
 $(document).ready(() => {
-  setupTabs('#grant-profile-tabs');
+  $("#grant-profile-tabs button").click(function(){
+    document.location = $(this).attr('href');
+  })
 });

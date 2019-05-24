@@ -132,7 +132,6 @@ def grant_details(request, grant_id, grant_slug):
     """Display the Grant details page."""
     profile = get_profile(request)
     add_cancel_params = False
-
     try:
         grant = Grant.objects.prefetch_related('subscriptions', 'milestones', 'updates').get(
             pk=grant_id, slug=grant_slug
@@ -200,6 +199,7 @@ def grant_details(request, grant_id, grant_slug):
         'active': 'grant_details',
         'clr_matching_banners_style': clr_matching_banners_style,
         'grant': grant,
+        'tab': request.GET.get('tab', 'description'),
         'title': matching_live + grant.title,
         'card_desc': grant.description,
         'avatar_url': grant.logo.url if grant.logo else None,
