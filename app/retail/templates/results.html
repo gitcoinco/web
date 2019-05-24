@@ -78,6 +78,9 @@
     <div class="content-block content-block--grey">
       <div class="container">
         <p class="promo-text">
+          In <span style="margin: 3px 3px; font-weight: bold;">{{prev_month_name}}</span>, Gitcoin facilitated $<span style="margin: 3px 3px;font-weight: bold;">{{last_month_amount|floatformat:0}}k in value transfer</span>.  That's about $<span style="margin: 3px 3px;font-weight: bold;">{{last_month_amount_hourly|floatformat:0}} per hour</span>, for every hour during {{prev_month_name_short}}.
+        </p>
+        <p class="promo-text" style="margin-top: 20px;">
           Since its <a href="https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-projects-f5a0955de9d6" target="_blank">launch</a>
           in <b>November 2017</b>, Gitcoin has helped <b>{{funders|intcomma}}</b> funders reach an audience of
           <b>{{audience|intcomma}}</b> developers.  Gitcoin has facilitated <b>{{transactions|intcomma}}</b> complete transactions
