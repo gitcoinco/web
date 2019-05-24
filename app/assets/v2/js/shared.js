@@ -282,6 +282,7 @@ var waitingStateActive = function() {
 
 const notify_funder = (network, std_bounties_id, data) => {
   var request_url = '/actions/bounty/' + network + '/' + std_bounties_id + '/notify/funder_payout_reminder/';
+
   showBusyOverlay();
   $.post(request_url, data).then(() => {
     hideBusyOverlay();
