@@ -653,7 +653,7 @@ def receive_bulk(request, secret):
 
             private_key = settings.KUDOS_PRIVATE_KEY if not coupon.sender_pk else coupon.sender_pk
             kudos_owner_address = settings.KUDOS_OWNER_ACCOUNT if not coupon.sender_address else coupon.sender_address
-
+            gas_price_confirmation_time = 2 if not coupon.sender_address else 60
             kudos_contract_address = Web3.toChecksumAddress(settings.KUDOS_CONTRACT_MAINNET)
             kudos_owner_address = Web3.toChecksumAddress(kudos_owner_address)
             w3 = get_web3(coupon.token.contract.network)
@@ -662,7 +662,7 @@ def receive_bulk(request, secret):
             tx = contract.functions.clone(address, coupon.token.token_id, 1).buildTransaction({
                 'nonce': nonce,
                 'gas': 500000,
-                'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(2) * 10**9),
+                'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(gas_price_confirmation_time) * 10**9),
                 'value': int(coupon.token.price_finney / 1000.0 * 10**18),
             })
 
