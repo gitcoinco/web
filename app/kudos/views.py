@@ -713,7 +713,8 @@ def receive_bulk(request, secret):
 
                         # send email
                         maybe_market_kudos_to_email(kudos_transfer)
-                except:
+                except Exception as e:
+                    logger.exception(e)
                     error = "Could not redeem your kudos.  Please try again soon."
 
 
