@@ -1,0 +1,15 @@
+{
+  "symbol": "$FD",
+  "address": "0xc3db10bf52d7c4e48eee40cb1026336eb785baa9",
+  "overview":{
+        "en": "The $mart fund is a set of smart contracts and tokens running on Ethereum. It is completely decentralized and uses voting to invest DAPP projects with clear profit model in Ethereum, and real-time dividends."
+  },
+  "email": "mailto:smart.fund@outlook.com",
+  "website": "https://1smartfund.github.io",
+  "whitepaper": "https://1smartfund.github.io/static/$mart_Investment_Ecology.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-05-24",
+  "links": {
+    "github": "https://github.com/1smartfund",
+  }
+}
