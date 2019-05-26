@@ -16,6 +16,7 @@ h4,
   position: fixed;
   top: 0.25rem;
   right: 2rem;
+  z-index: 9999999999999;
 }
 
 .lighter {

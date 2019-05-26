@@ -183,18 +183,23 @@ $(document).ready(function() {
     $('#tip_nav li').removeClass('selected');
     $(this).addClass('selected');
     if ($(this).hasClass('github')) {
-      $('.select2').removeClass('hidden');
+      $('.username .select2').removeClass('hidden');
       $('.eth_address').addClass('hidden');
       $('#airdrop_link').addClass('hidden');
+      $('.redemptions').addClass('hidden');
+      $('.redemptions select').val(1);
       $('input[name=send_type]').val('github');
     } else if ($(this).hasClass('airdrop')) {
-      $('.select2').addClass('hidden');
+      $('.username .select2').addClass('hidden');
+      $('.redemptions').removeClass('hidden');
       $('.eth_address').addClass('hidden');
       $('#airdrop_link').removeClass('hidden');
       $('input[name=send_type]').val('airdrop');
     } else {
-      $('.select2').addClass('hidden');
+      $('.username .select2').addClass('hidden');
+      $('.redemptions').addClass('hidden');
       $('.eth_address').removeClass('hidden');
+      $('.redemptions select').val(1);
       $('#airdrop_link').addClass('hidden');
       $('input[name=send_type]').val('eth_address');
     }
@@ -266,6 +271,7 @@ $(document).ready(function() {
     // tokenId is the kudos blockchain id that is being cloned
     var tokenId = $('#tokenid').data('tokenid');
     var send_type = $('input[name=send_type]').val();
+    var num_redemptions = $('.redemptions select').val();
 
     // get kudosPrice from the HTML
     kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice'));
@@ -315,8 +321,10 @@ $(document).ready(function() {
         $('#send_eth_done .font-weight-300').remove();
         var cta_url = document.location.origin + document.airdrop_url;
         var link = "<a href='" + cta_url + "'>" + cta_url + '</a>';
+        var num_times = $('.redemptions select').val();
+        var num_times_plural = num_times > 1 ? 's' : '';
 
-        $('#send_eth_done p.notifier').html('Your airdrop link is ' + link);
+        $('#send_eth_done p.notifier').html('Your airdrop link is ' + link + '<br><br>This link is valid to be used *' + num_times + '* time' + num_times_plural + '.  Copy it and send it to whomever you want to receive the kudos.');
       }
       $('#trans_link').attr('href', url);
       $('#trans_link2').attr('href', url);
@@ -435,6 +443,12 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
       metadata['direct_eth_send'] = true;
     }
 
+
+    var num_redemptions = 1;
+
+    if ($('.redemptions select').length) {
+      num_redemptions = $('.redemptions select').val();
+    }
     var formbody = {
       username: username,
       email: email,
@@ -453,7 +467,8 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
       from_address: web3.eth.coinbase,
       is_for_bounty_fulfiller: is_for_bounty_fulfiller,
       metadata: metadata,
-      send_type: send_type
+      send_type: send_type,
+      num_redemptions: num_redemptions
     };
 
     if (send_type == 'airdrop') {
@@ -581,10 +596,17 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
             };
             console.log(money);
             indicateMetamaskPopup();
+            var num_redemptions = 1;
+
+            if ($('.redemptions select').length) {
+              num_redemptions = $('.redemptions select').val();
+            }
+            var total_send = ((gas_money + kudosGasEstimateInWei + kudosPriceInWei.toNumber()) * new web3.BigNumber(num_redemptions)).toString();
+
             web3.eth.sendTransaction({
               to: destinationAccount,
               // Add gas_money + gas cost for kudos contract transaction + cost of kudos token (Gitcoin keeps this amount?)
-              value: gas_money + kudosGasEstimateInWei + kudosPriceInWei.toNumber(),
+              value: total_send,
               gasPrice: web3.toHex(get_gas_price())
             }, post_send_callback);
           });

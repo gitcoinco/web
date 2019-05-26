@@ -287,6 +287,7 @@ def send_2(request):
         'from_handle': request.user.username,
         'title': _('Send Kudos | Gitcoin'),
         'card_desc': _('Send a Kudos to any github user at the click of a button.'),
+        'numbers': range(1,100),
         'kudos': kudos,
     }
     return TemplateResponse(request, 'transaction/send.html', params)
@@ -375,10 +376,11 @@ def send_3(request):
     )
 
     if params.get('send_type') == 'airdrop':
+        num_redemptions = params['num_redemptions']
         btc = BulkTransferCoupon.objects.create(
             token=kudos_token_cloned_from,
-            num_uses_remaining=1, #TODO: in the future, support more
-            num_uses_total=1, #TODO: in the future, support more
+            num_uses_remaining=num_redemptions,
+            num_uses_total=num_redemptions,
             current_uses=0,
             secret=random.randint(10**19, 10**20),
             comments_to_put_in_kudos_transfer=params['comments_public'],
