@@ -76,25 +76,11 @@ input:read-only {
   cursor: pointer;
 }
 
-#pricing-section .form__amount-wrapper {
-  width: 25%;
-}
-
-#pricing-section .form__flex-group {
-  justify-content: space-between;
-}
-
-#pricing-section .form__input,
-#pricing-section .form__select2 {
-  height: 40px;
-}
-
 .select2-container--default .select2-selection--single {
   border-color:#D3D3D3 !important;
   font-size: 14px;
 }
 
-#issue-details,
 #no-issue-banner img {
   max-width: 100%;
   border: 1px solid #d1d1d1;
@@ -109,23 +95,41 @@ input:read-only {
   display: none;
 }
 
-#issue-details {
-  padding-left: 12px;
-  padding-right: 12px;
+.issue-details-public {
+  background-color: #F9F9F9;
+  padding: 1em;
 }
 
-#issue-details input:read-only,
-#issue-details textarea:read-only {
+.issue-details-public input,
+.issue-details-public textarea {
   border: none;
+  background-color: transparent;
   padding-left: 0;
-  background-color: #fff;
-  outline: none;
+  padding-right: 0;
 }
 
-#issue-details input:read-only {
-  font-size: 1.1rem;
-  border-bottom: 1px solid #d1d1d1;
-  border-radius: 0;
+.issue-details-public textarea::-webkit-scrollbar {
+  width:9px;
+}
+
+.issue-details-public textarea::-webkit-scrollbar-track {
+  -webkit-border-radius:5px;
+  border-radius:5px;
+  background:rgba(0,0,0,0.1);
+}
+
+.issue-details-public textarea::-webkit-scrollbar-thumb {
+  -webkit-border-radius:5px;
+  border-radius:5px;
+  background:rgba(0,0,0,0.2);
+}
+
+.issue-details-public textarea::-webkit-scrollbar-thumb:hover {
+  background:rgba(0,0,0,0.4);
+}
+
+.issue-details-public textarea::-webkit-scrollbar-thumb:window-inactive {
+  background:rgba(0,0,0,0.05);
 }
 
 #sync-issue,
@@ -167,24 +171,9 @@ input:read-only {
   color: #3E00FF;
 }
 
-#total-section {
-  border-top: 1px solid #000000;
-  border-bottom: 1px solid #000000;
-}
-
 @media (max-width: 767.98px) {
   .select2-container {
     max-width: 100%;
-  }
-}
-
-@media (max-width: 575.98px) {
-  #pricing-section .form__amount-wrapper {
-    width: 100%;
-  }
-
-  #pricing-section .form__flex-group {
-    display: block;
   }
 }
 
@@ -205,4 +194,34 @@ input:read-only {
 
 .new {
   color: #0FCE7C;
+}
+
+.collapse-header {
+  color: #7c7e81;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1em 0;
+  border-bottom: 1px solid #e5e5e5;
+  transition: all .3s linear;
+}
+
+.collapse-header:hover {
+  text-decoration: none;
+}
+
+.collapse-header.collapsed {
+  border-bottom-color: transparent;
+}
+
+.collapse-header .fa:before {
+  content: "\f077";
+}
+
+.collapse-header.collapsed .fa:before {
+  content: "\f078";
+}
+
+.letter-spacing {
+  letter-spacing: 0.1em;
 }

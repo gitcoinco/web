@@ -79,9 +79,10 @@
         {% endif %}
       </div>
 
-      <div class="font-body mb-2">
+      <div class="mb-2">
         <i style="width: 14px;" class="fab fa-ethereum mr-2 text-center"></i>
-        <a href="https://etherscan.io/address/{{ grant.admin_address }}" target="_blank" data-toggle="tooltip" data-placement="top" title="Recipient Funding Address">
+        <a class="wallet-address" href="https://etherscan.io/address/{{ grant.admin_address }}"
+          target="_blank" data-toggle="tooltip" data-placement="top" title="Recipient Funding Address">
           {{ grant.admin_address }}
         </a>
       </div>
@@ -113,17 +114,22 @@
         {% trans "Grant Has Ended" %}
       </button>
 
-    {% elif user_non_errored_subscription and not is_admin %}
+    {% elif not is_admin %}
 
-      <a href="{% url 'grants:subscription_cancel' grant.id grant.slug user_subscription.id %}">
-        <button class="button button--primary button--warning button--full shadow-none font-weight-bold py-3">{% trans "Cancel Your Funding" %}</button>
-      </a>
+      {% if user_non_errored_subscription %}
 
-    {% else %}
+        <a href="{% url 'grants:subscription_cancel' grant.id grant.slug user_subscription.id %}">
+          <button class="button button--primary button--warning button--full shadow-none font-weight-bold py-3">{% trans "Cancel Your Funding" %}</button>
+        </a>
 
-      <a href="{% url 'grants:fund' grant.id grant.slug %}">
-        <button class="btn btn-gc-blue button--full shadow-none font-weight-bold py-3">{% trans "Fund this Grant" %}</button>
-      </a>
+      {% else %}
+
+        <a href="{% url 'grants:fund' grant.id grant.slug %}">
+          <button class="btn btn-gc-blue button--full shadow-none font-weight-bold py-3">{% trans "Fund this Grant" %}</button>
+        </a>
+
+      {% endif %}
+
     {% endif %}
 
     <div class="mt-2 pt-2">
@@ -134,33 +140,45 @@
           <input id="amount_goal" class="p-0 m-0 inline-edit" value="{{ grant.amount_goal }}" disabled>
         </div>
       {% endif %}
-      <div class="grant__progress mt-4">
-        <div class="progress">
-          <div class="progress-bar" role="progressbar" style="width: {{ grant.percentage_done }}%" aria-valuenow="{{ grant.percentage_done }}%" aria-valuemin="0" aria-valuemax="100"></div>
-        </div>
-        <div class="progress-text mt-2">
-          <div class="row">
-            <div class="col-6">
-              <span>{{ grant.amount_received|floatformat:2|intcomma }} DAI</span>
-              <p>Total Funding</p>
-            </div>
-            <div class="col-6 text-right">
-              <span>{{ grant.amount_goal|floatformat:2|intcomma }} DAI</span>
-              <p>{% trans "Monthly Goal" %}</p>
+
+      <div class="row progress-container {% if not is_admin %} mt-4 {% endif %} mb-5">
+        <div class="offset-2 col-8 text-center text-xl-left offset-xl-0 col-xl-6 mb-4 mb-xl-0 ">
+          <p class="sub-title mb-0 font-caption">MONTHLY RECURRING</p>
+          <p class="font-title-xl mb-0 font-weight-bold">
+            {{ grant.monthly_amount_subscribed|floatformat:0|intcomma }} DAI
+          </p>
+          <p>of {{ grant.amount_goal|floatformat:0|intcomma }} DAI goal</p>
+          <div class="progress">
+            <div class="progress-bar" role="progressbar"
+              style="width: {{ grant.percentage_done }}%" aria-valuenow="{{ grant.percentage_done }}%" aria-valuemin="0" aria-valuemax="100">
             </div>
           </div>
         </div>
-        <p class="sub-title">
-          {% trans 'Monthly Recurring Funding: '%} {{ grant.monthly_amount_subscribed }}
-        </p>
+
+        <div class="offset-2 col-8 text-center text-xl-left offset-xl-0 col-xl-6">
+          <p class="sub-title mb-0 font-caption">TOTAL FUNDED</p>
+          <p class="font-title-xl mb-0 font-weight-bold">
+            {{ grant.amount_received|floatformat:0|intcomma }} DAI
+          </p>
+
+          {% if grant.clr_matching %}
+            <span class="mr-2">+{{ grant.clr_matching|floatformat:0 }} DAI</span>
+            <img src="{% static "v2/images/grants/clr.svg" %}">
+          {% endif %}
+        </div>
+
+        <div class="col-12 mt-4 font-body">
+          <span class="sub-title">{% trans 'MONTHLY RECURRING FUNDING:' %}</span>
+          <span class="font-weight-bold">{{ grant.monthly_amount_subscribed|floatformat:0 }} DAI </span>
+        </div>
+
       </div>
-      <!-- TODO: CLEAN UP-->
     </div>
 
     {% if is_admin and not grant_is_inactive %}
       <!-- OWNER ACTIONS -->
       <div class="font-body grant-item__owner my-4">
-        <p class="sub-title mb-0">GRANT OWNER</p>
+        <p class="sub-title mb-0" style="font-size: 16px;">GRANT OWNER</p>
         <div class="form__select2">
           <select id="grant-admin" class="form__input" name="grant-admin" disabled>
             <option selected="selected">{{ grant.admin_profile.handle|default:'anonymous' }}</option>
@@ -250,7 +268,7 @@
 
     <!-- TEAM MEMBERS -->
     <div class="grant-item__member my-4 font-body">
-      <p class="sub-title mb-3">TEAM MEMBER{% if grant.team_members.all|length > 1 %} S {% endif %}</p>
+      <p class="sub-title mb-3">Team member{% if grant.team_members.all|length > 1 %}s{% endif %}</p>
       {% if is_admin and not grant_is_inactive %}
         <div>
           <div class="form__select2">
