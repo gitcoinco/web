@@ -44,6 +44,7 @@ class Command(BaseCommand):
                 tokenList = {}
                 r = requests.get('https://blockscout.com/eth/'+self.network+'/api?module=account&action=tokenlist&address='+settings.FEE_ADDRESS)
                 print(r.json())
+
                 # Check if API is functioning or not and return null token list if so
                 if not r.ok:
                         return {}
@@ -56,10 +57,10 @@ class Command(BaseCommand):
                         if exchangeAddress != '0x0000000000000000000000000000000000000000':
                                 # Only add token to list to ETH if Uniswap exchange exists
                                 tokenList[address]={'tokenName':transaction['name'],'tokenSymbol':transaction['symbol'],'exchangeAddress':exchangeAddress,'balance':transaction['balance']}
-                                self.stdout.write('Token Name: ' + tokenList[address]['tokenName']+ ' and Token Symbol is: ' + tokenList[address]['tokenSymbol'])
-                                self.stdout.write('Token address is: ' + address)
-                                self.stdout.write('Uniswap Exchange address is: '+ exchangeAddress)
-                                self.stdout.write('Token balance is: ' + tokenList[address]['balance'])
+                                print('Token Name: ' + tokenList[address]['tokenName']+ ' and Token Symbol is: ' + tokenList[address]['tokenSymbol'])
+                                print('Token address is: ' + address)
+                                print('Uniswap Exchange address is: '+ exchangeAddress)
+                                print('Token balance is: ' + tokenList[address]['balance'])
                 return tokenList
 
         def sell_token(self, exchangeAddress, tokenSymbol):
