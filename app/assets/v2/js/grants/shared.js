@@ -1,5 +1,7 @@
 // outside of document.ready to be in global scope
 var compiledSubscription;
+var compiledSplitter;
+var contractVersion;
 
 // Waiting State screen
 var enableWaitState = container => {
@@ -142,13 +144,17 @@ const show_error_banner = (result, web3_not_found) => {
 
 $(document).ready(function() {
 
-  let contractVersion = $('#contract_version').val();
+  contractVersion = $('#contract_version').val();
 
   if (contractVersion) {
     if (contractVersion == 0) {
       compiledSubscription = compiledSubscription0;
+    } else if (contractVersion == 1) {
+      compiledSubscription = compiledSubscription1;
     }
   }
+
+  compiledSplitter = compiledSplitter0;
 
   const listen_web3_1_changes = () => {
     if (typeof web3 == 'undefined' || typeof web3.eth.getCoinbase() == 'undefined') {

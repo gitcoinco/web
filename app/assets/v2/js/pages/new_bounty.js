@@ -4,7 +4,6 @@
 load_tokens();
 
 var localStorage = window.localStorage ? window.localStorage : {};
-
 const quickstartURL = document.location.origin + '/bounty/quickstart';
 
 let params = (new URL(document.location)).searchParams;
@@ -22,14 +21,16 @@ if (localStorage['quickstart_dontshow'] !== 'true' &&
 }
 
 function doShowQuickstart(url) {
-  var fundingURL = document.location.origin + '/funding/new\\?';
-  var bountyURL = document.location.origin + '/bounty/new\\?';
-  var blacklist = [ fundingURL, bountyURL, quickstartURL ];
+  let blacklist = [];
 
-  for (var i = 0; i < blacklist.length; i++) {
-    if (url.match(blacklist[i])) {
+  blacklist.push(document.location.origin + '/bounty/quickstart');
+  blacklist.push(document.location.origin + '/bounty/new\\?');
+  blacklist.push(document.location.origin + '/funding/new\\?');
+  blacklist.push(document.location.origin + '/new\\?');
+
+  for (let i = 0; i < blacklist.length; i++) {
+    if (url.match(blacklist[i]))
       return false;
-    }
   }
 
   return true;

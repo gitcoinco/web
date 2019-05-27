@@ -274,8 +274,8 @@ a:hover .avatar_edit .avatar_edit_text {
 }
 
 .profile-bounties .avatar {
-  max-width: 3.125rem;
-  max-height: 3.125rem;
+  width: 3.125rem;
+  height: 3.125rem;
   margin-right: auto;
   margin-left: auto;
   border-radius: 100%;
