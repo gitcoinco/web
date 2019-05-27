@@ -824,11 +824,12 @@ def users_fetch(request):
         profile_json = {}
         count_work_completed = Activity.objects.filter(profile=user, activity_type='work_done').count()
         count_work_in_progress = Activity.objects.filter(profile=user, activity_type='start_work').count()
-        profile_json = {k: getattr(user, k) for k in
-        ['id', 'actions_count', 'created_on', 'handle', 'hide_profile',
-        'show_job_status', 'job_location', 'job_salary', 'job_search_status',
-        'job_type', 'linkedin_url', 'resume', 'remote', 'keywords',
-        'organizations', 'is_org']}
+        profile_json = {
+            k: getattr(user, k) for k in
+            ['id', 'actions_count', 'created_on', 'handle', 'hide_profile',
+            'show_job_status', 'job_location', 'job_salary', 'job_search_status',
+            'job_type', 'linkedin_url', 'resume', 'remote', 'keywords',
+            'organizations', 'is_org']}
         profile_json['job_status'] = user.job_status_verbose if user.job_search_status else None
         profile_json['position_contributor'] = user.get_contributor_leaderboard_index()
         profile_json['position_funder'] = user.get_funder_leaderboard_index()
