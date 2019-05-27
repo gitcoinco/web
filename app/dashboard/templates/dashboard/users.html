@@ -217,7 +217,7 @@
           <div v-else class="text-center font-subheader mt-4">
             <p class="font-weight-semibold">You've got NO open bounties</p>
             <p class="font-body">
-              <a href="/funder/new">Create a bounty</a>
+              <a :href="`/funding/new?invite=${ userSelected.id }`" target="_blank">Create a bounty</a>
               to invite [[ userSelected.handle ]]
             </p>
           </div>
