@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 from django import template
-from grants.model import Grant, Contribution
+from grants.models import Grant, Contribution
 
 register = template.Library()
 
