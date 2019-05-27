@@ -1,3 +1,5 @@
+/* stylelint-disable selector-pseudo-class-no-unknown */
+
 .submit_bounty .submit_bounty_content,
 .fulfill_bounty .submit_bounty_content {
   background-color: #f2f6f9;
