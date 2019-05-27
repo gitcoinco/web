@@ -375,8 +375,11 @@ def send_3(request):
         sender_profile=get_profile(from_username),
     )
 
-    if params.get('send_type') == 'airdrop':
+    if params.get('send_type') == 'airdrop' and is_user_authenticated:
         num_redemptions = params['num_redemptions']
+        if not params.get('pk'):
+            raise Exception('You must provide a pk')
+
         btc = BulkTransferCoupon.objects.create(
             token=kudos_token_cloned_from,
             num_uses_remaining=num_redemptions,
