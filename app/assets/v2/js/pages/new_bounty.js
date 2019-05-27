@@ -81,7 +81,7 @@ const getSuggestions = () => {
         children.id = generalIndex;
         if (obj.text == 'Invites') {
           children.selected= true;
-          $('#reserve-section').collapse('toggle');
+          $('#reserve-section').collapse('show');
         }
         generalIndex++;
       });
@@ -289,7 +289,7 @@ $(function() {
   }
 
   if (params.get('reserved')) {
-    $('#reserve-section').collapse('toggle');
+    $('#reserve-section').collapse('show');
   }
 
   userSearch(
