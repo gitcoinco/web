@@ -104,6 +104,8 @@ $(document).ready(function() {
 
     var success_callback = function(txid) {
 
+      clear_metadata();
+
       startConfetti();
       var url = 'https://' + etherscanDomain() + '/tx/' + txid;
 
