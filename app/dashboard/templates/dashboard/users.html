@@ -111,12 +111,6 @@
                 <input v-model="params.organisation" data-placeholder="e.g. Gitcoin" data-tags="true" class="form-control">
               </div>
             </div>
-            <div class="g-multiselect pb-4 border-bottom form-group">
-              <label for="contributors" class="font-weight-bold">Contributor</label>
-              <div class="font-smaller">
-                <input v-model="params.contributor" data-placeholder="e.g. owocki" data-tags="true" class="form-control">
-              </div>
-            </div>
             <button class="btn blue" @click="params = {}; searchUsers()">Reset Filters</button>
           </nav>
         </transition>
@@ -184,7 +178,7 @@
                     <b>[[ user.work_done ]]</b> bounties completed
                   </div>
                   <div class="text-center mt-2">
-                    <button data-toggle="modal" data-target="#userModal" class="btn btn-sm btn-gc-blue" @click="openBounties(user)">Invite to Bounty</button>
+                    <button v-if="funderBounties.length" data-toggle="modal" data-target="#userModal" class="btn btn-sm btn-gc-blue" @click="openBounties(user)">Invite to Bounty</button>
                   </div>
                 </div>
               </div>
