@@ -134,13 +134,13 @@ Vue.mixin({
 
         $.when(getUsers).then(function(response) {
           if (response && response.data) {
-            vm.openBounties(response.data[0])
-            $('#userModal').bootstrapModal('show')
+            vm.openBounties(response.data[0]);
+            $('#userModal').bootstrapModal('show');
           }
         });
       }
     }
-  },
+  }
 });
 
 if (document.getElementById('gc-users-directory')) {
