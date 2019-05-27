@@ -1,0 +1,16 @@
+{
+  "symbol": "EGOLD",
+  "address": "0xb8b8086e1c5bcbd3ab99c1b77d5c865c80566b5a",
+  "overview": {
+    "en": "EGOLD is a token issued based on NEWG gold mine to reward the global blockchain fog computing network Shared CDN and FogIPFS.",
+    "zh": "EGOLD 是基于NEWG金矿发行的一种通证，用于奖励全球区块链雾计算网络共享CDN和FogIPFS。"
+  },
+  "email": "support@newifi.gold",
+  "website": "http://ex.gold/",
+  "whitepaper": "http://www.newifi.gold/Public/files/white_paperv2.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-05-24",
+  "links": {
+    "twitter": "https://twitter.com/newg_Gmine"
+  }
+}
