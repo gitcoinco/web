@@ -87,9 +87,6 @@ Vue.mixin({
       let getBounties = fetchData(apiUrlBounties, 'GET');
 
       $.when(getBounties).then((response) => {
-        // response.data.forEach(function(item) {
-        //   console.log(item)
-        // });
         vm.funderBounties = response.data;
         console.log(vm.funderBounties);
       });
@@ -98,9 +95,7 @@ Vue.mixin({
     openBounties: function(user) {
       let vm = this;
 
-      console.log(user);
       vm.userSelected = user;
-      vm.showModal = true;
     },
     sendInvite: function(bounty, user) {
       let vm = this;
@@ -139,13 +134,13 @@ Vue.mixin({
 
         $.when(getUsers).then(function(response) {
           if (response && response.data) {
-            vm.reinviteUser = response.data[0];
+            vm.openBounties(response.data[0])
+            $('#userModal').bootstrapModal('show')
           }
         });
       }
     }
-  }
-
+  },
 });
 
 if (document.getElementById('gc-users-directory')) {
@@ -170,12 +165,10 @@ if (document.getElementById('gc-users-directory')) {
       skills: document.keywords,
       selectedSkills: [],
       noResults: false,
-      isLoading: true,
-      reinviteUser: ''
+      isLoading: true
     },
     mounted() {
       this.fetchUsers();
-      this.inviteOnMount();
       this.$watch('params', function(newVal, oldVal) {
         this.searchUsers();
       }, {
@@ -184,6 +177,7 @@ if (document.getElementById('gc-users-directory')) {
     },
     created() {
       this.fetchBounties();
+      this.inviteOnMount();
     },
     beforeMount() {
       window.addEventListener('scroll', () => {
@@ -196,16 +190,4 @@ if (document.getElementById('gc-users-directory')) {
       });
     }
   });
-}
-
-if (getURLParams('invite')) {
-  let timer = setInterval(function() {
-    if ($('#reinvite-user').length) {
-      $('#reinvite-user').trigger('click');
-      setTimeout(function() {
-        $('#reinvite-user').trigger('click');
-      }, 200);
-      clearInterval(timer);
-    }
-  }, 500);
 }

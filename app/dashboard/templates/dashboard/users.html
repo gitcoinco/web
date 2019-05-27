@@ -48,11 +48,6 @@
                 <!-- <button class="btn btn-outline-success my-2 my-sm-0" @click.prevent="searchUsers()">Search</button> -->
               </div>
             </form>
-
-            <div v-if="reinviteUser" class="hidden">
-              <button id="reinvite-user" data-toggle="modal" data-target="#userModal" @click="openBounties(reinviteUser)">THIS IS HIDDEN and SHOULD AUTO TRIGGER</button>
-            </div>
-
           </div>
         </nav>
       </div>
@@ -198,8 +193,8 @@
           </div>
         </div>
       </div>
-      <modal v-if="showModal" ref="user-modal">
-        <div slot="header">
+      <modal ref="user-modal" >
+        <div slot="header" v-if="userSelected.handle">
           <div class="d-flex flex-column align-items-center">
             <h6 class="font-weight-bold mb-3">Invite User to Bounty</h6>
             <img class="rounded-circle mx-auto mb-3" width="64" height="64" :src="`/dynamic/avatar/${ userSelected.handle }`"/>
@@ -209,7 +204,7 @@
             </a>
           </div>
         </div>
-        <div slot="body">
+        <div slot="body" v-if="userSelected.handle">
           <div v-if="funderBounties.length">
             <b>Select a bounty</b>
             <div class="bounties-box">
@@ -242,26 +237,7 @@
         </div>
       </modal>
     </div>
-    <template id="modal-template">
-      <div class="vue-modal modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" :class="size" role="document">
-          <div class="modal-content">
-            <div class="modal-header border-0">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">×</span>
-              </button>
-            </div>
-            <div class="modal-body pt-0 ">
-              <slot name="header"></slot>
-              <slot name="body"></slot>
-            </div>
-            <div class="modal-footer border-0">
-              <slot name="footer"></slot>
-            </div>
-          </div>
-        </div>
-      </div>
-    </template>
+
     <script type="text/x-template" id="select2-template">
       <select>
         <slot></slot>
