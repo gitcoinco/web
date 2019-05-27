@@ -2420,8 +2420,6 @@ def get_suggested_contributors(request):
 
     if invitees:
         invitees_filter = Q()
-        print('fuckkkkkkkkkkkkkk')
-        print( invitees)
         for invite in invitees:
             invitees_filter = invitees_filter | Q(pk=invite)
 
