@@ -847,12 +847,14 @@ def users_fetch(request):
             profile_json['avatar_url'] = user_avatar.avatar_url
         count_work_completed = Activity.objects.filter(profile=user, activity_type='work_done').count()
         count_work_in_progress = Activity.objects.filter(profile=user, activity_type='start_work').count()
-        previously_worked_with = BountyFulfillment.objects.filter(
-            bounty__bounty_owner_github_username__iexact=current_user.username,
-            fulfiller_github_username__iexact=user.handle,
-            bounty__network=network,
-            accepted=True
-        ).count()
+        previously_worked_with = 0
+        if current_user:
+            previously_worked_with = BountyFulfillment.objects.filter(
+                bounty__bounty_owner_github_username__iexact=current_user.username,
+                fulfiller_github_username__iexact=user.handle,
+                bounty__network=network,
+                accepted=True
+            ).count()
 
         profile_json['position_contributor'] = user.get_contributor_leaderboard_index()
         profile_json['position_funder'] = user.get_funder_leaderboard_index()
