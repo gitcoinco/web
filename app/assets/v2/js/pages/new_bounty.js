@@ -354,6 +354,11 @@ $('#specialEvent').on('click', () => {
 
 $('#submitBounty').validate({
   submitHandler: function(form) {
+    // console.log(form.checkValidity())
+    // if (form.checkValidity() === false) {
+    //   event.preventDefault();
+    //   event.stopPropagation();
+    // }
     try {
       bounty_address();
     } catch (exception) {
