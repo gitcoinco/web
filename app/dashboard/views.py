@@ -820,6 +820,14 @@ def users_fetch(request):
     all_users = []
     for user in all_pages.page(page):
         profile_json = {}
+        previously_worked_with = 0
+        if profile:
+            previously_worked_with = BountyFulfillment.objects.filter(
+                bounty__bounty_owner_github_username__iexact=profile.handle,
+                fulfiller_github_username__iexact=user.handle,
+                bounty__network=network,
+                bounty__accepted=True
+            ).count()
         count_work_completed = Activity.objects.filter(profile=user, activity_type='work_done').count()
         count_work_in_progress = Activity.objects.filter(profile=user, activity_type='start_work').count()
         profile_json = {
@@ -829,6 +837,7 @@ def users_fetch(request):
             'job_type', 'linkedin_url', 'resume', 'remote', 'keywords',
             'organizations', 'is_org']}
         profile_json['job_status'] = user.job_status_verbose if user.job_search_status else None
+        profile_json['previously_worked'] = previously_worked_with > 0
         profile_json['position_contributor'] = user.get_contributor_leaderboard_index()
         profile_json['position_funder'] = user.get_funder_leaderboard_index()
         profile_json['work_done'] = count_work_completed
