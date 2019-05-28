@@ -187,61 +187,51 @@
           </div>
         </div>
       </div>
-      <modal v-if="showModal" ref="user-modal">
-        <div slot="header">
+      <modal ref="user-modal" >
+        <div slot="header" v-if="userSelected.handle">
           <div class="d-flex flex-column align-items-center">
             <h6 class="font-weight-bold mb-3">Invite User to Bounty</h6>
             <img class="rounded-circle mx-auto mb-3" width="64" height="64" :src="`/dynamic/avatar/${ userSelected.handle }`"/>
-            <span>[[ userSelected.data.name || userSelected.handle ]]</span>
+            <span>[[ userSelected.data.name ]]</span>
             <a :href="`/profile/${ userSelected.handle }`" class="text-center d-block" target="_blank">
               [[ userSelected.handle ]]
             </a>
           </div>
         </div>
-        <div slot="body">
-          <b>Select a bounty</b>
-          <div class="bounties-box">
-            <div v-for="bounty in funderBounties" :key="bounty.id" @click="bountySelected = bounty" v-bind:class="{ 'btn-gc-blue': bountySelected && bounty.id === bountySelected.id }" class="bounty-select py-2 px-3 border-bottom d-flex align-items-center">
-              <img :src="`/dynamic/avatar/${ bounty.funding_organisation || bounty.bounty_owner_github_username }`" class="rounded-circle flex-shrink-0" width="30" height="30">
-              <p class="line-clamp font-smaller-2 my-0 mx-2">
-                [[ bounty.title ]]
-              </p>
-              <div class="ml-auto flex-shrink-0">
-                <span class="tag token">[[ bounty.value_true ]] [[ bounty.token_name ]]</span>
-                <span class="tag usd">[[ bounty.value_in_usdt_now ]] USD</span>
+        <div slot="body" v-if="userSelected.handle">
+          <div v-if="funderBounties.length">
+            <b>Select a bounty</b>
+            <div class="bounties-box">
+              <div v-for="bounty in funderBounties" :key="bounty.id" @click="bountySelected = bounty" v-bind:class="{ 'btn-gc-blue': bountySelected && bounty.id === bountySelected.id }" class="bounty-select py-2 px-3 border-bottom d-flex align-items-center">
+                <img :src="`/dynamic/avatar/${ bounty.funding_organisation || bounty.bounty_owner_github_username }`" class="rounded-circle flex-shrink-0" width="30" height="30">
+                <p class="line-clamp font-smaller-2 my-0 mx-2">
+                  [[ bounty.title ]]
+                </p>
+                <div class="ml-auto flex-shrink-0">
+                  <span class="tag token">[[ bounty.value_true ]] [[ bounty.token_name ]]</span>
+                  <span class="tag usd">[[ bounty.value_in_usdt_now ]] USD</span>
+                </div>
               </div>
             </div>
+          </div>
+          <div v-else class="text-center font-subheader mt-4">
+            <p class="font-weight-semibold">You've got NO open bounties</p>
+            <p class="font-body">
+              <a :href="`/funding/new?invite=${ userSelected.id }`" target="_blank">Create a bounty</a>
+              to invite [[ userSelected.handle ]]
+            </p>
           </div>
         </div>
         <div slot="footer" class="d-flex align-items-center flex-fill">
           <a v-if="bountySelected" :href="bountySelected.url" target="_blank" class="mr-5">view bounty</a>
           <div class="ml-auto">
             <button class="btn btn-outline-gc-blue" data-dismiss="modal">Cancel</button>
-            <button class="btn btn-gc-blue" :disabled="!bountySelected" @click="sendInvite(bountySelected, userSelected.id)">Invite</button>
+            <button  v-if="funderBounties.length" class="btn btn-gc-blue" :disabled="!bountySelected" @click="sendInvite(bountySelected, userSelected.id)">Invite</button>
           </div>
         </div>
       </modal>
     </div>
-    <template id="modal-template">
-      <div class="vue-modal modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" :class="size" role="document">
-          <div class="modal-content">
-            <div class="modal-header border-0">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">×</span>
-              </button>
-            </div>
-            <div class="modal-body pt-0 ">
-              <slot name="header"></slot>
-              <slot name="body"></slot>
-            </div>
-            <div class="modal-footer border-0">
-              <slot name="footer"></slot>
-            </div>
-          </div>
-        </div>
-      </div>
-    </template>
+
     <script type="text/x-template" id="select2-template">
       <select>
         <slot></slot>
