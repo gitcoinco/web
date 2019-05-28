@@ -46,6 +46,7 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
+import magic
 from app.utils import clean_str, ellipses, get_default_network
 from avatar.utils import get_avatar_context_for_user
 from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, profile_helper
@@ -55,7 +56,6 @@ from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_auth_url, get_github_user_data, is_github_token_valid, search_users
 from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
-import magic
 from marketing.mails import admin_contact_funder, bounty_uninterested
 from marketing.mails import funder_payout_reminder as funder_payout_reminder_mail
 from marketing.mails import new_reserved_issue, start_work_approved, start_work_new_applicant, start_work_rejected
