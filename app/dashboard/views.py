@@ -1797,7 +1797,8 @@ def invalid_file_response(uploaded_file, supported):
             'message': 'File Too Large'
         }
     else:
-        file_mime = magic.from_buffer(uploaded_file.chunks[0]);
+        file_mime = magic.from_buffer(next(uploaded_file.chunks()), mime=True)
+        logger.info('uploaded file: %s' % file_mime)
         if file_mime not in supported:
             response = {
                 'status': 415,
