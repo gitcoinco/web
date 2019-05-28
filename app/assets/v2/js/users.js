@@ -87,7 +87,7 @@ Vue.mixin({
       let getBounties = fetchData(apiUrlBounties, 'GET');
 
       $.when(getBounties).then((response) => {
-        vm.isFunder = response.is_funder
+        vm.isFunder = response.is_funder;
         vm.funderBounties = response.data;
       });
 

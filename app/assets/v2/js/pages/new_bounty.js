@@ -43,8 +43,8 @@ $('.select2-tag__choice').on('click', function() {
 });
 
 const getSuggestions = () => {
-  console.log(params)
   let queryParams = {};
+
   queryParams.keywords = $('#keywords').val();
   queryParams.invite = params.get('invite') || '';
 
@@ -81,7 +81,7 @@ const getSuggestions = () => {
         children.text = children.fulfiller_github_username || children.user__profile__handle || children.handle;
         children.id = generalIndex;
         if (obj.text == 'Invites') {
-          children.selected= true;
+          children.selected = true;
           $('#reserve-section').collapse('show');
         }
         generalIndex++;
@@ -858,7 +858,6 @@ const populateBountyTotal = () => {
 
 let isPrivateRepo = false;
 
-console.log(params)
 const toggleCtaPlan = (value) => {
   if (value === 'private') {
 
