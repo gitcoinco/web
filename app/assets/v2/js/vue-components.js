@@ -1,6 +1,23 @@
 Vue.component('modal', {
   props: [ 'user', 'size' ],
-  template: '#modal-template',
+  template: `<div class="vue-modal modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" :class="size" role="document">
+          <div class="modal-content">
+            <div class="modal-header border-0">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div class="modal-body pt-0 ">
+              <slot name="header"></slot>
+              <slot name="body"></slot>
+            </div>
+            <div class="modal-footer border-0">
+              <slot name="footer"></slot>
+            </div>
+          </div>
+        </div>
+      </div>`,
   data() {
     return {
       jqEl: null
