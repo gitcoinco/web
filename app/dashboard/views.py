@@ -732,12 +732,10 @@ def onboard(request, flow):
     return TemplateResponse(request, 'ftux/onboard.html', params)
 
 
+@login_required
 def users_directory(request):
     """Handle displaying users directory page."""
     from retail.utils import programming_languages, programming_languages_full
-
-    if not request.user.is_authenticated:
-        return redirect('/login/github?next=' + request.get_full_path())
 
     keywords = programming_languages + programming_languages_full
 

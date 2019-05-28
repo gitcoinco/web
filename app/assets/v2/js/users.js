@@ -87,22 +87,15 @@ Vue.mixin({
       let getBounties = fetchData(apiUrlBounties, 'GET');
 
       $.when(getBounties).then((response) => {
-        // response.data.forEach(function(item) {
-        //   console.log(item)
-        // });
         vm.isFunder = response.is_funder
         vm.funderBounties = response.data;
-        console.log(vm.funderBounties);
       });
 
     },
     openBounties: function(user) {
       let vm = this;
 
-      console.log(user);
       vm.userSelected = user;
-      vm.showModal = true;
-
     },
     sendInvite: function(bounty, user) {
       let vm = this;
@@ -130,9 +123,24 @@ Vue.mixin({
     },
     closeModal() {
       this.$refs['user-modal'].closeModal();
+    },
+    inviteOnMount: function() {
+      let vm = this;
+      let contributor = getURLParams('invite');
+
+      if (contributor) {
+        let api = `/api/v0.1/users_fetch/?search=${contributor}`;
+        let getUsers = fetchData (api, 'GET');
+
+        $.when(getUsers).then(function(response) {
+          if (response && response.data) {
+            vm.openBounties(response.data[0]);
+            $('#userModal').bootstrapModal('show');
+          }
+        });
+      }
     }
   }
-
 });
 
 if (document.getElementById('gc-users-directory')) {
@@ -170,6 +178,7 @@ if (document.getElementById('gc-users-directory')) {
     },
     created() {
       this.fetchBounties();
+      this.inviteOnMount();
     },
     beforeMount() {
       window.addEventListener('scroll', () => {
@@ -183,4 +192,3 @@ if (document.getElementById('gc-users-directory')) {
     }
   });
 }
-
