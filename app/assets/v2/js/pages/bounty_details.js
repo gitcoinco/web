@@ -681,22 +681,26 @@ var show_interest_modal = function() {
           };
 
           $.ajax(ndaSend).done(function(response) {
-            _alert(response.message, 'info');
-            add_interest(document.result['pk'], {
-              issue_message: msg,
-              signed_nda: response.bounty_doc_id
-            }).then(success => {
-              if (success) {
-                $(self).attr('href', '/uninterested');
-                $(self).find('span').text(gettext('Stop Work'));
-                $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
-                modals.bootstrapModal('hide');
-              }
-            }).catch((error) => {
-              if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
-                return;
-              throw error;
-            });
+            if (response.status == 200) {
+              _alert(response.message, 'info');
+              add_interest(document.result['pk'], {
+                issue_message: msg,
+                signed_nda: response.bounty_doc_id
+              }).then(success => {
+                if (success) {
+                  $(self).attr('href', '/uninterested');
+                  $(self).find('span').text(gettext('Stop Work'));
+                  $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
+                  modals.bootstrapModal('hide');
+                }
+              }).catch((error) => {
+                if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
+                  return;
+                throw error;
+              });
+            } else {
+              _alert(response.message, 'error');
+            }
           }).fail(function(error) {
             _alert(error, 'error');
           });

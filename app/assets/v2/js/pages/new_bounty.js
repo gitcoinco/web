@@ -690,10 +690,16 @@ $('#submitBounty').validate({
       };
 
       $.ajax(settings).done(function(response) {
-        _alert(response.message, 'info');
-        ipfsBounty.payload.unsigned_nda = response.bounty_doc_id;
-        if (data.featuredBounty) payFeaturedBounty();
-        else do_bounty();
+        if (response.status == 200) {
+          _alert(response.message, 'info');
+          ipfsBounty.payload.unsigned_nda = response.bounty_doc_id;
+          if (data.featuredBounty) payFeaturedBounty();
+          else do_bounty();
+        } else {
+          _alert('Unable to upload NDA. ', 'error');
+          unloading_button($('.js-submit'));
+          console.log('NDA error:', response.message);
+        }
       }).fail(function(error) {
         _alert('Unable to upload NDA. ', 'error');
         unloading_button($('.js-submit'));
