@@ -363,7 +363,7 @@ $('#submitBounty').validate({
   ignore: '',
   messages: {
     select2Start: {
-      required: "Please select the right keywords.",
+      required: 'Please select the right keywords.'
     }
   },
   submitHandler: function(form) {
