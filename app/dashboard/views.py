@@ -784,7 +784,7 @@ def users_fetch(request):
                     fulfilled__accepted=True,
                     fulfilled__bounty__bounty_owner_github_username__iexact=current_user.profile.handle
                 ))
-            ).order_by(
+            ).exclude(hide_profile=True).order_by(
                 '-previous_worked_count',
                 order_by,
                 '-actions_count'
@@ -792,7 +792,7 @@ def users_fetch(request):
     else:
         profile_list = Profile.objects.prefetch_related(
                 'fulfilled', 'leaderboard_ranks', 'feedbacks_got'
-            ).order_by(
+            ).exclude(hide_profile=True).order_by(
                 order_by,
                 '-actions_count'
             )
