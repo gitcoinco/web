@@ -46,6 +46,7 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
+import magic
 from app.utils import clean_str, ellipses, get_default_network
 from avatar.utils import get_avatar_context_for_user
 from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, profile_helper
@@ -732,12 +733,10 @@ def onboard(request, flow):
     return TemplateResponse(request, 'ftux/onboard.html', params)
 
 
+@login_required
 def users_directory(request):
     """Handle displaying users directory page."""
     from retail.utils import programming_languages, programming_languages_full
-
-    if not request.user.is_authenticated:
-        return redirect('/login/github?next=' + request.get_full_path())
 
     keywords = programming_languages + programming_languages_full
 
@@ -762,6 +761,13 @@ def users_fetch(request):
     bounties_completed = request.GET.get('bounties_completed', '').strip().split(',')
     leaderboard_rank = request.GET.get('leaderboard_rank', '').strip().split(',')
     rating = int(request.GET.get('rating', '0'))
+    organisation = request.GET.get('organisation', '')
+
+    user_id = request.GET.get('user', None)
+    if user_id:
+        profile = Profile.objects.get(id=int(user_id))
+    else:
+        profile = request.user.profile if hasattr(request, 'user') and request.user.is_authenticated and hasattr(request.user, 'profile') else None
 
     context = {}
     if not settings.DEBUG:
@@ -769,16 +775,18 @@ def users_fetch(request):
     else:
         network = 'rinkeby'
 
-    user_list = Profile.objects.prefetch_related('fulfilled', 'leaderboard_ranks', 'feedbacks_got').order_by(order_by)
+    profile_list = Profile.objects.prefetch_related(
+        'fulfilled', 'leaderboard_ranks', 'feedbacks_got'
+    ).exclude(hide_profile=True).order_by(order_by)
 
     if q:
-        user_list = user_list.filter(Q(handle__icontains=q) | Q(keywords__icontains=q))
+        profile_list = profile_list.filter(Q(handle__icontains=q) | Q(keywords__icontains=q))
 
     if skills:
-        user_list = user_list.filter(keywords__icontains=skills)
+        profile_list = profile_list.filter(keywords__icontains=skills)
 
     if len(bounties_completed) == 2:
-        user_list = user_list.annotate(
+        profile_list = profile_list.annotate(
                 count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network, fulfilled__accepted=True))
             ).filter(
                 count__gte=bounties_completed[0],
@@ -786,7 +794,7 @@ def users_fetch(request):
             )
 
     if len(leaderboard_rank) == 2:
-        user_list = user_list.filter(
+        profile_list = profile_list.filter(
             leaderboard_ranks__isnull=False,
             leaderboard_ranks__leaderboard='quarterly_earners',
             leaderboard_ranks__rank__gte=leaderboard_rank[0],
@@ -795,34 +803,55 @@ def users_fetch(request):
         )
 
     if rating != 0:
-        user_list = user_list.annotate(
+        profile_list = profile_list.annotate(
             average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
         ).filter(
             average_rating__gte=rating
         )
 
+    if organisation:
+        profile_list = profile_list.filter(
+            fulfilled__bounty__network=network,
+            fulfilled__bounty__accepted=True,
+            fulfilled__bounty__github_url__icontains=organisation
+        ).distinct()
+
     params = dict()
-    all_pages = Paginator(user_list, limit)
+    all_pages = Paginator(profile_list, limit)
     all_users = []
     for user in all_pages.page(page):
         profile_json = {}
-        profile_json = user.to_standard_dict()
-        if user.avatar_baseavatar_related.exists():
-            user_avatar = user.avatar_baseavatar_related.first()
-            profile_json['avatar_id'] = user_avatar.pk
-            profile_json['avatar_url'] = user_avatar.avatar_url
+        previously_worked_with = 0
+        if profile:
+            previously_worked_with = BountyFulfillment.objects.filter(
+                bounty__bounty_owner_github_username__iexact=profile.handle,
+                fulfiller_github_username__iexact=user.handle,
+                bounty__network=network,
+                bounty__accepted=True
+            ).count()
         count_work_completed = Activity.objects.filter(profile=user, activity_type='work_done').count()
         count_work_in_progress = Activity.objects.filter(profile=user, activity_type='start_work').count()
+        profile_json = {
+            k: getattr(user, k) for k in
+            ['id', 'actions_count', 'created_on', 'handle', 'hide_profile',
+            'show_job_status', 'job_location', 'job_salary', 'job_search_status',
+            'job_type', 'linkedin_url', 'resume', 'remote', 'keywords',
+            'organizations', 'is_org']}
+        profile_json['job_status'] = user.job_status_verbose if user.job_search_status else None
+        profile_json['previously_worked'] = previously_worked_with > 0
         profile_json['position_contributor'] = user.get_contributor_leaderboard_index()
         profile_json['position_funder'] = user.get_funder_leaderboard_index()
         profile_json['work_done'] = count_work_completed
         profile_json['work_inprogress'] = count_work_in_progress
-
-        profile_json['job_status'] = user.job_status_verbose if user.job_search_status else None
         profile_json['verification'] = user.get_my_verified_check
         profile_json['avg_rating'] = user.get_average_star_rating
-        # profile_json['bounties'] = user.get_quarterly_stats
-        profile_json['is_org'] = user.is_org
+        if user.avatar_baseavatar_related.exists():
+            user_avatar = user.avatar_baseavatar_related.first()
+            profile_json['avatar_id'] = user_avatar.pk
+            profile_json['avatar_url'] = user_avatar.avatar_url
+        if user.data:
+            user_data = user.data
+            profile_json['blog'] = user_data['blog']
 
         all_users.append(profile_json)
     # dumping and loading the json here quickly passes serialization issues - definitely can be a better solution
@@ -857,8 +886,14 @@ def get_user_bounties(request):
 
     params = dict()
     results = []
-    open_bounties = Bounty.objects.current().filter(bounty_owner_github_username__iexact=profile.handle, network=network) \
-                        .exclude(idx_status='cancelled').exclude(idx_status='done')
+    all_bounties = Bounty.objects.current().filter(bounty_owner_github_username__iexact=profile.handle, network=network)
+
+    if len(all_bounties) > 0:
+        is_funder = True
+    else:
+        is_funder = False
+
+    open_bounties = all_bounties.exclude(idx_status='cancelled').exclude(idx_status='done')
     for bounty in open_bounties:
         bounty_json = {}
         bounty_json = bounty.to_standard_dict()
@@ -869,6 +904,7 @@ def get_user_bounties(request):
         # raise Http404
     print(open_bounties)
     params['data'] = json.loads(json.dumps(results, default=str))
+    params['is_funder'] = is_funder
     return JsonResponse(params, status=200, safe=False)
 
 
@@ -886,6 +922,7 @@ def dashboard(request):
     }
     return TemplateResponse(request, 'dashboard/index.html', params)
 
+
 def ethhack(request):
     """Handle displaying ethhack landing page."""
 
@@ -898,6 +935,7 @@ def ethhack(request):
         'avatar_url': static('v2/images/ethhack_2019_media.png'),
     }
     return TemplateResponse(request, 'dashboard/hackathon/ethhack_2019.html', params)
+
 
 def accept_bounty(request):
     """Process the bounty.
@@ -1049,6 +1087,7 @@ def social_contribution_modal(request):
         promo_text += f" #{keyword}"
     params['promo_text'] = promo_text
     return TemplateResponse(request, 'social_contribution_modal.html', params)
+
 
 @csrf_exempt
 @require_POST
@@ -1730,6 +1769,11 @@ def profile_job_opportunity(request, handle):
     Args:
         handle (str): The profile handle.
     """
+    uploaded_file = request.FILES.get('job_cv')
+    error_response = invalid_file_response(uploaded_file, supported=['application/pdf'])
+    # 400 is ok because file upload is optional here
+    if error_response and error_response['status'] != '400':
+        return JsonResponse(error_response)
     try:
         profile = profile_helper(handle, True)
         if request.user.profile.id != profile.id:
@@ -1755,6 +1799,29 @@ def profile_job_opportunity(request, handle):
     return JsonResponse(response)
 
 
+def invalid_file_response(uploaded_file, supported):
+    response = None
+    if not uploaded_file:
+        response = {
+            'status': 400,
+            'message': 'No File Found'
+        }
+    elif uploaded_file.size > 31457280:
+        # 30MB max file size
+        response = {
+            'status': 413,
+            'message': 'File Too Large'
+        }
+    else:
+        file_mime = magic.from_buffer(next(uploaded_file.chunks()), mime=True)
+        logger.info('uploaded file: %s' % file_mime)
+        if file_mime not in supported:
+            response = {
+                'status': 415,
+                'message': 'Invalid File Type'
+            }
+    return response
+
 @csrf_exempt
 @require_POST
 def bounty_upload_nda(request):
@@ -1763,9 +1830,14 @@ def bounty_upload_nda(request):
     Args:
         bounty_id (int): The bounty id.
     """
-    if request.FILES.get('docs', None):
+    uploaded_file = request.FILES.get('docs', None)
+    error_response = invalid_file_response(
+        uploaded_file, supported=['application/pdf',
+                                  'application/msword',
+                                  'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])
+    if not error_response:
         bountydoc = BountyDocuments.objects.create(
-            doc=request.FILES.get('docs', None),
+            doc=uploaded_file,
             doc_type=request.POST.get('doc_type', None)
         )
         response = {
@@ -1773,12 +1845,8 @@ def bounty_upload_nda(request):
             'bounty_doc_id': bountydoc.pk,
             'message': 'NDA saved'
         }
-    else:
-        response = {
-            'status': 400,
-            'message': 'No File Found'
-        }
-    return JsonResponse(response)
+
+    return JsonResponse(error_response) if error_response else JsonResponse(response)
 
 
 
@@ -2349,6 +2417,7 @@ def redeem_coin(request, shortcode):
         raise Http404
 
 
+@login_required
 def new_bounty(request):
     """Create a new bounty."""
     from .utils import clean_bounty_url
@@ -2384,7 +2453,10 @@ def new_bounty(request):
 @csrf_exempt
 def get_suggested_contributors(request):
     previously_worked_developers = []
+    users_invite = []
     keywords = request.GET.get('keywords', '').split(',')
+    invitees = [int(x) for x in request.GET.get('invite', '').split(',') if x]
+
     if request.user.is_authenticated:
         previously_worked_developers = BountyFulfillment.objects.prefetch_related('bounty', 'profile')\
             .filter(
@@ -2404,11 +2476,19 @@ def get_suggested_contributors(request):
 
     verified_developers = UserVerificationModel.objects.filter(verified=True).values('user__profile__handle', 'user__profile__id')
 
+    if invitees:
+        invitees_filter = Q()
+        for invite in invitees:
+            invitees_filter = invitees_filter | Q(pk=invite)
+
+        users_invite = Profile.objects.filter(invitees_filter).values('id', 'handle', 'email').distinct()
+
     return JsonResponse(
                 {
                     'contributors': list(previously_worked_developers),
                     'recommended_developers': list(recommended_developers),
-                    'verified_developers': list(verified_developers)
+                    'verified_developers': list(verified_developers),
+                    'invites': list(users_invite)
                 },
                 status=200)
 

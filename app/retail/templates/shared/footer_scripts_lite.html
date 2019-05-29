@@ -22,23 +22,23 @@
   var media_url = "{{ MEDIA_URL }}";
 </script>
 <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
-<script src="{% static "v2/js/jquery.js" %}"></script>
+<script src="{% static "v2/js/lib/jquery.js" %}"></script>
 {% if user.is_authenticated and env == 'prod' %}
   <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 {% elif user.is_authenticated %}
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 {% endif %}
 {% include 'shared/sentry.html' %}
-<script src="{% static "v2/js/popper.min.js" %}"></script>
-<script src="{% static "v2/js/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+<script src="{% static "v2/js/lib/popper.min.js" %}"></script>
+<script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
 <script>
   var bootstrapTooltip = $.fn.tooltip.noConflict()
   var bootstrapModal = $.fn.modal.noConflict()
   $.fn.bootstrapModal = bootstrapModal
 </script>
-<script src="{% static "v2/js/jquery.cookie.js" %}"></script>
-<script src="{% static "v2/js/jquery.select2.min.js" %}"></script>
-<script src="{% static "v2/js/moment.min.js" %}"></script>
+<script src="{% static "v2/js/lib/jquery.cookie.js" %}"></script>
+<script src="{% static "v2/js/lib/jquery.select2.min.js" %}"></script>
+<script src="{% static "v2/js/lib/moment.min.js" %}"></script>
 <script src="{% static "v2/js/note.js" %}"></script>
 <script src="{% static "v2/js/base.js" %}"></script>
 <script src="{% static "v2/js/ajax-helper.js" %}"></script>

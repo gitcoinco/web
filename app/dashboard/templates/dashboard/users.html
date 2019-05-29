@@ -105,6 +105,12 @@
                 </fieldset>
               </div>
             </div>
+            <div class="g-multiselect pb-4 border-bottom form-group">
+              <label for="organisations" class="font-weight-bold">Organisation</label>
+              <div class="font-smaller">
+                <input v-model="params.organisation" data-placeholder="e.g. Gitcoin" data-tags="true" class="form-control">
+              </div>
+            </div>
             <button class="btn blue" @click="params = {}; searchUsers()">Reset Filters</button>
           </nav>
         </transition>
@@ -119,9 +125,15 @@
             <div class="grid-4">
               <div v-for="user in users" class="card card-user shadow-sm border-0" :key="user.id">
                 <div class="d-flex flex-column py-1 bg-lightblue">
+                  <button class="btn position-absolute align-self-end" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>
+                  <div class="dropdown-menu dropdown-menu-right">
+                    <a :href="`/funding/new?invite=${ user.id }`" target="_blank" class="dropdown-item">Fund bounty</a>
+                    <div class="dropdown-divider"></div>
+                    <a :href="`/profile/${ user.handle }`" class="dropdown-item" target="_blank">View profile</a>
+                  </div>
                   <img class="rounded-circle shadow-sm mx-auto mt-n5 mb-3 bg-white" width="113" height="113" :src="`/dynamic/avatar/${ user.handle }`"/>
                   <h5 class="text-center card-user_name">
-                    [[ user.data.name || user.handle ]]
+                    [[ user.name || user.handle ]]
                     <span v-if="user.verification">
                       <img src="{% static 'v2/images/badge-verify.svg' %}" width="15" height="15" title="Verified user" alt="verify badget">
                     </span>
@@ -136,6 +148,9 @@
                     <i class="far fa-star" :class="star <= user.avg_rating.overall.toFixed() ? 'fas' : 'far'" v-for="star in user.avg_rating.overall.toFixed(), 5"></i>
                     ([[ user.avg_rating.total_rating ]] ratings)
                   </div>
+                  <small class="text-center pb-1" v-if="user.previously_worked">
+                    <i class="far fa-handshake mr-1"></i>Worked with you
+                  </small>
                 </div>
                 <div class="card-body  d-flex flex-column justify-content-between">
                   <div v-if="user.keywords" class="text-center">
@@ -144,23 +159,21 @@
                     </template>
                   </div>
                   <div class="text-center my-1 font-smaller-1">
-                    <a :href="`${ user.data.html_url }?tab=repositories`" target="_blank" rel="noopener noreferrer" >
+                    <a :href="`https://github.com/${ user.handle }`" target="_blank" rel="noopener noreferrer" >
                       <i class="fab fa-github"></i>
                     </a>
-                    <a :href="`${ user.data.blog }`" target="_blank" rel="noopener noreferrer" v-if="user.data.blog">
+                    <a :href="`${ user.blog }`" target="_blank" rel="noopener noreferrer" v-if="user.blog">
                       <i class="fas fa-home"></i>
-                    </a>
-                    <a :href="`mailto:${ user.data.email }`" v-if="user.data.email">
-                      <i class="far fa-envelope"></i>
                     </a>
                     <a :href="`https://www.linkedin.com/in/${ user.linkedin_url }`" v-if="user.linkedin_url">
                       <i class="fab fa-linkedin-in"></i>
                     </a>
                   </div>
                   <div class="text-center" id="job_status" v-if="user.show_job_status">
-                    <a :href="`${media_url}${user.resume}`" download data-toggle="tooltip" title="Download resume">
+                    <a v-if="user.resume && user.job_search_status !== 'N'" :href="`${media_url}${user.resume}`" download data-toggle="tooltip" title="Download resume">
                       <i class="fa fa-briefcase mr-2" aria-hidden="true"></i> [[ user.job_status ]]
                     </a>
+                    <span v-else><i class="fa fa-briefcase mr-2" aria-hidden="true"></i> [[ user.job_status ]]</span>
                   </div>
                   <div class="text-center">
                     <span v-if="user.position_contributor > 0"><b>#[[ user.position_contributor ]]</b> contributor</span>  <span v-if="user.position_funder > 0"><b>#[[ user.position_funder ]]</b> funder</span>
@@ -170,6 +183,7 @@
                   </div>
                   <div class="text-center mt-2">
                     <button v-if="funderBounties.length" data-toggle="modal" data-target="#userModal" class="btn btn-sm btn-gc-blue" @click="openBounties(user)">Invite to Bounty</button>
+                    <a v-if="isFunder && !funderBounties.length" :href="`/funding/new?invite=${ user.id }`" target="_blank" class="btn btn-sm btn-gc-blue">Fund Bounty</a>
                   </div>
                 </div>
               </div>
@@ -178,61 +192,53 @@
           </div>
         </div>
       </div>
-      <modal v-if="showModal" ref="user-modal">
-        <div slot="header">
+      <modal ref="user-modal" >
+        <div slot="header" v-if="userSelected.handle">
           <div class="d-flex flex-column align-items-center">
             <h6 class="font-weight-bold mb-3">Invite User to Bounty</h6>
             <img class="rounded-circle mx-auto mb-3" width="64" height="64" :src="`/dynamic/avatar/${ userSelected.handle }`"/>
-            <span>[[ userSelected.data.name || userSelected.handle ]]</span>
+            <span>[[ userSelected.name ]]</span>
             <a :href="`/profile/${ userSelected.handle }`" class="text-center d-block" target="_blank">
               [[ userSelected.handle ]]
             </a>
           </div>
         </div>
-        <div slot="body">
-          <b>Select a bounty</b>
-          <div class="bounties-box">
-            <div v-for="bounty in funderBounties" :key="bounty.id" @click="bountySelected = bounty" v-bind:class="{ 'btn-gc-blue': bountySelected && bounty.id === bountySelected.id }" class="bounty-select py-2 px-3 border-bottom d-flex align-items-center">
-              <img :src="`/dynamic/avatar/${ bounty.funding_organisation || bounty.bounty_owner_github_username }`" class="rounded-circle flex-shrink-0" width="30" height="30">
-              <p class="line-clamp font-smaller-2 my-0 mx-2">
-                [[ bounty.title ]]
-              </p>
-              <div class="ml-auto flex-shrink-0">
-                <span class="tag token">[[ bounty.value_true ]] [[ bounty.token_name ]]</span>
-                <span class="tag usd">[[ bounty.value_in_usdt_now ]] USD</span>
+        <div slot="body" v-if="userSelected.handle">
+          <div v-if="funderBounties.length">
+            <div class="my-2 text-center">
+              <b>Select a bounty</b> or <a :href="`/funding/new?invite=${ userSelected.id }`" target="_blank" class="font-weight-bold">create a new one</a>
+            </div>
+            <div class="bounties-box">
+              <div v-for="bounty in funderBounties" :key="bounty.id" @click="bountySelected = bounty" v-bind:class="{ 'btn-gc-blue': bountySelected && bounty.id === bountySelected.id }" class="bounty-select py-2 px-3 border-bottom d-flex align-items-center">
+                <img :src="`/dynamic/avatar/${ bounty.funding_organisation || bounty.bounty_owner_github_username }`" class="rounded-circle flex-shrink-0" width="30" height="30">
+                <p class="line-clamp font-smaller-2 my-0 mx-2">
+                  [[ bounty.title ]]
+                </p>
+                <div class="ml-auto flex-shrink-0">
+                  <span class="tag token">[[ bounty.value_true ]] [[ bounty.token_name ]]</span>
+                  <span class="tag usd">[[ bounty.value_in_usdt_now ]] USD</span>
+                </div>
               </div>
             </div>
+          </div>
+          <div v-else class="text-center font-subheader mt-4">
+            <p class="font-weight-semibold">You've got NO open bounties</p>
+            <p class="font-body">
+              <a :href="`/funding/new?invite=${ userSelected.id }`" target="_blank">Create a bounty</a>
+              to invite [[ userSelected.handle ]]
+            </p>
           </div>
         </div>
         <div slot="footer" class="d-flex align-items-center flex-fill">
           <a v-if="bountySelected" :href="bountySelected.url" target="_blank" class="mr-5">view bounty</a>
           <div class="ml-auto">
             <button class="btn btn-outline-gc-blue" data-dismiss="modal">Cancel</button>
-            <button class="btn btn-gc-blue" :disabled="!bountySelected" @click="sendInvite(bountySelected, userSelected.id)">Invite</button>
+            <button  v-if="funderBounties.length" class="btn btn-gc-blue" :disabled="!bountySelected" @click="sendInvite(bountySelected, userSelected.id)">Invite</button>
           </div>
         </div>
       </modal>
     </div>
-    <template id="modal-template">
-      <div class="vue-modal modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" :class="size" role="document">
-          <div class="modal-content">
-            <div class="modal-header border-0">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">×</span>
-              </button>
-            </div>
-            <div class="modal-body pt-0 ">
-              <slot name="header"></slot>
-              <slot name="body"></slot>
-            </div>
-            <div class="modal-footer border-0">
-              <slot name="footer"></slot>
-            </div>
-          </div>
-        </div>
-      </div>
-    </template>
+
     <script type="text/x-template" id="select2-template">
       <select>
         <slot></slot>
@@ -244,8 +250,8 @@
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
-    <script src="{% static "v2/js/popper.min.js" %}"></script>
-    <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
+    <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
+    <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
     <script>
       let bootstrapTooltip = $.fn.tooltip.noConflict()
       $.fn.runTooltip = bootstrapTooltip;

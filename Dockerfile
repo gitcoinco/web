@@ -2,7 +2,7 @@ FROM python:3.7-alpine3.8
 
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
-ARG PACKAGES="postgresql-libs libxml2 libxslt freetype libffi jpeg libmaxminddb bash git tar gzip inkscape"
+ARG PACKAGES="postgresql-libs libxml2 libxslt freetype libffi jpeg libmaxminddb bash git tar gzip inkscape libmagic"
 ARG BUILD_DEPS="gcc g++ postgresql-dev libxml2-dev libxslt-dev freetype-dev libffi-dev jpeg-dev linux-headers autoconf automake libtool make dos2unix"
 WORKDIR /code
 
