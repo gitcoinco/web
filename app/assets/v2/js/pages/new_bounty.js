@@ -5,6 +5,9 @@ load_tokens();
 
 var localStorage = window.localStorage ? window.localStorage : {};
 const quickstartURL = document.location.origin + '/bounty/quickstart';
+
+let params = (new URL(document.location)).searchParams;
+
 const FEE_PERCENTAGE = document.FEE_PERCENTAGE / 100.0;
 
 var new_bounty = {
@@ -40,9 +43,15 @@ $('.select2-tag__choice').on('click', function() {
 });
 
 const getSuggestions = () => {
+  let queryParams = {};
+
+  queryParams.keywords = $('#keywords').val();
+  queryParams.invite = params.get('invite') || '';
+
+  let searchParams = new URLSearchParams(queryParams);
 
   const settings = {
-    url: `/api/v0.1/get_suggested_contributors?keywords=${$('#keywords').val()}`,
+    url: `/api/v0.1/get_suggested_contributors?${searchParams}`,
     method: 'GET',
     processData: false,
     dataType: 'json',
@@ -53,7 +62,8 @@ const getSuggestions = () => {
     let groups = {
       'contributors': 'Recently worked with you',
       'recommended_developers': 'Recommended based on skills',
-      'verified_developers': 'Verified contributors'
+      'verified_developers': 'Verified contributors',
+      'invites': 'Invites'
     };
 
     let options = Object.entries(response).map(([ text, children ]) => (
@@ -68,8 +78,12 @@ const getSuggestions = () => {
       }
 
       obj.children.forEach((children, childIndex) => {
-        children.text = children.fulfiller_github_username || children.user__profile__handle;
+        children.text = children.fulfiller_github_username || children.user__profile__handle || children.handle;
         children.id = generalIndex;
+        if (obj.text == 'Invites') {
+          children.selected = true;
+          $('#reserve-section').collapse('show');
+        }
         generalIndex++;
       });
       return obj;
@@ -275,7 +289,22 @@ $(function() {
     setUsdAmount();
   }
 
-  userSearch('#reservedFor', false);
+  if (params.get('reserved')) {
+    $('#reserve-section').collapse('show');
+  }
+
+  userSearch(
+    '#reservedFor',
+    // show address
+    false,
+    // theme
+    '',
+    // initial data
+    params.get('reserved') ? [params.get('reserved')] : [],
+    // allowClear
+    true
+  );
+
 
 });
 
@@ -703,10 +732,16 @@ $('#submitBounty').validate({
       };
 
       $.ajax(settings).done(function(response) {
-        _alert(response.message, 'info');
-        ipfsBounty.payload.unsigned_nda = response.bounty_doc_id;
-        if (data.featuredBounty) payFeaturedBounty();
-        else do_bounty();
+        if (response.status == 200) {
+          _alert(response.message, 'info');
+          ipfsBounty.payload.unsigned_nda = response.bounty_doc_id;
+          if (data.featuredBounty) payFeaturedBounty();
+          else do_bounty();
+        } else {
+          _alert('Unable to upload NDA. ', 'error');
+          unloading_button($('.js-submit'));
+          console.log('NDA error:', response.message);
+        }
       }).fail(function(error) {
         _alert('Unable to upload NDA. ', 'error');
         unloading_button($('.js-submit'));
@@ -841,7 +876,6 @@ const populateBountyTotal = () => {
 };
 
 let isPrivateRepo = false;
-let params = (new URL(document.location)).searchParams;
 
 const toggleCtaPlan = (value) => {
   if (value === 'private') {

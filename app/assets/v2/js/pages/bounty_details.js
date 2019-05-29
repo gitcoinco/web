@@ -501,9 +501,9 @@ var showWarningMessage = function(txid) {
 
   $('.left-rails').hide();
   $('#bounty_details').hide();
-  $('#bounty_detail').hide();
 
   waitingStateActive();
+  show_invite_users();
 };
 
 // refresh page if metamask changes
@@ -681,22 +681,26 @@ var show_interest_modal = function() {
           };
 
           $.ajax(ndaSend).done(function(response) {
-            _alert(response.message, 'info');
-            add_interest(document.result['pk'], {
-              issue_message: msg,
-              signed_nda: response.bounty_doc_id
-            }).then(success => {
-              if (success) {
-                $(self).attr('href', '/uninterested');
-                $(self).find('span').text(gettext('Stop Work'));
-                $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
-                modals.bootstrapModal('hide');
-              }
-            }).catch((error) => {
-              if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
-                return;
-              throw error;
-            });
+            if (response.status == 200) {
+              _alert(response.message, 'info');
+              add_interest(document.result['pk'], {
+                issue_message: msg,
+                signed_nda: response.bounty_doc_id
+              }).then(success => {
+                if (success) {
+                  $(self).attr('href', '/uninterested');
+                  $(self).find('span').text(gettext('Stop Work'));
+                  $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
+                  modals.bootstrapModal('hide');
+                }
+              }).catch((error) => {
+                if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
+                  return;
+                throw error;
+              });
+            } else {
+              _alert(response.message, 'error');
+            }
           }).fail(function(error) {
             _alert(error, 'error');
           });
@@ -1562,6 +1566,67 @@ const is_bounty_expired = function(bounty) {
   let now = new Date(bounty['now']);
 
   return now.getTime() >= expires_date.getTime();
+};
+
+/**
+ * Checks sessionStorage to toggle to show the quote
+ * container vs showing the list of fulfilled users to be
+ * invite.
+ */
+const show_invite_users = () => {
+
+  if (sessionStorage['fulfillers']) {
+    const users = sessionStorage['fulfillers'].split(',');
+
+    if (users.length == 1) {
+
+      let user = users[0];
+      const title = `Work with <b>${user}</b> again on your next bounty ?`;
+      const invite = `
+        <div class="invite-user">
+          <img class="avatar" src="/dynamic/avatar/${users}" />
+          <p class="mt-4">
+            <a target="_blank" class="btn btn-gc-blue shadow-none py-2 px-4" href="/users?invite=${user}">
+              Yes, invite to one of my bounties
+            </a>
+          </p>
+        </div>`;
+
+      $('#invite-header').html(title);
+      $('#invite-users').html(invite);
+    } else {
+
+      let invites = [];
+      const title = 'Work with these contributors again on your next bounty?';
+
+      users.forEach(user => {
+        const invite = `
+          <div class="invite-user mx-3">
+            <img class="avatar" src="/dynamic/avatar/${user}"/>
+            <p class="my-2">
+              <a target="_blank" class="font-subheader blue" href="/profile/${user}">
+                ${user}
+              </a>
+            </p>
+            <a target="_blank" class="btn btn-gc-blue shadow-none px-4 font-body font-weight-semibold" href="/users?invite=${user}">
+              Invite
+            </a>
+          </div>`;
+
+        invites.push(invite);
+      });
+
+      $('#invite-users').addClass('d-flex justify-content-center');
+      $('#invite-header').html(title);
+      $('#invite-users').html(invites);
+    }
+    delete sessionStorage['fulfillers'];
+    $('.invite-user-container').removeClass('hidden');
+    $('.quote-container').addClass('hidden');
+  } else {
+    $('.invite-user-container').addClass('hidden');
+    $('.quote-container').removeClass('hidden');
+  }
 };
 
 var main = function() {
