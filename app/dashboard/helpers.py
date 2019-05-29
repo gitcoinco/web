@@ -597,9 +597,10 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
     new_bounty.is_featured = True if latest_old_bounty and latest_old_bounty.is_featured is True else False
     if new_bounty.is_featured == True:
         new_bounty.save()
-
-    latest_old_bounty.current_bounty = False
-    latest_old_bounty.save()
+    
+    if latest_old_bounty:
+        latest_old_bounty.current_bounty = False
+        latest_old_bounty.save()
 
 
 def process_bounty_details(bounty_details):
