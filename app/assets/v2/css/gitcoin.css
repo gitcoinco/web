@@ -727,7 +727,7 @@ div.button-pink {
   width: auto;
 }
 
-#payout_table td div.percent,
+#payout_table td div.input_amount,
 #payout_table td a.remove,
 #payout_table td div.amount {
   position: relative;
