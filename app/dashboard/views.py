@@ -885,8 +885,14 @@ def get_user_bounties(request):
 
     params = dict()
     results = []
-    open_bounties = Bounty.objects.current().filter(bounty_owner_github_username__iexact=profile.handle, network=network) \
-                        .exclude(idx_status='cancelled').exclude(idx_status='done')
+    all_bounties = Bounty.objects.current().filter(bounty_owner_github_username__iexact=profile.handle, network=network)
+
+    if len(all_bounties) > 0:
+        is_funder = True
+    else:
+        is_funder = False
+
+    open_bounties = all_bounties.exclude(idx_status='cancelled').exclude(idx_status='done')
     for bounty in open_bounties:
         bounty_json = {}
         bounty_json = bounty.to_standard_dict()
@@ -897,6 +903,7 @@ def get_user_bounties(request):
         # raise Http404
     print(open_bounties)
     params['data'] = json.loads(json.dumps(results, default=str))
+    params['is_funder'] = is_funder
     return JsonResponse(params, status=200, safe=False)
 
 
@@ -2411,7 +2418,10 @@ def new_bounty(request):
 @csrf_exempt
 def get_suggested_contributors(request):
     previously_worked_developers = []
+    users_invite = []
     keywords = request.GET.get('keywords', '').split(',')
+    invitees = [int(x) for x in request.GET.get('invite', '').split(',') if x]
+
     if request.user.is_authenticated:
         previously_worked_developers = BountyFulfillment.objects.prefetch_related('bounty', 'profile')\
             .filter(
@@ -2431,11 +2441,19 @@ def get_suggested_contributors(request):
 
     verified_developers = UserVerificationModel.objects.filter(verified=True).values('user__profile__handle', 'user__profile__id')
 
+    if invitees:
+        invitees_filter = Q()
+        for invite in invitees:
+            invitees_filter = invitees_filter | Q(pk=invite)
+
+        users_invite = Profile.objects.filter(invitees_filter).values('id', 'handle', 'email').distinct()
+
     return JsonResponse(
                 {
                     'contributors': list(previously_worked_developers),
                     'recommended_developers': list(recommended_developers),
-                    'verified_developers': list(verified_developers)
+                    'verified_developers': list(verified_developers),
+                    'invites': list(users_invite)
                 },
                 status=200)
 

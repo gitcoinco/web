@@ -229,7 +229,7 @@ var _alert = function(msg, _class) {
     };
   }
   var numAlertsAlready = $('.alert:visible').length;
-  var top = numAlertsAlready * 66;
+  var top = numAlertsAlready * 44;
 
   var html = function() {
     return (
