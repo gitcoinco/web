@@ -2560,7 +2560,7 @@ def get_users(request):
             profile_json = {}
             profile_json['id'] = user.id
             profile_json['text'] = user.handle
-            profile_json['email'] = user.email
+            #profile_json['email'] = user.email
             if user.avatar_baseavatar_related.exists():
                 profile_json['avatar_id'] = user.avatar_baseavatar_related.first().pk
                 profile_json['avatar_url'] = user.avatar_baseavatar_related.first().avatar_url
