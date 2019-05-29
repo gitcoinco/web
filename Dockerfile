@@ -8,7 +8,7 @@ WORKDIR /code
 
 # Install general dependencies.
 RUN apk add --no-cache --update $PACKAGES && \
-    apk add --no-cache --update --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/ vips && \
+    apk add --no-cache --update --repository http://dl-cdn.alpinelinux.org/alpine/edge/community/ vips && \
     apk add --no-cache --update --virtual .builder $BUILD_DEPS
 
 # GeoIP2 Data Files
