@@ -24,7 +24,7 @@ class Command(BaseCommand):
     help = 'cleans up duplicate bounties'
 
     def handle(self, *args, **options):
-
+        
         handled_bounties = []
         for bounty in Bounty.objects.filter(current_bounty=True).order_by('-pk'):
 
@@ -38,5 +38,5 @@ class Command(BaseCommand):
                     print(f"-merging  {evil_twin.pk}, into {bounty.pk}")
 
                     handled_bounties.append(evil_twin.pk)
-                    merge_bounty(evil_twin, bounty, {}, {})
+                    merge_bounty(evil_twin, bounty, {}, {}, verbose=False)
 

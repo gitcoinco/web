@@ -359,6 +359,8 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
     """
     bounty_issuer = bounty_payload.get('issuer', {})
     metadata = bounty_payload.get('metadata', {})
+    # fulfillments metadata will be empty when bounty is first created
+    fulfillments = bounty_details.get('fulfillments', {})
     interested_comment_id = None
     submissions_comment_id = None
     interested_comment_id = None
@@ -502,8 +504,9 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
 
 
 # merges the bounties
-def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details):
-    print('new bounty is:{}'.format(new_bounty.to_standard_dict()))
+def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbose=True):
+    if verbose:
+        print('new bounty is:{}'.format(new_bounty.to_standard_dict()))
     new_bounty.fetch_issue_item()
     try:
         issue_kwargs = get_url_dict(new_bounty.github_url)
@@ -563,8 +566,6 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details):
         for activity in latest_old_bounty.activities.all().nocache():
             new_bounty.activities.add(activity)
 
-            latest_old_bounty.current_bounty = False
-            latest_old_bounty.save()
 
     bounty_reserved_for_user = metadata.get('reservedFor', '')
     if bounty_reserved_for_user:
@@ -596,6 +597,10 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details):
     new_bounty.is_featured = True if latest_old_bounty and latest_old_bounty.is_featured is True else False
     if new_bounty.is_featured == True:
         new_bounty.save()
+
+    latest_old_bounty.current_bounty = False
+    latest_old_bounty.save()
+
 
 def process_bounty_details(bounty_details):
     """Process bounty details.
