@@ -143,6 +143,15 @@
     document.bounty_amount_whole = {{bounty.get_value_true}};
     document.bounty_amount_wei = {{bounty.value_in_token}};
     document.token_address = '{{bounty.token_address}}';
+    {% if open_fulfillments %}
+      let fulfillers= [];
+
+      {% for fulfillment in open_fulfillments %}
+        fulfillers.push('{{ fulfillment.fulfiller_github_username }}');
+
+      {% endfor %}
+      sessionStorage['fulfillers'] = fulfillers;
+    {% endif %}
   </script>
 
   <!-- jQuery -->
