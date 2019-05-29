@@ -182,6 +182,7 @@ def grant_details(request, grant_id, grant_slug):
             form_profile = request.POST.get('edit-admin_profile')
             admin_profile = Profile.objects.get(handle=form_profile)
             grant.description = request.POST.get('edit-description')
+            grant.description_rich = request.POST.get('edit-description_rich')
             grant.amount_goal = Decimal(request.POST.get('edit-amount_goal'))
             team_members = request.POST.getlist('edit-grant_members[]')
             team_members.append(str(admin_profile.id))
@@ -265,6 +266,7 @@ def grant_new(request):
             grant_kwargs = {
                 'title': request.POST.get('title', ''),
                 'description': request.POST.get('description', ''),
+                'description_rich': request.POST.get('description_rich', ''),
                 'reference_url': request.POST.get('reference_url', ''),
                 'admin_address': request.POST.get('admin_address', ''),
                 'contract_owner_address': request.POST.get('contract_owner_address', ''),

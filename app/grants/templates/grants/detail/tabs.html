@@ -41,17 +41,14 @@
   </div>
 
   <div id="grant-profile-tabs-sections" class="tab-sections section pt-2">
-
     <div id="section-nav-description" class="tab-section active">
-      {% if is_admin and not grant_is_inactive %}
-        <textarea id="form--input__description" maxlength=5000 class="p-0 mt-2 inline-edit" disabled>
+      <div id="editor">
+        {% if grant.description_rich %}
+          {{ grant.description_rich }}
+        {% else %}
           {{ grant.description }}
-        </textarea>
-      {% else %}
-        <p class="grant__description font-subheader pr-lg-4 mb-5">
-          {{ grant.description }}
-        </p>
-      {% endif %}
+        {% endif %}
+      </div>
     </div>
 
     <div id="section-nav-transactions" class="tab-section">
@@ -89,3 +86,23 @@
     
   </div>
 </div>
+
+<script>
+  let grant_description;
+  {% if is_admin and not grant_is_inactive %}
+      grant_description = new Quill('#editor', {
+      theme: 'snow',
+    });
+    grant_description.enable(false);
+  {% else %}
+    grant_description = new Quill('#editor', {
+      theme: 'bubble',
+      readOnly: true,
+    });
+  {% endif %}
+
+  let desc = JSON.parse(grant_description.getContents().ops[0].insert);
+  if (desc.ops) {
+    grant_description.setContents(desc);
+  }
+</script>
