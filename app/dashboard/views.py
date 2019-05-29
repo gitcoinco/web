@@ -46,6 +46,7 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
+import magic
 from app.utils import clean_str, ellipses, get_default_network
 from avatar.utils import get_avatar_context_for_user
 from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, profile_helper
@@ -1767,6 +1768,11 @@ def profile_job_opportunity(request, handle):
     Args:
         handle (str): The profile handle.
     """
+    uploaded_file = request.FILES.get('job_cv')
+    error_response = invalid_file_response(uploaded_file, supported=['application/pdf'])
+    # 400 is ok because file upload is optional here
+    if error_response and error_response['status'] != '400':
+        return JsonResponse(error_response)
     try:
         profile = profile_helper(handle, True)
         profile.job_search_status = request.POST.get('job_search_status', None)
@@ -1788,6 +1794,29 @@ def profile_job_opportunity(request, handle):
     return JsonResponse(response)
 
 
+def invalid_file_response(uploaded_file, supported):
+    response = None
+    if not uploaded_file:
+        response = {
+            'status': 400,
+            'message': 'No File Found'
+        }
+    elif uploaded_file.size > 31457280:
+        # 30MB max file size
+        response = {
+            'status': 413,
+            'message': 'File Too Large'
+        }
+    else:
+        file_mime = magic.from_buffer(next(uploaded_file.chunks()), mime=True)
+        logger.info('uploaded file: %s' % file_mime)
+        if file_mime not in supported:
+            response = {
+                'status': 415,
+                'message': 'Invalid File Type'
+            }
+    return response
+
 @csrf_exempt
 @require_POST
 def bounty_upload_nda(request):
@@ -1796,9 +1825,14 @@ def bounty_upload_nda(request):
     Args:
         bounty_id (int): The bounty id.
     """
-    if request.FILES.get('docs', None):
+    uploaded_file = request.FILES.get('docs', None)
+    error_response = invalid_file_response(
+        uploaded_file, supported=['application/pdf',
+                                  'application/msword',
+                                  'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])
+    if not error_response:
         bountydoc = BountyDocuments.objects.create(
-            doc=request.FILES.get('docs', None),
+            doc=uploaded_file,
             doc_type=request.POST.get('doc_type', None)
         )
         response = {
@@ -1806,12 +1840,8 @@ def bounty_upload_nda(request):
             'bounty_doc_id': bountydoc.pk,
             'message': 'NDA saved'
         }
-    else:
-        response = {
-            'status': 400,
-            'message': 'No File Found'
-        }
-    return JsonResponse(response)
+
+    return JsonResponse(error_response) if error_response else JsonResponse(response)
 
 
 
