@@ -16,8 +16,10 @@
 
 '''
 from django.core.management.base import BaseCommand
-from dashboard.models import Bounty
+
 from dashboard.helpers import merge_bounty
+from dashboard.models import Bounty
+
 
 class Command(BaseCommand):
 
@@ -39,4 +41,3 @@ class Command(BaseCommand):
 
                     handled_bounties.append(evil_twin.pk)
                     merge_bounty(evil_twin, bounty, {}, {}, verbose=False)
-
