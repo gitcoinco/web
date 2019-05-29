@@ -231,6 +231,7 @@ class Bounty(SuperModel):
     project_length = models.CharField(max_length=50, choices=PROJECT_LENGTHS, blank=True)
     estimated_hours = models.PositiveIntegerField(blank=True, null=True)
     experience_level = models.CharField(max_length=50, choices=EXPERIENCE_LEVELS, blank=True)
+    bounty_category = models.CharField(max_length=255, blank=True)
     github_url = models.URLField(db_index=True)
     github_issue_details = JSONField(default=dict, blank=True, null=True)
     github_comments = models.IntegerField(default=0)

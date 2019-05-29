@@ -441,6 +441,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     timezone=UTC),
                 'title': bounty_payload.get('title', ''),
                 'issue_description': bounty_payload.get('description', ' '),
+                'bounty_category': bounty_payload.get('bounty_category', ''),
                 'balance': bounty_details.get('balance'),
                 'contract_address': bounty_details.get('token'),
                 'network': bounty_details.get('network'),
@@ -477,7 +478,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     'github_comments', 'override_status', 'last_comment_date', 'snooze_warnings_for_days',
                     'admin_override_and_hide', 'admin_override_suspend_auto_approval', 'admin_mark_as_remarket_ready',
                     'funding_organisation', 'bounty_reserved_for_user', 'is_featured', 'featuring_date', 'fee_tx_id',
-                    'fee_amount', 'repo_type', 'unsigned_nda'
+                    'fee_amount', 'repo_type', 'unsigned_nda', 'bounty_category'
                 ],
             )
             if latest_old_bounty_dict['bounty_reserved_for_user']:

@@ -479,6 +479,7 @@ $('#submitBounty').validate({
         fee_tx_id: '0x0',
         // optional fields
         metadata: metadata,
+        bounty_category: data.bounty_category,
         tokenName: tokenName,
         tokenAddress: tokenAddress,
         expire_date: expire_date
