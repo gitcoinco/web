@@ -1,5 +1,9 @@
 /* eslint-disable no-console */
 
+let description = new Quill('#input-description', {
+  theme: 'snow'
+});
+
 $(document).ready(function() {
   if (web3 && web3.eth) {
     web3.eth.net.isListening((error, connectionStatus) => {
@@ -82,7 +86,6 @@ const init = () => {
         data[this.name] = this.value;
       });
 
-
       $('#token_symbol').val($('#js-token option:selected').text());
       $('#token_address').val($('#js-token option:selected').val());
 
@@ -153,7 +156,8 @@ const init = () => {
             formData.append('input_image', file);
             formData.append('transaction_hash', $('#transaction_hash').val());
             formData.append('title', $('#input_title').val());
-            formData.append('description', $('#input-description').val());
+            formData.append('description', description.getText());
+            formData.append('description_rich', JSON.stringify(description.getContents()));
             formData.append('reference_url', $('#input-url').val());
             formData.append('admin_address', $('#input-admin_address').val());
             formData.append('contract_owner_address', $('#contract_owner_address').val());

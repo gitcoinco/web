@@ -79,6 +79,7 @@ class Grant(SuperModel):
     title = models.CharField(default='', max_length=255, help_text=_('The title of the Grant.'))
     slug = AutoSlugField(populate_from='title')
     description = models.TextField(default='', blank=True, help_text=_('The description of the Grant.'))
+    description_rich = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
     reference_url = models.URLField(blank=True, help_text=_('The associated reference URL of the Grant.'))
     logo = models.ImageField(
         upload_to=get_upload_filename,
