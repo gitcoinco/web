@@ -53,8 +53,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if settings.DEBUG:
-           print("not active in non prod environments")
-           return
+            print("not active in non prod environments")
+            return
         hours_back = 24
         eses = EmailSubscriber.objects.filter(active=True)
         print("got {} emails".format(eses.count()))

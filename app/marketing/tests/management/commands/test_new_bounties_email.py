@@ -72,5 +72,5 @@ class TestNewBountiesEmail(TestCase):
 
     def test_get_bounties_for_keywords(self):
         """Test get_bounties_for_keywords function to confirm a bounty reserved for a specific user is excluded."""
-        new_bounties, all_bounties = get_bounties_for_keywords('Python',24)
+        new_bounties, _all_bounties = get_bounties_for_keywords('Python',24)
         assert new_bounties.count() == 1
