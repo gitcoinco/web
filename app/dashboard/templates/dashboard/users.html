@@ -133,7 +133,7 @@
                   </div>
                   <img class="rounded-circle shadow-sm mx-auto mt-n5 mb-3 bg-white" width="113" height="113" :src="`/dynamic/avatar/${ user.handle }`"/>
                   <h5 class="text-center card-user_name">
-                    [[ user.data.name || user.handle ]]
+                    [[ user.name || user.handle ]]
                     <span v-if="user.verification">
                       <img src="{% static 'v2/images/badge-verify.svg' %}" width="15" height="15" title="Verified user" alt="verify badget">
                     </span>
@@ -159,23 +159,21 @@
                     </template>
                   </div>
                   <div class="text-center my-1 font-smaller-1">
-                    <a :href="`${ user.data.html_url }?tab=repositories`" target="_blank" rel="noopener noreferrer" >
+                    <a :href="`https://github.com/${ user.handle }`" target="_blank" rel="noopener noreferrer" >
                       <i class="fab fa-github"></i>
                     </a>
-                    <a :href="`${ user.data.blog }`" target="_blank" rel="noopener noreferrer" v-if="user.data.blog">
+                    <a :href="`${ user.blog }`" target="_blank" rel="noopener noreferrer" v-if="user.blog">
                       <i class="fas fa-home"></i>
-                    </a>
-                    <a :href="`mailto:${ user.data.email }`" v-if="user.data.email">
-                      <i class="far fa-envelope"></i>
                     </a>
                     <a :href="`https://www.linkedin.com/in/${ user.linkedin_url }`" v-if="user.linkedin_url">
                       <i class="fab fa-linkedin-in"></i>
                     </a>
                   </div>
                   <div class="text-center" id="job_status" v-if="user.show_job_status">
-                    <a :href="`${media_url}${user.resume}`" download data-toggle="tooltip" title="Download resume">
+                    <a v-if="user.resume && user.job_search_status !== 'N'" :href="`${media_url}${user.resume}`" download data-toggle="tooltip" title="Download resume">
                       <i class="fa fa-briefcase mr-2" aria-hidden="true"></i> [[ user.job_status ]]
                     </a>
+                    <span v-else><i class="fa fa-briefcase mr-2" aria-hidden="true"></i> [[ user.job_status ]]</span>
                   </div>
                   <div class="text-center">
                     <span v-if="user.position_contributor > 0"><b>#[[ user.position_contributor ]]</b> contributor</span>  <span v-if="user.position_funder > 0"><b>#[[ user.position_funder ]]</b> funder</span>
@@ -199,7 +197,7 @@
           <div class="d-flex flex-column align-items-center">
             <h6 class="font-weight-bold mb-3">Invite User to Bounty</h6>
             <img class="rounded-circle mx-auto mb-3" width="64" height="64" :src="`/dynamic/avatar/${ userSelected.handle }`"/>
-            <span>[[ userSelected.data.name ]]</span>
+            <span>[[ userSelected.name ]]</span>
             <a :href="`/profile/${ userSelected.handle }`" class="text-center d-block" target="_blank">
               [[ userSelected.handle ]]
             </a>
