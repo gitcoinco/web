@@ -354,7 +354,7 @@ $('#specialEvent').on('click', () => {
 
 $('#submitBounty').validate({
   errorPlacement: function(error, element) {
-    if (element.attr("name") == "bounty_category") {
+    if (element.attr('name') == 'bounty_category') {
       error.appendTo($(element).parents('.btn-group-toggle').next('.cat-error'));
     } else {
       error.insertAfter(element);

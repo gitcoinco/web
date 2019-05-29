@@ -80,7 +80,11 @@ $(document).ready(function() {
 
       inputElements.removeAttr('disabled');
       $.each($(form).serializeArray(), function() {
-        formData[this.name] = this.value;
+        if (formData[this.name]) {
+          formData[this.name] += ',' + this.value;
+        } else {
+          formData[this.name] = this.value;
+        }
       });
       inputElements.attr('disabled', 'disabled');
 
