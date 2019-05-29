@@ -783,7 +783,7 @@ def users_fetch(request):
                 previous_worked_count=Count('fulfilled', filter=Q(
                     fulfilled__bounty__network=network,
                     fulfilled__accepted=True,
-                    fulfilled__bounty__bounty_owner_github_username__iexact=current_user.username
+                    fulfilled__bounty__bounty_owner_github_username__iexact=current_user.profile.handle
                 ))
             ).order_by(
                 '-previous_worked_count',
@@ -850,7 +850,7 @@ def users_fetch(request):
         previously_worked_with = 0
         if current_user:
             previously_worked_with = BountyFulfillment.objects.filter(
-                bounty__bounty_owner_github_username__iexact=current_user.username,
+                bounty__bounty_owner_github_username__iexact=current_user.profile.handle,
                 fulfiller_github_username__iexact=user.handle,
                 bounty__network=network,
                 accepted=True
