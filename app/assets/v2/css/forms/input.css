@@ -23,7 +23,8 @@ textarea.form__input {
 }
 
 .form__input + label.error,
-.cat-error .error {
+.cat-error .error,
+.form__select2 .error {
   color: #D50000;
   margin-bottom: 0;
   display: block;

@@ -360,6 +360,12 @@ $('#submitBounty').validate({
       error.insertAfter(element);
     }
   },
+  ignore: '',
+  messages: {
+    select2Start: {
+      required: "Please select the right keywords.",
+    }
+  },
   submitHandler: function(form) {
     try {
       bounty_address();
