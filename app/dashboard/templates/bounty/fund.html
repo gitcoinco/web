@@ -162,29 +162,26 @@
             </div>
             <div class="mt-4">
               <label class="font-caption letter-spacing text-black-60 text-uppercase" for=issueURL>{% trans "Bounty category" %} <span class="badge badge-greylight text-capitalize">Required</span></label>
-              <p class="font-body">Pick the best categories of the bounty to get the right contributors</p>
+              <p class="font-body">Pick the most accurate categories for this bounty to get the right contributors</p>
 
               <div class="btn-group-toggle" data-toggle="buttons">
-                <label class="btn btn-radio frontend mr-2 font-weight-bold py-2 px-4">
-                  <input type="checkbox" name="repo_category" id="frontend_cat" value="frontend" autocomplete="off" required><i class="fas fa-laptop-code mr-2"></i> {% trans "Front End" %}
+                <label class="btn btn-radio frontend mr-2 font-weight-bold py-2 px-4" for="frontend_cat">
+                  <input type="checkbox" name="bounty_category" id="frontend_cat" value="frontend" autocomplete="off" required><i class="fas fa-laptop-code mr-2"></i> {% trans "Front End" %}
                 </label>
-                <div class="invalid-feedback">
-                    Please choose a category.
-                  </div>
                 <label class="btn btn-radio backend mr-2 font-weight-bold py-2 px-4 ">
-                  <input type="checkbox" name="repo_category" id="backend_cat" value="backend" autocomplete="off" required><i class="fas fa-code mr-2"></i> {% trans "Back End" %}
+                  <input type="checkbox" name="bounty_category" id="backend_cat" value="backend" autocomplete="off" required><i class="fas fa-code mr-2"></i> {% trans "Back End" %}
                 </label>
                 <label class="btn btn-radio design mr-2 font-weight-bold py-2 px-4 ">
-                  <input type="checkbox" name="repo_category" id="design_cat" value="design" autocomplete="off" required><i class="fas fa-pencil-ruler mr-2"></i> {% trans "Design" %}
+                  <input type="checkbox" name="bounty_category" id="design_cat" value="design" autocomplete="off" required><i class="fas fa-pencil-ruler mr-2"></i> {% trans "Design" %}
                 </label>
                 <label class="btn btn-radio doc mr-2 font-weight-bold py-2 px-4 ">
-                  <input type="checkbox" name="repo_category" id="doc_cat" value="doc" autocomplete="off" required><i class="fas fa-file-alt mr-2"></i> {% trans "Documentation" %}
+                  <input type="checkbox" name="bounty_category" id="doc_cat" value="doc" autocomplete="off" required><i class="fas fa-file-alt mr-2"></i> {% trans "Documentation" %}
                 </label>
                 <label class="btn btn-radio other font-weight-bold py-2 px-4 ">
-                  <input type="checkbox" name="repo_category" id="other_cat" value="other" autocomplete="off" required><i class="fas fa-briefcase mr-2"></i> {% trans "Other" %}
+                  <input type="checkbox" name="bounty_category" id="other_cat" value="other" autocomplete="off" required><i class="fas fa-briefcase mr-2"></i> {% trans "Other" %}
                 </label>
-
               </div>
+              <div class="cat-error"></div>
 
             </div>
             <div class="mt-4">
@@ -406,7 +403,7 @@
   </div>
   {% include 'shared/bottom_notification.html' %}
   {% include 'shared/analytics.html' %}
-  {% include 'shared/footer_scripts.html' %}
+  {% include 'shared/footer_scripts_lite.html' %}
   {% include 'shared/footer.html' %}
   {% include 'shared/messages.html' %}
 </body>
@@ -416,6 +413,8 @@
 <script>
   document.FEE_PERCENTAGE = {{ FEE_PERCENTAGE }};
 </script>
+<script src="{% static "v2/js/lib/jquery.validate.min.js" %}"></script>
+<script src="{% static "v2/js/shared.js" %}"></script>
 
 <script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>
 <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
@@ -424,8 +423,8 @@
 <script src="{% static "v2/js/abi.js" %}"></script>
 <script src="/dynamic/js/tokens_dynamic.js"></script>
 <script src="{% static "v2/js/tokens.js" %}"></script>
-<script src="{% static "v2/js/lib/popper.min.js" %}"></script>
-<script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+<!-- <script src="{% static "v2/js/lib/popper.min.js" %}"></script> -->
+<!-- <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script> -->
 <script src="{% static "v2/js/user-search.js" %}"></script>
 <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
 <script src="{% static "v2/js/pages/new_bounty.js" %}"></script>

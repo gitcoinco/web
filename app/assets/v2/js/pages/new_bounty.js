@@ -353,12 +353,14 @@ $('#specialEvent').on('click', () => {
 });
 
 $('#submitBounty').validate({
+  errorPlacement: function(error, element) {
+    if (element.attr("name") == "bounty_category") {
+      error.appendTo($(element).parents('.btn-group-toggle').next('.cat-error'));
+    } else {
+      error.insertAfter(element);
+    }
+  },
   submitHandler: function(form) {
-    // console.log(form.checkValidity())
-    // if (form.checkValidity() === false) {
-    //   event.preventDefault();
-    //   event.stopPropagation();
-    // }
     try {
       bounty_address();
     } catch (exception) {
