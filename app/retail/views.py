@@ -673,15 +673,6 @@ def about(request):
             "Cocktail Samosa"
         ),
         (
-            static("v2/images/team/saptaks.jpg"),
-            "Saptak Sengupta",
-            "Engineering",
-            "saptaks",
-            "saptaks",
-            "Everything Open Source",
-            "daab chingri"
-        ),
-        (
             static("v2/images/team/scott.jpg"),
             "Scott Moore",
             "Biz Dev",
