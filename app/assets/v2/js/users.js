@@ -126,8 +126,9 @@ Vue.mixin({
     },
     inviteOnMount: function() {
       let vm = this;
+
       vm.contributorInvite = getURLParams('invite');
-      vm.currentBounty = getURLParams('current-bounty')
+      vm.currentBounty = getURLParams('current-bounty');
 
       if (vm.contributorInvite) {
         let api = `/api/v0.1/users_fetch/?search=${vm.contributorInvite}`;
