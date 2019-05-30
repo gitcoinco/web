@@ -460,7 +460,8 @@ $('#submitBounty').validate({
       featuring_date: data.featuredBounty && ((new Date().getTime() / 1000) | 0) || 0,
       reservedFor: reservedFor ? reservedFor.text : '',
       tokenName,
-      invite: inviteContributors
+      invite: inviteContributors,
+      bounty_categories: data.bounty_category
     };
 
     var privacy_preferences = {
