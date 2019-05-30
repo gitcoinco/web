@@ -933,8 +933,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "April BUIDL brings May SHIPL!"
-    new_kudos_pks = [2573, 2565, 2617]
+    subject = "GitHub Sponsors and Store!"
+    new_kudos_pks = [2414, 2223, 2220]
     new_kudos_size_px = 150
 
     kudos_friday = f'''
@@ -949,26 +949,24 @@ def render_new_bounty_roundup(to_email):
 Hi Gitcoiners,
 </p>
 <p>
-This week, we reflected on the <a href="https://gitcoin.co/blog/gitcoins-april-product-update/" target="_blank">product updates and progress we made in April.</a> The core team shipped a <a href="https://gitcoin.co/users">user directory</a>, a system to invite contributors to bounties, and more. Some assorted improvements:
+This past week was an exciting week for open source, as GitHub released <a href="https://github.com/sponsors">Sponsors</a>, a way for users to find ways to financially support developers or open source projects. As proponents of open source, we couldn't be happier, and
+we're excited to announce that you can proudly display your Gitcoin Grants page via the sponsor link. <a href="https://medium.com/gitcoin/gitcoin-grants-github-sponsors-b516192c048">Check out this tutorial to learn more.</a>
 </p>
 <p>
-- <a href="https://gitcoin.co/grants/" target="_blank">Gitcoin Grants</a> now has a fresh new look! The Grants Detail page now separates out the description of the grant, the latest contributions, milestones, and contribution profiles for every grant under separate tabs. You can easily click through the tabs and see the organized information for each grant.
+We have a store now! Grab some swag at <a href="https://store.gitcoin.co/">https://store.gitcoin.co/</a>. We have backpacks, stickers, t-shirts, and more.
 </p>
 <p>
-- Github just launched a product that allows their users to sponsor each other.  We are thrilled to see Github care about OSS Sustainability, and are proud to offer a guide about how to integrate Gitcoin Grants into Github Sponsor. <a href="https://medium.com/gitcoin/gitcoin-grants-github-sponsors-b516192c048" target="_blank">Learn how here</a>.
-</p>
-<p>
-- We also now have a way to get a glimpse into a Gitcoiner through the brand new <a href="http://bits.owocki.com/dd38676964a8/Image%202019-05-23%20at%2012.51.37%20PM.png">preview cards</a>. See their name, development specialty, web3 projects they’ve contributed to, amount earned, bounties completed, in progress, latest activity, and more by hovering over their user. Thanks to @iamonuwa for helping us build this out!
+Last week, we released an article about finding the best freelance gigs in 2019. Read it on our blog <a href="https://gitcoin.co/blog/hiring-gig-economy/finding-best-freelance-jobs-for-coders-in-2019/">here.</a>
 </p>
 
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Watch this <a href="https://www.youtube.com/watch?v=Fk8hVxZzNCk&feature=youtu.be" target="_blank">wrap up video</a> from Ethereal NY and hear more about what we were up to.
+            Hackathon season is here! We’re looking for new sponsors for the next hackathon. Interested? Reach out to <a href="mailto:scott@gitcoin.co">Scott.</a>
         </li>
         <li>
-            The Gitcoin Livestream is back this week. Join us <a href="https://gitcoin.co/livestream"> at 2PM ET on Friday, or catch it on <a href="https://twitter.com/gitcoin">Twitter</a>!
+            Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET on Friday, or catch it on <a href="https://twitter.com/gitcoin">Twitter</a>!
         </li>
     </ul>
 </p>
@@ -978,34 +976,34 @@ Back to shipping,
 
 '''
     highlights = [{
-        'who': 'industral',
+        'who': 'janus',
         'who_link': True,
-        'what': 'MetaMask improvements from Industrial',
-        'link': 'https://gitcoin.co/issue/MetaMask/metamask-extension/5524/2980',
+        'what': 'Work from janus on WalletConnect!',
+        'link': 'https://gitcoin.co/issue/WalletConnect/walletconnect-monorepo/128/3030',
         'link_copy': 'View more',
     }, {
-        'who': 'xiaods',
+        'who': 'touhonoob',
         'who_link': True,
-        'what': 'Bug fixes galore!',
-        'link': 'https://gitcoin.co/issue/rook/rook/3190/2998',
+        'what': 'Dynamic Log Control Added!',
+        'link': 'https://gitcoin.co/issue/harmony-one/harmony/440/2973',
         'link_copy': 'View more',
     }, {
-        'who': 'muyaedward',
+        'who': 'noah-amar',
         'who_link': True,
-        'what': 'StackOverflow question answers funded via Gitcoin!',
-        'link': 'https://gitcoin.co/issue/VexyCats/Gitcoin_Bounties/1/2983',
+        'what': 'Quick Fix: Reduce Community Hero Image Height To 250px',
+        'link': 'https://gitcoin.co/issue/Native-Protocol/bounties/1/3033',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/WalletConnect/web3connect/issues/14',
-        'primer': 'Add missing images to WalletConnect',
+        'url': 'https://github.com/gitcoinco/web/issues/4483',
+        'primer': 'Design the Gitcoin Bots for 2019!',
     }, {
-        'url': 'https://github.com/status-im/status-react/issues/7633',
-        'primer': 'Use React-Native-Fast-Image to add remote images',
+        'url': 'https://github.com/centrifuge/precise-proofs/issues/86',
+        'primer': 'Implement A ZkSNARK Compatible Pedersen Hash Function',
     }, {
-        'url': 'https://github.com/julienbrg/hasard/issues/1',
-        'primer': 'Create an on-demand random number generator based on noise using iExec',
+        'url': 'https://github.com/blockscout/research/issues/1',
+        'primer': 'Swarm Scraper For Verified Smart Contracts',
     }, ]
 
     num_leadboard_items = 5
