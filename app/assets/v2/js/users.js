@@ -126,10 +126,11 @@ Vue.mixin({
     },
     inviteOnMount: function() {
       let vm = this;
-      let contributor = getURLParams('invite');
+      vm.contributorInvite = getURLParams('invite');
+      vm.currentBounty = getURLParams('current-bounty')
 
-      if (contributor) {
-        let api = `/api/v0.1/users_fetch/?search=${contributor}`;
+      if (vm.contributorInvite) {
+        let api = `/api/v0.1/users_fetch/?search=${vm.contributorInvite}`;
         let getUsers = fetchData (api, 'GET');
 
         $.when(getUsers).then(function(response) {
@@ -158,6 +159,8 @@ if (document.getElementById('gc-users-directory')) {
       bottom: false,
       params: {},
       funderBounties: [],
+      currentBounty: undefined,
+      contributorInvite: undefined,
       isFunder: false,
       bountySelected: null,
       userSelected: [],
