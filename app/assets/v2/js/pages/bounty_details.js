@@ -1586,7 +1586,7 @@ const show_invite_users = () => {
         <div class="invite-user">
           <img class="avatar" src="/dynamic/avatar/${users}" />
           <p class="mt-4">
-            <a target="_blank" class="btn btn-gc-blue shadow-none py-2 px-4" href="/users?invite=${user}">
+            <a target="_blank" class="btn btn-gc-blue shadow-none py-2 px-4" href="/users?invite=${user}&current-bounty=${document.result.pk}">
               Yes, invite to one of my bounties
             </a>
           </p>
@@ -1608,7 +1608,7 @@ const show_invite_users = () => {
                 ${user}
               </a>
             </p>
-            <a target="_blank" class="btn btn-gc-blue shadow-none px-4 font-body font-weight-semibold" href="/users?invite=${user}">
+            <a target="_blank" class="btn btn-gc-blue shadow-none px-4 font-body font-weight-semibold" href="/users?invite=${user}&current-bounty=${document.result.pk}"">
               Invite
             </a>
           </div>`;
