@@ -113,6 +113,7 @@ INSTALLED_APPS = [
     'revenue',
     'event_ethdenver2019',
     'inbox',
+    'feeswapper',
 ]
 
 MIDDLEWARE = [
@@ -696,3 +697,10 @@ if ENABLE_SILK:
             'name': 'Index View',
         }]
     SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT = env.int('SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT', default=10)
+
+# Gitcoin Bounty Funding Fee settings
+FEE_ADDRESS = env('FEE_ADDRESS', default='')
+FEE_ADDRESS_PRIVATE_KEY = env('FEE_ADDRESS_PRIVATE_KEY', default='')
+SLIPPAGE = env.float('SLIPPAGE', default=0.05)
+UNISWAP_LIQUIDITY_FEE = env.float('UNISWAP_LIQUDITY_FEE', default=0.003)
+UNISWAP_TRADE_DEADLINE = env.int('UNISWAP_TRADE_DEADLINE', default=300)
