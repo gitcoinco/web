@@ -49,7 +49,7 @@ class Command(BaseCommand):
             es = EmailSubscriber.objects.filter(email=profile.email).exclude(keywords=[]).first()
             if es:
                 print("2", es.keywords, profile.handle)
-                profile.keywords = es.keywords
+                profile.keywords = es.keywords + profile.keywords
                 profile.save()
 
         # pull keywords by profile into ES
@@ -57,7 +57,7 @@ class Command(BaseCommand):
             profile = Profile.objects.filter(email=es.email).exclude(keywords=[]).first()
             if profile:
                 print("3", profile.keywords, profile.handle)
-                es.keywords = profile.keywords
+                es.keywords = es.keywords + profile.keywords
                 es.save()
 
         #TODO: if a profile / emailsubscriber both have keywords we need to merge them
