@@ -23,10 +23,17 @@ $(document).ready(function() {
       case 'checkbox':
         ctrl.each(function() {
           $(this).prop('checked', value);
+          if (value.length) {
+            $.each(value, function(key, val) {
+              $(`.${val}`).button('toggle');
+            });
+          }
         });
         break;
       default:
-        ctrl.val(value);
+        if (value) {
+          ctrl.val(value);
+        }
     }
   });
 
