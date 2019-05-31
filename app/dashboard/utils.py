@@ -24,7 +24,7 @@ from json.decoder import JSONDecodeError
 
 from django.conf import settings
 
-import ipfsapi
+import ipfshttpclient
 import requests
 from app.utils import sync_profile
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
@@ -32,7 +32,7 @@ from dashboard.models import Activity, BlockedUser, Bounty, Profile, UserAction
 from eth_utils import to_checksum_address
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from hexbytes import HexBytes
-from ipfsapi.exceptions import CommunicationError
+from ipfshttpclient.exceptions import CommunicationError
 from web3 import HTTPProvider, Web3, WebsocketProvider
 from web3.exceptions import BadFunctionCallOutput
 from web3.middleware import geth_poa_middleware
@@ -196,14 +196,14 @@ def get_ipfs(host=None, port=settings.IPFS_API_PORT):
             communication error with IPFS.
 
     Returns:
-        ipfsapi.client.Client: The IPFS connection client.
+        ipfshttpclient.client.Client: The IPFS connection client.
 
     """
     if host is None:
         host = f'https://{settings.IPFS_HOST}'
 
     try:
-        return ipfsapi.connect(host, port)
+        return ipfshttpclient.connect(host, port)
     except CommunicationError as e:
         logger.exception(e)
         raise IPFSCantConnectException('Failed while attempt to connect to IPFS')
