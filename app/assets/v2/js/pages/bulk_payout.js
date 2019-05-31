@@ -359,6 +359,7 @@ const getFulfillers = () => {
     fulfillers.push($('.new-user option')[i].innerHTML);
   }
   sessionStorage['fulfillers'] = fulfillers;
+  sessionStorage['bountyId'] = $('#bountyId').val();
 };
 
 $(document).on('click', '.user-fulfiller', function(event) {
