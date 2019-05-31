@@ -110,21 +110,6 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'bounty_requests',
     'perftools',
-    # wagtail
-    'taggit',
-    'modelcluster',
-    'wagtail.contrib.forms',
-    'wagtail.contrib.redirects',
-    'wagtail.embeds',
-    'wagtail.sites',
-    'wagtail.users',
-    'wagtail.snippets',
-    'wagtail.documents',
-    'wagtail.images',
-    'wagtail.search',
-    'wagtail.admin',
-    'wagtail.core',
-    'cms',
     'revenue',
     'event_ethdenver2019',
     'inbox',
@@ -135,6 +120,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'app.middleware.drop_accept_langauge',
+    'app.middleware.bleach_requests',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -144,8 +130,6 @@ MIDDLEWARE = [
     'ratelimit.middleware.RatelimitMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',
     'impersonate.middleware.ImpersonateMiddleware',
-    'wagtail.core.middleware.SiteMiddleware',
-    'wagtail.contrib.redirects.middleware.RedirectMiddleware'
 ]
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
@@ -593,6 +577,15 @@ KUDOS_NETWORK = env('KUDOS_NETWORK', default='mainnet')
 # Grants
 GRANTS_OWNER_ACCOUNT = env('GRANTS_OWNER_ACCOUNT', default='0xD386793F1DB5F21609571C0164841E5eA2D33aD8')
 GRANTS_PRIVATE_KEY = env('GRANTS_PRIVATE_KEY', default='')
+GRANTS_SPLITTER_ROPSTEN = env('GRANTS_SPLITTER_ROPSTEN', default='0xe2fd6dfe7f371e884e782d46f043552421b3a9d9')
+GRANTS_SPLITTER_MAINNET = env('GRANTS_SPLITTER_MAINNET', default='0xdf869FAD6dB91f437B59F1EdEFab319493D4C4cE')
+GRANTS_NETWORK = env('GRANTS_NETWORK', default='mainnet')
+GITCOIN_DONATION_ADDRESS = env('GITCOIN_DONATION_ADDRESS', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
+SPLITTER_CONTRACT_ADDRESS = ''
+if GRANTS_NETWORK == 'mainnet':
+    SPLITTER_CONTRACT_ADDRESS = GRANTS_SPLITTER_MAINNET
+else:
+    SPLITTER_CONTRACT_ADDRESS = GRANTS_SPLITTER_ROPSTEN
 
 METATX_GAS_PRICE_THRESHOLD = float(env('METATX_GAS_PRICE_THRESHOLD', default='10000.0'))
 
@@ -642,7 +635,7 @@ if not AWS_S3_OBJECT_PARAMETERS:
     AWS_S3_OBJECT_PARAMETERS = {'CacheControl': f'max-age={AWS_S3_CACHE_MAX_AGE}', }
 
 CORS_ORIGIN_ALLOW_ALL = False
-CORS_ORIGIN_WHITELIST = ('sumo.com', 'load.sumo.com', 'googleads.g.doubleclick.net', 'gitcoin.co', )
+CORS_ORIGIN_WHITELIST = ('sumo.com', 'load.sumo.com', 'googleads.g.doubleclick.net', 'gitcoin.co', 'github.com', )
 CORS_ORIGIN_WHITELIST = CORS_ORIGIN_WHITELIST + (AWS_S3_CUSTOM_DOMAIN, MEDIA_CUSTOM_DOMAIN, )
 
 S3_REPORT_BUCKET = env('S3_REPORT_BUCKET', default='')  # TODO
@@ -701,6 +694,3 @@ if ENABLE_SILK:
             'name': 'Index View',
         }]
     SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT = env.int('SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT', default=10)
-
-TAGGIT_CASE_INSENSITIVE = env.bool('TAGGIT_CASE_INSENSITIVE', default=True)
-WAGTAIL_SITE_NAME = 'Gitcoin'

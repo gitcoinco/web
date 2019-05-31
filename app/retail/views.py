@@ -36,7 +36,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from app.utils import get_default_network
 from cacheops import cached_as, cached_view, cached_view_as
-from dashboard.models import Activity, Profile
+from dashboard.models import Activity, Bounty, Profile
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from economy.models import Token
 from marketing.mails import new_funding_limit_increase_request, new_token_request
@@ -64,7 +64,15 @@ def get_activities(tech_stack=None, num_activities=15):
     activities = activities[0:num_activities]
     return [a.view_props for a in activities]
 
+
 def index(request):
+
+    user = request.user.profile if request.user.is_authenticated else None
+    is_new_funder = True
+
+    if user and Bounty.objects.filter(bounty_owner_github_username=user).count() > 0:
+        is_new_funder = False
+
     products = [
         {
             'group' : 'grow_oss',
@@ -198,11 +206,12 @@ def index(request):
     ]
 
     context = {
+        'is_new_funder': is_new_funder,
         'products': products,
         'know_us': know_us,
         'press': press,
         'articles': articles,
-        'title': _('Grow Open Source: Find Freelance Developers & Open Source Bug Bounties - Gitcoin')
+        'title': _('Grow Open Source: Get crowdfunding and find freelance developers for your software projects, paid in crypto')
     }
     return TemplateResponse(request, 'home/index.html', context)
 
@@ -325,6 +334,7 @@ def subscribe(request):
         'gas_advisories': gas_advisories(),
     }
     return TemplateResponse(request, 'pricing/subscribe.html', context)
+
 
 def funder_bounties_redirect(request):
     return redirect(funder_bounties)
@@ -554,9 +564,12 @@ def contributor_bounties(request, tech_stack):
             { 'link': "/design", 'text': "Design"},
             { 'link': "/html", 'text': "HTML"},
             { 'link': "/ruby", 'text': "Ruby"},
-            { 'link': "/css", 'text': "CSS"},            
+            { 'link': "/css", 'text': "CSS"},
         ]
     }
+
+    if tech_stack == 'new':
+        return redirect('new_funding_short')
 
     try:
         new_context = JSONStore.objects.get(view='contributor_landing_page', key=tech_stack).data
@@ -988,6 +1001,8 @@ def results(request, keyword=None):
         raise Http404
     context = JSONStore.objects.get(view='results', key=keyword).data
     context['is_outside'] = True
+    import json
+    context['kudos_tokens'] = [json.loads(obj) for obj in context['kudos_tokens']]
     context['avatar_url'] = static('v2/images/results_preview.gif')
     return TemplateResponse(request, 'results.html', context)
 
@@ -1338,6 +1353,7 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
     }
     return TemplateResponse(request, 'help.html', context)
 
+
 def verified(request):
     user = request.user if request.user.is_authenticated else None
     profile = request.user.profile if user and hasattr(request.user, 'profile') else None
@@ -1348,6 +1364,7 @@ def verified(request):
         'profile': profile,
     }
     return TemplateResponse(request, 'verified.html', context)
+
 
 def presskit(request):
 
@@ -1512,6 +1529,7 @@ def slack(request):
                 context['msg'] = _('Invalid email')
 
     return TemplateResponse(request, 'slack.html', context)
+
 
 @csrf_exempt
 def newtoken(request):

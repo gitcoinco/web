@@ -58,12 +58,12 @@
         {% endfor  %}
       </div>
     </section>
-    <script src="{% static "v2/js/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+    <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
   </body>
   {% include 'shared/analytics.html' %}
   {% include 'shared/footer_scripts.html' %}
   {% include 'shared/footer.html' %}
-  <script src="{% static "v2/js/jquery-unveil.js" %}"></script>
+  <script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
   <script>
   $(document).ready(function() {
     $("img").unveil(200);

@@ -30,7 +30,8 @@
       </div>
 
       <div class="col-12 offset-md-1 col-md-10 offset-lg-1 col-lg-8 body">
-        {% include 'shared/bounty_waiting_state.html' with can_close=True %}
+        {% include 'shared/waiting_state.html' %}
+
         <div class="row nonefound" style="display:none;">
           <img src="{% static "v2/images/shrug_bot.png" %}">
           <h3>{% trans "No funded issue found." %}</h3>
@@ -38,16 +39,6 @@
           <br>
           <h6>{% trans "Be the OSS Funding you wish to see in the world." %}</h6>
           <p id='submitsolicitation'>{% url 'new_funding' as new_fundingurl %}{% blocktrans %} Looking to fund some work?  You can submit a new Funded Issue <a href="{{ new_fundingurl }}">here</a>.{% endblocktrans %}</p>
-        </div>
-
-        <div class="row ml-2 mr-2 pl-4 pr-4 waiting_room_entertainment" style="display: none;">
-          {% include 'shared/rain.html' with class="color" %}
-          <div class="quote-container">
-            <img src="{% static "v2/images/quotes.png" %}" style="float: left; max-width: 22px;" />
-            <div class="quote_text"></div>
-            <div class="quote_author"></div>
-            <input id="quoteRefresh" class="button button--primary" name="refresh" type='submit' onclick='javascript:waitingRoomEntertainment()' value="Refresh Quote" >
-          </div>
         </div>
 
         <div class="col-12" id="moderator-admin-actions"></div>
@@ -440,13 +431,13 @@
   </script>
 
   <!-- jQuery -->
-  <script src="{% static "v2/js/showdown.js" %}"></script>
+  <script src="{% static "v2/js/lib/showdown.js" %}"></script>
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
   <script src="{% static "v2/js/amounts.js" %}"></script>
-  <script src="{% static "v2/js/popper.min.js" %}"></script>
-  <script src="{% static "v2/js/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+  <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
+  <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
   <script src="{% static "v2/js/clipboard.js" %}"></script>
   <script>
     let bootstrapTooltip = $.fn.tooltip.noConflict()
@@ -465,7 +456,7 @@
   <script src="{% static "v2/js/pages/bounty_share.js" %}"></script>
   <script src="{% static "v2/js/pages/bounty_details.js" %}"></script>
   <script src="{% static "v2/js/user_popover.js" %}"></script>
-  <script src="{% static "v2/js/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
   <script src="{% static "v2/js/user-search.js" %}"></script>
   <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>

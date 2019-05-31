@@ -58,12 +58,12 @@
             <h3 class="chart_container__title">{% trans "and by Type" %}</h3>
             <div class="chart_container__content chart_container--flex">
               <div class="bounty-status-list">
-                <p><span class="box box_1"></span> {% trans "Bounties" %}</p>
-                <p><span class="box box_2"></span> {% trans "Tips" %}</p>
-                <p><span class="box box_3"></span> {% trans "Grants" %}</p>
-                <p><span class="box box_4"></span> {% trans "Kudos" %}</p>
-                <p><span class="box box_5"></span> {% trans "Ads" %}</p>
-                <p><span class="box box_6"></span> {% trans "Ecosystem" %}</p>
+                <p><span class="box box_1"></span> &nbsp;&nbsp;&nbsp;{% trans "Bounties" %}</p>
+                <p><span class="box box_2"></span> &nbsp;&nbsp;&nbsp;{% trans "Tips" %}</p>
+                <p><span class="box box_3"></span> &nbsp;&nbsp;&nbsp;{% trans "Grants" %}</p>
+                <p><span class="box box_4"></span> &nbsp;&nbsp;&nbsp;{% trans "Kudos" %}</p>
+                <p><span class="box box_5"></span> &nbsp;&nbsp;&nbsp;{% trans "Ads" %}</p>
+                <p><span class="box box_6"></span> &nbsp;&nbsp;&nbsp;{% trans "Ecosystem" %}</p>
               </div>
             </div>
           </div>
@@ -164,7 +164,7 @@
           <div id="repo_repos">
             {% for org in top_orgs %}
               <a class="repo-icon" href="/profile/{{org}}" title="{{org}}">
-                <img data-src="/dynamic/avatar/{{org}}" alts="{{org}}" src="/dynamic/avatar/{{org}}"/>
+                <img data-src="/dynamic/avatar/{{org}}" alts="{{org}}" />
               </a>
             {% endfor %}
           </div>
@@ -181,7 +181,7 @@
           <div id="repo_repos_top">
             {% for org in top_funders %}
               <a class="repo-icon" href="/profile/{{org}}" title="{{org}}">
-                <img data-src="/dynamic/avatar/{{org}}" alts="{{org}}" src="/dynamic/avatar/{{org}}" />
+                <img data-src="/dynamic/avatar/{{org}}" alts="{{org}}" />
               </a>
             {% endfor %}
           </div>
@@ -195,13 +195,13 @@
 
         <div class="col-md-12 align-items-center">
             <a class="mega-founder" href="https://ethereum.org" title="Ethereum Foundation">
-              <img src="{% static 'v2/images/metafunders/ethereum-foundation.png' %}" alts="Ethereum Foundation">
+              <img data-src="{% static 'v2/images/metafunders/ethereum-foundation.png' %}" alts="Ethereum Foundation">
             </a>
             <a class="mega-founder" href="https://ecf.network" title="Ethereum Community Fund">
-              <img src="{% static 'v2/images/metafunders/ecf_logo.svg' %}" alts="Ethereum Community Fund">
+              <img data-src="{% static 'v2/images/metafunders/ecf_logo.svg' %}" alts="Ethereum Community Fund">
             </a>
             <a class="mega-founder" href="http://consensys.net/" title="Consensys">
-              <img src="{% static 'v2/images/metafunders/consensys_logo.png' %}" alts="Consensys">
+              <img data-src="{% static 'v2/images/metafunders/consensys_logo.png' %}" alts="Consensys">
             </a>
         </div>
       </div>
@@ -215,7 +215,7 @@
           <div>
             {% for org in top_coders %}
               <a href="/profile/{{org}}" title="{{org}}">
-                <img data-src="/dynamic/avatar/{{org}}" alts="{{org}}" src="/dynamic/avatar/{{org}}" />
+                <img data-src="/dynamic/avatar/{{org}}" alts="{{org}}" style="border-radius: 50px; width: 100px;" />
               </a>
             {% endfor %}
           </div>
@@ -291,7 +291,7 @@
               <div>
                 {% for kudos in kudos_tokens %}
                   <a href="/kudos/{{ kudos.id }}/{{ kudos.name }}" title="{{kudos.name|humanize_name}}">
-                    <img data-src="{% static kudos.image %}" alts="{{kudos.name|humanize_name}}" src="{% static kudos.image %}" style="max-width: 100px; max-height: 100px; margin: 5px; border-radius: 50px;">
+                    <img data-src="{% static kudos.image %}" alts="{{kudos.name|humanize_name}}"  style="max-width: 100px; max-height: 100px; margin: 5px;">
                   </a>
                 {% endfor %}
               </div>
@@ -358,11 +358,13 @@
     <div class="content-block content-block--white">
       <div class="container" id="mesh_network_jobs">
       <h2 class="content-block__title">{% trans "TLDR - We're building a Mesh Network of" %} {{keyword|title}} {% trans "Jobs" %}</h2>
-
+      <p style="margin-bottom: 10px;">
+        Each node in this visualization below is a person who has engaged on Gitcoin, and  each edge in our is a transaction between two people on the network.
+      </p>
         <div class="row mt-2 pb-2 text-center">
           <div class="col" style="height: 600px;">
             <div id="mesh_network_jobs_holder">
-              <img src="{% static 'v2/images/results/mesh_network.gif' %}" id="mesh_preview" style="cursor: pointer; max-width: 100%;">
+              <img data-src="{% static 'v2/images/results/mesh_network.gif' %}" id="mesh_preview" style=" max-width: 100%;">
             </div>
           </div>
         </div>
@@ -403,18 +405,14 @@
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/messages.html' %}
 
-    <script src="{% static "v2/js/jquery-unveil.js" %}"></script>
+    <script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
+    <script>
+      $(document).ready(function() {
+        $("img").unveil(200);
+      });
+    </script>
 
   </body>
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script src="{% static "v2/js/pages/results.js" %}"></script>
-  <script>
-    $("#mesh_preview").on('click', function(e){
-      $("#mesh_network_jobs_holder").html('<iframe src="{% url 'viz_graph' %}?keyword={{keyword}}" style="width: 100%; height: 600px; border-left: 1px #dddddd solid; border-bottom: 1px #dddddd solid;  " frameBorder="0">');
-      e.preventDefault();
-    });
-  $(document).ready(function() {
-    $("img").unveil(200);
-  });
-  </script>
 </html>
