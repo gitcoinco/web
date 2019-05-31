@@ -32,7 +32,7 @@ $(document).ready(function() {
         });
         break;
       default:
-        if (value) {
+        if (value > 0) {
           ctrl.val(value);
         }
     }
@@ -82,6 +82,19 @@ $(document).ready(function() {
   );
 
   form.validate({
+    errorPlacement: function(error, element) {
+      if (element.attr('name') == 'bounty_categories') {
+        error.appendTo($(element).parents('.btn-group-toggle').next('.cat-error'));
+      } else {
+        error.insertAfter(element);
+      }
+    },
+    ignore: '',
+    messages: {
+      select2Start: {
+        required: 'Please select the right keywords.'
+      }
+    },
     submitHandler: function(form) {
       const inputElements = $(form).find(':input');
       const formData = {};
