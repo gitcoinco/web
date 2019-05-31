@@ -22,11 +22,12 @@ $(document).ready(function() {
         break;
       case 'checkbox':
         ctrl.each(function() {
-          $(this).prop('checked', value);
           if (value.length) {
             $.each(value, function(key, val) {
               $(`.${val}`).button('toggle');
             });
+          } else {
+            $(this).prop('checked', value);
           }
         });
         break;

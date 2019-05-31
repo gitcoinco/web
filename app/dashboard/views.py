@@ -2563,6 +2563,8 @@ def change_bounty(request, bounty_id):
                 value = timezone.make_aware(
                     timezone.datetime.fromtimestamp(int(value)),
                     timezone=UTC)
+            if key == 'bounty_categories':
+                value = value.split(',')
             old_value = getattr(bounty, key)
             if value != old_value:
                 setattr(bounty, key, value)
