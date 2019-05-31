@@ -329,6 +329,14 @@ class Bounty(SuperModel):
         super().save(*args, **kwargs)
 
     @property
+    def latest_activity(self):
+        activity = Activity.objects.filter(bounty=self.pk).order_by('-pk')
+        if activity.exists():
+            from dashboard.router import ActivitySerializer
+            return ActivitySerializer(activity.first()).data
+        return None
+
+    @property
     def profile_pairs(self):
         profile_handles = []
 
