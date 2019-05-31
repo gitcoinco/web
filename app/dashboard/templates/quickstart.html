@@ -31,14 +31,14 @@
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav.html' %}
     </div>
-    <div class="container-fluid content mt-3">
+    <div class="container-fluid content my-3 text-left">
       <div class="row pb-1">
         <div class="col text-center">
-          <h4 class="title">{% trans "Developer Guide" %}</h4>
+          <h4 class="title">{% trans "Funder Guide" %}</h4>
         </div>
       </div>
       <div class="row col-12 offset-lg-1 col-lg-10">
-        <div class="dont-show">
+        <div class="dont-show text-right w-100">
           <div class="checkbox_container">
             <input name="dontshow" id="dontshow" type="checkbox" />
             <span class="checkbox"></span>
@@ -53,7 +53,7 @@
           <img src="{% static 'v2/images/quickstart-box.svg' %}" />
         </div>
         <div class="col-md-6 col-sm-12 p-5 steps-list">
-          <ol>
+          <ol class="font-subheader">
             <li>{% trans "1) Create a Github Issue, you'll need the issue URL" %}</li>
             <li>{% trans "2) Select the type of issue to fund" %}</li>
             <li>{% trans '3) Complete the form and press "Fund Issue"' %}</li>
@@ -63,18 +63,18 @@
             {% trans "Once confirmed on blockchain, your bounty is posted to Gitcoin! Wait for developers across the world to discover your bounty and start working on your issue." %}
           </p>
           <div class="d-flex pt-5 action-footer">
-            <div class="video-link">
+            <div class="video-link my-auto">
               <a href="#" class="show_video">
                 <i class="far fa-play-circle"></i>
                 <span >{% trans "Watch 90 second video" %}</span>
               </a>
             </div>
-            <a href="{% url 'new_funding' %}"><button class="btn btn-primary">{% trans "Ok, I'm ready" %}</button></a>
+            <a href="{% url 'new_funding' %}"><button class="btn btn-primary font-body shadow-none font-weight-semibold py-2">{% trans "Ok, I'm ready" %}</button></a>
           </div>
         </div>
         <div class="col-md-3 col-sm-12 p-5 tips-list">
           <h5 class="title">{% trans "Tips & Tricks" %}</h5>
-          <ul>
+          <ul class="font-body">
             <li>{% trans "Know what you're looking for." %}</li>
             <li>{% trans "Set clear acceptance criteria." %}</li>
             <li>{% trans "Set a reasonable timeframe." %}</li>
@@ -86,7 +86,7 @@
           <a href="https://docs.google.com/document/d/1_U9IdDN8FIRMGAdLWCMl2BnqCTAv558QvyJiSWQfkbs/edit?usp=sharing" target="_blank" rel="noopener noreferrer">{% trans "See Developer Guide" %}</a>
         </div>
       </div>
-      <div class="row col-12 offset-lg-1 col-lg-10 pt-2 pb-5 issuetypes-container text-center">
+      <div class="row col-12 offset-lg-1 col-lg-10 pt-2 pb-5 mt-5 issuetypes-container text-center">
         <h4 class="subheading">{% trans "Other Repo Maintainers are funding these types of issues" %}</h4>
         <div class="col-md-3 mt-5 flex-column d-flex px-5">
           <img src="{% static 'v2/images/quickstart-icons/newproduct-icon.svg' %}" />
@@ -128,7 +128,7 @@
           <h5>{% trans "OTHER" %}</h5>
           <p>{% trans "Ideas, discussions, contests, consulting" %}</p>
         </div>
-        <div class="col-lg-10 col-md-12 offset-lg-1 notsuggested-container">
+        <div class="col-lg-10 col-md-12 offset-lg-1 mt-4 notsuggested-container">
           <h4 class="subheading">{% blocktrans %}In our experience, the following are <span class="orange-text">not</span> good candidates for bounties:{% endblocktrans %}</h4>
           <ol class="text-left">
             <li>
