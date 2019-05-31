@@ -4620,6 +4620,16 @@
   tags:
     - Ethereal Virtual Hackathon
   image: evh2019/ad_ex.svg
+- name: summer_bot_roadtrip
+  artist: guistf
+  description: What's more fun than a summer trip with all your bot-friends?
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - summer
+    - bots
+    - just for fun
+  image: summer_trip.svg
 
 
 
