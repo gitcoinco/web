@@ -134,6 +134,7 @@ $(document).ready(function($) {
 
   $('#acceptBounty').on('click', function(e) {
     e.preventDefault();
+    getFulfillers();
     update_registry();
 
     if (!$('#terms').is(':checked')) {
@@ -346,6 +347,20 @@ var update_registry = function(coinbase) {
   document.transactions = transactions;
 };
 
+/**
+ * stores fulfillers in sessionStorage on
+ * triggering advanced payout
+ */
+const getFulfillers = () => {
+  let fulfillers = [];
+  const users = $('.new-user option');
+
+  for (let i = 0; i < users.length; i++) {
+    fulfillers.push($('.new-user option')[i].innerHTML);
+  }
+  sessionStorage['fulfillers'] = fulfillers;
+  sessionStorage['bountyId'] = $('#bountyId').val();
+};
 
 $(document).on('click', '.user-fulfiller', function(event) {
   let elem = $('.username-search');

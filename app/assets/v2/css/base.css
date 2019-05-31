@@ -565,12 +565,14 @@ input[type=text].loading {
   color: white;
   display: flex;
   justify-content: space-between;
-  padding: 20px;
+  padding: 10px 20px;
   margin-bottom: 1px;
   position: fixed;
   top: 0px;
   width: 100%;
   z-index: 999999;
+  font-weight: 600;
+  font-size: 14px;
 }
 
 .alert .message {
@@ -584,8 +586,12 @@ input[type=text].loading {
 }
 
 .alert .message::before {
-  content: url('/static/v2/images/info.svg');
+  font-family: 'Font Awesome\ 5 Free', sans-serif;
+  content: "\f06a";
   margin-right: 10px;
+  font-size: 1.25rem;
+  position: relative;
+  top: 1px;
 }
 
 .alert a {
@@ -598,8 +604,7 @@ input[type=text].loading {
 }
 
 .alert.error .message::before {
-  content: url('/static/v2/images/close.svg');
-  height: 30px;
+  content: "\f057";
 }
 
 .alert.success {
@@ -607,8 +612,7 @@ input[type=text].loading {
 }
 
 .alert.success .message::before {
-  content: url('/static/v2/images/success.svg');
-  height: 30px;
+  content: "\f058";
 }
 
 .alert.info {
@@ -616,8 +620,7 @@ input[type=text].loading {
 }
 
 .alert.info .message::before {
-  content: url('/static/v2/images/info.svg');
-  height: 30px;
+  content: "\f05a";
 }
 
 .alert.warning {
@@ -625,8 +628,7 @@ input[type=text].loading {
 }
 
 .alert.warning .message::before {
-  content: url('/static/v2/images/warning.svg');
-  height: 28px;
+  content: "\f071";
 }
 
 /* The close button */
