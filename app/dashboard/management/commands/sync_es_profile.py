@@ -30,7 +30,7 @@ class Command(BaseCommand):
         from marketing.models import EmailSubscriber
 
         counter = 0 
-        # pull keywords by search history
+        # pull keywords by search history AND emailsubscriber
         for profile in Profile.objects.filter(keywords=[]):
 
             histories = SearchHistory.objects.filter(user__profile=profile)
@@ -38,25 +38,23 @@ class Command(BaseCommand):
             for history in histories:
                 if history.data.get('keywords', None):
                     keywords = history.data['keywords'][0].split(',')
+
+            es = EmailSubscriber.objects.filter(email=profile.email).exclude(keywords=[]).first()
+            if es:
+                keywords = keywords + es.keywords
+
             if keywords:
                 print("1", counter, profile.handle, keywords)
                 counter += 1
                 profile.keywords = keywords
                 profile.save()
 
-        # pull keywords by emailsubscriber into profile
-        for profile in Profile.objects.filter(keywords=[]):
-            es = EmailSubscriber.objects.filter(email=profile.email).exclude(keywords=[]).first()
-            if es:
-                print("2", es.keywords, profile.handle)
-                profile.keywords = es.keywords + profile.keywords
-                profile.save()
 
         # pull keywords by profile into ES
         for es in EmailSubscriber.objects.filter(keywords=[]):
             profile = Profile.objects.filter(email=es.email).exclude(keywords=[]).first()
             if profile:
-                print("3", profile.keywords, profile.handle)
+                print("2", profile.keywords, profile.handle)
                 es.keywords = es.keywords + profile.keywords
                 es.save()
 
