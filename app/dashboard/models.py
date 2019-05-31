@@ -227,16 +227,16 @@ class Bounty(SuperModel):
     value_in_token = models.DecimalField(default=1, decimal_places=2, max_digits=50)
     token_name = models.CharField(max_length=50)
     token_address = models.CharField(max_length=50)
-    bounty_type = models.CharField(max_length=50, choices=BOUNTY_TYPES, blank=True)
+    bounty_type = models.CharField(max_length=50, choices=BOUNTY_TYPES, blank=True, db_index=True)
     project_length = models.CharField(max_length=50, choices=PROJECT_LENGTHS, blank=True)
     estimated_hours = models.PositiveIntegerField(blank=True, null=True)
-    experience_level = models.CharField(max_length=50, choices=EXPERIENCE_LEVELS, blank=True)
+    experience_level = models.CharField(max_length=50, choices=EXPERIENCE_LEVELS, blank=True, db_index=True)
     github_url = models.URLField(db_index=True)
     github_issue_details = JSONField(default=dict, blank=True, null=True)
     github_comments = models.IntegerField(default=0)
     bounty_owner_address = models.CharField(max_length=50)
     bounty_owner_email = models.CharField(max_length=255, blank=True)
-    bounty_owner_github_username = models.CharField(max_length=255, blank=True)
+    bounty_owner_github_username = models.CharField(max_length=255, blank=True, db_index=True)
     bounty_owner_name = models.CharField(max_length=255, blank=True)
     bounty_owner_profile = models.ForeignKey(
         'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='bounties_funded', blank=True
@@ -249,7 +249,7 @@ class Bounty(SuperModel):
     raw_data = JSONField()
     metadata = JSONField(default=dict, blank=True)
     current_bounty = models.BooleanField(
-        default=False, help_text=_('Whether this bounty is the most current revision one or not'))
+        default=False, help_text=_('Whether this bounty is the most current revision one or not'), db_index=True)
     _val_usd_db = models.DecimalField(default=0, decimal_places=2, max_digits=50)
     contract_address = models.CharField(max_length=50, default='')
     network = models.CharField(max_length=255, blank=True, db_index=True)
@@ -273,13 +273,13 @@ class Bounty(SuperModel):
     fulfillment_started_on = models.DateTimeField(null=True, blank=True)
     canceled_on = models.DateTimeField(null=True, blank=True)
     canceled_bounty_reason = models.TextField(default='', blank=True, verbose_name=_('Cancelation reason'))
-    project_type = models.CharField(max_length=50, choices=PROJECT_TYPES, default='traditional')
-    permission_type = models.CharField(max_length=50, choices=PERMISSION_TYPES, default='permissionless')
+    project_type = models.CharField(max_length=50, choices=PROJECT_TYPES, default='traditional', db_index=True)
+    permission_type = models.CharField(max_length=50, choices=PERMISSION_TYPES, default='permissionless', db_index=True)
     repo_type = models.CharField(max_length=50, choices=REPO_TYPES, default='public')
     snooze_warnings_for_days = models.IntegerField(default=0)
     is_featured = models.BooleanField(
         default=False, help_text=_('Whether this bounty is featured'))
-    featuring_date = models.DateTimeField(blank=True, null=True)
+    featuring_date = models.DateTimeField(blank=True, null=True, db_index=True)
     fee_amount = models.DecimalField(default=0, decimal_places=18, max_digits=50)
     fee_tx_id = models.CharField(default="0x0", max_length=255, blank=True)
     unsigned_nda = models.ForeignKey('dashboard.BountyDocuments', blank=True, null=True, related_name='bounty', on_delete=models.SET_NULL)
@@ -300,7 +300,7 @@ class Bounty(SuperModel):
     admin_mark_as_remarket_ready = models.BooleanField(
         default=False, help_text=_('Admin override to mark as remarketing ready')
     )
-    attached_job_description = models.URLField(blank=True, null=True)
+    attached_job_description = models.URLField(blank=True, null=True, db_index=True)
     event = models.ForeignKey('dashboard.HackathonEvent', related_name='bounties', null=True, on_delete=models.SET_NULL, blank=True)
 
     # Bounty QuerySet Manager
