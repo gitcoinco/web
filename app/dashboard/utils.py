@@ -200,10 +200,11 @@ def get_ipfs(host=None, port=settings.IPFS_API_PORT):
 
     """
     if host is None:
-        host = f'https://{settings.IPFS_HOST}'
-
+        clientConnectString = f'/dns/{settings.IPFS_HOST}/tcp/{settings.IPFS_API_PORT}/https'
+    else:
+        clientConnectString = f'/dns/{host}/tcp/{settings.IPFS_API_PORT}/https'
     try:
-        return ipfshttpclient.connect(host, port)
+        return ipfshttpclient.connect(host)
     except CommunicationError as e:
         logger.exception(e)
         raise IPFSCantConnectException('Failed while attempt to connect to IPFS')
