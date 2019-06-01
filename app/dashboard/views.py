@@ -69,7 +69,7 @@ from .helpers import get_bounty_data_for_activity, handle_bounty_views
 from .models import (
     Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest,
     FeedbackEntry, HackathonEvent, Interest, LabsResearch, Profile, ProfileSerializer, RefundFeeRequest, Subscription,
-    Tool, ToolVote, UserAction, UserVerificationModel,
+    Tool, ToolVote, UserAction, UserVerificationModel, Coupon,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -2464,7 +2464,18 @@ def new_bounty(request):
         title=_('Create Funded Issue'),
         update=bounty_params,
     )
+
     params['FEE_PERCENTAGE'] = request.user.profile.fee_percentage if request.user.is_authenticated else 10
+
+    coupon_code = request.GET.get('coupon', False)
+    if coupon_code:
+        coupon = Coupon.objects.get(code=coupon_code)
+        if coupon.expiry_date > datetime.now().date():
+            params['FEE_PERCENTAGE'] = coupon.fee_percentage
+            params['coupon_code'] = coupon.code
+
+    print(params['FEE_PERCENTAGE'])
+
     return TemplateResponse(request, 'bounty/fund.html', params)
 
 
