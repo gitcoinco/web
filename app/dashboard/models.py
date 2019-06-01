@@ -158,6 +158,23 @@ class BountyQuerySet(models.QuerySet):
         return self.filter(idx_status__in=Bounty.FUNDED_STATUSES)
 
 
+"""Fields that bonties table should index together."""
+def get_bounty_index_together():
+    import copy
+    index_together = [
+            ["network", "idx_status"],
+            ["current_bounty", "network"],
+            ["current_bounty", "network", "idx_status"],
+            ["current_bounty", "network", "web3_created"],
+            ["current_bounty", "network", "idx_status", "web3_created"],
+        ]
+    additions = ['admin_override_and_hide', 'experience_level', 'is_featured', 'project_length', 'bounty_owner_github_username', 'event']
+    for addition in additions:
+        for ele in copy.copy(index_together):
+            index_together.append([addition] + ele)
+    return index_together
+
+
 class Bounty(SuperModel):
     """Define the structure of a Bounty.
 
@@ -312,7 +329,7 @@ class Bounty(SuperModel):
         verbose_name_plural = 'Bounties'
         index_together = [
             ["network", "idx_status"],
-        ]
+        ] + get_bounty_index_together()
 
     def __str__(self):
         """Return the string representation of a Bounty."""
