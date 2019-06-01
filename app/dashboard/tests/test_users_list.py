@@ -36,7 +36,8 @@ class UsersListTest(TestCase):
         for i in range(20):
             user = User.objects.create(password="{}".format(i),
                                        username="user{}".format(i))
-            profile = Profile.objects.create(user=user, data={}, handle="{}".format(i))
+            profile = Profile.objects.create(
+                user=user, data={}, hide_profile=False, handle="{}".format(i))
 
     def test_user_list(self):
         assert json.loads(users_fetch(self.request.get('/api/v0.1/users_fetch/')).content)['count'] == 20

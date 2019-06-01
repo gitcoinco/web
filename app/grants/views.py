@@ -139,9 +139,9 @@ def grant_details(request, grant_id, grant_slug):
         )
         milestones = grant.milestones.order_by('due_date')
         updates = grant.updates.order_by('-created_on')
-        subscriptions = grant.subscriptions.filter(active=True, error=False)
-        cancelled_subscriptions = grant.subscriptions.filter(active=False, error=False)
-        contributions = Contribution.objects.filter(subscription__in=grant.subscriptions.all())
+        subscriptions = grant.subscriptions.filter(active=True, error=False).order_by('-created_on')
+        cancelled_subscriptions = grant.subscriptions.filter(active=False, error=False).order_by('-created_on')
+        contributions = Contribution.objects.filter(subscription__in=grant.subscriptions.all()).order_by('-created_on')
         user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
         user_non_errored_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True, error=False).first()
         add_cancel_params = user_subscription
@@ -182,6 +182,7 @@ def grant_details(request, grant_id, grant_slug):
             form_profile = request.POST.get('edit-admin_profile')
             admin_profile = Profile.objects.get(handle=form_profile)
             grant.description = request.POST.get('edit-description')
+            grant.description_rich = request.POST.get('edit-description_rich')
             grant.amount_goal = Decimal(request.POST.get('edit-amount_goal'))
             team_members = request.POST.getlist('edit-grant_members[]')
             team_members.append(str(admin_profile.id))
@@ -265,6 +266,7 @@ def grant_new(request):
             grant_kwargs = {
                 'title': request.POST.get('title', ''),
                 'description': request.POST.get('description', ''),
+                'description_rich': request.POST.get('description_rich', ''),
                 'reference_url': request.POST.get('reference_url', ''),
                 'admin_address': request.POST.get('admin_address', ''),
                 'contract_owner_address': request.POST.get('contract_owner_address', ''),
