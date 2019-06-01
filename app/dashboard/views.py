@@ -824,7 +824,7 @@ def users_fetch(request):
             fulfilled__bounty__github_url__icontains=organisation
         ).distinct()
 
-    profile_list = Profile.objects.filter(pk__in=profile_list.values_list('pk'))
+    profile_list = Profile.objects.filter(pk__in=profile_list.order_by('-actions_count').values_list('pk'))
     params = dict()
     all_pages = Paginator(profile_list, limit)
     all_users = []
