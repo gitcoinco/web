@@ -778,12 +778,6 @@ def users_fetch(request):
     if current_user:
         profile_list = Profile.objects.prefetch_related(
                 'fulfilled', 'leaderboard_ranks', 'feedbacks_got'
-            ).annotate(
-                previous_worked_count=Count('fulfilled', filter=Q(
-                    fulfilled__bounty__network=network,
-                    fulfilled__accepted=True,
-                    fulfilled__bounty__bounty_owner_github_username__iexact=current_user.profile.handle
-                ))
             ).exclude(hide_profile=True).order_by(
                 '-previous_worked_count',
                 order_by,
@@ -804,9 +798,7 @@ def users_fetch(request):
         profile_list = profile_list.filter(keywords__icontains=skills)
 
     if len(bounties_completed) == 2:
-        profile_list = profile_list.annotate(
-                count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network, fulfilled__accepted=True))
-            ).filter(
+        profile_list = profile_list.filter(
                 count__gte=bounties_completed[0],
                 count__lte=bounties_completed[1],
             )
@@ -821,9 +813,7 @@ def users_fetch(request):
         )
 
     if rating != 0:
-        profile_list = profile_list.annotate(
-            average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
-        ).filter(
+        profile_list = profile_list.filter(
             average_rating__gte=rating
         )
 
@@ -834,10 +824,24 @@ def users_fetch(request):
             fulfilled__bounty__github_url__icontains=organisation
         ).distinct()
 
+    profile_list = Profile.objects.filter(pk__in=profile_list.values_list('pk'))
     params = dict()
     all_pages = Paginator(profile_list, limit)
     all_users = []
-    for user in all_pages.page(page):
+    this_page = all_pages.page(page)
+    
+    this_page = Profile.objects.filter(pk__in=[ele.pk for ele in this_page]).order_by('-actions_count').annotate(
+        previous_worked_count=Count('fulfilled', filter=Q(
+            fulfilled__bounty__network=network,
+            fulfilled__accepted=True,
+            fulfilled__bounty__bounty_owner_github_username__iexact=current_user.profile.handle
+        ))).annotate(
+            count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network, fulfilled__accepted=True))
+        ).annotate(
+            average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
+        )
+
+    for user in this_page:
         profile_json = {}
         previously_worked_with = 0
         if current_user:
