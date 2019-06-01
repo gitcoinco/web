@@ -594,15 +594,18 @@ class Bounty(SuperModel):
             return self.idx_status
 
         # standard bounties
+        is_traditional_bounty_type = self.project_type == 'traditional'
         try:
             has_tips = self.tips.filter(is_for_bounty_fulfiller=False).send_happy_path().exists()
-            if has_tips:
+            if has_tips and is_traditional_bounty_type:
                 return 'done'
             if not self.is_open:
                 if self.accepted:
                     return 'done'
                 elif self.past_hard_expiration_date:
                     return 'expired'
+                elif has_tips:
+                    return 'done'
                 # If its not expired or done, and no tips, it must be cancelled.
                 return 'cancelled'
             # per https://github.com/gitcoinco/web/pull/1098 ,
