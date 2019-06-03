@@ -68,10 +68,6 @@ def get_activities(tech_stack=None, num_activities=15):
 def index(request):
 
     user = request.user.profile if request.user.is_authenticated else None
-    is_new_funder = True
-
-    if user and Bounty.objects.filter(bounty_owner_github_username=user).count() > 0:
-        is_new_funder = False
 
     products = [
         {
@@ -206,7 +202,6 @@ def index(request):
     ]
 
     context = {
-        'is_new_funder': is_new_funder,
         'products': products,
         'know_us': know_us,
         'press': press,
