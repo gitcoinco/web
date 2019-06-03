@@ -1911,9 +1911,14 @@ def profile(request, handle):
     context['verification'] = profile.get_my_verified_check
     context['avg_rating'] = profile.get_average_star_rating
 
+    network = "mainnet"
+
+    if settings.DEBUG:
+        network = "rinkeby"
+
     context['unrated_funded_bounties'] = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
         .filter(bounty_owner_github_username__iexact=profile.handle) \
-        .filter(network=settings.KUDOS_NETWORK) \
+        .filter(network=network) \
         .exclude(
             feedbacks__feedbackType='approver',
             feedbacks__sender_profile=profile,
@@ -1923,7 +1928,7 @@ def profile(request, handle):
             .filter(interested__status='okay') \
             .filter(interested__pending=False) \
             .filter(idx_status='done') \
-            .filter(network=settings.KUDOS_NETWORK) \
+            .filter(network=network) \
             .exclude(
                 feedbacks__feedbackType='worker',
                 feedbacks__sender_profile=profile
@@ -1934,7 +1939,7 @@ def profile(request, handle):
         .filter(interested__status='okay') \
         .filter(interested__pending=False)\
         .filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)\
-        .filter(network=settings.KUDOS_NETWORK)
+        .filter(network=network)
     currently_working_bounties_count = currently_working_bounties.count()
     if currently_working_bounties_count > 0:
         obj = {'id': 'currently_working',
