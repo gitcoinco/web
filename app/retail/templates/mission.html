@@ -145,7 +145,7 @@
             <div class="col-md-6 mx-auto mb-5 d-flex align-items-center">
               <img class="icon" src="{% static "v2/images/mission/believe/blockchain.png" %}" />
               <span class="icon-text">
-                {% trans "We believe that blockchain is a game-changer for funding of Open Source. We believe that Open Source Funding and Open Source Jobs will be built on Open Source Money" %}
+                {% trans "We believe that blockchain is a game-changer for funding of Open Source. We believe that Open Source Funding and Open Source Jobs will be built on Open Source Money" %}.
               </span>
             </div>
 
@@ -153,7 +153,7 @@
               <img class="icon" src="{% static "v2/images/mission/believe/no_token.png" %}" />
               <span class="icon-text">
               {% blocktrans %}
-                We believe that an ICO and tokenization is not the best business model for our dapp. We do not have a token
+                We believe that an ICO and tokenization is not the best business model for our dapp. We do not have a token.
               {% endblocktrans %}
               </span>
             </div>
@@ -215,7 +215,7 @@
           {% for interaction in interactions %}
             <div class="col-12 col-md-6 my-4 d-flex align-items-center">
               <img class="icon" src="{% static interaction.img %}" alt="{{ value.alt }}" />
-              <span class="icon-text">{{ interaction.text }}</span>
+              <span class="icon-text">{{ interaction.text | safe }}</span>
             </div>
           {% endfor %}
         </div>
