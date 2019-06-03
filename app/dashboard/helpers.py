@@ -31,8 +31,8 @@ from django.utils import timezone
 
 from app.utils import get_semaphore, sync_profile
 from dashboard.models import (
-    Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, BountySyncRequest, HackathonEvent, UserAction,
-    Coupon,
+    Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, BountySyncRequest, Coupon, HackathonEvent,
+    UserAction,
 )
 from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
