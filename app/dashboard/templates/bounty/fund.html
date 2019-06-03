@@ -389,6 +389,9 @@
 
 <script>
   document.FEE_PERCENTAGE = {{ FEE_PERCENTAGE }};
+  {% if expired_coupon %}
+    _alert({ message: 'This coupon has expired.' }, 'error');
+  {% endif %}
 </script>
 
 <script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>

@@ -2473,6 +2473,8 @@ def new_bounty(request):
         if coupon.expiry_date > datetime.now().date():
             params['FEE_PERCENTAGE'] = coupon.fee_percentage
             params['coupon_code'] = coupon.code
+        else:
+            params['expired_coupon'] = True
 
     print(params['FEE_PERCENTAGE'])
 
