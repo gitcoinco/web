@@ -112,6 +112,56 @@
         </a>
       {% endif %}
     </nav>
+
+      <div class="nav-item dropdown interior">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Funder Rank: 5
+            <br>
+            Coder Rank: 0
+          </a>        </a>
+        <div class="dropdown-menu dropdown-menu-right" id="how-it-works" aria-labelledby="navbarDropdownHow">
+          <a class="dropdown-item" href="{% url "about" %}">
+            <strong>Coder Mode</strong>
+            (Switch to Funder Mode)
+          </a>
+          <a class="dropdown-item" href="{% url "about" %}">
+            <strong>Funding</strong>
+            <br>
+            Bounties: 4
+            <br>
+            CodeFund: 0
+            <br>
+            Kudos: 0
+            <br>
+            Grants: 1
+            <br>
+            ______________
+            <br>
+            Rank: 5
+          </a>
+          <a class="dropdown-item" href="{% url "about" %}#team">
+            <strong>Coding:</strong>
+            <br>
+            Bounties: 0
+            <br>
+            CodeFund: 0
+            <br>
+            Kudos: 0
+            <br>
+            Grants: 0
+            <br>
+            ______________
+            <br>
+            Rank: 0
+          </a>
+          <a class="dropdown-item" href="{% url "jobs" %}">
+            <strong>Shares:</strong>
+            <br>
+            Referrrals: 3
+          </a>
+        </div>
+      </div>
   </div>
 
 </nav>
