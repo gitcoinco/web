@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from grants.models import Contribution, Grant, MatchPledge, Subscription
+from grants.models import Contribution, Grant, MatchPledge, Subscription, CLRMatch
 
 
 class GeneralAdmin(admin.ModelAdmin):
@@ -182,5 +182,6 @@ class ContributionAdmin(GeneralAdmin):
 
 admin.site.register(MatchPledge, MatchPledgeAdmin)
 admin.site.register(Grant, GrantAdmin)
+admin.site.register(CLRMatch, GeneralAdmin)
 admin.site.register(Subscription, SubscriptionAdmin)
 admin.site.register(Contribution, ContributionAdmin)

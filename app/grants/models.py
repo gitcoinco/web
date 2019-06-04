@@ -192,7 +192,7 @@ class Grant(SuperModel):
         default=0,
         decimal_places=2,
         max_digits=20,
-        help_text=_('The CLR matching amount'),
+        help_text=_('The TOTAL CLR matching amount across all rounds'),
     )
     activeSubscriptions = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     hidden = models.BooleanField(default=False, help_text=_('Hide the grant from the /grants page?'))
@@ -742,6 +742,22 @@ def next_month():
     return localtime(timezone.now() + timedelta(days=30))
 
 
+class CLRMatch(SuperModel):
+    """Define the structure of a CLR Match amount."""
+
+    round_number = models.PositiveIntegerField(blank=True, null=True)
+    amount = models.FloatField()
+    grant = models.ForeignKey(
+        'grants.Grant',
+        related_name='clr_matches',
+        on_delete=models.CASCADE,
+        null=False,
+        help_text=_('The associated Grant.'),
+    )
+
+    def __str__(self):
+        """Return the string representation of a Grant."""
+        return f"id: {self.pk}, grant: {self.grant.pk}, round: {self.round_number}, amount: {self.amount}"
 
 
 

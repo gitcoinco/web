@@ -56,7 +56,7 @@ w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 clr_matching_banners_style = 'pledging'
 matching_live = '($50K matching live now!) '
 if True:
-    clr_matching_banners_style = 'none'
+    clr_matching_banners_style = 'results'
     matching_live = ''
 
 def get_keywords():
