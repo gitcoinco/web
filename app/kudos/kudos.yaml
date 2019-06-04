@@ -2799,6 +2799,13 @@
     - evolution
     - blopblop
   image: consensys_2.0.svg
+- name: consensys_2_1
+  description: Consensys 2.1
+  priceFinney: 10
+  numClonesAllowed: 500
+  tags:
+    - consensys
+  image: consensys_2_1.svg
 - name: ethdenver_winner_adoption_driver
   artist: mladen
   description: For the ETHDenver 2019 winner in the category of 'Adoption Driver'
