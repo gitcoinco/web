@@ -71,6 +71,21 @@ docker-compose exec web python3 app/manage.py createsuperuser
 8. You may continue administering your token over at [http://tokenfactory.surge.sh](http://tokenfactory.surge.sh).  Hint:  Maybe you should mint some? 🤔
 
 
+## Initial test data
+
+The development server is conditioned with a representative sampling of test data fixtures outlined below:
+* 20ish users doing a variety things
+* Bounties in various statuses - so you can get to work!
+* Grants - ask some friends to support your work on Gitcoin
+* A variety of Kudos for you to send to everybody hahrd at work on bounties
+* A default superuser - usage below
+    1. Go to [http://localhost:8000/_administrationeconomy/](http://localhost:8000/_administration) 
+    2. Login with - username - root - password - gitcoinco 
+    3. Poke around the database tables.
+    4. Click the "Impersonate User" link,  pick any user and poke around the site.
+
+Note, using the sync_geth command described below can potentially break some of the fixtures outlined above.
+
 ## Optional: Import bounty data from web3 to your database
 
 This can be useful if you'd like data to test with:
