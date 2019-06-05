@@ -112,6 +112,11 @@
               </div>
             </div>
             <button class="btn blue" @click="params = {}; searchUsers()">Reset Filters</button>
+
+            <div>
+              <a href="{% url "explorer" %}"><img src="{%  static 'v2/images/promote_bounties.png' %}"></a>
+            </div>
+  
           </nav>
         </transition>
         <div class="container pt-4" @scroll.passive="onScroll($event)">

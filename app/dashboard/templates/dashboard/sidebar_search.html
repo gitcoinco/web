@@ -17,6 +17,11 @@
 {% load i18n static %}
 <link rel="stylesheet" href={% static "v2/css/sidebar_search.css" %}>
 <div class="sidebar_search font-body">
+  <div>
+      <a  href="{% url "users_directory" %}"><img src="{%  static 'v2/images/promote_userdir.png' %}"></a>
+  </div>
+
+
   <div class="search font-caption mb-4">
     <div class="search-area col-12">
       <input class="form__input form__input_lg" id="keywords" type="text" />
