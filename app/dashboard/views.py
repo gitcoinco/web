@@ -2447,7 +2447,7 @@ def new_bounty(request):
             .filter(
                 bounty__bounty_owner_github_username__iexact=request.user.profile.handle,
                 bounty__idx_status='done'
-            ).values('fulfiller_github_username', 'profile__id').annotate(fulfillment_count=Count('bounty')) \
+            ).values('fulfiller_github_username', 'profile_id').annotate(fulfillment_count=Count('bounty')) \
             .order_by('-fulfillment_count')[:5]
     bounty_params = {
         'newsletter_headline': _('Be the first to know about new funded issues.'),
@@ -2476,12 +2476,15 @@ def get_suggested_contributors(request):
     invitees = [int(x) for x in request.GET.get('invite', '').split(',') if x]
 
     if request.user.is_authenticated:
-        previously_worked_developers = BountyFulfillment.objects.prefetch_related('bounty', 'profile')\
-            .filter(
+        previously_worked_developers = BountyFulfillment.objects.prefetch_related(
+            'bounty', 'profile', 'leaderboard_ranks', 'feedbacks_got'
+            ).filter(
                 bounty__bounty_owner_github_username__iexact=request.user.profile.handle,
                 bounty__idx_status='done'
-            ).values('fulfiller_github_username', 'profile__id').annotate(fulfillment_count=Count('bounty')) \
-            .order_by('-fulfillment_count')
+            ).values(
+                'fulfiller_github_username', 'profile__id', 'profile__leaderboard_ranks', 'profile__feedbacks_got',
+                'profile__keywords'
+            ).annotate(fulfillment_count=Count('bounty')).order_by('-fulfillment_count')
 
     keywords_filter = Q()
     for keyword in keywords:
@@ -2490,7 +2493,7 @@ def get_suggested_contributors(request):
         Q(bounty__issue_description__icontains=keyword)
 
     recommended_developers = BountyFulfillment.objects.prefetch_related('bounty', 'profile') \
-        .filter(keywords_filter).values('fulfiller_github_username', 'profile__id').distinct()[:10]
+        .filter(keywords_filter).values('fulfiller_github_username', 'profile__id', 'profile__leaderboard_ranks', 'profile__keywords').distinct()[:10]
 
     verified_developers = UserVerificationModel.objects.filter(verified=True).values('user__profile__handle', 'user__profile__id')
 
@@ -2499,7 +2502,7 @@ def get_suggested_contributors(request):
         for invite in invitees:
             invitees_filter = invitees_filter | Q(pk=invite)
 
-        users_invite = Profile.objects.filter(invitees_filter).values('id', 'handle', 'email').distinct()
+        users_invite = Profile.objects.filter(invitees_filter).values('id', 'handle', 'email', 'keywords', 'leaderboard_ranks').distinct()
 
     return JsonResponse(
                 {

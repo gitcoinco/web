@@ -79,6 +79,8 @@ const getSuggestions = () => {
 
       obj.children.forEach((children, childIndex) => {
         children.text = children.fulfiller_github_username || children.user__profile__handle || children.handle;
+        children.rank = children.profile__leaderboard_ranks || children.leaderboard_ranks;
+        children.keywords = children.profile__keywords || children.keywords;
         children.id = generalIndex;
         if (obj.text == 'Invites') {
           children.selected = true;
@@ -116,24 +118,40 @@ function formatUser(user) {
                   <div class="mr-2">
                     <img class="rounded-circle" src="${'/dynamic/avatar/' + user.text }" width="20" height="20"/>
                   </div>
-                  <div>${user.text}</div>
+                  <div>
+                    ${user.text} ${user.rank ? `&bull; <small>${user.rank}# Contributor</small>` : ''} ${user.keywords ? `&bull; ${user.keywords.slice(0, 5).map(keyword => `<small>${keyword}</small>`).join(' ')}` : ''}
+                  </div>
                 </div>`;
 
   return markup;
 }
 
-function formatUserSelection(user) {
+function formatUserSelection(user, data) {
   let selected;
 
   if (user.id) {
     selected = `
-      <img class="rounded-circle" src="${'/dynamic/avatar/' + user.text }" width="20" height="20"/>
-      <span class="ml-2">${user.text}</span>`;
+    <img class="rounded-circle" src="${'/dynamic/avatar/' + user.text }" width="20" height="20"/>
+    <span class="ml-2">${user.text}</span>`;
   } else {
     selected = user.text;
   }
   return selected;
 }
+
+$('#invite-contributors.js-select2').on('select2:selecting', function(e) {
+  let seletedUsers = $('#invite-contributors.js-select2').find('option:selected')
+    .map(function() {
+      return this;
+    }).get();
+
+  if (seletedUsers) {
+    seletedUsers.map(selectedUser => {
+      if (selectedUser.text === e.params.args.data.text) e.preventDefault();
+    });
+  }
+
+});
 
 function lastSynced(current, last_sync) {
   var time = timeDifference(current, last_sync);
