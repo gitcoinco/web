@@ -588,6 +588,7 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
     fulfillments = bounty_details.get('fulfillments', {})
     if fulfillments:
         handle_bounty_fulfillments(fulfillments, new_bounty, latest_old_bounty)
+        url = normalize_url(new_bounty.github_url)
         for inactive in Bounty.objects.filter(
             current_bounty=False, github_url=url
         ).nocache().order_by('-created_on'):
