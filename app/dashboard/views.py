@@ -1648,6 +1648,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 params['stdbounties_id'] = bounty.standard_bounties_id if not stdbounties_id else stdbounties_id
                 params['interested_profiles'] = bounty.interested.select_related('profile').all()
                 params['avatar_url'] = bounty.get_avatar_url(True)
+                params['canonical_url'] = bounty.get_canonical_url()
 
                 if bounty.event:
                     params['event_tag'] = bounty.event.slug
