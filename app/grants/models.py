@@ -25,11 +25,11 @@ from django.conf import settings
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 from django.db.models import Q
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.timezone import localtime
 from django.utils.translation import gettext_lazy as _
-from django.db.models.signals import pre_save
-from django.dispatch import receiver
 
 from django_extensions.db.fields import AutoSlugField
 from economy.models import SuperModel
