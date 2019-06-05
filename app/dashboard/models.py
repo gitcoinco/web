@@ -387,6 +387,10 @@ class Bounty(SuperModel):
     def url(self):
         return self.get_absolute_url()
 
+    @property
+    def canonical_url(self):
+        return self.get_canonical_url()
+
     def snooze_url(self, num_days):
         """Get the bounty snooze URL.
 
