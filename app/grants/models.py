@@ -28,6 +28,8 @@ from django.db.models import Q
 from django.utils import timezone
 from django.utils.timezone import localtime
 from django.utils.translation import gettext_lazy as _
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
 from django_extensions.db.fields import AutoSlugField
 from economy.models import SuperModel
@@ -659,14 +661,17 @@ next_valid_timestamp: {next_valid_timestamp}
             return None
 
     def get_converted_monthly_amount(self):
+        if self.num_tx_approved == 1:
+            return Decimal(0)
+
         converted_amount = self.get_converted_amount()
-
         total_sub_seconds = Decimal(self.real_period_seconds) * Decimal(self.num_tx_approved)
+        one_month = 30 * 24 * 60 * 60
 
-        if total_sub_seconds < 2592000:
+        if total_sub_seconds < one_month:
             result = Decimal(converted_amount * Decimal(self.num_tx_approved))
-        elif total_sub_seconds >= 2592000:
-            result = Decimal(converted_amount * (Decimal(2592000) / Decimal(self.real_period_seconds)))
+        elif total_sub_seconds >= one_month:
+            result = Decimal(converted_amount * (Decimal(one_month) / Decimal(self.real_period_seconds)))
 
         return result
 
@@ -698,6 +703,23 @@ next_valid_timestamp: {next_valid_timestamp}
         grant.save()
         successful_contribution(self.grant, self, contribution)
         return contribution
+
+
+@receiver(pre_save, sender=Grant, dispatch_uid="psave_grant")
+def psave_grant(sender, instance, **kwargs):
+    
+    instance.amount_received = 0
+    instance.monthly_amount_subscribed = 0
+    print(instance.id)
+    for subscription in instance.subscriptions.filter(error=False):
+        value_usdt = subscription.get_converted_amount()
+        for contrib in subscription.subscription_contribution.filter(success=True):
+            if value_usdt:
+                instance.amount_received += Decimal(value_usdt)
+
+        if subscription.num_tx_processed <= subscription.num_tx_approved and value_usdt:
+            instance.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
+        print("-", subscription.id, value_usdt, instance.monthly_amount_subscribed )
 
 
 class ContributionQuerySet(models.QuerySet):
