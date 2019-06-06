@@ -113,6 +113,7 @@ INSTALLED_APPS = [
     'revenue',
     'event_ethdenver2019',
     'inbox',
+    'board',
 ]
 
 MIDDLEWARE = [
@@ -142,7 +143,7 @@ AUTHENTICATION_BACKENDS = (
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': ['retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates'],
+    'DIRS': ['retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'board/templates'],
     'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': [

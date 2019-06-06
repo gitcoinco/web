@@ -64,6 +64,9 @@ urlpatterns = [
     # inbox
     path('inbox/', include('inbox.urls', namespace='inbox')),
 
+    # board
+    path('dashboard/', include('board.urls', namespace='board')),
+
     # kudos
     path('kudos/', kudos.views.about, name='kudos_main'),
     path('kudos/about/', kudos.views.about, name='kudos_about'),
@@ -124,7 +127,7 @@ urlpatterns = [
     re_path(r'^onboard/(?P<flow>\w+)/$', dashboard.views.onboard, name='onboard'),
     re_path(r'^onboard/contributor/avatar/?$', dashboard.views.onboard_avatar, name='onboard_avatar'),
     url(r'^postcomment/', dashboard.views.post_comment, name='post_comment'),
-    url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
+    # url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
     url(r'^hackathon/ethhack2019', dashboard.views.ethhack, name='ethhack_2019'),
     path('revenue/attestations/new', revenue.views.new_attestation, name='revenue_new_attestation'),

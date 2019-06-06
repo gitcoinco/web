@@ -2541,6 +2541,7 @@ class Profile(SuperModel):
 
         """
         eth_sum = 0
+        network = network or self.get_network()
 
         if not bounties:
             if sum_type == 'funded':
@@ -2577,6 +2578,8 @@ class Profile(SuperModel):
             dict: list of the profiles that were worked with (key) and the number of times they occured
 
         """
+        network = network or self.get_network()
+
         if not bounties:
             if work_type == 'funded':
                 bounties = self.bounties_funded.filter(network=network)
@@ -2826,7 +2829,7 @@ class ProfileSerializer(serializers.BaseSerializer):
             dict: The serialized Profile.
 
         """
-        
+
         return {
             'id': instance.id,
             'handle': instance.handle,
@@ -2835,8 +2838,8 @@ class ProfileSerializer(serializers.BaseSerializer):
             'keywords': instance.keywords,
             'url': instance.get_relative_url(),
             'position': instance.get_contributor_leaderboard_index(),
-            'organizations': instance.get_who_works_with(),
-            'total_earned': instance.get_eth_sum()
+            'organizations': instance.get_who_works_with(network=None),
+            'total_earned': instance.get_eth_sum(network=None)
         }
 
 
