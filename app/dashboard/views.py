@@ -798,7 +798,9 @@ def users_fetch(request):
         profile_list = profile_list.filter(keywords__icontains=skills)
 
     if len(bounties_completed) == 2:
-        profile_list = profile_list.filter(
+        profile_list = profile_list.annotate(
+            count=Count('fulfilled')
+        ).filter(
                 count__gte=bounties_completed[0],
                 count__lte=bounties_completed[1],
             )
@@ -813,7 +815,9 @@ def users_fetch(request):
         )
 
     if rating != 0:
-        profile_list = profile_list.filter(
+        profile_list = profile_list.annotate(
+            average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
+        ).filter(
             average_rating__gte=rating
         )
 
