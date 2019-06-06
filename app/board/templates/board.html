@@ -23,18 +23,21 @@
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
   </head>
-  <body class="{{ active }} bg-lightblue g-font-muli">
+  <body class="{{ active }} bg-lightblue g-font-muli" >
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
     {% include 'shared/nav.html' %}
-    <header class="container-fluid header">
-      <!-- {% include 'shared/minihero.html' with h1='test' suppress_logo=1 %} -->
+    <div id="gc-board">
+
+      <header class="container-fluid header">
+        <img :src="profile.avatar_url" alt=""> Welcome, [[ profile.handle ]]!
 
 
 
-    </header>
-    <section class="container" id="gc-dashboard">
+      </header>
+      <section class="container" >
 
-    </section>
+      </section>
+    </div>
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with slim=1 %}
@@ -43,5 +46,7 @@
     <script>
       var bootstrapTooltip = $.fn.tooltip.noConflict()
     </script>
+    <script src="{% static "v2/js/board.js" %}"></script>
+
   </body>
 </html>
