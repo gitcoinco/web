@@ -4638,8 +4638,7 @@
     - just for fun
   image: summer_trip.svg
 - name: ethereal_hackathon_partners
-  description: The evolution is made through opportunities, collaborations, and knowledge sharing. 
-  That's why good partnerships are the pillar for great results.
+  description: The evolution is made through opportunities, collaborations, and knowledge sharing. That's why good partnerships are the pillar for great results.
   priceFinney: 30
   artist: guistf
   platform: gitcoin
@@ -4654,9 +4653,7 @@
   - Ethereal Virtual Hackathon
   image: ethereal_hackathon_partners.svg
 - name: mythx_platform
-  description: The importance of smart contract auditing is essential for the interoperability of an ecosystem. 
-  Do you look for a collaborator who holds these abilities? The holders of those kudos are committed to 
-  the ethics and safety of their work.
+  description: The importance of smart contract auditing is essential for the interoperability of an ecosystem. Do you look for a collaborator who holds these abilities? The holders of those kudos are committed to  the ethics and safety of their work.
   priceFinney: 30
   artist: guistf
   platform: gitcoin
