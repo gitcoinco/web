@@ -933,8 +933,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "GitHub Sponsors and Store!"
-    new_kudos_pks = [2414, 2223, 2220]
+    subject = "Hackathons on the Horizon!"
+    new_kudos_pks = [3973, 2224, 1967]
     new_kudos_size_px = 150
 
     kudos_friday = f'''
@@ -946,27 +946,28 @@ def render_new_bounty_roundup(to_email):
     '''
     intro = f'''
 <p>
-Hi Gitcoiners,
+Hey Gitcoiners,
 </p>
 <p>
-This past week was an exciting week for open source, as GitHub released <a href="https://github.com/sponsors">Sponsors</a>, a way for users to find ways to financially support developers or open source projects. As proponents of open source, we couldn't be happier, and
-we're excited to announce that you can proudly display your Gitcoin Grants page via the sponsor link. <a href="https://medium.com/gitcoin/gitcoin-grants-github-sponsors-b516192c048">Check out this tutorial to learn more.</a>
+As summer formally begins, we're looking forward to the weather, the outdoors, and the memories to come. We're also looking forward to the next round of hackathons that we're planning. Fill out this Typeform to receive more information about the
+as we announce the next set of events. You can look forward to new sponsors, big bounties, and more opportunities to collaborate on new projects. <a href="https://gitcoin.typeform.com/to/j7CSbV">The form lives here.</a>
 </p>
 <p>
-We have a store now! Grab some swag at <a href="https://store.gitcoin.co/">https://store.gitcoin.co/</a>. We have backpacks, stickers, t-shirts, and more.
+The numbers from May are in, and we had another fantastic month. The Gitcoin product suite enabled $215k of value transfer in May, adding up to a cumulative 1.4m of lifetime value for the Gitcoin platform. That's about $299/hour, for every hour during May ($1348/business-hour). 
+We're excited for the next wave of activities, from Gitcoin Grants CLR Round 3 to a solution for abandoned bounties. Have any thoughts on what we should work on? <a href="mailto:founders@gitcoin.co">Drop us a line. We'd love to hear from you.</a>
 </p>
 <p>
-Last week, we released an article about finding the best freelance gigs in 2019. Read it on our blog <a href="https://gitcoin.co/blog/hiring-gig-economy/finding-best-freelance-jobs-for-coders-in-2019/">here.</a>
+The Gitcoin blog is now live. <a href="https://gitcoin.co/blog/finding-best-freelance-jobs-for-coders-in-2019/">Take another look at our first post and send us any issues you may find!</a>
 </p>
 
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Hackathon season is here! We’re looking for new sponsors for the next hackathon. Interested? Reach out to <a href="mailto:scott@gitcoin.co">Scott.</a>
+            Have an open source project that needs funding? <a href="mailto:founders@gitcoin.co">Send us an email and we'll see if we can help.</a>
         </li>
         <li>
-            Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET on Friday, or catch it on <a href="https://twitter.com/gitcoin">Twitter</a>!
+            The Gitcoin Livestream is back this week. Join us <a href="https://gitcoin.co/livestream"> at 2PM ET on Friday, or catch it on <a href="https://twitter.com/gitcoin">Twitter</a>!
         </li>
     </ul>
 </p>
@@ -978,32 +979,32 @@ Back to shipping,
     highlights = [{
         'who': 'janus',
         'who_link': True,
-        'what': 'Work from janus on WalletConnect!',
+        'what': 'Reduce bundle size :)',
         'link': 'https://gitcoin.co/issue/WalletConnect/walletconnect-monorepo/128/3030',
         'link_copy': 'View more',
     }, {
-        'who': 'touhonoob',
+        'who': 'c410-f3r',
         'who_link': True,
-        'what': 'Dynamic Log Control Added!',
-        'link': 'https://gitcoin.co/issue/harmony-one/harmony/440/2973',
+        'what': 'Nice job on the Stratum protocol proof of concept!',
+        'link': 'https://gitcoin.co/issue/nblockchain/TcpEchoSharp/1/3059',
         'link_copy': 'View more',
     }, {
-        'who': 'noah-amar',
+        'who': 'MaxStalker',
         'who_link': True,
-        'what': 'Quick Fix: Reduce Community Hero Image Height To 250px',
-        'link': 'https://gitcoin.co/issue/Native-Protocol/bounties/1/3033',
+        'what': 'Docs rewrite: complete.',
+        'link': 'https://gitcoin.co/issue/leapdao/leapdao-docs/25/3058',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/gitcoinco/web/issues/4483',
-        'primer': 'Design the Gitcoin Bots for 2019!',
+        'url': 'https://github.com/ethhub-io/ethhub/issues/285',
+        'primer': 'Help market the Plasma project by rewriting their copy',
     }, {
-        'url': 'https://github.com/centrifuge/precise-proofs/issues/86',
-        'primer': 'Implement A ZkSNARK Compatible Pedersen Hash Function',
+        'url': 'https://github.com/blockades/scuttle-dark-crystal/issues/56',
+        'primer': 'Changes to ephemeral shard returns after a security review of ssb-ephemeral-keys',
     }, {
-        'url': 'https://github.com/blockscout/research/issues/1',
-        'primer': 'Swarm Scraper For Verified Smart Contracts',
+        'url': 'https://github.com/leapdao/bridge-ui/issues/214',
+        'primer': 'Show NST/ERC1948 tokens on the Bridge UI',
     }, ]
 
     num_leadboard_items = 5
