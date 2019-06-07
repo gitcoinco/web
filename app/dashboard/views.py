@@ -832,6 +832,7 @@ def users_fetch(request):
     params = dict()
     all_pages = Paginator(profile_list, limit)
     all_users = []
+
     this_page = all_pages.page(page)
 
     this_page = Profile.objects.filter(pk__in=[ele.pk for ele in this_page]).order_by('-actions_count').annotate(
