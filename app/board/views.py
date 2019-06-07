@@ -55,10 +55,6 @@ def board(request):
 
 @login_required
 def get_bounties(request):
-
-
-    results = []
-
     if not settings.DEBUG:
         network = 'mainnet'
     else:
@@ -66,18 +62,17 @@ def get_bounties(request):
 
     current_user = request.user if hasattr(request, 'user') and request.user.is_authenticated else None
     profile = ProfileSerializer(current_user.profile).data
-    bounties = Bounty.objects.filter(
+    bounties = Bounty.objects.current().filter(
                 bounty_owner_github_username__iexact=current_user.profile.handle,
                 network=network
-            )
-    for bounty in bounties:
-        bounty_json = {}
-        bounty_json = bounty.to_standard_dict()
-        results.append(bounty_json)
-        # params['data'] = json.loads(json.dumps(results, default=str))
+            ).values(
+                'id','bounty_owner_github_username', 'github_comments', 'value_true', 'value_in_usdt_now', 'token_name',
+                'github_url', 'idx_status', 'standard_bounties_id', 'title', 'bounty_type', 'bountyinvites',
+                'interested', 'fulfillments' )
+
     return JsonResponse(
                 {
-                    'bounties': json.loads(json.dumps(results, default=str)),
+                    'bounties': list(bounties),
                     'profile': profile
                 },
                 status=200)

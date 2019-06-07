@@ -26,16 +26,57 @@
   <body class="{{ active }} bg-lightblue g-font-muli" >
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
     {% include 'shared/nav.html' %}
-    <div id="gc-board">
+    <div id="gc-board" v-cloak>
 
-      <header class="container-fluid header">
-        <img :src="profile.avatar_url" alt=""> Welcome, [[ profile.handle ]]!
-
+      <div class="header" style="min-height: 200px;">
 
 
+      </div>
+      <header class="container mt-n5 position-relative ">
+        <div class="row">
+          <div class="col-12">
+            <div class="bg-white rounded p-3">
+              <img :src="profile.avatar_url" alt="" width="68" height="68" class="rounded-circle"> Welcome, [[ profile.handle ]]!
+            </div>
+          </div>
+        </div>
       </header>
-      <section class="container" >
+      <section class="container">
+        <div class="row">
+          <div class="col-12">
+            <nav>
+              <div class="nav nav-tabs" id="myTab" role="tablist">
+                <a class="nav-item nav-link nav-line active" id="contributor-tab" data-toggle="tab" href="#nav-contributor" role="tab" aria-controls="contributor" aria-selected="true">Contributor</a>
+                <a class="nav-item nav-link nav-line" id="funder-tab" data-toggle="tab" href="#nav-funder" role="tab" aria-controls="funder" aria-selected="false">Funder</a>
+              </div>
+            </nav>
+            <div class="tab-content mt-3" id="nav-tabContent">
+              <div class="tab-pane fade show active" id="nav-contributor" role="tabpanel" aria-labelledby="nav-contributor-tab">
 
+
+                  <div class="row">
+                    <div class="col-9 ">
+                      <ul class="bg-white rounded">
+                        <li v-for="bounty in bounties" :key="bounty.id">
+                          [[ bounty.title ]]
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="col-3">
+                      <div class="bg-white rounded">
+                        Earnings
+                        [[ profile.total_earned ]]
+                      </div>
+                    </div>
+                  </div>
+
+              </div>
+              <div class="tab-pane fade" id="nav-funder" role="tabpanel" aria-labelledby="nav-funder-tab">
+              funder
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
     </div>
     {% include 'shared/footer.html' %}

@@ -1,3 +1,5 @@
+
+
 Vue.mixin({
   methods: {
     fetchBounties: function(newPage) {
@@ -7,6 +9,7 @@ Vue.mixin({
 
       $.when(getbounties).then(function(response) {
         vm.profile = response.profile;
+        vm.bounties = response.bounties;
       })
     }
   }
@@ -17,7 +20,8 @@ if (document.getElementById('gc-board')) {
     delimiters: [ '[[', ']]' ],
     el: '#gc-board',
     data: {
-      profile: []
+      profile: [],
+      bounties: []
     },
     mounted() {
       this.fetchBounties();
