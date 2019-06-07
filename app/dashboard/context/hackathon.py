@@ -25,6 +25,7 @@ Context Parameters For the ETHEREAL VIRTUAL HACKATHON static landing page
 '''
 eth_hack = {
     'hackathon_id'  : 'eth_hack',
+    'meta_description': _('Ethereal Virtual Hackathon, powered by Gitcoin and Microsoft'),
     'primary_color' : 'ethhk-pink-bg',
     'bg'            : 'ethhk-blue-bg',
     'banner_text'   : 'ethhk-white-f',
