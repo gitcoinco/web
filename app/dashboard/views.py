@@ -833,7 +833,7 @@ def users_fetch(request):
     all_pages = Paginator(profile_list, limit)
     all_users = []
     this_page = all_pages.page(page)
-    
+
     this_page = Profile.objects.filter(pk__in=[ele.pk for ele in this_page]).order_by('-actions_count').annotate(
         previous_worked_count=Count('fulfilled', filter=Q(
             fulfilled__bounty__network=network,
@@ -846,7 +846,6 @@ def users_fetch(request):
         )
 
     for user in this_page:
-        profile_json = {}
         previously_worked_with = 0
         if current_user:
             previously_worked_with = BountyFulfillment.objects.filter(
