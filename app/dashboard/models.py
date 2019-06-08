@@ -1956,6 +1956,7 @@ class Profile(SuperModel):
     job_location = JSONField(default=dict, blank=True)
     linkedin_url = models.CharField(max_length=255, default='', blank=True, null=True)
     resume = models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('The profile resume.'))
+    profile_banner = models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('The profile banner image.'))
     actions_count = models.IntegerField(default=3)
     fee_percentage = models.IntegerField(default=10)
     admin_override_name = models.CharField(max_length=255, blank=True, help_text=_('override profile name.'))

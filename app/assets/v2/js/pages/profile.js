@@ -1,5 +1,5 @@
 $(document).ready(function() {
-
+  
   $('#kudos-section').on('click keypress', '.flip-card', e => {
     if ($(e.target).is('a')) {
       e.stopPropagation();
@@ -12,6 +12,7 @@ $(document).ready(function() {
 
   const tabSection = document.querySelector('#activity-tabs-sections');
   const updateViewBtn = document.querySelector('#update-view-btn');
+
   let fetchInProgress = false;
 
   function updateView(ignoreScrollOffset) {
@@ -21,8 +22,12 @@ $(document).ready(function() {
       return;
     }
 
-    const activityContainer = document.querySelector('.tab-section.active .activities');
-    const activityCount = activityContainer ? parseInt(activityContainer.getAttribute('count')) || 0 : 0;
+    const activityContainer = document.querySelector(
+      '.tab-section.active .activities'
+    );
+    const activityCount = activityContainer
+      ? parseInt(activityContainer.getAttribute('count')) || 0
+      : 0;
     const loadingImg = document.querySelector('.loading_img');
 
     if (activityContainer.children.length < activityCount) {
@@ -39,43 +44,52 @@ $(document).ready(function() {
       fetchInProgress = true;
       loadingImg.className = loadingImg.className.replace('hidden', 'visible');
 
-      fetch(location.href.replace(location.hash, '') + '?p=' + (++page) + '&a=' + activityName).then(
-        function(response) {
+      fetch(
+        location.href.replace(location.hash, '') +
+          '?p=' +
+          ++page +
+          '&a=' +
+          activityName
+      )
+        .then(function(response) {
           if (response.status === 200) {
-            response.text().then(
-              function(html) {
-                const results = document.createElement('div');
+            response.text().then(function(html) {
+              const results = document.createElement('div');
 
-                activityContainer.setAttribute('page', page);
-                results.insertAdjacentHTML('afterBegin', html);
+              activityContainer.setAttribute('page', page);
+              results.insertAdjacentHTML('afterBegin', html);
 
-                const childs = results.children;
+              const childs = results.children;
 
-                while (childs.length) {
-                  activityContainer.append(childs[0]);
-                }
-
-                fetchInProgress = false;
-                loadingImg.className = loadingImg.className.replace('visible', 'hidden');
+              while (childs.length) {
+                activityContainer.append(childs[0]);
               }
-            );
+
+              fetchInProgress = false;
+              loadingImg.className = loadingImg.className.replace(
+                'visible',
+                'hidden'
+              );
+            });
             return;
           }
 
           fetchInProgress = false;
           hideBusyOverlay();
-        }
-      ).catch(
-        function() {
+        })
+        .catch(function() {
           fetchInProgress = false;
-          loadingImg.className = loadingImg.className.replace('visible', 'hidden');
-        }
-      );
+          loadingImg.className = loadingImg.className.replace(
+            'visible',
+            'hidden'
+          );
+        });
     }
   }
 
   if (updateViewBtn) {
-    updateViewBtn.addEventListener('click',
+    updateViewBtn.addEventListener(
+      'click',
       function() {
         updateView(true);
       },
@@ -102,11 +116,11 @@ $(document).ready(function() {
       type: 'POST',
       url: '/lazy_load_kudos/',
       data: {
-        'page': page,
-        'request': request,
-        'address': address,
-        'handle': handle,
-        'csrfmiddlewaretoken': '{{csrf_token}}' // from index.html
+        page: page,
+        request: request,
+        address: address,
+        handle: handle,
+        csrfmiddlewaretoken: '{{csrf_token}}' // from index.html
       },
       success: function(data) {
         // if there are still more pages to load,
@@ -120,11 +134,13 @@ $(document).ready(function() {
         // append html to the posts div
         var elem = '#' + request;
 
-        $(elem + ' div').first().append(data.kudos_html);
+        $(elem + ' div')
+          .first()
+          .append(data.kudos_html);
       },
       error: function(xhr, status, error) {
         // shit happens friends!
       }
     });
   });
-}(jQuery));
+})(jQuery);
