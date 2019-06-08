@@ -506,3 +506,39 @@ class DashboardModelsTest(TestCase):
         )
         assert bounty.github_url == 'https://github.com/gitcoinco/web/issues/305'
         bounty.delete()
+
+    @staticmethod
+    def get_all_tokens_sum():
+        """Test all users funded tokens."""
+        token_names = ['ETH', 'ETH', 'DAI']
+        for name in token_names:
+            Bounty.objects.create(
+                title='foo',
+                value_in_token=3,
+                token_name=name,
+                web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+                github_url='https://github.com/gitcoinco/web/issues/305#issuecomment-999999999',
+                token_address='0x0',
+                issue_description='hello world',
+                bounty_owner_github_username='gitcoinco',
+                is_open=True,
+                expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+                idx_project_length=5,
+                project_length='Months',
+                bounty_type='Feature',
+                experience_level='Intermediate',
+                raw_data={},
+                current_bounty=True,
+                network='mainnet',
+            )
+
+        profile = Profile(
+            handle='gitcoinco',
+            data={'type': 'Organization'},
+        )
+        query = profile.to_dict()['sum_all_funded_tokens']
+        assert query[0]['token_name'] == 'DAI'
+        assert query[0]['value_in_token'] == 3
+
+        assert query[1]['token_name'] == 'ETH'
+        assert query[1]['value_in_token'] == 6

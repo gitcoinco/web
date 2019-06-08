@@ -2603,6 +2603,44 @@ class Profile(SuperModel):
 
         return eth_sum
 
+    def get_all_tokens_sum(self, sum_type='collected', network='mainnet', bounties=None):
+        """Get the sum of collected or funded tokens based on the provided type.
+
+        Args:
+            sum_type (str): The sum to lookup.  Defaults to: collected.
+            network (str): The network to query results for.
+                Defaults to: mainnet.
+            bounties (dashboard.models.BountyQuerySet): Override the BountyQuerySet this function processes.
+                Defaults to: None.
+
+        Returns:
+            query: Grouped query by token_name and sum all token value
+        """
+        all_tokens_sum = None
+        if not bounties:
+            if sum_type == 'funded':
+                bounties = self.get_funded_bounties(network=network)
+            elif sum_type == 'collected':
+                bounties = self.get_fulfilled_bounties(network=network)
+            elif sum_type == 'org':
+                bounties = self.get_orgs_bounties(network=network)
+
+        if bounties and sum_type == 'funded':
+            bounties = bounties.has_funds()
+
+        try:
+            if bounties.exists():
+                all_tokens_sum = bounties.values(
+                    'token_name'
+                ).annotate(
+                    value_in_token=Sum('value_in_token') / 10**18,
+                ).order_by('token_name')
+
+        except Exception:
+            pass
+
+        return all_tokens_sum
+
     def get_who_works_with(self, work_type='collected', network='mainnet', bounties=None):
         """Get an array of profiles that this user works with.
 
@@ -2743,6 +2781,10 @@ class Profile(SuperModel):
         works_with_funded = self.get_who_works_with(work_type='funded', bounties=funded_bounties)
         works_with_collected = self.get_who_works_with(work_type='collected', bounties=fulfilled_bounties)
 
+        sum_all_funded_tokens = self.get_all_tokens_sum(sum_type='funded', bounties=funded_bounties, network=network)
+        sum_all_collected_tokens = self.get_all_tokens_sum(
+            sum_type='collected', bounties=fulfilled_bounties, network=network
+        )
         # org only
         count_bounties_on_repo = 0
         sum_eth_on_repos = 0
@@ -2775,6 +2817,8 @@ class Profile(SuperModel):
             'sum_eth_on_repos': sum_eth_on_repos,
             'works_with_org': works_with_org,
             'count_bounties_on_repo': count_bounties_on_repo,
+            'sum_all_funded_tokens': sum_all_funded_tokens,
+            'sum_all_collected_tokens': sum_all_collected_tokens
         }
 
         if activities:
