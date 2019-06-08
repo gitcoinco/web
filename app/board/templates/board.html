@@ -44,6 +44,28 @@
       <section class="container">
         <div class="row">
           <div class="col-12">
+            <div class="bg-white p-3">
+                {% trans 'Notifications' %}
+                <a href="{% url 'inbox:inbox_view' %}" class="">{% trans 'See all' %}</a>
+              <ul class="notifications__list">
+                <li v-for="notification in notifications" class="notifications__item" :key="notification.id">
+                  <span class="notifications__item-readed">
+                    <b class="notification__dot-small" v-bind:class="{'notification__dot-small_active': !notification.is_read}"></b>
+                  </span>
+                  <a :href="[[ notification.cta_url ]]" class="notifications_content" @click="e => !notification.is_read && markRead(notification.id)">
+                    <img class="notifications__avatar" :src="'/dynamic/avatar/' + [[ notification.username ]]" width="28" height="28">
+                    <p class="line-clamp" v-html="notification.message_html"></p>
+                  </a>
+                  <time class="notifications__time" :datetime="[[ notification.created_on ]]" :title="[[ notification.created_on ]]">
+                    [[ notification.created_on | moment-fromnow ]]
+                  </time>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
             <nav>
               <div class="nav nav-tabs" id="myTab" role="tablist">
                 <a class="nav-item nav-link nav-line active" id="contributor-tab" data-toggle="tab" href="#nav-contributor" role="tab" aria-controls="contributor" aria-selected="true">Contributor</a>
@@ -58,7 +80,8 @@
                     <div class="col-9 ">
                       <ul class="bg-white rounded">
                         <li v-for="bounty in bounties" :key="bounty.id">
-                          [[ bounty.title ]]
+                          <img :src="bounty.avatar_url" alt="" width="40" height="40">
+                          <a :href="bounty.url">[[ bounty.title ]]</a>
                         </li>
                       </ul>
                     </div>

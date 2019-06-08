@@ -24,6 +24,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.paginator import Paginator
+from django.core.serializers.json import DjangoJSONEncoder
 from django.http import HttpResponse, JsonResponse
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
@@ -62,17 +63,30 @@ def get_bounties(request):
 
     current_user = request.user if hasattr(request, 'user') and request.user.is_authenticated else None
     profile = ProfileSerializer(current_user.profile).data
-    bounties = Bounty.objects.current().filter(
+    bounties = Bounty.objects.current().prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks').filter(
                 bounty_owner_github_username__iexact=current_user.profile.handle,
                 network=network
-            ).values(
-                'id','bounty_owner_github_username', 'github_comments', 'value_true', 'value_in_usdt_now', 'token_name',
-                'github_url', 'idx_status', 'standard_bounties_id', 'title', 'bounty_type', 'bountyinvites',
-                'interested', 'fulfillments' )
+            )
+    all_bounties = []
+    for bounty in bounties:
+        bounty_json = {
+            k: getattr(bounty, k) for k in
+            ['id','bounty_owner_github_username', 'github_comments','value_true', 'value_in_usdt_now', 'token_name',
+            'github_url', 'idx_status', 'standard_bounties_id', 'title', 'bounty_type', 'funding_organisation', 'metadata']}
+        bounty_json['url'] = bounty.url
+        bounty_json['avatar_url'] = bounty.avatar_url
+        bounty_json['status'] = bounty.status
+        bounty_json['is_project_type_fulfilled'] = bounty.is_project_type_fulfilled
+        print(bounty)
+        # bounty_json['fulfillments'] = bounty.fulfillments
+        all_bounties.append(bounty_json)
 
     return JsonResponse(
                 {
-                    'bounties': list(bounties),
+                    'bounties': json.loads(json.dumps(all_bounties, cls=DjangoJSONEncoder)),
                     'profile': profile
                 },
                 status=200)
+# 'value_true', 'value_in_usdt_now', 'token_name',
+#             'github_url', 'idx_status', 'standard_bounties_id', 'title', 'bounty_type', 'bountyinvites',
+#             'interested', 'fulfillments', 'current_bounty', 'funding_organisation', 'metadata', 'activities'

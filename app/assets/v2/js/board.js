@@ -21,7 +21,8 @@ if (document.getElementById('gc-board')) {
     el: '#gc-board',
     data: {
       profile: [],
-      bounties: []
+      bounties: [],
+      notifications: notifications
     },
     mounted() {
       this.fetchBounties();
