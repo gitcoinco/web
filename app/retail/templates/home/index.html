@@ -58,11 +58,7 @@
               </span>
             </p>
             <div class="buttons">
-              {% if is_new_funder %}
-                <a class="btn btn-gc-green mr-2 shadow-none font-weight-bold py-3" href="/onboard/funder/">{% trans "Become a Funder" %}</a>
-              {% else %}
-                <a class="btn btn-gc-green mr-2 shadow-none font-weight-bold py-3" href="{% url "quickstart" %}">{% trans "Fund an Issue" %}</a>
-              {% endif %}
+              <a id="fund-issue" class="btn btn-gc-green mr-2 shadow-none font-weight-bold py-3" href="{% url "quickstart" %}">{% trans "Fund an Issue" %}</a>
               <a class="btn btn-outline-white ml-2 shadow-none font-weight-bold py-3" href="{% url "products" %}">{% trans "See Our Products" %}</a>
             </div>
           </div>
@@ -337,5 +333,8 @@
       $(this).html(videoTemplate(url));
     });
 
+    if(!localStorage['onboarded_funder']) {
+      $('#fund-issue').attr('href', '/onboard/funder/');
+    }
   </script>
 </html>

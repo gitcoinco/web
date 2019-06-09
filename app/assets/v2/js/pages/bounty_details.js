@@ -557,6 +557,8 @@ var wait_for_tx_to_mine_and_then_ping_server = function() {
             console.log('success from sync/web', response);
 
             // clear local data
+            delete sessionStorage['fulfillers'];
+            delete sessionStorage['bountyId'];
             localStorage[document.issueURL] = '';
             if (response['url']) {
               document.location.href = response['url'];
@@ -1577,6 +1579,7 @@ const show_invite_users = () => {
 
   if (sessionStorage['fulfillers']) {
     const users = sessionStorage['fulfillers'].split(',');
+    const bountyId = sessionStorage['bountyId'];
 
     if (users.length == 1) {
 
@@ -1586,7 +1589,7 @@ const show_invite_users = () => {
         <div class="invite-user">
           <img class="avatar" src="/dynamic/avatar/${users}" />
           <p class="mt-4">
-            <a target="_blank" class="btn btn-gc-blue shadow-none py-2 px-4" href="/users?invite=${user}&current-bounty=${document.result.pk}">
+            <a target="_blank" class="btn btn-gc-blue shadow-none py-2 px-4" href="/users?invite=${user}&current-bounty=${bountyId}">
               Yes, invite to one of my bounties
             </a>
           </p>
@@ -1608,7 +1611,7 @@ const show_invite_users = () => {
                 ${user}
               </a>
             </p>
-            <a target="_blank" class="btn btn-gc-blue shadow-none px-4 font-body font-weight-semibold" href="/users?invite=${user}&current-bounty=${document.result.pk}"">
+            <a target="_blank" class="btn btn-gc-blue shadow-none px-4 font-body font-weight-semibold" href="/users?invite=${user}&current-bounty=${bountyId}"">
               Invite
             </a>
           </div>`;
@@ -1620,7 +1623,6 @@ const show_invite_users = () => {
       $('#invite-header').html(title);
       $('#invite-users').html(invites);
     }
-    delete sessionStorage['fulfillers'];
     $('.invite-user-container').removeClass('hidden');
     $('.quote-container').addClass('hidden');
   } else {
