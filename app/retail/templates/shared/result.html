@@ -63,7 +63,7 @@
       [[if fulfillments.length]]
         <div class="tag pr" onclick="displayPRs(event, [[:standard_bounties_id]])">
             <a href="#" data-toggle="popover[[:standard_bounties_id]]" title="Existing PRs for this bounty" data-content="
-            [[for :fulfillments]]
+            [[for fulfillments]]
               PR<BR>
             [[/for]]
             ">
