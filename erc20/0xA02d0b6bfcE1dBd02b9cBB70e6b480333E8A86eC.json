@@ -1,0 +1,21 @@
+{
+  "symbol": "IPWT",
+  "address": "0xA02d0b6bfcE1dBd02b9cBB70e6b480333E8A86eC",
+  "overview":{
+      "en": "IPWeb will be the pioneer in the field of distributed storage. Our goal is to build a P2P-based open Internet platform that includes data storage and next-generation Internet communication protocols. IPWeb originated in Japan, with research and development team from all over the world. The team has extensive experience in the field of the blockchain, distributed storage, cryptography, communications and more. IPWeb technology will reshape the Internet ecosystem and cover search, streaming media, content, smart TV, web, mobile terminals, and other fields. IPWeb has successfully implemented the world's first distributed storage-based protocol, browser, and application, which will challenge the centralized Internet system in the future. IPWeb is a new generation of Internet-based on distributed storage.",
+      "zh": "IPWeb是基于分布式存储技术，实现的分布式互联网3.0项目。全球首创的基于分布式存储协议浏览器应用，未来将对中心化的互联网体系发起有力的挑战。起源于日本，研发团队来自全球各地。在区块链、分布式存储、加密学、通信等领域拥有丰富的经验。突破了各类技术难关，5月主网上线是目前IPFS项目进展最快的项目。主网测试已正常运行，每3秒产生一个新区块，节点不断增加中。通过我们提供的分布式存储的浏览器，首次实现了IPWeb的通信协议。IPWeb技术将重塑互联网生态，覆盖搜索、流媒体、内容、智能电视、WEB及移动端各个领域。未来将带来千亿级的商业机会。"
+  },
+  "email": "contact@ipweb.io",
+  "website": "https://www.ipweb.top/",
+  "whitepaper": "https://www.ipweb.top/whitepaper/whitepaper_cn.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-03-15",
+  "initial_price":{
+      "ETH":"0.00876 ETH",
+      "USD":"1.2 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/ipwebt",
+    "telegram": "https://t.me/Ipweb_en"
+  }
+}
