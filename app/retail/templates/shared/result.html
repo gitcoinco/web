@@ -72,12 +72,10 @@
     <div class="tags fixed justify-content-sm-start justify-content-md-end">
       [[if fulfillments.length]]
         <div class="tag pr" onclick="displayPRs(event, [[:standard_bounties_id]])">
-            <a href="#" id="PRpo-[[:standard_bounties_id]]">
-                  <p>
-              [[:fulfillments.length]]
-              <span>PR</span>
-            </p>
-          </a>    
+          <p>
+            [[:fulfillments.length]]
+            <span>PR</span>
+          </p>
         </div>
         <div class="PRpo-body-[[:standard_bounties_id]]" style="display: none;">
             [[for fulfillments]]
