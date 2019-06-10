@@ -22,6 +22,15 @@
   color: #00A55E;
 }
 
+.tag.pr {
+  background-color: #24a59f;
+  color: #ffffff;
+}
+
+.tag.pr:hover {
+  background-color: #44a59f;
+}
+
 .tag.usd:hover {
   background-color: #c6ebdb;
 }
