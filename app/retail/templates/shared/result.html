@@ -2,7 +2,7 @@
 <script type="text/javascript">
   function displayPRs(e,id){
     e.preventDefault();
-    $("[data-toggle=popover"+id+"]").popover();
+    $("[data-toggle=PRpo-"+id+"]").popover();
   }
 </script>
 
@@ -62,9 +62,9 @@
     <div class="tags fixed justify-content-sm-start justify-content-md-end">
       [[if fulfillments.length]]
         <div class="tag pr" onclick="displayPRs(event, [[:standard_bounties_id]])">
-            <a href="#" data-toggle="popover[[:standard_bounties_id]]" title="Existing PRs for this bounty" data-content="
+            <a href="ä" data-toggle="PRpo-[[:standard_bounties_id]]" title="Existing PRs for this bounty" data-content="
             [[for fulfillments]]
-              PR<BR>
+              PR [[:fulfiller_github_username]]
             [[/for]]
             ">
                   <p>
