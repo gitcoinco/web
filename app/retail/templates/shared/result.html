@@ -47,9 +47,6 @@
           [[else]]
             <span class="separator-bull"></span> <i class="fas fa-user"></i> 0 {% trans 'Applicants' %}
           [[/if]]
-          [[if fulfillments.length]]
-          <span class="separator-bull"></span> <i class="fas fa-user"></i> [[:fulfillments.length]] PRs
-          [[/if]]
         </div>
       </div>
     </div>
@@ -86,6 +83,15 @@
           </p>
         </div>
       [[/if]]
+      [[if fulfillments.length]]
+      <div class="tag usd">
+        <p>
+          [[:fulfillments.length]]
+          <span>PR</span>
+        </p>
+      </div>
+      [[/if]]
+
     </div>
   </div>
     [[if tokens ]]
