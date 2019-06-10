@@ -76,7 +76,13 @@
             [[:fulfillments.length]]
             <span>PR</span>
           </p>
+          <div style="display: none;">
+              [[for fulfillments]]
+                <a href="[[:fulfiller_github_url]]">PR by [[:fulfiller_github_username]]</a>
+              [[/for]]
+            </div>
         </div>
+  
       [[/if]]
       [[if network != 'mainnet']]
         <div class="tag network_warning">
