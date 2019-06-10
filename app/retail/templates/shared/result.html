@@ -47,6 +47,9 @@
           [[else]]
             <span class="separator-bull"></span> <i class="fas fa-user"></i> 0 {% trans 'Applicants' %}
           [[/if]]
+          [[if fulfillments.length]]
+          <span class="separator-bull"></span> <i class="fas fa-user"></i> [[:fulfillments.length]] PRs
+          [[/if]]
         </div>
       </div>
     </div>
