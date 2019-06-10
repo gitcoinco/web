@@ -2,7 +2,17 @@
 <script type="text/javascript">
   function displayPRs(e,id){
     e.preventDefault();
-    $("[data-toggle=PRpo-"+id+"]").popover();
+    popoverOptions = {
+      content: function () {
+          // Get the content from the hidden sibling.
+          return $(this).siblings('.PRpo-body-'+id).html();
+      },
+      trigger: 'hover',
+      animation: false,
+      placement: 'bottom',
+      html: true
+    };
+    $("[data-toggle=PRpo-"+id+"]").popover(popoverOptions);
   }
 </script>
 
@@ -62,16 +72,17 @@
     <div class="tags fixed justify-content-sm-start justify-content-md-end">
       [[if fulfillments.length]]
         <div class="tag pr" onclick="displayPRs(event, [[:standard_bounties_id]])">
-            <a href="#" data-toggle="PRpo-[[:standard_bounties_id]]" title="Existing PRs for this bounty" data-content="
-            [[for fulfillments]]
-              <a href="here">here - </a>PR by [[:fulfiller_github_username]]\n
-            [[/for]]
-            ">
+            <a href="#" data-toggle="PRpo-[[:standard_bounties_id]]" title="Existing PRs for this bounty" data-content=''>
                   <p>
               [[:fulfillments.length]]
               <span>PR</span>
             </p>
           </a>    
+        </div>
+        <div class="PRpo-body-[[:standard_bounties_id]]" style="display: none;">
+            [[for fulfillments]]
+              <a href="[[:fulfiller_github_url]]">PR by [[:fulfiller_github_username]]</a><BR>
+            [[/for]]
         </div>
       [[/if]]
       [[if network != 'mainnet']]
