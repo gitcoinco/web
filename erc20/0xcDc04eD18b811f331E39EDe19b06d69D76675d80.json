@@ -1,0 +1,13 @@
+{
+  "symbol": "KVB",
+  "address": "0xcDc04eD18b811f331E39EDe19b06d69D76675d80",
+  "overview": {
+        "en": "KVB (KVBEX Global Points, KVBCOIN) is a point system based on blockchain issuance and management, and is the only point officially issued by KVB.",
+        "zh": "KVB（KVBEX全球通用积分,KVBCOIN）是基于区块链发行和管理的积分系统，为KVB官方发行的唯一积分。"
+  },
+  "email": "KVBcoin@yandex.com",
+  "website": "http://m.fpig.us/",
+  "whitepaper": "http://m.fpig.us/adex/KVB%20white%20paper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-05-27"
+} 
