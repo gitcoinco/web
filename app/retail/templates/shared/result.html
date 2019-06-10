@@ -1,24 +1,7 @@
 {% load static i18n %}
-<script type="text/javascript">
-  function displayPRs(e,id){
-    e.preventDefault();
-    popoverOptions = {
-      content: function () {
-          // Get the content from the hidden sibling.
-          return $(this).siblings('.PRpo-body-'+id).html();
-      },
-      trigger: 'hover',
-      animation: false,
-      placement: 'bottom',
-      html: true
-    };
-    //$("[id=PRpo-"+id+"]").popover(popoverOptions);
-  }
-</script>
-
 <!-- JSRender stuff -->
 <script id="result" type="text/x-jsrender">
-  <a class="result bounty_row [[if hidden]]bounty_row--hidden[[/if]] [[:network]] i[[:standard_bounties_id]]" href="[[:action]]" data-container="body" data-toggle="popover" data-content='{% include "shared/bounty-popover.html" %}'>
+<a class="result bounty_row [[if hidden]]bounty_row--hidden[[/if]] [[:network]] i[[:standard_bounties_id]]" href="[[:action]]" data-container="body" data-toggle="popover" data-content='{% include "shared/bounty-popover.html" %}'>
   [[if avatar_url]]
     <div class="avatar-container col-1 justify-content-center hide_min_viewport">
       <img src='[[:avatar_url]]' class='avatar [[:github_org_name]]'>
@@ -78,7 +61,9 @@
           </p>
         </div>
         <div class="PRpo-body-[[:standard_bounties_id]]" style="display: none;">
+            [[for fulfillments]]
               <a href="[[:fulfiller_github_url]]">PR by [[:fulfiller_github_username]]</a><BR>
+            [[/for]]
         </div>
       [[/if]]
       [[if network != 'mainnet']]
