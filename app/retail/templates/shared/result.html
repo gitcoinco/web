@@ -1,4 +1,10 @@
 {% load static i18n %}
+<script type="text/javascript">
+  function displayPRs(e){
+    e.preventDefault();
+    alert("reaction!");
+  }
+</script>
 <!-- JSRender stuff -->
 <script id="result" type="text/x-jsrender">
 <a class="result bounty_row [[if hidden]]bounty_row--hidden[[/if]] [[:network]] i[[:standard_bounties_id]]" href="[[:action]]" data-container="body" data-toggle="popover" data-content='{% include "shared/bounty-popover.html" %}'>
@@ -54,7 +60,7 @@
   <div class="tags-container col-12 col-md-4 col-lg-3 font-caption">
     <div class="tags fixed justify-content-sm-start justify-content-md-end">
       [[if fulfillments.length]]
-        <div class="tag pr" onclick="javascript:alert('test');">
+        <div class="tag pr" onclick="displayPRs(event)">
           <p>
             [[:fulfillments.length]]
             <span>PR</span>
