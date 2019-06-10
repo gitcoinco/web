@@ -23,12 +23,12 @@
 }
 
 .tag.pr {
-  background-color: #24a59f;
-  color: #ffffff;
+  background-color: #e8e8e8;
+  color: #808080;
 }
 
 .tag.pr:hover {
-  background-color: #44a59f;
+  background-color: #b8b8b8;
 }
 
 .tag.usd:hover {
