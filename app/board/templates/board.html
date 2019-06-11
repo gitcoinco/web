@@ -82,6 +82,10 @@
                         <li v-for="bounty in bounties" :key="bounty.id">
                           <img :src="bounty.avatar_url" alt="" width="40" height="40">
                           <a :href="bounty.url">[[ bounty.title ]]</a>
+                          <div v-for="interested in bounty.profile_pairs">
+                            <img :src="`/dynamic/avatar/${interested[0]}`" alt="" width="40" height="40">
+                            [[ interested[0] ]]
+                          </div>
                         </li>
                       </ul>
                     </div>

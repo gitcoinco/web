@@ -77,7 +77,16 @@ def get_bounties(request):
         bounty_json['avatar_url'] = bounty.avatar_url
         bounty_json['status'] = bounty.status
         bounty_json['is_project_type_fulfilled'] = bounty.is_project_type_fulfilled
-        print(bounty)
+        print(bounty.interested.select_related('profile').all())
+
+        # bounty_json['profile_pairs'] = bounty.profile_pairs
+        # bounty_json['interested'] = bounty.interested.select_related('profile').all()
+        if bounty.interested.exists():
+            for profile in bounty.interested.select_related('profile').all().order_by('pk'):
+                interest= profile
+                bounty_json['interest']= interest.profile.handle
+        # bounty_json['is_fulfiller'] = bounty.is_fulfiller
+        print(bounty_json['interest'])
         # bounty_json['fulfillments'] = bounty.fulfillments
         all_bounties.append(bounty_json)
 
