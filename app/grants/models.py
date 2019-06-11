@@ -700,6 +700,26 @@ next_valid_timestamp: {next_valid_timestamp}
         return contribution
 
 
+<<<<<<< Updated upstream
+=======
+@receiver(pre_save, sender=Grant, dispatch_uid="psave_grant")
+def psave_grant(sender, instance, **kwargs):
+    
+    instance.amount_received = 0
+    instance.monthly_amount_subscribed = 0
+    #print(instance.id)
+    for subscription in instance.subscriptions.all():
+        value_usdt = subscription.get_converted_amount()
+        for contrib in subscription.subscription_contribution.filter(success=True):
+            if value_usdt:
+                instance.amount_received += Decimal(value_usdt)
+
+        if subscription.num_tx_processed <= subscription.num_tx_approved and value_usdt:
+            instance.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
+        #print("-", subscription.id, value_usdt, instance.monthly_amount_subscribed )
+
+
+>>>>>>> Stashed changes
 class ContributionQuerySet(models.QuerySet):
     """Define the Contribution default queryset and manager."""
 
