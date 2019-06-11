@@ -374,7 +374,7 @@ class Bounty(SuperModel):
         _org_name = org_name(self.github_url)
         _repo_name = repo_name(self.github_url)
         _issue_num = int(issue_number(self.github_url))
-        return reverse('issue_details_new2', kwargs={'ghuser': _org_name, 'ghrepo': _repo_name, 'ghissue': _issue_num})
+        return settings.BASE_URL.rstrip('/') + reverse('issue_details_new2', kwargs={'ghuser': _org_name, 'ghrepo': _repo_name, 'ghissue': _issue_num})
 
     def get_natural_value(self):
         token = addr_to_token(self.token_address)

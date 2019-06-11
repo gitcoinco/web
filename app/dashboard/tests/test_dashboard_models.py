@@ -481,7 +481,7 @@ class DashboardModelsTest(TestCase):
             experience_level='Intermediate',
             raw_data={},
         )
-        assert bounty.canonical_url == '/issue/gitcoinco/web/12'
+        assert bounty.canonical_url == settings.BASE_URL + 'issue/gitcoinco/web/12'
 
     @staticmethod
     def test_bounty_clean_gh_url_on_save():
