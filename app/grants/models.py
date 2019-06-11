@@ -696,7 +696,7 @@ next_valid_timestamp: {next_valid_timestamp}
         self.save()
         grant.updateActiveSubscriptions()
         grant.save()
-        successful_contribution(self.grant, self, contribution)
+        #successful_contribution(self.grant, self, contribution)
         return contribution
 
 
