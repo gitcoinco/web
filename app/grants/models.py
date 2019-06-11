@@ -710,7 +710,7 @@ def psave_grant(sender, instance, **kwargs):
     
     instance.amount_received = 0
     instance.monthly_amount_subscribed = 0
-    print(instance.id)
+    #print(instance.id)
     for subscription in instance.subscriptions.filter(error=False):
         value_usdt = subscription.get_converted_amount()
         for contrib in subscription.subscription_contribution.filter(success=True):
@@ -719,7 +719,7 @@ def psave_grant(sender, instance, **kwargs):
 
         if subscription.num_tx_processed <= subscription.num_tx_approved and value_usdt:
             instance.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
-        print("-", subscription.id, value_usdt, instance.monthly_amount_subscribed )
+        #print("-", subscription.id, value_usdt, instance.monthly_amount_subscribed )
 
 
 class ContributionQuerySet(models.QuerySet):
