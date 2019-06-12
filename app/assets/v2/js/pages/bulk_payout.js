@@ -23,10 +23,24 @@ $(document).ready(function($) {
     update_registry();
   });
 
-  $(document).on('input', '.percent', function(event) {
+
+  $(document).on('click', '.toggleType', function(event) {
     event.preventDefault();
-    var percent = $(this).text();
-    var is_error = !$.isNumeric(percent) || percent < 0;
+    if ($(this).data('type') == 'no') {
+      $(this).html('(%)');
+      $(this).data('type', 'pct');
+    } else {
+      $(this).html('(#)');
+      $(this).data('type', 'no');
+    }
+    $('.input_amount').trigger('input');
+  });
+
+
+  $(document).on('input', '.input_amount', function(event) {
+    event.preventDefault();
+    var input_amount = $(this).text();
+    var is_error = !$.isNumeric(input_amount) || input_amount < 0;
 
     if (is_error) {
       $(this).addClass('error');
@@ -34,7 +48,7 @@ $(document).ready(function($) {
     } else {
       $(this).removeClass('error');
       var decimals = 3;
-      var amount = round(get_amount(percent), decimals);
+      var amount = $('.toggleType').data('type') == 'no' ? input_amount : round(get_amount(input_amount), decimals);
 
       $(this).parents('tr').find('.amount').text(amount);
     }
@@ -134,6 +148,7 @@ $(document).ready(function($) {
 
   $('#acceptBounty').on('click', function(e) {
     e.preventDefault();
+    getFulfillers();
     update_registry();
 
     if (!$('#terms').is(':checked')) {
@@ -177,9 +192,9 @@ var get_amount = function(percent) {
 var add_row = function() {
   let bountyId = $('#bountyId').val();
   var num_rows = $('#payout_table tbody').find('tr.new-user').length;
-  var percent = num_rows <= 1 ? 100 : '';
+  var input_amount = num_rows <= 1 ? 100 : '';
   var denomination = $('#token_name').text();
-  var amount = get_amount(percent);
+  var amount = get_amount(input_amount);
   let username = '';
   var html = `
     <tr class="new-user">
@@ -188,7 +203,7 @@ var add_row = function() {
           <select onchange="update_registry()" class="username-search custom-select w-100 ml-auto mr-auto"></select>
         </div>
       </td>
-      <td class="pb-0"><div class="percent" contenteditable="true">${percent}</div></td>
+      <td class="pb-0"><div class="input_amount" contenteditable="true">${input_amount}</div></td>
       <td class="pb-0"><div class="amount"><span class=amount>${amount}</span> <span class=denomination>${denomination}</span></div></td>
       <td class="pb-0"><a class=remove href=#><i class="fas fa-times mt-2"></i></a>
       </td>
@@ -346,6 +361,20 @@ var update_registry = function(coinbase) {
   document.transactions = transactions;
 };
 
+/**
+ * stores fulfillers in sessionStorage on
+ * triggering advanced payout
+ */
+const getFulfillers = () => {
+  let fulfillers = [];
+  const users = $('.new-user option');
+
+  for (let i = 0; i < users.length; i++) {
+    fulfillers.push($('.new-user option')[i].innerHTML);
+  }
+  sessionStorage['fulfillers'] = fulfillers;
+  sessionStorage['bountyId'] = $('#bountyId').val();
+};
 
 $(document).on('click', '.user-fulfiller', function(event) {
   let elem = $('.username-search');

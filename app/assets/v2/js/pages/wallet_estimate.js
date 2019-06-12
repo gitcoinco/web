@@ -1,12 +1,12 @@
 window.addEventListener('load', function() {
   try {
-    if (web3.currentProvider.isTrust) {
+    if (web3 && web3.currentProvider.isTrust) {
       $('#trust_label').show();
     } else {
       $('#metamask_label').show();
     }
   } catch (ignore) {
-    console.log('%c error: web3 not defined', 'color: red');
+    console.log('%c error: web3 not defined. ensure metamask is installed & unlocked', 'color: red');
   }
   setTimeout(prefill_recommended_prices, 1000);
 

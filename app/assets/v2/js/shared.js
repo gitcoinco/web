@@ -131,6 +131,8 @@ var get_updated_metamask_conf_time_and_cost = function(gasPrice) {
     usdAmount = Math.round(100 * eth_amount_unrounded * document.eth_usd_conv_rate) / 100;
   }
 
+  if (typeof document.conf_time_spread == 'undefined') return;
+
   for (var i = 0; i < document.conf_time_spread.length - 1; i++) {
     var this_ele = (document.conf_time_spread[i]);
     var next_ele = (document.conf_time_spread[i + 1]);
@@ -229,7 +231,7 @@ var _alert = function(msg, _class) {
     };
   }
   var numAlertsAlready = $('.alert:visible').length;
-  var top = numAlertsAlready * 66;
+  var top = numAlertsAlready * 44;
 
   var html = function() {
     return (
@@ -281,20 +283,18 @@ var waitingStateActive = function() {
 };
 
 const notify_funder = (network, std_bounties_id, data) => {
-	  var request_url = '/actions/bounty/' + network + '/' + std_bounties_id + '/notify/funder_payout_reminder/';
+  var request_url = '/actions/bounty/' + network + '/' + std_bounties_id + '/notify/funder_payout_reminder/';
 
-	   showBusyOverlay();
-	  $.post(request_url, data).then(result => {
-		      hideBusyOverlay();
-
-		       _alert({message: gettext('Sent payout reminder')}, 'success');
-		      $('#notifyFunder a').addClass('disabled');
-		      return true;
-		    }).fail(result => {
-			        hideBusyOverlay();
-
-			         _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
-			      });
+  showBusyOverlay();
+  $.post(request_url, data).then(() => {
+    hideBusyOverlay();
+    _alert({message: gettext('Sent payout reminder')}, 'success');
+    $('#notifyFunder a').addClass('disabled');
+    return true;
+  }).fail(() => {
+    hideBusyOverlay();
+    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
+  });
 };
 
 /** Add the current profile to the interested profiles list. */
@@ -1231,7 +1231,7 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
     } else {
       result['hidden'] = (i > 4);
     }
-
+    
     html += tmpl.render(result);
   }
   return html;

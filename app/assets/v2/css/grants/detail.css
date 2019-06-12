@@ -2,6 +2,14 @@
   .grant-detail .container {
     max-width: 85vw
   }
+
+  #editor.ql-bubble .ql-editor {
+    padding: 0;
+  }
+
+  #editor .ql-editor p {
+    font-size: 1rem;
+  }
 }
 
 .grant_details {
