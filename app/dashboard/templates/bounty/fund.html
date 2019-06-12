@@ -278,6 +278,7 @@
           </div>
 
           <div class="bg-white my-3 px-5 rounded">
+            <input type="hidden" id="coupon_code" name="coupon_code" value="{{ coupon_code }}">
             {% if FEE_PERCENTAGE != 0 %}
               <div id="fee-section" class="py-4">
                 <h5 class="font-body letter-spacing text-black-60 text-uppercase">
@@ -388,6 +389,9 @@
 
 <script>
   document.FEE_PERCENTAGE = {{ FEE_PERCENTAGE }};
+  {% if expired_coupon %}
+    _alert({ message: 'This coupon has expired.' }, 'error');
+  {% endif %}
 </script>
 
 <script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>
