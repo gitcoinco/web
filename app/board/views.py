@@ -25,6 +25,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.paginator import Paginator
 from django.core.serializers.json import DjangoJSONEncoder
+from django.db.models import Count, Q
 from django.http import HttpResponse, JsonResponse
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
@@ -63,7 +64,9 @@ def get_bounties(request):
 
     current_user = request.user if hasattr(request, 'user') and request.user.is_authenticated else None
     profile = ProfileSerializer(current_user.profile).data
-    bounties = Bounty.objects.current().prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks').filter(
+    bounties = Bounty.objects.current().prefetch_related(
+        'fulfillments', 'interested', 'interested__profile', 'feedbacks').annotate(
+            count=Count('interested')).filter(
                 bounty_owner_github_username__iexact=current_user.profile.handle,
                 network=network
             )
@@ -77,16 +80,15 @@ def get_bounties(request):
         bounty_json['avatar_url'] = bounty.avatar_url
         bounty_json['status'] = bounty.status
         bounty_json['is_project_type_fulfilled'] = bounty.is_project_type_fulfilled
-        print(bounty.interested.select_related('profile').all())
+        print(bounty.interested.select_related('profile').all().values())
 
         # bounty_json['profile_pairs'] = bounty.profile_pairs
-        # bounty_json['interested'] = bounty.interested.select_related('profile').all()
-        if bounty.interested.exists():
-            for profile in bounty.interested.select_related('profile').all().order_by('pk'):
-                interest= profile
-                bounty_json['interest']= interest.profile.handle
+        # bounty_json['interested'] = bounty.interested.select_related('profile').all().values()
+        # if bounty.interested.exists():
+        #     for profile in bounty.interested.select_related('profile').all().order_by('pk'):
+        #         interest= profile
+        #         bounty_json['interest']= interest.profile.handle
         # bounty_json['is_fulfiller'] = bounty.is_fulfiller
-        print(bounty_json['interest'])
         # bounty_json['fulfillments'] = bounty.fulfillments
         all_bounties.append(bounty_json)
 
