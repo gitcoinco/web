@@ -511,7 +511,8 @@ $('#submitBounty').validate({
         metadata: metadata,
         tokenName: tokenName,
         tokenAddress: tokenAddress,
-        expire_date: expire_date
+        expire_date: expire_date,
+        coupon_code: $('#coupon_code').val()
       },
       meta: {
         platform: 'gitcoin',
