@@ -164,7 +164,7 @@ $(document).ready(function() {
           console.log('grant amount: ' + grant_amount);
           console.log('gitcoin grant amount: ' + gitcoin_grant_amount);
           // don't need to approve for gitcoin_grant_amount since we will directly transfer it
-          realApproval = Number(((grant_amount * data.num_periods)) * Math.pow(10, decimals) + 1 );
+          realApproval = Number(((grant_amount * data.num_periods)) * Math.pow(10, decimals) + 1);
         }
 
         let realGasPrice = Number(gitcoin_grant_amount * Math.pow(10, decimals)); // optional grants fee
@@ -253,7 +253,7 @@ const donationPayment = (token, account, donationAmountString) => {
   }).on('transactionHash', function(transactionHash) {
     console.log('One time old contract donation success: ' + transactionHash);
   });
-}
+};
 
 const subscribeToGrant = (transactionHash) => {
   web3.eth.getAccounts(function(err, accounts) {
@@ -431,8 +431,8 @@ const updateSummary = (element) => {
   $('.summary-frequency-unit-gitcoin').html($('#frequency_unit').val());
 
   if (contract_version == 0) {
-    $('.summary-period-gitcoin').html("");
-    $('.summary-frequency-unit-gitcoin').html("");
+    $('.summary-period-gitcoin').html('');
+    $('.summary-frequency-unit-gitcoin').html('');
     $('.summary-rollup-gitcoin').hide();
   }
 
