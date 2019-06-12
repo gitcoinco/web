@@ -160,8 +160,8 @@ class KudosContract:
 
         self._w3 = get_web3(self.network, sockets=sockets)
 
-        host = f'{settings.IPFS_API_SCHEME}://{settings.IPFS_HOST}'
-        self._ipfs = ipfshttpclient.connect(host=host, port=settings.IPFS_API_PORT)
+        ipfsConnectionString = f'/dns/{settings.IPFS_HOST}/tcp/{settings.IPFS_API_PORT}/{settings.IPFS_API_SCHEME}'
+        self._ipfs = ipfshttpclient.connect(ipfsConnectionString)
         self._contract = self._get_contract()
 
         self.address = self._get_contract_address()
