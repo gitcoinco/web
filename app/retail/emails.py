@@ -933,12 +933,12 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Developers, Ads, and Kudos, Oh My!"
-    new_kudos_pks = [2617, 2555, 2623]
+    subject = "Hackathons on the Horizon!"
+    new_kudos_pks = [3973, 2224, 1967]
     new_kudos_size_px = 150
 
     kudos_friday = f'''
-<h3>Happy Kudos Friday from our Ethereal Hackathon sponsors!</h3>
+<h3>Happy Kudos Friday!</h3>
 </p>
 <p>
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
@@ -946,29 +946,28 @@ def render_new_bounty_roundup(to_email):
     '''
     intro = f'''
 <p>
-Hi Gitcoiners,
+Hey Gitcoiners,
 </p>
 <p>
-This week, we wrapped up the <a href="https://gitcoin.co/hackathon/ethereal-virtual-hackathon/">Ethereal Virtual Hackathon</a>. We had 600 hackers in our Discord, $65K in prizes, and ultimately received over 80 submissions
-for bounties. We're excited to announce winners at Ethereal, soon.
+As summer formally begins, we're looking forward to the weather, the outdoors, and the memories to come. We're also looking forward to the next round of hackathons that we're planning. Fill out this Typeform to receive more information about the
+as we announce the next set of events. You can look forward to new sponsors, big bounties, and more opportunities to collaborate on new projects. <a href="https://gitcoin.typeform.com/to/j7CSbV">The form lives here.</a>
 </p>
 <p>
-During the event, we relied upon on Kudos, Codefund Ads, and the Gitcoin users to drive engagement. We built <a href="https://github.com/gitcoinco/kudosbadges/issues/new">custom Kudos</a> for each sponsor, showing unique appreciation via a piece of art made specifically for sponsors and developers.
-We ran <a href="https://codefund.app/advertisers/">CodeFund Ads</a> on Etherscan, driving great engagement to our discord. Lastly, Gitcoin is a place for developers, already. We're grateful
-to everyone who participated. Reply to this email if you'd like to discuss running a hackathon with us in the future!
+The numbers from May are in, and we had another fantastic month. The Gitcoin product suite enabled $215k of value transfer in May, adding up to a cumulative 1.4m of lifetime value for the Gitcoin platform. That's about $299/hour, for every hour during May ($1348/business-hour). 
+We're excited for the next wave of activities, from Gitcoin Grants CLR Round 3 to a solution for abandoned bounties. Have any thoughts on what we should work on? <a href="mailto:founders@gitcoin.co">Drop us a line. We'd love to hear from you.</a>
 </p>
 <p>
-So what got BUIDLt?  Winners will be announced next week, in the meantime, <a href=https://github.com/gitcoinco/skunkworks/blob/master/etherealhackathon2019.md>click here</a> to see a list of all entries to the hackathon!
+The Gitcoin blog is now live. <a href="https://gitcoin.co/blog/finding-best-freelance-jobs-for-coders-in-2019/">Take another look at our first post and send us any issues you may find!</a>
 </p>
 
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Check out our new <a href="https://gitcoin.co/users/">Gitcoin user directory</a> and invite great Gitcoiners to work with you today.
+            Have an open source project that needs funding? <a href="mailto:founders@gitcoin.co">Send us an email and we'll see if we can help.</a>
         </li>
         <li>
-            Gitcoin Livestream is back this week with Pia Mancini, CEO of Open Collective. Join us <a href="https://gitcoin.co/livestream"> at a new time, 2PM ET, or catch it on <a href="https://twitter.com/gitcoin">Twitter</a>!
+            The Gitcoin Livestream is back this week. Join us <a href="https://gitcoin.co/livestream"> at 2PM ET on Friday, or catch it on <a href="https://twitter.com/gitcoin">Twitter</a>!
         </li>
     </ul>
 </p>
@@ -978,34 +977,34 @@ Back to shipping,
 
 '''
     highlights = [{
-        'who': 'georgiemathews',
+        'who': 'janus',
         'who_link': True,
-        'what': 'Share kit for Vue.js with Bloom :)',
-        'link': 'https://gitcoin.co/issue/hellobloom/share-kit/42/2910',
+        'what': 'Reduce bundle size :)',
+        'link': 'https://gitcoin.co/issue/WalletConnect/walletconnect-monorepo/128/3030',
         'link_copy': 'View more',
     }, {
-        'who': 'iamonuwa',
+        'who': 'c410-f3r',
         'who_link': True,
-        'what': 'More great work by Onuwa on Status!',
-        'link': 'https://gitcoin.co/issue/status-im/discover-dapps/31/2888',
+        'what': 'Nice job on the Stratum protocol proof of concept!',
+        'link': 'https://gitcoin.co/issue/nblockchain/TcpEchoSharp/1/3059',
         'link_copy': 'View more',
     }, {
-        'who': 'devaman',
+        'who': 'MaxStalker',
         'who_link': True,
-        'what': 'Work with Pedro on Wallet Connect by devaman.',
-        'link': 'https://gitcoin.co/issue/WalletConnect/web3connect/12/2921',
+        'what': 'Docs rewrite: complete.',
+        'link': 'https://gitcoin.co/issue/leapdao/leapdao-docs/25/3058',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/AdExNetwork/adex-protocol-eth/issues/62',
-        'primer': 'Work with AdEx on their protocol prizes for ',
+        'url': 'https://github.com/ethhub-io/ethhub/issues/285',
+        'primer': 'Help market the Plasma project by rewriting their copy',
     }, {
-        'url': 'https://github.com/gitcoinco/skunkworks/issues/104',
-        'primer': 'Want to work on Quorum with JP Morgan on Privacy?',
+        'url': 'https://github.com/blockades/scuttle-dark-crystal/issues/56',
+        'primer': 'Changes to ephemeral shard returns after a security review of ssb-ephemeral-keys',
     }, {
-        'url': 'https://github.com/smartcontractkit/chainlink/issues/1091',
-        'primer': 'Connect smart contracts to external data!',
+        'url': 'https://github.com/leapdao/bridge-ui/issues/214',
+        'primer': 'Show NST/ERC1948 tokens on the Bridge UI',
     }, ]
 
     num_leadboard_items = 5

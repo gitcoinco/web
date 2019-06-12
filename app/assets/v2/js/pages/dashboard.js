@@ -291,7 +291,7 @@ var removeFilter = function(key, value) {
 };
 
 var get_search_URI = function(offset, order) {
-  var uri = '/api/v0.1/bounties/?';
+  var uri = '/api/v0.1/bounties/slim/?';
   var keywords = '';
   var org = '';
 

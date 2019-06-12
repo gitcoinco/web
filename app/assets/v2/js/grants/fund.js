@@ -195,6 +195,7 @@ $(document).ready(function() {
             console.log('1', error);
             _alert({ message: gettext('Your approval transaction failed. Please try again.')}, 'error');
           }).on('transactionHash', function(transactionHash) {
+            $('#sub_new_approve_tx_id').val(transactionHash);
             if (data.num_periods == 1) {
               // call splitter after approval
               splitPayment(accounts[0], data.admin_address, gitcoinDonationAddress, Number(grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}), Number(gitcoin_grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}));
@@ -257,7 +258,6 @@ const donationPayment = (token, account, donationAmountString) => {
 const subscribeToGrant = (transactionHash) => {
   web3.eth.getAccounts(function(err, accounts) {
     deployedToken.methods.decimals().call(function(err, decimals) {
-      $('#sub_new_approve_tx_id').val(transactionHash);
       const linkURL = etherscan_tx_url(transactionHash);
       let token_address = $('#js-token').length ? $('#js-token').val() : $('#sub_token_address').val();
       let data = {
