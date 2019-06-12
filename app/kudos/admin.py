@@ -45,7 +45,7 @@ class BulkTransferCouponAdmin(admin.ModelAdmin):
     readonly_fields = ['claim']
 
     def claim(self, instance):
-        url = f"/kudos/redeem/{instance.secret}"
+        url = instance.url
         return format_html(f"<a href={url}>{url}</a>")
 
 
