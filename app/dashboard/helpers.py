@@ -372,7 +372,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
         url = normalize_url(url)
     else:
         raise UnsupportedSchemaException('No webReferenceURL found. Cannot continue!')
-    
+
     # check conditions for private repos
     if metadata.get('repo_type', None) == 'private' and \
         bounty_payload.get('schemes', {}).get('permission_type', 'permissionless') != 'approval' and \
@@ -455,6 +455,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 'contract_address': bounty_details.get('token'),
                 'network': bounty_details.get('network'),
                 'bounty_type': metadata.get('bountyType', ''),
+                'bounty_categories': metadata.get('bounty_categories', '').split(','),
                 'funding_organisation': metadata.get('fundingOrganisation', ''),
                 'project_length': metadata.get('projectLength', ''),
                 'estimated_hours': metadata.get('estimatedHours'),
@@ -482,12 +483,12 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 fields=[
                     'web3_created', 'github_url', 'token_name', 'token_address', 'privacy_preferences', 'expires_date',
                     'title', 'issue_description', 'balance', 'contract_address', 'network', 'bounty_type',
-                    'project_length', 'experience_level', 'project_type', 'permission_type', 'attached_job_description',
-                    'bounty_owner_github_username', 'bounty_owner_address', 'bounty_owner_email', 'bounty_owner_name',
-                    'github_comments', 'override_status', 'last_comment_date', 'snooze_warnings_for_days',
-                    'admin_override_and_hide', 'admin_override_suspend_auto_approval', 'admin_mark_as_remarket_ready',
-                    'funding_organisation', 'bounty_reserved_for_user', 'is_featured', 'featuring_date', 'coupon_code',
-                    'fee_tx_id', 'fee_amount', 'repo_type', 'unsigned_nda'
+                    'bounty_categories', 'project_length', 'experience_level', 'project_type', 'permission_type',
+                    'attached_job_description', 'bounty_owner_github_username', 'bounty_owner_address',
+                    'bounty_owner_email', 'bounty_owner_name', 'github_comments', 'override_status', 'last_comment_date',
+                    'snooze_warnings_for_days', 'admin_override_and_hide', 'admin_override_suspend_auto_approval',
+                    'admin_mark_as_remarket_ready', 'funding_organisation', 'bounty_reserved_for_user', 'is_featured',
+                    'featuring_date', 'fee_tx_id', 'fee_amount', 'repo_type', 'unsigned_nda', 'coupon_code'
                 ],
             )
             if latest_old_bounty_dict['bounty_reserved_for_user']:

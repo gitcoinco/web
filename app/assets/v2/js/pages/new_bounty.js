@@ -382,6 +382,19 @@ $('#specialEvent').on('click', () => {
 });
 
 $('#submitBounty').validate({
+  errorPlacement: function(error, element) {
+    if (element.attr('name') == 'bounty_category') {
+      error.appendTo($(element).parents('.btn-group-toggle').next('.cat-error'));
+    } else {
+      error.insertAfter(element);
+    }
+  },
+  ignore: '',
+  messages: {
+    select2Start: {
+      required: 'Please select the right keywords.'
+    }
+  },
   submitHandler: function(form) {
     try {
       bounty_address();
@@ -447,7 +460,8 @@ $('#submitBounty').validate({
       featuring_date: data.featuredBounty && ((new Date().getTime() / 1000) | 0) || 0,
       reservedFor: reservedFor ? reservedFor.text : '',
       tokenName,
-      invite: inviteContributors
+      invite: inviteContributors,
+      bounty_categories: data.bounty_category
     };
 
     var privacy_preferences = {

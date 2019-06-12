@@ -2558,7 +2558,7 @@ def change_bounty(request, bounty_id):
         else:
             raise Http404
 
-    keys = ['experience_level', 'project_length', 'bounty_type', 'featuring_date',
+    keys = ['experience_level', 'project_length', 'bounty_type', 'featuring_date', 'bounty_categories',
             'permission_type', 'project_type', 'reserved_for_user_handle', 'is_featured', 'admin_override_suspend_auto_approval']
 
     if request.body:
@@ -2589,6 +2589,8 @@ def change_bounty(request, bounty_id):
                 value = timezone.make_aware(
                     timezone.datetime.fromtimestamp(int(value)),
                     timezone=UTC)
+            if key == 'bounty_categories':
+                value = value.split(',')
             old_value = getattr(bounty, key)
             if value != old_value:
                 setattr(bounty, key, value)

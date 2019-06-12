@@ -92,6 +92,7 @@ var rows = [
   'bounty_type',
   'expires_date',
   'issue_keywords',
+  'bounty_categories',
   'started_owners_username',
   'submitted_owners_username',
   'fulfilled_owners_username',
@@ -173,6 +174,24 @@ var callbacks = {
   'bounty_owner_github_username': gitcoin_ize,
   'funding_organisation': function(key, val, result) {
     return [ 'funding_organisation', result.funding_organisation ];
+  },
+  'bounty_categories': function(key, val, result) {
+    if (!result.bounty_categories || result.bounty_categories.length == 0)
+      return [ 'bounty_categories', null ];
+
+    const categories = [];
+    const categoryObj = {
+      frontend: '<span class="badge badge-secondary mr-1"><i class="fas fa-laptop-code"></i> Front End</span>',
+      backend: '<span class="badge badge-secondary mr-1"><i class="fas fa-code"></i> Back End</span>',
+      design: '<span class="badge badge-secondary mr-1"><i class="fas fa-pencil-ruler"></i> Design</span>',
+      documentation: '<span class="badge badge-secondary mr-1"><i class="fas fa-file-alt"></i> Documentation</span>',
+      other: '<span class="badge badge-secondary mr-1"><i class="fas fa-briefcase"></i> Other</span>'
+    };
+
+    result.bounty_categories.forEach(function(category) {
+      categories.push(categoryObj[category]);
+    });
+    return [ 'bounty_categories', categories ];
   },
   'permission_type': function(key, val, result) {
     if (val == 'approval') {
