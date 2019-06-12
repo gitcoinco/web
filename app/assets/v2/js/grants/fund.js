@@ -158,12 +158,6 @@ $(document).ready(function() {
         let realTokenAmount = Number(data.amount_per_period * Math.pow(10, decimals));
         let realApproval;
 
-        //if (data.contract_version == 0) {
-          // version 0 of the contract has no fee
-          //realApproval = Number((grant_amount * data.num_periods * Math.pow(10, decimals)) + 1);
-        //} else if (data.contract_version == 1) {
-        // get approval for total regardless of if we are doing subscription + one-time (old contract), one-time via splitter,
-        // or subscription w/ donation (new contract)
         if (data.contract_version == 1 || data.num_periods == 1) {
           realApproval = Number(((grant_amount + gitcoin_grant_amount) * data.num_periods * Math.pow(10, decimals)) + 1);
         } else if (data.contract_version == 0) {
@@ -172,16 +166,10 @@ $(document).ready(function() {
           // don't need to approve for gitcoin_grant_amount since we will directly transfer it
           realApproval = Number(((grant_amount * data.num_periods)) * Math.pow(10, decimals) + 1 );
         }
-        //}
 
         let realGasPrice = Number(gitcoin_grant_amount * Math.pow(10, decimals)); // optional grants fee
 
         $('#gas_price').val(realGasPrice);
-
-        // if (realPeriodSeconds < 2592000) {
-        //   charge gas for intervals less than a month
-        //   realGasPrice = Math.ceil($('#gasPrice').val() * Math.pow(10, 9));
-        // }
 
         let approvalSTR = realApproval.toLocaleString('fullwide', { useGrouping: false });
 
