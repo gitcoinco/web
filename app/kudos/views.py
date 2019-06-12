@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import json
 import logging
+import random
 import re
 import urllib.parse
 
@@ -286,6 +287,7 @@ def send_2(request):
         'from_handle': request.user.username,
         'title': _('Send Kudos | Gitcoin'),
         'card_desc': _('Send a Kudos to any github user at the click of a button.'),
+        'numbers': range(1,100),
         'kudos': kudos,
     }
     return TemplateResponse(request, 'transaction/send.html', params)
@@ -351,7 +353,7 @@ def send_3(request):
         raise Http404
 
     # db mutations
-    KudosTransfer.objects.create(
+    kt = KudosTransfer.objects.create(
         primary_email=primary_email,
         emails=to_emails,
         # For kudos, `token` is a kudos.models.Token instance.
@@ -372,6 +374,24 @@ def send_3(request):
         recipient_profile=get_profile(to_username),
         sender_profile=get_profile(from_username),
     )
+
+    if params.get('send_type') == 'airdrop' and is_user_authenticated:
+        num_redemptions = params['num_redemptions']
+        if not params.get('pk'):
+            raise Exception('You must provide a pk')
+
+        btc = BulkTransferCoupon.objects.create(
+            token=kudos_token_cloned_from,
+            num_uses_remaining=num_redemptions,
+            num_uses_total=num_redemptions,
+            current_uses=0,
+            secret=random.randint(10**19, 10**20),
+            comments_to_put_in_kudos_transfer=params['comments_public'],
+            sender_address=params['metadata']['address'],
+            sender_pk=params.get('pk'),
+            sender_profile=get_profile(from_username),
+            )
+        response['url'] = btc.url
 
     return JsonResponse(response)
 
@@ -638,7 +658,7 @@ def receive_bulk(request, secret):
 
             private_key = settings.KUDOS_PRIVATE_KEY if not coupon.sender_pk else coupon.sender_pk
             kudos_owner_address = settings.KUDOS_OWNER_ACCOUNT if not coupon.sender_address else coupon.sender_address
-
+            gas_price_confirmation_time = 2 if not coupon.sender_address else 60
             kudos_contract_address = Web3.toChecksumAddress(settings.KUDOS_CONTRACT_MAINNET)
             kudos_owner_address = Web3.toChecksumAddress(kudos_owner_address)
             w3 = get_web3(coupon.token.contract.network)
@@ -647,7 +667,7 @@ def receive_bulk(request, secret):
             tx = contract.functions.clone(address, coupon.token.token_id, 1).buildTransaction({
                 'nonce': nonce,
                 'gas': 500000,
-                'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(2) * 10**9),
+                'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(gas_price_confirmation_time) * 10**9),
                 'value': int(coupon.token.price_finney / 1000.0 * 10**18),
             })
 
@@ -698,7 +718,8 @@ def receive_bulk(request, secret):
 
                         # send email
                         maybe_market_kudos_to_email(kudos_transfer)
-                except:
+                except Exception as e:
+                    logger.exception(e)
                     error = "Could not redeem your kudos.  Please try again soon."
 
 

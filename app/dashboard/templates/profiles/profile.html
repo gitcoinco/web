@@ -19,7 +19,7 @@
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header profile-header dash" style="min-height: 350px;">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      {% include 'shared/nav.html' %}
+      {% include 'home/nav.html' %}
       {% if not hidden and is_staff %}
         <div class="alpha-warning font-caption mb-0">
           <span class="font-weight-bold">Staff only</span>
@@ -68,8 +68,8 @@
                   {% endif %}
                 </p>
                 <div class="static-stars my-3">
-                  {% for i in "x"|rjust:"5" %}
-                    <i class="far fa-star {% if i <= avg_rating.overall|floatformat:'0' %}fas{% endif %}"></i>
+                  {% for i in ratings %}
+                    <i class="far fa-star {% if avg_rating.overall != 0 and i <= avg_rating.overall %}fas{% endif %}"></i>
                   {% endfor %}
                   <small class="text-muted">({{ avg_rating.total_rating }} {% trans "rating" %}{{avg_rating.total_rating | pluralize}})</small>
                 </div>

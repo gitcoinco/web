@@ -152,7 +152,7 @@ def privacy_settings(request):
 
     context = {
         'profile': profile,
-        'nav': 'internal',
+        'nav': 'home',
         'active': '/settings/privacy',
         'title': _('Privacy Settings'),
         'navs': get_settings_navs(request),
@@ -207,7 +207,7 @@ def matching_settings(request):
         'is_logged_in': is_logged_in,
         'autocomplete_keywords': json.dumps(
             [str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
-        'nav': 'internal',
+        'nav': 'home',
         'active': '/settings/matching',
         'title': _('Matching Settings'),
         'navs': get_settings_navs(request),
@@ -235,7 +235,7 @@ def feedback_settings(request):
         msg = _('We\'ve received your feedback.')
 
     context = {
-        'nav': 'internal',
+        'nav': 'home',
         'active': '/settings/feedback',
         'title': _('Feedback'),
         'navs': get_settings_navs(request),
@@ -312,10 +312,11 @@ def email_settings(request, key):
             msg = _('Updated your preferences.')
     pref_lang = 'en' if not profile else profile.get_profile_preferred_language()
     context = {
-        'nav': 'internal',
+        'nav': 'home',
         'active': '/settings/email',
         'title': _('Email Settings'),
         'es': es,
+        'nav': 'home',
         'suppression_preferences': json.dumps(es.preferences.get('suppression_preferences', {}) if es else {}),
         'msg': msg,
         'email_types': ALL_EMAILS,
@@ -360,7 +361,7 @@ def slack_settings(request):
     context = {
         'repos': profile.get_slack_repos(join=True) if profile else [],
         'is_logged_in': is_logged_in,
-        'nav': 'internal',
+        'nav': 'home',
         'active': '/settings/slack',
         'title': _('Slack Settings'),
         'navs': get_settings_navs(request),
@@ -405,7 +406,7 @@ def discord_settings(request):
     context = {
         'repos': profile.get_discord_repos(join=True) if profile else [],
         'is_logged_in': is_logged_in,
-        'nav': 'internal',
+        'nav': 'home',
         'active': '/settings/discord',
         'title': _('Discord Settings'),
         'navs': get_settings_navs(request),
@@ -453,7 +454,7 @@ def token_settings(request):
 
     context = {
         'is_logged_in': is_logged_in,
-        'nav': 'internal',
+        'nav': 'home',
         'active': '/settings/tokens',
         'title': _('Token Settings'),
         'navs': get_settings_navs(request),
@@ -484,7 +485,7 @@ def ens_settings(request):
 
     context = {
         'is_logged_in': is_logged_in,
-        'nav': 'internal',
+        'nav': 'home',
         'ens_subdomain': ens_subdomain,
         'active': '/settings/ens',
         'title': _('ENS Settings'),
@@ -569,7 +570,7 @@ def account_settings(request):
 
     context = {
         'is_logged_in': is_logged_in,
-        'nav': 'internal',
+        'nav': 'home',
         'active': '/settings/account',
         'title': _('Account Settings'),
         'navs': get_settings_navs(request),
@@ -646,7 +647,7 @@ def job_settings(request):
 
     context = {
         'is_logged_in': is_logged_in,
-        'nav': 'internal',
+        'nav': 'home',
         'active': '/settings/job',
         'title': _('Job Settings'),
         'navs': get_settings_navs(request),
@@ -745,6 +746,7 @@ def leaderboard(request, key=''):
 
     context = {
         'items': items[0:limit],
+        'nav': 'home',
         'titles': titles,
         'selected': title,
         'is_linked_to_profile': is_linked_to_profile,
