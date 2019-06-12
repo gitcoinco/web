@@ -33,6 +33,11 @@ class UsersListTest(TestCase):
 
     def setUp(self):
         self.request = RequestFactory()
+        self.current_user = User.objects.create(
+            password="asdfasdf", username="asdfasdf")
+        current_user_profile = Profile.objects.create(
+            user=self.current_user, data={}, hide_profile=False, handle="asdfasdf")
+
         for i in range(20):
             user = User.objects.create(password="{}".format(i),
                                        username="user{}".format(i))
@@ -40,4 +45,6 @@ class UsersListTest(TestCase):
                 user=user, data={}, hide_profile=False, handle="{}".format(i))
 
     def test_user_list(self):
-        assert json.loads(users_fetch(self.request.get('/api/v0.1/users_fetch/')).content)['count'] == 20
+        request = self.request
+        request.user = self.current_user
+        assert json.loads(users_fetch(request.get('/api/v0.1/users_fetch/')).content)['count'] == 21
