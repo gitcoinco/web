@@ -200,7 +200,7 @@ def get_ipfs(host=None, port=settings.IPFS_API_PORT):
 
     """
     if host is None:
-        clientConnectString = f'/dns/{settings.IPFS_HOST}/tcp/{settings.IPFS_API_PORT}/https'
+        clientConnectString = f'/dns/{settings.IPFS_HOST}/tcp/{settings.IPFS_API_PORT}/{settings.IPFS_API_SCHEME}'
     else:
         clientConnectString = f'/dns/{host}/tcp/{settings.IPFS_API_PORT}/https'
     try:
