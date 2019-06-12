@@ -154,7 +154,7 @@ $(document).ready(function() {
     }
   }
 
-  compiledSplitter = compiledSplitter0;
+  compiledSplitter = compiledSplitter0 ? compiledSplitter0 : null;
 
   const listen_web3_1_changes = () => {
     if (typeof web3 == 'undefined' || typeof web3.eth.getCoinbase() == 'undefined') {
