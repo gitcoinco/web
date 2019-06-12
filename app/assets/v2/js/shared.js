@@ -1231,7 +1231,7 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
     } else {
       result['hidden'] = (i > 4);
     }
-
+    
     html += tmpl.render(result);
   }
   return html;

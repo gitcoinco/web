@@ -331,6 +331,14 @@ class Bounty(SuperModel):
         super().save(*args, **kwargs)
 
     @property
+    def latest_activity(self):
+        activity = Activity.objects.filter(bounty=self.pk).order_by('-pk')
+        if activity.exists():
+            from dashboard.router import ActivitySerializer
+            return ActivitySerializer(activity.first()).data
+        return None
+
+    @property
     def profile_pairs(self):
         profile_handles = []
 
@@ -588,14 +596,17 @@ class Bounty(SuperModel):
             return self.idx_status
 
         # standard bounties
+        is_traditional_bounty_type = self.project_type == 'traditional'
         try:
+            has_tips = self.tips.filter(is_for_bounty_fulfiller=False).send_happy_path().exists()
+            if has_tips and is_traditional_bounty_type:
+                return 'done'
             if not self.is_open:
                 if self.accepted:
                     return 'done'
                 elif self.past_hard_expiration_date:
                     return 'expired'
-                has_tips = self.tips.filter(is_for_bounty_fulfiller=False).send_happy_path().exists()
-                if has_tips:
+                elif has_tips:
                     return 'done'
                 # If its not expired or done, and no tips, it must be cancelled.
                 return 'cancelled'
@@ -1935,6 +1946,9 @@ class Profile(SuperModel):
         kt_owner_address = KudosTransfer.objects.filter(
             receive_address__iexact=self.preferred_payout_address
         )
+        if not self.preferred_payout_address:
+            kt_owner_address = KudosTransfer.objects.none()
+            
         kt_profile = KudosTransfer.objects.filter(recipient_profile=self)
 
         kudos_transfers = kt_profile | kt_owner_address
@@ -2639,12 +2653,11 @@ class Profile(SuperModel):
         if not self.is_org:
             all_activities = self.activities
         else:
+            # orgs
             url = self.github_url
             all_activities = Activity.objects.filter(
-                Q(bounty__github_url__startswith=url) |
-                Q(tip__github_url__startswith=url) |
-                Q(grant__isnull=False) |
-                Q(subscription__isnull=False)
+                Q(bounty__github_url__istartswith=url) |
+                Q(tip__github_url__istartswith=url)
             )
 
         all_activities = all_activities.filter(

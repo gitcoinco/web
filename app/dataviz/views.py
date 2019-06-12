@@ -272,31 +272,30 @@ def funnel(request):
         'title': 'web => bounties_posted => bounties_fulfilled',
         'keys': ['sessions', 'bounties_alltime', 'bounties_fulfilled', ],
         'data': []
-    },
-               {
-                   'title': 'web => bounties_posted => bounties_fulfilled (detail)',
-                   'keys': [
-                       'sessions', 'bounties_alltime', 'bounties_started_total', 'bounties_submitted_total',
-                       'bounties_done_total', 'bounties_expired_total', 'bounties_cancelled_total',
-                   ],
-                   'data': []
-               }, {
-                   'title': 'web session => email_subscribers',
-                   'keys': ['sessions', 'email_subscribers', ],
-                   'data': []
-               }, {
-                   'title': 'web session => slack',
-                   'keys': ['sessions', 'slack_users', ],
-                   'data': []
-               }, {
-                   'title': 'web session => create dev grant',
-                   'keys': ['sessions', 'dev_grant', ],
-                   'data': []
-               }, {
-                   'title': 'email funnel',
-                   'keys': ['email_processed', 'email_open', 'email_click', ],
-                   'data': []
-               }, ]
+    }, {
+        'title': 'web => bounties_posted => bounties_fulfilled (detail)',
+        'keys': [
+            'sessions', 'bounties_alltime', 'bounties_started_total', 'bounties_submitted_total', 'bounties_done_total',
+            'bounties_expired_total', 'bounties_cancelled_total',
+        ],
+        'data': []
+    }, {
+        'title': 'web session => email_subscribers',
+        'keys': ['sessions', 'email_subscribers', ],
+        'data': []
+    }, {
+        'title': 'web session => slack',
+        'keys': ['sessions', 'slack_users', ],
+        'data': []
+    }, {
+        'title': 'web session => create dev grant',
+        'keys': ['sessions', 'dev_grant', ],
+        'data': []
+    }, {
+        'title': 'email funnel',
+        'keys': ['email_processed', 'email_open', 'email_click', ],
+        'data': []
+    }, ]
 
     for funnel in range(0, len(funnels)):
         keys = funnels[funnel]['keys']

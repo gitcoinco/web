@@ -20,6 +20,7 @@ def drop_accept_langauge(get_response):
 
     return middleware
 
+
 def bleach_requests(get_response):
     """
     This middleware uses the bleach library to sanitize incoming requests to
