@@ -2476,8 +2476,6 @@ def new_bounty(request):
         else:
             params['expired_coupon'] = True
 
-    print(params['FEE_PERCENTAGE'])
-
     return TemplateResponse(request, 'bounty/fund.html', params)
 
 
