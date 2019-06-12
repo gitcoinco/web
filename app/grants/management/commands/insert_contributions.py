@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from django.core.management.base import BaseCommand
 
+
 class Command(BaseCommand):
 
     help = 'inserts contributions into the DB'
@@ -67,5 +68,3 @@ class Command(BaseCommand):
             subscription.subminer_comments = "skipping subminer bc this is a 1 and done subscription, and tokens were alredy sent"
             subscription.save()
             record_subscription_activity_helper('new_grant_contribution', subscription, profile)
-
-
