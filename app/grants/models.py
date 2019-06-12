@@ -25,6 +25,8 @@ from django.conf import settings
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 from django.db.models import Q
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.timezone import localtime
 from django.utils.translation import gettext_lazy as _
@@ -700,8 +702,6 @@ next_valid_timestamp: {next_valid_timestamp}
         return contribution
 
 
-<<<<<<< Updated upstream
-=======
 @receiver(pre_save, sender=Grant, dispatch_uid="psave_grant")
 def psave_grant(sender, instance, **kwargs):
     
@@ -719,7 +719,6 @@ def psave_grant(sender, instance, **kwargs):
         #print("-", subscription.id, value_usdt, instance.monthly_amount_subscribed )
 
 
->>>>>>> Stashed changes
 class ContributionQuerySet(models.QuerySet):
     """Define the Contribution default queryset and manager."""
 
