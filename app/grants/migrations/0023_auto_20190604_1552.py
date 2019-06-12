@@ -10,20 +10,23 @@ def forwards(apps, schema_editor):
     ## ROUND 2 CLR Match Amounts
     from grants.models import CLRMatch
     # array of [grant_id, amount]
-    data = [(82,13548),(89,11728),(24,3499),(39,3450),(80,2762),(48,2346),(25,2085),(20,1428),(13,1245),(36,910),(37,868),(40,774),(49,765),(85,725),(21,720),(12,530),(32,527),(30,354),(29,301),(16,265),(86,261),(38,158),(65,157),(17,150),(47,119),(81,100),(99,59),(23,56),(35,28),(62,24),(41,16),(50,15),(43,13),(31,10),(74,2),(76,2),(26,0),(87,0),(15,0),(73,0),(63,0),(79,0),(66,0),(72,0),(92,0),(83,0)]
-    round_number = 2
-    for ele in data:
-        grant = Grant.objects.get(pk=ele[0])
-        amount = ele[1]
-        if amount:
-            grant.clr_matching += amount
-            grant.save()
-            if grant.clr_matching:
-                CLRMatch.objects.create(
-                    grant=grant,
-                    round_number=round_number,
-                    amount=amount,
-                    )
+    try:
+        data = [(82,13548),(89,11728),(24,3499),(39,3450),(80,2762),(48,2346),(25,2085),(20,1428),(13,1245),(36,910),(37,868),(40,774),(49,765),(85,725),(21,720),(12,530),(32,527),(30,354),(29,301),(16,265),(86,261),(38,158),(65,157),(17,150),(47,119),(81,100),(99,59),(23,56),(35,28),(62,24),(41,16),(50,15),(43,13),(31,10),(74,2),(76,2),(26,0),(87,0),(15,0),(73,0),(63,0),(79,0),(66,0),(72,0),(92,0),(83,0)]
+        round_number = 2
+        for ele in data:
+            grant = Grant.objects.get(pk=ele[0])
+            amount = ele[1]
+            if amount:
+                grant.clr_matching += amount
+                grant.save()
+                if grant.clr_matching:
+                    CLRMatch.objects.create(
+                        grant=grant,
+                        round_number=round_number,
+                        amount=amount,
+                        )
+    except Exception as e:
+        logger.info(e)
 
 def backwards(apps, schema_editor):
     pass
