@@ -10,8 +10,8 @@
   <body class="g-font-muli hackathon {{ hackathon_id }}">
     <div class="container-fluid px-lg-0">
       <div class="row {{ bg }}">
-        <div class="col-12">
-          <img class="w-100" src="{{ logo }}" alt="{{ hackathon_id }}" />
+        <div class="col-12 {{ logo_bg }}">
+          <img class="w-100 my-5 py-4 banner-logo" src="{{ logo }}" alt="{{ hackathon_id }}" />
         </div>
         <div class="col-12 py-5 text-center">
           <h1 class="my-5 pt-5 font-weight-semibold {{ banner_text }}">{{ title_banner |safe }}</h1>
