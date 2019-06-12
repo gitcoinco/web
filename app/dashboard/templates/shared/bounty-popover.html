@@ -48,15 +48,13 @@
       [[if expired !== ""]]<i class="far fa-clock expired-icon"></i>[[/if]][[:expired]]
     </div>
   </div>
-  [[if activities.length]]
+  [[if latest_activity]]
     <div class="popover-bounty__footer">
       <span class="title">{% trans "Latest Activity" %}</span>
-      [[for activities.slice(-1)  ]]
         <div class="d-flex justify-content-between">
-          <span>[[activitytext:activity_type]] {% trans "by" %} <b>[[:profile.handle]]</b></span>
-          <span>[[timedifference:created]]</span>
+          <span>[[activitytext:latest_activity.activity_type]] {% trans "by" %} <b>[[:latest_activity.profile.handle]]</b></span>
+          <span>[[timedifference:latest_activity.created]]</span>
         </div>
-      [[/for]]
     </div>
   [[/if]]
 </div>

@@ -576,7 +576,7 @@ def get_interested_actions(github_url, username, email=''):
                 if 'actor' in pr_action:
                     if (pr_action['actor']):
                         gh_user = pr_action['actor']['login']
-                    if gh_user == username and pr_action['event'] in activity_event_types:
+                    if gh_user.lower() == username.lower() and pr_action['event'] in activity_event_types:
                         actions_by_interested_party.append(pr_action)
                     elif username == '*':
                         actions_by_interested_party.append(pr_action)
@@ -585,7 +585,7 @@ def get_interested_actions(github_url, username, email=''):
                     if gh_email and gh_email == email:
                         actions_by_interested_party.append(pr_action)
 
-        if gh_user and gh_user == username and action['event'] in activity_event_types:
+        if gh_user and gh_user.lower() == username.lower() and action['event'] in activity_event_types:
             actions_by_interested_party.append(action)
     return actions_by_interested_party
 
