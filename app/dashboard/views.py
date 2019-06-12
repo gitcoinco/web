@@ -67,7 +67,7 @@ from web3 import HTTPProvider, Web3
 
 from .helpers import get_bounty_data_for_activity, handle_bounty_views
 from .models import (
-    Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest,
+    Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest, Coupon,
     FeedbackEntry, HackathonEvent, Interest, LabsResearch, Profile, ProfileSerializer, RefundFeeRequest, Subscription,
     Tool, ToolVote, UserAction, UserVerificationModel,
 )
@@ -943,16 +943,11 @@ def dashboard(request):
 
 def ethhack(request):
     """Handle displaying ethhack landing page."""
+    from dashboard.context.hackathon import eth_hack
 
-    title = str(_(" Eth Hackathon 2019"))
-    params = {
-        'title': title,
-        'meta_description': _('Ethereal Virtual Hackathon, powered by Gitcoin and Microsoft'),
-        'card_title': title,
-        'card_desc': _('Ethereal Virtual Hackathon, powered by Gitcoin and Microsoft'),
-        'avatar_url': static('v2/images/ethhack_2019_media.png'),
-    }
-    return TemplateResponse(request, 'dashboard/hackathon/ethhack_2019.html', params)
+    params = eth_hack
+
+    return TemplateResponse(request, 'dashboard/hackathon/index.html', params)
 
 
 def accept_bounty(request):
@@ -2470,7 +2465,18 @@ def new_bounty(request):
         title=_('Create Funded Issue'),
         update=bounty_params,
     )
+
     params['FEE_PERCENTAGE'] = request.user.profile.fee_percentage if request.user.is_authenticated else 10
+
+    coupon_code = request.GET.get('coupon', False)
+    if coupon_code:
+        coupon = Coupon.objects.get(code=coupon_code)
+        if coupon.expiry_date > datetime.now().date():
+            params['FEE_PERCENTAGE'] = coupon.fee_percentage
+            params['coupon_code'] = coupon.code
+        else:
+            params['expired_coupon'] = True
+
     return TemplateResponse(request, 'bounty/fund.html', params)
 
 
