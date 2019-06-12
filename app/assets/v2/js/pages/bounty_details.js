@@ -1433,7 +1433,7 @@ const process_activities = function(result, bounty_activities) {
     extend_expiration: gettext('Extended Bounty Expiration')
   };
 
-  const now = new Date(result['now']);
+  const now = result['now'] ? new Date(result['now']) : new Date();
   const is_open = result['is_open'];
   const _result = [];
 

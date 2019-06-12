@@ -1910,6 +1910,11 @@ def profile(request, handle):
     sent_kudos = None
     handle = handle.replace("@", "")
 
+    if not settings.DEBUG:
+        network = 'mainnet'
+    else:
+        network = 'rinkeby'
+
     try:
         if not handle and not request.user.is_authenticated:
             return redirect('funder_bounties')
@@ -2013,15 +2018,16 @@ def profile(request, handle):
     context['verification'] = profile.get_my_verified_check
     context['avg_rating'] = profile.get_average_star_rating
 
-    context['unrated_funded_bounties'] = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
+    context['unrated_funded_bounties'] = Bounty.objects.current().prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
         .filter(
             bounty_owner_github_username__iexact=profile.handle,
+            network=network,
         ).exclude(
             feedbacks__feedbackType='approver',
             feedbacks__sender_profile=profile,
         )
 
-    context['unrated_contributed_bounties'] = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=profile) \
+    context['unrated_contributed_bounties'] = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=profile, network=network,) \
             .filter(interested__status='okay') \
             .filter(interested__pending=False).filter(idx_status='done') \
             .exclude(
