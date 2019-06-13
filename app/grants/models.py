@@ -715,7 +715,8 @@ def psave_grant(sender, instance, **kwargs):
                 instance.amount_received += Decimal(value_usdt)
 
         if subscription.num_tx_processed <= subscription.num_tx_approved and value_usdt:
-            instance.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
+            if subscription.num_tx_approved != 1:
+                instance.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
         #print("-", subscription.id, value_usdt, instance.monthly_amount_subscribed )
 
 
