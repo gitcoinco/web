@@ -25,8 +25,8 @@ from django.test.client import RequestFactory
 import ipfshttpclient
 import pytest
 from dashboard.utils import (
-    clean_bounty_url, create_user_action, get_bounty, get_ipfs, get_ordinal_repr, get_web3,
-    getBountyContract, humanize_event_name, ipfs_cat_ipfsapi,IPFSCantConnectException
+    IPFSCantConnectException, clean_bounty_url, create_user_action, get_bounty, get_ipfs, get_ordinal_repr, get_web3,
+    getBountyContract, humanize_event_name, ipfs_cat_ipfsapi,
 )
 from test_plus.test import TestCase
 from web3.main import Web3
