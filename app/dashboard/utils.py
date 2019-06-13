@@ -187,7 +187,8 @@ def get_ipfs(host=None, port=settings.IPFS_API_PORT):
 
     Args:
         host (str): The IPFS host to connect to.
-            Defaults to environment variable: IPFS_HOST.
+            Defaults to environment variable: IPFS_HOST.  The host name should be of the form 'ipfs.infura.io' and not 
+            include 'https://'.
         port (int): The IPFS port to connect to.
             Defaults to environment variable: env IPFS_API_PORT.
 
