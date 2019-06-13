@@ -372,7 +372,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
         url = normalize_url(url)
     else:
         raise UnsupportedSchemaException('No webReferenceURL found. Cannot continue!')
-    
+
     # check conditions for private repos
     if metadata.get('repo_type', None) == 'private' and \
         bounty_payload.get('schemes', {}).get('permission_type', 'permissionless') != 'approval' and \
@@ -455,6 +455,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 'contract_address': bounty_details.get('token'),
                 'network': bounty_details.get('network'),
                 'bounty_type': metadata.get('bountyType', ''),
+                'bounty_categories': metadata.get('bounty_categories', '').split(','),
                 'funding_organisation': metadata.get('fundingOrganisation', ''),
                 'project_length': metadata.get('projectLength', ''),
                 'estimated_hours': metadata.get('estimatedHours'),
@@ -482,12 +483,12 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 fields=[
                     'web3_created', 'github_url', 'token_name', 'token_address', 'privacy_preferences', 'expires_date',
                     'title', 'issue_description', 'balance', 'contract_address', 'network', 'bounty_type',
-                    'project_length', 'experience_level', 'project_type', 'permission_type', 'attached_job_description',
-                    'bounty_owner_github_username', 'bounty_owner_address', 'bounty_owner_email', 'bounty_owner_name',
-                    'github_comments', 'override_status', 'last_comment_date', 'snooze_warnings_for_days',
-                    'admin_override_and_hide', 'admin_override_suspend_auto_approval', 'admin_mark_as_remarket_ready',
-                    'funding_organisation', 'bounty_reserved_for_user', 'is_featured', 'featuring_date', 'coupon_code',
-                    'fee_tx_id', 'fee_amount', 'repo_type', 'unsigned_nda'
+                    'bounty_categories', 'project_length', 'experience_level', 'project_type', 'permission_type',
+                    'attached_job_description', 'bounty_owner_github_username', 'bounty_owner_address',
+                    'bounty_owner_email', 'bounty_owner_name', 'github_comments', 'override_status', 'last_comment_date',
+                    'snooze_warnings_for_days', 'admin_override_and_hide', 'admin_override_suspend_auto_approval',
+                    'admin_mark_as_remarket_ready', 'funding_organisation', 'bounty_reserved_for_user', 'is_featured',
+                    'featuring_date', 'fee_tx_id', 'fee_amount', 'repo_type', 'unsigned_nda', 'coupon_code'
                 ],
             )
             if latest_old_bounty_dict['bounty_reserved_for_user']:
@@ -503,99 +504,115 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
         try:
             print('new bounty with kwargs:{}'.format(bounty_kwargs))
             new_bounty = Bounty.objects.create(**bounty_kwargs)
-            print('new bounty is:{}'.format(new_bounty.to_standard_dict()))
-            new_bounty.fetch_issue_item()
-            try:
-                issue_kwargs = get_url_dict(new_bounty.github_url)
-                new_bounty.github_issue_details = get_gh_issue_details(**issue_kwargs)
-
-            except Exception as e:
-                logger.error(e)
-
-            event_tag = metadata.get('eventTag', '')
-            if event_tag:
-                try:
-                    evt = HackathonEvent.objects.filter(name__iexact=event_tag).latest('id')
-                    new_bounty.event = evt
-                    new_bounty.save()
-                except Exception as e:
-                    logger.error(e)
-
-            bounty_invitees = metadata.get('invite', '')
-            if bounty_invitees and not latest_old_bounty:
-                from marketing.mails import share_bounty
-                from dashboard.utils import get_bounty_invite_url
-                emails = []
-                inviter = Profile.objects.get(handle=new_bounty.bounty_owner_github_username)
-                invite_url = get_bounty_invite_url(inviter, new_bounty.id)
-                msg = "Check out this bounty that pays out " + \
-                    str(new_bounty.get_value_true) + new_bounty.token_name + invite_url
-                for keyword in new_bounty.keywords_list:
-                    msg += " #" + keyword
-                for user_id in bounty_invitees:
-                    profile = Profile.objects.get(id=int(user_id))
-                    bounty_invite = BountyInvites.objects.create(
-                        status='pending'
-                    )
-                    bounty_invite.bounty.add(new_bounty)
-                    bounty_invite.inviter.add(inviter.user)
-                    bounty_invite.invitee.add(profile.user)
-                    emails.append(profile.email)
-                try:
-                    share_bounty(emails, msg, inviter, invite_url, False)
-                    response = {
-                        'status': 200,
-                        'msg': 'email_sent',
-                    }
-                except Exception as e:
-                    logging.exception(e)
-                    response = {
-                        'status': 500,
-                        'msg': 'Email not sent',
-                    }
-            # migrate data objects from old bounty
-            if latest_old_bounty:
-                # Pull the interested parties off the last old_bounty
-                for interest in latest_old_bounty.interested.all().nocache():
-                    new_bounty.interested.add(interest)
-
-                # pull the activities off the last old bounty
-                for activity in latest_old_bounty.activities.all().nocache():
-                    new_bounty.activities.add(activity)
-
-            bounty_reserved_for_user = metadata.get('reservedFor', '')
-            if bounty_reserved_for_user:
-                new_bounty.reserved_for_user_handle = bounty_reserved_for_user
-                new_bounty.save()
-                if new_bounty.bounty_reserved_for_user:
-                    # notify a user that a bounty has been reserved for them
-                    new_reserved_issue('founders@gitcoin.co', new_bounty.bounty_reserved_for_user, new_bounty)
-
-            # set cancel date of this bounty
-            canceled_on = latest_old_bounty.canceled_on if latest_old_bounty and latest_old_bounty.canceled_on else None
-            if not canceled_on and new_bounty.status == 'cancelled':
-                canceled_on = timezone.now()
-            if canceled_on:
-                new_bounty.canceled_on = canceled_on
-                new_bounty.save()
-
-            # preserve featured status for bounties where it was set manually
-            new_bounty.is_featured = True if latest_old_bounty and latest_old_bounty.is_featured is True else False
-            if new_bounty.is_featured == True:
-                new_bounty.save()
+            merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details)
 
         except Exception as e:
             print(e, 'encountered during new bounty creation for:', url)
             logger.error(f'{e} encountered during new bounty creation for: {url}')
             new_bounty = None
 
-        if fulfillments:
-            handle_bounty_fulfillments(fulfillments, new_bounty, latest_old_bounty)
-            for inactive in Bounty.objects.filter(
-                current_bounty=False, github_url=url
-            ).nocache().order_by('-created_on'):
-                BountyFulfillment.objects.filter(bounty_id=inactive.id).nocache().delete()
     return new_bounty
+
+
+# merges the bounties
+def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbose=True):
+    if verbose:
+        print('new bounty is:{}'.format(new_bounty.to_standard_dict()))
+    new_bounty.fetch_issue_item()
+    try:
+        issue_kwargs = get_url_dict(new_bounty.github_url)
+        new_bounty.github_issue_details = get_gh_issue_details(**issue_kwargs)
+
+    except Exception as e:
+        logger.error(e)
+
+    event_tag = metadata.get('eventTag', '')
+    if event_tag:
+        try:
+            evt = HackathonEvent.objects.filter(name__iexact=event_tag).latest('id')
+            new_bounty.event = evt
+            new_bounty.save()
+        except Exception as e:
+            logger.error(e)
+
+    bounty_invitees = metadata.get('invite', '')
+    if bounty_invitees and not latest_old_bounty:
+        from marketing.mails import share_bounty
+        from dashboard.utils import get_bounty_invite_url
+        emails = []
+        inviter = Profile.objects.get(handle=new_bounty.bounty_owner_github_username)
+        invite_url = get_bounty_invite_url(inviter, new_bounty.id)
+        msg = "Check out this bounty that pays out " + \
+            str(new_bounty.get_value_true) + new_bounty.token_name + invite_url
+        for keyword in new_bounty.keywords_list:
+            msg += " #" + keyword
+        for user_id in bounty_invitees:
+            profile = Profile.objects.get(id=int(user_id))
+            bounty_invite = BountyInvites.objects.create(
+                status='pending'
+            )
+            bounty_invite.bounty.add(new_bounty)
+            bounty_invite.inviter.add(inviter.user)
+            bounty_invite.invitee.add(profile.user)
+            emails.append(profile.email)
+        try:
+            share_bounty(emails, msg, inviter, invite_url, False)
+            response = {
+                'status': 200,
+                'msg': 'email_sent',
+            }
+        except Exception as e:
+            logging.exception(e)
+            response = {
+                'status': 500,
+                'msg': 'Email not sent',
+            }
+    # migrate data objects from old bounty
+    if latest_old_bounty:
+        # Pull the interested parties off the last old_bounty
+        for interest in latest_old_bounty.interested.all().nocache():
+            new_bounty.interested.add(interest)
+
+        # pull the activities off the last old bounty
+        for activity in latest_old_bounty.activities.all().nocache():
+            new_bounty.activities.add(activity)
+
+
+    bounty_reserved_for_user = metadata.get('reservedFor', '')
+    if bounty_reserved_for_user:
+        new_bounty.reserved_for_user_handle = bounty_reserved_for_user
+        new_bounty.save()
+        if new_bounty.bounty_reserved_for_user:
+            # notify a user that a bounty has been reserved for them
+            new_reserved_issue('founders@gitcoin.co', new_bounty.bounty_reserved_for_user, new_bounty)
+
+    # set cancel date of this bounty
+    canceled_on = latest_old_bounty.canceled_on if latest_old_bounty and latest_old_bounty.canceled_on else None
+    if not canceled_on and new_bounty.status == 'cancelled':
+        canceled_on = timezone.now()
+    if canceled_on:
+        new_bounty.canceled_on = canceled_on
+        new_bounty.save()
+
+    # migrate fulfillments, and only take the ones from 
+    # fulfillments metadata will be empty when bounty is first created
+    fulfillments = bounty_details.get('fulfillments', {})
+    if fulfillments:
+        handle_bounty_fulfillments(fulfillments, new_bounty, latest_old_bounty)
+        url = normalize_url(new_bounty.github_url)
+        for inactive in Bounty.objects.filter(
+            current_bounty=False, github_url=url
+        ).nocache().order_by('-created_on'):
+            BountyFulfillment.objects.filter(bounty_id=inactive.id).nocache().delete()
+
+    # preserve featured status for bounties where it was set manually
+    new_bounty.is_featured = True if latest_old_bounty and latest_old_bounty.is_featured is True else False
+    if new_bounty.is_featured == True:
+        new_bounty.save()
+    
+    if latest_old_bounty:
+        latest_old_bounty.current_bounty = False
+        latest_old_bounty.save()
 
 
 def process_bounty_details(bounty_details):

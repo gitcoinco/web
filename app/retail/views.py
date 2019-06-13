@@ -668,15 +668,6 @@ def about(request):
             "Cocktail Samosa"
         ),
         (
-            static("v2/images/team/saptaks.jpg"),
-            "Saptak Sengupta",
-            "Engineering",
-            "saptaks",
-            "saptaks",
-            "Everything Open Source",
-            "daab chingri"
-        ),
-        (
             static("v2/images/team/scott.jpg"),
             "Scott Moore",
             "Biz Dev",
@@ -763,7 +754,7 @@ def mission(request):
 
     values = [
         {
-            'name': _('Collaboration'),
+            'name': _('Self Reliance'),
             'img': 'v2/images/mission/value/collaborative.svg',
             'alt': 'we-collobarate-icon'
         },
@@ -836,7 +827,7 @@ def mission(request):
             'alt': 'microscope-icon'
         },
         {
-            'text': _('We care about people (not just tasks)'),
+            'text': _('We care about people (not just tasks).'),
             'img': 'v2/images/mission/interact/people_care.svg',
             'alt': 'care-icon'
         },

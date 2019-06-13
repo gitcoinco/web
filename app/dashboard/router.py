@@ -131,18 +131,20 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
         model = Bounty
         fields = (
             'url', 'created_on', 'modified_on', 'title', 'web3_created', 'value_in_token', 'token_name',
-            'token_address', 'bounty_type', 'project_length', 'experience_level', 'github_url', 'github_comments',
-            'bounty_owner_address', 'bounty_owner_email', 'bounty_owner_github_username', 'bounty_owner_name',
-            'fulfillments', 'interested', 'is_open', 'expires_date', 'activities', 'keywords', 'current_bounty',
-            'value_in_eth', 'token_value_in_usdt', 'value_in_usdt_now', 'value_in_usdt', 'status', 'now', 'avatar_url',
+            'token_address', 'bounty_type', 'bounty_categories', 'project_length', 'experience_level',
+            'github_url', 'github_comments', 'bounty_owner_address', 'bounty_owner_email',
+            'bounty_owner_github_username', 'bounty_owner_name', 'fulfillments', 'interested', 'is_open',
+            'expires_date', 'activities', 'keywords', 'current_bounty', 'value_in_eth',
+            'token_value_in_usdt', 'value_in_usdt_now', 'value_in_usdt', 'status', 'now', 'avatar_url',
             'value_true', 'issue_description', 'network', 'org_name', 'pk', 'issue_description_text',
             'standard_bounties_id', 'web3_type', 'can_submit_after_expiration_date', 'github_issue_number',
-            'github_org_name', 'github_repo_name', 'idx_status', 'token_value_time_peg', 'fulfillment_accepted_on',
-            'fulfillment_submitted_on', 'fulfillment_started_on', 'canceled_on', 'canceled_bounty_reason',
-            'action_urls', 'project_type', 'permission_type', 'attached_job_description', 'needs_review',
-            'github_issue_state', 'is_issue_closed', 'additional_funding_summary', 'funding_organisation', 'paid',
-            'admin_override_suspend_auto_approval', 'reserved_for_user_handle', 'is_featured', 'featuring_date', 'repo_type',
-            'unsigned_nda', 'funder_last_messaged_on',
+            'github_org_name', 'github_repo_name', 'idx_status', 'token_value_time_peg',
+            'fulfillment_accepted_on', 'fulfillment_submitted_on', 'fulfillment_started_on', 'canceled_on',
+            'canceled_bounty_reason', 'action_urls', 'project_type', 'permission_type',
+            'attached_job_description', 'needs_review', 'github_issue_state', 'is_issue_closed',
+            'additional_funding_summary', 'funding_organisation', 'paid',
+            'admin_override_suspend_auto_approval', 'reserved_for_user_handle', 'is_featured',
+            'featuring_date', 'repo_type', 'unsigned_nda', 'funder_last_messaged_on',
         )
 
     def create(self, validated_data):
@@ -175,6 +177,19 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
                 bounty_invitee.save()
         return bounty
 
+
+class BountySerializerSlim(BountySerializer):
+
+
+    class Meta:
+        """Define the bounty serializer metadata."""
+        model = Bounty
+        fields = (
+            'url', 'title', 'experience_level', 'status', 'fulfillment_accepted_on',
+            'fulfillment_started_on', 'fulfillment_submitted_on', 'canceled_on', 'web3_created', 'bounty_owner_address',
+            'avatar_url', 'network', 'standard_bounties_id', 'github_org_name', 'interested', 'token_name', 'value_in_usdt',
+            'keywords', 'value_in_token', 'project_type', 'is_open', 'expires_date', 'latest_activity'
+        )
 
 class BountyViewSet(viewsets.ModelViewSet):
     """Handle the Bounty view behavior."""
@@ -212,9 +227,9 @@ class BountyViewSet(viewsets.ModelViewSet):
         else:
             queryset = queryset.filter(event=None)
 
-        for key in ['raw_data', 'experience_level', 'project_length', 'bounty_type', 'bounty_owner_address',
-                    'idx_status', 'network', 'bounty_owner_github_username', 'standard_bounties_id',
-                    'permission_type', 'project_type']:
+        for key in ['raw_data', 'experience_level', 'project_length', 'bounty_type', 'bounty_categories',
+                    'bounty_owner_address', 'idx_status', 'network', 'bounty_owner_github_username',
+                    'standard_bounties_id', 'permission_type', 'project_type']:
             if key in param_keys:
                 # special hack just for looking up bounties posted by a certain person
                 request_key = key if key != 'bounty_owner_address' else 'coinbase'
@@ -379,6 +394,12 @@ class BountyViewSet(viewsets.ModelViewSet):
         return queryset
 
 
+class BountyViewSetSlim(BountyViewSet):
+    queryset = Bounty.objects.all().order_by('-web3_created')
+    serializer_class = BountySerializerSlim
+
+
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
+router.register(r'bounties/slim', BountyViewSetSlim)
 router.register(r'bounties', BountyViewSet)
