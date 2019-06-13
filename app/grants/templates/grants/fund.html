@@ -206,9 +206,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                       {% if not grant_has_no_token %} {{ grant.token_symbol }} {% endif %}
                     </span>
                     {% if grant.contract_version == 1 %}
-                      {% trans "to the gitcoin grant every" %}
+                      {% trans "to the gitcoin maintainer grant every" %}
                     {% elif grant.contract_version == 0 %}
-                      {% trans "to the gitcoin grant" %}
+                      {% trans "to the gitcoin maintainer grant" %}
                     {% endif %}
                     <span class="summary-period-gitcoin font-weight-bold">-</span>
                     <span class="summary-frequency-unit-gitcoin font-weight-bold">-</span>.
