@@ -182,16 +182,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
                 <div class="summary font-body mt-4">
                   <p class="mb-2 font-weight-semibold">Summary</p>
-                  <p class="hide_if_onetime">
+
+                  <p>
                     <i class="fas fa-circle mr-2"></i>
                     {% trans "You are contributing" %}
                     <span id="summary-amount" class="font-weight-bold">-</span>
                     <span class="summary-token font-weight-bold">
                       {{ grant.token_symbol }}
                     </span>
-                    {% trans "to this grant every" %}
-                    <span class="summary-period font-weight-bold">-</span>
-                    <span class="summary-frequency-unit font-weight-bold">-</span>.
+                    {% trans "to this grant" %}
+                    <span class="hide_if_onetime">
+                      every
+                      <span class="summary-period font-weight-bold">-</span>
+                      <span class="summary-frequency-unit font-weight-bold">-</span>.
+                    </span>
                   </p>
 
                   <p id="summary-gitcoin-grant" class="hide_if_onetime">
@@ -223,15 +227,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
                   <p class="hide_if_recurring hidden">
                     <i class="fas fa-circle mr-2"></i>
-                    {% trans "This payment will be made one time." %}
-                  </p>
-
-                  <p class="hide_if_recurring hidden">
-                    <i class="fas fa-circle mr-2"></i>
                     {% trans "You are additionally contributing" %}
                     <span class="summary-gitcoin-amount font-weight-bold">-</span>
                     <span class="summary-token font-weight-bold"></span>
                     {% trans "to the gitcoin grant." %}
+                  </p>
+
+                  <p class="hide_if_recurring hidden">
+                    <i class="fas fa-circle mr-2"></i>
+                    {% trans "This payment will be made one time." %}
                   </p>
 
                   <p>
