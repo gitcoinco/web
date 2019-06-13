@@ -933,7 +933,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Hackathons on the Horizon!"
+    subject = "A Midsummer Bounty's Dream"
     new_kudos_pks = [3973, 2224, 1967]
     new_kudos_size_px = 150
 
@@ -949,22 +949,22 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-As summer formally begins, we're looking forward to the weather, the outdoors, and the memories to come. We're also looking forward to the next round of hackathons that we're planning. Fill out this Typeform to receive more information about the
-as we announce the next set of events. You can look forward to new sponsors, big bounties, and more opportunities to collaborate on new projects. <a href="https://gitcoin.typeform.com/to/j7CSbV">The form lives here.</a>
+Ethereum transactions are reaching new heights recently with the highest frequency of activity on the network in months. Need some help with your gas pricing? We're way ahead of you. Check out our helpful gas visualizer to assist with your
+work on the network. <a href="https://gitcoin.co/gas"It lives here.</a>
 </p>
 <p>
-The numbers from May are in, and we had another fantastic month. The Gitcoin product suite enabled $215k of value transfer in May, adding up to a cumulative 1.4m of lifetime value for the Gitcoin platform. That's about $299/hour, for every hour during May ($1348/business-hour). 
-We're excited for the next wave of activities, from Gitcoin Grants CLR Round 3 to a solution for abandoned bounties. Have any thoughts on what we should work on? <a href="mailto:founders@gitcoin.co">Drop us a line. We'd love to hear from you.</a>
+As we mentioned last week, we're currently in the process of organizing hackathons for the next few months. That means more projects, more opportunities, and of course more bounties. Fill out this Typeform to receive more information about them
+as we prepare to get everyone back together. Have any suggestions for us? <a href="mailto:team@gitcoin.co">Email the team.</a> Otherwise, <a href="https://gitcoin.typeform.com/to/j7CSbV">the form to sign up lives here.</a>
 </p>
 <p>
-The Gitcoin blog is now live. <a href="https://gitcoin.co/blog/finding-best-freelance-jobs-for-coders-in-2019/">Take another look at our first post and send us any issues you may find!</a>
+As we prepare to enter the second half of 2019, we're asking our community for feedback. What are we doing well? What can we do better to help you reach your goals? <a href="mailto:team@gitcoin.co">Reach out to us if you'd like to share your thoughts.</a>
 </p>
 
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Have an open source project that needs funding? <a href="mailto:founders@gitcoin.co">Send us an email and we'll see if we can help.</a>
+            Are you a project that might be interested in our hackathons? <a href="mailto:alex@gitcoin.co">Send us an email we'll be in touch.</a>
         </li>
         <li>
             The Gitcoin Livestream is back this week. Join us <a href="https://gitcoin.co/livestream"> at 2PM ET on Friday, or catch it on <a href="https://twitter.com/gitcoin">Twitter</a>!
@@ -977,34 +977,34 @@ Back to shipping,
 
 '''
     highlights = [{
-        'who': 'janus',
+        'who': 'nanspro',
         'who_link': True,
-        'what': 'Reduce bundle size :)',
-        'link': 'https://gitcoin.co/issue/WalletConnect/walletconnect-monorepo/128/3030',
+        'what': 'nanspro with the rewrite!',
+        'link': 'https://gitcoin.co/issue/ethhub-io/ethhub/285/3075',
         'link_copy': 'View more',
     }, {
-        'who': 'c410-f3r',
+        'who': 'gutsal-arsen',
         'who_link': True,
-        'what': 'Nice job on the Stratum protocol proof of concept!',
-        'link': 'https://gitcoin.co/issue/nblockchain/TcpEchoSharp/1/3059',
+        'what': 'Redux renovations',
+        'link': 'https://gitcoin.co/issue/ssteiger/Vyper-Contract-GUI/7/3060',
         'link_copy': 'View more',
     }, {
-        'who': 'MaxStalker',
+        'who': 'roleengineer',
         'who_link': True,
-        'what': 'Docs rewrite: complete.',
-        'link': 'https://gitcoin.co/issue/leapdao/leapdao-docs/25/3058',
+        'what': 'Merkle tree madness',
+        'link': 'https://gitcoin.co/issue/leapdao/leap-contracts/194/3041',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/ethhub-io/ethhub/issues/285',
-        'primer': 'Help market the Plasma project by rewriting their copy',
+        'url': 'https://github.com/w3f/Web3-collaboration/issues/123',
+        'primer': 'IPFS Integrations from Web3',
     }, {
-        'url': 'https://github.com/blockades/scuttle-dark-crystal/issues/56',
-        'primer': 'Changes to ephemeral shard returns after a security review of ssb-ephemeral-keys',
+        'url': 'https://github.com/PegaSysEng/BountiedWork/issues/18',
+        'primer': 'Trinity Hobbits Integration: 5 ETH up for grabs!',
     }, {
-        'url': 'https://github.com/leapdao/bridge-ui/issues/214',
-        'primer': 'Show NST/ERC1948 tokens on the Bridge UI',
+        'url': 'https://github.com/LinkdropProtocol/linkdrop-monorepo/issues/203',
+        'primer': 'Smart Contract Showdown...',
     }, ]
 
     num_leadboard_items = 5
