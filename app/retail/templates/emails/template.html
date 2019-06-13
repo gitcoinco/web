@@ -94,6 +94,13 @@
   #header {
     height: 200px;
   }
+  #preheader{
+    color: white;
+    background-color: #888;
+    align-content: center;
+    text-align: center;
+    padding: 0.5em;
+  }
 
   #header, #footer {
     color: white;
@@ -175,6 +182,9 @@
 
 <body class="g-font-muli">
   {% if not hide_header %}
+  <div id="preheader">
+    You are in <strong>Funder Mode</strong>.  <a style="color: white;" href=#>Click to switch to Coder Mode</a>
+  </div>
   <div id="header">
     <a href="{% url 'funder_bounties' %}">
       <span style="display: inline-block;height: 100%;vertical-align: middle;"></span><img id="logo" src="{% static "v2/images/logo_large.png" %}" alt="Gitcoin" title="Gitcoin Logo">
