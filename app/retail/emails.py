@@ -950,7 +950,7 @@ Hey Gitcoiners,
 </p>
 <p>
 Ethereum transactions are reaching new heights recently with the highest frequency of activity on the network in months. Need some help with your gas pricing? We're way ahead of you. Check out our helpful gas visualizer to assist with your
-work on the network. <a href="https://gitcoin.co/gas"It lives here.</a>
+work on the network. <a href="https://gitcoin.co/gas">It lives here.</a>
 </p>
 <p>
 As we mentioned last week, we're currently in the process of organizing hackathons for the next few months. That means more projects, more opportunities, and of course more bounties. Fill out this Typeform to receive more information about them
