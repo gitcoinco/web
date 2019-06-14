@@ -1,0 +1,53 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      {% include 'shared/head.html' %}
+      <link rel="stylesheet" type="text/css" href="{% static "v2/css/unsubscribe_email.css" %}">
+  </head>
+  <body class="interior {{ active }} g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+  <div class="container-fluid background">
+    <div class="justify-content-left pt-4 pl-4">
+      <img class="img-fluid logo" src="{% static 'v2/images/emails/email-subscribe-logo.png' %}" alt="Unsubscribed mail successful">
+    </div>
+    <div class="justify-content-center">
+      <div class="card-deck flex-column">
+        <div class="align-self-center mt-5">
+          <div class="card-deck flex-column flex-lg-row align-middle">
+            <div class="card shadow-sm text-center p-5 m-5 border-0">
+              <img class="mailer align-self-center" src="{% static 'v2/images/emails/email-unsubscribe-mail.png' %}" alt="Unsubscribed mail successful">
+              <h6 class="mt-4">{% trans 'Unsubscribe Successful' %}</h6>
+              <span>{% trans 'You have been unsubscribed from our' %} {{ type }} {% trans 'emails'%}.</span>
+              <div class="mt-4">
+                  <a href="{% url "explorer" %}">< {% trans 'Back to Home' %}</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+
+<!-- jQuery -->
+<script src="{% static "v2/js/lib/popper.min.js" %}"></script>
+<script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+</html>

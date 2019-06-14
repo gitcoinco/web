@@ -1,0 +1,18 @@
+.background {
+  background-image: url("/static/v2/images/emails/email-unsubscribe-background.png");
+  background-size: cover;
+  height: 100vh;
+}
+.mailer {
+  height: 320px;
+  width: 200px;
+}
+
+.logo {
+    width: 120px;
+}
+
+h6,
+span {
+  color: #666666;
+}

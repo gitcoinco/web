@@ -2277,6 +2277,12 @@ def sync_web3(request):
 
     return JsonResponse(result, status=result['status'])
 
+def unsubscribe(request):
+    context = {
+        'title': _('Email unsubscription successful'),
+        'type': 'Product Update'
+    }
+    return TemplateResponse(request, 'email_unsubscribed.html', context)
 
 # LEGAL
 @xframe_options_exempt
