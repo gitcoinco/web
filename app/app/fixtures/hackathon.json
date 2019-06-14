@@ -1,1 +1,0 @@
-[{"model": "dashboard.hackathonevent", "pk": 1, "fields": {"created_on": "2019-06-05T17:41:29Z", "modified_on": "2019-06-05T17:41:49.999Z", "name": "Gitcoin Ultra Rinkeby Hackathon", "slug": "gitcoin-ultra-rinkeby-hackathon", "logo": "", "logo_svg": "", "start_date": "2019-06-01T17:41:42Z", "end_date": "2099-06-05T17:41:47Z"}}]
