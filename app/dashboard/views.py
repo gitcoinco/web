@@ -962,6 +962,7 @@ def beyond_blocks_2019(request):
     from dashboard.context.hackathon import beyond_blocks_2019
 
     params = beyond_blocks_2019
+    params['card_desc'] = params['meta_description']
 
     return TemplateResponse(request, 'dashboard/hackathon/index.html', params)
 
