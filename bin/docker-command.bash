@@ -58,12 +58,14 @@ if [ ! -f /provisioned ] || [ "$FORCE_PROVISION" = "on" ]; then
         python manage.py loaddata app/fixtures/users.json
         python manage.py loaddata app/fixtures/economy.json
         python manage.py loaddata app/fixtures/profiles.json
-        python manage.py loaddata app/fixtures/hackathon.json        
-        python manage.py loaddata app/fixtures/bounties.json
-        python manage.py loaddata app/fixtures/feedback.json
-        python manage.py loaddata app/fixtures/interest.json
-        python manage.py loaddata app/fixtures/bountyfulfillments.json
-        python manage.py loaddata app/fixtures/activity.json
+#        python manage.py loaddata app/fixtures/hackathon.json        
+#        python manage.py loaddata app/fixtures/bounties.json
+#        python manage.py loaddata app/fixtures/feedback.json
+#        python manage.py loaddata app/fixtures/interest.json
+#        python manage.py loaddata app/fixtures/bountyfulfillments.json
+#        python manage.py loaddata app/fixtures/activity.json
+        python manage.py loaddata app/fixtures/dashboard.json
+        python manage.py loaddata app/fixtures/kudos.json
         python manage.py loaddata app/fixtures/grants.json
         python manage.py loaddata app/fixtures/marketing.json
         
