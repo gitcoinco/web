@@ -957,6 +957,15 @@ def ethhack(request):
     return TemplateResponse(request, 'dashboard/hackathon/index.html', params)
 
 
+def beyond_blocks_2019(request):
+    """Handle displaying ethhack landing page."""
+    from dashboard.context.hackathon import beyond_blocks_2019
+
+    params = beyond_blocks_2019
+
+    return TemplateResponse(request, 'dashboard/hackathon/index.html', params)
+
+
 def accept_bounty(request):
     """Process the bounty.
 
