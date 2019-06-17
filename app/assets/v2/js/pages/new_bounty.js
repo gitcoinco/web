@@ -195,6 +195,7 @@ $(function() {
   });
 
   let checked = params.get('type');
+
   if (params.has('type')) {
 
     $(`.${checked}`).button('toggle');
@@ -323,6 +324,7 @@ $('#issueURL').focusout(function() {
   if (isPrivateRepo) {
     setPrivateForm();
     var validated = $('input[name=issueURL]').val() == '' || !validURL($('input[name=issueURL]').val());
+
     if (validated) {
       $('.js-submit').addClass('disabled');
     } else {
