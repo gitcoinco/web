@@ -186,6 +186,7 @@ const setPublicForm = () => {
 
 
 $(function() {
+
   $('#last-synced').hide();
   $('.js-select2').each(function() {
     $(this).select2({
@@ -193,16 +194,17 @@ $(function() {
     });
   });
 
+  let checked = params.get('type');
   if (params.has('type')) {
-    let checked = params.get('type');
 
     $(`.${checked}`).button('toggle');
-    toggleCtaPlan(checked);
 
   } else {
     params.append('type', 'public');
     window.history.replaceState({}, '', location.pathname + '?' + params);
   }
+  toggleCtaPlan(checked);
+
   $('input[name=repo_type]').change(function() {
     toggleCtaPlan($(this).val());
   });
@@ -320,7 +322,8 @@ $('#sync-issue').on('click', function(event) {
 $('#issueURL').focusout(function() {
   if (isPrivateRepo) {
     setPrivateForm();
-    if ($('input[name=issueURL]').val() == '' || !validURL($('input[name=issueURL]').val())) {
+    var validated = $('input[name=issueURL]').val() == '' || !validURL($('input[name=issueURL]').val());
+    if (validated) {
       $('.js-submit').addClass('disabled');
     } else {
       $('.js-submit').removeClass('disabled');
