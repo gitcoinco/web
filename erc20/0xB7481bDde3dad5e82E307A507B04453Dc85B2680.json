@@ -1,6 +1,6 @@
 {
-    "symbol": "PCD_OLD",
-    "address": "0xA19Fb222DA725b34B8bC54BD43F167948cc0F79B",
+    "symbol": "PCD",
+    "address": "0xB7481bDde3dad5e82E307A507B04453Dc85B2680",
     "overview": {
         "en": "PCD is the general license of data storage, query and circulation under weixin chain, which is only issued by official channels and cannot be separated.",
         "zh": "PCD 是唯信链旗下的作为数据存储查询流通的通证，目前仅由官方渠道发放，不可分割。"
