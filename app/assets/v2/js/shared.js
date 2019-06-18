@@ -131,6 +131,8 @@ var get_updated_metamask_conf_time_and_cost = function(gasPrice) {
     usdAmount = Math.round(100 * eth_amount_unrounded * document.eth_usd_conv_rate) / 100;
   }
 
+  if (typeof document.conf_time_spread == 'undefined') return;
+
   for (var i = 0; i < document.conf_time_spread.length - 1; i++) {
     var this_ele = (document.conf_time_spread[i]);
     var next_ele = (document.conf_time_spread[i + 1]);
@@ -1229,7 +1231,7 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
     } else {
       result['hidden'] = (i > 4);
     }
-
+    
     html += tmpl.render(result);
   }
   return html;

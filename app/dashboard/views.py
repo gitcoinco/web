@@ -67,7 +67,7 @@ from web3 import HTTPProvider, Web3
 
 from .helpers import get_bounty_data_for_activity, handle_bounty_views
 from .models import (
-    Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest,
+    Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest, Coupon,
     FeedbackEntry, HackathonEvent, Interest, LabsResearch, Profile, ProfileSerializer, RefundFeeRequest, Subscription,
     Tool, ToolVote, UserAction, UserVerificationModel,
 )
@@ -778,12 +778,6 @@ def users_fetch(request):
     if current_user:
         profile_list = Profile.objects.prefetch_related(
                 'fulfilled', 'leaderboard_ranks', 'feedbacks_got'
-            ).annotate(
-                previous_worked_count=Count('fulfilled', filter=Q(
-                    fulfilled__bounty__network=network,
-                    fulfilled__accepted=True,
-                    fulfilled__bounty__bounty_owner_github_username__iexact=current_user.profile.handle
-                ))
             ).exclude(hide_profile=True).order_by(
                 '-previous_worked_count',
                 order_by,
@@ -805,8 +799,8 @@ def users_fetch(request):
 
     if len(bounties_completed) == 2:
         profile_list = profile_list.annotate(
-                count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network, fulfilled__accepted=True))
-            ).filter(
+            count=Count('fulfilled')
+        ).filter(
                 count__gte=bounties_completed[0],
                 count__lte=bounties_completed[1],
             )
@@ -834,11 +828,24 @@ def users_fetch(request):
             fulfilled__bounty__github_url__icontains=organisation
         ).distinct()
 
+    profile_list = Profile.objects.filter(pk__in=profile_list.order_by('-actions_count').values_list('pk'))
     params = dict()
     all_pages = Paginator(profile_list, limit)
     all_users = []
-    for user in all_pages.page(page):
-        profile_json = {}
+    this_page = all_pages.page(page)
+
+    this_page = Profile.objects.filter(pk__in=[ele.pk for ele in this_page]).order_by('-actions_count').annotate(
+        previous_worked_count=Count('fulfilled', filter=Q(
+            fulfilled__bounty__network=network,
+            fulfilled__accepted=True,
+            fulfilled__bounty__bounty_owner_github_username__iexact=current_user.profile.handle
+        ))).annotate(
+            count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network, fulfilled__accepted=True))
+        ).annotate(
+            average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
+        )
+
+    for user in this_page:
         previously_worked_with = 0
         if current_user:
             previously_worked_with = BountyFulfillment.objects.filter(
@@ -943,16 +950,11 @@ def dashboard(request):
 
 def ethhack(request):
     """Handle displaying ethhack landing page."""
+    from dashboard.context.hackathon import eth_hack
 
-    title = str(_(" Eth Hackathon 2019"))
-    params = {
-        'title': title,
-        'meta_description': _('Ethereal Virtual Hackathon, powered by Gitcoin and Microsoft'),
-        'card_title': title,
-        'card_desc': _('Ethereal Virtual Hackathon, powered by Gitcoin and Microsoft'),
-        'avatar_url': static('v2/images/ethhack_2019_media.png'),
-    }
-    return TemplateResponse(request, 'dashboard/hackathon/ethhack_2019.html', params)
+    params = eth_hack
+
+    return TemplateResponse(request, 'dashboard/hackathon/index.html', params)
 
 
 def accept_bounty(request):
@@ -1909,6 +1911,11 @@ def profile(request, handle):
     sent_kudos = None
     handle = handle.replace("@", "")
 
+    if not settings.DEBUG:
+        network = 'mainnet'
+    else:
+        network = 'rinkeby'
+
     try:
         if not handle and not request.user.is_authenticated:
             return redirect('funder_bounties')
@@ -1938,6 +1945,11 @@ def profile(request, handle):
             ('new_grant_subscription', _('Grants subscribed to')),
             ('killed_grant_contribution', _('Grants unsubscribed from')),
         ]
+        if profile.is_org:
+            activity_tabs = [
+                ('all', _('All Activity')),
+                ]
+
         page = request.GET.get('p', None)
 
         if page:
@@ -1958,6 +1970,7 @@ def profile(request, handle):
         all_activities = context.get('activities')
         context['avg_rating'] = profile.get_average_star_rating
         context['is_my_profile'] = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+        context['ratings'] = range(0,5)
         tabs = []
 
         for tab, name in activity_tabs:
@@ -1983,6 +1996,7 @@ def profile(request, handle):
         status = 404
         context = {
             'hidden': True,
+            'ratings': range(0,5),
             'profile': {
                 'handle': handle,
                 'avatar_url': f"/dynamic/avatar/Self",
@@ -2005,15 +2019,16 @@ def profile(request, handle):
     context['verification'] = profile.get_my_verified_check
     context['avg_rating'] = profile.get_average_star_rating
 
-    context['unrated_funded_bounties'] = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
+    context['unrated_funded_bounties'] = Bounty.objects.current().prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
         .filter(
             bounty_owner_github_username__iexact=profile.handle,
+            network=network,
         ).exclude(
             feedbacks__feedbackType='approver',
             feedbacks__sender_profile=profile,
         )
 
-    context['unrated_contributed_bounties'] = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=profile) \
+    context['unrated_contributed_bounties'] = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=profile, network=network,) \
             .filter(interested__status='okay') \
             .filter(interested__pending=False).filter(idx_status='done') \
             .exclude(
@@ -2465,7 +2480,18 @@ def new_bounty(request):
         title=_('Create Funded Issue'),
         update=bounty_params,
     )
+
     params['FEE_PERCENTAGE'] = request.user.profile.fee_percentage if request.user.is_authenticated else 10
+
+    coupon_code = request.GET.get('coupon', False)
+    if coupon_code:
+        coupon = Coupon.objects.get(code=coupon_code)
+        if coupon.expiry_date > datetime.now().date():
+            params['FEE_PERCENTAGE'] = coupon.fee_percentage
+            params['coupon_code'] = coupon.code
+        else:
+            params['expired_coupon'] = True
+
     return TemplateResponse(request, 'bounty/fund.html', params)
 
 
@@ -2533,7 +2559,7 @@ def change_bounty(request, bounty_id):
         else:
             raise Http404
 
-    keys = ['experience_level', 'project_length', 'bounty_type', 'featuring_date',
+    keys = ['experience_level', 'project_length', 'bounty_type', 'featuring_date', 'bounty_categories',
             'permission_type', 'project_type', 'reserved_for_user_handle', 'is_featured', 'admin_override_suspend_auto_approval']
 
     if request.body:
@@ -2564,6 +2590,8 @@ def change_bounty(request, bounty_id):
                 value = timezone.make_aware(
                     timezone.datetime.fromtimestamp(int(value)),
                     timezone=UTC)
+            if key == 'bounty_categories':
+                value = value.split(',')
             old_value = getattr(bounty, key)
             if value != old_value:
                 setattr(bounty, key, value)
@@ -2623,7 +2651,7 @@ def get_users(request):
             profile_json = {}
             profile_json['id'] = user.id
             profile_json['text'] = user.handle
-            profile_json['email'] = user.email
+            #profile_json['email'] = user.email
             if user.avatar_baseavatar_related.exists():
                 profile_json['avatar_id'] = user.avatar_baseavatar_related.first().pk
                 profile_json['avatar_url'] = user.avatar_baseavatar_related.first().avatar_url

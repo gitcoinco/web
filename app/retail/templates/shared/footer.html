@@ -73,6 +73,7 @@
           </div>
           <div class="sitenav">
             <h5>{% trans "Community" %}</h5>
+            <a href="{% url "blog" %}">{% trans "Blog" %}</a>
             <a class="slack{% if active == 'slack' %} selected{% endif %}" href="{% url "slack" %}">
               Slack ({{num_slack}})
             </a>

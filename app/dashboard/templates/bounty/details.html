@@ -66,7 +66,9 @@
                         <span>USD</span>
                       </p>
                     </div>
+                    <div class="d-inline-block font-subheader" id="bounty_categories"></div>
                   </div>
+
                 </div>
                 <div class="notif-info mb-3 font-caption" id="funder_notif_info"></div>
               </div>
@@ -450,7 +452,7 @@
   <script>
     $.fn.runTooltip = bootstrapTooltip
     $('[data-toggle="popover"]').popover()
-    
+
     $("body").on("mouseover", "[data-username] img", function(e) {
       openContributorPopOver($(this).parent().data("username"), $(this));
 });
