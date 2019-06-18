@@ -195,6 +195,7 @@ $(function() {
   });
 
   let checked = params.get('type');
+
   if (params.has('type')) {
 
     $(`.${checked}`).button('toggle');
@@ -252,9 +253,10 @@ $(function() {
     $('#summary-fee-token').html(token);
     populateBountyTotal();
   };
+
   $('select[name=denomination]').change(triggerDenominationUpdate);
-  waitforWeb3(function(){
-    setTimeout(function(){
+  waitforWeb3(function() {
+    setTimeout(function() {
       triggerDenominationUpdate();
     }, 1000);
   });
@@ -332,6 +334,7 @@ $('#issueURL').focusout(function() {
   if (isPrivateRepo) {
     setPrivateForm();
     var validated = $('input[name=issueURL]').val() == '' || !validURL($('input[name=issueURL]').val());
+
     if (validated) {
       $('.js-submit').addClass('disabled');
     } else {
