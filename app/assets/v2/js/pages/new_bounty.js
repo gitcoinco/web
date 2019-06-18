@@ -241,14 +241,24 @@ $(function() {
     populateBountyTotal();
   });
 
-  $('select[name=denomination]').change(function(e) {
+  var triggerDenominationUpdate = function(e) {
     setUsdAmount();
     promptForAuth();
-    const token = tokenAddressToDetails(e.target.value).name;
+    const token_val = $('select[name=denomination]').val();
+    const tokendetails = tokenAddressToDetails(token_val);
+    var token = tokendetails['name'];
+
 
     $('#summary-bounty-token').html(token);
     $('#summary-fee-token').html(token);
     populateBountyTotal();
+  };
+
+  $('select[name=denomination]').change(triggerDenominationUpdate);
+  waitforWeb3(function() {
+    setTimeout(function() {
+      triggerDenominationUpdate();
+    }, 1000);
   });
 
   $('#featuredBounty').on('change', function() {
