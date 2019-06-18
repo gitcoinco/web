@@ -1,0 +1,27 @@
+{
+  "symbol": "CARM",
+  "address": "0x2E0c40bEB655a988E087AD71Ca191A2806Ac55ef",
+  "overview":{
+        "en": "Unique marketing platform for car owners/lovers that allows users to profit from their own data.",
+        "zh": "为车主/爱好者提供独特的营销平台，让用户可以从自己的数据中获利。"
+  },
+  "email": "info@carnomic.io",
+  "website": "https://www.carnomic.io",
+  "whitepaper": "https://www.carnomic.io/wp/Carnomic-White-Paper-en.pdf",
+  "published_on": "2019-05-23",
+  "initial_price":{
+        "ETH":"0.00166666 ETH",
+        "USD":"0.7 USD",
+        "BTC":"0.00004137 BTC"
+  },
+  "links": {
+    "blog": "https://your-awesome-project.com/blog",
+    "twitter": "https://twitter.com/your-awesome-project",
+    "telegram": "https://t.me/joinchat/your-awesome-project",
+    "github": "https://github.com/your-awesome-project",
+    "facebook": "https://www.facebook.com/your-awesome-project",
+    "reddit": "https://www.reddit.com/r/your-awesome-project/",
+    "slack": "https://your-awesome-project.slack.com",
+    "medium": "https://medium.com/your-awesome-project"
+  }
+}
