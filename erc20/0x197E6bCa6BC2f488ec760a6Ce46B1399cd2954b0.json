@@ -1,0 +1,17 @@
+{
+  "symbol": "BPRO",
+  "address": "0x197E6bCa6BC2f488ec760a6Ce46B1399cd2954b0",
+  "overview":{
+        "en": "BitCloud is the world's largest aggregate liquidity trading platform with intelligent trading tools.  BitCloud is a one-stop digital asset wealth management platform supported by internationally renowned backers.  Its parent company holds a Philippines Central Bank issued Digital Asset Exchange license (amongst other financial licenses), and has strategic cooperation with several national banks.  BitCloud provides AML compliant fiat payment gateways across the G10 currencies as well as VISA card issuance and deposits to bridge the gap between the digital asset economy and traditional financial economy.  BitCloud’s market leading intelligent trading solution provides aggregate liquidity from top exchanges, and brings institutional-grade trading algorithms to your mobile phone creating a new paradigm for digital asset wealth management.",
+        "zh": "BitCloud是全球最大的深度交易平台和智能交易撮合工具。是数字货币领域不同阶段投资者都不可或缺的神器。BitCloud是由国际知名资本领投，获千万元股权投资的一站式财富管理增值平台，其母公司拥有菲律宾国家级数字货币交易所牌照和金融牌照，与多家国家级银行达成战略合作，可提供十二种法币的进出金通道和币币闪兑、法币数字货币闪兑的服务和VISA卡申请、充值、消费等业务；BitCloud集合首创的智能交易、聚合数十家交易所API的策略交易、“余额宝”、基金超市等杀手级功能于一身，致力于打破数字货币和法币交易、兑换之间的鸿沟，打造数字货币财富管理的新范式。"
+  },
+  "email": "business@bitcloud.pro",
+  "website": "https://bitcloudpro.com",
+  "whitepaper": "https://bitcloudpro.com/white_paper/BitCloud2.0.pdf",
+  "state": "NORMAL",
+  "links": {
+    "twitter": "https://twitter.com/bitcloudpro",
+    "telegram": "https://t.me/bitcloudpro",
+    "medium": "https://medium.com/@bitcloudpro"
+  }
+}
