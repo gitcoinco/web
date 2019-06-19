@@ -2422,6 +2422,8 @@ class Profile(SuperModel):
         if self.handle:
             return self.handle
 
+        return None
+
     @property
     def name(self):
         if self.admin_override_name:
