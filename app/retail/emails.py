@@ -72,7 +72,7 @@ def premailer_transform(html):
 
 
 def render_featured_funded_bounty(bounty):
-    params = {'bounty': bounty}
+    params = {'bounty': bounty, 'email_type': 'featured_funded_bounty'}
     response_html = premailer_transform(render_to_string("emails/funded_featured_bounty.html", params))
     response_txt = render_to_string("emails/funded_featured_bounty.txt", params)
     subject = _("Your bounty is now live on Gitcoin!")
@@ -92,6 +92,7 @@ def render_nth_day_email_campaign(to_email, nth, firstname):
     params = {
         "firstname": firstname,
         "subscriber": get_or_save_email_subscriber(to_email, "internal"),
+        'email_type': 'welcome_mail'
     }
     response_html = premailer_transform(render_to_string(f"emails/campaigns/email_campaign_day_{nth}.html", params))
     response_txt = render_to_string(f"emails/campaigns/email_campaign_day_{nth}.txt", params)
@@ -240,6 +241,7 @@ def render_tip_email(to_email, tip, is_new):
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'is_sender': to_email not in tip.emails,
         'is_receiver': to_email in tip.emails,
+        'email_type': 'tip'
     }
 
     response_html = premailer_transform(render_to_string("emails/new_tip.html", params))
@@ -294,6 +296,7 @@ def render_match_email(bounty, github_username):
     params = {
         'bounty': bounty,
         'github_username': github_username,
+        'email_type': 'bounty_match'
     }
     response_html = premailer_transform(render_to_string("emails/new_match.html", params))
     response_txt = render_to_string("emails/new_match.txt", params)
@@ -308,6 +311,8 @@ def render_quarterly_stats(to_email, platform_wide_stats):
     params = {**quarterly_stats, **platform_wide_stats}
     params['profile'] = profile
     params['subscriber'] = get_or_save_email_subscriber(to_email, 'internal'),
+    params['email_type'] = 'roundup'
+    print(params)
     response_html = premailer_transform(render_to_string("emails/quarterly_stats.html", params))
     response_txt = render_to_string("emails/quarterly_stats.txt", params)
 
@@ -410,6 +415,7 @@ PS - we've got some new gitcoin schwag on order. send me your mailing address an
 
     params = {
         'txt': txt,
+        'email_type': 'bounty_feedback'
     }
     response_html = premailer_transform(render_to_string("emails/txt.html", params))
     response_txt = txt
@@ -479,6 +485,7 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3):
         'subscriber': sub,
         'keywords': ",".join(sub.keywords),
         'email_style': email_style,
+        'email_type': 'new_bounty_notifications'
     }
 
     response_html = premailer_transform(render_to_string("emails/new_bounty.html", params))
@@ -501,6 +508,7 @@ def render_unread_notification_email_weekly_roundup(to_email, from_date=date.tod
         'subscriber': subscriber,
         'profile': profile.handle,
         'notifications': notifications,
+        'email_type': 'roundup'
     }
 
     subject = "Your unread notifications"
@@ -588,7 +596,8 @@ def render_weekly_recap(to_email, from_date=date.today(), days_back=7):
           'from': from_date,
           'to': to_date
         },
-        'debug': activity_types
+        'debug': activity_types,
+        'email_type': 'roundup'
     }
 
     response_html = premailer_transform(render_to_string("emails/recap/weekly_founder_recap.html", params))
@@ -699,6 +708,7 @@ def render_bounty_expire_warning(to_email, bounty):
         'is_claimee': (to_email.lower() in fulfiller_emails),
         'is_owner': bounty.bounty_owner_email.lower() == to_email.lower(),
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'email_type': 'bounty_expiration'
     }
 
     response_html = premailer_transform(render_to_string("emails/new_bounty_expire_warning.html", params))
@@ -713,6 +723,7 @@ def render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delt
         'interest': interest,
         'time_delta_days': time_delta_days,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'email_type': 'bounty_expiration'
     }
 
     response_html = premailer_transform(render_to_string("emails/bounty_startwork_expire_warning.html", params))
@@ -740,6 +751,7 @@ def render_faucet_rejected(fr):
         'fr': fr,
         'amount': settings.FAUCET_AMOUNT,
         'subscriber': get_or_save_email_subscriber(fr.email, 'internal'),
+        'email_type': 'faucet'
     }
 
     response_html = premailer_transform(render_to_string("emails/faucet_request_rejected.html", params))
@@ -754,6 +766,7 @@ def render_faucet_request(fr):
         'fr': fr,
         'amount': settings.FAUCET_AMOUNT,
         'subscriber': get_or_save_email_subscriber(fr.email, 'internal'),
+        'email_type': 'faucet'
     }
 
     response_html = premailer_transform(render_to_string("emails/faucet_request.html", params))
@@ -768,6 +781,7 @@ def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days)
         'interest': interest,
         'time_delta_days': time_delta_days,
         'subscriber': get_or_save_email_subscriber(interest.profile.email, 'internal'),
+        'email_type': 'bounty_expiration'
     }
 
     response_html = premailer_transform(render_to_string("emails/render_bounty_startwork_expired.html", params))
@@ -1029,6 +1043,7 @@ Back to shipping,
         'leaderboard': leaderboard,
         'invert_footer': False,
         'hide_header': False,
+        'email_type': 'roundup',
         'highlights': highlights,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'kudos_highlights': kudos_highlights,
