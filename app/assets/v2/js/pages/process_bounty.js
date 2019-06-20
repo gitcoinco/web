@@ -128,6 +128,7 @@ window.onload = function() {
       var expires = 9999999999;
       var kudosId = selected_kudos.id;
       var tokenId = selected_kudos.token_id;
+      var send_type = 'github';
       var success_callback = function(txid) {
         var url = 'https://' + etherscanDomain() + '/tx/' + txid;
         var msg = 'The Kudos has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
@@ -141,7 +142,7 @@ window.onload = function() {
         unloading_button($('.submitBounty'));
       };
 
-      return sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, to_eth_address, expires, kudosId, tokenId, success_callback, failure_callback, true);
+      return sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, to_eth_address, expires, kudosId, tokenId, success_callback, failure_callback, true, send_type);
 
     };
 

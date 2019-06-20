@@ -139,14 +139,12 @@ var save_sidebar_latest = function() {
 };
 
 // saves search information default
-var set_sidebar_defaults = function() {
-  // Special handling to support adding keywords from url query param
-  var q = getParam('q');
-  var keywords;
-  var org;
+const set_sidebar_defaults = () => {
+  const q = getParam('q');
+  const org = getParam('org');
 
   if (q) {
-    keywords = decodeURIComponent(q).replace(/^,|\s|,\s*$/g, '');
+    const keywords = decodeURIComponent(q).replace(/^,|\s|,\s*$/g, '');
 
     if (localStorage['keywords']) {
       keywords.split(',').forEach(function(v, k) {
@@ -157,11 +155,13 @@ var set_sidebar_defaults = function() {
     } else {
       localStorage['keywords'] = keywords;
     }
+  }
 
+  if (org) {
     if (localStorage['org']) {
-      org.split(',').forEach(function(v, k) {
-        if (localStorage['org'].indexOf(v) === -1) {
-          localStorage['org'] += ',' + v;
+      org.split(',').forEach(function(value) {
+        if (localStorage['org'].indexOf(value) === -1) {
+          localStorage['org'] += ',' + value;
         }
       });
     } else {
@@ -291,7 +291,7 @@ var removeFilter = function(key, value) {
 };
 
 var get_search_URI = function(offset, order) {
-  var uri = '/api/v0.1/bounties/?';
+  var uri = '/api/v0.1/bounties/slim/?';
   var keywords = '';
   var org = '';
 
@@ -387,7 +387,7 @@ var get_search_URI = function(offset, order) {
   if (typeof order_by !== 'undefined') {
     uri += '&order_by=' + order_by;
   }
-  
+
   uri += '&offset=' + offset;
   uri += '&limit=' + results_limit;
 

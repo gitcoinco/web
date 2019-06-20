@@ -136,12 +136,14 @@ $(document).ready(function() {
     element.toggleClass('active');
     let panel = element[0].nextElementSibling;
 
-    if (panel.style.maxHeight) {
-      panel.style.maxHeight = null;
-      panel.style.marginBottom = 0 + 'px';
-    } else {
-      panel.style.maxHeight = panel.scrollHeight + 'px';
-      panel.style.marginBottom = 10 + 'px';
+    if (panel) {
+      if (panel.style.maxHeight) {
+        panel.style.maxHeight = null;
+        panel.style.marginBottom = 0 + 'px';
+      } else {
+        panel.style.maxHeight = panel.scrollHeight + 'px';
+        panel.style.marginBottom = 10 + 'px';
+      }
     }
   });
 });

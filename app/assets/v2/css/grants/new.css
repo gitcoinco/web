@@ -52,12 +52,22 @@
   font-size: 1rem;
 }
 
+.select2-container--default .select2-selection--multiple {
+  height: 2.75rem;
+}
+
 .select2-container--default .select2-selection--multiple .select2-selection__choice {
   padding: 2px 5px;
   background-color: #fff;
   border-radius: 2px;
+  height: 35px !important;
 }
 
 .select2-container .select2-search--inline .select2-search__field {
-  margin-top: 8px;
+  margin-top: 0;
+  font-size: 1rem;
+}
+
+.ql-editor p {
+  font-size: 1rem;
 }
