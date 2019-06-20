@@ -20,23 +20,19 @@
   <div class="col-12">
     <h4 class="col-12 font-title font-weight-semibold py-1" id="newsletter-title">
       {% if newsletter_headline %}
-      {{ newsletter_headline }}
+        {{ newsletter_headline }}
       {% else %}
-      {% trans "Join Our Newsletter!" %}
+        {% trans "Join Our Newsletter!" %}
       {% endif %}
     </h4>
     I want to
     <nav class="nav justify-content-center d-inline-flex btn-group btn-group-sm my-3" id="myTab" role="tablist">
-      <!-- <li class="nav-item"> -->
-        <a class="nav-link active btn btn-gc-grey" id="funderForm-tab" data-toggle="tab" href="#funderForm" role="tab" aria-controls="funderForm" aria-selected="true">fund bounties</a>
-      <!-- </li> -->
-      <!-- <li class="nav-item"> -->
-        <a class="nav-link btn btn-gc-grey" id="hunterForm-tab" data-toggle="tab" href="#hunterForm" role="tab" aria-controls="hunterForm" aria-selected="false">work on bounties</a>
-      <!-- </li> -->
+      <a class="nav-link active btn btn-gc-grey" id="funderForm-tab" data-toggle="tab" href="#funderForm" role="tab" aria-controls="funderForm" aria-selected="true">fund bounties</a>
+      <a class="nav-link btn btn-gc-grey" id="hunterForm-tab" data-toggle="tab" href="#hunterForm" role="tab" aria-controls="hunterForm" aria-selected="false">work on bounties</a>
     </nav>
     <div class="tab-content" id="myTabContent">
       <!-- funders newsletter -->
-      <form action="//gitcoin.us16.list-manage.com/subscribe/post?u=f9f93e162a8732673b942cbda&amp;id=791d905ad8"
+      <form action="//consensys.us11.list-manage.com/subscribe/post?u=947c9b18fc27e0b00fc2ad055&amp;id=fbf50d06d9"
         method="post" id="funderForm" class="col-12 validate tab-pane fade show active" name="mc-embedded-subscribe-form" target="_blank" role="tabpanel" aria-labelledby="funderForm-tab" novalidate>
         {% if not hide_newsletter_caption %}
           <label for="newsletter-input">({% trans "Emails once a week max, & we never sell your data" %})</label>
@@ -53,7 +49,7 @@
       </form>
 
       <!-- hunters newsletter -->
-      <form action="https://gmail.us20.list-manage.com/subscribe/post?u=7013bba2daad67052fcd892d1&amp;id=fbc845873e"
+      <form action="//consensys.us11.list-manage.com/subscribe/post?u=947c9b18fc27e0b00fc2ad055&amp;id=d870d1315e"
         method="post" id="hunterForm" class="col-12 validate tab-pane fade"
         name="mc-embedded-subscribe-form" target="_blank" role="tabpanel" aria-labelledby="hunterForm-tab" novalidate>
         {% if not hide_newsletter_caption %}
