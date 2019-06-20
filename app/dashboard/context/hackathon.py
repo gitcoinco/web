@@ -163,6 +163,7 @@ beyond_blocks_2019 = {
     'bg'            : 'hk-black-bg',
     'banner_text'   : 'hk-white-f',
     'logo_bg'       : 'bb-banner-bg',
+    'logo'          : static('/v2/images/hackathon/beyond_block/logo.svg'),
     'title'         : 'BEYOND BLOCKCHAIN',
     'title_banner'  : 'BEYOND BLOCKCHAIN',
     'caption'       :  '''A three-week virtual hackathon <br> where global developers and
