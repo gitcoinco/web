@@ -209,6 +209,13 @@
         </tr>
       {% endfor %}
 
+      {% if percentage_fee %}
+        <tr class="item">
+          <td>Platform fees</td>
+          <td>{{percentage_fee}}</td>
+        </tr>
+      {% endif %}
+
       {% if not tips and not accepted_fulfillments %}
         <tr class="item">
           <td colspan="2">

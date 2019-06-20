@@ -1050,6 +1050,8 @@ def invoice(request):
     params['tips'] = [
         tip for tip in bounty.tips.send_happy_path() if ((tip.username == request.user.username and tip.username) or (tip.from_username == request.user.username and tip.from_username) or request.user.is_staff)
     ]
+    if (bounty.web3_created.replace(tzinfo=None) > date_to_start_charging_ten_percent.replace(tzinfo=None)):
+        params['percentage_fee'] = '10%'
     params['total'] = bounty._val_usd_db if params['accepted_fulfillments'] else 0
     for tip in params['tips']:
         if tip.value_in_usdt:
