@@ -382,6 +382,18 @@ class Bounty(SuperModel):
         except Exception:
             return f"{'/' if preceding_slash else ''}funding/details?url={self.github_url}"
 
+    def get_canonical_url(self):
+        """Get the canonical URL of the Bounty for SEO purposes.
+
+        Returns:
+            str: The canonical URL of the Bounty.
+
+        """
+        _org_name = org_name(self.github_url)
+        _repo_name = repo_name(self.github_url)
+        _issue_num = int(issue_number(self.github_url))
+        return settings.BASE_URL.rstrip('/') + reverse('issue_details_new2', kwargs={'ghuser': _org_name, 'ghrepo': _repo_name, 'ghissue': _issue_num})
+
     def get_natural_value(self):
         token = addr_to_token(self.token_address)
         if not token:
@@ -392,6 +404,10 @@ class Bounty(SuperModel):
     @property
     def url(self):
         return self.get_absolute_url()
+
+    @property
+    def canonical_url(self):
+        return self.get_canonical_url()
 
     def snooze_url(self, num_days):
         """Get the bounty snooze URL.
@@ -3097,6 +3113,7 @@ class HackathonEvent(SuperModel):
     logo_svg = models.FileField(blank=True)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
+    identifier = models.CharField(max_length=255, default='')
 
     def __str__(self):
         """String representation for HackathonEvent.
