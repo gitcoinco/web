@@ -121,10 +121,10 @@
               <p class="mt-4 font-weight-bold mb-0">No users found</p>
               <button class="btn blue" @click="params = {}; searchBounties()">Reset Filters</button>
             </div>
-            <div class="grid-4">
-              <div v-for="bounty in bounties" :class="[bounty.standard_bounties_id.toString(), bounty.network]" :key="bounty.pk">
+            <div class="">
+              <a v-for="bounty in bounties" :class="[bounty.standard_bounties_id.toString(), bounty.network]" :key="bounty.pk" :href="bounty.url" class="d-flex align-items-center">
                 <div class="avatar-container col-1 justify-content-center hide_min_viewport">
-                  <img :src="bounty.avatar_url" class="avatar" :class="bounty.github_org_name">
+                  <img :src="bounty.avatar_url" class="avatar w-100" :class="bounty.github_org_name">
                 </div>
                 <div class="col-12 col-md-8 d-flex flex-column">
                   <div class="bounty-detail">
@@ -164,7 +164,40 @@
                     </div>
                   </div>
                 </div>
-              </div>
+                <div class="tags-container col-12 col-md-4 col-lg-3 font-caption">
+                  <div v-if="bounty.network !== 'mainnet'" class="tag network_warning">
+                    <p>
+                      <span>[[ bounty.network ]]</span>
+                    </p>
+                  </div>
+                  <div class="tag token">
+                    <p>
+                      [[ bounty.rounded_amount ]]
+                      <span>[[ bounty.token_name ]]</span>
+                      <template v-if="bounty.tokens">
+                        <i class="fas fa-plus mx-1" style="font-size: 0.5rem; position: relative; top: -1px;"></i>
+                        <img class="m-0" style="position: relative; top: -2px;" src="{% static 'v2/images/coin.svg' %}">
+                      </template>
+                    </p>
+                    <template v-if="bounty.tokens">
+                      <button class="btn-expand-token" onclick="toggleExpandableBounty(event, `.${bounty.network}.i${bounty.standard_bounties_id}`)">
+                        {% trans 'See All' %}   <i class="fa fa-angle-down arrow"></i>
+                      </button>
+                    </template>
+                  </div>
+                  <template v-if="bounty.value_in_usdt">
+                    <div class="tag usd">
+                      <p>
+                        [[ bounty.value_in_usdt ]]
+                        <span>USD</span>
+                      </p>
+                    </div>
+                  </template>
+
+
+
+                </div>
+              </a>
             </div>
             <loading-screen v-if="isLoading"></loading-screen>
           </div>
