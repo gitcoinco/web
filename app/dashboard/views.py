@@ -945,7 +945,7 @@ def dashboard(request):
         'meta_description': "Find open bug bounties & freelance development jobs including crypto bounty reward value in USD, expiration date and bounty age.",
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
-    return TemplateResponse(request, 'dashboard/index.html', params)
+    return TemplateResponse(request, 'dashboard/explorer.html', params)
 
 
 def ethhack(request):
