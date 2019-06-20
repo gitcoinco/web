@@ -271,6 +271,30 @@ def email_settings(request, key):
     email = ''
     level = ''
     msg = ''
+    email_types = dict([('welcome_mail', 'Welcome Email'),('roundup', 'Round Up'), ('new_bounty_notifications', 'New Bounty Notifications Emails'), ('important_product_updates', 'Product Updates Emails'), ('tip', 'Tip Emails'), ('faucet', 'Faucet Notification Emails'), ('bounty', 'Bounty Notification Emails'), ('bounty_match', 'Bounty Match Emails'), ('bounty_feedback', 'Bounty Feedback Emails'), ('bounty_expiration', 'Bounty Expiration Warning Emails'), ('featured_funded_bounty', 'Featured Funded Bounty Emails')])
+    if request.GET.get('type') in email_types:
+        email = request.user.profile.email
+        dictionary = {}
+        dictionary[request.GET.get('type', '')] = ['1']
+        dictionary['email'] = email
+        if es:
+            key = get_or_save_email_subscriber(email, 'settings')
+            es.email = email
+            form = dictionary
+            es.build_email_preferences(form)
+            es = record_form_submission(request, es, 'email')
+            ip = get_ip(request)
+            if not es.metadata.get('ip', False):
+                es.metadata['ip'] = [ip]
+            else:
+                es.metadata['ip'].append(ip)
+            es.save()
+        context = {
+            'title': _('Email unsubscription successful'),
+            'type': email_types[request.GET.get('type')]
+        }
+        return TemplateResponse(request, 'email_unsubscribed.html', context)
+
     if request.POST and request.POST.get('submit'):
         email = request.POST.get('email')
         level = request.POST.get('level')
