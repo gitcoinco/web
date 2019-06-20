@@ -2524,10 +2524,10 @@ def get_suggested_contributors(request):
     for _, rd in enumerate(recommended_developers):
         rd.star_rating = rd.profile.get_average_star_rating
 
-    recommended_developers = [{k:v for k, v in rd if k in (
+    recommended_developers = [{k:v for k, v in rd if k in {
         'fulfiller_github_username', 'profile__id',
         'profile__leaderboard_ranks', 'profile__keywords', 'star_rating'
-    )} for rd in list(recommended_developers)]
+    }} for rd in list(recommended_developers)]
 
     verified_developers = UserVerificationModel.objects.filter(verified=True).values('user__profile__handle', 'user__profile__id')
 
