@@ -96,7 +96,7 @@ const openContributorPopOver = (contributor, element) => {
         popoverData.push({ [contributor]: response });
       })
       .catch(err => {
-        return _alert({ message: err }, 'error');
+        return console.error({ message: err }, 'error');
       });
   } else {
     element.popover({

@@ -291,7 +291,7 @@ var removeFilter = function(key, value) {
 };
 
 var get_search_URI = function(offset, order) {
-  var uri = '/api/v0.1/bounties/?';
+  var uri = '/api/v0.1/bounties/slim/?';
   var keywords = '';
   var org = '';
 
@@ -544,33 +544,31 @@ var refreshBounties = function(event, offset, append, do_save_search) {
     $('.loading').css('display', 'none');
   });
 
-  if (!document.hackathon) {
-    explorer.bounties_request = $.get(featuredBountiesURI, function(results, x) {
-      results = sanitizeAPIResults(results);
+  explorer.bounties_request = $.get(featuredBountiesURI, function(results, x) {
+    results = sanitizeAPIResults(results);
 
-      if (results.length === 0 && !append) {
-        $('.featured-bounties').hide();
-        if (localStorage['referrer'] === 'onboard') {
-          $('.no-results').removeClass('hidden');
-          $('#dashboard-content').addClass('hidden');
-        } else {
-          $('.nonefound').css('display', 'none');
-        }
+    if (results.length === 0 && !append) {
+      $('.featured-bounties').hide();
+      if (localStorage['referrer'] === 'onboard') {
+        $('.no-results').removeClass('hidden');
+        $('#dashboard-content').addClass('hidden');
+      } else {
+        $('.nonefound').css('display', 'none');
       }
+    }
 
-      var html = renderFeaturedBountiesFromResults(results, true);
+    var html = renderFeaturedBountiesFromResults(results, true);
 
-      if (html) {
-        $('.featured-bounties').show();
-        $('#featured-card-container').html(html);
-      }
-    }).fail(function() {
-      if (explorer.bounties_request.readyState !== 0)
-        _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
-    }).always(function() {
-      $('.loading').css('display', 'none');
-    });
-  }
+    if (html) {
+      $('.featured-bounties').show();
+      $('#featured-card-container').html(html);
+    }
+  }).fail(function() {
+    if (explorer.bounties_request.readyState !== 0)
+      _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
+  }).always(function() {
+    $('.loading').css('display', 'none');
+  });
 };
 
 window.addEventListener('load', function() {
@@ -790,7 +788,7 @@ $(document).ready(function() {
   // sidebar filters
   $('.sidebar_search input[type=checkbox], .sidebar_search label').change(function(e) {
     reset_offset();
-    refreshBounties(null, 0, false, true);
+    // refreshBounties(null, 0, false, true);
     e.preventDefault();
   });
 

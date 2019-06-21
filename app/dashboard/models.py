@@ -29,6 +29,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.contrib.humanize.templatetags.humanize import naturalday, naturaltime
 from django.contrib.postgres.fields import ArrayField, JSONField
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import Q, Sum
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
@@ -186,6 +187,13 @@ class Bounty(SuperModel):
         ('contest', 'contest'),
         ('cooperative', 'cooperative'),
     ]
+    BOUNTY_CATEGORIES = [
+        ('frontend', 'frontend'),
+        ('backend', 'backend'),
+        ('design', 'design'),
+        ('documentation', 'documentation'),
+        ('other', 'other'),
+    ]
     BOUNTY_TYPES = [
         ('Bug', 'Bug'),
         ('Security', 'Security'),
@@ -274,6 +282,7 @@ class Bounty(SuperModel):
     canceled_on = models.DateTimeField(null=True, blank=True)
     canceled_bounty_reason = models.TextField(default='', blank=True, verbose_name=_('Cancelation reason'))
     project_type = models.CharField(max_length=50, choices=PROJECT_TYPES, default='traditional')
+    bounty_categories = ArrayField(models.CharField(max_length=50, choices=BOUNTY_CATEGORIES), default=list)
     permission_type = models.CharField(max_length=50, choices=PERMISSION_TYPES, default='permissionless')
     repo_type = models.CharField(max_length=50, choices=REPO_TYPES, default='public')
     snooze_warnings_for_days = models.IntegerField(default=0)
@@ -282,6 +291,7 @@ class Bounty(SuperModel):
     featuring_date = models.DateTimeField(blank=True, null=True)
     fee_amount = models.DecimalField(default=0, decimal_places=18, max_digits=50)
     fee_tx_id = models.CharField(default="0x0", max_length=255, blank=True)
+    coupon_code = models.ForeignKey('dashboard.Coupon', blank=True, null=True, related_name='coupon', on_delete=models.SET_NULL)
     unsigned_nda = models.ForeignKey('dashboard.BountyDocuments', blank=True, null=True, related_name='bounty', on_delete=models.SET_NULL)
 
     token_value_time_peg = models.DateTimeField(blank=True, null=True)
@@ -329,6 +339,14 @@ class Bounty(SuperModel):
         super().save(*args, **kwargs)
 
     @property
+    def latest_activity(self):
+        activity = Activity.objects.filter(bounty=self.pk).order_by('-pk')
+        if activity.exists():
+            from dashboard.router import ActivitySerializer
+            return ActivitySerializer(activity.first()).data
+        return None
+
+    @property
     def profile_pairs(self):
         profile_handles = []
 
@@ -364,6 +382,18 @@ class Bounty(SuperModel):
         except Exception:
             return f"{'/' if preceding_slash else ''}funding/details?url={self.github_url}"
 
+    def get_canonical_url(self):
+        """Get the canonical URL of the Bounty for SEO purposes.
+
+        Returns:
+            str: The canonical URL of the Bounty.
+
+        """
+        _org_name = org_name(self.github_url)
+        _repo_name = repo_name(self.github_url)
+        _issue_num = int(issue_number(self.github_url))
+        return settings.BASE_URL.rstrip('/') + reverse('issue_details_new2', kwargs={'ghuser': _org_name, 'ghrepo': _repo_name, 'ghissue': _issue_num})
+
     def get_natural_value(self):
         token = addr_to_token(self.token_address)
         if not token:
@@ -374,6 +404,10 @@ class Bounty(SuperModel):
     @property
     def url(self):
         return self.get_absolute_url()
+
+    @property
+    def canonical_url(self):
+        return self.get_canonical_url()
 
     def snooze_url(self, num_days):
         """Get the bounty snooze URL.
@@ -586,14 +620,17 @@ class Bounty(SuperModel):
             return self.idx_status
 
         # standard bounties
+        is_traditional_bounty_type = self.project_type == 'traditional'
         try:
+            has_tips = self.tips.filter(is_for_bounty_fulfiller=False).send_happy_path().exists()
+            if has_tips and is_traditional_bounty_type:
+                return 'done'
             if not self.is_open:
                 if self.accepted:
                     return 'done'
                 elif self.past_hard_expiration_date:
                     return 'expired'
-                has_tips = self.tips.filter(is_for_bounty_fulfiller=False).send_happy_path().exists()
-                if has_tips:
+                elif has_tips:
                     return 'done'
                 # If its not expired or done, and no tips, it must be cancelled.
                 return 'cancelled'
@@ -1933,6 +1970,9 @@ class Profile(SuperModel):
         kt_owner_address = KudosTransfer.objects.filter(
             receive_address__iexact=self.preferred_payout_address
         )
+        if not self.preferred_payout_address:
+            kt_owner_address = KudosTransfer.objects.none()
+            
         kt_profile = KudosTransfer.objects.filter(recipient_profile=self)
 
         kudos_transfers = kt_profile | kt_owner_address
@@ -2637,12 +2677,11 @@ class Profile(SuperModel):
         if not self.is_org:
             all_activities = self.activities
         else:
+            # orgs
             url = self.github_url
             all_activities = Activity.objects.filter(
-                Q(bounty__github_url__startswith=url) |
-                Q(tip__github_url__startswith=url) |
-                Q(grant__isnull=False) |
-                Q(subscription__isnull=False)
+                Q(bounty__github_url__istartswith=url) |
+                Q(tip__github_url__istartswith=url)
             )
 
         all_activities = all_activities.filter(
@@ -2826,7 +2865,7 @@ class ProfileSerializer(serializers.BaseSerializer):
             dict: The serialized Profile.
 
         """
-        
+
         return {
             'id': instance.id,
             'handle': instance.handle,
@@ -3074,6 +3113,7 @@ class HackathonEvent(SuperModel):
     logo_svg = models.FileField(blank=True)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
+    identifier = models.CharField(max_length=255, default='')
 
     def __str__(self):
         """String representation for HackathonEvent.
@@ -3089,6 +3129,7 @@ class HackathonEvent(SuperModel):
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+
 
 class FeedbackEntry(SuperModel):
     bounty = models.ForeignKey(
@@ -3124,3 +3165,13 @@ class FeedbackEntry(SuperModel):
     def __str__(self):
         """Return the string representation of a Bounty."""
         return f'<Feedback Bounty #{self.bounty} - from: {self.sender_profile} to: {self.receiver_profile}>'
+
+
+class Coupon(SuperModel):
+    code = models.CharField(unique=True, max_length=10)
+    fee_percentage = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)])
+    expiry_date = models.DateField()
+
+    def __str__(self):
+        """Return the string representation of Coupon."""
+        return f'code: {self.code} | fee: {self.fee_percentage} %'
