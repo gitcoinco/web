@@ -929,12 +929,11 @@ def render_start_work_applicant_expired(interest, bounty):
 
     return response_html, response_txt, subject
 
-
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "A Midsummer Bounty's Dream"
-    new_kudos_pks = [3973, 2224, 1967]
+    subject = "Beyond Blockchain Begins!"
+    new_kudos_pks = [4033, 4031, 4028]
     new_kudos_size_px = 150
 
     kudos_friday = f'''
@@ -949,25 +948,24 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-Ethereum transactions are reaching new heights recently with the highest frequency of activity on the network in months. Need some help with your gas pricing? We're way ahead of you. Check out our helpful gas visualizer to assist with your
-work on the network. <a href="https://gitcoin.co/gas">It lives here.</a>
+Our first hackathon of the summer season is here. Beyond Blockchain, a hackathon organized alongside Consensys Labs, focuses on the future. Over $15k of prizes will be available for this three week hackathon, and the hacking begins on Monday, June 24th, and goes until July 10th.
+For more info, read the announcement blog post <a href="https://gitcoin.co/blog/beyond-blockchain-hackathon/" target="_blank"> here </a> and join our Discord <a href="https://discord.gg/T98dQYC" target="_blank"> here! </a>
 </p>
 <p>
-As we mentioned last week, we're currently in the process of organizing hackathons for the next few months. That means more projects, more opportunities, and of course more bounties. Fill out this Typeform to receive more information about them
-as we prepare to get everyone back together. Have any suggestions for us? <a href="mailto:team@gitcoin.co">Email the team.</a> Otherwise, <a href="https://gitcoin.typeform.com/to/j7CSbV">the form to sign up lives here.</a>
+Need to find a team for the hackathon? <a href="https://github.com/gitcoinco/beyondblockchainteams/issues">Post a profile in this GitHub repo</a> and mingle with others. We're here to help you find a crew.
 </p>
 <p>
-As we prepare to enter the second half of 2019, we're asking our community for feedback. What are we doing well? What can we do better to help you reach your goals? <a href="mailto:team@gitcoin.co">Reach out to us if you'd like to share your thoughts.</a>
+Missed a livestream but still want to soak in the knowledge? We're way ahead of you. Check out <a href="https://youtube.com/GitcoinMedia" target="_blank">Gitcoin Media</a>, our official YouTube channel, for livestream content and more. We'll be updating it in the coming weeks so all of the livestreams are uploaded for content consumption goodness.
 </p>
 
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Are you a project that might be interested in our hackathons? <a href="mailto:alex@gitcoin.co">Send us an email we'll be in touch.</a>
+            The Gitcoin Livestream is back this week. Join us <a href="https://gitcoin.co/livestream"> at 2PM ET on Friday, or catch it on <a href="https://twitter.com/gitcoin">Twitter</a>!
         </li>
         <li>
-            The Gitcoin Livestream is back this week. Join us <a href="https://gitcoin.co/livestream"> at 2PM ET on Friday, or catch it on <a href="https://twitter.com/gitcoin">Twitter</a>!
+            For those who had already signed up to the Gitcoin Events email list, we'd like to apologize for an error with our most recent email. We've made changes to ensure that this doesn't happen in the future, and we humbly apologize for any inconvenience.
         </li>
     </ul>
 </p>
@@ -977,34 +975,46 @@ Back to shipping,
 
 '''
     highlights = [{
-        'who': 'nanspro',
+        'who': 'renaynay',
         'who_link': True,
-        'what': 'nanspro with the rewrite!',
-        'link': 'https://gitcoin.co/issue/ethhub-io/ethhub/285/3075',
+        'what': 'Go for Hobbits',
+        'link': 'https://gitcoin.co/issue/PegaSysEng/BountiedWork/9/3109',
         'link_copy': 'View more',
     }, {
-        'who': 'gutsal-arsen',
+        'who': 'mglaman',
         'who_link': True,
-        'what': 'Redux renovations',
-        'link': 'https://gitcoin.co/issue/ssteiger/Vyper-Contract-GUI/7/3060',
+        'what': 'Fallback ads for local dev',
+        'link': 'https://gitcoin.co/issue/gitcoinco/code_fund_ads/483/3103',
         'link_copy': 'View more',
     }, {
-        'who': 'roleengineer',
+        'who': 'sudeepb02',
         'who_link': True,
-        'what': 'Merkle tree madness',
-        'link': 'https://gitcoin.co/issue/leapdao/leap-contracts/194/3041',
+        'what': 'User testing complete',
+        'link': 'https://gitcoin.co/issue/ProDerivatives/EthereumContracts/1/3091',
         'link_copy': 'View more',
     }, ]
 
+    sponsor = {
+        'name': 'Elk',
+        'title': 'Bringing blockchain into the physical world',
+        'image_url': 'https://elk.cc/assets/images/elk-board-1.png',
+        'link': 'http://bit.ly/ElkBlockchain',
+        'cta': 'Sign up now',
+        'body': [
+            'Introducing Elk - the development board for building hardware projects that interface with Ethereum.',
+            'We\'ll soon be on Kickstarter. <a href="http://bit.ly/ElkBlockchain" style="font-size: 14px; line-height: 18px;">Sign up now</a> and get your early bird discount!'
+        ]
+    }
+
     bounties_spec = [{
-        'url': 'https://github.com/w3f/Web3-collaboration/issues/123',
-        'primer': 'IPFS Integrations from Web3',
+        'url': 'https://github.com/ssbc/patchbay/issues/341',
+        'primer': 'Get peer-invites into Patchbay',
     }, {
-        'url': 'https://github.com/PegaSysEng/BountiedWork/issues/18',
-        'primer': 'Trinity Hobbits Integration: 5 ETH up for grabs!',
+        'url': 'https://github.com/ArweaveTeam/Bounties/issues/1',
+        'primer': 'Build a simple permaweb app!',
     }, {
-        'url': 'https://github.com/LinkdropProtocol/linkdrop-monorepo/issues/203',
-        'primer': 'Smart Contract Showdown...',
+        'url': 'https://github.com/ChainShot/Content/issues/9',
+        'primer': 'Intro to Web3.js Tutorial',
     }, ]
 
     num_leadboard_items = 5
@@ -1063,6 +1073,7 @@ Back to shipping,
         'highlights': highlights,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'kudos_highlights': kudos_highlights,
+        'sponsor': sponsor,
     }
 
     response_html = premailer_transform(render_to_string("emails/bounty_roundup.html", params))
