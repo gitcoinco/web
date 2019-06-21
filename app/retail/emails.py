@@ -929,7 +929,6 @@ def render_start_work_applicant_expired(interest, bounty):
 
     return response_html, response_txt, subject
 
-
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
@@ -995,6 +994,18 @@ Back to shipping,
         'link': 'https://gitcoin.co/issue/leapdao/leap-contracts/194/3041',
         'link_copy': 'View more',
     }, ]
+
+    sponsor = {
+        'name': 'Elk',
+        'title': 'Bringing blockchain into the physical world',
+        'image_url': 'https://elk.cc/assets/images/elk-board-1.png',
+        'link': 'http://bit.ly/ElkBlockchain',
+        'cta': 'Sign up now',
+        'body': f'''
+            <p>Introducing Elk - the development board for building hardware projects that interface with Ethereum.</p>
+            <p>We'll soon be on Kickstarter. <a href="http://bit.ly/ElkBlockchain">Sign up now</a> and get your early bird discount!</p>
+        '''
+    }
 
     bounties_spec = [{
         'url': 'https://github.com/w3f/Web3-collaboration/issues/123',
@@ -1063,6 +1074,7 @@ Back to shipping,
         'highlights': highlights,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'kudos_highlights': kudos_highlights,
+        'sponsor': sponsor,
     }
 
     response_html = premailer_transform(render_to_string("emails/bounty_roundup.html", params))
