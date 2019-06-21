@@ -275,13 +275,13 @@ def email_settings(request, key):
     email_types = dict([('welcome_mail', 'Welcome Email'),('roundup', 'Round Up'), ('new_bounty_notifications', 'New Bounty Notifications Emails'), ('important_product_updates', 'Product Updates Emails'), ('tip', 'Tip Emails'), ('faucet', 'Faucet Notification Emails'), ('bounty', 'Bounty Notification Emails'), ('bounty_match', 'Bounty Match Emails'), ('bounty_feedback', 'Bounty Feedback Emails'), ('bounty_expiration', 'Bounty Expiration Warning Emails'), ('featured_funded_bounty', 'Featured Funded Bounty Emails')])
     if request.GET.get('type') in email_types:
         email = request.user.profile.email
-        dictionary = {}
-        dictionary[request.GET.get('type', '')] = ['1']
-        dictionary['email'] = email
         if es:
             key = get_or_save_email_subscriber(email, 'settings')
             es.email = email
-            form = dictionary
+            unsubscribe_email_type = {}
+            unsubscribe_email_type[request.GET.get('type', '')] = ['1']
+            unsubscribe_email_type['email'] = email
+            form = unsubscribe_email_type
             es.build_email_preferences(form)
             es = record_form_submission(request, es, 'email')
             ip = get_ip(request)
