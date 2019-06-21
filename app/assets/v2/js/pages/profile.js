@@ -22,12 +22,8 @@ $(document).ready(function() {
       return;
     }
 
-    const activityContainer = document.querySelector(
-      '.tab-section.active .activities'
-    );
-    const activityCount = activityContainer
-      ? parseInt(activityContainer.getAttribute('count')) || 0
-      : 0;
+    const activityContainer = document.querySelector('.tab-section.active .activities');
+    const activityCount = activityContainer ? parseInt(activityContainer.getAttribute('count')) || 0 : 0;
     const loadingImg = document.querySelector('.loading_img');
 
     if (activityContainer.children.length < activityCount) {
@@ -44,46 +40,38 @@ $(document).ready(function() {
       fetchInProgress = true;
       loadingImg.className = loadingImg.className.replace('hidden', 'visible');
 
-      fetch(
-        location.href.replace(location.hash, '') +
-          '?p=' +
-          ++page +
-          '&a=' +
-          activityName
-      )
-        .then(function(response) {
+      fetch(location.href.replace(location.hash, '') + '?p=' + (++page) + '&a=' + activityName).then(
+        function(response) {
           if (response.status === 200) {
-            response.text().then(function(html) {
-              const results = document.createElement('div');
+            response.text().then(
+              function(html) {
+                const results = document.createElement('div');
 
-              activityContainer.setAttribute('page', page);
-              results.insertAdjacentHTML('afterBegin', html);
+                activityContainer.setAttribute('page', page);
+                results.insertAdjacentHTML('afterBegin', html);
 
-              const childs = results.children;
+                const childs = results.children;
 
-              while (childs.length) {
-                activityContainer.append(childs[0]);
+                while (childs.length) {
+                  activityContainer.append(childs[0]);
+                }
+
+                fetchInProgress = false;
+                loadingImg.className = loadingImg.className.replace('visible', 'hidden');
               }
-
-              fetchInProgress = false;
-              loadingImg.className = loadingImg.className.replace(
-                'visible',
-                'hidden'
-              );
-            });
+            );
             return;
           }
 
           fetchInProgress = false;
           hideBusyOverlay();
-        })
-        .catch(function() {
+        }
+      ).catch(
+        function() {
           fetchInProgress = false;
-          loadingImg.className = loadingImg.className.replace(
-            'visible',
-            'hidden'
-          );
-        });
+          loadingImg.className = loadingImg.className.replace('visible', 'hidden');
+        }
+      );
     }
   }
 
