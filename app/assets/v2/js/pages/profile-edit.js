@@ -1,14 +1,11 @@
 $(document).ready(function() {
-  let file = '';
+  let file_name = '';
 
   $('body').on('click', 'img.picky', function() {
     $('.selected').removeClass('selected');
     $(this).addClass('selected');
-    let link = $(this).attr('src');
+    file_name = $(this).attr('src');
 
-    srcToFile(link, $(this).attr('alt'), 'image/jpeg').then(result => {
-      file = result;
-    });
   });
 
   const cancelHeaderUpdate = document.querySelector('#cancel-header-update');
@@ -33,7 +30,7 @@ $(document).ready(function() {
   function setBanner() {
     const data = new FormData();
 
-    data.append('banner', file);
+    data.append('banner', file_name);
     data.append(
       'csrfmiddlewaretoken',
       $('input[name="csrfmiddlewaretoken"]').attr('value')
@@ -116,12 +113,6 @@ $(document).ready(function() {
       });
   }
 
-  // convert file from url to file object
-  function srcToFile(src, filename, mimeType) {
-    return fetch(src)
-      .then(response => response.arrayBuffer())
-      .then(buffer => new File([buffer], filename, { type: mimeType }));
-  }
 
   if (updateHeader) {
     updateHeader.addEventListener(

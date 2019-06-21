@@ -2823,10 +2823,7 @@ def get_hackathons(request):
 def upload_profile_banner(request):
     """Handle Profile Banner Uploads"""
 
-    filename = request.FILES.get('banner', None)
-    error_response = invalid_file_response(filename, supported=['image/jpeg', 'image/jpg', 'image/png'])
-    if error_response:
-        return JsonResponse(error_response)
+    filename = request.POST.get('banner')
 
     handle = request.user.profile.handle
 
