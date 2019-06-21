@@ -48,36 +48,6 @@
   a{
     text-decoration: underline;
   }
-  table {
-    border-spacing: 0;
-    border-collapse: collapse;
-    vertical-align: top;
-    text-align: left;
-    width: 100%;
-    padding: 0;
-  }
-  table tr {
-    vertical-align: top;
-    padding: 0;
-  }
-  table tr th {
-    color: #444;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-weight: normal;
-    line-height: 1.4;
-    font-size: 16px;
-    margin: 0;
-    padding: 0;
-  }
-  table.email-sponsorship {
-    position: relative;
-    display: table;
-  }
-  table.email-sponsorship th.columns {
-    width: 584px;
-    margin: 0 auto;
-    padding: 0 16px 16px;
-  }
 </style>
 
 <div class="roundup">
@@ -95,117 +65,25 @@
         <a href="https://twitter.com/owocki">@owocki</a>
       </p>
     </div>
+
+    {% if sponsor %}
+      <div style="padding: 5px 15px 15px 15px; background-color: #f2f6f9; text-align: center;">
+        <p style="text-transform: uppercase; font-size: 12px; color: rgba(0,0,0,0.4);">Sponsored by <a href="{{ sponsor.link }}" style="font-weight: bold; color: rgba(0,0,0,0.8);">{{ sponsor.name }}</a></p>
+        <a href="{{ sponsor.link }}" style="text-align: center; color: #0d0860; font-weight: bold; font-size: 16px; display: block; text-decoration: none; line-height: 19px;">{{ sponsor.title }}</a>
+        {% for paragraph in sponsor.body %}
+          <p style="font-size: 14px; text-align: center; line-height: 18px;">{{ paragraph | safe }}</p>
+        {% endfor %}
+        <div style="margin-bottom: 1em; margin-top: 2em;">
+          <a class="button" style="padding: 8px 16px; font-size: 15px; background-color: #c0c2c5; color: rgba(0,0,0,0.8);" href="{{ sponsor.link }}">{{ sponsor.cta }}</a>
+        </div>
+        <small style="text-align: center; color: rgba(0,0,0,0.4); font-size: 10px; line-height: 12px;">Interested in sponsoring The Gitcoin Weekly?
+          <a href="https://share.hsforms.com/1--0ESFkIQ1m-y8wCW-3Q_g3bjxf" style="color: rgba(0,0,0,0.4); font-size: 10px; line-height: 12px;">Let us know</a>
+        </small>
+      </div>
+    {% endif %}
+
     <hr>
   </div>
-
-  {% if sponsor %}
-    <table class="email-sponsorship row" style="">
-      <tbody>
-          <tr style="" align="left">
-            <th class="small-12 large-12 columns first last" align="left">
-              <table>
-                <tr align="left">
-                  <th align="left">
-                    <table class="spacer">
-                      <tbody>
-                        <tr align="left">
-                          <td height="20px" style='font-size: 20px; line-height: 20px; word-wrap: break-word; -webkit-hyphens: auto; -ms-hyphens: auto; hyphens: auto; border-collapse: collapse !important; mso-line-height-rule: exactly; color: #444; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: normal; margin: 0; padding: 0;' align="left" valign="top">&nbsp;</td>
-                        </tr>
-                      </tbody>
-                    </table>
-
-                    <p class="sponsor text-center" style='color: #757575; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 500; line-height: 1.4; font-size: 12px; -ms-word-break: normal; word-break: normal; -webkit-hyphens: manual; -ms-hyphens: manual; hyphens: manual; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 10px; padding: 0;' align="center">Sponsored by <a href="#LINK"
-                    style='color: #3a8bbb; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: normal; text-align: left; line-height: 1.4; text-decoration: none; margin: 0; padding: 0;'>
-                    Elk</a></p>
-
-                    <table class="spacer">
-                    <tbody>
-                        <tr style="" align="left">
-                          <td height="2px" style=
-                          'font-size: 2px; line-height: 2px; word-wrap: break-word; -webkit-hyphens: auto; -ms-hyphens: auto; hyphens: auto; border-collapse: collapse !important; mso-line-height-rule: exactly; color: #444; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: normal; margin: 0; padding: 0;'
-                          align="left" valign="top">&nbsp;</td>
-                        </tr>
-                      </tbody>
-                    </table>
-
-                    <table class="row" style=
-                    "border-spacing: 0; border-collapse: collapse; vertical-align: top; text-align: left; width: 100%; position: relative; display: table; padding: 0;">
-                    <tbody>
-                        <tr style="" align="left">
-                          <th class="small-4 large-4 columns first" style=
-                          'width: 184px; color: #444; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: normal; line-height: 1.4; font-size: 16px; margin: 0 auto; padding: 0 0 16px;'
-                          align="left">
-                            <table>
-                            <tr style="" align="left">
-                                <th style=
-                                'color: #444; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: normal; line-height: 1.4; font-size: 16px; margin: 0; padding: 0;'
-                                align="left"><a href="#LINK"
-                                style='color: #3a8bbb; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: normal; text-align: left; line-height: 1.4; text-decoration: none; margin: 0; padding: 0;'>
-                                <img alt="[TITLE]" src="https://cdn.dribbble.com/uploads/932/original/1ca5e417289b00ce268306cebc81074a.png?1552080018"
-                                style=
-                                "outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; width: auto; max-width: 100%; clear: both; display: block; border: none;" /></a></th>
-                              </tra
-                            </table>
-                          </th>
-
-                          <th class="small-1 large-1 columns" style=
-                          'width: 34px; color: #444; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: normal; line-height: 1.4; font-size: 16px; margin: 0 auto; padding: 0 0 16px;'
-                          align="left">
-                            <table>
-                            <tr style="" align="left">
-                                <th style=
-                                'color: #444; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: normal; line-height: 1.4; font-size: 16px; margin: 0; padding: 0;'
-                                align="left"></th>
-                              </tr>
-                            </table>
-                          </th>
-
-                          <th class="small-7 large-7 columns last" style=
-                          'width: 334px; color: #444; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: normal; line-height: 1.4; font-size: 16px; margin: 0 auto; padding: 0 0 16px;'
-                          align="left">
-                            <table>
-                            <tr style="" align="left">
-                                <th style=
-                                'color: #444; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: normal; line-height: 1.4; font-size: 16px; margin: 0; padding: 0;'
-                                align="left">
-                                  <h5 style=
-                                  'color: inherit; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: bold; line-height: 1.4; word-wrap: normal; font-size: 20px; margin: 0 0 10px; padding: 0;'
-                                  align="left"><a href=
-                                  "#LINK"
-                                  style=
-                                  'color: #3a8bbb; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: normal; text-align: left; line-height: 1.4; text-decoration: none; margin: 0; padding: 0;'>[TITLE]</a></h5>
-
-                                  <div class="sponsor-copy" style=
-                                  "line-height: 1.5; font-size: 15px;">
-                                    <p style=
-                                    'color: #444; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: normal; line-height: 1.4; font-size: 16px; -ms-word-break: normal; word-break: normal; -webkit-hyphens: manual; -ms-hyphens: manual; hyphens: manual; margin: 0 0 10px; padding: 0;'
-                                    align="left">asdf</p>
-                                  </div>
-                                </th>
-                              </tr>
-                            </table>
-                          </th>
-                        </tr>
-                      </tbody>
-                    </table>
-
-                    <p class="sponsorship-cta text-center" style=
-                    'color: #bbb; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: normal; line-height: 1.4; font-size: 11px; -ms-word-break: normal; word-break: normal; -webkit-hyphens: manual; -ms-hyphens: manual; hyphens: manual; margin: 10px 0 10px; padding: 0;'
-                    align="center">Interested in sponsoring The Gitcoin Weekly? <a class=
-                    "text-underline" href=
-                    "#email-to-codefund"
-                    style=
-                    'text-decoration: underline; color: #bbb; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: normal; text-align: left; line-height: 1.4; margin: 0; padding: 0;'>
-                    Let us know</a></p>
-                  </th>
-                </tr>
-              </table>
-            </th>
-          </tr>
-        </tbody>
-      </table>
-    <hr/>
-  {% endif %}
 
   {% if highlights %}
     <h3>{% trans "Last Week's Highlights" %}</h3>

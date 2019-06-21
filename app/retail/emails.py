@@ -1001,10 +1001,10 @@ Back to shipping,
         'image_url': 'https://elk.cc/assets/images/elk-board-1.png',
         'link': 'http://bit.ly/ElkBlockchain',
         'cta': 'Sign up now',
-        'body': f'''
-            <p>Introducing Elk - the development board for building hardware projects that interface with Ethereum.</p>
-            <p>We'll soon be on Kickstarter. <a href="http://bit.ly/ElkBlockchain">Sign up now</a> and get your early bird discount!</p>
-        '''
+        'body': [
+            'Introducing Elk - the development board for building hardware projects that interface with Ethereum.',
+            'We\'ll soon be on Kickstarter. <a href="http://bit.ly/ElkBlockchain" style="font-size: 14px; line-height: 18px;">Sign up now</a> and get your early bird discount!'
+        ]
     }
 
     bounties_spec = [{
