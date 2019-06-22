@@ -929,6 +929,7 @@ def render_start_work_applicant_expired(interest, bounty):
 
     return response_html, response_txt, subject
 
+
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
