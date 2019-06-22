@@ -3157,6 +3157,7 @@ class HackathonEvent(SuperModel):
     logo_svg = models.FileField(blank=True)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
+    identifier = models.CharField(max_length=255, default='')
 
     def __str__(self):
         """String representation for HackathonEvent.
