@@ -1,0 +1,108 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n humanize %}
+
+{% load static %}
+
+{% block content %}
+<h1 style="margin-top: 50px;">{% trans "Your bounty is now live!" %}</h1>
+<h2 style="margin-top: 10px;">{% trans "(& being sent to Gitcoin's worldwide community of developers)" %}</h2>
+
+<div class="primary-content centered-contents" style="margin-top: 40px;">
+  <img id="funded_featured_bounty" width="400" src="{% static "v2/images/emails/funded_featured_bounty.png" %}" alt="Funded featured bounty" title="Grow Open Source Image" style="max-width: 100%;">
+
+  <div style="margin-bottom: 20px;">
+    While you wait for a coder to find your issue, maybe now is a good time to <a href="https://gitcoin.co/help/repo">checkout the repo maintainers guide</a>.
+  </div>
+
+  <div class="bounty">
+    <div style="margin-bottom: 40px;">
+      <img id="funded_featured_bounty" width="100" src="{{ bounty.avatar_url }}" alt="Funded featured bounty" title="Grow Open Source Image">
+
+      <p>{{ bounty.title }}</p>
+      <div style="text-align: center;">
+        <span style="text-align: center; border-radius: 2px; margin: 4px; padding: 3px 6px; font-size: 11px; font-weight: 400; white-space: nowrap; background-color: #e7f0fa; color: var(--gc-blue);    display: inline-block;">
+          <p style="font-size:15px;">
+            {{ bounty.value_true }}
+            <span>{{ bounty.token_name }}</span>
+          </p style="font-size:15px;">
+        </span>
+        <span style="text-align: center; border-radius: 2px; margin: 4px; padding: 3px 6px; font-size: 11px; font-weight: 400; white-space: nowrap; background-color: #d6fbeb; color: #00A55E;    display: inline-block;">
+          <p style="font-size:15px;">
+            {{ bounty.value_in_usdt_now }}
+            <span>USD</span>
+          </p>
+        </span>
+      </div>
+
+      <div style="margin-bottom: 2em; margin-top: 2em;">
+        <a class="button" href="{{ bounty.url }}">{% trans "View Bounty" %}</a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="centered-contents" >
+  {% if bounty.is_featured %}
+    <div class="centered-contents" style="display: flex; justify-content: center; border-top: 1px solid #979797; border-bottom: 1px solid #979797; padding: 50px; text-align: center">
+      <img src="{% static "v2/images/emails/funded_featured_bounty_banner.png" %}" width="100" style="margin-right: 30px" alt="Featured bounty avatar" id="featured_bounty_detail_image">
+      <div style="margin-top: 30px;">
+        <h3 style="color: #0D0764; text-align: justify;">{% trans "Your bounty is now featured" %}</h3>
+        <span style="text-align: justify;">Your bounty will appear at the top of the Issue Explorer for <b>14 days</b></span>
+      </div>
+    </div>
+  {% endif %}
+  {% if bounty.repo_type == 'private' %}
+    <div class="centered-contents" style="border-top: 1px solid #979797; border-bottom: 1px solid #979797; padding: 50px; text-align: center;">
+      <h3 style="font-size: 2.1em;">{% trans "What to do next" %}</h3>
+
+      <div style="padding: 20px 10px 20px; text-align: center;" class="desktop-col">
+        <img src="{% static "v2/images/emails/private-repo-1.png" %}" width="185" height="147" style="margin-right: 30px; flex-shrink: 0;" alt="Featured bounty avatar">
+        <div style="">
+          <h3 style="color: #0D0764; text-align: left;">{% trans "Get Applications from Awesome Talents" %}</h3>
+          <p style="text-align: left;">{% trans "Contributors will apply to work on your bounty with a signed NDA. You can view the applications on the Issue Details page." %}</p>
+          <p style="text-align: left;">(<b>{% trans "Note:" %}</b> {% trans "Contributors will NOT have access to your private repo until you approve them)" %}</p>
+        </div>
+      </div>
+      <div style="padding: 20px 10px 20px; text-align: center;" class="desktop-col">
+        <img src="{% static "v2/images/emails/private-repo-2.png" %}" width="185" height="102" style="margin-right: 30px; flex-shrink: 0;" alt="Featured bounty avatar">
+        <div style="">
+          <h3 style="color: #0D0764; text-align: left;">{% trans "Approve Worker" %}</h3>
+          <p style="text-align: left;">{% trans "Approve Worker to assign them to your bounty." %}</p>
+        </div>
+      </div>
+      <div style="padding: 20px 10px 20px; text-align: center;" class="desktop-col">
+        <img src="{% static "v2/images/emails/private-repo-3.png" %}" width="185" height="151" style="margin-right: 30px; flex-shrink: 0;" alt="Featured bounty avatar">
+        <div style="">
+          <h3 style="color: #0D0764; text-align: left;">{% trans "Invite Worker to Your Repo" %}</h3>
+          <p style="text-align: left;">{% trans "Invite the approved worker to your GitHub private repo. You can do this through" %} <b>{% trans "GitHub > Settings > Collaborators." %}</b></p>
+        </div>
+      </div>
+      <div style="padding: 20px 10px 20px; text-align: center;" class="desktop-col">
+        <img src="{% static "v2/images/emails/private-repo-4.png" %}" width="185" height="112" style="margin-right: 30px; flex-shrink: 0;" alt="Featured bounty avatar">
+        <div style="">
+          <h3 style="color: #0D0764; text-align: left;">{% trans "Complete Bounty" %}</h3>
+          <p style="text-align: left;">{% trans "Once the bounty is completed, you can remove the contributor from your repo through GitHub." %}</p>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+</div>
+
+{% endblock %}

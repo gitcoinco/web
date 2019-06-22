@@ -19,7 +19,7 @@ END
 
 # deploy script
 # assumes that gitcoin repo lives at $HOME/gitcoin
-# and that gitcoinenv is the virtualenv under which it lives
+# and that gitcoin-37 is the virtualenv under which it lives
 
 # setup
 cd || echo "Cannot find directory!"
@@ -54,35 +54,41 @@ echo "- install req"
 echo "- cleaning up pyc files"
 find . -name \*.pyc -delete
 
-if [ "$UPDATE_CRONTAB" ]; then
+if [ "$UPDATE_CRONTAB" ] && [ "$JOBS_NODE" ]; then
     echo "- updating crontab"
     crontab scripts/crontab
 fi
 
 cd app || echo "Cannot find app directory!"
 echo "- collect static"
-if [ "$ISFRONTENDPUSH" ]; then
+if [ "$ISFRONTENDPUSH" ] && [ "$JOBS_NODE" ]; then
     python3 manage.py collectstatic --noinput -i other;
 fi
 
 rm -Rf ~/gitcoin/coin/app/static/other
 
-if [ "$MIGRATE_DB" ]; then
+if [ "$MIGRATE_DB" ] && [ "$JOBS_NODE" ]; then
     echo "- db"
     python3 manage.py migrate
 fi
 
-if [ "$CREATE_CACHE_TABLE" ]; then
+if [ "$CREATE_CACHE_TABLE" ] && [ "$JOBS_NODE" ]; then
     echo "- creating cache table"
     python3 manage.py createcachetable
 fi
 
 # let gunicorn know its ok to restart
-echo "- gunicorn"
-sudo systemctl restart gunicorn
+if ! [ "$JOBS_NODE" ]; then
+    echo "- gunicorn"
+    for pid in $(pgrep -fl "gunicorn: worke" | awk '{print $1}'); do
+    sudo kill -1 $pid
+    sleep 0.5
+    done
+
+fi
 
 # invalidate cloudfront
-if [ "$ISFRONTENDPUSH" ]; then
+if [ "$ISFRONTENDPUSH" ] && [ "$JOBS_NODE" ]; then
     if [ "$DISTID" ]; then
         cd ~/gitcoin/coin || echo "Cannot find coin directory!"; bash scripts/bustcache.bash "$DISTID"
     fi
@@ -92,7 +98,7 @@ fi
 cd ~/gitcoin/coin || echo "Cannot find coin directory!"
 bash scripts/run_management_command.bash ping_google
 
-if [ "$ENV" = "prod" ]; then
+if [ "$ENV" = "prod" ] && [ "$JOBS_NODE" ]; then
     # Handle sentry deployment
     echo "- publishing deployment information to Sentry"
     bash scripts/sentry.bash

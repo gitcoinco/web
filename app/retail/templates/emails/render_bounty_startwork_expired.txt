@@ -4,7 +4,7 @@
 Hey there,
 
 
-You started work upon a funded issue {{interest.created | naturaltime}}.  We haven't heard from you on the github thread{% if time_delta_days %} in {{time_delta_days}} days{%endif%}.
+You started work upon a funded issue {{ interest.created|naturaltime }}.  We haven't heard from you on the github thread{% if time_delta_days %} in {{ time_delta_days }} days{% endif %}.
 
 Since we have a responsibility to the community to keep the list of claimees for this issue current, Gitcoin removed you from the task.
 
@@ -12,9 +12,9 @@ Do you still want to work on this?  No big deal!  We can help with that:
 
 Please leave a comment on the github thread to check in.
 -AND-
-Click 'Start Work' at {{bounty.absolute_url}}
+Click 'Start Work' at {{ bounty.absolute_url }}
 
-If you have any questions, feel free to reach out on slack => https://gitcoin.co/slack
+If you have any questions, feel free to reach out on slack => {% url 'slack' %}
 
 Funded Issue Details
 

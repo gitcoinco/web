@@ -22,9 +22,10 @@
     {% include 'shared/cards.html' %}
   </head>
 
-  <body class="interior {{ active }}">
+  <body class="interior {{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav.html' %}
     </div>
     <div class="container-fluid">
@@ -34,6 +35,7 @@
           {% include 'shared/no_metamask_error.html' %}
           {% include 'shared/zero_balance_error.html' %}
           {% include 'shared/unlock_metamask.html' %}
+          {% include 'shared/connect_metamask.html' %}
         </div>
       </div>
       {% include 'shared/success_container.html' %}
@@ -45,7 +47,7 @@
             </div>
             <div class="col offset-md-1 col-md-10 d-flex align-items-center justify-content-center" id="primary_form">
               <div class="d-flex justify-content-center flex-column mt-5 w-100" id="primary_subform">
-                <div class="w-100" style="text-align: center;">
+                <div class="w-100 text-center">
                   <h3>{% trans "Payout Bounty" %}</h3>
                   <img src="{% static "v2/images/prime.png" %}">
                 </div>
@@ -93,9 +95,9 @@
   </body>
 
   <!-- jQuery -->
-  <script src="{% static "v2/js/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
-  <script src="{% static "v2/js/secrets.min.js" %}"></script>
+  <script src="{% static "v2/js/lib/secrets.min.js" %}"></script>
   <script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>
@@ -104,6 +106,7 @@
   <script src="{% static "v2/js/pages/bulk_payout.js" %}"></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "onepager/js/send.js" %}"></script>
+  <script src="{% static "v2/js/user-search.js" %}"></script>
 
   <style>
   h4{

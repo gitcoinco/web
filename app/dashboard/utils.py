@@ -17,6 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import base64
 import json
 import logging
 from json.decoder import JSONDecodeError
@@ -25,16 +26,37 @@ from django.conf import settings
 
 import ipfsapi
 import requests
+from app.utils import sync_profile
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
-from dashboard.models import Activity, Bounty, UserAction
+from dashboard.models import Activity, BlockedUser, Bounty, Profile, UserAction
 from eth_utils import to_checksum_address
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from hexbytes import HexBytes
 from ipfsapi.exceptions import CommunicationError
-from web3 import HTTPProvider, Web3
+from web3 import HTTPProvider, Web3, WebsocketProvider
 from web3.exceptions import BadFunctionCallOutput
+from web3.middleware import geth_poa_middleware
 
 logger = logging.getLogger(__name__)
+
+SEMAPHORE_BOUNTY_SALT = '1'
+SEMAPHORE_BOUNTY_NS = 'bounty_processor'
+
+
+def all_sendcryptoasset_models():
+    from revenue.models import DigitalGoodPurchase
+    from dashboard.models import Tip
+    from kudos.models import KudosTransfer
+
+    return [DigitalGoodPurchase, Tip, KudosTransfer]
+
+
+class ProfileNotFoundException(Exception):
+    pass
+
+
+class ProfileHiddenException(Exception):
+    pass
 
 
 class BountyNotFoundException(Exception):
@@ -114,6 +136,11 @@ def create_user_action(user, action_type, request=None, metadata=None):
         if ip_address:
             kwargs['ip_address'] = ip_address
 
+        utmJson = _get_utm_from_cookie(request)
+
+        if utmJson:
+            kwargs['utm'] = utmJson
+
     if user and hasattr(user, 'profile'):
         kwargs['profile'] = user.profile if user and user.profile else None
 
@@ -123,6 +150,36 @@ def create_user_action(user, action_type, request=None, metadata=None):
     except Exception as e:
         logger.error(f'Failure in UserAction.create_action - ({e})')
         return False
+
+
+def _get_utm_from_cookie(request):
+    """Extract utm* params from Cookie.
+
+    Args:
+        request (Request): The request object.
+
+    Returns:
+        utm_source: if it's not in cookie should be None.
+        utm_medium: if it's not in cookie should be None.
+        utm_campaign: if it's not in cookie should be None.
+
+    """
+    utmDict = {}
+    utm_source = request.COOKIES.get('utm_source')
+    utm_medium = request.COOKIES.get('utm_medium')
+    utm_campaign = request.COOKIES.get('utm_campaign')
+
+    if utm_source:
+        utmDict['utm_source'] = utm_source
+    if utm_medium:
+        utmDict['utm_medium'] = utm_medium
+    if utm_campaign:
+        utmDict['utm_campaign'] = utm_campaign
+
+    if bool(utmDict):
+        return utmDict
+    else:
+        return None
 
 
 def get_ipfs(host=None, port=settings.IPFS_API_PORT):
@@ -181,14 +238,14 @@ def ipfs_cat_ipfsapi(key):
 
 def ipfs_cat_requests(key):
     try:
-        url = f'https://ipfs.infura.io:5001/api/v0/cat/{key}'
+        url = f'https://ipfs.infura.io:5001/api/v0/cat?arg={key}'
         response = requests.get(url, timeout=1)
         return response.text, response.status_code
     except:
         return None, 500
 
 
-def get_web3(network):
+def get_web3(network, sockets=False):
     """Get a Web3 session for the provided network.
 
     Attributes:
@@ -203,8 +260,81 @@ def get_web3(network):
 
     """
     if network in ['mainnet', 'rinkeby', 'ropsten']:
-        return Web3(HTTPProvider(f'https://{network}.infura.io'))
+        if sockets:
+            if settings.INFURA_USE_V3:
+                provider = WebsocketProvider(f'wss://{network}.infura.io/ws/v3/{settings.INFURA_V3_PROJECT_ID}')
+            else:
+                provider = WebsocketProvider(f'wss://{network}.infura.io/ws')
+        else:
+            if settings.INFURA_USE_V3:
+                provider = HTTPProvider(f'https://{network}.infura.io/v3/{settings.INFURA_V3_PROJECT_ID}')
+            else:
+                provider = HTTPProvider(f'https://{network}.infura.io')
+
+        w3 = Web3(provider)
+        if network == 'rinkeby':
+            w3.middleware_stack.inject(geth_poa_middleware, layer=0)
+        return w3
+    elif network == 'localhost' or 'custom network':
+        return Web3(Web3.HTTPProvider("http://testrpc:8545", request_kwargs={'timeout': 60}))
+
     raise UnsupportedNetworkException(network)
+
+
+def get_profile_from_referral_code(code):
+    """Returns a profile from the unique code
+
+    Returns:
+        A unique string for each profile
+    """
+    return base64.urlsafe_b64decode(code.encode()).decode()
+
+
+def get_bounty_invite_url(inviter, bounty_id):
+    """Returns a unique url for each bounty and one who is inviting
+
+    Returns:
+        A unique string for each bounty
+    """
+    salt = "X96gRAVvwx52uS6w4QYCUHRfR3OaoB"
+    string = str(inviter) + salt + str(bounty_id)
+    return base64.urlsafe_b64encode(string.encode()).decode()
+
+
+def get_bounty_from_invite_url(invite_url):
+    """Returns a unique url for each bounty and one who is inviting
+
+    Returns:
+        A unique string for each bounty
+    """
+    salt = "X96gRAVvwx52uS6w4QYCUHRfR3OaoB"
+    decoded_string = base64.urlsafe_b64decode(invite_url.encode()).decode()
+    data_array = decoded_string.split(salt)
+    inviter = data_array[0]
+    bounty = data_array[1]
+    return {'inviter': inviter, 'bounty': bounty}
+
+
+def get_unrated_bounties_count(user):
+    if not user:
+        return 0
+    unrated_contributed = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=user) \
+        .filter(interested__status='okay') \
+        .filter(interested__pending=False).filter(idx_status='done') \
+        .exclude(
+            feedbacks__feedbackType='worker',
+            feedbacks__sender_profile=user
+        )
+    unrated_funded = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
+    .filter(
+        bounty_owner_github_username__iexact=user.handle,
+        idx_status='done'
+    ).exclude(
+        feedbacks__feedbackType='approver',
+        feedbacks__sender_profile=user,
+    )
+    unrated_count = unrated_funded.count() + unrated_contributed.count()
+    return unrated_count
 
 
 def getStandardBountiesContractAddresss(network):
@@ -295,6 +425,7 @@ def get_bounty(bounty_enum, network):
         'token': token,
         'fulfillments': fulfillments,
         'network': network,
+        'review': bounty_data.get('review',{}),
     }
     return bounty
 
@@ -322,6 +453,8 @@ def has_tx_mined(txid, network):
     web3 = get_web3(network)
     try:
         transaction = web3.eth.getTransaction(txid)
+        if not transaction:
+            return False
         return transaction.blockHash != HexBytes('0x0000000000000000000000000000000000000000000000000000000000000000')
     except Exception:
         return False
@@ -333,7 +466,10 @@ def get_bounty_id(issue_url, network):
     if bounty_id:
         return bounty_id
 
-    all_known_stdbounties = Bounty.objects.filter(web3_type='bounties_network', network=network).order_by('-standard_bounties_id')
+    all_known_stdbounties = Bounty.objects.filter(
+        web3_type='bounties_network',
+        network=network,
+    ).nocache().order_by('-standard_bounties_id')
 
     try:
         highest_known_bounty_id = get_highest_known_bounty_id(network)
@@ -349,7 +485,11 @@ def get_bounty_id(issue_url, network):
 
 def get_bounty_id_from_db(issue_url, network):
     issue_url = normalize_url(issue_url)
-    bounties = Bounty.objects.filter(github_url=issue_url, network=network, web3_type='bounties_network').order_by('-standard_bounties_id')
+    bounties = Bounty.objects.filter(
+        github_url=issue_url,
+        network=network,
+        web3_type='bounties_network',
+    ).nocache().order_by('-standard_bounties_id')
     if not bounties.exists():
         return None
     return bounties.first().standard_bounties_id
@@ -430,6 +570,17 @@ def get_ordinal_repr(num):
         suffix = ordinal_suffixes.get(num % 10, 'th')
     return f'{num}{suffix}'
 
+
+def record_funder_inaction_on_fulfillment(bounty_fulfillment):
+    payload = {
+        'profile': bounty_fulfillment.bounty.bounty_owner_profile,
+        'metadata': {
+            'bounties': list(bounty_fulfillment.bounty.pk),
+            'bounty_fulfillment_pk': bounty_fulfillment.pk,
+            'needs_review': True
+        }
+    }
+    Activity.objects.create(activity_type='bounty_abandonment_escalation_to_mods', bounty=bounty_fulfillment.bounty, **payload)
 
 
 def record_user_action_on_interest(interest, event_name, last_heard_from_user_days):
@@ -539,3 +690,134 @@ def generate_pub_priv_keypair():
     # return priv key, pub key, address
 
     return priv.to_string().hex(), pub.hex(), checksum_encode(address)
+
+
+def get_bounty_semaphore_ns(standard_bounty_id):
+    return f'{SEMAPHORE_BOUNTY_NS}_{standard_bounty_id}_{SEMAPHORE_BOUNTY_SALT}'
+
+
+def release_bounty_lock(standard_bounty_id):
+    from app.utils import release_semaphore
+    ns = get_bounty_semaphore_ns(standard_bounty_id)
+    release_semaphore(ns)
+
+
+def profile_helper(handle, suppress_profile_hidden_exception=False, current_user=None):
+    """Define the profile helper.
+
+    Args:
+        handle (str): The profile handle.
+
+    Raises:
+        DoesNotExist: The exception is raised if a Profile isn't found matching the handle.
+            Remediation is attempted by syncing the profile data.
+        MultipleObjectsReturned: The exception is raised if multiple Profiles are found.
+            The latest Profile will be returned.
+
+    Returns:
+        dashboard.models.Profile: The Profile associated with the provided handle.
+
+    """
+
+    current_profile = getattr(current_user, 'profile', None)
+    if current_profile and current_profile.handle == handle:
+        return current_profile
+
+    try:
+        profile = Profile.objects.get(handle__iexact=handle)
+    except Profile.DoesNotExist:
+        profile = sync_profile(handle)
+        if not profile:
+            raise ProfileNotFoundException
+    except Profile.MultipleObjectsReturned as e:
+        # Handle edge case where multiple Profile objects exist for the same handle.
+        # We should consider setting Profile.handle to unique.
+        # TODO: Should we handle merging or removing duplicate profiles?
+        profile = Profile.objects.filter(handle__iexact=handle).latest('id')
+        logging.error(e)
+
+    if profile.hide_profile and not profile.is_org and not suppress_profile_hidden_exception:
+        raise ProfileHiddenException
+
+    return profile
+
+
+def get_tx_status(txid, network, created_on):
+    from django.utils import timezone
+    from dashboard.utils import get_web3
+    import pytz
+
+    DROPPED_DAYS = 4
+
+    # get status
+    status = None
+    if txid == 'override':
+        return 'success', None #overridden by admin
+    try:
+        web3 = get_web3(network)
+        tx = web3.eth.getTransactionReceipt(txid)
+        if not tx:
+            drop_dead_date = created_on + timezone.timedelta(days=DROPPED_DAYS)
+            if timezone.now() > drop_dead_date:
+                status = 'dropped'
+            else:
+                status = 'pending'
+        elif tx and 'status' not in tx.keys():
+            if bool(tx['blockNumber']) and bool(tx['blockHash']):
+                status = 'success'
+            else:
+                raise Exception("got a tx but no blockNumber or blockHash")
+        elif tx.status == 1:
+            status = 'success'
+        elif tx.status == 0:
+            status = 'error'
+        else:
+            status = 'unknown'
+    except Exception as e:
+        logger.debug(f'Failure in get_tx_status for {txid} - ({e})')
+        status = 'unknown'
+
+    # get timestamp
+    timestamp = None
+    try:
+        if tx:
+            block = web3.eth.getBlock(tx['blockNumber'])
+            timestamp = block.timestamp
+            timestamp = timezone.datetime.fromtimestamp(timestamp).replace(tzinfo=pytz.UTC)
+    except:
+        pass
+    return status, timestamp
+
+
+def is_blocked(handle):
+    return BlockedUser.objects.filter(handle__iexact=handle, active=True).exists()
+
+
+def get_nonce(network, address):
+    # this function solves the problem of 2 pending tx's writing over each other
+    # by checking both web3 RPC *and* the local DB for the nonce
+    # and then using the higher of the two as the tx nonce
+    from perftools.models import JSONStore
+    from dashboard.utils import get_web3
+    w3 = get_web3(network)
+
+    # web3 RPC node: nonce
+    nonce_from_web3 = w3.eth.getTransactionCount(address)
+
+    # db storage
+    key = f"nonce_{network}_{address}"
+    view = 'get_nonce'
+    nonce_from_db = 0
+    try:
+        nonce_from_db = JSONStore.objects.get(key=key, view=view).data[0]
+        nonce_from_db += 1 # increment by 1 bc we need to be 1 higher than last txid
+    except:
+        pass
+
+    new_nonce = max(nonce_from_db, nonce_from_web3)
+
+    # update JSONStore
+    JSONStore.objects.filter(key=key, view=view).all().delete()
+    JSONStore.objects.create(key=key, view=view, data=[new_nonce])
+
+    return new_nonce

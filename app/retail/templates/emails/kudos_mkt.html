@@ -1,0 +1,100 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+    Copyright (C) 2018 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n humanize static kudos_extras  %}
+
+{% block content %}
+
+<style>
+    .kudos-box {
+        margin-bottom: 2em;
+    }
+    .kudos-contents {
+        text-align: center;
+    }
+    .kudos {
+        display: flex;
+        justify-content: center;
+        padding-top: 0.5em;
+        padding-bottom: 0.5em;
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+
+    .main-parag {
+      font-size:18px;
+      margin: 2em auto;
+      line-height: 2;
+    }
+    .green {
+      color: #05B66A;
+    }
+    @media screen and (max-width: 48em) {
+      .main-parag {
+        width: 90%;
+      }
+    }
+    @media screen and (min-width: 48em) {
+      .main-parag {
+        width: 50%;
+      }
+    }
+
+
+
+</style>
+
+<div>
+  <h1>{% trans "Show Appreciation with Kudos!" %}</h1>
+  <div>
+
+    <img src="{% static 'v2/images/emails/kudos-logo.png' %}" alt="" width="244" class="" style="margin:3em auto 2em; display: block;">
+    <img src="{% static 'v2/images/emails/kudos-group.png' %}" alt="" width="528" class="col-img" style="margin:0 auto 3em; display: block;">
+  </div>
+</div>
+<h2>
+  {% trans "What is Kudos?" %}
+</h2>
+<img src="{% static 'v2/images/emails/kudos-transfer.jpg' %}" alt="" width="375" class="">
+
+<p class="main-parag">{% blocktrans %} Kudos is a way of <span class="green">showing your appreciation</span> for another Gitcoin member. It's also a way to <span class="green">showcase special skills</span> that a member might have, such as Pythonista, or Design Star. Kudos tokens can also be <span class="green">bought</span> and <span class="green">sold</span> on the Kudos Marketplace.{% endblocktrans %}</p>
+<div style="margin: 3em 0 5em;">
+  <a class="button" href="{% url 'kudos_marketplace' %}">{% trans "Send Kudos" %}</a>
+</div>
+<h2>{% trans "Kudos can be used to" %}</h2>
+<p  style="line-height: 2; font-size:18px;">
+  {% blocktrans %}
+  Recognize Gitcoiners you’ve worked with <br>
+  Understand other Gitcoiner skillsets<br>
+  See who Gitcoiners have worked iwth<br>
+  Send as a tip<br>
+  Send with a tip<br>
+  Grow Open Source!<br>
+  {% endblocktrans %}
+</p>
+<small style="margin-top: 3em;display: block;">
+  {% trans "Kudos is a Non-Fungible Token and collectible similar to crypto kitties." %}
+</small>
+
+<div style="margin: 3em 0 5em;">
+  <a class="button" href="{% url 'kudos_about' %}">{% trans "Learn More" %}</a>
+</div>
+
+
+
+{% endblock %}

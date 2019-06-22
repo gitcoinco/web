@@ -2,21 +2,16 @@
 {% load i18n static %}
 
 {% block settings_content %}
-    <form id="settings" method="POST">
-      <div class="form-group">
-        <h5>{% trans "Feedback" %}</h5>
-        <label class="form__label" for="comments">{% trans "Comments" %}</label>
-        <textarea class="form__input" id="comments" name="comments" rows="3">{{ es.metadata.comments }}</textarea>
-        <small id="comments" class="form__input-help">{% trans "How are we doing?  What do you think?" %}</small>
-      </div>
-      {% csrf_token %}
-      <input class='button button--primary' type='submit' name='submit' value="{% trans "Save" %}">
-    </form>
-  </div>
+  <form id="settings" method="POST" class="col-md-8 m-auto">
+    <div class="form-group">
+      <h5>{% trans "Feedback" %}</h5>
+      <label class="form__label" for="comments">{% trans "Comments" %}</label>
+      <textarea class="form__input" id="comments" name="comments" rows="3">{{ es.metadata.comments }}</textarea>
+      <small id="comments" class="form__input-help">{% trans "How are we doing?  What do you think?" %}</small>
+    </div>
+    {% csrf_token %}
+    <input class='button button--primary' type='submit' name='submit' value="{% trans "Save" %}">
+  </form>
+
 {% endblock %}
 
-{% block scripts %}
-<script>
-
-</script>
-{% endblock %}

@@ -5,7 +5,7 @@ To help comply with GDPR consent requirements, we need to confirm that you would
 
 We hope that our content is useful to you. If you'd like to continue hearing from us, please update your subscription settings.
 
-Click here to update your subscription settings: https://gitcoin.co/settings/email/{{ subscriber.priv }}
+Click here to update your subscription settings: {% url 'email_settings' subscriber.priv %}
 
 Best,
 @owocki

@@ -1,27 +1,12 @@
-.search_bar {
-  min-height: 100px;
-}
-
-.search_bar #new_search {
-  margin-top: 18px;
-  margin-left: 5px;
-  padding: 8px 16px;
-  font-size: 12px;
-  position: relative;
-  bottom: 2px;
-}
-
-.save_search,
 .order_by {
   color: #000;
-  font-family: 'Muli', sans-serif;
   font-weight: 600;
   position: relative;
   bottom: 2px;
+  text-align: right;
 }
 
 .search-area,
-.search_bar #new_search,
 .order_by {
   display: inline-block;
 }
@@ -29,11 +14,6 @@
 .search-area {
   position: relative;
   margin-top: 15px;
-}
-
-.order_by {
-  margin-top: 26px;
-  text-align: right;
 }
 
 .order_by .heading {
@@ -52,8 +32,11 @@
 }
 
 .order_by div:first-child {
-  margin-right: 5px;
   display: inline;
+}
+
+.ui-selectmenu-button.ui-button {
+  width: 9rem;
 }
 
 .order_by .sort_option.selected {
@@ -68,10 +51,10 @@
 .filter-tag {
   margin: 2px;
   text-transform: lowercase;
-  background-color: black;
+  background-color: #3E00FF;
   color: white !important;
   border-radius: 2px;
-  font-size: 10px;
+  font-size: 12px;
   padding: 4px 5px;
   display: inline-block;
 }
@@ -86,13 +69,35 @@
   overflow-y: scroll;
 }
 
-.close-icon {
-  position: absolute;
-  top: 9px;
-  right: 9px;
-  width: 22px;
-  display: none;
+#search_nav li {
+  background-color: #fff;
+  border: 1px solid #d3d6e2;
+  padding: 5px 10px;
+  margin: 5px;
   cursor: pointer;
+  font-size: 12px;
+  border-radius:3px;
+}
+
+#search_nav .nav > i {
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-right: 0.75rem;
+}
+
+#search_nav li a {
+  color: #000;
+  float: right;
+  margin-left: 0.4rem;
+}
+
+
+#results-count {
+  color: #666666;
+}
+
+.search_bar {
+  border-bottom: 1px solid #D8D8D8;
 }
 
 /* Remove IE default X */
@@ -100,13 +105,6 @@
   display: none;
   width: 0;
   height: 0;
-}
-
-@media (min-width: 992px) and (max-width: 1024px) {
-
-  .order_by {
-    display: none;
-  }
 }
 
 @media (max-width: 767.98px) {
@@ -128,12 +126,6 @@
     margin-left: 0;
   }
 
-  .search_bar #new_search {
-    margin-left: 0;
-    margin-bottom: 10px;
-  }
-
-  .search_bar #new_search,
   .order_by {
     margin-top: 0;
   }

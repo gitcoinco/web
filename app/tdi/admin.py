@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -27,6 +27,7 @@ from .models import AccessCodes, WhitepaperAccess, WhitepaperAccessRequest
 class GeneralAdmin(admin.ModelAdmin):
 
     ordering = ['-id']
+    list_display = ['created_on', '__str__']
 
 
 class WhitepaperAccessRequestAdmin(admin.ModelAdmin):

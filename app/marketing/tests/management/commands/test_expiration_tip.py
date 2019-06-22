@@ -30,20 +30,27 @@ from test_plus.test import TestCase
 class TestExpirationTip(TestCase):
     """Define tests for expiration tip."""
 
-    @patch('marketing.management.commands.expiration_tip.tip_email')
-    def test_handle(self, mock_func):
-        """Test command expiration tip."""
-        tip = Tip.objects.create(
+    def setUp(self):
+        self.tip = Tip.objects.create(
             emails=['john@bar.com'],
+            primary_email='john@bar.com',
             tokenName='USDT',
             amount=7,
             username='john',
             expires_date=timezone.now() + timedelta(days=1, hours=1),
             tokenAddress='0x0000000000000000000000000000000000000000',
             network='mainnet',
+            tx_status='success',
+            txid='0x0123456789',
         )
+
+    @patch('marketing.management.commands.expiration_tip.tip_email')
+    def test_handle(self, mock_func):
+        """Test command expiration tip."""
         Command().handle()
 
         assert mock_func.call_count == 1
+        mock_func.assert_called_once_with(self.tip, self.tip.emails, False)
 
-        mock_func.assert_called_once_with(tip, ['john@bar.com'], False)
+    def tearDown(self):
+        self.tip.delete()

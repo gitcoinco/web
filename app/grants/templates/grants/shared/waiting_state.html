@@ -1,0 +1,31 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load static i18n %}
+<div class="row no-gutter grant_waiting" style="display: none;">
+  <div class="col-12 offset-md-1 col-md-10 offset-lg-1 col-lg-8 body ">
+    {% include 'shared/bounty_waiting_state.html' with can_close=False %}
+    <div class="row ml-2 mr-2 pl-4 pr-4 waiting_room_entertainment" style="display: none; text-align: center">
+      {% include 'shared/rain.html' with class="color" %}
+      <div class="quote-container font-weight-semibold my-5 mx-auto">
+        <img src="{% static "v2/images/quotes.png" %}" style="float: left; max-width: 22px;" />
+        <div class="quote_text mt-5"></div>
+        <div class="quote_author mt-2 mx-auto"></div>
+        <input id="quoteRefresh" class="mt-4 btn btn-gc-blue shadow-none py-2" name="refresh" type='submit' onclick='javascript:waitingRoomEntertainment()' value="Refresh Quote" >
+      </div>
+    </div>
+  </div>
+</div>

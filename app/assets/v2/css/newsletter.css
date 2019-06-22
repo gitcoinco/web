@@ -1,19 +1,15 @@
 .newsletter {
   margin-top: 1em;
   border-top: 1px solid #eee;
-  font-family: Muli, sans-serif;
 }
 
 .newsletter h4 {
   letter-spacing: 0;
   font-size: 20px;
-  font-family: Muli, sans-serif;
-  font-weight: 700;
   text-transform: none;
 }
 
 #landing_page_wrapper .newsletter h4 {
-  font-size: 25px;
   color: black;
 }
 
@@ -24,8 +20,7 @@
 }
 
 .newsletter #newsletter-input {
-  font-size: 12px;
-  text-align: center;
+  font-size: 14px;
   padding: 10px 40px;
   border: 1px solid #eee;
   border-top-left-radius: 5px;
@@ -66,10 +61,4 @@
 
 :-moz-placeholder {
   color: #999;
-}
-
-@media (max-width: 575px) {
-  .newsletter h4 {
-    font-weight: 600;
-  }
 }

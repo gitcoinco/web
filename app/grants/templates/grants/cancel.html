@@ -1,0 +1,125 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load static humanize i18n %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' with slim=1 %}
+    {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/grants/fund.css" %}">
+  </head>
+  <body class="interior {{ active }} grant">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'grants/nav.html' %}
+      <div class="row no-gutters metamask-banner">
+        <div class="col-12">
+          {% include 'shared/no_metamask_error.html' %}
+          {% include 'shared/zero_balance_error.html' %}
+          {% include 'shared/unlock_metamask.html' %}
+          {% include 'shared/connect_metamask.html' %}
+        </div>
+      </div>
+    </div>
+
+    {% include 'grants/shared/alpha.html' %}
+    {% include 'grants/shared/waiting_state.html' %}
+
+    <div class="row">
+      <div id="robot_error" class="hidden my-5">
+        <img src="{% static "v2/images/prime.png" %}">
+      </div>
+    </div>
+
+    <div class="row" id="grants_form">
+
+      <div class="col-12 text-center mt-md-3">
+        <h2 class="font-title-lg my-5">{% trans "Cancel Contribution" %}</h2>
+      </div>
+
+      {% include 'grants/banner.html' %}
+
+      <div class="col-12 offset-md-2 col-md-10 offset-lg-3 col-lg-5 mt-5 font-subheader mx-0 mx-md-auto row">
+
+        <div class="col-12 summary font-body my-4">
+          <p class="mb-2 font-weight-semibold">Summary</p>
+          <p>
+            <i class="fas fa-circle mr-2"></i>
+            {% trans "Your contribution will be cancelled from" %}
+            <span class="font-weight-semibold">{{ now|date:"M d, Y" }}</span>
+          </p>
+          <p>
+            <i class="fas fa-circle mr-2"></i>
+            {% trans " Note: You will have to approve 2 transactions via MetaMask on submit." %}
+          </p>
+        </div>
+
+        <div class="col-12 my-4">
+          <form method="POST" id="js-cancelSubscription">
+            {% csrf_token %}
+            <div id="gas-section" class="form__group-horizontal">
+              <h5 class="font-subheader pb-2">{% trans "Gas Settings" %}</h5>
+              <div>
+                {% include 'shared/wallet_estimate.html' %}
+              </div>
+            </div>
+            <button id="cancel-subscription" class="button button--primary button--warning button--full">{% trans "Cancel Contribution" %}
+            </button>
+            <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
+            <input type="hidden" id="contract_version" name="contract_version" value="{{ grant.contract_version }}">
+            <input type="hidden" id="admin_address" name="admin_address" value="{{ grant.admin_address }}">
+            <input type="hidden" id="token_address" name="token_address" value="{{ subscription.token_address }}">
+            <input type="hidden" id="sub_end_approve_tx_id" name="sub_end_approve_tx_id" value="">
+            <input type="hidden" id="sub_cancel_tx_id" name="sub_cancel_tx_id" value="">
+            <input type="hidden" id="amount_per_period" name="amount_per_period" value="{{ subscription.amount_per_period }}">
+            <input type="hidden" id="real_period_seconds" name="real_period_seconds" value="{{ subscription.real_period_seconds }}">
+            <input type="hidden" id="signature" name="signature" value="{{ subscription.contributor_signature }}">
+            <input type="hidden" id="subscriber-handle" name="subscriber-handle" value="{{ subscription.contributor_profile }}">
+            <input type="hidden" id="subscriber-address" name="subscriber-address" value="{{ subscription.contributor_address }}">
+          </form>
+        </div>
+
+        <div class="col-12 mt-3 mb-5 text-center font-body">
+          <a id="grant-link" href="{% url 'grants:details' grant.id grant.slug %}">
+            {% trans "No I do not want to cancel my contribution" %}
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+    {% include 'grants/shared/shared_scripts.html' %}
+  </body>
+  <script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>
+  <script src="{% static "v2/js/grants/compiledSplitter.js" %}"></script>
+  <script src="{% static "v2/js/grants/compiledSubscriptionContract0.js" %}"></script>
+  <script src="{% static "v2/js/grants/compiledSubscriptionContract1.js" %}"></script>
+  <script src="{% static "v2/js/grants/compiledTokenContract.js" %}"></script>
+  <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
+  <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/ipfs.js" %}"></script>
+  <script src="{% static "v2/js/grants/shared.js" %}"></script>
+  <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
+  <script src="{% static "v2/js/grants/cancel_subscription.js" %}"></script>
+</html>

@@ -1,0 +1,168 @@
+{% extends 'transaction/base.html' %}
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static kudos_extras %}
+{% block 'scripts' %}
+  {% include 'shared/current_profile.html' %}
+  <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/ipfs.js" %}"></script>
+  <script src="{% static "v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="{% static "v2/js/amounts.js" %}"></script>
+  <script src="{% static "v2/js/lib/secrets.min.js" %}"></script>
+  <script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
+  <script>
+    if (window.location.hostname === 'localhost') {
+      document.network = 'custom network'
+    } else {
+      document.network = 'mainnet'
+    }
+  </script>
+  <script src="{% static "v2/js/pages/kudos_send.js" %}"></script>
+  <script src="{% static "onepager/js/confetti.js" %}"></script>
+  <script src="{% static "v2/js/user-search.js" %}"></script>
+  <script src="{% static "v2/js/eth-price.js" %}"></script>
+  <script>
+  $(document).ready(function() {
+    if (typeof userSearch != 'undefined') {
+      userSearch('.username-search', true, 'bootstrap4');
+    }
+  })
+  </script>
+{% endblock %}
+
+{% block 'main' %}
+<div>
+  <canvas id="world" style="position:fixed; top:0px; left: 0px;"></canvas>
+</div>
+<section id="main" class="box-transaction">
+  <header class="text-center">
+    <h1 class="h2 mt-5">{% trans "Send Kudos" %}</h1>
+    <div class="my-4">
+      {% if kudos.name %}
+        <a href="{% url 'kudos_details' kudos.id kudos.name %}"><img src="{% static kudos.image %}" alt="{{ kudos.name }}" width="160" alt="" class="mb-2"></a>
+        <span class="d-block">{{ kudos.ui_name }}</span>
+        <p class="hidden" id="kudosid" data-kudosid="{{ kudos.id }}">{{ kudos.id }}</p>
+        <p class="hidden" id="tokenid" data-tokenid="{{ kudos.token_id }}">{{ kudos.token_id }}</p>
+        <span id="kudosPrice" class="d-block" data-ethprice="{{ kudos.price_in_eth }}">{{ kudos.price_in_eth }} ETH <small>USD</small></span>
+      {% else %}
+        <a href="{% url 'kudos_marketplace' %}" class="">
+          <svg  viewBox="0 0 109 125" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="width: 160px;">
+            <desc>{% trans "Select kudos" %}</desc>
+            <g id="hexagon" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+              <polygon id="shape-hexagon" stroke="#9B9B9B" stroke-width="8" fill="#D8D8D8" points="104.402946 91.3675295 54.4021289 120.292113 4.40294587 91.3675295 4.40294587 33.5200002 54.4021289 4.59705413 104.402946 33.5200002"></polygon>
+              <text id="svg-text" font-size="14" x="50%" y="50%" text-anchor="middle" fill="#ffffff" alignment-baseline="central">{% trans "Pick a kudos" %}</text>
+            </g>
+          </svg>
+        </a>
+        <span class="d-block">{% trans "Pick a Kudos" %}</span>
+      {% endif %}
+    </div>
+  </header>
+  <form id="send_eth">
+    <!-- token and amount are not used for kudos -->
+    <input type="hidden" id="token" value="0x0000000000000000000000000000000000000000">
+    <input type="hidden" id="kudosNetwork" value="{{ kudos.contract.network }}">
+    <input type="hidden" id="amount" value="{{ kudos.price_in_eth }}">
+    <label id="to_label" for="">{% trans "To:" %} 
+    </label>
+    <ul id="tip_nav">
+      <li class='github selected'>
+        Github/Gitcoin User
+      </li>
+      <li class='eth'>
+        ETH Address
+      </li>
+      <li class='airdrop'>
+        Anywhere
+      </li>
+    </ul>
+    <input type="hidden" name="send_type" value="github">
+
+    <div class="form-group username">
+      <select id="username" class="username-search custom-select" {% if not kudos.name  %}disabled{% endif %}></select>
+      <input type="text" placeholder="0x408c49a91e46311ddc35737f8c1aaea6191f36e0" id="to_eth_address" value="" class="form-control eth_address hidden" >
+      <input type="text" placeholder="(link will be displayed after you click Send)" id="airdrop_link" value="" class="form-control airdrop_link hidden" disabled="disabled">
+
+    </div>
+
+
+    <div class="form-group redemptions hidden">
+      <label for="">{% trans "Send this many Kudos" %}:</label>
+      <select name='redemptions' class='select2'>
+        {% for num in numbers %}
+        <option value="{{num}}">{{num}} Kudos (~{% widthratio kudos.price_in_usdt 1 num %} USDT)</option>
+        {% endfor %}
+      </select>
+    </div>
+
+
+
+    <div class="form-group">
+      <label for="">{% trans "From Github Username:" %} {% if not request.user.is_authenticated %}(<a href="{% url 'social:begin' 'github' %}?next=/kudos/send">{% trans "Login" %}</a>) {%endif%}</label>
+      <input type="text" placeholder="@username" id="fromName" value="{% if user.is_authenticated  %}{{ user }}{% endif %}" class="form-control" disabled="disabled">
+    </div>
+    <div class="form-group">
+      <label for="">{% trans "Related Github Issue URL" %} ({% trans "optional" %}):</label>
+      <input type="text" placeholder="https://github.com/user/repo/pull|issues/n" id="issueURL" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="">{% trans "Public Comments" %} ({% trans "optional" %}):</label>
+      <textarea id="comments_public" class="form-control"></textarea>
+    </div>
+    <div id="advanced_toggle" class="form-group text-center">
+      <a href="#">{% trans "Advanced" %} >></a>
+    </div>
+    <div id='advanced' style="display:none;">
+      <div class="form-group">
+        <label for="">{% trans "To Email address" %} ({% trans "optional" %}):</label>
+        <input type="email" placeholder="foo@bar.it" id="email" class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="">{% trans "From Email" %} ({% trans "optional" %}):</label>
+        <input type="email" placeholder="you@domain.co" id="fromEmail" value="{% if from_email %}{{ from_email }}{% endif %}" class="form-control">
+      </div>
+    </div>
+    <div class="form-group form-check text-center">
+      <input type="checkbox" id="tos" value="1" class="form-check-input" required>
+      <label for="tos" class="form-check-label">{% trans "I understand &amp; agree to the" %}
+        <a href="//{{ request.get_protocol }}{{ request.get_host }}{% url "_terms" %}" rel="modal:open">{% trans "terms of service" %}</a>.
+      </label>
+    </div>
+    <div class="text-center">
+      <button class="btn btn-gc-purple" id="send">{% trans "Send" %} <span class="emoji">⚡️</span></button>
+    </div>
+  </form>
+
+  <div id="send_eth_done" style="display:none;" class="text-center">
+    <h3>{% trans "Woo hoo!" %}</h3>
+    <p>{% blocktrans %}Your <span id="tokenName">Kudos</span> has been sent <a href="" target="_blank" rel="noopener noreferrer" id="trans_link">via the blockchain</a>.{% endblocktrans %}</p>
+    <div id="loading_trans">
+      <p class="font-smaller-1">
+        <a href="" target="_blank" rel="noopener noreferrer" id="trans_link2" >{% trans "The transaction is still pending." %}</a><br>{% trans "This page will auto-update when the transaction is confirmed" %} <br>({% trans "but you can close the browser window if you want" %}).
+      </p>
+      <img src="{% static "onepager/images/loading_v2.gif" %}" width="70" style="margin-right: 9px;">
+    </div>
+    <hr>
+    <h3 class="font-weight-300">{% blocktrans %}<span id="new_username">the user</span> has been notified{% endblocktrans %}</h3>
+    <p class="notifier">{% trans "with instructions about how to receive their kudos." %}</p>
+    <br>
+    <a id="" class="btn btn-gc-purple" href="{% url 'kudos_marketplace' %}">⬅ {% trans "Start Over" %}</a>
+  </div>
+</section>
+{% endblock %}

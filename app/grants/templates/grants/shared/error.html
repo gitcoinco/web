@@ -1,0 +1,87 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load static humanize i18n %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' with slim=1 %}
+    {% include 'shared/cards.html' %}
+    <style>
+      h1 {
+        color: #666666;
+      }
+
+      .text {
+        color: #9B9B9B;
+      }
+
+      .grant-title {
+        background-color: #F2F6F9;
+      }
+
+      .grant-title a {
+          text-decoration: none;
+          color: #0D0764;
+      }
+
+      .obiwan {
+        animation : wiggle 500ms ease-in-out;
+        animation-iteration-count: 1;
+      }
+
+      .btn-gc {
+        border-radius: 3px;
+      }
+
+      @keyframes wiggle {
+        0% { transform: rotate(6deg); }
+        25% { transform: rotate(-6deg); }
+        50% { transform: rotate(9deg); }
+        75% { transform: rotate(-3deg); }
+        100% { transform: rotate(0deg); }
+      }
+    </style>
+  </head>
+  <body class="interior {{ active }} grant text-center">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'grants/nav.html' %}
+    </div>
+
+    <div class="container my-5">
+      <div class="row">
+        <div class="col-12 my-5 mx-auto col-md-6">
+          <img class="obiwan my-4" src="{% static "v2/images/obiwan-bot.svg" %}">
+          <h1 class="font-title-xl mt-4 mb-2">{% trans "This isn’t the page you’re looking for." %}</h1>
+          <p class="font-title text">Oops! {{ text }}</p>
+          <p class="font-subheader mt-4 mb-0 font-weight-semibold grant-title py-3">
+            <a href="{% url 'grants:details' grant.id grant.slug %}">
+              {{grant.title}}
+            </a>
+          </p>
+        </div>
+        <div class="col-12 mt-3">
+          <a class="button-lg btn-gc btn-gc-blue py-3 px-5" href="{% url 'grants:details' grant.id grant.slug %}">
+            {% trans "Back to Grant" %}
+          </a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

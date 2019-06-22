@@ -1,0 +1,72 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' with slim=1 %}
+    {% include 'shared/cards.html' %}
+  </head>
+  <body class="interior {{ active }} g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'grants/nav.html' %}
+      {% include 'shared/minihero.html' with h1='Grants Leaderboard' suppress_logo=1 position_h1_below_logo=True hide_rain=True %}
+    </div>
+    <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
+    <style type="text/css">
+    .leaderboard-item{
+      padding: 10px 5px;
+    }
+    .leaderboard-item img{
+      max-height: 100px;
+      border-radius: 50%;
+      margin-right: 5px;
+      height: 100px;
+    }
+    .leaderboard-item:nth-of-type(2n+1){
+      background-color: #f8f8f8;
+    }
+    </style>
+    <section class="container-fluid py-3">
+      <div class="container">
+        {% for item in items %}
+        <div class="mb-3 leaderboard-item">
+          <a href="/profile/{{item.handle}}"><img data-src="/dynamic/avatar/{{item.handle}}"></a>
+          <h5 style="display: inline;" >{{item.rank}}) <a href="/profile/{{item.handle}}">@{{item.handle}}</a></h5>
+          <div style="float:right; margin-top: 30px;">
+            <span> {{item.no}}
+            </span> contribution{{item.no|pluralize}} worth $<span> {{item.sum}}</span>
+          </div>
+
+        </div>
+        {% endfor  %}
+      </div>
+    </section>
+    <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+  </body>
+  {% include 'shared/analytics.html' %}
+  {% include 'shared/footer_scripts.html' %}
+  {% include 'shared/footer.html' %}
+  <script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
+  <script>
+  $(document).ready(function() {
+    $("img").unveil(200);
+  });
+  </script>
+<html>

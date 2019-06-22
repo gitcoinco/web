@@ -25,7 +25,7 @@ window.onload = function() {
     }
     ipfs.catText(document.ipfs_key_to_secret, function(err, key2) {
       if (err) {
-        _alert('could not reach IPFS.  please try again later.', 'error');
+        _alert('Could not reach IPFS.  please try again later.', 'error');
         return;
       }
       document.priv_key = combine_secrets(key2, document.gitcoin_secret);
@@ -33,8 +33,14 @@ window.onload = function() {
   });
   waitforWeb3(function() {
     if (document.web3network != document.network) {
-      _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
-    } else {
+      if (document.web3network == 'locked') {
+        _alert({ message: gettext('Please authorize Metamask in order to continue.')}, 'info');
+        approve_metamask();
+      } else {
+        _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
+      }
+
+    } else if (!$('#forwarding_address').val()) {
       $('#forwarding_address').val(web3.eth.coinbase);
     }
     $('#network').val(document.web3network);
@@ -69,6 +75,11 @@ $(document).ready(function() {
 
     if (document.web3network != document.network) {
       _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
+      unloading_button($(this));
+      return;
+    }
+
+    if (!confirm(gettext('Please confirm that ' + forwarding_address + ' is the address for which you wish to redeem this tip.'))) {
       unloading_button($(this));
       return;
     }
@@ -118,7 +129,7 @@ $(document).ready(function() {
             nonce: web3.toHex(nonce),
             to: forwarding_address,
             from: holding_address,
-            value: amount_in_wei
+            value: amount_in_wei.toString()
           };
           web3.eth.estimateGas(rawTx, function(err, gasLimit) {
             var buffer = new BigNumber(0);
@@ -146,7 +157,7 @@ $(document).ready(function() {
         } else {
 
           // send ERC20
-          var data = token_contract.transfer.getData(forwarding_address, amount_in_wei);
+          var data = token_contract.transfer.getData(forwarding_address, amount_in_wei.toString());
 
           rawTx = {
             nonce: web3.toHex(nonce),
@@ -157,7 +168,7 @@ $(document).ready(function() {
           };
 
           web3.eth.estimateGas(rawTx, function(err, gasLimit) {
-            rawTx['gasPrice'] = gas_price_wei;
+            rawTx['gasPrice'] = gas_price_wei.toNumber();
             rawTx['gas'] = gasLimit;
             rawTx['gasLimit'] = gasLimit;
             var will_fail_at_this_gas_price = (gas_price_wei * gasLimit) > balance;

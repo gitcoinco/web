@@ -15,23 +15,20 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
-<div class="row">
-  <div class="col pt-4">
-    <h2>{% trans "Four oh Four" %}</h2>
+<div class="row text-center my-5">
+  <div class="col-12 mt-5 mx-auto col-md-6">
+    <img class="obiwan my-4" src="{% static "v2/images/obiwan-bot.svg" %}">
+    <h1 class="font-title-xl mt-4 mb-2">{% trans "This is not the profile you’re looking for" %}</h1>
+    <p class="font-subheader mt-4 mb-0 font-weight-semibold py-3">
+      {% trans "This profile either doesn’t exist, is not a member of Gitcoin, or the user has chosen not to make their profile available." %}
+    </p>
   </div>
-</div>
-<div class="row">
-  <div class="col pb-4">
-    <h5>{% trans "This profile is not available." %}</h5>
-  </div>
-</div>
-<div class="row">
-  <div class="col pb-4">
-    <p>{% trans "This profile either doesn't exist, is not a member of Gitcoin, or the user has chosen not to make their profile available." %}</p>
-  </div>
-</div>
-<div class="row">
-  <div class="col pb-4">
-    <p><a href="https://github.com/{{ profile.handle }}">{% trans "Try looking for their profile on Github" %}</a> or <a href="{% url 'slack' %}">{% trans "Contact us on Slack" %}</a></p>
+  <div class="col-12 mb-5">
+    {% trans "Try looking for their profile on" %}
+    <a rel="noreferrer" target="_blank" href="https://github.com/search?q={{ profile.handle }}&type=Users">
+      Github
+    </a>
+    {% trans "or Contact us on" %}
+    <a rel="noreferrer" target="_blank" href="https://gitcoincommunity.slack.com">Slack</a>
   </div>
 </div>

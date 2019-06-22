@@ -8,15 +8,20 @@ function drawChart() {
   var data = google.visualization.arrayToDataTable(document.bounty_history);
 
   var view = new google.visualization.DataView(data);
+  var width = 800;
 
+  if (width > document.body.clientWidth) {
+    width = document.body.clientWidth - 50;
+  }
   var options = {
     legend: { position: 'none' },
     bar: { groupWidth: '50%' },
-    colors: [ '#fbd0e6', '#FFCE08', '#25E899', '#3E00FF', '#F9006C' ],
+    colors: [ '#011f4b', '#03396c', '#005b96', '#6497b1', '#b3cde0', '#d3ddf0', '#DDDDDD' ],
     isStacked: true,
     backgroundColor: 'transparent',
     height: 400,
-    vAxis: { title: 'USD', ticks: [ 0, document.max_bounty_history ], format: 'short', gridlines: { color: 'transparent' } }
+    width: width,
+    vAxis: { title: 'USD', ticks: [ 0, 10000, 50000, 100000, 150000, 200000, document.max_bounty_history ], format: 'short', gridlines: { color: 'transparent' } }
   };
 
   var chart = new google.visualization.ColumnChart(document.getElementById('bounty_universe_chart'));
@@ -33,7 +38,7 @@ function repoChart() {
     legend: 'none',
     height: 300,
     width: 300,
-    colors: [ '#3E00FF', '#25E899', '#FFCE08' ]
+    colors: [ '#011f4b', '#03396c', '#005b96' ]
   };
 
   var chart = new google.visualization.PieChart(document.getElementById('repo_chart'));

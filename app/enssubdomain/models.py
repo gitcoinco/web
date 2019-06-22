@@ -39,9 +39,9 @@ class ENSSubdomainRegistration(SuperModel):
         'dashboard.Profile', related_name='ens_registration', null=True, on_delete=models.SET_NULL
     )
     subdomain_wallet_address = models.CharField(max_length=50)
-    txn_hash_1 = models.CharField(max_length=255)
-    txn_hash_2 = models.CharField(max_length=255)
-    txn_hash_3 = models.CharField(max_length=255)
+    txn_hash_1 = models.CharField(max_length=255, blank=True)
+    txn_hash_2 = models.CharField(max_length=255, blank=True)
+    txn_hash_3 = models.CharField(max_length=255, blank=True)
     pending = models.BooleanField()
     signed_msg = models.TextField()
     start_nonce = models.IntegerField(default=0)

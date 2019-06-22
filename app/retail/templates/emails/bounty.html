@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2017 Gitcoin Core
+  Copyright (C) 2018 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -13,7 +13,6 @@
 
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
-
 {% endcomment %}
 {% load i18n humanize %}
 
@@ -55,54 +54,54 @@
 <div class="centered-contents bounty-box">
   {% if primer %}
     <div class="bounty-primer">
-      <p>{{primer}}<p>
+      <p>{{ primer }}<p>
     </div>
   {% endif %}
   <div class="bounty">
     <div class="bounty-avatar">
-      <img style="border-radius: 100%;border: 2px solid #1AB56D;" src="{{bounty.avatar_url}}">
+      <img style="border-radius: 100%;border: 2px solid #1AB56D;" src="{{ bounty.avatar_url }}">
     </div>
     <div class="bounty-contents">
       {% if bounty.title %}
         <p class="bounty_title">
-          <b>{{bounty.org_name}}</b>: {{bounty.title}}
+          <b>{{ bounty.org_name }}</b>: {{ bounty.title }}
         </p>
       {% endif %}
 
       {% if not small %}
         {% if bounty.keywords %}
           <p>
-            <b>Keywords:</b> {{bounty.keywords}}
+            <b>Keywords:</b> {{ bounty.keywords }}
           </p>
         {% endif %}
 
         <p>
-          <b>Github:</b> <a href="{{bounty.github_url}}">{{bounty.github_url}}</a>
+          <b>Github:</b> <a href="{{ bounty.github_url }}">{{ bounty.github_url }}</a>
         </p>
       {% endif %}
 
       <p>
-        <b>Amount:</b> {{bounty.value_true}} {{bounty.token_name}}
+        <b>Amount:</b> {{ bounty.value_true }} {{ bounty.token_name }}
         {% if bounty.value_in_usdt_now %}
-          (about {{bounty.value_in_usdt_now}} USD @ ${{bounty.token_value_in_usdt_now}}/{{bounty.token_name}})
+          (about {{ bounty.value_in_usdt_now }} USD @ ${{ bounty.token_value_in_usdt_now }}/{{ bounty.token_name }})
         {% endif %}
       </p>
 
       {% if not small %}
         <p>
-          <b>{% trans "Status" %}:</b> {{bounty.status}}
+          <b>{% trans "Status" %}:</b> {{ bounty.status }}
           {% if bounty.status == 'submitted' %}
-            ({{bounty.status}} by
+            ({{ bounty.status }} by
             {% for fulfillment in bounty.fulfillments.all %}
               {% if fulfillment.fulfiller_github_username %}
-                <a href="https://gitcoin.co/profile/{{fulfillment.fulfiller_github_username}}">{{fulfillment.fulfiller_github_username}}</a>
+                <a href="{% url "profile" fulfillment.fulfiller_github_username %}">{{ fulfillment.fulfiller_github_username }}</a>
               {% elif fulfillment.fulfiller_email %}
-                <a href="mailto:{{fulfillment.fulfiller_email}}">{{fulfillment.fulfiller_email}}</a>
+                <a href="mailto:{{ fulfillment.fulfiller_email }}">{{ fulfillment.fulfiller_email }}</a>
               {% else %}
-                <a href="https://etherscan.io/address/{{fulfillment.fulfiller_address}}">{{fulfillment.fulfiller_address}}</a>
+                <a href="https://etherscan.io/address/{{ fulfillment.fulfiller_address }}">{{ fulfillment.fulfiller_address }}</a>
               {% endif %}
               {% if fulfillment.fulfiller_github_url %}
-                <a href="{{fulfillment.fulfiller_github_url}}">(View Submission)</a>
+                <a href="{{ fulfillment.fulfiller_github_url }}">(View Submission)</a>
               {% endif %}
             {% endfor %}
             )
@@ -111,21 +110,28 @@
               by
             {% endif %}
             {% for interested in bounty.interested.all %}
-              <a href="https://gitcoin.co/profile/{{interested.profile.handle}}"> {{interested.profile.handle}}</a>
+              <a href="{% url "profile" interested.profile.handle %}"> {{ interested.profile.handle }}</a>
             {% endfor %}
           {% endif %}
         </p>
         <p>
-          <b>{% trans "Expires:" %}</b> {{bounty.expires_date | naturaltime}}
+          <b>{% trans "Expires:" %}</b> {{ bounty.expires_date|naturaltime }}
         </p>
         <p>
           <b>{% trans "Specs:" %}</b><br>
-          {% trans "Project Length" %}: {% if bounty.project_length %}{{bounty.project_length}}{%else%}Not specified{%endif%}
+          {% trans "Time Commitment" %}: {% if bounty.project_length %}{{ bounty.project_length }}{%else%}Not specified{%endif%}
           <br>
-          {% trans "Type:" %} {% if bounty.bounty_type %}{{bounty.bounty_type}}{%else%}Not specified{%endif%}
+          {% trans "Type:" %} {% if bounty.bounty_type %}{{ bounty.bounty_type }}{%else%}Not specified{%endif%}
           <br>
-          {% trans "Experience Level:" %} {% if bounty.experience_level %}{{bounty.experience_level}}{%else%}Not specified{%endif%}
+          {% trans "Experience Level:" %} {% if bounty.experience_level %}{{ bounty.experience_level }}{%else%}Not specified{%endif%}
+          <br>
+          {% trans "Featured Bounty:" %} {% if bounty.is_featured %}Yes{%else%}Not featured{%endif%}
         </p>
+        {% if contributor_plan %}
+          <p>
+            <b>{% trans "Contributor plan" %}:</b> {{ contributor_plan }}
+          </p>
+        {%  endif %}
       {% endif %}
     </div>
   </div>

@@ -1,0 +1,71 @@
+{% extends 'transaction/base.html' %}
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+{% block 'scripts' %}
+<script src="{% static "v2/js/amounts.js" %}"></script>
+<script src="{% static "v2/js/range-slider.js" %}"></script>
+<script src="{% static "onepager/js/web3alert.js" %}"></script>
+{% endblock %}
+<!-- Main -->
+{% block 'main' %}
+<section id="main" class="box-transaction">
+  <header class="text-center">
+    <span class="avatar line-back">
+      <a href="{% url "tip" %}">
+        <img src="{% static "v2/images/helmet.png" %}" class="bg-white mh-100 mw-100 mx-auto p-2" width="100px"/>
+      </a>
+    </span>
+    <h1>{% trans "Mint" %} <span class="text-highlight-green">{% trans "Kudos" %}</span></h1>
+  </header>
+  <form>
+    <div class="form-group">
+      <label for="nameInput">Name</label>
+      <select class="form-control" id="nameInput">
+        <option>bugsquasher</option>
+        <option>collaborationmachine</option>
+        <option>designstar</option>
+        <option>fastturnaround</option>
+        <option>helpinghand</option>
+        <option>problemsolver</option>
+        <option>pythonista</option>
+        <option>meeseeks</option>
+      </select>
+    </div>
+    <div class="form-group ">
+      <label for="staticMintDescription" class="">Description</label>
+      <textarea class="form-control" name="staticMintDescription" id="staticMintDescription" rows="2" readonly></textarea>
+    </div>
+    <div class="form-group">
+      <label for="formControlRange">Rarity <span id="value-slider"></span></label>
+      <input type="range" class="form-control-range" id="rarityInput" data-rangeslider="value-slider">
+      <small id="rarityHelp" class="form-text text-muted">0 to 100</small>
+    </div>
+    <div class="form-group">
+      <label for="priceInput">Price</label>
+      <input type="text" class="form-control" id="priceInput" aria-describedby="emailHelp" placeholder="Enter price in ETH" value=".1">
+    </div>
+    <div class="form-group">
+      <label for="numClonesInput">Number of clones allowed</label>
+      <input type="text" class="form-control" id="numClonesAllowedInput" aria-describedby="emailHelp" placeholder="Enter number" value="10">
+    </div>
+    <div class="d-flex justify-content-center">
+      <a href="{% url "send_tip_2" %}" id="neweth" class="btn btn-gc-purple">{% trans "Mint Kudos" %} <span class="emoji">💰</span></a>
+    </div>
+  </form>
+</section>
+{% endblock %}

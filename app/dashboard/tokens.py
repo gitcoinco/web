@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -17,13 +17,13 @@
 '''
 
 
-def get_tokens():
+def get_tokens(network='mainnet'):
     from economy.models import Token
-    return [token.to_dict for token in Token.objects.filter(network='mainnet', approved=True).all()]
+    return [token.to_dict for token in Token.objects.filter(network=network, approved=True).all()]
 
 
-def addr_to_token(addr):
-    for token in get_tokens():
+def addr_to_token(addr, network='mainnet'):
+    for token in get_tokens(network=network):
         if(token['addr'].lower() == addr.lower()):
             return token
     return False

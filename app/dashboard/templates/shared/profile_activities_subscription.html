@@ -1,0 +1,75 @@
+{% load i18n humanize %}
+<a class="row result bounty_row {{ activity.subscription.network }}" target="_blank"
+ {% if activity.subscription.grant.url %} href="{{ activity.subscription.grant.url }}"
+ {% elif activity.subscription.grant.reference_url %} href="{{ activity.subscription.grant.reference_url }}"
+ {% endif %}>
+  <div class="avatar-container col-1 justify-content-center special_tag hide_min_viewport">
+    {% if activity.subscription.grant.logo %}
+      <img class="avatar" src="{{ activity.subscription.grant.logo.url }}">
+    {% else %}
+      <img class="avatar" src="{% url 'org_avatar' activity.subscription.grant.admin_profile.handle %}">
+    {% endif %}
+  </div>
+  <div class="col-12 col-md-7 d-flex flex-column">
+    <div class="bounty-detail">
+      <div class="title font-subheader">
+        {{ activity.subscription.grant.title }}
+      </div>
+
+      <div class="bounty-summary col-12">
+        <div class="info font-caption">
+          {{ activity.subscription.grant.amount_received | floatformat:2 }} /
+          {{ activity.subscription.grant.amount_goal | floatformat:2 }}
+          {{ activity.subscription.grant.token_symbol }}
+          &bull; {{ activity.created_on | naturaltime }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-md-4 tags fixed font-caption align-items-center">
+    {% if activity.activity_type == 'new_grant_contribution' %}
+      <div class="tag success">
+        <p>
+          <span>{% trans "Contributed " %}</span>
+        </p>
+      </div>
+    {% elif activity.activity_type == 'new_grant_subscription' %}
+      <div class="tag success">
+        <p>
+          <span>{% trans "Subscribed " %}</span>
+        </p>
+      </div>
+    {% elif activity.activity_type == 'killed_grant_contribution' %}
+      <div class="tag warning">
+        <p>
+          <span>{% trans "Cancelled subscription " %}</span>
+        </p>
+      </div>
+    {% else %}
+      <div class="tag in-progress">
+        <p>
+          <span>{{ activity.i18n_name }}</span>
+        </p>
+      </div>
+    {% endif %}
+    {% if activity.subscription.network != 'mainnet' %}
+    <div class="tag network_warning">
+      <p>
+        <span>{{ activity.subscription.network }}</span>
+      </p>
+    </div>
+    {% endif %}
+    <div class="tag token">
+      <p>
+        {{ activity.subscription.amount_per_period | floatformat:2 }}
+        <span>{{ activity.subscription.token_symbol }}</span>
+      </p>
+    </div>
+    <div class="tag usd">
+      <p>
+        {{ activity.subscription.amount_per_period_usdt | floatformat:2 }}
+        <span>USD</span>
+      </p>
+    </div>
+  </div>
+</a>

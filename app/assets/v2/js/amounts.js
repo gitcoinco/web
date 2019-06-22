@@ -28,27 +28,35 @@ var usdToAmountEstimate = function(usd_amount, conv_rate) {
   return 0;
 };
 
-var get_rates_estimate = function(usd_amount) {
-  if (!usd_amount) {
+const get_rates_estimate = function(usd_amount) {
+  let hours = $('#hours').val();
+
+  if (!usd_amount || !hours || hours == 0) {
     return '';
   }
-  var rates_addon = [];
-  var rates = [ 40, 80, 120 ];
 
-  for (var i = 0; i < rates.length; i++) {
-    var rate = rates[i];
-    var hours = usd_amount / rate;
-    var round_decimals = hours < 1 ? 2 : 1;
+  let rates_addon = [];
+  const rate = usd_amount / hours;
+  const round_rate = rate.toFixed(0);
+  const round_decimals = hours < 1 ? 2 : 1;
 
-    hours = Math.round(hours, round_decimals);
-    rates_addon.push('' + hours + ' hrs at $' + rate + '/hr');
+  hours = Math.round(hours, round_decimals);
+  let success_prob = 100 * ((0.002 * rate) + 0.65);
+
+  if (success_prob >= 100) {
+    success_prob = 99;
+  }
+
+  if (hours) {
+    rates_addon.push(`${hours} hrs at $${round_rate}/hr leads to <b>${success_prob.toFixed(0)}% success rate</b>. `);
+  } else {
+    rates_addon.push(`${hours} hrs at $&infin;/hr leads to <b>${success_prob.toFixed(0)}% success rate</b>. `);
   }
   rates_addon = rates_addon.join(', ');
 
-  var help_addon = ' <a href="https://medium.com/gitcoin/tutorial-how-to-price-work-on-gitcoin-49bafcdd201e" target="_blank" rel="noopener noreferrer">[Read our pricing guide]</a>';
-  var final_text = rates_addon + help_addon;
+  const help_addon = 'Read our <a href="https://medium.com/gitcoin/tutorial-how-to-price-work-on-gitcoin-49bafcdd201e" target="_blank" class="underline" rel="noopener noreferrer">pricing guide</a>.';
 
-  return final_text;
+  return (rates_addon + help_addon);
 };
 
 var getUSDEstimate = function(amount, denomination, callback) {
@@ -117,13 +125,12 @@ var getAmountEstimate = function(usd_amount, denomination, callback) {
   }
   if (document.conversion_rates && document.conversion_rates[denomination]) {
     conv_rate = document.conversion_rates[denomination];
-    var _amount = Math.round(usd_amount / conv_rate, 3);
     var amount_estimate = usdToAmountEstimate(usd_amount, conv_rate);
 
-    rate_estimate = get_rates_estimate(_amount * conv_rate);
+    rate_estimate = get_rates_estimate(amount_estimate * conv_rate);
     var estimate_obj = {
       'rate_text': rate_estimate,
-      'value': _amount
+      'value': amount_estimate
     };
 
     return callback(estimate_obj);

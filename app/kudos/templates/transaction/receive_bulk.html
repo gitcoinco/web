@@ -1,0 +1,176 @@
+{% extends 'transaction/base.html' %}
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+{% load kudos_extras %}
+{% block 'scripts' %}
+<script src="{% static "v2/js/pages/kudos_bulk_receive.js" %}"></script>
+<script src="{% static "onepager/js/confetti.js" %}"></script>
+
+{% endblock %}
+<!-- Main -->
+{% block 'world' %}
+<div>
+  <canvas id="world" style="position:fixed; top:0px; left: 0px;"></canvas>
+</div>
+{% endblock %}
+{% block 'main' %}
+<section id="main" class="box-transaction">
+  <header class="text-center">
+  <div id="receove_eth_done" class="text-center" {% if not kudos_transfer.receive_txid %} style="display:none;" {%endif%}>
+    <h1>{% trans "Congrats!" %} 🎉</h1>
+    <p>You've received a "{{ coupon.token.humanized_name }}" Kudos via transaction <a href="https://etherscan.io/tx/{{kudos_transfer.receive_txid}}"><span id="trans_id">{{kudos_transfer.receive_txid}}</span></a>.</p>
+    <p>{% trans "You can see your kudos in any web3 wallet that supports ERC-721-compliant NFTs, or in your" %} <a href="{% url 'profile' %}">Gitcoin {% trans "profile" %}</a>.</p>
+      {% include 'shared/twitter.html' %}
+      <p>
+        <a class="twitter-share-button"
+        data-url="{{coupon.token.url}}"
+        href="https://twitter.com/intent/tweet?text={{tweet_text}}"
+        data-size="large">
+        Tweet It</a>
+      </p>
+      <form action="{% url 'profile' %}">
+        <input id="receive" type='submit' class="btn btn-gc-purple" value="🌈 {% trans "View Profile" %} 🏳️‍🌈" {% if disable_inputs %}disabled=disabled{%endif%} >
+      </form>
+    <hr>
+
+  </div>
+    <h1 class="h2 mt-5">
+      <img style="max-height: 50px; max-width: 50px;" src="/dynamic/avatar/{{coupon.sender_profile.handle}}">
+      <a style='color:black; text-decoration: underline;' href="{{coupon.sender_profile.url}}">@{{coupon.sender_profile.handle}}</a>
+
+      {% trans "sent a" %}</h1>
+
+    <div class="my-4">
+
+      <div id="kudos-image" class="w-100" style="">
+        {% include 'shared/kudos_levitate.html' %}
+        <img src="{% static coupon.token.image %}" style="width: 100%;" alt="{{ coupon.token.name }}" >
+      </div>
+
+      
+      <br>
+      <span id="kudosComment" class="d-block">
+        <h3><a style='color:black; text-decoration: underline;' href="{{coupon.token.url}}"><span id="kudosName" data-kudosname="{{ coupon.token.name }}" >{{ coupon.token.humanized_name }} </span>{% trans "Kudos" %}</a></h3>
+        {% if coupon.comments_to_put_in_kudos_transfer %}
+        with an attached message, just for you: 
+        <p style="  
+    width: 80%;
+    height: 100px;
+    background-color: #D0DEEB;
+    margin-top: 30px;
+    text-align: left;
+    padding: 10px 5px;
+    border-left: 2px solid #295379;
+    margin: 10px auto;
+    border-top: 1px solid #295389;
+    font-family: Muli;
+    background-image: linear-gradient(to bottom right, #D0DEEB, #DFBDD9);
+    font-weight: 600;
+    overflow-y: scroll;
+        ">
+            {{ coupon.comments_to_put_in_kudos_transfer }}
+            <BR>
+            <span style="float:right; margin-right: 10px;">~ @{{coupon.sender_profile.handle}}</span>
+        </p>
+        {% endif %}
+      </span>
+    </div>
+
+  </header>
+  <div id="receove_eth" {% if kudos_transfer.receive_txid %} style="display:none;" {%endif%} >
+    <form method="POST">
+      {% csrf_token %}
+      <div class="form-group">
+        <hr>
+        <h3 class="text-center" style="margin: 0px auto;">👇 Redeem It Here 👇</h3>
+        {% trans "Logged in as" %} {% if not request.user.is_authenticated %}(<a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">{% trans "Login" %}</a>) {%endif%}
+        <input type="text" placeholder="@username" id="user" value="{% if user.is_authenticated  %}{{ user }}{% endif %}" disabled="disabled" class='form-control'  required >
+        {% if not request.user.is_authenticated %}
+        <p style="color:red;">{% trans "You must be logged in to receive this kudos." %}</p>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label for="">{% trans "Forward it to a permanent address" %}:</label>
+        <input type="text" name="forwarding_address" id="forwarding_address" class="form-control" placeholder="0x0" {% if disable_inputs %}disabled=disabled{%endif%}>
+        <input type="hidden" name="network" id="network" value="">
+      </div>
+
+      <div class="form-check">
+        <input type="checkbox" name="save_addr" id="save_addr" value="1" class="form-check-input" {% if disable_inputs %}disabled=disabled{%endif%} >
+        <label for=save_addr>{% trans "Save this address as my direct payment address" %}</label>
+      </div>
+
+      <div class="form-check mb-3">
+        <input type="checkbox" id="tos" value="1" class="form-check-input" required>
+        <label for="tos" class="form-check-label">{% trans "I understand &amp; agree to the" %} <a href="{% url "_terms" %}">{% trans "terms of service" %}</a>.</label>
+      </div>
+
+
+      <div class="text-center">
+        <input id="receive" type='submit' class="btn btn-gc-purple" value="🌈 {% trans "Redeem" %} Kudos 🏳️‍🌈" {% if disable_inputs %}disabled=disabled{%endif%} >
+        <br>
+        <br>
+        <a href="{% url 'kudos_about' %}">{% trans 'What is Kudos? ' %}🤔</a>
+      </div>
+    </form>
+  </div>
+
+  {% if not kudos_transfer.receive_txid and is_authed %}
+    <script>
+    </script>
+  {% endif %}
+{% if kudos_transfer.receive_txid %}
+  <script>
+    setTimeout(function(){
+      startConfetti();
+    }, 1000);
+  </script>
+{% endif %}
+</section>
+<style>
+  #kudos-image {
+    height: 600px; width: 60%;
+    cursor: grabbing;
+  }
+  @media screen and (max-width: 520px) {
+    #Layer_14{
+      display: none;
+    }
+    #kudos-image{
+      height: 450px;
+    }
+  }
+</style>
+<script src="{% static 'v2/js/lib/tweenlite.js' %}"></script>
+<link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
+{% include 'shared/footer_scripts.html' with slim=1 %}
+<script src="{% static "v2/js/lib/popper.min.js" %}"></script>
+<script src="{% static "v2/js/pages/kudos_details.js" %}"></script>
+<script>
+  document.network = '{{coupon.token.contract.network}}';
+  $(document).ready(function(){
+    {% if error %}
+      _alert('{{error}}', 'error');
+    {% endif %}
+    start_kudos_levitate();
+    document.suppress_kudos_levitate_hover = true;
+  })
+</script>
+{% endblock %}

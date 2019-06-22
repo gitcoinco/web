@@ -1,0 +1,95 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static is_in_list %}
+<div class="navbar navbar-expand-md w-100 p-0 m-0 mb-2 justify-content-between">
+  <a class="navbar-brand p-1" href="{% url 'kudos_marketplace' %}">
+    <img class="mw-100 mx-4" src="{% static "v2/images/kudos/logo.svg" %}" alt="kudos" height="50">
+    {% if request.path|is_in_list:"/gas,/gas/history,/gas/intro,/gas/calculator,/gas/faq,/gas/faucets" %}
+      <img id="addon" src="{% static "v2/images/gas_logo.gif" %}"/>
+      <p style="color:white; font-size: 12px;">{% trans "Gas Station" %}</p>
+    {% endif %}
+  </a>
+
+  <div class="navbar-network ml-xl-5 py-1 px-2 hidden">
+    <i class="fas fa-circle pr-1"></i>
+    <span id="current-network"></span>
+  </div>
+
+  {% if user.is_authenticated %}
+  <div class="d-flex order-0 order-md-last">
+    <a class="nav-link login" href="{% url 'profile' %}">
+      <img class="nav_avatar" width=25 height=25
+      src="{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
+      {{ user }}
+    </a>
+    {% include 'shared/notifications.html' %}
+  </div>
+
+  {% else %}
+  <a class="nav-link login" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">
+    <i class="fab fa-github"></i>{% trans "Login" %}
+  </a>
+  {% endif %}
+</div>
+
+<style>
+  #addon{
+    max-height: 35px;
+    margin-left: 7px;
+    margin-bottom: 2px;
+    max-width: 50px;
+  }
+  .navbar {
+    justify-content: initial;
+  }
+
+  .nav_avatar {
+    margin-right: 10px;
+  }
+
+  .navbar-network {
+    position: initial;
+    border-color: #fff;
+  }
+
+  .nav-link.login {
+    top:15px;
+    right: 15px;
+    text-transform: none;
+  }
+
+  .nav-link.login:hover {
+    color: #FFFFFF;
+  }
+
+  .nav-link.login i {
+    margin-right: 15px;
+  }
+
+  .nav-link.logo {
+    position: absolute;
+    top:20px;
+    left: 20px;
+  }
+
+  @media screen and (max-width: 600px) {
+    .nav-link.login,
+    .nav_avatar {
+      display: none;
+    }
+  }
+</style>

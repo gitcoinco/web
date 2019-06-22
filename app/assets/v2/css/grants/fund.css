@@ -1,0 +1,171 @@
+@media (min-width: 1200px) {
+  #gitcoin-grant-section .row {
+    border-bottom: 1px solid #515151;
+  }
+}
+
+.admin_profile a,
+#grant-link {
+  color: #0D0764;
+}
+
+.banner-img {
+  max-height: 22rem;
+  overflow-y: hidden;
+}
+
+.banner-img img {
+  height: auto;
+  width: 100%;
+  object-fit: cover;
+}
+
+#grants_form .form__input.valid,
+#grants_form .form__input.error {
+  background-position: top 0.5rem right 0.5rem;
+}
+
+#grants_form input.form__input {
+  height: 2.5rem;
+}
+
+.select2-container--default .select2-selection--single,
+#grants_form input {
+  border-color: #0D0764 !important;
+}
+
+.grant-banner {
+  background-color: #F2F6F9;
+  width: 100%;
+}
+
+.grant-banner .grant-title {
+  font-weight: 600;
+}
+
+.grant-banner .grant-title a {
+  color: #000;
+}
+
+.summary p {
+  margin: 0 0 4px;
+}
+
+.summary i {
+  font-size: 6px;
+  position: relative;
+  bottom: 2px;
+}
+
+#accordion-set-own-limit {
+  font-size: 12px;
+}
+
+#gitcoin-grant-section .custom {
+  width: 4.25rem;
+  position: relative;
+  top: -10px;
+}
+
+#gitcoin-grant-section input.form__input {
+  height: 46px;
+  font-size: var(--fs-title);
+}
+
+#gitcoin-grant-section input.form__input.form__input.valid {
+  padding: 0;
+  background-image: none;
+}
+
+#gitcoin-grant-input-amount-error {
+  position: absolute;
+  top: 4rem
+}
+
+#gitcoin-grant-section .form__input.error {
+  background-position: top 0.75rem right 0.5rem;
+  background-size: auto 1.013rem;
+  padding-right: 1.8rem;
+}
+
+#gitcoin-grant-section input.form__input[type=number]::-webkit-inner-spin-button,
+#gitcoin-grant-section input.form__input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+#gitcoin-grant-input-error {
+  position: absolute;
+  top: 4rem;
+}
+
+#gitcoin-grant-section .badge {
+  padding: 16px 24px;
+  cursor: pointer;
+}
+
+#gitcoin-grant-section .badge-active {
+  background-color: #72AAEB;
+  color: white;
+}
+
+#gitcoin-grant-section .badge-inactive {
+  background: #E8F3FF;
+  color: #4A90E2;
+}
+
+.inactive {
+  background-color: #E5E5E5 !important;
+  color: #9B9B9B !important;
+}
+
+#gitcoin-grant-section .gitcoin-grant-summary p {
+  position: relative;
+  top: 10px;
+}
+
+#gitcoin-grant-section .gitcoin-grant-summary i {
+  position: relative;
+  top: -2px;
+}
+
+#gitcoin-grant-section .gitcoin-grant-summary p:last-child {
+  top: 1.2rem;
+  left: 1rem;
+}
+
+.helper-text {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1.2rem;
+}
+
+@media (min-width:1140px) and (max-width: 1600px) {
+
+  #gitcoin-grant-section .fee-slider,
+  #gitcoin-grant-section .fee-slider-summary {
+    width: 100%;
+    max-width: 100%;
+    flex: 100%;
+    text-align: center !important;
+  }
+
+  #gitcoin-grant-section .fee-slider-summary {
+    margin-bottom: 1rem !important;
+  }
+}
+
+@media (max-width: 767.98px) {
+
+  .banner-img {
+    text-align: center;
+  }
+
+  .banner-img img {
+    width: auto;
+    max-width: 100%;
+  }
+}

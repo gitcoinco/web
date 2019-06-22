@@ -34,7 +34,7 @@ $('document').ready(function() {
 
   function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
-    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    return ((/^(GET|HEAD|OPTIONS|TRACE)$/).test(method));
   }
   $.ajaxSetup({
     beforeSend: function(xhr, settings) {
@@ -46,6 +46,10 @@ $('document').ready(function() {
 
   $('#submitFaucet').on('click', function(e) {
     e.preventDefault();
+    if (document.web3network != 'mainnet') {
+      _alert({ message: gettext('you must be on mainnet')}, 'error');
+      return;
+    }
     if ($(this).hasClass('disabled')) {
       return;
     }

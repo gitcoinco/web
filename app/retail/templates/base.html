@@ -14,17 +14,23 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load cookielaw_tags %}
+{% load cookielaw_tags static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   {% include 'shared/head.html' %}
   {% include 'shared/cards.html' %}
+  <link rel="stylesheet" href="{% static "v2/css/tag.css" %}" />
 </head>
-<body class="{{active}}">
+<body class="{{active}} g-font-muli">
   {% include 'shared/tag_manager_2.html' %}
   <div class="container-fluid header">
-    {% include 'shared/nav.html' %}
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    {% if nav == 'home' %}
+      {% include 'home/nav.html' %}
+    {% else %}
+      {% include 'shared/nav.html' %}
+    {% endif %}
     {% if minihero %}
       {% include 'shared/minihero.html' with h1=minihero %}
     {% endif %}

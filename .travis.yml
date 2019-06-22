@@ -12,6 +12,7 @@ os:
 services:
   - docker
   - postgresql
+  - redis-server
 
 cache:
   directories:
@@ -29,6 +30,15 @@ jobs:
         - cp app/app/travis.env app/app/.env
         - pip install pip setuptools --upgrade
         - pip install codecov
+        # Fetch and Install GeoIP database files.
+        - sudo apt-get update && sudo apt-get install -y libmaxminddb-dev
+        - wget http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz
+        - wget http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.mmdb.gz
+        - gunzip GeoLite2-City.mmdb.gz && gunzip GeoLite2-Country.mmdb.gz
+        - sudo mkdir -p /opt/GeoIP/
+        - sudo mv *.mmdb /opt/GeoIP/
+        # Install libvips dependencies.
+        - sudo apt-get install -y libvips libvips-dev
         # Install Node and Python dependencies.
         - npm install
         - pip install -r requirements/test.txt
@@ -37,9 +47,21 @@ jobs:
         - pytest -p no:ethereum
         # Publish CodeCov coverage results.
         - codecov
+        # Generate Markdown documentation and static docs page.
+        - pydocmd build
       env:
         - PYTHONPATH="${TRAVIS_BUILD_DIR}/app/"
         - DJANGO_SETTINGS_MODULE="app.settings"
+      deploy:
+        provider: pages
+        skip-cleanup: true
+        github-token: $GITHUB_TOKEN
+        keep-history: true
+        local-dir: _build/site
+        fqdn: docs.gitcoin.co
+        target-branch: gh-pages
+        on:
+          branch: master
     # Deploy to Docker Hub and initiate a rolling update for web.
     - stage: deploy-stage
       if: branch = master AND NOT type = pull_request

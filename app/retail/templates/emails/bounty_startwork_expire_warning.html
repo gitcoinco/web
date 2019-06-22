@@ -1,20 +1,19 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+  Copyright (C) 2018 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
-
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n humanize %}
 
@@ -24,33 +23,33 @@
 
 
 <p>
-    {% trans "Hey there, " %}
+  {% trans "Hey there, " %}
 
-    <br>
-    <br>
+  <br>
+  <br>
 
-     You <strong>started work upon</strong> a funded issue {{interest.created | naturaltime}}.  But we haven't heard from you on the github thread{% if time_delta_days %} in {{time_delta_days}} days{%endif%}.
+    You <strong>started work upon</strong> a funded issue {{ interest.created|naturaltime }}.  But we haven't heard from you on the github thread{% if time_delta_days %} in {{ time_delta_days }} days{% endif %}.
 
-    <br>
-    <br>
+  <br>
+  <br>
 
-    {% trans "Do you still want to work on this?  Please let us know so we can find someone else to work on it if not!" %}
+  {% trans "Do you still want to work on this?  Please let us know so we can find someone else to work on it if not!" %}
 
-    <br>
-    <br>
+  <br>
+  <br>
 
-    {% trans "If so, please leave a comment on the github thread to check in." %}
-    <br>
-    -{% trans "OR" %}-
-    <br>
-    {% blocktrans %}If not, click 'Stop Work' on the <a href="{{bounty.absolute_url}}">issue detail page</a>.{% endblocktrans %}
+  {% trans "If so, please leave a comment on the github thread to check in." %}
+  <br>
+  -{% trans "OR" %}-
+  <br>
+  {% blocktrans %}If not, click 'Stop Work' on the <a href="{{ bounty.absolute_url }}">issue detail page</a>.{% endblocktrans %}
 
-    <br>
-    <br>
-    {% blocktrans %}If you have any questions, feel free to reach out <a href="https://gitcoin.co/slack">on slack</a>.{% endblocktrans %}
+  <br>
+  <br>
+  {% blocktrans %}If you have any questions, feel free to reach out <a href="{% url 'slack' %}">on slack</a>.{% endblocktrans %}
 
-    <br>
-    <h5>{% trans "Funded Issue Details" %}</h5>
+  <br>
+  <h5>{% trans "Funded Issue Details" %}</h5>
 </p>
 
 <br>
@@ -58,7 +57,7 @@
 {% include 'emails/bounty.html' with bounty=bounty %}
 
 <p>
-{% trans "You are receiving this email because your email address is on the notification list for this funded issue." %} <a href="https://gitcoin.co/settings/email/{{subscriber.priv}}">{% trans "Manage Email Settings" %}</a>.
+  {% trans "You are receiving this email because your email address is on the notification list for this funded issue." %} <a href="{% url 'email_settings' subscriber.priv %}">{% trans "Manage Email Settings" %}</a>.
 </p>
 
 {% endblock %}

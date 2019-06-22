@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: web-config
+data:
+  .env: |-
+    CACHE_URL=dbcache://my_cache_table
+    REDIS_URL=rediscache://{{ .Release.Name }}-master:6379/0?client_class=django_redis.client.DefaultClient
+    CACHEOPS_REDIS=redis://{{ .Release.Name }}-master:6379/0
+    COLLECTFAST_CACHE_URL=dbcache://collectfast
+    DATABASE_HOST={{ .Release.Name }}-db
+    DEBUG=on
+    FORCE_GET_PRICES=on
+    DATABASE_USER=postgres
+    DATABASE_NAME=postgres
+    DATABASE_PASSWORD=gitcoin
+    DATABASE_URL=psql://postgres:gitcoin@{{ .Release.Name }}-db:5432/postgres

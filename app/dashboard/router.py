@@ -17,13 +17,21 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-
+import logging
+import time
 from datetime import datetime
 
 import django_filters.rest_framework
+from kudos.models import KudosTransfer
 from rest_framework import routers, serializers, viewsets
+from retail.helpers import get_ip
 
-from .models import Activity, Bounty, BountyFulfillment, Interest, ProfileSerializer
+from .models import (
+    Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, HackathonEvent, Interest, ProfileSerializer,
+    SearchHistory,
+)
+
+logger = logging.getLogger(__name__)
 
 
 class BountyFulfillmentSerializer(serializers.ModelSerializer):
@@ -38,18 +46,6 @@ class BountyFulfillmentSerializer(serializers.ModelSerializer):
                   'fulfillment_id', 'accepted', 'profile', 'created_on', 'accepted_on', 'fulfiller_github_url')
 
 
-class InterestSerializer(serializers.ModelSerializer):
-    """Handle serializing the Interest object."""
-
-    profile = ProfileSerializer()
-
-    class Meta:
-        """Define the Interest serializer metadata."""
-
-        model = Interest
-        fields = ('profile', 'created', 'pending')
-
-
 class ActivitySerializer(serializers.ModelSerializer):
     """Handle serializing the Activity object."""
 
@@ -62,6 +58,52 @@ class ActivitySerializer(serializers.ModelSerializer):
         fields = ('activity_type', 'created', 'profile', 'metadata', 'bounty', 'tip')
 
 
+class BountyDocumentsSerializer(serializers.ModelSerializer):
+    """Handle serializing the Activity object."""
+
+    class Meta:
+        """Define the activity serializer metadata."""
+
+        model = BountyDocuments
+        fields = ('doc', 'doc_type')
+
+
+class KudosSerializer(serializers.ModelSerializer):
+    """Handle serializing the Kudos object."""
+
+    class Meta:
+        """Define the kudos serializer metadata."""
+
+        model = KudosTransfer
+        depth = 1
+        fields = ('kudos_token_cloned_from', )
+
+
+class ActivitySerializer(serializers.ModelSerializer):
+    """Handle serializing the Activity object."""
+
+    profile = ProfileSerializer()
+    kudos = KudosSerializer()
+
+    class Meta:
+        """Define the activity serializer metadata."""
+
+        model = Activity
+        fields = ('activity_type', 'created', 'profile', 'metadata', 'bounty', 'tip', 'kudos')
+
+
+class InterestSerializer(serializers.ModelSerializer):
+    """Handle serializing the Interest object."""
+
+    profile = ProfileSerializer()
+    signed_nda = BountyDocumentsSerializer()
+
+    class Meta:
+        """Define the Interest serializer metadata."""
+        model = Interest
+        fields = ('profile', 'created', 'pending', 'signed_nda')
+
+
 # Serializers define the API representation.
 class BountySerializer(serializers.HyperlinkedModelSerializer):
     """Handle serializing the Bounty object."""
@@ -69,17 +111,18 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
     fulfillments = BountyFulfillmentSerializer(many=True)
     interested = InterestSerializer(many=True)
     activities = ActivitySerializer(many=True)
+    unsigned_nda = BountyDocumentsSerializer(many=False)
     bounty_owner_email = serializers.SerializerMethodField('override_bounty_owner_email')
     bounty_owner_name = serializers.SerializerMethodField('override_bounty_owner_name')
 
     def override_bounty_owner_email(self, obj):
-        can_make_visible_via_api = bool(int(obj.privacy_preferences.get('show_email_publicly', 1)))
-        default = "(hidden email)"
+        can_make_visible_via_api = bool(int(obj.privacy_preferences.get('show_email_publicly', 0)))
+        default = "Anonymous"
         return obj.bounty_owner_email if can_make_visible_via_api else default
 
     def override_bounty_owner_name(self, obj):
-        can_make_visible_via_api = bool(int(obj.privacy_preferences.get('show_name_publicly', 1)))
-        default = "(hidden name)"
+        can_make_visible_via_api = bool(int(obj.privacy_preferences.get('show_name_publicly', 0)))
+        default = "Anonymous"
         return obj.bounty_owner_name if can_make_visible_via_api else default
 
     class Meta:
@@ -88,16 +131,20 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
         model = Bounty
         fields = (
             'url', 'created_on', 'modified_on', 'title', 'web3_created', 'value_in_token', 'token_name',
-            'token_address', 'bounty_type', 'project_length', 'experience_level', 'github_url', 'github_comments',
-            'bounty_owner_address', 'bounty_owner_email', 'bounty_owner_github_username', 'bounty_owner_name',
-            'fulfillments', 'interested', 'is_open', 'expires_date', 'activities', 'keywords', 'current_bounty',
-            'value_in_eth', 'token_value_in_usdt', 'value_in_usdt_now', 'value_in_usdt', 'status', 'now', 'avatar_url',
+            'token_address', 'bounty_type', 'bounty_categories', 'project_length', 'experience_level',
+            'github_url', 'github_comments', 'bounty_owner_address', 'bounty_owner_email',
+            'bounty_owner_github_username', 'bounty_owner_name', 'fulfillments', 'interested', 'is_open',
+            'expires_date', 'activities', 'keywords', 'current_bounty', 'value_in_eth',
+            'token_value_in_usdt', 'value_in_usdt_now', 'value_in_usdt', 'status', 'now', 'avatar_url',
             'value_true', 'issue_description', 'network', 'org_name', 'pk', 'issue_description_text',
             'standard_bounties_id', 'web3_type', 'can_submit_after_expiration_date', 'github_issue_number',
-            'github_org_name', 'github_repo_name', 'idx_status', 'token_value_time_peg', 'fulfillment_accepted_on',
-            'fulfillment_submitted_on', 'fulfillment_started_on', 'canceled_on', 'action_urls', 'project_type',
-            'permission_type', 'attached_job_description', 'needs_review', 'github_issue_state', 'is_issue_closed',
-            'additional_funding_summary', 'paid',
+            'github_org_name', 'github_repo_name', 'idx_status', 'token_value_time_peg',
+            'fulfillment_accepted_on', 'fulfillment_submitted_on', 'fulfillment_started_on', 'canceled_on',
+            'canceled_bounty_reason', 'action_urls', 'project_type', 'permission_type',
+            'attached_job_description', 'needs_review', 'github_issue_state', 'is_issue_closed',
+            'additional_funding_summary', 'funding_organisation', 'paid',
+            'admin_override_suspend_auto_approval', 'reserved_for_user_handle', 'is_featured',
+            'featuring_date', 'repo_type', 'unsigned_nda', 'funder_last_messaged_on',
         )
 
     def create(self, validated_data):
@@ -105,7 +152,14 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
         fulfillments_data = validated_data.pop('fulfillments')
         bounty = Bounty.objects.create(**validated_data)
         for fulfillment_data in fulfillments_data:
-            BountyFulfillment.objects.create(bounty=bounty, **fulfillment_data)
+            bounty_fulfillment = BountyFulfillment.objects.create(bounty=bounty, **fulfillment_data)
+            bounty_invitee = BountyInvites.objects.filter(
+                bounty=bounty,
+                invitee=bounty_fulfillment.profile.user
+            ).first()
+            if bounty_invite:
+                bounty_invitee.status = 'completed'
+                bounty_invitee.save()
         return bounty
 
     def update(self, validated_data):
@@ -113,15 +167,33 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
         fulfillments_data = validated_data.pop('fulfillments')
         bounty = Bounty.objects.update(**validated_data)
         for fulfillment_data in fulfillments_data:
-            BountyFulfillment.objects.update(bounty=bounty, **fulfillment_data)
+            bounty_fulfillment = BountyFulfillment.objects.create(bounty=bounty, **fulfillment_data)
+            bounty_invitee = BountyInvites.objects.filter(
+                bounty=bounty,
+                invitee=bounty_fulfillment.profile.user
+            ).first()
+            if bounty_invite:
+                bounty_invitee.status = 'completed'
+                bounty_invitee.save()
         return bounty
 
 
+class BountySerializerSlim(BountySerializer):
+
+
+    class Meta:
+        """Define the bounty serializer metadata."""
+        model = Bounty
+        fields = (
+            'url', 'title', 'experience_level', 'status', 'fulfillment_accepted_on',
+            'fulfillment_started_on', 'fulfillment_submitted_on', 'canceled_on', 'web3_created', 'bounty_owner_address',
+            'avatar_url', 'network', 'standard_bounties_id', 'github_org_name', 'interested', 'token_name', 'value_in_usdt',
+            'keywords', 'value_in_token', 'project_type', 'is_open', 'expires_date', 'latest_activity'
+        )
+
 class BountyViewSet(viewsets.ModelViewSet):
     """Handle the Bounty view behavior."""
-
-    queryset = Bounty.objects.prefetch_related(
-        'fulfillments', 'interested', 'interested__profile', 'activities') \
+    queryset = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile', 'activities', 'unsigned_nda') \
         .all().order_by('-web3_created')
     serializer_class = BountySerializer
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
@@ -135,28 +207,41 @@ class BountyViewSet(viewsets.ModelViewSet):
         """
         param_keys = self.request.query_params.keys()
         queryset = Bounty.objects.prefetch_related(
-            'fulfillments', 'interested', 'interested__profile', 'activities')
+            'fulfillments', 'interested', 'interested__profile', 'activities', 'unsigned_nda')
         if 'not_current' not in param_keys:
             queryset = queryset.current()
 
         queryset = queryset.order_by('-web3_created')
 
         # filtering
-        for key in ['raw_data', 'experience_level', 'project_length', 'bounty_type', 'bounty_owner_address',
-                    'idx_status', 'network', 'bounty_owner_github_username', 'standard_bounties_id',
-                    'permission_type', 'project_type']:
+        event_tag = self.request.query_params.get('event_tag', '')
+        if event_tag:
+            if event_tag == 'all':
+                pass
+            else:
+                try:
+                    evt = HackathonEvent.objects.filter(slug__iexact=event_tag).latest('id')
+                    queryset = queryset.filter(event__pk=evt.pk)
+                except HackathonEvent.DoesNotExist:
+                    return Bounty.objects.none()
+        else:
+            queryset = queryset.filter(event=None)
+
+        for key in ['raw_data', 'experience_level', 'project_length', 'bounty_type', 'bounty_categories',
+                    'bounty_owner_address', 'idx_status', 'network', 'bounty_owner_github_username',
+                    'standard_bounties_id', 'permission_type', 'project_type']:
             if key in param_keys:
                 # special hack just for looking up bounties posted by a certain person
                 request_key = key if key != 'bounty_owner_address' else 'coinbase'
                 val = self.request.query_params.get(request_key, '')
 
-                vals = val.strip().split(',')
-                vals = [val for val in vals if val and val.strip()]
-                if len(vals):
+                values = val.strip().split(',')
+                values = [value for value in values if value and val.strip()]
+                if values:
                     _queryset = queryset.none()
-                    for val in vals:
+                    for value in values:
                         args = {}
-                        args['{}__icontains'.format(key)] = val.strip()
+                        args[f'{key}__icontains'] = value.strip()
                         _queryset = _queryset | queryset.filter(**args)
                     queryset = _queryset
 
@@ -188,7 +273,7 @@ class BountyViewSet(viewsets.ModelViewSet):
 
         # filter by is open or not
         if 'is_open' in param_keys:
-            queryset = queryset.filter(is_open=self.request.query_params.get('is_open') == 'True')
+            queryset = queryset.filter(is_open=self.request.query_params.get('is_open', '').lower() == 'true')
             queryset = queryset.filter(expires_date__gt=datetime.now())
 
         # filter by urls
@@ -196,11 +281,17 @@ class BountyViewSet(viewsets.ModelViewSet):
             urls = self.request.query_params.get('github_url').split(',')
             queryset = queryset.filter(github_url__in=urls)
 
-        # filter by urls
+        # filter by orgs
         if 'org' in param_keys:
-            org = self.request.query_params.get('org')
-            url = f"https://github.com/{org}"
-            queryset = queryset.filter(github_url__contains=url)
+            val = self.request.query_params.get('org', '')
+            values = val.strip().split(',')
+            values = [value for value in values if value and val.strip()]
+            if values:
+                _queryset = queryset.none()
+                for value in values:
+                    org = value.strip()
+                    _queryset = _queryset | queryset.filter(github_url__icontains=f'https://github.com/{org}')
+                queryset = _queryset
 
         # Retrieve all fullfilled bounties by fulfiller_username
         if 'fulfiller_github_username' in param_keys:
@@ -243,8 +334,25 @@ class BountyViewSet(viewsets.ModelViewSet):
             if self.request.query_params.get('misc') == 'hiring':
                 queryset = queryset.exclude(attached_job_description__isnull=True).exclude(attached_job_description='')
 
-        if 'keyword' in param_keys:
-            queryset = queryset.keyword(self.request.query_params.get('keyword'))
+        # Keyword search to search all comma separated keywords
+        queryset_original = queryset
+        if 'keywords' in param_keys:
+            for index, keyword in enumerate(self.request.query_params.get('keywords').split(',')):
+                if index == 0:
+                    queryset = queryset_original.keyword(keyword)
+                else:
+                    queryset |= queryset_original.keyword(keyword)
+
+        if 'is_featured' in param_keys:
+            queryset = queryset.filter(
+                is_featured=self.request.query_params.get('is_featured'),
+                is_open=True,
+            )
+
+        if 'repo_type' in param_keys:
+            queryset = queryset.filter(
+                repo_type=self.request.query_params.get('repo_type'),
+            )
 
         # order
         order_by = self.request.query_params.get('order_by')
@@ -254,19 +362,44 @@ class BountyViewSet(viewsets.ModelViewSet):
         queryset = queryset.distinct()
 
         # offset / limit
-        limit = int(self.request.query_params.get('limit', 100))
-        max_bounties = 100
-        if limit > max_bounties:
-            limit = max_bounties
-        offset = self.request.query_params.get('offset', 0)
-        if limit:
-            start = int(offset)
-            end = start + int(limit)
-            queryset = queryset[start:end]
+        if 'is_featured' not in param_keys:
+            limit = int(self.request.query_params.get('limit', 5))
+            max_bounties = 100
+            if limit > max_bounties:
+                limit = max_bounties
+            offset = self.request.query_params.get('offset', 0)
+            if limit:
+                start = int(offset)
+                end = start + int(limit)
+                queryset = queryset[start:end]
+
+        data = dict(self.request.query_params)
+        data.pop('is_featured', None)
+
+        # save search history, but only not is_featured
+        if 'is_featured' not in param_keys:
+            if self.request.user and self.request.user.is_authenticated:
+                data['nonce'] = int(time.time()  * 1000000)
+                try:
+                    SearchHistory.objects.update_or_create(
+                        user=self.request.user,
+                        data=data,
+                        ip_address=get_ip(self.request)
+                    )
+                except Exception as e:
+                    logger.debug(e)
+                    pass
+
 
         return queryset
 
 
+class BountyViewSetSlim(BountyViewSet):
+    queryset = Bounty.objects.all().order_by('-web3_created')
+    serializer_class = BountySerializerSlim
+
+
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
+router.register(r'bounties/slim', BountyViewSetSlim)
 router.register(r'bounties', BountyViewSet)

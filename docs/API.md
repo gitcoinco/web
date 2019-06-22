@@ -16,14 +16,14 @@ Beyond simple datatypes like `string` or `integer` the API returns datatypes lik
 
 The bounties endpoint provides a listing of bounties and their current status. There are two endpoints that access bounties:
 
-- `https://gitcoin.co/api/v0.1/bounties` - Returns a list of bounties
-- `https://gitcoin.co/api/v0.1/bounties/<bountyId>` - Returns a single bounty by ID.
+- `https://gitcoin.co/api/v0.1/bounties/` - Returns a list of bounties
+- `https://gitcoin.co/api/v0.1/bounties/<bountyId>/` - Returns a single bounty by ID.
 
 #### Fields
 
 | Field Key          |  Datatype          | Description                                                       |
 |--------------------|--------------------|-------------------------------------------------------------------|
-| `url`              | `string`           | URL for this specific bounty Ex: api/v0.1/bounties/9              |
+| `url`              | `string`           | URL for this specific bounty Ex: api/v0.1/bounties/9/              |
 | `created_on`       | `date_time`        | Creation timestamp                                                |
 | `modified_on`      | `date_time`        | Last modified timestamp                                           |
 | `title`            | `string`           | Title of the bounty                                               |
@@ -72,7 +72,7 @@ The bounties endpoint provides a listing of bounties and their current status. T
 
 **Filters**
 
-You can filter the data returned from the API buy providing these keys as URL parameters `experience_level`, `project_length`, `bounty_type`, `bounty_owner_address`, `is_open`, and `github_url`. `github_url` can take a comma-seperated list of GitHub urls
+You can filter the data returned from the API by providing these keys as URL parameters `experience_level`, `project_length`, `bounty_type`, `bounty_owner_address`, `is_open`, and `github_url`. `github_url` can take a comma-seperated list of GitHub urls
 
 **Order By**
 
@@ -158,9 +158,3 @@ _bountydetails function returns the following fields:
 | `created_on`     | `datetime`            | Creation timestamp                                                |
 | `source_project`         | `string`           | Source Project the bounty came from           |
 | `tags`         | `strings`           | tags to classify the bounthy           |
-
-# Bounties Universe API
-
-Access it at `https://gitcoin.co/api/v0.1/universe`
-
-The bounties universe API lists all bounties (offchain) that have not yet been put into the blockchain or (onchain) that aren't in standard bounties :)

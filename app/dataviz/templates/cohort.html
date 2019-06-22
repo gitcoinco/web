@@ -1,7 +1,7 @@
 {% extends "admin/base_site.html" %}
 {% load humanize %}
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -44,7 +44,7 @@
     <!-- code to include the highcharts and jQuery libraries goes here -->
     <!-- load_charts filter takes a comma-separated list of id's where -->
     <!-- the charts need to be rendered to                             -->
-    <script src="{% static "v2/js/jquery.js" %}"></script>
+    <script src="{% static "v2/js/lib/jquery.js" %}"></script>
 </head>
 
 <body>
@@ -53,6 +53,7 @@
             <option {% if args.data_source == "profile-startwork" %}selected{%endif%} >profile-startwork</option>
             <option {% if args.data_source == "profile-new_bounty" %}selected{%endif%} >profile-new_bounty</option>
             <option {% if args.data_source == "profile-login" %}selected{%endif%} >profile-login</option>
+            <option {% if args.data_source == "profile-visit" %}selected{%endif%} >profile-visit</option>
             <option {% if args.data_source == "profile-githubinteraction" %}selected{%endif%} >profile-githubinteraction</option>
             <option {% if args.data_source == "slack-online" %}selected{%endif%} >slack-online</option>
             <option {% if args.data_source == "email-processed" %}selected{%endif%} >email-processed</option>

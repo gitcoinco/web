@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1810px" height="1463px" viewBox="0 0 1810 1463" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.3 (57544) - http://www.bohemiancoding.com/sketch -->
+    <title>Group</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group" transform="translate(9.000000, 10.000000)">
+            <g id="anchors" transform="translate(1291.000000, 689.000000)"></g>
+            <path d="M224.351351,635.649194 L457.648649,375.350806" id="Line" stroke="#25E899" stroke-width="9" stroke-linecap="square" fill-rule="nonzero"></path>
+            <path d="M107.351351,1288.64919 L340.648649,1028.35081" id="Line" stroke="#F9006C" stroke-width="13" stroke-linecap="square" fill-rule="nonzero"></path>
+            <path d="M0.351351351,316.649194 L233.648649,56.3508065" id="Line" stroke="#F9006C" stroke-width="13" stroke-linecap="square" fill-rule="nonzero"></path>
+            <path d="M314.351351,260.649194 L547.648649,0.350806452" id="Line" stroke="#8E2ABE" stroke-width="14" stroke-linecap="square" fill-rule="nonzero"></path>
+            <path d="M697.351351,1060.64919 L930.648649,800.350806" id="Line" stroke="#3E00FF" stroke-width="9" stroke-linecap="square" fill-rule="nonzero"></path>
+            <path d="M550.351351,343.649194 L783.648649,83.3508065" id="Line" stroke="#3E00FF" stroke-width="9" stroke-linecap="square" fill-rule="nonzero"></path>
+            <path d="M617.5,454.5 L949.5,83.5" id="Line" stroke="#25E899" stroke-width="14" stroke-linecap="square" fill-rule="nonzero"></path>
+            <path d="M1458.5,1393.5 L1790.5,1022.5" id="Line" stroke="#F9006C" stroke-width="14" stroke-linecap="square" fill-rule="nonzero"></path>
+            <path d="M1458.5,1393.5 L1790.5,1022.5" id="Line" stroke="#F9006C" stroke-width="14" stroke-linecap="square" fill-rule="nonzero"></path>
+            <path d="M1125.5,371.5 L1457.5,0.5" id="Line" stroke="#F9006C" stroke-width="14" stroke-linecap="square" fill-rule="nonzero"></path>
+            <path d="M1391.5,502.5 L1723.5,131.5" id="Line" stroke="#FFCE08" stroke-width="9" stroke-linecap="square" fill-rule="nonzero"></path>
+            <path d="M1291.5,1060.5 L1623.5,689.5" id="Line" stroke="#0FCE7C" stroke-width="9" stroke-linecap="square" fill-rule="nonzero"></path>
+            <path d="M50.3513514,915.649194 L283.648649,655.350806" id="Path" stroke="#8E2ABE" stroke-width="9" stroke-linecap="square" fill-rule="nonzero"></path>
+            <path d="M117.5,1026.5 L449.5,655.5" id="Path" stroke="#8E2ABE" stroke-width="9" stroke-linecap="square" fill-rule="nonzero"></path>
+            <path d="M450.5,816.5 L782.5,445.5" id="Path" stroke="#0FCE7C" stroke-width="9" stroke-linecap="square" fill-rule="nonzero"></path>
+            <path d="M725.5,1446.5 L1057.5,1075.5" id="Path" stroke="#8E2ABE" stroke-width="9" stroke-linecap="square" fill-rule="nonzero"></path>
+            <path d="M625.5,943.5 L957.5,572.5" id="Path" stroke="#8E2ABE" stroke-width="9" stroke-linecap="square" fill-rule="nonzero"></path>
+            <path d="M891.5,1074.5 L1223.5,703.5" id="Path" stroke="#8E2ABE" stroke-width="9" stroke-linecap="square" fill-rule="nonzero"></path>
+        </g>
+    </g>
+</svg>

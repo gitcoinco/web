@@ -113,12 +113,11 @@
 {% block scripts %}
 <script>
   $('#newtoken').validate();
-  $(document).ready(function() {
-    $('#newtoken input.btn-go').click(function(e){
-      mixpanel.track("New Token Request", {});
-      setTimeout(function(){
+  $(document).ready(() => {
+    $('#newtoken input.btn-go').on('click', () => {
+      setTimeout(() => {
         $('#newtoken input.btn-go').attr('disabled','disabled');
-      },1);
+      }, 1);
     });
   });
 </script>

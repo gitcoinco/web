@@ -20,7 +20,7 @@
     <div class="warning mb-2">{% trans "Warning: the ethereum network is quite congested at the moment." %} <a href="{% url "gas" %}" target="_blank" rel="noopener noreferrer">[{% trans "Stats" %}]</a></div>
   {% endif %}
   <div class="row align-items-center" style="margin: auto -8px">
-    <div class="col-md-5 d-flex justify-content-center gas-dark-bg py-3">
+    <div class="col-md-5 d-flex justify-content-center gas-dark-bg py-2">
       <img class="gas-image" src="{% static "v2/images/gas.png" %}">
       <div id="gas-fee-details" class="text-center pl-3">
         <h5 class="font-subheader green">Your Gas Fee:</h5>
@@ -28,16 +28,16 @@
         <p class="font-body" id="gas-eth"></p>
       </div>
     </div>
-    <div class="col gas-rates">
+    <div class="col gas-rates font-body">
       <div class="message"></div>
-      <div id="default-recommended-gas" data-amount="{{recommend_gas_price_avg | floatformat:3}}" class="py-1 pl-5 recommended-prices"></div>
+      <div id="default-recommended-gas" data-amount="{{recommend_gas_price_avg | floatformat:3}}" class="py-1 px-auto recommended-prices"></div>
       <div id="slow-recommended-gas" data-amount="{{recommend_gas_price_slow | floatformat:3}}" class="py-1 pl-5 recommended-prices"></div>
       <div id="average-recommended-gas" data-amount="{{recommend_gas_price_avg | floatformat:3}}" class="active py-1 pl-5 recommended-prices"></div>
       <div id="fast-recommended-gas" data-amount="{{recommend_gas_price_fast | floatformat:3}}" class="py-1 pl-5 recommended-prices"></div>
     </div>
   </div>
 </div>
-<div id="accordion-set-own-limit" class="py-2">
+<div id="accordion-set-own-limit" class="py-2 font-body">
   Set my own gas limit <i class="fa fa-angle-down mt-1"></i>
 </div>
 <div class="w-100 mt-2 p-2" id="metamask_context" style="border-bottom: 1px solid rgba(0,0,0,0.1);">
@@ -45,12 +45,11 @@
     <div class="warning mb-2">{% trans "Warning: the ethereum network is quite congested at the moment." %} <a href="{% url "gas" %}" target="_blank" rel="noopener noreferrer">[{% trans "Stats" %}]</a></div>
   {% endif %}
   {% include 'shared/gas_advisories.html' %}
-  <label id="metamask_label" style="display:none"><img src="{% url "avatar" %}?repo=https://github.com/MetaMask&v=3" width="20px" height="20px">{% blocktrans %}The following MetaMask settings should give a <span id="confTime">5</span> min confirmation for <span id="ethAmount">unknown</span> ETH (<span id="usdAmount">unknown</span> USD){% endblocktrans %}:
+  <label id="metamask_label" class="font-body" style="display:none"><img class="mr-2" src="{% url "avatar" %}?repo=https://github.com/MetaMask&v=3" width="18px" height="18px">{% blocktrans %}The following MetaMask settings should give a <span id="confTime">5</span> min confirmation for <span id="ethAmount">unknown</span> ETH (<span id="usdAmount">unknown</span> USD){% endblocktrans %}:
   </label>
-  <label id="trust_label" style="display:none"><img src="{% url "avatar" %}?repo=https://github.com/TrustWallet&v=3" width="20px" height="20px">{% blocktrans %}The following Trust settings should give a <span id="confTime">5</span> min confirmation for <span id="ethAmount">unknown</span> ETH (<span id="usdAmount">unknown</span> USD){% endblocktrans %} :
+  <label id="trust_label" class="font-body" style="display:none"><img class="mr-2" src="{% url "avatar" %}?repo=https://github.com/TrustWallet&v=3" width="18px" height="18px">{% blocktrans %}The following Trust settings should give a <span id="confTime">5</span> min confirmation for <span id="ethAmount">unknown</span> ETH (<span id="usdAmount">unknown</span> USD){% endblocktrans %} :
   </label>
-  <br>
-  <div class="metamask_recc">
+  <div class="metamask_recc mt-2">
     <label class="form__label" for="gasLimit">{% trans "Gas Limit (units)" %}</label>
     <input name='gasLimit' id='gasLimit' class="form__input" type="text" disabled="" value="Unknown" />
   </div>
@@ -77,4 +76,3 @@
   document.eth_usd_conv_rate = {{ eth_usd_conv_rate }};
   document.conf_time_spread = {{ conf_time_spread | safe }};
 </script>
-<script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>

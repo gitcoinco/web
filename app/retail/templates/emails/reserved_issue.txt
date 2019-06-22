@@ -1,0 +1,4 @@
+{% load i18n  %}
+{% trans "Good news! An issue has been reserved for you on gitcoin. Please start working on the issue, in the next 72 hours, before it is opened up for other bounty hunters to try as well. " %}
+{% include 'emails/bounty.txt' with bounty=bounty %}
+{% trans "As always, if you have questions, please reach out to the project owner!" %}

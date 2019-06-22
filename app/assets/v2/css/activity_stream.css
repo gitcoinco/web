@@ -8,10 +8,8 @@
 }
 
 .box {
-  padding: 14px;
-  border: 1px solid #DBDBDB;
-  border-radius: 3px;
-  margin: 0;
+  padding: 1.2rem;
+  border-bottom: 1px solid #DBDBDB;
 }
 
 #avatar_url .avatar {
@@ -34,6 +32,14 @@
   color: #0D0764;
 }
 
-#activity_stream .tag {
+.tag {
   display: inline-block;
+}
+
+.bounty_removed_by_funder .activity-tags .tag,
+.bounty_removed_by_staff .activity-tags .tag,
+.bounty_abandonment_escalation_to_mods .activity-tags .tag,
+.bounty_abandonment_warning .activity-tags .tag,
+.activity.new_kudos .activity-tags .tag {
+  display: none;
 }

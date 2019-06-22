@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 22.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="HAIR_FRONT" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 899.2 1415.7" style="enable-background:new 0 0 899.2 1415.7;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#ed2027;}
+	.st1{fill:#231F20;}
+</style>
+<title>mohawk</title>
+<path class="st0" d="M490.4,332.4c-60.9,10-86.7-46.5-86.7-46.5l17.5-126.2l17.5-126.2l56.9,114l56.9,114
+	C552.6,261.4,551.2,322.4,490.4,332.4z"/>
+<path class="st1" d="M465.9,334.8c-61.7,0-78-59.9-78-59.9l37.7-121.7l37.7-121.7L501,153.1l37.7,121.7
+	C538.7,274.8,527.5,334.8,465.9,334.8z"/>
+<path class="st0" d="M426.5,330.3c-59.6-16-59.8-78.1-59.8-78.1l68-107.8l68-107.8l4.9,127.3l4.9,127.3
+	C512.4,291.2,486,346.2,426.5,330.3z"/>
+</svg>

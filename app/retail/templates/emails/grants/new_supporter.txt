@@ -1,0 +1,24 @@
+{% load i18n humanize %}
+
+{% trans "New Supporter." %}
+
+{% trans "You have a new supporter!" %}
+
+{{ subscriber.contributor_profile.avatar_url }}
+
+{{ subscriber.contributor_profile }}
+
+{{ subscription.subscription_hash }}
+
+{{ subscription.amount_per_period|floatformat:4|intcomma }}
+
+{% trans " has begun contributing" %}
+
+{{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }} {% trans "per" %} {{ subscription.frequency }} {{ subscription.frequency_unit }}
+
+{% trans "You can see the transaction on etherscan" %} at
+{% if subscription.network == 'mainnet' %}
+  http://etherscan.io/tx/{{ subscription.sub_new_approve_tx_id }}
+{% else %}
+  http://{{ grant.network }}.etherscan.io/tx/{{ subscription.sub_new_approve_tx_id }}
+{% endif %}

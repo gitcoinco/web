@@ -1,0 +1,189 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' with slim=1 %}
+    {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href={% static "v2/css/tabs.css" %}>
+    <style>
+      #grant-quickstart-tabs-sections img {
+        max-width: 15rem;
+      }
+
+      .minihero .header-line {
+        color: #fff;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      a.btn-gc-blue {
+        color: #fff !important;
+        padding-left: 5rem;
+        padding-right: 5rem;
+      }
+
+      p a,
+      #quickstart-referrer {
+        color: #3E00FF;
+        text-decoration: none;
+      }
+
+      #quickstart-referrer {
+        position: absolute;
+        right: 1rem;
+        z-index: 2;
+      }
+    </style>
+  </head>
+  <body class="interior {{ active }} g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'grants/nav.html' %}
+      {% include 'shared/minihero.html' with h1='Getting Started with Grants' suppress_logo=1 position_h1_below_logo=True hide_rain=True %}
+    </div>
+
+    <div class="container pt-5 font-body">
+      <div class="col-12 offset-lg-1 col-lg-10">
+        <a id="quickstart-referrer" href="#"><i class="fas fa-chevron-left"></i> Take me back</a>
+        <div id="grant-quickstart-tabs" class="tab-container mb-3">
+          <button type="button" id="fund" class="section-tab">{%trans "Fund a Grant" %}</button>
+          <button type="button" id="start" class="section-tab">{%trans "Start a Grant" %}</button>
+        </div>
+
+        <div id="grant-quickstart-tabs-sections" class="tab-sections section mt-4">
+          <div id="section-fund" class="tab-section active">
+            <div class="container px-0">
+              <div class="row mb-3 py-2 px-md-0 mx-sm-0">
+                <div class="col-12 col-md-8 px-md-0">
+                  <h1 class="font-title-lg">{%trans "Fund a Grant" %}</h1>
+                  <p class="my-4">
+                    {%trans "With Gitcoin Grants, you can support exciting projects with a recurring subscription." %} <br>
+                    {%trans "Here are some tips for funding a grant:" %}
+                  </p>
+
+                  <div class="mb-3 pb-1">
+                    <h2 class="font-title">{%trans "Know what you’re funding" %}</h2>
+                    <p>
+                      {%trans "Read the project’s description thoroughly. What is this project about?" %}<br>
+                      {%trans "Who’s behind it? Does this bring value to me or the ecosystem?" %}
+                    </p>
+                  </div>
+                  <div class="mb-3 pb-1">
+                    <h2 class="font-title">{%trans "Contribute with any ERC-20 token" %}</h2>
+                    <p>
+                      {%trans "If the grant owner does not specify a required token, you can contribute with any token!" %}<br>
+                      {%trans "WETH, DAI. It’s up to you." %}
+                    </p>
+                  </div>
+                  <div class="mb-3 pb-1">
+                    <h2 class="font-title">{%trans "It’s not just about the money" %}</h2>
+                    <p>
+                      {%trans "Have ideas on how to improve the project?" %}<br>
+                      {%trans "Feel free to chime in on the included GitHub repo! Remember, be kind." %}
+                    </p>
+                  </div>
+                </div>
+                <div class="col-12 col-md-4 my-auto text-center d-none d-md-block">
+                  <img src="{% static "v2/images/grants/quickstart/fund.svg" %}">
+                </div>
+                <div class="col-12 text-center font-subheader">
+                  <h3 class="font-subheader my-3">{%trans "Ready to fund a grant?" %}</h3>
+                  <a class="btn btn-gc-blue" href="{% url 'grants:grants' %}">{%trans "Fund a Grant" %}</a>
+                  <p class="font-body mt-3">
+                    {%trans "Have any questions?" %} <br>
+                    {%trans "Reach out to a Gitcoin Core Team member on" %}
+                    <a href="{% url 'slack' %}" target="_blank" rel="noopener noreferrer">
+                      Slack
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="section-start" class="tab-section">
+            <div class="container px-0">
+              <div class="row mb-3 py-2 px-md-0 mx-sm-0">
+                <div class="col-12 col-md-7 px-0">
+                  <h1 class="font-title-lg">{%trans "Start a Grant" %}</h1>
+                  <p class="my-4">
+                    {%trans "Gitcoin Grants allows developers like you to get recurring cashflow for working on projects you’re most excited about." %} <br>
+                    {%trans "Here are some tips for starting your own grant!" %}
+                  </p>
+
+                  <div class="mb-3 pb-1">
+                    <h2 class="font-title">{%trans "Have a clear project title and description" %}</h2>
+                    <p>
+                      {%trans "Some questions to ponder over: How does the project work?" %}<br>
+                      {%trans "How does it deliver value to the ecosystem?" %}
+                    </p>
+                  </div>
+                  <div class="mb-3 pb-1">
+                    <h2 class="font-title">{%trans "Supports any ERC-20 token" %}</h2>
+                    <p>
+                      {%trans "You can request for a grant with a specific ERC-20 token or leave the choice to your grant supporters!" %}
+                    </p>
+                  </div>
+                  <div class="mb-3 pb-1">
+                    <h2 class="font-title">{%trans "Introduce yourself or your team" %}</h2>
+                    <p>
+                      {%trans "Not every potential funder will know who you are. Let them know who you are, who’s on your team, and why you’re the right person for the project." %}
+                    </p>
+                  </div>
+                </div>
+                <div class="col-12 col-md-5 my-auto text-center d-none d-md-block">
+                  <img src="{% static "v2/images/grants/quickstart/start.svg" %}">
+                </div>
+                <div class="col-12 text-center font-subheader">
+                  <h3 class="font-subheader my-3">{%trans "Ready to start a grant?" %}</h3>
+                  <a class="btn btn-gc-blue" href="{% url 'grants:new' %}">{%trans "Start a Grant" %}</a>
+                  <p class="font-body mt-3">
+                    {%trans "Have any questions?" %} <br>
+                    {%trans "Reach out to a Gitcoin Core Team member on" %}
+                    <a href="{% url 'slack' %}" target="_blank" rel="noopener noreferrer">
+                      Slack
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% include 'grants/faq.html' %}
+
+  </body>
+  {% include 'shared/analytics.html' %}
+  {% include 'shared/footer_scripts.html' %}
+  {% include 'shared/footer.html' %}
+  <script src="{% static "v2/js/pages/tabs.js" %}"></script>
+  <script>
+    $(document).ready(function() {
+      setupTabs('#grant-quickstart-tabs');
+      const url = document.referrer;
+      if(url.includes('grants/profile') || url.includes('grants/new')) {
+        localStorage['grants_quickstart_disable'] = 'true';
+        $('#quickstart-referrer').attr('href', url);
+      } else {
+        $('#quickstart-referrer').hide();
+      }
+    });
+  </script>
+<html>

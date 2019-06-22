@@ -1,0 +1,101 @@
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' with slim=1 %}
+    {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/grants/milestones.css" %}">
+  </head>
+  <body class="interior {{ active }} grant">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'grants/nav.html' %}
+    </div>
+
+    <div class="container">
+      <div class="row justify-content-md-center mt-3">
+        <div class="milestones-form col-sm-12 col-md-12 col-lg-8 px-md-5 py-4 my-lg-5">
+          <div class="mt-4">
+            <p class="font-title-xl text-center">{% trans "Current Milestones" %}</p>
+            <a class="font-weight-semibold" href="{% url 'grants:details' grant.id grant.slug %}">{% trans "Back to" %} {{ grant.title }}</a>
+          </div>
+          <div class="milestones-container mt-2 mb-4">
+            {% if milestones %}
+              <ul class="milestones-list">
+                {% for milestone in milestones %}
+                  <li>
+                    <div class="milestone-title mb-1 font-weight-semibold">{{ milestone.title }}</div>
+                    <div class="milestone-date">
+                      <p id="due_label">{% trans 'Due Date - ' %}{{ milestone.due_date }}</p>
+                      {% if milestone.completion_date %}
+                        {% trans 'Date Completed - ' %}{{ milestone.completion_date }}
+                      {% else %}
+                        <form method="POST" action="{% url 'grants:milestones' grant.id grant.slug %}">
+                          {% csrf_token %}
+                          <input type="hidden" name="method" value="">
+                          <input type="hidden" name="milestone_id" value="{{milestone.id}}">
+                          <p id="completed_label">{% trans 'Date Completed - ' %} <input type="texr" class="ml-1 mr-2" name="completion_date" id="completion_date" required/></p>
+                          <a data-form-method="DELETE" class="button button--warning">{% trans "Delete" %}</a>
+                          <a data-form-method="PUT" class="button button--primary">{% trans "Complete" %}</a>
+                        </form>
+                      {% endif %}
+                    </div>
+                    <p class="milestone-description">{{ milestone.description }}</p>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p class="font-title text-center">
+                <i class="fas fa-hiking"></i>
+                {% trans "No milestones currently set for this grant." %}
+              </p>
+            {% endif %}
+          </div>
+          <div class="pt-5 my-4 text-center">
+            <h1 class="font-title-xl">{% trans "Create Milestones for " %}{{ grant.title }}</h1>
+          </div>
+          <div class="milestones-input">
+            <form action="{% url 'grants:milestones' grant.id grant.slug %}" method="POST">
+              {% csrf_token %}
+              <input type="hidden" name="method" value="POST">
+              <div class="form__group-horizontal mb-5">
+                <div class="row">
+                  <div class="col-12">
+                    {{ form.title }}
+                    {{ form.title.errors }}
+                    {{ form.description }}
+                    {{ form.description.errors }}
+                    {{ form.due_date }}
+                    {{ form.due_date.errors }}
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 mt-4 text-center">
+                <button class="btn btn-gc-blue">{% trans "Create Milestone" %}</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+  </body>
+
+  <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
+  <script src="{% static "v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/shared.js" %}"></script>
+  <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/ipfs.js" %}"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/lib/moment.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+  <script src="{% static "v2/js/grants/milestones.js" %}"></script>
+
+</html>

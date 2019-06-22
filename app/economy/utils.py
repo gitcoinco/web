@@ -17,6 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+from cacheops import cached_as
 from economy.models import ConversionRate
 
 
@@ -46,6 +47,13 @@ def convert_amount(from_amount, from_currency, to_currency, timestamp=None):
         float: The amount in to_currency.
 
     """
+
+    # hack to handle WETH
+    if from_currency == 'WETH':
+        from_currency = 'ETH'
+    if to_currency == 'WETH':
+        to_currency = 'ETH'
+    
     if timestamp:
         conversion_rate = ConversionRate.objects.filter(
             from_currency=from_currency,

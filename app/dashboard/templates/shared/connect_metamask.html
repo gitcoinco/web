@@ -1,0 +1,38 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<div id="connect_metamask_error" class="metamask-error container-fluid" style="display: none;">
+  <div class="row align-items-center px-4 py-5 text-center text-lg-left mx-lg-5">
+    <div class="col-lg-6 offset-xl-1 col-xl-5 col-sm-12 py-5 px-5">
+      <h3>{% trans "To continue," %} <br>
+        {% trans "you'll need to connect Metamask." %}</h3>
+      <p class="my-4">{% trans "Please connect MetaMask and refresh this page to continue." %}</p>
+      <button class="btn btn-metamask btn-lg-padding" onclick="approve_metamask()">{% trans 'Connect Metamask' %}</button>
+      <p class="mt-4 font-smaller-2">{% trans "Can't get web3 to work?" %}   <a href="https://github.com/gitcoinco/gitcoinco/issues/4" target="_blank" rel="noopener noreferrer">{% trans "Get help here." %}</a></p>
+    </div>
+    <div class="col-lg-6 col-xl-5 col-sm-12 text-center">
+      <img src="{% static "v2/images/metamask/connect-metamask.svg" %}" alt="Metamask Logo" class="mw-100">
+    </div>
+  </div>
+</div>
+
+<style>
+  #connect_metamask_error #metamask_connect {
+    position: relative;
+    bottom: 2px;
+  }
+</style>

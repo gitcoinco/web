@@ -1,0 +1,155 @@
+{% load static humanize i18n grants_extra %}
+<div class="px-0">
+  <div class="row mb-3 py-2 px-0 mx-sm-0">
+    <div class="col-12 px-0">
+      {% if subscriptions %}
+        <div id="active-subscriptions">
+          <p class="font-body font-weight-semibold subtitle mb-0">
+            <i class="g-icon g-icon__dot-circle mr-2"></i>{% trans "Active Subscriptions" %}
+          </p>
+          {% for subscription in subscriptions %}
+            <div class="py-3 mx-sm-0 row transaction-history">
+              <div class="col-2 font-subheader text-center text-md-left my-auto">
+                {{ subscription.created_on|date:"d M Y" }}
+              </div>
+              <div class="col-2 col-md-1 justify-content-center special_tag">
+                <a href="{% url 'profile' subscription.contributor_profile.handle %}">
+                  <img class="avatar rounded-circle" src="{{ subscription.contributor_profile.avatar_url }}">
+                </a>
+              </div>
+              <div class="col-4 my-auto">
+                <div class="font-weight-semibold font-body">
+                  <a href="{% url 'profile' subscription.contributor_profile.handle %}">
+                    {{ subscription.contributor_profile }}
+                  </a>
+                </div>
+                <div class="info font-caption">
+                  {{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }} 
+                  {% if subscription.num_tx_approved > 1 %}
+                    / {{ subscription.frequency }} {{ subscription.frequency_unit }},
+                  {% endif %}
+                  {{subscription.num_tx_approved|floatformat}} time{{ subscription.num_tx_approved|pluralize }}
+                </div>
+              </div>
+              <div class="d-none d-md-block col-4 col-md-2 my-auto font-body">
+                <a class="sub_tx_link" href="https://etherscan.io/tx/{{ subscription.new_approve_tx_id }}" target="_blank" rel="noopener noreferrer">
+                  View Etherscan
+                </a>
+              </div>
+              <div class="offset-lg-1 col-4 col-md-2 my-auto tags font-caption">
+                <div class="tag tag-lg token">
+                  <p>
+                    {{ subscription.amount_per_period|floatformat:4|intcomma }}
+                    <span>{{ subscription.token_symbol }}</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+      {% if contributions %}
+        <hr>
+        <div id="contributions">
+          <p class="font-body font-weight-semibold subtitle mb-0">
+            <i class="g-icon g-icon__dot-circle mr-2"></i>  {% trans "Contributions" %}
+          </p>
+          {% for transaction in contributions %}
+            <div class="py-3 mx-sm-0 row transaction-history">
+              <div class="col-2 font-subheader text-center text-md-left my-auto">
+                {{ transaction.created_on|date:"d M Y" }}
+              </div>
+              <div class="col-2 col-md-1 justify-content-center special_tag">
+                <a href="{% url 'profile' transaction.subscription.contributor_profile.handle %}">
+                  <img class="avatar rounded-circle" src="{{ transaction.subscription.contributor_profile.avatar_url }}">
+                </a>
+              </div>
+              <div class="col-4 my-auto">
+                <div class="font-weight-bold font-body">
+                  <a href="{% url 'profile' transaction.subscription.contributor_profile.handle %}">
+                    {{ transaction.subscription.contributor_profile }}
+                  </a>
+                </div>
+                <div class="info font-caption">
+                  {{ transaction.subscription.amount_per_period|floatformat:4|intcomma }} {{ transaction.subscription.token_symbol }}
+                  {% if not transaction.tx_cleared %} (Pending) {% endif %}
+                  {% if not transaction.success %} (Failed) {% endif %}
+                </div>
+              </div>
+              <div class="d-none d-md-block col-md-2 font-body my-auto txn-link">
+                <a class="tx_link" href="https://etherscan.io/tx/{{ transaction.tx_id }}" target="_blank" rel="noopener noreferrer">
+                  View Etherscan
+                </a>
+              </div>
+              <div class="offset-lg-1 col-4 col-md-2 my-auto tags font-caption">
+                <div class="tag tag-lg token">
+                  <p>
+                    {{ transaction.subscription.amount_per_period|floatformat:4|intcomma }}
+                    <span>{{ transaction.subscription.token_symbol }}</span>
+                  </p>
+                </div>
+                {% if transaction.value_in_usdt_now %}
+                  <div class="tag tag-lg usd">
+                    <p>
+                      {{ transaction.value_in_usdt_now }}
+                      <span>USD</span>
+                    </p>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+      {% if cancelled_subscriptions %}
+        <hr>
+        <div id="cancelled-subscriptions">
+          <p class="font-body font-weight-semibold subtitle mb-0">
+            <i class="g-icon g-icon__dot-circle mr-2"></i> {% trans "Inactive Subscriptions" %}
+          </p>
+          {% for subscription in cancelled_subscriptions %}
+          <div class="py-3 mx-sm-0 row transaction-history">
+            <div class="col-2 font-subheader text-center text-md-left my-auto">
+              {{ subscription.created_on|date:"d M Y" }}
+            </div>
+            <div class="col-2 col-md-1 justify-content-center special_tag">
+              <a href="{% url 'profile' subscription.contributor_profile.handle %}">
+                <img class="avatar rounded-circle" src="{{ subscription.contributor_profile.avatar_url }}">
+              </a>
+            </div>
+            <div class="col-4 my-auto">
+              <div class="font-weight-semibold font-body">
+                <a href="{% url 'profile' subscription.contributor_profile.handle %}">
+                  {{ subscription.contributor_profile }}
+                </a>
+              </div>
+              <div class="info font-caption">
+                {{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }} 
+                {% if subscription.num_tx_approved > 1 %}
+                  / {{ subscription.frequency }} {{ subscription.frequency_unit }},
+                {% endif %}
+                {{subscription.num_tx_approved|floatformat}} time{{ subscription.num_tx_approved|pluralize }}
+              </div>
+            </div>
+            <div class="d-none d-md-block col-md-2 my-auto font-body">
+              {% if subscription.cancel_tx_id != '0x0' %}
+                <a class="cancel_tx_link" href="https://etherscan.io/tx/{{ subscription.cancel_tx_id }}" target="_blank" rel="noopener noreferrer">
+                  View Etherscan
+                </a>
+              {% endif %}
+            </div>
+            <div class="col-4 col-md-2 offset-lg-1 my-auto tags font-caption">
+              <div class="tag tag-lg token">
+                <p>
+                  {{ subscription.amount_per_period|floatformat:4|intcomma }}
+                  <span>{{ subscription.token_symbol }}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>

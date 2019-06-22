@@ -1,8 +1,11 @@
 import email
 import imaplib
 import logging
+import os
 import re
 import time
+from hashlib import sha1
+from secrets import token_hex
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -14,7 +17,8 @@ from django.utils.translation import LANGUAGE_SESSION_KEY
 
 import geoip2.database
 import requests
-from dashboard.models import Profile
+from avatar.models import SocialAvatar
+from avatar.utils import get_svg_templates, get_user_github_avatar_image
 from geoip2.errors import AddressNotFoundError
 from git.utils import _AUTH, HEADERS, get_user
 from ipware.ip import get_real_ip
@@ -36,7 +40,65 @@ class NotEqual(Lookup):
         lhs, lhs_params = self.process_lhs(compiler, connection)
         rhs, rhs_params = self.process_rhs(compiler, connection)
         params = lhs_params + rhs_params
-        return f'%s <> %s' % (lhs, rhs), params
+        return f'{lhs} <> {rhs}', params
+
+
+def get_query_cache_key(compiler):
+    """Generate a cache key from a SQLCompiler.
+
+    This cache key is specific to the SQL query and its context
+    (which database is used).  The same query in the same context
+    (= the same database) must generate the same cache key.
+
+    Args:
+        compiler (django.db.models.sql.compiler.SQLCompiler): A SQLCompiler
+            that will generate the SQL query.
+
+    Returns:
+        int: The cache key.
+
+    """
+    sql, params = compiler.as_sql()
+    cache_key = f'{compiler.using}:{sql}:{[str(p) for p in params]}'
+    return sha1(cache_key.encode('utf-8')).hexdigest()
+
+
+def get_table_cache_key(db_alias, table):
+    """Generates a cache key from a SQL table.
+
+    Args:
+        db_alias (str): The alias of the used database.
+        table (str): The name of the SQL table.
+
+    Returns:
+        int: The cache key.
+
+    """
+    cache_key = f'{db_alias}:{table}'
+    return sha1(cache_key.encode('utf-8')).hexdigest()
+
+
+def get_raw_cache_client(backend='default'):
+    """Get a raw Redis cache client connection.
+
+    Args:
+        backend (str): The backend to attempt connection against.
+
+    Raises:
+        Exception: The exception is raised/caught if any generic exception
+            is encountered during the connection attempt.
+
+    Returns:
+        redis.client.StrictRedis: The raw Redis client connection.
+            If an exception is encountered, return None.
+
+    """
+    from django_redis import get_redis_connection
+    try:
+        return get_redis_connection(backend)
+    except Exception as e:
+        logger.error(e)
+        return None
 
 
 def get_short_url(url):
@@ -100,6 +162,7 @@ def setup_lang(request, user):
         DoesNotExist: The exception is raised if no profile is found for the specified handle.
 
     """
+    from dashboard.models import Profile
     profile = None
     if user.is_authenticated and hasattr(user, 'profile'):
         profile = user.profile
@@ -113,7 +176,15 @@ def setup_lang(request, user):
         request.session.modified = True
 
 
+def get_upload_filename(instance, filename):
+    salt = token_hex(16)
+    file_path = os.path.basename(filename)
+    return f"docs/{getattr(instance, '_path', '')}/{salt}/{file_path}"
+
+
 def sync_profile(handle, user=None, hide_profile=True):
+    from dashboard.models import Profile
+    handle = handle.strip().replace('@', '').lower()
     data = get_user(handle)
     email = ''
     is_error = 'name' not in data.keys()
@@ -137,6 +208,19 @@ def sync_profile(handle, user=None, hide_profile=True):
     try:
         profile, created = Profile.objects.update_or_create(handle=handle, defaults=defaults)
         print("Profile:", profile, "- created" if created else "- updated")
+        orgs = get_user(handle, '/orgs')
+        profile.organizations = [ele['login'] for ele in orgs]
+        keywords = []
+        for repo in profile.repos_data_lite:
+            language = repo.get('language') if repo.get('language') else ''
+            _keywords = language.split(',')
+            for key in _keywords:
+                if key != '' and key not in keywords:
+                    keywords.append(key)
+
+        profile.keywords = keywords
+        profile.save()
+
     except Exception as e:
         logger.error(e)
         return None
@@ -148,6 +232,22 @@ def sync_profile(handle, user=None, hide_profile=True):
 
     if email and profile:
         get_or_save_email_subscriber(email, 'sync_profile', profile=profile)
+
+    if profile and not profile.github_access_token:
+        token = profile.get_access_token(save=False)
+        profile.github_access_token = token
+        profile.save()
+
+    if profile and not profile.avatar_baseavatar_related.last():
+        github_avatar_img = get_user_github_avatar_image(profile.handle)
+        if github_avatar_img:
+            try:
+                github_avatar = SocialAvatar.github_avatar(profile, github_avatar_img)
+                github_avatar.save()
+                profile.activate_avatar(github_avatar.pk)
+                profile.save()
+            except Exception as e:
+                logger.warning(f'Encountered ({e}) while attempting to save a user\'s github avatar')
 
     return profile
 
@@ -284,3 +384,52 @@ def get_country_from_ip(ip_address, db=None):
 def clean_str(string):
     """Clean the provided string of all non-alpha numeric characters."""
     return re.sub(r'\W+', '', string)
+
+
+def get_default_network():
+    if settings.DEBUG:
+        return 'rinkeby'
+    return 'mainnet'
+
+
+def get_semaphore(namespace, count=1, db=None, blocking=False, stale_client_timeout=60):
+    from redis import Redis
+    from redis_semaphore import Semaphore
+    from urllib.parse import urlparse
+    redis = urlparse(settings.SEMAPHORE_REDIS_URL)
+
+    if db is None:
+        db = int(redis.path.lstrip('/'))
+
+    semaphore = Semaphore(
+        Redis(host=redis.hostname, port=redis.port, db=db),
+        count=count,
+        namespace=namespace,
+        blocking=blocking,
+        stale_client_timeout=stale_client_timeout,
+    )
+    return semaphore
+
+
+def release_semaphore(namespace, semaphore=None):
+    if not semaphore:
+        semaphore = get_semaphore(namespace)
+
+    token = semaphore.get_namespaced_key(namespace)
+    semaphore.signal(token)
+
+
+def get_profile(request):
+    """Get the current profile from the provided request.
+
+    Returns:
+        dashboard.models.Profile: The current user's Profile.
+
+    """
+    is_authed = request.user.is_authenticated
+    profile = getattr(request.user, 'profile', None) if is_authed else None
+
+    if is_authed and not profile:
+        profile = sync_profile(request.user.username, request.user, hide_profile=False)
+
+    return profile

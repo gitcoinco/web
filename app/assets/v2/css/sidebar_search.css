@@ -1,24 +1,40 @@
 .sidebar_search {
-  margin-left: 10px;
-  margin-right: 10px;
-  padding: 20px 20px 10px;
+  padding: 20px 20px 10px 40px;
 }
 
 .subheading {
   color: #5B5C5C;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  text-transform: uppercase;
-  font-family: 'Muli', sans-serif;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
   font-weight: 600;
 }
 
-.sidebar_search .options {
-  font-size: 14px;
+.subheading i {
+  position: relative;
+  top: -1px;
+  font-size: 0.8rem;
+}
+
+#expand,
+#minimize {
+  display: none;
+}
+
+.close-icon {
+  position: absolute;
+  top: 13px;
+  right: 25px;
+  width: 15px;
+  display: none;
+  cursor: pointer;
 }
 
 .sidebar_search .options .option {
   margin-bottom: 2px;
+}
+
+.sidebar_search .option.Azure-Samples img {
+  border-radius: 0px !important;
 }
 
 .option label:before,
@@ -33,8 +49,8 @@
 }
 
 .option label:after {
-  border: 1px solid #000;
-  background: #F2F6F9;
+  border: 1px solid #D3D3D3;
+  background: #FFF;
 }
 
 .sidebar_search label,
@@ -44,6 +60,14 @@
 
 .sidebar_search #clear {
   margin-top: 2px;
+  color: #3E00FF;
+}
+
+#new_search {
+  color: #3E00FF;
+  position: absolute;
+  right: 10px;
+  top: 11px;
 }
 
 .filter-label {
@@ -52,13 +76,40 @@
 }
 
 .sidebar_search .col {
-  border-bottom: 1px solid #D3D6E2;
-}
-
-.sidebar_search .col:last-child {
-  border-bottom: none;
+  border-top: 1px solid #D3D3D3;
 }
 
 .accordion:after {
   color: #5B5C5C;
+}
+
+.panel .col {
+  margin-bottom: 1rem;
+}
+
+.panel .col:first-child {
+  border-top: none;
+}
+
+@media (max-width: 991.98px) {
+  #sidebar_container form {
+    height: 0;
+    display: none;
+  }
+
+  #expand {
+    display: inherit;
+  }
+
+  .search_bar div {
+    padding-right: 15px !important;
+  }
+}
+
+@media (max-width: 1199.98px) {
+  .sidebar_search {
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 20px 20px 10px;
+  }
 }

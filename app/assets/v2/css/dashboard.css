@@ -1,5 +1,4 @@
 body {
-  font-family: 'Muli', sans-serif;
   background: #FFFFFF;
 }
 
@@ -74,13 +73,8 @@ body {
 
 .title-row {
   display: flex;
-  margin-top: 2em;
-  padding-bottom: 5px;
+  float: right;
   border-bottom: 2px solid #3E24FB;
-}
-
-#filter {
-  color: #3e24fb;
 }
 
 .bounty-info {
@@ -90,25 +84,21 @@ body {
 
 #stats {
   padding-left: 5px;
-  font-family: 'Muli', sans-serif;
   font-weight: 300;
   color: #7A7A7A;
 }
 
-#matches {
-  font-family: 'Muli', sans-serif;
-  font-weight: 300;
-  padding-left: 10px;
-}
-
 .title {
   text-transform: capitalize;
+  font-weight: 600;
 }
 
 .bounty_row {
   color: #000000;
   text-decoration: none;
-  padding: 10px 20px 10px 4em;
+  padding: 10px 3rem 10px 1rem;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .bounty_row .avatar-container {
@@ -164,8 +154,6 @@ body {
 }
 
 .bounty-detail .info {
-  font-family: 'Muli', sans-serif;
-  font-weight: 300;
   color: #666666;
 }
 
@@ -180,6 +168,11 @@ body {
 
 .tags {
   display: flex;
+  flex-wrap: wrap;
+}
+
+.tags.fixed {
+  padding-bottom: 1rem;
 }
 
 #onboard-footer {
@@ -197,25 +190,18 @@ body {
   }
 }
 
-@media (min-width: 992px) and (max-width: 1024px) {
-
+@media (max-width: 991.98px) {
   .bounty_row {
     padding-left: 1rem;
-    padding-right: 2rem;
+    padding-right: 1rem;
   }
-}
-
-@media (max-width: 991.98px) {
 
   #onboard-dashboard .robot {
     display: none;
   }
-}
 
-@media (min-width: 768px) {
-
-  .tag.shift_left {
-    margin-left: -100px;
+  .bounty_row .avatar-container {
+    display: none !important;
   }
 }
 
@@ -224,15 +210,6 @@ body {
   #onboard-dashboard .col-12 {
     padding-left: 3em;
     padding-right: 3em;
-  }
-
-  #filter {
-    padding-left: 20px;
-  }
-
-  .bounty_row {
-    padding-left: 1em;
-    padding-right: 2em;
   }
 
   .bounty-info {
@@ -246,16 +223,57 @@ body {
   }
 }
 
-@media (max-width: 767.98px) {
-
-  .bounty_row .avatar-container {
-    display: none !important;
-  }
+.hiring-alt {
+  font-size: 11px;
+  color: #4A90E2;
+  font-weight: 700;
+  letter-spacing: 1.7px;
 }
 
-@media (min-width: 768px) {
+.status-open {
+  color: #00A652;
+}
 
-  .bounty-detail {
-    margin-right: 4rem;
-  }
+.status-started {
+  color: #0D0764;
+}
+
+.status-submitted {
+  color: #008EFF;
+}
+
+.status-done {
+  color: #666666;
+}
+
+.status-cancelled,
+.status-expired {
+  color: #C70018;
+}
+
+.separator-bull {
+  margin: 0 0.6em;
+}
+
+.separator-bull:after {
+  content: '\2022'
+}
+
+.btn-expand-token {
+  position: absolute;
+  line-height: 1.5rem;
+  border: 0;
+  background-color: transparent;
+  font-weight: 400;
+  color: #007bff;
+}
+
+.btn-expand-token:focus {
+  color: #007bff;
+}
+
+.expired-icon {
+  font-size: 15px;
+  padding-right: 0.5em;
+  vertical-align: text-bottom;
 }

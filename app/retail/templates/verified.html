@@ -1,0 +1,137 @@
+{% comment %}
+  Copyright (C) 2019 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+    <meta name="title" content="Verified Contributors | Gitcoin">
+    <meta name="description" content="Verified contributor guidelines including application, FAQ, and additional information.">
+    <style>
+      .faq-item {
+        border-bottom: 1px solid #ccc;
+        padding: 5px 0px 5px 0px;
+        margin: auto;
+      }
+      .verified-title {
+        line-height: 1.5;
+      }
+    </style>
+  </head>
+  <!-- Change before this line later -->
+  <body class="{{active}} g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    <div class="container-fluid header">
+      {% include 'shared/nav.html' %}
+
+      <div class="minihero row pt-5 pb-5 text-center">
+        <div class="col-12 header-line font-weight-normal white">Verified Contributor</div>
+        <div class="col-12 pt-3">
+          <img src="{% static "v2/images/robot-verified.svg" %}" />
+        </div>
+        {% include 'shared/rain.html' with class="grey" %}
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-6">
+          <h1 class="h4 verified-title"><strong>Verified Contributors</strong> are outstanding contributors who have proven themselves by doing awesome work.</h1>
+        </div>
+      </div>
+      <div class="row pt-5 align-items-center">
+        <div class="col-12 col-lg-6 text-center">
+          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="461" height="332" viewBox="0 0 461 332" class="mw-100"><defs><rect id="b" width="402" height="233" x="30" y="65" rx="10"/><filter id="a" width="106.5%" height="111.2%" x="-3.2%" y="-4.7%" filterUnits="objectBoundingBox"><feMorphology in="SourceAlpha" operator="dilate" radius="1" result="shadowSpreadOuter1"/><feOffset dy="2" in="shadowSpreadOuter1" result="shadowOffsetOuter1"/><feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="3"/><feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"/></filter><rect id="d" width="353" height="146" x="55" y="121" rx="5"/><filter id="c" width="104.5%" height="111%" x="-2.3%" y="-4.8%" filterUnits="objectBoundingBox"><feMorphology in="SourceAlpha" operator="dilate" radius=".5" result="shadowSpreadOuter1"/><feOffset dy="1" in="shadowSpreadOuter1" result="shadowOffsetOuter1"/><feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="2"/><feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"/></filter><path id="e" d="M19.621 4.953a.235.235 0 0 1 .379.184v7.988C20 14.16 19.16 15 18.125 15H1.875A1.875 1.875 0 0 1 0 13.125V5.141c0-.196.223-.305.379-.184.875.68 2.035 1.543 6.02 4.438.824.601 2.214 1.867 3.601 1.859 1.395.012 2.813-1.281 3.605-1.86 3.985-2.894 5.141-3.761 6.016-4.44zM10 10c.906.016 2.21-1.14 2.867-1.617 5.184-3.762 5.578-4.09 6.774-5.028A.935.935 0 0 0 20 2.617v-.742C20 .84 19.16 0 18.125 0H1.875C.84 0 0 .84 0 1.875v.742c0 .29.133.559.36.738 1.195.934 1.59 1.266 6.773 5.028.656.476 1.96 1.633 2.867 1.617z"/></defs><g fill="none" fill-rule="evenodd"><path fill="#3E00FF" opacity=".046" d="M267.853005,54.7412842 C238.2982,53.6387242 210.149897,43.3725644 183.271099,32.1365178 C156.3923,20.9004712 129.764663,8.46121605 100.940508,2.50922232 C82.3865568,-1.3200004 61.1702984,-1.86441797 46.2193664,8.84093587 C31.8118555,19.1619949 27.1630929,36.9264774 24.6788819,53.4237021 C22.7974573,65.8400826 21.6923487,78.9061042 26.8434334,90.5264456 C30.4190534,98.5966354 36.7711445,105.376693 41.1641795,113.103762 C56.4484708,139.995245 45.6439793,173.158967 29.08105,199.414534 C21.3178904,211.730266 12.3034922,223.478705 6.30759309,236.590476 C0.311693968,249.702247 -2.47391035,264.726342 2.75937251,278.103459 C7.95612286,291.370778 20.3452122,301.316692 33.7663451,308.298047 C61.0241683,322.521528 93.131683,326.597797 124.462882,328.885266 C193.792463,333.990896 263.496503,331.781202 333.013314,329.566932 C358.736771,328.748018 384.578959,327.915379 409.88686,323.619513 C423.942745,321.240545 438.45072,317.466222 448.652425,308.357521 C461.607768,296.796654 464.818063,277.215922 456.137024,262.717944 C441.578817,238.397577 401.338251,232.354084 391.150246,206.254065 C385.551638,191.888762 391.300942,175.88563 399.443127,162.563412 C416.901103,133.979202 446.172781,108.90397 447.711713,76.2297658 C448.771156,53.8125718 434.701571,31.3221789 412.946458,20.7037489 C390.141035,9.57292587 358.522143,10.9728568 341.708052,29.3961302 C324.39164,48.4415952 293.946355,55.7203208 267.853005,54.7412842 Z" fill-rule="nonzero" fill="#070707">
+            <animate dur="5s" repeatCount="indefinite" attributeName="d" values="M267.853005,54.7412842 C238.2982,53.6387242 210.149897,43.3725644 183.271099,32.1365178 C156.3923,20.9004712 129.764663,8.46121605 100.940508,2.50922232 C82.3865568,-1.3200004 61.1702984,-1.86441797 46.2193664,8.84093587 C31.8118555,19.1619949 27.1630929,36.9264774 24.6788819,53.4237021 C22.7974573,65.8400826 21.6923487,78.9061042 26.8434334,90.5264456 C30.4190534,98.5966354 36.7711445,105.376693 41.1641795,113.103762 C56.4484708,139.995245 45.6439793,173.158967 29.08105,199.414534 C21.3178904,211.730266 12.3034922,223.478705 6.30759309,236.590476 C0.311693968,249.702247 -2.47391035,264.726342 2.75937251,278.103459 C7.95612286,291.370778 20.3452122,301.316692 33.7663451,308.298047 C61.0241683,322.521528 93.131683,326.597797 124.462882,328.885266 C193.792463,333.990896 263.496503,331.781202 333.013314,329.566932 C358.736771,328.748018 384.578959,327.915379 409.88686,323.619513 C423.942745,321.240545 438.45072,317.466222 448.652425,308.357521 C461.607768,296.796654 464.818063,277.215922 456.137024,262.717944 C441.578817,238.397577 401.338251,232.354084 391.150246,206.254065 C385.551638,191.888762 391.300942,175.88563 399.443127,162.563412 C416.901103,133.979202 446.172781,108.90397 447.711713,76.2297658 C448.771156,53.8125718 434.701571,31.3221789 412.946458,20.7037489 C390.141035,9.57292587 358.522143,10.9728568 341.708052,29.3961302 C324.39164,48.4415952 293.946355,55.7203208 267.853005,54.7412842 Z;
+            M253,38 C228,41 212,31 181,31 C150,31 149.824155,8.95199373 121,3 C102.446049,-0.829222717 87,-2 62,8 C37,18 20.4842111,57.5027752 18,74 C15.5157889,90.4972248 18,100 22,117 C26,134 47,150 47,169 C47,188 44,193 35,205 C26,217 29.3075931,213.590476 18,226 C6.69240691,238.409524 -5.7421768,257 3,277 C11.7421768,297 15.7421768,302.396032 43,316.619513 C70.2578232,330.842994 111.462882,299.239026 147,316.619513 C182.537118,334 196.483189,301.21427 266,299 C291.723458,298.181086 317.11314,306.566932 344,316.619513 C370.88686,326.672094 417,326.672094 431,312 C445,297.327906 430,279 442,265 C454,251 464.623832,223 449,201 C433.376168,179 423.959679,181 408.946458,159 C393.933236,137 430.809433,126.473554 442,103 C453.190567,79.5264456 448.203788,36.2962511 422,23 C395.796212,9.70374889 343,8 320,18 C297,28 278,35 253,38 Z;
+            M267.853005,54.7412842 C238.2982,53.6387242 210.149897,43.3725644 183.271099,32.1365178 C156.3923,20.9004712 129.764663,8.46121605 100.940508,2.50922232 C82.3865568,-1.3200004 61.1702984,-1.86441797 46.2193664,8.84093587 C31.8118555,19.1619949 27.1630929,36.9264774 24.6788819,53.4237021 C22.7974573,65.8400826 21.6923487,78.9061042 26.8434334,90.5264456 C30.4190534,98.5966354 36.7711445,105.376693 41.1641795,113.103762 C56.4484708,139.995245 45.6439793,173.158967 29.08105,199.414534 C21.3178904,211.730266 12.3034922,223.478705 6.30759309,236.590476 C0.311693968,249.702247 -2.47391035,264.726342 2.75937251,278.103459 C7.95612286,291.370778 20.3452122,301.316692 33.7663451,308.298047 C61.0241683,322.521528 93.131683,326.597797 124.462882,328.885266 C193.792463,333.990896 263.496503,331.781202 333.013314,329.566932 C358.736771,328.748018 384.578959,327.915379 409.88686,323.619513 C423.942745,321.240545 438.45072,317.466222 448.652425,308.357521 C461.607768,296.796654 464.818063,277.215922 456.137024,262.717944 C441.578817,238.397577 401.338251,232.354084 391.150246,206.254065 C385.551638,191.888762 391.300942,175.88563 399.443127,162.563412 C416.901103,133.979202 446.172781,108.90397 447.711713,76.2297658 C448.771156,53.8125718 434.701571,31.3221789 412.946458,20.7037489 C390.141035,9.57292587 358.522143,10.9728568 341.708052,29.3961302 C324.39164,48.4415952 293.946355,55.7203208 267.853005,54.7412842 Z;" fill="freeze" calcMode="spline" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1"></path><g><use fill="#000" filter="url(#a)" xlink:href="#b"/><use fill="#F8F9FA" xlink:href="#b"/></g><path fill="#0D0764" d="M40 65h382c5.523 0 10 4.477 10 10v101H30V75c0-5.523 4.477-10 10-10z"/><g><use fill="#000" filter="url(#c)" xlink:href="#d"/><use fill="#FFF" xlink:href="#d"/></g><g fill="#D8D8D8" opacity=".5" transform="translate(72 150)"><circle cx="44.5" cy="44.5" r="44.5"/><defs><clipPath id="circleView"><circle cx="44.5" cy="44.5" r="44.5" /></clipPath></defs><image width="89" height="89" xlink:href="{% if profile.avatar and profile.active_avatar.avatar_url %}{{ profile.active_avatar.avatar_url }}{% else %}{{ profile.avatar_url }}{% endif %}" clip-path="url(#circleView)" />
+            <rect width="172" height="20" x="105" y="13" rx="10"/><rect width="133" height="12" x="105" y="41" rx="6"/></g><use fill="#EBEBEB" fill-rule="nonzero" transform="translate(210 217)" xlink:href="#e"/><path fill="#EBEBEB" fill-rule="nonzero" d="M189.603 232.987c-.41.075-.56-.185-.56-.4 0-.27.01-1.65.01-2.765 0-.78-.254-1.274-.551-1.534 1.803-.205 3.705-.46 3.705-3.655 0-.91-.317-1.364-.834-1.95.083-.214.36-1.099-.083-2.249-.678-.215-2.228.895-2.228.895a7.418 7.418 0 0 0-2.028-.28c-.687 0-1.384.095-2.028.28 0 0-1.55-1.11-2.228-.895-.443 1.145-.17 2.03-.083 2.25-.516.585-.76 1.04-.76 1.95 0 3.179 1.818 3.449 3.622 3.654-.234.215-.444.585-.517 1.115-.463.214-1.648.584-2.354-.695-.444-.79-1.244-.855-1.244-.855-.79-.01-.053.51-.053.51.526.25.897 1.21.897 1.21.473 1.484 2.735.984 2.735.984 0 .695.01 1.825.01 2.03 0 .215-.147.475-.561.4-3.218-1.105-5.47-4.244-5.47-7.914 0-4.589 3.422-8.073 7.898-8.073 4.475 0 8.102 3.484 8.102 8.073.005 3.67-2.18 6.814-5.397 7.914z"/><g fill-rule="nonzero"><path fill="#3E00FF" d="M387.9 167.929a2.215 2.215 0 0 1 .806 3.016L387.53 173l1.176 2.054a2.217 2.217 0 0 1-.807 3.016l-2.047 1.194-.012 2.369a2.216 2.216 0 0 1-2.205 2.206l-2.37.013-1.195 2.047a2.214 2.214 0 0 1-3.014.807L375 185.532l-2.056 1.175a2.218 2.218 0 0 1-3.016-.807l-1.194-2.046-2.368-.013a2.219 2.219 0 0 1-2.206-2.206l-.012-2.369-2.048-1.195a2.218 2.218 0 0 1-.807-3.016l1.176-2.054-1.175-2.056a2.217 2.217 0 0 1 .807-3.016l2.047-1.194.012-2.37a2.218 2.218 0 0 1 2.206-2.205l2.368-.013 1.195-2.047a2.216 2.216 0 0 1 3.015-.807l2.056 1.176 2.056-1.175a2.217 2.217 0 0 1 3.016.807l1.194 2.047 2.368.012c1.217.008 2.2.99 2.206 2.206l.012 2.37 2.048 1.193z"/><path fill="#FFF" d="M367.249 174.534a.775.775 0 0 1 0-1.137l1.202-1.138a.884.884 0 0 1 1.202 0l3.722 3.523 7.972-7.546a.884.884 0 0 1 1.202 0l1.202 1.138a.775.775 0 0 1 0 1.137l-9.775 9.253a.884.884 0 0 1-1.202 0l-5.525-5.23z"/></g></g>
+          </svg>
+        </div>
+        <div class="col-12 col-lg-6">
+          <h3 class="font-bigger-2 mt-5">To be a <strong>Verified Contributor</strong>, a contributor has to:</h3>
+          <ul class="list-unstyled font-bigger-2">
+            <li class="mb-2"><i class="fas fa-check text-highlight-green mr-2"></i> Be speedy and responsive</li>
+            <li class="mb-2"><i class="fas fa-check text-highlight-green mr-2"></i> Have great communication</li>
+            <li class="mb-2"><i class="fas fa-check text-highlight-green mr-2"></i> Write clean, bug-free code</li>
+            <li class="mb-2"><i class="fas fa-check text-highlight-green mr-2"></i> Complete 10 bounties</li>
+          </ul>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 text-center">
+          <h4 class='mt-4 mb-4'>Interested in being verified?</h4>
+          <a href="https://alisamarch.typeform.com/to/cX9GML" target="_blank" class="btn btn-gc-blue m-2 rounded">
+          Request Verification
+          </a>
+        </div>
+      </div>
+      <div class="row justify-content-center mb-5">
+        <div class="col-12 col-md-8">
+
+          <h3 class="my-5 text-center">FAQ</h3>
+          <div class="mb-3 faq-item">
+            <h5 class="accordion">What does verified mean?</h5>
+            <div class="panel">
+              <p>A verified contributor has met criteria that a Gitcoin core team member deems as a trusted contributor.</p>
+            </div>
+          </div>
+
+          <div class="mb-3 faq-item">
+            <h5 class="accordion">Does verified contributor mean that I should use this contributor on my project?</h5>
+            <div class="panel">
+              <p>A verified contributor is someone who has worked with, interacted with or been recommended by a fellow funder. When looking for the right contributor for your projects, please use the vetting criteria you would normally use.</p>
+            </div>
+          </div>
+
+          <div class="mb-3 faq-item">
+            <h5 class="accordion">How can I become verified?</h5>
+            <div class="panel">
+              <p>Complete the typeform link to send a request to the Gitcoin Core team.</p>
+            </div>
+          </div>
+
+          <div class="mb-3 faq-item">
+            <h5 class="accordion">What happens after I request verification?</h5>
+            <div class="panel">
+              <p>An email will be sent to the Gitcoin Core team for review. Please expect 72 hours for a verified confirmation.</p>
+            </div>
+          </div>
+
+          <div class="mb-3 faq-item">
+            <h5 class="accordion">What are the perks of being a verified contributor?</h5>
+            <div class="panel">
+              <p>Being verified is a great way to let potential funders or repo owners know that you are a dependable and quality contributor. This may allow for opportunities on new and exciting open source projects, bounties, or grants!</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    {% include 'shared/footer.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts_lite.html' %}
+    {% include 'shared/messages.html' %}
+
+  </body>
+
+</html>

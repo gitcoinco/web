@@ -20,10 +20,10 @@
     <h1 class="font-title-xl mb-4">{% trans "Project Permissions" %}</h1>
     <p class="font-body how-it-works__text-grey">{% trans "Gitcoin supports 2 types of permissions to allow flexibility for each project." %}</p>
   </div>
-  <div class="col-12 col-md-6">
+  <div class="col-12 col-lg-6">
     <h2 class="font-subheader mb-4">
       {% trans "Permissions - Approval Required" %}
-      <img src="{% static "v2/images/how-it-works/icons/permissioned.svg" %}" alt="permissioned" />
+      <img class="mx-2" src="{% static "v2/images/how-it-works/icons/permissioned.svg" %}" alt="permissioned" />
     </h2>
     <div class="font-body how-it-works__text-grey">
       <p>
@@ -42,17 +42,16 @@
         <p>Gitcoin will send you an email notification when a worker has
         expressed interest.</p>
         <p>The repo owner/funder has the right to approve or deny any request to work.</p>
-        <p>If there is no response from the funder/repo owner, Gitcoin will auto 
-          approve the contributor after 72 hours. 
+        <p>A funder may override the auto approve setting.
+          In this case, workers will not be automatically approved after 72 hours.
         </p>
       {% endblocktrans %}  
-      <img class="mb-4 mb-md-0" src="{% static "v2/images/how-it-works/icons/timer.svg" %}" alt="system approve" />
     </div>
   </div>
-  <div class="col-12 col-md-6">
+  <div class="col-12 col-lg-6">
     <h2 class="font-subheader mb-4">
       {% trans "Permissionless - No Approval Required" %}
-      <img src="{% static "v2/images/how-it-works/icons/permissionless.svg" %}" alt="permissionless" />
+      <img class="mx-2" src="{% static "v2/images/how-it-works/icons/permissionless.svg" %}" alt="permissionless" />
     </h2>
     <div class="font-body how-it-works__text-grey">
       <p>

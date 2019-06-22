@@ -18,13 +18,17 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <meta name="title" content="Bounty Activity Feed | Gitcoin">
+    <meta name="description" content="See open source development in real-time with the Gitcoin Activity Feed.">
+    <link rel="canonical" href="{% url 'activity' %}">
     {% include 'shared/head.html' %}
     <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
   </head>
 
-  <body class="{{ active }}">
+  <body class="{{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
     <div class="container-fluid header">
       {% include 'shared/nav.html' %}
       {% include 'shared/minihero.html' with h1='Activity Feed' position_h1_below_logo=1 %}

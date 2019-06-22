@@ -1,0 +1,12 @@
+{% load i18n  %}
+
+{{ grant.title }} has a new {% trans "owner" %}
+
+{% trans "Congratulations" %} {{ grant.admin_profile.handle }}  {% trans "on becoming the new owner" %}.
+{% trans "We hope this Grant helps you Grow Open Source" %}
+
+{% trans "Title" %} : {{ grant.title }}
+
+{% trans "Goal" %} : {{ grant.amount_goal }}
+
+{% trans "The details of the grant can be seen here:" %} {{ grant.reference_url }}

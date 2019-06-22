@@ -22,11 +22,22 @@ import json
 from django.conf import settings
 from django.utils import timezone
 
-from dashboard.models import Tip
+from app.utils import get_location_from_ip
+from dashboard.models import Tip, UserAction
+from dashboard.utils import _get_utm_from_cookie
+from kudos.models import KudosTransfer
+from retail.helpers import get_ip
+
+RECORD_VISIT_EVERY_N_SECONDS = 60 * 60
 
 
-def insert_settings(request):
+def preprocess(request):
     """Handle inserting pertinent data into the current context."""
+
+    # make lbcheck super lightweight
+    if request.path == '/lbcheck':
+        return {}
+
     from marketing.utils import get_stat
     try:
         num_slack = int(get_stat('slack_users'))
@@ -39,16 +50,31 @@ def insert_settings(request):
     profile = request.user.profile if user_is_authenticated and hasattr(request.user, 'profile') else None
     email_subs = profile.email_subscriptions if profile else None
     email_key = email_subs.first().priv if user_is_authenticated and email_subs and email_subs.exists() else ''
-
+    if user_is_authenticated and profile and profile.pk:
+        record_visit = not profile.last_visit or profile.last_visit < (
+            timezone.now() - timezone.timedelta(seconds=RECORD_VISIT_EVERY_N_SECONDS)
+        )
+        if record_visit:
+            ip_address = get_ip(request)
+            profile.last_visit = timezone.now()
+            profile.save()
+            metadata = {'useragent': request.META['HTTP_USER_AGENT'], }
+            UserAction.objects.create(
+                user=request.user,
+                profile=profile,
+                action='Visit',
+                location_data=get_location_from_ip(ip_address),
+                ip_address=ip_address,
+                utm=_get_utm_from_cookie(request),
+                metadata=metadata,
+            )
     context = {
-        'mixpanel_token': settings.MIXPANEL_TOKEN,
         'STATIC_URL': settings.STATIC_URL,
         'MEDIA_URL': settings.MEDIA_URL,
         'num_slack': num_slack,
         'github_handle': request.user.username if user_is_authenticated else False,
         'email': request.user.email if user_is_authenticated else False,
         'name': request.user.get_full_name() if user_is_authenticated else False,
-        'sentry_address': settings.SENTRY_ADDRESS,
         'raven_js_version': settings.RAVEN_JS_VERSION,
         'raven_js_dsn': settings.SENTRY_JS_DSN,
         'release': settings.RELEASE,
@@ -57,11 +83,14 @@ def insert_settings(request):
         'profile_id': profile.id if profile else '',
         'hotjar': settings.HOTJAR_CONFIG,
         'ipfs_config': {
-            'host': settings.IPFS_HOST,
+            'host': settings.JS_IPFS_HOST,
             'port': settings.IPFS_API_PORT,
             'protocol': settings.IPFS_API_SCHEME,
             'root': settings.IPFS_API_ROOT,
         },
+        'access_token': profile.access_token if profile else '',
+        'is_staff': request.user.is_staff if user_is_authenticated else False,
+        'is_moderator': profile.is_moderator if profile else False,
     }
     context['json_context'] = json.dumps(context)
 
@@ -71,8 +100,13 @@ def insert_settings(request):
             receive_txid='',
             username__iexact=context['github_handle'],
             web3_type='v3',
-        ).exclude(txid='')
+        ).send_happy_path()
+        context['unclaimed_kudos'] = KudosTransfer.objects.filter(
+            receive_txid='', username__iexact="@" + context['github_handle'], web3_type='v3',
+        ).send_happy_path()
+
         if not settings.DEBUG:
             context['unclaimed_tips'] = context['unclaimed_tips'].filter(network='mainnet')
+            context['unclaimed_kudos'] = context['unclaimed_kudos'].filter(network='mainnet')
 
     return context

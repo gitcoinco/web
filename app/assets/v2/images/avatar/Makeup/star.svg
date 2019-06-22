@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1650px" height="774px" viewBox="0 0 1650 774" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.3 (57544) - http://www.bohemiancoding.com/sketch -->
+    <title>Group</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group" fill-rule="nonzero">
+            <rect id="Rectangle" stroke="#FFFFFF" opacity="0.00613839286" x="0.5" y="0.5" width="1649" height="773"></rect>
+            <polygon id="Star" fill="#FFF43E" transform="translate(601.815408, 417.581073) rotate(23.000000) translate(-601.815408, -417.581073) " points="601.815408 471.221167 558.187054 499.056493 566.519328 440.100326 531.223249 398.347336 580.001231 389.745747 601.815408 336.105654 614.293324 366.788294 623.629586 389.745747 672.407568 398.347336 637.111488 440.100326 645.443763 499.056493"></polygon>
+        </g>
+    </g>
+</svg>

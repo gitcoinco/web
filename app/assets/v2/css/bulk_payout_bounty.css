@@ -1,0 +1,145 @@
+#ethinfo-tooltip {
+  min-height: 37%;
+  top: 17rem;
+}
+
+@media only screen and (max-width: 1400px) {
+  #ethinfo-tooltip {
+    top: 18.5rem;
+  }
+}
+
+@media only screen and (max-width: 750px) {
+  #ethinfo-tooltip {
+    min-height: 30%;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  #ethinfo-tooltip {
+    min-height: 33%;
+    left: 70px;
+    top: 20.5rem;
+  }
+}
+
+#pay_with_bounty-tooltip {
+  min-height: 37%;
+  top: 15rem;
+  left: 220px;
+}
+
+@media only screen and (max-width: 730px) {
+  #pay_with_bounty-tooltip {
+    top: 16rem;
+    left: 30px;
+  }
+}
+
+.pay_with_bounty-hover {
+  margin-left: 5px;
+}
+
+#transaction_registry {
+  width: 100%;
+}
+
+#transaction_registry tr td {
+  padding: 10px;
+  border: #333 solid 1px;
+}
+
+#trans_preview {
+  padding: 5px;
+  border-radius: 3px;
+  background-color: #fafafa;
+  position: absolute;
+  top: 5rem;
+  right: -20rem;
+  max-width: 300px;
+}
+
+#trans_preview h5 {
+  color: #08cf7b;
+}
+
+#primary_form {
+  margin: 0px 25%;
+}
+
+@media (max-width: 1100px) {
+  #primary_form {
+    margin: 0px 15%;
+  }
+}
+
+@media (max-width: 900px) {
+  #primary_form {
+    margin: 0px 5%;
+  }
+}
+
+@media (max-width: 750px) {
+  #trans_preview {
+    position: unset;
+    top: 200px;
+    left: 72%;
+    width: 100%;
+    max-width: initial;
+  }
+  #primary_form {
+    margin: 0px auto;
+  }
+}
+
+tr div {
+  border-radius: 3px;
+  padding: 5px;
+}
+
+.error {
+  border: 1px solid red !important;
+}
+
+.entry.active {
+  background-color: #bbb;
+}
+
+.paymentAlert {
+  background-color: #E66700;
+  color: #FFF;
+  border-radius: 5px;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  display: none;
+  padding-left: 15px;
+}
+
+.paymentAlert > div:first-child {
+  width: 25px;
+  float: left;
+  padding-right: 10px;
+}
+
+.paymentAlert > div:last-child {
+  width: calc(100% - 40px);
+  float: left;
+  margin-left: 15px;
+  padding-right: 15px;
+  padding-top: 6.5px;
+}
+
+.paymentAlert > div:first-child > img {
+  width: 17px;
+  margin-top: 10px;
+}
+
+.overagePreview , .tipPreview {
+  color: #E66700;
+  padding-bottom: 5px;
+  display: none;
+}
+
+.select2{
+  width: 100% !important;
+}

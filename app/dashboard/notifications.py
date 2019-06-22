@@ -25,14 +25,18 @@ from urllib.parse import urlparse as parse
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.templatetags.static import static
+from django.utils import timezone, translation
+from django.utils.translation import gettext
 
 import requests
 import twitter
 from economy.utils import convert_token_to_usdt
 from git.utils import delete_issue_comment, org_name, patch_issue_comment, post_issue_comment, repo_name
-from marketing.mails import tip_email
+from marketing.mails import featured_funded_bounty, send_mail, setup_lang, tip_email
 from marketing.models import GithubOrgToTwitterHandleMapping
+from marketing.utils import should_suppress_notification_email
 from pyshorteners import Shortener
+from retail.emails import render_new_kudos_email
 from slackclient import SlackClient
 
 logger = logging.getLogger(__name__)
@@ -215,7 +219,7 @@ def build_message_for_integration(bounty, event_name):
 
     title = bounty.title if bounty.title else bounty.github_url
     msg = f"*{humanize_event_name(event_name)}*" \
-          f"\n*Title*: {title}" \
+          f"\n*Issue*: {title}" \
           f"\n*Bounty value*: {round(bounty.get_natural_value(), 4)} {bounty.token_name} {usdt_details}" \
           f"\n{bounty.get_absolute_url()}"
     return msg
@@ -362,6 +366,63 @@ def maybe_market_tip_to_slack(tip, event_name):
     return True
 
 
+def maybe_market_kudos_to_email(kudos_transfer):
+    """Send an email for the specified Kudos.  The general flow of this function:
+
+        - 1. Decide if we are sending it
+        - 2. Generate subject
+        - 3. Render email
+        - 4. Send email
+        - 5. Do translation
+
+    Args:
+        kudos_transfer (kudos.models.KudosTransfer): The Kudos Email object to be marketed.
+
+    Returns:
+        bool: Whether or not the email notification was sent successfully.
+
+    """
+
+    # 1. Decide if we are sending it
+    if kudos_transfer.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
+        logger.warning('Notifications are disabled.  Skipping email.')
+        logger.debug(kudos_transfer.network)
+        logger.debug(settings.ENABLE_NOTIFICATIONS_ON_NETWORK)
+        return False
+
+    if not kudos_transfer or not kudos_transfer.txid or not kudos_transfer.amount or not kudos_transfer.kudos_token_cloned_from:
+        logger.warning('Some kudos information not found.  Skipping email.')
+        return False
+
+    # 2. Generate subject
+    from_name = 'Someone' if not kudos_transfer.from_username else f'{kudos_transfer.from_username}'
+    on_network = '' if kudos_transfer.network == 'mainnet' else f'({kudos_transfer.network})'
+    subject = gettext(f"⚡️ {from_name} Sent You a {kudos_transfer.kudos_token_cloned_from.humanized_name} Kudos {on_network}")
+
+    logger.info(f'Emails to send to: {kudos_transfer.emails}')
+
+    to_email = kudos_transfer.primary_email
+    if to_email:
+        cur_language = translation.get_language()
+        try:
+            setup_lang(to_email)
+            # TODO:  Does the from_email field in the database mean nothing?  We just override it here.
+            from_email = settings.CONTACT_EMAIL
+            # 3. Render email
+            html, text = render_new_kudos_email(to_email, kudos_transfer, True)
+
+            # 4. Send email unless the email address has notifications disabled
+            if not should_suppress_notification_email(to_email, 'kudos'):
+                # TODO:  Should we be doing something with the response from SendGrid?
+                #        Maybe we should store it somewhere.
+                send_mail(from_email, to_email, subject, text, html)
+        finally:
+            # 5.  Do translation
+            translation.activate(cur_language)
+
+    return True
+
+
 def get_status_header(bounty):
     statuses = ['Open']
     status = bounty.status
@@ -432,11 +493,12 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
     learn_more_msg = f"* Learn more [on the Gitcoin Issue Details page]({absolute_url})"
     crowdfund_amount = f"(plus a crowdfund of {bounty.additional_funding_summary_sentence})" if bounty.additional_funding_summary_sentence else ""
     crowdfund_thx = ", ".join(f"@{tip.from_username}" for tip in bounty.tips.filter(is_for_bounty_fulfiller=True) if tip.from_username)
+    funding_org = f" as part of the {bounty.funding_organisation} fund" if bounty.funding_organisation else ""
     if crowdfund_thx:
         crowdfund_thx = f"Thanks to {crowdfund_thx} for their crowdfunded contributions to this bounty.\n\n"
     if event_name == 'new_bounty':
         msg = f"{status_header}__This issue now has a funding of {natural_value} {bounty.token_name} {usdt_value} " \
-              f"{crowdfund_amount} attached to it.__\n\n * If you would " \
+              f"{crowdfund_amount} attached to it{funding_org}.__\n\n * If you would " \
               f"like to work on this issue you can 'start work' [on the Gitcoin Issue Details page]({absolute_url})." \
               f"\n{crowdfund_msg}\n{help_msg}\n{openwork_msg}\n"
     if event_name == 'increased_bounty':
@@ -476,15 +538,13 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
             if not interest.pending and approval_required:
                 action = 'been approved to start work'
 
-            show_dibs = interested.count() > 1 and bounty.project_type == 'traditional'
-            dibs = f" ({get_ordinal_repr(i)} dibs)" if show_dibs else ""
-
-            msg += f"\n{i}. {profile_link} has {action}{dibs}. "
+            msg += f"\n**{i}) {profile_link} has {action}.**"
 
             issue_message = interest.issue_message.strip()
             if issue_message:
-                msg += f"\n    \n    {issue_message}"
-            msg += f"\n\nLearn more [on the Gitcoin Issue Details page]({absolute_url}).\n\n"
+                msg += f"\n\n{issue_message}"
+        
+        msg += f"\n\nLearn more [on the Gitcoin Issue Details page]({absolute_url}).\n\n"
 
     elif event_name == 'work_submitted':
         sub_msg = ""
@@ -507,15 +567,27 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
               f"{profiles}{sub_msg}\n<hr>\n\n" \
               f"{learn_more_msg}\n{crowdfund_msg}\n{help_msg}\n{openwork_msg}"
     elif event_name == 'work_done':
+        msg_body = ''
+        msg_tips = ''
+
+        # no crowdfund tips
+        for tip in bounty.tips.filter(is_for_bounty_fulfiller=False).exclude(txid=''):
+            msg_tips += f'* {tip.from_username} tipped {tip.amount} {tip.tokenName} ' \
+                        f'worth {tip.value_in_usdt_now} USD to {tip.username}.\n'
+
         try:
             accepted_fulfillment = bounty.fulfillments.filter(accepted=True).latest('fulfillment_id')
             accepted_fulfiller = f' to @{accepted_fulfillment.fulfiller_github_username}'
+            msg_body = f'__The funding of {natural_value} {bounty.token_name} {usdt_value} ' \
+                       f'{crowdfund_amount} attached to this ' \
+                       f'issue has been approved & issued{accepted_fulfiller}.__  \n\n{crowdfund_thx} '
         except BountyFulfillment.DoesNotExist:
-            accepted_fulfiller = ''
+            msg_body = f'__This Bounty has been completed.__'
 
-        msg = f"{status_header}__The funding of {natural_value} {bounty.token_name} {usdt_value} {crowdfund_amount} attached to this " \
-              f"issue has been approved & issued{accepted_fulfiller}.__  \n\n{crowdfund_thx} " \
-              f"{learn_more_msg}\n{help_msg}\n{openwork_msg}\n"
+        if msg_tips:
+            msg_body += f'\n\nAdditional Tips for this Bounty:\n{msg_tips}\n<hr>\n'
+
+        msg = f'{status_header}{msg_body}\n{learn_more_msg}\n{help_msg}\n{openwork_msg}\n'
     return msg
 
 
@@ -609,7 +681,7 @@ def open_bounties():
 
     """
     from dashboard.models import Bounty
-    return Bounty.objects.filter(network='mainnet', current_bounty=True, idx_status__in=['open', 'submitted'])
+    return Bounty.objects.current().filter(network='mainnet', idx_status__in=['open', 'submitted']).cache()
 
 
 def maybe_market_tip_to_github(tip):
@@ -669,6 +741,70 @@ def maybe_market_tip_to_github(tip):
     return True
 
 
+def maybe_market_kudos_to_github(kt):
+    """Post a Github comment for the specified Kudos.
+
+    Args:
+        kt (kudos.models.KudosTransfer): The KudosTransfer to be marketed.
+
+    Returns:
+        bool: Whether or not the Github comment was posted successfully.
+
+    """
+    if not kt.is_notification_eligible(var_to_check=settings.GITHUB_CLIENT_ID) or not kt.github_url:
+        return False
+
+    # prepare message
+    username = kt.username if '@' in kt.username else f'@{kt.username}'
+    _from = f" from @{kt.from_username}" if kt.from_name else ""
+    warning = kt.network if kt.network != 'mainnet' else ""
+    _comments = "\n\nThe sender had the following public comments: \n> " \
+                f"{kt.comments_public}" if kt.comments_public else ""
+    if kt.username:
+        msg = f"⚡️ A *{kt.kudos_token_cloned_from.humanized_name}* Kudos has been " \
+              f"sent to {username} for this issue{_from}. ⚡️ {_comments}\n\nNice work {username}! "
+        redeem_instructions = "\nTo redeem your Kudos, login to Gitcoin at https://gitcoin.co/explorer and select " \
+                              "'Claim Kudos' from dropdown menu in the top right, or check your email for a " \
+                              "link to the Kudos redemption page. "
+        if kt.receive_txid:
+            redeem_instructions = "\nYour Kudos has automatically been sent in the ETH address we have on file."
+        msg += redeem_instructions
+    else:
+        # TODO: support this once ETH-only sends are done
+        return False
+
+    image = f"<a title='{kt.kudos_token_cloned_from.humanized_name}' href='{kt.kudos_token_cloned_from.url}'> " \
+            f"<img width='250' src='{kt.kudos_token_cloned_from.img_url}' " \
+            f"alt='{kt.kudos_token_cloned_from.humanized_name}'> " \
+            f"</a> "
+    msg = f"""
+<table>
+<tr>
+<td>
+{image}
+</td>
+<td>
+{msg}
+</td>
+</tr>
+</table>"""
+    # actually post
+    url = kt.github_url
+    uri = parse(url).path
+    uri_array = uri.split('/')
+    try:
+        username = uri_array[1]
+        repo = uri_array[2]
+        issue_num = uri_array[4]
+        post_issue_comment(username, repo, issue_num, msg)
+    except Exception as e:
+        print(e)
+        return False
+    return True
+
+
+
+
 def maybe_market_to_email(b, event_name):
     from marketing.mails import new_work_submission, new_bounty_rejection, new_bounty_acceptance, bounty_changed
     to_emails = []
@@ -676,7 +812,7 @@ def maybe_market_to_email(b, event_name):
         return False
 
     if event_name == 'new_bounty' and not settings.DEBUG:
-        # handled in 'new_bounties_email'
+        featured_funded_bounty(settings.CONTACT_EMAIL, bounty=b)
         return
     elif event_name == 'work_submitted':
         try:
@@ -885,7 +1021,7 @@ def maybe_notify_user_escalated_github(bounty, username, last_heard_from_user_da
 
     msg = f"""{status_header}@{username} due to inactivity, we have escalated [this issue]({bounty.url}) to Gitcoin's moderation team. Let us know if you believe this has been done in error!
 
-* [x] warning ({num_days_back_to_warn} days)
+* [x] reminder ({num_days_back_to_warn} days)
 * [x] escalation to mods ({num_days_back_to_delete_interest} days)
 {append_snooze_copy(bounty)}"""
 
@@ -897,7 +1033,7 @@ def maybe_warn_user_removed_github(bounty, username, last_heard_from_user_days):
         return False
 
     msg = f"""@{username} Hello from Gitcoin Core - are you still working on this issue? Please submit a WIP PR or comment back within the next 3 days or you will be removed from this ticket and it will be returned to an ‘Open’ status. Please let us know if you have questions!
-* [x] warning ({num_days_back_to_warn} days)
+* [x] reminder ({num_days_back_to_warn} days)
 * [ ] escalation to mods ({num_days_back_to_delete_interest} days)
 {append_snooze_copy(bounty)}"""
 

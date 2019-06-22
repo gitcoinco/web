@@ -9,7 +9,7 @@
     font-size: 12px;
   }
 </style>
-<form id="settings" method="POST">
+<form id="settings" method="POST" class="col-md-8 m-auto">
   <div class="form-group">
     <h5>{% trans "Tokens" %}</h5>
     <p>
@@ -65,17 +65,17 @@
   {% csrf_token %}
   <input class='button button--primary' type='submit' name='submit' value="{% trans "Enable" %}">
   <p class="mt-3">
-    {% blocktrans %}Note: This form is only for enabling tokens *on your personal account*. If you have a token you'd like to enable otheres to use on Gitcoin, {% endblocktrans %}<a href="{% url 'newtoken' %}">click here</a>
+    {% blocktrans %}Note: This form is only for enabling tokens *on your personal account*. If you have a token you'd like to enable others to use on Gitcoin, {% endblocktrans %}<a href="{% url 'newtoken' %}">click here</a>
   </p>
 
 </form>
-</div>
+
 <script>
 document.gas_price = {{gas_price}};
 </script>
-<script src="{% static "v2/js/jquery.js" %}"></script>
+<script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
+<script src="{% static "v2/js/lib/jquery.js" %}"></script>
 <script src="{% static "v2/js/abi.js" %}"></script>
-<script src="{% static "v2/js/shared.js" %}"></script>
 <script src="/dynamic/js/tokens_dynamic.js"></script>
 <script src="{% static "v2/js/tokens.js" %}"></script>
 <script src="{% static "v2/js/pages/tokens_settings.js" %}"></script>

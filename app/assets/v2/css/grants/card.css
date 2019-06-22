@@ -1,0 +1,118 @@
+.grant-item {
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.flip-card__flipper {
+  border: 1px solid #D3D3D3;
+}
+
+.grant-item__title {
+  line-height: 24px;
+  height: 50px;
+  overflow-y: hidden;
+}
+
+.grant-item__title a {
+  color: #454545;
+}
+
+.grant-item__pitch {
+  color: #9B9B9B;
+  line-height: 18px;
+  height: 3.3rem;
+  overflow-y: hidden;
+}
+
+.grant-item__owner {
+  align-items: center;
+  display: flex;
+}
+
+.grant-item__img {
+  height: 11rem;
+  overflow: hidden;
+}
+
+.grant-item__img img {
+  width: 100%;
+  object-fit: contain;
+  height: 100%;
+  border-bottom: 1px solid lightgrey;
+}
+
+.grant-item__owner-image,
+.flip-card__flipper .grant__stakeholders-item {
+  height: 35px;
+  width: 35px;
+}
+
+.grant-item__owner-image img {
+  width: 100%;
+  border-radius: 50%;
+}
+
+.flip-card__flipper .grant__stakeholders-item img {
+  border-radius: 50%;
+  height: 50px;
+  width: 50px;
+  margin-bottom: 1rem;
+}
+
+.grant-item__footer {
+  margin-top: auto;
+}
+
+.grant-item__funding {
+  display: flex;
+  justify-content: space-between;
+}
+
+.grant-item__funding-number {
+  color: #0D0764;
+}
+
+.grant-item__funding-label {
+  color: #BBBDBF;
+}
+
+.grant-item__state-active,
+.grant-item__state-completed {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  top: 1px;
+}
+
+.grant-item__state-active {
+  background-color: #0FCE7C;
+}
+
+.grant-item__state-completed {
+  background-color: #1A91EB;
+}
+
+.inner {
+  margin-top: 2px;
+  margin-left: 2px;
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: white;
+  border-radius: 50%
+}
+
+.grant-item__footer #CLR_banner {
+  font-size: 0.8rem;
+}
+
+.grant-item__footer #CLR_banner img {
+  margin-top: 6px;
+}
+
+#CLR_banner .logo {
+  float: right;
+}

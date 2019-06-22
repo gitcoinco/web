@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -22,6 +22,7 @@ from datetime import datetime
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
+from django.db.models import Q
 from django.utils import timezone
 
 import pytz
@@ -60,26 +61,35 @@ class Command(BaseCommand):
         for day in days:
             start_date = (timezone.now() - timezone.timedelta(days=(day+1)))
             end_date = (timezone.now() - timezone.timedelta(days=day))
-            interests_by_created_on = Interest.objects.select_related('profile').filter(
-                created__gte=start_date,
-                created__lt=end_date,
-                pending=False,
-            )
-            interests_by_accepted_on = Interest.objects.select_related('profile').filter(
-                acceptance_date__gte=start_date,
-                acceptance_date__lt=end_date,
-                pending=False,
-            )
-            interests = (interests_by_accepted_on | interests_by_created_on).distinct('pk')
+
+            interests = Interest.objects.select_related("profile").filter(
+                Q(created__gte=start_date, created__lt=end_date) |
+                Q(acceptance_date__gte=start_date, acceptance_date__lt=end_date),
+                pending=False
+            ).distinct('pk')
+
             print(f'day {day} got {interests.count()} interests')
             for interest in interests:
-                interest_day_0 = interest.created if not interest.acceptance_date else interest.acceptance_date
-                bounties = Bounty.objects.current().filter(
-                    interested=interest,
-                    project_type='traditional',
-                    network='mainnet',
-                    idx_status__in=['open', 'started']
-                )
+
+                if interest.acceptance_date:
+                    interest_day_0 = interest.acceptance_date
+                    bounties = Bounty.objects.current().filter(
+                        interested=interest,
+                        project_type='traditional',
+                        network='mainnet',
+                        idx_status__in=['open', 'started'],
+                        permission_type='approval',
+                    )
+                else:
+                    interest_day_0 = interest.created
+                    bounties = Bounty.objects.current().filter(
+                        interested=interest,
+                        project_type='traditional',
+                        network='mainnet',
+                        idx_status__in=['open', 'started'],
+                        permission_type='permissionless',
+                    )
+
                 for bounty in bounties:
                     print("===========================================")
                     print(f"{interest} is interested in {bounty.pk} / {bounty.github_url}")

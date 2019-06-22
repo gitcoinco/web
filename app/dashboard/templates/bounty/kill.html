@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -21,59 +21,125 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
+    <style>
+      input[type=radio]:checked ~ label ~ textarea {
+        display: block;
+      }
+
+      textarea {
+        display: none;
+      }
+
+      .link {
+        text-decoration: none;
+        color: #0D0764;
+      }
+    </style>
   </head>
-  <body class="interior {{active}}">
+  <body class="{{active}} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
     <div class="container-fluid header dash">
         {% include 'shared/nav.html' %}
     </div>
-    <div class="container-fluid">
-      <div class="row no-gutters metamask-banner">
-        <div class="col-12">
-          {% include 'shared/no_issue_error.html' with page='kill_bounty' %}
-          {% include 'shared/no_metamask_error.html' %}
-          {% include 'shared/zero_balance_error.html' %}
-          {% include 'shared/unlock_metamask.html' %}
-        </div>
+    <div class="row metamask-banner">
+      <div class="col-12">
+        {% include 'shared/no_issue_error.html' with page='kill_bounty' %}
+        {% include 'shared/no_metamask_error.html' %}
+        {% include 'shared/zero_balance_error.html' %}
+        {% include 'shared/unlock_metamask.html' %}
+        {% include 'shared/connect_metamask.html' %}
       </div>
+    </div>
+    <div class="container-fluid">
       <div class="row">
-        <div class="col-12 body">
-          <div class="row font-smaller-2" id="form_container">
+        <div class="col-12 mb-5">
+          <div class="row">
             <div id="robot_error" class="hidden">
               <img src="{% static "v2/images/prime.png" %}">
             </div>
-            <div class="col offset-md-1 col-md-10 d-flex align-items-center justify-content-center" id="primary_form">
-              <div class="d-flex justify-content-center flex-column mt-5" id="primary_subform">
-                <div class="w-100" style="text-align: center;">
-                  <h3>{% trans "Cancel Bounty and Reclaim Funds" %}</h3>
-                  <h5>{% trans "(Issue Submitters only)" %}</h5>
-                  <img src="{% static "v2/images/prime.png" %}">
+            <div class="mt-5" id="primary_form">
+              <div class="media">
+                <div class="align-self-center ">
+                  <img src="{% static "v2/images/helmet_front.png" %}">
                 </div>
-                {% include 'shared/network_status.html' %}
-                <form id="submitBounty">
-                  <div class="w-100">
-                    <label class="form__label" for="issueURL">{% trans "Issue URL" %}</label>
-                    <input name='issueURL' id="issueURL" class="form__input" type="url" required placeholder="https://github.com/user/repo/issues/n" value="{% if bounty %}{{bounty.github_url}}{%endif%}" />
-                  </div>
-                  <div id="gas-section">
-                    {% include 'shared/bounty_actions_hidden_vars.html' %}
-                    {% include 'shared/wallet_estimate.html' %}
-                  </div>
-                  <div class="w-100 mt-2 terms_container">
-                    <div class="form__checkbox">
-                      <input name='terms' id='terms' type="checkbox" value=1 required />
-                      <label required class="form__label" for="terms">{% url "terms" as termsurl %}{% blocktrans %}I have read, understand, and agree to, the <a href="{{ termsurl }}" target="_blank" rel="noopener noreferrer">Terms of Service</a>.{% endblocktrans %}</label>
+                <div class="media-body align-self-center">
+                  <h4 class="text-left">{% trans "Cancel Bounty and Reclaim Funds" %}</h4>
+                  <p>{% trans "(Issue Submitters only)" %}</p>
+                </div>
+              </div>
+              <p class="mt-2">{% trans "Once you cancel, you will receive the funds & you can reuse it for your next bounty." %}</p>
+              <form id="submitBounty" class="font-smaller-2">
+                <div class="w-100">
+                  <p class="font-body font-weight-semibold">
+                    <a class="link" href="{{ bounty.github_url }}">{% trans "Back to Bounty" %}</a>
+                  </p>
+                  <label class="form__label" for="issueURL">{% trans "Issue URL" %}</label>
+                  <input name='issueURL' id="issueURL" class="form__input" type="url" required placeholder="https://github.com/user/repo/issues/n" value="{% if bounty %}{{bounty.github_url}}{%endif%}" />
+                </div>
+
+                <div class="my-4 pt-3 border-top">
+                  <h6>{% trans "Reason" %}</h6>
+                  <p>
+                      {% trans "Please let us know why you cancelled the bounty" %}
+                  </p>
+                  <div class="options">
+                    <div class="form__radio option">
+                      <input name="canceled_bounty_reason" id="reason_1" type="radio" value="1- Solved issue" />
+                      <label class="filter-label" for=reason_1>{% trans "An alternative commit, patch, or solution solved the issue." %}</label>
+                    </div>
+
+                    <div class="form__radio option">
+                      <input name="canceled_bounty_reason" id="reason_2" type="radio" value="2- Scope changed" />
+                      <label class="filter-label" for=reason_2>{% trans "The scope of work changed." %}</label>
+                    </div>
+
+                    <div class="form__radio option">
+                      <input name="canceled_bounty_reason" id="reason_3" type="radio" value="3- Internal solution" />
+                      <label class="filter-label" for=reason_3>{% trans "The bounty was brought to our internal team." %}</label>
+                    </div>
+
+                    <div class="form__radio option">
+                      <input name="canceled_bounty_reason" id="reason_4" type="radio" value="4- Abandoned bounty" />
+                      <label class="filter-label" for=reason_4>{% trans "The bounty had no workers and/or was consistently abandoned." %}</label>
+                    </div>
+
+                    <div class="form__radio option">
+                      <input name="canceled_bounty_reason" id="reason_5" type="radio" value="5- Bad work submitted" />
+                      <label class="filter-label" for=reason_5>{% trans "The quality of submitted work was not up to par." %}</label>
+                    </div>
+
+                    <div class="form__radio option">
+                      <input name="canceled_bounty_reason" id="reason_6" type="radio" value="6- Not needed anymore" />
+                      <label class="filter-label" for=reason_6>{% trans "The bounty was not needed anymore." %}</label>
+                    </div>
+
+                    <div class="form__radio option">
+                      <input name="canceled_bounty_reason" id="reason_other" type="radio" value="other" />
+                      <label class="filter-label" for=reason_other>{% trans "Others (Please tell us more)" %}</label>
+                      <textarea class="form__input mt-2" name="canceled_bounty_reason" id="reason_text" cols="10" rows="4" placeholder="What made you cancel this bounty?"></textarea>
                     </div>
                   </div>
-                  <div class="form__footer form__footer--right">
-                      <button class="button button--primary js-submit">{% trans "Cancel Bounty" %}</button>
-                      <a class="font-caption" style="display: block;" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">
-                        Your transaction is secured by the audited StandardBounties contract on the Ethereum blockchain.</br>
-                        Learn more here.
-                      </a>
+                </div>
+
+                <div id="gas-section">
+                  {% include 'shared/bounty_actions_hidden_vars.html' %}
+                  {% include 'shared/wallet_estimate.html' %}
+                </div>
+                <div class="w-100 mt-2 terms_container">
+                  <div class="form__checkbox">
+                    <input name='terms' id='terms' type="checkbox" value=1 required />
+                    <label required class="form__label" for="terms">{% url "terms" as termsurl %}{% blocktrans %}I have read, understand, and agree to, the <a href="{{ termsurl }}" target="_blank" rel="noopener noreferrer">Terms of Service</a>.{% endblocktrans %}</label>
                   </div>
-                </form>
-              </div>
+                </div>
+                <div class="text-center">
+                    <button class="button button--primary button--warning js-submit" style="width: 100%;">{% trans "Cancel Bounty" %}</button>
+                    <br>
+                    <a class="font-caption mt-3" style="display: block;" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">
+                      {% trans "Your transaction is secured by the audited StandardBounties contract on the Ethereum blockchain. Learn more here." %}
+                    </a>
+                </div>
+              </form>
             </div>
           </div>
         </div>
@@ -86,7 +152,7 @@
     {% include 'shared/messages.html' %}
   </body>
 
-  <!-- jQuery -->
+  <script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>

@@ -1,0 +1,116 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load static humanize i18n grants_extra %}
+<div class="px-lg-5">
+  <div id="grant-profile-tabs" class="tab-container font-body mt-5 mb-4">
+    
+    <button type="button" id="nav-description" href="{{grant.url}}?tab=description" class="section-tab {% if tab == "description" %} active {% endif %}">
+      {% trans "DESCRIPTION" %}
+    </button>
+
+    <button type="button" id="nav-transactions" href="{{grant.url}}?tab=activity" class="section-tab {% if tab == "activity" %} active {% endif %}">
+      {% trans "ACTIVITY" %}
+      {% if not subscriptions and not cancelled_subscriptions and not contributions %}
+        <span class="nav-badge">0</span>
+      {% endif %}
+    </button>
+
+    <button type="button" id="nav-summary" href="{{grant.url}}?tab=updates" class="section-tab {% if tab == "updates" %} active {% endif %}">
+      {% trans "UPDATES" %}
+    </button>
+  
+    <button type="button" id="nav-contributors" href="{{grant.url}}?tab=contributors" class="section-tab {% if tab == "contributors" %} active {% endif %}">
+      {% trans "CONTRIBUTORS" %}
+      <span class="nav-badge">{{ contributions|length }}</span>
+    </button>
+  
+  </div>
+
+  <div id="grant-profile-tabs-sections" class="tab-sections section pt-2">
+    {% if tab == "description" %}
+    <div id="section-nav-description" class="tab-section active">
+      <div id="editor">
+        {% if grant.description_rich %}
+          {{ grant.description_rich }}
+        {% else %}
+          {{ grant.description }}
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+
+    {% if tab == "activity" %}
+    <div id="section-nav-transactions" class="">
+      {% if not subscriptions and not cancelled_subscriptions and not contributions %}
+        <h4 class="m-auto text-center font-weight-semibold">{% trans "No Activity for this Grant!" %}</h4>
+      {% else %}
+        {% include 'grants/activity.html' %}
+        <span id="grant-network" class="hidden">{{ grant.network }}</span>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    {% if tab == "updates" %}
+    <div id="section-nav-summary" class="">
+      {% include 'grants/detail/summary.html' %}
+    </div>
+    {% endif %}
+
+    {% if tab == "contributors" %}
+    <div id="section-nav-contributors" class="">
+      <div class="grant__stakeholders-list d-flex flex-wrap">
+        {% for contribution in contributions %}
+          <a class="grant__stakeholders-item mr-3 mb-3" href="{% url 'profile' contribution.subscription.contributor_profile.handle %}">
+            <div class="mr-2 d-inline-block">
+              <img src="{{ contribution.subscription.contributor_profile.avatar_url }}" />
+            </div>
+            <div class="mt-1 d-inline-block">
+              <span class="grant-profile font-weight-semibold">{{ contribution.subscription.contributor_profile.handle }}</span>
+            </div>
+          </a>
+
+        {% empty %}
+          <div class="no-subscriptions">
+            <p class="mb-1">{% trans "No contributors." %}</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+    
+  </div>
+</div>
+
+<script>
+  let grant_description;
+  {% if is_admin and not grant_is_inactive %}
+      grant_description = new Quill('#editor', {
+      theme: 'snow',
+    });
+    grant_description.enable(false);
+  {% else %}
+    grant_description = new Quill('#editor', {
+      theme: 'bubble',
+      readOnly: true,
+    });
+  {% endif %}
+
+  let desc = JSON.parse(grant_description.getContents().ops[0].insert);
+  if (desc.ops) {
+    grant_description.setContents(desc);
+  }
+</script>

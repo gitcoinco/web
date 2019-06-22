@@ -8,8 +8,17 @@ if ($('.logged-in').length) {
 }
 
 $('.js-select2').each(function() {
-  $(this).select2();
+  $(this).select2({
+    minimumResultsForSearch: Infinity
+  });
 });
+
+// removes tooltip
+if ($('#job').parent().css('display') !== 'none') {
+  $('#job select').each(function(evt) {
+    $('.select2-selection__rendered').tooltip('destroy');
+  });
+}
 
 onboard.showTab = function(num) {
   $($('.step')[num]).addClass('block').outerWidth();
@@ -22,7 +31,7 @@ onboard.showTab = function(num) {
     window.history.pushState('', '', '/onboard/' + flow + '/' + $($('.step')[num]).attr('link'));
   }
 
-  if (num === 1 || num === 2 || $($('.step')[num]).attr('link') === 'avatar') {
+  if (num === 2 || $($('.step')[num]).attr('link') === 'avatar') {
     $('.controls').hide();
   } else {
     $('.controls').show();
@@ -65,9 +74,6 @@ onboard.watchMetamask = function() {
         </a>
       </div>`
     );
-    if (current === 1) {
-      $('.controls').hide();
-    }
   } else if (!web3.eth.coinbase) {
     $('.step #metamask').html(`
       <div class="locked">
@@ -78,7 +84,6 @@ onboard.watchMetamask = function() {
       </div>`
     );
     if (current === 1) {
-      $('.controls').hide();
       $('#metamask-video').show();
     }
   } else {
@@ -91,7 +96,7 @@ onboard.watchMetamask = function() {
       document.alreadyFoundMetamask = true;
       $('.controls').show();
       $('#metamask-video').hide();
-      $('#next-btn').click(function(e) {
+      $('#next-btn').on('click', function(e) {
         var eth_address = $('#eth_address').val();
 
         $.get('/onboard/contributor/', {eth_address: eth_address});
@@ -170,6 +175,17 @@ var changeStep = function(n) {
 
   var steps = $('.step');
 
+  if ($($('.step')[current]).attr('link') === 'skills') {
+    var level = $('#experienceLevel').find(':selected').val();
+
+    localStorage['experience_level'] = level;
+    localStorage['referrer'] = 'onboard';
+  }
+
+  if ($($('.step')[current]).attr('link') === 'job') {
+    save_job_status();
+  }
+
   $(steps[current]).removeClass('show');
   $(steps[current]).removeClass('block');
   $('.alert').remove();
@@ -233,9 +249,7 @@ var redirectURL = function() {
   var url = '';
 
   if (flow === 'contributor') {
-    var level = $('#experienceLevel').find(':selected').val();
-
-    localStorage['experience_level'] = level;
+    save_job_status();
     url = '/explorer?q=' + words.join(',');
   } else if (flow === 'funder') {
     url = '/funding/new';
@@ -243,6 +257,7 @@ var redirectURL = function() {
     url = '/profile';
   }
 
-  localStorage['referrer'] = 'onboard';
   document.location.href = url;
 };
+
+localStorage['onboarded_funder'] = true;

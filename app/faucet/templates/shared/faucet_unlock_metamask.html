@@ -1,36 +1,36 @@
 {% comment %}
-    Copyright (C) 2018 Gitcoin Core
+  Copyright (C) 2018 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
 {% load i18n static %}
-                    <div id="unlock_metamask_error" class="blocking_error" style="display: none; min-height: 500px;">
-                        <div class="w-100" style="text-align: center;">
-                            <h3>{% trans "Apply for a faucet distribution" %}</h3>
-                        </div>
-                        <img src="{% static "v2/images/prime.png" %}" style="max-height: 100px">
-                        <br>
-                        <h3>{% trans "You're almost there!" %}</h3>
-                        <p>
-                            {% trans "In order to continue, you'll need to unlock metamask." %}
-                        </p>
-                        <p>
-                            {% trans "Please unlock Metamask and refresh the page." %}
-                            <br>
-                            - {% trans "or" %} -
-                            <br>
-                            <a href="https://github.com/gitcoinco/gitcoinco/issues/4" target="_blank" rel="noopener noreferrer">{% trans "Can't get web3 to work? Get help here." %}</a>
-                        </p>
-                    </div>
+<div id="unlock_metamask_error" class="blocking_error font-body" style="display: none; min-height: 500px;">
+  <div class="w-100 text-center">
+  <h3>{% trans "Apply for a faucet distribution" %}</h3>
+  </div>
+  <img src="{% static "v2/images/prime.png" %}" style="max-height: 100px">
+  <br>
+  <h3>{% trans "You're almost there!" %}</h3>
+  <p>
+    {% trans "In order to continue, you'll need to unlock metamask." %}
+  </p>
+  <p>
+    {% trans "Please unlock Metamask and refresh the page." %}
+    <br>
+    - {% trans "or" %} -
+    <br>
+    <a href="https://github.com/gitcoinco/gitcoinco/issues/4" target="_blank" rel="noopener noreferrer">{% trans "Can't get web3 to work? Get help here." %}</a>
+  </p>
+</div>

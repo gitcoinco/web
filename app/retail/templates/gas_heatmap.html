@@ -1,0 +1,282 @@
+{% extends 'onepager/base.html' %}
+{% load i18n static %}
+{% block 'scripts' %}
+<script src="{% static "v2/js/lib/jquery.js"%}"> </script>
+<script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js"  %}">
+</script>
+<script src="{% static "v2/js/pages/gas.js" %}"></script>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="{% static "v2/js/lib/tooltip.js" %}"></script>
+
+{% if gas_histories != '[]' %}
+<script>
+  (function () {
+
+    data = []
+
+    {% for key, gas_history in gas_histories.items %}
+      var source = {{ gas_history | safe }};
+    source.forEach(function (d) {
+      d['gas_price'] = parseFloat(d[0]);
+      d['created_on'] = d[2];
+      d.splice(0, 2);
+      data.push(d);
+    });
+
+  {% endfor %}
+
+
+
+  //UI configuration
+  var itemSize = 70,
+    cellSize = itemSize - 1,
+    width = 800,
+    height = 1700,
+    margin = { top: 20, right: 20, bottom: 20, left: 25 };
+  if(window.innerWidth < 400){
+    itemSize = 15;
+    height = 800;
+  } else if(window.innerWidth < 600){
+    itemSize = 25;
+    height = 1000;
+  } else if(window.innerWidth < 800){
+    itemSize = 40;
+    height = 1200;
+  } else if(window.innerWidth < 1000){
+    itemSize = 50;
+    height = 1400;
+  }
+  //formats
+  var hourFormat = d3.timeFormat('%H'),
+    dayFormat = d3.timeFormat('%j'),
+    timeFormat = d3.timeFormat('%Y-%m-%dT%X'),
+    monthDayFormat = d3.timeFormat('%m.%d');
+
+  //timeFormatParse = d3.timeParse('%Y-%m-%dT%X');
+
+  timeFormatParse = d3.timeParse("%Y-%m-%dT%H:%M:%S");
+
+  //data vars for rendering
+  var dateExtent = null,
+    dayOffset = 0,
+    colorCalibration = ['#f6faaa', '#FEE08B', '#FDAE61', '#F46D43', '#D53E4F', '#9E0142'],
+    dailyValueExtent = {};
+
+  //axises and scales
+  var axisWidth = 0,
+    axisHeight = itemSize * 24,
+    xAxisScale = d3.scaleTime(),
+    xAxis = d3.axisTop()
+      .ticks(d3.timeDay.every(3))
+      .tickFormat(monthDayFormat),
+    yAxisScale = d3.scaleLinear()
+      .range([0, axisHeight])
+      .domain([0, 24]),
+    yAxis = d3.axisLeft()
+      .ticks(5)
+      .tickFormat(d3.format('02d'))
+      .scale(yAxisScale);
+
+  initCalibration();
+
+  var svg = d3.select('[role="heatmap"]');
+  var heatmap = svg
+    .attr('width', width)
+    .attr('height', height)
+    .append('g')
+    .attr('width', width - margin.left - margin.right)
+    .attr('height', height - margin.top - margin.bottom)
+    .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+  var rect = null;
+
+  data.forEach(function (valueObj) {
+    valueObj['date'] = timeFormatParse(valueObj['created_on']);
+    var day = valueObj['day'] = monthDayFormat(valueObj['date']);
+
+    var dayData = dailyValueExtent[day] = (dailyValueExtent[day] || [1000, -1]);
+    var pmValue = valueObj['gas_price'];
+    dayData[0] = d3.min([dayData[0], pmValue]);
+    dayData[1] = d3.max([dayData[1], pmValue]);
+  });
+
+  dateExtent = d3.extent(data, function (d) {
+    return d.date;
+  });
+
+  axisWidth = itemSize * (dayFormat(dateExtent[1]) - dayFormat(dateExtent[0]) + 1);
+
+  //render axises
+  xAxis.scale(xAxisScale.range([0, axisWidth]).domain([dateExtent[0], dateExtent[1]]));
+  svg.append('g')
+    .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+    .attr('class', 'x axis')
+    .call(xAxis)
+    .append('text')
+    .text('date')
+    .attr('transform', 'translate(' + axisWidth + ',-10)');
+
+  svg.append('g')
+    .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+    .attr('class', 'y axis')
+    .call(yAxis)
+    .append('text')
+    .text('time')
+    .attr('transform', 'translate(-10,' + axisHeight + ') rotate(-90)');
+
+  //render heatmap rects
+  dayOffset = dayFormat(dateExtent[0]);
+  rect = heatmap.selectAll('rect')
+    .data(data)
+    .enter().append('rect')
+    .attr('width', cellSize)
+    .attr('height', cellSize)
+    .attr('x', function (d) {
+      return itemSize * (dayFormat(d.date) - dayOffset);
+    })
+    .attr('y', function (d) {
+      return hourFormat(d.date) * itemSize;
+    })
+    .attr('fill', '#ffffff');
+
+  rect.filter(function (d) { return d["gas_price"] > 0; })
+    .append('title')
+    .text(function (d) {
+      return timeFormat(d.date) + ' - Gas Price: ' + ( Math.round(d["gas_price"] * 10) / 10 ) + " gwei";
+    });
+
+  renderColor();
+
+  function initCalibration() {
+    d3.select('[role="calibration"] [role="example"]').select('svg')
+      .selectAll('rect').data(colorCalibration).enter()
+      .append('rect')
+      .attr('width', cellSize)
+      .attr('height', cellSize)
+      .attr('x', function (d, i) {
+        return i * itemSize;
+      })
+      .attr('fill', function (d) {
+        return d;
+      });
+
+    //bind click event
+    d3.selectAll('[role="calibration"] [name="displayType"]').on('click', function () {
+      renderColor();
+    });
+  }
+
+  function renderColor() {
+    //var renderByCount = document.getElementsByName('displayType')[0].checked;
+
+    rect
+      .filter(function (d) {
+        return (d["gas_price"] >= 0);
+      })
+      .transition()
+      .delay(function (d) {
+        return (dayFormat(d.date) - dayOffset) * 15;
+      })
+      .duration(500)
+      .attrTween('fill', function (d, i, a) {
+        //choose color dynamicly
+        var colorIndex = d3.scaleQuantize()
+          .range([0, 1, 2, 3, 4, 5])
+          .domain((dailyValueExtent[d.day]));
+
+        return d3.interpolate(a, colorCalibration[colorIndex(d['gas_price'])]);
+      });
+  }
+
+  //extend frame height in `http://bl.ocks.org/`
+  d3.select(self.frameElement).style("height", "600px");
+  }) ();
+</script>
+
+{%endif%}
+
+<style>
+  .axis {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: .8em;
+  }
+
+  .line {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 2px;
+  }
+
+  .dot {
+    fill: steelblue;
+  }
+
+  div.tooltip {
+    position: absolute;
+    max-width: 300px;
+    padding: 3px 6px;
+    color: grey;
+    font-family: 'Droid Sans Mono', monospace;
+    font-size: .7em;
+    background: whitesmoke;
+    border: 1px solid grey;
+    border-radius: 3px;
+    pointer-events: none;
+    z-index: 9999;
+  }
+</style>
+{% endblock %}
+<!-- Main -->
+
+{% block 'world' %}
+<canvas id="world" style="position:absolute; top:0px; left: 0px;">
+</canvas>
+{% endblock %}
+
+{% block 'main' %}
+
+<section id=main style="max-width: 90%;">
+  {% include 'shared/gas_nav.html' %}
+
+  {% include 'shared/gas_advisories.html' %}
+
+  <h1> {% trans "Gas Heatmap to confirm within" %} {{mins}} {% trans "minutes" %} <span id="alpha">{% trans "Alpha" %}</span> </h1>
+  <div>
+    {% for min in min_options %}
+    <a href="{% url 'gas_heatmap' %}?mins={{min}}">({{min}} mins)</a>
+    {% endfor %}
+    <br>
+    <br>
+    <br>
+  </div>
+  {% if gas_histories == '[]' %}
+  <p>
+    {% blocktrans %} We are unable to sync gas data at this time. We recommend you check out <a href="https://ethgasstation.info/predictionTable.php"
+      target="_blank" rel="noopener noreferrer">ETH Gas Station</a> instead.{% endblocktrans %}
+  </p>
+  {% else %}
+  <div style="position: absolute; left: 30px; top: 500px; transform: rotate(-90deg);">
+    Hour of Day (UTC)
+  </div>
+  <div class="days-hours-heatmap">
+    <!-- calibration and render type controller -->
+    <div class="calibration" role="calibration">
+      <div class="group" role="example">
+        <svg width="120" height="17">
+        </svg>
+        <div role="description" class="description">
+          <label>Less Gas</label> <==>
+          <label>More Gas</label>
+        </div>
+      </div>
+    </div>
+    <div>
+      <br>
+      <br>
+      Date
+    </div>
+    <!-- heatmap -->
+    <svg role="heatmap" class="heatmap"></svg>
+  </div>
+  {% endif %}
+
+{% endblock %}

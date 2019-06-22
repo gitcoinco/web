@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2018 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -30,62 +30,130 @@ import credits.views
 import dashboard.embed
 import dashboard.gas_views
 import dashboard.helpers
-import dashboard.ios
 import dashboard.tip_views
 import dashboard.views
 import dataviz.d3_views
 import dataviz.views
 import enssubdomain.views
-import external_bounties.views
+# event:ethdenver2019
+import event_ethdenver2019.views
 import faucet.views
 import gitcoinbot.views
+import healthcheck.views
+import kudos.views
 import linkshortener.views
 import marketing.views
 import marketing.webhookviews
 import retail.emails
 import retail.views
+import revenue.views
 import tdi.views
+from avatar.router import router as avatar_router
 from dashboard.router import router as dbrouter
-from external_bounties.router import router as ebrouter
+from grants.router import router as grant_router
+from kudos.router import router as kdrouter
 
 from .sitemaps import sitemaps
 
 urlpatterns = [
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
 
+    # create bounty
+    url(r'^create?', dashboard.views.new_bounty, name='create_bounty'),  # TODO: Remove
+
+    # inbox
+    path('inbox/', include('inbox.urls', namespace='inbox')),
+
+    # kudos
+    path('kudos/', kudos.views.about, name='kudos_main'),
+    path('kudos/about/', kudos.views.about, name='kudos_about'),
+    path('kudos/marketplace/', kudos.views.marketplace, name='kudos_marketplace'),
+    path('kudos/mint/', kudos.views.mint, name='kudos_mint'),
+    path('kudos/send/', kudos.views.send_2, name='kudos_send'),
+    path('kudos/send/3/', kudos.views.send_3, name='kudos_send_3'),
+    path('kudos/send/4/', kudos.views.send_4, name='kudos_send_4'),
+    re_path(r'^lazy_load_kudos/$', dashboard.views.lazy_load_kudos, name='lazy_load_kudos'),
+    re_path(r'^kudos/receive/v3/(?P<key>.*)/(?P<txid>.*)/(?P<network>.*)?', kudos.views.receive, name='kudos_receive'),
+    re_path(r'^kudos/redeem/(?P<secret>.*)/?$', kudos.views.receive_bulk, name='kudos_receive_bulk'),
+    re_path(r'^kudos/search/$', kudos.views.search, name='kudos_search'),
+    re_path(
+        r'^kudos/(?P<address>\w*)/(?P<token_id>\d+)/(?P<name>\w*)',
+        kudos.views.details_by_address_and_token_id,
+        name='kudos_details_by_address_and_token_id'
+    ),
+    re_path(r'^kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.details, name='kudos_details'),
+    re_path(r'^kudos/address/(?P<handle>.*)', kudos.views.kudos_preferred_wallet, name='kudos_preferred_wallet'),
+    re_path(r'^dynamic/kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.image, name='kudos_dynamic_img'),
+
     # api views
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
-    url(r'^api/v0.1/funding/save/?', dashboard.ios.save, name='save'),
+    url(
+        r'^api/v0.1/profile/(.*)?/jobopportunity',
+        dashboard.views.profile_job_opportunity,
+        name='profile_job_opportunity'
+    ),
+    url(r'^api/v0.1/profile/(?P<handle>.*)', dashboard.views.profile_details, name='profile_details'),
+    url(
+        r'^api/v0.1/get_suggested_contributors',
+        dashboard.views.get_suggested_contributors,
+        name='get_suggested_contributors'
+    ),
+    url(
+        r'^api/v0.1/social_contribution_email',
+        dashboard.views.social_contribution_email,
+        name='social_contribution_email'
+    ),
+    url(r'^api/v0.1/bountydocument', dashboard.views.bounty_upload_nda, name='bounty_upload_nda'),
     url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
     url(r'^api/v0.1/', include(dbrouter.urls)),
-    url(r'^api/v0.1/', include(ebrouter.urls)),
-    url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active, but not cached in cloudfront
+    url(r'^api/v0.1/', include(kdrouter.urls)),
+    url(r'^api/v0.1/', include(grant_router.urls)),
+    url(r'^api/v0.1/', include(avatar_router.urls)),
+    url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active
     url(r'^api/v0.1/users_search/', dashboard.views.get_users, name='users_search'),
-
+    url(r'^api/v0.1/kudos_search/', dashboard.views.get_kudos, name='kudos_search'),
     # Health check endpoint
     re_path(r'^health/', include('health_check.urls')),
-    re_path(r'^lbcheck/?', retail.views.lbcheck, name='lbcheck'),
+    re_path(r'^lbcheck/?', healthcheck.views.lbcheck, name='lbcheck'),
+    re_path(r'^spec/?', healthcheck.views.spec, name='spec'),
+
+    # grant views
+    path('grants/', include('grants.urls', namespace='grants')),
 
     # dashboard views
-
-    # Dummy offchain index
-    url(r'^offchain/new/?', external_bounties.views.external_bounties_new, name="offchain_new"),
-    url(r'^offchain/(?P<issuenum>.*)/(?P<slug>.*)/?', external_bounties.views.external_bounties_show, name='offchain'),
-    url(r'^offchain/?', external_bounties.views.external_bounties_index, name="offchain_index"),
-    url(r'^universe/new/?', external_bounties.views.external_bounties_new, name="universe_new"),
-    url(r'^universe/(?P<issuenum>.*)/(?P<slug>.*)/?', external_bounties.views.external_bounties_show, name='universe'),
-    url(r'^universe/?', external_bounties.views.external_bounties_index, name="universe_index"),
     re_path(r'^onboard/(?P<flow>\w+)/$', dashboard.views.onboard, name='onboard'),
     re_path(r'^onboard/contributor/avatar/?$', dashboard.views.onboard_avatar, name='onboard_avatar'),
+    url(r'^postcomment/', dashboard.views.post_comment, name='post_comment'),
     url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
 
+    # Hackathon static page
+    url(r'^hackathon/ethhack2019', dashboard.views.ethhack, name='ethhack_2019'),
+    url(r'^hackathon/beyondblocks', dashboard.views.beyond_blocks_2019, name='beyond_blocks_2019'),
+    path('revenue/attestations/new', revenue.views.new_attestation, name='revenue_new_attestation'),
+
+    # Hackathons / special events
+    re_path(r'^hackathon/(?P<hackathon>.*)?/', dashboard.views.hackathon, name='hackathon'),
+    re_path(r'^hackathon?/', dashboard.views.hackathon, name='hackathon_idx'),
+    path('hackathon-list/', dashboard.views.get_hackathons, name='get_hackathons'),
+
     # action URLs
+    url(r'^funder', retail.views.funder_bounties_redirect, name='funder_bounties_redirect'),
+    re_path(
+        r'^contributor/?(?P<tech_stack>.*)/?',
+        retail.views.contributor_bounties_redirect,
+        name='contributor_bounties_redirect'
+    ),
+    url(r'^bounties/funder', retail.views.funder_bounties, name='funder_bounties'),
+    re_path(
+        r'^bounties/contributor/?(?P<tech_stack>.*)/?', retail.views.contributor_bounties, name='contributor_bounties'
+    ),
     re_path(r'^bounty/quickstart/?', dashboard.views.quickstart, name='quickstart'),
     url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
     re_path(r'^bounty/change/(?P<bounty_id>.*)?', dashboard.views.change_bounty, name='change_bounty'),
-    url(r'^funding/new/?', dashboard.views.new_bounty, name='new_funding'),
-    url(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),
+    url(r'^funding/new/?', dashboard.views.new_bounty, name='new_funding'),  # TODO: Remove
+    url(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),  # TODO: Remove
+    # TODO: Rename below to bounty/
     path('issue/fulfill', dashboard.views.fulfill_bounty, name='fulfill_bounty'),
     path('issue/accept', dashboard.views.accept_bounty, name='process_funding'),
     path('issue/advanced_payout', dashboard.views.bulk_payout_bounty, name='bulk_payout_bounty'),
@@ -93,8 +161,28 @@ urlpatterns = [
     path('issue/payout', dashboard.views.payout_bounty, name='payout_bounty'),
     path('issue/increase', dashboard.views.increase_bounty, name='increase_bounty'),
     path('issue/cancel', dashboard.views.cancel_bounty, name='kill_bounty'),
+    path('issue/refund_request', dashboard.views.refund_request, name='refund_request'),
+    path('issue/cancel_reason', dashboard.views.cancel_reason, name='cancel_reason'),
     path('issue/contribute', dashboard.views.contribute, name='contribute'),
     path('issue/social_contribution', dashboard.views.social_contribution, name='social_contribution'),
+    path('modal/social_contribution', dashboard.views.social_contribution_modal, name='social_contribution_modal'),
+    path(
+        '<str:bounty_network>/<int:stdbounties_id>/modal/funder_payout_reminder/',
+        dashboard.views.funder_payout_reminder_modal,
+        name='funder_payout_reminder_modal'
+    ),
+
+    # Rating
+    path('modal/rating/<int:bounty_id>/<str:username>/', dashboard.views.rating_modal, name='rating_modal'),
+    path('modal/rating_capture/', dashboard.views.rating_capture, name='rating_capture'),
+    url(r'^api/v0.1/unrated_bounties/', dashboard.views.unrated_bounties, name='unrated_bounties'),
+
+    # Notify Funder Modal Submission
+    path(
+        'actions/bounty/<str:bounty_network>/<int:stdbounties_id>/notify/funder_payout_reminder/',
+        dashboard.views.funder_payout_reminder,
+        name='funder_payout_reminder'
+    ),
     path(
         'actions/bounty/<int:bounty_id>/extend_expiration/',
         dashboard.views.extend_expiration,
@@ -125,6 +213,7 @@ urlpatterns = [
         name='issue_details_new2'
     ),
     re_path(r'^funding/details/?', dashboard.views.bounty_details, name='funding_details'),
+    re_path(r'^issue/(?P<invitecode>.*)', dashboard.views.bounty_invite_url, name='unique_bounty_invite'),
 
     # Tips
     url(
@@ -148,6 +237,7 @@ urlpatterns = [
     re_path(r'^legal/prirp/?', dashboard.views.prirp, name='prirp'),
     re_path(r'^legal/apitos/?', dashboard.views.apitos, name='apitos'),
     re_path(r'^legal/?', dashboard.views.terms, name='legal'),
+    re_path(r'^users/?', dashboard.views.users_directory, name='users_directory'),
 
     # Alpha functionality
     re_path(r'^profile/(.*)?', dashboard.views.profile, name='profile'),
@@ -155,6 +245,7 @@ urlpatterns = [
     path('actions/tool/<int:tool_id>/voteUp', dashboard.views.vote_tool_up, name='vote_tool_up'),
     path('actions/tool/<int:tool_id>/voteDown', dashboard.views.vote_tool_down, name='vote_tool_down'),
     re_path(r'^tools/?', dashboard.views.toolbox, name='tools'),
+    re_path(r'^labs/?', dashboard.views.labs, name='labs'),
 
     # gas views
     url(r'^gas/faucets/?', dashboard.gas_views.gas_faucet_list, name='gas_faucet_list'),
@@ -163,6 +254,7 @@ urlpatterns = [
     url(r'^gas/calculator/?', dashboard.gas_views.gas_calculator, name='gas_calculator'),
     url(r'^gas/history/?', dashboard.gas_views.gas_history_view, name='gas_history_view'),
     url(r'^gas/guzzlers/?', dashboard.gas_views.gas_guzzler_view, name='gas_guzzler_view'),
+    url(r'^gas/heatmap/?', dashboard.gas_views.gas_heatmap, name='gas_heatmap'),
     url(r'^gas/?', dashboard.gas_views.gas, name='gas'),
 
     # images
@@ -176,24 +268,25 @@ urlpatterns = [
     # sync methods
     url(r'^sync/web3/?', dashboard.views.sync_web3, name='sync_web3'),
     url(r'^sync/get_amount/?', dashboard.helpers.amount, name='helpers_amount'),
-    url(r'^sync/get_issue_details/?', dashboard.helpers.issue_details, name='helpers_issue_details'),
+    re_path(r'^sync/get_issue_details/?', dashboard.helpers.issue_details, name='helpers_issue_details'),
 
     # modals
     re_path(r'^modal/get_quickstart_video/?', dashboard.views.get_quickstart_video, name='get_quickstart_video'),
     re_path(r'^modal/extend_issue_deadline/?', dashboard.views.extend_issue_deadline, name='extend_issue_deadline'),
 
     # brochureware views
+    re_path(r'^$', retail.views.index, name='index'),
+    re_path(r'^pricing/$', retail.views.pricing, name='pricing'),
+    re_path(r'^subscribe/$', retail.views.subscribe, name='subscribe'),
     re_path(r'^about/?', retail.views.about, name='about'),
     re_path(r'^mission/?', retail.views.mission, name='mission'),
+    re_path(r'^jobs/?', retail.views.jobs, name='jobs'),
     re_path(r'^vision/?', retail.views.vision, name='vision'),
+    re_path(r'^products/?', retail.views.products, name='products'),
     path('not_a_token', retail.views.not_a_token, name='not_a_token'),
-    re_path(r'^styleguide-alpha/?', retail.views.ui, name='ui'),
     re_path(r'^results/?(?P<keyword>.*)/?', retail.views.results, name='results_by_keyword'),
     re_path(r'^results/?', retail.views.results, name='results'),
     re_path(r'^activity/?', retail.views.activity, name='activity'),
-    re_path(r'^get/?', retail.views.get_gitcoin, name='get_gitcoin'),
-    url(r'^$', retail.views.index, name='index'),
-    re_path(r'^contributor/?(?P<tech_stack>.*)/?', retail.views.contributor_landing, name='contributor_landing'),
     url(r'^help/dev/?', retail.views.help_dev, name='help_dev'),
     url(r'^help/repo/?', retail.views.help_repo, name='help_repo'),
     url(r'^help/faq/?', retail.views.help_faq, name='help_faq'),
@@ -209,11 +302,11 @@ urlpatterns = [
     # basic redirect retail views
     re_path(r'^press/?', retail.views.presskit, name='press'),
     re_path(r'^presskit/?', retail.views.presskit, name='presskit'),
+    re_path(r'^verified/?', retail.views.verified, name='verified'),
     re_path(r'^community/?', retail.views.community, name='community'),
     re_path(r'^slack/?', retail.views.slack, name='slack'),
+    re_path(r'^blog/?', retail.views.blog, name='blog'),
     re_path(r'^submittoken/?', retail.views.newtoken, name='newtoken'),
-    re_path(r'^iosfeedback/?', retail.views.iosfeedback, name='iosfeedback'),
-    re_path(r'^ios/?', retail.views.ios, name='ios'),
     re_path(r'^itunes/?', retail.views.itunes, name='itunes'),
     re_path(r'^podcast/?', retail.views.podcast, name='podcast'),
     re_path(r'^casestudy/?', retail.views.casestudy, name='casestudy'),
@@ -232,6 +325,9 @@ urlpatterns = [
     re_path(r'^youtube/?', retail.views.youtube, name='youtube'),
     re_path(r'^web3/?', retail.views.web3, name='web3'),
 
+    # increase funding limit
+    re_path(r'^requestincrease/?', retail.views.increase_funding_limit_request, name='increase_funding_limit_request'),
+
     # link shortener
     url(r'^l/(.*)$/?', linkshortener.views.linkredirect, name='redirect'),
     url(r'^credit/(.*)$/?', credits.views.credits, name='credit'),
@@ -248,6 +344,57 @@ urlpatterns = [
 
     # admin views
     re_path(r'^_administration/?', admin.site.urls, name='admin'),
+    path('_administration/email/grant_cancellation', retail.emails.grant_cancellation, name='admin_grant_cancellation'),
+    path(
+        '_administration/email/featured_funded_bounty',
+        retail.emails.featured_funded_bounty,
+        name='admin_featured_funded_bounty'
+    ),
+    path(
+        '_administration/email/subscription_terminated',
+        retail.emails.subscription_terminated,
+        name='admin_subscription_terminated'
+    ),
+    path('_administration/email/new_grant', retail.emails.new_grant, name='admin_new_grant'),
+    path(
+        '_administration/email/change_grant_owner_request',
+        retail.emails.change_grant_owner_request,
+        name='admin_change_grant_owner_request'
+    ),
+    path(
+        '_administration/email/change_grant_owner_accept',
+        retail.emails.change_grant_owner_accept,
+        name='admin_change_grant_owner_accept'
+    ),
+    path(
+        '_administration/email/notify_ownership_change',
+        retail.emails.notify_ownership_change,
+        name='admin_notify_ownership_change'
+    ),
+    path(
+        '_administration/email/change_grant_owner_reject',
+        retail.emails.change_grant_owner_reject,
+        name='admin_change_grant_owner_reject'
+    ),
+    path('_administration/email/new_supporter', retail.emails.new_supporter, name='admin_new_supporter'),
+    path(
+        '_administration/email/thank_you_for_supporting',
+        retail.emails.thank_you_for_supporting,
+        name='admin_thank_you_for_supporting'
+    ),
+    path(
+        '_administration/email/support_cancellation',
+        retail.emails.support_cancellation,
+        name='admin_support_cancellation'
+    ),
+    path(
+        '_administration/email/successful_contribution',
+        retail.emails.successful_contribution,
+        name='admin_successful_contribution'
+    ),
+    path('_administration/email/new_kudos', retail.emails.new_kudos, name='new_kudos'),
+    path('_administration/email/kudos_mint', retail.emails.kudos_mint, name='kudos_mint'),
+    path('_administration/email/kudos_mkt', retail.emails.kudos_mkt, name='kudos_mkt'),
     path('_administration/email/new_bounty', retail.emails.new_bounty, name='admin_new_bounty'),
     path('_administration/email/roundup', retail.emails.roundup, name='roundup'),
     path('_administration/email/faucet_rejected', retail.emails.faucet_rejected, name='email_faucet_rejected'),
@@ -256,6 +403,12 @@ urlpatterns = [
     path('_administration/email/new_match', retail.emails.new_match, name='new_match'),
     path('_administration/email/quarterly_roundup', retail.emails.quarterly_roundup, name='quarterly_roundup'),
     path('_administration/email/new_work_submission', retail.emails.new_work_submission, name='new_work_submission'),
+    path('_administration/email/weekly_founder_recap', retail.emails.weekly_recap, name='weekly_founder_recap'),
+    path(
+        '_administration/email/weekly_unread_notifications_email',
+        retail.emails.unread_notification_email_weekly_roundup,
+        name='unread_notifications_email_weekly_roundup'
+    ),
     path('_administration/email/new_bounty_rejection', retail.emails.new_bounty_rejection, name='new_bounty_rejection'),
     path(
         '_administration/email/new_bounty_acceptance',
@@ -276,7 +429,13 @@ urlpatterns = [
     ),
     path('_administration/email/start_work_expired', retail.emails.start_work_expired, name='start_work_expired'),
     path('_administration/email/gdpr_reconsent', retail.emails.gdpr_reconsent, name='gdpr_reconsent'),
+    path('_administration/email/share_bounty', retail.emails.share_bounty, name='share_bounty'),
     path('_administration/email/new_tip/resend', retail.emails.resend_new_tip, name='resend_new_tip'),
+    path(
+        '_administration/email/day_email_campaign/<int:day>',
+        marketing.views.day_email_campaign,
+        name='day_email_campaign'
+    ),
     re_path(
         r'^_administration/process_accesscode_request/(.*)$',
         tdi.views.process_accesscode_request,
@@ -286,6 +445,11 @@ urlpatterns = [
         r'^_administration/process_faucet_request/(.*)$',
         faucet.views.process_faucet_request,
         name='process_faucet_request'
+    ),
+    re_path(
+        r'^_administration/process_refund_request/(.*)$',
+        dashboard.views.process_refund_request,
+        name='process_refund_request'
     ),
     re_path(
         r'^_administration/email/start_work_approved$', retail.emails.start_work_approved, name='start_work_approved'
@@ -308,6 +472,11 @@ urlpatterns = [
         retail.emails.start_work_applicant_expired,
         name='start_work_applicant_expired'
     ),
+    re_path(
+        r'^_administration/email/funder_payout_reminder$',
+        retail.emails.funder_payout_reminder,
+        name='funder_payout_reminder'
+    ),
 
     # settings
     re_path(r'^settings/email/(.*)', marketing.views.email_settings, name='email_settings'),
@@ -319,6 +488,7 @@ urlpatterns = [
     re_path(r'^settings/ens/?', marketing.views.ens_settings, name='ens_settings'),
     re_path(r'^settings/account/?', marketing.views.account_settings, name='account_settings'),
     re_path(r'^settings/tokens/?', marketing.views.token_settings, name='token_settings'),
+    re_path(r'^settings/job/?', marketing.views.job_settings, name='job_settings'),
     re_path(r'^settings/(.*)?', marketing.views.email_settings, name='settings'),
 
     # marketing views
@@ -369,13 +539,25 @@ urlpatterns = [
     # gitcoinbot
     url(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),
     url(r'^impersonate/', include('impersonate.urls')),
+
+    # event:ethdenver2019
+    re_path(
+        r'^ethdenver/redeem/(?P<secret>.*)/?$',
+        event_ethdenver2019.views.receive_bulk_ethdenver,
+        name='kudos_receive_bulk'
+    ),
+    url(r'^ethdenver/', event_ethdenver2019.views.ethdenver2019),
+    # /event:ethdenver2019
+
+    # users
+    url(r'^api/v0.1/user_bounties/', dashboard.views.get_user_bounties, name='get_user_bounties'),
+    url(r'^api/v0.1/users_fetch/', dashboard.views.users_fetch, name='users_fetch'),
 ]
 
 if settings.ENABLE_SILK:
     urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]
 
-if settings.ENV == 'local' and not settings.AWS_STORAGE_BUCKET_NAME:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+if not settings.AWS_STORAGE_BUCKET_NAME:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # If running in DEBUG, expose the error handling pages.

@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -29,7 +29,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         days = [1, 2]
         for day in days:
-            tips = Tip.objects.filter(
+            tips = Tip.objects.send_success().filter(
                 expires_date__lt=(timezone.now() + timezone.timedelta(days=(day+1))),
                 expires_date__gte=(timezone.now() + timezone.timedelta(days=day)),
                 receive_txid='',
@@ -37,4 +37,4 @@ class Command(BaseCommand):
             ).all()
             print('day {} got {} tips'.format(day, tips.count()))
             for t in tips:
-                tip_email(t, t.emails, False)
+                tip_email(t, [t.primary_email], False)

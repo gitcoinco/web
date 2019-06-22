@@ -1,55 +1,79 @@
-{% load static %}
+{% load static i18n %}
 <!-- JSRender stuff -->
 <script id="result" type="text/x-jsrender">
-<div class="row result bounty_row [[if hidden]]bounty_row--hidden[[/if]] [[:network]]" href="[[:action]]">
-      [[if avatar_url]]
-        <div class="avatar-container col-1 justify-content-center hide_min_viewport">
-          <img src='[[:avatar_url]]' class='avatar'>
-        </div>
-      [[else]]
-        <div class="avatar-container col-1 justify-content-center">
-          <div class="experience [[:experience_level]]">&nbsp;</div>
-        </div>
+<a class="result bounty_row [[if hidden]]bounty_row--hidden[[/if]] [[:network]] i[[:standard_bounties_id]]" href="[[:action]]" data-container="body" data-toggle="popover" data-content='{% include "shared/bounty-popover.html" %}'>
+  [[if avatar_url]]
+    <div class="avatar-container col-1 justify-content-center hide_min_viewport">
+      <img src='[[:avatar_url]]' class='avatar [[:github_org_name]]'>
+    </div>
+  [[else]]
+    <div class="avatar-container col-1 justify-content-center">
+      <div class="experience [[:experience_level]]">&nbsp;</div>
+    </div>
+  [[/if]]
+  <div class="col-12 col-md-8 d-flex flex-column">
+    <div class="bounty-detail">
+      [[if attached_job_description != null && attached_job_description != '']]
+        <div class="hiring-alt">HIRING <i class="fa-flag far"></i></div>
       [[/if]]
-    <div class="col-12 col-md-8 d-flex flex-column">
-      <div class="bounty-detail">
-        <div class="title font-subheader">
-          [[:title]]
-        </div>
-        <div class="bounty-summary col-12">
+      <div class="title font-subheader">
+        [[:title]]
+      </div>
+      <div class="bounty-summary col-12">
+        <div class="info font-caption">
+          <span class="status-[[:status]]">
+            <i class="g-icon g-icon__dot-circle"></i>
+            [[if status === "open"]]
+              {% trans "Ready to work" %}
+            [[else status === "started"]]
+              {% trans "Work Started" %}
+            [[else status === "submitted"]]
+              {% trans "Work Submitted" %}
+            [[else status === "done"]]
+              {% trans "Work Done" %}
+            [[else status === "cancelled"]]
+              {% trans "Cancelled" %}
+            [[else status === "expired"]]
+              {% trans "Expired" %}
+            [[/if]]
+          </span>
+          <span class="separator-bull"></span>
+          [[:p]]
           [[if github_comments]]
-            <div class="col-xs-1">
-              <img src={% static "v2/images/comment.svg" %}>
-              <span class="github-comment font-caption">[[:github_comments]]</span>
-            </div>
+            <span class="separator-bull"></span> <i class="fas fa-comment-alt"></i> [[:github_comments]] {% trans 'Comments' %}
           [[/if]]
-          <div class="info font-caption">
-            [[:p]]
-          </div>
+          [[if interested.length]]
+            <span class="separator-bull"></span> <i class="fas fa-user"></i> [[:interested.length]] {% trans 'Applicants' %}
+          [[else]]
+            <span class="separator-bull"></span> <i class="fas fa-user"></i> 0 {% trans 'Applicants' %}
+          [[/if]]
         </div>
       </div>
     </div>
-    <div class="col-12 col-md-3 tags font-caption align-items-center">
+  </div>
+  <div class="tags-container col-12 col-md-4 col-lg-3 font-caption">
+    <div class="tags fixed justify-content-sm-start justify-content-md-end">
       [[if network != 'mainnet']]
-        <div class="tag network_warning shift_left">
+        <div class="tag network_warning">
           <p>
             <span>[[:network]]</span>
           </p>
         </div>
-      [[else]]
-        [[if attached_job_description != null && attached_job_description != '']]
-        <div class="tag hiring shift_left">
-          <p>
-            <span>Hiring</span>
-          </p>
-        </div>
-        [[/if]]
       [[/if]]
       <div class="tag token">
         <p>
           [[:rounded_amount]]
           <span>[[:token_name]]</span>
+          [[if tokens]]
+            <i class="fas fa-plus mx-1" style="font-size: 0.5rem; position: relative; top: -1px;"></i>
+            <img class="m-0" style="position: relative; top: -2px;" src="{% static 'v2/images/coin.svg' %}">
+          [[/if]]
         </p>
+        [[if tokens ]]
+          <button class="btn-expand-token" onclick="toggleExpandableBounty(event, '.[[:network]].i[[:standard_bounties_id]]')">
+            {% trans 'See All' %}   <i class="fa fa-angle-down arrow"></i>
+          </button>
+        [[/if]]
       </div>
       [[if value_in_usdt]]
         <div class="tag usd">
@@ -61,4 +85,27 @@
       [[/if]]
     </div>
   </div>
+    [[if tokens ]]
+      <div class="col-md-12 expandable">
+        <div class="d-flex flex-wrap">
+          <div class="avatar-container col-1 hide_min_viewport"></div>
+          <div>
+            <span class="text-highlight-gc-purple m-0 uppercase middle">{% trans 'Funding' %}</span>
+          </div>
+          <div class="tags flex-wrap col-9">
+            <div class="tag token font-caption">
+              <p><span>[[:rounded_amount]] [[:token_name]]</span></p>
+            </div>
+            [[props tokens]]
+              [[for prop ~tokenName=key]]
+                <div class="tag token font-caption">
+                  <p><span>[[:#data]] [[:~tokenName]]<i class="fas fa-users ml-1"></i></span></p>
+                </div>
+              [[/for]]
+            [[/props]]
+          </div>
+        </div>
+      </div>
+    [[/if]]
+</a>
 </script>

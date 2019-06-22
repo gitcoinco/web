@@ -1,0 +1,60 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+<div>
+  <div class="popover-bounty__content">
+    <div class="d-flex justify-content-between mb-2">
+      <span class="status-[[:status]]">
+        <i class="g-icon g-icon__dot-circle"></i>
+        [[if status === "open"]]
+          {% trans "Ready to work" %}
+        [[else status === "started"]]
+          {% trans "Work Started" %}
+        [[else status === "submitted"]]
+          {% trans "Work Submitted" %}
+        [[else status === "done"]]
+          {% trans "Work Done" %}
+        [[else status === "cancelled"]]
+          {% trans "Cancelled" %}
+        [[else status === "expired"]]
+          {% trans "Expired" %}
+        [[/if]]
+      </span>
+      <span><img src="[[:avatar_url]]" alt="[[:github_org_name]]" class="rounded-circle [[:github_org_name]]" height="14"> [[:github_org_name]]</span>
+    </div>
+    <div class="font-subheader title text-truncate">[[>title]]</div>
+    <div class="mt-2 keyword-group">
+      [[if keywords]]
+        [[for keywords.split(',')]]
+          <span class="tag keyword">[[>]]</span>
+        [[/for]]
+      [[/if]]
+    </div>
+    <div class="mt-2">
+      [[if expired !== ""]]<i class="far fa-clock expired-icon"></i>[[/if]][[:expired]]
+    </div>
+  </div>
+  [[if latest_activity]]
+    <div class="popover-bounty__footer">
+      <span class="title">{% trans "Latest Activity" %}</span>
+        <div class="d-flex justify-content-between">
+          <span>[[activitytext:latest_activity.activity_type]] {% trans "by" %} <b>[[:latest_activity.profile.handle]]</b></span>
+          <span>[[timedifference:latest_activity.created]]</span>
+        </div>
+    </div>
+  [[/if]]
+</div>

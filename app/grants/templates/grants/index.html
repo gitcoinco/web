@@ -1,0 +1,236 @@
+{% comment %}
+Copyright (C) 2018 Gitcoin Core
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load humanize static i18n %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="{% static "v2/css/search_bar.css" %}">
+    {% include 'shared/head.html' with slim=1 %}
+    {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
+    <link rel="stylesheet" href="{% static "v2/css/grants/card.css" %}">
+  </head>
+  <body class="interior {{ active }} grant g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'grants/nav.html' %}
+      <div class="container py-5 ">
+        <div class="grants-hero white my-5">
+          <div class="row">
+            <div class="col-12 col-md-6 order-md-last mb-5 mb-md-0">
+              <div class="embed-responsive embed-responsive-16by9">
+                <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/eVgEWSPFR2o?rel=0&showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+              </div>
+            </div>
+            <div class="m-auto col-12 col-md-6 offset-lg-1 col-lg-5">
+              <h1 class="font-title-xl font-weight-semibold">{% trans 'Provide sustainable funding for Open Source with Gitcoin Grants' %}</h1>
+              <p class="my-4 pt-1 font-header">
+                {% blocktrans %}
+                Gitcoin Grants, powered by the <a target="_blank" rel="noopener noreferrer" href="http://1337alliance.com/">EIP 1337 standard</a>
+                , are a fast, easy and secure way to provide recurring token contributions to your favorite OSS maintainers. <br/><br/>
+                Show your support.
+                {% endblocktrans %}
+              </p>
+              <a class="btn btn-gc-blue" href="{% url 'grants:new' %}">
+                <img class="mr-1 white-icon" src="{% static "v2/images/grants/icons/white.svg" %}">
+                {% trans 'Create a Grant' %}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+      <div class="container-fluid py-4 grants-results">
+        <div class="container">
+          <strong>Gitcoin Grants</strong> has facilitated the distribution of <strong>${{grant_amount|floatformat:0}}k</strong> to Open Source since it's launch in January 2019.  <br>
+          <a class="font-body" href="/results">See more results</a>.
+        </div>
+      </div>
+
+      <div class="container-fluid py-5 grants-matching">
+        <div class="container">
+          <div class="row">
+          <div class="col-md-6">
+            <h2 class="mb-1 font-title">Round 3 details coming soon.</h2>
+            <h3 class="mb-4 font-subheader">We will be announcing the match amounts soon!</h5>
+            <h2 class="mb-2 font-header">Round 2 of Matching is now closed!</h2>
+            <p class="mb-4">
+              A special thanks to the following partners who have offered to match contributions to Gitcoin Grants.
+              <a href="https://medium.com/gitcoin/gitcoin-grants-50k-oss-fund-e20e09dc2110">(Read Announcement Here)
+              </a>
+            </p>
+
+            {% if not user.is_authenticated %}
+              <a class="btn btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">{% trans 'Become a Matching Partner' %}</a>
+            {% else %}
+              <div class="btn btn-gc-blue font-subtitle font-weight-semibold" onclick="processPayment()">
+                {% trans 'Become a Matching Partner' %}
+              </div>
+            {% endif %}
+          </div>
+          <div class="col-md-6">
+            <img src="{% static 'v2/images/grants/robots.png' %}" class="rounded mx-auto d-block"/>
+          </div>
+        </div>
+        {% if current_partners or past_partners %}
+          <ul class="nav nav-tabs my-5" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link nav-line active" id="currentpartners-tab" data-toggle="tab" href="#currentpartners" role="tab" aria-controls="currentpartners" aria-selected="true">Current Partners</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link nav-line" id="pastpartners-tab" data-toggle="tab" href="#pastpartners" role="tab" aria-controls="pastpartners" aria-selected="false">Past Partners</a>
+            </li>
+            <li class="align-self-center ml-auto font-smaller-2">
+            </li>
+          </ul>
+
+          <div class="tab-content">
+            <div class="tab-pane fade show active" id="currentpartners" role="tabpanel" aria-labelledby="currentpartners-tab">
+              {% if current_partners|length == 0 %} No current partners.{% endif %}
+              {% for current_partner in current_partners %}
+                <div style="text-align:center; display: inline-block; padding: 10px;">
+                  <h5>
+                    <a href="/profile/{{current_partner.profile.handle}}">
+                      @{{current_partner.profile.handle}}
+                    </a>
+                  </h5>
+                    <a href="/profile/{{current_partner.profile.handle}}">
+                      <img style="max-width:100px; border-radius: 50px;" src="/dynamic/avatar/{{current_partner.profile.handle}}">
+                    </a>
+                  <p>${{current_partner.amount|floatformat}}</p>
+                </div>
+              {% endfor %}
+            </div>
+
+            <div class="tab-pane fade" id="pastpartners" role="tabpanel" aria-labelledby="pastpartners-tab">
+              {% for past_partner in past_partners %}
+                <div style="text-align:center; display: inline-block; padding: 10px;">
+                  <h5>@{{past_partner.profile.handle}}</h5>
+                  <img style="max-width:100px;" src="/dynamic/avatar/{{past_partner.profile.handle}}">
+                  <p>${{past_partner.amount|floatformat}}</p>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="container-fluid py-5 grants-search">
+      <div class="container">
+        <form method="POST" id="search_form">
+          {% csrf_token %}
+          <div class="row justify-content-center">
+            <div class="search px-0 col-7 col-sm-9 col-md-5 col-lg-6 form__flex-group">
+              <input type="search" class="form__input" id="keyword" name="keyword" placeholder="Search Grants">
+            </div>
+            <div class="col-3 col-lg-2 px-0">
+              <button class="btn btn-gc-blue">
+                <span class="d-sm-inline">{% trans "Search" %}</span>
+                <i class="ml-2 fas fa-search"></i>
+              </button>
+            </div>
+          </div>
+          <div class="row mt-5">
+            <ul id="grants_nav">
+              {% for nav_option in nav_options %}
+                <a href="/grants/?keyword={{nav_option.keyword}}" class="{% if keyword == nav_option.keyword %}selected{%endif%}"  >
+                  {{nav_option.label}}
+                </a>
+              {% endfor %}
+            </ul>
+          </div>
+          <div class="row mt-5">
+            <div class="col-12 col-md-6 pt-1 text-center text-sm-left pl-sm-0">
+              {{ grants_count }} {% trans "Grants available on" %}
+              <span class="ml-2">
+                <select name="network" id="network">
+                  <option value="mainnet">mainnet</option>
+                  <option value="rinkeby">rinkeby</option>
+                </select>
+              </span>
+            </div>
+            <div class="col-12 col-md-6 pt-1 font-caption order_by d-md-inline text-center text-sm-right">
+              <div class="heading">{% trans "SORT" %}</div>
+              <select name="sort_option" id="sort_option">
+                <option value="-created_on">{% trans "Created: Recent" %}</option>
+                <option value="created_on">{% trans "Created: Oldest" %}</option>
+                <option value="-clr_matching">{% trans "CLR Match: Highest" %}</option>
+                <option value="clr_matching">{% trans "CLR Match: Lowest" %}</option>
+                <option value="-amount_goal">{% trans "Goal: Highest" %}</option>
+                <option value="amount_goal">{% trans "Goal: Lowest" %}</option>
+                <option value="-amount_received">{% trans "Amount Raised: Highest" %}</option>
+                <option value="amount_received">{% trans "Amount Raised: Lowest" %}</option>
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="container-fluid grants-container">
+      <div class="container">
+        {% if grants %}
+          <div class="infinite-container row">
+            {% for grant in grants %}
+              <div class="col-12 col-md-6 col-lg-4 mb-4 infinite-item">
+                {% include 'grants/card/index.html' %}
+              </div>
+            {% endfor %}
+          </div>
+          {% if grants.has_next %}
+            <a class="infinite-more-link" href="?network={{network}}&keyword={{keyword}}&sort_option={{sort}}&page={{ grants.next_page_number }}">More</a>
+          {% endif %}
+        {% else %}
+          <div class="col-12 mb-3 mx-auto col-md-6 text-center">
+            <img class="obiwan my-4" src="{% static "v2/images/obiwan-bot.svg" %}">
+            <h1 class="font-title-lg font-weight-semibold mt-4 mb-2">{% trans "This is not the grant you’re looking for." %}</h1>
+            <p class="font-subheader text">
+              {% trans "We couldn't match with any grants on Gitcoin." %}</br>
+              {% trans "Please try another search term or browse for a grant." %}
+            </p>
+          </div>
+          <div class="col-12 pt-4 pb-5 mx-auto text-center">
+            <a class="button-lg btn-gc btn-gc-blue py-3 px-5 font-weight-semibold" href="{% url 'grants:grants' %}">
+              {% trans "Browse Grants" %}
+            </a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+    {% include 'grants/shared/shared_scripts.html' %}
+  </body>
+  <script src="{% static "v2/js/lib/jquery.waypoints.min.js" %}"></script>
+  <script src="{% static "v2/js/lib/infinite.min.js" %}"></script>
+  <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="{% static "v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
+  <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/ipfs.js" %}"></script>
+  <script src="{% static "v2/js/grants/index.js" %}"></script>
+  <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
+  <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+  <script src="{% static "v2/js/grants/newMatchingPartner.js" %}"></script>
+  <script>
+    var infinite = new Waypoint.Infinite({
+      element: $('.infinite-container')[0]
+    });
+  </script>
+</html>

@@ -1,0 +1,76 @@
+{% comment %}
+  Copyright (C) 2019 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n staticfiles kudos_extras %}
+
+<ul class="nav nav-tabs my-5" id="myTab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link nav-line active" id="mykudos-tab" data-toggle="tab" href="#mykudos" role="tab" aria-controls="mykudos" aria-selected="true">{% if request.path == '/profile/' %}{% trans "Your Kudos" %}{% else %}{% trans "Kudos" %}{% endif %} ({{ kudos_count }})</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link nav-line" id="sentkudos-tab" data-toggle="tab" href="#sentkudos" role="tab" aria-controls="sentkudos" aria-selected="false">{% trans "Sent Kudos" %} ({{ sent_kudos_count }})</a>
+  </li>
+  <li class="align-self-center ml-auto font-smaller-2">
+    &nbsp;
+  </li>
+</ul>
+
+<div class="tab-content" id="myTabContent">
+
+  <div class="tab-pane fade show active" id="mykudos" role="tabpanel" aria-labelledby="home-tab">
+    <div class="row">
+      {% include 'shared/kudos_card_profile.html' with kudos_data='kudos' %}
+    </div>
+    <div class="row justify-content-center">
+      {% if kudos_count > 8 %}
+      <button id="" data-request="mykudos" data-handle="{{profile.handle}}" data-page="2" class="btn btn-gc-blue mb-5 load-more">See More Kudos</button>
+      {% endif %}
+    </div>
+    {% if not kudos %}
+    <div class="text-center">
+      <h2 class="mb-4">What is Kudos?</h2>
+      <div class="mb-5">
+        <img class="img-fluid hidden-desktop" src="{% static "v2/images/kudos/assets/empty-kudos.svg" %}" alt="{% trans "ERC 721" %}" width="854" height="346">
+        <img class="img-fluid hidden-mobile" src="{% static "v2/images/kudos/assets/empty-kudos-desktop.svg" %}" alt="{% trans "ERC 721" %}" width="854" height="346">
+      </div>
+      <a href="{% url 'kudos_about' %}" class="btn btn-gc-blue mb-5">More About Kudos</a>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="tab-pane fade" id="sentkudos" role="tabpanel" aria-labelledby="sentkudos-tab">
+    <div class="row">
+      {% include 'shared/kudos_card_profile.html' with kudos_data='sent_kudos' %}
+    </div>
+    <div class="row justify-content-center">
+      {% if sent_kudos_count > 8 %}
+      <button id="" data-request="sentkudos" data-handle="{{profile.handle}}" data-page="2" class="btn btn-gc-blue mb-5 load-more">See More Kudos</button>
+      {% endif %}
+    </div>
+    {% if not sent_kudos %}
+    <div class="text-center">
+      <h2 class="mb-4">What is Kudos?</h2>
+      <div class="mb-5">
+        <img class="img-fluid hidden-desktop" src="{% static "v2/images/kudos/assets/empty-kudos.svg" %}" alt="{% trans "ERC 721" %}" width="854" height="346">
+        <img class="img-fluid hidden-mobile" src="{% static "v2/images/kudos/assets/empty-kudos-desktop.svg" %}" alt="{% trans "ERC 721" %}" width="854" height="346">
+      </div>
+      <a href="{% url 'kudos_about' %}" class="btn btn-gc-blue mb-5">More About Kudos</a>
+    </div>
+    {% endif %}
+  </div>
+
+</div>
+

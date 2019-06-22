@@ -1,8 +1,8 @@
 Hello {{ subscriber }},
 
-As a Web 3.0 company, we think carefully about user data and privacy and how the internet is evolving. We hope Web 3.0 will bring more control of data to users. With this ethos, we are always careful about how we use your information. 
+As a Web 3.0 company, we think carefully about user data and privacy and how the internet is evolving. We hope Web 3.0 will bring more control of data to users. With this ethos, we are always careful about how we use your information.
 
-We recently reviewed our Privacy Policy to comply with requirements of General Data Protection Regulation (GDPR), improving our Terms of Use, Privacy Policy and Cookie Policy. These changes will go into effect on May 25, 2018, and your continued use of the Gitcoin after May 25, 2018 will be subject to our updated Terms of Use and Privacy Policy. 
+Our Privacy Policy and Terms of Use are now compliant with requirements of General Data Protection Regulation (GDPR). These changes are in effect as of May 25, 2018. So your continued use of the Gitcoin will be subject to our updated Terms of Use and Privacy Policy.
 
 As always, the entire Gitcoin team works every day to make Gitcoin a safe and trustworthy place to grow open source. We invite you to learn more about our outlined updates to our Policies and Terms of Use:
 
@@ -10,11 +10,11 @@ As always, the entire Gitcoin team works every day to make Gitcoin a safe and tr
 2) Our updated Cookie Policy [2]
 3) Our updated Terms of Use [3]
 
-We’ll continue to keep you updated on our data privacy policies on the path towards a more open, transparent web. Thanks for using Gitcoin, and please let us know if you have any questions or feedback. 
+We’ll continue to keep you updated on our data privacy policies on the path towards a more open, transparent web. Thanks for using Gitcoin, and please let us know if you have any questions or feedback.
 
 [1] {{ privacy_policy_link }}
 [2] {{ cookie_policy_link }}
 [3] {{ terms_of_use_link }}
 
-Warmly, 
+Warmly,
 Gitcoin Core

@@ -5,7 +5,6 @@
 h1,
 h2 {
   color: #0D0764;
-  line-height: 0;
 }
 
 h2 {
@@ -57,23 +56,6 @@ h2 {
   z-index: 0;
   top: 1em;
   bottom: -4em;
-}
-
-.how-it-works__fake_but {
-  border: none;
-  border-radius: 2px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  color: #fff;
-  font-size: 14px;
-  font-family: 'Muli', sans-serif;
-  font-weight: 300;
-  padding: 8px 16px;
-  -webkit-appearance: none;
-  background-color: #0D0764;
-  margin-bottom: 1em;
-  position: absolute;
-  right: 0px;
-  bottom: 0px;
 }
 
 .how-it-works__step-number,
@@ -149,6 +131,10 @@ h2 {
   max-width: 5rem;
 }
 
+.in-some-cases-container img {
+  height: 7rem;
+}
+
 #permissions h2 img {
   position: relative;
   top: -3px;
@@ -190,11 +176,6 @@ h2 {
 }
 
 @media (max-width: 991px) {
-  .contributor-hero-bg,
-  .ethereum-icon {
-    display: none;
-  }
-
   .how-it-works__step {
     margin-bottom: 4em;
   }

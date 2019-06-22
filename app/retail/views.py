@@ -16,13 +16,16 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+import logging
+from json import loads as json_parse
 from os import walk as walkdir
 
 from django.conf import settings
+from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.core.validators import validate_email
-from django.http import Http404, HttpResponse, JsonResponse
+from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
@@ -31,17 +34,27 @@ from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
-from dashboard.models import Activity
+from app.utils import get_default_network
+from cacheops import cached_as, cached_view, cached_view_as
+from dashboard.models import Activity, Bounty, Profile
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from economy.models import Token
-from marketing.mails import new_token_request
+from marketing.mails import new_funding_limit_increase_request, new_token_request
 from marketing.models import Alumni, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
+from perftools.models import JSONStore
+from ratelimit.decorators import ratelimit
+from retail.emails import render_nth_day_email_campaign
 from retail.helpers import get_ip
 
-from .utils import build_stat_results, programming_languages
+from .forms import FundingLimitIncreaseRequestForm
+from .utils import programming_languages
 
+logger = logging.getLogger(__name__)
 
+@cached_as(
+    Activity.objects.select_related('bounty').filter(bounty__network='mainnet').order_by('-created'),
+    timeout=120)
 def get_activities(tech_stack=None, num_activities=15):
     # get activity feed
 
@@ -53,6 +66,295 @@ def get_activities(tech_stack=None, num_activities=15):
 
 
 def index(request):
+
+    user = request.user.profile if request.user.is_authenticated else None
+
+    products = [
+        {
+            'group' : 'grow_oss',
+            'products': [
+                {
+                    'img': static('v2/images/home/bounties.svg'),
+                    'name': 'BOUNTIES',
+                    'description': 'Get paid for solving open source bounties.',
+                    'link': '/bounties/funder'
+                }
+            ]
+        },
+        {
+            'group' : 'maintain_oss',
+            'products': [
+                {
+                    'img': static('v2/images/home/codefund.svg'),
+                    'name': 'CODEFUND',
+                    'description': 'Ethical advertising for open source.',
+                    'link': 'https://codefund.app'
+                },
+                {
+                    'img': static('v2/images/home/grants.svg'),
+                    'name': 'GRANTS',
+                    'description': 'Sustainable funding for open source.',
+                    'link': '/grants'
+                }
+            ]
+        },
+        {
+            'group' : 'build_oss',
+            'products': [
+                {
+                    'img': static('v2/images/home/kudos.svg'),
+                    'name': 'KUDOS',
+                    'description': 'A new way to show appreciation.',
+                    'link': '/kudos'
+                }
+            ]
+        }
+    ]
+
+    know_us  = [
+        {
+            'text': 'Our Vision',
+            'link': '/vision'
+        },
+        {
+            'text': 'Our Products',
+            'link': '/products'
+        },
+        {
+            'text': 'Our Team',
+            'link': '/about#team'
+        },
+        {
+            'text': 'Our Results',
+            'link': '/results'
+        },
+        {
+            'text': 'Our Values',
+            'link': '/mission'
+        },
+        {
+            'text': 'Our Token',
+            'link': '/not_a_token'
+        }
+    ]
+
+    press = [
+        {
+            'link': 'https://twit.tv/shows/floss-weekly/episodes/474',
+            'img' : 'v2/images/press/floss_weekly.jpg'
+        },
+        {
+            'link': 'https://epicenter.tv/episode/257/',
+            'img' : 'v2/images/press/epicenter.jpg'
+        },
+        {
+            'link': 'http://www.ibtimes.com/how-web-30-will-protect-our-online-identity-2667000',
+            'img': 'v2/images/press/ibtimes.jpg'
+        },
+        {
+            'link': 'https://www.forbes.com/sites/jeffersonnunn/2019/01/21/bitcoin-autonomous-employment-workers-wanted/',
+            'img': 'v2/images/press/forbes.jpg'
+        },
+        {
+            'link': 'https://unhashed.com/cryptocurrency-news/gitcoin-introduces-collectible-kudos-rewards/',
+            'img': 'v2/images/press/unhashed.jpg'
+        },
+        {
+            'link': 'https://www.coindesk.com/meet-dapp-market-twist-open-source-winning-developers/',
+            'img': 'v2/images/press/coindesk.png'
+        },
+        {
+            'link': 'https://softwareengineeringdaily.com/2018/04/03/gitcoin-open-source-bounties-with-kevin-owocki/',
+            'img': 'v2/images/press/se_daily.png'
+        },
+        {
+            'link': 'https://www.ethnews.com/gitcoin-offers-bounties-for-ens-integration-into-dapps',
+            'img': 'v2/images/press/ethnews.jpg'
+        },
+        {
+            'link': 'https://www.hostingadvice.com/blog/grow-open-source-projects-with-gitcoin/',
+            'img': 'v2/images/press/hosting-advice.png'
+        }
+    ]
+
+    articles = [
+        {
+            'link': 'https://medium.com/gitcoin/progressive-elaboration-of-scope-on-gitcoin-3167742312b0',
+            'img': 'https://cdn-images-1.medium.com/max/2000/1*ErCNRMzIJguUGUgXgVc-xw.png',
+            'title': _('Progressive Elaboration of Scope on Gitcoin'),
+            'description': _('What is it? Why does it matter? How can you deal with it on Gitcoin?'),
+            'alt': 'gitcoin scope'
+        },
+        {
+            'link': 'https://medium.com/gitcoin/commit-reveal-scheme-on-ethereum-25d1d1a25428',
+            'img': 'https://cdn-images-1.medium.com/max/1600/1*GTEu2R4xIxAApx50rAV_qw.png',
+            'title': _('Commit Reveal Scheme on Ethereum'),
+            'description': _('Hiding Actions and Generating Random Numbers'),
+            'alt': 'commit reveal scheme'
+        },
+        {
+            'link': 'https://medium.com/gitcoin/announcing-open-kudos-e437450f7802',
+            'img': 'https://cdn-images-1.medium.com/max/2000/1*iPQYV3M-JOlYeFFC-iqfcg.png',
+            'title': _('Announcing Open Kudos'),
+            'description': _('Our vision for integrating Kudos in any (d)App'),
+            'alt': 'open kudos'
+        }
+    ]
+
+    context = {
+        'products': products,
+        'know_us': know_us,
+        'press': press,
+        'articles': articles,
+        'title': _('Grow Open Source: Get crowdfunding and find freelance developers for your software projects, paid in crypto')
+    }
+    return TemplateResponse(request, 'home/index.html', context)
+
+
+@staff_member_required
+def pricing(request):
+
+    plans= [
+        {
+            'type': 'basic',
+            'img': '/v2/images/pricing/basic.svg',
+            'fee': 10,
+            'features': [
+                '1 free <a href="/kudos">Kudos</a>',
+                'Community Support'
+            ],
+            'features_na': [
+                'Job Board Access',
+                'Contributor Stats',
+                'Multi-Seg Wallet',
+                'Featured Bounties',
+                'Job Listing'
+            ]
+        },
+        {
+            'type': 'pro',
+            'img': '/v2/images/pricing/pro.svg',
+            'price': 40,
+            'features': [
+                '5 Free <a href="/kudos">Kudos</a> / mo',
+                'Community Support',
+                'Job Board - Limited',
+                'Contributor Stats'
+            ],
+            'features_na': [
+                'Multi-Seg Wallet',
+                'Featured Bounties',
+                'Job Listings'
+            ]
+        },
+        {
+            'type': 'max',
+            'img': '/v2/images/pricing/max.svg',
+            'price': 99,
+            'features': [
+                '5 Free <a href="/kudos">Kudos</a> / mo',
+                'Community Support',
+                'Job Board Access',
+                'Contributor Stats',
+                'Multi-Sig Wallet',
+                '5 Featured Bounties',
+                '5 Job Listings'
+            ]
+        }
+    ]
+
+    companies = [
+        {
+            'name': 'Market Protocol',
+            'img': 'v2/images/project_logos/market.png'
+        },
+        {
+            'name': 'Consensys',
+            'img': 'v2/images/consensys.svg'
+        },
+        {
+            'name': 'Metamask',
+            'img': 'v2/images/project_logos/metamask.png'
+        },
+        {
+            'name': 'Ethereum Foundation',
+            'img': 'v2/images/project_logos/eth.png'
+        },
+        {
+            'name': 'Truffle',
+            'img': 'v2/images/project_logos/truffle.png'
+        },
+    ]
+
+    context = {
+        'plans': plans,
+        'companies': companies
+    }
+
+    return TemplateResponse(request, 'pricing/plans.html', context)
+
+
+@staff_member_required
+def subscribe(request):
+
+    if request.POST:
+        return TemplateResponse(request, 'pricing/subscribe.html', {})
+
+    from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
+
+    plan = {
+        'type': 'pro',
+        'img': '/v2/images/pricing/sub_pro.svg',
+        'price': 40
+    }
+
+    if request.GET:
+        if 'plan' in request.GET and request.GET['plan'] == 'max':
+            plan = {
+                'type': 'max',
+                'img': '/v2/images/pricing/sub_max.svg',
+                'price': 99
+            }
+        if 'pack' in request.GET and request.GET['pack'] == 'annual':
+            plan['price'] = plan['price'] - plan['price'] / 10
+
+    context = {
+        'plan': plan,
+        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
+        'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(120),
+        'recommend_gas_price_avg': recommend_min_gas_price_to_confirm_in_time(15),
+        'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(1),
+        'eth_usd_conv_rate': eth_usd_conv_rate(),
+        'conf_time_spread': conf_time_spread(),
+        'gas_advisories': gas_advisories(),
+    }
+    return TemplateResponse(request, 'pricing/subscribe.html', context)
+
+
+def funder_bounties_redirect(request):
+    return redirect(funder_bounties)
+
+
+def funder_bounties(request):
+
+    onboard_slides = [
+        {
+            'img': static("v2/images/presskit/illustrations/prime.svg"),
+            'title': _('Are you a developer or designer?'),
+            'subtitle': _('Contribute to exciting OSS project and get paid!'),
+            'type': 'contributor',
+            'active': 'active',
+            'more': '/bounties/contributor'
+        },
+        {
+            'img': static("v2/images/presskit/illustrations/regulus-white.svg"),
+            'title': _('Are you a funder or project organizer?'),
+            'subtitle': _('Fund your OSS bounties and get work done!'),
+            'type': 'funder',
+            'more': '/how/funder'
+        }
+    ]
+
     slides = [
         ("Dan Finlay", static("v2/images/testimonials/dan.jpg"),
          _("Once we had merged in multiple language support from a bounty, it unblocked the \
@@ -89,6 +391,7 @@ def index(request):
     )
 
     context = {
+        'onboard_slides': onboard_slides,
         'activities': get_activities(),
         'is_outside': True,
         'slides': slides,
@@ -97,12 +400,36 @@ def index(request):
         'hide_newsletter_caption': True,
         'hide_newsletter_consent': True,
         'gitcoin_description': gitcoin_description,
-        'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter.")
+        'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter."),
+        'meta_title': "Grow Open Source: Find Freelance Developers & Open Source Bug Bounties - Gitcoin",
+        'meta_description': "The Gitcoin platform connects freelance developers with open bug bounties or online jobs, paid in crypto (ETH). Leverage a global workforce to quickly complete software development and coding jobs."
     }
-    return TemplateResponse(request, 'landing/funder.html', context)
+    return TemplateResponse(request, 'bounties/funder.html', context)
 
 
-def contributor_landing(request, tech_stack):
+def contributor_bounties_redirect(request, tech_stack):
+    return redirect(contributor_bounties, tech_stack= '/'+ tech_stack)
+
+
+def contributor_bounties(request, tech_stack):
+
+    onboard_slides = [
+        {
+            'img': static("v2/images/presskit/illustrations/regulus-white.svg"),
+            'title': _('Are you a funder or project organizer?'),
+            'subtitle': _('Fund your OSS bounties and get work done!'),
+            'type': 'funder',
+            'active': 'active',
+            'more': '/bounties/funder'
+        },
+        {
+            'img': static("v2/images/presskit/illustrations/prime.svg"),
+            'title': _('Are you a developer or designer?'),
+            'subtitle': _('Contribute to exciting OSS project and get paid!'),
+            'type': 'contributor',
+            'more': '/how/contributor'
+        }
+    ]
 
     slides = [
         ("Daniel", static("v2/images/testimonials/gitcoiners/daniel.jpeg"),
@@ -213,42 +540,82 @@ def contributor_landing(request, tech_stack):
         }
     ]
 
-    available_bounties_count = open_bounties().count()
-    available_bounties_worth = amount_usdt_open_work()
     # tech_stack = '' #uncomment this if you wish to disable contributor specific LPs
     context = {
-        'activities': get_activities(tech_stack),
-        'title': tech_stack.title() + str(_(" Open Source Opportunities")) if tech_stack else "Open Source Opportunities",
+        'onboard_slides': onboard_slides,
         'slides': slides,
         'slideDurationInMs': 6000,
         'active': 'home',
-        'newsletter_headline': _("Be the first to find out about newly posted bounties."),
+        'newsletter_headline': _("Be the first to find out about newly posted freelance jobs."),
         'hide_newsletter_caption': True,
         'hide_newsletter_consent': True,
-        'projects': projects,
         'gitcoin_description': gitcoin_description,
+        'projects': projects,
+        'contributor_list': [
+            { 'link': "/python", 'text': "Python"},
+            { 'link': "/javascript", 'text': "JavaScript"},
+            { 'link': "/rust", 'text': "Rust"},
+            { 'link': "/solidity", 'text': "Solidity"},
+            { 'link': "/design", 'text': "Design"},
+            { 'link': "/html", 'text': "HTML"},
+            { 'link': "/ruby", 'text': "Ruby"},
+            { 'link': "/css", 'text': "CSS"},
+        ]
+    }
+
+    if tech_stack == 'new':
+        return redirect('new_funding_short')
+
+    try:
+        new_context = JSONStore.objects.get(view='contributor_landing_page', key=tech_stack).data
+
+        for key, value in new_context.items():
+            context[key] = value
+    except Exception as e:
+        logger.exception(e)
+        raise Http404
+
+    return TemplateResponse(request, 'bounties/contributor.html', context)
+
+
+def get_contributor_landing_page_context(tech_stack):
+    available_bounties_count = open_bounties().count()
+    available_bounties_worth = amount_usdt_open_work()
+    activities = get_activities(tech_stack)
+    return {
+        'activities': activities,
+        'title': tech_stack.title() + str(_(" Open Source Opportunities")) if tech_stack else str(_("Open Source Opportunities")),
         'available_bounties_count': available_bounties_count,
         'available_bounties_worth': available_bounties_worth,
         'tech_stack': tech_stack,
-    }
 
-    return TemplateResponse(request, 'landing/contributor.html', context)
+    }
 
 
 def how_it_works(request, work_type):
     """Show How it Works / Funder page."""
     if work_type not in ['funder', 'contributor']:
         raise Http404
-
+    if work_type == 'contributor':
+        title = _('How to Find & Complete Open Bounties | Gitcoin')
+        desc = _('Learn how to get paid for open bug bounties and get paid in crypto (ETH or any ERC-20 token)')
+    elif work_type == 'funder':
+        title = _('How to Create & Fund Issues/Bounties | Gitcoin')
+        desc = _('Learn how to create open bug bounties and get freelance developers to complete your job/task.')
     context = {
         'active': f'how_it_works_{work_type}',
+        'title': title,
+        'desc': desc
     }
     return TemplateResponse(request, 'how_it_works/index.html', context)
 
 
+@cached_view_as(Profile.objects.hidden())
 def robotstxt(request):
+    hidden_profiles = Profile.objects.hidden()
     context = {
         'settings': settings,
+        'hidden_profiles': hidden_profiles,
     }
     return TemplateResponse(request, 'robots.txt', context, content_type='text')
 
@@ -266,28 +633,12 @@ def about(request):
         ),
         (
             static("v2/images/team/alisa-march.jpg"),
-            "Alisa March", "User Experience Design",
+            "Alisa March",
+            "User Experience Design",
             "PixelantDesign",
             "pixelant",
             "Tips",
             "Apple Cider Doughnuts"
-        ),
-        (
-            static("v2/images/team/justin-bean.jpg"),
-            "Justin Bean", "Engineering",
-            "StareIntoTheBeard",
-            "justinbean",
-            "Issue Explorer",
-            "Sushi"
-        ),
-        (
-            static("v2/images/team/mark-beacom.jpg"),
-            "Mark Beacom",
-            "Engineering",
-            "mbeacom",
-            "mbeacom",
-            "Start/Stop Work",
-            "Dolsot Bibimbap"
         ),
         (
             static("v2/images/team/eric-berry.jpg"),
@@ -317,15 +668,6 @@ def about(request):
             "Cocktail Samosa"
         ),
         (
-            static("v2/images/team/saptaks.jpg"),
-            "Saptak Sengupta",
-            "Engineering",
-            "saptaks",
-            "saptaks",
-            "Everything Open Source",
-            "daab chingri"
-        ),
-        (
             static("v2/images/team/scott.jpg"),
             "Scott Moore",
             "Biz Dev",
@@ -334,18 +676,64 @@ def about(request):
             "Issue Explorer",
             "Teriyaki Chicken"
         ),
+        (
+            static("v2/images/team/octavio-amu.png"),
+            "Octavio Amuchástegui",
+            "Front End Dev",
+            "octavioamu",
+            "octavioamu",
+            "The Community",
+            "Homemade italian pasta"
+        ),
+        (
+            static("v2/images/team/frank-chen.png"),
+            "Frank Chen",
+            "Data & Product",
+            "frankchen07",
+            "frankchen07",
+            "Kudos!",
+            "Crispy pork belly"
+        ),
+        (
+            static("v2/images/team/austin-griffith.jpg"),
+            "Austin Griffith",
+            "Gitcoin Labs",
+            "austintgriffith",
+            None,
+            "The #BUIDL",
+            "Drunken Noodles"
+        ),
+        (
+            static("v2/images/team/nate-hopkins.png"),
+            "Nate Hopkins",
+            "Engineering",
+            "hopsoft",
+            None,
+            "Bounties",
+            "Chicken tikka masala"
+        ),
+        (
+            static("v2/images/team/dan-lipert.png"),
+            "Dan Lipert",
+            "Engineering",
+            "danlipert",
+            "danlipert",
+            "EIP 1337",
+            "Tantan Ramen"
+        )
+
     ]
     exclude_community = ['kziemiane', 'owocki', 'mbeacom']
     community_members = [
     ]
-    leadeboardranks = LeaderboardRank.objects.filter(active=True, leaderboard='quarterly_earners').exclude(github_username__in=exclude_community).order_by('-amount')[0: 15]
+    leadeboardranks = LeaderboardRank.objects.filter(active=True, leaderboard='quarterly_earners').exclude(github_username__in=exclude_community).order_by('-amount').cache()[0: 15]
     for lr in leadeboardranks:
         package = (lr.avatar_url, lr.github_username, lr.github_username, '')
         community_members.append(package)
 
     alumnis = [
     ]
-    for alumni in Alumni.objects.select_related('profile').filter(public=True).exclude(organization='gitcoinco'):
+    for alumni in Alumni.objects.select_related('profile').filter(public=True).exclude(organization='gitcoinco').cache():
         package = (alumni.profile.avatar_url, alumni.profile.username, alumni.profile.username, alumni.organization)
         alumnis.append(package)
 
@@ -363,6 +751,98 @@ def about(request):
 
 def mission(request):
     """Render the Mission response."""
+
+    values = [
+        {
+            'name': _('Self Reliance'),
+            'img': 'v2/images/mission/value/collaborative.svg',
+            'alt': 'we-collobarate-icon'
+        },
+        {
+            'name': _('Intellectual honesty'),
+            'img': 'v2/images/mission/value/love_hands.svg',
+            'alt': 'intellectual-honesty-icon'
+        },
+        {
+            'name': _('Collaboration'),
+            'img': 'v2/images/mission/value/humble.svg',
+            'alt': 'humble-icon'
+        },
+        {
+            'name': _('Empathy'),
+            'img': 'v2/images/mission/value/empathetic.svg',
+            'alt': 'empathy-icon'
+        },
+        {
+            'name': _('Stress Reducers'),
+            'img': 'v2/images/mission/value/stress_reducing.svg',
+            'alt': 'stress-reduce-icon'
+        },
+        {
+            'name': _('Inclusivity'),
+            'img': 'v2/images/mission/value/inclusive.svg',
+            'alt': 'inclusive-icon'
+        },
+        {
+            'name': _('Giving first'),
+            'img': 'v2/images/mission/value/give_first.svg',
+            'alt': 'give-first-icon'
+        }
+    ]
+
+    interactions = [
+        {
+            'text': _('We happen to the world. We don\'t let the world happen to us.'),
+            'img': 'v2/images/mission/interact/world.svg',
+            'alt': 'world-icon'
+        },
+        {
+            'text': _('We show, don\'t tell.'),
+            'img': 'v2/images/mission/interact/book.svg',
+            'alt': 'openness-icon'
+        },
+        {
+            'text': _('We are thoughtful, clear, and direct.'),
+            'img': 'v2/images/mission/interact/head.svg',
+            'alt': 'thoughtful-icon'
+        },
+        {
+            'text': _('We seek balance.'),
+            'img': 'v2/images/mission/interact/scale.svg',
+            'alt': 'balance-icon'
+        },
+        {
+            'text': _('We challenge the status quo &amp; are willing to be challenged.'),
+            'img': 'v2/images/mission/interact/goal.svg',
+            'alt': 'goal-icon'
+        },
+        {
+            'text': _('We fix things twice.'),
+            'img': 'v2/images/mission/interact/hammer.svg',
+            'alt': 'fix-twicw-icon'
+        },
+        {
+            'text': _('We identify and validate our assumptions.'),
+            'img': 'v2/images/mission/interact/microscope.svg',
+            'alt': 'microscope-icon'
+        },
+        {
+            'text': _('We care about people (not just tasks).'),
+            'img': 'v2/images/mission/interact/people_care.svg',
+            'alt': 'care-icon'
+        },
+        {
+            'text': _('We listen.'),
+            'img': 'v2/images/mission/interact/hear.svg',
+            'alt': 'microscope-icon'
+        },
+        {
+            'text': _('We value pragmatism over dogmatism.'),
+            'img': 'v2/images/mission/interact/swiss_army.svg',
+            'alt': 'pargma-icon'
+        }
+    ]
+
     context = {
         'is_outside': True,
         'active': 'mission',
@@ -370,8 +850,45 @@ def mission(request):
         'card_title': _('Gitcoin is a mission-driven organization.'),
         'card_desc': _('Our mission is to grow open source.'),
         'avatar_url': static('v2/images/grow_open_source.png'),
+        'values': values,
+        'interactions': interactions
     }
     return TemplateResponse(request, 'mission.html', context)
+
+
+def jobs(request):
+    job_listings = [
+        {
+            'link': "mailto:founders@gitcoin.co",
+            'title': "Software Engineer",
+            'description': [
+                "Gitcoin is always looking for a few good software engineers.",
+                "If you are an active member of the community, have python + django + html chops",
+                "then we want to talk to you!"]
+        },
+        {
+            'link': "mailto:founders@gitcoin.co",
+            'title': "Community Manager",
+            'description': [
+                "We believe that community management is an important skill in the blockchain space.",
+                "We're looking for a solid community, proactive thinker, and someone who loves people",
+                "to be our next community manager.  Sound like you?  Apply below!"]
+        },
+        {
+            'link': "mailto:founders@gitcoin.co",
+            'title': "Ad Sales Engineer",
+            'description': [
+                "CodeFund is growing like a weed.  We could use a helping hand",
+                "to put CodeFund in front of more great advertisers and publishers.",
+                "If you want to be our next highly technical, highly engaging, sales engineer apply below!"]
+        }
+    ]
+    context = {
+        'active': 'jobs',
+        'title': 'Jobs',
+        'job_listings': job_listings
+    }
+    return TemplateResponse(request, 'jobs.html', context)
 
 
 def vision(request):
@@ -387,6 +904,69 @@ def vision(request):
     return TemplateResponse(request, 'vision.html', context)
 
 
+def products(request):
+    """Render the Products response."""
+    products = [
+        {
+            'name': 'bounties',
+            'heading': _("Solve bounties. Get paid. Contribute to open source"),
+            'description': _("Collaborate and monetize your skills while working on Open Source projects \
+                            through bounties."),
+            'link': '/explorer',
+            'img': static('v2/images/products/graphics-Bounties.png'),
+            'logo': static('v2/images/products/gitcoin-logo.svg')
+        },
+        {
+            'name': 'kudos',
+            'heading': _("Show your appreciation with collectible tokens"),
+            'description': _("Kudos is a way of showing your appreciation to another Gitcoin member.\
+                            It's also a way to showcase special skills that a member might have."),
+            'link': '/kudos',
+            'img': static('v2/images/products/graphics-Kudos.png'),
+            'logo': static('v2/images/products/kudos-logo.svg')
+        },
+        {
+            'name': 'grants',
+            'heading': _("Sustainable funding for open source"),
+            'description': _("Gitcoin Grants are a fast, easy & secure way to provide recurring token \
+                            contributions to your favorite OSS maintainers. Powered by EIP1337."),
+            'link': '/grants',
+            'img': static('v2/images/products/graphics-Grants.png'),
+            'logo': static('v2/images/products/grants-logo.svg')
+        },
+        {
+            'name': 'codefund',
+            'heading': _("Ethical advertising for developers"),
+            'description': _("CodeFund is an open source ad platform that funds contributors of the open \
+                            source ecosystem"),
+            'link': 'https://codefund.app/',
+            'img': static('v2/images/products/graphics-Codefund.svg'),
+            'logo': static('v2/images/products/codefund-logo.svg')
+        },
+        {
+            'name': 'labs',
+            'heading': _("Tools for busy developers"),
+            'description': _("Gitcoin Labs provides research reports and toolkits for busy developers, \
+                            making Ethereum dapps fast, usable, and secure."),
+            'link': '/labs',
+            'img': static('v2/images/products/graphics-Labs.png'),
+            'logo': static('v2/images/products/labs-logo.svg')
+        }
+    ]
+
+    context = {
+        'is_outside': True,
+        'active': 'products',
+        'title': 'Products',
+        'card_title': _("Gitcoin's Products."),
+        'card_desc': _('At Gitcoin, we build products that allow for better incentivized collaboration \
+                        in the realm of open source software'),
+        'avatar_url': static('v2/images/grow_open_source.png'),
+        'products': products,
+    }
+    return TemplateResponse(request, 'products.html', context)
+
+
 def not_a_token(request):
     """Render the not_a_token response."""
     context = {
@@ -395,7 +975,8 @@ def not_a_token(request):
         'avatar_url': static('v2/images/no-token/no-token.jpg'),
         'title': 'Gitcoin is not a token',
         'card_title': _("Gitcoin is not a token"),
-        'card_desc': _("We didn't do a token because we felt it wasn't the right way to align incentives with our user base.  Read more about the future of monetization in web3."),
+        'card_desc': _("We didn't do a token because we felt it wasn't the right way to align incentives \
+                        with our user base.  Read more about the future of monetization in web3."),
     }
     return TemplateResponse(request, 'not_a_token.html', context)
 
@@ -404,16 +985,19 @@ def results(request, keyword=None):
     """Render the Results response."""
     if keyword and keyword not in programming_languages:
         raise Http404
-    context = build_stat_results(keyword)
+    context = JSONStore.objects.get(view='results', key=keyword).data
     context['is_outside'] = True
+    import json
+    context['kudos_tokens'] = [json.loads(obj) for obj in context['kudos_tokens']]
+    context['avatar_url'] = static('v2/images/results_preview.gif')
     return TemplateResponse(request, 'results.html', context)
 
 
 def activity(request):
     """Render the Activity response."""
-
+    page_size = 15
     activities = Activity.objects.all().order_by('-created')
-    p = Paginator(activities, 300)
+    p = Paginator(activities, page_size)
     page = request.GET.get('page', 1)
 
     context = {
@@ -554,7 +1138,9 @@ Here are some of our values
      'General': [
         {
             'q': _('Is Gitcoin open source?'),
-            'a': _("Yes, all of Gitcoin's core software systems are open source and available at <a href=https://github.com/gitcoinco/>https://github.com/gitcoinco/</a>.  Please see the liscense.txt file in each repo for more details.")
+            'a': _("Yes, all of Gitcoin's core software systems are open source and available at "
+                   "<a href=https://github.com/gitcoinco/>https://github.com/gitcoinco/</a>.  Please see the "
+                   "LICENSE.txt file in each repo for more details.")
         },
         {
             'q': _('Is a token distribution event planned for Gitcoin?'),
@@ -720,6 +1306,10 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
         'url': 'https://medium.com/gitcoin/tutorial-how-to-price-work-on-gitcoin-49bafcdd201e',
         'title': _('How to Price Work on Gitcoin'),
     }, {
+        'img': 'https://raw.github.com/gitcoinco/Gitcoin-Exemplars/master/helpImage.png',
+        'url': 'https://github.com/gitcoinco/Gitcoin-Exemplars',
+        'title': _('Exemplars for Writing A Good Bounty Description'),
+    }, {
         'img': static('v2/images/help/tools.png'),
         'url': 'https://medium.com/gitcoin/tutorial-post-a-bounty-in-90-seconds-a7d1a8353f75',
         'title': _('Post a Bounty in 90 Seconds'),
@@ -748,6 +1338,18 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
         'tutorials': tutorials,
     }
     return TemplateResponse(request, 'help.html', context)
+
+
+def verified(request):
+    user = request.user if request.user.is_authenticated else None
+    profile = request.user.profile if user and hasattr(request.user, 'profile') else None
+
+    context = {
+        'active': 'verified',
+        'title': _('Verified'),
+        'profile': profile,
+    }
+    return TemplateResponse(request, 'verified.html', context)
 
 
 def presskit(request):
@@ -793,7 +1395,7 @@ def presskit(request):
             "#FFFFFF",
             "23, 244, 238"
         ),
-        ]
+    ]
 
     context = {
         'brand_colors': brand_colors,
@@ -801,14 +1403,6 @@ def presskit(request):
         'title': _('Presskit'),
     }
     return TemplateResponse(request, 'presskit.html', context)
-
-
-def get_gitcoin(request):
-    context = {
-        'active': 'get_gitcoin',
-        'title': _('Get Started'),
-    }
-    return TemplateResponse(request, 'getgitcoin.html', context)
 
 
 def handler403(request, exception=None):
@@ -888,23 +1482,6 @@ def itunes(request):
     return redirect('https://itunes.apple.com/us/app/gitcoin/id1319426014')
 
 
-def ios(request):
-
-    context = {
-        'active': 'ios',
-        'title': 'iOS app',
-        'card_title': 'Gitcoin has an iOS app!',
-        'card_desc': 'Gitcoin aims to make it easier to grow open source from anywhere in the world,\
-            anytime.  We’re proud to announce our iOS app, which brings us a step closer to this north star!\
-            Browse open bounties on the go, express interest, and coordinate your work on the move.',
-    }
-    return TemplateResponse(request, 'ios.html', context)
-
-
-def iosfeedback(request):
-    return redirect('https://goo.gl/forms/UqegoAMh7HVibfuF3')
-
-
 def casestudy(request):
     return redirect('https://docs.google.com/document/d/1M8-5xCGoJ8u-k0C0ncx_dr9LtHwZ32Ccn3KMFtEnsBA/edit')
 
@@ -917,6 +1494,7 @@ def slack(request):
     context = {
         'active': 'slack',
         'msg': None,
+        'nav': 'home',
     }
 
     if request.POST:
@@ -938,6 +1516,7 @@ def slack(request):
 
     return TemplateResponse(request, 'slack.html', context)
 
+
 @csrf_exempt
 def newtoken(request):
     context = {
@@ -953,7 +1532,6 @@ def newtoken(request):
                 context['msg'] = str(_('You must provide the following fields: ')) + key
                 validtion_passed = False
         if validtion_passed:
-            ip = get_ip(request)
             obj = Token.objects.create(
                 address=request.POST['address'],
                 symbol=request.POST['symbol'],
@@ -979,13 +1557,15 @@ def btctalk(request):
 def reddit(request):
     return redirect('https://www.reddit.com/r/gitcoincommunity/')
 
+def blog(request):
+    return redirect('https://gitcoin.co/blog')
 
 def livestream(request):
     return redirect('https://calendar.google.com/calendar/r?cid=N3JxN2dhMm91YnYzdGs5M2hrNjdhZ2R2ODhAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ')
 
 
 def twitter(request):
-    return redirect('http://twitter.com/getgitcoin')
+    return redirect('http://twitter.com/gitcoin')
 
 
 def fb(request):
@@ -1016,6 +1596,7 @@ def web3(request):
     return redirect('https://www.youtube.com/watch?v=cZZMDOrIo2k')
 
 
+@cached_view_as(Token.objects.filter(network=get_default_network, approved=True))
 def tokens(request):
     context = {}
     networks = ['mainnet', 'ropsten', 'rinkeby', 'unknown', 'custom']
@@ -1025,34 +1606,50 @@ def tokens(request):
     return TemplateResponse(request, 'tokens_js.txt', context, content_type='text/javascript')
 
 
-def ui(request):
-    svgs = []
-    pngs = []
-    gifs = []
-    for path, __, files in walkdir('assets/v2/images'):
-        if path.find('/avatar') != -1:
-            continue
-        for f in files:
-            if f.endswith('.svg'):
-                svgs.append(f'{path[7:]}/{f}')
-                continue
-            if f.endswith('.png'):
-                pngs.append(f'{path[7:]}/{f}')
-                continue
-            if f.endswith('.gif'):
-                gifs.append(f'{path[7:]}/{f}')
-                continue
+@csrf_exempt
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def increase_funding_limit_request(request):
+    user = request.user if request.user.is_authenticated else None
+    profile = request.user.profile if user and hasattr(request.user, 'profile') else None
+    usdt_per_tx = request.GET.get('usdt_per_tx', None)
+    usdt_per_week = request.GET.get('usdt_per_week', None)
+    is_staff = user.is_staff if user else False
 
-    context = {
-        'is_outside': True,
-        'active': 'ui_inventory ',
-        'title': 'UI Inventory',
-        'svgs': svgs,
-        'pngs': pngs,
-        'gifs': gifs,
+    if is_staff and usdt_per_tx and usdt_per_week:
+        try:
+            profile_pk = request.GET.get('profile_pk', None)
+            target_profile = Profile.objects.get(pk=profile_pk)
+            target_profile.max_tip_amount_usdt_per_tx = usdt_per_tx
+            target_profile.max_tip_amount_usdt_per_week = usdt_per_week
+            target_profile.save()
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+
+        return JsonResponse({'msg': _('Success')}, status=200)
+
+    if request.body:
+        if not user or not profile or not profile.handle:
+            return JsonResponse(
+                {'error': _('You must be Authenticated via Github to use this feature!')},
+                status=401)
+
+        try:
+            result = FundingLimitIncreaseRequestForm(json_parse(request.body))
+            if not result.is_valid():
+                raise
+        except Exception as e:
+            return JsonResponse({'error': _('Invalid JSON.')}, status=400)
+
+        new_funding_limit_increase_request(profile, result.cleaned_data)
+
+        return JsonResponse({'msg': _('Request received.')}, status=200)
+
+    form = FundingLimitIncreaseRequestForm()
+    params = {
+        'form': form,
+        'title': _('Request a Funding Limit Increase'),
+        'card_title': _('Gitcoin - Request a Funding Limit Increase'),
+        'card_desc': _('Do you hit the Funding Limit? Request a increasement!')
     }
-    return TemplateResponse(request, 'ui_inventory.html', context)
 
-
-def lbcheck(request):
-    return HttpResponse(status=200)
+    return TemplateResponse(request, 'increase_funding_limit_request_form.html', params)

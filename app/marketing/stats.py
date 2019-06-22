@@ -271,7 +271,22 @@ def bounties():
 
     Stat.objects.create(
         key='bounties',
-        val=(Bounty.objects.filter(current_bounty=True, network='mainnet').count()),
+        val=(Bounty.objects.current().filter(network='mainnet').count()),
+        )
+
+
+def grants():
+    """Creates a stats entry for 'grants', which stores the total value of all grant contributions in the system to date"""
+    from grants.models import Contribution
+    val = 0
+    for contrib in Contribution.objects.filter(subscription__grant__network='mainnet'):
+        value_in_usdt = contrib.subscription.amount_per_period_usdt
+        if value_in_usdt:
+            val += value_in_usdt
+
+    Stat.objects.create(
+        key='grants',
+        val=val,
         )
 
 
@@ -312,7 +327,7 @@ def bounties_by_status_and_keyword(created_before=timezone.now()):
     created_after = created_before - timezone.timedelta(days=days_back)
     for status in statuses:
         for keyword in keywords:
-            eligible_bounties = Bounty.objects.filter(current_bounty=True, network='mainnet', web3_created__gt=created_after, web3_created__lt=created_before)
+            eligible_bounties = Bounty.objects.current().filter(network='mainnet', web3_created__gt=created_after, web3_created__lt=created_before)
             if keyword:
                 eligible_bounties = eligible_bounties.filter(raw_data__icontains=keyword)
             numerator_bounties = eligible_bounties.filter(idx_status=status)
@@ -351,12 +366,13 @@ def joe_dominance_index(created_before=timezone.now()):
     joe_addresses = joe_addresses + ['0x5DA565AD870ee827608fC764f76ab8055B3E8474'.lower()]  # justin
     joe_addresses = joe_addresses + ['0x5cdb35fADB8262A3f88863254c870c2e6A848CcA'.lower()]  # aditya
     joe_addresses = joe_addresses + ['0x00de4b13153673bcae2616b67bf822500d325fc3'.lower()]  # kevin
+    joe_addresses = joe_addresses + ['0xe317C793ebc9d4A3732cA66e5a8fC4ffc213B989'.lower()]  # dan
 
 
     for days in [7, 30, 90, 360]:
         created_after = created_before - timezone.timedelta(days=days)
         for keyword in keywords:
-            all_bounties = Bounty.objects.filter(current_bounty=True, network='mainnet', web3_created__gt=created_after, web3_created__lt=created_before)
+            all_bounties = Bounty.objects.current().filter(network='mainnet', web3_created__gt=created_after, web3_created__lt=created_before)
             if keyword:
                 all_bounties = all_bounties.filter(raw_data__icontains=keyword)
             joe_bounties = all_bounties.filter(bounty_owner_address__in=joe_addresses)
@@ -386,8 +402,7 @@ def avg_time_bounty_turnaround():
     from dashboard.models import Bounty
 
     for days in [7, 30, 90, 360]:
-        all_bounties = Bounty.objects.filter(
-            current_bounty=True,
+        all_bounties = Bounty.objects.current().filter(
             network='mainnet',
             idx_status='done',
             web3_created__gt=(timezone.now() - timezone.timedelta(days=days))
@@ -425,7 +440,7 @@ def bounties_open():
 
     Stat.objects.create(
         key='bounties_open',
-        val=(Bounty.objects.filter(current_bounty=True, network='mainnet', idx_status='open').count()),
+        val=(Bounty.objects.current().filter(network='mainnet', idx_status='open').count()),
         )
 
 
@@ -434,7 +449,7 @@ def bounties_fulfilled():
 
     Stat.objects.create(
         key='bounties_fulfilled',
-        val=(Bounty.objects.filter(current_bounty=True, network='mainnet', idx_status='done').count()),
+        val=(Bounty.objects.current().filter(network='mainnet', idx_status='done').count()),
         )
 
 
@@ -447,22 +462,32 @@ def ens():
         )
 
 
-def tips():
+def sendcryptoassets():
+    from revenue.models import DigitalGoodPurchase
     from dashboard.models import Tip
-    tips = Tip.objects.filter(network='mainnet').exclude(txid='')
-    val = sum(tip.value_in_usdt for tip in tips if tip.value_in_usdt)
+    from kudos.models import KudosTransfer
 
-    stats_to_create = [
-        ('tips', tips.count()),
-        ('tips_value', val),
-        ]
+    iterate_me = {
+        'tips': Tip,
+        'kudos': KudosTransfer,
+        'dgp': DigitalGoodPurchase,
+    }
 
-    for stat in stats_to_create:
-        #print(stat)
-        Stat.objects.create(
-            key=stat[0],
-            val=stat[1],
-            )
+    for key, SendCryptoAsset in iterate_me.items():
+        objs = SendCryptoAsset.objects.filter(network='mainnet').send_success()
+        val = sum(obj.value_in_usdt for obj in objs if obj.value_in_usdt)
+
+        stats_to_create = [
+            (key, objs.count()),
+            (f'{key}_value', val),
+            ]
+
+        for stat in stats_to_create:
+            print(stat)
+            Stat.objects.create(
+                key=stat[0],
+                val=stat[1],
+                )
 
 
 def tips_received():
@@ -470,7 +495,7 @@ def tips_received():
 
     Stat.objects.create(
         key='tips_received',
-        val=(Tip.objects.filter(network='mainnet').exclude(txid='').exclude(receive_txid='').count()),
+        val=(Tip.objects.filter(network='mainnet').send_success().receive_success().count()),
         )
 
 
@@ -545,7 +570,7 @@ def get_skills_keyword_counts():
 def get_bounty_keyword_counts():
     from dashboard.models import Bounty
     keywords = {}
-    for bounty in Bounty.objects.filter(current_bounty=True).all():
+    for bounty in Bounty.objects.current().all():
         for keyword in str(bounty.keywords).split(","):
             keyword = keyword.strip().lower().replace(" ", "_")
             if keyword not in keywords.keys():

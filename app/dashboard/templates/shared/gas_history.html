@@ -15,6 +15,8 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 
+<link rel="canonical" href="{% url 'gas_history_view' %}">
+
 <style> /* set the CSS */
 
 .axis {
@@ -77,9 +79,9 @@ div.tooltip {
     .attr("class", "tooltip")
     .style("opacity", 0);
 
-  var margin = {top: 20, right: 20, bottom: 50, left: 70},
-      width = window.innerWidth - 100 - margin.left - margin.right,
-      height = 500 - margin.top - margin.bottom;
+    var margin = {top: 20, right: 20, bottom: 50, left: 70},
+        width = window.innerWidth - 200 - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;
   var initialWidth = width;
   var xScale = d3.scaleLinear().range([width, 0]);
   var yScale = d3.scaleLinear().range([height, 0]);
@@ -90,7 +92,7 @@ div.tooltip {
       .y(function(d) { return yScale(d.gas_price); });
 
   var svg = d3.select("#graph")
-      .attr("width", width + margin.left + margin.right)
+      .attr("width", width)
       .attr("height", height + margin.top + margin.bottom)
     .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");

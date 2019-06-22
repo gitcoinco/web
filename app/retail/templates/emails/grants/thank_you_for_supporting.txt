@@ -1,0 +1,24 @@
+{% load i18n humanize %}
+
+{% trans "Gitcoin Heart Robot" %}
+
+{% trans "Thank you for supporting" %} {{ grant.title }}
+
+{% trans "The world of open source is a better place because of you." %}
+
+{{ grant.description }}
+
+{% trans "You have agreed to give" %}
+
+{{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }} {% trans "per" %} {{ subscription.frequency }} {{ subscription.frequency_unit }}
+
+{% trans "You can see the transaction on etherscan" %} at
+{% if subscription.network == 'mainnet' %}
+  http://etherscan.io/tx/{{ subscription.sub_new_approve_tx_id }}
+{% else %}
+  http://{{ grant.network }}.etherscan.io/tx/{{ subscription.sub_new_approve_tx_id }}
+{% endif %}
+
+{% trans "View Updates" %}
+
+{% trans "If you ever need to you can cancel your support" %} {% trans "here." %}

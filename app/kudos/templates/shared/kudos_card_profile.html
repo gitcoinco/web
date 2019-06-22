@@ -1,0 +1,85 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static kudos_extras avatar_tags  %}
+{% load humanize %}
+{% if kudos_data == 'sent_kudos' %}
+  {% regroup sent_kudos|dictsort:"kudos_token_cloned_from.name" by kudos_token_cloned_from.name as kudos_dupe %}
+  {% for kudos_group in kudos_dupe|slice:":8" %}
+  <div class="col-xs-12 col-sm-6 col-lg-3 mb-3 kudos_card_container">
+    <div class="kd-card kd-extended flip-card" aria-haspopup="true" tabindex="0">
+      <div class="flip-card__flipper">
+        <div class="flip-card__hold flip-card__front">
+          <img src="{% static kudos_group.list.0.kudos_token_cloned_from.image %}" alt="{{ kudos_group.list.0.kudos_token_cloned_from.name|humanize_name }}" class="img-thumbnail border-transparent kd-shadow" width="250">
+          <div class="kd-content">
+            <div>
+              <a href="/kudos/{{ kudos_group.list.0.kudos_token_cloned_from.id }}/{{ kudos_group.list.0.kudos_token_cloned_from.name }}" class="kd-title" title="{% trans 'Go to ' %}{{ kudos_group.list.0.kudos_token_cloned_from.name|humanize_name }}" tabindex="0">
+                {{ kudos_group.list.0.kudos_token_cloned_from.name|humanize_name }}
+              </a>
+            </div>
+            <p>
+              {{ kudos_group.list.0.kudos_token_cloned_from.description|truncatechars:60 }}
+            </p>
+            <div class="flip-card__stack-img">
+              {% if kudos_group.list|length > 5 %}<b>+{{kudos_group.list|length|add:"-5"}}</b>{% endif %}
+              {% for kt in kudos_group.list|slice:":5" %}
+                <img src="{% avatar_url kt.username  %}" alt="{{ kt.username }}" class="rounded-circle" width="30" height="30">
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <div class="content-hover flip-card__hold flip-card__back">
+          {% include 'shared/kudos_card_hover_content.html' with relation='to' %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+{% else %}
+  {% regroup kudos|dictsort:"kudos_token_cloned_from.name" by kudos_token_cloned_from.name as kudos_dupe %}
+  {% for kudos_group in kudos_dupe|slice:":8" %}
+  <div class="col-xs-12 col-sm-6 col-lg-3 mb-3 kudos_card_container">
+    <div class="kd-card kd-extended flip-card" aria-haspopup="true" tabindex="0">
+      <div class="flip-card__flipper">
+        <div class="flip-card__hold flip-card__front">
+          <img src="{% static kudos_group.list.0.kudos_token_cloned_from.image %}" alt="{{ kudos_group.list.0.kudos_token_cloned_from.name|humanize_name }}" class="img-thumbnail border-transparent kd-shadow" width="250">
+          <div class="kd-content">
+            <div>
+              <a href="/kudos/{{ kudos_group.list.0.kudos_token_cloned_from.id }}/{{ kudos_group.list.0.kudos_token_cloned_from.name }}" class="kd-title" title="{% trans 'Go to ' %}{{ kudos_group.list.0.kudos_token_cloned_from.name|humanize_name }}" tabindex="0">
+                {{ kudos_group.list.0.kudos_token_cloned_from.name|humanize_name }}
+              </a>
+            </div>
+            <p>
+              {{ kudos_group.list.0.kudos_token_cloned_from.description|truncatechars:60 }}
+            </p>
+            <div class="flip-card__stack-img">
+              {% if kudos_group.list|length > 5 %}<b>+{{kudos_group.list|length|add:"-5"}}</b>{% endif %}
+              {% for kt in kudos_group.list|slice:":5" %}
+                <img src="{% avatar_url kt.from_username  %}" alt="{{ kt.from_username }}" class="rounded-circle" width="30" height="30">
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <div class="content-hover flip-card__hold flip-card__back">
+          {% include 'shared/kudos_card_hover_content.html' with relation='from' %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+{% endif %}

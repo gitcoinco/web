@@ -1,0 +1,112 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static cookielaw_tags %}
+
+<div class="howworks-toggle-container">
+  <button type="button" id="funder-toggle" class="howworks-section-toggle">
+    {% trans "Funder" %}
+  </button>
+  <button type="button" id="contributor-toggle" class="howworks-section-toggle active">
+    {% trans "Contributor" %}
+  </button>
+  <div id="howworks-toggle-indicator"></div>
+</div>
+<div class="howworks-sections d-flex">
+  <div class="howworks-section funder-container">
+    <div class="row mt-5 mb-5">
+      <div class="col text-center">
+        <h1>{% trans "Fund An Issue. Grow Your Project." %}</h1>
+      </div>
+    </div>
+    <div class="howworks-steps">
+      <div class="howworks-step">
+        <div class="howworks-step__label">1</div>
+        <i class="fab fa-ethereum" aria-hidden="true"></i>
+        <h5>{% trans "Post A Bounty." %}</h5>
+        <p class="font-subheader">{% blocktrans %}Fund a well specified issue on your Github repo which is a good
+          candidate for external contribution.{% endblocktrans %}</p>
+      </div>
+      <div class="howworks-step">
+        <div class="howworks-step__label">2</div>
+        <i class="fas fa-users" aria-hidden="true"></i>
+
+        <h5>{% trans "Work With A Gitcoiner." %}</h5>
+        <p class="font-subheader">{% blocktrans %}Provide a Gitcoiner with a timeline and
+          collaborate to complete the task.{% endblocktrans %}</p>
+      </div>
+      <div class="howworks-step">
+        <div class="howworks-step__label">3</div>
+        <i class="fas fa-project-diagram" aria-hidden="true"></i>
+        <h5>{% trans "Grow Your Project." %}</h5>
+        <p class="font-subheader">{% blocktrans %}Merge the Gitcoiner’s contribution, pay for a job well done,
+            and grow a healthy open source ecosystem.{% endblocktrans %}</p>
+      </div>
+    </div>
+    <a href="{% url "new_funding" %}" class="btn btn-gc-blue m-4">
+      <i class="fab fa-ethereum" aria-hidden="true"></i>
+      <span class="pl-1">{% trans "Fund an Issue" %}</span>
+    </a>
+    <p class="mb-0">{% trans "Gitcoin is a bounty-based collaboration tool that works easily with Github" %}
+      <i class="fab fa-github" aria-hidden="true"></i>
+    </p>
+  </div>
+
+  <div class="howworks-section contributor-container">
+    <div class="row mt-5 mb-5">
+      <div class="col text-center">
+        <h1>{% trans "Contribute to Open Source. Get Paid." %}</h1>
+      </div>
+    </div>
+    <div class="howworks-steps">
+      <div class="howworks-step">
+        <div class="howworks-step__label">1</div>
+        <i class="fas fa-search" aria-hidden="true"></i>
+        <h5>{% trans "Find An Open Bounty." %}</h5>
+        <p class="font-subheader">
+          {% trans "Whether it's Bugs, Features, or Security Issues, Gitcoin's" %}
+          <a href="{% url "explorer" %}">{% trans "Issue Explorer" %}</a>
+          {% trans "is the easiest way to find paid work in open source." %}
+        </p>
+      </div>
+      <div class="howworks-step">
+        <div class="howworks-step__label">2</div>
+        <i class="fas fa-desktop" aria-hidden="true"></i>
+        <h5>{% trans "Build Something Great." %}</h5>
+        <p class="font-subheader">
+          {% blocktrans %}Select an open issue, work on a project, collaborate, build your
+          skills, and contribute towards the open source projects.{% endblocktrans %}
+        </p>
+      </div>
+      <div class="howworks-step">
+        <div class="howworks-step__label">3</div>
+        <i class="fab fa-ethereum" aria-hidden="true"></i>
+        <h5>{% trans "Get Paid." %}</h5>
+        <p class="font-subheader">
+          {% blocktrans %}Payments are Ethereum-based, & released automatically after code is
+          accepted by the bounty submitter.{% endblocktrans %}
+        </p>
+      </div>
+    </div>
+    <a href="{% url "explorer" %}" class="btn btn-gc-blue m-4">
+      <i class="fab fa-ethereum" aria-hidden="true"></i>
+      <span class="pl-1">{% trans "Browse the Issue Explorer!" %}</span>
+    </a>
+    <p class="font-body">{% trans "Gitcoin is a bounty-based collaboration tool that works easily with Github" %}
+      <i class="fab fa-github" aria-hidden="true"></i>
+    </p>
+  </div>
+</div>

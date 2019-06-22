@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -20,7 +20,8 @@ import logging
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from dashboard.models import Interest
+from dashboard.models import Bounty, Interest
+from dashboard.views import record_user_action
 from marketing.mails import start_work_applicant_about_to_expire, start_work_applicant_expired, start_work_approved
 
 THRESHOLD_HOURS_AUTO_APPROVE = 3 * 24
@@ -36,6 +37,7 @@ def start_work_applicant_expired_executer(interest, bounty):
     interest.pending = False
     interest.acceptance_date = timezone.now()
     interest.save()
+    record_user_action(interest.profile.user, 'worker_approved', bounty)
 
 
 def helper_execute(threshold, func_to_execute, action_str):
@@ -53,6 +55,12 @@ def helper_execute(threshold, func_to_execute, action_str):
             if has_approved_worker_already:
                 print("skipped bc of has_approved_worker_already")
                 continue
+            is_bounty_in_terminal_state = bounty.status in Bounty.TERMINAL_STATUSES
+            is_bounty_already_submitted = bounty.status == 'submitted'
+            if is_bounty_in_terminal_state or is_bounty_already_submitted:
+                print("skipped bc of is_bounty_in_terminal_state | is_bounty_already_submitted")
+                continue
+
             print(f"- {interest.pk} {action_str}")
             func_to_execute(interest, bounty)
         else:

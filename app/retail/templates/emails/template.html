@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2017 Gitcoin Core
+  Copyright (C) 2018 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -13,22 +13,18 @@
 
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
-
 {% endcomment %}
 {% load i18n static %}
 <!DOCTYPE html>
 <html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="x-apple-disable-message-reformatting" />
+<head>
+
+</head>
 
 <style>
-  @font-face {
-    font-family: 'Muli', sans-serif;
-    src: url("{% static "v2/fonts/Muli/Muli.ttf" %}") /* TTF file for CSS3 browsers */
-  }
-
   body {
-    font-family: 'Muli', sans-serif !important;
     margin: 0px;
     padding: 0px;
   }
@@ -66,7 +62,7 @@
 
   body {
     {% if override_back_color %}
-      background-color: {{override_back_color}};
+      background-color: {{ override_back_color }};
     {% else %}
       background-color: #f2f6f9;
     {% endif %}
@@ -122,7 +118,6 @@
 
   p,
   a,
-  span,
   ul,
   ol,
   li {
@@ -170,49 +165,55 @@
       margin-right: 0;
     }
   }
+
+  @media screen and (min-width: 601px) {
+    .desktop-col {
+      display: flex;
+    }
+  }
 </style>
 
-<body>
-    {% if not hide_header %}
-    <div id="header">
-        <a href="https://gitcoin.co">
-            <span style="display: inline-block;height: 100%;vertical-align: middle;"></span><img id="logo" src="{% static "v2/images/logo_large.png" %}" alt="Gitcoin" title="Gitcoin Logo">
-        </a>
-    </div>
-    {% endif %}
+<body class="g-font-muli">
+  {% if not hide_header %}
+  <div id="header">
+    <a href="{% url 'funder_bounties' %}">
+      <span style="display: inline-block;height: 100%;vertical-align: middle;"></span><img id="logo" src="{% static "v2/images/logo_large.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+    </a>
+  </div>
+  {% endif %}
 
     <div class="primary-content centered-contents">
         {% block content %}
         {% endblock %}
-        <img id="grow-oss" src="{% static "v2/images/grow_open_source_new.png" %}" alt="Gitcoin Open Source" title="Grow Open Source Image">
+        <img id="grow-oss" width="259" src="{% static "v2/images/grow_open_source_new.png" %}" alt="Gitcoin Open Source" title="Grow Open Source Image">
     </div>
 
-    <div id="footer" class="centered-contents">
-        <div>
-            <a href="https://www.twitter.com/GetGitcoin"><img class="social-img" src="{% static "v2/images/social/twitter_new.png" %}"></a>
+  <div id="footer" class="centered-contents">
+    <div>
+      <a href="https://www.twitter.com/gitcoin"><img class="social-img" src="{% static "v2/images/social/twitter_new.png" %}"></a>
 
-            <a href="https://www.medium.com/gitcoin"><img class="social-img" src="{% static "v2/images/social/medium_new.png" %}"></a>
+      <a href="https://www.medium.com/gitcoin"><img class="social-img" src="{% static "v2/images/social/medium_new.png" %}"></a>
 
-            <a href="https://www.facebook.com/GetGitcoin"><img class="social-img" src="{% static "v2/images/social/facebook_new.png" %}"></a>
+      <a href="https://www.facebook.com/GetGitcoin"><img class="social-img" src="{% static "v2/images/social/facebook_new.png" %}"></a>
 
-            <a href="https://reddit.com/r/gitcoincommunity"><img class="social-img" src="{% static "v2/images/social/reddit_new.png" %}"></a>
+      <a href="https://reddit.com/r/gitcoincommunity"><img class="social-img" src="{% static "v2/images/social/reddit_new.png" %}"></a>
 
-            <a href="https://gitcoin.co/slack"><img class="social-img" src="{% static "v2/images/social/slack_new.png" %}"></a>
-        </div>
-        <div>
-            <div id="copyright">
-                <p>
-                    <span>&copy; {% now "Y" %} Gitcoin Core, Inc. {% trans "All rights reserved." %}</span>
-                </p>
-            </div>
-            <div id="legal-contact">
-                <p>
-                    {% trans "Want to change how you receive these emails?" %}
-                    <br>
-                    {% trans "You can update your" %} <a href="https://gitcoin.co/settings/email/{{subscriber.priv}}">{% trans "preferences" %}</a> {% trans "or" %} <a href="https://gitcoin.co/settings/email/{{subscriber.priv}}">{% trans "unsubscribe" %}</a> {% trans "from this list." %}
-                </p>
-            </div>
-        </div>
+      <a href="{% url 'slack' %}"><img class="social-img" src="{% static "v2/images/social/slack_new.png" %}"></a>
     </div>
+    <div>
+      <div id="copyright">
+        <p>
+          <span>&copy; {% now "Y" %} Gitcoin Core, Inc. {% trans "All rights reserved." %}</span>
+        </p>
+      </div>
+      <div id="legal-contact">
+        <p>
+          {% trans "Want to change how you receive these emails?" %}
+          <br>
+          {% trans "You can update your" %} <a href="{% url "email_settings" subscriber.priv %}">{% trans "preferences" %}</a> {% trans "or" %} <a href="{% url "email_settings" subscriber.priv %}">{% trans "unsubscribe" %}</a> {% trans "from this list." %}
+        </p>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

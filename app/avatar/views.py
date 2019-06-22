@@ -17,18 +17,24 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import json
 import logging
 from tempfile import NamedTemporaryFile
 
+from django.db import transaction
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from dashboard.utils import create_user_action
+from dashboard.utils import create_user_action, is_blocked
 from git.utils import org_name
+from marketing.utils import is_deleted_account
 from PIL import Image, ImageOps
 
-from .models import Avatar
-from .utils import add_gitcoin_logo_blend, build_avatar_svg, get_avatar, get_err_response, handle_avatar_payload
+from .models import BaseAvatar, CustomAvatar, SocialAvatar
+from .utils import (
+    add_gitcoin_logo_blend, build_avatar_svg, get_avatar, get_err_response, get_user_github_avatar_image,
+    handle_avatar_payload,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +45,10 @@ def avatar(request):
     preview = request.GET.get('preview', False)
     payload = {
         'background_color': f"#{request.GET.get('background', '781623')}",
-        'icon_size': (int(request.GET.get('icon_width', 215)), int(request.GET.get('icon_height', 215))),
+        'icon_size': (
+            int(request.GET.get('icon_width',
+                                BaseAvatar.ICON_SIZE[0])), int(request.GET.get('icon_height', BaseAvatar.ICON_SIZE[1]))
+        ),
         'avatar_size': request.GET.get('avatar_size', None),
         'skin_tone': skin_tone,
     }
@@ -76,42 +85,92 @@ def avatar(request):
 
 
 @csrf_exempt
-def save_avatar(request):
-    """Save the Avatar configuration."""
+def save_github_avatar(request):
+    """Save the Github Avatar."""
     response = {'status': 200, 'message': 'Avatar saved'}
     if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
         request.user, 'profile', None
     ):
         return JsonResponse({'status': 405, 'message': 'Authentication required'}, status=405)
-
     profile = request.user.profile
+    github_avatar_img = get_user_github_avatar_image(profile.handle)
+    if not github_avatar_img:
+        return JsonResponse(response, status=response['status'])
 
-    if request.body and 'use_github_avatar' in str(request.body):
-        if not profile.avatar:
-            profile.avatar = Avatar.objects.create()
-            profile.save()
-        profile.avatar.use_github_avatar = True
-        avatar_url = profile.avatar.pull_github_avatar()
-        response['message'] = 'Avatar updated'
-        response['avatar_url'] = avatar_url
-        return JsonResponse(response, status=200)
-
-    payload = handle_avatar_payload(request)
-    try:
-        if not profile.avatar:
-            profile.avatar = Avatar.objects.create(config=payload, use_github_avatar=False)
-            profile.save()
-        else:
-            profile.avatar.config = payload
-            profile.avatar.use_github_avatar = False
-            profile.avatar.save()
-        response['message'] = 'Avatar updated'
-        profile.avatar.create_from_config(svg_name=profile.handle)
+    with transaction.atomic():
+        github_avatar = SocialAvatar.github_avatar(profile, github_avatar_img)
+        github_avatar.save()
+        profile.activate_avatar(github_avatar.pk)
+        profile.save()
         create_user_action(profile.user, 'updated_avatar', request)
+        response['message'] = 'Avatar updated'
+        response['avatar_url'] = github_avatar.avatar_url
+    return JsonResponse(response, status=response['status'])
+
+
+@csrf_exempt
+def save_custom_avatar(request):
+    """Save the Custom Avatar."""
+    response = {'status': 200, 'message': 'Avatar saved'}
+    if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
+        request.user, 'profile', None
+    ):
+        return JsonResponse({'status': 405, 'message': 'Authentication required'}, status=405)
+    profile = request.user.profile
+    payload = handle_avatar_payload(json.loads(request.body))
+    try:
+        with transaction.atomic():
+            custom_avatar = CustomAvatar.create(profile, payload)
+            custom_avatar.save()
+            profile.activate_avatar(custom_avatar.pk)
+            profile.save()
+            create_user_action(profile.user, 'updated_avatar', request)
+            response['message'] = 'Avatar updated'
+    except Exception as e:
+        response['status'] = 500
+        response['message'] = 'Internal error'
+        logger.error('Save Avatar - Error: (%s) - Handle: (%s)', e, profile.handle if profile else '')
+    return JsonResponse(response, status=response['status'])
+
+
+def activate_avatar(request):
+    """Activate the Avatar."""
+    response = {'status': 200, 'message': 'Avatar activated'}
+    if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
+        request.user, 'profile', None
+    ):
+        return JsonResponse({'status': 405, 'message': 'Authentication required'}, status=405)
+    body = json.loads(request.body)
+    avatar_to_activate_pk = body['avatarPk']
+    profile = request.user.profile
+    profile.activate_avatar(avatar_to_activate_pk)
+    profile.save()
+    create_user_action(profile.user, 'updated_avatar', request)
+    return JsonResponse(response, status=response['status'])
+
+
+def select_preset_avatar(request):
+    """Select preset Avatar."""
+    response = {'status': 200, 'message': 'Preset avatar selected'}
+    if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
+        request.user, 'profile', None
+    ):
+        return JsonResponse({'status': 405, 'message': 'Authentication required'}, status=405)
+    try:
+        with transaction.atomic():
+            body = json.loads(request.body)
+            profile = request.user.profile
+            preset_activate_pk = body['avatarPk']
+            preset_avatar = CustomAvatar.objects.get(pk=preset_activate_pk)
+            selected_avatar = preset_avatar.select(profile)
+            selected_avatar.save()
+            profile.activate_avatar(selected_avatar.pk)
+            profile.save()
+            create_user_action(profile.user, 'updated_avatar', request)
     except Exception as e:
         response['status'] = 400
         response['message'] = 'Bad Request'
-        logger.error(e)
+        logger.error('Save Avatar - Error: (%s) - Handle: (%s)', e, profile.handle if profile else '')
     return JsonResponse(response, status=response['status'])
 
 
@@ -120,15 +179,21 @@ def handle_avatar(request, _org_name='', add_gitcoincologo=False):
     icon_size = (215, 215)
 
     if _org_name:
+        _org_name = _org_name.replace('@', '')
+
+    if is_blocked(_org_name) or is_deleted_account(_org_name):
+        return get_err_response(request, blank_img=(_org_name == 'Self'))
+
+    if _org_name:
         try:
-            profile = Profile.objects.select_related('avatar').get(handle__iexact=_org_name)
-            if profile.avatar:
-                if profile.avatar.use_github_avatar and profile.avatar.png:
-                    return HttpResponse(profile.avatar.png.file, content_type='image/png')
-                elif profile.avatar.svg and not profile.avatar.use_github_avatar:
-                    return HttpResponse(profile.avatar.svg.file, content_type='image/svg+xml')
+            profile = Profile.objects.prefetch_related('avatar_baseavatar_related')\
+                .filter(handle__iexact=_org_name).first()
+            if profile and profile.active_avatar:
+                avatar_file, content_type = profile.active_avatar.determine_response(request.GET.get('email', False))
+                if avatar_file:
+                    return HttpResponse(avatar_file, content_type=content_type)
         except Exception as e:
-            logger.error(e)
+            logger.error('Handle Avatar - Exception: (%s) - Handle: (%s)', str(e), _org_name)
 
     # default response
     # params
@@ -160,5 +225,5 @@ def handle_avatar(request, _org_name='', add_gitcoincologo=False):
         img.save(response, 'PNG')
         return response
     except (AttributeError, IOError, SyntaxError) as e:
-        logger.error(e)
+        logger.error('Handle Avatar - Response error: (%s) - Handle: (%s)', str(e), _org_name)
         return get_err_response(request, blank_img=(_org_name == 'Self'))

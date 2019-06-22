@@ -12,9 +12,14 @@ Gitcoin Grows Open Source. Learn more at [https://gitcoin.co](https://gitcoin.co
 
 [![Build Status](https://travis-ci.org/gitcoinco/web.svg?branch=master)](https://travis-ci.org/gitcoinco/web)
 [![codecov](https://codecov.io/gh/gitcoinco/web/branch/master/graph/badge.svg)](https://codecov.io/gh/gitcoinco/web)
-[![Waffle.io - Columns and their card count](https://badge.waffle.io/gitcoinco/web.svg?columns=all)](https://waffle.io/gitcoinco/web)
 
-This is the website that is live at gitcoin.co
+This is the website that is live at [gitcoin.co](https://gitcoin.co)
+```master``` branch - staging
+```stable``` branch - live on gitcoin.co
+
+## Documentation
+
+[https://docs.gitcoin.co](https://docs.gitcoin.co)
 
 ## How to interact with this repo
 
@@ -42,11 +47,11 @@ This is the website that is live at gitcoin.co
 
 [Star](https://github.com/gitcoinco/web/stargazers) and [watch](https://github.com/gitcoinco/web/watchers) this github repository to stay up to date, we're pushing new code several times per week!
 
-Check out the [CHANGELOG](./CHANGELOG.md) for details about recent changes to this repository.
+Check out the [CHANGELOG](https://docs.gitcoin.co/mk_changelog/) for details about recent changes to this repository.
 
 Also,
 
-* want to become a contributor ? Checkout our [guidelines](./CONTRIBUTING.md).
+* want to become a contributor ? Checkout our [guidelines](https://docs.gitcoin.co/mk_contributors/) & [styleguide](https://docs.gitcoin.co/mk_styleguide/).
 * [check out the gitcoinco organization-wide repo](https://github.com/gitcoinco/gitcoinco).
 * check out the open issues list, especially the [discussion](https://github.com/gitcoinco/web/issues?q=is%3Aissue+is%3Aopen+label%3Adiscussion) label and [easy-pickings](https://github.com/gitcoinco/web/issues?q=is%3Aissue+is%3Aopen+label%3Aeasy-pickings).
 
@@ -54,7 +59,7 @@ Also,
 
 [Check out the available open issues on Gitcoin](https://gitcoin.co/explorer/?q=https://github.com/gitcoinco/web).
 
-## What
+## What is Gitcoin?
 
 Functionally, the app has several key features:
 
@@ -78,21 +83,21 @@ Technically, the system is architected:
 
 ## HTTPS API
 
-[For more information on the HTTPS API, please view the api README](API.md)
+[For more information on the HTTPS API, please view the api README](https://docs.gitcoin.co/mk_rest_api/)
 
 ## Running locally
 
 ### With Docker (Recommended)
 
-[For more information on running the app locally, please view the running locally README](RUNNING_LOCALLY_DOCKER.md)
+[For more information on running the app locally, please view the documentation for running gitcoinco/web with Docker](https://docs.gitcoin.co/mk_setup/)
 
 ### Without Docker
 
-[For more information on running the app locally, please view the running locally README](RUNNING_LOCALLY.md)
+[For more information on running the app locally, please view the documentation for running gitcoinco/web without Docker](https://docs.gitcoin.co/mk_alternative_setup/)
 
 ## Overriding Application Defaults
 
-[For more information on overriding the local dev environment configuration defaults, please view the environment variables documentation](ENVIRONMENT_VARIABLES.md)
+[For more information on overriding the local dev environment configuration defaults, please view the environment variables documentation](https://docs.gitcoin.co/mk_envvars/)
 
 # Trying out Gitcoin
 
@@ -107,29 +112,55 @@ try posting a funded issue at [https://gitcoin.co/new](https://gitcoin.co/new).
 
 # Integrating Gitcoin
 
-## Integrating the 'available work widget' on your repo.
+Basics
+
+* [Getting Started With Gitcoin](https://medium.com/gitcoin/getting-started-with-gitcoin-fa7149f2461a)
+* [Fund an Issue on Gitcoin](https://medium.com/gitcoin/fund-an-issue-on-gitcoin-3d7245e9b3f3)
+
+Advanced
+
+* [Make a Contributor Friendly Repo](https://medium.com/gitcoin/how-to-build-a-contributor-friendly-project-927037f528d9)
+* [Set your OSS repos monetary policy](https://medium.com/gitcoin/setting-your-oss-repos-monetary-policy-9c493118cd34)
+* [Payout Several Contribs at Once](https://medium.com/gitcoin/payout-several-contributors-at-once-8742c13a8fdd)
+* [Crowdfund Bounties](https://medium.com/gitcoin/crowdfunding-bounties-fd821b04309d)
+* [Make a Gitcoin ENS Name](https://medium.com/gitcoin/personalize-your-own-gitcoin-ens-name-f8e5d7438e3e)
+
+Background
+
+* [Everything you need to know about Gitcoin](https://medium.com/gitcoin/everything-you-need-to-know-about-gitcoin-fe2e3e292a21)
+* [Our Vision: Open Source Money will BUIDL the OSS Ecosystem](https://medium.com/gitcoin/open-source-money-will-buidl-the-open-source-ecosystem-f4169def8748)
+
+Testimonials & Case Studies
+
+* [Augur](https://medium.com/gitcoin/gitcoin-testimonials-augur-9bfe97368a30)
+* [Balance](https://medium.com/gitcoin/gitcoin-testimonials-balance-6d027fe01b9f)
+* [uPort](https://medium.com/gitcoin/gitcoin-testimonials-uport-1510222f3744)
+* [Ethereum Foundation](https://medium.com/gitcoin/gitcoin-testimonials-ethereum-foundation-web3py-py-evm-561cd4da92a6)
+* [Market Protocol](https://medium.com/gitcoin/gitcoin-testimonials-market-protocol-722dbb263d19)
+
+## Integrating the 'available work widget' into your repository
 
 This widget will help you advertise that you support Gitcoin bounties, so that your community knows the best place to contribute.
 
-[Check out the widget readme to learn how](WIDGET.md)
+[Check out the widget documentation to learn how](https://docs.gitcoin.co/mk_widget/)
 
 ## Adding GitcoinBot to your repo
 
 Gitcoinbot will allow you to add issues straight from github.
 
-[Check out the gitcoinbot readme to learn how](app/gitcoinbot/)
+[Check out the gitcoinbot readme to learn how](../app/gitcoinbot/README.md)
 
 ## Adding your token to Gitcoin
 
-Have an ERC20 compatible token that you'ud like to add support for?  Great!  Submit [this form](https://gitcoin.co/submittoken) to submit it to the system
+Have an ERC20 compatible token that you'd like to use on the platform?  Great!  Submit [this form](https://gitcoin.co/submittoken) to submit it to the system
 
-## High Level flows
+## High Level flows...
 
-### of a Bounty
+### ... of a Bounty
 
 This is the high level flow of a bounty on Gitcoin:
 
-<a href="https://www.draw.io/?state=%7B%22ids%22:%5B%221FTatOur159qS8pzBCgIG5E0XdEH8iZF-%22%5D,%22action%22:%22open%22,%22userId%22:%22115514289174042120922%22%7D#G1FTatOur159qS8pzBCgIG5E0XdEH8iZF-"><img src='bounty_flow.png'></a>
+<a href="https://www.draw.io/?state=%7B%22ids%22:%5B%221FTatOur159qS8pzBCgIG5E0XdEH8iZF-%22%5D,%22action%22:%22open%22,%22userId%22:%22115514289174042120922%22%7D#G1FTatOur159qS8pzBCgIG5E0XdEH8iZF-"><img src='https://github.com/gitcoinco/web/raw/master/docs/bounty_flow.png'></a>
 
 Chain of Custody
 
@@ -137,43 +168,31 @@ Chain of Custody
 2. [StandardBounties Smart Contract](https://github.com/Bounties-Network/StandardBounties) deployed at [0x2af47a65da8cd66729b4209c22017d6a5c2d2400](https://etherscan.io/address/0x2af47a65da8cd66729b4209c22017d6a5c2d2400#code)
 3. (Submission Made)
 4. (Submission Accepted)
-5. Recipient's Wallet 
+5. Recipient's Wallet
 
-Anywhere between 2 and 4 above, Funder may withdraw their funds via 'Cancel Bounty' function for any reason. 
+Anywhere between 2 and 4 above, Funder may withdraw their funds via 'Cancel Bounty' function for any reason.
 
-We may introduce Arbitration [via Delphi](http://delphi.network/) at some point in the future.  Until then, we are lucky that Github users are very protective of their reputation, and therefore very kind to each other, and disputes have not generally arisen.
+### ... of a Tip
 
-### of a Tip
+*ToDo*
 
-Note: Crowdfunded bounties + bulk payouts are secured by Tips (at least until Standard Bounties 2.0 is released).
+### ... of a Kudos
+
+*ToDo*
+
+### Notes
+
+- Crowdfunded bounties + bulk payouts are secured by Tips (at least until Standard Bounties 2.0 is released).
+- Kudos are also secured by Tips
 
 This is the high level flow of a bounty on Gitcoin:
 
-<a href="https://www.draw.io/#G1sTJtQou5FYsHCabhb2JXHDTprpvvkUy0"><img src='tip_flow.png'></a>
+<a href="https://www.draw.io/#G1sTJtQou5FYsHCabhb2JXHDTprpvvkUy0"><img src='https://github.com/gitcoinco/web/raw/master/docs/tip_flow.png'></a>
 
-# Legal
+# Licenses
 
-'''
-    Copyright (C) 2018 Gitcoin Core
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-'''
-
-# License
-
-[GNU AFFERO GENERAL PUBLIC LICENSE](../LICENSE)
+- [Code - GNU AFFERO GENERAL PUBLIC LICENSE](../LICENSE)
+- [Creative assets -- Attribution-NonCommercial-NoDerivatives 4.0 International](../app/assets/LICENSE.txt)
 
 <!-- Google Analytics -->
 <img src='https://ga-beacon.appspot.com/UA-102304388-1/gitcoinco/web' style='width:1px; height:1px;' >

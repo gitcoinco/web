@@ -21,13 +21,14 @@ import json
 
 from django.http import JsonResponse
 from django.template.response import TemplateResponse
-from django.utils.html import escape, strip_tags
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
+from linkshortener.models import Link
 from marketing.mails import new_bounty_request
 from ratelimit.decorators import ratelimit
 
+from .forms import BountyRequestForm
 from .models import BountyRequest
 
 
@@ -37,6 +38,14 @@ def bounty_request(request):
     user = request.user if request.user.is_authenticated else None
     profile = request.user.profile if user and hasattr(request.user, 'profile') else None
 
+    comments_prefill = None
+    if request.GET.get('code', False):
+        code = request.GET.get('code')
+        ls = Link.objects.filter(shortcode=code, comments__icontains='Gitcoin Request Coin', uses__lt=5)
+        if ls.exists():
+            ls = ls.first()
+            comments_prefill = f"{ls.comments} : {ls.shortcode}"
+
     if request.body:
         if not user or not profile or not profile.handle:
             return JsonResponse(
@@ -44,38 +53,23 @@ def bounty_request(request):
                 status=401)
 
         try:
-            params = json.loads(request.body)
-        except Exception:
+            result = BountyRequestForm(json.loads(request.body))
+            if not result.is_valid():
+                raise
+        except:
             return JsonResponse({'error': 'Invalid JSON.'}, status=400)
 
-        requested_by = profile
-        github_url = params.get('github_url', '')
-        eth_address = params.get('eth_address', '')
-        comment = escape(strip_tags(params.get('comment', '')))
-        amount = params.get('amount', '')
-
-        try:
-            amount = int(amount)
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=400)
-
-        if not requested_by or not github_url or not comment or not amount:
-            return JsonResponse({'error': _('Missing required attributes.')}, status=400)
-
-        result = BountyRequest.objects.create(
-            requested_by=requested_by,
-            github_url=github_url,
-            eth_address=eth_address,
-            comment=comment,
-            amount=amount
-        )
-
-        new_bounty_request(result)
-
+        model = result.save(commit=False)
+        model.requested_by = profile
+        model.save()
+        new_bounty_request(model)
         return JsonResponse({'msg': _('Bounty Request received.')}, status=200)
 
+    form = BountyRequestForm()
     params = {
+        'form': form,
         'title': _('Request a Bounty'),
+        'comments_prefill': comments_prefill,
         'card_title': _('Gitcoin Requests'),
         'card_desc': _('Have an open-source issue that you think would benefit the community? '
                        'Suggest it be given a bounty!')

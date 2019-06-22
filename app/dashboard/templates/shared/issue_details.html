@@ -15,54 +15,98 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n %}
-<h5 class="font-subheader">{% trans "Details" %}</h5>
-<label class="form__label" for="project_type">{% trans "Project Type" %}</label>
-<div class="form__select2">
-  <select class="js-select2" name="project_type">
-    <option value="traditional">{% trans "Traditional -- 1 worker at a time, 1 is paid out" %}</option>
-    <option value="contest">{% trans "Contest -- many workers at a time, 1 is paid out" %}</option>
-    <option value="cooperative">{% trans "Cooperative -- many workers at a time, many are paid out" %}</option>
-  </select>
-</div>
-<label class="form__label" for="permission_type">{% trans "Permissions" %}</label>
-<div class="form__select2">
-  <select class="js-select2" name="permission_type">
-    <option value="permissionless">{% trans "Permissionless - Anyone can start work." %}</option>
-    <option value="approval" selected>{% trans "Approval Required - I will approve bounty hunters." %}</option>
-  </select>
-</div>
-<div>
-  <label class="form__label">{% trans "Issue Details" %}</label>
-</div>
-<div class="form__group">
-  <div class="form__select2 form__group-item">
-    <select class="js-select2" name="experience_level">
-      <option value="">{% trans "Experience Level" %}</option>
-      <option>{% trans "Beginner" %}</option>
-      <option>{% trans "Intermediate" %}</option>
-      <option>{% trans "Advanced" %}</option>
-    </select>
+<label class="font-caption letter-spacing text-black-60 text-uppercase" for="project_type">{% trans "Project Type" %}</label>
+
+<div class="d-flex row" data-toggle="buttons">
+  <div class="col-12 col-md-4 btn-group-toggle">
+    <label class="btn btn-block btn-radio traditional my-2 font-weight-bold py-2 px-4 active text-left">
+      <input type="radio" name="project_type" id="traditional" value="traditional" autocomplete="off" checked>
+      {% trans "Traditional" %}
+      <span class="d-block font-weight-normal">
+        <span class="fa-stack font-smaller-6">
+          <i class="far fa-circle fa-stack-2x"></i>
+          <i class="fas fa-user fa-stack-1x"></i>
+        </span>
+        {% trans "One contributor" %}
+      </span>
+      <span class="d-block font-weight-normal">
+        <span class="fa-stack font-smaller-6">
+          <i class="far fa-circle fa-stack-2x"></i>
+          <i class="fas fa-user fa-stack-1x"></i>
+        </span>
+        {% trans "One paid" %}
+      </span>
+    </label>
   </div>
-  <div class="form__select2 form__group-item">
-    <select class="js-select2" name="project_length">
-      <option value="Unknown">{% trans "Project Length" %}</option>
-      <option>{% trans "Hours" %}</option>
-      <option>{% trans "Days" %}</option>
-      <option>{% trans "Weeks" %}</option>
-      <option>{% trans "Months" %}</option>
-    </select>
+  <div class="col-12 col-md-4 btn-group-toggle">
+    <label class="btn btn-block btn-radio contest my-2 font-weight-bold py-2 px-4 text-left">
+      <input type="radio" name="project_type" id="contest" value="contest" autocomplete="off">
+      {% trans "Contest" %}
+      <span class="d-block font-weight-normal">
+        <span class="fa-stack font-smaller-6">
+          <i class="far fa-circle fa-stack-2x"></i>
+          <i class="fas fa-users fa-stack-1x"></i>
+        </span>
+        {% trans "Multiple contributors" %}
+      </span>
+      <span class="d-block font-weight-normal">
+        <span class="fa-stack font-smaller-6">
+          <i class="far fa-circle fa-stack-2x"></i>
+          <i class="fas fa-users fa-stack-1x"></i>
+        </span>
+        {% trans "One paid" %}
+      </span>
+    </label>
   </div>
-  <div class="form__select2 form__group-item">
-    <select class="js-select2" name="bounty_type">
-      <option value="">{% trans "Bounty Type" %}</option>
-      <option>{% trans "Bug" %}</option>
-      <option>{% trans "Feature" %}</option>
-      <option>{% trans "Improvement" %}</option>
-      <option>{% trans "Security" %}</option>
-      <option>{% trans "Documentation" %}</option>
-      <option>{% trans "Design" %}</option>
-      <option>{% trans "Code Review" %}</option>
-      <option>{% trans "Other" %}</option>
-    </select>
+  <div class="col-12 col-md-4 btn-group-toggle">
+    <label class="btn btn-block btn-radio cooperative my-2 font-weight-bold py-2 px-4 text-left">
+      <input type="radio" name="project_type" id="cooperative" value="cooperative" autocomplete="off">
+      {% trans "Cooperative" %}
+      <span class="d-block font-weight-normal">
+        <span class="fa-stack font-smaller-6">
+          <i class="far fa-circle fa-stack-2x"></i>
+          <i class="fas fa-users fa-stack-1x"></i>
+        </span>
+        {% trans "Multiple contributors" %}
+      </span>
+      <span class="d-block font-weight-normal">
+        <span class="fa-stack font-smaller-6">
+          <i class="far fa-circle fa-stack-2x"></i>
+          <i class="fas fa-user fa-stack-1x"></i>
+        </span>
+        {% trans "Multiple paid" %}
+      </span>
+    </label>
+  </div>
+</div>
+<label class="font-caption letter-spacing text-black-60 text-uppercase" for="permission_type">{% trans "Permissions" %}</label>
+<div class="d-flex row" data-toggle="buttons">
+  <div class="col-12 col-md-6 btn-group-toggle">
+    <label class="btn btn-block btn-radio approval my-2 font-weight-bold py-3 px-4 active text-left">
+      <input type="radio" name="permission_type" id="approval" value="approval" autocomplete="off" checked>
+      {% trans "Approval Required" %}
+      <span class="d-block font-weight-normal">
+        <i class="fas fa-user-cog"></i>
+        {% trans "I will approve bounty hunters" %}
+      </span>
+    </label>
+  </div>
+  <div class="col-12 col-md-6 btn-group-toggle">
+    <label class="btn btn-block btn-radio permissionless my-2 font-weight-bold py-3 px-4 text-left">
+      <input type="radio" name="permission_type" id="permissionless" value="permissionless" autocomplete="off">
+      {% trans "Permissionless" %}
+      <span class="d-block font-weight-normal">
+        <i class="fas fa-user-cog "></i>
+        {% trans "No approval required" %}
+      </span>
+    </label>
+  </div>
+</div>
+<div class="mt-2" id="auto_approve_workers_container">
+  <div class="form__checkbox">
+    <input name="admin_override_suspend_auto_approval" id="admin_override_suspend_auto_approval" value="1" type="checkbox" checked />
+    <label class="form__label" for="admin_override_suspend_auto_approval" style="display: flex;">
+      {% trans "Worker will be auto-approved after 72 hours." %}
+    </label>
   </div>
 </div>

@@ -1,0 +1,67 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}			
+<div class="row text-center my-4">
+  <div class="col-12">
+    <img width="240px" height="225px" src="{% static "v2/images/tree.png" %}"/>
+  </div>
+  <div class="col-12 no-profile-textcolor">
+    <p class="mb-0">{% trans 'Oops! Looks like this user has not participated in any bounty yet.' %}</p>
+    <p>{% trans 'In the meantime, here are some things you can do:' %}</p>
+  </div>
+</div>
+<div class="justify-content-center row mt-2 mb-2">
+  <div class="card offset-2 col-8 offset-md-0 col-md-6 col-lg-3 py-4 py-md-5 m-2 justify-content-center">
+    <div class="row justify-content-center">
+      <img class="m-1" src="{% static "v2/images/IssueExplorer.svg" %}" />
+    </div>
+    <div class="row m-2 text-center no-profile-textcolor font-subheader">
+      {% trans 'Start working on exciting bounties with the Issue Explorer' %}
+    </div>
+    <div class="row justify-content-center mt-auto">
+      <a class="btn btn-xs btn-success mt-3 mb-1 no-profile-button" href="{% url "explorer" %}">
+        {% trans 'Go to Issue Explorer' %}
+      </a>
+    </div>
+  </div>
+  <div class="card offset-2 col-8 offset-md-0 col-md-6 col-lg-3 py-4 py-md-5 m-2 justify-content-center">
+    <div class="row justify-content-center">
+      <img class="m-1" src="{% static "v2/images/Leaderboard.svg" %}" />
+    </div>
+    <div class="row text-center m-2 no-profile-textcolor font-subheader">
+      {% trans 'Looking for awesome contributors to work on your project?' %}
+    </div>
+    <div class="row justify-content-center mt-auto">
+      <a class="btn btn-xs btn-success mt-3 mb-1 no-profile-button" href="{% url "_leaderboard" %}">
+        {% trans 'Go to Leaderboard' %}
+      </a>
+    </div>
+  </div>
+  <div class="card offset-2 col-8 offset-md-0 col-md-6 col-lg-3 py-4 py-md-5 m-2 justify-content-center">
+    <div class="row justify-content-center">
+      <img class="m-1" src="{% static "v2/images/Slack.svg" %}" />
+    </div>
+    <div class="row m-2 text-center no-profile-textcolor font-subheader">
+      {% trans 'Have any questions or suggestions? Join our Slack channel!' %}
+    </div>
+    <div class="row justify-content-center mt-auto">
+      <a class="btn btn-xs btn-success mt-3 mb-1 no-profile-button" href="{% url "slack" %}">
+        {% trans 'Join our Slack' %}
+      </a>
+    </div>
+  </div>
+</div>

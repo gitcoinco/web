@@ -33,15 +33,11 @@ gitcoin.co/slack
 ### Expected Behavior
 [comment]: # (Describe what you expected to happen.)
 
-### Reproduction
-[comment]: # (Describe how we can replicate the bug step by step.)
-
-### Solution
-[comment]: # (Provide a summary of the solution and a task list on what needs to be fixed.)
-*Summary*:
-
 ### Definition of Done
 [comment]: # (Any other information that would be useful, bullets are helpful.)
+
+### Data Requirements
+[comment]: # (How will we measure the success of this feature? What kind of tracking is needed for this feature (clicks, impressions, flag)?)
 
 ### Additional Information
 [comment]: # (Any other information that would be useful, content, screenshots, etc.)

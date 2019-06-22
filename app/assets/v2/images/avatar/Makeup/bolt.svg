@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1650px" height="774px" viewBox="0 0 1650 774" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.3 (57544) - http://www.bohemiancoding.com/sketch -->
+    <title>bolt</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="bolt">
+            <rect id="Rectangle" stroke="#FFFFFF" opacity="0.00613839286" x="0.5" y="0.5" width="1649" height="773"></rect>
+            <g id="Group" transform="translate(651.500000, 323.000000) rotate(13.000000) translate(-651.500000, -323.000000) translate(532.000000, 126.000000)" fill="#000000" fill-rule="nonzero">
+                <path d="M239,0 C123.126235,118.362385 58.1537944,182.073549 44.0826783,191.133492 C30.0115622,200.193435 15.3173361,187.777098 0,153.884479 L239,0 Z" id="Triangle"></path>
+                <polygon id="Triangle" points="106 394 175.151807 133 232 133"></polygon>
+                <path d="M10,159.436917 C16.0589814,156.410019 30.5578403,153.18785 53.4965769,149.770412 C68.2037603,147.57932 110.704901,142.322516 181,134 L181,194.56321 C122.533981,192.430125 57.1606798,198.676497 37.1365889,194.56321 C17.112498,190.449923 25.4857993,172.494787 10,159.436917 Z" id="Triangle"></path>
+            </g>
+        </g>
+    </g>
+</svg>

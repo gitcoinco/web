@@ -1,0 +1,21 @@
+
+dependencies:
+- alias: expose
+  name: exposecontroller
+  repository: https://chartmuseum.build.cd.jenkins-x.io
+  version: 2.3.56
+- alias: cleanup
+  name: exposecontroller
+  repository: https://chartmuseum.build.cd.jenkins-x.io
+  version: 2.3.56
+- name: redis
+  alias: redis
+  version: ~4.1.2
+  repository: https://kubernetes-charts.storage.googleapis.com
+- name: postgresql
+  alias: db
+  version: ~0.19.0
+  repository: https://kubernetes-charts.storage.googleapis.com
+- alias: preview
+  name: web
+  repository: file://../web

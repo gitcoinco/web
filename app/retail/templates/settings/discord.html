@@ -1,7 +1,7 @@
 {% extends 'settings/settings.html' %}
 {% load i18n %}
 {% block settings_content %}
-<form id="settings" method="POST">
+<form id="settings" name="discord" method="POST" class="col-md-8 m-auto">
   <div class="form-group">
     <h5>{% trans "Discord Integration" %}</h5>
     <p>
@@ -13,7 +13,7 @@
     <label class="form__label" for="webhook_url">{% trans "Discord Webhook URL" %}</label>
     <input type="text" name="webhook_url" class="form__input" placeholder='Webhook URL' value="{{ profile.discord_webhook_url }}">
   </div>
-  <div class="form-group"
+  <div class="form-group">
     <label class="form__label" for="repos">{% trans "Github repos to monitor (use full name, like 'gitcoinco/web' for <a href=https://github.com/gitcoinco/web>this repo</a>)" %}</label>
     <input type="text" name="repos" class="form__input" placeholder='comma, separated, list (gitcoinco/web)' value="{{ repos }}">
   </div>
@@ -21,5 +21,4 @@
   <input class='button button--primary' type='submit' name='submit' value="{% trans "Go" %}">
   <input class='button button--primary' style='margin-left: 0.5em;' type='submit' name='test' value="{% trans "Test" %}">
 </form>
-</div>
 {% endblock %}

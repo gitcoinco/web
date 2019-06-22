@@ -1,5 +1,30 @@
 /* eslint-disable no-console */
 window.onload = function() {
+
+  const rateUser = () => {
+    let userSelected = $('#bountyFulfillment').select2('data')[0].text;
+
+    $('[data-open-rating]').data('openUsername', userSelected.trim());
+  };
+
+
+  $('#bountyFulfillment').on('select2:select', event => {
+    rateUser();
+  });
+
+  // Check Radio-box
+  $('.rating input:radio').attr('checked', false);
+
+  $('.rating input').click(function() {
+    $('.rating span').removeClass('checked');
+    $(this).parent().addClass('checked');
+  });
+
+  $('input:radio').change(
+    function() {
+      var userRating = this.value;
+    });
+
   // a little time for web3 injection
   setTimeout(function() {
     waitforWeb3(actions_page_warn_if_not_on_same_network);
@@ -21,11 +46,8 @@ window.onload = function() {
       $('#tipEstimate').text(estimate);
     });
 
-    var bountyDetails = [];
-
     var fulfillmentCallback = function(results, status) {
       if (status != 'success') {
-        mixpanel.track('Process Bounty Error', {step: 'fulfillmentCallback', error: error});
         _alert({ message: gettext('Could not get fulfillment details') }, 'warning');
         console.error(error);
         unloading_button($('.submitBounty'));
@@ -33,28 +55,10 @@ window.onload = function() {
       }
       results = sanitizeAPIResults(results);
       result = results[0];
-      if (result == null) {
+      if (result === null) {
         _alert({ message: gettext('No bounty fulfillments found for this Github URL.  Please use the advanced payout tool instead.') }, 'warning');
         unloading_button($('.submitBounty'));
         return;
-      }
-      $('#bountyFulfillment').html('');
-      $('body').append($('<select>').append($('<option>').attr('value', 'bla bla bla')));
-      $.each(result['fulfillments'], function(index, value) {
-        // option to build each selector-option:
-        var option = $('<option>');
-
-        option.attr('value', value.fulfillment_id);
-        option.attr('data-username', value.fulfiller_github_username);
-        var short_addr = value.fulfiller_address.slice(0, 7).concat('...');
-
-        option.text('Id: ' + value.fulfillment_id + ',  Username: ' + value.fulfiller_github_username + ',  Address: ' + short_addr);
-        $('#bountyFulfillment').append(option);
-      });
-
-      if (getParam('id')) {
-        selectedFulfillment = getParam('id');
-        $('#bountyFulfillment').find('option[value=' + selectedFulfillment + ']').attr('selected', '');
       }
 
     };
@@ -67,7 +71,7 @@ window.onload = function() {
       $.get(uri, fulfillmentCallback);
     });
 
-    $('#goBack').click(function(e) {
+    $('#goBack').on('click', function(e) {
       var url = window.location.href;
       var new_url = url.replace('process?source', 'details?url');
 
@@ -82,7 +86,7 @@ window.onload = function() {
       var email = '';
       var github_url = $('#issueURL').val();
       var from_name = document.contxt['github_handle'];
-      var username = $('#bountyFulfillment option:selected').data('username');
+      var username = getSelectedFulfillment().getAttribute('username');
       var amountInEth = bounty_amount * pct;
       var comments_priv = '';
       var comments_public = '';
@@ -101,16 +105,49 @@ window.onload = function() {
 
       };
       var failure_callback = function() {
-        // do nothing
-        $.noop();
+        unloading_button($('.submitBounty'));
       };
 
       return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, false);
 
     };
 
+    var attach_and_send_kudos = function(selected_kudos, callback) {
+      // get form data
 
-    $('#acceptBounty').click(function(e) {
+      var email = '';
+      var github_url = $('#issueURL').val();
+      var from_name = document.contxt['github_handle'];
+      var username = getSelectedFulfillment().getAttribute('username');
+      var amountInEth = selected_kudos.price_finney / 1000.0;
+      var comments_public = $('.kudos-comment textarea').val();
+      var comments_priv = '';
+      var from_email = '';
+      var accept_tos = true;
+      var to_eth_address = $('#bountyFulfillment option:selected').data('address');
+      var expires = 9999999999;
+      var kudosId = selected_kudos.id;
+      var tokenId = selected_kudos.token_id;
+      var send_type = 'github';
+      var success_callback = function(txid) {
+        var url = 'https://' + etherscanDomain() + '/tx/' + txid;
+        var msg = 'The Kudos has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
+
+        // send msg to frontend
+        _alert(msg, 'info');
+        callback();
+
+      };
+      var failure_callback = function() {
+        unloading_button($('.submitBounty'));
+      };
+
+      return sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, to_eth_address, expires, kudosId, tokenId, success_callback, failure_callback, true, send_type);
+
+    };
+
+
+    $('#acceptBounty').on('click', function(e) {
       try {
         bounty_address();
       } catch (exception) {
@@ -118,11 +155,9 @@ window.onload = function() {
         return;
       }
 
-      mixpanel.track('Process Bounty Clicked', {});
       e.preventDefault();
-      var whatAction = $(this).html().trim();
       var issueURL = $('input[name=issueURL]').val();
-      var fulfillmentId = $('select[name=bountyFulfillment]').val();
+      var fulfillmentId = getSelectedFulfillment().getAttribute('value');
 
       var isError = false;
 
@@ -150,7 +185,6 @@ window.onload = function() {
 
       var apiCallback = function(results, status) {
         if (status != 'success') {
-          mixpanel.track('Process Bounty Error', {step: 'apiCallback', error: error});
           _alert({ message: gettext('Could not get bounty details') }, 'warning');
           console.error(error);
           unloading_button($('.submitBounty'));
@@ -188,6 +222,7 @@ window.onload = function() {
         }
 
         var final_callback = function(error, result) {
+          indicateMetamaskPopup();
           var next = function() {
             // setup inter page state
             localStorage[issueURL] = JSON.stringify({
@@ -197,16 +232,19 @@ window.onload = function() {
               'txid': result
             });
 
-            _alert({ message: gettext('Submitted transaction to web3.') }, 'info');
-            setTimeout(function() {
-              mixpanel.track('Process Bounty Success', {});
-              document.location.href = '/funding/details?url=' + issueURL;
-            }, 1000);
+            _alert({ message: gettext('Submitted transaction to web3, saving comment(s)...') }, 'info');
 
+            var finishedComment = function() {
+              _alert({ message: gettext('Submitted transaction to web3.') }, 'info');
+              setTimeout(() => {
+                document.location.href = '/funding/details?url=' + issueURL;
+              }, 1000);
+            };
+
+            finishedComment();
           };
 
           if (error) {
-            mixpanel.track('Process Bounty Error', {step: 'final_callback', error: error});
             _alert({ message: gettext('There was an error') }, 'error');
             console.error(error);
             unloading_button($('.submitBounty'));
@@ -214,27 +252,68 @@ window.onload = function() {
             next();
           }
         };
-        var send = function() {
+        // just sent payout
+        var send_payout = function() {
           bounty.acceptFulfillment(bountyId, fulfillmentId, {gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))}, final_callback);
         };
 
-        if ($('#tipPercent').val() > 0) {
-          attach_and_send_tip(send);
+        // send both tip and payout
+        var send_tip_and_payout_callback = function() {
+          indicateMetamaskPopup();
+          if ($('#tipPercent').val() > 0) {
+            attach_and_send_tip(send_payout);
+          } else {
+            send_payout();
+          }
+        };
+
+        if ($('.kudos-search').select2('data')[0].id) {
+          attach_and_send_kudos($('.kudos-search').select2('data')[0], send_tip_and_payout_callback);
         } else {
-          send();
+          send_tip_and_payout_callback();
         }
-        
 
       };
       // Get bountyId from the database
 
       waitforWeb3(function() {
-        var uri = '/api/v0.1/bounties/?github_url=' + issueURL + '&network=' + $('input[name=network]').val() + '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
+        var uri = '/api/v0.1/bounties/?event_tag=all&github_url=' + issueURL + '&network=' + $('input[name=network]').val() + '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
 
         $.get(uri, apiCallback);
       });
       e.preventDefault();
     });
-  }, 100);
 
+    function getSelectedFulfillment() {
+      return $('#bountyFulfillment').select2('data')[0].element;
+    }
+
+    function renderFulfillment(selected) {
+      if (!selected.element) {
+        return selected.text;
+      }
+
+      let html =
+        '<img class="rounded-circle mr-1" src="' +
+        selected.element.getAttribute('avatar') +
+        '" width="32" height="32">' +
+        selected.element.getAttribute('username') +
+        '<i class="px-1 font-smallest middle fas fa-circle"></i>' +
+        truncate(selected.element.getAttribute('address'), 4);
+
+      return html;
+    }
+
+    $('#bountyFulfillment').select2(
+      {
+        templateSelection: renderFulfillment,
+        templateResult: renderFulfillment,
+        escapeMarkup: function(markup) {
+          return markup;
+        }
+      }
+    );
+    rateUser();
+
+  }, 100);
 };

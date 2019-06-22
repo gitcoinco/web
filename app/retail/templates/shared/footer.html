@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -16,74 +16,85 @@
 
 {% endcomment %}
 {% load i18n static %}
-<div class="container-fluid footer">
-  <div class="d-flex flex-wrap align-items-center footer__top justify-content-around pr-5 pl-5 pt-5">
-    <a class="navbar-brand text-center pt-0 pb-0 mb-3" href="/">
-      {% if request.path == '/ios' %}
-        <img id="logo" src="{% static "v2/images/ios/gitcoin.svg" %}" data-hover="{% static "v2/images/ios/gitcoin_hover.gif" %}" height="50" />
-      {% else %}
-        <img id="logo" src="{% static "v2/images/logo_large.png" %}" data-hover="{% static "v2/images/logo_med_hover.gif" %}" width="150" height="50" />
-      {% endif %}
-    </a>
-    <div class="nav footer__social justify-content-center">
-      <a class="nav-link" href="{% url "medium" %}">
-        <img src="{% static "v2/images/social/medium.png" %}" alt="Medium">
-      </a>
-      <a class="nav-link" href="{% url "gitter" %}">
-        <img src="{% static "v2/images/social/gitter.png" %}" alt="Gitter">
-      </a>
-      <a class="nav-link" href="{% url "github" %}">
-        <img src="{% static "v2/images/social/github.png" %}" alt="Github">
-      </a>
-      <a class="nav-link hide_min_viewport" href="{% url "fb" %}">
-        <img src="{% static "v2/images/social/facebook.png" %}" alt="Facebook">
-      </a>
-      <a class="nav-link" href="{% url "twitter" %}">
-        <img src="{% static "v2/images/social/twitter.png" %}" alt="Twitter">
-      </a>
-      <a class="nav-link" href="{% url "reddit" %}">
-        <img src="{% static "v2/images/social/reddit.png" %}" alt="Reddit">
-      </a>
-      <a class="nav-link" href="{% url "slack" %}">
-        <img src="{% static "v2/images/social/slack.png" %}" alt="Slack">
-      </a>
-      <a class="nav-link" href="{% url "btctalk" %}">
-        <img src="{% static "v2/images/bitcointalk.png" %}" alt="Bitcoin">
-      </a>
-      <a class="nav-link" href="mailto:founders@gitcoin.co">
-        <img src="{% static "v2/images/social/mail.png" %}" alt="Mail">
+<footer class="container-fluid no-gutters footer">
+  <div class="container footer__main">
+    <div class="row">
+      <div class="col-md-4">
+          <a class="navbar-brand text-center pt-0 pb-0 mb-3" href="/">
+            <img id="logo" src="{% static "v2/images/logo_large.png" %}" data-hover="{% static "v2/images/logo_med_hover.gif" %}" width="150" height="50" />
+          </a>
+          <p class="footer__text">Gitcoin is a platform for you to get paid for working on open source software in <a href="{% url 'contributor_bounties' '/python' %}">Python</a>, <a href="{% url 'contributor_bounties' '/rust' %}">Rust</a>, <a href="{% url 'contributor_bounties' '/ruby' %}">Ruby</a>, <a href="{% url 'contributor_bounties' '/javascript' %}">JavaScript</a>, <a href="{% url 'contributor_bounties' '/solidity' %}">Solidity</a>, <a href="{% url 'contributor_bounties' '/html' %}">HTML</a>, <a href="{% url 'contributor_bounties' '/css' %}">CSS</a>, <a href="{% url 'contributor_bounties' '/design' %}">Design</a>, and more.</p>
+      </div>
+      <div class="col-md-8">
+        <div class="nav mb-3">
+          <a class="nav-link" href="{% url "medium" %}">
+            <img src="{% static "v2/images/social/medium.png" %}" alt="Medium">
+          </a>
+          <a class="nav-link" href="{% url "gitter" %}">
+            <img src="{% static "v2/images/social/gitter.png" %}" alt="Gitter">
+          </a>
+          <a class="nav-link" href="{% url "github" %}">
+            <img src="{% static "v2/images/social/github.png" %}" alt="Github">
+          </a>
+          <a class="nav-link hide_min_viewport" href="{% url "fb" %}">
+            <img src="{% static "v2/images/social/facebook.png" %}" alt="Facebook">
+          </a>
+          <a class="nav-link" href="{% url "twitter" %}">
+            <img src="{% static "v2/images/social/twitter.png" %}" alt="Twitter">
+          </a>
+          <a class="nav-link" href="{% url "reddit" %}">
+            <img src="{% static "v2/images/social/reddit.png" %}" alt="Reddit">
+          </a>
+          <a class="nav-link" href="{% url "slack" %}">
+            <img src="{% static "v2/images/social/slack.png" %}" alt="Slack">
+          </a>
+          <a class="nav-link" href="{% url "btctalk" %}">
+            <img src="{% static "v2/images/bitcointalk.png" %}" alt="Bitcoin">
+          </a>
+          <a class="nav-link" href="mailto:founders@gitcoin.co">
+            <img src="{% static "v2/images/social/mail.png" %}" alt="Mail">
+          </a>
+        </div>
+        <div class="d-flex flex-wrap">
+          <div class="sitenav sitenav__product">
+            <h5>{% trans "Product" %}</h5>
+            <a href="{% url "explorer" %}">{% trans "Issue Explorer" %}</a>
+            <a href="{% url "kudos_main" %}">{% trans "Kudos" %}</a>
+            <a href="{% url "grants:grants" %}">{% trans "Grants" %}</a>
+            <a href="{% url "labs" %}">{% trans "Labs" %}</a>
+          </div>
+          <div class="sitenav">
+            <h5>{% trans "Business" %}</h5>
+            <a href="{% url "about" %}">{% trans "About" %}</a>
+            <a href="{% url "mission" %}">{% trans "Mission" %}</a>
+            <a href="{% url "results" %}">{% trans "Results" %}</a>
+            <a href="{% url "tools" %}">{% trans "Tools" %}</a>
+            <a href="{% url "jobs" %}">{% trans "Jobs" %}</a>
+          </div>
+          <div class="sitenav">
+            <h5>{% trans "Community" %}</h5>
+            <a href="{% url "blog" %}">{% trans "Blog" %}</a>
+            <a class="slack{% if active == 'slack' %} selected{% endif %}" href="{% url "slack" %}">
+              Slack ({{num_slack}})
+            </a>
+            <a href="{% url "activity" %}">{% trans "Activity Feed" %}</a>
+            <a href="{% url "help" %}">{% trans "Help" %}</a>
+            <a href="https://store.gitcoin.co/"">{% trans "Store" %}</a>
+          </div>
+          <div class="sitenav">
+            <h5>{% trans "Legal" %}</h5>
+            <a href="{% url "terms" %}" target="_blank" rel="noopener noreferrer">{% trans "Terms" %}</a>
+            <a href="{% url "privacy" %}" target="_blank" rel="noopener noreferrer">{% trans "Privacy" %}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="d-flex w-100 footer__consensys">
+      <a href="https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-projects-f5a0955de9d6" style="margin: 10px auto;" target="_blank" rel="noopener noreferrer">
+        <img src="{% static "v2/images/consensys-logo-white-small.png" %}" width="100" height="35"/>
       </a>
     </div>
   </div>
-  <div class="footer__main d-flex justify-content-end flex-wrap pl-4 pr-5 pb-5">
-    <div class="sitenav sitenav__product">
-      <h5>{% trans "Product" %}</h5>
-      <a href="{% url "explorer" %}">{% trans "Issue Explorer" %}</a>
-      <a href="{% url "tools" %}">{% trans "Tools" %}</a>
-    </div>
-    <div class="sitenav">
-      <h5>{% trans "Business" %}</h5>
-      <a href="{% url "about" %}">{% trans "About" %}</a>
-      <a href="{% url "mission" %}">{% trans "Mission" %}</a>
-      <a href="{% url "about" %}#jobs">{% trans "Careers" %}</a>
-      <a href="{% url "results" %}">{% trans "Results" %}</a>
-    </div>
-    <div class="sitenav">
-      <h5>{% trans "Community" %}</h5>
-      <a class="slack{% if active == 'slack' %} selected{% endif %}" href="{% url "slack" %}">
-        Slack ({{num_slack}})
-      </a>
-      <a href="{% url "help" %}">{% trans "Help" %}</a>
-    </div>
-    <div class="sitenav">
-      <h5>{% trans "Legal" %}</h5>
-      <a href="{% url "terms" %}" target="_blank" rel="noopener noreferrer">{% trans "Terms" %}</a>
-      <a href="{% url "privacy" %}" target="_blank" rel="noopener noreferrer">{% trans "Privacy" %}</a>
-    </div>
-  </div>
-  <div class="row footer__consensys">
-    <a href="https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-projects-f5a0955de9d6" style="margin: 10px auto;" target="_blank" rel="noopener noreferrer">
-      <img src="{% static "v2/images/consensys-logo-white-small.png" %}" style="filter:{% if request.path == '/ios' %}invert(100%);{%else%}none;{% endif %} width: 100px; height: 35px;"/>
-    </a>
-  </div>
-</div>
+</footer>

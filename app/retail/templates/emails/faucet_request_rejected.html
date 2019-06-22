@@ -1,23 +1,21 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+  Copyright (C) 2018 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
-
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n humanize %}
-{% load static %}
+{% load i18n humanize static %}
 
 {% block content %}
 
@@ -26,34 +24,34 @@
 <img src="{% static 'v2/images/gas.png' %}" width=200px height=200px >
 
 <p>
-    {% trans "Hey" %} @{{fr.github_username}},
+  {% trans "Hey" %} @{{ fr.github_username }},
 
-    <br>
-    <br>
+  <br>
+  <br>
 
-    {% blocktrans %}Gitcoin *could not* approve your faucet request for {{amount}} ETH to{% endblocktrans %} <a href=https://etherscan.io/address/{{fr.address}}>{{fr.address}}</a>.
+  {% blocktrans %}Gitcoin *could not* approve your faucet request for {{ amount }} ETH to{% endblocktrans %} <a href="https://etherscan.io/address/{{ fr.address }}">{{ fr.address }}</a>.
 
-    <br>
-    <br>
+  <br>
+  <br>
 
-    {% if fr.comment_admin %}
+  {% if fr.comment_admin %}
 
-    {% trans "Here are somme comments from the administrator:" %}
+  {% trans "Here are somme comments from the administrator:" %}
 
-    <br>
-    <br>
+  <br>
+  <br>
 
-        > {{fr.comment_admin}}
+    > {{ fr.comment_admin }}
 
-    <br>
-    <br>
+  <br>
+  <br>
 
-    {% endif %}
+  {% endif %}
 
-    {% trans "You are welcome to re-apply at" %} <a href="https://gitcoin.co/faucet">https://gitcoin.co/faucet</a>
+  {% trans "You are welcome to re-apply at" %} <a href="{% url 'faucet' %}">{% url 'faucet' %}</a>
 
-    <br>
-    <br>
+  <br>
+  <br>
 
 </p>
 

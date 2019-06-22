@@ -1,10 +1,13 @@
 *.min.js
 
-app/assets/v2/js/ipfs-api.js
-app/assets/v2/js/jquery*.js
-app/assets/v2/js/jsrender.js
-app/assets/v2/js/showdown.js
-app/assets/v2/js/tooltip.js
+app/assets/v2/js/event_ethdenver2019/blockies.js
+app/assets/v2/js/lib/ipfs-api.js
+app/assets/v2/js/lib/jquery*.js
+app/assets/v2/js/lib/jsrender.js
+app/assets/v2/js/lib/showdown.js
+app/assets/v2/js/lib/tooltip.js
+app/assets/v2/js/lib/tweenlite.js
+app/assets/v2/js/abi.js
 
 app/assets/onepager/js/confetti.js
 

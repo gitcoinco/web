@@ -1,8 +1,12 @@
-.submit_bounty .submit_bounty_content {
+/* stylelint-disable selector-pseudo-class-no-unknown */
+
+.submit_bounty .submit_bounty_content,
+.fulfill_bounty .submit_bounty_content {
   background-color: #f2f6f9;
 }
 
-.submit_bounty .submit_bounty_form {
+.submit_bounty .submit_bounty_form,
+.fulfill_bounty .submit_bounty_form {
   background-color: #FFFFFF;
 }
 
@@ -14,19 +18,14 @@ h1, h2, h3, h4, h5 {
   letter-spacing: 0;
 }
 
-input:-moz-read-only { /* For Firefox */
-  background-color: #eaeaea94;
+input {
+  outline: none;
 }
 
-input:read-only { 
-  background-color: #eaeaea94;
-}
-
-textarea:-moz-read-only { /* For Firefox */
-  background-color: #eaeaea94;
-}
-
-textarea:read-only { 
+textarea:-moz-read-only,
+input:-moz-read-only,
+textarea:read-only,
+input:read-only {
   background-color: #eaeaea94;
 }
 
@@ -52,6 +51,18 @@ textarea:read-only {
   font-size: 13px;
 }
 
+#keyword-suggestion-container,
+#contributor-suggestion-container {
+  display: flex;
+  align-items: center;
+}
+
+#keyword-suggestions,
+#contributor-suggestions {
+  display: flex;
+  margin-left: 15px;
+}
+
 .revisions input {
   width: 35%;
   height: 35px;
@@ -67,23 +78,15 @@ textarea:read-only {
   cursor: pointer;
 }
 
-#pricing-section .form__amount-wrapper {
-  width: 33%;
+.select2-container--default .select2-selection--single {
+  border-color:#D3D3D3 !important;
+  font-size: 14px;
 }
 
-#pricing-section .form__flex-group {
-  justify-content: space-between;
-}
-
-#pricing-section .form__input,
-#pricing-section .form__select2 {
-  height: 37px;
-}
-
-#issue-details,
 #no-issue-banner img {
   max-width: 100%;
-  border: 1px solid #d1d1d1;
+  border-top: 1px solid #d1d1d1;
+  border-bottom: 1px solid #d1d1d1;
 }
 
 #no-issue-banner {
@@ -95,23 +98,40 @@ textarea:read-only {
   display: none;
 }
 
-#issue-details {
-  padding-left: 12px;
-  padding-right: 12px;
+.issue-details-public {
+  padding: 1em;
 }
 
-#issue-details input:read-only,
-#issue-details textarea:read-only {
+.issue-details-public input,
+.issue-details-public textarea {
   border: none;
-  padding-left: 0;  
-  background-color: #fff;
-  outline: none;
+  background-color: transparent;
+  padding-left: 0;
+  padding-right: 0;
 }
 
-#issue-details input:read-only {
-  font-size: 1.1rem;
-  border-bottom: 1px solid #d1d1d1;
-  border-radius: 0;
+.issue-details-public textarea::-webkit-scrollbar {
+  width:9px;
+}
+
+.issue-details-public textarea::-webkit-scrollbar-track {
+  -webkit-border-radius:5px;
+  border-radius:5px;
+  background:rgba(0,0,0,0.1);
+}
+
+.issue-details-public textarea::-webkit-scrollbar-thumb {
+  -webkit-border-radius:5px;
+  border-radius:5px;
+  background:rgba(0,0,0,0.2);
+}
+
+.issue-details-public textarea::-webkit-scrollbar-thumb:hover {
+  background:rgba(0,0,0,0.4);
+}
+
+.issue-details-public textarea::-webkit-scrollbar-thumb:window-inactive {
+  background:rgba(0,0,0,0.05);
 }
 
 #sync-issue,
@@ -132,4 +152,78 @@ textarea:read-only {
 #last-synced {
   display: inline;
   margin-right: .5rem;
+}
+
+#reservedForDiv .select2-selection__arrow {
+  height: 2.5rem !important;
+  right: 6px;
+}
+
+.fee-circle::before {
+  content: '-';
+  background-color: #5B3AF0;
+  border-radius: 50%;
+  padding: 3.5rem 4rem;
+  position: relative;
+  opacity: 0.12;
+  top: 2.2rem;
+}
+
+.fee-circle p {
+  color: #3E00FF;
+}
+
+@media (max-width: 767.98px) {
+  .select2-container {
+    max-width: 100%;
+  }
+}
+
+#featured-bounty-add .featured-example {
+  border: 1px solid #E8E8E8;
+  padding: 8px 0 8px 8px;
+  max-width: 100%;
+}
+
+.featured-text {
+  font-size: 0.8em;
+}
+
+.featured-price {
+  display: block;
+  text-indent: 2.3em;
+}
+
+.new {
+  color: #0FCE7C;
+}
+
+.collapse-header {
+  color: #7c7e81;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1em 0;
+  border-bottom: 1px solid #e5e5e5;
+  transition: all .3s linear;
+}
+
+.collapse-header:hover {
+  text-decoration: none;
+}
+
+.collapse-header.collapsed {
+  border-bottom-color: transparent;
+}
+
+.collapse-header .fa:before {
+  content: "\f077";
+}
+
+.collapse-header.collapsed .fa:before {
+  content: "\f078";
+}
+
+.letter-spacing {
+  letter-spacing: 0.1em;
 }

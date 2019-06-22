@@ -1,0 +1,85 @@
+{% comment %}
+    Copyright (C) 2019 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static %}
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="row font-smaller-2" id="form_container">
+          <div class="col col-md-10 center-block">
+            <div class="d-flex justify-content-center flex-column mt-5 w-100" id="primary_subform">
+              <div class="center-block w-75 text-center">
+                <h2 class="mb-5">{% trans "Share this Bounty" %}</h2>
+                <img src="{% static 'v2/images/social-sharing.svg' %}" width="240">
+              </div>
+              <div class="bg-light media p-3 mt-5">
+                <img src="{% static 'v2/images/special-kudos.svg' %}" width="150" class="mr-3">
+                <div class="media-body">
+                  <h5 class="mt-0 font-weight-semibold font-body"><span class="text-highlight-green">Limited Time Only!</span> <br> Invite friend and get a special Kudos</h5>
+                  <p class="font-body">
+                    Get a special, limited-edition Kudos when your friend finishes this bounty.
+                  </p>
+                </div>
+              </div>
+              <div class="center-block mt-5 text-right w-75">
+                <p class="font-body text-left">{% trans "Help friends and colleagues find new and interesting work!" %}</p>
+                <textarea class="w-100 form__input" id="shareText">Check out this bounty that pays out {{bounty.get_value_true}} {{bounty.token_name}} {{invite_url}} {% for keyword in bounty.keywords_list %} #{{keyword}}{% endfor %}</textarea>
+                <button class="button button__small button--primary" data-copyclipboard="#shareText">Copy Text</button>
+              </div>
+
+              <div class="center-block w-75 my-5 {% if not user.is_authenticated %}d-none{%endif%}">
+                <p class="font-body text-center">...or invite a Gitcoiner by username</p>
+                <div class="form__select2 g-multiselect">
+                  <select id="" class="form__input form__input-lg  users_share" name="users_share[]" multiple="multiple">
+                  </select>
+                </div>
+                <div class="text-right mt-2">
+                  <button class="button button__small button--primary" id="sendInvites">Send Invite</button>
+                </div>
+              </div>
+              <div class="w-75 w-75 center-block mt-2">
+                <h4>{% trans "Click to instantly share on the following networks" %}</h4>
+                <div class="mb-5 mt-5 text-center">
+                  <a class="btn btn-circle btn-social btn-twitter"
+                  target="_blank"
+                  data-size="large"
+                  href="https://twitter.com/intent/tweet?text={{promo_text|iriencode}}">
+                    <i class="fab fa-fw fa-twitter"></i>
+                  </a>
+                  <a class="btn btn-circle btn-social btn-email"
+                  target="_blank"
+                  href="mailto:?subject=New Bounty&body={{promo_text|iriencode}}">
+                    <i class="fas fa-fw fa-envelope"></i>
+                  </a>
+                  <a class="btn btn-circle btn-social btn-facebook"
+                    target="_blank"
+                    href="https://www.facebook.com/sharer/sharer.php?u={{invite_url}}">
+                    <i class="fab fa-fw fa-facebook-f"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% csrf_token %}
+  <script type="text/javascript">
+    var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+    var invite_url = '{{invite_url}}';
+  </script>

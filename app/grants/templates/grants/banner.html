@@ -1,0 +1,37 @@
+{% load static humanize i18n grants_extra %}
+
+<div class="col-12 grant-banner py-5 row mx-0">
+  <div class="col-12 offset-md-2 col-md-3 py-4 banner-img">
+    <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
+  </div>
+  <div class="col-12 offset-sm-1 col-sm-10 col-md-4 ml-md-5 py-4 my-auto">
+    <h1 class="font-title-xl grant-title mb-3">
+      <a href="{{ grant.reference_url }}" target="_blank">{{ grant.title }}</a>
+    </h1>
+
+    <div class="admin_profile">
+      {% trans "by" %}
+      <a href="{% url 'profile' grant.admin_profile.handle %}">
+        {{ grant.admin_profile }}
+      </a>
+    </div>
+
+    <div class="grant__progress mt-4">
+      <div class="progress">
+          <div class="progress-bar" role="progressbar" style="width: {{ grant.percentage_done }}%" aria-valuenow="{{ grant.percentage_done }}%" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+      <div class="progress-text mt-2">
+        <div class="row">
+          <div class="col-6">
+            <span>{{ grant.monthly_amount_subscribed|floatformat:2|intcomma }} DAI</span>
+            <p>Monthly Funding</p>
+          </div>
+          <div class="col-6 text-right">
+            <span>{{ grant.amount_goal|floatformat:2|intcomma }} DAI</span>
+            <p> Monthly Goal</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,8 +1,9 @@
 let openSection;
 const layers = [
+  'Wallpaper',
   'HatLong', 'HairLong', 'EarringBack', 'Clothing',
-  'Ears', 'Head', 'HairShort', 'Earring', 'Beard', 'HatShort',
-  'Mustache', 'Mouth', 'Nose', 'Eyes', 'Glasses'
+  'Ears', 'Head', 'Makeup', 'HairShort', 'Earring', 'Beard', 'HatShort',
+  'Mustache', 'Mouth', 'Nose', 'Eyes', 'Glasses', 'Masks', 'Extras'
 ];
 const requiredLayers = [ 'Clothing', 'Ears', 'Head', 'Mouth', 'Nose', 'Eyes', 'Background' ];
 const colorOptions = {
@@ -29,7 +30,7 @@ const sectionPalettes = {
 const parentLayers = {
   HairShort: 'HairStyle', HairLong: 'HairStyle', Beard: 'FacialHair', Mustache: 'FacialHair',
   EarringBack: 'Accessories', Earring: 'Accessories', HatLong: 'Accessories', HatShort: 'Accessories',
-  Glasses: 'Accessories'
+  Glasses: 'Accessories', Masks: 'Accessories', Extras: 'Accessories'
 };
 
 var localStorage;
@@ -82,10 +83,13 @@ function getIdFromPath(path, option) {
 function getColorFromPath(path, option) {
   let color = '';
 
+  // filename without path and extension
+  const basename = path.split('.').slice(-2)[0].split('/').slice(-1)[0];
+
   if (option === 'FacialHair' || option === 'Accessories') {
-    color = path.split('.')[0].split('/').slice(-1)[0].split('-')[2];
+    color = basename.split('-')[2];
   } else {
-    color = path.split('.')[0].split('/').slice(-1)[0].split('-')[1];
+    color = basename.split('-')[1];
   }
 
   return color;
@@ -180,7 +184,76 @@ function changeImage(option, path) {
   }
 }
 
+function purchaseOption(option, value, target) {
+  if (document.web3network == 'mainnet') {
+    _alert('You will now be prompted via Metamask to purchase this avatar item.', 'info');
+    var ele = $('#' + target.id.replace("'", '').replace("'", ''));
+    var cost = null;
+
+    if (ele.data('cost')) {
+      cost = ele.data('cost');
+    } else {
+      cost = ele.find('div').data('cost');
+    }
+    var cost_eth = parseFloat(cost.replace('ETH', ''));
+    var cost_wei = web3.toWei(cost_eth);
+
+    to_address = '0x00De4B13153673BCAE2616b67bf822500d325Fc3'; // TODO: make dynamic
+    indicateMetamaskPopup();
+    web3.eth.sendTransaction({
+      'from': web3.eth.coinbase,
+      'to': to_address,
+      'value': cost_wei
+    }, function(error, result) {
+      indicateMetamaskPopup(true);
+      if (error) {
+        _alert('There was an error.', 'error');
+        return;
+      }
+      showBusyOverlay();
+      _alert('Waiting for tx to mine...', 'info');
+      callFunctionWhenTransactionMined(result, function() {
+        var request_url = '/revenue/attestations/new';
+        var txid = result;
+        var data = {
+          'txid': txid,
+          'amount': cost_eth,
+          'network': document.web3network,
+          'from_address': web3.eth.coinbase,
+          'to_address': to_address,
+          'type': 'avatar',
+          'option': option,
+          'value': value
+        };
+
+        $.post(request_url, data).then(function(result) {
+          hideBusyOverlay();
+          _alert('Success ✅ Loading your purchase now.', 'success');
+          setTimeout(function() {
+            location.reload();
+          });
+        });
+      });
+    });
+  } else if (document.web3network == 'locked') {
+    if (document.ready) {
+      _alert('This is a premium avatar item.  In order to purchase it, please unlock your web3 wallet.', 'info');
+    }
+  } else if (document.ready) {
+    _alert('This is a premium avatar item.  In order to purchase it, please switch to the mainnet.', 'info');
+  }
+  return;
+}
+
 function setOption(option, value, target) {
+  if (target.classList.contains('not_paid')) {
+    return purchaseOption(option, value, target);
+  }
+  return setOptionHelper(option, value, target);
+}
+
+function setOptionHelper(option, value, target) {
+
   const section = $(`#options-${option}`);
   let deselectingFlag = true;
 
@@ -197,10 +270,12 @@ function setOption(option, value, target) {
 
   switch (option) {
     case 'Head':
+    case 'Makeup':
     case 'Eyes':
     case 'Nose':
     case 'Ears':
     case 'Mouth':
+    case 'Wallpaper':
     case 'Clothing':
       localStorage[option + 'Id'] = $(target).attr('id');
       changeImage(option, deselectingFlag && $(target).children().data('path'));
@@ -269,6 +344,66 @@ function setOption(option, value, target) {
   }
 }
 
+function setRandomColor(section) {
+  let palette = sectionPalettes[section];
+  let availableColors = colorOptions[palette];
+  let randomChoice = Math.floor(Math.random() * availableColors.length);
+
+  changeColor(palette, availableColors[randomChoice]);
+}
+
+function randomAvatar(sections, optionalSections) {
+
+  // Random skin color
+  setRandomColor('Head');
+  // Random clothing color
+  setRandomColor('Clothing');
+  // Random hair color
+  setRandomColor('HairStyle');
+
+  // Random avatar components
+  sections.forEach((section, idx) => {
+    const paidOptions = Object.keys(section.paid_options);
+    let options = section.options.filter((option) => !paidOptions.includes(option));
+    let totalOpts = options.length;
+    let componentName = section.name.replace(' ', '');
+    let optional = optionalSections.includes(componentName) ? 0 : 1;
+
+    randomChoice = Math.floor(Math.random() * totalOpts) + optional;
+
+    if (randomChoice != 0) {
+      let option = options[randomChoice - 1];
+      let htmlComponent = null;
+
+      switch (componentName) {
+        case 'HairStyle':
+          option = option.join('-');
+          htmlComponent = $(`#avatar-option-${componentName}-${option}`)[0];
+          setOptionHelper(componentName, option, htmlComponent);
+          break;
+        case 'Accessories':
+          // removing previously selected accesories
+          $('button[id^="avatar-option-Accessories-"].selected').each((idx, component) => {
+            let id = component.id.replace('avatar-option-Accessories-', '');
+
+            setOptionHelper(componentName, JSON.stringify([id]), component);
+          });
+          option.forEach((part, idx) => {
+            htmlComponent = $(`#avatar-option-${componentName}-${part}`)[0];
+            setOptionHelper(componentName, JSON.stringify(option), htmlComponent);
+          });
+          
+          break;
+        default:
+          htmlComponent = $(`#avatar-option-${componentName}-${option}`)[0];
+          setOptionHelper(componentName, option, htmlComponent);
+          break;
+      }
+    }
+  });
+  
+}
+
 function saveAvatar() {
   $(document).ajaxStart(function() {
     loading_button($('#save-avatar'));
@@ -282,7 +417,7 @@ function saveAvatar() {
   $('#later-button').hide();
 
   var request = $.ajax({
-    url: '/avatar/save',
+    url: '/avatar/custom/save',
     type: 'POST',
     data: JSON.stringify(options),
     dataType: 'json',
@@ -291,11 +426,20 @@ function saveAvatar() {
       _alert({ message: gettext('Your Avatar Has Been Saved To your Gitcoin Profile!')}, 'success');
       changeStep(1);
     },
-    error: function() {
+    error: function(response) {
+      let text = gettext('Error occurred while saving. Please try again.');
+
+      if (response.responseJSON && response.responseJSON.message) {
+        text = response.responseJSON.message;
+      }
       $('#later-button').show();
-      _alert({ message: gettext('Error occurred while saving. Please try again.')}, 'error');
+      _alert({ message: text}, 'error');
     }
   });
 }
 
 changeSection('Head');
+
+$(document).ready(function() {
+  document.ready = true;
+});

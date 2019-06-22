@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -63,7 +63,7 @@ class Command(BaseCommand):
                 fulfiller_email = accepted_fulfillment.fulfiller_email
                 is_fulfiller_and_funder_same_person = (fulfiller_email == submitter_email)
                 fulfillment_pks = BountyFulfillment.objects.filter(accepted=True, fulfiller_email=fulfiller_email).values_list('pk', flat=True)
-                previous_bounties = Bounty.objects.current().filter(web3_created__lt=bounty.web3_created, idx_status__in=statues, fulfillments__pk__in=fulfillment_pks).exclude(pk=bounty.pk).distinct()
+                previous_bounties = Bounty.objects.current().filter(idx_status__in=statues, fulfillments__pk__in=fulfillment_pks).exclude(pk=bounty.pk).distinct()
                 has_been_sent_before_to_persona = previous_bounties.count()
                 if not has_been_sent_before_to_persona and not is_fulfiller_and_funder_same_person:
                     bounty_feedback(bounty, 'fulfiller', previous_bounties)

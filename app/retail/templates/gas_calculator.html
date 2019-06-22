@@ -1,7 +1,7 @@
 {% extends 'onepager/base.html' %}
 {% load i18n static %}
 {% block 'scripts' %}
-<script src="{% static "v2/js/jquery.js"%}"></script>
+<script src="{% static "v2/js/lib/jquery.js"%}"></script>
 <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
 <script src="{% static "v2/js/pages/gas.js" %}"></script>
 
@@ -22,7 +22,7 @@
     width: 100px !important;
   }
 </style>
-<section id=main>
+<section id=main style="max-width: 90%;">
 {% include 'shared/gas_nav.html' %}
 {% include 'shared/gas_advisories.html' %}
 

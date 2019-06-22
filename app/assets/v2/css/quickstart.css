@@ -1,16 +1,6 @@
-body.quickstart,
-.quickstart {
-  background: #f6f6f6;
-}
-
 .quickstart .title {
   color: #0d0764;
   letter-spacing: 0;
-}
-
-.quickstart .container-fluid.content {
-  margin-bottom: 13rem;
-  text-align: left;
 }
 
 .quickstart h4.title {
@@ -18,10 +8,7 @@ body.quickstart,
 }
 
 .quickstart .dont-show {
-  text-align: right;
-  font-style: italic;
   color: #4a4a4a;
-  width: 100%;
 }
 
 .quickstart .dont-show .checkbox_container .filter-label {
@@ -33,7 +20,7 @@ body.quickstart,
   padding: 0;
 }
 
-.quickstart .modal {
+.quickstart .modal#video {
   padding: 0;
   line-height: 0;
 }
@@ -61,7 +48,6 @@ body.quickstart,
 }
 
 .steps-list p {
-  font-size: 1.1rem;
   color: #4a4a4a
 }
 
@@ -69,7 +55,6 @@ body.quickstart,
   color: #3d3d46;
   list-style-type: none;
   line-height: 2.5rem;
-  font-size: 1.1rem;
 }
 
 .steps-list .action-footer {
@@ -77,11 +62,11 @@ body.quickstart,
 }
 
 .action-footer .video-link {
-  width: 30%;
+  width: 40%;
 }
 
 .action-footer .btn {
-  border-radius: 2px;
+  border-radius: 3px;
   background-color: #0c0763;
   border-color: #0c0763;
 }
@@ -92,12 +77,11 @@ body.quickstart,
 }
 
 .tips-list ul li {
-  font-size: 0.95rem !important;
   line-height: 2rem !important;
 }
 
 .issuetypes-container {
-  background-color: #efefef;
+  background-color: #fafafa;
 }
 
 .issuetypes-container .subheading {

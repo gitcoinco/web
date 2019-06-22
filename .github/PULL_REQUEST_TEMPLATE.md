@@ -1,34 +1,17 @@
-<!--
-  Thank you for your pull request. Please provide a description above and review
-  the requirements below.
-
-  Contributors guide: https://github.com/gitcoinco/web/blob/contributing/CONTRIBUTING.md
+<!-- 
+Thank you for your pull request! Please review the requirements below, read through the contributor's guide, 
+and ensure your pull request has fulfilled all requirements outlined by the Gitcoin Core team.
+Have you read the contributors guide?: https://docs.gitcoin.co/mk_contributors/ 
 -->
 
 ##### Description
 
-<!-- A description on what this PR aims to solve -->
-
-##### Checklist
-
-<!-- Remove items that do not apply. For completed items, change [ ] to [x]. -->
-
-- [ ] linter status: 100% pass
-- [ ] changes don't break existing behavior
-- [ ] commit message follows [commit guidelines](https://github.com/gitcoinco/web/blob/master/docs/CONTRIBUTING.md#step-4-commit)
-
-##### Affected core subsystem(s)
-
-<!-- Provide affected core subsystem(s) (like doc, ui, crypto, etc). -->
-
-##### Testing
-
-<!-- Why should the PR reviewer trust that this change doesn't break anything? How have you tested this change? -->
+<!-- Describe your changes here. -->
 
 ##### Refers/Fixes
 
-<!--
-  Link to an issue if applicable. For example:
-  If your PR fixes an issue  -> Fixes: #102
-  If your PR refers an issue -> Refs: #101
--->
+<!-- If this PR is related to a Github issue, please add a link here. -->
+
+##### Testing
+
+<!-- All PRs should be accompanied by tests! If you haven't added tests, please explain here. -->

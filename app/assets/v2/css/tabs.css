@@ -2,11 +2,18 @@
 .tab-container {
   position: relative;
   display: block;
-  text-align: center;
+  text-align: left;
+  border-bottom: 1px #dfdfdf solid;
+  width: 100%;
 }
 
 .tab-container > button {
-  margin: 0 5px;
+  margin: .5rem 3rem 0 0;
+  transition: none;
+}
+
+.tab-container > button:first-child {
+  margin-left: 0;
 }
 
 .section-tab {
@@ -14,16 +21,10 @@
   outline: none;
   border: none;
   cursor: pointer;
-  color: var(--gc-purple);
-  padding: 0;
-}
-
-.tab-indicator {
-  display: block;
-  height: 5px;
-  width: 20px;
-  background: var(--gc-blue);
-  transition: transform .3s, left .3s;
+  color: black;
+  padding: 0 0 0.5rem 0;
+  margin-bottom: 1rem;
+  font-weight: 600;
 }
 
 .section-tab:hover,
@@ -34,6 +35,8 @@
 
 .section-tab.active {
   color: var(--gc-blue);
+  border-bottom: 4px var(--gc-blue) solid;
+  font-weight: bold;
 }
 
 .tab-sections {
@@ -44,7 +47,36 @@
 
 .tab-section {
   width: 100%;
-  padding: 0 2rem;
-  margin: 0 1rem;
-  flex-shrink: 0;
+  display: none;
+}
+
+.tab-section.active {
+  display: block;
+}
+
+.nav-badge::after {
+  padding: 4px 11px;
+  background-color: rgba(62,0,255, 0.10);
+  content: '';
+  border-radius: 50%;
+  position: relative;
+  left: -1rem;
+}
+
+.nav-badge {
+  font-size: 10px;
+  color: rgba(62,0,255);
+  line-height: 10px;
+  margin-left: 0.5rem;
+  top: -2px;
+  position: relative;
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .tab-container > button,
+  .tab-container > button:first-child {
+    text-align: center;
+    margin: 0.25rem 1rem;
+  }
 }

@@ -17,30 +17,29 @@
 {% load i18n static %}
 {% load is_in_list %}
 
-<link rel="stylesheet" href="{% static "v2/css/fontawesome-all.min.css" %}">
-<link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/base.css" %}">
-
-<div class="navbar navbar-expand-md w-100 p-0 m-0 mb-2">
-  <a class="navbar-brand py-0" href="/" style="text-align: center;">
+<div class="navbar navbar-expand-md w-100 p-0 m-0 mb-2 justify-content-between">
+  <a class="navbar-brand py-0 text-center" href="/">
     <img id="logo" src="{% static "v2/images/logo_large.png" %}" width="150" height="50" />
-    {% if request.path|is_in_list:"/gas,/gas/history,/gas/intro,/gas/calculator,/gas/faq,/gas/guzzlers,/gas/faucets" %}
-    <img id="addon" src="{% static "v2/images/gas_white.gif" %}"/>
+    {% if request.path|is_in_list:"/gas,/gas/history,/gas/intro,/gas/calculator,/gas/faq,/gas/heatmap,/gas/guzzlers,/gas/faucets" %}
+    <img id="addon" src="{% static "v2/images/gas_logo.gif" %}"/>
     <p style="color:white; font-size: 12px;">Gas Station</p>
     {% endif %}
   </a>
 
-  <div class="navbar-network ml-5 py-1 px-2 hidden">
+  <div class="navbar-network ml-xl-5 py-1 px-2 hidden">
     <i class="fas fa-circle pr-1"></i>
     <span id="current-network"></span>
   </div>
 
   {% if user.is_authenticated %}
-  <a class="nav-link login" href="{% url 'profile' %}">
-    <img class="nav_avatar" width=25 height=25
-      src="{% if user.profile.avatar %}{{ user.profile.avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
-    {{ user }}
-  </a>
+  <div class="d-flex order-0 order-md-last">
+    <a class="nav-link login" href="{% url 'profile' %}">
+      <img class="nav_avatar" width=25 height=25
+        src="{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
+      {{ user }}
+    </a>
+    {% include 'shared/notifications.html' %}
+  </div>
   {% else %}
   <a class="nav-link login" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">
     <i class="fab fa-github"></i>{% trans "Login" %}
@@ -50,18 +49,26 @@
 
 <style>
   #addon{
-    max-height: 35px;
+    max-height: 45px;
     margin-left: 7px;
-    margin-bottom: 2px;
+    margin-top: 20px;
+    margin-bottom: -25px;
     max-width: 50px;
   }
+
+  .ethinfo-hover {
+    margin-top: 0.5rem;
+    float: none !important;
+    font-weight: 600;
+  }
+
   .navbar {
     justify-content: initial;
   }
 
   .nav_avatar {
-    margin-bottom: -7px;
     margin-right: 10px;
+    vertical-align: middle;
   }
 
   .navbar-network {
@@ -70,7 +77,6 @@
   }
 
   .nav-link.login {
-    position: absolute;
     top:15px;
     right: 15px;
     text-transform: none;
@@ -97,6 +103,3 @@
     }
   }
 </style>
-
-<script src="{% static "v2/js/tooltip.js" %}"></script>
-<script src="{% static "v2/js/base.js" %}"></script>

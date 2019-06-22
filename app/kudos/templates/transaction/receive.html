@@ -1,0 +1,121 @@
+{% extends 'transaction/base.html' %}
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+{% load kudos_extras %}
+{% block 'scripts' %}
+<script src="{% static "v2/js/abi.js" %}"></script>
+<script src="{% static "v2/js/lib/secrets.min.js" %}"></script>
+<script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
+<script src="{% static "v2/js/ipfs.js" %}"></script>
+<script src="{% static "v2/js/pages/kudos_receive.js" %}"></script>
+<script src="{% static "onepager/js/confetti.js" %}"></script>
+<script src="{% static "onepager/js/tx.js" %}"></script>
+
+<script>
+  $('#forwarding_address').val(web3.eth.coinbase)
+</script>
+
+{% endblock %}
+<!-- Main -->
+{% block 'world' %}
+<div>
+  <canvas id="world" style="position:fixed; top:0px; left: 0px;"></canvas>
+</div>
+{% endblock %}
+{% block 'main' %}
+<section id="main" class="box-transaction">
+  <header class="text-center">
+    <!-- <span class="avatar line-back">
+      <a href="{% url "tip" %}">
+      </a>
+    </span> -->
+    <!-- <img src="{% static "v2/images/helmet.png" %}" class="bg-white mh-100 mw-100 mx-auto p-2" width="70"/> -->
+    <h1 class="h2 mt-5">{% trans "You've got a Kudos" %}</h1>
+
+    <div class="my-4">
+      <img src="{% static kudos_transfer.kudos_token_cloned_from.image %}" width="160" alt="" class="mb-2">
+      <p hidden id="kudosid" data-kudosid="{{ kudos_transfer.kudos_token_cloned_from_id }}">{{ kudos_transfer.kudos_token_cloned_from_id }}</p>
+      <p hidden id="tokenid" data-tokenid="{{ kudos_transfer.kudos_token_cloned_from.token_id }}">{{ kudos_transfer.kudos_token_cloned_from.token_id }}</p>
+      <span id="kudosName" data-kudosname="{{ kudos_transfer.kudos_token_cloned_from.name }}" class="d-block">{{ kudos_transfer.kudos_token_cloned_from.humanized_name }}</span>
+      <span id="kudosFrom">{% if kudos_transfer.from_username %}from {{kudos_transfer.from_username}}{% endif %}</span>
+      <span id="kudosPrice" style="display: none !important;" class="d-block" data-ethprice="{{ kudos_transfer.kudos_token_cloned_from.price_in_eth }}">{{ kudos_transfer.kudos_token_cloned_from.price_in_eth }} ETH<small></small></span>
+    </div>
+
+  </header>
+  <div id="receove_eth" {% if kudos_transfer.receive_txid %} style="display:none;" {%endif%} >
+    <form method="POST">
+      <div class="form-group">
+        <label for="">{% trans "Forward it to a permanent address" %}:</label>
+        <input type="text" name="forwarding_address" id="forwarding_address" class="form-control" placeholder="0x0" {% if disable_inputs %}disabled=disabled{%endif%}>
+        <input type="hidden" name="network" id="network" value="">
+      </div>
+
+      <div class="form-check">
+        <input type="checkbox" name="save_addr" id="save_addr" value="1" class="form-check-input" {% if disable_inputs %}disabled=disabled{%endif%} required>
+        <label for=save_addr>{% trans "Save this address as my direct payment address" %}</label>
+      </div>
+
+      <div class="form-check mb-3">
+        <input type="checkbox" id="tos" value="1" class="form-check-input" required>
+        <label for="tos" class="form-check-label">{% trans "I understand &amp; agree to the" %} <a href="{% url "_terms" %}">{% trans "terms of service" %}</a>.</label>
+      </div>
+
+
+      <div class="text-center">
+        <input id="receive" type='submit' class="btn btn-gc-purple" value="{% trans "Claim" %} Kudos 🙌" {% if disable_inputs %}disabled=disabled{%endif%} >
+      </div>
+    </form>
+  </div>
+  <div id="receove_eth_done" class="text-center" {% if not kudos_transfer.receive_txid %} style="display:none;" {%endif%}>
+    <h1>{% trans "Congrats!" %}</h1>
+    <p>You've received a "{{ kudos_transfer.kudos_token_cloned_from.humanized_name }}" Kudos via transaction <span id="trans_id">{{kudos_transfer.receive_txid}}</span>.</p>
+    {% include 'shared/twitter.html' %}
+    <p>
+      <a class="twitter-share-button"
+      data-url="{{kudos_transfer.kudos_token_cloned_from.url}}"
+      href="https://twitter.com/intent/tweet?text={{tweet_text}}"
+      data-size="large">
+      Tweet It</a>
+    </p>
+
+    <p>{% trans "You can see your kudos in your" %} <a href="{% url 'profile' %}">{% trans "profile" %}</a></p>
+  </div>
+  {% if not kudos_transfer.receive_txid and is_authed %}
+    <script>
+      document.gas_price = {{gas_price}};
+      document.ipfs_key_to_secret = '{{key}}';
+      document.gitcoin_secret = '{{kudos_transfer.metadata.gitcoin_secret}}';
+      document.kudos_transfer = {
+        'holding_address': '{{kudos_transfer.metadata.address}}',
+        'amount_in_wei': {{kudos_transfer.amount_in_wei | floatformat}},
+        'token_address': '{{kudos_transfer.tokenAddress}}',
+      }
+    </script>
+  {% endif %}
+{% if kudos_transfer.receive_txid %}
+  <script>
+    setTimeout(function(){
+      startConfetti();
+    }, 1000);
+  </script>
+{% endif %}
+</section>
+<script>
+  document.network = '{{kudos_transfer.network}}';
+</script>
+{% endblock %}

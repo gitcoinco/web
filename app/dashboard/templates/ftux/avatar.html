@@ -14,100 +14,163 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
-<div class="row">
-  <div class="col-12">
-    <h2>{% trans "Build Your Gitcoin Avatar" %}
-      <button type="button" id="later-button" class="button button--primary-o" onclick="changeStep(1)">
-        {% trans "Do This Later" %}
-      </button>
-    </h2>
-  </div>
-  <div id="avatar-builder">
-    <!-- Navigation Links -->
-    <ul id="avatar-builder__sections">
-      {% for s in sections %}
-      <a href="#section-title" onclick="changeSection('{{ s.name|cut:" " }}')">
-        <li id="nav-{{ s.name|cut:" " }}">{% trans s.name %}</li>
-      </a>
-      {% endfor %}
-    </ul>
-    <!-- Main editor area -->
-    <div id="avatar-builder__editor">
-      <h3 id="section-title">
-        {% for s in sections %}
-        <span class="section-title__content" id="title-{{ s.name|cut:" " }}">
-          {% trans s.title %}
-        </span>
-        {% endfor %}
-      </h3>
-      <!-- Avatar preview -->
-      <div id="avatar-area" class="d-flex flex-wrap justify-content-center">
-        <div id="avatar-preview" class="mb-3" style="background-color: #{{ defaultBackground }}"></div>
-        <!-- Options area for each section (hidden by default) -->
-        {% for s in sections %}
-        {% with s.name|cut:" " as id %}
-        {% with "v2/images/avatar/"|add:id|add:"/" as basePath %}
-        <div id="options-{{ id }}" class="options-section d-flex flex-wrap {% if id in optionalSections %}optional{% endif %}">
-          {% for o in s.options %}
-          <button type="button" class="avatar-option" id="avatar-option-{{ id }}-{{ o }}" onclick="setOption('{{ id }}', '{{ o|addslashes }}', this)">
-            {% if id == "Head" or id == "Ears" %}
-            {% with STATIC_URL|add:basePath|add:o|add:"-"|add:defaultSkinTone|add:".svg" as path %}
-            <div class="SkinTone-dependent" style="background-image: url({{ path }});" data-path="{{ path }}"></div>
-            {% endwith %}
-            {% elif id == "Clothing" %}
-              {% with STATIC_URL|add:basePath|add:o|add:"-"|add:defaultClothingColor|add:".svg" as path %}
-              <div class="ClothingColor-dependent" style="background-image: url({{ path }});" data-path="{{ path }}"></div>
-              {% endwith %}
-            {% elif id == "HairStyle" %}
-              {% for part in o %}
-              {% with STATIC_URL|add:basePath|add:part|add:"-"|add:defaultHairColor|add:".svg" as path %}
-                {% if part != 'None' %}
-                <div class="{{ forloop.counter0 }} HairColor-dependent" style="background-image: url({{ path }});" data-path="{{ path }}"></div>
-                {% endif %}
-              {% endwith %}
-              {% endfor %}
-            {% elif id == "FacialHair" %}
-              {% with STATIC_URL|add:basePath|add:o|add:"-"|add:defaultHairColor|add:".svg" as path %}
-              <div class="HairColor-dependent" style="background-image: url({{ path }});" data-path="{{ path }}"></div>
-              {% endwith %}
-            {% elif id == "Accessories" %}
-              {% for part in o %}
-              {% with STATIC_URL|add:basePath|add:part|add:".svg" as path %}
-              <div style="background-image: url({{ path }});" data-path="{{ path }}"></div>
-              {% endwith %}
-              {% endfor %}
-            {% elif id == 'Background' or id == 'SkinTone' or id == 'HairColor' %}
-            <div class="color-option" style="background-color: #{{ o }}" data-path="{{ path }}"></div>
-            {% else %}
-              {% with STATIC_URL|add:basePath|add:o|add:".svg" as path %}
-              <div style="background-image: url({{ path }});" data-path="{{ path }}"></div>
-              {% endwith %}
-            {% endif %}
+{% load i18n static hash strip_char is_in_list_type_iexact jsonify %}
+
+
+<ul id="avatar-tabs" class="nav nav-tabs my-5" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link nav-line active" data-toggle="tab" href="#avatars-builder-tab" data-toggle="avatars-builder-tab" role="tab">Avatar Builder</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link nav-line" data-toggle="tab" href="#my-avatars-tab" data-toggle="my-avatars-tab" role="tab">My Avatars</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link nav-line" data-toggle="tab" href="#preset-avatars-tab" role="tab">Preset Avatars</a>
+  </li>
+</ul>
+<div class="tab-content">
+  <div class="tab-pane fade show active" id="avatars-builder-tab" role="tabpanel">
+    <div class="row">
+      <div class="col-12">
+        <h2>{% trans "Build Your Gitcoin Avatar" %}
+          <button type="button" id="later-button" class="button button--primary-o" onclick="changeStep(1)">
+            {% trans "Do This Later" %}
           </button>
-          {% endfor %}
-          </div>
-        {% endwith %}
-        {% endwith %}
-        {% endfor %}
+        </h2>
       </div>
-      <div id="color-picker"></div>
+      {% if not has_purchased_everything_package %}
+        <div class="col-12">
+          <p style="background-color: #CAF4E3; padding: 3px 5px; font-size: 12px;">
+            {% trans "NEW!  Purchase ALL Current & Future Premium Avatar Items for only 0.1 ETH" %}
+            <a href="#" id="purchase_all" data-cost="0.1ETH" style="font-weight: bold; font-size: 12px;" onclick="purchaseOption('all','all',this)">
+              {% trans "Click Here!" %}
+            </a>
+          </p>
+        </div>
+      {%endif %}
+      <div id="avatar-builder">
+        <!-- Navigation Links -->
+        <ul id="avatar-builder__sections">
+          {% for s in sections %}
+            <a href="#section-title" onclick="changeSection('{{ s.name|cut:" " }}')">
+            <li id="nav-{{ s.name|cut:" " }}">{% trans s.name %}</li>
+            </a>
+          {% endfor %}
+        </ul>
+        <!-- Main editor area -->
+        <div id="avatar-builder__editor">
+          <h3 id="section-title">
+            {% for s in sections %}
+              <span class="section-title__content" id="title-{{ s.name|cut:" " }}">
+                {% trans s.title %}
+              </span>
+            {% endfor %}
+          </h3>
+          <!-- Avatar preview -->
+          <div id="avatar-area" class="d-flex flex-wrap justify-content-center">
+            <div id="avatar-preview" class="mb-3" style="background-color: #{{ defaultBackground }}"></div>
+            <!-- Options area for each section (hidden by default) -->
+            {% for s in sections %}
+              {% with s.name|cut:" " as id %}
+              {% with "v2/images/avatar/"|add:id|add:"/" as basePath %}
+              <div id="options-{{ id }}" class="options-section d-flex flex-wrap {% if id in optionalSections %}optional{% endif %}">
+                {% for o in s.options %}
+                  <button type="button" class="avatar-option
+                  {% if s.paid_options|hash:o %}
+                  payment_required {{o}} {{s.purchases}}
+                    {% if o|is_in_list_type_iexact:s.purchases %}
+                      paid
+                    {% else %}
+                      not_paid
+                    {% endif %}
+                  {% endif %}
+                  {{ id }}-{{ o }} " id="avatar-option-{{ id | strip_char:"'" }}-{{ o | strip_char:"'" }}" onclick="setOption('{{ id }}', '{{ o|addslashes }}', this)">
+                {% if id == "Head" or id == "Ears" %}
+                  {% with STATIC_URL|add:basePath|add:o|add:"-"|add:defaultSkinTone|add:".svg" as path %}
+                  <div data-cost="{{s.paid_options|hash:o}}ETH" class="SkinTone-dependent" style="background-image: url({{ path }});" data-path="{{ path }}"></div>
+                  {% endwith %}
+                {% elif id == "Clothing" %}
+                  {% with STATIC_URL|add:basePath|add:o|add:"-"|add:defaultClothingColor|add:".svg" as path %}
+                  <div data-cost="{{s.paid_options|hash:o}}ETH" class="ClothingColor-dependent" style="background-image: url({{ path }});" data-path="{{ path }}"></div>
+                  {% endwith %}
+                {% elif id == "HairStyle" %}
+                  {% for part in o %}
+                    {% with STATIC_URL|add:basePath|add:part|add:"-"|add:defaultHairColor|add:".svg" as path %}
+                    {% if part != 'None' %}
+                      <div data-cost="{{s.paid_options|hash:o}}ETH" class="{{ forloop.counter0 }} HairColor-dependent" style="background-image: url({{ path }});" data-path="{{ path }}"></div>
+                    {% endif %}
+                    {% endwith %}
+                  {% endfor %}
+                {% elif id == "FacialHair" %}
+                  {% with STATIC_URL|add:basePath|add:o|add:"-"|add:defaultHairColor|add:".svg" as path %}
+                  <div data-cost="{{s.paid_options|hash:o}}ETH" class="HairColor-dependent" style="background-image: url({{ path }});" data-path="{{ path }}"></div>
+                {% endwith %}
+                {% elif id == "Accessories" %}
+                  {% for part in o %}
+                    {% with STATIC_URL|add:basePath|add:part|add:".svg" as path %}
+                    <div data-cost="{{s.paid_options|hash:o}}ETH" style="background-image: url({{ path }});" data-path="{{ path }}"></div>
+                    {% endwith %}
+                  {% endfor %}
+                {% elif id == 'Background' or id == 'SkinTone' or id == 'HairColor' %}
+                  <div data-cost="{{s.paid_options|hash:o}}ETH" class="color-option" style="background-color: #{{ o }}" data-path="{{ path }}"></div>
+                {% else %}
+                  {% with STATIC_URL|add:basePath|add:o|add:".svg" as path %}
+                  <div data-cost="{{s.paid_options|hash:o}}ETH" style="background-image: url({{ path }});" data-path="{{ path }}"></div>
+                {% endwith %}
+                {% endif %}
+              </button>
+              {% endfor %}
+              </div>
+              {% endwith %}
+              {% endwith %}
+            {% endfor %}
+          </div>
+          <div id="color-picker"></div>
+          <div>
+            <button type="button" id="random-avatar-button" class="button button--primary" onclick='randomAvatar({{ sections|jsonify }}, {{ optionalSections }})'>
+              {% trans "Random Avatar" %}
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Button Row -->
+      <div id="avatar-builder__actions">
+        <p class="button button--primary-o button--controls" onclick="changeStep(-1)">{% trans "Previous" %}</p>
+        <button disabled type="button" id="save-button" class="button button--primary" onclick="saveAvatar()">
+          {% trans "Save Avatar" %}
+        </button>
+        <div>
+          <a href="https://github.com/gitcoinco/web/issues/1550" target="_blank" rel="noopener noreferrer">{% trans "Don't see the right schwag?  Request new avatar attributes here" %}
+          </a>
+        </div>
+      </div>
     </div>
   </div>
-  <!-- Button Row -->
-  <div id="avatar-builder__actions">
-    <p class="button button--primary-o button--controls" onclick="changeStep(-1)">{% trans "Previous" %}</p>
-    <button disabled type="button" id="save-button" class="button button--primary" onclick="saveAvatar()">
-      {% trans "Save Avatar" %}
-    </button>
-    <div>
-      <a href="https://github.com/gitcoinco/web/issues/1550" target="_blank" rel="noopener noreferrer">{% trans "Don't see the right schwag?  Request new avatar attributes here" %}
-      </a>
+  <div class="tab-pane fade show" id="my-avatars-tab" role="tabpanel">
+    <div id="my-avatars">
+      <div class="text-muted text-cetner empty-avatars">No avatars</div>
+      <div class="avatars-container"></div>
+      <div class="action-buttons">
+        <a class="button button--primary-o button--controls" href="{% url "profile" %}">Profile</a>
+      </div>
+    </div>
+  </div>
+  <div class="tab-pane fade show" id="preset-avatars-tab" role="tabpanel">
+    <div id="preset-avatars">
+      <div class="text-muted text-cetner empty-avatars">No avatars</div>
+      <div class="avatars-container"></div>
+      <div class="action-buttons">
+        <a class="button button--primary-o button--controls" href="{% url "profile" %}">Profile</a>
+      </div>
     </div>
   </div>
 </div>
 
+
+<script src="{% static "v2/js/lib/jquery.js" %}"></script>
+<script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
 <script>
+  var profileId = '{{ profile_id }}';
   var options = {
     Background: '{{ defaultBackground }}',
     HairColor: '{{ defaultHairColor }}',
@@ -115,3 +178,4 @@
     ClothingColor: '{{ defaultClothingColor }}'
   }
 </script>
+<script src="{% static "v2/js/avatar.js" %}"></script>

@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -27,16 +27,18 @@ class Command(BaseCommand):
     help = 'pulls gas guzzlers from ether gas station'
 
     def handle(self, *args, **options):
-
         with transaction.atomic():
             url = 'https://ethgasstation.info/json/gasguzz.json'
             response = requests.get(url)
-            eles = response.json()
-            print(f'syncing {len(eles)} eles')
-            for ele in eles:
-                GasGuzzler.objects.create(
-                    ID=ele['ID'],
-                    pct_total=ele['pcttot'],
-                    address=ele['to_address'],
-                    gas_used=ele['gasused'],
+            elements = response.json()
+            print(f'syncing {len(elements)} elements')
+            try:
+                for element in elements:
+                    GasGuzzler.objects.create(
+                        ID=element['ID'],
+                        pct_total=element['pcttot'],
+                        address=element['to_address'],
+                        gas_used=element['gasused'],
                     )
+            except KeyError:
+                pass

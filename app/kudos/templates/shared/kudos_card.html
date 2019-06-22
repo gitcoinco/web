@@ -1,0 +1,25 @@
+{% comment %}
+  Copyright (C) 2019 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n staticfiles %}
+{% load kudos_extras matches %}
+<div class="kd-card {% if listing.num_clones_available == 0 %}ghost{% endif %}">
+  <a href="{% url 'kudos_details' listing.id listing.name %}" class="{% if 'cellarius' in listing.tags %}cellarius-partner{% endif %}">
+    <img id="kudosImage" data-src="{{listing.preview_img_url}}" alt="{{ listing.name }}" class="img-thumbnail kd-shadow border-transparent" width="250">
+  </a>
+  <span class="kd-price">{{ listing.price_in_eth }} ETH</span>
+  <div class="kd-name text-truncate" title="{{ listing.ui_name }}">{{ listing.ui_name }}</div>
+</div>

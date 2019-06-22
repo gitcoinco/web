@@ -1,0 +1,119 @@
+{% load i18n static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards_pic.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
+  </head>
+  <body class="{{ active }} bg-light g-font-muli">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    <header class="container-fluid header">
+      {% include 'shared/kudos_nav.html' %}
+      <!-- {% include 'shared/kudos_banner.html' %} -->
+      <div class="container pb-5">
+        {% include 'shared/kudos_searchbar.html' %}
+      </div>
+    </header>
+
+    <section class="container mt-5 pb-5">
+      <div class="row justify-content-between p-3">
+        <div class="">{{listings.count}} Kudos available on <strong>{{ network }}</strong></div>
+        {% if listings %}
+        <div>
+          <label for="">{% trans 'Sort by:' %}</label>
+          <select name="" id="sort_order">
+            <option value="-created_on">{% trans 'Newest' %}</option>
+            <option value="created_on">{% trans 'Oldest' %}</option>
+            <option value="-popularity">{% trans 'All Time Popularity' %}</option>
+            <option value="-popularity_week">{% trans 'Trending' %}</option>
+            <option value="price_finney">{% trans 'Low price' %}</option>
+            <option value="-price_finney">{% trans 'High price' %}</option>
+            <option value="name">{% trans 'Name' %}</option>
+            <option value="-rarity">{% trans 'Rarity' %}</option>
+          </select>
+        </div>
+        {% endif %}
+      </div>
+      {% if not listings %}
+      <div class="text-center m-5 bg-white p-5">
+        <h1>UH-OH!</h1>
+        The kudos you were looking for isn't here, but here's a surprise!
+        <img id="logo" src="{% static 'v2/images/kudos/assets/no-kudos.gif' %}"  width="500" class="mw-100" />
+        <div class="m-3">
+          {% trans "Feeling creative?" %} <a href="https://github.com/gitcoinco/kudosbadges/issues/new" target="_blank" class="">{% trans "Mint Your Own!" %}</a>
+        </div>
+      </div>
+      {% endif %}
+
+      <script>
+        show_konami = true;
+        if (show_konami) {
+          let cursor = 0;
+          // UUDDLRLRBA
+          const KONAMI_CODE = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
+          document.addEventListener('keydown', (e) => {
+            cursor = (e.keyCode == KONAMI_CODE[cursor]) ? cursor + 1 : 0;
+            if (cursor == KONAMI_CODE.length) activate(window.location.search);
+          });
+
+          function activate (keyword) {
+            console.log('konami');
+
+            // play sound and go to URL
+            setTimeout(function(){
+              var audio = new Audio('{% static 'v2/audio/secret-discovery-sound.wav' %}');
+              audio.play();
+              // go to URL
+              setTimeout(function(){
+                if(window.location.search === "?q=ethdenver"){
+                  window.location.href = 'https://gitcoin.co/kudos/redeem/top_secret_bufficorn_kudos_2019a';
+                } else {
+                  window.location.href = 'https://gitcoin.co/kudos/redeem/konamicode2018' ;
+                }
+              }, 2500);
+            }, 200)
+          }
+        }
+      </script>
+
+      <div class="row justify-content-center">
+        {% for listing in listings %}
+          <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
+            {% include 'shared/kudos_card.html' %}
+          </div>
+        {% if forloop.counter|divisibleby:4 %}
+      </div>
+      <div class="row justify-content-center">
+        {% endif %}
+      {% endfor %}
+
+      {% if listings %}
+      <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
+        <a href="https://github.com/gitcoinco/kudosbadges/issues/new" target="_blank" class="cta-square kd-shadow">
+          <div>
+            <span>{% trans "Don’t See One You Like?" %}</span>
+            <small>{% trans "Mint Your Own!" %}</small>
+          </div>
+        </a>
+      </div>
+      {% endif %}
+    </div>
+    </section>
+
+    {% include 'shared/footer.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' with slim=1 %}
+    <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
+    <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+    <script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
+    <script>
+      $(document).ready(function() {
+        $("img").unveil(200);
+      });
+      var bootstrapTooltip = $.fn.tooltip.noConflict()
+    </script>
+    <script src="{% static "v2/js/pages/kudos-search.js" %}"></script>
+    {% include 'shared/messages.html' %}
+  </body>
+</html>

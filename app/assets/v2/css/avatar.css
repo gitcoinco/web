@@ -1,0 +1,49 @@
+.avatars-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.avatar-tile {
+  height:250px;
+  width: 250px;
+  position: relative;
+  cursor: pointer;
+}
+
+.avatar-tile.active div::after {
+  position: absolute;
+  bottom: 25px;
+  right: 5px;
+  color: white;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  line-height: 1.2rem;
+  content: url('/static/v2/images/check.svg');
+  background-color: #150069;
+}
+
+.avatar-tile:not(.active) img:hover {
+  border: 2px solid #00BB61;
+}
+
+.avatar-tile:not(.active) div:hover::after {
+  content: '+';
+  background-color: #00BB61;
+  z-index: 11;
+  position: absolute;
+  bottom: 25px;
+  right: 5px;
+  color: white;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  line-height: 1.2rem;
+}
+
+.action-buttons {
+  display:flex;
+  justify-content: flex-end;
+}

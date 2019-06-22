@@ -18,10 +18,9 @@
 {% load i18n static %}
 {% block 'scripts' %}
 <script src="{% static "v2/js/abi.js" %}"></script>
-<script src="{% static "v2/js/secrets.min.js" %}"></script>
-<script src="{% static "v2/js/ipfs-api.js" %}"></script>
+<script src="{% static "v2/js/lib/secrets.min.js" %}"></script>
+<script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
 <script src="{% static "v2/js/ipfs.js" %}"></script>
-<script src="{% static "v2/js/shared.js" %}"></script>
 <script src="{% static "onepager/js/receive.js" %}"></script>
 <script src="{% static "onepager/js/confetti.js" %}"></script>
 <script src="{% static "onepager/js/bignumber.js" %}"></script>
@@ -31,7 +30,7 @@
 <!-- Main -->
 {% block 'world' %}
 <div>
-  <canvas id="world" style="position:absolute; top:0px; left: 0px;"></canvas>
+  <canvas id="world" style="position:fixed; top:0px; left: 0px;"></canvas>
 </div>
 {% endblock %}
 {% block 'main' %}

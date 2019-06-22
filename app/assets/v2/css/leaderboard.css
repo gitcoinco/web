@@ -1,200 +1,114 @@
-#leaderboard .leaderboard_entry {
-  padding: 10px 0px;
-  color: black;
-  text-decoration: none;
+
+.interior .body.leaderboard-container {
+  background-color: #fff;
 }
 
-#leaderboard .leaderboard_entry img {
-  max-height: 100px;
-  border-radius: 50%;
+.leaderboard .card-body {
+  border-radius: 3px;
 }
 
-#leaderboard .leaderboard_entry a {
-  color: #8b8b8b;
+.leaderboard .podium-items {
+  background-color: #150069;
 }
 
-#leaderboard .leaderboard_entry .item-amount {
-  font-size: 1.5em;
-  font-weight: bold;
-  color: #86eec4;
+.key-title {
+  display: inline;
 }
 
-#leaderboard .leaderboard_entry .item-position {
-  color: #8b8b8b;
+.key {
+  max-width: 12rem;
+  display: inline;
 }
 
-#leaderboard .table-striped tbody tr:nth-of-type(2n+1) {
-  background-color: #f8f8f8;
+.table-hover tbody tr:hover {
+  background-color: whitesmoke;
 }
 
-#leaderboard .progress_container {
-  padding-top: 2.5em;
-}
-
-#leaderboard #key {
-  right: 0px;
-  display: block;
-  position: absolute;
-  margin-right: 10px;
-  margin-top: 5px;
-}
-
-#leaderboard .podium {
+.leaderboard .podium {
   border-bottom-left-radius: 2px;
   border-bottom-right-radius: 2px;
-  background: #f5136e;
-  /* For browsers that do not support gradients */
-  background: -webkit-gradient(linear, center top, center bottom, from(#f5136e), to(#0f023c));
-  background: -webkit-linear-gradient(#f5136e, #0f023c);
-  background: -moz-linear-gradient(#f5136e, #0f023c);
-  background: -o-linear-gradient(#f5136e, #0f023c);
-  background: -ms-linear-gradient(#f5136e, #0f023c);
-  background: linear-gradient(#f5136e, #0f023c);
+  background: #150069;
+  justify-content: space-evenly;
 }
 
-#leaderboard .winner {
+.leaderboard .winner {
   position: relative;
   padding: 0px;
-  min-height: 23em;
+  text-align: center;
 }
 
-#leaderboard .winner-content {
-  top: 40%;
-  left: 0;
-  position: absolute;
+.interior .body {
+  background-color: #140069;
 }
 
-#leaderboard .winner-content .winner-position {
-  width: 100%;
-  min-height: 100px;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: contain;
-}
-
-#leaderboard .winner-content .winner-position-first {
-  background-image: url('/static/v2/images/leaderboard-1.png');
-}
-
-#leaderboard .winner-content .winner-position-second {
-  background-image: url('/static/v2/images/leaderboard-2.png');
-}
-
-#leaderboard .winner-content .winner-position-third {
-  background-image: url('/static/v2/images/leaderboard-3.png');
-}
-
-#leaderboard .winner img {
-  opacity: 0.5;
-  min-height: 23em;
-}
-
-#leaderboard .winner img:hover {
-  opacity: 0.55;
-}
-
-#leaderboard .winner a {
-  color: white;
-}
-
-#leaderboard .clickable-row {
+.leaderboard .clickable-row {
   cursor: pointer;
 }
 
-@media (max-width: 1300px) {
-  #leaderboard .winner img {
-    min-height: 20em;
-  }
+.leaderboard .winner img {
+  max-height: 10rem;
+  border-radius: 50%;
 }
 
-@media (max-width: 1025px) {
-  #leaderboard .leaderboard_entry div {
-    width: 30%;
+.leaderboard .leaderboard_entry img {
+  max-height: 4rem;
+  border-radius: 50%;
+}
+
+tbody, a {
+  color: #5C5D5F
+}
+
+.leaderboard .winner a {
+  color: #fff;
+}
+
+.leaderboard .leaderboard_entry {
+  padding: 10px 0px;
+  text-decoration: none;
+}
+
+.item-count-bounties {
+  display: none;
+}
+
+.hidemobile {
+  visibility: hidden;
+}
+
+@media (min-width: 700px) {
+  .item-count-bounties {
+    display: block
   }
 
-  #leaderboard .leaderboard_entry div:nth-child(2) {
-    width: 30%;
+  .podium {
+    justify-content: space-between;
   }
 
-  #leaderboard .leaderboard_entry div.progress {
+  .leaderboard .select {
+    display: block ;
+  }
+
+  .leaderboard .leaderboard_entry div {
     width: 100%;
   }
 
-  #leaderboard .winner img {
-    min-height: 18em;
+  .leaderboard .leaderboard_entry div:nth-child(2) {
+    width: 30%;
+  }
+
+  .leaderboard .leaderboard_entry div.progress {
+    width: 100%;
+  }
+
+  .hidemobile {
+    visibility: visible;
   }
 }
 
-@media (max-width: 700px) {
-  .item-count-bounties {
-    display: none !important;
-  }
-  .clickable-row.d-flex .col-5{
-    flex: 0 0 16.666667%;
-    max-width: 16.66666%;
-  }
-  #leaderboard .select {
-    display: none;
-  }
-
-  #leaderboard h3 {
-    font-size: 1.3rem;
-  }
-
-  #leaderboard .leaderboard_entry h4 {
-    font-size: 22px;
-  }
-
-  #leaderboard .winner h2 {
-    font-size: 22px;
-  }
-
-  #leaderboard .winner h5 {
-    font-size: 18px;
-  }
-
-  #leaderboard .winner-content {
-    top: 20%;
-  }
-
-  #leaderboard .winner img {
-    min-height: 12em;
-  }
-
-  #leaderboard .col-6 {
-    flex: 0 0 25%;
-    max-width: 25%;
-  }
-
-  #leaderboard .col-2 {
-    flex: 0 0 30%;
-    max-width: 30%;
-    overflow-x: hidden;
-  }
-
-  #leaderboard .progress_container {
-    padding-top: 1.5em;
-  }
-}
-
-@media (max-width: 481px) {
-  #leaderboard .leaderboard_entry h4 {
-    font-size: 18px;
-  }
-
-  #leaderboard .winner h2 {
-    font-size: 18px;
-  }
-
-  #leaderboard .winner h5 {
-    font-size: 16px;
-  }
-
-  #leaderboard .winner-content {
-    top: 20%;
-  }
-
-  #leaderboard .winner img {
-    min-height: 6em;
+@media (min-width: 1000px) {
+  .leaderboard .leaderboard_entry {
+    padding: 10px 0px;
+    text-decoration: none;
   }
 }

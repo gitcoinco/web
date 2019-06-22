@@ -1,0 +1,58 @@
+#kudos-holder {
+  max-width: 498px;
+}
+
+.scroll-carousel {
+  display: flex;
+  overflow-x: scroll;
+  scroll-snap-type: x mandatory;
+  flex: 1 1 50%;
+  flex-direction: row;
+}
+
+.scroll-carousel__item {
+  position: relative;
+  margin: 1rem 0.4rem;
+  scroll-snap-align: none start;
+  transition: .45s all ease-in-out;
+  display: flex;
+  flex-direction: row;
+  flex: 0 0 30%;
+  max-width: 30%;
+  align-items: center;
+  border: 1px solid #cfcfcf;
+  padding: .5em;
+  border-radius: 5px;
+  font-size: 11px;
+}
+
+.scroll-carousel__item:hover,
+.scroll-carousel__item.selected {
+  border-color: #3e00ff;
+  box-shadow: inset 0 0 0px 2px #3e00ff;
+}
+
+.scroll-carousel__btn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: #00bb5d;
+  color: white;
+  border: 0;
+  border-radius: 3px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.scroll-carousel__btn:hover {
+  background-color: #009c4e;
+}
+
+.scroll-carousel__img {
+  width: 60px;
+}
+
+.scroll-carousel__text {
+  padding: 0.6em;
+  word-break: break-word;
+}

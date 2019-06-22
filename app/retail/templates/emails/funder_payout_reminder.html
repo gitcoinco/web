@@ -1,0 +1,63 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n humanize static %}
+
+{% block content %}
+
+<h1>{% trans "Your funded bounty is fulfilled" %}</h1>
+
+
+<p style="color: #4A4A4A; line-height:2;">
+  <img src="{% static "v2/images/update-notification.png" %}" style="padding: 40px 0;"><br>
+
+  {% if bounty_fulfillment.fulfiller_github_url %}
+    <p>
+      {% blocktrans %}
+      Heads up! The funded issue that you posted (below) has work submitted by
+      <a href="https://github.com/{{ github_username }}">@{{ github_username }}.</a><br>
+      {% endblocktrans %}
+    </p>
+    <div style="margin-bottom: 2em; margin-top: 2em;">
+      <a class="button button--primary" href="{{bounty_fulfillment.fulfiller_github_url}}">{% trans "View work" %}</a><br>
+    </div>
+  {% else %}
+    <br>
+    {% trans "There is a currently pending claim against this funded issue. Please make sure you process them!" %}<br>
+  {% endif %}
+
+  <br>
+  {% blocktrans %}
+   If you have any questions, feel free to reach out
+   <a href="https://gitcoin.co/slack">on slack</a>.
+  {% endblocktrans %}
+
+  <br>
+  <h5>{% trans "Funded Issue Details" %}</h5>
+</p>
+
+<br>
+
+{% include 'emails/bounty.html' with bounty=bounty %}
+
+<p>
+ {% trans "You are receiving this email because your email address is listed as the reviewing funder for this issue." %}
+ <a href="{{bounty.url}}">{% trans "View Bounty" %}</a>.
+</p>
+
+{% endblock %}

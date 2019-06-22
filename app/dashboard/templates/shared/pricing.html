@@ -15,24 +15,29 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n %}
-<div id="pricing-section" class="pt-2">
-  <h5 class="font-subheader">{% trans "Pricing" %}</h5>
-  <div class="form__flex-group">
-    <div class="form__amount-wrapper">
+<div id="pricing-section" class="mt-4">
+  <label class="font-caption letter-spacing text-black-60 text-uppercase">{% trans "Pricing" %}</label>
+  <div class="d-flex row mb-2">
+    <div class="col-12 col-md-3">
       <label class="form__label" for="amount">{% trans "Denomination" %}</label>
       <div class="form__select2">
         <select name='denomination' id='token'></select>
       </div>
     </div>
-    <div class="form__amount-wrapper">
+    <div class="col-12 col-md-3">
       <label class="form__label" for="amount">{% trans "Amount" %}</label>
       <input name='amount' id='amount'  class="form__input" type="number" value="{{amount|default:'0.001'}}" step="0.001" min="0.001"/>
     </div>
-    <div class="form__amount-wrapper" id="usd-amount-wrapper">
+    <div class="col-12 col-md-3" id="usd-amount-wrapper">
       <label class="form__label" for="usd_amount">{% trans "USD" %}</label>
       <input name='usd_amount' id='usd_amount'  class="form__input" type="text" min="0.00"/>
     </div>
+    <div class="col-12 col-md-3">
+	  <label class="form__label" for="amount">{% trans "Est. Hours of Work" %}</label>
+      <input name='hours' id='hours'  class="form__input" type="number" value="1" step="1"
+      min="1" required="required"/>
+		</div>
   </div>
-  <small class="form__input-help form__input-help--dynamic" id="usd_amount_text"></small>
-  <hr class="mt-5">
+
+  <small class="form__input-help--dynamic text-highlight-gc-blue bg-lightpurple p-1" id="usd_amount_text"></small>
 </div>
