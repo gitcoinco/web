@@ -114,6 +114,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
     unsigned_nda = BountyDocumentsSerializer(many=False)
     bounty_owner_email = serializers.SerializerMethodField('override_bounty_owner_email')
     bounty_owner_name = serializers.SerializerMethodField('override_bounty_owner_name')
+    resurfaced = serializers.SerializerMethodField('resurfaced_issue')
 
     def override_bounty_owner_email(self, obj):
         can_make_visible_via_api = bool(int(obj.privacy_preferences.get('show_email_publicly', 0)))
@@ -124,6 +125,16 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
         can_make_visible_via_api = bool(int(obj.privacy_preferences.get('show_name_publicly', 0)))
         default = "Anonymous"
         return obj.bounty_owner_name if can_make_visible_via_api else default
+
+    def resurfaced_issue(self, issue):
+        open_status = issue.idx_status == 'open'
+        not_past_expiration_date = not issue.past_expiration_date
+        print(open_status, not_past_expiration_date, issue.activities.all().filter(
+            activity_type='extend_expiration'
+        ).exists())
+        return open_status and not_past_expiration_date and issue.activities.all().filter(
+            activity_type='extend_expiration'
+        ).exists()
 
     class Meta:
         """Define the bounty serializer metadata."""
@@ -188,7 +199,7 @@ class BountySerializerSlim(BountySerializer):
             'url', 'title', 'experience_level', 'status', 'fulfillment_accepted_on',
             'fulfillment_started_on', 'fulfillment_submitted_on', 'canceled_on', 'web3_created', 'bounty_owner_address',
             'avatar_url', 'network', 'standard_bounties_id', 'github_org_name', 'interested', 'token_name', 'value_in_usdt',
-            'keywords', 'value_in_token', 'project_type', 'is_open', 'expires_date', 'latest_activity'
+            'keywords', 'value_in_token', 'project_type', 'is_open', 'expires_date', 'latest_activity', 'resurfaced',
         )
 
 class BountyViewSet(viewsets.ModelViewSet):
