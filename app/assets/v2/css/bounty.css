@@ -58,12 +58,43 @@ body {
   padding-top: 3em;
 }
 
+.invite-user .avatar {
+  width: 5.5rem;
+  height: 5.5rem;
+}
+
+.quote-container {
+  width: 55%;
+  z-index: 2;
+}
+
+.quote-container img {
+  top: 3rem;
+  left: -2rem;
+  position: relative;
+}
+
+.quote-container .quote_text {
+  font-size: 1.1rem;
+  color: #4A4A4A;
+}
+
+.quote-container .quote_author {
+  color: #4A4A4A;
+  font-size: 1rem;
+  font-style: italic;
+}
+
 .bounty_details .avatar {
   width: 50px;
   height: 50px;
   margin: 0px auto;
   border-radius: 50px;
   margin-top: 0px;
+}
+
+.bounty_details .avatar.Azure-Samples {
+  border-radius: 0px;
 }
 
 #avatar_url .avatar {
@@ -145,31 +176,30 @@ body {
   font-size: 14px;
 }
 
-.bounty-info {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.bounty-info > div {
-  margin-bottom: 4px;
-}
-
 .bounty-info div {
-  display: inline;
+  display: inline-block;
   margin-right: 15px;
-  font-weight: 300;
+  font-weight: 500;
 }
 
 .bounty-info-heading {
   color: #0D0764;
+  font-weight: 500;
 }
 
 .bounty-info-row-div {
   width: 100%;
 }
+
+.bounty-info-row-div i {
+  position: absolute;
+  top: 4px;
+}
+
 .bounty-info-row-span-left {
   float: left;
 }
+
 .bounty-info-row-span-right {
   float: right;
 }
@@ -245,6 +275,7 @@ body {
 
 .transaction-status a{
   color: white;
+  text-decoration: underline;
 }
 
 .red_warning,
@@ -444,6 +475,11 @@ a.btn {
   color: #0ECF7C;
 }
 
+.activity-kudos {
+  width: 60px;
+  float: right;
+}
+
 .activity .bounty-subheading,
 .activity .bounty-text {
   font-size: 12px;
@@ -462,6 +498,35 @@ a.btn {
 #bounty_details {
   display: none;
   margin-bottom: 2em;
+}
+
+.earned {
+  color: #8E2ABE;
+  font-size: 14px;
+  line-height: 13px;
+  font-weight: 600;
+}
+
+.contributor-position,
+.username,
+.current_status,
+.in-progress {
+  color: #0D0764;
+}
+
+.specialty {
+  font-weight: 600;
+  font-size: 10px;
+  line-height: 11px;
+}
+
+.completed-bounties {
+  color: #05B66A;
+}
+
+.abandoned-bounties,
+.removed-bounties {
+  color: #F5A623;
 }
 
 .code-snippet {
@@ -651,13 +716,13 @@ a.btn {
   width: auto;
 }
 
-
 .btn-interested,
 .btn-extend,
 .btn-cancel {
   float: right;
   padding: 0.375rem 0.9375rem;
   font-size: 12px;
+  text-align: center;
 }
 
 .btn-cancel {
@@ -693,28 +758,6 @@ a.btn {
 
 .waiting_room_entertainment {
   text-align: center;
-}
-
-.bounty_details .quote-container,
-.grant_waiting .quote-container {
-  width: 55%;
-  margin: 4rem auto;
-  font-weight: 700;
-  z-index: 2;
-}
-
-.bounty_details .quote_text,
-.grant_waiting .quote_text {
-  margin-top: 50px;
-  font-size: 1.1rem;
-  color: #4A4A4A;
-}
-
-.bounty_details .quote_author,
-.grant_waiting .quote_author {
-  color: #4A4A4A;
-  margin: 1rem auto;
-  font-size: 1rem;
 }
 
 .ethereum-issue {

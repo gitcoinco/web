@@ -1,0 +1,75 @@
+.featured-bounties {
+  color: #fff;
+  background-color: #0d003c;
+  padding: 0.7rem 1.5rem;
+}
+
+.featured-bounties__title {
+  font-size: 1.25em;
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.featured-bounties__title .status-open {
+  color: #00e996;
+  font-size: 0.7em;
+  margin-left: 1.5em;
+}
+
+.featured-bounties .scroll-carousel {
+  -webkit-overflow-scrolling: touch;
+}
+
+.bounty-card {
+  display: flex;
+  color: #0d003c;
+  background-color: #fff;
+  border-radius: 4px;
+  position: relative;
+  margin: 1rem 0.4rem;
+  scroll-snap-align: none start;
+  transition: .45s all ease-in-out;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  flex: 0 0 20%;
+  max-width: 20%;
+  align-items: center;
+  border: 1px solid #cfcfcf;
+  padding: .5em;
+  font-size: 12px;
+  min-width: 230px;
+}
+
+.bounty-card__link {
+  color: #5100ff;
+  font-size: 0.9em;
+  font-weight: 600;
+}
+
+.bounty-card__title {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  margin-bottom: 0;
+  font-weight: 600;
+}
+
+.bounty-card__avatar {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+}
+
+.carousel-control-small .carousel-control-next,
+.carousel-control-small .carousel-control-prev {
+  width: 2.3rem;
+  height: 2.3rem;
+  background: #d3d3d3;
+  top: 0;
+  bottom: 0;
+  margin: auto -0.3em;
+  border-radius: 40px;
+}
+

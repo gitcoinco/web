@@ -65,7 +65,7 @@ Issues in `gitcoin/web` are the primary means by which bug reports and
 general discussions are made. A contributor is allowed to create an issue,
 discuss, and provide a fix if needed.
 
-Before opening an issue, https://waffle.io/gitcoinco/web is a good place to go to see if there are any current issues with similar key words. This helps us cut down on duplicate tickets.
+Before opening an issue, check to see if there are any current issues with similar key words. This helps us cut down on duplicate tickets.
 
 When you [open an issue](https://github.com/gitcoinco/web), you'll notice four templates (bug, custom, discussion, feature) with the user-story format we like for our issue reports. When starting a new issue, please do your best to be as detailed and specific as possible.
 
@@ -95,13 +95,12 @@ In order to make use of the `pre-commit` hooks used for this repository, you sho
 User facing copy / text should be run through [Django Translation Framework](https://docs.djangoproject.com/en/2.0/topics/i18n/translation/). For example,
 
 1. HTML user-facing pieces of copy are in `{% blocktrans %}` or `{% trans %}` fields.
-2. javascript user-facing pieces of copy are in `ngettext` fields.
+2. javascript user-facing pieces of copy are in `gettext` fields.
 3. each of the `views.py` user-facing pieces of copy are in `gettext_lazy` fields
 4. each of the models `help_text`s are internationalized
 5. as are all the emails in `marketing/mails.py`
 6. run `make autotranslate` or a combination of the necessary `./manage.py makemessages` and `./manage.py compilemessages` commands.
 
-Take a look at `/styleguide-alpha` (ui_inventory.html), for a quick reference of user interface components.
 If you are contributing user-facing assets, interface components or other relevant visuals,
 then please add them to our UI Inventory page.
 
@@ -197,7 +196,7 @@ Please ensure that your pull request follows all of the community guidelines to 
 * Title is descriptive and generally focused on what the PR addresses (If your PR is a work in progress, include `WIP` in the title. Once the PR is ready for review, please remove `WIP`)
 * Description explains what the PR achieves or addresses
 * If the PR modifies the frontend in any way, please attach screenshots and/or GIFs of all purposeful changes (before and after screens are recommended)
-* The PR passes all CI checks, to include: Stickler, Codecov, and CI.
+* The PR passes all CI checks, to include: Stickler, and Travis CI.
 * If tests are failing or coverage is decreased while adding logic to any backend code, you will be asked to include relevant tests and your PR will not be merged until all checks pass.
 
 ## Python

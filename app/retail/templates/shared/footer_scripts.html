@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -21,33 +21,34 @@
   var media_url = "{{ MEDIA_URL }}";
 </script>
 <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
-<script src="{% static "v2/js/jquery.js" %}"></script>
-{% if env == 'prod' %}
+<script src="{% static "v2/js/lib/jquery.js" %}"></script>
+{% if user.is_authenticated and env == 'prod' %}
   <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-{% else %}
+{% elif user.is_authenticated %}
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 {% endif %}
 {% include 'shared/sentry.html' %}
-<script src="{% static "v2/js/jquery.cookie.js" %}"></script>
+<script src="{% static "v2/js/lib/jquery.cookie.js" %}"></script>
 {% if not slim %}
-  <script src="{% static "v2/js/jquery-ui.js" %}"></script>
-  <script src="{% static "v2/js/tooltip.js" %}"></script>
+  <script src="{% static "v2/js/lib/jquery-ui.js" %}"></script>
+  <script src="{% static "v2/js/lib/tooltip.js" %}"></script>
 {% endif %}
-<script src="{% static "v2/js/jquery.modal.min.js" %}"></script>
-<script src="{% static "v2/js/jquery.select2.min.js" %}"></script>
-<script src="{% static "v2/js/jquery.validate.min.js" %}"></script>
-<script src="{% static "v2/js/jsrender.js" %}"></script>
-<script src="{% static "v2/js/moment.min.js" %}"></script>
+<script src="{% static "v2/js/lib/jquery.modal.min.js" %}"></script>
+<script src="{% static "v2/js/lib/jquery.select2.min.js" %}"></script>
+<script src="{% static "v2/js/lib/jquery.validate.min.js" %}"></script>
+<script src="{% static "v2/js/lib/jsrender.js" %}"></script>
+<script src="{% static "v2/js/lib/moment.min.js" %}"></script>
 <script src="{% static "v2/js/base.js" %}"></script>
-<script src="{% static "v2/js/purify.min.js" %}"></script>
+<script src="{% static "v2/js/lib/purify.min.js" %}"></script>
 <script src="{% static "v2/js/shared.js" %}"></script>
 <script src="{% static "v2/js/truncate-hash.js" %}"></script>
-<script src="{% static "v2/js/work_with_gitcoin.js" %}"></script>
-<script src="{% static "v2/js/animate.min.js" %}"></script>
+<script defer src="{% static "v2/js/work_with_gitcoin.js" %}"></script>
 <script src="{% static "v2/js/note.js" %}"></script>
 <script src="{% static "v2/js/ajax-helper.js" %}"></script>
 <script src="{% static "v2/js/pages/carousel.js" %}"></script>
-<script src="{% static "v2/js/notifications.js" %}"></script>
+{% if user.is_authenticated %}
+  <script src="{% static "v2/js/notifications.js" %}"></script>
+{% endif %}
 <script src="{% static "cookielaw/js/cl.js" %}"></script>
 
 <script>

@@ -1,46 +1,4 @@
 $(document).ready(function() {
-  $('[data-toggle=popover]').popover({
-    html: true,
-    trigger: 'focus',
-    template: '<div class="popover wallet-popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>',
-    content: function() {
-      var content = $(this).attr('data-popover-content');
-
-      return $(content).children('.popover-body').html();
-    },
-    title: function() {
-      var title = $(this).attr('data-popover-content');
-
-      return $(title).children('.popover-heading').html();
-    }
-  });
-
-  if (!document.hasPreferredPayoutAddress) {
-    $('[data-toggle=popover]').popover('show');
-  }
-
-  $('body').on('submit', '#form-wallets', function(e) {
-    e.preventDefault();
-
-    var data = $('#form-wallets').serializeArray();
-
-    data.push({'page': 2});
-
-    var postWallets = fetchData(
-      e.currentTarget.action,
-      e.currentTarget.method,
-      data
-    );
-
-    $.when(postWallets).then(function(response) {
-      var walletAddress = response.wallets[0];
-      var newAddress = new truncate(walletAddress);
-
-      $('#preferred-address').text(newAddress.elem);
-      $('#preferred-address').prop('title', walletAddress);
-      $('#kudos-section').html(response.kudos_html);
-    });
-  });
 
   $('#kudos-section').on('click keypress', '.flip-card', e => {
     if ($(e.target).is('a')) {
@@ -64,7 +22,7 @@ $(document).ready(function() {
     }
 
     const activityContainer = document.querySelector('.tab-section.active .activities');
-    const activityCount = parseInt(activityContainer.getAttribute('count')) || 0;
+    const activityCount = activityContainer ? parseInt(activityContainer.getAttribute('count')) || 0 : 0;
     const loadingImg = document.querySelector('.loading_img');
 
     if (activityContainer.children.length < activityCount) {
@@ -81,7 +39,7 @@ $(document).ready(function() {
       fetchInProgress = true;
       loadingImg.className = loadingImg.className.replace('hidden', 'visible');
 
-      fetch(document.location.href + '?p=' + (++page) + '&a=' + activityName).then(
+      fetch(location.href.replace(location.hash, '') + '?p=' + (++page) + '&a=' + activityName).then(
         function(response) {
           if (response.status === 200) {
             response.text().then(

@@ -1,0 +1,53 @@
+{% comment %}
+  Copyright (C) 2019 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static %}
+<div class="row banner--green p-3 font-subheader mx-0">
+  <div id="start" class="carousel slide w-100 text-center" data-ride="carousel">
+    <div class="carousel-inner">
+      {% for slide in onboard_slides %}
+        <div class="carousel-item {{ slide.active }}">
+          <div class="d-inline">
+            <img src="{{ slide.img }}">
+          </div>
+
+          <div class="mx-sm-5 content">
+            <p class="font-title-lg mb-0">{{ slide.title }}</p>
+            <p class="font-subheader">{{ slide.subtitle }}</p>
+            <div>
+              {% if slide.type == 'contributor' %}
+                <a class="button button--primary" href="{% url "onboard" "contributor" %}">Get Started</a>
+              {% else %}
+                <a class="button button--primary" href="{% url "onboard" "funder" %}">Get Started</a>
+              {% endif %}
+              <a class="button button--primary btn-green ml-sm-2" href="{{ slide.more }}">Learn More</a>
+            </div>
+          </div>
+
+        </div>
+      {% endfor %}
+    </div>
+    <a class="carousel-control-prev" href="#start" role="button" data-slide="prev">
+      <i class="fas fa-chevron-left"></i>
+      <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#start" role="button" data-slide="next">
+      <i class="fas fa-chevron-right"></i>
+      <span class="sr-only">Next</span>
+    </a>
+  </div>
+</div>

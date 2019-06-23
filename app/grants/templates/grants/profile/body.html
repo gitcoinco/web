@@ -39,11 +39,17 @@
                 {{ transaction.grant.title }}
               </div>
               <div class="info font-caption">
-                {{ transaction.sub.amount_per_period|floatformat:4|intcomma }} {{ transaction.sub.token_symbol }} / {{ transaction.sub.frequency }} {{ transaction.sub.frequency_unit }}
+
+                {{ transaction.sub.amount_per_period|floatformat:4|intcomma }} {{ transaction.sub.token_symbol }} 
+                {% if transaction.sub.num_tx_approved > 1 %}
+                  / {{ transaction.sub.frequency }} {{ transaction.sub.frequency_unit }},
+                {% endif %}
+                {{transaction.sub.num_tx_approved|floatformat}} time{{ transaction.sub.num_tx_approved|pluralize }}
+
               </div>
             </div>
             <div class="col-5 col-md-2 font-body my-auto txn-link">
-              <a id="tx_link" href="" target="_blank" rel="noopener noreferrer">
+              <a id="tx_link" href="https://etherscan.io/tx/{{transaction.cont.tx_id}}" target="_blank" rel="noopener noreferrer">
                 View Etherscan
               </a>
               <input type="hidden" id="tx_id" name="tx_id" value="{{ transaction.cont.tx_id }}"/>

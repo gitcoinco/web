@@ -6,10 +6,6 @@ body {
   flex-shrink: 0;
 }
 
-.navbar-nav > .img__spaceship {
-  display: none !important;
-}
-
 .lab-hero-bg {
   position: relative;
   align-content: center;
@@ -155,16 +151,6 @@ body {
 @media (max-width: 767px) {
   .landing_page_wrapper {
     margin-left: 1em !important;
-  }
-
-  .row {
-    padding: 1rem;
-    justify-content: center;
-  }
-
-  .sub-title {
-    align-content: center;
-    text-align: center;
   }
 
   .social {

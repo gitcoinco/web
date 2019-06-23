@@ -58,6 +58,7 @@ def preprocess(request):
             ip_address = get_ip(request)
             profile.last_visit = timezone.now()
             profile.save()
+            metadata = {'useragent': request.META['HTTP_USER_AGENT'], }
             UserAction.objects.create(
                 user=request.user,
                 profile=profile,
@@ -65,6 +66,7 @@ def preprocess(request):
                 location_data=get_location_from_ip(ip_address),
                 ip_address=ip_address,
                 utm=_get_utm_from_cookie(request),
+                metadata=metadata,
             )
     context = {
         'STATIC_URL': settings.STATIC_URL,
@@ -73,7 +75,6 @@ def preprocess(request):
         'github_handle': request.user.username if user_is_authenticated else False,
         'email': request.user.email if user_is_authenticated else False,
         'name': request.user.get_full_name() if user_is_authenticated else False,
-        'sentry_address': settings.SENTRY_ADDRESS,
         'raven_js_version': settings.RAVEN_JS_VERSION,
         'raven_js_dsn': settings.SENTRY_JS_DSN,
         'release': settings.RELEASE,

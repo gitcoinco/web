@@ -20,16 +20,44 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import unicode_literals
 
+import json
+
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.contrib.postgres.fields import JSONField
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
+from django.db.models.fields.files import FieldFile
+from django.db.models.query import QuerySet
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.forms.models import model_to_dict
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.encoding import force_text
+from django.utils.functional import Promise
 from django.utils.html import escape
 from django.utils.timezone import localtime
+
+
+class EncodeAnything(DjangoJSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Promise):
+            return force_text(obj)
+        elif isinstance(obj, FieldFile):
+            return bool(obj)
+        elif isinstance(obj, SuperModel):
+            return (obj.to_standard_dict())
+        elif isinstance(obj, models.Model):
+            return (model_to_dict(obj))
+        elif isinstance(obj, QuerySet):
+            if obj.count() and type(obj.first()) == str:
+                return obj[::1]
+            return [json.dumps(instance, cls=EncodeAnything) for instance in obj]
+        elif isinstance(obj, list):
+            return [json.dumps(instance, cls=EncodeAnything) for instance in obj]
+        elif(callable(obj)):
+            return None
+        return super(EncodeAnything, self).default(obj)
 
 
 def get_time():
@@ -48,12 +76,13 @@ class SuperModel(models.Model):
     created_on = models.DateTimeField(null=False, default=get_time, db_index=True)
     modified_on = models.DateTimeField(null=False, default=get_time)
 
-    def save(self, *args, **kwargs):
-        """Override the SuperModel save to handle modified_on logic."""
-        self.modified_on = get_time()
+    def save(self, update=True, *args, **kwargs):
+        """Override the SuperModel save to optionally handle modified_on logic."""
+        if update:
+            self.modified_on = get_time()
         return super(SuperModel, self).save(*args, **kwargs)
 
-    def to_standard_dict(self, fields=None, exclude=None):
+    def to_standard_dict(self, fields=None, exclude=None, properties=None):
         """Define the standard to dict representation of the object.
 
         Args:
@@ -72,13 +101,29 @@ class SuperModel(models.Model):
             kwargs['fields'] = fields
         if exclude:
             kwargs['exclude'] = exclude
-        return model_to_dict(self, **kwargs)
+        return_me = model_to_dict(self, **kwargs)
+        if properties:
+            keys = [k for k in dir(self) if not k.startswith('_')]
+            for key in keys:
+                if key in properties:
+                    attr = getattr(self, key)
+                    if callable(attr):
+                        return_me[key] = attr()
+                    else:
+                        return_me[key] = attr
+        return return_me
 
 
     @property
     def admin_url(self):
         url = reverse('admin:{0}_{1}_change'.format(self._meta.app_label, self._meta.model_name), args=[self.id])
         return '{0}'.format(url, escape(str(self)))
+
+    @property
+    def created_human_time(self):
+        from django.contrib.humanize.templatetags.humanize import naturaltime
+        return naturaltime(self.created_on)
+
 
 
 class ConversionRate(SuperModel):

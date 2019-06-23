@@ -90,3 +90,25 @@
   background-color: #E7F0FA;
   color: #6587AE;
 }
+
+.locations-tags {
+  color: white;
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.locations-tags .filter-tag {
+  display: inline-block;
+  background-color: #1AB56D;
+  margin: 5px;
+  border-radius: 3px;
+  font-weight: bolder;
+  padding: 2px 10px 5px;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.locations-tags .filter-tag i {
+  margin-right: 8px;
+}

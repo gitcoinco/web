@@ -9,7 +9,7 @@
     font-size: 12px;
   }
 </style>
-<form id="settings" method="POST">
+<form id="settings" method="POST" class="col-md-8 m-auto">
   <div class="form-group">
     <h5>{% trans "Tokens" %}</h5>
     <p>
@@ -69,12 +69,12 @@
   </p>
 
 </form>
-</div>
+
 <script>
 document.gas_price = {{gas_price}};
 </script>
 <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
-<script src="{% static "v2/js/jquery.js" %}"></script>
+<script src="{% static "v2/js/lib/jquery.js" %}"></script>
 <script src="{% static "v2/js/abi.js" %}"></script>
 <script src="/dynamic/js/tokens_dynamic.js"></script>
 <script src="{% static "v2/js/tokens.js" %}"></script>

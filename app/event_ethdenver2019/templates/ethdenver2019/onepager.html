@@ -1,0 +1,447 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load static avatar_tags i18n %}
+{% load kudos_extras matches %}
+{% load i18n static kudos_extras humanize avatar_tags trim %}
+<!DOCTYPE HTML>
+<html>
+  <head>
+    {% include 'shared/tag_manager_1.html' %}
+    <title>{{title}} | ETHDenver 2019 | Gitcoin</title>
+    <meta name="description" content="{{card_desc}}">
+    <meta charset="utf-8" />
+    <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <script src="{% static "v2/js/lib/jquery.js" %}"></script>
+    <script src="{% static "v2/js/work_with_gitcoin.js" %}"></script>
+    <script src="{% static "v2/js/shared.js" %}"></script>
+    <script src="{% static "v2/js/event_ethdenver2019/blockies.js" %}"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.36/dist/web3.min.js" integrity="sha256-nWBTbvxhJgjslRyuAKJHK+XcZPlCnmIAAMixz6EefVk=" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="{% static "v2/css/event_ethdenver2019/style.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/fontawesome-all.min.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/bootstrap.min.css" %}" crossorigin="anonymous">
+    <style type="text/css">
+     .ethdenver2019-nli-header {
+        background-image: url("{% static 'v2/images/event_ethdenver2019/background.png' %}");
+        background-size: 100% 100%;
+     }
+    </style>
+    <style type="text/css">
+      .ethdenver2019-kudos-img-widthfix {
+        max-width: 250px !important;
+        width: 250px !important;
+       }
+      .ethdenver2019-prog-header {
+        background-image: url("{% static 'v2/images/event_ethdenver2019/background.png' %}");
+        background-size: 100% 100%;
+      }
+      .ethdenver2019-kudos-received-overlay {
+
+          /* background: #000; */
+          left: 46px;
+          top: 8px;
+          color: rgba(0,255,0,.75);
+          display: inline-block;
+          max-height: 250px; /* same as the biggest image*/
+          opacity: 0.65;
+          overflow: hidden;
+          padding: 0 2px;
+          position: absolute;
+          width: 250px; /* same as the image*/
+          font-size: 200px;
+
+      }
+      .ethdenver2019-prog-header {
+        background-image: url("{% static 'v2/images/event_ethdenver2019/background.png' %}");
+        background-size: 100% 100%;
+      }
+      .sadsmiley {
+        font-size: 140px;
+        transform: rotate(90deg);
+      }
+    </style>
+    <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
+    {% include 'shared/favicon.html' %}
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+    <script>
+      $(document).ready(function() {
+        $('.flip-card').on('click keypress', e => {
+          if ($(e.target).is('a')) {
+            e.stopPropagation();
+            return;
+          }
+          $(e.currentTarget).toggleClass('turn');
+        });
+      });
+    </script>
+     <style>
+    .loader {
+      border: 16px solid #f3f3f3; /* Light grey */
+      border-top: 16px solid #3498db; /* Blue */
+      border-radius: 50%;
+      width: 120px;
+      height: 120px;
+      animation: spin 2s linear infinite;
+      justify-self: center;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    #web3content {
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      align-content: center;
+      align-self: center;
+      align-items: center;
+      justify-content: center;
+      display: inline-grid;
+
+    }
+    .loadertext{
+            padding-top: 3em;
+justify-self: center;
+    }
+
+    #overlay {
+      position: fixed;
+      display: table;
+      left: 10%;
+      width: 80%;
+      top: 10%;
+      height: 80%;
+      background-color: rgba(0,0,0,.75);
+      color: rgba(255,255,255,1);
+      z-index: 2;
+      cursor: pointer;
+    }
+    </style>
+    <script>
+    function off() {
+      document.getElementById("overlay").style.display = "none";
+    }
+  {% if page1 %}
+  var walletAddr = undefined;
+  var getStarted = function(){
+    if (walletAddr !== undefined) {
+          trimWallet = walletAddr.split("0x",2)[1];
+          window.location.replace(window.location.href.replace('#','')+"/?eth_addr="+trimWallet);
+    } else {
+          _alert("Cannot access your eth address - please unlock your web3 provider! (for example: MetaMask)","error");
+    }
+  }
+  var accountInterval;
+  $( document ).ready(x => {
+    if (typeof web3 !== 'undefined') {
+      web3 = new Web3(web3.currentProvider);
+    } else {
+      // Set the provider you want from Web3.providers
+      _alert("no web3 provider, please unlock metamask!");
+      return;
+    }
+
+    function parseAddr(){
+      var f = web3.eth.getAccounts().then(r => {
+        walletAddr = r[0];
+        /*if (walletAddr !== undefined) {
+          trimWallet = walletAddr.split("0x",2)[1];
+          window.location.replace(window.location.href.replace('#','')+"/?eth_addr="+r[0]);
+        } else {
+          console.log("Invalid address - no address found.");
+        }*/
+      });
+    }
+
+    var account = "";
+    web3.eth.getAccounts().then(x => {
+      account = x[0];
+    });
+
+    accountInterval = setInterval(function() {
+      web3.eth.getAccounts().then(x => {
+        if (x[0] !== account) {
+          console.log("Account changed!");
+          //clearInterval(accountInterval);
+          account = x[0];
+          parseAddr();
+          //window.location.replace(window.location.href);
+        }
+      });
+    }, 100);
+
+    parseAddr();
+
+
+  })
+  {% endif %}
+    </script>
+     <script>
+     $( document ).ready(x => {
+         if (typeof web3 !== 'undefined') {
+      web3 = new Web3(web3.currentProvider);
+    } else {
+      // Set the provider you want from Web3.providers
+      _alert("no web3 provider, please unlock metamask!");
+      return;
+    }
+    var account = "";
+    web3.eth.getAccounts().then(x => {
+      account = x[0];
+      const addresses = [
+        account
+      ];
+    for(let i = 0; i < addresses.length; i++) {
+      const seed = addresses[i];
+      /*const canvas = blockies.create({
+        seed: seed,
+        size: 10,
+        scale: 8
+      });*/
+      $('#profilename')[0].innerHTML = account;
+      var size = 10;
+      var scale = 6;
+      /*$('#profileimg')[0].style['background-image'] = 'url(' +.toDataURL()+')'
+      $('#profileimg')[0].style['width'] = size*scale + ' px';
+      $('#profileimg')[0].style['height'] = size*scale + ' px';*/
+      $('#profileimg')[0].appendChild( blockies.create({ seed:seed ,size: size,scale: scale}) ).classList.add("rounded-circle");
+
+    }
+    });
+
+    });
+  </script>
+
+  </head>
+  <body class="{{ class }} g-font-multi">
+  {% if page1 %}
+    <div class="container" id="page1">
+      <div class="row text-center">
+        <div class="ethdenver2019-nli-header col-12">
+          <div class="container">
+            <div class="row mt-4">
+              <div class="col-12">
+                <img src="{% static 'v2/images/event_ethdenver2019/ethdenver_logo.png' %}" class="rounded mx-auto d-block">
+              </div>
+            </div>
+            <div class="row mt-5 mb-5">
+              <div class="col-12">
+                <div class="ethdenver2019-texts-headers">
+                  SET CHALLENGES
+                </div>
+              </div>
+            </div>
+            <div class="row mt-5 mb-5">
+              <div class="col-12">
+                <div class="ethdenver2019-button-getstarted">
+                  <div class="ethdenver2019-button-getstarted-text">
+                    <a href="#" onclick="javascript:getStarted()">Get Started</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ethdenver2019-nli-kudos mt-4 mb-4 align-middle text-center">
+        &nbsp;<img src="{% static 'v2/images/event_ethdenver2019/collect_kudos.png' %}">
+      </div>
+      <div class="ethdenver2019-nli-prizes pb-5">
+        <div class="row">
+          <div class="col-12 ethdenver2019-col-center mt-5 mb-5">
+            <div class="ethdenver2019-texts-headers">
+              PRIZES
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-3 ethdenver2019-col-center">
+            <div class="peekicorn">
+              <img src="{% static 'v2/images/event_ethdenver2019/peeking-bufficorn.png' %}" class="rounded mx-auto d-block">
+            </div>
+            <div class="ethdenver2019-col-prize-img">
+              <img src="{% static 'v2/images/event_ethdenver2019/keepkey.png' %}" class="rounded mx-auto d-block">
+            </div>
+            <div class="ethdenver2019-texts-headers-2">
+              KeepKey
+            </div>
+            <div class="ethdenver2019-texts-normal">
+              A hardware wallet that secures bitcoin, ethereum, erc-20 tokens, and many more.
+            </div>
+          </div>
+          <div class="col-3 ethdenver2019-col-center">
+            <div class="ethdenver2019-col-prize-img">
+              <img src="{% static 'v2/images/event_ethdenver2019/price_2.png' %}">
+            </div>
+            <div class="ethdenver2019-texts-headers-2">
+              Limited Edition Kudos
+            </div>
+            <div class="ethdenver2019-texts-normal">
+              A special, limited edition Kudos you won’t be able to find anywhere else!
+            </div>
+          </div>
+          <div class="col-3 ethdenver2019-col-center">
+            <div class="ethdenver2019-col-prize-img">
+              <img src="{% static 'v2/images/event_ethdenver2019/mystery.png' %}" class="rounded mx-auto d-block">
+            </div>
+            <div class="bufficorn">
+              <img src="{% static 'v2/images/event_ethdenver2019/bufficorn2.png' %}" class="rounded mx-auto d-block">
+            </div>
+            <div class="ethdenver2019-texts-headers-2">
+              Non Fungible Totem
+            </div>
+            <div class="ethdenver2019-texts-normal">
+              Unique and custom to you for completing the game. This non fungible TOTEM will bring you wonderful good luck / charm
+            </div>
+          </div>
+        </div>
+        <div class="row text-center mt-5 mb-5">
+          <div class="col-12">
+            <div class="ethdenver2019-button-getstarted">
+              <div class="ethdenver2019-button-getstarted-text">
+                <a href="#" onclick="javascript:getStarted()">Get Started</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endif %}
+{% if page2 %}
+
+    <div class="container" id="page2">
+      <div class="row text-center">
+        <div class="ethdenver2019-prog-header col-12">
+          <div class="container">
+            <div class="row mt-4">
+              <div class="col-12">
+                <img src="{% static 'v2/images/event_ethdenver2019/ethdenver_logo.png' %}" class="rounded mx-auto d-block">
+              </div>
+            </div>
+            <div class="row mt-5 mb-5">
+              <div class="col-12">
+                <div class="ethdenver2019-texts-headers">
+                  SET CHALLENGES
+                </div>
+              </div>
+            </div>
+            <div class="row mt-5 mb-5">
+              <div class="col-12" id="profileimg" class="circle-cutter">
+
+              </div>
+              <div class="col-12 ethdenver2019-texts-white" id="profilename">
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ethdenver2019-kudos mt-4 mb-4 align-middle text-center">
+        <div class="ethdenver2019-texts-headers ethdenver2019-texts-black">
+          YOUR BUFFICORN KUDOS
+        </div>
+        <div class="ethdenver2019-texts-black mb-5">
+          Click on each Kudos for more details.
+        </div>
+
+        <div class="container mt-5">
+          {% for kudos_rows in kudos_selection %}
+          <div class="row">
+            {% for kudos in kudos_rows %}
+            <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
+              <div class="kd-card kd-extended {% if kudos.transfer %} flip-card {%endif%}" aria-haspopup="true" tabindex="0">
+                <div class="flip-card__flipper">
+                  <div class="flip-card__hold flip-card__front">
+                    <div>
+                      <img src="{% static kudos.kudos.image %}" alt="{{ kudos.kudos.name|humanize_name }}" class="img-thumbnail border-transparent kd-shadow received-equals-{{ kudos.received }}" width="250">
+                    </div>
+                    <div class="kd-content">
+                      <div>
+                        <a href="/kudos/{{ kudos.kudos.id }}/{{ kudos.kudos.name }}" class="kd-title" title="{% trans 'Go to ' %}{{ kudos.kudos.name|humanize_name }}" tabindex="0">
+                          {{ kudos.kudos.name|humanize_name }} {% if kudos.received %}    <i class="fas fa-check-circle"></i>  {% endif %}
+                        </a>
+                      </div>
+                      <p>
+                        {{ kudos.kudos.description|truncatechars:60 }}
+                      </p>
+                    </div>
+                  </div>
+                  {% if kudos.transfer %}
+                  <div class="content-hover flip-card__hold flip-card__back">
+                    <div class="d-flex flex-row">
+                      <img src="{% avatar_url kudos.transfer.from_username  %}" alt="{{ kudos.transfer.from_username }}" class="rounded-circle mr-3" width="45" height="45">
+                      <div class="d-flex flex-column">
+                        <a href="{% filter trim %}{% url 'profile' kudos.transfer.from_username %}{% endfilter %}" title="{% trans 'go to profile' %}">{{kudos.transfer.from_username}}</a>
+                        <time datetime="{{kudos.transfer.created_on|date:'c'}}" title="{{kudos.transfer.created_on}}">
+                          {{kudos.transfer.created_on|naturaltime}}
+                        </time>
+                      </div>
+                    </div>
+                    {% if kudos.transfer.comments_public %}
+                    <div class="bubble">
+                      <p>{{kudos.transfer.comments_public}}</p>
+                    </div>
+                    {% endif %}
+                    <div class="flip-card__extra-data">
+                      {% if kudos.transfer.github_url %}
+                        <a href="{{kudos.transfer.github_url}}" target="_blank">{% trans 'Issue url' %}</a>
+                      {% endif %}
+                      <a title="{% trans 'tx in etherscan' %}" href="{% if not kudos.transfer.network == 'mainnet' %}https://{{ kudos.transfer.network }}.etherscan.io/tx/{{ kudos.transfer.txid }}{% else %}https://etherscan.io/tx/{{ kudos.transfer.txid }}{% endif %}" target="_blank" class="mb-1">{{ kudos.transfer.txid|humanize_address }}</a>
+                    </div>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+  {% if page3 %}
+  <div id="overlay" onclick="off()">
+    <div class="container align-middle" id="page3" style="display: table-cell;">
+      <div class="ethdenver2019-kudos mt-4 mb-4 align-middle text-center">
+        <div class="row">
+          <div class="col-12">
+            <img src="{% static 'v2/images/event_ethdenver2019/bufficorn-joy.png' %}">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="ethdenver2019-texts-headers ethdenver2019-texts-white mb-2 mt-2">
+              Hooray!
+            </div>
+            <div class="ethdenver2019-texts-white">
+              You completed the ETHDenver2019 challenge!
+            </div>
+            <div>
+              Go to the front desk and show them that you received this message to claim your prize.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+  </body>
+</html>

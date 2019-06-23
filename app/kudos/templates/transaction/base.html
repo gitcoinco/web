@@ -40,7 +40,7 @@
       {% block 'main' %} {% endblock %}
       <!-- Footer -->
       <footer id="footer" class="copyright d-flex font-smaller-1 justify-content-center mt-5 p-4">
-          <a href="{% url 'index' %}" class="mr-4">&copy; Gitcoin.co</a>
+        <a href="{% url 'funder_bounties' %}" class="mr-4">&copy; Gitcoin.co</a> <!-- Update to index-->
         {% if not hide_send_tip %}
           <a href="{% url 'kudos_marketplace' %}">{% trans "Kudos Marketplace" %}</a>
         {% endif %}

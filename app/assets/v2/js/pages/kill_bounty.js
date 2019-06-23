@@ -96,6 +96,7 @@ window.onload = function() {
           }
 
           var final_callback = function(error, result) {
+            indicateMetamaskPopup(true);
             var next = function() {
               // setup inter page state
               localStorage[issueURL] = JSON.stringify({
@@ -120,6 +121,7 @@ window.onload = function() {
             }
           };
 
+          indicateMetamaskPopup();
           bounty.killBounty(
             bountyId,
             { gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)) },
@@ -128,7 +130,7 @@ window.onload = function() {
 
         };
         // Get bountyId from the database
-        var uri = '/api/v0.1/bounties/?github_url=' + issueURL + '&network=' + $('input[name=network]').val() + '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
+        var uri = '/api/v0.1/bounties/?event_tag=all&github_url=' + issueURL + '&network=' + $('input[name=network]').val() + '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
 
         $.get(uri, apiCallback);
       }

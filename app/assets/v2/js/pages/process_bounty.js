@@ -1,5 +1,30 @@
 /* eslint-disable no-console */
 window.onload = function() {
+
+  const rateUser = () => {
+    let userSelected = $('#bountyFulfillment').select2('data')[0].text;
+
+    $('[data-open-rating]').data('openUsername', userSelected.trim());
+  };
+
+
+  $('#bountyFulfillment').on('select2:select', event => {
+    rateUser();
+  });
+
+  // Check Radio-box
+  $('.rating input:radio').attr('checked', false);
+
+  $('.rating input').click(function() {
+    $('.rating span').removeClass('checked');
+    $(this).parent().addClass('checked');
+  });
+
+  $('input:radio').change(
+    function() {
+      var userRating = this.value;
+    });
+
   // a little time for web3 injection
   setTimeout(function() {
     waitforWeb3(actions_page_warn_if_not_on_same_network);
@@ -103,6 +128,7 @@ window.onload = function() {
       var expires = 9999999999;
       var kudosId = selected_kudos.id;
       var tokenId = selected_kudos.token_id;
+      var send_type = 'github';
       var success_callback = function(txid) {
         var url = 'https://' + etherscanDomain() + '/tx/' + txid;
         var msg = 'The Kudos has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
@@ -116,7 +142,7 @@ window.onload = function() {
         unloading_button($('.submitBounty'));
       };
 
-      return sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, to_eth_address, expires, kudosId, tokenId, success_callback, failure_callback, true);
+      return sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, to_eth_address, expires, kudosId, tokenId, success_callback, failure_callback, true, send_type);
 
     };
 
@@ -196,6 +222,7 @@ window.onload = function() {
         }
 
         var final_callback = function(error, result) {
+          indicateMetamaskPopup();
           var next = function() {
             // setup inter page state
             localStorage[issueURL] = JSON.stringify({
@@ -205,11 +232,16 @@ window.onload = function() {
               'txid': result
             });
 
-            _alert({ message: gettext('Submitted transaction to web3.') }, 'info');
-            setTimeout(() => {
-              document.location.href = '/funding/details?url=' + issueURL;
-            }, 1000);
+            _alert({ message: gettext('Submitted transaction to web3, saving comment(s)...') }, 'info');
 
+            var finishedComment = function() {
+              _alert({ message: gettext('Submitted transaction to web3.') }, 'info');
+              setTimeout(() => {
+                document.location.href = '/funding/details?url=' + issueURL;
+              }, 1000);
+            };
+
+            finishedComment();
           };
 
           if (error) {
@@ -227,7 +259,7 @@ window.onload = function() {
 
         // send both tip and payout
         var send_tip_and_payout_callback = function() {
-          _alert({ message: gettext('You will now be asked to confirm another transaction (please check metamask, sometimes the second popup doesnt come up).') }, 'info');
+          indicateMetamaskPopup();
           if ($('#tipPercent').val() > 0) {
             attach_and_send_tip(send_payout);
           } else {
@@ -245,7 +277,7 @@ window.onload = function() {
       // Get bountyId from the database
 
       waitforWeb3(function() {
-        var uri = '/api/v0.1/bounties/?github_url=' + issueURL + '&network=' + $('input[name=network]').val() + '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
+        var uri = '/api/v0.1/bounties/?event_tag=all&github_url=' + issueURL + '&network=' + $('input[name=network]').val() + '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
 
         $.get(uri, apiCallback);
       });
@@ -281,6 +313,7 @@ window.onload = function() {
         }
       }
     );
+    rateUser();
 
   }, 100);
 };

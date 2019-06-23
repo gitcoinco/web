@@ -3,7 +3,7 @@ var is_metamask_approved = is_metamask_approved || false;
 var is_metamask_unlocked = is_metamask_unlocked || false;
 
 async function metamaskApproval() {
-  if (window.ethereum) {
+  if (window.ethereum && window.ethereum._metamask) {
     window.web3 = new Web3(ethereum);
     is_metamask_approved = await window.ethereum._metamask.isApproved();
     is_metamask_unlocked = await window.ethereum._metamask.isUnlocked();
@@ -17,7 +17,7 @@ async function metamaskApproval() {
         var did_request_and_user_respond = (now_time - start_time) > 1.0;
 
         if (did_request_and_user_respond) {
-          document.location.href = document.location.href;
+          document.location.reload();
         }
       }
     } catch (error) {
@@ -38,7 +38,7 @@ async function approve_metamask() {
     var did_request_and_user_respond = (now_time - start_time) > 1.0;
 
     if (did_request_and_user_respond) {
-      document.location.href = document.location.href;
+      document.location.reload();
     }
     is_metamask_approved = true;
   } catch (error) {

@@ -20,13 +20,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from grants.models import Contribution, Grant, Subscription
+from grants.models import CLRMatch, Contribution, Grant, MatchPledge, Subscription
 
 
 class GeneralAdmin(admin.ModelAdmin):
     """Define the GeneralAdmin administration layout."""
 
     ordering = ['-id']
+
+
+class MatchPledgeAdmin(admin.ModelAdmin):
+    """Define the MatchPledge administration layout."""
+
+    ordering = ['-id']
+    raw_id_fields = ['profile']
 
 
 class GrantAdmin(GeneralAdmin):
@@ -37,16 +44,17 @@ class GrantAdmin(GeneralAdmin):
         'title', 'description', 'reference_url', 'admin_address', 'active',
         'amount_goal', 'amount_received', 'monthly_amount_subscribed',
         'deploy_tx_id', 'cancel_tx_id', 'admin_profile', 'token_symbol',
-        'token_address', 'contract_address', 'network', 'required_gas_price', 'logo_svg_asset',
+        'token_address', 'contract_address', 'contract_version', 'network', 'required_gas_price', 'logo_svg_asset',
         'logo_asset', 'created_on', 'modified_on', 'team_member_list',
-        'subscriptions_links', 'contributions_links',
+        'subscriptions_links', 'contributions_links', 'logo', 'logo_svg', 'image_css',
+         'link', 'clr_matching', 'hidden'
     ]
     readonly_fields = [
-        'logo_svg_asset', 'logo_asset', 'created_on', 'modified_on', 'token_address', 'contract_address',
-        'deploy_tx_id', 'cancel_tx_id', 'token_symbol',
-        'network', 'amount_goal', 'amount_received', 'team_member_list',
-        'subscriptions_links', 'contributions_links',
+        'logo_svg_asset', 'logo_asset',
+        'team_member_list',
+        'subscriptions_links', 'contributions_links', 'link', 
     ]
+    raw_id_fields = ['admin_profile']
 
     # Custom Avatars
     def logo_svg_asset(self, instance):
@@ -63,6 +71,13 @@ class GrantAdmin(GeneralAdmin):
 
         return mark_safe(" , ".join(items))
 
+    def link(self, instance):
+        try:
+            html = f"<a href={instance.url}>{instance.url}</a>"
+
+            return mark_safe(html)
+        except:
+            return "N/A"
 
     def logo_asset(self, instance):
         """Define the logo image tag to be displayed in the admin."""
@@ -97,11 +112,14 @@ class GrantAdmin(GeneralAdmin):
     logo_asset.short_description = 'Logo Image Asset'
 
 
+
 class SubscriptionAdmin(GeneralAdmin):
     """Define the Subscription administration layout."""
     raw_id_fields = ['grant', 'contributor_profile']
     readonly_fields = [
         'contributions_links',
+        'error_email_copy_insufficient_balance',
+        'error_email_copy_not_active',
     ]
 
     def contributions_links(self, instance):
@@ -114,12 +132,56 @@ class SubscriptionAdmin(GeneralAdmin):
 
         return mark_safe("<BR>".join(eles))
 
+    def error_email_copy_insufficient_balance(self, instance):
+        if not instance.error:
+            return ''
+        reason = "you dont have enough of a balance of DAI in your account"
+        amount = int(instance.amount_per_period)
+        html = f"""
+<textarea>
+hey there,
+
+just wanted to let you know your contribution to https://gitcoin.co/{instance.grant.url} failed because {reason}.  if you want to add {amount} {instance.token_symbol} to {instance.contributor_address} that will make it so we can process the subscription!
+
+let us know.
+
+best,
+kevin (team gitcoin)
+</textarea>
+        """
+
+        return mark_safe(html)
+
+    def error_email_copy_not_active(self, instance):
+        if not instance.error:
+            return ''
+        reason = "you need to top up your balance of DAI in your account"
+        amount = float(instance.gas_price / 10 ** 18)
+        amount =  str('%.18f' % amount ) + f" {instance.token_symbol} ({amount} {instance.token_symbol})"
+        html = f"""
+<textarea>
+hey there,
+
+just wanted to let you know your contribution to https://gitcoin.co/{instance.grant.url} failed because {reason}.  if you want to add {amount} to {instance.contributor_address} that will make it so we can process the subscription!
+
+let us know.
+
+best,
+kevin (team gitcoin)
+</textarea>
+        """
+
+        return mark_safe(html)
+
+
 
 class ContributionAdmin(GeneralAdmin):
     """Define the Contribution administration layout."""
     raw_id_fields = ['subscription']
 
 
+admin.site.register(MatchPledge, MatchPledgeAdmin)
 admin.site.register(Grant, GrantAdmin)
+admin.site.register(CLRMatch, GeneralAdmin)
 admin.site.register(Subscription, SubscriptionAdmin)
 admin.site.register(Contribution, ContributionAdmin)

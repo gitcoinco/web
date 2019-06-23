@@ -56,12 +56,12 @@ class Notification(SuperModel):
         ('update_milestone', 'Updated Milestone'),
         ('new_kudos', 'New Kudos'),
     )
-    cta_url = models.URLField(max_length=255, blank=True)
+    cta_url = models.URLField(max_length=500, blank=True)
     cta_text = models.CharField(
         max_length=50,
         choices=NOTIFICATION_TYPES
     )
-    message_html = models.CharField(max_length=255, blank=True, help_text=_("Html message"))
+    message_html = models.CharField(max_length=2000, blank=True, help_text=_("Html message"))
     is_read = models.BooleanField(default=False)
     to_user = models.ForeignKey(
         get_user_model(),

@@ -1,0 +1,99 @@
+{% extends 'emails/template.html' %}
+
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+
+{% load i18n humanize %}
+
+{% block content %}
+
+<style>
+  .content {
+    text-align: left;
+    margin: 0.5em 2em 2em 2em;
+  }
+
+  .content p {
+    margin-bottom: 2em;
+    letter-spacing: 0em;
+  }
+
+  .content ul li {
+    margin-bottom: 1.5em;
+    letter-spacing: 0em;
+  }
+
+</style>
+
+<div class="campaign">
+
+  <h1>Day 1: Growing Open Source</h1>
+
+  <div class="content">
+    <p>
+      {% trans "Hi" %} {{ firstname }},
+    </p>
+
+    <p>
+      {% blocktrans %}
+        Welcome to Gitcoin! Our mission is to
+        <b>grow open source</b>. Open source software is a force for good in the world, and we believe it’s the key to saving the internet. While a generation of software careers has been powered by open source software, it’s still hard to make a living working on open source. We plan to bring change in Web 3.
+      {% endblocktrans %}
+    </p>
+
+    <p>
+      {% blocktrans %}
+      <a href="https://gitcoin.co/explorer">The issue Explorer</a> is our first tool towards this end. Use it to find paid issues to work on in open source. Help build projects, ship code, and get paid in crypto tokens. <a href="https://gitcoin.co/explorer">Give it a try</a> and let us know what you think!
+      {% endblocktrans %}
+    </p>
+
+    <p>
+      {% blocktrans %}
+      As time passes, we’ll send you more ways to get involved in Gitcoin. For now, we have a few areas you can nerd out with us, depending on where you’re most comfortable.
+        <ul>
+            <li><a href="http://gitcoin.co/slack">Join the Slack channel</a> and say hi on #community-intros! </li>
+            <li><a href="http://twitter.com/gitcoin">Follow us on Twitter</a> for updates on open source software. </li>
+            <li><a href="https://www.youtube.com/channel/UCeKRqRjzSzq5yP-zUPwc6_w/featured">Add the Gitcoin Livestream to your cal (<a hred="https://calendar.google.com/calendar/ical/7rq7ga2oubv3tk93hk67agdv88%40group.calendar.google.com/public/basic.ics">iCal</a>, <a href="https://calendar.google.com/calendar/hosted/consensys.net/event?action=TEMPLATE&hl=en&text=Gitcoin%20Community%20Livestream&dates=20180427T160000%2F20180427T173000&location=https%3A%2F%2Fconsensys.zoom.us%2Fj%2F385625394&ctz=America%2FChicago&details">Google</a>) for Friday at 5PM EST. We’ll have two weekly product demo’s from the blockchain & open source ecosystems (like <a href="https://www.youtube.com/watch?v=E9c-6nlYyVo&pbjreload=10">Decentraland</a> and <a href="https://www.youtube.com/watch?v=EkZHTzGJMcY">Meta Transactions</a> with Austin Griffith. 
+            </li>
+        </ul>
+      {% endblocktrans %}
+
+    </p>
+
+    <p>
+      {% blocktrans %}
+      Oh, and <a href="https://gitcoin.co/kudos/redeem/onboardingtree_01302019">here’s akudos</a> for getting to the bottom of this e-mail :) welcome to the Gitcoin Family! 
+      {% endblocktrans %}
+
+    </p>
+    <p>
+        {% blocktrans %}
+        See you on the interwebs, 
+        {% endblocktrans %}
+    </p>
+
+    <p>
+        {% blocktrans %}
+        Kevin & Vivek
+        {% endblocktrans %}
+    </p>
+
+    </div>
+</div>
+
+{% endblock %}

@@ -1,9 +1,11 @@
 import email
 import imaplib
 import logging
+import os
 import re
 import time
 from hashlib import sha1
+from secrets import token_hex
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -15,7 +17,8 @@ from django.utils.translation import LANGUAGE_SESSION_KEY
 
 import geoip2.database
 import requests
-from dashboard.models import Profile
+from avatar.models import SocialAvatar
+from avatar.utils import get_svg_templates, get_user_github_avatar_image
 from geoip2.errors import AddressNotFoundError
 from git.utils import _AUTH, HEADERS, get_user
 from ipware.ip import get_real_ip
@@ -159,6 +162,7 @@ def setup_lang(request, user):
         DoesNotExist: The exception is raised if no profile is found for the specified handle.
 
     """
+    from dashboard.models import Profile
     profile = None
     if user.is_authenticated and hasattr(user, 'profile'):
         profile = user.profile
@@ -172,8 +176,15 @@ def setup_lang(request, user):
         request.session.modified = True
 
 
+def get_upload_filename(instance, filename):
+    salt = token_hex(16)
+    file_path = os.path.basename(filename)
+    return f"docs/{getattr(instance, '_path', '')}/{salt}/{file_path}"
+
+
 def sync_profile(handle, user=None, hide_profile=True):
-    handle = handle.strip().replace('@', '')
+    from dashboard.models import Profile
+    handle = handle.strip().replace('@', '').lower()
     data = get_user(handle)
     email = ''
     is_error = 'name' not in data.keys()
@@ -226,6 +237,17 @@ def sync_profile(handle, user=None, hide_profile=True):
         token = profile.get_access_token(save=False)
         profile.github_access_token = token
         profile.save()
+
+    if profile and not profile.avatar_baseavatar_related.last():
+        github_avatar_img = get_user_github_avatar_image(profile.handle)
+        if github_avatar_img:
+            try:
+                github_avatar = SocialAvatar.github_avatar(profile, github_avatar_img)
+                github_avatar.save()
+                profile.activate_avatar(github_avatar.pk)
+                profile.save()
+            except Exception as e:
+                logger.warning(f'Encountered ({e}) while attempting to save a user\'s github avatar')
 
     return profile
 

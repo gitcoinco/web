@@ -32,7 +32,7 @@ import requests
 import twitter
 from economy.utils import convert_token_to_usdt
 from git.utils import delete_issue_comment, org_name, patch_issue_comment, post_issue_comment, repo_name
-from marketing.mails import send_mail, setup_lang, tip_email
+from marketing.mails import featured_funded_bounty, send_mail, setup_lang, tip_email
 from marketing.models import GithubOrgToTwitterHandleMapping
 from marketing.utils import should_suppress_notification_email
 from pyshorteners import Shortener
@@ -543,7 +543,8 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
             issue_message = interest.issue_message.strip()
             if issue_message:
                 msg += f"\n\n{issue_message}"
-            msg += f"\n\nLearn more [on the Gitcoin Issue Details page]({absolute_url}).\n\n"
+        
+        msg += f"\n\nLearn more [on the Gitcoin Issue Details page]({absolute_url}).\n\n"
 
     elif event_name == 'work_submitted':
         sub_msg = ""
@@ -811,7 +812,7 @@ def maybe_market_to_email(b, event_name):
         return False
 
     if event_name == 'new_bounty' and not settings.DEBUG:
-        # handled in 'new_bounties_email'
+        featured_funded_bounty(settings.CONTACT_EMAIL, bounty=b)
         return
     elif event_name == 'work_submitted':
         try:

@@ -17,6 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import base64
 import json
 import logging
 from json.decoder import JSONDecodeError
@@ -237,7 +238,7 @@ def ipfs_cat_ipfsapi(key):
 
 def ipfs_cat_requests(key):
     try:
-        url = f'https://ipfs.infura.io:5001/api/v0/cat/{key}'
+        url = f'https://ipfs.infura.io:5001/api/v0/cat?arg={key}'
         response = requests.get(url, timeout=1)
         return response.text, response.status_code
     except:
@@ -260,9 +261,16 @@ def get_web3(network, sockets=False):
     """
     if network in ['mainnet', 'rinkeby', 'ropsten']:
         if sockets:
-            provider = WebsocketProvider(f'wss://{network}.infura.io/ws')
+            if settings.INFURA_USE_V3:
+                provider = WebsocketProvider(f'wss://{network}.infura.io/ws/v3/{settings.INFURA_V3_PROJECT_ID}')
+            else:
+                provider = WebsocketProvider(f'wss://{network}.infura.io/ws')
         else:
-            provider = HTTPProvider(f'https://{network}.infura.io')
+            if settings.INFURA_USE_V3:
+                provider = HTTPProvider(f'https://{network}.infura.io/v3/{settings.INFURA_V3_PROJECT_ID}')
+            else:
+                provider = HTTPProvider(f'https://{network}.infura.io')
+
         w3 = Web3(provider)
         if network == 'rinkeby':
             w3.middleware_stack.inject(geth_poa_middleware, layer=0)
@@ -271,6 +279,62 @@ def get_web3(network, sockets=False):
         return Web3(Web3.HTTPProvider("http://testrpc:8545", request_kwargs={'timeout': 60}))
 
     raise UnsupportedNetworkException(network)
+
+
+def get_profile_from_referral_code(code):
+    """Returns a profile from the unique code
+
+    Returns:
+        A unique string for each profile
+    """
+    return base64.urlsafe_b64decode(code.encode()).decode()
+
+
+def get_bounty_invite_url(inviter, bounty_id):
+    """Returns a unique url for each bounty and one who is inviting
+
+    Returns:
+        A unique string for each bounty
+    """
+    salt = "X96gRAVvwx52uS6w4QYCUHRfR3OaoB"
+    string = str(inviter) + salt + str(bounty_id)
+    return base64.urlsafe_b64encode(string.encode()).decode()
+
+
+def get_bounty_from_invite_url(invite_url):
+    """Returns a unique url for each bounty and one who is inviting
+
+    Returns:
+        A unique string for each bounty
+    """
+    salt = "X96gRAVvwx52uS6w4QYCUHRfR3OaoB"
+    decoded_string = base64.urlsafe_b64decode(invite_url.encode()).decode()
+    data_array = decoded_string.split(salt)
+    inviter = data_array[0]
+    bounty = data_array[1]
+    return {'inviter': inviter, 'bounty': bounty}
+
+
+def get_unrated_bounties_count(user):
+    if not user:
+        return 0
+    unrated_contributed = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=user) \
+        .filter(interested__status='okay') \
+        .filter(interested__pending=False).filter(idx_status='done') \
+        .exclude(
+            feedbacks__feedbackType='worker',
+            feedbacks__sender_profile=user
+        )
+    unrated_funded = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
+    .filter(
+        bounty_owner_github_username__iexact=user.handle,
+        idx_status='done'
+    ).exclude(
+        feedbacks__feedbackType='approver',
+        feedbacks__sender_profile=user,
+    )
+    unrated_count = unrated_funded.count() + unrated_contributed.count()
+    return unrated_count
 
 
 def getStandardBountiesContractAddresss(network):
@@ -361,6 +425,7 @@ def get_bounty(bounty_enum, network):
         'token': token,
         'fulfillments': fulfillments,
         'network': network,
+        'review': bounty_data.get('review',{}),
     }
     return bounty
 
@@ -504,6 +569,18 @@ def get_ordinal_repr(num):
     else:
         suffix = ordinal_suffixes.get(num % 10, 'th')
     return f'{num}{suffix}'
+
+
+def record_funder_inaction_on_fulfillment(bounty_fulfillment):
+    payload = {
+        'profile': bounty_fulfillment.bounty.bounty_owner_profile,
+        'metadata': {
+            'bounties': list(bounty_fulfillment.bounty.pk),
+            'bounty_fulfillment_pk': bounty_fulfillment.pk,
+            'needs_review': True
+        }
+    }
+    Activity.objects.create(activity_type='bounty_abandonment_escalation_to_mods', bounty=bounty_fulfillment.bounty, **payload)
 
 
 def record_user_action_on_interest(interest, event_name, last_heard_from_user_days):
@@ -697,7 +774,7 @@ def get_tx_status(txid, network, created_on):
         else:
             status = 'unknown'
     except Exception as e:
-        logger.error(f'Failure in get_tx_status for {txid} - ({e})')
+        logger.debug(f'Failure in get_tx_status for {txid} - ({e})')
         status = 'unknown'
 
     # get timestamp

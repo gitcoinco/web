@@ -1,0 +1,63 @@
+{% load i18n humanize %}
+<a class="row result bounty_row {{ activity.grant.network }}" target="_blank"
+ {% if activity.grant.url %} href="{{ activity.grant.url }}"
+ {% elif activity.grant.reference_url %} href="{{ activity.grant.reference_url }}"
+ {% endif %}>
+  <div class="avatar-container col-1 justify-content-center special_tag hide_min_viewport">
+    {% if activity.grant.logo %}
+      <img class="avatar" src="{{ activity.grant.logo.url }}">
+    {% else %}
+      <img class="avatar" src="{% url 'org_avatar' activity.grant.admin_profile.handle %}">
+    {% endif %}
+  </div>
+  <div class="col-12 col-md-7 d-flex flex-column">
+    <div class="bounty-detail">
+      <div class="title font-subheader">
+        {{ activity.grant.title }}
+      </div>
+
+      <div class="bounty-summary col-12">
+        <div class="info font-caption">
+          {{ activity.grant.amount_received | floatformat:2 }} /
+          {{ activity.grant.amount_goal | floatformat:2 }}
+          {{ activity.grant.token_symbol }}
+          &bull; {{ activity.created_on | naturaltime }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-md-4 tags fixed font-caption align-items-center">
+    {% if activity.activity_type == 'new_grant' %}
+      <div class="tag success">
+        <p>
+          <span>{% trans "Created " %}</span>
+        </p>
+      </div>
+    {% elif activity.activity_type == 'update_grant' %}
+      <div class="tag success">
+        <p>
+          <span>{% trans "Updated " %}</span>
+        </p>
+      </div>
+    {% elif activity.activity_type == 'killed_grant' %}
+      <div class="tag warning">
+        <p>
+          <span>{% trans "Cancelled " %}</span>
+        </p>
+      </div>
+    {% else %}
+      <div class="tag in-progress">
+        <p>
+          <span>{{ activity.i18n_name }}</span>
+        </p>
+      </div>
+    {% endif %}
+    {% if activity.grant.network != 'mainnet' %}
+      <div class="tag network_warning">
+        <p>
+          <span>{{ activity.grant.network }}</span>
+        </p>
+      </div>
+    {% endif %}
+  </div>
+</a>

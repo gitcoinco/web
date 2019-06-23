@@ -43,7 +43,7 @@ For example, if `settings.GITHUB_API_USER == gitcoinco` only `github.com/gitcoin
 1. Create a new SendGrid Account at https://sendgrid.com
 2. Go to [https://app.sendgrid.com/settings/api_keys](https://app.sendgrid.com/settings/api_keys) and create a new Sendgrid API key:
 
-Update the `web/app/app/.env` file to include the values provided by Github:
+Update the `web/app/app/.env` file to include the values provided by SendGrid:
 
 ```shell
 SENDGRID_API_KEY=xxx
@@ -99,8 +99,5 @@ If you would like to track errors of your local environment, setup an account at
 Once you have access to your project secrets, you can enable Sentry error tracking for both the backend and frontend by adding the following environment variables to `web/app/app/.env`:
 
 ```shell
-SENTRY_USER=xxx
-SENTRY_PASSWORD=xxx
-SENTRY_ADDRESS=https://sentry.example.xxx
-SENTRY_PROJECT=2
+SENTRY_DSN=xxx
 ```

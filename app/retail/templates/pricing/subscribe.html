@@ -1,0 +1,216 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static cookielaw_tags matches %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/retail/plans.css" %}" />
+  </head>
+  <body class="g-font-muli plans">
+    {% include 'shared/tag_manager_2.html' %}
+    {% include 'pricing/nav.html' %}
+    <div class="row no-gutters metamask-banner">
+      {% if request.path|matches:"^\/(subscribe.*)$" %}
+        <p id="navbar-network-banner" class="px-0 py-1 m-0 font-caption hidden"></p>
+      {% endif %}
+      <div class="col-12">
+        {% include 'shared/no_metamask_error.html' %}
+        {% include 'shared/zero_balance_error.html' %}
+        {% include 'shared/unlock_metamask.html' %}
+        {% include 'shared/connect_metamask.html' %}
+      </div>
+    </div>
+    {% cookielaw_banner %}
+    <div class="banner text-center m-auto primary_form-meta">
+      <h1 class="pt-5 font-title-xl">
+        {% trans "Let’s Get You On Your Way!" %}
+      </h1>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div id="robot_error" class="hidden my-5">
+          <img src="{% static "v2/images/prime.png" %}">
+        </div>
+      </div>
+      <div class="row" id="primary_form">
+        <div class="col-12 offset-md-1 col-md-10 offset-lg-2 col-lg-8 my-5 font-subheader mx-0 mx-md-auto">
+          <!-- TODO: ADD FORM -->
+          <div class="row">
+            <div class="col-12 step row">
+              <div class="col-7 pl-0">
+                <h2 class="mb-1">{% trans "Selected Plan" %}</h2>
+                <p class="mb-0">{% trans "Compare plans and features on our" %}
+                  <a href="{% url 'pricing' %}">{% trans "pricing page" %}</a>
+                </p>
+              </div>
+              <div class="col-5 pr-0 text-right plan-info">
+                <img class="mr-1" src="{% static plan.img %}" alt="DEV-FLOW {{ plan.type|upper }} logo">
+                <p class="font-weight-semibold d-inline-block font-subheader">DEV-FLOW {{ plan.type|upper }}</p>
+              </div>
+            </div>
+            <div class="col-12 step row">
+              <div class="col-6 pl-0">
+                <div class="billed">
+                  <h2 class="mr-2 my-auto">{% trans "Billed" %}</h2>
+                  <div id="bill-period" class="form__select2 form__group-item">
+                    <select class="js-select2" name="period">
+                      <option value="monthly" selected="selected">Monthly</option>
+                      <option value="annual">Annualy</option>
+                    </select>
+                  </div>
+                </div>
+                <p class="save-more font-caption font-weight-semibold mb-0" style="color: limegreen;">{% trans "Save 10% with annual billing" %}</p>
+              </div>
+              <div class="col-6 pr-0 text-right my-auto">
+                <h2 class="price">
+                  $<span id="monthly-amount">{{ plan.price }}</span>
+                  <span class="month"> / mo</span>
+                </h2>
+              </div>
+            </div>
+            <div class="col-12 step row">
+              <div class="col-6 pl-0">
+                <h2>{% trans "Currency" %}</h2>
+              </div>
+              <div class="col-6 pr-0 text-right">
+                <h2>DAI</h2>
+              </div>
+            </div>
+
+            <div id="gas-section" class="col-12 mt-4 mb-2 py-3 step"> <!-- CHECK -->
+              <h5 class="form__label">{% trans "Gas Settings" %}</h5>
+              <div>
+                {% include 'shared/wallet_estimate.html' %}
+              </div>
+            </div>
+
+            <div class="summary font-body step pl-md-4 w-100 pb-4"> <!-- CHECK -->
+              <p class="mb-2 font-weight-semibold">{% trans "Summary" %}</p>
+              <p class="annual-pay hidden">
+                <i class="fas fa-circle mr-2"></i>
+                {% trans "You are contributing" %}
+                <span id="summary-amount" class="font-weight-bold">-</span>
+                <span id="summary-token" class="font-weight-bold">DAI</span>
+                {% trans "to this grant every" %}
+                <span id="summary-frequency-unit" class="font-weight-bold">month</span>.
+              </p>
+              <p class="annual-pay hidden">
+                <i class="fas fa-circle mr-2"></i>
+                {% trans "Your contribution will stop once this payment has happened" %}
+                <span id="summary-frequency" class="font-weight-bold">12</span> times.
+              </p>
+              <p>
+                <i class="fas fa-circle mr-2"></i>
+                {% trans "The first payment will happen within 5 minutes after you click Contribute to Grant." %}
+              </p>
+              <p>
+                <i class="fas fa-circle mr-2"></i>
+                {% trans "Note: You will have to approve 2 transactions via MetaMask on submit." %} <a target="_blank" href="https://github.com/gitcoinco/web/blob/master/docs/GRANTS.md">Read how this works</a>.
+              </p>
+            </div>
+
+            <div class="col-12 step row">
+              <div class="col-6 pl-0">
+                <h2>Total</h2>
+              </div>
+              <div class="col-6 pr-0 text-right">
+                <h2 class="price">
+                  <span id="total-amount">{{ plan.price }}</span> DAI
+                </h2>
+              </div>
+            </div>
+
+            <div class="col-12 offset-md-2 col-md-8 mt-5">
+              <button class="button button--full btn-gc-blue" id='js-fundGrant-button'>{% trans "Subscribe to Gitcoin Plan" %}</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' with slim=1 %}
+    {% include 'shared/footer.html' %}
+    {% include 'shared/messages.html' %}
+  </body>
+
+  <script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>
+  <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/ipfs.js" %}"></script>
+  <script src="{% static "v2/js/amounts.js" %}"></script>
+  <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
+  <script src="{% static "v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/user-search.js" %}"></script>
+  <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
+  <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
+  <script src="{% static 'v2/js/lib/animate-number.min.js' %}"></script>
+
+  <script>
+    $(document).ready(function() {
+
+      if(getParam('pack') == 'annual')
+        updateData('annual');
+
+      $('.js-select2').select2({
+        minimumResultsForSearch: -1
+      });
+
+      $('#bill-period').on('select2:select', event => {
+        const data = event.params.data.id;
+        updateData(data);
+      });
+    });
+
+    const updateData = period => {
+      if(period == 'annual') {
+        $('.annual-pay').removeClass('hidden');
+        $('.save-more').addClass('hidden');
+        let monthly_amount = Number($('#monthly-amount').html());
+
+        $('#summary-amount').html(monthly_amount);
+
+        monthly_amount = monthly_amount - monthly_amount / 10;
+        $('#monthly-amount').animateNumber({
+          number: monthly_amount
+        });
+
+        $('#total-amount').animateNumber({
+          number: monthly_amount * 12
+        })
+      } else {
+        $('.annual-pay').addClass('hidden');
+        $('.save-more').removeClass('hidden');
+        const monthly_amount = `{{ plan.price }}`;
+
+        $('#monthly-amount').animateNumber({
+          number: Number(monthly_amount)
+        });
+
+        $('#total-amount').animateNumber({
+          number: monthly_amount
+        })
+      }
+    }
+  </script>
+</html>

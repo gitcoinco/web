@@ -81,14 +81,15 @@ def record_tip_activity(tip, github_handle, event_name):
         kwargs['profile'] = associated_profile
 
     try:
-        kwargs['bounty'] = tip.bounty
+        if tip.bounty:
+            kwargs['bounty'] = tip.bounty
     except Exception:
         pass
 
     try:
         Activity.objects.create(**kwargs)
     except Exception as e:
-        logger.error('error in record_tip_activity: %s - %s - %s - %s', e, event_name, tip, github_handle)
+        logger.debug('error in record_tip_activity: %s - %s - %s - %s', e, event_name, tip, github_handle)
 
 
 @csrf_exempt
@@ -213,7 +214,8 @@ def send_tip_4(request):
     # notifications
     maybe_market_tip_to_github(tip)
     maybe_market_tip_to_slack(tip, 'New tip')
-    maybe_market_tip_to_email(tip, tip.emails)
+    if tip.primary_email:
+        maybe_market_tip_to_email(tip, [tip.primary_email])
     record_user_action(tip.from_username, 'send_tip', tip)
     record_tip_activity(tip, tip.from_username, 'new_tip' if tip.username else 'new_crowdfund')
 

@@ -14,27 +14,34 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static avatar_tags %}
 <div class="col-12 col-lg-4">
   <div class="profile-header__stats profile-header__stats--contributor card mb-4">
     <div class="card-header font-subheader">
+      {% if scoreboard_position_org %}
+        <b>#{{ scoreboard_position_org }}</b> 
+      {% else %}
+        <b>&nbsp;</b> 
+      {% endif %}
       {% trans "Organization" %}
     </div>
     <div class="card-body font-subheader">
       <ul>
-        <li><span class="highlight">{{ count_bounties_on_repo }}</span> {% trans "bounties" %}</li>
-        <li><span class="highlight">{{ sum_eth_on_repos|floatformat:2 }}</span> {% trans "ETH" %}</li>
-        {% if scoreboard_position_org %}
-          <li><span class="highlight">#{{ scoreboard_position_org }}</span> {% trans "org" %}</li>
-        {% endif %}
+        <li><b>{{ count_bounties_on_repo }}</b> {% trans "bounties" %}</li>
+        <li><b>{{ sum_eth_on_repos|floatformat:2 }}</b> {% trans "ETH" %}</li>
         <li class="works_with_list">
-          {% if works_with_org|length != 0 %}
-            <span class="font-body">( <i class="fa fa-code"></i> ) {% trans "Contributors" %}:</span>
+          {% if works_with_org|length %}
+            <span class="font-body"><i class="fa fa-code"></i> {% trans "Contributors" %}:</span>
             {% for profile, num_times in works_with_org.items %}
-              <a href="{% url 'profile' profile %} ">
-                <img src='{% if profile.avatar and profile.avatar.svg %}{{ profile.avatar.svg.url }}{% else %}/dynamic/avatar/{{ profile }}{% endif %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
-              </a>
+              {% if forloop.counter < 9 %}
+                <a href="{% url 'profile' profile %} ">
+                  <img src='{% avatar_url profile %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
+                </a>
+              {% endif %}
             {% endfor %}
+            {% if works_with_org|length > 8 %}
+              <div href="" class="plus-img" data-container="body" data-toggle="popover" data-template='<div class="popover big-popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>' data-html="true" data-placement="bottom" data-trigger="hover click" data-content='{% for profile, num_times in works_with_org.items|slice:"5:" %}<a href="{% url "profile" profile %}"><img class="rounded-circle m-1" width="30" height="30" title="{{profile}}: {{ num_times }} times" src="{% avatar_url profile %}"/></a>{% endfor %}'><span>+{{works_with_org|length|add:"-8"}}</span></div>
+            {% endif %}
           {% endif %}
         </li>
       </ul>

@@ -3,13 +3,13 @@ const editableFields = [
   '#form--input__reference-url',
   '#grant-admin',
   '#contract_owner_address',
-  '#form--input__description',
   '#grant-members',
   '#amount_goal'
 ];
 
 $(document).ready(function() {
   showMore();
+  addGrantLogo();
 
   setInterval (() => {
     notifyOwnerAddressMismatch(
@@ -20,16 +20,21 @@ $(document).ready(function() {
     );
   }, 1000);
 
-  userSearch('#grant-admin');
-  userSearch('#grant-members');
+  let _text = grant_description.getContents();
+
+  userSearch('#grant-admin', false, undefined, false, false, true);
+  userSearch('#grant-members', false, undefined, false, false, true);
   $('.select2-selection__rendered').removeAttr('title');
-  $('#form--input__description').height($('#form--input__description').prop('scrollHeight'));
   $('#form--input__title').height($('#form--input__title').prop('scrollHeight'));
   $('#form--input__reference-url').height($('#form--input__reference-url').prop('scrollHeight'));
 
   $('#edit-details').on('click', (event) => {
     event.preventDefault();
 
+    if (grant_description) {
+      grant_description.enable(true);
+      grant_description.getContents();
+    }
     $('#edit-details').addClass('hidden');
     $('#save-details').removeClass('hidden');
     $('#cancel-details').removeClass('hidden');
@@ -46,6 +51,10 @@ $(document).ready(function() {
   });
 
   $('#save-details').on('click', (event) => {
+    if (grant_description) {
+      grant_description.enable(false);
+    }
+
     $('#edit-details').removeClass('hidden');
     $('#save-details').addClass('hidden');
     $('#cancel-details').addClass('hidden');
@@ -55,11 +64,12 @@ $(document).ready(function() {
     let edit_title = $('#form--input__title').val();
     let edit_reference_url = $('#form--input__reference-url').val();
     let edit_admin_profile = $('#grant-admin option').last().text();
-    let edit_description = $('#form--input__description').val();
+    let edit_description = grant_description.getText();
+    let edit_description_rich = JSON.stringify(grant_description.getContents());
     let edit_amount_goal = $('#amount_goal').val();
     let edit_grant_members = $('#grant-members').val();
 
-    if (editableFields['edit_admin_profile'] != edit_admin_profile)
+    if (editableFields['edit_admin_profile'] && editableFields['edit_admin_profile'] != edit_admin_profile)
       localStorage['request_change'] = 'R';
 
     $.ajax({
@@ -70,6 +80,7 @@ $(document).ready(function() {
         'edit-reference_url': edit_reference_url,
         'edit-admin_profile': edit_admin_profile,
         'edit-description': edit_description,
+        'edit-description_rich': edit_description_rich,
         'edit-amount_goal': edit_amount_goal,
         'edit-grant_members[]': edit_grant_members
       },
@@ -85,6 +96,10 @@ $(document).ready(function() {
   });
 
   $('#cancel-details').on('click', (event) => {
+    if (grant_description) {
+      grant_description.enable(false);
+      grant_description.setContents(_text);
+    }
     $('#edit-details').removeClass('hidden');
     $('#save-details').addClass('hidden');
     $('#cancel-details').addClass('hidden');
@@ -94,9 +109,6 @@ $(document).ready(function() {
   });
 
   $('#cancel_grant').on('click', function(e) {
-    // $('#cancelModal').modal({
-    //   modalClass: 'modal cancel_grants'
-    // });
 
     $('.modal-cancel-grants').on('click', function(e) {
       let contract_address = $('#contract_address').val();
@@ -188,7 +200,6 @@ const disableEdit = (input) => {
   $(input).prop('disabled', true);
 
   $('#contract_owner_button').addClass('hidden');
-  $('.grant__specs textarea').css('background-color', '#F2F6F9');
 };
 
 const copyDuplicateDetails = () => {
@@ -211,5 +222,7 @@ const copyDuplicateDetails = () => {
 };
 
 $(document).ready(() => {
-  setupTabs('#grant-profile-tabs');
+  $('#grant-profile-tabs button').click(function() {
+    document.location = $(this).attr('href');
+  });
 });

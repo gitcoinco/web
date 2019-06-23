@@ -1,0 +1,45 @@
+{% load static humanize i18n grants_extra %}
+{% if grant.clr_matching or clr_matching_banners_style == "pledging" %}
+  <style>
+    #CLR_banner {
+      background: rgba(62,0,255,0.03);
+      border-radius: 5px;
+      color: var(--gc-blue);
+    }
+
+    #CLR_banner img {
+      height: 3rem;
+    }
+  </style>
+  <div id="CLR_banner" class="my-2 p-3 d-flex">
+
+    {% if clr_matching_banners_style == "results" %}
+
+      <a class="my-auto logo" target="new" href="https://medium.com/gitcoin/gitcoin-grants-clr-matching-ecbc87b10038">
+        <img src="{% static "v2/images/eth_dollar.png" %}" />
+      </a>
+
+      <div class="clr-text pl-2">
+        <p class="mt-2 mb-1 font-weight-semibold">
+          ${{grant.clr_matching}} in CLR Matching
+        </p>
+        <p class="mb-0">
+          This project had contributions matched via <a target="new" href="https://medium.com/gitcoin/gitcoin-grants-50k-oss-fund-e20e09dc2110">CLR</a>.
+        </p>
+      </div>
+
+    {% else %}
+
+      <a class="my-auto logo" target="new" href="https://medium.com/gitcoin/gitcoin-grants-50k-oss-fund-e20e09dc2110">
+        <img src="{% static "v2/images/eth_dollar.png" %}" />
+      </a>
+
+      <div class="clr-text pl-2">
+        <p class="mt-2 mb-1 font-weight-semibold">
+          This Grant is accepting Matching Contributions
+        </p>
+      </div>
+
+    {% endif %}
+  </div>
+{% endif %}

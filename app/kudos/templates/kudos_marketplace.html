@@ -44,21 +44,39 @@
           {% trans "Feeling creative?" %} <a href="https://github.com/gitcoinco/kudosbadges/issues/new" target="_blank" class="">{% trans "Mint Your Own!" %}</a>
         </div>
       </div>
+      {% endif %}
+
       <script>
-        if (window.location.search === "?q=konami+code") {
+        show_konami = true;
+        if (show_konami) {
           let cursor = 0;
+          // UUDDLRLRBA
           const KONAMI_CODE = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
           document.addEventListener('keydown', (e) => {
             cursor = (e.keyCode == KONAMI_CODE[cursor]) ? cursor + 1 : 0;
-            if (cursor == KONAMI_CODE.length) activate();
+            if (cursor == KONAMI_CODE.length) activate(window.location.search);
           });
 
-          function activate () {
-            window.open('https://gitcoin.co/kudos/redeem/konamicode2018');
+          function activate (keyword) {
+            console.log('konami');
+
+            // play sound and go to URL
+            setTimeout(function(){
+              var audio = new Audio('{% static 'v2/audio/secret-discovery-sound.wav' %}');
+              audio.play();
+              // go to URL
+              setTimeout(function(){
+                if(window.location.search === "?q=ethdenver"){
+                  window.location.href = 'https://gitcoin.co/kudos/redeem/top_secret_bufficorn_kudos_2019a';
+                } else {
+                  window.location.href = 'https://gitcoin.co/kudos/redeem/konamicode2018' ;
+                }
+              }, 2500);
+            }, 200)
           }
         }
       </script>
-      {% endif %}
+
       <div class="row justify-content-center">
         {% for listing in listings %}
           <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
@@ -86,9 +104,9 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with slim=1 %}
-    <script src="{% static "v2/js/popper.min.js" %}"></script>
-    <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
-    <script src="{% static "v2/js/jquery-unveil.js" %}"></script>
+    <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
+    <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+    <script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
     <script>
       $(document).ready(function() {
         $("img").unveil(200);

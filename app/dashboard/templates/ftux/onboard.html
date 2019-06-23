@@ -26,15 +26,16 @@
     <link rel="stylesheet" href={% static "v2/css/onboard.css" %}>
     <link rel="stylesheet" href={% static "v2/css/avatar_builder.css" %}>
     <link rel="stylesheet" href={% static "v2/css/quickstart.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/avatar.css" %}>
   </head>
   <body class="g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      {% include 'shared/nav.html' %}
+      {% include 'home/nav.html' %}
     </div>
     <div class="row">
-      <div class="col-12 offset-sm-1 col-sm-10 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
+      <div class="col-12 col-sm-10 m-auto">
         <form id="onboarding">
           <div class="state">
             {% for step in steps %}
@@ -62,6 +63,7 @@
   {% csrf_token %}
   <script type="text/javascript">
     var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+    var jobLocations = {% if profile.job_location %}{{profile.job_location|safe }};{% else %}[];{% endif %}
   </script>
   <script>
     var steps = [];
@@ -71,6 +73,8 @@
     {% endfor %};
   </script>
   <script src="{% static "v2/js/pages/onboard.js" %}"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBaJ6gEXMqjw0Y7d5Ps9VvelzOOvfV6BvQ&libraries=places&callback=initPlacecomplete"></script>
+  <script src="{% static "v2/js/jobs.js" %}"></script>
   <script src="{% static "v2/js/avatar_builder.js" %}" defer></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>

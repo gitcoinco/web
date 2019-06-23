@@ -15,20 +15,17 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
-<div id="connect_metamask_error" class="submit-notification metamask-error container-fluid" style="display: none;">
-  <div class="row align-items-center px-4 py-2 text-center text-lg-left">
-    <div class="col-lg-10 col-sm-12 py-2 px-5">
-      <h3>{% trans "Please Connect to Metamask to Continue" %}</h3>
-      <p>
-        {% trans "In order to continue, you'll need to connect to metamask." %}
-      </p>
-      <p>
-        {% trans "Please connect to Metamask and refresh the page." %}
-        <button id="metamask_connect" class="font-caption mx-1" onclick="approve_metamask()">{% trans "Click here to connect to metamask" %}</button>
-      </p>
+<div id="connect_metamask_error" class="metamask-error container-fluid" style="display: none;">
+  <div class="row align-items-center px-4 py-5 text-center text-lg-left mx-lg-5">
+    <div class="col-lg-6 offset-xl-1 col-xl-5 col-sm-12 py-5 px-5">
+      <h3>{% trans "To continue," %} <br>
+        {% trans "you'll need to connect Metamask." %}</h3>
+      <p class="my-4">{% trans "Please connect MetaMask and refresh this page to continue." %}</p>
+      <button class="btn btn-metamask btn-lg-padding" onclick="approve_metamask()">{% trans 'Connect Metamask' %}</button>
+      <p class="mt-4 font-smaller-2">{% trans "Can't get web3 to work?" %}   <a href="https://github.com/gitcoinco/gitcoinco/issues/4" target="_blank" rel="noopener noreferrer">{% trans "Get help here." %}</a></p>
     </div>
-    <div class="col-lg-2 col-sm-12">
-      <img src="{% static "v2/images/metamask.svg" %}" alt="Metamask Logo">
+    <div class="col-lg-6 col-xl-5 col-sm-12 text-center">
+      <img src="{% static "v2/images/metamask/connect-metamask.svg" %}" alt="Metamask Logo" class="mw-100">
     </div>
   </div>
 </div>

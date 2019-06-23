@@ -1,0 +1,159 @@
+{% comment %}
+    Copyright (C) 2019 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards_pic.html' %}
+    <style>
+      .link {
+        text-decoration: none;
+        color: #0D0764;
+      }
+
+      #wrong_owner,
+      #success_container,
+      #primary_form {
+        display: none;
+      }
+
+      .form__label {
+        color: #666666;
+        margin-bottom: 0.2rem;
+        margin-top: 0.2rem;
+      }
+    </style>
+  </head>
+  <body class="{{active}} g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    <div class="container-fluid header dash px-0">
+      {% include 'shared/nav.html' %}
+    </div>
+    <div class="row metamask-banner">
+      <div class="col-12">
+        {% include 'shared/no_issue_error.html' with page='refund_request' %}
+        {% include 'shared/no_metamask_error.html' %}
+        {% include 'shared/zero_balance_error.html' %}
+        {% include 'shared/unlock_metamask.html' %}
+        {% include 'shared/connect_metamask.html' %}
+      </div>
+    </div>
+    {% if duplicate %}
+      <div class="col-12 my-5 mx-auto col-md-6 text-center">
+        <img class="obiwan my-4" src="{% static "v2/images/obiwan-bot.svg" %}">
+        <h1 class="font-title-xl mt-4">{% trans "Ah a duplicate request!" %}</h1>
+        <p class="font-subheader mt-2 mb-0 font-weight-semibold py-3">
+          {% trans "A request has already been raised for this bounty." %} <br>
+          {% trans "It's being reviewed by the Gitcoin Team." %}
+        </p>
+        <a class="link" href="{{ bounty.github_url }}">
+          <i class="font-caption fas fa-arrow-left mr-2"></i>
+          {% trans "Back to Bounty" %}
+        </a>
+      </div>
+    {% else %}
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12 mb-5">
+            <div class="row">
+              <div id="robot_error" class="hidden">
+                <img src="{% static "v2/images/prime.png" %}">
+              </div>
+
+              <div id="wrong_owner" class="col-12 my-5 mx-auto col-md-6 text-center">
+                <img class="obiwan my-4" src="{% static "v2/images/obiwan-bot.svg" %}">
+                <h1 class="font-title-xl mt-4">{% trans "You are not the chosen one." %}</h1>
+                <p class="font-subheader mt-2 mb-0 font-weight-semibold py-3">
+                  {% trans "Login as the funder to submit a fee refund request for this bounty." %}
+                </p>
+              </div>
+
+              <div class="mt-5" id="primary_form">
+                <div class="media">
+                  <div class="align-self-center ">
+                    <img src="{% static "v2/images/helmet_front.png" %}">
+                  </div>
+                  <div class="media-body align-self-center">
+                    <h4 class="text-left">{% trans "Request Bounty Fee Refund" %}</h4>
+                    <p>{% trans "(Funder only)" %}</p>
+                  </div>
+                </div>
+                <p class="mt-2">{% trans "If Gitcoin has charged you fee which shouldn't have been charged. Let us know and we'll look into it." %}</p>
+                {% csrf_token %}
+                <form id="submitBounty" class="font-smaller-2">
+                  <div class="w-100">
+                    <p class="font-body font-weight-semibold">
+                      <a class="link" href="{{ bounty.get_absolute_url }}">{% trans "Back to Bounty" %}</a>
+                    </p>
+                    <label class="form__label font-weight-semibold" for="issueURL">{% trans "Issue URL" %}</label>
+                    <p><a id="issueURL" class="font-body link mb-3" href="{{ bounty.get_absolute_url }}">{{ bounty.get_absolute_url }}</a></p>
+                    <label class="form__label font-weight-semibold" for="funder_owner">{% trans "Funder" %}</label>
+                    <p id="bounty_owner" class="font-body mb-3">{{ bounty.bounty_owner_github_username }}</p>
+                    <label class="form__label font-weight-semibold" for="funder_address">{% trans "Funder Address" %}</label>
+                    <p id="funder_address" class="font-body mb-3">{{ bounty.bounty_owner_address }}</p>
+                  </div>
+
+                  <div class="mt-3 mb-2">
+                    <h6 class="form__label font-weight-semibold">{% trans "Reason" %}</h6>
+                    <p class="mb-3">{% trans "Please let us know why you felt extra fees were charged" %}</p>
+                    <textarea class="form__input mt-0" name="refund_reason" id="refund_reason" cols="10" rows="4" required placeholder="Explain how the charges were extra"></textarea>
+                  </div>
+
+                  <input id="pk" type="hidden" value="{{ bounty.pk }}"/>
+                  <div class="text-center mt-3">
+                    <button id="submitRequest" class="button button--primary button--warning" style="width: 100%;">{% trans "Submit Request" %}</button>
+                  </div>
+                </form>
+              </div>
+
+              <div id="success_container" class="col-12 my-5 mx-auto col-md-6 text-center">
+                <h5 class="mt-5 mb-2">{% trans "Request Received" %}</h5>
+                {% include 'svgs/success.svg' %}
+                <div class="mt-4">
+                  <p class="mb-2 font-weight-semibold">
+                    <a class="link" href="{{ bounty.github_url }}">
+                      <i class="font-caption fas fa-arrow-left"></i>
+                      {% trans "Back to Bounty" %}
+                    </a>
+                  </p>
+                  <p class="mb-2">{% trans "Your fee refund request has been received." %}</p>
+                  <p class="mb-2">{% trans "The Gitcoin team will review your request shortly," %}</p>
+                  <p class="mb-2">{% trans "While you wait, why not create an *free* Gitcoin ENS name?" %}</p>
+                  <a class="link" href="{% url 'ens' %}">
+                    {{ bounty.bounty_owner_github_username }}.gitcoin.eth is available.  Click here to register it!
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+    {% include 'shared/messages.html' %}
+  </body>
+  <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
+  <script src="{% static "v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
+  <script src="{% static "v2/js/pages/refund_request.js" %}"></script>
+</html>

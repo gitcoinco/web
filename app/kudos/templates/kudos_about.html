@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -109,7 +109,7 @@
 
     {% if activities|length %}
       <section class="container-fluid p-5 activity">
-        {% include 'landing/contributor/activity.html' with title='Recently Sent Kudos' suppress_cta=1 %}
+        {% include 'bounties/contributor/activity.html' with title='Recently Sent Kudos' suppress_cta=1 %}
       </section>
     {% endif %}
 
@@ -408,9 +408,21 @@
 
         <div>
           <div class="mb-3 faq-item">
+            <h5 class="accordion">I am not an artist and I want to a kudos created.  Can you help!?</h5>
+            <div class="panel">
+              <p>
+                Yes, Anyone can create a kudos!
+                <a href="https://github.com/gitcoinco/kudosbadges/blob/master/README.md#to-create-a-new-kudos">To create a new kudos, click here and follow the instructions.</a>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="mb-3 faq-item">
             <h5 class="accordion">I have another question and it's not listed here.</h5>
             <div class="panel">
-              <p><a href="https://twitter.com/getgitcoin">Tweet us</a> or <a href="mailto:founders@gitcoin.co">Email Us</a></p>
+              <p><a href="https://twitter.com/gitcoin">Tweet us</a> or <a href="mailto:founders@gitcoin.co">Email Us</a></p>
             </div>
           </div>
         </div>
@@ -419,8 +431,8 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with slim=1 %}
-    <script src="{% static "v2/js/popper.min.js" %}"></script>
-    <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
+    <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
+    <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
     <script>
       $(document).ready(function() {
 

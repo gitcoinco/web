@@ -231,7 +231,7 @@ input[type='email']:focus,
 input[type='tel']:focus,
 select:focus,
 textarea:focus {
-  border-color: #ff7496;
+  border-color: #0366d6;
 }
 
 .select-wrapper {

@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -56,6 +56,7 @@ class Command(BaseCommand):
         # setup
         handles = set([b.org_name for b in Bounty.objects.current()])
         for handle in handles:
+            handle = handle.lower()
             print(handle)
             if is_blocked(handle)or is_deleted_account(handle):
                 print('not syncing, handle is blocked')

@@ -2,6 +2,18 @@
   .grant-detail .container {
     max-width: 85vw
   }
+
+  #editor.ql-bubble .ql-editor {
+    padding: 0;
+  }
+
+  #editor .ql-editor p {
+    font-size: 1rem;
+  }
+}
+
+.grant_details {
+  background-color: #F8FAFC;
 }
 
 .grant-item__owner-image,
@@ -14,19 +26,13 @@
   height: 50px;
 }
 
-.grant-item__owner .select2-selection
-.grant-item__member .select2-selection,
-.grant__header,
-.inline-edit {
-  background-color: #F2F6F9;
-}
-
 .grant-item__owner .select2-selection,
 .grant-item__member .select2-selection {
-  border-radius: 2px !important;
   font-size: 0.75rem;
-  margin-top: 0.5rem;
   outline: none;
+  border-color: #e2eaf2 !important;
+  background: #fff !important;
+  color: #000 !important;
 }
 
 .grant-item__member .select2-container--default .select2-selection--multiple .select2-selection__rendered {
@@ -35,34 +41,24 @@
 
 .grant-item__member .select2-container--default .select2-selection--multiple .select2-selection__choice {
   border-radius: 2px;
+  background-color: #fff;
+  border-color: #e2eaf2 !important;
 }
 
 .grant-item__members {
-  display: flex;
   text-align: center;
 }
 
-.grant__header .grant-item__member-image img {
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-}
-
-.select2-container--default .select2-selection--single .select2-selection__arrow {
-  top: 10px;
+#grant-profile-tabs .section-tab {
+  letter-spacing: 1.5px;
 }
 
 .grant__header {
   position: relative;
 }
 
-.grant__title {
-  color: #43484D;
-}
-
-.grant__url a {
-  text-decoration: none;
-  color: #0D0764;
+.summary-info i {
+  color: #666666;
 }
 
 .inline-edit {
@@ -73,6 +69,26 @@
   font-weight: 500;
 }
 
+#change-logo {
+  cursor: pointer;
+}
+
+#change-logo i {
+  position: absolute;
+  padding: 0.25rem 0.5rem;
+  background: white;
+  font-size: 1.2rem;
+  border-bottom-right-radius: 2px;
+  border-bottom-left-radius: 2px;
+  opacity: 0.6;
+}
+
+#js-drop span {
+  position: relative;
+  left: 30%;
+  width: 100%;
+}
+
 .grant__description textarea,
 #contract_owner_address.editable {
   background: white !important;
@@ -81,14 +97,20 @@
 input.editable,
 textarea.editable {
   margin-top: 6px;
-  border: 1px solid #CACACA;
+  border: 1px solid #e2eaf2;
   background: white;
   padding: 7px 14px !important;
   border-radius: 3px;
 }
 
 .form__select2 .select2-container--default .select2-selection--single {
-  border: 1px solid #CACACA;
+  border: 1px solid #e2eaf2;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove,
+.select2-available__choice__remove,
+.select2-tag__choice__remove {
+  color: #000;
 }
 
 #form--input__description,
@@ -96,18 +118,20 @@ textarea.editable {
 #form--input__title,
 #contract_owner_address {
   width: 100%;
-  text-align: justify;
   resize: none;
 }
 
+#form--input__description:disabled {
+  background: #F8FAFC;
+}
+
 .article-title,
-.grant__description,
 .article-description {
   color: #43484D;
 }
 
 .grant__description span {
-  text-align: justify;
+  white-space: pre-wrap;
 }
 
 .article-description {
@@ -127,23 +151,13 @@ textarea.editable {
   border-radius: 2px;
 }
 
-.grant__specs {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.grant__stakeholders-list {
-  display: flex;
-  flex-wrap: wrap;
-}
-
 .grant__header button {
   font-weight: 500;
 }
 
 .sub-title {
-  font-weight: 600;
+  color: #666;
+  letter-spacing: 1.5px;
 }
 
 .grant-banner img {
@@ -151,9 +165,20 @@ textarea.editable {
   width: 100%;
 }
 
+.grant-logo img {
+  height: auto;
+  width: 100%;
+  max-width: 25rem;
+  box-shadow: 0 4px 10px 0 rgba(0,0,0,0.15);
+}
+
 .grant-banner {
   overflow : hidden;
   max-height: 22rem;
+}
+
+.wallet-address {
+  font-size: 0.85rem;
 }
 
 .grant__stakeholders-list img,
@@ -170,10 +195,6 @@ textarea.editable {
 
 .grant__header .fa-edit {
   animation: rotation2 0.1s linear;
-}
-
-.update-milestone {
-  background-color: white;
 }
 
 .update {
@@ -206,6 +227,18 @@ textarea.editable {
   }
 }
 
+@media (max-width: 991.98px) {
+  .summary-info i {
+    float: left;
+    position: relative;
+    top: 2px;
+  }
+
+  .logo {
+    width: 100%;
+  }
+}
+
 @media (max-width: 767.98px) {
 
   #tabs ul {
@@ -224,5 +257,14 @@ textarea.editable {
 
   #cancelModal .modal-cancel-grants {
     margin-top: 1rem;
+  }
+
+  #grant-profile-tabs {
+    text-align: center;
+    border-bottom: none;
+  }
+
+  .logo {
+    display: none;
   }
 }

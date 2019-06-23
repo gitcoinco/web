@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -58,7 +58,7 @@ class Command(BaseCommand):
             repo_name = event.get('repo', {}).get('name', '').lower()
             return repo_name in repos_we_care_about
         except AttributeError:
-            logger.error('Error in do_we_care during sync_github')
+            logger.debug('Error in do_we_care during sync_github')
             return False
 
     def sync_profile_actions(self):

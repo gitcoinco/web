@@ -78,10 +78,8 @@ For further information, please check out the [Gitcoin Bot Documentation](https:
 
 | Variable | Description | Type | Default |
 | --- | --- | --- | --- |
-| SENTRY_USER | The [Sentry](https://sentry.io) user name. | `str` | '' |
-| SENTRY_PASSWORD | The [Sentry](https://sentry.io) password. | `str` | '' |
-| SENTRY_ADDRESS | The [Sentry](https://sentry.io) host address. | `str` | '' |
-| SENTRY_PROJECT | The [Sentry](https://sentry.io) project number. | `int` | '' |
+| SENTRY_DSN | The [Sentry](https://sentry.io) DSN. | `str` | '' |
+| SENTRY_JS_DSN | The DSN for Javascript Sentry reporting (defaults to SENTRY_DSN). | `str` | '' |
 
 ## SendGrid
 
@@ -120,6 +118,8 @@ The below environment variables are useful for overwriting [Django Silk](https:/
 | Variable | Description | Type | Default |
 | --- | --- | --- | --- |
 | WEB3_HTTP_PROVIDER | The Web3 HTTP provider URI to be used. | `str` | https://rinkeby.infura.io |
+| INFURA_USE_V3 | Use new API | `bool` | False |
+| INFURA_V3_PROJECT_ID | Infura Project ID | `str` | 1e0a90928efe4bb78bb1eeceb8aacc27 |
 
 ## VSCode Remote Debugging
 
@@ -138,3 +138,12 @@ If you opt to modify the port or listener interface, you must update your `launc
 | --- | --- | --- | --- |
 | FAUCET_AMOUNT | The amount of ETH to be distributed for approved faucet requests. | `float` | .0005 |
 | GITTER_TOKEN | The Gitter chat API token. | `str` | False |
+
+
+## Kudos
+
+| Variable | Description | Type | Default |
+| --- | --- | --- | --- |
+| KUDOS_NETWORK | The kudos network you will use `rinkeby` for local | `str` | mainnet |
+| KUDOS_OWNER_ACCOUNT | Wallet address to own the kudos. | `str` | `0xD386793F1DB5F21609571C0164841E5eA2D33aD8` |
+| KUDOS_LOCAL_SYNC | Turns The kudos listener on/off | `on` or `off` | None |

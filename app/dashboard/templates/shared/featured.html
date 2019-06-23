@@ -1,0 +1,39 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+
+<div id="featured-bounty-add" class="pt-2 row">
+  <div class="col-md-7">
+    <p class="featured-text">{% blocktrans %}Your bounty will be placed on a special ‘Featured Bounties’ section <b>at the top of the Issue Explorer</b> for 14 days.{% endblocktrans %}</p>
+    <div class="form__flex-group">
+      <div class="">
+        <div class="featured_container">
+          <small class="mb-3 d-block">Note: You will have to approve this transaction separately via MetaMask on submit.</small>
+          <div class="form__checkbox">
+            <input name='featuredBounty' id='featuredBounty' type="checkbox" value=1 />
+            <label class="form__label" for='featuredBounty'>{% trans "Yes, I want to feature my bounty." %}
+              <span class="featured-price"><b class="featured-price-eth">ETH</b> (<span class="featured-price-usd">12</span> USD)</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-5 text-right">
+    <img src="{% static 'v2/images/featured-example.jpg' %}" width="314" alt="featured bounty example" class="featured-example w-auto">
+  </div>
+</div>

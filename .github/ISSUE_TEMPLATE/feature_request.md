@@ -36,5 +36,8 @@ gitcoin.co/slack
 ### Definition of Done
 [comment]: # (Any other information that would be useful, bullets are helpful.)
 
+### Data Requirements
+[comment]: # (How will we measure the success of this feature? What kind of tracking is needed for this feature (clicks, impressions, flag)?)
+
 ### Additional Information
 [comment]: # (Any other information that would be useful, content, screenshots, etc.)

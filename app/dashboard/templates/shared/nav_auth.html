@@ -38,10 +38,28 @@
           {% trans "Fund Issue" %}
         </a>
 
+        <div class="dropdown-divider"></div>
         <a class="dropdown-item" href="{% url "grants:profile" %}">
           <i class="fas"><img src="{% static "v2/images/grants/icons/black.svg" %}"></i>
           {% trans "My Grants" %}
         </a>
+        <a class="dropdown-item" href="{% url "explorer" %}?bounty_filter=createdByMe&network=mainnet&order_by=-web3_created">
+          <i class="fas"><img src="{% static "v2/images/grants/icons/black.svg" %}"></i>
+          {% trans "My Funded Bounties" %}
+        </a>
+        <a class="dropdown-item" href="{% url "explorer" %}?bounty_filter=startedByMe&network=mainnet&order_by=-web3_created">
+          <i class="fas"><img src="{% static "v2/images/grants/icons/black.svg" %}"></i>
+          {% trans "My Started Bounties" %}
+        </a>
+        <div class="dropdown-divider"></div>
+      <a class="dropdown-item" href="{% url "onboard" "profile" %}?steps=avatar">
+        <i class="fas fa-user-edit"></i>
+        {% trans "My Avatar" %}
+      </a>
+      <a class="dropdown-item" href="{% url "profile" %}">
+        <i class="fas fa-user"></i>
+        {% trans "My Profile" %}
+      </a>
       {% else %}
         <a class="dropdown-item" href="{% url "get_gitcoin" %}">
           <i class="fas fa-bolt"></i>
@@ -50,14 +68,6 @@
       {% endif %}
 
       <div class="dropdown-divider"></div>
-      <a class="dropdown-item" href="{% url "onboard" "profile" %}?steps=avatar">
-        <i class="fas fa-user-edit"></i>
-        {% trans "Build Avatar" %}
-      </a>
-      <a class="dropdown-item" href="{% url "profile" %}">
-        <i class="fas fa-user"></i>
-        {% trans "View Profile" %}
-      </a>
       <a class="dropdown-item" href="{% url "email_settings" email_key %}">
         <i class="fas fa-cog"></i>
         {% trans "Manage Settings" %}
@@ -95,7 +105,8 @@
     </div>
   </div>
   <a href="/profile/" class="nav_avatar d-none d-md-block"
-    style="background-image:url({% if user.profile.avatar %}{{ user.profile.avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %})"></a>
+    style="background-image:url({% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %})">
+  </a>
 
 {% else %}
   <a class="nav-link login interior" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"

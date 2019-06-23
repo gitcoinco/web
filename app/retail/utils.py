@@ -32,8 +32,8 @@ from cacheops import CacheMiss, cache
 from marketing.models import Alumni, EmailSubscriber, LeaderboardRank, Stat
 from requests_oauthlib import OAuth2Session
 
-programming_languages = ['css', 'solidity', 'python', 'javascript', 'ruby', 'rust', 'html', 'design']
-
+programming_languages = ['css', 'solidity', 'python', 'javascript', 'ruby', 'rust', 'html', 'design', 'java']
+programming_languages_full = ['A# .NET','A# (Axiom)','A-0 System','A+','A++','ABAP','ABC','ABC ALGOL','ABLE','ABSET','ABSYS','ACC','Accent','Ace DASL','ACL2','ACT-III','Action!','ActionScript','Ada','Adenine','Agda','Agilent VEE','Agora','AIMMS','Alef','ALF','ALGOL 58','ALGOL 60','ALGOL 68','ALGOL W','Alice','Alma-0','AmbientTalk','Amiga E','AMOS','AMPL','APL','App Inventor for Androids visual block language','AppleScript','Arc','ARexx','Argus','AspectJ','Assembly language','ATS','Ateji PX','AutoHotkey','Autocoder','AutoIt','AutoLISP / Visual LISP','Averest','AWK','Axum','B','Babbage','Bash','BASIC','bc','BCPL','BeanShell','Batch (Windows/Dos)','Bertrand','BETA','Bigwig','Bistro','BitC','BLISS','Blue','Bon','Boo','Boomerang','Bourne shell','bash','ksh','BREW','BPEL','C','C--','C++','C#','C/AL','CachÃ© ObjectScript','C Shell','Caml','Candle','Cayenne','CDuce','Cecil','Cel','Cesil','Ceylon','CFEngine','CFML','Cg','Ch','Chapel','CHAIN','Charity','Charm','Chef','CHILL','CHIP-8','chomski','ChucK','CICS','Cilk','CL','Claire','Clarion','Clean','Clipper','CLIST','Clojure','CLU','CMS-2','COBOL','Cobra','CODE','CoffeeScript','Cola','ColdC','ColdFusion','COMAL','Combined Programming Language','COMIT','Common Intermediate Language','Common Lisp','COMPASS','Component Pascal','Constraint Handling Rules','Converge','Cool','Coq','Coral 66','Corn','CorVision','COWSEL','CPL','csh','CSP','Csound','CUDA','Curl','Curry','Cyclone','Cython','D','DASL','DASL','Dart','DataFlex','Datalog','DATATRIEVE','dBase','dc','DCL','Deesel','Delphi','DCL','DinkC','DIBOL','Dog','Draco','DRAKON','Dylan','DYNAMO','E','E#','Ease','Easy PL/I','Easy Programming Language','EASYTRIEVE PLUS','ECMAScript','Edinburgh IMP','EGL','Eiffel','ELAN','Elixir','Elm','Emacs Lisp','Emerald','Epigram','EPL','Erlang','es','Escapade','Escher','ESPOL','Esterel','Etoys','Euclid','Euler','Euphoria','EusLisp Robot Programming Language','CMS EXEC','EXEC 2','Executable UML','F','F#','Factor','Falcon','Fancy','Fantom','FAUST','Felix','Ferite','FFP','FjÃ¶lnir','FL','Flavors','Flex','FLOW-MATIC','FOCAL','FOCUS','FOIL','FORMAC','@Formula','Forth','Fortran','Fortress','FoxBase','FoxPro','FP','FPr','Franz Lisp','F-Script','FSProg','G','Google Apps Script','Game Maker Language','GameMonkey Script','GAMS','GAP','G-code','Genie','GDL','Gibiane','GJ','GEORGE','GLSL','GNU E','GM','Go','Go!','GOAL','GÃ¶del','Godiva','GOM (Good Old Mad)','Goo','Gosu','GOTRAN','GPSS','GraphTalk','GRASS','Groovy','Hack (programming language)','HAL/S','Hamilton C shell','Harbour','Hartmann pipelines','Haskell','Haxe','High Level Assembly','HLSL','Hop','Hope','Hugo','Hume','HyperTalk','IBM Basic assembly language','IBM HAScript','IBM Informix-4GL','IBM RPG','ICI','Icon','Id','IDL','Idris','IMP','Inform','Io','Ioke','IPL','IPTSCRAE','ISLISP','ISPF','ISWIM','J','J#','J++','JADE','Jako','JAL','Janus','JASS','Java','JavaScript','JCL','JEAN','Join Java','JOSS','Joule','JOVIAL','Joy','JScript','JScript .NET','JavaFX Script','Julia','Jython','K','Kaleidoscope','Karel','Karel++','KEE','Kixtart','KIF','Kojo','Kotlin','KRC','KRL','KUKA','KRYPTON','ksh','L','L# .NET','LabVIEW','Ladder','Lagoona','LANSA','Lasso','LaTeX','Lava','LC-3','Leda','Legoscript','LIL','LilyPond','Limbo','Limnor','LINC','Lingo','Linoleum','LIS','LISA','Lisaac','Lisp','Lite-C','Lithe','Little b','Logo','Logtalk','LPC','LSE','LSL','LiveCode','LiveScript','Lua','Lucid','Lustre','LYaPAS','Lynx','M2001','M4','Machine code','MAD','MAD/I','Magik','Magma','make','Maple','MAPPER','MARK-IV','Mary','MASM Microsoft Assembly x86','Mathematica','MATLAB','Maxima','Macsyma','Max','MaxScript','Maya (MEL)','MDL','Mercury','Mesa','Metacard','Metafont','MetaL','Microcode','MicroScript','MIIS','MillScript','MIMIC','Mirah','Miranda','MIVA Script','ML','Moby','Model 204','Modelica','Modula','Modula-2','Modula-3','Mohol','MOO','Mortran','Mouse','MPD','CIL','MSL','MUMPS','NASM','NATURAL','Napier88','Neko','Nemerle','nesC','NESL','Net.Data','NetLogo','NetRexx','NewLISP','NEWP','Newspeak','NewtonScript','NGL','Nial','Nice','Nickle','NPL','Not eXactly C','Not Quite C','NSIS','Nu','NWScript','NXT-G','o:XML','Oak','Oberon','Obix','OBJ2','Object Lisp','ObjectLOGO','Object REXX','Object Pascal','Objective-C','Objective-J','Obliq','Obol','OCaml','occam','occam-Ï€','Octave','OmniMark','Onyx','Opa','Opal','OpenCL','OpenEdge ABL','OPL','OPS5','OptimJ','Orc','ORCA/Modula-2','Oriel','Orwell','Oxygene','Oz','P#','ParaSail (programming language)','PARI/GP','Pascal','Pawn','PCASTL','PCF','PEARL','PeopleCode','Perl','PDL','PHP','Phrogram','Pico','Picolisp','Pict','Pike','PIKT','PILOT','Pipelines','Pizza','PL-11','PL/0','PL/B','PL/C','PL/I','PL/M','PL/P','PL/SQL','PL360','PLANC','PlankalkÃ¼l','Planner','PLEX','PLEXIL','Plus','POP-11','PostScript','PortablE','Powerhouse','PowerBuilder','PowerShell','PPL','Processing','Processing.js','Prograph','PROIV','Prolog','PROMAL','Promela','PROSE modeling language','PROTEL','ProvideX','Pro*C','Pure','Python','Q (equational programming language)','Q (programming language from Kx Systems)','Qalb','Qi','QtScript','QuakeC','QPL','R','R++','Racket','RAPID','Rapira','Ratfiv','Ratfor','rc','REBOL','Red','Redcode','REFAL','Reia','Revolution','rex','REXX','Rlab','RobotC','ROOP','RPG','RPL','RSL','RTL/2','Ruby','RuneScript','Rust','S','S2','S3','S-Lang','S-PLUS','SA-C','SabreTalk','SAIL','SALSA','SAM76','SAS','SASL','Sather','Sawzall','SBL','Scala','Scheme','Scilab','Scratch','Script.NET','Sed','Seed7','Self','SenseTalk','SequenceL','SETL','Shift Script','SIMPOL','Shakespeare','SIGNAL','SiMPLE','SIMSCRIPT','Simula','Simulink','SISAL','SLIP','SMALL','Smalltalk','Small Basic','SML','Snap!','SNOBOL','SPITBOL','Snowball','SOL','Span','SPARK','SPIN','SP/k','SPS','Squeak','Squirrel','SR','S/SL','Stackless Python','Starlogo','Strand','Stata','Stateflow','Subtext','SuperCollider','SuperTalk','Swift (Apple programming language)','Swift (parallel scripting language)','SYMPL','SyncCharts','SystemVerilog','T','TACL','TACPOL','TADS','TAL','Tcl','Tea','TECO','TELCOMP','TeX','TEX','TIE','Timber','TMG','Tom','TOM','Topspeed','TPU','Trac','TTM','T-SQL','TTCN','Turing','TUTOR','TXL','TypeScript','Turbo C++','Ubercode','UCSD Pascal','Umple','Unicon','Uniface','UNITY','Unix shell','UnrealScript','Vala','VBA','VBScript','Verilog','VHDL','Visual Basic','Visual Basic .NET','Visual DataFlex','Visual DialogScript','Visual Fortran','Visual FoxPro','Visual J++','Visual J#','Visual Objects','Visual Prolog','VSXu','Vvvv','WATFIV, WATFOR','WebDNA','WebQL','Windows PowerShell','Winbatch','Wolfram','Wyvern','X++','X#','X10','XBL','XC','XMOS architecture','xHarbour','XL','Xojo','XOTcl','XPL','XPL0','XQuery','XSB','XSLT','XPath','Xtend','Yorick','YQL','Z notation','Zeno','ZOPL','ZPL']
 
 class PerformanceProfiler:
 
@@ -81,15 +81,20 @@ def strip_double_chars(txt, char=' '):
 
 def get_bounty_history_row(label, date, keyword):
     bounties = get_bounty_history_at_date(['done'], date, keyword)
-    tips = get_tip_history_at_date(date, keyword)
+    ecosystem = get_ecosystem_history_at_date(date, keyword)
+    codefund = get_codefund_history_at_date(date, keyword)
+    tips = get_tip_history_at_date(date, keyword) - ecosystem
     core_platform = bounties + tips
 
-    print(label, date, core_platform, keyword, bounties, tips)
+    print(label, date, core_platform, keyword, bounties, tips, ecosystem)
     return [
         label,
-        core_platform,
+        bounties,
+        tips,
         get_grants_history_at_date(date, keyword),
         get_kudos_history_at_date(date, keyword),
+        codefund,
+        ecosystem,
     ]
 
 
@@ -120,6 +125,54 @@ def get_grants_history_at_date(date, keyword):
 
 def get_kudos_history_at_date(date, keyword):
     return get_cryptoasset_history_at_date(date, keyword, 'kudos')
+
+
+def get_ecosystem_history_at_date(date, keyword):
+    date = date.replace(tzinfo=None)
+    amount = 0
+    if date > timezone.datetime(2018, 9, 23):
+        amount += 17380
+    if date > timezone.datetime(2018, 10, 23):
+        amount += 8021
+    if date > timezone.datetime(2018, 11, 23):
+        amount += 16917
+    if date > timezone.datetime(2019, 1, 23):
+        amount += 184043 + 24033
+    if date > timezone.datetime(2018, 12, 23):
+        amount += 51087.23
+    return amount
+
+
+def get_codefund_history_at_date(date, keyword):
+    date = date.replace(tzinfo=None)
+    amount = 0
+    # July => Feb 2019
+    # $5,500.00 $4,400.00   $9,000.00   $8,500.00   $7,450.00   $6,150.00   $9,700.00 $6,258.31
+    if date > timezone.datetime(2018, 7, 23):
+        amount += 5500
+    if date > timezone.datetime(2018, 8, 23):
+        amount += 4400
+    if date > timezone.datetime(2018, 9, 23):
+        amount += 9000
+    if date > timezone.datetime(2018, 10, 23):
+        amount += 8500
+    if date > timezone.datetime(2018, 11, 23):
+        amount += 7450
+    if date > timezone.datetime(2018, 12, 23):
+        amount += 6150
+    if date > timezone.datetime(2019, 1, 9):
+        amount += 9700
+    if date > timezone.datetime(2019, 2, 9):
+        amount += 11272
+    if date > timezone.datetime(2019, 3, 9):
+        amount += 18726
+    if date > timezone.datetime(2019, 4, 9):
+        amount += 32802
+    if date > timezone.datetime(2019, 5, 9):
+        amount += 39304
+    if date > timezone.datetime(2019, 6, 9):
+        amount += 15000 # WIP June
+    return amount
 
 
 def get_tip_history_at_date(date, keyword):
@@ -198,14 +251,28 @@ def get_funder_receiver_stats(keyword):
     tip_recipients = list(eligible_tips.values_list('receive_address', flat=True))
     bounty_recipients = list(eligible_bounty_fulfillments.values_list('fulfiller_address', flat=True))
 
+    tip_values = [tip.value_in_usdt for tip in eligible_tips]
+    bounty_values = [bounty.value_in_usdt for bounty in eligible_bounties]
+    all_values = bounty_values + tip_values
+
+    bounty_value = sum([float(ele) for ele in bounty_values if ele])
+    tip_value = sum([float(ele) for ele in tip_values if ele])
+    all_value = [float(ele) for ele in all_values if ele]
+
     num_funders = len(set(bounty_funders + tip_funders))
     num_recipients = len(set(bounty_recipients + tip_recipients))
     num_transactions = eligible_tips.count() + eligible_bounties.count()
+
+    total_value = bounty_value + tip_value
+    avg_value = round(total_value / num_transactions)
+    median_value = statistics.median(all_value)
 
     return {
         'funders': num_funders,
         'recipients': num_recipients,
         'transactions': num_transactions,
+        'avg_value': avg_value,
+        'median_value': median_value,
     }
 
 
@@ -289,14 +356,14 @@ def get_bounty_median_turnaround_time(func='turnaround_time_started', keyword=No
 
 def get_bounty_history(keyword=None, cumulative=True):
     bh = [
-        ['', 'Core Platform', 'Grants', 'Kudos'],
+        ['', 'Bounties', 'Tips', 'Grants', 'Kudos', 'Ads', 'Ecosystem'],
     ]
     initial_stats = [
-        ["December 2017", 2011 + 5534, 0, 0],
-        ["January 2018", 5093 + 15930, 0, 0],
-        ["February 2018", 7391 + 16302, 0, 0],
-        ["March 2018", 8302 + 26390, 0, 0],
-        ["April 2018", 10109 + 37342, 0, 0],
+        ["December 2017", 5534, 2011, 0, 0, 0, 0],
+        ["January 2018", 15930, 5093, 0, 0, 0, 0],
+        ["February 2018", 16302, 7391, 0, 0, 0, 0],
+        ["March 2018", 26390, 8302, 0, 0, 0, 0],
+        ["April 2018", 37342, 10109, 0, 0, 0, 0],
     ]
     if not keyword:
         bh = bh + initial_stats
@@ -345,7 +412,7 @@ def build_stat_results(keyword=None):
     context = {
         'active': 'results',
         'title': _('Results'),
-        'card_desc': _('Gitcoin is transparent by design.  Here are some stats about our core bounty product.'),
+        'card_desc': _('Gitcoin is transparent by design.  Here are some stats about our suite of OSS incentivization products.'),
     }
     pp = PerformanceProfiler()
     pp.profile_time('start')
@@ -410,13 +477,16 @@ def build_stat_results(keyword=None):
 
     # bounties history
     cumulative = False
-    context['bounty_history'] = json.dumps(get_bounty_history(keyword, cumulative))
+    bounty_history = get_bounty_history(keyword, cumulative)
+    context['bounty_history'] = json.dumps(bounty_history)
     pp.profile_time('bounty_history')
 
     # Bounties
     completion_rate = get_completion_rate(keyword)
     funder_receiver_stats = get_funder_receiver_stats(keyword)
     context['funders'] = funder_receiver_stats['funders']
+    context['avg_value'] = funder_receiver_stats['avg_value']
+    context['median_value'] = funder_receiver_stats['median_value']
     context['transactions'] = funder_receiver_stats['transactions']
     context['recipients'] = funder_receiver_stats['recipients']
     context['audience'] = json.loads(context['members_history'])[-1][1]
@@ -429,7 +499,15 @@ def build_stat_results(keyword=None):
     ])
     total_grants_usd = get_grants_history_at_date(timezone.now(), [])
     total_kudos_usd = get_kudos_history_at_date(timezone.now(), [])
-    context['universe_total_usd'] = float(total_bounties_usd) + float(total_tips_usd) + float(total_grants_usd) + float(total_kudos_usd)
+    total_codefund_usd = get_codefund_history_at_date(timezone.now(), '')
+    all_platforms = [
+        float(total_bounties_usd),
+        float(total_tips_usd),
+        float(total_grants_usd),
+        float(total_kudos_usd),
+        float(total_codefund_usd)
+        ]
+    context['universe_total_usd'] = sum(all_platforms)
     pp.profile_time('universe_total_usd')
     context['max_bounty_history'] = float(context['universe_total_usd']) * .15
     context['bounty_abandonment_rate'] = bounty_abandonment_rate
@@ -458,6 +536,20 @@ def build_stat_results(keyword=None):
     pp.profile_time('kudos_tokens')
     pp.profile_time('final')
     context['keyword'] = keyword
-    context['title'] = f"{keyword.capitalize() if keyword else ''} Results"
+    context['title'] = f"${round(context['universe_total_usd'] / 1000000, 1)}m in " + f"{keyword.capitalize() if keyword else ''} Results"
     context['programming_languages'] = ['All'] + programming_languages
+
+
+    # last month data
+    today = timezone.now()
+    first = today.replace(day=1)
+    lastMonth = first - timezone.timedelta(days=1)
+    context['prev_month_name'] = lastMonth.strftime("%B %Y")
+    context['prev_month_name_short'] = lastMonth.strftime("%B")
+    bh = bounty_history[-1] if context['prev_month_name'] == bounty_history[-1][0] else bounty_history[-2]
+    bh[0] = 0
+    context['last_month_amount'] = round(sum(bh)/1000)
+    context['last_month_amount_hourly'] = sum(bh) / 30 / 24
+    context['last_month_amount_hourly_business_hours'] = context['last_month_amount_hourly'] / 0.222
+
     return context

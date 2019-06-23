@@ -1,6 +1,22 @@
 # Kudos General Documentation
 
-## How do I get/test kudos on my local RPC node
+## How to populate my DB with kudos
+
+First be aware to update your `.env` with this entries
+
+```
+KUDOS_NETWORK=rinkeby
+KUDOS_OWNER_ACCOUNT= YOUR_ADDRESS
+KUDOS_LOCAL_SYNC=off
+```
+Then run the commands
+
+```shell
+docker-compose up
+docker-compose exec web bash -c 'cd app && python manage.py sync_kudos rinkeby filter --start earliest'
+```
+
+## How do I MINT kudos on my local RPC node
 
 This answer assumes you're using docker.
 
