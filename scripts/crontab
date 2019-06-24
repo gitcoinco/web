@@ -83,3 +83,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 10 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash post_to_craigslist 1  >> /var/log/gitcoin/post_to_craigslist.log  2>&1
 10 1 * * * cd gitcoin/coin; bash scripts/run_management_command.bash output_gas_viz  >> /var/log/gitcoin/output_gas_viz.log  2>&1
 */15 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash check_gh_ratelimit  >> /var/log/gitcoin/gh_ratelimit.log  2>&1
+
+
+## USERS
+0 1 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash set_user_personas  >> /var/log/gitcoin/set_user_personas.log  2>&1

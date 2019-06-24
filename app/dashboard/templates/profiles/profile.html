@@ -130,7 +130,12 @@
                     <div class="card-body">
                       <ul>
                         <li><b>{{ count_bounties_completed }}</b> {% trans "bounties completed" %}</li>
-                        <li><b>{{ sum_eth_collected|floatformat:2 }} ETH</b> {% trans "collected" %}</li>
+                        {% for token in sum_all_collected_tokens %}
+                          <li><b>{{ token.value_in_token|floatformat:2 }} {{ token.token_name }}</b> {% trans "collected" %}</li>
+                        {% endfor %}
+                        {% if not sum_all_collected_tokens %}
+                          <li><b>{{ sum_eth_collected|floatformat:2 }} ETH</b> {% trans "collected" %}</li>
+                        {% endif %}
                         {% if no_times_been_removed %}
                           <li> - {% trans "removed from" %} <b>{{ no_times_been_removed }}</b> {% trans "bounties" %}</li>
                         {% endif %}
@@ -166,7 +171,12 @@
                     <div class="card-body font-subheader">
                       <ul>
                         <li><b>{{ funded_bounties_count }}</b> {% trans "bounties funded" %}</li>
-                        <li><b>{{ sum_eth_funded|floatformat:2 }} ETH</b> {% trans "funded" %}</li>
+                        {% for row in sum_all_funded_tokens %}
+                          <li><b>{{ row.value_in_token|floatformat:2 }} {{ row.token_name }}</b> {% trans "funded" %}</li>
+                        {% endfor %}
+                        {% if not sum_all_funded_tokens %}
+                          <li><b>{{ sum_eth_funded|floatformat:2 }} ETH</b> {% trans "funded" %}</li>
+                        {% endif %}
                         <li class="works_with_list">
                           {% if works_with_funded|length %}
                             <span class="font-body"><i class="fab fa-ethereum"></i> {% trans "Funds" %}:</span>

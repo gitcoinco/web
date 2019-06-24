@@ -996,6 +996,18 @@ Back to shipping,
         'link_copy': 'View more',
     }, ]
 
+    sponsor = {
+        'name': 'Elk',
+        'title': 'Bringing blockchain into the physical world',
+        'image_url': 'https://elk.cc/assets/images/elk-board-1.png',
+        'link': 'http://bit.ly/ElkBlockchain',
+        'cta': 'Sign up now',
+        'body': [
+            'Introducing Elk - the development board for building hardware projects that interface with Ethereum.',
+            'We\'ll soon be on Kickstarter. <a href="http://bit.ly/ElkBlockchain" style="font-size: 14px; line-height: 18px;">Sign up now</a> and get your early bird discount!'
+        ]
+    }
+
     bounties_spec = [{
         'url': 'https://github.com/w3f/Web3-collaboration/issues/123',
         'primer': 'IPFS Integrations from Web3',
@@ -1063,6 +1075,7 @@ Back to shipping,
         'highlights': highlights,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'kudos_highlights': kudos_highlights,
+        'sponsor': sponsor,
     }
 
     response_html = premailer_transform(render_to_string("emails/bounty_roundup.html", params))

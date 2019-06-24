@@ -2077,6 +2077,22 @@ def profile(request, handle):
     return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
 
+@staff_member_required
+def funders_mailing_list(request):
+    profile_list = list(Profile.objects.filter(
+        persona_is_funder=True).exclude(email="").values_list('email',
+                                                              flat=True))
+    return JsonResponse({'funder_emails': profile_list})
+
+
+@staff_member_required
+def hunters_mailing_list(request):
+    profile_list = list(Profile.objects.filter(
+        persona_is_hunter=True).exclude(email="").values_list('email',
+                                                              flat=True))
+    return JsonResponse({'hunter_emails': profile_list})
+
+
 @csrf_exempt
 def lazy_load_kudos(request):
     page = request.POST.get('page', 1)
@@ -2770,6 +2786,11 @@ def hackathon(request, hackathon=''):
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
         'hackathon': evt,
     }
+
+    if evt.identifier == 'beyondblockchain_2019':
+        from dashboard.context.hackathon_explorer import beyondblockchain_2019
+        params['sponsors'] = beyondblockchain_2019
+
     return TemplateResponse(request, 'dashboard/index.html', params)
 
 
