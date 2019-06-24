@@ -6,7 +6,6 @@
 
 .form__select2 {
   display: flex;
-  height: 100%;
 }
 
 .form__select__icon {
@@ -52,7 +51,7 @@
 
 .form__select2 .select2-container {
   display: inline-block !important;
-  width: 100% !important;
+  min-width: 100%;
   height: 100%;
   font-size: 14px;
 }
@@ -73,6 +72,64 @@
   min-height: 37px;
   border-radius: 2px;
 }
+
+/* Multi-select */
+.g-multiselect .select2-container--default .select2-selection--multiple .select2-selection__rendered li:not(.select2-search),
+li.select2-available__choice,
+li.select2-tag__choice {
+  align-items: center;
+  border: 1px solid #3E00FF;
+  background-color: #3E00FF;
+  display: flex;
+  color: #ffffff;
+  height: 100%;
+  min-height: 25px;
+  border-radius: 3px;
+}
+
+li.select2-available__choice,
+li.select2-tag__choice {
+  margin-right: 5px;
+  margin-top: 5px;
+  padding: 0 5px;
+  cursor: pointer;
+}
+
+.g-multiselect .select2 {
+  font-size: 12px;
+}
+
+.select2-container--default .select2-results__option[aria-selected=true] {
+  background: #fff;
+  color: #000;
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+  background-color: #3E00FF;
+  color: #fff;
+}
+
+.select2-selection.select2-selection--multiple,
+.select2-selection.select2-selection--single,
+.select2-container--default.select2-selection--single,
+.form__select2.select2-container--default.select2-selection--single {
+  border-radius: 2px !important;
+  border: 1px solid #D3D3D3 !important;
+  min-height: 2.5rem !important;
+}
+
+.g-multiselect .select2-container--default .select2-selection--multiple .select2-selection__clear {
+  position: absolute;
+  right: 0;
+  margin-top: 8px;
+}
+
+.select2-container--open .select2-dropdown--below {
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+  border: 1px solid #D3D3D3 !important
+}
+/* End multi-select */
 
 .form__select2 .select2-container--default .select2-selection--single .select2-selection__rendered {
   line-height: normal;
@@ -103,4 +160,22 @@
 
 .form__select2 .select2-container--default .select2-selection--single .select2-selection__arrow b {
   display: none;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove,
+.select2-available__choice__remove,
+.select2-tag__choice__remove {
+  color: #ffffff;
+  margin-right: 10px;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+  color: #ffffff;
+}
+
+
+.select2-container--default
+.select2-selection--multiple
+.select2-selection__rendered {
+  line-height: 2.4em !important;
 }

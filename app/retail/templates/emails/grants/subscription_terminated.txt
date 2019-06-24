@@ -1,0 +1,31 @@
+{% load i18n %}
+
+{% trans "Subscription Terminated." %}
+
+{% trans "Grant" %} {{ grant.title }} {% trans "has been cancelled." %}
+
+{% trans "Your subscription for the project has been cancelled and you will no longer be charged." %}
+
+{% trans "Description" %} : {{ grant.description }}
+
+{% trans "Status" %} : {{ grant.status }}
+
+{% trans "Goal" %} : {{ grant.amount_goal }} {% trans "DAI" %}
+
+{% trans "Percentage done" %}: {{ grant.percentage_done }}
+
+{% trans "You can see the  cancelled subscription on etherscan" %} at
+{% if subscription.network == 'mainnet' %}
+  http://etherscan.io/tx/{{ subscription.cancel_tx_id }}
+{% else %}
+  http://{{ grant.network }}.etherscan.io/tx/{{ subscription.cancel_tx_id }}
+{% endif %}
+
+{% trans "You can see the  cancelled grant on etherscan" %} at
+{% if grant.network == 'mainnet' %}
+  http://etherscan.io/tx/{{ grant.cancel_tx_id }}
+{% else %}
+  http://{{ grant.network }}.etherscan.io/tx/{{ grant.cancel_tx_id }}
+{% endif %}
+
+{% trans "View Inactive Grant here" %} {% url 'grants:details' grant.pk grant.slug %}

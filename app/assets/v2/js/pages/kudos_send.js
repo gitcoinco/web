@@ -172,26 +172,36 @@ $(document).ready(function() {
 
   set_metadata();
   // jquery bindings
-  $('#advanced_toggle').click(function(e) {
+  $('#advanced_toggle').on('click', function(e) {
     e.preventDefault();
     advancedToggle();
   });
 
 
-  $('#send_to_toggle').click(function(e) {
+  $('#tip_nav li').on('click', function(e) {
     e.preventDefault();
+    $('#tip_nav li').removeClass('selected');
+    $(this).addClass('selected');
     if ($(this).hasClass('github')) {
-      $(this).text(gettext('Send to ETH Address'));
-      $(this).removeClass('github');
-      $(this).addClass('eth');
-      $('.select2').removeClass('hidden');
+      $('.username .select2').removeClass('hidden');
       $('.eth_address').addClass('hidden');
+      $('#airdrop_link').addClass('hidden');
+      $('.redemptions').addClass('hidden');
+      $('.redemptions select').val(1);
+      $('input[name=send_type]').val('github');
+    } else if ($(this).hasClass('airdrop')) {
+      $('.username .select2').addClass('hidden');
+      $('.redemptions').removeClass('hidden');
+      $('.eth_address').addClass('hidden');
+      $('#airdrop_link').removeClass('hidden');
+      $('input[name=send_type]').val('airdrop');
     } else {
-      $(this).text(gettext('Send to Github User'));
-      $(this).addClass('github');
-      $(this).removeClass('eth');
-      $('.select2').addClass('hidden');
+      $('.username .select2').addClass('hidden');
+      $('.redemptions').addClass('hidden');
       $('.eth_address').removeClass('hidden');
+      $('.redemptions select').val(1);
+      $('#airdrop_link').addClass('hidden');
+      $('input[name=send_type]').val('eth_address');
     }
   });
 
@@ -202,7 +212,7 @@ $(document).ready(function() {
 
   // Step 1
   // Kudos send button is clicked
-  $('#send').click(function(e) {
+  $('#send').on('click', function(e) {
 
     e.preventDefault();
 
@@ -260,10 +270,12 @@ $(document).ready(function() {
     var kudosId = $('#kudosid').data('kudosid');
     // tokenId is the kudos blockchain id that is being cloned
     var tokenId = $('#tokenid').data('tokenid');
+    var send_type = $('input[name=send_type]').val();
+    var num_redemptions = $('.redemptions select').val();
 
     // get kudosPrice from the HTML
     kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice'));
-    kudosPriceInWei = new web3.BigNumber(kudosPriceInEth * 1.0 * Math.pow(10, 18));
+    kudosPriceInWei = new web3.BigNumber((kudosPriceInEth * 1.0 * Math.pow(10, 18)).toString());
 
     var formData = {
       email: email,
@@ -280,7 +292,8 @@ $(document).ready(function() {
       expires: expires,
       kudosId: kudosId,
       tokenId: tokenId,
-      to_eth_address: to_eth_address
+      to_eth_address: to_eth_address,
+      send_type: send_type
     };
 
     // derived info
@@ -299,9 +312,19 @@ $(document).ready(function() {
       $('#send_eth').css('display', 'none');
       $('#send_eth_done').css('display', 'block');
       if (username) {
-        $('#new_username').html(username);
-      } else {
+        var username_html = "<a href='/profile/" + username + "'>" + username + '</a>';
+
+        $('#new_username').html(username_html);
+      } else if (to_eth_address) {
         $('#new_username').html(to_eth_address);
+      } else {
+        $('#send_eth_done .font-weight-300').remove();
+        var cta_url = document.location.origin + document.airdrop_url;
+        var link = "<a href='" + cta_url + "'>" + cta_url + '</a>';
+        var num_times = $('.redemptions select').val();
+        var num_times_plural = num_times > 1 ? 's' : '';
+
+        $('#send_eth_done p.notifier').html('Your airdrop link is ' + link + '<br><br>This link is valid to be used *' + num_times + '* time' + num_times_plural + '.  Copy it and send it to whomever you want to receive the kudos.');
       }
       $('#trans_link').attr('href', url);
       $('#trans_link2').attr('href', url);
@@ -316,10 +339,9 @@ $(document).ready(function() {
     // cloneAndTransferKudos(kudosId, 1, receiverAddress);
     // cloneKudos(kudosId, 1);
 
-    console.log(formData);
     // Step 3
     // Run sendKudos function
-    return sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, to_eth_address, expires, kudosId, tokenId, success_callback, failure_callback, false);
+    return sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, to_eth_address, expires, kudosId, tokenId, success_callback, failure_callback, false, send_type);
 
   });
 
@@ -337,8 +359,8 @@ $(document).ready(function() {
 });
 
 // Step 3
-function sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, to_eth_address, expires, kudosId, tokenId, success_callback, failure_callback, is_for_bounty_fulfiller) {
-  mixpanel.track('Tip Step 2 Click', {});
+function sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, to_eth_address, expires, kudosId, tokenId, success_callback, failure_callback, is_for_bounty_fulfiller, send_type) {
+
   if (typeof web3 == 'undefined') {
     _alert({ message: gettext('You must have a web3 enabled browser to do this.  Please download Metamask.') }, 'warning');
     failure_callback();
@@ -368,7 +390,8 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
 
   // Step 4
   // validation
-  if (!username && !to_eth_address) {
+  console.log(send_type);
+  if (send_type != 'airdrop' && !username && !to_eth_address) {
     _alert({ message: gettext('You must specify a recipient.') }, 'warning');
     failure_callback();
     return;
@@ -420,28 +443,43 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
       metadata['direct_eth_send'] = true;
     }
 
+
+    var num_redemptions = 1;
+
+    if ($('.redemptions select').length) {
+      num_redemptions = $('.redemptions select').val();
+    }
+    var formbody = {
+      username: username,
+      email: email,
+      tokenName: tokenName,
+      amount: amountInEth,
+      comments_priv: comments_priv,
+      comments_public: comments_public,
+      expires_date: expires,
+      github_url: github_url,
+      from_email: from_email,
+      from_name: from_name,
+      to_eth_address: to_eth_address,
+      kudosId: kudosId,
+      tokenId: tokenId,
+      network: document.web3network,
+      from_address: web3.eth.coinbase,
+      is_for_bounty_fulfiller: is_for_bounty_fulfiller,
+      metadata: metadata,
+      send_type: send_type,
+      num_redemptions: num_redemptions
+    };
+
+    if (send_type == 'airdrop') {
+      formbody['pk'] = document.account['private'];
+    }
+
+
     fetch(url, {
       method: 'POST',
       credentials: 'include',
-      body: JSON.stringify({
-        username: username,
-        email: email,
-        tokenName: tokenName,
-        amount: amountInEth,
-        comments_priv: comments_priv,
-        comments_public: comments_public,
-        expires_date: expires,
-        github_url: github_url,
-        from_email: from_email,
-        from_name: from_name,
-        to_eth_address: to_eth_address,
-        kudosId: kudosId,
-        tokenId: tokenId,
-        network: document.web3network,
-        from_address: web3.eth.coinbase,
-        is_for_bounty_fulfiller: is_for_bounty_fulfiller,
-        metadata: metadata
-      })
+      body: JSON.stringify(formbody)
     }).then(function(response) {
       // console.log(response)
       return response.json();
@@ -458,7 +496,12 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
         var is_direct_to_recipient = metadata['is_direct'] || to_eth_address;
         var destinationAccount = to_eth_address ? to_eth_address : metadata['address'];
 
+        if (json['url']) {
+          document.airdrop_url = json['url'];
+        }
+
         var post_send_callback = function(errors, txid, kudos_id) {
+          indicateMetamaskPopup(true);
           if (errors) {
             _alert({ message: gettext('There was an error.') }, 'warning');
             failure_callback();
@@ -504,7 +547,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
         console.log('destinationAccount:' + destinationAccount);
 
         var kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice')) || $('.kudos-search').select2('data')[0].price_finney;
-        var kudosPriceInWei = new web3.BigNumber(kudosPriceInEth * 1.0 * Math.pow(10, 18));
+        var kudosPriceInWei = new web3.BigNumber((kudosPriceInEth * 1.0 * Math.pow(10, 18)).toString());
 
         if (is_direct_to_recipient) {
           // Step 9
@@ -512,7 +555,8 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
           console.log('Using Kudos Direct Send (KDS)');
 
 
-          kudos_contract.clone(destinationAccount, tokenId, numClones, {from: account, value: kudosPriceInWei}, function(cloneError, cloneTxid) {
+          kudos_contract.clone(destinationAccount, tokenId, numClones, {from: account, value: kudosPriceInWei, gasPrice: web3.toHex(get_gas_price())
+          }, function(cloneError, cloneTxid) {
             // getLatestId yields the last kudos_id
             kudos_contract.getLatestId(function(error, kudos_id) {
               post_send_callback(cloneError, cloneTxid, kudos_id);
@@ -533,7 +577,8 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
             value: kudosPriceInWei.toString()
           };
 
-          kudos_contract.clone.estimateGas(destinationAccount, tokenId, numClones, {from: account, value: kudosPriceInWei}, function(err, kudosGasEstimate) {
+          kudos_contract.clone.estimateGas(destinationAccount, tokenId, numClones, {from: account, value: kudosPriceInWei, gasPrice: web3.toHex(get_gas_price())
+          }, function(err, kudosGasEstimate) {
             if (err) {
               unloading_button($('#send'));
               _alert('Got an error back from RPC node.  Please try again or contact support');
@@ -550,10 +595,18 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
               kudosPriceInWei: kudosPriceInWei.toNumber()
             };
             console.log(money);
+            indicateMetamaskPopup();
+            var num_redemptions = 1;
+
+            if ($('.redemptions select').length) {
+              num_redemptions = $('.redemptions select').val();
+            }
+            var total_send = ((gas_money + kudosGasEstimateInWei + kudosPriceInWei.toNumber()) * new web3.BigNumber(num_redemptions)).toString();
+
             web3.eth.sendTransaction({
               to: destinationAccount,
               // Add gas_money + gas cost for kudos contract transaction + cost of kudos token (Gitcoin keeps this amount?)
-              value: gas_money + kudosGasEstimateInWei + kudosPriceInWei.toNumber(),
+              value: total_send,
               gasPrice: web3.toHex(get_gas_price())
             }, post_send_callback);
           });

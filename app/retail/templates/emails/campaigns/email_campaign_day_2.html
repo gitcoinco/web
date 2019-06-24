@@ -1,0 +1,92 @@
+{% extends 'emails/template.html' %}
+
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+
+{% load i18n humanize %}
+
+{% block content %}
+
+<style>
+  .content {
+    text-align: left;
+    margin: 0.5em 2em 2em 2em;
+  }
+
+  .content p {
+    margin-bottom: 2em;
+    letter-spacing: 0em;
+  }
+
+  .content ul li {
+    margin-bottom: 1.5em;
+    letter-spacing: 0em;
+  }
+
+</style>
+
+<div class="campaign">
+
+  <h1>Day 2: Finding A Gitcoin Issue For You</h1>
+
+  <div class="content">
+    <p>
+      {% trans "Hi" %} {{ firstname }},
+    </p>
+
+    <p>
+      {% blocktrans %}
+      By this point, you might have poked around the Gitcoin <a href="https://gitcoin.co/explorer?utm_source=email&utm_medium=drip&utm_term=day2">Issue Explorer</a> to see the open source projects you could make money by contributing! If interested in doing work, here’s how. 
+      {% endblocktrans %}
+    </p>
+
+    <h2>Start Work</h2>
+    <p>
+      {% blocktrans %}
+      Check if a bounty requires approval from the funder by checking the Permissions section within the bounty. 
+      {% endblocktrans %}
+      <BR><BR>
+      {% blocktrans %}
+      If it states "Permissionless" you can click "Start Work" to provide a short action plan and get started on working.
+      {% endblocktrans %}
+      <BR><BR>
+      {% blocktrans %}
+      However if it states anything else, you can click the button "Express Interest" to provide a brief message to the bounty owner that you want to work on this issue. 
+      {% endblocktrans %}
+      <BR>
+      {% blocktrans %}
+      From here, you’ll receive an email and a notification when the issue is ready for you to work. 
+      {% endblocktrans %}
+    </p>
+    
+    <p>
+      {% blocktrans %}
+      You’ll be able to submit a PR directly onto the repo maintainer’s project from there. It’s that simple! 
+      {% endblocktrans %}
+    </p>
+
+    <p>
+      {% blocktrans %}
+      CTA: Check out the <a href="http://gitcoin.co/explorer?utm_source=email&utm_medium=drip&utm_term=day2">Issue Explorer</a> if you haven’t already! If you don’t find good fits, let us <a href="https://docs.google.com/forms/d/1AeiKhCO2TefXo8wAbFerjxe2Vgci3ueqzzUpa-PFPLo/edit">know an open source project</a> that you’d like to see using Gitcoin. No promises, but we might have something up our sleeve.  
+      {% endblocktrans %}
+    </p>
+
+  </div>
+</div>
+
+{% endblock %}

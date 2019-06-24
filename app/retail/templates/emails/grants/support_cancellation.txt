@@ -1,0 +1,27 @@
+{% load i18n humanize %}
+
+{% trans "We are sad to see you go." %}
+
+{% trans "Your support for" %} {{ grant.title }} {% trans "has been cancelled" %}
+
+{% trans "Thank you for everything you have contributed!" %}
+
+{% trans "Description:" %} : {{ grant.description }}
+
+{% trans "Your Contribution" %}
+
+{{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }}
+
+{% trans "Grant % done" %} : {{ grant.percentage_done }}
+
+{% trans "Grant Received" %} : {{ grant.amount_received }}
+{% trans "Grant Goal" %} : {{ grant.amount_goal }}
+
+{% trans "Goal" %}
+
+{% trans "You can see the transaction on etherscan" %} at
+{% if subscription.network == 'mainnet' %}
+  http://etherscan.io/tx/{{ subscription.cancel_tx_id }}
+{% else %}
+  http://{{ grant.network }}.etherscan.io/tx/{{ subscription.cancel_tx_id }}
+{% endif %}

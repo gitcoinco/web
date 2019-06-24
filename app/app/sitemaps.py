@@ -14,11 +14,13 @@ class StaticViewSitemap(sitemaps.Sitemap):
     def items(self):
         return [
             'dashboard', 'new_funding', 'tip', 'terms', 'privacy', 'cookie', 'prirp', 'apitos', 'about', 'index',
-            'help', 'whitepaper', 'whitepaper_access', '_leaderboard', 'faucet', 'mission', 'slack', 'universe_index',
-            'results', 'activity', 'kudos_main', 'kudos_marketplace'
+            'help', 'whitepaper', 'whitepaper_access', '_leaderboard', 'faucet', 'mission', 'slack', 'labs', 'results',
+            'activity', 'kudos_main', 'kudos_marketplace', 'grants', 'funder_bounties'
         ]
 
     def location(self, item):
+        if item == 'grants':
+            return reverse('grants:grants')
         return reverse(item)
 
 
@@ -64,23 +66,42 @@ class ProfileSitemap(Sitemap):
         return item.get_relative_url()
 
 
-class ResultsSitemap(Sitemap):
+class ContributorLandingPageSitemap(Sitemap):
     changefreq = "weekly"
     priority = 0.6
 
     def items(self):
         from retail.utils import programming_languages
-        return programming_languages
+        return programming_languages + ['']
 
     def lastmod(self, obj):
         from django.utils import timezone
         return timezone.now()
 
     def location(self, item):
+        return f'/bounties/contributor/{item}'
+
+
+class ResultsSitemap(Sitemap):
+    changefreq = "weekly"
+    priority = 0.6
+
+    def items(self):
+        from retail.utils import programming_languages_full
+        return programming_languages_full
+
+    def lastmod(self, obj):
+        from django.utils import timezone
+        return timezone.now()
+
+    def location(self, item):
+        import urllib.parse
+        item = urllib.parse.quote_plus(item)
         return f'/results/{item}'
 
 
 sitemaps = {
+    'landers': ContributorLandingPageSitemap,
     'results': ResultsSitemap,
     'static': StaticViewSitemap,
     'issues': IssueSitemap,

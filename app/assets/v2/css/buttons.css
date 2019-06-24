@@ -79,8 +79,6 @@ button {
 
 button:hover,
 button:focus {
-  border-color: var(--hover);
-  color: #fff;
   outline: none;
 }
 
@@ -96,16 +94,22 @@ button:focus {
   }
 }
 
-.btn-gc-blue, .btn-gc-green, .btn-gc-purple {
+.btn {
+  border-radius: 5px;
+}
+
+.btn-gc-blue,
+.btn-gc-green,
+.btn-gc-purple,
+.btn-gc-pink {
   color: white;
-  padding: .75rem 1.5rem;
 }
 
 .btn-outline-gc-blue,
 .btn-outline-gc-purple,
 .btn-outline-gc-green,
 .btn-outline-white {
-  padding: .75rem 1.5rem;
+  /* padding: .75rem 1.5rem; */
 }
 
 .btn-gc-blue {
@@ -130,6 +134,7 @@ button:focus {
 .btn-outline-white {
   border-color: #ffffff;
   color: #ffffff;
+  text-decoration: none;
 }
 
 .btn-outline-white:hover {
@@ -183,6 +188,14 @@ button:focus {
   color: white;
 }
 
+.btn-gc-pink {
+  background-color: var(--gc-pink);
+}
+
+.btn-gc-pink:hover {
+  background-color: var(--gc-pink-hover);
+}
+
 /* Icons in buttons */
 .btn > svg:first-child {
   margin-right: .5rem;
@@ -192,5 +205,62 @@ button:focus {
   background: none;
   color: white;
   border: 2px solid white;
-  border-radius: 10px;
+  border-radius: 4px;
+}
+
+.btn.btn-circle {
+  border-radius: 50px;
+  line-height: 2em;
+}
+
+.btn.btn-social:hover {
+  color: white;
+  filter: saturate(3);
+}
+
+.btn-twitter {
+  color: white;
+  background-color: #1DA1F2;
+}
+
+.btn-facebook {
+  color: white;
+  background-color: #4267B2;
+}
+
+.btn-email {
+  color: white;
+  background-color: #F24283;
+}
+
+.btn-metamask {
+  background: #FF7F00;
+  color: white;
+}
+
+.btn-metamask:hover {
+  color: white;
+  background: #E17000;
+}
+
+.btn-lg-padding {
+  padding: 0.6rem 2rem;
+}
+
+.btn-radio {
+  border: 2px solid #D3D3D3;
+}
+
+.btn-radio.active {
+  border-color: #3E00FF;
+}
+
+.btn-radio i {
+  color: #3E00FF;
+}
+
+.badge-greylight {
+  background-color: #F3F3F3;
+  color: #666666;
+  font-weight: 600;
 }

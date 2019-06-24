@@ -1,0 +1,261 @@
+.header {
+  background-image: none;
+  background: linear-gradient(to right top, #0fce7c, #00a5a1, #0077b5, #0046a1, #0d0764);
+  animation: gradient 40s ease infinite;
+  background-size: 200% 200% !important;
+}
+
+.header .embed-responsive {
+  border-radius: 3px;
+}
+
+.white-icon {
+  width: 14px;
+  height: 20px;
+}
+
+.button {
+  font-weight: 500;
+}
+
+.rounded-circle {
+  margin-right: 8px;
+}
+
+#search_form button {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+#keyword {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.token_symbol {
+  font-weight: 600;
+}
+
+.progress {
+  background-color: #D8D8D8;
+  border-radius: 5px;
+  height: 0.5rem;
+}
+
+.grant-tooltip {
+  text-align: left;
+  display: block;
+  font-size: 14px;
+  color: #0ECF7C;
+  font-weight: 600;
+  line-height: 1.5;
+  width: 300px;
+}
+
+.ui-tooltip {
+  padding: 0 !important;
+  border-radius: 0.25rem !important;
+}
+
+.grant-tooltip .tooltip-inner {
+  font-size: 12px;
+  padding: 1rem;
+  max-width: 100%;
+}
+
+.progress-container {
+  color: #0D0764;
+}
+
+.progress .progress-bar {
+  background-color: #0D0764;
+  height: auto;
+}
+
+.progress-bar.progress-bar--cancel {
+  background-color: #D0021B;
+  position: relative;
+}
+
+.progress--small {
+  height: 7px;
+}
+
+.progress--small .progress-bar {
+  background-color: #0ECF7C;
+}
+
+.grant-item__owner-handle {
+  color: #9B9B9B;
+  line-height: 18px;
+}
+
+.grant-item__member-handle span,
+.grant__stakeholders-item span {
+  color: #000;
+}
+
+.grant-item__owner-handle span,
+.grant-item__owner-handle a,
+.progress-text span {
+  color: #0D0764;
+}
+
+.progress-text p {
+  font-size: 14px;
+}
+
+/* Grants Contribution */
+.contribution {
+  position: absolute;
+  top: -50px;
+  left: 100%;
+  text-align: left;
+  padding: 0 10px;
+}
+
+.contribution:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  z-index: 100;
+  top: 0;
+  width: 1px;
+  height: 100%;
+  background: #979797;
+}
+
+.contribution span {
+  font-size: 18px;
+}
+
+.contribution p {
+  font-size: 14px;
+  color: #BBBDBF;
+}
+
+.grants_landing .grants-search,
+.grants_landing .grants-results,
+.grants_landing .grants-container {
+  background-color: #F2F6F9;
+}
+.grants_landing .grants-results{
+  text-align: center;
+}
+.grant-item {
+  background-color: #fff;
+}
+
+.grants-hero.white a {
+  color: white;
+}
+
+/* Tabs */
+.ui-widget.ui-widget-content.ui-tabs {
+  background: transparent !important;
+  box-shadow: none;
+}
+
+.ui-tabs-nav {
+  background: transparent;
+  border: none;
+}
+
+.ui-tabs .ui-tabs-nav li {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #BBBDBF;
+  margin: 0;
+  width: 25%;
+}
+
+.ui-tabs .ui-tabs-nav li .ui-tabs-anchor {
+  color: #BBBDBF;
+  padding: 0.75em 2.5em;
+  width: 100%;
+  text-align: center;
+}
+
+.ui-tabs .ui-tabs-nav li.ui-tabs-active .ui-tabs-anchor {
+  border-bottom: 3px solid #0D0764;
+  color: #0D0764;
+}
+
+.ui-state-active, .ui-widget-content .ui-state-active {
+  border: none !important;
+  background: transparent !important;
+}
+
+.order_by {
+  margin-top: 0;
+}
+
+#search_form .select2-container {
+  width: auto !important;
+  font-weight: normal;
+  text-align: left;
+  min-width: 9rem;
+  font-size: 12px;
+}
+
+#grants_nav{
+  border-bottom: 1px solid #333333;
+  text-align: left;
+  width: 100%;
+}
+
+#grants_nav a{
+  color: #333333;
+  margin-right: 30px;
+}
+
+#grants_nav a:hover{
+  font-weight: 700;
+}
+
+#grants_nav .selected{
+  font-weight: 1000;
+  color: #3f24f9;
+}
+
+@media (min-width: 1200px) {
+  .header .container {
+    max-width: 1240px;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .search {
+    margin-left: 0rem;
+    margin-right: 0rem;
+  }
+
+  .order_by {
+    margin-top: 1rem;
+    padding: 0;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .search {
+    margin-left: 1rem;
+  }
+}
+
+@-webkit-keyframes gradient {
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+
+@-moz-keyframes gradient {
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+
+@keyframes gradient {
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}

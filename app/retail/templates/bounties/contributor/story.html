@@ -1,0 +1,63 @@
+{% comment %}
+  Copyright (C) 2019 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<div class="story mx-lg-5 px-md-5">
+  <div class="row my-3">
+    <div class="col-12 col-md-5 offset-md-2 mt-4 order-md-2 g-fadein" data-fade-duration=1000 data-fade-direction="right">
+      <img src="{% static "v2/images/landing/contributor/story-1.svg" %}" alt="what is gitcoin">
+    </div>
+    <div class="col-12 col-md-5 my-auto mt-4 order-md-1 g-fadein" data-fade-duration=1000 data-fade-direction="left">
+      <p>
+        Gitcoin is a platform for you to discover freelance programming jobs and 
+        contribute to open bug bounties or software development requests.
+      </p>
+      <p>
+        All work is done over Github to make showing your work and communicating
+        with project owners as simple as possible.
+      </p>
+    </div>
+  </div>
+
+  <div class="row my-3">
+    <div class="col-12 col-md-5 mt-4 order-md-1 g-fadein" data-fade-duration=1000 data-fade-direction="left">
+      <img src="{% static "v2/images/landing/contributor/story-2.svg" %}" alt="explore bounties">
+    </div>
+    <div class="col-12 col-md-5 offset-md-2 my-auto mt-4 order-md-2 g-fadein" data-fade-duration=1000 data-fade-direction="right">
+      <p>
+        There are open issues & bug bounties in our <a href="{% url 'explorer' %}">Issue Explorer</a> for 
+        {% for subject in contributor_list %}
+          <a href="{% url 'contributor_bounties' tech_stack=subject.link %}">{{subject.text}}</a>, 
+        {% endfor %}
+          and much more.
+      </p>
+    </div>
+  </div>
+
+  <div class="row my-3">
+    <div class="col-12 col-md-5 offset-md-2 mt-4 order-md-2 g-fadein" data-fade-duration=1000 data-fade-direction="right">
+      <img src="{% static "v2/images/landing/contributor/story-3.svg" %}" alt="oss mission">
+    </div>
+    <div class="col-12 col-md-5 my-auto mt-4 order-md-1 g-fadein" data-fade-duration=1000 data-fade-direction="left">
+      <p>
+        Gitcoin’s mission is to grow open source and, by contributing to top OSS
+        projects’ code, you are able to get paid for your freelance programming
+        and connect with OSS repo owners and likeminded coders from around the world.
+      </p>
+    </div>
+  </div>
+
+</div>

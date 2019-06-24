@@ -14,20 +14,35 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static is_in_list %}
+{% load i18n static is_in_list matches %}
 {% include 'shared/tag_manager_1.html' %}
 <meta charset="utf-8">
+<link rel="preload" href="{% static "v2/css/base.css" %}" as="style">
+<link rel="preload" href="{% static "v2/css/gitcoin.css" %}" as="style">
+<link rel="preload" href="{% static "v2/css/bootstrap.min.css" %}" as="style" crossorigin="anonymous">
+<link rel="preload" href="{% static "v2/css/top-nav.css" %}" as="style">
+<link rel="preload" href="{% static "v2/css/fontawesome-all.min.css" %}" as="style">
+<link rel="preload" href="{% static "v2/css/lib/typography.css" %}" as="style">
+<link rel="preload" href="{% static "v2/css/jquery.select2.min.css" %}" as="style">
+<link rel="preload" href="/static/v2/fonts/muli/muli-v12-latin-200.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/static/v2/fonts/muli/muli-v12-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/static/v2/fonts/muli/muli-v12-latin-600.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/static/v2/fonts/muli/muli-v12-latin-700.woff2" as="font" type="font/woff2" crossorigin>
+
+<link rel="preload" href="{% static "v2/js/lib/bootstrap.min.js" %}" as="script" crossorigin="anonymous">
+
 <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
-<link rel="stylesheet" href="{% static "v2/css/fontawesome-all.min.css" %}">
 <link rel="stylesheet" href="{% static "v2/css/bootstrap.min.css" %}" crossorigin="anonymous">
 <link rel="stylesheet" href="{% static "v2/css/lib/typography.css" %}">
+<link rel="stylesheet" href="{% static "v2/css/fontawesome-all.min.css" %}">
 <link rel="stylesheet" href="{% static "v2/css/gitcoin.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/top-nav.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/base.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/jquery.modal.min.css" %}" />
+{% if not slim %}
+  <link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
+  <link rel="stylesheet" href="{% static "v2/css/jquery.modal.min.css" %}" />
+{% endif %}
 <link rel="stylesheet" href="{% static "v2/css/jquery.select2.min.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/animate.min.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/rain.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/buttons.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/timeline.css" %}" />
@@ -36,36 +51,33 @@
 <link rel="stylesheet" href="{% static "v2/css/colors.css" %}" />
 
 <!-- Forms -->
-<link rel="stylesheet" href="{% static "v2/css/forms/button.css" %}">
-<link rel="stylesheet" href="{% static "v2/css/forms/checkbox.css" %}">
-<link rel="stylesheet" href="{% static "v2/css/forms/form.css" %}">
-<link rel="stylesheet" href="{% static "v2/css/forms/input.css" %}">
-<link rel="stylesheet" href="{% static "v2/css/forms/label.css" %}">
-<link rel="stylesheet" href="{% static "v2/css/forms/radio.css" %}">
-<link rel="stylesheet" href="{% static "v2/css/forms/select.css" %}">
-<link rel="stylesheet" href="{% static "v2/css/external_bounties/checkboxes.css" %}">
+<link rel="stylesheet" href="{% static "v2/css/forms/button.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/forms/checkbox.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/forms/drop.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/forms/form.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/forms/input.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/forms/label.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/forms/radio.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/forms/select.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/external_bounties/checkboxes.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/notifications.css" %}">
 
+{% if 'grants' in request.path %}
+<!-- Grants -->
+<link rel="stylesheet" href="{% static "v2/css/grants/grant.css" %}">
+<link rel="stylesheet" href="{% static "v2/css/grants/cancel.css" %}">
+{% endif %}
 
 <!-- Cookie Consent -->
 <link rel="stylesheet" href="{% static "cookielaw/css/cookielaw.css" %}">
 
-{% if active == 'offchain' %}
-<!-- External Bounties -->
-<link rel="stylesheet" href="{% static "v2/css/external_bounties/bounties.css" %}">
-{% endif %}
-
-{% if request.path == '/ios' %}
-<!-- iOS -->
-<link rel="stylesheet" href="{% static "v2/css/toolbox.css" %}">
-<link rel="stylesheet" href="{% static "v2/css/card.css" %}">
-<link rel="stylesheet" href="{% static "v2/css/ios.css" %}">
-{% endif %}
-
 <title>{% if title %}{{title}}{% else %}{% trans "Grow Open Source" %}{% endif %} | Gitcoin</title>
 {% include 'shared/favicon.html' %}
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+{% if meta_title %}<meta name="title" content="{{meta_title}}" />{% endif %}
+{% if meta_description %}<meta name="description" content="{{meta_description}}" />{% endif %}
+<script async src="{% static "v2/js/metamask-approval.js" %}"></script>
 
-<script src="{% static "v2/js/metamask-approval.js" %}"></script>
 
 {% if env == 'prod' %}
 <!-- Hotjar Tracking Code for gitcoin.co -->

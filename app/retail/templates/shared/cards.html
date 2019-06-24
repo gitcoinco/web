@@ -17,7 +17,7 @@
 {% load static %}
 <meta name="twitter:domain" content="gitcoin.co" />
 <meta name="twitter:card" content="player" />
-<meta name="twitter:site" content="@getgitcoin" />
+<meta name="twitter:site" content="@gitcoin" />
 {% if card_title %}
 <meta name="twitter:title" content="{{card_title}}" />
 {% elif title %}
@@ -32,11 +32,31 @@
 <meta name="twitter:description" content="Gitcoin is the easiest way to monetize or incentivize work in Open Source Software." />
 <meta name="description" content="Gitcoin is the easiest way to monetize or incentivize work in Open Source Software." />
 {% endif %}
-<meta name="twitter:image" content="{% static "v2/card/thumb.png" %}" />
-<meta name="twitter:player" content="https://www.youtube.com/embed/DJartWzDn0E" />
 <meta name="twitter:player:width" content="560" />
 <meta name="twitter:player:height" content="315" />
-<meta name="twitter:player:stream" content="{% static "v2/card/card.mp4" %}" />
+{% if card_player_override %}
+  <meta name="twitter:player" content="{{card_player_override}}" />
+{% else %}
+  <meta name="twitter:player" content="https://www.youtube.com/embed/DJartWzDn0E" />
+{% endif %}
+{% if card_player_stream_override %}
+  <meta name="twitter:player:stream" content="{{card_player_stream_override}}" />
+  <meta property="og:video" content="{{card_player_stream_override}}" />
+  <meta property="og:video:secure_url" content="{{card_player_stream_override}}" />
+{% else %}
+  <meta name="twitter:player:stream" content="{% static "v2/card/card.mp4" %}" />
+  <meta property="og:video" content="{% static "v2/card/card.mp4" %}" />
+  <meta property="og:video:secure_url" content="{% static "v2/card/card.mp4" %}" />
+{% endif %}
+{% if card_player_thumb_override %}
+  <meta property=og:image content="{{card_player_thumb_override}}">
+  <meta name="twitter:image" content="{{card_player_thumb_override}}" />
+{% else %}
+  <meta property=og:image content="{% static "v2/card/thumb.jpg" %}">
+  <meta name="twitter:image" content="{% static "v2/card/thumb.png" %}" />
+{% endif %}
+
+
 <meta name="twitter:player:stream:content_type" content="video/mp4" />
 <meta property=fb:app_id content="118275288856850">
 {% if card_title %}
@@ -52,11 +72,8 @@
 {% else %}
 <meta property=og:description content="{{card_desc}}">
 {% endif %}
-<meta property=og:image content="{% static "v2/card/thumb.jpg" %}">
 <meta property=og:type content="website">
 <meta property=og:site_name content="Gitcoin: Grow Open Source">
-<meta property="og:video" content="{% static "v2/card/card.mp4" %}" />
-<meta property="og:video:secure_url" content="{% static "v2/card/card.mp4" %}" />
 <meta property="og:video:type" content="video/mp4" />
 <meta property="og:video:width" content="560" />
 <meta property="og:video:height" content="315" />

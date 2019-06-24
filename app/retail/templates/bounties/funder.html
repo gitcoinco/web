@@ -1,0 +1,172 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static cookielaw_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' with slim=1 %}
+    {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/landing_page.css" %}" />
+  </head>
+  <body class="index d-flex flex-column g-font-muli funder-page">
+    {% include 'shared/tag_manager_2.html' %}
+    {% cookielaw_banner %}
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    {% include 'shared/nav.html' %}
+    <div id="landing_page_wrapper">
+      <div class="container-fluid header">
+        {% include 'bounties/funder/hero.html' %}
+      </div>
+
+      {% include 'shared/onboard_slider.html' %}
+
+      <div class="pt-2" id="codefund"></div>
+
+      <div class="container-fluid px-5 pb-5 pt-2 benefits_container">
+        {% include 'bounties/funder/benefits.html' %}
+      </div>
+
+      <div class="container-fluid pb-5 mb-2 landing__newsletter">
+        {% include 'shared/newsletter.html' %}
+      </div>
+
+      <div class="container-fluid p-5 howworks-container">
+        {% include 'bounties/funder/howworks.html' %}
+      </div>
+
+      <div class="container-fluid p-5 whatisit_container">
+        {% include 'shared/what_is_gitcoin.html' with title="Why Gitcoin?" video='bs4BmLNESaw' %}
+      </div>
+
+      <div class="container-fluid p-5 tree_container">
+        <div id="gc-tree">
+          {% include 'shared/tree.html' %}
+          <h2 class="mt-4">Grow Open Source</h2>
+        </div>
+      </div>
+
+      <div class="container-fluid p-5 case-studies-container">
+        <div class="row mb-5">
+          <div class="col text-center">
+            <h1>{% trans "Read Case Studies" %}</h1>
+          </div>
+        </div>
+        <ul class="case-studies-list">
+          <li>
+            <a href="https://medium.com/gitcoin/gitcoin-testimonials-market-protocol-722dbb263d19" target="_blank" rel="noopener noreferrer">
+              {% trans "MARKET Protocol Hires Eswara Sai, A Gitcoiner" %}
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/gitcoin/metamask-internationalizes-via-gitcoin-bf1390c0301c" target="_blank" rel="noopener noreferrer">
+              {% trans "MetaMask Internationalizes Via Gitcoin" %}
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/gitcoin/gitcoin-testimonials-balance-6d027fe01b9f" target="_blank" rel="noopener noreferrer">
+              {% trans "Balance: Building Open Source Banking" %}
+            </a>
+          </li>
+        </ul>
+        <img id="gc-robot" src="{% static "v2/images/Robot.png" %}" alt="Gitcoin Robot" />
+        <a class="btn btn-gc-purple" href="https://docs.google.com/document/d/1M8-5xCGoJ8u-k0C0ncx_dr9LtHwZ32Ccn3KMFtEnsBA/edit"
+          target="_blank" rel="noopener noreferrer">See All Case Studies</a>
+      </div>
+      <!-- <div class="container-fluid p-5 mb-4 pricing_container">
+        <div class="row mb-5">
+          <div class="col text-center">
+            <h1>{% trans "Simple Pricing" %}</h1>
+          </div>
+        </div>
+        <div class="pricing-tiers-container">
+          <div class="text-highlight-light-blue pricing-tier__title font-title">Lite</div>
+          <div class="pricing-tier__subtitle">{% trans "A Taste of Our Product" %}</div>
+          <div>
+            <div class="pricing-tier__price">{% trans "Free" %}</div>
+          </div>
+          <ul class="pricing-tier__features">
+            <li>{% trans "Do it yourself. You post and manage the bounties." %}</li>
+          </ul>
+          <div>
+            <a class="btn btn-outline-gc-green btn-outline-gc-grey btn-block mb-4" href="{% url "new_bounty" %}">{% trans "Get Started" %}</a>
+          </div>
+
+          <div class="text-highlight-light-blue pricing-tier__title font-title">{% trans "Silver" %}</div>
+          <div class="pricing-tier__subtitle">{% trans "We Manage the Development Flow" %}</div>
+          <div>
+            <div class="pricing-tier__price">$10k</div>
+          </div>
+          <ul class="pricing-tier__features">
+            <li>{% trans "Access Gitcoin's torrent of dev flow" %}</li>
+            <li>{% trans "We manage the project for you" %}</li>
+            <li>{% trans "We advise on pricing" %}</li>
+            <li>{% trans "We will monitor it for you" %}</li>
+          </ul>
+          <div>
+            <a class="btn btn-outline-gc-green btn-outline-gc-grey btn-block mb-4"
+              href="https://docs.google.com/forms/d/e/1FAIpQLSe0bjx1K1awOqzCtdaH7F4rY3FAgWKCGEuYmog3diN_oMEJXQ/viewform?usp=sf_link"
+              target="_blank" rel="noopener noreferrer">
+              {% trans "Get Started" %}
+            </a>
+          </div>
+
+          <div class="pricing-tier__title emphasis font-title">{% trans "Gold" %}</div>
+          <div class="pricing-tier__subtitle emphasis">{% trans "We Spin Up Projects and Manage Them" %}</div>
+          <div class="emphasis">
+            <div class="pricing-tier__price">$20k</div>
+          </div>
+          <ul class="pricing-tier__features emphasis">
+            <li>{% trans "Access Gitcoin's torrent of dev flow" %}</li>
+            <li>{% trans "We manage the project for you" %}</li>
+            <li>{% trans "We advise on pricing" %}</li>
+            <li>{% trans "We will monitor it for you" %}</li>
+            <li>{% trans "We scope and define the project" %}</li>
+          </ul>
+          <div class="emphasis">
+            <a class="btn btn-gc-green btn-block mb-4" target="_blank" rel="noopener noreferrer"
+              href="https://docs.google.com/forms/d/e/1FAIpQLSe0bjx1K1awOqzCtdaH7F4rY3FAgWKCGEuYmog3diN_oMEJXQ/viewform?usp=sf_link">
+              {% trans "Get Started" %}
+            </a>
+          </div>
+        </div>
+      </div> -->
+
+      <div class="container-fluid py-5 px-0 testimonial-container">
+        <div class="row mb-4">
+          <div class="col text-center">
+            <h2>{% trans "Who's Using Gitcoin?" %}</h2>
+          </div>
+        </div>
+        {% include "shared/testimonials.html" %}
+      </div>
+      {% include 'bounties/funder/pilot.html' %}
+
+      <div class="container-fluid p-5 activity">
+        {% include 'bounties/contributor/activity.html' %}
+      </div>
+
+      {% include 'bounties/funder/press.html' %}
+      {% include 'shared/footer.html' %}
+    </div>
+    {% include 'shared/footer_scripts_lite.html' with slim=1 %}
+    <script src="{% static "v2/js/landing_page.js" %}"></script>
+  </body>
+  {% include 'shared/analytics.html' %}
+  {% block scripts %}{% endblock %}
+  <script src="https://codefund.app/properties/189/funder.js" async="async"></script>
+</html>

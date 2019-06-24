@@ -1,7 +1,7 @@
 {% extends 'settings/settings.html' %}
 {% load i18n static %}
 {% block settings_content %}
-<form id="settings" method="POST" action="{% url 'ens' %}">
+<form id="settings" method="POST" action="{% url 'ens' %}" class="col-md-8 m-auto">
   <div class="form-group">
     <h5 style="text-transform: none;">{{ github_handle }}.gitcoin.eth</h5>
     <p>
@@ -22,10 +22,9 @@
   {% csrf_token %}
   <input class='button button--primary' type='submit' name='submit' value="{% trans "Update" %}">
   <div>
-      <br>
-      <a href="https://medium.com/gitcoin/new-feature-alert-you-gitcoin-eth-ens-names-f8e5d7438e3e"
-      target="_blank" rel="noopener noreferrer">{% trans "Read more about this feature" %}</a>
-    </div>
+    <br>
+    <a href="https://medium.com/gitcoin/new-feature-alert-you-gitcoin-eth-ens-names-f8e5d7438e3e"
+    target="_blank" rel="noopener noreferrer">{% trans "Read more about this feature" %}</a>
+  </div>
 </form>
-</div>
 {% endblock %}

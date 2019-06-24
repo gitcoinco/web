@@ -1,0 +1,14 @@
+Day 2: Finding a Gitcoin issue for you
+
+By this point, you might have poked around the Gitcoin Issue Explorer to see the open source projects you could make money by contributing! If you are interested in start working, here’s how.
+
+Start Work
+Check if a bounty requires approval from the funder by checking the Permissions section within the bounty. 
+
+If it states "Permissionless" you can click "Start Work" to provide a short action plan and get started on working.
+
+However if it states anything else, you can click the button "Express Interest" to provide a brief message to the bounty owner that you want to work on this issue. From here, you’ll receive an email and a notification when the issue is ready for you to work. 
+
+You’ll be able to submit a PR directly onto the repo maintainer’s project from there. It’s that simple!
+
+CTA: Check out the Issue Explorer if you haven’t already! If you don’t find good fits, let us know an open source project that you’d like to see using Gitcoin. No promises, but we might have something up our sleeve.

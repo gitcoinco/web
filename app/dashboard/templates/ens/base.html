@@ -4,12 +4,16 @@
   <head>
     <title>{% trans "ENS Subdomains | Gitcoin" %}</title>
     {% include 'shared/cards_pic.html' with title='Gitcoin | _you_.gitcoin.eth ENS Subdomains'  card_desc='*NEW* Register `_you_.gitcoin.eth` with one click for free' avatar_url="https://s.gitcoin.co/static/v2/images/ens_gitcoin.png"  %}
+    {% include 'shared/head.html' %}
     <meta charset="utf-8" />
+    <meta name="title" content="ENS Subdomains | Gitcoin">
     <meta name="description" content="Create and manage your ENS subdomain">
     <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
     <meta name="theme-color" content="#ffffff">
     <!--[if lte IE 8]><script src="{% static "onepager/js/html5shiv.js" %}"></script><![endif]-->
     <link rel="stylesheet" href="{% static "v2/css/bootstrap.min.css" %}" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
+    <link rel="stylesheet" href="{% static "onepager/css/main.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/lib/typography.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/gitcoin.css" %}">
     <link rel="stylesheet" href="{% static "onepager/css/main.css" %}">
@@ -19,7 +23,8 @@
     <link rel="stylesheet" href="{% static "v2/css/external_bounties/checkboxes.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/jquery.select2.min.css" %}">
     <link rel="stylesheet" href="{% static "cookielaw/css/cookielaw.css" %}">
-    <script src="{% static "v2/js/jquery.js" %}"></script>
+
+    <script src="{% static "v2/js/lib/jquery.js" %}"></script>
     <script src="{% static "v2/js/metamask-approval.js" %}"></script>
     <script src="{% static "v2/js/work_with_gitcoin.js" %}"></script>
     <!--[if lte IE 9]><link rel="stylesheet" href="{% static "onepager/css/ie9.css" %}"><![endif]-->
@@ -38,13 +43,13 @@
       }
     </style>
   </head>
-  <body class="{{class}} g-font-muli">
+  <body id='yge' class="{{class}} transaction g-font-muli">
     {% block 'world' %}
     {% endblock %}
     {% include 'shared/rain.html' with class="color" %}
     {% include 'shared/rain.html' with class="color" %}
     <!-- Wrapper -->
-    <div id="wrapper" class="pt-1">
+    <div id="wrapper" class="pt-1 container-fluid">
       {% include 'shared/onepager_auth.html' with source='authed' %}
       {% cookielaw_banner %}
       <!-- Main -->
@@ -65,7 +70,7 @@
     {% block 'scripts' %}
     {% endblock %}
     {% include 'shared/twitter.html'  %}
-    <script src="{% static "v2/js/jquery.select2.min.js" %}"></script>
+    <script src="{% static "v2/js/lib/jquery.select2.min.js" %}"></script>
     <script src="{% static "cookielaw/js/cl.js" %}"></script>
   </body>
 </html>

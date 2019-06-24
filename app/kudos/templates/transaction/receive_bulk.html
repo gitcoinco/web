@@ -31,15 +31,62 @@
 {% block 'main' %}
 <section id="main" class="box-transaction">
   <header class="text-center">
-    <h1 class="h2 mt-5">{% trans "You've got a" %} <a style='color:black; text-decoration: underline;' href="{% url 'kudos_about' %}">{% trans "Kudos" %}</a></h1>
+  <div id="receove_eth_done" class="text-center" {% if not kudos_transfer.receive_txid %} style="display:none;" {%endif%}>
+    <h1>{% trans "Congrats!" %} 🎉</h1>
+    <p>You've received a "{{ coupon.token.humanized_name }}" Kudos via transaction <a href="https://etherscan.io/tx/{{kudos_transfer.receive_txid}}"><span id="trans_id">{{kudos_transfer.receive_txid}}</span></a>.</p>
+    <p>{% trans "You can see your kudos in any web3 wallet that supports ERC-721-compliant NFTs, or in your" %} <a href="{% url 'profile' %}">Gitcoin {% trans "profile" %}</a>.</p>
+      {% include 'shared/twitter.html' %}
+      <p>
+        <a class="twitter-share-button"
+        data-url="{{coupon.token.url}}"
+        href="https://twitter.com/intent/tweet?text={{tweet_text}}"
+        data-size="large">
+        Tweet It</a>
+      </p>
+      <form action="{% url 'profile' %}">
+        <input id="receive" type='submit' class="btn btn-gc-purple" value="🌈 {% trans "View Profile" %} 🏳️‍🌈" {% if disable_inputs %}disabled=disabled{%endif%} >
+      </form>
+    <hr>
+
+  </div>
+    <h1 class="h2 mt-5">
+      <img style="max-height: 50px; max-width: 50px;" src="/dynamic/avatar/{{coupon.sender_profile.handle}}">
+      <a style='color:black; text-decoration: underline;' href="{{coupon.sender_profile.url}}">@{{coupon.sender_profile.handle}}</a>
+
+      {% trans "sent a" %}</h1>
 
     <div class="my-4">
-      <img src="{% static coupon.token.image %}" width="160" alt="" class="mb-2">
-      <h3 id="kudosName" data-kudosname="{{ coupon.token.name }}" class="d-block">{{ coupon.token.humanized_name }} </h3>
+
+      <div id="kudos-image" class="w-100" style="">
+        {% include 'shared/kudos_levitate.html' %}
+        <img src="{% static coupon.token.image %}" style="width: 100%;" alt="{{ coupon.token.name }}" >
+      </div>
+
+      
       <br>
       <span id="kudosComment" class="d-block">
+        <h3><a style='color:black; text-decoration: underline;' href="{{coupon.token.url}}"><span id="kudosName" data-kudosname="{{ coupon.token.name }}" >{{ coupon.token.humanized_name }} </span>{% trans "Kudos" %}</a></h3>
         {% if coupon.comments_to_put_in_kudos_transfer %}
-        From Sender: {{ coupon.comments_to_put_in_kudos_transfer }}
+        with an attached message, just for you: 
+        <p style="  
+    width: 80%;
+    height: 100px;
+    background-color: #D0DEEB;
+    margin-top: 30px;
+    text-align: left;
+    padding: 10px 5px;
+    border-left: 2px solid #295379;
+    margin: 10px auto;
+    border-top: 1px solid #295389;
+    font-family: Muli;
+    background-image: linear-gradient(to bottom right, #D0DEEB, #DFBDD9);
+    font-weight: 600;
+    overflow-y: scroll;
+        ">
+            {{ coupon.comments_to_put_in_kudos_transfer }}
+            <BR>
+            <span style="float:right; margin-right: 10px;">~ @{{coupon.sender_profile.handle}}</span>
+        </p>
         {% endif %}
       </span>
     </div>
@@ -49,6 +96,8 @@
     <form method="POST">
       {% csrf_token %}
       <div class="form-group">
+        <hr>
+        <h3 class="text-center" style="margin: 0px auto;">👇 Redeem It Here 👇</h3>
         {% trans "Logged in as" %} {% if not request.user.is_authenticated %}(<a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">{% trans "Login" %}</a>) {%endif%}
         <input type="text" placeholder="@username" id="user" value="{% if user.is_authenticated  %}{{ user }}{% endif %}" disabled="disabled" class='form-control'  required >
         {% if not request.user.is_authenticated %}
@@ -74,15 +123,14 @@
 
 
       <div class="text-center">
-        <input id="receive" type='submit' class="btn btn-gc-purple" value="{% trans "Claim" %} Kudos 🙌" {% if disable_inputs %}disabled=disabled{%endif%} >
+        <input id="receive" type='submit' class="btn btn-gc-purple" value="🌈 {% trans "Redeem" %} Kudos 🏳️‍🌈" {% if disable_inputs %}disabled=disabled{%endif%} >
+        <br>
+        <br>
+        <a href="{% url 'kudos_about' %}">{% trans 'What is Kudos? ' %}🤔</a>
       </div>
     </form>
   </div>
-  <div id="receove_eth_done" class="text-center" {% if not kudos_transfer.receive_txid %} style="display:none;" {%endif%}>
-    <h1>{% trans "Congrats!" %}</h1>
-    <p>You've received a "{{ coupon.token.humanized_name }}" Kudos via transaction <span id="trans_id">{{kudos_transfer.receive_txid}}</span>.</p>
-    <p>{% trans "You can see your kudos in your" %} <a href="{% url 'profile' %}">{% trans "profile" %}</a></p>
-  </div>
+
   {% if not kudos_transfer.receive_txid and is_authed %}
     <script>
     </script>
@@ -95,7 +143,34 @@
   </script>
 {% endif %}
 </section>
+<style>
+  #kudos-image {
+    height: 600px; width: 60%;
+    cursor: grabbing;
+  }
+  @media screen and (max-width: 520px) {
+    #Layer_14{
+      display: none;
+    }
+    #kudos-image{
+      height: 450px;
+    }
+  }
+</style>
+<script src="{% static 'v2/js/lib/tweenlite.js' %}"></script>
+<link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
+{% include 'shared/footer_scripts.html' with slim=1 %}
+<script src="{% static "v2/js/lib/popper.min.js" %}"></script>
+<script src="{% static "v2/js/pages/kudos_details.js" %}"></script>
 <script>
   document.network = '{{coupon.token.contract.network}}';
+  $(document).ready(function(){
+    {% if error %}
+      _alert('{{error}}', 'error');
+    {% endif %}
+    start_kudos_levitate();
+    document.suppress_kudos_levitate_hover = true;
+  })
 </script>
 {% endblock %}

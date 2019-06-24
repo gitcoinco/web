@@ -2,7 +2,7 @@ bs4
 ccxt
 cryptocompare==0.6
 cryptography==2.3
-django==2.1.2
+django==2.1.7
 django-cors-headers==2.4.0
 django-filter==2.0.0
 django-ratelimit==1.1.0
@@ -22,7 +22,7 @@ PyJWT==1.5.3
 PyPdf2
 python-twitter==3.2
 sendgrid==5.6.0
-slackclient
+slackclient==2.0.0
 eth-tester
 websockets
 web3==4.5.0
@@ -38,18 +38,17 @@ boto==2.49.0
 google-api-python-client
 django-environ==0.4.5
 ipfsapi
-eth-utils==1.0.3
+eth-utils==1.4.1
 jsondiff==1.1.1
 social-auth-app-django==2.1.0
 django-ipware==2.0.2
 geoip2==2.8.0
 django-silk==2.0.0
-django-extensions==2.1.0
+django-extensions==2.1.4
 ipdb==0.11
 django-autotranslate==1.1.0
 svgutils==0.3.0
 Werkzeug[watchdog]==0.14.1
-matplotlib
 imageio
 boto3==1.7.81
 django-storages==1.6.6
@@ -64,7 +63,6 @@ ecdsa
 pysha3
 oyaml
 pygithub==1.43.2
-raven==6.9.0
 django-cacheops==4.0.7
 django-redis==4.10.0
 collectfast==0.6.2
@@ -79,3 +77,8 @@ pyvips==2.1.4
 redis-semaphore
 watchtower==0.5.4
 Wand==0.4.4
+raven==6.9.0
+sentry-sdk
+websocket-client
+bleach
+python-magic

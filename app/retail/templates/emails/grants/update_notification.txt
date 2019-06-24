@@ -1,0 +1,19 @@
+{% load i18n %}
+
+{% trans "Update!" %}
+
+{% trans "An update has been posted for:" %}
+
+{{ grant.title }}
+
+{{ grant.desciption }}
+
+{% trans "New Grant Update." %}
+
+{{ activity.title }}
+
+{{ activity.date }}
+
+{{ activity.description }}
+
+{% trans "View Grant" %} {{ grant.reference_url }}

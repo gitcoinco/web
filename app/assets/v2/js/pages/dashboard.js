@@ -16,7 +16,12 @@ var local_storage_keys = JSON.parse(JSON.stringify(filters));
 
 local_storage_keys.push('keywords');
 local_storage_keys.push('org');
-results_limit = 25;
+
+results_limit = 5;
+
+if (document.hackathon) {
+  results_limit = 5;
+}
 
 var localStorage;
 
@@ -27,6 +32,32 @@ try {
 } catch (e) {
   localStorage = {};
 }
+
+var paint_search_tabs = function() {
+  if (!localStorage['searches'])
+    return;
+
+  var container = $('#dashboard-title');
+  var target = $('#search_nav');
+
+  searches = localStorage['searches'].split(',');
+
+  if (searches.length <= 1)
+    return target.html('');
+
+  var html = "<ul class='nav'><i class='fas fa-history'></i>";
+
+  for (var i = 0; i < searches.length; i++) {
+    var search_no = searches[i];
+    var title = get_search_tab_name(search_no);
+
+    if (title) {
+      html += "<li class='nav-item' data-num='" + search_no + "'><span>" + title + '</span><a><i class="fas fa-times"></i></a></li>';
+    }
+  }
+  html += '</ul>';
+  target.html(html);
+};
 
 function debounce(func, wait, immediate) {
   var timeout;
@@ -48,6 +79,8 @@ function debounce(func, wait, immediate) {
   };
 }
 
+const scrub = value => value.replace(/[\W]+/g, '');
+
 /**
  * Fetches all filters options from the URI
  */
@@ -59,6 +92,10 @@ var getActiveFilters = function() {
   let _filters = filters.slice();
 
   _filters.push('keywords', 'order_by', 'org');
+  if (document.hackathon) {
+    resetFilters(true);
+    filters.push('org');
+  }
   _filters.forEach(filter => {
     if (getParam(filter)) {
       localStorage[filter] = getParam(filter).replace(/^,|,\s*$/g, '');
@@ -102,14 +139,12 @@ var save_sidebar_latest = function() {
 };
 
 // saves search information default
-var set_sidebar_defaults = function() {
-  // Special handling to support adding keywords from url query param
-  var q = getParam('q');
-  var keywords;
-  var org;
+const set_sidebar_defaults = () => {
+  const q = getParam('q');
+  const org = getParam('org');
 
   if (q) {
-    keywords = decodeURIComponent(q).replace(/^,|\s|,\s*$/g, '');
+    const keywords = decodeURIComponent(q).replace(/^,|\s|,\s*$/g, '');
 
     if (localStorage['keywords']) {
       keywords.split(',').forEach(function(v, k) {
@@ -120,11 +155,13 @@ var set_sidebar_defaults = function() {
     } else {
       localStorage['keywords'] = keywords;
     }
+  }
 
+  if (org) {
     if (localStorage['org']) {
-      org.split(',').forEach(function(v, k) {
-        if (localStorage['org'].indexOf(v) === -1) {
-          localStorage['org'] += ',' + v;
+      org.split(',').forEach(function(value) {
+        if (localStorage['org'].indexOf(value) === -1) {
+          localStorage['org'] += ',' + value;
         }
       });
     } else {
@@ -186,9 +223,8 @@ var addTechStackKeywordFilters = function(value) {
   } else {
     localStorage['keywords'] = value;
   }
-
-  $('.filter-tags').append('<a class="filter-tag keywords"><span>' + value + '</span>' +
-    '<i class="fas fa-times" onclick="removeFilter(\'keywords\', \'' + value + '\')"></i></a>');
+  $('.filter-tags').append('<a class="filter-tag keywords"><span>' + scrub(value) + '</span>' +
+    '<i class="fas fa-times" onclick="removeFilter(\'keywords\', \'' + scrub(value) + '\')"></i></a>');
 };
 
 var addTechStackOrgFilters = function(value) {
@@ -207,8 +243,8 @@ var addTechStackOrgFilters = function(value) {
     localStorage['org'] = value;
   }
 
-  $('.filter-tags').append('<a class="filter-tag keywords"><span>' + value + '</span>' +
-    '<i class="fas fa-times" onclick="removeFilter(\'org\', \'' + value + '\')"></i></a>');
+  $('.filter-tags').append('<a class="filter-tag keywords"><span>' + scrub(value) + '</span>' +
+    '<i class="fas fa-times" onclick="removeFilter(\'org\', \'' + scrub(value) + '\')"></i></a>');
 };
 
 var getFilters = function() {
@@ -225,15 +261,15 @@ var getFilters = function() {
 
   if (localStorage['keywords']) {
     localStorage['keywords'].split(',').forEach(function(v, k) {
-      _filters.push('<a class="filter-tag keywords"><span>' + v + '</span>' +
-        '<i class="fas fa-times" onclick="removeFilter(\'keywords\', \'' + v + '\')"></i></a>');
+      _filters.push('<a class="filter-tag keywords"><span>' + scrub(v) + '</span>' +
+        '<i class="fas fa-times" onclick="removeFilter(\'keywords\', \'' + scrub(v) + '\')"></i></a>');
     });
   }
 
   if (localStorage['org']) {
     localStorage['org'].split(',').forEach(function(v, k) {
-      _filters.push('<a class="filter-tag keywords"><span>' + v + '</span>' +
-        '<i class="fas fa-times" onclick="removeFilter(\'org\', \'' + v + '\')"></i></a>');
+      _filters.push('<a class="filter-tag keywords"><span>' + scrub(v) + '</span>' +
+        '<i class="fas fa-times" onclick="removeFilter(\'org\', \'' + scrub(v) + '\')"></i></a>');
     });
   }
 
@@ -254,8 +290,8 @@ var removeFilter = function(key, value) {
   refreshBounties(null, 0, false, false);
 };
 
-var get_search_URI = function(offset) {
-  var uri = '/api/v0.1/bounties/?';
+var get_search_URI = function(offset, order) {
+  var uri = '/api/v0.1/bounties/slim/?';
   var keywords = '';
   var org = '';
 
@@ -321,7 +357,7 @@ var get_search_URI = function(offset) {
   }
 
   if (keywords) {
-    uri += '&raw_data=' + keywords;
+    uri += '&keywords=' + keywords;
   }
 
   if (localStorage['org']) {
@@ -336,14 +372,25 @@ var get_search_URI = function(offset) {
   if (org) {
     uri += '&org=' + org;
   }
+  let order_by;
 
-  var order_by = localStorage['order_by'];
+  if (order) {
+    order_by = order;
+  } else {
+    order_by = localStorage['order_by'];
+  }
 
-  if (order_by) {
+  if (document.hackathon) {
+    uri += `&event_tag=${document.hackathon}`;
+  }
+
+  if (typeof order_by !== 'undefined') {
     uri += '&order_by=' + order_by;
   }
+
   uri += '&offset=' + offset;
   uri += '&limit=' + results_limit;
+
   return uri;
 };
 
@@ -382,6 +429,8 @@ var reset_offset = function() {
   document.offset = 0;
 };
 
+let organizations = [];
+
 var refreshBounties = function(event, offset, append, do_save_search) {
 
   // Allow search for freeform text
@@ -389,53 +438,65 @@ var refreshBounties = function(event, offset, append, do_save_search) {
   var orgInput = $('#org')[0];
 
   $('#results-count span.num').html('<i class="fas fa-spinner fa-spin"></i>');
-  if (searchInput.value.length > 0) {
+  if (searchInput && searchInput.value.length > 0) {
     addTechStackKeywordFilters(searchInput.value.trim());
     searchInput.value = '';
     searchInput.blur();
     $('.close-icon').hide();
   }
 
-  if (orgInput.value.length > 0) {
-    addTechStackOrgFilters(orgInput.value.trim());
-    orgInput.value = '';
-    orgInput.blur();
-    $('.close-icon').hide();
-  }
-
-  save_sidebar_latest();
-  toggleAny(event);
-  getFilters();
-  if (do_save_search) {
-    if (!is_search_already_saved()) {
-      save_search();
+  if (!document.hackathon) {
+    if (orgInput.value.length > 0) {
+      addTechStackOrgFilters(orgInput.value.trim());
+      orgInput.value = '';
+      orgInput.blur();
+      $('.close-icon').hide();
     }
-  }
-  paint_search_tabs();
 
-  window.history.pushState('', '', '/explorer?' + buildURI());
+    save_sidebar_latest();
+    toggleAny(event);
+    getFilters();
+    if (do_save_search) {
+      if (!is_search_already_saved()) {
+        save_search();
+      }
+
+      paint_search_tabs();
+      window.history.pushState('', '', window.location.pathname + '?' + buildURI());
+    }
+  } else {
+    toggleAny(event);
+    localStorage['order_by'] = $('#sort_option').val();
+  }
 
   if (!append) {
     $('.nonefound').css('display', 'none');
     $('.loading').css('display', 'block');
     $('.bounty_row').remove();
   }
-  // filter
-  var uri = get_search_URI(offset);
 
-  // analytics
-  mixpanel.track('Refresh Bounties', { uri: uri });
+  const uri = get_search_URI(offset);
+  const uriFeatured = get_search_URI(offset, '-featuring_date');
+  let bountiesURI;
+  let featuredBountiesURI;
+
+  if (!uri.endsWith('?')) {
+    bountiesURI = uri;
+    featuredBountiesURI = uriFeatured + '&';
+  }
+  // bountiesURI += '';
+  featuredBountiesURI += 'is_featured=True';
 
   // Abort pending request if any subsequent request
   if (explorer.bounties_request && explorer.bounties_request.readyState !== 4) {
     explorer.bounties_request.abort();
   }
 
-  explorer.bounties_request = $.get(uri, function(results, x) {
+  explorer.bounties_request = $.get(bountiesURI, function(results, x) {
     results = sanitizeAPIResults(results);
 
     if (results.length === 0 && !append) {
-      if (localStorage['referrer'] === 'onboard') {
+      if (localStorage['referrer'] === 'onboard' && !document.hackathon) {
         $('.no-results').removeClass('hidden');
         $('#dashboard-content').addClass('hidden');
       } else {
@@ -482,6 +543,32 @@ var refreshBounties = function(event, offset, append, do_save_search) {
   }).always(function() {
     $('.loading').css('display', 'none');
   });
+
+  explorer.bounties_request = $.get(featuredBountiesURI, function(results, x) {
+    results = sanitizeAPIResults(results);
+
+    if (results.length === 0 && !append) {
+      $('.featured-bounties').hide();
+      if (localStorage['referrer'] === 'onboard') {
+        $('.no-results').removeClass('hidden');
+        $('#dashboard-content').addClass('hidden');
+      } else {
+        $('.nonefound').css('display', 'none');
+      }
+    }
+
+    var html = renderFeaturedBountiesFromResults(results, true);
+
+    if (html) {
+      $('.featured-bounties').show();
+      $('#featured-card-container').html(html);
+    }
+  }).fail(function() {
+    if (explorer.bounties_request.readyState !== 0)
+      _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
+  }).always(function() {
+    $('.loading').css('display', 'none');
+  });
 };
 
 window.addEventListener('load', function() {
@@ -489,15 +576,6 @@ window.addEventListener('load', function() {
   reset_offset();
   refreshBounties(null, 0, false, false);
 });
-
-function getURLParams(k) {
-  var p = {};
-
-  location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(s, k, v) {
-    p[k] = v;
-  });
-  return k ? p[k] : p;
-}
 
 /**
  * removed all filters from the sidebar search
@@ -532,7 +610,7 @@ var resetFilters = function(resetKeyword) {
 };
 
 (function() {
-  if (localStorage['referrer'] === 'onboard') {
+  if (localStorage['referrer'] === 'onboard' && !document.hackathon) {
     $('#sidebar_container').addClass('invisible');
     $('#dashboard-title').addClass('hidden');
     $('#onboard-dashboard').removeClass('hidden');
@@ -541,7 +619,7 @@ var resetFilters = function(resetKeyword) {
     $('input[name=idx_status][value=open]').prop('checked', true);
     $('.search-area input[type=text]').text(getURLParams('q'));
 
-    $('#onboard-alert').click(function(e) {
+    $('#onboard-alert').on('click', function(e) {
 
       if (!$('.no-results').hasClass('hidden'))
         $('.nonefound').css('display', 'block');
@@ -569,6 +647,24 @@ var resetFilters = function(resetKeyword) {
 })();
 
 $(document).ready(function() {
+
+  $('#expand').on('click', () => {
+    $('#expand').hide();
+    $('#minimize').show();
+    $('#sidebar_container form').css({
+      'height': 'auto',
+      'display': 'inherit'
+    });
+  });
+
+  $('#minimize').on('click', () => {
+    $('#minimize').hide();
+    $('#expand').show();
+    $('#sidebar_container form').css({
+      'height': 0,
+      'display': 'none'
+    });
+  });
 
   // Sort select menu
   $('#sort_option').selectmenu({
@@ -643,7 +739,7 @@ $(document).ready(function() {
     });
 
   // sidebar clear
-  $('.dashboard #clear').click(function(e) {
+  $('.dashboard #clear').on('click', function(e) {
     e.preventDefault();
     resetFilters(true);
     reset_offset();
@@ -683,7 +779,7 @@ $(document).ready(function() {
   });
 
   // sidebar filters
-  $('.sidebar_search input[type=radio], .sidebar_search label').change(function(e) {
+  $('.sidebar_search , .sidebar_search label').change('input[type=radio]', function(e) {
     reset_offset();
     refreshBounties(null, 0, false, true);
     e.preventDefault();
@@ -692,7 +788,7 @@ $(document).ready(function() {
   // sidebar filters
   $('.sidebar_search input[type=checkbox], .sidebar_search label').change(function(e) {
     reset_offset();
-    refreshBounties(null, 0, false, true);
+    // refreshBounties(null, 0, false, true);
     e.preventDefault();
   });
 
@@ -767,33 +863,6 @@ var get_search_tab_name = function(n) {
 
 };
 
-var paint_search_tabs = function() {
-  if (!localStorage['searches'])
-    return;
-
-  var container = $('#dashboard-title');
-  var target = $('#search_nav');
-
-  searches = localStorage['searches'].split(',');
-
-  if (searches.length <= 1)
-    return target.html('');
-
-  var html = "<ul class='nav'>";
-
-  for (var i = 0; i < searches.length; i++) {
-    var search_no = searches[i];
-    var title = get_search_tab_name(search_no);
-
-    if (title) {
-      html += "<li class='nav-item' data-num='" + search_no + "'><span>" + title + '</span><a><i class="fas fa-times"></i></a></li>';
-    }
-  }
-  html += '</ul>';
-  target.html(html);
-};
-
-
 // gets available searches
 var get_available_searches = function() {
   if (typeof localStorage['searches'] == 'undefined') {
@@ -828,4 +897,3 @@ var remove_search = function(n) {
 
   localStorage.removeItem(key);
 };
-

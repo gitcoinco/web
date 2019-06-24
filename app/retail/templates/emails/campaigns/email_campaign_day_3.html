@@ -1,0 +1,97 @@
+{% extends 'emails/template.html' %}
+
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+
+{% load i18n humanize %}
+
+{% block content %}
+
+<style>
+  .content {
+    text-align: left;
+    margin: 0.5em 2em 2em 2em;
+  }
+
+  .content p {
+    margin-bottom: 2em;
+    letter-spacing: 0em;
+  }
+
+  .content ul li {
+    margin-bottom: 1.5em;
+    letter-spacing: 0em;
+  }
+
+</style>
+
+<div class="campaign">
+
+  <h1>Day 3: Leveraging The Gitcoin Community</h1>
+
+  <div class="content">
+    <p>
+      {% trans "Hi" %} {{ firstname }},
+    </p>
+
+    <p>
+      {% blocktrans %}
+      Gitcoin Core is 11 team members, yet we’ve seen contributions from well over 100 developers using Gitcoin. We’d like to see you do the same!  <a href="https://medium.com/gitcoin/tutorial-leverage-gitcoins-firehose-of-talent-to-do-more-faster-dcd39650fc5">Here’s how to leverage a firehose of developer talent to do more, faster.</a>
+      {% endblocktrans %}
+    </p>
+
+    <p>
+      {% blocktrans %}
+      <a href="https://medium.com/gitcoin/tutorial-post-a-bounty-in-90-seconds-a7d1a8353f75">Posting a bounty can be done in 90 seconds</a>, once you know Gitcoin is an option to accelerate your development.  Adding bounties to an existing project is like adding icing to a cake.  We take what’s already great about OSS (mission,  freedom, and great people) and add financial incentivization, a home base for projects seeking contributors, funding for developer, and community.
+      {% endblocktrans %}
+    </p>
+
+    <p>
+      {% blocktrans %}
+      Alongside posting bounties on the Issue Explorer, Gitcoin offers two complimentary products for open source software enthusiasts. 
+        <ul>
+          <li><a href="http://codefund.io/">Codefund</a>: Sustain your OSS project with ethical advertising
+          </li>
+          <li><a href="https://gitcoin.co/tip?utm_source=email&utm_medium=drip&utm_term=day3">Gitcoin Kudos</a>: Have a contributor that’s doing fantastic work? Send them a token of appreciation using Kudos! <a href="https://gitcoin.co/kudos/redeem/onboardingtree_01302019">Here’s one for you :) </a>
+          </li>
+          <li><a href="https://gitcoin.co/grants">Gitcoin Grants</a>: Recurring funding for open source projects.
+          </li>
+        </ul>
+      {% endblocktrans %}
+    </p>
+
+    <p>
+      {% blocktrans %}
+        Over the first week of you joining, we're going to send over some information on key products and education
+        tools available in the Gitcoin ecosystem. For now, we have a few areas you can nerd out with us, depending on where
+        you're most comfortable.
+      {% endblocktrans %}
+
+    </p>
+
+    <p>
+      {% blocktrans %}
+      Community is what makes Open Source work.  A strong OSS community is inclusive, helpful, and mission-oriented. The Gitcoin community is 10,000 software developers who are focused on the tooling for the new world. Is there a chance that your next career connection could come from the Gitcoin community? Come find out!     
+      {% endblocktrans %}
+
+    </p>
+
+  </div>
+</div>
+
+{% endblock %}

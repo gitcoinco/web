@@ -1,0 +1,15 @@
+{% load static i18n %}
+<!-- JSRender stuff -->
+<script id="featured-card" type="text/x-jsrender">
+  <div class="bounty-card">
+    <img src="[[:avatar_url]]" alt="" width="56" height="56" class="bounty-card__avatar rounded-circle">
+    <div class="">
+      <p class="bounty-card__title">[[:title]]</p>
+      <div class="d-flex">
+        <div class="tag token">[[:rounded_amount]] <span>[[:token_name]]</span></div>
+        <div class="tag usd">[[:value_in_usdt]] <span>USD</span></div>
+      </div>
+      <a href="[[:url]]" class="bounty-card__link">View Bounty</a>
+    </div>
+  </div>
+</script>

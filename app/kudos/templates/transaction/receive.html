@@ -19,8 +19,8 @@
 {% load kudos_extras %}
 {% block 'scripts' %}
 <script src="{% static "v2/js/abi.js" %}"></script>
-<script src="{% static "v2/js/secrets.min.js" %}"></script>
-<script src="{% static "v2/js/ipfs-api.js" %}"></script>
+<script src="{% static "v2/js/lib/secrets.min.js" %}"></script>
+<script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
 <script src="{% static "v2/js/ipfs.js" %}"></script>
 <script src="{% static "v2/js/pages/kudos_receive.js" %}"></script>
 <script src="{% static "onepager/js/confetti.js" %}"></script>
@@ -84,6 +84,15 @@
   <div id="receove_eth_done" class="text-center" {% if not kudos_transfer.receive_txid %} style="display:none;" {%endif%}>
     <h1>{% trans "Congrats!" %}</h1>
     <p>You've received a "{{ kudos_transfer.kudos_token_cloned_from.humanized_name }}" Kudos via transaction <span id="trans_id">{{kudos_transfer.receive_txid}}</span>.</p>
+    {% include 'shared/twitter.html' %}
+    <p>
+      <a class="twitter-share-button"
+      data-url="{{kudos_transfer.kudos_token_cloned_from.url}}"
+      href="https://twitter.com/intent/tweet?text={{tweet_text}}"
+      data-size="large">
+      Tweet It</a>
+    </p>
+
     <p>{% trans "You can see your kudos in your" %} <a href="{% url 'profile' %}">{% trans "profile" %}</a></p>
   </div>
   {% if not kudos_transfer.receive_txid and is_authed %}

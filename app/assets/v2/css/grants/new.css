@@ -1,0 +1,73 @@
+.grant-container {
+  background-color: #f2f6f9;
+}
+
+.primary-form {
+  background-color: #FFFFFF;
+}
+
+#create-grant label {
+  color: #666;
+  font-weight: 600;
+}
+
+.new-grant .form__drop {
+  margin-top: 15px;
+}
+
+.new-grant #grants_form img {
+  max-width: none;
+}
+
+.new-grant .form__select2 {
+  height: 33px;
+}
+
+.new-grant .form__select2 .select2-container--default .select2-selection--single {
+  max-height: 100%;
+}
+
+.frequency .select2-container .select2-selection--single {
+  height: 2.05rem !important;
+}
+
+.frequency .select2-container--default .select2-selection--single .select2-selection__rendered {
+  position: relative;
+  font-size: 1rem;
+}
+
+.frequency .select2-container--default .select2-selection--single .select2-selection__rendered,
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+  top: -3px;
+}
+
+.select2-container--default .select2-selection--multiple,
+.new-grant .form__select2 .select2-container--default .select2-selection--single {
+  border-color: #D3D3D3 !important;
+  border-radius: 2px !important;
+  font-size: 1rem;
+}
+
+.select2-results__option, .select2-search--dropdown .select2-search__field {
+  font-size: 1rem;
+}
+
+.select2-container--default .select2-selection--multiple {
+  height: 2.75rem;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+  padding: 2px 5px;
+  background-color: #fff;
+  border-radius: 2px;
+  height: 35px !important;
+}
+
+.select2-container .select2-search--inline .select2-search__field {
+  margin-top: 0;
+  font-size: 1rem;
+}
+
+.ql-editor p {
+  font-size: 1rem;
+}

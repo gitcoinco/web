@@ -8,7 +8,7 @@
 }
 
 .tab-container > button {
-  margin: .5rem 1rem 0 0;
+  margin: .5rem 3rem 0 0;
   transition: none;
 }
 
@@ -21,8 +21,10 @@
   outline: none;
   border: none;
   cursor: pointer;
-  color: var(--gc-purple);
-  padding: 0;
+  color: black;
+  padding: 0 0 0.5rem 0;
+  margin-bottom: 1rem;
+  font-weight: 600;
 }
 
 .section-tab:hover,
@@ -33,7 +35,8 @@
 
 .section-tab.active {
   color: var(--gc-blue);
-  border-bottom: 2px var(--gc-blue) solid;
+  border-bottom: 4px var(--gc-blue) solid;
+  font-weight: bold;
 }
 
 .tab-sections {
@@ -49,6 +52,25 @@
 
 .tab-section.active {
   display: block;
+}
+
+.nav-badge::after {
+  padding: 4px 11px;
+  background-color: rgba(62,0,255, 0.10);
+  content: '';
+  border-radius: 50%;
+  position: relative;
+  left: -1rem;
+}
+
+.nav-badge {
+  font-size: 10px;
+  color: rgba(62,0,255);
+  line-height: 10px;
+  margin-left: 0.5rem;
+  top: -2px;
+  position: relative;
+  font-weight: bold;
 }
 
 @media (max-width: 768px) {

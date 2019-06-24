@@ -15,7 +15,7 @@
     height: 50px;
   }
 </style>
-<form id="whitepaper" method="POST">
+<form id="whitepaper" method="POST" class="col-md-8 m-auto">
   <div class="form-group">
     <h5>{% trans "Email Preferences" %}</h5>
     <label class="form__label" for="email">{% trans "Email address" %}</label>
@@ -57,7 +57,7 @@
 <script>
   $(document).ready(function(){
     // select / deselect all
-    $('#select_all').click(function(e) {
+    $('#select_all').on('click', function(e) {
       e.preventDefault();
       if($(this).data('direction') == '+'){
         $('.priv_checkbox').prop('checked', true);
@@ -86,5 +86,5 @@
   });
 
 </script>
-
+{{ block.super }}
 {% endblock %}

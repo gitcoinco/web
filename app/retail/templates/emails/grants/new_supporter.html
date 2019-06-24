@@ -1,0 +1,78 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static humanize %}
+{% block content %}
+<style>
+  hr {
+    width: 80%;
+    height: 2px;
+    border-radius: 25px;
+    border: none;
+    background-color: #D2D2D2;
+  }
+
+  .supporter {
+    padding-top: 30px;
+    padding-bottom: 1%;
+  }
+
+  .supporter a img {
+    border-radius: 25px;
+    margin-bottom: 10px;
+  }
+
+  .supporterName {
+    font-size: 18px;
+    color: #0D0764;
+  }
+
+  p > a {
+    color: #4A90E2;
+  }
+
+  #grow-oss {
+    margin-top: 45px;
+    margin-bottom: 30px;
+  }
+</style>
+<img src="{% static "v2/images/new-supporter.png" %}" alt="{% trans "New Supporter" %}" title="{% trans "New Supporter." %}">
+<h1 style="text-transform: none;">{{ grant.title }}{% trans " has a new supporter!" %}</h1>
+<hr>
+<div class="supporter">
+  <a href="{% url 'profile' subscription.contributor_profile.handle %}">
+    <img src="{{ subscription.contributor_profile.avatar_url }}" width="50" height="50" />
+  </a>
+  <br>
+  <a class="supporterName" href="{% url 'profile' subscription.contributor_profile.handle %}">
+    {{ subscription.contributor_profile.handle }}
+  </a>
+  <p>{% trans "has begun contributing" %}</p>
+  <p style="padding-top:0;margin-top:.5rem">
+    <strong>{{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }} </strong>
+      {% if subscription.num_tx_approved > 1 %}
+        {% trans "every" %} {{ subscription.frequency }} {{ subscription.frequency_unit }}
+      {% endif %}
+    <strong> {{subscription.num_tx_approved|floatformat}} time{{ subscription.num_tx_approved|pluralize }}</strong>
+  </p>
+
+  <p>{% trans "You can see the transaction history for " %}{{ grant.title }}
+      <a href="{% url 'grants:profile' %}">{% trans "here." %}</a>
+  </p>
+</div>
+<hr>
+{% endblock %}

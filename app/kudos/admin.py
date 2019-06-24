@@ -20,8 +20,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from django.contrib import admin
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 
-from .models import BulkTransferCoupon, BulkTransferRedemption, Contract, KudosTransfer, Token, Wallet
+from .models import (
+    BulkTransferCoupon, BulkTransferRedemption, Contract, KudosTransfer, Token, TransferEnabledFor, Wallet,
+)
 
 
 class GeneralAdmin(admin.ModelAdmin):
@@ -29,10 +32,21 @@ class GeneralAdmin(admin.ModelAdmin):
     list_display = ['created_on', '__str__']
 
 
+class TransferEnabledForAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['created_on', '__str__']
+    raw_id_fields = ['token', 'profile']
+
+
 class BulkTransferCouponAdmin(admin.ModelAdmin):
     ordering = ['-id']
     list_display = ['created_on', '__str__']
     raw_id_fields = ['sender_profile', 'token']
+    readonly_fields = ['claim']
+
+    def claim(self, instance):
+        url = instance.url
+        return format_html(f"<a href={url}>{url}</a>")
 
 
 class BulkTransferRedemptionAdmin(admin.ModelAdmin):
@@ -45,13 +59,18 @@ class TokenAdmin(admin.ModelAdmin):
     ordering = ['-id']
     search_fields = ['name', 'description']
     raw_id_fields = ['contract']
+    readonly_fields = ['link']
+
+    def link(self, instance):
+        html = f"<a href={instance.url}>{instance.url}</a>"
+        return mark_safe(html)
 
 
 class TransferAdmin(admin.ModelAdmin):
     raw_id_fields = ['recipient_profile', 'sender_profile', 'kudos_token', 'kudos_token_cloned_from']
     ordering = ['-id']
     readonly_fields = ['claim']
-    search_fields = ['tokenName', 'comments_public', 'from_name', 'username', 'network', 'github_url', 'url', 'emails', 'from_address', 'receive_address']
+    search_fields = ['tokenName', 'comments_public', 'from_name', 'username', 'network', 'github_url', 'url', 'emails', 'from_address', 'receive_address', 'txid', 'receive_txid']
     list_display = ['created_on', '__str__']
 
     def claim(self, instance):
@@ -71,6 +90,7 @@ class TransferAdmin(admin.ModelAdmin):
         return html
 
 
+admin.site.register(TransferEnabledFor, TransferEnabledForAdmin)
 admin.site.register(Token, TokenAdmin)
 admin.site.register(KudosTransfer, TransferAdmin)
 admin.site.register(Wallet, GeneralAdmin)

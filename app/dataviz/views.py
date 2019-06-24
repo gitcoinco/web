@@ -162,6 +162,8 @@ def cohort_helper_num(inner_start_time, inner_end_time, data_source, users):
             event = 'start_work'
             if data_source == 'profile-login':
                 event = 'Login'
+            if data_source == 'profile-visit':
+                event = 'Visit'
             if data_source == 'profile-new_bounty':
                 event = 'new_bounty'
             num = UserAction.objects.filter(
@@ -195,7 +197,7 @@ def cohort(request):
     cohorts = {}
 
     data_source = request.GET.get('data_source', 'slack-online')
-    num_periods = request.GET.get('num_periods', 10)
+    num_periods = request.GET.get('num_periods', 20)
     period_size = request.GET.get('period_size', 'weeks')
     kwargs = {}
 
@@ -270,31 +272,30 @@ def funnel(request):
         'title': 'web => bounties_posted => bounties_fulfilled',
         'keys': ['sessions', 'bounties_alltime', 'bounties_fulfilled', ],
         'data': []
-    },
-               {
-                   'title': 'web => bounties_posted => bounties_fulfilled (detail)',
-                   'keys': [
-                       'sessions', 'bounties_alltime', 'bounties_started_total', 'bounties_submitted_total',
-                       'bounties_done_total', 'bounties_expired_total', 'bounties_cancelled_total',
-                   ],
-                   'data': []
-               }, {
-                   'title': 'web session => email_subscribers',
-                   'keys': ['sessions', 'email_subscribers', ],
-                   'data': []
-               }, {
-                   'title': 'web session => slack',
-                   'keys': ['sessions', 'slack_users', ],
-                   'data': []
-               }, {
-                   'title': 'web session => create dev grant',
-                   'keys': ['sessions', 'dev_grant', ],
-                   'data': []
-               }, {
-                   'title': 'email funnel',
-                   'keys': ['email_processed', 'email_open', 'email_click', ],
-                   'data': []
-               }, ]
+    }, {
+        'title': 'web => bounties_posted => bounties_fulfilled (detail)',
+        'keys': [
+            'sessions', 'bounties_alltime', 'bounties_started_total', 'bounties_submitted_total', 'bounties_done_total',
+            'bounties_expired_total', 'bounties_cancelled_total',
+        ],
+        'data': []
+    }, {
+        'title': 'web session => email_subscribers',
+        'keys': ['sessions', 'email_subscribers', ],
+        'data': []
+    }, {
+        'title': 'web session => slack',
+        'keys': ['sessions', 'slack_users', ],
+        'data': []
+    }, {
+        'title': 'web session => create dev grant',
+        'keys': ['sessions', 'dev_grant', ],
+        'data': []
+    }, {
+        'title': 'email funnel',
+        'keys': ['email_processed', 'email_open', 'email_click', ],
+        'data': []
+    }, ]
 
     for funnel in range(0, len(funnels)):
         keys = funnels[funnel]['keys']

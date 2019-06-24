@@ -375,7 +375,14 @@ def get_emails_by_category(username):
 
 def get_emails_master(username):
     emails_by_category = get_emails_by_category(username)
-    return list(set([to_email for category, to_email in emails_by_category.items()]))
+    emails = []
+    for category, to_email in emails_by_category.items():
+        if type(to_email) is str:
+            emails.append(to_email)
+        if type(to_email) is list:
+            for email in to_email:
+                emails.append(email)
+    return list(set(emails))
 
 
 def search(query):
@@ -565,16 +572,20 @@ def get_interested_actions(github_url, username, email=''):
                 page += 1
 
             for pr_action in all_pr_actions:
+                pr_action['pr_url'] = pr_repo_owner + '/' + pr_repo + '/' + str(pr_num) + '/' + str(page)
                 if 'actor' in pr_action:
-                    gh_user = pr_action['actor']['login']
-                    if gh_user == username and pr_action['event'] in activity_event_types:
+                    if (pr_action['actor']):
+                        gh_user = pr_action['actor']['login']
+                    if gh_user.lower() == username.lower() and pr_action['event'] in activity_event_types:
+                        actions_by_interested_party.append(pr_action)
+                    elif username == '*':
                         actions_by_interested_party.append(pr_action)
                 elif 'committer' in pr_action:
                     gh_email = pr_action['committer']['email']
                     if gh_email and gh_email == email:
                         actions_by_interested_party.append(pr_action)
 
-        if gh_user and gh_user == username and action['event'] in activity_event_types:
+        if gh_user and gh_user.lower() == username.lower() and action['event'] in activity_event_types:
             actions_by_interested_party.append(action)
     return actions_by_interested_party
 

@@ -31,11 +31,11 @@
     <div class="row no-gutter">
       <div class="col body">
         <div class="container-fluid no-gutter">
+          {% include 'shared/no_metamask_error.html' %}
+          {% include 'shared/unlock_metamask.html' %}
+          {% include 'shared/connect_metamask.html' %}
+          {% include 'shared/faucet_over_balance_error.html' %}
           <div class="form-container" id="form_container">
-            {% include 'shared/no_metamask_error.html' %}
-            {% include 'shared/unlock_metamask.html' %}
-            {% include 'shared/connect_metamask.html' %}
-            {% include 'shared/faucet_over_balance_error.html' %}
             <div id="faucet_form">
               <div class="faucet-form" id="primary_form">
                 <h3>{% trans "Faucet Request" %} <span id="alpha">{% trans "Alpha" %}</span></h3>
@@ -85,23 +85,26 @@
                 </div>
               </div>
             </div>
-            <div id="success_container" class="faucet_response">
-              <h3>{% trans "Request Received" %}</h3>
+            <div id="success_container" class="faucet_response text-center">
+              <h5 class="mt-5 mb-4">{% trans "Request Received" %}</h5>
               {% include 'svgs/success.svg' %}
-              <div class="fail_header"></div>
-              <div class="fail_message">{% trans "Your request for a faucet distribution has been received. An administrator will review your request shortly (up to 24 hours on weekdays, on next business day if on weekends / holidays) and arrange a deposit if approved." %}
-              <br>
-              {% trans "While you wait, why not create an *free* Gitcoin ENS name?" %} <a href="{% url 'ens' %}">{{user.username}}.gitcoin.eth is available.  Click here to register it!</a>
+              <div class="fail_message mt-4">
+                <p class="mb-0">{% trans "Your request for a faucet distribution has been received." %}</p>
+                <p class="mb-3">{% trans "The Gitcoin team will review your request shortly." %}</p>
+                <p class="mb-0">{% trans "While you wait, why not create an *free* Gitcoin ENS name?" %}</p>
+                <a class="link" href="{% url 'ens' %}">
+                  {{ user.username }}.gitcoin.eth is available.  Click here to register it!
+                </a>
               </div>
             </div>
-            <div id="fail_container" class="faucet_response">
-              <div class="frheader" style="color:red;">
-                {% trans "There was an error" %}:
+            <div id="fail_container" class="mt-2 faucet_response">
+              <div class="frheader font-weight-semibold font-body" style="color:red;">
+                <p class="mb-2">{% trans "There was an error" %}:</p>
               </div>
-              <div style="font-size: 18px">
-                {% trans "Something went wrong submitting your request" %}:
-              </div>
-              <div class="frmessage" id="fail_message" style="font-size: 16px"></div>
+              <p class="font-body mb-2">
+                {% trans "Something went wrong submitting your request" %}
+              <p>
+              <div class="frmessage font-caption" id="fail_message"></div>
             </div>
           </div>
           <div class="col-12 offset-md-1 col-md-10">

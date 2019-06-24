@@ -1,0 +1,39 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<div class="modal fade g-modal" id="modalRating" tabindex="-1" role="dialog" aria-labelledby="modalRatingTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header border-0">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body center-block text-center">
+          <img src="{% static 'v2/images/rate-capture.svg' %}" width="170" class="d-block mx-auto mb-4">
+          <h2 class="h5 text-center font-weight-bold">
+              {% trans 'How was your bounty experience?' %}
+          </h2>
+          <p class="font-smaller-1 text-black-60 mx-3 px-2 mt-4">{% trans 'You’ve recently completed one or more bounties on Gitcoin. Help us improve Gitcoin by rating your bounty experience!' %}</p>
+          <p class="p-2 mx-3 font-smaller-1 text-black-60">{% trans 'Only Gitcoin admins are able to see your feedback.' %}</p>
+          <div class="my-4">
+            <a href="{% url "profile" %}#ratingTabs" class="button button--primary shadow-none">{% trans 'Rate your bounty experience' %}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

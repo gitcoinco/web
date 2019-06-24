@@ -1,0 +1,43 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static cookielaw_tags %}
+<meta name="title" content="Issue & Open Bug Bounty Explorer | Gitcoin">
+<meta name="description" content="Find open bug bounties & freelance development jobs including crypto bounty reward value in USD, expiration date and bounty age.">
+<link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
+<link rel="stylesheet" href={% static "v2/css/profile.css" %}>
+<link rel="stylesheet" href={% static "v2/css/tag.css" %}>
+<style>
+  .profile-bounties--loading {
+    background-position: center;
+    margin-bottom: 4rem;
+  }
+
+  .bounty_row:hover {
+    background-color: #fff;
+  }
+</style>
+<div>
+  <div class="col text-center">
+    <h3 class="mb-2 font-weight-semibold">{% trans "Available " %} {{ tech_stack|capfirst }} {% trans "Programming Jobs" %}</h3>
+    <p class="mb-5 font-title">{% trans "Click one to start contributing!" %}</p>
+  </div>
+  <div class="mb-4 col offset-lg-1 col-lg-10 profile-bounties featured-bounties profile-bounties--loading ">
+  </div>
+</div>
+{% include 'shared/result.html' %}
+<script src="/dynamic/js/tokens_dynamic.js"></script>
+<script src="{% static "v2/js/tokens.js" %}"></script>

@@ -97,6 +97,8 @@ body {
   color: #000000;
   text-decoration: none;
   padding: 10px 3rem 10px 1rem;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .bounty_row .avatar-container {
@@ -166,6 +168,7 @@ body {
 
 .tags {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .tags.fixed {
@@ -188,7 +191,6 @@ body {
 }
 
 @media (max-width: 991.98px) {
-
   .bounty_row {
     padding-left: 1rem;
     padding-right: 1rem;
@@ -268,4 +270,10 @@ body {
 
 .btn-expand-token:focus {
   color: #007bff;
+}
+
+.expired-icon {
+  font-size: 15px;
+  padding-right: 0.5em;
+  vertical-align: text-bottom;
 }

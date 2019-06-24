@@ -1,0 +1,97 @@
+/* stylelint-disable no-descending-specificity  */
+.card-rating {
+  color: #0d003c;
+  background-color: #fff;
+  border-radius: 4px;
+  position: relative;
+  margin: 1rem 0.6rem;
+  scroll-snap-align: none start;
+  transition: .45s all ease-in-out;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  flex: 0 0 24.2%;
+  max-width: 24.2%;
+  align-items: center;
+  font-size: 12px;
+  min-width: 230px;
+  box-shadow: 0 2px 2px 1px rgba(0, 0, 0, 0.1);
+}
+.card-rating .tag {
+  font-weight: 700;
+}
+.card-rating__title {
+  color: #000;
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.card-rating__avatar {
+  flex-shrink: 0;
+}
+
+.card-rating__header {
+  display: flex;
+  background-color: #F8F9FA;
+  padding: 1rem .5em;
+  border-radius: 4px 4px 0 0;
+}
+
+.rating {
+  direction: rtl;
+}
+
+.rating--small .rating-star {
+  font-size: 0.6rem;
+}
+
+.rating > input { display: none; }
+.rating > .rating-star:before {
+  margin: 1px;
+  font-size: 2.35em;
+  font-family: 'Font Awesome\ 5 Free', sans-serif;
+  display: inline-block;
+  content: "\f005";
+}
+
+.rating > .half:before {
+  content: "\f089";
+  position: absolute;
+}
+
+.rating > .rating-star {
+  color: #ddd;
+  margin-bottom: 0;
+}
+
+.rating > input:checked ~ .rating-star,
+fieldset:not(:disabled) .rating:not(:checked) > .rating-star:hover,
+fieldset:not(:disabled) .rating:not(:checked) > .rating-star:hover ~ .rating-star {
+  color: #25E899;
+  font-weight: 800;
+}
+
+fieldset:not(:disabled) .rating > input:checked + .rating-star:hover,
+fieldset:not(:disabled) .rating > input:checked ~ .rating-star:hover,
+fieldset:not(:disabled) .rating > .rating-star:hover ~ input:checked ~ .rating-star,
+fieldset:not(:disabled) .rating > input:checked ~ .rating-star:hover ~ .rating-star {
+  color: rgb(11, 253, 156);
+}
+
+fieldset:disabled .rating {
+  filter: saturate(0.4);
+}
+
+.static-stars .far {
+  font-size: 23px;
+  color: #CCCED0;
+}
+
+.static-stars .fas {
+  color: #25E899;
+}

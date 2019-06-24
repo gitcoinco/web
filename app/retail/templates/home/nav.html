@@ -1,0 +1,117 @@
+{% comment %}
+    Copyright (C) 2019 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static matches %}
+<nav class="navbar navbar-expand-md navbar-dark g-font-muli">
+  <a class="navbar-brand pt-0 pb-0" href="/">
+    <img id="logo" src="{% static "v2/images/logo_large.png" %}" data-hover="{% static "v2/images/logo_med_hover.gif" %}" width="150" height="50" />
+  </a>
+
+  <div class="d-flex order-0 order-md-last">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </div>
+
+  <div class="collapse navbar-collapse order-1" id="navbarSupportedContent">
+    <nav class="navbar-nav mx-auto">
+      <div class="nav-item dropdown interior">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {% trans "Products" %}
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" id="why-gitcoin" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="{% url "funder_bounties" %}">
+            {% trans "Bounties" %} <br>
+            <span>{% trans "Development resources at your finger tips" %}</span>
+          </a>
+          <a class="dropdown-item" href="{% url "kudos_main" %}">
+            {% trans "Kudos" %} <br>
+            <span>{% trans "Sincere compliments" %}</span>
+          </a>
+          <a class="dropdown-item" href="{% url "grants:grants" %}">
+            {% trans "Grants" %} <br>
+            <span>{% trans "Recurring Funding for open source" %}</span>
+          </a>
+          <a class="dropdown-item" href="https://codefund.app/">
+            {% trans "Codefund" %} <br>
+            <span>{% trans "Revenue to power open source" %}</span>
+          </a>
+          <a class="dropdown-item" href="{% url "labs" %}">
+            {% trans "Labs" %} <br>
+            <span>{% trans "Experiments to grow Ethereum" %}</span>
+          </a>
+        </div>
+      </div>
+      <div class="nav-item dropdown interior">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {% trans "Network" %}
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" id="how-it-works" aria-labelledby="navbarDropdownHow">
+          <a class="dropdown-item" href="{% url "vision" %}">
+            {% trans "Vision" %}
+          </a>
+          <a class="dropdown-item" href="{% url "mission" %}">
+            {% trans "Mission" %}
+          </a>
+          <a class="dropdown-item" href="{% url "results" %}">
+            {% trans "Results" %}
+          </a>
+        </div>
+      </div>
+
+      <div class="nav-item dropdown interior">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {% trans "Company" %}
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" id="how-it-works" aria-labelledby="navbarDropdownHow">
+          <a class="dropdown-item" href="{% url "about" %}">
+            {% trans "About" %}
+          </a>
+          <a class="dropdown-item" href="{% url "about" %}#team">
+            {% trans "Team" %}
+          </a>
+          <a class="dropdown-item" href="https://medium.com/gitcoin">
+            {% trans "Blog" %}
+          </a>
+          <a class="dropdown-item" href="{% url "not_a_token" %}">
+            {% trans "No Token" %}
+          </a>
+          <a class="dropdown-item" href="{% url "jobs" %}">
+            {% trans "Jobs" %}
+          </a>
+        </div>
+      </div>
+
+      <!-- <a class="nav-link interior" href="{% url "pricing" %}">{% trans "Pricing" %}</a> -->
+    </nav>
+    <nav class="navbar-nav mr-3">      
+      {% if user.is_authenticated %}
+        {% include 'shared/nav_auth.html' with source='authed' %}
+      {% else %}
+        <a href="{% url 'social:begin' 'github' %}?next=/" class="nav-link interior">
+          <i class="fab fa-github mr-1" role="aria-hidden"></i>
+          {% trans "LOG IN" %}
+        </a>
+      {% endif %}
+    </nav>
+  </div>
+
+</nav>

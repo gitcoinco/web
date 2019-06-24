@@ -1,6 +1,5 @@
 .body {
   padding: 60px 100px !important;
-  background-color: #fefefe !important;
 }
 
 .description {
@@ -48,7 +47,7 @@
 }
 
 #toc a.active {
-  color: black;
+  color: var(--gc-blue-hover);
 }
 
 #toc ol {
@@ -75,7 +74,6 @@
 
 @media (max-width: 991px) {
   #toc {
-    background-color: #FFFFFF;
     position: initial;
     border-top: 0px;
     border-left: 0px;

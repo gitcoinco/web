@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -16,29 +16,28 @@
 
 {% endcomment %}
 {% load i18n static matches %}
-<nav class="navbar navbar-expand-md navbar-dark">
-  <div id="gitcoin-background"></div>
+<nav class="navbar navbar-expand-md navbar-dark gitcoin-background">
   <a class="navbar-brand pt-0 pb-0 brand-hover" href="{% url 'kudos_main' %}">
-    {% if request.path == '/ios' %}
-    <!-- <img id="logo" src="{% static "v2/images/ios/gitcoin.svg" %}" data-hover="{% static "v2/images/ios/gitcoin_hover.gif" %}" height="50" /> -->
-    {% else %}
-      <img class="mw-100 logo-static" src="{% static "v2/images/kudos/logo.svg" %}" alt="kudos" height="50">
-      <img class="mw-100 logo-animated" src="{% static "v2/images/kudos/kudos_faster_repeat.gif" %}" alt="kudos" height="50">
-      <!-- <img id="logo" src="{% static "v2/images/logo_large.png" %}" data-hover="{% static "v2/images/logo_med_hover.gif" %}" width="150" height="50" /> -->
-    {% endif %}
+    <img class="mw-100 logo-static" src="{% static "v2/images/kudos/logo.svg" %}" alt="kudos" height="50">
+    <img class="mw-100 logo-animated" src="{% static "v2/images/kudos/kudos_faster_repeat.gif" %}" alt="kudos" height="50">
   </a>
   {% if request.path|matches:"^\/((explorer)|(issue.*)|(.*new.*))$" %}
-    <div class="navbar-network ml-5 py-1 px-2 hidden">
+    <div class="navbar-network ml-xl-5 py-1 px-2 hidden">
       <i class="fas fa-circle pr-1"></i>
       <span id="current-network"></span>
     </div>
   {% endif %}
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+  <div class="d-flex order-0 order-md-last">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    {% if user.is_authenticated %}
+      {% include 'shared/notifications.html' %}
+    {% endif %}
+  </div>
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+  <div class="collapse navbar-collapse order-1" id="navbarSupportedContent">
     <nav class="navbar-nav ml-auto mr-3">
       <a class="nav-link{% if active == 'about' %} selected{% endif %} interior" href="{% url 'kudos_main' %}">{% trans "What is Kudos?" %}</a>
       <a class="nav-link{% if active == 'marketplace' %} selected{% endif %} interior" href="{% url 'kudos_marketplace' %}">{% trans "Marketplace" %}</a>

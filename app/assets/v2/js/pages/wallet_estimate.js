@@ -1,8 +1,12 @@
 window.addEventListener('load', function() {
-  if (web3.currentProvider.isTrust) {
-    $('#trust_label').show();
-  } else {
-    $('#metamask_label').show();
+  try {
+    if (web3 && web3.currentProvider.isTrust) {
+      $('#trust_label').show();
+    } else {
+      $('#metamask_label').show();
+    }
+  } catch (ignore) {
+    console.log('%c error: web3 not defined. ensure metamask is installed & unlocked', 'color: red');
   }
   setTimeout(prefill_recommended_prices, 1000);
 
@@ -81,7 +85,7 @@ function prefill_recommended_prices() {
 
   if (fast_data['time'] == 'unknown') {
     $('#default-recommended-gas').show();
-    $('#default-recommended-gas').html('The confirmation time is unknown. However we recommend a gas price of $' + parseFloat(fast_data['usd']).toFixed(2));
+    $('#default-recommended-gas').html('The confirmation time is unknown. <br> However we recommend a gas price of $' + parseFloat(fast_data['usd']).toFixed(2));
     $('#default-recommended-gas').data('amount-usd', parseFloat(fast_data['usd']).toFixed(2));
     $('#gasPriceRecommended').val($('#average-recommended-gas').data('amount'));
     $('#slow-recommended-gas').hide();
@@ -127,4 +131,3 @@ function prefill_recommended_prices() {
   $('#fast-recommended-gas').html('Fast $' + parseFloat(fast_data['usd']).toFixed(2) + ' ~' + fast_data['time'] + ' minutes');
   $('#fast-recommended-gas').data('amount-usd', parseFloat(fast_data['usd']).toFixed(2));
 }
-

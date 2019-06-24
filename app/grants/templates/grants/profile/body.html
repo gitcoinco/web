@@ -1,0 +1,76 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load static i18n humanize %}
+
+{% if grants %}
+  <div class="grants-container">
+    {% for grant in grants %}
+      {% if forloop.counter0|divisibleby:3 %}<div class="row">{% endif %}
+      <div class="col-12 col-md-6 col-lg-4 mb-4">
+        {% include 'grants/card/index.html' %}
+      </div>
+      {%  if forloop.counter|divisibleby:3 or forloop.last %}</div>{% endif %}
+    {% endfor %}
+    <h2 class="font-title my-3 pb-3 title">{% trans "Transaction History" %}</h2>
+    {% for transaction in history %}
+          <div class="py-3 mx-sm-0 row transaction-history">
+            <div class="col-3 col-md-1 font-subheader text-center my-auto">
+              {{ transaction.cont.created_on|date:"d M" }}
+            </div>
+            <div class="col-2 col-md-1 justify-content-center special_tag">
+              <img class="avatar" src="{{ transaction.profile.avatar_url }}">
+            </div>
+            <div class="col-7 col-md-5 my-auto">
+              <div class="title font-body">
+                {{ transaction.grant.title }}
+              </div>
+              <div class="info font-caption">
+
+                {{ transaction.sub.amount_per_period|floatformat:4|intcomma }} {{ transaction.sub.token_symbol }} 
+                {% if transaction.sub.num_tx_approved > 1 %}
+                  / {{ transaction.sub.frequency }} {{ transaction.sub.frequency_unit }},
+                {% endif %}
+                {{transaction.sub.num_tx_approved|floatformat}} time{{ transaction.sub.num_tx_approved|pluralize }}
+
+              </div>
+            </div>
+            <div class="col-5 col-md-2 font-body my-auto txn-link">
+              <a id="tx_link" href="https://etherscan.io/tx/{{transaction.cont.tx_id}}" target="_blank" rel="noopener noreferrer">
+                View Etherscan
+              </a>
+              <input type="hidden" id="tx_id" name="tx_id" value="{{ transaction.cont.tx_id }}"/>
+            </div>
+            <div class="offset-lg-1 col-7 col-md-2 my-auto tags font-caption">
+              <div class="tag tag-lg token">
+                <p>
+                  {{ transaction.sub.amount_per_period|floatformat:4|intcomma }}
+                  <span>{{ transaction.sub.token_symbol }}</span>
+                </p>
+              </div>
+              {% if transaction.value_in_usdt_now %}
+                <div class="tag tag-lg usd">
+                  <p>
+                    {{ transaction.value_in_usdt_now }}
+                    <span>USD</span>
+                  </p>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+    {% endfor %}
+  </div>
+{% endif %}

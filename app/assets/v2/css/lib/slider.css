@@ -1,0 +1,46 @@
+.g-switch input { 
+  display: none;
+}
+
+.g-switch {
+  display: inline-block;
+  width: 60px;
+  height: 30px;
+  margin: 8px;
+  transform: translateY(50%);
+  position: relative;
+}
+
+.g-switch .slider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border-radius: 30px;
+  box-shadow: 0 0 0 2px #0D0764, 0 0 4px #0D0764;
+  cursor: pointer;
+  border: 4px solid transparent;
+  overflow: hidden;
+  transition: .4s;
+}
+
+.g-switch .slider:before {
+  position: absolute;
+  content: "";
+  width: 100%;
+  height: 100%;
+  background: #0D0764;
+  border-radius: 30px;
+  transform: translateX(-30px);
+  transition: .4s;
+}
+
+.g-switch input:checked + .slider:before {
+  transform: translateX(30px);
+  background: limegreen;
+}
+
+.g-switch input:checked + .slider {
+  box-shadow: 0 0 0 2px limegreen,0 0 2px limegreen;
+}

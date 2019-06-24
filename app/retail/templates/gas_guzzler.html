@@ -1,7 +1,7 @@
 {% extends 'onepager/base.html' %}
 {% load i18n static %}
 {% block 'scripts' %}
-<script src="{% static "v2/js/jquery.js"%}"></script>
+<script src="{% static "v2/js/lib/jquery.js"%}"></script>
 {% endblock %}
 <!-- Main -->
 
@@ -12,7 +12,7 @@
 
 {% block 'main' %}
 
-<section id=main>
+<section id=main style="max-width: 90%;">
 {% include 'shared/gas_nav.html' %}
 
 <h1> {% trans "Gas Guzzlers" %} ({{breakdown}}) <span id="alpha">{% trans "Alpha" %}</span> </h1>

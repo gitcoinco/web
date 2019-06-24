@@ -63,7 +63,7 @@
 <div class="container-fluid">
   <div class="row">
     <div class="d-none d-md-block col-md-2 pb-4">
-      <div class="align-items-right justify-content-right" style="text-align: right;">
+      <div class="align-items-right justify-content-right text-right">
         <img id='side_img' src="{% static "v2/images/mission/want/falcon_1.svg" %}" style="max-width:200px; margin-top: 50px;">
         <img id='side_img' src="{% static "v2/images/mission/value/falcon_2.svg" %}" style="max-width:200px; margin-top: 10px;">
         <img id='side_img' src="{% static "v2/images/mission/interact/falcon_3.svg" %}" style="max-width:200px; margin-top: 10px;">
@@ -78,20 +78,27 @@
               </li>
             {% endfor %}
         </ul>
-        <br>
-        <div style="max-width: 500px; margin: 0px auto;">
-        {% if msg %}
-        <p style="background-color: #fee856; padding: 5px 10px;">
-          {{msg | safe}}
-        </p>
-        {% endif %}
-        {% block settings_content %}
-        {% endblock %}
-        <br>
-        <br>
+        <div class="mt-5">
+          {% if msg %}
+          <p style="background-color: #fee856; padding: 5px 10px;">
+            {{msg | safe}}
+          </p>
+          {% endif %}
+          {% block settings_content %}
+          {% endblock %}
+        </div>
       </div>
     </div>
   </div>
 </div>
-
+{% endblock %}
+{% block scripts %}
+<script>
+$('form input:not([type="submit"])').keydown(function (e) {
+    if (e.keyCode == 13) {
+        e.preventDefault();
+        return false;
+    }
+});
+</script>
 {% endblock %}
