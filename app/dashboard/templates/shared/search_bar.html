@@ -25,7 +25,7 @@
     <select name="sort_option" id="sort_option">
       <option value="-web3_created">{% trans "Created: Recent" %}</option>
       <option value="web3_created">{% trans "Created: Oldest" %}</option>
-      <option value="-_val_usd_db">{% trans "Value: Highest" %}</option>
+      <option value="-_val_usd_db" {% if hackathon %}selected{% endif %}>{% trans "Value: Highest" %}</option>
       <option value="_val_usd_db">{% trans "Value: Lowest" %}</option>
     </select>
   </div>

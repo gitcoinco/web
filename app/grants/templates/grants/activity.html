@@ -10,7 +10,7 @@
           {% for subscription in subscriptions %}
             <div class="py-3 mx-sm-0 row transaction-history">
               <div class="col-2 font-subheader text-center text-md-left my-auto">
-                {{ subscription.created_on|date:"d M" }}
+                {{ subscription.created_on|date:"d M Y" }}
               </div>
               <div class="col-2 col-md-1 justify-content-center special_tag">
                 <a href="{% url 'profile' subscription.contributor_profile.handle %}">
@@ -57,7 +57,7 @@
           {% for transaction in contributions %}
             <div class="py-3 mx-sm-0 row transaction-history">
               <div class="col-2 font-subheader text-center text-md-left my-auto">
-                {{ transaction.created_on|date:"d M" }}
+                {{ transaction.created_on|date:"d M Y" }}
               </div>
               <div class="col-2 col-md-1 justify-content-center special_tag">
                 <a href="{% url 'profile' transaction.subscription.contributor_profile.handle %}">
@@ -110,7 +110,7 @@
           {% for subscription in cancelled_subscriptions %}
           <div class="py-3 mx-sm-0 row transaction-history">
             <div class="col-2 font-subheader text-center text-md-left my-auto">
-              {{ subscription.created_on|date:"d M" }}
+              {{ subscription.created_on|date:"d M Y" }}
             </div>
             <div class="col-2 col-md-1 justify-content-center special_tag">
               <a href="{% url 'profile' subscription.contributor_profile.handle %}">

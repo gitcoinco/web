@@ -139,14 +139,12 @@ var save_sidebar_latest = function() {
 };
 
 // saves search information default
-var set_sidebar_defaults = function() {
-  // Special handling to support adding keywords from url query param
-  var q = getParam('q');
-  var keywords;
-  var org;
+const set_sidebar_defaults = () => {
+  const q = getParam('q');
+  const org = getParam('org');
 
   if (q) {
-    keywords = decodeURIComponent(q).replace(/^,|\s|,\s*$/g, '');
+    const keywords = decodeURIComponent(q).replace(/^,|\s|,\s*$/g, '');
 
     if (localStorage['keywords']) {
       keywords.split(',').forEach(function(v, k) {
@@ -157,11 +155,13 @@ var set_sidebar_defaults = function() {
     } else {
       localStorage['keywords'] = keywords;
     }
+  }
 
+  if (org) {
     if (localStorage['org']) {
-      org.split(',').forEach(function(v, k) {
-        if (localStorage['org'].indexOf(v) === -1) {
-          localStorage['org'] += ',' + v;
+      org.split(',').forEach(function(value) {
+        if (localStorage['org'].indexOf(value) === -1) {
+          localStorage['org'] += ',' + value;
         }
       });
     } else {
@@ -291,7 +291,7 @@ var removeFilter = function(key, value) {
 };
 
 var get_search_URI = function(offset, order) {
-  var uri = '/api/v0.1/bounties/?';
+  var uri = '/api/v0.1/bounties/slim/?';
   var keywords = '';
   var org = '';
 
@@ -387,7 +387,7 @@ var get_search_URI = function(offset, order) {
   if (typeof order_by !== 'undefined') {
     uri += '&order_by=' + order_by;
   }
-  
+
   uri += '&offset=' + offset;
   uri += '&limit=' + results_limit;
 
@@ -544,33 +544,31 @@ var refreshBounties = function(event, offset, append, do_save_search) {
     $('.loading').css('display', 'none');
   });
 
-  if (!document.hackathon) {
-    explorer.bounties_request = $.get(featuredBountiesURI, function(results, x) {
-      results = sanitizeAPIResults(results);
+  explorer.bounties_request = $.get(featuredBountiesURI, function(results, x) {
+    results = sanitizeAPIResults(results);
 
-      if (results.length === 0 && !append) {
-        $('.featured-bounties').hide();
-        if (localStorage['referrer'] === 'onboard') {
-          $('.no-results').removeClass('hidden');
-          $('#dashboard-content').addClass('hidden');
-        } else {
-          $('.nonefound').css('display', 'none');
-        }
+    if (results.length === 0 && !append) {
+      $('.featured-bounties').hide();
+      if (localStorage['referrer'] === 'onboard') {
+        $('.no-results').removeClass('hidden');
+        $('#dashboard-content').addClass('hidden');
+      } else {
+        $('.nonefound').css('display', 'none');
       }
+    }
 
-      var html = renderFeaturedBountiesFromResults(results, true);
+    var html = renderFeaturedBountiesFromResults(results, true);
 
-      if (html) {
-        $('.featured-bounties').show();
-        $('#featured-card-container').html(html);
-      }
-    }).fail(function() {
-      if (explorer.bounties_request.readyState !== 0)
-        _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
-    }).always(function() {
-      $('.loading').css('display', 'none');
-    });
-  }
+    if (html) {
+      $('.featured-bounties').show();
+      $('#featured-card-container').html(html);
+    }
+  }).fail(function() {
+    if (explorer.bounties_request.readyState !== 0)
+      _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
+  }).always(function() {
+    $('.loading').css('display', 'none');
+  });
 };
 
 window.addEventListener('load', function() {
@@ -790,7 +788,7 @@ $(document).ready(function() {
   // sidebar filters
   $('.sidebar_search input[type=checkbox], .sidebar_search label').change(function(e) {
     reset_offset();
-    refreshBounties(null, 0, false, true);
+    // refreshBounties(null, 0, false, true);
     e.preventDefault();
   });
 

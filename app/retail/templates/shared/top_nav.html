@@ -18,9 +18,9 @@
 {% load i18n static matches %}
 
 <!--- Top Row Notification -->
-<div class="row bottom_notification font-caption" style="text-align: center; display: none;">
+<div class="row bottom_notification font-caption" style="text-align: center;">
   <span style="text-align: center; margin: auto;">
-    {% blocktrans %}<strong>The Ethereal Hackathon is now live!</strong> - Earn over $40k of prizes and a chance to meet the top teams in web3; <a href="https://gitcoin.co/hackathon/ethhack2019">Participate today!</a>.{% endblocktrans %}
+    {% blocktrans %}<strong>The Beyond Blocks Hackathon was just announced!</strong> - A three week virtual hackathon where global developers + entrepeneurs will collaborate to push blockchain applications to new frontiers of business + technology + social change <a href="https://gitcoin.co/hackathon/beyondblocks">Sign up today</a>.{% endblocktrans %}
   </span>
   <span style="cursor: pointer;" id="top_nav_notification">
     X
@@ -42,7 +42,7 @@
     <img src="{% static "v2/images/top-bar/kudos-logo.svg" %}" height="22" alt="" class="d-md-block d-none">
     <img src="{% static "v2/images/top-bar/kudos-symbol.svg" %}" height="22" alt="" class="d-md-none">
   </a>
-  <a class="{% if request.path|matches:'^\/((grants.*))$' %}selected{% endif %}" href="/grants">
+  <a class="{% if request.path|matches:'^\/((grants.*))$' %}selected{% endif %}" href="{% url "grants:grants" %}">
     <img src="{% static "v2/images/top-bar/grants-logo.svg" %}" height="22" alt="" class="d-md-block d-none">
     <img src="{% static "v2/images/top-bar/grants-symbol.svg" %}" height="22" alt="" class="d-md-none">
   </a>

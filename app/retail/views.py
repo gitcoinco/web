@@ -36,7 +36,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from app.utils import get_default_network
 from cacheops import cached_as, cached_view, cached_view_as
-from dashboard.models import Activity, Profile
+from dashboard.models import Activity, Bounty, Profile
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from economy.models import Token
 from marketing.mails import new_funding_limit_increase_request, new_token_request
@@ -64,7 +64,11 @@ def get_activities(tech_stack=None, num_activities=15):
     activities = activities[0:num_activities]
     return [a.view_props for a in activities]
 
+
 def index(request):
+
+    user = request.user.profile if request.user.is_authenticated else None
+
     products = [
         {
             'group' : 'grow_oss',
@@ -326,6 +330,7 @@ def subscribe(request):
     }
     return TemplateResponse(request, 'pricing/subscribe.html', context)
 
+
 def funder_bounties_redirect(request):
     return redirect(funder_bounties)
 
@@ -554,7 +559,7 @@ def contributor_bounties(request, tech_stack):
             { 'link': "/design", 'text': "Design"},
             { 'link': "/html", 'text': "HTML"},
             { 'link': "/ruby", 'text': "Ruby"},
-            { 'link': "/css", 'text': "CSS"},            
+            { 'link': "/css", 'text': "CSS"},
         ]
     }
 
@@ -663,15 +668,6 @@ def about(request):
             "Cocktail Samosa"
         ),
         (
-            static("v2/images/team/saptaks.jpg"),
-            "Saptak Sengupta",
-            "Engineering",
-            "saptaks",
-            "saptaks",
-            "Everything Open Source",
-            "daab chingri"
-        ),
-        (
             static("v2/images/team/scott.jpg"),
             "Scott Moore",
             "Biz Dev",
@@ -758,7 +754,7 @@ def mission(request):
 
     values = [
         {
-            'name': _('Collaboration'),
+            'name': _('Self Reliance'),
             'img': 'v2/images/mission/value/collaborative.svg',
             'alt': 'we-collobarate-icon'
         },
@@ -831,7 +827,7 @@ def mission(request):
             'alt': 'microscope-icon'
         },
         {
-            'text': _('We care about people (not just tasks)'),
+            'text': _('We care about people (not just tasks).'),
             'img': 'v2/images/mission/interact/people_care.svg',
             'alt': 'care-icon'
         },
@@ -1343,6 +1339,7 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
     }
     return TemplateResponse(request, 'help.html', context)
 
+
 def verified(request):
     user = request.user if request.user.is_authenticated else None
     profile = request.user.profile if user and hasattr(request.user, 'profile') else None
@@ -1353,6 +1350,7 @@ def verified(request):
         'profile': profile,
     }
     return TemplateResponse(request, 'verified.html', context)
+
 
 def presskit(request):
 
@@ -1518,6 +1516,7 @@ def slack(request):
 
     return TemplateResponse(request, 'slack.html', context)
 
+
 @csrf_exempt
 def newtoken(request):
     context = {
@@ -1558,6 +1557,8 @@ def btctalk(request):
 def reddit(request):
     return redirect('https://www.reddit.com/r/gitcoincommunity/')
 
+def blog(request):
+    return redirect('https://gitcoin.co/blog')
 
 def livestream(request):
     return redirect('https://calendar.google.com/calendar/r?cid=N3JxN2dhMm91YnYzdGs5M2hrNjdhZ2R2ODhAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ')

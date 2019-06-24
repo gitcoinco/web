@@ -16,6 +16,7 @@ h4,
   position: fixed;
   top: 0.25rem;
   right: 2rem;
+  z-index: 9999999999999;
 }
 
 .lighter {
@@ -726,7 +727,7 @@ div.button-pink {
   width: auto;
 }
 
-#payout_table td div.percent,
+#payout_table td div.input_amount,
 #payout_table td a.remove,
 #payout_table td div.amount {
   position: relative;

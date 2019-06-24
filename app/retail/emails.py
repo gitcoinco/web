@@ -933,12 +933,12 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Developers, Ads, and Kudos, Oh My!"
-    new_kudos_pks = [2617, 2555, 2623]
+    subject = "A Midsummer Bounty's Dream"
+    new_kudos_pks = [3973, 2224, 1967]
     new_kudos_size_px = 150
 
     kudos_friday = f'''
-<h3>Happy Kudos Friday from our Ethereal Hackathon sponsors!</h3>
+<h3>Happy Kudos Friday!</h3>
 </p>
 <p>
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
@@ -946,29 +946,28 @@ def render_new_bounty_roundup(to_email):
     '''
     intro = f'''
 <p>
-Hi Gitcoiners,
+Hey Gitcoiners,
 </p>
 <p>
-This week, we wrapped up the <a href="https://gitcoin.co/hackathon/ethereal-virtual-hackathon/">Ethereal Virtual Hackathon</a>. We had 600 hackers in our Discord, $65K in prizes, and ultimately received over 80 submissions
-for bounties. We're excited to announce winners at Ethereal, soon.
+Ethereum transactions are reaching new heights recently with the highest frequency of activity on the network in months. Need some help with your gas pricing? We're way ahead of you. Check out our helpful gas visualizer to assist with your
+work on the network. <a href="https://gitcoin.co/gas">It lives here.</a>
 </p>
 <p>
-During the event, we relied upon on Kudos, Codefund Ads, and the Gitcoin users to drive engagement. We built <a href="https://github.com/gitcoinco/kudosbadges/issues/new">custom Kudos</a> for each sponsor, showing unique appreciation via a piece of art made specifically for sponsors and developers.
-We ran <a href="https://codefund.app/advertisers/">CodeFund Ads</a> on Etherscan, driving great engagement to our discord. Lastly, Gitcoin is a place for developers, already. We're grateful
-to everyone who participated. Reply to this email if you'd like to discuss running a hackathon with us in the future!
+As we mentioned last week, we're currently in the process of organizing hackathons for the next few months. That means more projects, more opportunities, and of course more bounties. Fill out this Typeform to receive more information about them
+as we prepare to get everyone back together. Have any suggestions for us? <a href="mailto:team@gitcoin.co">Email the team.</a> Otherwise, <a href="https://gitcoin.typeform.com/to/j7CSbV">the form to sign up lives here.</a>
 </p>
 <p>
-So what got BUIDLt?  Winners will be announced next week, in the meantime, <a href=https://github.com/gitcoinco/skunkworks/blob/master/etherealhackathon2019.md>click here</a> to see a list of all entries to the hackathon!
+As we prepare to enter the second half of 2019, we're asking our community for feedback. What are we doing well? What can we do better to help you reach your goals? <a href="mailto:team@gitcoin.co">Reach out to us if you'd like to share your thoughts.</a>
 </p>
 
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Check out our new <a href="https://gitcoin.co/users/">Gitcoin user directory</a> and invite great Gitcoiners to work with you today.
+            Are you a project that might be interested in our hackathons? <a href="mailto:alex@gitcoin.co">Send us an email we'll be in touch.</a>
         </li>
         <li>
-            Gitcoin Livestream is back this week with Pia Mancini, CEO of Open Collective. Join us <a href="https://gitcoin.co/livestream"> at a new time, 2PM ET, or catch it on <a href="https://twitter.com/gitcoin">Twitter</a>!
+            The Gitcoin Livestream is back this week. Join us <a href="https://gitcoin.co/livestream"> at 2PM ET on Friday, or catch it on <a href="https://twitter.com/gitcoin">Twitter</a>!
         </li>
     </ul>
 </p>
@@ -978,34 +977,46 @@ Back to shipping,
 
 '''
     highlights = [{
-        'who': 'georgiemathews',
+        'who': 'nanspro',
         'who_link': True,
-        'what': 'Share kit for Vue.js with Bloom :)',
-        'link': 'https://gitcoin.co/issue/hellobloom/share-kit/42/2910',
+        'what': 'nanspro with the rewrite!',
+        'link': 'https://gitcoin.co/issue/ethhub-io/ethhub/285/3075',
         'link_copy': 'View more',
     }, {
-        'who': 'iamonuwa',
+        'who': 'gutsal-arsen',
         'who_link': True,
-        'what': 'More great work by Onuwa on Status!',
-        'link': 'https://gitcoin.co/issue/status-im/discover-dapps/31/2888',
+        'what': 'Redux renovations',
+        'link': 'https://gitcoin.co/issue/ssteiger/Vyper-Contract-GUI/7/3060',
         'link_copy': 'View more',
     }, {
-        'who': 'devaman',
+        'who': 'roleengineer',
         'who_link': True,
-        'what': 'Work with Pedro on Wallet Connect by devaman.',
-        'link': 'https://gitcoin.co/issue/WalletConnect/web3connect/12/2921',
+        'what': 'Merkle tree madness',
+        'link': 'https://gitcoin.co/issue/leapdao/leap-contracts/194/3041',
         'link_copy': 'View more',
     }, ]
 
+    sponsor = {
+        'name': 'Elk',
+        'title': 'Bringing blockchain into the physical world',
+        'image_url': 'https://elk.cc/assets/images/elk-board-1.png',
+        'link': 'http://bit.ly/ElkBlockchain',
+        'cta': 'Sign up now',
+        'body': [
+            'Introducing Elk - the development board for building hardware projects that interface with Ethereum.',
+            'We\'ll soon be on Kickstarter. <a href="http://bit.ly/ElkBlockchain" style="font-size: 14px; line-height: 18px;">Sign up now</a> and get your early bird discount!'
+        ]
+    }
+
     bounties_spec = [{
-        'url': 'https://github.com/AdExNetwork/adex-protocol-eth/issues/62',
-        'primer': 'Work with AdEx on their protocol prizes for ',
+        'url': 'https://github.com/w3f/Web3-collaboration/issues/123',
+        'primer': 'IPFS Integrations from Web3',
     }, {
-        'url': 'https://github.com/gitcoinco/skunkworks/issues/104',
-        'primer': 'Want to work on Quorum with JP Morgan on Privacy?',
+        'url': 'https://github.com/PegaSysEng/BountiedWork/issues/18',
+        'primer': 'Trinity Hobbits Integration: 5 ETH up for grabs!',
     }, {
-        'url': 'https://github.com/smartcontractkit/chainlink/issues/1091',
-        'primer': 'Connect smart contracts to external data!',
+        'url': 'https://github.com/LinkdropProtocol/linkdrop-monorepo/issues/203',
+        'primer': 'Smart Contract Showdown...',
     }, ]
 
     num_leadboard_items = 5
@@ -1064,6 +1075,7 @@ Back to shipping,
         'highlights': highlights,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'kudos_highlights': kudos_highlights,
+        'sponsor': sponsor,
     }
 
     response_html = premailer_transform(render_to_string("emails/bounty_roundup.html", params))
