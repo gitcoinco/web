@@ -2775,6 +2775,11 @@ def hackathon(request, hackathon=''):
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
         'hackathon': evt,
     }
+
+    if evt.identifier == 'beyondblockchain_2019':
+        from dashboard.context.hackathon_explorer import beyondblockchain_2019
+        params['sponsors'] = beyondblockchain_2019
+
     return TemplateResponse(request, 'dashboard/index.html', params)
 
 
