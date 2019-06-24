@@ -1,0 +1,25 @@
+{
+    "symbol": "OGO",
+    "address": "0xFF0E5e014cf97e0615cb50F6f39Da6388E2FaE6E",
+    "overview": {
+        "en": "Origo.Network is the scalable privacy preserving platform for decentralized applications that uses zero-knowledge proof to implement the privacy protection of data in smart contract. It uses off-chain computation, on-chain verification and sharding technology to increase transaction speed while ensure the correctness which greatly promote the use of blockchain application.",
+        "zh": "Origo Network是去中心化应用的可扩展隐私保护平台，利用零知识证明实现了智能合约中数据的隐私保护，使用链下计算、链上验证和分片技术等，保证计算正确性的同时提高交易速度，大大推动了区块链应用的落地。"
+    },
+    "email": "info@origo.network",
+    "website": "https://origo.network/",
+    "whitepaper": "https://origo.network/whitepaper",
+    "state": "NORMAL",
+    "published_on": "2019-05-31",
+    "initial_price": {
+        "ETH": "0.00031576 ETH",
+        "USD": "0.12 USD"
+    },
+    "links": {
+        "blog": "https://medium.com/@origonetwork",
+        "twitter": "https://twitter.com/OrigoNetwork",
+        "telegram": "https://t.me/origoofficial",
+        "github": "https://github.com/origolab",
+        "medium": "https://medium.com/@origonetwork",
+        "youtube": "https://www.youtube.com/c/OrigoNetwork"
+    }
+}
