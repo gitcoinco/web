@@ -2833,7 +2833,7 @@ def upload_profile_banner(request):
             return JsonResponse(
                 {'error': 'Bad request'},
                 status=401)
-        profile.profile_banner = filename
+        profile.profile_wallpaper = filename
         profile.save()
     except (ProfileNotFoundException, ProfileHiddenException):
         raise Http404

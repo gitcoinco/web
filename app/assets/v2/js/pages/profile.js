@@ -76,8 +76,7 @@ $(document).ready(function() {
   }
 
   if (updateViewBtn) {
-    updateViewBtn.addEventListener(
-      'click',
+    updateViewBtn.addEventListener('click',
       function() {
         updateView(true);
       },
@@ -122,9 +121,7 @@ $(document).ready(function() {
         // append html to the posts div
         var elem = '#' + request;
 
-        $(elem + ' div')
-          .first()
-          .append(data.kudos_html);
+        $(elem + ' div').first().append(data.kudos_html);
       },
       error: function(xhr, status, error) {
         // shit happens friends!

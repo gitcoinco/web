@@ -21,7 +21,7 @@
       {% csrf_token %}
       <h4 class="font-title-lg">Change your header photo</h4>
     </div>
-      <div class="container-fluid header profile-header dash" style="min-height: 350px; {% if profile.profile_banner %} background-image: url( {{ profile.profile_banner }} ) {% endif %}">
+      <div class="container-fluid header profile-header dash" style="min-height: 350px; {% if profile.profile_wallpaper %} background-image: url( {{ profile.profile_wallpaper }} ) {% endif %}">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'home/nav.html' %}
       {% if not hidden and is_staff %}
