@@ -88,8 +88,34 @@ beyondblockchain_2019 = {
     'sponsor_bg'    : 'none',
     'sponsors_gold' : [
         {
+            'name'  : 'Raiden',
+            'logo'  : static('v2/images/hackathon/beyond_block/sponsors/raiden-white.svg')
+        },
+        {
             'name'  : 'Consensys Labs',
             'logo'  : static('v2/images/hackathon/ethhack/sponsors/big/labs-logo-blue.svg')
-        }
-    ]
+        },
+        {
+            'name'  : 'Pegasys',
+            'logo'  : static('v2/images/hackathon/ethhack/sponsors/big/pegasys-logo.svg')
+        },
+        {
+            'name'  : 'Portis',
+            'logo'  : static('v2/images/hackathon/beyond_block/sponsors/portis.svg')
+        },
+    ],
+    'sponsors_silver' : [
+        {
+            'name'  : 'Matic',
+            'logo'  : static('v2/images/hackathon/beyond_block/sponsors/matic.svg')
+        },
+        {
+            'name'  : 'Alethio',
+            'logo'  : static('v2/images/hackathon/ethhack/sponsors/small/alethio-no-bg.svg')
+        },
+        {
+            'name'  : 'Arweave',
+            'logo'  : static('v2/images/hackathon/beyond_block/sponsors/arweave.svg')
+        },
+    ],
 }

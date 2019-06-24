@@ -185,24 +185,52 @@ beyond_blocks_2019 = {
     'prize_link'    : _('https://gitcoin.co/hackathon/beyondblockchain/'),
     'results_link'  : False,
     'starter_guide' : False,
-    'sponsors_gold' : False,
+    'sponsors_gold' : [
+        {
+            'name'  : 'Raiden',
+            'logo'  : static('v2/images/hackathon/beyond_block/sponsors/raiden.svg')
+        },
+        {
+            'name'  : 'Consensys Labs',
+            'logo'  : static('v2/images/hackathon/ethhack/sponsors/big/labs-logo-blue.svg')
+        },
+        {
+            'name'  : 'Alethio',
+            'logo'  : static('v2/images/hackathon/ethhack/sponsors/small/alethio-no-bg.svg')
+        },
+        {
+            'name'  : 'Arweave',
+            'logo'  : static('v2/images/hackathon/beyond_block/sponsors/arweave.svg')
+        },
+    ],
+    'sponsors_silver' : [
+
+        {
+            'name'  : 'Pegasys',
+            'logo'  : static('v2/images/hackathon/ethhack/sponsors/big/pegasys-logo.svg')
+        },
+        {
+            'name'  : 'Matic',
+            'logo'  : static('v2/images/hackathon/beyond_block/sponsors/matic.svg')
+        },
+        {
+            'name'  : 'Portis',
+            'logo'  : static('v2/images/hackathon/beyond_block/sponsors/portis.svg')
+        }
+    ],
     'sections' : [
         {
             'title'         : _('Participate today!'),
-            'bg'            : 'hk-white-bg',
-            'font-bg-color' : 'hk-black-f',
-            # 'bg'            : 'hk-black-bg', TODO : Enable when sponsors are added
-            # 'font-bg-color' : 'hk-white-f',
+            'bg'            : 'hk-black-bg',
+            'font-bg-color' : 'hk-white-f',
             'subtitle'      : '''Over the last decade the blockchain community has built, funded, and scaled core infrastructure <br>
                                 for a new decentralized world. Join today to build projects to harness this power for users in <br>
                                 their everyday lives.''',
         },
         {
             'title'         : 'June 24th - July 10th',
-            'bg'            : 'hk-black-bg',
-            'font-bg-color' : 'hk-white-f',
-            # 'bg'            : 'hk-white-bg', TODO : Enable when sponsors are added
-            # 'font-bg-color' : 'hk-black-f',
+            'bg'            : 'hk-white-bg',
+            'font-bg-color' : 'hk-black-f',
             'register_link' : True,
             'subtitle'      : '''Hackathon challenges will be posted as bounties, <br> with the best hacks receiving
                                 prizes in ETH & ERC-20 tokens.''',
@@ -211,10 +239,8 @@ beyond_blocks_2019 = {
         },
         {
             'title'         : _('Fund a Prize Bounty'),
-            'bg'            : 'hk-white-bg',
-            'font-bg-color' : 'hk-black-f',
-            # 'bg'            : 'hk-black-bg', TODO : Enable when sponsors are added
-            # 'font-bg-color' : 'hk-white-f',
+            'bg'            : 'hk-black-bg', 
+            'font-bg-color' : 'hk-white-f',
             'subtitle'      : _('Have an epic challenge you want to see the community tackle? <br> <a target="_blank" href="https://docs.google.com/presentation/d/1gktma0VzSmzLGKFLJ7xVEbkXHjHfroP2Rk9vrYUIv_k/edit#slide=id.g5b466f0de5_1_6">Learn More</a>'),
             'img'           :  static('v2/images/hackathon/bot.svg')
         }

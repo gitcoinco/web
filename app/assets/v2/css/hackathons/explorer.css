@@ -69,12 +69,42 @@
   font-size: 4rem;
 }
 
-#beyondblockchain_2019 .sponsors-gold img {
+#beyondblockchain_2019 .sponsors-gold img,
+#beyondblockchain_2019 .sponsors-silver img {
   width: 12rem;
+}
+
+#beyondblockchain_2019 img.Alethio,
+#beyondblockchain_2019 img.Arweave {
+  height: 4rem;
+  width: auto;
+}
+
+#beyondblockchain_2019 img.Alethio ,
+#beyondblockchain_2019 img.Matic,
+#beyondblockchain_2019 img.Arweave {
+  padding: 5px;
+  background-color: rgba(255, 255, 255, 0.85);
+  border-radius: 1px;
 }
 
 #beyondblockchain_2019 .img-holder {
   width: auto;
   height: auto;
   padding: 0;
+}
+
+#beyondblockchain_2019 .sponsors-gold img {
+  max-height: 6rem;
+}
+
+#beyondblockchain_2019 .sponsors-silver img {
+  max-height: 3rem;
+}
+
+#beyondblockchain_2019 img.Pegasys,
+#beyondblockchain_2019 img.Portis {
+  max-height: 3rem;
+  position: relative;
+  top: 1rem;
 }
