@@ -11,15 +11,20 @@
     <div class="container-fluid px-lg-0">
       <div class="row {{ bg }}">
         <div class="col-12 {{ logo_bg }}">
-          <img class="w-100 my-5 py-4 banner-logo" src="{{ logo }}" alt="{{ hackathon_id }}" />
+          <img class="w-100 my-5 py-4 banner-logo" {% if logo %} src="{{ logo }}"  alt="{{ hackathon_id }}" {% endif %}/>
         </div>
         <div class="col-12 py-5 text-center">
           <h1 class="my-5 pt-5 font-weight-semibold {{ banner_text }}">{{ title_banner |safe }}</h1>
-          <h3 class="{{ banner_text }}">{{ subtitle }}</h3>
+          {% if subtitle %}
+            <h3 class="{{ banner_text }}">{{ subtitle }}</h3>
+          {% endif %}
+          {% if caption %}
+            <h4 class="{{ banner_text }}">{{ caption |safe }}</h4>
+          {% endif %}
         </div>
         <div class="col-12 py-3 text-center powered-by">
           <p class="font-title-xl {{ banner_text }}">Powered by:</p>
-          <div>
+          <div class="powered_by">
             {% for company in powered_by %}
               <img src="{{ company.logo }}" alt="{{ company.name }}" class="m-5"/>
             {% endfor %}
@@ -38,7 +43,7 @@
           {% endif %}
         </div>
 
-        <div class="col-12 text-center my-4 info-links font-title-xl">
+        <div class="col-12 text-center my-4 info-links font-title-xl pb-5">
           {% if discord_link %}
             <p class="d-lg-inline"> <a class="mx-5" href="{{ discord_link}}">Join The Discord</a> </p> 
           {% endif %}
@@ -50,7 +55,7 @@
           {% endif %}
 
           {% if starter_guide %}
-            <p class="font-title my-5">
+            <p class="font-title mt-5">
               or view our <a href="{{starter_guide }}">Get Started Guide</a>
             </p>
           {% endif %}

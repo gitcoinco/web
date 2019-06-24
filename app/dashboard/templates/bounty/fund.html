@@ -306,17 +306,15 @@
             {% if FEE_PERCENTAGE != 0 %}
               <div id="fee-section" class="py-4">
                 <h5 class="font-body letter-spacing text-black-60 text-uppercase">
-                  {% trans "No Suprises" %}
+                  {% trans "No Surprises" %}
                 </h5>
                 <div class="row">
                   <div class="col-12 col-sm-9 mt-3 font-body mb-sm-3">
                     <p>
-                      {% blocktrans %}
-                      Simply pay the bounty amount ( plus a standard
+                      Simply pay the bounty amount ( plus a {% if FEE_PERCENTAGE == 10 %} standard {% else %} discounted {% endif %}
                       <span class="fee-percentage font-weight-bold">10</span><span class="font-weight-bold">%</span> Gitcoin platform fee ).
                       This covers our costs for finding quality contributors to join our platform so that you get the best work.
                       If your business requires additional assistance, please contact us <a href="mailto:founders@gitcoin.co">founders@gitcoin.co</a>
-                      {% endblocktrans %}
                     </p>
                   </div>
                   <div class="col-12 col-sm-3 order-first order-sm-last mt-4 mt-sm-2 mt-md-0 mb-4 mb-sm-3">

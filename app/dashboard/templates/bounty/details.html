@@ -7,6 +7,9 @@
     {% include 'shared/cards_pic.html' %}
     <meta name="title" content="{{ card_title }} Bug Bounty | Gitcoin">
     <meta name="description" content="{{ card_desc | truncatechars:200 }}">
+    {% if canonical_url %}
+      <link rel="canonical" href="{{ canonical_url }}">
+    {% endif %}
     <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/user_popover.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">

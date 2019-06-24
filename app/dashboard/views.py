@@ -957,6 +957,16 @@ def ethhack(request):
     return TemplateResponse(request, 'dashboard/hackathon/index.html', params)
 
 
+def beyond_blocks_2019(request):
+    """Handle displaying ethhack landing page."""
+    from dashboard.context.hackathon import beyond_blocks_2019
+
+    params = beyond_blocks_2019
+    params['card_desc'] = params['meta_description']
+
+    return TemplateResponse(request, 'dashboard/hackathon/index.html', params)
+
+
 def accept_bounty(request):
     """Process the bounty.
 
@@ -1650,6 +1660,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 params['stdbounties_id'] = bounty.standard_bounties_id if not stdbounties_id else stdbounties_id
                 params['interested_profiles'] = bounty.interested.select_related('profile').all()
                 params['avatar_url'] = bounty.get_avatar_url(True)
+                params['canonical_url'] = bounty.canonical_url
 
                 if bounty.event:
                     params['event_tag'] = bounty.event.slug
@@ -2748,6 +2759,11 @@ def hackathon(request, hackathon=''):
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
         'hackathon': evt,
     }
+
+    if evt.identifier == 'beyondblockchain_2019':
+        from dashboard.context.hackathon_explorer import beyondblockchain_2019
+        params['sponsors'] = beyondblockchain_2019
+
     return TemplateResponse(request, 'dashboard/index.html', params)
 
 
