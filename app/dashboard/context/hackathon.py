@@ -181,7 +181,7 @@ beyond_blocks_2019 = {
     'period'        : _('June 24th, 2019 - July 10th, 2019'),
     'register_link' : _('https://gitcoin.typeform.com/to/Yp7chL'),
     'discord_link'  : _('https://discord.gg/TxRKTn8'),
-    'prize_link'    : False,
+    'prize_link'    : _('https://gitcoin.co/hackathon/beyondblockchain/'),
     'results_link'  : False,
     'starter_guide' : False,
     'sponsors_gold' : False,
