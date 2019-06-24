@@ -69,7 +69,7 @@
             handle: '{{ github_handle }}',
             profile_id: '{{ profile_id|default_if_none:"0" }}'
         });
+        {% endif %}
     })
-    {% endif %}
   </script>
 {% endif %}
