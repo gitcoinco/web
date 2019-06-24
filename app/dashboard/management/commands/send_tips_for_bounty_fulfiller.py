@@ -88,9 +88,9 @@ class Command(BaseCommand):
                             ######################################################
                             print(" - 2 ")
                             old_from = tip.from_name
-                            comments_public = "[gitcoinbot message] This crowdfunding was auto-returned to you because Gitcoin could not figure out how to distribute the funds."
+                            comments_public = "[gitcoinbot message] This crowdfunding was auto-returned to you because Gitcoin could not figure out how to distribute the funds.  We recommend that you payout these funds to the bounty hunters, at your discretion, via https://gitcoin.co/tip ."
                             msg = f'auto assigneed on {timezone.now()}; as bulk payout bounty.  tip was from {tip.from_name}'
-                            return_to_sender(tip, msg)
+                            return_to_sender(tip, msg, comments_public)
                     elif bounty.status == 'cancelled':
                         ######################################################
                         # return to funder
@@ -100,7 +100,7 @@ class Command(BaseCommand):
                         old_from = tip.from_name
                         comments_public = "[gitcoinbot message] This funding was auto-returned to you because the bounty it was associated with was cancelled."
                         msg = f'auto assigneed on {timezone.now()}; as cancelled bounty.  tip was from {tip.from_name}'
-                        return_to_sender(tip, msg)
+                        return_to_sender(tip, msg, comments_public)
             except Exception as e:
                 print(e)
                 logger.exception(e)
