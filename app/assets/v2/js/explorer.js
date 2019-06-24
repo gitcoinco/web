@@ -15,11 +15,12 @@ Vue.mixin({
       vm.isLoading = true;
       vm.noResults = false;
       // vm.params.network = 'rinkeby';
-      // if (newPage) {
-      //   vm.bountiesPage = newPage;
-      // }
       // vm.params.page = vm.bountiesPage;
       vm.params.limit = vm.BountiesLimit;
+      if (newPage || newPage === 0 ) {
+        // vm.bountiesPage = newPage;
+        vm.BountiesOffset = newPage;
+      }
       vm.params.offset = vm.BountiesOffset;
       console.log(vm.params.limit, vm.params.offset)
 
@@ -75,15 +76,16 @@ Vue.mixin({
       const url = new URL(location.href);
       const params = new URLSearchParams(url.search);
       for (let p of params) {
+        console.log(p)
         vm.params[p[0]] = p[1]
       }
     },
-    searchUsers: function() {
+    searchBounties: function() {
       let vm = this;
 
-      vm.users = [];
-
-      // vm.fetchBounties(1);
+      vm.bounties = [];
+      vm.fetchBounties(0);
+      console.log( 'here')
 
     },
     bottomVisible: function() {
@@ -101,6 +103,17 @@ Vue.mixin({
         }
       }
     },
+    clearParams() {
+      let vm = this;
+      vm.params = {};
+      vm.experienceSelected = []
+
+    },
+    // check() {
+    //   let vm = this;
+
+    //   vm.params['experience_level'] =  vm.experienceSelected;
+    // },
     closeModal() {
       this.$refs['user-modal'].closeModal();
     },
@@ -122,16 +135,43 @@ if (document.getElementById('gc-explorer')) {
       media_url,
       searchTerm: null,
       bottom: false,
-      params: {},
+      experienceSelected:[],
+      params: { },
+      // experience_options: [
+      //   {
+      //     id: 1,
+      //     name: 'beginner',
+      //   },
+      //   {
+      //     id: 2,
+      //     name: 'intermediate',
+      //   },
+      //   {
+      //     id: 3,
+      //     name: 'advanced',
+      //   }
+      // ],
       showFilters: true,
       noResults: false,
       isLoading: true
+    },
+    computed:{
+      // flatSelected () {
+      //   return this.params.experience_level.reduce((acc, cur) => [ ...acc, ...cur ], [])
+      // }
+      foos(){
+
+          return this.params.experience_level = this.experienceSelected
+
+        // return this.experienceSelected.map(item => this.params.experience_level = item);
+        // this.check()
+      }
     },
     mounted() {
       this.getUrlParams();
       this.fetchBounties();
       this.$watch('params', function(newVal, oldVal) {
-        this.searchUsers();
+        this.searchBounties();
       }, {
         deep: true
       });

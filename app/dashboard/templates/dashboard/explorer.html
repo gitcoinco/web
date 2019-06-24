@@ -73,7 +73,7 @@
                 </select2>
               </div>
             </div>
-            <div class="pb-4 border-bottom form-group">
+            <!-- <div class="pb-4 border-bottom form-group">
               <label for="leaderboard_rank" class="font-weight-bold">Leaderboard Rank</label>
               <div class="form__select2">
                 <select2 v-model="params.leaderboard_rank" data-minimum-results-for-search="Infinity" class="form-control">
@@ -84,8 +84,8 @@
                   <option value="15,20">15-20</option>
                 </select2>
               </div>
-            </div>
-            <div class="pb-2 border-bottom form-group">
+            </div> -->
+            <!-- <div class="pb-2 border-bottom form-group">
               <div class="w-100 p-2">
                 <fieldset class="">
                   <label for="" class="font-weight-bold">Star Rating</label>
@@ -103,14 +103,29 @@
                   </div>
                 </fieldset>
               </div>
+            </div> -->
+            <div class="pb-2 border-bottom form-group">
+              <!-- <div v-for="item in experience_level" :key="item.id">
+                <input type="checkbox" name="experience_level" :value="item.name" v-model="params.experience_level" />
+
+                <label >[[item.name]]</label>
+              </div> -->
+              [[params.experience_level]] //
+              <input type="checkbox" value="beginner" v-model="experienceSelected" @click="foos">
+              <label for="beginner">beginner</label>
+              <input type="checkbox" value="intermediate" v-model="experienceSelected" @click="foos">
+              <label for="intermediate">intermediate</label>
+              <input type="checkbox" value="advanced" v-model="experienceSelected" @click="foos">
+              <label for="advanced">advanced</label>
             </div>
             <div class="g-multiselect pb-4 border-bottom form-group">
               <label for="organisations" class="font-weight-bold">Organisation</label>
               <div class="font-smaller">
-                <input v-model.lazy="params.organisation" data-placeholder="e.g. Gitcoin" data-tags="true" class="form-control">
+                <input v-model.lazy="params.org" data-placeholder="e.g. Gitcoin" data-tags="true" class="form-control">
               </div>
             </div>
-            <button class="btn blue" @click="params = {};">Reset Filters</button>
+            [[params]]
+            <button class="btn blue" @click="clearParams();">Reset Filters</button>
           </nav>
         </transition>
         <div class="container pt-4" @scroll.passive="onScroll($event)">
@@ -119,7 +134,7 @@
             <div v-if="noResults" class="text-center">
               <img src="{% static 'v2/images/shrug_bot.png' %}" alt="nothing found" width="316" height="221">
               <p class="mt-4 font-weight-bold mb-0">No users found</p>
-              <button class="btn blue" @click="params = {}; searchBounties()">Reset Filters</button>
+              <button class="btn blue" @click="clearParams(); searchBounties()">Reset Filters</button>
             </div>
             <div class="">
               <a v-for="bounty in bounties" :class="[bounty.standard_bounties_id.toString(), bounty.network]" :key="bounty.pk" :href="bounty.url" class="d-flex align-items-center">
