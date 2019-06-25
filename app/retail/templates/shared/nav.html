@@ -84,6 +84,9 @@
         <i class="fab fa-ethereum mr-1" role="aria-hidden"></i>
         {% trans "FUND ISSUE" %}
       </a>
+      <button class="nav-link btn btn-link text-left" id="help-zendesk">
+        <i class="far fa-question-circle"></i>
+      </button>
       {% if request.path != '/' or user.is_authenticated %}
         {% include 'shared/nav_auth.html' with source='authed' %}
       {% endif %}

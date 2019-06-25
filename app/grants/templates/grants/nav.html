@@ -43,6 +43,9 @@
       <a class="nav-link{% if active == 'grants_quickstart' %} selected {% endif %} interior" href="{% url 'grants:quickstart' %}">{% trans "What is Grants?" %}</a>
       <a class="nav-link{% if active == 'grants_leaderboard' %} selected {% endif %} interior" href="{% url 'grants:leaderboard' %}">{% trans "Leaderboard" %}</a>
       <a class="nav-link{% if active == 'new_grant' %} selected {% endif %} interior" href="{% url 'grants:new' %}"><i class="fab fa-ethereum mr-1" role="aria-hidden"></i> {% trans "Create Grant" %}</a>
+      <button class="nav-link btn btn-link text-left" id="help-zendesk">
+        <i class="far fa-question-circle"></i>
+      </button>
 
       {% if not user.is_authenticated %}
         <a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" class="nav-link interior" onclick="dataLayer.push({'event': 'login'});">

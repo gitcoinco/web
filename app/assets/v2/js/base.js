@@ -36,6 +36,13 @@ $(document).ready(function() {
 
   record_campaign_to_cookie();
 
+  $('#help-zendesk').on('click', function(e) {
+    zE(function() {
+      zE('webWidget', 'helpCenter:setSuggestions', { url: true });
+      zE.activate();
+    });
+  });
+
   if (!$('.header > .minihero').length && $('.header > .navbar').length) {
     $('.header').css('overflow', 'visible');
   }
