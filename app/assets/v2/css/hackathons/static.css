@@ -52,6 +52,7 @@ h4 {
 
 .hackathon .banner-logo {
   max-height: 18rem;
+  width: auto !important;
 }
 
 .hackathon .sponsors_gold img {
@@ -153,6 +154,7 @@ h4 {
 
 .bb-banner-bg {
   background-color: #121315;
+  text-align: center;
 }
 
 .bb-green-bg {
