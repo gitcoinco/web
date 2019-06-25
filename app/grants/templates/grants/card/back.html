@@ -17,12 +17,14 @@
 {% load i18n static humanize grants_extra avatar_tags %}
 <div class="row h-100">
   {% if grant.active %}
-    {% if grant.activeSubscriptions %}
+    {% if grant.id|remove_duplication_by_id|length > 0 %}
       <div class="col-12 my-2">
-        <h3 class="font-subheader font-weight-bold mb-3">{% trans 'Contributors' %} ({{ grant.activeSubscriptions|length }})</h3>
-        {% for handle in grant.activeSubscriptions %}
-          <a class="grant__stakeholders-item ml-2" href="{% url 'profile' handle %}">
-            <img data-src="{% avatar_url handle  %}" />
+        <h3 class="font-subheader font-weight-bold mb-3">
+          {% trans 'Contributors' %} ({{ grant.id|remove_duplication_by_id|length }})
+        </h3>
+        {% for contribution in grant.id|remove_duplication_by_id %}
+          <a class="grant__stakeholders-item ml-2" href="{% url 'profile' contribution.0 %}">
+            <img data-src="{% avatar_url contribution.0  %}" />
           </a>
         {% endfor %}
       </div>

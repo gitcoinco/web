@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from django import template
 
+from grants.models import Contribution, Grant
+
 register = template.Library()
 
 
@@ -56,3 +58,45 @@ def modulo(num, val):
 
     """
     return num % val
+
+
+@register.filter
+def remove_duplication(contributions):
+    """Get the contribution list without duplication.
+    Args:
+        contributions (QuerySet<Contribution>): Something describing the contributions.
+    Usage:
+        {{ contributions|remove_duplication }}
+    Returns:
+        list: the contribution list without duplication.
+    """
+    handle_set = list()
+    result = list()
+
+    for contribution in contributions:
+        if contribution.tx_cleared and contribution.success:
+            handle = contribution.subscription.contributor_profile.handle
+            if handle not in handle_set:
+                temp_result = list()
+                handle_set.append(handle)
+                temp_result.append(handle)
+                temp_result.append(contribution.subscription.contributor_profile.avatar_url)
+                result.append(temp_result)
+
+    return result
+
+
+@register.filter
+def remove_duplication_by_id(grant_id):
+    """Get the contribution list without duplication by grant id.
+        Args:
+            grant_id (int): Grant index.
+        Usage:
+            {{ grant_id|remove_duplication_by_id }}
+        Returns:
+            list: the contribution list without duplication.
+        """
+    grant = Grant.objects.prefetch_related('subscriptions').get(pk=grant_id)
+    contributions = Contribution.objects.filter(subscription__in=grant.subscriptions.all())
+
+    return remove_duplication(contributions)
