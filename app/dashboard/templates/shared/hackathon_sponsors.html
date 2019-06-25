@@ -20,23 +20,27 @@
 
   {% if sponsors %}
     {% if sponsors.sponsors_gold %}
-      {% for sponsor in sponsors.sponsors_gold %}
-        <div class="sponsors-gold d-flex flex-wrap justify-content-center">
-          <div class="img-holder">
-            <img src="{{sponsor.logo}}" alt="{{sponsor.name}}" title="{{sponsor.name}}">
+      <div class="d-flex flex-wrap justify-content-center">
+        {% for sponsor in sponsors.sponsors_gold %}
+          <div class="sponsors-gold">
+            <div class="img-holder">
+              <img src="{{sponsor.logo}}" alt="{{sponsor.name}}" title="{{sponsor.name}}" class="{{sponsor.name}}">
+            </div>
           </div>
-        </div>
-      {% endfor %}
+        {% endfor %}
+      </div>
     {% endif %}
 
     {% if sponsors.sponsors_silver %}
-      {% for sponsor in sponsors.sponsors_silver %}
-        <div class="sponsors-silver d-flex flex-wrap justify-content-center">
-          <div class="img-holder">
-            <img src="{{sponsor.logo}}" alt="{{sponsor.name}}" title="{{sponsor.name}}">
+      <div class="d-flex flex-wrap justify-content-center">
+        {% for sponsor in sponsors.sponsors_silver %}
+          <div class="sponsors-silver">
+            <div class="img-holder">
+              <img src="{{sponsor.logo}}" alt="{{sponsor.name}}" title="{{sponsor.name}}" class="{{sponsor.name}}">
+            </div>
           </div>
-        </div>
-      {% endfor %}
+        {% endfor %}
+      </div>
     {% endif %}
 
   {% else %}
