@@ -85,6 +85,26 @@
       $.fn.runTooltip = bootstrapTooltip;
       $('[data-toggle="tooltip"]').runTooltip();
       $.fn.modal.noConflict();
+
+    let grant_description;
+    if($('#editor').length) {
+      {% if is_admin and not grant_is_inactive %}
+          grant_description = new Quill('#editor', {
+          theme: 'snow',
+        });
+        grant_description.enable(false);
+      {% else %}
+        grant_description = new Quill('#editor', {
+          theme: 'bubble',
+          readOnly: true,
+        });
+      {% endif %}
+
+      let desc = JSON.parse(grant_description.getContents().ops[0].insert);
+      if (desc.ops) {
+        grant_description.setContents(desc);
+      }
+    }
   </script>
   <script src="{% static "v2/js/user-search.js" %}"></script>
   <script src="{% static "v2/js/grants/shared.js" %}"></script>

@@ -20,7 +20,7 @@ $(document).ready(function() {
     );
   }, 1000);
 
-  let _text = grant_description.getContents();
+  let _text = grant_description ? grant_description.getContents() : null;
 
   userSearch('#grant-admin', false, undefined, false, false, true);
   userSearch('#grant-members', false, undefined, false, false, true);
@@ -64,8 +64,8 @@ $(document).ready(function() {
     let edit_title = $('#form--input__title').val();
     let edit_reference_url = $('#form--input__reference-url').val();
     let edit_admin_profile = $('#grant-admin option').last().text();
-    let edit_description = grant_description.getText();
-    let edit_description_rich = JSON.stringify(grant_description.getContents());
+    let edit_description = grant_description ? grant_description.getText() : null;
+    let edit_description_rich = grant_description ? JSON.stringify(grant_description.getContents()) : null;
     let edit_amount_goal = $('#amount_goal').val();
     let edit_grant_members = $('#grant-members').val();
 

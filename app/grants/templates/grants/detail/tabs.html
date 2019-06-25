@@ -94,23 +94,3 @@
     
   </div>
 </div>
-
-<script>
-  let grant_description;
-  {% if is_admin and not grant_is_inactive %}
-      grant_description = new Quill('#editor', {
-      theme: 'snow',
-    });
-    grant_description.enable(false);
-  {% else %}
-    grant_description = new Quill('#editor', {
-      theme: 'bubble',
-      readOnly: true,
-    });
-  {% endif %}
-
-  let desc = JSON.parse(grant_description.getContents().ops[0].insert);
-  if (desc.ops) {
-    grant_description.setContents(desc);
-  }
-</script>
