@@ -107,15 +107,19 @@ beyondblockchain_2019 = {
     'sponsors_silver' : [
         {
             'name'  : 'Matic',
-            'logo'  : static('v2/images/hackathon/beyond_block/sponsors/matic.svg')
+            'logo'  : static('v2/images/hackathon/beyond_block/sponsors/matic-white.svg')
         },
         {
             'name'  : 'Alethio',
-            'logo'  : static('v2/images/hackathon/ethhack/sponsors/small/alethio-no-bg.svg')
+            'logo'  : static('v2/images/hackathon/ethhack/sponsors/small/alethio-white.svg')
+        },
+        {
+            'name'  : 'TheGraph',
+            'logo'  : static('v2/images/hackathon/beyond_block/sponsors/thegraph-white.svg')
         },
         {
             'name'  : 'Arweave',
-            'logo'  : static('v2/images/hackathon/beyond_block/sponsors/arweave.svg')
+            'logo'  : static('v2/images/hackathon/beyond_block/sponsors/arweave-white.svg')
         },
     ],
 }
