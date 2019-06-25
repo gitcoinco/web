@@ -199,8 +199,8 @@ beyond_blocks_2019 = {
             'logo'  : static('v2/images/hackathon/ethhack/sponsors/small/alethio-no-bg.svg')
         },
         {
-            'name'  : 'Pegasys',
-            'logo'  : static('v2/images/hackathon/ethhack/sponsors/big/pegasys-logo.svg')
+            'name'  : 'TheGraph',
+            'logo'  : static('v2/images/hackathon/beyond_block/sponsors/thegraph.svg')
         },
     ],
     'sponsors_silver' : [
@@ -215,7 +215,11 @@ beyond_blocks_2019 = {
         {
             'name'  : 'Portis',
             'logo'  : static('v2/images/hackathon/beyond_block/sponsors/portis.svg')
-        }
+        },
+        {
+            'name'  : 'Pegasys',
+            'logo'  : static('v2/images/hackathon/ethhack/sponsors/big/pegasys-logo.svg')
+        },
     ],
     'sections' : [
         {
