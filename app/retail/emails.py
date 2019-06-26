@@ -932,8 +932,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Beyond Blockchain Begins!"
-    new_kudos_pks = [4033, 4031, 4028]
+    subject = "A Hackaton: Continued"
+    new_kudos_pks = [4028, 4029, 4030]
     new_kudos_size_px = 150
 
     kudos_friday = f'''
@@ -948,14 +948,15 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-Our first hackathon of the summer season is here. Beyond Blockchain, a hackathon organized alongside Consensys Labs, focuses on the future. Over $15k of prizes will be available for this three week hackathon, and the hacking begins on Monday, June 24th, and goes until July 10th.
-For more info, read the announcement blog post <a href="https://gitcoin.co/blog/beyond-blockchain-hackathon/" target="_blank"> here </a> and join our Discord <a href="https://discord.gg/T98dQYC" target="_blank"> here! </a>
+Beyond Blockchain has officially begun! We kicked off the three week haul on Monday, and there's still plenty of time to vie for some of the prizes we have available. Our sponsors -- Consensys Labs, Raiden, Arweave, Portis, and The Graph -- have dozens of prizes ranging up to 22 ETH. Join our <a href="https://docs.google.com/document/d/1N8EcHOP7pzuvoPNvJ3VPBtv9KFJf9Ot1kjGU381Dh_s/edit?usp=sharing" target="_blank">Discord</a> and discuss the hackathon,
+and reach out to us if you have any questions. More information about the hackathon can be found on our blog <a href="https://gitcoin.co/blog/beyond-blockchain-hackathon/" target="_blank">here</a>, and you can read more about the specific sponsor prizes <a href="https://github.com/gitcoinco/beyondblockchainteams/#beyond-blockchain-prizes-to-be-updated-regularly" target="_blank">here.</a>
 </p>
 <p>
-Need to find a team for the hackathon? <a href="https://github.com/gitcoinco/beyondblockchainteams/issues">Post a profile in this GitHub repo</a> and mingle with others. We're here to help you find a crew.
+Our sponsors each offer a unique product and set of goals for their hackathon prompts. Read about their projects and their goals in <a href="https://gitcoin.co/blog/beyond-blockchain-the-players/?preview=true" target="_blank">this</a> blog post, and head on over to the GitHub page to read individual
+prompts. 
 </p>
 <p>
-Missed a livestream but still want to soak in the knowledge? We're way ahead of you. Check out <a href="https://youtube.com/GitcoinMedia" target="_blank">Gitcoin Media</a>, our official YouTube channel, for livestream content and more. We'll be updating it in the coming weeks so all of the livestreams are uploaded for content consumption goodness.
+Need to find a team for the hackathon to ease your workload? <a href="https://github.com/gitcoinco/beyondblockchainteams/issues">Post a profile in this GitHub repo</a> and mingle with others. We're here to help you find a crew.
 </p>
 
 {kudos_friday}
@@ -965,7 +966,7 @@ Missed a livestream but still want to soak in the knowledge? We're way ahead of 
             The Gitcoin Livestream is back this week. Join us <a href="https://gitcoin.co/livestream"> at 2PM ET on Friday, or catch it on <a href="https://twitter.com/gitcoin">Twitter</a>!
         </li>
         <li>
-            For those who had already signed up to the Gitcoin Events email list, we'd like to apologize for an error with our most recent email. We've made changes to ensure that this doesn't happen in the future, and we humbly apologize for any inconvenience.
+            We've released a new set of Kudos in the past weeks. Check the <a href="https://gitcoin.co/kudos/" target="_blank">homepage</a> for new art and then send some of your favorites to your friends. 
         </li>
     </ul>
 </p>
@@ -975,22 +976,22 @@ Back to shipping,
 
 '''
     highlights = [{
-        'who': 'renaynay',
+        'who': 'nanspro',
         'who_link': True,
-        'what': 'Go for Hobbits',
-        'link': 'https://gitcoin.co/issue/PegaSysEng/BountiedWork/9/3109',
+        'what': 'Nanspro with the Python!',
+        'link': 'https://gitcoin.co/issue/PegaSysEng/BountiedWork/17/3119',
         'link_copy': 'View more',
     }, {
-        'who': 'mglaman',
+        'who': 'calchulus',
         'who_link': True,
-        'what': 'Fallback ads for local dev',
+        'what': 'Content Created',
         'link': 'https://gitcoin.co/issue/gitcoinco/code_fund_ads/483/3103',
         'link_copy': 'View more',
     }, {
-        'who': 'sudeepb02',
+        'who': 'many',
         'who_link': True,
-        'what': 'User testing complete',
-        'link': 'https://gitcoin.co/issue/ProDerivatives/EthereumContracts/1/3091',
+        'what': 'Simple Permaweb: Frontend',
+        'link': 'https://gitcoin.co/issue/ArweaveTeam/Bounties/1/3152',
         'link_copy': 'View more',
     }, ]
 
@@ -1007,14 +1008,14 @@ Back to shipping,
     }
 
     bounties_spec = [{
-        'url': 'https://github.com/ssbc/patchbay/issues/341',
-        'primer': 'Get peer-invites into Patchbay',
+        'url': 'https://github.com/knocte/udtRs/issues/1',
+        'primer': 'Create a pure-Rust UDT/UDP hole-punching implementation',
     }, {
-        'url': 'https://github.com/ArweaveTeam/Bounties/issues/1',
+        'url': 'https://github.com/prysmaticlabs/prysm/issues/2740',
         'primer': 'Build a simple permaweb app!',
     }, {
-        'url': 'https://github.com/ChainShot/Content/issues/9',
-        'primer': 'Intro to Web3.js Tutorial',
+        'url': 'https://github.com/status-im/status-react/issues/8349',
+        'primer': '"Confirmed" transaction is shown for "Failed" in 1-1 chat',
     }, ]
 
     num_leadboard_items = 5
