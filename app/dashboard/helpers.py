@@ -499,6 +499,9 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 latest_old_bounty_dict['unsigned_nda'] = BountyDocuments.objects.filter(
                     pk=latest_old_bounty_dict['unsigned_nda']
                 ).first()
+            if latest_old_bounty_dict.get('coupon_code'):
+                latest_old_bounty_dict['coupon_code'] = Coupon.objects.get(pk=latest_old_bounty_dict['coupon_code'])
+
             bounty_kwargs.update(latest_old_bounty_dict)
 
         try:
