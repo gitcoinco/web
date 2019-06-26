@@ -51,7 +51,7 @@
             <p>
               {% blocktrans %}
               <b>Coders/Software Developers: </b><br>
-              Get paid in crypto for freelance jobs, building features, and solving bug bounties! Work with top open source projects and get paid out fast. 
+              Get paid in crypto for freelance jobs, building features, and solving bug bounties! Work with top open source projects and get paid out fast.
               {% endblocktrans %}<br>
               <span class="d-flex mt-3 content-links">
                 <a href="{% url 'contributor_bounties' '/' %}">{% trans "Bug Bounties" %}</a>
@@ -304,17 +304,23 @@
   </body>
   {% include 'shared/bottom_notification.html' %}
   {% include 'shared/analytics.html' %}
-  {% include 'shared/footer_scripts.html' with slim=1 %}
+  {% include 'shared/footer_scripts_lite.html' with slim=1 %}
   {% include 'shared/footer.html' %}
   {% include 'shared/messages.html' %}
-  <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
+<script src="{% static "v2/js/shared.js" %}"></script>
+
+  <!-- <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
   <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
   <script>
       const bootstrapTooltip = $.fn.tooltip.noConflict()
       $.fn.runTooltip = bootstrapTooltip;
       $('[data-toggle="tooltip"]').runTooltip();
-      $.fn.modal.noConflict();
-  </script>
+
+
+
+      var bootstrapModal = $.fn.modal.noConflict()
+      $.fn.bootstrapModal = bootstrapModal
+  </script> -->
   <script>
 
     const options = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture";

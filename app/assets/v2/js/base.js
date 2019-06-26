@@ -171,7 +171,7 @@ if ($('#is-authenticated').val() === 'True' && !localStorage['notify_policy_upda
             <a href="/legal/policy" target="_blank">${gettext('Read Our Updated Terms')}</a>
           </div>
           <div class="col-12 mt-4 mb-2 text-right font-caption">
-            <a rel="modal:close" href="javascript:void" aria-label="Close dialog" class="button button--primary">Ok</a>
+            <button type="button" class="button button--primary" data-dismiss="modal">ok</button>
           </div>
         </div>
       </div>
@@ -179,4 +179,35 @@ if ($('#is-authenticated').val() === 'True' && !localStorage['notify_policy_upda
 
   $(content).appendTo('body');
   $('#notify_policy_update').bootstrapModal('show');
+}
+
+if (!document.contxt.persona_is_funder && !document.contxt.persona_is_hunter) {
+
+  const content = $.parseHTML(
+    `<div id="persona_modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content px-4 py-3">
+          <div class="col-12">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="col-12 pt-2 pb-2 text-center">
+            <h2 class="font-title">${gettext('Are you a Funder or a Contributor?')}</h2>
+          </div>
+          <div class="col-12 pt-2 pb-2 font-body">
+            <p>${gettext('Let us know so we could optimize the best experience for you!')}</p>
+          </div>
+          <div class="col-12 mt-4 mb-2 text-right font-caption">
+          <button type="button" class="btn" data-dismiss="modal">I'm a Funder</button>
+          <button type="button" class="btn" data-dismiss="modal">I'm a Contributor</button>
+
+
+          </div>
+        </div>
+      </div>
+    </div>`);
+
+  $(content).appendTo('body');
+  $('#persona_modal').bootstrapModal('show');
 }
