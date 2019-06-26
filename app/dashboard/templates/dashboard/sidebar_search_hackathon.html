@@ -51,10 +51,10 @@
 
             
         {% for org in orgs %}
-          <div class="form__radio option {{org.org_name}}">
-            <input name="org" id="{{org.org_name}}" type="radio" value="{{org.org_name}}" val-ui="Turing-Chain">
-            <label class="filter-label" for="{{org.org_name}}">
-              <img src="{{org.avatar_url}}" class="rounded-circle" width="24" height="24"> {{org.display_name}}
+          <div class="form__radio option {{org}}">
+            <input name="org" id="{{org}}" type="radio" value="{{org}}" val-ui="Turing-Chain">
+            <label class="filter-label" for="{{org}}">
+              <img src="/dynamic/avatar/{{org}}" class="rounded-circle" width="24" height="24"> {{org}}
             </label>
           </div>
         {% endfor %}
