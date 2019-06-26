@@ -49,7 +49,11 @@
               </div>
 
                 <h1 class="profile-header__handle">
-                  {{ profile.name }}
+                  {% if profile.data.name %}
+                    {{ profile.data.name }}
+                  {% else %}
+                    {{ profile.handle }}
+                  {% endif %}
                   {% if verification.verified %}
                     <button class="btn btn-sm animate-verify" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='
                     <p class="h6 my-2 text-left">Gitcoin Verified <img width="18" src="{% static "v2/images/badge-verify.svg" %}"></p>
