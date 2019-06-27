@@ -311,6 +311,13 @@ class Bounty(SuperModel):
     admin_mark_as_remarket_ready = models.BooleanField(
         default=False, help_text=_('Admin override to mark as remarketing ready')
     )
+    admin_override_org_name = models.CharField(max_length=255, blank=True) # TODO: Remove POST ORGS
+    admin_override_org_logo = models.ImageField(
+        upload_to=get_upload_filename,
+        null=True,
+        blank=True,
+        help_text=_('Organization Logo - Override'),
+    ) # TODO: Remove POST ORGS
     attached_job_description = models.URLField(blank=True, null=True)
     event = models.ForeignKey('dashboard.HackathonEvent', related_name='bounties', null=True, on_delete=models.SET_NULL, blank=True)
 
@@ -488,6 +495,12 @@ class Bounty(SuperModel):
         return self.github_org_name
 
     @property
+    def org_display_name(self): # TODO: Remove POST ORGS
+        if self.admin_override_org_name:
+            return self.admin_override_org_name
+        return org_name(self.github_url)
+
+    @property
     def github_org_name(self):
         try:
             return org_name(self.github_url)
@@ -563,6 +576,10 @@ class Bounty(SuperModel):
 
     def get_avatar_url(self, gitcoin_logo_flag=False):
         """Return the local avatar URL."""
+
+        if self.admin_override_org_logo:
+            return self.admin_override_org_logo.url
+
         org_name = self.github_org_name
         gitcoin_logo_flag = "/1" if gitcoin_logo_flag else ""
         if org_name:
@@ -1943,6 +1960,13 @@ class Profile(SuperModel):
     fee_percentage = models.IntegerField(default=10)
     persona_is_funder = models.BooleanField(default=False)
     persona_is_hunter = models.BooleanField(default=False)
+    admin_override_name = models.CharField(max_length=255, blank=True, help_text=_('override profile name.'))
+    admin_override_avatar = models.ImageField(
+        upload_to=get_upload_filename,
+        null=True,
+        blank=True,
+        help_text=_('override profile avatar'),
+    )
 
     objects = ProfileQuerySet.as_manager()
 
@@ -2400,6 +2424,8 @@ class Profile(SuperModel):
 
     @property
     def avatar_url(self):
+        if self.admin_override_avatar:
+            return self.admin_override_avatar.url
         if self.active_avatar:
             return self.active_avatar.avatar_url
         return f"{settings.BASE_URL}dynamic/avatar/{self.handle}"
@@ -2414,13 +2440,23 @@ class Profile(SuperModel):
 
     @property
     def username(self):
-        handle = ''
         if getattr(self, 'user', None) and self.user.username:
-            handle = self.user.username
-        # TODO: (mbeacom) Remove this check once we get rid of all the lingering identity shenanigans.
-        elif self.handle:
-            handle = self.handle
-        return handle
+            return self.user.username
+
+        if self.handle:
+            return self.handle
+
+        return None
+
+    @property
+    def name(self):
+        if self.admin_override_name:
+            return self.admin_override_name
+
+        if self.data and self.data["name"]:
+            return self.data["name"]
+
+        return  username(self)
 
 
     def is_github_token_valid(self):
