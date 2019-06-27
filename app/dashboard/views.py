@@ -1660,6 +1660,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 params['stdbounties_id'] = bounty.standard_bounties_id if not stdbounties_id else stdbounties_id
                 params['interested_profiles'] = bounty.interested.select_related('profile').all()
                 params['avatar_url'] = bounty.get_avatar_url(True)
+                params['canonical_url'] = bounty.canonical_url
 
                 if bounty.event:
                     params['event_tag'] = bounty.event.slug
@@ -2074,6 +2075,22 @@ def profile(request, handle):
 
             return JsonResponse(msg, status=msg.get('status', 200))
     return TemplateResponse(request, 'profiles/profile.html', context, status=status)
+
+
+@staff_member_required
+def funders_mailing_list(request):
+    profile_list = list(Profile.objects.filter(
+        persona_is_funder=True).exclude(email="").values_list('email',
+                                                              flat=True))
+    return JsonResponse({'funder_emails': profile_list})
+
+
+@staff_member_required
+def hunters_mailing_list(request):
+    profile_list = list(Profile.objects.filter(
+        persona_is_hunter=True).exclude(email="").values_list('email',
+                                                              flat=True))
+    return JsonResponse({'hunter_emails': profile_list})
 
 
 @csrf_exempt
@@ -2749,7 +2766,18 @@ def hackathon(request, hackathon=''):
 
     title = evt.name
     network = get_default_network()
-    orgs = set([bounty.org_name for bounty in Bounty.objects.filter(event=evt, network=network).current()])
+
+    # TODO: Refactor post orgs
+    orgs = []
+    for bounty in Bounty.objects.filter(event=evt, network=network).current():
+        org = {
+            'display_name': bounty.org_display_name,
+            'avatar_url': bounty.avatar_url,
+            'org_name': bounty.org_name
+        }
+        orgs.append(org)
+
+    orgs = list({v['org_name']:v for v in orgs}.values())
 
     params = {
         'active': 'dashboard',

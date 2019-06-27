@@ -163,7 +163,7 @@ beyond_blocks_2019 = {
     'bg'            : 'hk-black-bg',
     'banner_text'   : 'hk-white-f',
     'logo_bg'       : 'bb-banner-bg',
-    'logo'          : static('v2/images/hackathon/beyond_block/logo.svg'),
+    'logo'          : static('v2/images/hackathon/beyond_block/logo.png'),
     'title'         : 'BEYOND BLOCKCHAIN',
     'title_banner'  : 'BEYOND BLOCKCHAIN',
     'caption'       :  '''A three-week virtual hackathon <br> where global developers and
@@ -199,8 +199,8 @@ beyond_blocks_2019 = {
             'logo'  : static('v2/images/hackathon/ethhack/sponsors/small/alethio-no-bg.svg')
         },
         {
-            'name'  : 'Pegasys',
-            'logo'  : static('v2/images/hackathon/ethhack/sponsors/big/pegasys-logo.svg')
+            'name'  : 'TheGraph',
+            'logo'  : static('v2/images/hackathon/beyond_block/sponsors/thegraph.svg')
         },
     ],
     'sponsors_silver' : [
@@ -209,13 +209,13 @@ beyond_blocks_2019 = {
             'logo'  : static('v2/images/hackathon/beyond_block/sponsors/arweave.svg')
         },
         {
-            'name'  : 'Matic',
-            'logo'  : static('v2/images/hackathon/beyond_block/sponsors/matic.svg')
-        },
-        {
             'name'  : 'Portis',
             'logo'  : static('v2/images/hackathon/beyond_block/sponsors/portis.svg')
-        }
+        },
+        {
+            'name'  : 'Pegasys',
+            'logo'  : static('v2/images/hackathon/ethhack/sponsors/big/pegasys-logo.svg')
+        },
     ],
     'sections' : [
         {

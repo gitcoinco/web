@@ -85,6 +85,10 @@ urlpatterns = [
     re_path(r'^kudos/address/(?P<handle>.*)', kudos.views.kudos_preferred_wallet, name='kudos_preferred_wallet'),
     re_path(r'^dynamic/kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.image, name='kudos_dynamic_img'),
 
+    # mailing list
+    url('mailing_list/funders/', dashboard.views.funders_mailing_list),
+    url('mailing_list/hunters/', dashboard.views.hunters_mailing_list),
+
     # api views
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
     url(
@@ -305,6 +309,7 @@ urlpatterns = [
     re_path(r'^verified/?', retail.views.verified, name='verified'),
     re_path(r'^community/?', retail.views.community, name='community'),
     re_path(r'^slack/?', retail.views.slack, name='slack'),
+    re_path(r'^blog/?', retail.views.blog, name='blog'),
     re_path(r'^submittoken/?', retail.views.newtoken, name='newtoken'),
     re_path(r'^itunes/?', retail.views.itunes, name='itunes'),
     re_path(r'^podcast/?', retail.views.podcast, name='podcast'),
