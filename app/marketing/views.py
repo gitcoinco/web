@@ -41,10 +41,11 @@ from dashboard.models import Profile, TokenApproval
 from dashboard.utils import create_user_action
 from enssubdomain.models import ENSSubdomainRegistration
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from mailchimp3 import MailChimp
 from marketing.mails import new_feedback
 from marketing.models import AccountDeletionRequest, EmailSubscriber, Keyword, LeaderboardRank
-from marketing.utils import get_or_save_email_subscriber, validate_discord_integration, validate_slack_integration
+from marketing.utils import (
+    delete_user_from_mailchimp, get_or_save_email_subscriber, validate_discord_integration, validate_slack_integration,
+)
 from retail.emails import ALL_EMAILS, render_nth_day_email_campaign
 from retail.helpers import get_ip
 
@@ -535,16 +536,8 @@ def account_settings(request):
             profile.save()
 
             # remove email
-            try:
-                client = MailChimp(mc_user=settings.MAILCHIMP_USER, mc_api=settings.MAILCHIMP_API_KEY)
-                result = client.search_members.get(query=es.email)
-                subscriber_hash = result['exact_matches']['members'][0]['id']
-                client.lists.members.delete(
-                    list_id=settings.MAILCHIMP_LIST_ID,
-                    subscriber_hash=subscriber_hash,
-                )
-            except Exception as e:
-                logger.debug(e)
+            delete_user_from_mailchimp(es.email)
+
             if es:
                 es.delete()
             request.user.delete()
@@ -619,16 +612,8 @@ def job_settings(request):
             profile.save()
 
             # remove email
-            try:
-                client = MailChimp(mc_user=settings.MAILCHIMP_USER, mc_api=settings.MAILCHIMP_API_KEY)
-                result = client.search_members.get(query=es.email)
-                subscriber_hash = result['exact_matches']['members'][0]['id']
-                client.lists.members.delete(
-                    list_id=settings.MAILCHIMP_LIST_ID,
-                    subscriber_hash=subscriber_hash,
-                )
-            except Exception as e:
-                logger.exception(e)
+            delete_user_from_mailchimp(es.email)
+
             if es:
                 es.delete()
             request.user.delete()

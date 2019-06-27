@@ -488,7 +488,8 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     'bounty_owner_email', 'bounty_owner_name', 'github_comments', 'override_status', 'last_comment_date',
                     'snooze_warnings_for_days', 'admin_override_and_hide', 'admin_override_suspend_auto_approval',
                     'admin_mark_as_remarket_ready', 'funding_organisation', 'bounty_reserved_for_user', 'is_featured',
-                    'featuring_date', 'fee_tx_id', 'fee_amount', 'repo_type', 'unsigned_nda', 'coupon_code'
+                    'featuring_date', 'fee_tx_id', 'fee_amount', 'repo_type', 'unsigned_nda', 'coupon_code',
+                    'admin_override_org_name', 'admin_override_org_logo'
                 ],
             )
             if latest_old_bounty_dict['bounty_reserved_for_user']:
@@ -499,6 +500,9 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 latest_old_bounty_dict['unsigned_nda'] = BountyDocuments.objects.filter(
                     pk=latest_old_bounty_dict['unsigned_nda']
                 ).first()
+            if latest_old_bounty_dict.get('coupon_code'):
+                latest_old_bounty_dict['coupon_code'] = Coupon.objects.get(pk=latest_old_bounty_dict['coupon_code'])
+
             bounty_kwargs.update(latest_old_bounty_dict)
 
         try:
