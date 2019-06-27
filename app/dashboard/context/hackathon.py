@@ -209,10 +209,6 @@ beyond_blocks_2019 = {
             'logo'  : static('v2/images/hackathon/beyond_block/sponsors/arweave.svg')
         },
         {
-            'name'  : 'Matic',
-            'logo'  : static('v2/images/hackathon/beyond_block/sponsors/matic.svg')
-        },
-        {
             'name'  : 'Portis',
             'logo'  : static('v2/images/hackathon/beyond_block/sponsors/portis.svg')
         },
