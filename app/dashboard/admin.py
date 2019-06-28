@@ -158,10 +158,11 @@ class BountyAdmin(admin.ModelAdmin):
     ]
 
     def img(self, instance):
+        if instance.admin_override_org_logo:
+            return format_html("<img src={} style='max-width:30px; max-height: 30px'>", mark_safe(instance.admin_override_org_logo.url))
         if not instance.avatar_url:
             return 'n/a'
-        img_html = format_html("<img src={} style='max-width:30px; max-height: 30px'>", mark_safe(instance.avatar_url))
-        return img_html
+        return format_html("<img src={} style='max-width:30px; max-height: 30px'>", mark_safe(instance.avatar_url))
 
     def what(self, instance):
         return str(instance)
