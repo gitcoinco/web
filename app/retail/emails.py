@@ -994,14 +994,13 @@ Back to shipping,
     }, ]
 
     sponsor = {
-        'name': 'Elk',
-        'title': 'Bringing blockchain into the physical world',
-        'image_url': 'https://elk.cc/assets/images/elk-board-1.png',
-        'link': 'http://bit.ly/ElkBlockchain',
-        'cta': 'Sign up now',
+        'name': 'Blockchain Job Kit',
+        'title': 'Blockchain Developer Job Kit',
+        'image_url': 'ADD IMAGE LINK',
+        'link': 'http://bit.ly/EthDevKit',
+        'cta': 'View now',
         'body': [
-            'Introducing Elk - the development board for building hardware projects that interface with Ethereum.',
-            'We\'ll soon be on Kickstarter. <a href="http://bit.ly/ElkBlockchain" style="font-size: 14px; line-height: 18px;">Sign up now</a> and get your early bird discount!'
+            'Blockchain Developer Job Kit - See who’s hiring, salary info, and dev skills required'
         ]
     }
 
