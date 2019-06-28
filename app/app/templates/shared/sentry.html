@@ -60,6 +60,14 @@
         /metrics\.itunes\.apple\.com\.edgesuite\.net\//i
       ]
     };
+    /**
+     According to https://docs.sentry.io/clients/javascript/#configuring-the-client 
+     Raven should be initialized inside callback of `Raven.context` call
+     From the documentation:
+     It is additionally recommended (but not required) to wrap your application start using Raven.context. This can help surface additional errors in some execution contexts.
+
+     TESTING: Opera v62.0.3331.16 on Gentoo Linux: 4.19.52-gentoo
+     */
     Raven.context(function() {
         Raven.config('{{ raven_js_dsn }}', ravenOptions).install()
         {% if github_handle %}
