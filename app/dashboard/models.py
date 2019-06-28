@@ -30,7 +30,7 @@ from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.contrib.humanize.templatetags.humanize import naturalday, naturaltime
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.validators import MaxValueValidator, MinValueValidator
-from django.db import models
+from django.db import connection, models
 from django.db.models import Q, Sum
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
@@ -44,6 +44,7 @@ from django.utils.translation import gettext_lazy as _
 import pytz
 import requests
 from app.utils import get_upload_filename
+from dashboard.sql.persona import PERSONA_SQL
 from dashboard.tokens import addr_to_token
 from economy.models import ConversionRate, SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
@@ -310,6 +311,13 @@ class Bounty(SuperModel):
     admin_mark_as_remarket_ready = models.BooleanField(
         default=False, help_text=_('Admin override to mark as remarketing ready')
     )
+    admin_override_org_name = models.CharField(max_length=255, blank=True) # TODO: Remove POST ORGS
+    admin_override_org_logo = models.ImageField(
+        upload_to=get_upload_filename,
+        null=True,
+        blank=True,
+        help_text=_('Organization Logo - Override'),
+    ) # TODO: Remove POST ORGS
     attached_job_description = models.URLField(blank=True, null=True)
     event = models.ForeignKey('dashboard.HackathonEvent', related_name='bounties', null=True, on_delete=models.SET_NULL, blank=True)
 
@@ -487,6 +495,12 @@ class Bounty(SuperModel):
         return self.github_org_name
 
     @property
+    def org_display_name(self): # TODO: Remove POST ORGS
+        if self.admin_override_org_name:
+            return self.admin_override_org_name
+        return org_name(self.github_url)
+
+    @property
     def github_org_name(self):
         try:
             return org_name(self.github_url)
@@ -562,6 +576,10 @@ class Bounty(SuperModel):
 
     def get_avatar_url(self, gitcoin_logo_flag=False):
         """Return the local avatar URL."""
+
+        if self.admin_override_org_logo:
+            return self.admin_override_org_logo.url
+
         org_name = self.github_org_name
         gitcoin_logo_flag = "/1" if gitcoin_logo_flag else ""
         if org_name:
@@ -1940,6 +1958,15 @@ class Profile(SuperModel):
     resume = models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('The profile resume.'))
     actions_count = models.IntegerField(default=3)
     fee_percentage = models.IntegerField(default=10)
+    persona_is_funder = models.BooleanField(default=False)
+    persona_is_hunter = models.BooleanField(default=False)
+    admin_override_name = models.CharField(max_length=255, blank=True, help_text=_('override profile name.'))
+    admin_override_avatar = models.ImageField(
+        upload_to=get_upload_filename,
+        null=True,
+        blank=True,
+        help_text=_('override profile avatar'),
+    )
 
     objects = ProfileQuerySet.as_manager()
 
@@ -1972,7 +1999,7 @@ class Profile(SuperModel):
         )
         if not self.preferred_payout_address:
             kt_owner_address = KudosTransfer.objects.none()
-            
+
         kt_profile = KudosTransfer.objects.filter(recipient_profile=self)
 
         kudos_transfers = kt_profile | kt_owner_address
@@ -2075,6 +2102,27 @@ class Profile(SuperModel):
         on_repo = Tip.objects.filter(github_url__startswith=self.github_url).order_by('-id')
         tipped_for = Tip.objects.filter(username__iexact=self.handle).order_by('-id')
         return on_repo | tipped_for
+
+    def calculate_and_save_persona(self):
+        network = settings.ENABLE_NOTIFICATIONS_ON_NETWORK
+        designation = None
+        with connection.cursor() as cursor:
+            try:
+                cursor.execute(PERSONA_SQL, [network, self.id, network])
+                result = cursor.fetchone()
+                _, _, designation, _, _ = result
+            except Exception as e:
+                logger.info(
+                    'Exception calculating persona for user %s: %s' % (self.id,
+                                                                       e))
+
+        if designation and designation == "bounty_hunter":
+            self.persona_is_hunter = True
+
+        if designation and designation == "funder":
+            self.persona_is_funder = True
+
+        self.save()
 
     def has_custom_avatar(self):
         from avatar.models import CustomAvatar
@@ -2376,6 +2424,8 @@ class Profile(SuperModel):
 
     @property
     def avatar_url(self):
+        if self.admin_override_avatar:
+            return self.admin_override_avatar.url
         if self.active_avatar:
             return self.active_avatar.avatar_url
         return f"{settings.BASE_URL}dynamic/avatar/{self.handle}"
@@ -2390,13 +2440,23 @@ class Profile(SuperModel):
 
     @property
     def username(self):
-        handle = ''
         if getattr(self, 'user', None) and self.user.username:
-            handle = self.user.username
-        # TODO: (mbeacom) Remove this check once we get rid of all the lingering identity shenanigans.
-        elif self.handle:
-            handle = self.handle
-        return handle
+            return self.user.username
+
+        if self.handle:
+            return self.handle
+
+        return None
+
+    @property
+    def name(self):
+        if self.admin_override_name:
+            return self.admin_override_name
+
+        if self.data and self.data["name"]:
+            return self.data["name"]
+
+        return  username(self)
 
 
     def is_github_token_valid(self):

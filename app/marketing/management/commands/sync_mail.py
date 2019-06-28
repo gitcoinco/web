@@ -99,18 +99,13 @@ def pull_to_db():
 
     print('/pull_to_db')
 
-
-def push_to_mailchimp():
-    print('- push_to_mailchimp')
-    client = MailChimp(settings.MAILCHIMP_API_KEY, settings.MAILCHIMP_USER)
-    created_after = timezone.now() - timezone.timedelta(hours=2)
-    eses = EmailSubscriber.objects.filter(active=True, created_on__gt=created_after).order_by('-pk')
+def sync_mailchimp_list(eses, list_id):
     print("- {} emails".format(eses.count()))
     for es in eses:
         email = es.email
         print(email)
         try:
-            client.lists.members.create(settings.MAILCHIMP_LIST_ID, {
+            client.lists.members.create(list_id, {
                 'email_address': email,
                 'status': 'subscribed'
             })
@@ -118,6 +113,33 @@ def push_to_mailchimp():
         except Exception:
             # print("already on the list")
             pass
+
+
+def push_to_mailchimp():
+    print('- push_to_mailchimp')
+    client = MailChimp(settings.MAILCHIMP_API_KEY, settings.MAILCHIMP_USER)
+    created_after = timezone.now() - timezone.timedelta(hours=2)
+
+    eses_funder = EmailSubscriber.objects.filter(
+        active=True, created_on__gt=created_after,
+        profile__persona_is_funder=True).order_by('-pk')
+    print("funder emails")
+    print("- {} emails".format(eses_funder.count()))
+    sync_mailchimp_list(eses_funder, settings.MAILCHIMP_LIST_ID_FUNDERS)
+
+    eses_hunter = EmailSubscriber.objects.filter(
+        active=True, created_on__gt=created_after,
+        profile__persona_is_hunter=True).order_by('-pk')
+    print("hunter emails")
+    print("- {} emails".format(eses_hunter.count()))
+    sync_mailchimp_list(eses_hunter, settings.MAILCHIMP_LIST_ID_HUNTERS)
+
+    eses = EmailSubscriber.objects.filter(active=True,
+        created_on__gt=created_after).order_by('-pk')
+    print("all emails")
+    print("- {} emails".format(eses.count()))
+    sync_mailchimp_list(eses, settings.MAILCHIMP_LIST_ID)
+
     print('/push_to_mailchimp')
 
 
