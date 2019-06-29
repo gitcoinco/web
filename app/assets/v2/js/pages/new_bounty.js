@@ -321,6 +321,10 @@ $(function() {
 
 });
 
+$('#reservedFor').on('select2:select', function(e) {
+  $('#permissionless').click();
+});
+
 $('#sync-issue').on('click', function(event) {
   event.preventDefault();
   if (!$('#sync-issue').hasClass('disabled')) {
