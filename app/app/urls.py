@@ -64,6 +64,9 @@ urlpatterns = [
     # inbox
     path('inbox/', include('inbox.urls', namespace='inbox')),
 
+    # favorites
+    path('api/v0.1/favorites/', include('favorites.urls', namespace='favorites')),
+
     # kudos
     path('kudos/', kudos.views.about, name='kudos_main'),
     path('kudos/about/', kudos.views.about, name='kudos_about'),
