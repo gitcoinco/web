@@ -98,7 +98,7 @@
     {% endif %}
 
     if(localStorage['request_change'] === 'R') {
-      _alert({ message: gettext('Ownership Transfer will happen upon confirmation from the requested user.') }, 'success');
+      _alert({ message: gettext('Email has been sent to the requested user. Ownership Transfer will happen upon confirmation from the requested user.') }, 'success');
       delete localStorage['request_change'];
     }
   </script>

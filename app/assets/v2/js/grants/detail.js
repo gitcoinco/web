@@ -69,9 +69,6 @@ $(document).ready(function() {
     let edit_amount_goal = $('#amount_goal').val();
     let edit_grant_members = $('#grant-members').val();
 
-    if (editableFields['edit_admin_profile'] && editableFields['edit_admin_profile'] != edit_admin_profile)
-      localStorage['request_change'] = 'R';
-
     $.ajax({
       type: 'post',
       url: '',
@@ -209,7 +206,16 @@ const copyDuplicateDetails = () => {
     obj[field] = $(field).val() ? $(field).val() : $(field).last().text();
   });
 
-  $('#cancel-details').on('click', (event) => {
+  $('#save-details').on('click', () => {
+    if (
+      obj['#grant-admin'] &&
+      obj['#grant-admin'] != $('#grant-admin option').last().text()
+    ) {
+      localStorage['request_change'] = 'R';
+    }
+  });
+
+  $('#cancel-details').on('click', () => {
     editableFields.forEach(field => {
       if (field == '#grant-admin')
         $(field).val([obj[field]]).trigger('change');
