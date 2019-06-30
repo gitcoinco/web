@@ -15,7 +15,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load static humanize i18n grants_extra %}
-<div class="summary p-5 px-md-3 px-lg-5">
+<div class="summary p-5 px-md-3">
   <!-- GRANT LOGO -->
   <div class="grant-logo pb-2">
     {% if is_admin and not grant_is_inactive %}
@@ -81,7 +81,7 @@
 
       <div class="mb-2">
         <i style="width: 14px;" class="fab fa-ethereum mr-2 text-center"></i>
-        <a class="wallet-address" href="https://etherscan.io/address/{{ grant.admin_address }}"
+        <a id="wallet-address" class="wallet-address" href="https://etherscan.io/address/{{ grant.admin_address }}"
           target="_blank" data-toggle="tooltip" data-placement="top" title="Recipient Funding Address">
           {{ grant.admin_address }}
         </a>
@@ -180,9 +180,11 @@
         <div class="font-body">
           <p class="sub-title mb-0">OWNER ADDRESS</p>
           <input id="contract_owner_address" class="p-0 m-0 inline-edit" name="contract_owner_address" value="{{ grant.contract_owner_address }}" disabled data-toggle="tooltip" data-placement="bottom" title="Beware! Please do not change this to an address you do NOT own.">
-          <button id="contract_owner_button" class="mt-2 button button--primary button--full hidden shadow-none font-weight-bold">
-            {% trans "Change Contract Owner" %}
-          </button>
+          <div id="contract_owner_button-container" tabindex="0" data-toggle="tooltip" data-placement="bottom" title="Grant owner address hasn't changed. Update the above field to enable this.">
+            <button id="contract_owner_button" data-toggle="tooltip" data-placement="bottom" title='Clicking this will trigger a metamsk confirmation' class="mt-2 disable-tooltip button button--primary button--full hidden shadow-none font-weight-bold">
+              {% trans "Change Contract Owner" %}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -192,12 +194,12 @@
         </button>
       </div>
       <div class="row mx-0">
-        <div class="col-12 col-lg-6 pl-0 pr-1">
+        <div class="col-12 col-lg-6 px-0 pr-lg-1 mb-2">
           <button id="save-details" class="button btn-gc-blue button--full hidden shadow-none font-weight-bold py-3">
             <i class="fas fa-save mr-2"></i> {% trans "Save Info" %}
           </button>
         </div>
-        <div class="col-12 col-lg-6 pl-1 pr-0">
+        <div class="col-12 col-lg-6 px-0 pl-lg-1">
           <button id="cancel-details" class="button button--warning button--full hidden shadow-none font-weight-bold py-3">
             <i class="fas fa-times mr-2"></i> {% trans "Cancel Edit" %}
           </button>

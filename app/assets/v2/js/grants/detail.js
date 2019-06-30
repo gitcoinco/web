@@ -14,10 +14,23 @@ $(document).ready(function() {
   setInterval (() => {
     notifyOwnerAddressMismatch(
       $('#grant-admin').val(),
-      $('#contract_owner_address').val(),
+      $('#wallet-address').text().trim(),
       '#cancel_grant',
-      'Looks like your grant has been created with ' + $('#contract_owner_address').val() + '. Switch to take action on your grant.'
+      'Looks like your grant has been created with ' +
+        $('#wallet-address').text().trim() + '. Switch to take action on your grant.'
     );
+
+    if ($('#contract_owner_address').val() === $('#wallet-address').text().trim()) {
+      $('#contract_owner_button').attr('disabled', true);
+      $('#contract_owner_button').addClass('disable-btn').addClass('disable-tooltip');
+      $('#contract_owner_button-container').attr(
+        'data-original-title', 'Grant owner address hasn\'t changed. Update the above field to enable this.'
+      );
+    } else {
+      $('#contract_owner_button').attr('disabled', false);
+      $('#contract_owner_button').removeClass('disable-btn').removeClass('disable-tooltip');
+      $('#contract_owner_button-container').attr('data-original-title', '');
+    }
   }, 1000);
 
   let _text = grant_description.getContents();

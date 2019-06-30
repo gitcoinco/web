@@ -209,6 +209,19 @@ textarea.editable {
   padding-bottom: 0 !important;
 }
 
+#contract_owner_button-container {
+  outline: none;
+}
+
+.disable-tooltip {
+  pointer-events: none;
+}
+
+.disable-btn {
+  background-color: whitesmoke;
+  color: #999;
+}
+
 @keyframes rotation {
   from {
     transform: rotate(0deg);
@@ -228,14 +241,25 @@ textarea.editable {
 }
 
 @media (max-width: 991.98px) {
+  .summary,
+  .summary textarea,
+  .summary input {
+    text-align: center;
+  }
+
   .summary-info i {
-    float: left;
     position: relative;
     top: 2px;
   }
 
   .logo {
     width: 100%;
+  }
+}
+
+@media (min-width:767.98px) and (max-width: 991.98px) {
+  .summary-info i {
+    float: left;
   }
 }
 
