@@ -2808,3 +2808,14 @@ def get_hackathons(request):
         'hackathons': events,
     }
     return TemplateResponse(request, 'dashboard/hackathons.html', params)
+
+
+def inspectUser(request):
+    if ( request.user.is_authenticated ):
+        responseObj = {
+            'x-hasura-role': 'user',
+            'x-hasura-user-id': str(request.user.id)
+        }
+        return HttpResponse(json.dumps(responseObj))
+    else:
+        return HttpResponse('User not logged in', status=401)

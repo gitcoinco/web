@@ -56,6 +56,7 @@ from kudos.router import router as kdrouter
 from .sitemaps import sitemaps
 
 urlpatterns = [
+    path('validate_request', dashboard.views.inspectUser, name='inspectUser'),
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
 
     # create bounty
