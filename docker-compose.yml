@@ -16,6 +16,26 @@ services:
         reservations:
           memory: 128M
 
+  graphql-engine:
+    image: hasura/graphql-engine:v1.0.0-beta.2
+    ports:
+    - "9000:9000"
+    depends_on:
+    - "db"
+    restart: always
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgres@db:5432/postgres
+      # HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
+    command:
+      - graphql-engine
+      - serve
+      - --access-key=mysecretkey
+      - --auth-hook=http://192.168.2.58:9090/validate_request
+      - --enable-console
+      - --server-port=9000
+      ## uncomment next line to set an admin secret
+      # HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
+
   ipfs:
     image: ipfs/go-ipfs:release
     restart: unless-stopped
