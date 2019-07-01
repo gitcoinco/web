@@ -14,13 +14,13 @@ $(document).ready(function() {
   setInterval (() => {
     notifyOwnerAddressMismatch(
       $('#grant-admin').val(),
-      $('#wallet-address').text().trim(),
+      $('#grant_contract_owner_address').text(),
       '#cancel_grant',
       'Looks like your grant has been created with ' +
-        $('#wallet-address').text().trim() + '. Switch to take action on your grant.'
+        $('#grant_contract_owner_address').text() + '. Switch to take action on your grant.'
     );
 
-    if ($('#contract_owner_address').val() === $('#wallet-address').text().trim()) {
+    if ($('#contract_owner_address').val() === $('#grant_contract_owner_address').text()) {
       $('#contract_owner_button').attr('disabled', true);
       $('#contract_owner_button').addClass('disable-btn').addClass('disable-tooltip');
       $('#contract_owner_button-container').attr(

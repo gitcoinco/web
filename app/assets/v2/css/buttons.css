@@ -173,6 +173,12 @@ button:focus {
   background-color: var(--gc-purple);
 }
 
+.btn-outline-black {
+  border: 1px solid #000;
+  background: white;
+  color: #000;
+}
+
 .btn-gc-purple:hover {
   background-color: var(--gc-purple-hover);
   color: white;

@@ -218,6 +218,7 @@ textarea.editable {
 }
 
 .disable-btn {
+  border: none;
   background-color: whitesmoke;
   color: #999;
 }
