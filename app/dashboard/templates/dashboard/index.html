@@ -106,11 +106,10 @@
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
-    <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
-    <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+
     <script>
-      let bootstrapTooltip = $.fn.tooltip.noConflict()
-      $.fn.runTooltip = bootstrapTooltip
+      // let bootstrapTooltip = $.fn.tooltip.noConflict()
+      // $.fn.runTooltip = bootstrapTooltip
 
       $('[data-toggle="popover"]').popover()
 
@@ -126,8 +125,8 @@
                   </div>`
       });
 
-      var bootstrapModal = $.fn.modal.noConflict()
-      $.fn.bootstrapModal = bootstrapModal
+      // var bootstrapModal = $.fn.modal.noConflict()
+      // $.fn.bootstrapModal = bootstrapModal
       {% if hackathon %}
         document.hackathon = "{{ hackathon.slug | safe }}";
         if(location.hostname === 'gitcoin.co') $('#network-filter').hide();
