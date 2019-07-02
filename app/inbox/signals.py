@@ -129,18 +129,35 @@ def create_notification(sender, **kwargs):
             'new_kudos',
             f'You received a <b>new kudos from {activity.profile.user}</b>'
         )
+    if activity.activity_type == 'funder_none_response_in_issue':
+        message = """Your bounty hunters haven't responded on this issue
+         in a few days. Remove them if you haven't heard from them?"""
 
-    # TODO
-    # For Funder
-    # Your bounty hunters haven't responded on this issue in a few days.
-    # Remove them if you haven't heard from them?
-    # Your bounty is expiring soon
-    # For Hunter
-    # You haven't responded to this issue in x days.
-    # This issue has been remarketed and has your skill sets. Are you interested?
-    # You have been removed from a bounty due to no response
-    # Your submission has been declined.
-    # Funding has increased on a bounty that you’re working on.
+    if activity.activity_type == 'funder_bounty_expiring':
+        message = 'Your bounty is expiring soon.'
 
+    if activity.activity_type == 'hunter_none_response':
+        message = 'You haven\'t responded to this issue in x days.'
+
+    if activity.activity_type == 'hunter_has_the_right_skills':
+        message = """This issue has been remarketed and has your skill sets.
+         Are you interested?"""
+
+    if activity.activity_type == 'hunter_removed_from_bounty':
+        message = 'You have been removed from a bounty due to no response'
+
+    if activity.activity_type == 'hunter_submission_declined':
+        message = 'Your submission has been declined.'
+
+    if activity.activity_type == 'hunter_issue_funding_increased':
+        bounty = activity.bounty
+        message = f'Funding has increased on a {bounty.title} that you’re working on.'
+        send_notification_to_user(
+            activity.profile.user,
+            get_user_model().objects.get(username__iexact=bounty.bounty_owner_github_username),
+            bounty.url,
+            'hunter_issue_funding_increased',
+            message
+        )
 
 post_save.connect(create_notification, sender=Activity)
