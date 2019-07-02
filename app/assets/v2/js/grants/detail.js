@@ -20,6 +20,16 @@ $(document).ready(function() {
         $('#grant_contract_owner_address').text() + '. Switch to take action on your grant.'
     );
 
+    if ($('#cancel_grant').attr('disabled')) {
+      $('#cancel_grant').addClass('disable-btn').addClass('disable-tooltip');
+      $('#cancel_grant_tooltip').attr(
+        'data-original-title', 'switch to below contract owner address to cancel grant.'
+      );
+    } else {
+      $('#cancel_grant').removeClass('disable-btn').removeClass('disable-tooltip');
+      $('#cancel_grant_tooltip').attr('data-original-title', '');
+    }
+
     if ($('#contract_owner_address').val() === $('#grant_contract_owner_address').text()) {
       $('#contract_owner_button').attr('disabled', true);
       $('#contract_owner_button').addClass('disable-btn').addClass('disable-tooltip');

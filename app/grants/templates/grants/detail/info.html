@@ -236,8 +236,12 @@
         <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
         <input type="hidden" id="contract_version" name="contract_version" value="{{ grant.contract_version }}">
         <input type="hidden" id="grant_cancel_tx_id" name="grant_cancel_tx_id" value="">
-        <button type="button" class="button button--primary button--full button--warning shadow-none font-weight-bold py-3" data-toggle="modal" data-target="#cancelModal" id="cancel_grant">{% trans "Cancel this Grant" %}
-        </button>
+        <div id="cancel_grant_tooltip" data-toggle="tooltip" data-placement="bottom">
+          <button type="button" data-toggle="modal" data-target="#cancelModal" id="cancel_grant"
+            class="button button--primary button--full button--warning shadow-none font-weight-bold py-3">
+            {% trans "Cancel this Grant" %}
+          </button>
+        </div>
 
         <div id="cancelModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="cancelGrantModal" aria-hidden="true">
           <div class="modal-dialog modal-lg">
