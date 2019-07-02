@@ -147,7 +147,59 @@ $(document).ready(function() {
       }
     }
   });
+  attach_close_button();
 });
+
+const attach_close_button = function() {
+  $('body').delegate('.alert .closebtn', 'click', function(e) {
+    $(this).parents('.alert').remove();
+    $('.alert').each(function(index) {
+      if (index == 0) $(this).css('top', 0);
+      else {
+        var new_top = (index * 66) + 'px';
+
+        $(this).css('top', new_top);
+      }
+    });
+  });
+};
+
+const closeButton = function(msg) {
+  var html = (msg['closeButton'] === false ? '' : '<span class="closebtn" >&times;</span>');
+
+  return html;
+};
+
+const alertMessage = function(msg) {
+  var html = `<strong>${typeof msg['title'] !== 'undefined' ? msg['title'] : ''}</strong>${msg['message']}`;
+
+  return html;
+};
+
+const _alert = function(msg, _class) {
+  if (typeof msg == 'string') {
+    msg = {
+      'message': msg
+    };
+  }
+  var numAlertsAlready = $('.alert:visible').length;
+  var top = numAlertsAlready * 44;
+
+  var html = function() {
+    return (
+      `<div class="alert ${_class} g-font-muli" style="top: ${top}px">
+        <div class="message">
+          <div class="content">
+            ${alertMessage(msg)}
+          </div>
+        </div>
+        ${closeButton(msg)}
+      </div>`
+    );
+  };
+
+  $('body').append(html);
+};
 
 
 if ($('#is-authenticated').val() === 'True' && !localStorage['notify_policy_update']) {
