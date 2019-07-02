@@ -1,0 +1,20 @@
+{
+    "symbol": "DCC",
+    "address": "0x4dC975e2C100aab50702eD679F33d5c80cd18060",
+    "overview": {
+        "en": "DCC (Decentralized Contract Chain), based on Ethereum and IPFS, serves as a decentralized electronic contract signing platform. Any individual or enterprise can complete the contract signing quickly, conveniently and safely without the intervention of a third party with DCC.",
+        "zh": "DCC（Decentralized contract chain）是基于以太坊和IPFS去中心化电子合同签约平台。通过DCC，任何个人、企业都可以在无需第三方介入的情况下快速、便捷、安全地完成合同签署。"
+    },
+    "email": "support@coinyee.com",
+    "website": "www.dcchain.org",
+    "whitepaper": "http://www.dcchain.org/dcchain-whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-02-06",
+    "initial_price": {
+        "BTC": "0.000012 BTC",
+        "USD": "0.74 USD"
+    },
+    "links": {
+        "weibo": "https://weibo.com/chainspay"
+    }
+}
