@@ -70,9 +70,6 @@ var loading_button = function(button) {
   button.prepend('<img src=' + static_url + 'v2/images/loading_white.gif style="max-width:20px; max-height: 20px">');
 };
 
-
-
-
 var update_metamask_conf_time_and_cost_estimate = function() {
   var confTime = 'unknown';
   var ethAmount = 'unknown';
