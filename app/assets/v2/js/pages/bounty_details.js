@@ -92,6 +92,7 @@ var rows = [
   'bounty_type',
   'expires_date',
   'issue_keywords',
+  'bounty_categories',
   'started_owners_username',
   'submitted_owners_username',
   'fulfilled_owners_username',
@@ -173,6 +174,24 @@ var callbacks = {
   'bounty_owner_github_username': gitcoin_ize,
   'funding_organisation': function(key, val, result) {
     return [ 'funding_organisation', result.funding_organisation ];
+  },
+  'bounty_categories': function(key, val, result) {
+    if (!result.bounty_categories || result.bounty_categories.length == 0)
+      return [ 'bounty_categories', null ];
+
+    const categories = [];
+    const categoryObj = {
+      frontend: '<span class="badge badge-secondary mr-1"><i class="fas fa-laptop-code"></i> Front End</span>',
+      backend: '<span class="badge badge-secondary mr-1"><i class="fas fa-code"></i> Back End</span>',
+      design: '<span class="badge badge-secondary mr-1"><i class="fas fa-pencil-ruler"></i> Design</span>',
+      documentation: '<span class="badge badge-secondary mr-1"><i class="fas fa-file-alt"></i> Documentation</span>',
+      other: '<span class="badge badge-secondary mr-1"><i class="fas fa-briefcase"></i> Other</span>'
+    };
+
+    result.bounty_categories.forEach(function(category) {
+      categories.push(categoryObj[category]);
+    });
+    return [ 'bounty_categories', categories ];
   },
   'permission_type': function(key, val, result) {
     if (val == 'approval') {
@@ -501,9 +520,9 @@ var showWarningMessage = function(txid) {
 
   $('.left-rails').hide();
   $('#bounty_details').hide();
-  $('#bounty_detail').hide();
 
   waitingStateActive();
+  show_invite_users();
 };
 
 // refresh page if metamask changes
@@ -557,6 +576,8 @@ var wait_for_tx_to_mine_and_then_ping_server = function() {
             console.log('success from sync/web', response);
 
             // clear local data
+            delete sessionStorage['fulfillers'];
+            delete sessionStorage['bountyId'];
             localStorage[document.issueURL] = '';
             if (response['url']) {
               document.location.href = response['url'];
@@ -681,22 +702,26 @@ var show_interest_modal = function() {
           };
 
           $.ajax(ndaSend).done(function(response) {
-            _alert(response.message, 'info');
-            add_interest(document.result['pk'], {
-              issue_message: msg,
-              signed_nda: response.bounty_doc_id
-            }).then(success => {
-              if (success) {
-                $(self).attr('href', '/uninterested');
-                $(self).find('span').text(gettext('Stop Work'));
-                $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
-                modals.bootstrapModal('hide');
-              }
-            }).catch((error) => {
-              if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
-                return;
-              throw error;
-            });
+            if (response.status == 200) {
+              _alert(response.message, 'info');
+              add_interest(document.result['pk'], {
+                issue_message: msg,
+                signed_nda: response.bounty_doc_id
+              }).then(success => {
+                if (success) {
+                  $(self).attr('href', '/uninterested');
+                  $(self).find('span').text(gettext('Stop Work'));
+                  $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
+                  modals.bootstrapModal('hide');
+                }
+              }).catch((error) => {
+                if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
+                  return;
+                throw error;
+              });
+            } else {
+              _alert(response.message, 'error');
+            }
           }).fail(function(error) {
             _alert(error, 'error');
           });
@@ -1408,7 +1433,7 @@ const process_activities = function(result, bounty_activities) {
     extend_expiration: gettext('Extended Bounty Expiration')
   };
 
-  const now = new Date(result['now']);
+  const now = result['now'] ? new Date(result['now']) : new Date();
   const is_open = result['is_open'];
   const _result = [];
 
@@ -1562,6 +1587,67 @@ const is_bounty_expired = function(bounty) {
   let now = new Date(bounty['now']);
 
   return now.getTime() >= expires_date.getTime();
+};
+
+/**
+ * Checks sessionStorage to toggle to show the quote
+ * container vs showing the list of fulfilled users to be
+ * invite.
+ */
+const show_invite_users = () => {
+
+  if (sessionStorage['fulfillers']) {
+    const users = sessionStorage['fulfillers'].split(',');
+    const bountyId = sessionStorage['bountyId'];
+
+    if (users.length == 1) {
+
+      let user = users[0];
+      const title = `Work with <b>${user}</b> again on your next bounty ?`;
+      const invite = `
+        <div class="invite-user">
+          <img class="avatar" src="/dynamic/avatar/${users}" />
+          <p class="mt-4">
+            <a target="_blank" class="btn btn-gc-blue shadow-none py-2 px-4" href="/users?invite=${user}&current-bounty=${bountyId}">
+              Yes, invite to one of my bounties
+            </a>
+          </p>
+        </div>`;
+
+      $('#invite-header').html(title);
+      $('#invite-users').html(invite);
+    } else {
+
+      let invites = [];
+      const title = 'Work with these contributors again on your next bounty?';
+
+      users.forEach(user => {
+        const invite = `
+          <div class="invite-user mx-3">
+            <img class="avatar" src="/dynamic/avatar/${user}"/>
+            <p class="my-2">
+              <a target="_blank" class="font-subheader blue" href="/profile/${user}">
+                ${user}
+              </a>
+            </p>
+            <a target="_blank" class="btn btn-gc-blue shadow-none px-4 font-body font-weight-semibold" href="/users?invite=${user}&current-bounty=${bountyId}"">
+              Invite
+            </a>
+          </div>`;
+
+        invites.push(invite);
+      });
+
+      $('#invite-users').addClass('d-flex justify-content-center');
+      $('#invite-header').html(title);
+      $('#invite-users').html(invites);
+    }
+    $('.invite-user-container').removeClass('hidden');
+    $('.quote-container').addClass('hidden');
+  } else {
+    $('.invite-user-container').addClass('hidden');
+    $('.quote-container').removeClass('hidden');
+  }
 };
 
 var main = function() {

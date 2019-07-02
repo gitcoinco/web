@@ -18,22 +18,22 @@
 <div class="px-lg-5">
   <div id="grant-profile-tabs" class="tab-container font-body mt-5 mb-4">
     
-    <button type="button" id="nav-description" class="section-tab">
+    <button type="button" id="nav-description" href="{{grant.url}}?tab=description" class="section-tab {% if tab == "description" %} active {% endif %}">
       {% trans "DESCRIPTION" %}
     </button>
 
-    <button type="button" id="nav-transactions" class="section-tab">
+    <button type="button" id="nav-transactions" href="{{grant.url}}?tab=activity" class="section-tab {% if tab == "activity" %} active {% endif %}">
       {% trans "ACTIVITY" %}
       {% if not subscriptions and not cancelled_subscriptions and not contributions %}
         <span class="nav-badge">0</span>
       {% endif %}
     </button>
 
-    <button type="button" id="nav-summary" class="section-tab">
+    <button type="button" id="nav-summary" href="{{grant.url}}?tab=updates" class="section-tab {% if tab == "updates" %} active {% endif %}">
       {% trans "UPDATES" %}
     </button>
   
-    <button type="button" id="nav-contributors" class="section-tab">
+    <button type="button" id="nav-contributors" href="{{grant.url}}?tab=contributors" class="section-tab {% if tab == "contributors" %} active {% endif %}">
       {% trans "CONTRIBUTORS" %}
       <span class="nav-badge">{{ contributions|length }}</span>
     </button>
@@ -41,20 +41,20 @@
   </div>
 
   <div id="grant-profile-tabs-sections" class="tab-sections section pt-2">
-
+    {% if tab == "description" %}
     <div id="section-nav-description" class="tab-section active">
-      {% if is_admin and not grant_is_inactive %}
-        <textarea id="form--input__description" maxlength=5000 class="p-0 mt-2 inline-edit" disabled>
+      <div id="editor">
+        {% if grant.description_rich %}
+          {{ grant.description_rich }}
+        {% else %}
           {{ grant.description }}
-        </textarea>
-      {% else %}
-        <p class="grant__description font-subheader pr-lg-4 mb-5">
-          {{ grant.description }}
-        </p>
-      {% endif %}
+        {% endif %}
+      </div>
     </div>
+    {% endif %}
 
-    <div id="section-nav-transactions" class="tab-section">
+    {% if tab == "activity" %}
+    <div id="section-nav-transactions" class="">
       {% if not subscriptions and not cancelled_subscriptions and not contributions %}
         <h4 class="m-auto text-center font-weight-semibold">{% trans "No Activity for this Grant!" %}</h4>
       {% else %}
@@ -62,12 +62,16 @@
         <span id="grant-network" class="hidden">{{ grant.network }}</span>
       {% endif %}
     </div>
+    {% endif %}
 
-    <div id="section-nav-summary" class="tab-section">
+    {% if tab == "updates" %}
+    <div id="section-nav-summary" class="">
       {% include 'grants/detail/summary.html' %}
     </div>
+    {% endif %}
 
-    <div id="section-nav-contributors" class="tab-section">
+    {% if tab == "contributors" %}
+    <div id="section-nav-contributors" class="">
       <div class="grant__stakeholders-list d-flex flex-wrap">
         {% for contribution in contributions %}
           <a class="grant__stakeholders-item mr-3 mb-3" href="{% url 'profile' contribution.subscription.contributor_profile.handle %}">
@@ -86,6 +90,27 @@
         {% endfor %}
       </div>
     </div>
+    {% endif %}
     
   </div>
 </div>
+
+<script>
+  let grant_description;
+  {% if is_admin and not grant_is_inactive %}
+      grant_description = new Quill('#editor', {
+      theme: 'snow',
+    });
+    grant_description.enable(false);
+  {% else %}
+    grant_description = new Quill('#editor', {
+      theme: 'bubble',
+      readOnly: true,
+    });
+  {% endif %}
+
+  let desc = JSON.parse(grant_description.getContents().ops[0].insert);
+  if (desc.ops) {
+    grant_description.setContents(desc);
+  }
+</script>

@@ -73,11 +73,13 @@
           </div>
           <div class="sitenav">
             <h5>{% trans "Community" %}</h5>
+            <a href="{% url "blog" %}">{% trans "Blog" %}</a>
             <a class="slack{% if active == 'slack' %} selected{% endif %}" href="{% url "slack" %}">
               Slack ({{num_slack}})
             </a>
             <a href="{% url "activity" %}">{% trans "Activity Feed" %}</a>
             <a href="{% url "help" %}">{% trans "Help" %}</a>
+            <a href="https://store.gitcoin.co/"">{% trans "Store" %}</a>
           </div>
           <div class="sitenav">
             <h5>{% trans "Legal" %}</h5>

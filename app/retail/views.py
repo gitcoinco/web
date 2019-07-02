@@ -68,10 +68,6 @@ def get_activities(tech_stack=None, num_activities=15):
 def index(request):
 
     user = request.user.profile if request.user.is_authenticated else None
-    is_new_funder = True
-
-    if user and Bounty.objects.filter(bounty_owner_github_username=user).count() > 0:
-        is_new_funder = False
 
     products = [
         {
@@ -206,7 +202,6 @@ def index(request):
     ]
 
     context = {
-        'is_new_funder': is_new_funder,
         'products': products,
         'know_us': know_us,
         'press': press,
@@ -673,15 +668,6 @@ def about(request):
             "Cocktail Samosa"
         ),
         (
-            static("v2/images/team/saptaks.jpg"),
-            "Saptak Sengupta",
-            "Engineering",
-            "saptaks",
-            "saptaks",
-            "Everything Open Source",
-            "daab chingri"
-        ),
-        (
             static("v2/images/team/scott.jpg"),
             "Scott Moore",
             "Biz Dev",
@@ -768,7 +754,7 @@ def mission(request):
 
     values = [
         {
-            'name': _('Collaboration'),
+            'name': _('Self Reliance'),
             'img': 'v2/images/mission/value/collaborative.svg',
             'alt': 'we-collobarate-icon'
         },
@@ -841,7 +827,7 @@ def mission(request):
             'alt': 'microscope-icon'
         },
         {
-            'text': _('We care about people (not just tasks)'),
+            'text': _('We care about people (not just tasks).'),
             'img': 'v2/images/mission/interact/people_care.svg',
             'alt': 'care-icon'
         },
@@ -1571,6 +1557,8 @@ def btctalk(request):
 def reddit(request):
     return redirect('https://www.reddit.com/r/gitcoincommunity/')
 
+def blog(request):
+    return redirect('https://gitcoin.co/blog')
 
 def livestream(request):
     return redirect('https://calendar.google.com/calendar/r?cid=N3JxN2dhMm91YnYzdGs5M2hrNjdhZ2R2ODhAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ')

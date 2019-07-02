@@ -24,7 +24,7 @@ from django.utils.safestring import mark_safe
 
 from .models import (
     Activity, BlockedUser, Bounty, BountyFulfillment, BountyInvites, BountySyncRequest, CoinRedemption,
-    CoinRedemptionRequest, FeedbackEntry, HackathonEvent, Interest, LabsResearch, Profile, RefundFeeRequest,
+    CoinRedemptionRequest, Coupon, FeedbackEntry, HackathonEvent, Interest, LabsResearch, Profile, RefundFeeRequest,
     SearchHistory, Tip, TokenApproval, Tool, ToolVote, UserAction, UserVerificationModel,
 )
 
@@ -142,13 +142,17 @@ class BountyAdmin(admin.ModelAdmin):
 
     search_fields = ['raw_data', 'title', 'bounty_owner_github_username', 'token_name']
     list_display = ['pk', 'img', 'idx_status', 'network_link', 'standard_bounties_id_link', 'bounty_link', 'what']
-    readonly_fields = ['what', 'img', 'fulfillments_link', 'standard_bounties_id_link', 'bounty_link', 'network_link', '_action_urls']
+    readonly_fields = [
+        'what', 'img', 'fulfillments_link', 'standard_bounties_id_link', 'bounty_link', 'network_link',
+        '_action_urls', 'coupon_link'
+    ]
 
     def img(self, instance):
+        if instance.admin_override_org_logo:
+            return format_html("<img src={} style='max-width:30px; max-height: 30px'>", mark_safe(instance.admin_override_org_logo.url))
         if not instance.avatar_url:
             return 'n/a'
-        img_html = format_html("<img src={} style='max-width:30px; max-height: 30px'>", mark_safe(instance.avatar_url))
-        return img_html
+        return format_html("<img src={} style='max-width:30px; max-height: 30px'>", mark_safe(instance.avatar_url))
 
     def what(self, instance):
         return str(instance)
@@ -177,6 +181,11 @@ class BountyAdmin(admin.ModelAdmin):
     def network_link(self, instance):
         copy = f'{instance.network}'
         url = f'/_administrationdashboard/bounty/?network={instance.network}'
+        return mark_safe(f"<a href={url}>{copy}</a>")
+
+    def coupon_link(self, instance):
+        copy = f'{instance.coupon_code.code}'
+        url = f'/_administrationdashboard/coupon/{instance.coupon_code.pk}'
         return mark_safe(f"<a href={url}>{copy}</a>")
 
 
@@ -253,6 +262,17 @@ class HackathonEventAdmin(admin.ModelAdmin):
         return mark_safe(f'<a href="{url}">Explorer Link</a>')
 
 
+class CouponAdmin(admin.ModelAdmin):
+    """The admin object to maintain discount coupons for bounty"""
+
+    list_display = ['pk', 'code', 'fee_percentage', 'expiry_date', 'link']
+    search_fields = ['created_on', 'code', 'fee_percentage']
+
+    def link(self, instance):
+        url = f'/funding/new?coupon={instance.code}'
+        return mark_safe(f'<a target="_blank" href="{url}">http://gitcoin.co{url}</a>')
+
+
 admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
 admin.site.register(BlockedUser, GeneralAdmin)
@@ -274,3 +294,4 @@ admin.site.register(FeedbackEntry, FeedbackAdmin)
 admin.site.register(LabsResearch)
 admin.site.register(UserVerificationModel, VerificationAdmin)
 admin.site.register(RefundFeeRequest, RefundFeeRequestAdmin)
+admin.site.register(Coupon, CouponAdmin)

@@ -46,7 +46,7 @@ const notifyOwnerAddressMismatch = (username, address, button, message) => {
   if (!web3 || !web3.eth)
     return;
   web3.eth.getAccounts((error, accounts) => {
-    if (document.contxt.github_handle == username &&
+    if (document.contxt.github_handle == username && accounts[0] &&
         accounts[0] != address) {
       if ($(button).attr('disabled') != 'disabled') {
         $(button).attr('disabled', 'disabled');
@@ -154,7 +154,7 @@ $(document).ready(function() {
     }
   }
 
-  compiledSplitter = compiledSplitter0;
+  compiledSplitter = compiledSplitter0 ? compiledSplitter0 : null;
 
   const listen_web3_1_changes = () => {
     if (typeof web3 == 'undefined' || typeof web3.eth.getCoinbase() == 'undefined') {
