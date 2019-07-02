@@ -2808,3 +2808,32 @@ def get_hackathons(request):
         'hackathons': events,
     }
     return TemplateResponse(request, 'dashboard/hackathons.html', params)
+
+@csrf_exempt
+@require_POST
+def choose_persona(request):
+    if request.is_ajax():
+
+        if request.user.is_authenticated:
+            profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+            access_token = request.POST.get('access_token')
+            persona = request.POST.get('persona')
+            if persona == 'persona_is_funder':
+                profile.persona_is_funder = True
+            elif  persona == 'persona_is_hunter':
+                profile.persona_is_hunter = True
+            profile.save()
+        else:
+            return JsonResponse(
+                {'error': _('You must be authenticated')},
+            status=401)
+    else:
+        print('no ajax')
+        raise Http404
+
+    return JsonResponse(
+        {
+            'success': True,
+            'persona': persona,
+        },
+        status=200)

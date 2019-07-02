@@ -200,8 +200,8 @@ if (document.contxt.github_handle && !document.contxt.persona_is_funder && !docu
             <p>${gettext('Let us know so we could optimize the <br>best experience for you!')}</p>
           </div>
           <div class="col-12 my-4 d-flex justify-content-around">
-            <button type="button" class="btn btn-gc-blue col-5" data-dismiss="modal">I'm a Funder</button>
-            <button type="button" class="btn btn-gc-blue col-5" data-dismiss="modal">I'm a Contributor</button>
+            <button type="button" class="btn btn-gc-blue col-5" data-persona="persona_is_funder">I'm a Funder</button>
+            <button type="button" class="btn btn-gc-blue col-5" data-persona="persona_is_hunter">I'm a Contributor</button>
           </div>
         </div>
       </div>
@@ -210,3 +210,68 @@ if (document.contxt.github_handle && !document.contxt.persona_is_funder && !docu
   $(content).appendTo('body');
   $('#persona_modal').bootstrapModal('show');
 }
+
+$('body').on('click', '[data-persona]', function(e) {
+  sendPersonal($(this).data('persona'));
+});
+
+const sendPersonal = (persona) => {
+  let postPersona = fetchData('/api/v0.1/choose_persona/', 'POST',
+    {persona, 'access_token': document.contxt.access_token}
+  );
+
+  $.when(postPersona).then((response, status, statusCode) => {
+    if (statusCode.status != 200) {
+      return _alert(response.msg, 'error');
+    }
+
+    $('#persona_modal').bootstrapModal('hide');
+    const urls = [
+      {
+        url: document.location.origin,
+        redirect: '/onboard/funder'
+      },
+      {
+        url: '/bounties/funder',
+        redirect: '/onboard/funder'
+      },
+      {
+        url: '/contributor',
+        redirect: '/onboard/contributor'
+      }
+    ];
+    // TODO: CLEAN COMMENTS
+    const checkUrl = (arr, val) => {
+      return arr.some(arrObj => {
+        if (val.indexOf(arrObj.url) > 0) {
+          // window.location = arrObj.redirect;
+          return true;
+        }
+        return false;
+      });
+    };
+
+    if (response.persona === 'persona_is_funder') {
+      // if (!checkUrl(urls, document.location.href)) {
+      //   return _alert(gettext('Thanks, you can read the guide <a href="/how/funder">here.</a>'), 'info');
+      // }
+      if (checkUrl(urls, document.location.href)) {
+        window.location = '/onboard/funder';
+      } else {
+        return _alert(gettext('Thanks, you can read the guide <a href="/how/funder">here.</a>'), 'info');
+      }
+
+    } else if (response.persona === 'persona_is_hunter') {
+      // if (!checkUrl(urls, document.location.href)) {
+      //   return _alert(gettext('Thanks, you can read the guide <a href="/how/contributor">here.</a>'), 'info');
+      // }
+      if (checkUrl(urls, document.location.href)) {
+        window.location = '/onboard/contributor';
+      } else {
+        return _alert(gettext('Thanks, you can read the guide <a href="/how/contributor">here.</a>'), 'info');
+      }
+    }
+
+
+  });
+};
