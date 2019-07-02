@@ -1,0 +1,21 @@
+{
+    "symbol": "THO",
+    "address": "0x5c3010cdBc6A8526Bc08F5200f796845ea23818B",
+    "overview": {
+        "en": "Tian Hop Chain is abbreviated as THO. THO is a well-known financial service fund of Tian Hop Chain Asset Management Co., Ltd., which is committed to investing in incubating high-tech enterprises and has success in areas such as artificial intelligence, big data, cloud computing, new technologies and new materials. Case. Tian Hop Chain Asset Management Co., Ltd. hopes to use the blockchain anchoring of technology, assets and brand value to help “all-industry” start-ups quickly enter the track.",
+        "zh": "天合链简称THO，THO是天合链资产管理有限公司为知名的金融服务基金，致力于投资孵化高新技术企业，在人工智能，大数据，云计算、新技术，新材料等领域均有成功案例。天合链资产管理有限公司希望通过技术、资产、品牌价值用区块链锚定，帮助“全行业”初创企业快速入轨。"
+    },
+    "email": "support@ethce.org",
+    "website": "http://www.ethce.org/",
+    "whitepaper": "http://www.ethce.org/cn/white_paper.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-06-18",
+    "initial_price": {
+        "ETH": "0.003720 ETH",
+        "USD": "1.0000 USD",
+        "BTC": "0.000110 BTC"
+    },
+    "links": {
+        "blog": "http://www.ethce.org/"
+    }
+}
