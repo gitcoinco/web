@@ -85,6 +85,10 @@ urlpatterns = [
     re_path(r'^kudos/address/(?P<handle>.*)', kudos.views.kudos_preferred_wallet, name='kudos_preferred_wallet'),
     re_path(r'^dynamic/kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.image, name='kudos_dynamic_img'),
 
+    # mailing list
+    url('mailing_list/funders/', dashboard.views.funders_mailing_list),
+    url('mailing_list/hunters/', dashboard.views.hunters_mailing_list),
+
     # api views
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
     url(
@@ -126,7 +130,10 @@ urlpatterns = [
     url(r'^postcomment/', dashboard.views.post_comment, name='post_comment'),
     url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
+
+    # Hackathon static page
     url(r'^hackathon/ethhack2019', dashboard.views.ethhack, name='ethhack_2019'),
+    url(r'^hackathon/beyondblocks', dashboard.views.beyond_blocks_2019, name='beyond_blocks_2019'),
     path('revenue/attestations/new', revenue.views.new_attestation, name='revenue_new_attestation'),
 
     # Hackathons / special events
@@ -302,6 +309,7 @@ urlpatterns = [
     re_path(r'^verified/?', retail.views.verified, name='verified'),
     re_path(r'^community/?', retail.views.community, name='community'),
     re_path(r'^slack/?', retail.views.slack, name='slack'),
+    re_path(r'^blog/?', retail.views.blog, name='blog'),
     re_path(r'^submittoken/?', retail.views.newtoken, name='newtoken'),
     re_path(r'^itunes/?', retail.views.itunes, name='itunes'),
     re_path(r'^podcast/?', retail.views.podcast, name='podcast'),

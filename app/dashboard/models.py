@@ -30,7 +30,7 @@ from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.contrib.humanize.templatetags.humanize import naturalday, naturaltime
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.validators import MaxValueValidator, MinValueValidator
-from django.db import models
+from django.db import connection, models
 from django.db.models import Q, Sum
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
@@ -44,6 +44,7 @@ from django.utils.translation import gettext_lazy as _
 import pytz
 import requests
 from app.utils import get_upload_filename
+from dashboard.sql.persona import PERSONA_SQL
 from dashboard.tokens import addr_to_token
 from economy.models import ConversionRate, SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
@@ -310,6 +311,13 @@ class Bounty(SuperModel):
     admin_mark_as_remarket_ready = models.BooleanField(
         default=False, help_text=_('Admin override to mark as remarketing ready')
     )
+    admin_override_org_name = models.CharField(max_length=255, blank=True) # TODO: Remove POST ORGS
+    admin_override_org_logo = models.ImageField(
+        upload_to=get_upload_filename,
+        null=True,
+        blank=True,
+        help_text=_('Organization Logo - Override'),
+    ) # TODO: Remove POST ORGS
     attached_job_description = models.URLField(blank=True, null=True)
     event = models.ForeignKey('dashboard.HackathonEvent', related_name='bounties', null=True, on_delete=models.SET_NULL, blank=True)
 
@@ -382,6 +390,18 @@ class Bounty(SuperModel):
         except Exception:
             return f"{'/' if preceding_slash else ''}funding/details?url={self.github_url}"
 
+    def get_canonical_url(self):
+        """Get the canonical URL of the Bounty for SEO purposes.
+
+        Returns:
+            str: The canonical URL of the Bounty.
+
+        """
+        _org_name = org_name(self.github_url)
+        _repo_name = repo_name(self.github_url)
+        _issue_num = int(issue_number(self.github_url))
+        return settings.BASE_URL.rstrip('/') + reverse('issue_details_new2', kwargs={'ghuser': _org_name, 'ghrepo': _repo_name, 'ghissue': _issue_num})
+
     def get_natural_value(self):
         token = addr_to_token(self.token_address)
         if not token:
@@ -392,6 +412,10 @@ class Bounty(SuperModel):
     @property
     def url(self):
         return self.get_absolute_url()
+
+    @property
+    def canonical_url(self):
+        return self.get_canonical_url()
 
     def snooze_url(self, num_days):
         """Get the bounty snooze URL.
@@ -471,6 +495,12 @@ class Bounty(SuperModel):
         return self.github_org_name
 
     @property
+    def org_display_name(self): # TODO: Remove POST ORGS
+        if self.admin_override_org_name:
+            return self.admin_override_org_name
+        return org_name(self.github_url)
+
+    @property
     def github_org_name(self):
         try:
             return org_name(self.github_url)
@@ -546,6 +576,10 @@ class Bounty(SuperModel):
 
     def get_avatar_url(self, gitcoin_logo_flag=False):
         """Return the local avatar URL."""
+
+        if self.admin_override_org_logo:
+            return self.admin_override_org_logo.url
+
         org_name = self.github_org_name
         gitcoin_logo_flag = "/1" if gitcoin_logo_flag else ""
         if org_name:
@@ -1905,8 +1939,8 @@ class Profile(SuperModel):
     max_num_issues_start_work = models.IntegerField(default=3)
     preferred_payout_address = models.CharField(max_length=255, default='', blank=True)
     preferred_kudos_wallet = models.OneToOneField('kudos.Wallet', related_name='preferred_kudos_wallet', on_delete=models.SET_NULL, null=True, blank=True)
-    max_tip_amount_usdt_per_tx = models.DecimalField(default=500, decimal_places=2, max_digits=50)
-    max_tip_amount_usdt_per_week = models.DecimalField(default=1500, decimal_places=2, max_digits=50)
+    max_tip_amount_usdt_per_tx = models.DecimalField(default=2500, decimal_places=2, max_digits=50)
+    max_tip_amount_usdt_per_week = models.DecimalField(default=20000, decimal_places=2, max_digits=50)
     last_visit = models.DateTimeField(null=True, blank=True)
     job_search_status = models.CharField(max_length=2, choices=JOB_SEARCH_STATUS, blank=True)
     show_job_status = models.BooleanField(
@@ -1924,6 +1958,15 @@ class Profile(SuperModel):
     resume = models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('The profile resume.'))
     actions_count = models.IntegerField(default=3)
     fee_percentage = models.IntegerField(default=10)
+    persona_is_funder = models.BooleanField(default=False)
+    persona_is_hunter = models.BooleanField(default=False)
+    admin_override_name = models.CharField(max_length=255, blank=True, help_text=_('override profile name.'))
+    admin_override_avatar = models.ImageField(
+        upload_to=get_upload_filename,
+        null=True,
+        blank=True,
+        help_text=_('override profile avatar'),
+    )
 
     objects = ProfileQuerySet.as_manager()
 
@@ -1956,7 +1999,7 @@ class Profile(SuperModel):
         )
         if not self.preferred_payout_address:
             kt_owner_address = KudosTransfer.objects.none()
-            
+
         kt_profile = KudosTransfer.objects.filter(recipient_profile=self)
 
         kudos_transfers = kt_profile | kt_owner_address
@@ -2059,6 +2102,27 @@ class Profile(SuperModel):
         on_repo = Tip.objects.filter(github_url__startswith=self.github_url).order_by('-id')
         tipped_for = Tip.objects.filter(username__iexact=self.handle).order_by('-id')
         return on_repo | tipped_for
+
+    def calculate_and_save_persona(self):
+        network = settings.ENABLE_NOTIFICATIONS_ON_NETWORK
+        designation = None
+        with connection.cursor() as cursor:
+            try:
+                cursor.execute(PERSONA_SQL, [network, self.id, network])
+                result = cursor.fetchone()
+                _, _, designation, _, _ = result
+            except Exception as e:
+                logger.info(
+                    'Exception calculating persona for user %s: %s' % (self.id,
+                                                                       e))
+
+        if designation and designation == "bounty_hunter":
+            self.persona_is_hunter = True
+
+        if designation and designation == "funder":
+            self.persona_is_funder = True
+
+        self.save()
 
     def has_custom_avatar(self):
         from avatar.models import CustomAvatar
@@ -2360,6 +2424,8 @@ class Profile(SuperModel):
 
     @property
     def avatar_url(self):
+        if self.admin_override_avatar:
+            return self.admin_override_avatar.url
         if self.active_avatar:
             return self.active_avatar.avatar_url
         return f"{settings.BASE_URL}dynamic/avatar/{self.handle}"
@@ -2374,13 +2440,23 @@ class Profile(SuperModel):
 
     @property
     def username(self):
-        handle = ''
         if getattr(self, 'user', None) and self.user.username:
-            handle = self.user.username
-        # TODO: (mbeacom) Remove this check once we get rid of all the lingering identity shenanigans.
-        elif self.handle:
-            handle = self.handle
-        return handle
+            return self.user.username
+
+        if self.handle:
+            return self.handle
+
+        return None
+
+    @property
+    def name(self):
+        if self.admin_override_name:
+            return self.admin_override_name
+
+        if self.data and self.data["name"]:
+            return self.data["name"]
+
+        return self.username
 
 
     def is_github_token_valid(self):
@@ -2587,6 +2663,44 @@ class Profile(SuperModel):
 
         return eth_sum
 
+    def get_all_tokens_sum(self, sum_type='collected', network='mainnet', bounties=None):
+        """Get the sum of collected or funded tokens based on the provided type.
+
+        Args:
+            sum_type (str): The sum to lookup.  Defaults to: collected.
+            network (str): The network to query results for.
+                Defaults to: mainnet.
+            bounties (dashboard.models.BountyQuerySet): Override the BountyQuerySet this function processes.
+                Defaults to: None.
+
+        Returns:
+            query: Grouped query by token_name and sum all token value
+        """
+        all_tokens_sum = None
+        if not bounties:
+            if sum_type == 'funded':
+                bounties = self.get_funded_bounties(network=network)
+            elif sum_type == 'collected':
+                bounties = self.get_fulfilled_bounties(network=network)
+            elif sum_type == 'org':
+                bounties = self.get_orgs_bounties(network=network)
+
+        if bounties and sum_type == 'funded':
+            bounties = bounties.has_funds()
+
+        try:
+            if bounties.exists():
+                all_tokens_sum = bounties.values(
+                    'token_name'
+                ).annotate(
+                    value_in_token=Sum('value_in_token') / 10**18,
+                ).order_by('token_name')
+
+        except Exception:
+            pass
+
+        return all_tokens_sum
+
     def get_who_works_with(self, work_type='collected', network='mainnet', bounties=None):
         """Get an array of profiles that this user works with.
 
@@ -2727,6 +2841,10 @@ class Profile(SuperModel):
         works_with_funded = self.get_who_works_with(work_type='funded', bounties=funded_bounties)
         works_with_collected = self.get_who_works_with(work_type='collected', bounties=fulfilled_bounties)
 
+        sum_all_funded_tokens = self.get_all_tokens_sum(sum_type='funded', bounties=funded_bounties, network=network)
+        sum_all_collected_tokens = self.get_all_tokens_sum(
+            sum_type='collected', bounties=fulfilled_bounties, network=network
+        )
         # org only
         count_bounties_on_repo = 0
         sum_eth_on_repos = 0
@@ -2759,6 +2877,8 @@ class Profile(SuperModel):
             'sum_eth_on_repos': sum_eth_on_repos,
             'works_with_org': works_with_org,
             'count_bounties_on_repo': count_bounties_on_repo,
+            'sum_all_funded_tokens': sum_all_funded_tokens,
+            'sum_all_collected_tokens': sum_all_collected_tokens
         }
 
         if activities:
@@ -3097,6 +3217,7 @@ class HackathonEvent(SuperModel):
     logo_svg = models.FileField(blank=True)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
+    identifier = models.CharField(max_length=255, default='')
 
     def __str__(self):
         """String representation for HackathonEvent.

@@ -715,7 +715,8 @@ def psave_grant(sender, instance, **kwargs):
                 instance.amount_received += Decimal(value_usdt)
 
         if subscription.num_tx_processed <= subscription.num_tx_approved and value_usdt:
-            instance.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
+            if subscription.num_tx_approved != 1:
+                instance.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
         #print("-", subscription.id, value_usdt, instance.monthly_amount_subscribed )
 
 
@@ -753,8 +754,9 @@ class Contribution(SuperModel):
         """Updates tx status."""
         from dashboard.utils import get_tx_status
         tx_status, tx_time = get_tx_status(self.tx_id, self.subscription.network, self.created_on)
-        self.success = tx_status == 'success'
-        self.tx_cleared = True
+        if tx_status != 'pending':
+            self.success = tx_status == 'success'
+            self.tx_cleared = True
 
 def next_month():
     """Get the next month time."""
