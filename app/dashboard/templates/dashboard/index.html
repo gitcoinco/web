@@ -34,17 +34,16 @@
       {% include 'shared/nav.html' %}
     </div>
     {% if hackathon %}
-      <div class="row pt-5 pb-5 text-center" style="
-        background: linear-gradient(161deg, rgba(55,27,181,1) 37%, rgba(255,51,117,1) 100%);
-      ">
+      <link rel="stylesheet" href={% static "v2/css/hackathons/explorer.css" %}>
+      <div id="{{ hackathon.identifier }}" class="row pt-5 pb-5 text-center banner">
         <div class="col g-font-muli">
-          <span class="d-block font-title-xl text-white font-weight-bold">{{ hackathon.name }}</span>
+          <span class="hackathon-name d-block mt-5 text-white font-weight-semibold">{{ hackathon.name }}</span>
           {% if hackathon.logo_svg %}
-            <img class="d-block mx-auto my-4" max-width="364" src="{{ hackathon.logo_svg.url }}"/>
+            <img class="d-block mx-auto my-4 hackathon-logo" src="{{ hackathon.logo_svg.url }}"/>
           {% elif hackathon.logo %}
-            <img class="d-block mx-auto my-4" max-width="364" src="{{ hackathon.logo.url }}"/>
+            <img class="d-block mx-auto my-4 hackathon-logo" src="{{ hackathon.logo.url }}"/>
           {% endif %}
-          <span class="d-block font-title-lg text-white font-weight-semibold" style="white-space: nowrap;">
+          <span class="d-block font-title-lg text-white">
             {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
           </span>
         </div>

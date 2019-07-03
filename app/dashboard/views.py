@@ -2077,6 +2077,22 @@ def profile(request, handle):
     return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
 
+@staff_member_required
+def funders_mailing_list(request):
+    profile_list = list(Profile.objects.filter(
+        persona_is_funder=True).exclude(email="").values_list('email',
+                                                              flat=True))
+    return JsonResponse({'funder_emails': profile_list})
+
+
+@staff_member_required
+def hunters_mailing_list(request):
+    profile_list = list(Profile.objects.filter(
+        persona_is_hunter=True).exclude(email="").values_list('email',
+                                                              flat=True))
+    return JsonResponse({'hunter_emails': profile_list})
+
+
 @csrf_exempt
 def lazy_load_kudos(request):
     page = request.POST.get('page', 1)
@@ -2750,7 +2766,18 @@ def hackathon(request, hackathon=''):
 
     title = evt.name
     network = get_default_network()
-    orgs = set([bounty.org_name for bounty in Bounty.objects.filter(event=evt, network=network).current()])
+
+    # TODO: Refactor post orgs
+    orgs = []
+    for bounty in Bounty.objects.filter(event=evt, network=network).current():
+        org = {
+            'display_name': bounty.org_display_name,
+            'avatar_url': bounty.avatar_url,
+            'org_name': bounty.org_name
+        }
+        orgs.append(org)
+
+    orgs = list({v['org_name']:v for v in orgs}.values())
 
     params = {
         'active': 'dashboard',
@@ -2759,6 +2786,11 @@ def hackathon(request, hackathon=''):
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
         'hackathon': evt,
     }
+
+    if evt.identifier == 'beyondblockchain_2019':
+        from dashboard.context.hackathon_explorer import beyondblockchain_2019
+        params['sponsors'] = beyondblockchain_2019
+
     return TemplateResponse(request, 'dashboard/index.html', params)
 
 

@@ -48,11 +48,6 @@
           <p class="font-caption {% if grant.clr_matching %} my-2 {% endif %}">
             of {{ grant.amount_goal|floatformat:0|intcomma }} DAI goal
           </p>
-          <div class="progress progress--small">
-            <div class="progress-bar" role="progressbar"
-              style="width: {{ grant.percentage_done }}%" aria-valuenow="{{ grant.percentage_done }}%" aria-valuemin="0" aria-valuemax="100">
-            </div>
-          </div>
         </div>
 
         <div class="offset-2 col-8 text-center text-xl-left offset-xl-0 col-xl-6">
