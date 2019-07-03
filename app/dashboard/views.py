@@ -772,14 +772,14 @@ def users_fetch(request):
         network = 'mainnet'
     else:
         network = 'rinkeby'
-
     if current_user:
         profile_list = Profile.objects.prefetch_related(
                 'fulfilled', 'leaderboard_ranks', 'feedbacks_got'
             ).exclude(hide_profile=True).order_by(
                 '-previous_worked_count',
                 order_by,
-                '-actions_count'
+                '-actions_count',
+                'feedbacks_got__rating'
             )
     else:
         profile_list = Profile.objects.prefetch_related(
@@ -825,14 +825,20 @@ def users_fetch(request):
             fulfilled__accepted=True,
             fulfilled__bounty__github_url__icontains=organisation
         ).distinct()
-
-    profile_list = Profile.objects.filter(pk__in=profile_list.order_by('-actions_count').values_list('pk'))
+    profile_list = profile_list.annotate(
+        feedbacks_got_count=Count('feedbacks_got', filter=Q(feedbacks_got__sender_profile=current_user.profile.id))
+    )
+    profile_list = Profile.objects.filter(pk__in=profile_list.order_by(
+        '-feedbacks_got_count', '-actions_count'
+    ).values_list('pk'))
     params = dict()
     all_pages = Paginator(profile_list, limit)
     all_users = []
     this_page = all_pages.page(page)
 
-    this_page = Profile.objects.filter(pk__in=[ele.pk for ele in this_page]).order_by('-actions_count').annotate(
+    this_page = Profile.objects.filter(pk__in=[ele.pk for ele in this_page]).annotate(
+        feedbacks_got_count=Count('feedbacks_got', filter=Q(feedbacks_got__sender_profile=current_user.profile.id))
+    ).order_by('-feedbacks_got_count', '-actions_count').annotate(
         previous_worked_count=Count('fulfilled', filter=Q(
             fulfilled__bounty__network=network,
             fulfilled__accepted=True,
@@ -842,7 +848,6 @@ def users_fetch(request):
         ).annotate(
             average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
         )
-
     for user in this_page:
         previously_worked_with = 0
         if current_user:
@@ -877,6 +882,7 @@ def users_fetch(request):
             profile_json['blog'] = user_data['blog']
 
         all_users.append(profile_json)
+
     # dumping and loading the json here quickly passes serialization issues - definitely can be a better solution
     params['data'] = json.loads(json.dumps(all_users, default=str))
     params['has_next'] = all_pages.page(page).has_next()
