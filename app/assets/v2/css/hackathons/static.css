@@ -52,6 +52,7 @@ h4 {
 
 .hackathon .banner-logo {
   max-height: 18rem;
+  width: auto !important;
 }
 
 .hackathon .sponsors_gold img {
@@ -147,8 +148,13 @@ h4 {
   height: 100%;
 }
 
+.beyond_blocks .sponsors_silver img {
+  height: 3.5rem;
+}
+
 .bb-banner-bg {
   background-color: #121315;
+  text-align: center;
 }
 
 .bb-green-bg {

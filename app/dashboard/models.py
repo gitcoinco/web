@@ -1958,6 +1958,8 @@ class Profile(SuperModel):
     resume = models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('The profile resume.'))
     actions_count = models.IntegerField(default=3)
     fee_percentage = models.IntegerField(default=10)
+    persona_is_funder = models.BooleanField(default=False)
+    persona_is_hunter = models.BooleanField(default=False)
     admin_override_name = models.CharField(max_length=255, blank=True, help_text=_('override profile name.'))
     admin_override_avatar = models.ImageField(
         upload_to=get_upload_filename,
@@ -1965,8 +1967,6 @@ class Profile(SuperModel):
         blank=True,
         help_text=_('override profile avatar'),
     )
-    persona_is_funder = models.BooleanField(default=False)
-    persona_is_hunter = models.BooleanField(default=False)
 
     objects = ProfileQuerySet.as_manager()
 
@@ -2077,6 +2077,11 @@ class Profile(SuperModel):
     @property
     def job_status_verbose(self):
         return dict(Profile.JOB_SEARCH_STATUS)[self.job_search_status]
+
+    @property
+    def active_bounties(self):
+        active_bounties = Bounty.objects.current().filter(idx_status__in=['open', 'started'])
+        return Interest.objects.filter(profile_id=self.pk, bounty__in=active_bounties)
 
     @property
     def is_org(self):
@@ -2456,7 +2461,7 @@ class Profile(SuperModel):
         if self.data and self.data["name"]:
             return self.data["name"]
 
-        return  username(self)
+        return self.username
 
 
     def is_github_token_valid(self):

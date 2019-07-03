@@ -70,7 +70,7 @@
           </div>
           <div class="col-12 mb-5 sponsors-container">
             {% if sponsors_gold %}
-              <div class="mt-4 pb-4 px-lg-5 sponsors sponsors_gold d-md-flex justify-content-around">
+              <div class="mt-4 pb-4 px-lg-5 sponsors sponsors_gold d-md-flex flex-wrap justify-content-around">
                 {% for sponsor in sponsors_gold %}
                   <img src="{{ sponsor.logo }}" class="my-4 mx-5 mx-lg-0" alt="{{ sponsor.name }}" />
                 {% endfor %}
@@ -78,7 +78,7 @@
             {% endif %}
 
             {% if sponsors_silver %}
-              <div class=" mt-5 pt-2 px-lg-5 pb-5 sponsors sponsors_silver d-md-flex justify-content-around">
+              <div class=" mt-5 pt-2 px-lg-5 pb-5 sponsors sponsors_silver d-md-flex flex-wrap justify-content-around">
                 {% for sponsor in sponsors_silver %}
                   <img src="{{ sponsor.logo }}" class="m-4 mx-lg-0" alt="{{ sponsor.name }}" />
                 {% endfor %}
