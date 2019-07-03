@@ -6,7 +6,7 @@ django==2.1.7
 django-cors-headers==2.4.0
 django-filter==2.0.0
 django-ratelimit==1.1.0
-djangorestframework==3.8.2
+djangorestframework==3.9.1
 gitterpy
 gunicorn
 matplotlib
