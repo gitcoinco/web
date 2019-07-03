@@ -91,7 +91,7 @@ urlpatterns = [
 
     # api views
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
-    url(r'^api/v0.1/profile/banner', dashboard.views.upload_profile_banner, name='upload_profile_banner'),
+    url(r'^api/v0.1/profile/banner', dashboard.views.change_user_profile_banner, name='change_user_profile_banner'),
     url(
         r'^api/v0.1/profile/(.*)?/jobopportunity',
         dashboard.views.profile_job_opportunity,

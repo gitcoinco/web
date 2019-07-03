@@ -2820,7 +2820,7 @@ def get_hackathons(request):
 
 @require_POST
 @login_required
-def upload_profile_banner(request):
+def change_user_profile_banner(request):
     """Handle Profile Banner Uploads"""
 
     filename = request.POST.get('banner')

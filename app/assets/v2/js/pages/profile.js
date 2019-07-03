@@ -1,5 +1,4 @@
 $(document).ready(function() {
-  
   $('#kudos-section').on('click keypress', '.flip-card', e => {
     if ($(e.target).is('a')) {
       e.stopPropagation();
@@ -103,11 +102,11 @@ $(document).ready(function() {
       type: 'POST',
       url: '/lazy_load_kudos/',
       data: {
-        page: page,
-        request: request,
-        address: address,
-        handle: handle,
-        csrfmiddlewaretoken: '{{csrf_token}}' // from index.html
+        'page': page,
+        'request': request,
+        'address': address,
+        'handle': handle,
+        'csrfmiddlewaretoken': '{{csrf_token}}' // from index.html
       },
       success: function(data) {
         // if there are still more pages to load,
@@ -128,4 +127,4 @@ $(document).ready(function() {
       }
     });
   });
-})(jQuery);
+}(jQuery));

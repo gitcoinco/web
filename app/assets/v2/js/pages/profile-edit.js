@@ -63,7 +63,7 @@ $(document).ready(function() {
       .then(response => {
         if (response.status === 200) {
           const content = $.parseHTML(`
-            <div class="modal fade" id="bannerUploadModal" tabindex="-1">
+            <div class="modal fade" id="bannerUpdateModal" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
                 <div class="modal-header">
@@ -99,7 +99,7 @@ $(document).ready(function() {
           `);
 
           $(content).appendTo('body');
-          $('#bannerUploadModal').bootstrapModal('show');
+          $('#bannerUpdateModal').bootstrapModal('show');
         } else {
           _alert(
             {
