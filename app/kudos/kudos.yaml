@@ -4909,7 +4909,7 @@
   - happy fourth of july
   - gitcoin
   image: fourth_of_july.svg
-  - name: fourth_of_july_bot_
+- name: fourth_of_july_bot_
   description: Happy Fourth of July from Gitcoin!
   priceFinney: 10
   platform: gitcoin
@@ -4919,7 +4919,7 @@
   - happy fourth of july
   - gitcoin
   image: fourth_of_july2.svg
-  - name: fourth_of_july_bot__
+- name: fourth_of_july_bot__
   description: Happy Fourth of July from Gitcoin!
   priceFinney: 10
   platform: gitcoin
@@ -4929,7 +4929,7 @@
   - happy fourth of july
   - gitcoin
   image: fourth_of_july3.svg
-  - name: fourth_of_july_bot___
+- name: fourth_of_july_bot___
   description: Happy Fourth of July from Gitcoin!
   priceFinney: 10
   platform: gitcoin
@@ -4939,7 +4939,7 @@
   - happy fourth of july
   - gitcoin
   image: fourth_of_july4.svg
-  - name: fourth_of_july_bot_____
+- name: fourth_of_july_bot_____
   description: Happy Fourth of July from Gitcoin!
   priceFinney: 10
   platform: gitcoin
@@ -4949,7 +4949,7 @@
   - happy fourth of july
   - gitcoin
   image: fourth_of_july5.svg
-  - name: fourth_of_july_bot______
+- name: fourth_of_july_bot______
   description: Happy Fourth of July from Gitcoin!
   priceFinney: 10
   platform: gitcoin
