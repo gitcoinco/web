@@ -32,6 +32,7 @@ from django.utils.translation import gettext as _
 
 import cssutils
 import premailer
+import requests
 from grants.models import Contribution, Grant, Subscription
 from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
@@ -996,7 +997,7 @@ Back to shipping,
     sponsor_response = (requests.get(settings.CODEFUND_NEWSLETTER_URL)
                         if settings.CODEFUND_NEWSLETTER_URL
                         else None)
-    if sponsor_response and sponsor_response.status_code = 200:
+    if sponsor_response and sponsor_response.status_code == 200:
         print('loading newsletter sponsor data from codefund servers')
         sponsor = sponsor_response.json()
     else:

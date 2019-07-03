@@ -66,3 +66,18 @@ class TestRoundup(TestCase):
         assert mock_weekly_roundup.call_count == 1
 
         mock_weekly_roundup.assert_called_once_with(['jackson@bar.com'])
+
+    @patch('time.sleep')
+    @patch('retail.emails.requests')
+    @patch('marketing.management.commands.roundup.weekly_roundup')
+    def test_codefund_sponsor_local_context(self, mock_weekly_roundup, requests, *args):
+        Command().handle(exclude_startswith=None, filter_startswith=None, start_counter=0, live=False)
+        assert requests.call_count == 0
+
+    @patch('time.sleep')
+    @patch('retail.emails.requests')
+    @patch('marketing.management.commands.roundup.weekly_roundup')
+    def test_codefund_sponsor_api_context(self, mock_weekly_roundup, requests, *args):
+        with self.settings(CODEFUND_NEWSLETTER_URL='http://www.example.com'):
+            Command().handle(exclude_startswith=None, filter_startswith=None, start_counter=0, live=False)
+            assert requests.call_count == 1
