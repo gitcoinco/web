@@ -993,16 +993,24 @@ Back to shipping,
         'link_copy': 'View more',
     }, ]
 
-    sponsor = {
-        'name': 'Blockchain Job Kit',
-        'title': 'Blockchain Developer Job Kit',
-        'image_url': 'https://s3.us-west-2.amazonaws.com/gitcoin-static/jDSk7ZTfpY19PWdwwsk8puNd.png',
-        'link': 'http://bit.ly/EthDevKit',
-        'cta': 'View now',
-        'body': [
-            'Blockchain Developer Job Kit - See who’s hiring, salary info, and dev skills required'
-        ]
-    }
+    sponsor_response = (requests.get(settings.CODEFUND_NEWSLETTER_URL)
+                        if settings.CODEFUND_NEWSLETTER_URL
+                        else None)
+    if sponsor_response and sponsor_response.status_code = 200:
+        print('loading newsletter sponsor data from codefund servers')
+        sponsor = sponsor_response.json()
+    else:
+        print('using local sponsor data')
+        sponsor = {
+            'name': 'Blockchain Job Kit',
+            'title': 'Blockchain Developer Job Kit',
+            'image_url': 'https://s3.us-west-2.amazonaws.com/gitcoin-static/jDSk7ZTfpY19PWdwwsk8puNd.png',
+            'link': 'http://bit.ly/EthDevKit',
+            'cta': 'View now',
+            'body': [
+                'Blockchain Developer Job Kit - See who’s hiring, salary info, and dev skills required'
+            ]
+        }
 
     bounties_spec = [{
         'url': 'https://github.com/knocte/udtRs/issues/1',

@@ -487,6 +487,7 @@ EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')  # TODO
 EMAIL_PORT = env.int('EMAIL_PORT', default=587)
 EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
 SERVER_EMAIL = env('SERVER_EMAIL', default='server@TODO.co')
+CODEFUND_NEWSLETTER_URL = env('CODEFUND_NEWSLETTER_URL', default=None)
 
 # ENS Subdomain Settings
 # The value of ENS_LIMIT_RESET_DAYS should be higher since only one transaction is allowed per user.
