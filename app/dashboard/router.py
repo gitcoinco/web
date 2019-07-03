@@ -21,6 +21,8 @@ import logging
 import time
 from datetime import datetime
 
+from django.db.models import Count
+
 import django_filters.rest_framework
 from kudos.models import KudosTransfer
 from rest_framework import routers, serializers, viewsets
@@ -266,6 +268,16 @@ class BountyViewSet(viewsets.ModelViewSet):
         if 'status__in' in param_keys:
             statuses = self.request.query_params.get('status__in').split(',')
             queryset = queryset.filter(idx_status__in=statuses)
+
+        applicants = self.request.query_params.get('applicants')
+        if applicants == '0':
+            queryset = queryset.annotate(
+                interested_count=Count("interested")
+            ).filter(interested_count=0)
+        elif applicants == '1-5':
+            queryset = queryset.annotate(
+                interested_count=Count("interested")
+            ).filter(interested_count__gte=1).filter(interested_count__lte=5)
 
         # filter by who is interested
         if 'started' in param_keys:
