@@ -2461,7 +2461,7 @@ class Profile(SuperModel):
         if self.data and self.data["name"]:
             return self.data["name"]
 
-        return  username(self)
+        return self.username
 
 
     def is_github_token_valid(self):
