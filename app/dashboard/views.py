@@ -257,9 +257,7 @@ def new_interest(request, bounty_id):
             status=401)
 
     num_issues = profile.max_num_issues_start_work
-    active_bounties = Bounty.objects.current().filter(idx_status__in=['open', 'started'])
-    num_active = Interest.objects.filter(profile_id=profile_id, bounty__in=active_bounties).count()
-    is_working_on_too_much_stuff = num_active >= num_issues
+    is_working_on_too_much_stuff = profile.active_bounties.count() >= num_issues
     if is_working_on_too_much_stuff:
         return JsonResponse({
             'error': _(f'You may only work on max of {num_issues} issues at once.'),
