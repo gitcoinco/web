@@ -2832,7 +2832,8 @@ def dashboard_bounty_info(request, bounty_id):
                          'github_url': bounty.github_url,
                          'absolute_url': bounty.absolute_url,
                          'avatar_url': bounty.avatar_url,
-                         'project_type': bounty.project_type})
+                         'project_type': bounty.project_type,
+                         'expires_date': bounty.expires_date})
 
 
 def user_dashboard(request):
