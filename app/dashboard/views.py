@@ -2812,3 +2812,59 @@ def get_hackathons(request):
         'hackathons': events,
     }
     return TemplateResponse(request, 'dashboard/hackathons.html', params)
+
+
+def dashboard_bounty_info(request, bounty_id):
+    """Per-bounty JSON data for the user dashboard"""
+
+    user = request.user if request.user.is_authenticated else None
+    if not user:
+        return JsonResponse(
+            {'error': _('You must be authenticated via github to use this feature!')},
+            status=401)
+
+    bounty = Bounty.objects.get(id=bounty_id)
+
+    return JsonResponse({'title': bounty.title,
+                         'token_name': bounty.token_name,
+                         'value_in_token': bounty.value_in_token,
+                         'value_in_used': bounty.get_value_in_usdt,
+                         'github_url': bounty.github_url,
+                         'absolute_url': bounty.absolute_url,
+                         'avatar_url': bounty.avatar_url,
+                         'project_type': bounty.project_type})
+
+
+def user_dashboard(request):
+    """JSON data for the user dashboard"""
+
+    user = request.user if request.user.is_authenticated else None
+    if not user:
+        return JsonResponse(
+            {'error': _('You must be authenticated via github to use this feature!')},
+            status=401)
+
+    profile = request.user.profile
+
+    interested_bounties = Bounty.objects.filter(
+        Q(idx_status='open') | Q(idx_status='open'),
+        interested__pending=True,
+        current_bounty=True,
+        bounty_owner_profile=profile
+        ).values_list('id', flat=True).order_by('-interested__created')
+
+    submitted_bounties = Bounty.objects.filter(
+        Q(idx_status='submitted') | Q(override_status='submitted'),
+        current_bounty=True,
+        bounty_owner_profile=profile
+        ).values_list('id', flat=True).order_by('-fulfillments__created_on')
+
+    expired_bounties = Bounty.objects.filter(
+        Q(idx_status='expired') | Q(override_status='expired'),
+        current_bounty=True,
+        bounty_owner_profile=profile
+        ).values_list('id', flat=True).order_by('-expires_date')
+
+    return JsonResponse({'interested': interested_bounties,
+                         'submitted': submitted_bounties,
+                         'expired': expired_bounties})
