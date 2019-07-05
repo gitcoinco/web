@@ -2825,6 +2825,25 @@ def dashboard_bounty_info(request, bounty_id):
 
     bounty = Bounty.objects.get(id=bounty_id)
 
+    if bounty.status == 'open':
+        interests = bounty.interested.prefetch_related('profile').filter(status='okay').all()
+        profiles = [
+            {'interest': {'id': i.id,
+                          'issue_message': i.issue_message},
+             'handle': i.profile.handle,
+             'avatar_url': i.profile.avatar_url,
+             'star_rating': i.profile.get_average_star_rating['overall'],
+             'total_rating': i.profile.get_average_star_rating['total_rating'],
+             'fulfilled_bounties': len(
+                [b for b in i.profile.get_fulfilled_bounties]),
+             'leaderboard_rank': i.profile.get_contributor_leaderbard_index(),
+             'id': i.profile.id}]
+}
+    elif bounty.status == 'submitted':
+        profiles =
+    elif bounty.status == 'expired':
+        profiles = []
+
     return JsonResponse({'title': bounty.title,
                          'token_name': bounty.token_name,
                          'value_in_token': bounty.value_in_token,
@@ -2833,7 +2852,8 @@ def dashboard_bounty_info(request, bounty_id):
                          'absolute_url': bounty.absolute_url,
                          'avatar_url': bounty.avatar_url,
                          'project_type': bounty.project_type,
-                         'expires_date': bounty.expires_date})
+                         'expires_date': bounty.expires_date,
+                         'profiles': profiles})
 
 
 def user_dashboard(request):
