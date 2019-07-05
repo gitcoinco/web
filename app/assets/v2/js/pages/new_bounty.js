@@ -811,17 +811,24 @@ $('#submitBounty').validate({
       const token_details = tokenAddressToDetails(tokenAddress);
       const token_decimals = token_details['decimals'];
       const token_name = token_details['name'];
-      const total = parseFloat(amount) +
+      let total = parseFloat(amount) +
                     parseFloat((parseFloat(amount) * FEE_PERCENTAGE).toFixed(4)) +
                     (data.featuredBounty ? ethFeaturedPrice : 0);
+
       const checkBalance = (balance, total, token_name) => {
 
         if (parseFloat(total) > balance) {
+          let isFeaturedToken = token_name !== 'ETH' && data.featuredBounty;
+
+          total = isFeaturedToken ? total - ethFeaturedPrice : total;
           const balance_rounded = Math.round(balance * 10) / 10;
-          const msg = gettext('You do not have enough tokens to fund this bounty. You have ') +
+          let msg = gettext('You do not have enough tokens to fund this bounty. You have ') +
             balance_rounded + ' ' + token_name + ' ' + gettext(' but you need ') + total +
             ' ' + token_name;
 
+          if (isFeaturedToken) {
+            msg += ` + ${ethFeaturedPrice} ETH`;
+          }
           _alert(msg, 'warning');
         } else {
           return processBounty();
