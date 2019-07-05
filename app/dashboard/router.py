@@ -115,6 +115,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
     bounty_owner_email = serializers.SerializerMethodField('override_bounty_owner_email')
     bounty_owner_name = serializers.SerializerMethodField('override_bounty_owner_name')
     resurfaced = serializers.SerializerMethodField('resurfaced_issue')
+    remarket = serializers.SerializerMethodField('remarket_issue')
 
     def override_bounty_owner_email(self, obj):
         can_make_visible_via_api = bool(int(obj.privacy_preferences.get('show_email_publicly', 0)))
@@ -136,6 +137,9 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
             activity_type='extend_expiration'
         ).exists()
 
+    def remarket_issue(self, issue):
+        return True
+
     class Meta:
         """Define the bounty serializer metadata."""
 
@@ -155,7 +159,8 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
             'attached_job_description', 'needs_review', 'github_issue_state', 'is_issue_closed',
             'additional_funding_summary', 'funding_organisation', 'paid',
             'admin_override_suspend_auto_approval', 'reserved_for_user_handle', 'is_featured',
-            'featuring_date', 'repo_type', 'unsigned_nda', 'funder_last_messaged_on',
+            'featuring_date', 'repo_type', 'unsigned_nda', 'funder_last_messaged_on', 'resurfaced',
+            'remarket'
         )
 
     def create(self, validated_data):
@@ -200,6 +205,7 @@ class BountySerializerSlim(BountySerializer):
             'fulfillment_started_on', 'fulfillment_submitted_on', 'canceled_on', 'web3_created', 'bounty_owner_address',
             'avatar_url', 'network', 'standard_bounties_id', 'github_org_name', 'interested', 'token_name', 'value_in_usdt',
             'keywords', 'value_in_token', 'project_type', 'is_open', 'expires_date', 'latest_activity', 'resurfaced',
+            'remarket',
         )
 
 class BountyViewSet(viewsets.ModelViewSet):

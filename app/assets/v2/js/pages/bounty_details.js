@@ -1003,7 +1003,7 @@ var do_actions = function(result) {
   let show_extend_deadline = isBountyOwner(result) && !is_status_expired && !is_status_done;
   let show_invoice = isBountyOwner(result);
   let show_notify_funder = is_open && has_fulfilled;
-
+  let show_remarket_issue = result['remarket'];
 
   const show_suspend_auto_approval = currentProfile.isStaff && result['permission_type'] == 'approval' && !result['admin_override_suspend_auto_approval'];
   const show_admin_methods = currentProfile.isStaff;
@@ -1136,6 +1136,18 @@ var do_actions = function(result) {
       text: gettext('Show Invoice'),
       parent: 'right_actions',
       title: gettext('View an Invoice for this Issue')
+    };
+
+    actions.push(_entry);
+  }
+
+  if (show_remarket_issue) {
+    const _entry = {
+      enabled: true,
+      href: '/remarket-issue',
+      text: gettext('Remarket Issue'),
+      parent: 'right_actions',
+      title: gettext('Remarket Issue')
     };
 
     actions.push(_entry);
