@@ -2837,10 +2837,16 @@ def dashboard_bounty_info(request, bounty_id):
              'fulfilled_bounties': len(
                 [b for b in i.profile.get_fulfilled_bounties]),
              'leaderboard_rank': i.profile.get_contributor_leaderbard_index(),
-             'id': i.profile.id}]
-}
+             'id': i.profile.id} for i in interests]
     elif bounty.status == 'submitted':
-        profiles =
+        fulfillments = bounty.fulfillments.prefetch_related('profile').all()
+        profiles = [
+            {'fulfillment': {'id': f.id,
+                             'metadata': f.metadata},
+             'handle': f.profile.handle,
+             'avatar_url': f.profile.avatar_url,
+             'preferred_payout_address': f.profile.preferred_payout_address,
+             'id': f.profile.id} for f in fulfillments]
     elif bounty.status == 'expired':
         profiles = []
 
