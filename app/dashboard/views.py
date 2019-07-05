@@ -2847,7 +2847,7 @@ def dashboard_bounty_info(request, bounty_id):
              'avatar_url': f.profile.avatar_url,
              'preferred_payout_address': f.profile.preferred_payout_address,
              'id': f.profile.id} for f in fulfillments]
-    elif bounty.status == 'expired':
+    else:
         profiles = []
 
     return JsonResponse({'title': bounty.title,
