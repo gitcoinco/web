@@ -811,7 +811,9 @@ $('#submitBounty').validate({
       const token_details = tokenAddressToDetails(tokenAddress);
       const token_decimals = token_details['decimals'];
       const token_name = token_details['name'];
-      const total = parseFloat(amount) + parseFloat((parseFloat(amount) * FEE_PERCENTAGE).toFixed(4));
+      const total = parseFloat(amount) +
+                    parseFloat((parseFloat(amount) * FEE_PERCENTAGE).toFixed(4)) +
+                    (data.featuredBounty ? ethFeaturedPrice : 0);
       const checkBalance = (balance, total, token_name) => {
 
         if (parseFloat(total) > balance) {
