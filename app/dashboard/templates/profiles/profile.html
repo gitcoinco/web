@@ -101,6 +101,11 @@
                   {% endif %}
                 </div>
               {% endif %}
+              {% if profile.hunter_hourly_rate %}
+                <div class="my-2" id="hourly_rate">
+                  <b>Hourly Contract rate:</b> {{ profile.hunter_hourly_rate }} USD
+                </div>
+              {% endif %}
               {% if  profile.show_job_status %}
                 <div class="my-2" id="job_status">
                   <i class="fa fa-briefcase mr-2" aria-hidden="true"></i>{{ profile.job_status_verbose }}

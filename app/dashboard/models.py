@@ -320,6 +320,7 @@ class Bounty(SuperModel):
     ) # TODO: Remove POST ORGS
     attached_job_description = models.URLField(blank=True, null=True)
     event = models.ForeignKey('dashboard.HackathonEvent', related_name='bounties', null=True, on_delete=models.SET_NULL, blank=True)
+    hourly_contract = models.BooleanField(default=False)
 
     # Bounty QuerySet Manager
     objects = BountyQuerySet.as_manager()
@@ -1967,6 +1968,7 @@ class Profile(SuperModel):
         blank=True,
         help_text=_('override profile avatar'),
     )
+    hunter_hourly_rate = models.IntegerField(null=True)
 
     objects = ProfileQuerySet.as_manager()
 

@@ -518,6 +518,18 @@ def account_settings(request):
             profile.preferred_payout_address = request.POST.get('preferred_payout_address', '')
             profile.save()
             msg = _('Updated your Address')
+        elif 'hourly_rate' in request.POST.keys():
+            rate = request.POST.get('hourly_rate', '')
+            if rate == '':
+                profile.hunter_hourly_rate = None
+                profile.save()
+                messages.success(request, _('Hourly Rate removed'))
+            elif rate.isdigit():
+                profile.hunter_hourly_rate = rate
+                profile.save()
+                messages.success(request, _('Hourly Rate updated'))
+            else:
+                messages.error(request, _('Invalid Input'))
         elif request.POST.get('disconnect', False):
             profile.github_access_token = ''
             profile = record_form_submission(request, profile, 'account-disconnect')
