@@ -19,7 +19,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
 from django.urls import path
+from .views import FavoriteView
+from django.views.decorators.csrf import csrf_exempt
+
+
 app_name = 'favorites'
 
 urlpatterns = [
+    path('', csrf_exempt(FavoriteView.as_view())),
 ]
