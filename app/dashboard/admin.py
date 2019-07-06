@@ -92,6 +92,16 @@ class ProfileAdmin(admin.ModelAdmin):
     ordering = ['-id']
     search_fields = ['email', 'data']
     list_display = ['handle', 'created_on']
+    readonly_fields = ['active_bounties_list']
+
+    def active_bounties_list(self, instance):
+        interests = instance.active_bounties
+        htmls = []
+        for interest in interests:
+            bounty = Bounty.objects.get(interested=interest, current_bounty=True)
+            htmls.append(f"<a href='{bounty.url}'>{bounty.title_or_desc}</a>")
+        html = format_html("<BR>".join(htmls))
+        return html
 
 
 class VerificationAdmin(admin.ModelAdmin):
@@ -148,10 +158,11 @@ class BountyAdmin(admin.ModelAdmin):
     ]
 
     def img(self, instance):
+        if instance.admin_override_org_logo:
+            return format_html("<img src={} style='max-width:30px; max-height: 30px'>", mark_safe(instance.admin_override_org_logo.url))
         if not instance.avatar_url:
             return 'n/a'
-        img_html = format_html("<img src={} style='max-width:30px; max-height: 30px'>", mark_safe(instance.avatar_url))
-        return img_html
+        return format_html("<img src={} style='max-width:30px; max-height: 30px'>", mark_safe(instance.avatar_url))
 
     def what(self, instance):
         return str(instance)

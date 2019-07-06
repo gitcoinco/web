@@ -75,6 +75,7 @@ class Command(BaseCommand):
                             # was sent with bulk payout.  send to bulk payout_ees
                             ######################################################
                             print(" - 2 ")
+                            continue; # https://gitcoincore.slack.com/archives/CAXQ7PT60/p1561387099015900?thread_ts=1561140267.081600&cid=CAXQ7PT60
                             bpts = bounty.bulk_payout_tips
                             bpts_ids = bpts.values_list('pk', flat=True)
                             bpts_total_amount = sum(bpts.values_list('amount', flat=True))

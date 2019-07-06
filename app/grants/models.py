@@ -754,8 +754,9 @@ class Contribution(SuperModel):
         """Updates tx status."""
         from dashboard.utils import get_tx_status
         tx_status, tx_time = get_tx_status(self.tx_id, self.subscription.network, self.created_on)
-        self.success = tx_status == 'success'
-        self.tx_cleared = True
+        if tx_status != 'pending':
+            self.success = tx_status == 'success'
+            self.tx_cleared = True
 
 def next_month():
     """Get the next month time."""
