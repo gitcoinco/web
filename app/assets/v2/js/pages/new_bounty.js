@@ -476,7 +476,8 @@ $('#submitBounty').validate({
       reservedFor: reservedFor ? reservedFor.text : '',
       tokenName,
       invite: inviteContributors,
-      bounty_categories: data.bounty_category
+      bounty_categories: data.bounty_category,
+      allow_hourly_rate: data.allow_hourly_rate || 0
     };
 
     var privacy_preferences = {
