@@ -146,7 +146,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
             'attached_job_description', 'needs_review', 'github_issue_state', 'is_issue_closed',
             'additional_funding_summary', 'funding_organisation', 'paid',
             'admin_override_suspend_auto_approval', 'reserved_for_user_handle', 'is_featured',
-            'featuring_date', 'repo_type', 'unsigned_nda', 'funder_last_messaged_on',
+            'featuring_date', 'repo_type', 'unsigned_nda', 'funder_last_messaged_on', 'hourly_contract',
         )
 
     def create(self, validated_data):
