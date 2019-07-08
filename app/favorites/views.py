@@ -17,16 +17,24 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from rest_framework.views import APIView
+from rest_framework import status
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from .models import Favorite
 
 
-class CreateFavorite(APIView):
-
-    def get_queryset(self):
-        return Favorite.objects.all()
-
-    def post(self, request, *args, **kwargs):
-        print(request)
-        return Response()
+@api_view(['POST'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def create_favorite(request):
+    types = dict((val.lower(), key) for (key, val) in Favorite.TYPE)
+    user = request.user
+    obj_id = request.data['id']
+    type = request.data['type']
+    if type not in types:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    return Response()
