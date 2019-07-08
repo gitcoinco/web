@@ -20,8 +20,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from django.urls import path
 
+from .views import CreateFavorite
+
 app_name = 'favorites'
 
 urlpatterns = [
-
+    path('', CreateFavorite.as_view()),
 ]

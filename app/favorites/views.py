@@ -17,3 +17,16 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .models import Favorite
+
+
+class CreateFavorite(APIView):
+
+    def get_queryset(self):
+        return Favorite.objects.all()
+
+    def post(self, request, *args, **kwargs):
+        print(request)
+        return Response()
