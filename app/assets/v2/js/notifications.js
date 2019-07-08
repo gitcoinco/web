@@ -269,8 +269,3 @@ Vue.filter('moment', function(date) {
   moment.locale('en');
   return moment.utc(date).fromNow();
 });
-
-
-
-
-$.post('http://localhost:8000/api/v0.1/favorites/')
