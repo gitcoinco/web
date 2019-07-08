@@ -476,8 +476,7 @@ $('#submitBounty').validate({
       reservedFor: reservedFor ? reservedFor.text : '',
       tokenName,
       invite: inviteContributors,
-      bounty_categories: data.bounty_category,
-      allow_hourly_rate: data.allow_hourly_rate || 0
+      bounty_categories: data.bounty_category
     };
 
     var privacy_preferences = {
@@ -528,7 +527,8 @@ $('#submitBounty').validate({
         tokenName: tokenName,
         tokenAddress: tokenAddress,
         expire_date: expire_date,
-        coupon_code: $('#coupon_code').val()
+        coupon_code: $('#coupon_code').val(),
+        allow_hourly_rate: data.allow_hourly_rate || 0
       },
       meta: {
         platform: 'gitcoin',

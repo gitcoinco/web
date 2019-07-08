@@ -417,7 +417,8 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
             'num_fulfillments': len(fulfillments),
             'value_in_token': bounty_details.get('fulfillmentAmount', Decimal(1.0)),
             'fee_tx_id': bounty_payload.get('fee_tx_id', '0x0'),
-            'fee_amount': bounty_payload.get('fee_amount', 0)
+            'fee_amount': bounty_payload.get('fee_amount', 0),
+            'hourly_contract': True if bounty_payload.get('allow_hourly_rate') else False
         }
 
         coupon_code = bounty_payload.get('coupon_code', None)
@@ -598,7 +599,7 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
         new_bounty.canceled_on = canceled_on
         new_bounty.save()
 
-    # migrate fulfillments, and only take the ones from 
+    # migrate fulfillments, and only take the ones from
     # fulfillments metadata will be empty when bounty is first created
     fulfillments = bounty_details.get('fulfillments', {})
     if fulfillments:
@@ -613,7 +614,7 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
     new_bounty.is_featured = True if latest_old_bounty and latest_old_bounty.is_featured is True else False
     if new_bounty.is_featured == True:
         new_bounty.save()
-    
+
     if latest_old_bounty:
         latest_old_bounty.current_bounty = False
         latest_old_bounty.save()
