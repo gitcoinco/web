@@ -1,0 +1,21 @@
+{
+  "symbol": "CMDT",
+  "address": "0x3d8FbCE14BbD1732dFDE8CecDb86bbbDb2C4bE0A",
+  "overview":{
+        "en": "The YuanZhi is a workplace person's resume credit inquiry system based on the consortium blockchain technology. It is dedicated to solving problems such as employee resume fraud, job fraud, etc., saving background check time and high background check cost when recruiting employees.",
+        "zh": "猿值是基于联盟链技术实现的职场人履历征信查询系统，致力于解决员工履历造假、职位造假等问题，节省企业招聘员工时的背景调查时间和高额的背景调查成本。"
+  },
+  "email": "liyuechun2009@163.com",
+  "website": "http://51mkey.io",
+  "whitepaper": "http://51mkey.io/CMDT-whitepage.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-04-26",
+  "initial_price":{
+        "ETH":"0.0000094 ETH",
+        "USD":"0.00148 USD",
+        "BTC":"0.00000028 BTC"
+  },
+  "links": {
+    "github": "https://github.com/CMDT1"
+  }
+}
