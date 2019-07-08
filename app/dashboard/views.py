@@ -2814,7 +2814,7 @@ def get_hackathons(request):
     return TemplateResponse(request, 'dashboard/hackathons.html', params)
 
 
-def dashboard_bounty_info(request, bounty_id):
+def funder_dashboard_bounty_info(request, bounty_id):
     """Per-bounty JSON data for the user dashboard"""
 
     user = request.user if request.user.is_authenticated else None
@@ -2840,29 +2840,34 @@ def dashboard_bounty_info(request, bounty_id):
              'id': i.profile.id} for i in interests]
     elif bounty.status == 'submitted':
         fulfillments = bounty.fulfillments.prefetch_related('profile').all()
-        profiles = [
-            {'fulfillment': {'id': f.id,
-                             'metadata': f.metadata},
-             'handle': f.profile.handle,
-             'avatar_url': f.profile.avatar_url,
-             'preferred_payout_address': f.profile.preferred_payout_address,
-             'id': f.profile.id} for f in fulfillments]
+        profiles = []
+        for f in fulfillments:
+            profile = {'fulfiller_metadata': f.fulfiller_metadata}
+            if f.profile:
+                profile.update(
+                    {'handle': f.profile.handle,
+                     'avatar_url': f.profile.avatar_url,
+                     'preferred_payout_address': f.profile.preferred_payout_address,
+                     'id': f.profile.id})
+            profiles.append(profile)
     else:
         profiles = []
 
     return JsonResponse({'title': bounty.title,
                          'token_name': bounty.token_name,
                          'value_in_token': bounty.value_in_token,
-                         'value_in_used': bounty.get_value_in_usdt,
+                         'value_in_usd': bounty.get_value_in_usdt,
                          'github_url': bounty.github_url,
                          'absolute_url': bounty.absolute_url,
                          'avatar_url': bounty.avatar_url,
                          'project_type': bounty.project_type,
                          'expires_date': bounty.expires_date,
+                         'interested_comment': bounty.interested_comment,
+                         'submissions_comment': bounty.submissions_comment,
                          'profiles': profiles})
 
 
-def user_dashboard(request):
+def funder_dashboard(request):
     """JSON data for the user dashboard"""
 
     user = request.user if request.user.is_authenticated else None
@@ -2873,25 +2878,25 @@ def user_dashboard(request):
 
     profile = request.user.profile
 
-    interested_bounties = Bounty.objects.filter(
+    open_bounties = list(Bounty.objects.filter(
         Q(idx_status='open') | Q(idx_status='open'),
-        interested__pending=True,
         current_bounty=True,
         bounty_owner_profile=profile
-        ).values_list('id', flat=True).order_by('-interested__created')
+        ).values_list('id', flat=True).order_by('-interested__created'))
 
-    submitted_bounties = Bounty.objects.filter(
+    submitted_bounties = list(Bounty.objects.filter(
         Q(idx_status='submitted') | Q(override_status='submitted'),
         current_bounty=True,
+        fulfullments__accepted=False,
         bounty_owner_profile=profile
-        ).values_list('id', flat=True).order_by('-fulfillments__created_on')
+        ).values_list('id', flat=True).order_by('-fulfillments__created_on'))
 
-    expired_bounties = Bounty.objects.filter(
+    expired_bounties = list(Bounty.objects.filter(
         Q(idx_status='expired') | Q(override_status='expired'),
         current_bounty=True,
         bounty_owner_profile=profile
-        ).values_list('id', flat=True).order_by('-expires_date')
+        ).order_by('-expires_date').values_list('id', flat=True))
 
-    return JsonResponse({'interested': interested_bounties,
+    return JsonResponse({'open': open_bounties,
                          'submitted': submitted_bounties,
                          'expired': expired_bounties})
