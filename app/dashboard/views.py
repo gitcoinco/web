@@ -2826,7 +2826,7 @@ def funder_dashboard_bounty_info(request, bounty_id):
     bounty = Bounty.objects.get(id=bounty_id)
 
     if bounty.status == 'open':
-        interests = bounty.interested.prefetch_related('profile').filter(status='okay').all()
+        interests = Interest.objects.prefetch_related('profile').filter(status='okay', bounty=bounty).all()
         profiles = [
             {'interest': {'id': i.id,
                           'issue_message': i.issue_message},
@@ -2835,8 +2835,8 @@ def funder_dashboard_bounty_info(request, bounty_id):
              'star_rating': i.profile.get_average_star_rating['overall'],
              'total_rating': i.profile.get_average_star_rating['total_rating'],
              'fulfilled_bounties': len(
-                [b for b in i.profile.get_fulfilled_bounties]),
-             'leaderboard_rank': i.profile.get_contributor_leaderbard_index(),
+                [b for b in i.profile.get_fulfilled_bounties()]),
+             'leaderboard_rank': i.profile.get_contributor_leaderboard_index(),
              'id': i.profile.id} for i in interests]
     elif bounty.status == 'submitted':
         fulfillments = bounty.fulfillments.prefetch_related('profile').all()
@@ -2887,7 +2887,7 @@ def funder_dashboard(request):
     submitted_bounties = list(Bounty.objects.filter(
         Q(idx_status='submitted') | Q(override_status='submitted'),
         current_bounty=True,
-        fulfullments__accepted=False,
+        fulfillments__accepted=False,
         bounty_owner_profile=profile
         ).values_list('id', flat=True).order_by('-fulfillments__created_on'))
 
