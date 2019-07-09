@@ -98,7 +98,8 @@ var rows = [
   'fulfilled_owners_username',
   'fulfillment_accepted_on',
   'additional_funding_summary',
-  'admin_override_suspend_auto_approval'
+  'admin_override_suspend_auto_approval',
+  'hourly_contract'
 ];
 
 var heads = {
@@ -449,6 +450,12 @@ var callbacks = {
     $('#bounty_reserved_for_label').css('display', 'none');
 
     return [ key, val ];
+  },
+  'hourly_contract': function(key, val) {
+    if (val) {
+      return [key, 'Yes'];
+    }
+    return [key, 'No'];
   }
 };
 
