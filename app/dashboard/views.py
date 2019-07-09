@@ -1995,7 +1995,7 @@ def profile(request, handle):
             else:
                 activities_count = counts.get(tab, 0)
             if tab == 'start_work':
-                activities_count += counts['worker_approved']
+                activities_count += counts.get("worker_approved", 0)
 
 
             # dont draw a tab where the activities count is 0
