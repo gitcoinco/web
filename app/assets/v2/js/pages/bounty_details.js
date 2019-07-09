@@ -453,9 +453,9 @@ var callbacks = {
   },
   'hourly_contract': function(key, val) {
     if (val) {
-      return [ key, 'Yes' ];
+      return [ key, gettext('Yes') ];
     }
-    return [ key, 'No' ];
+    return [ key, gettext('No') ];
   }
 };
 
