@@ -155,6 +155,7 @@ class TestAssembleLeaderboards(TestCase):
     def test_bounty_index_terms(self):
         """Test bounty index terms list."""
         index_terms = bounty_index_terms(self.bounty)
+        print(index_terms)
         assert len(index_terms) == 15
         assert 'USDT' in index_terms
         assert set({self.bounty_payer_handle, self.bounty_earner_handle, 'gitcoinco'}).issubset(set(index_terms))
