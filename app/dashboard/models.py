@@ -2861,7 +2861,7 @@ class Profile(SuperModel):
 
         total_funded = funded_bounties.count()
         total_fulfilled = fulfilled_bounties.count()
-        desc = self.get_desc(funded_bounties, fulfilled_bounties) 
+        desc = self.get_desc(funded_bounties, fulfilled_bounties)
         no_times_been_removed = self.no_times_been_removed_by_funder() + self.no_times_been_removed_by_staff() + self.no_times_slashed_by_staff()
         params = {
             'title': f"@{self.handle}",
