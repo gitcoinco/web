@@ -2830,10 +2830,15 @@ class Profile(SuperModel):
             dict: The profile card context.
 
         """
+        import time
+        counter = 1
+        print(f"* {counter}", time.time())
         params = {}
         network = network or self.get_network()
         query_kwargs = {'network': network}
         bounties = self.bounties
+        counter += 1
+        print(f"* {counter}", time.time())
         fulfilled_bounties = self.get_fulfilled_bounties(network=network)
         funded_bounties = self.get_funded_bounties(network=network)
         orgs_bounties = None
@@ -2841,16 +2846,24 @@ class Profile(SuperModel):
         if self.is_org:
             orgs_bounties = self.get_orgs_bounties(network=network)
 
+        counter += 1
+        print(f"* {counter}", time.time())
         sum_eth_funded = self.get_eth_sum(sum_type='funded', bounties=funded_bounties)
         sum_eth_collected = self.get_eth_sum(bounties=fulfilled_bounties)
+        counter += 1
+        print(f"* {counter}", time.time())
         works_with_funded = self.get_who_works_with(work_type='funded', bounties=funded_bounties)
         works_with_collected = self.get_who_works_with(work_type='collected', bounties=fulfilled_bounties)
+        counter += 1
+        print(f"* {counter}", time.time())
 
         sum_all_funded_tokens = self.get_all_tokens_sum(sum_type='funded', bounties=funded_bounties, network=network)
         sum_all_collected_tokens = self.get_all_tokens_sum(
             sum_type='collected', bounties=fulfilled_bounties, network=network
         )
         # org only
+        counter += 1
+        print(f"* {counter}", time.time())
         count_bounties_on_repo = 0
         sum_eth_on_repos = 0
         works_with_org = []
@@ -2859,10 +2872,17 @@ class Profile(SuperModel):
             sum_eth_on_repos = self.get_eth_sum(bounties=orgs_bounties)
             works_with_org = self.get_who_works_with(work_type='org', bounties=orgs_bounties)
 
+        counter += 1
+        print(f"* {counter}", time.time()) #7
         total_funded = funded_bounties.count()
+        print(f"* {counter}", time.time())#8
         total_fulfilled = fulfilled_bounties.count()
-        desc = self.get_desc(funded_bounties, fulfilled_bounties)
+        print(f"* {counter}", time.time()) #9
+        desc = self.get_desc(funded_bounties, fulfilled_bounties) 
+        print(f"* {counter}", time.time()) #10
         no_times_been_removed = self.no_times_been_removed_by_funder() + self.no_times_been_removed_by_staff() + self.no_times_slashed_by_staff()
+        counter += 1
+        print(f"* {counter}", time.time()) #11
         params = {
             'title': f"@{self.handle}",
             'active': 'profile_details',
@@ -2886,17 +2906,25 @@ class Profile(SuperModel):
             'sum_all_collected_tokens': sum_all_collected_tokens
         }
 
+        counter += 1
+        print(f"* {counter}", time.time())
         if activities:
             params['activities'] = self.get_various_activities(network=network)
 
         if tips:
             params['tips'] = self.tips.filter(**query_kwargs).send_happy_path()
+        counter += 1
+        print(f"* {counter}", time.time())
 
         if leaderboards:
             params['scoreboard_position_contributor'] = self.get_contributor_leaderboard_index()
+            counter += 1
+            print(f"* {counter}", time.time())
             params['scoreboard_position_funder'] = self.get_funder_leaderboard_index()
             if self.is_org:
                 params['scoreboard_position_org'] = self.get_org_leaderboard_index()
+        counter += 1
+        print(f"* {counter}", time.time())
 
         return params
 
@@ -3010,13 +3038,20 @@ class UserAction(SuperModel):
         ('updated_avatar', 'Updated Avatar'),
         ('account_disconnected', 'Account Disconnected'),
     ]
-    action = models.CharField(max_length=50, choices=ACTION_TYPES)
-    user = models.ForeignKey(User, related_name='actions', on_delete=models.SET_NULL, null=True)
-    profile = models.ForeignKey('dashboard.Profile', related_name='actions', on_delete=models.CASCADE, null=True)
+    action = models.CharField(max_length=50, choices=ACTION_TYPES, db_index=True)
+    user = models.ForeignKey(User, related_name='actions', on_delete=models.SET_NULL, null=True, db_index=True)
+    profile = models.ForeignKey('dashboard.Profile', related_name='actions', on_delete=models.CASCADE, null=True, db_index=True)
     ip_address = models.GenericIPAddressField(null=True)
     location_data = JSONField(default=dict)
     metadata = JSONField(default=dict)
     utm = JSONField(default=dict, null=True)
+
+    class Meta:
+        """Define metadata associated with UserAction."""
+
+        index_together = [
+            ["profile", "action"],
+        ]
 
     def __str__(self):
         return f"{self.action} by {self.profile} at {self.created_on}"
