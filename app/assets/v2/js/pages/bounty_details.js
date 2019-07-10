@@ -132,7 +132,7 @@ var callbacks = {
 
       let can_submit = result['can_submit_after_expiration_date'];
 
-      if (!isBountyOwner && can_submit && is_bounty_expired(result)) {
+      if (!isBountyOwner() && can_submit && is_bounty_expired(result)) {
         ui_status += '<p class="text-highlight-light-blue font-weight-light font-body" style="text-transform: none;">' +
           gettext('This issue is past its expiration date, but it is still active.') +
           '<br>' +
