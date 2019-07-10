@@ -92,6 +92,16 @@ class ProfileAdmin(admin.ModelAdmin):
     ordering = ['-id']
     search_fields = ['email', 'data']
     list_display = ['handle', 'created_on']
+    readonly_fields = ['active_bounties_list']
+
+    def active_bounties_list(self, instance):
+        interests = instance.active_bounties
+        htmls = []
+        for interest in interests:
+            bounty = Bounty.objects.get(interested=interest, current_bounty=True)
+            htmls.append(f"<a href='{bounty.url}'>{bounty.title_or_desc}</a>")
+        html = format_html("<BR>".join(htmls))
+        return html
 
 
 class VerificationAdmin(admin.ModelAdmin):
