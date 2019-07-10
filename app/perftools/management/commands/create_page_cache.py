@@ -58,6 +58,7 @@ def create_contributor_landing_page_context():
     keywords = [''] + programming_languages
     if settings.DEBUG:
         keywords = ['']
+    keywords = ['']
     view = 'contributor_landing_page'
     from retail.views import get_contributor_landing_page_context
     with transaction.atomic():
