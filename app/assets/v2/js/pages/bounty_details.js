@@ -125,6 +125,7 @@ var callbacks = {
   },
   'status': function(key, val, result) {
     let ui_status = val;
+    let ui_status_raw = val;
 
     if (ui_status === 'open') {
       ui_status = '<span>' + gettext('OPEN ISSUE') + '</span>';
@@ -148,8 +149,8 @@ var callbacks = {
       ui_status = '<span style="color: #f9006c;">' + gettext('cancelled') + '</span>';
     }
 
-    if (isBountyOwner && is_bounty_expired(result) &&
-      ui_status !== 'done' && ui_status !== 'cancelled') {
+    if (isBountyOwner() && is_bounty_expired(result) &&
+      ui_status_raw !== 'done' && ui_status_raw !== 'cancelled') {
 
       ui_status += '<p class="font-weight-light font-body" style="color: black; text-transform: none;">' +
       'This issue has expired. Click <a class="text-highlight-light-blue font-weight-semibold" href="/extend-deadlines">here to extend expiration</a> ' +
