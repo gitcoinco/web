@@ -677,6 +677,7 @@ var show_interest_modal = function() {
 
       let actionPlanForm = $('#action_plan');
       let issueMessage = $('#issue_message');
+      let hourly_contract = $('#hourly_contract_input');
 
       issueMessage.attr('placeholder', gettext('What steps will you take to complete this task? (min 30 chars)'));
 
@@ -684,6 +685,7 @@ var show_interest_modal = function() {
         event.preventDefault();
 
         let msg = issueMessage.val().trim();
+        let hourly = hourly_contract.is(':checked');
 
         if (!msg || msg.length < 30) {
           _alert({message: gettext('Please provide an action plan for this ticket. (min 30 chars)')}, 'error');
@@ -713,7 +715,8 @@ var show_interest_modal = function() {
               _alert(response.message, 'info');
               add_interest(document.result['pk'], {
                 issue_message: msg,
-                signed_nda: response.bounty_doc_id
+                signed_nda: response.bounty_doc_id,
+                hourly_contract: hourly
               }).then(success => {
                 if (success) {
                   $(self).attr('href', '/uninterested');
@@ -734,7 +737,8 @@ var show_interest_modal = function() {
           });
         } else {
           add_interest(document.result['pk'], {
-            issue_message: msg
+            issue_message: msg,
+            hourly_contract: hourly
           }).then(success => {
             if (success) {
               $(self).attr('href', '/uninterested');

@@ -26,6 +26,17 @@
     {% if user_logged_in %}
       <div class="col-12">
         <form id="action_plan" class="font-body">
+          {% if bounty.hourly_contract %}
+            <div class="checkbox_container d-flex">
+              <input type="checkbox" name='hourly_contract_input' id="hourly_contract_input" class="form__input" value="1"/>
+              <span class="checkbox"></span>
+              <div class="filter-label">
+                <label for="hourly_contract_input">
+                  {% trans "I want to work on an hourly basis." %}
+                </label>
+              </div>
+            </div>
+          {% endif %}
           {% if bounty.repo_type == 'private' %}
             <div id="nda-upload">
               <hr class="mt-4">
