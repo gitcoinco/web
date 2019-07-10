@@ -169,6 +169,10 @@ $(document).ready(function() {
 
         let realGasPrice = Number(gitcoin_grant_amount * Math.pow(10, decimals)); // optional grants fee
 
+        if(contractVersion == 0) {
+          realGasPrice = 1;
+        }
+
         $('#gas_price').val(realGasPrice);
 
         let approvalSTR = realApproval.toLocaleString('fullwide', { useGrouping: false });
