@@ -127,7 +127,7 @@ var callbacks = {
     let ui_status = val;
     let ui_status_raw = val;
 
-    if (ui_status === 'open') {
+    if (ui_status_raw === 'open') {
       ui_status = '<span>' + gettext('OPEN ISSUE') + '</span>';
 
       let can_submit = result['can_submit_after_expiration_date'];
@@ -139,13 +139,13 @@ var callbacks = {
           gettext('Check with the submitter to see if they still want to see it fulfilled.') +
           '</p>';
       }
-    } else if (ui_status === 'started') {
+    } else if (ui_status_raw === 'started') {
       ui_status = '<span>' + gettext('work started') + '</span>';
-    } else if (ui_status === 'submitted') {
+    } else if (ui_status_raw === 'submitted') {
       ui_status = '<span>' + gettext('work submitted') + '</span>';
-    } else if (ui_status === 'done') {
+    } else if (ui_status_raw === 'done') {
       ui_status = '<span>' + gettext('done') + '</span>';
-    } else if (ui_status === 'cancelled') {
+    } else if (ui_status_raw === 'cancelled') {
       ui_status = '<span style="color: #f9006c;">' + gettext('cancelled') + '</span>';
     }
 
