@@ -2078,6 +2078,7 @@ def profile(request, handle):
             }
 
             return JsonResponse(msg, status=msg.get('status', 200))
+    context['show_activity'] = request.GET.get('p', False) != False
     return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
 
