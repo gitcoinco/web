@@ -20,7 +20,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 */10 4,11,18 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_kudos mainnet opensea --start 1 >> /var/log/gitcoin/sync_kudos_all.log 2>&1
 
 ## TOOLING
-1 */3 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash get_prices  >> /var/log/gitcoin/get_prices.log  2>&1
+1 */6 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash get_prices  >> /var/log/gitcoin/get_prices.log  2>&1
 45 */6 * * * cd gitcoin/coin; bash scripts/run_management_command.bash refresh_bounties  >> /var/log/gitcoin/refresh_bounties.log  2>&1
 30 1 * * * cd gitcoin/coin; bash scripts/run_management_command.bash refresh_bounties --remote  >> /var/log/gitcoin/refresh_bounties_remote.log  2>&1
 30 1 * * * cd gitcoin/coin; bash scripts/run_management_command.bash expire_featured_bounties  >> /var/log/gitcoin/expire_featured_bounties.log  2>&1
