@@ -21,7 +21,7 @@ $('.modal-link').click(function(e) {
 const sendInvites = (users) => {
   let usersId = [];
   let msg = $('#shareText').val();
-  let bountyId = document.result.pk
+  let bountyId = document.result.pk;
 
   $.each(users, function(index, elem) {
     usersId.push(elem.id);
