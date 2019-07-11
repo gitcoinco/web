@@ -608,6 +608,12 @@ a.btn {
   padding-left: 5px;
 }
 
+.hourly-contract {
+  background: #0ECF7C;
+  padding: 5px;
+  border-radius: 3px;
+}
+
 #moderator-admin-actions:not(:empty) {
   background: #F2F6F9;
   padding: 16px 0 10px;

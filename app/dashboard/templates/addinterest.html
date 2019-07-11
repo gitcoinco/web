@@ -26,7 +26,7 @@
     {% if user_logged_in %}
       <div class="col-12">
         <form id="action_plan" class="font-body">
-          {% if bounty.hourly_contract %}
+          {% if bounty.hourly_contract and user.profile.hunter_hourly_rate %}
             <div class="checkbox_container d-flex">
               <input type="checkbox" name='hourly_contract_input' id="hourly_contract_input" class="form__input" value="1"/>
               <span class="checkbox"></span>
