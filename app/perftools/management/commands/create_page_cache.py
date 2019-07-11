@@ -34,7 +34,7 @@ from retail.utils import build_stat_results, programming_languages
 
 def create_results_cache():
     print('results')
-    keywords = [''] + programming_languages
+    keywords = ['']
     if settings.DEBUG:
         keywords = ['']
     view = 'results'
