@@ -167,10 +167,11 @@ def helper_handle_access_token(request, access_token):
     request.session['profile_id'] = profile.pk
 
 
-def create_new_interest_helper(bounty, user, issue_message, signed_nda=None):
+def create_new_interest_helper(bounty, user, issue_message, hourly_contract, signed_nda=None):
     approval_required = bounty.permission_type == 'approval'
     acceptance_date = timezone.now() if not approval_required else None
     profile_id = user.profile.pk
+    hourly_contract = True if hourly_contract == 'true' else False
     record_bounty_activity(bounty, user, 'start_work' if not approval_required else 'worker_applied')
     interest = Interest.objects.create(
         profile_id=profile_id,
@@ -178,6 +179,7 @@ def create_new_interest_helper(bounty, user, issue_message, signed_nda=None):
         pending=approval_required,
         acceptance_date=acceptance_date,
         signed_nda=signed_nda,
+        hourly_contract=hourly_contract
     )
     bounty.interested.add(interest)
     record_user_action(user, 'start_work', interest)
@@ -280,11 +282,12 @@ def new_interest(request, bounty_id):
     except Interest.DoesNotExist:
         issue_message = request.POST.get("issue_message")
         signed_nda = None
+        hourly_contract = request.POST.get("hourly_contract")
         if request.POST.get("signed_nda", None):
             signed_nda = BountyDocuments.objects.filter(
                 pk=request.POST.get("signed_nda")
             ).first()
-        interest = create_new_interest_helper(bounty, request.user, issue_message, signed_nda)
+        interest = create_new_interest_helper(bounty, request.user, issue_message, hourly_contract, signed_nda)
         if interest.pending:
             start_work_new_applicant(interest, bounty)
 

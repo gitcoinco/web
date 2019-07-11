@@ -1555,6 +1555,7 @@ class Interest(SuperModel):
         help_text=_('Whether or not the interest requires review'),
         verbose_name=_('Needs Review'))
     signed_nda = models.ForeignKey('dashboard.BountyDocuments', blank=True, null=True, related_name='interest', on_delete=models.SET_NULL)
+    hourly_contract = models.BooleanField(default=False)
 
     # Interest QuerySet Manager
     objects = InterestQuerySet.as_manager()
