@@ -2646,8 +2646,7 @@ class Profile(SuperModel):
 
         """
         eth_sum = 0
-
-        if not bounties:
+        if bounties is None:
             if sum_type == 'funded':
                 bounties = self.get_funded_bounties(network=network)
             elif sum_type == 'collected':
@@ -2660,9 +2659,7 @@ class Profile(SuperModel):
 
         try:
             if bounties.exists():
-                eth_sum = bounties.aggregate(
-                    Sum('value_in_eth')
-                )['value_in_eth__sum'] / 10**18
+                eth_sum = sum([amount for amount in bounty.values_list("value_in_eth", flat=True)])
         except Exception:
             pass
 
@@ -2720,7 +2717,7 @@ class Profile(SuperModel):
             dict: list of the profiles that were worked with (key) and the number of times they occured
 
         """
-        if not bounties:
+        if bounties is None:
             if work_type == 'funded':
                 bounties = self.bounties_funded.filter(network=network)
             elif work_type == 'collected':
