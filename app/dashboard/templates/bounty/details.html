@@ -125,7 +125,7 @@
                   <span class="bounty-info-text bounty-info-row-span-right" id="permission_type" title='{% include "shared/permissions_type_tooltip.html" %}'></span>
                 </div>
                 <div class="bounty-info-row-div">
-                  <span class="bounty-info-heading" id="hourly_contract_label">{% trans "Hourly Contract" %}</span>
+                  <span class="bounty-info-heading" id="hourly_contract_label">{% trans "Hourly Contract Allowed" %}</span>
                   <span class="bounty-info-text bounty-info-row-span-right" id="hourly_contract"></span>
                 </div>
                 <div class="bounty-info-row-div" id="fulfillment_accepted_on_wrapper">
@@ -285,6 +285,9 @@
                 [[:text]]
                 [[if signed_nda]]
                   <a href="[[:signed_nda.signed_nda.doc]]" download class="d-flex">View signed NDA</a>
+                [[/if]]
+                [[if hourly_contract]]
+                  <span class="bounty-text">Hourly Contract</span>
                 [[/if]]
               </div>
               [[if can_approve_worker ]]

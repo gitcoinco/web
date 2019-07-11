@@ -1460,6 +1460,12 @@ const process_activities = function(result, bounty_activities) {
     const fulfillment = meta.fulfillment || {};
     const new_bounty = meta.new_bounty || {};
     const old_bounty = meta.old_bounty || {};
+    const is_hourly_contract = result.interested.length ?
+      result.interested.find(interest => {
+        if (interest.profile.handle === _activity.profile.handle && interest.hourly_contract) {
+          return interest.hourly_contract;
+        }
+      }) : false;
     const has_signed_nda = result.interested.length ?
       result.interested.find(interest => {
         if (interest.profile.handle === _activity.profile.handle && interest.signed_nda) {
@@ -1500,6 +1506,7 @@ const process_activities = function(result, bounty_activities) {
       age: timeDifference(now, new Date(_activity.created)),
       activity_type: _activity.activity_type,
       status: _activity.activity_type === 'work_started' ? 'started' : 'stopped',
+      hourly_contract: is_hourly_contract,
       signed_nda: has_signed_nda,
       uninterest_possible: uninterest_possible,
       slash_possible: slash_possible,
