@@ -755,7 +755,7 @@ def users_fetch(request):
     skills = request.GET.get('skills', '')
     limit = int(request.GET.get('limit', 10))
     page = int(request.GET.get('page', 1))
-    order_by = request.GET.get('order_by', 'leaderboard_ranks__rank')
+    order_by = request.GET.get('order_by', 'average_rating')
     bounties_completed = request.GET.get('bounties_completed', '').strip().split(',')
     leaderboard_rank = request.GET.get('leaderboard_rank', '').strip().split(',')
     rating = int(request.GET.get('rating', '0'))
@@ -775,19 +775,11 @@ def users_fetch(request):
     if current_user:
         profile_list = Profile.objects.prefetch_related(
                 'fulfilled', 'leaderboard_ranks', 'feedbacks_got'
-            ).exclude(hide_profile=True).order_by(
-                '-previous_worked_count',
-                order_by,
-                '-actions_count',
-                'feedbacks_got__rating'
-            )
+            ).exclude(hide_profile=True)
     else:
         profile_list = Profile.objects.prefetch_related(
                 'fulfilled', 'leaderboard_ranks', 'feedbacks_got'
-            ).exclude(hide_profile=True).order_by(
-                order_by,
-                '-actions_count'
-            )
+            ).exclude(hide_profile=True)
 
     if q:
         profile_list = profile_list.filter(Q(handle__icontains=q) | Q(keywords__icontains=q))
@@ -828,17 +820,20 @@ def users_fetch(request):
     profile_list = profile_list.annotate(
         feedbacks_got_count=Count('feedbacks_got', filter=Q(feedbacks_got__sender_profile=current_user.profile.id))
     )
-    profile_list = Profile.objects.filter(pk__in=profile_list.order_by(
-        '-feedbacks_got_count', '-actions_count'
-    ).values_list('pk'))
+    profile_list = Profile.objects.filter(pk__in=profile_list).annotate(
+            average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
+        ).order_by(
+        order_by
+    )
+    profile_list = profile_list.values_list('pk', flat=True)
     params = dict()
     all_pages = Paginator(profile_list, limit)
     all_users = []
     this_page = all_pages.page(page)
 
-    this_page = Profile.objects.filter(pk__in=[ele.pk for ele in this_page]).annotate(
+    this_page = Profile.objects.filter(pk__in=[ele for ele in this_page]).annotate(
         feedbacks_got_count=Count('feedbacks_got', filter=Q(feedbacks_got__sender_profile=current_user.profile.id))
-    ).order_by('-feedbacks_got_count', '-actions_count').annotate(
+    ).order_by(order_by).annotate(
         previous_worked_count=Count('fulfilled', filter=Q(
             fulfilled__bounty__network=network,
             fulfilled__accepted=True,
