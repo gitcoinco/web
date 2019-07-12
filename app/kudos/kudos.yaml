@@ -4959,4 +4959,15 @@
   - happy fourth of july
   - gitcoin
   image: fourth_of_july6.svg
+- name: Beyond_Blockchain_Relay_Kudos
+  description: Kudos from ConsenSys Labs for participation in the Beyond Blockchain Virtual Hackathon!
+  artist: MladenPetronijevic
+  priceFinney: 20
+  numClonesAllowed: 100
+  tags: 
+   - Labs
+   - Hackathon
+   - Beyond Blockchain
+   - ConsenSys
+  image: labs_beyonde_blockchain.svg
 
