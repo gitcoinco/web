@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 
 from dashboard.models import Profile, UserAction
-from django.utils import timezone
 
 
 class Command(BaseCommand):

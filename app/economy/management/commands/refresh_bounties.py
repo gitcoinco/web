@@ -17,6 +17,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """
+import time
+
 from django.core.management.base import BaseCommand
 
 from dashboard.models import Bounty
@@ -46,7 +48,7 @@ class Command(BaseCommand):
                 Defaults to: `False` unless user passes the remote option.
 
         """
-        all_bounties = Bounty.objects.filter(current_bounty=True)
+        all_bounties = Bounty.objects.filter(current_bounty=True).order('-pk')
         fetch_remote = options['remote']
         print(f"refreshing {all_bounties.count()} bounties")
 
@@ -63,6 +65,7 @@ class Command(BaseCommand):
                     bounty.fetch_issue_item('title')
                     bounty.fetch_issue_item()
                     bounty.fetch_issue_comments()
+                    time.sleep(10)
                     print('1/ refreshed', bounty.pk)
             except Exception as e:
                 print(e)
