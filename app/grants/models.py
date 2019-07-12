@@ -34,7 +34,7 @@ from django.utils.translation import gettext_lazy as _
 from django_extensions.db.fields import AutoSlugField
 from economy.models import SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount
-from gas.utils import recommend_min_gas_price_to_confirm_in_time
+from gas.utils import eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from grants.utils import get_upload_filename
 from web3 import Web3
 
@@ -650,11 +650,18 @@ next_valid_timestamp: {next_valid_timestamp}
 
     def get_converted_amount(self):
         try:
-            return Decimal(convert_amount(
+            if self.token_symbol == "ETH" or self.token_symbol == "WETH":
+                return Decimal(self.amount_per_period * eth_usd_conv_rate())
+            else:
+                value_token_to_eth = Decimal(convert_amount(
                     self.amount_per_period,
                     self.token_symbol,
-                    "USDT")
+                    "ETH")
                 )
+
+            value_eth_to_usdt = Decimal(eth_usd_conv_rate())
+            value_usdt = value_token_to_eth * value_eth_to_usdt
+            return value_usdt
 
         except ConversionRateNotFoundError as e:
             logger.info(e)
