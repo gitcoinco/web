@@ -755,7 +755,7 @@ def users_fetch(request):
     skills = request.GET.get('skills', '')
     limit = int(request.GET.get('limit', 10))
     page = int(request.GET.get('page', 1))
-    order_by = request.GET.get('order_by', 'average_rating')
+    order_by = request.GET.get('order_by', '-actions_count')
     bounties_completed = request.GET.get('bounties_completed', '').strip().split(',')
     leaderboard_rank = request.GET.get('leaderboard_rank', '').strip().split(',')
     rating = int(request.GET.get('rating', '0'))
