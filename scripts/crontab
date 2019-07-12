@@ -26,7 +26,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 30 1 * * * cd gitcoin/coin; bash scripts/run_management_command.bash expire_featured_bounties  >> /var/log/gitcoin/expire_featured_bounties.log  2>&1
 */10 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash sync_gas_prices  >> /var/log/gitcoin/sync_gas_prices.log  2>&1
 1 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash sync_gas_guzzlers  >> /var/log/gitcoin/sync_gas_guzzlers.log  2>&1
-15 */6 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_profiles  >> /var/log/gitcoin/sync_profiles.log  2>&1
+15 1 * * 0 cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_profiles  >> /var/log/gitcoin/sync_profiles.log  2>&1
 15 2 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_es_profiles  >> /var/log/gitcoin/sync_es_profiles.log  2>&1
 15 2 * * * cd gitcoin/coin; bash scripts/run_management_command.bash cleanup_dupe_profiles  >> /var/log/gitcoin/cleanup_dupe_profiles.log  2>&1
 1 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash cleanup_dupe_bounties  >> /var/log/gitcoin/cleanup_dupe_bounties.log  2>&1
@@ -77,7 +77,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 11 10 * * * cd gitcoin/coin; bash scripts/run_management_command.bash expiration_tip  >> /var/log/gitcoin/expiration_tip.log  2>&1
 1 10 * * 4 cd gitcoin/coin; bash scripts/run_management_command.bash assemble_leaderboards  >> /var/log/gitcoin/assemble_leaderboards.log  2>&1
 10 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash pull_stats  >> /var/log/gitcoin/pull_stats.log  2>&1
-10 3 * * * cd gitcoin/coin; bash scripts/run_management_command.bash pull_github  >> /var/log/gitcoin/pull_github.log  2>&1
+10 3 * * 0 cd gitcoin/coin; bash scripts/run_management_command.bash pull_github  >> /var/log/gitcoin/pull_github.log  2>&1
 10 4 * * * cd gitcoin/coin; bash scripts/run_management_command.bash process_email_events  >> /var/log/gitcoin/process_email_events.log  2>&1
 10 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash post_to_craigslist 1  >> /var/log/gitcoin/post_to_craigslist.log  2>&1
 10 1 * * * cd gitcoin/coin; bash scripts/run_management_command.bash output_gas_viz  >> /var/log/gitcoin/output_gas_viz.log  2>&1
