@@ -4970,4 +4970,15 @@
    - Beyond Blockchain
    - ConsenSys
   image: labs_beyonde_blockchain.svg
+- name: MythX_Beta_Champs_Kudos
+  description: MythX friends and champions who battled together with us through Beta!
+  artist: Mladen
+  priceFinney: 100
+  numClonesAllowed: 1000
+  to_address: '0x393376e59bd40a4fbedeed3e44697ec4e00299d9'
+  marketplace_listed: False
+  tags:
+   - MythX
+   - Smart contracts
+   - Security
 
