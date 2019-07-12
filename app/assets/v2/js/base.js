@@ -280,7 +280,7 @@ const sendPersonal = (persona) => {
     $('#persona_modal').bootstrapModal('hide');
     const urls = [
       {
-        url: document.location.origin,
+        url: document.location.href,
         redirect: '/onboard/funder'
       },
       {
@@ -295,7 +295,7 @@ const sendPersonal = (persona) => {
     // TODO: CLEAN COMMENTS
     const checkUrl = (arr, val) => {
       return arr.some(arrObj => {
-        if (val.indexOf(arrObj.url) > 0) {
+        if (val.indexOf(arrObj.url) >= 0) {
           // window.location = arrObj.redirect;
           return true;
         }
