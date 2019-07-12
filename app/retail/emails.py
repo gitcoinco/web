@@ -932,8 +932,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Beyond...Beyond Blockchain? 🤯"
-    new_kudos_pks = [4184, 4179, 4143]
+    subject = "The Final Hours of Beyond Blockchain ⛓"
+    new_kudos_pks = [4144, 4141, 4143]
     new_kudos_size_px = 150
 
     kudos_friday = f'''
@@ -948,14 +948,12 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-For our folks living in the United States, Happy Fourth of July! We hope you have a terrific weekend of outdoors and good eats. To celebrate, we've decided to announce the next brand new hackathon. While the Beyond Blockchain hackathon is barely halfway over, we're
-looking forward to the next one: the Grow Ethereum hackathon. To sign up for this one, fill out the following form, and stay tuned on your email. We'll be in touch with the details soon. We are more than excited, and we hope you are too. <a href="https://mailchi.mp/a92da05667d6/groweth" target="_blank">The form lives here.</a>
+The Beyond Blockchain hackathon is coming to a close. Thank you to all of our participants that hacked along during the past three weeks; we're ecstatic to see what you all have created. We will be releasing another retro in the coming days as winners are announced.
 </p>
 <p>
-With that said...the Beyond Blockchain hackathon is still firing on all cylinders. If you're looking to take advantage of the long weekend and vie for some of the top prizes, check out the following: <a href="https://gitcoin.co/issue/ConsenSys/Beyond-Blockchain-Relay/3/3158">Reinvent Healthcare</a>; 
-<a href="https://gitcoin.co/issue/gitcoinco/skunkworks/93/3185">Make Kudos Incredible</a>; <a href="https://gitcoin.co/issue/raiden-network/hackathons/1/3168">Integrate Raiden</a>; and <a href="https://gitcoin.co/issue/raiden-network/hackathons/3/3170">Enhance Raiden.</a>
+For those who didn't get a chance to participate in the hackathon, learned too late, or weren't interested in the prizes: don't fret. The next chapter of prizes is right around the corner. The Grow Ethereum hackathon is slated for July 22nd to August 15th, and we have lots of exciting
+participants to announce. Interested? <a href="https://hackathons.gitcoin.co/grow-ethereum/">Fill out this form. We'll be in touch.</a>
 </p>
-Round 3 of CLR matching for Gitcoin Grants is coming in Q3! Are you interested in matching? Add to our $50K+ committed and help us grow open source infrastructure projects. 🛠 Building? A funding opportunity awaits. Create a Gitcoin Grant & let the community see your progress!
 <p>
 
 </p>
@@ -963,10 +961,10 @@ Round 3 of CLR matching for Gitcoin Grants is coming in Q3! Are you interested i
 <h3>What else is new?</h3>
     <ul>
         <li>
-            The Gitcoin Livestream is NOT back this week! Our team will be celebrating the Fourth with our families. Join us <a href="https://gitcoin.co/livestream"> at 2PM ET next Friday.
+            The Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday.
         </li>
         <li>
-            Looking for something to watch this weekend? You're in luck. We just released new content on the Gitcoin Media YouTube channel. Check it out <a href="http://youtube.com/gitcoinmedia">here</a>. 
+            Round 3 of CLR matching for Gitcoin Grants is coming in Q3! Are you interested in matching? Add to our $50K+ committed and help us grow open source infrastructure projects.  
         </li>
     </ul>
 </p>
@@ -975,45 +973,45 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'socialcode-rob1',
+        'who': 'dvdplm',
         'who_link': True,
-        'what': 'Readme: updated.',
-        'link': 'https://gitcoin.co/issue/sigillabs/mobidex/235/3165',
+        'what': 'Node Syncing: Fixed',
+        'link': 'https://gitcoin.co/issue/paritytech/parity-ethereum/10085/3017',
         'link_copy': 'View more',
     }, {
-        'who': 'nanspro',
+        'who': 'kziemianek',
         'who_link': True,
-        'what': 'Nanspro with the resources!',
-        'link': 'https://gitcoin.co/issue/ethhub-io/ethhub/299/3159',
+        'what': 'Mentors, coded.',
+        'link': 'https://gitcoin.co/issue/gitcoinco/web/963/304',
         'link_copy': 'View more',
     }, {
-        'who': 'sanidhayarora',
+        'who': 'mishfit',
         'who_link': True,
-        'what': 'Warnings, fixed.',
-        'link': 'https://gitcoin.co/issue/sigillabs/mobidex/230/3100',
+        'what': 'Web3 Provider Does Not Catch New Events/Block Updates',
+        'link': 'https://gitcoin.co/issue/TrustWallet/trust-web3-provider/6/485',
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'The Future of Infrastructure Finance',
-        'title': 'Blockchain Developer Job Kit',
+        'name': 'Quantstamp',
+        'title': 'Scan your smart contract with the Quantstamp Security Network V2 today.',
         'image_url': 'https://s3.us-west-2.amazonaws.com/gitcoin-static/jDSk7ZTfpY19PWdwwsk8puNd.png',
-        'link': 'http://bit.ly/Allinfra',
-        'cta': 'Register today',
+        'link': 'http://bit.ly/QStamp',
+        'cta': 'Scan now',
         'body': [
-            'Bringing access, choice, and liquidity to unlisted infrastructure assets'
+            'Reentrancy bu🐜s are easy to miss. Have confidence in your code and integrate security checks as part of your development workflow.🛡'
         ]
     }
 
     bounties_spec = [{
-        'url': 'https://github.com/ssbc/patchbay/issues/342',
-        'primer': 'SSB-Ahoy Replication',
+        'url': 'https://github.com/crytic/crytic-compile/issues/2',
+        'primer': 'Add Support for Brownie',
     }, {
-        'url': 'https://github.com/prysmaticlabs/prysm/issues/2740',
-        'primer': 'Cache Active Indices Efficiently',
+        'url': 'https://github.com/bluzelle/CryptoMarketWebApp/issues/1',
+        'primer': 'Crypto-Market Application using Bluzelle',
     }, {
-        'url': 'https://github.com/status-im/status-react/issues/7990',
-        'primer': 'Support for Galaxy S10',
+        'url': 'https://github.com/gitcoinco/web/issues/4745',
+        'primer': 'Allow Ability To Resurface Bounties To The Top When Bounty Has Been Abandoned',
 }, ]
     
     

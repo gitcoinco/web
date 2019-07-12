@@ -43,7 +43,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 
 
 ## GITCOIN MARKETING
-30 */2 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_mail  >> /var/log/gitcoin/sync_mail.log  2>&1
+30 */12 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_mail  >> /var/log/gitcoin/sync_mail.log  2>&1
 35 14 * * 1,6 cd gitcoin/coin; bash scripts/run_management_command.bash remarket_bounties  >> /var/log/gitcoin/remarket_bounties.log  2>&1
 35 11 * * 0,4 cd gitcoin/coin; bash scripts/run_management_command.bash remarket_bounties  >> /var/log/gitcoin/remarket_bounties.log  2>&1
 45 10 * * * cd gitcoin/coin; bash scripts/run_management_command.bash expiration  >> /var/log/gitcoin/expiration_bounty.log  2>&1
