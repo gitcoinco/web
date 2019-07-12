@@ -415,6 +415,7 @@ $('#submitBounty').validate({
       bounty_address();
     } catch (exception) {
       _alert(gettext('You are on an unsupported network.  Please change your network to a supported network.'));
+      unloading_button($('.js-submit'));
       return;
     }
     if (typeof ga != 'undefined') {
@@ -436,6 +437,7 @@ $('#submitBounty').validate({
 
     if (data.repo_type == 'private' && data.project_type != 'traditional' && data.permission_type != 'approval') {
       _alert(gettext('The project type and/or permission type of bounty does not validate for a private repo'));
+      unloading_button($('.js-submit'));
     }
 
     disabled.attr('disabled', 'disabled');
@@ -698,6 +700,7 @@ $('#submitBounty').validate({
             indicateMetamaskPopup(true);
             if (error) {
               _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
+              unloading_button($('.js-submit'));
             } else {
               deductBountyAmount(fee, txnId);
             }
@@ -840,6 +843,7 @@ function check_balance_and_alert_user_if_not_enough(tokenAddress, amount) {
         ' ' + token_name;
 
       _alert(msg, 'warning');
+      unloading_button($('.js-submit'));
     }
   });
 }
