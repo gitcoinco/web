@@ -271,13 +271,11 @@ class BountyViewSet(viewsets.ModelViewSet):
 
         applicants = self.request.query_params.get('applicants')
         if applicants == '0':
-            queryset = queryset.annotate(
-                interested_count=Count("interested")
-            ).filter(interested_count=0)
+            queryset = queryset.filter(interested__isnull=True)
         elif applicants == '1-5':
             queryset = queryset.annotate(
                 interested_count=Count("interested")
-            ).filter(interested_count__gte=1).filter(interested_count__lte=5)
+            ).filter(interested_count__gte=1).filter(interested_count__lte=5).cache()
 
         # filter by who is interested
         if 'started' in param_keys:
@@ -401,7 +399,6 @@ class BountyViewSet(viewsets.ModelViewSet):
                 except Exception as e:
                     logger.debug(e)
                     pass
-
 
         return queryset
 
