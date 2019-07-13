@@ -111,9 +111,9 @@ $(document).ready(function() {
 
       grant_description.enable(false);
       data = Object.assign({}, data, {
-          'edit-description': edit_description,
-          'edit-description_rich': edit_description_rich,
-        });
+        'edit-description': edit_description,
+        'edit-description_rich': edit_description_rich
+      });
     }
 
     $.ajax({
@@ -261,8 +261,8 @@ const copyDuplicateDetails = () => {
     obj[field] = $(field).val()
       ? $(field).val()
       : $(field)
-          .last()
-          .text();
+        .last()
+        .text();
   });
 
   $('#save-details').on('click', () => {
@@ -287,7 +287,8 @@ const copyDuplicateDetails = () => {
         $(field)
           .val(obj[field])
           .trigger('change');
-      else $(field).val(obj[field]);
+      else
+        $(field).val(obj[field]);
     });
   });
 };
