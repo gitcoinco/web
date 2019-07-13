@@ -110,13 +110,10 @@ $(document).ready(function() {
       const edit_description_rich = JSON.stringify(grant_description.getContents());
 
       grant_description.enable(false);
-      data = {
-        ...data,
-        ...{
+      data = Object.assign({}, data, {
           'edit-description': edit_description,
           'edit-description_rich': edit_description_rich,
-        }
-      };
+        });
     }
 
     $.ajax({
