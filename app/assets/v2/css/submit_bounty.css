@@ -85,7 +85,8 @@ input:read-only {
 
 #no-issue-banner img {
   max-width: 100%;
-  border: 1px solid #d1d1d1;
+  border-top: 1px solid #d1d1d1;
+  border-bottom: 1px solid #d1d1d1;
 }
 
 #no-issue-banner {
@@ -98,7 +99,6 @@ input:read-only {
 }
 
 .issue-details-public {
-  background-color: #F9F9F9;
   padding: 1em;
 }
 

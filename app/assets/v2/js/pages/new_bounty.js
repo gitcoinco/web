@@ -186,6 +186,7 @@ const setPublicForm = () => {
 
 
 $(function() {
+
   $('#last-synced').hide();
   $('.js-select2').each(function() {
     $(this).select2({
@@ -193,16 +194,18 @@ $(function() {
     });
   });
 
+  let checked = params.get('type');
+
   if (params.has('type')) {
-    let checked = params.get('type');
 
     $(`.${checked}`).button('toggle');
-    toggleCtaPlan(checked);
 
   } else {
     params.append('type', 'public');
     window.history.replaceState({}, '', location.pathname + '?' + params);
   }
+  toggleCtaPlan(checked);
+
   $('input[name=repo_type]').change(function() {
     toggleCtaPlan($(this).val());
   });
@@ -238,14 +241,24 @@ $(function() {
     populateBountyTotal();
   });
 
-  $('select[name=denomination]').change(function(e) {
+  var triggerDenominationUpdate = function(e) {
     setUsdAmount();
     promptForAuth();
-    const token = tokenAddressToDetails(e.target.value).name;
+    const token_val = $('select[name=denomination]').val();
+    const tokendetails = tokenAddressToDetails(token_val);
+    var token = tokendetails['name'];
+
 
     $('#summary-bounty-token').html(token);
     $('#summary-fee-token').html(token);
     populateBountyTotal();
+  };
+
+  $('select[name=denomination]').change(triggerDenominationUpdate);
+  waitforWeb3(function() {
+    setTimeout(function() {
+      triggerDenominationUpdate();
+    }, 1000);
   });
 
   $('#featuredBounty').on('change', function() {
@@ -320,7 +333,9 @@ $('#sync-issue').on('click', function(event) {
 $('#issueURL').focusout(function() {
   if (isPrivateRepo) {
     setPrivateForm();
-    if ($('input[name=issueURL]').val() == '' || !validURL($('input[name=issueURL]').val())) {
+    var validated = $('input[name=issueURL]').val() == '' || !validURL($('input[name=issueURL]').val());
+
+    if (validated) {
       $('.js-submit').addClass('disabled');
     } else {
       $('.js-submit').removeClass('disabled');
@@ -382,6 +397,19 @@ $('#specialEvent').on('click', () => {
 });
 
 $('#submitBounty').validate({
+  errorPlacement: function(error, element) {
+    if (element.attr('name') == 'bounty_category') {
+      error.appendTo($(element).parents('.btn-group-toggle').next('.cat-error'));
+    } else {
+      error.insertAfter(element);
+    }
+  },
+  ignore: '',
+  messages: {
+    select2Start: {
+      required: 'Please select the right keywords.'
+    }
+  },
   submitHandler: function(form) {
     try {
       bounty_address();
@@ -447,7 +475,8 @@ $('#submitBounty').validate({
       featuring_date: data.featuredBounty && ((new Date().getTime() / 1000) | 0) || 0,
       reservedFor: reservedFor ? reservedFor.text : '',
       tokenName,
-      invite: inviteContributors
+      invite: inviteContributors,
+      bounty_categories: data.bounty_category
     };
 
     var privacy_preferences = {
@@ -497,7 +526,8 @@ $('#submitBounty').validate({
         metadata: metadata,
         tokenName: tokenName,
         tokenAddress: tokenAddress,
-        expire_date: expire_date
+        expire_date: expire_date,
+        coupon_code: $('#coupon_code').val()
       },
       meta: {
         platform: 'gitcoin',

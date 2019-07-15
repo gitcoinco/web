@@ -19,7 +19,7 @@
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header profile-header dash" style="min-height: 350px;">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      {% include 'shared/nav.html' %}
+      {% include 'home/nav.html' %}
       {% if not hidden and is_staff %}
         <div class="alpha-warning font-caption mb-0">
           <span class="font-weight-bold">Staff only</span>
@@ -49,11 +49,7 @@
               </div>
 
                 <h1 class="profile-header__handle">
-                  {% if profile.data.name %}
-                    {{ profile.data.name }}
-                  {% else %}
-                    {{ profile.handle }}
-                  {% endif %}
+                  {{ profile.name }}
                   {% if verification.verified %}
                     <button class="btn btn-sm animate-verify" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='
                     <p class="h6 my-2 text-left">Gitcoin Verified <img width="18" src="{% static "v2/images/badge-verify.svg" %}"></p>
@@ -68,8 +64,8 @@
                   {% endif %}
                 </p>
                 <div class="static-stars my-3">
-                  {% for i in "x"|rjust:"5" %}
-                    <i class="far fa-star {% if i <= avg_rating.overall|floatformat:'0' %}fas{% endif %}"></i>
+                  {% for i in ratings %}
+                    <i class="far fa-star {% if avg_rating.overall != 0 and i <= avg_rating.overall %}fas{% endif %}"></i>
                   {% endfor %}
                   <small class="text-muted">({{ avg_rating.total_rating }} {% trans "rating" %}{{avg_rating.total_rating | pluralize}})</small>
                 </div>
@@ -134,7 +130,12 @@
                     <div class="card-body">
                       <ul>
                         <li><b>{{ count_bounties_completed }}</b> {% trans "bounties completed" %}</li>
-                        <li><b>{{ sum_eth_collected|floatformat:2 }} ETH</b> {% trans "collected" %}</li>
+                        {% for token in sum_all_collected_tokens %}
+                          <li><b>{{ token.value_in_token|floatformat:2 }} {{ token.token_name }}</b> {% trans "collected" %}</li>
+                        {% endfor %}
+                        {% if not sum_all_collected_tokens %}
+                          <li><b>{{ sum_eth_collected|floatformat:2 }} ETH</b> {% trans "collected" %}</li>
+                        {% endif %}
                         {% if no_times_been_removed %}
                           <li> - {% trans "removed from" %} <b>{{ no_times_been_removed }}</b> {% trans "bounties" %}</li>
                         {% endif %}
@@ -170,7 +171,12 @@
                     <div class="card-body font-subheader">
                       <ul>
                         <li><b>{{ funded_bounties_count }}</b> {% trans "bounties funded" %}</li>
-                        <li><b>{{ sum_eth_funded|floatformat:2 }} ETH</b> {% trans "funded" %}</li>
+                        {% for row in sum_all_funded_tokens %}
+                          <li><b>{{ row.value_in_token|floatformat:2 }} {{ row.token_name }}</b> {% trans "funded" %}</li>
+                        {% endfor %}
+                        {% if not sum_all_funded_tokens %}
+                          <li><b>{{ sum_eth_funded|floatformat:2 }} ETH</b> {% trans "funded" %}</li>
+                        {% endif %}
                         <li class="works_with_list">
                           {% if works_with_funded|length %}
                             <span class="font-body"><i class="fab fa-ethereum"></i> {% trans "Funds" %}:</span>
@@ -256,10 +262,12 @@
                     <div class="container">
                       <div class="row mb-3 p-2">
                         <div id="{{ tab.id }}" class="col-12 activities" count="{{ tab.count }}">
-                          {% if tab.type == 'activity' %}
-                            {% include 'profiles/profile_activities.html' with activities=tab.objects %}
-                          {% else %}
-                            {% include 'profiles/profile_bounties.html' with bounties=tab.objects %}
+                          {% if show_activity %}
+                            {% if tab.type == 'activity' %}
+                              {% include 'profiles/profile_activities.html' with activities=tab.objects %}
+                            {% else %}
+                              {% include 'profiles/profile_bounties.html' with bounties=tab.objects %}
+                            {% endif %}
                           {% endif %}
                         </div>
                       </div>

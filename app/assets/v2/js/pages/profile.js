@@ -34,7 +34,7 @@ $(document).ready(function() {
 
     if (ignoreScrollOffset || window.scrollY >= tabSection.scrollHeight) {
       const activityName = activityContainer.id;
-      let page = parseInt(activityContainer.getAttribute('page')) || 1;
+      let page = parseInt(activityContainer.getAttribute('page')) || 0;
 
       fetchInProgress = true;
       loadingImg.className = loadingImg.className.replace('hidden', 'visible');
