@@ -1,4 +1,26 @@
 {
     "symbol": "VNT",
-    "address": "0x69d2779533a4D2c780639713558B2cC98c46A9b7"
+    "address": "0x69d2779533a4D2c780639713558B2cC98c46A9b7",
+    "overview":{
+          "en": "VNT Chain is supported by the world's leading blockchain technology service provider, Yunphant. It adopts the \"Consortium Chain + Cross-Chain + Public Chain\" aggregation chain architecture, and executes the \"One Chain, One Platform, One Entrance\" strategy, to create a global distributed intelligent value network, to build connectors for data exchange and asset exchange, and to empower the distributed economy.VNT Chain’s target is to build a global distributed smart value network based on blockchain technology to provide reliable, secure, efficient, friendly and low-cost value transfer services, and to gain widespread use in different vertical markets, such as finance, healthcare, supply chain, gaming etc.\nFor enterprise users, existing public blockchain solutions do not quite meet the demands ofcommercial applications due to the lack of permission management and low performance. Whileconsortium blockchain solutions offer secure information sharing among members, it lacks supportfor value transfer, making it hard to be applied to a large scale. Creatively ,VNT Chain integratesthe distributed value transfer capabilities of the public blockchain and the business features of theconsortium blockchain into the architecture named Aggregation Chain. This architecture of consistsof public chain (Hubble Network), consortium blockchains (Galileo Network) and crosschain(Kepler Route).",
+          "zh": "VNT Chain（维特链）由全球领先的区块链技术服务商-云象提供技术支撑，采用“联盟链+跨链+公有链”聚合链技术架构，依托“1链1平台1入口”战略，打造全球分布式智能价值网络，构建数据交换和资产交换的连接器，赋能分布式经济。基于区块链技术构建全球分布式智能价值网络，为金融、医疗、供应链、社交、游戏等多个领域提供可信、安全、高效便捷且成本低廉的价值流转服务。\n针对企业级应用，现有的公有链由于缺乏对成员准入的控制且在性能等方面 存在缺陷，难以满足商业应用的需求。而联盟链虽然定位于企业级应用，目前仅 实现了信息的安全共享，但缺乏对价值流转的支撑，难以大规模应用。VNT Chain 创造性地融合了公有链的分布式价值流转特性以及联盟链的商业属性，构建起由 公有链（Hubble Network），联盟链（Galileo Network）及跨链（Kepler Route） 组成的聚合链架构。"
+    },
+    "email": "info@vntchain.io",
+    "website": "http://vntchain.io/",
+    "whitepaper": "http://vntchain.io/whitepaper-en.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-03-14",
+    "initial_price":{
+          "ETH":"0.00001 ETH"
+    },
+    "links": {
+      "blog": "https://your-awesome-project.com/blog",
+      "twitter": "https://twitter.com/your-awesome-project",
+      "telegram": "https://t.me/joinchat/your-awesome-project",
+      "github": "https://github.com/your-awesome-project",
+      "facebook": "https://www.facebook.com/your-awesome-project",
+      "reddit": "https://www.reddit.com/r/your-awesome-project/",
+      "slack": "https://your-awesome-project.slack.com",
+      "medium": "https://medium.com/your-awesome-project"
+    }
 }
