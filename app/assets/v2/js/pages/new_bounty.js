@@ -357,9 +357,7 @@ $('#issueURL').focusout(function() {
     $('#last-synced').hide();
     $('.js-submit').addClass('disabled');
   } else {
-    $('#no-issue-banner').hide();
     $('#edit-issue').attr('href', $('input[name=issueURL]').val());
-    $('#issue-details, #issue-details-edit').show();
 
     $('#sync-issue').removeClass('disabled');
     $('.js-submit').removeClass('disabled');
