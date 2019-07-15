@@ -8,6 +8,7 @@ app/assets/v2/js/lib/showdown.js
 app/assets/v2/js/lib/tooltip.js
 app/assets/v2/js/lib/tweenlite.js
 app/assets/v2/js/abi.js
+app/assets/v2/js/lib/vue.js
 
 app/assets/onepager/js/confetti.js
 
