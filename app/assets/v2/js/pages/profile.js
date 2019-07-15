@@ -39,7 +39,7 @@ $(document).ready(function() {
       fetchInProgress = true;
       loadingImg.className = loadingImg.className.replace('hidden', 'visible');
 
-      fetch(location.href.replace(location.hash, '') + '?p=' + (++page) + '&a=' + activityName).then(
+      fetch(location.href.replace(location.hash, '').replace('?', '') + '?p=' + (++page) + '&a=' + activityName).then(
         function(response) {
           if (response.status === 200) {
             response.text().then(
