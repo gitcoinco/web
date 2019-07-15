@@ -2,8 +2,8 @@
     "symbol": "DCC",
     "address": "0x4dC975e2C100aab50702eD679F33d5c80cd18060",
     "overview": {
-        "en": "DCC (Decentralized Contract Chain), based on Ethereum and IPFS, serves as a decentralized electronic contract signing platform. Any individual or enterprise can complete the contract signing quickly, conveniently and safely without the intervention of a third party with DCC.",
-        "zh": "DCC（Decentralized contract chain）是基于以太坊和IPFS去中心化电子合同签约平台。通过DCC，任何个人、企业都可以在无需第三方介入的情况下快速、便捷、安全地完成合同签署。"
+        "en": "DCC gave birth to its first use case of Chainspay. Chainspay is a world known enterprise level digital asset third party payment platform. It empowers multiple commercial uses such as crypto exchange hot wallet, crypto wallet, airdrop, dApps, quantitative trading etc.",
+        "zh": "DCC首发产品链付Chainspay平台落地。链付是全球领先的企业级数字资产第三方支付平台。它可以支撑交易所钱包服务、To C数字货币钱包、空投、DAPP、量化交易等多种业务场景。"
     },
     "email": "support@coinyee.com",
     "website": "www.dcchain.org",
