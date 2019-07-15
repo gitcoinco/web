@@ -23,7 +23,8 @@ from mailchimp3 import MailChimp
 from marketing.models import EmailSubscriber
 from marketing.utils import get_or_save_email_subscriber as process_email
 
-hours_ago = 12
+hours_ago = 12 #if you change, this make sure you change the crontab file to ...
+# make it inclusive of all users since last run of this job
 
 
 def pull_to_db():
