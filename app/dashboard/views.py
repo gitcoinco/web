@@ -257,9 +257,7 @@ def new_interest(request, bounty_id):
             status=401)
 
     num_issues = profile.max_num_issues_start_work
-    active_bounties = Bounty.objects.current().filter(idx_status__in=['open', 'started'])
-    num_active = Interest.objects.filter(profile_id=profile_id, bounty__in=active_bounties).count()
-    is_working_on_too_much_stuff = num_active >= num_issues
+    is_working_on_too_much_stuff = profile.active_bounties.count() >= num_issues
     if is_working_on_too_much_stuff:
         return JsonResponse({
             'error': _(f'You may only work on max of {num_issues} issues at once.'),
@@ -774,14 +772,14 @@ def users_fetch(request):
         network = 'mainnet'
     else:
         network = 'rinkeby'
-
     if current_user:
         profile_list = Profile.objects.prefetch_related(
                 'fulfilled', 'leaderboard_ranks', 'feedbacks_got'
             ).exclude(hide_profile=True).order_by(
                 '-previous_worked_count',
                 order_by,
-                '-actions_count'
+                '-actions_count',
+                'feedbacks_got__rating'
             )
     else:
         profile_list = Profile.objects.prefetch_related(
@@ -827,14 +825,20 @@ def users_fetch(request):
             fulfilled__accepted=True,
             fulfilled__bounty__github_url__icontains=organisation
         ).distinct()
-
-    profile_list = Profile.objects.filter(pk__in=profile_list.order_by('-actions_count').values_list('pk'))
+    profile_list = profile_list.annotate(
+        feedbacks_got_count=Count('feedbacks_got', filter=Q(feedbacks_got__sender_profile=current_user.profile.id))
+    )
+    profile_list = Profile.objects.filter(pk__in=profile_list.order_by(
+        '-feedbacks_got_count', '-actions_count'
+    ).values_list('pk'))
     params = dict()
     all_pages = Paginator(profile_list, limit)
     all_users = []
     this_page = all_pages.page(page)
 
-    this_page = Profile.objects.filter(pk__in=[ele.pk for ele in this_page]).order_by('-actions_count').annotate(
+    this_page = Profile.objects.filter(pk__in=[ele.pk for ele in this_page]).annotate(
+        feedbacks_got_count=Count('feedbacks_got', filter=Q(feedbacks_got__sender_profile=current_user.profile.id))
+    ).order_by('-feedbacks_got_count', '-actions_count').annotate(
         previous_worked_count=Count('fulfilled', filter=Q(
             fulfilled__bounty__network=network,
             fulfilled__accepted=True,
@@ -844,7 +848,6 @@ def users_fetch(request):
         ).annotate(
             average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
         )
-
     for user in this_page:
         previously_worked_with = 0
         if current_user:
@@ -879,6 +882,7 @@ def users_fetch(request):
             profile_json['blog'] = user_data['blog']
 
         all_users.append(profile_json)
+
     # dumping and loading the json here quickly passes serialization issues - definitely can be a better solution
     params['data'] = json.loads(json.dumps(all_users, default=str))
     params['has_next'] = all_pages.page(page).has_next()
@@ -953,6 +957,16 @@ def ethhack(request):
     from dashboard.context.hackathon import eth_hack
 
     params = eth_hack
+
+    return TemplateResponse(request, 'dashboard/hackathon/index.html', params)
+
+
+def beyond_blocks_2019(request):
+    """Handle displaying ethhack landing page."""
+    from dashboard.context.hackathon import beyond_blocks_2019
+
+    params = beyond_blocks_2019
+    params['card_desc'] = params['meta_description']
 
     return TemplateResponse(request, 'dashboard/hackathon/index.html', params)
 
@@ -1650,6 +1664,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 params['stdbounties_id'] = bounty.standard_bounties_id if not stdbounties_id else stdbounties_id
                 params['interested_profiles'] = bounty.interested.select_related('profile').all()
                 params['avatar_url'] = bounty.get_avatar_url(True)
+                params['canonical_url'] = bounty.canonical_url
 
                 if bounty.event:
                     params['event_tag'] = bounty.event.slug
@@ -1972,18 +1987,29 @@ def profile(request, handle):
         context['ratings'] = range(0,5)
         tabs = []
 
+        counts = all_activities.values('activity_type').order_by('activity_type').annotate(the_count=Count('activity_type'))
+        counts = {ele['activity_type']: ele['the_count'] for ele in counts}
         for tab, name in activity_tabs:
-            activities = profile_filter_activities(all_activities, tab)
-            activities_count = activities.count()
 
+            # this functions as profile_filter_activities does
+            # except w. aggregate counts
+
+            if tab == 'all':
+                activities_count = sum([val for key, val in counts.items()])
+            else:
+                activities_count = counts.get(tab, 0)
+            if tab == 'start_work':
+                activities_count += counts.get("worker_approved", 0)
+
+
+            # dont draw a tab where the activities count is 0
             if activities_count == 0:
                 continue
 
-            paginator = Paginator(activities, 10)
-
+            # buidl dict
             obj = {'id': tab,
                    'name': name,
-                   'objects': paginator.get_page(1),
+                   'objects': [],
                    'count': activities_count,
                    'type': 'activity'
                    }
@@ -2063,7 +2089,24 @@ def profile(request, handle):
             }
 
             return JsonResponse(msg, status=msg.get('status', 200))
+    context['show_activity'] = request.GET.get('p', False) != False
     return TemplateResponse(request, 'profiles/profile.html', context, status=status)
+
+
+@staff_member_required
+def funders_mailing_list(request):
+    profile_list = list(Profile.objects.filter(
+        persona_is_funder=True).exclude(email="").values_list('email',
+                                                              flat=True))
+    return JsonResponse({'funder_emails': profile_list})
+
+
+@staff_member_required
+def hunters_mailing_list(request):
+    profile_list = list(Profile.objects.filter(
+        persona_is_hunter=True).exclude(email="").values_list('email',
+                                                              flat=True))
+    return JsonResponse({'hunter_emails': profile_list})
 
 
 @csrf_exempt
@@ -2739,7 +2782,18 @@ def hackathon(request, hackathon=''):
 
     title = evt.name
     network = get_default_network()
-    orgs = set([bounty.org_name for bounty in Bounty.objects.filter(event=evt, network=network).current()])
+
+    # TODO: Refactor post orgs
+    orgs = []
+    for bounty in Bounty.objects.filter(event=evt, network=network).current():
+        org = {
+            'display_name': bounty.org_display_name,
+            'avatar_url': bounty.avatar_url,
+            'org_name': bounty.org_name
+        }
+        orgs.append(org)
+
+    orgs = list({v['org_name']:v for v in orgs}.values())
 
     params = {
         'active': 'dashboard',
@@ -2748,6 +2802,11 @@ def hackathon(request, hackathon=''):
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
         'hackathon': evt,
     }
+
+    if evt.identifier == 'beyondblockchain_2019':
+        from dashboard.context.hackathon_explorer import beyondblockchain_2019
+        params['sponsors'] = beyondblockchain_2019
+
     return TemplateResponse(request, 'dashboard/index.html', params)
 
 

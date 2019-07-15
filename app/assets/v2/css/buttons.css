@@ -173,6 +173,12 @@ button:focus {
   background-color: var(--gc-purple);
 }
 
+.btn-outline-black {
+  border: 1px solid #000;
+  background: white;
+  color: #000;
+}
+
 .btn-gc-purple:hover {
   background-color: var(--gc-purple-hover);
   color: white;
@@ -263,4 +269,14 @@ button:focus {
   background-color: #F3F3F3;
   color: #666666;
   font-weight: 600;
+}
+
+.btn-gc-grey {
+  color: #171717;
+  background-color: #cbcbcb;
+}
+
+.btn-gc-grey:not(:disabled):not(.disabled).active {
+  color: white;
+  background-color: #5300ff;
 }

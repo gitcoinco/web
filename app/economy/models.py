@@ -76,9 +76,10 @@ class SuperModel(models.Model):
     created_on = models.DateTimeField(null=False, default=get_time, db_index=True)
     modified_on = models.DateTimeField(null=False, default=get_time)
 
-    def save(self, *args, **kwargs):
-        """Override the SuperModel save to handle modified_on logic."""
-        self.modified_on = get_time()
+    def save(self, update=True, *args, **kwargs):
+        """Override the SuperModel save to optionally handle modified_on logic."""
+        if update:
+            self.modified_on = get_time()
         return super(SuperModel, self).save(*args, **kwargs)
 
     def to_standard_dict(self, fields=None, exclude=None, properties=None):

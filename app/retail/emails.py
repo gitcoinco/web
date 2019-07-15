@@ -929,12 +929,11 @@ def render_start_work_applicant_expired(interest, bounty):
 
     return response_html, response_txt, subject
 
-
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Hackathons on the Horizon!"
-    new_kudos_pks = [3973, 2224, 1967]
+    subject = "Beyond...Beyond Blockchain? 🤯"
+    new_kudos_pks = [4184, 4179, 4143]
     new_kudos_size_px = 150
 
     kudos_friday = f'''
@@ -949,64 +948,75 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-As summer formally begins, we're looking forward to the weather, the outdoors, and the memories to come. We're also looking forward to the next round of hackathons that we're planning. Fill out this Typeform to receive more information about the
-as we announce the next set of events. You can look forward to new sponsors, big bounties, and more opportunities to collaborate on new projects. <a href="https://gitcoin.typeform.com/to/j7CSbV">The form lives here.</a>
+For our folks living in the United States, Happy Fourth of July! We hope you have a terrific weekend of outdoors and good eats. To celebrate, we've decided to announce the next brand new hackathon. While the Beyond Blockchain hackathon is barely halfway over, we're
+looking forward to the next one: the Grow Ethereum hackathon. To sign up for this one, fill out the following form, and stay tuned on your email. We'll be in touch with the details soon. We are more than excited, and we hope you are too. <a href="https://mailchi.mp/a92da05667d6/groweth" target="_blank">The form lives here.</a>
 </p>
 <p>
-The numbers from May are in, and we had another fantastic month. The Gitcoin product suite enabled $215k of value transfer in May, adding up to a cumulative 1.4m of lifetime value for the Gitcoin platform. That's about $299/hour, for every hour during May ($1348/business-hour). 
-We're excited for the next wave of activities, from Gitcoin Grants CLR Round 3 to a solution for abandoned bounties. Have any thoughts on what we should work on? <a href="mailto:founders@gitcoin.co">Drop us a line. We'd love to hear from you.</a>
+With that said...the Beyond Blockchain hackathon is still firing on all cylinders. If you're looking to take advantage of the long weekend and vie for some of the top prizes, check out the following: <a href="https://gitcoin.co/issue/ConsenSys/Beyond-Blockchain-Relay/3/3158">Reinvent Healthcare</a>; 
+<a href="https://gitcoin.co/issue/gitcoinco/skunkworks/93/3185">Make Kudos Incredible</a>; <a href="https://gitcoin.co/issue/raiden-network/hackathons/1/3168">Integrate Raiden</a>; and <a href="https://gitcoin.co/issue/raiden-network/hackathons/3/3170">Enhance Raiden.</a>
 </p>
+Round 3 of CLR matching for Gitcoin Grants is coming in Q3! Are you interested in matching? Add to our $50K+ committed and help us grow open source infrastructure projects. 🛠 Building? A funding opportunity awaits. Create a Gitcoin Grant & let the community see your progress!
 <p>
-The Gitcoin blog is now live. <a href="https://gitcoin.co/blog/finding-best-freelance-jobs-for-coders-in-2019/">Take another look at our first post and send us any issues you may find!</a>
-</p>
 
+</p>
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Have an open source project that needs funding? <a href="mailto:founders@gitcoin.co">Send us an email and we'll see if we can help.</a>
+            The Gitcoin Livestream is NOT back this week! Our team will be celebrating the Fourth with our families. Join us <a href="https://gitcoin.co/livestream"> at 2PM ET next Friday.
         </li>
         <li>
-            The Gitcoin Livestream is back this week. Join us <a href="https://gitcoin.co/livestream"> at 2PM ET on Friday, or catch it on <a href="https://twitter.com/gitcoin">Twitter</a>!
+            Looking for something to watch this weekend? You're in luck. We just released new content on the Gitcoin Media YouTube channel. Check it out <a href="http://youtube.com/gitcoinmedia">here</a>. 
         </li>
     </ul>
 </p>
 <p>
 Back to shipping,
 </p>
-
 '''
     highlights = [{
-        'who': 'janus',
+        'who': 'socialcode-rob1',
         'who_link': True,
-        'what': 'Reduce bundle size :)',
-        'link': 'https://gitcoin.co/issue/WalletConnect/walletconnect-monorepo/128/3030',
+        'what': 'Readme: updated.',
+        'link': 'https://gitcoin.co/issue/sigillabs/mobidex/235/3165',
         'link_copy': 'View more',
     }, {
-        'who': 'c410-f3r',
+        'who': 'nanspro',
         'who_link': True,
-        'what': 'Nice job on the Stratum protocol proof of concept!',
-        'link': 'https://gitcoin.co/issue/nblockchain/TcpEchoSharp/1/3059',
+        'what': 'Nanspro with the resources!',
+        'link': 'https://gitcoin.co/issue/ethhub-io/ethhub/299/3159',
         'link_copy': 'View more',
     }, {
-        'who': 'MaxStalker',
+        'who': 'sanidhayarora',
         'who_link': True,
-        'what': 'Docs rewrite: complete.',
-        'link': 'https://gitcoin.co/issue/leapdao/leapdao-docs/25/3058',
+        'what': 'Warnings, fixed.',
+        'link': 'https://gitcoin.co/issue/sigillabs/mobidex/230/3100',
         'link_copy': 'View more',
     }, ]
+
+    sponsor = {
+        'name': 'The Future of Infrastructure Finance',
+        'title': 'Blockchain Developer Job Kit',
+        'image_url': 'https://s3.us-west-2.amazonaws.com/gitcoin-static/jDSk7ZTfpY19PWdwwsk8puNd.png',
+        'link': 'http://bit.ly/Allinfra',
+        'cta': 'Register today',
+        'body': [
+            'Bringing access, choice, and liquidity to unlisted infrastructure assets'
+        ]
+    }
 
     bounties_spec = [{
-        'url': 'https://github.com/ethhub-io/ethhub/issues/285',
-        'primer': 'Help market the Plasma project by rewriting their copy',
+        'url': 'https://github.com/ssbc/patchbay/issues/342',
+        'primer': 'SSB-Ahoy Replication',
     }, {
-        'url': 'https://github.com/blockades/scuttle-dark-crystal/issues/56',
-        'primer': 'Changes to ephemeral shard returns after a security review of ssb-ephemeral-keys',
+        'url': 'https://github.com/prysmaticlabs/prysm/issues/2740',
+        'primer': 'Cache Active Indices Efficiently',
     }, {
-        'url': 'https://github.com/leapdao/bridge-ui/issues/214',
-        'primer': 'Show NST/ERC1948 tokens on the Bridge UI',
-    }, ]
-
+        'url': 'https://github.com/status-im/status-react/issues/7990',
+        'primer': 'Support for Galaxy S10',
+}, ]
+    
+    
     num_leadboard_items = 5
     highlight_kudos_ids = []
     num_kudos_to_show = 15
@@ -1063,6 +1073,7 @@ Back to shipping,
         'highlights': highlights,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'kudos_highlights': kudos_highlights,
+        'sponsor': sponsor,
     }
 
     response_html = premailer_transform(render_to_string("emails/bounty_roundup.html", params))

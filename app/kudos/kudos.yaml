@@ -4839,5 +4839,124 @@
   tags:
   - BUIDL
   image: i_want_you_to_build_on_eth.svg
-
+- name: beyond_blockchain_submission
+  description: This badge is for a Gitcoiner who grew open source during Beyond Blockchain 2019 :) 
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - beyondblockchain
+  - gitcoin
+  image: beyond_blockchain_hackathon.svg
+- name: raiden_network
+  description: This badge is for a Raiden community member who has shown their appreciation for a scalable blockchain future
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - raiden
+  - gitcoin
+  image: RN-Kudo.svg
+- name: beyond_blockchain_winners
+  description: This badge is for prize winners of the Beyond Blockchain hackathon! 
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 100
+  tags:
+  - beyondblockchain
+  - gitcoin
+  image: beyond_blockchain_throphy.svg
+- name: portis_badge
+  description: This badge is for a Portis community member who has shown their appreciation for a usable blockchain future! 
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - portis
+  - wallet
+  image: portis.svg
+- name: beyond_blockchain
+  description: This badge is for hackers in the Beyond Blockchain hackathon! 
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - beyondblockchain
+  - gitcoin
+  image: beyond_blockchain_3.svg
+- name: arweave_badge
+  description: This badge is for a Arweave community member who has shown their appreciation for a permaweb future!
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - arweave
+  - gitcoin
+  image: arwave.svg
+- name: fourth_of_july_bot
+  description: Happy Fourth of July from Gitcoin!
+  priceFinney: 10
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - just for fun
+  - happy fourth of july
+  - gitcoin
+  image: fourth_of_july.svg
+- name: fourth_of_july_bot_
+  description: Happy Fourth of July from Gitcoin!
+  priceFinney: 10
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - just for fun
+  - happy fourth of july
+  - gitcoin
+  image: fourth_of_july2.svg
+- name: fourth_of_july_bot__
+  description: Happy Fourth of July from Gitcoin!
+  priceFinney: 10
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - just for fun
+  - happy fourth of july
+  - gitcoin
+  image: fourth_of_july3.svg
+- name: fourth_of_july_bot___
+  description: Happy Fourth of July from Gitcoin!
+  priceFinney: 10
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - just for fun
+  - happy fourth of july
+  - gitcoin
+  image: fourth_of_july4.svg
+- name: fourth_of_july_bot_____
+  description: Happy Fourth of July from Gitcoin!
+  priceFinney: 10
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - just for fun
+  - happy fourth of july
+  - gitcoin
+  image: fourth_of_july5.svg
+- name: fourth_of_july_bot______
+  description: Happy Fourth of July from Gitcoin!
+  priceFinney: 10
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - just for fun
+  - happy fourth of july
+  - gitcoin
+  image: fourth_of_july6.svg
 

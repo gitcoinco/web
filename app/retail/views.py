@@ -998,10 +998,11 @@ def activity(request):
     page_size = 15
     activities = Activity.objects.all().order_by('-created')
     p = Paginator(activities, page_size)
-    page = request.GET.get('page', 1)
+    page = int(request.GET.get('page', 1))
 
     context = {
         'p': p,
+        'next_page': page + 1,
         'page': p.get_page(page),
         'title': _('Activity Feed'),
     }
@@ -1557,6 +1558,8 @@ def btctalk(request):
 def reddit(request):
     return redirect('https://www.reddit.com/r/gitcoincommunity/')
 
+def blog(request):
+    return redirect('https://gitcoin.co/blog')
 
 def livestream(request):
     return redirect('https://calendar.google.com/calendar/r?cid=N3JxN2dhMm91YnYzdGs5M2hrNjdhZ2R2ODhAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ')
