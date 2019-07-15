@@ -1987,18 +1987,29 @@ def profile(request, handle):
         context['ratings'] = range(0,5)
         tabs = []
 
+        counts = all_activities.values('activity_type').order_by('activity_type').annotate(the_count=Count('activity_type'))
+        counts = {ele['activity_type']: ele['the_count'] for ele in counts}
         for tab, name in activity_tabs:
-            activities = profile_filter_activities(all_activities, tab)
-            activities_count = activities.count()
 
+            # this functions as profile_filter_activities does
+            # except w. aggregate counts
+
+            if tab == 'all':
+                activities_count = sum([val for key, val in counts.items()])
+            else:
+                activities_count = counts.get(tab, 0)
+            if tab == 'start_work':
+                activities_count += counts.get("worker_approved", 0)
+
+
+            # dont draw a tab where the activities count is 0
             if activities_count == 0:
                 continue
 
-            paginator = Paginator(activities, 10)
-
+            # buidl dict
             obj = {'id': tab,
                    'name': name,
-                   'objects': paginator.get_page(1),
+                   'objects': [],
                    'count': activities_count,
                    'type': 'activity'
                    }
@@ -2078,6 +2089,7 @@ def profile(request, handle):
             }
 
             return JsonResponse(msg, status=msg.get('status', 200))
+    context['show_activity'] = request.GET.get('p', False) != False
     return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
 
