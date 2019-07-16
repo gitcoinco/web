@@ -2,7 +2,6 @@
     "symbol": "HCC",
     "account_name": "hurricaneccc",
     "overview": {
-        "en": "Hurricane Chain——An underlying infrastructure for distributed data storage,processing,and application development.",
-        "zh": "飓风生态（Hurricane Chain，简称HCC）,一个分布式数据存储、处理和应用开发底层设施。"
+        "en": "Hurricane Chain——An underlying infrastructure for distributed data storage,processing,and application development."
     }
 }
