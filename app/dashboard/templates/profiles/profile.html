@@ -1,4 +1,4 @@
-{% load i18n email_obfuscator humanize static add_url_schema avatar_tags %}
+{% load i18n email_obfuscator humanize static add_url_schema avatar_tags compress %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -7,6 +7,7 @@
     {% endif %}
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
+    {% compress css %}
     <link rel="stylesheet" href={% static "v2/css/dashboard.css" %} />
     <link rel="stylesheet" href={% static "v2/css/profile.css" %} />
     <link rel="stylesheet" href={% static "v2/css/tag.css" %} />
@@ -14,6 +15,7 @@
     <link rel="stylesheet" href={% static "v2/css/tabs.css" %} />
     <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
     <link rel="stylesheet" href={% static "v2/css/scroll-carousel.css" %} />
+    {% endcompress %}
   </head>
   <body class="interior {{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
@@ -302,9 +304,13 @@
     {% include 'shared/messages.html' %}
 
     <!-- jQuery -->
+  {% compress js %}
     <script src="{% static "v2/js/abi.js" %}"></script>
     <script src="/dynamic/js/tokens_dynamic.js"></script>
     <script src="{% static "v2/js/tokens.js" %}"></script>
+    <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
+    <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+    {% endcompress %}  
     
     
     <script>
