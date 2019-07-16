@@ -22,6 +22,8 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/board.css" %}" />
+
   </head>
   <body class="{{ active }} bg-lightblue g-font-muli" >
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
@@ -42,28 +44,7 @@
         </div>
       </header>
       <section class="container">
-        <div class="row">
-          <div class="col-12">
-            <div class="bg-white p-3">
-                {% trans 'Notifications' %}
-                <a href="{% url 'inbox:inbox_view' %}" class="">{% trans 'See all' %}</a>
-              <ul class="notifications__list">
-                <li v-for="notification in notifications" class="notifications__item" :key="notification.id">
-                  <span class="notifications__item-readed">
-                    <b class="notification__dot-small" v-bind:class="{'notification__dot-small_active': !notification.is_read}"></b>
-                  </span>
-                  <a :href="[[ notification.cta_url ]]" class="notifications_content" @click="e => !notification.is_read && markRead(notification.id)">
-                    <img class="notifications__avatar" :src="'/dynamic/avatar/' + [[ notification.username ]]" width="28" height="28">
-                    <p class="line-clamp" v-html="notification.message_html"></p>
-                  </a>
-                  <time class="notifications__time" :datetime="[[ notification.created_on ]]" :title="[[ notification.created_on ]]">
-                    [[ notification.created_on | moment-fromnow ]]
-                  </time>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
+
         <div class="row">
           <div class="col-12">
             <nav>
@@ -76,25 +57,76 @@
               <div class="tab-pane fade show active" id="nav-contributor" role="tabpanel" aria-labelledby="nav-contributor-tab">
 
 
-                  <div class="row">
-                    <div class="col-9 ">
-                      <ul class="bg-white rounded">
-                        <li v-for="bounty in bounties" :key="bounty.id">
-                          <img :src="bounty.avatar_url" alt="" width="40" height="40">
-                          <a :href="bounty.url">[[ bounty.title ]]</a>
-                          <div v-for="interested in bounty.profile_pairs">
-                            <img :src="`/dynamic/avatar/${interested[0]}`" alt="" width="40" height="40">
-                            [[ interested[0] ]]
+                  <div class="row bg-white rounded border">
+                    <div>3 Open Bounties</div>
+                    <div class="col-12">
+                      <ul class="list-unstyled">
+                        <li v-for="(bounty, key) in bounties" :key="bounty.id" class="position-relative my-3" :class="isExpanded(key)? 'line-deco': ''">
+
+                          <span class="fa-stack">
+                            <i class="fas fa-circle fa-stack-2x green"></i>
+                            <i class="fas fa-user fa-stack-1x fa-inverse"></i>
+                          </span>
+                          You have 4 applicantions on this bounty
+                          <div class="d-flex justify-content-between border p-3 my-2 ml-5 rounded">
+                            <div class="w-75">
+                              <div class="d-flex align-items-end">
+                                <img :src="bounty.avatar_url" alt="" width="40" height="40" class="flex-shrink-0">
+                                <a :href="bounty.url" class="text-truncate">[[ bounty.title ]]</a>
+                              </div>
+                              <div class="d-flex justify-content-between">
+                                <template v-if="bounty.bounty_type">
+                                  <span>[[ bounty.bounty_type ]]</span> &bull;
+                                </template>
+                                <template v-if="bounty.expires_date">
+                                  <span>[[ bounty.expires_date ]]</span> &bull;
+                                </template>
+                                <span>[[ bounty.value_true ]] [[ bounty.token_name ]] ([[ bounty.value_in_usdt_now ]] USD)</span>
+                                <a href="#"><i class="fab fa-github"></i> View Issue Details</a>
+                                <a href="#"><i class="fab fa-github"></i> View Github</a>
+                              </div>
+                            </div>
+                            <button @click="toggleExpansion(key)" class="btn blue">View Applicants <i class="fa fa-fw" :class="isExpanded(key)? 'fa-chevron-up': 'fa-chevron-down'"></i></button>
+                          </div>
+                          <div v-show="isExpanded(key)">
+                            <ul class="list-unstyled m-5">
+                              <li class="mb-4" v-for="contributor in 4, 5">
+                                <div class="d-flex justify-content-between">
+                                  <div class="w-75">
+                                    <div class="d-flex">
+                                      <img :src="bounty.avatar_url" alt="" width="40" height="40" class="flex-shrink-0">
+                                      <div class="d-flex flex-column">
+                                        <div class="">
+                                          owocki <a href="#"><i class="fab fa-github"></i></a>
+                                        </div>
+                                        <div class="d-flex">
+                                          <div class="" style="color:#25E899;">
+                                            <i class="far fa-star" :class="star <= (4).toFixed() ? 'fas' : 'far'" v-for="star in (4).toFixed(), 5"></i>
+                                          </div>
+                                            (5 ratings) &bull;
+                                            #40 contributor &bull;
+                                            40 bounties completed
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                  </div>
+                                  <button class="btn btn-sm btn-gc-blue"><i class="fas fa-check"></i> Accept</button>
+                                  <button class="btn btn-sm btn-outline-gc-blue"><i class="fas fa-times"></i> Reject</button>
+                                </div>
+
+                                <div class="comment-plan">Work Plan: 1. Look for inspiration from Dribbble
+                                  2. Do a first draft on Photoshop by August 5th
+                                  3. Make adjustments based on feedback
+                                </div>
+
+                              </li>
+                            </ul>
                           </div>
                         </li>
                       </ul>
                     </div>
-                    <div class="col-3">
-                      <div class="bg-white rounded">
-                        Earnings
-                        [[ profile.total_earned ]]
-                      </div>
-                    </div>
+
                   </div>
 
               </div>

@@ -1,0 +1,21 @@
+.line-deco:after {
+  content: '';
+  position: absolute;
+  top: 34px;
+  border: 1px solid #F5F6F6;
+  bottom: 20px;
+  /* height: 100%; */
+  left: 18px;
+}
+
+.comment-plan {
+  color: #666666;
+  white-space: pre-line;
+  max-height: 100px;
+  overflow: hidden;
+  overflow-y: auto;
+  background: #F5F6F6;
+  padding: 1em;
+  margin-top: 1em;
+  border-radius: 5px;
+}

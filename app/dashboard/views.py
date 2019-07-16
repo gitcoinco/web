@@ -2889,25 +2889,28 @@ def funder_dashboard(request):
             status=401)
 
     profile = request.user.profile
+    # values = ['id', 'token_name', 'value_in_token', 'value_in_usd', 'github_url', 'absolute_url']
+
 
     open_bounties = list(Bounty.objects.filter(
         Q(idx_status='open') | Q(idx_status='open'),
         current_bounty=True,
         bounty_owner_profile=profile
-        ).values_list('id', flat=True).order_by('-interested__created'))
+        ).values_list('id', 'title','token_name', 'value_in_token', 'value_in_usdt', 'github_url').order_by('-interested__created'))
+    print(open_bounties,profile)
 
     submitted_bounties = list(Bounty.objects.filter(
         Q(idx_status='submitted') | Q(override_status='submitted'),
         current_bounty=True,
         fulfillments__accepted=False,
         bounty_owner_profile=profile
-        ).values_list('id', flat=True).order_by('-fulfillments__created_on'))
+        ).values_list('id').order_by('-fulfillments__created_on'))
 
     expired_bounties = list(Bounty.objects.filter(
         Q(idx_status='expired') | Q(override_status='expired'),
         current_bounty=True,
         bounty_owner_profile=profile
-        ).order_by('-expires_date').values_list('id', flat=True))
+        ).order_by('-expires_date').values_list('id'))
 
     return JsonResponse({'open': open_bounties,
                          'submitted': submitted_bounties,
