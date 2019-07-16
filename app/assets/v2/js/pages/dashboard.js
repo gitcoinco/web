@@ -18,10 +18,10 @@ var local_storage_keys = JSON.parse(JSON.stringify(filters));
 local_storage_keys.push('keywords');
 local_storage_keys.push('org');
 
-results_limit = 10;
+results_limit = 5;
 
 if (document.hackathon) {
-  results_limit = 10;
+  results_limit = 5;
 }
 
 var localStorage;
