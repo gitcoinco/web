@@ -17,7 +17,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from cacheops import cached_as
 from economy.models import ConversionRate
 
 
@@ -34,7 +33,8 @@ class ConversionRateNotFoundError(Exception):
     pass
 
 
-def convert_amount(from_amount, from_currency, to_currency, timestamp=None):
+def convert_amount(from_amount: float, from_currency: str, to_currency: str,
+                   timestamp=None) -> float:
     """Convert the provided amount to another current.
 
     Args:
@@ -67,12 +67,14 @@ def convert_amount(from_amount, from_currency, to_currency, timestamp=None):
         ).order_by('-timestamp').first()
 
     if not conversion_rate:
-        raise ConversionRateNotFoundError(f"ConversionRate {from_currency}/{to_currency} @ {timestamp} not found")
+        raise ConversionRateNotFoundError(
+            f"ConversionRate {from_currency}/{to_currency} @ {timestamp} not found")
 
-    return (float(conversion_rate.to_amount) / float(conversion_rate.from_amount)) * float(from_amount)
+    return (float(conversion_rate.to_amount) / float(conversion_rate.from_amount)) * float(
+        from_amount)
 
 
-def convert_token_to_usdt(from_token, timestamp=None):
+def convert_token_to_usdt(from_token: str, timestamp=None) -> float:
     """Convert the token to USDT.
 
     Args:
@@ -89,7 +91,7 @@ def convert_token_to_usdt(from_token, timestamp=None):
         return convert_amount(in_eth, 'ETH', "USDT", timestamp)
 
 
-def etherscan_link(txid):
+def etherscan_link(txid: str) -> str:
     """Build the Etherscan URL.
 
     Args:

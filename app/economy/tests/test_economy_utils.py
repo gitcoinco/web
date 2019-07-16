@@ -18,12 +18,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 from datetime import datetime
+from unittest import mock
 
 from django.test.client import RequestFactory
 
 from economy.models import ConversionRate
-from economy.utils import convert_amount, etherscan_link
+from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt, etherscan_link
 from test_plus.test import TestCase
+
+
+def mocked_convert_amount_side_effect(from_amount, from_currency, to_currency, timestamp=None):
+    if from_currency == 'foo' and to_currency == 'USDT':
+        raise ConversionRateNotFoundError()
+    return 123
 
 
 class EconomyUtilsTest(TestCase):
@@ -64,6 +71,34 @@ class EconomyUtilsTest(TestCase):
         """Test the economy util convert_amount method for historic ConversionRates."""
         result = convert_amount(2, 'ETH', 'USDT', datetime(2018, 1, 1))
         assert round(result, 1) == 10
+
+    def test_convert_amount_raises(self):
+        """Test the economy util convert_amount method for raising ConversionRateNotFoundError."""
+        from_currency = 'foo'
+        to_currency = 'bar'
+        exc_msg = f"ConversionRate {from_currency}/{to_currency} @ None not found"
+        with self.assertRaisesMessage(ConversionRateNotFoundError, exc_msg):
+            convert_amount(101, from_currency, to_currency)
+
+    @mock.patch('economy.utils.convert_amount', return_value=321)
+    def test_convert_token_to_usdt(self, mocked_convert_amount):
+        """Test the economy util convert_token_to_usdt method."""
+        rv = convert_token_to_usdt('ETH')
+        assert rv == 321
+        mocked_convert_amount.assert_called_with(1, 'ETH', 'USDT', None)
+
+    @mock.patch('economy.utils.convert_amount', side_effect=mocked_convert_amount_side_effect)
+    def test_convert_token_to_usdt_conversion_rate_not_found(self, mocked_convert_amount):
+        """Test the economy util convert_token_to_usdt for handling ConversionRateNotFoundError."""
+        from_token = 'foo'
+        rv = convert_token_to_usdt(from_token)
+        assert rv == 123
+        calls = [
+            mock.call(1, from_token, 'USDT', None),
+            mock.call(1, from_token, 'ETH', None),
+            mock.call(123, 'ETH', 'USDT', None)
+        ]
+        mocked_convert_amount.assert_has_calls(calls)
 
     def test_etherscan_link(self):
         """Test the economy util etherscan_link method."""
