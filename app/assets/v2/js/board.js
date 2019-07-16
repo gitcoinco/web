@@ -15,7 +15,7 @@ Vue.mixin({
     isExpanded(key) {
     	return this.expandedGroup.indexOf(key) !== -1;
     },
-    toggleExpansion(key) {
+    toggleCollapse(key) {
     	if (this.isExpanded(key))
         this.expandedGroup.splice(this.expandedGroup.indexOf(key), 1);
       else
