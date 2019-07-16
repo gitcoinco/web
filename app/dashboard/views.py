@@ -307,7 +307,7 @@ def new_interest(request, bounty_id):
     approval_required = bounty.permission_type == 'approval'
     if approval_required:
         msg = _("You have applied to start work.  If approved, you will be notified via email.")
-    elif approval_required == 'permissionless' and bounty.bounty_reserved_for_user != profile:
+    elif not approval_required and bounty.bounty_reserved_for_user != profile:
         msg = _("You have applied to start work, but the bounty is reserved for another user.")
         JsonResponse({
             'error': msg,
