@@ -17,6 +17,7 @@
 {% load i18n static is_in_list matches compress %}
 {% include 'shared/tag_manager_1.html' %}
 <meta charset="utf-8">
+<link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
 {% compress css %}
 <link rel="preload" href="{% static "v2/css/base.css" %}" as="style">
 <link rel="preload" href="{% static "v2/css/gitcoin.css" %}" as="style">
@@ -32,15 +33,16 @@
 
 <link rel="preload" href="{% static "v2/js/lib/bootstrap.min.js" %}" as="script" crossorigin="anonymous">
 
-<link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
 <link rel="stylesheet" href="{% static "v2/css/bootstrap.min.css" %}" crossorigin="anonymous">
 <link rel="stylesheet" href="{% static "v2/css/lib/typography.css" %}">
 <link rel="stylesheet" href="{% static "v2/css/fontawesome-all.min.css" %}">
 <link rel="stylesheet" href="{% static "v2/css/gitcoin.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/top-nav.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/base.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/jquery.modal.min.css" %}" />
+{% if not slim %}
+  <link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
+  <link rel="stylesheet" href="{% static "v2/css/jquery.modal.min.css" %}" />
+{% endif %}
 <link rel="stylesheet" href="{% static "v2/css/jquery.select2.min.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/rain.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/buttons.css" %}" />
