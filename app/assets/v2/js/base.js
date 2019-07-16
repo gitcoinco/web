@@ -156,7 +156,7 @@ const attach_close_button = function() {
     $('.alert').each(function(index) {
       if (index == 0) $(this).css('top', 0);
       else {
-        var new_top = (index * 66) + 'px';
+        let new_top = (index * 66) + 'px';
 
         $(this).css('top', new_top);
       }
@@ -292,11 +292,10 @@ const sendPersonal = (persona) => {
         redirect: '/onboard/contributor'
       }
     ];
-    // TODO: CLEAN COMMENTS
+
     const checkUrl = (arr, val) => {
       return arr.some(arrObj => {
         if (val.indexOf(arrObj.url) >= 0) {
-          // window.location = arrObj.redirect;
           return true;
         }
         return false;
@@ -304,9 +303,6 @@ const sendPersonal = (persona) => {
     };
 
     if (response.persona === 'persona_is_funder') {
-      // if (!checkUrl(urls, document.location.href)) {
-      //   return _alert(gettext('Thanks, you can read the guide <a href="/how/funder">here.</a>'), 'info');
-      // }
       if (checkUrl(urls, document.location.href)) {
         window.location = '/onboard/funder';
       } else {
@@ -314,9 +310,6 @@ const sendPersonal = (persona) => {
       }
 
     } else if (response.persona === 'persona_is_hunter') {
-      // if (!checkUrl(urls, document.location.href)) {
-      //   return _alert(gettext('Thanks, you can read the guide <a href="/how/contributor">here.</a>'), 'info');
-      // }
       if (checkUrl(urls, document.location.href)) {
         window.location = '/onboard/contributor';
       } else {
