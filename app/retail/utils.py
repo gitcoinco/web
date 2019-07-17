@@ -171,7 +171,7 @@ def get_codefund_history_at_date(date, keyword):
     if date > timezone.datetime(2019, 5, 9):
         amount += 39304
     if date > timezone.datetime(2019, 6, 9):
-        amount += 15000 # WIP June
+        amount += 38287.22
     return amount
 
 
@@ -550,5 +550,6 @@ def build_stat_results(keyword=None):
     bh[0] = 0
     context['last_month_amount'] = round(sum(bh)/1000)
     context['last_month_amount_hourly'] = sum(bh) / 30 / 24
+    context['last_month_amount_hourly_business_hours'] = context['last_month_amount_hourly'] / 0.222
 
     return context

@@ -449,6 +449,12 @@ a:hover #shape-hexagon {
   margin-left: -60px;
   margin-top: 4rem;
   top: 0; }
+
+  @media (max-width: 768px) {
+  #kudos-section .kudos_card_container {
+    width: 50%;
+    }
+  }
 @media (max-width: 768px) {
   .star-pulse {
     right: -10px;
@@ -691,4 +697,25 @@ body.ck .top-nav{
 }
 body.ck img.mw-100{
   display: none !important;
+}
+#tip_nav {
+  padding-left: 0px;
+  margin-bottom: 0px;
+}
+#tip_nav li {
+  list-style: none;
+  display: inline-block;
+  background-color: #eeeeee;
+  border-top: solid 1px black;
+  border-right: solid 1px black;
+  border-left: solid 1px black;
+  padding: 3px 5px;
+  cursor: pointer;
+  border-radius: 3px 3px 0px 0px;
+}
+#tip_nav li:hover {
+  text-decoration: underline;
+}
+#tip_nav li.selected {
+  font-weight: bold;
 }

@@ -70,21 +70,6 @@ var loading_button = function(button) {
   button.prepend('<img src=' + static_url + 'v2/images/loading_white.gif style="max-width:20px; max-height: 20px">');
 };
 
-var attach_close_button = function() {
-  $('body').delegate('.alert .closebtn', 'click', function(e) {
-    $(this).parents('.alert').remove();
-    $('.alert').each(function(index) {
-      if (index == 0) $(this).css('top', 0);
-      else {
-        var new_top = (index * 66) + 'px';
-
-        $(this).css('top', new_top);
-      }
-    });
-  });
-};
-
-
 var update_metamask_conf_time_and_cost_estimate = function() {
   var confTime = 'unknown';
   var ethAmount = 'unknown';
@@ -130,6 +115,8 @@ var get_updated_metamask_conf_time_and_cost = function(gasPrice) {
     ethAmount = Math.round(1000000 * eth_amount_unrounded) / 1000000;
     usdAmount = Math.round(100 * eth_amount_unrounded * document.eth_usd_conv_rate) / 100;
   }
+
+  if (typeof document.conf_time_spread == 'undefined') return;
 
   for (var i = 0; i < document.conf_time_spread.length - 1; i++) {
     var this_ele = (document.conf_time_spread[i]);
@@ -220,43 +207,6 @@ var waitforWeb3 = function(callback) {
 
 var normalizeURL = function(url) {
   return url.replace(/\/$/, '');
-};
-
-var _alert = function(msg, _class) {
-  if (typeof msg == 'string') {
-    msg = {
-      'message': msg
-    };
-  }
-  var numAlertsAlready = $('.alert:visible').length;
-  var top = numAlertsAlready * 44;
-
-  var html = function() {
-    return (
-      `<div class="alert ${_class} g-font-muli" style="top: ${top}px">
-        <div class="message">
-          <div class="content">
-            ${alertMessage(msg)}
-          </div>
-        </div>
-        ${closeButton(msg)}
-      </div>`
-    );
-  };
-
-  $('body').append(html);
-};
-
-var closeButton = function(msg) {
-  var html = (msg['closeButton'] === false ? '' : '<span class="closebtn" >&times;</span>');
-
-  return html;
-};
-
-var alertMessage = function(msg) {
-  var html = `<strong>${typeof msg['title'] !== 'undefined' ? msg['title'] : ''}</strong>${msg['message']}`;
-
-  return html;
 };
 
 var timestamp = function() {
@@ -690,8 +640,10 @@ var retrieveIssueDetails = function() {
       }).trigger('change');
 
     }
-    target_eles['description'].val(result['description']);
     target_eles['title'].val(result['title']);
+    target_eles['description'].val(result['description']);
+    $('#no-issue-banner').hide();
+    $('#issue-details, #issue-details-edit').show();
 
     // $('#title--text').html(result['title']); // TODO: Refactor
     $.each(target_eles, function(i, ele) {
@@ -1041,7 +993,6 @@ attach_change_element_type();
 
 window.addEventListener('load', function() {
   setInterval(listen_for_web3_changes, 1000);
-  attach_close_button();
 });
 
 var callMethodIfTokenIsAuthed = function(success, failure) {
@@ -1136,9 +1087,7 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
       decimals = relatedTokenDetails.decimals;
     }
 
-    const divisor = Math.pow(10, decimals);
-
-    result['rounded_amount'] = normalizeAmount(result['value_in_token'] / divisor, decimals);
+    result['rounded_amount'] = normalizeAmount(result['value_in_token'], decimals);
 
     const crowdfunding = result['additional_funding_summary'];
 
@@ -1277,7 +1226,7 @@ const renderFeaturedBountiesFromResults = (results, renderForExplorer) => {
       decimals = relatedTokenDetails.decimals;
     }
 
-    result['rounded_amount'] = normalizeAmount(result['value_in_token'] / divisor, decimals);
+    result['rounded_amount'] = normalizeAmount(result['value_in_token'], decimals);
 
     html += tmpl.render(result);
   }
@@ -1390,7 +1339,7 @@ function toggleExpandableBounty(evt, selector) {
 }
 
 function normalizeAmount(amount, decimals) {
-  return Math.round(amount * 10 ** decimals) / 10 ** decimals;
+  return Math.round((parseInt(amount) / Math.pow(10, decimals)) * 1000) / 1000;
 }
 
 function newTokenTag(amount, tokenName, tooltipInfo, isCrowdfunded) {

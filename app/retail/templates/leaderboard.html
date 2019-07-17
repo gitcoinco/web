@@ -14,7 +14,7 @@
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      {% include 'shared/nav.html' %}
+      {% include 'home/nav.html' %}
     </div>
     <div class="row no-gutter">
       <div class="col body leaderboard-container">
@@ -32,15 +32,13 @@
                       {% endif %}
 
                       <h6 class="pt-3 pb-2 text-center">
-                        {% if forloop.counter == 1 %}
-                          <img src="/static/v2/images/leaderboard-1.png" style="max-width: 2rem; float: left; position: relative; bottom: 3px;"></img>
-                        {% endif %}
                         {% if not is_linked_to_profile %}
+                          {% if forloop.counter == 1 %}
+                            <img src="/static/v2/images/leaderboard-1.png" style="max-width: 2rem; float: left; position: relative; bottom: 3px;"></img>
+                          {% endif %}
                           <a href="{{ podium_item.url }}" class="font-weight-semibold" target="_blank">
                             {{ podium_item.at_ify_username }}
                           </a>
-                        {% else %}
-                          {{ podium_item.at_ify_username }}
                         {% endif %}
                       </h6>
 
@@ -59,7 +57,7 @@
                   <!-- RESULTS TITLE & FILTER -->
 
                   <div class="col-12 my-auto col-lg-6 text-center text-md-left">
-                    <h3 class="font-subheader font-weight-semibold mb-lg-0">{{ title }}</h3>
+                    <h3 class="font-subheader font-weight-semibold mb-lg-0">Quarterly {{ title }}</h3>
                   </div>
                   <div class="col-12 col-sm-6 col-lg-3 mx-auto my-2 my-md-0 text-center text-sm-right text-lg-left">
                     {% if technologies|length > 0 %}

@@ -108,10 +108,10 @@
             <div class="g-multiselect pb-4 border-bottom form-group">
               <label for="organisations" class="font-weight-bold">Organisation</label>
               <div class="font-smaller">
-                <input v-model="params.organisation" data-placeholder="e.g. Gitcoin" data-tags="true" class="form-control">
+                <input v-model.lazy="params.organisation" data-placeholder="e.g. Gitcoin" data-tags="true" class="form-control">
               </div>
             </div>
-            <button class="btn blue" @click="params = {}; searchUsers()">Reset Filters</button>
+            <button class="btn blue" @click="params = {};">Reset Filters</button>
           </nav>
         </transition>
         <div class="container pt-4" @scroll.passive="onScroll($event)">
@@ -250,15 +250,11 @@
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
-    <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
-    <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
-    <script>
-      let bootstrapTooltip = $.fn.tooltip.noConflict()
-      $.fn.runTooltip = bootstrapTooltip;
-      const bootstrapModal = $.fn.modal.noConflict()
-      $.fn.bootstrapModal = bootstrapModal
 
-      $('[data-toggle="tooltip"]').runTooltip();
+    <script>
+      $('body').bootstrapTooltip({
+        selector: '[data-toggle="tooltip"]'
+      });
       const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
       document.keywords = {{keywords | safe}};
     </script>

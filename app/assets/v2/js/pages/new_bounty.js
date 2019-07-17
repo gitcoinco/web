@@ -186,6 +186,7 @@ const setPublicForm = () => {
 
 
 $(function() {
+
   $('#last-synced').hide();
   $('.js-select2').each(function() {
     $(this).select2({
@@ -193,16 +194,18 @@ $(function() {
     });
   });
 
+  let checked = params.get('type');
+
   if (params.has('type')) {
-    let checked = params.get('type');
 
     $(`.${checked}`).button('toggle');
-    toggleCtaPlan(checked);
 
   } else {
     params.append('type', 'public');
     window.history.replaceState({}, '', location.pathname + '?' + params);
   }
+  toggleCtaPlan(checked);
+
   $('input[name=repo_type]').change(function() {
     toggleCtaPlan($(this).val());
   });
@@ -238,14 +241,24 @@ $(function() {
     populateBountyTotal();
   });
 
-  $('select[name=denomination]').change(function(e) {
+  var triggerDenominationUpdate = function(e) {
     setUsdAmount();
     promptForAuth();
-    const token = tokenAddressToDetails(e.target.value).name;
+    const token_val = $('select[name=denomination]').val();
+    const tokendetails = tokenAddressToDetails(token_val);
+    var token = tokendetails['name'];
+
 
     $('#summary-bounty-token').html(token);
     $('#summary-fee-token').html(token);
     populateBountyTotal();
+  };
+
+  $('select[name=denomination]').change(triggerDenominationUpdate);
+  waitforWeb3(function() {
+    setTimeout(function() {
+      triggerDenominationUpdate();
+    }, 1000);
   });
 
   $('#featuredBounty').on('change', function() {
@@ -320,7 +333,9 @@ $('#sync-issue').on('click', function(event) {
 $('#issueURL').focusout(function() {
   if (isPrivateRepo) {
     setPrivateForm();
-    if ($('input[name=issueURL]').val() == '' || !validURL($('input[name=issueURL]').val())) {
+    var validated = $('input[name=issueURL]').val() == '' || !validURL($('input[name=issueURL]').val());
+
+    if (validated) {
       $('.js-submit').addClass('disabled');
     } else {
       $('.js-submit').removeClass('disabled');
@@ -342,9 +357,7 @@ $('#issueURL').focusout(function() {
     $('#last-synced').hide();
     $('.js-submit').addClass('disabled');
   } else {
-    $('#no-issue-banner').hide();
     $('#edit-issue').attr('href', $('input[name=issueURL]').val());
-    $('#issue-details, #issue-details-edit').show();
 
     $('#sync-issue').removeClass('disabled');
     $('.js-submit').removeClass('disabled');
@@ -382,6 +395,19 @@ $('#specialEvent').on('click', () => {
 });
 
 $('#submitBounty').validate({
+  errorPlacement: function(error, element) {
+    if (element.attr('name') == 'bounty_category') {
+      error.appendTo($(element).parents('.btn-group-toggle').next('.cat-error'));
+    } else {
+      error.insertAfter(element);
+    }
+  },
+  ignore: '',
+  messages: {
+    select2Start: {
+      required: 'Please select the right keywords.'
+    }
+  },
   submitHandler: function(form) {
     try {
       bounty_address();
@@ -447,7 +473,8 @@ $('#submitBounty').validate({
       featuring_date: data.featuredBounty && ((new Date().getTime() / 1000) | 0) || 0,
       reservedFor: reservedFor ? reservedFor.text : '',
       tokenName,
-      invite: inviteContributors
+      invite: inviteContributors,
+      bounty_categories: data.bounty_category
     };
 
     var privacy_preferences = {
@@ -497,7 +524,8 @@ $('#submitBounty').validate({
         metadata: metadata,
         tokenName: tokenName,
         tokenAddress: tokenAddress,
-        expire_date: expire_date
+        expire_date: expire_date,
+        coupon_code: $('#coupon_code').val()
       },
       meta: {
         platform: 'gitcoin',
@@ -524,13 +552,7 @@ $('#submitBounty').validate({
     var isETH = tokenAddress == '0x0000000000000000000000000000000000000000';
     var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
     var account = web3.eth.coinbase;
-
-    if (!isETH) {
-      check_balance_and_alert_user_if_not_enough(
-        tokenAddress,
-        amount,
-        'You do not have enough tokens to fund this bounty.');
-    }
+    let amountNoDecimal = amount;
 
     amount = amount * decimalDivisor;
     // Create the bounty object.
@@ -766,12 +788,69 @@ $('#submitBounty').validate({
       });
     };
 
-    if ($("input[type='radio'][name='repo_type']:checked").val() == 'private' && $('#issueNDA')[0].files[0]) {
-      uploadNDA();
-    } else if (data.featuredBounty) {
-      payFeaturedBounty();
+    function processBounty() {
+      if ($("input[type='radio'][name='repo_type']:checked").val() == 'private' && $('#issueNDA')[0].files[0]) {
+        uploadNDA();
+      } else if (data.featuredBounty) {
+        payFeaturedBounty();
+      } else {
+        do_bounty();
+      }
+    }
+
+    if (check_balance_and_alert_user_if_not_enough(tokenAddress, amountNoDecimal)) {
+      processBounty();
     } else {
-      do_bounty();
+      return unloading_button($('.js-submit'));
+    }
+
+    function check_balance_and_alert_user_if_not_enough(tokenAddress, amount, msg) {
+      const token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+      const from = web3.eth.coinbase;
+      const token_details = tokenAddressToDetails(tokenAddress);
+      const token_decimals = token_details['decimals'];
+      const token_name = token_details['name'];
+      let total = parseFloat(amount) +
+                    parseFloat((parseFloat(amount) * FEE_PERCENTAGE).toFixed(4)) +
+                    (data.featuredBounty ? ethFeaturedPrice : 0);
+
+      const checkBalance = (balance, total, token_name) => {
+
+        if (parseFloat(total) > balance) {
+          let isFeaturedToken = token_name !== 'ETH' && data.featuredBounty;
+
+          total = isFeaturedToken ? total - ethFeaturedPrice : total;
+          const balance_rounded = Math.round(balance * 10) / 10;
+          let msg = gettext('You do not have enough tokens to fund this bounty. You have ') +
+            balance_rounded + ' ' + token_name + ' ' + gettext(' but you need ') + total +
+            ' ' + token_name;
+
+          if (isFeaturedToken) {
+            msg += ` + ${ethFeaturedPrice} ETH`;
+          }
+          _alert(msg, 'warning');
+        } else {
+          return processBounty();
+        }
+      };
+      var walletBalance;
+
+      if (tokenAddress == '0x0000000000000000000000000000000000000000') {
+        let ethBalance = getBalance(from);
+
+        ethBalance.then(
+          function(result) {
+            walletBalance = result.toNumber() / Math.pow(10, token_decimals);
+            return checkBalance(walletBalance, total, token_name);
+          }
+        );
+      } else {
+        token_contract.balanceOf.call(from, function(error, result) {
+          if (error) return;
+          walletBalance = result.toNumber() / Math.pow(10, token_decimals);
+          return checkBalance(walletBalance, total, token_name);
+        });
+      }
     }
   }
 });
@@ -787,34 +866,18 @@ $('[name=permission_type]').on('change', function() {
   }
 });
 
-/**
- * Alerts funder if they don't have enough tokens while attempting to
- * fund a bounty.
- * @param {String} tokenAddress
- * @param {Number} amount
- */
-function check_balance_and_alert_user_if_not_enough(tokenAddress, amount) {
-  const token_contract = web3.eth.contract(token_abi).at(tokenAddress);
-  const from = web3.eth.coinbase;
-  const token_details = tokenAddressToDetails(tokenAddress);
-  const token_decimals = token_details['decimals'];
-  const token_name = token_details['name'];
 
-  token_contract.balanceOf.call(from, function(error, result) {
-    if (error) return;
-    const balance = result.toNumber() / Math.pow(10, token_decimals);
-    const balance_rounded = Math.round(balance * 10) / 10;
-    const total = parseFloat(amount) + parseFloat((parseFloat(amount) * FEE_PERCENTAGE).toFixed(4));
-
-    if (parseFloat(total) > balance) {
-      const msg = gettext('You do not have enough tokens to fund this bounty. You have ') +
-        balance_rounded + ' ' + token_name + ' ' + gettext(' but you need ') + amount +
-        ' ' + token_name;
-
-      _alert(msg, 'warning');
-    }
+var getBalance = (address) => {
+  return new Promise (function(resolve, reject) {
+    web3.eth.getBalance(address, function(error, result) {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(result);
+      }
+    });
   });
-}
+};
 
 let usdFeaturedPrice = $('.featured-price-usd').text();
 let ethFeaturedPrice;

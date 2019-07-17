@@ -2799,6 +2799,13 @@
     - evolution
     - blopblop
   image: consensys_2.0.svg
+- name: consensys_2_1
+  description: Consensys 2.1
+  priceFinney: 10
+  numClonesAllowed: 500
+  tags:
+    - consensys
+  image: consensys_2_1.svg
 - name: ethdenver_winner_adoption_driver
   artist: mladen
   description: For the ETHDenver 2019 winner in the category of 'Adoption Driver'
@@ -4620,6 +4627,336 @@
   tags:
     - Ethereal Virtual Hackathon
   image: evh2019/ad_ex.svg
-
-
+- name: summer_bot_roadtrip
+  artist: guistf
+  description: What's more fun than a summer trip with all your bot-friends?
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - summer
+    - bots
+    - just for fun
+  image: summer_trip.svg
+- name: ethereal_hackathon_partners
+  description: The evolution is made through opportunities, collaborations, and knowledge sharing. That's why good partnerships are the pillar for great results.
+  priceFinney: 30
+  artist: guistf
+  platform: gitcoin
+  numClonesAllowed: 25
+  to_address: '0xa6d91F3795f934bb5f703724337f39C0f1a95fD5'
+  tags:
+  - Ethereal
+  - hackathon
+  - community
+  - partnerships
+  - collaborations
+  - Ethereal Virtual Hackathon
+  image: ethereal_hackathon_partners.svg
+- name: mythx_platform
+  description: The importance of smart contract auditing is essential for the interoperability of an ecosystem. Do you look for a collaborator who holds these abilities? The holders of those kudos are committed to  the ethics and safety of their work.
+  priceFinney: 30
+  artist: guistf
+  platform: gitcoin
+  numClonesAllowed: 80
+  to_address: '0xa6d91F3795f934bb5f703724337f39C0f1a95fD5'
+  tags:
+  - Mythx
+  - Intelligence
+  - Audit
+  - autonomous
+  - smart contract
+  - tools
+  - security
+  - consensys diligence
+  - pythx
+  image: mythx_platform.svg
+- name: plumber_bot
+  description: it's a me, plumber bot!
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - gitcoin bot
+  image: mario_bot.svg
+- name: summer_beach_bot
+  description: Getting and outdoors and getting some sunshine.  Celebrate the outdoors with your friends! 
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - gitcoin bot
+  image: summer_beach.svg
+- name: love_bot
+  description: for those that <3 their work!
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - gitcoin bot
+  image: lovely_bot.svg
+- name: kayak_bot
+  description: Getting and outdoors and getting some sunshine.  Celebrate the outdoors with your friends! 
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - gitcoin bot
+  image: kayak.svg
+- name: biking_bot
+  description: Getting and outdoors and getting some sunshine.  Celebrate the outdoors with your friends! 
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - gitcoin bot
+  image: biking.svg
+- name: camping_bot
+  description: Getting and outdoors and getting some sunshine.  Celebrate the outdoors with your friends! 
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - gitcoin bot
+  image: camping.svg
+- name: evil_genius_bot
+  description: for the evil genius's that you know
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - gitcoin bot
+  image: darth_vader.svg
+- name: hippy_dippy_bot
+  description: for the grooviest devs you know
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - gitcoin bot
+  image: hippy.svg
+- name: summer_trip_bots
+  description: Getting and outdoors and getting some sunshine.  Celebrate the outdoors with your friends! 
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - gitcoin bot
+  image: summer_trip.svg
+- name: morpheus_bot
+  description: “There's a difference between knowing the path and walking the path
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - gitcoin bot
+  image: morpheus_bot.svg
+- name: cricket_bot
+  description: For the sportsmen (and sportswomen) on your repo
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - gitcoin bot
+  image: cricket_bot.svg
+- name: magneto_bot
+  description: for those who are STRONG like a mutant.
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - gitcoin bot
+  image: magneto_bot.svg
+- name: Meeseeks_bot
+  description: They're clones from an alternate reality, possessed by demonic alien spirits from another dimension's future.
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - gitcoin bot
+  image: Meeseeks_bot.svg
+- name: hippy_bot
+  description: for the grooviest contributors to your repo
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - gitcoin bot
+  image: hippy_bot.svg
+- name: undead
+  description: winter is coming :)
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - just for fun
+  image: night_king.svg
+- name: app_alliance
+  description: Awarded by @owocki for those who are doing great work on Applications in web3.
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 200
+  tags:
+  - gitcoin bot
+  image: app_alliance.svg
+- name: hummingbird
+  description: For those who move so quick, they might as well be a hummingbird
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - just for fun
+  image: hummingbird2.svg
+- name: austin_griffiths_bowtie
+  description: The bowtie award is the highest honor in some parts of the Burner Wallet community.
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - just for fun
+  - austin
+  image: bowtie.svg
+- name: khaleesi
+  description: for the khaleesi's on your team
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - just for fun
+  image: khaleesi.svg
+- name: nights_watcher
+  description: for those defenders of the realm in your team
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - just for fun
+  image: jon_snow.svg
+- name: i_want_you_to_build_on_eth
+  description: for those that you just really want to BUIDL on ETH
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - BUIDL
+  image: i_want_you_to_build_on_eth.svg
+- name: beyond_blockchain_submission
+  description: This badge is for a Gitcoiner who grew open source during Beyond Blockchain 2019 :) 
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - beyondblockchain
+  - gitcoin
+  image: beyond_blockchain_hackathon.svg
+- name: raiden_network
+  description: This badge is for a Raiden community member who has shown their appreciation for a scalable blockchain future
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - raiden
+  - gitcoin
+  image: RN-Kudo.svg
+- name: beyond_blockchain_winners
+  description: This badge is for prize winners of the Beyond Blockchain hackathon! 
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 100
+  tags:
+  - beyondblockchain
+  - gitcoin
+  image: beyond_blockchain_throphy.svg
+- name: portis_badge
+  description: This badge is for a Portis community member who has shown their appreciation for a usable blockchain future! 
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - portis
+  - wallet
+  image: portis.svg
+- name: beyond_blockchain
+  description: This badge is for hackers in the Beyond Blockchain hackathon! 
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - beyondblockchain
+  - gitcoin
+  image: beyond_blockchain_3.svg
+- name: arweave_badge
+  description: This badge is for a Arweave community member who has shown their appreciation for a permaweb future!
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - arweave
+  - gitcoin
+  image: arwave.svg
+- name: fourth_of_july_bot
+  description: Happy Fourth of July from Gitcoin!
+  priceFinney: 10
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - just for fun
+  - happy fourth of july
+  - gitcoin
+  image: fourth_of_july.svg
+- name: fourth_of_july_bot_
+  description: Happy Fourth of July from Gitcoin!
+  priceFinney: 10
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - just for fun
+  - happy fourth of july
+  - gitcoin
+  image: fourth_of_july2.svg
+- name: fourth_of_july_bot__
+  description: Happy Fourth of July from Gitcoin!
+  priceFinney: 10
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - just for fun
+  - happy fourth of july
+  - gitcoin
+  image: fourth_of_july3.svg
+- name: fourth_of_july_bot___
+  description: Happy Fourth of July from Gitcoin!
+  priceFinney: 10
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - just for fun
+  - happy fourth of july
+  - gitcoin
+  image: fourth_of_july4.svg
+- name: fourth_of_july_bot_____
+  description: Happy Fourth of July from Gitcoin!
+  priceFinney: 10
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - just for fun
+  - happy fourth of july
+  - gitcoin
+  image: fourth_of_july5.svg
+- name: fourth_of_july_bot______
+  description: Happy Fourth of July from Gitcoin!
+  priceFinney: 10
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - just for fun
+  - happy fourth of july
+  - gitcoin
+  image: fourth_of_july6.svg
 

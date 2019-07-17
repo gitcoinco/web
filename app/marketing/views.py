@@ -41,10 +41,11 @@ from dashboard.models import Profile, TokenApproval
 from dashboard.utils import create_user_action
 from enssubdomain.models import ENSSubdomainRegistration
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from mailchimp3 import MailChimp
 from marketing.mails import new_feedback
 from marketing.models import AccountDeletionRequest, EmailSubscriber, Keyword, LeaderboardRank
-from marketing.utils import get_or_save_email_subscriber, validate_discord_integration, validate_slack_integration
+from marketing.utils import (
+    delete_user_from_mailchimp, get_or_save_email_subscriber, validate_discord_integration, validate_slack_integration,
+)
 from retail.emails import ALL_EMAILS, render_nth_day_email_campaign
 from retail.helpers import get_ip
 
@@ -152,7 +153,7 @@ def privacy_settings(request):
 
     context = {
         'profile': profile,
-        'nav': 'internal',
+        'nav': 'home',
         'active': '/settings/privacy',
         'title': _('Privacy Settings'),
         'navs': get_settings_navs(request),
@@ -207,7 +208,7 @@ def matching_settings(request):
         'is_logged_in': is_logged_in,
         'autocomplete_keywords': json.dumps(
             [str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
-        'nav': 'internal',
+        'nav': 'home',
         'active': '/settings/matching',
         'title': _('Matching Settings'),
         'navs': get_settings_navs(request),
@@ -235,7 +236,7 @@ def feedback_settings(request):
         msg = _('We\'ve received your feedback.')
 
     context = {
-        'nav': 'internal',
+        'nav': 'home',
         'active': '/settings/feedback',
         'title': _('Feedback'),
         'navs': get_settings_navs(request),
@@ -312,10 +313,11 @@ def email_settings(request, key):
             msg = _('Updated your preferences.')
     pref_lang = 'en' if not profile else profile.get_profile_preferred_language()
     context = {
-        'nav': 'internal',
+        'nav': 'home',
         'active': '/settings/email',
         'title': _('Email Settings'),
         'es': es,
+        'nav': 'home',
         'suppression_preferences': json.dumps(es.preferences.get('suppression_preferences', {}) if es else {}),
         'msg': msg,
         'email_types': ALL_EMAILS,
@@ -360,7 +362,7 @@ def slack_settings(request):
     context = {
         'repos': profile.get_slack_repos(join=True) if profile else [],
         'is_logged_in': is_logged_in,
-        'nav': 'internal',
+        'nav': 'home',
         'active': '/settings/slack',
         'title': _('Slack Settings'),
         'navs': get_settings_navs(request),
@@ -405,7 +407,7 @@ def discord_settings(request):
     context = {
         'repos': profile.get_discord_repos(join=True) if profile else [],
         'is_logged_in': is_logged_in,
-        'nav': 'internal',
+        'nav': 'home',
         'active': '/settings/discord',
         'title': _('Discord Settings'),
         'navs': get_settings_navs(request),
@@ -453,7 +455,7 @@ def token_settings(request):
 
     context = {
         'is_logged_in': is_logged_in,
-        'nav': 'internal',
+        'nav': 'home',
         'active': '/settings/tokens',
         'title': _('Token Settings'),
         'navs': get_settings_navs(request),
@@ -484,7 +486,7 @@ def ens_settings(request):
 
     context = {
         'is_logged_in': is_logged_in,
-        'nav': 'internal',
+        'nav': 'home',
         'ens_subdomain': ens_subdomain,
         'active': '/settings/ens',
         'title': _('ENS Settings'),
@@ -511,6 +513,10 @@ def account_settings(request):
         return login_redirect
 
     if request.POST:
+        if 'persona_is_funder' or 'persona_is_hunter' in request.POST.keys():
+            profile.persona_is_funder = bool(request.POST.get('persona_is_funder', False))
+            profile.persona_is_hunter = bool(request.POST.get('persona_is_hunter', False))
+            profile.save()
 
         if 'preferred_payout_address' in request.POST.keys():
             profile.preferred_payout_address = request.POST.get('preferred_payout_address', '')
@@ -534,16 +540,8 @@ def account_settings(request):
             profile.save()
 
             # remove email
-            try:
-                client = MailChimp(mc_user=settings.MAILCHIMP_USER, mc_api=settings.MAILCHIMP_API_KEY)
-                result = client.search_members.get(query=es.email)
-                subscriber_hash = result['exact_matches']['members'][0]['id']
-                client.lists.members.delete(
-                    list_id=settings.MAILCHIMP_LIST_ID,
-                    subscriber_hash=subscriber_hash,
-                )
-            except Exception as e:
-                logger.debug(e)
+            delete_user_from_mailchimp(es.email)
+
             if es:
                 es.delete()
             request.user.delete()
@@ -569,7 +567,7 @@ def account_settings(request):
 
     context = {
         'is_logged_in': is_logged_in,
-        'nav': 'internal',
+        'nav': 'home',
         'active': '/settings/account',
         'title': _('Account Settings'),
         'navs': get_settings_navs(request),
@@ -618,16 +616,8 @@ def job_settings(request):
             profile.save()
 
             # remove email
-            try:
-                client = MailChimp(mc_user=settings.MAILCHIMP_USER, mc_api=settings.MAILCHIMP_API_KEY)
-                result = client.search_members.get(query=es.email)
-                subscriber_hash = result['exact_matches']['members'][0]['id']
-                client.lists.members.delete(
-                    list_id=settings.MAILCHIMP_LIST_ID,
-                    subscriber_hash=subscriber_hash,
-                )
-            except Exception as e:
-                logger.exception(e)
+            delete_user_from_mailchimp(es.email)
+
             if es:
                 es.delete()
             request.user.delete()
@@ -646,7 +636,7 @@ def job_settings(request):
 
     context = {
         'is_logged_in': is_logged_in,
-        'nav': 'internal',
+        'nav': 'home',
         'active': '/settings/job',
         'title': _('Job Settings'),
         'navs': get_settings_navs(request),
@@ -745,6 +735,7 @@ def leaderboard(request, key=''):
 
     context = {
         'items': items[0:limit],
+        'nav': 'home',
         'titles': titles,
         'selected': title,
         'is_linked_to_profile': is_linked_to_profile,

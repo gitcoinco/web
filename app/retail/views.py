@@ -668,15 +668,6 @@ def about(request):
             "Cocktail Samosa"
         ),
         (
-            static("v2/images/team/saptaks.jpg"),
-            "Saptak Sengupta",
-            "Engineering",
-            "saptaks",
-            "saptaks",
-            "Everything Open Source",
-            "daab chingri"
-        ),
-        (
             static("v2/images/team/scott.jpg"),
             "Scott Moore",
             "Biz Dev",
@@ -763,7 +754,7 @@ def mission(request):
 
     values = [
         {
-            'name': _('Collaboration'),
+            'name': _('Self Reliance'),
             'img': 'v2/images/mission/value/collaborative.svg',
             'alt': 'we-collobarate-icon'
         },
@@ -836,7 +827,7 @@ def mission(request):
             'alt': 'microscope-icon'
         },
         {
-            'text': _('We care about people (not just tasks)'),
+            'text': _('We care about people (not just tasks).'),
             'img': 'v2/images/mission/interact/people_care.svg',
             'alt': 'care-icon'
         },
@@ -1007,10 +998,11 @@ def activity(request):
     page_size = 15
     activities = Activity.objects.all().order_by('-created')
     p = Paginator(activities, page_size)
-    page = request.GET.get('page', 1)
+    page = int(request.GET.get('page', 1))
 
     context = {
         'p': p,
+        'next_page': page + 1,
         'page': p.get_page(page),
         'title': _('Activity Feed'),
     }
@@ -1566,6 +1558,8 @@ def btctalk(request):
 def reddit(request):
     return redirect('https://www.reddit.com/r/gitcoincommunity/')
 
+def blog(request):
+    return redirect('https://gitcoin.co/blog')
 
 def livestream(request):
     return redirect('https://calendar.google.com/calendar/r?cid=N3JxN2dhMm91YnYzdGs5M2hrNjdhZ2R2ODhAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ')
