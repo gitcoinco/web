@@ -207,14 +207,34 @@
       {% endif%}
 
       {% if not hidden and not profile.is_org %}
-      <div class="container" >
+        <div id="tabs">
+        <div id="tab_controller" class="container">
+          <ul class="nav">
+            <li class="nav-item">
+              <a class="nav-link active" href="#" data-href="tab2">
+                Activity
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" data-href="tab1">
+                Details
+              </a>
+            </li>
+          </ul>
+        </div>
+      {% endif %}
+
+      {% if not hidden and not profile.is_org %}
+      <div class="container tab1" >
         <div id="kudos-section">
           {% include "shared/profile_kudos.html" %}
         </div>
       </div>
       {% endif %}
       {% if is_my_profile and not hidden %}
-        {% include "shared/rate_bounties.html" %}
+        <div class="tab1">
+          {% include "shared/rate_bounties.html" %}
+        </div>
       {% endif %}
     </div>
 
@@ -224,7 +244,7 @@
       {% else %}
 
       {% if not profile.is_org and profile.organizations|length %}
-        <div class="container px-md-0">
+        <div class="container px-md-0 tab1 mb-5">
           <div class="row">
           <div class="col py-4 px-md-0">
             <div class="pb-2 profile-section-title">
@@ -249,7 +269,7 @@
       {% endif %}
 
       {% if tabs %}
-        <div class="row pt-4 py-2">
+        <div class="row pt-4 py-2 tab2">
           <div class="container profile-bounties profile-bounties--activities">
             <div class="row">
               <div class="col-12 px-4 px-lg-0">
@@ -295,6 +315,9 @@
       {% endif %}
     {% endif %}
     </div>
+    {% if not hidden and not profile.is_org %}
+      </div>
+    {% endif %}
     </div>
   </div>
     {% include 'shared/result.html' %}

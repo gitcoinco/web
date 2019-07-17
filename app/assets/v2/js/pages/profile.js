@@ -7,6 +7,16 @@ $(document).ready(function() {
     $(e.currentTarget).toggleClass('turn');
   });
 
+  $('#tab_controller li a').click(function(e) {
+    $('#tab_controller li a').removeClass('active');
+    $(this).addClass('active');
+    var target_class = $(this).data('href');
+
+    $('.tab1, .tab2').css('display', 'none');
+    $('.' + target_class).css('display', 'block');
+    e.preventDefault();
+  });
+
   setupTabs('#activity-tabs');
 
   const tabSection = document.querySelector('#activity-tabs-sections');
@@ -39,7 +49,9 @@ $(document).ready(function() {
       fetchInProgress = true;
       loadingImg.className = loadingImg.className.replace('hidden', 'visible');
 
-      fetch(location.href.replace(location.hash, '').replace('?', '') + '?p=' + (++page) + '&a=' + activityName).then(
+      var fetch_url = location.href.replace(location.hash, '').replace('?', '').replace('#', '');
+
+      fetch(fetch_url + '?p=' + (++page) + '&a=' + activityName).then(
         function(response) {
           if (response.status === 200) {
             response.text().then(
