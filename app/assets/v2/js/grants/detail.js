@@ -91,9 +91,7 @@ $(document).ready(function() {
 
     let edit_title = $('#form--input__title').val();
     let edit_reference_url = $('#form--input__reference-url').val();
-    let edit_admin_profile = $('#grant-admin option')
-      .last()
-      .text();
+    let edit_admin_profile = $('#grant-admin option').last().text();
     let edit_amount_goal = $('#amount_goal').val();
     let edit_grant_members = $('#grant-members').val();
 
