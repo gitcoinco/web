@@ -929,12 +929,11 @@ def render_start_work_applicant_expired(interest, bounty):
 
     return response_html, response_txt, subject
 
-
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "GitHub Sponsors and Store!"
-    new_kudos_pks = [2414, 2223, 2220]
+    subject = "Beyond...Beyond Blockchain? 🤯"
+    new_kudos_pks = [4184, 4179, 4143]
     new_kudos_size_px = 150
 
     kudos_friday = f'''
@@ -946,66 +945,78 @@ def render_new_bounty_roundup(to_email):
     '''
     intro = f'''
 <p>
-Hi Gitcoiners,
+Hey Gitcoiners,
 </p>
 <p>
-This past week was an exciting week for open source, as GitHub released <a href="https://github.com/sponsors">Sponsors</a>, a way for users to find ways to financially support developers or open source projects. As proponents of open source, we couldn't be happier, and
-we're excited to announce that you can proudly display your Gitcoin Grants page via the sponsor link. <a href="https://medium.com/gitcoin/gitcoin-grants-github-sponsors-b516192c048">Check out this tutorial to learn more.</a>
+For our folks living in the United States, Happy Fourth of July! We hope you have a terrific weekend of outdoors and good eats. To celebrate, we've decided to announce the next brand new hackathon. While the Beyond Blockchain hackathon is barely halfway over, we're
+looking forward to the next one: the Grow Ethereum hackathon. To sign up for this one, fill out the following form, and stay tuned on your email. We'll be in touch with the details soon. We are more than excited, and we hope you are too. <a href="https://mailchi.mp/a92da05667d6/groweth" target="_blank">The form lives here.</a>
 </p>
 <p>
-We have a store now! Grab some swag at <a href="https://store.gitcoin.co/">https://store.gitcoin.co/</a>. We have backpacks, stickers, t-shirts, and more.
+With that said...the Beyond Blockchain hackathon is still firing on all cylinders. If you're looking to take advantage of the long weekend and vie for some of the top prizes, check out the following: <a href="https://gitcoin.co/issue/ConsenSys/Beyond-Blockchain-Relay/3/3158">Reinvent Healthcare</a>; 
+<a href="https://gitcoin.co/issue/gitcoinco/skunkworks/93/3185">Make Kudos Incredible</a>; <a href="https://gitcoin.co/issue/raiden-network/hackathons/1/3168">Integrate Raiden</a>; and <a href="https://gitcoin.co/issue/raiden-network/hackathons/3/3170">Enhance Raiden.</a>
 </p>
+Round 3 of CLR matching for Gitcoin Grants is coming in Q3! Are you interested in matching? Add to our $50K+ committed and help us grow open source infrastructure projects. 🛠 Building? A funding opportunity awaits. Create a Gitcoin Grant & let the community see your progress!
 <p>
-Last week, we released an article about finding the best freelance gigs in 2019. Read it on our blog <a href="https://gitcoin.co/blog/hiring-gig-economy/finding-best-freelance-jobs-for-coders-in-2019/">here.</a>
-</p>
 
+</p>
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Hackathon season is here! We’re looking for new sponsors for the next hackathon. Interested? Reach out to <a href="mailto:scott@gitcoin.co">Scott.</a>
+            The Gitcoin Livestream is NOT back this week! Our team will be celebrating the Fourth with our families. Join us <a href="https://gitcoin.co/livestream"> at 2PM ET next Friday.
         </li>
         <li>
-            Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET on Friday, or catch it on <a href="https://twitter.com/gitcoin">Twitter</a>!
+            Looking for something to watch this weekend? You're in luck. We just released new content on the Gitcoin Media YouTube channel. Check it out <a href="http://youtube.com/gitcoinmedia">here</a>. 
         </li>
     </ul>
 </p>
 <p>
 Back to shipping,
 </p>
-
 '''
     highlights = [{
-        'who': 'janus',
+        'who': 'socialcode-rob1',
         'who_link': True,
-        'what': 'Work from janus on WalletConnect!',
-        'link': 'https://gitcoin.co/issue/WalletConnect/walletconnect-monorepo/128/3030',
+        'what': 'Readme: updated.',
+        'link': 'https://gitcoin.co/issue/sigillabs/mobidex/235/3165',
         'link_copy': 'View more',
     }, {
-        'who': 'touhonoob',
+        'who': 'nanspro',
         'who_link': True,
-        'what': 'Dynamic Log Control Added!',
-        'link': 'https://gitcoin.co/issue/harmony-one/harmony/440/2973',
+        'what': 'Nanspro with the resources!',
+        'link': 'https://gitcoin.co/issue/ethhub-io/ethhub/299/3159',
         'link_copy': 'View more',
     }, {
-        'who': 'noah-amar',
+        'who': 'sanidhayarora',
         'who_link': True,
-        'what': 'Quick Fix: Reduce Community Hero Image Height To 250px',
-        'link': 'https://gitcoin.co/issue/Native-Protocol/bounties/1/3033',
+        'what': 'Warnings, fixed.',
+        'link': 'https://gitcoin.co/issue/sigillabs/mobidex/230/3100',
         'link_copy': 'View more',
     }, ]
+
+    sponsor = {
+        'name': 'The Future of Infrastructure Finance',
+        'title': 'Blockchain Developer Job Kit',
+        'image_url': 'https://s3.us-west-2.amazonaws.com/gitcoin-static/jDSk7ZTfpY19PWdwwsk8puNd.png',
+        'link': 'http://bit.ly/Allinfra',
+        'cta': 'Register today',
+        'body': [
+            'Bringing access, choice, and liquidity to unlisted infrastructure assets'
+        ]
+    }
 
     bounties_spec = [{
-        'url': 'https://github.com/gitcoinco/web/issues/4483',
-        'primer': 'Design the Gitcoin Bots for 2019!',
+        'url': 'https://github.com/ssbc/patchbay/issues/342',
+        'primer': 'SSB-Ahoy Replication',
     }, {
-        'url': 'https://github.com/centrifuge/precise-proofs/issues/86',
-        'primer': 'Implement A ZkSNARK Compatible Pedersen Hash Function',
+        'url': 'https://github.com/prysmaticlabs/prysm/issues/2740',
+        'primer': 'Cache Active Indices Efficiently',
     }, {
-        'url': 'https://github.com/blockscout/research/issues/1',
-        'primer': 'Swarm Scraper For Verified Smart Contracts',
-    }, ]
-
+        'url': 'https://github.com/status-im/status-react/issues/7990',
+        'primer': 'Support for Galaxy S10',
+}, ]
+    
+    
     num_leadboard_items = 5
     highlight_kudos_ids = []
     num_kudos_to_show = 15
@@ -1062,6 +1073,7 @@ Back to shipping,
         'highlights': highlights,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'kudos_highlights': kudos_highlights,
+        'sponsor': sponsor,
     }
 
     response_html = premailer_transform(render_to_string("emails/bounty_roundup.html", params))

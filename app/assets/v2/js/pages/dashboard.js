@@ -10,7 +10,8 @@ var filters = [
   'idx_status',
   'project_type',
   'permission_type',
-  'misc'
+  'misc',
+  'applicants'
 ];
 var local_storage_keys = JSON.parse(JSON.stringify(filters));
 
@@ -129,10 +130,13 @@ var save_sidebar_latest = function() {
 
   filters.forEach((filter) => {
     localStorage[filter] = '';
-
-    $('input[name="' + filter + '"]:checked').each(function() {
-      localStorage[filter] += $(this).val() + ',';
-    });
+    if (filter === 'applicants') {
+      localStorage[filter] = $('#applicants_box').val();
+    } else {
+      $('input[name="' + filter + '"]:checked').each(function() {
+        localStorage[filter] += $(this).val() + ',';
+      });
+    }
 
     localStorage[filter] = localStorage[filter].replace(/^,|,\s*$/g, '');
   });
@@ -178,6 +182,10 @@ const set_sidebar_defaults = () => {
 
   filters.forEach((filter) => {
     if (localStorage[filter]) {
+      if (filter === 'applicants') {
+        $('#applicants_box').val(localStorage[filter]).trigger('change');
+      }
+
       localStorage[filter].split(',').forEach(function(val) {
         $('input[name="' + filter + '"][value="' + val + '"]').prop('checked', true);
       });
@@ -295,7 +303,6 @@ var get_search_URI = function(offset, order) {
   var keywords = '';
   var org = '';
 
-
   filters.forEach((filter) => {
     var active_filters = [];
 
@@ -336,6 +343,9 @@ var get_search_URI = function(offset, order) {
         filter = 'bounty_owner_address';
         val = 'myself';
       }
+    }
+    if (filter === 'applicants') {
+      val = $('#applicants_box').val();
     }
 
     if (val && val !== 'any' &&
@@ -544,33 +554,31 @@ var refreshBounties = function(event, offset, append, do_save_search) {
     $('.loading').css('display', 'none');
   });
 
-  if (!document.hackathon) {
-    explorer.bounties_request = $.get(featuredBountiesURI, function(results, x) {
-      results = sanitizeAPIResults(results);
+  explorer.bounties_request = $.get(featuredBountiesURI, function(results, x) {
+    results = sanitizeAPIResults(results);
 
-      if (results.length === 0 && !append) {
-        $('.featured-bounties').hide();
-        if (localStorage['referrer'] === 'onboard') {
-          $('.no-results').removeClass('hidden');
-          $('#dashboard-content').addClass('hidden');
-        } else {
-          $('.nonefound').css('display', 'none');
-        }
+    if (results.length === 0 && !append) {
+      $('.featured-bounties').hide();
+      if (localStorage['referrer'] === 'onboard') {
+        $('.no-results').removeClass('hidden');
+        $('#dashboard-content').addClass('hidden');
+      } else {
+        $('.nonefound').css('display', 'none');
       }
+    }
 
-      var html = renderFeaturedBountiesFromResults(results, true);
+    var html = renderFeaturedBountiesFromResults(results, true);
 
-      if (html) {
-        $('.featured-bounties').show();
-        $('#featured-card-container').html(html);
-      }
-    }).fail(function() {
-      if (explorer.bounties_request.readyState !== 0)
-        _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
-    }).always(function() {
-      $('.loading').css('display', 'none');
-    });
-  }
+    if (html) {
+      $('.featured-bounties').show();
+      $('#featured-card-container').html(html);
+    }
+  }).fail(function() {
+    if (explorer.bounties_request.readyState !== 0)
+      _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
+  }).always(function() {
+    $('.loading').css('display', 'none');
+  });
 };
 
 window.addEventListener('load', function() {
@@ -592,6 +600,12 @@ var resetFilters = function(resetKeyword) {
         $('input[name="' + filter + '"][value="any"]').prop('checked', true);
       else
         $('input[name="' + filter + '"][value="' + tag[j].value + '"]').prop('checked', false);
+    }
+
+    if (filter === 'applicants' && !document.hackathon) {
+      $('#applicants_box').val('0').trigger('change');
+    } else if (resetKeyword && filter === 'applicants' && document.hackathon) {
+      localStorage.setItem(filter, '');
     }
 
     // Defaults to mainnet on clear filters to make it less confusing
@@ -649,6 +663,12 @@ var resetFilters = function(resetKeyword) {
 })();
 
 $(document).ready(function() {
+
+  $('.js-select2').each(function() {
+    $(this).select2({
+      minimumResultsForSearch: Infinity
+    });
+  });
 
   $('#expand').on('click', () => {
     $('#expand').hide();
@@ -790,7 +810,7 @@ $(document).ready(function() {
   // sidebar filters
   $('.sidebar_search input[type=checkbox], .sidebar_search label').change(function(e) {
     reset_offset();
-    refreshBounties(null, 0, false, true);
+    // refreshBounties(null, 0, false, true);
     e.preventDefault();
   });
 

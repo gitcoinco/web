@@ -78,7 +78,7 @@
     <div class="content-block content-block--grey">
       <div class="container">
         <p class="promo-text">
-          In <span style="margin: 3px 3px; font-weight: bold;">{{prev_month_name}}</span>, Gitcoin facilitated $<span style="margin: 3px 3px;font-weight: bold;">{{last_month_amount|floatformat:0}}k in value transfer</span>.  That's about $<span style="margin: 3px 3px;font-weight: bold;">{{last_month_amount_hourly|floatformat:0}} per hour</span>, for every hour during {{prev_month_name_short}}.
+          In <span style="margin: 3px 3px; font-weight: bold;">{{prev_month_name}}</span>, Gitcoin facilitated $<span style="margin: 3px 3px;font-weight: bold;">{{last_month_amount|floatformat:0}}k in value transfer</span>.  That's about $<span style="margin: 3px 3px;font-weight: bold;">{{last_month_amount_hourly|floatformat:0}}/hour</span>, for every hour during {{prev_month_name_short}} ($<span style="margin: 3px 3px;font-weight: bold;">{{last_month_amount_hourly_business_hours|floatformat:0}}/business-hour</span>).
         </p>
         <p class="promo-text" style="margin-top: 20px;">
           Since its <a href="https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-projects-f5a0955de9d6" target="_blank">launch</a>
@@ -101,7 +101,7 @@
           </div>
           <div class="single-stat">
             <img src="{% static "v2/images/results/monthly-active-users.svg" %}" />
-            <h3 class="single-stat__title">{% trans "14,336" %}</h3>
+            <h3 class="single-stat__title">{% trans "13,174" %}</h3>
             <p class="single-stat__subtitle">{% trans "Monthly Active Users" %}</p>
             <p class="single-stat__fineprint">(but only 1% of them create on-chain tx's)</p>
           </div>

@@ -31,7 +31,8 @@ from django.utils import timezone
 
 from app.utils import get_semaphore, sync_profile
 from dashboard.models import (
-    Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, BountySyncRequest, HackathonEvent, UserAction,
+    Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, BountySyncRequest, Coupon, HackathonEvent,
+    UserAction,
 )
 from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
@@ -371,7 +372,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
         url = normalize_url(url)
     else:
         raise UnsupportedSchemaException('No webReferenceURL found. Cannot continue!')
-    
+
     # check conditions for private repos
     if metadata.get('repo_type', None) == 'private' and \
         bounty_payload.get('schemes', {}).get('permission_type', 'permissionless') != 'approval' and \
@@ -418,6 +419,15 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
             'fee_tx_id': bounty_payload.get('fee_tx_id', '0x0'),
             'fee_amount': bounty_payload.get('fee_amount', 0)
         }
+
+        coupon_code = bounty_payload.get('coupon_code', None)
+        if coupon_code:
+            coupon = Coupon.objects.get(code=coupon_code)
+            if coupon:
+                bounty_kwargs.update({
+                    'coupon_code': coupon
+                })
+
         if not latest_old_bounty:
             print("no latest old bounty")
             schemes = bounty_payload.get('schemes', {})
@@ -445,6 +455,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 'contract_address': bounty_details.get('token'),
                 'network': bounty_details.get('network'),
                 'bounty_type': metadata.get('bountyType', ''),
+                'bounty_categories': metadata.get('bounty_categories', '').split(','),
                 'funding_organisation': metadata.get('fundingOrganisation', ''),
                 'project_length': metadata.get('projectLength', ''),
                 'estimated_hours': metadata.get('estimatedHours'),
@@ -472,12 +483,13 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 fields=[
                     'web3_created', 'github_url', 'token_name', 'token_address', 'privacy_preferences', 'expires_date',
                     'title', 'issue_description', 'balance', 'contract_address', 'network', 'bounty_type',
-                    'project_length', 'experience_level', 'project_type', 'permission_type', 'attached_job_description',
-                    'bounty_owner_github_username', 'bounty_owner_address', 'bounty_owner_email', 'bounty_owner_name',
-                    'github_comments', 'override_status', 'last_comment_date', 'snooze_warnings_for_days',
-                    'admin_override_and_hide', 'admin_override_suspend_auto_approval', 'admin_mark_as_remarket_ready',
-                    'funding_organisation', 'bounty_reserved_for_user', 'is_featured', 'featuring_date', 'fee_tx_id',
-                    'fee_amount', 'repo_type', 'unsigned_nda'
+                    'bounty_categories', 'project_length', 'experience_level', 'project_type', 'permission_type',
+                    'attached_job_description', 'bounty_owner_github_username', 'bounty_owner_address',
+                    'bounty_owner_email', 'bounty_owner_name', 'github_comments', 'override_status', 'last_comment_date',
+                    'snooze_warnings_for_days', 'admin_override_and_hide', 'admin_override_suspend_auto_approval',
+                    'admin_mark_as_remarket_ready', 'funding_organisation', 'bounty_reserved_for_user', 'is_featured',
+                    'featuring_date', 'fee_tx_id', 'fee_amount', 'repo_type', 'unsigned_nda', 'coupon_code',
+                    'admin_override_org_name', 'admin_override_org_logo'
                 ],
             )
             if latest_old_bounty_dict['bounty_reserved_for_user']:
@@ -488,6 +500,9 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 latest_old_bounty_dict['unsigned_nda'] = BountyDocuments.objects.filter(
                     pk=latest_old_bounty_dict['unsigned_nda']
                 ).first()
+            if latest_old_bounty_dict.get('coupon_code'):
+                latest_old_bounty_dict['coupon_code'] = Coupon.objects.get(pk=latest_old_bounty_dict['coupon_code'])
+
             bounty_kwargs.update(latest_old_bounty_dict)
 
         try:
@@ -588,6 +603,7 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
     fulfillments = bounty_details.get('fulfillments', {})
     if fulfillments:
         handle_bounty_fulfillments(fulfillments, new_bounty, latest_old_bounty)
+        url = normalize_url(new_bounty.github_url)
         for inactive in Bounty.objects.filter(
             current_bounty=False, github_url=url
         ).nocache().order_by('-created_on'):

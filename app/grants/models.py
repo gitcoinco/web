@@ -25,6 +25,8 @@ from django.conf import settings
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 from django.db.models import Q
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.timezone import localtime
 from django.utils.translation import gettext_lazy as _
@@ -32,7 +34,7 @@ from django.utils.translation import gettext_lazy as _
 from django_extensions.db.fields import AutoSlugField
 from economy.models import SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount
-from gas.utils import recommend_min_gas_price_to_confirm_in_time
+from gas.utils import eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from grants.utils import get_upload_filename
 from web3 import Web3
 
@@ -192,7 +194,7 @@ class Grant(SuperModel):
         default=0,
         decimal_places=2,
         max_digits=20,
-        help_text=_('The CLR matching amount'),
+        help_text=_('The TOTAL CLR matching amount across all rounds'),
     )
     activeSubscriptions = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     hidden = models.BooleanField(default=False, help_text=_('Hide the grant from the /grants page?'))
@@ -648,11 +650,18 @@ next_valid_timestamp: {next_valid_timestamp}
 
     def get_converted_amount(self):
         try:
-            return Decimal(convert_amount(
+            if self.token_symbol == "ETH" or self.token_symbol == "WETH":
+                return Decimal(self.amount_per_period * eth_usd_conv_rate())
+            else:
+                value_token_to_eth = Decimal(convert_amount(
                     self.amount_per_period,
                     self.token_symbol,
-                    "USDT")
+                    "ETH")
                 )
+
+            value_eth_to_usdt = Decimal(eth_usd_conv_rate())
+            value_usdt = value_token_to_eth * value_eth_to_usdt
+            return value_usdt
 
         except ConversionRateNotFoundError as e:
             logger.info(e)
@@ -700,6 +709,24 @@ next_valid_timestamp: {next_valid_timestamp}
         return contribution
 
 
+@receiver(pre_save, sender=Grant, dispatch_uid="psave_grant")
+def psave_grant(sender, instance, **kwargs):
+    
+    instance.amount_received = 0
+    instance.monthly_amount_subscribed = 0
+    #print(instance.id)
+    for subscription in instance.subscriptions.all():
+        value_usdt = subscription.get_converted_amount()
+        for contrib in subscription.subscription_contribution.filter(success=True):
+            if value_usdt:
+                instance.amount_received += Decimal(value_usdt)
+
+        if subscription.num_tx_processed <= subscription.num_tx_approved and value_usdt:
+            if subscription.num_tx_approved != 1:
+                instance.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
+        #print("-", subscription.id, value_usdt, instance.monthly_amount_subscribed )
+
+
 class ContributionQuerySet(models.QuerySet):
     """Define the Contribution default queryset and manager."""
 
@@ -734,14 +761,31 @@ class Contribution(SuperModel):
         """Updates tx status."""
         from dashboard.utils import get_tx_status
         tx_status, tx_time = get_tx_status(self.tx_id, self.subscription.network, self.created_on)
-        self.success = tx_status == 'success'
-        self.tx_cleared = True
+        if tx_status != 'pending':
+            self.success = tx_status == 'success'
+            self.tx_cleared = True
 
 def next_month():
     """Get the next month time."""
     return localtime(timezone.now() + timedelta(days=30))
 
 
+class CLRMatch(SuperModel):
+    """Define the structure of a CLR Match amount."""
+
+    round_number = models.PositiveIntegerField(blank=True, null=True)
+    amount = models.FloatField()
+    grant = models.ForeignKey(
+        'grants.Grant',
+        related_name='clr_matches',
+        on_delete=models.CASCADE,
+        null=False,
+        help_text=_('The associated Grant.'),
+    )
+
+    def __str__(self):
+        """Return the string representation of a Grant."""
+        return f"id: {self.pk}, grant: {self.grant.pk}, round: {self.round_number}, amount: {self.amount}"
 
 
 

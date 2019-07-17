@@ -22,11 +22,19 @@ $(document).ready(function() {
         break;
       case 'checkbox':
         ctrl.each(function() {
-          $(this).prop('checked', value);
+          if (value.length) {
+            $.each(value, function(key, val) {
+              $(`.${val}`).button('toggle');
+            });
+          } else {
+            $(this).prop('checked', value);
+          }
         });
         break;
       default:
-        ctrl.val(value);
+        if (value > 0) {
+          ctrl.val(value);
+        }
     }
   });
 
@@ -74,13 +82,30 @@ $(document).ready(function() {
   );
 
   form.validate({
+    errorPlacement: function(error, element) {
+      if (element.attr('name') == 'bounty_categories') {
+        error.appendTo($(element).parents('.btn-group-toggle').next('.cat-error'));
+      } else {
+        error.insertAfter(element);
+      }
+    },
+    ignore: '',
+    messages: {
+      select2Start: {
+        required: 'Please select the right keywords.'
+      }
+    },
     submitHandler: function(form) {
       const inputElements = $(form).find(':input');
       const formData = {};
 
       inputElements.removeAttr('disabled');
       $.each($(form).serializeArray(), function() {
-        formData[this.name] = this.value;
+        if (formData[this.name]) {
+          formData[this.name] += ',' + this.value;
+        } else {
+          formData[this.name] = this.value;
+        }
       });
       inputElements.attr('disabled', 'disabled');
 
