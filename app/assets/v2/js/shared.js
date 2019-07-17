@@ -1078,9 +1078,7 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
       decimals = relatedTokenDetails.decimals;
     }
 
-    const divisor = Math.pow(10, decimals);
-
-    result['rounded_amount'] = normalizeAmount(result['value_in_token'] / divisor, decimals);
+    result['rounded_amount'] = normalizeAmount(result['value_in_token'], decimals);
 
     const crowdfunding = result['additional_funding_summary'];
 
@@ -1219,7 +1217,7 @@ const renderFeaturedBountiesFromResults = (results, renderForExplorer) => {
       decimals = relatedTokenDetails.decimals;
     }
 
-    result['rounded_amount'] = normalizeAmount(result['value_in_token'] / divisor, decimals);
+    result['rounded_amount'] = normalizeAmount(result['value_in_token'], decimals);
 
     html += tmpl.render(result);
   }
@@ -1332,7 +1330,7 @@ function toggleExpandableBounty(evt, selector) {
 }
 
 function normalizeAmount(amount, decimals) {
-  return Math.round(amount * 10 ** decimals) / 10 ** decimals;
+  return Math.round((parseInt(amount) / Math.pow(10, decimals)) * 1000) / 1000;
 }
 
 function newTokenTag(amount, tokenName, tooltipInfo, isCrowdfunded) {
