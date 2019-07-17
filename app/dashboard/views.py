@@ -1137,14 +1137,13 @@ def social_contribution_email(request):
 
     emails = []
     user_ids = request.POST.getlist('usersId[]', [])
-    url = request.POST.get('url', '')
     invite_url = request.POST.get('invite_url', '')
+    bounty_id = request.POST.get('bountyId')
     if not invite_url:
-        bounty_id = request.POST.get('bountyId')
         invite_url = f'{settings.BASE_URL}issue/{get_bounty_invite_url(request.user.username, bounty_id)}'
 
     inviter = request.user if request.user.is_authenticated else None
-    bounty = Bounty.objects.current().get(github_url=url)
+    bounty = Bounty.objects.current().get(id=int(bounty_id))
     for user_id in user_ids:
         profile = Profile.objects.get(id=int(user_id))
         bounty_invite = BountyInvites.objects.create(
@@ -2834,6 +2833,7 @@ def get_hackathons(request):
     }
     return TemplateResponse(request, 'dashboard/hackathons.html', params)
 
+
 @require_POST
 @login_required
 def change_user_profile_banner(request):
@@ -2859,3 +2859,30 @@ def change_user_profile_banner(request):
         'message': 'User banner image has been updated.'
     }
     return JsonResponse(response)
+
+
+@csrf_exempt
+@require_POST
+def choose_persona(request):
+
+    if request.user.is_authenticated:
+        profile = request.user.profile if hasattr(request.user, 'profile') else None
+        access_token = request.POST.get('access_token')
+        persona = request.POST.get('persona')
+        if persona == 'persona_is_funder':
+            profile.persona_is_funder = True
+        elif persona == 'persona_is_hunter':
+            profile.persona_is_hunter = True
+        profile.save()
+    else:
+        return JsonResponse(
+            {'error': _('You must be authenticated')},
+        status=401)
+
+
+    return JsonResponse(
+        {
+            'success': True,
+            'persona': persona,
+        },
+        status=200)
