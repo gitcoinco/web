@@ -8,24 +8,11 @@ $(document).ready(function() {
 
   });
 
-  const cancelHeaderUpdate = document.querySelector('#cancel-header-update');
-  const updateHeader = document.querySelector('#update-header');
   const banner = document.querySelector('.profile-banner');
+  const updateHeader = document.querySelector('#update-header');
 
-  cancelHeaderUpdate.classList.add('hidden');
+  banner.style['visibility'] = 'visible';
 
-  function toggleProfileHeaderView() {
-    banner.style['visibility'] = 'visible';
-    cancelHeaderUpdate.classList.remove('hidden');
-    updateHeader.classList.add('hidden');
-  }
-
-  function cancelProfileHeaderBannerUpdate() {
-    cancelHeaderUpdate.classList.add('hidden');
-    updateHeader.classList.remove('hidden');
-    banner.style['visibility'] = 'hidden';
-    updateHeader.innerHTML = 'Update Profile';
-  }
 
   function setBanner() {
     const data = new FormData();
@@ -40,7 +27,6 @@ $(document).ready(function() {
       body: data
     }).then(response => {
       if (response.status === 200) {
-        updateHeader.innerHTML = 'Update Profile';
         location.reload();
         _alert(
           { message: gettext('User profile banner has been updated.') },
@@ -113,25 +99,6 @@ $(document).ready(function() {
       });
   }
 
-
-  if (updateHeader) {
-    updateHeader.addEventListener(
-      'click',
-      function() {
-        toggleProfileHeaderView();
-      },
-      false
-    );
-  }
-  if (cancelHeaderUpdate) {
-    cancelHeaderUpdate.addEventListener(
-      'click',
-      function() {
-        cancelProfileHeaderBannerUpdate();
-      },
-      false
-    );
-  }
 
   $(document).on('click', '#use-banner', function() {
     setBanner();
