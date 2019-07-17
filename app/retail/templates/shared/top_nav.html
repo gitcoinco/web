@@ -31,23 +31,23 @@
 <div class="top-nav g-font-muli {{class}}">
   <a class="link d-md-block d-none" href="{% url 'products' %}">Grow Open Source</a>
   <a class="{% if request.path == '/' %}selected{% endif %}" href="{% url 'funder_bounties' %}">
-    <img src="{% static "v2/images/top-bar/bounties_desktop.svg" %}" height="22" alt="" class="d-md-block d-none" style="margin-bottom: 5px;">
-    <img src="{% static "v2/images/top-bar/bounties_mobile.svg" %}" height="22" alt="" class="d-md-none">
+    <img data-src="{% static "v2/images/top-bar/bounties_desktop.svg" %}" height="22" alt="" class="d-md-block d-none" style="margin-bottom: 5px;">
+    <img data-src="{% static "v2/images/top-bar/bounties_mobile.svg" %}" height="22" alt="" class="d-md-none">
   </a>
   <a class="{% if request.path|matches:'^\/((codefund.*))$' %}selected{% endif %}" href="https://codefund.app/">
-    <img src="{% static "v2/images/top-bar/codefund-logo.svg" %}" height="20" alt="" class="d-md-block d-none">
-    <img src="{% static "v2/images/top-bar/codefund-symbol.svg" %}" height="20" alt="" class="d-md-none">
+    <img data-src="{% static "v2/images/top-bar/codefund-logo.svg" %}" height="20" alt="" class="d-md-block d-none">
+    <img data-src="{% static "v2/images/top-bar/codefund-symbol.svg" %}" height="20" alt="" class="d-md-none">
   </a>
   <a class="{% if request.path|matches:'^\/((kudos.*))$' %}selected{% endif %}" href="{% url 'kudos_main' %}">
-    <img src="{% static "v2/images/top-bar/kudos-logo.svg" %}" height="22" alt="" class="d-md-block d-none">
-    <img src="{% static "v2/images/top-bar/kudos-symbol.svg" %}" height="22" alt="" class="d-md-none">
+    <img data-src="{% static "v2/images/top-bar/kudos-logo.svg" %}" height="22" alt="" class="d-md-block d-none">
+    <img data-src="{% static "v2/images/top-bar/kudos-symbol.svg" %}" height="22" alt="" class="d-md-none">
   </a>
   <a class="{% if request.path|matches:'^\/((grants.*))$' %}selected{% endif %}" href="{% url "grants:grants" %}">
-    <img src="{% static "v2/images/top-bar/grants-logo.svg" %}" height="22" alt="" class="d-md-block d-none">
-    <img src="{% static "v2/images/top-bar/grants-symbol.svg" %}" height="22" alt="" class="d-md-none">
+    <img data-src="{% static "v2/images/top-bar/grants-logo.svg" %}" height="22" alt="" class="d-md-block d-none">
+    <img data-src="{% static "v2/images/top-bar/grants-symbol.svg" %}" height="22" alt="" class="d-md-none">
   </a>
   <a class="{% if request.path|matches:'^\/((labs.*))$' %}selected{% endif %}" href="{% url 'labs' %}">
     <img src="{% static "v2/images/labs/gitcoinlabs-logo.svg" %}" height="22" alt="" class="d-md-block d-none" style="margin-bottom: 3px;" >
-    <img src="{% static "v2/images/labs/gitcoin_labs_symbol.svg" %}" height="22" alt="" class="d-md-none">
+    <img data-src="{% static "v2/images/labs/gitcoin_labs_symbol.svg" %}" height="22" alt="" class="d-md-none">
   </a>
 </div>
