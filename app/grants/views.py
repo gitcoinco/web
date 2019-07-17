@@ -611,7 +611,7 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
         subscription.save()
         record_subscription_activity_helper('killed_grant_contribution', subscription, profile)
 
-        value_usdt = subscription.get_converted_amount
+        value_usdt = subscription.get_converted_amount()
         if value_usdt:
             grant.monthly_amount_subscribed -= subscription.get_converted_monthly_amount()
 
