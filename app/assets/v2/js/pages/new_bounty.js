@@ -672,46 +672,47 @@ $('#submitBounty').validate({
     }
 
     var do_bounty = function(callback) {
-      const fee = Number((Number(data.amount) * FEE_PERCENTAGE).toFixed(4));
-      const to_address = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
-      const gas_price = web3.toHex($('#gasPrice').val() * Math.pow(10, 9));
+      callMethodIfTokenIsAuthed(function(x, y) {
+        const fee = Number((Number(data.amount) * FEE_PERCENTAGE).toFixed(4));
+        const to_address = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
+        const gas_price = web3.toHex($('#gasPrice').val() * Math.pow(10, 9));
 
-      indicateMetamaskPopup();
-      if (FEE_PERCENTAGE == 0) {
-        deductBountyAmount(fee, '');
-      } else {
-        if (isETH) {
-          web3.eth.sendTransaction({
-            to: to_address,
-            from: web3.eth.coinbase,
-            value: web3.toWei(fee, 'ether'),
-            gasPrice: gas_price
-          }, function(error, txnId) {
-            indicateMetamaskPopup(true);
-            if (error) {
-              _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
-              unloading_button($('.js-submit'));
-            } else {
-              deductBountyAmount(fee, txnId);
-            }
-          });
+        indicateMetamaskPopup();
+        if (FEE_PERCENTAGE == 0) {
+          deductBountyAmount(fee, '');
         } else {
-          const amountInWei = fee * 1.0 * Math.pow(10, token.decimals);
-          const token_contract = web3.eth.contract(token_abi).at(tokenAddress);
-
-          token_contract.transfer(to_address, amountInWei, { gasPrice: gas_price },
-            function(error, txnId) {
+          if (isETH) {
+            web3.eth.sendTransaction({
+              to: to_address,
+              from: web3.eth.coinbase,
+              value: web3.toWei(fee, 'ether'),
+              gasPrice: gas_price
+            }, function(error, txnId) {
               indicateMetamaskPopup(true);
               if (error) {
                 _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
-                unloading_button($('.js-submit'));
               } else {
                 deductBountyAmount(fee, txnId);
               }
-            }
-          );
+            });
+          } else {
+            const amountInWei = fee * 1.0 * Math.pow(10, token.decimals);
+            const token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+
+            token_contract.transfer(to_address, amountInWei, { gasPrice: gas_price },
+              function(error, txnId) {
+                indicateMetamaskPopup(true);
+                if (error) {
+                  _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
+                  unloading_button($('.js-submit'));
+                } else {
+                  deductBountyAmount(fee, txnId);
+                }
+              }
+            );
+          }
         }
-      }
+      }, promptForAuthFailure);
     };
 
     const deductBountyAmount = function(fee, txnId) {
