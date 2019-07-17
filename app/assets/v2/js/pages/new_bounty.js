@@ -672,7 +672,7 @@ $('#submitBounty').validate({
     }
 
     var do_bounty = function(callback) {
-      callMethodIfTokenIsAuthed(function(x, y){
+      callMethodIfTokenIsAuthed(function(x, y) {
         const fee = Number((Number(data.amount) * FEE_PERCENTAGE).toFixed(4));
         const to_address = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
         const gas_price = web3.toHex($('#gasPrice').val() * Math.pow(10, 9));

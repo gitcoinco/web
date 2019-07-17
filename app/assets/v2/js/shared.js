@@ -1016,9 +1016,9 @@ var callMethodIfTokenIsAuthed = function(success, failure) {
       }
     });
   }
-}
+};
 
-var promptForAuthFailure = function(denomination, tokenAddress){
+var promptForAuthFailure = function(denomination, tokenAddress) {
   _alert(
     gettext(`To enable this token, go to the
     <a style="padding-left:5px;" href="/settings/tokens">
@@ -1026,13 +1026,13 @@ var promptForAuthFailure = function(denomination, tokenAddress){
     </a> This is only needed once per token.`),
     'warning'
   );
-}
+};
 
 var promptForAuth = function(event) {
 
-  var success = function(denomination, tokenAddress){
+  var success = function(denomination, tokenAddress) {
     $('.alert').remove();
-  }
+  };
 
   callMethodIfTokenIsAuthed(success, promptForAuthFailure);
 };
