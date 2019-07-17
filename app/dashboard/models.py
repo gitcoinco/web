@@ -1959,6 +1959,8 @@ class Profile(SuperModel):
     profile_wallpaper = models.CharField(max_length=255, default='', blank=True, null=True)
     actions_count = models.IntegerField(default=3)
     fee_percentage = models.IntegerField(default=10)
+    persona_is_funder = models.BooleanField(default=False)
+    persona_is_hunter = models.BooleanField(default=False)
     admin_override_name = models.CharField(max_length=255, blank=True, help_text=_('override profile name.'))
     admin_override_avatar = models.ImageField(
         upload_to=get_upload_filename,
@@ -1966,8 +1968,6 @@ class Profile(SuperModel):
         blank=True,
         help_text=_('override profile avatar'),
     )
-    persona_is_funder = models.BooleanField(default=False)
-    persona_is_hunter = models.BooleanField(default=False)
 
     objects = ProfileQuerySet.as_manager()
 
@@ -2078,6 +2078,11 @@ class Profile(SuperModel):
     @property
     def job_status_verbose(self):
         return dict(Profile.JOB_SEARCH_STATUS)[self.job_search_status]
+
+    @property
+    def active_bounties(self):
+        active_bounties = Bounty.objects.current().filter(idx_status__in=['open', 'started'])
+        return Interest.objects.filter(profile_id=self.pk, bounty__in=active_bounties)
 
     @property
     def is_org(self):
@@ -2457,7 +2462,7 @@ class Profile(SuperModel):
         if self.data and self.data["name"]:
             return self.data["name"]
 
-        return  username(self)
+        return self.username
 
 
     def is_github_token_valid(self):
@@ -2642,8 +2647,7 @@ class Profile(SuperModel):
 
         """
         eth_sum = 0
-
-        if not bounties:
+        if bounties is None:
             if sum_type == 'funded':
                 bounties = self.get_funded_bounties(network=network)
             elif sum_type == 'collected':
@@ -2656,9 +2660,7 @@ class Profile(SuperModel):
 
         try:
             if bounties.exists():
-                eth_sum = bounties.aggregate(
-                    Sum('value_in_eth')
-                )['value_in_eth__sum'] / 10**18
+                eth_sum = sum([amount for amount in bounty.values_list("value_in_eth", flat=True)])
         except Exception:
             pass
 
@@ -2716,7 +2718,7 @@ class Profile(SuperModel):
             dict: list of the profiles that were worked with (key) and the number of times they occured
 
         """
-        if not bounties:
+        if bounties is None:
             if work_type == 'funded':
                 bounties = self.bounties_funded.filter(network=network)
             elif work_type == 'collected':
@@ -3006,13 +3008,20 @@ class UserAction(SuperModel):
         ('updated_avatar', 'Updated Avatar'),
         ('account_disconnected', 'Account Disconnected'),
     ]
-    action = models.CharField(max_length=50, choices=ACTION_TYPES)
-    user = models.ForeignKey(User, related_name='actions', on_delete=models.SET_NULL, null=True)
-    profile = models.ForeignKey('dashboard.Profile', related_name='actions', on_delete=models.CASCADE, null=True)
+    action = models.CharField(max_length=50, choices=ACTION_TYPES, db_index=True)
+    user = models.ForeignKey(User, related_name='actions', on_delete=models.SET_NULL, null=True, db_index=True)
+    profile = models.ForeignKey('dashboard.Profile', related_name='actions', on_delete=models.CASCADE, null=True, db_index=True)
     ip_address = models.GenericIPAddressField(null=True)
     location_data = JSONField(default=dict)
     metadata = JSONField(default=dict)
     utm = JSONField(default=dict, null=True)
+
+    class Meta:
+        """Define metadata associated with UserAction."""
+
+        index_together = [
+            ["profile", "action"],
+        ]
 
     def __str__(self):
         return f"{self.action} by {self.profile} at {self.created_on}"

@@ -266,10 +266,12 @@
                     <div class="container">
                       <div class="row mb-3 p-2">
                         <div id="{{ tab.id }}" class="col-12 activities" count="{{ tab.count }}">
-                          {% if tab.type == 'activity' %}
-                            {% include 'profiles/profile_activities.html' with activities=tab.objects %}
-                          {% else %}
-                            {% include 'profiles/profile_bounties.html' with bounties=tab.objects %}
+                          {% if show_activity %}
+                            {% if tab.type == 'activity' %}
+                              {% include 'profiles/profile_activities.html' with activities=tab.objects %}
+                            {% else %}
+                              {% include 'profiles/profile_bounties.html' with bounties=tab.objects %}
+                            {% endif %}
                           {% endif %}
                         </div>
                       </div>

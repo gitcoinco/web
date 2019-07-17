@@ -554,13 +554,7 @@ $('#submitBounty').validate({
     var isETH = tokenAddress == '0x0000000000000000000000000000000000000000';
     var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
     var account = web3.eth.coinbase;
-
-    if (!isETH) {
-      check_balance_and_alert_user_if_not_enough(
-        tokenAddress,
-        amount,
-        'You do not have enough tokens to fund this bounty.');
-    }
+    let amountNoDecimal = amount;
 
     amount = amount * decimalDivisor;
     // Create the bounty object.
@@ -698,6 +692,7 @@ $('#submitBounty').validate({
             indicateMetamaskPopup(true);
             if (error) {
               _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
+              unloading_button($('.js-submit'));
             } else {
               deductBountyAmount(fee, txnId);
             }
@@ -794,12 +789,69 @@ $('#submitBounty').validate({
       });
     };
 
-    if ($("input[type='radio'][name='repo_type']:checked").val() == 'private' && $('#issueNDA')[0].files[0]) {
-      uploadNDA();
-    } else if (data.featuredBounty) {
-      payFeaturedBounty();
+    function processBounty() {
+      if ($("input[type='radio'][name='repo_type']:checked").val() == 'private' && $('#issueNDA')[0].files[0]) {
+        uploadNDA();
+      } else if (data.featuredBounty) {
+        payFeaturedBounty();
+      } else {
+        do_bounty();
+      }
+    }
+
+    if (check_balance_and_alert_user_if_not_enough(tokenAddress, amountNoDecimal)) {
+      processBounty();
     } else {
-      do_bounty();
+      return unloading_button($('.js-submit'));
+    }
+
+    function check_balance_and_alert_user_if_not_enough(tokenAddress, amount, msg) {
+      const token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+      const from = web3.eth.coinbase;
+      const token_details = tokenAddressToDetails(tokenAddress);
+      const token_decimals = token_details['decimals'];
+      const token_name = token_details['name'];
+      let total = parseFloat(amount) +
+                    parseFloat((parseFloat(amount) * FEE_PERCENTAGE).toFixed(4)) +
+                    (data.featuredBounty ? ethFeaturedPrice : 0);
+
+      const checkBalance = (balance, total, token_name) => {
+
+        if (parseFloat(total) > balance) {
+          let isFeaturedToken = token_name !== 'ETH' && data.featuredBounty;
+
+          total = isFeaturedToken ? total - ethFeaturedPrice : total;
+          const balance_rounded = Math.round(balance * 10) / 10;
+          let msg = gettext('You do not have enough tokens to fund this bounty. You have ') +
+            balance_rounded + ' ' + token_name + ' ' + gettext(' but you need ') + total +
+            ' ' + token_name;
+
+          if (isFeaturedToken) {
+            msg += ` + ${ethFeaturedPrice} ETH`;
+          }
+          _alert(msg, 'warning');
+        } else {
+          return processBounty();
+        }
+      };
+      var walletBalance;
+
+      if (tokenAddress == '0x0000000000000000000000000000000000000000') {
+        let ethBalance = getBalance(from);
+
+        ethBalance.then(
+          function(result) {
+            walletBalance = result.toNumber() / Math.pow(10, token_decimals);
+            return checkBalance(walletBalance, total, token_name);
+          }
+        );
+      } else {
+        token_contract.balanceOf.call(from, function(error, result) {
+          if (error) return;
+          walletBalance = result.toNumber() / Math.pow(10, token_decimals);
+          return checkBalance(walletBalance, total, token_name);
+        });
+      }
     }
   }
 });
@@ -815,34 +867,18 @@ $('[name=permission_type]').on('change', function() {
   }
 });
 
-/**
- * Alerts funder if they don't have enough tokens while attempting to
- * fund a bounty.
- * @param {String} tokenAddress
- * @param {Number} amount
- */
-function check_balance_and_alert_user_if_not_enough(tokenAddress, amount) {
-  const token_contract = web3.eth.contract(token_abi).at(tokenAddress);
-  const from = web3.eth.coinbase;
-  const token_details = tokenAddressToDetails(tokenAddress);
-  const token_decimals = token_details['decimals'];
-  const token_name = token_details['name'];
 
-  token_contract.balanceOf.call(from, function(error, result) {
-    if (error) return;
-    const balance = result.toNumber() / Math.pow(10, token_decimals);
-    const balance_rounded = Math.round(balance * 10) / 10;
-    const total = parseFloat(amount) + parseFloat((parseFloat(amount) * FEE_PERCENTAGE).toFixed(4));
-
-    if (parseFloat(total) > balance) {
-      const msg = gettext('You do not have enough tokens to fund this bounty. You have ') +
-        balance_rounded + ' ' + token_name + ' ' + gettext(' but you need ') + amount +
-        ' ' + token_name;
-
-      _alert(msg, 'warning');
-    }
+var getBalance = (address) => {
+  return new Promise (function(resolve, reject) {
+    web3.eth.getBalance(address, function(error, result) {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(result);
+      }
+    });
   });
-}
+};
 
 let usdFeaturedPrice = $('.featured-price-usd').text();
 let ethFeaturedPrice;

@@ -929,12 +929,11 @@ def render_start_work_applicant_expired(interest, bounty):
 
     return response_html, response_txt, subject
 
-
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "A Midsummer Bounty's Dream"
-    new_kudos_pks = [3973, 2224, 1967]
+    subject = "Beyond...Beyond Blockchain? 🤯"
+    new_kudos_pks = [4184, 4179, 4143]
     new_kudos_size_px = 150
 
     kudos_friday = f'''
@@ -949,76 +948,75 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-Ethereum transactions are reaching new heights recently with the highest frequency of activity on the network in months. Need some help with your gas pricing? We're way ahead of you. Check out our helpful gas visualizer to assist with your
-work on the network. <a href="https://gitcoin.co/gas">It lives here.</a>
+For our folks living in the United States, Happy Fourth of July! We hope you have a terrific weekend of outdoors and good eats. To celebrate, we've decided to announce the next brand new hackathon. While the Beyond Blockchain hackathon is barely halfway over, we're
+looking forward to the next one: the Grow Ethereum hackathon. To sign up for this one, fill out the following form, and stay tuned on your email. We'll be in touch with the details soon. We are more than excited, and we hope you are too. <a href="https://mailchi.mp/a92da05667d6/groweth" target="_blank">The form lives here.</a>
 </p>
 <p>
-As we mentioned last week, we're currently in the process of organizing hackathons for the next few months. That means more projects, more opportunities, and of course more bounties. Fill out this Typeform to receive more information about them
-as we prepare to get everyone back together. Have any suggestions for us? <a href="mailto:team@gitcoin.co">Email the team.</a> Otherwise, <a href="https://gitcoin.typeform.com/to/j7CSbV">the form to sign up lives here.</a>
+With that said...the Beyond Blockchain hackathon is still firing on all cylinders. If you're looking to take advantage of the long weekend and vie for some of the top prizes, check out the following: <a href="https://gitcoin.co/issue/ConsenSys/Beyond-Blockchain-Relay/3/3158">Reinvent Healthcare</a>; 
+<a href="https://gitcoin.co/issue/gitcoinco/skunkworks/93/3185">Make Kudos Incredible</a>; <a href="https://gitcoin.co/issue/raiden-network/hackathons/1/3168">Integrate Raiden</a>; and <a href="https://gitcoin.co/issue/raiden-network/hackathons/3/3170">Enhance Raiden.</a>
 </p>
+Round 3 of CLR matching for Gitcoin Grants is coming in Q3! Are you interested in matching? Add to our $50K+ committed and help us grow open source infrastructure projects. 🛠 Building? A funding opportunity awaits. Create a Gitcoin Grant & let the community see your progress!
 <p>
-As we prepare to enter the second half of 2019, we're asking our community for feedback. What are we doing well? What can we do better to help you reach your goals? <a href="mailto:team@gitcoin.co">Reach out to us if you'd like to share your thoughts.</a>
-</p>
 
+</p>
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Are you a project that might be interested in our hackathons? <a href="mailto:alex@gitcoin.co">Send us an email we'll be in touch.</a>
+            The Gitcoin Livestream is NOT back this week! Our team will be celebrating the Fourth with our families. Join us <a href="https://gitcoin.co/livestream"> at 2PM ET next Friday.
         </li>
         <li>
-            The Gitcoin Livestream is back this week. Join us <a href="https://gitcoin.co/livestream"> at 2PM ET on Friday, or catch it on <a href="https://twitter.com/gitcoin">Twitter</a>!
+            Looking for something to watch this weekend? You're in luck. We just released new content on the Gitcoin Media YouTube channel. Check it out <a href="http://youtube.com/gitcoinmedia">here</a>. 
         </li>
     </ul>
 </p>
 <p>
 Back to shipping,
 </p>
-
 '''
     highlights = [{
+        'who': 'socialcode-rob1',
+        'who_link': True,
+        'what': 'Readme: updated.',
+        'link': 'https://gitcoin.co/issue/sigillabs/mobidex/235/3165',
+        'link_copy': 'View more',
+    }, {
         'who': 'nanspro',
         'who_link': True,
-        'what': 'nanspro with the rewrite!',
-        'link': 'https://gitcoin.co/issue/ethhub-io/ethhub/285/3075',
+        'what': 'Nanspro with the resources!',
+        'link': 'https://gitcoin.co/issue/ethhub-io/ethhub/299/3159',
         'link_copy': 'View more',
     }, {
-        'who': 'gutsal-arsen',
+        'who': 'sanidhayarora',
         'who_link': True,
-        'what': 'Redux renovations',
-        'link': 'https://gitcoin.co/issue/ssteiger/Vyper-Contract-GUI/7/3060',
-        'link_copy': 'View more',
-    }, {
-        'who': 'roleengineer',
-        'who_link': True,
-        'what': 'Merkle tree madness',
-        'link': 'https://gitcoin.co/issue/leapdao/leap-contracts/194/3041',
+        'what': 'Warnings, fixed.',
+        'link': 'https://gitcoin.co/issue/sigillabs/mobidex/230/3100',
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'Elk',
-        'title': 'Bringing blockchain into the physical world',
-        'image_url': 'https://elk.cc/assets/images/elk-board-1.png',
-        'link': 'http://bit.ly/ElkBlockchain',
-        'cta': 'Sign up now',
+        'name': 'The Future of Infrastructure Finance',
+        'title': 'Blockchain Developer Job Kit',
+        'image_url': 'https://s3.us-west-2.amazonaws.com/gitcoin-static/jDSk7ZTfpY19PWdwwsk8puNd.png',
+        'link': 'http://bit.ly/Allinfra',
+        'cta': 'Register today',
         'body': [
-            'Introducing Elk - the development board for building hardware projects that interface with Ethereum.',
-            'We\'ll soon be on Kickstarter. <a href="http://bit.ly/ElkBlockchain" style="font-size: 14px; line-height: 18px;">Sign up now</a> and get your early bird discount!'
+            'Bringing access, choice, and liquidity to unlisted infrastructure assets'
         ]
     }
 
     bounties_spec = [{
-        'url': 'https://github.com/w3f/Web3-collaboration/issues/123',
-        'primer': 'IPFS Integrations from Web3',
+        'url': 'https://github.com/ssbc/patchbay/issues/342',
+        'primer': 'SSB-Ahoy Replication',
     }, {
-        'url': 'https://github.com/PegaSysEng/BountiedWork/issues/18',
-        'primer': 'Trinity Hobbits Integration: 5 ETH up for grabs!',
+        'url': 'https://github.com/prysmaticlabs/prysm/issues/2740',
+        'primer': 'Cache Active Indices Efficiently',
     }, {
-        'url': 'https://github.com/LinkdropProtocol/linkdrop-monorepo/issues/203',
-        'primer': 'Smart Contract Showdown...',
-    }, ]
-
+        'url': 'https://github.com/status-im/status-react/issues/7990',
+        'primer': 'Support for Galaxy S10',
+}, ]
+    
+    
     num_leadboard_items = 5
     highlight_kudos_ids = []
     num_kudos_to_show = 15
