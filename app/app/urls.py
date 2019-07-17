@@ -132,7 +132,7 @@ urlpatterns = [
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
 
     # Funder dashboard
-    path('funder_dashboard/', dashboard.views.funder_dashboard, name='funder_dashboard'),
+    path('funder_dashboard/<str:bounty_type>/', dashboard.views.funder_dashboard, name='funder_dashboard'),
     path('funder_dashboard/bounties/<int:bounty_id>/', dashboard.views.funder_dashboard_bounty_info, name='funder_dashboard_bounty_info'),
 
     # Hackathon static page

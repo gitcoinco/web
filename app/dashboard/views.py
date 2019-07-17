@@ -2867,7 +2867,7 @@ def funder_dashboard_bounty_info(request, bounty_id):
                          'profiles': profiles})
 
 
-def funder_dashboard(request):
+def funder_dashboard(request, bounty_type):
     """JSON data for the user dashboard"""
 
     user = request.user if request.user.is_authenticated else None
@@ -2878,25 +2878,37 @@ def funder_dashboard(request):
 
     profile = request.user.profile
 
-    open_bounties = list(Bounty.objects.filter(
-        Q(idx_status='open') | Q(idx_status='open'),
-        current_bounty=True,
-        bounty_owner_profile=profile
-        ).values_list('id', flat=True).order_by('-interested__created'))
+    if bounty_type == 'open':
+        bounties = Bounty.objects.filter(
+            Q(idx_status='open') | Q(idx_status='open'),
+            current_bounty=True,
+            bounty_owner_profile=profile
+            ).order_by('-interested__created')
 
-    submitted_bounties = list(Bounty.objects.filter(
-        Q(idx_status='submitted') | Q(override_status='submitted'),
-        current_bounty=True,
-        fulfillments__accepted=False,
-        bounty_owner_profile=profile
-        ).values_list('id', flat=True).order_by('-fulfillments__created_on'))
+    elif bounty_type == 'submitted':
+        bounties = list(Bounty.objects.filter(
+            Q(idx_status='submitted') | Q(override_status='submitted'),
+            current_bounty=True,
+            fulfillments__accepted=False,
+            bounty_owner_profile=profile
+            ).values_list('id', flat=True).order_by('-fulfillments__created_on'))
 
-    expired_bounties = list(Bounty.objects.filter(
-        Q(idx_status='expired') | Q(override_status='expired'),
-        current_bounty=True,
-        bounty_owner_profile=profile
-        ).order_by('-expires_date').values_list('id', flat=True))
+    elif bounty_type == 'expired':
+        bounties = list(Bounty.objects.filter(
+            Q(idx_status='expired') | Q(override_status='expired'),
+            current_bounty=True,
+            bounty_owner_profile=profile
+            ).order_by('-expires_date').values_list('id', flat=True))
 
-    return JsonResponse({'open': open_bounties,
-                         'submitted': submitted_bounties,
-                         'expired': expired_bounties})
+    return JsonResponse([{'title': b.title,
+                          'token_name': b.token_name,
+                          'value_in_token': b.value_in_token,
+                          'value_in_usd': b.get_value_in_usdt,
+                          'github_url': b.github_url,
+                          'absolute_url': b.absolute_url,
+                          'avatar_url': b.avatar_url,
+                          'project_type': b.project_type,
+                          'expires_date': b.expires_date,
+                          'interested_comment': b.interested_comment,
+                          'submissions_comment': b.submissions_comment}
+                          for b in bounties], safe=False)
