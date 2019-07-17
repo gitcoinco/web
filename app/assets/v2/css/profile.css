@@ -124,6 +124,13 @@ a:hover .avatar_edit .avatar_edit_text {
   top: 40%;
 }
 
+.picky img {
+  width: 100%;
+  height: auto;
+  vertical-align: middle;
+}
+
+
 .profile-organizations .organization {
   display: inline-block;
 }
@@ -364,4 +371,25 @@ a:hover .avatar_edit .avatar_edit_text {
 
 .no-profile-textcolor {
   color: #666666;
+}
+
+.profile-banner {
+  top: 25vh;
+  color: #ffffff;
+  z-index: 99;
+  width: 100vw;
+  visibility: hidden;
+  cursor: pointer;
+}
+
+.picky {
+  cursor: pointer;
+}
+
+.picky:active, .picky:focus {
+  border: 2px solid #007bff;
+}
+
+.selected {
+  border: 5px solid #007bff;
 }

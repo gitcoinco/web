@@ -513,6 +513,10 @@ def account_settings(request):
         return login_redirect
 
     if request.POST:
+        if 'persona_is_funder' or 'persona_is_hunter' in request.POST.keys():
+            profile.persona_is_funder = bool(request.POST.get('persona_is_funder', False))
+            profile.persona_is_hunter = bool(request.POST.get('persona_is_hunter', False))
+            profile.save()
 
         if 'preferred_payout_address' in request.POST.keys():
             profile.preferred_payout_address = request.POST.get('preferred_payout_address', '')
