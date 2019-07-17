@@ -83,7 +83,7 @@
                               <span>[[ bounty.expires_date ]]</span> &bull;
                             </template>
                             <span>[[ bounty.value_true ]] [[ bounty.token_name ]] ([[ bounty.value_in_usdt_now ]] USD)</span>
-                            <a href="#"><i class="fas fa-eye"></i> View Issue Details</a>
+                            <a :href="bounty.url"><i class="fas fa-eye"></i> View Issue Details</a>
                             <a href="#" target="_blank"><i class="fab fa-github"></i> View Github</a>
                           </div>
                         </div>
@@ -93,29 +93,29 @@
                   </div>
                   <div v-show="isExpanded(key)">
                     <ul class="list-unstyled m-5">
-                      <li class="mb-4" v-for="contributor in 4, 5">
+                      <li class="mb-4" v-for="(contributor, key) in contributors">
                         <div class="d-flex flex-column flex-md-row justify-content-between">
                           <div class="w-75">
                             <div class="d-flex">
-                              <img :src="bounty.avatar_url" alt="" width="40" height="40" class="flex-shrink-0">
+                              <img :src="contributor.profile.avatar_url" alt="" width="40" height="40" class="flex-shrink-0 mr-2 rounded-circle">
                               <div class="d-flex flex-column">
                                 <div class="">
-                                  owocki <a href="#" target="_blank"><i class="fab fa-github text-dark"></i></a>
+                                  <a :href="contributor.profile.url" class="text-dark">[[ contributor.profile.handle ]]</a> <a :href="`https://github.com/${contributor.profile.handle}`" target="_blank"><i class="fab fa-github text-dark"></i></a>
                                 </div>
                                 <div class="d-flex flex-column flex-lg-row">
                                   <div class="" style="color:#25E899;">
-                                    <i class="far fa-star" :class="star <= (4).toFixed() ? 'fas' : 'far'" v-for="star in (4).toFixed(), 5"></i>
+                                    <i class="far fa-star" :class="star <= contributor.avg_rating.overall.toFixed() ? 'fas' : 'far'" v-for="star in contributor.avg_rating.overall.toFixed(), 5"></i>
                                   </div>
-                                    (5 ratings) &bull;
-                                    #40 contributor &bull;
-                                    40 bounties completed
+                                    ([[ contributor.avg_rating.total_rating ]] ratings) &bull;
+                                    #[[ contributor.profile.position ]] contributor &bull;
+                                    [[ contributor.profile.work_completed ]] bounties completed
                                 </div>
                               </div>
                             </div>
 
                           </div>
-                          <button class="btn btn-sm btn-gc-blue m-2"><i class="fas fa-check"></i> Accept</button>
-                          <button class="btn btn-sm btn-outline-gc-blue m-2"><i class="fas fa-times"></i> Reject</button>
+                          <button class="btn btn-sm btn-gc-blue m-2" @click="startWork(key,bounty.id, contributor.profile.id)" :disabled="key === disabledBtn"><i class="fas fa-check"></i> Accept</button>
+                          <button class="btn btn-sm btn-outline-gc-blue m-2" @click="stopWork(key, bounty.id, contributor.profile.id)"><i class="fas fa-times"></i> Reject</button>
                         </div>
 
                         <div class="comment-plan">Work Plan: 1. Look for inspiration from Dribbble
