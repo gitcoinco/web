@@ -1136,14 +1136,13 @@ def social_contribution_email(request):
 
     emails = []
     user_ids = request.POST.getlist('usersId[]', [])
-    url = request.POST.get('url', '')
     invite_url = request.POST.get('invite_url', '')
+    bounty_id = request.POST.get('bountyId')
     if not invite_url:
-        bounty_id = request.POST.get('bountyId')
         invite_url = f'{settings.BASE_URL}issue/{get_bounty_invite_url(request.user.username, bounty_id)}'
 
     inviter = request.user if request.user.is_authenticated else None
-    bounty = Bounty.objects.current().get(github_url=url)
+    bounty = Bounty.objects.current().get(id=int(bounty_id))
     for user_id in user_ids:
         profile = Profile.objects.get(id=int(user_id))
         bounty_invite = BountyInvites.objects.create(
