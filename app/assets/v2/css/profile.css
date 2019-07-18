@@ -411,10 +411,9 @@ nav.navbar.navbar-dark{
 #change_header_lede span {
   font-weight: bold;
   visibility: hidden;
-  padding: 5px;  
+  padding: 5px;
 }
 
 #change_header_lede:hover span {
   visibility: visible;
-  padding: 5px;  
 }
