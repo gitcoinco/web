@@ -391,15 +391,15 @@ a:hover .avatar_edit .avatar_edit_text {
   background: linear-gradient(to top,rgba(255,255,255,0.6),rgba(255,255,255,0.0));
 }
 
-.profile-banner:hover span {
-  opacity: 1;
-}
-
-.profile-banner span {
+.profile-banner .h4 {
   font-weight: bold;
   text-shadow: 1px 1px 1px #000;
   opacity: 0.5;
   padding: 5px;
+}
+
+.profile-banner:hover .h4 {
+  opacity: 1;
 }
 
 .picky {
@@ -416,6 +416,7 @@ a:hover .avatar_edit .avatar_edit_text {
 
 nav.navbar.navbar-dark{
   background-image: url(/static/v2/images/header-bg.png);
+  z-index: 2;
 }
 
 
