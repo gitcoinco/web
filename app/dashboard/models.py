@@ -299,15 +299,9 @@ class Bounty(SuperModel):
     fulfillment_started_on = models.DateTimeField(null=True, blank=True)
     canceled_on = models.DateTimeField(null=True, blank=True)
     canceled_bounty_reason = models.TextField(default='', blank=True, verbose_name=_('Cancelation reason'))
-<<<<<<< Updated upstream
     project_type = models.CharField(max_length=50, choices=PROJECT_TYPES, default='traditional', db_index=True)
     permission_type = models.CharField(max_length=50, choices=PERMISSION_TYPES, default='permissionless', db_index=True)
-    bounty_categories = ArrayField(models.CharField(max_length=50, choices=BOUNTY_CATEGORIES), default=list)
-=======
-    project_type = models.CharField(max_length=50, choices=PROJECT_TYPES, default='traditional')
     bounty_categories = ArrayField(models.CharField(max_length=50, choices=BOUNTY_CATEGORIES), default=list, blank=True)
-    permission_type = models.CharField(max_length=50, choices=PERMISSION_TYPES, default='permissionless')
->>>>>>> Stashed changes
     repo_type = models.CharField(max_length=50, choices=REPO_TYPES, default='public')
     snooze_warnings_for_days = models.IntegerField(default=0)
     is_featured = models.BooleanField(
