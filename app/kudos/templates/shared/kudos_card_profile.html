@@ -23,7 +23,7 @@
     <div class="kd-card kd-extended flip-card" aria-haspopup="true" tabindex="0">
       <div class="flip-card__flipper">
         <div class="flip-card__hold flip-card__front">
-          <img src="{% static kudos_group.list.0.kudos_token_cloned_from.image %}" alt="{{ kudos_group.list.0.kudos_token_cloned_from.name|humanize_name }}" class="img-thumbnail border-transparent kd-shadow" width="250">
+          <img data-src="{% static kudos_group.list.0.kudos_token_cloned_from.image %}" alt="{{ kudos_group.list.0.kudos_token_cloned_from.name|humanize_name }}" class="img-thumbnail border-transparent kd-shadow" width="250">
           <div class="kd-content">
             <div>
               <a href="/kudos/{{ kudos_group.list.0.kudos_token_cloned_from.id }}/{{ kudos_group.list.0.kudos_token_cloned_from.name }}" class="kd-title" title="{% trans 'Go to ' %}{{ kudos_group.list.0.kudos_token_cloned_from.name|humanize_name }}" tabindex="0">
@@ -36,7 +36,7 @@
             <div class="flip-card__stack-img">
               {% if kudos_group.list|length > 5 %}<b>+{{kudos_group.list|length|add:"-5"}}</b>{% endif %}
               {% for kt in kudos_group.list|slice:":5" %}
-                <img src="{% avatar_url kt.username  %}" alt="{{ kt.username }}" class="rounded-circle" width="30" height="30">
+                <img data-src="{% avatar_url kt.username  %}" alt="{{ kt.username }}" class="rounded-circle" width="30" height="30">
               {% endfor %}
             </div>
           </div>
@@ -56,7 +56,7 @@
     <div class="kd-card kd-extended flip-card" aria-haspopup="true" tabindex="0">
       <div class="flip-card__flipper">
         <div class="flip-card__hold flip-card__front">
-          <img src="{% static kudos_group.list.0.kudos_token_cloned_from.image %}" alt="{{ kudos_group.list.0.kudos_token_cloned_from.name|humanize_name }}" class="img-thumbnail border-transparent kd-shadow" width="250">
+          <img data-src="{% static kudos_group.list.0.kudos_token_cloned_from.image %}" alt="{{ kudos_group.list.0.kudos_token_cloned_from.name|humanize_name }}" class="img-thumbnail border-transparent kd-shadow" width="250">
           <div class="kd-content">
             <div>
               <a href="/kudos/{{ kudos_group.list.0.kudos_token_cloned_from.id }}/{{ kudos_group.list.0.kudos_token_cloned_from.name }}" class="kd-title" title="{% trans 'Go to ' %}{{ kudos_group.list.0.kudos_token_cloned_from.name|humanize_name }}" tabindex="0">
@@ -69,7 +69,7 @@
             <div class="flip-card__stack-img">
               {% if kudos_group.list|length > 5 %}<b>+{{kudos_group.list|length|add:"-5"}}</b>{% endif %}
               {% for kt in kudos_group.list|slice:":5" %}
-                <img src="{% avatar_url kt.from_username  %}" alt="{{ kt.from_username }}" class="rounded-circle" width="30" height="30">
+                <img data-src="{% avatar_url kt.from_username  %}" alt="{{ kt.from_username }}" class="rounded-circle" width="30" height="30">
               {% endfor %}
             </div>
           </div>

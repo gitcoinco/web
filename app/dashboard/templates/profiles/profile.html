@@ -67,7 +67,7 @@
                     <p class="h6 my-2 text-left">Gitcoin Verified <img width="18" src="{% static "v2/images/badge-verify.svg" %}"></p>
                     <p>This contributor has completed the Gitcoin verification process, which means that the Gitcoin Core trusts their work.</p>
                     <p>Please note - use your judgement on whether this is the right contributor for your task.</p>
-                    '><img src="{% static 'v2/images/badge-verify.svg' %}" alt=""></button>
+                    '><img data-src="{% static 'v2/images/badge-verify.svg' %}" alt=""></button>
                   {% endif %}
                 </h1>
                 <p class="mb-0">{{ profile.handle }}
@@ -154,7 +154,7 @@
                                   {% for profile, num_times in works_with_collected.items %}
                                     {% if forloop.counter < 6 %}
                                       <a href="{% url 'profile' profile %} ">
-                                        <img src='{% avatar_url profile %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
+                                        <img data-src='{% avatar_url profile %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
                                       </a>
                                     {% endif %}
                                   {% endfor %}
@@ -187,7 +187,7 @@
                                 {% for profile, num_times in works_with_funded.items %}
                                   {% if forloop.counter < 6 %}
                                     <a href="{% url 'profile' profile %} ">
-                                      <img src='{% avatar_url profile %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
+                                      <img data-src='{% avatar_url profile %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
                                     </a>
                                   {% endif %}
                                 {% endfor %}
@@ -240,7 +240,7 @@
                 {% for org in profile.organizations %}
                   <div class="organization">
                     <a href="{% url 'profile' %}{{org}}" title="{{ org }}">
-                      <img src="/dynamic/avatar/{{ org }}" title="{{ org }}" height="100px" width="100px">
+                      <img data-src="/dynamic/avatar/{{ org }}" title="{{ org }}" height="100px" width="100px">
                     </a>
                   </div>
                 {% endfor %}
@@ -283,7 +283,7 @@
               </div>
               <div class="col text-center">
                 <div class="row loading justify-content-center align-items-center loading_img hidden">
-                  <img src="{% static 'v2/images/loading_v2.gif' %}">
+                  <img data-src="{% static 'v2/images/loading_v2.gif' %}">
                 </div>
                 <span id="update-view-btn" class="btn btn-outline-gc-purple font-caption m-1 p-1" style="visibility: hidden;">
                   {% trans 'Show Me More' %}
@@ -307,11 +307,15 @@
     {% include 'shared/messages.html' %}
 
     <!-- jQuery -->
-  {% compress js %}
-    <script src="{% static "v2/js/abi.js" %}"></script>
-    <script src="{% static "v2/js/tokens.js" %}"></script>
-    <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
-    <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+    {% compress js %}
+      <script src="{% static "v2/js/abi.js" %}"></script>
+      <script src="{% static "v2/js/tokens.js" %}"></script>
+      <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
+      <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+      <script src="{% static "v2/js/pages/tabs.js" %}"></script>
+      <script src="{% static "v2/js/pages/profile.js" %}"></script>
+      <script src="{% static "v2/js/pages/profile-edit.js" %}"></script>
+      <script src="{% static "v2/js/rating.js" %}"></script>
     {% endcompress %}  
     <script src="/dynamic/js/tokens_dynamic.js"></script>
     
@@ -320,10 +324,6 @@
       $('[data-toggle="tooltip"]').bootstrapTooltip();
 
     </script>
-    <script src="{% static "v2/js/pages/tabs.js" %}"></script>
-    <script src="{% static "v2/js/pages/profile.js" %}"></script>
-    <script src="{% static "v2/js/pages/profile-edit.js" %}"></script>
-    <script src="{% static "v2/js/rating.js" %}"></script>
     <script type="text/javascript">
       {% if preferred_payout_address %}
         document.hasPreferredPayoutAddress = true;

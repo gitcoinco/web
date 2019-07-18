@@ -395,7 +395,7 @@ a:hover .avatar_edit .avatar_edit_text {
 }
 
 nav.navbar.navbar-dark{
-  background-image: url(/static/v2/images/header-bg.png);
+  background-color: #181143;
 }
 
 #change_header_lede {

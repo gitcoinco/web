@@ -20,7 +20,7 @@
   <div class="d-flex flex-row">
 
     {% if relation == 'to' %}
-      <img src="{% avatar_url kt.username  %}" alt="{{ kt.username }}" class="rounded-circle mr-3" width="45" height="45">
+      <img data-src="{% avatar_url kt.username  %}" alt="{{ kt.username }}" class="rounded-circle mr-3" width="45" height="45">
       <div class="d-flex flex-column">
         <a href="{% url 'profile' kt.username %}" >{{kt.username}}</a>
         <time datetime="{{kt.created_on|date:'c'}}" title="{{kt.created_on}}">
@@ -28,7 +28,7 @@
         </time>
       </div>
     {% else %}
-      <img src="{% avatar_url kt.from_username  %}" alt="{{ kt.from_username }}" class="rounded-circle mr-3" width="45" height="45">
+      <img data-src="{% avatar_url kt.from_username  %}" alt="{{ kt.from_username }}" class="rounded-circle mr-3" width="45" height="45">
       <div class="d-flex flex-column">
         <a href="{% filter trim %}{% url 'profile' kt.from_username %}{% endfilter %}" title="{% trans 'go to profile' %}">{{kt.from_username}}</a>
         <time datetime="{{kt.created_on|date:'c'}}" title="{{kt.created_on}}">
