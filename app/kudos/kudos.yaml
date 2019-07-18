@@ -4959,4 +4959,53 @@
   - happy fourth of july
   - gitcoin
   image: fourth_of_july6.svg
+- name: Beyond_Blockchain_Relay_Kudos
+  description: Kudos from ConsenSys Labs for participation in the Beyond Blockchain Virtual Hackathon!
+  artist: MladenPetronijevic
+  priceFinney: 20
+  numClonesAllowed: 100
+  tags: 
+   - Labs
+   - Hackathon
+   - Beyond Blockchain
+   - ConsenSys
+  image: labs_beyonde_blockchain.svg
+- name: MythX_Beta_Champs_Kudos
+  description: MythX friends and champions who battled together with us through Beta!
+  artist: Mladen
+  priceFinney: 100
+  numClonesAllowed: 1000
+  to_address: '0x393376e59bd40a4fbedeed3e44697ec4e00299d9'
+  tags:
+   - MythX
+   - Smart contracts
+   - Security
+  image: mythx_beta_champs.svg
+- name: meme_warrior
+  description: to those who have the dankest memes on teh internet
+  artist: Mladen
+  priceFinney: 10
+  numClonesAllowed: 1000
+  tags:
+   - memes
+   - just for fun
+  image: meme_warrior.svg
+- name: oracle
+  description: to those who have seen further than most
+  artist: Mladen
+  priceFinney: 10
+  numClonesAllowed: 1000
+  tags:
+   - oracle
+   - soft skill
+  image: oracle.svg
+- name: magic_doge
+  description: much contributor.  such fun. very meme
+  artist: Mladen
+  priceFinney: 10
+  numClonesAllowed: 1000
+  tags:
+   - doge
+   - just for fun
+  image: doge2.svg
 
