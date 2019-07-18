@@ -932,7 +932,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Grow Ethereum Draws Nearer"
+    subject = "The Grow Ethereum Hackathon Draws Nearer"
     new_kudos_pks = [4284, 4282, 4281]
     new_kudos_size_px = 150
 
@@ -948,7 +948,7 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-Grow Ethereum is right around the corner -- only 11 days remain until the hacking begins❗️ We are expecting great sponsors, including confirmation from the Ethereum Foundation itself (!) and UNICEF. Build projects together with top Ethereum companies and enterprises, win crypto, and unleash a new era of decentralized global infrastructure. The link to register is <a href="https://hackathons.gitcoin.co/grow-ethereum/" target="_blank">here.</a> 🌱
+The Grow Ethereum Hackathon is right around the corner -- only 11 days remain until the hacking begins❗️ We are expecting great sponsors, including confirmation from the Ethereum Foundation itself (!) and UNICEF. Build projects together with top Ethereum companies and enterprises, win crypto, and unleash a new era of decentralized global infrastructure. The link to register is <a href="https://hackathons.gitcoin.co/grow-ethereum/" target="_blank">here.</a> 🌱
 </p>
 <p>
 Working on an Ethereum ecosystem project and need funding? Get ready. Round 3 of the Gitcoin Grants CLR matching is right around the corner. Pick up some funding to help sustain your work and ease your worries: a funding opportunity awaits. <a href="https://gitcoin.co/grants/">Create a Gitcoin Grant & let the community know your progress!</a>
@@ -995,7 +995,7 @@ Back to shipping,
         'name': 'Solana',
         'title': 'Solana is the most performant blockchain in the world with speeds over 50,000 TPS (while being decentralized and secure).',
         'image_url': 'https://s3.us-west-2.amazonaws.com/gitcoin-static/jDSk7ZTfpY19PWdwwsk8puNd.png',
-        'link': 'https://solana.com/tds/',
+        'link': 'http://bit.ly/TourDeSOL',
         'cta': 'Sign Up for Tour de SOL',
         'body': [
             'We just announced Tour de SOL, or our incentivized testnet event. Are you a validator? Earn token and race against the best in the world. Deadline is July 21st.'
@@ -1012,6 +1012,27 @@ Back to shipping,
         'url': 'https://github.com/centrifuge/precise-proofs/issues/88',
         'primer': 'Optimize the fixed height tree implementation',
 }, ]
+    
+    
+    num_leadboard_items = 5
+    highlight_kudos_ids = []
+    num_kudos_to_show = 15
+
+    #### don't need to edit anything below this line
+    leaderboard = {
+        'quarterly_payers': {
+            'title': _('Top Payers'),
+            'items': [],
+        },
+        'quarterly_earners': {
+            'title': _('Top Earners'),
+            'items': [],
+        },
+        'quarterly_orgs': {
+            'title': _('Top Orgs'),
+            'items': [],
+        },
+    }
 
     from kudos.models import KudosTransfer
     if highlight_kudos_ids:
