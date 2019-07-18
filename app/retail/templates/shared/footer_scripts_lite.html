@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load static %}
+{% load static compress %}
 <!-- THIS IS LIGHT -->
 <script type="text/javascript">
   var static_url = "{{ STATIC_URL }}";
@@ -30,8 +30,12 @@
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 {% endif %}
 {% include 'shared/sentry.html' %}
+
+{% compress js %}
 <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
 <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+{% endcompress %}
+
 <script>
   const bootstrapModal = $.fn.modal.noConflict()
   $.fn.bootstrapModal = bootstrapModal

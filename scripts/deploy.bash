@@ -62,6 +62,8 @@ fi
 cd app || echo "Cannot find app directory!"
 echo "- collect static"
 if [ "$ISFRONTENDPUSH" ] && [ "$JOBS_NODE" ]; then
+    python3 manage.py compilejsi18n;
+    python3 manage.py compress --follow-links --force;
     python3 manage.py collectstatic --noinput -i other;
 fi
 

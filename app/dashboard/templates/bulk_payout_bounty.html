@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static compress %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -201,6 +201,13 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
   </body>
+
+  <!-- jQuery -->
+  {% compress js %}
+  <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
+  <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+  {% endcompress %}    
+  
   <script>
     $('[data-toggle="popover"]').popover()
     $('[data-toggle="tooltip"]').bootstrapTooltip();

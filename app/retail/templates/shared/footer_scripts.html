@@ -15,19 +15,16 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load static %}
+{% load static compress %}
 <script type="text/javascript">
   var static_url = "{{ STATIC_URL }}";
   var media_url = "{{ MEDIA_URL }}";
   document.contxt = {{ json_context|safe }};
 </script>
-<script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
-<script src="{% static "v2/js/lib/jquery.js" %}"></script>
 {% if user.is_authenticated and env == 'prod' %}
-  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-{% elif user.is_authenticated %}
-  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script> 
 {% endif %}
+<<<<<<< Updated upstream
 {% include 'shared/sentry.html' %}
 <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
 <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
@@ -39,11 +36,13 @@
 
 </script>
 
+{% compress js %}
+<script src="{% static "jsi18n/en/djangojs.js" %}"></script>
+<script src="{% static "v2/js/lib/jquery.js" %}"></script>
+<script src="{% static "v2/js/lib/vue.js" %}"></script>
 <script src="{% static "v2/js/lib/jquery.cookie.js" %}"></script>
-{% if not slim %}
-  <script src="{% static "v2/js/lib/jquery-ui.js" %}"></script>
-  <script src="{% static "v2/js/lib/tooltip.js" %}"></script>
-{% endif %}
+<script src="{% static "v2/js/lib/jquery-ui.js" %}"></script>
+<script src="{% static "v2/js/lib/tooltip.js" %}"></script>
 <script src="{% static "v2/js/lib/jquery.modal.min.js" %}"></script>
 <script src="{% static "v2/js/lib/jquery.select2.min.js" %}"></script>
 <script src="{% static "v2/js/lib/jquery.validate.min.js" %}"></script>
@@ -57,10 +56,17 @@
 <script src="{% static "v2/js/note.js" %}"></script>
 <script src="{% static "v2/js/ajax-helper.js" %}"></script>
 <script src="{% static "v2/js/pages/carousel.js" %}"></script>
-{% if user.is_authenticated %}
-  <script src="{% static "v2/js/notifications.js" %}"></script>
-{% endif %}
+<script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
+<script src="{% static "v2/js/metamask-approval.js" %}"></script>
+<script src="{% static "v2/js/notifications.js" %}"></script>
 <script src="{% static "cookielaw/js/cl.js" %}"></script>
+{% endcompress %}  
+{% include 'shared/sentry.html' %}
+<script>
+  $(document).ready(function() {
+    $("img, div").unveil();
+  });
+</script>
 
 <script>
   var host = ("{{ ipfs_config.host }}" == "ipfs" ? "localhost" : "{{ ipfs_config.host }}");

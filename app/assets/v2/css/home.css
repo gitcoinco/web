@@ -224,7 +224,7 @@ img.play {
   cursor: pointer;
   --padding: 40px;
   background-color: var(--gc-green-hover);
-  background-image: url('../images/home/bg-video-preview.svg');
+  
   background-position: 15% -20%;
   background-size: 150% 150%;
   background-repeat: no-repeat;

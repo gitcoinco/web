@@ -180,21 +180,21 @@ def index(request):
     articles = [
         {
             'link': 'https://medium.com/gitcoin/progressive-elaboration-of-scope-on-gitcoin-3167742312b0',
-            'img': 'https://cdn-images-1.medium.com/max/2000/1*ErCNRMzIJguUGUgXgVc-xw.png',
+            'img': static("v2/images/medium/1.png"),
             'title': _('Progressive Elaboration of Scope on Gitcoin'),
             'description': _('What is it? Why does it matter? How can you deal with it on Gitcoin?'),
             'alt': 'gitcoin scope'
         },
         {
             'link': 'https://medium.com/gitcoin/commit-reveal-scheme-on-ethereum-25d1d1a25428',
-            'img': 'https://cdn-images-1.medium.com/max/1600/1*GTEu2R4xIxAApx50rAV_qw.png',
+            'img': static("v2/images/medium/2.png"),
             'title': _('Commit Reveal Scheme on Ethereum'),
             'description': _('Hiding Actions and Generating Random Numbers'),
             'alt': 'commit reveal scheme'
         },
         {
             'link': 'https://medium.com/gitcoin/announcing-open-kudos-e437450f7802',
-            'img': 'https://cdn-images-1.medium.com/max/2000/1*iPQYV3M-JOlYeFFC-iqfcg.png',
+            'img': static("v2/images/medium/3.png"),
             'title': _('Announcing Open Kudos'),
             'description': _('Our vision for integrating Kudos in any (d)App'),
             'alt': 'open kudos'
