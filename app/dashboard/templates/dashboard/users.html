@@ -258,11 +258,6 @@
     
     
     <script>
-      let bootstrapTooltip = $.fn.tooltip.noConflict()
-      $.fn.runTooltip = bootstrapTooltip;
-      const bootstrapModal = $.fn.modal.noConflict()
-      $.fn.bootstrapModal = bootstrapModal
-
       $('body').bootstrapTooltip({
         selector: '[data-toggle="tooltip"]'
       });
