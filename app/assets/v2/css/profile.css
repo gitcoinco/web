@@ -124,6 +124,13 @@ a:hover .avatar_edit .avatar_edit_text {
   top: 40%;
 }
 
+.picky img {
+  width: 100%;
+  height: auto;
+  vertical-align: middle;
+}
+
+
 .profile-organizations .organization {
   display: inline-block;
 }
@@ -364,4 +371,45 @@ a:hover .avatar_edit .avatar_edit_text {
 
 .no-profile-textcolor {
   color: #666666;
+}
+
+.profile-banner {
+  top: 25vh;
+  color: #ffffff;
+  z-index: 99;
+  width: 100vw;
+  visibility: hidden;
+  cursor: pointer;
+}
+
+.picky {
+  cursor: pointer;
+}
+
+.picky:active, .picky:focus {
+  border: 2px solid #007bff;
+}
+
+.selected {
+  border: 5px solid #007bff;
+}
+
+nav.navbar.navbar-dark{
+  background-image: url(/static/v2/images/header-bg.png);
+}
+
+#change_header_lede {
+  padding-top: 150px;
+  padding-bottom: 170px;
+}
+#change_header_lede:hover {
+  background-color: rgba(255,255,255,.15);
+}
+#change_header_lede span {
+  background-color: rgba(255,255,255,.3);
+  padding: 5px;  
+}
+#change_header_lede:hover span {
+  background-color: rgba(255,255,255,.5);
+  padding: 5px;  
 }

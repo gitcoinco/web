@@ -164,6 +164,23 @@ class BountyQuerySet(models.QuerySet):
         return self.filter(idx_status__in=Bounty.FUNDED_STATUSES)
 
 
+"""Fields that bonties table should index together."""
+def get_bounty_index_together():
+    import copy
+    index_together = [
+            ["network", "idx_status"],
+            ["current_bounty", "network"],
+            ["current_bounty", "network", "idx_status"],
+            ["current_bounty", "network", "web3_created"],
+            ["current_bounty", "network", "idx_status", "web3_created"],
+        ]
+    additions = ['admin_override_and_hide', 'experience_level', 'is_featured', 'project_length', 'bounty_owner_github_username', 'event']
+    for addition in additions:
+        for ele in copy.copy(index_together):
+            index_together.append([addition] + ele)
+    return index_together
+
+
 class Bounty(SuperModel):
     """Define the structure of a Bounty.
 
@@ -240,16 +257,16 @@ class Bounty(SuperModel):
     value_in_token = models.DecimalField(default=1, decimal_places=2, max_digits=50)
     token_name = models.CharField(max_length=50)
     token_address = models.CharField(max_length=50)
-    bounty_type = models.CharField(max_length=50, choices=BOUNTY_TYPES, blank=True)
+    bounty_type = models.CharField(max_length=50, choices=BOUNTY_TYPES, blank=True, db_index=True)
     project_length = models.CharField(max_length=50, choices=PROJECT_LENGTHS, blank=True)
     estimated_hours = models.PositiveIntegerField(blank=True, null=True)
-    experience_level = models.CharField(max_length=50, choices=EXPERIENCE_LEVELS, blank=True)
+    experience_level = models.CharField(max_length=50, choices=EXPERIENCE_LEVELS, blank=True, db_index=True)
     github_url = models.URLField(db_index=True)
     github_issue_details = JSONField(default=dict, blank=True, null=True)
     github_comments = models.IntegerField(default=0)
     bounty_owner_address = models.CharField(max_length=50)
     bounty_owner_email = models.CharField(max_length=255, blank=True)
-    bounty_owner_github_username = models.CharField(max_length=255, blank=True)
+    bounty_owner_github_username = models.CharField(max_length=255, blank=True, db_index=True)
     bounty_owner_name = models.CharField(max_length=255, blank=True)
     bounty_owner_profile = models.ForeignKey(
         'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='bounties_funded', blank=True
@@ -262,7 +279,7 @@ class Bounty(SuperModel):
     raw_data = JSONField()
     metadata = JSONField(default=dict, blank=True)
     current_bounty = models.BooleanField(
-        default=False, help_text=_('Whether this bounty is the most current revision one or not'))
+        default=False, help_text=_('Whether this bounty is the most current revision one or not'), db_index=True)
     _val_usd_db = models.DecimalField(default=0, decimal_places=2, max_digits=50)
     contract_address = models.CharField(max_length=50, default='')
     network = models.CharField(max_length=255, blank=True, db_index=True)
@@ -286,14 +303,14 @@ class Bounty(SuperModel):
     fulfillment_started_on = models.DateTimeField(null=True, blank=True)
     canceled_on = models.DateTimeField(null=True, blank=True)
     canceled_bounty_reason = models.TextField(default='', blank=True, verbose_name=_('Cancelation reason'))
-    project_type = models.CharField(max_length=50, choices=PROJECT_TYPES, default='traditional')
+    project_type = models.CharField(max_length=50, choices=PROJECT_TYPES, default='traditional', db_index=True)
+    permission_type = models.CharField(max_length=50, choices=PERMISSION_TYPES, default='permissionless', db_index=True)
     bounty_categories = ArrayField(models.CharField(max_length=50, choices=BOUNTY_CATEGORIES), default=list)
-    permission_type = models.CharField(max_length=50, choices=PERMISSION_TYPES, default='permissionless')
     repo_type = models.CharField(max_length=50, choices=REPO_TYPES, default='public')
     snooze_warnings_for_days = models.IntegerField(default=0)
     is_featured = models.BooleanField(
         default=False, help_text=_('Whether this bounty is featured'))
-    featuring_date = models.DateTimeField(blank=True, null=True)
+    featuring_date = models.DateTimeField(blank=True, null=True, db_index=True)
     fee_amount = models.DecimalField(default=0, decimal_places=18, max_digits=50)
     fee_tx_id = models.CharField(default="0x0", max_length=255, blank=True)
     coupon_code = models.ForeignKey('dashboard.Coupon', blank=True, null=True, related_name='coupon', on_delete=models.SET_NULL)
@@ -322,7 +339,7 @@ class Bounty(SuperModel):
         blank=True,
         help_text=_('Organization Logo - Override'),
     ) # TODO: Remove POST ORGS
-    attached_job_description = models.URLField(blank=True, null=True)
+    attached_job_description = models.URLField(blank=True, null=True, db_index=True)
     event = models.ForeignKey('dashboard.HackathonEvent', related_name='bounties', null=True, on_delete=models.SET_NULL, blank=True)
 
     # Bounty QuerySet Manager
@@ -334,7 +351,7 @@ class Bounty(SuperModel):
         verbose_name_plural = 'Bounties'
         index_together = [
             ["network", "idx_status"],
-        ]
+        ] + get_bounty_index_together()
 
     def __str__(self):
         """Return the string representation of a Bounty."""
@@ -1973,6 +1990,7 @@ class Profile(SuperModel):
     job_location = JSONField(default=dict, blank=True)
     linkedin_url = models.CharField(max_length=255, default='', blank=True, null=True)
     resume = models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('The profile resume.'))
+    profile_wallpaper = models.CharField(max_length=255, default='', blank=True, null=True)
     actions_count = models.IntegerField(default=3)
     fee_percentage = models.IntegerField(default=10)
     persona_is_funder = models.BooleanField(default=False)
@@ -2094,6 +2112,11 @@ class Profile(SuperModel):
     @property
     def job_status_verbose(self):
         return dict(Profile.JOB_SEARCH_STATUS)[self.job_search_status]
+
+    @property
+    def active_bounties(self):
+        active_bounties = Bounty.objects.current().filter(idx_status__in=['open', 'started'])
+        return Interest.objects.filter(profile_id=self.pk, bounty__in=active_bounties)
 
     @property
     def is_org(self):
@@ -2473,7 +2496,7 @@ class Profile(SuperModel):
         if self.data and self.data["name"]:
             return self.data["name"]
 
-        return  username(self)
+        return self.username
 
 
     def is_github_token_valid(self):
@@ -2658,8 +2681,7 @@ class Profile(SuperModel):
 
         """
         eth_sum = 0
-
-        if not bounties:
+        if bounties is None:
             if sum_type == 'funded':
                 bounties = self.get_funded_bounties(network=network)
             elif sum_type == 'collected':
@@ -2672,9 +2694,7 @@ class Profile(SuperModel):
 
         try:
             if bounties.exists():
-                eth_sum = bounties.aggregate(
-                    Sum('value_in_eth')
-                )['value_in_eth__sum'] / 10**18
+                eth_sum = sum([amount for amount in bounty.values_list("value_in_eth", flat=True)])
         except Exception:
             pass
 
@@ -2732,7 +2752,7 @@ class Profile(SuperModel):
             dict: list of the profiles that were worked with (key) and the number of times they occured
 
         """
-        if not bounties:
+        if bounties is None:
             if work_type == 'funded':
                 bounties = self.bounties_funded.filter(network=network)
             elif work_type == 'collected':
@@ -3022,13 +3042,20 @@ class UserAction(SuperModel):
         ('updated_avatar', 'Updated Avatar'),
         ('account_disconnected', 'Account Disconnected'),
     ]
-    action = models.CharField(max_length=50, choices=ACTION_TYPES)
-    user = models.ForeignKey(User, related_name='actions', on_delete=models.SET_NULL, null=True)
-    profile = models.ForeignKey('dashboard.Profile', related_name='actions', on_delete=models.CASCADE, null=True)
+    action = models.CharField(max_length=50, choices=ACTION_TYPES, db_index=True)
+    user = models.ForeignKey(User, related_name='actions', on_delete=models.SET_NULL, null=True, db_index=True)
+    profile = models.ForeignKey('dashboard.Profile', related_name='actions', on_delete=models.CASCADE, null=True, db_index=True)
     ip_address = models.GenericIPAddressField(null=True)
     location_data = JSONField(default=dict)
     metadata = JSONField(default=dict)
     utm = JSONField(default=dict, null=True)
+
+    class Meta:
+        """Define metadata associated with UserAction."""
+
+        index_together = [
+            ["profile", "action"],
+        ]
 
     def __str__(self):
         return f"{self.action} by {self.profile} at {self.created_on}"

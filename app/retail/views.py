@@ -998,10 +998,11 @@ def activity(request):
     page_size = 15
     activities = Activity.objects.all().order_by('-created')
     p = Paginator(activities, page_size)
-    page = request.GET.get('page', 1)
+    page = int(request.GET.get('page', 1))
 
     context = {
         'p': p,
+        'next_page': page + 1,
         'page': p.get_page(page),
         'title': _('Activity Feed'),
     }
