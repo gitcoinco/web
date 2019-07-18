@@ -84,6 +84,6 @@ bleach
 python-magic
 rcssmin --install-option="--without-c-extensions"
 rjsmin --install-option="--without-c-extensions"
-compressor --upgrade
+django-compressor --upgrade
 django-statici18n
 
