@@ -399,17 +399,21 @@ nav.navbar.navbar-dark{
 }
 
 #change_header_lede {
-  padding-top: 150px;
-  padding-bottom: 170px;
+  padding-top: 2rem;
+  padding-bottom: 10rem;
+  background: linear-gradient(to top,rgba(255,255,255,0.6),rgba(255,255,255,0.0));
 }
+
 #change_header_lede:hover {
-  background-color: rgba(255,255,255,.15);
+  background: linear-gradient(to top,rgba(255,255,255,0.9),rgba(255,255,255,0.0));
 }
+
 #change_header_lede span {
-  background-color: rgba(255,255,255,.3);
+  font-weight: bold;
+  visibility: hidden;
   padding: 5px;
 }
+
 #change_header_lede:hover span {
-  background-color: rgba(255,255,255,.5);
-  padding: 5px;
+  visibility: visible;
 }
