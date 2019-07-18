@@ -22,6 +22,11 @@ var show_modal_handler = (modalUrl) => {
 };
 
 /**
+ * how many decimals are allowed in token displays
+ */
+let token_round_decimals = 3;
+
+/**
  * Validates if input is a valid URL
  * @param {string} input - Input String
  */
@@ -1087,7 +1092,9 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
       decimals = relatedTokenDetails.decimals;
     }
 
-    result['rounded_amount'] = normalizeAmount(result['value_in_token'], decimals);
+    const divisor = Math.pow(10, decimals);
+
+    result['rounded_amount'] = Math.round(10 ** token_round_decimals * normalizeAmount(result['value_in_token'] / divisor, decimals)) / 10 ** token_round_decimals;
 
     const crowdfunding = result['additional_funding_summary'];
 
@@ -1226,7 +1233,7 @@ const renderFeaturedBountiesFromResults = (results, renderForExplorer) => {
       decimals = relatedTokenDetails.decimals;
     }
 
-    result['rounded_amount'] = normalizeAmount(result['value_in_token'], decimals);
+    result['rounded_amount'] = Math.round(10 ** token_round_decimals * normalizeAmount(result['value_in_token'] / divisor, decimals)) / 10 ** token_round_decimals;
 
     html += tmpl.render(result);
   }

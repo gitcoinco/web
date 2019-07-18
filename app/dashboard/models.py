@@ -2697,7 +2697,7 @@ class Profile(SuperModel):
             query: Grouped query by token_name and sum all token value
         """
         all_tokens_sum = None
-        if not bounties:
+        if bounties is None:
             if sum_type == 'funded':
                 bounties = self.get_funded_bounties(network=network)
             elif sum_type == 'collected':
@@ -2710,11 +2710,11 @@ class Profile(SuperModel):
 
         try:
             if bounties.exists():
-                all_tokens_sum = bounties.values(
-                    'token_name'
-                ).annotate(
-                    value_in_token=Sum('value_in_token') / 10**18,
-                ).order_by('token_name')
+                tokens_and_values = bounties.values_list('token_name', 'value_in_token')
+                all_tokens_sum_tmp = {token: 0 for token in set([ele[0] for ele in tokens_and_values])}
+                for ele in tokens_and_values:
+                    all_tokens_sum_tmp[ele[0]] += ele[1] / 10**18
+                all_tokens_sum = [{'token_name': token_name, 'value_in_token': value_in_token} for token_name, value_in_token in all_tokens_sum_tmp.items()]
 
         except Exception:
             pass
@@ -2744,7 +2744,9 @@ class Profile(SuperModel):
                 bounties = self.get_orgs_bounties(network=network)
 
         if work_type != 'org':
-            profiles = [bounty.org_name for bounty in bounties if bounty.org_name]
+            github_urls = bounties.values_list('github_url', flat=True)
+            profiles = [org_name(url) for url in github_urls]
+            profiles = [ele for ele in profiles if ele]
         else:
             profiles = []
             for bounty in bounties:
@@ -2855,7 +2857,6 @@ class Profile(SuperModel):
 
         if self.is_org:
             orgs_bounties = self.get_orgs_bounties(network=network)
-
         sum_eth_funded = self.get_eth_sum(sum_type='funded', bounties=funded_bounties)
         sum_eth_collected = self.get_eth_sum(bounties=fulfilled_bounties)
         works_with_funded = self.get_who_works_with(work_type='funded', bounties=funded_bounties)

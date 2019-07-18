@@ -413,6 +413,7 @@ $('#submitBounty').validate({
       bounty_address();
     } catch (exception) {
       _alert(gettext('You are on an unsupported network.  Please change your network to a supported network.'));
+      unloading_button($('.js-submit'));
       return;
     }
     if (typeof ga != 'undefined') {
@@ -434,6 +435,7 @@ $('#submitBounty').validate({
 
     if (data.repo_type == 'private' && data.project_type != 'traditional' && data.permission_type != 'approval') {
       _alert(gettext('The project type and/or permission type of bounty does not validate for a private repo'));
+      unloading_button($('.js-submit'));
     }
 
     disabled.attr('disabled', 'disabled');
@@ -865,7 +867,6 @@ $('[name=permission_type]').on('change', function() {
     $('#admin_override_suspend_auto_approval').attr('disabled', true);
   }
 });
-
 
 var getBalance = (address) => {
   return new Promise (function(resolve, reject) {
