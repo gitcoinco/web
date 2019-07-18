@@ -26,8 +26,6 @@
 {% endif %}
 
 {% include 'shared/sentry.html' %}
-<script src="{% static "v2/js/lib/popper.min.js" %}"></script>
-<script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
 <script>
   const bootstrapModal = $.fn.modal.noConflict()
   $.fn.bootstrapModal = bootstrapModal
@@ -37,6 +35,8 @@
 </script>
 
 {% compress js %}
+<script src="{% static "v2/js/lib/popper.min.js" %}"></script>
+<script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
 <script src="{% static "jsi18n/en/djangojs.js" %}"></script>
 <script src="{% static "v2/js/lib/jquery.js" %}"></script>
 <script src="{% static "v2/js/lib/vue.js" %}"></script>
