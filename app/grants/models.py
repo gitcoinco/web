@@ -664,8 +664,14 @@ next_valid_timestamp: {next_valid_timestamp}
             return value_usdt
 
         except ConversionRateNotFoundError as e:
-            logger.info(e)
-            return None
+            try:
+                return Decimal(convert_amount(
+                    self.amount_per_period,
+                    self.token_symbol,
+                    "USDT"))
+            except ConversionRateNotFoundError as no_conversion_e:
+                logger.info(no_conversion_e)
+                return None
 
     def get_converted_monthly_amount(self):
         converted_amount = self.get_converted_amount()
