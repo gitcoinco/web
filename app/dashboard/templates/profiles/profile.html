@@ -17,20 +17,18 @@
   </head>
   <body class="interior {{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
-    <div class="position-absolute profile-banner text-center">
-      {% csrf_token %}
-      {% if is_my_profile%}
-      <h4 class="font-title-lg m-auto" id="change_header_lede">
-        <span>
-          Edit Header Photo
-        </span>
-      </h4>
-      {% endif %}
-    </div>
-      <div class="container-fluid header profile-header dash" style="min-height: 450px; {% if profile.profile_wallpaper %} background-image: url( {{ profile.profile_wallpaper }} ) {% endif %}">
-      {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      {% include 'home/nav.html' %}
-      {% if not hidden and is_staff %}
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    {% include 'home/nav.html' %}
+    <div class="container-fluid header profile-header dash" style="min-height: 450px; {% if profile.profile_wallpaper %} background-image: url( {{ profile.profile_wallpaper }} ) {% endif %}">
+        {% csrf_token %}
+        {% if is_my_profile %}
+        <div class="position-absolute profile-banner text-center">
+          <div class="h4 font-title-lg m-auto">
+            Edit Header Photo
+          </div>
+        </div>
+          {% endif %}
+        {% if not hidden and is_staff %}
         <div class="alpha-warning font-caption mb-0">
           <span class="font-weight-bold">Staff only</span>
           <a style="color:white;" href="{{profile.admin_url}}">{% trans "Profile Admin" %}</a>

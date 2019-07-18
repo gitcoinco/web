@@ -21,6 +21,10 @@
   border-radius: 50%;
 }
 
+.profile-header {
+  position: relative;
+}
+
 .profile-header__handle {
   padding-top: 0.8rem;
   margin-bottom: 0;
@@ -374,12 +378,28 @@ a:hover .avatar_edit .avatar_edit_text {
 }
 
 .profile-banner {
-  top: 25vh;
+  display: flex;
+  top: 0;
+  bottom: 0;
   color: #ffffff;
   z-index: 1;
   width: 100vw;
-  visibility: hidden;
   cursor: pointer;
+}
+
+.profile-banner:hover {
+  background: linear-gradient(to top,rgba(255,255,255,0.6),rgba(255,255,255,0.0));
+}
+
+.profile-banner .h4 {
+  font-weight: bold;
+  text-shadow: 1px 1px 1px #000;
+  opacity: 0.5;
+  padding: 5px;
+}
+
+.profile-banner:hover .h4 {
+  opacity: 1;
 }
 
 .picky {
@@ -398,22 +418,4 @@ nav.navbar.navbar-dark{
   background-image: url(/static/v2/images/header-bg.png);
 }
 
-#change_header_lede {
-  padding-top: 2rem;
-  padding-bottom: 10rem;
-  background: linear-gradient(to top,rgba(255,255,255,0.6),rgba(255,255,255,0.0));
-}
 
-#change_header_lede:hover {
-  background: linear-gradient(to top,rgba(255,255,255,0.9),rgba(255,255,255,0.0));
-}
-
-#change_header_lede span {
-  font-weight: bold;
-  visibility: hidden;
-  padding: 5px;
-}
-
-#change_header_lede:hover span {
-  visibility: visible;
-}
