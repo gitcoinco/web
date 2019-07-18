@@ -416,7 +416,6 @@ a:hover .avatar_edit .avatar_edit_text {
 
 nav.navbar.navbar-dark{
   background-image: url(/static/v2/images/header-bg.png);
-  z-index: 2;
 }
 
 
