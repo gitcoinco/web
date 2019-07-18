@@ -695,15 +695,6 @@ def about(request):
             "Crispy pork belly"
         ),
         (
-            static("v2/images/team/austin-griffith.jpg"),
-            "Austin Griffith",
-            "Gitcoin Labs",
-            "austintgriffith",
-            None,
-            "The #BUIDL",
-            "Drunken Noodles"
-        ),
-        (
             static("v2/images/team/nate-hopkins.png"),
             "Nate Hopkins",
             "Engineering",
