@@ -640,8 +640,10 @@ var retrieveIssueDetails = function() {
       }).trigger('change');
 
     }
-    target_eles['description'].val(result['description']);
     target_eles['title'].val(result['title']);
+    target_eles['description'].val(result['description']);
+    $('#no-issue-banner').hide();
+    $('#issue-details, #issue-details-edit').show();
 
     // $('#title--text').html(result['title']); // TODO: Refactor
     $.each(target_eles, function(i, ele) {
@@ -993,39 +995,46 @@ window.addEventListener('load', function() {
   setInterval(listen_for_web3_changes, 1000);
 });
 
-var promptForAuth = function(event) {
+var callMethodIfTokenIsAuthed = function(success, failure) {
   var denomination = $('#token option:selected').text();
   var tokenAddress = $('#token option:selected').val();
 
   if (!denomination) {
-    return;
-  }
-
-  if (denomination !== 'ETH') {
+    failure(denomination, tokenAddress);
+  } else if (denomination == 'ETH') {
+    success(denomination, tokenAddress);
+  } else {
     var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
     var from = web3.eth.coinbase;
     var to = bounty_address();
 
     token_contract.allowance.call(from, to, function(error, result) {
       if (error || result.toNumber() == 0) {
-        if (!document.alert_enable_token_shown) {
-          _alert(
-            gettext(`To enable this token, go to the
-            <a style="padding-left:5px;" href="/settings/tokens">
-            Token Settings page and enable it.
-            </a> This is only needed once per token.`),
-            'warning'
-          );
-        }
-        document.alert_enable_token_shown = true;
-
+        failure(denomination, tokenAddress);
+      } else {
+        success(denomination, tokenAddress);
       }
     });
-
-  } else if ($('.alert')) {
-    $('.alert').remove();
-    document.alert_enable_token_shown = false;
   }
+};
+
+var promptForAuthFailure = function(denomination, tokenAddress) {
+  _alert(
+    gettext(`To enable this token, go to the
+    <a style="padding-left:5px;" href="/settings/tokens">
+    Token Settings page and enable it.
+    </a> This is only needed once per token.`),
+    'warning'
+  );
+};
+
+var promptForAuth = function(event) {
+
+  var success = function(denomination, tokenAddress) {
+    $('.alert').remove();
+  };
+
+  callMethodIfTokenIsAuthed(success, promptForAuthFailure);
 };
 
 var setUsdAmount = function(event) {

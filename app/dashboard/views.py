@@ -20,6 +20,7 @@ from __future__ import print_function, unicode_literals
 
 import json
 import logging
+import os
 import time
 from datetime import datetime
 
@@ -65,7 +66,7 @@ from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
 
-from .helpers import get_bounty_data_for_activity, handle_bounty_views
+from .helpers import get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory
 from .models import (
     Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest, Coupon,
     FeedbackEntry, HackathonEvent, Interest, LabsResearch, Profile, ProfileSerializer, RefundFeeRequest, Subscription,
@@ -1740,6 +1741,14 @@ def quickstart(request):
     """Display quickstart guide."""
     return TemplateResponse(request, 'quickstart.html', {})
 
+def load_banners(request):
+    """Load profile banners"""
+    images = load_files_in_directory('wallpapers')
+    response = {
+        'status': 200,
+        'banners': images
+    }
+    return JsonResponse(response, safe=False)
 
 def profile_details(request, handle):
     """Display profile keywords.
@@ -1755,7 +1764,6 @@ def profile_details(request, handle):
         count_work_in_progress = Activity.objects.filter(profile=profile, activity_type='start_work').count()
         count_work_abandoned = Activity.objects.filter(profile=profile, activity_type='stop_work').count()
         count_work_removed = Activity.objects.filter(profile=profile, activity_type='bounty_removed_by_funder').count()
-
     except (ProfileNotFoundException, ProfileHiddenException):
         raise Http404
 
@@ -1978,6 +1986,7 @@ def profile(request, handle):
             context['activities'] = paginator.get_page(page)
 
             return TemplateResponse(request, 'profiles/profile_activities.html', context, status=status)
+
 
         context = profile.to_dict(tips=False)
         all_activities = context.get('activities')
@@ -2823,6 +2832,34 @@ def get_hackathons(request):
         'hackathons': events,
     }
     return TemplateResponse(request, 'dashboard/hackathons.html', params)
+
+
+@require_POST
+@login_required
+def change_user_profile_banner(request):
+    """Handle Profile Banner Uploads"""
+
+    filename = request.POST.get('banner')
+
+    handle = request.user.profile.handle
+
+    try:
+        profile = profile_helper(handle, True)
+        if request.user.profile.id != profile.id:
+            return JsonResponse(
+                {'error': 'Bad request'},
+                status=401)
+        profile.profile_wallpaper = filename
+        profile.save()
+    except (ProfileNotFoundException, ProfileHiddenException):
+        raise Http404
+        
+    response = {
+        'status': 200,
+        'message': 'User banner image has been updated.'
+    }
+    return JsonResponse(response)
+
 
 @csrf_exempt
 @require_POST
