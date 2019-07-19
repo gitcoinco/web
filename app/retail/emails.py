@@ -434,6 +434,7 @@ def render_admin_contact_funder(bounty, text, from_user):
 """
     params = {
         'txt': txt,
+        'email_type': 'admin_contact_funder'
     }
     response_html = premailer_transform(render_to_string("emails/txt.html", params))
     response_txt = txt
@@ -471,7 +472,7 @@ appreciate you being a part of the community and let me know if you'd like some 
 
 """
 
-    params = {'txt': response_txt}
+    params = {'txt': response_txt, 'email_type': 'admin_contact_funder'}
     response_html = premailer_transform(render_to_string("emails/txt.html", params))
     return response_html, response_txt
 
@@ -609,6 +610,7 @@ def render_weekly_recap(to_email, from_date=date.today(), days_back=7):
 def render_gdpr_reconsent(to_email):
     sub = get_or_save_email_subscriber(to_email, 'internal')
     params = {
+        'email_type': 'roundup',
         'subscriber': sub,
     }
 
@@ -634,6 +636,7 @@ def render_share_bounty(to_email, msg, from_profile, invite_url=None, kudos_invi
         'from_profile': from_profile,
         'to_email': to_email,
         'invite_url': invite_url,
+        'email_type': 'bounty',
         'kudos_invite': kudos_invite
     }
     response_html = premailer_transform(render_to_string("emails/share_bounty_email.html", params))
@@ -644,6 +647,7 @@ def render_share_bounty(to_email, msg, from_profile, invite_url=None, kudos_invi
 def render_new_work_submission(to_email, bounty):
     params = {
         'bounty': bounty,
+        'email_type': 'bounty',
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -657,6 +661,7 @@ def render_new_bounty_acceptance(to_email, bounty, unrated_count=0):
     params = {
         'bounty': bounty,
         'unrated_count': unrated_count,
+        'email_type': 'bounty',
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -669,6 +674,7 @@ def render_new_bounty_acceptance(to_email, bounty, unrated_count=0):
 def render_new_bounty_rejection(to_email, bounty):
     params = {
         'bounty': bounty,
+        'email_type': 'bounty',
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -681,6 +687,7 @@ def render_new_bounty_rejection(to_email, bounty):
 def render_bounty_changed(to_email, bounty):
     params = {
         'bounty': bounty,
+        'email_type': 'bounty',
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -708,7 +715,7 @@ def render_bounty_expire_warning(to_email, bounty):
         'is_claimee': (to_email.lower() in fulfiller_emails),
         'is_owner': bounty.bounty_owner_email.lower() == to_email.lower(),
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
-        'email_type': 'bounty_expiration'
+        'email_type': 'bounty'
     }
 
     response_html = premailer_transform(render_to_string("emails/new_bounty_expire_warning.html", params))
@@ -723,7 +730,7 @@ def render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delt
         'interest': interest,
         'time_delta_days': time_delta_days,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
-        'email_type': 'bounty_expiration'
+        'email_type': 'bounty'
     }
 
     response_html = premailer_transform(render_to_string("emails/bounty_startwork_expire_warning.html", params))
@@ -736,6 +743,7 @@ def render_bounty_unintersted(to_email, bounty, interest):
     params = {
         'bounty': bounty,
         'interest': interest,
+        'email_type': 'bounty',
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -766,7 +774,7 @@ def render_faucet_request(fr):
         'fr': fr,
         'amount': settings.FAUCET_AMOUNT,
         'subscriber': get_or_save_email_subscriber(fr.email, 'internal'),
-        'email_type': 'faucet'
+        'email_type': 'faucet',
     }
 
     response_html = premailer_transform(render_to_string("emails/faucet_request.html", params))
@@ -781,6 +789,7 @@ def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days)
         'interest': interest,
         'time_delta_days': time_delta_days,
         'subscriber': get_or_save_email_subscriber(interest.profile.email, 'internal'),
+        'email_type': 'bounty',
         'email_type': 'bounty_expiration'
     }
 
@@ -796,6 +805,7 @@ def render_gdpr_update(to_email):
         'terms_of_use_link': 'https://gitcoin.co/legal/terms',
         'privacy_policy_link': 'https://gitcoin.co/legal/privacy',
         'cookie_policy_link': 'https://gitcoin.co/legal/cookie',
+        'email_type': 'roundup',
     }
 
     subject = "Gitcoin: Updated Terms & Policies"
@@ -809,6 +819,7 @@ def render_reserved_issue(to_email, user, bounty):
     params = {
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'user': user,
+        'email_type': 'bounty',
         'bounty': bounty
     }
     subject = "Reserved Issue"
@@ -823,6 +834,7 @@ def render_start_work_approved(interest, bounty):
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'interest': interest,
         'bounty': bounty,
+        'email_type': 'bounty',
         'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
     }
 
@@ -839,6 +851,7 @@ def render_start_work_rejected(interest, bounty):
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'interest': interest,
         'bounty': bounty,
+        'email_type': 'bounty',
         'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
     }
 
@@ -855,6 +868,7 @@ def render_start_work_new_applicant(interest, bounty):
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'interest': interest,
         'bounty': bounty,
+        'email_type': 'bounty',
         'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
     }
 
@@ -871,6 +885,7 @@ def render_start_work_applicant_about_to_expire(interest, bounty):
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'interest': interest,
         'bounty': bounty,
+        'email_type': 'bounty',
         'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
     }
 
@@ -887,6 +902,7 @@ def render_start_work_applicant_expired(interest, bounty):
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'interest': interest,
         'bounty': bounty,
+        'email_type': 'bounty',
         'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
     }
 
@@ -1044,6 +1060,7 @@ Back to shipping,
         'invert_footer': False,
         'hide_header': False,
         'highlights': highlights,
+        'email_type': 'roundup',
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'kudos_highlights': kudos_highlights,
         'sponsor': sponsor,
