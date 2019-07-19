@@ -1715,6 +1715,7 @@ class Activity(SuperModel):
     """
 
     ACTIVITY_TYPES = [
+        ('status_update', 'Update status'),
         ('new_bounty', 'New Bounty'),
         ('start_work', 'Work Started'),
         ('stop_work', 'Work Stopped'),
@@ -1823,6 +1824,7 @@ class Activity(SuperModel):
             'start_work': 'fa-lightbulb',
             'new_bounty': 'fa-money-bill-alt',
             'work_done': 'fa-check-circle',
+            'status_update': 'fa-user',
             'new_kudos': 'fa-thumbs-up',
             'new_grant': 'fa-envelope',
             'update_grant': 'fa-edit',
@@ -3130,6 +3132,7 @@ class UserAction(SuperModel):
         ('added_slack_integration', 'Added Slack Integration'),
         ('removed_slack_integration', 'Removed Slack Integration'),
         ('updated_avatar', 'Updated Avatar'),
+        ('status_update', 'Update Status'),
         ('account_disconnected', 'Account Disconnected'),
     ]
     action = models.CharField(max_length=50, choices=ACTION_TYPES, db_index=True)
