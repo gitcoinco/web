@@ -1,9 +1,7 @@
 $(document).ready(function() {
-  let textarea = document.querySelector('#textarea');
   let button = document.querySelector('#btn_post');
 
   $('body').on('focus change paste keyup blur', 'textarea', function() {
-    textarea.style['height'] = '60px';
     if (
       $(this)
         .val()
