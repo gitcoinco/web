@@ -932,8 +932,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "The Final Hours of Beyond Blockchain ⛓"
-    new_kudos_pks = [4144, 4141, 4143]
+    subject = "The Grow Ethereum Hackathon Draws Nearer"
+    new_kudos_pks = [4284, 4282, 4281]
     new_kudos_size_px = 150
 
     kudos_friday = f'''
@@ -948,11 +948,10 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-The Beyond Blockchain hackathon is coming to a close. Thank you to all of our participants that hacked along during the past three weeks; we're ecstatic to see what you all have created. We will be releasing another retro in the coming days as winners are announced.
+The Grow Ethereum Hackathon is right around the corner -- only 11 days remain until the hacking begins❗️ We are expecting great sponsors, including confirmation from the Ethereum Foundation itself (!) and UNICEF. Build projects together with top Ethereum companies and enterprises, win crypto, and unleash a new era of decentralized global infrastructure. The link to register is <a href="https://hackathons.gitcoin.co/grow-ethereum/" target="_blank">here.</a> 🌱
 </p>
 <p>
-For those who didn't get a chance to participate in the hackathon, learned too late, or weren't interested in the prizes: don't fret. The next chapter of prizes is right around the corner. The Grow Ethereum hackathon is slated for July 22nd to August 15th, and we have lots of exciting
-participants to announce. Interested? <a href="https://hackathons.gitcoin.co/grow-ethereum/">Fill out this form. We'll be in touch.</a>
+Working on an Ethereum ecosystem project and need funding? Get ready. Round 3 of the Gitcoin Grants CLR matching is right around the corner. Pick up some funding to help sustain your work and ease your worries: a funding opportunity awaits. <a href="https://gitcoin.co/grants/">Create a Gitcoin Grant & let the community know your progress!</a>
 </p>
 <p>
 
@@ -961,10 +960,10 @@ participants to announce. Interested? <a href="https://hackathons.gitcoin.co/gro
 <h3>What else is new?</h3>
     <ul>
         <li>
-            The Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday.
+            The Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday to see some of the top Beyond Blockchain projects present.
         </li>
         <li>
-            Round 3 of CLR matching for Gitcoin Grants is coming in Q3! Are you interested in matching? Add to our $50K+ committed and help us grow open source infrastructure projects.  
+            Interested in the future of ads on the internet? <a href="https://media.consensys.net/how-ethical-advertising-will-transform-the-blockchain-industry-31c2c4f2bd45">Check out this primer on Ethical Advertising from Connor O'Day, part of the Codefund team.</a>
         </li>
     </ul>
 </p>
@@ -973,45 +972,45 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'dvdplm',
+        'who': 'IgorShadurin',
         'who_link': True,
-        'what': 'Node Syncing: Fixed',
-        'link': 'https://gitcoin.co/issue/paritytech/parity-ethereum/10085/3017',
+        'what': 'Provable Emails, thanks to IgorShadurin and josh-richardson',
+        'link': 'https://gitcoin.co/issue/ArweaveTeam/Bounties/5/3164',
         'link_copy': 'View more',
     }, {
-        'who': 'kziemianek',
+        'who': 'sanchaymittal',
         'who_link': True,
-        'what': 'Mentors, coded.',
-        'link': 'https://gitcoin.co/issue/gitcoinco/web/963/304',
+        'what': 'Docs are complete!',
+        'link': 'https://gitcoin.co/issue/MrElliwood/audio-router/1/3213',
         'link_copy': 'View more',
     }, {
-        'who': 'mishfit',
+        'who': 'cpurta',
         'who_link': True,
-        'what': 'Web3 Provider Does Not Catch New Events/Block Updates',
-        'link': 'https://gitcoin.co/issue/TrustWallet/trust-web3-provider/6/485',
+        'what': 'Raiden Hackathon Completion!',
+        'link': 'https://gitcoin.co/issue/raiden-network/hackathons/3/3170',
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'Quantstamp',
-        'title': 'Scan your smart contract with the Quantstamp Security Network V2 today.',
+        'name': 'Solana',
+        'title': 'Solana is the most performant blockchain in the world with speeds over 50,000 TPS (while being decentralized and secure).',
         'image_url': 'https://s3.us-west-2.amazonaws.com/gitcoin-static/jDSk7ZTfpY19PWdwwsk8puNd.png',
-        'link': 'http://bit.ly/QStamp',
-        'cta': 'Scan now',
+        'link': 'http://bit.ly/TourDeSOL',
+        'cta': 'Sign Up for Tour de SOL',
         'body': [
-            'Reentrancy bu🐜s are easy to miss. Have confidence in your code and integrate security checks as part of your development workflow.🛡'
+            'We just announced Tour de SOL, or our incentivized testnet event. Are you a validator? Earn token and race against the best in the world. Deadline is July 21st.'
         ]
     }
 
     bounties_spec = [{
-        'url': 'https://github.com/crytic/crytic-compile/issues/2',
-        'primer': 'Add Support for Brownie',
+        'url': 'https://github.com/RibbonBlockchain/IncentivesMVP/issues/19',
+        'primer': 'Create Initial Pilot phase for Ribbon blockchain',
     }, {
-        'url': 'https://github.com/bluzelle/CryptoMarketWebApp/issues/1',
-        'primer': 'Crypto-Market Application using Bluzelle',
+        'url': 'https://github.com/RibbonBlockchain/IncentivesMVP/issues/8',
+        'primer': 'Enable camera on front end for capture passport on patient and practitioner onboarding',
     }, {
-        'url': 'https://github.com/gitcoinco/web/issues/4745',
-        'primer': 'Allow Ability To Resurface Bounties To The Top When Bounty Has Been Abandoned',
+        'url': 'https://github.com/centrifuge/precise-proofs/issues/88',
+        'primer': 'Optimize the fixed height tree implementation',
 }, ]
     
     
