@@ -34,7 +34,7 @@ from retail.utils import build_stat_results, programming_languages
 
 def create_results_cache():
     print('results')
-    keywords = ['']
+    keywords = [''] + programming_languages
     if settings.DEBUG:
         keywords = ['']
     view = 'results'
@@ -58,7 +58,6 @@ def create_contributor_landing_page_context():
     keywords = [''] + programming_languages
     if settings.DEBUG:
         keywords = ['']
-    keywords = ['']
     view = 'contributor_landing_page'
     from retail.views import get_contributor_landing_page_context
     with transaction.atomic():
