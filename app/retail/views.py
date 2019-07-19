@@ -695,15 +695,6 @@ def about(request):
             "Crispy pork belly"
         ),
         (
-            static("v2/images/team/austin-griffith.jpg"),
-            "Austin Griffith",
-            "Gitcoin Labs",
-            "austintgriffith",
-            None,
-            "The #BUIDL",
-            "Drunken Noodles"
-        ),
-        (
             static("v2/images/team/nate-hopkins.png"),
             "Nate Hopkins",
             "Engineering",
@@ -998,10 +989,11 @@ def activity(request):
     page_size = 15
     activities = Activity.objects.all().order_by('-created')
     p = Paginator(activities, page_size)
-    page = request.GET.get('page', 1)
+    page = int(request.GET.get('page', 1))
 
     context = {
         'p': p,
+        'next_page': page + 1,
         'page': p.get_page(page),
         'title': _('Activity Feed'),
     }
