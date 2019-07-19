@@ -1,0 +1,14 @@
+textarea {
+    height: 60px;
+    resize: none;
+    border-radius: 5px;
+    padding: 5px;
+    overflow: hidden;
+    outline: none;
+}
+
+.btn_cta {
+    border-radius: 5px;
+    border: none;
+    padding: 20px 30px;
+}

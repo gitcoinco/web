@@ -9,6 +9,7 @@
     {% include 'shared/cards_pic.html' %}
     <link rel="stylesheet" href={% static "v2/css/dashboard.css" %} />
     <link rel="stylesheet" href={% static "v2/css/profile.css" %} />
+    <link rel="stylesheet" href={% static "v2/css/status.css" %} />
     <link rel="stylesheet" href={% static "v2/css/tag.css" %} />
     <link rel="stylesheet" href={% static "v2/css/kudos/styles.css" %} />
     <link rel="stylesheet" href={% static "v2/css/tabs.css" %} />
@@ -204,6 +205,8 @@
           </div>
         </div>
       {% endif%}
+      
+      {% include 'profiles/status_box.html' %}
 
       {% if not hidden and not profile.is_org %}
       <div class="container" >
@@ -316,6 +319,7 @@
     <script src="{% static "v2/js/pages/profile.js" %}"></script>
     <script src="{% static "v2/js/pages/profile-edit.js" %}"></script>
     <script src="{% static "v2/js/rating.js" %}"></script>
+    <script src="{% static "v2/js/status.js" %}"></script>
     <script type="text/javascript">
       {% if preferred_payout_address %}
         document.hasPreferredPayoutAddress = true;

@@ -1,0 +1,11 @@
+<div class="container m-4" id="status">
+    {% csrf_token %}
+  <textarea
+    class="w-100"
+    id="textarea"
+    placeholder="What are you thinking?"
+  ></textarea>
+  <div class="text-right">
+    <button class="btn btn-primary" id="btn_post" disabled="true">Post!</button>
+  </div>
+</div>
