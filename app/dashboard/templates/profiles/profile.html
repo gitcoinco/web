@@ -9,7 +9,6 @@
     {% include 'shared/cards_pic.html' %}
     <link rel="stylesheet" href={% static "v2/css/dashboard.css" %} />
     <link rel="stylesheet" href={% static "v2/css/profile.css" %} />
-    <link rel="stylesheet" href={% static "v2/css/status.css" %} />
     <link rel="stylesheet" href={% static "v2/css/tag.css" %} />
     <link rel="stylesheet" href={% static "v2/css/kudos/styles.css" %} />
     <link rel="stylesheet" href={% static "v2/css/tabs.css" %} />
@@ -205,9 +204,13 @@
           </div>
         </div>
       {% endif%}
-      
-      {% include 'profiles/status_box.html' %}
 
+      <div class="container px-md-0">
+        <div class="row">
+          {% include 'profiles/status_box.html' %}
+        </div>
+      </div>
+      
       {% if not hidden and not profile.is_org %}
       <div class="container" >
         <div id="kudos-section">
@@ -219,7 +222,6 @@
         {% include "shared/rate_bounties.html" %}
       {% endif %}
     </div>
-
     <div class="container">
       {% if hidden %}
         {% include 'profiles/hidden.html' %}
