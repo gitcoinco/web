@@ -670,38 +670,26 @@ def leaderboard(request, key=''):
         TemplateResponse: The leaderboard template response.
 
     """
-    if not key:
-        key = 'quarterly_earners'
+    cadences = ['all', 'weekly', 'monthly', 'quarterly', 'yearly']
 
-    keyword_search = request.GET.get('keyword')
+    keyword_search = request.GET.get('keyword', '')
     limit = request.GET.get('limit', 25)
-
+    cadence = request.GET.get('cadence', 'quarterly')
     titles = {
-        'quarterly_payers': _('Top Payers'),
-        'quarterly_earners': _('Top Earners'),
-        'quarterly_orgs': _('Top Orgs'),
-        'quarterly_tokens': _('Top Tokens'),
-        'quarterly_keywords': _('Top Keywords'),
-        'quarterly_kudos': _('Top Kudos'),
-        'quarterly_cities': _('Top Cities'),
-        'quarterly_countries': _('Top Countries'),
-        'quarterly_continents': _('Top Continents'),
-        #        'weekly_fulfilled': 'Weekly Leaderboard: Fulfilled Funded Issues',
-        #        'weekly_all': 'Weekly Leaderboard: All Funded Issues',
-        #        'monthly_fulfilled': 'Monthly Leaderboard',
-        #        'monthly_all': 'Monthly Leaderboard: All Funded Issues',
-        #        'yearly_fulfilled': 'Yearly Leaderboard: Fulfilled Funded Issues',
-        #        'yearly_all': 'Yearly Leaderboard: All Funded Issues',
-        #        'all_fulfilled': 'All-Time Leaderboard: Fulfilled Funded Issues',
-        #        'all_all': 'All-Time Leaderboard: All Funded Issues',
-        # TODO - also include options for weekly, yearly, and all cadences of earning
+        f'{cadence}_payers': _('Top Funders'),
+        f'{cadence}_earners': _('Top Coders'),
+        f'{cadence}_orgs': _('Top Orgs'),
+        f'{cadence}_tokens': _('Top Tokens'),
+        f'{cadence}_keywords': _('Top Keywords'),
+        f'{cadence}_kudos': _('Top Kudos'),
+        f'{cadence}_cities': _('Top Cities'),
+        f'{cadence}_countries': _('Top Countries'),
+        f'{cadence}_continents': _('Top Continents'),
     }
 
-    if settings.ENV != 'prod':
-        # TODO (mbeacom): Re-enable this on live following a fix for leaderboards by location.
-        titles['quarterly_cities'] = _('Top Cities')
-        titles['quarterly_countries'] = _('Top Countries')
-        titles['quarterly_continents'] = _('Top Continents')
+    if not key:
+        key = f'{cadence}_earners'
+
 
     if key not in titles.keys():
         raise Http404
@@ -737,16 +725,19 @@ def leaderboard(request, key=''):
         'items': items[0:limit],
         'nav': 'home',
         'titles': titles,
+        'cadence': cadence,
         'selected': title,
         'is_linked_to_profile': is_linked_to_profile,
-        'title': f'Leaderboard: {title}',
-        'card_title': f'Leaderboard: {title}',
+        'title': f'{keyword_search} Leaderboard: {title}',
+        'card_title': f'{keyword_search} Leaderboard: {title}',
         'card_desc': f'See the most valued members in the Gitcoin community recently . {top_earners}',
         'action_past_tense': 'Transacted' if 'submitted' in key else 'bountied',
         'amount_max': amount_max,
         'podium_items': items[:5] if items else [],
         'technologies': technologies,
-        'active': 'leaderboard'
+        'active': 'leaderboard',
+        'keyword_search': keyword_search,
+        'cadences': cadences,
     }
 
     return TemplateResponse(request, 'leaderboard.html', context)

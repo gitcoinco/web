@@ -38,11 +38,18 @@ $(document).ready(function() {
     document.location.href = `/leaderboard/${val}`;
   });
 
+
+  $('#cadence').change(function() {
+
+    document.location.href = document.location.pathname + '?cadence=' + $('#cadence').val() + '&keyword=' + $('#tech-keyword').val();
+  });
+
+
   $('#tech-keyword').change(function() {
     const keyword = $(this).val();
 
     if (keyword === 'all') {
-      var new_location = window.location.href.split('?')[0];
+      document.location.href = document.location.pathname + '?cadence=' + $('#cadence').val() + '&keyword=';
 
       window.location.href = new_location;
     } else {
@@ -52,7 +59,7 @@ $(document).ready(function() {
         base_url = window.location.href.split('?')[0];
       }
 
-      window.location.href = base_url + `?keyword=${keyword}`;
+      document.location.href = document.location.pathname + '?cadence=' + $('#cadence').val() + '&keyword=' + $('#tech-keyword').val();
     }
   });
 });
