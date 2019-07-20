@@ -673,32 +673,37 @@ def leaderboard(request, key=''):
     cadences = ['all', 'weekly', 'monthly', 'quarterly', 'yearly']
 
     keyword_search = request.GET.get('keyword', '')
+    keyword_search = '' if keyword_search == 'all' else keyword_search
     limit = request.GET.get('limit', 25)
     cadence = request.GET.get('cadence', 'quarterly')
+
+    # backwards compatibility fix for old inbound links
+    for ele in cadences:
+        key = key.replace(f"{ele}_", '')
+
     titles = {
-        f'{cadence}_payers': _('Top Funders'),
-        f'{cadence}_earners': _('Top Coders'),
-        f'{cadence}_orgs': _('Top Orgs'),
-        f'{cadence}_tokens': _('Top Tokens'),
-        f'{cadence}_keywords': _('Top Keywords'),
-        f'{cadence}_kudos': _('Top Kudos'),
-        f'{cadence}_cities': _('Top Cities'),
-        f'{cadence}_countries': _('Top Countries'),
-        f'{cadence}_continents': _('Top Continents'),
+        f'payers': _('Top Funders'),
+        f'earners': _('Top Coders'),
+        f'orgs': _('Top Orgs'),
+        f'tokens': _('Top Tokens'),
+        f'keywords': _('Top Keywords'),
+        f'kudos': _('Top Kudos'),
+        f'cities': _('Top Cities'),
+        f'countries': _('Top Countries'),
+        f'continents': _('Top Continents'),
     }
 
     if not key:
-        key = f'{cadence}_earners'
-
+        key = f'earners'
 
     if key not in titles.keys():
         raise Http404
 
     title = titles[key]
+    which_leaderboard = f"{cadence}_{key}"
+    ranks = LeaderboardRank.objects.filter(active=True, leaderboard=which_leaderboard)
     if keyword_search:
-        ranks = LeaderboardRank.objects.filter(active=True, leaderboard=key, tech_keywords__icontains=keyword_search)
-    else:
-        ranks = LeaderboardRank.objects.filter(active=True, leaderboard=key)
+        ranks = ranks.filter(tech_keywords__icontains=keyword_search)
 
     amount = ranks.values_list('amount').annotate(Max('amount')).order_by('-amount')
     items = ranks.order_by('-amount')
@@ -721,6 +726,8 @@ def leaderboard(request, key=''):
     profile_keys = ['_tokens', '_keywords', '_cities', '_countries', '_continents']
     is_linked_to_profile = any(sub in key for sub in profile_keys)
 
+    cadence_ui = cadence if cadence != 'all' else 'All-Time'
+    page_title = f'{cadence_ui.title()} {keyword_search.title()} Leaderboard: {title.title()}'
     context = {
         'items': items[0:limit],
         'nav': 'home',
@@ -728,8 +735,8 @@ def leaderboard(request, key=''):
         'cadence': cadence,
         'selected': title,
         'is_linked_to_profile': is_linked_to_profile,
-        'title': f'{keyword_search} Leaderboard: {title}',
-        'card_title': f'{keyword_search} Leaderboard: {title}',
+        'title': page_title,
+        'card_title': page_title,
         'card_desc': f'See the most valued members in the Gitcoin community recently . {top_earners}',
         'action_past_tense': 'Transacted' if 'submitted' in key else 'bountied',
         'amount_max': amount_max,
