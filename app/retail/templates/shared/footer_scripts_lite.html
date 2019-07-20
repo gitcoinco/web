@@ -42,8 +42,12 @@
   const bootstrapTooltip = $.fn.tooltip.noConflict()
   $.fn.bootstrapTooltip = bootstrapTooltip;
 </script>
+
+{% compress js %}
+
 <script src="{% static "v2/js/lib/jquery.cookie.js" %}"></script>
 <script src="{% static "v2/js/lib/jquery.select2.min.js" %}"></script>
+<script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
 <script src="{% static "v2/js/lib/moment.min.js" %}"></script>
 <script src="{% static "v2/js/note.js" %}"></script>
 <script src="{% static "v2/js/base.js" %}"></script>
@@ -55,6 +59,9 @@
 <script src="{% static "cookielaw/js/cl.js" %}"></script>
 <script defer src="{% static "v2/js/work_with_gitcoin.js" %}"></script>
 
+{% endcompress %}
+
+
 <script>
   var host = ("{{ ipfs_config.host }}" == "ipfs" ? "localhost" : "{{ ipfs_config.host }}");
   var ipfsConfig = {
@@ -64,6 +71,13 @@
     root: "{{ ipfs_config.root }}"
   };
 </script>
+
+<script>
+  $(document).ready(function() {
+    $("img, div").unveil();
+  });
+</script>
+
 
 {% if recommend_gas_price %}
 <script type="text/javascript">
