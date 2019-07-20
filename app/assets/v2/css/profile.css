@@ -109,11 +109,11 @@
   height: 40px;
 }
 
-.is_my_profile a:hover .profile-header__avatar{
+.is_editable a:hover .profile-header__avatar{
   border: 3px solid #0fce7c;
 }
 
-.is_my_profile{
+.is_editable{
   cursor: pointer;
 }
 

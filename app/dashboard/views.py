@@ -1987,6 +1987,8 @@ def profile(request, handle):
         all_activities = context.get('activities')
         context['avg_rating'] = profile.get_average_star_rating
         context['is_my_profile'] = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+        context['is_my_org'] = request.user.is_authenticated and any([handle.lower() == org.lower() for org in request.user.profile.organizations ])
+        context['is_editable'] = context['is_my_org'] or context['is_my_profile']
         context['ratings'] = range(0,5)
         tabs = []
 
