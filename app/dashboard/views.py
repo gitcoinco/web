@@ -2831,9 +2831,13 @@ def hackathon(request, hackathon=''):
             'sponsors_silver': sponsors_silver
         }
 
-    elif hackathon_event.identifier == 'beyondblockchain_2019': # TODO: REMOVE
+    elif hackathon_event.identifier == 'beyondblockchain_2019':
         from dashboard.context.hackathon_explorer import beyondblockchain_2019
         params['sponsors'] = beyondblockchain_2019
+
+    elif hackathon_event.identifier == 'eth_hack':
+        from dashboard.context.hackathon_explorer import eth_hack
+        params['sponsors'] = eth_hack
 
     return TemplateResponse(request, 'dashboard/index.html', params)
 
