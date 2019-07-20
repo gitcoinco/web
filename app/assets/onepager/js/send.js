@@ -162,6 +162,7 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
   }
   // setup
   var fromAccount = web3.eth.accounts[0];
+
   if (typeof fromAccount == 'undefined') {
     _alert({ message: gettext('You must unlock & enable Gitcoin via your web3 wallet to continue.') }, 'warning');
     failure_callback();
