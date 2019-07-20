@@ -3236,6 +3236,17 @@ class BlockedUser(SuperModel):
         return f'<BlockedUser: {self.handle}>'
 
 
+class Sponsor(SuperModel):
+    """Defines the Hackthon Sponsor"""
+
+    name = models.CharField(max_length=255, help_text='sponsor Name')
+    logo = models.ImageField(help_text='sponsor logo', blank=True)
+    logo_svg = models.FileField(help_text='sponsor logo svg', blank=True)
+
+    def __str__(self):
+        return self.name
+
+
 class HackathonEvent(SuperModel):
     """Defines the HackathonEvent model."""
 
@@ -3245,7 +3256,9 @@ class HackathonEvent(SuperModel):
     logo_svg = models.FileField(blank=True)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    identifier = models.CharField(max_length=255, default='')
+    background_color = models.CharField(max_length=255, null=True, blank=True, help_text='hexcode for the banner')
+    identifier = models.CharField(max_length=255, default='', help_text='used for custom styling for the banner')
+    sponsors = models.ManyToManyField(Sponsor, through='HackathonSponsor')
 
     def __str__(self):
         """String representation for HackathonEvent.
@@ -3262,6 +3275,19 @@ class HackathonEvent(SuperModel):
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
+
+class HackathonSponsor(SuperModel):
+    SPONSOR_TYPES = [
+        ('G', 'Gold'),
+        ('S', 'Silver'),
+    ]
+    hackathon = models.ForeignKey('HackathonEvent', default=1, on_delete=models.CASCADE)
+    sponsor = models.ForeignKey('Sponsor', default=1, on_delete=models.CASCADE)
+    sponsor_type = models.CharField(
+        max_length=1,
+        choices=SPONSOR_TYPES,
+        default='G',
+    )
 
 class FeedbackEntry(SuperModel):
     bounty = models.ForeignKey(
