@@ -59,6 +59,16 @@
   .falcon-wrapper {
     display: none;
   }
+  #mission_hero .row {
+    padding: 1rem !important;
+  }
+  #mission_hero .text{
+    margin-left: 0rem;
+  }
+  #mission_hero .col-2, #mission_hero .col-9 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
 }
 
 @media(min-width: 768px) {
