@@ -233,8 +233,7 @@ if ($('#is-authenticated').val() === 'True' && !localStorage['notify_policy_upda
   $('#notify_policy_update').bootstrapModal('show');
 }
 
-if (document.contxt.github_handle && !document.contxt.persona_is_funder && !document.contxt.persona_is_hunter) {
-
+var show_persona_modal = function(e) {
   const content = $.parseHTML(
     `<div id="persona_modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog">
@@ -261,6 +260,10 @@ if (document.contxt.github_handle && !document.contxt.persona_is_funder && !docu
 
   $(content).appendTo('body');
   $('#persona_modal').bootstrapModal('show');
+};
+
+if (document.contxt.github_handle && !document.contxt.persona_is_funder && !document.contxt.persona_is_hunter) {
+  show_persona_modal();
 }
 
 $('body').on('click', '[data-persona]', function(e) {

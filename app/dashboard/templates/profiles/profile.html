@@ -125,9 +125,10 @@
               {% if profile.is_org %}
                 {% include 'profiles/organization.html' %}
               {% else %}
+              {% if profile.persona_is_hunter %}
               <div class="col-12 col-lg-6">
                 <div class="row">
-                    <div class="col-12 col-lg-6">
+                    <div class="col-12 col-lg-12">
                       <div class="profile-header__stats profile-header__stats--contributor card mb-4">
                         <div class="card-header font-subheader">
                           {% if scoreboard_position_contributor %}
@@ -136,6 +137,7 @@
                             <b>&nbsp;</b>
                           {% endif %}
                           {% trans "Contributor" %}
+                        {% include "shared/profile_rank_link.html" with link='earners' %}
                         </div>
                         <div class="card-body">
                           <ul>
@@ -163,6 +165,8 @@
                         </div>
                       </div>
                     </div>
+                    {% endif %}
+                    {% if profile.persona_is_funder %}
                     <div class="col-12 col-lg-6">
                       <div class="profile-header__stats profile-header__stats--funder card mb-4">
                         <div class="card-header font-subheader">
@@ -172,6 +176,7 @@
                             <b>&nbsp;</b>
                           {% endif %}
                           {% trans "Funder" %}
+                        {% include "shared/profile_rank_link.html" with link='payers' %}
                         </div>
                         <div class="card-body font-subheader">
                           <ul>
@@ -196,6 +201,7 @@
                         </div>
                       </div>
                     </div>
+                    {% endif %}
                   </div>
               </div>
               {% endif %}

@@ -431,4 +431,8 @@ nav.navbar.navbar-dark{
   background-image: url(/static/v2/images/header-bg.png);
 }
 
+#rank_link{
+  font-size: 12px;
+  color: black;
+}
 
