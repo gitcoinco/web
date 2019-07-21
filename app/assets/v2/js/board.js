@@ -5,14 +5,28 @@ var interested =[{"profile":{"id":13,"handle":"octavioamu","github_url":"https:/
 
 Vue.mixin({
   methods: {
-    fetchBounties: function(newPage) {
+    fetchBounties: function(type) {
       let vm = this;
-      let apiUrlbounties = `api/v0.1/get_bounties/`;
+      let apiUrlbounties = `/funder_dashboard/${type}/`;
       let getbounties = fetchData (apiUrlbounties, 'GET');
 
       $.when(getbounties).then(function(response) {
-        vm.profile = response.profile;
-        vm.bounties = response.bounties;
+        vm.$set(vm.bounties,type, response)
+      })
+    },
+    fetchApplicants: function(id, key, type) {
+      let vm = this;
+      let apiUrlApplicants = `/funder_dashboard/bounties/${id}/`;
+      if (vm.bounties[type][key].contributors) {
+        return;
+      }
+      let getApplicants = fetchData (apiUrlApplicants, 'GET');
+
+      $.when(getApplicants).then(function(response) {
+
+        vm.$set(vm.bounties[type][key],'contributors', response.profiles)
+        // vm.$set(vm.openBounties[key],'contributors', response.profiles)
+
       })
     },
     isExpanded(key) {
@@ -68,19 +82,30 @@ if (document.getElementById('gc-board')) {
     delimiters: [ '[[', ']]' ],
     el: '#gc-board',
     data: {
-      profile: [],
-      bounties: [],
+      bounties: {},
+      openBounties: [],
+      submittedBounties: [],
+      expiredBounties: [],
       expandedGroup: [],
-      contributors: interested,
+      contributors: [],
       disabledBtn: false
     },
     mounted() {
-      this.fetchBounties();
+      this.fetchBounties('open');
+      this.fetchBounties('submitted');
+      this.fetchBounties('expired');
     }
 
   });
 }
 
+Vue.filter('pluralize', (word, amount, singular, plural) => {
+  plural = plural || 's'
+  singular = singular || ''
+  return amount > 1 ? `${word + plural}` : `${word + singular}`
+});
 
-
-
+Vue.filter('moment', (date) => {
+  moment.locale('en');
+  return moment.utc(date).fromNow();
+});
