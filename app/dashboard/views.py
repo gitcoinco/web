@@ -2882,7 +2882,39 @@ def funder_dashboard_bounty_info(request, bounty_id):
                          'profiles': profiles})
 
 
-def funder_dashboard(request):
+def serialize_funder_dashboard_open_rows(bounties, interests):
+    return [{'users_count': len([i for i in interests if b.pk in [i_b.pk for i_b in i.bounties]]),
+             'title': b.title,
+             'token_name': b.token_name,
+             'value_in_token': b.value_in_token,
+             'value_in_usd': b.get_value_in_usdt,
+             'github_url': b.github_url,
+             'absolute_url': b.absolute_url,
+             'avatar_url': b.avatar_url,
+             'project_type': b.project_type,
+             'expires_date': b.expires_date,
+             'interested_comment': b.interested_comment,
+             'bounty_owner_github_username': b.bounty_owner_github_username,
+             'submissions_comment': b.submissions_comment} for b in bounties]
+
+
+def serialize_funder_dashboard_submitted_rows(bounties):
+    return [{'users_count': b.fulfillments.count(),
+             'title': b.title,
+             'token_name': b.token_name,
+             'value_in_token': b.value_in_token,
+             'value_in_usd': b.get_value_in_usdt,
+             'github_url': b.github_url,
+             'absolute_url': b.absolute_url,
+             'avatar_url': b.avatar_url,
+             'project_type': b.project_type,
+             'expires_date': b.expires_date,
+             'interested_comment': b.interested_comment,
+             'bounty_owner_github_username': b.bounty_owner_github_username,
+             'submissions_comment': b.submissions_comment} for b in bounties]
+
+
+def funder_dashboard(request, bounty_type):
     """JSON data for the user dashboard"""
 
     user = request.user if request.user.is_authenticated else None
@@ -2895,29 +2927,44 @@ def funder_dashboard(request):
     # values = ['id', 'token_name', 'value_in_token', 'value_in_usd', 'github_url', 'absolute_url']
 
 
-    open_bounties = list(Bounty.objects.filter(
-        Q(idx_status='open') | Q(idx_status='open'),
-        current_bounty=True,
-        bounty_owner_profile=profile
-        ).values_list('id', 'title','token_name', 'value_in_token', 'value_in_usdt', 'github_url').order_by('-interested__created'))
-    print(open_bounties,profile)
+    if bounty_type == 'open':
+        bounties = list(Bounty.objects.filter(
+            Q(idx_status='open') | Q(override_status='open'),
+            current_bounty=True,
+            bounty_owner_github_username=profile.handle,
+            ).order_by('-interested__created'))
+        interests = list(Interest.objects.filter(bounty__pk__in=[b.pk for b in bounties], status='okay'))
+        return JsonResponse(serialize_funder_dashboard_open_rows(bounties, interests), safe=False)
 
-    submitted_bounties = list(Bounty.objects.filter(
-        Q(idx_status='submitted') | Q(override_status='submitted'),
-        current_bounty=True,
-        fulfillments__accepted=False,
-        bounty_owner_profile=profile
-        ).values_list('id').order_by('-fulfillments__created_on'))
+    elif bounty_type == 'submitted':
+        bounties = Bounty.objects.prefetch_related('fulfillments').filter(
+            Q(idx_status='submitted') | Q(override_status='submitted'),
+            current_bounty=True,
+            fulfillments__accepted=False,
+            bounty_owner_github_username=profile.handle,
+            ).order_by('-fulfillments__created_on')
+        return JsonResponse(serialize_funder_dashboard_submitted_rows(bounties), safe=False)
 
-    expired_bounties = list(Bounty.objects.filter(
-        Q(idx_status='expired') | Q(override_status='expired'),
-        current_bounty=True,
-        bounty_owner_profile=profile
-        ).order_by('-expires_date').values_list('id'))
+    elif bounty_type == 'expired':
+        bounties = Bounty.objects.filter(
+            Q(idx_status='expired') | Q(override_status='expired'),
+            current_bounty=True,
+            bounty_owner_github_username=profile.handle,
+            ).order_by('-expires_date')
 
-    return JsonResponse({'open': open_bounties,
-                         'submitted': submitted_bounties,
-                         'expired': expired_bounties})
+        return JsonResponse([{'title': b.title,
+                              'token_name': b.token_name,
+                              'value_in_token': b.value_in_token,
+                              'value_in_usd': b.get_value_in_usdt,
+                              'github_url': b.github_url,
+                              'absolute_url': b.absolute_url,
+                              'avatar_url': b.avatar_url,
+                              'project_type': b.project_type,
+                              'expires_date': b.expires_date,
+                              'interested_comment': b.interested_comment,
+                              'submissions_comment': b.submissions_comment}
+                              for b in bounties], safe=False)
+
 
 @require_POST
 @login_required
@@ -2938,7 +2985,7 @@ def change_user_profile_banner(request):
         profile.save()
     except (ProfileNotFoundException, ProfileHiddenException):
         raise Http404
-        
+
     response = {
         'status': 200,
         'message': 'User banner image has been updated.'
