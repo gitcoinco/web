@@ -65,7 +65,7 @@ urlpatterns = [
     path('inbox/', include('inbox.urls', namespace='inbox')),
 
     # board
-    path('dashboard/', include('board.urls', namespace='board')),
+    path('dashboard/', dashboard.views.board, name='dashboard'),
 
     # kudos
     path('kudos/', kudos.views.about, name='kudos_main'),

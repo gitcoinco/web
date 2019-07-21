@@ -2829,6 +2829,21 @@ def get_hackathons(request):
     return TemplateResponse(request, 'dashboard/hackathons.html', params)
 
 
+@login_required
+def board(request):
+    """Handle the board view."""
+
+    context = {
+        'is_outside': True,
+        'active': 'dashboard',
+        'title': 'dashboard',
+        'card_title': _('Dashboard'),
+        'card_desc': _('Manage all your activity.'),
+        'avatar_url': static('v2/images/helmet.png'),
+    }
+    return TemplateResponse(request, 'board.html', context)
+
+
 def funder_dashboard_bounty_info(request, bounty_id):
     """Per-bounty JSON data for the user dashboard"""
 
