@@ -2868,25 +2868,29 @@ def funder_dashboard_bounty_info(request, bounty_id):
     else:
         profiles = []
 
-    return JsonResponse({'title': bounty.title,
-                         'token_name': bounty.token_name,
-                         'value_in_token': bounty.value_in_token,
-                         'value_in_usd': bounty.get_value_in_usdt,
-                         'github_url': bounty.github_url,
-                         'absolute_url': bounty.absolute_url,
-                         'avatar_url': bounty.avatar_url,
-                         'project_type': bounty.project_type,
-                         'expires_date': bounty.expires_date,
-                         'interested_comment': bounty.interested_comment,
-                         'submissions_comment': bounty.submissions_comment,
+    return JsonResponse({
+                        # 'title': bounty.title,
+                        #  'token_name': bounty.token_name,
+                        #  'value_in_token': bounty.value_in_token,
+                        #  'value_in_usd': bounty.get_value_in_usdt,
+                        #  'github_url': bounty.github_url,
+                        #  'absolute_url': bounty.absolute_url,
+                        #  'avatar_url': bounty.avatar_url,
+                        #  'project_type': bounty.project_type,
+                        #  'expires_date': bounty.expires_date,
+                        #  'interested_comment': bounty.interested_comment,
+                        #  'submissions_comment': bounty.submissions_comment,
+                         'id': bounty.id,
                          'profiles': profiles})
 
 
 def serialize_funder_dashboard_open_rows(bounties, interests):
     return [{'users_count': len([i for i in interests if b.pk in [i_b.pk for i_b in i.bounties]]),
              'title': b.title,
+             'id': b.id,
              'token_name': b.token_name,
              'value_in_token': b.value_in_token,
+             'value_true': b.value_true,
              'value_in_usd': b.get_value_in_usdt,
              'github_url': b.github_url,
              'absolute_url': b.absolute_url,
@@ -2901,6 +2905,7 @@ def serialize_funder_dashboard_open_rows(bounties, interests):
 def serialize_funder_dashboard_submitted_rows(bounties):
     return [{'users_count': b.fulfillments.count(),
              'title': b.title,
+             'id': b.id,
              'token_name': b.token_name,
              'value_in_token': b.value_in_token,
              'value_in_usd': b.get_value_in_usdt,
