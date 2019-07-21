@@ -623,7 +623,6 @@ def robotstxt(request):
 def about(request):
     core_team = [
         (
-            static("v2/images/team/kevin-owocki.png"),
             "Kevin Owocki",
             "All the things",
             "owocki",
@@ -632,7 +631,6 @@ def about(request):
             "Avocado Toast"
         ),
         (
-            static("v2/images/team/alisa-march.jpg"),
             "Alisa March",
             "User Experience Design",
             "PixelantDesign",
@@ -641,7 +639,6 @@ def about(request):
             "Apple Cider Doughnuts"
         ),
         (
-            static("v2/images/team/eric-berry.jpg"),
             "Eric Berry",
             "OSS Funding",
             "coderberry",
@@ -650,7 +647,6 @@ def about(request):
             "Pastel de nata"
         ),
         (
-            static("v2/images/team/vivek-singh.jpg"),
             "Vivek Singh",
             "Community Buidl-er",
             "vs77bb",
@@ -659,7 +655,6 @@ def about(request):
             "Tangerine Gelato"
         ),
         (
-            static("v2/images/team/aditya-anand.jpg"),
             "Aditya Anand M C",
             "Engineering",
             "thelostone-mc",
@@ -668,7 +663,6 @@ def about(request):
             "Cocktail Samosa"
         ),
         (
-            static("v2/images/team/scott.jpg"),
             "Scott Moore",
             "Biz Dev",
             "ceresstation",
@@ -677,7 +671,6 @@ def about(request):
             "Teriyaki Chicken"
         ),
         (
-            static("v2/images/team/octavio-amu.png"),
             "Octavio Amuchástegui",
             "Front End Dev",
             "octavioamu",
@@ -686,7 +679,6 @@ def about(request):
             "Homemade italian pasta"
         ),
         (
-            static("v2/images/team/frank-chen.png"),
             "Frank Chen",
             "Data & Product",
             "frankchen07",
@@ -695,16 +687,6 @@ def about(request):
             "Crispy pork belly"
         ),
         (
-            static("v2/images/team/austin-griffith.jpg"),
-            "Austin Griffith",
-            "Gitcoin Labs",
-            "austintgriffith",
-            None,
-            "The #BUIDL",
-            "Drunken Noodles"
-        ),
-        (
-            static("v2/images/team/nate-hopkins.png"),
             "Nate Hopkins",
             "Engineering",
             "hopsoft",
@@ -713,7 +695,6 @@ def about(request):
             "Chicken tikka masala"
         ),
         (
-            static("v2/images/team/dan-lipert.png"),
             "Dan Lipert",
             "Engineering",
             "danlipert",
@@ -998,10 +979,11 @@ def activity(request):
     page_size = 15
     activities = Activity.objects.all().order_by('-created')
     p = Paginator(activities, page_size)
-    page = request.GET.get('page', 1)
+    page = int(request.GET.get('page', 1))
 
     context = {
         'p': p,
+        'next_page': page + 1,
         'page': p.get_page(page),
         'title': _('Activity Feed'),
     }

@@ -91,12 +91,14 @@ urlpatterns = [
 
     # api views
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
+    url(r'^api/v0.1/profile/banner', dashboard.views.change_user_profile_banner, name='change_user_profile_banner'),
     url(
         r'^api/v0.1/profile/(.*)?/jobopportunity',
         dashboard.views.profile_job_opportunity,
         name='profile_job_opportunity'
     ),
     url(r'^api/v0.1/profile/(?P<handle>.*)', dashboard.views.profile_details, name='profile_details'),
+    url(r'^api/v0.1/banners', dashboard.views.load_banners, name='load_banners'),
     url(
         r'^api/v0.1/get_suggested_contributors',
         dashboard.views.get_suggested_contributors,
@@ -116,6 +118,8 @@ urlpatterns = [
     url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active
     url(r'^api/v0.1/users_search/', dashboard.views.get_users, name='users_search'),
     url(r'^api/v0.1/kudos_search/', dashboard.views.get_kudos, name='kudos_search'),
+    url(r'^api/v0.1/choose_persona/', dashboard.views.choose_persona, name='choose_persona'),
+
     # Health check endpoint
     re_path(r'^health/', include('health_check.urls')),
     re_path(r'^lbcheck/?', healthcheck.views.lbcheck, name='lbcheck'),

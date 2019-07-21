@@ -21,6 +21,11 @@
   border-radius: 50%;
 }
 
+.profile-header {
+  position: relative;
+  min-height: 450px;
+}
+
 .profile-header__handle {
   padding-top: 0.8rem;
   margin-bottom: 0;
@@ -124,6 +129,13 @@ a:hover .avatar_edit .avatar_edit_text {
   top: 40%;
 }
 
+.picky img {
+  width: 100%;
+  height: auto;
+  vertical-align: middle;
+}
+
+
 .profile-organizations .organization {
   display: inline-block;
 }
@@ -140,10 +152,21 @@ a:hover .avatar_edit .avatar_edit_text {
   border-radius: 50%;
 }
 
+
+@media (max-width: 1200px) {
+  .profile-header{
+    min-height: 350px;
+  }
+}
+
 @media (max-width: 767.98px) {
 
   .profile-header__main-infos {
     text-align: center;
+  }
+
+  .profile-header{
+    min-height: 250px;
   }
 
   .profile-header__avatar {
@@ -185,6 +208,7 @@ a:hover .avatar_edit .avatar_edit_text {
 }
 
 @media (min-width: 992px) and (max-width: 1199.98px) {
+
   .profile-header__stats .card-header {
     padding: 0 0.5rem;
     font-size: 1.2rem;
@@ -365,3 +389,46 @@ a:hover .avatar_edit .avatar_edit_text {
 .no-profile-textcolor {
   color: #666666;
 }
+
+.profile-banner {
+  display: flex;
+  top: 0;
+  bottom: 0;
+  color: #ffffff;
+  z-index: 1;
+  width: 100vw;
+  cursor: pointer;
+}
+
+.profile-banner:hover {
+  background: linear-gradient(to top,rgba(255,255,255,0.6),rgba(255,255,255,0.0));
+}
+
+.profile-banner .h4 {
+  font-weight: bold;
+  text-shadow: 1px 1px 1px #000;
+  opacity: 0.5;
+  padding: 5px;
+}
+
+.profile-banner:hover .h4 {
+  opacity: 1;
+}
+
+.picky {
+  cursor: pointer;
+}
+
+.picky:active, .picky:focus {
+  border: 2px solid #007bff;
+}
+
+.selected {
+  border: 5px solid #007bff;
+}
+
+nav.navbar.navbar-dark{
+  background-image: url(/static/v2/images/header-bg.png);
+}
+
+
