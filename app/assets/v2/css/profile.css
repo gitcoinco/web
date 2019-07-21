@@ -166,7 +166,7 @@ a:hover .avatar_edit .avatar_edit_text {
   }
 
   .profile-header{
-    min-height: 250px;
+    min-height: 200px;
   }
 
   .profile-header__avatar {
@@ -183,6 +183,11 @@ a:hover .avatar_edit .avatar_edit_text {
     float: none;
     margin-right: 0;
   }
+
+  .row.bottom_notification{
+    display: none;
+  }
+
 }
 
 
