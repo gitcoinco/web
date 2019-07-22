@@ -57,31 +57,49 @@
                   <!-- RESULTS TITLE & FILTER -->
 
                   <div class="col-12 my-auto col-lg-6 text-center text-md-left">
-                    <h3 class="font-subheader font-weight-semibold mb-lg-0">Quarterly {{ title }}</h3>
+                    <h1 class="font-header font-weight-semibold mb-lg-0">{{title}}</h1>
                   </div>
                   <div class="col-12 col-sm-6 col-lg-3 mx-auto my-2 my-md-0 text-center text-sm-right text-lg-left">
-                    {% if technologies|length > 0 %}
-                      <p class="key-title font-body mb-0 font-weight-semibold mr-2">Key :</p>
-                      <div class="form-group text-center text-md-right d-inline">
-                        <select id="tech-keyword" class="form-control tech-options key">
-                          <option value="all">All</option>
-                        </select>
-                      </div>
-                    {% endif %}
                   </div>
 
                   <!-- END RESULTS TITLE & FILTER -->
 
                   <div class="col-12 col-sm-6 col-lg-3 select mx-auto my-2 my-md-0 text-center text-lg-left">
                     <div class="form-group text-center text-md-right d-inline">
-                      <p class="key-title font-body mb-0 font-weight-semibold mr-2">Type :</p>
-                      <select id="key" class="form-control key font-body">
-                        {% for this_title in titles.items %}
-                          <option value="{{this_title.0}}"
-                            {% if selected == this_title.1 %}selected=selected{% endif %} >{{this_title.1}}
-                          </option>
-                        {% endfor %}
-                      </select>
+                      
+                      <div class=" mt-2">
+                        <p class="key-title font-body mb-0 font-weight-semibold mr-2">Type : &nbsp; &nbsp; &nbsp; </p>
+                        <select id="key" class="form-control key font-body">
+                          {% for this_title in titles.items %}
+                            <option value="{{this_title.0}}"
+                              {% if selected == this_title.1 %}selected=selected{% endif %} >{{this_title.1}}
+                            </option>
+                          {% endfor %}
+                        </select>
+                      </div>
+
+                      <div class=" mt-2">
+                        <p class="key-title font-body mb-0 font-weight-semibold mr-2">Cadence :</p>
+                        <select id="cadence" class="form-control key font-body">
+                          {% for ele in cadences %}
+                            <option value="{{ele}}"
+                              {% if cadence == ele %}selected=selected{% endif %} >{{ele|title}}
+                            </option>
+                          {% endfor %}
+                        </select>
+                      </div>
+
+                    <div class=" mt-2">
+                      {% if technologies|length > 0 %}
+                        <p class="key-title font-body mb-0 font-weight-semibold mr-2">Key : &nbsp; &nbsp; &nbsp; &nbsp;</p>
+                        <div class="form-group text-center text-md-right d-inline">
+                          <select id="tech-keyword" class="form-control tech-options key">
+                            <option value="all">All</option>
+                          </select>
+                        </div>
+                      {% endif %}
+                    </div>
+
                     </div>
                   </div>
                 </div>
@@ -112,7 +130,7 @@
                           <td class="col-3 d-flex align-items-center item-position"># {{forloop.counter}}</td>
                           <td class="col-5 d-flex align-items-center" >
                             {% if not is_linked_to_profile %}
-                              <img class="img-fluid"  src="{{item.avatar_url}}">
+                              <img class="img-fluid"  data-src="{{item.avatar_url}}">
                             {% endif %}
                             <div class="ml-3 item-count-bounties" style="white-space: nowrap">
                               {% if not is_linked_to_profile %}
@@ -164,5 +182,13 @@
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
   <script src="{% static "v2/js/pages/leaderboard.js" %}"></script>
+
+  <script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
+  <script>
+    $(document).ready(function() {
+      $("img").unveil(200);
+    });
+  </script>
+
 
 </html>

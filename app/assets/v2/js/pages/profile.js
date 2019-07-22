@@ -1,5 +1,4 @@
 $(document).ready(function() {
-
   $('#kudos-section').on('click keypress', '.flip-card', e => {
     if ($(e.target).is('a')) {
       e.stopPropagation();
@@ -12,6 +11,7 @@ $(document).ready(function() {
 
   const tabSection = document.querySelector('#activity-tabs-sections');
   const updateViewBtn = document.querySelector('#update-view-btn');
+
   let fetchInProgress = false;
 
   function updateView(ignoreScrollOffset) {
@@ -39,7 +39,7 @@ $(document).ready(function() {
       fetchInProgress = true;
       loadingImg.className = loadingImg.className.replace('hidden', 'visible');
 
-      fetch(location.href.replace(location.hash, '') + '?p=' + (++page) + '&a=' + activityName).then(
+      fetch(location.href.replace(location.hash, '').replace('?', '') + '?p=' + (++page) + '&a=' + activityName).then(
         function(response) {
           if (response.status === 200) {
             response.text().then(

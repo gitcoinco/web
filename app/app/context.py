@@ -91,6 +91,8 @@ def preprocess(request):
         'access_token': profile.access_token if profile else '',
         'is_staff': request.user.is_staff if user_is_authenticated else False,
         'is_moderator': profile.is_moderator if profile else False,
+        'persona_is_funder': profile.persona_is_funder if profile else False,
+        'persona_is_hunter': profile.persona_is_hunter if profile else False,
     }
     context['json_context'] = json.dumps(context)
 

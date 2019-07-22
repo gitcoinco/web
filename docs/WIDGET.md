@@ -18,7 +18,7 @@ The JS image is responsive.  Here are some screenshots of it:
 
 ### Example
 
-[Click here to see an example JSFiddle widget](https://jsfiddle.net/j73nqdg2/)
+[Click here to see an example JSFiddle widget](https://jsfiddle.net/6psv90qL/)
 
 Step 1: Include the JavaScript SDK on your page once, ideally right after the opening body tag.
 

@@ -193,6 +193,15 @@ class BountySerializerSlim(BountySerializer):
             'keywords', 'value_in_token', 'project_type', 'is_open', 'expires_date', 'latest_activity', 'token_address'
         )
 
+
+class BountySerializerCheckIn(BountySerializer):
+    class Meta:
+        model = Bounty
+        fields = (
+            'url', 'title', 'bounty_owner_name', 'status', 'github_url', 'created_on', 'standard_bounties_id', 'bounty_owner_github_username'
+        )
+
+
 class BountyViewSet(viewsets.ModelViewSet):
     """Handle the Bounty view behavior."""
     queryset = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile', 'activities', 'unsigned_nda') \
@@ -410,8 +419,12 @@ class BountyViewSetSlim(BountyViewSet):
     queryset = Bounty.objects.all().order_by('-web3_created')
     serializer_class = BountySerializerSlim
 
+class BountyViewSetCheckIn(BountyViewSet):
+    queryset = Bounty.objects.all().order_by('standard_bounties_id')
+    serializer_class = BountySerializerCheckIn
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
 router.register(r'bounties/slim', BountyViewSetSlim)
 router.register(r'bounties', BountyViewSet)
+router.register(r'checkin', BountyViewSetCheckIn)
