@@ -492,7 +492,7 @@ const isAvailableIfReserved = function(bounty) {
 
 const isBountyOwner = result => {
   if (typeof web3 == 'undefined' || !web3.eth ||
-      typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
+      typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase || !result) {
     return false;
   }
   return caseInsensitiveCompare(web3.eth.coinbase, result['bounty_owner_address']);
@@ -1179,19 +1179,6 @@ var do_actions = function(result) {
     actions.push(_entry);
   }
 
-  if (show_extend_deadline) {
-    const enabled = true;
-    const _entry = {
-      enabled: enabled,
-      href: '/extend-deadlines',
-      text: gettext('Extend Expiration'),
-      parent: 'bounty_actions',
-      title: gettext('Extend deadline of an issue')
-    };
-
-    actions.push(_entry);
-  }
-
   if (show_invoice) {
     const _entry = {
       enabled: true,
@@ -1205,14 +1192,30 @@ var do_actions = function(result) {
   }
 
   if (show_change_bounty) {
+    const connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
+
     const _entry = [
       {
         enabled: true,
         href: '/bounty/change/' + result['pk'],
-        text: gettext('Edit Issue Details'),
+        text: gettext('Edit Issue'),
         parent: 'bounty_actions',
-        title: gettext('Update your Bounty Settings to get the right Crowd')
-      }
+        title: gettext('Update your Bounty Settings to get the right Crowd'),
+        edit_dropdown: true,
+        edit_issue_href: '/bounty/change/' + result['pk'],
+        show_extend_expiration: show_extend_deadline,
+        extend_expiration_href: '/extend-deadlines',
+        show_remarket: true,
+        remarket_enabled: result['can_remarket'],
+        remarket_url: result['url'] + connector_char + 'trigger_remarket=1'
+      }// ,
+      // {
+      //   enabled: true,
+      //   href: '/issue/refund_request?pk=' + result['pk'],
+      //   text: gettext('Request Fee Refund'),
+      //   parent: 'right_actions',
+      //   title: gettext('Raise a request if you believe you need your fee refunded')
+      // }
     ];
 
     actions.push(..._entry);

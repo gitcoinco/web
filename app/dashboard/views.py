@@ -1563,6 +1563,44 @@ def helper_handle_approvals(request, bounty):
             messages.warning(request, _('Only the funder of this bounty may perform this action.'))
 
 
+def helper_handle_remarket_trigger(request, bounty):
+    trigger_remarket = request.GET.get('trigger_remarket', False)
+    if trigger_remarket:
+        is_staff = request.user.is_staff
+        is_funder = bounty.is_funder(request.user.username.lower())
+        if is_staff or is_funder:
+            remarketed_count = bounty.remarketed_count
+            if remarketed_count < 2:
+                one_hour_after_remarketing = bounty.last_remarketed + timezone.timedelta(hours=1)
+                now = timezone.now()
+                if now > one_hour_after_remarketing:
+                    bounty.remarketed_count = remarketed_count + 1
+                    bounty.last_remarketed = now
+                    bounty.save()
+
+                    maybe_market_to_slack(bounty, 'issue_remarketed')
+
+                    further_permitted_remarket_count = 2 - bounty.remarketed_count
+                    success_msg = "This issue has been remarketed. The issue will appear at the top of the issue explorer. "
+                    if further_permitted_remarket_count == 1:
+                        success_msg = success_msg + "You will be able to remarket this bounty one more time if a contributor does not pick this up."
+                    elif further_permitted_remarket_count == 0:
+                        success_msg = success_msg + "Please note this is the last time the issue is able to be remarketed."
+
+                    messages.success(request, _(success_msg))
+
+                else:
+                    time_delta_wait_time = one_hour_after_remarketing - now
+                    minutes_to_wait = round(time_delta_wait_time.total_seconds() / 60)
+                    messages.warning(request,
+                                     _(f'You need to wait {minutes_to_wait} minutes before remarketing this bounty again'))
+            else:
+                messages.warning(request,
+                                 _('You cannot remarket this bounty again due to reaching the remarket limit (2)'))
+        else:
+            messages.warning(request, _('Only staff or the funder of this bounty may do this.'))
+
+
 @login_required
 def bounty_invite_url(request, invitecode):
     """Decode the bounty details and redirect to correct bounty
@@ -1675,6 +1713,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 helper_handle_admin_override_and_hide(request, bounty)
                 helper_handle_suspend_auto_approval(request, bounty)
                 helper_handle_mark_as_remarket_ready(request, bounty)
+                helper_handle_remarket_trigger(request, bounty)
                 helper_handle_admin_contact_funder(request, bounty)
                 helper_handle_override_status(request, bounty)
         except Bounty.DoesNotExist:

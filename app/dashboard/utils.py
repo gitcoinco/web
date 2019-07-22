@@ -94,7 +94,8 @@ def humanize_event_name(name):
         'killed_bounty': 'Cancelled funded issue',
         'worker_approved': 'Worker approved',
         'worker_rejected': 'Worker rejected',
-        'work_done': 'Work done'
+        'work_done': 'Work done',
+        'issue_remarketed': 'Issue re-marketed'
     }
 
     return humanized_event_names.get(name, name).upper()
