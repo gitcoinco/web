@@ -1,0 +1,19 @@
+{
+    "symbol": "ZNC",
+    "address": "0x5472E246529ba0C2917Eae93d27A7f955d4B1eb4",
+    "overview":{
+          "en": "The core of Zioncoin is the protocol for payment systems. This blockchain-based decentralized network consists of mutually-independent, trusted gateways, where information is distributed in different server networks, to offer a safer, cheaper and more decentralized payment method. Our mission is to become an important part of global business by providing users all over the world a trusted, transparent and decentralized payment network protocol. Zioncoin currently operates on the Ethereum blockchain. The Zioncoin token is a digital asset totaling 841.9 billion. After Zioncoin's main network goes online line, it will be mapped 1:1 with the primary network's native assets.",
+          "zh": "Zioncoin的核心是为支付系统提供协议，其通过区块链打造去中心化的网络由人们信任的网关组成，这些网关是互相独立运行的，传输的信息分散在不同服务器网络中，组成一个更快、更安全、更廉价和更分散的支付方式。Zioncoin的使命是成为全球商业的强大力量，为全球所有用户提供一个可靠、透明和去中心化支付网络协议。目前Zioncoin是在以太坊区块链上运行。Zioncoin代币作为数字资产，总量8419亿，Zioncoin主网上线后将与主网原生资产进行1:1映射。"
+    },
+    "email": "zncfund@gmail.com",
+    "website": "https://zionc.info",
+    "whitepaper": "https://zionc.info/blog/2019/6/14/white-paper-10/",
+    "state": "NORMAL",
+    "published_on": "2019-06-14",
+    "links": {
+      "blog": "https://zionc.info/blog/",
+      "twitter": "https://twitter.com/CoinZion",
+      "telegram": "https://t.me/znc8419",
+      "github": "https://github.com/zioncoin2100"
+    }
+  }
