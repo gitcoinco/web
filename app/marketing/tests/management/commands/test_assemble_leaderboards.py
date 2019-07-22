@@ -157,11 +157,11 @@ class TestAssembleLeaderboards(TestCase):
         index_terms = bounty_index_terms(self.bounty)
         assert len(index_terms) == 15
         assert 'USDT' in index_terms
-        assert set([self.bounty_payer_handle, self.bounty_earner_handle, 'gitcoinco']).issubset(set(index_terms))
-        assert set(['Cuyahoga Falls', 'United States', 'North America']).issubset(set(index_terms))
-        assert set(['London', 'United Kingdom', 'Europe']).issubset(set(index_terms))
-        assert set(['Australia', 'Oceania']).issubset(set(index_terms))
-        assert set(['python', 'shell']).issubset(set(index_terms))
+        assert {self.bounty_payer_handle, self.bounty_earner_handle, 'gitcoinco'}.issubset(set(index_terms))
+        assert {'Tallmadge', 'United States', 'North America'}.issubset(set(index_terms))
+        assert {'London', 'United Kingdom', 'Europe'}.issubset(set(index_terms))
+        assert {'Australia', 'Oceania'}.issubset(set(index_terms))
+        assert {'python', 'shell'}.issubset(set(index_terms))
 
     def test_tip_index_terms(self):
         """Test tip index terms list."""
@@ -169,9 +169,9 @@ class TestAssembleLeaderboards(TestCase):
 
         assert len(index_terms) == 10
         assert 'USDT' in index_terms
-        assert set([self.tip_payer_handle, self.tip_earner_handle, 'gitcoinco']).issubset(set(index_terms))
-        assert set(['Cuyahoga Falls', 'United States', 'North America']).issubset(set(index_terms))
-        assert set(['London', 'United Kingdom', 'Europe']).issubset(set(index_terms))
+        assert {self.tip_payer_handle, self.tip_earner_handle, 'gitcoinco'}.issubset(set(index_terms))
+        assert {'Tallmadge', 'United States', 'North America'}.issubset(set(index_terms))
+        assert {'London', 'United Kingdom', 'Europe'}.issubset(set(index_terms))
 
     def test_sum_bounties_payer(self):
         """Test sum bounties leaderboards."""

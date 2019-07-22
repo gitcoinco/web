@@ -118,7 +118,7 @@ def sync_mailchimp_list(eses, list_id):
 def push_to_mailchimp():
     print('- push_to_mailchimp')
     client = MailChimp(settings.MAILCHIMP_API_KEY, settings.MAILCHIMP_USER)
-    created_after = timezone.now() - timezone.timedelta(hours=2)
+    created_after = timezone.now() - timezone.timedelta(hours=12)
 
     eses_funder = EmailSubscriber.objects.filter(
         active=True, created_on__gt=created_after,
