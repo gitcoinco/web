@@ -2046,7 +2046,7 @@ def profile(request, handle):
     context['sent_kudos_count'] = sent_kudos.count()
     context['verification'] = profile.get_my_verified_check
     context['avg_rating'] = profile.get_average_star_rating
-    
+
     context['unrated_funded_bounties'] = Bounty.objects.current().prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
         .filter(
             bounty_owner_github_username__iexact=profile.handle,
