@@ -2872,7 +2872,7 @@ def funder_dashboard_bounty_info(request, bounty_id):
         fulfillments = bounty.fulfillments.prefetch_related('profile').all()
         profiles = []
         for f in fulfillments:
-            profile = {'fulfiller_metadata': f.fulfiller_metadata}
+            profile = {'fulfiller_metadata': f.fulfiller_metadata, 'created_on': f.created_on}
             if f.profile:
                 profile.update(
                     {'handle': f.profile.handle,
@@ -2903,6 +2903,7 @@ def serialize_funder_dashboard_open_rows(bounties, interests):
     return [{'users_count': len([i for i in interests if b.pk in [i_b.pk for i_b in i.bounties]]),
              'title': b.title,
              'id': b.id,
+             'standard_bounties_id': b.standard_bounties_id,
              'token_name': b.token_name,
              'value_in_token': b.value_in_token,
              'value_true': b.value_true,
@@ -2923,6 +2924,7 @@ def serialize_funder_dashboard_submitted_rows(bounties):
              'id': b.id,
              'token_name': b.token_name,
              'value_in_token': b.value_in_token,
+             'value_true': b.value_true,
              'value_in_usd': b.get_value_in_usdt,
              'github_url': b.github_url,
              'absolute_url': b.absolute_url,
@@ -2975,6 +2977,7 @@ def funder_dashboard(request, bounty_type):
         return JsonResponse([{'title': b.title,
                               'token_name': b.token_name,
                               'value_in_token': b.value_in_token,
+                              'value_true': b.value_true,
                               'value_in_usd': b.get_value_in_usdt,
                               'github_url': b.github_url,
                               'absolute_url': b.absolute_url,

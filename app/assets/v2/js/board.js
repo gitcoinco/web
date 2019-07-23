@@ -36,6 +36,12 @@ Vue.mixin({
         this.expandedGroup.push(key);
       }
     },
+    mutateWorkerAction(bountyUrl, action, worker) {
+      let vm = this;
+      let url = `${bountyUrl}/?mutate_worker_action=${action}&worker=${octavioamu}`;
+      let postWorkerAction = fetchData (url, 'POST');
+
+    },
     startWork(key, bountyPk, profileId) {
       let vm = this;
       let url = `/actions/bounty/${bountyPk}/interest/${profileId}/interested/`;
@@ -102,7 +108,12 @@ if (document.getElementById('gc-board')) {
 Vue.filter('pluralize', (word, amount, singular, plural) => {
   plural = plural || 's';
   singular = singular || '';
-  return amount > 1 ? `${word + plural}` : `${word + singular}`;
+  return amount !== 1 ? `${word + plural}` : `${word + singular}`;
+});
+
+Vue.filter('truncate', (account, num) => {
+  num = !num ? num = 4 : num;
+  return account.substr(0, num + 2) + '\u2026' + account.substr(-num);
 });
 
 Vue.filter('moment', (date) => {
