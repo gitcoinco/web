@@ -1669,6 +1669,7 @@ class Activity(SuperModel):
         ('new_milestone', 'New Milestone'),
         ('update_milestone', 'Updated Milestone'),
         ('new_kudos', 'New Kudos'),
+        ('joined', 'Joined Gitcoin'),
     ]
 
     profile = models.ForeignKey(
@@ -2783,7 +2784,7 @@ class Profile(SuperModel):
         )
         return funded_bounties
 
-    def get_various_activities(self, network='mainnet'):
+    def get_various_activities(self):
         """Get bounty, tip and grant related activities for this profile.
 
         Args:
@@ -2794,6 +2795,7 @@ class Profile(SuperModel):
             (dashboard.models.ActivityQuerySet): The query results.
 
         """
+        
         if not self.is_org:
             all_activities = self.activities
         else:
@@ -2804,14 +2806,7 @@ class Profile(SuperModel):
                 Q(tip__github_url__istartswith=url)
             )
 
-        all_activities = all_activities.filter(
-            Q(bounty__network=network) |
-            Q(tip__network=network) |
-            Q(grant__network=network) |
-            Q(subscription__network=network)
-        ).select_related('bounty', 'tip', 'grant', 'subscription').all().order_by('-created')
-
-        return all_activities
+        return all_activities.all().order_by('-created')
 
     def activate_avatar(self, avatar_pk):
         self.avatar_baseavatar_related.update(active=False)
@@ -2903,7 +2898,7 @@ class Profile(SuperModel):
         }
 
         if activities:
-            params['activities'] = self.get_various_activities(network=network)
+            params['activities'] = self.get_various_activities()
 
         if tips:
             params['tips'] = self.tips.filter(**query_kwargs).send_happy_path()

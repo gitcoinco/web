@@ -1094,7 +1094,7 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
 
     const divisor = Math.pow(10, decimals);
 
-    result['rounded_amount'] = Math.round(10 ** token_round_decimals * normalizeAmount(result['value_in_token'] / divisor, decimals)) / 10 ** token_round_decimals;
+    result['rounded_amount'] = normalizeAmount(result['value_in_token'], decimals);
 
     const crowdfunding = result['additional_funding_summary'];
 
@@ -1226,14 +1226,12 @@ const renderFeaturedBountiesFromResults = (results, renderForExplorer) => {
   for (let i = 0; i < results.length; i++) {
     const result = results[i];
     let decimals = 18;
-    const divisor = Math.pow(10, decimals);
     const relatedTokenDetails = tokenAddressToDetailsByNetwork(result['token_address'], result['network']);
 
     if (relatedTokenDetails && relatedTokenDetails.decimals) {
       decimals = relatedTokenDetails.decimals;
     }
-
-    result['rounded_amount'] = Math.round(10 ** token_round_decimals * normalizeAmount(result['value_in_token'] / divisor, decimals)) / 10 ** token_round_decimals;
+    result['rounded_amount'] = normalizeAmount(result['value_in_token'], decimals);
 
     html += tmpl.render(result);
   }
