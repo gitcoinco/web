@@ -149,7 +149,7 @@ const init = () => {
           }).on('transactionHash', function(transactionHash) {
             console.log('2', transactionHash);
             $('#transaction_hash').val(transactionHash);
-            const linkURL = etherscan_tx_url(transactionHash);
+            const linkURL = get_etherscan_url(transactionHash);
             let file = $('#img-project')[0].files[0];
             let formData = new FormData();
 
