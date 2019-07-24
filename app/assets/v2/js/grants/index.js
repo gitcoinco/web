@@ -39,7 +39,7 @@ $(document).ready(() => {
 
 const etherscanUrlConvert = (elem, network) => {
   elem.each(function() {
-    $(this).attr('href', etherscan_tx_url($(this).attr('href'), network));
+    $(this).attr('href', get_etherscan_url($(this).attr('href'), network));
   });
 };
 
