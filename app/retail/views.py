@@ -206,6 +206,9 @@ def index(request):
         'know_us': know_us,
         'press': press,
         'articles': articles,
+        'hide_newsletter_caption': True,
+        'hide_newsletter_consent': True,
+        'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter."),
         'title': _('Grow Open Source: Get crowdfunding and find freelance developers for your software projects, paid in crypto')
     }
     return TemplateResponse(request, 'home/index.html', context)
