@@ -16,7 +16,7 @@
 
 {% endcomment %}
 {% load humanize i18n static %}
-<div class="row box activity {{ row.activity_type }}">
+<div class="row box activity {{ row.activity_type }} infinite-item">
   <div class="col-12 col-md-1">
     <div class="activity-avatar">
       <img class="avatar" src="/dynamic/avatar/{{ row.profile.handle }}"/>
@@ -50,6 +50,8 @@
         <a href="{{ row.metadata.grant_url }}" target="_blank">
           {{ row.metadata.title }}
         </a>
+      {% elif row.activity_type == 'joined' %}
+        {% trans "joined Gitcoin" %}
       {% elif row.activity_type == 'update_grant' %}
         {% trans "updated" %}
         <a href="{{ row.metadata.grant_url }}" target="_blank">
@@ -107,7 +109,7 @@
               {{ row.metadata.value_in_token | floatformat:2 }} / {{ row.metadata.amount_goal | floatformat:2 }}
               {{ row.metadata.token_name }}
             {% else %}
-            <span>{{row.metadata.value_in_token_old}}  - {{row.metadata.value_in_token}}  {{row.metadata.token_name}}</span>
+            <span>{{row.metadata.value_in_token}}  {{row.metadata.token_name}}</span>
             {% endif %}
           </p>
         </div>

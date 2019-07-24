@@ -12,7 +12,7 @@ const ratingModal = (bountyId, receiver, elem) => {
   }).done(function(result) {
     $('body').append(result);
     $('#modalRating').bootstrapModal('show');
-    $('[data-toggle="tooltip"]').runTooltip();
+    $('[data-toggle="tooltip"]').bootstrapTooltip();
     $('input[name="review[rating]"]').filter('[value="' + elem.val() + '"]').prop('checked', true);
 
     $('#ratingForm').on('submit', function(e) {
