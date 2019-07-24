@@ -53,11 +53,14 @@ from git.utils import (
     _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_gh_issue_details, get_issue_comments, issue_number, org_name,
     repo_name,
 )
-from marketing.mails import featured_funded_bounty
+from marketing.mails import featured_funded_bounty, start_work_approved
 from marketing.models import LeaderboardRank
 from rest_framework import serializers
 from web3 import Web3
 
+from .notifications import (
+    maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter, maybe_market_to_user_slack,
+)
 from .signals import m2m_changed_interested
 
 logger = logging.getLogger(__name__)
@@ -1596,6 +1599,15 @@ class Interest(SuperModel):
         self.save()
         return self
 
+def auto_user_approve(interest, bounty):
+    interest.pending = False
+    interest.acceptance_date = timezone.now()
+    start_work_approved(interest, bounty)
+    maybe_market_to_github(bounty, 'work_started', profile_pairs=bounty.profile_pairs)
+    maybe_market_to_slack(bounty, 'worker_approved')
+    maybe_market_to_user_slack(bounty, 'worker_approved')
+    maybe_market_to_twitter(bounty, 'worker_approved')
+
 
 @receiver(post_save, sender=Interest, dispatch_uid="psave_interest")
 @receiver(post_delete, sender=Interest, dispatch_uid="pdel_interest")
@@ -1603,7 +1615,11 @@ def psave_interest(sender, instance, **kwargs):
     # when a new interest is saved, update the status on frontend
     print("signal: updating bounties psave_interest")
     for bounty in Bounty.objects.filter(interested=instance):
+
+        if bounty.bounty_reserved_for_user == instance.profile:
+            auto_user_approve(instance, bounty)
         bounty.save()
+
 
 class ActivityQuerySet(models.QuerySet):
     """Handle the manager queryset for Activities."""
@@ -3231,6 +3247,17 @@ class BlockedUser(SuperModel):
         return f'<BlockedUser: {self.handle}>'
 
 
+class Sponsor(SuperModel):
+    """Defines the Hackthon Sponsor"""
+
+    name = models.CharField(max_length=255, help_text='sponsor Name')
+    logo = models.ImageField(help_text='sponsor logo', blank=True)
+    logo_svg = models.FileField(help_text='sponsor logo svg', blank=True)
+
+    def __str__(self):
+        return self.name
+
+
 class HackathonEvent(SuperModel):
     """Defines the HackathonEvent model."""
 
@@ -3240,7 +3267,9 @@ class HackathonEvent(SuperModel):
     logo_svg = models.FileField(blank=True)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    identifier = models.CharField(max_length=255, default='')
+    background_color = models.CharField(max_length=255, null=True, blank=True, help_text='hexcode for the banner')
+    identifier = models.CharField(max_length=255, default='', help_text='used for custom styling for the banner')
+    sponsors = models.ManyToManyField(Sponsor, through='HackathonSponsor')
 
     def __str__(self):
         """String representation for HackathonEvent.
@@ -3257,6 +3286,19 @@ class HackathonEvent(SuperModel):
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
+
+class HackathonSponsor(SuperModel):
+    SPONSOR_TYPES = [
+        ('G', 'Gold'),
+        ('S', 'Silver'),
+    ]
+    hackathon = models.ForeignKey('HackathonEvent', default=1, on_delete=models.CASCADE)
+    sponsor = models.ForeignKey('Sponsor', default=1, on_delete=models.CASCADE)
+    sponsor_type = models.CharField(
+        max_length=1,
+        choices=SPONSOR_TYPES,
+        default='G',
+    )
 
 class FeedbackEntry(SuperModel):
     bounty = models.ForeignKey(

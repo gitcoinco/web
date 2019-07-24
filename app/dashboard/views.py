@@ -69,8 +69,8 @@ from web3 import HTTPProvider, Web3
 from .helpers import get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory
 from .models import (
     Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest, Coupon,
-    FeedbackEntry, HackathonEvent, Interest, LabsResearch, Profile, ProfileSerializer, RefundFeeRequest, Subscription,
-    Tool, ToolVote, UserAction, UserVerificationModel,
+    FeedbackEntry, HackathonEvent, HackathonSponsor, Interest, LabsResearch, Profile, ProfileSerializer,
+    RefundFeeRequest, Sponsor, Subscription, Tool, ToolVote, UserAction, UserVerificationModel,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -306,7 +306,12 @@ def new_interest(request, bounty_id):
     approval_required = bounty.permission_type == 'approval'
     if approval_required:
         msg = _("You have applied to start work.  If approved, you will be notified via email.")
-
+    elif not approval_required and bounty.bounty_reserved_for_user != profile:
+        msg = _("You have applied to start work, but the bounty is reserved for another user.")
+        JsonResponse({
+            'error': msg,
+            'success': False},
+            status=401)
     return JsonResponse({
         'success': True,
         'profile': ProfileSerializer(interest.profile).data,
@@ -2769,16 +2774,16 @@ def hackathon(request, hackathon=''):
     """Handle rendering of HackathonEvents. Reuses the dashboard template."""
 
     try:
-        evt = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
+        hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
     except HackathonEvent.DoesNotExist:
-        evt = HackathonEvent.objects.last()
+        hackathon_event = HackathonEvent.objects.last()
 
-    title = evt.name
+    title = hackathon_event.name
     network = get_default_network()
 
     # TODO: Refactor post orgs
     orgs = []
-    for bounty in Bounty.objects.filter(event=evt, network=network).current():
+    for bounty in Bounty.objects.filter(event=hackathon_event, network=network).current():
         org = {
             'display_name': bounty.org_display_name,
             'avatar_url': bounty.avatar_url,
@@ -2793,12 +2798,41 @@ def hackathon(request, hackathon=''):
         'title': title,
         'orgs': orgs,
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
-        'hackathon': evt,
+        'hackathon': hackathon_event,
     }
 
-    if evt.identifier == 'beyondblockchain_2019':
+    # fetch sponsors for the hackathon
+    hackathon_sponsors = HackathonSponsor.objects.filter(hackathon=hackathon_event)
+    if hackathon_sponsors:
+        sponsors_gold = []
+        sponsors_silver = []
+        for hackathon_sponsor in hackathon_sponsors:
+            sponsor = Sponsor.objects.get(name=hackathon_sponsor.sponsor)
+            sponsor_obj = {
+                'name': sponsor.name,
+            }
+            if sponsor.logo_svg:
+                sponsor_obj['logo'] = sponsor.logo_svg.url
+            elif sponsor.logo:
+                sponsor_obj['logo'] = sponsor.logo.url
+
+            if hackathon_sponsor.sponsor_type == 'G':
+                sponsors_gold.append(sponsor_obj)
+            else:
+                sponsors_silver.append(sponsor_obj)
+
+        params['sponsors'] = {
+            'sponsors_gold': sponsors_gold,
+            'sponsors_silver': sponsors_silver
+        }
+
+    elif hackathon_event.identifier == 'beyondblockchain_2019':
         from dashboard.context.hackathon_explorer import beyondblockchain_2019
         params['sponsors'] = beyondblockchain_2019
+
+    elif hackathon_event.identifier == 'eth_hack':
+        from dashboard.context.hackathon_explorer import eth_hack
+        params['sponsors'] = eth_hack
 
     return TemplateResponse(request, 'dashboard/index.html', params)
 
@@ -2838,7 +2872,7 @@ def change_user_profile_banner(request):
         profile.save()
     except (ProfileNotFoundException, ProfileHiddenException):
         raise Http404
-        
+
     response = {
         'status': 200,
         'message': 'User banner image has been updated.'
