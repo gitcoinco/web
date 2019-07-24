@@ -23,6 +23,7 @@
 
 .profile-header {
   position: relative;
+  min-height: 450px;
 }
 
 .profile-header__handle {
@@ -151,10 +152,21 @@ a:hover .avatar_edit .avatar_edit_text {
   border-radius: 50%;
 }
 
+
+@media (max-width: 1200px) {
+  .profile-header{
+    min-height: 350px;
+  }
+}
+
 @media (max-width: 767.98px) {
 
   .profile-header__main-infos {
     text-align: center;
+  }
+
+  .profile-header{
+    min-height: 200px;
   }
 
   .profile-header__avatar {
@@ -171,6 +183,11 @@ a:hover .avatar_edit .avatar_edit_text {
     float: none;
     margin-right: 0;
   }
+
+  .row.bottom_notification{
+    display: none;
+  }
+
 }
 
 
@@ -196,6 +213,7 @@ a:hover .avatar_edit .avatar_edit_text {
 }
 
 @media (min-width: 992px) and (max-width: 1199.98px) {
+
   .profile-header__stats .card-header {
     padding: 0 0.5rem;
     font-size: 1.2rem;
