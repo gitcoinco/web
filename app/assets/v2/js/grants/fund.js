@@ -262,7 +262,7 @@ const donationPayment = (token, account, donationAmountString) => {
 const subscribeToGrant = (transactionHash) => {
   web3.eth.getAccounts(function(err, accounts) {
     deployedToken.methods.decimals().call(function(err, decimals) {
-      const linkURL = etherscan_tx_url(transactionHash);
+      const linkURL = get_etherscan_url(transactionHash);
       let token_address = $('#js-token').length ? $('#js-token').val() : $('#sub_token_address').val();
       let data = {
         'contributor_address': $('#contributor_address').val(),
@@ -393,7 +393,7 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
       window.location = redirectURL;
     });
 
-    const linkURL = etherscan_tx_url(transactionHash);
+    const linkURL = get_etherscan_url(transactionHash);
 
     document.issueURL = linkURL;
 
