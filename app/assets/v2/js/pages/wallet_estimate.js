@@ -1,3 +1,4 @@
+'use strict';
 window.addEventListener('load', function() {
   try {
     if (web3 && web3.currentProvider.isTrust) {

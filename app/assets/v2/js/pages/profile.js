@@ -1,3 +1,4 @@
+'use strict';
 $(document).ready(function() {
   $('#kudos-section').on('click keypress', '.flip-card', e => {
     if ($(e.target).is('a')) {

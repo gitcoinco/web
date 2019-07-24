@@ -1,3 +1,4 @@
+'use strict';
 /*
  *  Copy the string from the input / textarea into the system clipboard
  *  @example

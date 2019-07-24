@@ -1,3 +1,4 @@
+'use strict';
 let popoverData = [];
 
 const renderPopOverData = json => {

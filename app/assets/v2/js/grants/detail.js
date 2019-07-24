@@ -1,3 +1,4 @@
+'use strict';
 const editableFields = [
   '#form--input__title',
   '#form--input__reference-url',

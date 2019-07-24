@@ -1,4 +1,4 @@
-
+'use strict';
 // Overwrite from shared.js
 var trigger_form_hooks = function() {
   callFunctionWhenweb3Available(

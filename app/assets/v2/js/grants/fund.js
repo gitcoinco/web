@@ -1,3 +1,4 @@
+'use strict';
 /* eslint-disable no-console */
 let deployedToken;
 let deployedSubscription;

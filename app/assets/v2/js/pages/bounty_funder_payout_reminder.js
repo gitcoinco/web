@@ -1,3 +1,4 @@
+'use strict';
 $(document).on('click', '#notify_funder_submit', (event) => {
   event.preventDefault();
   $(document).on('hidden.bs.modal', '#modal', (e) => {

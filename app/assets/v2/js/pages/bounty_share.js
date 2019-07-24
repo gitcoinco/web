@@ -1,4 +1,4 @@
-
+'use strict';
 $('.modal-link').click(function(e) {
   let modals = $('#modal');
   let modalBody = $('#modal .modal-content');

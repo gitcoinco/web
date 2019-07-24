@@ -1,3 +1,4 @@
+'use strict';
 function kudosSearch(elem) {
   var selectItem = elem || '.kudos-search';
 

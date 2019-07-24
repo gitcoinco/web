@@ -1,3 +1,4 @@
+'use strict';
 /* eslint-disable no-console */
 
 $(document).ready(function() {

@@ -1,3 +1,4 @@
+'use strict';
 /* eslint-disable no-new */
 /* eslint-disable no-console */
 
@@ -61,7 +62,7 @@ new truncateHash();
     try {
       const currentWallet = web3.eth.coinbase;
       const elem = document.querySelectorAll('[data-metamask-address]');
-  
+
       for (let i = 0; i < elem.length; ++i) {
         new getaddress(elem[i], currentWallet);
       }

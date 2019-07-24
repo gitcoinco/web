@@ -1,3 +1,4 @@
+'use strict';
 let notifications = [];
 let page = 1;
 let unreadNotifications = [];

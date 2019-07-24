@@ -1,3 +1,4 @@
+'use strict';
 const $slides = $('#slides');
 
 let currentSlide = 0;

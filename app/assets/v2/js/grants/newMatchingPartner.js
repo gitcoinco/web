@@ -1,3 +1,4 @@
+'use strict';
 const GITCOIN_ADDRESS = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
 
 function createMatchingPartner(transactionID, transactionAmount) {

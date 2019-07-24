@@ -1,3 +1,4 @@
+'use strict';
 /* eslint block-scoped-var: "warn" */
 /* eslint no-redeclare: "warn" */
 /* eslint no-loop-func: "warn" */

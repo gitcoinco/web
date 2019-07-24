@@ -1,3 +1,4 @@
+'use strict';
 // outside of document.ready to be in global scope
 var compiledSubscription;
 var compiledSplitter;

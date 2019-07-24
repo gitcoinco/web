@@ -1,3 +1,4 @@
+'use strict';
 let compiledSplitter0 = {
   'className': 'Splitter',
   'args': [],

@@ -1,3 +1,4 @@
+'use strict';
 $('body').on('click', '[data-open-rating] input', function(e) {
   ratingModal($(this).parent().data('openRating'), $(this).parent().data('openUsername'), $(this));
 });

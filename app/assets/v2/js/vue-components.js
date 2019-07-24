@@ -1,3 +1,4 @@
+'use strict';
 Vue.component('modal', {
   props: [ 'user', 'size' ],
   template: `<div class="vue-modal modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">

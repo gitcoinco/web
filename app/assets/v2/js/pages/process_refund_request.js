@@ -1,3 +1,4 @@
+'use strict';
 $(document).ready(function() {
 
   load_tokens();

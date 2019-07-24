@@ -1,3 +1,4 @@
+'use strict';
 const movementStrength = 25;
 let startX = null;
 let startY = null;

@@ -1,7 +1,7 @@
+'use strict';
 /* eslint-disable no-console */
 /* eslint-disable nonblock-statement-body-position */
 // helper functions
-
 /**
  *  * Generates a boostrap modal handler for when a user clicks a link to launch a boostrap modal.
  *   * @param {string} modalUrl - content url for the modal

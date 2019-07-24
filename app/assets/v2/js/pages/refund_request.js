@@ -1,3 +1,4 @@
+'use strict';
 $(document).ready(function() {
   if (!caseInsensitiveCompare($('#bounty_owner').html(), document.contxt.github_handle)) {
     $('.metamask-banner').hide();

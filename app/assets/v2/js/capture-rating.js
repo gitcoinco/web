@@ -1,3 +1,4 @@
+'use strict';
 const checkUnrated = () => {
   let today = new Date();
   let lastPromp = new Date(localStorage.getItem('rateCapture')) || 0;

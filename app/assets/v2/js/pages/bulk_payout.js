@@ -1,3 +1,4 @@
+'use strict';
 const round = function(num, decimals) {
   return Math.round(num * 10 ** decimals) / 10 ** decimals;
 };

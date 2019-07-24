@@ -1,3 +1,4 @@
+'use strict';
 let compiledSubscription1 = {
   'contractName': 'Subscription',
   'abi': [

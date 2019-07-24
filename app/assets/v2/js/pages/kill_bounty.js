@@ -1,3 +1,4 @@
+'use strict';
 /* eslint-disable no-console */
 window.onload = function() {
   // a little time for web3 injection

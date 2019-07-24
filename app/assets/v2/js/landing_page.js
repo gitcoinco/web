@@ -1,3 +1,4 @@
+'use strict';
 scrollContainer = $('#landing_page_wrapper');
 
 // Header and Nav

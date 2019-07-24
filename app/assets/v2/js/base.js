@@ -1,3 +1,4 @@
+'use strict';
 /* eslint-disable no-loop-func */
 /* eslint-disable no-console */
 /* eslint-disable nonblock-statement-body-position */

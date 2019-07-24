@@ -1,3 +1,4 @@
+'use strict';
 let users = [];
 let usersPage = 1;
 let usersNumPages = '';

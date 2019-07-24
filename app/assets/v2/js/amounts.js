@@ -1,3 +1,4 @@
+'use strict';
 var estimate = function(amount, conv_rate) {
   var estimateAmount = amount * conv_rate;
 

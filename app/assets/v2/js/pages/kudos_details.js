@@ -1,3 +1,4 @@
+'use strict';
 var cloneKudos = function(name, numClones) {
   console.log('name: ' + name);
   console.log('numClones: ' + numClones);

@@ -1,4 +1,4 @@
-
+'use strict';
 function setupTabs(name) {
   let sections = document.querySelector(name + '-sections.tab-sections');
 

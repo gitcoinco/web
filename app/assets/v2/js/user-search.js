@@ -1,3 +1,4 @@
+'use strict';
 function userSearch(elem, showAddress, theme, initialData, allowClear, suppress_non_gitcoiners) {
   var themeChoice = theme || undefined;
   var selectItem = elem || '.username-search';

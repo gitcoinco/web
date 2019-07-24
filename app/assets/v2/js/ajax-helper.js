@@ -1,3 +1,4 @@
+'use strict';
 /**
  * Generic function to make an AJAX call avoid DRY
  *

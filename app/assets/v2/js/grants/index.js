@@ -1,3 +1,4 @@
+'use strict';
 $(document).ready(() => {
   $('#sort_option').select2({
     minimumResultsForSearch: Infinity
