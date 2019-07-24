@@ -177,14 +177,6 @@ class Grant(SuperModel):
         help_text=_('The Grant administrator\'s profile.'),
         null=True,
     )
-    request_ownership_change = models.ForeignKey(
-        'dashboard.Profile',
-        related_name='request_ownership_change',
-        on_delete=models.CASCADE,
-        help_text=_('The Grant\'s potential new administrator profile.'),
-        null=True,
-        blank=True,
-    )
     team_members = models.ManyToManyField(
         'dashboard.Profile',
         related_name='grant_teams',
