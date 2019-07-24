@@ -183,6 +183,7 @@ class Grant(SuperModel):
         on_delete=models.CASCADE,
         help_text=_('The Grant\'s potential new administrator profile.'),
         null=True,
+        blank=True,
     )
     team_members = models.ManyToManyField(
         'dashboard.Profile',
@@ -717,7 +718,7 @@ next_valid_timestamp: {next_valid_timestamp}
 
 @receiver(pre_save, sender=Grant, dispatch_uid="psave_grant")
 def psave_grant(sender, instance, **kwargs):
-    
+
     instance.amount_received = 0
     instance.monthly_amount_subscribed = 0
     #print(instance.id)
