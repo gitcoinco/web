@@ -2044,7 +2044,7 @@ def profile(request, handle):
         ).exclude(
             feedbacks__feedbackType='approver',
             feedbacks__sender_profile=profile,
-        )
+        ).distinct('pk')
 
     context['unrated_contributed_bounties'] = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=profile, network=network,) \
             .filter(interested__status='okay') \
@@ -2052,7 +2052,7 @@ def profile(request, handle):
             .exclude(
                 feedbacks__feedbackType='worker',
                 feedbacks__sender_profile=profile
-            )
+            ).distinct('pk')
 
     currently_working_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
         .filter(interested__pending=False).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)
