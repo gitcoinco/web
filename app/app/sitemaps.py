@@ -49,7 +49,7 @@ class KudosSitemap(Sitemap):
         return obj.modified_on
 
     def location(self, item):
-        return item.url
+        return item.get_relative_url()
 
 
 class ProfileSitemap(Sitemap):
