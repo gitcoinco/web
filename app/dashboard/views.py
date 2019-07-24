@@ -1970,7 +1970,7 @@ def profile(request, handle):
         if page:
             page = int(page)
             activity_type = request.GET.get('a', '')
-            all_activities = profile.get_various_activities(network)
+            all_activities = profile.get_various_activities()
             paginator = Paginator(profile_filter_activities(all_activities, activity_type, activity_tabs), 10)
 
             if page > paginator.num_pages:
