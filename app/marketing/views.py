@@ -670,47 +670,41 @@ def leaderboard(request, key=''):
         TemplateResponse: The leaderboard template response.
 
     """
-    if not key:
-        key = 'quarterly_earners'
+    cadences = ['all', 'weekly', 'monthly', 'quarterly', 'yearly']
 
-    keyword_search = request.GET.get('keyword')
-    limit = request.GET.get('limit', 25)
+
+    keyword_search = request.GET.get('keyword', '')
+    keyword_search = '' if keyword_search == 'all' else keyword_search
+    limit = request.GET.get('limit', 50)
+    cadence = request.GET.get('cadence', 'quarterly')
+
+    # backwards compatibility fix for old inbound links
+    for ele in cadences:
+        key = key.replace(f"{ele}_", '')
 
     titles = {
-        'quarterly_payers': _('Top Payers'),
-        'quarterly_earners': _('Top Earners'),
-        'quarterly_orgs': _('Top Orgs'),
-        'quarterly_tokens': _('Top Tokens'),
-        'quarterly_keywords': _('Top Keywords'),
-        'quarterly_kudos': _('Top Kudos'),
-        'quarterly_cities': _('Top Cities'),
-        'quarterly_countries': _('Top Countries'),
-        'quarterly_continents': _('Top Continents'),
-        #        'weekly_fulfilled': 'Weekly Leaderboard: Fulfilled Funded Issues',
-        #        'weekly_all': 'Weekly Leaderboard: All Funded Issues',
-        #        'monthly_fulfilled': 'Monthly Leaderboard',
-        #        'monthly_all': 'Monthly Leaderboard: All Funded Issues',
-        #        'yearly_fulfilled': 'Yearly Leaderboard: Fulfilled Funded Issues',
-        #        'yearly_all': 'Yearly Leaderboard: All Funded Issues',
-        #        'all_fulfilled': 'All-Time Leaderboard: Fulfilled Funded Issues',
-        #        'all_all': 'All-Time Leaderboard: All Funded Issues',
-        # TODO - also include options for weekly, yearly, and all cadences of earning
+        f'payers': _('Top Funders'),
+        f'earners': _('Top Coders'),
+        f'orgs': _('Top Orgs'),
+        f'tokens': _('Top Tokens'),
+        f'keywords': _('Top Keywords'),
+        f'kudos': _('Top Kudos'),
+        f'cities': _('Top Cities'),
+        f'countries': _('Top Countries'),
+        f'continents': _('Top Continents'),
     }
 
-    if settings.ENV != 'prod':
-        # TODO (mbeacom): Re-enable this on live following a fix for leaderboards by location.
-        titles['quarterly_cities'] = _('Top Cities')
-        titles['quarterly_countries'] = _('Top Countries')
-        titles['quarterly_continents'] = _('Top Continents')
+    if not key:
+        key = f'earners'
 
     if key not in titles.keys():
         raise Http404
 
     title = titles[key]
+    which_leaderboard = f"{cadence}_{key}"
+    ranks = LeaderboardRank.objects.filter(active=True, leaderboard=which_leaderboard)
     if keyword_search:
-        ranks = LeaderboardRank.objects.filter(active=True, leaderboard=key, tech_keywords__icontains=keyword_search)
-    else:
-        ranks = LeaderboardRank.objects.filter(active=True, leaderboard=key)
+        ranks = ranks.filter(tech_keywords__icontains=keyword_search)
 
     amount = ranks.values_list('amount').annotate(Max('amount')).order_by('-amount')
     items = ranks.order_by('-amount')
@@ -733,20 +727,25 @@ def leaderboard(request, key=''):
     profile_keys = ['_tokens', '_keywords', '_cities', '_countries', '_continents']
     is_linked_to_profile = any(sub in key for sub in profile_keys)
 
+    cadence_ui = cadence if cadence != 'all' else 'All-Time'
+    page_title = f'{cadence_ui.title()} {keyword_search.title()} Leaderboard: {title.title()}'
     context = {
         'items': items[0:limit],
         'nav': 'home',
         'titles': titles,
+        'cadence': cadence,
         'selected': title,
         'is_linked_to_profile': is_linked_to_profile,
-        'title': f'Leaderboard: {title}',
-        'card_title': f'Leaderboard: {title}',
+        'title': page_title,
+        'card_title': page_title,
         'card_desc': f'See the most valued members in the Gitcoin community recently . {top_earners}',
         'action_past_tense': 'Transacted' if 'submitted' in key else 'bountied',
         'amount_max': amount_max,
         'podium_items': items[:5] if items else [],
         'technologies': technologies,
-        'active': 'leaderboard'
+        'active': 'leaderboard',
+        'keyword_search': keyword_search,
+        'cadences': cadences,
     }
 
     return TemplateResponse(request, 'leaderboard.html', context)

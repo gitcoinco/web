@@ -1685,6 +1685,7 @@ class Activity(SuperModel):
         ('new_milestone', 'New Milestone'),
         ('update_milestone', 'Updated Milestone'),
         ('new_kudos', 'New Kudos'),
+        ('joined', 'Joined Gitcoin'),
     ]
 
     profile = models.ForeignKey(
@@ -2713,7 +2714,7 @@ class Profile(SuperModel):
             query: Grouped query by token_name and sum all token value
         """
         all_tokens_sum = None
-        if not bounties:
+        if bounties is None:
             if sum_type == 'funded':
                 bounties = self.get_funded_bounties(network=network)
             elif sum_type == 'collected':
@@ -2726,11 +2727,11 @@ class Profile(SuperModel):
 
         try:
             if bounties.exists():
-                all_tokens_sum = bounties.values(
-                    'token_name'
-                ).annotate(
-                    value_in_token=Sum('value_in_token') / 10**18,
-                ).order_by('token_name')
+                tokens_and_values = bounties.values_list('token_name', 'value_in_token')
+                all_tokens_sum_tmp = {token: 0 for token in set([ele[0] for ele in tokens_and_values])}
+                for ele in tokens_and_values:
+                    all_tokens_sum_tmp[ele[0]] += ele[1] / 10**18
+                all_tokens_sum = [{'token_name': token_name, 'value_in_token': value_in_token} for token_name, value_in_token in all_tokens_sum_tmp.items()]
 
         except Exception:
             pass
@@ -2760,7 +2761,9 @@ class Profile(SuperModel):
                 bounties = self.get_orgs_bounties(network=network)
 
         if work_type != 'org':
-            profiles = [bounty.org_name for bounty in bounties if bounty.org_name]
+            github_urls = bounties.values_list('github_url', flat=True)
+            profiles = [org_name(url) for url in github_urls]
+            profiles = [ele for ele in profiles if ele]
         else:
             profiles = []
             for bounty in bounties:
@@ -2797,7 +2800,7 @@ class Profile(SuperModel):
         )
         return funded_bounties
 
-    def get_various_activities(self, network='mainnet'):
+    def get_various_activities(self):
         """Get bounty, tip and grant related activities for this profile.
 
         Args:
@@ -2808,6 +2811,7 @@ class Profile(SuperModel):
             (dashboard.models.ActivityQuerySet): The query results.
 
         """
+        
         if not self.is_org:
             all_activities = self.activities
         else:
@@ -2818,14 +2822,7 @@ class Profile(SuperModel):
                 Q(tip__github_url__istartswith=url)
             )
 
-        all_activities = all_activities.filter(
-            Q(bounty__network=network) |
-            Q(tip__network=network) |
-            Q(grant__network=network) |
-            Q(subscription__network=network)
-        ).select_related('bounty', 'tip', 'grant', 'subscription').all().order_by('-created')
-
-        return all_activities
+        return all_activities.all().order_by('-created')
 
     def activate_avatar(self, avatar_pk):
         self.avatar_baseavatar_related.update(active=False)
@@ -2871,7 +2868,6 @@ class Profile(SuperModel):
 
         if self.is_org:
             orgs_bounties = self.get_orgs_bounties(network=network)
-
         sum_eth_funded = self.get_eth_sum(sum_type='funded', bounties=funded_bounties)
         sum_eth_collected = self.get_eth_sum(bounties=fulfilled_bounties)
         works_with_funded = self.get_who_works_with(work_type='funded', bounties=funded_bounties)
@@ -2918,7 +2914,7 @@ class Profile(SuperModel):
         }
 
         if activities:
-            params['activities'] = self.get_various_activities(network=network)
+            params['activities'] = self.get_various_activities()
 
         if tips:
             params['tips'] = self.tips.filter(**query_kwargs).send_happy_path()
@@ -3251,6 +3247,17 @@ class BlockedUser(SuperModel):
         return f'<BlockedUser: {self.handle}>'
 
 
+class Sponsor(SuperModel):
+    """Defines the Hackthon Sponsor"""
+
+    name = models.CharField(max_length=255, help_text='sponsor Name')
+    logo = models.ImageField(help_text='sponsor logo', blank=True)
+    logo_svg = models.FileField(help_text='sponsor logo svg', blank=True)
+
+    def __str__(self):
+        return self.name
+
+
 class HackathonEvent(SuperModel):
     """Defines the HackathonEvent model."""
 
@@ -3260,7 +3267,9 @@ class HackathonEvent(SuperModel):
     logo_svg = models.FileField(blank=True)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    identifier = models.CharField(max_length=255, default='')
+    background_color = models.CharField(max_length=255, null=True, blank=True, help_text='hexcode for the banner')
+    identifier = models.CharField(max_length=255, default='', help_text='used for custom styling for the banner')
+    sponsors = models.ManyToManyField(Sponsor, through='HackathonSponsor')
 
     def __str__(self):
         """String representation for HackathonEvent.
@@ -3277,6 +3286,19 @@ class HackathonEvent(SuperModel):
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
+
+class HackathonSponsor(SuperModel):
+    SPONSOR_TYPES = [
+        ('G', 'Gold'),
+        ('S', 'Silver'),
+    ]
+    hackathon = models.ForeignKey('HackathonEvent', default=1, on_delete=models.CASCADE)
+    sponsor = models.ForeignKey('Sponsor', default=1, on_delete=models.CASCADE)
+    sponsor_type = models.CharField(
+        max_length=1,
+        choices=SPONSOR_TYPES,
+        default='G',
+    )
 
 class FeedbackEntry(SuperModel):
     bounty = models.ForeignKey(
