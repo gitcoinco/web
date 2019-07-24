@@ -1888,7 +1888,7 @@ def bounty_upload_nda(request):
 
 
 
-def profile_filter_activities(activities, activity_name):
+def profile_filter_activities(activities, activity_name, activity_tabs):
     """A helper function to filter a ActivityQuerySet.
 
     Args:
@@ -1899,10 +1899,11 @@ def profile_filter_activities(activities, activity_name):
         ActivityQuerySet: The filtered results.
 
     """
-    if not activity_name or activity_name == 'all':
+    if not activity_name or activity_name == 'all-activity':
         return activities
-    if activity_name == 'start_work':
-        return activities.filter(activity_type__in=['start_work', 'worker_approved'])
+    for name, actions in activity_tabs:
+        if slugify(name) == activity_name:
+            return activities.filter(activity_type__in=actions)
     return activities.filter(activity_type=activity_name)
 
 
@@ -1946,24 +1947,17 @@ def profile(request, handle):
                 handle = handle[:-1]
             profile = profile_helper(handle, current_user=request.user)
 
+        all_activities = ['all', 'new_bounty', 'start_work', 'work_submitted', 'work_done', 'new_tip', 'receive_tip', 'new_grant', 'update_grant', 'killed_grant', 'new_grant_contribution', 'new_grant_subscription', 'killed_grant_contribution', 'receive_kudos', 'new_kudos']
         activity_tabs = [
-            ('all', _('All Activity')),
-            ('new_bounty', _('Bounties Funded')),
-            ('start_work', _('Work Started')),
-            ('work_submitted', _('Work Submitted')),
-            ('work_done', _('Bounties Completed')),
-            ('new_tip', _('Tips Sent')),
-            ('receive_tip', _('Tips Received')),
-            ('new_grant', _('Grants created')),
-            ('update_grant', _('Grants updated')),
-            ('killed_grant', _('Grants cancelled')),
-            ('new_grant_contribution', _('Grants contributed to')),
-            ('new_grant_subscription', _('Grants subscribed to')),
-            ('killed_grant_contribution', _('Grants unsubscribed from')),
+            (_('All Activity'), all_activities),
+            (_('Bounties'), ['new_bounty', 'start_work', 'work_submitted', 'work_done']),
+            (_('Tips'), ['new_tip', 'receive_tip']),
+            (_('Kudos'), ['receive_kudos', 'new_kudos']),
+            (_('Grants'), ['new_grant', 'update_grant', 'killed_grant', 'new_grant_contribution', 'new_grant_subscription', 'killed_grant_contribution']),
         ]
         if profile.is_org:
             activity_tabs = [
-                ('all', _('All Activity')),
+                (_('All Activity'), all_activities),
                 ]
 
         page = request.GET.get('p', None)
@@ -1972,7 +1966,7 @@ def profile(request, handle):
             page = int(page)
             activity_type = request.GET.get('a', '')
             all_activities = profile.get_various_activities(network)
-            paginator = Paginator(profile_filter_activities(all_activities, activity_type), 10)
+            paginator = Paginator(profile_filter_activities(all_activities, activity_type, activity_tabs), 10)
 
             if page > paginator.num_pages:
                 return HttpResponse(status=204)
@@ -1992,17 +1986,13 @@ def profile(request, handle):
 
         counts = all_activities.values('activity_type').order_by('activity_type').annotate(the_count=Count('activity_type'))
         counts = {ele['activity_type']: ele['the_count'] for ele in counts}
-        for tab, name in activity_tabs:
+        for name, actions in activity_tabs:
 
             # this functions as profile_filter_activities does
             # except w. aggregate counts
-
-            if tab == 'all':
-                activities_count = sum([val for key, val in counts.items()])
-            else:
-                activities_count = counts.get(tab, 0)
-            if tab == 'start_work':
-                activities_count += counts.get("worker_approved", 0)
+            activities_count = 0
+            for action in actions:
+                activities_count += counts.get(action, 0)
 
 
             # dont draw a tab where the activities count is 0
@@ -2010,7 +2000,7 @@ def profile(request, handle):
                 continue
 
             # buidl dict
-            obj = {'id': tab,
+            obj = {'id': slugify(name),
                    'name': name,
                    'objects': [],
                    'count': activities_count,
@@ -2054,7 +2044,7 @@ def profile(request, handle):
         ).exclude(
             feedbacks__feedbackType='approver',
             feedbacks__sender_profile=profile,
-        )
+        ).distinct('pk')
 
     context['unrated_contributed_bounties'] = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=profile, network=network,) \
             .filter(interested__status='okay') \
@@ -2062,7 +2052,7 @@ def profile(request, handle):
             .exclude(
                 feedbacks__feedbackType='worker',
                 feedbacks__sender_profile=profile
-            )
+            ).distinct('pk')
 
     currently_working_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
         .filter(interested__pending=False).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)
