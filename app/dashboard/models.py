@@ -2794,6 +2794,7 @@ class Profile(SuperModel):
             (dashboard.models.ActivityQuerySet): The query results.
 
         """
+        
         if not self.is_org:
             all_activities = self.activities
         else:

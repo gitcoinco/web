@@ -87,7 +87,12 @@
   <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
   <script>
     $('#wallet-address').attr(
-      'href', etherscan_tx_url($('#wallet-address').text().trim(), '{{ grant.network }}')
+      'href',
+      get_etherscan_url(
+        $('#wallet-address').text().trim(),
+        '{{ grant.network }}',
+        'address'
+      )
     );
 
     {% if change_ownership == 'Y' %}

@@ -158,7 +158,7 @@ $(document).ready(function() {
           })
           .on('transactionHash', function(transactionHash) {
             grant_cancel_tx_id = $('#grant_cancel_tx_id').val();
-            const linkURL = etherscan_tx_url(transactionHash);
+            const linkURL = get_etherscan_url(transactionHash);
 
             document.issueURL = linkURL;
             $('#transaction_url').attr('href', linkURL);
@@ -194,41 +194,31 @@ $(document).ready(function() {
     let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, contract_address);
 
     web3.eth.getAccounts(function(err, accounts) {
-      deployedSubscription.methods
-        .changeOwnership(contract_owner_address)
-        .send({
-          from: accounts[0],
-          gasPrice: 8000000000
-        })
-        .on('transactionHash', function(transactionHash) {
-          const linkURL = etherscan_tx_url(transactionHash);
+      deployedSubscription.methods.changeOwnership(
+        contract_owner_address
+      ).send({
+        from: accounts[0],
+        gasPrice: 8000000000
+      }).on('transactionHash', function(transactionHash) {
+        const linkURL = get_etherscan_url(transactionHash);
 
-          document.issueURL = linkURL;
-          $('#transaction_url').attr('href', linkURL);
-          $('.modal .close').trigger('click');
-          enableWaitState('#grants-details');
-        })
-        .on('confirmation', function(confirmationNumber, receipt) {
-          $.ajax({
-            type: 'post',
-            url: '',
-            data: {
-              contract_owner_address: contract_owner_address
-            },
-            success: function(json) {
-              window.location.reload(false);
-            },
-            error: function() {
-              _alert(
-                {
-                  message: gettext(
-                    'Changing the contract owner address failed to save. Please try again.'
-                  )
-                },
-                'error'
-              );
-            }
-          });
+        document.issueURL = linkURL;
+        $('#transaction_url').attr('href', linkURL);
+        $('.modal .close').trigger('click');
+        enableWaitState('#grants-details');
+      }).on('confirmation', function(confirmationNumber, receipt) {
+        $.ajax({
+          type: 'post',
+          url: '',
+          data: {
+            'contract_owner_address': contract_owner_address
+          },
+          success: function(json) {
+            window.location.reload(false);
+          },
+          error: function() {
+            _alert({ message: gettext('Changing the contract owner address failed to save. Please try again.') }, 'error');
+          }
         });
     });
   });
