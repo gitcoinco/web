@@ -20,6 +20,7 @@ from __future__ import print_function, unicode_literals
 
 import json
 import logging
+import os
 import time
 from datetime import datetime
 
@@ -65,7 +66,7 @@ from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
 
-from .helpers import get_bounty_data_for_activity, handle_bounty_views
+from .helpers import get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory
 from .models import (
     Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest, Coupon,
     FeedbackEntry, HackathonEvent, Interest, LabsResearch, Profile, ProfileSerializer, RefundFeeRequest, Subscription,
@@ -755,7 +756,7 @@ def users_fetch(request):
     skills = request.GET.get('skills', '')
     limit = int(request.GET.get('limit', 10))
     page = int(request.GET.get('page', 1))
-    order_by = request.GET.get('order_by', 'leaderboard_ranks__rank')
+    order_by = request.GET.get('order_by', '-actions_count')
     bounties_completed = request.GET.get('bounties_completed', '').strip().split(',')
     leaderboard_rank = request.GET.get('leaderboard_rank', '').strip().split(',')
     rating = int(request.GET.get('rating', '0'))
@@ -775,19 +776,11 @@ def users_fetch(request):
     if current_user:
         profile_list = Profile.objects.prefetch_related(
                 'fulfilled', 'leaderboard_ranks', 'feedbacks_got'
-            ).exclude(hide_profile=True).order_by(
-                '-previous_worked_count',
-                order_by,
-                '-actions_count',
-                'feedbacks_got__rating'
-            )
+            ).exclude(hide_profile=True)
     else:
         profile_list = Profile.objects.prefetch_related(
                 'fulfilled', 'leaderboard_ranks', 'feedbacks_got'
-            ).exclude(hide_profile=True).order_by(
-                order_by,
-                '-actions_count'
-            )
+            ).exclude(hide_profile=True)
 
     if q:
         profile_list = profile_list.filter(Q(handle__icontains=q) | Q(keywords__icontains=q))
@@ -828,17 +821,20 @@ def users_fetch(request):
     profile_list = profile_list.annotate(
         feedbacks_got_count=Count('feedbacks_got', filter=Q(feedbacks_got__sender_profile=current_user.profile.id))
     )
-    profile_list = Profile.objects.filter(pk__in=profile_list.order_by(
-        '-feedbacks_got_count', '-actions_count'
-    ).values_list('pk'))
+    profile_list = Profile.objects.filter(pk__in=profile_list).annotate(
+            average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
+        ).order_by(
+        order_by
+    )
+    profile_list = profile_list.values_list('pk', flat=True)
     params = dict()
     all_pages = Paginator(profile_list, limit)
     all_users = []
     this_page = all_pages.page(page)
 
-    this_page = Profile.objects.filter(pk__in=[ele.pk for ele in this_page]).annotate(
+    this_page = Profile.objects.filter(pk__in=[ele for ele in this_page]).annotate(
         feedbacks_got_count=Count('feedbacks_got', filter=Q(feedbacks_got__sender_profile=current_user.profile.id))
-    ).order_by('-feedbacks_got_count', '-actions_count').annotate(
+    ).order_by(order_by).annotate(
         previous_worked_count=Count('fulfilled', filter=Q(
             fulfilled__bounty__network=network,
             fulfilled__accepted=True,
@@ -1136,14 +1132,13 @@ def social_contribution_email(request):
 
     emails = []
     user_ids = request.POST.getlist('usersId[]', [])
-    url = request.POST.get('url', '')
     invite_url = request.POST.get('invite_url', '')
+    bounty_id = request.POST.get('bountyId')
     if not invite_url:
-        bounty_id = request.POST.get('bountyId')
         invite_url = f'{settings.BASE_URL}issue/{get_bounty_invite_url(request.user.username, bounty_id)}'
 
     inviter = request.user if request.user.is_authenticated else None
-    bounty = Bounty.objects.current().get(github_url=url)
+    bounty = Bounty.objects.current().get(id=int(bounty_id))
     for user_id in user_ids:
         profile = Profile.objects.get(id=int(user_id))
         bounty_invite = BountyInvites.objects.create(
@@ -1741,6 +1736,14 @@ def quickstart(request):
     """Display quickstart guide."""
     return TemplateResponse(request, 'quickstart.html', {})
 
+def load_banners(request):
+    """Load profile banners"""
+    images = load_files_in_directory('wallpapers')
+    response = {
+        'status': 200,
+        'banners': images
+    }
+    return JsonResponse(response, safe=False)
 
 def profile_details(request, handle):
     """Display profile keywords.
@@ -1756,7 +1759,6 @@ def profile_details(request, handle):
         count_work_in_progress = Activity.objects.filter(profile=profile, activity_type='start_work').count()
         count_work_abandoned = Activity.objects.filter(profile=profile, activity_type='stop_work').count()
         count_work_removed = Activity.objects.filter(profile=profile, activity_type='bounty_removed_by_funder').count()
-
     except (ProfileNotFoundException, ProfileHiddenException):
         raise Http404
 
@@ -1886,7 +1888,7 @@ def bounty_upload_nda(request):
 
 
 
-def profile_filter_activities(activities, activity_name):
+def profile_filter_activities(activities, activity_name, activity_tabs):
     """A helper function to filter a ActivityQuerySet.
 
     Args:
@@ -1897,10 +1899,11 @@ def profile_filter_activities(activities, activity_name):
         ActivityQuerySet: The filtered results.
 
     """
-    if not activity_name or activity_name == 'all':
+    if not activity_name or activity_name == 'all-activity':
         return activities
-    if activity_name == 'start_work':
-        return activities.filter(activity_type__in=['start_work', 'worker_approved'])
+    for name, actions in activity_tabs:
+        if slugify(name) == activity_name:
+            return activities.filter(activity_type__in=actions)
     return activities.filter(activity_type=activity_name)
 
 
@@ -1944,24 +1947,17 @@ def profile(request, handle):
                 handle = handle[:-1]
             profile = profile_helper(handle, current_user=request.user)
 
+        all_activities = ['all', 'new_bounty', 'start_work', 'work_submitted', 'work_done', 'new_tip', 'receive_tip', 'new_grant', 'update_grant', 'killed_grant', 'new_grant_contribution', 'new_grant_subscription', 'killed_grant_contribution', 'receive_kudos', 'new_kudos']
         activity_tabs = [
-            ('all', _('All Activity')),
-            ('new_bounty', _('Bounties Funded')),
-            ('start_work', _('Work Started')),
-            ('work_submitted', _('Work Submitted')),
-            ('work_done', _('Bounties Completed')),
-            ('new_tip', _('Tips Sent')),
-            ('receive_tip', _('Tips Received')),
-            ('new_grant', _('Grants created')),
-            ('update_grant', _('Grants updated')),
-            ('killed_grant', _('Grants cancelled')),
-            ('new_grant_contribution', _('Grants contributed to')),
-            ('new_grant_subscription', _('Grants subscribed to')),
-            ('killed_grant_contribution', _('Grants unsubscribed from')),
+            (_('All Activity'), all_activities),
+            (_('Bounties'), ['new_bounty', 'start_work', 'work_submitted', 'work_done']),
+            (_('Tips'), ['new_tip', 'receive_tip']),
+            (_('Kudos'), ['receive_kudos', 'new_kudos']),
+            (_('Grants'), ['new_grant', 'update_grant', 'killed_grant', 'new_grant_contribution', 'new_grant_subscription', 'killed_grant_contribution']),
         ]
         if profile.is_org:
             activity_tabs = [
-                ('all', _('All Activity')),
+                (_('All Activity'), all_activities),
                 ]
 
         page = request.GET.get('p', None)
@@ -1969,8 +1965,8 @@ def profile(request, handle):
         if page:
             page = int(page)
             activity_type = request.GET.get('a', '')
-            all_activities = profile.get_various_activities()
-            paginator = Paginator(profile_filter_activities(all_activities, activity_type), 10)
+            all_activities = profile.get_various_activities(network)
+            paginator = Paginator(profile_filter_activities(all_activities, activity_type, activity_tabs), 10)
 
             if page > paginator.num_pages:
                 return HttpResponse(status=204)
@@ -1979,6 +1975,7 @@ def profile(request, handle):
             context['activities'] = paginator.get_page(page)
 
             return TemplateResponse(request, 'profiles/profile_activities.html', context, status=status)
+
 
         context = profile.to_dict(tips=False)
         all_activities = context.get('activities')
@@ -1989,17 +1986,13 @@ def profile(request, handle):
 
         counts = all_activities.values('activity_type').order_by('activity_type').annotate(the_count=Count('activity_type'))
         counts = {ele['activity_type']: ele['the_count'] for ele in counts}
-        for tab, name in activity_tabs:
+        for name, actions in activity_tabs:
 
             # this functions as profile_filter_activities does
             # except w. aggregate counts
-
-            if tab == 'all':
-                activities_count = sum([val for key, val in counts.items()])
-            else:
-                activities_count = counts.get(tab, 0)
-            if tab == 'start_work':
-                activities_count += counts.get("worker_approved", 0)
+            activities_count = 0
+            for action in actions:
+                activities_count += counts.get(action, 0)
 
 
             # dont draw a tab where the activities count is 0
@@ -2007,7 +2000,7 @@ def profile(request, handle):
                 continue
 
             # buidl dict
-            obj = {'id': tab,
+            obj = {'id': slugify(name),
                    'name': name,
                    'objects': [],
                    'count': activities_count,
@@ -2051,7 +2044,7 @@ def profile(request, handle):
         ).exclude(
             feedbacks__feedbackType='approver',
             feedbacks__sender_profile=profile,
-        )
+        ).distinct('pk')
 
     context['unrated_contributed_bounties'] = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=profile, network=network,) \
             .filter(interested__status='okay') \
@@ -2059,7 +2052,7 @@ def profile(request, handle):
             .exclude(
                 feedbacks__feedbackType='worker',
                 feedbacks__sender_profile=profile
-            )
+            ).distinct('pk')
 
     currently_working_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
         .filter(interested__pending=False).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)
@@ -2824,3 +2817,57 @@ def get_hackathons(request):
         'hackathons': events,
     }
     return TemplateResponse(request, 'dashboard/hackathons.html', params)
+
+
+@require_POST
+@login_required
+def change_user_profile_banner(request):
+    """Handle Profile Banner Uploads"""
+
+    filename = request.POST.get('banner')
+
+    handle = request.user.profile.handle
+
+    try:
+        profile = profile_helper(handle, True)
+        if request.user.profile.id != profile.id:
+            return JsonResponse(
+                {'error': 'Bad request'},
+                status=401)
+        profile.profile_wallpaper = filename
+        profile.save()
+    except (ProfileNotFoundException, ProfileHiddenException):
+        raise Http404
+        
+    response = {
+        'status': 200,
+        'message': 'User banner image has been updated.'
+    }
+    return JsonResponse(response)
+
+
+@csrf_exempt
+@require_POST
+def choose_persona(request):
+
+    if request.user.is_authenticated:
+        profile = request.user.profile if hasattr(request.user, 'profile') else None
+        access_token = request.POST.get('access_token')
+        persona = request.POST.get('persona')
+        if persona == 'persona_is_funder':
+            profile.persona_is_funder = True
+        elif persona == 'persona_is_hunter':
+            profile.persona_is_hunter = True
+        profile.save()
+    else:
+        return JsonResponse(
+            {'error': _('You must be authenticated')},
+        status=401)
+
+
+    return JsonResponse(
+        {
+            'success': True,
+            'persona': persona,
+        },
+        status=200)

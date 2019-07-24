@@ -932,8 +932,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Beyond...Beyond Blockchain? 🤯"
-    new_kudos_pks = [4184, 4179, 4143]
+    subject = "The Grow Ethereum Hackathon Draws Nearer"
+    new_kudos_pks = [4284, 4282, 4281]
     new_kudos_size_px = 150
 
     kudos_friday = f'''
@@ -948,14 +948,11 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-For our folks living in the United States, Happy Fourth of July! We hope you have a terrific weekend of outdoors and good eats. To celebrate, we've decided to announce the next brand new hackathon. While the Beyond Blockchain hackathon is barely halfway over, we're
-looking forward to the next one: the Grow Ethereum hackathon. To sign up for this one, fill out the following form, and stay tuned on your email. We'll be in touch with the details soon. We are more than excited, and we hope you are too. <a href="https://mailchi.mp/a92da05667d6/groweth" target="_blank">The form lives here.</a>
+The Grow Ethereum Hackathon is right around the corner -- only 11 days remain until the hacking begins❗️ We are expecting great sponsors, including confirmation from the Ethereum Foundation itself (!) and UNICEF. Build projects together with top Ethereum companies and enterprises, win crypto, and unleash a new era of decentralized global infrastructure. The link to register is <a href="https://hackathons.gitcoin.co/grow-ethereum/" target="_blank">here.</a> 🌱
 </p>
 <p>
-With that said...the Beyond Blockchain hackathon is still firing on all cylinders. If you're looking to take advantage of the long weekend and vie for some of the top prizes, check out the following: <a href="https://gitcoin.co/issue/ConsenSys/Beyond-Blockchain-Relay/3/3158">Reinvent Healthcare</a>; 
-<a href="https://gitcoin.co/issue/gitcoinco/skunkworks/93/3185">Make Kudos Incredible</a>; <a href="https://gitcoin.co/issue/raiden-network/hackathons/1/3168">Integrate Raiden</a>; and <a href="https://gitcoin.co/issue/raiden-network/hackathons/3/3170">Enhance Raiden.</a>
+Working on an Ethereum ecosystem project and need funding? Get ready. Round 3 of the Gitcoin Grants CLR matching is right around the corner. Pick up some funding to help sustain your work and ease your worries: a funding opportunity awaits. <a href="https://gitcoin.co/grants/">Create a Gitcoin Grant & let the community know your progress!</a>
 </p>
-Round 3 of CLR matching for Gitcoin Grants is coming in Q3! Are you interested in matching? Add to our $50K+ committed and help us grow open source infrastructure projects. 🛠 Building? A funding opportunity awaits. Create a Gitcoin Grant & let the community see your progress!
 <p>
 
 </p>
@@ -963,10 +960,10 @@ Round 3 of CLR matching for Gitcoin Grants is coming in Q3! Are you interested i
 <h3>What else is new?</h3>
     <ul>
         <li>
-            The Gitcoin Livestream is NOT back this week! Our team will be celebrating the Fourth with our families. Join us <a href="https://gitcoin.co/livestream"> at 2PM ET next Friday.
+            The Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday to see some of the top Beyond Blockchain projects present.
         </li>
         <li>
-            Looking for something to watch this weekend? You're in luck. We just released new content on the Gitcoin Media YouTube channel. Check it out <a href="http://youtube.com/gitcoinmedia">here</a>. 
+            Interested in the future of ads on the internet? <a href="https://media.consensys.net/how-ethical-advertising-will-transform-the-blockchain-industry-31c2c4f2bd45">Check out this primer on Ethical Advertising from Connor O'Day, part of the Codefund team.</a>
         </li>
     </ul>
 </p>
@@ -975,45 +972,45 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'socialcode-rob1',
+        'who': 'IgorShadurin',
         'who_link': True,
-        'what': 'Readme: updated.',
-        'link': 'https://gitcoin.co/issue/sigillabs/mobidex/235/3165',
+        'what': 'Provable Emails, thanks to IgorShadurin and josh-richardson',
+        'link': 'https://gitcoin.co/issue/ArweaveTeam/Bounties/5/3164',
         'link_copy': 'View more',
     }, {
-        'who': 'nanspro',
+        'who': 'sanchaymittal',
         'who_link': True,
-        'what': 'Nanspro with the resources!',
-        'link': 'https://gitcoin.co/issue/ethhub-io/ethhub/299/3159',
+        'what': 'Docs are complete!',
+        'link': 'https://gitcoin.co/issue/MrElliwood/audio-router/1/3213',
         'link_copy': 'View more',
     }, {
-        'who': 'sanidhayarora',
+        'who': 'cpurta',
         'who_link': True,
-        'what': 'Warnings, fixed.',
-        'link': 'https://gitcoin.co/issue/sigillabs/mobidex/230/3100',
+        'what': 'Raiden Hackathon Completion!',
+        'link': 'https://gitcoin.co/issue/raiden-network/hackathons/3/3170',
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'The Future of Infrastructure Finance',
-        'title': 'Blockchain Developer Job Kit',
+        'name': 'Solana',
+        'title': 'Solana is the most performant blockchain in the world with speeds over 50,000 TPS (while being decentralized and secure).',
         'image_url': 'https://s3.us-west-2.amazonaws.com/gitcoin-static/jDSk7ZTfpY19PWdwwsk8puNd.png',
-        'link': 'http://bit.ly/Allinfra',
-        'cta': 'Register today',
+        'link': 'http://bit.ly/TourDeSOL',
+        'cta': 'Sign Up for Tour de SOL',
         'body': [
-            'Bringing access, choice, and liquidity to unlisted infrastructure assets'
+            'We just announced Tour de SOL, or our incentivized testnet event. Are you a validator? Earn token and race against the best in the world. Deadline is July 21st.'
         ]
     }
 
     bounties_spec = [{
-        'url': 'https://github.com/ssbc/patchbay/issues/342',
-        'primer': 'SSB-Ahoy Replication',
+        'url': 'https://github.com/RibbonBlockchain/IncentivesMVP/issues/19',
+        'primer': 'Create Initial Pilot phase for Ribbon blockchain',
     }, {
-        'url': 'https://github.com/prysmaticlabs/prysm/issues/2740',
-        'primer': 'Cache Active Indices Efficiently',
+        'url': 'https://github.com/RibbonBlockchain/IncentivesMVP/issues/8',
+        'primer': 'Enable camera on front end for capture passport on patient and practitioner onboarding',
     }, {
-        'url': 'https://github.com/status-im/status-react/issues/7990',
-        'primer': 'Support for Galaxy S10',
+        'url': 'https://github.com/centrifuge/precise-proofs/issues/88',
+        'primer': 'Optimize the fixed height tree implementation',
 }, ]
     
     
