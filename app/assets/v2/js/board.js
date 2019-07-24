@@ -20,27 +20,18 @@ Vue.mixin({
       let getApplicants = fetchData (apiUrlApplicants, 'GET');
 
       $.when(getApplicants).then(function(response) {
-
         vm.$set(vm.bounties[type][key], 'contributors', response.profiles);
-        // vm.$set(vm.openBounties[key],'contributors', response.profiles)
-
       });
     },
-    isExpanded(key) {
-      return this.expandedGroup.indexOf(key) !== -1;
+    isExpanded(key, type) {
+      return this.expandedGroup[type].indexOf(key) !== -1;
     },
-    toggleCollapse(key) {
-      if (this.isExpanded(key)) {
-        this.expandedGroup.splice(this.expandedGroup.indexOf(key), 1);
+    toggleCollapse(key, type) {
+      if (this.isExpanded(key, type)) {
+        this.expandedGroup[type].splice(this.expandedGroup[type].indexOf(key), 1);
       } else {
-        this.expandedGroup.push(key);
+        this.expandedGroup[type].push(key);
       }
-    },
-    mutateWorkerAction(bountyUrl, action, worker) {
-      let vm = this;
-      let url = `${bountyUrl}/?mutate_worker_action=${action}&worker=${octavioamu}`;
-      let postWorkerAction = fetchData (url, 'POST');
-
     },
     startWork(key, bountyPk, profileId) {
       let vm = this;
@@ -92,7 +83,7 @@ if (document.getElementById('gc-board')) {
       openBounties: [],
       submittedBounties: [],
       expiredBounties: [],
-      expandedGroup: [],
+      expandedGroup: {'submitted': [], 'open': []},
       contributors: [],
       disabledBtn: false
     },
@@ -101,7 +92,6 @@ if (document.getElementById('gc-board')) {
       this.fetchBounties('submitted');
       this.fetchBounties('expired');
     }
-
   });
 }
 

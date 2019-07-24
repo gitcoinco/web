@@ -2884,17 +2884,6 @@ def funder_dashboard_bounty_info(request, bounty_id):
         profiles = []
 
     return JsonResponse({
-                        # 'title': bounty.title,
-                        #  'token_name': bounty.token_name,
-                        #  'value_in_token': bounty.value_in_token,
-                        #  'value_in_usd': bounty.get_value_in_usdt,
-                        #  'github_url': bounty.github_url,
-                        #  'absolute_url': bounty.absolute_url,
-                        #  'avatar_url': bounty.avatar_url,
-                        #  'project_type': bounty.project_type,
-                        #  'expires_date': bounty.expires_date,
-                        #  'interested_comment': bounty.interested_comment,
-                        #  'submissions_comment': bounty.submissions_comment,
                          'id': bounty.id,
                          'profiles': profiles})
 
@@ -2946,8 +2935,6 @@ def funder_dashboard(request, bounty_type):
             status=401)
 
     profile = request.user.profile
-    # values = ['id', 'token_name', 'value_in_token', 'value_in_usd', 'github_url', 'absolute_url']
-
 
     if bounty_type == 'open':
         bounties = list(Bounty.objects.filter(
