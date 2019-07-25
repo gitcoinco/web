@@ -1449,6 +1449,13 @@ const process_activities = function(result, bounty_activities) {
     const fulfillment = meta.fulfillment || {};
     const new_bounty = meta.new_bounty || {};
     const old_bounty = meta.old_bounty || {};
+    const issue_message = result.interested.length ?
+    result.interested.find(interest => {
+      if (interest.profile.handle === _activity.profile.handle && interest.issue_message) {
+        return interest.issue_message;
+      }
+      return false;
+    }) : false;
     const has_signed_nda = result.interested.length ?
       result.interested.find(interest => {
         if (interest.profile.handle === _activity.profile.handle && interest.signed_nda) {
@@ -1490,6 +1497,7 @@ const process_activities = function(result, bounty_activities) {
       activity_type: _activity.activity_type,
       status: _activity.activity_type === 'work_started' ? 'started' : 'stopped',
       signed_nda: has_signed_nda,
+      issue_message: issue_message,
       uninterest_possible: uninterest_possible,
       slash_possible: slash_possible,
       approve_worker_url: meta.approve_worker_url,
