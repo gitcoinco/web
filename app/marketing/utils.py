@@ -43,7 +43,7 @@ def delete_user_from_mailchimp(email_address):
         logger.debug(e)
 
     if result:
-        subscriber_hash = result['exact_matches']['members'][0]['id']
+        subscriber_hash = result.get('exact_matches', {}).get('members', [{}])[0].get('id', None)
 
         try:
             client.lists.members.delete(
