@@ -672,6 +672,7 @@ def leaderboard(request, key=''):
     """
     cadences = ['all', 'weekly', 'monthly', 'quarterly', 'yearly']
 
+
     keyword_search = request.GET.get('keyword', '')
     keyword_search = '' if keyword_search == 'all' else keyword_search
     limit = request.GET.get('limit', 50)

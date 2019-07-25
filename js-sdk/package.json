@@ -24,7 +24,7 @@
   "main": "dist/index.js",
   "unpkg": "dist/index.js",
   "devDependencies": {
-    "@babel/core": "^7.0.0-beta.46",
+    "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.0.0-beta.46",
     "babel-eslint": "^8.2.3",
     "babel-loader": "^8.0.0-beta",
@@ -33,7 +33,7 @@
     "eslint": "^4.19.1",
     "siema": "^1.5.1",
     "style-loader": "^0.21.0",
-    "stylelint": "^9.2.0",
+    "stylelint": "^9.10.1",
     "stylelint-config-recommended": "^2.1.0",
     "uglifyjs-webpack-plugin": "^1.2.5",
     "webpack": "^4.6.0",

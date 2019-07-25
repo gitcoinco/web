@@ -24,8 +24,8 @@ from django.utils.safestring import mark_safe
 
 from .models import (
     Activity, BlockedUser, Bounty, BountyFulfillment, BountyInvites, BountySyncRequest, CoinRedemption,
-    CoinRedemptionRequest, Coupon, FeedbackEntry, HackathonEvent, Interest, LabsResearch, Profile, RefundFeeRequest,
-    SearchHistory, Tip, TokenApproval, Tool, ToolVote, UserAction, UserVerificationModel,
+    CoinRedemptionRequest, Coupon, FeedbackEntry, HackathonEvent, HackathonSponsor, Interest, LabsResearch, Profile,
+    RefundFeeRequest, SearchHistory, Sponsor, Tip, TokenApproval, Tool, ToolVote, UserAction, UserVerificationModel,
 )
 
 
@@ -243,6 +243,30 @@ class RefundFeeRequestAdmin(admin.ModelAdmin):
     link.allow_tags = True
 
 
+class HackathonSponsorAdmin(admin.ModelAdmin):
+    """The admin object for the HackathonSponsor model."""
+
+    list_display = ['pk', 'hackathon', 'sponsor', 'sponsor_type']
+
+
+class SponsorAdmin(admin.ModelAdmin):
+    """The admin object for the Sponsor model."""
+
+    list_display = ['pk', 'name', 'img']
+
+    def img(self, instance):
+        """Returns a formatted HTML img node or 'n/a' if the HackathonEvent has no logo.
+
+        Returns:
+            str: A formatted HTML img node or 'n/a' if the HackathonEvent has no logo.
+        """
+        logo = instance.logo_svg or instance.logo
+        if not logo:
+            return 'n/a'
+        img_html = format_html('<img src={} style="width: auto; max-height: 40px">', mark_safe(logo.url))
+        return img_html
+
+
 class HackathonEventAdmin(admin.ModelAdmin):
     """The admin object for the HackathonEvent model."""
 
@@ -299,7 +323,9 @@ admin.site.register(CoinRedemption, GeneralAdmin)
 admin.site.register(CoinRedemptionRequest, GeneralAdmin)
 admin.site.register(Tool, ToolAdmin)
 admin.site.register(ToolVote, ToolVoteAdmin)
+admin.site.register(Sponsor, SponsorAdmin)
 admin.site.register(HackathonEvent, HackathonEventAdmin)
+admin.site.register(HackathonSponsor, HackathonSponsorAdmin)
 admin.site.register(FeedbackEntry, FeedbackAdmin)
 admin.site.register(LabsResearch)
 admin.site.register(UserVerificationModel, VerificationAdmin)

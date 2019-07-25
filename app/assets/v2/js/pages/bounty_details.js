@@ -512,7 +512,7 @@ var showWarningMessage = function(txid) {
   if (typeof txid != 'undefined' && txid.indexOf('0x') != -1) {
     waitforWeb3(function() {
       clearInterval(interval);
-      var link_url = etherscan_tx_url(txid);
+      var link_url = get_etherscan_url(txid);
 
       $('#transaction_url').attr('href', link_url);
     });

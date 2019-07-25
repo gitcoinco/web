@@ -61,6 +61,10 @@
   color: #0D0764;
 }
 
+.homepage .newsletter {
+  border-top: none;
+}
+
 .watch a {
   color: #0D0764;
 }
