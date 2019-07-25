@@ -1,0 +1,12 @@
+{
+  "baseUrl": "http://localhost:8000",
+  "env": {
+    "NEW_USER": false,
+    "FUNDER": "",
+    "FUNDER_PASS": "",
+    "HUNTER": "",
+    "HUNTER_PASS": "",
+    "GITHUB_CLIENT_ID": "",
+    "GITHUB_CLIENT_SECRET": ""
+  }
+}
