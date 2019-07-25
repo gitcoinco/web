@@ -2864,7 +2864,10 @@ def change_user_profile_banner(request):
 
     try:
         profile = profile_helper(handle, True)
-        if request.user.profile.id != profile.id:
+        is_valid = request.user.profile.id == profile.id
+        if filename[0:7] != '/static' or filename.split('/')[-1] not in load_files_in_directory('wallpapers'):
+            is_valid = False
+        if not is_valid:
             return JsonResponse(
                 {'error': 'Bad request'},
                 status=401)
