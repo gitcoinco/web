@@ -160,15 +160,9 @@
   <script src="{% static "v2/js/lib/secrets.min.js" %}"></script>
   <script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
   <script src="{% static "onepager/js/send.js" %}"></script>
-  <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
-  <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
   <script>
-    var bootstrapTooltip = $.fn.tooltip.noConflict()
-    var bootstrapModal = $.fn.modal.noConflict()
-    $.fn.runTooltip = bootstrapTooltip
-    $.fn.bootstrapModal = bootstrapModal
     $('[data-toggle="popover"]').popover()
-    $('[data-toggle="tooltip"]').runTooltip();
+    $('[data-toggle="tooltip"]').bootstrapTooltip();
   </script>
   <script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>
   <script src="{% static "v2/js/rating.js" %}"></script>
