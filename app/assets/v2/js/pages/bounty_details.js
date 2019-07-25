@@ -1450,12 +1450,12 @@ const process_activities = function(result, bounty_activities) {
     const new_bounty = meta.new_bounty || {};
     const old_bounty = meta.old_bounty || {};
     const issue_message = result.interested.length ?
-    result.interested.find(interest => {
-      if (interest.profile.handle === _activity.profile.handle && interest.issue_message) {
-        return interest.issue_message;
-      }
-      return false;
-    }) : false;
+      result.interested.find(interest => {
+        if (interest.profile.handle === _activity.profile.handle && interest.issue_message) {
+          return interest.issue_message;
+        }
+        return false;
+      }) : false;
     const has_signed_nda = result.interested.length ?
       result.interested.find(interest => {
         if (interest.profile.handle === _activity.profile.handle && interest.signed_nda) {
