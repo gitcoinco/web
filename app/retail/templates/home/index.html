@@ -89,7 +89,11 @@
 
     <img class="w-100 mb-5" src="{% static "v2/images/home/story.svg" %}" />
 
-    <div id="optimize_oss" class="mt-5 optimize_oss">
+    <div class="container-fluid pb-5 my-5 landing__newsletter">
+      {% include 'shared/newsletter.html' %}
+    </div>
+
+    <div id="optimize_oss" class="mt-5 pt-4 optimize_oss">
       <div class="container pt-0">
         <div class="row">
           <div class="col-12 col-md-8 col-lg-6 g-fadein" data-fade-duration=1000 data-fade-direction="left">
