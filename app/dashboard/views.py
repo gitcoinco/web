@@ -23,6 +23,7 @@ import logging
 import os
 import time
 from datetime import datetime
+from decimal import Decimal
 
 from django.conf import settings
 from django.contrib import messages
@@ -1058,7 +1059,7 @@ def invoice(request):
     params['total'] = bounty._val_usd_db if params['accepted_fulfillments'] else 0
     for tip in params['tips']:
         if tip.value_in_usdt:
-            params['total'] += float(tip.value_in_usdt)
+            params['total'] += Decimal(tip.value_in_usdt)
 
     return TemplateResponse(request, 'bounty/invoice.html', params)
 
