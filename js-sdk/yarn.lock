@@ -14,22 +14,29 @@
   dependencies:
     "@babel/highlight" "7.0.0-beta.46"
 
-"@babel/core@^7.0.0-beta.42", "@babel/core@^7.0.0-beta.46":
-  version "7.0.0-beta.46"
-  resolved "https://registry.yarnpkg.com/@babel/core/-/core-7.0.0-beta.46.tgz#dbe2189bcdef9a2c84becb1ec624878d31a95689"
+"@babel/code-frame@^7.0.0", "@babel/code-frame@^7.5.5":
+  version "7.5.5"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/@babel/code-frame/-/code-frame-7.5.5.tgz#bc0782f6d69f7b7d49531219699b988f669a8f9d"
+  integrity sha1-vAeC9tafe31JUxIZaZuYj2aaj50=
   dependencies:
-    "@babel/code-frame" "7.0.0-beta.46"
-    "@babel/generator" "7.0.0-beta.46"
-    "@babel/helpers" "7.0.0-beta.46"
-    "@babel/template" "7.0.0-beta.46"
-    "@babel/traverse" "7.0.0-beta.46"
-    "@babel/types" "7.0.0-beta.46"
-    babylon "7.0.0-beta.46"
+    "@babel/highlight" "^7.0.0"
+
+"@babel/core@>=7.2.2", "@babel/core@^7.5.5":
+  version "7.5.5"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/@babel/core/-/core-7.5.5.tgz#17b2686ef0d6bc58f963dddd68ab669755582c30"
+  integrity sha1-F7JobvDWvFj5Y93daKtml1VYLDA=
+  dependencies:
+    "@babel/code-frame" "^7.5.5"
+    "@babel/generator" "^7.5.5"
+    "@babel/helpers" "^7.5.5"
+    "@babel/parser" "^7.5.5"
+    "@babel/template" "^7.4.4"
+    "@babel/traverse" "^7.5.5"
+    "@babel/types" "^7.5.5"
     convert-source-map "^1.1.0"
-    debug "^3.1.0"
-    json5 "^0.5.0"
-    lodash "^4.2.0"
-    micromatch "^2.3.11"
+    debug "^4.1.0"
+    json5 "^2.1.0"
+    lodash "^4.17.13"
     resolve "^1.3.2"
     semver "^5.4.1"
     source-map "^0.5.0"
@@ -51,6 +58,17 @@
     "@babel/types" "7.0.0-beta.46"
     jsesc "^2.5.1"
     lodash "^4.2.0"
+    source-map "^0.5.0"
+    trim-right "^1.0.1"
+
+"@babel/generator@^7.5.5":
+  version "7.5.5"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/@babel/generator/-/generator-7.5.5.tgz#873a7f936a3c89491b43536d12245b626664e3cf"
+  integrity sha1-hzp/k2o8iUkbQ1NtEiRbYmZk488=
+  dependencies:
+    "@babel/types" "^7.5.5"
+    jsesc "^2.5.1"
+    lodash "^4.17.13"
     source-map "^0.5.0"
     trim-right "^1.0.1"
 
@@ -106,6 +124,15 @@
     "@babel/template" "7.0.0-beta.46"
     "@babel/types" "7.0.0-beta.46"
 
+"@babel/helper-function-name@^7.1.0":
+  version "7.1.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/@babel/helper-function-name/-/helper-function-name-7.1.0.tgz#a0ceb01685f73355d4360c1247f582bfafc8ff53"
+  integrity sha1-oM6wFoX3M1XUNgwSR/WCv6/I/1M=
+  dependencies:
+    "@babel/helper-get-function-arity" "^7.0.0"
+    "@babel/template" "^7.1.0"
+    "@babel/types" "^7.0.0"
+
 "@babel/helper-get-function-arity@7.0.0-beta.44":
   version "7.0.0-beta.44"
   resolved "https://registry.yarnpkg.com/@babel/helper-get-function-arity/-/helper-get-function-arity-7.0.0-beta.44.tgz#d03ca6dd2b9f7b0b1e6b32c56c72836140db3a15"
@@ -117,6 +144,13 @@
   resolved "https://registry.yarnpkg.com/@babel/helper-get-function-arity/-/helper-get-function-arity-7.0.0-beta.46.tgz#7161bfe449b4183dbe25d1fe5579338b7429e5f2"
   dependencies:
     "@babel/types" "7.0.0-beta.46"
+
+"@babel/helper-get-function-arity@^7.0.0":
+  version "7.0.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/@babel/helper-get-function-arity/-/helper-get-function-arity-7.0.0.tgz#83572d4320e2a4657263734113c42868b64e49c3"
+  integrity sha1-g1ctQyDipGVyY3NBE8QoaLZOScM=
+  dependencies:
+    "@babel/types" "^7.0.0"
 
 "@babel/helper-hoist-variables@7.0.0-beta.46":
   version "7.0.0-beta.46"
@@ -203,6 +237,13 @@
   dependencies:
     "@babel/types" "7.0.0-beta.46"
 
+"@babel/helper-split-export-declaration@^7.4.4":
+  version "7.4.4"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/@babel/helper-split-export-declaration/-/helper-split-export-declaration-7.4.4.tgz#ff94894a340be78f53f06af038b205c49d993677"
+  integrity sha1-/5SJSjQL549T8GrwOLIFxJ2ZNnc=
+  dependencies:
+    "@babel/types" "^7.4.4"
+
 "@babel/helper-wrap-function@7.0.0-beta.46":
   version "7.0.0-beta.46"
   resolved "https://registry.yarnpkg.com/@babel/helper-wrap-function/-/helper-wrap-function-7.0.0-beta.46.tgz#d0fb836516d8a38ab80df1b434e4b76015be9035"
@@ -212,13 +253,14 @@
     "@babel/traverse" "7.0.0-beta.46"
     "@babel/types" "7.0.0-beta.46"
 
-"@babel/helpers@7.0.0-beta.46":
-  version "7.0.0-beta.46"
-  resolved "https://registry.yarnpkg.com/@babel/helpers/-/helpers-7.0.0-beta.46.tgz#b5f988dfd77f4f713792cf7818b687050736ee52"
+"@babel/helpers@^7.5.5":
+  version "7.5.5"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/@babel/helpers/-/helpers-7.5.5.tgz#63908d2a73942229d1e6685bc2a0e730dde3b75e"
+  integrity sha1-Y5CNKnOUIinR5mhbwqDnMN3jt14=
   dependencies:
-    "@babel/template" "7.0.0-beta.46"
-    "@babel/traverse" "7.0.0-beta.46"
-    "@babel/types" "7.0.0-beta.46"
+    "@babel/template" "^7.4.4"
+    "@babel/traverse" "^7.5.5"
+    "@babel/types" "^7.5.5"
 
 "@babel/highlight@7.0.0-beta.44":
   version "7.0.0-beta.44"
@@ -235,6 +277,20 @@
     chalk "^2.0.0"
     esutils "^2.0.2"
     js-tokens "^3.0.0"
+
+"@babel/highlight@^7.0.0":
+  version "7.5.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/@babel/highlight/-/highlight-7.5.0.tgz#56d11312bd9248fa619591d02472be6e8cb32540"
+  integrity sha1-VtETEr2SSPphlZHQJHK+boyzJUA=
+  dependencies:
+    chalk "^2.0.0"
+    esutils "^2.0.2"
+    js-tokens "^4.0.0"
+
+"@babel/parser@^7.4.4", "@babel/parser@^7.5.5":
+  version "7.5.5"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/@babel/parser/-/parser-7.5.5.tgz#02f077ac8817d3df4a832ef59de67565e71cca4b"
+  integrity sha1-AvB3rIgX099Kgy71neZ1Zeccyks=
 
 "@babel/plugin-proposal-async-generator-functions@7.0.0-beta.46":
   version "7.0.0-beta.46"
@@ -534,6 +590,15 @@
     babylon "7.0.0-beta.46"
     lodash "^4.2.0"
 
+"@babel/template@^7.1.0", "@babel/template@^7.4.4":
+  version "7.4.4"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/@babel/template/-/template-7.4.4.tgz#f4b88d1225689a08f5bc3a17483545be9e4ed237"
+  integrity sha1-9LiNEiVomgj1vDoXSDVFvp5O0jc=
+  dependencies:
+    "@babel/code-frame" "^7.0.0"
+    "@babel/parser" "^7.4.4"
+    "@babel/types" "^7.4.4"
+
 "@babel/traverse@7.0.0-beta.44":
   version "7.0.0-beta.44"
   resolved "https://registry.yarnpkg.com/@babel/traverse/-/traverse-7.0.0-beta.44.tgz#a970a2c45477ad18017e2e465a0606feee0d2966"
@@ -549,7 +614,7 @@
     invariant "^2.2.0"
     lodash "^4.2.0"
 
-"@babel/traverse@7.0.0-beta.46", "@babel/traverse@^7.0.0-beta.42":
+"@babel/traverse@7.0.0-beta.46":
   version "7.0.0-beta.46"
   resolved "https://registry.yarnpkg.com/@babel/traverse/-/traverse-7.0.0-beta.46.tgz#29a0c0395b3642f0297e6f8e475bde89f9343755"
   dependencies:
@@ -563,6 +628,21 @@
     globals "^11.1.0"
     invariant "^2.2.0"
     lodash "^4.2.0"
+
+"@babel/traverse@^7.5.5":
+  version "7.5.5"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/@babel/traverse/-/traverse-7.5.5.tgz#f664f8f368ed32988cd648da9f72d5ca70f165bb"
+  integrity sha1-9mT482jtMpiM1kjan3LVynDxZbs=
+  dependencies:
+    "@babel/code-frame" "^7.5.5"
+    "@babel/generator" "^7.5.5"
+    "@babel/helper-function-name" "^7.1.0"
+    "@babel/helper-split-export-declaration" "^7.4.4"
+    "@babel/parser" "^7.5.5"
+    "@babel/types" "^7.5.5"
+    debug "^4.1.0"
+    globals "^11.1.0"
+    lodash "^4.17.13"
 
 "@babel/types@7.0.0-beta.44":
   version "7.0.0-beta.44"
@@ -580,6 +660,15 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
+"@babel/types@^7.0.0", "@babel/types@^7.4.4", "@babel/types@^7.5.5":
+  version "7.5.5"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/@babel/types/-/types-7.5.5.tgz#97b9f728e182785909aa4ab56264f090a028d18a"
+  integrity sha1-l7n3KOGCeFkJqkq1YmTwkKAo0Yo=
+  dependencies:
+    esutils "^2.0.2"
+    lodash "^4.17.13"
+    to-fast-properties "^2.0.0"
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"
@@ -587,9 +676,60 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
+"@nodelib/fs.stat@^1.1.2":
+  version "1.1.3"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
+  integrity sha1-K1o6s/kYzKSKjHVMCBaOPwPrphs=
+
 "@sindresorhus/is@^0.7.0":
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.7.0.tgz#9a06f4f137ee84d7df0460c1fdb1135ffa6c50fd"
+
+"@types/events@*":
+  version "3.0.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/@types/events/-/events-3.0.0.tgz#2862f3f58a9a7f7c3e78d79f130dd4d71c25c2a7"
+  integrity sha1-KGLz9Yqaf3w+eNefEw3U1xwlwqc=
+
+"@types/glob@^7.1.1":
+  version "7.1.1"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/@types/glob/-/glob-7.1.1.tgz#aa59a1c6e3fbc421e07ccd31a944c30eba521575"
+  integrity sha1-qlmhxuP7xCHgfM0xqUTDDrpSFXU=
+  dependencies:
+    "@types/events" "*"
+    "@types/minimatch" "*"
+    "@types/node" "*"
+
+"@types/minimatch@*":
+  version "3.0.3"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/@types/minimatch/-/minimatch-3.0.3.tgz#3dca0e3f33b200fc7d1139c0cd96c1268cadfd9d"
+  integrity sha1-PcoOPzOyAPx9ETnAzZbBJoyt/Z0=
+
+"@types/node@*":
+  version "12.6.8"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/@types/node/-/node-12.6.8.tgz#e469b4bf9d1c9832aee4907ba8a051494357c12c"
+  integrity sha1-5Gm0v50cmDKu5JB7qKBRSUNXwSw=
+
+"@types/unist@*", "@types/unist@^2.0.0":
+  version "2.0.3"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/@types/unist/-/unist-2.0.3.tgz#9c088679876f374eb5983f150d4787aa6fb32d7e"
+  integrity sha1-nAiGeYdvN061mD8VDUeHqm+zLX4=
+
+"@types/vfile-message@*":
+  version "1.0.1"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/@types/vfile-message/-/vfile-message-1.0.1.tgz#e1e9895cc6b36c462d4244e64e6d0b6eaf65355a"
+  integrity sha1-4emJXMazbEYtQkTmTm0Lbq9lNVo=
+  dependencies:
+    "@types/node" "*"
+    "@types/unist" "*"
+
+"@types/vfile@^3.0.0":
+  version "3.0.2"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/@types/vfile/-/vfile-3.0.2.tgz#19c18cd232df11ce6fa6ad80259bc86c366b09b9"
+  integrity sha1-GcGM0jLfEc5vpq2AJZvIbDZrCbk=
+  dependencies:
+    "@types/node" "*"
+    "@types/unist" "*"
+    "@types/vfile-message" "*"
 
 abbrev@1:
   version "1.1.1"
@@ -619,7 +759,7 @@ ajv-keywords@^2.1.0:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/ajv-keywords/-/ajv-keywords-2.1.1.tgz#617997fc5f60576894c435f940d819e135b80762"
 
-ajv-keywords@^3.0.0, ajv-keywords@^3.1.0:
+ajv-keywords@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/ajv-keywords/-/ajv-keywords-3.1.0.tgz#ac2b27939c543e95d2c06e7f7f5c27be4aa543be"
 
@@ -632,7 +772,7 @@ ajv@^5.2.3, ajv@^5.3.0:
     fast-json-stable-stringify "^2.0.0"
     json-schema-traverse "^0.3.0"
 
-ajv@^6.0.1, ajv@^6.1.0:
+ajv@^6.1.0:
   version "6.4.0"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.4.0.tgz#d3aff78e9277549771daf0164cff48482b754fc6"
   dependencies:
@@ -640,6 +780,16 @@ ajv@^6.0.1, ajv@^6.1.0:
     fast-json-stable-stringify "^2.0.0"
     json-schema-traverse "^0.3.0"
     uri-js "^3.0.2"
+
+ajv@^6.10.2:
+  version "6.10.2"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/ajv/-/ajv-6.10.2.tgz#d3cea04d6b017b2894ad69040fec8b623eb4bd52"
+  integrity sha1-086gTWsBeyiUrWkED+yLYj60vVI=
+  dependencies:
+    fast-deep-equal "^2.0.1"
+    fast-json-stable-stringify "^2.0.0"
+    json-schema-traverse "^0.4.1"
+    uri-js "^4.2.2"
 
 alphanum-sort@^1.0.1, alphanum-sort@^1.0.2:
   version "1.0.2"
@@ -661,11 +811,16 @@ ansi-regex@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-3.0.0.tgz#ed0317c322064f79466c02966bddb605ab37d998"
 
+ansi-regex@^4.1.0:
+  version "4.1.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/ansi-regex/-/ansi-regex-4.1.0.tgz#8b9f8f08cf1acb843756a839ca8c7e3168c51997"
+  integrity sha1-i5+PCM8ay4Q3Vqg5yox+MWjFGZc=
+
 ansi-styles@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-2.2.1.tgz#b432dd3358b634cf75e1e4664368240533c1ddbe"
 
-ansi-styles@^3.2.1:
+ansi-styles@^3.2.0, ansi-styles@^3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-3.2.1.tgz#41fbb20243e50b12be0f04b8dedbf07520ce841d"
   dependencies:
@@ -733,7 +888,7 @@ array-iterate@^1.0.0:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/array-iterate/-/array-iterate-1.1.2.tgz#f66a57e84426f8097f4197fbb6c051b8e5cdf7d8"
 
-array-union@^1.0.1:
+array-union@^1.0.1, array-union@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/array-union/-/array-union-1.0.2.tgz#9a34410e4f4e3da23dea375be5be70f24778ec39"
   dependencies:
@@ -781,6 +936,11 @@ ast-types@0.11.3:
   version "0.11.3"
   resolved "https://registry.yarnpkg.com/ast-types/-/ast-types-0.11.3.tgz#c20757fe72ee71278ea0ff3d87e5c2ca30d9edf8"
 
+astral-regex@^1.0.0:
+  version "1.0.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/astral-regex/-/astral-regex-1.0.0.tgz#6c8c3fb827dd43ee3918f27b82782ab7658a6fd9"
+  integrity sha1-bIw/uCfdQ+45GPJ7gngqt2WKb9k=
+
 async-each@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/async-each/-/async-each-1.0.1.tgz#19d386a1d9edc6e7c1c85d388aedbcc56d33602d"
@@ -810,16 +970,18 @@ autoprefixer@^6.3.1:
     postcss "^5.2.16"
     postcss-value-parser "^3.2.3"
 
-autoprefixer@^8.0.0:
-  version "8.3.0"
-  resolved "https://registry.yarnpkg.com/autoprefixer/-/autoprefixer-8.3.0.tgz#22ac5151c3c8946bb8f75f337d5c5042c0ec6404"
+autoprefixer@^9.0.0:
+  version "9.6.1"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/autoprefixer/-/autoprefixer-9.6.1.tgz#51967a02d2d2300bb01866c1611ec8348d355a47"
+  integrity sha1-UZZ6AtLSMAuwGGbBYR7INI01Wkc=
   dependencies:
-    browserslist "^3.2.4"
-    caniuse-lite "^1.0.30000830"
+    browserslist "^4.6.3"
+    caniuse-lite "^1.0.30000980"
+    chalk "^2.4.2"
     normalize-range "^0.1.2"
     num2fraction "^1.2.2"
-    postcss "^6.0.21"
-    postcss-value-parser "^3.2.3"
+    postcss "^7.0.17"
+    postcss-value-parser "^4.0.0"
 
 babel-code-frame@^6.22.0, babel-code-frame@^6.26.0:
   version "6.26.0"
@@ -1424,7 +1586,7 @@ babylon@7.0.0-beta.44:
   version "7.0.0-beta.44"
   resolved "https://registry.yarnpkg.com/babylon/-/babylon-7.0.0-beta.44.tgz#89159e15e6e30c5096e22d738d8c0af8a0e8ca1d"
 
-babylon@7.0.0-beta.46, babylon@^7.0.0-beta.30, babylon@^7.0.0-beta.42:
+babylon@7.0.0-beta.46, babylon@^7.0.0-beta.30:
   version "7.0.0-beta.46"
   resolved "https://registry.yarnpkg.com/babylon/-/babylon-7.0.0-beta.46.tgz#b6ddaba81bbb130313932757ff9c195d527088b6"
 
@@ -1573,12 +1735,21 @@ browserslist@^1.3.6, browserslist@^1.5.2, browserslist@^1.7.6:
     caniuse-db "^1.0.30000639"
     electron-to-chromium "^1.2.7"
 
-browserslist@^3.0.0, browserslist@^3.2.4:
+browserslist@^3.0.0:
   version "3.2.6"
   resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-3.2.6.tgz#138a44d04a9af64443679191d041f28ce5b965d5"
   dependencies:
     caniuse-lite "^1.0.30000830"
     electron-to-chromium "^1.3.42"
+
+browserslist@^4.6.3:
+  version "4.6.6"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/browserslist/-/browserslist-4.6.6.tgz#6e4bf467cde520bc9dbdf3747dafa03531cec453"
+  integrity sha1-bkv0Z83lILydvfN0fa+gNTHOxFM=
+  dependencies:
+    caniuse-lite "^1.0.30000984"
+    electron-to-chromium "^1.3.191"
+    node-releases "^1.1.25"
 
 buffer-from@^1.0.0:
   version "1.0.0"
@@ -1652,15 +1823,34 @@ call-me-maybe@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/call-me-maybe/-/call-me-maybe-1.0.1.tgz#26d208ea89e37b5cbde60250a15f031c16a4d66b"
 
+caller-callsite@^2.0.0:
+  version "2.0.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/caller-callsite/-/caller-callsite-2.0.0.tgz#847e0fce0a223750a9a027c54b33731ad3154134"
+  integrity sha1-hH4PzgoiN1CpoCfFSzNzGtMVQTQ=
+  dependencies:
+    callsites "^2.0.0"
+
 caller-path@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/caller-path/-/caller-path-0.1.0.tgz#94085ef63581ecd3daa92444a8fe94e82577751f"
   dependencies:
     callsites "^0.2.0"
 
+caller-path@^2.0.0:
+  version "2.0.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/caller-path/-/caller-path-2.0.0.tgz#468f83044e369ab2010fac5f06ceee15bb2cb1f4"
+  integrity sha1-Ro+DBE42mrIBD6xfBs7uFbsssfQ=
+  dependencies:
+    caller-callsite "^2.0.0"
+
 callsites@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/callsites/-/callsites-0.2.0.tgz#afab96262910a7f33c19a5775825c69f34e350ca"
+
+callsites@^2.0.0:
+  version "2.0.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/callsites/-/callsites-2.0.0.tgz#06eb84f00eea413da86affefacbffb36093b3c50"
+  integrity sha1-BuuE8A7qQT2oav/vrL/7Ngk7PFA=
 
 camelcase-keys@^4.0.0:
   version "4.2.0"
@@ -1691,6 +1881,11 @@ caniuse-lite@^1.0.30000830:
   version "1.0.30000830"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000830.tgz#cb96b8a2dd3cbfe04acea2af3c4e894249095328"
 
+caniuse-lite@^1.0.30000980, caniuse-lite@^1.0.30000984:
+  version "1.0.30000985"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/caniuse-lite/-/caniuse-lite-1.0.30000985.tgz#0eb40f6c8a8c219155cbe43c4975c0efb4a0f77f"
+  integrity sha1-DrQPbIqMIZFVy+Q8SXXA77Sg938=
+
 ccount@^1.0.0:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/ccount/-/ccount-1.0.3.tgz#f1cec43f332e2ea5a569fd46f9f5bde4e6102aff"
@@ -1708,6 +1903,15 @@ chalk@^1.0.0, chalk@^1.1.1, chalk@^1.1.3:
 chalk@^2.0.0, chalk@^2.0.1, chalk@^2.1.0, chalk@^2.3.0, chalk@^2.3.2:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-2.4.1.tgz#18c49ab16a037b6eb0152cc83e3471338215b66e"
+  dependencies:
+    ansi-styles "^3.2.1"
+    escape-string-regexp "^1.0.5"
+    supports-color "^5.3.0"
+
+chalk@^2.4.1, chalk@^2.4.2:
+  version "2.4.2"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/chalk/-/chalk-2.4.2.tgz#cd42541677a54333cf541a49108c1432b44c9424"
+  integrity sha1-zUJUFnelQzPPVBpJEIwUMrRMlCQ=
   dependencies:
     ansi-styles "^3.2.1"
     escape-string-regexp "^1.0.5"
@@ -2016,14 +2220,15 @@ core-util-is@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
 
-cosmiconfig@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/cosmiconfig/-/cosmiconfig-4.0.0.tgz#760391549580bbd2df1e562bc177b13c290972dc"
+cosmiconfig@^5.0.0:
+  version "5.2.1"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/cosmiconfig/-/cosmiconfig-5.2.1.tgz#040f726809c591e77a17c0a3626ca45b4f168b1a"
+  integrity sha1-BA9yaAnFked6F8CjYmykW08Wixo=
   dependencies:
+    import-fresh "^2.0.0"
     is-directory "^0.3.1"
-    js-yaml "^3.9.0"
+    js-yaml "^3.13.1"
     parse-json "^4.0.0"
-    require-from-string "^2.0.1"
 
 create-ecdh@^4.0.0:
   version "4.0.1"
@@ -2198,11 +2403,18 @@ debug@^2.1.2, debug@^2.2.0, debug@^2.3.3, debug@^2.6.8, debug@^2.6.9:
   dependencies:
     ms "2.0.0"
 
-debug@^3.0.0, debug@^3.1.0:
+debug@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/debug/-/debug-3.1.0.tgz#5bb5a0672628b64149566ba16819e61518c67261"
   dependencies:
     ms "2.0.0"
+
+debug@^4.0.0, debug@^4.1.0:
+  version "4.1.1"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/debug/-/debug-4.1.1.tgz#3b72260255109c6b589cee050f1d516139664791"
+  integrity sha1-O3ImAlUQnGtYnO4FDx1RYTlmR5E=
+  dependencies:
+    ms "^2.1.1"
 
 decamelize-keys@^1.0.0:
   version "1.1.0"
@@ -2305,11 +2517,11 @@ diffie-hellman@^5.0.0:
     miller-rabin "^4.0.0"
     randombytes "^2.0.0"
 
-dir-glob@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/dir-glob/-/dir-glob-2.0.0.tgz#0b205d2b6aef98238ca286598a8204d29d0a0034"
+dir-glob@^2.2.2:
+  version "2.2.2"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/dir-glob/-/dir-glob-2.2.2.tgz#fa09f0694153c8918b18ba0deafae94769fc50c4"
+  integrity sha1-+gnwaUFTyJGLGLoN6vrpR2n8UMQ=
   dependencies:
-    arrify "^1.0.1"
     path-type "^3.0.0"
 
 doctrine@^2.1.0:
@@ -2329,9 +2541,14 @@ domain-browser@^1.1.1:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/domain-browser/-/domain-browser-1.2.0.tgz#3d31f50191a6749dd1375a7f522e823d42e54eda"
 
-domelementtype@1, domelementtype@^1.3.0:
+domelementtype@1:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/domelementtype/-/domelementtype-1.3.0.tgz#b17aed82e8ab59e52dd9c19b1756e0fc187204c2"
+
+domelementtype@^1.3.1:
+  version "1.3.1"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/domelementtype/-/domelementtype-1.3.1.tgz#d048c44b37b0d10a7f2a3d5fee3f4333d790481f"
+  integrity sha1-0EjESzew0Qp/Kj1f7j9DM9eQSB8=
 
 domelementtype@~1.1.1:
   version "1.1.3"
@@ -2381,6 +2598,11 @@ electron-to-chromium@^1.2.7, electron-to-chromium@^1.3.42:
   version "1.3.44"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.44.tgz#ef6b150a60d523082388cadad88085ecd2fd4684"
 
+electron-to-chromium@^1.3.191:
+  version "1.3.199"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/electron-to-chromium/-/electron-to-chromium-1.3.199.tgz#f9a62a74cda77854310a2abffde8b75591ea09a1"
+  integrity sha1-+aYqdM2neFQxCiq//ei3VZHqCaE=
+
 elegant-spinner@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/elegant-spinner/-/elegant-spinner-1.0.1.tgz#db043521c95d7e303fd8f345bedc3349cfb0729e"
@@ -2396,6 +2618,11 @@ elliptic@^6.0.0:
     inherits "^2.0.1"
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.0"
+
+emoji-regex@^7.0.1:
+  version "7.0.3"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/emoji-regex/-/emoji-regex-7.0.3.tgz#933a04052860c85e83c122479c4748a8e4c72156"
+  integrity sha1-kzoEBShgyF6DwSJHnEdIqOTHIVY=
 
 emojis-list@^2.0.0:
   version "2.1.0"
@@ -2646,14 +2873,21 @@ fast-deep-equal@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-1.1.0.tgz#c053477817c86b51daa853c81e059b733d023614"
 
-fast-glob@^2.0.2:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/fast-glob/-/fast-glob-2.2.1.tgz#686c2345be88f3741e174add0be6f2e5b6078889"
+fast-deep-equal@^2.0.1:
+  version "2.0.1"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/fast-deep-equal/-/fast-deep-equal-2.0.1.tgz#7b05218ddf9667bf7f370bf7fdb2cb15fdd0aa49"
+  integrity sha1-ewUhjd+WZ79/Nwv3/bLLFf3Qqkk=
+
+fast-glob@^2.2.6:
+  version "2.2.7"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/fast-glob/-/fast-glob-2.2.7.tgz#6953857c3afa475fff92ee6015d52da70a4cd39d"
+  integrity sha1-aVOFfDr6R1//ku5gFdUtpwpM050=
   dependencies:
     "@mrmlnc/readdir-enhanced" "^2.2.1"
+    "@nodelib/fs.stat" "^1.1.2"
     glob-parent "^3.1.0"
     is-glob "^4.0.0"
-    merge2 "^1.2.1"
+    merge2 "^1.2.3"
     micromatch "^3.1.10"
 
 fast-json-stable-stringify@^2.0.0:
@@ -2687,6 +2921,13 @@ file-entry-cache@^2.0.0:
   dependencies:
     flat-cache "^1.2.1"
     object-assign "^4.0.1"
+
+file-entry-cache@^4.0.0:
+  version "4.0.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/file-entry-cache/-/file-entry-cache-4.0.0.tgz#633567d15364aefe0b299e1e217735e8f3a9f6e8"
+  integrity sha1-YzVn0VNkrv4LKZ4eIXc16POp9ug=
+  dependencies:
+    flat-cache "^2.0.1"
 
 filename-regex@^2.0.0:
   version "2.0.1"
@@ -2739,6 +2980,20 @@ flat-cache@^1.2.1:
     del "^2.0.2"
     graceful-fs "^4.1.2"
     write "^0.2.1"
+
+flat-cache@^2.0.1:
+  version "2.0.1"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/flat-cache/-/flat-cache-2.0.1.tgz#5d296d6f04bda44a4630a301413bdbc2ec085ec0"
+  integrity sha1-XSltbwS9pEpGMKMBQTvbwuwIXsA=
+  dependencies:
+    flatted "^2.0.0"
+    rimraf "2.6.3"
+    write "1.0.3"
+
+flatted@^2.0.0:
+  version "2.0.1"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/flatted/-/flatted-2.0.1.tgz#69e57caa8f0eacbc281d2e2cb458d46fdb449e08"
+  integrity sha1-aeV8qo8OrLwoHS4stFjUb9tEngg=
 
 flatten@^1.0.2:
   version "1.0.2"
@@ -2896,6 +3151,18 @@ glob@^7.0.0, glob@^7.0.3, glob@^7.0.5, glob@^7.1.2:
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
+glob@^7.1.3:
+  version "7.1.4"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/glob/-/glob-7.1.4.tgz#aa608a2f6c577ad357e1ae5a5c26d9a8d1969255"
+  integrity sha1-qmCKL2xXetNX4a5aXCbZqNGWklU=
+  dependencies:
+    fs.realpath "^1.0.0"
+    inflight "^1.0.4"
+    inherits "2"
+    minimatch "^3.0.4"
+    once "^1.3.0"
+    path-is-absolute "^1.0.0"
+
 global-modules@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/global-modules/-/global-modules-1.0.0.tgz#6d770f0eb523ac78164d72b5e71a8877265cc3ea"
@@ -2903,6 +3170,13 @@ global-modules@^1.0.0:
     global-prefix "^1.0.1"
     is-windows "^1.0.1"
     resolve-dir "^1.0.0"
+
+global-modules@^2.0.0:
+  version "2.0.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/global-modules/-/global-modules-2.0.0.tgz#997605ad2345f27f51539bea26574421215c7780"
+  integrity sha1-mXYFrSNF8n9RU5vqJldEISFcd4A=
+  dependencies:
+    global-prefix "^3.0.0"
 
 global-prefix@^1.0.1:
   version "1.0.2"
@@ -2913,6 +3187,15 @@ global-prefix@^1.0.1:
     ini "^1.3.4"
     is-windows "^1.0.1"
     which "^1.2.14"
+
+global-prefix@^3.0.0:
+  version "3.0.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/global-prefix/-/global-prefix-3.0.0.tgz#fc85f73064df69f50421f47f883fe5b913ba9b97"
+  integrity sha1-/IX3MGTfafUEIfR/iD/luRO6m5c=
+  dependencies:
+    ini "^1.3.5"
+    kind-of "^6.0.2"
+    which "^1.3.1"
 
 globals@^11.0.1, globals@^11.1.0:
   version "11.5.0"
@@ -2943,17 +3226,19 @@ globby@^6.1.0:
     pify "^2.0.0"
     pinkie-promise "^2.0.0"
 
-globby@^8.0.0:
-  version "8.0.1"
-  resolved "https://registry.yarnpkg.com/globby/-/globby-8.0.1.tgz#b5ad48b8aa80b35b814fc1281ecc851f1d2b5b50"
+globby@^9.0.0:
+  version "9.2.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/globby/-/globby-9.2.0.tgz#fd029a706c703d29bdd170f4b6db3a3f7a7cb63d"
+  integrity sha1-/QKacGxwPSm90XD0tts6P3p8tj0=
   dependencies:
-    array-union "^1.0.1"
-    dir-glob "^2.0.0"
-    fast-glob "^2.0.2"
-    glob "^7.1.2"
-    ignore "^3.3.5"
-    pify "^3.0.0"
-    slash "^1.0.0"
+    "@types/glob" "^7.1.1"
+    array-union "^1.0.2"
+    dir-glob "^2.2.2"
+    fast-glob "^2.2.6"
+    glob "^7.1.3"
+    ignore "^4.0.3"
+    pify "^4.0.1"
+    slash "^2.0.0"
 
 globjoin@^0.1.4:
   version "0.1.4"
@@ -3128,16 +3413,17 @@ html-tags@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/html-tags/-/html-tags-2.0.0.tgz#10b30a386085f43cede353cc8fa7cb0deeea668b"
 
-htmlparser2@^3.9.2:
-  version "3.9.2"
-  resolved "https://registry.yarnpkg.com/htmlparser2/-/htmlparser2-3.9.2.tgz#1bdf87acca0f3f9e53fa4fcceb0f4b4cbb00b338"
+htmlparser2@^3.10.0:
+  version "3.10.1"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/htmlparser2/-/htmlparser2-3.10.1.tgz#bd679dc3f59897b6a34bb10749c855bb53a9392f"
+  integrity sha1-vWedw/WYl7ajS7EHSchVu1OpOS8=
   dependencies:
-    domelementtype "^1.3.0"
+    domelementtype "^1.3.1"
     domhandler "^2.3.0"
     domutils "^1.5.1"
     entities "^1.1.1"
     inherits "^2.0.1"
-    readable-stream "^2.0.2"
+    readable-stream "^3.1.1"
 
 http-cache-semantics@3.8.1:
   version "3.8.1"
@@ -3177,9 +3463,27 @@ ignore-walk@^3.0.1:
   dependencies:
     minimatch "^3.0.4"
 
-ignore@^3.3.3, ignore@^3.3.5:
+ignore@^3.3.3:
   version "3.3.8"
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-3.3.8.tgz#3f8e9c35d38708a3a7e0e9abb6c73e7ee7707b2b"
+
+ignore@^4.0.3:
+  version "4.0.6"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/ignore/-/ignore-4.0.6.tgz#750e3db5862087b4737ebac8207ffd1ef27b25fc"
+  integrity sha1-dQ49tYYgh7RzfrrIIH/9HvJ7Jfw=
+
+ignore@^5.0.4:
+  version "5.1.2"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/ignore/-/ignore-5.1.2.tgz#e28e584d43ad7e92f96995019cc43b9e1ac49558"
+  integrity sha1-4o5YTUOtfpL5aZUBnMQ7nhrElVg=
+
+import-fresh@^2.0.0:
+  version "2.0.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/import-fresh/-/import-fresh-2.0.0.tgz#d81355c15612d386c61f9ddd3922d4304822a546"
+  integrity sha1-2BNVwVYS04bGH53dOSLUMEgipUY=
+  dependencies:
+    caller-path "^2.0.0"
+    resolve-from "^3.0.0"
 
 import-lazy@^3.1.0:
   version "3.1.0"
@@ -3229,9 +3533,10 @@ inherits@2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/inherits/-/inherits-2.0.1.tgz#b17d08d326b4423e568eff719f91b0b1cbdf69f1"
 
-ini@^1.3.4, ini@~1.3.0:
+ini@^1.3.4, ini@^1.3.5, ini@~1.3.0:
   version "1.3.5"
-  resolved "https://registry.yarnpkg.com/ini/-/ini-1.3.5.tgz#eee25f56db1c9ec6085e0c22778083f596abf927"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/ini/-/ini-1.3.5.tgz#eee25f56db1c9ec6085e0c22778083f596abf927"
+  integrity sha1-7uJfVtscnsYIXgwid4CD9Zar+Sc=
 
 inquirer@^3.0.6, inquirer@^3.3.0:
   version "3.3.0"
@@ -3332,9 +3637,14 @@ is-binary-path@^1.0.0:
   dependencies:
     binary-extensions "^1.0.0"
 
-is-buffer@^1.1.4, is-buffer@^1.1.5:
+is-buffer@^1.1.5:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/is-buffer/-/is-buffer-1.1.6.tgz#efaa2ea9daa0d7ab2ea13a97b2b8ad51fefbe8be"
+
+is-buffer@^2.0.0:
+  version "2.0.3"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/is-buffer/-/is-buffer-2.0.3.tgz#4ecf3fcf749cbd1e472689e109ac66261a25e725"
+  integrity sha1-Ts8/z3ScvR5HJonhCaxmJhol5yU=
 
 is-builtin-module@^1.0.0:
   version "1.0.0"
@@ -3607,7 +3917,20 @@ js-tokens@^3.0.0, js-tokens@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-3.0.2.tgz#9866df395102130e38f7f996bceb65443209c25b"
 
-js-yaml@^3.9.0, js-yaml@^3.9.1:
+js-tokens@^4.0.0:
+  version "4.0.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
+  integrity sha1-GSA/tZmR35jjoocFDUZHzerzJJk=
+
+js-yaml@^3.13.1:
+  version "3.13.1"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/js-yaml/-/js-yaml-3.13.1.tgz#aff151b30bfdfa8e49e05da22e7415e9dfa37847"
+  integrity sha1-r/FRswv9+o5J4F2iLnQV6d+jeEc=
+  dependencies:
+    argparse "^1.0.7"
+    esprima "^4.0.0"
+
+js-yaml@^3.9.1:
   version "3.11.0"
   resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.11.0.tgz#597c1a8bd57152f26d622ce4117851a51f5ebaef"
   dependencies:
@@ -3685,6 +4008,11 @@ json-schema-traverse@^0.3.0:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/json-schema-traverse/-/json-schema-traverse-0.3.1.tgz#349a6d44c53a51de89b40805c5d5e59b417d3340"
 
+json-schema-traverse@^0.4.1:
+  version "0.4.1"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/json-schema-traverse/-/json-schema-traverse-0.4.1.tgz#69f6a87d9513ab8bb8fe63bdb0979c448e684660"
+  integrity sha1-afaofZUTq4u4/mO9sJecRI5oRmA=
+
 json-stable-stringify-without-jsonify@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/json-stable-stringify-without-jsonify/-/json-stable-stringify-without-jsonify-1.0.1.tgz#9db7b59496ad3f3cfef30a75142d2d930ad72651"
@@ -3692,6 +4020,13 @@ json-stable-stringify-without-jsonify@^1.0.1:
 json5@^0.5.0, json5@^0.5.1:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/json5/-/json5-0.5.1.tgz#1eade7acc012034ad84e2396767ead9fa5495821"
+
+json5@^2.1.0:
+  version "2.1.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/json5/-/json5-2.1.0.tgz#e7a0c62c48285c628d20a10b85c89bb807c32850"
+  integrity sha1-56DGLEgoXGKNIKELhcibuAfDKFA=
+  dependencies:
+    minimist "^1.2.0"
 
 keyv@3.0.0:
   version "3.0.0"
@@ -3719,15 +4054,21 @@ kind-of@^6.0.0, kind-of@^6.0.2:
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-6.0.2.tgz#01146b36a6218e64e58f3a8d66de5d7fc6f6d051"
 
-known-css-properties@^0.6.0:
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/known-css-properties/-/known-css-properties-0.6.1.tgz#31b5123ad03d8d1a3f36bd4155459c981173478b"
+known-css-properties@^0.11.0:
+  version "0.11.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/known-css-properties/-/known-css-properties-0.11.0.tgz#0da784f115ea77c76b81536d7052e90ee6c86a8a"
+  integrity sha1-DaeE8RXqd8drgVNtcFLpDubIaoo=
 
 lcid@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/lcid/-/lcid-1.0.0.tgz#308accafa0bc483a3867b4b6f2b9506251d1b835"
   dependencies:
     invert-kv "^1.0.0"
+
+leven@^2.1.0:
+  version "2.1.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/leven/-/leven-2.1.0.tgz#c2e7a9f772094dee9d34202ae8acce4687875580"
+  integrity sha1-wuep93IJTe6dNCAq6KzORoeHVYA=
 
 levn@^0.3.0, levn@~0.3.0:
   version "0.3.0"
@@ -3827,6 +4168,11 @@ lodash.uniq@^4.5.0:
 lodash@^4.13.1, lodash@^4.14.0, lodash@^4.17.2, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.2.0, lodash@^4.3.0:
   version "4.17.10"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.10.tgz#1b7793cf7259ea38fb3661d4d38b3260af8ae4e7"
+
+lodash@^4.17.11, lodash@^4.17.13, lodash@^4.17.14:
+  version "4.17.15"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
+  integrity sha1-tEf2ZwoEVbv+7dETku/zMOoJdUg=
 
 log-symbols@^1.0.2:
   version "1.0.2"
@@ -3973,25 +4319,27 @@ memory-fs@^0.4.0, memory-fs@~0.4.1:
     errno "^0.1.3"
     readable-stream "^2.0.1"
 
-meow@^4.0.0:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/meow/-/meow-4.0.1.tgz#d48598f6f4b1472f35bf6317a95945ace347f975"
+meow@^5.0.0:
+  version "5.0.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/meow/-/meow-5.0.0.tgz#dfc73d63a9afc714a5e371760eb5c88b91078aa4"
+  integrity sha1-38c9Y6mvxxSl43F2DrXIi5EHiqQ=
   dependencies:
     camelcase-keys "^4.0.0"
     decamelize-keys "^1.0.0"
     loud-rejection "^1.0.0"
-    minimist "^1.1.3"
     minimist-options "^3.0.1"
     normalize-package-data "^2.3.4"
     read-pkg-up "^3.0.0"
     redent "^2.0.0"
     trim-newlines "^2.0.0"
+    yargs-parser "^10.0.0"
 
-merge2@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/merge2/-/merge2-1.2.1.tgz#271d2516ff52d4af7f7b710b8bf3e16e183fef66"
+merge2@^1.2.3:
+  version "1.2.3"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/merge2/-/merge2-1.2.3.tgz#7ee99dbd69bb6481689253f018488a1b902b0ed5"
+  integrity sha1-fumdvWm7ZIFoklPwGEiKG5ArDtU=
 
-micromatch@^2.3.11, micromatch@^2.3.7:
+micromatch@^2.3.7:
   version "2.3.11"
   resolved "https://registry.yarnpkg.com/micromatch/-/micromatch-2.3.11.tgz#86677c97d1720b363431d04d0d15293bd38c1565"
   dependencies:
@@ -4075,7 +4423,7 @@ minimist@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-0.1.0.tgz#99df657a52574c21c9057497df742790b2b4c0de"
 
-minimist@^1.1.3, minimist@^1.2.0:
+minimist@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.0.tgz#a35008b20f41383eec1fb914f4cd5df79a264284"
 
@@ -4134,6 +4482,11 @@ move-concurrently@^1.0.1:
 ms@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
+
+ms@^2.1.1:
+  version "2.1.2"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
+  integrity sha1-0J0fNXtEP0kzgqjrPM0YOHKuYAk=
 
 multimatch@^2.0.0:
   version "2.1.0"
@@ -4235,6 +4588,13 @@ node-pre-gyp@^0.9.0:
     rimraf "^2.6.1"
     semver "^5.3.0"
     tar "^4"
+
+node-releases@^1.1.25:
+  version "1.1.25"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/node-releases/-/node-releases-1.1.25.tgz#0c2d7dbc7fed30fbe02a9ee3007b8c90bf0133d3"
+  integrity sha1-DC19vH/tMPvgKp7jAHuMkL8BM9M=
+  dependencies:
+    semver "^5.3.0"
 
 nomnom@^1.8.1:
   version "1.8.1"
@@ -4589,6 +4949,11 @@ pify@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/pify/-/pify-3.0.0.tgz#e5a4acd2c101fdf3d9a4d07f0dbc4db49dd28176"
 
+pify@^4.0.0, pify@^4.0.1:
+  version "4.0.1"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/pify/-/pify-4.0.1.tgz#4b2cd25c50d598735c50292224fd8c6df41e3231"
+  integrity sha1-SyzSXFDVmHNcUCkiJP2MbfQeMjE=
+
 pinkie-promise@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/pinkie-promise/-/pinkie-promise-2.0.1.tgz#2135d6dfa7a358c069ac9b178776288228450ffa"
@@ -4674,22 +5039,34 @@ postcss-filter-plugins@^2.0.0:
     postcss "^5.0.4"
     uniqid "^4.0.0"
 
-postcss-html@^0.18.0:
-  version "0.18.0"
-  resolved "https://registry.yarnpkg.com/postcss-html/-/postcss-html-0.18.0.tgz#992a84117cc56f9f28915fbadba576489641e652"
+postcss-html@^0.36.0:
+  version "0.36.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/postcss-html/-/postcss-html-0.36.0.tgz#b40913f94eaacc2453fd30a1327ad6ee1f88b204"
+  integrity sha1-tAkT+U6qzCRT/TChMnrW7h+IsgQ=
   dependencies:
-    "@babel/core" "^7.0.0-beta.42"
-    "@babel/traverse" "^7.0.0-beta.42"
-    babylon "^7.0.0-beta.42"
-    htmlparser2 "^3.9.2"
-    remark "^9.0.0"
-    unist-util-find-all-after "^1.0.1"
+    htmlparser2 "^3.10.0"
 
-postcss-less@^1.1.5:
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/postcss-less/-/postcss-less-1.1.5.tgz#a6f0ce180cf3797eeee1d4adc0e9e6d6db665609"
+postcss-jsx@^0.36.0:
+  version "0.36.1"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/postcss-jsx/-/postcss-jsx-0.36.1.tgz#ab5e469e7449b84bd1a5973ff555fbe84c39f91d"
+  integrity sha1-q15GnnRJuEvRpZc/9VX76Ew5+R0=
   dependencies:
-    postcss "^5.2.16"
+    "@babel/core" ">=7.2.2"
+
+postcss-less@^3.1.0:
+  version "3.1.4"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/postcss-less/-/postcss-less-3.1.4.tgz#369f58642b5928ef898ffbc1a6e93c958304c5ad"
+  integrity sha1-Np9YZCtZKO+Jj/vBpuk8lYMExa0=
+  dependencies:
+    postcss "^7.0.14"
+
+postcss-markdown@^0.36.0:
+  version "0.36.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/postcss-markdown/-/postcss-markdown-0.36.0.tgz#7f22849ae0e3db18820b7b0d5e7833f13a447560"
+  integrity sha1-fyKEmuDj2xiCC3sNXngz8TpEdWA=
+  dependencies:
+    remark "^10.0.1"
+    unist-util-find-all-after "^1.0.2"
 
 postcss-media-query-parser@^0.2.3:
   version "0.2.3"
@@ -4826,37 +5203,41 @@ postcss-reduce-transforms@^1.0.3:
     postcss "^5.0.8"
     postcss-value-parser "^3.0.1"
 
-postcss-reporter@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/postcss-reporter/-/postcss-reporter-5.0.0.tgz#a14177fd1342829d291653f2786efd67110332c3"
+postcss-reporter@^6.0.0:
+  version "6.0.1"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/postcss-reporter/-/postcss-reporter-6.0.1.tgz#7c055120060a97c8837b4e48215661aafb74245f"
+  integrity sha1-fAVRIAYKl8iDe05IIVZhqvt0JF8=
   dependencies:
-    chalk "^2.0.1"
-    lodash "^4.17.4"
-    log-symbols "^2.0.0"
-    postcss "^6.0.8"
+    chalk "^2.4.1"
+    lodash "^4.17.11"
+    log-symbols "^2.2.0"
+    postcss "^7.0.7"
 
 postcss-resolve-nested-selector@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/postcss-resolve-nested-selector/-/postcss-resolve-nested-selector-0.1.1.tgz#29ccbc7c37dedfac304e9fff0bf1596b3f6a0e4e"
 
-postcss-safe-parser@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/postcss-safe-parser/-/postcss-safe-parser-3.0.1.tgz#b753eff6c7c0aea5e8375fbe4cde8bf9063ff142"
+postcss-safe-parser@^4.0.0:
+  version "4.0.1"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/postcss-safe-parser/-/postcss-safe-parser-4.0.1.tgz#8756d9e4c36fdce2c72b091bbc8ca176ab1fcdea"
+  integrity sha1-h1bZ5MNv3OLHKwkbvIyhdqsfzeo=
   dependencies:
-    postcss "^6.0.6"
+    postcss "^7.0.0"
 
-postcss-sass@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/postcss-sass/-/postcss-sass-0.3.0.tgz#dc2582ee0e61541aa88bafdc5a8aebb53deaae75"
+postcss-sass@^0.3.5:
+  version "0.3.5"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/postcss-sass/-/postcss-sass-0.3.5.tgz#6d3e39f101a53d2efa091f953493116d32beb68c"
+  integrity sha1-bT458QGlPS76CR+VNJMRbTK+tow=
   dependencies:
     gonzales-pe "^4.2.3"
-    postcss "^6.0.16"
+    postcss "^7.0.1"
 
-postcss-scss@^1.0.2:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/postcss-scss/-/postcss-scss-1.0.5.tgz#40a10cfd03766accf0a3cf8e65a8af887b2bf6c4"
+postcss-scss@^2.0.0:
+  version "2.0.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/postcss-scss/-/postcss-scss-2.0.0.tgz#248b0a28af77ea7b32b1011aba0f738bda27dea1"
+  integrity sha1-JIsKKK936nsysQEaug9zi9on3qE=
   dependencies:
-    postcss "^6.0.21"
+    postcss "^7.0.0"
 
 postcss-selector-parser@^2.0.0, postcss-selector-parser@^2.2.2:
   version "2.2.3"
@@ -4883,6 +5264,11 @@ postcss-svgo@^2.1.1:
     postcss-value-parser "^3.2.3"
     svgo "^0.7.0"
 
+postcss-syntax@^0.36.2:
+  version "0.36.2"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/postcss-syntax/-/postcss-syntax-0.36.2.tgz#f08578c7d95834574e5593a82dfbfa8afae3b51c"
+  integrity sha1-8IV4x9lYNFdOVZOoLfv6ivrjtRw=
+
 postcss-unique-selectors@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/postcss-unique-selectors/-/postcss-unique-selectors-2.0.2.tgz#981d57d29ddcb33e7b1dfe1fd43b8649f933ca1d"
@@ -4894,6 +5280,11 @@ postcss-unique-selectors@^2.0.2:
 postcss-value-parser@^3.0.1, postcss-value-parser@^3.0.2, postcss-value-parser@^3.1.1, postcss-value-parser@^3.1.2, postcss-value-parser@^3.2.3, postcss-value-parser@^3.3.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/postcss-value-parser/-/postcss-value-parser-3.3.0.tgz#87f38f9f18f774a4ab4c8a232f5c5ce8872a9d15"
+
+postcss-value-parser@^4.0.0:
+  version "4.0.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/postcss-value-parser/-/postcss-value-parser-4.0.0.tgz#99a983d365f7b2ad8d0f9b8c3094926eab4b936d"
+  integrity sha1-mamD02X3sq2ND5uMMJSSbqtLk20=
 
 postcss-zindex@^2.0.1:
   version "2.2.0"
@@ -4912,13 +5303,22 @@ postcss@^5.0.10, postcss@^5.0.11, postcss@^5.0.12, postcss@^5.0.13, postcss@^5.0
     source-map "^0.5.6"
     supports-color "^3.2.3"
 
-postcss@^6.0.1, postcss@^6.0.14, postcss@^6.0.16, postcss@^6.0.21, postcss@^6.0.6, postcss@^6.0.8:
+postcss@^6.0.1:
   version "6.0.21"
   resolved "https://registry.yarnpkg.com/postcss/-/postcss-6.0.21.tgz#8265662694eddf9e9a5960db6da33c39e4cd069d"
   dependencies:
     chalk "^2.3.2"
     source-map "^0.6.1"
     supports-color "^5.3.0"
+
+postcss@^7.0.0, postcss@^7.0.1, postcss@^7.0.13, postcss@^7.0.14, postcss@^7.0.17, postcss@^7.0.2, postcss@^7.0.7:
+  version "7.0.17"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/postcss/-/postcss-7.0.17.tgz#4da1bdff5322d4a0acaab4d87f3e782436bad31f"
+  integrity sha1-TaG9/1Mi1KCsqrTYfz54JDa60x8=
+  dependencies:
+    chalk "^2.4.2"
+    source-map "^0.6.1"
+    supports-color "^6.1.0"
 
 prelude-ls@~1.1.2:
   version "1.1.2"
@@ -5103,6 +5503,15 @@ read-pkg@^3.0.0:
     string_decoder "~1.1.1"
     util-deprecate "~1.0.1"
 
+readable-stream@^3.1.1:
+  version "3.4.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/readable-stream/-/readable-stream-3.4.0.tgz#a51c26754658e0a3c21dbf59163bd45ba6f447fc"
+  integrity sha1-pRwmdUZY4KPCHb9ZFjvUW6b0R/w=
+  dependencies:
+    inherits "^2.0.3"
+    string_decoder "^1.1.1"
+    util-deprecate "^1.0.1"
+
 readdirp@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/readdirp/-/readdirp-2.1.0.tgz#4ed0ad060df3073300c48440373f72d1cc642d78"
@@ -5250,9 +5659,10 @@ regjsparser@^0.2.1:
   dependencies:
     jsesc "~0.5.0"
 
-remark-parse@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/remark-parse/-/remark-parse-5.0.0.tgz#4c077f9e499044d1d5c13f80d7a98cf7b9285d95"
+remark-parse@^6.0.0:
+  version "6.0.3"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/remark-parse/-/remark-parse-6.0.3.tgz#c99131052809da482108413f87b0ee7f52180a3a"
+  integrity sha1-yZExBSgJ2kghCEE/h7Duf1IYCjo=
   dependencies:
     collapse-white-space "^1.0.2"
     is-alphabetical "^1.0.0"
@@ -5270,9 +5680,10 @@ remark-parse@^5.0.0:
     vfile-location "^2.0.0"
     xtend "^4.0.1"
 
-remark-stringify@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/remark-stringify/-/remark-stringify-5.0.0.tgz#336d3a4d4a6a3390d933eeba62e8de4bd280afba"
+remark-stringify@^6.0.0:
+  version "6.0.4"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/remark-stringify/-/remark-stringify-6.0.4.tgz#16ac229d4d1593249018663c7bddf28aafc4e088"
+  integrity sha1-FqwinU0VkySQGGY8e93yiq/E4Ig=
   dependencies:
     ccount "^1.0.0"
     is-alphanumeric "^1.0.0"
@@ -5289,13 +5700,14 @@ remark-stringify@^5.0.0:
     unherit "^1.0.4"
     xtend "^4.0.1"
 
-remark@^9.0.0:
-  version "9.0.0"
-  resolved "https://registry.yarnpkg.com/remark/-/remark-9.0.0.tgz#c5cfa8ec535c73a67c4b0f12bfdbd3a67d8b2f60"
+remark@^10.0.1:
+  version "10.0.1"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/remark/-/remark-10.0.1.tgz#3058076dc41781bf505d8978c291485fe47667df"
+  integrity sha1-MFgHbcQXgb9QXYl4wpFIX+R2Z98=
   dependencies:
-    remark-parse "^5.0.0"
-    remark-stringify "^5.0.0"
-    unified "^6.0.0"
+    remark-parse "^6.0.0"
+    remark-stringify "^6.0.0"
+    unified "^7.0.0"
 
 remove-trailing-separator@^1.0.1:
   version "1.1.0"
@@ -5326,10 +5738,6 @@ replace-ext@1.0.0, replace-ext@^1.0.0:
 require-directory@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/require-directory/-/require-directory-2.1.1.tgz#8c64ad5fd30dab1c976e2344ffe7f792a6a6df42"
-
-require-from-string@^2.0.1:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/require-from-string/-/require-from-string-2.0.2.tgz#89a7fdd938261267318eafe14f9c32e598c36909"
 
 require-main-filename@^1.0.1:
   version "1.0.1"
@@ -5400,6 +5808,13 @@ restore-cursor@^2.0.0:
 ret@~0.1.10:
   version "0.1.15"
   resolved "https://registry.yarnpkg.com/ret/-/ret-0.1.15.tgz#b8a4825d5bdb1fc3f6f53c2bc33f81388681c7bc"
+
+rimraf@2.6.3:
+  version "2.6.3"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/rimraf/-/rimraf-2.6.3.tgz#b2d104fe0d8fb27cf9e0a1cda8262dd3833c6cab"
+  integrity sha1-stEE/g2Psnz54KHNqCYt04M8bKs=
+  dependencies:
+    glob "^7.1.3"
 
 rimraf@^2.2.8, rimraf@^2.5.4, rimraf@^2.6.1, rimraf@^2.6.2:
   version "2.6.2"
@@ -5550,6 +5965,11 @@ slash@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/slash/-/slash-1.0.0.tgz#c41f2f6c39fc16d1cd17ad4b5d896114ae470d55"
 
+slash@^2.0.0:
+  version "2.0.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/slash/-/slash-2.0.0.tgz#de552851a1759df3a8f206535442f5ec4ddeab44"
+  integrity sha1-3lUoUaF1nfOo8gZTVEL17E3eq0Q=
+
 slice-ansi@0.0.4:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/slice-ansi/-/slice-ansi-0.0.4.tgz#edbf8903f66f7ce2f8eafd6ceed65e264c831b35"
@@ -5558,6 +5978,15 @@ slice-ansi@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/slice-ansi/-/slice-ansi-1.0.0.tgz#044f1a49d8842ff307aad6b505ed178bd950134d"
   dependencies:
+    is-fullwidth-code-point "^2.0.0"
+
+slice-ansi@^2.1.0:
+  version "2.1.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/slice-ansi/-/slice-ansi-2.1.0.tgz#cacd7693461a637a5788d92a7dd4fba068e81636"
+  integrity sha1-ys12k0YaY3pXiNkqfdT7oGjoFjY=
+  dependencies:
+    ansi-styles "^3.2.0"
+    astral-regex "^1.0.0"
     is-fullwidth-code-point "^2.0.0"
 
 slide@^1.1.5:
@@ -5657,9 +6086,10 @@ spdx-license-ids@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/spdx-license-ids/-/spdx-license-ids-3.0.0.tgz#7a7cd28470cc6d3a1cfe6d66886f6bc430d3ac87"
 
-specificity@^0.3.1:
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/specificity/-/specificity-0.3.2.tgz#99e6511eceef0f8d9b57924937aac2cb13d13c42"
+specificity@^0.4.1:
+  version "0.4.1"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/specificity/-/specificity-0.4.1.tgz#aab5e645012db08ba182e151165738d00887b019"
+  integrity sha1-qrXmRQEtsIuhguFRFlc40AiHsBk=
 
 split-string@^3.0.1, split-string@^3.0.2:
   version "3.1.0"
@@ -5745,9 +6175,25 @@ string-width@^2.0.0, string-width@^2.1.0, string-width@^2.1.1:
     is-fullwidth-code-point "^2.0.0"
     strip-ansi "^4.0.0"
 
+string-width@^3.0.0:
+  version "3.1.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/string-width/-/string-width-3.1.0.tgz#22767be21b62af1081574306f69ac51b62203961"
+  integrity sha1-InZ74htirxCBV0MG9prFG2IgOWE=
+  dependencies:
+    emoji-regex "^7.0.1"
+    is-fullwidth-code-point "^2.0.0"
+    strip-ansi "^5.1.0"
+
 string_decoder@^1.0.0, string_decoder@~1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/string_decoder/-/string_decoder-1.1.1.tgz#9cf1611ba62685d7030ae9e4ba34149c3af03fc8"
+  dependencies:
+    safe-buffer "~5.1.0"
+
+string_decoder@^1.1.1:
+  version "1.2.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/string_decoder/-/string_decoder-1.2.0.tgz#fe86e738b19544afe70469243b2a1ee9240eae8d"
+  integrity sha1-/obnOLGVRK/nBGkkOyoe6SQOro0=
   dependencies:
     safe-buffer "~5.1.0"
 
@@ -5771,6 +6217,13 @@ strip-ansi@^4.0.0:
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-4.0.0.tgz#a8479022eb1ac368a871389b635262c505ee368f"
   dependencies:
     ansi-regex "^3.0.0"
+
+strip-ansi@^5.1.0:
+  version "5.2.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/strip-ansi/-/strip-ansi-5.2.0.tgz#8c9a536feb6afc962bdfa5b104a5091c1ad9c0ae"
+  integrity sha1-jJpTb+tq/JYr36WxBKUJHBrZwK4=
+  dependencies:
+    ansi-regex "^4.1.0"
 
 strip-ansi@~0.1.0:
   version "0.1.1"
@@ -5820,57 +6273,65 @@ stylelint-config-recommended@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/stylelint-config-recommended/-/stylelint-config-recommended-2.1.0.tgz#f526d5c771c6811186d9eaedbed02195fee30858"
 
-stylelint@^9.2.0:
-  version "9.2.0"
-  resolved "https://registry.yarnpkg.com/stylelint/-/stylelint-9.2.0.tgz#f77a82518106074c1a795e962fd780da2c8af43b"
+stylelint@^9.10.1:
+  version "9.10.1"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/stylelint/-/stylelint-9.10.1.tgz#5f0ee3701461dff1d68284e1386efe8f0677a75d"
+  integrity sha1-Xw7jcBRh3/HWgoThOG7+jwZ3p10=
   dependencies:
-    autoprefixer "^8.0.0"
+    autoprefixer "^9.0.0"
     balanced-match "^1.0.0"
-    chalk "^2.0.1"
-    cosmiconfig "^4.0.0"
-    debug "^3.0.0"
+    chalk "^2.4.1"
+    cosmiconfig "^5.0.0"
+    debug "^4.0.0"
     execall "^1.0.0"
-    file-entry-cache "^2.0.0"
+    file-entry-cache "^4.0.0"
     get-stdin "^6.0.0"
-    globby "^8.0.0"
+    global-modules "^2.0.0"
+    globby "^9.0.0"
     globjoin "^0.1.4"
     html-tags "^2.0.0"
-    ignore "^3.3.3"
+    ignore "^5.0.4"
     import-lazy "^3.1.0"
     imurmurhash "^0.1.4"
-    known-css-properties "^0.6.0"
+    known-css-properties "^0.11.0"
+    leven "^2.1.0"
     lodash "^4.17.4"
     log-symbols "^2.0.0"
     mathml-tag-names "^2.0.1"
-    meow "^4.0.0"
-    micromatch "^2.3.11"
+    meow "^5.0.0"
+    micromatch "^3.1.10"
     normalize-selector "^0.2.0"
-    pify "^3.0.0"
-    postcss "^6.0.16"
-    postcss-html "^0.18.0"
-    postcss-less "^1.1.5"
+    pify "^4.0.0"
+    postcss "^7.0.13"
+    postcss-html "^0.36.0"
+    postcss-jsx "^0.36.0"
+    postcss-less "^3.1.0"
+    postcss-markdown "^0.36.0"
     postcss-media-query-parser "^0.2.3"
-    postcss-reporter "^5.0.0"
+    postcss-reporter "^6.0.0"
     postcss-resolve-nested-selector "^0.1.1"
-    postcss-safe-parser "^3.0.1"
-    postcss-sass "^0.3.0"
-    postcss-scss "^1.0.2"
+    postcss-safe-parser "^4.0.0"
+    postcss-sass "^0.3.5"
+    postcss-scss "^2.0.0"
     postcss-selector-parser "^3.1.0"
+    postcss-syntax "^0.36.2"
     postcss-value-parser "^3.3.0"
     resolve-from "^4.0.0"
     signal-exit "^3.0.2"
-    specificity "^0.3.1"
-    string-width "^2.1.0"
+    slash "^2.0.0"
+    specificity "^0.4.1"
+    string-width "^3.0.0"
     style-search "^0.1.0"
-    sugarss "^1.0.0"
+    sugarss "^2.0.0"
     svg-tags "^1.0.0"
-    table "^4.0.1"
+    table "^5.0.0"
 
-sugarss@^1.0.0:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/sugarss/-/sugarss-1.0.1.tgz#be826d9003e0f247735f92365dc3fd7f1bae9e44"
+sugarss@^2.0.0:
+  version "2.0.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/sugarss/-/sugarss-2.0.0.tgz#ddd76e0124b297d40bf3cca31c8b22ecb43bc61d"
+  integrity sha1-3dduASSyl9QL88yjHIsi7LQ7xh0=
   dependencies:
-    postcss "^6.0.14"
+    postcss "^7.0.2"
 
 supports-color@^2.0.0:
   version "2.0.0"
@@ -5885,6 +6346,13 @@ supports-color@^3.2.3:
 supports-color@^5.3.0:
   version "5.4.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-5.4.0.tgz#1c6b337402c2137605efe19f10fec390f6faab54"
+  dependencies:
+    has-flag "^3.0.0"
+
+supports-color@^6.1.0:
+  version "6.1.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/supports-color/-/supports-color-6.1.0.tgz#0764abc69c63d5ac842dd4867e8d025e880df8f3"
+  integrity sha1-B2Srxpxj1ayELdSGfo0CXogN+PM=
   dependencies:
     has-flag "^3.0.0"
 
@@ -5923,16 +6391,15 @@ table@4.0.2:
     slice-ansi "1.0.0"
     string-width "^2.1.1"
 
-table@^4.0.1:
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/table/-/table-4.0.3.tgz#00b5e2b602f1794b9acaf9ca908a76386a7813bc"
+table@^5.0.0:
+  version "5.4.4"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/table/-/table-5.4.4.tgz#6e0f88fdae3692793d1077fd172a4667afe986a6"
+  integrity sha1-bg+I/a42knk9EHf9FypGZ6/phqY=
   dependencies:
-    ajv "^6.0.1"
-    ajv-keywords "^3.0.0"
-    chalk "^2.1.0"
-    lodash "^4.17.4"
-    slice-ansi "1.0.0"
-    string-width "^2.1.1"
+    ajv "^6.10.2"
+    lodash "^4.17.14"
+    slice-ansi "^2.1.0"
+    string-width "^3.0.0"
 
 tapable@^1.0.0:
   version "1.0.0"
@@ -6110,16 +6577,18 @@ unicode-property-aliases-ecmascript@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/unicode-property-aliases-ecmascript/-/unicode-property-aliases-ecmascript-1.0.3.tgz#ac3522583b9e630580f916635333e00c5ead690d"
 
-unified@^6.0.0:
-  version "6.1.6"
-  resolved "https://registry.yarnpkg.com/unified/-/unified-6.1.6.tgz#5ea7f807a0898f1f8acdeefe5f25faa010cc42b1"
+unified@^7.0.0:
+  version "7.1.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/unified/-/unified-7.1.0.tgz#5032f1c1ee3364bd09da12e27fdd4a7553c7be13"
+  integrity sha1-UDLxwe4zZL0J2hLif91KdVPHvhM=
   dependencies:
+    "@types/unist" "^2.0.0"
+    "@types/vfile" "^3.0.0"
     bail "^1.0.0"
     extend "^3.0.0"
     is-plain-obj "^1.1.0"
     trough "^1.0.0"
-    vfile "^2.0.0"
-    x-is-function "^1.0.4"
+    vfile "^3.0.0"
     x-is-string "^0.1.0"
 
 union-value@^1.0.0:
@@ -6157,15 +6626,21 @@ unique-slug@^2.0.0:
   dependencies:
     imurmurhash "^0.1.4"
 
-unist-util-find-all-after@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/unist-util-find-all-after/-/unist-util-find-all-after-1.0.1.tgz#4e5512abfef7e0616781aecf7b1ed751c00af908"
+unist-util-find-all-after@^1.0.2:
+  version "1.0.4"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/unist-util-find-all-after/-/unist-util-find-all-after-1.0.4.tgz#2eeaba818fd98492d69c44f9bee52c6a25282eef"
+  integrity sha1-Luq6gY/ZhJLWnET5vuUsaiUoLu8=
   dependencies:
-    unist-util-is "^2.0.0"
+    unist-util-is "^3.0.0"
 
-unist-util-is@^2.0.0, unist-util-is@^2.1.1:
+unist-util-is@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/unist-util-is/-/unist-util-is-2.1.1.tgz#0c312629e3f960c66e931e812d3d80e77010947b"
+
+unist-util-is@^3.0.0:
+  version "3.0.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/unist-util-is/-/unist-util-is-3.0.0.tgz#d9e84381c2468e82629e4a5be9d7d05a2dd324cd"
+  integrity sha1-2ehDgcJGjoJinkpb6dfQWi3TJM0=
 
 unist-util-modify-children@^1.0.0:
   version "1.1.1"
@@ -6210,6 +6685,13 @@ uri-js@^3.0.2:
   dependencies:
     punycode "^2.1.0"
 
+uri-js@^4.2.2:
+  version "4.2.2"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/uri-js/-/uri-js-4.2.2.tgz#94c540e1ff772956e2299507c010aea6c8838eb0"
+  integrity sha1-lMVA4f93KVbiKZUHwBCupsiDjrA=
+  dependencies:
+    punycode "^2.1.0"
+
 urix@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/urix/-/urix-0.1.0.tgz#da937f7a62e21fec1fd18d49b35c2935067a6c72"
@@ -6243,7 +6725,7 @@ use@^3.1.0:
   dependencies:
     kind-of "^6.0.2"
 
-util-deprecate@~1.0.1:
+util-deprecate@^1.0.1, util-deprecate@~1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
 
@@ -6278,11 +6760,12 @@ vfile-message@^1.0.0:
   dependencies:
     unist-util-stringify-position "^1.1.1"
 
-vfile@^2.0.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/vfile/-/vfile-2.3.0.tgz#e62d8e72b20e83c324bc6c67278ee272488bf84a"
+vfile@^3.0.0:
+  version "3.0.1"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/vfile/-/vfile-3.0.1.tgz#47331d2abe3282424f4a4bb6acd20a44c4121803"
+  integrity sha1-RzMdKr4ygkJPSku2rNIKRMQSGAM=
   dependencies:
-    is-buffer "^1.1.4"
+    is-buffer "^2.0.0"
     replace-ext "1.0.0"
     unist-util-stringify-position "^1.0.0"
     vfile-message "^1.0.0"
@@ -6413,6 +6896,13 @@ which@^1.2.14, which@^1.2.9:
   dependencies:
     isexe "^2.0.0"
 
+which@^1.3.1:
+  version "1.3.1"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/which/-/which-1.3.1.tgz#a45043d54f5805316da8d62f9f50918d3da70b0a"
+  integrity sha1-pFBD1U9YBTFtqNYvn1CRjT2nCwo=
+  dependencies:
+    isexe "^2.0.0"
+
 wide-align@^1.1.0:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/wide-align/-/wide-align-1.1.2.tgz#571e0f1b0604636ebc0dfc21b0339bbe31341710"
@@ -6448,15 +6938,18 @@ write-file-atomic@^1.2.0:
     imurmurhash "^0.1.4"
     slide "^1.1.5"
 
+write@1.0.3:
+  version "1.0.3"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/write/-/write-1.0.3.tgz#0800e14523b923a387e415123c865616aae0f5c3"
+  integrity sha1-CADhRSO5I6OH5BUSPIZWFqrg9cM=
+  dependencies:
+    mkdirp "^0.5.1"
+
 write@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/write/-/write-0.2.1.tgz#5fc03828e264cea3fe91455476f7a3c566cb0757"
   dependencies:
     mkdirp "^0.5.1"
-
-x-is-function@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/x-is-function/-/x-is-function-1.0.4.tgz#5d294dc3d268cbdd062580e0c5df77a391d1fa1e"
 
 x-is-string@^0.1.0:
   version "0.1.0"
@@ -6481,6 +6974,13 @@ yallist@^2.1.2:
 yallist@^3.0.0, yallist@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-3.0.2.tgz#8452b4bb7e83c7c188d8041c1a837c773d6d8bb9"
+
+yargs-parser@^10.0.0:
+  version "10.1.0"
+  resolved "http://npm.paypal.com/artifactory/api/npm/npm-all/yargs-parser/-/yargs-parser-10.1.0.tgz#7202265b89f7e9e9f2e5765e0fe735a905edbaa8"
+  integrity sha1-cgImW4n36eny5XZeD+c1qQXtuqg=
+  dependencies:
+    camelcase "^4.1.0"
 
 yargs-parser@^9.0.2:
   version "9.0.2"

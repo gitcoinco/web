@@ -960,7 +960,7 @@ Finally, we're preparing to announce the next round of CLR matching for Gitcoin 
 <h3>What else is new?</h3>
     <ul>
         <li>
-            The Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday.
+            The Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday to see some of the top Beyond Blockchain projects present.
         </li>
         <li>
             Interested in the future of ads on the internet? <a href="https://media.consensys.net/how-ethical-advertising-will-transform-the-blockchain-industry-31c2c4f2bd45">Check out this primer on Ethical Advertising from Connor O'Day, part of the Codefund team.</a>
