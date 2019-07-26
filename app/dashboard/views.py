@@ -2976,6 +2976,51 @@ def funder_dashboard(request, bounty_type):
                               for b in bounties], safe=False)
 
 
+
+def contributor_dashboard(request, bounty_type):
+    user = request.user if request.user.is_authenticated else None
+    if not user:
+        return JsonResponse(
+            {'error': _('You must be authenticated via github to use this feature!')},
+            status=401)
+
+    profile = request.user.profile
+    if bounty_type == 'work_in_progress':
+        status = ['open', 'started']
+        pending = False
+
+    elif bounty_type == 'interested':
+        status = ['open']
+        pending = True
+
+    elif bounty_type == 'submitted':
+        status = ['submitted']
+        pending = False
+
+    if status:
+        bounties = Bounty.objects.current().filter(
+            interested__profile=profile,
+            interested__status='okay',
+            interested__pending=pending,
+            idx_status__in=status,
+            current_bounty=True).order_by('-interested__created')
+
+        return JsonResponse([{'title': b.title,
+                                'id': b.id,
+                                'token_name': b.token_name,
+                                'value_in_token': b.value_in_token,
+                                'value_true': b.value_true,
+                                'value_in_usd': b.get_value_in_usdt,
+                                'github_url': b.github_url,
+                                'absolute_url': b.absolute_url,
+                                'avatar_url': b.avatar_url,
+                                'project_type': b.project_type,
+                                'expires_date': b.expires_date,
+                                'interested_comment': b.interested_comment,
+                                'submissions_comment': b.submissions_comment}
+                                for b in bounties], safe=False)
+
+
 @require_POST
 @login_required
 def change_user_profile_banner(request):

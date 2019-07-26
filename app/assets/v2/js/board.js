@@ -1,3 +1,5 @@
+let contributorBounties = {};
+let bounties = {};
 
 Vue.mixin({
   methods: {
@@ -21,6 +23,15 @@ Vue.mixin({
 
       $.when(getApplicants).then(function(response) {
         vm.$set(vm.bounties[type][key], 'contributors', response.profiles);
+      });
+    },
+    fetchContributorBounties: function(type) {
+      let vm = this;
+      let apiUrlbounties = `/contributor_dashboard/${type}/`;
+      let getbounties = fetchData (apiUrlbounties, 'GET');
+
+      $.when(getbounties).then(function(response) {
+        vm.$set(vm.contributorBounties, type, response);
       });
     },
     isExpanded(key, type) {
@@ -70,6 +81,38 @@ Vue.mixin({
         console.log(error.responseJSON.error);
         _alert({ message: gettext(msg) }, 'error');
       });
+    },
+    checkData(persona) {
+      let vm = this;
+      if (!Object.keys(vm.bounties).length && persona === 'funder') {
+        vm.fetchBounties('open');
+        vm.fetchBounties('submitted');
+        vm.fetchBounties('expired');
+      }
+
+      if (!Object.keys(vm.contributorBounties).length && persona === 'contributor') {
+        vm.fetchContributorBounties('work_in_progress');
+        vm.fetchContributorBounties('submitted');
+        vm.fetchContributorBounties('interested');
+      }
+    },
+    tabOnLoad() {
+      let vm = this;
+
+      if (document.contxt.persona_is_funder) {
+        // vm.fetchBounties('open');
+        // vm.fetchBounties('submitted');
+        // vm.fetchBounties('expired');
+        vm.checkData('funder')
+        $('#funder-tab').tab('show')
+      } else if (document.contxt.persona_is_hunter) {
+        vm.checkData('contributor')
+
+        // vm.fetchContributorBounties('work_in_progress');
+        // vm.fetchContributorBounties('submitted');
+        // vm.fetchContributorBounties('interested');
+        $('#contributor-tab').tab('show')
+      }
     }
   }
 });
@@ -79,18 +122,17 @@ if (document.getElementById('gc-board')) {
     delimiters: [ '[[', ']]' ],
     el: '#gc-board',
     data: {
-      bounties: {},
+      bounties: bounties,
       openBounties: [],
       submittedBounties: [],
       expiredBounties: [],
-      expandedGroup: {'submitted': [], 'open': []},
       contributors: [],
+      contributorBounties: contributorBounties,
+      expandedGroup: {'submitted': [], 'open': []},
       disabledBtn: false
     },
     mounted() {
-      this.fetchBounties('open');
-      this.fetchBounties('submitted');
-      this.fetchBounties('expired');
+      this.tabOnLoad()
     }
   });
 }
