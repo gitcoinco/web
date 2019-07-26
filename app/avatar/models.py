@@ -28,6 +28,8 @@ from django.contrib.postgres.fields import JSONField
 from django.core.files import File
 from django.core.files.base import ContentFile
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
 from economy.models import SuperModel
@@ -208,3 +210,11 @@ class SocialAvatar(BaseAvatar):
         avatar.png.save(f'{profile.handle}.png', ContentFile(get_temp_image_file(avatar_img).getvalue()), save=True)
         avatar.svg = avatar.convert_field(avatar.png, 'png', 'svg')
         return avatar
+
+
+@receiver(post_save, sender=SocialAvatar, dispatch_uid="psave_avatar")
+@receiver(post_save, sender=CustomAvatar, dispatch_uid="psave_avatar2")
+def psave_avatar(sender, instance, **kwargs):
+    from dashboard.models import Activity
+    metadata = {'url': instance.png.url, }
+    Activity.objects.create(profile=instance.profile, activity_type='updated_avatar', metadata=metadata)
