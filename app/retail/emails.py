@@ -1009,7 +1009,7 @@ Back to shipping,
         'url': 'https://github.com/SpeckleOS/speckle-browser-extension/issues/89',
         'primer': 'Global Settings (Change Colour Theme and Log Out)',
     }, {
-        'url': 'https://gitcoin.co/issue/ironcoinext/IronCoin/8/3253',
+        'url': 'https://github.com/ironcoinext/IronCoin/issues/8',
         'primer': 'New Tab Page',
 }, ]
     
