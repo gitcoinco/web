@@ -949,7 +949,7 @@ Hey Gitcoiners,
 </p>
 <p>
 We are now only days away from the beginning of the Grow Ethereum hackathon, one of the largest hackathons we've planned to date. As we announced last week, we have huge names behind the event - the Ethereum Foundation and MetaCartel to name a couple - with dozens of prizes on the horizon. See the full list of sponsors (including bZx, AdEx, and Arweave) and a checklist to prepare for the July 29th start date on this <a href="https://gitcoin.co/blog/growethereum/" target="_blank">blog post.</a>
-/p>
+</p>
 <p>
 Is it time for a summer refresh on your Gitcoin profile? Yes. Now, you can customize your Gitcoin profile with a groovy header. Check out the new profile customizations and grab yourself a brand new avatar for the summer at <a href="https://gitcoin.co/onboard/profile/?steps=avatar"> the Avatar Creator </a> and <a href="https://gitcoin.co/profile/"> Profile Editor.</a>
 </p>
