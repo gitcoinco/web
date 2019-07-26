@@ -216,5 +216,5 @@ class SocialAvatar(BaseAvatar):
 @receiver(post_save, sender=CustomAvatar, dispatch_uid="psave_avatar2")
 def psave_avatar(sender, instance, **kwargs):
     from dashboard.models import Activity
-    metadata = {'url': instance.png.url, }
+    metadata = {'url': instance.png.url if getattr(instance, 'png', False) else None, }
     Activity.objects.create(profile=instance.profile, activity_type='updated_avatar', metadata=metadata)
