@@ -23,6 +23,9 @@
       {% if row.metadata.to_username %}
         <img class="avatar" src="/dynamic/avatar/{{ row.metadata.to_username|cut:'@' }}" style="
       width: 30px; height: 30px; bottom: 0; right: 0; position: absolute;"/>
+      {% elif row.metadata.url %}
+        <img class="avatar" src="{{row.metadata.url}}" style="
+      width: 30px; height: 30px; bottom: 0; right: 0; position: absolute;"/>
       {% elif row.metadata.grant_logo %}
         <img class="avatar" src="{{ row.metadata.grant_logo }}" style="width: 30px; height: 30px; bottom: 0; right: 0; position: absolute;"/>
       {% endif %}
@@ -87,6 +90,8 @@
         <span>{% trans "canceled bounty: " %}</span>{{ row.urled_title | safe }}
       {% elif row.activity_type == 'increased_bounty' %}
         <span>{% trans "increased funding: " %}</span>{{ row.urled_title | safe }}
+      {% elif row.activity_type == 'updated_avatar' %}
+        <span>{% trans "updated their avatar" %}</span>
       {% elif row.activity_type == 'unknown_event' %}
         <span>{% trans "made an update to: " %}</span>{{ row.urled_title | safe }}
       {% else %}
