@@ -132,5 +132,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(generate_activities),
+        # migrations.RunPython(generate_activities),
     ]
