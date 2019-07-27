@@ -1847,7 +1847,7 @@ def no_file_response(uploaded_file):
     """Check if there is an uploaded file
 
     Returns:
-        (dict): the response message and status code, if there is no file
+        dict: the response message and status code, if there is no file
     """
     response = None
     if not uploaded_file:
@@ -1862,7 +1862,7 @@ def invalid_file_response(uploaded_file, supported):
     """Check if the uploaded file is valid
 
     Returns:
-        (dict): the response message and status code,
+        dict: the response message and status code,
                 if there is an invalid file
     """
     response = None
