@@ -206,6 +206,9 @@ def index(request):
         'know_us': know_us,
         'press': press,
         'articles': articles,
+        'hide_newsletter_caption': True,
+        'hide_newsletter_consent': True,
+        'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter."),
         'title': _('Grow Open Source: Get crowdfunding and find freelance developers for your software projects, paid in crypto')
     }
     return TemplateResponse(request, 'home/index.html', context)
@@ -623,7 +626,6 @@ def robotstxt(request):
 def about(request):
     core_team = [
         (
-            static("v2/images/team/kevin-owocki.png"),
             "Kevin Owocki",
             "All the things",
             "owocki",
@@ -632,7 +634,6 @@ def about(request):
             "Avocado Toast"
         ),
         (
-            static("v2/images/team/alisa-march.jpg"),
             "Alisa March",
             "User Experience Design",
             "PixelantDesign",
@@ -641,7 +642,6 @@ def about(request):
             "Apple Cider Doughnuts"
         ),
         (
-            static("v2/images/team/eric-berry.jpg"),
             "Eric Berry",
             "OSS Funding",
             "coderberry",
@@ -650,7 +650,6 @@ def about(request):
             "Pastel de nata"
         ),
         (
-            static("v2/images/team/vivek-singh.jpg"),
             "Vivek Singh",
             "Community Buidl-er",
             "vs77bb",
@@ -659,7 +658,6 @@ def about(request):
             "Tangerine Gelato"
         ),
         (
-            static("v2/images/team/aditya-anand.jpg"),
             "Aditya Anand M C",
             "Engineering",
             "thelostone-mc",
@@ -668,16 +666,6 @@ def about(request):
             "Cocktail Samosa"
         ),
         (
-            static("v2/images/team/saptaks.jpg"),
-            "Saptak Sengupta",
-            "Engineering",
-            "saptaks",
-            "saptaks",
-            "Everything Open Source",
-            "daab chingri"
-        ),
-        (
-            static("v2/images/team/scott.jpg"),
             "Scott Moore",
             "Biz Dev",
             "ceresstation",
@@ -686,7 +674,6 @@ def about(request):
             "Teriyaki Chicken"
         ),
         (
-            static("v2/images/team/octavio-amu.png"),
             "Octavio Amuchástegui",
             "Front End Dev",
             "octavioamu",
@@ -695,7 +682,6 @@ def about(request):
             "Homemade italian pasta"
         ),
         (
-            static("v2/images/team/frank-chen.png"),
             "Frank Chen",
             "Data & Product",
             "frankchen07",
@@ -704,16 +690,6 @@ def about(request):
             "Crispy pork belly"
         ),
         (
-            static("v2/images/team/austin-griffith.jpg"),
-            "Austin Griffith",
-            "Gitcoin Labs",
-            "austintgriffith",
-            None,
-            "The #BUIDL",
-            "Drunken Noodles"
-        ),
-        (
-            static("v2/images/team/nate-hopkins.png"),
             "Nate Hopkins",
             "Engineering",
             "hopsoft",
@@ -722,7 +698,6 @@ def about(request):
             "Chicken tikka masala"
         ),
         (
-            static("v2/images/team/dan-lipert.png"),
             "Dan Lipert",
             "Engineering",
             "danlipert",
@@ -763,7 +738,7 @@ def mission(request):
 
     values = [
         {
-            'name': _('Collaboration'),
+            'name': _('Self Reliance'),
             'img': 'v2/images/mission/value/collaborative.svg',
             'alt': 'we-collobarate-icon'
         },
@@ -836,7 +811,7 @@ def mission(request):
             'alt': 'microscope-icon'
         },
         {
-            'text': _('We care about people (not just tasks)'),
+            'text': _('We care about people (not just tasks).'),
             'img': 'v2/images/mission/interact/people_care.svg',
             'alt': 'care-icon'
         },
@@ -1007,10 +982,11 @@ def activity(request):
     page_size = 15
     activities = Activity.objects.all().order_by('-created')
     p = Paginator(activities, page_size)
-    page = request.GET.get('page', 1)
+    page = int(request.GET.get('page', 1))
 
     context = {
         'p': p,
+        'next_page': page + 1,
         'page': p.get_page(page),
         'title': _('Activity Feed'),
     }
@@ -1566,6 +1542,8 @@ def btctalk(request):
 def reddit(request):
     return redirect('https://www.reddit.com/r/gitcoincommunity/')
 
+def blog(request):
+    return redirect('https://gitcoin.co/blog')
 
 def livestream(request):
     return redirect('https://calendar.google.com/calendar/r?cid=N3JxN2dhMm91YnYzdGs5M2hrNjdhZ2R2ODhAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ')

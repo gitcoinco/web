@@ -92,6 +92,7 @@ var rows = [
   'bounty_type',
   'expires_date',
   'issue_keywords',
+  'bounty_categories',
   'started_owners_username',
   'submitted_owners_username',
   'fulfilled_owners_username',
@@ -124,31 +125,32 @@ var callbacks = {
   },
   'status': function(key, val, result) {
     let ui_status = val;
+    let ui_status_raw = val;
 
-    if (ui_status === 'open') {
+    if (ui_status_raw === 'open') {
       ui_status = '<span>' + gettext('OPEN ISSUE') + '</span>';
 
       let can_submit = result['can_submit_after_expiration_date'];
 
-      if (!isBountyOwner && can_submit && is_bounty_expired(result)) {
+      if (!isBountyOwner() && can_submit && is_bounty_expired(result)) {
         ui_status += '<p class="text-highlight-light-blue font-weight-light font-body" style="text-transform: none;">' +
           gettext('This issue is past its expiration date, but it is still active.') +
           '<br>' +
           gettext('Check with the submitter to see if they still want to see it fulfilled.') +
           '</p>';
       }
-    } else if (ui_status === 'started') {
+    } else if (ui_status_raw === 'started') {
       ui_status = '<span>' + gettext('work started') + '</span>';
-    } else if (ui_status === 'submitted') {
+    } else if (ui_status_raw === 'submitted') {
       ui_status = '<span>' + gettext('work submitted') + '</span>';
-    } else if (ui_status === 'done') {
+    } else if (ui_status_raw === 'done') {
       ui_status = '<span>' + gettext('done') + '</span>';
-    } else if (ui_status === 'cancelled') {
+    } else if (ui_status_raw === 'cancelled') {
       ui_status = '<span style="color: #f9006c;">' + gettext('cancelled') + '</span>';
     }
 
-    if (isBountyOwner && is_bounty_expired(result) &&
-      ui_status !== 'done' && ui_status !== 'cancelled') {
+    if (isBountyOwner() && is_bounty_expired(result) &&
+      ui_status_raw !== 'done' && ui_status_raw !== 'cancelled') {
 
       ui_status += '<p class="font-weight-light font-body" style="color: black; text-transform: none;">' +
       'This issue has expired. Click <a class="text-highlight-light-blue font-weight-semibold" href="/extend-deadlines">here to extend expiration</a> ' +
@@ -173,6 +175,24 @@ var callbacks = {
   'bounty_owner_github_username': gitcoin_ize,
   'funding_organisation': function(key, val, result) {
     return [ 'funding_organisation', result.funding_organisation ];
+  },
+  'bounty_categories': function(key, val, result) {
+    if (!result.bounty_categories || result.bounty_categories.length == 0)
+      return [ 'bounty_categories', null ];
+
+    const categories = [];
+    const categoryObj = {
+      frontend: '<span class="badge badge-secondary mr-1"><i class="fas fa-laptop-code"></i> Front End</span>',
+      backend: '<span class="badge badge-secondary mr-1"><i class="fas fa-code"></i> Back End</span>',
+      design: '<span class="badge badge-secondary mr-1"><i class="fas fa-pencil-ruler"></i> Design</span>',
+      documentation: '<span class="badge badge-secondary mr-1"><i class="fas fa-file-alt"></i> Documentation</span>',
+      other: '<span class="badge badge-secondary mr-1"><i class="fas fa-briefcase"></i> Other</span>'
+    };
+
+    result.bounty_categories.forEach(function(category) {
+      categories.push(categoryObj[category]);
+    });
+    return [ 'bounty_categories', categories ];
   },
   'permission_type': function(key, val, result) {
     if (val == 'approval') {
@@ -493,7 +513,7 @@ var showWarningMessage = function(txid) {
   if (typeof txid != 'undefined' && txid.indexOf('0x') != -1) {
     waitforWeb3(function() {
       clearInterval(interval);
-      var link_url = etherscan_tx_url(txid);
+      var link_url = get_etherscan_url(txid);
 
       $('#transaction_url').attr('href', link_url);
     });
@@ -1414,7 +1434,7 @@ const process_activities = function(result, bounty_activities) {
     extend_expiration: gettext('Extended Bounty Expiration')
   };
 
-  const now = new Date(result['now']);
+  const now = result['now'] ? new Date(result['now']) : new Date();
   const is_open = result['is_open'];
   const _result = [];
 

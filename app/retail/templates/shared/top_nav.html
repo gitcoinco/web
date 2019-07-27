@@ -18,12 +18,12 @@
 {% load i18n static matches %}
 
 <!--- Top Row Notification -->
-<div class="row bottom_notification font-caption" style="text-align: center; display: none;">
+<div class="row bottom_notification font-caption" style="text-align: center;">
   <span style="text-align: center; margin: auto;">
-    {% blocktrans %}<strong>The Ethereal Hackathon is now live!</strong> - Earn over $40k of prizes and a chance to meet the top teams in web3; <a href="https://gitcoin.co/hackathon/ethhack2019">Participate today!</a>.{% endblocktrans %}
+    {% blocktrans %}The <strong>Grow Ethereum</strong> Hackathon runs July 29th to August 19th - <a href="https://hackathons.gitcoin.co/grow-ethereum/">Check out the Details</a>.{% endblocktrans %}
   </span>
   <span style="cursor: pointer;" id="top_nav_notification">
-    X
+      &times;
   </span>
 </div>
 <!--- /Top Row Notification -->
@@ -45,9 +45,5 @@
   <a class="{% if request.path|matches:'^\/((grants.*))$' %}selected{% endif %}" href="{% url "grants:grants" %}">
     <img src="{% static "v2/images/top-bar/grants-logo.svg" %}" height="22" alt="" class="d-md-block d-none">
     <img src="{% static "v2/images/top-bar/grants-symbol.svg" %}" height="22" alt="" class="d-md-none">
-  </a>
-  <a class="{% if request.path|matches:'^\/((labs.*))$' %}selected{% endif %}" href="{% url 'labs' %}">
-    <img src="{% static "v2/images/labs/gitcoinlabs-logo.svg" %}" height="22" alt="" class="d-md-block d-none" style="margin-bottom: 3px;" >
-    <img src="{% static "v2/images/labs/gitcoin_labs_symbol.svg" %}" height="22" alt="" class="d-md-none">
   </a>
 </div>

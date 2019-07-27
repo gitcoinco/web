@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+{% load i18n static %}
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards_pic.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/hackathons/static.css" %}">
+    
+  </head>
+  <body class="g-font-muli hackathon {{ hackathon_id }}">
+    <div class="container-fluid px-lg-0">
+      <div class="row {{ bg }}">
+        <div class="col-12 {{ logo_bg }}">
+          <img class="w-100 my-5 py-4 banner-logo" {% if logo %} src="{{ logo }}"  alt="{{ hackathon_id }}" {% endif %}/>
+        </div>
+        <div class="col-12 py-5 text-center">
+          <h1 class="my-5 pt-5 font-weight-semibold {{ banner_text }}">{{ title_banner |safe }}</h1>
+          {% if subtitle %}
+            <h3 class="{{ banner_text }}">{{ subtitle }}</h3>
+          {% endif %}
+          {% if caption %}
+            <h4 class="{{ banner_text }}">{{ caption |safe }}</h4>
+          {% endif %}
+        </div>
+        <div class="col-12 py-3 text-center powered-by">
+          <p class="font-title-xl {{ banner_text }}">Powered by:</p>
+          <div class="powered_by">
+            {% for company in powered_by %}
+              <img src="{{ company.logo }}" alt="{{ company.name }}" class="m-5"/>
+            {% endfor %}
+          </div>
+          <p class="my-5 font-title-lg">{{ period }}</p>
+        </div>
+      </div>
+
+      <div class="row {{ bg }}">
+
+        <div class="col-12 text-center mb-5">
+          {% if register_link %}
+            <a class="button {{ primary_color }} {{ banner_text }} " href="{{ register_link }}">
+              REGISTER
+            </a>
+          {% endif %}
+        </div>
+
+        <div class="col-12 text-center my-4 info-links font-title-xl pb-5">
+          {% if discord_link %}
+            <p class="d-lg-inline"> <a class="mx-5" href="{{ discord_link}}">Join The Discord</a> </p> 
+          {% endif %}
+          {% if prize_link %}
+            <p class="d-lg-inline"> <a class="mx-5" href="{{ prize_link }}">View Prizes</a> </p>
+          {% endif %}
+          {% if results_link %}
+            <p class="d-lg-inline"> <a class="mx-5" href="{{ results_link }}">View Past Results</a> </p>
+          {% endif %}
+
+          {% if starter_guide %}
+            <p class="font-title mt-5">
+              or view our <a href="{{starter_guide }}">Get Started Guide</a>
+            </p>
+          {% endif %}
+        </div>
+
+      </div>
+
+      {% if sponsors_gold or sponsors_silver %}
+        <div class="row py-5 text-center">
+          <div class="col-12 text-center">
+            <p class="font-title-xl my-5">Supported By:</p>
+          </div>
+          <div class="col-12 mb-5 sponsors-container">
+            {% if sponsors_gold %}
+              <div class="mt-4 pb-4 px-lg-5 sponsors sponsors_gold d-md-flex flex-wrap justify-content-around">
+                {% for sponsor in sponsors_gold %}
+                  <img src="{{ sponsor.logo }}" class="my-4 mx-5 mx-lg-0" alt="{{ sponsor.name }}" />
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            {% if sponsors_silver %}
+              <div class=" mt-5 pt-2 px-lg-5 pb-5 sponsors sponsors_silver d-md-flex flex-wrap justify-content-around">
+                {% for sponsor in sponsors_silver %}
+                  <img src="{{ sponsor.logo }}" class="m-4 mx-lg-0" alt="{{ sponsor.name }}" />
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+
+      {% if notification %}
+        <div class="row">
+          <div class="col-12 bottom_notification {{ primary_color }}">
+            <p class="my-auto pl-4 py-2 font-subheader font-weight-semibold">{{ notification |safe }}</p> 
+          </div>
+        </div>
+      {% endif %}
+      
+      {% for section in sections %}
+        <div class="row section py-5 font-bg-color text-center {{ section.bg }}">
+          
+          <div class="col-12 my-4 text-center g-fadein" data-fade-duration=700>
+            <h2 class="mt-lg-5 pt-3">{{ section.title }}</h2>
+            <p class="border mx-auto"></p>
+          </div>
+          
+          {% if section.img %}
+            <div class="col-12 my-4 g-fadein" data-fade-duration=700>
+              <img src="{{ section.img }}" />
+            </div>
+          {% endif %}
+
+          <div class="col-12 {% if not section.register_link %} pb-5 mb-4 {% endif %} g-fadein" data-fade-duration=700>
+            <p class="font-title-xl mt-3">{{ section.subtitle |safe }}</p>
+            {% if section.content %}
+              <p class="mt-5 font-title-lg">{{ section.content |safe }}</p>
+            {% endif %}
+          </div>
+
+          {% if section.register_link %}
+            <div class="col-12 text-center my-5">
+              {% if register_link %}
+                <a class="button {{ primary_color }} {{ banner_text }}" href="{{ register_link }}">
+                  REGISTER
+                </a>
+              {% endif %}
+            </div>
+
+            <div class="col-12 text-center my-4 info-links font-title-xl g-fadein" data-fade-duration=700>
+              <p>
+                {% if discord_link %}
+                  <p class="d-lg-inline"> <a class="mx-5" href="{{ discord_link}}">Join The Discord</a> </p> 
+                {% endif %}
+                {% if prize_link %}
+                  <p class="d-lg-inline"> <a class="mx-5" href="{{ prize_link }}">View Prizes</a> </p>
+                {% endif %}
+                {% if results_link %}
+                  <p class="d-lg-inline"> <a class="mx-5" href="{{ results_link }}">View Past Results</a> </p>
+                {% endif %}
+              </p>
+    
+              {% if starter_guide %}
+                <p class="font-title my-5 pb-2">
+                  or view our <a href="{{starter_guide }}">Get Started Guide</a>
+                </p>
+              {% endif %}
+            </div>
+          {% endif %}         
+        </div>
+      {% endfor %}
+    </div>
+
+    {% if notification %}
+      <div class="row bottom_notification {{ primary_color }}">
+        <p class="my-auto pl-4 py-2 font-subheader font-weight-semibold">{{ notification |safe }}</p> 
+      </div>
+    {% endif %}
+  
+    <footer class="py-2">
+      <div class="d-flex align-items-center justify-content-around p-5 flex-column flex-md-row">
+        {% for footer_link in footer_links %}
+          <a href="{{ footer_link.link }}">
+            <img class="img-fluid m-md-5 my-5" src="{{ footer_link.logo }}"
+              alt="{{ footer_link.name }}" />
+          </a>
+        {% endfor %}
+      </div>
+    </footer>
+  </body>
+</html>
+
+{% include 'shared/footer_scripts.html' with slim=1 %}
+<script>
