@@ -1816,8 +1816,11 @@ def profile_job_opportunity(request, handle):
     # 400 is ok because file upload is optional here
     if error_response and error_response['status'] != '400':
         return JsonResponse(error_response)
+
+    profile = profile_helper(handle, True)
+    # No file is ok if there is a resume on the profile
+    error_response = no_file_response(uploaded_file) if not profile.resume else None
     try:
-        profile = profile_helper(handle, True)
         if request.user.profile.id != profile.id:
             return JsonResponse(
                 {'error': 'Bad request'},
@@ -1829,7 +1832,7 @@ def profile_job_opportunity(request, handle):
         profile.job_salary = float(request.POST.get('job_salary', '0').replace(',', ''))
         profile.job_location = json.loads(request.POST.get('locations'))
         profile.linkedin_url = request.POST.get('linkedin_url', None)
-        profile.resume = request.FILES.get('job_cv', None)
+        profile.resume = request.FILES.get('job_cv', profile.resume)
         profile.save()
     except (ProfileNotFoundException, ProfileHiddenException):
         raise Http404
@@ -1840,15 +1843,32 @@ def profile_job_opportunity(request, handle):
     }
     return JsonResponse(response)
 
+def no_file_response(uploaded_file):
+    """Check if there is an uploaded file
 
-def invalid_file_response(uploaded_file, supported):
+    Returns:
+        (dict): the response message and status code, if there is no file
+    """
     response = None
     if not uploaded_file:
         response = {
             'status': 400,
             'message': 'No File Found'
         }
-    elif uploaded_file.size > 31457280:
+
+    return response
+
+def invalid_file_response(uploaded_file, supported):
+    """Check if the uploaded file is valid
+
+    Returns:
+        (dict): the response message and status code,
+                if there is an invalid file
+    """
+    response = None
+    if not uploaded_file:
+        return None
+    if uploaded_file.size > 31457280:
         # 30MB max file size
         response = {
             'status': 413,
@@ -1873,10 +1893,12 @@ def bounty_upload_nda(request):
         bounty_id (int): The bounty id.
     """
     uploaded_file = request.FILES.get('docs', None)
-    error_response = invalid_file_response(
-        uploaded_file, supported=['application/pdf',
-                                  'application/msword',
-                                  'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])
+    error_response = no_file_response(uploaded_file)
+    if not error_response:
+        error_response = invalid_file_response(
+            uploaded_file, supported=['application/pdf',
+                                      'application/msword',
+                                      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])
     if not error_response:
         bountydoc = BountyDocuments.objects.create(
             doc=uploaded_file,
