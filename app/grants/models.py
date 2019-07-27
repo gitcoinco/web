@@ -183,6 +183,7 @@ class Grant(SuperModel):
         on_delete=models.CASCADE,
         help_text=_('The Grant\'s potential new administrator profile.'),
         null=True,
+        blank=True,
     )
     team_members = models.ManyToManyField(
         'dashboard.Profile',
