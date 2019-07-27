@@ -21,7 +21,7 @@ const renderPopOverData = json => {
   )}
               </div>
               <span class="earned">~ ${
-  json.profile.total_earned.toFixed(4)
+  Number(json.profile.total_earned).toFixed(4)
 } ETH earned</span>
               <div class="statistics d-flex justify-content-between mt-2">
                 <div class="popover_card text-center mr-4 pt-2">
@@ -58,7 +58,7 @@ const renderPopOverData = json => {
                 </div>
               </div>
             </div>
-      
+
             <div class="popover-bounty__footer">
               <div class="d-flex justify-content-between">
                 <span class="title text-muted">Latest Activity
@@ -96,7 +96,7 @@ const openContributorPopOver = (contributor, element) => {
         popoverData.push({ [contributor]: response });
       })
       .catch(err => {
-        return _alert({ message: err }, 'error');
+        return console.error({ message: err }, 'error');
       });
   } else {
     element.popover({

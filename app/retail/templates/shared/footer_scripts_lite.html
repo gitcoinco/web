@@ -20,6 +20,7 @@
 <script type="text/javascript">
   var static_url = "{{ STATIC_URL }}";
   var media_url = "{{ MEDIA_URL }}";
+  document.contxt = {{ json_context|safe }};
 </script>
 <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
 <script src="{% static "v2/js/lib/jquery.js" %}"></script>
@@ -32,9 +33,10 @@
 <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
 <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
 <script>
-  var bootstrapTooltip = $.fn.tooltip.noConflict()
-  var bootstrapModal = $.fn.modal.noConflict()
+  const bootstrapModal = $.fn.modal.noConflict()
   $.fn.bootstrapModal = bootstrapModal
+  const bootstrapTooltip = $.fn.tooltip.noConflict()
+  $.fn.bootstrapTooltip = bootstrapTooltip;
 </script>
 <script src="{% static "v2/js/lib/jquery.cookie.js" %}"></script>
 <script src="{% static "v2/js/lib/jquery.select2.min.js" %}"></script>
@@ -77,7 +79,4 @@
 </script>
 {% endif %}
 
-<script>
-  document.contxt = {{ json_context|safe }};
-</script>
 {% include 'shared/messages.html' %}

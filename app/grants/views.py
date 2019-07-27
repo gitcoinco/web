@@ -56,7 +56,7 @@ w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 clr_matching_banners_style = 'pledging'
 matching_live = '($50K matching live now!) '
 if True:
-    clr_matching_banners_style = 'none'
+    clr_matching_banners_style = 'results'
     matching_live = ''
 
 def get_keywords():
@@ -132,16 +132,15 @@ def grant_details(request, grant_id, grant_slug):
     """Display the Grant details page."""
     profile = get_profile(request)
     add_cancel_params = False
-
     try:
         grant = Grant.objects.prefetch_related('subscriptions', 'milestones', 'updates').get(
             pk=grant_id, slug=grant_slug
         )
         milestones = grant.milestones.order_by('due_date')
         updates = grant.updates.order_by('-created_on')
-        subscriptions = grant.subscriptions.filter(active=True, error=False)
-        cancelled_subscriptions = grant.subscriptions.filter(active=False, error=False)
-        contributions = Contribution.objects.filter(subscription__in=grant.subscriptions.all())
+        subscriptions = grant.subscriptions.filter(active=True, error=False).order_by('-created_on')
+        cancelled_subscriptions = grant.subscriptions.filter(active=False, error=False).order_by('-created_on')
+        contributions = Contribution.objects.filter(subscription__in=grant.subscriptions.all()).order_by('-created_on')
         user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
         user_non_errored_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True, error=False).first()
         add_cancel_params = user_subscription
@@ -201,6 +200,7 @@ def grant_details(request, grant_id, grant_slug):
         'active': 'grant_details',
         'clr_matching_banners_style': clr_matching_banners_style,
         'grant': grant,
+        'tab': request.GET.get('tab', 'description'),
         'title': matching_live + grant.title,
         'card_desc': grant.description,
         'avatar_url': grant.logo.url if grant.logo else None,
@@ -519,7 +519,7 @@ def grant_fund(request, grant_id, grant_slug):
             subscription.save()
 
             # one time payments
-            if subscription.num_tx_approved == '1':
+            if int(subscription.num_tx_approved) == 1:
                 subscription.successful_contribution(subscription.new_approve_tx_id);
                 subscription.error = True #cancel subs so it doesnt try to bill again
                 subscription.subminer_comments = "skipping subminer bc this is a 1 and done subscription, and tokens were alredy sent"
@@ -611,7 +611,7 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
         subscription.save()
         record_subscription_activity_helper('killed_grant_contribution', subscription, profile)
 
-        value_usdt = subscription.get_converted_amount
+        value_usdt = subscription.get_converted_amount()
         if value_usdt:
             grant.monthly_amount_subscribed -= subscription.get_converted_monthly_amount()
 

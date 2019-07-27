@@ -156,6 +156,38 @@ class Token(SuperModel):
         return self.price_finney / 1000
 
     @property
+    def price_in_wei(self):
+        """Convert price from finney to wei.
+
+        Returns:
+            float or int:  price in wei.
+
+        """
+        return self.price_in_eth * 10**18
+
+    @property
+    def price_in_gwei(self):
+        """Convert price from finney to gwei.
+
+        Returns:
+            float or int:  price in gwei.
+
+        """
+        return self.price_in_eth * 10**9
+
+    @property
+    def price_in_usdt(self):
+        from economy.utils import ConversionRateNotFoundError, convert_token_to_usdt
+        if hasattr(self, 'price_usdt'):
+            return self.price_usdt
+        try:
+            self.price_usdt = round(convert_token_to_usdt('ETH') * self.price_in_eth, 2)
+            return self.price_usdt
+        except ConversionRateNotFoundError:
+            return None
+
+
+    @property
     def shortened_address(self):
         """Shorten ethereum address to only the first and last 4 digits.
 
@@ -295,6 +327,20 @@ class Token(SuperModel):
     @property
     def url(self):
         return f'{settings.BASE_URL}kudos/{self.pk}/{slugify(self.name)}'
+
+
+    def get_relative_url(self):
+        """Get the relative URL for the Bounty.
+
+        Attributes:
+            preceding_slash (bool): Whether or not to include a preceding slash.
+
+        Returns:
+            str: The relative URL for the Bounty.
+
+        """
+        return f'/kudos/{self.pk}/{slugify(self.name)}'
+
 
     def send_enabled_for(self, user):
         """
@@ -461,6 +507,9 @@ class BulkTransferCoupon(SuperModel):
         """Return the string representation of a model."""
         return f"Token: {self.token} num_uses_total: {self.num_uses_total}"
 
+    @property
+    def url(self):
+        return f"/kudos/redeem/{self.secret}"
 
 class BulkTransferRedemption(SuperModel):
 
@@ -488,10 +537,10 @@ class TransferEnabledFor(SuperModel):
     """
 
     token = models.ForeignKey(
-        'kudos.Token', related_name='transfers_enabled', on_delete=models.CASCADE, 
+        'kudos.Token', related_name='transfers_enabled', on_delete=models.CASCADE,
     )
     profile = models.ForeignKey(
-        'dashboard.Profile', related_name='transfers_enabled', on_delete=models.CASCADE, 
+        'dashboard.Profile', related_name='transfers_enabled', on_delete=models.CASCADE,
     )
 
     def __str__(self):

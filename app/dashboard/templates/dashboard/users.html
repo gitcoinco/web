@@ -108,10 +108,10 @@
             <div class="g-multiselect pb-4 border-bottom form-group">
               <label for="organisations" class="font-weight-bold">Organisation</label>
               <div class="font-smaller">
-                <input v-model="params.organisation" data-placeholder="e.g. Gitcoin" data-tags="true" class="form-control">
+                <input v-model.lazy="params.organisation" data-placeholder="e.g. Gitcoin" data-tags="true" class="form-control">
               </div>
             </div>
-            <button class="btn blue" @click="params = {}; searchUsers()">Reset Filters</button>
+            <button class="btn blue" @click="params = {};">Reset Filters</button>
           </nav>
         </transition>
         <div class="container pt-4" @scroll.passive="onScroll($event)">
@@ -209,7 +209,7 @@
               <b>Select a bounty</b> or <a :href="`/funding/new?invite=${ userSelected.id }`" target="_blank" class="font-weight-bold">create a new one</a>
             </div>
             <div class="bounties-box">
-              <div v-for="bounty in funderBounties" :key="bounty.id" @click="bountySelected = bounty" v-bind:class="{ 'btn-gc-blue': bountySelected && bounty.id === bountySelected.id }" class="bounty-select py-2 px-3 border-bottom d-flex align-items-center">
+              <div v-for="bounty in funderBounties" :key="bounty.id" @click="bountySelected = bounty" v-bind:class="{ 'btn-gc-blue': bountySelected && bounty.id === bountySelected.id, 'hidden': contributorInvite === userSelected.handle && currentBounty == bounty.id }"  class="bounty-select py-2 px-3 border-bottom d-flex align-items-center">
                 <img :src="`/dynamic/avatar/${ bounty.funding_organisation || bounty.bounty_owner_github_username }`" class="rounded-circle flex-shrink-0" width="30" height="30">
                 <p class="line-clamp font-smaller-2 my-0 mx-2">
                   [[ bounty.title ]]
@@ -250,15 +250,11 @@
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
-    <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
-    <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
-    <script>
-      let bootstrapTooltip = $.fn.tooltip.noConflict()
-      $.fn.runTooltip = bootstrapTooltip;
-      const bootstrapModal = $.fn.modal.noConflict()
-      $.fn.bootstrapModal = bootstrapModal
 
-      $('[data-toggle="tooltip"]').runTooltip();
+    <script>
+      $('body').bootstrapTooltip({
+        selector: '[data-toggle="tooltip"]'
+      });
       const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
       document.keywords = {{keywords | safe}};
     </script>

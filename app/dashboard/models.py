@@ -29,7 +29,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.contrib.humanize.templatetags.humanize import naturalday, naturaltime
 from django.contrib.postgres.fields import ArrayField, JSONField
-from django.db import models
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import connection, models
 from django.db.models import Q, Sum
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
@@ -43,6 +44,7 @@ from django.utils.translation import gettext_lazy as _
 import pytz
 import requests
 from app.utils import get_upload_filename
+from dashboard.sql.persona import PERSONA_SQL
 from dashboard.tokens import addr_to_token
 from economy.models import ConversionRate, SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
@@ -51,11 +53,14 @@ from git.utils import (
     _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_gh_issue_details, get_issue_comments, issue_number, org_name,
     repo_name,
 )
-from marketing.mails import featured_funded_bounty
+from marketing.mails import featured_funded_bounty, start_work_approved
 from marketing.models import LeaderboardRank
 from rest_framework import serializers
 from web3 import Web3
 
+from .notifications import (
+    maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter, maybe_market_to_user_slack,
+)
 from .signals import m2m_changed_interested
 
 logger = logging.getLogger(__name__)
@@ -158,6 +163,23 @@ class BountyQuerySet(models.QuerySet):
         return self.filter(idx_status__in=Bounty.FUNDED_STATUSES)
 
 
+"""Fields that bonties table should index together."""
+def get_bounty_index_together():
+    import copy
+    index_together = [
+            ["network", "idx_status"],
+            ["current_bounty", "network"],
+            ["current_bounty", "network", "idx_status"],
+            ["current_bounty", "network", "web3_created"],
+            ["current_bounty", "network", "idx_status", "web3_created"],
+        ]
+    additions = ['admin_override_and_hide', 'experience_level', 'is_featured', 'project_length', 'bounty_owner_github_username', 'event']
+    for addition in additions:
+        for ele in copy.copy(index_together):
+            index_together.append([addition] + ele)
+    return index_together
+
+
 class Bounty(SuperModel):
     """Define the structure of a Bounty.
 
@@ -185,6 +207,13 @@ class Bounty(SuperModel):
         ('traditional', 'traditional'),
         ('contest', 'contest'),
         ('cooperative', 'cooperative'),
+    ]
+    BOUNTY_CATEGORIES = [
+        ('frontend', 'frontend'),
+        ('backend', 'backend'),
+        ('design', 'design'),
+        ('documentation', 'documentation'),
+        ('other', 'other'),
     ]
     BOUNTY_TYPES = [
         ('Bug', 'Bug'),
@@ -227,16 +256,16 @@ class Bounty(SuperModel):
     value_in_token = models.DecimalField(default=1, decimal_places=2, max_digits=50)
     token_name = models.CharField(max_length=50)
     token_address = models.CharField(max_length=50)
-    bounty_type = models.CharField(max_length=50, choices=BOUNTY_TYPES, blank=True)
+    bounty_type = models.CharField(max_length=50, choices=BOUNTY_TYPES, blank=True, db_index=True)
     project_length = models.CharField(max_length=50, choices=PROJECT_LENGTHS, blank=True)
     estimated_hours = models.PositiveIntegerField(blank=True, null=True)
-    experience_level = models.CharField(max_length=50, choices=EXPERIENCE_LEVELS, blank=True)
+    experience_level = models.CharField(max_length=50, choices=EXPERIENCE_LEVELS, blank=True, db_index=True)
     github_url = models.URLField(db_index=True)
     github_issue_details = JSONField(default=dict, blank=True, null=True)
     github_comments = models.IntegerField(default=0)
     bounty_owner_address = models.CharField(max_length=50)
     bounty_owner_email = models.CharField(max_length=255, blank=True)
-    bounty_owner_github_username = models.CharField(max_length=255, blank=True)
+    bounty_owner_github_username = models.CharField(max_length=255, blank=True, db_index=True)
     bounty_owner_name = models.CharField(max_length=255, blank=True)
     bounty_owner_profile = models.ForeignKey(
         'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='bounties_funded', blank=True
@@ -249,7 +278,7 @@ class Bounty(SuperModel):
     raw_data = JSONField()
     metadata = JSONField(default=dict, blank=True)
     current_bounty = models.BooleanField(
-        default=False, help_text=_('Whether this bounty is the most current revision one or not'))
+        default=False, help_text=_('Whether this bounty is the most current revision one or not'), db_index=True)
     _val_usd_db = models.DecimalField(default=0, decimal_places=2, max_digits=50)
     contract_address = models.CharField(max_length=50, default='')
     network = models.CharField(max_length=255, blank=True, db_index=True)
@@ -273,15 +302,17 @@ class Bounty(SuperModel):
     fulfillment_started_on = models.DateTimeField(null=True, blank=True)
     canceled_on = models.DateTimeField(null=True, blank=True)
     canceled_bounty_reason = models.TextField(default='', blank=True, verbose_name=_('Cancelation reason'))
-    project_type = models.CharField(max_length=50, choices=PROJECT_TYPES, default='traditional')
-    permission_type = models.CharField(max_length=50, choices=PERMISSION_TYPES, default='permissionless')
+    project_type = models.CharField(max_length=50, choices=PROJECT_TYPES, default='traditional', db_index=True)
+    permission_type = models.CharField(max_length=50, choices=PERMISSION_TYPES, default='permissionless', db_index=True)
+    bounty_categories = ArrayField(models.CharField(max_length=50, choices=BOUNTY_CATEGORIES), default=list)
     repo_type = models.CharField(max_length=50, choices=REPO_TYPES, default='public')
     snooze_warnings_for_days = models.IntegerField(default=0)
     is_featured = models.BooleanField(
         default=False, help_text=_('Whether this bounty is featured'))
-    featuring_date = models.DateTimeField(blank=True, null=True)
+    featuring_date = models.DateTimeField(blank=True, null=True, db_index=True)
     fee_amount = models.DecimalField(default=0, decimal_places=18, max_digits=50)
     fee_tx_id = models.CharField(default="0x0", max_length=255, blank=True)
+    coupon_code = models.ForeignKey('dashboard.Coupon', blank=True, null=True, related_name='coupon', on_delete=models.SET_NULL)
     unsigned_nda = models.ForeignKey('dashboard.BountyDocuments', blank=True, null=True, related_name='bounty', on_delete=models.SET_NULL)
 
     token_value_time_peg = models.DateTimeField(blank=True, null=True)
@@ -300,7 +331,14 @@ class Bounty(SuperModel):
     admin_mark_as_remarket_ready = models.BooleanField(
         default=False, help_text=_('Admin override to mark as remarketing ready')
     )
-    attached_job_description = models.URLField(blank=True, null=True)
+    admin_override_org_name = models.CharField(max_length=255, blank=True) # TODO: Remove POST ORGS
+    admin_override_org_logo = models.ImageField(
+        upload_to=get_upload_filename,
+        null=True,
+        blank=True,
+        help_text=_('Organization Logo - Override'),
+    ) # TODO: Remove POST ORGS
+    attached_job_description = models.URLField(blank=True, null=True, db_index=True)
     event = models.ForeignKey('dashboard.HackathonEvent', related_name='bounties', null=True, on_delete=models.SET_NULL, blank=True)
 
     # Bounty QuerySet Manager
@@ -312,7 +350,7 @@ class Bounty(SuperModel):
         verbose_name_plural = 'Bounties'
         index_together = [
             ["network", "idx_status"],
-        ]
+        ] + get_bounty_index_together()
 
     def __str__(self):
         """Return the string representation of a Bounty."""
@@ -327,6 +365,14 @@ class Bounty(SuperModel):
         if self.github_url:
             self.github_url = clean_bounty_url(self.github_url)
         super().save(*args, **kwargs)
+
+    @property
+    def latest_activity(self):
+        activity = Activity.objects.filter(bounty=self.pk).order_by('-pk')
+        if activity.exists():
+            from dashboard.router import ActivitySerializer
+            return ActivitySerializer(activity.first()).data
+        return None
 
     @property
     def profile_pairs(self):
@@ -364,6 +410,18 @@ class Bounty(SuperModel):
         except Exception:
             return f"{'/' if preceding_slash else ''}funding/details?url={self.github_url}"
 
+    def get_canonical_url(self):
+        """Get the canonical URL of the Bounty for SEO purposes.
+
+        Returns:
+            str: The canonical URL of the Bounty.
+
+        """
+        _org_name = org_name(self.github_url)
+        _repo_name = repo_name(self.github_url)
+        _issue_num = int(issue_number(self.github_url))
+        return settings.BASE_URL.rstrip('/') + reverse('issue_details_new2', kwargs={'ghuser': _org_name, 'ghrepo': _repo_name, 'ghissue': _issue_num})
+
     def get_natural_value(self):
         token = addr_to_token(self.token_address)
         if not token:
@@ -374,6 +432,10 @@ class Bounty(SuperModel):
     @property
     def url(self):
         return self.get_absolute_url()
+
+    @property
+    def canonical_url(self):
+        return self.get_canonical_url()
 
     def snooze_url(self, num_days):
         """Get the bounty snooze URL.
@@ -453,6 +515,12 @@ class Bounty(SuperModel):
         return self.github_org_name
 
     @property
+    def org_display_name(self): # TODO: Remove POST ORGS
+        if self.admin_override_org_name:
+            return self.admin_override_org_name
+        return org_name(self.github_url)
+
+    @property
     def github_org_name(self):
         try:
             return org_name(self.github_url)
@@ -528,6 +596,10 @@ class Bounty(SuperModel):
 
     def get_avatar_url(self, gitcoin_logo_flag=False):
         """Return the local avatar URL."""
+
+        if self.admin_override_org_logo:
+            return self.admin_override_org_logo.url
+
         org_name = self.github_org_name
         gitcoin_logo_flag = "/1" if gitcoin_logo_flag else ""
         if org_name:
@@ -586,14 +658,17 @@ class Bounty(SuperModel):
             return self.idx_status
 
         # standard bounties
+        is_traditional_bounty_type = self.project_type == 'traditional'
         try:
+            has_tips = self.tips.filter(is_for_bounty_fulfiller=False).send_happy_path().exists()
+            if has_tips and is_traditional_bounty_type:
+                return 'done'
             if not self.is_open:
                 if self.accepted:
                     return 'done'
                 elif self.past_hard_expiration_date:
                     return 'expired'
-                has_tips = self.tips.filter(is_for_bounty_fulfiller=False).send_happy_path().exists()
-                if has_tips:
+                elif has_tips:
                     return 'done'
                 # If its not expired or done, and no tips, it must be cancelled.
                 return 'cancelled'
@@ -1524,6 +1599,15 @@ class Interest(SuperModel):
         self.save()
         return self
 
+def auto_user_approve(interest, bounty):
+    interest.pending = False
+    interest.acceptance_date = timezone.now()
+    start_work_approved(interest, bounty)
+    maybe_market_to_github(bounty, 'work_started', profile_pairs=bounty.profile_pairs)
+    maybe_market_to_slack(bounty, 'worker_approved')
+    maybe_market_to_user_slack(bounty, 'worker_approved')
+    maybe_market_to_twitter(bounty, 'worker_approved')
+
 
 @receiver(post_save, sender=Interest, dispatch_uid="psave_interest")
 @receiver(post_delete, sender=Interest, dispatch_uid="pdel_interest")
@@ -1531,7 +1615,11 @@ def psave_interest(sender, instance, **kwargs):
     # when a new interest is saved, update the status on frontend
     print("signal: updating bounties psave_interest")
     for bounty in Bounty.objects.filter(interested=instance):
+
+        if bounty.bounty_reserved_for_user == instance.profile:
+            auto_user_approve(instance, bounty)
         bounty.save()
+
 
 class ActivityQuerySet(models.QuerySet):
     """Handle the manager queryset for Activities."""
@@ -1597,6 +1685,8 @@ class Activity(SuperModel):
         ('new_milestone', 'New Milestone'),
         ('update_milestone', 'Updated Milestone'),
         ('new_kudos', 'New Kudos'),
+        ('joined', 'Joined Gitcoin'),
+        ('updated_avatar', 'Updated Avatar'),
     ]
 
     profile = models.ForeignKey(
@@ -1884,8 +1974,8 @@ class Profile(SuperModel):
     max_num_issues_start_work = models.IntegerField(default=3)
     preferred_payout_address = models.CharField(max_length=255, default='', blank=True)
     preferred_kudos_wallet = models.OneToOneField('kudos.Wallet', related_name='preferred_kudos_wallet', on_delete=models.SET_NULL, null=True, blank=True)
-    max_tip_amount_usdt_per_tx = models.DecimalField(default=500, decimal_places=2, max_digits=50)
-    max_tip_amount_usdt_per_week = models.DecimalField(default=1500, decimal_places=2, max_digits=50)
+    max_tip_amount_usdt_per_tx = models.DecimalField(default=2500, decimal_places=2, max_digits=50)
+    max_tip_amount_usdt_per_week = models.DecimalField(default=20000, decimal_places=2, max_digits=50)
     last_visit = models.DateTimeField(null=True, blank=True)
     job_search_status = models.CharField(max_length=2, choices=JOB_SEARCH_STATUS, blank=True)
     show_job_status = models.BooleanField(
@@ -1901,8 +1991,18 @@ class Profile(SuperModel):
     job_location = JSONField(default=dict, blank=True)
     linkedin_url = models.CharField(max_length=255, default='', blank=True, null=True)
     resume = models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('The profile resume.'))
+    profile_wallpaper = models.CharField(max_length=255, default='', blank=True, null=True)
     actions_count = models.IntegerField(default=3)
     fee_percentage = models.IntegerField(default=10)
+    persona_is_funder = models.BooleanField(default=False)
+    persona_is_hunter = models.BooleanField(default=False)
+    admin_override_name = models.CharField(max_length=255, blank=True, help_text=_('override profile name.'))
+    admin_override_avatar = models.ImageField(
+        upload_to=get_upload_filename,
+        null=True,
+        blank=True,
+        help_text=_('override profile avatar'),
+    )
 
     objects = ProfileQuerySet.as_manager()
 
@@ -1933,6 +2033,9 @@ class Profile(SuperModel):
         kt_owner_address = KudosTransfer.objects.filter(
             receive_address__iexact=self.preferred_payout_address
         )
+        if not self.preferred_payout_address:
+            kt_owner_address = KudosTransfer.objects.none()
+
         kt_profile = KudosTransfer.objects.filter(recipient_profile=self)
 
         kudos_transfers = kt_profile | kt_owner_address
@@ -2012,6 +2115,11 @@ class Profile(SuperModel):
         return dict(Profile.JOB_SEARCH_STATUS)[self.job_search_status]
 
     @property
+    def active_bounties(self):
+        active_bounties = Bounty.objects.current().filter(idx_status__in=['open', 'started'])
+        return Interest.objects.filter(profile_id=self.pk, bounty__in=active_bounties)
+
+    @property
     def is_org(self):
         try:
             return self.data['type'] == 'Organization'
@@ -2035,6 +2143,27 @@ class Profile(SuperModel):
         on_repo = Tip.objects.filter(github_url__startswith=self.github_url).order_by('-id')
         tipped_for = Tip.objects.filter(username__iexact=self.handle).order_by('-id')
         return on_repo | tipped_for
+
+    def calculate_and_save_persona(self):
+        network = settings.ENABLE_NOTIFICATIONS_ON_NETWORK
+        designation = None
+        with connection.cursor() as cursor:
+            try:
+                cursor.execute(PERSONA_SQL, [network, self.id, network])
+                result = cursor.fetchone()
+                _, _, designation, _, _ = result
+            except Exception as e:
+                logger.info(
+                    'Exception calculating persona for user %s: %s' % (self.id,
+                                                                       e))
+
+        if designation and designation == "bounty_hunter":
+            self.persona_is_hunter = True
+
+        if designation and designation == "funder":
+            self.persona_is_funder = True
+
+        self.save()
 
     def has_custom_avatar(self):
         from avatar.models import CustomAvatar
@@ -2336,6 +2465,8 @@ class Profile(SuperModel):
 
     @property
     def avatar_url(self):
+        if self.admin_override_avatar:
+            return self.admin_override_avatar.url
         if self.active_avatar:
             return self.active_avatar.avatar_url
         return f"{settings.BASE_URL}dynamic/avatar/{self.handle}"
@@ -2350,13 +2481,23 @@ class Profile(SuperModel):
 
     @property
     def username(self):
-        handle = ''
         if getattr(self, 'user', None) and self.user.username:
-            handle = self.user.username
-        # TODO: (mbeacom) Remove this check once we get rid of all the lingering identity shenanigans.
-        elif self.handle:
-            handle = self.handle
-        return handle
+            return self.user.username
+
+        if self.handle:
+            return self.handle
+
+        return None
+
+    @property
+    def name(self):
+        if self.admin_override_name:
+            return self.admin_override_name
+
+        if self.data and self.data["name"]:
+            return self.data["name"]
+
+        return self.username
 
 
     def is_github_token_valid(self):
@@ -2541,8 +2682,7 @@ class Profile(SuperModel):
 
         """
         eth_sum = 0
-
-        if not bounties:
+        if bounties is None:
             if sum_type == 'funded':
                 bounties = self.get_funded_bounties(network=network)
             elif sum_type == 'collected':
@@ -2555,13 +2695,49 @@ class Profile(SuperModel):
 
         try:
             if bounties.exists():
-                eth_sum = bounties.aggregate(
-                    Sum('value_in_eth')
-                )['value_in_eth__sum'] / 10**18
+                eth_sum = sum([amount for amount in bounty.values_list("value_in_eth", flat=True)])
         except Exception:
             pass
 
         return eth_sum
+
+    def get_all_tokens_sum(self, sum_type='collected', network='mainnet', bounties=None):
+        """Get the sum of collected or funded tokens based on the provided type.
+
+        Args:
+            sum_type (str): The sum to lookup.  Defaults to: collected.
+            network (str): The network to query results for.
+                Defaults to: mainnet.
+            bounties (dashboard.models.BountyQuerySet): Override the BountyQuerySet this function processes.
+                Defaults to: None.
+
+        Returns:
+            query: Grouped query by token_name and sum all token value
+        """
+        all_tokens_sum = None
+        if bounties is None:
+            if sum_type == 'funded':
+                bounties = self.get_funded_bounties(network=network)
+            elif sum_type == 'collected':
+                bounties = self.get_fulfilled_bounties(network=network)
+            elif sum_type == 'org':
+                bounties = self.get_orgs_bounties(network=network)
+
+        if bounties and sum_type == 'funded':
+            bounties = bounties.has_funds()
+
+        try:
+            if bounties.exists():
+                tokens_and_values = bounties.values_list('token_name', 'value_in_token')
+                all_tokens_sum_tmp = {token: 0 for token in set([ele[0] for ele in tokens_and_values])}
+                for ele in tokens_and_values:
+                    all_tokens_sum_tmp[ele[0]] += ele[1] / 10**18
+                all_tokens_sum = [{'token_name': token_name, 'value_in_token': value_in_token} for token_name, value_in_token in all_tokens_sum_tmp.items()]
+
+        except Exception:
+            pass
+
+        return all_tokens_sum
 
     def get_who_works_with(self, work_type='collected', network='mainnet', bounties=None):
         """Get an array of profiles that this user works with.
@@ -2577,7 +2753,7 @@ class Profile(SuperModel):
             dict: list of the profiles that were worked with (key) and the number of times they occured
 
         """
-        if not bounties:
+        if bounties is None:
             if work_type == 'funded':
                 bounties = self.bounties_funded.filter(network=network)
             elif work_type == 'collected':
@@ -2586,7 +2762,9 @@ class Profile(SuperModel):
                 bounties = self.get_orgs_bounties(network=network)
 
         if work_type != 'org':
-            profiles = [bounty.org_name for bounty in bounties if bounty.org_name]
+            github_urls = bounties.values_list('github_url', flat=True)
+            profiles = [org_name(url) for url in github_urls]
+            profiles = [ele for ele in profiles if ele]
         else:
             profiles = []
             for bounty in bounties:
@@ -2623,7 +2801,7 @@ class Profile(SuperModel):
         )
         return funded_bounties
 
-    def get_various_activities(self, network='mainnet'):
+    def get_various_activities(self):
         """Get bounty, tip and grant related activities for this profile.
 
         Args:
@@ -2634,25 +2812,18 @@ class Profile(SuperModel):
             (dashboard.models.ActivityQuerySet): The query results.
 
         """
+        
         if not self.is_org:
             all_activities = self.activities
         else:
+            # orgs
             url = self.github_url
             all_activities = Activity.objects.filter(
-                Q(bounty__github_url__startswith=url) |
-                Q(tip__github_url__startswith=url) |
-                Q(grant__isnull=False) |
-                Q(subscription__isnull=False)
+                Q(bounty__github_url__istartswith=url) |
+                Q(tip__github_url__istartswith=url)
             )
 
-        all_activities = all_activities.filter(
-            Q(bounty__network=network) |
-            Q(tip__network=network) |
-            Q(grant__network=network) |
-            Q(subscription__network=network)
-        ).select_related('bounty', 'tip', 'grant', 'subscription').all().order_by('-created')
-
-        return all_activities
+        return all_activities.all().order_by('-created')
 
     def activate_avatar(self, avatar_pk):
         self.avatar_baseavatar_related.update(active=False)
@@ -2698,12 +2869,15 @@ class Profile(SuperModel):
 
         if self.is_org:
             orgs_bounties = self.get_orgs_bounties(network=network)
-
         sum_eth_funded = self.get_eth_sum(sum_type='funded', bounties=funded_bounties)
         sum_eth_collected = self.get_eth_sum(bounties=fulfilled_bounties)
         works_with_funded = self.get_who_works_with(work_type='funded', bounties=funded_bounties)
         works_with_collected = self.get_who_works_with(work_type='collected', bounties=fulfilled_bounties)
 
+        sum_all_funded_tokens = self.get_all_tokens_sum(sum_type='funded', bounties=funded_bounties, network=network)
+        sum_all_collected_tokens = self.get_all_tokens_sum(
+            sum_type='collected', bounties=fulfilled_bounties, network=network
+        )
         # org only
         count_bounties_on_repo = 0
         sum_eth_on_repos = 0
@@ -2736,10 +2910,12 @@ class Profile(SuperModel):
             'sum_eth_on_repos': sum_eth_on_repos,
             'works_with_org': works_with_org,
             'count_bounties_on_repo': count_bounties_on_repo,
+            'sum_all_funded_tokens': sum_all_funded_tokens,
+            'sum_all_collected_tokens': sum_all_collected_tokens
         }
 
         if activities:
-            params['activities'] = self.get_various_activities(network=network)
+            params['activities'] = self.get_various_activities()
 
         if tips:
             params['tips'] = self.tips.filter(**query_kwargs).send_happy_path()
@@ -2826,7 +3002,7 @@ class ProfileSerializer(serializers.BaseSerializer):
             dict: The serialized Profile.
 
         """
-        
+
         return {
             'id': instance.id,
             'handle': instance.handle,
@@ -2862,13 +3038,20 @@ class UserAction(SuperModel):
         ('updated_avatar', 'Updated Avatar'),
         ('account_disconnected', 'Account Disconnected'),
     ]
-    action = models.CharField(max_length=50, choices=ACTION_TYPES)
-    user = models.ForeignKey(User, related_name='actions', on_delete=models.SET_NULL, null=True)
-    profile = models.ForeignKey('dashboard.Profile', related_name='actions', on_delete=models.CASCADE, null=True)
+    action = models.CharField(max_length=50, choices=ACTION_TYPES, db_index=True)
+    user = models.ForeignKey(User, related_name='actions', on_delete=models.SET_NULL, null=True, db_index=True)
+    profile = models.ForeignKey('dashboard.Profile', related_name='actions', on_delete=models.CASCADE, null=True, db_index=True)
     ip_address = models.GenericIPAddressField(null=True)
     location_data = JSONField(default=dict)
     metadata = JSONField(default=dict)
     utm = JSONField(default=dict, null=True)
+
+    class Meta:
+        """Define metadata associated with UserAction."""
+
+        index_together = [
+            ["profile", "action"],
+        ]
 
     def __str__(self):
         return f"{self.action} by {self.profile} at {self.created_on}"
@@ -3065,6 +3248,17 @@ class BlockedUser(SuperModel):
         return f'<BlockedUser: {self.handle}>'
 
 
+class Sponsor(SuperModel):
+    """Defines the Hackthon Sponsor"""
+
+    name = models.CharField(max_length=255, help_text='sponsor Name')
+    logo = models.ImageField(help_text='sponsor logo', blank=True)
+    logo_svg = models.FileField(help_text='sponsor logo svg', blank=True)
+
+    def __str__(self):
+        return self.name
+
+
 class HackathonEvent(SuperModel):
     """Defines the HackathonEvent model."""
 
@@ -3074,6 +3268,9 @@ class HackathonEvent(SuperModel):
     logo_svg = models.FileField(blank=True)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
+    background_color = models.CharField(max_length=255, null=True, blank=True, help_text='hexcode for the banner')
+    identifier = models.CharField(max_length=255, default='', help_text='used for custom styling for the banner')
+    sponsors = models.ManyToManyField(Sponsor, through='HackathonSponsor')
 
     def __str__(self):
         """String representation for HackathonEvent.
@@ -3089,6 +3286,20 @@ class HackathonEvent(SuperModel):
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+
+
+class HackathonSponsor(SuperModel):
+    SPONSOR_TYPES = [
+        ('G', 'Gold'),
+        ('S', 'Silver'),
+    ]
+    hackathon = models.ForeignKey('HackathonEvent', default=1, on_delete=models.CASCADE)
+    sponsor = models.ForeignKey('Sponsor', default=1, on_delete=models.CASCADE)
+    sponsor_type = models.CharField(
+        max_length=1,
+        choices=SPONSOR_TYPES,
+        default='G',
+    )
 
 class FeedbackEntry(SuperModel):
     bounty = models.ForeignKey(
@@ -3124,3 +3335,13 @@ class FeedbackEntry(SuperModel):
     def __str__(self):
         """Return the string representation of a Bounty."""
         return f'<Feedback Bounty #{self.bounty} - from: {self.sender_profile} to: {self.receiver_profile}>'
+
+
+class Coupon(SuperModel):
+    code = models.CharField(unique=True, max_length=10)
+    fee_percentage = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)])
+    expiry_date = models.DateField()
+
+    def __str__(self):
+        """Return the string representation of Coupon."""
+        return f'code: {self.code} | fee: {self.fee_percentage} %'

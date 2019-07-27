@@ -128,7 +128,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   </div>
                 </div>
 
-                {% if grant.contract_version == 1 %}
                 <div id="gitcoin-grant-section" class="form__group-horizontal my-5">
                   <div class="row">
                     <div class="col-12 mb-3">
@@ -160,16 +159,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                             {% if grant_has_no_token %} - {% else %} {{ grant.token_symbol }} {% endif %}
                           </span>
                         </p>
-                        <p class="mb-0 mx-0 font-caption text-center">
-                          every <span class="font-caption summary-period">-</span>
-                          <span class="font-caption summary-frequency-unit">-</span>
-                          (<span class="summary-frequency">-</span> times)
+                        <p class="mb-0 mx-0 font-caption text-center summary-rollup-gitcoin">
+                        {% trans "every" %} <span class="font-caption summary-period">-</span>
+                          <span class="font-caption summary-frequency-unit-gitcoin">-</span>
+                          (<span class="summary-frequency-gitcoin">-</span> times)
                         </p>
                       </div>
                     </div>
                   </div>
                 </div>
-                {% endif %}
 
                 <div id="gas-section" class="form__group-horizontal">
                   <div class="row">
@@ -184,16 +182,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
                 <div class="summary font-body mt-4">
                   <p class="mb-2 font-weight-semibold">Summary</p>
-                  <p class="hide_if_onetime">
+
+                  <p>
                     <i class="fas fa-circle mr-2"></i>
                     {% trans "You are contributing" %}
                     <span id="summary-amount" class="font-weight-bold">-</span>
                     <span class="summary-token font-weight-bold">
                       {{ grant.token_symbol }}
                     </span>
-                    {% trans "to this grant every" %}
-                    <span class="summary-period font-weight-bold">-</span>
-                    <span class="summary-frequency-unit font-weight-bold">-</span>.
+                    {% trans "to this grant" %}
+                    <span class="hide_if_onetime">
+                      every
+                      <span class="summary-period font-weight-bold">-</span>
+                      <span class="summary-frequency-unit font-weight-bold">-</span>.
+                    </span>
                   </p>
 
                   <p id="summary-gitcoin-grant" class="hide_if_onetime">
@@ -203,9 +205,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     <span class="summary-token font-weight-bold">
                       {% if not grant_has_no_token %} {{ grant.token_symbol }} {% endif %}
                     </span>
-                    {% trans "to the gitcoin grant every" %}
-                    <span class="summary-period font-weight-bold">-</span>
-                    <span class="summary-frequency-unit font-weight-bold">-</span>.
+                    {% if grant.contract_version == 1 %}
+                      {% trans "to the gitcoin maintainer grant every" %}
+                    {% elif grant.contract_version == 0 %}
+                      {% trans "to the gitcoin maintainer grant" %}
+                    {% endif %}
+                    <span class="summary-period-gitcoin font-weight-bold">-</span>
+                    <span class="summary-frequency-unit-gitcoin font-weight-bold">-</span>.
                   </p>
 
                   <p class="hide_if_onetime">
@@ -221,15 +227,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
                   <p class="hide_if_recurring hidden">
                     <i class="fas fa-circle mr-2"></i>
-                    {% trans "This payment will be made one time." %}
+                    {% trans "You are additionally contributing" %}
+                    <span class="summary-gitcoin-amount font-weight-bold">-</span>
+                    <span class="summary-token font-weight-bold"></span>
+                    {% trans "to the gitcoin maintainer grant." %}
                   </p>
 
                   <p class="hide_if_recurring hidden">
                     <i class="fas fa-circle mr-2"></i>
-                    {% trans "You are additionally contributing" %}
-                    <span class="summary-gitcoin-amount font-weight-bold">-</span>
-                    <span class="summary-token font-weight-bold"></span>
-                    {% trans "to the gitcoin grant." %}
+                    {% trans "This payment will be made one time." %}
                   </p>
 
                   <p>
@@ -317,11 +323,5 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   <script src="{% static "v2/js/grants/fund.js" %}"></script>
   <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
-  <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
-  <script>
-    let bootstrapTooltip = $.fn.tooltip.noConflict()
-    let bootstrapModal = $.fn.modal.noConflict()
-    $.fn.bootstrapModal = bootstrapModal
-  </script>
   <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
 </html>

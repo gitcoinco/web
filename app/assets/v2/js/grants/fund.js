@@ -158,21 +158,22 @@ $(document).ready(function() {
         let realTokenAmount = Number(data.amount_per_period * Math.pow(10, decimals));
         let realApproval;
 
-        if (data.contract_version == 0) {
-          // version 0 of the contract has no fee
-          realApproval = Number((grant_amount * data.num_periods * Math.pow(10, decimals)) + 1);
-        } else if (data.contract_version == 1) {
+        if (data.contract_version == 1 || data.num_periods == 1) {
           realApproval = Number(((grant_amount + gitcoin_grant_amount) * data.num_periods * Math.pow(10, decimals)) + 1);
+        } else if (data.contract_version == 0) {
+          console.log('grant amount: ' + grant_amount);
+          console.log('gitcoin grant amount: ' + gitcoin_grant_amount);
+          // don't need to approve for gitcoin_grant_amount since we will directly transfer it
+          realApproval = Number(((grant_amount * data.num_periods)) * Math.pow(10, decimals) + 1);
         }
 
         let realGasPrice = Number(gitcoin_grant_amount * Math.pow(10, decimals)); // optional grants fee
 
-        $('#gas_price').val(realGasPrice);
+        if (contractVersion == 0) {
+          realGasPrice = 1;
+        }
 
-        // if (realPeriodSeconds < 2592000) {
-        //   charge gas for intervals less than a month
-        //   realGasPrice = Math.ceil($('#gasPrice').val() * Math.pow(10, 9));
-        // }
+        $('#gas_price').val(realGasPrice);
 
         let approvalSTR = realApproval.toLocaleString('fullwide', { useGrouping: false });
 
@@ -198,10 +199,14 @@ $(document).ready(function() {
             console.log('1', error);
             _alert({ message: gettext('Your approval transaction failed. Please try again.')}, 'error');
           }).on('transactionHash', function(transactionHash) {
+            $('#sub_new_approve_tx_id').val(transactionHash);
             if (data.num_periods == 1) {
               // call splitter after approval
               splitPayment(accounts[0], data.admin_address, gitcoinDonationAddress, Number(grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}), Number(gitcoin_grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}));
             } else {
+              if (data.contract_version == 0 && gitcoin_grant_amount > 0) {
+                donationPayment(deployedToken, accounts[0], Number(gitcoin_grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}));
+              }
               subscribeToGrant(transactionHash);
             }
           }).on('confirmation', function(confirmationNumber, receipt) {
@@ -240,11 +245,24 @@ $(document).ready(function() {
   }); // waitforWeb3
 }); // document ready
 
+const donationPayment = (token, account, donationAmountString) => {
+  token.methods.transfer(
+    gitcoinDonationAddress,
+    web3.utils.toTwosComplement(donationAmountString)
+  ).send({
+    from: account
+  }).on('error', function(error) {
+    console.log('One time old contract donation error:', error);
+    _alert({ message: gettext('Your Gitcoin donation transaction failed. Please try again.')}, 'error');
+  }).on('transactionHash', function(transactionHash) {
+    console.log('One time old contract donation success: ' + transactionHash);
+  });
+};
+
 const subscribeToGrant = (transactionHash) => {
   web3.eth.getAccounts(function(err, accounts) {
     deployedToken.methods.decimals().call(function(err, decimals) {
-      $('#sub_new_approve_tx_id').val(transactionHash);
-      const linkURL = etherscan_tx_url(transactionHash);
+      const linkURL = get_etherscan_url(transactionHash);
       let token_address = $('#js-token').length ? $('#js-token').val() : $('#sub_token_address').val();
       let data = {
         'contributor_address': $('#contributor_address').val(),
@@ -375,7 +393,7 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
       window.location = redirectURL;
     });
 
-    const linkURL = etherscan_tx_url(transactionHash);
+    const linkURL = get_etherscan_url(transactionHash);
 
     document.issueURL = linkURL;
 
@@ -409,9 +427,19 @@ const waitforData = (callback) => {
 
 // Updates summary section
 const updateSummary = (element) => {
+  contract_version = $('#contract_version').val();
 
   $('.summary-period').html($('input#frequency_count').val());
+  $('.summary-period-gitcoin').html($('input#frequency_count').val());
   $('.summary-frequency-unit').html($('#frequency_unit').val());
+  $('.summary-frequency-unit-gitcoin').html($('#frequency_unit').val());
+
+  if (contract_version == 0) {
+    $('.summary-period-gitcoin').html('');
+    $('.summary-frequency-unit-gitcoin').html('');
+    $('.summary-rollup-gitcoin').hide();
+  }
+
   $('.summary-frequency').html($('input#period').val() ? $('input#period').val() : 0);
 
   if ($('#token_symbol').val() === 'Any Token') {
@@ -426,9 +454,11 @@ let grant_amount = 0;
 
 // Splits the total amount between the grant & gitcoin grant in the summary section
 const splitGrantAmount = () => {
+  contract_version = $('#contract_version').val();
+  num_periods = $('#period').val();
+
   const percent = $('#gitcoin-grant-input-amount').val();
   const total_amount = $('input#amount').val() ? $('input#amount').val() : 0;
-
 
   if (total_amount != 0) {
     if (!percent) {
@@ -436,8 +466,13 @@ const splitGrantAmount = () => {
       grant_amount = Number($('input#amount').val());
     } else {
       $('#summary-gitcoin-grant').show();
-      gitcoin_grant_amount = parseFloat(Number(percent / 100 * Number($('input#amount').val())).toFixed(4));
-      grant_amount = parseFloat((Number($('input#amount').val()) - gitcoin_grant_amount).toFixed(4));
+      if (contract_version == 0) {
+        gitcoin_grant_amount = parseFloat(Number(num_periods * percent / 100 * Number($('input#amount').val())).toFixed(4));
+        grant_amount = parseFloat((Number($('input#amount').val())).toFixed(4));
+      } else {
+        gitcoin_grant_amount = parseFloat(Number(percent / 100 * Number($('input#amount').val())).toFixed(4));
+        grant_amount = parseFloat((Number($('input#amount').val()) - gitcoin_grant_amount).toFixed(4));
+      }
     }
   }
 
