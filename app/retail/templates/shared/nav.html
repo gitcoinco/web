@@ -51,6 +51,7 @@
           <a class="dropdown-item{% if active == 'dashboard' %} selected{% endif %} interior" href="{% url "explorer" %}">{% trans "Bounties" %}</a>
           <a class="dropdown-item{% if active == 'users_directory' %} selected{% endif %} interior" href="{% url "users_directory" %}">{% trans "Users" %}</a>
           <a class="dropdown-item{% if active == 'leaderboard' %} selected{% endif %} interior" href="{% url "_leaderboard" %}">{% trans "Leaderboard" %}</a>
+          <a class="dropdown-item{% if active == 'activity' %} selected{% endif %} interior" href="{% url "activity" %}">{% trans "Activity Stream" %}</a>
         </div>
       </div>
 

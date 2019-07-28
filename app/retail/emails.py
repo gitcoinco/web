@@ -929,12 +929,11 @@ def render_start_work_applicant_expired(interest, bounty):
 
     return response_html, response_txt, subject
 
-
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "A Midsummer Bounty's Dream"
-    new_kudos_pks = [3973, 2224, 1967]
+    subject = "The Grow Ethereum Hackathon Draws Nearer"
+    new_kudos_pks = [4284, 4282, 4281]
     new_kudos_size_px = 150
 
     kudos_friday = f'''
@@ -949,76 +948,72 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-Ethereum transactions are reaching new heights recently with the highest frequency of activity on the network in months. Need some help with your gas pricing? We're way ahead of you. Check out our helpful gas visualizer to assist with your
-work on the network. <a href="https://gitcoin.co/gas">It lives here.</a>
+The Grow Ethereum Hackathon is right around the corner -- only 11 days remain until the hacking begins❗️ We are expecting great sponsors, including confirmation from the Ethereum Foundation itself (!) and UNICEF. Build projects together with top Ethereum companies and enterprises, win crypto, and unleash a new era of decentralized global infrastructure. The link to register is <a href="https://hackathons.gitcoin.co/grow-ethereum/" target="_blank">here.</a> 🌱
 </p>
 <p>
-As we mentioned last week, we're currently in the process of organizing hackathons for the next few months. That means more projects, more opportunities, and of course more bounties. Fill out this Typeform to receive more information about them
-as we prepare to get everyone back together. Have any suggestions for us? <a href="mailto:team@gitcoin.co">Email the team.</a> Otherwise, <a href="https://gitcoin.typeform.com/to/j7CSbV">the form to sign up lives here.</a>
+Working on an Ethereum ecosystem project and need funding? Get ready. Round 3 of the Gitcoin Grants CLR matching is right around the corner. Pick up some funding to help sustain your work and ease your worries: a funding opportunity awaits. <a href="https://gitcoin.co/grants/">Create a Gitcoin Grant & let the community know your progress!</a>
 </p>
 <p>
-As we prepare to enter the second half of 2019, we're asking our community for feedback. What are we doing well? What can we do better to help you reach your goals? <a href="mailto:team@gitcoin.co">Reach out to us if you'd like to share your thoughts.</a>
-</p>
 
+</p>
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Are you a project that might be interested in our hackathons? <a href="mailto:alex@gitcoin.co">Send us an email we'll be in touch.</a>
+            The Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday to see some of the top Beyond Blockchain projects present.
         </li>
         <li>
-            The Gitcoin Livestream is back this week. Join us <a href="https://gitcoin.co/livestream"> at 2PM ET on Friday, or catch it on <a href="https://twitter.com/gitcoin">Twitter</a>!
+            Interested in the future of ads on the internet? <a href="https://media.consensys.net/how-ethical-advertising-will-transform-the-blockchain-industry-31c2c4f2bd45">Check out this primer on Ethical Advertising from Connor O'Day, part of the Codefund team.</a>
         </li>
     </ul>
 </p>
 <p>
 Back to shipping,
 </p>
-
 '''
     highlights = [{
-        'who': 'nanspro',
+        'who': 'IgorShadurin',
         'who_link': True,
-        'what': 'nanspro with the rewrite!',
-        'link': 'https://gitcoin.co/issue/ethhub-io/ethhub/285/3075',
+        'what': 'Provable Emails, thanks to IgorShadurin and josh-richardson',
+        'link': 'https://gitcoin.co/issue/ArweaveTeam/Bounties/5/3164',
         'link_copy': 'View more',
     }, {
-        'who': 'gutsal-arsen',
+        'who': 'sanchaymittal',
         'who_link': True,
-        'what': 'Redux renovations',
-        'link': 'https://gitcoin.co/issue/ssteiger/Vyper-Contract-GUI/7/3060',
+        'what': 'Docs are complete!',
+        'link': 'https://gitcoin.co/issue/MrElliwood/audio-router/1/3213',
         'link_copy': 'View more',
     }, {
-        'who': 'roleengineer',
+        'who': 'cpurta',
         'who_link': True,
-        'what': 'Merkle tree madness',
-        'link': 'https://gitcoin.co/issue/leapdao/leap-contracts/194/3041',
+        'what': 'Raiden Hackathon Completion!',
+        'link': 'https://gitcoin.co/issue/raiden-network/hackathons/3/3170',
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'Elk',
-        'title': 'Bringing blockchain into the physical world',
-        'image_url': 'https://elk.cc/assets/images/elk-board-1.png',
-        'link': 'http://bit.ly/ElkBlockchain',
-        'cta': 'Sign up now',
+        'name': 'Solana',
+        'title': 'Solana is the most performant blockchain in the world with speeds over 50,000 TPS (while being decentralized and secure).',
+        'image_url': 'https://s3.us-west-2.amazonaws.com/gitcoin-static/jDSk7ZTfpY19PWdwwsk8puNd.png',
+        'link': 'http://bit.ly/TourDeSOL',
+        'cta': 'Sign Up for Tour de SOL',
         'body': [
-            'Introducing Elk - the development board for building hardware projects that interface with Ethereum.',
-            'We\'ll soon be on Kickstarter. <a href="http://bit.ly/ElkBlockchain" style="font-size: 14px; line-height: 18px;">Sign up now</a> and get your early bird discount!'
+            'We just announced Tour de SOL, or our incentivized testnet event. Are you a validator? Earn token and race against the best in the world. Deadline is July 21st.'
         ]
     }
 
     bounties_spec = [{
-        'url': 'https://github.com/w3f/Web3-collaboration/issues/123',
-        'primer': 'IPFS Integrations from Web3',
+        'url': 'https://github.com/RibbonBlockchain/IncentivesMVP/issues/19',
+        'primer': 'Create Initial Pilot phase for Ribbon blockchain',
     }, {
-        'url': 'https://github.com/PegaSysEng/BountiedWork/issues/18',
-        'primer': 'Trinity Hobbits Integration: 5 ETH up for grabs!',
+        'url': 'https://github.com/RibbonBlockchain/IncentivesMVP/issues/8',
+        'primer': 'Enable camera on front end for capture passport on patient and practitioner onboarding',
     }, {
-        'url': 'https://github.com/LinkdropProtocol/linkdrop-monorepo/issues/203',
-        'primer': 'Smart Contract Showdown...',
-    }, ]
-
+        'url': 'https://github.com/centrifuge/precise-proofs/issues/88',
+        'primer': 'Optimize the fixed height tree implementation',
+}, ]
+    
+    
     num_leadboard_items = 5
     highlight_kudos_ids = []
     num_kudos_to_show = 15

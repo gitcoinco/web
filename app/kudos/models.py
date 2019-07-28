@@ -328,6 +328,20 @@ class Token(SuperModel):
     def url(self):
         return f'{settings.BASE_URL}kudos/{self.pk}/{slugify(self.name)}'
 
+
+    def get_relative_url(self):
+        """Get the relative URL for the Bounty.
+
+        Attributes:
+            preceding_slash (bool): Whether or not to include a preceding slash.
+
+        Returns:
+            str: The relative URL for the Bounty.
+
+        """
+        return f'/kudos/{self.pk}/{slugify(self.name)}'
+
+
     def send_enabled_for(self, user):
         """
 
@@ -523,10 +537,10 @@ class TransferEnabledFor(SuperModel):
     """
 
     token = models.ForeignKey(
-        'kudos.Token', related_name='transfers_enabled', on_delete=models.CASCADE, 
+        'kudos.Token', related_name='transfers_enabled', on_delete=models.CASCADE,
     )
     profile = models.ForeignKey(
-        'dashboard.Profile', related_name='transfers_enabled', on_delete=models.CASCADE, 
+        'dashboard.Profile', related_name='transfers_enabled', on_delete=models.CASCADE,
     )
 
     def __str__(self):

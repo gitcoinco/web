@@ -18,11 +18,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 import logging
+import os
 import pprint
 from decimal import Decimal
 from enum import Enum
 
 from django.conf import settings
+from django.conf.urls.static import static
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 from django.db import transaction
@@ -50,6 +52,14 @@ from redis_semaphore import NotAvailable as SemaphoreExists
 from .models import Profile
 
 logger = logging.getLogger(__name__)
+
+def load_files_in_directory(dir_name):
+    path = os.path.join(settings.STATIC_ROOT, dir_name)
+    images = []
+    for f in os.listdir(path):
+        if f.endswith('jpg') or f.endswith('png') or f.endswith('jpeg'):
+            images.append("%s" % (f))
+    return images
 
 
 def get_bounty_view_kwargs(request):
@@ -488,7 +498,8 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     'bounty_owner_email', 'bounty_owner_name', 'github_comments', 'override_status', 'last_comment_date',
                     'snooze_warnings_for_days', 'admin_override_and_hide', 'admin_override_suspend_auto_approval',
                     'admin_mark_as_remarket_ready', 'funding_organisation', 'bounty_reserved_for_user', 'is_featured',
-                    'featuring_date', 'fee_tx_id', 'fee_amount', 'repo_type', 'unsigned_nda', 'coupon_code'
+                    'featuring_date', 'fee_tx_id', 'fee_amount', 'repo_type', 'unsigned_nda', 'coupon_code',
+                    'admin_override_org_name', 'admin_override_org_logo'
                 ],
             )
             if latest_old_bounty_dict['bounty_reserved_for_user']:
@@ -499,6 +510,9 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 latest_old_bounty_dict['unsigned_nda'] = BountyDocuments.objects.filter(
                     pk=latest_old_bounty_dict['unsigned_nda']
                 ).first()
+            if latest_old_bounty_dict.get('coupon_code'):
+                latest_old_bounty_dict['coupon_code'] = Coupon.objects.get(pk=latest_old_bounty_dict['coupon_code'])
+
             bounty_kwargs.update(latest_old_bounty_dict)
 
         try:

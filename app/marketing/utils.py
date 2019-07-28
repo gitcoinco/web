@@ -26,11 +26,48 @@ from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
 import requests
+from mailchimp3 import MailChimp
 from marketing.models import AccountDeletionRequest, LeaderboardRank
 from slackclient import SlackClient
 from slackclient.exceptions import SlackClientError
 
 logger = logging.getLogger(__name__)
+
+
+def delete_user_from_mailchimp(email_address):
+    client = MailChimp(mc_user=settings.MAILCHIMP_USER, mc_api=settings.MAILCHIMP_API_KEY)
+    result = None
+    try:
+        result = client.search_members.get(query=email_address)
+        if result:
+            subscriber_hash = result.get('exact_matches', {}).get('members', [{}])[0].get('id', None)
+    except Exception as e:
+        logger.debug(e)
+
+
+        try:
+            client.lists.members.delete(
+                list_id=settings.MAILCHIMP_LIST_ID,
+                subscriber_hash=subscriber_hash,
+            )
+        except Exception as e:
+            logger.debug(e)
+
+        try:
+            client.lists.members.delete(
+                list_id=settings.MAILCHIMP_LIST_ID_HUNTERS,
+                subscriber_hash=subscriber_hash,
+            )
+        except Exception as e:
+            logger.debug(e)
+
+        try:
+            client.lists.members.delete(
+                list_id=settings.MAILCHIMP_LIST_ID_HUNTERS,
+                subscriber_hash=subscriber_hash,
+            )
+        except Exception as e:
+            logger.debug(e)
 
 
 def is_deleted_account(handle):

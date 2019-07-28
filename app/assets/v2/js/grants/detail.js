@@ -14,10 +14,33 @@ $(document).ready(function() {
   setInterval (() => {
     notifyOwnerAddressMismatch(
       $('#grant-admin').val(),
-      $('#contract_owner_address').val(),
+      $('#grant_contract_owner_address').text(),
       '#cancel_grant',
-      'Looks like your grant has been created with ' + $('#contract_owner_address').val() + '. Switch to take action on your grant.'
+      'Looks like your grant has been created with ' +
+        $('#grant_contract_owner_address').text() + '. Switch to take action on your grant.'
     );
+
+    if ($('#cancel_grant').attr('disabled')) {
+      $('#cancel_grant').addClass('disable-btn').addClass('disable-tooltip');
+      $('#cancel_grant_tooltip').attr(
+        'data-original-title', 'switch to below contract owner address to cancel grant.'
+      );
+    } else {
+      $('#cancel_grant').removeClass('disable-btn').removeClass('disable-tooltip');
+      $('#cancel_grant_tooltip').attr('data-original-title', '');
+    }
+
+    if ($('#contract_owner_address').val() === $('#grant_contract_owner_address').text()) {
+      $('#contract_owner_button').attr('disabled', true);
+      $('#contract_owner_button').addClass('disable-btn').addClass('disable-tooltip');
+      $('#contract_owner_button-container').attr(
+        'data-original-title', 'Grant owner address hasn\'t changed. Update the above field to enable this.'
+      );
+    } else {
+      $('#contract_owner_button').attr('disabled', false);
+      $('#contract_owner_button').removeClass('disable-btn').removeClass('disable-tooltip');
+      $('#contract_owner_button-container').attr('data-original-title', '');
+    }
   }, 1000);
 
   let _text = grant_description.getContents();
@@ -68,9 +91,6 @@ $(document).ready(function() {
     let edit_description_rich = JSON.stringify(grant_description.getContents());
     let edit_amount_goal = $('#amount_goal').val();
     let edit_grant_members = $('#grant-members').val();
-
-    if (editableFields['edit_admin_profile'] && editableFields['edit_admin_profile'] != edit_admin_profile)
-      localStorage['request_change'] = 'R';
 
     $.ajax({
       type: 'post',
@@ -123,7 +143,7 @@ $(document).ready(function() {
             gasPrice: web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9))
           }).on('transactionHash', function(transactionHash) {
             grant_cancel_tx_id = $('#grant_cancel_tx_id').val();
-            const linkURL = etherscan_tx_url(transactionHash);
+            const linkURL = get_etherscan_url(transactionHash);
 
             document.issueURL = linkURL;
             $('#transaction_url').attr('href', linkURL);
@@ -162,7 +182,7 @@ $(document).ready(function() {
         from: accounts[0],
         gasPrice: 8000000000
       }).on('transactionHash', function(transactionHash) {
-        const linkURL = etherscan_tx_url(transactionHash);
+        const linkURL = get_etherscan_url(transactionHash);
 
         document.issueURL = linkURL;
         $('#transaction_url').attr('href', linkURL);
@@ -209,7 +229,16 @@ const copyDuplicateDetails = () => {
     obj[field] = $(field).val() ? $(field).val() : $(field).last().text();
   });
 
-  $('#cancel-details').on('click', (event) => {
+  $('#save-details').on('click', () => {
+    if (
+      obj['#grant-admin'] &&
+      obj['#grant-admin'] != $('#grant-admin option').last().text()
+    ) {
+      localStorage['request_change'] = 'R';
+    }
+  });
+
+  $('#cancel-details').on('click', () => {
     editableFields.forEach(field => {
       if (field == '#grant-admin')
         $(field).val([obj[field]]).trigger('change');
