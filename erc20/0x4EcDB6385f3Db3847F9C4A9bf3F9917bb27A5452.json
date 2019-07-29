@@ -1,0 +1,13 @@
+{
+  "symbol": "EKT",
+  "address": "0x4EcDB6385f3Db3847F9C4A9bf3F9917bb27A5452",
+  "overview":{
+    "zh": "EKT多链技术是一个模块化的区块链底层框架，将构建一个基于多链架构的公有链生态系统，致力于成为支持大量应用落地的商用公链。能够为企业提供易用、灵活且高效的通用型基础技术，共同推动区块链应用场景落地。"
+  },
+  "website": "http://ekt8.io/",
+  "whitepaper": "http://ekt8.io/EKT.pdf",
+  "published_on": "2018-01-05",
+  "links": {
+    "github": "https://github.com/EducationEKT/EKT"
+  }
+}
