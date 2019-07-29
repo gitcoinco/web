@@ -54,3 +54,7 @@
 #grow-ethereum-2019 {
   border-bottom: solid 0.5px #eee;
 }
+
+#grow-ethereum-2019 .text-white {
+  color: black !important; /* TODO: REMOVE */
+}
