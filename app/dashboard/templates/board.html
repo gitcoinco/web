@@ -146,7 +146,7 @@
 
                       </div>
                     </li>
-                    <li class="text-center my-5" :class="{'d-none': (isLoading.open && bounties.open && bounties.open.length > 0) }" v-cloak> [[isLoading.open]]
+                    <li class="text-center my-5" :class="{'d-none': (isLoading.open || bounties.open && bounties.open.length > 0) }"> [[isLoading.open]]
                       <img src="{% static 'v2/images/zero-bounties.svg' %}" alt="" width="197" height="169">
                       <h4 class="h5 font-weight-semibold my-3">
                         You haven’t funded any issues yet.
@@ -156,7 +156,7 @@
                       <a href="/funding/new" class="btn btn-gc-blue">Fund an Issue</a>
                     </li>
                   </ul>
-            <loading-screen v-if="isLoading.open"></loading-screen>
+                  <loading-screen v-if="isLoading.open"></loading-screen>
 
                 </div>
               </div>
@@ -224,7 +224,7 @@
                         <loading-screen v-if="isLoading.submittedContrib"></loading-screen>
                       </div>
                     </li>
-                    <li class="text-center my-5" :class="{'d-none': bounties.submitted && bounties.submitted.length > 0}" v-cloak>
+                    <li class="text-center my-5" :class="{'d-none': isLoading.submitted ||bounties.submitted && bounties.submitted.length > 0}" v-cloak>
                       <p>You have no bounties with submittions.</p>
                     </li>
                   </ul>
@@ -272,10 +272,11 @@
                         <a :href="bounty.absolute_url" class="btn btn-sm btn-gc-blue m-2"> <i class="fas fa-clock"></i> Extend Expiration</a>
                       </div>
                     </li>
-                    <li class="text-center my-5" :class="{'d-none': bounties.expired && bounties.expired.length > 0}" v-cloak>
+                    <li class="text-center my-5" :class="{'d-none': isLoading.expired || bounties.expired && bounties.expired.length > 0}" v-cloak>
                       <p>You have no expired bounties.</p>
                     </li>
                   </ul>
+                  <loading-screen v-if="isLoading.expired"></loading-screen>
                 </div>
               </div>
             </div>
@@ -298,7 +299,7 @@
                   </div>
                   <div class="my-3 mx-4 head-number">
                     <span class="head-number_title">WORK SUBMITTED</span>
-                    <span class="head-number_value">[[ contributorBounties.submitted ? contributorBounties.submitted.length : '0' ]]</span>
+                    <span class="head-number_value">[[ contributorBounties.work_submitted ? contributorBounties.work_submitted.length : '0' ]]</span>
                   </div>
                 </div>
               </div>
@@ -343,7 +344,7 @@
                         </div>
                       </div>
                     </li>
-                    <li class="text-center my-5" :class="{'d-none': contributorBounties.work_in_progress && contributorBounties.work_in_progress.length > 0}" v-cloak>
+                    <li class="text-center my-5" :class="{'d-none': isLoading.work_in_progress || contributorBounties.work_in_progress && contributorBounties.work_in_progress.length > 0}" v-cloak>
                       <img src="{% static 'v2/images/zero-bounties.svg' %}" alt="" width="197" height="169">
                       <h4 class="h5 font-weight-semibold my-3">
                           You are not working in any bounty yet.
@@ -353,6 +354,8 @@
                       <a href="{% url 'explorer' %}" class="btn btn-gc-blue">Find a Bounty</a>
                     </li>
                   </ul>
+                  <loading-screen v-if="isLoading.work_in_progress"></loading-screen>
+
                 </div>
               </div>
             </div>
@@ -396,10 +399,12 @@
                         </div>
                       </div>
                     </li>
-                    <li class="text-center my-5" :class="{'d-none': contributorBounties.interested && contributorBounties.interested.length > 0}" v-cloak>
+                    <li class="text-center my-5" :class="{'d-none': isLoading.interested || contributorBounties.interested && contributorBounties.interested.length > 0}" v-cloak>
                       <p>You are not wating approval to work in any bounty.</p>
                     </li>
                   </ul>
+                  <loading-screen v-if="isLoading.interested"></loading-screen>
+
                 </div>
               </div>
             </div>
@@ -409,10 +414,10 @@
             <div class="row">
               <div class="col-12">
                 <div class="bg-white rounded border my-4">
-                  <div class="p-4 border-bottom font-weight-bold" v-if="contributorBounties.submitted">[[ contributorBounties.submitted.length ]] Work Submitted</div>
+                  <div class="p-4 border-bottom font-weight-bold" v-if="contributorBounties.work_submitted">[[ contributorBounties.work_submitted.length ]] Work Submitted</div>
 
                   <ul class="list-unstyled">
-                    <li v-for="(bounty, key) in contributorBounties.submitted" :key="bounty.id" class="position-relative font-smaller-1 mt-3 p-3 list-bounty-item">
+                    <li v-for="(bounty, key) in contributorBounties.work_submitted" :key="bounty.id" class="position-relative font-smaller-1 mt-3 p-3 list-bounty-item">
                       <span class="fa-stack mr-2">
                         <i class="fas fa-circle fa-stack-2x light-blue"></i>
                         <i class="fas fa-user fa-stack-1x fa-inverse"></i>
@@ -440,10 +445,12 @@
                         </div>
                       </div>
                     </li>
-                    <li class="text-center my-5" :class="{'d-none': contributorBounties.submitted && contributorBounties.submitted.length > 0}" v-cloak>
+                    <li class="text-center my-5" :class="{'d-none': isLoading.work_submitted || contributorBounties.work_submitted && contributorBounties.work_submitted.length > 0}" v-cloak>
                       <p>You don't have any submittion awaiting payment.</p>
                     </li>
                   </ul>
+                  <loading-screen v-if="isLoading.work_submitted"></loading-screen>
+
                 </div>
               </div>
             </div>

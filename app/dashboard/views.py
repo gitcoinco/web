@@ -2993,7 +2993,7 @@ def contributor_dashboard(request, bounty_type):
         status = ['open']
         pending = True
 
-    elif bounty_type == 'submitted':
+    elif bounty_type == 'work_submitted':
         status = ['submitted']
         pending = False
 

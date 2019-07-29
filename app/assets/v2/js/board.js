@@ -102,7 +102,7 @@ Vue.mixin({
 
       if (!Object.keys(vm.contributorBounties).length && persona === 'contributor') {
         vm.fetchContributorBounties('work_in_progress');
-        vm.fetchContributorBounties('submitted');
+        vm.fetchContributorBounties('work_submitted');
         vm.fetchContributorBounties('interested');
       }
     },
@@ -139,8 +139,10 @@ if (document.getElementById('gc-board')) {
         'openContrib':true,
         'submitted':true,
         'submittedContrib':true,
-        'interest':true,
-        'contributorBounties':true,
+        'expired':true,
+        'work_in_progress':true,
+        'interested':true,
+        'work_submitted':true,
       }
     },
     mounted() {
