@@ -15,9 +15,11 @@
     along with this program. If not,see <http://www.gnu.org/licenses/>.
 
 '''
+import re
+
 from django.conf import settings
 from django.core.management.base import BaseCommand
-import re
+
 
 def is_an_edge(handle, edges):
     for edge in edges:
@@ -87,6 +89,3 @@ class Command(BaseCommand):
             handle2 = normalize_handle(handle2)
             if handle1 and handle2:
                 print(f"graph.addEdge(user_{handle1}, user_{handle2}); drawEdge(user_{handle1}, user_{handle2}); ");
-
-
-
