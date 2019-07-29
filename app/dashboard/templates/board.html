@@ -142,8 +142,7 @@
                             <a href="/users" class="btn btn-outline-gc-blue w-75 font-smaller-2 gc-letter-spacing">EXPLORE USER DIRECTORY</a>
                           </li>
                         </ul>
-            <loading-screen v-if="isLoading.openContrib"></loading-screen>
-
+                        <loading-screen v-if="isLoading.openContrib"></loading-screen>
                       </div>
                     </li>
                     <li class="text-center my-5" :class="{'d-none': (isLoading.open || bounties.open && bounties.open.length > 0) }"> [[isLoading.open]]
@@ -157,7 +156,6 @@
                     </li>
                   </ul>
                   <loading-screen v-if="isLoading.open"></loading-screen>
-
                 </div>
               </div>
             </div>
@@ -229,8 +227,6 @@
                     </li>
                   </ul>
                   <loading-screen v-if="isLoading.submitted"></loading-screen>
-
-
                 </div>
               </div>
             </div>
@@ -355,7 +351,6 @@
                     </li>
                   </ul>
                   <loading-screen v-if="isLoading.work_in_progress"></loading-screen>
-
                 </div>
               </div>
             </div>
@@ -404,7 +399,6 @@
                     </li>
                   </ul>
                   <loading-screen v-if="isLoading.interested"></loading-screen>
-
                 </div>
               </div>
             </div>
@@ -450,7 +444,6 @@
                     </li>
                   </ul>
                   <loading-screen v-if="isLoading.work_submitted"></loading-screen>
-
                 </div>
               </div>
             </div>

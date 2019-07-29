@@ -135,14 +135,14 @@ if (document.getElementById('gc-board')) {
       disabledBtn: false,
       authProfile: authProfile,
       isLoading: {
-        'open':true,
-        'openContrib':true,
-        'submitted':true,
-        'submittedContrib':true,
-        'expired':true,
-        'work_in_progress':true,
-        'interested':true,
-        'work_submitted':true,
+        'open': true,
+        'openContrib': true,
+        'submitted': true,
+        'submittedContrib': true,
+        'expired': true,
+        'work_in_progress': true,
+        'interested': true,
+        'work_submitted': true
       }
     },
     mounted() {
