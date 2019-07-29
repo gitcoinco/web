@@ -11,6 +11,7 @@ Vue.mixin({
 
       $.when(getbounties).then(function(response) {
         vm.$set(vm.bounties, type, response);
+        vm.isLoading[type] = false;
       });
     },
     fetchApplicants: function(id, key, type) {
@@ -24,6 +25,7 @@ Vue.mixin({
 
       $.when(getApplicants).then(function(response) {
         vm.$set(vm.bounties[type][key], 'contributors', response.profiles);
+        vm.isLoading[`${type}Contrib`] = false;
       });
     },
     fetchContributorBounties: function(type) {
@@ -33,6 +35,8 @@ Vue.mixin({
 
       $.when(getbounties).then(function(response) {
         vm.$set(vm.contributorBounties, type, response);
+        vm.isLoading[type] = false;
+
       });
     },
     isExpanded(key, type) {
@@ -129,7 +133,15 @@ if (document.getElementById('gc-board')) {
       contributorBounties: contributorBounties,
       expandedGroup: {'submitted': [], 'open': []},
       disabledBtn: false,
-      authProfile: authProfile
+      authProfile: authProfile,
+      isLoading: {
+        'open':true,
+        'openContrib':true,
+        'submitted':true,
+        'submittedContrib':true,
+        'interest':true,
+        'contributorBounties':true,
+      }
     },
     mounted() {
       this.tabOnLoad();

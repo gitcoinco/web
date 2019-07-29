@@ -22,6 +22,8 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href={% static "v2/css/vue-loader.css" %} />
+
     <link rel="stylesheet" href="{% static "v2/css/board.css" %}" />
 
   </head>
@@ -140,9 +142,11 @@
                             <a href="/users" class="btn btn-outline-gc-blue w-75 font-smaller-2 gc-letter-spacing">EXPLORE USER DIRECTORY</a>
                           </li>
                         </ul>
+            <loading-screen v-if="isLoading.openContrib"></loading-screen>
+
                       </div>
                     </li>
-                    <li class="text-center my-5" :class="{'d-none': bounties.open && bounties.open.length > 0}" v-cloak>
+                    <li class="text-center my-5" :class="{'d-none': (isLoading.open && bounties.open && bounties.open.length > 0) }" v-cloak> [[isLoading.open]]
                       <img src="{% static 'v2/images/zero-bounties.svg' %}" alt="" width="197" height="169">
                       <h4 class="h5 font-weight-semibold my-3">
                         You haven’t funded any issues yet.
@@ -152,6 +156,8 @@
                       <a href="/funding/new" class="btn btn-gc-blue">Fund an Issue</a>
                     </li>
                   </ul>
+            <loading-screen v-if="isLoading.open"></loading-screen>
+
                 </div>
               </div>
             </div>
@@ -215,12 +221,16 @@
                             <div class="comment-plan"> <a :href="contributor.fulfiller_metadata.data.payload.fulfiller.githubPRLink">[[ contributor.fulfiller_metadata.data.payload.fulfiller.githubPRLink ]]</a></div>
                           </li>
                         </ul>
+                        <loading-screen v-if="isLoading.submittedContrib"></loading-screen>
                       </div>
                     </li>
                     <li class="text-center my-5" :class="{'d-none': bounties.submitted && bounties.submitted.length > 0}" v-cloak>
                       <p>You have no bounties with submittions.</p>
                     </li>
                   </ul>
+                  <loading-screen v-if="isLoading.submitted"></loading-screen>
+
+
                 </div>
               </div>
             </div>
@@ -445,6 +455,7 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with slim=1 %}
+    <script src="{% static "v2/js/vue-components.js" %}"></script>
     <script src="{% static "v2/js/board.js" %}"></script>
     <script>
       $('body').bootstrapTooltip({
