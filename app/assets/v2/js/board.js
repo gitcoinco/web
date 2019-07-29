@@ -109,12 +109,12 @@ Vue.mixin({
     tabOnLoad() {
       let vm = this;
 
-      if (document.contxt.persona_is_funder) {
-        vm.checkData('funder');
-        $('#funder-tab').tab('show');
-      } else if (document.contxt.persona_is_hunter) {
+      if (document.contxt.persona_is_hunter) {
         vm.checkData('contributor');
         $('#contributor-tab').tab('show');
+      } else {
+        vm.checkData('funder');
+        $('#funder-tab').tab('show');
       }
     }
   }

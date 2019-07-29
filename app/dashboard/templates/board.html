@@ -145,7 +145,7 @@
                         <loading-screen v-if="isLoading.openContrib"></loading-screen>
                       </div>
                     </li>
-                    <li class="text-center my-5" :class="{'d-none': (isLoading.open || bounties.open && bounties.open.length > 0) }"> [[isLoading.open]]
+                    <li class="text-center my-5" :class="{'d-none': (isLoading.open || bounties.open && bounties.open.length > 0) }">
                       <img src="{% static 'v2/images/zero-bounties.svg' %}" alt="" width="197" height="169">
                       <h4 class="h5 font-weight-semibold my-3">
                         You haven’t funded any issues yet.
