@@ -74,7 +74,7 @@
                   <div class="p-4 border-bottom font-weight-bold" v-if="bounties.open">[[ bounties.open.length ]] Open [[ 'Bount' | pluralize(bounties.open.length, 'y', 'ies') ]]</div>
 
                   <ul class="list-unstyled">
-                    <li v-for="(bounty, key) in bounties.open" :key="bounty.id" class="position-relative font-smaller-1 mt-3 p-3 border-bottom" :class="isExpanded(key, 'open') ? 'line-deco' : ''">
+                    <li v-for="(bounty, key) in bounties.open" :key="bounty.id" class="position-relative font-smaller-1 mt-3 p-3 list-bounty-item" :class="isExpanded(key, 'open') ? 'line-deco' : ''">
                       <span class="fa-stack mr-2">
                         <i class="fas fa-circle fa-stack-2x green"></i>
                         <i class="fas fa-user fa-stack-1x fa-inverse"></i>
@@ -91,7 +91,7 @@
                                   <span>[[ bounty.project_type ]]</span> &bull;
                                 </template>
                                 <template v-if="bounty.expires_date">
-                                  <time :datetime="[[ bounty.expires_date ]]" :title="[[ bounty.expires_date ]]">[[ bounty.expires_date | moment ]]</time> &bull;
+                                  <time :datetime="[[ bounty.expires_date ]]" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> &bull;
                                 </template>
                                 <span>[[ bounty.value_true ]] [[ bounty.token_name ]] ([[ bounty.value_in_usd ]] USD)</span>
                                 <a :href="bounty.absolute_url"><i class="fas fa-eye"></i> View Issue Details</a>
@@ -115,10 +115,10 @@
                                   <img :src="contributor.avatar_url" alt="" width="40" height="40" class="flex-shrink-0 mr-2 rounded-circle">
                                   <div class="d-flex flex-column">
                                     <div class="">
-                                      <a :href="`/profile/${contributor.handle}`" class="text-dark">[[ contributor.handle ]]</a> <a :href="`https://github.com/${contributor.handle}`" target="_blank"><i class="fab fa-github text-dark"></i></a>
+                                      <a :href="`/profile/${contributor.handle}`" data-toggle="tooltip" title="View profile" class="text-dark">[[ contributor.handle ]]</a> <a :href="`https://github.com/${contributor.handle}`" target="_blank"><i class="fab fa-github text-dark" data-toggle="tooltip" title="View GitHub profile"></i></a>
                                     </div>
-                                    <div class="d-flex flex-column flex-lg-row">
-                                      <div class="" style="color:#25E899;">
+                                    <div class="">
+                                      <div class="d-inline" style="color:#25E899;">
                                         <i class="far fa-star" :class="star <= contributor.star_rating.toFixed() ? 'fas' : 'far'" v-for="star in contributor.star_rating.toFixed(), 5"></i>
                                       </div>
                                         ([[ contributor.total_rating ]] ratings) &bull;
@@ -128,13 +128,15 @@
                                   </div>
                                 </div>
                               </div>
-                              <a target="_blank" :href="`${bounty.absolute_url}?mutate_worker_action=approve&worker=${contributor.handle}`" class="btn btn-sm btn-gc-blue m-2"><i class="fas fa-check"></i> Accept</a>
-                              <a target="_blank" :href="`${bounty.absolute_url}?mutate_worker_action=reject&worker=${contributor.handle}`" class="btn btn-sm btn-outline-gc-blue m-2"><i class="fas fa-check"></i> Reject</a>
+                              <div>
+                                <a target="_blank" :href="`${bounty.absolute_url}?mutate_worker_action=approve&worker=${contributor.handle}`" class="btn btn-sm btn-gc-blue m-2"><i class="fas fa-check"></i> Accept</a>
+                                <a target="_blank" :href="`${bounty.absolute_url}?mutate_worker_action=reject&worker=${contributor.handle}`" class="btn btn-sm btn-outline-gc-blue m-2"><i class="fas fa-times"></i> Reject</a>
+                              </div>
                             </div>
                             <div class="comment-plan">[[ contributor.interest.issue_message]]</div>
                           </li>
                           <li class="text-center">
-                            <p class="font-smaller-2 blue">Couldn’t find the right contributor?</p>
+                            <p class="font-smaller-2 mb-2">Couldn’t find the right contributor?</p>
                             <a href="/users" class="btn btn-outline-gc-blue w-75 font-smaller-2 gc-letter-spacing">EXPLORE USER DIRECTORY</a>
                           </li>
                         </ul>
@@ -163,7 +165,7 @@
                   <div class="p-4 border-bottom font-weight-bold" v-if="bounties.submitted">[[ bounties.submitted.length ]] Submitted [[ 'Bount' | pluralize(bounties.submitted.length, 'y', 'ies') ]]</div>
 
                   <ul class="list-unstyled">
-                    <li v-for="(bounty, key) in bounties.submitted" :key="bounty.id" class="position-relative font-smaller-1 mt-3 p-3 border-bottom" :class="isExpanded(key, 'submitted')? 'line-deco': ''">
+                    <li v-for="(bounty, key) in bounties.submitted" :key="bounty.id" class="position-relative font-smaller-1 mt-3 p-3 list-bounty-item" :class="isExpanded(key, 'submitted')? 'line-deco': ''">
                       <span class="fa-stack mr-2">
                         <i class="fas fa-circle fa-stack-2x light-blue"></i>
                         <i class="fas fa-copy fa-stack-1x fa-inverse"></i>
@@ -180,7 +182,7 @@
                                   <span>[[ bounty.project_type ]]</span> &bull;
                                 </template>
                                 <template v-if="bounty.expires_date">
-                                  <time :datetime="[[ bounty.expires_date ]]" :title="[[ bounty.expires_date ]]">[[ bounty.expires_date | moment ]]</time> &bull;
+                                  <time :datetime="[[ bounty.expires_date ]]" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> &bull;
                                 </template>
                                 <span>[[ bounty.value_true ]] [[ bounty.token_name ]] ([[ bounty.value_in_usd ]] USD)</span>
                                 <a :href="bounty.absolute_url"><i class="fas fa-eye"></i> View Issue Details</a>
@@ -200,7 +202,7 @@
                                   <img :src="contributor.avatar_url" alt="" width="40" height="40" class="flex-shrink-0 mr-2 rounded-circle">
                                   <div class="d-flex flex-column">
                                     <div class="">
-                                      <a :href="`/profile/${contributor.handle}`" class="text-dark">[[ contributor.handle ]]</a> <a :href="`https://github.com/${contributor.handle}`" target="_blank"><i class="fab fa-github text-dark"></i></a>
+                                      <a :href="`/profile/${contributor.handle}`" data-toggle="tooltip" title="View profile" class="text-dark">[[ contributor.handle ]]</a> <a :href="`https://github.com/${contributor.handle}`" target="_blank"><i class="fab fa-github text-dark" data-toggle="tooltip" title="View GitHub profile"></i></a>
                                     </div>
                                     <div class="">
                                       <a target="_blank" :href="`https://etherscan.io/address/${contributor.fulfiller_metadata.fulfiller}`">[[ contributor.fulfiller_metadata.fulfiller | truncate ]]</a> Submitted [[ contributor.created_on | moment]]
@@ -231,7 +233,7 @@
                   <div class="p-4 border-bottom font-weight-bold" v-if="bounties.expired">[[ bounties.expired.length ]] Expired [[ 'Bount' | pluralize(bounties.expired.length, 'y', 'ies') ]]</div>
 
                   <ul class="list-unstyled">
-                    <li v-for="(bounty, key) in bounties.expired" :key="bounty.id" class="position-relative font-smaller-1 mt-3 p-3 border-bottom">
+                    <li v-for="(bounty, key) in bounties.expired" :key="bounty.id" class="position-relative font-smaller-1 mt-3 p-3 list-bounty-item">
                       <span class="fa-stack mr-2">
                         <i class="fas fa-circle fa-stack-2x text-danger"></i>
                         <i class="fas fa-user fa-stack-1x fa-inverse"></i>
@@ -248,7 +250,7 @@
                                   <span>[[ bounty.project_type ]]</span> &bull;
                                 </template>
                                 <template v-if="bounty.expires_date">
-                                  <time :datetime="[[ bounty.expires_date ]]" :title="[[ bounty.expires_date ]]">[[ bounty.expires_date | moment ]]</time> &bull;
+                                  <time :datetime="[[ bounty.expires_date ]]" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> &bull;
                                 </template>
                                 <span>[[ bounty.value_true ]] [[ bounty.token_name ]] ([[ bounty.value_in_usd ]] USD)</span>
                                 <a :href="bounty.absolute_url"><i class="fas fa-eye"></i> View Issue Details</a>
@@ -299,7 +301,7 @@
                   <div class="p-4 border-bottom font-weight-bold" v-if="contributorBounties.work_in_progress">[[ contributorBounties.work_in_progress.length ]] [[ 'Bount' | pluralize(contributorBounties.work_in_progress.length, 'y', 'ies') ]] in Progress</div>
 
                   <ul class="list-unstyled">
-                    <li v-for="(bounty, key) in contributorBounties.work_in_progress" :key="bounty.id" class="position-relative font-smaller-1 mt-3 p-3 border-bottom">
+                    <li v-for="(bounty, key) in contributorBounties.work_in_progress" :key="bounty.id" class="position-relative font-smaller-1 mt-3 p-3 list-bounty-item">
                       <span class="fa-stack mr-2">
                         <i class="fas fa-circle fa-stack-2x text-danger"></i>
                         <i class="fas fa-user fa-stack-1x fa-inverse"></i>
@@ -310,13 +312,13 @@
                           <div class="d-flex">
                             <img :src="bounty.avatar_url" alt="" width="40" height="40" class="rounded-circle flex-shrink-0">
                             <div class="d-flex flex-column w-100 ml-3">
-                              <a :href="bounty.absolute_url" class="text-truncate mb-2 text-dark">[[ bounty.title ]] [[bounty.id]]</a>
+                              <a :href="bounty.absolute_url" class="text-truncate mb-2 text-dark">[[ bounty.title ]]</a>
                               <div class="d-flex flex-column flex-md-row justify-content-between">
                                 <template v-if="bounty.project_type">
                                   <span>[[ bounty.project_type ]]</span> &bull;
                                 </template>
                                 <template v-if="bounty.expires_date">
-                                  <time :datetime="[[ bounty.expires_date ]]" :title="[[ bounty.expires_date ]]">[[ bounty.expires_date | moment ]]</time> &bull;
+                                  <time :datetime="[[ bounty.expires_date ]]" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> &bull;
                                 </template>
                                 <span>[[ bounty.value_true ]] [[ bounty.token_name ]] ([[ bounty.value_in_usd ]] USD)</span>
                                 <a :href="bounty.absolute_url"><i class="fas fa-eye"></i> View Issue Details</a>
@@ -324,6 +326,10 @@
                               </div>
                             </div>
                           </div>
+                        </div>
+                        <div>
+                          <a target="_blank" :href="`/issue/fulfill?pk=${bounty.id}`" class="btn btn-sm btn-gc-blue m-2">Submit Work</a>
+                          <button @click="stopWork(key, bounty.id, authProfile)" class="btn btn-sm btn-outline-gc-blue m-2" :disabled="key === disabledBtn">Stop Work</button>
                         </div>
                       </div>
                     </li>
@@ -346,10 +352,10 @@
             <div class="row">
               <div class="col-12">
                 <div class="bg-white rounded border my-4">
-                  <div class="p-4 border-bottom font-weight-bold" v-if="contributorBounties.interested">[[ contributorBounties.interested.length ]] [[ 'Bount' | pluralize(contributorBounties.work_in_progress.length, 'y', 'ies') ]] Applied </div>
+                  <div class="p-4 border-bottom font-weight-bold" v-if="contributorBounties.interested">[[ contributorBounties.interested.length ]] [[ 'Bount' | pluralize(contributorBounties.interested.length, 'y', 'ies') ]] Applied </div>
 
                   <ul class="list-unstyled">
-                    <li v-for="(bounty, key) in contributorBounties.interested" :key="bounty.id" class="position-relative font-smaller-1 mt-3 p-3 border-bottom">
+                    <li v-for="(bounty, key) in contributorBounties.interested" :key="bounty.id" class="position-relative font-smaller-1 mt-3 p-3 list-bounty-item">
                       <span class="fa-stack mr-2">
                         <i class="fas fa-circle fa-stack-2x green"></i>
                         <i class="fas fa-user fa-stack-1x fa-inverse"></i>
@@ -360,13 +366,13 @@
                           <div class="d-flex">
                             <img :src="bounty.avatar_url" alt="" width="40" height="40" class="rounded-circle flex-shrink-0">
                             <div class="d-flex flex-column w-100 ml-3">
-                              <a :href="bounty.absolute_url" class="text-truncate mb-2 text-dark">[[ bounty.title ]][[bounty.id]]</a>
+                              <a :href="bounty.absolute_url" class="text-truncate mb-2 text-dark">[[ bounty.title ]]</a>
                               <div class="d-flex flex-column flex-md-row justify-content-between">
                                 <template v-if="bounty.project_type">
                                   <span>[[ bounty.project_type ]]</span> &bull;
                                 </template>
                                 <template v-if="bounty.expires_date">
-                                  <time :datetime="[[ bounty.expires_date ]]" :title="[[ bounty.expires_date ]]">[[ bounty.expires_date | moment ]]</time> &bull;
+                                  <time :datetime="[[ bounty.expires_date ]]" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> &bull;
                                 </template>
                                 <span>[[ bounty.value_true ]] [[ bounty.token_name ]] ([[ bounty.value_in_usd ]] USD)</span>
                                 <a :href="bounty.absolute_url"><i class="fas fa-eye"></i> View Issue Details</a>
@@ -374,6 +380,9 @@
                               </div>
                             </div>
                           </div>
+                        </div>
+                        <div>
+                          <button @click="stopWork(key, bounty.id, authProfile, 'contributorBounties', 'interested')" class="btn btn-sm btn-outline-gc-blue m-2" :disabled="key === disabledBtn">Stop Work</button>
                         </div>
                       </div>
                     </li>
@@ -393,7 +402,7 @@
                   <div class="p-4 border-bottom font-weight-bold" v-if="contributorBounties.submitted">[[ contributorBounties.submitted.length ]] Work Submitted</div>
 
                   <ul class="list-unstyled">
-                    <li v-for="(bounty, key) in contributorBounties.submitted" :key="bounty.id" class="position-relative font-smaller-1 mt-3 p-3 border-bottom">
+                    <li v-for="(bounty, key) in contributorBounties.submitted" :key="bounty.id" class="position-relative font-smaller-1 mt-3 p-3 list-bounty-item">
                       <span class="fa-stack mr-2">
                         <i class="fas fa-circle fa-stack-2x light-blue"></i>
                         <i class="fas fa-user fa-stack-1x fa-inverse"></i>
@@ -410,7 +419,7 @@
                                   <span>[[ bounty.project_type ]]</span> &bull;
                                 </template>
                                 <template v-if="bounty.expires_date">
-                                  <time :datetime="[[ bounty.expires_date ]]" :title="[[ bounty.expires_date ]]">[[ bounty.expires_date | moment ]]</time> &bull;
+                                  <time :datetime="[[ bounty.expires_date ]]" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> &bull;
                                 </template>
                                 <span>[[ bounty.value_true ]] [[ bounty.token_name ]] ([[ bounty.value_in_usd ]] USD)</span>
                                 <a :href="bounty.absolute_url"><i class="fas fa-eye"></i> View Issue Details</a>
@@ -437,6 +446,11 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with slim=1 %}
     <script src="{% static "v2/js/board.js" %}"></script>
+    <script>
+      $('body').bootstrapTooltip({
+        selector: '[data-toggle="tooltip"]'
+      });
+    </script>
 
   </body>
 </html>

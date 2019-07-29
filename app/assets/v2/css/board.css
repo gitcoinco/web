@@ -8,6 +8,10 @@
   left: 2.25em;
 }
 
+.list-bounty-item + .list-bounty-item {
+  border-top: 1px solid #dee2e6;
+}
+
 .comment-plan {
   color: #666666;
   white-space: pre-line;

@@ -1,5 +1,6 @@
 let contributorBounties = {};
 let bounties = {};
+let authProfile = document.contxt.profile_id;
 
 Vue.mixin({
   methods: {
@@ -63,27 +64,32 @@ Vue.mixin({
         _alert({ message: gettext(msg) }, 'error');
       });
     },
-    stopWork(key, bountyPk, profileId) {
+    stopWork(key, bountyPk, profileId, obj, section) {
       let vm = this;
-      let url = `/actions/bounty/${bountyPk}/interest/${profileId}/uninterested/`;
-      let postStartpWork = fetchData (url, 'POST');
+      // let url = `/actions/bounty/${bountyPk}/interest/${profileId}/uninterested/`;
+      let url = `/actions/bounty/${bountyPk}/interest/remove/`;
 
       vm.disabledBtn = key;
+      if (window.confirm('Do you want to stop working on this bounty?')) {
+        let postStartpWork = fetchData (url, 'POST');
 
-      $.when(postStartpWork).then(response => {
-        vm.contributors.splice(key, 1);
-        vm.disabledBtn = '';
-        _alert({ message: gettext('Contributor removed from bounty.') }, 'success');
-      }, error => {
-        vm.disabledBtn = '';
-        let msg = error.responseJSON.error || 'got an error. please try again, or contact support@gitcoin.co';
+        $.when(postStartpWork).then(response => {
+          vm[obj][section].splice(key, 1);
+          vm.disabledBtn = '';
+          _alert({ message: gettext('Contributor removed from bounty.') }, 'success');
+        }, error => {
+          vm.disabledBtn = '';
+          let msg = error.responseJSON.error || 'got an error. please try again, or contact support@gitcoin.co';
 
-        console.log(error.responseJSON.error);
-        _alert({ message: gettext(msg) }, 'error');
-      });
+          _alert({ message: gettext(msg) }, 'error');
+        });
+      } else {
+        vm.disabledBtn = '';
+      }
     },
     checkData(persona) {
       let vm = this;
+
       if (!Object.keys(vm.bounties).length && persona === 'funder') {
         vm.fetchBounties('open');
         vm.fetchBounties('submitted');
@@ -100,18 +106,11 @@ Vue.mixin({
       let vm = this;
 
       if (document.contxt.persona_is_funder) {
-        // vm.fetchBounties('open');
-        // vm.fetchBounties('submitted');
-        // vm.fetchBounties('expired');
-        vm.checkData('funder')
-        $('#funder-tab').tab('show')
+        vm.checkData('funder');
+        $('#funder-tab').tab('show');
       } else if (document.contxt.persona_is_hunter) {
-        vm.checkData('contributor')
-
-        // vm.fetchContributorBounties('work_in_progress');
-        // vm.fetchContributorBounties('submitted');
-        // vm.fetchContributorBounties('interested');
-        $('#contributor-tab').tab('show')
+        vm.checkData('contributor');
+        $('#contributor-tab').tab('show');
       }
     }
   }
@@ -129,10 +128,11 @@ if (document.getElementById('gc-board')) {
       contributors: [],
       contributorBounties: contributorBounties,
       expandedGroup: {'submitted': [], 'open': []},
-      disabledBtn: false
+      disabledBtn: false,
+      authProfile: authProfile
     },
     mounted() {
-      this.tabOnLoad()
+      this.tabOnLoad();
     }
   });
 }
