@@ -652,7 +652,7 @@ next_valid_timestamp: {next_valid_timestamp}
     def get_converted_amount(self):
         try:
             if self.token_symbol == "ETH" or self.token_symbol == "WETH":
-                return Decimal(self.amount_per_period * eth_usd_conv_rate())
+                return Decimal(float(self.amount_per_period) * float(eth_usd_conv_rate()))
             else:
                 value_token_to_eth = Decimal(convert_amount(
                     self.amount_per_period,
