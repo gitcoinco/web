@@ -2836,7 +2836,7 @@ def board(request):
     context = {
         'is_outside': True,
         'active': 'dashboard',
-        'title': 'dashboard',
+        'title': 'Dashboard',
         'card_title': _('Dashboard'),
         'card_desc': _('Manage all your activity.'),
         'avatar_url': static('v2/images/helmet.png'),

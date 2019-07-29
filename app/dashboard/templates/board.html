@@ -32,10 +32,6 @@
     {% include 'shared/nav.html' %}
     <div id="gc-board" v-cloak>
 
-      <div class="header" style="min-height: 200px;">
-
-
-      </div>
       <div class="container">
         <nav class="mx-3">
           <div class="nav nav-tabs" id="myTab" role="tablist">
@@ -75,13 +71,13 @@
 
                   <div class="p-4 border-bottom font-weight-bold" v-if="bounties.open">[[ bounties.open.length ]] Open [[ 'Bount' | pluralize(bounties.open.length, 'y', 'ies') ]]</div>
 
-                  <ul class="list-unstyled">
+                  <ul class="list-unstyled list-bounty">
                     <li v-for="(bounty, key) in bounties.open" :key="bounty.id" class="position-relative font-smaller-1 mt-3 p-3 list-bounty-item" :class="isExpanded(key, 'open') ? 'line-deco' : ''">
                       <span class="fa-stack mr-2">
                         <i class="fas fa-circle fa-stack-2x green"></i>
                         <i class="fas fa-user fa-stack-1x fa-inverse"></i>
                       </span>
-                      <span class="font-weight-bold">You have [[ bounty.users_count ]] [[ 'applicantion' | pluralize(bounty.users_count) ]] on this bounty</span>
+                      <span class="font-weight-bold">You have [[ bounty.users_count ]] [[ 'applicant' | pluralize(bounty.users_count) ]] on this bounty</span>
                       <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
                         <div class="w-75">
                           <div class="d-flex">
@@ -103,9 +99,9 @@
                           </div>
                         </div>
                         <button v-if="bounty.users_count > 0" @click="toggleCollapse(key, 'open'), fetchApplicants(bounty.id, key, 'open')" class="btn blue">View Applicants <i class="fa fa-fw" :class="isExpanded(key, 'open')? 'fa-chevron-up': 'fa-chevron-down'"></i></button>
-                        <div v-else>
-                          <a :href="`bounty/change/${bounty.id}/`" class="btn btn-gc-blue btn-sm"> <i class="fas fa-star"></i> Feature Bounty</a>
-                          <a :href="`bounty/change/${bounty.id}/`" class="btn btn-gc-blue btn-sm"> <i class="fas fa-user"></i> Invite Contributors</a>
+                        <div class="d-flex" v-else>
+                          <a :href="`/bounty/change/${bounty.id}`" target="_blank" class="btn btn-gc-blue btn-sm m-2"> <i class="fas fa-star"></i> Feature Bounty</a>
+                          <a :href="`/bounty/change/${bounty.id}`" target="_blank" class="btn btn-gc-blue btn-sm m-2"> <i class="fas fa-user"></i> Invite Contributors</a>
                         </div>
                       </div>
                       <div v-show="isExpanded(key, 'open')">
@@ -168,13 +164,13 @@
 
                   <div class="p-4 border-bottom font-weight-bold" v-if="bounties.submitted">[[ bounties.submitted.length ]] Submitted [[ 'Bount' | pluralize(bounties.submitted.length, 'y', 'ies') ]]</div>
 
-                  <ul class="list-unstyled">
+                  <ul class="list-unstyled list-bounty">
                     <li v-for="(bounty, key) in bounties.submitted" :key="bounty.id" class="position-relative font-smaller-1 mt-3 p-3 list-bounty-item" :class="isExpanded(key, 'submitted')? 'line-deco': ''">
                       <span class="fa-stack mr-2">
                         <i class="fas fa-circle fa-stack-2x light-blue"></i>
                         <i class="fas fa-copy fa-stack-1x fa-inverse"></i>
                       </span>
-                      <span class="font-weight-bold">You have [[ bounty.users_count ]] [[ 'applicantion' | pluralize(bounty.users_count) ]] on this bounty</span>
+                      <span class="font-weight-bold">You have [[ bounty.users_count ]] [[ 'applicant' | pluralize(bounty.users_count) ]] on this bounty</span>
                       <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
                         <div class="w-75">
                           <div class="d-flex">
@@ -238,7 +234,7 @@
                 <div class="bg-white rounded border my-4">
                   <div class="p-4 border-bottom font-weight-bold" v-if="bounties.expired">[[ bounties.expired.length ]] Expired [[ 'Bount' | pluralize(bounties.expired.length, 'y', 'ies') ]]</div>
 
-                  <ul class="list-unstyled">
+                  <ul class="list-unstyled list-bounty">
                     <li v-for="(bounty, key) in bounties.expired" :key="bounty.id" class="position-relative font-smaller-1 mt-3 p-3 list-bounty-item">
                       <span class="fa-stack mr-2">
                         <i class="fas fa-circle fa-stack-2x text-danger"></i>
@@ -307,7 +303,7 @@
                 <div class="bg-white rounded border my-4">
                   <div class="p-4 border-bottom font-weight-bold" v-if="contributorBounties.work_in_progress">[[ contributorBounties.work_in_progress.length ]] [[ 'Bount' | pluralize(contributorBounties.work_in_progress.length, 'y', 'ies') ]] in Progress</div>
 
-                  <ul class="list-unstyled">
+                  <ul class="list-unstyled list-bounty">
                     <li v-for="(bounty, key) in contributorBounties.work_in_progress" :key="bounty.id" class="position-relative font-smaller-1 mt-3 p-3 list-bounty-item">
                       <span class="fa-stack mr-2">
                         <i class="fas fa-circle fa-stack-2x text-danger"></i>
@@ -336,7 +332,7 @@
                         </div>
                         <div>
                           <a target="_blank" :href="`/issue/fulfill?pk=${bounty.id}`" class="btn btn-sm btn-gc-blue m-2">Submit Work</a>
-                          <button @click="stopWork(key, bounty.id, authProfile)" class="btn btn-sm btn-outline-gc-blue m-2" :disabled="key === disabledBtn">Stop Work</button>
+                          <button @click="stopWork(key, bounty.id, authProfile, 'contributorBounties', 'work_in_progress')" class="btn btn-sm btn-outline-gc-blue m-2" :disabled="key === disabledBtn">Stop Work</button>
                         </div>
                       </div>
                     </li>
@@ -362,7 +358,7 @@
                 <div class="bg-white rounded border my-4">
                   <div class="p-4 border-bottom font-weight-bold" v-if="contributorBounties.interested">[[ contributorBounties.interested.length ]] [[ 'Bount' | pluralize(contributorBounties.interested.length, 'y', 'ies') ]] Applied </div>
 
-                  <ul class="list-unstyled">
+                  <ul class="list-unstyled list-bounty">
                     <li v-for="(bounty, key) in contributorBounties.interested" :key="bounty.id" class="position-relative font-smaller-1 mt-3 p-3 list-bounty-item">
                       <span class="fa-stack mr-2">
                         <i class="fas fa-circle fa-stack-2x green"></i>
@@ -410,7 +406,7 @@
                 <div class="bg-white rounded border my-4">
                   <div class="p-4 border-bottom font-weight-bold" v-if="contributorBounties.work_submitted">[[ contributorBounties.work_submitted.length ]] Work Submitted</div>
 
-                  <ul class="list-unstyled">
+                  <ul class="list-unstyled list-bounty">
                     <li v-for="(bounty, key) in contributorBounties.work_submitted" :key="bounty.id" class="position-relative font-smaller-1 mt-3 p-3 list-bounty-item">
                       <span class="fa-stack mr-2">
                         <i class="fas fa-circle fa-stack-2x light-blue"></i>
