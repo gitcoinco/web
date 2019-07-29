@@ -2812,7 +2812,7 @@ class Profile(SuperModel):
             (dashboard.models.ActivityQuerySet): The query results.
 
         """
-        
+
         if not self.is_org:
             all_activities = self.activities
         else:
@@ -3268,7 +3268,8 @@ class HackathonEvent(SuperModel):
     logo_svg = models.FileField(blank=True)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    background_color = models.CharField(max_length=255, null=True, blank=True, help_text='hexcode for the banner')
+    background_color = models.CharField(max_length=255, null=True, blank=True, help_text='hexcode for the banner, default to white')
+    text_color = models.CharField(max_length=255, null=True, blank=True, help_text='hexcode for the text, default to black')
     identifier = models.CharField(max_length=255, default='', help_text='used for custom styling for the banner')
     sponsors = models.ManyToManyField(Sponsor, through='HackathonSponsor')
 
