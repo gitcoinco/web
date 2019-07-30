@@ -1815,7 +1815,7 @@ def profile_job_opportunity(request, handle):
     uploaded_file = request.FILES.get('job_cv')
     error_response = invalid_file_response(uploaded_file, supported=['application/pdf'])
     # 400 is ok because file upload is optional here
-    if error_response and error_response['status'] != '400':
+    if error_response and error_response['status'] != 400:
         return JsonResponse(error_response)
     try:
         profile = profile_helper(handle, True)
