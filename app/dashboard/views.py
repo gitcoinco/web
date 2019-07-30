@@ -2594,7 +2594,7 @@ def change_bounty(request, bounty_id):
         else:
             raise Http404
 
-    keys = ['experience_level', 'project_length', 'bounty_type', 'featuring_date', 'bounty_categories',
+    keys = ['experience_level', 'project_length', 'bounty_type', 'featuring_date', 'bounty_categories', 'issue_description',
             'permission_type', 'project_type', 'reserved_for_user_handle', 'is_featured', 'admin_override_suspend_auto_approval']
 
     if request.body:
@@ -2621,18 +2621,19 @@ def change_bounty(request, bounty_id):
         new_reservation = False
         for key in keys:
             value = params.get(key, 0)
-            if key == 'featuring_date':
-                value = timezone.make_aware(
-                    timezone.datetime.fromtimestamp(int(value)),
-                    timezone=UTC)
-            if key == 'bounty_categories':
-                value = value.split(',')
-            old_value = getattr(bounty, key)
-            if value != old_value:
-                setattr(bounty, key, value)
-                bounty_changed = True
-                if key == 'reserved_for_user_handle' and value:
-                    new_reservation = True
+            if value != 0:
+                if key == 'featuring_date':
+                    value = timezone.make_aware(
+                        timezone.datetime.fromtimestamp(int(value)),
+                        timezone=UTC)
+                if key == 'bounty_categories':
+                    value = value.split(',')
+                old_value = getattr(bounty, key)
+                if value != old_value:
+                    setattr(bounty, key, value)
+                    bounty_changed = True
+                    if key == 'reserved_for_user_handle' and value:
+                        new_reservation = True
 
         if not bounty_changed:
             return JsonResponse({
@@ -2838,7 +2839,7 @@ def change_user_profile_banner(request):
         profile.save()
     except (ProfileNotFoundException, ProfileHiddenException):
         raise Http404
-        
+
     response = {
         'status': 200,
         'message': 'User banner image has been updated.'
