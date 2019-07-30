@@ -2164,8 +2164,6 @@ class Profile(SuperModel):
         if is_funder:
             self.persona_is_funder = True
 
-        self.save()
-
     def has_custom_avatar(self):
         from avatar.models import CustomAvatar
         return CustomAvatar.objects.filter(active=True, profile=self).exists()
