@@ -53,7 +53,7 @@ from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, ge
 from economy.utils import convert_token_to_usdt
 from eth_utils import to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from git.utils import get_auth_url, get_github_user_data, is_github_token_valid, search_users
+from git.utils import get_auth_url, get_gh_issue_details, get_github_user_data, is_github_token_valid, search_users
 from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
 from marketing.mails import admin_contact_funder, bounty_uninterested
@@ -2663,6 +2663,37 @@ def change_bounty(request, bounty_id):
     }
     return TemplateResponse(request, 'bounty/change.html', params)
 
+@csrf_exempt
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def sync_bounty_with_github(request, bounty_id):
+    user = request.user if request.user.is_authenticated else None
+
+    if not user:
+        if request.body:
+            return JsonResponse(
+                {'error': _('You must be authenticated via github to use this feature!')},
+                status=401)
+        else:
+            return redirect('/login/github?next=' + request.get_full_path())
+
+    try:
+        bounty_id = int(bounty_id)
+        bounty = Bounty.objects.get(pk=bounty_id)
+    except:
+        if request.body:
+            return JsonResponse({'error': _('Bounty doesn\'t exist!')}, status=404)
+        else:
+            raise Http404
+    logger.info(settings.GITHUB_API_TOKEN)
+    args = bounty.github_url.split('/')
+    github_details = get_gh_issue_details(bounty.bounty_owner_github_username, args[4], int(args[6]), settings.GITHUB_API_TOKEN)
+    logger.info(github_details)
+    bounty.github_issue_details = github_details
+    bounty.issue_description = github_details['description']
+    bounty.title = github_details['title']
+    bounty.save()
+
+    return redirect(f'/issue/{args[3]}/{args[4]}/{args[6]}/{bounty.standard_bounties_id}')
 
 def get_users(request):
     token = request.GET.get('token', None)

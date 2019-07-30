@@ -155,6 +155,7 @@ urlpatterns = [
     re_path(r'^bounty/quickstart/?', dashboard.views.quickstart, name='quickstart'),
     url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
     re_path(r'^bounty/change/(?P<bounty_id>.*)?', dashboard.views.change_bounty, name='change_bounty'),
+    re_path(r'^bounty/resync/(?P<bounty_id>.*)?', dashboard.views.sync_bounty_with_github, name='sync_bounty_with_github'),
     url(r'^funding/new/?', dashboard.views.new_bounty, name='new_funding'),  # TODO: Remove
     url(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),  # TODO: Remove
     # TODO: Rename below to bounty/

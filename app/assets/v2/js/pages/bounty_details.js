@@ -1003,7 +1003,7 @@ var do_actions = function(result) {
   let show_extend_deadline = isBountyOwner(result) && !is_status_expired && !is_status_done;
   let show_invoice = isBountyOwner(result);
   let show_notify_funder = is_open && has_fulfilled;
-
+  let show_sync_bounty = isBountyOwner(result) && is_open && result['repo_type'] == 'public';
 
   const show_suspend_auto_approval = currentProfile.isStaff && result['permission_type'] == 'approval' && !result['admin_override_suspend_auto_approval'];
   const show_admin_methods = currentProfile.isStaff;
@@ -1140,7 +1140,17 @@ var do_actions = function(result) {
 
     actions.push(_entry);
   }
-
+  if (show_sync_bounty) {
+    const _entry = {
+      enabled: true,
+      href: '/bounty/resync/' + result['pk'],
+      text: gettext('Resync Description'),
+      parent: 'right_actions',
+      title: gettext('Sync Bounty Description with Github')
+    };
+  
+    actions.push(_entry);
+  }
   if (show_change_bounty) {
     const _entry = [
       {
@@ -1159,8 +1169,10 @@ var do_actions = function(result) {
       // }
     ];
 
+
     actions.push(..._entry);
   }
+
 
   if (show_github_link) {
     let github_url = result['github_url'];
