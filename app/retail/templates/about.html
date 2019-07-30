@@ -190,12 +190,13 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-12 offset-lg-2 col-lg-8 row">
-          {% for avatar, name, role, handle, linkedin, feature, food in core_team %}
-            <div class="col-12 col-md-6 col-lg-4">
+          {% for name, role, handle, linkedin, feature, food in core_team %}
+            <div class="col-10 col-md-6 col-lg-3">
               <div class="card">
-                <img class="avatar" src="{{avatar}}">
-                <p class="name">{{name}}</p>
+                <a href="/profile/{{handle}}">
+                  <img class="avatar" src="https://gitcoin.co/dynamic/avatar/{{handle}}">
+                </a>
+                <p class="name">{{name}} (<a href="/profile/{{handle}}">@{{handle}}</a>)</p>
                 <p class="role font-caption">{{role}}</p>
                 <p class="font-caption">
                   <span class="title">Favorite Gitcoin Feature</span></br>
@@ -215,7 +216,6 @@
               </div>
             </div>
           {% endfor %}
-        </div>
       </div>
       {% include 'community.html' with h1="Community"  h2="Gitcoin's Top Community Members" community_members=community_members %}
       {% include 'community.html' with h1="Alumni"  h2=total_alumnis|add:" community members have 'graduated' into full time work in the space (that we know of!)" community_members=alumni %}
