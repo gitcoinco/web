@@ -1813,13 +1813,14 @@ def profile_job_opportunity(request, handle):
     """
     uploaded_file = request.FILES.get('job_cv')
     error_response = invalid_file_response(uploaded_file, supported=['application/pdf'])
+    if not error_response:
+        profile = profile_helper(handle, True)
+        # No file is ok if there is a resume on the profile
+        error_response = no_file_response(uploaded_file) if not profile.resume else None
     # 400 is ok because file upload is optional here
     if error_response and error_response['status'] != '400':
         return JsonResponse(error_response)
 
-    profile = profile_helper(handle, True)
-    # No file is ok if there is a resume on the profile
-    error_response = no_file_response(uploaded_file) if not profile.resume else None
     try:
         if request.user.profile.id != profile.id:
             return JsonResponse(
