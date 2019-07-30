@@ -2963,6 +2963,7 @@ def psave_profile(sender, instance, **kwargs):
     instance.handle = instance.handle.replace(' ', '')
     instance.handle = instance.handle.replace('@', '')
     instance.handle = instance.handle.lower()
+    instance.calculate_and_save_persona()
     instance.actions_count = instance.get_num_actions
 
 
