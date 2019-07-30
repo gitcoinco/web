@@ -44,7 +44,6 @@ from django.utils.translation import gettext_lazy as _
 import pytz
 import requests
 from app.utils import get_upload_filename
-from dashboard.sql.persona import PERSONA_SQL
 from dashboard.tokens import addr_to_token
 from economy.models import ConversionRate, SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
@@ -2145,22 +2144,24 @@ class Profile(SuperModel):
         return on_repo | tipped_for
 
     def calculate_and_save_persona(self):
-        network = settings.ENABLE_NOTIFICATIONS_ON_NETWORK
-        designation = None
-        with connection.cursor() as cursor:
-            try:
-                cursor.execute(PERSONA_SQL, [network, self.id, network])
-                result = cursor.fetchone()
-                _, _, designation, _, _ = result
-            except Exception as e:
-                logger.info(
-                    'Exception calculating persona for user %s: %s' % (self.id,
-                                                                       e))
+        # respect to defaults
+        is_hunter = self.persona_is_hunter
+        is_funder = self.persona_is_funder
 
-        if designation and designation == "bounty_hunter":
+        # calculate persona
+        is_hunter |= self.interested.exists()
+        is_hunter |= self.received_tips.exists()
+        is_hunter |= self.grant_admin.exists()
+
+        is_funder |= self.fulfilled.exists()
+        is_funder |= self.sent_tips.exists()
+        is_funder |= self.grant_contributor.exists()
+
+        # update db
+        if is_hunter:
             self.persona_is_hunter = True
 
-        if designation and designation == "funder":
+        if is_funder:
             self.persona_is_funder = True
 
         self.save()
