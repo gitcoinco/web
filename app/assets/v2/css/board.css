@@ -76,3 +76,20 @@
 .light-blue {
   color: #008EFF;
 }
+
+.list-bounty-item_content {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .list-bounty-item_logo {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (min-width: 992px) {
+  .list-bounty-item_content {
+    width: 75%;
+  }
+}

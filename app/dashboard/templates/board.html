@@ -79,27 +79,27 @@
                       </span>
                       <span class="font-weight-bold">You have [[ bounty.users_count ]] [[ 'applicant' | pluralize(bounty.users_count) ]] on this bounty</span>
                       <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
-                        <div class="w-75">
-                          <div class="d-flex">
-                            <img :src="bounty.avatar_url" alt="" width="40" height="40" class="rounded-circle flex-shrink-0">
-                            <div class="d-flex flex-column w-100 ml-3">
+                        <div class="list-bounty-item_content">
+                          <div class="d-flex flex-column flex-md-row">
+                            <img :src="bounty.avatar_url" alt="" width="60" height="60" class="rounded-circle flex-shrink-0 m-auto list-bounty-item_logo">
+                            <div class="d-flex flex-column w-100 ml-md-3">
                               <a :href="bounty.absolute_url" class="text-truncate mb-2 text-dark">[[ bounty.title ]]</a>
-                              <div class="d-flex flex-column flex-md-row justify-content-between">
+                              <div class="d-flex flex-column flex-md-row justify-content-between font-smaller-2">
                                 <template v-if="bounty.project_type">
-                                  <span>[[ bounty.project_type ]]</span> &bull;
+                                  <span class="my-1">[[ bounty.project_type ]]</span> <span class="d-md-block d-none mx-2">&bull;</span>
                                 </template>
                                 <template v-if="bounty.expires_date">
-                                  <time :datetime="[[ bounty.expires_date ]]" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> &bull;
+                                  <time :datetime="[[ bounty.expires_date ]]" class="my-1" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> <span class="d-md-block d-none mx-2">&bull;</span>
                                 </template>
-                                <span>[[ bounty.value_true ]] [[ bounty.token_name ]] ([[ bounty.value_in_usd ]] USD)</span>
-                                <a :href="bounty.absolute_url"><i class="fas fa-eye"></i> View Issue Details</a>
-                                <a :href="bounty.github_url" target="_blank"><i class="fab fa-github"></i> View Github</a>
+                                <span class="my-1">[[ bounty.value_true ]] [[ bounty.token_name ]] ([[ bounty.value_in_usd ]] USD)</span>
+                                <a :href="bounty.absolute_url" class="mx-md-2 my-1"><i class="fas fa-eye"></i> View Issue Details</a>
+                                <a :href="bounty.github_url" class="mx-md-2 my-1" target="_blank"><i class="fab fa-github"></i> View Github</a>
                               </div>
                             </div>
                           </div>
                         </div>
                         <button v-if="bounty.users_count > 0" @click="toggleCollapse(key, 'open'), fetchApplicants(bounty.id, key, 'open')" class="btn blue">View Applicants <i class="fa fa-fw" :class="isExpanded(key, 'open')? 'fa-chevron-up': 'fa-chevron-down'"></i></button>
-                        <div class="d-flex" v-else>
+                        <div class="d-flex flex-column justify-content-center" v-else>
                           <a :href="`/bounty/change/${bounty.id}`" target="_blank" class="btn btn-gc-blue btn-sm m-2"> <i class="fas fa-star"></i> Feature Bounty</a>
                           <a :href="`/bounty/change/${bounty.id}`" target="_blank" class="btn btn-gc-blue btn-sm m-2"> <i class="fas fa-user"></i> Invite Contributors</a>
                         </div>
@@ -108,7 +108,7 @@
                         <ul class="list-unstyled m-5">
                           <li class="mb-4" v-for="(contributor, key) in bounty.contributors">
                             <div class="d-flex flex-column flex-md-row justify-content-between">
-                              <div class="w-75">
+                              <div class="list-bounty-item_content">
                                 <div class="d-flex">
                                   <img :src="contributor.avatar_url" alt="" width="40" height="40" class="flex-shrink-0 mr-2 rounded-circle">
                                   <div class="d-flex flex-column">
@@ -119,14 +119,14 @@
                                       <div class="d-inline" style="color:#25E899;">
                                         <i class="far fa-star" :class="star <= contributor.star_rating.toFixed() ? 'fas' : 'far'" v-for="star in contributor.star_rating.toFixed(), 5"></i>
                                       </div>
-                                        ([[ contributor.total_rating ]] ratings) &bull;
-                                        #[[ contributor.leaderboard_rank ]] contributor &bull;
+                                        ([[ contributor.total_rating ]] ratings) <span class="mx-2">&bull;</span>
+                                        #[[ contributor.leaderboard_rank ]] contributor <span class="mx-2">&bull;</span>
                                         [[ contributor.fulfilled_bounties ]] bounties completed
                                     </div>
                                   </div>
                                 </div>
                               </div>
-                              <div>
+                              <div class="d-flex flex-column flex-md-row">
                                 <a target="_blank" :href="`${bounty.absolute_url}?mutate_worker_action=approve&worker=${contributor.handle}`" class="btn btn-sm btn-gc-blue m-2"><i class="fas fa-check"></i> Accept</a>
                                 <a target="_blank" :href="`${bounty.absolute_url}?mutate_worker_action=reject&worker=${contributor.handle}`" class="btn btn-sm btn-outline-gc-blue m-2"><i class="fas fa-times"></i> Reject</a>
                               </div>
@@ -172,21 +172,21 @@
                       </span>
                       <span class="font-weight-bold">You have [[ bounty.users_count ]] [[ 'applicant' | pluralize(bounty.users_count) ]] on this bounty</span>
                       <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
-                        <div class="w-75">
-                          <div class="d-flex">
-                            <img :src="bounty.avatar_url" alt="" width="40" height="40" class="rounded-circle flex-shrink-0">
-                            <div class="d-flex flex-column w-100 ml-3">
+                        <div class="list-bounty-item_content">
+                          <div class="d-flex flex-column flex-md-row">
+                            <img :src="bounty.avatar_url" alt="" width="60" height="60" class="rounded-circle flex-shrink-0 m-auto list-bounty-item_logo">
+                            <div class="d-flex flex-column w-100 ml-md-3">
                               <a :href="bounty.absolute_url" class="text-truncate mb-2 text-dark">[[ bounty.title ]]</a>
-                              <div class="d-flex flex-column flex-md-row justify-content-between">
+                              <div class="d-flex flex-column flex-md-row justify-content-between font-smaller-2">
                                 <template v-if="bounty.project_type">
-                                  <span>[[ bounty.project_type ]]</span> &bull;
+                                  <span class="my-1">[[ bounty.project_type ]]</span> <span class="d-md-block d-none mx-2">&bull;</span>
                                 </template>
                                 <template v-if="bounty.expires_date">
-                                  <time :datetime="[[ bounty.expires_date ]]" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> &bull;
+                                  <time :datetime="[[ bounty.expires_date ]]" class="my-1" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> <span class="d-md-block d-none mx-2">&bull;</span>
                                 </template>
-                                <span>[[ bounty.value_true ]] [[ bounty.token_name ]] ([[ bounty.value_in_usd ]] USD)</span>
-                                <a :href="bounty.absolute_url"><i class="fas fa-eye"></i> View Issue Details</a>
-                                <a :href="bounty.github_url" target="_blank"><i class="fab fa-github"></i> View Github</a>
+                                <span class="my-1">[[ bounty.value_true ]] [[ bounty.token_name ]] ([[ bounty.value_in_usd ]] USD)</span>
+                                <a :href="bounty.absolute_url" class="mx-md-2 my-1"><i class="fas fa-eye"></i> View Issue Details</a>
+                                <a :href="bounty.github_url" class="mx-md-2 my-1" target="_blank"><i class="fab fa-github"></i> View Github</a>
                               </div>
                             </div>
                           </div>
@@ -197,7 +197,7 @@
                         <ul class="list-unstyled m-5">
                           <li class="mb-4" v-for="(contributor, key) in bounty.contributors">
                             <div class="d-flex flex-column flex-md-row justify-content-between">
-                              <div class="w-75">
+                              <div class="list-bounty-item_content">
                                 <div class="d-flex">
                                   <img :src="contributor.avatar_url" alt="" width="40" height="40" class="flex-shrink-0 mr-2 rounded-circle">
                                   <div class="d-flex flex-column">
@@ -242,26 +242,28 @@
                       </span>
                       <span class="font-weight-bold">You have expired bounties</span>
                       <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
-                        <div class="w-75">
-                          <div class="d-flex">
-                            <img :src="bounty.avatar_url" alt="" width="40" height="40" class="rounded-circle flex-shrink-0">
-                            <div class="d-flex flex-column w-100 ml-3">
+                        <div class="list-bounty-item_content">
+                          <div class="d-flex flex-column flex-md-row">
+                            <img :src="bounty.avatar_url" alt="" width="60" height="60" class="rounded-circle flex-shrink-0 m-auto list-bounty-item_logo">
+                            <div class="d-flex flex-column w-100 ml-md-3">
                               <a :href="bounty.absolute_url" class="text-truncate mb-2 text-dark">[[ bounty.title ]]</a>
-                              <div class="d-flex flex-column flex-md-row justify-content-between">
+                              <div class="d-flex flex-column flex-md-row justify-content-between font-smaller-2">
                                 <template v-if="bounty.project_type">
-                                  <span>[[ bounty.project_type ]]</span> &bull;
+                                  <span class="my-1">[[ bounty.project_type ]]</span> <span class="d-md-block d-none mx-2">&bull;</span>
                                 </template>
                                 <template v-if="bounty.expires_date">
-                                  <time :datetime="[[ bounty.expires_date ]]" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> &bull;
+                                  <time :datetime="[[ bounty.expires_date ]]" class="my-1" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> <span class="d-md-block d-none mx-2">&bull;</span>
                                 </template>
-                                <span>[[ bounty.value_true ]] [[ bounty.token_name ]] ([[ bounty.value_in_usd ]] USD)</span>
-                                <a :href="bounty.absolute_url"><i class="fas fa-eye"></i> View Issue Details</a>
-                                <a :href="bounty.github_url" target="_blank"><i class="fab fa-github"></i> View Github</a>
+                                <span class="my-1">[[ bounty.value_true ]] [[ bounty.token_name ]] ([[ bounty.value_in_usd ]] USD)</span>
+                                <a :href="bounty.absolute_url" class="mx-md-2 my-1"><i class="fas fa-eye"></i> View Issue Details</a>
+                                <a :href="bounty.github_url" class="mx-md-2 my-1" target="_blank"><i class="fab fa-github"></i> View Github</a>
                               </div>
                             </div>
                           </div>
                         </div>
-                        <a :href="bounty.absolute_url" class="btn btn-sm btn-gc-blue m-2"> <i class="fas fa-clock"></i> Extend Expiration</a>
+                        <div class="d-flex flex-column justify-content-center">
+                          <a :href="bounty.absolute_url" class="btn btn-sm btn-gc-blue m-2"> <i class="fas fa-clock"></i> Extend Expiration</a>
+                        </div>
                       </div>
                     </li>
                     <li class="text-center my-5" :class="{'d-none': isLoading.expired || bounties.expired && bounties.expired.length > 0}" v-cloak>
@@ -311,21 +313,21 @@
                       </span>
                       <span class="font-weight-bold">You are currently working on this bounty </span>
                       <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
-                        <div class="w-75">
-                          <div class="d-flex">
-                            <img :src="bounty.avatar_url" alt="" width="40" height="40" class="rounded-circle flex-shrink-0">
-                            <div class="d-flex flex-column w-100 ml-3">
+                        <div class="list-bounty-item_content">
+                          <div class="d-flex flex-column flex-md-row">
+                            <img :src="bounty.avatar_url" alt="" width="60" height="60" class="rounded-circle flex-shrink-0 m-auto list-bounty-item_logo">
+                            <div class="d-flex flex-column w-100 ml-md-3">
                               <a :href="bounty.absolute_url" class="text-truncate mb-2 text-dark">[[ bounty.title ]]</a>
-                              <div class="d-flex flex-column flex-md-row justify-content-between">
+                              <div class="d-flex flex-column flex-md-row justify-content-between font-smaller-2">
                                 <template v-if="bounty.project_type">
-                                  <span>[[ bounty.project_type ]]</span> &bull;
+                                  <span class="my-1">[[ bounty.project_type ]]</span> <span class="d-md-block d-none mx-2">&bull;</span>
                                 </template>
                                 <template v-if="bounty.expires_date">
-                                  <time :datetime="[[ bounty.expires_date ]]" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> &bull;
+                                  <time :datetime="[[ bounty.expires_date ]]" class="my-1" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> <span class="d-md-block d-none mx-2">&bull;</span>
                                 </template>
-                                <span>[[ bounty.value_true ]] [[ bounty.token_name ]] ([[ bounty.value_in_usd ]] USD)</span>
-                                <a :href="bounty.absolute_url"><i class="fas fa-eye"></i> View Issue Details</a>
-                                <a :href="bounty.github_url" target="_blank"><i class="fab fa-github"></i> View Github</a>
+                                <span class="my-1">[[ bounty.value_true ]] [[ bounty.token_name ]] ([[ bounty.value_in_usd ]] USD)</span>
+                                <a :href="bounty.absolute_url" class="mx-md-2 my-1"><i class="fas fa-eye"></i> View Issue Details</a>
+                                <a :href="bounty.github_url" class="mx-md-2 my-1" target="_blank"><i class="fab fa-github"></i> View Github</a>
                               </div>
                             </div>
                           </div>
@@ -366,21 +368,21 @@
                       </span>
                       <span class="font-weight-bold">You are awaiting approval </span>
                       <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
-                        <div class="w-75">
-                          <div class="d-flex">
-                            <img :src="bounty.avatar_url" alt="" width="40" height="40" class="rounded-circle flex-shrink-0">
-                            <div class="d-flex flex-column w-100 ml-3">
+                        <div class="list-bounty-item_content">
+                          <div class="d-flex flex-column flex-md-row">
+                            <img :src="bounty.avatar_url" alt="" width="60" height="60" class="rounded-circle flex-shrink-0 m-auto list-bounty-item_logo">
+                            <div class="d-flex flex-column w-100 ml-md-3">
                               <a :href="bounty.absolute_url" class="text-truncate mb-2 text-dark">[[ bounty.title ]]</a>
-                              <div class="d-flex flex-column flex-md-row justify-content-between">
+                              <div class="d-flex flex-column flex-md-row justify-content-between font-smaller-2">
                                 <template v-if="bounty.project_type">
-                                  <span>[[ bounty.project_type ]]</span> &bull;
+                                  <span class="my-1">[[ bounty.project_type ]]</span> <span class="d-md-block d-none mx-2">&bull;</span>
                                 </template>
                                 <template v-if="bounty.expires_date">
-                                  <time :datetime="[[ bounty.expires_date ]]" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> &bull;
+                                  <time :datetime="[[ bounty.expires_date ]]" class="my-1" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> <span class="d-md-block d-none mx-2">&bull;</span>
                                 </template>
-                                <span>[[ bounty.value_true ]] [[ bounty.token_name ]] ([[ bounty.value_in_usd ]] USD)</span>
-                                <a :href="bounty.absolute_url"><i class="fas fa-eye"></i> View Issue Details</a>
-                                <a :href="bounty.github_url" target="_blank"><i class="fab fa-github"></i> View Github</a>
+                                <span class="my-1">[[ bounty.value_true ]] [[ bounty.token_name ]] ([[ bounty.value_in_usd ]] USD)</span>
+                                <a :href="bounty.absolute_url" class="mx-md-2 my-1"><i class="fas fa-eye"></i> View Issue Details</a>
+                                <a :href="bounty.github_url" class="mx-md-2 my-1" target="_blank"><i class="fab fa-github"></i> View Github</a>
                               </div>
                             </div>
                           </div>
@@ -414,21 +416,21 @@
                       </span>
                       <span class="font-weight-bold">You are awaiting payment </span>
                       <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
-                        <div class="w-75">
-                          <div class="d-flex">
-                            <img :src="bounty.avatar_url" alt="" width="40" height="40" class="rounded-circle flex-shrink-0">
-                            <div class="d-flex flex-column w-100 ml-3">
+                        <div class="list-bounty-item_content">
+                          <div class="d-flex flex-column flex-md-row">
+                            <img :src="bounty.avatar_url" alt="" width="60" height="60" class="rounded-circle flex-shrink-0 m-auto list-bounty-item_logo">
+                            <div class="d-flex flex-column w-100 ml-md-3">
                               <a :href="bounty.absolute_url" class="text-truncate mb-2 text-dark">[[ bounty.title ]]</a>
-                              <div class="d-flex flex-column flex-md-row justify-content-between">
+                              <div class="d-flex flex-column flex-md-row justify-content-between font-smaller-2">
                                 <template v-if="bounty.project_type">
-                                  <span>[[ bounty.project_type ]]</span> &bull;
+                                  <span class="my-1">[[ bounty.project_type ]]</span> <span class="d-md-block d-none mx-2">&bull;</span>
                                 </template>
                                 <template v-if="bounty.expires_date">
-                                  <time :datetime="[[ bounty.expires_date ]]" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> &bull;
+                                  <time :datetime="[[ bounty.expires_date ]]" class="my-1" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> <span class="d-md-block d-none mx-2">&bull;</span>
                                 </template>
-                                <span>[[ bounty.value_true ]] [[ bounty.token_name ]] ([[ bounty.value_in_usd ]] USD)</span>
-                                <a :href="bounty.absolute_url"><i class="fas fa-eye"></i> View Issue Details</a>
-                                <a :href="bounty.github_url" target="_blank"><i class="fab fa-github"></i> View Github</a>
+                                <span class="my-1">[[ bounty.value_true ]] [[ bounty.token_name ]] ([[ bounty.value_in_usd ]] USD)</span>
+                                <a :href="bounty.absolute_url" class="mx-md-2 my-1"><i class="fas fa-eye"></i> View Issue Details</a>
+                                <a :href="bounty.github_url" class="mx-md-2 my-1" target="_blank"><i class="fab fa-github"></i> View Github</a>
                               </div>
                             </div>
                           </div>
