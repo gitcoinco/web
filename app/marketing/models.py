@@ -190,7 +190,7 @@ class LeaderboardRank(SuperModel):
     github_username = models.CharField(max_length=255)
     leaderboard = models.CharField(max_length=255, db_index=True)
     amount = models.FloatField(db_index=True)
-    active = models.BooleanField()
+    active = models.BooleanField(db_index=True)
     count = models.IntegerField(default=0)
     rank = models.IntegerField(default=0)
     tech_keywords = ArrayField(models.CharField(max_length=50), blank=True, default=list)
