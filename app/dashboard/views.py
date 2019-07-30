@@ -1952,7 +1952,7 @@ def profile(request, handle):
                 handle = handle[:-1]
             profile = profile_helper(handle, current_user=request.user)
 
-        all_activities = ['all', 'new_bounty', 'start_work', 'work_submitted', 'work_done', 'new_tip', 'receive_tip', 'new_grant', 'update_grant', 'killed_grant', 'new_grant_contribution', 'new_grant_subscription', 'killed_grant_contribution', 'receive_kudos', 'new_kudos']
+        all_activities = ['all', 'new_bounty', 'start_work', 'work_submitted', 'work_done', 'new_tip', 'receive_tip', 'new_grant', 'update_grant', 'killed_grant', 'new_grant_contribution', 'new_grant_subscription', 'killed_grant_contribution', 'receive_kudos', 'new_kudos', 'joined', 'updated_avatar']
         activity_tabs = [
             (_('All Activity'), all_activities),
             (_('Bounties'), ['new_bounty', 'start_work', 'work_submitted', 'work_done']),
@@ -2041,7 +2041,7 @@ def profile(request, handle):
     context['sent_kudos_count'] = sent_kudos.count()
     context['verification'] = profile.get_my_verified_check
     context['avg_rating'] = profile.get_average_star_rating
-
+    context['suppress_sumo'] = True
     context['unrated_funded_bounties'] = Bounty.objects.current().prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
         .filter(
             bounty_owner_github_username__iexact=profile.handle,
@@ -2864,7 +2864,10 @@ def change_user_profile_banner(request):
 
     try:
         profile = profile_helper(handle, True)
-        if request.user.profile.id != profile.id:
+        is_valid = request.user.profile.id == profile.id
+        if filename[0:7] != '/static' or filename.split('/')[-1] not in load_files_in_directory('wallpapers'):
+            is_valid = False
+        if not is_valid:
             return JsonResponse(
                 {'error': 'Bad request'},
                 status=401)
