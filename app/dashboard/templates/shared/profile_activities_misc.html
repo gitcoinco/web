@@ -1,0 +1,27 @@
+{% load i18n humanize %}
+<a class="row result bounty_row {{ activity.subscription.network }}" target="_blank"
+ {% if activity.subscription.grant.url %} href="{{ activity.subscription.grant.url }}"
+ {% elif activity.subscription.grant.reference_url %} href="{{ activity.subscription.grant.reference_url }}"
+ {% endif %}>
+  <div class="avatar-container col-1 justify-content-center special_tag hide_min_viewport">
+    {% if activity.metadata.url %}
+      <img class="avatar" src="{{ activity.metadata.url }}">
+    {% else %}
+      <img class="avatar" src="/dynamic/avatar/{{ activity.profile.handle }}">
+    {% endif %}
+  </div>
+  <div class="col-12 col-md-7 d-flex flex-column">
+    <div class="bounty-detail">
+      <div class="title font-subheader">
+      </div>
+      {{activity.humanized_activity_type}}
+      <div class="bounty-summary col-12">
+        <div class="info font-caption">
+            {{ activity.created_on | naturaltime }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-md-4 tags fixed font-caption align-items-center">
+  </div>
+</a>
