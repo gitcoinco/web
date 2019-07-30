@@ -11,45 +11,34 @@ $(document).ready(function() {
   showMore();
   addGrantLogo();
 
-  setInterval(() => {
+  setInterval (() => {
     notifyOwnerAddressMismatch(
       $('#grant-admin').val(),
       $('#grant_contract_owner_address').text(),
       '#cancel_grant',
       'Looks like your grant has been created with ' +
-        $('#grant_contract_owner_address').text() +
-        '. Switch to take action on your grant.'
+      $('#grant_contract_owner_address').text() + '. Switch to take action on your grant.'
     );
 
     if ($('#cancel_grant').attr('disabled')) {
-      $('#cancel_grant')
-        .addClass('disable-btn')
-        .addClass('disable-tooltip');
+      $('#cancel_grant').addClass('disable-btn').addClass('disable-tooltip');
       $('#cancel_grant_tooltip').attr(
-        'data-original-title',
-        'switch to below contract owner address to cancel grant.'
+        'data-original-title', 'switch to below contract owner address to cancel grant.'
       );
     } else {
-      $('#cancel_grant')
-        .removeClass('disable-btn')
-        .removeClass('disable-tooltip');
+      $('#cancel_grant').removeClass('disable-btn').removeClass('disable-tooltip');
       $('#cancel_grant_tooltip').attr('data-original-title', '');
     }
 
     if ($('#contract_owner_address').val() === $('#grant_contract_owner_address').text()) {
       $('#contract_owner_button').attr('disabled', true);
-      $('#contract_owner_button')
-        .addClass('disable-btn')
-        .addClass('disable-tooltip');
+      $('#contract_owner_button').addClass('disable-btn').addClass('disable-tooltip');
       $('#contract_owner_button-container').attr(
-        'data-original-title',
-        "Grant owner address hasn't changed. Update the above field to enable this."
+        'data-original-title', 'Grant owner address hasn\'t changed. Update the above field to enable this.'
       );
     } else {
       $('#contract_owner_button').attr('disabled', false);
-      $('#contract_owner_button')
-        .removeClass('disable-btn')
-        .removeClass('disable-tooltip');
+      $('#contract_owner_button').removeClass('disable-btn').removeClass('disable-tooltip');
       $('#contract_owner_button-container').attr('data-original-title', '');
     }
   }, 1000);
@@ -60,7 +49,7 @@ $(document).ready(function() {
   $('#form--input__title').height($('#form--input__title').prop('scrollHeight'));
   $('#form--input__reference-url').height($('#form--input__reference-url').prop('scrollHeight'));
 
-  $('#edit-details').on('click', event => {
+  $('#edit-details').on('click', (event) => {
     event.preventDefault();
 
     if (grant_description !== undefined) {
@@ -149,14 +138,12 @@ $(document).ready(function() {
       let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, contract_address);
 
       web3.eth.getAccounts(function(err, accounts) {
-        deployedSubscription.methods
-          .endContract()
+        deployedSubscription.methods.endContract()
           .send({
             from: accounts[0],
             gas: 3000000,
             gasPrice: web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9))
-          })
-          .on('transactionHash', function(transactionHash) {
+          }).on('transactionHash', function(transactionHash) {
             grant_cancel_tx_id = $('#grant_cancel_tx_id').val();
             const linkURL = get_etherscan_url(transactionHash);
 
@@ -170,17 +157,14 @@ $(document).ready(function() {
               type: 'post',
               url: '',
               data: {
-                contract_address: contract_address,
-                grant_cancel_tx_id: grant_cancel_tx_id
+                'contract_address': contract_address,
+                'grant_cancel_tx_id': grant_cancel_tx_id
               },
               success: function(json) {
                 window.location.reload(false);
               },
               error: function() {
-                _alert(
-                  { message: gettext('Canceling your grant failed to save. Please try again.') },
-                  'error'
-                );
+                _alert({ message: gettext('Canceling your grant failed to save. Please try again.') }, 'error');
               }
             });
           });
@@ -219,14 +203,7 @@ $(document).ready(function() {
               window.location.reload(false);
             },
             error: function() {
-              _alert(
-                {
-                  message: gettext(
-                    'Changing the contract owner address failed to save. Please try again.'
-                  )
-                },
-                'error'
-              );
+              _alert({ message: gettext('Changing the contract owner address failed to save. Please try again.') }, 'error');
             }
           });
         });
@@ -238,13 +215,13 @@ $(document).ready(function() {
   });
 });
 
-const makeEditable = input => {
+const makeEditable = (input) => {
   $(input).addClass('editable');
   $(input).prop('readonly', false);
   $(input).prop('disabled', false);
 };
 
-const disableEdit = input => {
+const disableEdit = (input) => {
   $(input).removeClass('editable');
   $(input).prop('readonly', true);
   $(input).prop('disabled', true);
@@ -256,20 +233,13 @@ const copyDuplicateDetails = () => {
   let obj = {};
 
   editableFields.forEach(field => {
-    obj[field] = $(field).val()
-      ? $(field).val()
-      : $(field)
-        .last()
-        .text();
+    obj[field] = $(field).val() ? $(field).val() : $(field).last().text();
   });
 
   $('#save-details').on('click', () => {
     if (
       obj['#grant-admin'] &&
-      obj['#grant-admin'] !=
-        $('#grant-admin option')
-          .last()
-          .text()
+      obj['#grant-admin'] != $('#grant-admin option').last().text()
     ) {
       localStorage['request_change'] = 'R';
     }
@@ -278,13 +248,9 @@ const copyDuplicateDetails = () => {
   $('#cancel-details').on('click', () => {
     editableFields.forEach(field => {
       if (field == '#grant-admin')
-        $(field)
-          .val([obj[field]])
-          .trigger('change');
+        $(field).val([obj[field]]).trigger('change');
       else if (field == '#grant-members')
-        $(field)
-          .val(obj[field])
-          .trigger('change');
+        $(field).val(obj[field]).trigger('change');
       else
         $(field).val(obj[field]);
     });
