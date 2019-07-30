@@ -2942,7 +2942,10 @@ def funder_dashboard(request, bounty_type):
             current_bounty=True,
             bounty_owner_github_username=profile.handle,
             ).order_by('-interested__created'))
-        interests = list(Interest.objects.filter(bounty__pk__in=[b.pk for b in bounties], status='okay'))
+        interests = list(Interest.objects.filter(
+            bounty__pk__in=[b.pk for b in bounties],
+            status='okay',
+            pending=True))
         return JsonResponse(serialize_funder_dashboard_open_rows(bounties, interests), safe=False)
 
     elif bounty_type == 'submitted':
