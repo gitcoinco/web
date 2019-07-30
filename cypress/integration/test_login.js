@@ -7,10 +7,11 @@ describe('Login Tests', () => {
    */
   Cypress.Commands.add('persona', (userType) => {
     userType = userType.toLowerCase();
+
     Cypress.log({
       name: `persona-${userType}`
     });
-    //
+
     cy.get('body', {timeout: 10000}).contains('Are you a Funder or a Contributor?');
 
     cy.get(`button[data-persona="persona_is_${userType}"]`)
@@ -49,6 +50,7 @@ describe('Login Tests', () => {
   Cypress.Commands.add('login', (userType, forcePersona = false) => {
 
     userType = userType.toUpperCase();
+
     Cypress.log({
       name: `login-${userType}`
     });
@@ -102,6 +104,7 @@ describe('Login Tests', () => {
 
   it('Login as a Funder', () => {
     const userType = 'hunter';
+
     // if a new user, set the NEW_USER env variable to test persona
     cy.login(userType);
 

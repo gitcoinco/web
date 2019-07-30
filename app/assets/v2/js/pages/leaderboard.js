@@ -35,7 +35,7 @@ $(document).ready(function() {
   $('#key').change(function() {
     const val = $(this).val();
 
-    document.location.href = `/leaderboard/${val}` + '?cadence=' + $('#cadence').val() + '&keyword=' + $('#tech-keyword').val();
+    document.location.href = `/leaderboard/${val}?cadence=` + $('#cadence').val() + '&keyword=' + $('#tech-keyword').val();
   });
 
 
