@@ -2826,6 +2826,9 @@ def hackathon(request, hackathon=''):
             'sponsors_silver': sponsors_silver
         }
 
+        if hackathon_event.identifier == 'grow-ethereum-2019':
+            params['card_desc'] = "The ‘Grow Ethereum’ Hackathon runs from Jul 29, 2019 - Aug 15, 2019 and features over $10,000 in bounties"
+
     elif hackathon_event.identifier == 'beyondblockchain_2019':
         from dashboard.context.hackathon_explorer import beyondblockchain_2019
         params['sponsors'] = beyondblockchain_2019
