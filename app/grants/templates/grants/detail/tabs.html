@@ -17,7 +17,7 @@
 {% load static humanize i18n grants_extra %}
 <div class="px-lg-5">
   <div id="grant-profile-tabs" class="tab-container font-body mt-5 mb-4">
-
+    
     <button type="button" id="nav-description" href="{{grant.url}}?tab=description" class="section-tab {% if tab == "description" %} active {% endif %}">
       {% trans "DESCRIPTION" %}
     </button>
@@ -32,12 +32,12 @@
     <button type="button" id="nav-summary" href="{{grant.url}}?tab=updates" class="section-tab {% if tab == "updates" %} active {% endif %}">
       {% trans "UPDATES" %}
     </button>
-
+  
     <button type="button" id="nav-contributors" href="{{grant.url}}?tab=contributors" class="section-tab {% if tab == "contributors" %} active {% endif %}">
       {% trans "CONTRIBUTORS" %}
       <span class="nav-badge">{{ contributions|length }}</span>
     </button>
-
+  
   </div>
 
   <div id="grant-profile-tabs-sections" class="tab-sections section pt-2">
@@ -91,30 +91,26 @@
       </div>
     </div>
     {% endif %}
+    
   </div>
 </div>
 
 <script>
-  {% with description_tab_url=grant.url|addstr:'?tab=description' %}
-      let grant_description;
+  let grant_description;
+  {% if is_admin and not grant_is_inactive %}
+      grant_description = new Quill('#editor', {
+      theme: 'snow',
+    });
+    grant_description.enable(false);
+  {% else %}
+    grant_description = new Quill('#editor', {
+      theme: 'bubble',
+      readOnly: true,
+    });
+  {% endif %}
 
-      {% if request.get_full_path == description_tab_url %}
-        grant_description = new Quill('#editor', {
-            theme: 'bubble',
-            readOnly: true,
-          });
-
-        {% if is_admin and not grant_is_inactive %}
-          grant_description = new Quill('#editor', {
-            theme: 'snow',
-          });
-          grant_description.enable(false);
-        {% endif %}
-
-        let desc = JSON.parse(grant_description.getContents().ops[0].insert);
-        if (desc.ops) {
-          grant_description.setContents(desc);
-        }
-      {% endif %}
-  {% endwith %}
+  let desc = JSON.parse(grant_description.getContents().ops[0].insert);
+  if (desc.ops) {
+    grant_description.setContents(desc);
+  }
 </script>
