@@ -890,20 +890,14 @@ const appendGithubSyncButton = function(result) {
           }
         ).fail(
           function(result) {
-            var alertMsg = result && result.responseJSON ? result.responseJSON.error : null;
+            const alertMsg = result && result.responseJSON ? result.responseJSON.error : gettext('Failed to sync issue. Please reload the page and try again.');
 
-            if (alertMsg === null) {
-              alertMsg = gettext('Failed to sync issue. Please reload the page and try again.');
-            }
             _alert({ message: alertMsg }, 'error');
           }
         );
       }).fail(function(result) {
-        var alertMsg = result && result.responseJSON ? result.responseJSON.error : null;
+        const alertMsg = result && result.responseJSON ? result.responseJSON.error : gettext('Failed to sync issue. Please reload the page and try again.');
 
-        if (alertMsg === null) {
-          alertMsg = gettext('Failed to sync issue. Please reload the page and try again.');
-        }
         _alert({ message: alertMsg }, 'error');
       });
     });
