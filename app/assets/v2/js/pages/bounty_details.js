@@ -292,11 +292,11 @@ var callbacks = {
       const ratio = obj['ratio'];
       const amount = obj['amount'];
       const usd = amount * ratio;
-      const funding = normalizeAmount(amount, tokenDecimals);
-      const tokenValue = normalizeAmount(1.0 * ratio, dollarDecimals);
+      const funding = round(amount, 2);
+      const tokenValue = Math.round(1.0 * ratio);
       const timestamp = new Date(obj['timestamp']);
       const timePeg = timeDifference(dateNow, timestamp > dateNow ? dateNow : timestamp, false, 60 * 60);
-      const tooltip = `$ ${normalizeAmount(usd, dollarDecimals)} USD in crowdfunding`;
+      const tooltip = `$ ${Math.round(usd)} USD in crowdfunding`;
 
       leftHtml += '<p class="m-0">+ ' + funding + ' ' + tokenName + '</p>';
       rightHtml += '<p class="m-0">@ $' + tokenValue + ' ' + tokenName + ' as of ' + timePeg + '</p>';
@@ -309,7 +309,7 @@ var callbacks = {
       );
     }
 
-    $('#value_in_usdt').html(normalizeAmount(totalUSDValue, dollarDecimals));
+    $('#value_in_usdt').html(Math.round(totalUSDValue));
 
     $('#value_in_usdt_wrapper').attr('title',
       '<div class="tooltip-info tooltip-sm">' +
