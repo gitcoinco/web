@@ -724,7 +724,7 @@ def leaderboard(request, key=''):
     else:
         amount_max = 0
 
-    profile_keys = ['_tokens', '_keywords', '_cities', '_countries', '_continents']
+    profile_keys = ['tokens', 'keywords', 'cities', 'countries', 'continents']
     is_linked_to_profile = any(sub in key for sub in profile_keys)
 
     cadence_ui = cadence if cadence != 'all' else 'All-Time'
