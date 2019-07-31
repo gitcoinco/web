@@ -1,0 +1,465 @@
+{% comment %}
+  Copyright (C) 2019 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not,see
+  <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static add_url_schema avatar_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href={% static "v2/css/vue-loader.css" %} />
+
+    <link rel="stylesheet" href="{% static "v2/css/board.css" %}" />
+
+  </head>
+  <body class="{{ active }} bg-lightblue g-font-muli" >
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    {% include 'shared/nav.html' %}
+    <div id="gc-board" v-cloak>
+
+      <div class="container">
+        <nav class="mx-3">
+          <div class="nav nav-tabs" id="myTab" role="tablist">
+            <a class="nav-item nav-link nav-line active" id="funder-tab" data-toggle="tab" href="#nav-funder" role="tab" aria-controls="funder" aria-selected="false" @click="checkData('funder')">Funder</a>
+            <a class="nav-item nav-link nav-line " id="contributor-tab" data-toggle="tab" href="#nav-contributor" role="tab" aria-controls="contributor" aria-selected="true" @click="checkData('contributor')">Contributor</a>
+          </div>
+        </nav>
+      </div>
+      <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-funder" role="tabpanel" aria-labelledby="nav-funder-tab">
+          <header class="container position-relative">
+            <div class="row mb-2">
+              <div class="col-12">
+                <div class="bg-white rounded d-flex p-3 font-smaller-3">
+
+                  <div class="my-3 mx-4 head-number">
+                    <span class="head-number_title">OPEN BOUNTIES</span>
+                    <span class="head-number_value">[[ bounties.open ? bounties.open.length : '0' ]]</span>
+                  </div>
+                  <div class="my-3 mx-4 head-number">
+                    <span class="head-number_title">BOUNTY SUBMISSIONS</span>
+                    <span class="head-number_value">[[ bounties.submitted ? bounties.submitted.length : '0' ]]</span>
+                  </div>
+                  <div class="my-3 mx-4 head-number">
+                    <span class="head-number_title">EXPIRED BOUNTIES</span>
+                    <span class="head-number_value">[[ bounties.expired ? bounties.expired.length : '0' ]]</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </header>
+
+          <section class="container">
+            <div class="row">
+              <div class="col-12">
+                <div class="bg-white rounded border my-4">
+
+                  <div class="p-4 border-bottom font-weight-bold" v-if="bounties.open">[[ bounties.open.length ]] Open [[ 'Bount' | pluralize(bounties.open.length, 'y', 'ies') ]]</div>
+
+                  <ul class="list-unstyled list-bounty">
+                    <li v-for="(bounty, key) in bounties.open" :key="bounty.id" class="position-relative font-smaller-1 mt-3 p-3 list-bounty-item" :class="isExpanded(key, 'open') ? 'line-deco' : ''">
+                      <span class="fa-stack mr-2">
+                        <i class="fas fa-circle fa-stack-2x green"></i>
+                        <i class="fas fa-user fa-stack-1x fa-inverse"></i>
+                      </span>
+                      <span class="font-weight-bold">You have [[ bounty.users_count ]] [[ 'applicant' | pluralize(bounty.users_count) ]] on this bounty</span>
+                      <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
+                        <div class="list-bounty-item_content">
+                          <div class="d-flex flex-column flex-md-row">
+                            <img :src="bounty.avatar_url" alt="" width="60" height="60" class="rounded-circle flex-shrink-0 m-auto list-bounty-item_logo">
+                            <div class="d-flex flex-column w-100 ml-md-3">
+                              <a :href="bounty.absolute_url" class="text-truncate mb-2 text-dark">[[ bounty.title ]]</a>
+                              <div class="d-flex flex-column flex-md-row justify-content-between font-smaller-2">
+                                <template v-if="bounty.project_type">
+                                  <span class="my-1">[[ bounty.project_type ]]</span> <span class="d-md-block d-none mx-2">&bull;</span>
+                                </template>
+                                <template v-if="bounty.expires_date">
+                                  <time :datetime="[[ bounty.expires_date ]]" class="my-1" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> <span class="d-md-block d-none mx-2">&bull;</span>
+                                </template>
+                                <span class="my-1">[[ bounty.value_true ]] [[ bounty.token_name ]] ([[ bounty.value_in_usd ]] USD)</span>
+                                <a :href="bounty.absolute_url" class="mx-md-2 my-1"><i class="fas fa-eye"></i> View Issue Details</a>
+                                <a :href="bounty.github_url" class="mx-md-2 my-1" target="_blank"><i class="fab fa-github"></i> View Github</a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <button v-if="bounty.users_count > 0" @click="toggleCollapse(key, 'open'), fetchApplicants(bounty.id, key, 'open')" class="btn blue">View Applicants <i class="fa fa-fw" :class="isExpanded(key, 'open')? 'fa-chevron-up': 'fa-chevron-down'"></i></button>
+                        <div class="d-flex flex-column justify-content-center" v-else>
+                          <a :href="`/bounty/change/${bounty.id}`" target="_blank" class="btn btn-gc-blue btn-sm m-2"> <i class="fas fa-star"></i> Feature Bounty</a>
+                          <a :href="`/bounty/change/${bounty.id}`" target="_blank" class="btn btn-gc-blue btn-sm m-2"> <i class="fas fa-user"></i> Invite Contributors</a>
+                        </div>
+                      </div>
+                      <div v-show="isExpanded(key, 'open')">
+                        <ul class="list-unstyled m-5">
+                          <li class="mb-4" v-for="(contributor, key) in bounty.contributors">
+                            <div class="d-flex flex-column flex-md-row justify-content-between">
+                              <div class="list-bounty-item_content">
+                                <div class="d-flex">
+                                  <img :src="contributor.avatar_url" alt="" width="40" height="40" class="flex-shrink-0 mr-2 rounded-circle">
+                                  <div class="d-flex flex-column">
+                                    <div class="">
+                                      <a :href="`/profile/${contributor.handle}`" data-toggle="tooltip" title="View profile" class="text-dark">[[ contributor.handle ]]</a> <a :href="`https://github.com/${contributor.handle}`" target="_blank"><i class="fab fa-github text-dark" data-toggle="tooltip" title="View GitHub profile"></i></a>
+                                    </div>
+                                    <div class="">
+                                      <div class="d-inline" style="color:#25E899;">
+                                        <i class="far fa-star" :class="star <= contributor.star_rating.toFixed() ? 'fas' : 'far'" v-for="star in contributor.star_rating.toFixed(), 5"></i>
+                                      </div>
+                                        ([[ contributor.total_rating ]] ratings) <span class="mx-2">&bull;</span>
+                                        #[[ contributor.leaderboard_rank ]] contributor <span class="mx-2">&bull;</span>
+                                        [[ contributor.fulfilled_bounties ]] bounties completed
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="d-flex flex-column flex-md-row">
+                                <a target="_blank" :href="`${bounty.absolute_url}?mutate_worker_action=approve&worker=${contributor.handle}`" class="btn btn-sm btn-gc-blue m-2"><i class="fas fa-check"></i> Accept</a>
+                                <a target="_blank" :href="`${bounty.absolute_url}?mutate_worker_action=reject&worker=${contributor.handle}`" class="btn btn-sm btn-outline-gc-blue m-2"><i class="fas fa-times"></i> Reject</a>
+                              </div>
+                            </div>
+                            <div class="comment-plan">[[ contributor.interest.issue_message]]</div>
+                          </li>
+                          <li class="text-center">
+                            <p class="font-smaller-2 mb-2">Couldn’t find the right contributor?</p>
+                            <a href="/users" class="btn btn-outline-gc-blue w-75 font-smaller-2 gc-letter-spacing">EXPLORE USER DIRECTORY</a>
+                          </li>
+                        </ul>
+                        <loading-screen v-if="isLoading.openContrib"></loading-screen>
+                      </div>
+                    </li>
+                    <li class="text-center my-5" :class="{'d-none': (isLoading.open || bounties.open && bounties.open.length > 0) }">
+                      <img src="{% static 'v2/images/zero-bounties.svg' %}" alt="" width="197" height="169">
+                      <h4 class="h5 font-weight-semibold my-3">
+                        You haven’t funded any issues yet.
+                      </h4>
+                      <p class="text-black-70"><a href="{% url 'new_funding' %}">Fund an Issue</a> or check out our <a href="{% url 'quickstart' %}">Funders Guide</a> to start getting contributors for your project! </p>
+                      <p class="text-black-70">Have any question? Chat with us on <a href="{% url 'slack' %}">Slack</a>!</p>
+                      <a href="/funding/new" class="btn btn-gc-blue">Fund an Issue</a>
+                    </li>
+                  </ul>
+                  <loading-screen v-if="isLoading.open"></loading-screen>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="container">
+            <div class="row">
+              <div class="col-12">
+                <div class="bg-white rounded border my-4">
+
+                  <div class="p-4 border-bottom font-weight-bold" v-if="bounties.submitted">[[ bounties.submitted.length ]] Submitted [[ 'Bount' | pluralize(bounties.submitted.length, 'y', 'ies') ]]</div>
+
+                  <ul class="list-unstyled list-bounty">
+                    <li v-for="(bounty, key) in bounties.submitted" :key="bounty.id" class="position-relative font-smaller-1 mt-3 p-3 list-bounty-item" :class="isExpanded(key, 'submitted')? 'line-deco': ''">
+                      <span class="fa-stack mr-2">
+                        <i class="fas fa-circle fa-stack-2x light-blue"></i>
+                        <i class="fas fa-copy fa-stack-1x fa-inverse"></i>
+                      </span>
+                      <span class="font-weight-bold">You have [[ bounty.users_count ]] [[ 'applicant' | pluralize(bounty.users_count) ]] on this bounty</span>
+                      <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
+                        <div class="list-bounty-item_content">
+                          <div class="d-flex flex-column flex-md-row">
+                            <img :src="bounty.avatar_url" alt="" width="60" height="60" class="rounded-circle flex-shrink-0 m-auto list-bounty-item_logo">
+                            <div class="d-flex flex-column w-100 ml-md-3">
+                              <a :href="bounty.absolute_url" class="text-truncate mb-2 text-dark">[[ bounty.title ]]</a>
+                              <div class="d-flex flex-column flex-md-row justify-content-between font-smaller-2">
+                                <template v-if="bounty.project_type">
+                                  <span class="my-1">[[ bounty.project_type ]]</span> <span class="d-md-block d-none mx-2">&bull;</span>
+                                </template>
+                                <template v-if="bounty.expires_date">
+                                  <time :datetime="[[ bounty.expires_date ]]" class="my-1" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> <span class="d-md-block d-none mx-2">&bull;</span>
+                                </template>
+                                <span class="my-1">[[ bounty.value_true ]] [[ bounty.token_name ]] ([[ bounty.value_in_usd ]] USD)</span>
+                                <a :href="bounty.absolute_url" class="mx-md-2 my-1"><i class="fas fa-eye"></i> View Issue Details</a>
+                                <a :href="bounty.github_url" class="mx-md-2 my-1" target="_blank"><i class="fab fa-github"></i> View Github</a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <button v-if="bounty.users_count > 0" @click="toggleCollapse(key, 'submitted'), fetchApplicants(bounty.id, key, 'submitted')" class="btn blue">View Submissions <i class="fa fa-fw" :class="isExpanded(key, 'submitted')? 'fa-chevron-up': 'fa-chevron-down'"></i></button>
+                      </div>
+                      <div v-show="isExpanded(key, 'submitted')">
+                        <ul class="list-unstyled m-5">
+                          <li class="mb-4" v-for="(contributor, key) in bounty.contributors">
+                            <div class="d-flex flex-column flex-md-row justify-content-between">
+                              <div class="list-bounty-item_content">
+                                <div class="d-flex">
+                                  <img :src="contributor.avatar_url" alt="" width="40" height="40" class="flex-shrink-0 mr-2 rounded-circle">
+                                  <div class="d-flex flex-column">
+                                    <div class="">
+                                      <a :href="`/profile/${contributor.handle}`" data-toggle="tooltip" title="View profile" class="text-dark">[[ contributor.handle ]]</a> <a :href="`https://github.com/${contributor.handle}`" target="_blank"><i class="fab fa-github text-dark" data-toggle="tooltip" title="View GitHub profile"></i></a>
+                                    </div>
+                                    <div class="">
+                                      <a target="_blank" :href="`https://etherscan.io/address/${contributor.fulfiller_metadata.fulfiller}`">[[ contributor.fulfiller_metadata.fulfiller | truncate ]]</a> Submitted [[ contributor.created_on | moment]]
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <a :href="`/issue/payout?pk=${bounty.id}`" class="btn btn-sm btn-gc-blue m-2">Payout bounty</a>
+                            </div>
+                            <div class="comment-plan"> <a :href="contributor.fulfiller_metadata.data.payload.fulfiller.githubPRLink">[[ contributor.fulfiller_metadata.data.payload.fulfiller.githubPRLink ]]</a></div>
+                          </li>
+                        </ul>
+                        <loading-screen v-if="isLoading.submittedContrib"></loading-screen>
+                      </div>
+                    </li>
+                    <li class="text-center my-5" :class="{'d-none': isLoading.submitted ||bounties.submitted && bounties.submitted.length > 0}" v-cloak>
+                      <p>You have no bounties with submittions.</p>
+                    </li>
+                  </ul>
+                  <loading-screen v-if="isLoading.submitted"></loading-screen>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="container">
+            <div class="row">
+              <div class="col-12">
+                <div class="bg-white rounded border my-4">
+                  <div class="p-4 border-bottom font-weight-bold" v-if="bounties.expired">[[ bounties.expired.length ]] Expired [[ 'Bount' | pluralize(bounties.expired.length, 'y', 'ies') ]]</div>
+
+                  <ul class="list-unstyled list-bounty">
+                    <li v-for="(bounty, key) in bounties.expired" :key="bounty.id" class="position-relative font-smaller-1 mt-3 p-3 list-bounty-item">
+                      <span class="fa-stack mr-2">
+                        <i class="fas fa-circle fa-stack-2x text-danger"></i>
+                        <i class="fas fa-user fa-stack-1x fa-inverse"></i>
+                      </span>
+                      <span class="font-weight-bold">You have expired bounties</span>
+                      <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
+                        <div class="list-bounty-item_content">
+                          <div class="d-flex flex-column flex-md-row">
+                            <img :src="bounty.avatar_url" alt="" width="60" height="60" class="rounded-circle flex-shrink-0 m-auto list-bounty-item_logo">
+                            <div class="d-flex flex-column w-100 ml-md-3">
+                              <a :href="bounty.absolute_url" class="text-truncate mb-2 text-dark">[[ bounty.title ]]</a>
+                              <div class="d-flex flex-column flex-md-row justify-content-between font-smaller-2">
+                                <template v-if="bounty.project_type">
+                                  <span class="my-1">[[ bounty.project_type ]]</span> <span class="d-md-block d-none mx-2">&bull;</span>
+                                </template>
+                                <template v-if="bounty.expires_date">
+                                  <time :datetime="[[ bounty.expires_date ]]" class="my-1" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> <span class="d-md-block d-none mx-2">&bull;</span>
+                                </template>
+                                <span class="my-1">[[ bounty.value_true ]] [[ bounty.token_name ]] ([[ bounty.value_in_usd ]] USD)</span>
+                                <a :href="bounty.absolute_url" class="mx-md-2 my-1"><i class="fas fa-eye"></i> View Issue Details</a>
+                                <a :href="bounty.github_url" class="mx-md-2 my-1" target="_blank"><i class="fab fa-github"></i> View Github</a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="d-flex flex-column justify-content-center">
+                          <a :href="bounty.absolute_url" class="btn btn-sm btn-gc-blue m-2"> <i class="fas fa-clock"></i> Extend Expiration</a>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="text-center my-5" :class="{'d-none': isLoading.expired || bounties.expired && bounties.expired.length > 0}" v-cloak>
+                      <p>You have no expired bounties.</p>
+                    </li>
+                  </ul>
+                  <loading-screen v-if="isLoading.expired"></loading-screen>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div class="tab-pane fade " id="nav-contributor" role="tabpanel" aria-labelledby="nav-contributor-tab">
+          <header class="container position-relative">
+            <div class="row mb-2">
+              <div class="col-12">
+                <div class="bg-white rounded d-flex p-3 font-smaller-3">
+
+                  <div class="my-3 mx-4 head-number">
+                    <span class="head-number_title">BOUNTIES IN PROGRESS</span>
+                    <span class="head-number_value">[[ contributorBounties.work_in_progress ? contributorBounties.work_in_progress.length : '0' ]]</span>
+                  </div>
+                  <div class="my-3 mx-4 head-number">
+                    <span class="head-number_title">BOUNTIES APPLIED </span>
+                    <span class="head-number_value">[[ contributorBounties.interested ? contributorBounties.interested.length : '0' ]]</span>
+                  </div>
+                  <div class="my-3 mx-4 head-number">
+                    <span class="head-number_title">WORK SUBMITTED</span>
+                    <span class="head-number_value">[[ contributorBounties.work_submitted ? contributorBounties.work_submitted.length : '0' ]]</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </header>
+          <section class="container">
+            <div class="row">
+              <div class="col-12">
+                <div class="bg-white rounded border my-4">
+                  <div class="p-4 border-bottom font-weight-bold" v-if="contributorBounties.work_in_progress">[[ contributorBounties.work_in_progress.length ]] [[ 'Bount' | pluralize(contributorBounties.work_in_progress.length, 'y', 'ies') ]] in Progress</div>
+
+                  <ul class="list-unstyled list-bounty">
+                    <li v-for="(bounty, key) in contributorBounties.work_in_progress" :key="bounty.id" class="position-relative font-smaller-1 mt-3 p-3 list-bounty-item">
+                      <span class="fa-stack mr-2">
+                        <i class="fas fa-circle fa-stack-2x text-danger"></i>
+                        <i class="fas fa-user fa-stack-1x fa-inverse"></i>
+                      </span>
+                      <span class="font-weight-bold">You are currently working on this bounty </span>
+                      <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
+                        <div class="list-bounty-item_content">
+                          <div class="d-flex flex-column flex-md-row">
+                            <img :src="bounty.avatar_url" alt="" width="60" height="60" class="rounded-circle flex-shrink-0 m-auto list-bounty-item_logo">
+                            <div class="d-flex flex-column w-100 ml-md-3">
+                              <a :href="bounty.absolute_url" class="text-truncate mb-2 text-dark">[[ bounty.title ]]</a>
+                              <div class="d-flex flex-column flex-md-row justify-content-between font-smaller-2">
+                                <template v-if="bounty.project_type">
+                                  <span class="my-1">[[ bounty.project_type ]]</span> <span class="d-md-block d-none mx-2">&bull;</span>
+                                </template>
+                                <template v-if="bounty.expires_date">
+                                  <time :datetime="[[ bounty.expires_date ]]" class="my-1" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> <span class="d-md-block d-none mx-2">&bull;</span>
+                                </template>
+                                <span class="my-1">[[ bounty.value_true ]] [[ bounty.token_name ]] ([[ bounty.value_in_usd ]] USD)</span>
+                                <a :href="bounty.absolute_url" class="mx-md-2 my-1"><i class="fas fa-eye"></i> View Issue Details</a>
+                                <a :href="bounty.github_url" class="mx-md-2 my-1" target="_blank"><i class="fab fa-github"></i> View Github</a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          <a target="_blank" :href="`/issue/fulfill?pk=${bounty.id}`" class="btn btn-sm btn-gc-blue m-2">Submit Work</a>
+                          <button @click="stopWork(key, bounty.id, authProfile, 'contributorBounties', 'work_in_progress')" class="btn btn-sm btn-outline-gc-blue m-2" :disabled="key === disabledBtn">Stop Work</button>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="text-center my-5" :class="{'d-none': isLoading.work_in_progress || contributorBounties.work_in_progress && contributorBounties.work_in_progress.length > 0}" v-cloak>
+                      <img src="{% static 'v2/images/zero-bounties.svg' %}" alt="" width="197" height="169">
+                      <h4 class="h5 font-weight-semibold my-3">
+                          You are not working in any bounty yet.
+                      </h4>
+                      <p class="text-black-70"><a href="{% url 'explorer' %}">Find a bounty</a> or check out our <a href="{% url 'how_it_works' 'contributor' %}">Contributors Guide</a> to start doing bounties! </p>
+                      <p class="text-black-70">Have any question? Chat with us on <a href="{% url 'slack' %}">Slack</a>!</p>
+                      <a href="{% url 'explorer' %}" class="btn btn-gc-blue">Find a Bounty</a>
+                    </li>
+                  </ul>
+                  <loading-screen v-if="isLoading.work_in_progress"></loading-screen>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="container">
+            <div class="row">
+              <div class="col-12">
+                <div class="bg-white rounded border my-4">
+                  <div class="p-4 border-bottom font-weight-bold" v-if="contributorBounties.interested">[[ contributorBounties.interested.length ]] [[ 'Bount' | pluralize(contributorBounties.interested.length, 'y', 'ies') ]] Applied </div>
+
+                  <ul class="list-unstyled list-bounty">
+                    <li v-for="(bounty, key) in contributorBounties.interested" :key="bounty.id" class="position-relative font-smaller-1 mt-3 p-3 list-bounty-item">
+                      <span class="fa-stack mr-2">
+                        <i class="fas fa-circle fa-stack-2x green"></i>
+                        <i class="fas fa-user fa-stack-1x fa-inverse"></i>
+                      </span>
+                      <span class="font-weight-bold">You are awaiting approval </span>
+                      <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
+                        <div class="list-bounty-item_content">
+                          <div class="d-flex flex-column flex-md-row">
+                            <img :src="bounty.avatar_url" alt="" width="60" height="60" class="rounded-circle flex-shrink-0 m-auto list-bounty-item_logo">
+                            <div class="d-flex flex-column w-100 ml-md-3">
+                              <a :href="bounty.absolute_url" class="text-truncate mb-2 text-dark">[[ bounty.title ]]</a>
+                              <div class="d-flex flex-column flex-md-row justify-content-between font-smaller-2">
+                                <template v-if="bounty.project_type">
+                                  <span class="my-1">[[ bounty.project_type ]]</span> <span class="d-md-block d-none mx-2">&bull;</span>
+                                </template>
+                                <template v-if="bounty.expires_date">
+                                  <time :datetime="[[ bounty.expires_date ]]" class="my-1" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> <span class="d-md-block d-none mx-2">&bull;</span>
+                                </template>
+                                <span class="my-1">[[ bounty.value_true ]] [[ bounty.token_name ]] ([[ bounty.value_in_usd ]] USD)</span>
+                                <a :href="bounty.absolute_url" class="mx-md-2 my-1"><i class="fas fa-eye"></i> View Issue Details</a>
+                                <a :href="bounty.github_url" class="mx-md-2 my-1" target="_blank"><i class="fab fa-github"></i> View Github</a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          <button @click="stopWork(key, bounty.id, authProfile, 'contributorBounties', 'interested')" class="btn btn-sm btn-outline-gc-blue m-2" :disabled="key === disabledBtn">Stop Work</button>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="text-center my-5" :class="{'d-none': isLoading.interested || contributorBounties.interested && contributorBounties.interested.length > 0}" v-cloak>
+                      <p>You are not wating approval to work in any bounty.</p>
+                    </li>
+                  </ul>
+                  <loading-screen v-if="isLoading.interested"></loading-screen>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="container">
+            <div class="row">
+              <div class="col-12">
+                <div class="bg-white rounded border my-4">
+                  <div class="p-4 border-bottom font-weight-bold" v-if="contributorBounties.work_submitted">[[ contributorBounties.work_submitted.length ]] Work Submitted</div>
+
+                  <ul class="list-unstyled list-bounty">
+                    <li v-for="(bounty, key) in contributorBounties.work_submitted" :key="bounty.id" class="position-relative font-smaller-1 mt-3 p-3 list-bounty-item">
+                      <span class="fa-stack mr-2">
+                        <i class="fas fa-circle fa-stack-2x light-blue"></i>
+                        <i class="fas fa-user fa-stack-1x fa-inverse"></i>
+                      </span>
+                      <span class="font-weight-bold">You are awaiting payment </span>
+                      <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
+                        <div class="list-bounty-item_content">
+                          <div class="d-flex flex-column flex-md-row">
+                            <img :src="bounty.avatar_url" alt="" width="60" height="60" class="rounded-circle flex-shrink-0 m-auto list-bounty-item_logo">
+                            <div class="d-flex flex-column w-100 ml-md-3">
+                              <a :href="bounty.absolute_url" class="text-truncate mb-2 text-dark">[[ bounty.title ]]</a>
+                              <div class="d-flex flex-column flex-md-row justify-content-between font-smaller-2">
+                                <template v-if="bounty.project_type">
+                                  <span class="my-1">[[ bounty.project_type ]]</span> <span class="d-md-block d-none mx-2">&bull;</span>
+                                </template>
+                                <template v-if="bounty.expires_date">
+                                  <time :datetime="[[ bounty.expires_date ]]" class="my-1" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> <span class="d-md-block d-none mx-2">&bull;</span>
+                                </template>
+                                <span class="my-1">[[ bounty.value_true ]] [[ bounty.token_name ]] ([[ bounty.value_in_usd ]] USD)</span>
+                                <a :href="bounty.absolute_url" class="mx-md-2 my-1"><i class="fas fa-eye"></i> View Issue Details</a>
+                                <a :href="bounty.github_url" class="mx-md-2 my-1" target="_blank"><i class="fab fa-github"></i> View Github</a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="text-center my-5" :class="{'d-none': isLoading.work_submitted || contributorBounties.work_submitted && contributorBounties.work_submitted.length > 0}" v-cloak>
+                      <p>You don't have any submittion awaiting payment.</p>
+                    </li>
+                  </ul>
+                  <loading-screen v-if="isLoading.work_submitted"></loading-screen>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+    </div>
+    {% include 'shared/footer.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' with slim=1 %}
+    <script src="{% static "v2/js/vue-components.js" %}"></script>
+    <script src="{% static "v2/js/board.js" %}"></script>
+    <script>
+      $('body').bootstrapTooltip({
+        selector: '[data-toggle="tooltip"]'
+      });
+    </script>
+
+  </body>
+</html>

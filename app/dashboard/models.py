@@ -3011,8 +3011,8 @@ class ProfileSerializer(serializers.BaseSerializer):
             'keywords': instance.keywords,
             'url': instance.get_relative_url(),
             'position': instance.get_contributor_leaderboard_index(),
-            'organizations': instance.get_who_works_with(),
-            'total_earned': instance.get_eth_sum()
+            'organizations': instance.get_who_works_with(network=None),
+            'total_earned': instance.get_eth_sum(network=None)
         }
 
 
