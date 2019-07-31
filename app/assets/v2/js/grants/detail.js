@@ -17,7 +17,7 @@ $(document).ready(function() {
       $('#grant_contract_owner_address').text(),
       '#cancel_grant',
       'Looks like your grant has been created with ' +
-        $('#grant_contract_owner_address').text() + '. Switch to take action on your grant.'
+      $('#grant_contract_owner_address').text() + '. Switch to take action on your grant.'
     );
 
     if ($('#cancel_grant').attr('disabled')) {
@@ -43,8 +43,6 @@ $(document).ready(function() {
     }
   }, 1000);
 
-  let _text = grant_description.getContents();
-
   userSearch('#grant-admin', false, undefined, false, false, true);
   userSearch('#grant-members', false, undefined, false, false, true);
   $('.select2-selection__rendered').removeAttr('title');
@@ -54,10 +52,11 @@ $(document).ready(function() {
   $('#edit-details').on('click', (event) => {
     event.preventDefault();
 
-    if (grant_description) {
+    if (grant_description !== undefined) {
       grant_description.enable(true);
       grant_description.getContents();
     }
+
     $('#edit-details').addClass('hidden');
     $('#save-details').removeClass('hidden');
     $('#cancel-details').removeClass('hidden');
@@ -70,14 +69,9 @@ $(document).ready(function() {
     editableFields.forEach(field => {
       makeEditable(field);
     });
-
   });
 
-  $('#save-details').on('click', (event) => {
-    if (grant_description) {
-      grant_description.enable(false);
-    }
-
+  $('#save-details').on('click', event => {
     $('#edit-details').removeClass('hidden');
     $('#save-details').addClass('hidden');
     $('#cancel-details').addClass('hidden');
@@ -87,23 +81,32 @@ $(document).ready(function() {
     let edit_title = $('#form--input__title').val();
     let edit_reference_url = $('#form--input__reference-url').val();
     let edit_admin_profile = $('#grant-admin option').last().text();
-    let edit_description = grant_description.getText();
-    let edit_description_rich = JSON.stringify(grant_description.getContents());
     let edit_amount_goal = $('#amount_goal').val();
     let edit_grant_members = $('#grant-members').val();
+
+    let data = {
+      'edit-title': edit_title,
+      'edit-reference_url': edit_reference_url,
+      'edit-admin_profile': edit_admin_profile,
+      'edit-amount_goal': edit_amount_goal,
+      'edit-grant_members[]': edit_grant_members
+    };
+
+    if (grant_description !== undefined) {
+      const edit_description = grant_description.getText();
+      const edit_description_rich = JSON.stringify(grant_description.getContents());
+
+      grant_description.enable(false);
+      data = Object.assign({}, data, {
+        'edit-description': edit_description,
+        'edit-description_rich': edit_description_rich
+      });
+    }
 
     $.ajax({
       type: 'post',
       url: '',
-      data: {
-        'edit-title': edit_title,
-        'edit-reference_url': edit_reference_url,
-        'edit-admin_profile': edit_admin_profile,
-        'edit-description': edit_description,
-        'edit-description_rich': edit_description_rich,
-        'edit-amount_goal': edit_amount_goal,
-        'edit-grant_members[]': edit_grant_members
-      },
+      data,
       success: function(json) {
         window.location.reload(false);
       },
@@ -115,10 +118,10 @@ $(document).ready(function() {
     editableFields.forEach(field => disableEdit(field));
   });
 
-  $('#cancel-details').on('click', (event) => {
-    if (grant_description) {
+  $('#cancel-details').on('click', event => {
+    if (grant_description !== undefined) {
       grant_description.enable(false);
-      grant_description.setContents(_text);
+      grant_description.setContents(grant_description.getContents());
     }
     $('#edit-details').removeClass('hidden');
     $('#save-details').addClass('hidden');
@@ -129,7 +132,6 @@ $(document).ready(function() {
   });
 
   $('#cancel_grant').on('click', function(e) {
-
     $('.modal-cancel-grants').on('click', function(e) {
       let contract_address = $('#contract_address').val();
       let grant_cancel_tx_id;
@@ -206,6 +208,9 @@ $(document).ready(function() {
     });
   });
 
+  $('#grant-profile-tabs button').click(function() {
+    document.location = $(this).attr('href');
+  });
 });
 
 const makeEditable = (input) => {
@@ -249,9 +254,3 @@ const copyDuplicateDetails = () => {
     });
   });
 };
-
-$(document).ready(() => {
-  $('#grant-profile-tabs button').click(function() {
-    document.location = $(this).attr('href');
-  });
-});
