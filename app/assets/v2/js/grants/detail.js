@@ -143,7 +143,7 @@ $(document).ready(function() {
             gasPrice: web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9))
           }).on('transactionHash', function(transactionHash) {
             grant_cancel_tx_id = $('#grant_cancel_tx_id').val();
-            const linkURL = etherscan_tx_url(transactionHash);
+            const linkURL = get_etherscan_url(transactionHash);
 
             document.issueURL = linkURL;
             $('#transaction_url').attr('href', linkURL);
@@ -182,7 +182,7 @@ $(document).ready(function() {
         from: accounts[0],
         gasPrice: 8000000000
       }).on('transactionHash', function(transactionHash) {
-        const linkURL = etherscan_tx_url(transactionHash);
+        const linkURL = get_etherscan_url(transactionHash);
 
         document.issueURL = linkURL;
         $('#transaction_url').attr('href', linkURL);

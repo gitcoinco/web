@@ -125,31 +125,32 @@ var callbacks = {
   },
   'status': function(key, val, result) {
     let ui_status = val;
+    let ui_status_raw = val;
 
-    if (ui_status === 'open') {
+    if (ui_status_raw === 'open') {
       ui_status = '<span>' + gettext('OPEN ISSUE') + '</span>';
 
       let can_submit = result['can_submit_after_expiration_date'];
 
-      if (!isBountyOwner && can_submit && is_bounty_expired(result)) {
+      if (!isBountyOwner() && can_submit && is_bounty_expired(result)) {
         ui_status += '<p class="text-highlight-light-blue font-weight-light font-body" style="text-transform: none;">' +
           gettext('This issue is past its expiration date, but it is still active.') +
           '<br>' +
           gettext('Check with the submitter to see if they still want to see it fulfilled.') +
           '</p>';
       }
-    } else if (ui_status === 'started') {
+    } else if (ui_status_raw === 'started') {
       ui_status = '<span>' + gettext('work started') + '</span>';
-    } else if (ui_status === 'submitted') {
+    } else if (ui_status_raw === 'submitted') {
       ui_status = '<span>' + gettext('work submitted') + '</span>';
-    } else if (ui_status === 'done') {
+    } else if (ui_status_raw === 'done') {
       ui_status = '<span>' + gettext('done') + '</span>';
-    } else if (ui_status === 'cancelled') {
+    } else if (ui_status_raw === 'cancelled') {
       ui_status = '<span style="color: #f9006c;">' + gettext('cancelled') + '</span>';
     }
 
-    if (isBountyOwner && is_bounty_expired(result) &&
-      ui_status !== 'done' && ui_status !== 'cancelled') {
+    if (isBountyOwner() && is_bounty_expired(result) &&
+      ui_status_raw !== 'done' && ui_status_raw !== 'cancelled') {
 
       ui_status += '<p class="font-weight-light font-body" style="color: black; text-transform: none;">' +
       'This issue has expired. Click <a class="text-highlight-light-blue font-weight-semibold" href="/extend-deadlines">here to extend expiration</a> ' +
@@ -512,7 +513,7 @@ var showWarningMessage = function(txid) {
   if (typeof txid != 'undefined' && txid.indexOf('0x') != -1) {
     waitforWeb3(function() {
       clearInterval(interval);
-      var link_url = etherscan_tx_url(txid);
+      var link_url = get_etherscan_url(txid);
 
       $('#transaction_url').attr('href', link_url);
     });
@@ -1449,6 +1450,13 @@ const process_activities = function(result, bounty_activities) {
     const fulfillment = meta.fulfillment || {};
     const new_bounty = meta.new_bounty || {};
     const old_bounty = meta.old_bounty || {};
+    const issue_message = result.interested.length ?
+      result.interested.find(interest => {
+        if (interest.profile.handle === _activity.profile.handle && interest.issue_message) {
+          return interest.issue_message;
+        }
+        return false;
+      }) : false;
     const has_signed_nda = result.interested.length ?
       result.interested.find(interest => {
         if (interest.profile.handle === _activity.profile.handle && interest.signed_nda) {
@@ -1490,6 +1498,7 @@ const process_activities = function(result, bounty_activities) {
       activity_type: _activity.activity_type,
       status: _activity.activity_type === 'work_started' ? 'started' : 'stopped',
       signed_nda: has_signed_nda,
+      issue_message: issue_message,
       uninterest_possible: uninterest_possible,
       slash_possible: slash_possible,
       approve_worker_url: meta.approve_worker_url,
