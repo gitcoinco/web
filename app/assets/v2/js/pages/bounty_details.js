@@ -132,7 +132,7 @@ var callbacks = {
 
       let can_submit = result['can_submit_after_expiration_date'];
 
-      if (!isBountyOwner() && can_submit && is_bounty_expired(result)) {
+      if (!isBountyOwner(result) && can_submit && is_bounty_expired(result)) {
         ui_status += '<p class="text-highlight-light-blue font-weight-light font-body" style="text-transform: none;">' +
           gettext('This issue is past its expiration date, but it is still active.') +
           '<br>' +
@@ -149,7 +149,7 @@ var callbacks = {
       ui_status = '<span style="color: #f9006c;">' + gettext('cancelled') + '</span>';
     }
 
-    if (isBountyOwner() && is_bounty_expired(result) &&
+    if (isBountyOwner(result) && is_bounty_expired(result) &&
       ui_status_raw !== 'done' && ui_status_raw !== 'cancelled') {
 
       ui_status += '<p class="font-weight-light font-body" style="color: black; text-transform: none;">' +
