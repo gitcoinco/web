@@ -2695,7 +2695,7 @@ class Profile(SuperModel):
 
         try:
             if bounties.exists():
-                eth_sum = sum([amount for amount in bounties.values_list("value_in_eth", flat=True)])
+                eth_sum = sum([amount for amount in bounties.values_list("value_true", flat=True)])
         except Exception:
             pass
 
@@ -2812,7 +2812,7 @@ class Profile(SuperModel):
             (dashboard.models.ActivityQuerySet): The query results.
 
         """
-        
+
         if not self.is_org:
             all_activities = self.activities
         else:
