@@ -180,13 +180,12 @@ def grant_details(request, grant_id, grant_slug):
             grant.reference_url = request.POST.get('edit-reference_url')
             form_profile = request.POST.get('edit-admin_profile')
             admin_profile = Profile.objects.get(handle=form_profile)
+            grant.description = request.POST.get('edit-description')
+            grant.description_rich = request.POST.get('edit-description_rich')
             grant.amount_goal = Decimal(request.POST.get('edit-amount_goal'))
             team_members = request.POST.getlist('edit-grant_members[]')
             team_members.append(str(admin_profile.id))
             grant.team_members.set(team_members)
-            if 'edit-description' in request.POST:
-                grant.description = request.POST.get('edit-description')
-                grant.description_rich = request.POST.get('edit-description_rich')
             if grant.admin_profile != admin_profile:
                 grant.request_ownership_change = admin_profile
                 change_grant_owner_request(grant, grant.request_ownership_change)
