@@ -98,7 +98,7 @@
   {% with description_tab_url=grant.url|addstr:'?tab=description' %}
       let grant_description;
 
-      {% if request.get_full_path == description_tab_url %}
+      {% if request.get_full_path == description_tab_url or request.get_full_path == grant.url %}
         grant_description = new Quill('#editor', {
             theme: 'bubble',
             readOnly: true,
