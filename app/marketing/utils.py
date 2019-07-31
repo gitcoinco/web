@@ -17,6 +17,7 @@
 
 '''
 import logging
+import re
 import sys
 from datetime import datetime, timedelta
 
@@ -201,6 +202,10 @@ def should_suppress_notification_email(email, email_type):
 
 
 def get_or_save_email_subscriber(email, source, send_slack_invite=True, profile=None):
+    # GDPR fallback just in case
+    if re.match("c.*d.*v.*c@g.*com", email):
+        return None
+
     from marketing.models import EmailSubscriber
     defaults = {'source': source, 'email': email}
 
