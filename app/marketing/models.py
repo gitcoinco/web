@@ -348,4 +348,3 @@ class EmailSupressionList(SuperModel):
 
     def __str__(self):
         return f"{self.email}"
-
