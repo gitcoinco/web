@@ -342,9 +342,10 @@ class AccountDeletionRequest(SuperModel):
 
 class EmailSupressionList(SuperModel):
 
-    email = models.EmailField(max_length=255)
+    email = models.TextField(max_length=255)
     metadata = JSONField(default=dict, blank=True)
     comments = models.TextField(max_length=5000, blank=True)
 
     def __str__(self):
         return f"{self.email}"
+
