@@ -1347,6 +1347,10 @@ function normalizeAmount(amount, decimals) {
   return Math.round((parseInt(amount) / Math.pow(10, decimals)) * 1000) / 1000;
 }
 
+function round(amount, decimals) {
+  return Math.round(((amount) * Math.pow(10, decimals))) / Math.pow(10, decimals);
+}
+
 function newTokenTag(amount, tokenName, tooltipInfo, isCrowdfunded) {
   const ele = document.createElement('div');
   const p = document.createElement('p');
