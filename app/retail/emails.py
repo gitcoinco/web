@@ -932,8 +932,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Grow Ethereum Hackathon: Just Days Away"
-    new_kudos_pks = [153, 66, 4281]
+    subject = "Hacking, Begin! Grow Ethereum Has Started"
+    new_kudos_pks = [2050, 4281, 1970]
     new_kudos_size_px = 150
 
     kudos_friday = f'''
@@ -948,13 +948,13 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-We are now only days away from the beginning of the Grow Ethereum hackathon, one of the largest hackathons we've planned to date. As we announced last week, we have huge names behind the event - the Ethereum Foundation and MetaCartel to name a couple - with dozens of prizes on the horizon. See the full list of sponsors (including bZx, AdEx, and Arweave) and a checklist to prepare for the July 29th start date on this <a href="https://gitcoin.co/blog/growethereum/" target="_blank">blog post.</a>
+Grow Ethereum has officially started! After weeks of hype, the hackathon is now upon us. Dozens of bounties from some of the top projects in Ethereum are now live on the Hackathon Issue Explorer. If you aren't already a member, join the Discord to find a team and then get to work! Some of the Hackathon bounties are featured in this email below, but many more are up for grabs. For more information on the prizes, and to take a look at the availabile issues, check out the hackathon homepage <a href="https://hackathons.gitcoin.co/grow-ethereum/" target="_blank">here.</a>
 </p>
 <p>
-Is it time for a summer refresh on your Gitcoin profile? Yes. Now, you can customize your Gitcoin profile with a groovy header. Check out the new profile customizations and grab yourself a brand new avatar for the summer at <a href="https://gitcoin.co/onboard/profile/?steps=avatar"> the Avatar Creator </a> and <a href="https://gitcoin.co/profile/"> Profile Editor.</a>
+Who are the sponsors for Grow Ethereum? This hackathon features a wide range of projects coming from all parts of the ecosystem. Our core sponsors are <a href="https://www.adex.network/">AdEx</a>, <a href="https://bzx.network/">bZx</a>, the <a href="https://ethereum.org/">Ethereum Foundation</a>, <a href="https://www.unicef.org/innovation/blockchain">UNICEF</a>, and <a href="https://www.metacartel.org/">Metacartel</a>. Our node sponsors are <a href="https://www.portis.io/">Portis</a>, <a href="https://fluence.network/">fluence</a>, <a href="https://pegasys.tech/">PegaSys</a>, <a href="https://www.arweave.org/">Arweave</a>, and <a href="https://raiden.network/">Raiden</a>. For more information on each sponsor's bounty offerings, drop by the Discord and find their specific sponsor channel. There, bounties will be posted, and you can ask any questions you may have.
 </p>
 <p>
-Finally, we're preparing to announce the next round of CLR matching for Gitcoin Grants. If you have a project that needs funding, or are a funder that would like to help grow open source, check out the current Gitcoin Grants homepage. We are happy to answer any questions you might have. <a href="https://gitcoin.co/grants/">Grants live here.</a>
+Last, we're inching closer to our announcement of the next round of CLR matching for Gitcoin Grants. If you have a project that needs funding, or are a funder that would like to help grow open source, check out the current Gitcoin Grants homepage. We are happy to answer any questions you might have. <a href="https://gitcoin.co/grants/">Grants live here.</a>
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
@@ -963,7 +963,7 @@ Finally, we're preparing to announce the next round of CLR matching for Gitcoin 
             The Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday.
         </li>
         <li>
-            Interested in the future of ads on the internet? <a href="https://media.consensys.net/how-ethical-advertising-will-transform-the-blockchain-industry-31c2c4f2bd45">Check out this primer on Ethical Advertising from Connor O'Day, part of the Codefund team.</a>
+        Looking for something to watch this weekend? Gitcoin Media is about to upload a new wave of past livestreams. Take a look at the existing ones uploaded today and get ready to watch the next ones! Gitcoin Media lives <a href="https://www.youtube.com/gitcoinmedia">here.</a>
         </li>
     </ul>
 </p>
@@ -972,45 +972,45 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'dcd018',
+        'who': 'KapsonLabs',
         'who_link': True,
-        'what': 'Clone form, fixed!',
-        'link': 'https://gitcoin.co/issue/gitcoinco/code_fund_ads/572/3247',
+        'what': 'Pay Practitioner Implemented!',
+        'link': 'https://gitcoin.co/issue/RibbonBlockchain/IncentivesMVP/16/3282',
         'link_copy': 'View more',
     }, {
-        'who': 'enieber',
+        'who': 'samsparsky',
         'who_link': True,
-        'what': 'README: Updated!',
-        'link': 'https://gitcoin.co/issue/sigillabs/mobidex/236/3166',
+        'what': 'Token Buyback for Gnosis.',
+        'link': 'https://gitcoin.co/issue/GnosisEcosystemFund/Gnosis-Bounties-/3/1626',
         'link_copy': 'View more',
     }, {
-        'who': 'gutsal-arsen',
+        'who': 'PierrickGT',
         'who_link': True,
-        'what': 'Safe Keyboard, Implemented',
-        'link': 'https://gitcoin.co/issue/polkawallet-io/polkawallet-RN/104/2944',
+        'what': 'The edit button now works.',
+        'link': 'https://gitcoin.co/issue/gitcoinco/web/4786/3227',
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'Allinfra',
-        'title': 'The Future of Infrastructure Finance',
+        'name': 'Quantstamp',
+        'title': 'Scan your smart contract with the Quantstamp Security Network V2 today.',
         'image_url': 'https://s3.us-west-2.amazonaws.com/gitcoin-static/jDSk7ZTfpY19PWdwwsk8puNd.png',
-        'link': 'http://bit.ly/Allinfra',
-        'cta': 'Register today',
+        'link': 'http://bit.ly/QStamp',
+        'cta': 'Scan now',
         'body': [
-            'Bringing access, choice, and liquidity to unlisted infrastructure assets using the power of Ethereum'
+            'Reentrancy bu🐜s are easy to miss. Have confidence in your code and integrate security checks as part of your development workflow.🛡'
         ]
     }
 
     bounties_spec = [{
-        'url': 'https://github.com/gitcoinco/web/issues/4744',
-        'primer': 'Allow Ability to Resurface Bounties to the Top When Expiration Date is Extended',
+        'url': 'https://github.com/fluencelabs/Bounties/issues/1',
+        'primer': 'Help Build The Real Decentralized Web',
     }, {
-        'url': 'https://github.com/SpeckleOS/speckle-browser-extension/issues/89',
-        'primer': 'Global Settings (Change Colour Theme and Log Out)',
+        'url': 'https://gitcoin.co/issue/PegaSysEng/BountiedWork/20/3281',
+        'primer': 'Stratum Implementation for Pantheon',
     }, {
-        'url': 'https://github.com/ironcoinext/IronCoin/issues/8',
-        'primer': 'New Tab Page',
+        'url': 'https://gitcoin.co/issue/fluencelabs/Bounties/2/3291',
+        'primer': 'Building REPL to Enable Customizable Decentralized Backends',
 }, ]
     
     
