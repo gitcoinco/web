@@ -113,8 +113,9 @@ var callbacks = {
   'github_url': link_ize,
   'value_in_token': function(key, val, result) {
     var title = token_value_to_display(val) + ' ' + result['token_name'];
-    var title_expand = title + " in funding from original funder.";
-    $("#value_in_token").parents('.token').attr('title', title_expand);
+    var title_expand = title + ' in funding from original funder.';
+
+    $('#value_in_token').parents('.token').attr('title', title_expand);
     return [ 'amount', title ];
   },
   'avatar_url': function(key, val, result) {
@@ -236,9 +237,8 @@ var callbacks = {
     if (val === null) {
       return [ null, null ];
     }
-    var rates_estimate = get_rates_estimate(val);
 
-    $('#value_in_usdt_wrapper').attr('title', '<div class="tooltip-info tooltip-sm">' + rates_estimate + '</div>');
+    $('#value_in_usdt_wrapper').attr('title', '<div class="tooltip-info">The funding in this bounty adds up to $' + val + ' USD </div>');
 
     return [ 'Amount_usd', val ];
   },
