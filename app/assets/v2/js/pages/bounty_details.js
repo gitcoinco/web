@@ -112,8 +112,8 @@ var heads = {
 var callbacks = {
   'github_url': link_ize,
   'value_in_token': function(key, val, result) {
-    var title = token_value_to_display(val) + ' ' + result['token_name'];
-    var title_expand = title + ' in funding from original funder.';
+    const title = token_value_to_display(val) + ' ' + result['token_name'];
+    const title_expand = title + ' in funding from original funder.';
 
     $('#value_in_token').parents('.token').attr('title', title_expand);
     return [ 'amount', title ];
