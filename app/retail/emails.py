@@ -932,7 +932,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Hacking, Begin! Grow Ethereum Has Started"
+    subject = "The Grow Ethereum Hackathon Has Started"
     new_kudos_pks = [2050, 4281, 1970]
     new_kudos_size_px = 150
 
