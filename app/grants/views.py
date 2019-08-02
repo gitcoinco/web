@@ -173,12 +173,13 @@ def grant_details(request, grant_id, grant_slug):
         elif 'edit-title' in request.POST:
             grant.title = request.POST.get('edit-title')
             grant.reference_url = request.POST.get('edit-reference_url')
-            grant.description = request.POST.get('edit-description')
-            grant.description_rich = request.POST.get('edit-description_rich')
             grant.amount_goal = Decimal(request.POST.get('edit-amount_goal'))
             team_members = request.POST.getlist('edit-grant_members[]')
             team_members.append(str(grant.admin_profile.id))
             grant.team_members.set(team_members)
+            if 'edit-description' in request.POST:
+                grant.description = request.POST.get('edit-description')
+                grant.description_rich = request.POST.get('edit-description_rich')
             grant.save()
             record_grant_activity_helper('update_grant', grant, profile)
             return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
