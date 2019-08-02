@@ -932,7 +932,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Hacking, Begin! Grow Ethereum Has Started"
+    subject = "The Grow Ethereum Hackathon Has Started"
     new_kudos_pks = [2050, 4281, 1970]
     new_kudos_size_px = 150
 
@@ -1006,10 +1006,10 @@ Back to shipping,
         'url': 'https://github.com/fluencelabs/Bounties/issues/1',
         'primer': 'Help Build The Real Decentralized Web',
     }, {
-        'url': 'https://gitcoin.co/issue/PegaSysEng/BountiedWork/20/3281',
+        'url': 'https://github.com/PegaSysEng/BountiedWork/issues/20',
         'primer': 'Stratum Implementation for Pantheon',
     }, {
-        'url': 'https://gitcoin.co/issue/fluencelabs/Bounties/2/3291',
+        'url': 'https://github.com/fluencelabs/Bounties/issues/2',
         'primer': 'Building REPL to Enable Customizable Decentralized Backends',
 }, ]
     
