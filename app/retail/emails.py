@@ -948,10 +948,10 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-Grow Ethereum has officially started! After weeks of hype, the hackathon is now upon us. Dozens of bounties from some of the top projects in Ethereum are now live on the Hackathon Issue Explorer. If you aren't already a member, join the Discord to find a team and then get to work! Some of the Hackathon bounties are featured in this email below, but many more are up for grabs. For more information on the prizes, and to take a look at the availabile issues, check out the hackathon homepage <a href="https://hackathons.gitcoin.co/grow-ethereum/" target="_blank">here.</a>
+Grow Ethereum has officially started! After weeks of hype, the hackathon is now upon us. Dozens of bounties from some of the top projects in Ethereum are now live on the Hackathon Issue Explorer. If you aren't already a member, join the Discord to find a team and then get to work! Some of the Hackathon bounties are featured in this email below, but many more are up for grabs. For more information on the prizes, and to take a look at the available issues, check out the hackathon homepage <a href="https://hackathons.gitcoin.co/grow-ethereum/" target="_blank">here.</a>
 </p>
 <p>
-Who are the sponsors for Grow Ethereum? This hackathon features a wide range of projects coming from all parts of the ecosystem. Our core sponsors are <a href="https://www.adex.network/">AdEx</a>, <a href="https://bzx.network/">bZx</a>, the <a href="https://ethereum.org/">Ethereum Foundation</a>, <a href="https://www.unicef.org/innovation/blockchain">UNICEF</a>, and <a href="https://www.metacartel.org/">Metacartel</a>. Our node sponsors are <a href="https://www.portis.io/">Portis</a>, <a href="https://fluence.network/">fluence</a>, <a href="https://pegasys.tech/">PegaSys</a>, <a href="https://www.arweave.org/">Arweave</a>, and <a href="https://raiden.network/">Raiden</a>. For more information on each sponsor's bounty offerings, drop by the Discord and find their specific sponsor channel. There, bounties will be posted, and you can ask any questions you may have.
+Who are the sponsors for Grow Ethereum? This hackathon features a wide range of projects coming from all parts of the ecosystem. Our core sponsors are <a href="https://www.adex.network/">AdEx</a>, <a href="https://bzx.network/">bZx</a>, the <a href="https://ethereum.org/">Ethereum Foundation</a>, <a href="https://www.unicef.org/innovation/blockchain">UNICEF Innovation</a>, and <a href="https://www.metacartel.org/">Metacartel</a>. Our node sponsors are <a href="https://www.portis.io/">Portis</a>, <a href="https://fluence.network/">fluence</a>, <a href="https://pegasys.tech/">PegaSys</a>, <a href="https://www.arweave.org/">Arweave</a>, and <a href="https://raiden.network/">Raiden</a>. For more information on each sponsor's bounty offerings, drop by the Discord and find their specific sponsor channel. There, bounties will be posted, and you can ask any questions you may have.
 </p>
 <p>
 Last, we're inching closer to our announcement of the next round of CLR matching for Gitcoin Grants. If you have a project that needs funding, or are a funder that would like to help grow open source, check out the current Gitcoin Grants homepage. We are happy to answer any questions you might have. <a href="https://gitcoin.co/grants/">Grants live here.</a>
@@ -1006,10 +1006,10 @@ Back to shipping,
         'url': 'https://github.com/fluencelabs/Bounties/issues/1',
         'primer': 'Help Build The Real Decentralized Web',
     }, {
-        'url': 'https://gitcoin.co/issue/PegaSysEng/BountiedWork/20/3281',
+        'url': 'https://github.com/PegaSysEng/BountiedWork/issues/20',
         'primer': 'Stratum Implementation for Pantheon',
     }, {
-        'url': 'https://gitcoin.co/issue/fluencelabs/Bounties/2/3291',
+        'url': 'https://github.com/fluencelabs/Bounties/issues/2',
         'primer': 'Building REPL to Enable Customizable Decentralized Backends',
 }, ]
     
