@@ -1581,3 +1581,7 @@ div.busyOverlay {
 .g-modal .modal-footer {
   border: none;
 }
+
+.inner-tooltip {
+  pointer-events: none;
+}
