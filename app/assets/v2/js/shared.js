@@ -1360,14 +1360,11 @@ function newTokenTag(amount, tokenName, tooltipInfo, isCrowdfunded) {
   span.innerHTML = amount + ' ' + tokenName +
     (isCrowdfunded ? '<i class="fas fa-users ml-1"></i>' : '');
 
+  p.className = 'inner-tooltip';
   p.appendChild(span);
   ele.appendChild(p);
-
   if (tooltipInfo) {
-    ele.title =
-      '<div class="tooltip-info tooltip-sm">' +
-      tooltipInfo +
-      '</div>';
+    ele.title = tooltipInfo;
   }
 
   return ele;

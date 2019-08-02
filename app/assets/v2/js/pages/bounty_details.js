@@ -112,7 +112,11 @@ var heads = {
 var callbacks = {
   'github_url': link_ize,
   'value_in_token': function(key, val, result) {
-    return [ 'amount', token_value_to_display(val) + ' ' + result['token_name'] ];
+    const title = token_value_to_display(val) + ' ' + result['token_name'];
+    const title_expand = title + ' in funding from original funder.';
+
+    $('#value_in_token').parents('.token').attr('title', title_expand);
+    return [ 'amount', title ];
   },
   'avatar_url': function(key, val, result) {
     return [ 'avatar', '<a href="/profile/' + result['org_name'] + '"><img class="avatar ' + result['github_org_name'] + '" src="' + val + '"></a>' ];
@@ -233,9 +237,8 @@ var callbacks = {
     if (val === null) {
       return [ null, null ];
     }
-    var rates_estimate = get_rates_estimate(val);
 
-    $('#value_in_usdt_wrapper').attr('title', '<div class="tooltip-info tooltip-sm">' + rates_estimate + '</div>');
+    $('#value_in_usdt_wrapper').attr('title', '<div class="tooltip-info">The funding in this bounty adds up to $' + val + ' USD </div>');
 
     return [ 'Amount_usd', val ];
   },
@@ -296,7 +299,7 @@ var callbacks = {
       const tokenValue = Math.round(1.0 * ratio);
       const timestamp = new Date(obj['timestamp']);
       const timePeg = timeDifference(dateNow, timestamp > dateNow ? dateNow : timestamp, false, 60 * 60);
-      const tooltip = `$ ${Math.round(usd)} USD in crowdfunding`;
+      const tooltip = `+ ${funding} ${tokenName} in crowdfunding`;
 
       leftHtml += '<p class="m-0">+ ' + funding + ' ' + tokenName + '</p>';
       rightHtml += '<p class="m-0">@ $' + tokenValue + ' ' + tokenName + ' as of ' + timePeg + '</p>';
@@ -307,6 +310,7 @@ var callbacks = {
         newTokenTag(funding, tokenName, tooltip, true),
         usdTagElement
       );
+
     }
 
     $('#value_in_usdt').html(Math.round(totalUSDValue));
