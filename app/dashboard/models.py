@@ -251,7 +251,7 @@ class Bounty(SuperModel):
     TERMINAL_STATUSES = ['done', 'expired', 'cancelled']
 
     web3_type = models.CharField(max_length=50, default='bounties_network')
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=1000)
     web3_created = models.DateTimeField(db_index=True)
     value_in_token = models.DecimalField(default=1, decimal_places=2, max_digits=50)
     token_name = models.CharField(max_length=50)
