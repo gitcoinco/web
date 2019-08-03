@@ -1850,6 +1850,26 @@ class Activity(SuperModel):
         return model_to_dict(self, **kwargs)
 
 
+@receiver(post_save, sender=Activity, dispatch_uid="post_add_activity")
+def post_add_activity(sender, instance, created, **kwargs):
+    if created:
+        dupes = Activity.objects.exclude(pk=instance.pk)
+        dupes = dupes.filter(created_on__gte=(instance.created_on - timezone.timedelta(minutes=5)))
+        dupes = dupes.filter(created_on__lte=(instance.created_on + timezone.timedelta(minutes=5)))
+        dupes = dupes.filter(profile=instance.profile)
+        dupes = dupes.filter(bounty=instance.bounty)
+        dupes = dupes.filter(tip=instance.tip)
+        dupes = dupes.filter(kudos=instance.kudos)
+        dupes = dupes.filter(grant=instance.grant)
+        dupes = dupes.filter(subscription=instance.subscription)
+        dupes = dupes.filter(activity_type=instance.activity_type)
+        dupes = dupes.filter(metadata=instance.metadata)
+        dupes = dupes.filter(needs_review=instance.needs_review)
+        for dupe in dupes:
+            dupe.delete()
+
+
+
 class LabsResearch(SuperModel):
     """Define the structure of Labs Research object."""
 
