@@ -82,8 +82,3 @@ sentry-sdk
 websocket-client
 bleach
 python-magic
-rcssmin --install-option="--without-c-extensions"
-rjsmin --install-option="--without-c-extensions"
-django-compressor --upgrade
-django-statici18n
-

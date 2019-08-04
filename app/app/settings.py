@@ -38,7 +38,6 @@ env = environ.Env(DEBUG=(bool, False), )  # set default values and casting
 env.read_env(str(root.path('app/.env')))  # reading .env file
 
 DEBUG = env.bool('DEBUG', default=True)
-TEMPLATE_DEBUG = env.bool('TEMPLATE_DEBUG', default=False)
 ENV = env('ENV', default='local')
 DEBUG_ENVS = env.list('DEBUG_ENVS', default=['local', 'stage', 'test'])
 IS_DEBUG_ENV = ENV in DEBUG_ENVS
@@ -114,8 +113,6 @@ INSTALLED_APPS = [
     'revenue',
     'event_ethdenver2019',
     'inbox',
-    "compressor",
-    'statici18n',
 ]
 
 MIDDLEWARE = [
@@ -153,7 +150,6 @@ TEMPLATES = [{
             'django.contrib.auth.context_processors.auth', 'django.contrib.messages.context_processors.messages',
             'app.context.preprocess', 'social_django.context_processors.backends',
             'social_django.context_processors.login_redirect',
-            'django.template.context_processors.i18n',
         ],
     },
 }]
@@ -349,13 +345,6 @@ STATICFILES_DIRS = env.tuple('STATICFILES_DIRS', default=('assets/', ))
 STATIC_ROOT = root('static')
 STATICFILES_LOCATION = env.str('STATICFILES_LOCATION', default='static')
 MEDIAFILES_LOCATION = env.str('MEDIAFILES_LOCATION', default='media')
-
-STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    # other finders..
-    'compressor.finders.CompressorFinder',
-)
 
 if ENV in ['prod', 'stage']:
     DEFAULT_FILE_STORAGE = env('DEFAULT_FILE_STORAGE', default='app.static_storage.MediaFileStorage')
@@ -682,13 +671,6 @@ IPFS_API_ROOT = env('IPFS_API_ROOT', default='/api/v0')
 IPFS_API_SCHEME = env('IPFS_API_SCHEME', default='https')
 
 STABLE_COINS = ['DAI', 'USDT', 'TUSD']
-
-from datetime import date, timedelta
-tenyrs = date.today() + timedelta(days=365*10)
-# Expires 10 years in the future at 8PM GMT
-AWS_HEADERS = {
-    'Expires': tenyrs.strftime('%a, %d %b %Y 20:00:00 GMT')
-}
 
 # Silk Profiling and Performance Monitoring
 ENABLE_SILK = env.bool('ENABLE_SILK', default=False)
