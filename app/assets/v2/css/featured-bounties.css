@@ -24,7 +24,7 @@
   display: flex;
   color: #0d003c;
   background-color: #fff;
-  border-radius: 4px;
+  border-radius: 2px;
   position: relative;
   margin: 1rem 0.4rem;
   scroll-snap-align: none start;
@@ -35,9 +35,13 @@
   max-width: 20%;
   align-items: center;
   border: 1px solid #cfcfcf;
-  padding: .5em;
+  padding: 1em .5em;
   font-size: 12px;
-  min-width: 230px;
+  min-width: 18rem;
+}
+
+.bounty-card .tag.token:first-child {
+  margin-left: 0;
 }
 
 .bounty-card__link {
@@ -60,6 +64,7 @@
   flex-shrink: 0;
   width: 56px;
   height: 56px;
+  margin-right: 0.5rem;
 }
 
 .carousel-control-small .carousel-control-next,

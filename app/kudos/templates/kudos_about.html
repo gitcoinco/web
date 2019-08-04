@@ -26,7 +26,7 @@
   </head>
   <body class="{{ active }} g-font-muli">
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    <header class="container-fluid header">
+    <header class="header">
       {% include 'shared/kudos_nav.html' %}
       <!-- {% include 'shared/kudos_banner.html' %} -->
       <div class="container text-center mt-5">
@@ -438,7 +438,6 @@
 
         setInterval(load_kudos_card_images, 300);
       });
-      var bootstrapTooltip = $.fn.tooltip.noConflict()
     </script>
     {% include 'shared/messages.html' %}
   </body>

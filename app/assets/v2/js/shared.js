@@ -75,21 +75,6 @@ var loading_button = function(button) {
   button.prepend('<img src=' + static_url + 'v2/images/loading_white.gif style="max-width:20px; max-height: 20px">');
 };
 
-var attach_close_button = function() {
-  $('body').delegate('.alert .closebtn', 'click', function(e) {
-    $(this).parents('.alert').remove();
-    $('.alert').each(function(index) {
-      if (index == 0) $(this).css('top', 0);
-      else {
-        var new_top = (index * 66) + 'px';
-
-        $(this).css('top', new_top);
-      }
-    });
-  });
-};
-
-
 var update_metamask_conf_time_and_cost_estimate = function() {
   var confTime = 'unknown';
   var ethAmount = 'unknown';
@@ -227,43 +212,6 @@ var waitforWeb3 = function(callback) {
 
 var normalizeURL = function(url) {
   return url.replace(/\/$/, '');
-};
-
-var _alert = function(msg, _class) {
-  if (typeof msg == 'string') {
-    msg = {
-      'message': msg
-    };
-  }
-  var numAlertsAlready = $('.alert:visible').length;
-  var top = numAlertsAlready * 44;
-
-  var html = function() {
-    return (
-      `<div class="alert ${_class} g-font-muli" style="top: ${top}px">
-        <div class="message">
-          <div class="content">
-            ${alertMessage(msg)}
-          </div>
-        </div>
-        ${closeButton(msg)}
-      </div>`
-    );
-  };
-
-  $('body').append(html);
-};
-
-var closeButton = function(msg) {
-  var html = (msg['closeButton'] === false ? '' : '<span class="closebtn" >&times;</span>');
-
-  return html;
-};
-
-var alertMessage = function(msg) {
-  var html = `<strong>${typeof msg['title'] !== 'undefined' ? msg['title'] : ''}</strong>${msg['message']}`;
-
-  return html;
 };
 
 var timestamp = function() {
@@ -697,8 +645,10 @@ var retrieveIssueDetails = function() {
       }).trigger('change');
 
     }
-    target_eles['description'].val(result['description']);
     target_eles['title'].val(result['title']);
+    target_eles['description'].val(result['description']);
+    $('#no-issue-banner').hide();
+    $('#issue-details, #issue-details-edit').show();
 
     // $('#title--text').html(result['title']); // TODO: Refactor
     $.each(target_eles, function(i, ele) {
@@ -1048,42 +998,48 @@ attach_change_element_type();
 
 window.addEventListener('load', function() {
   setInterval(listen_for_web3_changes, 1000);
-  attach_close_button();
 });
 
-var promptForAuth = function(event) {
+var callMethodIfTokenIsAuthed = function(success, failure) {
   var denomination = $('#token option:selected').text();
   var tokenAddress = $('#token option:selected').val();
 
   if (!denomination) {
-    return;
-  }
-
-  if (denomination !== 'ETH') {
+    failure(denomination, tokenAddress);
+  } else if (denomination == 'ETH') {
+    success(denomination, tokenAddress);
+  } else {
     var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
     var from = web3.eth.coinbase;
     var to = bounty_address();
 
     token_contract.allowance.call(from, to, function(error, result) {
       if (error || result.toNumber() == 0) {
-        if (!document.alert_enable_token_shown) {
-          _alert(
-            gettext(`To enable this token, go to the
-            <a style="padding-left:5px;" href="/settings/tokens">
-            Token Settings page and enable it.
-            </a> This is only needed once per token.`),
-            'warning'
-          );
-        }
-        document.alert_enable_token_shown = true;
-
+        failure(denomination, tokenAddress);
+      } else {
+        success(denomination, tokenAddress);
       }
     });
-
-  } else if ($('.alert')) {
-    $('.alert').remove();
-    document.alert_enable_token_shown = false;
   }
+};
+
+var promptForAuthFailure = function(denomination, tokenAddress) {
+  _alert(
+    gettext(`To enable this token, go to the
+    <a style="padding-left:5px;" href="/settings/tokens">
+    Token Settings page and enable it.
+    </a> This is only needed once per token.`),
+    'warning'
+  );
+};
+
+var promptForAuth = function(event) {
+
+  var success = function(denomination, tokenAddress) {
+    $('.alert').remove();
+  };
+
+  callMethodIfTokenIsAuthed(success, promptForAuthFailure);
 };
 
 var setUsdAmount = function(event) {
@@ -1138,7 +1094,7 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
 
     const divisor = Math.pow(10, decimals);
 
-    result['rounded_amount'] = Math.round(10 ** token_round_decimals * normalizeAmount(result['value_in_token'] / divisor, decimals)) / 10 ** token_round_decimals;
+    result['rounded_amount'] = normalizeAmount(result['value_in_token'], decimals);
 
     const crowdfunding = result['additional_funding_summary'];
 
@@ -1236,7 +1192,7 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
     } else {
       result['hidden'] = (i > 4);
     }
-    
+
     html += tmpl.render(result);
   }
   return html;
@@ -1270,14 +1226,12 @@ const renderFeaturedBountiesFromResults = (results, renderForExplorer) => {
   for (let i = 0; i < results.length; i++) {
     const result = results[i];
     let decimals = 18;
-    const divisor = Math.pow(10, decimals);
     const relatedTokenDetails = tokenAddressToDetailsByNetwork(result['token_address'], result['network']);
 
     if (relatedTokenDetails && relatedTokenDetails.decimals) {
       decimals = relatedTokenDetails.decimals;
     }
-
-    result['rounded_amount'] = Math.round(10 ** token_round_decimals * normalizeAmount(result['value_in_token'] / divisor, decimals)) / 10 ** token_round_decimals;
+    result['rounded_amount'] = normalizeAmount(result['value_in_token'], decimals);
 
     html += tmpl.render(result);
   }
@@ -1390,7 +1344,11 @@ function toggleExpandableBounty(evt, selector) {
 }
 
 function normalizeAmount(amount, decimals) {
-  return Math.round(amount * 10 ** decimals) / 10 ** decimals;
+  return Math.round((parseInt(amount) / Math.pow(10, decimals)) * 1000) / 1000;
+}
+
+function round(amount, decimals) {
+  return Math.round(((amount) * Math.pow(10, decimals))) / Math.pow(10, decimals);
 }
 
 function newTokenTag(amount, tokenName, tooltipInfo, isCrowdfunded) {

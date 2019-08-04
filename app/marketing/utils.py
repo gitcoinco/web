@@ -17,6 +17,7 @@
 
 '''
 import logging
+import re
 import sys
 from datetime import datetime, timedelta
 
@@ -39,11 +40,11 @@ def delete_user_from_mailchimp(email_address):
     result = None
     try:
         result = client.search_members.get(query=email_address)
+        if result:
+            subscriber_hash = result.get('exact_matches', {}).get('members', [{}])[0].get('id', None)
     except Exception as e:
         logger.debug(e)
 
-    if result:
-        subscriber_hash = result['exact_matches']['members'][0]['id']
 
         try:
             client.lists.members.delete(
@@ -201,6 +202,10 @@ def should_suppress_notification_email(email, email_type):
 
 
 def get_or_save_email_subscriber(email, source, send_slack_invite=True, profile=None):
+    # GDPR fallback just in case
+    if re.match("c.*d.*v.*c@g.*com", email):
+        return None
+
     from marketing.models import EmailSubscriber
     defaults = {'source': source, 'email': email}
 

@@ -87,10 +87,7 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with slim=1 %}
-    
-    
-    <script>
-      var bootstrapTooltip = $.fn.tooltip.noConflict()
-    </script>
+    <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
+    <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
   </body>
 </html>

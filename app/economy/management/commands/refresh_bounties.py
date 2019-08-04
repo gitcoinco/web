@@ -48,7 +48,7 @@ class Command(BaseCommand):
                 Defaults to: `False` unless user passes the remote option.
 
         """
-        all_bounties = Bounty.objects.filter(current_bounty=True).order('-pk')
+        all_bounties = Bounty.objects.filter(current_bounty=True).order_by('-pk')
         fetch_remote = options['remote']
         print(f"refreshing {all_bounties.count()} bounties")
 
