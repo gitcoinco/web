@@ -542,6 +542,7 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
 
     if latest_old_bounty.event:
         new_bounty.event = latest_old_bounty.event;
+        new_bounty.save()
     else:
         event_tag = metadata.get('eventTag', '')
         if event_tag:
