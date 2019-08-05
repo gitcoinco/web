@@ -28,7 +28,7 @@ class TokenSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Token
         fields = ('id', 'created_on', 'modified_on', 'name', 'description', 'image', 'rarity',
-                  'price', 'num_clones_allowed', 'num_clones_in_wild', 'owner_address', 'tags')
+                  'price_finney', 'num_clones_allowed', 'num_clones_in_wild', 'owner_address', 'tags')
 
 
 class WalletSerializer(serializers.HyperlinkedModelSerializer):

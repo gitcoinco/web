@@ -20,10 +20,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from django.urls import path
 
-from .views import create_favorite
+from .views import get_favorites, splitMethod_favorite
 
 app_name = 'favorites'
 
 urlpatterns = [
-    path('', create_favorite),
+    path('<favType>/<int:id>', splitMethod_favorite),
+    path('<favType>', get_favorites),
 ]

@@ -17,6 +17,17 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import json
+from fnmatch import filter
+
+from django.http import JsonResponse
+
+from dashboard.models import Bounty, Profile, User
+from dashboard.router import BountySerializer, ProfileSerializer
+from grants.models import Grant
+from grants.router import GrantSerializer
+from kudos.models import Token
+from kudos.router import TokenSerializer
 from rest_framework import status
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
@@ -27,14 +38,77 @@ from rest_framework.views import APIView
 from .models import Favorite
 
 
-@api_view(['POST'])
+@api_view(['POST', 'DELETE'])
 @authentication_classes((SessionAuthentication, BasicAuthentication))
 @permission_classes((IsAuthenticated,))
-def create_favorite(request):
+def splitMethod_favorite(request, favType, id, **kwargs):
+    if request.method == "DELETE":
+        return delete_favorite(request, favType, id)
+    elif request.method == "POST":
+        return create_favorite(request, favType, id)
+
+
+def create_favorite(request, favType, id, **kwargs):
     types = dict((val.lower(), key) for (key, val) in Favorite.TYPE)
     user = request.user
-    obj_id = request.data['id']
-    type = request.data['type']
-    if type not in types:
+    #obj_id = request.data['id']
+    obj_id = id
+    #favType = request.data['favType']
+    if favType not in types:
         return Response(status=status.HTTP_400_BAD_REQUEST)
-    return Response()
+    newFav = Favorite()
+    newFav.obj_id = obj_id
+    newFav.user = user
+    newFav.type = types[favType]
+    if newFav.save():
+        favSaveReturn = status.HTTP_201_CREATED
+    else:
+        favSaveReturn = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+    return Response(favSaveReturn)
+
+def delete_favorite(request,  favType, id, **kwargs):
+    types = dict((val.lower(), key) for (key, val) in Favorite.TYPE)
+    user = request.user
+    obj_id = id
+    #obj_id = request.data['id']
+    #favType = request.data['favType']
+    if favType not in types:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    if Favorite.objects.filter(user=user, type=types[favType], obj_id=obj_id).delete():
+        favSaveReturn = status.HTTP_200_OK
+    else:
+        favSaveReturn = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+    return Response(favSaveReturn)
+
+@api_view(['GET'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def get_favorites(request,  favType, **kwargs):
+    reqTypes = dict((val.lower(), key) for (key, val) in Favorite.TYPE)
+    user = request.user
+    #favType = request.data['favType']
+    if favType not in reqTypes:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    favs = Favorite.objects.filter(user=user, type=reqTypes[favType])
+    jsonRetData = []
+    for fav in favs:
+        if reqTypes[favType] == "BOUN":
+            for obj in Bounty.objects.filter(standard_bounties_id=fav.obj_id):
+                ser = BountySerializer(obj)
+                jsonRetData.append(ser.data)
+        elif reqTypes[favType] == "KUDO":
+            for obj in Token.objects.filter(id=fav.obj_id):
+                ser = TokenSerializer(obj)
+                jsonRetData.append(ser.data)
+        elif reqTypes[favType] == "GRAN":
+            for obj in Grant.objects.filter(id=fav.obj_id):
+                ser = GrantSerializer(obj)
+                jsonRetData.append(ser.data)
+        elif reqTypes[favType] == "USER":
+            for obj in Profile.objects.filter(user=fav.obj_id):
+                ser = ProfileSerializer(obj)
+                jsonRetData.append(ser.data)
+
+    return Response(json.dumps(jsonRetData, indent=4, sort_keys=True, default=str))
