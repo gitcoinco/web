@@ -27,7 +27,7 @@ from django.utils.translation import gettext_lazy as _
 
 import requests
 from mailchimp3 import MailChimp
-from marketing.models import AccountDeletionRequest, LeaderboardRank
+from marketing.models import AccountDeletionRequest, EmailSupressionList, LeaderboardRank
 from slackclient import SlackClient
 from slackclient.exceptions import SlackClientError
 
@@ -39,11 +39,11 @@ def delete_user_from_mailchimp(email_address):
     result = None
     try:
         result = client.search_members.get(query=email_address)
+        if result:
+            subscriber_hash = result.get('exact_matches', {}).get('members', [{}])[0].get('id', None)
     except Exception as e:
         logger.debug(e)
 
-    if result:
-        subscriber_hash = result['exact_matches']['members'][0]['id']
 
         try:
             client.lists.members.delete(
@@ -201,6 +201,12 @@ def should_suppress_notification_email(email, email_type):
 
 
 def get_or_save_email_subscriber(email, source, send_slack_invite=True, profile=None):
+    # Prevent syncing for those who match the suppression list
+    suppressions = EmailSupressionList.objects.all()
+    for suppression in suppressions:
+        if re.match(suppression, email):
+            return None
+
     from marketing.models import EmailSubscriber
     defaults = {'source': source, 'email': email}
 

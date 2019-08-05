@@ -23,7 +23,7 @@ from django.conf import settings
 from django.utils import timezone
 
 from app.utils import get_location_from_ip
-from dashboard.models import Tip, UserAction
+from dashboard.models import Activity, Tip, UserAction
 from dashboard.utils import _get_utm_from_cookie
 from kudos.models import KudosTransfer
 from retail.helpers import get_ip
@@ -51,9 +51,12 @@ def preprocess(request):
     email_subs = profile.email_subscriptions if profile else None
     email_key = email_subs.first().priv if user_is_authenticated and email_subs and email_subs.exists() else ''
     if user_is_authenticated and profile and profile.pk:
+        # what actions to take?
+        record_join = not profile.last_visit
         record_visit = not profile.last_visit or profile.last_visit < (
             timezone.now() - timezone.timedelta(seconds=RECORD_VISIT_EVERY_N_SECONDS)
         )
+
         if record_visit:
             ip_address = get_ip(request)
             profile.last_visit = timezone.now()
@@ -68,6 +71,10 @@ def preprocess(request):
                 utm=_get_utm_from_cookie(request),
                 metadata=metadata,
             )
+
+        if record_join:
+            Activity.objects.create(profile=profile, activity_type='joined')
+
     context = {
         'STATIC_URL': settings.STATIC_URL,
         'MEDIA_URL': settings.MEDIA_URL,
@@ -91,6 +98,8 @@ def preprocess(request):
         'access_token': profile.access_token if profile else '',
         'is_staff': request.user.is_staff if user_is_authenticated else False,
         'is_moderator': profile.is_moderator if profile else False,
+        'persona_is_funder': profile.persona_is_funder if profile else False,
+        'persona_is_hunter': profile.persona_is_hunter if profile else False,
     }
     context['json_context'] = json.dumps(context)
 

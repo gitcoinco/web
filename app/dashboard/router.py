@@ -103,7 +103,7 @@ class InterestSerializer(serializers.ModelSerializer):
     class Meta:
         """Define the Interest serializer metadata."""
         model = Interest
-        fields = ('profile', 'created', 'pending', 'signed_nda')
+        fields = ('profile', 'created', 'pending', 'signed_nda', 'issue_message')
 
 
 # Serializers define the API representation.
@@ -190,8 +190,17 @@ class BountySerializerSlim(BountySerializer):
             'url', 'title', 'experience_level', 'status', 'fulfillment_accepted_on',
             'fulfillment_started_on', 'fulfillment_submitted_on', 'canceled_on', 'web3_created', 'bounty_owner_address',
             'avatar_url', 'network', 'standard_bounties_id', 'github_org_name', 'interested', 'token_name', 'value_in_usdt',
-            'keywords', 'value_in_token', 'project_type', 'is_open', 'expires_date', 'latest_activity'
+            'keywords', 'value_in_token', 'project_type', 'is_open', 'expires_date', 'latest_activity', 'token_address'
         )
+
+
+class BountySerializerCheckIn(BountySerializer):
+    class Meta:
+        model = Bounty
+        fields = (
+            'url', 'title', 'bounty_owner_name', 'status', 'github_url', 'created_on', 'standard_bounties_id', 'bounty_owner_github_username'
+        )
+
 
 class BountyViewSet(viewsets.ModelViewSet):
     """Handle the Bounty view behavior."""
@@ -410,8 +419,12 @@ class BountyViewSetSlim(BountyViewSet):
     queryset = Bounty.objects.all().order_by('-web3_created')
     serializer_class = BountySerializerSlim
 
+class BountyViewSetCheckIn(BountyViewSet):
+    queryset = Bounty.objects.all().order_by('standard_bounties_id')
+    serializer_class = BountySerializerCheckIn
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
 router.register(r'bounties/slim', BountyViewSetSlim)
 router.register(r'bounties', BountyViewSet)
+router.register(r'checkin', BountyViewSetCheckIn)

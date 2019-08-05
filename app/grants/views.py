@@ -180,12 +180,13 @@ def grant_details(request, grant_id, grant_slug):
             grant.reference_url = request.POST.get('edit-reference_url')
             form_profile = request.POST.get('edit-admin_profile')
             admin_profile = Profile.objects.get(handle=form_profile)
-            grant.description = request.POST.get('edit-description')
-            grant.description_rich = request.POST.get('edit-description_rich')
             grant.amount_goal = Decimal(request.POST.get('edit-amount_goal'))
             team_members = request.POST.getlist('edit-grant_members[]')
             team_members.append(str(admin_profile.id))
             grant.team_members.set(team_members)
+            if 'edit-description' in request.POST:
+                grant.description = request.POST.get('edit-description')
+                grant.description_rich = request.POST.get('edit-description_rich')
             if grant.admin_profile != admin_profile:
                 grant.request_ownership_change = admin_profile
                 change_grant_owner_request(grant, grant.request_ownership_change)
@@ -611,7 +612,7 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
         subscription.save()
         record_subscription_activity_helper('killed_grant_contribution', subscription, profile)
 
-        value_usdt = subscription.get_converted_amount
+        value_usdt = subscription.get_converted_amount()
         if value_usdt:
             grant.monthly_amount_subscribed -= subscription.get_converted_monthly_amount()
 

@@ -51,7 +51,7 @@
             <p>
               {% blocktrans %}
               <b>Coders/Software Developers: </b><br>
-              Get paid in crypto for freelance jobs, building features, and solving bug bounties! Work with top open source projects and get paid out fast. 
+              Get paid in crypto for freelance jobs, building features, and solving bug bounties! Work with top open source projects and get paid out fast.
               {% endblocktrans %}<br>
               <span class="d-flex mt-3 content-links">
                 <a href="{% url 'contributor_bounties' '/' %}">{% trans "Bug Bounties" %}</a>
@@ -89,7 +89,11 @@
 
     <img class="w-100 mb-5" src="{% static "v2/images/home/story.svg" %}" />
 
-    <div id="optimize_oss" class="mt-5 optimize_oss">
+    <div class="container-fluid pb-5 my-5 landing__newsletter">
+      {% include 'shared/newsletter.html' %}
+    </div>
+
+    <div id="optimize_oss" class="mt-5 pt-4 optimize_oss">
       <div class="container pt-0">
         <div class="row">
           <div class="col-12 col-md-8 col-lg-6 g-fadein" data-fade-duration=1000 data-fade-direction="left">
@@ -304,19 +308,11 @@
   </body>
   {% include 'shared/bottom_notification.html' %}
   {% include 'shared/analytics.html' %}
-  {% include 'shared/footer_scripts.html' with slim=1 %}
+  {% include 'shared/footer_scripts_lite.html' with slim=1 %}
   {% include 'shared/footer.html' %}
   {% include 'shared/messages.html' %}
-  <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
-  <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+  <script src="{% static "v2/js/shared.js" %}"></script>
   <script>
-      const bootstrapTooltip = $.fn.tooltip.noConflict()
-      $.fn.runTooltip = bootstrapTooltip;
-      $('[data-toggle="tooltip"]').runTooltip();
-      $.fn.modal.noConflict();
-  </script>
-  <script>
-
     const options = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture";
     const videoTemplate = (url) => {
       return `<iframe

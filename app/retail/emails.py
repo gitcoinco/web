@@ -932,8 +932,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Hacking Beyond Blockchain 💻🤓"
-    new_kudos_pks = [4028, 4029, 4030]
+    subject = "Grow Ethereum Hackathon: Just Days Away"
+    new_kudos_pks = [153, 66, 4281]
     new_kudos_size_px = 150
 
     kudos_friday = f'''
@@ -948,24 +948,22 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-Beyond Blockchain has officially begun! We kicked off the three week haul on Monday, and there's still plenty of time to vie for some of the prizes we have available. Our sponsors -- Consensys Labs, Raiden, Arweave, Portis, and The Graph -- have dozens of prizes ranging up to 22 ETH. Join our <a href="https://discord.gg/T98dQYC" target="_blank">Discord</a> and discuss the hackathon,
-and reach out to us if you have any questions. More information about the hackathon can be found on our blog <a href="https://gitcoin.co/blog/beyond-blockchain-hackathon/" target="_blank">here</a>, and you can read more about the specific sponsor prizes <a href="https://github.com/gitcoinco/beyondblockchainteams/#beyond-blockchain-prizes-to-be-updated-regularly" target="_blank">here.</a>
+We are now only days away from the beginning of the Grow Ethereum hackathon, one of the largest hackathons we've planned to date. As we announced last week, we have huge names behind the event - the Ethereum Foundation and MetaCartel to name a couple - with dozens of prizes on the horizon. See the full list of sponsors (including bZx, AdEx, and Arweave) and a checklist to prepare for the July 29th start date on this <a href="https://gitcoin.co/blog/growethereum/" target="_blank">blog post.</a>
 </p>
 <p>
-Our sponsors each offer a unique product and set of goals for their hackathon prompts. Read about their projects and their goals in <a href="https://gitcoin.co/blog/beyond-blockchain-the-players/?preview=true" target="_blank">this</a> blog post, and head on over to the GitHub page to read individual
-prompts. 
+Is it time for a summer refresh on your Gitcoin profile? Yes. Now, you can customize your Gitcoin profile with a groovy header. Check out the new profile customizations and grab yourself a brand new avatar for the summer at <a href="https://gitcoin.co/onboard/profile/?steps=avatar"> the Avatar Creator </a> and <a href="https://gitcoin.co/profile/"> Profile Editor.</a>
 </p>
 <p>
-Are you a Coder, and do you need to find a team for the hackathon? Are you a Hirer, and do you need to find a coder to work on your project? <a href="https://github.com/gitcoinco/beyondblockchainteams/issues">Post a profile in this GitHub repo</a> and mingle with others. We're here to help you find a crew.
+Finally, we're preparing to announce the next round of CLR matching for Gitcoin Grants. If you have a project that needs funding, or are a funder that would like to help grow open source, check out the current Gitcoin Grants homepage. We are happy to answer any questions you might have. <a href="https://gitcoin.co/grants/">Grants live here.</a>
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-            The Gitcoin Livestream is back this week. Join us <a href="https://gitcoin.co/livestream"> at 2PM ET on Friday, or catch it on <a href="https://twitter.com/gitcoin">Twitter</a>!
+            The Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday.
         </li>
         <li>
-            We've released a new set of Kudos in the past weeks. Check the <a href="https://gitcoin.co/kudos/" target="_blank">homepage</a> for new art and then send some of your favorites to your friends. 
+            Interested in the future of ads on the internet? <a href="https://media.consensys.net/how-ethical-advertising-will-transform-the-blockchain-industry-31c2c4f2bd45">Check out this primer on Ethical Advertising from Connor O'Day, part of the Codefund team.</a>
         </li>
     </ul>
 </p>
@@ -974,45 +972,45 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'nanspro',
+        'who': 'dcd018',
         'who_link': True,
-        'what': 'Nanspro with the Python!',
-        'link': 'https://gitcoin.co/issue/PegaSysEng/BountiedWork/17/3119',
+        'what': 'Clone form, fixed!',
+        'link': 'https://gitcoin.co/issue/gitcoinco/code_fund_ads/572/3247',
         'link_copy': 'View more',
     }, {
-        'who': 'calchulus',
+        'who': 'enieber',
         'who_link': True,
-        'what': 'Content Created',
-        'link': 'https://gitcoin.co/issue/gitcoinco/code_fund_ads/483/3103',
+        'what': 'README: Updated!',
+        'link': 'https://gitcoin.co/issue/sigillabs/mobidex/236/3166',
         'link_copy': 'View more',
     }, {
-        'who': 'many',
+        'who': 'gutsal-arsen',
         'who_link': True,
-        'what': 'Simple Permaweb: Frontend',
-        'link': 'https://gitcoin.co/issue/ArweaveTeam/Bounties/1/3152',
+        'what': 'Safe Keyboard, Implemented',
+        'link': 'https://gitcoin.co/issue/polkawallet-io/polkawallet-RN/104/2944',
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'Blockchain Job Kit',
-        'title': 'Blockchain Developer Job Kit',
+        'name': 'Allinfra',
+        'title': 'The Future of Infrastructure Finance',
         'image_url': 'https://s3.us-west-2.amazonaws.com/gitcoin-static/jDSk7ZTfpY19PWdwwsk8puNd.png',
-        'link': 'http://bit.ly/EthDevKit',
-        'cta': 'View now',
+        'link': 'http://bit.ly/Allinfra',
+        'cta': 'Register today',
         'body': [
-            'Blockchain Developer Job Kit - See who’s hiring, salary info, and dev skills required'
+            'Bringing access, choice, and liquidity to unlisted infrastructure assets using the power of Ethereum'
         ]
     }
 
     bounties_spec = [{
-        'url': 'https://github.com/knocte/udtRs/issues/1',
-        'primer': 'Create a pure-Rust UDT/UDP hole-punching implementation',
+        'url': 'https://github.com/gitcoinco/web/issues/4744',
+        'primer': 'Allow Ability to Resurface Bounties to the Top When Expiration Date is Extended',
     }, {
-        'url': 'https://github.com/prysmaticlabs/prysm/issues/2740',
-        'primer': 'Build a simple permaweb app!',
+        'url': 'https://github.com/SpeckleOS/speckle-browser-extension/issues/89',
+        'primer': 'Global Settings (Change Colour Theme and Log Out)',
     }, {
-        'url': 'https://github.com/status-im/status-react/issues/8349',
-        'primer': '"Confirmed" transaction is shown for "Failed" in 1-1 chat',
+        'url': 'https://github.com/ironcoinext/IronCoin/issues/8',
+        'primer': 'New Tab Page',
 }, ]
     
     
