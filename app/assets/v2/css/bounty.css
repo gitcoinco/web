@@ -687,13 +687,15 @@ a.btn {
   justify-content: flex-start;
 }
 
-#add_interest .login {
+#add_interest .login,
+#add_interest .stake {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: 1rem auto;
 }
 
+#add_interest .stake__text,
 #add_interest .login__text {
   margin-bottom: 1rem;
 }

@@ -196,6 +196,7 @@ class Bounty(SuperModel):
     """
 
     PERMISSION_TYPES = [
+        ('stake_required', 'stake_required'),
         ('permissionless', 'permissionless'),
         ('approval', 'approval'),
     ]
@@ -382,6 +383,15 @@ class Bounty(SuperModel):
             profile_handles.append((profile.profile.handle, profile.profile.absolute_url))
 
         return profile_handles
+
+    @property
+    def stake_amount_required(self):
+        return self.value_in_eth / 10**18 / 10
+
+    def has_staked(self, profile):
+
+        return self.tips.filter(from_username=profile.handle, is_for_bounty_fulfiller=True, network=profile.get_network())
+
 
     def get_absolute_url(self):
         """Get the absolute URL for the Bounty.

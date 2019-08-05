@@ -209,6 +209,7 @@ def get_interest_modal(request):
     context = {
         'bounty': bounty,
         'active': 'get_interest_modal',
+        'stake_required': bounty.permission_type == 'stake_required' and request.user.is_authenticated and not bounty.has_staked(request.user.profile),
         'title': _('Add Interest'),
         'user_logged_in': request.user.is_authenticated,
         'login_link': '/login/github?next=' + request.GET.get('redirect', '/')

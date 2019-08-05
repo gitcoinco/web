@@ -202,6 +202,9 @@ var callbacks = {
     if (val == 'approval') {
       val = 'Approval Required';
     }
+    if (val == 'stake_required') {
+      val = 'Staked';
+    }
     return [ 'permission_type', ucwords(val) ];
   },
   'project_type': function(key, val, result) {
@@ -919,6 +922,45 @@ var build_detail_page = function(result) {
 
   $('body').delegate('#bounty_details .button.disabled', 'click', function(e) {
     e.preventDefault();
+  });
+
+  $('body').delegate('.stake__button', 'click', function(e) {
+  e.preventDefault()
+  injectScript('/static/v2/js/ethereumjs-accounts.js')
+  injectScript('/static/v2/js/lib/secrets.min.js')
+  injectScript('/static/onepager/js/send.js')
+      .then(() => {
+          console.log('Script loaded!');
+          var email = '';
+          var github_url = 'https://github.com/owocki/pytrader/issues/162'; // TODO
+          var from_name = document.contxt['github_handle'];
+          var username = 'gitcoinbot';
+          var amount = $(".stake__button").data('amount')
+          var comments_priv = '';
+          var comments_public = '';
+          var from_email = '';
+          var accept_tos = true; // TODO
+          var tokenAddress = '0x0';
+          var expires = 9999999999;
+          var is_for_bounty_fulfiller = true;
+          var success_callback = function(txid) {
+            var url = 'https://' + etherscanDomain() + '/tx/' + txid;
+            var msg = 'This stake has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
+
+            // send msg to frontend
+            _alert(msg, 'info');
+
+          };
+          var failure_callback = function() {
+            // do nothing
+            $.noop();
+          };
+
+
+          sendTip(email, github_url, from_name, username, amount, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, is_for_bounty_fulfiller);
+      }).catch(error => {
+          console.log(error);
+      });    
   });
 
   $('#bounty_details #issue_description img').on('click', function() {

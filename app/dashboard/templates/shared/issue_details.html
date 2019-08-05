@@ -81,7 +81,7 @@
 </div>
 <label class="font-caption letter-spacing text-black-60 text-uppercase" for="permission_type">{% trans "Permissions" %}</label>
 <div class="d-flex row" data-toggle="buttons">
-  <div class="col-12 col-md-6 btn-group-toggle">
+  <div class="col-12 col-md-4 btn-group-toggle">
     <label class="btn btn-block btn-radio approval my-2 font-weight-bold py-3 px-4 active text-left">
       <input type="radio" name="permission_type" id="approval" value="approval" autocomplete="off" checked>
       {% trans "Approval Required" %}
@@ -91,13 +91,23 @@
       </span>
     </label>
   </div>
-  <div class="col-12 col-md-6 btn-group-toggle">
+  <div class="col-12 col-md-4 btn-group-toggle">
     <label class="btn btn-block btn-radio permissionless my-2 font-weight-bold py-3 px-4 text-left">
       <input type="radio" name="permission_type" id="permissionless" value="permissionless" autocomplete="off">
       {% trans "Permissionless" %}
       <span class="d-block font-weight-normal">
         <i class="fas fa-user-cog "></i>
         {% trans "No approval required" %}
+      </span>
+    </label>
+  </div>
+  <div class="col-12 col-md-4 btn-group-toggle">
+    <label class="btn btn-block btn-radio permissionless my-2 font-weight-bold py-3 px-4 text-left">
+      <input type="radio" name="permission_type" id="stake_required" value="stake_required" autocomplete="off">
+      {% trans "Stake Required" %}
+      <span class="d-block font-weight-normal">
+        <i class="fas fa-user-cog "></i>
+        {% trans "Any bounty hunter who wants to work on the issue will have to stake 10% of the value of the issue." %}
       </span>
     </label>
   </div>

@@ -30,6 +30,7 @@ from mailchimp3 import MailChimp
 from marketing.models import AccountDeletionRequest, EmailSupressionList, LeaderboardRank
 from slackclient import SlackClient
 from slackclient.exceptions import SlackClientError
+import re
 
 logger = logging.getLogger(__name__)
 
@@ -202,10 +203,6 @@ def should_suppress_notification_email(email, email_type):
 
 def get_or_save_email_subscriber(email, source, send_slack_invite=True, profile=None):
     # Prevent syncing for those who match the suppression list
-    suppressions = EmailSupressionList.objects.all()
-    for suppression in suppressions:
-        if re.match(suppression, email):
-            return None
 
     from marketing.models import EmailSubscriber
     defaults = {'source': source, 'email': email}

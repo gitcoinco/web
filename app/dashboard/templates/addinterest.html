@@ -23,7 +23,20 @@
     <div class="col-12">
       <h5 class="text-center font-title">{% trans "Submit a Plan" %}</h5>
     </div>
-    {% if user_logged_in %}
+    {% if stake_required %}
+      <div class="col-12 text-center">
+        <div class="stake">
+          <div class="stake__text">
+            The bounty funder has specified that you must stake ETH to work on this bounty.  Staking ETH is a sign that you are taking the bounty seriously.  If you successfully get this bounty done, you will receive your ETH back.
+
+            <br>{% trans "Please stake " %} {{bounty.stake_amount_required}} {% trans "ETH to get started." %}
+          </div>
+          <a class="button button--primary stake__button" href="#" data-amount="{{bounty.stake_amount_required}}" onclick="dataLayer.push({'event': 'stake'});">
+            {% trans "Stake" %} {{bounty.stake_amount_required}} {% trans "ETH" %}
+          </a>
+        </div>
+      </div>
+    {% elif user_logged_in %}
       <div class="col-12">
         <form id="action_plan" class="font-body">
           {% if bounty.repo_type == 'private' %}
