@@ -1737,8 +1737,13 @@ def funder_payout_reminder(request, bounty_network, stdbounties_id):
 
 
 def quickstart(request):
-    """Display quickstart guide."""
-    return TemplateResponse(request, 'quickstart.html', {})
+    """Display Quickstart Guide."""
+
+    from dashboard.context.quickstart import quickstart
+    activities = Activity.objects.filter(activity_type='new_bounty').order_by('-created')[:5]
+    quickstart["activities"] = [a.view_props for a in activities]
+    return TemplateResponse(request, 'quickstart.html', quickstart)
+
 
 def load_banners(request):
     """Load profile banners"""
@@ -1748,6 +1753,7 @@ def load_banners(request):
         'banners': images
     }
     return JsonResponse(response, safe=False)
+
 
 def profile_details(request, handle):
     """Display profile keywords.
