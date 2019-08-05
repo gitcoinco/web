@@ -1137,11 +1137,9 @@ def social_contribution_email(request):
     from .utils import get_bounty_invite_url
 
     emails = []
-    user_ids = request.POST.getlist('usersId[]', [])
-    invite_url = request.POST.get('invite_url', '')
     bounty_id = request.POST.get('bountyId')
-    if not invite_url:
-        invite_url = f'{settings.BASE_URL}issue/{get_bounty_invite_url(request.user.username, bounty_id)}'
+    user_ids = request.POST.getlist('usersId[]', [])
+    invite_url = f'{settings.BASE_URL}issue/{get_bounty_invite_url(request.user.username, bounty_id)}'
 
     inviter = request.user if request.user.is_authenticated else None
     bounty = Bounty.objects.current().get(id=int(bounty_id))
