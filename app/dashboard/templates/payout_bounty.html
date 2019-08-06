@@ -42,45 +42,45 @@
       <div class="row content">
         <div class="col-12 body">
           <div class="row font-smaller-2" id="form_container">
-            <div id="robot_error" class="hidden">
-              <img src="{% static "v2/images/prime.png" %}">
-            </div>
             <div class="col offset-md-1 col-md-10 d-flex align-items-center justify-content-center" id="primary_form">
               <div class="d-flex justify-content-center flex-column mt-5 w-100" id="primary_subform">
                 <div class="w-100 text-center">
                   <h3>{% trans "Payout Bounty" %}</h3>
-                  <img src="{% static "v2/images/prime.png" %}">
                 </div>
-                {% include 'shared/network_status.html' %}
-                <div class="w-100">
-                  <h4>{% trans "Option 1:" %}</h4>
-                </div>
+
+                <p class="font-title-lg text-center mt-4">{% trans "Option 1:" %}</p>
                 <div class="w-100 mt-2">
                   <a class="bounty_box {% if bounty.fulfillments.count == 0 %}disabled{% endif %}" href="{% if bounty.fulfillments.count > 0 %}{{ bounty.action_urls.accept }}{% else %}#{% endif %}">
-                      <h5>{% trans "Basic Payout." %}</h5>
-                      <span>
-                        {% trans "Used to accept a bounty hunter's submission. You currently have " %}{{bounty.fulfillments.count}} {% trans "submission" %}{{bounty.fulfillments.count | pluralize}}.
-                        {% if bounty.fulfillments.count == 0 %}
-                        {% trans "This option is currently disabled because you have no submissions." %}
-                        {% elif bounty.fulfillments.count == 1 %}
-                        {% trans "Accept it using this option." %}
-                        {% else %}
-                        {% trans "Accept one of them using this option." %}
-                        {% endif %}
-                      </span>
+                    <h5>{% trans "Basic Payout." %}</h5>
+                    <span class="font-body">
+                      {% trans "Used to accept a bounty hunter's submission. You currently have " %}{{bounty.fulfillments.count}} {% trans "submission" %}{{bounty.fulfillments.count | pluralize}}.
+                      {% if bounty.fulfillments.count == 0 %}
+                      {% trans "This option is currently disabled because you have no submissions." %}
+                      {% elif bounty.fulfillments.count == 1 %}
+                      {% trans "Accept it using this option." %}
+                      {% else %}
+                      {% trans "Accept one of them using this option." %}
+                      {% endif %}
+                    </span>
                   </a>
                 </div>
-                <div class="w-100">
-                  <h4>{% trans "Option 2:" %}</h4>
-                </div>
+
+                <p class="font-title-lg text-center mt-4">{% trans "Option 2:" %}</p>
                 <div class="w-100 mt-2">
                   <a class="bounty_box" href="{{ bounty.action_urls.advanced_payout }}">
-                      <h5>{% trans "Advanced Payout." %}</h5>
-                      <span>
-                        {% trans "Used to skip the 'submission' step; or when multiple parties need to be paid out." %}
-                      </span>
+                    <h5>{% trans "Advanced Payout." %}</h5>
+                    <span class="font-body">
+                      {% trans "Used to skip the 'submission' step; or when multiple parties need to be paid out." %}
+                    </span>
                   </a>
+                  <div class="row btn-metamask mt-4 mx-1 py-3 br-2">
+                    <i class="col-3 col-lg-2 fas fa-exclamation-triangle font-title-xl my-auto text-center"></i>
+                    <p class="col-9 col-lg-10 pl-lg-0 font-body my-auto font-weight-semibold">
+                      {% trans "To include crowdfunding as part of this payout, please use Basic Payout." %}
+                    </p>
+                  </div>
                 </div>
+
               </div>
             </div>
           </div>
