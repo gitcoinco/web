@@ -277,3 +277,7 @@ body {
   padding-right: 0.5em;
   vertical-align: text-bottom;
 }
+
+a.filter-tag {
+    cursor: pointer;
+}
