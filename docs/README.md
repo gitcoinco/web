@@ -1,36 +1,43 @@
-<img src="https://d3vv6lp55qjaqc.cloudfront.net/items/263e3q1M2Y2r3L1X3c2y/helmet.png" width=75px height=75px>
+<img src="https://miro.medium.com/max/1260/1*oVotVJoRY5DGKGJq8haS1g.png" />
 
 # Gitcoin
 
-Gitcoin Grows Open Source. Learn more at [https://gitcoin.co](https://gitcoin.co)
+Gitcoin Grows Open Source.
+
+Learn more at [https://gitcoin.co](https://gitcoin.co)
 
 <a href="https://gitcoin.co/explorer?q=gitcoinco">
     <img src="https://gitcoin.co/funding/embed?repo=https://github.com/gitcoinco/web&badge=1&maxAge=60">
 </a>
 
-# web repo
+# Gitcoin Web Repo
 
 [![Build Status](https://travis-ci.org/gitcoinco/web.svg?branch=master)](https://travis-ci.org/gitcoinco/web)
 [![codecov](https://codecov.io/gh/gitcoinco/web/branch/master/graph/badge.svg)](https://codecov.io/gh/gitcoinco/web)
+![Discord Shield](https://discordapp.com/api/guilds/562828676480237578/widget.png?style=shield)
 
 This is the website that is live at [gitcoin.co](https://gitcoin.co)
+
 ```master``` branch - staging
+
 ```stable``` branch - live on gitcoin.co
 
 ## Documentation
 
 [https://docs.gitcoin.co](https://docs.gitcoin.co)
 
-## How to interact with this repo
+## Join us!
+Come and talk with us at our very own [Discord server](https://discordapp.com/invite/QRA2rXp)!
 
 ### Table of Contents
 
 - [Gitcoin](#gitcoin)
-- [web repo](#web-repo)
-  * [How to interact with this repo](#how-to-interact-with-this-repo)
-    + [On Github](#on-github)
-    + [On Gitcoin](#on-gitcoin)
-  * [What](#what)
+- [What is Gitcoin?](#what-is-gitcoin)
+  * [Functionally](#what-is-gitcoin)
+  * [Technically](#what-is-gitcoin)
+- [How to interact with this repo](#how-to-interact-with-this-repo)
+    * [On Github](#on-github)
+    * [On Gitcoin](#on-gitcoin)
 - [Developing](#developing)
   * [HTTPS API](#https-api)
   * [Running Locally](#running-locally)
@@ -40,28 +47,17 @@ This is the website that is live at [gitcoin.co](https://gitcoin.co)
   * [Integrating the 'available work widget' on your repo.](#integrating-the--available-work-widget--on-your-repo)
   * [Adding GitcoinBot to your repo](#adding-gitcoinbot-to-your-repo)
   * [Adding your token to Gitcoin](#adding-your-token-to-gitcoin)
-- [Legal](#legal)
-- [License](#license)
-
-### On Github
-
-[Star](https://github.com/gitcoinco/web/stargazers) and [watch](https://github.com/gitcoinco/web/watchers) this github repository to stay up to date, we're pushing new code several times per week!
-
-Check out the [CHANGELOG](https://docs.gitcoin.co/mk_changelog/) for details about recent changes to this repository.
-
-Also,
-
-* want to become a contributor ? Checkout our [guidelines](https://docs.gitcoin.co/mk_contributors/) & [styleguide](https://docs.gitcoin.co/mk_styleguide/).
-* [check out the gitcoinco organization-wide repo](https://github.com/gitcoinco/gitcoinco).
-* check out the open issues list, especially the [discussion](https://github.com/gitcoinco/web/issues?q=is%3Aissue+is%3Aopen+label%3Adiscussion) label and [easy-pickings](https://github.com/gitcoinco/web/issues?q=is%3Aissue+is%3Aopen+label%3Aeasy-pickings).
-
-### On Gitcoin
-
-[Check out the available open issues on Gitcoin](https://gitcoin.co/explorer/?q=https://github.com/gitcoinco/web).
+- [High Level flows](#high-level-flows)
+  * [Bounty](#bounty)
+  * [Tip or Kudos](#tip-or-kudos)
+- [Licenses](#Licenses)
 
 ## What is Gitcoin?
 
-Functionally, the app has several key features:
+Gitcoin is an open source bounties platform on the Ethereum blockchain. We facilitate a space that allows open source developers to get paid for their work contributing to open source projects and in return, the open source projects get exposure to a vast community of hard working developers they might not have had otherwise.
+
+## Functionally
+The app has several key features:
 
 * Smart Contracts -- Where funded issues are stored and indexed.
 * Brochureware -- Describes the project.
@@ -72,32 +68,54 @@ Functionally, the app has several key features:
 
 [More about how/why to interact with web3 here](https://gitcoin.co/web3).
 
-Technically, the system is architected:
+## Technically
+
+The system is architected:
 
 * __Web3__ The main source of truth for the system is the Ethereum blockchain. Check out the [smart contracts](https://github.com/gitcoinco/smart_contracts).
 * __Web2__ This part of the app is built with Python, Django, Postgres, and a handful of other tools that are common in the web2 ecosystem.
 * __Web 3 Bridge__ This is the bridge between web3 and the rest of the application. Mostly built in javascript(web3js) and python(web3py).
 * __Brochureware__ Just a nice little landing page telling folks what the Gitcoin project is.
 
+
+## How to interact with this repo
+
+### On Github
+
+[Star](https://github.com/gitcoinco/web/stargazers) and [watch](https://github.com/gitcoinco/web/watchers) this github repository to stay up to date, we're pushing new code several times per week!
+
+Check out the [CHANGELOG](https://docs.gitcoin.co/mk_changelog/) for details about recent changes to this repository.
+
+Also,
+
+* Do you want to become a contributor ? Checkout our [guidelines](https://docs.gitcoin.co/mk_contributors/) & [styleguide](https://docs.gitcoin.co/mk_styleguide/).
+* [Check out the gitcoinco organization-wide repo](https://github.com/gitcoinco/gitcoinco).
+* Check out the open issues list, especially the [discussion](https://github.com/gitcoinco/web/issues?q=is%3Aissue+is%3Aopen+label%3Adiscussion) label and [easy-pickings](https://github.com/gitcoinco/web/issues?q=is%3Aissue+is%3Aopen+label%3Aeasy-pickings).
+
+### On Gitcoin
+
+[Check out the Bounty Explorer open issues on Gitcoin](https://gitcoin.co/explorer/?q=https://github.com/gitcoinco/web).
+
 # Developing
 
 ## HTTPS API
+Gitcoin provides a simple HTTPS API to access data without having to run your own Ethereum node. 
 
-[For more information on the HTTPS API, please view the api README](https://docs.gitcoin.co/mk_rest_api/)
+[Full documentation on the HTTPS API](https://docs.gitcoin.co/mk_rest_api/)
 
 ## Running locally
 
 ### With Docker (Recommended)
 
-[For more information on running the app locally, please view the documentation for running gitcoinco/web with Docker](https://docs.gitcoin.co/mk_setup/)
+[How to run the Gitcoinco/web app with Docker locally?](https://docs.gitcoin.co/mk_setup/)
 
 ### Without Docker
 
-[For more information on running the app locally, please view the documentation for running gitcoinco/web without Docker](https://docs.gitcoin.co/mk_alternative_setup/)
+[How to run the Gitcoinco/web app without Docker locally?](https://docs.gitcoin.co/mk_alternative_setup/)
 
 ## Overriding Application Defaults
 
-[For more information on overriding the local dev environment configuration defaults, please view the environment variables documentation](https://docs.gitcoin.co/mk_envvars/)
+[How to override the local dev environment configuration defaults?](https://docs.gitcoin.co/mk_envvars/)
 
 # Trying out Gitcoin
 
@@ -105,10 +123,10 @@ Technically, the system is architected:
 
 If you
 
-* have some work on your Github Issues board that you don't have time (or skills) to do.
-* are dependant upon an upstream repo for something, and you'd like to incentivize them to work onit.
+* Have some work on your Github Issues board that you don't have time (or skills) to do.
+* Are dependant upon an upstream repo for something, and you'd like to incentivize them to work onit.
 
-try posting a funded issue at [https://gitcoin.co/new](https://gitcoin.co/new).
+Try posting a funded issue at [https://gitcoin.co/new](https://gitcoin.co/new).
 
 # Integrating Gitcoin
 
@@ -156,7 +174,7 @@ Have an ERC20 compatible token that you'd like to use on the platform?  Great!  
 
 ## High Level flows...
 
-### ... of a Bounty
+### Bounty
 
 This is the high level flow of a bounty on Gitcoin:
 
@@ -174,9 +192,7 @@ Anywhere between 2 and 4 above, Funder may withdraw their funds via 'Cancel Boun
 
 We may introduce Arbitration [via Delphi](http://delphi.network/) at some point in the future.  Until then, we are lucky that Github users are very protective of their reputation, and therefore very kind to each other, and disputes have not generally arisen.
 
-### of a Tip
-
-### ... of a Kudos
+### Tip or Kudos
 
 Note:
 - Crowdfunded bounties + bulk payouts are secured by Tips (at least until Standard Bounties 2.0 is released).
