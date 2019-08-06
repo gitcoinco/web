@@ -318,6 +318,22 @@ $(function() {
     true
   );
 
+  $('input[name="expirationTimeDelta"]').daterangepicker({
+    singleDatePicker: true,
+    startDate: moment().add(1, 'year'),
+    alwaysShowCalendars: false,
+    ranges: {
+      '1 week': [moment().add(7, 'days'), moment().add(7, 'days')],
+      '2 weeks': [moment().add(14, 'days'), moment().add(14, 'days')],
+      '1 month': [moment().add(1, 'month'), moment().add(1, 'month')],
+      '3 months': [moment().add(3, 'month'), moment().add(3, 'month')],
+      '1 year': [moment().add(1, 'year'), moment().add(1, 'year')]
+    },
+    "locale": {
+      "customRangeLabel": "Custom"
+    }
+  });
+
 
 });
 

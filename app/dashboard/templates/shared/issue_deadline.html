@@ -18,7 +18,11 @@
 
 <div class="mt-4">
   <label class="font-caption letter-spacing text-black-60 text-uppercase" for="expirationTimeDelta">{% trans "Expires in" %}</label>
-  <div class="form__select2">
+  <input name='expirationTimeDelta' id="expirationTimeDelta" class="form__input" type="text" placeholder="" required/>
+
+
+
+  <!-- <div class="form__select2">
     <select class="js-select2" name="expirationTimeDelta">
       <option value="86400">{% trans "1 day" %}</option>
       <option value="259200">{% trans "3 days" %}</option>
@@ -30,5 +34,5 @@
       <option value="31536000" selected="">{% trans "1 year" %}</option>
       <option value="9999999999">{% trans "Never" %}</option>
     </select>
-  </div>
+  </div> -->
 </div>
