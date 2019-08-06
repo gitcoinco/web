@@ -3,7 +3,7 @@
     max-width: 85vw
   }
 
-  #editor.ql-bubble .ql-editor {
+  #editor.ql-bubble .ql-editor[contenteditable='false'] {
     padding: 0;
   }
 

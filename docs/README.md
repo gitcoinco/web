@@ -172,20 +172,17 @@ Chain of Custody
 
 Anywhere between 2 and 4 above, Funder may withdraw their funds via 'Cancel Bounty' function for any reason.
 
-### ... of a Tip
+We may introduce Arbitration [via Delphi](http://delphi.network/) at some point in the future.  Until then, we are lucky that Github users are very protective of their reputation, and therefore very kind to each other, and disputes have not generally arisen.
 
-*ToDo*
+### of a Tip
 
 ### ... of a Kudos
 
-*ToDo*
-
-### Notes
-
+Note:
 - Crowdfunded bounties + bulk payouts are secured by Tips (at least until Standard Bounties 2.0 is released).
 - Kudos are also secured by Tips
 
-This is the high level flow of a bounty on Gitcoin:
+This is the high level flow of a tip on Gitcoin:
 
 <a href="https://www.draw.io/#G1sTJtQou5FYsHCabhb2JXHDTprpvvkUy0"><img src='https://github.com/gitcoinco/web/raw/master/docs/tip_flow.png'></a>
 

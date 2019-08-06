@@ -112,7 +112,11 @@ var heads = {
 var callbacks = {
   'github_url': link_ize,
   'value_in_token': function(key, val, result) {
-    return [ 'amount', token_value_to_display(val) + ' ' + result['token_name'] ];
+    const title = token_value_to_display(val) + ' ' + result['token_name'];
+    const title_expand = title + ' in funding from original funder.';
+
+    $('#value_in_token').parents('.token').attr('title', title_expand);
+    return [ 'amount', title ];
   },
   'avatar_url': function(key, val, result) {
     return [ 'avatar', '<a href="/profile/' + result['org_name'] + '"><img class="avatar ' + result['github_org_name'] + '" src="' + val + '"></a>' ];
@@ -132,7 +136,7 @@ var callbacks = {
 
       let can_submit = result['can_submit_after_expiration_date'];
 
-      if (!isBountyOwner() && can_submit && is_bounty_expired(result)) {
+      if (!isBountyOwner(result) && can_submit && is_bounty_expired(result)) {
         ui_status += '<p class="text-highlight-light-blue font-weight-light font-body" style="text-transform: none;">' +
           gettext('This issue is past its expiration date, but it is still active.') +
           '<br>' +
@@ -149,7 +153,7 @@ var callbacks = {
       ui_status = '<span style="color: #f9006c;">' + gettext('cancelled') + '</span>';
     }
 
-    if (isBountyOwner() && is_bounty_expired(result) &&
+    if (isBountyOwner(result) && is_bounty_expired(result) &&
       ui_status_raw !== 'done' && ui_status_raw !== 'cancelled') {
 
       ui_status += '<p class="font-weight-light font-body" style="color: black; text-transform: none;">' +
@@ -233,9 +237,8 @@ var callbacks = {
     if (val === null) {
       return [ null, null ];
     }
-    var rates_estimate = get_rates_estimate(val);
 
-    $('#value_in_usdt_wrapper').attr('title', '<div class="tooltip-info tooltip-sm">' + rates_estimate + '</div>');
+    $('#value_in_usdt_wrapper').attr('title', '<div class="tooltip-info">The funding in this bounty adds up to $' + val + ' USD </div>');
 
     return [ 'Amount_usd', val ];
   },
@@ -292,11 +295,11 @@ var callbacks = {
       const ratio = obj['ratio'];
       const amount = obj['amount'];
       const usd = amount * ratio;
-      const funding = normalizeAmount(amount, tokenDecimals);
-      const tokenValue = normalizeAmount(1.0 * ratio, dollarDecimals);
+      const funding = round(amount, 2);
+      const tokenValue = Math.round(1.0 * ratio);
       const timestamp = new Date(obj['timestamp']);
       const timePeg = timeDifference(dateNow, timestamp > dateNow ? dateNow : timestamp, false, 60 * 60);
-      const tooltip = `$ ${normalizeAmount(usd, dollarDecimals)} USD in crowdfunding`;
+      const tooltip = `+ ${funding} ${tokenName} in crowdfunding`;
 
       leftHtml += '<p class="m-0">+ ' + funding + ' ' + tokenName + '</p>';
       rightHtml += '<p class="m-0">@ $' + tokenValue + ' ' + tokenName + ' as of ' + timePeg + '</p>';
@@ -307,9 +310,10 @@ var callbacks = {
         newTokenTag(funding, tokenName, tooltip, true),
         usdTagElement
       );
+
     }
 
-    $('#value_in_usdt').html(normalizeAmount(totalUSDValue, dollarDecimals));
+    $('#value_in_usdt').html(Math.round(totalUSDValue));
 
     $('#value_in_usdt_wrapper').attr('title',
       '<div class="tooltip-info tooltip-sm">' +
@@ -1450,6 +1454,13 @@ const process_activities = function(result, bounty_activities) {
     const fulfillment = meta.fulfillment || {};
     const new_bounty = meta.new_bounty || {};
     const old_bounty = meta.old_bounty || {};
+    const issue_message = result.interested.length ?
+      result.interested.find(interest => {
+        if (interest.profile.handle === _activity.profile.handle && interest.issue_message) {
+          return interest.issue_message;
+        }
+        return false;
+      }) : false;
     const has_signed_nda = result.interested.length ?
       result.interested.find(interest => {
         if (interest.profile.handle === _activity.profile.handle && interest.signed_nda) {
@@ -1491,6 +1502,7 @@ const process_activities = function(result, bounty_activities) {
       activity_type: _activity.activity_type,
       status: _activity.activity_type === 'work_started' ? 'started' : 'stopped',
       signed_nda: has_signed_nda,
+      issue_message: issue_message,
       uninterest_possible: uninterest_possible,
       slash_possible: slash_possible,
       approve_worker_url: meta.approve_worker_url,
