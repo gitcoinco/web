@@ -22,9 +22,11 @@ from unittest.mock import patch
 from django.conf import settings
 from django.test.client import RequestFactory
 
+import ipfshttpclient
+import pytest
 from dashboard.utils import (
-    clean_bounty_url, create_user_action, get_bounty, get_ordinal_repr, get_web3, getBountyContract,
-    humanize_event_name,
+    IPFSCantConnectException, clean_bounty_url, create_user_action, get_bounty, get_ipfs, get_ordinal_repr, get_web3,
+    getBountyContract, humanize_event_name, ipfs_cat_ipfsapi,
 )
 from test_plus.test import TestCase
 from web3.main import Web3
@@ -114,3 +116,20 @@ class DashboardUtilsTest(TestCase):
         create_user_action(None, 'Login', request)
         mockUserAction.create.assert_called_once_with(action='Login', metadata={}, user=None,
                                                       utm={'utm_campaign': 'test campaign'})
+
+    @staticmethod
+    def test_get_ipfs():
+        """Test that IPFS connectivity to gateway defined in settings succeeds."""
+        ipfs = get_ipfs()
+        assert type(ipfs) is ipfshttpclient.client.Client
+
+    @staticmethod
+    def test_get_ipfs_with_bad_host():
+        """Test that IPFS connectivity to gateway fails when bad host is passed."""
+        with pytest.raises(IPFSCantConnectException):
+            assert get_ipfs('nohost.com')
+
+    @staticmethod
+    def test_ipfs_cat_ipfsapi():
+        """Test that ipfs_cat_ipfsapi method returns IPFS object."""
+        assert "security-notes" in str(ipfs_cat_ipfsapi('/ipfs/QmS4ustL54uo8FzR9455qaxZwuMiUhyvMcX9Ba8nUH4uVv/readme'))
