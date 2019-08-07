@@ -135,9 +135,11 @@ Vue.mixin({
         let getUsers = fetchData (api, 'GET');
 
         $.when(getUsers).then(function(response) {
-          if (response && response.data) {
+          if (response && response.data.length) {
             vm.openBounties(response.data[0]);
             $('#userModal').bootstrapModal('show');
+          } else {
+            _alert('The user was not found. Please try using the search box.', 'error');
           }
         });
       }
