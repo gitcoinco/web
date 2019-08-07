@@ -165,18 +165,6 @@
       </div>
     </div>
 
-    {% if is_admin and not grant_is_inactive %}
-      <!-- OWNER ACTIONS -->
-      <div class="font-body grant-item__owner mb-4 mt-2">
-        <p class="sub-title mb-0" data-toggle="tooltip" data-placement="bottom" title="This owner can update grant data , milestones and description">GRANT OWNER</p>
-        <div class="form__select2">
-          <select id="grant-admin" class="form__input" name="grant-admin" disabled>
-            <option selected="selected">{{ grant.admin_profile.handle|default:'anonymous' }}</option>
-          </select>
-        </div>
-      </div>
-    {% endif %}
-
     <!-- TEAM MEMBERS -->
     <div class="grant-item__member my-4 font-body">
       <p class="sub-title {% if is_admin %} mb-0 {% else %} mb-3 {% endif %}">
@@ -285,16 +273,19 @@
         </div>
       </div>
 
-      <div class="grant-item__owner my-4">
-        <div class="font-body">
-          <p class="sub-title mb-0" data-toggle="tooltip" data-placement="bottom" title="This address can cancel the grant.">Contract Owner Address</p>
-          <input id="contract_owner_address" class="p-0 m-0 inline-edit font-caption" name="contract_owner_address" value="{{ grant.contract_owner_address }}" disabled>
-          <div id="contract_owner_button-container" tabindex="0" data-toggle="tooltip" data-placement="bottom" title="Contract Owner address hasn't changed. Update the above field to enable this.">
-            <button id="contract_owner_button" data-toggle="tooltip" data-placement="bottom" title='Clicking this will trigger a metamask confirmation' class="mt-2 disable-tooltip btn btn-outline-black button--full hidden shadow-none font-weight-semibold font-body">
-              <i class="fas fa-user mr-2"></i>
-              {% trans "Change Contract Owner" %}
-            </button>
+      <div class="font-body grant-item__owner my-4">
+        <div class="mb-3">
+          <p class="sub-title" data-toggle="tooltip" data-placement="bottom">Grant Owner</p>
+          <div class="mr-2 d-inline-block">
+            <img src="{{ grant.admin_profile.avatar_url }}">
           </div>
+          <div class="mt-1 d-inline-block">
+            <span id="grant-admin" class="font-weight-semibold ">{{ grant.admin_profile.handle|default:'anonymous' }}</span>
+          </div>
+        </div>
+        <div>
+          <p class="sub-title mb-0" data-toggle="tooltip" data-placement="bottom" title="Address used to create this grant.">Contract Owner Address</p>
+          <p id="contract_owner_address" class="p-0 m-0 font-body">{{ grant.contract_owner_address }}</p>
         </div>
       </div>
 
