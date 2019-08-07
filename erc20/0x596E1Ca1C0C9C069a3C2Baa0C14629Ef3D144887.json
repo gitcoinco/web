@@ -1,0 +1,18 @@
+{
+	"symbol": "gold",
+	"address": "0x596E1Ca1C0C9C069a3C2Baa0C14629Ef3D144887",
+	"published_on": "2019-06-25",
+	"overview": {
+		"en": "Gold Digital Asset Certificate GOLD MART (GM) is a digital asset project managed and issued by Global Block Chain Technology Trading Center (GLOBAL BLOCK CHAIN TECHNOLOGY TRADING CENTER CO., LIMITED). It is a carrier of value circulation in ecology. Participants can use digital asset certificate as their rights and interests in all ecological platforms and circulation links. Proof.",
+		"zh": "黃金數字資產憑證GOLD MART（簡稱：GM）是全球區塊鏈技術交易中心（GLOBAL BLOCK CHAIN TECHNOLOGY TRADING CENTER CO., LIMITED） 管理發行的数字资产项目，運用區塊鏈技術構建，是生態中的價值流通載體，參與者在各生態平臺、流通環節均可以使用數字資產憑證作為權益證明。"
+	},
+	"initial_price": {
+		"ETH": "1 ETH"
+	},
+	"links": {
+		"goldmark": "http://www.goldmart.vip/"
+	},
+	"email": "goldmartvip@gmail.com",
+	"website": "http://www.goldmart.vip/",
+	"whitepaper": "https://img1.wsimg.com/blobby/go/b6b25393-f9a2-451c-ac28-257a59fd1391/downloads/GM%E9%BB%84%E9%87%91%E5%B0%8F%E9%95%87%E7%99%BD%E7%9A%AE%E4%B9%A66.3.pdf"
+}

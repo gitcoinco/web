@@ -1,0 +1,28 @@
+{
+  "symbol": "Mars Coin",
+  "address": "0xe8E507d131b8F6fFd76fa4ce73DDf8dC983362dD",
+  "overview":{
+        "en": "MC is an eco-uniform certificate issued based on the four major products of Mars Blockchain Group. The total amount of issuance is 16 billion and the first phase will issue 2 billion. Regular destruction and community airdrops will be implemented to maintain the balance of the entire MC ecosystem. MC hopes to provide users with a one-stop service, which users can achieve trading, storage, communication, entertainment and other functions. The four major ecological products of Mars construct a complete blockchain economic system. As a value certificate, MC is a function mark of value circulation in the entire ecosystem. The issuance of MC will further advance the integration of ecological values. Any user who uses these products will obtain a certain amount of MC as a valuable community behavior reward.  Thus, MC can flow freely throughout the ecosystem. This mechanism empowers the entire ecology of Mars Media. In the future, the MC rewards obtained by users can be used for consumption and equity exchange in the App. Also, the community will allocate a certain amount of MC for community construction.",
+        "zh": "MC是基于火星区块链集团现已上线的四大产品而发行的生态统一通证，发行总量恒定为160亿，一期发行20亿枚，定期实施销毁和社区空投。MC希望为用户提供一站式服务，用户能在火星区块链的整个生态中实现交易、存储、交流、娱乐等功能。火星四大生态产品本身就是一个完整的区块链经济系统，MC作为火星传媒App经济体系中的价值凭证，是整个生态系统中价值流通的功能标记，MC的发行将进一步通过通证的力量完成生态价值的整合：任何用户在使用上述产品时，都可以基于有价值的社区行为而获得一定MC，而MC可以在整个生态系统内无障碍流动，从而实现赋能火星传媒整个生态。用户获得的MC奖励，未来可用于App生态系统上的消费与权益兑换，部分MC将用于社区生态建设。"
+  },
+  "email": "marsmedia@marsmedia24.com",
+  "website": "http://www.marsnews.cn",
+  "whitepaper": "https://github.com/MarsBlockchainMedia/MarsCoin/blob/master/MarsCoin%E7%99%BD%E7%9A%AE%E4%B9%A6V1.0.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-04-16",
+  "initial_price":{
+        "ETH":"0.000166666 ETH",
+        "USD":"0.07 USD",
+        "BTC":"0.000004137 BTC"
+  },
+  "links": {
+    "blog": "https://www.zhihu.com/people/huo-xing-chuan-mei-qu-kuai-lian/activities",
+    "twitter": "https://twitter.com/MarsMedia5",
+    "telegram": "https://0.plus/MarsMediaBlockChain",
+    "github": "https://github.com/MarsBlockchainMedia",
+    "facebook": "https://www.facebook.com/MarsMedia0",
+    "reddit": "https://www.reddit.com/user/Mars_Media",
+    "slack": "https://marsblockchai-zmw3914.slack.com/messages/CJ4GCP6UX/",
+    "medium": "https://medium.com/@marsmedia_97076"
+  }
+}

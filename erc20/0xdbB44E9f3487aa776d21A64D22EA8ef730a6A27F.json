@@ -1,0 +1,19 @@
+{
+    "symbol": "GNC",
+    "address": "0xdbB44E9f3487aa776d21A64D22EA8ef730a6A27F",
+    "overview": {
+        "zh": "GNC是全球通用的数字资产存储平台用户可以使用其他加密的数字资产进行交易提供更便捷的支付体验."
+    },
+    "email": "gnc@globaltoken.info",
+    "website": "https://globaltoken.info",
+    "whitepaper": "https://globaltoken.info/GlobalToken.pdf",
+    "published_on": "2019-06-15",
+    "initial_price": {
+        "ETH": "0.00055 ETH",
+        "USD": "0.15 USD",
+        "BTC": "0.000004137 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/globaltoken"
+    }
+}

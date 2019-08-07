@@ -1,0 +1,19 @@
+{
+  "symbol": "KPC8",
+  "address": "0xd8f93d967fa21a0a826a3bd4601ada4bb468823d",
+  "overview":{
+        "en": "KPC8 Token can be used for E-commerce platform and financial service.",
+        "zh": "KPC8 (袋鼠币）在线上及二级市场进行交易，同时消费者可以用KPC8 (袋鼠币） 购买平台上同等价值的真实物品。KPC8 (袋鼠币）可作为金融衍生品服务，提供跨境便捷支付，同时平台上的优质项目为KPC8 (袋鼠币）提供了强有力的保障。"
+  },
+  "email": "info@kpaycoin.com",
+  "website": "http://kpaycoin.com/chs",
+  "whitepaper": "http://kpaycoin.com/downloads/袋鼠币中文白皮书.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-07-01",
+  "initial_price":{
+        "USD":"0.27 USD"
+  },
+  "links": {
+    "github": "https://github.com/kpaycoin/kpc8-erc20"
+  }
+}

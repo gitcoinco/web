@@ -1,0 +1,16 @@
+{
+    "symbol": "NSS",
+    "address": "0x4E3Bddd468AbfC6C88bc25dAA5d894380CEd5bc8",
+    "overview":{
+          "en": "NSS (New energy science and technology chain) is based on the new energy technology field. It uses the unique blockchain {BlockChian} decentralized technology to represent the distributed database to identify, disseminate and record information intelligently. Peer-to-peer networks and decentralized peer-to-peer networks use open source software to combine cryptographic principles, time series data, and consensus mechanisms to ensure the continuity and continuity of nodes in a distributed database, enabling instant verification and traceability of information. However, it is difficult to tamper with and cannot be shielded, thus creating a set of privacy, efficient and secure shared value system.",
+          "zh": "NSS（New energy science and technology chain，新能源科技链）是基于新能源科技领域，以独有的区块链｛BlockChian｝去中心化技术所呈现的分布式数据库识别，传播和记载信息的智能化对等网络和去中心化的对等网络，用开源软件把密码学原理、时序数据和共识机制相结合，来保障分布式数据库中各节点的连贯和持续，使信息能即时验证、可追溯、但难以篡改和无法屏蔽、从而创造了一套隐私、高效、安全的共享价值体系的特点。"
+    },
+    "email": "huarui_candy@foxmail.com",
+    "website": "http://www.nsscoin.net",
+    "whitepaper": "http://www.nsscoin.net/nss.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-10",
+    "links": {
+      "telegram": "https://telegram.me/joinchat/K4268hL-R2vRtZT5Tuzz9g"
+    }
+  }

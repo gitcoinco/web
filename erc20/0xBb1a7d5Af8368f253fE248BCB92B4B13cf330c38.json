@@ -1,0 +1,18 @@
+{
+  "symbol": "UEBT",
+  "address": "0xBb1a7d5Af8368f253fE248BCB92B4B13cf330c38",
+  "overview":{
+        "en": "UEBT is a platform for Ultra-election over-selection based on blockchain and smart contract technology to incubate the sharing economy and generate quantitative value for users' network behavior and idle resources.",
+        "zh": "UEBT 是 Ultra-election 超选基于区块链及智能合约技术，孵化共享经济，让用户网络行为及闲置资源产生量化价值的平台通证。"
+  },
+  "email": "service@chaoxuan.io",
+  "website": "http://www.chaoxuan.io",
+  "whitepaper": "http://www.chaoxuan.io/doc/whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-06-23",
+  "initial_price":{
+        "ETH":"0.0000223642 ETH",
+        "USD":"0.01 USD",
+        "BTC":"0.000000883 BTC"
+  }
+}

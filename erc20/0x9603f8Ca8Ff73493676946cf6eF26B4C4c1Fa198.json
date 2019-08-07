@@ -1,0 +1,26 @@
+{
+    "symbol": "SWAP",
+    "address": "0x9603f8Ca8Ff73493676946cf6eF26B4C4c1Fa198",
+    "overview": {
+        "en": "Global one-stop high-quality financial assets trading platform based on blockchain technology",
+        "zh": "基于区块链技术的一站式全球金融资产配置平台"
+    },
+    "email": "support@aswap.io",
+    "website": "http://aswap.io/",
+    "whitepaper": "http://aswap.io/lib/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-05-30",
+    "initial_price": {
+        "ETH": "0.000163 ETH",
+        "USD": "0.0439 USD",
+        "BTC": "0.000005 BTC"
+    },
+    "links": {
+        "facebook": "https://www.facebook.com/profile.php?id=100037520822482",
+        "telegram": "https://t.me/SWAP_Official",
+        "weibo": "https://weibo.com/7165760019/profile?topnav=1&wvr=6",
+        "medium": "https://medium.com/@swapfoundation",
+        "简书": "https://www.jianshu.com/u/c65ea3a54143",
+        "github": "https://github.com/swapfoundation"
+    }
+}

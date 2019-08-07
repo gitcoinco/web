@@ -1,0 +1,57 @@
+{
+
+
+  "symbol":"MM",
+
+  "address":"0xcd23Ef2cBa177A1B5f5D3818d055868E4B599d18",
+
+  "overview":{
+
+    "en":"MM (Moon Money Chain Token) is the Utility Token for MoonX Exchange (both for Crypto and Foreign Currency Trading), Cross-border payments and transactions."
+
+
+
+  },
+
+  "email":"support@moonx.pro",
+
+  "website":"https://moonx.pro/",
+
+  "whitepaper":"http://moonx.pro/wp-content/uploads/2019/03/MoonChain-Whitepaper-V2.pdf",
+
+  "state":"NORMAL",
+
+  "published_on":"2019-03-15",
+
+  "initial_price":{
+
+        "ETH":"0.00174 ETH",
+
+        "USD":"0.174 USD",
+
+        "BTC":"0.00002356 BTC"
+
+  },
+
+  "links": {
+
+    "blog":"https://moonx.pro/moonx-blog/",
+
+    "twitter":"https://twitter.com/MoonX555",
+
+    "telegram":"https://t.me/Moon_Money",
+
+    "reddit":"https://www.reddit.com/user/MoonX333/",
+
+    "github":"https://github.com/MoonX4hft",
+
+    "facebook":"https://www.facebook.com/MoonX333/",
+
+    "slack":"https://moonx-workspace.slack.com",
+
+    "medium":"https://medium.com/@moonxfamily"
+
+  }
+
+}
+

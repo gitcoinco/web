@@ -1,0 +1,19 @@
+{
+    "symbol": "ZNC",
+    "address": "0x95baEd0B5Bce872601110Dd461E598322f58c50c",
+    "overview":{
+          "en": "ZionCoin's design philosophy is to use profit incentive mechanism to construct a fast, low cost, efficient, safe and reliable public blockchain ecosystem which satisfies large-scale daily business needs. These requirements include, but are not limited to, trading and clearance of various types of assets, as well as redundant storage of information.",
+          "zh": "ZionCoin的设计理念是基于利益激励原则来构建一个快速、低费用、高效、安全且可靠的公有区块链生态体系，以满足大规模日常商业活动的需求。这些需求包括但不限于对各类资产的交易和清算，数据存证/交易，（跨境）支付方面，以及对信息的冗余存储。"
+    },
+    "email": "zioncoin2100@gmail.com",
+    "website": "http://zionc.info",
+    "whitepaper": "http://zionc.info/blog/2019/6/14/white-paper-10/",
+    "state": "NORMAL",
+    "published_on": "2019-06-14",
+    "links": {
+      "blog": "http://zionc.info/blog/",
+      "twitter": "https://twitter.com/CoinZion",
+      "telegram": "https://t.me/joinchat/GC56OxQOR84MWj66wIo0pw",
+      "github": "https://github.com/zioncoin2100"
+    }
+  }
