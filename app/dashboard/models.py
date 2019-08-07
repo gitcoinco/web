@@ -2152,8 +2152,9 @@ class Profile(SuperModel):
         is_hunter |= self.interested.exists()
         is_hunter |= self.received_tips.exists()
         is_hunter |= self.grant_admin.exists()
+        is_hunter |= self.fulfilled.exists()
 
-        is_funder |= self.fulfilled.exists()
+        is_funder |= self.bounties_funded.exists()
         is_funder |= self.sent_tips.exists()
         is_funder |= self.grant_contributor.exists()
 
