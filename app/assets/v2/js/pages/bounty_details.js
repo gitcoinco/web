@@ -164,11 +164,25 @@ var callbacks = {
     return [ 'status', ui_status ];
   },
   'issue_description': function(key, val, result) {
-    var converter = new showdown.Converter({
-      simplifiedAutoLink: true
+
+    const _markdown = new markdownit({
+      linkify: true,
+      highlight: function(str, lang) {
+        if (lang && hljs.getLanguage(lang)) {
+          try {
+            return '<pre class="hljs"><code>' +
+                    hljs.highlight(lang, str, true).value +
+                   '</code></pre>';
+          } catch (__) {}
+        }
+        return '<pre class="hljs"><code>' + sanitize(md.utils.escapeHtml(str)) + '</code></pre>';
+      }
     });
 
-    ui_body = sanitize(converter.makeHtml(val));
+    _markdown.renderer.rules.table_open = function() {
+      return '<table class="table">';
+    };
+    ui_body = sanitize(_markdown.render(val));
     return [ 'issue_description', ui_body ];
   },
   'bounty_owner_address': address_ize,
@@ -950,11 +964,10 @@ var build_detail_page = function(result) {
       _result = callbacks[key](key, val, result);
       val = _result[1];
     }
-    var _entry = {
-      'head': head,
-      'key': key,
-      'val': val
-    };
+
+    hljs.initHighlighting.called = false;
+    hljs.initHighlighting();
+
     var id = '#' + key;
 
     if ($(id).length) {
@@ -976,12 +989,11 @@ var build_detail_page = function(result) {
       '</div>' +
       '<div class="col-12 pt-2 pb-2"><img class="magnify" src="' + $(this).attr('src') + '"/></div></div></div>');
 
-    var modal = $(content).appendTo('body').modal({
+    $(content).appendTo('body').modal({
       modalClass: 'modal magnify'
     });
   });
 
-  $('#bounty_details #issue_description code').parent().addClass('code-snippet');
   appendGithubSyncButton(result);
 };
 
