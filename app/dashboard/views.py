@@ -22,6 +22,7 @@ import json
 import logging
 import os
 import time
+from copy import deepcopy
 from datetime import datetime
 from decimal import Decimal
 
@@ -51,6 +52,7 @@ from django.views.decorators.http import require_GET, require_POST
 import magic
 from app.utils import clean_str, ellipses, get_default_network
 from avatar.utils import get_avatar_context_for_user
+from dashboard.context import quickstart as qs
 from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, profile_helper
 from economy.utils import convert_token_to_usdt
 from eth_utils import to_checksum_address, to_normalized_address
@@ -1737,8 +1739,13 @@ def funder_payout_reminder(request, bounty_network, stdbounties_id):
 
 
 def quickstart(request):
-    """Display quickstart guide."""
-    return TemplateResponse(request, 'quickstart.html', {})
+    """Display Quickstart Guide."""
+
+    activities = Activity.objects.filter(activity_type='new_bounty').order_by('-created')[:5]
+    context = deepcopy(qs.quickstart)
+    context["activities"] = [a.view_props for a in activities]
+    return TemplateResponse(request, 'quickstart.html', context)
+
 
 def load_banners(request):
     """Load profile banners"""
@@ -1748,6 +1755,7 @@ def load_banners(request):
         'banners': images
     }
     return JsonResponse(response, safe=False)
+
 
 def profile_details(request, handle):
     """Display profile keywords.
