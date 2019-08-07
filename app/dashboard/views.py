@@ -2961,7 +2961,12 @@ def serialize_funder_dashboard_submitted_rows(bounties):
 
 
 def funder_dashboard(request, bounty_type):
-    """JSON data for the user dashboard"""
+    """JSON data for the funder dashboard"""
+
+    if not settings.DEBUG:
+        network = 'mainnet'
+    else:
+        network = 'rinkeby'
 
     user = request.user if request.user.is_authenticated else None
     if not user:
@@ -2975,6 +2980,7 @@ def funder_dashboard(request, bounty_type):
         bounties = list(Bounty.objects.filter(
             Q(idx_status='open') | Q(override_status='open'),
             current_bounty=True,
+            network=network,
             bounty_owner_github_username=profile.handle,
             ).order_by('-interested__created'))
         interests = list(Interest.objects.filter(
@@ -2987,6 +2993,7 @@ def funder_dashboard(request, bounty_type):
         bounties = Bounty.objects.prefetch_related('fulfillments').filter(
             Q(idx_status='submitted') | Q(override_status='submitted'),
             current_bounty=True,
+            network=network,
             fulfillments__accepted=False,
             bounty_owner_github_username=profile.handle,
             ).order_by('-fulfillments__created_on')
@@ -2996,6 +3003,7 @@ def funder_dashboard(request, bounty_type):
         bounties = Bounty.objects.filter(
             Q(idx_status='expired') | Q(override_status='expired'),
             current_bounty=True,
+            network=network,
             bounty_owner_github_username=profile.handle,
             ).order_by('-expires_date')
 
@@ -3016,7 +3024,15 @@ def funder_dashboard(request, bounty_type):
 
 
 def contributor_dashboard(request, bounty_type):
+    """JSON data for the contributor dashboard"""
+
+    if not settings.DEBUG:
+        network = 'mainnet'
+    else:
+        network = 'rinkeby'
+
     user = request.user if request.user.is_authenticated else None
+
     if not user:
         return JsonResponse(
             {'error': _('You must be authenticated via github to use this feature!')},
@@ -3041,6 +3057,7 @@ def contributor_dashboard(request, bounty_type):
             interested__status='okay',
             interested__pending=pending,
             idx_status__in=status,
+            network=network,
             current_bounty=True).order_by('-interested__created')
 
         return JsonResponse([{'title': b.title,
