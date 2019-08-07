@@ -15,12 +15,12 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
-<div class="col-12 sponsors text-white mt-5 mb-3">
-  <p class="font-weight-semibold font-subheader mb-4">SUPPORTED BY</p>
 
+<div class="col-12 sponsors text-white mt-5 mb-3">
   {% if sponsors %}
+    <p class="font-weight-semibold font-subheader mb-4">SUPPORTED BY</p>
     {% if sponsors.sponsors_gold %}
-      <div class="d-flex flex-wrap justify-content-center mb-4">
+      <div class="d-flex flex-wrap justify-content-center mb-5">
         {% for sponsor in sponsors.sponsors_gold %}
           <div class="sponsors-gold my-auto mx-2">
             <img src="{{sponsor.logo}}" alt="{{sponsor.name}}" class="{{sponsor.name}}">
@@ -30,7 +30,7 @@
     {% endif %}
 
     {% if sponsors.sponsors_silver %}
-      <div class="d-flex flex-wrap justify-content-center">
+      <div class="d-flex flex-wrap justify-content-center mb-4">
         {% for sponsor in sponsors.sponsors_silver %}
           <div class="sponsors-silver my-auto mx-2">
             <img src="{{sponsor.logo}}" alt="{{sponsor.name}}" class="{{sponsor.name}}">

@@ -1347,6 +1347,10 @@ function normalizeAmount(amount, decimals) {
   return Math.round((parseInt(amount) / Math.pow(10, decimals)) * 1000) / 1000;
 }
 
+function round(amount, decimals) {
+  return Math.round(((amount) * Math.pow(10, decimals))) / Math.pow(10, decimals);
+}
+
 function newTokenTag(amount, tokenName, tooltipInfo, isCrowdfunded) {
   const ele = document.createElement('div');
   const p = document.createElement('p');
@@ -1356,14 +1360,11 @@ function newTokenTag(amount, tokenName, tooltipInfo, isCrowdfunded) {
   span.innerHTML = amount + ' ' + tokenName +
     (isCrowdfunded ? '<i class="fas fa-users ml-1"></i>' : '');
 
+  p.className = 'inner-tooltip';
   p.appendChild(span);
   ele.appendChild(p);
-
   if (tooltipInfo) {
-    ele.title =
-      '<div class="tooltip-info tooltip-sm">' +
-      tooltipInfo +
-      '</div>';
+    ele.title = tooltipInfo;
   }
 
   return ele;
