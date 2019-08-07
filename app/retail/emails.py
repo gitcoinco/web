@@ -70,6 +70,7 @@ def premailer_transform(html):
     p = premailer.Premailer(html, base_url=settings.BASE_URL)
     return p.transform()
 
+
 def render_featured_funded_bounty(bounty):
     params = {'bounty': bounty}
     response_html = premailer_transform(render_to_string("emails/funded_featured_bounty.html", params))
@@ -97,43 +98,12 @@ def render_nth_day_email_campaign(to_email, nth, firstname):
 
     return response_html, response_txt, subject
 
+
 def render_new_grant_email(grant):
     params = {'grant': grant}
     response_html = premailer_transform(render_to_string("emails/grants/new_grant.html", params))
     response_txt = render_to_string("emails/grants/new_grant.txt", params)
     subject = _("Your Gitcoin Grant")
-    return response_html, response_txt, subject
-
-
-def render_change_grant_owner_request(grant):
-    params = {'grant': grant}
-    response_html = premailer_transform(render_to_string("emails/grants/change_owner_request.html", params))
-    response_txt = render_to_string("emails/grants/change_owner_request.txt", params)
-    subject = _("You've been chosen to be the owner for a Gitcoin Grant")
-    return response_html, response_txt, subject
-
-
-def render_change_grant_owner_accept(grant):
-    params = {'grant': grant}
-    response_html = premailer_transform(render_to_string("emails/grants/change_owner_accept.html", params))
-    response_txt = render_to_string("emails/grants/change_owner_accept.txt", params)
-    subject = _("Grant Owner has changed")
-    return response_html, response_txt, subject
-
-
-def render_notify_ownership_change(grant):
-    params = {'grant': grant}
-    response_html = premailer_transform(render_to_string("emails/grants/change_owner_notify.html", params))
-    response_txt = render_to_string("emails/grants/change_owner_notify.txt", params)
-    subject = _("Grant ownership has been changed")
-    return response_html, response_txt, subject
-
-
-def render_change_grant_owner_reject(grant):
-    params = {'grant': grant}
-    response_html = premailer_transform(render_to_string("emails/grants/change_owner_reject.html", params))
-    response_txt = render_to_string("emails/grants/change_owner_reject.txt", params)
-    subject = _("Grant has no change in ownership")
     return response_html, response_txt, subject
 
 
@@ -245,34 +215,6 @@ def new_supporter(request):
 def new_grant(request):
     grant = Grant.objects.first()
     response_html, __, __ = render_new_grant_email(grant)
-    return HttpResponse(response_html)
-
-
-@staff_member_required
-def change_grant_owner_request(request):
-    grant = Grant.objects.first()
-    response_html, __, __ = render_change_grant_owner_request(grant)
-    return HttpResponse(response_html)
-
-
-@staff_member_required
-def notify_ownership_change(request):
-    grant = Grant.objects.first()
-    response_html, __, __ = render_notify_ownership_change(grant)
-    return HttpResponse(response_html)
-
-
-@staff_member_required
-def change_grant_owner_accept(request):
-    grant = Grant.objects.first()
-    response_html, __, __ = render_change_grant_owner_accept(grant)
-    return HttpResponse(response_html)
-
-
-@staff_member_required
-def change_grant_owner_reject(request):
-    grant = Grant.objects.first()
-    response_html, __, __ = render_change_grant_owner_reject(grant)
     return HttpResponse(response_html)
 
 
@@ -932,8 +874,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Hacking Beyond Blockchain 💻🤓"
-    new_kudos_pks = [4028, 4029, 4030]
+    subject = "The Grow Ethereum Hackathon Has Started"
+    new_kudos_pks = [2050, 4281, 1970]
     new_kudos_size_px = 150
 
     kudos_friday = f'''
@@ -948,24 +890,22 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-Beyond Blockchain has officially begun! We kicked off the three week haul on Monday, and there's still plenty of time to vie for some of the prizes we have available. Our sponsors -- Consensys Labs, Raiden, Arweave, Portis, and The Graph -- have dozens of prizes ranging up to 22 ETH. Join our <a href="https://discord.gg/T98dQYC" target="_blank">Discord</a> and discuss the hackathon,
-and reach out to us if you have any questions. More information about the hackathon can be found on our blog <a href="https://gitcoin.co/blog/beyond-blockchain-hackathon/" target="_blank">here</a>, and you can read more about the specific sponsor prizes <a href="https://github.com/gitcoinco/beyondblockchainteams/#beyond-blockchain-prizes-to-be-updated-regularly" target="_blank">here.</a>
+Grow Ethereum has officially started! After weeks of hype, the hackathon is now upon us. Dozens of bounties from some of the top projects in Ethereum are now live on the Hackathon Issue Explorer. If you aren't already a member, join the Discord to find a team and then get to work! Some of the Hackathon bounties are featured in this email below, but many more are up for grabs. For more information on the prizes, and to take a look at the available issues, check out the hackathon homepage <a href="https://hackathons.gitcoin.co/grow-ethereum/" target="_blank">here.</a>
 </p>
 <p>
-Our sponsors each offer a unique product and set of goals for their hackathon prompts. Read about their projects and their goals in <a href="https://gitcoin.co/blog/beyond-blockchain-the-players/?preview=true" target="_blank">this</a> blog post, and head on over to the GitHub page to read individual
-prompts. 
+Who are the sponsors for Grow Ethereum? This hackathon features a wide range of projects coming from all parts of the ecosystem. Our core sponsors are <a href="https://www.adex.network/">AdEx</a>, <a href="https://bzx.network/">bZx</a>, the <a href="https://ethereum.org/">Ethereum Foundation</a>, <a href="https://www.unicef.org/innovation/blockchain">UNICEF Innovation</a>, and <a href="https://www.metacartel.org/">Metacartel</a>. Our node sponsors are <a href="https://www.portis.io/">Portis</a>, <a href="https://fluence.network/">fluence</a>, <a href="https://pegasys.tech/">PegaSys</a>, <a href="https://www.arweave.org/">Arweave</a>, and <a href="https://raiden.network/">Raiden</a>. For more information on each sponsor's bounty offerings, drop by the Discord and find their specific sponsor channel. There, bounties will be posted, and you can ask any questions you may have.
 </p>
 <p>
-Are you a Coder, and do you need to find a team for the hackathon? Are you a Hirer, and do you need to find a coder to work on your project? <a href="https://github.com/gitcoinco/beyondblockchainteams/issues">Post a profile in this GitHub repo</a> and mingle with others. We're here to help you find a crew.
+Last, we're inching closer to our announcement of the next round of CLR matching for Gitcoin Grants. If you have a project that needs funding, or are a funder that would like to help grow open source, check out the current Gitcoin Grants homepage. We are happy to answer any questions you might have. <a href="https://gitcoin.co/grants/">Grants live here.</a>
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-            The Gitcoin Livestream is back this week. Join us <a href="https://gitcoin.co/livestream"> at 2PM ET on Friday, or catch it on <a href="https://twitter.com/gitcoin">Twitter</a>!
+            The Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday.
         </li>
         <li>
-            We've released a new set of Kudos in the past weeks. Check the <a href="https://gitcoin.co/kudos/" target="_blank">homepage</a> for new art and then send some of your favorites to your friends. 
+        Looking for something to watch this weekend? Gitcoin Media is about to upload a new wave of past livestreams. Take a look at the existing ones uploaded today and get ready to watch the next ones! Gitcoin Media lives <a href="https://www.youtube.com/gitcoinmedia">here.</a>
         </li>
     </ul>
 </p>
@@ -974,45 +914,45 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'nanspro',
+        'who': 'KapsonLabs',
         'who_link': True,
-        'what': 'Nanspro with the Python!',
-        'link': 'https://gitcoin.co/issue/PegaSysEng/BountiedWork/17/3119',
+        'what': 'Pay Practitioner Implemented!',
+        'link': 'https://gitcoin.co/issue/RibbonBlockchain/IncentivesMVP/16/3282',
         'link_copy': 'View more',
     }, {
-        'who': 'calchulus',
+        'who': 'samsparsky',
         'who_link': True,
-        'what': 'Content Created',
-        'link': 'https://gitcoin.co/issue/gitcoinco/code_fund_ads/483/3103',
+        'what': 'Token Buyback for Gnosis.',
+        'link': 'https://gitcoin.co/issue/GnosisEcosystemFund/Gnosis-Bounties-/3/1626',
         'link_copy': 'View more',
     }, {
-        'who': 'many',
+        'who': 'PierrickGT',
         'who_link': True,
-        'what': 'Simple Permaweb: Frontend',
-        'link': 'https://gitcoin.co/issue/ArweaveTeam/Bounties/1/3152',
+        'what': 'The edit button now works.',
+        'link': 'https://gitcoin.co/issue/gitcoinco/web/4786/3227',
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'Blockchain Job Kit',
-        'title': 'Blockchain Developer Job Kit',
+        'name': 'Quantstamp',
+        'title': 'Scan your smart contract with the Quantstamp Security Network V2 today.',
         'image_url': 'https://s3.us-west-2.amazonaws.com/gitcoin-static/jDSk7ZTfpY19PWdwwsk8puNd.png',
-        'link': 'http://bit.ly/EthDevKit',
-        'cta': 'View now',
+        'link': 'http://bit.ly/QStamp',
+        'cta': 'Scan now',
         'body': [
-            'Blockchain Developer Job Kit - See who’s hiring, salary info, and dev skills required'
+            'Reentrancy bu🐜s are easy to miss. Have confidence in your code and integrate security checks as part of your development workflow.🛡'
         ]
     }
 
     bounties_spec = [{
-        'url': 'https://github.com/knocte/udtRs/issues/1',
-        'primer': 'Create a pure-Rust UDT/UDP hole-punching implementation',
+        'url': 'https://github.com/fluencelabs/Bounties/issues/1',
+        'primer': 'Help Build The Real Decentralized Web',
     }, {
-        'url': 'https://github.com/prysmaticlabs/prysm/issues/2740',
-        'primer': 'Build a simple permaweb app!',
+        'url': 'https://github.com/PegaSysEng/BountiedWork/issues/20',
+        'primer': 'Stratum Implementation for Pantheon',
     }, {
-        'url': 'https://github.com/status-im/status-react/issues/8349',
-        'primer': '"Confirmed" transaction is shown for "Failed" in 1-1 chat',
+        'url': 'https://github.com/fluencelabs/Bounties/issues/2',
+        'primer': 'Building REPL to Enable Customizable Decentralized Backends',
 }, ]
     
     

@@ -52,7 +52,7 @@ class InfuraIPFSBackend(BaseHealthCheckBackend):
         """Define the functionality of the health check."""
         from dashboard.utils import get_ipfs
         try:
-            ipfs_connection = get_ipfs(host='https://ipfs.infura.io', port=5001)
+            ipfs_connection = get_ipfs(host='ipfs.infura.io', port=5001)
         except IPFSCantConnectException:
             ipfs_connection = None
 

@@ -35,7 +35,15 @@
     </div>
     {% if hackathon %}
       <link rel="stylesheet" href={% static "v2/css/hackathons/explorer.css" %}>
-      <div id="{{ hackathon.identifier }}" class="row pt-5 pb-5 text-center banner">
+
+      <style>
+        .hackathon-banner {
+          background: {% firstof hackathon.background_color or 'white' %};
+          color: {% firstof hackathon.text_color or 'black' %};
+        }
+      </style>
+
+      <div id="{{ hackathon.identifier }}" class="row pt-5 pb-5 text-center banner hackathon-banner">
         <div class="col g-font-muli">
           <span class="hackathon-name d-block mt-5 text-white font-weight-semibold">{{ hackathon.name }}</span>
           {% if hackathon.logo_svg %}
@@ -69,8 +77,11 @@
           </div>
 
           <div class="col-12 col-lg-9 col-xl-10 body">
-            <div class="container-fluid p-2" id="bounties">
+            <div class="container-fluid py-2" id="bounties">
               <div id="dashboard-title" class="hidden">
+                <div class="my-3 mx-4">
+                  <h1 class="font-bigger-1">Issue Explorer - Freelance Code Bounties</h1>
+                </div>
                 {% include 'shared/search_bar.html' %}
               </div>
         {% endif %}
@@ -106,12 +117,8 @@
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
-    <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
-    <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
-    <script>
-      let bootstrapTooltip = $.fn.tooltip.noConflict()
-      $.fn.runTooltip = bootstrapTooltip
 
+    <script>
       $('[data-toggle="popover"]').popover()
 
       $('body').popover({
@@ -126,8 +133,6 @@
                   </div>`
       });
 
-      var bootstrapModal = $.fn.modal.noConflict()
-      $.fn.bootstrapModal = bootstrapModal
       {% if hackathon %}
         document.hackathon = "{{ hackathon.slug | safe }}";
         if(location.hostname === 'gitcoin.co') $('#network-filter').hide();

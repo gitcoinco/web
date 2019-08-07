@@ -18,11 +18,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 import logging
+import os
 import pprint
 from decimal import Decimal
 from enum import Enum
 
 from django.conf import settings
+from django.conf.urls.static import static
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 from django.db import transaction
@@ -50,6 +52,14 @@ from redis_semaphore import NotAvailable as SemaphoreExists
 from .models import Profile
 
 logger = logging.getLogger(__name__)
+
+def load_files_in_directory(dir_name):
+    path = os.path.join(settings.STATIC_ROOT, dir_name)
+    images = []
+    for f in os.listdir(path):
+        if f.endswith('jpg') or f.endswith('png') or f.endswith('jpeg'):
+            images.append("%s" % (f))
+    return images
 
 
 def get_bounty_view_kwargs(request):
@@ -530,14 +540,18 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
     except Exception as e:
         logger.error(e)
 
-    event_tag = metadata.get('eventTag', '')
-    if event_tag:
-        try:
-            evt = HackathonEvent.objects.filter(name__iexact=event_tag).latest('id')
-            new_bounty.event = evt
-            new_bounty.save()
-        except Exception as e:
-            logger.error(e)
+    if latest_old_bounty and latest_old_bounty.event:
+        new_bounty.event = latest_old_bounty.event;
+        new_bounty.save()
+    else:
+        event_tag = metadata.get('eventTag', '')
+        if event_tag:
+            try:
+                evt = HackathonEvent.objects.filter(name__iexact=event_tag).latest('id')
+                new_bounty.event = evt
+                new_bounty.save()
+            except Exception as e:
+                logger.error(e)
 
     bounty_invitees = metadata.get('invite', '')
     if bounty_invitees and not latest_old_bounty:

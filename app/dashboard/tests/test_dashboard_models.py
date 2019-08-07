@@ -21,6 +21,7 @@ from datetime import date, datetime, timedelta
 
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.utils import timezone
 
 import pytz
 from avatar.models import CustomAvatar, SocialAvatar
@@ -506,6 +507,51 @@ class DashboardModelsTest(TestCase):
         )
         assert bounty.github_url == 'https://github.com/gitcoinco/web/issues/305'
         bounty.delete()
+
+    @staticmethod
+    def test_auto_user_auto_approve():
+
+        profile = Profile.objects.create(
+            data={},
+            handle='fred',
+            email='fred@bar.com'
+        )
+        interest = Interest.objects.create(
+            profile=profile, pending=True
+        )
+        interest.created = timezone.now()
+        interest.save()
+
+        bounty = Bounty.objects.create(
+            title='foo',
+            value_in_token=3,
+            token_name='USDT',
+            web3_created=datetime(2008, 10, 31),
+            github_url='https://github.com/gitcoinco/web/issues/1/',
+            token_address='0x0',
+            issue_description='hello world',
+            bounty_owner_github_username='flintstone',
+            is_open=True,
+            accepted=True,
+            expires_date=timezone.now() + timedelta(days=1, hours=1),
+            idx_project_length=5,
+            project_length='Months',
+            bounty_type='Feature',
+            experience_level='Intermediate',
+            raw_data={},
+            network='mainnet',
+            idx_status='open',
+            bounty_owner_email='john@bar.com',
+            current_bounty=True,
+            permission_type='approval',
+            bounty_reserved_for_user=profile
+        )
+
+        bounty.interested.add(interest)
+        bounty.save()
+        interest.save()
+
+        assert not interest.pending
 
     @staticmethod
     def get_all_tokens_sum():

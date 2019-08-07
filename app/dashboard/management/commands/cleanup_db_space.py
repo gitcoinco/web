@@ -59,5 +59,5 @@ class Command(BaseCommand):
 
         result = LeaderboardRank.objects.filter(
                 created_on__lt=self.get_then(14),
-            ).delete()
+            ).exclude(created_on__week_day=2).delete()
         print(f'LeaderboardRank: {result}')
