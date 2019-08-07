@@ -133,6 +133,15 @@ class BountyQuerySet(models.QuerySet):
                 activities__needs_review=False,
             )
 
+    def has_applicant(self):
+        """Filter results by bounties that have applicants."""
+        return self.prefetch_related('activities') \
+            .filter(
+                activities__activity_type='worker_applied',
+                activities__needs_review=False,
+            )
+        
+    
     def warned(self):
         """Filter results by bounties that have been warned for inactivity."""
         return self.prefetch_related('activities') \
@@ -429,6 +438,10 @@ class Bounty(SuperModel):
         decimals = token.get('decimals', 0)
         return float(self.value_in_token) / 10**decimals
 
+    @property
+    def no_of_applicants(self):
+        return self.interested.count()
+    
     @property
     def url(self):
         return self.get_absolute_url()
