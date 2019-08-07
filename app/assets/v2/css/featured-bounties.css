@@ -2,6 +2,36 @@
   color: #fff;
   background-color: #0d003c;
   padding: 0.7rem 1.5rem;
+  position: relative;
+}
+
+.featured-bounties:hover .featured-bounties__arrow {
+  opacity: 1;
+
+}
+.featured-bounties__arrow {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  opacity: 0;
+  z-index: 1;
+  color: #10ce7c;
+  background: transparent;
+  border: none;
+}
+
+.featured-bounties__arrow:hover,
+.featured-bounties__arrow:focus {
+  color: #57e6a8;
+  opacity: 1;
+}
+
+.featured-bounties__arrow-left {
+  left: 0;
+}
+
+.featured-bounties__arrow-right {
+  right: 10px;
 }
 
 .featured-bounties__title {
