@@ -251,7 +251,7 @@ class Bounty(SuperModel):
     TERMINAL_STATUSES = ['done', 'expired', 'cancelled']
 
     web3_type = models.CharField(max_length=50, default='bounties_network')
-    title = models.CharField(max_length=1000)
+    title = models.CharField(max_length=255)
     web3_created = models.DateTimeField(db_index=True)
     value_in_token = models.DecimalField(default=1, decimal_places=2, max_digits=50)
     token_name = models.CharField(max_length=50)
@@ -304,7 +304,7 @@ class Bounty(SuperModel):
     canceled_bounty_reason = models.TextField(default='', blank=True, verbose_name=_('Cancelation reason'))
     project_type = models.CharField(max_length=50, choices=PROJECT_TYPES, default='traditional', db_index=True)
     permission_type = models.CharField(max_length=50, choices=PERMISSION_TYPES, default='permissionless', db_index=True)
-    bounty_categories = ArrayField(models.CharField(max_length=50, choices=BOUNTY_CATEGORIES), default=list, blank=True)
+    bounty_categories = ArrayField(models.CharField(max_length=50, choices=BOUNTY_CATEGORIES), default=list)
     repo_type = models.CharField(max_length=50, choices=REPO_TYPES, default='public')
     snooze_warnings_for_days = models.IntegerField(default=0)
     is_featured = models.BooleanField(
@@ -2695,7 +2695,7 @@ class Profile(SuperModel):
 
         try:
             if bounties.exists():
-                eth_sum = sum([amount for amount in bounties.values_list("value_true", flat=True)])
+                eth_sum = sum([amount for amount in bounty.values_list("value_in_eth", flat=True)])
         except Exception:
             pass
 
@@ -3011,8 +3011,8 @@ class ProfileSerializer(serializers.BaseSerializer):
             'keywords': instance.keywords,
             'url': instance.get_relative_url(),
             'position': instance.get_contributor_leaderboard_index(),
-            'organizations': instance.get_who_works_with(network=None),
-            'total_earned': instance.get_eth_sum(network=None)
+            'organizations': instance.get_who_works_with(),
+            'total_earned': instance.get_eth_sum()
         }
 
 
@@ -3268,8 +3268,8 @@ class HackathonEvent(SuperModel):
     logo_svg = models.FileField(blank=True)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    background_color = models.CharField(max_length=7, null=True, blank=True, help_text='hexcode for the banner, default to white')
-    text_color = models.CharField(max_length=7, null=True, blank=True, help_text='hexcode for the text, default to black')
+    background_color = models.CharField(max_length=255, null=True, blank=True, help_text='hexcode for the banner, default to white')
+    text_color = models.CharField(max_length=255, null=True, blank=True, help_text='hexcode for the text, default to black')
     identifier = models.CharField(max_length=255, default='', help_text='used for custom styling for the banner')
     sponsors = models.ManyToManyField(Sponsor, through='HackathonSponsor')
 
