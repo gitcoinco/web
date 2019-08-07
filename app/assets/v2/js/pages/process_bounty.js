@@ -159,6 +159,8 @@ window.onload = function() {
       var issueURL = $('input[name=issueURL]').val();
       var fulfillmentId = getSelectedFulfillment().getAttribute('value');
 
+      sessionStorage['bountyId'] = getURLParams('pk');
+
       var isError = false;
 
       if ($('#terms:checked').length == 0) {

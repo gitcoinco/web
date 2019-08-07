@@ -139,10 +139,16 @@ urlpatterns = [
 
     # Funder dashboard
     path('funder_dashboard/<str:bounty_type>/', dashboard.views.funder_dashboard, name='funder_dashboard'),
-    path('funder_dashboard/bounties/<int:bounty_id>/', dashboard.views.funder_dashboard_bounty_info, name='funder_dashboard_bounty_info'),
+    path(
+        'funder_dashboard/bounties/<int:bounty_id>/',
+        dashboard.views.funder_dashboard_bounty_info,
+        name='funder_dashboard_bounty_info'
+    ),
 
     # Contributor dashboard
-    path('contributor_dashboard/<str:bounty_type>/', dashboard.views.contributor_dashboard, name='contributor_dashboard'),
+    path(
+        'contributor_dashboard/<str:bounty_type>/', dashboard.views.contributor_dashboard, name='contributor_dashboard'
+    ),
 
     # Hackathon static page
     url(r'^hackathon/ethhack2019', dashboard.views.ethhack, name='ethhack_2019'),
