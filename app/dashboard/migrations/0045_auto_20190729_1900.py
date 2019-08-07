@@ -13,11 +13,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='hackathonevent',
             name='text_color',
-            field=models.CharField(blank=True, help_text='hexcode for the text, default to black', max_length=255, null=True),
+            field=models.CharField(blank=True, help_text='hexcode for the text, default to black', max_length=7, null=True),
         ),
         migrations.AlterField(
             model_name='hackathonevent',
             name='background_color',
-            field=models.CharField(blank=True, help_text='hexcode for the banner, default to white', max_length=255, null=True),
+            field=models.CharField(blank=True, help_text='hexcode for the banner, default to white', max_length=7, null=True),
         ),
     ]
