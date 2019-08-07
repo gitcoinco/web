@@ -1,0 +1,24 @@
+{
+  "symbol": "DT",
+  "address": "0xEC5bb38e7a5e0578b76216dF563Fc1cc80DED4f2",
+  "overview":{
+        "en": "Dcoin Token (DT) is a Global Utility Token issued by ESPBC Foundation for Dcoin Exchange and its eco-system. DT holders have the privilige to participate in Dcoin community autonomy and ecological co-construction.",
+        "zh": "Dcoin Token (DT)为由ESPBC基金会发行的Dcoin Exchange全球通用积分。DT采用全球首个多币种混链共振发行的方式，旨在服务于社区共建，实现开放管理、持续发展的自由交易平台。"
+  },
+  "email": "support@dcoin.com",
+  "website": "https://www.dcoinpro.com/",
+  "whitepaper": "https://www.dcoinpro.com/img/white_paper_en.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-06-20",
+  "initial_price":{
+        "USD":"0.02 USD"
+  },
+  "links": {
+    "blog": "https://weibo.com/u/6877427776",
+    "twitter": "https://twitter.com/dcoinexchange",
+    "telegram": "https://t.me/dcoinofficial",
+    "github": "https://github.com/dcoinapi/openapi/wiki",
+    "facebook": "https://www.facebook.com/dcoinexchange",
+    "medium": "https://medium.com/dcoin-exchange"
+  }
+}

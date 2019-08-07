@@ -23,7 +23,7 @@
 
 为确保资料提交的真实性，请在贵方官网或其他经过认证的社交媒体渠道发布公告，并将此公告链接附于「官方公告」。推荐文案：
 >\#imToken# #1636#
-我们正在完善 XXX 在 imToken 中的代币相关资料。完成后，大家就可以在 imToken 里看到 logo，更方便地管理 XXX 了，还能看到更多代币信息。
+我们正在完善 XXX 在 imToken 中的代币相关资料。完成后，大家可以在 imToken 里看到 logo，更方便地管理 XXX，同时能看到更多代币信息。
 
 注：
 - 1636 为 pr 序号，如 https://github.com/consenlabs/token-profile/pull/1636 的序号为 1636，这是帮助 imToken **判断 pr 真实性的关键**。

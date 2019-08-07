@@ -1,0 +1,16 @@
+{
+    "symbol": "FGC",
+    "address": "0x61A9758686bF7A9c687444c7F0879F7ccDff2abE",
+    "overview":{
+          "en": "FoundGame Coin"
+    },
+    "email": "contact@foundgame.com",
+    "website": "https://foundgame.io/",
+    "whitepaper": "https://foundgame.com/assets/whiter-paper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-05-05",
+    "links": {
+         "telegram": "https://t.me/foundgame",
+         "weibo": "https://weibo.com/u/6441189103"
+    }
+  } 

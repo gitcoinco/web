@@ -1,0 +1,12 @@
+{
+  "symbol": "KIP",
+  "address": "0x64E65D352f6A2949463B3a7595911B61BBaFc63E",
+  "overview":{
+          "en": "Khipu is easy-to-implement-and-deploy enterprise blockchain platforms and SDK , intelligent contract integrated development environment, enterprise blockchain real-time monitoring platforms. The First Application Scenarios are the distributed search engine and the advertising chain.The industry blockchains implemented on the basis of the Khipu platform will use general KIP tokens. Khipu shares information and value between these business chains through common Token and protocols. Khipu business chain promotes each other to build up Khipu ecological chain and system.",
+          "zh": "Khipu是易于实施和部署的企业区块链平台及 SDK，智能合约集成开发环境，以及企业区块链实时监测平台。Khipu 平台的首批实例是搜索引擎链和广告投放链. KIP Token是所有基于 Khipu 平台上的任何一种应用实例的通用 Token, 未来基于Khipu平台开发的其它业务也将使用该Token，并实现跨链结算和跨链信息交换。"
+   },
+  "email": "khipu2019@gmail.com",
+  "website": "http://khipu.io/",
+  "state": "NORMAL",
+  "published_on": "2019-06-22"
+}

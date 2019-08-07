@@ -1,0 +1,20 @@
+{
+    "symbol": "DCC",
+    "address": "0x4dC975e2C100aab50702eD679F33d5c80cd18060",
+    "overview": {
+        "en": "DCC gave birth to its first use case of Chainspay. Chainspay is a world known enterprise level digital asset third party payment platform. It empowers multiple commercial uses such as crypto exchange hot wallet, crypto wallet, airdrop, dApps, quantitative trading etc.",
+        "zh": "DCC首发产品链付Chainspay平台落地。链付是全球领先的企业级数字资产第三方支付平台。它可以支撑交易所钱包服务、To C数字货币钱包、空投、DAPP、量化交易等多种业务场景。"
+    },
+    "email": "support@coinyee.com",
+    "website": "www.dcchain.org",
+    "whitepaper": "http://www.dcchain.org/dcchain-whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-02-06",
+    "initial_price": {
+        "BTC": "0.000012 BTC",
+        "USD": "0.74 USD"
+    },
+    "links": {
+        "weibo": "https://weibo.com/chainspay"
+    }
+}

@@ -1,0 +1,22 @@
+{
+  "symbol": "TRC",
+  "address": "0xddb3Db2DFdD8705e606959637477AEE7B0Cc22F1",
+  "overview":{
+        "en": "Tyercoin is an intelligent peer-to-peer network and decentralized peer-to-peer network based on the ecological agriculture field, which uses the unique blockchain (BlockChain) decentralization technology to identify, disseminate and record information. The software combines cryptography principles, time series data and consensus mechanisms to ensure the continuity and continuity of nodes in a distributed database, enabling information to be instantly verified, traceable, but difficult to tamper with and unmaskable, thus creating a set of privacy, The characteristics of an efficient and secure shared value system are particularly applicable to problems that have been solved in the field of ecological agriculture for decades.",
+        "zh": "太尔币（TRC）是基于生态农业领域，以独有的区块链（BlockChain）去中心化技术所呈现的分布式数据库识别、传播和记载信息的智能化对等网络和去中心化的对等网络, 用开源软件把密码学原理、时序数据和共识机制相结合，来保障分布式数据库中各节点的连贯和持续，使信息能即时验证、可追溯、但难以篡改和无法屏蔽， 从而创造了一套隐私、高效、安全的共享价值体系的特点， 特别适用于，生态农业领域几十年来一直想解决而未解决的问题。"
+  },
+  "email": "trc@tyercoin.com",
+  "website": "https://www.tyercoin.com/",
+  "whitepaper": "https://www.tyercoin.com/wp/wpcn.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-07-10",
+  "initial_price":{
+        "USD":"0.000015 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/tyercoin",
+    "telegram": "https://t.me/joinchat/H-cHH1YuY2Nv5irzPywv0Q",
+    "facebook": "https://www.facebook.com/tyercoin",
+	"reddit": "https://www.reddit.com/user/tyercoin"
+  }
+}
