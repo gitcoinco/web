@@ -877,6 +877,51 @@ var show_extend_deadline_modal = function() {
   });
 };
 
+const appendGithubSyncButton = function(result) {
+  if (isBountyOwner(result) || currentProfile.isStaff) {
+    const title = gettext('Sync Issue');
+
+    $('#github_actions').append('<button sync-github-issue id="btn-white" type="button" class="btn btn-small">' + title + '</button>');
+
+    $('#github_actions [sync-github-issue]').on('click', function(e) {
+      const bountyId = result.pk;
+
+      e.preventDefault();
+
+      $.get(
+        '/sync/get_issue_details?url=' + encodeURIComponent(result['github_url']) + '&token=' + currentProfile.githubToken
+      ).then(function(result) {
+        const payload = JSON.stringify({
+          issue_description: result.description
+        });
+
+        return $.post('/bounty/change/' + bountyId, payload).then(
+          function(result) {
+            result = sanitizeAPIResults(result);
+            _alert({ message: result.msg }, 'success');
+
+            if (result.url) {
+              setTimeout(function() {
+                document.location.href = result.url;
+              }, 1000);
+            }
+          }
+        ).fail(
+          function(result) {
+            const alertMsg = result && result.responseJSON ? result.responseJSON.error : gettext('Failed to sync issue. Please reload the page and try again.');
+
+            _alert({ message: alertMsg }, 'error');
+          }
+        );
+      }).fail(function(result) {
+        const alertMsg = result && result.responseJSON ? result.responseJSON.error : gettext('Failed to sync issue. Please reload the page and try again.');
+
+        _alert({ message: alertMsg }, 'error');
+      });
+    });
+  }
+};
+
 var build_detail_page = function(result) {
 
   // setup
@@ -948,6 +993,8 @@ var build_detail_page = function(result) {
       modalClass: 'modal magnify'
     });
   });
+
+  appendGithubSyncButton(result);
 };
 
 const is_current_user_interested = function(result) {
@@ -1043,7 +1090,7 @@ var do_actions = function(result) {
       enabled: enabled,
       href: result['action_urls']['fulfill'],
       text: gettext('Submit Work'),
-      parent: 'right_actions',
+      parent: 'bounty_actions',
       title: gettext('Submit work for the funder to review'),
       work_started: is_interested,
       id: 'submit'
@@ -1059,7 +1106,7 @@ var do_actions = function(result) {
 	    enabled: enabled,
 	    href: '#',
 	    text: gettext('Send Payment Reminder'),
-	    parent: 'right_actions',
+	    parent: 'bounty_actions',
 	    title: gettext('Send Payment Reminder'),
 	    id: 'notifyFunder',
 	    clickhandler: show_modal_handler(url),
@@ -1082,7 +1129,7 @@ var do_actions = function(result) {
       enabled: enabled,
       href: is_interested ? '/uninterested' : '/interested',
       text: text,
-      parent: 'right_actions',
+      parent: 'bounty_actions',
       title: is_interested ? gettext('Notify the funder that you will not be working on this project') : gettext('Notify the funder that you would like to take on this project'),
       color: is_interested ? '' : '',
       id: 'interest'
@@ -1097,7 +1144,7 @@ var do_actions = function(result) {
       enabled: enabled,
       href: result['action_urls']['cancel'],
       text: gettext('Cancel Bounty'),
-      parent: 'right_actions',
+      parent: 'bounty_actions',
       title: gettext('Cancel bounty and reclaim funds for this issue'),
       buttonclass: 'button--warning'
     };
@@ -1112,7 +1159,7 @@ var do_actions = function(result) {
       href: result['action_urls']['payout'],
       text: gettext('Payout Bounty'),
       title: gettext('Payout the bounty to one or more submitters.'),
-      parent: 'right_actions'
+      parent: 'bounty_actions'
     };
 
     actions.push(_entry);
@@ -1125,7 +1172,7 @@ var do_actions = function(result) {
       enabled: enabled,
       href: result['action_urls']['contribute'],
       text: gettext('Contribute'),
-      parent: 'right_actions',
+      parent: 'bounty_actions',
       title: gettext('Help by funding or promoting this issue')
     };
 
@@ -1138,7 +1185,7 @@ var do_actions = function(result) {
       enabled: enabled,
       href: '/extend-deadlines',
       text: gettext('Extend Expiration'),
-      parent: 'right_actions',
+      parent: 'bounty_actions',
       title: gettext('Extend deadline of an issue')
     };
 
@@ -1150,7 +1197,7 @@ var do_actions = function(result) {
       enabled: true,
       href: result['action_urls']['invoice'],
       text: gettext('Show Invoice'),
-      parent: 'right_actions',
+      parent: 'bounty_actions',
       title: gettext('View an Invoice for this Issue')
     };
 
@@ -1163,16 +1210,9 @@ var do_actions = function(result) {
         enabled: true,
         href: '/bounty/change/' + result['pk'],
         text: gettext('Edit Issue Details'),
-        parent: 'right_actions',
+        parent: 'bounty_actions',
         title: gettext('Update your Bounty Settings to get the right Crowd')
-      }// ,
-      // {
-      //   enabled: true,
-      //   href: '/issue/refund_request?pk=' + result['pk'],
-      //   text: gettext('Request Fee Refund'),
-      //   parent: 'right_actions',
-      //   title: gettext('Raise a request if you believe you need your fee refunded')
-      // }
+      }
     ];
 
     actions.push(..._entry);
@@ -1189,9 +1229,9 @@ var do_actions = function(result) {
       enabled: true,
       href: github_url,
       text: (result['repo_type'] === 'private' ? '<i class="fas fa-lock"></i> ' +
-            gettext('Private Repo') : gettext('View On Github')) +
-            (result['is_issue_closed'] ? gettext(' (Issue is closed)') : ''),
-      parent: 'right_actions',
+        gettext('Private Repo') : gettext('View On Github')) +
+        (result['is_issue_closed'] ? gettext(' (Issue is closed)') : ''),
+      parent: 'github_actions',
       title: gettext('View issue details and comments on Github'),
       comments: result['github_comments'],
       color: 'white'
@@ -1207,7 +1247,7 @@ var do_actions = function(result) {
       enabled: true,
       href: job_url,
       text: gettext('View Attached Job Description'),
-      parent: 'right_actions',
+      parent: 'bounty_actions',
       title: gettext('This bounty funder is hiring for a full time, part time, or contract role and has attached that to this bounty.'),
       color: 'white'
     };
