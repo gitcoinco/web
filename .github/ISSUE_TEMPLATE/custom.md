@@ -1,5 +1,5 @@
 ---
-name: Custom
+name: 🤔 Custom
 about: Want to report an issue that doesn't fall under any other category? Use this
   template.
 
