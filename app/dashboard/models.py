@@ -441,7 +441,36 @@ class Bounty(SuperModel):
     @property
     def no_of_applicants(self):
         return self.interested.count()
+   
+    @property
+    def has_applicant(self):
+        """Filter results by bounties that have applicants."""
+        return self.prefetch_related('activities') \
+            .filter(
+                activities__activity_type='worker_applied',
+                activities__needs_review=False,
+            )
+        
+    @property
+    def warned(self):
+        """Filter results by bounties that have been warned for inactivity."""
+        return self.prefetch_related('activities') \
+            .filter(
+                activities__activity_type='bounty_abandonment_warning',
+                activities__needs_review=True,
+            )
     
+    @property
+    def escalated(self):
+        """Filter results by bounties that have been escalated for review."""
+        return self.prefetch_related('activities') \
+            .filter(
+                activities__activity_type='bounty_abandonment_escalation_to_mods',
+                activities__needs_review=True,
+            )
+
+
+
     @property
     def url(self):
         return self.get_absolute_url()
