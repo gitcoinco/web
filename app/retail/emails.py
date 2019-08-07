@@ -70,6 +70,7 @@ def premailer_transform(html):
     p = premailer.Premailer(html, base_url=settings.BASE_URL)
     return p.transform()
 
+
 def render_featured_funded_bounty(bounty):
     params = {'bounty': bounty}
     response_html = premailer_transform(render_to_string("emails/funded_featured_bounty.html", params))
@@ -97,43 +98,12 @@ def render_nth_day_email_campaign(to_email, nth, firstname):
 
     return response_html, response_txt, subject
 
+
 def render_new_grant_email(grant):
     params = {'grant': grant}
     response_html = premailer_transform(render_to_string("emails/grants/new_grant.html", params))
     response_txt = render_to_string("emails/grants/new_grant.txt", params)
     subject = _("Your Gitcoin Grant")
-    return response_html, response_txt, subject
-
-
-def render_change_grant_owner_request(grant):
-    params = {'grant': grant}
-    response_html = premailer_transform(render_to_string("emails/grants/change_owner_request.html", params))
-    response_txt = render_to_string("emails/grants/change_owner_request.txt", params)
-    subject = _("You've been chosen to be the owner for a Gitcoin Grant")
-    return response_html, response_txt, subject
-
-
-def render_change_grant_owner_accept(grant):
-    params = {'grant': grant}
-    response_html = premailer_transform(render_to_string("emails/grants/change_owner_accept.html", params))
-    response_txt = render_to_string("emails/grants/change_owner_accept.txt", params)
-    subject = _("Grant Owner has changed")
-    return response_html, response_txt, subject
-
-
-def render_notify_ownership_change(grant):
-    params = {'grant': grant}
-    response_html = premailer_transform(render_to_string("emails/grants/change_owner_notify.html", params))
-    response_txt = render_to_string("emails/grants/change_owner_notify.txt", params)
-    subject = _("Grant ownership has been changed")
-    return response_html, response_txt, subject
-
-
-def render_change_grant_owner_reject(grant):
-    params = {'grant': grant}
-    response_html = premailer_transform(render_to_string("emails/grants/change_owner_reject.html", params))
-    response_txt = render_to_string("emails/grants/change_owner_reject.txt", params)
-    subject = _("Grant has no change in ownership")
     return response_html, response_txt, subject
 
 
@@ -245,34 +215,6 @@ def new_supporter(request):
 def new_grant(request):
     grant = Grant.objects.first()
     response_html, __, __ = render_new_grant_email(grant)
-    return HttpResponse(response_html)
-
-
-@staff_member_required
-def change_grant_owner_request(request):
-    grant = Grant.objects.first()
-    response_html, __, __ = render_change_grant_owner_request(grant)
-    return HttpResponse(response_html)
-
-
-@staff_member_required
-def notify_ownership_change(request):
-    grant = Grant.objects.first()
-    response_html, __, __ = render_notify_ownership_change(grant)
-    return HttpResponse(response_html)
-
-
-@staff_member_required
-def change_grant_owner_accept(request):
-    grant = Grant.objects.first()
-    response_html, __, __ = render_change_grant_owner_accept(grant)
-    return HttpResponse(response_html)
-
-
-@staff_member_required
-def change_grant_owner_reject(request):
-    grant = Grant.objects.first()
-    response_html, __, __ = render_change_grant_owner_reject(grant)
     return HttpResponse(response_html)
 
 
@@ -932,8 +874,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "The Grow Ethereum Hackathon Draws Nearer"
-    new_kudos_pks = [4284, 4282, 4281]
+    subject = "Grow Ethereum Hackathon: Just Days Away"
+    new_kudos_pks = [153, 66, 4281]
     new_kudos_size_px = 150
 
     kudos_friday = f'''
@@ -948,19 +890,19 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-The Grow Ethereum Hackathon is right around the corner -- only 11 days remain until the hacking begins❗️ We are expecting great sponsors, including confirmation from the Ethereum Foundation itself (!) and UNICEF. Build projects together with top Ethereum companies and enterprises, win crypto, and unleash a new era of decentralized global infrastructure. The link to register is <a href="https://hackathons.gitcoin.co/grow-ethereum/" target="_blank">here.</a> 🌱
+We are now only days away from the beginning of the Grow Ethereum hackathon, one of the largest hackathons we've planned to date. As we announced last week, we have huge names behind the event - the Ethereum Foundation and MetaCartel to name a couple - with dozens of prizes on the horizon. See the full list of sponsors (including bZx, AdEx, and Arweave) and a checklist to prepare for the July 29th start date on this <a href="https://gitcoin.co/blog/growethereum/" target="_blank">blog post.</a>
 </p>
 <p>
-Working on an Ethereum ecosystem project and need funding? Get ready. Round 3 of the Gitcoin Grants CLR matching is right around the corner. Pick up some funding to help sustain your work and ease your worries: a funding opportunity awaits. <a href="https://gitcoin.co/grants/">Create a Gitcoin Grant & let the community know your progress!</a>
+Is it time for a summer refresh on your Gitcoin profile? Yes. Now, you can customize your Gitcoin profile with a groovy header. Check out the new profile customizations and grab yourself a brand new avatar for the summer at <a href="https://gitcoin.co/onboard/profile/?steps=avatar"> the Avatar Creator </a> and <a href="https://gitcoin.co/profile/"> Profile Editor.</a>
 </p>
 <p>
-
+Finally, we're preparing to announce the next round of CLR matching for Gitcoin Grants. If you have a project that needs funding, or are a funder that would like to help grow open source, check out the current Gitcoin Grants homepage. We are happy to answer any questions you might have. <a href="https://gitcoin.co/grants/">Grants live here.</a>
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-            The Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday to see some of the top Beyond Blockchain projects present.
+            The Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday.
         </li>
         <li>
             Interested in the future of ads on the internet? <a href="https://media.consensys.net/how-ethical-advertising-will-transform-the-blockchain-industry-31c2c4f2bd45">Check out this primer on Ethical Advertising from Connor O'Day, part of the Codefund team.</a>
@@ -972,45 +914,45 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'IgorShadurin',
+        'who': 'dcd018',
         'who_link': True,
-        'what': 'Provable Emails, thanks to IgorShadurin and josh-richardson',
-        'link': 'https://gitcoin.co/issue/ArweaveTeam/Bounties/5/3164',
+        'what': 'Clone form, fixed!',
+        'link': 'https://gitcoin.co/issue/gitcoinco/code_fund_ads/572/3247',
         'link_copy': 'View more',
     }, {
-        'who': 'sanchaymittal',
+        'who': 'enieber',
         'who_link': True,
-        'what': 'Docs are complete!',
-        'link': 'https://gitcoin.co/issue/MrElliwood/audio-router/1/3213',
+        'what': 'README: Updated!',
+        'link': 'https://gitcoin.co/issue/sigillabs/mobidex/236/3166',
         'link_copy': 'View more',
     }, {
-        'who': 'cpurta',
+        'who': 'gutsal-arsen',
         'who_link': True,
-        'what': 'Raiden Hackathon Completion!',
-        'link': 'https://gitcoin.co/issue/raiden-network/hackathons/3/3170',
+        'what': 'Safe Keyboard, Implemented',
+        'link': 'https://gitcoin.co/issue/polkawallet-io/polkawallet-RN/104/2944',
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'Solana',
-        'title': 'Solana is the most performant blockchain in the world with speeds over 50,000 TPS (while being decentralized and secure).',
+        'name': 'Allinfra',
+        'title': 'The Future of Infrastructure Finance',
         'image_url': 'https://s3.us-west-2.amazonaws.com/gitcoin-static/jDSk7ZTfpY19PWdwwsk8puNd.png',
-        'link': 'http://bit.ly/TourDeSOL',
-        'cta': 'Sign Up for Tour de SOL',
+        'link': 'http://bit.ly/Allinfra',
+        'cta': 'Register today',
         'body': [
-            'We just announced Tour de SOL, or our incentivized testnet event. Are you a validator? Earn token and race against the best in the world. Deadline is July 21st.'
+            'Bringing access, choice, and liquidity to unlisted infrastructure assets using the power of Ethereum'
         ]
     }
 
     bounties_spec = [{
-        'url': 'https://github.com/RibbonBlockchain/IncentivesMVP/issues/19',
-        'primer': 'Create Initial Pilot phase for Ribbon blockchain',
+        'url': 'https://github.com/gitcoinco/web/issues/4744',
+        'primer': 'Allow Ability to Resurface Bounties to the Top When Expiration Date is Extended',
     }, {
-        'url': 'https://github.com/RibbonBlockchain/IncentivesMVP/issues/8',
-        'primer': 'Enable camera on front end for capture passport on patient and practitioner onboarding',
+        'url': 'https://github.com/SpeckleOS/speckle-browser-extension/issues/89',
+        'primer': 'Global Settings (Change Colour Theme and Log Out)',
     }, {
-        'url': 'https://github.com/centrifuge/precise-proofs/issues/88',
-        'primer': 'Optimize the fixed height tree implementation',
+        'url': 'https://github.com/ironcoinext/IronCoin/issues/8',
+        'primer': 'New Tab Page',
 }, ]
     
     

@@ -56,12 +56,12 @@
                 <div class="col-12 text-center text-lg-left">
                   <div class="tags font-caption align-items-center">
                     <div class="tag token">
-                      <p>
+                      <p class="inner-tooltip">
                         <span id="value_in_token"></span>
                       </p>
                     </div>
                     <div id="value_in_usdt_wrapper" title="" class="tag usd ml-3">
-                      <p>
+                      <p class="inner-tooltip">
                         <span id="value_in_usdt"></span>
                         <span>USD</span>
                       </p>
@@ -401,7 +401,7 @@
           <div class="col-12 col-md-2">
             <div class="activity-time">[[:age]]</div>
           </div>
-          [[if issue_message]]
+          [[if issue_message && activity_type == 'worker_applied']]
             <p class="bg-lightblue p-2 rounded mt-3 mb-0 w-100 overflow-auto" style="resize: vertical;height: 50px;word-break: break-word;white-space: pre-wrap;"><b>Work Plan:</b> [[:issue_message.issue_message]]</p>
           [[/if]]
         </div>

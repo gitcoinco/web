@@ -177,14 +177,6 @@ class Grant(SuperModel):
         help_text=_('The Grant administrator\'s profile.'),
         null=True,
     )
-    request_ownership_change = models.ForeignKey(
-        'dashboard.Profile',
-        related_name='request_ownership_change',
-        on_delete=models.CASCADE,
-        help_text=_('The Grant\'s potential new administrator profile.'),
-        null=True,
-        blank=True,
-    )
     team_members = models.ManyToManyField(
         'dashboard.Profile',
         related_name='grant_teams',
@@ -652,7 +644,7 @@ next_valid_timestamp: {next_valid_timestamp}
     def get_converted_amount(self):
         try:
             if self.token_symbol == "ETH" or self.token_symbol == "WETH":
-                return Decimal(self.amount_per_period * eth_usd_conv_rate())
+                return Decimal(float(self.amount_per_period) * float(eth_usd_conv_rate()))
             else:
                 value_token_to_eth = Decimal(convert_amount(
                     self.amount_per_period,
