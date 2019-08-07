@@ -19,6 +19,11 @@
 <div class="mt-4">
   <label class="font-caption letter-spacing text-black-60 text-uppercase" for="expirationTimeDelta">{% trans "Expires in" %}</label>
   <input name='expirationTimeDelta' id="expirationTimeDelta" class="form__input" type="text" placeholder="" required/>
+  <div class="form__checkbox">
+    <input name='neverExpires' id='neverExpires' type="checkbox"  />
+    <label class="form__label" for=neverExpires>{% trans "Never expire" %}
+    </label>
+  </div>
 
 
 

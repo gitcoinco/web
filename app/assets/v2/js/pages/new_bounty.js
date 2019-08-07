@@ -329,9 +329,12 @@ $(function() {
       '3 months': [moment().add(3, 'month'), moment().add(3, 'month')],
       '1 year': [moment().add(1, 'year'), moment().add(1, 'year')]
     },
-    "locale": {
-      "customRangeLabel": "Custom"
+    'locale': {
+      'customRangeLabel': 'Custom',
+      'format': 'MM/DD/YYYY'
     }
+  }, function (start, end, label){
+    console.log('start', start, 'end', end, 'label', label)
   });
 
 
@@ -389,8 +392,9 @@ $('#issueURL').focusout(function() {
   }
 });
 
-const togggleEnabled = function(checkboxSelector, targetSelector, do_focus) {
-  let isChecked = $(checkboxSelector).is(':checked');
+const togggleEnabled = function(checkboxSelector, targetSelector, do_focus, revert) {
+  let check = revert ? ':unchecked' : ':checked';
+  let isChecked = $(checkboxSelector).is(check);
 
   if (isChecked) {
     $(targetSelector).attr('disabled', false);
@@ -412,6 +416,10 @@ $('#hiringRightNow').on('click', () => {
 
 $('#specialEvent').on('click', () => {
   togggleEnabled('#specialEvent', '#eventTag', true);
+});
+
+$('#neverExpires').on('click', () => {
+  togggleEnabled('#neverExpires', '#expirationTimeDelta', false, true);
 });
 
 $('#submitBounty').validate({
@@ -471,7 +479,7 @@ $('#submitBounty').validate({
     var decimals = token['decimals'];
     var tokenName = token['name'];
     var decimalDivisor = Math.pow(10, decimals);
-    var expirationTimeDelta = data.expirationTimeDelta;
+    var expirationTimeDelta = $('#expirationTimeDelta').data('daterangepicker').endDate.utc().unix();
     let reservedFor = $('.username-search').select2('data')[0];
     let inviteContributors = $('#invite-contributors.js-select2').select2('data').map((user) => {
       return user.profile__id;
@@ -504,10 +512,15 @@ $('#submitBounty').validate({
       show_name_publicly: data.show_name_publicly
     };
 
-    var expire_date =
-      parseInt(expirationTimeDelta) + ((new Date().getTime() / 1000) | 0);
     var mock_expire_date = 9999999999; // 11/20/2286, https://github.com/Bounties-Network/StandardBounties/issues/25
+    let expire_date = expirationTimeDelta;
 
+    if ($('#neverExpires').is(':checked')) {
+      expire_date = mock_expire_date;
+    }
+
+    console.log(expire_date)
+    debugger;
     // https://github.com/ConsenSys/StandardBounties/issues/21
     var ipfsBounty = {
       payload: {

@@ -795,51 +795,88 @@ const repoInstructions = () => {
 };
 
 var set_extended_time_html = function(extendedDuration, currentExpires) {
-  currentExpires.setTime(currentExpires.getTime() + (extendedDuration * 1000));
-  $('input[name=updatedExpires]').val(currentExpires.getTime());
-  const date = getFormattedDate(currentExpires);
-  let days = timeDifference(now, currentExpires).split(' ');
+  // currentExpires.setTime(currentExpires.getTime() + (extendedDuration * 1000));
+  // currentExpires = moment(currentExpires).add(extendedDuration);
 
-  days.shift();
-  days = days.join(' ');
+  $('input[name=updatedExpires]').val(extendedDuration.utc().unix());
+  // let date = currentExpires.format();
+  // let days = timeDifference(now, currentExpires).split(' ');
 
-  $('#extended-expiration-date #extended-date').html(date);
-  $('#extended-expiration-date #extended-days').html(days);
+  // days.shift();
+  // days = days.join(' ');
+
+  console.log(moment(extendedDuration).fromNow())
+  $('#extended-expiration-date #extended-days').html(moment.utc(extendedDuration).fromNow());
+  $('#extended-expiration-date #extended-date').html(extendedDuration.format());
 };
 
 var show_extend_deadline_modal = function() {
   var self = this;
 
-  setTimeout(function() {
+  // setTimeout(function() {
     var url = '/modal/extend_issue_deadline?pk=' + document.result['pk'];
+    moment.locale('en');
 
     $.get(url, function(newHTML) {
       var modal = $(newHTML).appendTo('body').modal({
         modalClass: 'modal add-interest-modal'
       });
 
+      var currentExpires = moment(document.result['expires_date']);
+
+      $('input[name="expirationTimeDelta"]').daterangepicker({
+        singleDatePicker: true,
+        startDate: moment.utc(currentExpires).add(1, 'year'),
+        alwaysShowCalendars: false,
+        // minDate: moment.utc(currentExpires),
+        ranges: {
+          '1 week': [moment(currentExpires).add(7, 'days'), moment(currentExpires).add(7, 'days')],
+          '2 weeks': [moment(currentExpires).add(14, 'days'), moment(currentExpires).add(14, 'days')],
+          '1 month': [moment(currentExpires).add(1, 'month'), moment(currentExpires).add(1, 'month')],
+          '3 months': [moment(currentExpires).add(3, 'month'), moment(currentExpires).add(3, 'month')],
+          '1 year': [moment(currentExpires).add(1, 'year'), moment(currentExpires).add(1, 'year')]
+        },
+        'locale': {
+          'customRangeLabel': 'Custom',
+          'format': 'MM/DD/YYYY'
+        }
+      });
+
+      $('#neverExpires').on('click', () => {
+        if ($('#neverExpires').is(':checked')) {
+          $('#expirationTimeDelta').attr('disabled', true);
+        } else {
+          $('#expirationTimeDelta').attr('disabled', false);
+        }
+      });
+
       // all js select 2 fields
-      $('.js-select2').each(function() {
-        $(this).select2();
-      });
+      // $('.js-select2').each(function() {
+      //   $(this).select2();
+      // });
       // removes tooltip
-      $('.submit_bounty select').each(function(evt) {
-        $('.select2-selection__rendered').removeAttr('title');
-      });
+      // $('.submit_bounty select').each(function(evt) {
+      //   $('.select2-selection__rendered').removeAttr('title');
+      // });
       // removes search field in all but the 'denomination' dropdown
-      $('.select2-container').on('click', function() {
-        $('.select2-container .select2-search__field').remove();
+      // $('.select2-container').on('click', function() {
+      //   $('.select2-container .select2-search__field').remove();
+      // });
+
+      // var extendedDuration = parseInt($('select[name=expirationTimeDelta]').val());
+
+
+      var extendedDuration = $('#expirationTimeDelta').data('daterangepicker').endDate;
+      set_extended_time_html(extendedDuration);
+      $(document).on('change', 'input[name=expirationTimeDelta]', function(ev, picker) {
+        //do something, like clearing an input
+
+        // var previousExpires = new Date(document.result['expires_date']);
+console.log(extendedDuration)
+        set_extended_time_html($('#expirationTimeDelta').data('daterangepicker').endDate);
       });
-
-      var extendedDuration = parseInt($('select[name=expirationTimeDelta]').val());
-      var currentExpires = new Date(document.result['expires_date']);
-
-      set_extended_time_html(extendedDuration, currentExpires);
-      $(document).on('change', 'select[name=expirationTimeDelta]', function() {
-        var previousExpires = new Date(document.result['expires_date']);
-
-        set_extended_time_html(parseInt($(this).val()), previousExpires);
-      });
+      // $(document).on('change', 'input[name=expirationTimeDelta]', function() {
+      // });
 
       $('.btn-cancel').on('click', function() {
         $.modal.close();
@@ -860,7 +897,7 @@ var show_extend_deadline_modal = function() {
         }, 2000);
       });
     });
-  });
+  // });
 };
 
 var build_detail_page = function(result) {
