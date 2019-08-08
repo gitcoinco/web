@@ -49,7 +49,7 @@
           }
         </style>
         <div class="col-xs-12 col-sm-6 col-lg-4">
-          <div class="card" id="{{hackathon.slug}}">
+          <div class="card mb-5" id="{{hackathon.slug}}">
             {% firstof firstof hackathon.logo_svg or hackathon.logo as logo %}
             {% if logo %}
               <img class="card-img-top" width="364" src="{{MEDIA_URL}}{{logo}}"/>
