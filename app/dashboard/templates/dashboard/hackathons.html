@@ -43,13 +43,22 @@
     <div class="container">
       <div class="row justify-content-around my-5">
         {% for hackathon in hackathons %}
-        <div class="col-xs-12 col-sm-6 col-lg-3">
-          <div class="card">
-            {% if hackathon.logo_svg %}
-              <img class="card-img-top" width="364" src="{{MEDIA_URL}}{{ hackathon.logo_svg }}"/>
-            {% elif hackathon.logo %}
-              <img class="card-img-top" width="364" src="{{MEDIA_URL}}{{ hackathon.logo }}"/>
+        <style>
+          #{{hackathon.slug}} .card-img-top {
+            background: {% firstof hackathon.background_color or 'rgb(25, 0, 63)' %};
+          }
+        </style>
+        <div class="col-xs-12 col-sm-6 col-lg-4">
+          <div class="card" id="{{hackathon.slug}}">
+            {% firstof firstof hackathon.logo_svg or hackathon.logo as logo %}
+            {% if logo %}
+            <img class="card-img-top" width="364" src="{{MEDIA_URL}}{{logo}}"/>
+            {% else %}
+            <div class="card-img-top d-flex align-items-center justify-content-around text-white-50">
+              No Image
+            </div>
             {% endif %}
+            <!--  -->
             <div class="card-body">
               <h5 class="card-title"><a href="{% url 'hackathon' hackathon.slug %}">{{ hackathon.name }}</a></h5>
               <div class="small">
