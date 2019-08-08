@@ -52,13 +52,12 @@
           <div class="card" id="{{hackathon.slug}}">
             {% firstof firstof hackathon.logo_svg or hackathon.logo as logo %}
             {% if logo %}
-            <img class="card-img-top" width="364" src="{{MEDIA_URL}}{{logo}}"/>
+              <img class="card-img-top" width="364" src="{{MEDIA_URL}}{{logo}}"/>
             {% else %}
-            <div class="card-img-top d-flex align-items-center justify-content-around text-white-50">
-              No Image
-            </div>
+              <div class="card-img-top d-flex align-items-center justify-content-around font-bigger-4 text-center text-white">
+                {{ hackathon.name }}
+              </div>
             {% endif %}
-            <!--  -->
             <div class="card-body">
               <h5 class="card-title"><a href="{% url 'hackathon' hackathon.slug %}">{{ hackathon.name }}</a></h5>
               <div class="small">
