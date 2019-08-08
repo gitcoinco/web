@@ -1836,7 +1836,7 @@ def profile_job_opportunity(request, handle):
         profile.job_salary = float(request.POST.get('job_salary', '0').replace(',', ''))
         profile.job_location = json.loads(request.POST.get('locations'))
         profile.linkedin_url = request.POST.get('linkedin_url', None)
-        profile.resume = request.FILES.get('job_cv', profile.resume)
+        profile.resume = request.FILES.get('job_cv', profile.resume) if not error_response else None
         profile.save()
     except (ProfileNotFoundException, ProfileHiddenException):
         raise Http404
