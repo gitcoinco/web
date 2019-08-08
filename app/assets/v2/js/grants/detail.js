@@ -184,3 +184,9 @@ const copyDuplicateDetails = () => {
     });
   });
 };
+
+$(document).ready(() => {
+  $('#grant-profile-tabs button').click(function() {
+    document.location = $(this).attr('href');
+  });
+});
