@@ -175,7 +175,7 @@ var callbacks = {
                    '</code></pre>';
           } catch (__) {}
         }
-        return '<pre class="hljs"><code>' + sanitize(md.utils.escapeHtml(str)) + '</code></pre>';
+        return '<pre class="hljs"><code>' + sanitize(_markdown.utils.escapeHtml(str)) + '</code></pre>';
       }
     });
 
