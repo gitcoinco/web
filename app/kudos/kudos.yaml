@@ -5019,4 +5019,15 @@
   - rare
   - codefund
   image: codefund/codefund_influencer_v1.0.svg
+- name: codefund_influencer_reissue
+  description: Limited Edition CodeFund Kudos! These are only awarded to first round influences of the CodeFund advertising platform
+  priceFinney: 1
+  artist: coderberry
+  platform: gitcoin
+  numClonesAllowed: 150
+  to_address: '0x28e21609ca8542ce5a363cbf339529204b043ede'
+  tags:
+  - rare
+  - codefund
+  image: codefund/codefund_influencer_v1.0reissue.svg
 

@@ -20,7 +20,7 @@ var gitcoin_ize = function(key, val) {
   if (!_truthy(val)) {
     return [ null, null ];
   }
-  return [ key, '<a href="https://gitcoin.co/profile/' + val + '" target="_blank" rel="noopener noreferrer">' + val.replace('@', '') + '</a>' ];
+  return [ key, '<a href="/profile/' + val + '" target="_blank" rel="noopener noreferrer">' + val.replace('@', '') + '</a>' ];
 };
 
 var email_ize = function(key, val) {
@@ -175,7 +175,7 @@ var callbacks = {
                    '</code></pre>';
           } catch (__) {}
         }
-        return '<pre class="hljs"><code>' + sanitize(md.utils.escapeHtml(str)) + '</code></pre>';
+        return '<pre class="hljs"><code>' + sanitize(_markdown.utils.escapeHtml(str)) + '</code></pre>';
       }
     });
 
@@ -1576,7 +1576,8 @@ const process_activities = function(result, bounty_activities) {
       token_value_time_peg_new: new_bounty.token_value_time_peg,
       token_name: result['token_name'],
       to_username: to_username,
-      kudos: kudos
+      kudos: kudos,
+      permission_type: result['permission_type']
     });
   });
 
