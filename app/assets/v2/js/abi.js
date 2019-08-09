@@ -60,7 +60,7 @@ var get_etherscan_url = function(id, network, type = 'tx') {
     case 'ropsten':
       return 'https://ropsten.etherscan.io/' + type + '/' + id;
     case 'kovan':
-      return 'https://kovan.etherscan.io/'  + type + '/' + id;
+      return 'https://kovan.etherscan.io/' + type + '/' + id;
     case 'rinkeby':
       return 'https://rinkeby.etherscan.io/' + type + '/' + id;
     case 'custom network':

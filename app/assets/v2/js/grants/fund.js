@@ -409,7 +409,9 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
       'sub_new_approve_tx_id': $('#sub_new_approve_tx_id').val()
     };
     console.log('confirmed!');
-    saveSubscription(data, true);
+    if (confirmationNumber == 0) {
+      saveSubscription(data, true);
+    }
   });
 };
 
