@@ -58,6 +58,9 @@ from .sitemaps import sitemaps
 urlpatterns = [
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
 
+    # record consent
+    path('record_consent/', dashboard.views.record_consent, name='record_consent'),
+
     # create bounty
     url(r'^create?', dashboard.views.new_bounty, name='create_bounty'),  # TODO: Remove
 

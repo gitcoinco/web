@@ -3366,3 +3366,10 @@ class Coupon(SuperModel):
     def __str__(self):
         """Return the string representation of Coupon."""
         return f'code: {self.code} | fee: {self.fee_percentage} %'
+
+class ConsentRecord(SuperModel):
+    identifier = models.TextField(default='', blank=True)
+    record_notice = models.TextField(default='', blank=True)
+
+    def __str__(self):
+        return f'{self.identifier} on {self.created_on}: {self.record_notice}'

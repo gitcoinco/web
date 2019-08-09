@@ -24,7 +24,7 @@ from django.utils.safestring import mark_safe
 
 from .models import (
     Activity, BlockedUser, Bounty, BountyFulfillment, BountyInvites, BountySyncRequest, CoinRedemption,
-    CoinRedemptionRequest, Coupon, FeedbackEntry, HackathonEvent, HackathonSponsor, Interest, LabsResearch, Profile,
+    CoinRedemptionRequest, ConsentRecord, Coupon, FeedbackEntry, HackathonEvent, HackathonSponsor, Interest, LabsResearch, Profile,
     RefundFeeRequest, SearchHistory, Sponsor, Tip, TokenApproval, Tool, ToolVote, UserAction, UserVerificationModel,
 )
 
@@ -308,6 +308,13 @@ class CouponAdmin(admin.ModelAdmin):
         return mark_safe(f'<a target="_blank" href="{url}">http://gitcoin.co{url}</a>')
 
 
+class ConsentRecordAdmin(admin.ModelAdmin):
+    """The admin object to record cookie consent"""
+
+    list_display = ['pk', 'identifier']
+    search_fields = ['created_on', 'identifier']
+
+
 admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
 admin.site.register(BlockedUser, GeneralAdmin)
@@ -332,3 +339,4 @@ admin.site.register(LabsResearch)
 admin.site.register(UserVerificationModel, VerificationAdmin)
 admin.site.register(RefundFeeRequest, RefundFeeRequestAdmin)
 admin.site.register(Coupon, CouponAdmin)
+admin.site.register(ConsentRecord, ConsentRecordAdmin)
