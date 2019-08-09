@@ -304,7 +304,7 @@ class Bounty(SuperModel):
     canceled_bounty_reason = models.TextField(default='', blank=True, verbose_name=_('Cancelation reason'))
     project_type = models.CharField(max_length=50, choices=PROJECT_TYPES, default='traditional', db_index=True)
     permission_type = models.CharField(max_length=50, choices=PERMISSION_TYPES, default='permissionless', db_index=True)
-    bounty_categories = ArrayField(models.CharField(max_length=50, choices=BOUNTY_CATEGORIES), default=list)
+    bounty_categories = ArrayField(models.CharField(max_length=50, choices=BOUNTY_CATEGORIES), default=list, blank=True)
     repo_type = models.CharField(max_length=50, choices=REPO_TYPES, default='public')
     snooze_warnings_for_days = models.IntegerField(default=0)
     is_featured = models.BooleanField(
@@ -1850,6 +1850,26 @@ class Activity(SuperModel):
         return model_to_dict(self, **kwargs)
 
 
+@receiver(post_save, sender=Activity, dispatch_uid="post_add_activity")
+def post_add_activity(sender, instance, created, **kwargs):
+    if created:
+        dupes = Activity.objects.exclude(pk=instance.pk)
+        dupes = dupes.filter(created_on__gte=(instance.created_on - timezone.timedelta(minutes=5)))
+        dupes = dupes.filter(created_on__lte=(instance.created_on + timezone.timedelta(minutes=5)))
+        dupes = dupes.filter(profile=instance.profile)
+        dupes = dupes.filter(bounty=instance.bounty)
+        dupes = dupes.filter(tip=instance.tip)
+        dupes = dupes.filter(kudos=instance.kudos)
+        dupes = dupes.filter(grant=instance.grant)
+        dupes = dupes.filter(subscription=instance.subscription)
+        dupes = dupes.filter(activity_type=instance.activity_type)
+        dupes = dupes.filter(metadata=instance.metadata)
+        dupes = dupes.filter(needs_review=instance.needs_review)
+        for dupe in dupes:
+            dupe.delete()
+
+
+
 class LabsResearch(SuperModel):
     """Define the structure of Labs Research object."""
 
@@ -3268,7 +3288,8 @@ class HackathonEvent(SuperModel):
     logo_svg = models.FileField(blank=True)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    background_color = models.CharField(max_length=255, null=True, blank=True, help_text='hexcode for the banner')
+    background_color = models.CharField(max_length=255, null=True, blank=True, help_text='hexcode for the banner, default to white')
+    text_color = models.CharField(max_length=255, null=True, blank=True, help_text='hexcode for the text, default to black')
     identifier = models.CharField(max_length=255, default='', help_text='used for custom styling for the banner')
     sponsors = models.ManyToManyField(Sponsor, through='HackathonSponsor')
 

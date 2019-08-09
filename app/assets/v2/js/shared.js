@@ -388,7 +388,7 @@ var pull_interest_list = function(bounty_pk, callback) {
 };
 
 var profileHtml = function(handle, name) {
-  return '<span><a href="https://gitcoin.co/profile/' +
+  return '<span><a href="/profile/' +
     handle + '" target="_blank">' + (name ? name : handle) + '</span></a>';
 };
 
@@ -1360,14 +1360,11 @@ function newTokenTag(amount, tokenName, tooltipInfo, isCrowdfunded) {
   span.innerHTML = amount + ' ' + tokenName +
     (isCrowdfunded ? '<i class="fas fa-users ml-1"></i>' : '');
 
+  p.className = 'inner-tooltip';
   p.appendChild(span);
   ele.appendChild(p);
-
   if (tooltipInfo) {
-    ele.title =
-      '<div class="tooltip-info tooltip-sm">' +
-      tooltipInfo +
-      '</div>';
+    ele.title = tooltipInfo;
   }
 
   return ele;

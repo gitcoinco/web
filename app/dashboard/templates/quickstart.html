@@ -22,8 +22,9 @@
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
     <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
-    <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
     <link rel="stylesheet" href={% static "v2/css/quickstart.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/activity_stream.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
   </head>
   <body class="interior {{active}} quickstart g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
@@ -32,122 +33,122 @@
       {% include 'shared/nav.html' %}
     </div>
     <div class="container-fluid content my-3 text-left">
-      <div class="row pb-1">
-        <div class="col text-center">
-          <h4 class="title">{% trans "Funder Guide" %}</h4>
-        </div>
-      </div>
-      <div class="row col-12 offset-lg-1 col-lg-10">
-        <div class="dont-show text-right w-100">
-          <div class="checkbox_container">
-            <input name="dontshow" id="dontshow" type="checkbox" />
-            <span class="checkbox"></span>
-            <div class="filter-label">
-              <label for=dontshow>{% trans "Don't show again" %}</label>
-            </div>
+      <h4 class="title text-center">{% trans "Funder Guide" %}</h4>
+      <div class="dont-show text-center col-12">
+        <div class="checkbox_container">
+          <input name="dontshow" id="dontshow" type="checkbox" />
+          <span class="checkbox"></span>
+          <div class="filter-label display-inline">
+            <label for=dontshow>{% trans "Don't show again" %}</label>
           </div>
         </div>
       </div>
-      <div class="row col-12 offset-lg-1 col-lg-10 mt-2 steps-container">
-        <div class="col-md-3 col-sm-12 text-center p-2 image-container">
+      <div class="row col-12 offset-xl-2 col-xl-8 mt-2 mb-5 pb-4 steps-container">
+        <div class="col-md-4 col-sm-12 my-auto text-center p-2 image-container">
           <img src="{% static 'v2/images/quickstart-box.svg' %}" />
         </div>
-        <div class="col-md-6 col-sm-12 p-5 steps-list">
+        <div class="col-md-7 col-sm-12 p-5 steps-list">
           <ol class="font-subheader">
             <li>{% trans "1) Create a Github Issue, you'll need the issue URL" %}</li>
             <li>{% trans "2) Select the type of issue to fund" %}</li>
             <li>{% trans '3) Complete the form and press "Fund Issue"' %}</li>
-            <li>{% trans "4) Confirm the transaction in metamask" %}</li>
+            <li>{% trans "4) Confirm the transaction in MetaMask" %}</li>
           </ol>
-          <p>
+          <p class="mb-4">
             {% trans "Once confirmed on blockchain, your bounty is posted to Gitcoin! Wait for developers across the world to discover your bounty and start working on your issue." %}
           </p>
-          <div class="d-flex pt-5 action-footer">
-            <div class="video-link my-auto">
-              <a href="#" class="show_video">
-                <i class="far fa-play-circle"></i>
-                <span >{% trans "Watch 90 second video" %}</span>
-              </a>
-            </div>
-            <a href="{% url 'new_funding' %}"><button class="btn btn-primary font-body shadow-none font-weight-semibold py-2">{% trans "Ok, I'm ready" %}</button></a>
-          </div>
+          <a href="#" class="show_video">
+            <i class="far fa-play-circle"></i>
+            <span >{% trans "Watch 90 second video" %}</span>
+          </a>
         </div>
-        <div class="col-md-3 col-sm-12 p-5 tips-list">
-          <h5 class="title">{% trans "Tips & Tricks" %}</h5>
-          <ul class="font-body">
-            <li>{% trans "Know what you're looking for." %}</li>
-            <li>{% trans "Set clear acceptance criteria." %}</li>
-            <li>{% trans "Set a reasonable timeframe." %}</li>
-            <li>{% trans "Pick a fair price." %}</li>
-            <li>{% trans "Documentation is Key." %}</li>
-            <li>{% trans "Leave Room for Error." %}</li>
-          </ul>
-          <p>{% trans "Have fun! Meet new people!" %}</p>
-          <a href="https://docs.google.com/document/d/1_U9IdDN8FIRMGAdLWCMl2BnqCTAv558QvyJiSWQfkbs/edit?usp=sharing" target="_blank" rel="noopener noreferrer">{% trans "See Developer Guide" %}</a>
+        <div class="col-12 text-center">
+          <a href="{% url 'new_funding' %}">
+            <button class="btn btn-gc-blue font-subheader shadow-none font-weight-semibold py-3 px-5">{% trans "Ok, I'm ready" %}</button>
+          </a>
         </div>
       </div>
-      <div class="row col-12 offset-lg-1 col-lg-10 pt-2 pb-5 mt-5 issuetypes-container text-center">
-        <h4 class="subheading">{% trans "Other Repo Maintainers are funding these types of issues" %}</h4>
-        <div class="col-md-3 mt-5 flex-column d-flex px-5">
-          <img src="{% static 'v2/images/quickstart-icons/newproduct-icon.svg' %}" />
-          <h5>{% trans "NEW PRODUCT OR FEATURE" %}</h5>
-          <p>{% trans "Build new product ideas or new features" %}</p>
+
+      <div class="bounty-tips pt-3 pb-5">
+        <h4 class="subheading font-weight-semibold my-4 pb-3">
+          {% trans "Creating Great Bounties" %}
+        </h4>
+
+        <div class="row mx-0 mx-lg-auto col-12 col-lg-10 offset-xl-2 col-xl-8 mt-2 bounty-tips mb-3">
+          {% for bounty_tip in bounty_tips %}
+            <div class="col-12 col-lg-6 px-xl-5 mb-4 row mx-0 mx-lg-auto">
+              <div class="col-12 card row mx-0">
+                <div class="col-3 col-xl-2 text-right my-auto">
+                  <img src="{{ bounty_tip.img }}" alt="{{ bounty_tip.title }}" />
+                </div>
+                <div class="col-9 col-xl-10 text-left my-auto">
+                  <h5 class="font-weight-bolder title">{{ bounty_tip.title }}</h5>
+                  <p class="font-subheader">{{ bounty_tip.description |safe }}</p>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
         </div>
-        <div class="col-md-3 mt-5 flex-column d-flex px-5">
-          <img src="{% static 'v2/images/quickstart-icons/feature-icon.svg' %}" />
-          <h5>{% trans "FEATURE IMPROVEMENT" %}</h5>
-          <p>{% trans "Iterate on the next set of features" %}</p>
-        </div>
-        <div class="col-md-3 mt-5 flex-column d-flex px-5">
-          <img src="{% static 'v2/images/quickstart-icons/bug-icon.svg' %}" />
-          <h5>{% trans "BUG FIX" %}</h5>
-          <p>{% trans "Find and fix bugs in your product" %}</p>
-        </div>
-        <div class="col-md-3 mt-5 flex-column d-flex px-5">
-          <img src="{% static 'v2/images/quickstart-icons/review-icon.svg' %}" />
-          <h5>{% trans "CODE REVIEW" %}</h5>
-          <p>{% trans "Get help reviewing code" %}</p>
-        </div>
-        <div class="col-md-3 mt-5 flex-column d-flex px-5">
-          <img src="{% static 'v2/images/quickstart-icons/upgrade-icon.svg' %}" />
-          <h5>{% trans "TECH UPGRADE" %}</h5>
-          <p>{% trans "Frameworks, migrations, batches" %}</p>
-        </div>
-        <div class="col-md-3 mt-5 flex-column d-flex px-5">
-          <img src="{% static 'v2/images/quickstart-icons/documentation-icon.svg' %}" />
-          <h5>{% trans "DOCUMENTATION" %}</h5>
-          <p>{% trans "Product documentation, set up instructions" %}</p>
-        </div>
-        <div class="col-md-3 mt-5 flex-column d-flex px-5">
-          <img src="{% static 'v2/images/quickstart-icons/design-icon.svg' %}" />
-          <h5>{% trans "DESIGN" %}</h5>
-          <p>{% trans "Architecture, flows, wireframes, designs" %}</p>
-        </div>
-        <div class="col-md-3 mt-5 flex-column d-flex px-5">
-          <img src="{% static 'v2/images/quickstart-icons/other-icon.svg' %}" />
-          <h5>{% trans "OTHER" %}</h5>
-          <p>{% trans "Ideas, discussions, contests, consulting" %}</p>
-        </div>
-        <div class="col-lg-10 col-md-12 offset-lg-1 mt-4 notsuggested-container">
-          <h4 class="subheading">{% blocktrans %}In our experience, the following are <span class="orange-text">not</span> good candidates for bounties:{% endblocktrans %}</h4>
-          <ol class="text-left">
-            <li>
-              <i class="far fa-2x fa-times-circle"></i>
-              <span>{% trans "Core Architecture" %}</span>
-            </li>
-            <li>
-              <i class="far fa-2x fa-times-circle"></i>
-              <span>{% blocktrans %}Anything that requires a high degree of situational awareness
-              of the product/market fit (unless there is well documented material on the same){% endblocktrans %}</span>
-            </li>
-            <li>
-              <i class="far fa-2x fa-times-circle"></i>
-              <span>{% blocktrans %}Anything that requires privileged access (like SSH access,
-              prod private API key){% endblocktrans %}</span>
-            </li>
-          </ol>
-          <span>{% trans "If you're unsure, please reach out to a Gitcoin Core Team member on" %} <a href="{% url 'slack' %}">Slack</a></span>
-        </div>
+      </div>
+
+      <div class="row col-12 offset-lg-1 col-lg-10 pt-2 pb-5 issuetypes-container text-center mx-0 mx-lg-auto">
+        <h4 class="subheading font-weight-semibold mt-5 mb-4">
+          {% trans "Other Repo Maintainers are funding these types of issues" %}
+        </h4>
+
+        {% for issue_type in good_issue_types %}
+          <div class="row col-12 col-sm-6 col-lg-4 px-xl-5 mt-4 pt-3 mx-0">
+            <div class="col-4 col-lg-12 col-xl-4 text-right text-lg-center text-xl-right">
+              <img src="{{ issue_type.img }}" alt="{{ issue_type.title }}" />
+            </div>
+            <div class="col-8 col-lg-12 col-xl-8 text-left text-lg-center text-xl-left">
+              <h5 class="font-weight-bolder">{{ issue_type.title }}</h5>
+              <p class="font-subheader">{{ issue_type.description }}</p>
+              {% if issue_type.good_first_bounty %}
+                <p class="font-weight-bold font-caption">
+                  <span class="first-bounty">Good First Bounty</span>
+                </p>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+
+        {% if activities|length %}
+          <div class="container-fluid py-5 px-lg-5 activity">
+            <div class="bounty-activity row py-5 col-12">
+              <h3 class="subheading font-weight-semibold mt-2 mb-4">Latest Bounties Created</h3>
+              <div class="container infinite-container" id="activity_stream">
+                <div class="mb-4 col-12 text-center text-md-left">
+                  {% for row in activities %}
+                    {% include 'shared/activity.html' %}
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+
+        <h4 class="subheading font-weight-semibold mt-5 mb-4">
+          {% blocktrans %}In our experience, the following are
+          <span class="red-text">not</span> good candidates for bounties:{% endblocktrans %}
+        </h4>
+
+        {% for issue_type in bad_issue_types %}
+          <div class="row col-12 col-md-4 px-lg-5 mt-4 pt-3 mx-0 mx-lg-auto">
+            <div class="col-4 col-lg-12 col-xl-4 text-right text-lg-center text-xl-right">
+              <img src="{{ issue_type.img }}" alt="{{ issue_type.title }}" />
+            </div>
+            <div class="col-8 col-lg-12 col-xl-8 text-left text-lg-center text-xl-left">
+              <h5 class="font-weight-bolder">{{ issue_type.title }}</h5>
+              <p class="font-subheader">{{ issue_type.description }}</p>
+            </div>
+          </div>
+        {% endfor %}
+
+        <p class="text-center font-subheader w-100 font-weight-semibold mt-5">
+          {% trans "If you're unsure, please reach out to a Gitcoin Core Team member on" %}
+          <a href="{% url 'slack' %}">Slack</a>
+        </p>
       </div>
     </div>
 
