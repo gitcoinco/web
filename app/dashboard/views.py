@@ -3145,12 +3145,10 @@ def get_ip_address(request):
 @csrf_exempt
 @require_POST
 def record_consent(request):
-
     identifier = get_ip_address(request)
     if request.user.is_authenticated:
         profile = request.user.profile if hasattr(request.user, 'profile') else None
         identifier = "{}@{}".format(profile.handle, identifier)
-    print(request.POST)
     ConsentRecord.objects.create(identifier=identifier,
                                  record_notice=request.POST.get('record_notice'))
     return JsonResponse({'success':True}, status=200)

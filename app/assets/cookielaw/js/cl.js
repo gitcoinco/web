@@ -16,7 +16,6 @@ var Cookielaw = {
         // This function has been altered to record the text of the cookie
         // consent popup
         this.createCookie('cookielaw_accepted', '1', 10 * 365);
-        console.log('cookie accepted!');
         consent_data = {record_notice: jQuery('#CookielawBanner').text()};
         jQuery.ajax({
           type: 'POST',
@@ -24,10 +23,8 @@ var Cookielaw = {
           data: consent_data,
           dataType: 'json',
           success: function(json) {
-              console.log('cookie consent recorded: ' + JSON.stringify(consent_data));
           },
           error: function() {
-              console.log('cookie consent not recorded: ' + JSON.stringify(consent_data));
           }
         });
         if (typeof (window.jQuery) === 'function') {
