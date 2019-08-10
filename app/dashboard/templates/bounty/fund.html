@@ -400,6 +400,36 @@
 
     </div>
   </div>
+
+
+  <div class="modal fade" id="add-token-dialog" tabindex="-1" role="dialog" aria-labelledby="add-token-dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content text-center">
+
+        <div class="modal-body">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+
+          <img class="my-4" src="{% static "v2/images/bounty/token_auth.svg" %}">
+          <h3 class="mt-3 mb-4 font-title-lg font-weight-semibold">
+            Please enable this token <span id="token-denomination"></span> to proceed.
+          </h3>
+          <p class="font-body px-xl-5">
+            Click the button below to open the Token Settings page
+            and enable this token. This is only needed once per token.
+          </p>
+
+          <a class="my-2 font-subheader px-5 btn btn-gc-blue btn-lg-padding font-weight-semibold"
+            href="{% url 'token_settings' %}" target="_blank"
+          >
+            Enable Token
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
   {% include 'shared/bottom_notification.html' %}
   {% include 'shared/analytics.html' %}
   {% include 'shared/footer_scripts_lite.html' %}
