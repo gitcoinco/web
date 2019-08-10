@@ -674,6 +674,24 @@ input[type=text].loading {
   margin-left: 0px;
 }
 
+.bottom_notification-beyond {
+  background: #000;
+  position: relative;
+  background-image: linear-gradient(90deg, #000, rgba(15, 206, 124, 0.7), #000), url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' opacity='1' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0.5' y='0.5' width='20' height='20' rx='3.5' stroke='rgba(15, 206, 124, 0.7)'/%3E%3C/svg%3E%0A");
+  background-repeat: no-repeat, repeat-x;
+  background-size:  100%, 24px;
+  background-position: center, 100% center;
+  animation: bg-move 17s cubic-bezier( 0.36, 0.45, 0.63, 0.53) infinite;
+}
+@keyframes bg-move {
+  0% {
+    background-position: center, 0 center;
+  }
+  100% {
+    background-position: center, 100% center;
+  }
+}
+
 .metamask_recc {
   width: 45%;
   display: inline-block;
@@ -1012,32 +1030,27 @@ input.is-invalid {
 }
 
 .bounty_box {
-  border: 5px solid white;
+  box-shadow: 0px 0px 0px 3px #15003e;
   width: 100%;
   display: block;
   padding: 30px 30px;
-  background-color: #15003e;
-  color: white;
+  background-color: white;
+  color: black;
   text-decoration: none;
+  transition: all 100ms linear;
 }
 
 .bounty_box.disabled, .bounty_box.disabled:hover {
   cursor: not-allowed;
-  background-color: #5f445b;
+  background-color: rgb(245, 245, 245);
   text-decoration: none;
 }
 
 .bounty_box:hover {
-  background-color: #35305e;
   text-decoration: none;
-}
-
-.bounty_box h5 {
-  color: white;
-}
-
-.bounty_box span {
-  color: white;
+  transition: box-shadow 100ms ease-out;
+  box-shadow: 0px 0px 0px 6px #15003e;
+  color: #000;
 }
 
 .morecontent span {
@@ -1562,4 +1575,8 @@ div.busyOverlay {
 .g-modal .modal-header,
 .g-modal .modal-footer {
   border: none;
+}
+
+.inner-tooltip {
+  pointer-events: none;
 }

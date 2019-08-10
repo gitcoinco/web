@@ -44,8 +44,8 @@ from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recom
 from grants.forms import MilestoneForm
 from grants.models import Contribution, Grant, MatchPledge, Milestone, Subscription, Update
 from marketing.mails import (
-    change_grant_owner_accept, change_grant_owner_reject, change_grant_owner_request, grant_cancellation, new_grant,
-    new_supporter, subscription_terminated, support_cancellation, thank_you_for_supporting,
+    grant_cancellation, new_grant, new_supporter, subscription_terminated, support_cancellation,
+    thank_you_for_supporting,
 )
 from marketing.models import Keyword, Stat
 from web3 import HTTPProvider, Web3
@@ -170,25 +170,16 @@ def grant_details(request, grant_id, grant_slug):
             }
             Update.objects.create(**update_kwargs)
             record_grant_activity_helper('update_grant', grant, profile)
-        elif 'contract_owner_address' in request.POST:
-            grant.contract_owner_address = request.POST.get('contract_owner_address')
-            grant.save()
-            record_grant_activity_helper('update_grant', grant, profile)
-            return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
         elif 'edit-title' in request.POST:
             grant.title = request.POST.get('edit-title')
             grant.reference_url = request.POST.get('edit-reference_url')
-            form_profile = request.POST.get('edit-admin_profile')
-            admin_profile = Profile.objects.get(handle=form_profile)
-            grant.description = request.POST.get('edit-description')
-            grant.description_rich = request.POST.get('edit-description_rich')
             grant.amount_goal = Decimal(request.POST.get('edit-amount_goal'))
             team_members = request.POST.getlist('edit-grant_members[]')
-            team_members.append(str(admin_profile.id))
+            team_members.append(str(grant.admin_profile.id))
             grant.team_members.set(team_members)
-            if grant.admin_profile != admin_profile:
-                grant.request_ownership_change = admin_profile
-                change_grant_owner_request(grant, grant.request_ownership_change)
+            if 'edit-description' in request.POST:
+                grant.description = request.POST.get('edit-description')
+                grant.description_rich = request.POST.get('edit-description_rich')
             grant.save()
             record_grant_activity_helper('update_grant', grant, profile)
             return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
@@ -228,23 +219,6 @@ def grant_details(request, grant_id, grant_slug):
         }
         for key, value in add_in_params.items():
             params[key] = value
-
-
-    if request.method == 'GET' and grant.request_ownership_change and profile == grant.request_ownership_change:
-        if request.GET.get('ownership', None) == 'accept':
-            previous_owner = grant.admin_profile
-            grant.admin_profile = grant.request_ownership_change
-            grant.request_ownership_change = None
-            grant.save()
-            record_grant_activity_helper('update_grant', grant, profile)
-            change_grant_owner_accept(grant, grant.admin_profile, previous_owner)
-            params['change_ownership'] = 'Y'
-        elif request.GET.get('ownership', None) == 'reject':
-            grant.request_ownership_change = None
-            grant.save()
-            record_grant_activity_helper('update_grant', grant, profile)
-            change_grant_owner_reject(grant, grant.admin_profile)
-            params['change_ownership'] = 'N'
 
     return TemplateResponse(request, 'grants/detail/index.html', params)
 
@@ -611,7 +585,7 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
         subscription.save()
         record_subscription_activity_helper('killed_grant_contribution', subscription, profile)
 
-        value_usdt = subscription.get_converted_amount
+        value_usdt = subscription.get_converted_amount()
         if value_usdt:
             grant.monthly_amount_subscribed -= subscription.get_converted_monthly_amount()
 

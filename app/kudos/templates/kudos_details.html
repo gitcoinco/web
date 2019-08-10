@@ -10,7 +10,7 @@
   </head>
   <body class="{{ active }} bg-light g-font-muli">
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    <header class="container-fluid header">
+    <header class="header">
       {% include 'shared/kudos_nav.html' %}
       <!-- {% include 'shared/kudos_banner.html' %} -->
       <div class="container pb-5">
@@ -133,15 +133,12 @@
     {% include 'shared/analytics.html' %}
     <script src="{% static 'v2/js/lib/tweenlite.js' %}"></script>
     {% include 'shared/footer_scripts.html' with slim=1 %}
-    <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
-    <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
     <script src="{% static "v2/js/pages/kudos_details.js" %}"></script>
     <script src="{% static "v2/js/abi.js" %}"></script>
     <script src="{% static "v2/js/amounts.js" %}"></script>
     <script src="{% static "v2/js/eth-price.js" %}"></script>
     <script>
-      $.fn.runTooltip = $.fn.tooltip.noConflict()
-      $('[data-toggle="tooltip"]').runTooltip();
+      $('[data-toggle="tooltip"]').bootstrapTooltip();
     </script>
     <script src="{% static "v2/js/pages/kudos-search.js" %}"></script>
     {% include 'shared/messages.html' %}

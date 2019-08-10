@@ -105,7 +105,7 @@ Vue.mixin({
       let postInvite = fetchData(
         apiUrlInvite,
         'POST',
-        { 'url': bounty.github_url, 'usersId': [user], 'bountyId': bounty.id},
+        { 'usersId': [user], 'bountyId': bounty.id},
         {'X-CSRFToken': csrftoken}
       );
 
@@ -135,9 +135,11 @@ Vue.mixin({
         let getUsers = fetchData (api, 'GET');
 
         $.when(getUsers).then(function(response) {
-          if (response && response.data) {
+          if (response && response.data.length) {
             vm.openBounties(response.data[0]);
             $('#userModal').bootstrapModal('show');
+          } else {
+            _alert('The user was not found. Please try using the search box.', 'error');
           }
         });
       }

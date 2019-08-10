@@ -17,6 +17,7 @@
 
 '''
 import logging
+import re
 import sys
 from datetime import datetime, timedelta
 
@@ -26,11 +27,48 @@ from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
 import requests
-from marketing.models import AccountDeletionRequest, LeaderboardRank
+from mailchimp3 import MailChimp
+from marketing.models import AccountDeletionRequest, EmailSupressionList, LeaderboardRank
 from slackclient import SlackClient
 from slackclient.exceptions import SlackClientError
 
 logger = logging.getLogger(__name__)
+
+
+def delete_user_from_mailchimp(email_address):
+    client = MailChimp(mc_user=settings.MAILCHIMP_USER, mc_api=settings.MAILCHIMP_API_KEY)
+    result = None
+    try:
+        result = client.search_members.get(query=email_address)
+        if result:
+            subscriber_hash = result.get('exact_matches', {}).get('members', [{}])[0].get('id', None)
+    except Exception as e:
+        logger.debug(e)
+
+
+        try:
+            client.lists.members.delete(
+                list_id=settings.MAILCHIMP_LIST_ID,
+                subscriber_hash=subscriber_hash,
+            )
+        except Exception as e:
+            logger.debug(e)
+
+        try:
+            client.lists.members.delete(
+                list_id=settings.MAILCHIMP_LIST_ID_HUNTERS,
+                subscriber_hash=subscriber_hash,
+            )
+        except Exception as e:
+            logger.debug(e)
+
+        try:
+            client.lists.members.delete(
+                list_id=settings.MAILCHIMP_LIST_ID_HUNTERS,
+                subscriber_hash=subscriber_hash,
+            )
+        except Exception as e:
+            logger.debug(e)
 
 
 def is_deleted_account(handle):
@@ -164,6 +202,16 @@ def should_suppress_notification_email(email, email_type):
 
 
 def get_or_save_email_subscriber(email, source, send_slack_invite=True, profile=None):
+    # Prevent syncing for those who match the suppression list
+    suppressions = EmailSupressionList.objects.all()
+    for suppression in suppressions:
+        if re.match(str(suppression.email), email):
+            return None
+
+    # GDPR fallback just in case
+    if re.match("c.*d.*v.*c@g.*com", email):
+        return None
+
     from marketing.models import EmailSubscriber
     defaults = {'source': source, 'email': email}
 
