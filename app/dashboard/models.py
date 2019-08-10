@@ -140,7 +140,6 @@ class BountyQuerySet(models.QuerySet):
                 activities__activity_type='worker_applied',
                 activities__needs_review=False,
             )
-        
     
     def warned(self):
         """Filter results by bounties that have been warned for inactivity."""
@@ -468,8 +467,6 @@ class Bounty(SuperModel):
                 activities__activity_type='bounty_abandonment_escalation_to_mods',
                 activities__needs_review=True,
             )
-
-
 
     @property
     def url(self):
