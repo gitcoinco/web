@@ -320,23 +320,20 @@ $(function() {
 
   $('input[name="expirationTimeDelta"]').daterangepicker({
     singleDatePicker: true,
-    startDate: moment().add(1, 'year'),
+    startDate: moment().add(1, 'month'),
     alwaysShowCalendars: false,
     ranges: {
-      '1 week': [moment().add(7, 'days'), moment().add(7, 'days')],
-      '2 weeks': [moment().add(14, 'days'), moment().add(14, 'days')],
-      '1 month': [moment().add(1, 'month'), moment().add(1, 'month')],
-      '3 months': [moment().add(3, 'month'), moment().add(3, 'month')],
-      '1 year': [moment().add(1, 'year'), moment().add(1, 'year')]
+      '1 week': [ moment().add(7, 'days'), moment().add(7, 'days') ],
+      '2 weeks': [ moment().add(14, 'days'), moment().add(14, 'days') ],
+      '1 month': [ moment().add(1, 'month'), moment().add(1, 'month') ],
+      '3 months': [ moment().add(3, 'month'), moment().add(3, 'month') ],
+      '1 year': [ moment().add(1, 'year'), moment().add(1, 'year') ]
     },
     'locale': {
       'customRangeLabel': 'Custom',
       'format': 'MM/DD/YYYY'
     }
-  }, function (start, end, label){
-    console.log('start', start, 'end', end, 'label', label)
   });
-
 
 });
 
@@ -518,9 +515,6 @@ $('#submitBounty').validate({
     if ($('#neverExpires').is(':checked')) {
       expire_date = mock_expire_date;
     }
-
-    console.log(expire_date)
-    debugger;
     // https://github.com/ConsenSys/StandardBounties/issues/21
     var ipfsBounty = {
       payload: {

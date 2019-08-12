@@ -347,7 +347,6 @@ var callbacks = {
     return [ 'updated', timeDifference(new Date(result['now']), new Date(result['web3_created'])) ];
   },
   'expires_date': function(key, val, result) {
-    console.log(val, result)
     moment.locale('en-expire');
     moment.defineLocale('en-expire', {
       parentLocale: 'en',
@@ -360,7 +359,7 @@ var callbacks = {
     let response = moment.utc(expires_date).fromNow();
     const isInfinite = expires_date - new Date().setFullYear(new Date().getFullYear() + 1) > 1;
 
-    $('#expires_date').attr('title', moment(expires_date).format('LLL') );
+    $('#expires_date').attr('title', moment(expires_date).format('LLL'));
 
     if (expires_date < new Date()) {
       label = 'expired';
