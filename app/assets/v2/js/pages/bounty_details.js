@@ -794,96 +794,57 @@ const repoInstructions = () => {
   });
 };
 
-var set_extended_time_html = function(extendedDuration, currentExpires) {
-  // currentExpires.setTime(currentExpires.getTime() + (extendedDuration * 1000));
-  // currentExpires = moment(currentExpires).add(extendedDuration);
-
+var set_extended_time_html = function(extendedDuration) {
+  extendedDuration = extendedDuration.set({hour: 0, minute: 0, second: 0, millisecond: 0});
   $('input[name=updatedExpires]').val(extendedDuration.utc().unix());
-  // let date = currentExpires.format();
-  // let days = timeDifference(now, currentExpires).split(' ');
-
-  // days.shift();
-  // days = days.join(' ');
-
-  console.log(moment(extendedDuration).fromNow())
+  $('#extended-expiration-date #extended-date').html(extendedDuration.format('MM-DD-YYYY hh:mm A'));
   $('#extended-expiration-date #extended-days').html(moment.utc(extendedDuration).fromNow());
-  $('#extended-expiration-date #extended-date').html(extendedDuration.format());
 };
 
 var show_extend_deadline_modal = function() {
   var self = this;
+  var modals = $('#modalExtend');
+  let modalBody = $('#modalExtend .modal-content');
+  var url = '/modal/extend_issue_deadline?pk=' + document.result['pk'];
 
-  // setTimeout(function() {
-    var url = '/modal/extend_issue_deadline?pk=' + document.result['pk'];
-    moment.locale('en');
+  moment.locale('en');
+  modals.on('show.bs.modal', function() {
+    modalBody.load(url, ()=> {
+      var currentExpires = moment.utc(document.result['expires_date']);
 
-    $.get(url, function(newHTML) {
-      var modal = $(newHTML).appendTo('body').modal({
-        modalClass: 'modal add-interest-modal'
-      });
-
-      var currentExpires = moment(document.result['expires_date']);
-
-      $('input[name="expirationTimeDelta"]').daterangepicker({
+      $('#modalExtend input[name="expirationTimeDelta"]').daterangepicker({
+        parentEl: '#extend_deadline',
         singleDatePicker: true,
-        startDate: moment.utc(currentExpires).add(1, 'year'),
-        alwaysShowCalendars: false,
-        // minDate: moment.utc(currentExpires),
+        startDate: moment(currentExpires).add(1, 'month'),
+        minDate: moment().add(1, 'day'),
         ranges: {
-          '1 week': [moment(currentExpires).add(7, 'days'), moment(currentExpires).add(7, 'days')],
-          '2 weeks': [moment(currentExpires).add(14, 'days'), moment(currentExpires).add(14, 'days')],
-          '1 month': [moment(currentExpires).add(1, 'month'), moment(currentExpires).add(1, 'month')],
-          '3 months': [moment(currentExpires).add(3, 'month'), moment(currentExpires).add(3, 'month')],
-          '1 year': [moment(currentExpires).add(1, 'year'), moment(currentExpires).add(1, 'year')]
+          '1 week': [ moment(currentExpires).add(7, 'days'), moment(currentExpires).add(7, 'days') ],
+          '2 weeks': [ moment(currentExpires).add(14, 'days'), moment(currentExpires).add(14, 'days') ],
+          '1 month': [ moment(currentExpires).add(1, 'month'), moment(currentExpires).add(1, 'month') ],
+          '3 months': [ moment(currentExpires).add(3, 'month'), moment(currentExpires).add(3, 'month') ],
+          '1 year': [ moment(currentExpires).add(1, 'year'), moment(currentExpires).add(1, 'year') ]
         },
         'locale': {
-          'customRangeLabel': 'Custom',
-          'format': 'MM/DD/YYYY'
+          'customRangeLabel': 'Custom'
         }
+      }, function(start, end, label) {
+        set_extended_time_html(end);
       });
+
+      set_extended_time_html($('#modalExtend input[name="expirationTimeDelta"]').data('daterangepicker').endDate);
 
       $('#neverExpires').on('click', () => {
         if ($('#neverExpires').is(':checked')) {
           $('#expirationTimeDelta').attr('disabled', true);
+          $('#extended-expiration-date #extended-days').html('Never');
+          $('#extended-expiration-date #extended-date').html('-');
         } else {
           $('#expirationTimeDelta').attr('disabled', false);
+          set_extended_time_html($('#modalExtend input[name="expirationTimeDelta"]').data('daterangepicker').endDate);
         }
       });
 
-      // all js select 2 fields
-      // $('.js-select2').each(function() {
-      //   $(this).select2();
-      // });
-      // removes tooltip
-      // $('.submit_bounty select').each(function(evt) {
-      //   $('.select2-selection__rendered').removeAttr('title');
-      // });
-      // removes search field in all but the 'denomination' dropdown
-      // $('.select2-container').on('click', function() {
-      //   $('.select2-container .select2-search__field').remove();
-      // });
-
-      // var extendedDuration = parseInt($('select[name=expirationTimeDelta]').val());
-
-
-      var extendedDuration = $('#expirationTimeDelta').data('daterangepicker').endDate;
-      set_extended_time_html(extendedDuration);
-      $(document).on('change', 'input[name=expirationTimeDelta]', function(ev, picker) {
-        //do something, like clearing an input
-
-        // var previousExpires = new Date(document.result['expires_date']);
-console.log(extendedDuration)
-        set_extended_time_html($('#expirationTimeDelta').data('daterangepicker').endDate);
-      });
-      // $(document).on('change', 'input[name=expirationTimeDelta]', function() {
-      // });
-
-      $('.btn-cancel').on('click', function() {
-        $.modal.close();
-        return;
-      });
-
-      modal.on('submit', function(event) {
+      modals.on('submit', function(event) {
         event.preventDefault();
 
         var extended_time = $('input[name=updatedExpires]').val();
@@ -891,13 +852,17 @@ console.log(extendedDuration)
         extend_expiration(document.result['pk'], {
           deadline: extended_time
         });
-        $.modal.close();
         setTimeout(function() {
           window.location.reload();
         }, 2000);
       });
     });
-  // });
+  });
+  modals.bootstrapModal('show');
+  $(document, modals).on('hidden.bs.modal', function(e) {
+    $('#extend_deadline').remove();
+    $('.daterangepicker').remove();
+  });
 };
 
 var build_detail_page = function(result) {

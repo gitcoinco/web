@@ -885,8 +885,8 @@ a.btn {
   }
 
   #extend_deadline {
-    min-width: 40rem;
-    max-width: 0;
+    /* min-width: 40rem; */
+    /* max-width: 0; */
   }
 }
 

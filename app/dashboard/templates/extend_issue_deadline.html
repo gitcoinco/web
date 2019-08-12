@@ -15,13 +15,18 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
-<div id="extend_deadline" class="white-light-bg">
-  <div class="row">
-    <div class="col-12 closebtn">
+<div id="extend_deadline" class="">
+  <div class="">
+    <!-- <div class="col-12 closebtn">
       <a rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">
         <span aria-hidden="true">&times;</span>
       </a>
-    </div>
+    </div> -->
+    <div class="modal-header border-0 py-0">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
     <div class="col-12">
       <h5 class="text-center font-title">{% trans "Extend Issue Deadline" %}</h5>
     </div>
@@ -33,7 +38,7 @@
             <input type="hidden" name="currentExpire" value="{{ bounty.expires_date }}" />
             <div id="deadline-section" class="pt-2">
               <p class="my-2">{% trans "Current Expiration" %}: {{ bounty.expires_date }} </p>
-              <label class="form__label font-weight-bold" for="expirationTimeDelta">{% trans "Extend by:" %}</label>
+              <label class="form__label font-weight-bold" for="expirationTimeDelta">{% trans "Update to:" %}</label>
               <!-- <div class="form__select2">
                 <select class="js-select2" name="expirationTimeDelta">
                   <option value="86400">{% trans "1 day" %}</option>
