@@ -1,0 +1,13 @@
+{
+  "symbol": "MEMOIR",
+  "address": "0x52bd9790a59Eda6b2a4E52097751cB04Ddc0cf06",
+  "overview": {
+        "en": "The core goal of MEMOIR is to create a simple, stable and scalable blockchain token system. The whole system is designed with simple and stable principles to achieve functions such as secure fast payment, privacy transaction and atomic exchange. At the same time, the use of offline wallet and wallet retrieval to protect the security of MEMOIR digital assets.",
+        "zh": "MEMOIR的核心目标是致力于打造一种简单稳定、扩展性强的区块链代币系统，整个系统的设计秉承着简单稳定的原则，从而实现安全快速支付、隐私交易和原子互换等功能，同时运用离线钱包和钱包找回等功能来保障MEMOIR数字资产的安全性。"
+  },
+  "email": "memoirservice01@gmail.com",
+  "website": "http://me01.me/",
+  "whitepaper": "http://me01.me/MEMOEN.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-11-22"
+} 
