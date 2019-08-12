@@ -883,11 +883,6 @@ a.btn {
   .rocket {
     right: 11rem;
   }
-
-  #extend_deadline {
-    /* min-width: 40rem; */
-    /* max-width: 0; */
-  }
 }
 
 @media (max-width: 1024px) {
