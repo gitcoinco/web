@@ -235,8 +235,8 @@ class BountyViewSet(viewsets.ModelViewSet):
                     queryset = queryset.filter(event__pk=evt.pk)
                 except HackathonEvent.DoesNotExist:
                     return Bounty.objects.none()
-        else:
-            queryset = queryset.filter(event=None)
+        # else:
+        #     queryset = queryset.filter(event=None)
 
         for key in ['raw_data', 'experience_level', 'project_length', 'bounty_type', 'bounty_categories',
                     'bounty_owner_address', 'idx_status', 'network', 'bounty_owner_github_username',

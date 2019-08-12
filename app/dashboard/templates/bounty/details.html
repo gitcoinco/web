@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="{% static "v2/css/user_popover.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <link rel="stylesheet" href="{% static "v2/css/highlight_github.css" %}">
   </head>
 
   <body class="interior {{active}} g-font-muli">
@@ -143,6 +144,8 @@
                     <button type="button" class="modal-link button button--primary float-right" data-toggle="modal" data-target=".share-modal">
                       <span class="font-caption"><i class="fas fa-share-alt mr-2"></i> Share</span>
                     </button>
+                    <div id="bounty_actions" class="d-inline-block"></div>
+                    <div id="github_actions" class="d-inline-block"></div>
                   </div>
                 </div>
             </div>
@@ -400,7 +403,7 @@
           <div class="col-12 col-md-2">
             <div class="activity-time">[[:age]]</div>
           </div>
-          [[if issue_message && activity_type == 'worker_applied']]
+          [[if issue_message && activity_type == 'worker_applied' || issue_message && permission_type == 'permissionless' && activity_type == 'start_work' ]]
             <p class="bg-lightblue p-2 rounded mt-3 mb-0 w-100 overflow-auto" style="resize: vertical;height: 50px;word-break: break-word;white-space: pre-wrap;"><b>Work Plan:</b> [[:issue_message.issue_message]]</p>
           [[/if]]
         </div>
@@ -450,8 +453,9 @@
     {% endif %}
   </script>
 
-  <!-- jQuery -->
-  <script src="{% static "v2/js/lib/showdown.js" %}"></script>
+  <script src="{% static "v2/js/lib/highlight.js" %}"></script>
+  <script src="{% static "v2/js/lib/markdown-it.js" %}"></script>
+
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
@@ -459,7 +463,6 @@
   <script src="{% static "v2/js/clipboard.js" %}"></script>
   <script>
     $('[data-toggle="popover"]').popover()
-
     $("body").on("mouseover", "[data-username] img", function(e) {
       openContributorPopOver($(this).parent().data("username"), $(this));
     });
