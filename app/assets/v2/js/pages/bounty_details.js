@@ -347,40 +347,31 @@ var callbacks = {
     return [ 'updated', timeDifference(new Date(result['now']), new Date(result['web3_created'])) ];
   },
   'expires_date': function(key, val, result) {
-    var label = 'expires';
-
+    console.log(val, result)
+    moment.locale('en-expire');
+    moment.defineLocale('en-expire', {
+      parentLocale: 'en',
+      relativeTime: {
+        future: '%s'
+      }
+    });
     expires_date = new Date(val);
-    now = new Date(result['now']);
-
-    var expiringInPercentage = 100 * (
-      (now.getTime() - new Date(result['web3_created']).getTime()) /
-      (expires_date.getTime() - new Date(result['web3_created']).getTime()));
-
-    if (expiringInPercentage > 100) {
-      expiringInPercentage = 100;
-    }
-
-    $('.progress').css('width', expiringInPercentage + '%');
-    var response = timeDifference(now, expires_date).split(' ');
+    let label = 'expires';
+    let response = moment.utc(expires_date).fromNow();
     const isInfinite = expires_date - new Date().setFullYear(new Date().getFullYear() + 1) > 1;
+
+    $('#expires_date').attr('title', moment(expires_date).format('LLL') );
 
     if (expires_date < new Date()) {
       label = 'expired';
       if (result['is_open']) {
         $('.timeleft').text('Expired');
-        $('.progress-bar').addClass('expired');
-        response = response.join(' ');
-      } else {
-        $('#timer').hide();
       }
-    } else if (result['status'] === 'done' || result['status'] === 'cancelled') {
-      $('#timer').hide();
     } else if (isInfinite) {
-      response = '&infin;';
-    } else {
-      response.shift();
-      response = response.join(' ');
+      $('#expires_date').removeAttr('title');
+      response = 'Never expires';
     }
+
     return [ label, response ];
   },
   'started_owners_username': function(key, val, result) {
