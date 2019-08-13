@@ -1,11 +1,11 @@
-<img src="https://d3vv6lp55qjaqc.cloudfront.net/items/263e3q1M2Y2r3L1X3c2y/helmet.png" width=75px height=75px>
+<img src="https://d3vv6lp55qjaqc.cloudfront.net/items/263e3q1M2Y2r3L1X3c2y/helmet.png" width=75px height=75px alt="Gitcoin logo">
 
 # Gitcoin
 
 Gitcoin Grows Open Source. Learn more at [https://gitcoin.co](https://gitcoin.co)
 
 <a href="https://gitcoin.co/explorer?q=gitcoinco">
-    <img src="https://gitcoin.co/funding/embed?repo=https://github.com/gitcoinco/web&badge=1&maxAge=60">
+    <img src="https://gitcoin.co/funding/embed?repo=https://github.com/gitcoinco/web&badge=1&maxAge=60" alt="Open bounties widget">
 </a>
 
 # web repo
@@ -160,7 +160,7 @@ Have an ERC20 compatible token that you'd like to use on the platform?  Great!  
 
 This is the high level flow of a bounty on Gitcoin:
 
-<a href="https://www.draw.io/?state=%7B%22ids%22:%5B%221FTatOur159qS8pzBCgIG5E0XdEH8iZF-%22%5D,%22action%22:%22open%22,%22userId%22:%22115514289174042120922%22%7D#G1FTatOur159qS8pzBCgIG5E0XdEH8iZF-"><img src='https://github.com/gitcoinco/web/raw/master/docs/bounty_flow.png'></a>
+<a href="https://www.draw.io/?state=%7B%22ids%22:%5B%221FTatOur159qS8pzBCgIG5E0XdEH8iZF-%22%5D,%22action%22:%22open%22,%22userId%22:%22115514289174042120922%22%7D#G1FTatOur159qS8pzBCgIG5E0XdEH8iZF-"><img src='https://github.com/gitcoinco/web/raw/master/docs/bounty_flow.png' alt="Gitcoin bounty workflow"></a>
 
 Chain of Custody
 
@@ -181,10 +181,6 @@ We may introduce Arbitration [via Delphi](http://delphi.network/) at some point 
 Note:
 - Crowdfunded bounties + bulk payouts are secured by Tips (at least until Standard Bounties 2.0 is released).
 - Kudos are also secured by Tips
-
-This is the high level flow of a tip on Gitcoin:
-
-<a href="https://www.draw.io/#G1sTJtQou5FYsHCabhb2JXHDTprpvvkUy0"><img src='https://github.com/gitcoinco/web/raw/master/docs/tip_flow.png'></a>
 
 # Licenses
 
