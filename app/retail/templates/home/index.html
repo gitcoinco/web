@@ -15,7 +15,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
-
+{% load render_bundle from webpack_loader %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -306,6 +306,10 @@
         </div>
       </div>
     </div>
+    <!-- my bundle -->
+    {% render_bundle 'main' %}
+    <!-- my bundle -->
+
   </body>
   {% include 'shared/bottom_notification.html' %}
   {% include 'shared/analytics.html' %}

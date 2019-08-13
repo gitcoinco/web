@@ -82,3 +82,4 @@ sentry-sdk
 websocket-client
 bleach
 python-magic
+django-webpack-loader

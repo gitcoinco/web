@@ -5,13 +5,14 @@ const styleLintPlugin = require('stylelint-webpack-plugin');
 
 
 module.exports = {
+  entry: './app/frontend/app.js',
   devtool: 'inline-source-map',
   output: {
     path: path.resolve(__dirname, 'app/static/bundles'),
     filename: '[name]-[hash].js',
 
     // Tell django to use this URL to load packages and not use STATIC_URL + bundle_name
-    publicPath: 'http://localhost:3000/static/bundles/'
+    publicPath: 'http://localhost:3000/'
   },
   module: {
     rules: [{
@@ -45,7 +46,7 @@ module.exports = {
     // don't reload if there is an error
     new webpack.NoEmitOnErrorsPlugin(),
     new BundleTracker({
-      filename: './webpack-stats.json'
+      filename: './app/frontend/webpack-stats.json'
     }),
     new styleLintPlugin({
       configFile: '.stylelintrc',
@@ -60,7 +61,11 @@ module.exports = {
       modulesDirectories: path.resolve(__dirname, 'node_modules')
     },
     extensions: ['.js']
-  }
+  },
+  devServer: { //object
+    port: 3000,
+    contentBase: path.join(__dirname, './app/static/bundles'),
+  },
 };
 
 

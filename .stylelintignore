@@ -3,3 +3,6 @@ app/assets/v2/css/bootstrap.min.css
 app/assets/v2/js/lib/tweenlite.js
 app/assets/v2/js/abi.js
 app/assets/v2/css/highlight_github.css
+
+app/assets/v2/css/*
+app/assets/v2/js/dataviz/heatmap.css
