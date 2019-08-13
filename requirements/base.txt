@@ -37,7 +37,7 @@ cytoolz==0.9.0
 boto==2.49.0
 google-api-python-client
 django-environ==0.4.5
-ipfsapi
+ipfshttpclient
 eth-utils==1.4.1
 jsondiff==1.1.1
 social-auth-app-django==2.1.0

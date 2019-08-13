@@ -35,17 +35,23 @@
     </div>
     {% if hackathon %}
       <link rel="stylesheet" href={% static "v2/css/hackathons/explorer.css" %}>
-      <div id="{{ hackathon.identifier }}" class="row pt-5 pb-5 text-center banner"
-        {% if hackathon.background_color %} style="background: {{ hackathon.background_color }}" {% endif %}
-      >
+
+      <style>
+        .hackathon-banner {
+          background: {% firstof hackathon.background_color or 'white' %};
+          color: {% firstof hackathon.text_color or 'black' %};
+        }
+      </style>
+
+      <div id="{{ hackathon.identifier }}" class="row pt-5 pb-5 text-center banner hackathon-banner">
         <div class="col g-font-muli">
-          <span class="hackathon-name d-block mt-5 text-white font-weight-semibold">{{ hackathon.name }}</span>
+          <span class="hackathon-name d-block mt-5 font-weight-semibold">{{ hackathon.name }}</span>
           {% if hackathon.logo_svg %}
             <img class="d-block mx-auto my-4 hackathon-logo" src="{{ hackathon.logo_svg.url }}"/>
           {% elif hackathon.logo %}
             <img class="d-block mx-auto my-4 hackathon-logo" src="{{ hackathon.logo.url }}"/>
           {% endif %}
-          <span class="d-block font-title-lg text-white">
+          <span class="d-block font-title-lg">
             {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
           </span>
         </div>

@@ -22,6 +22,7 @@ import json
 import logging
 import os
 import time
+from copy import deepcopy
 from datetime import datetime
 from decimal import Decimal
 
@@ -51,6 +52,7 @@ from django.views.decorators.http import require_GET, require_POST
 import magic
 from app.utils import clean_str, ellipses, get_default_network
 from avatar.utils import get_avatar_context_for_user
+from dashboard.context import quickstart as qs
 from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, profile_helper
 from economy.utils import convert_token_to_usdt
 from eth_utils import to_checksum_address, to_normalized_address
@@ -1737,8 +1739,13 @@ def funder_payout_reminder(request, bounty_network, stdbounties_id):
 
 
 def quickstart(request):
-    """Display quickstart guide."""
-    return TemplateResponse(request, 'quickstart.html', {})
+    """Display Quickstart Guide."""
+
+    activities = Activity.objects.filter(activity_type='new_bounty').order_by('-created')[:5]
+    context = deepcopy(qs.quickstart)
+    context["activities"] = [a.view_props for a in activities]
+    return TemplateResponse(request, 'quickstart.html', context)
+
 
 def load_banners(request):
     """Load profile banners"""
@@ -1748,6 +1755,7 @@ def load_banners(request):
         'banners': images
     }
     return JsonResponse(response, safe=False)
+
 
 def profile_details(request, handle):
     """Display profile keywords.
@@ -1813,7 +1821,7 @@ def profile_job_opportunity(request, handle):
     uploaded_file = request.FILES.get('job_cv')
     error_response = invalid_file_response(uploaded_file, supported=['application/pdf'])
     # 400 is ok because file upload is optional here
-    if error_response and error_response['status'] != '400':
+    if error_response and error_response['status'] != 400:
         return JsonResponse(error_response)
     try:
         profile = profile_helper(handle, True)
@@ -1828,7 +1836,7 @@ def profile_job_opportunity(request, handle):
         profile.job_salary = float(request.POST.get('job_salary', '0').replace(',', ''))
         profile.job_location = json.loads(request.POST.get('locations'))
         profile.linkedin_url = request.POST.get('linkedin_url', None)
-        profile.resume = request.FILES.get('job_cv', None)
+        profile.resume = request.FILES.get('job_cv', profile.resume) if not error_response else None
         profile.save()
     except (ProfileNotFoundException, ProfileHiddenException):
         raise Http404
@@ -2598,7 +2606,7 @@ def change_bounty(request, bounty_id):
         else:
             raise Http404
 
-    keys = ['experience_level', 'project_length', 'bounty_type', 'featuring_date', 'bounty_categories',
+    keys = ['experience_level', 'project_length', 'bounty_type', 'featuring_date', 'bounty_categories', 'issue_description',
             'permission_type', 'project_type', 'reserved_for_user_handle', 'is_featured', 'admin_override_suspend_auto_approval']
 
     if request.body:
@@ -2625,18 +2633,19 @@ def change_bounty(request, bounty_id):
         new_reservation = False
         for key in keys:
             value = params.get(key, 0)
-            if key == 'featuring_date':
-                value = timezone.make_aware(
-                    timezone.datetime.fromtimestamp(int(value)),
-                    timezone=UTC)
-            if key == 'bounty_categories':
-                value = value.split(',')
-            old_value = getattr(bounty, key)
-            if value != old_value:
-                setattr(bounty, key, value)
-                bounty_changed = True
-                if key == 'reserved_for_user_handle' and value:
-                    new_reservation = True
+            if value != 0:
+                if key == 'featuring_date':
+                    value = timezone.make_aware(
+                        timezone.datetime.fromtimestamp(int(value)),
+                        timezone=UTC)
+                if key == 'bounty_categories':
+                    value = value.split(',')
+                old_value = getattr(bounty, key)
+                if value != old_value:
+                    setattr(bounty, key, value)
+                    bounty_changed = True
+                    if key == 'reserved_for_user_handle' and value:
+                        new_reservation = True
 
         if not bounty_changed:
             return JsonResponse({
@@ -2843,7 +2852,7 @@ def get_hackathons(request):
     """Handle rendering all Hackathons."""
 
     try:
-        events = HackathonEvent.objects.values()
+        events = HackathonEvent.objects.values().order_by('-created_on')
     except HackathonEvent.DoesNotExist:
         raise Http404
 
@@ -2952,7 +2961,12 @@ def serialize_funder_dashboard_submitted_rows(bounties):
 
 
 def funder_dashboard(request, bounty_type):
-    """JSON data for the user dashboard"""
+    """JSON data for the funder dashboard"""
+
+    if not settings.DEBUG:
+        network = 'mainnet'
+    else:
+        network = 'rinkeby'
 
     user = request.user if request.user.is_authenticated else None
     if not user:
@@ -2966,6 +2980,7 @@ def funder_dashboard(request, bounty_type):
         bounties = list(Bounty.objects.filter(
             Q(idx_status='open') | Q(override_status='open'),
             current_bounty=True,
+            network=network,
             bounty_owner_github_username=profile.handle,
             ).order_by('-interested__created'))
         interests = list(Interest.objects.filter(
@@ -2978,6 +2993,7 @@ def funder_dashboard(request, bounty_type):
         bounties = Bounty.objects.prefetch_related('fulfillments').filter(
             Q(idx_status='submitted') | Q(override_status='submitted'),
             current_bounty=True,
+            network=network,
             fulfillments__accepted=False,
             bounty_owner_github_username=profile.handle,
             ).order_by('-fulfillments__created_on')
@@ -2987,6 +3003,7 @@ def funder_dashboard(request, bounty_type):
         bounties = Bounty.objects.filter(
             Q(idx_status='expired') | Q(override_status='expired'),
             current_bounty=True,
+            network=network,
             bounty_owner_github_username=profile.handle,
             ).order_by('-expires_date')
 
@@ -3007,7 +3024,15 @@ def funder_dashboard(request, bounty_type):
 
 
 def contributor_dashboard(request, bounty_type):
+    """JSON data for the contributor dashboard"""
+
+    if not settings.DEBUG:
+        network = 'mainnet'
+    else:
+        network = 'rinkeby'
+
     user = request.user if request.user.is_authenticated else None
+
     if not user:
         return JsonResponse(
             {'error': _('You must be authenticated via github to use this feature!')},
@@ -3032,6 +3057,7 @@ def contributor_dashboard(request, bounty_type):
             interested__status='okay',
             interested__pending=pending,
             idx_status__in=status,
+            network=network,
             current_bounty=True).order_by('-interested__created')
 
         return JsonResponse([{'title': b.title,
