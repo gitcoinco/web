@@ -1585,3 +1585,12 @@ div.busyOverlay {
 .inner-tooltip {
   pointer-events: none;
 }
+
+.daterangepicker td.active,
+.daterangepicker td.active:hover {
+  background-color: #3E00FF !important;
+}
+
+.daterangepicker .ranges li.active {
+  background-color: #5b24ff !important;
+}
