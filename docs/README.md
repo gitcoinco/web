@@ -27,21 +27,30 @@ This is the website that is live at [gitcoin.co](https://gitcoin.co)
 
 - [Gitcoin](#gitcoin)
 - [web repo](#web-repo)
-  * [How to interact with this repo](#how-to-interact-with-this-repo)
-    + [On Github](#on-github)
-    + [On Gitcoin](#on-gitcoin)
-  * [What](#what)
+  - [Documentation](#documentation)
+  - [How to interact with this repo](#how-to-interact-with-this-repo)
+    - [Table of Contents](#table-of-contents)
+    - [On Github](#on-github)
+    - [On Gitcoin](#on-gitcoin)
+  - [What is Gitcoin?](#what-is-gitcoin)
 - [Developing](#developing)
-  * [HTTPS API](#https-api)
-  * [Running Locally](#running-locally)
+  - [HTTPS API](#https-api)
+  - [Running locally](#running-locally)
+    - [With Docker (Recommended)](#with-docker-recommended)
+    - [Without Docker](#without-docker)
+  - [Overriding Application Defaults](#overriding-application-defaults)
 - [Trying out Gitcoin](#trying-out-gitcoin)
-  * [Posting your first issue](#posting-your-first-issue)
+  - [Posting your first issue](#posting-your-first-issue)
 - [Integrating Gitcoin](#integrating-gitcoin)
-  * [Integrating the 'available work widget' on your repo.](#integrating-the--available-work-widget--on-your-repo)
-  * [Adding GitcoinBot to your repo](#adding-gitcoinbot-to-your-repo)
-  * [Adding your token to Gitcoin](#adding-your-token-to-gitcoin)
-- [Legal](#legal)
-- [License](#license)
+  - [Integrating the 'available work widget' into your repository](#integrating-the-available-work-widget-into-your-repository)
+  - [Adding GitcoinBot to your repo](#adding-gitcoinbot-to-your-repo)
+  - [Adding your token to Gitcoin](#adding-your-token-to-gitcoin)
+  - [High Level flows...](#high-level-flows)
+    - [Bounties](#bounties)
+      - [Showing Support to Individuals](#showing-support-to-individuals)
+    - [Tips](#tips)
+    - [Kudos](#kudos)
+- [Licenses](#licenses)
 
 ### On Github
 
@@ -156,7 +165,12 @@ Have an ERC20 compatible token that you'd like to use on the platform?  Great!  
 
 ## High Level flows...
 
-### ... of a Bounty
+- [Bounties](#bounties)
+  - [Supporting Individuals](#showing-support-to-individuals)
+- [Tips](#tips)
+- [Kudos](#kudos)
+  
+### Bounties 
 
 This is the high level flow of a bounty on Gitcoin:
 
@@ -174,9 +188,21 @@ Anywhere between 2 and 4 above, Funder may withdraw their funds via 'Cancel Boun
 
 We may introduce Arbitration [via Delphi](http://delphi.network/) at some point in the future.  Until then, we are lucky that Github users are very protective of their reputation, and therefore very kind to each other, and disputes have not generally arisen.
 
-### of a Tip
+#### Showing Support to Individuals
 
-### ... of a Kudos
+- via [Tips](https://gitcoin.co/tips) 
+  - A free, fast way to show immediate gratitude towards an individual via github username or email adress
+  
+- via [Kudos](https://gitcoin.co/kudos)
+  - Showcases special skills and appreciation towards other Gitcoin members.
+
+### Tips
+
+This is the high level flow of a tip on Gitcoin:
+
+<a href="https://www.draw.io/#G1sTJtQou5FYsHCabhb2JXHDTprpvvkUy0"><img src='https://github.com/gitcoinco/web/raw/master/docs/tip_flow.png' alt="Gitcoin Tip workflow"></a>
+
+### Kudos
 
 Note:
 - Crowdfunded bounties + bulk payouts are secured by Tips (at least until Standard Bounties 2.0 is released).
