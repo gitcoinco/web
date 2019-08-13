@@ -4,8 +4,8 @@ services:
   db:
     image: postgres:10.1-alpine
     restart: unless-stopped
-    ports:
-      - "5432:5432"
+#    ports:
+#      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     deploy:
@@ -22,11 +22,11 @@ services:
     volumes:
       - 'ipfsexport:/export'
       - 'ipfsdata:/data/ipfs'
-    ports:
-      - "4001:4001"
-      - "4002:4002"
-      - "5001:5001"
-      - "8080:8080"
+#    ports:
+#      - "4001:4001"
+#      - "4002:4002"
+#      - "5001:5001"
+#      - "8080:8080"
     deploy:
       replicas: 1
       resources:
@@ -50,7 +50,7 @@ services:
       - .:/code
     ports:
       - "8000:8000"
-      - "3030:3030"
+ #     - "3030:3030"
     depends_on:
       - db
     stdin_open: true
@@ -65,8 +65,8 @@ services:
 
   testrpc:
     image: trufflesuite/ganache-cli
-    ports:
-      - "8545:8545"
+ #   ports:
+ #     - "8545:8545"
     command: '-a 1 --seed 2 --host 0.0.0.0 --mnemonic "${TEST_MNEMONIC}"'
     deploy:
       replicas: 1
@@ -83,8 +83,8 @@ services:
       - app/app/.env
     volumes:
       - redis:/data
-    ports:
-      - "6379:6379"
+#    ports:
+#      - "6379:6379"
     deploy:
       replicas: 1
       resources:
