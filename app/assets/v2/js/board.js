@@ -12,6 +12,9 @@ Vue.mixin({
       $.when(getbounties).then(function(response) {
         vm.$set(vm.bounties, type, response);
         vm.isLoading[type] = false;
+      }).catch( function() {
+        vm.isLoading[type] = false;
+        vm.error[type] = 'Error fetching bounties. Please contact founders@gitcoin.co';
       });
     },
     fetchApplicants: function(id, key, type) {
@@ -26,6 +29,8 @@ Vue.mixin({
       $.when(getApplicants).then(function(response) {
         vm.$set(vm.bounties[type][key], 'contributors', response.profiles);
         vm.isLoading[`${type}Contrib`] = false;
+      }).catch( function() {
+        vm.isLoading[`${type}Contrib`] = false;
       });
     },
     fetchContributorBounties: function(type) {
@@ -36,7 +41,9 @@ Vue.mixin({
       $.when(getbounties).then(function(response) {
         vm.$set(vm.contributorBounties, type, response);
         vm.isLoading[type] = false;
-
+      }).catch( function() {
+        vm.isLoading[type] = false;
+        vm.error[type] = 'Error fetching bounties. Please contact founders@gitcoin.co';
       });
     },
     isExpanded(key, type) {
@@ -143,6 +150,16 @@ if (document.getElementById('gc-board')) {
         'work_in_progress': true,
         'interested': true,
         'work_submitted': true
+      },
+      error: {
+        'open': '',
+        'openContrib': '',
+        'submitted': '',
+        'submittedContrib': '',
+        'expired': '',
+        'work_in_progress': '',
+        'interested': '',
+        'work_submitted': ''
       }
     },
     mounted() {
