@@ -1605,3 +1605,12 @@ div.busyOverlay {
 .dynamic-content h6 {
   font-size: 1.2em;
 }
+
+.daterangepicker td.active,
+.daterangepicker td.active:hover {
+  background-color: #3E00FF !important;
+}
+
+.daterangepicker .ranges li.active {
+  background-color: #5b24ff !important;
+}

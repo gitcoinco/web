@@ -100,6 +100,8 @@ class DashboardModelsTest(TestCase):
         assert bounty.estimated_hours == 7
         assert bounty_fulfillment.profile.handle == 'fred'
         assert bounty_fulfillment.bounty.title == 'foo'
+        assert bounty.remarketed_count == 0
+        assert bounty.last_remarketed is None
 
     @staticmethod
     def test_exclude_bounty_by_status():
@@ -342,6 +344,79 @@ class DashboardModelsTest(TestCase):
             raw_data={},
         )
         assert bounty.status == 'expired'
+
+    @staticmethod
+    def test_can_remarket_is_true_under_valid_conditions():
+        bounty = Bounty.objects.create(
+            title='CanRemarketTrueTest',
+            idx_status=0,
+            is_open=True,
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            last_remarketed=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            github_url='https://github.com/gitcoinco/web/issues/12345678',
+            raw_data={}
+        )
+
+        assert bounty.last_remarketed == datetime(2008, 10, 31, tzinfo=pytz.UTC)
+        assert bounty.remarketed_count == 0
+        assert bounty.can_remarket is True
+
+    @staticmethod
+    def test_can_remarket_is_false_if_remarket_count_2():
+        bounty = Bounty.objects.create(
+            title='CanRemarketFalseTest',
+            idx_status=0,
+            is_open=True,
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            last_remarketed=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            remarketed_count=2,
+            github_url='https://github.com/gitcoinco/web/issues/12345678',
+            raw_data={}
+        )
+
+        assert bounty.can_remarket is False
+
+    @staticmethod
+    def test_can_remarket_is_false_if_remarketed_within_last_hour():
+        now = datetime.now(pytz.UTC)
+        bounty = Bounty.objects.create(
+            title='CanRemarketFalseTest',
+            idx_status=0,
+            is_open=True,
+            web3_created=now,
+            expires_date=now + timedelta(hours=1),
+            last_remarketed=now,
+            github_url='https://github.com/gitcoinco/web/issues/12345678',
+            raw_data={}
+        )
+
+        assert bounty.can_remarket is False
+
+    @staticmethod
+    def test_can_remarket_is_false_if_workers_have_applied():
+        bounty = Bounty.objects.create(
+            title='CanRemarketFalseTest',
+            idx_status=0,
+            is_open=True,
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            last_remarketed=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            github_url='https://github.com/gitcoinco/web/issues/12345678',
+            raw_data={}
+        )
+
+        dummy_profile = Profile.objects.create(
+            handle='foo',
+            data={}
+        )
+
+        bounty.interested.create(
+            profile=dummy_profile
+        )
+
+        assert bounty.can_remarket is False
 
     @staticmethod
     def test_tip():

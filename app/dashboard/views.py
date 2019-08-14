@@ -550,7 +550,7 @@ def extend_expiration(request, bounty_id):
 
     is_funder = bounty.is_funder(user.username.lower()) if user else False
     if is_funder:
-        deadline = round(int(request.POST.get('deadline')) / 1000)
+        deadline = round(int(request.POST.get('deadline')))
         bounty.expires_date = timezone.make_aware(
             timezone.datetime.fromtimestamp(deadline),
             timezone=UTC)
@@ -826,13 +826,31 @@ def users_fetch(request):
             fulfilled__accepted=True,
             fulfilled__bounty__github_url__icontains=organisation
         ).distinct()
-    profile_list = profile_list.annotate(
-        feedbacks_got_count=Count('feedbacks_got', filter=Q(feedbacks_got__sender_profile=current_user.profile.id))
-    )
+
+    def previous_worked():
+        if current_user.profile.persona_is_funder:
+            return Count(
+                'fulfilled',
+                filter=Q(
+                    fulfilled__bounty__network=network,
+                    fulfilled__accepted=True,
+                    fulfilled__bounty__bounty_owner_github_username__iexact=current_user.profile.handle
+                )
+            )
+
+        return Count(
+            'bounties_funded__fulfillments',
+            filter=Q(
+                bounties_funded__fulfillments__bounty__network=network,
+                bounties_funded__fulfillments__accepted=True,
+                bounties_funded__fulfillments__fulfiller_github_username=current_user.profile.handle
+            )
+        )
+
     profile_list = Profile.objects.filter(pk__in=profile_list).annotate(
             average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
-        ).order_by(
-        order_by
+        ).annotate(previous_worked=previous_worked()).order_by(
+        order_by, '-previous_worked'
     )
     profile_list = profile_list.values_list('pk', flat=True)
     params = dict()
@@ -840,27 +858,15 @@ def users_fetch(request):
     all_users = []
     this_page = all_pages.page(page)
 
-    this_page = Profile.objects.filter(pk__in=[ele for ele in this_page]).annotate(
-        feedbacks_got_count=Count('feedbacks_got', filter=Q(feedbacks_got__sender_profile=current_user.profile.id))
-    ).order_by(order_by).annotate(
-        previous_worked_count=Count('fulfilled', filter=Q(
-            fulfilled__bounty__network=network,
-            fulfilled__accepted=True,
-            fulfilled__bounty__bounty_owner_github_username__iexact=current_user.profile.handle
-        ))).annotate(
+    this_page = Profile.objects.filter(pk__in=[ele for ele in this_page])\
+        .order_by(order_by).annotate(
+        previous_worked_count=previous_worked()).annotate(
             count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network, fulfilled__accepted=True))
         ).annotate(
             average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
-        )
+        ).order_by('-previous_worked_count')
     for user in this_page:
         previously_worked_with = 0
-        if current_user:
-            previously_worked_with = BountyFulfillment.objects.filter(
-                bounty__bounty_owner_github_username__iexact=current_user.profile.handle,
-                fulfiller_github_username__iexact=user.handle,
-                bounty__network=network,
-                accepted=True
-            ).count()
         count_work_completed = Activity.objects.filter(profile=user, activity_type='work_done').count()
         count_work_in_progress = Activity.objects.filter(profile=user, activity_type='start_work').count()
         profile_json = {
@@ -870,7 +876,7 @@ def users_fetch(request):
             'job_type', 'linkedin_url', 'resume', 'remote', 'keywords',
             'organizations', 'is_org']}
         profile_json['job_status'] = user.job_status_verbose if user.job_search_status else None
-        profile_json['previously_worked'] = previously_worked_with > 0
+        profile_json['previously_worked'] = user.previous_worked_count > 0
         profile_json['position_contributor'] = user.get_contributor_leaderboard_index()
         profile_json['position_funder'] = user.get_funder_leaderboard_index()
         profile_json['work_done'] = count_work_completed
@@ -1563,6 +1569,44 @@ def helper_handle_approvals(request, bounty):
             messages.warning(request, _('Only the funder of this bounty may perform this action.'))
 
 
+def helper_handle_remarket_trigger(request, bounty):
+    trigger_remarket = request.GET.get('trigger_remarket', False)
+    if trigger_remarket:
+        is_staff = request.user.is_staff
+        is_funder = bounty.is_funder(request.user.username.lower())
+        if is_staff or is_funder:
+            remarketed_count = bounty.remarketed_count
+            if remarketed_count < 2:
+                now = timezone.now()
+                one_hour_after_remarketing = bounty.last_remarketed + timezone.timedelta(hours=1) if bounty.last_remarketed else now
+                if now >= one_hour_after_remarketing:
+                    bounty.remarketed_count = remarketed_count + 1
+                    bounty.last_remarketed = now
+                    bounty.save()
+
+                    maybe_market_to_slack(bounty, 'issue_remarketed')
+
+                    further_permitted_remarket_count = 2 - bounty.remarketed_count
+                    success_msg = "This issue has been remarketed. The issue will appear at the top of the issue explorer. "
+                    if further_permitted_remarket_count == 1:
+                        success_msg = success_msg + "You will be able to remarket this bounty one more time if a contributor does not pick this up."
+                    elif further_permitted_remarket_count == 0:
+                        success_msg = success_msg + "Please note this is the last time the issue is able to be remarketed."
+
+                    messages.success(request, _(success_msg))
+
+                else:
+                    time_delta_wait_time = one_hour_after_remarketing - now
+                    minutes_to_wait = round(time_delta_wait_time.total_seconds() / 60)
+                    messages.warning(request,
+                                     _(f'You need to wait {minutes_to_wait} minutes before remarketing this bounty again'))
+            else:
+                messages.warning(request,
+                                 _('You cannot remarket this bounty again due to reaching the remarket limit (2)'))
+        else:
+            messages.warning(request, _('Only staff or the funder of this bounty may do this.'))
+
+
 @login_required
 def bounty_invite_url(request, invitecode):
     """Decode the bounty details and redirect to correct bounty
@@ -1675,6 +1719,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 helper_handle_admin_override_and_hide(request, bounty)
                 helper_handle_suspend_auto_approval(request, bounty)
                 helper_handle_mark_as_remarket_ready(request, bounty)
+                helper_handle_remarket_trigger(request, bounty)
                 helper_handle_admin_contact_funder(request, bounty)
                 helper_handle_override_status(request, bounty)
         except Bounty.DoesNotExist:
@@ -2985,18 +3030,18 @@ def funder_dashboard(request, bounty_type):
             ).order_by('-interested__created'))
         interests = list(Interest.objects.filter(
             bounty__pk__in=[b.pk for b in bounties],
-            status='okay',
-            pending=True))
+            status='okay'))
         return JsonResponse(serialize_funder_dashboard_open_rows(bounties, interests), safe=False)
 
     elif bounty_type == 'submitted':
-        bounties = Bounty.objects.prefetch_related('fulfillments').filter(
+        bounties = Bounty.objects.prefetch_related('fulfillments').distinct('id').filter(
             Q(idx_status='submitted') | Q(override_status='submitted'),
             current_bounty=True,
             network=network,
             fulfillments__accepted=False,
             bounty_owner_github_username=profile.handle,
-            ).order_by('-fulfillments__created_on')
+            )
+        bounties.order_by('-fulfillments__created_on')
         return JsonResponse(serialize_funder_dashboard_submitted_rows(bounties), safe=False)
 
     elif bounty_type == 'expired':
