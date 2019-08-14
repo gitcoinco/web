@@ -318,6 +318,8 @@ class Bounty(SuperModel):
     is_featured = models.BooleanField(
         default=False, help_text=_('Whether this bounty is featured'))
     featuring_date = models.DateTimeField(blank=True, null=True, db_index=True)
+    last_remarketed = models.DateTimeField(blank=True, null=True, db_index=True)
+    remarketed_count = models.PositiveSmallIntegerField(default=0, blank=True, null=True)
     fee_amount = models.DecimalField(default=0, decimal_places=18, max_digits=50)
     fee_tx_id = models.CharField(default="0x0", max_length=255, blank=True)
     coupon_code = models.ForeignKey('dashboard.Coupon', blank=True, null=True, related_name='coupon', on_delete=models.SET_NULL)
@@ -1140,6 +1142,23 @@ class Bounty(SuperModel):
                 logger.warning(f'reserved_for_user_handle: Unknown handle: ${handle}')
 
         self.bounty_reserved_for_user = profile
+
+    @property
+    def can_remarket(self):
+        result = True
+
+        if self.remarketed_count >= 2:
+            result = False
+
+        if self.last_remarketed:
+            one_hour_after_remarketing = self.last_remarketed + timezone.timedelta(hours=1)
+            if timezone.now() < one_hour_after_remarketing:
+                result = False
+
+        if self.interested.count() > 0:
+            result = False
+
+        return result
 
 
 class BountyFulfillmentQuerySet(models.QuerySet):

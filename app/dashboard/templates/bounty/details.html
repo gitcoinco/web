@@ -228,9 +228,23 @@
             [[/if]]
           </a>
         [[else]]
-          <a class="button button--primary [[if !enabled]]disabled[[/if]] [[:buttonclass]]" role="button" href="[[:href]]" target="[[:target]]" [[if modal]] data-toggle="modal" data-target=".share-modal" [[/if]]>
-            <span class="font-caption">[[:text]]</span>
-          </a>
+          [[if edit_dropdown]]
+              <div class="dropdown show" style="display: inline;">
+                <a class="button button--primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  {% trans "Update Issue" %}
+                </a>
+
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                  <a class="dropdown-item" href="[[:edit_issue_href]]">{% trans "Edit Issue Details" %}</a>
+                  [[if show_extend_expiration]] <a class="dropdown-item" href="[[:extend_expiration_href]]">{% trans "Extend Expiration" %}</a> [[/if]]
+                  [[if show_remarket]] <a class="dropdown-item [[if !remarket_enabled]]disabled[[/if]]" href="[[:remarket_url]]">{% trans "Re-market Issue" %}</a> [[/if]]
+                </div>
+              </div>
+          [[else]]
+            <a class="button button--primary [[if !enabled]]disabled[[/if]] [[:buttonclass]]" role="button" href="[[:href]]" target="[[:target]]" [[if modal]] data-toggle="modal" data-target=".share-modal" [[/if]]>
+              <span class="font-caption">[[:text]]</span>
+            </a>
+          [[/if]]
         [[/if]]
       </span>
     </script>
