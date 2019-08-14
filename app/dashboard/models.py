@@ -133,6 +133,14 @@ class BountyQuerySet(models.QuerySet):
                 activities__needs_review=False,
             )
 
+    def has_applicant(self):
+        """Filter results by bounties that have applicants."""
+        return self.prefetch_related('activities') \
+            .filter(
+                activities__activity_type='worker_applied',
+                activities__needs_review=False,
+            )
+    
     def warned(self):
         """Filter results by bounties that have been warned for inactivity."""
         return self.prefetch_related('activities') \
@@ -310,6 +318,8 @@ class Bounty(SuperModel):
     is_featured = models.BooleanField(
         default=False, help_text=_('Whether this bounty is featured'))
     featuring_date = models.DateTimeField(blank=True, null=True, db_index=True)
+    last_remarketed = models.DateTimeField(blank=True, null=True, db_index=True)
+    remarketed_count = models.PositiveSmallIntegerField(default=0, blank=True, null=True)
     fee_amount = models.DecimalField(default=0, decimal_places=18, max_digits=50)
     fee_tx_id = models.CharField(default="0x0", max_length=255, blank=True)
     coupon_code = models.ForeignKey('dashboard.Coupon', blank=True, null=True, related_name='coupon', on_delete=models.SET_NULL)
@@ -428,6 +438,37 @@ class Bounty(SuperModel):
             return 0
         decimals = token.get('decimals', 0)
         return float(self.value_in_token) / 10**decimals
+
+    @property
+    def no_of_applicants(self):
+        return self.interested.count()
+   
+    @property
+    def has_applicant(self):
+        """Filter results by bounties that have applicants."""
+        return self.prefetch_related('activities') \
+            .filter(
+                activities__activity_type='worker_applied',
+                activities__needs_review=False,
+            )
+        
+    @property
+    def warned(self):
+        """Filter results by bounties that have been warned for inactivity."""
+        return self.prefetch_related('activities') \
+            .filter(
+                activities__activity_type='bounty_abandonment_warning',
+                activities__needs_review=True,
+            )
+    
+    @property
+    def escalated(self):
+        """Filter results by bounties that have been escalated for review."""
+        return self.prefetch_related('activities') \
+            .filter(
+                activities__activity_type='bounty_abandonment_escalation_to_mods',
+                activities__needs_review=True,
+            )
 
     @property
     def url(self):
@@ -1101,6 +1142,23 @@ class Bounty(SuperModel):
                 logger.warning(f'reserved_for_user_handle: Unknown handle: ${handle}')
 
         self.bounty_reserved_for_user = profile
+
+    @property
+    def can_remarket(self):
+        result = True
+
+        if self.remarketed_count >= 2:
+            result = False
+
+        if self.last_remarketed:
+            one_hour_after_remarketing = self.last_remarketed + timezone.timedelta(hours=1)
+            if timezone.now() < one_hour_after_remarketing:
+                result = False
+
+        if self.interested.count() > 0:
+            result = False
+
+        return result
 
 
 class BountyFulfillmentQuerySet(models.QuerySet):
