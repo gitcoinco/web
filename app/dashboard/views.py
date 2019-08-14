@@ -826,13 +826,31 @@ def users_fetch(request):
             fulfilled__accepted=True,
             fulfilled__bounty__github_url__icontains=organisation
         ).distinct()
-    profile_list = profile_list.annotate(
-        feedbacks_got_count=Count('feedbacks_got', filter=Q(feedbacks_got__sender_profile=current_user.profile.id))
-    )
+
+    def previous_worked():
+        if current_user.profile.persona_is_funder:
+            return Count(
+                'fulfilled',
+                filter=Q(
+                    fulfilled__bounty__network=network,
+                    fulfilled__accepted=True,
+                    fulfilled__bounty__bounty_owner_github_username__iexact=current_user.profile.handle
+                )
+            )
+
+        return Count(
+            'bounties_funded__fulfillments',
+            filter=Q(
+                bounties_funded__fulfillments__bounty__network=network,
+                bounties_funded__fulfillments__accepted=True,
+                bounties_funded__fulfillments__fulfiller_github_username=current_user.profile.handle
+            )
+        )
+
     profile_list = Profile.objects.filter(pk__in=profile_list).annotate(
             average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
-        ).order_by(
-        order_by
+        ).annotate(previous_worked=previous_worked()).order_by(
+        order_by, '-previous_worked'
     )
     profile_list = profile_list.values_list('pk', flat=True)
     params = dict()
@@ -840,27 +858,15 @@ def users_fetch(request):
     all_users = []
     this_page = all_pages.page(page)
 
-    this_page = Profile.objects.filter(pk__in=[ele for ele in this_page]).annotate(
-        feedbacks_got_count=Count('feedbacks_got', filter=Q(feedbacks_got__sender_profile=current_user.profile.id))
-    ).order_by(order_by).annotate(
-        previous_worked_count=Count('fulfilled', filter=Q(
-            fulfilled__bounty__network=network,
-            fulfilled__accepted=True,
-            fulfilled__bounty__bounty_owner_github_username__iexact=current_user.profile.handle
-        ))).annotate(
+    this_page = Profile.objects.filter(pk__in=[ele for ele in this_page])\
+        .order_by(order_by).annotate(
+        previous_worked_count=previous_worked()).annotate(
             count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network, fulfilled__accepted=True))
         ).annotate(
             average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
-        )
+        ).order_by('-previous_worked_count')
     for user in this_page:
         previously_worked_with = 0
-        if current_user:
-            previously_worked_with = BountyFulfillment.objects.filter(
-                bounty__bounty_owner_github_username__iexact=current_user.profile.handle,
-                fulfiller_github_username__iexact=user.handle,
-                bounty__network=network,
-                accepted=True
-            ).count()
         count_work_completed = Activity.objects.filter(profile=user, activity_type='work_done').count()
         count_work_in_progress = Activity.objects.filter(profile=user, activity_type='start_work').count()
         profile_json = {
@@ -870,7 +876,7 @@ def users_fetch(request):
             'job_type', 'linkedin_url', 'resume', 'remote', 'keywords',
             'organizations', 'is_org']}
         profile_json['job_status'] = user.job_status_verbose if user.job_search_status else None
-        profile_json['previously_worked'] = previously_worked_with > 0
+        profile_json['previously_worked'] = user.previous_worked_count > 0
         profile_json['position_contributor'] = user.get_contributor_leaderboard_index()
         profile_json['position_funder'] = user.get_funder_leaderboard_index()
         profile_json['work_done'] = count_work_completed
