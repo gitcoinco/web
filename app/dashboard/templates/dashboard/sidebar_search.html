@@ -29,6 +29,16 @@
       <div class="filter-tags"></div> <!-- Populate the filters -->
     </div>
   </div>
+
+  <p id="expand" class="text-right font-caption font-weight-semibold">
+    {% trans "Expand Filter" %}
+    <i class="fas fa-chevron-down"></i>
+  </p>
+  <p id="minimize" class="text-right font-caption font-weight-semibold">
+    {% trans "Minimize Filter" %}
+    <i class="fas fa-chevron-up"></i>
+  </p>
+
   <form>
 
     <div class="col my-1">
@@ -140,6 +150,19 @@
           <input name="idx_status" id="any_status" type="radio" value="any" />
           <label class="filter-label" for=any_status>{% trans "Any" %}</label>
         </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="col-12 subheading">
+        Applicants
+      </div>
+      <div class="col-12 options">
+        <select class="w-100 js-select2" name="applicants" id="applicants_box">
+          <option value="ALL">ALL</option>
+          <option value="0">0</option>
+          <option value="1-5">1-5</option>
+        </select>
       </div>
     </div>
 
@@ -295,20 +318,6 @@
         <div class="col">
           <div class="col-12 subheading">{% trans "Network" %}</div>
           <div class="col-12 options">
-            <div class="checkbox_container">
-              <input name="network" id="local" type="checkbox" value="local" val-ui='Custom Network' />
-              <span class="checkbox"></span>
-              <div class="filter-label">
-                <label for=local>{% trans "Custom" %}</label>
-              </div>
-            </div>
-            <div class="checkbox_container">
-              <input name="network" id="ropsten" type="checkbox" value="ropsten" val-ui='Ropsten' />
-              <span class="checkbox"></span>
-              <div class="filter-label">
-                <label for=ropsten>{% trans "Ropsten" %}</label>
-              </div>
-            </div>
             <div class="checkbox_container">
               <input name="network" id="rinkeby" type="checkbox" value="rinkeby" val-ui='Rinkeby' />
               <span class="checkbox"></span>

@@ -25,6 +25,8 @@ from django.conf import settings
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 from django.db.models import Q
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.timezone import localtime
 from django.utils.translation import gettext_lazy as _
@@ -32,7 +34,7 @@ from django.utils.translation import gettext_lazy as _
 from django_extensions.db.fields import AutoSlugField
 from economy.models import SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount
-from gas.utils import recommend_min_gas_price_to_confirm_in_time
+from gas.utils import eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from grants.utils import get_upload_filename
 from web3 import Web3
 
@@ -79,6 +81,7 @@ class Grant(SuperModel):
     title = models.CharField(default='', max_length=255, help_text=_('The title of the Grant.'))
     slug = AutoSlugField(populate_from='title')
     description = models.TextField(default='', blank=True, help_text=_('The description of the Grant.'))
+    description_rich = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
     reference_url = models.URLField(blank=True, help_text=_('The associated reference URL of the Grant.'))
     logo = models.ImageField(
         upload_to=get_upload_filename,
@@ -174,13 +177,6 @@ class Grant(SuperModel):
         help_text=_('The Grant administrator\'s profile.'),
         null=True,
     )
-    request_ownership_change = models.ForeignKey(
-        'dashboard.Profile',
-        related_name='request_ownership_change',
-        on_delete=models.CASCADE,
-        help_text=_('The Grant\'s potential new administrator profile.'),
-        null=True,
-    )
     team_members = models.ManyToManyField(
         'dashboard.Profile',
         related_name='grant_teams',
@@ -191,7 +187,7 @@ class Grant(SuperModel):
         default=0,
         decimal_places=2,
         max_digits=20,
-        help_text=_('The CLR matching amount'),
+        help_text=_('The TOTAL CLR matching amount across all rounds'),
     )
     activeSubscriptions = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     hidden = models.BooleanField(default=False, help_text=_('Hide the grant from the /grants page?'))
@@ -205,6 +201,8 @@ class Grant(SuperModel):
 
     def percentage_done(self):
         """Return the percentage of token received based on the token goal."""
+        if not self.amount_goal:
+            return 0
         return ((self.amount_received / self.amount_goal) * 100)
 
 
@@ -218,8 +216,13 @@ class Grant(SuperModel):
     @property
     def abi(self):
         """Return grants abi."""
-        from grants.abi import abi_v0
-        return abi_v0
+        if self.contract_version == 0:
+            from grants.abi import abi_v0
+            return abi_v0
+        elif self.contract_version == 1:
+            from grants.abi import abi_v1
+            return abi_v1
+
 
     @property
     def url(self):
@@ -458,6 +461,7 @@ class Subscription(SuperModel):
             token_contract = web3.eth.contract(Web3.toChecksumAddress(self.token_address), abi=erc20_abi)
             balance = token_contract.functions.balanceOf(Web3.toChecksumAddress(self.contributor_address)).call()
             allowance = token_contract.functions.allowance(Web3.toChecksumAddress(self.contributor_address), Web3.toChecksumAddress(self.grant.contract_address)).call()
+            gasPrice = self.gas_price
             is_active = self.get_is_active_from_web3()
             token = addr_to_token(self.token_address, self.network)
             next_valid_timestamp = self.get_next_valid_timestamp()
@@ -469,7 +473,7 @@ class Subscription(SuperModel):
                 error_reason = 'not_active'
             if timezone.now().timestamp() < next_valid_timestamp:
                 error_reason = 'before_next_valid_timestamp'
-            if balance < self.amount_per_period:
+            if (float(balance) + float(gasPrice)) < float(self.amount_per_period):
                 error_reason = "insufficient_balance"
             if allowance < self.amount_per_period:
                 error_reason = "insufficient_allowance"
@@ -639,15 +643,28 @@ next_valid_timestamp: {next_valid_timestamp}
 
     def get_converted_amount(self):
         try:
-            return Decimal(convert_amount(
+            if self.token_symbol == "ETH" or self.token_symbol == "WETH":
+                return Decimal(float(self.amount_per_period) * float(eth_usd_conv_rate()))
+            else:
+                value_token_to_eth = Decimal(convert_amount(
                     self.amount_per_period,
                     self.token_symbol,
-                    "USDT")
+                    "ETH")
                 )
 
+            value_eth_to_usdt = Decimal(eth_usd_conv_rate())
+            value_usdt = value_token_to_eth * value_eth_to_usdt
+            return value_usdt
+
         except ConversionRateNotFoundError as e:
-            logger.info(e)
-            return None
+            try:
+                return Decimal(convert_amount(
+                    self.amount_per_period,
+                    self.token_symbol,
+                    "USDT"))
+            except ConversionRateNotFoundError as no_conversion_e:
+                logger.info(no_conversion_e)
+                return None
 
     def get_converted_monthly_amount(self):
         converted_amount = self.get_converted_amount()
@@ -691,6 +708,112 @@ next_valid_timestamp: {next_valid_timestamp}
         return contribution
 
 
+@receiver(pre_save, sender=Grant, dispatch_uid="psave_grant")
+def psave_grant(sender, instance, **kwargs):
+
+    instance.amount_received = 0
+    instance.monthly_amount_subscribed = 0
+    #print(instance.id)
+    for subscription in instance.subscriptions.all():
+        value_usdt = subscription.get_converted_amount()
+        for contrib in subscription.subscription_contribution.filter(success=True):
+            if value_usdt:
+                instance.amount_received += Decimal(value_usdt)
+
+        if subscription.num_tx_processed <= subscription.num_tx_approved and value_usdt:
+            if subscription.num_tx_approved != 1:
+                instance.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
+        #print("-", subscription.id, value_usdt, instance.monthly_amount_subscribed )
+
+
+class DonationQuerySet(models.QuerySet):
+    """Define the Contribution default queryset and manager."""
+
+    pass
+
+
+class Donation(SuperModel):
+    """Define the structure of an optional donation. These donations are
+       additional funds sent to Gitcoin as part of contributing or subscribing
+       to a grant."""
+
+    from_address = models.CharField(
+        max_length=255,
+        default='0x0',
+        help_text=_("The sender's address."),
+    )
+    to_address = models.CharField(
+        max_length=255,
+        default='0x0',
+        help_text=_("The destination address."),
+    )
+    profile = models.ForeignKey(
+        'dashboard.Profile',
+        related_name='donations',
+        on_delete=models.SET_NULL,
+        help_text=_("The donator's profile."),
+        null=True,
+    )
+    token_address = models.CharField(
+        max_length=255,
+        default='0x0',
+        help_text=_('The token address to be used with the Grant.'),
+    )
+    token_symbol = models.CharField(
+        max_length=255,
+        default='',
+        help_text=_("The donation token's symbol."),
+    )
+    token_amount = models.DecimalField(
+        default=0,
+        decimal_places=18,
+        max_digits=64,
+        help_text=_('The donation amount in tokens.'),
+    )
+    token_amount_usdt = models.DecimalField(
+        default=0,
+        decimal_places=4,
+        max_digits=50,
+        help_text=_('The donation amount converted to USDT/DAI at the moment of donation.'),
+    )
+    tx_id = models.CharField(
+        max_length=255,
+        default='0x0',
+        help_text=_('The transaction ID of the Contribution.'),
+    )
+    network = models.CharField(
+        max_length=8,
+        default='mainnet',
+        help_text=_('The network in which the Subscription resides.'),
+    )
+    donation_percentage = models.DecimalField(
+        default=0,
+        decimal_places=2,
+        max_digits=5,
+        help_text=_('The additional percentage selected when the donation is made'),
+    )
+    subscription = models.ForeignKey(
+        'grants.subscription',
+        related_name='donations',
+        on_delete=models.SET_NULL,
+        help_text=_("The recurring subscription that this donation originated from."),
+        null=True,
+    )
+    contribution = models.ForeignKey(
+        'grants.contribution',
+        related_name='donation',
+        on_delete=models.SET_NULL,
+        help_text=_("The contribution that this donation was a part of."),
+        null=True,
+    )
+
+
+    def __str__(self):
+        """Return the string representation of this object."""
+        from django.contrib.humanize.templatetags.humanize import naturaltime
+        return f"id: {self.pk}; from:{profile.handle}; {tx_id} => ${token_amount_usdt}; {naturaltime(self.created_on)}"
+
+
 class ContributionQuerySet(models.QuerySet):
     """Define the Contribution default queryset and manager."""
 
@@ -700,6 +823,8 @@ class ContributionQuerySet(models.QuerySet):
 class Contribution(SuperModel):
     """Define the structure of a subscription agreement."""
 
+    success = models.BooleanField(default=True, help_text=_('Whether or not success.'))
+    tx_cleared = models.BooleanField(default=False, help_text=_('Whether or not tx cleared.'))
     tx_id = models.CharField(
         max_length=255,
         default='0x0',
@@ -719,10 +844,36 @@ class Contribution(SuperModel):
         txid_shortened = self.tx_id[0:10] + "..."
         return f"id: {self.pk}; {txid_shortened} => subs:{self.subscription}; {naturaltime(self.created_on)}"
 
+    def update_tx_status(self):
+        """Updates tx status."""
+        from dashboard.utils import get_tx_status
+        tx_status, tx_time = get_tx_status(self.tx_id, self.subscription.network, self.created_on)
+        if tx_status != 'pending':
+            self.success = tx_status == 'success'
+            self.tx_cleared = True
 
 def next_month():
     """Get the next month time."""
     return localtime(timezone.now() + timedelta(days=30))
+
+
+class CLRMatch(SuperModel):
+    """Define the structure of a CLR Match amount."""
+
+    round_number = models.PositiveIntegerField(blank=True, null=True)
+    amount = models.FloatField()
+    grant = models.ForeignKey(
+        'grants.Grant',
+        related_name='clr_matches',
+        on_delete=models.CASCADE,
+        null=False,
+        help_text=_('The associated Grant.'),
+    )
+
+    def __str__(self):
+        """Return the string representation of a Grant."""
+        return f"id: {self.pk}, grant: {self.grant.pk}, round: {self.round_number}, amount: {self.amount}"
+
 
 
 class MatchPledge(SuperModel):

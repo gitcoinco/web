@@ -8,7 +8,11 @@ function drawChart() {
   var data = google.visualization.arrayToDataTable(document.bounty_history);
 
   var view = new google.visualization.DataView(data);
+  var width = 800;
 
+  if (width > document.body.clientWidth) {
+    width = document.body.clientWidth - 50;
+  }
   var options = {
     legend: { position: 'none' },
     bar: { groupWidth: '50%' },
@@ -16,7 +20,8 @@ function drawChart() {
     isStacked: true,
     backgroundColor: 'transparent',
     height: 400,
-    vAxis: { title: 'USD', ticks: [ 0, document.max_bounty_history ], format: 'short', gridlines: { color: 'transparent' } }
+    width: width,
+    vAxis: { title: 'USD', ticks: [ 0, 10000, 50000, 100000, 150000, 200000, document.max_bounty_history ], format: 'short', gridlines: { color: 'transparent' } }
   };
 
   var chart = new google.visualization.ColumnChart(document.getElementById('bounty_universe_chart'));

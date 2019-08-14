@@ -259,3 +259,5 @@ var redirectURL = function() {
 
   document.location.href = url;
 };
+
+localStorage['onboarded_funder'] = true;

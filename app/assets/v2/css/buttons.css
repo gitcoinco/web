@@ -95,7 +95,7 @@ button:focus {
 }
 
 .btn {
-  border-radius: 2px;
+  border-radius: 5px;
 }
 
 .btn-gc-blue,
@@ -103,14 +103,13 @@ button:focus {
 .btn-gc-purple,
 .btn-gc-pink {
   color: white;
-  padding: .75rem 1.5rem;
 }
 
 .btn-outline-gc-blue,
 .btn-outline-gc-purple,
 .btn-outline-gc-green,
 .btn-outline-white {
-  padding: .75rem 1.5rem;
+  /* padding: .75rem 1.5rem; */
 }
 
 .btn-gc-blue {
@@ -172,6 +171,12 @@ button:focus {
 
 .btn-gc-purple {
   background-color: var(--gc-purple);
+}
+
+.btn-outline-black {
+  border: 1px solid #000;
+  background: white;
+  color: #000;
 }
 
 .btn-gc-purple:hover {
@@ -246,4 +251,32 @@ button:focus {
 
 .btn-lg-padding {
   padding: 0.6rem 2rem;
+}
+
+.btn-radio {
+  border: 2px solid #D3D3D3;
+}
+
+.btn-radio.active {
+  border-color: #3E00FF;
+}
+
+.btn-radio i {
+  color: #3E00FF;
+}
+
+.badge-greylight {
+  background-color: #F3F3F3;
+  color: #666666;
+  font-weight: 600;
+}
+
+.btn-gc-grey {
+  color: #171717;
+  background-color: #cbcbcb;
+}
+
+.btn-gc-grey:not(:disabled):not(.disabled).active {
+  color: white;
+  background-color: #5300ff;
 }

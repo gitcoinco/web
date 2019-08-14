@@ -28,9 +28,9 @@
 
   <body class="{{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
     <div class="container-fluid header">
-      {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      {% include 'shared/nav.html' %}
+      {% include 'home/nav.html' %}
     </div>
 
     <div class="intro container-fluid py-5">
@@ -87,26 +87,31 @@
       </div>
     {% endfor %}
 
-    <div class="intro container-fluid ">
-      <div class="row py-3 py-md-0 justify-content-center">
-        <div class="d-flex flex-column align-items-center ">
-          <span class="product-heading text-center pt-3 my-4">
+    <div class="intro container-fluid">
+      <div class="row py-3 py-md-0">
+        <div class="col-12 text-center">
+          <h2 class="text-center pt-3 my-4">
             {% trans "Optimizing the OSS Lifecycle" %}
-          </span>
-          <span class="product-desc text-center my-2">
+          </h2>
+          <p class="font-title text-center my-2">
             {% trans "Each of our products helps optimize the OSS Lifecycle so that things can look more like this." %}
-          </span>
-          <img class="img-fluid my-4 px-3" src="{% static 'v2/images/products/oss_cycle_with_gitcoin.svg' %}">
-          <span class="product-desc text-center my-2">
+          </p>
+        </div>
+        <div class="col-12 offset-md-3 col-md-6">
+          <img class="img-fluid my-4" width="800" src="{% static 'v2/images/products/oss_cycle_with_gitcoin.svg' %}">
+        </div>
+        <div class="col-12 text-center mb-5">
+          <p class="product-desc text-center my-2">
             {% trans "Interested in working with us?" %}
-          </span>
-          <a href="" class="button button-bounties text-center display-5 ">
-            {% trans "Get in touch" %}
-          </a>
-          <BR>
-          <a href="{% url 'mission' %}" class="button button-bounties text-center display-5 ">
-            {% trans "About the mission" %}
-          </a>
+          </p>
+          <p>
+            <a href="{% url 'jobs' %}" class="btn btn-gc-blue py-3 shadow-none font-weight-bold text-center m-2">
+              {% trans "Check our Jobs Page" %}
+            </a>
+            <a href="{% url 'mission' %}" class="btn btn-gc-blue py-3 shadow-none font-weight-bold text-center m-2">
+              {% trans "About the mission" %}
+            </a>
+          </p>
         </div>
       </div>
     </div>

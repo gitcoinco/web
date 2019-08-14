@@ -38,19 +38,32 @@
           </div>
         </a>
       </div>
-      <div class="progress progress--small">
-        <div class="progress-bar" role="progressbar" style="width: {{ grant.percentage_done }}%" aria-valuenow="{{ grant.percentage_done }}%" aria-valuemin="0" aria-valuemax="100"></div>
-      </div>
-      <div class="grant-item__funding mt-2">
-        <div class="grant-item__funding-item">
-          <div class="grant-item__funding-number font-body">{{ grant.amount_received|floatformat:2|intcomma }} DAI</div>
-          <div class="grant-item__funding-label font-caption">{% trans 'Funded' %}</div>
+
+      <div class="row progress-container mb-4">
+        <div class="offset-2 col-8 text-center text-xl-left offset-xl-0 col-xl-6 mb-4 mb-xl-0 ">
+          <p class="sub-title mb-0 font-caption">MONTHLY RECURRING</p>
+          <p class="font-title mb-0 font-weight-bold">
+            {{ grant.monthly_amount_subscribed|floatformat:0|intcomma }} DAI
+          </p>
+          <p class="font-caption {% if grant.clr_matching %} my-2 {% endif %}">
+            of {{ grant.amount_goal|floatformat:0|intcomma }} DAI goal
+          </p>
         </div>
-        <div class="grant-item__funding-item">
-          <div class="grant-item__funding-number font-body">{{ grant.amount_goal|floatformat:2|intcomma }} DAI</div>
-          <div class="grant-item__funding-label font-caption">{% trans ' Monthly Goal' %}</div>
+
+        <div class="offset-2 col-8 text-center text-xl-left offset-xl-0 col-xl-6">
+          <p class="sub-title mb-0 font-caption">TOTAL FUNDED</p>
+          <p class="font-title mb-0 font-weight-bold">
+            {{ grant.amount_received|floatformat:0|intcomma }} DAI
+          </p>
+
+          {% if grant.clr_matching %}
+            <span class="mr-2 font-caption">+{{ grant.clr_matching|floatformat:0 }} DAI</span>
+            <img src="{% static "v2/images/grants/clr.svg" %}">
+          {% endif %}
+
         </div>
       </div>
+
       {% include 'grants/detail/matching.html' %}
       <div class="grant-item__state mt-3 row">
         <div class="col-6">

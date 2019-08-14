@@ -1,5 +1,9 @@
 /* eslint-disable no-console */
 
+let description = new Quill('#input-description', {
+  theme: 'snow'
+});
+
 $(document).ready(function() {
   if (web3 && web3.eth) {
     web3.eth.net.isListening((error, connectionStatus) => {
@@ -82,7 +86,6 @@ const init = () => {
         data[this.name] = this.value;
       });
 
-
       $('#token_symbol').val($('#js-token option:selected').text());
       $('#token_address').val($('#js-token option:selected').val());
 
@@ -93,21 +96,44 @@ const init = () => {
       // Begin New Deploy Subscription Contract
       let SubscriptionContract = new web3.eth.Contract(compiledSubscription.abi);
 
+      console.log(compiledSubscription.abi);
+
       // These args are baseline requirements for the contract set by the sender. Will set most to zero to abstract complexity from user.
-      let args = [
-        // admin_address
-        web3.utils.toChecksumAddress(data.admin_address),
-        // required token
-        web3.utils.toChecksumAddress(data.denomination),
-        // required tokenAmount
-        web3.utils.toTwosComplement(0),
-        // data.frequency
-        web3.utils.toTwosComplement(0),
-        // data.gas_price
-        web3.utils.toTwosComplement(0),
-        // contract version
-        web3.utils.toTwosComplement(0)
-      ];
+      let args;
+
+      if ($('#contract_version').val() == 1) {
+        args = [
+          // admin_address
+          web3.utils.toChecksumAddress(data.admin_address),
+          // required token
+          web3.utils.toChecksumAddress(data.denomination),
+          // required tokenAmount
+          web3.utils.toTwosComplement(0),
+          // data.frequency
+          web3.utils.toTwosComplement(0),
+          // data.gas_price
+          web3.utils.toTwosComplement(0),
+          // contract version
+          web3.utils.toTwosComplement(1),
+          // trusted relayer
+          web3.utils.toChecksumAddress(data.trusted_relayer)
+        ];
+      } else if ($('#contract_version').val() == 0) {
+        args = [
+          // admin_address
+          web3.utils.toChecksumAddress(data.admin_address),
+          // required token
+          web3.utils.toChecksumAddress(data.denomination),
+          // required tokenAmount
+          web3.utils.toTwosComplement(0),
+          // data.frequency
+          web3.utils.toTwosComplement(0),
+          // data.gas_price
+          web3.utils.toTwosComplement(0),
+          // contract version
+          web3.utils.toTwosComplement(0)
+        ];
+      }
 
       web3.eth.getAccounts(function(err, accounts) {
         web3.eth.net.getId(function(err, network) {
@@ -123,14 +149,15 @@ const init = () => {
           }).on('transactionHash', function(transactionHash) {
             console.log('2', transactionHash);
             $('#transaction_hash').val(transactionHash);
-            const linkURL = etherscan_tx_url(transactionHash);
+            const linkURL = get_etherscan_url(transactionHash);
             let file = $('#img-project')[0].files[0];
             let formData = new FormData();
 
             formData.append('input_image', file);
             formData.append('transaction_hash', $('#transaction_hash').val());
             formData.append('title', $('#input_title').val());
-            formData.append('description', $('#input-description').val());
+            formData.append('description', description.getText());
+            formData.append('description_rich', JSON.stringify(description.getContents()));
             formData.append('reference_url', $('#input-url').val());
             formData.append('admin_address', $('#input-admin_address').val());
             formData.append('contract_owner_address', $('#contract_owner_address').val());

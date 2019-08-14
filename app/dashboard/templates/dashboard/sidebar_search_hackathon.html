@@ -1,0 +1,84 @@
+{% comment %}
+    Copyright (C) 2018 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<link rel="stylesheet" href={% static "v2/css/sidebar_search.css" %}>
+<style>
+  form .col:first-child {
+    border-top: none;
+  }
+
+  .sidebar_search {
+    padding: 20px 3rem;
+  }
+
+</style>
+
+<div class="sidebar_search font-body">
+  <p id="expand" class="text-right font-caption font-weight-semibold mb-0">
+    {% trans "Expand Filter" %}
+    <i class="fas fa-chevron-down"></i>
+  </p>
+  <p id="minimize" class="text-right font-caption font-weight-semibold">
+    {% trans "Minimize Filter" %}
+    <i class="fas fa-chevron-up"></i>
+  </p>
+  <form>
+    <div class="col">
+      <div class="col-12 subheading">
+        {% trans "Sponsors" %}
+      </div>
+
+      <div class="col-12 options" id="list-orgs">
+
+        <div class="form__radio option mb-2">
+          <input name="org" id="any_org" type="radio" value="any" checked="">
+          <label class="filter-label" for="any_org">All</label>
+        </div>
+
+            
+        {% for org in orgs %}
+          <div class="form__radio option {{org.org_name}}">
+            <input name="org" id="{{org.org_name}}" type="radio" value="{{org.org_name}}" val-ui="Turing-Chain">
+            <label class="filter-label" for="{{org.org_name}}">
+              <img src="{{org.avatar_url}}" class="rounded-circle" width="24" height="24"> {{org.display_name}}
+            </label>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="col" id="network-filter" style="display: hidden;">
+      <div class="col-12 subheading">{% trans "Network" %}</div>
+      <div class="col-12 options">
+        <div class="checkbox_container">
+          <input name="network" id="rinkeby" type="checkbox" value="rinkeby" val-ui='Rinkeby' />
+          <span class="checkbox"></span>
+          <div class="filter-label">
+            <label for=rinkeby>{% trans "Rinkeby" %}</label>
+          </div>
+        </div>
+        <div class="checkbox_container">
+          <input name="network" id="mainnet" type="checkbox" value="mainnet" val-ui='Mainnet' checked />
+          <span class="checkbox"></span>
+          <div class="filter-label">
+            <label for=mainnet>{% trans "Mainnet" %}</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

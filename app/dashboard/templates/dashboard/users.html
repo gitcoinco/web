@@ -1,0 +1,265 @@
+{% comment %}
+    Copyright (C) 2019 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static email_obfuscator add_url_schema avatar_tags %}
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href={% static "v2/css/users.css" %} />
+    <link rel="stylesheet" href={% static "v2/css/tag.css" %} />
+    <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
+    <link rel="stylesheet" href="{% static "v2/css/forms/select.css" %}" />
+  </head>
+
+  <body class="interior {{active}} g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'shared/nav.html' %}
+    </div>
+    <div class="" id="gc-users-directory" v-cloak>
+
+      <div class="container-fluid">
+        <nav class="search-section p-5">
+          <div class="d-flex flex-grow-1" id="usersFilters">
+            <form class="form-inline my-2 flex-fill justify-content-center">
+              <div class="input-group w-50">
+                <input class="form-control form-control-lg" v-model="searchTerm" type="search" placeholder="Search" aria-label="Search">
+                <div class="input-group-append">
+                  <button type="submit" class="btn input-group-text btn-search" @click.prevent="searchUsers()"> <i class="fas fa-search"></i></button>
+                </div>
+                <!-- <button class="btn btn-outline-success my-2 my-sm-0" @click.prevent="searchUsers()">Search</button> -->
+              </div>
+            </form>
+          </div>
+        </nav>
+      </div>
+      <div class="sidebar-container flex-column flex-lg-row">
+        <transition name="fade">
+          <nav v-show="showFilters" class="sidebar flex-fill p-4" role="navigation">
+            <div class="g-multiselect pb-4 border-bottom form-group">
+              <label for="skills" class="font-weight-bold">Skills</label>
+              <div class="form__select2">
+                <select2 :options="skills" v-model="params.skills" data-placeholder="e.g. HTML, CSS" data-tags="true" multiple class="form-control">
+                  <option disabled value="0">Select one</option>
+                </select2>
+              </div>
+            </div>
+            <div class="pb-4 border-bottom form-group">
+              <label for="bounty-completed" class="font-weight-bold">Bounties Completed</label>
+              <div class="form__select2">
+                <select2 v-model="params.bounties_completed" data-minimum-results-for-search="Infinity" class="form-control">
+                  <option value="" selected="true">All</option>
+                  <option value="0,5">0-5</option>
+                  <option value="5,10">5-10</option>
+                  <option value="10,15">10-15</option>
+                  <option value="15,20">15-20</option>
+                </select2>
+              </div>
+            </div>
+            <div class="pb-4 border-bottom form-group">
+              <label for="leaderboard_rank" class="font-weight-bold">Leaderboard Rank</label>
+              <div class="form__select2">
+                <select2 v-model="params.leaderboard_rank" data-minimum-results-for-search="Infinity" class="form-control">
+                  <option value="" selected="true">All</option>
+                  <option value="0,5">0-5</option>
+                  <option value="5,10">5-10</option>
+                  <option value="10,15">10-15</option>
+                  <option value="15,20">15-20</option>
+                </select2>
+              </div>
+            </div>
+            <div class="pb-2 border-bottom form-group">
+              <div class="w-100 p-2">
+                <fieldset class="">
+                  <label for="" class="font-weight-bold">Star Rating</label>
+                  <div class="rating font-smaller-4">
+                    <input type="radio" id="rating-5" name="rating" value="5" v-model="params.rating" />
+                    <label class ="rating-star full" for="rating-5" data-toggle="tooltip" title="It was great - 5 stars"></label>
+                    <input type="radio" id="rating-4" name="rating" value="4" v-model="params.rating" />
+                    <label class ="rating-star full" for="rating-4" data-toggle="tooltip" title="It was good - 4 stars"></label>
+                    <input type="radio" id="rating-3" name="rating" value="3" v-model="params.rating" />
+                    <label class ="rating-star full" for="rating-3" data-toggle="tooltip" title="It was okay - 3 stars"></label>
+                    <input type="radio" id="rating-2" name="rating" value="2" v-model="params.rating" />
+                    <label class ="rating-star full" for="rating-2" data-toggle="tooltip" title="It was bad - 2 stars"></label>
+                    <input type="radio" id="rating-1" name="rating" value="1" v-model="params.rating" />
+                    <label class ="rating-star full" for="rating-1" data-toggle="tooltip" title="It was terrible - 1 star"></label>
+                  </div>
+                </fieldset>
+              </div>
+            </div>
+            <div class="g-multiselect pb-4 border-bottom form-group">
+              <label for="organisations" class="font-weight-bold">Organisation</label>
+              <div class="font-smaller">
+                <input v-model.lazy="params.organisation" data-placeholder="e.g. Gitcoin" data-tags="true" class="form-control">
+              </div>
+            </div>
+            <button class="btn blue" @click="params = {};">Reset Filters</button>
+          </nav>
+        </transition>
+        <div class="container pt-4" @scroll.passive="onScroll($event)">
+          <button class="blue btn font-smaller-1 font-weight-bold" @click="showFilters = !showFilters">[[ showFilters ? 'Hide' : 'Show' ]] filters <i class="fas fa-filter"></i></button>
+          <div class="py-5 mt-4">
+            <div v-if="noResults" class="text-center">
+              <img src="{% static 'v2/images/shrug_bot.png' %}" alt="nothing found" width="316" height="221">
+              <p class="mt-4 font-weight-bold mb-0">No users found</p>
+              <button class="btn blue" @click="params = {}; searchUsers()">Reset Filters</button>
+            </div>
+            <div class="grid-4">
+              <div v-for="user in users" class="card card-user shadow-sm border-0" :key="user.id">
+                <div class="d-flex flex-column py-1 bg-lightblue">
+                  <button class="btn position-absolute align-self-end" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>
+                  <div class="dropdown-menu dropdown-menu-right">
+                    <a :href="`/funding/new?invite=${ user.id }`" target="_blank" class="dropdown-item">Fund bounty</a>
+                    <div class="dropdown-divider"></div>
+                    <a :href="`/profile/${ user.handle }`" class="dropdown-item" target="_blank">View profile</a>
+                  </div>
+                  <img class="rounded-circle shadow-sm mx-auto mt-n5 mb-3 bg-white" width="113" height="113" :src="`/dynamic/avatar/${ user.handle }`"/>
+                  <h5 class="text-center card-user_name">
+                    [[ user.name || user.handle ]]
+                    <span v-if="user.verification">
+                      <img src="{% static 'v2/images/badge-verify.svg' %}" width="15" height="15" title="Verified user" alt="verify badget">
+                    </span>
+                  </h5>
+                  <a :href="`/profile/${ user.handle }`" class="text-center d-block">
+                    @[[ user.handle ]]
+                  </a>
+                  <small class="text-center">
+                    Joined: <time :datetime="[[ user.created_on ]]" :title="[[ user.created_on ]]">[[ user.created_on | moment ]]</time>
+                  </small>
+                  <div class="card-user_stars text-center my-2">
+                    <i class="far fa-star" :class="star <= user.avg_rating.overall.toFixed() ? 'fas' : 'far'" v-for="star in user.avg_rating.overall.toFixed(), 5"></i>
+                    ([[ user.avg_rating.total_rating ]] ratings)
+                  </div>
+                  <small class="text-center pb-1" v-if="user.previously_worked">
+                    <i class="far fa-handshake mr-1"></i>Worked with you
+                  </small>
+                </div>
+                <div class="card-body  d-flex flex-column justify-content-between">
+                  <div v-if="user.keywords" class="text-center">
+                    <template v-for="keyword in user.keywords">
+                      <span class="badge badge--bluelight">[[ keyword ]]</span>[[ ' ' ]]
+                    </template>
+                  </div>
+                  <div class="text-center my-1 font-smaller-1">
+                    <a :href="`https://github.com/${ user.handle }`" target="_blank" rel="noopener noreferrer" >
+                      <i class="fab fa-github"></i>
+                    </a>
+                    <a :href="`${ user.blog }`" target="_blank" rel="noopener noreferrer" v-if="user.blog">
+                      <i class="fas fa-home"></i>
+                    </a>
+                    <a :href="`https://www.linkedin.com/in/${ user.linkedin_url }`" v-if="user.linkedin_url">
+                      <i class="fab fa-linkedin-in"></i>
+                    </a>
+                  </div>
+                  <div class="text-center" id="job_status" v-if="user.show_job_status">
+                    <a v-if="user.resume && user.job_search_status !== 'N'" :href="`${media_url}${user.resume}`" download data-toggle="tooltip" title="Download resume">
+                      <i class="fa fa-briefcase mr-2" aria-hidden="true"></i> [[ user.job_status ]]
+                    </a>
+                    <span v-else><i class="fa fa-briefcase mr-2" aria-hidden="true"></i> [[ user.job_status ]]</span>
+                  </div>
+                  <div class="text-center">
+                    <span v-if="user.position_contributor > 0"><b>#[[ user.position_contributor ]]</b> contributor</span>  <span v-if="user.position_funder > 0"><b>#[[ user.position_funder ]]</b> funder</span>
+                  </div>
+                  <div class="text-center">
+                    <b>[[ user.work_done ]]</b> bounties completed
+                  </div>
+                  <div class="text-center mt-2">
+                    <button v-if="funderBounties.length" data-toggle="modal" data-target="#userModal" class="btn btn-sm btn-gc-blue" @click="openBounties(user)">Invite to Bounty</button>
+                    <a v-if="isFunder && !funderBounties.length" :href="`/funding/new?invite=${ user.id }`" target="_blank" class="btn btn-sm btn-gc-blue">Fund Bounty</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <loading-screen v-if="isLoading"></loading-screen>
+          </div>
+        </div>
+      </div>
+      <modal ref="user-modal" >
+        <div slot="header" v-if="userSelected.handle">
+          <div class="d-flex flex-column align-items-center">
+            <h6 class="font-weight-bold mb-3">Invite User to Bounty</h6>
+            <img class="rounded-circle mx-auto mb-3" width="64" height="64" :src="`/dynamic/avatar/${ userSelected.handle }`"/>
+            <span>[[ userSelected.name ]]</span>
+            <a :href="`/profile/${ userSelected.handle }`" class="text-center d-block" target="_blank">
+              [[ userSelected.handle ]]
+            </a>
+          </div>
+        </div>
+        <div slot="body" v-if="userSelected.handle">
+          <div v-if="funderBounties.length">
+            <div class="my-2 text-center">
+              <b>Select a bounty</b> or <a :href="`/funding/new?invite=${ userSelected.id }`" target="_blank" class="font-weight-bold">create a new one</a>
+            </div>
+            <div class="bounties-box">
+              <div v-for="bounty in funderBounties" :key="bounty.id" @click="bountySelected = bounty" v-bind:class="{ 'btn-gc-blue': bountySelected && bounty.id === bountySelected.id, 'hidden': contributorInvite === userSelected.handle && currentBounty == bounty.id }"  class="bounty-select py-2 px-3 border-bottom d-flex align-items-center">
+                <img :src="`/dynamic/avatar/${ bounty.funding_organisation || bounty.bounty_owner_github_username }`" class="rounded-circle flex-shrink-0" width="30" height="30">
+                <p class="line-clamp font-smaller-2 my-0 mx-2">
+                  [[ bounty.title ]]
+                </p>
+                <div class="ml-auto flex-shrink-0">
+                  <span class="tag token">[[ bounty.value_true ]] [[ bounty.token_name ]]</span>
+                  <span class="tag usd">[[ bounty.value_in_usdt_now ]] USD</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div v-else class="text-center font-subheader mt-4">
+            <p class="font-weight-semibold">You've got NO open bounties</p>
+            <p class="font-body">
+              <a :href="`/funding/new?invite=${ userSelected.id }`" target="_blank">Create a bounty</a>
+              to invite [[ userSelected.handle ]]
+            </p>
+          </div>
+        </div>
+        <div slot="footer" class="d-flex align-items-center flex-fill">
+          <a v-if="bountySelected" :href="bountySelected.url" target="_blank" class="mr-5">view bounty</a>
+          <div class="ml-auto">
+            <button class="btn btn-outline-gc-blue" data-dismiss="modal">Cancel</button>
+            <button  v-if="funderBounties.length" class="btn btn-gc-blue" :disabled="!bountySelected" @click="sendInvite(bountySelected, userSelected.id)">Invite</button>
+          </div>
+        </div>
+      </modal>
+    </div>
+
+    <script type="text/x-template" id="select2-template">
+      <select>
+        <slot></slot>
+      </select>
+    </script>
+
+    {% csrf_token %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+    {% include 'shared/messages.html' %}
+
+    <script>
+      $('body').bootstrapTooltip({
+        selector: '[data-toggle="tooltip"]'
+      });
+      const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+      document.keywords = {{keywords | safe}};
+    </script>
+    <script src="{% static "v2/js/vue-components.js" %}"></script>
+    <script src="{% static "v2/js/users.js" %}"></script>
+
+  </body>
+</html>

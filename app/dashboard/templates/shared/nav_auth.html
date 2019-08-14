@@ -25,6 +25,10 @@
     </a>
     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
       {% if source == 'authed' %}
+        <!-- <a class="dropdown-item" href="{% url "dashboard" %}">
+          <i class="fas fa-tachometer-alt"></i>
+          {% trans "Dashboard" %}
+        </a> -->
         <a class="dropdown-item" href="{% url "tip" %}">
           <i class="far fa-paper-plane"></i>
           {% trans "Send Tip" %}
@@ -45,7 +49,7 @@
         </a>
         <a class="dropdown-item" href="{% url "explorer" %}?bounty_filter=createdByMe&network=mainnet&order_by=-web3_created">
           <i class="fas"><img src="{% static "v2/images/grants/icons/black.svg" %}"></i>
-          {% trans "My Created Bounties" %}
+          {% trans "My Funded Bounties" %}
         </a>
         <a class="dropdown-item" href="{% url "explorer" %}?bounty_filter=startedByMe&network=mainnet&order_by=-web3_created">
           <i class="fas"><img src="{% static "v2/images/grants/icons/black.svg" %}"></i>

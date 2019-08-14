@@ -3,5 +3,11 @@
     {% include "shared/profile_activities_tip.html" with tip=activity.tip %}
   {% elif activity.bounty %}
     {% include "shared/profile_activities_bounty.html" %}
+  {% elif activity.grant %}
+    {% include "shared/profile_activities_grant.html" %}
+  {% elif activity.subscription %}
+    {% include "shared/profile_activities_subscription.html" %}
+  {% else %}
+    {% include "shared/profile_activities_misc.html" %}
   {% endif %}
 {% endfor %}

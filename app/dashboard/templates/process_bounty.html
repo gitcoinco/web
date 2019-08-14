@@ -143,26 +143,29 @@
     document.bounty_amount_whole = {{bounty.get_value_true}};
     document.bounty_amount_wei = {{bounty.value_in_token}};
     document.token_address = '{{bounty.token_address}}';
+    {% if open_fulfillments %}
+      let fulfillers= [];
+
+      {% for fulfillment in open_fulfillments %}
+        fulfillers.push('{{ fulfillment.fulfiller_github_username }}');
+
+      {% endfor %}
+      sessionStorage['fulfillers'] = fulfillers;
+    {% endif %}
   </script>
 
   <!-- jQuery -->
-  <script src="{% static "v2/js/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
-  <script src="{% static "v2/js/secrets.min.js" %}"></script>
+  <script src="{% static "v2/js/lib/secrets.min.js" %}"></script>
   <script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
   <script src="{% static "onepager/js/send.js" %}"></script>
-  <script src="{% static "v2/js/popper.min.js" %}"></script>
-  <script src="{% static "v2/js/bootstrap.min.js" %}" crossorigin="anonymous"></script>
   <script>
-    var bootstrapTooltip = $.fn.tooltip.noConflict()
-    var bootstrapModal = $.fn.modal.noConflict()
-    $.fn.runTooltip = bootstrapTooltip
-    $.fn.bootstrapModal = bootstrapModal
     $('[data-toggle="popover"]').popover()
-    $('[data-toggle="tooltip"]').runTooltip();
+    $('[data-toggle="tooltip"]').bootstrapTooltip();
   </script>
+  <script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>
   <script src="{% static "v2/js/rating.js" %}"></script>
-
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>

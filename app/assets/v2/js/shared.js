@@ -8,11 +8,11 @@
  *    */
 var show_modal_handler = (modalUrl) => {
 	  const url = modalUrl;
-	
+
 	   return (e) => {
 		       var modals = $('#modal');
 		       var modalBody = $('#modal .modal-content');
-		   
+
 	        modals.off('show.bs.modal');
 		       modals.on('show.bs.modal', () => {
 		         $('#modal .modal-content').load(modalUrl);
@@ -20,6 +20,11 @@ var show_modal_handler = (modalUrl) => {
 		       e.preventDefault();
 		     };
 };
+
+/**
+ * how many decimals are allowed in token displays
+ */
+let token_round_decimals = 3;
 
 /**
  * Validates if input is a valid URL
@@ -67,24 +72,8 @@ var callFunctionWhenweb3Available = function(f) {
 
 var loading_button = function(button) {
   button.prop('disabled', true);
-  button.addClass('disabled');
-  button.prepend('<img src=' + static_url + 'v2/images/loading_white.gif style="max-width:20px; max-height: 20px">').addClass('disabled');
+  button.prepend('<img src=' + static_url + 'v2/images/loading_white.gif style="max-width:20px; max-height: 20px">');
 };
-
-var attach_close_button = function() {
-  $('body').delegate('.alert .closebtn', 'click', function(e) {
-    $(this).parents('.alert').remove();
-    $('.alert').each(function(index) {
-      if (index == 0) $(this).css('top', 0);
-      else {
-        var new_top = (index * 66) + 'px';
-
-        $(this).css('top', new_top);
-      }
-    });
-  });
-};
-
 
 var update_metamask_conf_time_and_cost_estimate = function() {
   var confTime = 'unknown';
@@ -131,6 +120,8 @@ var get_updated_metamask_conf_time_and_cost = function(gasPrice) {
     ethAmount = Math.round(1000000 * eth_amount_unrounded) / 1000000;
     usdAmount = Math.round(100 * eth_amount_unrounded * document.eth_usd_conv_rate) / 100;
   }
+
+  if (typeof document.conf_time_spread == 'undefined') return;
 
   for (var i = 0; i < document.conf_time_spread.length - 1; i++) {
     var this_ele = (document.conf_time_spread[i]);
@@ -223,43 +214,6 @@ var normalizeURL = function(url) {
   return url.replace(/\/$/, '');
 };
 
-var _alert = function(msg, _class) {
-  if (typeof msg == 'string') {
-    msg = {
-      'message': msg
-    };
-  }
-  var numAlertsAlready = $('.alert:visible').length;
-  var top = numAlertsAlready * 66;
-
-  var html = function() {
-    return (
-      `<div class="alert ${_class} g-font-muli" style="top: ${top}px">
-        <div class="message">
-          <div class="content">
-            ${alertMessage(msg)}
-          </div>
-        </div>
-        ${closeButton(msg)}
-      </div>`
-    );
-  };
-
-  $('body').append(html);
-};
-
-var closeButton = function(msg) {
-  var html = (msg['closeButton'] === false ? '' : '<span class="closebtn" >&times;</span>');
-
-  return html;
-};
-
-var alertMessage = function(msg) {
-  var html = `<strong>${typeof msg['title'] !== 'undefined' ? msg['title'] : ''}</strong>${msg['message']}`;
-
-  return html;
-};
-
 var timestamp = function() {
   return Math.floor(Date.now() / 1000);
 };
@@ -282,20 +236,18 @@ var waitingStateActive = function() {
 };
 
 const notify_funder = (network, std_bounties_id, data) => {
-	  var request_url = '/actions/bounty/' + network + '/' + std_bounties_id + '/notify/funder_payout_reminder/';
-	
-	   showBusyOverlay();
-	  $.post(request_url, data).then(result => {
-		      hideBusyOverlay();
-		  
-		       _alert({message: gettext('Sent payout reminder')}, 'success');
-		      $('#notifyFunder a').addClass('disabled');
-		      return true;
-		    }).fail(result => {
-			        hideBusyOverlay();
-			    
-			         _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
-			      });
+  var request_url = '/actions/bounty/' + network + '/' + std_bounties_id + '/notify/funder_payout_reminder/';
+
+  showBusyOverlay();
+  $.post(request_url, data).then(() => {
+    hideBusyOverlay();
+    _alert({message: gettext('Sent payout reminder')}, 'success');
+    $('#notifyFunder a').addClass('disabled');
+    return true;
+  }).fail(() => {
+    hideBusyOverlay();
+    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
+  });
 };
 
 /** Add the current profile to the interested profiles list. */
@@ -436,7 +388,7 @@ var pull_interest_list = function(bounty_pk, callback) {
 };
 
 var profileHtml = function(handle, name) {
-  return '<span><a href="https://gitcoin.co/profile/' +
+  return '<span><a href="/profile/' +
     handle + '" target="_blank">' + (name ? name : handle) + '</span></a>';
 };
 
@@ -676,6 +628,8 @@ var retrieveIssueDetails = function() {
   $.each(target_eles, function(i, ele) {
     ele.addClass('loading');
   });
+  $('#sync-issue').children('.fas').addClass('fa-spin');
+
   $.get(request_url, function(result) {
     result = sanitizeAPIResults(result);
     if (result['keywords']) {
@@ -686,17 +640,22 @@ var retrieveIssueDetails = function() {
         placeholder: 'Select tags',
         data: keywords,
         tags: 'true',
-        allowClear: true
-      });
+        allowClear: true,
+        tokenSeparators: [ ',', ' ' ]
+      }).trigger('change');
 
     }
-    target_eles['description'].val(result['description']);
     target_eles['title'].val(result['title']);
+    target_eles['description'].val(result['description']);
+    $('#no-issue-banner').hide();
+    $('#issue-details, #issue-details-edit').show();
 
-    $('#title--text').html(result['title']); // TODO: Refactor
+    // $('#title--text').html(result['title']); // TODO: Refactor
     $.each(target_eles, function(i, ele) {
       ele.removeClass('loading');
     });
+    $('#sync-issue').children('.fas').removeClass('fa-spin');
+
   }).fail(function() {
     $.each(target_eles, function(i, ele) {
       ele.removeClass('loading');
@@ -991,7 +950,7 @@ var listen_for_web3_changes = async function() {
     }
   }
 
-  if (window.ethereum && !document.has_checked_for_ethereum_enable) {
+  if (window.ethereum && !document.has_checked_for_ethereum_enable && window.ethereum._metamask) {
     document.has_checked_for_ethereum_enable = true;
     is_metamask_approved = await window.ethereum._metamask.isApproved();
     is_metamask_unlocked = await window.ethereum._metamask.isUnlocked();
@@ -1039,47 +998,7 @@ attach_change_element_type();
 
 window.addEventListener('load', function() {
   setInterval(listen_for_web3_changes, 1000);
-  attach_close_button();
 });
-
-var promptForAuth = function(event) {
-  var denomination = $('#token option:selected').text();
-  var tokenAddress = $('#token option:selected').val();
-
-  if (!denomination) {
-    return;
-  }
-
-  if (denomination == 'ETH') {
-    $('input, textarea, select').prop('disabled', '');
-  } else {
-    var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
-    var from = web3.eth.coinbase;
-    var to = bounty_address();
-
-    token_contract.allowance.call(from, to, function(error, result) {
-      if (error || result.toNumber() == 0) {
-        if (!document.alert_enable_token_shown) {
-          _alert(
-            gettext('To enable this token, go to the ') +
-            '<a style="padding-left:5px;" href="/settings/tokens">' +
-            gettext('Token Settings page and enable it.') +
-            '</a> ' +
-            gettext('This is only needed once per token.'),
-            'warning'
-          );
-        }
-        document.alert_enable_token_shown = true;
-
-        $('input, textarea, select').prop('disabled', 'disabled');
-        $('select[name=denomination]').prop('disabled', '');
-      } else {
-        $('input, textarea, select').prop('disabled', '');
-      }
-    });
-
-  }
-};
 
 var setUsdAmount = function(event) {
   var amount = $('input[name=amount]').val();
@@ -1133,7 +1052,7 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
 
     const divisor = Math.pow(10, decimals);
 
-    result['rounded_amount'] = normalizeAmount(result['value_in_token'] / divisor, decimals);
+    result['rounded_amount'] = normalizeAmount(result['value_in_token'], decimals);
 
     const crowdfunding = result['additional_funding_summary'];
 
@@ -1221,7 +1140,7 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
     }
 
     if (renderForExplorer) {
-      if (typeof web3 != 'undefined' && web3.eth.coinbase == result['bounty_owner_address']) {
+      if (typeof web3 != 'undefined' && typeof web3.eth != 'undefined' && web3.eth.coinbase == result['bounty_owner_address']) {
         result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">mine</span></a>';
       } else if (result['fulfiller_address'] !== '0x0000000000000000000000000000000000000000') {
         result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">' + result['status'] + '</span></a>';
@@ -1265,14 +1184,12 @@ const renderFeaturedBountiesFromResults = (results, renderForExplorer) => {
   for (let i = 0; i < results.length; i++) {
     const result = results[i];
     let decimals = 18;
-    const divisor = Math.pow(10, decimals);
     const relatedTokenDetails = tokenAddressToDetailsByNetwork(result['token_address'], result['network']);
 
     if (relatedTokenDetails && relatedTokenDetails.decimals) {
       decimals = relatedTokenDetails.decimals;
     }
-
-    result['rounded_amount'] = normalizeAmount(result['value_in_token'] / divisor, decimals);
+    result['rounded_amount'] = normalizeAmount(result['value_in_token'], decimals);
 
     html += tmpl.render(result);
   }
@@ -1385,7 +1302,11 @@ function toggleExpandableBounty(evt, selector) {
 }
 
 function normalizeAmount(amount, decimals) {
-  return Math.round(amount * 10 ** decimals) / 10 ** decimals;
+  return Math.round((parseInt(amount) / Math.pow(10, decimals)) * 1000) / 1000;
+}
+
+function round(amount, decimals) {
+  return Math.round(((amount) * Math.pow(10, decimals))) / Math.pow(10, decimals);
 }
 
 function newTokenTag(amount, tokenName, tooltipInfo, isCrowdfunded) {
@@ -1397,14 +1318,11 @@ function newTokenTag(amount, tokenName, tooltipInfo, isCrowdfunded) {
   span.innerHTML = amount + ' ' + tokenName +
     (isCrowdfunded ? '<i class="fas fa-users ml-1"></i>' : '');
 
+  p.className = 'inner-tooltip';
   p.appendChild(span);
   ele.appendChild(p);
-
   if (tooltipInfo) {
-    ele.title =
-      '<div class="tooltip-info tooltip-sm">' +
-      tooltipInfo +
-      '</div>';
+    ele.title = tooltipInfo;
   }
 
   return ele;
@@ -1550,3 +1468,33 @@ $(document).ready(function() {
     });
   });
 });
+
+function check_balance_and_alert_user_if_not_enough(
+  tokenAddress,
+  amount,
+  msg = 'You do not have enough tokens to perform this action.') {
+
+  if (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000') {
+    return;
+  }
+
+  let token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+  let from = web3.eth.coinbase;
+  let token_details = tokenAddressToDetails(tokenAddress);
+  let token_decimals = token_details['decimals'];
+  let token_name = token_details['name'];
+
+  token_contract.balanceOf.call(from, function(error, result) {
+    if (error) return;
+    let balance = result.toNumber() / Math.pow(10, token_decimals);
+    let balance_rounded = Math.round(balance * 10) / 10;
+
+    if (parseFloat(amount) > balance) {
+      let msg1 = gettext(msg);
+      let msg2 = gettext(' You have ') + balance_rounded + ' ' + token_name + ' ' + gettext(' but you need ') + amount + ' ' + token_name;
+
+      _alert(msg1 + msg2, 'warning');
+    }
+  });
+
+}

@@ -23,9 +23,10 @@
   <div class="col-8 font-caption order_by">
     <div class="heading">{% trans "Sort by" %} </div>
     <select name="sort_option" id="sort_option">
+      <option value="recently_marketed">{% trans "Recently Marketed" %}</option>
       <option value="-web3_created">{% trans "Created: Recent" %}</option>
       <option value="web3_created">{% trans "Created: Oldest" %}</option>
-      <option value="-_val_usd_db">{% trans "Value: Highest" %}</option>
+      <option value="-_val_usd_db" {% if hackathon %}selected{% endif %}>{% trans "Value: Highest" %}</option>
       <option value="_val_usd_db">{% trans "Value: Lowest" %}</option>
     </select>
   </div>

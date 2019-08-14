@@ -1,5 +1,4 @@
 $(document).ready(function() {
-
   $('#kudos-section').on('click keypress', '.flip-card', e => {
     if ($(e.target).is('a')) {
       e.stopPropagation();
@@ -12,6 +11,7 @@ $(document).ready(function() {
 
   const tabSection = document.querySelector('#activity-tabs-sections');
   const updateViewBtn = document.querySelector('#update-view-btn');
+
   let fetchInProgress = false;
 
   function updateView(ignoreScrollOffset) {
@@ -22,7 +22,7 @@ $(document).ready(function() {
     }
 
     const activityContainer = document.querySelector('.tab-section.active .activities');
-    const activityCount = parseInt(activityContainer.getAttribute('count')) || 0;
+    const activityCount = activityContainer ? parseInt(activityContainer.getAttribute('count')) || 0 : 0;
     const loadingImg = document.querySelector('.loading_img');
 
     if (activityContainer.children.length < activityCount) {
@@ -34,12 +34,12 @@ $(document).ready(function() {
 
     if (ignoreScrollOffset || window.scrollY >= tabSection.scrollHeight) {
       const activityName = activityContainer.id;
-      let page = parseInt(activityContainer.getAttribute('page')) || 1;
+      let page = parseInt(activityContainer.getAttribute('page')) || 0;
 
       fetchInProgress = true;
       loadingImg.className = loadingImg.className.replace('hidden', 'visible');
 
-      fetch(location.href.replace(location.hash, '') + '?p=' + (++page) + '&a=' + activityName).then(
+      fetch(location.href.replace(location.hash, '').replace('?', '') + '?p=' + (++page) + '&a=' + activityName).then(
         function(response) {
           if (response.status === 200) {
             response.text().then(

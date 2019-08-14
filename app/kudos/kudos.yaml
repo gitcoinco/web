@@ -2032,7 +2032,7 @@
     - gitcoin ambassador
   image: gitcoin_ambassador.svg
 - name: twitter_follower__thanksgiving_turkey_2018
-  description: This Kudos is a thank you to Gitcoin's twitter followers at https://twitter.com/getgitcoin.
+  description: This Kudos is a thank you to Gitcoin's twitter followers at https://twitter.com/gitcoin.
   priceFinney: 10
   numClonesAllowed: 250
   tags: 
@@ -2799,6 +2799,13 @@
     - evolution
     - blopblop
   image: consensys_2.0.svg
+- name: consensys_2_1
+  description: Consensys 2.1
+  priceFinney: 10
+  numClonesAllowed: 500
+  tags:
+    - consensys
+  image: consensys_2_1.svg
 - name: ethdenver_winner_adoption_driver
   artist: mladen
   description: For the ETHDenver 2019 winner in the category of 'Adoption Driver'
@@ -4044,10 +4051,983 @@
   priceFinney: 10
   artist: Mladen
   numClonesAllowed: 1000
-  to_address: '0x911143d946ba5d467bfc476491fdb235fef4d667'
+  to_address: '0xfdb33f8ac7ce72d7d4795dd8610e323b4c122fbb'
   tags: 
    - ENS
    - Naming
   image: ENS.svg
-
+- name: Pikaaaa
+  artist: yash412
+  to_address: '0xa40c2140a4B369Eb5AAccb2E7BADCa50E2892A74'
+  description: Pika Pika!
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - Pokemon
+    - Pikachu
+    - 90s
+  image: pikachu.svg
+- name: Snor-ey
+  artist: yash412
+  to_address: '0xa40c2140a4B369Eb5AAccb2E7BADCa50E2892A74'
+  description: Sleeping, do not disturb or I'll errupt. 
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - Pokemon
+    - Pikachu
+    - 90s
+  image: snorlax.svg
+- name: Charm-bot
+  artist: yash412
+  to_address: '0xa40c2140a4B369Eb5AAccb2E7BADCa50E2892A74'
+  description: Playing with fire! 
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - Pokemon
+    - Charmander
+    - 90s
+  image: charmander.svg
+- name: Eeveeee_bot
+  artist: yash412
+  to_address: '0xa40c2140a4B369Eb5AAccb2E7BADCa50E2892A74'
+  description: Evolution is second nature to me.
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - Pokemon
+    - eevee
+    - 90s
+  image: eevee.svg
+- name: Bullba_bot
+  artist: yash412
+  to_address: '0xa40c2140a4B369Eb5AAccb2E7BADCa50E2892A74'
+  description: As green as this world itself, oh wait. 
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - Pokemon
+    - bullbasaur
+    - 90s
+  image: bullbasaur.svg
+- name: Jiggly_bot
+  artist: yash412
+  to_address: '0xa40c2140a4B369Eb5AAccb2E7BADCa50E2892A74'
+  description: Jiggly Jiggly Jiggly Puff!
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - Pokemon
+    - jigglypuff
+    - 90s
+  image: jigglypuff.svg
+- name: Meow_bot
+  artist: yash412
+  to_address: '0xa40c2140a4B369Eb5AAccb2E7BADCa50E2892A74'
+  description: Team Rocket! 
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - Pokemon
+    - meowth
+    - 90s
+  image: meowth.svg
+- name: Pidgeon_bot
+  artist: yash412
+  to_address: '0xa40c2140a4B369Eb5AAccb2E7BADCa50E2892A74'
+  description: Fly high like a pidgey?
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - Pokemon
+    - pidgey
+    - 90s
+  image: pidgey.svg
+- name: Holy_Hand_Grenade
+  artist: yash412
+  to_address: '0xa40c2140a4B369Eb5AAccb2E7BADCa50E2892A74'
+  description: First shalt thou take out the Holy Pin.  Then, shalt thou count to three, no more, no less.  Three shalt be the number thou shalt count, and the number of the counting shall be three. Once the number three, being the third number, be reached, then lobbest thou thy Holy Hand Grenade of Antioch towards thy foe, who, being naughty in my sight, shall snuff it
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - Grenade
+    - Holy
+  image: hhg.svg
+- name: Ambo_Launch_Kudos
+  artist: jbhav24
+  to_address: '0xCb1D5db9bD5C41b8B3cf223920554cA1A58F6A6C'
+  description: A special gift to the early users of the Ambo Wallet! 
+  priceFinney: 1
+  numClonesAllowed: 1000
+  tags:
+    - Ambo
+    - MyCrypto
+  image: ambo_lambo.svg
+- name: bot_kitty
+  artist: emiwatanabe422
+  to_address: '0x9a5eF5D1AE95ca2c16872e8Dd4065b88a8441A5c'
+  description: A whole Crypto Kitty bot. Collect all of the Crypto Kitty bot Kudos for a chance to win a real genuine Crypto Kitty!
+  priceFinney: 20
+  numClonesAllowed: 500
+  tags:
+    - Crypto Kitty
+    - Ethereal Summit
+    - Collectable
+  image: cryptokitty/cryptokitty.svg
+- name: cryptokitty_head
+  artist: emiwatanabe422
+  to_address: '0x9a5eF5D1AE95ca2c16872e8Dd4065b88a8441A5c'
+  description: The head of a Crypto Kitty bot. Collect all of the Crypto Kitty bot Kudos for a chance to win a real genuine Crypto Kitty!
+  priceFinney: 20
+  numClonesAllowed: 500
+  tags:
+    - Crypto Kitty
+    - Ethereal Summit
+    - Collectable
+  image: cryptokitty/cryptokitty_head.svg
+- name: cryptokitty_arm
+  artist: emiwatanabe422
+  to_address: '0x9a5eF5D1AE95ca2c16872e8Dd4065b88a8441A5c'
+  description: The arm of a Crypto Kitty bot. Collect all of the Crypto Kitty bot Kudos for a chance to win a real genuine Crypto Kitty!
+  priceFinney: 20
+  numClonesAllowed: 500
+  tags:
+    - Crypto Kitty
+    - Ethereal Summit
+    - Collectable
+  image: cryptokitty/cryptokitty_arm.svg
+- name: cryptokitty_body
+  artist: emiwatanabe422
+  to_address: '0x9a5eF5D1AE95ca2c16872e8Dd4065b88a8441A5c'
+  description: The body of a Crypto Kitty bot. Collect all of the Crypto Kitty bot Kudos for a chance to win a real genuine Crypto Kitty!
+  priceFinney: 20
+  numClonesAllowed: 500
+  tags:
+    - Crypto Kitty
+    - Ethereal Summit
+    - Collectable
+  image: cryptokitty/cryptokitty_body.svg
+- name: cryptokitty_tail
+  artist: emiwatanabe422
+  to_address: '0x9a5eF5D1AE95ca2c16872e8Dd4065b88a8441A5c'
+  description: The tail of a Crypto Kitty bot. Collect all of the Crypto Kitty bot Kudos for a chance to win a real genuine Crypto Kitty!
+  priceFinney: 20
+  numClonesAllowed: 500
+  tags:
+    - Crypto Kitty
+    - Ethereal Summit
+    - Collectable
+  image: cryptokitty/cryptokitty_tail.svg
+- name: Fun_time
+  artist: guistf
+  description: Time to remember the best childhood games.
+  priceFinney: 10
+  numClonesAllowed: 500
+  tags:
+    - fun
+    - tamagotchi
+    - Rubiks Cube
+    - strategy
+    - gameboy
+  image: 90_games.svg
+- name: lets_play_some_music
+  artist: guistf
+  description: For those who like a good classic of the 90's.
+  priceFinney: 10
+  numClonesAllowed: 500
+  tags:
+    - music
+    - just for fun
+    - cassette
+    - play
+  image: Cassette.svg
+- name: POGs
+  artist: guistf
+  description: Fun images printed making them supremely collectible.
+  priceFinney: 10
+  numClonesAllowed: 500
+  tags:
+    - Pac man
+    - snakes
+    - game
+    - School
+  image: pogs.svg
+- name: Helper_Fox
+  description: You are a cherished member of the MetaMask community. Thanks for helping!
+  priceFinney: 10
+  numClonesAllowed: 500
+  to_address: "0x12c8ff915ad423cfA1c03E6D0749F1eBAc582959"
+  tags: 
+    - ethereum
+    - metamask
+    - community
+    - bugs
+    - mobile
+  image: metamask_helper.svg
+- name: kitty_part_1
+  description: This is a part of a cryptokitty, collected at Ethereal 2019.
+  priceFinney: 1
+  numClonesAllowed: 2000
+  tags: 
+    - ethereal
+    - cryptokitty
+  image: kitties_asset1.svg
+- name: kitty_part_2
+  description: This is a part of a cryptokitty, collected at Ethereal 2019.
+  priceFinney: 1
+  numClonesAllowed: 2000
+  tags: 
+    - ethereal
+    - cryptokitty
+  image: kitties_asset2.svg
+- name: kitty_part_3
+  description: This is a part of a cryptokitty, collected at Ethereal 2019.
+  priceFinney: 1
+  numClonesAllowed: 2000
+  tags: 
+    - ethereal
+    - cryptokitty
+  image: kitties_asset3.svg
+- name: kitty_part_4
+  description: This is a part of a cryptokitty, collected at Ethereal 2019.
+  priceFinney: 1
+  numClonesAllowed: 2000
+  tags: 
+    - ethereal
+    - cryptokitty
+  image: kitties_asset4.svg
+- name: kitty_part_5
+  description: This is a part of a cryptokitty, collected at Ethereal 2019.
+  priceFinney: 1
+  numClonesAllowed: 2000
+  tags: 
+    - ethereal
+    - cryptokitty
+  image: kitties_asset5.svg
+- name: kitty_part_6
+  description: This is a part of a cryptokitty, collected at Ethereal 2019.
+  priceFinney: 1
+  numClonesAllowed: 2000
+  tags: 
+    - ethereal
+    - cryptokitty
+  image: kitties_asset6.svg
+- name: falcon_bot
+  description: Just for fun, this Gitcoin Robot is a way of celebrating the contributors
+    in your life.
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 100
+  tags:
+  - robot
+  - just for fun
+  - gitcoin
+  image: falcon.svg
+- name: genie_bot
+  description: Just for fun, this Gitcoin Robot is a way of celebrating the contributors
+    in your life.
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 100
+  tags:
+  - robot
+  - just for fun
+  - gitcoin
+  image: genie.svg
+- name: industrial_lunchpale_worker_bot
+  description: Just for fun, this Gitcoin Robot is a way of celebrating the contributors
+    in your life.
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 100
+  tags:
+  - robot
+  - just for fun
+  - gitcoin
+  image: lunchbox.svg
+- name: wonder_bot
+  description: Just for fun, this Gitcoin Robot is a way of celebrating the contributors
+    in your life.
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 100
+  tags:
+  - robot
+  - just for fun
+  - gitcoin
+  image: wonderwoman.svg
+- name: alpha_5_bot
+  description: Just for fun, this Alpha 5 Gitcoin Robot is a way of celebrating the contributors
+    in your life.
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 100
+  tags:
+  - robot
+  - just for fun
+  - gitcoin
+  image: go_go_power_rangers.svg
+- name: blue_spikey_shell
+  description: For the contributor to your repo thats a heat seeking missile for problems
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 100
+  tags:
+  - video game parody
+  - just for fun
+  - gitcoin
+  image: blue_spikey_shells.svg
+- name: pogs_eth_elements
+  description: The Classic 90's Pogs collection with ethereal elements, great for offering unique contributors.
+  priceFinney: 10
+  artist: guistf
+  platform: gitcoin
+  numClonesAllowed: 250
+  to_address: '0xa6d91F3795f934bb5f703724337f39C0f1a95fD5'
+  tags:
+  - pogs
+  - ethereum
+  - gitcoin
+  image: pogs_eth_elements.svg
+- name: ethereal_hackathon
+  description: Do you like epic challenges? Is it euphoric with passion for the development open source
+   between promoters and collaborators ,contributing to technological evolution? So this kudo is for you!
+  priceFinney: 10
+  artist: guistf
+  platform: gitcoin
+  numClonesAllowed: 100
+  to_address: '0xa6d91F3795f934bb5f703724337f39C0f1a95fD5'
+  tags:
+  - ethereal
+  - hackathon
+  - developer
+  image: eth_hackaton.svg
+- name: smart_contract
+  description: This Kudo is to honor the important work of collaborators who audit and report vulnerabilities in smart contracts.
+  priceFinney: 10
+  artist: guistf
+  platform: gitcoin
+  numClonesAllowed: 500
+  to_address: '0xa6d91F3795f934bb5f703724337f39C0f1a95fD5'
+  tags:
+  - smart contract
+  - developer
+  - safe
+  image: smart_contract.svg
+- name: web_assembly_dev
+  description: Do you look for a developer who cares about a fast, efficient and portable code? Safe, readable and debuggable code? Owners of this badge are known to dominate WebAssembly.
+  priceFinney: 15
+  artist: guistf
+  platform: gitcoin
+  numClonesAllowed: 150
+  to_address: '0xa6d91F3795f934bb5f703724337f39C0f1a95fD5'
+  tags:
+  - web assembly
+  - developer
+  - ai
+  - audit
+  - programming
+  - project
+  image: web_assembly_dev.svg
+- name: think_outside_the_box
+  description: The owners of this kudos do not think of obvious solutions. They are collaborators who have put in the power of creativity in solving problems. They do not think outside the box! They think the box does not exist!
+  priceFinney: 10
+  artist: guistf
+  platform: gitcoin
+  numClonesAllowed: 500
+  to_address: '0xa6d91F3795f934bb5f703724337f39C0f1a95fD5'
+  tags:
+  - ideas
+  - agile
+  - creative
+  image: think_outside_the_box.svg
+- name: artificial_intelligence
+  description: AI will be an essential solution for new challenges in the future. Are you looking for your teacher? You have found the collaborator who is beyond your time and who loves to talk to the machines!
+  priceFinney: 40
+  artist: guistf
+  platform: gitcoin
+  numClonesAllowed: 50
+  to_address: '0xa6d91F3795f934bb5f703724337f39C0f1a95fD5'
+  tags:
+  - ai
+  - intelligence
+  - audit
+  - autonomous
+  - machine
+  image: artificial_intelligence.svg
+- name: microsoft
+  artist: mladenpetronijevic
+  to_address: '0x9e3788ff41d4f73051583c6fc8b5642ea5769dc7'
+  description: Kudos from Microsoft!
+  priceFinney: 20
+  numClonesAllowed: 100
+  tags:
+    - Ethereal Virtual Hackathon
+  image: evh2019/microsoft.svg
+- name: quorum
+  artist: mladenpetronijevic
+  to_address: '0x185dc280Db47457550BEf6876a5c9D5a82d228c2'
+  description: Kudos from Quorum!
+  priceFinney: 20
+  numClonesAllowed: 100
+  tags:
+    - Ethereal Virtual Hackathon
+  image: evh2019/quorum.svg
+- name: mythx
+  artist: mladenpetronijevic
+  to_address: '0x393376e59bD40A4FBeDEeD3e44697eC4E00299D9'
+  description: Kudos from MythX!
+  priceFinney: 20
+  numClonesAllowed: 100
+  tags:
+    - Ethereal Virtual Hackathon
+  image: evh2019/mythX.svg
+- name: consensys_labs
+  artist: mladenpetronijevic
+  to_address: '0x249196a49F367841F5FA1Aa6Fd37657CC2Ea693c'
+  description: Kudos from ConsenSys Labs!
+  priceFinney: 20
+  numClonesAllowed: 100
+  tags:
+    - Ethereal Virtual Hackathon
+  image: evh2019/consensys_labs.svg
+- name: fortmatic
+  artist: mladenpetronijevic
+  to_address: '0xE0cef4417a772512E6C95cEf366403839b0D6D6D'
+  description: Kudos from Fortmatic!
+  priceFinney: 20
+  numClonesAllowed: 100
+  tags:
+    - Ethereal Virtual Hackathon
+  image: evh2019/fortmatic.svg
+- name: pegasys
+  artist: jakehaugen
+  to_address: '0xDaA65a7e57766ba333d3f6712937da6D54947085'
+  description: Kudos from PEGASYS!
+  priceFinney: 20
+  numClonesAllowed: 100
+  tags:
+    - Ethereal Virtual Hackathon
+  image: evh2019/pegasys.svg
+- name: ad_ex
+  artist: mladenpetronijevic
+  to_address: '0xd6e371526cdaeE04cd8AF225D42e37Bc14688D9E'
+  description: Kudos from AdEx!
+  priceFinney: 20
+  numClonesAllowed: 100
+  tags:
+    - Ethereal Virtual Hackathon
+  image: evh2019/ad_ex.svg
+- name: BDFL
+  description: Benevolent dictator for life (BDFL) is a title given to a small number of open-source software development leaders, typically project founders who retain the final say in disputes or arguments within the community
+  priceFinney: 10
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 100
+  tags:
+  - just for fun
+  - leadership
+  image: BDFL.svg
+- name: junior_release_manager
+  description: A merit badge for the junior ranger-- err junior release managers in your team.
+  priceFinney: 1
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 100
+  tags:
+  - just for fun
+  - leadership
+  image: junior_release_menager.svg
+- name: glen_award
+  description: GlenAward is created to display the RadicalxChange ideas & other stuff ! Creation inspired by an original idea of @DeanEigenmann !
+  priceFinney: 3000
+  artist: AnonVitalik
+  platform: gitcoin
+  to_address: "0x22e07f416cc960C30139BFef2a4e06bf4d2aA17E"
+  numClonesAllowed: 1
+  tags:
+  - Glen
+  image: glen.svg
+- name: pandoras_box
+  description: For the contributor to your repo who opened Pandoras Box
+  priceFinney: 10
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 100
+  tags:
+  - Pandoras Box
+  image: pandoras_box.svg
+- name: microsoft
+  artist: mladenpetronijevic
+  to_address: '0x9e3788ff41d4f73051583c6fc8b5642ea5769dc7'
+  description: Kudos from Microsoft!
+  priceFinney: 20
+  numClonesAllowed: 100
+  tags:
+    - Ethereal Virtual Hackathon
+  image: evh2019/microsoft.svg
+- name: quorum
+  artist: mladenpetronijevic
+  to_address: '0x185dc280Db47457550BEf6876a5c9D5a82d228c2'
+  description: Kudos from Quorum!
+  priceFinney: 20
+  numClonesAllowed: 100
+  tags:
+    - Ethereal Virtual Hackathon
+  image: evh2019/quorum.svg
+- name: mythx
+  artist: mladenpetronijevic
+  to_address: '0x393376e59bD40A4FBeDEeD3e44697eC4E00299D9'
+  description: Kudos from MythX!
+  priceFinney: 20
+  numClonesAllowed: 100
+  tags:
+    - Ethereal Virtual Hackathon
+  image: evh2019/mythX.svg
+- name: consensys_labs
+  artist: mladenpetronijevic
+  to_address: '0x249196a49F367841F5FA1Aa6Fd37657CC2Ea693c'
+  description: Kudos from ConsenSys Labs!
+  priceFinney: 20
+  numClonesAllowed: 100
+  tags:
+    - Ethereal Virtual Hackathon
+  image: evh2019/consensys_labs.svg
+- name: fortmatic
+  artist: mladenpetronijevic
+  to_address: '0xE0cef4417a772512E6C95cEf366403839b0D6D6D'
+  description: Kudos from Fortmatic!
+  priceFinney: 20
+  numClonesAllowed: 100
+  tags:
+    - Ethereal Virtual Hackathon
+  image: evh2019/fortmatic.svg
+- name: pegasys
+  artist: jakehaugen
+  to_address: '0xDaA65a7e57766ba333d3f6712937da6D54947085'
+  description: Kudos from PEGASYS!
+  priceFinney: 20
+  numClonesAllowed: 100
+  tags:
+    - Ethereal Virtual Hackathon
+  image: evh2019/pegasys.svg
+- name: ad_ex
+  artist: mladenpetronijevic
+  to_address: '0xd6e371526cdaeE04cd8AF225D42e37Bc14688D9E'
+  description: Kudos from AdEx!
+  priceFinney: 20
+  numClonesAllowed: 100
+  tags:
+    - Ethereal Virtual Hackathon
+  image: evh2019/ad_ex.svg
+- name: summer_bot_roadtrip
+  artist: guistf
+  description: What's more fun than a summer trip with all your bot-friends?
+  priceFinney: 20
+  numClonesAllowed: 200
+  tags:
+    - summer
+    - bots
+    - just for fun
+  image: summer_trip.svg
+- name: ethereal_hackathon_partners
+  description: The evolution is made through opportunities, collaborations, and knowledge sharing. That's why good partnerships are the pillar for great results.
+  priceFinney: 30
+  artist: guistf
+  platform: gitcoin
+  numClonesAllowed: 25
+  to_address: '0xa6d91F3795f934bb5f703724337f39C0f1a95fD5'
+  tags:
+  - Ethereal
+  - hackathon
+  - community
+  - partnerships
+  - collaborations
+  - Ethereal Virtual Hackathon
+  image: ethereal_hackathon_partners.svg
+- name: mythx_platform
+  description: The importance of smart contract auditing is essential for the interoperability of an ecosystem. Do you look for a collaborator who holds these abilities? The holders of those kudos are committed to  the ethics and safety of their work.
+  priceFinney: 30
+  artist: guistf
+  platform: gitcoin
+  numClonesAllowed: 80
+  to_address: '0xa6d91F3795f934bb5f703724337f39C0f1a95fD5'
+  tags:
+  - Mythx
+  - Intelligence
+  - Audit
+  - autonomous
+  - smart contract
+  - tools
+  - security
+  - consensys diligence
+  - pythx
+  image: mythx_platform.svg
+- name: plumber_bot
+  description: it's a me, plumber bot!
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - gitcoin bot
+  image: mario_bot.svg
+- name: summer_beach_bot
+  description: Getting and outdoors and getting some sunshine.  Celebrate the outdoors with your friends! 
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - gitcoin bot
+  image: summer_beach.svg
+- name: love_bot
+  description: for those that <3 their work!
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - gitcoin bot
+  image: lovely_bot.svg
+- name: kayak_bot
+  description: Getting and outdoors and getting some sunshine.  Celebrate the outdoors with your friends! 
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - gitcoin bot
+  image: kayak.svg
+- name: biking_bot
+  description: Getting and outdoors and getting some sunshine.  Celebrate the outdoors with your friends! 
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - gitcoin bot
+  image: biking.svg
+- name: camping_bot
+  description: Getting and outdoors and getting some sunshine.  Celebrate the outdoors with your friends! 
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - gitcoin bot
+  image: camping.svg
+- name: evil_genius_bot
+  description: for the evil genius's that you know
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - gitcoin bot
+  image: darth_vader.svg
+- name: hippy_dippy_bot
+  description: for the grooviest devs you know
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - gitcoin bot
+  image: hippy.svg
+- name: summer_trip_bots
+  description: Getting and outdoors and getting some sunshine.  Celebrate the outdoors with your friends! 
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - gitcoin bot
+  image: summer_trip.svg
+- name: morpheus_bot
+  description: “There's a difference between knowing the path and walking the path
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - gitcoin bot
+  image: morpheus_bot.svg
+- name: cricket_bot
+  description: For the sportsmen (and sportswomen) on your repo
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - gitcoin bot
+  image: cricket_bot.svg
+- name: magneto_bot
+  description: for those who are STRONG like a mutant.
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - gitcoin bot
+  image: magneto_bot.svg
+- name: Meeseeks_bot
+  description: They're clones from an alternate reality, possessed by demonic alien spirits from another dimension's future.
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - gitcoin bot
+  image: Meeseeks_bot.svg
+- name: hippy_bot
+  description: for the grooviest contributors to your repo
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - gitcoin bot
+  image: hippy_bot.svg
+- name: undead
+  description: winter is coming :)
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - just for fun
+  image: night_king.svg
+- name: app_alliance
+  description: Awarded by @owocki for those who are doing great work on Applications in web3.
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 200
+  tags:
+  - gitcoin bot
+  image: app_alliance.svg
+- name: hummingbird
+  description: For those who move so quick, they might as well be a hummingbird
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - just for fun
+  image: hummingbird2.svg
+- name: austin_griffiths_bowtie
+  description: The bowtie award is the highest honor in some parts of the Burner Wallet community.
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - just for fun
+  - austin
+  image: bowtie.svg
+- name: khaleesi
+  description: for the khaleesi's on your team
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - just for fun
+  image: khaleesi.svg
+- name: nights_watcher
+  description: for those defenders of the realm in your team
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - just for fun
+  image: jon_snow.svg
+- name: i_want_you_to_build_on_eth
+  description: for those that you just really want to BUIDL on ETH
+  priceFinney: 20
+  platform: gitcoin
+  numClonesAllowed: 88
+  tags:
+  - BUIDL
+  image: i_want_you_to_build_on_eth.svg
+- name: beyond_blockchain_submission
+  description: This badge is for a Gitcoiner who grew open source during Beyond Blockchain 2019 :) 
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - beyondblockchain
+  - gitcoin
+  image: beyond_blockchain_hackathon.svg
+- name: raiden_network
+  description: This badge is for a Raiden community member who has shown their appreciation for a scalable blockchain future
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - raiden
+  - gitcoin
+  image: RN-Kudo.svg
+- name: beyond_blockchain_winners
+  description: This badge is for prize winners of the Beyond Blockchain hackathon! 
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 100
+  tags:
+  - beyondblockchain
+  - gitcoin
+  image: beyond_blockchain_throphy.svg
+- name: portis_badge
+  description: This badge is for a Portis community member who has shown their appreciation for a usable blockchain future! 
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - portis
+  - wallet
+  image: portis.svg
+- name: beyond_blockchain
+  description: This badge is for hackers in the Beyond Blockchain hackathon! 
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - beyondblockchain
+  - gitcoin
+  image: beyond_blockchain_3.svg
+- name: arweave_badge
+  description: This badge is for a Arweave community member who has shown their appreciation for a permaweb future!
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - arweave
+  - gitcoin
+  image: arwave.svg
+- name: fourth_of_july_bot
+  description: Happy Fourth of July from Gitcoin!
+  priceFinney: 10
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - just for fun
+  - happy fourth of july
+  - gitcoin
+  image: fourth_of_july.svg
+- name: fourth_of_july_bot_
+  description: Happy Fourth of July from Gitcoin!
+  priceFinney: 10
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - just for fun
+  - happy fourth of july
+  - gitcoin
+  image: fourth_of_july2.svg
+- name: fourth_of_july_bot__
+  description: Happy Fourth of July from Gitcoin!
+  priceFinney: 10
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - just for fun
+  - happy fourth of july
+  - gitcoin
+  image: fourth_of_july3.svg
+- name: fourth_of_july_bot___
+  description: Happy Fourth of July from Gitcoin!
+  priceFinney: 10
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - just for fun
+  - happy fourth of july
+  - gitcoin
+  image: fourth_of_july4.svg
+- name: fourth_of_july_bot_____
+  description: Happy Fourth of July from Gitcoin!
+  priceFinney: 10
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - just for fun
+  - happy fourth of july
+  - gitcoin
+  image: fourth_of_july5.svg
+- name: fourth_of_july_bot______
+  description: Happy Fourth of July from Gitcoin!
+  priceFinney: 10
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - just for fun
+  - happy fourth of july
+  - gitcoin
+  image: fourth_of_july6.svg
+- name: Beyond_Blockchain_Relay_Kudos
+  description: Kudos from ConsenSys Labs for participation in the Beyond Blockchain Virtual Hackathon!
+  artist: MladenPetronijevic
+  priceFinney: 20
+  numClonesAllowed: 100
+  tags: 
+   - Labs
+   - Hackathon
+   - Beyond Blockchain
+   - ConsenSys
+  image: labs_beyonde_blockchain.svg
+- name: MythX_Beta_Champs_Kudos
+  description: MythX friends and champions who battled together with us through Beta!
+  artist: Mladen
+  priceFinney: 100
+  numClonesAllowed: 1000
+  to_address: '0x393376e59bd40a4fbedeed3e44697ec4e00299d9'
+  tags:
+   - MythX
+   - Smart contracts
+   - Security
+  image: mythx_beta_champs.svg
+- name: meme_warrior
+  description: to those who have the dankest memes on teh internet
+  artist: Mladen
+  priceFinney: 10
+  numClonesAllowed: 1000
+  tags:
+   - memes
+   - just for fun
+  image: meme_warrior.svg
+- name: oracle
+  description: to those who have seen further than most
+  artist: Mladen
+  priceFinney: 10
+  numClonesAllowed: 1000
+  tags:
+   - oracle
+   - soft skill
+  image: oracle.svg
+- name: magic_doge
+  description: much contributor.  such fun. very meme
+  artist: Mladen
+  priceFinney: 10
+  numClonesAllowed: 1000
+  tags:
+   - doge
+   - just for fun
+  image: doge2.svg
+- name: codefund_influencer
+  description: Limited Edition CodeFund Kudos! These are only awarded to first round influences of the CodeFund advertising platform
+  priceFinney: 200
+  artist: coderberry
+  platform: gitcoin
+  numClonesAllowed: 150
+  to_address: '0x28e21609ca8542ce5a363cbf339529204b043ede'
+  tags:
+  - rare
+  - codefund
+  image: codefund/codefund_influencer_v1.0.svg
+- name: codefund_influencer_reissue
+  description: Limited Edition CodeFund Kudos! These are only awarded to first round influences of the CodeFund advertising platform
+  priceFinney: 1
+  artist: coderberry
+  platform: gitcoin
+  numClonesAllowed: 150
+  to_address: '0x28e21609ca8542ce5a363cbf339529204b043ede'
+  tags:
+  - rare
+  - codefund
+  image: codefund/codefund_influencer_v1.0reissue.svg
 

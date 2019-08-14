@@ -70,11 +70,12 @@ def premailer_transform(html):
     p = premailer.Premailer(html, base_url=settings.BASE_URL)
     return p.transform()
 
+
 def render_featured_funded_bounty(bounty):
     params = {'bounty': bounty}
     response_html = premailer_transform(render_to_string("emails/funded_featured_bounty.html", params))
     response_txt = render_to_string("emails/funded_featured_bounty.txt", params)
-    subject = _("You've successfully funded a bounty!")
+    subject = _("Your bounty is now live on Gitcoin!")
 
     return response_html, response_txt, subject
 
@@ -97,43 +98,12 @@ def render_nth_day_email_campaign(to_email, nth, firstname):
 
     return response_html, response_txt, subject
 
+
 def render_new_grant_email(grant):
     params = {'grant': grant}
     response_html = premailer_transform(render_to_string("emails/grants/new_grant.html", params))
     response_txt = render_to_string("emails/grants/new_grant.txt", params)
     subject = _("Your Gitcoin Grant")
-    return response_html, response_txt, subject
-
-
-def render_change_grant_owner_request(grant):
-    params = {'grant': grant}
-    response_html = premailer_transform(render_to_string("emails/grants/change_owner_request.html", params))
-    response_txt = render_to_string("emails/grants/change_owner_request.txt", params)
-    subject = _("You've been chosen to be the owner for a Gitcoin Grant")
-    return response_html, response_txt, subject
-
-
-def render_change_grant_owner_accept(grant):
-    params = {'grant': grant}
-    response_html = premailer_transform(render_to_string("emails/grants/change_owner_accept.html", params))
-    response_txt = render_to_string("emails/grants/change_owner_accept.txt", params)
-    subject = _("Grant Owner has changed")
-    return response_html, response_txt, subject
-
-
-def render_notify_ownership_change(grant):
-    params = {'grant': grant}
-    response_html = premailer_transform(render_to_string("emails/grants/change_owner_notify.html", params))
-    response_txt = render_to_string("emails/grants/change_owner_notify.txt", params)
-    subject = _("Grant ownership has been changed")
-    return response_html, response_txt, subject
-
-
-def render_change_grant_owner_reject(grant):
-    params = {'grant': grant}
-    response_html = premailer_transform(render_to_string("emails/grants/change_owner_reject.html", params))
-    response_txt = render_to_string("emails/grants/change_owner_reject.txt", params)
-    subject = _("Grant has no change in ownership")
     return response_html, response_txt, subject
 
 
@@ -245,34 +215,6 @@ def new_supporter(request):
 def new_grant(request):
     grant = Grant.objects.first()
     response_html, __, __ = render_new_grant_email(grant)
-    return HttpResponse(response_html)
-
-
-@staff_member_required
-def change_grant_owner_request(request):
-    grant = Grant.objects.first()
-    response_html, __, __ = render_change_grant_owner_request(grant)
-    return HttpResponse(response_html)
-
-
-@staff_member_required
-def notify_ownership_change(request):
-    grant = Grant.objects.first()
-    response_html, __, __ = render_notify_ownership_change(grant)
-    return HttpResponse(response_html)
-
-
-@staff_member_required
-def change_grant_owner_accept(request):
-    grant = Grant.objects.first()
-    response_html, __, __ = render_change_grant_owner_accept(grant)
-    return HttpResponse(response_html)
-
-
-@staff_member_required
-def change_grant_owner_reject(request):
-    grant = Grant.objects.first()
-    response_html, __, __ = render_change_grant_owner_reject(grant)
     return HttpResponse(response_html)
 
 
@@ -656,7 +598,7 @@ def render_gdpr_reconsent(to_email):
     return response_html, response_txt
 
 
-def render_share_bounty(to_email, msg, from_profile):
+def render_share_bounty(to_email, msg, from_profile, invite_url=None, kudos_invite=False):
     """Render the share bounty email template.
 
     Args:
@@ -667,20 +609,15 @@ def render_share_bounty(to_email, msg, from_profile):
         str: The rendered response as a string.
 
     """
-    to_email = f"@{to_email}" if to_email else "there"
-    response_txt = f"""
-hi {to_email},
-
-{msg}
-
-@{from_profile.handle}
-{from_profile.email}
-
-
-"""
-
-    params = {'txt': response_txt}
-    response_html = premailer_transform(render_to_string("emails/txt.html", params))
+    params = {
+        'msg': msg,
+        'from_profile': from_profile,
+        'to_email': to_email,
+        'invite_url': invite_url,
+        'kudos_invite': kudos_invite
+    }
+    response_html = premailer_transform(render_to_string("emails/share_bounty_email.html", params))
+    response_txt = render_to_string("emails/share_bounty_email.txt", params)
     return response_html, response_txt
 
 
@@ -696,7 +633,7 @@ def render_new_work_submission(to_email, bounty):
     return response_html, response_txt
 
 
-def render_new_bounty_acceptance(to_email, bounty, unrated_count):
+def render_new_bounty_acceptance(to_email, bounty, unrated_count=0):
     params = {
         'bounty': bounty,
         'unrated_count': unrated_count,
@@ -934,10 +871,10 @@ def render_start_work_applicant_expired(interest, bounty):
 
     return response_html, response_txt, subject
 
-
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
+<<<<<<< HEAD
 <<<<<<< HEAD
     subject = "The Ethereal Hackathon Grows | $1MM In Platform Value"
     new_kudos_pks = [2244, 2238, 2240]
@@ -965,6 +902,10 @@ def render_new_bounty_roundup(to_email):
 =======
     subject = "Save the date; Ethereal Virtual Hackathon April 15th — 30th"
     new_kudos_pks = [1106, 2110, 2050, 2116]
+=======
+    subject = "The Final Days of Grow Ethereum"
+    new_kudos_pks = [1926, 1819, 1895]
+>>>>>>> 106146e034d9dd329856e6bdf8165baff0100867
     new_kudos_size_px = 150
 
 >>>>>>> 88e00615eff62f921cb3d7c0147a8e6c8dd03f3c
@@ -992,30 +933,47 @@ for the next 18 months. This milestone (and the proof of our value to the ecosys
 =======
     intro = f'''
 <p>
-Hi Gitcoiners,
+Hey Gitcoiners,
 </p>
 <p>
+We're just days away from the conclusion of our latest hackathon, Grow Ethereum. After two weeks of hacking, the final stage is upon us. If you're participating, it's time to get your ducks in a row and prepare for submission. The Gitcoin team will be in Discord throughout the next few days outlining the steps necessary -- and expect an email from us soon. Make sure you "Submit Work" on the day of the deadline or beforehand so you qualify! The hackathon Issue Explorer lives <a href="https://hackathons.gitcoin.co/grow-ethereum/" target="_blank">here.</a>
+</p>
+<p>
+<<<<<<< HEAD
 We're excited to announce the date for the <a href="https://gitcoin.co/hackathon/ethhack2019">Ethereal Virtual hackathon</a>.  Join us April 15th-30th for Hackathon challenges, which will be posted as bounties, with the best hacks receiving prizes in ETH & ERC-20 tokens. Main track winners will receive free tickets to Ethereal NY to present their project live on stage!  <a href="https://medium.com/gitcoin/the-ethereal-hackathon-4f5dc2eb56d6">More details here</a>. 
 >>>>>>> 88e00615eff62f921cb3d7c0147a8e6c8dd03f3c
+=======
+For those looking to learn more about our sponsors, we've got just what you need. We've posted two posts highlighting AdEx and bZx, two of the top sponsors for this most recent hackalong. Read those posts on our blog <a href="https://gitcoin.co/blog/"> here!</a>
+</p>
+<p>
+Last, if you're looking for something to watch this weekend, we're rolling back the tapes on our livestream with last week's Grow Ethereum focused livestream. Check it on <a href="https://www.youtube.com/gitcoinmedia">Gitcoin Media.</a>
+>>>>>>> 106146e034d9dd329856e6bdf8165baff0100867
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
 <<<<<<< HEAD
+<<<<<<< HEAD
             Gitcoin Livestream is back this week with MetaMask + Bunz! Join us <a href="https://gitcoin.co/livestream"> at 5PM ET or catch it on <a href="https://twitter.com/GetGitcoin">Twitter</a>!
 =======
             Gitcoin Livestream is back this week with Eric Conner and Anthony Sassano from EthHub and Igor from POA! Join us <a href="https://gitcoin.co/livestream"> at 5PM ET or catch it on <a href="https://twitter.com/GetGitcoin">Twitter</a>!
 >>>>>>> 88e00615eff62f921cb3d7c0147a8e6c8dd03f3c
+=======
+        The Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday. </a>
+        </li>
+        <li>
+        Have you participated in our hackathons? Do you have ideas for how we can improve? As we move forward, we'd love to receive some feedback from our community members. Send us an email <a href="mailto:alex@gitcoin.co"> here</a> with your feedback.
+>>>>>>> 106146e034d9dd329856e6bdf8165baff0100867
         </li>
     </ul>
 </p>
 <p>
 Back to shipping,
 </p>
-
 '''
     highlights = [{
+<<<<<<< HEAD
 <<<<<<< HEAD
         'who': 'eswarasai',
         'who_link': True,
@@ -1035,26 +993,46 @@ Back to shipping,
         'link': 'https://gitcoin.co/issue/centrifuge/website/97/2647',
 =======
         'who': 'e18r ',
+=======
+        'who': 'kanaruna',
+>>>>>>> 106146e034d9dd329856e6bdf8165baff0100867
         'who_link': True,
-        'what': 'Some nice work on this giveth bounty :)',
-        'link': 'https://gitcoin.co/issue/Giveth/giveth-dapp/522/2418',
+        'what': 'Gitlab CI -- Compatible with Linux!',
+        'link': 'https://gitcoin.co/issue/nblockchain/TcpEchoSharp/4/3146',
         'link_copy': 'View more',
     }, {
-        'who': 'rsercano ',
+        'who': 'josh-richardson',
         'who_link': True,
-        'what': 'Good work on this CI and CD pipeline..',
-        'link': 'https://gitcoin.co/issue/status-im/status-components/5/2608',
+        'what': 'Decentralised App Stores',
+        'link': 'https://gitcoin.co/issue/ArweaveTeam/Bounties/4/3162',
         'link_copy': 'View more',
     }, {
-        'who': 'eswarasai',
+        'who': 'bshevchenko',
         'who_link': True,
+<<<<<<< HEAD
         'what': 'Eswara is one of our longtime community members!',
         'link': 'https://gitcoin.co/issue/centrifuge/go-centrifuge/835/2593',
 >>>>>>> 88e00615eff62f921cb3d7c0147a8e6c8dd03f3c
+=======
+        'what': 'The secret data is valid.',
+        'link': 'https://gitcoin.co/issue/enigmampc/EnigmaBounties/4/3263',
+>>>>>>> 106146e034d9dd329856e6bdf8165baff0100867
         'link_copy': 'View more',
     }, ]
 
+    sponsor = {
+        'name': 'Loopring',
+        'title': 'Love bug bounties? Interested in defi?',
+        'image_url': 'https://s3.us-west-2.amazonaws.com/gitcoin-static/jDSk7ZTfpY19PWdwwsk8puNd.png',
+        'link': 'http://bit.ly/LoopringBounty',
+        'cta': 'Hack the planet',
+        'body': [
+            'Check out our latest program to help find vulnerabilities in Loopring Protocol 3.0. Up to $50,000 is on the line!'
+        ]
+    }
+
     bounties_spec = [{
+<<<<<<< HEAD
 <<<<<<< HEAD
         'url': 'https://github.com/jschiarizzi/storj-ipfs-gateway/issues/9',
         'primer': 'How can we drive IPFS adoption? Help and get paid!',
@@ -1067,15 +1045,27 @@ Back to shipping,
 =======
         'url': 'https://github.com/gitcoinco/skunkworks/issues/89',
         'primer': '20ETH Security bounty for Ethereum Istanbul Hard Fork!',
+=======
+        'url': 'https://github.com/gnosis/mock-contract/issues/14',
+        'primer': 'Partially matching call arguments',
+>>>>>>> 106146e034d9dd329856e6bdf8165baff0100867
     }, {
-        'url': 'https://github.com/ShipChain/hydra/issues/3',
-        'primer': 'ShipChain sidechain test network evaluation bounty!',
+        'url': 'https://github.com/decentraland/MANA-community-fund-learning-content/issues/32',
+        'primer': 'Participate in the Decentraland September Game Jam',
     }, {
+<<<<<<< HEAD
         'url': 'https://github.com/gitcoinco/creative/issues/51',
         'primer': 'Print your own Gitcoin Stickers & get ETH for it!',
 >>>>>>> 88e00615eff62f921cb3d7c0147a8e6c8dd03f3c
     }, ]
 
+=======
+        'url': 'https://github.com/Synthetixio/synthetix/issues/188',
+        'primer': 'Create an arbitrage contract for the sETH/ETH Uniswap Pool',
+}, ]
+    
+    
+>>>>>>> 106146e034d9dd329856e6bdf8165baff0100867
     num_leadboard_items = 5
     highlight_kudos_ids = []
     num_kudos_to_show = 15
@@ -1132,6 +1122,7 @@ Back to shipping,
         'highlights': highlights,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'kudos_highlights': kudos_highlights,
+        'sponsor': sponsor,
     }
 
     response_html = premailer_transform(render_to_string("emails/bounty_roundup.html", params))
@@ -1367,6 +1358,8 @@ def gdpr_reconsent(request):
 
 @staff_member_required
 def share_bounty(request):
+    from dashboard.models import Profile
+    handle = request.GET.get('handle')
     profile = Profile.objects.filter(handle=handle).first()
     response_html, _ = render_share_bounty(settings.CONTACT_EMAIL, 'This is a sample message', profile)
     return HttpResponse(response_html)

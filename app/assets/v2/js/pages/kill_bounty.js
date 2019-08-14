@@ -80,13 +80,18 @@ window.onload = function() {
 
           let errormsg = undefined;
 
-          if (bountyAmount == 0 || is_open == false) {
-            errormsg =
-                gettext('No active funded issue found at this address.  Are you sure this is an active funded issue?');
-          }
-          if (fromAddress != web3.eth.coinbase) {
-            errormsg =
-                gettext('Only the address that submitted this funded issue may kill the bounty.');
+          if (bountyAmount > 0 && !is_open) {
+            errormsg = gettext(
+              'This bounty is already in progress, canceling the issue is no longer possible.'
+            );
+          } else if (bountyAmount == 0 || is_open == false) {
+            errormsg = gettext(
+              'No active funded issue found at this address.  Are you sure this is an active funded issue?'
+            );
+          } else if (fromAddress != web3.eth.coinbase) {
+            errormsg = gettext(
+              'Only the address that submitted this funded issue may kill the bounty.'
+            );
           }
 
           if (errormsg) {
@@ -130,7 +135,7 @@ window.onload = function() {
 
         };
         // Get bountyId from the database
-        var uri = '/api/v0.1/bounties/?github_url=' + issueURL + '&network=' + $('input[name=network]').val() + '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
+        var uri = '/api/v0.1/bounties/?event_tag=all&github_url=' + issueURL + '&network=' + $('input[name=network]').val() + '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
 
         $.get(uri, apiCallback);
       }

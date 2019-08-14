@@ -26,7 +26,7 @@
   </head>
   <body class="{{ active }} g-font-muli">
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    <header class="container-fluid header">
+    <header class="header">
       {% include 'shared/kudos_nav.html' %}
       <!-- {% include 'shared/kudos_banner.html' %} -->
       <div class="container text-center mt-5">
@@ -408,9 +408,21 @@
 
         <div>
           <div class="mb-3 faq-item">
+            <h5 class="accordion">I am not an artist and I want to a kudos created.  Can you help!?</h5>
+            <div class="panel">
+              <p>
+                Yes, Anyone can create a kudos!
+                <a href="https://github.com/gitcoinco/kudosbadges/blob/master/README.md#to-create-a-new-kudos">To create a new kudos, click here and follow the instructions.</a>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="mb-3 faq-item">
             <h5 class="accordion">I have another question and it's not listed here.</h5>
             <div class="panel">
-              <p><a href="https://twitter.com/getgitcoin">Tweet us</a> or <a href="mailto:founders@gitcoin.co">Email Us</a></p>
+              <p><a href="https://twitter.com/gitcoin">Tweet us</a> or <a href="mailto:founders@gitcoin.co">Email Us</a></p>
             </div>
           </div>
         </div>
@@ -419,14 +431,13 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with slim=1 %}
-    <script src="{% static "v2/js/popper.min.js" %}"></script>
-    <script src="{% static "v2/js/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+    <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
+    <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
     <script>
       $(document).ready(function() {
 
         setInterval(load_kudos_card_images, 300);
       });
-      var bootstrapTooltip = $.fn.tooltip.noConflict()
     </script>
     {% include 'shared/messages.html' %}
   </body>

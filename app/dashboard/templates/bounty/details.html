@@ -7,7 +7,13 @@
     {% include 'shared/cards_pic.html' %}
     <meta name="title" content="{{ card_title }} Bug Bounty | Gitcoin">
     <meta name="description" content="{{ card_desc | truncatechars:200 }}">
+    {% if canonical_url %}
+      <link rel="canonical" href="{{ canonical_url }}">
+    {% endif %}
+    <link rel="stylesheet" href="{% static "v2/css/lib/daterangepicker.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/lib/highlight_github.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/user_popover.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
   </head>
 
@@ -20,12 +26,17 @@
     <div class="row no-gutter">
       <div class="col-12 col-lg-2 left-rails text-center" style="background: #F2F6F9;">
         <div class="explorer font-body">
-          <a href="{% url 'explorer' %}"><i class="fas fa-chevron-left"></i> {% trans "Back to Issue Explorer" %}</a>
+          {% if event_tag %}
+            <a href="/hackathon/{{ event_tag }}"><i class="fas fa-chevron-left"></i> {% trans "Back to Hackathon Explorer" %}</a>
+          {% else %}
+            <a href="{% url 'explorer' %}"><i class="fas fa-chevron-left"></i> {% trans "Back to Issue Explorer" %}</a>
+          {% endif %}
         </div>
       </div>
 
       <div class="col-12 offset-md-1 col-md-10 offset-lg-1 col-lg-8 body">
-        {% include 'shared/bounty_waiting_state.html' with can_close=True %}
+        {% include 'shared/waiting_state.html' %}
+
         <div class="row nonefound" style="display:none;">
           <img src="{% static "v2/images/shrug_bot.png" %}">
           <h3>{% trans "No funded issue found." %}</h3>
@@ -33,16 +44,6 @@
           <br>
           <h6>{% trans "Be the OSS Funding you wish to see in the world." %}</h6>
           <p id='submitsolicitation'>{% url 'new_funding' as new_fundingurl %}{% blocktrans %} Looking to fund some work?  You can submit a new Funded Issue <a href="{{ new_fundingurl }}">here</a>.{% endblocktrans %}</p>
-        </div>
-
-        <div class="row ml-2 mr-2 pl-4 pr-4 waiting_room_entertainment" style="display: none;">
-          {% include 'shared/rain.html' with class="color" %}
-          <div class="quote-container">
-            <img src="{% static "v2/images/quotes.png" %}" style="float: left; max-width: 22px;" />
-            <div class="quote_text"></div>
-            <div class="quote_author"></div>
-            <input id="quoteRefresh" class="button button--primary" name="refresh" type='submit' onclick='javascript:waitingRoomEntertainment()' value="Refresh Quote" >
-          </div>
         </div>
 
         <div class="col-12" id="moderator-admin-actions"></div>
@@ -57,17 +58,19 @@
                 <div class="col-12 text-center text-lg-left">
                   <div class="tags font-caption align-items-center">
                     <div class="tag token">
-                      <p>
+                      <p class="inner-tooltip">
                         <span id="value_in_token"></span>
                       </p>
                     </div>
                     <div id="value_in_usdt_wrapper" title="" class="tag usd ml-3">
-                      <p>
+                      <p class="inner-tooltip">
                         <span id="value_in_usdt"></span>
                         <span>USD</span>
                       </p>
                     </div>
+                    <div class="d-inline-block font-subheader" id="bounty_categories"></div>
                   </div>
+
                 </div>
                 <div class="notif-info mb-3 font-caption" id="funder_notif_info"></div>
               </div>
@@ -141,6 +144,8 @@
                     <button type="button" class="modal-link button button--primary float-right" data-toggle="modal" data-target=".share-modal">
                       <span class="font-caption"><i class="fas fa-share-alt mr-2"></i> Share</span>
                     </button>
+                    <div id="bounty_actions" class="d-inline-block"></div>
+                    <div id="github_actions" class="d-inline-block"></div>
                   </div>
                 </div>
             </div>
@@ -223,9 +228,23 @@
             [[/if]]
           </a>
         [[else]]
-          <a class="button button--primary [[if !enabled]]disabled[[/if]] [[:buttonclass]]" role="button" href="[[:href]]" target="[[:target]]" [[if modal]] data-toggle="modal" data-target=".share-modal" [[/if]]>
-            <span class="font-caption">[[:text]]</span>
-          </a>
+          [[if edit_dropdown]]
+              <div class="dropdown show" style="display: inline;">
+                <a class="button button--primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  {% trans "Update Issue" %}
+                </a>
+
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                  <a class="dropdown-item" href="[[:edit_issue_href]]">{% trans "Edit Issue Details" %}</a>
+                  [[if show_extend_expiration]] <a class="dropdown-item" href="[[:extend_expiration_href]]">{% trans "Extend Expiration" %}</a> [[/if]]
+                  [[if show_remarket]] <a class="dropdown-item [[if !remarket_enabled]]disabled[[/if]]" href="[[:remarket_url]]">{% trans "Re-market Issue" %}</a> [[/if]]
+                </div>
+              </div>
+          [[else]]
+            <a class="button button--primary [[if !enabled]]disabled[[/if]] [[:buttonclass]]" role="button" href="[[:href]]" target="[[:target]]" [[if modal]] data-toggle="modal" data-target=".share-modal" [[/if]]>
+              <span class="font-caption">[[:text]]</span>
+            </a>
+          [[/if]]
         [[/if]]
       </span>
     </script>
@@ -234,13 +253,13 @@
       [[if activity_type != 'unknown_event']]
         <div class="row box activity">
           <div class="col-12 col-md-1">
-            <div class="activity-avatar">
+            <div class="activity-avatar bounty_row user-popover" data-username="[[:name]]" data-html="true" data-toggle="popover" data-container="body">
               <img class="avatar" src="/dynamic/avatar/[[:name]]"/>
             </div>
           </div>
           <div class="col-12 col-md-2">
             <div class="activity-name">
-              <a href="https://gitcoin.co/profile/[[:name]]" target="_blank">
+              <a href="/profile/[[:name]]" target="_blank">
                 [[:name]]
               </a>
             </div>
@@ -278,8 +297,8 @@
             <div class="col-12 col-md-7 started-status-column d-flex">
               <div class="activity-status">
                 [[:text]]
-                [[if signed_nda && signed_nda != 'false']]
-                  <a href="[[:signed_nda]]" download class="d-flex">View signed NDA</a>
+                [[if signed_nda]]
+                  <a href="[[:signed_nda.signed_nda.doc]]" download class="d-flex">View signed NDA</a>
                 [[/if]]
               </div>
               [[if can_approve_worker ]]
@@ -320,7 +339,7 @@
             <div class="col-12 col-md-7 started-status-column">
               <div class="activity-status">
                 Worker
-                <a href="https://gitcoin.co/profile/[[:worker_handle]]" target="_blank">
+                <a href="/profile/[[:worker_handle]]" target="_blank">
                   [[:worker_handle]]
                 </a>
                 Approved
@@ -330,7 +349,7 @@
             <div class="col-12 col-md-7 started-status-column">
               <div class="activity-status">
                 Worker
-                <a href="https://gitcoin.co/profile/[[:worker_handle]]" target="_blank">
+                <a href="/profile/[[:worker_handle]]" target="_blank">
                   [[:worker_handle]]
                 </a>
                 Rejected
@@ -398,6 +417,9 @@
           <div class="col-12 col-md-2">
             <div class="activity-time">[[:age]]</div>
           </div>
+          [[if issue_message && activity_type == 'worker_applied' || issue_message && permission_type == 'permissionless' && activity_type == 'start_work' ]]
+            <p class="bg-lightblue p-2 rounded mt-3 mb-0 w-100 overflow-auto" style="resize: vertical;height: 50px;word-break: break-word;white-space: pre-wrap;"><b>Work Plan:</b> [[:issue_message.issue_message]]</p>
+          [[/if]]
         </div>
       [[/if]]
     </script>
@@ -412,6 +434,17 @@
         <div class="modal-content">
           <div class="row loading justify-content-center align-items-center loading_img">
             <img src="{% static 'v2/images/loading_v2.gif' %}">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="modalExtend" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-dialog ">
+          <div class="modal-content py-3">
+            <div class="row loading justify-content-center align-items-center loading_img">
+              <img src="{% static 'v2/images/loading_v2.gif' %}">
+            </div>
           </div>
         </div>
       </div>
@@ -434,24 +467,26 @@
     {% endif %}
   </script>
 
-  <!-- jQuery -->
-  <script src="{% static "v2/js/showdown.js" %}"></script>
+  <script src="{% static "v2/js/lib/highlight.js" %}"></script>
+  <script src="{% static "v2/js/lib/markdown-it.js" %}"></script>
+
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
   <script src="{% static "v2/js/amounts.js" %}"></script>
-  <script src="{% static "v2/js/popper.min.js" %}"></script>
-  <script src="{% static "v2/js/bootstrap.min.js" %}" crossorigin="anonymous"></script>
   <script src="{% static "v2/js/clipboard.js" %}"></script>
   <script>
-    var bootstrapTooltip = $.fn.tooltip.noConflict()
-    var bootstrapModal = $.fn.modal.noConflict()
-    $.fn.bootstrapModal = bootstrapModal
+    $('[data-toggle="popover"]').popover()
+    $("body").on("mouseover", "[data-username] img", function(e) {
+      openContributorPopOver($(this).parent().data("username"), $(this));
+    });
   </script>
+  <script src="{% static "v2/js/lib/daterangepicker.min.js" %}"></script>
   <script src="{% static "v2/js/pages/bounty_funder_payout_reminder.js" %}"></script>
   <script src="{% static "v2/js/pages/bounty_share.js" %}"></script>
   <script src="{% static "v2/js/pages/bounty_details.js" %}"></script>
-  <script src="{% static "v2/js/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/user_popover.js" %}"></script>
+  <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
   <script src="{% static "v2/js/user-search.js" %}"></script>
   <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>

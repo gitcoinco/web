@@ -24,7 +24,7 @@ from json.decoder import JSONDecodeError
 
 from django.conf import settings
 
-import ipfsapi
+import ipfshttpclient
 import requests
 from app.utils import sync_profile
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
@@ -32,7 +32,7 @@ from dashboard.models import Activity, BlockedUser, Bounty, Profile, UserAction
 from eth_utils import to_checksum_address
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from hexbytes import HexBytes
-from ipfsapi.exceptions import CommunicationError
+from ipfshttpclient.exceptions import CommunicationError
 from web3 import HTTPProvider, Web3, WebsocketProvider
 from web3.exceptions import BadFunctionCallOutput
 from web3.middleware import geth_poa_middleware
@@ -94,7 +94,8 @@ def humanize_event_name(name):
         'killed_bounty': 'Cancelled funded issue',
         'worker_approved': 'Worker approved',
         'worker_rejected': 'Worker rejected',
-        'work_done': 'Work done'
+        'work_done': 'Work done',
+        'issue_remarketed': 'Issue re-marketed'
     }
 
     return humanized_event_names.get(name, name).upper()
@@ -187,7 +188,8 @@ def get_ipfs(host=None, port=settings.IPFS_API_PORT):
 
     Args:
         host (str): The IPFS host to connect to.
-            Defaults to environment variable: IPFS_HOST.
+            Defaults to environment variable: IPFS_HOST.  The host name should be of the form 'ipfs.infura.io' and not 
+            include 'https://'.
         port (int): The IPFS port to connect to.
             Defaults to environment variable: env IPFS_API_PORT.
 
@@ -196,14 +198,15 @@ def get_ipfs(host=None, port=settings.IPFS_API_PORT):
             communication error with IPFS.
 
     Returns:
-        ipfsapi.client.Client: The IPFS connection client.
+        ipfshttpclient.client.Client: The IPFS connection client.
 
     """
     if host is None:
-        host = f'https://{settings.IPFS_HOST}'
-
+        clientConnectString = f'/dns/{settings.IPFS_HOST}/tcp/{settings.IPFS_API_PORT}/{settings.IPFS_API_SCHEME}'
+    else:
+        clientConnectString = f'/dns/{host}/tcp/{settings.IPFS_API_PORT}/https'
     try:
-        return ipfsapi.connect(host, port)
+        return ipfshttpclient.connect(clientConnectString)
     except CommunicationError as e:
         logger.exception(e)
         raise IPFSCantConnectException('Failed while attempt to connect to IPFS')
@@ -238,7 +241,7 @@ def ipfs_cat_ipfsapi(key):
 
 def ipfs_cat_requests(key):
     try:
-        url = f'https://ipfs.infura.io:5001/api/v0/cat/{key}'
+        url = f'https://ipfs.infura.io:5001/api/v0/cat?arg={key}'
         response = requests.get(url, timeout=1)
         return response.text, response.status_code
     except:
@@ -316,6 +319,8 @@ def get_bounty_from_invite_url(invite_url):
 
 
 def get_unrated_bounties_count(user):
+    if not user:
+        return 0
     unrated_contributed = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=user) \
         .filter(interested__status='okay') \
         .filter(interested__pending=False).filter(idx_status='done') \

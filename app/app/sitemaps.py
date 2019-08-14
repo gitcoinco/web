@@ -49,7 +49,7 @@ class KudosSitemap(Sitemap):
         return obj.modified_on
 
     def location(self, item):
-        return item.url
+        return item.get_relative_url()
 
 
 class ProfileSitemap(Sitemap):
@@ -79,7 +79,7 @@ class ContributorLandingPageSitemap(Sitemap):
         return timezone.now()
 
     def location(self, item):
-        return f'/contributor/{item}'
+        return f'/bounties/contributor/{item}'
 
 
 class ResultsSitemap(Sitemap):
@@ -87,8 +87,8 @@ class ResultsSitemap(Sitemap):
     priority = 0.6
 
     def items(self):
-        from retail.utils import programming_languages_full
-        return programming_languages_full
+        from retail.utils import programming_languages
+        return programming_languages
 
     def lastmod(self, obj):
         from django.utils import timezone
