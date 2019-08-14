@@ -1,5 +1,9 @@
 - name: Grow Ethereum Winner!
+<<<<<<< HEAD
   description: Congrats to the winner of an open source prize during the Grow Ethereum hackathon.
+=======
+  description: Congrats to the winner of a prize during the Grow Ethereum hackathon.
+>>>>>>> 5d42b48c8cecd1fe3fc79e40644fe439b76b85b4
   artist: mladen
   priceFinney: 1
   numClonesAllowed: 100
