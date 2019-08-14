@@ -21,7 +21,7 @@ import logging
 import time
 from datetime import datetime
 
-from django.db.models import Count
+from django.db.models import Count, F
 
 import django_filters.rest_framework
 from kudos.models import KudosTransfer
@@ -146,7 +146,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
             'attached_job_description', 'needs_review', 'github_issue_state', 'is_issue_closed',
             'additional_funding_summary', 'funding_organisation', 'paid',
             'admin_override_suspend_auto_approval', 'reserved_for_user_handle', 'is_featured',
-            'featuring_date', 'repo_type', 'unsigned_nda', 'funder_last_messaged_on',
+            'featuring_date', 'repo_type', 'unsigned_nda', 'funder_last_messaged_on', 'can_remarket'
         )
 
     def create(self, validated_data):
@@ -198,7 +198,9 @@ class BountySerializerCheckIn(BountySerializer):
     class Meta:
         model = Bounty
         fields = (
-            'url', 'title', 'bounty_owner_name', 'status', 'github_url', 'created_on', 'standard_bounties_id', 'bounty_owner_github_username'
+            'url', 'title', 'bounty_owner_name', 'status', 'github_url', 
+            'created_on', 'standard_bounties_id', 'bounty_owner_github_username',
+            'no_of_applicants', 'num_fulfillments', 'has_applicant', 'warned', 'escalated', 'event'
         )
 
 
@@ -235,8 +237,8 @@ class BountyViewSet(viewsets.ModelViewSet):
                     queryset = queryset.filter(event__pk=evt.pk)
                 except HackathonEvent.DoesNotExist:
                     return Bounty.objects.none()
-        else:
-            queryset = queryset.filter(event=None)
+        # else:
+        #     queryset = queryset.filter(event=None)
 
         for key in ['raw_data', 'experience_level', 'project_length', 'bounty_type', 'bounty_categories',
                     'bounty_owner_address', 'idx_status', 'network', 'bounty_owner_github_username',
@@ -378,7 +380,10 @@ class BountyViewSet(viewsets.ModelViewSet):
         # order
         order_by = self.request.query_params.get('order_by')
         if order_by and order_by != 'null':
-            queryset = queryset.order_by(order_by)
+            if order_by == 'recently_marketed':
+                queryset = queryset.order_by(F('last_remarketed').desc(nulls_last = True), '-web3_created')
+            else:
+                queryset = queryset.order_by(order_by)
 
         queryset = queryset.distinct()
 

@@ -163,9 +163,9 @@ body {
   color: #000000;
 }
 
-#issue_description pre, code {
+/* #issue_description pre, code {
   padding: 1em 0;
-}
+} */
 
 #bounty-info-row {
   margin-left: 1px;
@@ -529,11 +529,6 @@ a.btn {
   color: #F5A623;
 }
 
-.code-snippet {
-  background-color: #F2F6F9;
-  padding: 1rem;
-}
-
 #funder_notif_info .bounty-notification {
   border: orange 1px solid;
   border-radius: 3px;
@@ -737,6 +732,7 @@ a.btn {
 .modal .magnify {
   width: auto;
   max-width: 100%;
+  overflow-y: scroll;
 }
 
 .bg-container {
@@ -882,11 +878,6 @@ a.btn {
 
   .rocket {
     right: 11rem;
-  }
-
-  #extend_deadline {
-    min-width: 40rem;
-    max-width: 0;
   }
 }
 

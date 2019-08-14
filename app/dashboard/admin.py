@@ -98,8 +98,9 @@ class ProfileAdmin(admin.ModelAdmin):
         interests = instance.active_bounties
         htmls = []
         for interest in interests:
-            bounty = Bounty.objects.get(interested=interest, current_bounty=True)
-            htmls.append(f"<a href='{bounty.url}'>{bounty.title_or_desc}</a>")
+            bounties = Bounty.objects.filter(interested=interest, current_bounty=True)
+            for bounty in bounties:
+                htmls.append(f"<a href='{bounty.url}'>{bounty.title_or_desc}</a>")
         html = format_html("<BR>".join(htmls))
         return html
 
