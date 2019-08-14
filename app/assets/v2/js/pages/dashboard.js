@@ -60,6 +60,20 @@ var paint_search_tabs = function() {
   target.html(html);
 };
 
+function scrollSlider(element, cardSize) {
+  const arrowLeft = $('#arrowLeft');
+  const arrowRight = $('#arrowRight');
+
+  arrowLeft.on('click', function() {
+    element[0].scrollBy({left: -cardSize, behavior: 'smooth'});
+  });
+  arrowRight.on('click', function() {
+    element[0].scrollBy({left: cardSize, behavior: 'smooth'});
+  });
+
+}
+scrollSlider($('#featured-card-container'), 288);
+
 function debounce(func, wait, immediate) {
   var timeout;
 

@@ -64,6 +64,9 @@ urlpatterns = [
     # inbox
     path('inbox/', include('inbox.urls', namespace='inbox')),
 
+    # board
+    path('dashboard/', dashboard.views.board, name='dashboard'),
+
     # kudos
     path('kudos/', kudos.views.about, name='kudos_main'),
     path('kudos/about/', kudos.views.about, name='kudos_about'),
@@ -132,8 +135,20 @@ urlpatterns = [
     re_path(r'^onboard/(?P<flow>\w+)/$', dashboard.views.onboard, name='onboard'),
     re_path(r'^onboard/contributor/avatar/?$', dashboard.views.onboard_avatar, name='onboard_avatar'),
     url(r'^postcomment/', dashboard.views.post_comment, name='post_comment'),
-    url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
+
+    # Funder dashboard
+    path('funder_dashboard/<str:bounty_type>/', dashboard.views.funder_dashboard, name='funder_dashboard'),
+    path(
+        'funder_dashboard/bounties/<int:bounty_id>/',
+        dashboard.views.funder_dashboard_bounty_info,
+        name='funder_dashboard_bounty_info'
+    ),
+
+    # Contributor dashboard
+    path(
+        'contributor_dashboard/<str:bounty_type>/', dashboard.views.contributor_dashboard, name='contributor_dashboard'
+    ),
 
     # Hackathon static page
     url(r'^hackathon/ethhack2019', dashboard.views.ethhack, name='ethhack_2019'),
@@ -364,26 +379,6 @@ urlpatterns = [
         name='admin_subscription_terminated'
     ),
     path('_administration/email/new_grant', retail.emails.new_grant, name='admin_new_grant'),
-    path(
-        '_administration/email/change_grant_owner_request',
-        retail.emails.change_grant_owner_request,
-        name='admin_change_grant_owner_request'
-    ),
-    path(
-        '_administration/email/change_grant_owner_accept',
-        retail.emails.change_grant_owner_accept,
-        name='admin_change_grant_owner_accept'
-    ),
-    path(
-        '_administration/email/notify_ownership_change',
-        retail.emails.notify_ownership_change,
-        name='admin_notify_ownership_change'
-    ),
-    path(
-        '_administration/email/change_grant_owner_reject',
-        retail.emails.change_grant_owner_reject,
-        name='admin_change_grant_owner_reject'
-    ),
     path('_administration/email/new_supporter', retail.emails.new_supporter, name='admin_new_supporter'),
     path(
         '_administration/email/thank_you_for_supporting',

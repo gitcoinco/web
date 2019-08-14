@@ -47,31 +47,25 @@
             </div>
             <div class="col offset-md-1 col-md-10 d-flex align-items-center justify-content-center" id="primary_form">
               <div class="d-flex justify-content-center flex-column mt-5 w-100" id="primary_subform">
-                <div class="w-100 text-center">
-                  <h3>{% trans "Contribute to Bounty" %}</h3>
-                  <img src="{% static "v2/images/prime.png" %}">
-                </div>
-                {% include 'shared/network_status.html' %}
-                <div class="w-100">
-                  <h4>{% trans "Option 1:" %}</h4>
+                <div class="w-100 text-center mb-5">
+                  <h3 class="mb-4">{% trans "Contribute to Bounty" %}</h3>
+                  <img src="{% static "v2/images/obiwan-bot.svg" %}" style="max-width: 15rem">
                 </div>
                 <div class="w-100 mt-2">
                   <a class="bounty_box" href="{{bounty.action_urls.increase}}">
-                      <h5>{% trans "Fund this Bounty." %}</h5>
-                      <span>
-                        {% trans "Used to increase the financial compensation to the bounty hunter(s) who turn around this issue." %}
-                      </span>
+                    <h5>{% trans "Fund this Bounty." %}</h5>
+                    <span>
+                      {% trans "Used to increase the financial compensation to the bounty hunter(s) who turn around this issue." %}
+                    </span>
                   </a>
                 </div>
-                <div class="w-100">
-                  <h4>{% trans "Option 2:" %}</h4>
-                </div>
+                <h4 class="font-weight-bold py-4 mb-0">OR</h4>
                 <div class="w-100 mt-2">
                   <a class="bounty_box" href="{{bounty.action_urls.social_contribution}}">
-                      <h5>{% trans "Promote this Bounty" %}</h5>
-                      <span>
-                        {% trans "Used to tell your network about this bounty; increasing the chance that it'll be turned around." %}
-                      </span>
+                    <h5>{% trans "Promote this Bounty" %}</h5>
+                    <span>
+                      {% trans "Used to tell your network about this bounty; increasing the chance that it'll be turned around." %}
+                    </span>
                   </a>
                 </div>
               </div>
@@ -86,33 +80,4 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
   </body>
-  <style>
-  h4{
-    border-bottom: 1px solid black;
-  }
-  .bounty_box {
-    border: 5px solid white;
-    width: 100%;
-    display: block;
-    padding: 30px 30px;
-    background-color: #3f243b;
-    color: white;
-    text-decoration: none;
-  }
-  .bounty_box.disabled, .bounty_box.disabled:hover {
-    cursor: not-allowed;
-    background-color: #5f445b;
-    text-decoration: none;
-  }
-  .bounty_box:hover {
-    background-color: #2f142b;
-    text-decoration: none;
-  }
-  .bounty_box h5{
-    color: white;
-  }
-  .bounty_box span{
-    color: white;
-  }
-  </style>
 </html>
