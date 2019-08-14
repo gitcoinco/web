@@ -320,3 +320,68 @@ const sendPersonal = (persona) => {
 
   });
 };
+
+
+const gitcoinUpdates = (force) => {
+  let urlUpdates = 'https://api.github.com/gists/ffddcf798cf46558b878de3f61931fc2?access_token=9ff03c64d67dad3298f8d7d40585b7c7c34863f8'
+  let today = new Date();
+  let showedUpdates = JSON.parse(localStorage.getItem('showed_updates'))
+  let lastPromp = showedUpdates ? showedUpdates.last_promp : today;
+  let lastUpdated = showedUpdates ? showedUpdates.last_updated : 0;
+
+  console.log(moment(lastPromp).diff(moment(today), 'days'))
+  if ( !force && showedUpdates && (moment(lastPromp).diff(moment(today), 'days') < 7)) {
+    return;
+  }
+
+  let getUpdates = fetchData (urlUpdates, 'GET');
+
+  $.when(getUpdates).then(function(response) {
+    console.log(response.files.changelog.content)
+
+    if (!force && (response.updated_at == lastUpdated)) {
+      return;
+    }
+
+    const content = $.parseHTML(
+      `<div id="gitcoin_updates" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content px-4 py-3">
+            <div class="col-12">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="col-12 pt-2 pb-2 text-center">
+              <img src="${static_url}v2/images/modals/persona-choose.svg" width="160" height="137">
+              <h2 class="mt-4">${response.description}</h2>
+            </div>
+            <div class="col-12 pt-2 dynamic-content">
+              ${response.files.changelog.content}
+            </div>
+            <div class="col-12 my-4 d-flex justify-content-around">
+              <button type="button" class="btn btn-gc-blue" data-dismiss="modal" aria-label="Close">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>`);
+
+    $(content).appendTo('body');
+    $('#gitcoin_updates').bootstrapModal('show');
+    let newPrompt = {
+      "last_promp": new Date(),
+      "last_updated": response.updated_at
+    }
+    localStorage.setItem('showed_updates', JSON.stringify(newPrompt));
+
+  });
+
+  $(document, '#gitcoin_updates').on('hidden.bs.modal', function(e) {
+    $('#gitcoin_updates').remove();
+    $('#gitcoin_updates').bootstrapModal('dispose');
+  });
+}
+
+if (document.contxt.github_handle) {
+  gitcoinUpdates();
+}
