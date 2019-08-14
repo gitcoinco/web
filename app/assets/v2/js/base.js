@@ -323,21 +323,19 @@ const sendPersonal = (persona) => {
 
 
 const gitcoinUpdates = (force) => {
-  let urlUpdates = 'https://api.github.com/gists/ffddcf798cf46558b878de3f61931fc2?access_token=9ff03c64d67dad3298f8d7d40585b7c7c34863f8'
+  let urlUpdates = 'https://api.github.com/gists/ffddcf798cf46558b878de3f61931fc2?access_token=9ff03c64d67dad3298f8d7d40585b7c7c34863f8';
   let today = new Date();
-  let showedUpdates = JSON.parse(localStorage.getItem('showed_updates'))
+  let showedUpdates = JSON.parse(localStorage.getItem('showed_updates'));
   let lastPromp = showedUpdates ? showedUpdates.last_promp : today;
   let lastUpdated = showedUpdates ? showedUpdates.last_updated : 0;
 
-  console.log(moment(lastPromp).diff(moment(today), 'days'))
-  if ( !force && showedUpdates && (moment(lastPromp).diff(moment(today), 'days') < 7)) {
+  if (!force && showedUpdates && (moment(lastPromp).diff(moment(today), 'days') < 7)) {
     return;
   }
 
   let getUpdates = fetchData (urlUpdates, 'GET');
 
   $.when(getUpdates).then(function(response) {
-    console.log(response.files.changelog.content)
 
     if (!force && (response.updated_at == lastUpdated)) {
       return;
@@ -369,9 +367,10 @@ const gitcoinUpdates = (force) => {
     $(content).appendTo('body');
     $('#gitcoin_updates').bootstrapModal('show');
     let newPrompt = {
-      "last_promp": new Date(),
-      "last_updated": response.updated_at
-    }
+      'last_promp': new Date(),
+      'last_updated': response.updated_at
+    };
+
     localStorage.setItem('showed_updates', JSON.stringify(newPrompt));
 
   });
@@ -380,7 +379,7 @@ const gitcoinUpdates = (force) => {
     $('#gitcoin_updates').remove();
     $('#gitcoin_updates').bootstrapModal('dispose');
   });
-}
+};
 
 if (document.contxt.github_handle) {
   gitcoinUpdates();
