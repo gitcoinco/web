@@ -550,7 +550,7 @@ def extend_expiration(request, bounty_id):
 
     is_funder = bounty.is_funder(user.username.lower()) if user else False
     if is_funder:
-        deadline = round(int(request.POST.get('deadline')) / 1000)
+        deadline = round(int(request.POST.get('deadline')))
         bounty.expires_date = timezone.make_aware(
             timezone.datetime.fromtimestamp(deadline),
             timezone=UTC)
