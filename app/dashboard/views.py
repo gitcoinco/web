@@ -1577,9 +1577,9 @@ def helper_handle_remarket_trigger(request, bounty):
         if is_staff or is_funder:
             remarketed_count = bounty.remarketed_count
             if remarketed_count < 2:
-                one_hour_after_remarketing = bounty.last_remarketed + timezone.timedelta(hours=1)
                 now = timezone.now()
-                if now > one_hour_after_remarketing:
+                one_hour_after_remarketing = bounty.last_remarketed + timezone.timedelta(hours=1) if bounty.last_remarketed else now
+                if now >= one_hour_after_remarketing:
                     bounty.remarketed_count = remarketed_count + 1
                     bounty.last_remarketed = now
                     bounty.save()
