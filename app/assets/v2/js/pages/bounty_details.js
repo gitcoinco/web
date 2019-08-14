@@ -806,15 +806,14 @@ var set_extended_time_html = function(extendedDuration) {
 };
 
 var show_extend_deadline_modal = function() {
-  var self = this;
-  var modals = $('#modalExtend');
+  let modals = $('#modalExtend');
   let modalBody = $('#modalExtend .modal-content');
-  var url = '/modal/extend_issue_deadline?pk=' + document.result['pk'];
+  const url = '/modal/extend_issue_deadline?pk=' + document.result['pk'];
 
   moment.locale('en');
   modals.on('show.bs.modal', function() {
     modalBody.load(url, ()=> {
-      var currentExpires = moment.utc(document.result['expires_date']);
+      const currentExpires = moment.utc(document.result['expires_date']);
 
       $('#modalExtend input[name="expirationTimeDelta"]').daterangepicker({
         parentEl: '#extend_deadline',
