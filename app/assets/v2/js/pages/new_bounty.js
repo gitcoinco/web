@@ -136,9 +136,7 @@ function formatUserSelection(user) {
 }
 
 function lastSynced(current, last_sync) {
-  var time = timeDifference(current, last_sync);
-
-  return time;
+  return timeDifference(current, last_sync);
 }
 
 const setPrivateForm = () => {
@@ -184,6 +182,68 @@ const setPublicForm = () => {
   retrieveIssueDetails();
 };
 
+/**
+ * Checks if token used to fund bounty is authed.
+ */
+const handleTokenAuth = () => {
+  return new Promise((resolve) => {
+    const tokenName = $('#token option:selected').text();
+    const tokenAddress = $('#token option:selected').val();
+    let isTokenAuthed = true;
+
+    if (!token) {
+      isTokenAuthed = false;
+      tokenAuthAlert(isTokenAuthed);
+      resolve(isTokenAuthed);
+    } else if (tokenName == 'ETH') {
+      tokenAuthAlert(isTokenAuthed);
+      resolve(isTokenAuthed);
+    } else {
+      const token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+      const from = web3.eth.coinbase;
+      const to = bounty_address();
+
+      token_contract.allowance.call(from, to, (error, result) => {
+
+        if (error || result.toNumber() == 0) {
+          isTokenAuthed = false;
+        }
+        tokenAuthAlert(isTokenAuthed, tokenName);
+        resolve(isTokenAuthed);
+      });
+    }
+  });
+};
+
+/**
+ * Toggles alert to notify user while bounty creation using an
+ * un-authed token.
+ * @param {boolean} isTokenAuthed - Token auth status for user
+ * @param {string=}  tokenName - token name
+ */
+const tokenAuthAlert = (isTokenAuthed, tokenName) => {
+  $('.alert').remove();
+
+  if (isTokenAuthed) {
+    $('.alert').remove();
+    $('#add-token-dialog').bootstrapModal('hide');
+    $('#token-denomination').html('');
+  } else {
+    tokenName = tokenName ? tokenName : '';
+    _alert(
+      gettext(`
+        This token ${tokenName} needs to be enabled to fund this bounty, click on
+        <a class="font-weight-semibold" href="/settings/tokens">
+          the Token Settings page and enable it.
+        </a> This is only needed once per token.`
+      ),
+      'warning'
+    );
+
+    $('#token-denomination').html(tokenName);
+    $('#add-token-dialog').bootstrapModal('show');
+  }
+};
 
 $(function() {
 
@@ -223,9 +283,7 @@ $(function() {
 
 
   setTimeout(setUsdAmount, 1000);
-  waitforWeb3(function() {
-    promptForAuth();
-  });
+
   // fetch issue URL related info
   $('input[name=amount]').keyup(setUsdAmount);
   $('input[name=amount]').blur(setUsdAmount);
@@ -243,7 +301,7 @@ $(function() {
 
   var triggerDenominationUpdate = function(e) {
     setUsdAmount();
-    promptForAuth();
+    handleTokenAuth();
     const token_val = $('select[name=denomination]').val();
     const tokendetails = tokenAddressToDetails(token_val);
     var token = tokendetails['name'];
@@ -701,7 +759,7 @@ $('#submitBounty').validate({
     }
 
     var do_bounty = function(callback) {
-      callMethodIfTokenIsAuthed(function(x, y) {
+      handleTokenAuth().then(() => {
         const fee = Number((Number(data.amount) * FEE_PERCENTAGE).toFixed(4));
         const to_address = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
         const gas_price = web3.toHex($('#gasPrice').val() * Math.pow(10, 9));
@@ -741,7 +799,7 @@ $('#submitBounty').validate({
             );
           }
         }
-      }, promptForAuthFailure);
+      });
     };
 
     const deductBountyAmount = function(fee, txnId) {
@@ -818,12 +876,17 @@ $('#submitBounty').validate({
     };
 
     function processBounty() {
-      if ($("input[type='radio'][name='repo_type']:checked").val() == 'private' && $('#issueNDA')[0].files[0]) {
+      if (
+        $("input[type='radio'][name='repo_type']:checked").val() == 'private' &&
+        $('#issueNDA')[0].files[0]
+      ) {
         uploadNDA();
-      } else if (data.featuredBounty) {
-        payFeaturedBounty();
       } else {
-        do_bounty();
+        handleTokenAuth().then(isAuthedToken => {
+          if (isAuthedToken) {
+            data.featuredBounty ? payFeaturedBounty() : do_bounty();
+          }
+        });
       }
     }
 
