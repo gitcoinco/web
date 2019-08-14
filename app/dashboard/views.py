@@ -2985,18 +2985,18 @@ def funder_dashboard(request, bounty_type):
             ).order_by('-interested__created'))
         interests = list(Interest.objects.filter(
             bounty__pk__in=[b.pk for b in bounties],
-            status='okay',
-            pending=True))
+            status='okay'))
         return JsonResponse(serialize_funder_dashboard_open_rows(bounties, interests), safe=False)
 
     elif bounty_type == 'submitted':
-        bounties = Bounty.objects.prefetch_related('fulfillments').filter(
+        bounties = Bounty.objects.prefetch_related('fulfillments').distinct('id').filter(
             Q(idx_status='submitted') | Q(override_status='submitted'),
             current_bounty=True,
             network=network,
             fulfillments__accepted=False,
             bounty_owner_github_username=profile.handle,
-            ).order_by('-fulfillments__created_on')
+            )
+        bounties.order_by('-fulfillments__created_on')
         return JsonResponse(serialize_funder_dashboard_submitted_rows(bounties), safe=False)
 
     elif bounty_type == 'expired':
