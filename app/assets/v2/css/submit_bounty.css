@@ -54,6 +54,16 @@ textarea:read-only {
   font-size: 13px;
 }
 
+#keyword-suggestion-container {
+  display: flex;
+  align-items: center;
+}
+
+#keyword-suggestions {
+  display: flex;
+  margin-left: 15px;
+}
+
 .revisions input {
   width: 35%;
   height: 35px;
@@ -79,7 +89,7 @@ textarea:read-only {
 
 #pricing-section .form__input,
 #pricing-section .form__select2 {
-  height: 37px;
+  height: 40px;
 }
 
 .select2-container--default .select2-selection--single {
@@ -144,6 +154,25 @@ textarea:read-only {
 #reservedForDiv .select2-selection__arrow {
   height: 2.5rem !important;
   right: 6px;
+}
+
+.fee-circle::before {
+  content: '-';
+  background-color: #5B3AF0;
+  border-radius: 50%;
+  padding: 3.5rem 4rem;
+  position: relative;
+  opacity: 0.12;
+  top: 2.2rem;
+}
+
+.fee-circle p {
+  color: #3E00FF;
+}
+
+#total-section {
+  border-top: 1px solid #000000;
+  border-bottom: 1px solid #000000;
 }
 
 @media (max-width: 767.98px) {

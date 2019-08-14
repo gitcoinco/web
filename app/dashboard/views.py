@@ -21,10 +21,14 @@ from __future__ import print_function, unicode_literals
 import json
 import logging
 import time
+from datetime import datetime
 
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core import serializers
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.http import Http404, HttpResponse, JsonResponse
@@ -32,7 +36,9 @@ from django.shortcuts import redirect
 from django.template import loader
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
+from django.urls import reverse
 from django.utils import timezone
+from django.utils.html import escape, strip_tags
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -59,8 +65,9 @@ from web3 import HTTPProvider, Web3
 
 from .helpers import get_bounty_data_for_activity, handle_bounty_views
 from .models import (
-    Activity, Bounty, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest, FeedbackEntry, Interest,
-    LabsResearch, Profile, ProfileSerializer, Subscription, Tool, ToolVote, UserAction,
+    Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest,
+    FeedbackEntry, HackathonEvent, Interest, LabsResearch, Profile, ProfileSerializer, RefundFeeRequest, Subscription,
+    Tool, ToolVote, UserAction,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -68,7 +75,8 @@ from .notifications import (
     maybe_market_to_user_slack,
 )
 from .utils import (
-    get_bounty, get_bounty_id, get_context, get_web3, has_tx_mined, record_user_action_on_interest, web3_process_bounty,
+    get_bounty, get_bounty_id, get_context, get_unrated_bounties_count, get_web3, has_tx_mined,
+    record_user_action_on_interest, web3_process_bounty,
 )
 
 logger = logging.getLogger(__name__)
@@ -157,7 +165,7 @@ def helper_handle_access_token(request, access_token):
     request.session['profile_id'] = profile.pk
 
 
-def create_new_interest_helper(bounty, user, issue_message):
+def create_new_interest_helper(bounty, user, issue_message, signed_nda=None):
     approval_required = bounty.permission_type == 'approval'
     acceptance_date = timezone.now() if not approval_required else None
     profile_id = user.profile.pk
@@ -167,6 +175,7 @@ def create_new_interest_helper(bounty, user, issue_message):
         issue_message=issue_message,
         pending=approval_required,
         acceptance_date=acceptance_date,
+        signed_nda=signed_nda,
     )
     bounty.interested.add(interest)
     record_user_action(user, 'start_work', interest)
@@ -270,7 +279,12 @@ def new_interest(request, bounty_id):
             status=401)
     except Interest.DoesNotExist:
         issue_message = request.POST.get("issue_message")
-        interest = create_new_interest_helper(bounty, request.user, issue_message)
+        signed_nda = None
+        if request.POST.get("signed_nda", None):
+            signed_nda = BountyDocuments.objects.filter(
+                pk=request.POST.get("signed_nda")
+            ).first()
+        interest = create_new_interest_helper(bounty, request.user, issue_message, signed_nda)
         if interest.pending:
             start_work_new_applicant(interest, bounty)
 
@@ -309,23 +323,34 @@ def post_comment(request):
             'msg': '',
         })
 
-    sbid = request.POST.get('standard_bounties_id')
-    bountyObj = Bounty.objects.filter(standard_bounties_id=sbid).first()
-    fbAmount = FeedbackEntry.objects.filter(sender_profile=profile_id, feedbackType=request.POST.get('review[reviewType]', 'approver'), bounty=bountyObj).count()
+    # sbid = request.POST.get('standard_bounties_id')
+    bounty_id = request.POST.get('bounty_id')
+    # bountyObj = Bounty.objects.filter(standard_bounties_id=sbid).first()
+    bountyObj = Bounty.objects.get(pk=bounty_id)
+    fbAmount = FeedbackEntry.objects.filter(
+        sender_profile=profile_id,
+        feedbackType=request.POST.get('review[reviewType]', 'approver'),
+        bounty=bountyObj
+    ).count()
     if fbAmount > 0:
         return JsonResponse({
             'success': False,
             'msg': 'There is already a approval comment',
         })
-    if request.POST.get('review[reviewType]','approver') == 'approver':
-        receiver_profile = Profile.objects.filter(handle=request.POST.get('review[receiver]', '')).first()
+    if request.POST.get('review[reviewType]') == 'worker':
+        receiver_profile = Profile.objects.filter(handle=request.POST.get('review[receiver]')).first()
     else:
         receiver_profile = bountyObj.bounty_owner_profile
     kwargs = {
         'bounty': bountyObj,
         'sender_profile': profile_id,
         'receiver_profile': receiver_profile,
-        'rating': request.POST.get('review[rating]', '-1'),
+        'rating': request.POST.get('review[rating]', '0'),
+        'satisfaction_rating': request.POST.get('review[satisfaction_rating]', '0'),
+        'communication_rating': request.POST.get('review[communication_rating]', '0'),
+        'speed_rating': request.POST.get('review[speed_rating]', '0'),
+        'code_quality_rating': request.POST.get('review[code_quality_rating]', '0'),
+        'recommendation_rating': request.POST.get('review[recommendation_rating]', '0'),
         'comment': request.POST.get('review[comment]', 'No comment.'),
         'feedbackType': request.POST.get('review[reviewType]','approver')
     }
@@ -333,9 +358,90 @@ def post_comment(request):
     feedback = FeedbackEntry.objects.create(**kwargs)
     feedback.save()
     return JsonResponse({
-            'success': False,
+            'success': True,
             'msg': 'Finished.'
         })
+
+def rating_modal(request, bounty_id, username):
+    # TODO: will be changed to the new share
+    """Rating modal.
+
+    Args:
+        pk (int): The primary key of the bounty to be rated.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The rate bounty view.
+
+    """
+    try:
+        bounty = Bounty.objects.get(pk=bounty_id)
+    except Bounty.DoesNotExist:
+        return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
+                            status=401)
+
+    params = get_context(
+        ref_object=bounty,
+    )
+    params['receiver']=username
+    params['user'] = request.user if request.user.is_authenticated else None
+
+    return TemplateResponse(request, 'rating_modal.html', params)
+
+
+def rating_capture(request):
+    # TODO: will be changed to the new share
+    """Rating capture.
+
+    Args:
+        pk (int): The primary key of the bounty to be rated.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The rate bounty capture modal.
+
+    """
+    user = request.user if request.user.is_authenticated else None
+    if not user:
+        return JsonResponse(
+            {'error': _('You must be authenticated via github to use this feature!')},
+            status=401)
+
+    return TemplateResponse(request, 'rating_capture.html')
+
+
+def unrated_bounties(request):
+    """Rating capture.
+
+    Args:
+        pk (int): The primary key of the bounty to be rated.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The rate bounty capture modal.
+
+    """
+    # request.user.profile if request.user.is_authenticated and getattr(request.user, 'profile', None) else None
+    unrated_count = 0
+    user = request.user.profile if request.user.is_authenticated else None
+    if not user:
+        return JsonResponse(
+            {'error': _('You must be authenticated via github to use this feature!')},
+            status=401)
+
+    if user:
+        unrated_count = get_unrated_bounties_count(user)
+
+    # data = json.dumps(unrated)
+    return JsonResponse({
+        'unrated': unrated_count,
+    }, status=200)
 
 
 @csrf_exempt
@@ -639,6 +745,18 @@ def dashboard(request):
     }
     return TemplateResponse(request, 'dashboard/index.html', params)
 
+def ethhack(request):
+    """Handle displaying ethhack landing page."""
+
+    title = str(_(" Eth Hackathon 2019"))
+    params = {
+        'title': title,
+        'meta_description': _('Ethereal Virtual Hackathon, powered by Gitcoin and Microsoft'),
+        'card_title': title,
+        'card_desc': _('Ethereal Virtual Hackathon, powered by Gitcoin and Microsoft'),
+        'avatar_url': static('v2/images/ethhack_2019_media.png'),
+    }
+    return TemplateResponse(request, 'dashboard/hackathon/ethhack_2019.html', params)
 
 def accept_bounty(request):
     """Process the bounty.
@@ -800,8 +918,7 @@ def social_contribution_email(request):
         JsonResponse: Success in sending email.
     """
     from marketing.mails import share_bounty
-
-    emails = [] 
+    emails = []
     user_ids = request.POST.getlist('usersId[]', [])
     url = request.POST.get('url', '')
     inviter = request.user if request.user.is_authenticated else None
@@ -968,6 +1085,119 @@ def cancel_bounty(request):
     return TemplateResponse(request, 'bounty/kill.html', params)
 
 
+def refund_request(request):
+    """Request refund for bounty
+
+    Args:
+        pk (int): The primary key of the bounty to be cancelled.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The request refund view.
+
+    """
+
+    if request.method == 'POST':
+        is_authenticated = request.user.is_authenticated
+        profile = request.user.profile if is_authenticated and hasattr(request.user, 'profile') else None
+        bounty = Bounty.objects.get(pk=request.GET.get('pk'))
+
+        if not profile or not bounty or profile.username != bounty.bounty_owner_github_username :
+            return JsonResponse({
+                'message': _('Only bounty funder can raise this request!')
+            }, status=401)
+
+        comment = escape(strip_tags(request.POST.get('comment')))
+
+        review_req = RefundFeeRequest.objects.create(
+            profile=profile,
+            bounty=bounty,
+            comment=comment,
+            token=bounty.token_name,
+            address=bounty.bounty_owner_address,
+            fee_amount=bounty.fee_amount
+        )
+
+        # TODO: Send Mail
+
+        return JsonResponse({'message': _('Request Submitted.')}, status=201)
+
+    bounty = handle_bounty_views(request)
+
+    if RefundFeeRequest.objects.filter(bounty=bounty).exists():
+        params = get_context(
+            ref_object=bounty,
+            active='refund_request',
+            title=_('Request Bounty Refund'),
+        )
+        params['duplicate'] = True
+        return TemplateResponse(request, 'bounty/refund_request.html', params)
+
+    params = get_context(
+        ref_object=bounty,
+        user=request.user if request.user.is_authenticated else None,
+        active='refund_request',
+        title=_('Request Bounty Refund'),
+    )
+
+    return TemplateResponse(request, 'bounty/refund_request.html', params)
+
+
+@staff_member_required
+def process_refund_request(request, pk):
+    """Request refund for bounty
+
+    Args:
+        pk (int): The primary key of the bounty to be cancelled.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: Admin view for request refund view.
+
+    """
+
+    try :
+       refund_request =  RefundFeeRequest.objects.get(pk=pk)
+    except RefundFeeRequest.DoesNotExist:
+        raise Http404
+
+    if refund_request.fulfilled:
+        messages.info(request, 'refund request already fulfilled')
+        return redirect(reverse('admin:index'))
+
+    if refund_request.rejected:
+        messages.info(request, 'refund request already rejected')
+        return redirect(reverse('admin:index'))
+
+    if request.POST:
+
+        if request.POST.get('fulfill'):
+            refund_request.fulfilled = True
+            refund_request.txnId = request.POST.get('txnId')
+            messages.success(request, 'fulfilled')
+
+        else:
+            refund_request.comment_admin = request.POST.get('comment')
+            refund_request.rejected = True
+            messages.success(request, 'rejected')
+
+        refund_request.save()
+        messages.info(request, 'Complete')
+        # TODO: send mail
+        return redirect('admin:index')
+
+    context = {
+        'obj': refund_request,
+        'recommend_gas_price': round(recommend_min_gas_price_to_confirm_in_time(1), 1),
+    }
+
+    return TemplateResponse(request, 'bounty/process_refund_request.html', context)
+
+
 def helper_handle_admin_override_and_hide(request, bounty):
     admin_override_and_hide = request.GET.get('admin_override_and_hide', False)
     if admin_override_and_hide:
@@ -1109,12 +1339,13 @@ def helper_handle_approvals(request, bounty):
             messages.warning(request, _('Only the funder of this bounty may perform this action.'))
 
 
+@login_required
 def bounty_invite_url(request, invitecode):
     """Decode the bounty details and redirect to correct bounty
 
     Args:
         invitecode (str): Unique invite code with bounty details and handle
-    
+
     Returns:
         django.template.response.TemplateResponse: The Bounty details template response.
     """
@@ -1137,7 +1368,7 @@ def bounty_invite_url(request, invitecode):
         bounty_invite.inviter.add(inviter)
         bounty_invite.invitee.add(request.user)
     return redirect('/funding/details/?url=' + bounty.github_url)
-    
+
 
 
 def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None):
@@ -1203,6 +1434,9 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 params['stdbounties_id'] = bounty.standard_bounties_id if not stdbounties_id else stdbounties_id
                 params['interested_profiles'] = bounty.interested.select_related('profile').all()
                 params['avatar_url'] = bounty.get_avatar_url(True)
+
+                if bounty.event:
+                    params['event_tag'] = bounty.event.slug
 
                 helper_handle_snooze(request, bounty)
                 helper_handle_approvals(request, bounty)
@@ -1322,6 +1556,34 @@ def profile_job_opportunity(request, handle):
         'message': 'Job search status saved'
     }
     return JsonResponse(response)
+
+
+@csrf_exempt
+@require_POST
+def bounty_upload_nda(request):
+    """ Save Bounty related docs like NDA.
+
+    Args:
+        bounty_id (int): The bounty id.
+    """
+    if request.FILES.get('docs', None):
+        bountydoc = BountyDocuments.objects.create(
+            doc=request.FILES.get('docs', None),
+            doc_type=request.POST.get('doc_type', None)
+        )
+        response = {
+            'status': 200,
+            'bounty_doc_id': bountydoc.pk,
+            'message': 'NDA saved'
+        }
+    else:
+        response = {
+            'status': 400,
+            'message': 'No File Found'
+        }
+    return JsonResponse(response)
+
+
 
 
 def profile_filter_activities(activities, activity_name):
@@ -1450,6 +1712,23 @@ def profile(request, handle):
     context['kudos_count'] = owned_kudos.count()
     context['sent_kudos_count'] = sent_kudos.count()
     context['verification'] = profile.get_my_verified_check
+    context['avg_rating'] = profile.get_average_star_rating
+
+    context['unrated_funded_bounties'] = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
+        .filter(
+            bounty_owner_github_username__iexact=profile.handle,
+        ).exclude(
+            feedbacks__feedbackType='approver',
+            feedbacks__sender_profile=profile,
+        )
+
+    context['unrated_contributed_bounties'] = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=profile) \
+            .filter(interested__status='okay') \
+            .filter(interested__pending=False).filter(idx_status='done') \
+            .exclude(
+                feedbacks__feedbackType='worker',
+                feedbacks__sender_profile=profile
+            )
 
     currently_working_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
         .filter(interested__pending=False).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)
@@ -1616,7 +1895,6 @@ def terms(request):
         'title': _('Terms of Use'),
     }
     return TemplateResponse(request, 'legal/terms.html', context)
-
 
 def privacy(request):
     return TemplateResponse(request, 'legal/privacy.html', {})
@@ -1870,10 +2148,13 @@ def redeem_coin(request, shortcode):
 def new_bounty(request):
     """Create a new bounty."""
     from .utils import clean_bounty_url
+
+    events = HackathonEvent.objects.filter(end_date__gt=datetime.today())
     bounty_params = {
         'newsletter_headline': _('Be the first to know about new funded issues.'),
         'issueURL': clean_bounty_url(request.GET.get('source') or request.GET.get('url', '')),
         'amount': request.GET.get('amount'),
+        'events': events,
     }
 
     params = get_context(
@@ -2075,3 +2356,37 @@ def get_kudos(request):
         raise Http404
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)
+
+
+def hackathon(request, hackathon=''):
+    """Handle rendering of HackathonEvents. Reuses the dashboard template."""
+
+    try:
+        evt = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
+        title = evt.name
+    except HackathonEvent.DoesNotExist:
+        raise Http404
+
+    params = {
+        'active': 'dashboard',
+        'title': title,
+        'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
+        'hackathon': evt,
+    }
+    return TemplateResponse(request, 'dashboard/index.html', params)
+
+
+def get_hackathons(request):
+    """Handle rendering all Hackathons."""
+
+    try:
+        events = HackathonEvent.objects.values()
+    except HackathonEvent.DoesNotExist:
+        raise Http404
+
+    params = {
+        'active': 'hackathons',
+        'title': 'hackathons',
+        'hackathons': events,
+    }
+    return TemplateResponse(request, 'dashboard/hackathons.html', params)

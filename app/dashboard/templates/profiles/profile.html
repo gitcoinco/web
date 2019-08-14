@@ -12,6 +12,8 @@
     <link rel="stylesheet" href={% static "v2/css/tag.css" %} />
     <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
     <link rel="stylesheet" href={% static "v2/css/tabs.css" %} />
+    <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
+    <link rel="stylesheet" href={% static "v2/css/scroll-carousel.css" %} />
   </head>
   <body class="interior {{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
@@ -25,7 +27,7 @@
         </div>
       {% endif %}
     </div>
-    <div class="container-fluid bg-light pb-5">
+    <div class="container-fluid bg-light">
 
         <div class="container profile-card mt-md-n5">
           <div class="row">
@@ -60,7 +62,11 @@
                     '><img src="{% static 'v2/images/badge-verify.svg' %}" alt=""></button>
                   {% endif %}
                 </h1>
-                <p class="mb-0">{{ profile.handle }}</p>
+                <p class="mb-0">{{ profile.handle }}
+                  {% if profile.custom_tagline %}
+                    <span style="font-size: 14px; font-color: #000;">- {{ profile.custom_tagline }}</span>
+                  {% endif %}
+                </p>
                 <p class="profile-header__links clearfix mt-1">
                   <a href="{{ profile.data.html_url }}?tab=repositories" target="_blank" rel="noopener noreferrer" >
                     <i class="fab fa-github"></i>
@@ -112,7 +118,12 @@
                 <div class="col-12 col-lg-3">
                   <div class="profile-header__stats profile-header__stats--contributor card mb-4">
                     <div class="card-header font-subheader">
-                     <b>#{{ scoreboard_position_contributor }}</b> {% trans "Contributor" %}
+                      {% if scoreboard_position_contributor %}
+                        <b>#{{ scoreboard_position_contributor }}</b>
+                      {% else %}
+                        <b>&nbsp;</b>
+                      {% endif %}
+                      {% trans "Contributor" %}
                     </div>
                     <div class="card-body">
                       <ul>
@@ -143,7 +154,12 @@
                 <div class="col-12 col-lg-3">
                   <div class="profile-header__stats profile-header__stats--funder card mb-4">
                     <div class="card-header font-subheader">
-                      <b>#{{ scoreboard_position_funder }}</b> {% trans "Funder" %}
+                      {% if scoreboard_position_funder %}
+                        <b>#{{ scoreboard_position_funder }}</b>
+                      {% else %}
+                        <b>&nbsp;</b>
+                      {% endif %}
+                      {% trans "Funder" %}
                     </div>
                     <div class="card-body font-subheader">
                       <ul>
@@ -181,8 +197,10 @@
         </div>
       </div>
       {% endif %}
+      {% if is_my_profile and not hidden %}
+        {% include "shared/rate_bounties.html" %}
+      {% endif %}
     </div>
-
 
     <div class="container">
       {% if hidden %}
@@ -259,12 +277,14 @@
       {% endif %}
     {% endif %}
     </div>
+    </div>
+  </div>
 
     {% include 'shared/result.html' %}
     {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html'%}
-    {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
 
     <!-- jQuery -->
@@ -272,15 +292,19 @@
     <script src="/dynamic/js/tokens_dynamic.js"></script>
     <script src="{% static "v2/js/tokens.js" %}"></script>
     <script src="{% static "v2/js/popper.min.js" %}"></script>
-    <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
+    <script src="{% static "v2/js/bootstrap.min.js" %}" crossorigin="anonymous"></script>
     <script>
       var bootstrapTooltip = $.fn.tooltip.noConflict()
+      var bootstrapModal = $.fn.modal.noConflict()
       $.fn.runTooltip = bootstrapTooltip
+      $.fn.bootstrapModal = bootstrapModal
       $('[data-toggle="popover"]').popover()
+      $('[data-toggle="tooltip"]').runTooltip();
 
     </script>
     <script src="{% static "v2/js/pages/tabs.js" %}"></script>
     <script src="{% static "v2/js/pages/profile.js" %}"></script>
+    <script src="{% static "v2/js/rating.js" %}"></script>
     <script type="text/javascript">
       {% if preferred_payout_address %}
         document.hasPreferredPayoutAddress = true;

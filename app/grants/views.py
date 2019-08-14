@@ -38,6 +38,7 @@ from django.views.decorators.csrf import csrf_exempt
 from app.utils import get_profile
 from cacheops import cached_view
 from dashboard.models import Profile
+from dashboard.utils import get_web3, has_tx_mined
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.forms import MilestoneForm
 from grants.models import Contribution, Grant, MatchPledge, Milestone, Subscription, Update
@@ -71,9 +72,9 @@ def grants(request):
     _grants = None
 
     if state == 'active':
-        _grants = Grant.objects.filter(network=network).active().keyword(keyword).order_by(sort)
+        _grants = Grant.objects.filter(network=network, hidden=False).active().keyword(keyword).order_by(sort)
     else:
-        _grants = Grant.objects.filter(network=network).keyword(keyword).order_by(sort)
+        _grants = Grant.objects.filter(network=network, hidden=False).keyword(keyword).order_by(sort)
 
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
@@ -634,3 +635,54 @@ def leaderboard(request):
             params['items'].append(item)
             counter += 1
     return TemplateResponse(request, 'grants/leaderboard.html', params)
+
+
+@csrf_exempt
+def new_matching_partner(request):
+
+    tx_hash = request.POST.get('hash')
+    tx_amount = request.POST.get('amount')
+    profile = get_profile(request)
+
+    def get_json_response(message, status):
+        return JsonResponse(
+            {'status': status, 'message': message},
+            status=status
+        )
+
+    def is_verified(tx_details, tx_hash, tx_amount, network):
+        gitcoin_account = '0x00De4B13153673BCAE2616b67bf822500d325Fc3'
+        return has_tx_mined(tx_hash, network) and\
+            tx_details.to == gitcoin_account and\
+            str(tx_details.value) == str(tx_amount)
+
+    if not request.user.is_authenticated:
+        return get_json_response("Not Authorized", 403)
+
+    if not profile:
+        return get_json_response("Profile not found.", 404)
+
+    if request.POST and tx_hash:
+        network = 'mainnet'
+        web3 = get_web3(network)
+        tx = web3.eth.getTransaction(tx_hash)
+        match_pledge = MatchPledge(
+            profile=profile,
+            amount=tx.value,
+            data=json.dumps({
+                'tx_hash': tx_hash,
+                'network': network,
+                'from': tx['from'],
+                'to': tx.to,
+                'tx_amount': tx.value}
+            )
+        )
+        match_pledge.active = is_verified(tx, tx_hash, tx_amount, network)
+        match_pledge.save()
+
+        return get_json_response(
+            """Thank you for volunteering to match on Gitcoin Grants. 
+            You are supporting open source, and we thank you""", 201
+        )
+
+    return get_json_response("Wrong request.", 400)

@@ -1,10 +1,9 @@
-html {
-  overflow: hidden;
+body {
+  color: #43484d;
 }
 
-body {
+body.funder-page {
   height: 100vh;
-  color: #43484d;
 }
 
 .navbar {
@@ -26,6 +25,28 @@ body {
 .banner--green p,
 .banner--green a {
   font-weight: 600;
+}
+
+.carousel-inner .content {
+  display: inline-block;
+  position: relative;
+  top: 1rem;
+}
+
+.carousel-inner img {
+  max-height: 7.5rem;
+  position: relative;
+  top: -1rem;
+}
+
+.carousel-control-prev,
+.carousel-control-prev:hover,
+.carousel-control-prev:focus,
+.carousel-control-next,
+.carousel-control-next:hover,
+.carousel-control-next:focus {
+  color: #000000;
+  font-size: 1.5rem;
 }
 
 .youtube iframe {
@@ -195,10 +216,6 @@ body {
   margin: 0 auto;
 }
 
-.benefits-list-contributors {
-  grid-template-columns: repeat(4, 1fr);
-}
-
 .benefit {
   background-color: white;
   text-align: center;
@@ -233,21 +250,25 @@ body {
   margin-top: 0;
 }
 
-.landing__newsletter .newsletter h4 {
-  padding-top: 1.25rem;
-  padding-bottom: 0.5rem;
-  font-weight: normal;
+.contributor-page .landing__newsletter,
+.open-bounties,
+.pilot-container,
+.story_container {
+  background: white;
 }
 
-.pilot-container {
-  background: white;
+.pilot-container img {
+  margin: 1.5rem;
 }
 
 .pilot-container img,
 .project  {
-  margin: 1.5rem 3rem;
   height: 5rem;
   width: 5rem;
+}
+
+.project {
+  margin: 1.5rem 3rem;
 }
 
 .project img {
@@ -264,7 +285,7 @@ body {
 }
 
 .contributors-cta__robot {
-  max-height: 350px;
+  max-height: 16rem;
 }
 
 .join-gitcoin-heading {
@@ -280,6 +301,11 @@ body {
 .pricing_container {
   background-color: #F9F9F9;
   padding-bottom: 50rem;
+}
+
+.story img {
+  width: 28rem;
+  max-width: 100%;
 }
 
 .press_container {
@@ -396,8 +422,9 @@ body {
   border-top: 1px solid #E1E8EE;
 }
 
-.testimonial-container {
-  background-color: #F0F0F0;
+.testimonial-container,
+.activity {
+  background-color: #f8f8f8;
 }
 
 .in-some-cases-container {
@@ -689,6 +716,18 @@ body {
   .benefits-list {
     grid-template-columns: 1fr;
   }
+
+  .story {
+    text-align: center;
+  }
+
+  .story img {
+    margin-bottom: 2rem;
+  }
+
+  .story img:not(:first-child) {
+    margin-top: 2rem;
+  }
 }
 
 @media (min-width: 768px) and (max-width: 991.98px) {
@@ -719,6 +758,11 @@ body {
 
   #gc-robot {
     right: 10px;
+  }
+
+  #start .carousel-control-prev,
+  #start .carousel-control-next {
+    display: none;
   }
 
   .pricing-tiers-container {
@@ -773,26 +817,25 @@ body {
     margin-right: 10rem;
   }
 
+  .feat-3 {
+    position: relative;
+    left: -0.7rem;
+  }
+
   .newsletter #newsletter-input {
-    padding: 12px 10px !important;
+    padding: 14px 16px !important;
     min-width: 18rem !important;
-    font-size: 16px !important;
     border: 1px solid #888;
-    border-top-left-radius: 2px !important;
-    border-bottom-left-radius: 2px !important;
-    border-right: none;
+    border-radius: 2px !important;
   }
 
   #newsletter-subscribe {
     height: 48px;
-    top: 1px;
+    top: -2px;
     border-radius: 2px;
-    border-bottom-left-radius: 0;
-    border-top-left-radius: 0;
     position: relative;
     box-shadow: none;
     font-weight: 600;
-    left: -4px;
   }
 }
 
@@ -818,6 +861,24 @@ body {
     display: none;
   }
 
+  .feature_container img {
+    margin-bottom: 2rem;
+    min-width: 5rem;
+  }
+
+  #start img {
+    top: 1rem;
+  }
+
+  #start .carousel-item {
+    min-height: 17rem;
+  }
+
+  .carousel-item .content {
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+  }
+
   .howworks-container {
     padding-left: .5rem !important;
     padding-right: .5rem !important;
@@ -840,54 +901,36 @@ body {
   text-align: left;
 }
 
-.contributor-hero-bg {
-  position: relative;
-  background: url('../images/landing/contributor/hero_laptop.png') no-repeat;
-  background-size: 100% 100%;
-  height: 100%;
-  margin-right: -15px;
-  max-height: 350px;
-  max-width: 500px;
+.contributor-page .profile-bounties .bounty_row {
+  background: #FFFFFF;
+  box-shadow: 0 1px 4px 1px rgba(0,0,0,0.10);
+  border-radius: 5px;
+  margin-bottom: 1.2rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
-.contributors-hero-container {
-  position: relative; 
-  overflow-y: hidden;
+.contributor-page .tags-container {
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
-.contributor-hero-bg-container{
-  position: absolute;
-  top:100px;
-  right: 0px;
-  height: 500px;
-  width: 500px;
-}
-
-.ethereum-icon {
-  position: absolute;
-  top: -2em;
-  height: 50px;
-  width: 30px;
-  left: -1.2em;
-  background: url('../images/landing/contributor/hero_whiteeth.png') no-repeat;
-  background-position: center;
-  background-size: cover;
+.contributor-page .tags-container .tags.fixed {
+  padding-bottom: 0;
 }
 
 .text-purple {
   color: #3f00ff;
 }
 
-@media (max-width: 991px) {
-  .contributor-hero-bg,
-  .ethereum-icon {
-    display: none;
-  }
-}
-
 @media (max-width: 767px) {
-  .contributors-hero-container {
-    margin-left: 1em !important;
+  .contributors-hero-container iframe {
+    max-width: 100%;
+    height: 100%;
+  }
+
+  .story p {
+    text-align: center;
   }
 
   .join-slack-btn {

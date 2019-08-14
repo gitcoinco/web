@@ -74,6 +74,8 @@ function debounce(func, wait, immediate) {
   };
 }
 
+const scrub = value => value.replace(/[\W]+/g, '');
+
 /**
  * Fetches all filters options from the URI
  */
@@ -212,9 +214,8 @@ var addTechStackKeywordFilters = function(value) {
   } else {
     localStorage['keywords'] = value;
   }
-
-  $('.filter-tags').append('<a class="filter-tag keywords"><span>' + value + '</span>' +
-    '<i class="fas fa-times" onclick="removeFilter(\'keywords\', \'' + value + '\')"></i></a>');
+  $('.filter-tags').append('<a class="filter-tag keywords"><span>' + scrub(value) + '</span>' +
+    '<i class="fas fa-times" onclick="removeFilter(\'keywords\', \'' + scrub(value) + '\')"></i></a>');
 };
 
 var addTechStackOrgFilters = function(value) {
@@ -233,8 +234,8 @@ var addTechStackOrgFilters = function(value) {
     localStorage['org'] = value;
   }
 
-  $('.filter-tags').append('<a class="filter-tag keywords"><span>' + value + '</span>' +
-    '<i class="fas fa-times" onclick="removeFilter(\'org\', \'' + value + '\')"></i></a>');
+  $('.filter-tags').append('<a class="filter-tag keywords"><span>' + scrub(value) + '</span>' +
+    '<i class="fas fa-times" onclick="removeFilter(\'org\', \'' + scrub(value) + '\')"></i></a>');
 };
 
 var getFilters = function() {
@@ -251,15 +252,15 @@ var getFilters = function() {
 
   if (localStorage['keywords']) {
     localStorage['keywords'].split(',').forEach(function(v, k) {
-      _filters.push('<a class="filter-tag keywords"><span>' + v + '</span>' +
-        '<i class="fas fa-times" onclick="removeFilter(\'keywords\', \'' + v + '\')"></i></a>');
+      _filters.push('<a class="filter-tag keywords"><span>' + scrub(v) + '</span>' +
+        '<i class="fas fa-times" onclick="removeFilter(\'keywords\', \'' + scrub(v) + '\')"></i></a>');
     });
   }
 
   if (localStorage['org']) {
     localStorage['org'].split(',').forEach(function(v, k) {
-      _filters.push('<a class="filter-tag keywords"><span>' + v + '</span>' +
-        '<i class="fas fa-times" onclick="removeFilter(\'org\', \'' + v + '\')"></i></a>');
+      _filters.push('<a class="filter-tag keywords"><span>' + scrub(v) + '</span>' +
+        '<i class="fas fa-times" onclick="removeFilter(\'org\', \'' + scrub(v) + '\')"></i></a>');
     });
   }
 
@@ -347,7 +348,7 @@ var get_search_URI = function(offset, order) {
   }
 
   if (keywords) {
-    uri += '&raw_data=' + keywords;
+    uri += '&keywords=' + keywords;
   }
 
   if (localStorage['org']) {
@@ -370,9 +371,14 @@ var get_search_URI = function(offset, order) {
     order_by = localStorage['order_by'];
   }
 
-  if (typeof order_by !== 'undefined') {
-    uri += '&order_by=' + order_by;
+  if (!document.hackathon) {
+    if (typeof order_by !== 'undefined') {
+      uri += '&order_by=' + order_by;
+    }
+  } else {
+    uri += '&event_tag=' + document.hackathon;
   }
+
   uri += '&offset=' + offset;
   uri += '&limit=' + results_limit;
   return uri;
@@ -420,31 +426,33 @@ var refreshBounties = function(event, offset, append, do_save_search) {
   var orgInput = $('#org')[0];
 
   $('#results-count span.num').html('<i class="fas fa-spinner fa-spin"></i>');
-  if (searchInput.value.length > 0) {
+  if (searchInput && searchInput.value.length > 0) {
     addTechStackKeywordFilters(searchInput.value.trim());
     searchInput.value = '';
     searchInput.blur();
     $('.close-icon').hide();
   }
 
-  if (orgInput.value.length > 0) {
-    addTechStackOrgFilters(orgInput.value.trim());
-    orgInput.value = '';
-    orgInput.blur();
-    $('.close-icon').hide();
-  }
+  if (!document.hackathon) {
+    if (orgInput.value.length > 0) {
+      addTechStackOrgFilters(orgInput.value.trim());
+      orgInput.value = '';
+      orgInput.blur();
+      $('.close-icon').hide();
+    }
 
-  save_sidebar_latest();
-  toggleAny(event);
-  getFilters();
-  if (do_save_search) {
-    if (!is_search_already_saved()) {
-      save_search();
+    save_sidebar_latest();
+    toggleAny(event);
+    getFilters();
+    if (do_save_search) {
+      if (!is_search_already_saved()) {
+        save_search();
+      }
+
+      paint_search_tabs();
+      window.history.pushState('', '', window.location.pathname + '?' + buildURI());
     }
   }
-  paint_search_tabs();
-
-  window.history.pushState('', '', '/explorer?' + buildURI());
 
   if (!append) {
     $('.nonefound').css('display', 'none');
