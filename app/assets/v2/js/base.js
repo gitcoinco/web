@@ -323,7 +323,7 @@ const sendPersonal = (persona) => {
 
 
 const gitcoinUpdates = (force) => {
-  let urlUpdates = 'https://api.github.com/gists/ffddcf798cf46558b878de3f61931fc2?access_token=9ff03c64d67dad3298f8d7d40585b7c7c34863f8';
+  let urlUpdates = `https://api.github.com/gists/ffddcf798cf46558b878de3f61931fc2?access_token=${document.contxt.access_token}`;
   let today = new Date();
   let showedUpdates = JSON.parse(localStorage.getItem('showed_updates'));
   let lastPromp = showedUpdates ? showedUpdates.last_promp : today;
