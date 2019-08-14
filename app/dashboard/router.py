@@ -198,7 +198,9 @@ class BountySerializerCheckIn(BountySerializer):
     class Meta:
         model = Bounty
         fields = (
-            'url', 'title', 'bounty_owner_name', 'status', 'github_url', 'created_on', 'standard_bounties_id', 'bounty_owner_github_username'
+            'url', 'title', 'bounty_owner_name', 'status', 'github_url', 
+            'created_on', 'standard_bounties_id', 'bounty_owner_github_username',
+            'no_of_applicants', 'num_fulfillments', 'has_applicant', 'warned', 'escalated', 'event'
         )
 
 

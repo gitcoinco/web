@@ -10,10 +10,11 @@
     {% if canonical_url %}
       <link rel="canonical" href="{{ canonical_url }}">
     {% endif %}
+    <link rel="stylesheet" href="{% static "v2/css/lib/daterangepicker.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/lib/highlight_github.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/user_popover.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/highlight_github.css" %}">
   </head>
 
   <body class="interior {{active}} g-font-muli">
@@ -437,6 +438,17 @@
         </div>
       </div>
     </div>
+    <div id="modalExtend" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-dialog ">
+          <div class="modal-content py-3">
+            <div class="row loading justify-content-center align-items-center loading_img">
+              <img src="{% static 'v2/images/loading_v2.gif' %}">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
@@ -469,6 +481,7 @@
       openContributorPopOver($(this).parent().data("username"), $(this));
     });
   </script>
+  <script src="{% static "v2/js/lib/daterangepicker.min.js" %}"></script>
   <script src="{% static "v2/js/pages/bounty_funder_payout_reminder.js" %}"></script>
   <script src="{% static "v2/js/pages/bounty_share.js" %}"></script>
   <script src="{% static "v2/js/pages/bounty_details.js" %}"></script>
