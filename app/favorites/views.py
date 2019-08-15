@@ -111,4 +111,4 @@ def get_favorites(request,  favType, **kwargs):
                 ser = ProfileSerializer(obj)
                 jsonRetData.append(ser.data)
 
-    return Response(json.dumps(jsonRetData, indent=4, sort_keys=True, default=str))
+    return Response(json.loads(json.dumps(jsonRetData, indent=4, sort_keys=True, default=str)))
