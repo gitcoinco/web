@@ -1147,7 +1147,7 @@ class Bounty(SuperModel):
     def can_remarket(self):
         result = True
 
-        if self.remarketed_count >= 2:
+        if self.remarketed_count and self.remarketed_count >= 2:
             result = False
 
         if self.last_remarketed:
