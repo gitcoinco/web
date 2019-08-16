@@ -46,8 +46,8 @@ const notifyOwnerAddressMismatch = (username, address, button, message) => {
   if (!web3 || !web3.eth)
     return;
   web3.eth.getAccounts((error, accounts) => {
-    if (document.contxt.github_handle == username && accounts[0] &&
-        accounts[0] != address) {
+    if (document.contxt && document.contxt.github_handle == username &&
+        accounts[0] && accounts[0] != address) {
       if ($(button).attr('disabled') != 'disabled') {
         $(button).attr('disabled', 'disabled');
         _alert({
