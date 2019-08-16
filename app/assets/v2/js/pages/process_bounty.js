@@ -2,11 +2,12 @@
 window.onload = function() {
 
   const rateUser = () => {
-    let userSelected = $('#bountyFulfillment').select2('data')[0].text;
+    if ($('#bountyFulfillment').select2('data')[0]) {
+      let userSelected = $('#bountyFulfillment').select2('data')[0].text;
 
-    $('[data-open-rating]').data('openUsername', userSelected.trim());
+      $('[data-open-rating]').data('openUsername', userSelected.trim());
+    }
   };
-
 
   $('#bountyFulfillment').on('select2:select', event => {
     rateUser();
