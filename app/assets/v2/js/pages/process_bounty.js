@@ -87,7 +87,7 @@ window.onload = function() {
       var email = '';
       var github_url = $('#issueURL').val();
       var from_name = document.contxt['github_handle'];
-      var username = getSelectedFulfillment().getAttribute('username');
+      var username = getSelectedFulfillment() && getSelectedFulfillment().getAttribute('username');
       var amountInEth = bounty_amount * pct;
       var comments_priv = '';
       var comments_public = '';
@@ -119,7 +119,7 @@ window.onload = function() {
       var email = '';
       var github_url = $('#issueURL').val();
       var from_name = document.contxt['github_handle'];
-      var username = getSelectedFulfillment().getAttribute('username');
+      var username = getSelectedFulfillment() && getSelectedFulfillment().getAttribute('username');
       var amountInEth = selected_kudos.price_finney / 1000.0;
       var comments_public = $('.kudos-comment textarea').val();
       var comments_priv = '';
@@ -158,7 +158,7 @@ window.onload = function() {
 
       e.preventDefault();
       var issueURL = $('input[name=issueURL]').val();
-      var fulfillmentId = getSelectedFulfillment().getAttribute('value');
+      var fulfillmentId = getSelectedFulfillment() && getSelectedFulfillment().getAttribute('value');
 
       sessionStorage['bountyId'] = getURLParams('pk');
 
@@ -288,7 +288,7 @@ window.onload = function() {
     });
 
     function getSelectedFulfillment() {
-      return $('#bountyFulfillment').select2('data')[0].element;
+      return $('#bountyFulfillment').select2('data')[0] ? $('#bountyFulfillment').select2('data')[0].element : null;
     }
 
     function renderFulfillment(selected) {
