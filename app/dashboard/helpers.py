@@ -452,6 +452,10 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 'web3_created': timezone.make_aware(
                     timezone.datetime.fromtimestamp(bounty_payload.get('created')),
                     timezone=UTC),
+                'last_remarketed': timezone.make_aware(
+                    timezone.datetime.fromtimestamp(bounty_payload.get('created')),
+                    timezone=UTC),
+                'remarketed_count': 0,
                 'github_url': url,
                 'token_name': token_name,
                 'token_address': token_address,
@@ -540,14 +544,18 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
     except Exception as e:
         logger.error(e)
 
-    event_tag = metadata.get('eventTag', '')
-    if event_tag:
-        try:
-            evt = HackathonEvent.objects.filter(name__iexact=event_tag).latest('id')
-            new_bounty.event = evt
-            new_bounty.save()
-        except Exception as e:
-            logger.error(e)
+    if latest_old_bounty and latest_old_bounty.event:
+        new_bounty.event = latest_old_bounty.event;
+        new_bounty.save()
+    else:
+        event_tag = metadata.get('eventTag', '')
+        if event_tag:
+            try:
+                evt = HackathonEvent.objects.filter(name__iexact=event_tag).latest('id')
+                new_bounty.event = evt
+                new_bounty.save()
+            except Exception as e:
+                logger.error(e)
 
     bounty_invitees = metadata.get('invite', '')
     if bounty_invitees and not latest_old_bounty:

@@ -9,7 +9,11 @@
       {% if tip.comments_public %}
         {% trans "Comments" %}: {{ tip.comments_public }}
       {% else %}
-        {% trans "Tip for" %} {{ tip.username }}
+        {% if tip.username %}
+          {% trans "Tip for" %} {{ tip.username }}
+        {% else %}
+          {% trans "Crowdfund contribution" %} to {{ activity.bounty.title }}
+        {% endif %}
       {% endif %}
       </div>
       <div class="bounty-summary col-12">

@@ -136,9 +136,7 @@ function formatUserSelection(user) {
 }
 
 function lastSynced(current, last_sync) {
-  var time = timeDifference(current, last_sync);
-
-  return time;
+  return timeDifference(current, last_sync);
 }
 
 const setPrivateForm = () => {
@@ -184,6 +182,68 @@ const setPublicForm = () => {
   retrieveIssueDetails();
 };
 
+/**
+ * Checks if token used to fund bounty is authed.
+ */
+const handleTokenAuth = () => {
+  return new Promise((resolve) => {
+    const tokenName = $('#token option:selected').text();
+    const tokenAddress = $('#token option:selected').val();
+    let isTokenAuthed = true;
+
+    if (!token) {
+      isTokenAuthed = false;
+      tokenAuthAlert(isTokenAuthed);
+      resolve(isTokenAuthed);
+    } else if (tokenName == 'ETH') {
+      tokenAuthAlert(isTokenAuthed);
+      resolve(isTokenAuthed);
+    } else {
+      const token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+      const from = web3.eth.coinbase;
+      const to = bounty_address();
+
+      token_contract.allowance.call(from, to, (error, result) => {
+
+        if (error || result.toNumber() == 0) {
+          isTokenAuthed = false;
+        }
+        tokenAuthAlert(isTokenAuthed, tokenName);
+        resolve(isTokenAuthed);
+      });
+    }
+  });
+};
+
+/**
+ * Toggles alert to notify user while bounty creation using an
+ * un-authed token.
+ * @param {boolean} isTokenAuthed - Token auth status for user
+ * @param {string=}  tokenName - token name
+ */
+const tokenAuthAlert = (isTokenAuthed, tokenName) => {
+  $('.alert').remove();
+
+  if (isTokenAuthed) {
+    $('.alert').remove();
+    $('#add-token-dialog').bootstrapModal('hide');
+    $('#token-denomination').html('');
+  } else {
+    tokenName = tokenName ? tokenName : '';
+    _alert(
+      gettext(`
+        This token ${tokenName} needs to be enabled to fund this bounty, click on
+        <a class="font-weight-semibold" href="/settings/tokens">
+          the Token Settings page and enable it.
+        </a> This is only needed once per token.`
+      ),
+      'warning'
+    );
+
+    $('#token-denomination').html(tokenName);
+    $('#add-token-dialog').bootstrapModal('show');
+  }
+};
 
 $(function() {
 
@@ -223,9 +283,7 @@ $(function() {
 
 
   setTimeout(setUsdAmount, 1000);
-  waitforWeb3(function() {
-    promptForAuth();
-  });
+
   // fetch issue URL related info
   $('input[name=amount]').keyup(setUsdAmount);
   $('input[name=amount]').blur(setUsdAmount);
@@ -243,7 +301,7 @@ $(function() {
 
   var triggerDenominationUpdate = function(e) {
     setUsdAmount();
-    promptForAuth();
+    handleTokenAuth();
     const token_val = $('select[name=denomination]').val();
     const tokendetails = tokenAddressToDetails(token_val);
     var token = tokendetails['name'];
@@ -318,6 +376,22 @@ $(function() {
     true
   );
 
+  $('input[name="expirationTimeDelta"]').daterangepicker({
+    singleDatePicker: true,
+    startDate: moment().add(1, 'month'),
+    alwaysShowCalendars: false,
+    ranges: {
+      '1 week': [ moment().add(7, 'days'), moment().add(7, 'days') ],
+      '2 weeks': [ moment().add(14, 'days'), moment().add(14, 'days') ],
+      '1 month': [ moment().add(1, 'month'), moment().add(1, 'month') ],
+      '3 months': [ moment().add(3, 'month'), moment().add(3, 'month') ],
+      '1 year': [ moment().add(1, 'year'), moment().add(1, 'year') ]
+    },
+    'locale': {
+      'customRangeLabel': 'Custom',
+      'format': 'MM/DD/YYYY'
+    }
+  });
 
 });
 
@@ -373,8 +447,9 @@ $('#issueURL').focusout(function() {
   }
 });
 
-const togggleEnabled = function(checkboxSelector, targetSelector, do_focus) {
-  let isChecked = $(checkboxSelector).is(':checked');
+const togggleEnabled = function(checkboxSelector, targetSelector, do_focus, revert) {
+  let check = revert ? ':unchecked' : ':checked';
+  let isChecked = $(checkboxSelector).is(check);
 
   if (isChecked) {
     $(targetSelector).attr('disabled', false);
@@ -396,6 +471,10 @@ $('#hiringRightNow').on('click', () => {
 
 $('#specialEvent').on('click', () => {
   togggleEnabled('#specialEvent', '#eventTag', true);
+});
+
+$('#neverExpires').on('click', () => {
+  togggleEnabled('#neverExpires', '#expirationTimeDelta', false, true);
 });
 
 $('#submitBounty').validate({
@@ -455,7 +534,7 @@ $('#submitBounty').validate({
     var decimals = token['decimals'];
     var tokenName = token['name'];
     var decimalDivisor = Math.pow(10, decimals);
-    var expirationTimeDelta = data.expirationTimeDelta;
+    var expirationTimeDelta = $('#expirationTimeDelta').data('daterangepicker').endDate.utc().unix();
     let reservedFor = $('.username-search').select2('data')[0];
     let inviteContributors = $('#invite-contributors.js-select2').select2('data').map((user) => {
       return user.profile__id;
@@ -488,10 +567,12 @@ $('#submitBounty').validate({
       show_name_publicly: data.show_name_publicly
     };
 
-    var expire_date =
-      parseInt(expirationTimeDelta) + ((new Date().getTime() / 1000) | 0);
     var mock_expire_date = 9999999999; // 11/20/2286, https://github.com/Bounties-Network/StandardBounties/issues/25
+    let expire_date = expirationTimeDelta;
 
+    if ($('#neverExpires').is(':checked')) {
+      expire_date = mock_expire_date;
+    }
     // https://github.com/ConsenSys/StandardBounties/issues/21
     var ipfsBounty = {
       payload: {
@@ -678,7 +759,7 @@ $('#submitBounty').validate({
     }
 
     var do_bounty = function(callback) {
-      callMethodIfTokenIsAuthed(function(x, y) {
+      handleTokenAuth().then(() => {
         const fee = Number((Number(data.amount) * FEE_PERCENTAGE).toFixed(4));
         const to_address = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
         const gas_price = web3.toHex($('#gasPrice').val() * Math.pow(10, 9));
@@ -718,7 +799,7 @@ $('#submitBounty').validate({
             );
           }
         }
-      }, promptForAuthFailure);
+      });
     };
 
     const deductBountyAmount = function(fee, txnId) {
@@ -795,12 +876,17 @@ $('#submitBounty').validate({
     };
 
     function processBounty() {
-      if ($("input[type='radio'][name='repo_type']:checked").val() == 'private' && $('#issueNDA')[0].files[0]) {
+      if (
+        $("input[type='radio'][name='repo_type']:checked").val() == 'private' &&
+        $('#issueNDA')[0].files[0]
+      ) {
         uploadNDA();
-      } else if (data.featuredBounty) {
-        payFeaturedBounty();
       } else {
-        do_bounty();
+        handleTokenAuth().then(isAuthedToken => {
+          if (isAuthedToken) {
+            data.featuredBounty ? payFeaturedBounty() : do_bounty();
+          }
+        });
       }
     }
 
