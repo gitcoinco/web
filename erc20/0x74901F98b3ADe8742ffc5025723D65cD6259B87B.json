@@ -1,0 +1,18 @@
+{
+    "symbol": "EDA",
+    "address": "0x74901F98b3ADe8742ffc5025723D65cD6259B87B",
+    "overview": {
+        "en": "EDA is the value network of enterprise data sharing. The network ecology gathers the open source ERP platform Odoo with 3 million enterprise users, serves the SaaS collaboration platform of 100,000 enterprises, and serves many well-known retail brands with more than 50,000 consumer planets. Through the advanced public chain EDA Chain, hundreds of millions of people will build and share a new business ecosystem, providing enterprises with data capitalization and asset digitization solutions, so that everyone has their own digital assets.",
+        "zh": "EDA是企业数据共享的价值网络，网络生态集合了全球拥有300万家企业用户的开源ERP平台Odoo，服务10万家企业的SaaS协作平台企信，服务多家知名零售品牌拥有5万多用户的消费星球。通过先进公链EDA Chain构建数亿人共建共享的商业新生态，为企业提供数据资产化以及资产数字化解决方案，让人人拥有自己的数字资产。"
+    },
+    "email": "service@cstar.info",
+    "website": "https://eda.network",
+    "whitepaper": "https://eda.network/js/EDAWhitepaperV0.1.9_EN.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-08-12",
+    "links": {
+        "telegram": "https://t.me/EdaNetwork", 
+        "twitter": "https://twitter.com/EDAChain",
+        "facebook": "https://www.facebook.com/eda.chain"
+    }
+}

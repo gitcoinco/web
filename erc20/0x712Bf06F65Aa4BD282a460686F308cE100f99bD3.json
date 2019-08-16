@@ -1,0 +1,18 @@
+{
+    "symbol": "SADT",
+    "address": "0x712Bf06F65Aa4BD282a460686F308cE100f99bD3",
+    "overview": {
+        "en": "SADT is a business platform passport for small and medium-sized enterprises based on block chain technology. It is committed to helping enterprises transform and upgrade digitally through SADT. SADT provides users with: block chain SaaS solutions and commercial solutions.",
+        "zh": "SADT是一个基于区块链技术的中小企业商务平台通证，致力于通过SADT助力企业数字化转型升级。SADT为用户提供：区块链SaaS解决方案和商业解决方案。"
+    },
+    "email": "kf@xy100.cn",
+    "website": "https://www.sashop.io/",
+    "whitepaper": "https://www.sashop.io/nd.jsp?id=5#_jcp=1",
+    "initial_price": {
+        "USD": "0.0026 USD",
+        "ETH": "0.00001198 ETH"
+    },
+    "links": {
+        "github": "https://github.com/simpleframework"
+    }
+}
