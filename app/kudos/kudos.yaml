@@ -5107,3 +5107,14 @@
   - rare
   - codefund
   image: codefund/codefund_influencer_v1.0reissue.svg
+- name: 3Box_Social_Butterfly
+  description: You're a social butterfly!
+  priceFinney: 1
+  numClonesAllowed: 150
+  to_address: '0xa8eE0BABE72cD9A80Ae45dD74Cd3eaE7a82fd5d1'
+  tags:
+  - 3Box
+  - Social
+  - Friends
+  - Love
+  image: 3box_butterfly.svg
