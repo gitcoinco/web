@@ -896,7 +896,7 @@ Grow Ethereum, after two and a half weeks of intense hacking, is now wrapping up
 "Are we done with hackathons?" you may ask. Absolutely not. Coming up after ETHBerlin is our next virtual hackathon, Ethereal Blocks. This hackathon has $50k of prizes from Portis, Ethereum, Matic, Status, and more. Place your lego blocks towards a more open, transparent internet: and if you win, you'll get the chance to present at the Ethereal Summit on 9/15. We'll be dropping more details in the coming weeks. Follow us on <a href="https://twitter.com/gitcoin">Twitter</a> and bookmark the <a href="https://hackathons.gitcoin.co/ethereal-blocks/">hackathon homepage.</a>  
 </p>
 <p>
-We're rearing up for the next round of Gitcoin Grants CLR matching. If you're a project in need of funding, or are a supporter of open source, be sure to peruse the Gitcoin Grants homepage <a href="https://gitcoin.co/grants/">- located here -</a> to find projects that interest you or post your own. Expect more information as we get further along in Q3 of 2019!
+We're grearing up for the next round of Gitcoin Grants CLR matching. If you're a project in need of funding, or are a supporter of open source, be sure to peruse the Gitcoin Grants homepage <a href="https://gitcoin.co/grants/">- located here -</a> to find projects that interest you or post your own. Expect more information as we get further along in Q3 of 2019!
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
