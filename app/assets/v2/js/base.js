@@ -103,7 +103,7 @@ $(document).ready(function() {
     });
   }
 
-  var top_nav_salt = 2;
+  var top_nav_salt = 3;
   var remove_top_row = function() {
     $('#top_nav_notification').parents('.row').remove();
     localStorage['top_nav_notification_remove_' + top_nav_salt] = true;
