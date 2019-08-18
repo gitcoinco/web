@@ -15,9 +15,11 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+from django.core.management.base import BaseCommand
+
 from faucet.models import FaucetRequest
 from marketing.mails import reject_faucet_request
-from django.core.management.base import BaseCommand
+
 
 class Command(BaseCommand):
 
@@ -32,5 +34,3 @@ class Command(BaseCommand):
             faucet_request.save()
             reject_faucet_request(faucet_request)
             print(faucet_request.pk)
-
-
