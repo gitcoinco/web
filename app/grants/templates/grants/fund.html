@@ -54,7 +54,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
       {% include 'grants/banner.html' %}
 
-      <div class="col-12 offset-md-2 col-md-10 offset-lg-3 col-lg-6 mt-5 font-subheader mx-0 mx-md-auto row">
+      <div class="col-12 offset-md-2 col-md-10 offset-xl-3 col-xl-6 mt-5 font-subheader mx-0 mx-md-auto row">
         <p class="col-12 font-weight-semibold my-4 text-center">
           {{ grant.admin_profile }} {% trans "is accepting contributions in "%}
           {% if grant_has_no_token %}
@@ -72,7 +72,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
                 <div class="form__group-horizontal">
                   <div class="row">
-                    <div class="col-6 col-sm-8">
+                    <div id="amount-container" class="col-6 col-sm-8" data-container="body" data-toggle="popover" data-html="true" data-placement="left">
                       <label class="form__label" id="amount_label">{% trans "Amount Per Period" %}</label>
                       <input type="number" min="0.001" id="amount" name="amount_per_period" class="form__input" value="5" required />
                     </div>
@@ -309,6 +309,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     {% include 'shared/footer.html' %}
     {% include 'grants/shared/shared_scripts.html' %}
   </body>
+
+  <script>
+    $('[data-toggle="popover"]').popover();
+  </script>
 
   <script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>
   <script src="{% static "v2/js/grants/compiledSplitter.js" %}"></script>

@@ -30,6 +30,14 @@
   display: flex;
 }
 
+.clr {
+  right: 1.25rem;
+}
+
+.clr h2 {
+  color: #f6851b;
+}
+
 .grant-item__img {
   height: 11rem;
   overflow: hidden;

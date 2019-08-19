@@ -10,6 +10,17 @@ let gitcoinDonationAddress;
 
 
 $(document).ready(function() {
+
+  showCLRPopover();
+
+  $('#amount').on('input', () => {
+    showCLRPopover();
+  });
+
+  $('.popover').on('click', () => {
+    $('#amount-container').popover('hide');
+  });
+
   gitcoinDonationAddress = $('#gitcoin_donation_address').val();
   splitterAddress = $('#splitter_contract_address').val();
 
@@ -479,4 +490,25 @@ const splitGrantAmount = () => {
   $('.gitcoin-grant-percent').html(percent);
   $('.summary-gitcoin-amount').html(gitcoin_grant_amount);
   $('#summary-amount').html(grant_amount);
+};
+
+const showCLRPopover = () => {
+  // TODO: Check if grant has CLR else return
+
+  const clr_amount = 0; // TODO: trigger CLR calculation
+  const total_clr = 0; // TODO: fetch CLR
+  const random = 0; // TODO: figure out what this is
+  const html = `
+    <div class="mx-3 clr-popover text-center">
+      <h1 class="mt-3 mb-0 font-title">CLR MATCH ${clr_amount} DAI</h1>
+      <h2 class="font-body mt-0 mb-2">( out of ${total_clr} DAI )</h2>
+      <p class="font-caption">
+        This is how much your contribution at this moment would
+        increase the CLR Match amount for the grant by ${random} amount
+      </p>
+    </div>
+  `;
+
+  $('#amount-container').attr('data-content', html);
+  $('#amount-container').popover('show');
 };
