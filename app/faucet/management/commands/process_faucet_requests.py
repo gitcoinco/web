@@ -27,7 +27,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         reject_comments = "Please tell us what you're planning on using these funds for in the comments section!  Thanks."
-        requests = FaucetRequest.objects.filter(rejected=False, fulfilled=False)
+        requests = FaucetRequest.objects.filter(rejected=False, fulfilled=False, comment='')
         for faucet_request in requests:
             faucet_request.comment_admin = reject_comments
             faucet_request.rejected = True
