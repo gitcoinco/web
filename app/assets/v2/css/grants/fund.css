@@ -4,6 +4,14 @@
   }
 }
 
+.popover-body .clr-popover h1 {
+  color: #f6851b
+}
+
+.popover-body .clr-popover p {
+  font-weight: 500;
+}
+
 .admin_profile a,
 #grant-link {
   color: #0D0764;
