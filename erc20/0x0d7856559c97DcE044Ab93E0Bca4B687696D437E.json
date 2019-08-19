@@ -5,13 +5,13 @@
         "zh": "区块链操作系统，连接全球网络，多链平行，构建跨链应用生态。",
         "en": "Blockchain operating system that connects the world’s networks and facilitates the development of cross-chain applications."
     },
-    "email": "foundation@xpeer.org",
+    "email": "xpeerchain@gmail.com",
     "website": "http://xpeer.org",
     "whitepaper": "http://github.com/xpeerchain/WhitePaper/blob/master/README.md",
     "state": "NORMAL",
     "published_on": "2019-08-08",
     "initial_price": {
-        "USD": "0.1 USD"
+        "USD": "0.05 USD"
     },
     "links": {
         "github": "http://github.com/xpeerchain"
