@@ -1,5 +1,5 @@
 
-#activity_stream .avatar {
+.activity_stream .avatar {
   width: 50px;
   height: 50px;
   margin: 0px auto;
@@ -17,6 +17,16 @@
   height: 80px;
 }
 
+.activity .secondary_avatar {
+width: 3.125rem; 
+height: 3.125rem; 
+top: 1rem; 
+right: 0rem; 
+position: absolute;
+}
+
+
+
 .funder-avatar,
 .activity-avatar {
   text-align: center;
@@ -24,7 +34,6 @@
 
 .funder-avatar,
 .activity div {
-  margin: auto;
 }
 
 .last-icon {
@@ -42,4 +51,16 @@
 .bounty_abandonment_warning .activity-tags .tag,
 .activity.new_kudos .activity-tags .tag {
   display: none;
+}
+
+@media (max-width: 767.98px) {
+  .activity-info {
+    text-align: center;
+  }
+  .activity_stream .activity .avatar.secondary_avatar {
+    position: unset;
+    margin-left: -20px;
+    margin-top: 20px;
+  }
+
 }

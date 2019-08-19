@@ -2029,7 +2029,7 @@ def profile(request, handle):
                 return HttpResponse(status=204)
 
             context = {}
-            context['activities'] = paginator.get_page(page)
+            context['activities'] = [ele.view_props for ele in paginator.get_page(page)]
 
             return TemplateResponse(request, 'profiles/profile_activities.html', context, status=status)
 
