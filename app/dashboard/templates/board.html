@@ -33,7 +33,7 @@
     <div id="gc-board" v-cloak>
 
       <div class="container">
-        <nav class="mx-3">
+        <nav class="mx-3 mt-5">
           <div class="nav nav-tabs" id="myTab" role="tablist">
             <a class="nav-item nav-link nav-line active" id="funder-tab" data-toggle="tab" href="#nav-funder" role="tab" aria-controls="funder" aria-selected="false" @click="checkData('funder')">Funder</a>
             <a class="nav-item nav-link nav-line " id="contributor-tab" data-toggle="tab" href="#nav-contributor" role="tab" aria-controls="contributor" aria-selected="true" @click="checkData('contributor')">Contributor</a>
@@ -79,17 +79,17 @@
                       </span>
                       <span class="font-weight-bold">You have [[ bounty.users_count ]] [[ 'applicant' | pluralize(bounty.users_count) ]] on this bounty</span>
                       <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
-                        <div class="list-bounty-item_content">
+                        <div class="list-bounty-item_content my-auto">
                           <div class="d-flex flex-column flex-md-row">
                             <img :src="bounty.avatar_url" alt="" width="60" height="60" class="rounded-circle flex-shrink-0 m-auto list-bounty-item_logo">
                             <div class="d-flex flex-column w-100 ml-md-3">
                               <a :href="bounty.absolute_url" class="text-truncate mb-2 text-dark">[[ bounty.title ]]</a>
                               <div class="d-flex flex-column flex-md-row justify-content-between font-smaller-2">
                                 <template v-if="bounty.project_type">
-                                  <span class="my-1">[[ bounty.project_type ]]</span> <span class="d-md-block d-none mx-2">&bull;</span>
+                                  <span class="my-1">[[ bounty.project_type ]]</span> <span class="d-md-block d-none mx-2 my-auto">&bull;</span>
                                 </template>
                                 <template v-if="bounty.expires_date">
-                                  <time :datetime="[[ bounty.expires_date ]]" class="my-1" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> <span class="d-md-block d-none mx-2">&bull;</span>
+                                  <time :datetime="[[ bounty.expires_date ]]" class="my-1" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> <span class="d-md-block d-none mx-2 my-auto">&bull;</span>
                                 </template>
                                 <span class="my-1">[[ bounty.value_true ]] [[ bounty.token_name ]] ([[ bounty.value_in_usd ]] USD)</span>
                                 <a :href="bounty.absolute_url" class="mx-md-2 my-1"><i class="fas fa-eye"></i> View Issue Details</a>
@@ -100,15 +100,15 @@
                         </div>
                         <button v-if="bounty.users_count > 0" @click="toggleCollapse(key, 'open'), fetchApplicants(bounty.id, key, 'open')" class="btn blue">View Applicants <i class="fa fa-fw" :class="isExpanded(key, 'open')? 'fa-chevron-up': 'fa-chevron-down'"></i></button>
                         <div class="d-flex flex-column justify-content-center" v-else>
-                          <a :href="`/bounty/change/${bounty.id}`" target="_blank" class="btn btn-gc-blue btn-sm m-2"> <i class="fas fa-star"></i> Feature Bounty</a>
-                          <a :href="`/bounty/change/${bounty.id}`" target="_blank" class="btn btn-gc-blue btn-sm m-2"> <i class="fas fa-user"></i> Invite Contributors</a>
+                          <a :href="`/bounty/change/${bounty.id}`" target="_blank" class="btn btn-gc-blue btn-sm m-2"> <i class="fas fa-star pr-2"></i> Feature Bounty</a>
+                          <a :href="`/bounty/change/${bounty.id}`" target="_blank" class="btn btn-gc-blue btn-sm m-2"> <i class="fas fa-user pr-2"></i> Invite Contributors</a>
                         </div>
                       </div>
                       <div v-show="isExpanded(key, 'open')">
                         <ul class="list-unstyled m-5">
                           <li class="mb-4" v-for="(contributor, key) in bounty.contributors">
                             <div class="d-flex flex-column flex-md-row justify-content-between">
-                              <div class="list-bounty-item_content">
+                              <div class="list-bounty-item_content my-auto">
                                 <div class="d-flex">
                                   <img :src="contributor.avatar_url" alt="" width="40" height="40" class="flex-shrink-0 mr-2 rounded-circle">
                                   <div class="d-flex flex-column">
@@ -172,17 +172,17 @@
                       </span>
                       <span class="font-weight-bold">You have [[ bounty.users_count ]] [[ 'applicant' | pluralize(bounty.users_count) ]] on this bounty</span>
                       <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
-                        <div class="list-bounty-item_content">
+                        <div class="list-bounty-item_content my-auto">
                           <div class="d-flex flex-column flex-md-row">
                             <img :src="bounty.avatar_url" alt="" width="60" height="60" class="rounded-circle flex-shrink-0 m-auto list-bounty-item_logo">
                             <div class="d-flex flex-column w-100 ml-md-3">
                               <a :href="bounty.absolute_url" class="text-truncate mb-2 text-dark">[[ bounty.title ]]</a>
                               <div class="d-flex flex-column flex-md-row justify-content-between font-smaller-2">
                                 <template v-if="bounty.project_type">
-                                  <span class="my-1">[[ bounty.project_type ]]</span> <span class="d-md-block d-none mx-2">&bull;</span>
+                                  <span class="my-1">[[ bounty.project_type ]]</span> <span class="d-md-block d-none mx-2 my-auto">&bull;</span>
                                 </template>
                                 <template v-if="bounty.expires_date">
-                                  <time :datetime="[[ bounty.expires_date ]]" class="my-1" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> <span class="d-md-block d-none mx-2">&bull;</span>
+                                  <time :datetime="[[ bounty.expires_date ]]" class="my-1" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> <span class="d-md-block d-none mx-2 my-auto">&bull;</span>
                                 </template>
                                 <span class="my-1">[[ bounty.value_true ]] [[ bounty.token_name ]] ([[ bounty.value_in_usd ]] USD)</span>
                                 <a :href="bounty.absolute_url" class="mx-md-2 my-1"><i class="fas fa-eye"></i> View Issue Details</a>
@@ -197,7 +197,7 @@
                         <ul class="list-unstyled m-5">
                           <li class="mb-4" v-for="(contributor, key) in bounty.contributors">
                             <div class="d-flex flex-column flex-md-row justify-content-between">
-                              <div class="list-bounty-item_content">
+                              <div class="list-bounty-item_content my-auto">
                                 <div class="d-flex">
                                   <img :src="contributor.avatar_url" alt="" width="40" height="40" class="flex-shrink-0 mr-2 rounded-circle">
                                   <div class="d-flex flex-column">
@@ -219,7 +219,7 @@
                       </div>
                     </li>
                     <li class="text-center my-5" :class="{'d-none': isLoading.submitted ||bounties.submitted && bounties.submitted.length > 0}" v-cloak>
-                      <p>You have no bounties with submittions.</p>
+                      <p>[[ error.submitted || 'You have no bounties with submittions.' ]]</p>
                     </li>
                   </ul>
                   <loading-screen v-if="isLoading.submitted"></loading-screen>
@@ -242,17 +242,17 @@
                       </span>
                       <span class="font-weight-bold">You have expired bounties</span>
                       <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
-                        <div class="list-bounty-item_content">
+                        <div class="list-bounty-item_content my-auto">
                           <div class="d-flex flex-column flex-md-row">
                             <img :src="bounty.avatar_url" alt="" width="60" height="60" class="rounded-circle flex-shrink-0 m-auto list-bounty-item_logo">
                             <div class="d-flex flex-column w-100 ml-md-3">
                               <a :href="bounty.absolute_url" class="text-truncate mb-2 text-dark">[[ bounty.title ]]</a>
                               <div class="d-flex flex-column flex-md-row justify-content-between font-smaller-2">
                                 <template v-if="bounty.project_type">
-                                  <span class="my-1">[[ bounty.project_type ]]</span> <span class="d-md-block d-none mx-2">&bull;</span>
+                                  <span class="my-1">[[ bounty.project_type ]]</span> <span class="d-md-block d-none mx-2 my-auto">&bull;</span>
                                 </template>
                                 <template v-if="bounty.expires_date">
-                                  <time :datetime="[[ bounty.expires_date ]]" class="my-1" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> <span class="d-md-block d-none mx-2">&bull;</span>
+                                  <time :datetime="[[ bounty.expires_date ]]" class="my-1" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> <span class="d-md-block d-none mx-2 my-auto">&bull;</span>
                                 </template>
                                 <span class="my-1">[[ bounty.value_true ]] [[ bounty.token_name ]] ([[ bounty.value_in_usd ]] USD)</span>
                                 <a :href="bounty.absolute_url" class="mx-md-2 my-1"><i class="fas fa-eye"></i> View Issue Details</a>
@@ -267,7 +267,7 @@
                       </div>
                     </li>
                     <li class="text-center my-5" :class="{'d-none': isLoading.expired || bounties.expired && bounties.expired.length > 0}" v-cloak>
-                      <p>You have no expired bounties.</p>
+                      <p>[[ error.expired || 'You have no expired bounties.' ]]</p>
                     </li>
                   </ul>
                   <loading-screen v-if="isLoading.expired"></loading-screen>
@@ -313,17 +313,17 @@
                       </span>
                       <span class="font-weight-bold">You are currently working on this bounty </span>
                       <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
-                        <div class="list-bounty-item_content">
+                        <div class="list-bounty-item_content my-auto">
                           <div class="d-flex flex-column flex-md-row">
                             <img :src="bounty.avatar_url" alt="" width="60" height="60" class="rounded-circle flex-shrink-0 m-auto list-bounty-item_logo">
                             <div class="d-flex flex-column w-100 ml-md-3">
                               <a :href="bounty.absolute_url" class="text-truncate mb-2 text-dark">[[ bounty.title ]]</a>
                               <div class="d-flex flex-column flex-md-row justify-content-between font-smaller-2">
                                 <template v-if="bounty.project_type">
-                                  <span class="my-1">[[ bounty.project_type ]]</span> <span class="d-md-block d-none mx-2">&bull;</span>
+                                  <span class="my-1">[[ bounty.project_type ]]</span> <span class="d-md-block d-none mx-2 my-auto">&bull;</span>
                                 </template>
                                 <template v-if="bounty.expires_date">
-                                  <time :datetime="[[ bounty.expires_date ]]" class="my-1" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> <span class="d-md-block d-none mx-2">&bull;</span>
+                                  <time :datetime="[[ bounty.expires_date ]]" class="my-1" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> <span class="d-md-block d-none mx-2 my-auto">&bull;</span>
                                 </template>
                                 <span class="my-1">[[ bounty.value_true ]] [[ bounty.token_name ]] ([[ bounty.value_in_usd ]] USD)</span>
                                 <a :href="bounty.absolute_url" class="mx-md-2 my-1"><i class="fas fa-eye"></i> View Issue Details</a>
@@ -368,17 +368,17 @@
                       </span>
                       <span class="font-weight-bold">You are awaiting approval </span>
                       <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
-                        <div class="list-bounty-item_content">
+                        <div class="list-bounty-item_content my-auto">
                           <div class="d-flex flex-column flex-md-row">
                             <img :src="bounty.avatar_url" alt="" width="60" height="60" class="rounded-circle flex-shrink-0 m-auto list-bounty-item_logo">
                             <div class="d-flex flex-column w-100 ml-md-3">
                               <a :href="bounty.absolute_url" class="text-truncate mb-2 text-dark">[[ bounty.title ]]</a>
                               <div class="d-flex flex-column flex-md-row justify-content-between font-smaller-2">
                                 <template v-if="bounty.project_type">
-                                  <span class="my-1">[[ bounty.project_type ]]</span> <span class="d-md-block d-none mx-2">&bull;</span>
+                                  <span class="my-1">[[ bounty.project_type ]]</span> <span class="d-md-block d-none mx-2 my-auto">&bull;</span>
                                 </template>
                                 <template v-if="bounty.expires_date">
-                                  <time :datetime="[[ bounty.expires_date ]]" class="my-1" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> <span class="d-md-block d-none mx-2">&bull;</span>
+                                  <time :datetime="[[ bounty.expires_date ]]" class="my-1" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> <span class="d-md-block d-none mx-2 my-auto">&bull;</span>
                                 </template>
                                 <span class="my-1">[[ bounty.value_true ]] [[ bounty.token_name ]] ([[ bounty.value_in_usd ]] USD)</span>
                                 <a :href="bounty.absolute_url" class="mx-md-2 my-1"><i class="fas fa-eye"></i> View Issue Details</a>
@@ -393,7 +393,7 @@
                       </div>
                     </li>
                     <li class="text-center my-5" :class="{'d-none': isLoading.interested || contributorBounties.interested && contributorBounties.interested.length > 0}" v-cloak>
-                      <p>You are not wating approval to work in any bounty.</p>
+                      <p>[[ error.interested || 'You are not waiting approval to work in any bounty.' ]]</p>
                     </li>
                   </ul>
                   <loading-screen v-if="isLoading.interested"></loading-screen>
@@ -416,17 +416,17 @@
                       </span>
                       <span class="font-weight-bold">You are awaiting payment </span>
                       <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
-                        <div class="list-bounty-item_content">
+                        <div class="list-bounty-item_content my-auto">
                           <div class="d-flex flex-column flex-md-row">
                             <img :src="bounty.avatar_url" alt="" width="60" height="60" class="rounded-circle flex-shrink-0 m-auto list-bounty-item_logo">
                             <div class="d-flex flex-column w-100 ml-md-3">
                               <a :href="bounty.absolute_url" class="text-truncate mb-2 text-dark">[[ bounty.title ]]</a>
                               <div class="d-flex flex-column flex-md-row justify-content-between font-smaller-2">
                                 <template v-if="bounty.project_type">
-                                  <span class="my-1">[[ bounty.project_type ]]</span> <span class="d-md-block d-none mx-2">&bull;</span>
+                                  <span class="my-1">[[ bounty.project_type ]]</span> <span class="d-md-block d-none mx-2 my-auto">&bull;</span>
                                 </template>
                                 <template v-if="bounty.expires_date">
-                                  <time :datetime="[[ bounty.expires_date ]]" class="my-1" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> <span class="d-md-block d-none mx-2">&bull;</span>
+                                  <time :datetime="[[ bounty.expires_date ]]" class="my-1" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> <span class="d-md-block d-none mx-2 my-auto">&bull;</span>
                                 </template>
                                 <span class="my-1">[[ bounty.value_true ]] [[ bounty.token_name ]] ([[ bounty.value_in_usd ]] USD)</span>
                                 <a :href="bounty.absolute_url" class="mx-md-2 my-1"><i class="fas fa-eye"></i> View Issue Details</a>
@@ -438,7 +438,7 @@
                       </div>
                     </li>
                     <li class="text-center my-5" :class="{'d-none': isLoading.work_submitted || contributorBounties.work_submitted && contributorBounties.work_submitted.length > 0}" v-cloak>
-                      <p>You don't have any submittion awaiting payment.</p>
+                      <p>[[ error.work_submitted || "You don't have any submittion awaiting payment." ]]</p>
                     </li>
                   </ul>
                   <loading-screen v-if="isLoading.work_submitted"></loading-screen>
