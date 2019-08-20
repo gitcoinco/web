@@ -156,8 +156,8 @@ urlpatterns = [
     path('revenue/attestations/new', revenue.views.new_attestation, name='revenue_new_attestation'),
 
     # Hackathons / special events
-    re_path(r'^hackathon/(?P<hackathon>.*)?/', dashboard.views.hackathon, name='hackathon'),
-    re_path(r'^hackathon?/', dashboard.views.hackathon, name='hackathon_idx'),
+    path('hackathon/<str:hackathon>/', dashboard.views.hackathon, name='hackathon'),
+    path('hackathon/', dashboard.views.hackathon, name='hackathon_idx'),
     path('hackathon-list/', dashboard.views.get_hackathons, name='get_hackathons'),
 
     # action URLs
