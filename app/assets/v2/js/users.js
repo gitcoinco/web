@@ -145,7 +145,7 @@ Vue.mixin({
     },
     extractURLFilters: function() {
       let vm = this;
-      let params = getURLParams()
+      let params = getURLParams();
 
       vm.users = [];
 
