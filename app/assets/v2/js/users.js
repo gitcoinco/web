@@ -145,11 +145,18 @@ Vue.mixin({
     },
     extractURLFilters: function() {
       let vm = this;
-      let skills = getURLParams('skills');
+      let params = getURLParams()
 
-      if (skills) {
-        vm.params.skills = skills.split(',');
-        fetchUsers(1);
+      vm.users = [];
+
+      if (params) {
+        for (var prop in params) {
+          if (prop === 'skills') {
+            vm.$set(vm.params, prop, params[prop].split(','));
+          } else {
+            vm.$set(vm.params, prop, params[prop]);
+          }
+        }
       }
     }
   }
