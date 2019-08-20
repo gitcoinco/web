@@ -1700,6 +1700,11 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                     params['card_title'] = f'{bounty.title} | {bounty.org_name} Funded Issue Detail | Gitcoin'
                     params['title'] = params['card_title']
                     params['card_desc'] = ellipses(bounty.issue_description_text, 255)
+                    params['noscript'] = {
+                        'title': bounty.title,
+                        'org_name': bounty.org_name,
+                        'issue_description_text': bounty.issue_description_text,
+                        'keywords': ', '.join(bounty.keywords.split(','))}
 
                 if bounty.event and bounty.event.slug:
                     params['event'] = bounty.event.slug

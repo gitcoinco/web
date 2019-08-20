@@ -450,6 +450,13 @@
       </div>
     </div>
 
+    <noscript>
+        <h2>{{ noscript.title }}</h2>
+        <h3>{{ noscript.org_name }}</h3>
+        <h3>{{ noscript.keywords }}</h3>
+        <p>{{ noscript.issue_description_text }}</p>
+    </noscript>
+
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
