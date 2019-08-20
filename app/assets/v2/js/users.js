@@ -119,7 +119,6 @@ Vue.mixin({
           _alert('The invitation has been sent', 'info');
         }
       });
-
     },
     closeModal() {
       this.$refs['user-modal'].closeModal();
@@ -142,6 +141,15 @@ Vue.mixin({
             _alert('The user was not found. Please try using the search box.', 'error');
           }
         });
+      }
+    },
+    extractURLFilters: function() {
+      let vm = this;
+      let skills = getURLParams('skills');
+
+      if (skills) {
+        vm.params.skills = skills.split(',');
+        fetchUsers(1);
       }
     }
   }
@@ -185,6 +193,7 @@ if (document.getElementById('gc-users-directory')) {
     created() {
       this.fetchBounties();
       this.inviteOnMount();
+      this.extractURLFilters();
     },
     beforeMount() {
       window.addEventListener('scroll', () => {
