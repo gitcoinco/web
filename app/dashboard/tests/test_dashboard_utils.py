@@ -84,6 +84,7 @@ class DashboardUtilsTest(TestCase):
         """Test the humanized representation of an event name."""
         assert humanize_event_name('start_work') == 'WORK STARTED'
         assert humanize_event_name('remarket_funded_issue') == 'REMARKET_FUNDED_ISSUE'
+        assert humanize_event_name('issue_remarketed') == 'ISSUE RE-MARKETED'
 
     @staticmethod
     @patch('dashboard.utils.UserAction.objects')

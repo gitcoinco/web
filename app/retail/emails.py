@@ -874,8 +874,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "The Grow Ethereum Hackathon Has Started"
-    new_kudos_pks = [2050, 4281, 1970]
+    subject = "Grants, Ethereal Blocks, and Grown Ethereum"
+    new_kudos_pks = [1926, 1819, 1895]
     new_kudos_size_px = 150
 
     kudos_friday = f'''
@@ -890,22 +890,22 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-Grow Ethereum has officially started! After weeks of hype, the hackathon is now upon us. Dozens of bounties from some of the top projects in Ethereum are now live on the Hackathon Issue Explorer. If you aren't already a member, join the Discord to find a team and then get to work! Some of the Hackathon bounties are featured in this email below, but many more are up for grabs. For more information on the prizes, and to take a look at the available issues, check out the hackathon homepage <a href="https://hackathons.gitcoin.co/grow-ethereum/" target="_blank">here.</a>
+Grow Ethereum, after two and a half weeks of intense hacking, is now wrapping up. We've seen some incredible projects -- from a 💩 game using Portis' Gas Relay to projects on Arweave's permawe -- and are excited to see our sponsors decide the winners. Make sure you post your submitted project in the Discord channel #project-for-kudos; after you're submitted, we'll send you a unique Grow Ethereum kudo you can proudly display on your profile! Thanks to everyone who participated. We're excited to share the winners with you all next week. 
 </p>
 <p>
-Who are the sponsors for Grow Ethereum? This hackathon features a wide range of projects coming from all parts of the ecosystem. Our core sponsors are <a href="https://www.adex.network/">AdEx</a>, <a href="https://bzx.network/">bZx</a>, the <a href="https://ethereum.org/">Ethereum Foundation</a>, <a href="https://www.unicef.org/innovation/blockchain">UNICEF Innovation</a>, and <a href="https://www.metacartel.org/">Metacartel</a>. Our node sponsors are <a href="https://www.portis.io/">Portis</a>, <a href="https://fluence.network/">fluence</a>, <a href="https://pegasys.tech/">PegaSys</a>, <a href="https://www.arweave.org/">Arweave</a>, and <a href="https://raiden.network/">Raiden</a>. For more information on each sponsor's bounty offerings, drop by the Discord and find their specific sponsor channel. There, bounties will be posted, and you can ask any questions you may have.
+"Are we done with hackathons?" you may ask. Absolutely not. Coming up after ETHBerlin is our next virtual hackathon, Ethereal Blocks. This hackathon has $50k of prizes from Portis, Ethereum, Matic, Status, and more. Place your lego blocks towards a more open, transparent internet: and if you win, you'll get the chance to present at the Ethereal Summit on 9/15. We'll be dropping more details in the coming weeks. Follow us on <a href="https://twitter.com/gitcoin">Twitter</a> and bookmark the <a href="https://hackathons.gitcoin.co/ethereal-blocks/">hackathon homepage.</a>  
 </p>
 <p>
-Last, we're inching closer to our announcement of the next round of CLR matching for Gitcoin Grants. If you have a project that needs funding, or are a funder that would like to help grow open source, check out the current Gitcoin Grants homepage. We are happy to answer any questions you might have. <a href="https://gitcoin.co/grants/">Grants live here.</a>
+We're grearing up for the next round of Gitcoin Grants CLR matching. If you're a project in need of funding, or are a supporter of open source, be sure to peruse the Gitcoin Grants homepage <a href="https://gitcoin.co/grants/">- located here -</a> to find projects that interest you or post your own. Expect more information as we get further along in Q3 of 2019!
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-            The Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday.
+        The Gitcoin Livestream is back this week! Join us alongside UNICEF<a href="https://gitcoin.co/livestream"> at 2PM ET this Friday. </a>
         </li>
         <li>
-        Looking for something to watch this weekend? Gitcoin Media is about to upload a new wave of past livestreams. Take a look at the existing ones uploaded today and get ready to watch the next ones! Gitcoin Media lives <a href="https://www.youtube.com/gitcoinmedia">here.</a>
+        <a href="https://www.youtube.com/gitcoinmedia">Rewatch some of the sponsor videos from Grow Ethereum or catch up on some of our other video content on the Gitcoin Media YouTube channel!</a>
         </li>
     </ul>
 </p>
@@ -914,45 +914,45 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'KapsonLabs',
+        'who': 'pacamara',
         'who_link': True,
-        'what': 'Pay Practitioner Implemented!',
-        'link': 'https://gitcoin.co/issue/RibbonBlockchain/IncentivesMVP/16/3282',
+        'what': 'Onboarding Designs, implemented.',
+        'link': 'https://gitcoin.co/issue/status-im/status-react/8136/3128',
         'link_copy': 'View more',
     }, {
-        'who': 'samsparsky',
+        'who': 'b-m-f',
         'who_link': True,
-        'what': 'Token Buyback for Gnosis.',
-        'link': 'https://gitcoin.co/issue/GnosisEcosystemFund/Gnosis-Bounties-/3/1626',
+        'what': 'NVM support, with "solc use"!',
+        'link': 'https://gitcoin.co/issue/crytic/solc-select/16/3301',
         'link_copy': 'View more',
     }, {
-        'who': 'PierrickGT',
+        'who': 'PSalant726',
         'who_link': True,
-        'what': 'The edit button now works.',
-        'link': 'https://gitcoin.co/issue/gitcoinco/web/4786/3227',
+        'what': 'More tests have been written.',
+        'link': 'https://gitcoin.co/issue/tendermint/tendermint/2740/3139', 
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'Quantstamp',
-        'title': 'Scan your smart contract with the Quantstamp Security Network V2 today.',
+        'name': 'Solana',
+        'title': 'Solana is the most performant blockchain in the world with speeds over 50,000 TPS (while being decentralized and secure).',
         'image_url': 'https://s3.us-west-2.amazonaws.com/gitcoin-static/jDSk7ZTfpY19PWdwwsk8puNd.png',
-        'link': 'http://bit.ly/QStamp',
-        'cta': 'Scan now',
+        'link': 'http://bit.ly/TourDeSOL',
+        'cta': 'Sign Up for Tour de SOL',
         'body': [
-            'Reentrancy bu🐜s are easy to miss. Have confidence in your code and integrate security checks as part of your development workflow.🛡'
+            'We just announced Tour de SOL, or our incentivized testnet event. Are you a validator? Earn token and race against the best in the world. Deadline is July 21st.'
         ]
     }
 
     bounties_spec = [{
-        'url': 'https://github.com/fluencelabs/Bounties/issues/1',
-        'primer': 'Help Build The Real Decentralized Web',
+        'url': 'https://github.com/gitcoinco/creative/issues/51',
+        'primer': 'Gitcoin Bot Stickers',
+    }, {
+        'url': 'https://github.com/spacemeshos/poet2/issues/3',
+        'primer': 'Rust MVP Coding Contest',
     }, {
         'url': 'https://github.com/PegaSysEng/BountiedWork/issues/20',
         'primer': 'Stratum Implementation for Pantheon',
-    }, {
-        'url': 'https://github.com/fluencelabs/Bounties/issues/2',
-        'primer': 'Building REPL to Enable Customizable Decentralized Backends',
 }, ]
     
     

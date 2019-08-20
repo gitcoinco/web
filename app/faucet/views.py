@@ -104,15 +104,16 @@ def process_faucet_request(request, pk):
     except FaucetRequest.DoesNotExist:
         raise Http404
 
+    redir_link = '/_administrationfaucet/faucetrequest/?fulfilled=f&rejected=f'
     faucet_amount = float(settings.FAUCET_AMOUNT) * float(recommend_min_gas_price_to_confirm_in_time(5))
 
     if faucet_request.fulfilled:
         messages.info(request, 'already fulfilled')
-        return redirect(reverse('admin:index'))
+        return redirect(redir_link)
 
     if faucet_request.rejected:
         messages.info(request, 'already rejected')
-        return redirect(reverse('admin:index'))
+        return redirect(redir_link)
 
     reject_comments = request.POST.get('reject_comments')
     if reject_comments:
@@ -121,7 +122,7 @@ def process_faucet_request(request, pk):
         faucet_request.save()
         reject_faucet_request(faucet_request)
         messages.success(request, 'rejected')
-        return redirect(reverse('admin:index'))
+        return redirect(redir_link)
 
     if request.POST.get('destinationAccount'):
         faucet_request.fulfilled = True
@@ -130,12 +131,20 @@ def process_faucet_request(request, pk):
         faucet_request.save()
         processed_faucet_request(faucet_request)
         messages.success(request, 'sent')
-        return redirect(reverse('admin:index'))
+        return redirect(redir_link)
+
+    common_rejection_reasons = [
+        "Please tell us what you're planning on using these funds for in the comments section!  Thanks.",
+        "This is a faucet for Gitcoin-specific functionality (like posting Bounties or fulfilling Bounties).  Please re-submit your request if you need to do something Gitcoin specific.",
+        "You don't need ETH to start work on a bounty.  Please submit another request if you finish your work and need to submit work.",
+        "",
+    ]
 
     context = {
         'obj': faucet_request,
         'faucet_amount': faucet_amount,
         'recommend_gas_price': round(recommend_min_gas_price_to_confirm_in_time(1), 1),
+        'common_rejection_reasons': common_rejection_reasons,
     }
 
     return TemplateResponse(request, 'process_faucet_request.html', context)
