@@ -229,6 +229,7 @@ pages:
     - Rest API: mk_rest_api.md << docs/API.md
     - Changelog: mk_changelog.md << CHANGELOG.md
     - Contributor's Guide: mk_contributors.md << docs/CONTRIBUTING.md
+    - Security Bounty Program: mk_securitybounty.md << docs/SECURITYBOUNTY.md
     - StyleGuide: mk_styleguide.md << docs/STYLEGUIDE.md
   - Code:
     - App:
